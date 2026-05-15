@@ -16,11 +16,28 @@ const ContactSection: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('תודה! פנייתך התקבלה ונחזור אליך בהקדם.');
-    setFormData({ name: '', email: '', phone: '', service: 'couples', message: '' });
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        alert('תודה! פנייתך התקבלה דרך מערכת ה-Worker ונחזור אליך בהקדם.');
+        setFormData({ name: '', email: '', phone: '', service: 'couples', message: '' });
+      } else {
+        alert('הייתה שגיאה בשליחת הטופס. נסו שוב מאוחר יותר.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('שגיאת תקשורת. אנא נסו שוב.');
+    }
   };
 
   return (
