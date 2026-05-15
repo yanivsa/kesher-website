@@ -74,8 +74,50 @@
   box-shadow: var(--shadow-md);
 }
 
+.menuToggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--color-primary-dark);
+  cursor: pointer;
+  padding: 0;
+  z-index: 1002; /* Above the mobile menu */
+}
+
 @media (max-width: 768px) {
+  .menuToggle {
+    display: block;
+  }
+
   .nav {
-    display: none; /* Add mobile menu later */
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    height: 100vh;
+    background-color: var(--color-surface);
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: calc(var(--header-height) + var(--spacing-lg));
+    box-shadow: var(--shadow-lg);
+    transition: right 0.3s ease-in-out;
+    z-index: 1001;
+  }
+
+  .navOpen {
+    right: 0;
+  }
+
+  .dropdownContent {
+    position: static;
+    box-shadow: none;
+    padding-right: var(--spacing-md);
+    background-color: transparent;
+    display: none; /* Can be managed with state if needed, simplified for now */
+  }
+
+  .dropdown:hover .dropdownContent {
+    display: block;
   }
 }
