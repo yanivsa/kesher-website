@@ -1,8 +1,9 @@
 import React from 'react';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './FloatingWhatsApp.module.css';
 
 const FloatingWhatsApp: React.FC = () => {
-  const phoneNumber = '9725XXXXXXXX'; // Update with real number
+  const phoneNumber = SITE_CONFIG.contact.whatsapp;
   const message = encodeURIComponent('היי שירה, אשמח לקבוע פגישת היכרות.');
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 

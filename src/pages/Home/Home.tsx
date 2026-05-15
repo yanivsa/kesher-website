@@ -6,29 +6,30 @@ import BlogPreview from './BlogPreview';
 import ContactSection from './ContactSection';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './Home.module.css';
 
 const Home: React.FC = () => {
   const schemaData = {
     "@context": "https://schema.org",
     "@type": "Therapist",
-    "name": "שירה שחרוני — ייעוץ זוגי, הדרכת הורים וגישור",
+    "name": `${SITE_CONFIG.author} — ייעוץ זוגי, הדרכת הורים וגישור`,
     "url": "https://shira.saharoni.com",
-    "telephone": "+972-50-000-0000",
+    "telephone": SITE_CONFIG.contact.phone,
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "אשדוד",
       "addressCountry": "IL"
     },
     "serviceType": ["ייעוץ זוגי", "הדרכת הורים", "גישור גירושין"],
-    "description": "יועצת זוגית ומגשרת מוסמכת באשדוד עם ניסיון בהדרכת הורים לילדים עם ADHD"
+    "description": SITE_CONFIG.description
   };
 
   return (
     <div className={styles.home}>
       <MetaTags 
-        title="שירה שחרוני — ייעוץ זוגי, הדרכת הורים וגישור באשדוד"
-        description="יועצת זוגית ומנחת הורים מוסמכת באשדוד. ייעוץ זוגי, הדרכת הורים וגישור גירושין. קבעו שיחת היכרות ▸"
+        title={`${SITE_CONFIG.author} — ייעוץ זוגי, הדרכת הורים וגישור באשדוד`}
+        description={SITE_CONFIG.description}
       />
       <SchemaOrg data={schemaData} />
       <Hero />

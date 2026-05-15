@@ -1,4 +1,5 @@
 import React from 'react';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './Footer.module.css';
 
 const Footer: React.FC = () => {
@@ -7,8 +8,8 @@ const Footer: React.FC = () => {
       <div className={`container ${styles.container}`}>
         <div className={styles.info}>
           <div className={styles.logo}>
-            <span className={styles.brand}>קשר</span>
-            <span className={styles.subtitle}>שירה סהרוני</span>
+            <span className={styles.brand}>{SITE_CONFIG.brand}</span>
+            <span className={styles.subtitle}>{SITE_CONFIG.author}</span>
           </div>
           <p>יועצת זוגית, מנחת הורים ומגשרת מוסמכת.</p>
         </div>
@@ -21,14 +22,14 @@ const Footer: React.FC = () => {
         </div>
         <div className={styles.contact}>
           <h4>פרטי התקשרות</h4>
-          <p>טלפון: 05X-XXXXXXX</p>
-          <p>אימייל: shira@example.com</p>
-          <p>מיקום: אשדוד / אונליין</p>
+          <p>טלפון: {SITE_CONFIG.contact.phone}</p>
+          <p>אימייל: {SITE_CONFIG.contact.email}</p>
+          <p>מיקום: {SITE_CONFIG.contact.location}</p>
         </div>
       </div>
       <div className={styles.bottom}>
         <div className="container">
-          <p>© {new Date().getFullYear()} קשר - שירה סהרוני. כל הזכויות שמורות.</p>
+          <p>© {new Date().getFullYear()} {SITE_CONFIG.brand} - {SITE_CONFIG.author}. כל הזכויות שמורות.</p>
         </div>
       </div>
     </footer>

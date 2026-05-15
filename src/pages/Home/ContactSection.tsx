@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './ContactSection.module.css';
 
 const ContactSection: React.FC = () => {
@@ -35,21 +36,21 @@ const ContactSection: React.FC = () => {
               <span className={styles.icon}>📞</span>
               <div>
                 <h4>טלפון</h4>
-                <p>05X-XXXXXXX</p>
+                <p>{SITE_CONFIG.contact.phone}</p>
               </div>
             </div>
             <div className={styles.detail}>
               <span className={styles.icon}>✉️</span>
               <div>
                 <h4>אימייל</h4>
-                <p>shira@example.com</p>
+                <p>{SITE_CONFIG.contact.email}</p>
               </div>
             </div>
             <div className={styles.detail}>
               <span className={styles.icon}>📍</span>
               <div>
                 <h4>מיקום</h4>
-                <p>אשדוד / פגישות אונליין (Zoom)</p>
+                <p>{SITE_CONFIG.contact.location}</p>
               </div>
             </div>
           </div>
