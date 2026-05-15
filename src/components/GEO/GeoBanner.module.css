@@ -1,0 +1,11 @@
+.banner {
+  background-color: var(--color-primary-dark);
+  color: white;
+  padding: 0.5rem 0;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.banner strong {
+  color: var(--color-accent-light);
+}
