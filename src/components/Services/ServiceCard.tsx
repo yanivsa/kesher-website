@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styles from './ServiceCard.module.css';
 
 interface ServiceCardProps {
@@ -14,7 +15,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, lin
       <div className={styles.icon}>{icon}</div>
       <h3 className={styles.title}>{title}</h3>
       <p className={styles.description}>{description}</p>
-      <a href={link} className={styles.link}>למידע נוסף ←</a>
+      <Link to={link} className={styles.link}>למידע נוסף ←</Link>
     </div>
   );
 };

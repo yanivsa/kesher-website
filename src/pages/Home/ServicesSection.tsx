@@ -8,19 +8,19 @@ const ServicesSection: React.FC = () => {
       title: 'ייעוץ זוגי',
       description: 'בניית תקשורת מקרבת, פתרון קונפליקטים והחזרת האינטימיות והחברות לקשר הזוגי.',
       icon: '💑',
-      link: '#couples'
+      link: '/services/couples'
     },
     {
       title: 'הדרכת הורים',
       description: 'כלים פרקטיים להתמודדות עם אתגרי ההורות, סמכות הורית וליווי הורים לילדים עם ADHD.',
       icon: '👨‍👩‍👧',
-      link: '#parenting'
+      link: '/services/parenting'
     },
     {
       title: 'גישור משפחתי',
       description: 'ליווי מקצועי ומשפטי לפתרון סכסוכים, גירושין בשיתוף פעולה ובניית הסכמים מחוץ לכותלי בית המשפט.',
       icon: '⚖️',
-      link: '#mediation'
+      link: '/services/mediation'
     }
   ];
 
