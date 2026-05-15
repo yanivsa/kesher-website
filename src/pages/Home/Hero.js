@@ -1,0 +1,13 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jsx_runtime_1 = require("react/jsx-runtime");
+const react_1 = __importDefault(require("react"));
+const Hero_module_css_1 = __importDefault(require("./Hero.module.css"));
+const Hero = () => {
+    return ((0, jsx_runtime_1.jsx)("section", { className: Hero_module_css_1.default.hero, children: (0, jsx_runtime_1.jsxs)("div", { className: `container ${Hero_module_css_1.default.container}`, children: [(0, jsx_runtime_1.jsxs)("div", { className: Hero_module_css_1.default.content, children: [(0, jsx_runtime_1.jsxs)("h1", { className: Hero_module_css_1.default.title, children: ["\u05DE\u05E2\u05E8\u05DB\u05D5\u05EA \u05D9\u05D7\u05E1\u05D9\u05DD ", (0, jsx_runtime_1.jsx)("br", {}), (0, jsx_runtime_1.jsx)("span", { children: "\u05E8\u05D0\u05D5\u05D9\u05D5\u05EA \u05DC\u05D8\u05D9\u05E4\u05D5\u05DC \u05E0\u05DB\u05D5\u05DF." })] }), (0, jsx_runtime_1.jsx)("p", { className: Hero_module_css_1.default.description, children: "\u05DC\u05D9\u05D5\u05D5\u05D9 \u05DE\u05E7\u05E6\u05D5\u05E2\u05D9 \u05D5\u05E8\u05D2\u05D9\u05E9 \u05DC\u05D6\u05D5\u05D2\u05D5\u05EA, \u05D4\u05D5\u05E8\u05D9\u05DD \u05D5\u05DE\u05E9\u05E4\u05D7\u05D5\u05EA \u05D1\u05EA\u05D4\u05DC\u05D9\u05DB\u05D9 \u05E9\u05D9\u05E0\u05D5\u05D9, \u05E6\u05DE\u05D9\u05D7\u05D4 \u05D5\u05D2\u05D9\u05E9\u05D5\u05E8. \u05D1\u05D5\u05D0\u05D5 \u05E0\u05DE\u05E6\u05D0 \u05D9\u05D7\u05D3 \u05D0\u05EA \u05D4\u05D3\u05E8\u05DA \u05DC\u05D7\u05D9\u05D1\u05D5\u05E8 \u05E2\u05DE\u05D5\u05E7 \u05D9\u05D5\u05EA\u05E8 \u05D5\u05E4\u05D7\u05D5\u05EA \u05E7\u05D5\u05E0\u05E4\u05DC\u05D9\u05E7\u05D8\u05D9\u05DD." }), (0, jsx_runtime_1.jsxs)("div", { className: Hero_module_css_1.default.actions, children: [(0, jsx_runtime_1.jsx)("a", { href: "#contact", className: Hero_module_css_1.default.primaryBtn, children: "\u05E7\u05D1\u05D9\u05E2\u05EA \u05E4\u05D2\u05D9\u05E9\u05EA \u05D4\u05D9\u05DB\u05E8\u05D5\u05EA" }), (0, jsx_runtime_1.jsx)("a", { href: "#about", className: Hero_module_css_1.default.secondaryBtn, children: "\u05E7\u05E8\u05D0 \u05E2\u05D5\u05D3 \u05D0\u05D5\u05D3\u05D5\u05EA\u05D9" })] })] }), (0, jsx_runtime_1.jsx)("div", { className: Hero_module_css_1.default.imageContainer, children: (0, jsx_runtime_1.jsx)("div", { className: Hero_module_css_1.default.imagePlaceholder, children: (0, jsx_runtime_1.jsx)("div", { className: Hero_module_css_1.default.overlay }) }) })] }) }));
+};
+exports.default = Hero;
+//# sourceMappingURL=Hero.js.map

@@ -1,0 +1,70 @@
+.footer {
+  background: var(--color-text);
+  color: var(--color-bg);
+  padding-top: var(--spacing-lg);
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  gap: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--spacing-sm);
+}
+
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  color: var(--color-primary-light);
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.links, .contact {
+  display: flex;
+  flex-direction: column;
+}
+
+.links h4, .contact h4 {
+  color: white;
+  font-family: 'Assistant', sans-serif;
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.links a {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+}
+
+.links a:hover {
+  color: var(--color-primary-light);
+}
+
+.contact p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+}
+
+.bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--spacing-sm) 0;
+  font-size: 0.85rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+}

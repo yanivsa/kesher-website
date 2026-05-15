@@ -1,0 +1,41 @@
+:root {
+  /* Primary — Warm Sage (Calm) */
+  --color-primary: #7C9E87;
+  --color-primary-light: #9BB8A4;
+  --color-primary-dark: #5A7A65;
+
+  /* Accent — Warm Terracotta (Trust) */
+  --color-accent: #C07B5A;
+  --color-accent-light: #E5A882;
+  --color-accent-dark: #A36447;
+
+  /* Neutrals */
+  --color-bg: #FAF7F4; /* Warm Cream */
+  --color-surface: #FFFFFF;
+  --color-text: #2D2926; /* Deep Brown */
+  --color-text-muted: #7A6F6A;
+  --color-border: #E5E1DD;
+
+  /* Status */
+  --color-whatsapp: #25D366;
+  
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-lg: 4rem;
+  --spacing-xl: 8rem;
+
+  /* Layout */
+  --container-max-width: 1200px;
+  --header-height: 80px;
+  
+  /* Effects */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --transition: all 0.3s ease;
+}
