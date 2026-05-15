@@ -22,7 +22,7 @@ const Header: React.FC = () => {
               <Link to="/services/mediation">גישור משפחתי</Link>
             </div>
           </div>
-          <Link to="/#blog">בלוג</Link>
+          <Link to="/blog">בלוג</Link>
           <a href="/#contact" className={styles.cta}>קביעת פגישה</a>
         </nav>
       </div>
