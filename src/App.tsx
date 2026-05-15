@@ -8,6 +8,7 @@ import ParentingGuidance from './pages/Services/Parenting/ParentingGuidance'
 import Mediation from './pages/Services/Mediation/Mediation'
 import BlogList from './pages/Blog/BlogList'
 import BlogPost from './pages/Blog/BlogPost'
+import FAQ from './pages/FAQ/FAQ'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/services/mediation" element={<Mediation />} />
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:id" element={<BlogPost />} />
+          <Route path="/faq" element={<FAQ />} />
         </Routes>
       </Layout>
     </Router>
