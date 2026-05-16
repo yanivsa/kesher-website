@@ -19,17 +19,20 @@ const ContactSection: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    const formSpreeUrl = 'https://formspree.io/f/xvgzgeyw'; // Formspree endpoint
+
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch(formSpreeUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          _subject: `פנייה חדשה מאתר קשר: ${formData.name}`,
+        }),
       });
       
-      const result = await response.json();
-      
-      if (result.success) {
-        alert('תודה! פנייתך התקבלה דרך מערכת ה-Worker ונחזור אליך בהקדם.');
+      if (response.ok) {
+        alert('תודה! פנייתך התקבלה ונחזור אליך בהקדם.');
         setFormData({ name: '', email: '', phone: '', service: 'couples', message: '' });
       } else {
         alert('הייתה שגיאה בשליחת הטופס. נסו שוב מאוחר יותר.');

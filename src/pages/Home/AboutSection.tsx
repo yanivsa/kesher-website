@@ -8,8 +8,8 @@ const AboutSection: React.FC = () => {
         <div className={styles.imageContainer}>
           <div className={styles.imageWrapper}>
             <img 
-              src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" 
-              alt="הקליניקה של שירה סהרוני" 
+              src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80" 
+              alt="קליניקה נעימה ומזמינה" 
               className={styles.aboutImage}
             />
             <div className={styles.experienceBadge}>

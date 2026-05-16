@@ -1,3 +1,39 @@
+# === AI Search Crawlers — ALLOW (for visibility in AI answers) ===
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+# === AI Training Crawlers — BLOCK (protect original content) ===
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+# === Traditional Search — ALLOW ===
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
 User-agent: *
 Allow: /
 

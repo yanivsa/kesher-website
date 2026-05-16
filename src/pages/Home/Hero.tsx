@@ -22,8 +22,8 @@ const Hero: React.FC = () => {
         <div className={styles.imageContainer}>
           <div className={styles.imageWrapper}>
             <img 
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80" 
-              alt="שירה סהרוני - יועצת זוגית ומגשרת" 
+              src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1200&q=80" 
+              alt="מרחב בטוח לייעוץ וגישור" 
               className={styles.heroImage}
             />
             <div className={styles.overlay}></div>
