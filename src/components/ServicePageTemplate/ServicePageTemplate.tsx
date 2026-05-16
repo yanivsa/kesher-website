@@ -10,6 +10,7 @@ interface ServicePageTemplateProps {
   heroSubtitle: string;
   content: React.ReactNode;
   icon: string;
+  image: string;
 }
 
 const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({ 
@@ -18,16 +19,22 @@ const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
   heroTitle, 
   heroSubtitle, 
   content,
-  icon
+  icon,
+  image
 }) => {
   return (
     <div className={styles.page}>
       <MetaTags title={title} description={description} />
       <header className={styles.hero}>
-        <div className="container">
-          <div className={styles.icon}>{icon}</div>
-          <h1>{heroTitle}</h1>
-          <p className={styles.subtitle}>{heroSubtitle}</p>
+        <div className={`container ${styles.heroContainer}`}>
+          <div className={styles.heroContent}>
+            <div className={styles.icon}>{icon}</div>
+            <h1>{heroTitle}</h1>
+            <p className={styles.subtitle}>{heroSubtitle}</p>
+          </div>
+          <div className={styles.heroImageWrapper}>
+            <img src={image} alt={heroTitle} className={styles.heroImage} />
+          </div>
         </div>
       </header>
       <section className={styles.contentSection}>

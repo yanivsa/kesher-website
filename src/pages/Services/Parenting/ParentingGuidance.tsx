@@ -24,6 +24,7 @@ const ParentingGuidance: React.FC = () => {
       heroTitle="הדרכת הורים"
       heroSubtitle="מנהיגות הורית מתוך חיבור, הבנה וכלים פרקטיים ליום-יום."
       icon="👨‍👩‍👧"
+      image="https://images.unsplash.com/photo-1510906594845-bc082582c8cc?auto=format&fit=crop&w=1200&q=80"
       content={content}
     />
   );

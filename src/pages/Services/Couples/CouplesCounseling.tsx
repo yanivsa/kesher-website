@@ -23,6 +23,7 @@ const CouplesCounseling: React.FC = () => {
       heroTitle="ייעוץ זוגי"
       heroSubtitle="בניית גשרים של תקשורת ואינטימיות בלב הקשר שלכם."
       icon="💑"
+      image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80"
       content={content}
     />
   );

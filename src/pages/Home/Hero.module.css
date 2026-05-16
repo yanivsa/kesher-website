@@ -75,14 +75,19 @@
   height: 500px;
 }
 
-.imagePlaceholder {
+.imageWrapper {
   width: 100%;
   height: 100%;
-  background-color: var(--color-primary-light);
   border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-lg);
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .overlay {

@@ -6,8 +6,12 @@ const AboutSection: React.FC = () => {
     <section id="about" className={styles.about}>
       <div className={`container ${styles.container}`}>
         <div className={styles.imageContainer}>
-          <div className={styles.imagePlaceholder}>
-            {/* Image of Shira in her clinic */}
+          <div className={styles.imageWrapper}>
+            <img 
+              src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80" 
+              alt="הקליניקה של שירה סהרוני" 
+              className={styles.aboutImage}
+            />
             <div className={styles.experienceBadge}>
               <span className={styles.years}>15+</span>
               <span className={styles.yearsText}>שנות ניסיון</span>
