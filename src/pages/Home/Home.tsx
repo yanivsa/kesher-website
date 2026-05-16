@@ -2,6 +2,7 @@ import React from 'react';
 import Hero from './Hero';
 import ServicesSection from './ServicesSection';
 import ProcessSection from './ProcessSection';
+import WhyMeSection from './WhyMeSection';
 import Testimonials from './Testimonials';
 import AboutSection from './AboutSection';
 import BlogPreview from './BlogPreview';
@@ -73,6 +74,7 @@ const Home: React.FC = () => {
       <Hero />
       <ServicesSection />
       <ProcessSection />
+      <WhyMeSection />
       <Testimonials />
       <AboutSection />
       <BlogPreview />

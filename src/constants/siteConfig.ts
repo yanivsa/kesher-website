@@ -3,7 +3,7 @@ export const SITE_CONFIG = {
   author: "שירה סהרוני",
   title: "שירה סהרוני | ייעוץ זוגי, הדרכת הורים וגישור",
   description: "יועצת זוגית ומנחת הורים מוסמכת באשדוד. ייעוץ זוגי, הדרכת הורים וגישור גירושין. קבעו שיחת היכרות ▸",
-  url: "https://kesher-website.pages.dev",
+  url: "https://kesher.saharoni.com",
   contact: {
     phone: "052-526-7848", // Placeholder - Update with real
     email: "shira@saharoni.com",

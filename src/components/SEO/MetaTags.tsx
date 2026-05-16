@@ -25,7 +25,7 @@ const MetaTags: React.FC<MetaTagsProps> = ({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonical} />
-      <meta property="og:site_name" content="קשר - שירה סהרוני" />
+      <meta property="og:site_name" content={SITE_CONFIG.author} />
       
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />

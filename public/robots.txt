@@ -37,4 +37,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://shira.saharoni.com/sitemap.xml
+Sitemap: https://kesher.saharoni.com/sitemap.xml
