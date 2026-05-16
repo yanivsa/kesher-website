@@ -1,0 +1,88 @@
+name: Jules Nightly Kesher Site Fixes
+
+on:
+  schedule:
+    - cron: "20 22 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: jules-nightly-kesher-site-fixes
+  cancel-in-progress: false
+
+jobs:
+  start-jules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop if site-fix PR backlog is open
+        id: backlog_gate
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" \
+            > open-prs.json
+
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+
+          with open("open-prs.json", encoding="utf-8") as fh:
+              prs = json.load(fh)
+
+          pattern = re.compile(
+              r"(site fix|code[- ]?health|testing|security|performance|seo|geo|"
+              r"accessibility|build|vite|react|css|layout|bug|suggested|start)",
+              re.I,
+          )
+          blockers = [
+              f"#{pr['number']} {pr['title']}"
+              for pr in prs
+              if pattern.search(pr.get("title") or "")
+              or pattern.search((pr.get("head") or {}).get("ref") or "")
+              or pattern.search(pr.get("body") or "")
+          ]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"blocked={'true' if blockers else 'false'}\n")
+          if blockers:
+              print("Open Kesher site-fix PR backlog exists; no Jules session will be started.")
+              for blocker in blockers[:20]:
+                  print(f"- {blocker}")
+          PY
+
+      - name: Start Jules autonomous site-fix session
+        if: steps.backlog_gate.outputs.blocked != 'true'
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${JULES_API_KEY:-}"
+
+          cat > payload.json <<'JSON'
+          {
+            "title": "Nightly Kesher site fixes and Suggested sweep",
+            "prompt": "Run fully autonomously. Do not ask the user for confirmation, clarification, approval, review, Start clicks, or implementation choices.\n\nRepository: yanivsa/kesher-website. Start from main.\n\nAct like clicking Start on Jules Suggested Tasks, but safely. Do not start all suggested fixes blindly.\n\nBefore choosing work, read:\n- seo.md\n- geo.md\n- plan.md\n\nSite context:\nThis is the Hebrew website for Shira Saharoni / שירה סהרוני, a parenting facilitator, parenting guide, couples counselor, and family mediator in Ashdod and online. Preserve the canonical spelling already used in src/constants/siteConfig.ts and visible site copy.\n\nPick at most ONE coherent, high-confidence fix per nightly run.\n\nEligible fixes:\n- SEO/GEO metadata\n- sitemap / robots / llms.txt consistency\n- accessibility\n- mobile layout\n- React/Vite build reliability\n- routing bugs\n- content consistency\n- performance\n- small maintainability improvements\n\nDo not publish blog articles in this task.\n\nHard open-PR gate:\nIf any open PR or branch already exists for site fixes, suggested-task work, testing, security, performance, SEO/GEO, accessibility, routing, build, CSS/layout, or similar maintenance, do not edit and do not create another PR. Finish no-op and name the blocker.\n\nDuplicate-avoidance rule:\nDo not create a PR for an issue already covered by an open PR, existing branch, merged PR, recent session, or equivalent code in main.\n\nRun npm run build.\n\nCreate one PR automatically only if the change is clean, focused, and non-duplicate. PR summary must include which suggested/backlog issue was addressed, why it was not a duplicate, changed files, validation commands, risks or skipped checks, and confirmation that no manual Start/approval was required.",
+            "sourceContext": {
+              "source": "sources/github/yanivsa/kesher-website",
+              "githubRepoContext": {
+                "startingBranch": "main"
+              }
+            },
+            "requirePlanApproval": false,
+            "automationMode": "AUTO_CREATE_PR"
+          }
+          JSON
+
+          curl --fail-with-body -sS \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            https://jules.googleapis.com/v1alpha/sessions

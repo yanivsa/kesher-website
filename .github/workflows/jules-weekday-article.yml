@@ -1,0 +1,103 @@
+name: Jules Weekday Kesher Article
+
+on:
+  schedule:
+    # 00:35 Israel time during daylight saving. The job also checks local day
+    # before starting Jules, so Friday/Saturday are skipped even across DST.
+    - cron: "35 21 * * 0,1,2,3,4"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: jules-weekday-kesher-article
+  cancel-in-progress: false
+
+jobs:
+  start-jules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip Friday and Saturday in Israel
+        id: local_day
+        run: |
+          set -euo pipefail
+          day="$(TZ=Asia/Jerusalem date +%u)"
+          if [ "$day" = "5" ] || [ "$day" = "6" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Local day is Friday/Saturday in Israel; skipping article run."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stop if article PR is already open
+        if: steps.local_day.outputs.skip != 'true'
+        id: article_gate
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" \
+            > open-prs.json
+
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+
+          with open("open-prs.json", encoding="utf-8") as fh:
+              prs = json.load(fh)
+
+          pattern = re.compile(
+              r"(kesher article|weekday article|blog article|posts\.json|"
+              r"auto[- ]?publish|publish article|new article|מאמר)",
+              re.I,
+          )
+          blockers = [
+              f"#{pr['number']} {pr['title']}"
+              for pr in prs
+              if pattern.search(pr.get("title") or "")
+              or pattern.search((pr.get("head") or {}).get("ref") or "")
+              or pattern.search(pr.get("body") or "")
+          ]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"blocked={'true' if blockers else 'false'}\n")
+          if blockers:
+              print("Open Kesher article PR exists; no Jules session will be started.")
+              for blocker in blockers[:20]:
+                  print(f"- {blocker}")
+          PY
+
+      - name: Start Jules autonomous article session
+        if: steps.local_day.outputs.skip != 'true' && steps.article_gate.outputs.blocked != 'true'
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${JULES_API_KEY:-}"
+
+          cat > payload.json <<'JSON'
+          {
+            "title": "Weekday Kesher Hebrew article",
+            "prompt": "Run fully autonomously. Do not ask the user for confirmation, clarification, approval, review, Start clicks, or implementation choices.\n\nRepository: yanivsa/kesher-website. Start from main.\n\nSite context:\nThis is the Hebrew website for Shira Saharoni / שירה סהרוני as represented by the current code. If docs disagree on Hebrew spelling, preserve the canonical spelling already used in src/constants/siteConfig.ts and visible site copy. She is a parenting facilitator / parenting guide, couples counselor, and family mediator in Ashdod and online.\n\nBefore writing, read:\n- seo.md\n- geo.md\n- plan.md\n- src/data/posts.json\n\nCreate exactly ONE new Hebrew blog article per run. Do not catch up backlog. Do not create more than one article. Do not duplicate an existing post topic, title, slug, hook, keyword, or angle.\n\nArticle requirements:\n- Hebrew only.\n- Relevant to couples counseling, parenting guidance, ADHD parenting, co-parenting, family mediation, divorce mediation, communication, boundaries, emotional regulation, or family conflict repair.\n- Use local/long-tail SEO from seo.md, especially Ashdod-focused and practical search-intent topics.\n- Start with a strong hook: a real-life couple/parent/family situation.\n- Immediately after the hook, include a 40-80 word answer-first / BLUF paragraph.\n- Use practical H3 question sections.\n- Include concrete examples, not generic advice.\n- Keep Shira's warm, practical, professional tone.\n- Include a soft CTA.\n- Do not give legal or clinical promises.\n\nAllowed edits:\n- src/data/posts.json\n- public/sitemap.xml if needed\n- public/llms.txt if needed\n- public/llms-full.txt only if it exists or repo docs require it\n\nHard gate:\nIf an open PR or branch already contains Kesher blog/article/posts.json work, do not edit and do not create another PR. Finish no-op and name the blocking PR/branch.\n\nRun npm run build.\n\nCreate one PR automatically only for this single article and minimal index updates. PR summary must include selected keyword, topic, hook, category, changed files, validation commands, skipped checks, and confirmation that no manual Start/approval was required.",
+            "sourceContext": {
+              "source": "sources/github/yanivsa/kesher-website",
+              "githubRepoContext": {
+                "startingBranch": "main"
+              }
+            },
+            "requirePlanApproval": false,
+            "automationMode": "AUTO_CREATE_PR"
+          }
+          JSON
+
+          curl --fail-with-body -sS \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            https://jules.googleapis.com/v1alpha/sessions
