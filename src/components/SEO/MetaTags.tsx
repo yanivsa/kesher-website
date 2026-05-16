@@ -1,4 +1,5 @@
 import React from 'react';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 
 interface MetaTagsProps {
   title: string;
@@ -10,7 +11,7 @@ interface MetaTagsProps {
 const MetaTags: React.FC<MetaTagsProps> = ({ 
   title, 
   description, 
-  canonical = "https://shira.saharoni.com",
+  canonical = SITE_CONFIG.url,
   ogType = "website"
 }) => {
   return (

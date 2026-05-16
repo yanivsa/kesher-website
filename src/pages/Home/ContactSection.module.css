@@ -16,7 +16,26 @@
 .subtitle {
   font-size: 1.1rem;
   color: var(--color-text-muted);
+  margin-bottom: var(--spacing-md);
+}
+
+.whatsappBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  background: var(--color-whatsapp);
+  color: white !important;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 800;
   margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.whatsappBtn:hover {
+  filter: brightness(0.95);
+  transform: translateY(-2px);
 }
 
 .contactDetails {
@@ -48,7 +67,7 @@
 .formContainer {
   background: var(--color-bg);
   padding: var(--spacing-lg);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
 }
 

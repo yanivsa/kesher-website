@@ -26,6 +26,18 @@
   display: inline-block;
 }
 
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.35rem;
+}
+
+.nav a {
+  color: var(--color-text);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
 .navLink {
   color: var(--color-text);
   font-weight: 500;
@@ -98,26 +110,47 @@
     height: 100vh;
     background-color: var(--color-surface);
     flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
     justify-content: flex-start;
     padding-top: calc(var(--header-height) + var(--spacing-lg));
+    padding-right: var(--spacing-md);
+    padding-left: var(--spacing-md);
     box-shadow: var(--shadow-lg);
     transition: right 0.3s ease-in-out;
     z-index: 1001;
+  }
+
+  .nav a,
+  .navLink {
+    font-size: 1.05rem;
+    padding: 0.35rem 0;
   }
 
   .navOpen {
     right: 0;
   }
 
+  .dropdown {
+    display: grid;
+    gap: 0.35rem;
+  }
+
   .dropdownContent {
     position: static;
     box-shadow: none;
-    padding-right: var(--spacing-md);
+    padding-right: var(--spacing-sm);
     background-color: transparent;
-    display: none; /* Can be managed with state if needed, simplified for now */
+    display: block;
   }
 
-  .dropdown:hover .dropdownContent {
-    display: block;
+  .dropdownContent a {
+    padding: 0.35rem 0;
+    color: var(--color-text-muted);
+  }
+
+  .cta {
+    text-align: center;
+    margin-top: var(--spacing-sm);
   }
 }

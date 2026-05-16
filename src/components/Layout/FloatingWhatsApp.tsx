@@ -3,13 +3,9 @@ import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './FloatingWhatsApp.module.css';
 
 const FloatingWhatsApp: React.FC = () => {
-  const phoneNumber = SITE_CONFIG.contact.whatsapp;
-  const message = encodeURIComponent('היי שירה, אשמח לקבוע פגישת היכרות.');
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-
   return (
     <a 
-      href={whatsappUrl} 
+      href={SITE_CONFIG.links.whatsapp} 
       className={styles.button} 
       target="_blank" 
       rel="noopener noreferrer"

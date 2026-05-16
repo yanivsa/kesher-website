@@ -2,6 +2,7 @@ import React from 'react';
 import Hero from './Hero';
 import ServicesSection from './ServicesSection';
 import ProcessSection from './ProcessSection';
+import Testimonials from './Testimonials';
 import AboutSection from './AboutSection';
 import BlogPreview from './BlogPreview';
 import ContactSection from './ContactSection';
@@ -16,10 +17,10 @@ const Home: React.FC = () => {
     "@graph": [
       {
         "@type": "Therapist",
-        "@id": "https://shira.saharoni.com/#therapist",
+        "@id": `${SITE_CONFIG.url}/#therapist`,
         "name": SITE_CONFIG.author,
         "alternateName": "Shira Saharoni",
-        "url": "https://shira.saharoni.com",
+        "url": SITE_CONFIG.url,
         "telephone": SITE_CONFIG.contact.phone,
         "description": SITE_CONFIG.description,
         "address": {
@@ -50,6 +51,7 @@ const Home: React.FC = () => {
         "@type": "LocalBusiness",
         "name": SITE_CONFIG.brand,
         "image": "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80",
+        "url": SITE_CONFIG.url,
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "אשדוד",
@@ -71,6 +73,7 @@ const Home: React.FC = () => {
       <Hero />
       <ServicesSection />
       <ProcessSection />
+      <Testimonials />
       <AboutSection />
       <BlogPreview />
       <ContactSection />

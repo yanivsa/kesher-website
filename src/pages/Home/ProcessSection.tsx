@@ -1,36 +1,46 @@
 import React from 'react';
+import { FiPhoneCall, FiMap, FiHeart, FiCheckCircle } from 'react-icons/fi';
 import styles from './ProcessSection.module.css';
 
-const steps = [
-  {
-    title: 'שיחה ראשונה',
-    text: 'בודקים בקצרה מה מביא אתכם עכשיו, מה דחוף, ואיזה סוג ליווי מתאים: זוגי, הורי או גישורי.'
-  },
-  {
-    title: 'מיפוי משותף',
-    text: 'מזהים את הדפוסים שחוזרים בבית, את המקומות שבהם השיחה נתקעת, ואת המטרות שחשוב לכם להשיג.'
-  },
-  {
-    title: 'כלים והסכמות',
-    text: 'מתרגמים את ההבנות לפעולות קטנות וברורות: דרך לדבר, דרך לקבל החלטות, ודרך להוריד הסלמה ברגעי עומס.'
-  }
-];
-
 const ProcessSection: React.FC = () => {
+  const steps = [
+    {
+      icon: <FiPhoneCall />,
+      title: 'שיחת היכרות קצרה',
+      description: 'שיחה טלפונית ללא התחייבות כדי להבין את הצרכים שלכם ולראות איך אני יכולה לעזור.'
+    },
+    {
+      icon: <FiMap />,
+      title: 'פגישת מיפוי ואבחון',
+      description: 'צלילה לעומק הדינמיקה, הבנת החסמים המרכזיים ובניית מפת דרכים אישית.'
+    },
+    {
+      icon: <FiHeart />,
+      title: 'תהליך הליווי / הגישור',
+      description: 'סדרת מפגשים ממוקדים שבהם תקבלו כלים פרקטיים לשינוי התנהגותי ותקשורתי.'
+    },
+    {
+      icon: <FiCheckCircle />,
+      title: 'תוצאה: שקט ובהירות',
+      description: 'יציאה לדרך חדשה עם הסכמות ברורות, תקשורת מקרבת ותחושת ביטחון בבית.'
+    }
+  ];
+
   return (
     <section className={styles.process}>
-      <div className={`container ${styles.container}`}>
+      <div className="container">
         <div className={styles.header}>
-          <p className={styles.eyebrow}>איך זה נראה בפועל</p>
-          <h2>תהליך קצר, ברור וממוקד במה שקורה אצלכם בבית</h2>
+          <h2>איך זה עובד? המסע שלכם איתי</h2>
+          <p>תהליך מובנה, רגיש ומקצועי שמוריד את מפלס החרדה ומייצר תוצאות בשטח.</p>
         </div>
-        <div className={styles.steps}>
+        <div className={styles.grid}>
           {steps.map((step, index) => (
-            <article className={styles.step} key={step.title}>
-              <span className={styles.number}>{index + 1}</span>
-              <h3>{step.title}</h3>
-              <p>{step.text}</p>
-            </article>
+            <div key={index} className={styles.step}>
+              <div className={styles.iconWrapper}>{step.icon}</div>
+              <h3 className={styles.stepTitle}>{step.title}</h3>
+              <p className={styles.stepDescription}>{step.description}</p>
+              {index < steps.length - 1 && <div className={styles.connector} />}
+            </div>
           ))}
         </div>
       </div>

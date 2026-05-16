@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaWhatsapp } from 'react-icons/fa';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './ContactSection.module.css';
 
@@ -49,8 +50,12 @@ const ContactSection: React.FC = () => {
         <div className={styles.info}>
           <h2 className={styles.title}>בואו נתחיל לדבר</h2>
           <p className={styles.subtitle}>
-            אני כאן לכל שאלה, התייעצות או קביעת פגישה. אתם מוזמנים להשאיר פרטים או ליצור קשר ישיר.
+            השאירו פרטים ואחזור אליכם, או שלחו הודעת WhatsApp קצרה אם נוח לכם להתחיל משם.
           </p>
+          <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
+            <FaWhatsapp aria-hidden="true" />
+            שליחת WhatsApp
+          </a>
           <div className={styles.contactDetails}>
             <div className={styles.detail}>
               <span className={styles.icon}>📞</span>
