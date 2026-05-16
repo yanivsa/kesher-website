@@ -29,13 +29,13 @@ const AboutSection: React.FC = () => {
               השילוב בין ייעוץ זוגי, הנחיית הורים וגישור מאפשר לי להסתכל על המשפחה כמערכת אחת: הקשר הזוגי, ההורות, הילדים וההחלטות המעשיות שצריך לקבל.
             </p>
             <p>
-              הרקע המשפטי והגישורי מוסיף לתהליך חשיבה מובנית, דיסקרטיות ויכולת להחזיק גם שיחות טעונות בלי להפוך אותן למאבק. המטרה היא לאפשר שיחה ברורה, מכבדת וישימה.
+              תהליך הגישור מוסיף לתהליך חשיבה מובנית, דיסקרטיות ויכולת להחזיק גם שיחות טעונות בלי להפוך אותן למאבק. המטרה היא לאפשר שיחה ברורה, מכבדת וישימה, תוך שמירה על הלב ועל השקט הנפשי.
             </p>
           </div>
           <div className={styles.credentials}>
             <div className={styles.credential}>
               <span className={styles.icon}><FiBriefcase aria-hidden="true" /></span>
-              <span>עורכת דין ומגשרת מוסמכת</span>
+              <span>מגשרת משפחתית מוסמכת</span>
             </div>
             <div className={styles.credential}>
               <span className={styles.icon}><FiCompass aria-hidden="true" /></span>

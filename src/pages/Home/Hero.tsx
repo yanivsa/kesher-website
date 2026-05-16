@@ -10,14 +10,14 @@ const Hero: React.FC = () => {
     <section className={styles.hero}>
       <div className={`container ${styles.container}`}>
         <div className={styles.content}>
-          <div className={styles.badge}>שילוב ייחודי: מענה רגשי + ליווי משפטי</div>
+          <div className={styles.badge}>מענה רגשי מקיף + גישור מקצועי</div>
           <h1 className={styles.title}>
             לצאת מהפלונטר הזוגי <br />
             <span>עם ביטחון וכלים פרקטיים.</span>
           </h1>
           <p className={styles.description}>
-            שירה סהרוני — עורכת דין, מגשרת ויועצת זוגית. עוזרת לכם לצלוח משברים, 
-            לבנות הורות משותפת חזקה או לסיים קשר בדרך מכבדת — בלי לוותר על השקט הנפשי שלכם.
+            שירה סהרוני — מגשרת מוסמכת ויועצת זוגית. עוזרת לכם לצלוח משברים, 
+            לבנות הורות משותפת חזקה או לסיים קשר בדרך מכבדת — תוך שמירה על הלב ועל השקט הנפשי שלכם.
           </p>
           <div className={styles.actions}>
             <a href={SITE_CONFIG.links.whatsapp} className={styles.primaryBtn}>
@@ -25,7 +25,7 @@ const Hero: React.FC = () => {
               שיחת היכרות בוואטסאפ
             </a>
             <Link to="/about" className={styles.secondaryBtn}>
-              למה השילוב שלי קריטי עבורכם?
+              במה אני יכולה לעזור לכם?
               <FiArrowLeft aria-hidden="true" />
             </Link>
           </div>
@@ -33,7 +33,6 @@ const Hero: React.FC = () => {
             <span>יועצת זוגית</span>
             <span>מנחת הורים</span>
             <span>מגשרת מוסמכת</span>
-            <span>עורכת דין</span>
           </div>
         </div>
         <div className={styles.imageContainer}>

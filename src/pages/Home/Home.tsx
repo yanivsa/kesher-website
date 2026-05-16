@@ -31,7 +31,7 @@ const Home: React.FC = () => {
         "knowsAbout": [
           "ייעוץ זוגי",
           "הדרכת הורים",
-          "גישור גירושין",
+          "גישור משפחתי",
           "ADHD",
           "תקשורת בזוגיות",
           "הורות משותפת"
@@ -39,11 +39,11 @@ const Home: React.FC = () => {
         "hasCredential": [
           {
             "@type": "EducationalOccupationalCredential",
-            "credentialCategory": "עורכת דין"
+            "credentialCategory": "מגשרת משפחתית מוסמכת"
           },
           {
             "@type": "EducationalOccupationalCredential",
-            "credentialCategory": "מגשרת מוסמכת"
+            "credentialCategory": "יועצת זוגית ומשפחתית"
           }
         ]
       },
