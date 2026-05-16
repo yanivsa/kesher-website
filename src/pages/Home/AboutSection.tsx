@@ -1,4 +1,5 @@
 import React from 'react';
+import { FiAward, FiBriefcase, FiCompass } from 'react-icons/fi';
 import styles from './AboutSection.module.css';
 
 const AboutSection: React.FC = () => {
@@ -21,28 +22,28 @@ const AboutSection: React.FC = () => {
         <div className={styles.content}>
           <h2 className={styles.title}>נעים מאוד, שירה סהרוני</h2>
           <p className={styles.lead}>
-            אני מאמינה שמערכות יחסים הן הלב הפועם של החיים שלנו, וכשהן במיטבן – אנחנו במיטבנו.
+            אני פוגשת זוגות, הורים ומשפחות ברגעים שבהם השיחה כבר לא מצליחה להחזיק את המורכבות לבד.
           </p>
           <div className={styles.description}>
             <p>
-              כעורכת דין ומגשרת מוסמכת, לצד היותי יועצת זוגית ומנחת הורים, אני מביאה לקליניקה שילוב ייחודי של הבנה משפטית עמוקה וראייה טיפולית רגישה.
+              השילוב בין ייעוץ זוגי, הנחיית הורים וגישור מאפשר לי להסתכל על המשפחה כמערכת אחת: הקשר הזוגי, ההורות, הילדים וההחלטות המעשיות שצריך לקבל.
             </p>
             <p>
-              הגישה שלי משלבת כלים מעולם ה-Gottman וה-EFT יחד עם פרקטיקה של תקשורת מקרבת. אני עוזרת לזוגות ולמשפחות למצוא את הדרך חזרה אחד לשני, גם ברגעים שנראים בלתי אפשריים.
+              הרקע המשפטי והגישורי מוסיף לתהליך חשיבה מובנית, דיסקרטיות ויכולת להחזיק גם שיחות טעונות בלי להפוך אותן למאבק. המטרה היא לאפשר שיחה ברורה, מכבדת וישימה.
             </p>
           </div>
           <div className={styles.credentials}>
             <div className={styles.credential}>
-              <span className={styles.icon}>🎓</span>
+              <span className={styles.icon}><FiBriefcase aria-hidden="true" /></span>
               <span>עורכת דין ומגשרת מוסמכת</span>
             </div>
             <div className={styles.credential}>
-              <span className={styles.icon}>🤝</span>
-              <span>מומחית בגישור וגירושין בשיתוף פעולה</span>
+              <span className={styles.icon}><FiCompass aria-hidden="true" /></span>
+              <span>ליווי זוגות ומשפחות סביב קונפליקט, פרידה והסכמות</span>
             </div>
             <div className={styles.credential}>
-              <span className={styles.icon}>🌟</span>
-              <span>מומחית בהדרכת הורים לילדים עם ADHD</span>
+              <span className={styles.icon}><FiAward aria-hidden="true" /></span>
+              <span>הדרכת הורים, כולל התמודדות עם ADHD ואתגרי קשב</span>
             </div>
           </div>
           <a href="#contact" className={styles.cta}>בואו נדבר</a>

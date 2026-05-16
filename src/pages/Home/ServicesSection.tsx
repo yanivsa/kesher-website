@@ -1,4 +1,5 @@
 import React from 'react';
+import { FiFileText, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import ServiceCard from '../../components/Services/ServiceCard';
 import styles from './ServicesSection.module.css';
 
@@ -6,20 +7,23 @@ const ServicesSection: React.FC = () => {
   const services = [
     {
       title: 'ייעוץ זוגי',
-      description: 'בניית תקשורת מקרבת, פתרון קונפליקטים והחזרת האינטימיות והחברות לקשר הזוגי.',
-      icon: '💑',
+      description: 'לזוגות שנמצאים בלופים של ריבים, ריחוק או שחיקה ורוצים להבין מה קורה ביניהם לפני שמוותרים.',
+      icon: <FiMessageCircle aria-hidden="true" />,
+      highlights: ['מיפוי דפוסי התקשורת', 'כלים לשיחות קשות בלי הסלמה', 'חיזוק אמון, קרבה ושיתוף פעולה'],
       link: '/services/couples'
     },
     {
       title: 'הדרכת הורים',
-      description: 'כלים פרקטיים להתמודדות עם אתגרי ההורות, סמכות הורית וליווי הורים לילדים עם ADHD.',
-      icon: '👨‍👩‍👧',
+      description: 'להורים שרוצים פחות מאבקי כוח בבית ויותר בהירות, גבולות ושיתוף פעולה עם הילדים.',
+      icon: <FiUsers aria-hidden="true" />,
+      highlights: ['סמכות הורית רגועה ועקבית', 'התמודדות עם ילדים ומתבגרים', 'ליווי סביב ADHD ואתגרי קשב'],
       link: '/services/parenting'
     },
     {
       title: 'גישור משפחתי',
-      description: 'ליווי מקצועי ומשפטי לפתרון סכסוכים, גירושין בשיתוף פעולה ובניית הסכמים מחוץ לכותלי בית המשפט.',
-      icon: '⚖️',
+      description: 'מרחב מובנה ומכבד לקבלת החלטות כשיש מחלוקת, פרידה או צורך בהסכמות משפחתיות.',
+      icon: <FiFileText aria-hidden="true" />,
+      highlights: ['חלופה רגועה יותר למאבק משפטי', 'שיחה שמחזירה שליטה לצדדים', 'התמקדות בטובת הילדים והמשפחה'],
       link: '/services/mediation'
     }
   ];
@@ -30,7 +34,7 @@ const ServicesSection: React.FC = () => {
         <div className={styles.header}>
           <h2 className={styles.title}>איך אוכל לעזור לכם?</h2>
           <p className={styles.subtitle}>
-            אני מאמינה שכל משבר הוא הזדמנות לצמיחה. יחד נמצא את הכלים המתאימים לכם.
+            שלושה שערי כניסה לאותו צורך: להוריד את עוצמת הקונפליקט, להבין את הדפוס שחוזר על עצמו, ולבנות דרך פעולה שאפשר ליישם בבית.
           </p>
         </div>
         <div className={styles.grid}>

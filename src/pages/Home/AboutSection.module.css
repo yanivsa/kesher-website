@@ -1,6 +1,6 @@
 .about {
   padding: var(--spacing-xl) 0;
-  background-color: var(--color-surface);
+  background-color: var(--color-bg);
 }
 
 .container {
@@ -17,7 +17,7 @@
 .imageWrapper {
   width: 100%;
   aspect-ratio: 4/5;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   position: relative;
   box-shadow: var(--shadow-lg);
   overflow: hidden;
@@ -87,7 +87,14 @@
 }
 
 .icon {
-  font-size: 1.2rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  background: rgba(192, 123, 90, 0.12);
+  color: var(--color-accent-dark);
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
 }
 
 .cta {

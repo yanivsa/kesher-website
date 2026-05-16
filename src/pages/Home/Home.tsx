@@ -1,6 +1,7 @@
 import React from 'react';
 import Hero from './Hero';
 import ServicesSection from './ServicesSection';
+import ProcessSection from './ProcessSection';
 import AboutSection from './AboutSection';
 import BlogPreview from './BlogPreview';
 import ContactSection from './ContactSection';
@@ -69,6 +70,7 @@ const Home: React.FC = () => {
       <SchemaOrg data={schemaData} />
       <Hero />
       <ServicesSection />
+      <ProcessSection />
       <AboutSection />
       <BlogPreview />
       <ContactSection />
