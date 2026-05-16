@@ -9,6 +9,8 @@ import Mediation from './pages/Services/Mediation/Mediation'
 import BlogList from './pages/Blog/BlogList'
 import BlogPost from './pages/Blog/BlogPost'
 import FAQ from './pages/FAQ/FAQ'
+import AboutPage from './pages/About/AboutPage'
+import ContactPage from './pages/Contact/ContactPage'
 
 function App() {
   return (
@@ -17,12 +19,14 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/services/couples" element={<CouplesCounseling />} />
           <Route path="/services/parenting" element={<ParentingGuidance />} />
           <Route path="/services/mediation" element={<Mediation />} />
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/faq" element={<FAQ />} />
+          <Route path="/contact" element={<ContactPage />} />
         </Routes>
       </Layout>
     </Router>

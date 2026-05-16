@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './Footer.module.css';
 
@@ -15,10 +16,10 @@ const Footer: React.FC = () => {
         </div>
         <div className={styles.links}>
           <h4>ניווט מהיר</h4>
-          <a href="/">דף הבית</a>
-          <a href="#about">אודות</a>
-          <a href="#services">שירותים</a>
-          <a href="#contact">צור קשר</a>
+          <Link to="/">דף הבית</Link>
+          <Link to="/about">אודות</Link>
+          <Link to="/faq">שאלות נפוצות</Link>
+          <Link to="/contact">צור קשר</Link>
         </div>
         <div className={styles.contact}>
           <h4>פרטי התקשרות</h4>

@@ -12,17 +12,52 @@ import styles from './Home.module.css';
 const Home: React.FC = () => {
   const schemaData = {
     "@context": "https://schema.org",
-    "@type": "Therapist",
-    "name": `${SITE_CONFIG.author} — ייעוץ זוגי, הדרכת הורים וגישור`,
-    "url": "https://shira.saharoni.com",
-    "telephone": SITE_CONFIG.contact.phone,
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "אשדוד",
-      "addressCountry": "IL"
-    },
-    "serviceType": ["ייעוץ זוגי", "הדרכת הורים", "גישור גירושין"],
-    "description": SITE_CONFIG.description
+    "@graph": [
+      {
+        "@type": "Therapist",
+        "@id": "https://shira.saharoni.com/#therapist",
+        "name": SITE_CONFIG.author,
+        "alternateName": "Shira Saharoni",
+        "url": "https://shira.saharoni.com",
+        "telephone": SITE_CONFIG.contact.phone,
+        "description": SITE_CONFIG.description,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "אשדוד",
+          "addressCountry": "IL"
+        },
+        "knowsAbout": [
+          "ייעוץ זוגי",
+          "הדרכת הורים",
+          "גישור גירושין",
+          "ADHD",
+          "תקשורת בזוגיות",
+          "הורות משותפת"
+        ],
+        "hasCredential": [
+          {
+            "@type": "EducationalOccupationalCredential",
+            "credentialCategory": "עורכת דין"
+          },
+          {
+            "@type": "EducationalOccupationalCredential",
+            "credentialCategory": "מגשרת מוסמכת"
+          }
+        ]
+      },
+      {
+        "@type": "LocalBusiness",
+        "name": SITE_CONFIG.brand,
+        "image": "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "אשדוד",
+          "addressCountry": "IL"
+        },
+        "telephone": SITE_CONFIG.contact.phone,
+        "priceRange": "$$"
+      }
+    ]
   };
 
   return (

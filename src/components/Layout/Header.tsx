@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMenu, FiX } from 'react-icons/fi';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './Header.module.css';
 
 const Header: React.FC = () => {
@@ -19,8 +20,8 @@ const Header: React.FC = () => {
       <div className={`container ${styles.container}`}>
         <Link to="/" className={styles.logoLink} onClick={closeMenu}>
           <div className={styles.logo}>
-            <span className={styles.brand}>קשר</span>
-            <span className={styles.subtitle}>שירה סהרוני</span>
+            <span className={styles.brand}>{SITE_CONFIG.brand}</span>
+            <span className={styles.subtitle}>ייעוץ זוגי וגישור</span>
           </div>
         </Link>
 
@@ -31,7 +32,7 @@ const Header: React.FC = () => {
 
         {/* Navigation */}
         <nav className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
-          <Link to="/#about" onClick={closeMenu}>אודות</Link>
+          <Link to="/about" onClick={closeMenu}>אודות</Link>
           <div className={styles.dropdown}>
             <span className={styles.navLink}>שירותים</span>
             <div className={styles.dropdownContent}>
@@ -41,7 +42,8 @@ const Header: React.FC = () => {
             </div>
           </div>
           <Link to="/blog" onClick={closeMenu}>בלוג</Link>
-          <a href="/#contact" className={styles.cta} onClick={closeMenu}>קביעת פגישה</a>
+          <Link to="/faq" onClick={closeMenu}>שאלות נפוצות</Link>
+          <Link to="/contact" className={styles.cta} onClick={closeMenu}>קביעת פגישה</Link>
         </nav>
       </div>
     </header>
