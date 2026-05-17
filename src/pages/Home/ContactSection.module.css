@@ -1,6 +1,7 @@
 .contact {
   padding: var(--spacing-xl) 0;
   background-color: var(--color-surface);
+  scroll-margin-top: calc(var(--header-height) + 1rem);
 }
 
 .container {

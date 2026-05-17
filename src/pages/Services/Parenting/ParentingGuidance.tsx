@@ -48,7 +48,7 @@ const ParentingGuidance: React.FC = () => {
       heroTitle="הדרכת הורים"
       heroSubtitle="להפוך מהורים ששורדים את היום להורים שמובילים בביטחון."
       icon="👨‍👩‍👧"
-      image="https://images.unsplash.com/photo-1510906594845-bc082582c8cc?auto=format&fit=crop&w=1200&q=80"
+      image="/images/generated/services/parenting-room.jpg"
       content={content}
     />
   );

@@ -1,3 +1,6 @@
+# === kesher.saharoni.com — robots.txt ===
+# Strategy: Allow AI Search bots (visibility), Block AI Training (protect content)
+
 # === AI Search Crawlers — ALLOW (for visibility in AI answers) ===
 User-agent: OAI-SearchBot
 Allow: /

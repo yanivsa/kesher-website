@@ -52,7 +52,7 @@ const CouplesCounseling: React.FC = () => {
       heroTitle="ייעוץ זוגי"
       heroSubtitle="הזדמנות לבנות מחדש את החיבור, הביטחון והחברות ביניכם."
       icon="💑"
-      image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80"
+      image="/images/generated/services/couples-room.jpg"
       content={content}
     />
   );

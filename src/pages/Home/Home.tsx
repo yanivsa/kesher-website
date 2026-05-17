@@ -45,13 +45,44 @@ const Home: React.FC = () => {
           {
             "@type": "EducationalOccupationalCredential",
             "credentialCategory": "יועצת זוגית ומשפחתית"
+          },
+          {
+            "@type": "EducationalOccupationalCredential",
+            "credentialCategory": "עורכת דין"
+          }
+        ],
+        "serviceType": ["ייעוץ זוגי", "הדרכת הורים", "גישור גירושין", "טיפול מקוון"],
+        "makesOffer": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "ייעוץ זוגי",
+              "description": "טיפול זוגי לשיפור תקשורת, התמודדות עם משברים, בגידות ואינטימיות. גישות Gottman ו-EFT."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "הדרכת הורים",
+              "description": "הדרכה מקצועית להורים לילדים עם ADHD, הצבת גבולות, והורות משותפת לאחר פרידה."
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "גישור גירושין",
+              "description": "גישור בהסכמה כחלופה להליך משפטי. כולל הסדרת רכוש, הסדרי ילדים ומזונות."
+            }
           }
         ]
       },
       {
         "@type": "LocalBusiness",
         "name": SITE_CONFIG.brand,
-        "image": "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80",
+        "image": `${SITE_CONFIG.url}/images/generated/site/home-hero.jpg`,
         "url": SITE_CONFIG.url,
         "address": {
           "@type": "PostalAddress",

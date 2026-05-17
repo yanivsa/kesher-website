@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="קשר">
+  <rect width="64" height="64" rx="16" fill="#5A7A65"/>
+  <path d="M22 22c0-5.5 4.5-10 10-10s10 4.5 10 10c0 3.9-2.2 7.2-5.4 8.9L32 34l-4.6-3.1A10 10 0 0 1 22 22Z" fill="#FAF7F4"/>
+  <path d="M17 35c0-4.4 3.6-8 8-8h2.4l4.6 3.1 4.6-3.1H39c4.4 0 8 3.6 8 8 0 4.4-3.6 8-8 8h-2.4L32 47l-4.6-4H25c-4.4 0-8-3.6-8-8Z" fill="#E5A882"/>
+  <circle cx="28" cy="22" r="2" fill="#5A7A65"/>
+  <circle cx="36" cy="22" r="2" fill="#5A7A65"/>
+</svg>

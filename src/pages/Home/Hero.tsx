@@ -38,7 +38,7 @@ const Hero: React.FC = () => {
         <div className={styles.imageContainer}>
           <div className={styles.imageWrapper}>
             <img 
-              src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1200&q=80" 
+              src="/images/generated/site/home-hero.jpg" 
               alt="מרחב בטוח לייעוץ וגישור - שירה סהרוני" 
               className={styles.heroImage}
             />

@@ -9,7 +9,7 @@ const AboutSection: React.FC = () => {
         <div className={styles.imageContainer}>
           <div className={styles.imageWrapper}>
             <img 
-              src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80" 
+              src="/images/generated/site/about-office.jpg" 
               alt="קליניקה נעימה ומזמינה" 
               className={styles.aboutImage}
             />
