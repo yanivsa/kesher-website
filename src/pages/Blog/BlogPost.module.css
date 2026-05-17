@@ -57,6 +57,11 @@
   padding-top: var(--spacing-lg);
 }
 
+.mainContent {
+  display: flex;
+  flex-direction: column;
+}
+
 .content {
   font-size: 1.15rem;
   line-height: 1.8;

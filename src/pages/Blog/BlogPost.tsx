@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import posts from '../../data/posts.json';
 import MetaTags from '../../components/SEO/MetaTags';
+import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
 import styles from './BlogPost.module.css';
 
 const BlogPost: React.FC = () => {
@@ -32,7 +33,10 @@ const BlogPost: React.FC = () => {
         <img src={post.image} alt={post.title} className={styles.image} />
       </div>
       <div className={`container ${styles.container}`}>
-        <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+        <div className={styles.mainContent}>
+          <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+          <LeadMagnet />
+        </div>
         <aside className={styles.sidebar}>
           <div className={styles.ctaCard}>
             <h3>צריכים עזרה עם הנושא הזה?</h3>
