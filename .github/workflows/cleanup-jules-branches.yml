@@ -1,0 +1,125 @@
+name: Cleanup Jules branches
+
+on:
+  pull_request:
+    types: [closed]
+  schedule:
+    - cron: "55 3 * * *" # daily
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: cleanup-jules-branches
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete branch for closed Jules PR
+        if: github.event_name == 'pull_request' && github.event.pull_request.state == 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REF: ${{ github.event.pull_request.head.ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+
+          python3 - <<'PY'
+          import os
+          import re
+          import urllib.parse
+          import subprocess
+
+          ref = os.environ.get('REF','')
+          title = os.environ.get('TITLE','')
+          body = os.environ.get('BODY','') or ''
+
+          is_jules = 'PR created automatically by Jules' in body
+          allowed = (
+              ref.startswith('nightly-')
+              or ref.startswith('jules-')
+          )
+          title_ok = bool(re.match(r'^(fix:|chore:|No-op:)', title, re.I))
+
+          if not (is_jules and allowed and title_ok):
+              print('Skip branch cleanup:', {'ref': ref, 'title': title, 'is_jules': is_jules})
+              raise SystemExit(0)
+
+          repo = os.environ.get('GITHUB_REPOSITORY')
+          token = os.environ.get('GITHUB_TOKEN')
+          ref_enc = urllib.parse.quote(ref, safe='')
+          url = f"https://api.github.com/repos/{repo}/git/refs/heads/{ref_enc}"
+
+          print('Deleting ref', ref)
+          subprocess.run(
+              ['curl','--fail-with-body','-sS','-X','DELETE',
+               '-H', f'Authorization: Bearer {token}',
+               '-H', 'Accept: application/vnd.github+json',
+               url],
+              check=True,
+          )
+          PY
+
+      - name: Daily cleanup stale nightly branches (no open PR)
+        if: github.event_name != 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
+            > open-prs.json
+
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+          import urllib.parse
+
+          repo = os.environ['REPO']
+          token = os.environ['GITHUB_TOKEN']
+
+          with open('open-prs.json', encoding='utf-8') as fh:
+              prs = json.load(fh)
+
+          open_heads = set((pr.get('head') or {}).get('ref') for pr in prs)
+
+          patterns = ['nightly-','jules-']
+
+          for prefix in patterns:
+              page = 1
+              while True:
+                  url = f"https://api.github.com/repos/{repo}/git/matching-refs/heads/{urllib.parse.quote(prefix, safe='')}?per_page=100&page={page}"
+                  res = subprocess.check_output(
+                      ['curl','--fail-with-body','-sS',
+                       '-H', f'Authorization: Bearer {token}',
+                       '-H', 'Accept: application/vnd.github+json',
+                       url]
+                  ).decode('utf-8')
+                  refs = json.loads(res)
+                  if not refs:
+                      break
+                  for r in refs:
+                      head = (r.get('ref','') or '').replace('refs/heads/','')
+                      if not head or head in open_heads:
+                          continue
+                      del_url = f"https://api.github.com/repos/{repo}/git/refs/heads/{urllib.parse.quote(head, safe='')}"
+                      print('Deleting stale branch', head)
+                      subprocess.run(
+                          ['curl','--fail-with-body','-sS','-X','DELETE',
+                           '-H', f'Authorization: Bearer {token}',
+                           '-H', 'Accept: application/vnd.github+json',
+                           del_url],
+                          check=True,
+                      )
+                  page += 1
+          PY
