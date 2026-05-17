@@ -1,0 +1,111 @@
+name: Auto-close no-op PRs
+
+on:
+  schedule:
+    - cron: "25 3 * * *" # daily
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: auto-close-noop-prs
+  cancel-in-progress: false
+
+jobs:
+  close_noops:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close no-op PRs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
+            > open-prs.json
+
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          from datetime import datetime, timezone
+
+          repo = os.environ["REPO"]
+
+          def iso_to_dt(s: str):
+              return datetime.fromisoformat(s.replace("Z", "+00:00")).astimezone(timezone.utc)
+
+          now = datetime.now(timezone.utc)
+
+          with open("open-prs.json", encoding="utf-8") as fh:
+              prs = json.load(fh)
+
+          title_re = re.compile(r"^(no-op:)|\(no-op\)", re.I)
+          body_re = re.compile(r"no-op summary", re.I)
+
+          candidates = []
+          for pr in prs:
+              title = pr.get("title") or ""
+              body = pr.get("body") or ""
+              updated_at = pr.get("updated_at") or ""
+              if not (title_re.search(title) and body_re.search(body)):
+                  continue
+              if not updated_at:
+                  continue
+              age_h = (now - iso_to_dt(updated_at)).total_seconds() / 3600.0
+              if age_h < 6:
+                  continue
+              candidates.append((pr["number"], title, age_h))
+
+          if not candidates:
+              print("No no-op PRs to close")
+              raise SystemExit(0)
+
+          for number, title, age_h in candidates:
+              print(f"Closing no-op PR #{number}: {title} (age {age_h:.1f}h)")
+              comment = (
+                  "Auto-closed by workflow: detected a Jules no-op PR (blocked run). "
+                  "Keeping the PR list clean so the next scheduled run is easier to spot."
+              )
+              subprocess.run(
+                  [
+                      "curl",
+                      "--fail-with-body",
+                      "-sS",
+                      "-X",
+                      "POST",
+                      "-H",
+                      f"Authorization: Bearer {os.environ['GITHUB_TOKEN']}",
+                      "-H",
+                      "Accept: application/vnd.github+json",
+                      "-d",
+                      json.dumps({"body": comment}),
+                      f"https://api.github.com/repos/{repo}/issues/{number}/comments",
+                  ],
+                  check=True,
+              )
+              subprocess.run(
+                  [
+                      "curl",
+                      "--fail-with-body",
+                      "-sS",
+                      "-X",
+                      "PATCH",
+                      "-H",
+                      f"Authorization: Bearer {os.environ['GITHUB_TOKEN']}",
+                      "-H",
+                      "Accept: application/vnd.github+json",
+                      "-d",
+                      json.dumps({"state": "closed"}),
+                      f"https://api.github.com/repos/{repo}/issues/{number}",
+                  ],
+                  check=True,
+              )
+          PY
