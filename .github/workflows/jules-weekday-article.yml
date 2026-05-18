@@ -46,6 +46,7 @@ jobs:
             > open-prs.json
 
           python3 - <<'PY'
+          import datetime as dt
           import json
           import os
           import re
@@ -58,12 +59,26 @@ jobs:
               r"auto[- ]?publish|publish article|new article|מאמר)",
               re.I,
           )
+          now = dt.datetime.now(dt.UTC)
+
+          def is_fresh(pr):
+              updated = dt.datetime.fromisoformat(pr["updated_at"].replace("Z", "+00:00"))
+              return now - updated <= dt.timedelta(days=3)
+
+          def is_noop(pr):
+              text = f"{pr.get('title') or ''}\n{pr.get('body') or ''}"
+              return re.search(r"\bno[- ]?op\b|no files were edited|no Jules session", text, re.I)
+
           blockers = [
               f"#{pr['number']} {pr['title']}"
               for pr in prs
-              if pattern.search(pr.get("title") or "")
-              or pattern.search((pr.get("head") or {}).get("ref") or "")
-              or pattern.search(pr.get("body") or "")
+              if is_fresh(pr)
+              and not is_noop(pr)
+              and (
+                  pattern.search(pr.get("title") or "")
+                  or pattern.search((pr.get("head") or {}).get("ref") or "")
+                  or pattern.search(pr.get("body") or "")
+              )
           ]
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
               out.write(f"blocked={'true' if blockers else 'false'}\n")
