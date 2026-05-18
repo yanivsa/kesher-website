@@ -1,0 +1,43 @@
+.page {
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  padding-bottom: 5rem;
+}
+
+.header {
+  padding: 4rem 0 2rem;
+  text-align: center;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.content {
+  max-width: 800px;
+  margin: 3rem auto;
+  background: white;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  line-height: 1.8;
+}
+
+.content h2 {
+  margin-top: 2rem;
+  font-size: 1.5rem;
+  color: var(--color-primary-dark);
+}
+
+.content ul {
+  padding-right: 1.5rem;
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 1.5rem;
+    margin: 1.5rem;
+  }
+}

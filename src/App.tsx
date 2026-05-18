@@ -11,6 +11,9 @@ import BlogPost from './pages/Blog/BlogPost'
 import FAQ from './pages/FAQ/FAQ'
 import AboutPage from './pages/About/AboutPage'
 import ContactPage from './pages/Contact/ContactPage'
+import AccessibilityPage from './pages/Legal/AccessibilityPage'
+import PrivacyPolicy from './pages/Legal/PrivacyPolicy'
+import TermsOfUse from './pages/Legal/TermsOfUse'
 
 function App() {
   return (
@@ -27,6 +30,9 @@ function App() {
           <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/accessibility" element={<AccessibilityPage />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfUse />} />
         </Routes>
       </Layout>
     </Router>

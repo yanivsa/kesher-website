@@ -1,9 +1,13 @@
 import React from 'react';
 import { FiFileText, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import ServiceCard from '../../components/Services/ServiceCard';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './ServicesSection.module.css';
 
 const ServicesSection: React.FC = () => {
+  const [headerRef, headerVisible] = useScrollReveal();
+  const [gridRef, gridVisible] = useScrollReveal({ threshold: 0.1 });
+
   const services = [
     {
       title: 'ייעוץ זוגי',
@@ -31,13 +35,19 @@ const ServicesSection: React.FC = () => {
   return (
     <section id="services" className={styles.services}>
       <div className="container">
-        <div className={styles.header}>
+        <div 
+          ref={headerRef} 
+          className={`${styles.header} reveal ${headerVisible ? 'visible' : ''}`}
+        >
           <h2 className={styles.title}>איך אוכל לעזור לכם?</h2>
           <p className={styles.subtitle}>
             שלושה שערי כניסה לאותו צורך: להוריד את עוצמת הקונפליקט, להבין את הדפוס שחוזר על עצמו, ולבנות דרך פעולה שאפשר ליישם בבית.
           </p>
         </div>
-        <div className={styles.grid}>
+        <div 
+          ref={gridRef} 
+          className={`${styles.grid} reveal-stagger ${gridVisible ? 'visible' : ''}`}
+        >
           {services.map((service, index) => (
             <ServiceCard key={index} {...service} />
           ))}
@@ -48,3 +58,4 @@ const ServicesSection: React.FC = () => {
 };
 
 export default ServicesSection;
+

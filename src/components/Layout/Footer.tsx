@@ -27,6 +27,12 @@ const Footer: React.FC = () => {
           <p>אימייל: {SITE_CONFIG.contact.email}</p>
           <p>מיקום: {SITE_CONFIG.contact.location}</p>
         </div>
+        <div className={styles.legal}>
+          <h4>מידע משפטי</h4>
+          <Link to="/accessibility">הצהרת נגישות</Link>
+          <Link to="/privacy">מדיניות פרטיות</Link>
+          <Link to="/terms">תנאי שימוש</Link>
+        </div>
       </div>
       <div className={styles.bottom}>
         <div className="container">

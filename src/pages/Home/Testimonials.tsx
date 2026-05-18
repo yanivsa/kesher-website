@@ -1,7 +1,10 @@
 import React from 'react';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './Testimonials.module.css';
 
 const Testimonials: React.FC = () => {
+  const [headerRef, headerVisible] = useScrollReveal();
+  const [gridRef, gridVisible] = useScrollReveal({ threshold: 0.1 });
   const testimonials = [
     {
       text: "הגענו לשירה בשיא המשבר. היא עזרה לנו להוריד את גובה הלהבות ולדבר בפעם הראשונה מזה שנים. השילוב של הידע המשפטי שלה נתן לנו המון שקט.",
@@ -20,11 +23,11 @@ const Testimonials: React.FC = () => {
   return (
     <section className={styles.testimonials}>
       <div className="container">
-        <div className={styles.header}>
+        <div ref={headerRef} className={`${styles.header} reveal ${headerVisible ? 'visible' : ''}`}>
           <h2>מה אומרים עלי?</h2>
           <p>המלצות אנונימיות מחדר הטיפולים והגישור.</p>
         </div>
-        <div className={styles.grid}>
+        <div ref={gridRef} className={`${styles.grid} reveal-stagger ${gridVisible ? 'visible' : ''}`}>
           {testimonials.map((t, index) => (
             <div key={index} className={styles.card}>
               <div className={styles.quote}>"</div>
