@@ -1,56 +1,87 @@
 import React from 'react';
-import ServicePageTemplate from '../../../components/ServicePageTemplate/ServicePageTemplate';
+import MetaTags from '../../../components/SEO/MetaTags';
+import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
+import { FiTarget, FiZap, FiSmile, FiCompass } from 'react-icons/fi';
 import styles from './ParentingGuidance.module.css';
 
 const ParentingGuidance: React.FC = () => {
-  const content = (
-    <div className={styles.serviceContent}>
-      <section className={styles.segment}>
-        <h2>למי זה מתאים?</h2>
-        <p>הדרכת הורים היא המקום שבו אנחנו הופכים מהורים ש'מכבים שריפות' להורים שמובילים את הבית. זה מתאים לכם אם:</p>
-        <ul>
-          <li>הבית הפך לשדה קרב של מאבקי כוח וויכוחים.</li>
-          <li>אתם מרגישים חסרי אונים מול התנהגויות של הילדים.</li>
-          <li>קיבלתם אבחון ADHD ואתם רוצים לדעת איך לעזור לילד באמת.</li>
-          <li>יש לכם חילוקי דעות קשים עם בן הזוג על הדרך החינוכית.</li>
-        </ul>
+  return (
+    <div className={styles.page}>
+      <MetaTags 
+        title="הדרכת הורים באשדוד | ADHD | שירה סהרוני" 
+        description="הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית." 
+      />
+      
+      <header className={styles.header}>
+        <div className={`container ${styles.heroContainer}`}>
+          <div className={styles.heroContent}>
+            <div className={styles.badge}>מומחית ב-ADHD ואתגרי קשב</div>
+            <h1>להפסיק להילחם <br /><span>ולהתחיל להוביל</span></h1>
+            <p className={styles.subtitle}>הדרכת הורים מעשית שנותנת לכם ביטחון, סמכות וחיבור אמיתי לילד.</p>
+            <a href="https://wa.me/972525267848" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
+          </div>
+          <div className={styles.heroImageWrapper}>
+            <img src="https://images.unsplash.com/photo-1510906594845-bc082582c8cc?auto=format&fit=crop&w=1200&q=80" alt="הדרכת הורים באשדוד" />
+          </div>
+        </div>
+      </header>
+
+      <section className={styles.segments}>
+        <div className="container">
+          <div className={styles.segmentGrid}>
+            <div className={styles.segment}>
+              <FiZap className={styles.icon} />
+              <h3>התמחות ב-ADHD</h3>
+              <p>הבנת המוח של ילד הקשב היא המפתח. נלמד איך 'להפעיל' אותו נכון, איך למנוע התפרצויות ואיך לשמור על הדימוי העצמי שלו.</p>
+            </div>
+            <div className={styles.segment}>
+              <FiTarget className={styles.icon} />
+              <h3>גבולות ללא מלחמות</h3>
+              <p>איך להציב גבולות ברורים ועקביים בלי להרים את הקול ובלי להרגיש אשמה בסוף היום.</p>
+            </div>
+            <div className={styles.segment}>
+              <FiSmile className={styles.icon} />
+              <h3>החזרת ההנאה לבית</h3>
+              <p>נהפוך את הבית למקום רגוע שנעים להיות בו, ונגלה מחדש את רגעי הקרבה עם הילדים.</p>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className={styles.segment}>
-        <h2>התמחות ב-ADHD</h2>
-        <p>הורות לילדי קשב וריכוז דורשת 'הפעלה' אחרת. אנחנו נלמד איך המוח שלהם עובד, איך לבנות שגרה שמורידה חיכוך, ואיך לשמור על הביטחון העצמי שלהם (ושלכם) בתוך האתגרים.</p>
+      <section className={styles.howItWorks}>
+        <div className="container">
+          <h2>איך נראה ליווי הורי אצלי?</h2>
+          <div className={styles.processSteps}>
+            <div className={styles.step}>
+              <div className={styles.stepNum}>01</div>
+              <h4>ניתוח הדינמיקה</h4>
+              <p>נבין מה באמת קורה בבית - איפה הקושי ומה מעורר את מאבקי הכוח.</p>
+            </div>
+            <div className={styles.step}>
+              <div className={styles.stepNum}>02</div>
+              <h4>בניית אסטרטגיה</h4>
+              <p>תקבלו כלים מותאמים אישית למוח של הילד שלכם ולסגנון ההורי שלכם.</p>
+            </div>
+            <div className={styles.step}>
+              <div className={styles.stepNum}>03</div>
+              <h4>ליווי ויישום</h4>
+              <p>אני איתכם לאורך הדרך, מדייקים את הכלים ורואים תוצאות בשטח.</p>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className={styles.segment}>
-        <h2>איך נראה התהליך?</h2>
-        <div className={styles.steps}>
-          <div className={styles.step}>
-            <h3>1. הבנת המנגנון</h3>
-            <p>ננתח את הסיבות האמיתיות להתנהגות ונלמד מה הילד מנסה 'להגיד' לנו.</p>
-          </div>
-          <div className={styles.step}>
-            <h3>2. יצירת סמכות מטיבה</h3>
-            <p>נבנה כלים להצבת גבולות ברורים מתוך חיבור ואהבה, בלי צעקות.</p>
-          </div>
-          <div className={styles.step}>
-            <h3>3. שיפור האווירה</h3>
-            <p>נחזיר את השקט והנאה המשפחתית לבית שלכם.</p>
+      <section className={styles.ctaArea}>
+        <div className="container">
+          <LeadMagnet />
+          <div className={styles.finalCall}>
+            <h2>אתם לא חייבים לעשות את זה לבד.</h2>
+            <p>בואו נחזיר את הביטחון להורות שלכם.</p>
+            <a href="/contact" className={styles.btnPrimary}>לשיחת ייעוץ ראשונה</a>
           </div>
         </div>
       </section>
     </div>
-  );
-
-  return (
-    <ServicePageTemplate
-      title="הדרכת הורים אשדוד | ADHD | שירה סהרוני"
-      description="הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית."
-      heroTitle="הדרכת הורים"
-      heroSubtitle="להפוך מהורים ששורדים את היום להורים שמובילים בביטחון."
-      icon="👨‍👩‍👧"
-      image="/images/generated/services/parenting-room.jpg"
-      content={content}
-    />
   );
 };
 

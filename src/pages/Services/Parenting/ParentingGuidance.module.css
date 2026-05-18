@@ -1,78 +1,165 @@
-.serviceContent {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xl);
+.page {
+  background-color: var(--color-bg);
 }
 
-.segment h2 {
-  color: var(--color-primary-dark);
-  margin-bottom: var(--spacing-md);
-  position: relative;
-  display: inline-block;
+.header {
+  padding: 6rem 0;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.segment h2::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  right: 0;
-  width: 40px;
-  height: 3px;
-  background-color: var(--color-accent);
-}
-
-.segment p {
-  font-size: 1.15rem;
-  max-width: 800px;
-}
-
-.segment ul {
-  list-style: none;
-  padding: 0;
+.heroContainer {
   display: grid;
-  gap: var(--spacing-sm);
-}
-
-.segment li {
-  font-size: 1.1rem;
-  display: flex;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: var(--spacing-xl);
   align-items: center;
-  gap: 0.5rem;
 }
 
-.segment li::before {
-  content: '✦';
-  color: var(--color-primary);
+.badge {
+  display: inline-block;
+  background: rgba(192, 123, 90, 0.1);
+  color: var(--color-accent-dark);
+  padding: 0.5rem 1rem;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
 }
 
-.steps {
+.heroContent h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.heroContent h1 span {
+  color: var(--color-accent);
+}
+
+.subtitle {
+  font-size: 1.4rem;
+  color: var(--color-text-muted);
+  max-width: 500px;
+  margin-bottom: 2rem;
+}
+
+.ctaBtn {
+  display: inline-block;
+  background: var(--color-accent);
+  color: white !important;
+  padding: 1.1rem 2.5rem;
+  border-radius: 8px;
+  font-weight: 800;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s;
+}
+
+.heroImageWrapper {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.heroImageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.segments {
+  padding: 6rem 0;
+  background-color: var(--color-surface);
+}
+
+.segmentGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-md);
+  gap: 2.5rem;
+}
+
+.segment {
+  text-align: center;
+}
+
+.icon {
+  font-size: 3rem;
+  color: var(--color-accent);
+  margin-bottom: 1rem;
+}
+
+.segment h3 {
+  margin-bottom: 1rem;
+}
+
+.howItWorks {
+  padding: 6rem 0;
+  background-color: var(--color-bg);
+}
+
+.howItWorks h2 {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.processSteps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
 }
 
 .step {
-  background-color: var(--color-bg);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  position: relative;
 }
 
-.step h3 {
-  font-family: 'Assistant', sans-serif;
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  color: var(--color-text);
+.stepNum {
+  position: absolute;
+  top: -20px;
+  right: 20px;
+  background: var(--color-primary-dark);
+  color: white;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
 }
 
-.step p {
-  font-size: 1rem;
-  margin: 0;
+.step h4 {
+  margin-bottom: 1rem;
+  color: var(--color-primary-dark);
 }
 
-@media (max-width: 768px) {
-  .steps {
-    grid-template-columns: 1fr;
-  }
+.ctaArea {
+  padding: 6rem 0;
+}
+
+.finalCall {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.btnPrimary {
+  display: inline-block;
+  margin-top: 1.5rem;
+  background: var(--color-accent-dark);
+  color: white !important;
+  padding: 1rem 3rem;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+@media (max-width: 992px) {
+  .heroContainer { grid-template-columns: 1fr; text-align: center; }
+  .heroContent h1 { font-size: 2.8rem; }
+  .subtitle { margin: 0 auto 2rem; }
+  .heroImageWrapper { display: none; }
+  .segmentGrid, .processSteps { grid-template-columns: 1fr; }
 }

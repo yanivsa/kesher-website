@@ -1,60 +1,80 @@
 import React from 'react';
-import ServicePageTemplate from '../../../components/ServicePageTemplate/ServicePageTemplate';
+import MetaTags from '../../../components/SEO/MetaTags';
+import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
+import { FiHeart, FiMessageCircle, FiShield, FiStar } from 'react-icons/fi';
 import styles from './CouplesCounseling.module.css';
 
 const CouplesCounseling: React.FC = () => {
-  const content = (
-    <div className={styles.serviceContent}>
-      <section className={styles.segment}>
-        <h2>למי זה מתאים?</h2>
-        <p>ייעוץ זוגי הוא לא רק 'מוצא אחרון' לפני פרידה. הוא מתאים לכם אם:</p>
-        <ul>
-          <li>אתם מרגישים שאתם בלופ של מריבות שחוזרות על עצמן.</li>
-          <li>השתיקה והריחוק השתלטו על הבית.</li>
-          <li>עברתם משבר אמון או בגידה ואתם רוצים לבנות מחדש.</li>
-          <li>אתם מרגישים כמו 'שותפים לדירה' ופחות כמו בני זוג.</li>
-        </ul>
-      </section>
+  return (
+    <div className={styles.page}>
+      <MetaTags 
+        title="ייעוץ זוגי באשדוד | שירה סהרוני" 
+        description="ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר." 
+      />
+      
+      <header className={styles.hero}>
+        <div className={`container ${styles.heroContainer}`}>
+          <div className={styles.heroContent}>
+            <div className={styles.badge}>מרחב בטוח לזוגיות שלכם</div>
+            <h1>להחזיר את <br /><span>החברות והאינטימיות</span></h1>
+            <p className={styles.subtitle}>ייעוץ זוגי רגיש ומקצועי המשלב כלים מעולם ה-Gottman וה-EFT.</p>
+            <a href="https://wa.me/972525267848" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
+          </div>
+          <div className={styles.heroImageWrapper}>
+            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80" alt="ייעוץ זוגי באשדוד" />
+          </div>
+        </div>
+      </header>
 
-      <section className={styles.segment}>
-        <h2>מה קורה בתהליך הייעוץ?</h2>
-        <p>התהליך איתי הוא שילוב של הבנה רגשית עמוקה לבין כלים פרקטיים לשימוש מיידי בבית.</p>
-        <div className={styles.steps}>
-          <div className={styles.step}>
-            <h3>1. אבחון ומיפוי</h3>
-            <p>נבין את דפוסי התקשורת שלכם - מה 'מדליק' אתכם ואיפה אתם הולכים לאיבוד.</p>
-          </div>
-          <div className={styles.step}>
-            <h3>2. רכישת כלים</h3>
-            <p>תלמדו איך לדבר על הצרכים שלכם בלי להאשים, ואיך להקשיב בלי להתגונן.</p>
-          </div>
-          <div className={styles.step}>
-            <h3>3. בניית אינטימיות</h3>
-            <p>נעבוד על החזרת החברות, התשוקה והביטחון לקשר שלכם.</p>
+      <section className={styles.painPoints}>
+        <div className="container">
+          <h2 className={styles.sectionTitle}>מרגישים שאתם בלופ?</h2>
+          <div className={styles.grid}>
+            <div className={styles.card}>
+              <FiMessageCircle className={styles.icon} />
+              <h3>התקשורת תקועה</h3>
+              <p>כל ניסיון לדבר הופך למריבה או לשתיקה כואבת. אתם כבר לא יודעים איך להביע צורך בלי להאשים.</p>
+            </div>
+            <div className={styles.card}>
+              <FiStar className={styles.icon} />
+              <h3>האינטימיות נעלמה</h3>
+              <p>מרגישים כמו 'שותפים לדירה' שמנהלים לוגיסטיקה וילדים, אבל שכחתם איך להיות פשוט זוג.</p>
+            </div>
+            <div className={styles.card}>
+              <FiShield className={styles.icon} />
+              <h3>משבר אמון</h3>
+              <p>התמודדות עם בגידה, הסתרות או שחיקה מצטברת שגרמה לכם להפסיק להאמין שאפשר אחרת.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className={styles.segment}>
-        <h2>למה דווקא אצלי?</h2>
-        <p>
-          השילוב שלי כעורכת דין ומגשרת נותן לי את היכולת לראות את 'השורה התחתונה' ואת ההשלכות המשפטיות, 
-          בעוד שהכובע כיועצת זוגית מאפשר לי לטפל בלב הפועם של הקשר - הרגש. אתם מקבלים מעטפת מלאה.
-        </p>
+      <section className={styles.approach}>
+        <div className="container">
+          <div className={styles.approachContent}>
+            <h2>איך אני עוזרת לכם?</h2>
+            <p>הגישה שלי לא מחפשת 'מי צודק'. אנחנו נתמקד ב'איך' - איך אתם מתקשרים, איך אתם חווים אחד את השני, ואיך בונים בסיס בטוח של אמון וחברות.</p>
+            <ul className={styles.approachList}>
+              <li>זיהוי 'מעגלי המריבה' שלכם וכלים לעצירה בזמן אמת.</li>
+              <li>תרגול שפת רגש במקום שפת האשמה.</li>
+              <li>בניית טקסים של קרבה וחיבור בתוך השגרה המלחיצה.</li>
+              <li>ליווי רגיש בשיקום אמון אחרי משברים עמוקים.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.ctaSection}>
+        <div className="container">
+          <LeadMagnet />
+          <div className={styles.bottomCta}>
+            <h2>מגיע לכם להרגיש שוב בבית בתוך הקשר.</h2>
+            <p>אני כאן באשדוד (ובאונליין) כדי ללוות אתכם צעד אחר צעד.</p>
+            <a href="/contact" className={styles.finalBtn}>בואו נתחיל לדבר</a>
+          </div>
+        </div>
       </section>
     </div>
-  );
-
-  return (
-    <ServicePageTemplate
-      title="ייעוץ זוגי באשדוד | שירה סהרוני"
-      description="ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר."
-      heroTitle="ייעוץ זוגי"
-      heroSubtitle="הזדמנות לבנות מחדש את החיבור, הביטחון והחברות ביניכם."
-      icon="💑"
-      image="/images/generated/services/couples-room.jpg"
-      content={content}
-    />
   );
 };
 
