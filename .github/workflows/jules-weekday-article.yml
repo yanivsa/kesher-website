@@ -92,6 +92,7 @@ jobs:
         if: steps.local_day.outputs.skip != 'true' && steps.article_gate.outputs.blocked != 'true'
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+          DEEPAI_API_KEY: ${{ secrets.DEEPAI_API_KEY }}
         run: |
           set -euo pipefail
           test -n "${JULES_API_KEY:-}"
