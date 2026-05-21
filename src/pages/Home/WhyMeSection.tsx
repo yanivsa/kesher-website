@@ -2,30 +2,30 @@ import React from 'react';
 import { FiAward, FiHeart, FiShield, FiTrendingUp } from 'react-icons/fi';
 import styles from './WhyMeSection.module.css';
 
-const WhyMeSection: React.FC = () => {
-  const points = [
-    {
-      icon: <FiAward />,
-      title: 'הסמכה רב-תחומית',
-      description: 'השילוב בין ייעוץ זוגי, הנחיית הורים וגישור משפחתי מאפשר לי לראות את כל התמונה ולתת מענה שלם.'
-    },
-    {
-      icon: <FiHeart />,
-      title: 'גישה אנושית ורגישה',
-      description: 'אני מאמינה שבתוך כל קונפליקט מסתתר רצון לחיבור. הטיפול שלי מבוסס על חמלה, הקשבה וביטחון רגשי.'
-    },
-    {
-      icon: <FiTrendingUp />,
-      title: 'כלים פרקטיים ליומיום',
-      description: 'לא רק מדברים, אלא עושים. תקבלו ממני "שיעורי בית" וכלים יישומיים שיעבדו עבורכם כבר מהיום הראשון.'
-    },
-    {
-      icon: <FiShield />,
-      title: 'דיסקרטיות ומקצועיות',
-      description: 'מחויבות מלאה לפרטיות שלכם ולסטנדרטים המקצועיים הגבוהים ביותר בעולם הגישור והטיפול.'
-    }
-  ];
+const points = [
+  {
+    icon: <FiAward />,
+    title: 'הסמכה רב-תחומית',
+    description: 'השילוב בין ייעוץ זוגי, הנחיית הורים וגישור משפחתי מאפשר לי לראות את כל התמונה ולתת מענה שלם.'
+  },
+  {
+    icon: <FiHeart />,
+    title: 'גישה אנושית ורגישה',
+    description: 'אני מאמינה שבתוך כל קונפליקט מסתתר רצון לחיבור. הטיפול שלי מבוסס על חמלה, הקשבה וביטחון רגשי.'
+  },
+  {
+    icon: <FiTrendingUp />,
+    title: 'כלים פרקטיים ליומיום',
+    description: 'לא רק מדברים, אלא עושים. תקבלו ממני "שיעורי בית" וכלים יישומיים שיעבדו עבורכם כבר מהיום הראשון.'
+  },
+  {
+    icon: <FiShield />,
+    title: 'דיסקרטיות ומקצועיות',
+    description: 'מחויבות מלאה לפרטיות שלכם ולסטנדרטים המקצועיים הגבוהים ביותר בעולם הגישור והטיפול.'
+  }
+];
 
+const WhyMeSection: React.FC = () => {
   return (
     <section className={styles.whyMe}>
       <div className="container">

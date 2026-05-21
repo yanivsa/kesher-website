@@ -2,30 +2,30 @@ import React from 'react';
 import { FiPhoneCall, FiMap, FiHeart, FiCheckCircle } from 'react-icons/fi';
 import styles from './ProcessSection.module.css';
 
-const ProcessSection: React.FC = () => {
-  const steps = [
-    {
-      icon: <FiPhoneCall />,
-      title: 'שיחת היכרות קצרה',
-      description: 'שיחה טלפונית ללא התחייבות כדי להבין את הצרכים שלכם ולראות איך אני יכולה לעזור.'
-    },
-    {
-      icon: <FiMap />,
-      title: 'פגישת מיפוי ואבחון',
-      description: 'צלילה לעומק הדינמיקה, הבנת החסמים המרכזיים ובניית מפת דרכים אישית.'
-    },
-    {
-      icon: <FiHeart />,
-      title: 'תהליך הליווי / הגישור',
-      description: 'סדרת מפגשים ממוקדים שבהם תקבלו כלים פרקטיים לשינוי התנהגותי ותקשורתי.'
-    },
-    {
-      icon: <FiCheckCircle />,
-      title: 'תוצאה: שקט ובהירות',
-      description: 'יציאה לדרך חדשה עם הסכמות ברורות, תקשורת מקרבת ותחושת ביטחון בבית.'
-    }
-  ];
+const steps = [
+  {
+    icon: <FiPhoneCall />,
+    title: 'שיחת היכרות קצרה',
+    description: 'שיחה טלפונית ללא התחייבות כדי להבין את הצרכים שלכם ולראות איך אני יכולה לעזור.'
+  },
+  {
+    icon: <FiMap />,
+    title: 'פגישת מיפוי ואבחון',
+    description: 'צלילה לעומק הדינמיקה, הבנת החסמים המרכזיים ובניית מפת דרכים אישית.'
+  },
+  {
+    icon: <FiHeart />,
+    title: 'תהליך הליווי / הגישור',
+    description: 'סדרת מפגשים ממוקדים שבהם תקבלו כלים פרקטיים לשינוי התנהגותי ותקשורתי.'
+  },
+  {
+    icon: <FiCheckCircle />,
+    title: 'תוצאה: שקט ובהירות',
+    description: 'יציאה לדרך חדשה עם הסכמות ברורות, תקשורת מקרבת ותחושת ביטחון בבית.'
+  }
+];
 
+const ProcessSection: React.FC = () => {
   return (
     <section className={styles.process}>
       <div className="container">

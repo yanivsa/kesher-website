@@ -10,7 +10,9 @@ interface ServiceCardProps {
   highlights?: string[];
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, link, highlights = [] }) => {
+const EMPTY_HIGHLIGHTS: string[] = [];
+
+const ServiceCard: React.FC<ServiceCardProps> = ({ title, description, icon, link, highlights = EMPTY_HIGHLIGHTS }) => {
   return (
     <div className={styles.card}>
       <div className={styles.icon}>{icon}</div>
