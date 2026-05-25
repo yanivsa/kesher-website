@@ -27,6 +27,36 @@
   padding-bottom: var(--spacing-xl);
 }
 
+.card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-5px);
+}
+
+.imageWrapper {
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.image {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
 .controls {
   display: flex;
   flex-direction: column;
@@ -141,6 +171,14 @@
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .header {
+    padding: var(--spacing-lg) 0;
+  }
+
+  .controls {
+    padding: var(--spacing-sm);
   }
   
   .filterWrapper {

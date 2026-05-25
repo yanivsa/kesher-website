@@ -1,0 +1,78 @@
+name: Jules Weekly Kesher Mobile Review
+
+on:
+  schedule:
+    # Tuesday 02:20 Israel time during daylight saving.
+    - cron: "20 23 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: jules-weekly-kesher-mobile-review
+  cancel-in-progress: false
+
+jobs:
+  start-jules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop if mobile review PR is already open
+        id: backlog_gate
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
+            > open-prs.json
+
+          python3 - <<'PY'
+          import json, os, re
+          with open("open-prs.json", encoding="utf-8") as fh:
+              prs = json.load(fh)
+          pattern = re.compile(r"(mobile review|mobile audit|responsive|overflow|layout|sticky bar|מובייל|רספונסיבי)", re.I)
+          blockers = [
+              f"#{pr['number']} {pr['title']}"
+              for pr in prs
+              if pattern.search((pr.get("title") or "") + "\n" + ((pr.get("head") or {}).get("ref") or "") + "\n" + (pr.get("body") or ""))
+          ]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"blocked={'true' if blockers else 'false'}\n")
+          if blockers:
+              print("Open mobile-review PR exists; no Jules session will be started.")
+              print("\n".join(blockers[:20]))
+          PY
+
+      - name: Start Jules mobile review session
+        if: steps.backlog_gate.outputs.blocked != 'true'
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${JULES_API_KEY:-}"
+
+          cat > payload.json <<'JSON'
+          {
+            "title": "Weekly Kesher mobile UX review",
+            "prompt": "Run fully autonomously. Do not ask the user for confirmation, clarification, approval, review, or implementation choices. If a decision is needed, choose the smallest safe repo-consistent option yourself and continue.\n\nRepository: yanivsa/kesher-website. Start from main.\n\nGoal: perform a recurring mobile UX and responsive-layout review for the Kesher website. This is not an article-publishing task.\n\nInspect the responsive behavior of at least these routes:\n- /\n- /services/couples\n- /services/parenting\n- /services/mediation\n- /blog\n- /faq\n- /contact\n\nUse mobile widths around 360px, 390px, and 430px when feasible. Check for horizontal overflow, hidden or overlapping CTA buttons, broken cards/images, unusable navigation, sticky/floating CTA collisions, text that does not fit, forms that are hard to use, and content that disappears in a way that hurts trust.\n\nFix at most ONE coherent mobile issue per run. Prefer measurable fixes such as eliminating horizontal overflow, repairing a broken card/image layout, or improving a mobile CTA/navigation problem. Do not redesign the full site and do not change unrelated content.\n\nRequired checks before PR:\n- Run npm run build.\n- Verify the changed route at a mobile width and report the viewport used.\n- Confirm whether document scrollWidth is equal to viewport width for the fixed page when relevant.\n\nCreate one PR automatically only if a focused improvement was made. PR summary must include: route(s) inspected, viewport(s), issue found, changed files, validation command, and residual mobile risks.",
+            "sourceContext": {
+              "source": "sources/github/yanivsa/kesher-website",
+              "githubRepoContext": {
+                "startingBranch": "main"
+              }
+            },
+            "requirePlanApproval": false,
+            "automationMode": "AUTO_CREATE_PR"
+          }
+          JSON
+
+          curl --fail-with-body -sS \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            https://jules.googleapis.com/v1alpha/sessions
