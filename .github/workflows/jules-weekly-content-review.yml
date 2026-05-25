@@ -1,0 +1,78 @@
+name: Jules Weekly Kesher Content Review
+
+on:
+  schedule:
+    # Sunday 02:10 Israel time during daylight saving.
+    - cron: "10 23 * * 6"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: jules-weekly-kesher-content-review
+  cancel-in-progress: false
+
+jobs:
+  start-jules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop if content review PR is already open
+        id: backlog_gate
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
+            > open-prs.json
+
+          python3 - <<'PY'
+          import json, os, re
+          with open("open-prs.json", encoding="utf-8") as fh:
+              prs = json.load(fh)
+          pattern = re.compile(r"(content review|content audit|copy audit|service copy|איכות תוכן|תוכן)", re.I)
+          blockers = [
+              f"#{pr['number']} {pr['title']}"
+              for pr in prs
+              if pattern.search((pr.get("title") or "") + "\n" + ((pr.get("head") or {}).get("ref") or "") + "\n" + (pr.get("body") or ""))
+          ]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"blocked={'true' if blockers else 'false'}\n")
+          if blockers:
+              print("Open content-review PR exists; no Jules session will be started.")
+              print("\n".join(blockers[:20]))
+          PY
+
+      - name: Start Jules content review session
+        if: steps.backlog_gate.outputs.blocked != 'true'
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${JULES_API_KEY:-}"
+
+          cat > payload.json <<'JSON'
+          {
+            "title": "Weekly Kesher content quality review",
+            "prompt": "Run fully autonomously. Do not ask the user for confirmation, clarification, approval, review, or implementation choices. If a decision is needed, choose the smallest high-quality repo-consistent option yourself and continue.\n\nRepository: yanivsa/kesher-website. Start from main.\n\nGoal: perform a recurring content-quality review of the Kesher website for the services of parenting guidance, couples counseling, and family mediation. This is not an article-publishing task.\n\nRead first:\n- plan.md\n- seo.md\n- geo.md\n- src/constants/siteConfig.ts\n- src/pages/Home/*\n- src/pages/About/*\n- src/pages/Services/**/*\n- src/pages/FAQ/FAQ.tsx\n- src/data/posts.json\n\nEvaluate whether the visible Hebrew content is excellent for the business: clear positioning, trust, human Israeli Hebrew, service clarity, differentiated parenting guidance and couples counseling, credible credentials, realistic promises, warm tone, and direct conversion path.\n\nFix at most ONE coherent content problem per run. Prefer changes that improve the service pages or homepage copy. Do not rewrite the whole site. Do not publish new blog articles. Do not invent credentials, certifications, degrees, testimonials, or legal/clinical claims that are not already supported in the repo. If credentials are missing, add a TODO-style neutral copy improvement only when it does not invent facts.\n\nRequired checks before PR:\n- Hebrew copy must sound natural and Israeli, not translated-English or AI-like.\n- Avoid absolute promises such as guaranteed results or every problem solved quickly.\n- Keep the business focus on parenting guidance, couples counseling, and family mediation.\n- Run npm run build.\n\nCreate one ready-for-review PR automatically only if a focused improvement was made. Do not create a draft PR. PR title must start with `[jules-automerge] Kesher content review:` so the repository auto-merge workflow can validate and merge it without waiting for user approval. PR summary must include: reviewed areas, chosen issue, why it matters, changed files, validation command, and any content claims intentionally left untouched because they need human confirmation.",
+            "sourceContext": {
+              "source": "sources/github/yanivsa/kesher-website",
+              "githubRepoContext": {
+                "startingBranch": "main"
+              }
+            },
+            "requirePlanApproval": false,
+            "automationMode": "AUTO_CREATE_PR"
+          }
+          JSON
+
+          curl --fail-with-body -sS \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            https://jules.googleapis.com/v1alpha/sessions
