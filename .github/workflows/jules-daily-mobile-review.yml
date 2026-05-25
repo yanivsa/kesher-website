@@ -1,9 +1,9 @@
-name: Jules Weekly Kesher Mobile Review
+name: Jules Daily Kesher Mobile Review
 
 on:
   schedule:
-    # Tuesday 02:20 Israel time during daylight saving.
-    - cron: "20 23 * * 1"
+    # 02:20 Israel time during daylight saving.
+    - cron: "20 23 * * *"
   workflow_dispatch:
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: jules-weekly-kesher-mobile-review
+  group: jules-daily-kesher-mobile-review
   cancel-in-progress: false
 
 jobs:
@@ -58,7 +58,7 @@ jobs:
 
           cat > payload.json <<'JSON'
           {
-            "title": "Weekly Kesher mobile UX review",
+            "title": "Daily Kesher mobile UX review",
             "prompt": "Run fully autonomously. Do not ask the user for confirmation, clarification, approval, review, or implementation choices. If a decision is needed, choose the smallest safe repo-consistent option yourself and continue.\n\nRepository: yanivsa/kesher-website. Start from main.\n\nGoal: perform a recurring mobile UX and responsive-layout review for the Kesher website. This is not an article-publishing task.\n\nInspect the responsive behavior of at least these routes:\n- /\n- /services/couples\n- /services/parenting\n- /services/mediation\n- /blog\n- /faq\n- /contact\n\nUse mobile widths around 360px, 390px, and 430px when feasible. Check for horizontal overflow, hidden or overlapping CTA buttons, broken cards/images, unusable navigation, sticky/floating CTA collisions, text that does not fit, forms that are hard to use, and content that disappears in a way that hurts trust.\n\nFix at most ONE coherent mobile issue per run. Prefer measurable fixes such as eliminating horizontal overflow, repairing a broken card/image layout, or improving a mobile CTA/navigation problem. Do not redesign the full site and do not change unrelated content.\n\nRequired checks before PR:\n- Run npm run build.\n- Verify the changed route at a mobile width and report the viewport used.\n- Confirm whether document scrollWidth is equal to viewport width for the fixed page when relevant.\n\nCreate one PR automatically only if a focused improvement was made. PR summary must include: route(s) inspected, viewport(s), issue found, changed files, validation command, and residual mobile risks.",
             "sourceContext": {
               "source": "sources/github/yanivsa/kesher-website",
