@@ -35,6 +35,8 @@ a:hover {
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
