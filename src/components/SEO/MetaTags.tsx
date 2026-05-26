@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 
 interface MetaTagsProps {
@@ -11,20 +12,23 @@ interface MetaTagsProps {
 const MetaTags: React.FC<MetaTagsProps> = ({ 
   title, 
   description, 
-  canonical = SITE_CONFIG.url,
+  canonical,
   ogType = "website"
 }) => {
+  const location = useLocation();
+  const currentUrl = canonical || `${SITE_CONFIG.url}${location.pathname === '/' ? '' : location.pathname}`;
+
   return (
     <>
       <title>{title}</title>
       <meta name="description" content={description} />
-      <link rel="canonical" href={canonical} />
+      <link rel="canonical" href={currentUrl} />
       
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      <meta property="og:url" content={canonical} />
+      <meta property="og:url" content={currentUrl} />
       <meta property="og:site_name" content={SITE_CONFIG.author} />
       
       {/* Twitter */}
