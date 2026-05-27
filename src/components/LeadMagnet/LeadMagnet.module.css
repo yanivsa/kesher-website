@@ -96,6 +96,12 @@
 }
 
 @media (max-width: 600px) {
+  .wrapper {
+    padding: var(--spacing-md) 0;
+  }
+  .content {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
   .form {
     flex-direction: column;
   }
