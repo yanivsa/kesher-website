@@ -1,16 +1,35 @@
 import React from 'react';
 import MetaTags from '../../../components/SEO/MetaTags';
+import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
 import { FiCheckSquare, FiClock, FiDollarSign, FiUsers } from 'react-icons/fi';
+import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './Mediation.module.css';
 
 const Mediation: React.FC = () => {
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "גישור משפחתי",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": SITE_CONFIG.brand,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "אשדוד",
+        "addressCountry": "IL"
+      }
+    },
+    "description": "גישור גירושין ומשפחה באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים וגירושין בשיתוף פעולה."
+  };
+
   return (
     <div className={styles.page}>
       <MetaTags 
         title="גישור גירושין ומשפחה באשדוד | שירה סהרוני" 
         description="גישור גירושין ומשפחה באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים וגירושין בשיתוף פעולה." 
       />
+      <SchemaOrg data={schemaData} />
       
       <header className={styles.header}>
         <div className={`container ${styles.heroContainer}`}>
