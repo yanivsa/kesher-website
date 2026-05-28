@@ -1,16 +1,35 @@
 import React from 'react';
 import MetaTags from '../../../components/SEO/MetaTags';
+import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
 import { FiHeart, FiMessageCircle, FiShield, FiStar } from 'react-icons/fi';
+import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './CouplesCounseling.module.css';
 
 const CouplesCounseling: React.FC = () => {
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "ייעוץ זוגי",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": SITE_CONFIG.brand,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "אשדוד",
+        "addressCountry": "IL"
+      }
+    },
+    "description": "ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר."
+  };
+
   return (
     <div className={styles.page}>
       <MetaTags 
         title="ייעוץ זוגי באשדוד | שירה סהרוני" 
         description="ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר." 
       />
+      <SchemaOrg data={schemaData} />
       
       <header className={styles.hero}>
         <div className={`container ${styles.heroContainer}`}>

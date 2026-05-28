@@ -2,7 +2,9 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import posts from '../../data/posts.json';
 import MetaTags from '../../components/SEO/MetaTags';
+import SchemaOrg from '../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './BlogPost.module.css';
 
 const BlogPost: React.FC = () => {
@@ -18,9 +20,32 @@ const BlogPost: React.FC = () => {
     );
   }
 
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "image": `${SITE_CONFIG.url}${post.image}`,
+    "datePublished": post.date,
+    "author": {
+      "@type": "Person",
+      "name": SITE_CONFIG.author,
+      "url": SITE_CONFIG.url
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": SITE_CONFIG.brand,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${SITE_CONFIG.url}/images/generated/site/logo.png`
+      }
+    },
+    "description": post.excerpt
+  };
+
   return (
     <article className={styles.post}>
-      <MetaTags title={post.title} description={post.excerpt} />
+      <MetaTags title={post.title} description={post.excerpt} ogType="article" />
+      <SchemaOrg data={schemaData} />
       <header className={styles.header}>
         <div className="container">
           <Link to="/blog" className={styles.backLink}>← חזרה לבלוג</Link>

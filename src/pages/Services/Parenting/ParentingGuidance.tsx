@@ -1,16 +1,35 @@
 import React from 'react';
 import MetaTags from '../../../components/SEO/MetaTags';
+import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
 import { FiTarget, FiZap, FiSmile, FiCompass } from 'react-icons/fi';
+import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './ParentingGuidance.module.css';
 
 const ParentingGuidance: React.FC = () => {
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "הדרכת הורים",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": SITE_CONFIG.brand,
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "אשדוד",
+        "addressCountry": "IL"
+      }
+    },
+    "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית."
+  };
+
   return (
     <div className={styles.page}>
       <MetaTags 
         title="הדרכת הורים באשדוד | ADHD | שירה סהרוני" 
         description="הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית." 
       />
+      <SchemaOrg data={schemaData} />
       
       <header className={styles.header}>
         <div className={`container ${styles.heroContainer}`}>
