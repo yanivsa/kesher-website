@@ -40,6 +40,7 @@ const BlogList: React.FC = () => {
             <input 
               type="text" 
               placeholder="חיפוש מאמרים..." 
+              aria-label="חיפוש מאמרים"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={styles.searchInput}
