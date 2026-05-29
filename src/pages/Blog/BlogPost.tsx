@@ -22,29 +22,56 @@ const BlogPost: React.FC = () => {
 
   const schemaData = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": post.title,
-    "image": `${SITE_CONFIG.url}${post.image}`,
-    "datePublished": post.date,
-    "author": {
-      "@type": "Person",
-      "name": SITE_CONFIG.author,
-      "url": SITE_CONFIG.url
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": SITE_CONFIG.brand,
-      "logo": {
-        "@type": "ImageObject",
-        "url": `${SITE_CONFIG.url}/images/generated/site/logo.png`
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline": post.title,
+        "image": `${SITE_CONFIG.url}${post.image}`,
+        "datePublished": post.date,
+        "author": {
+          "@type": "Person",
+          "name": SITE_CONFIG.author,
+          "url": SITE_CONFIG.url
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": SITE_CONFIG.brand,
+          "logo": {
+            "@type": "ImageObject",
+            "url": `${SITE_CONFIG.url}/images/generated/site/logo.png`
+          }
+        },
+        "description": post.excerpt
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "עמוד הבית",
+            "item": SITE_CONFIG.url
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "בלוג",
+            "item": `${SITE_CONFIG.url}/blog`
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": post.title,
+            "item": `${SITE_CONFIG.url}/blog/${post.id}`
+          }
+        ]
       }
-    },
-    "description": post.excerpt
+    ]
   };
 
   return (
     <article className={styles.post}>
-      <MetaTags title={post.title} description={post.excerpt} ogType="article" />
+      <MetaTags title={post.title} description={post.excerpt} ogType="article" image={post.image} />
       <SchemaOrg data={schemaData} />
       <header className={styles.header}>
         <div className="container">

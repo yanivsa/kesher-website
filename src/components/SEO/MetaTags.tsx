@@ -7,16 +7,24 @@ interface MetaTagsProps {
   description: string;
   canonical?: string;
   ogType?: string;
+  image?: string;
 }
 
 const MetaTags: React.FC<MetaTagsProps> = ({ 
   title, 
   description, 
   canonical,
-  ogType = "website"
+  ogType = "website",
+  image
 }) => {
   const location = useLocation();
   const currentUrl = canonical || `${SITE_CONFIG.url}${location.pathname === '/' ? '' : location.pathname}`;
+
+  // Format image URL properly
+  let imageUrl = image || `${SITE_CONFIG.url}/apple-touch-icon.png`;
+  if (imageUrl.startsWith('/')) {
+    imageUrl = `${SITE_CONFIG.url}${imageUrl}`;
+  }
 
   return (
     <>
@@ -30,11 +38,13 @@ const MetaTags: React.FC<MetaTagsProps> = ({
       <meta property="og:description" content={description} />
       <meta property="og:url" content={currentUrl} />
       <meta property="og:site_name" content={SITE_CONFIG.author} />
+      <meta property="og:image" content={imageUrl} />
       
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={imageUrl} />
     </>
   );
 };

@@ -9,18 +9,39 @@ import styles from './CouplesCounseling.module.css';
 const CouplesCounseling: React.FC = () => {
   const schemaData = {
     "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "ייעוץ זוגי",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": SITE_CONFIG.brand,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "אשדוד",
-        "addressCountry": "IL"
+    "@graph": [
+      {
+        "@type": "Service",
+        "serviceType": "ייעוץ זוגי",
+        "provider": {
+          "@type": "LocalBusiness",
+          "name": SITE_CONFIG.brand,
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "אשדוד",
+            "addressCountry": "IL"
+          }
+        },
+        "description": "ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר."
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "עמוד הבית",
+            "item": SITE_CONFIG.url
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "ייעוץ זוגי",
+            "item": `${SITE_CONFIG.url}/services/couples`
+          }
+        ]
       }
-    },
-    "description": "ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר."
+    ]
   };
 
   return (
@@ -28,6 +49,7 @@ const CouplesCounseling: React.FC = () => {
       <MetaTags 
         title="ייעוץ זוגי באשדוד | שירה סהרוני" 
         description="ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר." 
+        image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80"
       />
       <SchemaOrg data={schemaData} />
       
