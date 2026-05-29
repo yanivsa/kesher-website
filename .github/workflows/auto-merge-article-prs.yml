@@ -50,7 +50,6 @@ jobs:
           import json, re
           with open("open-prs.json", encoding="utf-8") as fh:
               prs = json.load(fh)
-          # Article PRs are not tagged; rely on file-level allowlist + title hints.
           title_re = re.compile(r"\b(article|post|posts\.json|מאמר)\b", re.I)
           for pr in prs:
               if title_re.search(pr.get("title") or ""):
@@ -71,7 +70,7 @@ jobs:
             api "https://api.github.com/repos/${repo}/pulls/${number}/files?per_page=100" > pr-files.json
 
             python3 - <<'PY' > gate.env
-          import json, re
+          import json
 
           with open("pr.json", encoding="utf-8") as fh:
               pr = json.load(fh)
@@ -81,8 +80,6 @@ jobs:
           allowed_files = {
               "src/data/posts.json",
           }
-
-          # Allow adding a single local generated image file.
           allowed_prefixes = ("public/images/generated/blog/",)
 
           filenames = [f.get("filename") for f in files if f.get("filename")]
@@ -121,7 +118,7 @@ jobs:
             (
               cd "pr-${number}"
               git init -q
-              git remote add origin "https://github.com/${repo}.git"
+              git remote add origin "https://x-access-token:${token}@github.com/${repo}.git"
               git fetch --depth 1 origin "${sha}"
               git checkout -q FETCH_HEAD
               npm ci
