@@ -1,6 +1,6 @@
 .wrapper {
   background: var(--color-primary-light);
-  padding: var(--spacing-lg) 0;
+  padding: var(--spacing-lg) var(--spacing-md);
   margin: var(--spacing-xl) 0;
   border-radius: var(--radius-lg);
   position: relative;
@@ -97,7 +97,7 @@
 
 @media (max-width: 600px) {
   .wrapper {
-    padding: var(--spacing-md) 0;
+    padding: var(--spacing-md);
   }
   .content {
     padding: var(--spacing-md) var(--spacing-sm);
