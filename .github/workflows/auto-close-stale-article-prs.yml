@@ -1,0 +1,88 @@
+name: Auto-close stale Kesher article PRs
+
+on:
+  schedule:
+    - cron: "15 2 * * *" # daily
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: auto-close-stale-kesher-article-prs
+  cancel-in-progress: false
+
+jobs:
+  close-stale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close stale article PRs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
+            > open-prs.json
+
+          python3 - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          import re
+          import subprocess
+
+          repo = os.environ["REPO"]
+          token = os.environ["GITHUB_TOKEN"]
+          now = dt.datetime.now(dt.UTC)
+
+          with open("open-prs.json", encoding="utf-8") as fh:
+              prs = json.load(fh)
+
+          # Close only PRs that clearly look like article PRs by file list.
+          def api(url, method="GET", body=None):
+              args = [
+                  "curl","--fail-with-body","-sS",
+                  "-X", method,
+                  "-H", f"Authorization: Bearer {token}",
+                  "-H", "Accept: application/vnd.github+json",
+              ]
+              if body is not None:
+                  args += ["-H","Content-Type: application/json","-d", json.dumps(body)]
+              args.append(url)
+              out = subprocess.check_output(args)
+              return json.loads(out.decode("utf-8")) if out else {}
+
+          for pr in prs:
+              number = pr["number"]
+              updated = dt.datetime.fromisoformat(pr["updated_at"].replace("Z", "+00:00"))
+              age_h = (now - updated).total_seconds() / 3600.0
+              if age_h < 72:
+                  continue
+
+              files = api(f"https://api.github.com/repos/{repo}/pulls/{number}/files?per_page=100")
+              filenames = [f.get("filename") for f in files if f.get("filename")]
+
+              touches_posts = "src/data/posts.json" in filenames
+              allowed = True
+              for f in filenames:
+                  if f == "src/data/posts.json":
+                      continue
+                  if f and f.startswith("public/images/generated/blog/"):
+                      continue
+                  allowed = False
+                  break
+
+              if not (touches_posts and allowed):
+                  continue
+
+              comment = "Auto-closed stale article PR (72h+) to unblock nightly publishing. Reopen if still needed."
+              api(f"https://api.github.com/repos/{repo}/issues/{number}/comments", method="POST", body={"body": comment})
+              api(f"https://api.github.com/repos/{repo}/pulls/{number}", method="PATCH", body={"state": "closed"})
+              print(f"Closed stale article PR #{number}")
+          PY
