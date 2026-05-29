@@ -9,18 +9,39 @@ import styles from './ParentingGuidance.module.css';
 const ParentingGuidance: React.FC = () => {
   const schemaData = {
     "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "הדרכת הורים",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": SITE_CONFIG.brand,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "אשדוד",
-        "addressCountry": "IL"
+    "@graph": [
+      {
+        "@type": "Service",
+        "serviceType": "הדרכת הורים",
+        "provider": {
+          "@type": "LocalBusiness",
+          "name": SITE_CONFIG.brand,
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "אשדוד",
+            "addressCountry": "IL"
+          }
+        },
+        "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית."
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "עמוד הבית",
+            "item": SITE_CONFIG.url
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "הדרכת הורים",
+            "item": `${SITE_CONFIG.url}/services/parenting`
+          }
+        ]
       }
-    },
-    "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית."
+    ]
   };
 
   return (
@@ -28,6 +49,7 @@ const ParentingGuidance: React.FC = () => {
       <MetaTags 
         title="הדרכת הורים באשדוד | ADHD | שירה סהרוני" 
         description="הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית." 
+        image="https://images.unsplash.com/photo-1510906594845-bc082582c8cc?auto=format&fit=crop&w=1200&q=80"
       />
       <SchemaOrg data={schemaData} />
       

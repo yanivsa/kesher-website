@@ -9,18 +9,39 @@ import styles from './Mediation.module.css';
 const Mediation: React.FC = () => {
   const schemaData = {
     "@context": "https://schema.org",
-    "@type": "Service",
-    "serviceType": "גישור משפחתי",
-    "provider": {
-      "@type": "LocalBusiness",
-      "name": SITE_CONFIG.brand,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "אשדוד",
-        "addressCountry": "IL"
+    "@graph": [
+      {
+        "@type": "Service",
+        "serviceType": "גישור משפחתי",
+        "provider": {
+          "@type": "LocalBusiness",
+          "name": SITE_CONFIG.brand,
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "אשדוד",
+            "addressCountry": "IL"
+          }
+        },
+        "description": "גישור גירושין ומשפחה באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים וגירושין בשיתוף פעולה."
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "עמוד הבית",
+            "item": SITE_CONFIG.url
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "גישור משפחתי",
+            "item": `${SITE_CONFIG.url}/services/mediation`
+          }
+        ]
       }
-    },
-    "description": "גישור גירושין ומשפחה באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים וגירושין בשיתוף פעולה."
+    ]
   };
 
   return (
@@ -28,6 +49,7 @@ const Mediation: React.FC = () => {
       <MetaTags 
         title="גישור גירושין ומשפחה באשדוד | שירה סהרוני" 
         description="גישור גירושין ומשפחה באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים וגירושין בשיתוף פעולה." 
+        image="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1200&q=80"
       />
       <SchemaOrg data={schemaData} />
       
