@@ -7,3 +7,9 @@
 .main {
   flex: 1;
 }
+
+@media (max-width: 768px) {
+  .wrapper {
+    padding-bottom: 60px; /* Space for MobileStickyBar */
+  }
+}
