@@ -43,6 +43,7 @@ const LeadMagnet: React.FC = () => {
               <input
                 type="email"
                 placeholder="הכנס/י כתובת אימייל"
+                aria-label="כתובת אימייל"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
