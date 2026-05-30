@@ -28,7 +28,7 @@ const ContactSection: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          _subject: `פנייה חדשה מאתר קשר: ${formData.name}`,
+          _subject: `פנייה חדשה מהאתר: ${formData.name}`,
         }),
       });
       
