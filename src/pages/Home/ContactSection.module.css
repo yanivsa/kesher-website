@@ -136,6 +136,12 @@
 }
 
 @media (max-width: 600px) {
+  .contact {
+    padding: var(--spacing-lg) 0;
+  }
+  .formContainer {
+    padding: var(--spacing-md);
+  }
   .formRow {
     grid-template-columns: 1fr;
   }
