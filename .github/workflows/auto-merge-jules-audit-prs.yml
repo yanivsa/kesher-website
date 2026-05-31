@@ -66,11 +66,23 @@ jobs:
           for number in ${numbers}; do
             echo "Inspecting PR #${number}"
             api "https://api.github.com/repos/${repo}/pulls/${number}" > pr.json
+            api "https://api.github.com/repos/${repo}/pulls/${number}/files?per_page=100" > pr-files.json
 
             python3 - <<'PY' > gate.env
           import json, re
           with open("pr.json", encoding="utf-8") as fh:
               pr = json.load(fh)
+          with open("pr-files.json", encoding="utf-8") as fh:
+              files = json.load(fh)
+          filenames = [f.get("filename") for f in files if f.get("filename")]
+
+          blocked_prefixes = (".github/workflows/", ".github/actions/")
+          blocked_files = {"package.json", "package-lock.json", "vite.config.ts", "tsconfig.json", ".env"}
+          touches_blocked = any(
+              f in blocked_files or any(f.startswith(p) for p in blocked_prefixes)
+              for f in filenames
+          )
+
           pattern = re.compile(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review):", re.I)
           eligible = (
               pr.get("state") == "open"
@@ -78,6 +90,7 @@ jobs:
               and pattern.search(pr.get("title") or "")
               and (pr.get("head") or {}).get("repo", {}).get("full_name") == (pr.get("base") or {}).get("repo", {}).get("full_name")
               and (pr.get("base") or {}).get("ref") == "main"
+              and not touches_blocked
           )
           print(f"eligible='{'true' if eligible else 'false'}'")
           print(f"sha='{(pr.get('head') or {}).get('sha') or ''}'")

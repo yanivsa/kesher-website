@@ -79,6 +79,9 @@ jobs:
 
           allowed_files = {
               "src/data/posts.json",
+              "public/sitemap.xml",
+              "public/llms.txt",
+              "public/llms-full.txt",
           }
           allowed_prefixes = ("public/images/generated/blog/",)
 

@@ -67,12 +67,6 @@
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/blog/co-parenting-communication-after-divorce</loc>
-    <lastmod>2026-05-24</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://kesher.saharoni.com/blog/relationship-after-childbirth</loc>
     <lastmod>2026-05-20</lastmod>
     <changefreq>yearly</changefreq>
@@ -91,12 +85,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/blog/late-life-divorce-gray</loc>
-    <lastmod>2024-03-25</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://kesher.saharoni.com/blog/adhd-and-screen-addiction-strategies</loc>
     <lastmod>2024-03-10</lastmod>
     <changefreq>yearly</changefreq>
@@ -105,12 +93,6 @@
   <url>
     <loc>https://kesher.saharoni.com/blog/mediation-for-family-business-disputes</loc>
     <lastmod>2024-02-25</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://kesher.saharoni.com/blog/loneliness-after-divorce-israel</loc>
-    <lastmod>2024-02-10</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -138,7 +120,6 @@
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
-
   <url>
     <loc>https://kesher.saharoni.com/blog/boundaries-without-punishments</loc>
     <lastmod>2026-05-31</lastmod>
