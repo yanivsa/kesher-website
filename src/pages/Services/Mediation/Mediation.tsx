@@ -22,7 +22,7 @@ const Mediation: React.FC = () => {
             "addressCountry": "IL"
           }
         },
-        "description": "גישור גירושין ומשפחה באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים וגירושין בשיתוף פעולה."
+        "description": "גישור משפחתי באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים ופרידה בשיתוף פעולה."
       },
       {
         "@type": "BreadcrumbList",
@@ -47,8 +47,8 @@ const Mediation: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags 
-        title="גישור גירושין ומשפחה באשדוד | שירה סהרוני" 
-        description="גישור גירושין ומשפחה באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים וגירושין בשיתוף פעולה." 
+        title="גישור משפחתי באשדוד | שירה סהרוני"
+        description="גישור משפחתי באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים ופרידה בשיתוף פעולה."
         image="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1200&q=80"
       />
       <SchemaOrg data={schemaData} />
