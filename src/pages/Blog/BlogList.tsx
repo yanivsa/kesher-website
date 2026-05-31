@@ -67,7 +67,7 @@ const BlogList: React.FC = () => {
             {filteredPosts.map((post) => (
               <article key={post.id} className={styles.card}>
                 <div className={styles.imageWrapper}>
-                  <img src={post.image} alt={post.title} className={styles.image} loading="lazy" />
+                  <img src={post.image} alt={post.title} className={styles.image} />
                   <span className={styles.categoryBadge}>{post.category}</span>
                 </div>
                 <div className={styles.content}>

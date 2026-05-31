@@ -79,9 +79,9 @@ jobs:
               and (pr.get("head") or {}).get("repo", {}).get("full_name") == (pr.get("base") or {}).get("repo", {}).get("full_name")
               and (pr.get("base") or {}).get("ref") == "main"
           )
-          print(f"eligible={'true' if eligible else 'false'}")
-          print(f"sha={(pr.get('head') or {}).get('sha') or ''}")
-          print(f"mergeable_state={pr.get('mergeable_state') or ''}")
+          print(f"eligible='{'true' if eligible else 'false'}'")
+          print(f"sha='{(pr.get('head') or {}).get('sha') or ''}'")
+          print(f"mergeable_state='{pr.get('mergeable_state') or ''}'")
           PY
             . ./gate.env
 
