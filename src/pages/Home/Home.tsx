@@ -52,7 +52,7 @@ const Home: React.FC = () => {
             "credentialCategory": "עורכת דין"
           }
         ],
-        "serviceType": ["ייעוץ זוגי", "הדרכת הורים", "גישור גירושין", "טיפול מקוון"],
+        "serviceType": ["ייעוץ זוגי", "הדרכת הורים", "גישור משפחה", "טיפול מקוון"],
         "makesOffer": [
           {
             "@type": "Offer",
@@ -74,7 +74,7 @@ const Home: React.FC = () => {
             "@type": "Offer",
             "itemOffered": {
               "@type": "Service",
-              "name": "גישור גירושין",
+              "name": "גישור משפחה",
               "description": "גישור בהסכמה כחלופה להליך משפטי. כולל הסדרת רכוש, הסדרי ילדים ומזונות."
             }
           }
