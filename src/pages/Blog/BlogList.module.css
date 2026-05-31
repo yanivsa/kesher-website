@@ -22,7 +22,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: var(--spacing-md);
   padding-bottom: var(--spacing-xl);
 }
@@ -44,7 +44,8 @@
 }
 
 .imageWrapper {
-  height: 200px;
+  aspect-ratio: 16 / 9;
+  height: auto;
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -55,6 +56,11 @@
   height: 100%;
   object-fit: cover;
   width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.05);
 }
 
 .controls {
@@ -169,10 +175,6 @@
 }
 
 @media (max-width: 768px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
   .header {
     padding: var(--spacing-lg) 0;
   }
@@ -219,14 +221,3 @@
   font-size: 0.9rem;
 }
 
-@media (max-width: 992px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-}
