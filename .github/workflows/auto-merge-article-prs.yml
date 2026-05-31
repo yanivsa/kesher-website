@@ -101,9 +101,9 @@ jobs:
               and all_allowed
           )
 
-          print(f"eligible={'true' if eligible else 'false'}")
-          print(f"sha={(pr.get('head') or {}).get('sha') or ''}")
-          print(f"reason={'ok' if eligible else 'not eligible (non-article files or wrong base/head)'}")
+          print(f"eligible=\"{'true' if eligible else 'false'}\"")
+          print(f"sha=\"{(pr.get('head') or {}).get('sha') or ''}\"")
+          print(f"reason=\"{'ok' if eligible else 'not eligible (non-article files or wrong base/head)'}\"")
           PY
 
             . ./gate.env
