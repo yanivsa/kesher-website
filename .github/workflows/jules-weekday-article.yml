@@ -105,7 +105,8 @@ jobs:
               "source": "sources/github/yanivsa/kesher-website",
               "githubRepoContext": {
                 "startingBranch": "main"
-              }
+              },
+              "environmentVariablesEnabled": true
             },
             "requirePlanApproval": false,
             "automationMode": "AUTO_CREATE_PR"
