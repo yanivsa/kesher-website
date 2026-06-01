@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import posts from '../../data/posts.json';
 import styles from './BlogPreview.module.css';
 
-const BlogPreview: React.FC = () => {
-  // Get latest 3 posts
-  const latestPosts = [...posts]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 3);
+// Get latest 3 posts
+const latestPosts = [...posts]
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  .slice(0, 3);
 
+const BlogPreview: React.FC = () => {
   return (
     <section id="blog" className={styles.blog}>
       <div className="container">
