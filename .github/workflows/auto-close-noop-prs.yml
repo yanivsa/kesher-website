@@ -7,7 +7,7 @@ on:
 
 permissions:
   issues: write
-  pull-requests: read
+  pull-requests: write
 
 concurrency:
   group: auto-close-noop-prs
@@ -109,7 +109,7 @@ jobs:
                       "Accept: application/vnd.github+json",
                       "-d",
                       json.dumps({"state": "closed"}),
-                      f"https://api.github.com/repos/{repo}/issues/{number}",
+                      f"https://api.github.com/repos/{repo}/pulls/{number}",
                   ],
                   check=True,
               )
