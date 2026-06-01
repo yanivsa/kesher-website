@@ -159,6 +159,7 @@
 }
 
 @media (max-width: 992px) {
+  .hero, .painPoints, .approach, .ctaSection { padding: 3rem 0; }
   .heroContainer { grid-template-columns: 1fr; text-align: center; }
   .heroContent h1 { font-size: 2.8rem; }
   .subtitle { margin: 0 auto 2rem; }
