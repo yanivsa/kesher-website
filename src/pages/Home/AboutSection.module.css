@@ -20,13 +20,14 @@
   border-radius: var(--radius-md);
   position: relative;
   box-shadow: var(--shadow-lg);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .aboutImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: var(--radius-md);
 }
 
 .experienceBadge {
