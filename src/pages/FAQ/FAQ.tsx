@@ -122,6 +122,7 @@ const FAQ: React.FC = () => {
         <div className={styles.categories}>
           {categories.map(cat => (
             <button 
+              type="button"
               key={cat}
               className={`${styles.categoryBtn} ${activeCategory === cat ? styles.active : ''}`}
               onClick={() => { setActiveCategory(cat); setOpenIndex(null); }}
@@ -137,6 +138,7 @@ const FAQ: React.FC = () => {
               className={`${styles.item} ${openIndex === index ? styles.open : ''}`}
             >
               <button 
+                type="button"
                 className={styles.question} 
                 onClick={() => toggle(index)}
                 aria-expanded={openIndex === index}

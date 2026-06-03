@@ -101,6 +101,7 @@ const BlogList: React.FC = () => {
             <div className={styles.categories}>
               {categories.map(cat => (
                 <button 
+                  type="button"
                   key={cat}
                   className={`${styles.categoryBtn} ${activeCategory === cat ? styles.active : ''}`}
                   onClick={() => setActiveCategory(cat)}
@@ -132,7 +133,7 @@ const BlogList: React.FC = () => {
         ) : (
           <div className={styles.noResults}>
             <h3>לא נמצאו מאמרים התואמים את החיפוש שלך.</h3>
-            <button onClick={() => {setSearchQuery(''); setActiveCategory('הכל');}} className={styles.resetBtn}>נקה חיפוש</button>
+            <button type="button" onClick={() => {setSearchQuery(''); setActiveCategory('הכל');}} className={styles.resetBtn}>נקה חיפוש</button>
           </div>
         )}
       </div>

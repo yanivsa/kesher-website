@@ -26,7 +26,7 @@ const Header: React.FC = () => {
         </Link>
 
         {/* Mobile Toggle Button */}
-        <button className={styles.menuToggle} onClick={toggleMenu} aria-label="פתיחת תפריט">
+        <button type="button" className={styles.menuToggle} onClick={toggleMenu} aria-label="פתיחת תפריט">
           {isMenuOpen ? <FiX /> : <FiMenu />}
         </button>
 
