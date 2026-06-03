@@ -12,7 +12,9 @@ const ParentingGuidance: React.FC = () => {
     "@graph": [
       {
         "@type": "Service",
+        "name": "הדרכת הורים",
         "serviceType": "הדרכת הורים",
+        "url": `${SITE_CONFIG.url}/services/parenting`,
         "provider": {
           "@type": "LocalBusiness",
           "name": SITE_CONFIG.brand,

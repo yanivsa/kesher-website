@@ -27,6 +27,7 @@ const BlogPost: React.FC = () => {
         "@type": "Article",
         "headline": post.title,
         "image": `${SITE_CONFIG.url}${post.image}`,
+        "url": `${SITE_CONFIG.url}/blog/${post.id}`,
         "datePublished": post.date,
         "author": {
           "@type": "Person",

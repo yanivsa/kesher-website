@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './FAQ.module.css';
 
 interface FAQItem {
@@ -94,15 +95,36 @@ const FAQ: React.FC = () => {
   // FAQPage Schema for SEO/GEO
   const faqSchema = {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqs.map(faq => ({
-      "@type": "Question",
-      "name": faq.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": faq.answer
+    "@graph": [
+      {
+        "@type": "FAQPage",
+        "mainEntity": faqs.map(faq => ({
+          "@type": "Question",
+          "name": faq.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": faq.answer
+          }
+        }))
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "עמוד הבית",
+            "item": SITE_CONFIG.url
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "שאלות נפוצות",
+            "item": `${SITE_CONFIG.url}/faq`
+          }
+        ]
       }
-    }))
+    ]
   };
 
   return (
