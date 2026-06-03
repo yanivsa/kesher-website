@@ -12,7 +12,9 @@ const CouplesCounseling: React.FC = () => {
     "@graph": [
       {
         "@type": "Service",
+        "name": "ייעוץ זוגי",
         "serviceType": "ייעוץ זוגי",
+        "url": `${SITE_CONFIG.url}/services/couples`,
         "provider": {
           "@type": "LocalBusiness",
           "name": SITE_CONFIG.brand,

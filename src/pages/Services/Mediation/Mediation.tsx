@@ -12,7 +12,9 @@ const Mediation: React.FC = () => {
     "@graph": [
       {
         "@type": "Service",
+        "name": "גישור משפחתי",
         "serviceType": "גישור משפחתי",
+        "url": `${SITE_CONFIG.url}/services/mediation`,
         "provider": {
           "@type": "LocalBusiness",
           "name": SITE_CONFIG.brand,
