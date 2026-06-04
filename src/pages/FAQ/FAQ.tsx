@@ -80,6 +80,41 @@ const faqs: FAQItem[] = [
 
 const categories = ['הכל', 'ייעוץ זוגי', 'גישור', 'הדרכת הורים', 'כללי'];
 
+// FAQPage Schema for SEO/GEO
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "עמוד הבית",
+          "item": SITE_CONFIG.url
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "שאלות נפוצות",
+          "item": `${SITE_CONFIG.url}/faq`
+        }
+      ]
+    }
+  ]
+};
+
 const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeCategory, setActiveCategory] = useState('הכל');
@@ -92,40 +127,6 @@ const FAQ: React.FC = () => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  // FAQPage Schema for SEO/GEO
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "FAQPage",
-        "mainEntity": faqs.map(faq => ({
-          "@type": "Question",
-          "name": faq.question,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": faq.answer
-          }
-        }))
-      },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "עמוד הבית",
-            "item": SITE_CONFIG.url
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "שאלות נפוצות",
-            "item": `${SITE_CONFIG.url}/faq`
-          }
-        ]
-      }
-    ]
-  };
 
   return (
     <div className={styles.faq}>

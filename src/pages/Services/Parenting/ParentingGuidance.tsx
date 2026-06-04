@@ -6,45 +6,46 @@ import { FiTarget, FiZap, FiSmile, FiCompass } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './ParentingGuidance.module.css';
 
-const ParentingGuidance: React.FC = () => {
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Service",
-        "name": "הדרכת הורים",
-        "serviceType": "הדרכת הורים",
-        "url": `${SITE_CONFIG.url}/services/parenting`,
-        "provider": {
-          "@type": "LocalBusiness",
-          "name": SITE_CONFIG.brand,
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "אשדוד",
-            "addressCountry": "IL"
-          }
-        },
-        "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית."
+const schemaData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      "name": "הדרכת הורים",
+      "serviceType": "הדרכת הורים",
+      "url": `${SITE_CONFIG.url}/services/parenting`,
+      "provider": {
+        "@type": "LocalBusiness",
+        "name": SITE_CONFIG.brand,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "אשדוד",
+          "addressCountry": "IL"
+        }
       },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "עמוד הבית",
-            "item": SITE_CONFIG.url
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "הדרכת הורים",
-            "item": `${SITE_CONFIG.url}/services/parenting`
-          }
-        ]
-      }
-    ]
-  };
+      "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "עמוד הבית",
+          "item": SITE_CONFIG.url
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "הדרכת הורים",
+          "item": `${SITE_CONFIG.url}/services/parenting`
+        }
+      ]
+    }
+  ]
+};
+
+const ParentingGuidance: React.FC = () => {
 
   return (
     <div className={styles.page}>

@@ -6,45 +6,46 @@ import { FiHeart, FiMessageCircle, FiShield, FiStar } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './CouplesCounseling.module.css';
 
-const CouplesCounseling: React.FC = () => {
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Service",
-        "name": "ייעוץ זוגי",
-        "serviceType": "ייעוץ זוגי",
-        "url": `${SITE_CONFIG.url}/services/couples`,
-        "provider": {
-          "@type": "LocalBusiness",
-          "name": SITE_CONFIG.brand,
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "אשדוד",
-            "addressCountry": "IL"
-          }
-        },
-        "description": "ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר."
+const schemaData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      "name": "ייעוץ זוגי",
+      "serviceType": "ייעוץ זוגי",
+      "url": `${SITE_CONFIG.url}/services/couples`,
+      "provider": {
+        "@type": "LocalBusiness",
+        "name": SITE_CONFIG.brand,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "אשדוד",
+          "addressCountry": "IL"
+        }
       },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "עמוד הבית",
-            "item": SITE_CONFIG.url
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "ייעוץ זוגי",
-            "item": `${SITE_CONFIG.url}/services/couples`
-          }
-        ]
-      }
-    ]
-  };
+      "description": "ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "עמוד הבית",
+          "item": SITE_CONFIG.url
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "ייעוץ זוגי",
+          "item": `${SITE_CONFIG.url}/services/couples`
+        }
+      ]
+    }
+  ]
+};
+
+const CouplesCounseling: React.FC = () => {
 
   return (
     <div className={styles.page}>

@@ -6,45 +6,46 @@ import { FiCheckSquare, FiClock, FiDollarSign, FiUsers } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './Mediation.module.css';
 
-const Mediation: React.FC = () => {
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Service",
-        "name": "גישור משפחתי",
-        "serviceType": "גישור משפחתי",
-        "url": `${SITE_CONFIG.url}/services/mediation`,
-        "provider": {
-          "@type": "LocalBusiness",
-          "name": SITE_CONFIG.brand,
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "אשדוד",
-            "addressCountry": "IL"
-          }
-        },
-        "description": "גישור משפחתי באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים ופרידה בשיתוף פעולה."
+const schemaData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      "name": "גישור משפחתי",
+      "serviceType": "גישור משפחתי",
+      "url": `${SITE_CONFIG.url}/services/mediation`,
+      "provider": {
+        "@type": "LocalBusiness",
+        "name": SITE_CONFIG.brand,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "אשדוד",
+          "addressCountry": "IL"
+        }
       },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "עמוד הבית",
-            "item": SITE_CONFIG.url
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "גישור משפחתי",
-            "item": `${SITE_CONFIG.url}/services/mediation`
-          }
-        ]
-      }
-    ]
-  };
+      "description": "גישור משפחתי באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים ופרידה בשיתוף פעולה."
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "עמוד הבית",
+          "item": SITE_CONFIG.url
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "גישור משפחתי",
+          "item": `${SITE_CONFIG.url}/services/mediation`
+        }
+      ]
+    }
+  ]
+};
+
+const Mediation: React.FC = () => {
 
   return (
     <div className={styles.page}>
