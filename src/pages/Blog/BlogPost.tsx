@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import posts from '../../data/posts.json';
 import MetaTags from '../../components/SEO/MetaTags';
@@ -20,7 +20,7 @@ const BlogPost: React.FC = () => {
     );
   }
 
-  const schemaData = {
+  const schemaData = useMemo(() => ({
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -68,7 +68,7 @@ const BlogPost: React.FC = () => {
         ]
       }
     ]
-  };
+  }), [post]);
 
   return (
     <article className={styles.post}>

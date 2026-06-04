@@ -9,6 +9,53 @@ import styles from './BlogList.module.css';
 
 const categories = ['הכל', 'זוגיות', 'הדרכת הורים', 'גישור משפחתי'];
 
+const schemaData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Blog",
+      "name": "הבלוג של שירה סהרוני | ייעוץ זוגי, הדרכת הורים וגישור",
+      "description": "מאמרים, טיפים ותובנות על זוגיות, הורות ופתרון סכסוכים. כל מה שצריך כדי לבנות מערכות יחסים טובות יותר.",
+      "url": `${SITE_CONFIG.url}/blog`,
+      "publisher": {
+        "@type": "Organization",
+        "name": SITE_CONFIG.brand,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${SITE_CONFIG.url}/apple-touch-icon.png`
+        }
+      },
+      "blogPost": posts.slice(0, 5).map(post => ({
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "url": `${SITE_CONFIG.url}/blog/${post.id}`,
+        "datePublished": post.date,
+        "author": {
+          "@type": "Person",
+          "name": SITE_CONFIG.author
+        }
+      }))
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "עמוד הבית",
+          "item": SITE_CONFIG.url
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "בלוג",
+          "item": `${SITE_CONFIG.url}/blog`
+        }
+      ]
+    }
+  ]
+};
+
 const BlogList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('הכל');
@@ -22,52 +69,6 @@ const BlogList: React.FC = () => {
     });
   }, [searchQuery, activeCategory]);
 
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Blog",
-        "name": "הבלוג של שירה סהרוני | ייעוץ זוגי, הדרכת הורים וגישור",
-        "description": "מאמרים, טיפים ותובנות על זוגיות, הורות ופתרון סכסוכים. כל מה שצריך כדי לבנות מערכות יחסים טובות יותר.",
-        "url": `${SITE_CONFIG.url}/blog`,
-        "publisher": {
-          "@type": "Organization",
-          "name": SITE_CONFIG.brand,
-          "logo": {
-            "@type": "ImageObject",
-            "url": `${SITE_CONFIG.url}/apple-touch-icon.png`
-          }
-        },
-        "blogPost": posts.slice(0, 5).map(post => ({
-          "@type": "BlogPosting",
-          "headline": post.title,
-          "url": `${SITE_CONFIG.url}/blog/${post.id}`,
-          "datePublished": post.date,
-          "author": {
-            "@type": "Person",
-            "name": SITE_CONFIG.author
-          }
-        }))
-      },
-      {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "עמוד הבית",
-            "item": SITE_CONFIG.url
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "בלוג",
-            "item": `${SITE_CONFIG.url}/blog`
-          }
-        ]
-      }
-    ]
-  };
 
   return (
     <div className={styles.blog}>
