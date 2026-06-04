@@ -125,3 +125,15 @@
     margin: 0 auto;
   }
 }
+
+@media (max-width: 600px) {
+  .experienceBadge {
+    right: -5px;
+    bottom: -15px;
+    padding: 1rem;
+  }
+
+  .years {
+    font-size: 1.4rem;
+  }
+}
