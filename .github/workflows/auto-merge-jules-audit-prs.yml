@@ -50,7 +50,7 @@ jobs:
           import json, re
           with open("open-prs.json", encoding="utf-8") as fh:
               prs = json.load(fh)
-          pattern = re.compile(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review|accessibility review|site fixes):", re.I)
+          pattern = re.compile(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review|accessibility review|site fixes|performance review|maintainability review):", re.I)
           for pr in prs:
               if pattern.search(pr.get("title") or ""):
                   print(pr["number"])
@@ -83,7 +83,7 @@ jobs:
               for f in filenames
           )
 
-          pattern = re.compile(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review|accessibility review|site fixes):", re.I)
+          pattern = re.compile(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review|accessibility review|site fixes|performance review|maintainability review):", re.I)
           eligible = (
               pr.get("state") == "open"
               and not pr.get("draft")
