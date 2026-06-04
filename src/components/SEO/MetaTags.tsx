@@ -18,7 +18,11 @@ const MetaTags: React.FC<MetaTagsProps> = ({
   image
 }) => {
   const location = useLocation();
-  const currentUrl = canonical || `${SITE_CONFIG.url}${location.pathname === '/' ? '' : location.pathname}`;
+  // Strip trailing slash if present (unless it's just '/')
+  const cleanPath = location.pathname.length > 1 && location.pathname.endsWith('/')
+    ? location.pathname.slice(0, -1)
+    : location.pathname;
+  const currentUrl = canonical || `${SITE_CONFIG.url}${cleanPath === '/' ? '' : cleanPath}`;
 
   // Format image URL properly
   let imageUrl = image || `${SITE_CONFIG.url}/apple-touch-icon.png`;
