@@ -22,7 +22,7 @@ const MetaTags: React.FC<MetaTagsProps> = ({
   const cleanPath = location.pathname.length > 1 && location.pathname.endsWith('/')
     ? location.pathname.slice(0, -1)
     : location.pathname;
-  const currentUrl = canonical || `${SITE_CONFIG.url}${cleanPath === '/' ? '' : cleanPath}`;
+  const currentUrl = canonical || `${SITE_CONFIG.url}${cleanPath}`;
 
   // Format image URL properly
   let imageUrl = image || `${SITE_CONFIG.url}/apple-touch-icon.png`;
