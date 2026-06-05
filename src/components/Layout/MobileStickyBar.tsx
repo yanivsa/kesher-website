@@ -24,12 +24,12 @@ const MobileStickyBar: React.FC = () => {
 
   return (
     <div className={styles.stickyBar}>
-      <a href={`tel:${SITE_CONFIG.contact.phone.replace(/-/g, '')}`} className={styles.callBtn}>
-        <FaPhoneAlt />
+      <a href={`tel:${SITE_CONFIG.contact.phone.replace(/-/g, '')}`} className={styles.callBtn} aria-label="התקשרו עכשיו">
+        <FaPhoneAlt aria-hidden="true" />
         <span>שיחה דחופה</span>
       </a>
-      <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn} target="_blank" rel="noopener noreferrer">
-        <FaWhatsapp />
+      <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn} target="_blank" rel="noopener noreferrer" aria-label="שלחו הודעת וואטסאפ">
+        <FaWhatsapp aria-hidden="true" />
         <span>שלחו הודעה</span>
       </a>
     </div>
