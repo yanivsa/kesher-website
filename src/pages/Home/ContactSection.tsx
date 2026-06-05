@@ -20,7 +20,7 @@ const ContactSection: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const formSpreeUrl = 'https://formspree.io/f/xvgzgeyw'; // Formspree endpoint
+    const formSpreeUrl = SITE_CONFIG.formspreeUrl;
 
     try {
       const response = await fetch(formSpreeUrl, {

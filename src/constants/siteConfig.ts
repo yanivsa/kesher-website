@@ -4,6 +4,7 @@ export const SITE_CONFIG = {
   title: "שירה סהרוני | ייעוץ זוגי, הדרכת הורים וגישור",
   description: "יועצת זוגית ומנחת הורים מוסמכת באשדוד. ייעוץ זוגי, הדרכת הורים וגישור משפחה. קבעו שיחת היכרות ▸",
   url: "https://kesher.saharoni.com",
+  formspreeUrl: "https://formspree.io/f/xvgzgeyw",
   contact: {
     phone: "052-526-7848", // Placeholder - Update with real
     email: "shira@saharoni.com",

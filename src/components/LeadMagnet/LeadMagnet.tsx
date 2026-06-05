@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FiDownload } from 'react-icons/fi';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './LeadMagnet.module.css';
 
 const LeadMagnet: React.FC = () => {
@@ -11,7 +12,7 @@ const LeadMagnet: React.FC = () => {
     if (!email) return;
 
     // Simulate sending email to Formspree or email marketing service
-    const formSpreeUrl = 'https://formspree.io/f/xvgzgeyw';
+    const formSpreeUrl = SITE_CONFIG.formspreeUrl;
     try {
       await fetch(formSpreeUrl, {
         method: 'POST',
