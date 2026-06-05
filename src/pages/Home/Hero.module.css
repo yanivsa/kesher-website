@@ -194,5 +194,5 @@
 @media (max-width: 520px) {
   .title { font-size: 2.4rem; }
   .actions { flex-direction: column; width: 100%; }
-  .primaryBtn, .secondaryBtn { width: 100%; }
+  .primaryBtn, .secondaryBtn { width: 100%; justify-content: center; }
 }
