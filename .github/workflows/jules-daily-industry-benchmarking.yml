@@ -1,0 +1,78 @@
+name: Jules Daily Kesher Industry Benchmarking
+
+on:
+  schedule:
+    # 02:40 Israel time during daylight saving.
+    - cron: "40 23 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: jules-daily-kesher-industry-benchmarking
+  cancel-in-progress: false
+
+jobs:
+  start-jules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop if benchmarking PR is already open
+        id: backlog_gate
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
+            > open-prs.json
+
+          python3 - <<'PY'
+          import json, os, re
+          with open("open-prs.json", encoding="utf-8") as fh:
+              prs = json.load(fh)
+          pattern = re.compile(r"(industry review|industry benchmark|competitor benchmark|ייעוץ זוגי|הדרכת הורים|מגשרים)", re.I)
+          blockers = [
+              f"#{pr['number']} {pr['title']}"
+              for pr in prs
+              if pattern.search((pr.get("title") or "") + "\n" + ((pr.get("head") or {}).get("ref") or "") + "\n" + (pr.get("body") or ""))
+          ]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"blocked={'true' if blockers else 'false'}\n")
+          if blockers:
+              print("Open industry-benchmarking PR exists; no Jules session will be started.")
+              print("\n".join(blockers[:20]))
+          PY
+
+      - name: Start Jules benchmarking session
+        if: steps.backlog_gate.outputs.blocked != 'true'
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${JULES_API_KEY:-}"
+
+          cat > payload.json <<'JSON'
+          {
+            "title": "Daily Kesher industry competitor benchmarking",
+            "prompt": "Run fully autonomously. Do not ask the user for confirmation, clarification, approval, review, or implementation choices. If a decision is needed, choose the smallest safe repo-consistent option yourself and continue.\n\nRepository: yanivsa/kesher-website. Start from main.\n\nGoal: perform a recurring competitive benchmark analysis for the Kesher website against top-tier Israeli websites in parenting guidance, couples counseling, and family mediation. Try to learn from them and make Shira's website match or exceed the highest industry standards.\n\nRead first:\n- plan.md\n- seo.md\n- geo.md\n- src/constants/siteConfig.ts\n- src/pages/Home/Home.tsx\n- src/pages/About/*\n- src/pages/Services/**/*\n\nTask details:\n1. Search the web for top-tier Israeli marriage/couples counselors, parenting guides/facilitators, and family mediators in Hebrew (e.g., search terms: 'ייעוץ זוגי מומלץ באשדוד', 'הדרכת הורים מומלצת', 'גישור זוגי ומשפחתי').\n2. Inspect the search results and look at websites of the highest levels in Israel. Analyze their content structure, call-to-actions, tone of voice, visual hierarchy, and layout details.\n3. Identify one specific layout, component, copywriting, or navigation element where Shira's site can be improved to match or surpass these top-tier competitor websites.\n4. Safely implement this single improvement in the repository (e.g., refactoring visible Hebrew copy, adding a trust-building section, optimizing CTA copy/alignment, or structuring service descriptions better).\n\nContent guardrail: Do not add, expand, promote, or re-introduce content about divorce (גירושין) or separation-as-breakup. The word פרידה is acceptable only when describing family mediation services (גישור / פרידה) already present in the site. Do not create new articles, sections, or copy that frame the service as divorce-related.\n\nRequired checks before PR:\n- Hebrew copy must sound natural and Israeli, not translated-English or AI-like.\n- Run npm run build.\n\nCreate one ready-for-review PR automatically only if a focused improvement was made. Do not create a draft PR. PR title must start with `[jules-automerge] Kesher industry review:` so the repository auto-merge workflow can validate and merge it without waiting for user approval. PR summary must include: search query used, competitor websites analyzed, specific best practice learned and implemented, changed files, and validation command.",
+            "sourceContext": {
+              "source": "sources/github/yanivsa/kesher-website",
+              "githubRepoContext": {
+                "startingBranch": "main"
+              }
+            },
+            "requirePlanApproval": false,
+            "automationMode": "AUTO_CREATE_PR"
+          }
+          JSON
+
+          curl --fail-with-body -sS \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            https://jules.googleapis.com/v1alpha/sessions
