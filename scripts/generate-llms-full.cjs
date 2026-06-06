@@ -21,6 +21,43 @@ while ((match = faqRegex.exec(faqContent)) !== null) {
   fullContent += `### ${question}\n${answer}\n\n`;
 }
 
+
+// Add Service Pages Content
+fullContent += '## עמודי שירות מפורטים (Detailed Services)\n\n';
+const services = [
+  { name: 'ייעוץ זוגי', path: path.join(__dirname, '../src/pages/Services/Couples/CouplesCounseling.tsx') },
+  { name: 'הדרכת הורים', path: path.join(__dirname, '../src/pages/Services/Parenting/ParentingGuidance.tsx') },
+  { name: 'גישור משפחתי', path: path.join(__dirname, '../src/pages/Services/Mediation/Mediation.tsx') }
+];
+
+services.forEach(service => {
+  fullContent += `### ${service.name}\n\n`;
+  if (fs.existsSync(service.path)) {
+    const serviceContent = fs.readFileSync(service.path, 'utf8');
+
+    // Extract text from <p>, <li>, <h3>, <h2>
+    const tagsRegex = /<(p|li|h2|h3)[^>]*>(.*?)<\/\1>/gs;
+    let match;
+    while ((match = tagsRegex.exec(serviceContent)) !== null) {
+      let text = match[2]
+        .replace(/<[^>]+>/g, '') // remove inner tags like <br/>, <span>
+        .trim();
+
+      // Ignore short or irrelevant lines or React code
+      if (text.length > 5 && !text.includes('className=')) {
+        if (match[1] === 'h2' || match[1] === 'h3') {
+           fullContent += `\n#### ${text}\n`;
+        } else if (match[1] === 'li') {
+           fullContent += `- ${text}\n`;
+        } else {
+           fullContent += `${text}\n\n`;
+        }
+      }
+    }
+  }
+  fullContent += '\n';
+});
+
 // 3. Add Blog Posts
 fullContent += '## מאמרים מלאים (Blog Posts)\n\n';
 const posts = JSON.parse(fs.readFileSync(postsPath, 'utf8'));
