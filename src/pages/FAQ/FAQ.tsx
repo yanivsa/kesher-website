@@ -179,7 +179,7 @@ const FAQ: React.FC = () => {
         <div className={styles.cta}>
           <h3>לא מצאתם תשובה?</h3>
           <p>אני כאן לכל שאלה. שלחו הודעה ואחזור אליכם תוך 24 שעות.</p>
-          <a href="https://wa.me/972525267848" className={styles.ctaBtn}>
+          <a href="https://wa.me/972502763802" className={styles.ctaBtn}>
             שאלו אותי בוואטסאפ
           </a>
         </div>

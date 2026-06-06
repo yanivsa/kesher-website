@@ -62,7 +62,7 @@ const ParentingGuidance: React.FC = () => {
             <div className={styles.badge}>מומחית ב-ADHD ואתגרי קשב</div>
             <h1>להפסיק להילחם <br /><span>ולהתחיל להוביל</span></h1>
             <p className={styles.subtitle}>הדרכת הורים מעשית שנותנת לכם ביטחון, סמכות וחיבור אמיתי לילד.</p>
-            <a href="https://wa.me/972525267848" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
+            <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
           </div>
           <div className={styles.heroImageWrapper}>
             <img src="https://images.unsplash.com/photo-1510906594845-bc082582c8cc?auto=format&fit=crop&w=1200&q=80" alt="הדרכת הורים באשדוד" />

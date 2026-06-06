@@ -62,7 +62,7 @@ const CouplesCounseling: React.FC = () => {
             <div className={styles.badge}>מרחב בטוח לזוגיות שלכם</div>
             <h1>להחזיר את <br /><span>החברות והאינטימיות</span></h1>
             <p className={styles.subtitle}>ייעוץ זוגי רגיש ומקצועי המשלב כלים מעולם ה-Gottman וה-EFT.</p>
-            <a href="https://wa.me/972525267848" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
+            <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
           </div>
           <div className={styles.heroImageWrapper}>
             <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80" alt="ייעוץ זוגי באשדוד" />

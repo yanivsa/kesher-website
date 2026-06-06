@@ -62,7 +62,7 @@ const Mediation: React.FC = () => {
             <div className={styles.badge}>פתרון סכסוכים בדרכי שלום</div>
             <h1>לסיים בטוב <br /><span>ולהישאר הורים</span></h1>
             <p className={styles.subtitle}>גישור משפחתי מקצועי המעניק לכם שליטה על העתיד שלכם ושל ילדיכם.</p>
-            <a href="https://wa.me/972525267848" className={styles.ctaBtn}>תיאום פגישת היכרות</a>
+            <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום פגישת היכרות</a>
           </div>
           <div className={styles.heroImageWrapper}>
             <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1200&q=80" alt="גישור משפחתי באשדוד" />
