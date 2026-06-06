@@ -49,7 +49,7 @@ jobs:
 
           title_re = re.compile(r"(^no[- ]?op:)|(^chore:\s*no[- ]?op\b)|(\bno[- ]?op\b)", re.I)
           body_re = re.compile(
-              r"(no[- ]?op summary|no files were edited|no files were modified|"
+              r"(no[- ]?op summary|no files (?:were )?edited|no files (?:were )?modified|"
               r"selector was not run|finished as a no[- ]?op|completed as a no[- ]?op|"
               r"blocking .*pr|blocking .*branch)",
               re.I,

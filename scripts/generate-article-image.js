@@ -29,10 +29,11 @@ function downloadImage(url, filepath) {
 
 function buildPrompt(title) {
   return [
-    `Realistic editorial photography for a Hebrew counseling article titled: ${title}.`,
+    `Realistic professional editorial photography for a Hebrew counseling article titled: ${title}.`,
     "Warm natural light, modest everyday Israeli home or counseling room.",
     "Emotionally respectful scene of a couple, parent and child, or family conversation.",
     "No text, no logos, no watermark, no clinical stock-photo feeling.",
+    "High-quality 8k resolution, photorealistic, cinematic lighting, sharp focus, detailed textures.",
   ].join(" ");
 }
 

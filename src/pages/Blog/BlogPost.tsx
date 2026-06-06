@@ -82,11 +82,11 @@ const BlogPost: React.FC = () => {
           <span className={styles.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
         </div>
       </header>
-      <div className={styles.imageWrapper}>
-        <img src={post.image} alt={post.title} className={styles.image} />
-      </div>
       <div className={`container ${styles.container}`}>
         <div className={styles.mainContent}>
+          <div className={styles.imageWrapper}>
+            <img src={post.image} alt={post.title} className={styles.image} />
+          </div>
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
           <LeadMagnet />
         </div>

@@ -37,11 +37,11 @@
 }
 
 .imageWrapper {
-  max-width: 1000px;
-  margin: 0 auto;
-  height: 500px;
+  width: 100%;
+  height: 350px;
   overflow: hidden;
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
 }
 
 .image {
