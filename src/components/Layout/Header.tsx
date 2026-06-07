@@ -45,7 +45,7 @@ const Header: React.FC = () => {
           <Link to="/" className={styles.logoLink} onClick={closeMenu}>
             <div className={styles.logo}>
               <span className={styles.brand}>{SITE_CONFIG.brand}</span>
-              <span className={styles.subtitle}>ייעוץ זוגי וגישור</span>
+              <span className={styles.subtitle}>ייעוץ זוגי וגישור משפחתי</span>
             </div>
           </Link>
 
