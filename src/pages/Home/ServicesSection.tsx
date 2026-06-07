@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiBookOpen, FiFileText, FiHeart, FiMessageCircle, FiUsers, FiZap } from 'react-icons/fi';
+import { FiBookOpen, FiFileText, FiHeart, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import ServiceCard from '../../components/Services/ServiceCard';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './ServicesSection.module.css';
@@ -37,15 +37,9 @@ const specializations = [
     link: '/services/parenting'
   },
   {
-    title: 'הכנת זוגות לקראת חתונה',
-    description: 'בניית שפה זוגית והסכמות לפני החתונה, עם רגישות מיוחדת למתחתנים שגדלו עם הורים גרושים.',
+    title: 'הכנה לחתונה לזוגות שרוצים להתחיל נכון',
+    description: 'בניית שפה זוגית והסכמות לפני החתונה, כולל ליווי למתחתנים שהוריהם גרושים ולזוגות שבהם אחד או שני בני הזוג מתמודדים עם ADHD.',
     icon: <FiHeart aria-hidden="true" />,
-    link: '/services/couples'
-  },
-  {
-    title: 'זוגיות כשאחד מבני הזוג עם ADHD',
-    description: 'הבנת השפעת הקשב על עומס, משימות, תקשורת ואינטימיות, ובניית כלים שמתאימים לשני בני הזוג.',
-    icon: <FiZap aria-hidden="true" />,
     link: '/services/couples'
   }
 ];
@@ -77,7 +71,7 @@ const ServicesSection: React.FC = () => {
         <div className={styles.specializations}>
           <div className={styles.specializationsHeader}>
             <h3>תחומי התמחות ממוקדים</h3>
-            <p>ליווי שמותאם לצמתים משפחתיים וזוגיים שדורשים הבנה מדויקת וכלים מעשיים.</p>
+            <p>הכנה מעשית לצמתים שבהם נכון לבנות כלים מראש, לפני שהעומס והחששות מנהלים את הבית או את הזוגיות.</p>
           </div>
           <div className={styles.specializationGrid}>
             {specializations.map((specialization) => (
