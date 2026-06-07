@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
@@ -23,7 +24,7 @@ const schemaData = {
           "addressCountry": "IL"
         }
       },
-      "description": "ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר."
+      "description": "ייעוץ זוגי מקצועי ורגיש באשדוד, כולל הכנת זוגות לקראת חתונה וליווי זוגי כאשר אחד מבני הזוג מתמודד עם ADHD."
     },
     {
       "@type": "BreadcrumbList",
@@ -50,8 +51,8 @@ const CouplesCounseling: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags 
-        title="ייעוץ זוגי באשדוד | שירה סהרוני" 
-        description="ייעוץ זוגי מקצועי ורגיש באשדוד. בואו לשפר את התקשורת, לפתור קונפליקטים ולהחזיר את האינטימיות לקשר." 
+        title="ייעוץ זוגי באשדוד | הכנה לחתונה וזוגיות עם ADHD | שירה סהרוני"
+        description="ייעוץ זוגי באשדוד, הכנת זוגות לקראת חתונה עם רגישות למשפחות גירושים, וליווי זוגי כאשר אחד מבני הזוג מתמודד עם ADHD."
         image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80"
       />
       <SchemaOrg data={schemaData} />
@@ -104,6 +105,34 @@ const CouplesCounseling: React.FC = () => {
               <li>בניית טקסים של קרבה וחיבור בתוך השגרה המלחיצה.</li>
               <li>ליווי רגיש בשיקום אמון אחרי משברים עמוקים.</li>
             </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.specializations}>
+        <div className="container">
+          <div className={styles.specializationsHeader}>
+            <span>תחומי התמחות</span>
+            <h2>ליווי זוגי שמתחיל מהסיפור הייחודי שלכם</h2>
+            <p>שני מסלולים ממוקדים לזוגות שרוצים לבנות בסיס יציב ולהפוך הבדלים למערכת שעובדת עבור שניהם.</p>
+          </div>
+          <div className={styles.specializationsGrid}>
+            <article className={styles.specializationCard}>
+              <h3>הכנת זוגות לקראת חתונה</h3>
+              <p>
+                תהליך מעשי לבניית ציפיות והסכמות סביב תקשורת, כסף, משפחות וחלוקת תפקידים. המסלול כולל רגישות מיוחדת
+                למתחתנים שהוריהם גרושים, ולחששות שהסיפור המשפחתי עלול לחזור בזוגיות החדשה.
+              </p>
+              <Link to="/blog?category=זוגיות&subcategory=הכנה לזוגיות וחתונה">למאמרים על הכנה לחתונה</Link>
+            </article>
+            <article className={styles.specializationCard}>
+              <h3>זוגיות כשאחד מבני הזוג עם ADHD</h3>
+              <p>
+                ליווי שמפריד בין כוונה לבין השפעה, ומתרגם קשיי זמן, זיכרון, עומס והתנעה לכללים זוגיים ברורים.
+                המטרה אינה להפוך אחד למנהל של השני, אלא לבנות שותפות מותאמת והוגנת.
+              </p>
+              <Link to="/blog?category=זוגיות&subcategory=זוגיות ו-ADHD">למאמרים על זוגיות ו-ADHD</Link>
+            </article>
           </div>
         </div>
       </section>

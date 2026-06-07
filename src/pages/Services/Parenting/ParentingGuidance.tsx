@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
@@ -23,7 +24,7 @@ const schemaData = {
           "addressCountry": "IL"
         }
       },
-      "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית."
+      "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הכנה לכיתה א', הצבת גבולות ושיפור האווירה המשפחתית."
     },
     {
       "@type": "BreadcrumbList",
@@ -50,8 +51,8 @@ const ParentingGuidance: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags 
-        title="הדרכת הורים באשדוד | ADHD | שירה סהרוני" 
-        description="הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הצבת גבולות ושיפור האווירה המשפחתית." 
+        title="הדרכת הורים באשדוד | ADHD והכנה לכיתה א' | שירה סהרוני"
+        description="הדרכת הורים מקצועית באשדוד. התמחות בהכנה לכיתה א' לילדים עם ADHD, בניית שגרה, ויסות רגשי והצבת גבולות."
         image="https://images.unsplash.com/photo-1510906594845-bc082582c8cc?auto=format&fit=crop&w=1200&q=80"
       />
       <SchemaOrg data={schemaData} />
@@ -112,6 +113,36 @@ const ParentingGuidance: React.FC = () => {
               <p>אני איתכם לאורך הדרך, מדייקים את הכלים ורואים תוצאות בשטח.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className={styles.specialization}>
+        <div className="container">
+          <div className={styles.specializationIntro}>
+            <span>תחום התמחות</span>
+            <h2>הכנה לכיתה א' לילדים עם ADHD</h2>
+            <p>
+              המעבר מהגן לבית הספר דורש מילדי קשב הרבה יותר מידע של אותיות ומספרים. בליווי ממוקד נבנה יחד שגרת בוקר,
+              הרגלי התארגנות, כלים לוויסות רגשי ודרך ברורה לשיתוף פעולה עם המחנכת.
+            </p>
+          </div>
+          <div className={styles.specializationGrid}>
+            <article>
+              <h3>מוכנות רגשית</h3>
+              <p>הפחתת אי-ודאות, הכרות מוקדמת עם המסגרת ותרגול תגובות למצבים חדשים.</p>
+            </article>
+            <article>
+              <h3>שגרה והתארגנות</h3>
+              <p>בניית רצף בוקר פשוט, ארגון ילקוט וציוד, וחיזוק עצמאות בלי מאבקי כוח.</p>
+            </article>
+            <article>
+              <h3>שותפות עם בית הספר</h3>
+              <p>הצגת הצרכים של הילד באופן חיובי ויצירת תקשורת יעילה עם הצוות החינוכי.</p>
+            </article>
+          </div>
+          <Link to="/blog?category=הדרכת הורים&subcategory=הכנה לכיתה א' ו-ADHD" className={styles.specializationLink}>
+            למאמרים על הכנה לכיתה א' ו-ADHD
+          </Link>
         </div>
       </section>
 

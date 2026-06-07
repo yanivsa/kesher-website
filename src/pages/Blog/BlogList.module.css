@@ -75,6 +75,21 @@
   border: 1px solid var(--color-border);
 }
 
+.subcategoryRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.subcategoryRow > span {
+  font-weight: 800;
+  color: var(--color-text-muted);
+}
+
 .searchWrapper {
   position: relative;
   width: 100%;
@@ -220,4 +235,3 @@
   font-weight: 700;
   font-size: 0.9rem;
 }
-
