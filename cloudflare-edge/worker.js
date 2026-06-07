@@ -13,7 +13,7 @@ export default {
       // JSON-LD Schema for Therapist / LocalBusiness
       const jsonLd = {
         "@context": "https://schema.org",
-        "@type": "Therapist",
+        "@type": "LocalBusiness",
         "name": "שירה סהרוני — ייעוץ זוגי, הדרכת הורים וגישור",
         "url": "https://kesher.saharoni.com",
         "telephone": "+972-50-2763802",
