@@ -1,0 +1,15 @@
+/* Floating styles for ElevenLabs AI Conversational Widget */
+
+.container :global(elevenlabs-convai) {
+  position: fixed !important;
+  bottom: 2rem !important;
+  right: 2rem !important;
+  z-index: 1005 !important; /* Above other page contents */
+}
+
+@media (max-width: 768px) {
+  .container :global(elevenlabs-convai) {
+    bottom: 84px !important; /* Move above the mobile sticky actions bar (approx 68px tall + padding) */
+    right: 1rem !important;
+  }
+}
