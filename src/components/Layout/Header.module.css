@@ -106,6 +106,12 @@
   box-shadow: var(--shadow-md);
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .menuToggle {
   display: none;
   background: none;

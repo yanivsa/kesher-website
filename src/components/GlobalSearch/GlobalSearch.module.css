@@ -1,0 +1,245 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(45, 41, 38, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: min(12vh, 100px);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal {
+  width: 92%;
+  max-width: 620px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: slideDown 0.25s ease;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Search input area */
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.searchIcon {
+  color: var(--color-primary);
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1.1rem;
+  background: transparent;
+  color: var(--color-text);
+  font-family: inherit;
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.closeBtn {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+
+/* Results */
+.results {
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.resultLink {
+  display: flex;
+  gap: 0.85rem;
+  padding: 0.85rem 1.25rem;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: background 0.15s ease;
+  align-items: flex-start;
+}
+
+.resultLink:hover,
+.resultLink:focus {
+  background: var(--color-bg);
+  outline: none;
+}
+
+.iconCol {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  margin-top: 2px;
+}
+
+.iconBlog {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.iconFaq {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.iconService {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.iconPage {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.textCol {
+  flex: 1;
+  min-width: 0;
+}
+
+.resultTitle {
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin-bottom: 0.15rem;
+}
+
+.resultBody {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badge {
+  font-size: 0.68rem;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  padding: 0.15rem 0.5rem;
+  border-radius: 99px;
+  flex-shrink: 0;
+  align-self: center;
+  border: 1px solid var(--color-border);
+}
+
+/* Empty / idle states */
+.empty {
+  padding: 2rem 1.25rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.emptyIcon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.4;
+}
+
+.emptyTitle {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: var(--color-text);
+}
+
+.emptyText {
+  font-size: 0.85rem;
+}
+
+/* Keyboard hint footer */
+.footer {
+  border-top: 1px solid var(--color-border);
+  padding: 0.6rem 1.25rem;
+  display: flex;
+  gap: 1rem;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+}
+
+.footerKbd {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.68rem;
+  font-family: inherit;
+  margin-left: 0.25rem;
+}
+
+/* Trigger button in header */
+.trigger {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.trigger:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .overlay {
+    padding-top: 0;
+    align-items: flex-start;
+  }
+  
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+    max-height: 100vh;
+    height: 100vh;
+  }
+
+  .footer {
+    display: none;
+  }
+}
