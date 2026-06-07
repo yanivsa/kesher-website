@@ -1,6 +1,7 @@
 /* Floating styles for ElevenLabs AI Conversational Widget */
 
 :global(elevenlabs-convai) {
+  direction: ltr !important;
   position: fixed !important;
   bottom: 2rem !important;
   right: 2rem !important;
