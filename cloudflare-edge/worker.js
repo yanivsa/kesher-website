@@ -7,6 +7,8 @@ export default {
     // Only apply HTMLRewriter to HTML responses
     if (contentType && contentType.includes("text/html")) {
       const city = request.cf?.city || "";
+      const requestUrl = new URL(request.url);
+      const canonicalUrl = `https://kesher.saharoni.com${requestUrl.pathname}`;
       
       // JSON-LD Schema for Therapist / LocalBusiness
       const jsonLd = {
@@ -14,7 +16,7 @@ export default {
         "@type": "Therapist",
         "name": "שירה סהרוני — ייעוץ זוגי, הדרכת הורים וגישור",
         "url": "https://kesher.saharoni.com",
-        "telephone": "+972-50-000-0000",
+        "telephone": "+972-50-2763802",
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "אשדוד",
@@ -25,6 +27,9 @@ export default {
       };
 
       class HeadRewriter {
+        constructor(canonical) {
+          this.canonical = canonical;
+        }
         element(element) {
           // Inject JSON-LD
           element.append(`<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`, { html: true });
@@ -33,11 +38,11 @@ export default {
           element.append(`<meta property="og:type" content="website" />`, { html: true });
           element.append(`<meta property="og:title" content="שירה סהרוני | ייעוץ זוגי, הדרכת הורים וגישור" />`, { html: true });
           element.append(`<meta property="og:description" content="יועצת זוגית ומנחת הורים מוסמכת באשדוד. מציעה ייעוץ זוגי, הדרכת הורים וגישור." />`, { html: true });
-          element.append(`<meta property="og:url" content="https://kesher.saharoni.com" />`, { html: true });
+          element.append(`<meta property="og:url" content="${this.canonical}" />`, { html: true });
           element.append(`<meta property="og:site_name" content="שירה סהרוני" />`, { html: true });
           
           // Inject Canonical Tag
-          element.append(`<link rel="canonical" href="https://kesher.saharoni.com" />`, { html: true });
+          element.append(`<link rel="canonical" href="${this.canonical}" />`, { html: true });
         }
       }
 
@@ -58,7 +63,7 @@ export default {
 
       // Transform HTML
       return new HTMLRewriter()
-        .on("head", new HeadRewriter())
+        .on("head", new HeadRewriter(canonicalUrl))
         .on("title", new TitleRewriter())
         .transform(newResponse);
     }

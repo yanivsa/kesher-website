@@ -1,6 +1,6 @@
 /* Floating styles for ElevenLabs AI Conversational Widget */
 
-:global(elevenlabs-convai) {
+elevenlabs-convai {
   position: fixed !important;
   bottom: 2rem !important;
   right: 2rem !important;
@@ -11,7 +11,7 @@
 }
 
 @media (max-width: 768px) {
-  :global(elevenlabs-convai) {
+  elevenlabs-convai {
     bottom: 84px !important; /* Move above the mobile sticky actions bar (approx 68px tall + padding) */
     right: 1rem !important;
     left: auto !important;
