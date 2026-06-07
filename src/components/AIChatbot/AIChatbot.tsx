@@ -31,7 +31,7 @@ const AIChatbot: React.FC = () => {
     }
 
     const script = document.createElement('script');
-    script.src = 'https://elevenlabs.io/convai-widget/index.js';
+    script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
     script.async = true;
     script.onload = () => {
       setScriptLoaded(true);
