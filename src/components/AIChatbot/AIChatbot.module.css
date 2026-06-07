@@ -1,11 +1,12 @@
 /* Floating styles for ElevenLabs AI Conversational Widget */
 
 :global(elevenlabs-convai) {
-  direction: ltr !important;
   position: fixed !important;
   bottom: 2rem !important;
   right: 2rem !important;
   left: auto !important;
+  width: fit-content !important;
+  height: fit-content !important;
   z-index: 1005 !important; /* Above other page contents */
 }
 
