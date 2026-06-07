@@ -35,7 +35,11 @@ export const SearchTrigger: React.FC<{ onClick: () => void }> = ({ onClick }) =>
     aria-label="חיפוש באתר"
     title="חיפוש (Ctrl+K)"
   >
-    <FiSearch />
+    <FiSearch className={styles.triggerIcon} />
+    <span className={styles.triggerText}>חיפוש...</span>
+    <span className={styles.triggerShortcut}>
+      <kbd>Ctrl</kbd>+<kbd>K</kbd>
+    </span>
   </button>
 );
 
