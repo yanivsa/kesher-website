@@ -107,3 +107,33 @@
 *   **אתר זמן טוב (zmantov.co.il):**
     *   **סטטוס נוכחי:** שירה כבר רשומה שם!
     *   **משימה:** כנסו לחשבון שלכם בפורטל ועדכנו את קישור האתר של שירה לכתובת החדשה והמאובטחת: `https://kesher.saharoni.com`.
+
+---
+
+## 4. English Articles for International Platforms (Medium / Substack / Blogger)
+
+To build international Domain Authority (DA) and appeal to English-speaking residents in Israel, publish the following article on global platforms.
+
+### English Article: Couples, Kids & ADHD in Israel
+*   **Suggested Title:** Navigating Love, Parenting, and ADHD: The Modern Family's Balancing Act
+*   **Recommended Platforms:** Medium, Substack, Blogger.
+*   **Target Backlink Anchors:** Included in the text.
+
+```markdown
+Every long-term relationship experiences natural seasons of conflict, transition, and renegotiation. However, in modern households where parenting demands collide with executive functioning challenges like ADHD, these pressure points can quickly amplify into chronic marital distress.
+
+For English-speaking couples and families residing in Israel, accessing culturally attuned, language-fluent professional help is crucial. Many find that seeking a licensed [couples therapist Ashdod Israel](https://kesher.saharoni.com) provides the safe space needed to restore mutual empathy and open dialogue.
+
+### The ADHD Factor in Couples Dynamics
+
+When a child or partner is diagnosed with ADHD, it is never just an individual concern; it is a family system dynamic. Common challenges include:
+* **The Parent-Child Trap:** One partner takes on all administrative and scheduling duties, leading to resentment and a dynamic that feels more like parent-and-child than equal partners.
+* **Emotional Dysregulation:** ADHD often manifests as sudden emotional storms, which can leave spouses feeling walking on eggshells.
+* **Chronic Overwhelm:** Navigating school systems, homework, and routines in Israel can be overwhelming without specialized guidance.
+
+### Finding Integrated Solutions
+
+The most effective approach often combines relationship counseling with specialized [parenting guidance ADHD Israel](https://kesher.saharoni.com/services/parenting). Learning practical behavioral strategies for the kids while simultaneously healing the adult partnership creates a unified parental front. 
+
+Furthermore, when couples decide that parting ways is the healthiest path, utilizing [family mediation Ashdod](https://kesher.saharoni.com/services/mediation) ensures that custody, co-parenting agreements, and assets are handled amicably and legally without entering adversarial court battles. 
+```
