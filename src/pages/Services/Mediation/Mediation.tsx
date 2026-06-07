@@ -16,12 +16,7 @@ const schemaData = {
       "url": `${SITE_CONFIG.url}/services/mediation`,
       "provider": {
         "@type": "LocalBusiness",
-        "name": SITE_CONFIG.brand,
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "אשדוד",
-          "addressCountry": "IL"
-        }
+        "@id": `${SITE_CONFIG.url}/#business`
       },
       "description": "גישור משפחתי באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים ופרידה בשיתוף פעולה."
     },

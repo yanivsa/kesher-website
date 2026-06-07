@@ -17,12 +17,7 @@ const schemaData = {
       "url": `${SITE_CONFIG.url}/services/couples`,
       "provider": {
         "@type": "LocalBusiness",
-        "name": SITE_CONFIG.brand,
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "אשדוד",
-          "addressCountry": "IL"
-        }
+        "@id": `${SITE_CONFIG.url}/#business`
       },
       "description": "ייעוץ זוגי מקצועי ורגיש באשדוד, כולל הכנת זוגות לקראת חתונה וליווי זוגי כאשר אחד מבני הזוג מתמודד עם ADHD."
     },

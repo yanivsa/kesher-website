@@ -17,8 +17,8 @@ const schemaData = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Therapist",
-      "@id": `${SITE_CONFIG.url}/#therapist`,
+      "@type": "LocalBusiness",
+      "@id": `${SITE_CONFIG.url}/#business`,
       "name": SITE_CONFIG.author,
       "alternateName": "Shira Saharoni",
       "url": SITE_CONFIG.url,
@@ -77,19 +77,8 @@ const schemaData = {
             "description": "גישור בהסכמה כחלופה להליך משפטי. כולל הסדרת רכוש, הסדרי ילדים ומזונות."
           }
         }
-      ]
-    },
-    {
-      "@type": "LocalBusiness",
-      "name": SITE_CONFIG.brand,
+      ],
       "image": `${SITE_CONFIG.url}/images/generated/site/home-hero.jpg`,
-      "url": SITE_CONFIG.url,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "אשדוד",
-        "addressCountry": "IL"
-      },
-      "telephone": SITE_CONFIG.contact.phone,
       "priceRange": "$$"
     }
   ]
