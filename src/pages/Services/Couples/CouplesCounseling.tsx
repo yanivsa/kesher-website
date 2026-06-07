@@ -17,12 +17,7 @@ const schemaData = {
       "url": `${SITE_CONFIG.url}/services/couples`,
       "provider": {
         "@type": "LocalBusiness",
-        "name": SITE_CONFIG.brand,
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "אשדוד",
-          "addressCountry": "IL"
-        }
+        "@id": `${SITE_CONFIG.url}/#business`
       },
       "description": "הכנה לחתונה לזוגות שרוצים להתחיל נכון, כולל ליווי למתחתנים שהוריהם גרושים ולזוגות שבהם אחד או שני בני הזוג מתמודדים עם ADHD."
     },

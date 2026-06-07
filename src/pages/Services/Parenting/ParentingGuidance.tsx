@@ -17,12 +17,7 @@ const schemaData = {
       "url": `${SITE_CONFIG.url}/services/parenting`,
       "provider": {
         "@type": "LocalBusiness",
-        "name": SITE_CONFIG.brand,
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "אשדוד",
-          "addressCountry": "IL"
-        }
+        "@id": `${SITE_CONFIG.url}/#business`
       },
       "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הכנה לכיתה א', הצבת גבולות ושיפור האווירה המשפחתית."
     },
