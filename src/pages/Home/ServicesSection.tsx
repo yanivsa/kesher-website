@@ -1,5 +1,6 @@
 import React from 'react';
-import { FiFileText, FiMessageCircle, FiUsers } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { FiBookOpen, FiFileText, FiHeart, FiMessageCircle, FiUsers, FiZap } from 'react-icons/fi';
 import ServiceCard from '../../components/Services/ServiceCard';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './ServicesSection.module.css';
@@ -28,6 +29,27 @@ const services = [
   }
 ];
 
+const specializations = [
+  {
+    title: "הכנה לכיתה א' לילדים עם ADHD",
+    description: 'ליווי ממוקד להורים לקראת המעבר למסגרת בית הספר: שגרה, התארגנות, ויסות רגשי וקשר עם הצוות החינוכי.',
+    icon: <FiBookOpen aria-hidden="true" />,
+    link: '/services/parenting'
+  },
+  {
+    title: 'הכנת זוגות לקראת חתונה',
+    description: 'בניית שפה זוגית והסכמות לפני החתונה, עם רגישות מיוחדת למתחתנים שגדלו עם הורים גרושים.',
+    icon: <FiHeart aria-hidden="true" />,
+    link: '/services/couples'
+  },
+  {
+    title: 'זוגיות כשאחד מבני הזוג עם ADHD',
+    description: 'הבנת השפעת הקשב על עומס, משימות, תקשורת ואינטימיות, ובניית כלים שמתאימים לשני בני הזוג.',
+    icon: <FiZap aria-hidden="true" />,
+    link: '/services/couples'
+  }
+];
+
 const ServicesSection: React.FC = () => {
   const [headerRef, headerVisible] = useScrollReveal();
   const [gridRef, gridVisible] = useScrollReveal({ threshold: 0.1 });
@@ -52,10 +74,26 @@ const ServicesSection: React.FC = () => {
             <ServiceCard key={index} {...service} />
           ))}
         </div>
+        <div className={styles.specializations}>
+          <div className={styles.specializationsHeader}>
+            <h3>תחומי התמחות ממוקדים</h3>
+            <p>ליווי שמותאם לצמתים משפחתיים וזוגיים שדורשים הבנה מדויקת וכלים מעשיים.</p>
+          </div>
+          <div className={styles.specializationGrid}>
+            {specializations.map((specialization) => (
+              <Link key={specialization.title} to={specialization.link} className={styles.specializationItem}>
+                <span className={styles.specializationIcon}>{specialization.icon}</span>
+                <span>
+                  <strong>{specialization.title}</strong>
+                  <small>{specialization.description}</small>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
 };
 
 export default ServicesSection;
-

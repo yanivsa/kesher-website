@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { FiSearch, FiFilter } from 'react-icons/fi';
 import posts from '../../data/posts.json';
 import MetaTags from '../../components/SEO/MetaTags';
@@ -8,6 +8,11 @@ import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './BlogList.module.css';
 
 const categories = ['הכל', 'זוגיות', 'הדרכת הורים', 'גישור משפחתי'];
+
+const subcategories: Record<string, string[]> = {
+  'זוגיות': ['הכל', 'הכנה לזוגיות וחתונה', 'זוגיות ו-ADHD'],
+  'הדרכת הורים': ['הכל', "הכנה לכיתה א' ו-ADHD"]
+};
 
 const schemaData = {
   "@context": "https://schema.org",
@@ -57,18 +62,42 @@ const schemaData = {
 };
 
 const BlogList: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('הכל');
+  const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || 'הכל');
+  const [activeSubcategory, setActiveSubcategory] = useState(searchParams.get('subcategory') || 'הכל');
+
+  useEffect(() => {
+    setActiveCategory(searchParams.get('category') || 'הכל');
+    setActiveSubcategory(searchParams.get('subcategory') || 'הכל');
+  }, [searchParams]);
+
+  const handleCategoryChange = (category: string) => {
+    setSearchParams(category === 'הכל' ? {} : { category });
+  };
+
+  const handleSubcategoryChange = (subcategory: string) => {
+    const params: Record<string, string> = {};
+    if (activeCategory !== 'הכל') params.category = activeCategory;
+    if (subcategory !== 'הכל') params.subcategory = subcategory;
+    setSearchParams(params);
+  };
 
   const filteredPosts = useMemo(() => {
     return posts.filter(post => {
       const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = activeCategory === 'הכל' || post.category === activeCategory;
-      return matchesSearch && matchesCategory;
+      const matchesSubcategory = activeSubcategory === 'הכל'
+        || ('subcategory' in post && post.subcategory === activeSubcategory);
+      return matchesSearch && matchesCategory && matchesSubcategory;
     });
-  }, [searchQuery, activeCategory]);
+  }, [searchQuery, activeCategory, activeSubcategory]);
 
+  const resetFilters = () => {
+    setSearchQuery('');
+    setSearchParams({});
+  };
 
   return (
     <div className={styles.blog}>
@@ -105,13 +134,30 @@ const BlogList: React.FC = () => {
                   type="button"
                   key={cat}
                   className={`${styles.categoryBtn} ${activeCategory === cat ? styles.active : ''}`}
-                  onClick={() => setActiveCategory(cat)}
+                  onClick={() => handleCategoryChange(cat)}
                 >
                   {cat}
                 </button>
               ))}
             </div>
           </div>
+          {subcategories[activeCategory] && (
+            <div className={styles.subcategoryRow}>
+              <span>תחום התמחות:</span>
+              <div className={styles.categories}>
+                {subcategories[activeCategory].map(subcategory => (
+                  <button
+                    type="button"
+                    key={subcategory}
+                    className={`${styles.categoryBtn} ${activeSubcategory === subcategory ? styles.active : ''}`}
+                    onClick={() => handleSubcategoryChange(subcategory)}
+                  >
+                    {subcategory}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {filteredPosts.length > 0 ? (
@@ -120,7 +166,9 @@ const BlogList: React.FC = () => {
               <article key={post.id} className={styles.card}>
                 <div className={styles.imageWrapper}>
                   <img src={post.image} alt={post.title} className={styles.image} loading="lazy" />
-                  <span className={styles.categoryBadge}>{post.category}</span>
+                  <span className={styles.categoryBadge}>
+                    {('subcategory' in post && post.subcategory) ? post.subcategory : post.category}
+                  </span>
                 </div>
                 <div className={styles.content}>
                   <span className={styles.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
@@ -134,7 +182,7 @@ const BlogList: React.FC = () => {
         ) : (
           <div className={styles.noResults}>
             <h3>לא נמצאו מאמרים התואמים את החיפוש שלך.</h3>
-            <button type="button" onClick={() => {setSearchQuery(''); setActiveCategory('הכל');}} className={styles.resetBtn}>נקה חיפוש</button>
+            <button type="button" onClick={resetFilters} className={styles.resetBtn}>נקה חיפוש</button>
           </div>
         )}
       </div>

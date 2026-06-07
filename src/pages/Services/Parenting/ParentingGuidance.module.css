@@ -141,6 +141,58 @@
   padding: 6rem 0;
 }
 
+.specialization {
+  padding: 6rem 0;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.specializationIntro {
+  max-width: 760px;
+  margin-bottom: 2rem;
+}
+
+.specializationIntro span {
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  color: var(--color-accent-dark);
+  font-weight: 800;
+}
+
+.specializationIntro p {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+.specializationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.specializationGrid article {
+  padding: 1.5rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.specializationGrid h3 {
+  margin-bottom: 0.6rem;
+}
+
+.specializationGrid p {
+  color: var(--color-text-muted);
+}
+
+.specializationLink {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-weight: 800;
+  color: var(--color-accent-dark);
+}
+
 .finalCall {
   text-align: center;
   margin-top: 4rem;
@@ -157,10 +209,10 @@
 }
 
 @media (max-width: 992px) {
-  .header, .segments, .howItWorks, .ctaArea { padding: 3rem 0; }
+  .header, .segments, .howItWorks, .specialization, .ctaArea { padding: 3rem 0; }
   .heroContainer { grid-template-columns: 1fr; text-align: center; }
   .heroContent h1 { font-size: 2.8rem; }
   .subtitle { margin: 0 auto 2rem; }
   .heroImageWrapper { display: none; }
-  .segmentGrid, .processSteps { grid-template-columns: 1fr; }
+  .segmentGrid, .processSteps, .specializationGrid { grid-template-columns: 1fr; }
 }
