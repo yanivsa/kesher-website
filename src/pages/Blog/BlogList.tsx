@@ -10,7 +10,7 @@ import styles from './BlogList.module.css';
 const categories = ['הכל', 'זוגיות', 'הדרכת הורים', 'גישור משפחתי'];
 
 const subcategories: Record<string, string[]> = {
-  'זוגיות': ['הכל', 'הכנה לזוגיות וחתונה', 'זוגיות ו-ADHD'],
+  'זוגיות': ['הכל', 'הכנה לחתונה'],
   'הדרכת הורים': ['הכל', "הכנה לכיתה א' ו-ADHD"]
 };
 
