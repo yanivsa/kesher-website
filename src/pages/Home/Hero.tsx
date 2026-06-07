@@ -12,12 +12,12 @@ const Hero: React.FC = () => {
         <div className={styles.content}>
           <div className={styles.badge}>מענה רגשי מקיף + גישור מקצועי</div>
           <h1 className={styles.title}>
-            לנווט את אתגרי המשפחה והזוגיות <br />
-            <span>עם ביטחון וכלים פרקטיים.</span>
+            להחזיר את השקט והקירבה <br />
+            <span>לזוגיות ולמשפחה שלכם.</span>
           </h1>
           <p className={styles.description}>
-            שירה סהרוני היא יועצת זוגית, מנחת הורים ומגשרת משפחתית מוסמכת באשדוד.
-            מתמחה בייעוץ זוגי, הדרכת הורים כולל התמודדות עם ADHD, וגישור בסכסוכים משפחתיים בהסכמה (בעלת רקע כעורכת דין).
+            שירה סהרוני - יועצת זוגית, מנחת הורים ומגשרת מוסמכת.
+            ליווי רגיש, פרקטי ודיסקרטי שנועד להוציא אתכם ממעגל המריבות ולבנות מחדש תקשורת בריאה, אמון וקירבה.
           </p>
           <div className={styles.actions}>
             <a href={SITE_CONFIG.links.whatsapp} className={styles.primaryBtn}>
