@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
+import { FiShield } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './ContactSection.module.css';
 
@@ -145,7 +146,11 @@ const ContactSection: React.FC = () => {
                 placeholder="ספרו לי קצת על הפנייה שלכם..."
               ></textarea>
             </div>
-            <button type="submit" className={styles.submitBtn}>שלח הודעה</button>
+            <button type="submit" className={styles.submitBtn}>שליחת פנייה</button>
+            <div className={styles.privacyNote}>
+              <FiShield aria-hidden="true" />
+              <span>כל פנייה נשמרת בדיסקרטיות וסודיות מלאה.</span>
+            </div>
           </form>
         </div>
       </div>
