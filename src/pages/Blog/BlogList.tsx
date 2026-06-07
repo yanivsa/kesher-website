@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { FiSearch, FiFilter } from 'react-icons/fi';
 import posts from '../../data/posts.json';
+import Fuse from 'fuse.js';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
@@ -83,16 +84,24 @@ const BlogList: React.FC = () => {
     setSearchParams(params);
   };
 
+  const fuse = useMemo(() => new Fuse(posts, {
+    keys: ['title', 'excerpt'],
+    threshold: 0.3,
+  }), []);
+
   const filteredPosts = useMemo(() => {
-    return posts.filter(post => {
-      const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = activeCategory === 'הכל' || post.category === activeCategory;
-      const matchesSubcategory = activeSubcategory === 'הכל'
-        || ('subcategory' in post && post.subcategory === activeSubcategory);
-      return matchesSearch && matchesCategory && matchesSubcategory;
-    });
-  }, [searchQuery, activeCategory, activeSubcategory]);
+    let result = posts;
+    if (searchQuery) {
+      result = fuse.search(searchQuery).map(res => res.item);
+    }
+    if (activeCategory !== 'הכל') {
+      result = result.filter(post => post.category === activeCategory);
+    }
+    if (activeSubcategory !== 'הכל') {
+      result = result.filter(post => 'subcategory' in post && post.subcategory === activeSubcategory);
+    }
+    return result;
+  }, [searchQuery, activeCategory, activeSubcategory, fuse]);
 
   const resetFilters = () => {
     setSearchQuery('');
