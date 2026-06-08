@@ -12,8 +12,12 @@
 >    - מאמר הדרכת הורים ADHD: [https://telegra.ph/הדרכת-הורים-לילדים-עם-הפרעות-קשב-וריכוז-ADHD-באשדוד-06-08](https://telegra.ph/הדרכת-הורים-לילדים-עם-הפרעות-קשב-וריכוז-ADHD-באשדוד-06-08)
 >    - מאמר גישור משפחתי: [https://telegra.ph/לפתור-סכסוכים-משפחתיים-מחוץ-לבית-המשפט-גישור-משפחתי-באשדוד-06-08](https://telegra.ph/לפתור-סכסוכים-משפחתיים-מחוץ-לבית-המשפט-גישור-משפחתי-באשדוד-06-08)
 > 
-> 3. **קישורי אוטוריטה ב-GitHub (DA 99):**
->    🔗 [שירה סהרוני — גיטהאב רפונזיל](https://github.com/yanivsa/kesher-website) (ה-README.md עודכן עם קישורי SEO ישירים לכל דפי השירות).
+> 3. **עמוד משאבים ב-Rentry (DA 78):**
+>    🔗 **[https://rentry.co/kesher-seo-2428](https://rentry.co/kesher-seo-2428)**
+> 
+> 4. **קישורי אוטוריטה ב-GitHub (DA 99):**
+>    - מאגר האתר הראשי: [yanivsa/kesher-website](https://github.com/yanivsa/kesher-website)
+>    - מאגר משאבים ייעודי חדש: [yanivsa/counseling-ashdod-resources](https://github.com/yanivsa/counseling-ashdod-resources)
 > 
 > *כל הקישורים עברו תהליך פינג (Ping) במנועי החיפוש על ידי סקריפט האינדוקס שלנו כדי להבטיח זיהוי מהיר.*
 
