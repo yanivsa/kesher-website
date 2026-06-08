@@ -8,7 +8,6 @@ const { chromium } = require('playwright');
     '/',
     '/services/couples',
     '/services/parenting',
-    '/services/mediation',
     '/blog',
     '/faq',
     '/contact'

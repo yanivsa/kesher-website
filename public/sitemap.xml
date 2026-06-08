@@ -49,12 +49,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/services/mediation</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://kesher.saharoni.com/blog</loc>
     <lastmod>2026-05-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -109,20 +103,8 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/blog/mediation-for-family-business-disputes</loc>
-    <lastmod>2024-02-25</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://kesher.saharoni.com/blog/parenting-the-stubborn-child</loc>
     <lastmod>2024-01-25</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://kesher.saharoni.com/blog/mediation-for-will-conflicts</loc>
-    <lastmod>2024-01-10</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>

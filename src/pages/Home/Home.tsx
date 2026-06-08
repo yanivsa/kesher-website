@@ -72,7 +72,7 @@ const Home: React.FC = () => {
   return (
     <div className={styles.home}>
       <MetaTags 
-        title={`${SITE_CONFIG.author} — ייעוץ זוגי, הדרכת הורים וגישור באשדוד`}
+        title={`${SITE_CONFIG.author} — ייעוץ זוגי והדרכת הורים באשדוד`}
         description={SITE_CONFIG.description}
       />
       <SchemaOrg data={schemaData} />

@@ -5,8 +5,8 @@ export default {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מרכז משאבים ומאמרים: זוגיות, הורות וגישור משפחתי</title>
-    <meta name="description" content="מאמרים מקצועיים, טיפים ומשאבים בנושא ייעוץ זוגי, הדרכת הורים ל-ADHD וגישור משפחתי באשדוד והסביבה.">
+    <title>מרכז משאבים ומאמרים: זוגיות והדרכת הורים</title>
+    <meta name="description" content="מאמרים מקצועיים, טיפים ומשאבים בנושא ייעוץ זוגי והדרכת הורים ל-ADHD באשדוד והסביבה.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Rubik:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -114,7 +114,7 @@ export default {
     <header>
         <div class="container">
             <h1>מרכז משאבים ומאמרים חיצוניים</h1>
-            <p>מאמרים מקצועיים ומידע בתחומי זוגיות, הורות וגישור משפחתי</p>
+            <p>מאמרים מקצועיים ומידע בתחומי זוגיות והדרכת הורים</p>
         </div>
     </header>
 
@@ -154,22 +154,6 @@ export default {
             <p>אם אתם מתמודדים עם אתגרים דומים ומחפשים ליווי מקצועי שיחזיר את השקט והביטחון המשפחתי, מומלץ לפנות למנחת הורים מנוסה המכירה את הקשיים הללו מקרוב.</p>
         </article>
 
-        <!-- מאמר 3 -->
-        <article>
-            <h2>לפתור סכסוכים מחוץ לבית המשפט: היתרונות של גישור משפחתי בהסכמה</h2>
-            <div class="meta">
-                <span>מאת: שירה סהרוני</span>
-                <span>•</span>
-                <span>זמן קריאה: 3 דק'</span>
-            </div>
-            <p>פרידה או קונפליקטים בתוך המשפחה או העסק המשפחתי מלווים תמיד במטען רגשי כבד. הבחירה הראשונה והטבעית של רבים היא לפנות לייצוג משפטי אגרסיבי, מה שמוביל לרוב למלחמות ממושכות ויקרות בבתי המשפט, הפוגעות בילדים וביחסים המשפחתיים לשנים קדימה.</p>
-            <p>בחירה באפיק של <a href="https://kesher.saharoni.com/services/mediation" target="_blank" rel="dofollow">מגשרת משפחתית אשדוד</a> מאפשרת לנהל את השיח בגובה העיניים, למנוע הסלמה ולהגיע להסכמות משותפות המשרתות את כל הצדדים בצורה הוגנת ויעילה.</p>
-            <h3>מדוע לבחור בגישור משפחתי?</h3>
-            <p>1. <strong>שליטה מלאה בתוצאות:</strong> בבית המשפט השופט מחליט עבורכם. בגישור, ההסכם מנוסח אך ורק בהסכמת שני הצדדים.</p>
-            <p>2. <strong>חיסכון עצום בזמן ובעלויות:</strong> הליך גישור קצר משמעותית ויקר הרבה פחות ממאבקים משפטיים ארוכי שנים.</p>
-            <p>3. <strong>שמירה על הילדים:</strong> הגישור מתמקד בטובת הילדים ובהבטחת המשך תפקודכם כשותפים להורות, גם לאחר הפרידה.</p>
-            <p>לפרטים נוספים וליווי בהליכי גישור מורכבים באזור הדרום, מומלץ לפנות למגשרת מקצועית באשדוד בעלת רקע והבנה משפטית רחבה.</p>
-        </article>
 
         <!-- מאמר 4 באנגלית -->
         <article lang="en" dir="ltr">
@@ -188,13 +172,12 @@ export default {
             <p>* <strong>Chronic Overwhelm:</strong> Navigating school systems, homework, and routines in Israel can be overwhelming without specialized guidance.</p>
             <h3>Finding Integrated Solutions</h3>
             <p>The most effective approach often combines relationship counseling with specialized <a href="https://kesher.saharoni.com/services/parenting" target="_blank" rel="dofollow">parenting guidance ADHD Israel</a>. Learning practical behavioral strategies for the kids while simultaneously healing the adult partnership creates a unified parental front.</p>
-            <p>Furthermore, when couples decide that parting ways is the healthiest path, utilizing <a href="https://kesher.saharoni.com/services/mediation" target="_blank" rel="dofollow">family mediation Ashdod</a> ensures that custody, co-parenting agreements, and assets are handled amicably and legally without entering adversarial court battles.</p>
         </article>
     </div>
 
     <footer>
         <div class="container">
-            <p>כל הזכויות שמורות לשירה סהרוני — ייעוץ זוגי, הדרכת הורים וגישור © 2026</p>
+            <p>כל הזכויות שמורות לשירה סהרוני — ייעוץ זוגי והדרכת הורים © 2026</p>
             <p>קישור לאתר הראשי: <a href="https://kesher.saharoni.com" target="_blank" rel="dofollow">kesher.saharoni.com</a></p>
         </div>
     </footer>

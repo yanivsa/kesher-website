@@ -14,7 +14,6 @@ const fs = require('fs');
     '/',
     '/services/couples',
     '/services/parenting',
-    '/services/mediation',
     '/blog',
     '/faq',
     '/contact'

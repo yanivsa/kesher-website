@@ -38,7 +38,7 @@ const Hero: React.FC = () => {
           <div className={styles.imageWrapper}>
             <img 
               src="/images/generated/site/home-hero.jpg" 
-              alt="מרחב בטוח לייעוץ וגישור - שירה סהרוני" 
+              alt="מרחב בטוח לייעוץ זוגי והדרכת הורים - שירה סהרוני" 
               className={styles.heroImage}
             />
             <div className={styles.overlay}></div>
