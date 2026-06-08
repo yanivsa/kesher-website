@@ -45,10 +45,6 @@ const schemaData = {
         {
           "@type": "EducationalOccupationalCredential",
           "credentialCategory": "יועצת זוגית ומשפחתית"
-        },
-        {
-          "@type": "EducationalOccupationalCredential",
-          "credentialCategory": "עורכת דין"
         }
       ],
       "serviceType": ["ייעוץ זוגי", "הדרכת הורים", "גישור משפחה", "טיפול מקוון"],

@@ -9,7 +9,7 @@ const AboutSection: React.FC = () => {
         <div className={styles.imageContainer}>
           <div className={styles.imageWrapper}>
             <img 
-              src="/images/generated/site/about-office.jpg" 
+              src="/images/generated/site/about-office.png" 
               alt="קליניקה נעימה ומזמינה" 
               className={styles.aboutImage}
             />
@@ -30,6 +30,9 @@ const AboutSection: React.FC = () => {
             </p>
             <p>
               תהליך הגישור מוסיף לתהליך חשיבה מובנית, דיסקרטיות ויכולת להחזיק גם שיחות טעונות בלי להפוך אותן למאבק. המטרה היא לאפשר שיחה ברורה, מכבדת וישימה, תוך שמירה על הלב ועל השקט הנפשי.
+            </p>
+            <p>
+              בעברי כעורכת דין, נחשפתי לאורך שנים למאבקים משפחתיים וזוגיים קשים וכואבים בין כותלי בית המשפט. המפגשים הללו חיזקו בי את ההבנה העמוקה שקונפליקטים מורכבים רבים כל כך יכולים וראויים להיפתר אחרת — בשיח מכבד, רגיש ומקרב על ספת היועצת הזוגית והמגשרת, ולא דרך מאבקים משפטיים מתישים.
             </p>
           </div>
           <div className={styles.credentials}>

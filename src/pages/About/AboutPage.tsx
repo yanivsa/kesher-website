@@ -20,10 +20,10 @@ const AboutPage: React.FC = () => {
             "@type": "Person",
             "name": SITE_CONFIG.author,
             "alternateName": "Shira Saharoni",
-            "jobTitle": ["יועצת זוגית", "מגשרת מוסמכת", "עורכת דין", "מנחת הורים"],
+            "jobTitle": ["יועצת זוגית", "מגשרת מוסמכת", "מנחת הורים"],
             "description": "הכירו את שירה סהרוני - מגשרת מוסמכת ויועצת זוגית. שילוב ייחודי של כלים טיפוליים וראייה מערכתית רגישה.",
             "url": `${SITE_CONFIG.url}/about`,
-            "image": `${SITE_CONFIG.url}/images/generated/site/about-office.jpg`,
+            "image": `${SITE_CONFIG.url}/images/generated/site/about-office.png`,
             "worksFor": {
               "@type": "LocalBusiness",
               "name": SITE_CONFIG.brand
