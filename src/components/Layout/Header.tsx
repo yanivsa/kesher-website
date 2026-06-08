@@ -45,7 +45,7 @@ const Header: React.FC = () => {
           <Link to="/" className={styles.logoLink} onClick={closeMenu}>
             <div className={styles.logo}>
               <span className={styles.brand}>{SITE_CONFIG.brand}</span>
-              <span className={styles.subtitle}>ייעוץ זוגי וגישור משפחתי</span>
+              <span className={styles.subtitle}>ייעוץ זוגי והנחיית הורים</span>
             </div>
           </Link>
 
@@ -65,7 +65,6 @@ const Header: React.FC = () => {
               <div className={styles.dropdownContent}>
                 <Link to="/services/couples" onClick={closeMenu}>ייעוץ זוגי</Link>
                 <Link to="/services/parenting" onClick={closeMenu}>הדרכת הורים</Link>
-                <Link to="/services/mediation" onClick={closeMenu}>גישור משפחתי</Link>
               </div>
             </div>
             <Link to="/blog" onClick={closeMenu}>בלוג</Link>

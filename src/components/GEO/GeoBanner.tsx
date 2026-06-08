@@ -6,7 +6,7 @@ const GeoBanner: React.FC = () => {
     <div className={styles.banner}>
       <div className="container">
         <p>
-          📍 מספקת שירותי ייעוץ, הדרכת הורים וגישור באזור <strong>אשדוד והסביבה</strong> ובפריסה ארצית (אונליין).
+          📍 מספקת שירותי ייעוץ והדרכת הורים באזור <strong>אשדוד והסביבה</strong> ובפריסה ארצית (אונליין).
         </p>
       </div>
     </div>

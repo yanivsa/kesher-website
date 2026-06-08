@@ -1,8 +1,8 @@
 export const SITE_CONFIG = {
   brand: "שירה סהרוני",
   author: "שירה סהרוני",
-  title: "שירה סהרוני | ייעוץ זוגי, הדרכת הורים וגישור",
-  description: "יועצת זוגית ומנחת הורים מוסמכת באשדוד. ייעוץ זוגי, הדרכת הורים וגישור משפחה. קבעו שיחת היכרות ▸",
+  title: "שירה סהרוני | ייעוץ זוגי והנחיית הורים",
+  description: "יועצת זוגית ומנחת הורים מוסמכת באשדוד. ייעוץ זוגי והדרכת הורים. קבעו שיחת היכרות ▸",
   url: "https://kesher.saharoni.com",
   formspreeUrl: "https://formspree.io/f/xvgzgeyw",
   contact: {

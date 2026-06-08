@@ -11,7 +11,7 @@ const schemaData = {
     {
       "@type": "ContactPage",
       "name": "צור קשר | שירה סהרוני",
-      "description": "צרו קשר עם שירה סהרוני לתיאום פגישת ייעוץ זוגי, הדרכת הורים או גישור. זמינה באשדוד וב-Zoom.",
+      "description": "צרו קשר עם שירה סהרוני לתיאום פגישת ייעוץ זוגי או הדרכת הורים. זמינה באשדוד וב-Zoom.",
       "url": `${SITE_CONFIG.url}/contact`,
       "mainEntity": {
         "@type": "LocalBusiness",
@@ -52,7 +52,7 @@ const ContactPage: React.FC = () => {
       <SchemaOrg data={schemaData} />
       <MetaTags 
         title="צור קשר | שירה סהרוני" 
-        description="צרו קשר עם שירה סהרוני לתיאום פגישת ייעוץ זוגי, הדרכת הורים או גישור. זמינה באשדוד וב-Zoom." 
+        description="צרו קשר עם שירה סהרוני לתיאום פגישת ייעוץ זוגי או הדרכת הורים. זמינה באשדוד וב-Zoom." 
       />
       <header className={styles.header}>
         <div className="container">

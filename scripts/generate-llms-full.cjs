@@ -26,8 +26,7 @@ while ((match = faqRegex.exec(faqContent)) !== null) {
 fullContent += '## עמודי שירות מפורטים (Detailed Services)\n\n';
 const services = [
   { name: 'ייעוץ זוגי', path: path.join(__dirname, '../src/pages/Services/Couples/CouplesCounseling.tsx') },
-  { name: 'הדרכת הורים', path: path.join(__dirname, '../src/pages/Services/Parenting/ParentingGuidance.tsx') },
-  { name: 'גישור משפחתי', path: path.join(__dirname, '../src/pages/Services/Mediation/Mediation.tsx') }
+  { name: 'הדרכת הורים', path: path.join(__dirname, '../src/pages/Services/Parenting/ParentingGuidance.tsx') }
 ];
 
 services.forEach(service => {

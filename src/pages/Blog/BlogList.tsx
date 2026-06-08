@@ -8,7 +8,7 @@ import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './BlogList.module.css';
 
-const categories = ['הכל', 'זוגיות', 'הדרכת הורים', 'גישור משפחתי'];
+const categories = ['הכל', 'זוגיות', 'הדרכת הורים'];
 
 const subcategories: Record<string, string[]> = {
   'זוגיות': ['הכל', 'הכנה לחתונה'],
@@ -20,8 +20,8 @@ const schemaData = {
   "@graph": [
     {
       "@type": "Blog",
-      "name": "הבלוג של שירה סהרוני | ייעוץ זוגי, הדרכת הורים וגישור",
-      "description": "מאמרים, טיפים ותובנות על זוגיות, הורות ופתרון סכסוכים. כל מה שצריך כדי לבנות מערכות יחסים טובות יותר.",
+      "name": "הבלוג של שירה סהרוני | ייעוץ זוגי והנחיית הורים",
+      "description": "מאמרים, טיפים ותובנות על זוגיות והורות. כל מה שצריך כדי לבנות מערכות יחסים טובות יותר.",
       "url": `${SITE_CONFIG.url}/blog`,
       "publisher": {
         "@type": "Organization",
@@ -112,13 +112,13 @@ const BlogList: React.FC = () => {
     <div className={styles.blog}>
       <SchemaOrg data={schemaData} />
       <MetaTags 
-        title="הבלוג של שירה סהרוני | ייעוץ זוגי, הדרכת הורים וגישור"
-        description="מאמרים, טיפים ותובנות על זוגיות, הורות ופתרון סכסוכים. כל מה שצריך כדי לבנות מערכות יחסים טובות יותר."
+        title="הבלוג של שירה סהרוני | ייעוץ זוגי והנחיית הורים"
+        description="מאמרים, טיפים ותובנות על זוגיות והורות. כל מה שצריך כדי לבנות מערכות יחסים טובות יותר."
       />
       <header className={styles.header}>
         <div className="container">
           <h1>הבלוג המקצועי</h1>
-          <p>תובנות, כלים וסיפורים מהקליניקה וחדר הגישור.</p>
+          <p>תובנות, כלים וסיפורים מהקליניקה.</p>
         </div>
       </header>
 

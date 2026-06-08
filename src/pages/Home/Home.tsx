@@ -32,7 +32,6 @@ const schemaData = {
       "knowsAbout": [
         "ייעוץ זוגי",
         "הדרכת הורים",
-        "גישור משפחתי",
         "ADHD",
         "תקשורת בזוגיות",
         "הורות משותפת"
@@ -40,14 +39,10 @@ const schemaData = {
       "hasCredential": [
         {
           "@type": "EducationalOccupationalCredential",
-          "credentialCategory": "מגשרת מוסמכת"
-        },
-        {
-          "@type": "EducationalOccupationalCredential",
           "credentialCategory": "יועצת זוגית ומשפחתית"
         }
       ],
-      "serviceType": ["ייעוץ זוגי", "הדרכת הורים", "גישור משפחה", "טיפול מקוון"],
+      "serviceType": ["ייעוץ זוגי", "הדרכת הורים", "טיפול מקוון"],
       "makesOffer": [
         {
           "@type": "Offer",
@@ -63,14 +58,6 @@ const schemaData = {
             "@type": "Service",
             "name": "הדרכת הורים",
             "description": "הדרכה מקצועית להורים לילדים עם ADHD, הצבת גבולות, והורות משותפת לאחר פרידה."
-          }
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "גישור משפחה",
-            "description": "גישור בהסכמה כחלופה להליך משפטי. כולל הסדרת רכוש, הסדרי ילדים ומזונות."
           }
         }
       ],

@@ -10,13 +10,13 @@ const Hero: React.FC = () => {
     <section className={styles.hero}>
       <div className={`container ${styles.container}`}>
         <div className={styles.content}>
-          <div className={styles.badge}>מענה רגשי מקיף + גישור מקצועי</div>
+          <div className={styles.badge}>מענה רגשי מקיף וכלים פרקטיים</div>
           <h1 className={styles.title}>
             להחזיר את השקט והקירבה <br />
             <span>לזוגיות ולמשפחה שלכם.</span>
           </h1>
           <p className={styles.description}>
-            שירה סהרוני - יועצת זוגית, מנחת הורים ומגשרת מוסמכת.
+            שירה סהרוני - יועצת זוגית ומנחת הורים.
             ליווי רגיש, פרקטי ודיסקרטי שנועד להוציא אתכם ממעגל המריבות ולבנות מחדש תקשורת בריאה, אמון וקירבה.
           </p>
           <div className={styles.actions}>
@@ -32,7 +32,6 @@ const Hero: React.FC = () => {
           <div className={styles.trustBar} aria-label="תחומי התמחות">
             <span>יועצת זוגית</span>
             <span>מנחת הורים</span>
-            <span>מגשרת מוסמכת</span>
           </div>
         </div>
         <div className={styles.imageContainer}>

@@ -131,7 +131,6 @@ const ContactSection: React.FC = () => {
               >
                 <option value="couples">ייעוץ זוגי</option>
                 <option value="parenting">הדרכת הורים</option>
-                <option value="mediation">גישור / פרידה</option>
                 <option value="other">אחר</option>
               </select>
             </div>

@@ -20,8 +20,8 @@ const AboutPage: React.FC = () => {
             "@type": "Person",
             "name": SITE_CONFIG.author,
             "alternateName": "Shira Saharoni",
-            "jobTitle": ["יועצת זוגית", "מגשרת מוסמכת", "מנחת הורים"],
-            "description": "הכירו את שירה סהרוני - מגשרת מוסמכת ויועצת זוגית. שילוב ייחודי של כלים טיפוליים וראייה מערכתית רגישה.",
+            "jobTitle": ["יועצת זוגית", "מנחת הורים"],
+            "description": "הכירו את שירה סהרוני - יועצת זוגית ומנחת הורים באשדוד. שילוב ייחודי של כלים טיפוליים וראייה מערכתית רגישה.",
             "url": `${SITE_CONFIG.url}/about`,
             "image": `${SITE_CONFIG.url}/images/generated/site/about-office.png`,
             "worksFor": {
@@ -55,8 +55,8 @@ const AboutPage: React.FC = () => {
     <div className={styles.page}>
       <SchemaOrg data={schemaData} />
       <MetaTags 
-        title="אודות שירה סהרוני | יועצת זוגית ומגשרת באשדוד" 
-        description="הכירו את שירה סהרוני - מגשרת מוסמכת ויועצת זוגית. שילוב ייחודי של כלים טיפוליים וראייה מערכתית רגישה." 
+        title="אודות שירה סהרוני | יועצת זוגית ומנחת הורים באשדוד" 
+        description="הכירו את שירה סהרוני - יועצת זוגית ומנחת הורים באשדוד. שילוב ייחודי של כלים טיפוליים וראייה מערכתית רגישה." 
       />
       <header className={styles.header}>
         <div className="container">

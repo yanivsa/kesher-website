@@ -6,7 +6,7 @@ import { SITE_CONFIG } from '../../constants/siteConfig';
 import faqs from '../../data/faqs';
 import styles from './FAQ.module.css';
 
-const categories = ['הכל', 'ייעוץ זוגי', 'גישור', 'הדרכת הורים', 'כללי'];
+const categories = ['הכל', 'ייעוץ זוגי', 'הדרכת הורים', 'כללי'];
 
 // FAQPage Schema for SEO/GEO
 const faqSchema = {
@@ -59,7 +59,7 @@ const FAQ: React.FC = () => {
   return (
     <div className={styles.faq}>
       <MetaTags 
-        title="שאלות נפוצות | שירה סהרוני — ייעוץ זוגי, הדרכת הורים וגישור" 
+        title="שאלות נפוצות | שירה סהרוני — ייעוץ זוגי והנחיית הורים" 
         description="תשובות על הכנה לחתונה לזוגות שרוצים להתחיל נכון, מתחתנים עם הורים גרושים או ADHD, הכנה לכיתה א', ייעוץ זוגי והדרכת הורים."
       />
       <SchemaOrg data={faqSchema} />

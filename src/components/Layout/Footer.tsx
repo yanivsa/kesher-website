@@ -12,7 +12,7 @@ const Footer: React.FC = () => {
             <span className={styles.brand}>{SITE_CONFIG.brand}</span>
             <span className={styles.subtitle}>{SITE_CONFIG.author}</span>
           </div>
-          <p>יועצת זוגית, מנחת הורים ומגשרת מוסמכת.</p>
+          <p>יועצת זוגית ומנחת הורים.</p>
         </div>
         <div className={styles.links}>
           <h4>ניווט מהיר</h4>
