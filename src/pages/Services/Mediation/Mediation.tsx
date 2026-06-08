@@ -18,7 +18,7 @@ const schemaData = {
         "@type": "LocalBusiness",
         "@id": `${SITE_CONFIG.url}/#business`
       },
-      "description": "גישור משפחתי באשדוד. פתרון סכסוכים בדרכי שלום, בניית הסכמים ופרידה בשיתוף פעולה."
+      "description": "גישור משפחתי באשדוד. פתרון סכסוכים בדרכי שלום, הגעה להסכמות ופרידה בשיתוף פעולה."
     },
     {
       "@type": "BreadcrumbList",
@@ -109,7 +109,7 @@ const Mediation: React.FC = () => {
         <div className="container">
           <LeadMagnet />
           <div className={styles.finalBox}>
-            <h2>בואו נבנה הסכם שמכבד את כולם.</h2>
+            <h2>בואו נגיע להסכמות שמכבדות את כולם.</h2>
             <p>אני כאן כדי לעזור לכם לעבור את זה בדרך השפויה והנכונה ביותר.</p>
             <a href="/contact" className={styles.mainBtn}>דברו איתי</a>
           </div>
