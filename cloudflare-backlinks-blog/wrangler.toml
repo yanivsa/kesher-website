@@ -1,0 +1,6 @@
+name = "kesher-external-articles"
+main = "worker.js"
+compatibility_date = "2024-03-29"
+
+[placement]
+mode = "smart"
