@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const llmsPath = path.join(__dirname, '../public/llms.txt');
-const faqPath = path.join(__dirname, '../src/pages/FAQ/FAQ.tsx');
+const faqPath = path.join(__dirname, '../src/data/faqs.ts');
 const postsPath = path.join(__dirname, '../src/data/posts.json');
 const outputPath = path.join(__dirname, '../public/llms-full.txt');
 
