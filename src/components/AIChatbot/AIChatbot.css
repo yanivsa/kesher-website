@@ -1,31 +1,20 @@
 /* Floating styles for ElevenLabs AI Conversational Widget */
 
-.elevenlabs-chatbot-container {
+elevenlabs-convai {
+  direction: ltr !important;
   position: fixed !important;
   bottom: 2rem !important;
   right: 2rem !important;
   left: auto !important;
   top: auto !important;
-  width: fit-content !important;
-  height: fit-content !important;
   z-index: 10005 !important; /* Above other page contents */
-  overflow: visible !important;
-}
-
-.elevenlabs-chatbot-container elevenlabs-convai {
-  position: relative !important;
-  bottom: auto !important;
-  top: auto !important;
-  left: auto !important;
-  right: auto !important;
-  width: fit-content !important;
-  height: fit-content !important;
-  display: block !important;
 }
 
 @media (max-width: 768px) {
-  .elevenlabs-chatbot-container {
+  elevenlabs-convai {
     bottom: 84px !important; /* Move above the mobile sticky actions bar (approx 68px tall + padding) */
     right: 1rem !important;
+    left: auto !important;
+    top: auto !important;
   }
 }

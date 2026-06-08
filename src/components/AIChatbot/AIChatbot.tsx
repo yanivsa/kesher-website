@@ -49,7 +49,7 @@ const AIChatbot: React.FC = () => {
   if (!scriptLoaded) return null;
 
   return (
-    <div className="elevenlabs-chatbot-container">
+    <div className="elevenlabs-chatbot-container" dir="ltr">
       <elevenlabs-convai
         agent-id="agent_2201kthm21rbejr80f69dgq03dhv"
         avatar-orb-color-1="#7C9E87" /* Primary color from variables: sage green */
