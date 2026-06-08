@@ -40,7 +40,7 @@ const schemaData = {
       "hasCredential": [
         {
           "@type": "EducationalOccupationalCredential",
-          "credentialCategory": "מגשרת משפחתית מוסמכת"
+          "credentialCategory": "מגשרת מוסמכת"
         },
         {
           "@type": "EducationalOccupationalCredential",

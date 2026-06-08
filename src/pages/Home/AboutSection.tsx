@@ -14,8 +14,8 @@ const AboutSection: React.FC = () => {
               className={styles.aboutImage}
             />
             <div className={styles.experienceBadge}>
-              <span className={styles.years}>15+</span>
-              <span className={styles.yearsText}>שנות ניסיון</span>
+              <span className={styles.years}>בעלת</span>
+              <span className={styles.yearsText}>ניסיון מקצועי</span>
             </div>
           </div>
         </div>
@@ -35,7 +35,7 @@ const AboutSection: React.FC = () => {
           <div className={styles.credentials}>
             <div className={styles.credential}>
               <span className={styles.icon}><FiBriefcase aria-hidden="true" /></span>
-              <span>מגשרת משפחתית מוסמכת</span>
+              <span>מגשרת מוסמכת</span>
             </div>
             <div className={styles.credential}>
               <span className={styles.icon}><FiCompass aria-hidden="true" /></span>
