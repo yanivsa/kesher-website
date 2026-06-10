@@ -1,5 +1,6 @@
 import React from 'react';
 import Hero from './Hero';
+import TrustSection from './TrustSection';
 import ServicesSection from './ServicesSection';
 import ProcessSection from './ProcessSection';
 import WhyMeSection from './WhyMeSection';
@@ -77,6 +78,7 @@ const Home: React.FC = () => {
       />
       <SchemaOrg data={schemaData} />
       <Hero />
+      <TrustSection />
       <ServicesSection />
       <ProcessSection />
       <WhyMeSection />
