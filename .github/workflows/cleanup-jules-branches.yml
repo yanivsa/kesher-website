@@ -65,7 +65,7 @@ jobs:
           )
           PY
 
-      - name: Daily cleanup stale nightly branches (no open PR)
+      - name: Daily cleanup stale automation branches (no open PR)
         if: github.event_name != 'pull_request'
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -93,29 +93,36 @@ jobs:
 
           open_heads = set((pr.get('head') or {}).get('ref') for pr in prs)
 
-          patterns = ['nightly-','jules-']
-
-          for prefix in patterns:
-              # NOTE: `matching-refs` pagination is inconsistent; avoid an unbounded loop.
-              url = f"https://api.github.com/repos/{repo}/git/matching-refs/heads/{urllib.parse.quote(prefix, safe='')}?per_page=100"
-              res = subprocess.check_output(
-                  ['curl','--fail-with-body','-sS',
+          url = f"https://api.github.com/repos/{repo}/git/matching-refs/heads/"
+          res = subprocess.check_output(
+              ['curl','--fail-with-body','-sS',
+               '-H', f'Authorization: Bearer {token}',
+               '-H', 'Accept: application/vnd.github+json',
+               url]
+          ).decode('utf-8')
+          refs = json.loads(res)
+          for r in refs:
+              ref_full = r.get('ref','')
+              head = ref_full.replace('refs/heads/','')
+              if not head or head == 'main' or head in open_heads:
+                  continue
+              name_lower = head.lower()
+              keywords = [
+                  'nightly', 'jules', 'bolt', 'code-health', '🧹', '🧪', 
+                  'add-', 'test', 'refactor', 'sentinel', 'fix-', 'fix/',
+                  'perf-', 'perf/', 'security-', 'feat/', 'geo-', 'seo-', 
+                  'mobile-', 'kesher-', 'content-', 'feature-', 'feature/',
+                  'main-', 'vendor', 'enrich'
+              ]
+              if not any(k in name_lower for k in keywords):
+                  continue
+              del_url = f"https://api.github.com/repos/{repo}/git/refs/heads/{urllib.parse.quote(head, safe='')}"
+              print('Deleting stale branch', head)
+              subprocess.run(
+                  ['curl','--fail-with-body','-sS','-X','DELETE',
                    '-H', f'Authorization: Bearer {token}',
                    '-H', 'Accept: application/vnd.github+json',
-                   url]
-              ).decode('utf-8')
-              refs = json.loads(res)
-              for r in refs:
-                  head = (r.get('ref','') or '').replace('refs/heads/','')
-                  if not head or head in open_heads:
-                      continue
-                  del_url = f"https://api.github.com/repos/{repo}/git/refs/heads/{urllib.parse.quote(head, safe='')}"
-                  print('Deleting stale branch', head)
-                  subprocess.run(
-                      ['curl','--fail-with-body','-sS','-X','DELETE',
-                       '-H', f'Authorization: Bearer {token}',
-                       '-H', 'Accept: application/vnd.github+json',
-                       del_url],
-                      check=True,
-                  )
+                   del_url],
+                  check=True,
+              )
           PY
