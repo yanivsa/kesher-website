@@ -26,6 +26,7 @@ const AboutPage: React.FC = () => {
             "image": `${SITE_CONFIG.url}/images/generated/site/about-office.png`,
             "worksFor": {
               "@type": "LocalBusiness",
+              "@id": `${SITE_CONFIG.url}/#business`,
               "name": SITE_CONFIG.brand
             }
           }
