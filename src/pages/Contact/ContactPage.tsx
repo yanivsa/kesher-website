@@ -15,6 +15,7 @@ const schemaData = {
       "url": `${SITE_CONFIG.url}/contact`,
       "mainEntity": {
         "@type": "LocalBusiness",
+        "@id": `${SITE_CONFIG.url}/#business`,
         "name": SITE_CONFIG.brand,
         "telephone": SITE_CONFIG.contact.phone,
         "email": SITE_CONFIG.contact.email,
