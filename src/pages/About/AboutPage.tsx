@@ -1,56 +1,53 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import AboutSection from '../Home/AboutSection';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './AboutPage.module.css';
 
-const AboutPage: React.FC = () => {
-
-  const schemaData = useMemo(() => {
-    const currentDate = new Date().toISOString().split('T')[0];
-    return {
-      "@context": "https://schema.org",
-      "@graph": [
+const schemaData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "ProfilePage",
+      "dateCreated": "2024-01-01",
+      "dateModified": "2024-01-01",
+      "mainEntity": {
+        "@type": "Person",
+        "name": SITE_CONFIG.author,
+        "alternateName": "Shira Saharoni",
+        "jobTitle": ["יועצת זוגית", "מנחת הורים"],
+        "description": "הכירו את שירה סהרוני - יועצת זוגית ומנחת הורים באשדוד. שילוב ייחודי של כלים טיפוליים וראייה מערכתית רגישה.",
+        "url": `${SITE_CONFIG.url}/about`,
+        "image": `${SITE_CONFIG.url}/images/generated/site/about-office.png`,
+        "worksFor": {
+          "@type": "LocalBusiness",
+          "@id": `${SITE_CONFIG.url}/#business`,
+          "name": SITE_CONFIG.brand
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
         {
-          "@type": "ProfilePage",
-          "dateCreated": "2024-01-01",
-          "dateModified": currentDate,
-          "mainEntity": {
-            "@type": "Person",
-            "name": SITE_CONFIG.author,
-            "alternateName": "Shira Saharoni",
-            "jobTitle": ["יועצת זוגית", "מנחת הורים"],
-            "description": "הכירו את שירה סהרוני - יועצת זוגית ומנחת הורים באשדוד. שילוב ייחודי של כלים טיפוליים וראייה מערכתית רגישה.",
-            "url": `${SITE_CONFIG.url}/about`,
-            "image": `${SITE_CONFIG.url}/images/generated/site/about-office.png`,
-            "worksFor": {
-              "@type": "LocalBusiness",
-              "@id": `${SITE_CONFIG.url}/#business`,
-              "name": SITE_CONFIG.brand
-            }
-          }
+          "@type": "ListItem",
+          "position": 1,
+          "name": "עמוד הבית",
+          "item": SITE_CONFIG.url
         },
         {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "עמוד הבית",
-              "item": SITE_CONFIG.url
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": "אודות",
-              "item": `${SITE_CONFIG.url}/about`
-            }
-          ]
+          "@type": "ListItem",
+          "position": 2,
+          "name": "אודות",
+          "item": `${SITE_CONFIG.url}/about`
         }
       ]
-    };
-  }, []);
+    }
+  ]
+};
+
+const AboutPage: React.FC = () => {
 
   return (
     <div className={styles.page}>
