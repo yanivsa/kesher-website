@@ -1,0 +1,25 @@
+.page {
+  min-height: 55vh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+}
+
+.code {
+  color: var(--color-accent);
+  font-size: clamp(4rem, 16vw, 9rem);
+  font-weight: 900;
+  line-height: 1;
+  margin: 0;
+}
+
+.link {
+  display: inline-block;
+  margin-top: var(--spacing-md);
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: white;
+  font-weight: 700;
+}

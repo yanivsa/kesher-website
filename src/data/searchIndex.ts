@@ -1,4 +1,4 @@
-import posts from './posts.json';
+import posts from './publishedPosts';
 import faqs from './faqs';
 
 export interface SearchItem {
@@ -15,7 +15,7 @@ const servicePages: SearchItem[] = [
     id: 'service-couples',
     type: 'service',
     title: 'ייעוץ זוגי',
-    body: 'ייעוץ זוגי באשדוד. תקשורת שנתקעה, אינטימיות שנעלמה, משבר אמון. הכנה לחתונה לזוגות עם הורים גרושים. ייעוץ זוגי מותאם ADHD. גישה רב-תחומית המשלבת כלים מעולם הטיפול הזוגי והאימון.',
+    body: 'ייעוץ זוגי באשדוד. תקשורת שנתקעה, אינטימיות שנעלמה, משבר אמון. הכנה לחתונה וזוגיות עם ADHD. גישה מעשית ורגישה לחיזוק הקשר.',
     url: '/services/couples',
     category: 'שירותים'
   },
@@ -34,7 +34,7 @@ const staticPages: SearchItem[] = [
     id: 'page-about',
     type: 'page',
     title: 'אודות שירה סהרוני',
-    body: 'יועצת זוגית ומנחת הורים באשדוד בעלת ניסיון מקצועי. גישה רב-תחומית. הכשרה בייעוץ זוגי והנחיית הורים. מאמינה בתהליך מכבד, מעשי וממוקד.',
+    body: 'יועצת זוגית ומנחת הורים באשדוד. גישה משולבת לזוגיות ולהורות ותהליך מכבד, מעשי וממוקד.',
     url: '/about',
     category: 'דפים'
   },

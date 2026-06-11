@@ -26,21 +26,6 @@ const iconClass: Record<SearchItem['type'], string> = {
   page: styles.iconPage,
 };
 
-/* ── Trigger Button (for the Header) ── */
-export const SearchTrigger: React.FC<{ onClick: () => void }> = ({ onClick }) => (
-  <button
-    type="button"
-    className={styles.trigger}
-    onClick={onClick}
-    aria-label="חיפוש באתר"
-    title="חיפוש"
-  >
-    <FiSearch className={styles.triggerIcon} />
-    <span className={styles.triggerText}>חיפוש...</span>
-  </button>
-);
-
-/* ── Modal ── */
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -49,6 +34,7 @@ interface Props {
 const GlobalSearch: React.FC<Props> = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const fuse = useMemo(() => new Fuse(searchIndex, {
@@ -68,7 +54,6 @@ const GlobalSearch: React.FC<Props> = ({ isOpen, onClose }) => {
   // Focus input when modal opens
   useEffect(() => {
     if (isOpen) {
-      setQuery('');
       setTimeout(() => inputRef.current?.focus(), 50);
     }
   }, [isOpen]);
@@ -76,6 +61,21 @@ const GlobalSearch: React.FC<Props> = ({ isOpen, onClose }) => {
   // Close on Escape
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose();
+    if (e.key === 'Tab' && modalRef.current) {
+      const focusable = Array.from(
+        modalRef.current.querySelectorAll<HTMLElement>('button, a[href], input, [tabindex]:not([tabindex="-1"])'),
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
   }, [onClose]);
 
   useEffect(() => {
@@ -111,7 +111,14 @@ const GlobalSearch: React.FC<Props> = ({ isOpen, onClose }) => {
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+      <div
+        ref={modalRef}
+        className={styles.modal}
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="חיפוש באתר"
+      >
         {/* Input */}
         <div className={styles.inputWrapper}>
           <FiSearch className={styles.searchIcon} />
@@ -124,13 +131,13 @@ const GlobalSearch: React.FC<Props> = ({ isOpen, onClose }) => {
             onChange={e => setQuery(e.target.value)}
             aria-label="חיפוש באתר"
           />
-          <button type="button" className={styles.closeBtn} onClick={onClose}>
+          <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="סגירת חיפוש">
             ESC
           </button>
         </div>
 
         {/* Results */}
-        <div className={styles.results}>
+        <div className={styles.results} aria-live="polite">
           {query.trim() && results.length === 0 && (
             <div className={styles.empty}>
               <div className={styles.emptyIcon}>🔍</div>

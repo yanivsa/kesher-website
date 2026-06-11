@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import posts from '../../data/posts.json';
+import DOMPurify from 'dompurify';
+import posts from '../../data/publishedPosts';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import { getImageDimensions } from '../../data/imageDimensions';
 import styles from './BlogPost.module.css';
 
 const BlogPost: React.FC = () => {
@@ -20,7 +22,7 @@ const BlogPost: React.FC = () => {
     );
   }
 
-  const schemaData = useMemo(() => ({
+  const schemaData = {
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -39,7 +41,7 @@ const BlogPost: React.FC = () => {
           "name": SITE_CONFIG.brand,
           "logo": {
             "@type": "ImageObject",
-            "url": `${SITE_CONFIG.url}/images/generated/site/logo.png`
+            "url": `${SITE_CONFIG.url}/apple-touch-icon.png`
           }
         },
         "description": post.excerpt
@@ -68,7 +70,8 @@ const BlogPost: React.FC = () => {
         ]
       }
     ]
-  }), [post]);
+  };
+  const safeContent = DOMPurify.sanitize(post.content);
 
   return (
     <article className={styles.post}>
@@ -85,9 +88,15 @@ const BlogPost: React.FC = () => {
       <div className={`container ${styles.container}`}>
         <div className={styles.mainContent}>
           <div className={styles.imageWrapper}>
-            <img src={post.image} alt={post.title} className={styles.image} />
+            <img
+              src={post.image}
+              alt={post.title}
+              className={styles.image}
+              {...getImageDimensions(post.image)}
+            />
           </div>
-          <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+          <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
+          <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
           <LeadMagnet />
         </div>
         <aside className={styles.sidebar}>

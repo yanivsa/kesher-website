@@ -3,138 +3,88 @@ name: Auto-merge Kesher article PRs
 on:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
-  schedule:
-    - cron: "*/30 * * * *"
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
   contents: write
   pull-requests: write
-  issues: write
+  checks: read
 
 concurrency:
   group: auto-merge-kesher-article-prs
   cancel-in-progress: false
 
 jobs:
-  validate-and-merge:
+  merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Validate and merge eligible article PRs
+      - name: Merge eligible article PRs after CI
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
 
-          token="${{ github.token }}"
-          repo="${GITHUB_REPOSITORY}"
-          event_name="${GITHUB_EVENT_NAME}"
-
           api() {
             curl --fail-with-body -sS \
-              -H "Authorization: Bearer ${token}" \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
               -H "Accept: application/vnd.github+json" \
               -H "Content-Type: application/json" \
               "$@"
           }
 
-          if [ "$event_name" = "pull_request_target" ]; then
-            numbers="$(python3 - <<'PY'
+          if [ "${EVENT_NAME}" = "pull_request_target" ]; then
+            python3 - <<'PY' > pr-numbers.txt
           import json, os
           with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as fh:
-              event = json.load(fh)
-          print(event["pull_request"]["number"])
+              print(json.load(fh)["pull_request"]["number"])
           PY
-          )"
           else
-            api "https://api.github.com/repos/${repo}/pulls?state=open&per_page=100" > open-prs.json
-            numbers="$(python3 - <<'PY'
-          import json, re
+            api "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" > open-prs.json
+            python3 - <<'PY' > pr-numbers.txt
+          import json
           with open("open-prs.json", encoding="utf-8") as fh:
-              prs = json.load(fh)
-          title_re = re.compile(r"\b(article|post|posts\.json|מאמר)\b", re.I)
-          for pr in prs:
-              if title_re.search(pr.get("title") or ""):
+              for pr in json.load(fh):
                   print(pr["number"])
           PY
-          )"
           fi
 
-          if [ -z "${numbers}" ]; then
-            echo "No eligible article PRs (candidates list empty)."
-            exit 0
-          fi
+          while read -r number; do
+            [ -n "${number}" ] || continue
+            api "https://api.github.com/repos/${REPO}/pulls/${number}" > pr.json
+            api "https://api.github.com/repos/${REPO}/pulls/${number}/files?per_page=100" > files.json
+            sha="$(python3 -c 'import json; print(json.load(open("pr.json"))["head"]["sha"])')"
+            api "https://api.github.com/repos/${REPO}/commits/${sha}/check-runs?per_page=100" > checks.json
 
-          for number in ${numbers}; do
-            echo "Inspecting PR #${number}"
-
-            api "https://api.github.com/repos/${repo}/pulls/${number}" > pr.json
-            api "https://api.github.com/repos/${repo}/pulls/${number}/files?per_page=100" > pr-files.json
-
-            python3 - <<'PY' > gate.env
-          import json
-
-          with open("pr.json", encoding="utf-8") as fh:
-              pr = json.load(fh)
-          with open("pr-files.json", encoding="utf-8") as fh:
-              files = json.load(fh)
-
-          allowed_files = {
-              "src/data/posts.json",
-              "public/sitemap.xml",
-              "public/llms.txt",
-              "public/llms-full.txt",
-          }
-          allowed_prefixes = ("public/images/generated/blog/",)
-
-          filenames = [f.get("filename") for f in files if f.get("filename")]
-
-          def is_allowed(path: str) -> bool:
-              if path in allowed_files:
-                  return True
-              return any(path.startswith(p) for p in allowed_prefixes)
-
-          all_allowed = all(is_allowed(p) for p in filenames)
-          touches_posts = "src/data/posts.json" in filenames
-
+            if ! python3 - <<'PY'
+          import json, sys
+          pr = json.load(open("pr.json"))
+          files = [f["filename"] for f in json.load(open("files.json"))]
+          checks = json.load(open("checks.json")).get("check_runs", [])
+          allowed_files = {"src/data/posts.json", "public/sitemap.xml", "public/llms.txt", "public/llms-full.txt"}
+          allowed = all(f in allowed_files or f.startswith("public/images/generated/blog/") for f in files)
+          ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
           eligible = (
               pr.get("state") == "open"
               and not pr.get("draft")
-              and (pr.get("head") or {}).get("repo", {}).get("full_name") == (pr.get("base") or {}).get("repo", {}).get("full_name")
-              and (pr.get("base") or {}).get("ref") == "main"
-              and touches_posts
-              and all_allowed
+              and pr["base"]["ref"] == "main"
+              and pr["head"]["repo"]["full_name"] == pr["base"]["repo"]["full_name"]
+              and "src/data/posts.json" in files
+              and allowed
+              and ci_passed
           )
-
-          print(f"eligible=\"{'true' if eligible else 'false'}\"")
-          print(f"sha=\"{(pr.get('head') or {}).get('sha') or ''}\"")
-          print(f"reason=\"{'ok' if eligible else 'not eligible (non-article files or wrong base/head)'}\"")
+          sys.exit(0 if eligible else 1)
           PY
-
-            . ./gate.env
-
-            if [ "${eligible}" != "true" ]; then
-              echo "PR #${number} not eligible: ${reason}"
+            then
+              echo "PR #${number} is not an eligible, CI-passing article PR."
               continue
             fi
 
-            rm -rf "pr-${number}"
-            mkdir "pr-${number}"
-            (
-              cd "pr-${number}"
-              git init -q
-              git remote add origin "https://x-access-token:${token}@github.com/${repo}.git"
-              git fetch --depth 1 origin "${sha}"
-              git checkout -q FETCH_HEAD
-              npm ci
-              npm run build
-            )
-
             api -X PUT \
-              -d "{\"commit_title\":\"Auto-merge Kesher article PR #${number}\",\"merge_method\":\"squash\"}" \
-              "https://api.github.com/repos/${repo}/pulls/${number}/merge" \
-              > merge-result.json
-
-            api -X POST \
-              -d "{\"body\":\"Auto-merged after validation: npm ci + npm run build.\"}" \
-              "https://api.github.com/repos/${repo}/issues/${number}/comments" \
-              > /dev/null
-          done
+              -d '{"commit_title":"Auto-merge validated Kesher article","merge_method":"squash"}' \
+              "https://api.github.com/repos/${REPO}/pulls/${number}/merge"
+          done < pr-numbers.txt

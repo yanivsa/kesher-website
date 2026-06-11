@@ -1,0 +1,69 @@
+const fs = require('fs');
+const path = require('path');
+const { ROOT, STATIC_ROUTES, isPublishable, blogRoute, wordCount, headingCount } = require('./content-policy.cjs');
+
+const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
+const published = posts.filter(isPublishable);
+const errors = [];
+const ensureUnique = (label, values) => {
+  const seen = new Set();
+  for (const value of values) {
+    if (seen.has(value)) errors.push(`Duplicate ${label}: ${value}`);
+    seen.add(value);
+  }
+};
+
+ensureUnique('post id', published.map((post) => post.id));
+ensureUnique('post title', published.map((post) => post.title));
+ensureUnique('post image', published.map((post) => post.image));
+
+for (const post of published) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(post.date)) errors.push(`Invalid date: ${post.id}`);
+  if (!post.image.startsWith('/images/')) errors.push(`Non-local image: ${post.id}`);
+  if (!fs.existsSync(path.join(ROOT, 'public', post.image.replace(/^\//, '')))) errors.push(`Missing image: ${post.id}`);
+  if (/<script|onerror=|onclick=|javascript:/i.test(post.content)) errors.push(`Unsafe HTML: ${post.id}`);
+  if (wordCount(post.content) < 500 || headingCount(post.content) < 5) errors.push(`Thin content: ${post.id}`);
+  if (/מוסמכת|הדרך היחידה|טראומות לא נשכחות/.test(post.content)) errors.push(`Unsupported absolute claim: ${post.id}`);
+}
+
+const sitemap = fs.readFileSync(path.join(ROOT, 'public/sitemap.xml'), 'utf8');
+for (const route of [...STATIC_ROUTES, ...published.map(blogRoute)]) {
+  const url = `https://kesher.saharoni.com${route === '/' ? '/' : route}`;
+  if (!sitemap.includes(`<loc>${url}</loc>`)) errors.push(`Missing sitemap URL: ${url}`);
+}
+for (const post of posts.filter((post) => !isPublishable(post))) {
+  if (sitemap.includes(`/blog/${post.id}</loc>`)) errors.push(`Thin post remains indexed: ${post.id}`);
+}
+
+const unsupportedClaims = [
+  /מוסמכת/,
+  /מומחית/,
+  /\bGottman\b/i,
+  /\bEFT\b/,
+  /licensed therapist/i,
+  /הסיכויים להצלחה גבוהים יותר/,
+  /יעילה יותר מטיפול ישיר/,
+  /המנגנון הנוירולוגי של הילד/,
+];
+const claimFiles = [
+  'src/constants/siteConfig.ts',
+  'src/pages/Home/Home.tsx',
+  'src/pages/About/AboutPage.tsx',
+  'src/pages/Services/Couples/CouplesCounseling.tsx',
+  'src/pages/Services/Parenting/ParentingGuidance.tsx',
+  'src/data/faqs.ts',
+  'public/llms.txt',
+];
+for (const relative of claimFiles) {
+  const content = fs.readFileSync(path.join(ROOT, relative), 'utf8');
+  for (const pattern of unsupportedClaims) {
+    if (pattern.test(content)) errors.push(`Unsupported claim in ${relative}: ${pattern}`);
+  }
+}
+
+if (errors.length) {
+  console.error(errors.join('\n'));
+  process.exit(1);
+}
+
+console.log(`Validated ${published.length} published posts; ${posts.length - published.length} thin legacy posts remain unindexed.`);

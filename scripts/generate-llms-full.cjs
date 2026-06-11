@@ -5,6 +5,7 @@ const llmsPath = path.join(__dirname, '../public/llms.txt');
 const faqPath = path.join(__dirname, '../src/data/faqs.ts');
 const postsPath = path.join(__dirname, '../src/data/posts.json');
 const outputPath = path.join(__dirname, '../public/llms-full.txt');
+const { isPublishable } = require('./content-policy.cjs');
 
 // 1. Read llms.txt
 let fullContent = fs.readFileSync(llmsPath, 'utf8');
@@ -61,7 +62,7 @@ services.forEach(service => {
 fullContent += '## מאמרים מלאים (Blog Posts)\n\n';
 const posts = JSON.parse(fs.readFileSync(postsPath, 'utf8'));
 
-posts.forEach(post => {
+posts.filter(isPublishable).forEach(post => {
   fullContent += `### ${post.title}\n`;
   fullContent += `תאריך: ${post.date} | קטגוריה: ${post.category}\n\n`;
 

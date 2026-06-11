@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import posts from '../../data/posts.json';
+import posts from '../../data/publishedPosts';
+import { getImageDimensions } from '../../data/imageDimensions';
 import styles from './BlogPreview.module.css';
 
 // Get latest 3 posts
@@ -20,7 +21,13 @@ const BlogPreview: React.FC = () => {
           {latestPosts.map((post) => (
             <article key={post.id} className={styles.card}>
               <div className={styles.imageWrapper}>
-                <img src={post.image} alt={post.title} className={styles.postImage} />
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className={styles.postImage}
+                  loading="lazy"
+                  {...getImageDimensions(post.image)}
+                />
                 <span className={styles.category}>{post.category}</span>
               </div>
               <div className={styles.content}>

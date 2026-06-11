@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
-import { FiHeart, FiMessageCircle, FiShield, FiStar } from 'react-icons/fi';
+import { FiMessageCircle, FiShield, FiStar } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './CouplesCounseling.module.css';
 
@@ -48,7 +48,7 @@ const CouplesCounseling: React.FC = () => {
       <MetaTags 
         title="ייעוץ זוגי באשדוד ואונליין | שירה סהרוני — יועצת זוגית ומנחת הורים"
         description="ייעוץ זוגי מקצועי ורגיש באשדוד ובאונליין (Zoom). שיפור תקשורת זוגית, חיזוק האינטימיות, התמודדות עם משברים והכנה לחתונה."
-        image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80"
+        image="/images/generated/services/couples-room.jpg"
       />
       <SchemaOrg data={schemaData} />
       
@@ -57,11 +57,11 @@ const CouplesCounseling: React.FC = () => {
           <div className={styles.heroContent}>
             <div className={styles.badge}>מרחב בטוח לזוגיות שלכם</div>
             <h1>להחזיר את <br /><span>החברות והאינטימיות</span></h1>
-            <p className={styles.subtitle}>ייעוץ זוגי רגיש ומקצועי המשלב כלים מעולם ה-Gottman וה-EFT.</p>
+            <p className={styles.subtitle}>ייעוץ זוגי רגיש ומעשי שמתמקד בתקשורת, אמון וחיבור.</p>
             <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
           </div>
           <div className={styles.heroImageWrapper}>
-            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80" alt="ייעוץ זוגי באשדוד" />
+            <img src="/images/generated/services/couples-room.jpg" alt="מרחב שיחה זוגי נעים" width="1600" height="900" />
           </div>
         </div>
       </header>

@@ -17,7 +17,7 @@ const schemaData = {
         "name": SITE_CONFIG.author,
         "alternateName": "Shira Saharoni",
         "jobTitle": ["יועצת זוגית", "מנחת הורים"],
-        "description": "הכירו את שירה סהרוני - יועצת זוגית ומנחת הורים באשדוד. שילוב ייחודי של כלים טיפוליים וראייה מערכתית רגישה.",
+        "description": "הכירו את שירה סהרוני - יועצת זוגית ומנחת הורים באשדוד. שילוב של כלים מעשיים וראייה מערכתית רגישה.",
         "url": `${SITE_CONFIG.url}/about`,
         "image": `${SITE_CONFIG.url}/images/generated/site/about-office.png`,
         "worksFor": {
@@ -54,7 +54,7 @@ const AboutPage: React.FC = () => {
       <SchemaOrg data={schemaData} />
       <MetaTags 
         title="אודות שירה סהרוני | יועצת זוגית ומנחת הורים באשדוד" 
-        description="הכירו את שירה סהרוני - יועצת זוגית ומנחת הורים באשדוד. שילוב ייחודי של כלים טיפוליים וראייה מערכתית רגישה." 
+        description="הכירו את שירה סהרוני - יועצת זוגית ומנחת הורים באשדוד. שילוב של כלים מעשיים וראייה מערכתית רגישה."
       />
       <header className={styles.header}>
         <div className="container">

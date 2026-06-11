@@ -129,10 +129,10 @@
   background: var(--color-primary-light);
   padding: 3rem;
   border-radius: 16px;
-  color: white;
+  color: var(--color-primary-dark);
 }
 
-.cta h3 { color: white; margin-bottom: 0.5rem; }
+.cta h3 { color: var(--color-primary-dark); margin-bottom: 0.5rem; }
 .cta p { margin-bottom: 1.5rem; }
 
 .ctaBtn {

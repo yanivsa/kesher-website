@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiBookOpen, FiFileText, FiHeart, FiMessageCircle, FiUsers } from 'react-icons/fi';
+import { FiBookOpen, FiHeart, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import ServiceCard from '../../components/Services/ServiceCard';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './ServicesSection.module.css';

@@ -2,27 +2,35 @@
   "name": "kesher",
   "version": "1.0.0",
   "type": "module",
-  "description": "",
-  "main": "index.js",
+  "description": "Production website for Shira Saharoni, deployed on Cloudflare Pages.",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/generate-llms-full.cjs",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "generate": "node scripts/generate-sitemap.cjs && node scripts/generate-llms-full.cjs",
+    "prebuild": "npm run generate",
+    "typecheck": "tsc && tsc -p tsconfig.functions.json",
+    "build": "npm run typecheck && vite build && node scripts/prerender.cjs",
+    "preview": "vite preview",
+    "lint": "eslint src functions tests",
+    "test": "vitest run",
+    "test:content": "node scripts/validate-content.cjs",
+    "test:e2e": "playwright test",
+    "verify:dist": "node scripts/verify-dist.cjs",
+    "check": "npm run generate && npm run lint && npm run test:content && npm run test && npm run build && npm run verify:dist && npm run test:e2e"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yanivsa/kesher-website.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["couples counseling", "parenting guidance", "ashdod"],
+  "author": "Shira Saharoni",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/yanivsa/kesher-website/issues"
   },
-  "homepage": "https://github.com/yanivsa/kesher-website#readme",
+  "homepage": "https://kesher.saharoni.com",
   "dependencies": {
     "@vitejs/plugin-react-swc": "^4.3.1",
+    "dompurify": "^3.4.9",
     "framer-motion": "^12.38.0",
     "fuse.js": "^7.4.2",
     "react": "^19.2.6",
@@ -32,9 +40,19 @@
     "vite": "^8.0.13"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "@cloudflare/workers-types": "^4.20260611.1",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.60.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^10.4.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
     "playwright": "^1.60.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.0",
+    "vitest": "^4.1.8"
   }
 }

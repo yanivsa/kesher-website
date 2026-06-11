@@ -40,10 +40,10 @@
 
   .whatsappBtn {
     color: white;
-    background-color: #25D366; /* WhatsApp Green */
+    background-color: var(--color-whatsapp);
   }
 
   .whatsappBtn:active {
-    background-color: #20bd5a;
+    background-color: #0d542b;
   }
 }

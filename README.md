@@ -1,34 +1,31 @@
-# שירה סהרוני — ייעוץ זוגי והדרכת הורים באשדוד
+# Kesher website
 
-האתר הרשמי של שירה סהרוני: יועצת זוגית ומנחת הורים מוסמכת, המתמחה בליווי משפחות והורים לילדים עם הפרעות קשב וריכוז (ADHD).
+Production website for Shira Saharoni, built with React, TypeScript, and Vite and deployed to Cloudflare Pages.
 
-🔗 **בקרו באתר הרשמי:** [שירה סהרוני — ייעוץ זוגי והדרכת הורים](https://kesher.saharoni.com)
+## Local development
 
----
+```bash
+npm ci
+npm run dev
+```
 
-## שירותי הקליניקה באשדוד ובאונליין:
+## Quality gates
 
-### 👩‍❤️‍👨 [ייעוץ זוגי באשדוד](https://kesher.saharoni.com/services/couples)
-ליווי זוגות במשבר, שיפור תקשורת מקרבת, התמודדות עם שחיקה רגשית וזוגית, שיקום אמון לאחר משבר או בגידה, וחיזוק האינטימיות והקשר הרגשי.
-* לפרטים נוספים: [יועצת זוגית באשדוד מומלצת](https://kesher.saharoni.com/services/couples)
+```bash
+npm run check
+```
 
-### 👨‍👩‍👧‍👦 [הדרכת הורים ADHD אשדוד](https://kesher.saharoni.com/services/parenting)
-ליווי והדרכת הורים לילדים ומתבגרים, תוך התמחות מיוחדת בילדים בעלי הפרעת קשב וריכוז (ADHD). בניית סמכות הורית מתוך קשר, שיפור האווירה בבית ופתרון קשיים התנהגותיים.
-* למידע נוסף: [הדרכת הורים וילדים עם ADHD באשדוד](https://kesher.saharoni.com/services/parenting)
+The full gate validates generated discovery files, linting, TypeScript, contact API behavior, content policy, prerendered routes, desktop/mobile layout, route metadata, and serious accessibility findings.
 
+## Content policy
 
+- Public articles must contain at least 500 words and five practical `h3` sections.
+- Every public article must use a unique local image under `public/images/`.
+- Thin legacy articles remain in `src/data/posts.json` but are excluded from public routes, search, sitemap, and `llms-full.txt`.
+- Do not add unsupported credentials, clinical promises, or legal/mediation services.
 
----
+## Deployment
 
-## 📝 [מאמרים וטיפים מקצועיים בבלוג](https://kesher.saharoni.com/blog)
-אנו מזמינים אתכם לקרוא מגוון מאמרים מקצועיים ומדריכים שכתבה שירה בנושאי זוגיות, משפחה, הורות וקשב וריכוז:
-* [איך להתארגן בבוקר עם ילד ADHD בצורה רגועה?](https://kesher.saharoni.com/blog)
-* [האם ניתן לשקם את האמון הזוגי לאחר בגידה?](https://kesher.saharoni.com/blog)
+Changes reach production only from `main`, after the complete quality gate passes. The deployment workflow publishes `dist/` to the `kesher-website` Cloudflare Pages project.
 
----
-
-## יצירת קשר עם הקליניקה:
-* 📞 **טלפון נייד:** 050-2763802
-* 📧 **אימייל:** shira@saharoni.com
-* 📍 **מיקום הקליניקה:** אשדוד, ישראל (ומפגשים מקוונים בזום)
-
+Production: [kesher.saharoni.com](https://kesher.saharoni.com)
