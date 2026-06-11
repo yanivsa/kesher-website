@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './AIChatbot.css';
 
 declare module 'react' {
   namespace JSX {
