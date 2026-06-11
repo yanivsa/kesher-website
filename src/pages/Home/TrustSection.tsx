@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiAward, FiShield, FiHeart } from 'react-icons/fi';
+import { FiTarget, FiShield, FiHeart, FiMaximize } from 'react-icons/fi';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './TrustSection.module.css';
 
@@ -12,23 +12,23 @@ const TrustSection: React.FC = () => {
         <div className={`${styles.content} reveal ${isVisible ? 'visible' : ''}`}>
           <h2 className={styles.title}>סטנדרט מקצועי ללא פשרות</h2>
           <p className={styles.subtitle}>
-            הליווי המקצועי משלב ידע אקדמי ומעשי משלושה עולמות תוכן משלימים, כדי לתת לכם מענה מקיף, בטוח ומדויק.
+            הליווי המקצועי משלב ידע אקדמי ומעשי משלושה עולמות תוכן משלימים, כדי לתת לכם מענה מקיף, פרקטי ובטוח.
           </p>
           <div className={`${styles.grid} reveal-stagger ${isVisible ? 'visible' : ''}`}>
             <div className={styles.card}>
-              <div className={styles.iconWrapper}><FiHeart aria-hidden="true" /></div>
-              <h3>ייעוץ זוגי והדרכת הורים</h3>
-              <p>הסמכה מקצועית בייעוץ זוגי והנחיית משפחות. התמקדות בשיפור התקשורת, ויסות רגשי ויצירת קרבה אמיתית.</p>
-            </div>
-            <div className={styles.card}>
               <div className={styles.iconWrapper}><FiShield aria-hidden="true" /></div>
-              <h3>גישור משפחתי</h3>
-              <p>מגשרת מוסמכת מטעם לשכת עורכי הדין. מומחיות בבניית הסכמות רגישות למשפחות במשבר ומעברי חיים.</p>
+              <h3>מרחב בטוח ללא שיפוטיות</h3>
+              <p>מקום בטוח ודיסקרטי בו תוכלו להביא את עצמכם בדיוק כפי שאתם. הקשבה עמוקה, אמפתיה אמיתית והכלה של כל הקשיים והמורכבויות בדרך לפתרון.</p>
             </div>
             <div className={styles.card}>
-              <div className={styles.iconWrapper}><FiAward aria-hidden="true" /></div>
-              <h3>רקע משפטי</h3>
-              <p>כעורכת דין (LL.B), הגישור מנוהל תוך הבנה עמוקה של המשמעויות המעשיות, מה שמעניק לכם ביטחון ושקט נפשי בהחלטות שמתקבלות.</p>
+              <div className={styles.iconWrapper}><FiTarget aria-hidden="true" /></div>
+              <h3>כלים מעשיים לשגרת היום</h3>
+              <p>התמקדות בפתרונות פרקטיים שתוכלו ליישם מיד. טכניקות לתקשורת מקרבת, כלים לניהול קונפליקטים וויסות רגשי במצבי לחץ בבית.</p>
+            </div>
+            <div className={styles.card}>
+              <div className={styles.iconWrapper}><FiMaximize aria-hidden="true" /></div>
+              <h3>הסתכלות מערכתית שלמה</h3>
+              <p>ראייה רחבה שמחברת בין הייעוץ הזוגי להדרכת ההורים. הבנה עמוקה כיצד הקשר הזוגי משפיע על ההורות, ולהפך, לבניית משפחה חזקה ויציבה.</p>
             </div>
           </div>
         </div>
