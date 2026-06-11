@@ -9,10 +9,13 @@ const errors = [];
 for (const route of routes) {
   const file = route === '/'
     ? path.join(ROOT, 'dist/index.html')
-    : path.join(ROOT, 'dist', route.replace(/^\//, ''), 'index.html');
+    : path.join(ROOT, 'dist', `${route.replace(/^\//, '')}.html`);
   if (!fs.existsSync(file)) {
     errors.push(`Missing prerendered route: ${route}`);
     continue;
+  }
+  if (route !== '/' && fs.existsSync(path.join(ROOT, 'dist', route.replace(/^\//, ''), 'index.html'))) {
+    errors.push(`Route would force a trailing-slash redirect: ${route}`);
   }
   const html = fs.readFileSync(file, 'utf8');
   if (!/<h1[\s>]/.test(html)) errors.push(`Missing h1 in prerendered HTML: ${route}`);
