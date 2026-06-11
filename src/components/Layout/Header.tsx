@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { lazy, Suspense, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { FiMenu, FiX } from 'react-icons/fi';
+import { FiMenu, FiSearch, FiX } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../constants/siteConfig';
-import GlobalSearch, { SearchTrigger } from '../GlobalSearch/GlobalSearch';
 import styles from './Header.module.css';
+
+const GlobalSearch = lazy(() => import('../GlobalSearch/GlobalSearch'));
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -52,16 +53,23 @@ const Header: React.FC = () => {
           {/* Search + Mobile Toggle */}
           <div className={styles.actions}>
             <SearchTrigger onClick={openSearch} />
-            <button type="button" className={styles.menuToggle} onClick={toggleMenu} aria-label="פתיחת תפריט">
+            <button
+              type="button"
+              className={styles.menuToggle}
+              onClick={toggleMenu}
+              aria-label={isMenuOpen ? 'סגירת תפריט' : 'פתיחת תפריט'}
+              aria-expanded={isMenuOpen}
+              aria-controls="main-navigation"
+            >
               {isMenuOpen ? <FiX /> : <FiMenu />}
             </button>
           </div>
 
           {/* Navigation */}
-          <nav className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
+          <nav id="main-navigation" aria-label="ניווט ראשי" className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
             <Link to="/about" onClick={closeMenu}>אודות</Link>
             <div className={styles.dropdown}>
-              <span className={styles.navLink}>שירותים</span>
+              <button type="button" className={styles.navLink}>שירותים</button>
               <div className={styles.dropdownContent}>
                 <Link to="/services/couples" onClick={closeMenu}>ייעוץ זוגי</Link>
                 <Link to="/services/parenting" onClick={closeMenu}>הדרכת הורים</Link>
@@ -74,9 +82,24 @@ const Header: React.FC = () => {
         </div>
       </header>
 
-      <GlobalSearch isOpen={isSearchOpen} onClose={closeSearch} />
+      <Suspense fallback={null}>
+        {isSearchOpen && <GlobalSearch isOpen={isSearchOpen} onClose={closeSearch} />}
+      </Suspense>
     </>
   );
 };
+
+const SearchTrigger: React.FC<{ onClick: () => void }> = ({ onClick }) => (
+  <button
+    type="button"
+    className={styles.searchTrigger}
+    onClick={onClick}
+    aria-label="חיפוש באתר"
+    title="חיפוש"
+  >
+    <FiSearch aria-hidden="true" />
+    <span>חיפוש...</span>
+  </button>
+);
 
 export default Header;

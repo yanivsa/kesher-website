@@ -1,13 +1,13 @@
 :root {
   /* Primary — Warm Sage (Calm) */
-  --color-primary: #7C9E87;
-  --color-primary-light: #9BB8A4;
-  --color-primary-dark: #5A7A65;
+  --color-primary: #4A6854;
+  --color-primary-light: #D6E3D9;
+  --color-primary-dark: #3F5E49;
 
   /* Accent — Warm Terracotta (Trust) */
-  --color-accent: #C07B5A;
-  --color-accent-light: #E5A882;
-  --color-accent-dark: #A36447;
+  --color-accent: #945035;
+  --color-accent-light: #F2D8C8;
+  --color-accent-dark: #7E3D29;
 
   /* Neutrals */
   --color-bg: #FAF7F4; /* Warm Cream */
@@ -17,7 +17,7 @@
   --color-border: #E5E1DD;
 
   /* Status */
-  --color-whatsapp: #25D366;
+  --color-whatsapp: #126B37;
   
   /* Spacing */
   --spacing-xs: 0.5rem;

@@ -40,6 +40,9 @@ const Hero: React.FC = () => {
               src="/images/generated/site/home-hero.jpg" 
               alt="מרחב בטוח לייעוץ זוגי והדרכת הורים - שירה סהרוני" 
               className={styles.heroImage}
+              width="1600"
+              height="900"
+              fetchPriority="high"
             />
             <div className={styles.overlay}></div>
             <div className={styles.photoNote}>

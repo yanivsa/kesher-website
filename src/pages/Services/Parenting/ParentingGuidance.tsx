@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
-import { FiTarget, FiZap, FiSmile, FiCompass } from 'react-icons/fi';
+import { FiTarget, FiZap, FiSmile } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './ParentingGuidance.module.css';
 
@@ -48,20 +48,20 @@ const ParentingGuidance: React.FC = () => {
       <MetaTags 
         title="הדרכת הורים באשדוד | ADHD והכנה לכיתה א' | שירה סהרוני"
         description="הדרכת הורים מקצועית באשדוד. התמחות בהכנה לכיתה א' לילדים עם ADHD, בניית שגרה, ויסות רגשי והצבת גבולות."
-        image="https://images.unsplash.com/photo-1510906594845-bc082582c8cc?auto=format&fit=crop&w=1200&q=80"
+        image="/images/generated/services/parenting-room.jpg"
       />
       <SchemaOrg data={schemaData} />
       
       <header className={styles.header}>
         <div className={`container ${styles.heroContainer}`}>
           <div className={styles.heroContent}>
-            <div className={styles.badge}>מומחית ב-ADHD ואתגרי קשב</div>
+            <div className={styles.badge}>ליווי הורים סביב ADHD ואתגרי קשב</div>
             <h1>להפסיק להילחם <br /><span>ולהתחיל להוביל</span></h1>
             <p className={styles.subtitle}>הדרכת הורים מעשית שנותנת לכם ביטחון, סמכות וחיבור אמיתי לילד.</p>
             <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
           </div>
           <div className={styles.heroImageWrapper}>
-            <img src="https://images.unsplash.com/photo-1510906594845-bc082582c8cc?auto=format&fit=crop&w=1200&q=80" alt="הדרכת הורים באשדוד" />
+            <img src="/images/generated/services/parenting-room.jpg" alt="מרחב נעים להדרכת הורים" width="1600" height="900" />
           </div>
         </div>
       </header>
@@ -105,7 +105,7 @@ const ParentingGuidance: React.FC = () => {
             <div className={styles.step}>
               <div className={styles.stepNum}>03</div>
               <h4>ליווי ויישום</h4>
-              <p>אני איתכם לאורך הדרך, מדייקים את הכלים ורואים תוצאות בשטח.</p>
+              <p>אני איתכם לאורך הדרך, מדייקים את הכלים ובודקים מה עוזר בבית.</p>
             </div>
           </div>
         </div>

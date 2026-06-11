@@ -20,6 +20,33 @@ html {
   min-height: 100vh;
 }
 
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  inset-inline-start: 0.5rem;
+  z-index: 5000;
+  padding: 0.7rem 1rem;
+  background: var(--color-text);
+  color: white;
+  border-radius: var(--radius-sm);
+  transform: translateY(-150%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.route-loading {
+  min-height: 50vh;
+  display: grid;
+  place-items: center;
+}
+
 /* === Scroll Reveal Animations === */
 @keyframes fadeInUp {
   from {

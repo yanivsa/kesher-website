@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiShield } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import { submitContact } from '../../lib/contactApi';
 import styles from './ContactSection.module.css';
 
 const ContactSection: React.FC = () => {
@@ -12,7 +13,9 @@ const ContactSection: React.FC = () => {
     service: 'couples',
     message: ''
   });
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [company, setCompany] = useState('');
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const startedAt = useRef(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -23,26 +26,19 @@ const ContactSection: React.FC = () => {
     e.preventDefault();
     setSubmitStatus('idle');
     
-    const formSpreeUrl = SITE_CONFIG.formspreeUrl;
-
     try {
-      const response = await fetch(formSpreeUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          _subject: `פנייה חדשה מהאתר: ${formData.name}`,
-        }),
+      setSubmitStatus('submitting');
+      await submitContact({
+        kind: 'contact',
+        ...formData,
+        company,
+        startedAt: startedAt.current,
       });
-      
-      if (response.ok) {
-        setSubmitStatus('success');
-        setFormData({ name: '', email: '', phone: '', service: 'couples', message: '' });
-      } else {
-        setSubmitStatus('error');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
+      setSubmitStatus('success');
+      setFormData({ name: '', email: '', phone: '', service: 'couples', message: '' });
+      setCompany('');
+      startedAt.current = 0;
+    } catch {
       setSubmitStatus('error');
     }
   };
@@ -98,12 +94,30 @@ const ContactSection: React.FC = () => {
               </button>
             </div>
           ) : (
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <form
+              className={styles.form}
+              onSubmit={handleSubmit}
+              onFocus={() => {
+                if (!startedAt.current) startedAt.current = Date.now();
+              }}
+            >
               {submitStatus === 'error' && (
-                <div className={styles.errorMessage}>
+                <div className={styles.errorMessage} role="alert">
                   הייתה שגיאה בשליחת הטופס. אנא נסו שוב או פנו אלי ישירות בטלפון / WhatsApp.
                 </div>
               )}
+              <div className={styles.honeypot} aria-hidden="true">
+                <label htmlFor="company">חברה</label>
+                <input
+                  id="company"
+                  name="company"
+                  type="text"
+                  value={company}
+                  onChange={(event) => setCompany(event.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </div>
               <div className={styles.formGroup}>
                 <label htmlFor="name">שם מלא</label>
                 <input 
@@ -166,10 +180,12 @@ const ContactSection: React.FC = () => {
                   placeholder="ספרו לי קצת על הפנייה שלכם..."
                 ></textarea>
               </div>
-              <button type="submit" className={styles.submitBtn}>שליחת פנייה</button>
+              <button type="submit" className={styles.submitBtn} disabled={submitStatus === 'submitting'}>
+                {submitStatus === 'submitting' ? 'שולחת...' : 'שליחת פנייה'}
+              </button>
               <div className={styles.privacyNote}>
                 <FiShield aria-hidden="true" />
-                <span>כל פנייה נשמרת בדיסקרטיות וסודיות מלאה.</span>
+                <span>הפרטים משמשים לחזרה אליכם בלבד, בהתאם למדיניות הפרטיות.</span>
               </div>
             </form>
           )}

@@ -1,37 +1,42 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout/Layout'
 import ScrollToTop from './components/ScrollToTop'
-import Home from './pages/Home/Home'
-import CouplesCounseling from './pages/Services/Couples/CouplesCounseling'
-import ParentingGuidance from './pages/Services/Parenting/ParentingGuidance'
-import BlogList from './pages/Blog/BlogList'
-import BlogPost from './pages/Blog/BlogPost'
-import FAQ from './pages/FAQ/FAQ'
-import AboutPage from './pages/About/AboutPage'
-import ContactPage from './pages/Contact/ContactPage'
-import AccessibilityPage from './pages/Legal/AccessibilityPage'
-import PrivacyPolicy from './pages/Legal/PrivacyPolicy'
-import TermsOfUse from './pages/Legal/TermsOfUse'
+
+const Home = lazy(() => import('./pages/Home/Home'))
+const CouplesCounseling = lazy(() => import('./pages/Services/Couples/CouplesCounseling'))
+const ParentingGuidance = lazy(() => import('./pages/Services/Parenting/ParentingGuidance'))
+const BlogList = lazy(() => import('./pages/Blog/BlogList'))
+const BlogPost = lazy(() => import('./pages/Blog/BlogPost'))
+const FAQ = lazy(() => import('./pages/FAQ/FAQ'))
+const AboutPage = lazy(() => import('./pages/About/AboutPage'))
+const ContactPage = lazy(() => import('./pages/Contact/ContactPage'))
+const AccessibilityPage = lazy(() => import('./pages/Legal/AccessibilityPage'))
+const PrivacyPolicy = lazy(() => import('./pages/Legal/PrivacyPolicy'))
+const TermsOfUse = lazy(() => import('./pages/Legal/TermsOfUse'))
+const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
 
 function App() {
   return (
     <Router>
       <ScrollToTop />
       <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/services/couples" element={<CouplesCounseling />} />
-          <Route path="/services/parenting" element={<ParentingGuidance />} />
-          <Route path="/blog" element={<BlogList />} />
-          <Route path="/blog/:id" element={<BlogPost />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/accessibility" element={<AccessibilityPage />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/terms" element={<TermsOfUse />} />
-        </Routes>
+        <Suspense fallback={<div className="route-loading" role="status">טוענת...</div>}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/services/couples" element={<CouplesCounseling />} />
+            <Route path="/services/parenting" element={<ParentingGuidance />} />
+            <Route path="/blog" element={<BlogList />} />
+            <Route path="/blog/:id" element={<BlogPost />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/accessibility" element={<AccessibilityPage />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfUse />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </Layout>
     </Router>
   )

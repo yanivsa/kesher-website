@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiTarget, FiShield, FiHeart, FiMaximize } from 'react-icons/fi';
+import { FiTarget, FiShield, FiMaximize } from 'react-icons/fi';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './TrustSection.module.css';
 
@@ -12,7 +12,7 @@ const TrustSection: React.FC = () => {
         <div className={`${styles.content} reveal ${isVisible ? 'visible' : ''}`}>
           <h2 className={styles.title}>סטנדרט מקצועי ללא פשרות</h2>
           <p className={styles.subtitle}>
-            הליווי המקצועי משלב ידע אקדמי ומעשי משלושה עולמות תוכן משלימים, כדי לתת לכם מענה מקיף, פרקטי ובטוח.
+            הליווי משלב הסתכלות זוגית והורית עם כלים מעשיים, כדי לתת לכם מענה רחב, פרקטי ומכבד.
           </p>
           <div className={`${styles.grid} reveal-stagger ${isVisible ? 'visible' : ''}`}>
             <div className={styles.card}>

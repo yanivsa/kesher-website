@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { FiSearch, FiFilter } from 'react-icons/fi';
-import posts from '../../data/posts.json';
+import posts from '../../data/publishedPosts';
+import { getImageDimensions } from '../../data/imageDimensions';
 import Fuse from 'fuse.js';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
@@ -65,13 +66,8 @@ const schemaData = {
 const BlogList: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || 'הכל');
-  const [activeSubcategory, setActiveSubcategory] = useState(searchParams.get('subcategory') || 'הכל');
-
-  useEffect(() => {
-    setActiveCategory(searchParams.get('category') || 'הכל');
-    setActiveSubcategory(searchParams.get('subcategory') || 'הכל');
-  }, [searchParams]);
+  const activeCategory = searchParams.get('category') || 'הכל';
+  const activeSubcategory = searchParams.get('subcategory') || 'הכל';
 
   const handleCategoryChange = (category: string) => {
     setSearchParams(category === 'הכל' ? {} : { category });
@@ -84,24 +80,18 @@ const BlogList: React.FC = () => {
     setSearchParams(params);
   };
 
-  const fuse = useMemo(() => new Fuse(posts, {
+  const fuse = new Fuse(posts, {
     keys: ['title', 'excerpt'],
     threshold: 0.3,
-  }), []);
+  });
 
-  const filteredPosts = useMemo(() => {
-    let result = posts;
-    if (searchQuery) {
-      result = fuse.search(searchQuery).map(res => res.item);
-    }
-    if (activeCategory !== 'הכל') {
-      result = result.filter(post => post.category === activeCategory);
-    }
-    if (activeSubcategory !== 'הכל') {
-      result = result.filter(post => 'subcategory' in post && post.subcategory === activeSubcategory);
-    }
-    return result;
-  }, [searchQuery, activeCategory, activeSubcategory, fuse]);
+  let filteredPosts = searchQuery ? fuse.search(searchQuery).map(res => res.item) : posts;
+  if (activeCategory !== 'הכל') {
+    filteredPosts = filteredPosts.filter(post => post.category === activeCategory);
+  }
+  if (activeSubcategory !== 'הכל') {
+    filteredPosts = filteredPosts.filter(post => 'subcategory' in post && post.subcategory === activeSubcategory);
+  }
 
   const resetFilters = () => {
     setSearchQuery('');
@@ -174,7 +164,13 @@ const BlogList: React.FC = () => {
             {filteredPosts.map((post) => (
               <article key={post.id} className={styles.card}>
                 <div className={styles.imageWrapper}>
-                  <img src={post.image} alt={post.title} className={styles.image} loading="lazy" />
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className={styles.image}
+                    loading="lazy"
+                    {...getImageDimensions(post.image)}
+                  />
                   <span className={styles.categoryBadge}>
                     {('subcategory' in post && post.subcategory) ? post.subcategory : post.category}
                   </span>

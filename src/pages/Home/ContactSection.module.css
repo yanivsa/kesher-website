@@ -78,6 +78,15 @@
   gap: var(--spacing-md);
 }
 
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .formGroup {
   display: flex;
   flex-direction: column;
@@ -126,6 +135,12 @@
   background: var(--color-primary-dark);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+}
+
+.submitBtn:disabled {
+  cursor: wait;
+  opacity: 0.7;
+  transform: none;
 }
 
 @media (max-width: 992px) {

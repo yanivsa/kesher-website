@@ -59,10 +59,15 @@
 }
 
 .navLink {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
   color: var(--color-text);
   font-weight: 500;
   font-size: 1rem;
   cursor: pointer;
+  padding: 0;
 }
 
 .dropdownContent {
@@ -88,7 +93,8 @@
   background-color: var(--color-bg);
 }
 
-.dropdown:hover .dropdownContent {
+.dropdown:hover .dropdownContent,
+.dropdown:focus-within .dropdownContent {
   display: block;
 }
 
@@ -112,6 +118,21 @@
   gap: 0.5rem;
 }
 
+.searchTrigger {
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font: inherit;
+  cursor: pointer;
+}
+
 .menuToggle {
   display: none;
   background: none;
@@ -126,6 +147,16 @@
 @media (max-width: 768px) {
   .menuToggle {
     display: block;
+  }
+
+  .searchTrigger {
+    min-width: 0;
+    border-radius: 50%;
+    padding: 0.5rem;
+  }
+
+  .searchTrigger span {
+    display: none;
   }
 
   .nav {

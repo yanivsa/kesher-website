@@ -3,3 +3,30 @@
     bottom: 80px !important;
   }
 }
+
+.ai-chat-consent {
+  position: fixed;
+  inset-inline-start: 1rem;
+  bottom: 1rem;
+  z-index: 999;
+  border: 1px solid var(--color-primary-dark);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  box-shadow: var(--shadow-md);
+  padding: 0.65rem 1rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ai-chat-consent:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+  .ai-chat-consent {
+    bottom: 76px;
+  }
+}

@@ -51,6 +51,16 @@
 .form {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
 }
 
 .input {
@@ -87,12 +97,29 @@
   transform: translateY(-2px);
 }
 
+.button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+  transform: none;
+}
+
 .successMessage {
   background: rgba(37, 211, 102, 0.1);
   color: #20bd5a;
   padding: 1rem;
   border-radius: var(--radius-sm);
   font-weight: 700;
+}
+
+.successMessage a {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.errorMessage {
+  flex-basis: 100%;
+  color: #8f1d1d !important;
+  margin: 0 !important;
 }
 
 @media (max-width: 600px) {

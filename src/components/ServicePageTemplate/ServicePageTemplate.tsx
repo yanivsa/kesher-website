@@ -1,6 +1,5 @@
 import React from 'react';
 import MetaTags from '../SEO/MetaTags';
-import SchemaOrg from '../SEO/SchemaOrg';
 import styles from './ServicePageTemplate.module.css';
 
 interface ServicePageTemplateProps {

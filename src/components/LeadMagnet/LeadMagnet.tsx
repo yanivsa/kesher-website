@@ -1,28 +1,34 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FiDownload } from 'react-icons/fi';
-import { SITE_CONFIG } from '../../constants/siteConfig';
+import { submitContact } from '../../lib/contactApi';
 import styles from './LeadMagnet.module.css';
 
 const LeadMagnet: React.FC = () => {
   const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [company, setCompany] = useState('');
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [downloadUrl, setDownloadUrl] = useState('');
+  const startedAt = useRef(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
 
-    // Simulate sending email to Formspree or email marketing service
-    const formSpreeUrl = SITE_CONFIG.formspreeUrl;
     try {
-      await fetch(formSpreeUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, _subject: "בקשה להורדת מדריך: 5 משפטים שיעצרו כל ריב" }),
+      setStatus('submitting');
+      const result = await submitContact({
+        kind: 'lead_magnet',
+        email,
+        company,
+        startedAt: startedAt.current,
       });
-      setSubmitted(true);
+      setDownloadUrl(result.downloadUrl || '/guides/5-sentences-stop-an-argument.html');
+      setStatus('success');
       setEmail('');
-    } catch (error) {
-      console.error(error);
+      setCompany('');
+      startedAt.current = 0;
+    } catch {
+      setStatus('error');
     }
   };
 
@@ -32,15 +38,32 @@ const LeadMagnet: React.FC = () => {
         <div className={styles.content}>
           <h3>מרגישים שהריבים יוצאים משליטה?</h3>
           <p>
-            הורידו בחינם את המדריך הקצר שלי: <strong>"5 משפטים שיעצרו כל ריב תוך 3 דקות"</strong>.
+            הורידו בחינם את המדריך הקצר שלי: <strong>"5 משפטים שעוזרים לעצור הסלמה בזמן ריב"</strong>.
             כלים מעשיים מהקליניקה שאפשר ליישם כבר הערב.
           </p>
-          {submitted ? (
-            <div className={styles.successMessage}>
-              <p>תודה! המדריך בדרך לתיבת המייל שלך.</p>
+          {status === 'success' ? (
+            <div className={styles.successMessage} role="status">
+              <p>תודה! אפשר להוריד את המדריך עכשיו.</p>
+              <a href={downloadUrl} download>להורדת המדריך</a>
             </div>
           ) : (
-            <form className={styles.form} onSubmit={handleSubmit}>
+            <form
+              className={styles.form}
+              onSubmit={handleSubmit}
+              onFocus={() => {
+                if (!startedAt.current) startedAt.current = Date.now();
+              }}
+            >
+              <input
+                type="text"
+                name="company"
+                value={company}
+                onChange={(event) => setCompany(event.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                className={styles.honeypot}
+              />
               <input
                 type="email"
                 placeholder="הכנס/י כתובת אימייל"
@@ -50,9 +73,12 @@ const LeadMagnet: React.FC = () => {
                 required
                 className={styles.input}
               />
-              <button type="submit" className={styles.button}>
-                <FiDownload /> שליחה למייל
+              <button type="submit" className={styles.button} disabled={status === 'submitting'}>
+                <FiDownload /> {status === 'submitting' ? 'שולחת...' : 'קבלת קישור להורדה'}
               </button>
+              {status === 'error' && (
+                <p className={styles.errorMessage} role="alert">לא הצלחנו לשלוח את הבקשה. נסו שוב בעוד רגע.</p>
+              )}
             </form>
           )}
         </div>

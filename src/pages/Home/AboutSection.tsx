@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiAward, FiBriefcase, FiCompass } from 'react-icons/fi';
+import { FiAward, FiCompass } from 'react-icons/fi';
 import styles from './AboutSection.module.css';
 
 const AboutSection: React.FC = () => {
@@ -12,6 +12,9 @@ const AboutSection: React.FC = () => {
               src="/images/generated/site/about-office.png" 
               alt="קליניקה נעימה ומזמינה" 
               className={styles.aboutImage}
+              width="1024"
+              height="1024"
+              loading="lazy"
             />
             <div className={styles.experienceBadge}>
               <span className={styles.years}>בעלת</span>

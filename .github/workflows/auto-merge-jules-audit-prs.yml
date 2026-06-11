@@ -3,24 +3,25 @@ name: Auto-merge Jules audit PRs
 on:
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
-  schedule:
-    - cron: "*/30 * * * *"
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
   contents: write
   pull-requests: write
-  issues: write
+  checks: read
 
 concurrency:
   group: auto-merge-jules-audit-prs
   cancel-in-progress: false
 
 jobs:
-  validate-and-merge:
+  merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Validate and merge eligible Jules audit PRs
+      - name: Merge eligible Jules audit PRs after CI
         env:
           GITHUB_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -40,84 +41,53 @@ jobs:
             python3 - <<'PY' > pr-numbers.txt
           import json, os
           with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as fh:
-              event = json.load(fh)
-          print(event["pull_request"]["number"])
+              print(json.load(fh)["pull_request"]["number"])
           PY
           else
             api "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" > open-prs.json
             python3 - <<'PY' > pr-numbers.txt
-          import json, re
+          import json
           with open("open-prs.json", encoding="utf-8") as fh:
-              prs = json.load(fh)
-          approved = re.compile(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review):", re.I)
-          for pr in prs:
-              if approved.search(pr.get("title") or ""):
+              for pr in json.load(fh):
                   print(pr["number"])
           PY
           fi
 
-          if [ ! -s pr-numbers.txt ]; then
-            echo "No eligible Jules audit PRs."
-            exit 0
-          fi
-
           while read -r number; do
-            echo "Inspecting PR #${number}"
+            [ -n "${number}" ] || continue
             api "https://api.github.com/repos/${REPO}/pulls/${number}" > pr.json
-            api "https://api.github.com/repos/${REPO}/pulls/${number}/files?per_page=100" > pr-files.json
+            api "https://api.github.com/repos/${REPO}/pulls/${number}/files?per_page=100" > files.json
+            sha="$(python3 -c 'import json; print(json.load(open("pr.json"))["head"]["sha"])')"
+            api "https://api.github.com/repos/${REPO}/commits/${sha}/check-runs?per_page=100" > checks.json
 
-            python3 - <<'PY' > gate.env
-          import json, re
-          with open("pr.json", encoding="utf-8") as fh:
-              pr = json.load(fh)
-          with open("pr-files.json", encoding="utf-8") as fh:
-              files = json.load(fh)
-
-          filenames = [f.get("filename") for f in files if f.get("filename")]
-          blocked_prefixes = (".github/workflows/", ".github/actions/")
-          blocked_files = {"package.json", "package-lock.json", "vite.config.ts", "tsconfig.json", ".env"}
-          touches_blocked = any(
-              f in blocked_files or any(f.startswith(prefix) for prefix in blocked_prefixes)
-              for f in filenames
+            if ! python3 - <<'PY'
+          import json, re, sys
+          pr = json.load(open("pr.json"))
+          files = [f["filename"] for f in json.load(open("files.json"))]
+          checks = json.load(open("checks.json")).get("check_runs", [])
+          title_ok = re.search(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review|industry review):", pr.get("title") or "", re.I)
+          allowed = all(
+              f == "README.md" or f.startswith(("src/", "public/", "docs/"))
+              for f in files
           )
-          approved = re.compile(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review):", re.I)
+          ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
           eligible = (
               pr.get("state") == "open"
               and not pr.get("draft")
-              and approved.search(pr.get("title") or "")
-              and (pr.get("head") or {}).get("repo", {}).get("full_name") == (pr.get("base") or {}).get("repo", {}).get("full_name")
-              and (pr.get("base") or {}).get("ref") == "main"
-              and not touches_blocked
+              and title_ok
+              and pr["base"]["ref"] == "main"
+              and pr["head"]["repo"]["full_name"] == pr["base"]["repo"]["full_name"]
+              and allowed
+              and ci_passed
           )
-          print(f"eligible='{'true' if eligible else 'false'}'")
-          print(f"sha='{(pr.get('head') or {}).get('sha') or ''}'")
+          sys.exit(0 if eligible else 1)
           PY
-            . ./gate.env
-
-            if [ "${eligible}" != "true" ]; then
-              echo "PR #${number} is not eligible for audit auto-merge."
+            then
+              echo "PR #${number} is not an eligible, CI-passing audit PR."
               continue
             fi
 
-            rm -rf "pr-${number}"
-            mkdir "pr-${number}"
-            (
-              cd "pr-${number}"
-              git init -q
-              git remote add origin "https://github.com/${REPO}.git"
-              git fetch --depth 1 origin "${sha}"
-              git checkout -q FETCH_HEAD
-              npm ci
-              npm run build
-            )
-
             api -X PUT \
-              -d "{\"commit_title\":\"Auto-merge Jules audit PR #${number}\",\"merge_method\":\"squash\"}" \
-              "https://api.github.com/repos/${REPO}/pulls/${number}/merge" \
-              > merge-result.json
-
-            api -X POST \
-              -d "{\"body\":\"Auto-merged after repository validation: npm ci + npm run build.\"}" \
-              "https://api.github.com/repos/${REPO}/issues/${number}/comments" \
-              > /dev/null
+              -d '{"commit_title":"Auto-merge validated Jules audit","merge_method":"squash"}' \
+              "https://api.github.com/repos/${REPO}/pulls/${number}/merge"
           done < pr-numbers.txt
