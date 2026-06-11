@@ -17,7 +17,7 @@ const LeadMagnet: React.FC = () => {
       await fetch(formSpreeUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, _subject: "בקשה להורדת מדריך: 5 מילים שיעצרו ריב" }),
+        body: JSON.stringify({ email, _subject: "בקשה להורדת מדריך: 5 משפטים שיעצרו כל ריב" }),
       });
       setSubmitted(true);
       setEmail('');

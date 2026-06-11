@@ -53,9 +53,9 @@ const AIChatbot: React.FC = () => {
       agent-id="agent_2201kthm21rbejr80f69dgq03dhv"
       avatar-orb-color-1="#7C9E87" /* Primary color from variables: sage green */
       avatar-orb-color-2="#C07B5A" /* Accent color: warm terracotta */
-      action-text="דברו עם יועצת ה-AI שלנו"
-      start-call-text="התחלת שיחה"
-      end-call-text="סיום שיחה"
+      action-text="צ'אט עם עוזרת ה-AI שלנו"
+      start-call-text="התחלת צ'אט"
+      end-call-text="סיום צ'אט"
       disable-banner="true"
     />
   );

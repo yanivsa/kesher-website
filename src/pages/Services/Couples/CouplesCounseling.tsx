@@ -46,8 +46,8 @@ const CouplesCounseling: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags 
-        title="הכנה לחתונה לזוגות שרוצים להתחיל נכון | שירה סהרוני"
-        description="הכנה זוגית לפני חתונה, עם מסלולים ממוקדים למתחתנים שהוריהם גרושים ולזוגות שבהם אחד או שני בני הזוג מתמודדים עם ADHD."
+        title="ייעוץ זוגי באשדוד ואונליין | שירה סהרוני — יועצת זוגית ומנחת הורים"
+        description="ייעוץ זוגי מקצועי ורגיש באשדוד ובאונליין (Zoom). שיפור תקשורת זוגית, חיזוק האינטימיות, התמודדות עם משברים והכנה לחתונה."
         image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80"
       />
       <SchemaOrg data={schemaData} />
