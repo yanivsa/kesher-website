@@ -1,0 +1,5 @@
+@media (max-width: 768px) {
+  elevenlabs-convai {
+    bottom: 80px !important;
+  }
+}
