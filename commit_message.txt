@@ -1,0 +1,4 @@
+feat(home): add FAQ section to homepage to build trust
+
+Extracted 4 highly relevant questions from the central faqs
+data and rendered them via an accordion above the CTA.
