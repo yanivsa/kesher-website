@@ -104,6 +104,20 @@ const CouplesCounseling: React.FC = () => {
         </div>
       </section>
 
+      <section className={styles.boundaries}>
+        <div className="container">
+          <div className={styles.boundariesContent}>
+            <h2>למי הליווי פחות יתאים?</h2>
+            <p>כדי שהתהליך יצליח, נדרשת בשלות ומחויבות. הליווי פחות מתאים במקרים הבאים:</p>
+            <ul className={styles.boundariesList}>
+              <li>מחפשים 'קסמים' או פתרונות אינסטנט בלי נכונות לעבודת עומק.</li>
+              <li>מגיעים כדי 'לתקן את בן/בת הזוג' בלי רצון להסתכל גם על החלק שלכם בדינמיקה.</li>
+              <li>מצבי אלימות במשפחה (במקרים אלו יש לפנות למרכזים ייעודיים לטיפול באלימות).</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <section className={styles.specializations}>
         <div className="container">
           <div className={styles.specializationsHeader}>
