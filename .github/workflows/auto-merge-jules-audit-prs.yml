@@ -75,16 +75,20 @@ jobs:
           pr = json.load(open("pr.json"))
           files = [f["filename"] for f in json.load(open("files.json"))]
           checks = json.load(open("checks.json")).get("check_runs", [])
-          title_ok = re.search(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review):", pr.get("title") or "", re.I)
+          title_match = re.search(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review):", pr.get("title") or "", re.I)
+          audit_kind = title_match.group(1).lower() if title_match else ""
+          allowed_prefixes = ("src/", "public/", "docs/")
+          if audit_kind == "seo geo review":
+              allowed_prefixes += ("scripts/",)
           allowed = all(
-              f == "README.md" or f.startswith(("src/", "public/", "docs/"))
+              f == "README.md" or f.startswith(allowed_prefixes)
               for f in files
           )
           ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
           eligible = (
               pr.get("state") == "open"
               and not pr.get("draft")
-              and title_ok
+              and title_match
               and pr["base"]["ref"] == "main"
               and pr["head"]["repo"]["full_name"] == pr["base"]["repo"]["full_name"]
               and allowed
