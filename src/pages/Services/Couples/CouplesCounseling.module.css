@@ -195,6 +195,48 @@
   font-weight: 800;
 }
 
+.boundaries {
+  padding: 6rem 0;
+  background-color: rgba(124, 158, 135, 0.05);
+}
+
+.boundariesContent {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: right;
+  background: white;
+  padding: 3rem;
+  border-radius: 16px;
+  border-right: 4px solid var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.boundariesContent h2 {
+  margin-bottom: 1rem;
+}
+
+.boundariesList {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.boundariesList li {
+  font-size: 1.1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.boundariesList li::before {
+  content: '−';
+  color: #d32f2f;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
 .bottomCta {
   text-align: center;
   margin-top: 4rem;
@@ -211,7 +253,7 @@
 }
 
 @media (max-width: 992px) {
-  .hero, .painPoints, .approach, .specializations, .ctaSection { padding: 3rem 0; }
+  .hero, .painPoints, .approach, .specializations, .boundaries, .ctaSection { padding: 3rem 0; }
   .heroContainer { grid-template-columns: 1fr; text-align: center; }
   .heroContent h1 { font-size: 2.8rem; }
   .subtitle { margin: 0 auto 2rem; }
