@@ -6,7 +6,11 @@ const { ROOT, STATIC_ROUTES, isPublishable, blogRoute } = require('./content-pol
 
 const dist = path.join(ROOT, 'dist');
 const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
-const routes = [...STATIC_ROUTES, ...posts.filter(isPublishable).map(blogRoute)];
+const routes = [
+  ...STATIC_ROUTES.filter(r => r !== '/'),
+  ...posts.filter(isPublishable).map(blogRoute),
+  '/'
+];
 const port = 4179;
 let viteExitCode = null;
 const vite = spawn(process.execPath, [
