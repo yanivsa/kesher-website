@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import posts from '../../data/publishedPosts';
@@ -13,24 +13,17 @@ const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const post = posts.find(p => p.id === id);
 
-  if (!post) {
-    return (
-      <div className="container">
-        <h1>המאמר לא נמצא</h1>
-        <Link to="/blog">חזרה לבלוג</Link>
-      </div>
-    );
-  }
 
-  const schemaData = {
+
+  const schemaData = useMemo(() => ({
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "Article",
-        "headline": post.title,
-        "image": `${SITE_CONFIG.url}${post.image}`,
-        "url": `${SITE_CONFIG.url}/blog/${post.id}`,
-        "datePublished": post.date,
+        "headline": post?.title || "",
+        "image": `${SITE_CONFIG.url}${post?.image || ""}`,
+        "url": `${SITE_CONFIG.url}/blog/${post?.id || ""}`,
+        "datePublished": post?.date || "",
         "author": {
           "@type": "Person",
           "name": SITE_CONFIG.author,
@@ -44,7 +37,7 @@ const BlogPost: React.FC = () => {
             "url": `${SITE_CONFIG.url}/apple-touch-icon.png`
           }
         },
-        "description": post.excerpt
+        "description": post?.excerpt || ""
       },
       {
         "@type": "BreadcrumbList",
@@ -64,13 +57,22 @@ const BlogPost: React.FC = () => {
           {
             "@type": "ListItem",
             "position": 3,
-            "name": post.title,
-            "item": `${SITE_CONFIG.url}/blog/${post.id}`
+            "name": post?.title || "",
+            "item": `${SITE_CONFIG.url}/blog/${post?.id || ""}`
           }
         ]
       }
     ]
-  };
+  }), [post?.title, post?.image, post?.id, post?.date, post?.excerpt]);
+
+  if (!post) {
+    return (
+      <div className="container">
+        <h1>המאמר לא נמצא</h1>
+        <Link to="/blog">חזרה לבלוג</Link>
+      </div>
+    );
+  }
   const safeContent = DOMPurify.sanitize(post.content);
 
   return (
