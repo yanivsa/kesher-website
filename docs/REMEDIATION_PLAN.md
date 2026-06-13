@@ -106,11 +106,19 @@ Completed locally:
 - Initial JavaScript is `258.03 kB` (`81.83 kB` gzip), reduced from the `481.71 kB` baseline.
 - The obsolete `kesher-external-articles` and `kesher-seo-worker` Cloudflare Workers were deleted.
 
-Pending publication proof:
+Completed publication proof:
 
-- GitHub CI must pass on the remediation pull request and merged `main`.
-- Cloudflare Pages must deploy the merged commit.
-- Live routes, headers, metadata, API behavior, and `404` handling must pass the final smoke test.
+- GitHub CI passes on the remediation pull requests and merged `main`.
+- Cloudflare Pages production deployment succeeds from the corrected `main`.
+- Live routes return clean `200` URLs without trailing-slash redirects, unknown routes return `404`, and `GET /api/contact` returns JSON `405`.
+- Live HTML contains one route-specific description and canonical link, security headers are present, immutable assets are cached, and the AI provider script is absent before consent.
+- `main` requires the strict `verify` check, blocks force-pushes and deletions, and has Dependabot alerts and security updates enabled.
+- GitHub Actions run on Node.js 24-compatible pinned versions without runtime deprecation warnings.
+
+Additional findings fixed during live verification:
+
+- Prerendered routes were changed from directory indexes to clean `.html` files to align live URLs with canonical URLs and the sitemap.
+- GitHub Actions were upgraded from Node.js 20 runtimes before the platform migration deadline.
 
 ## Completion Audit
 

@@ -65,7 +65,7 @@
 
 @media (max-width: 768px) {
   .footer {
-    padding-bottom: 80px;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
   }
   .container {
     grid-template-columns: 1fr;
