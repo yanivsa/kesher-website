@@ -1,6 +1,6 @@
 @media (max-width: 768px) {
   elevenlabs-convai {
-    bottom: 80px !important;
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
 
@@ -27,6 +27,6 @@
 
 @media (max-width: 768px) {
   .ai-chat-consent {
-    bottom: 76px;
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
   }
 }

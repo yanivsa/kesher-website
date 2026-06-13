@@ -37,6 +37,16 @@ jobs:
               "$@"
           }
 
+          api_status() {
+            curl -sS \
+              -o response.json \
+              -w '%{http_code}' \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "Content-Type: application/json" \
+              "$@"
+          }
+
           if [ "${EVENT_NAME}" = "pull_request_target" ]; then
             python3 - <<'PY' > pr-numbers.txt
           import json, os
@@ -65,16 +75,20 @@ jobs:
           pr = json.load(open("pr.json"))
           files = [f["filename"] for f in json.load(open("files.json"))]
           checks = json.load(open("checks.json")).get("check_runs", [])
-          title_ok = re.search(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review|industry review):", pr.get("title") or "", re.I)
+          title_match = re.search(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review):", pr.get("title") or "", re.I)
+          audit_kind = title_match.group(1).lower() if title_match else ""
+          allowed_prefixes = ("src/", "public/", "docs/")
+          if audit_kind == "seo geo review":
+              allowed_prefixes += ("scripts/",)
           allowed = all(
-              f == "README.md" or f.startswith(("src/", "public/", "docs/"))
+              f == "README.md" or f.startswith(allowed_prefixes)
               for f in files
           )
           ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
           eligible = (
               pr.get("state") == "open"
               and not pr.get("draft")
-              and title_ok
+              and title_match
               and pr["base"]["ref"] == "main"
               and pr["head"]["repo"]["full_name"] == pr["base"]["repo"]["full_name"]
               and allowed
@@ -87,7 +101,27 @@ jobs:
               continue
             fi
 
-            api -X PUT \
+            merge_status="$(api_status -X PUT \
               -d '{"commit_title":"Auto-merge validated Jules audit","merge_method":"squash"}' \
-              "https://api.github.com/repos/${REPO}/pulls/${number}/merge"
+              "https://api.github.com/repos/${REPO}/pulls/${number}/merge")"
+
+            case "${merge_status}" in
+              200|201)
+                echo "Merged eligible audit PR #${number}."
+                ;;
+              405|409)
+                echo "PR #${number} needs a refreshed branch/check run before merge; requesting update."
+                update_status="$(api_status -X PUT \
+                  -d '{}' \
+                  "https://api.github.com/repos/${REPO}/pulls/${number}/update-branch")"
+                if [ "${update_status}" != "202" ]; then
+                  cat response.json
+                  exit 1
+                fi
+                ;;
+              *)
+                cat response.json
+                exit 1
+                ;;
+            esac
           done < pr-numbers.txt
