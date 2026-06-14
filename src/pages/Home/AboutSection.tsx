@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiAward, FiCompass } from 'react-icons/fi';
+import { FiAward, FiCompass, FiBookOpen } from 'react-icons/fi';
 import styles from './AboutSection.module.css';
 
 const AboutSection: React.FC = () => {
@@ -40,6 +40,10 @@ const AboutSection: React.FC = () => {
             <div className={styles.credential}>
               <span className={styles.icon}><FiAward aria-hidden="true" /></span>
               <span>הדרכת הורים, כולל התמודדות עם ADHD ואתגרי קשב</span>
+            </div>
+            <div className={styles.credential}>
+              <span className={styles.icon}><FiBookOpen aria-hidden="true" /></span>
+              <span>הכשרה מקצועית מקיפה [TODO: להוסיף פירוט מוסדות ותעודות]</span>
             </div>
           </div>
           <a href="#contact" className={styles.cta}>בואו נדבר</a>
