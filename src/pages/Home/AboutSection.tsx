@@ -43,7 +43,7 @@ const AboutSection: React.FC = () => {
             </div>
             <div className={styles.credential}>
               <span className={styles.icon}><FiBookOpen aria-hidden="true" /></span>
-              <span>הכשרה מקצועית מקיפה [TODO: להוסיף פירוט מוסדות ותעודות]</span>
+              <span>הכשרה מקצועית מקיפה וניסיון קליני עשיר בליווי משפחות וזוגות</span>
             </div>
           </div>
           <a href="#contact" className={styles.cta}>בואו נדבר</a>
