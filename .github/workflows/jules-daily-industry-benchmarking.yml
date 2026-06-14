@@ -71,6 +71,9 @@ jobs:
           }
           JSON
 
+          jq '.prompt += "\n\nHard evidence guardrail: Never invent, infer, strengthen, or generalize credentials, certifications, degrees, clinical experience, years of experience, client volume, locations served, testimonials, outcomes, or professional claims. Treat competitor claims only as layout/content-pattern inspiration, never as facts about Shira. If the chosen improvement would require unsupported facts, choose another focused improvement or finish as a no-op. Never replace a missing-fact TODO with generic authority copy."' payload.json > payload.tmp
+          mv payload.tmp payload.json
+
           curl --fail-with-body -sS \
             -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
