@@ -71,6 +71,9 @@ jobs:
           }
           JSON
 
+          jq '.prompt += "\n\nHard missing-fact guardrail: Never add visible TODO placeholders to the website and never invent, infer, strengthen, or generalize credentials, certifications, degrees, clinical experience, years of experience, client volume, testimonials, outcomes, or professional claims. If a content improvement requires missing facts, leave that area unchanged and choose another supported improvement or finish as a no-op."' payload.json > payload.tmp
+          mv payload.tmp payload.json
+
           curl --fail-with-body -sS \
             -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
