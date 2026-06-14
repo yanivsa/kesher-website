@@ -19,7 +19,8 @@ const schemaData = {
         "@type": "LocalBusiness",
         "@id": `${SITE_CONFIG.url}/#business`
       },
-      "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הכנה לכיתה א', הצבת גבולות ושיפור האווירה המשפחתית."
+      "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הכנה לכיתה א', הצבת גבולות ושיפור האווירה המשפחתית.",
+      "image": `${SITE_CONFIG.url}/images/generated/services/parenting-room.jpg`
     },
     {
       "@type": "BreadcrumbList",

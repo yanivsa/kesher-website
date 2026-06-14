@@ -19,7 +19,8 @@ const schemaData = {
         "@type": "LocalBusiness",
         "@id": `${SITE_CONFIG.url}/#business`
       },
-      "description": "הכנה לחתונה לזוגות שרוצים להתחיל נכון, כולל ליווי למתחתנים שהוריהם גרושים ולזוגות שבהם אחד או שני בני הזוג מתמודדים עם ADHD."
+      "description": "הכנה לחתונה לזוגות שרוצים להתחיל נכון, כולל ליווי למתחתנים שהוריהם גרושים ולזוגות שבהם אחד או שני בני הזוג מתמודדים עם ADHD.",
+      "image": `${SITE_CONFIG.url}/images/generated/services/couples-room.jpg`
     },
     {
       "@type": "BreadcrumbList",
