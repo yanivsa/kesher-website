@@ -11,13 +11,37 @@ interface MetaTagsProps {
   noIndex?: boolean;
 }
 
-const upsertMeta = (selector: string, attributes: Record<string, string>) => {
-  const matches = [...document.head.querySelectorAll<HTMLMetaElement>(selector)];
-  const element = matches.shift() || document.createElement('meta');
-  for (const duplicate of matches) duplicate.remove();
-  for (const [name, value] of Object.entries(attributes)) element.setAttribute(name, value);
-  element.dataset.kesherSeo = 'true';
-  if (!element.parentElement) document.head.appendChild(element);
+const upsertMetaTagsBatch = (tags: Record<string, string>[]) => {
+  const existingMetas = document.head.querySelectorAll('meta');
+  const metaMap: Record<string, HTMLMetaElement[]> = {};
+
+  for (const meta of existingMetas) {
+    const name = meta.getAttribute('name');
+    const property = meta.getAttribute('property');
+    const key = name ? `name=${name}` : property ? `property=${property}` : null;
+    if (key) {
+      if (!metaMap[key]) metaMap[key] = [];
+      metaMap[key].push(meta);
+    }
+  }
+
+  for (const attributes of tags) {
+    const isName = 'name' in attributes;
+    const key = isName ? `name=${attributes.name}` : `property=${attributes.property}`;
+    if (!key) continue;
+
+    const matches = metaMap[key] || [];
+    const element = matches.shift() || document.createElement('meta');
+
+    for (const duplicate of matches) duplicate.remove();
+    for (const [name, value] of Object.entries(attributes)) {
+      if (element.getAttribute(name) !== value) {
+        element.setAttribute(name, value);
+      }
+    }
+    element.dataset.kesherSeo = 'true';
+    if (!element.parentElement) document.head.appendChild(element);
+  }
 };
 
 const upsertCanonical = (href: string) => {
@@ -49,27 +73,28 @@ const MetaTags = ({
 
   useEffect(() => {
     document.title = title;
-    upsertMeta('meta[name="description"]', { name: 'description', content: description });
+
     upsertCanonical(currentUrl);
 
-    const meta = [
-      ['meta[property="og:type"]', { property: 'og:type', content: ogType }],
-      ['meta[property="og:title"]', { property: 'og:title', content: title }],
-      ['meta[property="og:description"]', { property: 'og:description', content: description }],
-      ['meta[property="og:url"]', { property: 'og:url', content: currentUrl }],
-      ['meta[property="og:site_name"]', { property: 'og:site_name', content: SITE_CONFIG.author }],
-      ['meta[property="og:image"]', { property: 'og:image', content: imageUrl }],
-      ['meta[name="twitter:card"]', { name: 'twitter:card', content: 'summary_large_image' }],
-      ['meta[name="twitter:title"]', { name: 'twitter:title', content: title }],
-      ['meta[name="twitter:description"]', { name: 'twitter:description', content: description }],
-      ['meta[name="twitter:image"]', { name: 'twitter:image', content: imageUrl }],
-    ] as const;
+    const metaTags: Record<string, string>[] = [
+      { name: 'description', content: description },
+      { property: 'og:type', content: ogType },
+      { property: 'og:title', content: title },
+      { property: 'og:description', content: description },
+      { property: 'og:url', content: currentUrl },
+      { property: 'og:site_name', content: SITE_CONFIG.author },
+      { property: 'og:image', content: imageUrl },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: title },
+      { name: 'twitter:description', content: description },
+      { name: 'twitter:image', content: imageUrl },
+    ];
 
-    for (const [selector, attributes] of meta) upsertMeta(selector, attributes);
+    upsertMetaTagsBatch(metaTags);
 
     const robots = [...document.head.querySelectorAll<HTMLMetaElement>('meta[name="robots"]')];
     if (noIndex) {
-      upsertMeta('meta[name="robots"]', { name: 'robots', content: 'noindex, nofollow' });
+      upsertMetaTagsBatch([{ name: 'robots', content: 'noindex, nofollow' }]);
     } else {
       for (const element of robots) element.remove();
     }
