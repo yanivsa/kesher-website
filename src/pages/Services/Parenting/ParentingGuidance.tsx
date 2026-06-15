@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
+import ServiceFAQ from '../../../components/FAQ/ServiceFAQ';
+import faqs from '../../../data/faqs';
 import { FiTarget, FiZap, FiSmile } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './ParentingGuidance.module.css';
+
+const parentingFaqs = faqs.filter(f => f.category === "הדרכת הורים");
 
 const schemaData = {
   "@context": "https://schema.org",
@@ -37,6 +41,17 @@ const schemaData = {
           "item": `${SITE_CONFIG.url}/services/parenting`
         }
       ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": parentingFaqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
     }
   ]
 };
@@ -140,6 +155,8 @@ const ParentingGuidance: React.FC = () => {
           </Link>
         </div>
       </section>
+
+      <ServiceFAQ category="הדרכת הורים" />
 
       <section className={styles.ctaArea}>
         <div className="container">
