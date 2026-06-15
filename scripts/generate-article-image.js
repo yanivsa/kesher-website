@@ -39,6 +39,7 @@ function buildPrompt(title) {
 
 async function main() {
   const apiKey = process.env.DEEPAI_API_KEY;
+  delete process.env.DEEPAI_API_KEY;
   if (!apiKey) {
     console.warn("WARNING: DEEPAI_API_KEY is missing. Skipping DeepAI image generation.");
     process.exit(0);
