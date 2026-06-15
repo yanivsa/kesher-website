@@ -1,47 +1,21 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiShield } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../constants/siteConfig';
-import { submitContact } from '../../lib/contactApi';
+import { useContactForm } from '../../hooks/useContactForm';
 import styles from './ContactSection.module.css';
 
 const ContactSection: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    service: 'couples',
-    message: ''
-  });
-  const [company, setCompany] = useState('');
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const startedAt = useRef(0);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitStatus('idle');
-    
-    try {
-      setSubmitStatus('submitting');
-      await submitContact({
-        kind: 'contact',
-        ...formData,
-        company,
-        startedAt: startedAt.current,
-      });
-      setSubmitStatus('success');
-      setFormData({ name: '', email: '', phone: '', service: 'couples', message: '' });
-      setCompany('');
-      startedAt.current = 0;
-    } catch {
-      setSubmitStatus('error');
-    }
-  };
+  const {
+    formData,
+    company,
+    setCompany,
+    submitStatus,
+    handleChange,
+    handleSubmit,
+    handleFocus,
+    resetStatus
+  } = useContactForm();
 
   return (
     <section id="contact" className={styles.contact}>
@@ -88,7 +62,7 @@ const ContactSection: React.FC = () => {
               <button 
                 type="button" 
                 className={styles.resetBtn} 
-                onClick={() => setSubmitStatus('idle')}
+                onClick={resetStatus}
               >
                 שליחת פנייה נוספת
               </button>
@@ -97,9 +71,7 @@ const ContactSection: React.FC = () => {
             <form
               className={styles.form}
               onSubmit={handleSubmit}
-              onFocus={() => {
-                if (!startedAt.current) startedAt.current = Date.now();
-              }}
+              onFocus={handleFocus}
             >
               {submitStatus === 'error' && (
                 <div className={styles.errorMessage} role="alert">
