@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { FiSearch, FiFilter } from 'react-icons/fi';
 import posts from '../../data/publishedPosts';
 import { getImageDimensions } from '../../data/imageDimensions';
-import Fuse from 'fuse.js';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './BlogList.module.css';
+import { useBlogFilters } from '../../hooks/useBlogFilters';
+
 
 const categories = ['הכל', 'זוגיות', 'הדרכת הורים'];
 
@@ -64,39 +65,16 @@ const schemaData = {
 };
 
 const BlogList: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState('');
-  const activeCategory = searchParams.get('category') || 'הכל';
-  const activeSubcategory = searchParams.get('subcategory') || 'הכל';
-
-  const handleCategoryChange = (category: string) => {
-    setSearchParams(category === 'הכל' ? {} : { category });
-  };
-
-  const handleSubcategoryChange = (subcategory: string) => {
-    const params: Record<string, string> = {};
-    if (activeCategory !== 'הכל') params.category = activeCategory;
-    if (subcategory !== 'הכל') params.subcategory = subcategory;
-    setSearchParams(params);
-  };
-
-  const fuse = new Fuse(posts, {
-    keys: ['title', 'excerpt'],
-    threshold: 0.3,
-  });
-
-  let filteredPosts = searchQuery ? fuse.search(searchQuery).map(res => res.item) : posts;
-  if (activeCategory !== 'הכל') {
-    filteredPosts = filteredPosts.filter(post => post.category === activeCategory);
-  }
-  if (activeSubcategory !== 'הכל') {
-    filteredPosts = filteredPosts.filter(post => 'subcategory' in post && post.subcategory === activeSubcategory);
-  }
-
-  const resetFilters = () => {
-    setSearchQuery('');
-    setSearchParams({});
-  };
+  const {
+    searchQuery,
+    setSearchQuery,
+    activeCategory,
+    activeSubcategory,
+    handleCategoryChange,
+    handleSubcategoryChange,
+    filteredPosts,
+    resetFilters
+  } = useBlogFilters(posts);
 
   return (
     <div className={styles.blog}>
