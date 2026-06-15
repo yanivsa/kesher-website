@@ -1,0 +1,8 @@
+🎯 **What:** Added unit tests for the `getImageDimensions` pure function in `src/data/imageDimensions.ts` which acts as a dictionary lookup with a fallback.
+
+📊 **Coverage:** Covered the following scenarios:
+- Happy path: Retrieving correct dimensions for a known image source.
+- Fallback: Returning default dimensions (512x512) for an unknown image source.
+- Fallback: Returning default dimensions (512x512) for an empty string.
+
+✨ **Result:** Increased test coverage by ensuring the `getImageDimensions` function behaves correctly under both expected and edge-case conditions, making it safe for future refactoring.
