@@ -21,7 +21,11 @@
     "type": "git",
     "url": "git+https://github.com/yanivsa/kesher-website.git"
   },
-  "keywords": ["couples counseling", "parenting guidance", "ashdod"],
+  "keywords": [
+    "couples counseling",
+    "parenting guidance",
+    "ashdod"
+  ],
   "author": "Shira Saharoni",
   "license": "ISC",
   "bugs": {
@@ -44,12 +48,14 @@
     "@cloudflare/workers-types": "^4.20260611.1",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.60.0",
+    "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "eslint": "^10.4.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "jsdom": "^29.1.1",
     "playwright": "^1.60.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.0",
