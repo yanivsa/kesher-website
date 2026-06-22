@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { FiSearch, FiFilter } from 'react-icons/fi';
 import posts from '../../data/publishedPosts';
@@ -80,10 +80,10 @@ const BlogList: React.FC = () => {
     setSearchParams(params);
   };
 
-  const fuse = new Fuse(posts, {
+  const fuse = useMemo(() => new Fuse(posts, {
     keys: ['title', 'excerpt'],
     threshold: 0.3,
-  });
+  }), []);
 
   let filteredPosts = searchQuery ? fuse.search(searchQuery).map(res => res.item) : posts;
   if (activeCategory !== 'הכל') {
