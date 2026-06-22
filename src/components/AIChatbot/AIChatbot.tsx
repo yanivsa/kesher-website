@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './AIChatbot.css';
 
 const CONSENT_KEY = 'kesher-ai-chat-consent';
-const SCRIPT_URL = 'https://unpkg.com/@elevenlabs/convai-widget-embed@0.8.1';
+const SCRIPT_URL = 'https://unpkg.com/@elevenlabs/convai-widget-embed@0.8.1/dist/index.js';
 
 const AIChatbot: React.FC = () => {
   const [consented, setConsented] = useState(() => localStorage.getItem(CONSENT_KEY) === 'yes');
@@ -20,6 +20,8 @@ const AIChatbot: React.FC = () => {
     const script = document.createElement('script');
     script.src = SCRIPT_URL;
     script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.integrity = 'sha384-xAcN9ZVkolOzxxKgR7KnzBpuVW7VKHhxLT+SRsWwD0oaLf5C9l2F7GhUG4mctZvC';
     script.dataset.kesherAiChat = 'true';
     script.onload = () => setScriptLoaded(true);
     document.body.appendChild(script);
