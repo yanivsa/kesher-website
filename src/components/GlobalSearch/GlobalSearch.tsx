@@ -54,7 +54,11 @@ const GlobalSearch: React.FC<Props> = ({ isOpen, onClose }) => {
   // Focus input when modal opens
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 50);
+      // Use requestAnimationFrame to ensure the DOM has updated
+      // and the input is visible before trying to focus it
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => inputRef.current?.focus());
+      });
     }
   }, [isOpen]);
 
