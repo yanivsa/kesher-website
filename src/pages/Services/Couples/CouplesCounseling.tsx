@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
+import ServiceFAQ from '../../../components/FAQ/ServiceFAQ';
+import faqs from '../../../data/faqs';
 import { FiMessageCircle, FiShield, FiStar } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './CouplesCounseling.module.css';
+
+const couplesFaqs = faqs.filter(f => f.category === "ייעוץ זוגי");
 
 const schemaData = {
   "@context": "https://schema.org",
@@ -37,6 +41,17 @@ const schemaData = {
           "item": `${SITE_CONFIG.url}/services/couples`
         }
       ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": couplesFaqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
     }
   ]
 };
@@ -145,6 +160,8 @@ const CouplesCounseling: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <ServiceFAQ category="ייעוץ זוגי" />
 
       <section className={styles.ctaSection}>
         <div className="container">
