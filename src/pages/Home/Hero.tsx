@@ -22,12 +22,15 @@ const Hero: React.FC = () => {
           <div className={styles.actions}>
             <a href={SITE_CONFIG.links.whatsapp} className={styles.primaryBtn}>
               <FaWhatsapp aria-hidden="true" />
-              שיחת היכרות בוואטסאפ
+              תיאום שיחת היכרות
             </a>
             <Link to="/about" className={styles.secondaryBtn}>
               במה אני יכולה לעזור לכם?
               <FiArrowLeft aria-hidden="true" />
             </Link>
+          </div>
+          <div className={styles.ctaNote}>
+            * שיחת ההיכרות הראשונית היא טלפונית וללא עלות
           </div>
           <div className={styles.trustBar} aria-label="תחומי התמחות">
             <span>יועצת זוגית</span>

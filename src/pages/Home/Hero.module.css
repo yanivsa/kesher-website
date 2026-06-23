@@ -65,6 +65,12 @@
 .actions {
   display: flex;
   gap: var(--spacing-md);
+  margin-bottom: 0.5rem;
+}
+
+.ctaNote {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
   margin-bottom: var(--spacing-xl);
 }
 

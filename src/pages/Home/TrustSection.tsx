@@ -10,9 +10,9 @@ const TrustSection: React.FC = () => {
     <section className={styles.trustSection}>
       <div className={`container ${styles.container}`} ref={ref}>
         <div className={`${styles.content} reveal ${isVisible ? 'visible' : ''}`}>
-          <h2 className={styles.title}>סטנדרט מקצועי ללא פשרות</h2>
+          <h2 className={styles.title}>ליווי ממוקד, פרקטי ובגובה העיניים</h2>
           <p className={styles.subtitle}>
-            הליווי משלב הסתכלות זוגית והורית עם כלים מעשיים, כדי לתת לכם מענה רחב, פרקטי ומכבד.
+            הליווי משלב הסתכלות זוגית והורית עם כלים מעשיים שתוכלו ליישם כבר היום, כדי לתת לכם מענה רחב ומכבד.
           </p>
           <div className={`${styles.grid} reveal-stagger ${isVisible ? 'visible' : ''}`}>
             <div className={styles.card}>
