@@ -24,6 +24,7 @@ const BlogPost: React.FC = () => {
         "image": `${SITE_CONFIG.url}${post?.image || ""}`,
         "url": `${SITE_CONFIG.url}/blog/${post?.id || ""}`,
         "datePublished": post?.date || "",
+        "dateModified": post?.date || "",
         "author": {
           "@type": "Person",
           "name": SITE_CONFIG.author,
