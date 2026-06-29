@@ -6,9 +6,10 @@ interface SchemaOrgProps {
 
 const SchemaOrg: React.FC<SchemaOrgProps> = ({ data }) => {
   return (
-    <script type="application/ld+json">
-      {JSON.stringify(data)}
-    </script>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
   );
 };
 
