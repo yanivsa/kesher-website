@@ -45,10 +45,10 @@ const Hero: React.FC = () => {
               fetchPriority="high"
             />
             <div className={styles.overlay}></div>
-            <div className={styles.photoNote}>
-              <strong>מרחב דיסקרטי ומכבד</strong>
-              <span>פגישות באשדוד ובאונליין</span>
-            </div>
+          </div>
+          <div className={styles.photoNote}>
+            <strong>מרחב דיסקרטי ומכבד</strong>
+            <span>פגישות באשדוד ובאונליין</span>
           </div>
         </div>
       </div>

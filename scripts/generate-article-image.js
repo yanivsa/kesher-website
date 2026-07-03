@@ -27,14 +27,16 @@ function downloadImage(url, filepath) {
   });
 }
 
-function buildPrompt(title) {
+function buildPrompt(title, customPrompt = "") {
   return [
     `Realistic professional editorial photography for a Hebrew counseling article titled: ${title}.`,
+    customPrompt ? `${customPrompt}.` : "",
     "Warm natural light, modest everyday Israeli home or counseling room.",
     "Emotionally respectful scene of a couple, parent and child, or family conversation.",
+    "Subjects should have typical Israeli appearances (Middle Eastern, Mediterranean, or European demographics). Avoid depicting East Asian or African-American ethnicities.",
     "No text, no logos, no watermark, no clinical stock-photo feeling.",
     "High-quality 8k resolution, photorealistic, cinematic lighting, sharp focus, detailed textures.",
-  ].join(" ");
+  ].filter(Boolean).join(" ");
 }
 
 async function main() {
@@ -45,9 +47,9 @@ async function main() {
     process.exit(0);
   }
 
-  const [slug, title = slug] = process.argv.slice(2);
+  const [slug, title = slug, customPrompt = ""] = process.argv.slice(2);
   if (!slug) {
-    console.error("ERROR: Usage: node scripts/generate-article-image.js <slug> [title]");
+    console.error("ERROR: Usage: node scripts/generate-article-image.js <slug> [title] [customPrompt]");
     process.exit(1);
   }
 
@@ -58,7 +60,7 @@ async function main() {
         "Api-Key": apiKey,
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: new URLSearchParams({ text: buildPrompt(title) }),
+      body: new URLSearchParams({ text: buildPrompt(title, customPrompt) }),
     });
 
     if (!response.ok) {
