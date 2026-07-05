@@ -88,12 +88,12 @@ const ParentingGuidance: React.FC = () => {
             <div className={styles.segment}>
               <FiZap className={styles.icon} />
               <h3>התמחות ב-ADHD</h3>
-              <p>הבנת המוח של ילד הקשב היא המפתח. נלמד איך 'להפעיל' אותו נכון, איך למנוע התפרצויות ואיך לשמור על הדימוי העצמי שלו.</p>
+              <p>הבנת המוח של ילד הקשב היא המפתח. נלמד איך לגשת אליו נכון, איך להפחית התפרצויות ואיך לשמור על הדימוי העצמי שלו.</p>
             </div>
             <div className={styles.segment}>
               <FiTarget className={styles.icon} />
               <h3>גבולות ללא מלחמות</h3>
-              <p>איך להציב גבולות ברורים ועקביים בלי להרים את הקול ובלי להרגיש אשמה בסוף היום.</p>
+              <p>איך להציב גבולות ברורים ועקביים מתוך סמכות שקטה, ולהפחית את רגשות האשמה בסוף היום.</p>
             </div>
             <div className={styles.segment}>
               <FiSmile className={styles.icon} />
