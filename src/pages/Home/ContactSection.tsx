@@ -47,9 +47,9 @@ const ContactSection: React.FC = () => {
     <section id="contact" className={styles.contact}>
       <div className={`container ${styles.container}`}>
         <div className={styles.info}>
-          <h2 className={styles.title}>בואו נתחיל לדבר</h2>
+          <h2 className={styles.title}>מוכנים לעשות את הצעד הראשון?</h2>
           <p className={styles.subtitle}>
-            השאירו פרטים ואחזור אליכם, או שלחו הודעת WhatsApp קצרה אם נוח לכם להתחיל משם.
+            פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אני מזמינה אתכם לשיחת היכרות קצרה, שבה נוכל להבין יחד את הצרכים שלכם ולבדוק איך אוכל לעזור. השאירו פרטים למטה או שלחו הודעת WhatsApp.
           </p>
           <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
             <FaWhatsapp aria-hidden="true" />
@@ -185,7 +185,7 @@ const ContactSection: React.FC = () => {
               </button>
               <div className={styles.privacyNote}>
                 <FiShield aria-hidden="true" />
-                <span>הפרטים משמשים לחזרה אליכם בלבד, בהתאם למדיניות הפרטיות.</span>
+                <span>הפרטים שלכם נשמרים בדיסקרטיות מלאה ומשמשים לחזרה אליכם בלבד.</span>
               </div>
             </form>
           )}
