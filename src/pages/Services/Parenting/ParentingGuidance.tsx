@@ -127,6 +127,19 @@ const ParentingGuidance: React.FC = () => {
         </div>
       </section>
 
+      <section className={styles.boundaries}>
+        <div className="container">
+          <div className={styles.boundariesContent}>
+            <h2>למי הליווי פחות יתאים?</h2>
+            <p>כדי שהתהליך יצליח ויביא לשינוי אמיתי בבית, נדרשת מחויבות. הליווי פחות מתאים במקרים הבאים:</p>
+            <ul className={styles.boundariesList}>
+              <li>הורים שמחפשים פתרונות קסם מיידיים או 'תיקון' של הילד ללא נכונות לעבור תהליך בעצמם.</li>
+              <li>מקרים הדורשים התערבות פסיכיאטרית או טיפול פסיכולוגי קליני עמוק (במקרים אלו אפנה לגורם המתאים).</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <section className={styles.specialization}>
         <div className="container">
           <div className={styles.specializationIntro}>
