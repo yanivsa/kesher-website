@@ -77,7 +77,7 @@ const CouplesCounseling: React.FC = () => {
             <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
           </div>
           <div className={styles.heroImageWrapper}>
-            <img src="/images/generated/services/couples-room.jpg" alt="מרחב שיחה זוגי נעים" width="1600" height="900" />
+            <img src="/images/generated/services/couples-room.jpg" alt="מרחב שיחה זוגי נעים" width="1600" height="900" fetchPriority="high" />
           </div>
         </div>
       </header>

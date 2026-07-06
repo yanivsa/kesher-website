@@ -95,6 +95,7 @@ const BlogPost: React.FC = () => {
               src={post.image}
               alt={post.title}
               className={styles.image}
+              fetchPriority="high"
               {...getImageDimensions(post.image)}
             />
           </div>
