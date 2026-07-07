@@ -6,7 +6,7 @@
 
 .container {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
   gap: var(--spacing-lg);
   padding-bottom: var(--spacing-lg);
 }
@@ -28,25 +28,25 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-.links, .contact, .legal {
+.links, .services, .contact, .legal {
   display: flex;
   flex-direction: column;
 }
 
-.links h4, .contact h4, .legal h4 {
+.links h4, .services h4, .contact h4, .legal h4 {
   color: white;
   font-family: 'Assistant', sans-serif;
   font-size: 1.1rem;
   margin-bottom: var(--spacing-sm);
 }
 
-.links a, .legal a {
+.links a, .services a, .legal a {
   color: rgba(255, 255, 255, 0.7);
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
-.links a:hover, .legal a:hover {
+.links a:hover, .services a:hover, .legal a:hover {
   color: var(--color-primary-light);
 }
 

@@ -21,6 +21,11 @@ const Footer: React.FC = () => {
           <Link to="/faq">שאלות נפוצות</Link>
           <Link to="/contact">צור קשר</Link>
         </div>
+        <div className={styles.services}>
+          <h4>שירותים</h4>
+          <Link to="/services/couples">ייעוץ זוגי</Link>
+          <Link to="/services/parenting">הדרכת הורים</Link>
+        </div>
         <div className={styles.contact}>
           <h4>פרטי התקשרות</h4>
           <p>טלפון: {SITE_CONFIG.contact.phone}</p>
