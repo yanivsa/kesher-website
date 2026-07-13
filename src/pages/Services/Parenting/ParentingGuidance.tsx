@@ -178,7 +178,7 @@ const ParentingGuidance: React.FC = () => {
           <div className={styles.finalCall}>
             <h2>אתם לא חייבים לעשות את זה לבד.</h2>
             <p>בואו נחזיר את הביטחון להורות שלכם.</p>
-            <a href="/contact" className={styles.btnPrimary}>לשיחת ייעוץ ראשונה</a>
+            <Link to="/contact" className={styles.btnPrimary}>לשיחת ייעוץ ראשונה</Link>
           </div>
         </div>
       </section>

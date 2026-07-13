@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import MetaTags from '../SEO/MetaTags';
 import styles from './ServicePageTemplate.module.css';
 
@@ -45,7 +46,7 @@ const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
         <div className="container">
           <h2>מוכנים להתחיל בשינוי?</h2>
           <p>אני כאן כדי ללוות אתכם בתהליך.</p>
-          <a href="/#contact" className={styles.ctaButton}>לקביעת פגישת היכרות</a>
+          <Link to="/contact" className={styles.ctaButton}>לקביעת פגישת היכרות</Link>
         </div>
       </section>
     </div>

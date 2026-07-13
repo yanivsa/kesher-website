@@ -170,7 +170,7 @@ const CouplesCounseling: React.FC = () => {
           <div className={styles.bottomCta}>
             <h2>מגיע לכם להרגיש שוב בבית בתוך הקשר.</h2>
             <p>אני כאן באשדוד (ובאונליין) כדי ללוות אתכם צעד אחר צעד.</p>
-            <a href="/contact" className={styles.finalBtn}>בואו נתחיל לדבר</a>
+            <Link to="/contact" className={styles.finalBtn}>בואו נתחיל לדבר</Link>
           </div>
         </div>
       </section>
