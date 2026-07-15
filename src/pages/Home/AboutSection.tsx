@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FiAward, FiCompass, FiBookOpen } from 'react-icons/fi';
 import styles from './AboutSection.module.css';
 
@@ -46,7 +47,7 @@ const AboutSection: React.FC = () => {
               <span>הכשרה מקצועית מקיפה בתחומי הייעוץ הזוגי והדרכת ההורים</span>
             </div>
           </div>
-          <a href="#contact" className={styles.cta}>בואו נדבר</a>
+          <Link to="/contact" className={styles.cta}>בואו נדבר</Link>
         </div>
       </div>
     </section>
