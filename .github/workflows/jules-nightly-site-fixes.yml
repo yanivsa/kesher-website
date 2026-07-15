@@ -17,64 +17,7 @@ jobs:
   start-jules:
     runs-on: ubuntu-latest
     steps:
-      - name: Stop if site-fix PR backlog is open
-        id: backlog_gate
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-
-          curl --fail-with-body -sS \
-            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" \
-            > open-prs.json
-
-          python3 - <<'PY'
-          import datetime as dt
-          import json
-          import os
-          import re
-
-          with open("open-prs.json", encoding="utf-8") as fh:
-              prs = json.load(fh)
-
-          pattern = re.compile(
-              r"(site fix|code[- ]?health|testing|security|performance|seo|geo|"
-              r"accessibility|build|vite|react|css|layout|bug|suggested|start)",
-              re.I,
-          )
-          now = dt.datetime.now(dt.UTC)
-
-          def is_fresh(pr):
-              updated = dt.datetime.fromisoformat(pr["updated_at"].replace("Z", "+00:00"))
-              return now - updated <= dt.timedelta(days=3)
-
-          def is_noop(pr):
-              text = f"{pr.get('title') or ''}\n{pr.get('body') or ''}"
-              return re.search(r"\bno[- ]?op\b|no files were edited|no Jules session", text, re.I)
-
-          blockers = [
-              f"#{pr['number']} {pr['title']}"
-              for pr in prs
-              if is_fresh(pr)
-              and not is_noop(pr)
-              and (
-                  pattern.search(pr.get("title") or "")
-                  or pattern.search((pr.get("head") or {}).get("ref") or "")
-                  or pattern.search(pr.get("body") or "")
-              )
-          ]
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              out.write(f"blocked={'true' if blockers else 'false'}\n")
-          if blockers:
-              print("Open Kesher site-fix PR backlog exists; no Jules session will be started.")
-              for blocker in blockers[:20]:
-                  print(f"- {blocker}")
-          PY
-
       - name: Start Jules autonomous site-fix session
-        if: steps.backlog_gate.outputs.blocked != 'true'
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
         run: |

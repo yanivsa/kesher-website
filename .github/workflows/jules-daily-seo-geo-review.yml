@@ -35,11 +35,13 @@ jobs:
           import json, os, re
           with open("open-prs.json", encoding="utf-8") as fh:
               prs = json.load(fh)
-          pattern = re.compile(r"(seo|geo|ai optimization|llms|sitemap|robots|canonical|schema|structured data)", re.I)
+          title_pattern = re.compile(r"^\[jules-automerge\] Kesher SEO GEO review:", re.I)
+          branch_pattern = re.compile(r"(?:^|[-_/])kesher-seo-geo-review(?:[-_/]|$)|(?:^|[-_/])seo-geo-review(?:[-_/]|$)", re.I)
           blockers = [
               f"#{pr['number']} {pr['title']}"
               for pr in prs
-              if pattern.search((pr.get("title") or "") + "\n" + ((pr.get("head") or {}).get("ref") or "") + "\n" + (pr.get("body") or ""))
+              if title_pattern.search(pr.get("title") or "")
+              or branch_pattern.search((pr.get("head") or {}).get("ref") or "")
           ]
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
               out.write(f"blocked={'true' if blockers else 'false'}\n")
