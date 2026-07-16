@@ -17,13 +17,30 @@ ensureUnique('post id', published.map((post) => post.id));
 ensureUnique('post title', published.map((post) => post.title));
 ensureUnique('post image', published.map((post) => post.image));
 
-for (const post of published) {
+for (let i = 0; i < published.length; i++) {
+  const post = published[i];
   if (!/^\d{4}-\d{2}-\d{2}$/.test(post.date)) errors.push(`Invalid date: ${post.id}`);
   if (!post.image.startsWith('/images/')) errors.push(`Non-local image: ${post.id}`);
   if (!fs.existsSync(path.join(ROOT, 'public', post.image.replace(/^\//, '')))) errors.push(`Missing image: ${post.id}`);
   if (/<script|onerror=|onclick=|javascript:/i.test(post.content)) errors.push(`Unsafe HTML: ${post.id}`);
   if (wordCount(post.content) < 500 || headingCount(post.content) < 5) errors.push(`Thin content: ${post.id}`);
   if (/מוסמכת|הדרך היחידה|טראומות לא נשכחות/.test(post.content)) errors.push(`Unsupported absolute claim: ${post.id}`);
+
+  if (post.date > '2026-07-15') {
+    const getWords = (id) => new Set(id.split('-').filter(w => w.length > 3));
+    const currentWords = getWords(post.id);
+
+    for (let j = i + 1; j < Math.min(i + 31, published.length); j++) {
+      const olderPost = published[j];
+      const olderWords = getWords(olderPost.id);
+      const intersection = [...currentWords].filter(x => olderWords.has(x));
+
+      if (intersection.length >= 2) {
+        errors.push(`Topic too similar: '${post.id}' overlaps with recent post '${olderPost.id}' on keywords: ${intersection.join(', ')}. Please choose a substantially fresh topic.`);
+        break;
+      }
+    }
+  }
 }
 
 const sitemap = fs.readFileSync(path.join(ROOT, 'public/sitemap.xml'), 'utf8');
