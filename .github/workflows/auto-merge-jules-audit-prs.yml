@@ -116,7 +116,9 @@ jobs:
                 update_status="$(api_status -X PUT \
                   -d '{}' \
                   "https://api.github.com/repos/${REPO}/pulls/${number}/update-branch")"
-                if [ "${update_status}" != "202" ]; then
+                if [ "${update_status}" = "422" ] && grep -q "There are no new commits on the base branch" response.json; then
+                  echo "PR #${number} branch is already current; requesting a fresh CI run."
+                elif [ "${update_status}" != "202" ]; then
                   cat response.json
                   exit 1
                 fi
