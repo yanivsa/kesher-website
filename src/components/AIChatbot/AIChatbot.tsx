@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FaRobot } from 'react-icons/fa';
 import './AIChatbot.css';
 
 const CONSENT_KEY = 'kesher-ai-chat-consent';
@@ -37,8 +38,9 @@ const AIChatbot: React.FC = () => {
           setConsented(true);
         }}
         aria-label="הפעלת צ'אט עם עוזרת AI חיצונית"
-      >
-        הפעלת צ'אט AI
+       title="הפעלת צ'אט AI">
+        <FaRobot aria-hidden="true" className="ai-icon" />
+        <span className="ai-text">הפעלת צ'אט AI</span>
       </button>
     );
   }
