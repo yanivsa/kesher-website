@@ -12,6 +12,7 @@ permissions:
   contents: write
   pull-requests: write
   checks: read
+  actions: write
 
 concurrency:
   group: auto-merge-jules-audit-prs
@@ -111,10 +112,18 @@ jobs:
                 ;;
               405|409)
                 echo "PR #${number} needs a refreshed branch/check run before merge; requesting update."
+                head_branch="$(python3 -c 'import json; print(json.load(open("pr.json"))["head"]["ref"])')"
                 update_status="$(api_status -X PUT \
                   -d '{}' \
                   "https://api.github.com/repos/${REPO}/pulls/${number}/update-branch")"
                 if [ "${update_status}" != "202" ]; then
+                  cat response.json
+                  exit 1
+                fi
+                dispatch_status="$(api_status -X POST \
+                  -d "{\"ref\":\"${head_branch}\"}" \
+                  "https://api.github.com/repos/${REPO}/actions/workflows/ci.yml/dispatches")"
+                if [ "${dispatch_status}" != "204" ]; then
                   cat response.json
                   exit 1
                 fi
