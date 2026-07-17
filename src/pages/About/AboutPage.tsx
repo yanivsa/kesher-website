@@ -9,7 +9,7 @@ const schemaData = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "ProfilePage",
+      "@type": "AboutPage",
       "dateCreated": "2024-01-01",
       "dateModified": "2024-01-01",
       "mainEntity": {

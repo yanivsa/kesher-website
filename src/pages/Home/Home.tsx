@@ -37,13 +37,13 @@ const schemaData = {
         "תקשורת בזוגיות",
         "הורות משותפת"
       ],
-      "serviceType": ["ייעוץ זוגי", "הדרכת הורים", "ליווי מקוון"],
       "makesOffer": [
         {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
             "name": "ייעוץ זוגי",
+            "url": `${SITE_CONFIG.url}/services/couples`,
             "description": "ייעוץ זוגי לשיפור תקשורת, התמודדות עם משברים וחיזוק הקשר."
           }
         },
@@ -52,6 +52,7 @@ const schemaData = {
           "itemOffered": {
             "@type": "Service",
             "name": "הדרכת הורים",
+            "url": `${SITE_CONFIG.url}/services/parenting`,
             "description": "הדרכה להורים לילדים עם ADHD, הצבת גבולות ושיפור שיתוף הפעולה בבית."
           }
         }
