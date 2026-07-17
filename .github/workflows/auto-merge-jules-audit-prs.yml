@@ -85,6 +85,15 @@ jobs:
               f == "README.md" or f.startswith(allowed_prefixes)
               for f in files
           )
+          forbidden_by_kind = {
+              "content review": {"public/sitemap.xml"},
+              "mobile review": {"public/sitemap.xml"},
+          }
+          forbidden = any(
+              f.startswith(".github/workflows/")
+              or f in forbidden_by_kind.get(audit_kind, set())
+              for f in files
+          )
           ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
           eligible = (
               pr.get("state") == "open"
@@ -93,6 +102,7 @@ jobs:
               and pr["base"]["ref"] == "main"
               and pr["head"]["repo"]["full_name"] == pr["base"]["repo"]["full_name"]
               and allowed
+              and not forbidden
               and ci_passed
           )
           sys.exit(0 if eligible else 1)

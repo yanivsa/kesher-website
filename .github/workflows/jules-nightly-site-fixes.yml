@@ -39,8 +39,23 @@ jobs:
           }
           JSON
 
-          curl --fail-with-body -sS \
-            -H "x-goog-api-key: ${JULES_API_KEY}" \
-            -H "Content-Type: application/json" \
-            -d @payload.json \
-            https://jules.googleapis.com/v1alpha/sessions
+          for attempt in 1 2 3; do
+            status="$(curl -sS -o response.json -w '%{http_code}' \
+              -H "x-goog-api-key: ${JULES_API_KEY}" \
+              -H "Content-Type: application/json" \
+              -d @payload.json \
+              https://jules.googleapis.com/v1alpha/sessions || true)"
+            cat response.json
+            if [ "${status}" = "200" ] || [ "${status}" = "201" ]; then
+              exit 0
+            fi
+            if [ "${status}" = "429" ] || [ "${status}" -ge 500 ]; then
+              echo "Jules API returned ${status}; retrying attempt ${attempt}/3."
+              sleep $((attempt * 20))
+              continue
+            fi
+            exit 1
+          done
+
+          echo "Jules API did not create a site-fix session after retries; failing with explicit external-infrastructure status."
+          exit 1
