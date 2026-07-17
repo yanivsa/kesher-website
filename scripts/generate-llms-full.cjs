@@ -35,8 +35,8 @@ services.forEach(service => {
   if (fs.existsSync(service.path)) {
     const serviceContent = fs.readFileSync(service.path, 'utf8');
 
-    // Extract text from <p>, <li>, <h3>, <h2>
-    const tagsRegex = /<(p|li|h2|h3)[^>]*>(.*?)<\/\1>/gs;
+    // Extract text from <p>, <li>, <h1>, <h2>, <h3>
+    const tagsRegex = /<(p|li|h1|h2|h3)[^>]*>(.*?)<\/\1>/gs;
     let match;
     while ((match = tagsRegex.exec(serviceContent)) !== null) {
       let text = match[2]
@@ -45,7 +45,7 @@ services.forEach(service => {
 
       // Ignore short or irrelevant lines or React code
       if (text.length > 5 && !text.includes('className=')) {
-        if (match[1] === 'h2' || match[1] === 'h3') {
+        if (match[1] === 'h1' || match[1] === 'h2' || match[1] === 'h3') {
            fullContent += `\n#### ${text}\n`;
         } else if (match[1] === 'li') {
            fullContent += `- ${text}\n`;
