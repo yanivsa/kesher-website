@@ -12,6 +12,7 @@ permissions:
   contents: write
   pull-requests: write
   checks: read
+  actions: write
 
 concurrency:
   group: auto-merge-jules-audit-prs
@@ -84,6 +85,15 @@ jobs:
               f == "README.md" or f.startswith(allowed_prefixes)
               for f in files
           )
+          forbidden_by_kind = {
+              "content review": {"public/sitemap.xml"},
+              "mobile review": {"public/sitemap.xml"},
+          }
+          forbidden = any(
+              f.startswith(".github/workflows/")
+              or f in forbidden_by_kind.get(audit_kind, set())
+              for f in files
+          )
           ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
           eligible = (
               pr.get("state") == "open"
@@ -92,6 +102,7 @@ jobs:
               and pr["base"]["ref"] == "main"
               and pr["head"]["repo"]["full_name"] == pr["base"]["repo"]["full_name"]
               and allowed
+              and not forbidden
               and ci_passed
           )
           sys.exit(0 if eligible else 1)
@@ -111,10 +122,20 @@ jobs:
                 ;;
               405|409)
                 echo "PR #${number} needs a refreshed branch/check run before merge; requesting update."
+                head_branch="$(python3 -c 'import json; print(json.load(open("pr.json"))["head"]["ref"])')"
                 update_status="$(api_status -X PUT \
                   -d '{}' \
                   "https://api.github.com/repos/${REPO}/pulls/${number}/update-branch")"
-                if [ "${update_status}" != "202" ]; then
+                if [ "${update_status}" = "422" ] && grep -q "There are no new commits on the base branch" response.json; then
+                  echo "PR #${number} branch is already current; requesting a fresh CI run."
+                elif [ "${update_status}" != "202" ]; then
+                  cat response.json
+                  exit 1
+                fi
+                dispatch_status="$(api_status -X POST \
+                  -d "{\"ref\":\"${head_branch}\"}" \
+                  "https://api.github.com/repos/${REPO}/actions/workflows/ci.yml/dispatches")"
+                if [ "${dispatch_status}" != "204" ]; then
                   cat response.json
                   exit 1
                 fi

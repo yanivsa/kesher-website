@@ -73,6 +73,15 @@ jobs:
           }
           JSON
 
+          python3 - <<'PY'
+          import json
+          with open("payload.json", encoding="utf-8") as fh:
+              payload = json.load(fh)
+          payload["prompt"] += "\n\nFile-scope guardrail: do not edit `.github/workflows/`, `public/sitemap.xml`, `public/llms.txt`, `public/llms-full.txt`, or generated SEO index files during a mobile review. If any of these files change incidentally, revert them before opening the PR. The PR summary must explicitly confirm that no workflow or sitemap files changed."
+          with open("payload.json", "w", encoding="utf-8") as fh:
+              json.dump(payload, fh, ensure_ascii=False)
+          PY
+
           curl --fail-with-body -sS \
             -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
