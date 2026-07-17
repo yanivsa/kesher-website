@@ -2,7 +2,11 @@ import React from 'react';
 import { FiAward, FiCompass, FiBookOpen } from 'react-icons/fi';
 import styles from './AboutSection.module.css';
 
-const AboutSection: React.FC = () => {
+interface AboutSectionProps {
+  isPriority?: boolean;
+}
+
+const AboutSection: React.FC<AboutSectionProps> = ({ isPriority = false }) => {
   return (
     <section id="about" className={styles.about}>
       <div className={`container ${styles.container}`}>
@@ -14,7 +18,8 @@ const AboutSection: React.FC = () => {
               className={styles.aboutImage}
               width="1024"
               height="1024"
-              loading="lazy"
+              loading={isPriority ? undefined : "lazy"}
+              fetchPriority={isPriority ? "high" : undefined}
             />
             <div className={styles.experienceBadge}>
               <span className={styles.years}>בעלת</span>

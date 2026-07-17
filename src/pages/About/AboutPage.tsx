@@ -62,7 +62,7 @@ const AboutPage: React.FC = () => {
           <p>ליווי רגיש ומקצועי למען מערכות היחסים שלכם.</p>
         </div>
       </header>
-      <AboutSection />
+      <AboutSection isPriority />
       <section className={styles.extraContent}>
         <div className="container">
           <h2>הכשרה מקצועית וניסיון</h2>
