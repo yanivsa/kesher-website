@@ -1,5 +1,7 @@
-🎯 **What:** Removed `process.env.DEEPAI_API_KEY` from the environment immediately after copying it to a local variable in `scripts/generate-article-image.js`.
+🎯 **What:** Hardened the weekday article generation prompt and content validation script to prevent near-duplicate topics and overlapping content.
 
-⚠️ **Risk:** Storing third-party API keys within the global `process.env` throughout the lifecycle of a script exposes the secret to unintended leakage. If the script spawns child processes, or encounters an uncaught exception triggering a crash dump, the complete environment block containing the secret key may be printed to logs, published to external services, or otherwise exposed.
+⚠️ **Risk:** The previous article generation could sometimes pick a topic that was too similar to a recently published post, leading to redundant content.
 
-🛡️ **Solution:** Using the principle of least privilege for memory/state, the script now immediately uses `delete process.env.DEEPAI_API_KEY;` after extracting the key. This ensures subsequent execution scopes cannot inadvertently expose the key while retaining functionality.
+🛡️ **Solution:**
+1. Updated the `.github/workflows/jules-weekday-article.yml` prompt to explicitly instruct the agent to check the 30 most recent articles in `src/data/posts.json` and ensure the new topic is substantially fresh.
+2. Hardened `scripts/validate-content.cjs` to enforce this rule programmatically. The script now calculates the intersection of significant words between the new post's ID/slug and those of the 30 previous posts. If 2 or more significant words overlap, the validation fails, preventing the PR from being merged and requiring a fresh topic.
