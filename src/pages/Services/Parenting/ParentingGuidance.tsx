@@ -74,7 +74,7 @@ const ParentingGuidance: React.FC = () => {
             <div className={styles.badge}>ליווי הורים סביב ADHD ואתגרי קשב</div>
             <h1>להפסיק להילחם <br /><span>ולהתחיל להוביל</span></h1>
             <p className={styles.subtitle}>הדרכת הורים מעשית שנותנת לכם ביטחון, סמכות וחיבור אמיתי לילד.</p>
-            <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
+            <a href={SITE_CONFIG.links.whatsapp} className={styles.ctaBtn}>תיאום שיחת היכרות</a>
           </div>
           <div className={styles.heroImageWrapper}>
             <img src="/images/generated/services/parenting-room.jpg" alt="מרחב נעים להדרכת הורים" width="1600" height="900" fetchPriority="high" />

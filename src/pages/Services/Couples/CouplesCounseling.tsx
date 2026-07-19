@@ -74,7 +74,7 @@ const CouplesCounseling: React.FC = () => {
             <div className={styles.badge}>מרחב בטוח לזוגיות שלכם</div>
             <h1>להחזיר את <br /><span>החברות והאינטימיות</span></h1>
             <p className={styles.subtitle}>ייעוץ זוגי רגיש ומעשי שמתמקד בתקשורת, אמון וחיבור.</p>
-            <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
+            <a href={SITE_CONFIG.links.whatsapp} className={styles.ctaBtn}>תיאום שיחת היכרות</a>
           </div>
           <div className={styles.heroImageWrapper}>
             <img src="/images/generated/services/couples-room.jpg" alt="מרחב שיחה זוגי נעים" width="1600" height="900" fetchPriority="high" />
