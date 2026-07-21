@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FiMessageCircle } from 'react-icons/fi';
 import './AIChatbot.css';
 
 const CONSENT_KEY = 'kesher-ai-chat-consent';
@@ -38,7 +39,8 @@ const AIChatbot: React.FC = () => {
         }}
         aria-label="הפעלת צ'אט עם עוזרת AI חיצונית"
       >
-        הפעלת צ'אט AI
+        <FiMessageCircle className="ai-chat-icon" aria-hidden="true" />
+        <span className="ai-chat-text">הפעלת צ'אט AI</span>
       </button>
     );
   }

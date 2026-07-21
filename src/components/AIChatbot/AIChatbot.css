@@ -18,6 +18,14 @@
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ai-chat-icon {
+  font-size: 1.25rem;
+  display: none;
 }
 
 .ai-chat-consent:focus-visible {
@@ -28,5 +36,16 @@
 @media (max-width: 768px) {
   .ai-chat-consent {
     bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    padding: 0;
+    width: 3.5rem;
+    height: 3.5rem;
+    justify-content: center;
+  }
+  .ai-chat-text {
+    display: none;
+  }
+  .ai-chat-icon {
+    display: block;
+    font-size: 1.5rem;
   }
 }
