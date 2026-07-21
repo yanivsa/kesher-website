@@ -23,7 +23,7 @@ const schemaData = {
         "@type": "LocalBusiness",
         "@id": `${SITE_CONFIG.url}/#business`
       },
-      "description": "הדרכת הורים מקצועית באשדוד. התמחות בילדים עם ADHD, הכנה לכיתה א', הצבת גבולות ושיפור האווירה המשפחתית.",
+      "description": "הדרכת הורים מקצועית באשדוד ובאונליין (Zoom). התמחות בילדים עם ADHD, הכנה לכיתה א', הצבת גבולות ושיפור האווירה המשפחתית.",
       "image": `${SITE_CONFIG.url}/images/generated/services/parenting-room.jpg`
     },
     {
@@ -62,8 +62,8 @@ const ParentingGuidance: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags 
-        title="הדרכת הורים באשדוד | ADHD והכנה לכיתה א' | שירה סהרוני"
-        description="הדרכת הורים מקצועית באשדוד. התמחות בהכנה לכיתה א' לילדים עם ADHD, בניית שגרה, ויסות רגשי והצבת גבולות."
+        title="הדרכת הורים באשדוד ואונליין | ADHD והכנה לכיתה א' | שירה סהרוני"
+        description="הדרכת הורים מקצועית באשדוד ובאונליין (Zoom). התמחות בהכנה לכיתה א' לילדים עם ADHD, בניית שגרה, ויסות רגשי והצבת גבולות."
         image="/images/generated/services/parenting-room.jpg"
       />
       <SchemaOrg data={schemaData} />
