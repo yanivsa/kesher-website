@@ -39,6 +39,15 @@ jobs:
           }
           JSON
 
+          python3 - <<'PY'
+          import json
+          with open("payload.json", encoding="utf-8") as fh:
+              payload = json.load(fh)
+          payload["prompt"] += "\n\nNo-safe-fix completion rule: if inspection finds no safe non-duplicate high-confidence fix, that is a complete successful no-op. Immediately finish with a plain session summary naming the checked open PRs/categories, with no question, no file edit, no changeSet, no branch, no commit, and no PR."
+          with open("payload.json", "w", encoding="utf-8") as fh:
+              json.dump(payload, fh, ensure_ascii=False)
+          PY
+
           for attempt in 1 2 3; do
             status="$(curl -sS -o response.json -w '%{http_code}' \
               -H "x-goog-api-key: ${JULES_API_KEY}" \

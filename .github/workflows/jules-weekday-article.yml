@@ -39,7 +39,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          curl --fail-with-body -sS \
+          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" \
@@ -113,7 +113,16 @@ jobs:
           }
           JSON
 
-          curl --fail-with-body -sS \
+          python3 - <<'PY'
+          import json
+          with open("payload.json", encoding="utf-8") as fh:
+              payload = json.load(fh)
+          payload["prompt"] += "\n\nStrict Hebrew-only gate: the new article title, excerpt, and rendered content must contain no Latin letters `A-Z` or `a-z`, including English terminology, acronyms, parenthetical translations, headings, CTA text, or image captions. Keep machine identifiers such as id/slug/image path in ASCII as required by the repo, but visible article prose must be Hebrew-only. Before opening a PR, scan the new visible fields with `/[A-Za-z]/`; if any match remains, replace it with natural Hebrew and rerun `npm run check`."
+          with open("payload.json", "w", encoding="utf-8") as fh:
+              json.dump(payload, fh, ensure_ascii=False)
+          PY
+
+          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
             -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
             -d @payload.json \
