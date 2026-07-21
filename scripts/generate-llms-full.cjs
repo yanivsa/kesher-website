@@ -26,12 +26,12 @@ while ((match = faqRegex.exec(faqContent)) !== null) {
 // Add Service Pages Content
 fullContent += '## עמודי שירות מפורטים (Detailed Services)\n\n';
 const services = [
-  { name: 'ייעוץ זוגי', path: path.join(__dirname, '../src/pages/Services/Couples/CouplesCounseling.tsx') },
-  { name: 'הדרכת הורים', path: path.join(__dirname, '../src/pages/Services/Parenting/ParentingGuidance.tsx') }
+  { name: 'ייעוץ זוגי', url: '/services/couples', path: path.join(__dirname, '../src/pages/Services/Couples/CouplesCounseling.tsx') },
+  { name: 'הדרכת הורים', url: '/services/parenting', path: path.join(__dirname, '../src/pages/Services/Parenting/ParentingGuidance.tsx') }
 ];
 
 services.forEach(service => {
-  fullContent += `### ${service.name}\n\n`;
+  fullContent += `### [${service.name}](https://kesher.saharoni.com${service.url})\n\n`;
   if (fs.existsSync(service.path)) {
     const serviceContent = fs.readFileSync(service.path, 'utf8');
 
@@ -63,7 +63,7 @@ fullContent += '## מאמרים מלאים (Blog Posts)\n\n';
 const posts = JSON.parse(fs.readFileSync(postsPath, 'utf8'));
 
 posts.filter(isPublishable).forEach(post => {
-  fullContent += `### ${post.title}\n`;
+  fullContent += `### [${post.title}](https://kesher.saharoni.com/blog/${post.id})\n`;
   fullContent += `תאריך: ${post.date} | קטגוריה: ${post.category}\n\n`;
 
   // Clean HTML from content for the llms text file
