@@ -179,7 +179,7 @@ const BlogList: React.FC = () => {
                   <span className={styles.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
                   <h2 className={styles.title}>{post.title}</h2>
                   <p className={styles.excerpt}>{post.excerpt}</p>
-                  <Link to={`/blog/${post.id}`} className={styles.link}>קרא עוד ←</Link>
+                  <Link to={`/blog/${post.id}`} className={styles.link} aria-label={`קרא עוד על ${post.title}`}>קרא עוד ←</Link>
                 </div>
               </article>
             ))}
