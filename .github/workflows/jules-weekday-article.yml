@@ -70,7 +70,7 @@ jobs:
               return re.search(r"\bno[- ]?op\b|no files were edited|no Jules session", text, re.I)
 
           blockers = [
-              f"#{pr['number']} {pr['title']}"
+              f"#{pr['number']} {pr['title']} ({pr.get('html_url', 'No URL')})"
               for pr in prs
               if is_fresh(pr)
               and not is_noop(pr)
@@ -80,16 +80,24 @@ jobs:
                   or pattern.search(pr.get("body") or "")
               )
           ]
+          launch_required = not bool(blockers)
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              out.write(f"blocked={'true' if blockers else 'false'}\n")
+              out.write(f"launch_required={'true' if launch_required else 'false'}\n")
           if blockers:
-              print("Open Kesher article PR exists; no Jules session will be started.")
+              msg = "Open Kesher article PR exists; no Jules session will be started.\n"
+              print(msg)
               for blocker in blockers[:20]:
                   print(f"- {blocker}")
+              if "GITHUB_STEP_SUMMARY" in os.environ:
+                  with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
+                      out.write("### Jules Session Skipped\n\n")
+                      out.write("Jules session intentionally skipped because the following fresh article PRs are open:\n")
+                      for blocker in blockers[:20]:
+                          out.write(f"- {blocker}\n")
           PY
 
       - name: Start Jules autonomous article session
-        if: steps.local_day.outputs.skip != 'true' && steps.article_gate.outputs.blocked != 'true'
+        if: steps.local_day.outputs.skip != 'true' && steps.article_gate.outputs.launch_required == 'true'
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
           DEEPAI_API_KEY: ${{ secrets.DEEPAI_API_KEY }}
@@ -118,12 +126,59 @@ jobs:
           with open("payload.json", encoding="utf-8") as fh:
               payload = json.load(fh)
           payload["prompt"] += "\n\nStrict Hebrew-only gate: the new article title, excerpt, and rendered content must contain no Latin letters `A-Z` or `a-z`, including English terminology, acronyms, parenthetical translations, headings, CTA text, or image captions. Keep machine identifiers such as id/slug/image path in ASCII as required by the repo, but visible article prose must be Hebrew-only. Before opening a PR, scan the new visible fields with `/[A-Za-z]/`; if any match remains, replace it with natural Hebrew and rerun `npm run check`."
+          payload["prompt"] += "\n\nAutonomy rule: an auto-approved/generated plan must be executed immediately; never restate it and ask permission or enter AWAITING_USER_FEEDBACK."
           with open("payload.json", "w", encoding="utf-8") as fh:
               json.dump(payload, fh, ensure_ascii=False)
           PY
 
-          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
+          set +e
+          HTTP_STATUS=$(curl -w "%{http_code}" -sS --retry 3 --retry-all-errors --retry-delay 2 \
+            -o response.json \
             -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
             -d @payload.json \
-            https://jules.googleapis.com/v1alpha/sessions
+            https://jules.googleapis.com/v1alpha/sessions)
+          CURL_EXIT_CODE=$?
+          set -e
+
+          if [ $CURL_EXIT_CODE -ne 0 ]; then
+            echo "curl failed with exit code $CURL_EXIT_CODE"
+            exit $CURL_EXIT_CODE
+          fi
+
+          if [ "$HTTP_STATUS" -ge 400 ]; then
+            echo "API request failed with HTTP status $HTTP_STATUS"
+            cat response.json
+            exit 1
+          fi
+
+          python3 - <<'PY'
+          import json
+          import sys
+          import os
+
+          try:
+              with open("response.json", "r", encoding="utf-8") as f:
+                  data = json.load(f)
+          except Exception as e:
+              print(f"Failed to parse response.json: {e}")
+              sys.exit(1)
+
+          session_id = data.get("name") or data.get("id")
+          session_url = data.get("url") or data.get("agentUrl") or data.get("sessionUrl")
+
+          if not session_id or not session_url:
+              print("Response missing required session ID/name or URL")
+              print("Response body:")
+              print(json.dumps(data, indent=2))
+              sys.exit(1)
+
+          if "GITHUB_STEP_SUMMARY" in os.environ:
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+                  f.write("### Jules Session Created Successfully\n\n")
+                  f.write(f"- **ID/Name:** `{session_id}`\n")
+                  f.write(f"- **URL:** [{session_url}]({session_url})\n")
+
+          print(f"Session started: {session_id}")
+          print(f"URL: {session_url}")
+          PY
