@@ -25,7 +25,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          curl --fail-with-body -sS \
+          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
@@ -77,12 +77,12 @@ jobs:
           import json
           with open("payload.json", encoding="utf-8") as fh:
               payload = json.load(fh)
-          payload["prompt"] += "\n\nFile-scope guardrail: do not edit `.github/workflows/`, `public/sitemap.xml`, `public/llms.txt`, `public/llms-full.txt`, or generated SEO index files during a mobile review. If any of these files change incidentally, revert them before opening the PR. The PR summary must explicitly confirm that no workflow or sitemap files changed."
+          payload["prompt"] += "\n\nFile-scope and branch guardrail: create any mobile-review PR directly from current `main` and target `main`; never base a repair PR on another PR branch. Before opening a PR, run `git diff --name-only origin/main...HEAD` and keep only files strictly required for the one reported mobile issue. Do not edit `.github/workflows/`, `public/sitemap.xml`, `public/llms.txt`, `public/llms-full.txt`, generated SEO index files, or unrelated pages during a mobile review. If inherited or incidental churn cannot be removed cleanly, abandon the change and finish as a no-op with no PR. The PR summary must list the final diff and explicitly confirm that no workflow, sitemap, generated-output, or unrelated page files changed."
           with open("payload.json", "w", encoding="utf-8") as fh:
               json.dump(payload, fh, ensure_ascii=False)
           PY
 
-          curl --fail-with-body -sS \
+          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
             -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
             -d @payload.json \
