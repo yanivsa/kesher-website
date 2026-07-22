@@ -36,6 +36,8 @@
 @media (max-width: 768px) {
   .ai-chat-consent {
     bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+    inset-inline-start: auto;
+    inset-inline-end: 1rem;
     padding: 0;
     width: 3.5rem;
     height: 3.5rem;
