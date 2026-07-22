@@ -65,7 +65,7 @@ const BlogPost: React.FC = () => {
         ]
       }
     ]
-  }), [post?.title, post?.image, post?.id, post?.date, post?.excerpt]);
+  }), [post?.title, post?.image, post?.id, post?.date, post?.excerpt, post?.content]);
 
   if (!post) {
     return (
