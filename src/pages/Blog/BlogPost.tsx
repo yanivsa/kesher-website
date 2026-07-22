@@ -38,7 +38,8 @@ const BlogPost: React.FC = () => {
             "url": `${SITE_CONFIG.url}/apple-touch-icon.png`
           }
         },
-        "description": post?.excerpt || ""
+        "description": post?.excerpt || "",
+        "articleBody": post?.content?.replace(/<[^>]+>/g, ' ') || ""
       },
       {
         "@type": "BreadcrumbList",
