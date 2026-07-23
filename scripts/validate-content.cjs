@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { ROOT, STATIC_ROUTES, isPublishable, blogRoute, wordCount, headingCount } = require('./content-policy.cjs');
+const { ROOT, STATIC_ROUTES, isPublishable, blogRoute, wordCount, headingCount, stripHtml } = require('./content-policy.cjs');
 
 const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
 const published = posts.filter(isPublishable);
@@ -27,6 +27,10 @@ for (let i = 0; i < published.length; i++) {
   if (/מוסמכת|הדרך היחידה|טראומות לא נשכחות/.test(post.content)) errors.push(`Unsupported absolute claim: ${post.id}`);
 
   if (post.date > '2026-07-15') {
+    if (/[a-zA-Z]/.test(post.title) || /[a-zA-Z]/.test(post.excerpt) || /[a-zA-Z]/.test(stripHtml(post.content))) {
+      errors.push(`Latin characters found in visible prose: ${post.id}`);
+    }
+
     const STOP_WORDS = new Set(['couples', 'parenting', 'relationship', 'children', 'child', 'with', 'about', 'how', 'why', 'what', 'when', 'your', 'their']);
     const getWords = (id) => new Set(id.split('-').filter(w => w.length > 3 && !STOP_WORDS.has(w.toLowerCase())));
     const currentWords = getWords(post.id);
