@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiBookOpen, FiHeart, FiMessageCircle, FiUsers } from 'react-icons/fi';
+import { FiBookOpen, FiCompass, FiHeart, FiMessageCircle, FiStar, FiUsers } from 'react-icons/fi';
 import ServiceCard from '../../components/Services/ServiceCard';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './ServicesSection.module.css';
@@ -15,25 +15,44 @@ const services = [
   },
   {
     title: 'הדרכת הורים',
-    description: 'להורים שרוצים פחות מאבקי כוח בבית ויותר בהירות, גבולות ושיתוף פעולה עם הילדים.',
+    description: 'להורים שרוצים פחות מאבקי כוח ויותר בהירות, גבולות ושיתוף פעולה, כולל מחוננות, ADHD ומעברים חינוכיים.',
     icon: <FiUsers aria-hidden="true" />,
-    highlights: ['סמכות הורית רגועה ועקבית', 'התמודדות עם ילדים ומתבגרים', 'ליווי סביב ADHD ואתגרי קשב'],
+    highlights: ['הורים לילדים מחוננים', 'ADHD ותפקודים ניהוליים', 'הכנה למסגרות חינוכיות'],
     link: '/services/parenting'
+  },
+  {
+    title: 'גישור',
+    description: 'מסגרת מכבדת ומעשית לבני זוג, משפחות, הורים, שכנים ושותפים שרוצים לצאת משיחה תקועה ולהגיע להסכמות.',
+    icon: <FiCompass aria-hidden="true" />,
+    highlights: ['בירור צרכים ונושאים', 'הפחתת מתח והאשמות', 'הסכמות ישימות וברורות'],
+    link: '/services/mediation'
   }
 ];
 
 const specializations = [
   {
-    title: "הכנה לכיתה א' לילדים עם ADHD",
-    description: 'ליווי ממוקד להורים לקראת המעבר למסגרת בית הספר: שגרה, התארגנות, ויסות רגשי וקשר עם הצוות החינוכי.',
+    title: 'הנחיית הורים לילדים מחוננים',
+    description: 'ליווי סביב רגישות, פרפקציוניזם, שייכות, מוטיבציה ומחוננות לצד ADHD.',
+    icon: <FiStar aria-hidden="true" />,
+    link: '/services/gifted-parenting'
+  },
+  {
+    title: "הכנה לכיתה א' ותפקודים ניהוליים",
+    description: 'לילדים עם ADHD ולכל ילד שזקוק לחיזוק בהתארגנות, ויסות, עצמאות ושגרת למידה — יחד עם הוריו.',
     icon: <FiBookOpen aria-hidden="true" />,
     link: '/services/parenting'
   },
   {
-    title: 'הכנה לחתונה לזוגות שרוצים להתחיל נכון',
-    description: 'בניית שפה זוגית והסכמות לפני החתונה, כולל ליווי למתחתנים שהוריהם גרושים ולזוגות שבהם אחד או שני בני הזוג מתמודדים עם ADHD.',
+    title: 'הכנה לכניסה למסגרת מחוננים',
+    description: 'הכנה ניהולית, רגשית וחברתית לילד ולהוריו לקראת המעבר למסגרת החדשה.',
+    icon: <FiCompass aria-hidden="true" />,
+    link: '/services/gifted-parenting#gifted-framework'
+  },
+  {
+    title: 'משפחות עולים ותושבים חוזרים',
+    description: 'ייעוץ זוגי והנחיית הורים סביב הסתגלות, מסגרות חדשות, שינוי תפקידים ותחושת שייכות בישראל.',
     icon: <FiHeart aria-hidden="true" />,
-    link: '/services/couples'
+    link: '/services/aliyah-families'
   }
 ];
 
@@ -50,7 +69,7 @@ const ServicesSection: React.FC = () => {
         >
           <h2 className={styles.title}>איך אוכל לעזור לכם?</h2>
           <p className={styles.subtitle}>
-            שני שערי כניסה לאותו צורך: להוריד את עוצמת הקונפליקט, להבין את הדפוס שחוזר על עצמו, ולבנות דרך פעולה שאפשר ליישם בבית.
+            שלושה מסלולים שמטרתם להפחית עומס וקונפליקט, להבין את הדפוס שחוזר ולבנות דרך פעולה שאפשר ליישם בחיים עצמם.
           </p>
         </div>
         <div 
@@ -64,7 +83,7 @@ const ServicesSection: React.FC = () => {
         <div className={styles.specializations}>
           <div className={styles.specializationsHeader}>
             <h3>תחומי התמחות ממוקדים</h3>
-            <p>הכנה מעשית לצמתים שבהם נכון לבנות כלים מראש, לפני שהעומס והחששות מנהלים את הבית או את הזוגיות.</p>
+            <p>ליווי ממוקד בצמתים שבהם היכולת, הרגש והשינוי המשפחתי נפגשים.</p>
           </div>
           <div className={styles.specializationGrid}>
             {specializations.map((specialization) => (

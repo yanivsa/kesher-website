@@ -46,7 +46,7 @@ const Header: React.FC = () => {
           <Link to="/" className={styles.logoLink} onClick={closeMenu}>
             <div className={styles.logo}>
               <span className={styles.brand}>{SITE_CONFIG.brand}</span>
-              <span className={styles.subtitle}>ייעוץ זוגי והנחיית הורים</span>
+              <span className={styles.subtitle}>ייעוץ זוגי, הנחיית הורים וגישור</span>
             </div>
           </Link>
 
@@ -73,6 +73,16 @@ const Header: React.FC = () => {
               <div className={styles.dropdownContent}>
                 <Link to="/services/couples" onClick={closeMenu}>ייעוץ זוגי</Link>
                 <Link to="/services/parenting" onClick={closeMenu}>הדרכת הורים</Link>
+                <Link to="/services/mediation" onClick={closeMenu}>גישור</Link>
+              </div>
+            </div>
+            <div className={styles.dropdown}>
+              <button type="button" className={styles.navLink}>תחומי התמחות</button>
+              <div className={styles.dropdownContent}>
+                <Link to="/services/gifted-parenting" onClick={closeMenu}>הורים לילדים מחוננים</Link>
+                <Link to="/services/parenting" onClick={closeMenu}>הכנה לכיתה א׳</Link>
+                <Link to="/services/gifted-parenting#gifted-framework" onClick={closeMenu}>כניסה למסגרת מחוננים</Link>
+                <Link to="/services/aliyah-families" onClick={closeMenu}>עולים ותושבים חוזרים</Link>
               </div>
             </div>
             <Link to="/blog" onClick={closeMenu}>בלוג</Link>

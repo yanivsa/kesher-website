@@ -5,7 +5,16 @@ const { ROOT, STATIC_ROUTES, isPublishable, blogRoute } = require('./content-pol
 const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
 const today = new Date().toISOString().slice(0, 10);
 const legalRoutes = new Set(['/accessibility', '/privacy', '/terms']);
-const serviceRoutes = new Set(['/about', '/contact', '/services/couples', '/services/parenting', '/faq']);
+const serviceRoutes = new Set([
+  '/about',
+  '/contact',
+  '/services/couples',
+  '/services/parenting',
+  '/services/mediation',
+  '/services/gifted-parenting',
+  '/services/aliyah-families',
+  '/faq',
+]);
 const staticEntries = STATIC_ROUTES.map((route) => ({
   route,
   lastmod: today,
