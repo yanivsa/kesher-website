@@ -41,10 +41,16 @@ test('unknown routes render the noindex 404 page', async ({ page }) => {
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
 });
 
-test('AI chat is consent gated', async ({ page }) => {
+test('AI chat is desktop-only and consent gated', async ({ page }, testInfo) => {
   await page.goto('/');
   await expect(page.locator('script[data-kesher-ai-chat]')).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'הפעלת צ\'אט עם עוזרת AI חיצונית' })).toBeVisible();
+  const consentButton = page.getByRole('button', { name: 'הפעלת צ\'אט עם עוזרת AI חיצונית' });
+
+  if (testInfo.project.name === 'mobile') {
+    await expect(consentButton).toBeHidden();
+  } else {
+    await expect(consentButton).toBeVisible();
+  }
 });
 
 test('gifted framework links reach the dedicated section', async ({ page }) => {
