@@ -50,6 +50,8 @@ jobs:
           import json
           import os
           import re
+          import urllib.request
+          import urllib.error
 
           with open("open-prs.json", encoding="utf-8") as fh:
               prs = json.load(fh)
@@ -60,6 +62,8 @@ jobs:
               re.I,
           )
           now = dt.datetime.now(dt.UTC)
+          repo = os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website")
+          token = os.environ.get("GITHUB_TOKEN", "")
 
           def is_fresh(pr):
               updated = dt.datetime.fromisoformat(pr["updated_at"].replace("Z", "+00:00"))
@@ -67,22 +71,54 @@ jobs:
 
           def is_noop(pr):
               text = f"{pr.get('title') or ''}\n{pr.get('body') or ''}"
-              return re.search(r"\bno[- ]?op\b|no files were edited|no Jules session", text, re.I)
+              return bool(re.search(r"\bno[- ]?op\b|no files were edited|no Jules session", text, re.I))
 
-          blockers = [
-              f"#{pr['number']} {pr['title']} ({pr.get('html_url', 'No URL')})"
-              for pr in prs
-              if is_fresh(pr)
-              and not is_noop(pr)
-              and (
+          def is_repair_or_review(pr):
+              title = pr.get("title", "")
+              if title.startswith("[jules-review]"):
+                  return True
+              return bool(re.search(r"(repair|validator|workflow|automation)", title, re.I))
+
+          def modifies_posts_json(pr_number):
+              url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/files"
+              headers = {
+                  "User-Agent": "python-urllib",
+                  "Accept": "application/vnd.github+json"
+              }
+              if token:
+                  headers["Authorization"] = f"Bearer {token}"
+              req = urllib.request.Request(url, headers=headers)
+              try:
+                  with urllib.request.urlopen(req) as response:
+                      files = json.loads(response.read().decode())
+                      for f in files:
+                          if f.get("filename") == "src/data/posts.json":
+                              return True
+              except Exception:
+                  pass
+              return False
+
+          blockers = []
+          for pr in prs:
+              if not is_fresh(pr) or is_noop(pr):
+                  continue
+
+              if is_repair_or_review(pr):
+                  continue
+
+              text_match = (
                   pattern.search(pr.get("title") or "")
                   or pattern.search((pr.get("head") or {}).get("ref") or "")
                   or pattern.search(pr.get("body") or "")
               )
-          ]
+
+              if text_match and modifies_posts_json(pr["number"]):
+                  blockers.append(f"#{pr['number']} {pr['title']} ({pr.get('html_url', 'No URL')})")
+
           launch_required = not bool(blockers)
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
               out.write(f"launch_required={'true' if launch_required else 'false'}\n")
+
           if blockers:
               msg = "Open Kesher article PR exists; no Jules session will be started.\n"
               print(msg)
