@@ -164,7 +164,7 @@
     top: 0;
     right: -100%;
     width: 80%;
-    height: 100vh;
+    height: 100dvh;
     background-color: var(--color-surface);
     flex-direction: column;
     align-items: stretch;
