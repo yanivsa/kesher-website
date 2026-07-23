@@ -28,121 +28,153 @@ jobs:
           REPO: ${{ github.repository }}
           EVENT_NAME: ${{ github.event_name }}
         run: |
-          set -euo pipefail
+          cat << 'EOF' > automerge.py
+          import json, os, re, sys, urllib.request, urllib.error, urllib.parse
 
-          api() {
-            curl --fail-with-body -sS \
-              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              -H "Content-Type: application/json" \
-              "$@"
-          }
+          token = os.environ.get("GITHUB_TOKEN")
+          repo = os.environ.get("REPO")
+          event_name = os.environ.get("EVENT_NAME")
+          event_path = os.environ.get("GITHUB_EVENT_PATH")
 
-          api_status() {
-            curl -sS \
-              -o response.json \
-              -w '%{http_code}' \
-              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              -H "Content-Type: application/json" \
-              "$@"
-          }
+          def api(method, endpoint, data=None, allow_codes=None):
+              if allow_codes is None: allow_codes = []
+              url = f"https://api.github.com{endpoint}"
+              headers = {
+                  "Authorization": f"Bearer {token}",
+                  "Accept": "application/vnd.github+json",
+                  "X-GitHub-Api-Version": "2022-11-28",
+                  "User-Agent": "python-urllib"
+              }
+              req_data = json.dumps(data).encode("utf-8") if data else None
+              req = urllib.request.Request(url, data=req_data, headers=headers, method=method)
+              if data is not None:
+                  req.add_header("Content-Type", "application/json")
+              try:
+                  with urllib.request.urlopen(req) as resp:
+                      body = resp.read()
+                      return resp.status, (json.loads(body) if body else {})
+              except urllib.error.HTTPError as e:
+                  if e.code in allow_codes:
+                      body = e.read()
+                      try:
+                          err_data = json.loads(body) if body else {}
+                      except json.JSONDecodeError:
+                          err_data = {"raw": body.decode(errors='replace')}
+                      return e.code, err_data
+                  body = e.read()
+                  try:
+                      err_data = json.loads(body) if body else {}
+                  except json.JSONDecodeError:
+                      err_data = {"raw": body.decode(errors='replace')}
+                  print(f"API Error {e.code} on {method} {endpoint}: {err_data}", file=sys.stderr)
+                  sys.exit(1)
+              except Exception as e:
+                  print(f"Network/Unexpected Error on {method} {endpoint}: {e}", file=sys.stderr)
+                  sys.exit(1)
 
-          if [ "${EVENT_NAME}" = "pull_request_target" ]; then
-            python3 - <<'PY' > pr-numbers.txt
-          import json, os
-          with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as fh:
-              print(json.load(fh)["pull_request"]["number"])
-          PY
-          else
-            api "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" > open-prs.json
-            python3 - <<'PY' > pr-numbers.txt
-          import json
-          with open("open-prs.json", encoding="utf-8") as fh:
-              for pr in json.load(fh):
-                  print(pr["number"])
-          PY
-          fi
+          def main():
+              pr_numbers = []
+              if event_name == "pull_request_target":
+                  if event_path and os.path.exists(event_path):
+                      with open(event_path, "r", encoding="utf-8") as f:
+                          event_data = json.load(f)
+                          if "pull_request" in event_data:
+                              pr_numbers.append(event_data["pull_request"]["number"])
+              else:
+                  status, prs = api("GET", f"/repos/{repo}/pulls?state=open&per_page=100")
+                  pr_numbers = [pr["number"] for pr in prs]
 
-          while read -r number; do
-            [ -n "${number}" ] || continue
-            api "https://api.github.com/repos/${REPO}/pulls/${number}" > pr.json
-            api "https://api.github.com/repos/${REPO}/pulls/${number}/files?per_page=100" > files.json
-            sha="$(python3 -c 'import json; print(json.load(open("pr.json"))["head"]["sha"])')"
-            api "https://api.github.com/repos/${REPO}/commits/${sha}/check-runs?per_page=100" > checks.json
+              for number in pr_numbers:
+                  print(f"--- PR #{number} ---")
+                  status, pr = api("GET", f"/repos/{repo}/pulls/{number}")
+                  status, files_data = api("GET", f"/repos/{repo}/pulls/{number}/files?per_page=100")
+                  files = [f["filename"] for f in files_data]
 
-            if ! python3 - <<'PY'
-          import json, re, sys
-          pr = json.load(open("pr.json"))
-          files = [f["filename"] for f in json.load(open("files.json"))]
-          checks = json.load(open("checks.json")).get("check_runs", [])
-          title_match = re.search(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review):", pr.get("title") or "", re.I)
-          audit_kind = title_match.group(1).lower() if title_match else ""
-          allowed_prefixes = ("src/", "public/", "docs/")
-          if audit_kind == "seo geo review":
-              allowed_prefixes += ("scripts/",)
-          allowed = all(
-              f == "README.md" or f.startswith(allowed_prefixes)
-              for f in files
-          )
-          forbidden_by_kind = {
-              "content review": {"public/sitemap.xml"},
-              "mobile review": {"public/sitemap.xml"},
-          }
-          forbidden = any(
-              f.startswith(".github/workflows/")
-              or f in forbidden_by_kind.get(audit_kind, set())
-              for f in files
-          )
-          ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
-          eligible = (
-              pr.get("state") == "open"
-              and not pr.get("draft")
-              and title_match
-              and pr["base"]["ref"] == "main"
-              and pr["head"]["repo"]["full_name"] == pr["base"]["repo"]["full_name"]
-              and allowed
-              and not forbidden
-              and ci_passed
-          )
-          sys.exit(0 if eligible else 1)
-          PY
-            then
-              echo "PR #${number} is not an eligible, CI-passing audit PR."
-              continue
-            fi
+                  title_match = re.search(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review):", pr.get("title") or "", re.I)
+                  audit_kind = title_match.group(1).lower() if title_match else ""
+                  allowed_prefixes = ("src/", "public/", "docs/")
+                  if audit_kind == "seo geo review":
+                      allowed_prefixes += ("scripts/",)
+                  allowed = all(f == "README.md" or f.startswith(allowed_prefixes) for f in files)
 
-            merge_status="$(api_status -X PUT \
-              -d '{"commit_title":"Auto-merge validated Jules audit","merge_method":"squash"}' \
-              "https://api.github.com/repos/${REPO}/pulls/${number}/merge")"
+                  forbidden_by_kind = {
+                      "content review": {"public/sitemap.xml"},
+                      "mobile review": {"public/sitemap.xml"},
+                  }
+                  forbidden = any(f.startswith(".github/workflows/") or f in forbidden_by_kind.get(audit_kind, set()) for f in files)
 
-            case "${merge_status}" in
-              200|201)
-                echo "Merged eligible audit PR #${number}."
-                ;;
-              405|409)
-                echo "PR #${number} needs a refreshed branch/check run before merge; requesting update."
-                head_branch="$(python3 -c 'import json; print(json.load(open("pr.json"))["head"]["ref"])')"
-                update_status="$(api_status -X PUT \
-                  -d '{}' \
-                  "https://api.github.com/repos/${REPO}/pulls/${number}/update-branch")"
-                if [ "${update_status}" = "422" ] && grep -q "There are no new commits on the base branch" response.json; then
-                  echo "PR #${number} branch is already current; requesting a fresh CI run."
-                elif [ "${update_status}" != "202" ]; then
-                  cat response.json
-                  exit 1
-                fi
-                dispatch_status="$(api_status -X POST \
-                  -d "{\"ref\":\"${head_branch}\"}" \
-                  "https://api.github.com/repos/${REPO}/actions/workflows/ci.yml/dispatches")"
-                if [ "${dispatch_status}" != "204" ]; then
-                  cat response.json
-                  exit 1
-                fi
-                ;;
-              *)
-                cat response.json
-                exit 1
-                ;;
-            esac
-          done < pr-numbers.txt
+                  eligible = (
+                      pr.get("state") == "open"
+                      and not pr.get("draft")
+                      and bool(title_match)
+                      and pr.get("base", {}).get("ref") == "main"
+                      and pr.get("head", {}).get("repo", {}).get("full_name") == pr.get("base", {}).get("repo", {}).get("full_name")
+                      and allowed
+                      and not forbidden
+                  )
+
+                  if not eligible:
+                      print(f"PR #{number} is not an eligible audit PR.")
+                      continue
+
+                  sha = pr["head"]["sha"]
+                  head_branch = pr["head"]["ref"]
+                  base_ref = pr["base"]["ref"]
+
+                  status, checks_data = api("GET", f"/repos/{repo}/commits/{sha}/check-runs?per_page=100")
+                  checks = checks_data.get("check_runs", [])
+                  verify_checks = [c for c in checks if c.get("name") == "verify"]
+                  verify_checks.sort(key=lambda x: x.get("id", 0), reverse=True)
+                  latest_verify = verify_checks[0] if verify_checks else None
+
+                  v_status = latest_verify.get("status") if latest_verify else "missing"
+                  v_conclusion = latest_verify.get("conclusion") if latest_verify else None
+
+                  if v_status in ["queued", "in_progress"]:
+                      print(f"PR #{number}: verify check is {v_status}. Waiting.")
+                      continue
+
+                  if v_conclusion == "success":
+                      merge_status, merge_resp = api("PUT", f"/repos/{repo}/pulls/{number}/merge",
+                          data={"commit_title": "Auto-merge validated Jules audit", "merge_method": "squash"},
+                          allow_codes=[405, 409, 200, 201])
+                      if merge_status in [200, 201]:
+                          print(f"PR #{number}: Merged successfully.")
+                          continue
+                      print(f"PR #{number}: Merge failed with {merge_status}. Checking if branch is behind...")
+                  elif v_conclusion is not None:
+                      print(f"PR #{number}: verify check concluded with '{v_conclusion}'. Needs fix. Not merging.")
+                      continue
+
+                  # Compare branches
+                  encoded_base = urllib.parse.quote(base_ref, safe="")
+                  encoded_head = urllib.parse.quote(head_branch, safe="")
+                  status, comp_data = api("GET", f"/repos/{repo}/compare/{encoded_base}...{encoded_head}", allow_codes=[404])
+                  if status == 404:
+                      print(f"PR #{number}: Could not compare branches.")
+                      continue
+
+                  compare_status = comp_data.get("status")
+                  if compare_status in ["behind", "diverged"]:
+                      print(f"PR #{number}: Branch is {compare_status}. Updating branch...")
+                      update_status, update_resp = api("PUT", f"/repos/{repo}/pulls/{number}/update-branch", data={}, allow_codes=[422, 202])
+                      if update_status == 202:
+                          print(f"PR #{number}: Branch updated. The resulting synchronize event will trigger a fresh CI run. Yielding.")
+                      else:
+                          print(f"PR #{number}: Failed to update branch (Status {update_status}): {update_resp}")
+                  else:
+                      print(f"PR #{number}: Branch is {compare_status} (not behind).")
+                      if v_status == "missing":
+                          print(f"PR #{number}: verify check is missing. Dispatching CI...")
+                          dispatch_status, dispatch_resp = api("POST", f"/repos/{repo}/actions/workflows/ci.yml/dispatches",
+                              data={"ref": head_branch}, allow_codes=[204])
+                          if dispatch_status == 204:
+                              print(f"PR #{number}: CI dispatched.")
+                          else:
+                              print(f"PR #{number}: Failed to dispatch CI: {dispatch_resp}", file=sys.stderr)
+                              sys.exit(1)
+
+          if __name__ == "__main__":
+              main()
+          EOF
+          python3 automerge.py
