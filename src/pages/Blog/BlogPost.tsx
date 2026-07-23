@@ -38,7 +38,8 @@ const BlogPost: React.FC = () => {
             "url": `${SITE_CONFIG.url}/apple-touch-icon.png`
           }
         },
-        "description": post?.excerpt || ""
+        "description": post?.excerpt || "",
+        "articleBody": post?.content?.replace(/<[^>]+>/g, ' ') || ""
       },
       {
         "@type": "BreadcrumbList",
@@ -64,7 +65,7 @@ const BlogPost: React.FC = () => {
         ]
       }
     ]
-  }), [post?.title, post?.image, post?.id, post?.date, post?.excerpt]);
+  }), [post?.title, post?.image, post?.id, post?.date, post?.excerpt, post?.content]);
 
   if (!post) {
     return (

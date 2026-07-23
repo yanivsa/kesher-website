@@ -31,6 +31,14 @@ for (let i = 0; i < published.length; i++) {
       errors.push(`Latin characters found in visible prose: ${post.id}`);
     }
 
+    const forbiddenPhrases = ["גשר מעל התהום", "גשר מחדש מעל התהום", "שריר של שיח", "השריר של שיח זוגי", "הפרויקט המשותף הגדול הסתיים", "רעש רגשי גדול", "השקט הפיזי בבית מציף רעש רגשי גדול", "עמדה של יצירה משותפת"];
+    for (const phrase of forbiddenPhrases) {
+      if (post.content.includes(phrase)) {
+        errors.push(`Forbidden formulaic AI phrase found in new article ${post.id}: "${phrase}"`);
+      }
+    }
+
+
     const STOP_WORDS = new Set(['couples', 'parenting', 'relationship', 'children', 'child', 'with', 'about', 'how', 'why', 'what', 'when', 'your', 'their']);
     const getWords = (id) => new Set(id.split('-').filter(w => w.length > 3 && !STOP_WORDS.has(w.toLowerCase())));
     const currentWords = getWords(post.id);
