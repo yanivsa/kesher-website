@@ -1,27 +1,22 @@
 import React from 'react';
-import { FiPhoneCall, FiMap, FiHeart, FiCheckCircle } from 'react-icons/fi';
+import { FiCalendar, FiMessageCircle, FiCheckCircle } from 'react-icons/fi';
 import styles from './ProcessSection.module.css';
 
 const steps = [
   {
-    icon: <FiPhoneCall />,
-    title: 'שיחת היכרות קצרה',
-    description: 'שיחת היכרות קצרה בטלפון או בזום ללא התחייבות, כדי להבין את הצרכים שלכם ולראות איך אני יכולה לעזור.'
+    icon: <FiCalendar />,
+    title: 'בוחרים מועד',
+    description: 'קובעים פגישת ייעוץ של 50 דקות ביומן. אם אתם מעדיפים לברר משהו קודם, אפשר לשלוח הודעה.'
   },
   {
-    icon: <FiMap />,
-    title: 'פגישת מיפוי ואבחון',
-    description: 'צלילה לעומק הדינמיקה, הבנת החסמים המרכזיים ובניית מפת דרכים אישית.'
-  },
-  {
-    icon: <FiHeart />,
-    title: 'תהליך הליווי הזוגי או ההורי',
-    description: 'סדרת מפגשים ממוקדים בקליניקה או באונליין, שבהם תקבלו כלים פרקטיים לשינוי התנהגותי ותקשורתי.'
+    icon: <FiMessageCircle />,
+    title: 'נפגשים ומבררים',
+    description: 'בפגישה הראשונה תשמעו ותישמעו. נברר מה קורה עכשיו, מה כבר ניסיתם ומה הייתם רוצים שייראה אחרת.'
   },
   {
     icon: <FiCheckCircle />,
-    title: 'יציאה לדרך חדשה',
-    description: 'יציאה לדרך חדשה עם כלים ברורים, תקשורת מקרבת ותחושת ביטחון בבית.'
+    title: 'מחליטים על ההמשך',
+    description: 'בסוף הפגישה נסכם את המוקד ואת האפשרויות להמשך. אין מספר פגישות קבוע מראש, וההחלטה מתקבלת יחד.'
   }
 ];
 
@@ -30,8 +25,8 @@ const ProcessSection: React.FC = () => {
     <section className={styles.process}>
       <div className="container">
         <div className={styles.header}>
-          <h2>איך זה עובד? המסע שלכם איתי</h2>
-          <p>תהליך מובנה, רגיש ומקצועי שמוריד את מפלס החרדה ומייצר תוצאות בשטח.</p>
+          <h2>מה קורה כשפונים?</h2>
+          <p>שלושה צעדים פשוטים, בלי צורך לדעת מראש בדיוק איך לקרוא למה שקורה.</p>
         </div>
         <div className={styles.grid}>
           {steps.map((step, index) => (

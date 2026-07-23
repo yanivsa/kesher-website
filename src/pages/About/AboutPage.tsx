@@ -173,7 +173,7 @@ const AboutPage: React.FC = () => {
             <p>
               התפקיד שלי הוא לעזור לכם ליצור בהירות, חיבור ושיתוף פעולה — בין בני זוג, בין הורים לילדים ובין המשפחה למסגרות שסביבה.
             </p>
-            <a href={SITE_CONFIG.links.whatsapp}>לתיאום שיחת היכרות</a>
+            <Link to={SITE_CONFIG.links.appointment}>קביעת פגישת ייעוץ</Link>
           </div>
         </div>
       </section>

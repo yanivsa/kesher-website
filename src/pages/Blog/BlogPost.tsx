@@ -108,7 +108,7 @@ const BlogPost: React.FC = () => {
           <div className={styles.ctaCard}>
             <h3>צריכים עזרה עם הנושא הזה?</h3>
             <p>אני כאן כדי ללוות אתכם בתהליך אישי ומותאם לכם.</p>
-            <Link to="/contact" className={styles.ctaButton}>קביעת פגישת היכרות</Link>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.ctaButton}>קביעת פגישת ייעוץ</Link>
           </div>
         </aside>
       </div>

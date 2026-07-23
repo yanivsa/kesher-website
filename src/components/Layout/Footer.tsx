@@ -22,13 +22,14 @@ const Footer: React.FC = () => {
           <Link to="/services/gifted-parenting">הורים לילדים מחוננים</Link>
           <Link to="/services/aliyah-families">עולים ותושבים חוזרים</Link>
           <Link to="/faq">שאלות נפוצות</Link>
+          <Link to={SITE_CONFIG.links.appointment}>קביעת פגישה</Link>
           <Link to="/contact">צור קשר</Link>
         </div>
         <div className={styles.contact}>
           <h4>פרטי התקשרות</h4>
-          <p>טלפון: {SITE_CONFIG.contact.phone}</p>
-          <p>אימייל: {SITE_CONFIG.contact.email}</p>
-          <p>מיקום: {SITE_CONFIG.contact.location}</p>
+          <p>{`טלפון: ${SITE_CONFIG.contact.phone}`}</p>
+          <p>{`אימייל: ${SITE_CONFIG.contact.email}`}</p>
+          <p>{`מיקום: ${SITE_CONFIG.contact.location}`}</p>
         </div>
         <div className={styles.legal}>
           <h4>מידע משפטי</h4>
@@ -39,7 +40,7 @@ const Footer: React.FC = () => {
       </div>
       <div className={styles.bottom}>
         <div className="container">
-          <p>© {new Date().getFullYear()} {SITE_CONFIG.brand}. כל הזכויות שמורות.</p>
+          <p>{`© ${new Date().getFullYear()} ${SITE_CONFIG.brand}. כל הזכויות שמורות.`}</p>
         </div>
       </div>
     </footer>

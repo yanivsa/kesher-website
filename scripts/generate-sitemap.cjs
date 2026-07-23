@@ -8,6 +8,7 @@ const legalRoutes = new Set(['/accessibility', '/privacy', '/terms']);
 const serviceRoutes = new Set([
   '/about',
   '/contact',
+  '/appointment',
   '/services/couples',
   '/services/parenting',
   '/services/mediation',

@@ -72,9 +72,9 @@ const ParentingGuidance: React.FC = () => {
         <div className={`container ${styles.heroContainer}`}>
           <div className={styles.heroContent}>
             <div className={styles.badge}>מחוננים • ADHD • מעברים חינוכיים</div>
-            <h1>להפסיק להילחם <br /><span>ולהתחיל להוביל</span></h1>
-            <p className={styles.subtitle}>הדרכת הורים מעשית שנותנת לכם ביטחון, סמכות וחיבור אמיתי לילד.</p>
-            <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
+            <h1>להבין מה מקשה בבית <br /><span>ולבחור תגובה שעוזרת</span></h1>
+            <p className={styles.subtitle}>הדרכת הורים שמחברת בין הצרכים של הילד, הגבולות בבית ומה שאפשר ליישם בשגרה שלכם.</p>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.ctaBtn}>קביעת פגישת ייעוץ</Link>
           </div>
           <div className={styles.heroImageWrapper}>
             <img src="/images/generated/services/parenting-room.jpg" alt="מרחב נעים להדרכת הורים" width="1600" height="900" fetchPriority="high" />
@@ -97,8 +97,8 @@ const ParentingGuidance: React.FC = () => {
             </div>
             <div className={styles.segment}>
               <FiSmile className={styles.icon} />
-              <h3>החזרת ההנאה לבית</h3>
-              <p>נהפוך את הבית למקום רגוע שנעים להיות בו, ונגלה מחדש את רגעי הקרבה עם הילדים.</p>
+              <h3>יותר רגעים של שיתוף פעולה</h3>
+              <p>נחפש שינויים קטנים שמפחיתים חיכוך ומאפשרים גם קשר, משחק ושיחה בתוך היום העמוס.</p>
             </div>
           </div>
         </div>
@@ -123,18 +123,18 @@ const ParentingGuidance: React.FC = () => {
           <div className={styles.processSteps}>
             <div className={styles.step}>
               <div className={styles.stepNum}>01</div>
-              <h4>ניתוח הדינמיקה</h4>
-              <p>נבין מה באמת קורה בבית - איפה הקושי ומה מעורר את מאבקי הכוח.</p>
+              <h4>מכירים את השגרה</h4>
+              <p>נבין באילו רגעים קשה במיוחד, מה קורה לפני העימות ואיך כל אחד מגיב.</p>
             </div>
             <div className={styles.step}>
               <div className={styles.stepNum}>02</div>
-              <h4>בניית אסטרטגיה</h4>
-              <p>תקבלו כלים מותאמים לצרכים של הילד שלכם, לגיל שלו ולסגנון ההורי שלכם.</p>
+              <h4>בוחרים שינוי אחד</h4>
+              <p>נבחר תגובה או הרגל שמתאימים לגיל הילד ולמציאות בבית, ונגדיר איך לנסות אותם.</p>
             </div>
             <div className={styles.step}>
               <div className={styles.stepNum}>03</div>
-              <h4>ליווי ויישום</h4>
-              <p>אני איתכם לאורך הדרך, מדייקים את הכלים ובודקים מה עוזר בבית.</p>
+              <h4>בודקים ומדייקים</h4>
+              <p>בפגישה הבאה נבדוק מה עזר, מה לא היה ישים ומה כדאי לשנות.</p>
             </div>
           </div>
         </div>
@@ -143,11 +143,11 @@ const ParentingGuidance: React.FC = () => {
       <section className={styles.boundaries}>
         <div className="container">
           <div className={styles.boundariesContent}>
-            <h2>למי הליווי פחות יתאים?</h2>
-            <p>כדי שהתהליך יצליח ויביא לשינוי אמיתי בבית, נדרשת מחויבות. הליווי פחות מתאים במקרים הבאים:</p>
+            <h2>מתי כדאי לשלב גורם מקצועי נוסף?</h2>
+            <p>הדרכת הורים אינה מחליפה אבחון או טיפול בילד. לפעמים נכון לשלב אותה עם מענה נוסף:</p>
             <ul className={styles.boundariesList}>
-              <li>הורים שמחפשים פתרונות קסם מיידיים או 'תיקון' של הילד ללא נכונות לעבור תהליך בעצמם.</li>
-              <li>מקרים הדורשים התערבות פסיכיאטרית או טיפול פסיכולוגי קליני עמוק (במקרים אלו אפנה לגורם המתאים).</li>
+              <li>כאשר עולה צורך בבירור התפתחותי, רגשי, לימודי או רפואי.</li>
+              <li>כאשר הילד או ההורים נמצאים במצוקה שדורשת טיפול ישיר ומותאם.</li>
             </ul>
           </div>
         </div>
@@ -159,7 +159,7 @@ const ParentingGuidance: React.FC = () => {
             <span>תחום התמחות</span>
             <h2>הכנה לכיתה א' דרך בניית תפקודים ניהוליים</h2>
             <p>
-              המעבר מהגן לבית הספר דורש יותר מידע של אותיות ומספרים. לילדים עם ADHD ולכל ילד שזקוק לכך נבנה יחד שגרת בוקר,
+              המעבר מהגן לבית הספר דורש יותר מהיכרות עם אותיות ומספרים. לילדים עם ADHD ולכל ילד שזקוק לכך נבנה יחד שגרת בוקר,
               הרגלי התארגנות, מעבר בין משימות, כלים לוויסות רגשי ודרך ברורה לשיתוף פעולה עם הצוות החינוכי.
             </p>
             <p>
@@ -192,9 +192,9 @@ const ParentingGuidance: React.FC = () => {
         <div className="container">
           <LeadMagnet />
           <div className={styles.finalCall}>
-            <h2>אתם לא חייבים לעשות את זה לבד.</h2>
-            <p>בואו נחזיר את הביטחון להורות שלכם.</p>
-            <a href="/contact" className={styles.btnPrimary}>לשיחת ייעוץ ראשונה</a>
+            <h2>אפשר להתחיל ממה שקורה אצלכם השבוע</h2>
+            <p>הפגישה הראשונה נועדה להבין את התמונה ולבחור מוקד מעשי להמשך.</p>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.btnPrimary}>בחירת מועד לפגישה</Link>
           </div>
         </div>
       </section>

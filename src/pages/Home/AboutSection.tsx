@@ -1,5 +1,6 @@
 import React from 'react';
 import { FiAward, FiCompass, FiBookOpen } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 import styles from './AboutSection.module.css';
 
 const AboutSection: React.FC = () => {
@@ -29,7 +30,7 @@ const AboutSection: React.FC = () => {
           </p>
           <div className={styles.description}>
             <p>
-              היכולת לנתח מצבים מורכבים, להקשיב לכל הצדדים ולבנות הסכמות מלווה אותי בעבודה עם זוגות, הורים ומשפחות. אני משלבת ראייה מערכתית עם כלים שאפשר ליישם בבית.
+              אני אוהבת לפרק יחד מצב שנראה מסובך: להבין מי נפגע, מה חוזר על עצמו ומה אפשר לנסות אחרת כבר השבוע. לפעמים המוקד הוא הזוגיות, לפעמים ההורות, ולעיתים אי אפשר באמת להפריד ביניהן.
             </p>
           </div>
           <div className={styles.credentials}>
@@ -46,7 +47,7 @@ const AboutSection: React.FC = () => {
               <span>ליווי משפחות במעברים חינוכיים, בעלייה ובחזרה לישראל</span>
             </div>
           </div>
-          <a href="#contact" className={styles.cta}>בואו נדבר</a>
+          <Link to="/about" className={styles.cta}>עוד עליי ועל אופן העבודה</Link>
         </div>
       </div>
     </section>

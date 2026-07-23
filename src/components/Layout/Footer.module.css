@@ -18,7 +18,7 @@
 }
 
 .brand {
-  font-family: 'Playfair Display', serif;
+  font-family: inherit;
   font-size: 2rem;
   color: var(--color-primary-light);
 }
@@ -35,7 +35,7 @@
 
 .links h4, .contact h4, .legal h4 {
   color: white;
-  font-family: 'Assistant', sans-serif;
+  font-family: inherit;
   font-size: 1.1rem;
   margin-bottom: var(--spacing-sm);
 }

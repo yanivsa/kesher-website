@@ -44,13 +44,50 @@ test('unknown routes render the noindex 404 page', async ({ page }) => {
 test('AI chat is desktop-only and consent gated', async ({ page }, testInfo) => {
   await page.goto('/');
   await expect(page.locator('script[data-kesher-ai-chat]')).toHaveCount(0);
-  const consentButton = page.getByRole('button', { name: 'הפעלת צ\'אט עם עוזרת AI חיצונית' });
+  const consentButton = page.locator('button.ai-chat-consent');
+  await expect(consentButton).toHaveCount(1);
 
   if (testInfo.project.name === 'mobile') {
     await expect(consentButton).toBeHidden();
   } else {
     await expect(consentButton).toBeVisible();
   }
+});
+
+test('mobile menu has an obvious close action and supports Escape', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  await page.getByRole('button', { name: 'פתיחת תפריט' }).click();
+  await expect(page.getByRole('button', { name: 'סגירת תפריט', exact: true })).toBeVisible();
+  await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
+
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: 'פתיחת תפריט' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'סגירת תפריט', exact: true })).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'פתיחת תפריט' }).click();
+  await page.getByRole('button', { name: 'סגירת התפריט בלחיצה מחוץ לתפריט' })
+    .click({ position: { x: 10, y: 400 } });
+  await expect(page.getByRole('button', { name: 'פתיחת תפריט' })).toBeVisible();
+});
+
+test('appointment page embeds Shira Calendly and keeps a direct fallback', async ({ page }) => {
+  await page.goto('/appointment');
+  await expect(page.getByRole('heading', { name: 'קביעת פגישת ייעוץ עם שירה' })).toBeVisible();
+  await expect(page.locator('meta[name="description"]')).toHaveCount(1);
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
+  const width = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+  }));
+  expect(width.scrollWidth).toBe(width.clientWidth);
+  const results = await new AxeBuilder({ page }).exclude('iframe').analyze();
+  expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact || ''))).toEqual([]);
+  await expect(page.locator('iframe[title="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]'))
+    .toHaveAttribute('src', 'https://calendly.com/shira-saharoni/50');
+  await expect(page.getByRole('link', { name: 'פתחו את Calendly בחלון חדש' }))
+    .toHaveAttribute('href', 'https://calendly.com/shira-saharoni/50');
 });
 
 test('gifted framework links reach the dedicated section', async ({ page }) => {

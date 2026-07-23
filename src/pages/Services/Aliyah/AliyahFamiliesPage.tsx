@@ -60,7 +60,7 @@ const AliyahFamiliesPage: React.FC = () => {
               עלייה או חזרה לישראל היא שינוי של מדינה, שפה, מסגרת ולעיתים גם זהות משפחתית. גם כשהמעבר רצוי, הוא יכול להעמיס על הזוגיות, ההורות והילדים.
             </p>
             <div className={styles.heroActions}>
-              <a href={SITE_CONFIG.links.whatsapp} className={styles.primaryButton}>לתיאום שיחת היכרות</a>
+              <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת ייעוץ</Link>
               <Link to="/contact" className={styles.secondaryButton}>אפשרויות יצירת קשר</Link>
             </div>
           </div>

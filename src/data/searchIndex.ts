@@ -1,4 +1,4 @@
-import posts from './publishedPosts';
+import posts from './postSummaries.json';
 import faqs from './faqs';
 
 export interface SearchItem {
@@ -65,9 +65,17 @@ const staticPages: SearchItem[] = [
   {
     id: 'page-contact',
     type: 'page',
-    title: 'צור קשר / קביעת פגישה',
-    body: 'קביעת פגישת היכרות ללא עלות. טלפון, WhatsApp, אימייל. אשדוד ואונליין דרך Zoom. שלחו הודעה ואחזור אליכם תוך 24 שעות.',
+    title: 'צור קשר',
+    body: 'יצירת קשר עם שירה בטלפון, WhatsApp או אימייל. השאירו הודעה ואחזור אליכם בהקדם.',
     url: '/contact',
+    category: 'דפים'
+  },
+  {
+    id: 'page-appointment',
+    type: 'page',
+    title: 'קביעת פגישת ייעוץ עם שירה',
+    body: 'בחירת מועד לפגישת ייעוץ בת 50 דקות עם שירה סהרוני. ייעוץ זוגי, הנחיית הורים או גישור, באשדוד או אונליין.',
+    url: '/appointment',
     category: 'דפים'
   }
 ];
