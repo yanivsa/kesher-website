@@ -6,6 +6,9 @@ import ScrollToTop from './components/ScrollToTop'
 const Home = lazy(() => import('./pages/Home/Home'))
 const CouplesCounseling = lazy(() => import('./pages/Services/Couples/CouplesCounseling'))
 const ParentingGuidance = lazy(() => import('./pages/Services/Parenting/ParentingGuidance'))
+const MediationPage = lazy(() => import('./pages/Services/Mediation/MediationPage'))
+const GiftedParentingPage = lazy(() => import('./pages/Services/Gifted/GiftedParentingPage'))
+const AliyahFamiliesPage = lazy(() => import('./pages/Services/Aliyah/AliyahFamiliesPage'))
 const BlogList = lazy(() => import('./pages/Blog/BlogList'))
 const BlogPost = lazy(() => import('./pages/Blog/BlogPost'))
 const FAQ = lazy(() => import('./pages/FAQ/FAQ'))
@@ -27,6 +30,9 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/services/couples" element={<CouplesCounseling />} />
             <Route path="/services/parenting" element={<ParentingGuidance />} />
+            <Route path="/services/mediation" element={<MediationPage />} />
+            <Route path="/services/gifted-parenting" element={<GiftedParentingPage />} />
+            <Route path="/services/aliyah-families" element={<AliyahFamiliesPage />} />
             <Route path="/blog" element={<BlogList />} />
             <Route path="/blog/:id" element={<BlogPost />} />
             <Route path="/faq" element={<FAQ />} />
