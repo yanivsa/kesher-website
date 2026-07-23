@@ -1,20 +1,16 @@
 name: Jules Weekday Kesher Article
-
 on:
   schedule:
     # 00:35 Israel time during daylight saving. The job also checks local day
     # before starting Jules, so Friday/Saturday are skipped even across DST.
     - cron: "35 21 * * 0,1,2,3,4"
   workflow_dispatch:
-
 permissions:
   contents: read
   pull-requests: read
-
 concurrency:
   group: jules-weekday-kesher-article
   cancel-in-progress: false
-
 jobs:
   start-jules:
     runs-on: ubuntu-latest
@@ -30,7 +26,6 @@ jobs:
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
-
       - name: Stop if article PR is already open
         if: steps.local_day.outputs.skip != 'true'
         id: article_gate
@@ -38,65 +33,107 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-
           curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls?state=open&per_page=100" \
             > open-prs.json
-
           python3 - <<'PY'
           import datetime as dt
           import json
           import os
           import re
-
+          import urllib.request
+          import urllib.error
+          import sys
           with open("open-prs.json", encoding="utf-8") as fh:
               prs = json.load(fh)
-
           pattern = re.compile(
               r"(kesher article|weekday article|blog article|posts\.json|"
               r"auto[- ]?publish|publish article|new article|מאמר)",
               re.I,
           )
           now = dt.datetime.now(dt.UTC)
-
+          repo = os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website")
+          token = os.environ.get("GITHUB_TOKEN", "")
           def is_fresh(pr):
               updated = dt.datetime.fromisoformat(pr["updated_at"].replace("Z", "+00:00"))
               return now - updated <= dt.timedelta(days=3)
-
           def is_noop(pr):
               text = f"{pr.get('title') or ''}\n{pr.get('body') or ''}"
-              return re.search(r"\bno[- ]?op\b|no files were edited|no Jules session", text, re.I)
+              return bool(re.search(r"\bno[- ]?op\b|no files were edited|no Jules session", text, re.I))
+          def is_repair_or_review(pr):
+              title = pr.get("title", "")
+              if title.startswith("[jules-review]"):
+                  return True
+              return bool(re.search(r"(repair|validator|workflow|automation)", title, re.I))
+          def modifies_posts_json(pr_number):
+              url = f"https://api.github.com/repos/{repo}/pulls/{pr_number}/files?per_page=100"
+              headers = {
+                  "User-Agent": "python-urllib",
+                  "Accept": "application/vnd.github+json"
+              }
+              if token:
+                  headers["Authorization"] = f"Bearer {token}"
+              req = urllib.request.Request(url, headers=headers)
+              try:
+                  with urllib.request.urlopen(req) as response:
+                      if response.headers.get('Link') and 'rel="next"' in response.headers.get('Link'):
+                          print(f"External infrastructure error: PR #{pr_number} has too many files (pagination required but unsupported).")
+                          sys.exit(1)
+                      files = json.loads(response.read().decode())
+                      for f in files:
+                          if f.get("filename") == "src/data/posts.json":
+                              return True
+              except urllib.error.HTTPError as e:
+                  print(f"External infrastructure error: GitHub API returned {e.code} when checking PR #{pr_number} files.")
+                  sys.exit(1)
+              except urllib.error.URLError as e:
+                  print(f"External infrastructure error: Network failure when checking PR #{pr_number} files.")
+                  sys.exit(1)
+              except Exception as e:
+                  print(f"External infrastructure error: JSON parse or other failure when checking PR #{pr_number} files.")
+                  sys.exit(1)
+              return False
+          blockers = []
+          for pr in prs:
+              if not is_fresh(pr) or is_noop(pr):
+                  continue
 
-          blockers = [
-              f"#{pr['number']} {pr['title']}"
-              for pr in prs
-              if is_fresh(pr)
-              and not is_noop(pr)
-              and (
+              if is_repair_or_review(pr):
+                  continue
+              text_match = (
                   pattern.search(pr.get("title") or "")
                   or pattern.search((pr.get("head") or {}).get("ref") or "")
                   or pattern.search(pr.get("body") or "")
               )
-          ]
+
+              if text_match and modifies_posts_json(pr["number"]):
+                  blockers.append(f"#{pr['number']} {pr['title']} ({pr.get('html_url', 'No URL')})")
+          launch_required = not bool(blockers)
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
-              out.write(f"blocked={'true' if blockers else 'false'}\n")
+              out.write(f"launch_required={'true' if launch_required else 'false'}\n")
+
           if blockers:
-              print("Open Kesher article PR exists; no Jules session will be started.")
+              msg = "Open Kesher article PR exists; no Jules session will be started.\n"
+              print(msg)
               for blocker in blockers[:20]:
                   print(f"- {blocker}")
+              if "GITHUB_STEP_SUMMARY" in os.environ:
+                  with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
+                      out.write("### Jules Session Skipped\n\n")
+                      out.write("Jules session intentionally skipped because the following fresh article PRs are open:\n")
+                      for blocker in blockers[:20]:
+                          out.write(f"- {blocker}\n")
           PY
-
       - name: Start Jules autonomous article session
-        if: steps.local_day.outputs.skip != 'true' && steps.article_gate.outputs.blocked != 'true'
+        if: steps.local_day.outputs.skip != 'true' && steps.article_gate.outputs.launch_required == 'true'
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
           DEEPAI_API_KEY: ${{ secrets.DEEPAI_API_KEY }}
         run: |
           set -euo pipefail
           test -n "${JULES_API_KEY:-}"
-
           cat > payload.json <<'JSON'
           {
             "title": "Weekday Kesher Hebrew article",
@@ -112,18 +149,56 @@ jobs:
             "automationMode": "AUTO_CREATE_PR"
           }
           JSON
-
           python3 - <<'PY'
           import json
           with open("payload.json", encoding="utf-8") as fh:
               payload = json.load(fh)
           payload["prompt"] += "\n\nStrict Hebrew-only gate: the new article title, excerpt, and rendered content must contain no Latin letters `A-Z` or `a-z`, including English terminology, acronyms, parenthetical translations, headings, CTA text, or image captions. Keep machine identifiers such as id/slug/image path in ASCII as required by the repo, but visible article prose must be Hebrew-only. Before opening a PR, scan the new visible fields with `/[A-Za-z]/`; if any match remains, replace it with natural Hebrew and rerun `npm run check`."
+          payload["prompt"] += "\n\nAutonomy rule: an auto-approved/generated plan must be executed immediately; never restate it and ask permission or enter AWAITING_USER_FEEDBACK."
           with open("payload.json", "w", encoding="utf-8") as fh:
               json.dump(payload, fh, ensure_ascii=False)
           PY
-
-          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
+          set +e
+          HTTP_STATUS=$(curl -w "%{http_code}" -sS --retry 3 --retry-all-errors --retry-delay 2 \
+            -o response.json \
             -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
             -d @payload.json \
-            https://jules.googleapis.com/v1alpha/sessions
+            https://jules.googleapis.com/v1alpha/sessions)
+          CURL_EXIT_CODE=$?
+          set -e
+          if [ $CURL_EXIT_CODE -ne 0 ]; then
+            echo "curl failed with exit code $CURL_EXIT_CODE"
+            exit $CURL_EXIT_CODE
+          fi
+          if [ "$HTTP_STATUS" -ge 400 ]; then
+            echo "API request failed with HTTP status $HTTP_STATUS"
+            cat response.json
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          import sys
+          import os
+          try:
+              with open("response.json", "r", encoding="utf-8") as f:
+                  data = json.load(f)
+          except Exception as e:
+              print(f"Failed to parse response.json: {e}")
+              sys.exit(1)
+          session_id = data.get("name") or data.get("id")
+          session_url = data.get("url") or data.get("agentUrl") or data.get("sessionUrl")
+          if not session_id or not session_url:
+              print("Response missing required session ID/name or URL")
+              print("Response body:")
+              print(json.dumps(data, indent=2))
+              sys.exit(1)
+          if "GITHUB_STEP_SUMMARY" in os.environ:
+              with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+                  f.write("### Jules Session Created Successfully\n\n")
+                  f.write(f"- **ID/Name:** `{session_id}`\n")
+                  f.write(f"- **URL:** [{session_url}]({session_url})\n")
+
+          print(f"Session started: {session_id}")
+          print(f"URL: {session_url}")
+          PY
