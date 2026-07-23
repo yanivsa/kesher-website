@@ -23,7 +23,7 @@ const schemaData = {
         "@type": "LocalBusiness",
         "@id": `${SITE_CONFIG.url}/#business`
       },
-      "description": "הדרכת הורים מקצועית באשדוד ובאונליין (Zoom). התמחות בילדים עם ADHD, הכנה לכיתה א', הצבת גבולות ושיפור האווירה המשפחתית.",
+      "description": "הדרכת הורים באשדוד ובאונליין לילדים מחוננים, לילדים עם ADHD ולמשפחות המתכוננות לכיתה א' ולמעברים חינוכיים.",
       "image": `${SITE_CONFIG.url}/images/generated/services/parenting-room.jpg`
     },
     {
@@ -62,8 +62,8 @@ const ParentingGuidance: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags 
-        title="הדרכת הורים באשדוד ואונליין | ADHD והכנה לכיתה א' | שירה סהרוני"
-        description="הדרכת הורים מקצועית באשדוד ובאונליין (Zoom). התמחות בהכנה לכיתה א' לילדים עם ADHD, בניית שגרה, ויסות רגשי והצבת גבולות."
+        title="הדרכת הורים | מחוננים, ADHD והכנה לכיתה א' | שירה סהרוני"
+        description="הדרכת הורים באשדוד ובאונליין לילדים מחוננים, לילדים עם ADHD ולהכנה לכיתה א' דרך תפקודים ניהוליים, ויסות ועצמאות."
         image="/images/generated/services/parenting-room.jpg"
       />
       <SchemaOrg data={schemaData} />
@@ -71,7 +71,7 @@ const ParentingGuidance: React.FC = () => {
       <header className={styles.header}>
         <div className={`container ${styles.heroContainer}`}>
           <div className={styles.heroContent}>
-            <div className={styles.badge}>ליווי הורים סביב ADHD ואתגרי קשב</div>
+            <div className={styles.badge}>מחוננים • ADHD • מעברים חינוכיים</div>
             <h1>להפסיק להילחם <br /><span>ולהתחיל להוביל</span></h1>
             <p className={styles.subtitle}>הדרכת הורים מעשית שנותנת לכם ביטחון, סמכות וחיבור אמיתי לילד.</p>
             <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
@@ -87,8 +87,8 @@ const ParentingGuidance: React.FC = () => {
           <div className={styles.segmentGrid}>
             <div className={styles.segment}>
               <FiZap className={styles.icon} />
-              <h3>התמחות ב-ADHD</h3>
-              <p>הבנת המוח של ילד הקשב היא המפתח. נלמד איך לגשת אליו נכון, איך להפחית התפרצויות ואיך לשמור על הדימוי העצמי שלו.</p>
+              <h3>ADHD ואתגרי קשב</h3>
+              <p>נבין מה מקשה על הילד להתארגן, לווסת ולהתמיד, ונבנה תמיכה שמחזקת עצמאות ושומרת על הדימוי העצמי.</p>
             </div>
             <div className={styles.segment}>
               <FiTarget className={styles.icon} />
@@ -100,6 +100,19 @@ const ParentingGuidance: React.FC = () => {
               <h3>החזרת ההנאה לבית</h3>
               <p>נהפוך את הבית למקום רגוע שנעים להיות בו, ונגלה מחדש את רגעי הקרבה עם הילדים.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.giftedCallout}>
+        <div className="container">
+          <div className={styles.giftedContent}>
+            <span>תחום ליווי מרכזי</span>
+            <h2>הנחיית הורים לילדים מחוננים</h2>
+            <p>
+              יכולת גבוהה יכולה להגיע לצד רגישות, פרפקציוניזם, שעמום, קושי חברתי או פער בין ההבנה של הילד לבין יכולת ההתארגנות והוויסות שלו. הליווי מחבר בין הצרכים של הילד, ההורות והמסגרת החינוכית.
+            </p>
+            <Link to="/services/gifted-parenting">לעמוד המלא על הורים לילדים מחוננים</Link>
           </div>
         </div>
       </section>
@@ -116,7 +129,7 @@ const ParentingGuidance: React.FC = () => {
             <div className={styles.step}>
               <div className={styles.stepNum}>02</div>
               <h4>בניית אסטרטגיה</h4>
-              <p>תקבלו כלים מותאמים אישית למוח של הילד שלכם ולסגנון ההורי שלכם.</p>
+              <p>תקבלו כלים מותאמים לצרכים של הילד שלכם, לגיל שלו ולסגנון ההורי שלכם.</p>
             </div>
             <div className={styles.step}>
               <div className={styles.stepNum}>03</div>
@@ -144,10 +157,13 @@ const ParentingGuidance: React.FC = () => {
         <div className="container">
           <div className={styles.specializationIntro}>
             <span>תחום התמחות</span>
-            <h2>הכנה לכיתה א' לילדים עם ADHD</h2>
+            <h2>הכנה לכיתה א' דרך בניית תפקודים ניהוליים</h2>
             <p>
-              המעבר מהגן לבית הספר דורש מילדי קשב הרבה יותר מידע של אותיות ומספרים. בליווי ממוקד נבנה יחד שגרת בוקר,
-              הרגלי התארגנות, כלים לוויסות רגשי ודרך ברורה לשיתוף פעולה עם המחנכת.
+              המעבר מהגן לבית הספר דורש יותר מידע של אותיות ומספרים. לילדים עם ADHD ולכל ילד שזקוק לכך נבנה יחד שגרת בוקר,
+              הרגלי התארגנות, מעבר בין משימות, כלים לוויסות רגשי ודרך ברורה לשיתוף פעולה עם הצוות החינוכי.
+            </p>
+            <p>
+              זהו תהליך משותף לילד ולהוריו: הילד מתרגל מיומנויות ועצמאות, וההורים בונים סביבת תמיכה עקבית שאפשר לקיים לאורך זמן.
             </p>
           </div>
           <div className={styles.specializationGrid}>
@@ -156,8 +172,8 @@ const ParentingGuidance: React.FC = () => {
               <p>הפחתת אי-ודאות, הכרות מוקדמת עם המסגרת ותרגול תגובות למצבים חדשים.</p>
             </article>
             <article>
-              <h3>שגרה והתארגנות</h3>
-              <p>בניית רצף בוקר פשוט, ארגון ילקוט וציוד, וחיזוק עצמאות בלי מאבקי כוח.</p>
+              <h3>תפקודים ניהוליים</h3>
+              <p>בניית רצף בוקר, ארגון ילקוט וציוד, מעבר בין משימות, התמודדות עם הסחות וחיזוק עצמאות.</p>
             </article>
             <article>
               <h3>שותפות עם בית הספר</h3>
@@ -165,7 +181,7 @@ const ParentingGuidance: React.FC = () => {
             </article>
           </div>
           <Link to="/blog?category=הדרכת הורים&subcategory=הכנה לכיתה א' ו-ADHD" className={styles.specializationLink}>
-            למאמרים על הכנה לכיתה א' ו-ADHD
+            למאמרים על הכנה לכיתה א', תפקודים ניהוליים ו-ADHD
           </Link>
         </div>
       </section>

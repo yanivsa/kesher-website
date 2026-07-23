@@ -10,14 +10,17 @@ const Footer: React.FC = () => {
         <div className={styles.info}>
           <div className={styles.logo}>
             <span className={styles.brand}>{SITE_CONFIG.brand}</span>
-            <span className={styles.subtitle}>{SITE_CONFIG.author}</span>
+            <span className={styles.subtitle}>ייעוץ זוגי, הנחיית הורים וגישור</span>
           </div>
-          <p>יועצת זוגית ומנחת הורים.</p>
+          <p>יועצת זוגית, מנחת הורים ומגשרת מוסמכת.</p>
         </div>
         <div className={styles.links}>
           <h4>ניווט מהיר</h4>
           <Link to="/">דף הבית</Link>
           <Link to="/about">אודות</Link>
+          <Link to="/services/mediation">גישור</Link>
+          <Link to="/services/gifted-parenting">הורים לילדים מחוננים</Link>
+          <Link to="/services/aliyah-families">עולים ותושבים חוזרים</Link>
           <Link to="/faq">שאלות נפוצות</Link>
           <Link to="/contact">צור קשר</Link>
         </div>
@@ -36,7 +39,7 @@ const Footer: React.FC = () => {
       </div>
       <div className={styles.bottom}>
         <div className="container">
-          <p>© {new Date().getFullYear()} {SITE_CONFIG.brand} - {SITE_CONFIG.author}. כל הזכויות שמורות.</p>
+          <p>© {new Date().getFullYear()} {SITE_CONFIG.brand}. כל הזכויות שמורות.</p>
         </div>
       </div>
     </footer>

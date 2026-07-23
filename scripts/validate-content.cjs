@@ -58,7 +58,7 @@ for (const post of posts.filter((post) => !isPublishable(post))) {
 }
 
 const unsupportedClaims = [
-  /מוסמכת/,
+  /(מטפלת|פסיכולוגית|פסיכותרפיסטית|עובדת סוציאלית|מאמנת)\s+מוסמכת/,
   /מומחית/,
   /\bGottman\b/i,
   /\bEFT\b/,
@@ -73,6 +73,9 @@ const claimFiles = [
   'src/pages/About/AboutPage.tsx',
   'src/pages/Services/Couples/CouplesCounseling.tsx',
   'src/pages/Services/Parenting/ParentingGuidance.tsx',
+  'src/pages/Services/Mediation/MediationPage.tsx',
+  'src/pages/Services/Gifted/GiftedParentingPage.tsx',
+  'src/pages/Services/Aliyah/AliyahFamiliesPage.tsx',
   'src/data/faqs.ts',
   'public/llms.txt',
 ];

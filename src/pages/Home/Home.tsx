@@ -33,6 +33,11 @@ const schemaData = {
       "knowsAbout": [
         "ייעוץ זוגי",
         "הדרכת הורים",
+        "גישור",
+        "ילדים מחוננים",
+        "הכנה למסגרת מחוננים",
+        "משפחות עולים",
+        "תושבים חוזרים",
         "ADHD",
         "תקשורת בזוגיות",
         "הורות משותפת"
@@ -53,7 +58,16 @@ const schemaData = {
             "@type": "Service",
             "name": "הדרכת הורים",
             "url": `${SITE_CONFIG.url}/services/parenting`,
-            "description": "הדרכה להורים לילדים עם ADHD, הצבת גבולות ושיפור שיתוף הפעולה בבית."
+            "description": "הדרכה להורים לילדים מחוננים ולילדים עם ADHD, כולל מעברים חינוכיים ותפקודים ניהוליים."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "גישור",
+            "url": `${SITE_CONFIG.url}/services/mediation`,
+            "description": "גישור לבני זוג, משפחות, הורים, שכנים ושותפים לצורך בניית הסכמות מעשיות."
           }
         }
       ],
@@ -68,7 +82,7 @@ const Home: React.FC = () => {
   return (
     <div className={styles.home}>
       <MetaTags 
-        title={`${SITE_CONFIG.author} — ייעוץ זוגי והדרכת הורים באשדוד`}
+        title={`${SITE_CONFIG.author} — ייעוץ זוגי, הנחיית הורים וגישור באשדוד`}
         description={SITE_CONFIG.description}
       />
       <SchemaOrg data={schemaData} />
