@@ -31,7 +31,7 @@ for (let i = 0; i < published.length; i++) {
       errors.push(`Latin characters found in visible prose: ${post.id}`);
     }
 
-    const forbiddenPhrases = ["גשר מעל התהום","שריר של שיח","הפרויקט המשותף הגדול הסתיים","רעש רגשי גדול","עמדה של יצירה משותפת"];
+    const forbiddenPhrases = ["גשר מעל התהום", "גשר מחדש מעל התהום", "שריר של שיח", "השריר של שיח זוגי", "הפרויקט המשותף הגדול הסתיים", "רעש רגשי גדול", "השקט הפיזי בבית מציף רעש רגשי גדול", "עמדה של יצירה משותפת"];
     for (const phrase of forbiddenPhrases) {
       if (post.content.includes(phrase)) {
         errors.push(`Forbidden formulaic AI phrase found in new article ${post.id}: "${phrase}"`);
