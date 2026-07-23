@@ -1,7 +1,18 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-const routes = ['/', '/about', '/services/couples', '/services/parenting', '/blog', '/faq', '/contact'];
+const routes = [
+  '/',
+  '/about',
+  '/services/couples',
+  '/services/parenting',
+  '/services/mediation',
+  '/services/gifted-parenting',
+  '/services/aliyah-families',
+  '/blog',
+  '/faq',
+  '/contact',
+];
 
 for (const route of routes) {
   test(`${route} renders route metadata and accessible content`, async ({ page }) => {
@@ -34,4 +45,11 @@ test('AI chat is consent gated', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('script[data-kesher-ai-chat]')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'הפעלת צ\'אט עם עוזרת AI חיצונית' })).toBeVisible();
+});
+
+test('gifted framework links reach the dedicated section', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'הכנה לכניסה למסגרת מחוננים' }).click();
+  await expect(page).toHaveURL(/\/services\/gifted-parenting#gifted-framework$/);
+  await expect(page.locator('#gifted-framework')).toBeInViewport();
 });

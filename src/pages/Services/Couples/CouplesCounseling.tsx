@@ -62,7 +62,7 @@ const CouplesCounseling: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags 
-        title="ייעוץ זוגי באשדוד ואונליין | שירה סהרוני — יועצת זוגית ומנחת הורים"
+        title="ייעוץ זוגי באשדוד ואונליין | שירה סהרוני"
         description="ייעוץ זוגי מקצועי ורגיש באשדוד ובאונליין (Zoom). שיפור תקשורת זוגית, חיזוק האינטימיות, התמודדות עם משברים והכנה לחתונה."
         image="/images/generated/services/couples-room.jpg"
       />

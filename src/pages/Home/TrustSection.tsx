@@ -12,7 +12,7 @@ const TrustSection: React.FC = () => {
         <div className={`${styles.content} reveal ${isVisible ? 'visible' : ''}`}>
           <h2 className={styles.title}>סטנדרט מקצועי ללא פשרות</h2>
           <p className={styles.subtitle}>
-            הליווי משלב הסתכלות זוגית והורית עם כלים מעשיים, כדי לתת לכם מענה רחב, פרקטי ומכבד.
+            הליווי משלב הסתכלות זוגית, הורית וגישורית עם כלים מעשיים, כדי לתת לכם מענה רחב, פרקטי ומכבד.
           </p>
           <div className={`${styles.grid} reveal-stagger ${isVisible ? 'visible' : ''}`}>
             <div className={styles.card}>

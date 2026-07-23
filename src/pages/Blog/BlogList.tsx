@@ -21,7 +21,7 @@ const schemaData = {
   "@graph": [
     {
       "@type": "Blog",
-      "name": "הבלוג של שירה סהרוני | ייעוץ זוגי והנחיית הורים",
+      "name": "הבלוג של שירה סהרוני | זוגיות, הורות וגישור",
       "description": "מאמרים, טיפים ותובנות על זוגיות והורות. כל מה שצריך כדי לבנות מערכות יחסים טובות יותר.",
       "url": `${SITE_CONFIG.url}/blog`,
       "publisher": {
@@ -102,7 +102,7 @@ const BlogList: React.FC = () => {
     <div className={styles.blog}>
       <SchemaOrg data={schemaData} />
       <MetaTags 
-        title="הבלוג של שירה סהרוני | ייעוץ זוגי והנחיית הורים"
+        title="הבלוג של שירה סהרוני | זוגיות, הורות וגישור"
         description="מאמרים, טיפים ותובנות על זוגיות והורות. כל מה שצריך כדי לבנות מערכות יחסים טובות יותר."
       />
       <header className={styles.header}>

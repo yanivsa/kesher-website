@@ -27,7 +27,10 @@ while ((match = faqRegex.exec(faqContent)) !== null) {
 fullContent += '## עמודי שירות מפורטים (Detailed Services)\n\n';
 const services = [
   { name: 'ייעוץ זוגי', url: '/services/couples', path: path.join(__dirname, '../src/pages/Services/Couples/CouplesCounseling.tsx') },
-  { name: 'הדרכת הורים', url: '/services/parenting', path: path.join(__dirname, '../src/pages/Services/Parenting/ParentingGuidance.tsx') }
+  { name: 'הדרכת הורים', url: '/services/parenting', path: path.join(__dirname, '../src/pages/Services/Parenting/ParentingGuidance.tsx') },
+  { name: 'גישור', url: '/services/mediation', path: path.join(__dirname, '../src/pages/Services/Mediation/MediationPage.tsx') },
+  { name: 'הנחיית הורים לילדים מחוננים', url: '/services/gifted-parenting', path: path.join(__dirname, '../src/pages/Services/Gifted/GiftedParentingPage.tsx') },
+  { name: 'משפחות עולים ותושבים חוזרים', url: '/services/aliyah-families', path: path.join(__dirname, '../src/pages/Services/Aliyah/AliyahFamiliesPage.tsx') }
 ];
 
 services.forEach(service => {

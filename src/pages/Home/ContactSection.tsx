@@ -166,6 +166,11 @@ const ContactSection: React.FC = () => {
                 >
                   <option value="couples">ייעוץ זוגי</option>
                   <option value="parenting">הדרכת הורים</option>
+                  <option value="mediation">גישור</option>
+                  <option value="gifted-parenting">הנחיית הורים לילדים מחוננים</option>
+                  <option value="first-grade">הכנה לכיתה א׳ ותפקודים ניהוליים</option>
+                  <option value="gifted-framework">הכנה למסגרת מחוננים</option>
+                  <option value="aliyah-families">עולים ותושבים חוזרים</option>
                   <option value="other">אחר</option>
                 </select>
               </div>
