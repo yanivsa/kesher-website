@@ -40,7 +40,7 @@ const AIChatbot: React.FC = () => {
         aria-label="הפעלת צ'אט עם עוזרת AI חיצונית"
       >
         <FiMessageCircle className="ai-chat-icon" aria-hidden="true" />
-        <span className="ai-chat-text">הפעלת צ'אט AI</span>
+        <span className="ai-chat-text">עזרה</span>
       </button>
     );
   }
@@ -49,6 +49,7 @@ const AIChatbot: React.FC = () => {
 
   return React.createElement('elevenlabs-convai', {
     'agent-id': 'agent_2201kthm21rbejr80f69dgq03dhv',
+    variant: 'expandable',
     'avatar-orb-color-1': '#4A6854',
     'avatar-orb-color-2': '#945035',
     'action-text': "צ'אט עם עוזרת ה-AI שלנו",
