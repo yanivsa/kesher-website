@@ -69,6 +69,24 @@ const schemaData = {
             "url": `${SITE_CONFIG.url}/services/mediation`,
             "description": "גישור לבני זוג, משפחות, הורים, שכנים ושותפים לצורך בניית הסכמות מעשיות."
           }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "הנחיית הורים לילדים מחוננים",
+            "url": `${SITE_CONFIG.url}/services/gifted-parenting`,
+            "description": "ליווי סביב רגישות, פרפקציוניזם, שייכות והכנה רגשית וניהולית למסגרת מחוננים."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "משפחות עולים ותושבים חוזרים",
+            "url": `${SITE_CONFIG.url}/services/aliyah-families`,
+            "description": "ייעוץ זוגי והנחיית הורים בתקופת עלייה או חזרה לישראל, כולל הסתגלות ובניית תחושת בית."
+          }
         }
       ],
       "image": `${SITE_CONFIG.url}/images/generated/site/home-hero.jpg`,
