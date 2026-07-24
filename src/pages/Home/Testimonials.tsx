@@ -25,8 +25,8 @@ const Testimonials: React.FC = () => {
     <section className={styles.testimonials}>
       <div className="container">
         <div ref={headerRef} className={`${styles.header} reveal ${headerVisible ? 'visible' : ''}`}>
-          <h2>מה אומרים עלי?</h2>
-          <p>המלצות אנונימיות מהקליניקה.</p>
+          <h2>מילים ממשפחות שליוויתי</h2>
+          <p>השמות והפרטים המזהים הושמטו כדי לשמור על פרטיות הפונים.</p>
         </div>
         <div ref={gridRef} className={`${styles.grid} reveal-stagger ${gridVisible ? 'visible' : ''}`}>
           {testimonials.map((t, index) => (

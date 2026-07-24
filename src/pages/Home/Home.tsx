@@ -1,6 +1,5 @@
 import React from 'react';
 import Hero from './Hero';
-import TrustSection from './TrustSection';
 import ServicesSection from './ServicesSection';
 import ProcessSection from './ProcessSection';
 import WhyMeSection from './WhyMeSection';
@@ -25,6 +24,17 @@ const schemaData = {
       "url": SITE_CONFIG.url,
       "telephone": SITE_CONFIG.contact.phone,
       "description": SITE_CONFIG.description,
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "אשדוד"
+        },
+        {
+          "@type": "Country",
+          "name": "ישראל"
+        }
+      ],
+      "availableLanguage": "he",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "אשדוד",
@@ -38,11 +48,23 @@ const schemaData = {
         "הכנה למסגרת מחוננים",
         "משפחות עולים",
         "תושבים חוזרים",
+        "רווקות מאוחרת",
+        "מציאת זוגיות",
+        "דייטים",
         "ADHD",
         "תקשורת בזוגיות",
         "הורות משותפת"
       ],
       "makesOffer": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "ייעוץ ברווקות מאוחרת וליווי למציאת זוגיות",
+            "url": `${SITE_CONFIG.url}/services/singles-guidance`,
+            "description": "ליווי אישי סביב היכרות, דייטים, בחירת קשר, תקשורת וגבולות."
+          }
+        },
         {
           "@type": "Offer",
           "itemOffered": {
@@ -69,10 +91,60 @@ const schemaData = {
             "url": `${SITE_CONFIG.url}/services/mediation`,
             "description": "גישור לבני זוג, משפחות, הורים, שכנים ושותפים לצורך בניית הסכמות מעשיות."
           }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "הנחיית הורים לילדים מחוננים",
+            "url": `${SITE_CONFIG.url}/services/gifted-parenting`,
+            "description": "הנחיית הורים סביב מחוננות, רגישות, שייכות, תפקודים ניהוליים והכנה למסגרת מחוננים."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "ליווי משפחות עולים ותושבים חוזרים",
+            "url": `${SITE_CONFIG.url}/services/aliyah-families`,
+            "description": "ייעוץ זוגי והנחיית הורים למשפחות בתקופת עלייה לישראל או חזרה אליה."
+          }
         }
       ],
       "image": `${SITE_CONFIG.url}/images/generated/site/home-hero.jpg`,
-      "priceRange": "$$"
+      "priceRange": "$$",
+      "potentialAction": {
+        "@type": "ReserveAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": `${SITE_CONFIG.url}/appointment`,
+          "inLanguage": "he"
+        }
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": `${SITE_CONFIG.url}/#shira`,
+      "name": SITE_CONFIG.author,
+      "alternateName": "Shira Saharoni",
+      "url": `${SITE_CONFIG.url}/about`,
+      "jobTitle": [
+        "יועצת זוגית",
+        "מנחת הורים",
+        "מגשרת מוסמכת"
+      ],
+      "worksFor": {
+        "@id": `${SITE_CONFIG.url}/#business`
+      },
+      "knowsAbout": [
+        "ייעוץ זוגי",
+        "הנחיית הורים",
+        "גישור",
+        "ילדים מחוננים",
+        "תפקודים ניהוליים",
+        "משפחות עולים ותושבים חוזרים",
+        "רווקות מאוחרת ומציאת זוגיות"
+      ]
     }
   ]
 };
@@ -87,12 +159,11 @@ const Home: React.FC = () => {
       />
       <SchemaOrg data={schemaData} />
       <Hero />
-      <TrustSection />
       <ServicesSection />
+      <AboutSection />
       <ProcessSection />
       <WhyMeSection />
       <Testimonials />
-      <AboutSection />
       <BlogPreview />
       <div className="container">
         <LeadMagnet />

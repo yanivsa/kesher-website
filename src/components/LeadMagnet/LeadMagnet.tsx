@@ -74,7 +74,8 @@ const LeadMagnet: React.FC = () => {
                 className={styles.input}
               />
               <button type="submit" className={styles.button} disabled={status === 'submitting'}>
-                <FiDownload /> {status === 'submitting' ? 'שולחת...' : 'קבלת קישור להורדה'}
+                <FiDownload />
+                <span>{status === 'submitting' ? 'שולחת...' : 'קבלת קישור להורדה'}</span>
               </button>
               {status === 'error' && (
                 <p className={styles.errorMessage} role="alert">לא הצלחנו לשלוח את הבקשה. נסו שוב בעוד רגע.</p>

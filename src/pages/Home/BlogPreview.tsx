@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import posts from '../../data/publishedPosts';
+import posts from '../../data/postSummaries.json';
 import { getImageDimensions } from '../../data/imageDimensions';
 import styles from './BlogPreview.module.css';
 

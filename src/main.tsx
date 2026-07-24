@@ -1,6 +1,6 @@
 import React from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'
-import App from './App'
+import App, { preloadRoute } from './App'
 import './styles/index.css'
 
 const app = (
@@ -10,8 +10,11 @@ const app = (
 )
 
 const root = document.getElementById('root')!
-if (root.hasChildNodes()) {
-  hydrateRoot(root, app)
-} else {
-  createRoot(root).render(app)
-}
+
+preloadRoute(window.location.pathname).then(() => {
+  if (root.hasChildNodes()) {
+    hydrateRoot(root, app)
+  } else {
+    createRoot(root).render(app)
+  }
+})

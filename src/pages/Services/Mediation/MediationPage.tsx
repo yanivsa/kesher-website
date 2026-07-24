@@ -60,7 +60,7 @@ const MediationPage: React.FC = () => {
               כשכל שיחה חוזרת לאותו ויכוח, גישור יוצר מסגרת אחרת: מאטים, מקשיבים, מזהים את הצרכים של כל צד ובונים יחד פתרונות מעשיים שמתאימים לאנשים שנמצאים בחדר.
             </p>
             <div className={styles.heroActions}>
-              <a href={SITE_CONFIG.links.whatsapp} className={styles.primaryButton}>לתיאום שיחת היכרות</a>
+              <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת ייעוץ</Link>
               <Link to="/about" className={styles.secondaryButton}>אודות שירה</Link>
             </div>
           </div>
@@ -138,7 +138,7 @@ const MediationPage: React.FC = () => {
             </article>
           </div>
           <p className={styles.note}>
-            הגישור באתר הוא שירות של הנחיית שיח ובניית הסכמות. האתר אינו מציע ייעוץ או ייצוג משפטי.
+            ההשתתפות בגישור וההסכמות מתקבלות מרצון. שירה מנהלת את השיחה באופן ניטרלי; ההחלטות נשארות בידי המשתתפים.
           </p>
         </div>
       </section>

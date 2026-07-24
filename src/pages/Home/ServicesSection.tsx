@@ -8,21 +8,21 @@ import styles from './ServicesSection.module.css';
 const services = [
   {
     title: 'ייעוץ זוגי',
-    description: 'לזוגות שנמצאים בלופים של ריבים, ריחוק או שחיקה ורוצים להבין מה קורה ביניהם לפני שמוותרים.',
+    description: 'לזוגות שכל שיחה אצלם חוזרת לאותו ויכוח, או שהמרחק והשחיקה כבר מורגשים בחיי היום־יום.',
     icon: <FiMessageCircle aria-hidden="true" />,
     highlights: ['מיפוי דפוסי התקשורת', 'כלים לשיחות קשות בלי הסלמה', 'חיזוק אמון, קרבה ושיתוף פעולה'],
     link: '/services/couples'
   },
   {
     title: 'הדרכת הורים',
-    description: 'להורים שרוצים פחות מאבקי כוח ויותר בהירות, גבולות ושיתוף פעולה, כולל מחוננות, ADHD ומעברים חינוכיים.',
+    description: 'להורים שמחפשים דרך ברורה יותר להגיב בבית, להציב גבולות וללוות ילד שזקוק להתאמות או להכנה למעבר.',
     icon: <FiUsers aria-hidden="true" />,
     highlights: ['הורים לילדים מחוננים', 'ADHD ותפקודים ניהוליים', 'הכנה למסגרות חינוכיות'],
     link: '/services/parenting'
   },
   {
     title: 'גישור',
-    description: 'מסגרת מכבדת ומעשית לבני זוג, משפחות, הורים, שכנים ושותפים שרוצים לצאת משיחה תקועה ולהגיע להסכמות.',
+    description: 'לבני זוג, בני משפחה, הורים, שכנים או שותפים שרוצים לנהל מחלוקת בצורה מסודרת ולנסח הסכמות שאפשר לקיים.',
     icon: <FiCompass aria-hidden="true" />,
     highlights: ['בירור צרכים ונושאים', 'הפחתת מתח והאשמות', 'הסכמות ישימות וברורות'],
     link: '/services/mediation'
@@ -49,6 +49,12 @@ const specializations = [
     link: '/services/gifted-parenting#gifted-framework'
   },
   {
+    title: 'רווקות מאוחרת ומציאת זוגיות',
+    description: 'ליווי אישי סביב דייטים, בחירת קשר, תקשורת, גבולות ושחיקה בתהליך ההיכרות.',
+    icon: <FiHeart aria-hidden="true" />,
+    link: '/services/singles-guidance'
+  },
+  {
     title: 'משפחות עולים ותושבים חוזרים',
     description: 'ייעוץ זוגי והנחיית הורים סביב הסתגלות, מסגרות חדשות, שינוי תפקידים ותחושת שייכות בישראל.',
     icon: <FiHeart aria-hidden="true" />,
@@ -69,7 +75,7 @@ const ServicesSection: React.FC = () => {
         >
           <h2 className={styles.title}>איך אוכל לעזור לכם?</h2>
           <p className={styles.subtitle}>
-            שלושה מסלולים שמטרתם להפחית עומס וקונפליקט, להבין את הדפוס שחוזר ולבנות דרך פעולה שאפשר ליישם בחיים עצמם.
+            בחרו את הנושא שהכי קרוב למה שמעסיק אתכם. אם עדיין לא ברור מה מתאים, אפשר לברר זאת בפגישה הראשונה.
           </p>
         </div>
         <div 
@@ -83,7 +89,7 @@ const ServicesSection: React.FC = () => {
         <div className={styles.specializations}>
           <div className={styles.specializationsHeader}>
             <h3>תחומי התמחות ממוקדים</h3>
-            <p>ליווי ממוקד בצמתים שבהם היכולת, הרגש והשינוי המשפחתי נפגשים.</p>
+            <p>מענים להורים ולמשפחות סביב מחוננות, קשב ומעברים משמעותיים.</p>
           </div>
           <div className={styles.specializationGrid}>
             {specializations.map((specialization) => (

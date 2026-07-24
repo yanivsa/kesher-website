@@ -8,11 +8,13 @@ const legalRoutes = new Set(['/accessibility', '/privacy', '/terms']);
 const serviceRoutes = new Set([
   '/about',
   '/contact',
+  '/appointment',
   '/services/couples',
   '/services/parenting',
   '/services/mediation',
   '/services/gifted-parenting',
   '/services/aliyah-families',
+  '/services/singles-guidance',
   '/faq',
 ]);
 const staticEntries = STATIC_ROUTES.map((route) => ({

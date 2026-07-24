@@ -6,7 +6,7 @@ import { SITE_CONFIG } from '../../constants/siteConfig';
 import faqs from '../../data/faqs';
 import styles from './FAQ.module.css';
 
-const categories = ['הכל', 'ייעוץ זוגי', 'הדרכת הורים', 'גישור', 'תחומי התמחות', 'כללי'];
+const categories = ['הכל', 'ייעוץ זוגי', 'רווקות ומציאת זוגיות', 'הדרכת הורים', 'גישור', 'תחומי התמחות', 'כללי'];
 
 // FAQPage Schema for SEO/GEO
 const faqSchema = {
@@ -60,7 +60,7 @@ const FAQ: React.FC = () => {
     <div className={styles.faq}>
       <MetaTags 
         title="שאלות נפוצות | שירה סהרוני — ייעוץ, הנחיית הורים וגישור"
-        description="תשובות על ייעוץ זוגי, הנחיית הורים, גישור, ילדים מחוננים, הכנה לכיתה א׳, מסגרות מחוננים ומשפחות עולים ותושבים חוזרים."
+        description="תשובות על ייעוץ זוגי, רווקות מאוחרת ומציאת זוגיות, הנחיית הורים, גישור, ילדים מחוננים ומשפחות בתקופות מעבר."
       />
       <SchemaOrg data={faqSchema} />
       <header className={styles.header}>
@@ -106,7 +106,7 @@ const FAQ: React.FC = () => {
 
         <div className={styles.cta}>
           <h3>לא מצאתם תשובה?</h3>
-          <p>אני כאן לכל שאלה. שלחו הודעה ואחזור אליכם תוך 24 שעות.</p>
+          <p>נשארה שאלה? אפשר לשלוח לי הודעה ואחזור אליכם בהקדם.</p>
           <a href="https://wa.me/972502763802" className={styles.ctaBtn}>
             שאלו אותי בוואטסאפ
           </a>

@@ -1,27 +1,33 @@
-import React, { lazy, Suspense, useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMenu, FiSearch, FiX } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import GlobalSearch from '../GlobalSearch/GlobalSearch';
 import styles from './Header.module.css';
-
-const GlobalSearch = lazy(() => import('../GlobalSearch/GlobalSearch'));
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const menuCloseRef = useRef<HTMLButtonElement>(null);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen((open) => !open);
   };
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setIsMenuOpen(false);
-  };
+  }, []);
+
+  const dismissMenu = useCallback(() => {
+    closeMenu();
+    window.requestAnimationFrame(() => menuButtonRef.current?.focus());
+  }, [closeMenu]);
 
   const openSearch = useCallback(() => {
     setIsSearchOpen(true);
     closeMenu();
-  }, []);
+  }, [closeMenu]);
 
   const closeSearch = useCallback(() => {
     setIsSearchOpen(false);
@@ -39,6 +45,24 @@ const Header: React.FC = () => {
     return () => document.removeEventListener('keydown', handler);
   }, []);
 
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    menuCloseRef.current?.focus();
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') dismissMenu();
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [dismissMenu, isMenuOpen]);
+
   return (
     <>
       <header className={styles.header}>
@@ -53,25 +77,52 @@ const Header: React.FC = () => {
           {/* Search + Mobile Toggle */}
           <div className={styles.actions}>
             <SearchTrigger onClick={openSearch} />
+            {!isMenuOpen && (
+              <button
+                ref={menuButtonRef}
+                type="button"
+                className={styles.menuToggle}
+                onClick={toggleMenu}
+                aria-label="פתיחת תפריט"
+                aria-expanded="false"
+                aria-controls="main-navigation"
+              >
+                <FiMenu aria-hidden="true" />
+              </button>
+            )}
+          </div>
+
+          {isMenuOpen && (
             <button
               type="button"
-              className={styles.menuToggle}
-              onClick={toggleMenu}
-              aria-label={isMenuOpen ? 'סגירת תפריט' : 'פתיחת תפריט'}
-              aria-expanded={isMenuOpen}
-              aria-controls="main-navigation"
-            >
-              {isMenuOpen ? <FiX /> : <FiMenu />}
-            </button>
-          </div>
+              className={styles.menuBackdrop}
+              onClick={dismissMenu}
+              aria-label="סגירת התפריט בלחיצה מחוץ לתפריט"
+            />
+          )}
 
           {/* Navigation */}
           <nav id="main-navigation" aria-label="ניווט ראשי" className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
+            <div className={styles.mobileMenuHeader}>
+              <span>תפריט</span>
+              <button
+                ref={menuCloseRef}
+                type="button"
+                className={styles.menuClose}
+                onClick={dismissMenu}
+                aria-label="סגירת תפריט"
+                aria-expanded="true"
+                aria-controls="main-navigation"
+              >
+                <FiX aria-hidden="true" />
+              </button>
+            </div>
             <Link to="/about" onClick={closeMenu}>אודות</Link>
             <div className={styles.dropdown}>
               <button type="button" className={styles.navLink}>שירותים</button>
               <div className={styles.dropdownContent}>
                 <Link to="/services/couples" onClick={closeMenu}>ייעוץ זוגי</Link>
+                <Link to="/services/singles-guidance" onClick={closeMenu}>ליווי למציאת זוגיות</Link>
                 <Link to="/services/parenting" onClick={closeMenu}>הדרכת הורים</Link>
                 <Link to="/services/mediation" onClick={closeMenu}>גישור</Link>
               </div>
@@ -83,18 +134,17 @@ const Header: React.FC = () => {
                 <Link to="/services/parenting" onClick={closeMenu}>הכנה לכיתה א׳</Link>
                 <Link to="/services/gifted-parenting#gifted-framework" onClick={closeMenu}>כניסה למסגרת מחוננים</Link>
                 <Link to="/services/aliyah-families" onClick={closeMenu}>עולים ותושבים חוזרים</Link>
+                <Link to="/services/singles-guidance" onClick={closeMenu}>רווקות מאוחרת ומציאת זוגיות</Link>
               </div>
             </div>
             <Link to="/blog" onClick={closeMenu}>בלוג</Link>
             <Link to="/faq" onClick={closeMenu}>שאלות נפוצות</Link>
-            <Link to="/contact" className={styles.cta} onClick={closeMenu}>קביעת פגישה</Link>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.cta} onClick={closeMenu}>קביעת פגישה</Link>
           </nav>
         </div>
       </header>
 
-      <Suspense fallback={null}>
-        {isSearchOpen && <GlobalSearch isOpen={isSearchOpen} onClose={closeSearch} />}
-      </Suspense>
+      {isSearchOpen && <GlobalSearch isOpen={isSearchOpen} onClose={closeSearch} />}
     </>
   );
 };
