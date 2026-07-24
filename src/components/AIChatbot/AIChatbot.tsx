@@ -11,11 +11,20 @@ const AIChatbot: React.FC = () => {
   // visitors who had already approved the external chat.
   const [consented, setConsented] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+    const syncMobileState = () => setIsMobile(mobileQuery.matches);
+
+    syncMobileState();
+    mobileQuery.addEventListener('change', syncMobileState);
+
     if (localStorage.getItem(CONSENT_KEY) === 'yes') {
       queueMicrotask(() => setConsented(true));
     }
+
+    return () => mobileQuery.removeEventListener('change', syncMobileState);
   }, []);
 
   useEffect(() => {
@@ -36,6 +45,8 @@ const AIChatbot: React.FC = () => {
     script.onload = () => setScriptLoaded(true);
     document.body.appendChild(script);
   }, [consented]);
+
+  if (isMobile) return null;
 
   if (!consented) {
     return (
