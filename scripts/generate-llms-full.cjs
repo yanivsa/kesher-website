@@ -30,7 +30,8 @@ const services = [
   { name: 'הדרכת הורים', url: '/services/parenting', path: path.join(__dirname, '../src/pages/Services/Parenting/ParentingGuidance.tsx') },
   { name: 'גישור', url: '/services/mediation', path: path.join(__dirname, '../src/pages/Services/Mediation/MediationPage.tsx') },
   { name: 'הנחיית הורים לילדים מחוננים', url: '/services/gifted-parenting', path: path.join(__dirname, '../src/pages/Services/Gifted/GiftedParentingPage.tsx') },
-  { name: 'משפחות עולים ותושבים חוזרים', url: '/services/aliyah-families', path: path.join(__dirname, '../src/pages/Services/Aliyah/AliyahFamiliesPage.tsx') }
+  { name: 'משפחות עולים ותושבים חוזרים', url: '/services/aliyah-families', path: path.join(__dirname, '../src/pages/Services/Aliyah/AliyahFamiliesPage.tsx') },
+  { name: 'רווקות מאוחרת ומציאת זוגיות', url: '/services/singles-guidance', path: path.join(__dirname, '../src/pages/Services/Singles/SinglesGuidancePage.tsx') }
 ];
 
 services.forEach(service => {

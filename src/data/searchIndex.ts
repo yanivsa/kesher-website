@@ -36,6 +36,14 @@ const servicePages: SearchItem[] = [
     category: 'שירותים'
   },
   {
+    id: 'service-singles-guidance',
+    type: 'service',
+    title: 'ייעוץ ברווקות מאוחרת וליווי למציאת זוגיות',
+    body: 'ייעוץ אישי לרווקות ולרווקים סביב דייטים, אפליקציות היכרות, שחיקה, בחירת קשר, תקשורת בתחילת קשר, גבולות, לחץ מהסביבה ודפוסים חוזרים.',
+    url: '/services/singles-guidance',
+    category: 'תחומי התמחות'
+  },
+  {
     id: 'service-gifted-parenting',
     type: 'service',
     title: 'הנחיית הורים לילדים מחוננים',

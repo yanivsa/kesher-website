@@ -14,6 +14,7 @@ const serviceRoutes = new Set([
   '/services/mediation',
   '/services/gifted-parenting',
   '/services/aliyah-families',
+  '/services/singles-guidance',
   '/faq',
 ]);
 const staticEntries = STATIC_ROUTES.map((route) => ({

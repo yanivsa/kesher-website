@@ -49,6 +49,12 @@ const specializations = [
     link: '/services/gifted-parenting#gifted-framework'
   },
   {
+    title: 'רווקות מאוחרת ומציאת זוגיות',
+    description: 'ליווי אישי סביב דייטים, בחירת קשר, תקשורת, גבולות ושחיקה בתהליך ההיכרות.',
+    icon: <FiHeart aria-hidden="true" />,
+    link: '/services/singles-guidance'
+  },
+  {
     title: 'משפחות עולים ותושבים חוזרים',
     description: 'ייעוץ זוגי והנחיית הורים סביב הסתגלות, מסגרות חדשות, שינוי תפקידים ותחושת שייכות בישראל.',
     icon: <FiHeart aria-hidden="true" />,

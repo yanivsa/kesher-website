@@ -11,6 +11,7 @@ const STATIC_ROUTES = [
   '/services/mediation',
   '/services/gifted-parenting',
   '/services/aliyah-families',
+  '/services/singles-guidance',
   '/blog',
   '/faq',
   '/accessibility',
