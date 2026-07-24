@@ -58,7 +58,7 @@ const ContactPage: React.FC = () => {
       <header className={styles.header}>
         <div className="container">
           <h1>צרו קשר</h1>
-          <p>צעד ראשון לקראת שינוי מתחיל בשיחה אחת.</p>
+          <p>אפשר לקבוע מועד ישירות ביומן או להשאיר פרטים לחזרה.</p>
         </div>
       </header>
       <ContactSection />

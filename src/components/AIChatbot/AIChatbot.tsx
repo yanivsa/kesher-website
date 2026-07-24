@@ -6,8 +6,26 @@ const CONSENT_KEY = 'kesher-ai-chat-consent';
 const SCRIPT_URL = 'https://unpkg.com/@elevenlabs/convai-widget-embed@0.8.1/dist/index.js';
 
 const AIChatbot: React.FC = () => {
-  const [consented, setConsented] = useState(() => localStorage.getItem(CONSENT_KEY) === 'yes');
+  // Keep the first client render identical to the prerendered HTML. Reading
+  // localStorage during initialization caused a hydration mismatch for returning
+  // visitors who had already approved the external chat.
+  const [consented, setConsented] = useState(false);
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+    const syncMobileState = () => setIsMobile(mobileQuery.matches);
+
+    syncMobileState();
+    mobileQuery.addEventListener('change', syncMobileState);
+
+    if (localStorage.getItem(CONSENT_KEY) === 'yes') {
+      queueMicrotask(() => setConsented(true));
+    }
+
+    return () => mobileQuery.removeEventListener('change', syncMobileState);
+  }, []);
 
   useEffect(() => {
     if (!consented) return;
@@ -27,6 +45,8 @@ const AIChatbot: React.FC = () => {
     script.onload = () => setScriptLoaded(true);
     document.body.appendChild(script);
   }, [consented]);
+
+  if (isMobile) return null;
 
   if (!consented) {
     return (

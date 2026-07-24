@@ -1,4 +1,4 @@
-import posts from './publishedPosts';
+import posts from './postSummaries.json';
 import faqs from './faqs';
 
 export interface SearchItem {
@@ -36,6 +36,14 @@ const servicePages: SearchItem[] = [
     category: 'שירותים'
   },
   {
+    id: 'service-singles-guidance',
+    type: 'service',
+    title: 'ייעוץ ברווקות מאוחרת וליווי למציאת זוגיות',
+    body: 'ייעוץ אישי לרווקות ולרווקים סביב דייטים, אפליקציות היכרות, שחיקה, בחירת קשר, תקשורת בתחילת קשר, גבולות, לחץ מהסביבה ודפוסים חוזרים.',
+    url: '/services/singles-guidance',
+    category: 'תחומי התמחות'
+  },
+  {
     id: 'service-gifted-parenting',
     type: 'service',
     title: 'הנחיית הורים לילדים מחוננים',
@@ -65,9 +73,17 @@ const staticPages: SearchItem[] = [
   {
     id: 'page-contact',
     type: 'page',
-    title: 'צור קשר / קביעת פגישה',
-    body: 'קביעת פגישת היכרות ללא עלות. טלפון, WhatsApp, אימייל. אשדוד ואונליין דרך Zoom. שלחו הודעה ואחזור אליכם תוך 24 שעות.',
+    title: 'צור קשר',
+    body: 'יצירת קשר עם שירה בטלפון, WhatsApp או אימייל. השאירו הודעה ואחזור אליכם בהקדם.',
     url: '/contact',
+    category: 'דפים'
+  },
+  {
+    id: 'page-appointment',
+    type: 'page',
+    title: 'קביעת פגישת ייעוץ עם שירה',
+    body: 'בחירת מועד לפגישת ייעוץ בת 50 דקות עם שירה סהרוני. ייעוץ זוגי, הנחיית הורים או גישור, באשדוד או אונליין.',
+    url: '/appointment',
     category: 'דפים'
   }
 ];

@@ -25,7 +25,7 @@
 }
 
 .quote {
-  font-family: 'Playfair Display', serif;
+  font-family: inherit;
   font-size: 4rem;
   color: var(--color-primary-light);
   line-height: 1;

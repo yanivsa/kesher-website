@@ -60,7 +60,7 @@ const GiftedParentingPage: React.FC = () => {
               ילד מחונן אינו רק ילד שלומד מהר יותר. לעיתים היכולת הגבוהה מגיעה לצד רגישות, פרפקציוניזם, שעמום, קושי חברתי או פער בין מה שהילד מבין לבין מה שהוא עדיין מסוגל לנהל.
             </p>
             <div className={styles.heroActions}>
-              <a href={SITE_CONFIG.links.whatsapp} className={styles.primaryButton}>לתיאום שיחת היכרות</a>
+              <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת ייעוץ</Link>
               <Link to="/services/parenting" className={styles.secondaryButton}>לכל תחומי הנחיית ההורים</Link>
             </div>
           </div>

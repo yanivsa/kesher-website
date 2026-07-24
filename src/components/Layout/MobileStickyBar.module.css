@@ -17,7 +17,7 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  .callBtn, .whatsappBtn {
+  .appointmentBtn, .whatsappBtn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -29,13 +29,13 @@
     transition: background-color 0.2s;
   }
 
-  .callBtn {
+  .appointmentBtn {
     color: var(--color-text);
     background-color: var(--color-surface);
     border-top: 2px solid var(--color-border);
   }
 
-  .callBtn:active {
+  .appointmentBtn:active {
     background-color: #f0f0f0;
   }
 

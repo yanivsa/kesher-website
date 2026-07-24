@@ -1,5 +1,5 @@
 body {
-  font-family: 'Assistant', sans-serif;
+  font-family: Arial, 'Arial Hebrew', 'Noto Sans Hebrew', sans-serif;
   color: var(--color-text);
   line-height: 1.6;
   background-color: var(--color-bg);
@@ -9,7 +9,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Playfair Display', serif;
+  font-family: Arial, 'Arial Hebrew', 'Noto Sans Hebrew', sans-serif;
   font-weight: 700;
   margin-top: 0;
   color: var(--color-text);

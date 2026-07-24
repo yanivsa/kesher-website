@@ -65,10 +65,62 @@ jobs:
           pr = json.load(open("pr.json"))
           files = [f["filename"] for f in json.load(open("files.json"))]
           checks = json.load(open("checks.json")).get("check_runs", [])
+          import os
           allowed_files = {"src/data/posts.json", "public/sitemap.xml", "public/llms.txt", "public/llms-full.txt"}
-          has_image_claim = (pr.get("body") or "").find("https://") != -1 and re.search(r"[0-9a-f]{64}", pr.get("body") or "")
+          body = pr.get("body") or ""
+          sha = pr["head"]["sha"]
           has_new_image = any(f.startswith("public/images/generated/blog/") for f in files)
-          if has_new_image and not has_image_claim:
+          image_claim_valid = False
+
+          if has_new_image:
+              import hashlib
+
+              # Find all new image files
+              new_images = [f for f in files if f.startswith("public/images/generated/blog/")]
+
+              # Check if body contains structured evidence
+              if "Image Source URL: https://" in body and "Image SHA-256:" in body:
+                  # Extract the claimed SHA
+                  match = re.search(r"Image SHA-256:\s*([0-9a-f]{64})", body, re.IGNORECASE)
+                  if match:
+                      claimed_sha = match.group(1).lower()
+
+                      # Get the contents of the new images from the PR head using API
+                      # and compute SHA-256
+                      all_images_match = True
+                      for img_path in new_images:
+                          import urllib.request
+                          req = urllib.request.Request(f"https://api.github.com/repos/{os.environ['REPO']}/contents/{img_path}?ref={sha}")
+                          req.add_header("Authorization", f"Bearer {os.environ['GITHUB_TOKEN']}")
+                          req.add_header("Accept", "application/vnd.github+json")
+                          req.add_header("User-Agent", "python-urllib")
+
+                          try:
+                              with urllib.request.urlopen(req) as response:
+                                  import base64
+                                  file_data = json.loads(response.read().decode('utf-8'))
+                                  if file_data['encoding'] == 'base64':
+                                      content = base64.b64decode(file_data['content'])
+                                      actual_sha = hashlib.sha256(content).hexdigest()
+                                      if actual_sha != claimed_sha:
+                                          all_images_match = False
+                                          print(f"SHA-256 mismatch for {img_path}. Claimed: {claimed_sha}, Actual: {actual_sha}")
+                                          break
+                                  else:
+                                      all_images_match = False
+                          except Exception as e:
+                              print(f"Error fetching image content: {e}")
+                              all_images_match = False
+
+                      if all_images_match:
+                          image_claim_valid = True
+          else:
+              # No new images, check for no-image fallback explicitly stated
+              # Must verify that image field isn't present in posts.json diff, but this is handled by allowing no new images if fallback stated.
+              # Alternatively, if there's no new image, we just pass unless we wanted to strict check posts.json for "image": ""
+              image_claim_valid = True # Or check for 'no-image fallback' in body if required
+
+          if has_new_image and not image_claim_valid:
               sys.exit(1)
           allowed = all(f in allowed_files or f.startswith("public/images/generated/blog/") for f in files)
           ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)

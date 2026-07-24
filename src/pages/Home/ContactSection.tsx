@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
-import { FiShield } from 'react-icons/fi';
+import { FiCalendar, FiShield } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { submitContact } from '../../lib/contactApi';
 import styles from './ContactSection.module.css';
@@ -47,33 +48,39 @@ const ContactSection: React.FC = () => {
     <section id="contact" className={styles.contact}>
       <div className={`container ${styles.container}`}>
         <div className={styles.info}>
-          <h2 className={styles.title}>מוכנים לעשות את הצעד הראשון?</h2>
+          <h2 className={styles.title}>אפשר לפנות בדרך שנוחה לכם</h2>
           <p className={styles.subtitle}>
-            פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אני מזמינה אתכם לשיחת היכרות קצרה, שבה נוכל להבין יחד את הצרכים שלכם ולבדוק איך אוכל לעזור. השאירו פרטים למטה או שלחו הודעת WhatsApp.
+            פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.
           </p>
-          <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
-            <FaWhatsapp aria-hidden="true" />
-            שליחת WhatsApp
-          </a>
+          <div className={styles.contactActions}>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
+              <FiCalendar aria-hidden="true" />
+              בחירת מועד לפגישה
+            </Link>
+            <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
+              <FaWhatsapp aria-hidden="true" />
+              שליחת הודעה בוואטסאפ
+            </a>
+          </div>
           <div className={styles.contactDetails}>
             <div className={styles.detail}>
               <span className={styles.icon}>📞</span>
               <div>
-                <h4>טלפון</h4>
+                <h3>טלפון</h3>
                 <p>{SITE_CONFIG.contact.phone}</p>
               </div>
             </div>
             <div className={styles.detail}>
               <span className={styles.icon}>✉️</span>
               <div>
-                <h4>אימייל</h4>
+                <h3>אימייל</h3>
                 <p>{SITE_CONFIG.contact.email}</p>
               </div>
             </div>
             <div className={styles.detail}>
               <span className={styles.icon}>📍</span>
               <div>
-                <h4>מיקום</h4>
+                <h3>מיקום</h3>
                 <p>{SITE_CONFIG.contact.location}</p>
               </div>
             </div>
@@ -84,7 +91,7 @@ const ContactSection: React.FC = () => {
             <div className={styles.successMessage}>
               <div className={styles.successIcon}>✓</div>
               <h3>תודה רבה! פנייתכם התקבלה בהצלחה</h3>
-              <p>פרטי הקשר שלכם התקבלו. אחזור אליכם בהקדם (בדרך כלל תוך 24 שעות) לתיאום שיחת ההיכרות הראשונית.</p>
+              <p>פרטי הקשר שלכם התקבלו. אחזור אליכם לתיאום המשך.</p>
               <button 
                 type="button" 
                 className={styles.resetBtn} 
@@ -103,7 +110,7 @@ const ContactSection: React.FC = () => {
             >
               {submitStatus === 'error' && (
                 <div className={styles.errorMessage} role="alert">
-                  הייתה שגיאה בשליחת הטופס. אנא נסו שוב או פנו אלי ישירות בטלפון / WhatsApp.
+                  הייתה שגיאה בשליחת הטופס. אפשר לנסות שוב או לפנות אליי ישירות בטלפון או בוואטסאפ.
                 </div>
               )}
               <div className={styles.honeypot} aria-hidden="true">
@@ -165,6 +172,7 @@ const ContactSection: React.FC = () => {
                   onChange={handleChange}
                 >
                   <option value="couples">ייעוץ זוגי</option>
+                  <option value="singles-guidance">רווקות מאוחרת וליווי למציאת זוגיות</option>
                   <option value="parenting">הדרכת הורים</option>
                   <option value="mediation">גישור</option>
                   <option value="gifted-parenting">הנחיית הורים לילדים מחוננים</option>

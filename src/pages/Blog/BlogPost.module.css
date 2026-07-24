@@ -96,7 +96,7 @@
 }
 
 .ctaCard h3 {
-  font-family: 'Assistant', sans-serif;
+  font-family: inherit;
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
 }

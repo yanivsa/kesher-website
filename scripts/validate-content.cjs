@@ -31,13 +31,22 @@ for (let i = 0; i < published.length; i++) {
       errors.push(`Latin characters found in visible prose: ${post.id}`);
     }
 
-    const forbiddenPhrases = ["גשר מעל התהום", "גשר מחדש מעל התהום", "שריר של שיח", "השריר של שיח זוגי", "הפרויקט המשותף הגדול הסתיים", "רעש רגשי גדול", "השקט הפיזי בבית מציף רעש רגשי גדול", "עמדה של יצירה משותפת", "מייצר ואקום אדיר", "הזדמנות פז אמיתית ומעשית", "הילדים הם הדבק החזק ביותר", "השקט לא חייב להיות אויב", "אזור הנוחות החדש", "הסקרנות היא המפתח", "להפסיק לנהל ולהתחיל לחיות", "תוקף רגשי", "המערכת תתאזן מעצמה", "הדבר הנכון הוא פשוט", "סיכום וצעדים הבאים", "לסיכום"];
+    const forbiddenPhrases = ["גשר מעל התהום", "גשר מחדש מעל התהום", "שריר של שיח", "השריר של שיח זוגי", "הפרויקט המשותף הגדול הסתיים", "רעש רגשי גדול", "השקט הפיזי בבית מציף רעש רגשי גדול", "עמדה של יצירה משותפת", "מייצר ואקום אדיר", "הזדמנות פז אמיתית ומעשית", "הילדים הם הדבק החזק ביותר", "השקט לא חייב להיות אויב", "אזור הנוחות החדש", "הסקרנות היא המפתח", "להפסיק לנהל ולהתחיל לחיות", "תוקף רגשי", "המערכת תתאזן מעצמה", "הדבר הנכון הוא פשוט"];
     for (const phrase of forbiddenPhrases) {
       if (post.content.includes(phrase)) {
         errors.push(`Forbidden formulaic AI phrase found in new article ${post.id}: "${phrase}"`);
       }
     }
 
+
+    const headings = post.content.match(/<h3[^>]*>(.*?)<\/h3>/g);
+    if (headings && headings.length > 0) {
+      const lastHeading = headings[headings.length - 1].replace(/<\/?h3[^>]*>/g, '').trim();
+      const genericHeadings = ["סיכום", "לסיכום", "סיכום וצעדים הבאים", "צעדים הבאים"];
+      if (genericHeadings.includes(lastHeading)) {
+        errors.push(`Generic final heading found in new article ${post.id}: "${lastHeading}"`);
+      }
+    }
 
     const STOP_WORDS = new Set(['couples', 'parenting', 'relationship', 'children', 'child', 'with', 'about', 'how', 'why', 'what', 'when', 'your', 'their']);
     const getWords = (id) => new Set(id.split('-').filter(w => w.length > 3 && !STOP_WORDS.has(w.toLowerCase())));
@@ -84,6 +93,7 @@ const claimFiles = [
   'src/pages/Services/Mediation/MediationPage.tsx',
   'src/pages/Services/Gifted/GiftedParentingPage.tsx',
   'src/pages/Services/Aliyah/AliyahFamiliesPage.tsx',
+  'src/pages/Services/Singles/SinglesGuidancePage.tsx',
   'src/data/faqs.ts',
   'public/llms.txt',
 ];

@@ -59,12 +59,15 @@ const writeRoute = (route, html) => {
     const page = await browser.newPage();
 
     for (const route of routes) {
-      await page.goto(`http://127.0.0.1:${port}${route}`, { waitUntil: 'networkidle' });
+      // Third-party embeds (notably Calendly) can keep background requests open
+      // indefinitely. The route is ready once its own main heading renders.
+      await page.goto(`http://127.0.0.1:${port}${route}`, { waitUntil: 'domcontentloaded' });
       await page.waitForSelector('#main-content h1');
+      await page.waitForSelector('link[rel="canonical"]', { state: 'attached' });
       writeRoute(route, await page.content());
     }
 
-    await page.goto(`http://127.0.0.1:${port}/__not-found__`, { waitUntil: 'networkidle' });
+    await page.goto(`http://127.0.0.1:${port}/__not-found__`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#main-content h1');
     fs.writeFileSync(path.join(dist, '404.html'), await page.content());
   } finally {
