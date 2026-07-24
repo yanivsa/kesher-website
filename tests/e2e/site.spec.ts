@@ -9,6 +9,7 @@ const routes = [
   '/services/mediation',
   '/services/gifted-parenting',
   '/services/aliyah-families',
+  '/services/singles-guidance',
   '/blog',
   '/faq',
   '/contact',

@@ -45,6 +45,7 @@ const parenting = loadable(() => import('./pages/Services/Parenting/ParentingGui
 const mediation = loadable(() => import('./pages/Services/Mediation/MediationPage'));
 const gifted = loadable(() => import('./pages/Services/Gifted/GiftedParentingPage'));
 const aliyah = loadable(() => import('./pages/Services/Aliyah/AliyahFamiliesPage'));
+const singles = loadable(() => import('./pages/Services/Singles/SinglesGuidancePage'));
 const blogList = loadable(() => import('./pages/Blog/BlogList'));
 const blogPost = loadable(() => import('./pages/Blog/BlogPost'));
 const faq = loadable(() => import('./pages/FAQ/FAQ'));
@@ -64,6 +65,7 @@ const { Page: ParentingGuidance } = parenting;
 const { Page: MediationPage } = mediation;
 const { Page: GiftedParentingPage } = gifted;
 const { Page: AliyahFamiliesPage } = aliyah;
+const { Page: SinglesGuidancePage } = singles;
 const { Page: BlogList } = blogList;
 const { Page: BlogPost } = blogPost;
 const { Page: FAQ } = faq;
@@ -83,6 +85,7 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/services\/mediation\/?$/, mediation.preload],
   [/^\/services\/gifted-parenting\/?$/, gifted.preload],
   [/^\/services\/aliyah-families\/?$/, aliyah.preload],
+  [/^\/services\/singles-guidance\/?$/, singles.preload],
   [/^\/blog\/?$/, blogList.preload],
   [/^\/blog\/[^/]+\/?$/, blogPost.preload],
   [/^\/faq\/?$/, faq.preload],
@@ -112,6 +115,7 @@ function App() {
           <Route path="/services/mediation" element={<MediationPage />} />
           <Route path="/services/gifted-parenting" element={<GiftedParentingPage />} />
           <Route path="/services/aliyah-families" element={<AliyahFamiliesPage />} />
+          <Route path="/services/singles-guidance" element={<SinglesGuidancePage />} />
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/faq" element={<FAQ />} />
