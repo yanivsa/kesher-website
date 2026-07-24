@@ -9,7 +9,8 @@ const routes = [
   '/services/mediation',
   '/services/gifted-parenting',
   '/services/aliyah-families',
-  '/services/singles-guidance',
+  '/services/late-singleness',
+  '/services/finding-relationship',
   '/blog',
   '/faq',
   '/contact',
@@ -96,4 +97,17 @@ test('gifted framework links reach the dedicated section', async ({ page }) => {
   await page.getByRole('link', { name: 'הכנה לכניסה למסגרת מחוננים' }).click();
   await expect(page).toHaveURL(/\/services\/gifted-parenting#gifted-framework$/);
   await expect(page.locator('#gifted-framework')).toBeInViewport();
+});
+
+test('legacy singles guidance route redirects to the late singleness page', async ({ page }) => {
+  await page.goto('/services/singles-guidance');
+  await expect(page).toHaveURL(/\/services\/late-singleness$/);
+  await expect(page.getByRole('heading', { name: 'ייעוץ במצבי רווקות מאוחרת' })).toBeVisible();
+});
+
+test('the two singles guidance pages link to each other', async ({ page }) => {
+  await page.goto('/services/late-singleness');
+  await page.getByRole('link', { name: 'ליווי מעשי למציאת זוגיות' }).click();
+  await expect(page).toHaveURL(/\/services\/finding-relationship$/);
+  await expect(page.getByRole('heading', { name: 'ליווי למציאת זוגיות' })).toBeVisible();
 });

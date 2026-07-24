@@ -139,10 +139,15 @@ const AboutPage: React.FC = () => {
               <strong>ייעוץ זוגי</strong>
               <span>תקשורת, קירבה, אמון והכנה לחיים משותפים.</span>
             </Link>
-            <Link to="/services/singles-guidance">
+            <Link to="/services/late-singleness">
               <FiHeart aria-hidden="true" />
-              <strong>רווקות מאוחרת ומציאת זוגיות</strong>
-              <span>דייטים, בחירת קשר, תקשורת, גבולות ושחיקה מהיכרויות.</span>
+              <strong>ייעוץ ברווקות מאוחרת</strong>
+              <span>שחיקה, לחץ מהסביבה, בדידות ודפוסים חוזרים.</span>
+            </Link>
+            <Link to="/services/finding-relationship">
+              <FiMessageCircle aria-hidden="true" />
+              <strong>ליווי למציאת זוגיות</strong>
+              <span>היכרויות, בחירת קשר, תקשורת והתקדמות לזוגיות.</span>
             </Link>
             <Link to="/services/mediation">
               <FiCompass aria-hidden="true" />

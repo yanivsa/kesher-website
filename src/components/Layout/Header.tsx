@@ -122,7 +122,8 @@ const Header: React.FC = () => {
               <button type="button" className={styles.navLink}>שירותים</button>
               <div className={styles.dropdownContent}>
                 <Link to="/services/couples" onClick={closeMenu}>ייעוץ זוגי</Link>
-                <Link to="/services/singles-guidance" onClick={closeMenu}>ליווי למציאת זוגיות</Link>
+                <Link to="/services/late-singleness" onClick={closeMenu}>ייעוץ ברווקות מאוחרת</Link>
+                <Link to="/services/finding-relationship" onClick={closeMenu}>ליווי למציאת זוגיות</Link>
                 <Link to="/services/parenting" onClick={closeMenu}>הדרכת הורים</Link>
                 <Link to="/services/mediation" onClick={closeMenu}>גישור</Link>
               </div>
@@ -134,7 +135,6 @@ const Header: React.FC = () => {
                 <Link to="/services/parenting" onClick={closeMenu}>הכנה לכיתה א׳</Link>
                 <Link to="/services/gifted-parenting#gifted-framework" onClick={closeMenu}>כניסה למסגרת מחוננים</Link>
                 <Link to="/services/aliyah-families" onClick={closeMenu}>עולים ותושבים חוזרים</Link>
-                <Link to="/services/singles-guidance" onClick={closeMenu}>רווקות מאוחרת ומציאת זוגיות</Link>
               </div>
             </div>
             <Link to="/blog" onClick={closeMenu}>בלוג</Link>
