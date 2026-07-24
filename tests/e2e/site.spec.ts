@@ -45,11 +45,11 @@ test('AI chat is desktop-only and consent gated', async ({ page }, testInfo) => 
   await page.goto('/');
   await expect(page.locator('script[data-kesher-ai-chat]')).toHaveCount(0);
   const consentButton = page.locator('button.ai-chat-consent');
-  await expect(consentButton).toHaveCount(1);
 
   if (testInfo.project.name === 'mobile') {
-    await expect(consentButton).toBeHidden();
+    await expect(consentButton).toHaveCount(0);
   } else {
+    await expect(consentButton).toHaveCount(1);
     await expect(consentButton).toBeVisible();
   }
 });
