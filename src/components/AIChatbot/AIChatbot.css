@@ -36,6 +36,12 @@
 
 @media (max-width: 768px) {
   .ai-chat-consent {
+    inset-inline-start: auto;
+    inset-inline-end: 1rem;
+    bottom: 5rem;
+    padding: 0.8rem;
+  }
+  .ai-chat-text {
     display: none;
   }
 }
