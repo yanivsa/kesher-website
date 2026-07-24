@@ -61,11 +61,15 @@ jobs:
             api "https://api.github.com/repos/${REPO}/commits/${sha}/check-runs?per_page=100" > checks.json
 
             if ! python3 - <<'PY'
-          import json, sys
+          import json, sys, re
           pr = json.load(open("pr.json"))
           files = [f["filename"] for f in json.load(open("files.json"))]
           checks = json.load(open("checks.json")).get("check_runs", [])
           allowed_files = {"src/data/posts.json", "public/sitemap.xml", "public/llms.txt", "public/llms-full.txt"}
+          has_image_claim = (pr.get("body") or "").find("https://") != -1 and re.search(r"[0-9a-f]{64}", pr.get("body") or "")
+          has_new_image = any(f.startswith("public/images/generated/blog/") for f in files)
+          if has_new_image and not has_image_claim:
+              sys.exit(1)
           allowed = all(f in allowed_files or f.startswith("public/images/generated/blog/") for f in files)
           ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
           eligible = (
