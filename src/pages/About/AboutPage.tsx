@@ -82,6 +82,7 @@ const AboutPage: React.FC = () => {
               alt="מרחב הייעוץ של שירה סהרוני"
               width="1024"
               height="1024"
+              fetchPriority="high"
             />
             <div className={styles.imageBadge}>מקשיבים • מבינים • מתקדמים</div>
           </div>
