@@ -139,6 +139,11 @@ const AboutPage: React.FC = () => {
               <strong>ייעוץ זוגי</strong>
               <span>תקשורת, קירבה, אמון והכנה לחיים משותפים.</span>
             </Link>
+            <Link to="/services/singles-guidance">
+              <FiHeart aria-hidden="true" />
+              <strong>רווקות מאוחרת ומציאת זוגיות</strong>
+              <span>דייטים, בחירת קשר, תקשורת, גבולות ושחיקה מהיכרויות.</span>
+            </Link>
             <Link to="/services/mediation">
               <FiCompass aria-hidden="true" />
               <strong>גישור</strong>
@@ -173,7 +178,7 @@ const AboutPage: React.FC = () => {
             <p>
               התפקיד שלי הוא לעזור לכם ליצור בהירות, חיבור ושיתוף פעולה — בין בני זוג, בין הורים לילדים ובין המשפחה למסגרות שסביבה.
             </p>
-            <a href={SITE_CONFIG.links.whatsapp}>לתיאום שיחת היכרות</a>
+            <Link to={SITE_CONFIG.links.appointment}>קביעת פגישת ייעוץ</Link>
           </div>
         </div>
       </section>

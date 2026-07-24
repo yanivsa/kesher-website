@@ -1,12 +1,11 @@
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import FloatingWhatsApp from './FloatingWhatsApp';
 import GeoBanner from '../GEO/GeoBanner';
 import MobileStickyBar from './MobileStickyBar';
+import AIChatbot from '../AIChatbot/AIChatbot';
 import styles from './Layout.module.css';
-
-const AIChatbot = lazy(() => import('../AIChatbot/AIChatbot'));
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -24,7 +23,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Footer />
       <FloatingWhatsApp />
       <MobileStickyBar />
-      <Suspense fallback={null}><AIChatbot /></Suspense>
+      <AIChatbot />
     </div>
   );
 };

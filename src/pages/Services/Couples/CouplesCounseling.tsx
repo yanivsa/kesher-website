@@ -71,10 +71,10 @@ const CouplesCounseling: React.FC = () => {
       <header className={styles.hero}>
         <div className={`container ${styles.heroContainer}`}>
           <div className={styles.heroContent}>
-            <div className={styles.badge}>מרחב בטוח לזוגיות שלכם</div>
-            <h1>להחזיר את <br /><span>החברות והאינטימיות</span></h1>
-            <p className={styles.subtitle}>ייעוץ זוגי רגיש ומעשי שמתמקד בתקשורת, אמון וחיבור.</p>
-            <a href="https://wa.me/972502763802" className={styles.ctaBtn}>תיאום שיחת היכרות</a>
+            <div className={styles.badge}>ייעוץ זוגי באשדוד ובאונליין</div>
+            <h1>לדבר על מה שקורה <br /><span>בלי לחזור לאותו ריב</span></h1>
+            <p className={styles.subtitle}>פגישה לשני בני הזוג, שבה אפשר להבין את הדפוס שחוזר ולבדוק מה ניתן לשנות.</p>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.ctaBtn}>קביעת פגישת ייעוץ</Link>
           </div>
           <div className={styles.heroImageWrapper}>
             <img src="/images/generated/services/couples-room.jpg" alt="מרחב שיחה זוגי נעים" width="1600" height="900" fetchPriority="high" />
@@ -84,7 +84,7 @@ const CouplesCounseling: React.FC = () => {
 
       <section className={styles.painPoints}>
         <div className="container">
-          <h2 className={styles.sectionTitle}>מרגישים שאתם בלופ?</h2>
+          <h2 className={styles.sectionTitle}>מתי זוגות פונים לייעוץ?</h2>
           <div className={styles.grid}>
             <div className={styles.card}>
               <FiMessageCircle className={styles.icon} />
@@ -109,11 +109,11 @@ const CouplesCounseling: React.FC = () => {
         <div className="container">
           <div className={styles.approachContent}>
             <h2>איך אני עוזרת לכם?</h2>
-            <p>הגישה שלי לא מחפשת 'מי צודק'. אנחנו נתמקד ב'איך' - איך אתם מתקשרים, איך אתם חווים אחד את השני, ואיך בונים בסיס בטוח של אמון וחברות.</p>
+            <p>המטרה אינה להכריע מי צודק. נבדוק איך השיחה מתנהלת, מה כל אחד שומע ברגעים טעונים ומה יעזור לכם להישאר באותה שיחה בלי להסלים או להתרחק.</p>
             <ul className={styles.approachList}>
               <li>זיהוי 'מעגלי המריבה' שלכם וכלים לעצירה בזמן אמת.</li>
               <li>תרגול שפת רגש במקום שפת האשמה.</li>
-              <li>בניית טקסים של קרבה וחיבור בתוך השגרה המלחיצה.</li>
+              <li>יצירת זמן וקביעות לקשר בתוך שגרה עמוסה.</li>
               <li>ליווי רגיש בשיקום אמון אחרי משברים עמוקים.</li>
             </ul>
           </div>
@@ -123,12 +123,12 @@ const CouplesCounseling: React.FC = () => {
       <section className={styles.boundaries}>
         <div className="container">
           <div className={styles.boundariesContent}>
-            <h2>למי הליווי פחות יתאים?</h2>
-            <p>כדי שהתהליך יצליח, נדרשת בשלות ומחויבות. הליווי פחות מתאים במקרים הבאים:</p>
+            <h2>מתי צריך מענה אחר או נוסף?</h2>
+            <p>ייעוץ זוגי דורש נכונות של שני הצדדים להשתתף. יש מצבים שבהם נכון להתחיל במענה ייעודי אחר:</p>
             <ul className={styles.boundariesList}>
-              <li>מחפשים 'קסמים' או פתרונות אינסטנט בלי נכונות לעבודת עומק.</li>
-              <li>מגיעים כדי 'לתקן את בן/בת הזוג' בלי רצון להסתכל גם על החלק שלכם בדינמיקה.</li>
-              <li>מצבי אלימות במשפחה (במקרים אלו יש לפנות למרכזים ייעודיים לטיפול באלימות).</li>
+              <li>כאשר רק צד אחד מעוניין להגיע והשני אינו מסכים להשתתף.</li>
+              <li>כאשר המטרה היחידה היא לשנות את בן או בת הזוג, בלי לבחון את הדינמיקה המשותפת.</li>
+              <li>במצבים של אלימות או סכנה בבית יש לפנות תחילה למענה ייעודי ומותאם.</li>
             </ul>
           </div>
         </div>
@@ -168,9 +168,9 @@ const CouplesCounseling: React.FC = () => {
         <div className="container">
           <LeadMagnet />
           <div className={styles.bottomCta}>
-            <h2>מגיע לכם להרגיש שוב בבית בתוך הקשר.</h2>
-            <p>אני כאן באשדוד (ובאונליין) כדי ללוות אתכם צעד אחר צעד.</p>
-            <a href="/contact" className={styles.finalBtn}>בואו נתחיל לדבר</a>
+            <h2>אפשר לבדוק אם הייעוץ מתאים לכם</h2>
+            <p>הפגישה מתקיימת באשדוד או אונליין ונמשכת 50 דקות.</p>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.finalBtn}>בחירת מועד לפגישה</Link>
           </div>
         </div>
       </section>

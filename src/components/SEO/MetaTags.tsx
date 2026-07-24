@@ -53,7 +53,9 @@ const MetaTags = ({
     upsertCanonical(currentUrl);
 
     const meta = [
+      ['meta[name="author"]', { name: 'author', content: SITE_CONFIG.author }],
       ['meta[property="og:type"]', { property: 'og:type', content: ogType }],
+      ['meta[property="og:locale"]', { property: 'og:locale', content: 'he_IL' }],
       ['meta[property="og:title"]', { property: 'og:title', content: title }],
       ['meta[property="og:description"]', { property: 'og:description', content: description }],
       ['meta[property="og:url"]', { property: 'og:url', content: currentUrl }],

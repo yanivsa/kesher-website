@@ -20,20 +20,35 @@
   margin-bottom: var(--spacing-md);
 }
 
+.contactActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.appointmentBtn,
 .whatsappBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  background: var(--color-whatsapp);
   color: white !important;
   padding: 0.85rem 1.25rem;
   border-radius: var(--radius-md);
   font-weight: 800;
-  margin-bottom: var(--spacing-lg);
   box-shadow: var(--shadow-sm);
 }
 
+.appointmentBtn {
+  background: var(--color-primary-dark);
+}
+
+.whatsappBtn {
+  background: var(--color-whatsapp);
+}
+
+.appointmentBtn:hover,
 .whatsappBtn:hover {
   filter: brightness(0.95);
   transform: translateY(-2px);
@@ -50,9 +65,9 @@
   gap: var(--spacing-sm);
 }
 
-.detail h4 {
+.detail h3 {
   font-size: 1rem;
-  font-family: 'Assistant', sans-serif;
+  font-family: inherit;
   margin-bottom: 0.2rem;
 }
 
@@ -162,6 +177,9 @@
   }
   .formRow {
     grid-template-columns: 1fr;
+  }
+  .contactActions {
+    display: grid;
   }
 }
 
