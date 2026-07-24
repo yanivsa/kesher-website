@@ -1,9 +1,10 @@
 name: Jules Weekday Kesher Article
 on:
   schedule:
-    # 00:35 Israel time during daylight saving. The job also checks local day
-    # before starting Jules, so Friday/Saturday are skipped even across DST.
-    - cron: "35 21 * * 0,1,2,3,4"
+    # 00:35 Sunday-Thursday in Israel during daylight saving. Cron weekdays
+    # are UTC, so Saturday-Wednesday UTC map to the intended local days.
+    # The local-day guard below still protects Friday/Saturday across DST.
+    - cron: "35 21 * * 6,0,1,2,3"
   workflow_dispatch:
 permissions:
   contents: read
