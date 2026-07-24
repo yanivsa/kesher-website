@@ -36,11 +36,19 @@ const servicePages: SearchItem[] = [
     category: 'שירותים'
   },
   {
-    id: 'service-singles-guidance',
+    id: 'service-late-singleness',
     type: 'service',
-    title: 'ייעוץ ברווקות מאוחרת וליווי למציאת זוגיות',
-    body: 'ייעוץ אישי לרווקות ולרווקים סביב דייטים, אפליקציות היכרות, שחיקה, בחירת קשר, תקשורת בתחילת קשר, גבולות, לחץ מהסביבה ודפוסים חוזרים.',
-    url: '/services/singles-guidance',
+    title: 'ייעוץ במצבי רווקות מאוחרת',
+    body: 'ייעוץ אישי לרווקות ולרווקים סביב שחיקה, בדידות, לחץ מהסביבה, השוואה לאחרים, התמודדות עם דחייה ודפוסים חוזרים.',
+    url: '/services/late-singleness',
+    category: 'תחומי התמחות'
+  },
+  {
+    id: 'service-finding-relationship',
+    type: 'service',
+    title: 'ליווי למציאת זוגיות',
+    body: 'ליווי אישי סביב אפליקציות והיכרויות, דייטים, בחירת קשר, תקשורת בתחילת קשר, גבולות, הדדיות והמעבר מהיכרות לזוגיות.',
+    url: '/services/finding-relationship',
     category: 'תחומי התמחות'
   },
   {

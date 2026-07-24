@@ -31,7 +31,8 @@ const services = [
   { name: 'גישור', url: '/services/mediation', path: path.join(__dirname, '../src/pages/Services/Mediation/MediationPage.tsx') },
   { name: 'הנחיית הורים לילדים מחוננים', url: '/services/gifted-parenting', path: path.join(__dirname, '../src/pages/Services/Gifted/GiftedParentingPage.tsx') },
   { name: 'משפחות עולים ותושבים חוזרים', url: '/services/aliyah-families', path: path.join(__dirname, '../src/pages/Services/Aliyah/AliyahFamiliesPage.tsx') },
-  { name: 'רווקות מאוחרת ומציאת זוגיות', url: '/services/singles-guidance', path: path.join(__dirname, '../src/pages/Services/Singles/SinglesGuidancePage.tsx') }
+  { name: 'ייעוץ במצבי רווקות מאוחרת', url: '/services/late-singleness', path: path.join(__dirname, '../src/pages/Services/Singles/LateSinglenessPage.tsx') },
+  { name: 'ליווי למציאת זוגיות', url: '/services/finding-relationship', path: path.join(__dirname, '../src/pages/Services/Singles/FindingRelationshipPage.tsx') }
 ];
 
 services.forEach(service => {

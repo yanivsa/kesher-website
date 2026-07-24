@@ -55,7 +55,13 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/services/singles-guidance</loc>
+    <loc>https://kesher.saharoni.com/services/late-singleness</loc>
+    <lastmod>2026-07-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/services/finding-relationship</loc>
     <lastmod>2026-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

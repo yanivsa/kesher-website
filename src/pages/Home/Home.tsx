@@ -60,9 +60,18 @@ const schemaData = {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "ייעוץ ברווקות מאוחרת וליווי למציאת זוגיות",
-            "url": `${SITE_CONFIG.url}/services/singles-guidance`,
-            "description": "ליווי אישי סביב היכרות, דייטים, בחירת קשר, תקשורת וגבולות."
+            "name": "ייעוץ במצבי רווקות מאוחרת",
+            "url": `${SITE_CONFIG.url}/services/late-singleness`,
+            "description": "ייעוץ אישי סביב שחיקה, לחץ מהסביבה, בדידות ודפוסים חוזרים."
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "ליווי למציאת זוגיות",
+            "url": `${SITE_CONFIG.url}/services/finding-relationship`,
+            "description": "ליווי אישי סביב היכרויות, בחירת קשר, תקשורת, גבולות ובניית קשר."
           }
         },
         {
@@ -143,7 +152,8 @@ const schemaData = {
         "ילדים מחוננים",
         "תפקודים ניהוליים",
         "משפחות עולים ותושבים חוזרים",
-        "רווקות מאוחרת ומציאת זוגיות"
+        "רווקות מאוחרת",
+        "מציאת זוגיות"
       ]
     }
   ]

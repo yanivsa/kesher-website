@@ -172,7 +172,8 @@ const ContactSection: React.FC = () => {
                   onChange={handleChange}
                 >
                   <option value="couples">ייעוץ זוגי</option>
-                  <option value="singles-guidance">רווקות מאוחרת וליווי למציאת זוגיות</option>
+                  <option value="late-singleness">ייעוץ במצבי רווקות מאוחרת</option>
+                  <option value="finding-relationship">ליווי למציאת זוגיות</option>
                   <option value="parenting">הדרכת הורים</option>
                   <option value="mediation">גישור</option>
                   <option value="gifted-parenting">הנחיית הורים לילדים מחוננים</option>
