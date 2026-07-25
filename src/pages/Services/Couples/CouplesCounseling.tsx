@@ -120,6 +120,29 @@ const CouplesCounseling: React.FC = () => {
         </div>
       </section>
 
+      <section className={styles.howItWorks}>
+        <div className="container">
+          <h2>איך נראה ליווי זוגי אצלי?</h2>
+          <div className={styles.processSteps}>
+            <div className={styles.step}>
+              <div className={styles.stepNum}>01</div>
+              <h4>ממפים את התמונה</h4>
+              <p>נבין את "מעגלי המריבה" שלכם, באילו רגעים קשה במיוחד ואיך כל אחד מגיב כשמתחיל החיכוך.</p>
+            </div>
+            <div className={styles.step}>
+              <div className={styles.stepNum}>02</div>
+              <h4>בוחרים שינוי אפשרי</h4>
+              <p>נזהה מוקד אחד שאפשר להתחיל ממנו ונבחר תגובה או כלים מעשיים לעצירה והקשבה שאפשר לנסות כבר השבוע.</p>
+            </div>
+            <div className={styles.step}>
+              <div className={styles.stepNum}>03</div>
+              <h4>בודקים ומדייקים</h4>
+              <p>נבחן בין הפגישות מה עזר בבית, מה עדיין קשה, ונדייק את הדרך עד שנוצרת תחושת ביטחון ושותפות מחודשת.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className={styles.boundaries}>
         <div className="container">
           <div className={styles.boundariesContent}>
