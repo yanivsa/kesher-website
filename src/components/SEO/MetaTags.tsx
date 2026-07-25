@@ -48,7 +48,9 @@ const MetaTags = ({
     : image || `${SITE_CONFIG.url}/apple-touch-icon.png`;
 
   useEffect(() => {
-    document.title = title;
+    const fullTitle = title.includes(SITE_CONFIG.brand) ? title : `${title} | ${SITE_CONFIG.brand}`;
+
+    document.title = fullTitle;
     upsertMeta('meta[name="description"]', { name: 'description', content: description });
     upsertCanonical(currentUrl);
 
@@ -56,13 +58,13 @@ const MetaTags = ({
       ['meta[name="author"]', { name: 'author', content: SITE_CONFIG.author }],
       ['meta[property="og:type"]', { property: 'og:type', content: ogType }],
       ['meta[property="og:locale"]', { property: 'og:locale', content: 'he_IL' }],
-      ['meta[property="og:title"]', { property: 'og:title', content: title }],
+      ['meta[property="og:title"]', { property: 'og:title', content: fullTitle }],
       ['meta[property="og:description"]', { property: 'og:description', content: description }],
       ['meta[property="og:url"]', { property: 'og:url', content: currentUrl }],
       ['meta[property="og:site_name"]', { property: 'og:site_name', content: SITE_CONFIG.author }],
       ['meta[property="og:image"]', { property: 'og:image', content: imageUrl }],
       ['meta[name="twitter:card"]', { name: 'twitter:card', content: 'summary_large_image' }],
-      ['meta[name="twitter:title"]', { name: 'twitter:title', content: title }],
+      ['meta[name="twitter:title"]', { name: 'twitter:title', content: fullTitle }],
       ['meta[name="twitter:description"]', { name: 'twitter:description', content: description }],
       ['meta[name="twitter:image"]', { name: 'twitter:image', content: imageUrl }],
     ] as const;
