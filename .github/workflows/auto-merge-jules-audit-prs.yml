@@ -155,24 +155,55 @@ jobs:
                       continue
 
                   compare_status = comp_data.get("status")
+
                   if compare_status in ["behind", "diverged"]:
                       print(f"PR #{number}: Branch is {compare_status}. Updating branch...")
                       update_status, update_resp = api("PUT", f"/repos/{repo}/pulls/{number}/update-branch", data={}, allow_codes=[422, 202])
                       if update_status == 202:
-                          print(f"PR #{number}: Branch updated. The resulting synchronize event will trigger a fresh CI run. Yielding.")
+                          print(f"PR #{number}: Branch update status: {update_status} (Success). Dispatching CI for new commit...")
+                          dispatch_status, dispatch_resp = api("POST", f"/repos/{repo}/actions/workflows/ci.yml/dispatches",
+                              data={"ref": head_branch}, allow_codes=[204])
+                          if dispatch_status == 204:
+                              print(f"PR #{number}: CI dispatched successfully.")
+                          else:
+                              print(f"PR #{number}: Failed to dispatch CI: {dispatch_resp}", file=sys.stderr)
+                              sys.exit(1)
+                      elif update_status == 422:
+                          print(f"PR #{number}: Branch update status: {update_status} (no-new-commits/no-op).")
+                          if v_status in ["queued", "in_progress"]:
+                              print(f"PR #{number}: verify check is {v_status}. Not dispatching duplicate CI.")
+                          elif v_conclusion == "success":
+                              print(f"PR #{number}: verify check is successful. Not dispatching duplicate CI.")
+                          elif v_status == "missing" or v_conclusion == "action_required":
+                              print(f"PR #{number}: verify check is action_required/missing. Dispatching CI...")
+                              dispatch_status, dispatch_resp = api("POST", f"/repos/{repo}/actions/workflows/ci.yml/dispatches",
+                                  data={"ref": head_branch}, allow_codes=[204])
+                              if dispatch_status == 204:
+                                  print(f"PR #{number}: CI dispatched successfully.")
+                              else:
+                                  print(f"PR #{number}: Failed to dispatch CI: {dispatch_resp}", file=sys.stderr)
+                                  sys.exit(1)
+                          else:
+                              print(f"PR #{number}: verify check is {v_status} ({v_conclusion}). No CI dispatch required.")
                       else:
                           print(f"PR #{number}: Failed to update branch (Status {update_status}): {update_resp}")
                   else:
                       print(f"PR #{number}: Branch is {compare_status} (not behind).")
-                      if v_status == "missing":
-                          print(f"PR #{number}: verify check is missing. Dispatching CI...")
+                      if v_status in ["queued", "in_progress"]:
+                          print(f"PR #{number}: verify check is {v_status}. Not dispatching duplicate CI.")
+                      elif v_conclusion == "success":
+                          print(f"PR #{number}: verify check is successful. Not dispatching duplicate CI.")
+                      elif v_status == "missing" or v_conclusion == "action_required":
+                          print(f"PR #{number}: verify check is action_required/missing. Dispatching CI...")
                           dispatch_status, dispatch_resp = api("POST", f"/repos/{repo}/actions/workflows/ci.yml/dispatches",
                               data={"ref": head_branch}, allow_codes=[204])
                           if dispatch_status == 204:
-                              print(f"PR #{number}: CI dispatched.")
+                              print(f"PR #{number}: CI dispatched successfully.")
                           else:
                               print(f"PR #{number}: Failed to dispatch CI: {dispatch_resp}", file=sys.stderr)
                               sys.exit(1)
+                      else:
+                          print(f"PR #{number}: verify check is {v_status} ({v_conclusion}). No CI dispatch required.")
 
           if __name__ == "__main__":
               main()
