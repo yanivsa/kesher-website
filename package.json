@@ -12,7 +12,7 @@
     "preview": "vite preview",
     "lint": "eslint src functions tests",
     "test": "vitest run",
-    "test:content": "node scripts/validate-content.cjs",
+    "test:content": "node scripts/validate-content.cjs && node tests/automation-gates.test.cjs",
     "test:e2e": "playwright test",
     "verify:dist": "node scripts/verify-dist.cjs",
     "check": "npm run generate && npm run lint && npm run test:content && npm run test && npm run build && npm run verify:dist && npm run test:e2e"
@@ -21,7 +21,11 @@
     "type": "git",
     "url": "git+https://github.com/yanivsa/kesher-website.git"
   },
-  "keywords": ["couples counseling", "parenting guidance", "ashdod"],
+  "keywords": [
+    "couples counseling",
+    "parenting guidance",
+    "ashdod"
+  ],
   "author": "Shira Saharoni",
   "license": "ISC",
   "bugs": {

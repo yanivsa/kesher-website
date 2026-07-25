@@ -38,3 +38,12 @@
 - קריאה לפעולה תופיע רק אם היא משתלבת בטבעיות בנושא. היא תהיה קצרה ולא מכירתית.
 
 לפני יצירת בקשת השינויים יש לקרוא את המאמר בקול ולבצע עריכת אנושיות נוספת. אם אפשר להעביר פסקה שלמה למאמר אחר בלי לשנותה, אם הפסקאות נשמעות אחידות מדי, או אם הסיום מסכם שוב את כל המאמר — יש לשכתב. בסיכום בקשת השינויים יש לאשר במפורש שבוצעו בדיקת כפילות, בדיקת עברית טבעית ובדיקת קול אנושי.
+
+## Image Provenance and Fallback
+Any image PR body must use exact structured lines `Image Source URL: https://...` and `Image SHA-256: <64 lowercase hex>`, include dimensions, and a factual visual-match sentence. If no image is independently source- and pixel-verified, require truthful no-image fallback: omit/remove the image file and post `image` field, and state the fallback.
+
+## Article Constraints
+Invented names must be explicitly hypothetical or omitted. No guarantees that grief/relationship dynamics self-resolve. Do not use generic final H3 headings like "סיכום" or "צעדים הבאים" (ordinary prose is allowed).
+
+## Completion Requirements
+Before completion/ready state after a requested repair, require a changed authoritative remote PR head, exact remote file/body evidence, and fresh successful verify CI on that head; local-only or unchanged-head completion is forbidden.
