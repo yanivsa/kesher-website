@@ -132,6 +132,17 @@ const schemaData = {
       }
     },
     {
+      "@type": "WebSite",
+      "@id": `${SITE_CONFIG.url}/#website`,
+      "url": SITE_CONFIG.url,
+      "name": SITE_CONFIG.title,
+      "description": SITE_CONFIG.description,
+      "publisher": {
+        "@id": `${SITE_CONFIG.url}/#business`
+      },
+      "inLanguage": "he"
+    },
+    {
       "@type": "Person",
       "@id": `${SITE_CONFIG.url}/#shira`,
       "name": SITE_CONFIG.author,
