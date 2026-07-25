@@ -17,6 +17,17 @@ const schemaData = {
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "WebSite",
+      "@id": `${SITE_CONFIG.url}/#website`,
+      "url": SITE_CONFIG.url,
+      "name": SITE_CONFIG.brand,
+      "publisher": {
+        "@id": `${SITE_CONFIG.url}/#business`
+      },
+      "inLanguage": "he"
+    },
+
+    {
       "@type": "LocalBusiness",
       "@id": `${SITE_CONFIG.url}/#business`,
       "name": SITE_CONFIG.author,
