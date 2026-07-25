@@ -9,12 +9,12 @@ const AboutSection: React.FC = () => {
       <div className={`container ${styles.container}`}>
         <div className={styles.imageContainer}>
           <div className={styles.imageWrapper}>
-            <img 
-              src="/images/generated/site/about-office.png" 
-              alt="קליניקה נעימה ומזמינה" 
+            <img
+              src="/images/shira-saharoni.webp"
+              alt="שירה סהרוני, יועצת זוגית ומשפחתית, מגשרת ומנחת הורים"
               className={styles.aboutImage}
-              width="1024"
-              height="1024"
+              width="1271"
+              height="1280"
               loading="lazy"
             />
             <div className={styles.experienceBadge}>
