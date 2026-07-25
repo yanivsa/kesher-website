@@ -7,6 +7,7 @@ import SchemaOrg from '../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { getImageDimensions } from '../../data/imageDimensions';
+import NotFound from '../NotFound/NotFound';
 import styles from './BlogPost.module.css';
 
 const BlogPost: React.FC = () => {
@@ -68,12 +69,7 @@ const BlogPost: React.FC = () => {
   }), [post?.title, post?.image, post?.id, post?.date, post?.excerpt, post?.content]);
 
   if (!post) {
-    return (
-      <div className="container">
-        <h1>המאמר לא נמצא</h1>
-        <Link to="/blog">חזרה לבלוג</Link>
-      </div>
-    );
+    return <NotFound />;
   }
   const safeContent = DOMPurify.sanitize(post.content);
 

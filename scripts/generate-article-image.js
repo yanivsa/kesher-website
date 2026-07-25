@@ -1,30 +1,33 @@
 import fs from "fs";
-import https from "https";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function downloadImage(url, filepath) {
-  return new Promise((resolve, reject) => {
-    const request = https.get(url, (response) => {
-      if (response.statusCode !== 200) {
-        reject(new Error(`Failed to download image (${response.statusCode})`));
-        response.resume();
-        return;
-      }
+const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
 
-      const file = fs.createWriteStream(filepath);
-      response.pipe(file);
-      file.on("finish", () => file.close(resolve));
-      file.on("error", (error) => {
-        fs.unlink(filepath, () => reject(error));
-      });
-    });
+async function downloadImage(url, filepath) {
+  const response = await fetch(url, { redirect: "follow" });
+  if (!response.ok) {
+    throw new Error(`Failed to download image (${response.status})`);
+  }
 
-    request.on("error", reject);
-  });
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.startsWith("image/")) {
+    throw new Error(`Unexpected image content type: ${contentType || "missing"}`);
+  }
+
+  const contentLength = Number(response.headers.get("content-length") || 0);
+  if (contentLength > MAX_IMAGE_BYTES) {
+    throw new Error("Generated image exceeds the 15 MB limit");
+  }
+
+  const bytes = Buffer.from(await response.arrayBuffer());
+  if (bytes.byteLength > MAX_IMAGE_BYTES) {
+    throw new Error("Generated image exceeds the 15 MB limit");
+  }
+  fs.writeFileSync(filepath, bytes);
 }
 
 function buildPrompt(title, customPrompt = "") {
@@ -33,24 +36,28 @@ function buildPrompt(title, customPrompt = "") {
     customPrompt ? `${customPrompt}.` : "",
     "Warm natural light, modest everyday Israeli home or counseling room.",
     "Emotionally respectful scene of a couple, parent and child, or family conversation.",
-    "Subjects should have typical Israeli appearances (Middle Eastern, Mediterranean, or European demographics). Avoid depicting East Asian or African-American ethnicities.",
+    "Show the natural diversity of Israeli couples and families without stereotypes.",
     "No text, no logos, no watermark, no clinical stock-photo feeling.",
     "High-quality 8k resolution, photorealistic, cinematic lighting, sharp focus, detailed textures.",
   ].filter(Boolean).join(" ");
 }
 
 async function main() {
+  const [slug, title = slug, customPrompt = ""] = process.argv.slice(2);
+  if (!slug) {
+    console.error("ERROR: Usage: node scripts/generate-article-image.js <slug> [title] [customPrompt]");
+    process.exit(1);
+  }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+    console.error("ERROR: slug must contain only lowercase letters, digits, and single hyphens.");
+    process.exit(1);
+  }
+
   const apiKey = process.env.DEEPAI_API_KEY;
   delete process.env.DEEPAI_API_KEY;
   if (!apiKey) {
     console.warn("WARNING: DEEPAI_API_KEY is missing. Skipping DeepAI image generation.");
     process.exit(0);
-  }
-
-  const [slug, title = slug, customPrompt = ""] = process.argv.slice(2);
-  if (!slug) {
-    console.error("ERROR: Usage: node scripts/generate-article-image.js <slug> [title] [customPrompt]");
-    process.exit(1);
   }
 
   try {

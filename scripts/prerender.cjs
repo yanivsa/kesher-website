@@ -31,7 +31,9 @@ const waitForServer = async () => {
     try {
       const response = await fetch(`http://127.0.0.1:${port}/`);
       if (response.ok) return;
-    } catch {}
+    } catch {
+      // The preview server may still be starting; retry within the bounded loop.
+    }
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
   throw new Error('Vite preview did not start');
