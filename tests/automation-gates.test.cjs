@@ -134,13 +134,58 @@ function testContentValidatorContracts() {
         validator.includes('const visibleProse = `${post.title}\\n${post.excerpt}\\n${stripHtml(post.content)}`'),
         "Formulaic phrase validation must cover title, excerpt, and content"
     );
-    for (const phrase of ["זירת התגוששות", "שדה מוקשים", "לנווט את התקופה", "משפט תגובה קצר וחותך"]) {
+    for (const phrase of [
+        "זירת התגוששות",
+        "שדה מוקשים",
+        "לנווט את התקופה",
+        "משפט תגובה קצר וחותך",
+        "הבנה עמוקה",
+        "חיבור אמיתי",
+        "לנווט את החיים",
+        "מזמינה אתכם לעשות סדר במחשבות",
+        "נובעות לרוב משילוב",
+        "הדור הקודם גדל על מסלול חיים מאוד ברור",
+        "החריגה ממנו מעוררת אצלם חרדה",
+        "התגובה הטבעית היא",
+        "הכלל החשוב ביותר",
+    ]) {
         assert(validator.includes(`"${phrase}"`), `Missing observed phrase guard: ${phrase}`);
     }
+    assert(
+        validator.includes('if (i === 0)'),
+        'Newly observed phrase guards must target the latest article without retroactively blocking old content'
+    );
+}
+
+function testAutomergeDeployContracts() {
+    const auditWorkflow = fs.readFileSync('.github/workflows/auto-merge-jules-audit-prs.yml', 'utf8');
+    const articleWorkflow = fs.readFileSync('.github/workflows/auto-merge-article-prs.yml', 'utf8');
+    for (const [name, workflow] of [
+        ['audit', auditWorkflow],
+        ['article', articleWorkflow],
+    ]) {
+        assert(
+            workflow.includes('/actions/workflows/deploy.yml/dispatches'),
+            `${name} auto-merge must dispatch deployment after a successful merge`
+        );
+        assert(
+            /permissions:[\s\S]*actions:\s*write/.test(workflow),
+            `${name} auto-merge must have actions: write for deploy dispatch`
+        );
+    }
+    assert(
+        auditWorkflow.lastIndexOf('dispatch_deploy()') > auditWorkflow.indexOf('Merged successfully.'),
+        'Audit deploy dispatch must occur only after a successful merge'
+    );
+    assert(
+        articleWorkflow.indexOf('merge.json') < articleWorkflow.indexOf('/actions/workflows/deploy.yml/dispatches'),
+        'Article deploy dispatch must occur only after checking the merge response'
+    );
 }
 
 testGenericH3();
 testImageExtraction();
 testWorkflowGate();
 testContentValidatorContracts();
+testAutomergeDeployContracts();
 console.log('All automation gates tests passed.');

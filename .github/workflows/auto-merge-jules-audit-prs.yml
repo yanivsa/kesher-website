@@ -72,6 +72,18 @@ jobs:
                   print(f"Network/Unexpected Error on {method} {endpoint}: {e}", file=sys.stderr)
                   sys.exit(1)
 
+          def dispatch_deploy():
+              dispatch_status, dispatch_resp = api(
+                  "POST",
+                  f"/repos/{repo}/actions/workflows/deploy.yml/dispatches",
+                  data={"ref": "main"},
+                  allow_codes=[204],
+              )
+              if dispatch_status != 204:
+                  print(f"Deploy dispatch failed after merge: {dispatch_resp}", file=sys.stderr)
+                  sys.exit(1)
+              print("Deploy workflow dispatched for main after merge.")
+
           def main():
               pr_numbers = []
               if event_name == "pull_request_target":
@@ -140,6 +152,7 @@ jobs:
                           allow_codes=[405, 409, 200, 201])
                       if merge_status in [200, 201]:
                           print(f"PR #{number}: Merged successfully.")
+                          dispatch_deploy()
                           continue
                       print(f"PR #{number}: Merge failed with {merge_status}. Checking if branch is behind...")
                   elif v_conclusion is not None:
