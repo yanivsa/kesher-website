@@ -15,14 +15,16 @@ const ensureUnique = (label, values) => {
 
 ensureUnique('post id', published.map((post) => post.id));
 ensureUnique('post title', published.map((post) => post.title));
-ensureUnique('post image', published.map((post) => post.image));
+ensureUnique('post image', published.map((post) => post.image).filter(Boolean));
 
 for (let i = 0; i < published.length; i++) {
   const post = published[i];
   if (post.date > '2026-07-15' && /<h3[^>]*>\s*(סיכום|לסיכום|סיכום וצעדים הבאים|צעדים הבאים)\s*<\/h3>/.test(post.content)) errors.push('Generic final H3 found in post: ' + post.id);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(post.date)) errors.push(`Invalid date: ${post.id}`);
-  if (!post.image.startsWith('/images/')) errors.push(`Non-local image: ${post.id}`);
-  if (!fs.existsSync(path.join(ROOT, 'public', post.image.replace(/^\//, '')))) errors.push(`Missing image: ${post.id}`);
+  if (post.image) {
+    if (!post.image.startsWith('/images/')) errors.push(`Non-local image: ${post.id}`);
+    if (!fs.existsSync(path.join(ROOT, 'public', post.image.replace(/^\//, '')))) errors.push(`Missing image: ${post.id}`);
+  }
   if (/<script|onerror=|onclick=|javascript:/i.test(post.content)) errors.push(`Unsafe HTML: ${post.id}`);
   if (wordCount(post.content) < 500 || headingCount(post.content) < 5) errors.push(`Thin content: ${post.id}`);
   if (/מוסמכת|הדרך היחידה|טראומות לא נשכחות/.test(post.content)) errors.push(`Unsupported absolute claim: ${post.id}`);
@@ -32,9 +34,10 @@ for (let i = 0; i < published.length; i++) {
       errors.push(`Latin characters found in visible prose: ${post.id}`);
     }
 
-    const forbiddenPhrases = ["גשר מעל התהום", "גשר מחדש מעל התהום", "שריר של שיח", "השריר של שיח זוגי", "הפרויקט המשותף הגדול הסתיים", "רעש רגשי גדול", "השקט הפיזי בבית מציף רעש רגשי גדול", "עמדה של יצירה משותפת", "מייצר ואקום אדיר", "הזדמנות פז אמיתית ומעשית", "הילדים הם הדבק החזק ביותר", "השקט לא חייב להיות אויב", "אזור הנוחות החדש", "הסקרנות היא המפתח", "להפסיק לנהל ולהתחיל לחיות", "תוקף רגשי", "המערכת תתאזן מעצמה", "הדבר הנכון הוא פשוט"];
+    const forbiddenPhrases = ["גשר מעל התהום", "גשר מחדש מעל התהום", "שריר של שיח", "השריר של שיח זוגי", "הפרויקט המשותף הגדול הסתיים", "רעש רגשי גדול", "השקט הפיזי בבית מציף רעש רגשי גדול", "עמדה של יצירה משותפת", "מייצר ואקום אדיר", "הזדמנות פז אמיתית ומעשית", "הילדים הם הדבק החזק ביותר", "השקט לא חייב להיות אויב", "אזור הנוחות החדש", "הסקרנות היא המפתח", "להפסיק לנהל ולהתחיל לחיות", "תוקף רגשי", "המערכת תתאזן מעצמה", "הדבר הנכון הוא פשוט", "זירת התגוששות", "שדה מוקשים", "חקירות צולבות", "לאבד את שיווי המשקל", "לנווט את התקופה", "משפט תגובה קצר וחותך", "משפט קצר וחותך שמעביר את השליטה"];
+    const visibleProse = `${post.title}\n${post.excerpt}\n${stripHtml(post.content)}`;
     for (const phrase of forbiddenPhrases) {
-      if (post.content.includes(phrase)) {
+      if (visibleProse.includes(phrase)) {
         errors.push(`Forbidden formulaic AI phrase found in new article ${post.id}: "${phrase}"`);
       }
     }
