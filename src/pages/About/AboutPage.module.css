@@ -49,13 +49,14 @@
 
 .imageWrapper {
   position: relative;
+  aspect-ratio: 4 / 5;
   overflow: visible;
 }
 
 .imageWrapper img {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 5;
+  height: 100%;
   object-fit: cover;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);

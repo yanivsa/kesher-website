@@ -12,7 +12,7 @@ const validPayload = {
   startedAt: Date.now() - 5_000,
 };
 
-const request = (body: object, method = 'POST') =>
+const request = (body: unknown, method = 'POST') =>
   new Request('https://kesher.saharoni.com/api/contact', {
     method,
     headers: { 'Content-Type': 'application/json' },
@@ -32,6 +32,17 @@ describe('contact API', () => {
     vi.stubGlobal('fetch', provider);
     const response = await handleContactRequest(request({ ...validPayload, email: 'bad' }));
     expect(response.status).toBe(400);
+    expect(provider).not.toHaveBeenCalled();
+  });
+
+  it('rejects null and other non-object JSON bodies instead of throwing', async () => {
+    const provider = vi.fn();
+    vi.stubGlobal('fetch', provider);
+
+    for (const body of [null, [], 'invalid']) {
+      const response = await handleContactRequest(request(body));
+      expect(response.status).toBe(400);
+    }
     expect(provider).not.toHaveBeenCalled();
   });
 
@@ -59,6 +70,23 @@ describe('contact API', () => {
     const response = await handleContactRequest(request(validPayload));
     expect(response.status).toBe(200);
     expect(provider).toHaveBeenCalledOnce();
+  });
+
+  it('returns a controlled error when the message provider is unavailable', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network down')));
+    const response = await handleContactRequest(request(validPayload));
+    expect(response.status).toBe(502);
+    expect(await response.json()).toMatchObject({ success: false });
+  });
+
+  it('returns a controlled error when Turnstile is unavailable', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network down')));
+    const response = await handleContactRequest(
+      request({ ...validPayload, turnstileToken: 'token' }),
+      { TURNSTILE_SECRET_KEY: 'secret' },
+    );
+    expect(response.status).toBe(503);
+    expect(await response.json()).toMatchObject({ success: false });
   });
 
   it('returns a real download URL for lead magnet requests', async () => {

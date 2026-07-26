@@ -80,7 +80,11 @@ export async function handleContactRequest(
     if (new TextEncoder().encode(body).byteLength > MAX_BODY_BYTES) {
       return json({ success: false, message: "Request is too large" }, 413);
     }
-    raw = JSON.parse(body) as ContactPayload;
+    const parsed: unknown = JSON.parse(body);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return json({ success: false, message: "Invalid JSON request" }, 400);
+    }
+    raw = parsed as ContactPayload;
   } catch {
     return json({ success: false, message: "Invalid JSON request" }, 400);
   }
@@ -117,33 +121,49 @@ export async function handleContactRequest(
     if (!raw.turnstileToken) {
       return json({ success: false, message: "Verification is required" }, 400);
     }
-    const verified = await verifyTurnstile(
-      env.TURNSTILE_SECRET_KEY,
-      raw.turnstileToken,
-      request.headers.get("CF-Connecting-IP"),
-    );
+    let verified: boolean;
+    try {
+      verified = await verifyTurnstile(
+        env.TURNSTILE_SECRET_KEY,
+        raw.turnstileToken,
+        request.headers.get("CF-Connecting-IP"),
+      );
+    } catch {
+      return json(
+        { success: false, message: "Verification service is unavailable" },
+        503,
+      );
+    }
     if (!verified) {
       return json({ success: false, message: "Verification failed" }, 403);
     }
   }
 
-  const providerResponse = await fetch(
-    env.FORMSPREE_ENDPOINT || DEFAULT_FORMSPREE_ENDPOINT,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
+  let providerResponse: Response;
+  try {
+    providerResponse = await fetch(
+      env.FORMSPREE_ENDPOINT || DEFAULT_FORMSPREE_ENDPOINT,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          ...payload,
+          _subject:
+            payload.kind === "lead_magnet"
+              ? "בקשה להורדת מדריך מהאתר"
+              : `פנייה חדשה מהאתר: ${payload.name}`,
+        }),
       },
-      body: JSON.stringify({
-        ...payload,
-        _subject:
-          payload.kind === "lead_magnet"
-            ? "בקשה להורדת מדריך מהאתר"
-            : `פנייה חדשה מהאתר: ${payload.name}`,
-      }),
-    },
-  );
+    );
+  } catch {
+    return json(
+      { success: false, message: "The message provider is unavailable" },
+      502,
+    );
+  }
 
   if (!providerResponse.ok) {
     return json(

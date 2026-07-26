@@ -148,6 +148,7 @@ const schemaData = {
       "name": SITE_CONFIG.author,
       "alternateName": "Shira Saharoni",
       "url": `${SITE_CONFIG.url}/about`,
+      "image": `${SITE_CONFIG.url}/images/shira-saharoni.webp`,
       "jobTitle": [
         "יועצת זוגית",
         "מנחת הורים",

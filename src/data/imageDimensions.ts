@@ -1,6 +1,7 @@
 const dimensions: Record<string, { width: number; height: number }> = {
   '/images/generated/site/home-hero.jpg': { width: 1600, height: 900 },
   '/images/generated/site/about-office.png': { width: 1024, height: 1024 },
+  '/images/shira-saharoni.webp': { width: 1271, height: 1280 },
   '/images/generated/services/couples-room.jpg': { width: 1600, height: 900 },
   '/images/generated/services/parenting-room.jpg': { width: 1600, height: 900 },
   '/images/generated/blog/adhd-first-grade-preparation.jpg': { width: 1256, height: 1256 },

@@ -10,6 +10,8 @@ const Header: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const menuCloseRef = useRef<HTMLButtonElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const searchButtonRef = useRef<HTMLButtonElement>(null);
 
   const toggleMenu = () => {
     setIsMenuOpen((open) => !open);
@@ -31,6 +33,7 @@ const Header: React.FC = () => {
 
   const closeSearch = useCallback(() => {
     setIsSearchOpen(false);
+    window.requestAnimationFrame(() => searchButtonRef.current?.focus());
   }, []);
 
   // Ctrl+K / Cmd+K to open search
@@ -54,6 +57,22 @@ const Header: React.FC = () => {
 
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') dismissMenu();
+      if (event.key !== 'Tab' || !navRef.current) return;
+
+      const focusable = Array.from(
+        navRef.current.querySelectorAll<HTMLElement>('button:not([disabled]), a[href]'),
+      ).filter((element) => element.offsetParent !== null);
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
     document.addEventListener('keydown', handleEscape);
@@ -76,7 +95,7 @@ const Header: React.FC = () => {
 
           {/* Search + Mobile Toggle */}
           <div className={styles.actions}>
-            <SearchTrigger onClick={openSearch} />
+            <SearchTrigger ref={searchButtonRef} onClick={openSearch} />
             {!isMenuOpen && (
               <button
                 ref={menuButtonRef}
@@ -102,7 +121,7 @@ const Header: React.FC = () => {
           )}
 
           {/* Navigation */}
-          <nav id="main-navigation" aria-label="ניווט ראשי" className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
+          <nav ref={navRef} id="main-navigation" aria-label="ניווט ראשי" className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
             <div className={styles.mobileMenuHeader}>
               <span>תפריט</span>
               <button
@@ -149,8 +168,9 @@ const Header: React.FC = () => {
   );
 };
 
-const SearchTrigger: React.FC<{ onClick: () => void }> = ({ onClick }) => (
+const SearchTrigger = React.forwardRef<HTMLButtonElement, { onClick: () => void }>(({ onClick }, ref) => (
   <button
+    ref={ref}
     type="button"
     className={styles.searchTrigger}
     onClick={onClick}
@@ -160,6 +180,8 @@ const SearchTrigger: React.FC<{ onClick: () => void }> = ({ onClick }) => (
     <FiSearch aria-hidden="true" />
     <span>חיפוש...</span>
   </button>
-);
+));
+
+SearchTrigger.displayName = 'SearchTrigger';
 
 export default Header;

@@ -1,4 +1,5 @@
 import React from 'react';
+import { serializeJsonLd } from '../../lib/serializeJsonLd';
 
 interface SchemaOrgProps {
   data: object;
@@ -9,7 +10,7 @@ const SchemaOrg: React.FC<SchemaOrgProps> = ({ data }) => {
     <script
       type="application/ld+json"
       suppressHydrationWarning
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(data) }}
     />
   );
 };

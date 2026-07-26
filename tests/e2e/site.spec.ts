@@ -12,8 +12,12 @@ const routes = [
   '/services/late-singleness',
   '/services/finding-relationship',
   '/blog',
+  '/blog/child-after-school-restraint-collapse',
   '/faq',
   '/contact',
+  '/accessibility',
+  '/privacy',
+  '/terms',
 ];
 
 for (const route of routes) {
@@ -38,9 +42,25 @@ for (const route of routes) {
 }
 
 test('unknown routes render the noindex 404 page', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(message.text());
+  });
   await page.goto('/definitely-not-a-real-page');
   await expect(page.getByRole('heading', { name: 'העמוד לא נמצא' })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+  expect(errors).toEqual([]);
+});
+
+test('unknown blog posts render the noindex 404 page', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(message.text());
+  });
+  await page.goto('/blog/definitely-not-a-real-post');
+  await expect(page.getByRole('heading', { name: 'העמוד לא נמצא' })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+  expect(errors).toEqual([]);
 });
 
 test('AI chat is desktop-only and consent gated', async ({ page }, testInfo) => {
@@ -69,9 +89,29 @@ test('mobile menu has an obvious close action and supports Escape', async ({ pag
   await expect(page.getByRole('button', { name: 'סגירת תפריט', exact: true })).toHaveCount(0);
 
   await page.getByRole('button', { name: 'פתיחת תפריט' }).click();
+  const closeButton = page.getByRole('button', { name: 'סגירת תפריט', exact: true });
+  const appointmentLink = page.getByRole('navigation', { name: 'ניווט ראשי' })
+    .getByRole('link', { name: 'קביעת פגישה' });
+  await appointmentLink.focus();
+  await page.keyboard.press('Tab');
+  await expect(closeButton).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(appointmentLink).toBeFocused();
+
   await page.getByRole('button', { name: 'סגירת התפריט בלחיצה מחוץ לתפריט' })
     .click({ position: { x: 10, y: 400 } });
   await expect(page.getByRole('button', { name: 'פתיחת תפריט' })).toBeVisible();
+});
+
+test('global search opens its first result with Enter and restores focus', async ({ page }) => {
+  await page.goto('/');
+  const searchButton = page.getByRole('button', { name: 'חיפוש באתר' });
+  await searchButton.click();
+  const searchInput = page.getByRole('textbox', { name: 'חיפוש באתר' });
+  await searchInput.fill('קביעת פגישת ייעוץ עם שירה');
+  await searchInput.press('Enter');
+  await expect(page).toHaveURL(/\/appointment$/);
+  await expect(searchButton).toBeFocused();
 });
 
 test('appointment page embeds Shira Calendly and keeps a direct fallback', async ({ page }) => {

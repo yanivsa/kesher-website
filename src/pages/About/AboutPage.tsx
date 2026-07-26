@@ -20,7 +20,7 @@ const schemaData = {
         "jobTitle": ["יועצת זוגית", "מנחת הורים", "מגשרת מוסמכת"],
         "description": "שירה סהרוני היא יועצת זוגית, מנחת הורים ומגשרת מוסמכת, עורכת דין בהכשרתה, המלווה זוגות ומשפחות באשדוד ובאונליין.",
         "url": `${SITE_CONFIG.url}/about`,
-        "image": `${SITE_CONFIG.url}/images/generated/site/about-office.png`,
+        "image": `${SITE_CONFIG.url}/images/shira-saharoni.webp`,
         "knowsAbout": [
           "ייעוץ זוגי",
           "גישור",
@@ -65,6 +65,7 @@ const AboutPage: React.FC = () => {
       <MetaTags 
         title="אודות שירה סהרוני | יועצת זוגית, מנחת הורים ומגשרת"
         description="הכירו את שירה סהרוני — עורכת דין בהכשרתה, מגשרת מוסמכת, יועצת זוגית ומנחת הורים באשדוד ובאונליין."
+        image="/images/shira-saharoni.webp"
       />
       <header className={styles.header}>
         <div className="container">
@@ -78,10 +79,10 @@ const AboutPage: React.FC = () => {
         <div className={`container ${styles.storyGrid}`}>
           <div className={styles.imageWrapper}>
             <img
-              src="/images/generated/site/about-office.png"
-              alt="מרחב הייעוץ של שירה סהרוני"
-              width="1024"
-              height="1024"
+              src="/images/shira-saharoni.webp"
+              alt="שירה סהרוני, יועצת זוגית ומשפחתית, מגשרת ומנחת הורים"
+              width="1271"
+              height="1280"
             />
             <div className={styles.imageBadge}>מקשיבים • מבינים • מתקדמים</div>
           </div>

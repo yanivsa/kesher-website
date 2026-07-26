@@ -84,27 +84,18 @@ const GlobalSearch: React.FC<Props> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
+      const previousOverflow = document.body.style.overflow;
       document.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = previousOverflow;
+      };
     }
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
     };
   }, [isOpen, handleKeyDown]);
-
-  // Ctrl+K global shortcut
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        if (isOpen) onClose();
-        // parent handles opening
-      }
-    };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [isOpen, onClose]);
 
   const handleResultClick = (url: string) => {
     onClose();
@@ -133,6 +124,12 @@ const GlobalSearch: React.FC<Props> = ({ isOpen, onClose }) => {
             placeholder="חיפוש מאמרים, שאלות, שירותים..."
             value={query}
             onChange={e => setQuery(e.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' && results.length > 0) {
+                event.preventDefault();
+                handleResultClick(results[0].url);
+              }
+            }}
             aria-label="חיפוש באתר"
           />
           <button type="button" className={styles.closeBtn} onClick={onClose} aria-label="סגירת חיפוש">
