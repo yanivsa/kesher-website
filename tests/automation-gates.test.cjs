@@ -120,7 +120,27 @@ function testWorkflowGate() {
     );
 }
 
+function testContentValidatorContracts() {
+    const validator = fs.readFileSync('scripts/validate-content.cjs', 'utf8');
+    assert(
+        validator.includes("published.map((post) => post.image).filter(Boolean)"),
+        "No-image fallback must not fail uniqueness validation"
+    );
+    assert(
+        validator.includes("if (post.image) {"),
+        "Local image checks must run only when an image exists"
+    );
+    assert(
+        validator.includes('const visibleProse = `${post.title}\\n${post.excerpt}\\n${stripHtml(post.content)}`'),
+        "Formulaic phrase validation must cover title, excerpt, and content"
+    );
+    for (const phrase of ["זירת התגוששות", "שדה מוקשים", "לנווט את התקופה", "משפט תגובה קצר וחותך"]) {
+        assert(validator.includes(`"${phrase}"`), `Missing observed phrase guard: ${phrase}`);
+    }
+}
+
 testGenericH3();
 testImageExtraction();
 testWorkflowGate();
+testContentValidatorContracts();
 console.log('All automation gates tests passed.');
