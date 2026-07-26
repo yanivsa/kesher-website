@@ -49,6 +49,18 @@ const specializations = [
     link: '/services/gifted-parenting#gifted-framework'
   },
   {
+    title: 'הכנה לנישואים והשנה הראשונה',
+    description: 'פגישות לזוגות שרוצים לדבר מראש על כסף, בית, משפחות ותקשורת — ולהיעזר גם כשהתכנון פוגש את החיים עצמם.',
+    icon: <FiHeart aria-hidden="true" />,
+    link: '/services/premarital-first-year'
+  },
+  {
+    title: 'זוגיות בעלייה וברילוקיישן',
+    description: 'ייעוץ זוגי סביב שינוי תפקידים, פערי הסתגלות, כסף, בדידות ושייכות לפני מעבר מדינה, במהלכו או אחרי החזרה.',
+    icon: <FiCompass aria-hidden="true" />,
+    link: '/services/couples-aliyah-relocation'
+  },
+  {
     title: 'ייעוץ במצבי רווקות מאוחרת',
     description: 'ליווי אישי סביב שחיקה, לחץ מהסביבה, בדידות ודפוסים שחוזרים בקשרים ובהיכרויות.',
     icon: <FiHeart aria-hidden="true" />,
@@ -95,7 +107,7 @@ const ServicesSection: React.FC = () => {
         <div className={styles.specializations}>
           <div className={styles.specializationsHeader}>
             <h3>תחומי התמחות ממוקדים</h3>
-            <p>מענים להורים ולמשפחות סביב מחוננות, קשב ומעברים משמעותיים.</p>
+            <p>מענים ממוקדים לזוגות, להורים ולמשפחות סביב התחלות ומעברים משמעותיים.</p>
           </div>
           <div className={styles.specializationGrid}>
             {specializations.map((specialization) => (

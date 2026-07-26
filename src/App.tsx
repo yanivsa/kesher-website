@@ -45,6 +45,8 @@ const parenting = loadable(() => import('./pages/Services/Parenting/ParentingGui
 const mediation = loadable(() => import('./pages/Services/Mediation/MediationPage'));
 const gifted = loadable(() => import('./pages/Services/Gifted/GiftedParentingPage'));
 const aliyah = loadable(() => import('./pages/Services/Aliyah/AliyahFamiliesPage'));
+const couplesRelocation = loadable(() => import('./pages/Services/Relocation/CouplesAliyahRelocationPage'));
+const premaritalFirstYear = loadable(() => import('./pages/Services/Premarital/PremaritalFirstYearPage'));
 const lateSingleness = loadable(() => import('./pages/Services/Singles/LateSinglenessPage'));
 const findingRelationship = loadable(() => import('./pages/Services/Singles/FindingRelationshipPage'));
 const blogList = loadable(() => import('./pages/Blog/BlogList'));
@@ -66,6 +68,8 @@ const { Page: ParentingGuidance } = parenting;
 const { Page: MediationPage } = mediation;
 const { Page: GiftedParentingPage } = gifted;
 const { Page: AliyahFamiliesPage } = aliyah;
+const { Page: CouplesAliyahRelocationPage } = couplesRelocation;
+const { Page: PremaritalFirstYearPage } = premaritalFirstYear;
 const { Page: LateSinglenessPage } = lateSingleness;
 const { Page: FindingRelationshipPage } = findingRelationship;
 const { Page: BlogList } = blogList;
@@ -87,6 +91,8 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/services\/mediation\/?$/, mediation.preload],
   [/^\/services\/gifted-parenting\/?$/, gifted.preload],
   [/^\/services\/aliyah-families\/?$/, aliyah.preload],
+  [/^\/services\/couples-aliyah-relocation\/?$/, couplesRelocation.preload],
+  [/^\/services\/premarital-first-year\/?$/, premaritalFirstYear.preload],
   [/^\/services\/late-singleness\/?$/, lateSingleness.preload],
   [/^\/services\/finding-relationship\/?$/, findingRelationship.preload],
   [/^\/blog\/?$/, blogList.preload],
@@ -118,6 +124,8 @@ function App() {
           <Route path="/services/mediation" element={<MediationPage />} />
           <Route path="/services/gifted-parenting" element={<GiftedParentingPage />} />
           <Route path="/services/aliyah-families" element={<AliyahFamiliesPage />} />
+          <Route path="/services/couples-aliyah-relocation" element={<CouplesAliyahRelocationPage />} />
+          <Route path="/services/premarital-first-year" element={<PremaritalFirstYearPage />} />
           <Route path="/services/late-singleness" element={<LateSinglenessPage />} />
           <Route path="/services/finding-relationship" element={<FindingRelationshipPage />} />
           <Route path="/services/singles-guidance" element={<Navigate to="/services/late-singleness" replace />} />
