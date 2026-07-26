@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs><path id="arc3" d="M12 39a22 22 0 0 0 40 0"/></defs>
+  <rect width="64" height="64" rx="16" fill="#EEF4EE"/>
+  <circle cx="32" cy="32" r="25" fill="none" stroke="#7F9F88" stroke-width="2" stroke-dasharray="4 2"/>
+  <circle cx="32" cy="32" r="22.5" fill="none" stroke="#B9CEBE" stroke-width="1.5" stroke-dasharray="2 3"/>
+  <text x="32" y="39" text-anchor="middle" font-family="Snell Roundhand,Savoye LET,cursive" font-size="36" fill="#456B52">S</text>
+  <text font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="6.2" font-weight="700" fill="#456B52"><textPath href="#arc3" startOffset="50%" text-anchor="middle">שירה סהרוני</textPath></text>
+</svg>

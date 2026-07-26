@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="950" viewBox="0 0 1280 950">
+  <rect width="1280" height="950" fill="#F8F5F1"/>
+  <text x="640" y="58" text-anchor="middle" font-family="Arial" font-size="34" font-weight="700" fill="#2D2926">הלוגו הקיים + שירה סהרוני — 12 כיווני פסטל</text>
+  <text x="640" y="94" text-anchor="middle" font-family="Arial" font-size="18" fill="#7A6F6A">המונוגרמה והטבעת הקלועה נשמרות בכל האפשרויות</text>
+  <g transform="translate(105 130)"><image href="favicon-options/existing-logo-01-blue.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">1</text></g>
+  <g transform="translate(400 130)"><image href="favicon-options/existing-logo-02-blush.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">2</text></g>
+  <g transform="translate(695 130)"><image href="favicon-options/existing-logo-03-sage.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">3</text></g>
+  <g transform="translate(990 130)"><image href="favicon-options/existing-logo-04-lavender.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">4</text></g>
+  <g transform="translate(105 405)"><image href="favicon-options/existing-logo-05-peach.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">5</text></g>
+  <g transform="translate(400 405)"><image href="favicon-options/existing-logo-06-sky.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">6</text></g>
+  <g transform="translate(695 405)"><image href="favicon-options/existing-logo-07-two-tone.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">7</text></g>
+  <g transform="translate(990 405)"><image href="favicon-options/existing-logo-08-rose-ring.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">8</text></g>
+  <g transform="translate(105 680)"><image href="favicon-options/existing-logo-09-dark-sage.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">9</text></g>
+  <g transform="translate(400 680)"><image href="favicon-options/existing-logo-10-gradient.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">10</text></g>
+  <g transform="translate(695 680)"><image href="favicon-options/existing-logo-11-seal.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">11</text></g>
+  <g transform="translate(990 680)"><image href="favicon-options/existing-logo-12-minimal.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700">12</text></g>
+</svg>

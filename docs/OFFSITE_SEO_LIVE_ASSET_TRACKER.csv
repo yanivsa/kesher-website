@@ -1,0 +1,24 @@
+target,type,submitted_at,status,public_url,verification_or_evidence,next_action
+Google Business Profile,map profile,2026-07-26,awaiting physical verification,,Profile completed 100 percent and Google requires a business video,Owner records the verification video
+Google Search Console,measurement,,live,https://search.google.com/search-console,Domain property saharoni.com accessible and external links report showed zero,Recheck links after publications go live
+YouTube,video profile,,live,https://www.youtube.com/channel/UCx5fEFvdVf28HLAR2dFW64Q,Channel and ten live videos link to the website,Keep descriptions and business details consistent
+ZmanTov,professional profile,,live,,Public profile found but website is missing and WhatsApp is malformed,Await support correction and record the final URL
+Merkaz YNR,professional article,,live,,Indexed article mentions Shira but does not link to the new site,Await profile or article link update
+Merkaz Horut Mashmautit,professional profile,,live,https://mhorut.org/profile/shirasa/,Indexed profile exists but is empty,Await biography and website update
+D.co.il,business directory,2026-07-26,submitted,,Registration confirmation displayed and representative should call,Approve accurate details and record live profile URL
+Oin Ashdod,local directory,2026-07-26,submitted,,Join request confirmation displayed for marriage and family counselors,Approve only accurate terms and record live profile URL
+Bing Places,map profile,2026-07-26,awaiting verification,,Business ID d1e141ef-d709-406a-91ca-ad4f3900ff4b and postcard delivery suspended,Retry after Google verification or mail service resumes
+Apple Business Connect,map profile,,blocked,,Requires an owner-controlled Apple Account and authentic business documents,Owner signs in and supplies matching documents
+easy,business directory,2026-07-26,awaiting phone code,,Support sent the normal add-business guide,Complete the code sent to Shira
+B144,business directory,2026-07-26,awaiting phone code,,Registration requires a five-digit phone code,Complete the code sent to Shira
+Klinikum,paid professional directory,2026-07-26,commercial review,,Quoted ILS 448.40 including VAT without duration or profile specification,Wait for written scope and assess value before paying
+Israeli Association for Couple and Family Counseling,professional association,2026-07-26,eligibility inquiry,,Requested documents internship annual fee and profile-link terms,Apply only if Shira meets the requirements
+Mediation portal,professional directory,2026-07-26,submitted,,Join form accepted name phone and professional email,Wait for terms and a public profile URL
+Ashdod Index,local directory,2026-07-26,category request,,No suitable category existed and a request was emailed,Wait for a relevant category and public URL
+Ashdod Online,editorial outreach,2026-07-26,pitch sent,,Guest-column pitch sent to the editorial team,Follow up once if there is no reply
+AshdodNet,editorial outreach,2026-07-26,pitch sent,,Pitch resent to verified editorial address after old address bounced,Follow up once if there is no reply
+Kan Darom,editorial outreach,2026-07-26,pitch sent,,Local expert-column pitch sent,Follow up once if there is no reply
+Ashdod municipal mediation center,municipal opportunity,2026-07-26,owner handoff,,One message preceded the no-municipal-contact instruction and all contact details were emailed to the owner,No further municipal outreach by Codex
+Ad HaAhava podcast,podcast outreach,2026-07-26,pitch sent,,Tailored late-singleness guest pitch sent in Gmail message 19f9f104e74267cf,Wait for a reply and request natural guest credit if accepted
+HaYeled Ben 30 podcast,podcast outreach,2026-07-26,pitch sent,,Tailored parent-support guest pitch sent in Gmail message 19f9f1091aa36045,Wait for a reply and request natural guest credit if accepted
+eFind,low-quality directory,2026-07-26,rejected,,Low relevance and account friction with weak recent content,Do not pursue

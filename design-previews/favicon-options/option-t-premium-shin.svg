@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="מונוגרמת שירה יוקרתית">
+  <rect width="64" height="64" rx="16" fill="#3F5E49"/>
+  <circle cx="32" cy="32" r="22" fill="#FAF7F4"/>
+  <text x="32" y="45" text-anchor="middle" font-family="Times New Roman, .SF Hebrew, serif" font-size="39" font-weight="700" fill="#3F5E49">ש</text>
+  <path d="M45 16c4 1 6 3 7 7-4-1-6-3-7-7Z" fill="#D9A083"/>
+</svg>

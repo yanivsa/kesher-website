@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850">
+  <rect width="1200" height="850" fill="#FAF7F4"/>
+  <text x="600" y="60" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#2D2926">אפשרויות נוספות בסגנון ח׳ — קשר ולב</text>
+  <text x="600" y="96" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#7A6F6A">וריאציות של חוליות מחוברות, לב וצבעי פסטל</text>
+
+  <g transform="translate(105 130)">
+    <rect width="310" height="300" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-i-soft-linked-heart.svg" x="30" y="36" width="150" height="150"/>
+    <image href="favicon-options/option-i-soft-linked-heart.svg" x="212" y="42" width="42" height="42"/>
+    <text x="155" y="232" text-anchor="middle" font-family="Arial" font-size="23" font-weight="700" fill="#2D2926">ט — קשר רך</text>
+    <text x="155" y="267" text-anchor="middle" font-family="Arial" font-size="17" fill="#7A6F6A">ורוד־אבקתי ואלגנטי</text>
+  </g>
+  <g transform="translate(445 130)">
+    <rect width="310" height="300" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-j-sage-linked-heart.svg" x="30" y="36" width="150" height="150"/>
+    <image href="favicon-options/option-j-sage-linked-heart.svg" x="212" y="42" width="42" height="42"/>
+    <text x="155" y="232" text-anchor="middle" font-family="Arial" font-size="23" font-weight="700" fill="#2D2926">י — קשר מרווה</text>
+    <text x="155" y="267" text-anchor="middle" font-family="Arial" font-size="17" fill="#7A6F6A">הכי מתאים לצבעי האתר</text>
+  </g>
+  <g transform="translate(785 130)">
+    <rect width="310" height="300" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-k-infinity-heart.svg" x="30" y="36" width="150" height="150"/>
+    <image href="favicon-options/option-k-infinity-heart.svg" x="212" y="42" width="42" height="42"/>
+    <text x="155" y="232" text-anchor="middle" font-family="Arial" font-size="23" font-weight="700" fill="#2D2926">י״א — קשר אינסופי</text>
+    <text x="155" y="267" text-anchor="middle" font-family="Arial" font-size="17" fill="#7A6F6A">זוגיות, המשכיות וביטחון</text>
+  </g>
+
+  <g transform="translate(105 465)">
+    <rect width="310" height="300" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-l-diagonal-link-heart.svg" x="30" y="36" width="150" height="150"/>
+    <image href="favicon-options/option-l-diagonal-link-heart.svg" x="212" y="42" width="42" height="42"/>
+    <text x="155" y="232" text-anchor="middle" font-family="Arial" font-size="23" font-weight="700" fill="#2D2926">י״ב — חיבור דינמי</text>
+    <text x="155" y="267" text-anchor="middle" font-family="Arial" font-size="17" fill="#7A6F6A">מודרני וקליל</text>
+  </g>
+  <g transform="translate(445 465)">
+    <rect width="310" height="300" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-m-heart-as-link.svg" x="30" y="36" width="150" height="150"/>
+    <image href="favicon-options/option-m-heart-as-link.svg" x="212" y="42" width="42" height="42"/>
+    <text x="155" y="232" text-anchor="middle" font-family="Arial" font-size="23" font-weight="700" fill="#2D2926">י״ג — הלב המחבר</text>
+    <text x="155" y="267" text-anchor="middle" font-family="Arial" font-size="17" fill="#7A6F6A">רך, חם וברור במיוחד</text>
+  </g>
+  <g transform="translate(785 465)">
+    <rect width="310" height="300" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-n-family-links.svg" x="30" y="36" width="150" height="150"/>
+    <image href="favicon-options/option-n-family-links.svg" x="212" y="42" width="42" height="42"/>
+    <text x="155" y="232" text-anchor="middle" font-family="Arial" font-size="23" font-weight="700" fill="#2D2926">י״ד — קשר משפחתי</text>
+    <text x="155" y="267" text-anchor="middle" font-family="Arial" font-size="17" fill="#7A6F6A">שלוש חוליות, משפחה ולב</text>
+  </g>
+</svg>
