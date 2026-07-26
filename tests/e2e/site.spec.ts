@@ -9,10 +9,14 @@ const routes = [
   '/services/mediation',
   '/services/gifted-parenting',
   '/services/aliyah-families',
+  '/services/couples-aliyah-relocation',
+  '/services/premarital-first-year',
   '/services/late-singleness',
   '/services/finding-relationship',
   '/blog',
   '/blog/child-after-school-restraint-collapse',
+  '/blog/relocation-couple-conversations-before-moving',
+  '/blog/premarital-questions-before-wedding',
   '/faq',
   '/contact',
   '/accessibility',
@@ -150,4 +154,20 @@ test('the two singles guidance pages link to each other', async ({ page }) => {
   await page.getByRole('link', { name: 'ליווי מעשי למציאת זוגיות' }).click();
   await expect(page).toHaveURL(/\/services\/finding-relationship$/);
   await expect(page.getByRole('heading', { name: 'ליווי למציאת זוגיות' })).toBeVisible();
+});
+
+test('relocation and premarital service pages expose their practical article hubs', async ({ page }) => {
+  await page.goto('/services/couples-aliyah-relocation');
+  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי לעולים ולזוגות ברילוקיישן' })).toBeVisible();
+  await page.getByRole('link', { name: /7 שיחות שחייבים לעשות לפני שאורזים/ }).click();
+  await expect(page).toHaveURL(/\/blog\/relocation-couple-conversations-before-moving$/);
+  await expect(page.getByRole('link', { name: 'ייעוץ זוגי בעלייה וברילוקיישן' }))
+    .toHaveAttribute('href', '/services/couples-aliyah-relocation');
+
+  await page.goto('/services/premarital-first-year');
+  await expect(page.getByRole('heading', { name: 'הכנה לנישואים וליווי בשנה הראשונה' })).toBeVisible();
+  await page.getByRole('link', { name: /12 שאלות שחייבים לשאול לפני החתונה/ }).click();
+  await expect(page).toHaveURL(/\/blog\/premarital-questions-before-wedding$/);
+  await expect(page.getByRole('link', { name: 'פגישות הכנה לנישואים' }))
+    .toHaveAttribute('href', '/services/premarital-first-year');
 });

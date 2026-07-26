@@ -109,6 +109,8 @@ const claimFiles = [
   'src/pages/Services/Mediation/MediationPage.tsx',
   'src/pages/Services/Gifted/GiftedParentingPage.tsx',
   'src/pages/Services/Aliyah/AliyahFamiliesPage.tsx',
+  'src/pages/Services/Relocation/CouplesAliyahRelocationPage.tsx',
+  'src/pages/Services/Premarital/PremaritalFirstYearPage.tsx',
   'src/pages/Services/Singles/LateSinglenessPage.tsx',
   'src/pages/Services/Singles/FindingRelationshipPage.tsx',
   'src/data/faqs.ts',
