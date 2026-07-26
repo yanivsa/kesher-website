@@ -27,6 +27,11 @@ jobs:
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Checkout repository instruction sources
+        if: steps.local_day.outputs.skip != 'true'
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          persist-credentials: false
       - name: Stop if article PR is already open
         if: steps.local_day.outputs.skip != 'true'
         id: article_gate
@@ -135,6 +140,10 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${JULES_API_KEY:-}"
+          if [ ! -s ".github/prompts/jules-weekday-article-update.md" ]; then
+            echo "::error::Required Jules article policy is missing or empty; no session was created."
+            exit 1
+          fi
           cat > payload.json <<'JSON'
           {
             "title": "Weekday Kesher Hebrew article",
@@ -180,6 +189,7 @@ jobs:
               raise SystemExit("Stale contradictory Jules article rule remains in runtime prompt")
           payload["prompt"] += "\n\nStrict Hebrew-only gate: the new article title, excerpt, and rendered content must contain no Latin letters `A-Z` or `a-z`, including English terminology, acronyms, parenthetical translations, headings, CTA text, or image captions. Keep machine identifiers such as id/slug/image path in ASCII as required by the repo, but visible article prose must be Hebrew-only. Before opening a PR, scan the new visible fields with `/[A-Za-z]/`; if any match remains, replace it with natural Hebrew and rerun `npm run check`."
           payload["prompt"] += "\n\nAutonomy rule: an auto-approved/generated plan must be executed immediately; never restate it and ask permission or enter AWAITING_USER_FEEDBACK."
+          payload["prompt"] += "\n\nInstruction-source integrity rule: before planning, verify that `src/data/posts.json`, `package.json`, and the repository article policy are present and readable. If any required source is missing or unreadable, log the exact path and failure, do not guess or silently weaken the requirements, do not claim success, and finish without a branch, commit, or PR."
           with open("payload.json", "w", encoding="utf-8") as fh:
               json.dump(payload, fh, ensure_ascii=False)
           PY
