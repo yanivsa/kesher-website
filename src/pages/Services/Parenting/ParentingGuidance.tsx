@@ -92,7 +92,7 @@ const ParentingGuidance: React.FC = () => {
             </div>
             <div className={styles.segment}>
               <FiTarget className={styles.icon} />
-              <h3>גבולות ללא מלחמות</h3>
+              <h3>גבולות עם פחות חיכוכים</h3>
               <p>איך להציב גבולות ברורים ועקביים מתוך סמכות שקטה, ולהפחית את רגשות האשמה בסוף היום.</p>
             </div>
             <div className={styles.segment}>
