@@ -160,7 +160,9 @@ jobs:
           }
           JSON
           python3 - <<'PY'
+          from datetime import datetime
           import json
+          from zoneinfo import ZoneInfo
           with open("payload.json", encoding="utf-8") as fh:
               payload = json.load(fh)
           payload["prompt"] += "\n\nImage Provenance: Any image PR body must use exact structured lines `Image Source URL: https://...` and `Image SHA-256: <64 lowercase hex>`, include dimensions, and a factual visual-match sentence. If no image is independently source- and pixel-verified, require truthful no-image fallback: omit/remove the image file and post `image` field, and state the fallback."
@@ -190,6 +192,9 @@ jobs:
           payload["prompt"] += "\n\nStrict Hebrew-only gate: the new article title, excerpt, and rendered content must contain no Latin letters `A-Z` or `a-z`, including English terminology, acronyms, parenthetical translations, headings, CTA text, or image captions. Keep machine identifiers such as id/slug/image path in ASCII as required by the repo, but visible article prose must be Hebrew-only. Before opening a PR, scan the new visible fields with `/[A-Za-z]/`; if any match remains, replace it with natural Hebrew and rerun `npm run check`."
           payload["prompt"] += "\n\nAutonomy rule: an auto-approved/generated plan must be executed immediately; never restate it and ask permission or enter AWAITING_USER_FEEDBACK."
           payload["prompt"] += "\n\nInstruction-source integrity rule: before planning, verify that `src/data/posts.json`, `package.json`, and the repository article policy are present and readable. If any required source is missing or unreadable, log the exact path and failure, do not guess or silently weaken the requirements, do not claim success, and finish without a branch, commit, or PR."
+          israel_date = datetime.now(ZoneInfo("Asia/Jerusalem")).date().isoformat()
+          payload["prompt"] += f"\n\nRuntime publication date: use `{israel_date}` as the new article date unless an explicit repository rule requires another date. Never silently future-date the article."
+          payload["prompt"] += "\n\nFinal submission contract: before commit or PR, remove every scratch/helper/cache/temporary file and run `git diff --name-only origin/main...HEAD` after refreshing current main. The final diff may contain only `src/data/posts.json`, an independently verified new image under `public/images/generated/blog/`, and minimal generated sitemap/llms files required for this one article. Files such as `add_post.py` are forbidden. This is an article publication, not an audit: the non-draft PR title must start with `Publish Kesher article:` and must never use a `[jules-automerge] Kesher content review:`, mobile-review, or SEO-review prefix."
           with open("payload.json", "w", encoding="utf-8") as fh:
               json.dump(payload, fh, ensure_ascii=False)
           PY
