@@ -33,6 +33,7 @@
 - יש לגוון במבנה, בקצב ובאורך הפסקאות. אין להשתמש בכל מאמר באותה נוסחה של משבר דרמטי, הסבר רגשי, רשימת כלים וסיום מעודד.
 - אין לפתוח אוטומטית ב„אתם לא לבד”, „זה קורה לכולנו”, „בעולם המודרני” או „דמיינו את הסיטואציה”.
 - יש להימנע מביטויים שחוקים ותבניתיים כגון „מרחב בטוח”, „כלים פרקטיים”, „חיבור אמיתי”, „הבנה עמוקה”, „מפת דרכים”, „מסע”, „ארגז כלים”, „צעד ראשון”, „להחזיר את השקט הביתה”, „בדיוק כפי שמגיע לכם”, „מייצר ואקום אדיר”, „הזדמנות פז אמיתית ומעשית”, „הילדים הם הדבק החזק ביותר”, „השקט לא חייב להיות אויב”, „אזור הנוחות החדש”, „הסקרנות היא המפתח” ו„להפסיק לנהל ולהתחיל לחיות”.
+- אין לנסח הסברים פסיכולוגיים נחרצים או כללים גורפים כגון „ברוב המכריע של המקרים”, „הטעות הנפוצה ביותר”, „הדרך הנכונה” או חלוקה קשיחה לשני מקורות. יש לסייג, להשאיר מקום ליותר מאפשרות אחת ולא לייחס כוונה אחידה לכל ההורים, בני הזוג או בני דור מסוים.
 - אין להשתמש בהבטחות גדולות, בדרמטיזציה, בהפחדה, באבחנות פופולריות או בהסברים מוחיים וקליניים לא מבוססים.
 - יש להעדיף עברית ישראלית טבעית, פרטים קטנים ומוכרים, עצה מוגבלת וישימה, ומקום למורכבות או לאי־ודאות.
 - קריאה לפעולה תופיע רק אם היא משתלבת בטבעיות בנושא. היא תהיה קצרה ולא מכירתית.
@@ -47,3 +48,10 @@ Invented names must be explicitly hypothetical or omitted. No guarantees that gr
 
 ## Completion Requirements
 Before completion/ready state after a requested repair, require a changed authoritative remote PR head, exact remote file/body evidence, and fresh successful verify CI on that head; local-only or unchanged-head completion is forbidden.
+
+## Final Scope and Submission Contract
+Before any commit or PR, remove every scratch, helper, cache, and temporary file. Refresh `origin/main`, then run `git diff --name-only origin/main...HEAD`. The final diff may contain only `src/data/posts.json`, an independently verified new image under `public/images/generated/blog/`, and the minimal generated sitemap/llms files required for that one article. A helper such as `add_post.py` is forbidden final scope.
+
+This is an article publication, not a content-review audit. The non-draft PR title must start with `Publish Kesher article:` and must never use a `[jules-automerge] Kesher content review:`, mobile-review, or SEO-review prefix.
+
+Use the current Israel date supplied by the runtime prompt as the article publication date unless an explicit repository rule requires another date. Never silently future-date an article.
