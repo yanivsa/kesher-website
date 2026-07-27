@@ -92,8 +92,26 @@
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/blog/late-singleness-intrusive-family-questions</loc>
+    <loc>https://kesher.saharoni.com/blog/relocation-couple-conversations-before-moving</loc>
     <lastmod>2026-07-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/aliyah-partners-different-adjustment-pace</loc>
+    <lastmod>2026-07-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/premarital-questions-before-wedding</loc>
+    <lastmod>2026-07-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/newlywed-first-year-conflicts</loc>
+    <lastmod>2026-07-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -292,6 +310,12 @@
   <url>
     <loc>https://kesher.saharoni.com/blog/healing-after-infidelity</loc>
     <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/late-singleness-intrusive-family-questions</loc>
+    <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
