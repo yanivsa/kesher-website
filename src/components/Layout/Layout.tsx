@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import FloatingWhatsApp from './FloatingWhatsApp';
@@ -12,6 +13,18 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const { pathname } = useLocation();
+  const isBeta = pathname === '/b' || pathname === '/b/';
+
+  if (isBeta) {
+    return (
+      <div className={styles.wrapper}>
+        <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>
+        {children}
+      </div>
+    );
+  }
+
   return (
     <div className={styles.wrapper}>
       <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>

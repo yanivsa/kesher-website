@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 const routes = [
+  '/b',
   '/',
   '/about',
   '/services/couples',
@@ -54,6 +55,15 @@ test('unknown routes render the noindex 404 page', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'העמוד לא נמצא' })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
   expect(errors).toEqual([]);
+});
+
+test('beta is isolated from production chrome and remains noindex', async ({ page }) => {
+  await page.goto('/b/');
+  await expect(page.getByRole('heading', { name: /לא חייבים להישאר/ })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+  await expect(page.getByRole('banner')).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'חיפוש באתר' })).toHaveCount(0);
+  await expect(page.locator('elevenlabs-convai')).toHaveCount(0);
 });
 
 test('unknown blog posts render the noindex 404 page', async ({ page }) => {
