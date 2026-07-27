@@ -7,6 +7,7 @@ const { ROOT, STATIC_ROUTES, isPublishable, blogRoute } = require('./content-pol
 const dist = path.join(ROOT, 'dist');
 const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
 const routes = [
+  '/b',
   ...STATIC_ROUTES.filter(r => r !== '/'),
   ...posts.filter(isPublishable).map(blogRoute),
   '/'
