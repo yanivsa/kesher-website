@@ -12,7 +12,6 @@ import {
   FiMessageCircle,
   FiMonitor,
   FiShield,
-  FiStar,
   FiUsers,
   FiX,
 } from 'react-icons/fi';
@@ -27,6 +26,7 @@ const services = [
     link: '/services/couples',
     icon: FiHeart,
     accent: 'rose',
+    tags: ['תקשורת', 'קרבה', 'אמון'],
   },
   {
     title: 'הדרכת הורים',
@@ -34,6 +34,7 @@ const services = [
     link: '/services/parenting',
     icon: FiUsers,
     accent: 'sage',
+    tags: ['גבולות', 'שגרה', 'וויסות'],
   },
   {
     title: 'גישור',
@@ -41,6 +42,7 @@ const services = [
     link: '/services/mediation',
     icon: FiCompass,
     accent: 'sand',
+    tags: ['הקשבה', 'הסכמות', 'בהירות'],
   },
 ];
 
@@ -70,6 +72,82 @@ const process = [
   },
 ];
 
+const testimonials = [
+  {
+    text: 'הגענו לשירה בשיא המשבר. היא עזרה לנו להוריד את גובה הלהבות ולדבר בפעם הראשונה מזה שנים.',
+    author: 'א׳ ו־מ׳, אשדוד',
+    type: 'ייעוץ זוגי',
+  },
+  {
+    text: 'הדרכת ההורים עזרה לנו להבין טוב יותר את הקושי של הבן שלנו ולבנות שגרה רגועה וברורה יותר.',
+    author: 'משפחת ל׳, גן יבנה',
+    type: 'הדרכת הורים',
+  },
+  {
+    text: 'הרגישות והכלים המעשיים נתנו לנו דרך להתחיל להתקרב מחדש.',
+    author: 'ד׳ ס׳, דרום',
+    type: 'ליווי זוגי',
+  },
+];
+
+const ScrollProgress = () => {
+  return <div className={styles.scrollProgress} aria-hidden="true" />;
+};
+
+const InteractiveHeroVisual = () => {
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'touch') return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width;
+    const y = (event.clientY - bounds.top) / bounds.height;
+    event.currentTarget.style.setProperty('--tilt-x', `${(0.5 - y) * 5}deg`);
+    event.currentTarget.style.setProperty('--tilt-y', `${(x - 0.5) * 7}deg`);
+    event.currentTarget.style.setProperty('--glow-x', `${x * 100}%`);
+    event.currentTarget.style.setProperty('--glow-y', `${y * 100}%`);
+  };
+
+  const resetTilt = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.currentTarget.style.removeProperty('--tilt-x');
+    event.currentTarget.style.removeProperty('--tilt-y');
+    event.currentTarget.style.removeProperty('--glow-x');
+    event.currentTarget.style.removeProperty('--glow-y');
+  };
+
+  return (
+    <div className={styles.heroVisualStage}>
+      <div
+        className={styles.heroVisual}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={resetTilt}
+      >
+        <div className={styles.imageFrame}>
+          <img
+            src="/images/shira-saharoni.webp"
+            alt="שירה סהרוני, יועצת זוגית, מנחת הורים ומגשרת"
+            width="1271"
+            height="1280"
+            fetchPriority="high"
+          />
+          <div className={styles.imageWash} />
+          <span className={styles.visualReflection} aria-hidden="true" />
+        </div>
+        <div className={styles.glassNote}>
+          <span className={styles.noteIcon}><FiMessageCircle aria-hidden="true" /></span>
+          <p>
+            <strong>לפעמים שינוי מתחיל</strong>
+            משיחה אחת שבה באמת מצליחים לראות מה קורה.
+          </p>
+        </div>
+        <div className={styles.roleCard}>
+          <span>עורכת דין בהכשרתה</span>
+          <strong>מגשרת מוסמכת</strong>
+        </div>
+      </div>
+      <span className={styles.visualHalo} aria-hidden="true" />
+    </div>
+  );
+};
+
 const BetaPage: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -96,6 +174,7 @@ const BetaPage: React.FC = () => {
         image="/images/shira-saharoni.webp"
         noIndex
       />
+      <ScrollProgress />
 
       <div className={styles.ambient} aria-hidden="true">
         <span className={styles.orbOne} />
@@ -175,6 +254,11 @@ const BetaPage: React.FC = () => {
                 <FiChevronDown aria-hidden="true" />
               </a>
             </div>
+            <a href={SITE_CONFIG.links.whatsapp} className={styles.heroWhatsapp}>
+              <FiMessageCircle aria-hidden="true" />
+              מעדיפים להתחיל בהודעה? כתבו לי ב־WhatsApp
+              <FiArrowLeft aria-hidden="true" />
+            </a>
             <div className={styles.trustRow} aria-label="פרטי השירות">
               <span><FiMapPin aria-hidden="true" /> אשדוד</span>
               <span><FiMonitor aria-hidden="true" /> אונליין</span>
@@ -182,29 +266,7 @@ const BetaPage: React.FC = () => {
             </div>
           </div>
 
-          <div className={styles.heroVisual}>
-            <div className={styles.imageFrame}>
-              <img
-                src="/images/shira-saharoni.webp"
-                alt="שירה סהרוני, יועצת זוגית, מנחת הורים ומגשרת"
-                width="1271"
-                height="1280"
-                fetchPriority="high"
-              />
-              <div className={styles.imageWash} />
-            </div>
-            <div className={styles.glassNote}>
-              <span className={styles.noteIcon}><FiMessageCircle aria-hidden="true" /></span>
-              <p>
-                <strong>לפעמים שינוי מתחיל</strong>
-                משיחה אחת שבה באמת מצליחים לראות מה קורה.
-              </p>
-            </div>
-            <div className={styles.roleCard}>
-              <span>עורכת דין בהכשרתה</span>
-              <strong>מגשרת מוסמכת</strong>
-            </div>
-          </div>
+          <InteractiveHeroVisual />
         </section>
 
         <section className={styles.signalBar} aria-label="תחומי העיסוק של שירה">
@@ -217,7 +279,7 @@ const BetaPage: React.FC = () => {
           <span>ליווי בתקופות מעבר</span>
         </section>
 
-        <section id="services" className={`${styles.section} ${styles.servicesSection}`}>
+        <section id="services" className={`${styles.section} ${styles.revealSection}`}>
           <div className={styles.sectionHeading}>
             <span className={styles.kicker}>איך אוכל לעזור</span>
             <h2>מקום לעשות בו סדר,<br />בלי לפשט את מה שמורכב.</h2>
@@ -225,17 +287,24 @@ const BetaPage: React.FC = () => {
           </div>
 
           <div className={styles.serviceGrid}>
-            {services.map(({ title, description, link, icon: Icon, accent }, index) => (
+            {services.map(({ title, description, link, icon: Icon, accent, tags }, index) => (
               <Link
                 to={link}
-                className={`${styles.serviceCard} ${styles[accent]}`}
+                className={`${styles.serviceCard} ${styles[accent]} ${index < 2 ? styles.primaryService : styles.secondaryService}`}
                 key={title}
                 style={{ '--delay': `${index * 90}ms` } as React.CSSProperties}
               >
                 <span className={styles.serviceIcon}><Icon aria-hidden="true" /></span>
-                <span className={styles.serviceIndex}>0{index + 1}</span>
+                <span
+                  className={styles.serviceIndex}
+                  data-index={`0${index + 1}`}
+                  aria-hidden="true"
+                />
                 <h3>{title}</h3>
                 <p>{description}</p>
+                <span className={styles.serviceTags} aria-label={`נושאים מרכזיים ב${title}`}>
+                  {tags.map((tag) => <small key={tag}>{tag}</small>)}
+                </span>
                 <span className={styles.cardLink}>
                   לקריאה נוספת
                   <FiArrowLeft aria-hidden="true" />
@@ -245,7 +314,28 @@ const BetaPage: React.FC = () => {
           </div>
         </section>
 
-        <section id="about" className={`${styles.section} ${styles.aboutSection}`}>
+        <section className={`${styles.section} ${styles.trustSection} ${styles.revealSection}`}>
+          <div className={styles.trustHeading}>
+            <span className={styles.kicker}>אמון נבנה בחוויה</span>
+            <h2>מה משתנה כשמצליחים לדבר אחרת.</h2>
+            <p>הפרטים המזהים הושמטו כדי לשמור על פרטיות הפונים.</p>
+          </div>
+          <div className={styles.quoteGrid}>
+            {testimonials.map((testimonial, index) => (
+              <blockquote
+                className={`${styles.quoteCard} ${index === 0 ? styles.featuredQuote : ''}`}
+                key={testimonial.author}
+              >
+                <span className={styles.quoteType}>{testimonial.type}</span>
+                <FiMessageCircle aria-hidden="true" />
+                <p>“{testimonial.text}”</p>
+                <footer>{testimonial.author}</footer>
+              </blockquote>
+            ))}
+          </div>
+        </section>
+
+        <section id="about" className={`${styles.section} ${styles.aboutSection} ${styles.revealSection}`}>
           <div className={styles.aboutVisual}>
             <div className={styles.aboutImage}>
               <img
@@ -285,7 +375,7 @@ const BetaPage: React.FC = () => {
           </div>
         </section>
 
-        <section id="process" className={`${styles.section} ${styles.processSection}`}>
+        <section id="process" className={`${styles.section} ${styles.processSection} ${styles.revealSection}`}>
           <div className={styles.sectionHeading}>
             <span className={styles.kicker}>איך מתחילים</span>
             <h2>בהירות לפני הכול.</h2>
@@ -293,7 +383,11 @@ const BetaPage: React.FC = () => {
           </div>
           <div className={styles.processGrid}>
             {process.map((step) => (
-              <article className={styles.processCard} key={step.number}>
+              <article
+                className={styles.processCard}
+                key={step.number}
+                style={{ '--process-delay': `${Number(step.number) * 65}ms` } as React.CSSProperties}
+              >
                 <span className={styles.processNumber}>{step.number}</span>
                 <h3>{step.title}</h3>
                 <p>{step.text}</p>
@@ -302,17 +396,7 @@ const BetaPage: React.FC = () => {
           </div>
         </section>
 
-        <section className={styles.testimonialSection}>
-          <div className={styles.testimonialGlow} aria-hidden="true" />
-          <FiStar className={styles.starIcon} aria-hidden="true" />
-          <blockquote>
-            “הגענו לשירה בשיא המשבר. היא עזרה לנו להוריד את גובה הלהבות
-            ולדבר בפעם הראשונה מזה שנים.”
-          </blockquote>
-          <p>א׳ ו־מ׳, אשדוד <span>הפרטים המזהים הושמטו לשמירה על פרטיות הפונים</span></p>
-        </section>
-
-        <section className={styles.finalCta}>
+        <section className={`${styles.finalCta} ${styles.revealSection}`}>
           <div>
             <span className={styles.kicker}>אפשר להתחיל מכאן</span>
             <h2>השיחה הראשונה לא חייבת לפתור הכול.<br />היא רק צריכה לפתוח דרך.</h2>
@@ -329,6 +413,18 @@ const BetaPage: React.FC = () => {
           </div>
         </section>
       </main>
+
+      <aside className={styles.quickDock} aria-label="אפשרויות ליצירת קשר">
+        <span className={styles.quickDockLabel}>אפשר להתחיל בדרך שנוחה לכם</span>
+        <Link to={SITE_CONFIG.links.appointment}>
+          <FiCalendar aria-hidden="true" />
+          <span>פגישה</span>
+        </Link>
+        <a href={SITE_CONFIG.links.whatsapp}>
+          <FiMessageCircle aria-hidden="true" />
+          <span>WhatsApp</span>
+        </a>
+      </aside>
 
       <footer className={styles.footer}>
         <div className={styles.footerBrand}>

@@ -9,6 +9,10 @@ export const shouldHydrateRoute = (
   hasPrerenderedMarkup: boolean,
 ) => {
   if (!hasPrerenderedMarkup || !canonicalHref) return false;
+  // The beta is an interaction-heavy experiment. Preserve its prerendered
+  // first paint, then mount a fresh client tree so browser motion preferences
+  // and pointer enhancements cannot create hydration drift.
+  if (normalizePath(currentPathname) === '/b') return false;
 
   try {
     const prerenderedPathname = new URL(canonicalHref).pathname;
