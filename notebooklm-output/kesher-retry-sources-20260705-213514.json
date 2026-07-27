@@ -1,0 +1,128 @@
+{
+  "started_at": "20260705-213514",
+  "notebook_url": "https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63",
+  "candidates": [
+    {
+      "url": "https://www.youtube.com/watch?v=wLK8_kdWYzo",
+      "title": "Building connection with kids when it feels impossible"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=1dqOgglYHJ4",
+      "title": "How not to explode when kids push buttons"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=iaqNUDRJMQU",
+      "title": "What gentle parenting actually is boundaries"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=uKgB41pMf-s",
+      "title": "Couples therapist repeated fight repair inspiration"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=mHIS2DUf3mQ",
+      "title": "Relationship reset repeated fight therapist inspiration"
+    }
+  ],
+  "attempts": [
+    {
+      "candidate": {
+        "url": "https://www.youtube.com/watch?v=wLK8_kdWYzo",
+        "title": "Building connection with kids when it feels impossible"
+      },
+      "started_at": "2026-07-05T21:35:43",
+      "source_add": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"success\": false,\n  \"error\": \"Could not find NotebookLM chat input.\\n\\nCurrent URL: https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63\\n\\nPossible causes:\\n1. Invalid notebook URL - the notebook may not exist or you don't have access\\n2. NotebookLM page structure changed (rare)\\n3. Page took too long to load (timeout after 15 seconds)\\n\\nPlease verify:\\n- The notebook URL is correct\\n- You have access to this notebook\\n- The URL format: https://notebooklm.google.com/notebook/[id]\"\n}"
+          }
+        ],
+        "structuredContent": {
+          "success": false,
+          "error": "Could not find NotebookLM chat input.\n\nCurrent URL: https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63\n\nPossible causes:\n1. Invalid notebook URL - the notebook may not exist or you don't have access\n2. NotebookLM page structure changed (rare)\n3. Page took too long to load (timeout after 15 seconds)\n\nPlease verify:\n- The notebook URL is correct\n- You have access to this notebook\n- The URL format: https://notebooklm.google.com/notebook/[id]"
+        }
+      },
+      "ok": false
+    },
+    {
+      "candidate": {
+        "url": "https://www.youtube.com/watch?v=1dqOgglYHJ4",
+        "title": "How not to explode when kids push buttons"
+      },
+      "started_at": "2026-07-05T21:36:21",
+      "source_add": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"success\": false,\n  \"error\": \"Could not find NotebookLM chat input.\\n\\nCurrent URL: https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63\\n\\nPossible causes:\\n1. Invalid notebook URL - the notebook may not exist or you don't have access\\n2. NotebookLM page structure changed (rare)\\n3. Page took too long to load (timeout after 15 seconds)\\n\\nPlease verify:\\n- The notebook URL is correct\\n- You have access to this notebook\\n- The URL format: https://notebooklm.google.com/notebook/[id]\"\n}"
+          }
+        ],
+        "structuredContent": {
+          "success": false,
+          "error": "Could not find NotebookLM chat input.\n\nCurrent URL: https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63\n\nPossible causes:\n1. Invalid notebook URL - the notebook may not exist or you don't have access\n2. NotebookLM page structure changed (rare)\n3. Page took too long to load (timeout after 15 seconds)\n\nPlease verify:\n- The notebook URL is correct\n- You have access to this notebook\n- The URL format: https://notebooklm.google.com/notebook/[id]"
+        }
+      },
+      "ok": false
+    },
+    {
+      "candidate": {
+        "url": "https://www.youtube.com/watch?v=iaqNUDRJMQU",
+        "title": "What gentle parenting actually is boundaries"
+      },
+      "started_at": "2026-07-05T21:36:53",
+      "source_add": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"success\": false,\n  \"error\": \"Could not find NotebookLM chat input.\\n\\nCurrent URL: https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63\\n\\nPossible causes:\\n1. Invalid notebook URL - the notebook may not exist or you don't have access\\n2. NotebookLM page structure changed (rare)\\n3. Page took too long to load (timeout after 15 seconds)\\n\\nPlease verify:\\n- The notebook URL is correct\\n- You have access to this notebook\\n- The URL format: https://notebooklm.google.com/notebook/[id]\"\n}"
+          }
+        ],
+        "structuredContent": {
+          "success": false,
+          "error": "Could not find NotebookLM chat input.\n\nCurrent URL: https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63\n\nPossible causes:\n1. Invalid notebook URL - the notebook may not exist or you don't have access\n2. NotebookLM page structure changed (rare)\n3. Page took too long to load (timeout after 15 seconds)\n\nPlease verify:\n- The notebook URL is correct\n- You have access to this notebook\n- The URL format: https://notebooklm.google.com/notebook/[id]"
+        }
+      },
+      "ok": false
+    },
+    {
+      "candidate": {
+        "url": "https://www.youtube.com/watch?v=uKgB41pMf-s",
+        "title": "Couples therapist repeated fight repair inspiration"
+      },
+      "started_at": "2026-07-05T21:37:24",
+      "source_add": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"success\": false,\n  \"error\": \"Could not find NotebookLM chat input.\\n\\nCurrent URL: https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63\\n\\nPossible causes:\\n1. Invalid notebook URL - the notebook may not exist or you don't have access\\n2. NotebookLM page structure changed (rare)\\n3. Page took too long to load (timeout after 15 seconds)\\n\\nPlease verify:\\n- The notebook URL is correct\\n- You have access to this notebook\\n- The URL format: https://notebooklm.google.com/notebook/[id]\"\n}"
+          }
+        ],
+        "structuredContent": {
+          "success": false,
+          "error": "Could not find NotebookLM chat input.\n\nCurrent URL: https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63\n\nPossible causes:\n1. Invalid notebook URL - the notebook may not exist or you don't have access\n2. NotebookLM page structure changed (rare)\n3. Page took too long to load (timeout after 15 seconds)\n\nPlease verify:\n- The notebook URL is correct\n- You have access to this notebook\n- The URL format: https://notebooklm.google.com/notebook/[id]"
+        }
+      },
+      "ok": false
+    },
+    {
+      "candidate": {
+        "url": "https://www.youtube.com/watch?v=mHIS2DUf3mQ",
+        "title": "Relationship reset repeated fight therapist inspiration"
+      },
+      "started_at": "2026-07-05T21:38:01",
+      "source_add": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"success\": false,\n  \"error\": \"Could not find NotebookLM chat input.\\n\\nCurrent URL: https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63\\n\\nPossible causes:\\n1. Invalid notebook URL - the notebook may not exist or you don't have access\\n2. NotebookLM page structure changed (rare)\\n3. Page took too long to load (timeout after 15 seconds)\\n\\nPlease verify:\\n- The notebook URL is correct\\n- You have access to this notebook\\n- The URL format: https://notebooklm.google.com/notebook/[id]\"\n}"
+          }
+        ],
+        "structuredContent": {
+          "success": false,
+          "error": "Could not find NotebookLM chat input.\n\nCurrent URL: https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63\n\nPossible causes:\n1. Invalid notebook URL - the notebook may not exist or you don't have access\n2. NotebookLM page structure changed (rare)\n3. Page took too long to load (timeout after 15 seconds)\n\nPlease verify:\n- The notebook URL is correct\n- You have access to this notebook\n- The URL format: https://notebooklm.google.com/notebook/[id]"
+        }
+      },
+      "ok": false
+    }
+  ]
+}

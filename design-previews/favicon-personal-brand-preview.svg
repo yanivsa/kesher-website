@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="880" viewBox="0 0 1200 880">
+  <rect width="1200" height="880" fill="#FAF7F4"/>
+  <text x="600" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#2D2926">כיוון חדש — המותג האישי של שירה סהרוני</text>
+  <text x="600" y="94" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" fill="#7A6F6A">מונוגרמה אישית במקום סמל כללי</text>
+
+  <g transform="translate(80 125)">
+    <rect width="325" height="320" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-o-shira-shin-heart.svg" x="28" y="30" width="150" height="150"/>
+    <rect x="28" y="198" width="269" height="45" rx="10" fill="#F3F3F3"/>
+    <image href="favicon-options/option-o-shira-shin-heart.svg" x="40" y="207" width="27" height="27"/>
+    <text x="78" y="228" font-family="Arial" font-size="16" fill="#2D2926">שירה סהרוני | ייעוץ זוגי</text>
+    <text x="162" y="280" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">ט״ו — ש׳ ולב</text>
+    <text x="162" y="307" text-anchor="middle" font-family="Arial" font-size="16" fill="#7A6F6A">אישי, חם והכי ברור</text>
+  </g>
+  <g transform="translate(437.5 125)">
+    <rect width="325" height="320" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-p-shira-initials.svg" x="28" y="30" width="150" height="150"/>
+    <rect x="28" y="198" width="269" height="45" rx="10" fill="#F3F3F3"/>
+    <image href="favicon-options/option-p-shira-initials.svg" x="40" y="207" width="27" height="27"/>
+    <text x="78" y="228" font-family="Arial" font-size="16" fill="#2D2926">שירה סהרוני | ייעוץ זוגי</text>
+    <text x="162" y="280" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">ט״ז — ראשי תיבות</text>
+    <text x="162" y="307" text-anchor="middle" font-family="Arial" font-size="16" fill="#7A6F6A">ש׳ וס׳ מחוברות</text>
+  </g>
+  <g transform="translate(795 125)">
+    <rect width="325" height="320" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-q-shira-signature.svg" x="28" y="30" width="150" height="150"/>
+    <rect x="28" y="198" width="269" height="45" rx="10" fill="#F3F3F3"/>
+    <image href="favicon-options/option-q-shira-signature.svg" x="40" y="207" width="27" height="27"/>
+    <text x="78" y="228" font-family="Arial" font-size="16" fill="#2D2926">שירה סהרוני | ייעוץ זוגי</text>
+    <text x="162" y="280" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">י״ז — חתימת שירה</text>
+    <text x="162" y="307" text-anchor="middle" font-family="Arial" font-size="16" fill="#7A6F6A">נשי ואישי, פחות חד בזעיר</text>
+  </g>
+
+  <g transform="translate(80 485)">
+    <rect width="325" height="320" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-r-framed-shin.svg" x="28" y="30" width="150" height="150"/>
+    <rect x="28" y="198" width="269" height="45" rx="10" fill="#F3F3F3"/>
+    <image href="favicon-options/option-r-framed-shin.svg" x="40" y="207" width="27" height="27"/>
+    <text x="78" y="228" font-family="Arial" font-size="16" fill="#2D2926">שירה סהרוני | ייעוץ זוגי</text>
+    <text x="162" y="280" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">י״ח — חותם אישי</text>
+    <text x="162" y="307" text-anchor="middle" font-family="Arial" font-size="16" fill="#7A6F6A">נקי, מודרני וזכיר</text>
+  </g>
+  <g transform="translate(437.5 485)">
+    <rect width="325" height="320" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-s-human-shin.svg" x="28" y="30" width="150" height="150"/>
+    <rect x="28" y="198" width="269" height="45" rx="10" fill="#F3F3F3"/>
+    <image href="favicon-options/option-s-human-shin.svg" x="40" y="207" width="27" height="27"/>
+    <text x="78" y="228" font-family="Arial" font-size="16" fill="#2D2926">שירה סהרוני | ייעוץ זוגי</text>
+    <text x="162" y="280" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">י״ט — ש׳ אנושית</text>
+    <text x="162" y="307" text-anchor="middle" font-family="Arial" font-size="16" fill="#7A6F6A">האות בנויה משלוש דמויות</text>
+  </g>
+  <g transform="translate(795 485)">
+    <rect width="325" height="320" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-t-premium-shin.svg" x="28" y="30" width="150" height="150"/>
+    <rect x="28" y="198" width="269" height="45" rx="10" fill="#F3F3F3"/>
+    <image href="favicon-options/option-t-premium-shin.svg" x="40" y="207" width="27" height="27"/>
+    <text x="78" y="228" font-family="Arial" font-size="16" fill="#2D2926">שירה סהרוני | ייעוץ זוגי</text>
+    <text x="162" y="280" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">כ׳ — מונוגרמה יוקרתית</text>
+    <text x="162" y="307" text-anchor="middle" font-family="Arial" font-size="16" fill="#7A6F6A">בוגר, מקצועי וסמכותי</text>
+  </g>
+</svg>

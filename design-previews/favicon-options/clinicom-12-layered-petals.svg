@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="16" fill="#FFF9F2"/>
+  <path d="M32 33C18 31 13 22 15 11c11 1 18 8 17 22Z" fill="#D58B42"/>
+  <path d="M33 34c1-14 9-21 20-21 1 11-6 20-20 21Z" fill="#EBCB89"/>
+  <path d="M31 34C18 38 10 34 6 24c10-4 20 0 25 10Z" fill="#367D75"/>
+  <path d="M34 35c12 4 20 1 25-9-10-5-20-2-25 9Z" fill="#C85F36"/>
+  <text x="32" y="55" text-anchor="middle" font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="22" font-weight="700" fill="#367D75">ש</text>
+</svg>

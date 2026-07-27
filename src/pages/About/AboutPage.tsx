@@ -28,7 +28,9 @@ const schemaData = {
           "ילדים מחוננים",
           "ADHD",
           "מעברים חינוכיים",
-          "משפחות עולים ותושבים חוזרים"
+          "משפחות עולים ותושבים חוזרים",
+          "זוגיות בעלייה וברילוקיישן",
+          "הכנה לנישואים והשנה הראשונה"
         ],
         "worksFor": {
           "@type": "LocalBusiness",
@@ -139,6 +141,16 @@ const AboutPage: React.FC = () => {
               <FiHeart aria-hidden="true" />
               <strong>ייעוץ זוגי</strong>
               <span>תקשורת, קירבה, אמון והכנה לחיים משותפים.</span>
+            </Link>
+            <Link to="/services/premarital-first-year">
+              <FiHeart aria-hidden="true" />
+              <strong>הכנה לנישואים והשנה הראשונה</strong>
+              <span>כסף, בית, משפחות, תקשורת והסכמות לחיים המשותפים.</span>
+            </Link>
+            <Link to="/services/couples-aliyah-relocation">
+              <FiCompass aria-hidden="true" />
+              <strong>זוגיות בעלייה וברילוקיישן</strong>
+              <span>תפקידים, הסתגלות ושייכות לפני מעבר מדינה, במהלכו ואחריו.</span>
             </Link>
             <Link to="/services/late-singleness">
               <FiHeart aria-hidden="true" />

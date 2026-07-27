@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="950" viewBox="0 0 1280 950">
+  <rect width="1280" height="950" fill="#FAF7F4"/>
+  <text x="640" y="58" text-anchor="middle" font-family="Arial" font-size="34" font-weight="700" fill="#2D2926">12 גרסאות Favicon — חתימת שירה סהרוני</text>
+  <text x="640" y="94" text-anchor="middle" font-family="Arial" font-size="18" fill="#7A6F6A">רק האייקון עצמו — כל השם נמצא בתוך הריבוע</text>
+
+  <g transform="translate(105 130)">
+    <image href="favicon-options/signature-01-ink.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">1</text>
+  </g>
+  <g transform="translate(400 130)">
+    <image href="favicon-options/signature-02-sage.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">2</text>
+  </g>
+  <g transform="translate(695 130)">
+    <image href="favicon-options/signature-03-blush.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">3</text>
+  </g>
+  <g transform="translate(990 130)">
+    <image href="favicon-options/signature-04-lavender.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">4</text>
+  </g>
+
+  <g transform="translate(105 405)">
+    <image href="favicon-options/signature-05-sky.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">5</text>
+  </g>
+  <g transform="translate(400 405)">
+    <image href="favicon-options/signature-06-forest.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">6</text>
+  </g>
+  <g transform="translate(695 405)">
+    <image href="favicon-options/signature-07-cream.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">7</text>
+  </g>
+  <g transform="translate(990 405)">
+    <image href="favicon-options/signature-08-rose.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">8</text>
+  </g>
+
+  <g transform="translate(105 680)">
+    <image href="favicon-options/signature-09-olive.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">9</text>
+  </g>
+  <g transform="translate(400 680)">
+    <image href="favicon-options/signature-10-sand.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">10</text>
+  </g>
+  <g transform="translate(695 680)">
+    <image href="favicon-options/signature-11-plum.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">11</text>
+  </g>
+  <g transform="translate(990 680)">
+    <image href="favicon-options/signature-12-minimal.svg" width="180" height="180"/><text x="90" y="215" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2D2926">12</text>
+  </g>
+</svg>

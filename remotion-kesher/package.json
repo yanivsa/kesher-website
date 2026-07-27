@@ -1,0 +1,22 @@
+{
+  "name": "kesher-remotion-upgrade",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "remotion render src/index.ts KesherVideo ../remotion-output/kesher-remotion-upgraded.mp4",
+    "still": "remotion still src/index.ts KesherVideo ../remotion-output/kesher-remotion-frame.png --frame=120"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.486",
+    "@remotion/media": "^4.0.387",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "remotion": "^4.0.387"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.3"
+  }
+}

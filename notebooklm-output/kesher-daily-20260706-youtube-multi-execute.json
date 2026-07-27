@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"data\":{\"results\":[{\"response\":{\"successful\":false,\"data\":{\"message\":\"Failed to download file with s3key 'https://tmpfiles.org/dl/wwwtv9oG3Pr2/kesher-daily-20260706-hebrew-dubbed.mp4': storage returned HTTP 404. The file may not exist, may have been deleted, or the download URL may have expired.\",\"status_code\":null},\"error\":\"Failed to download file with s3key 'https://tmpfiles.org/dl/wwwtv9oG3Pr2/kesher-daily-20260706-hebrew-dubbed.mp4': storage returned HTTP 404. The file may not exist, may have been deleted, or the download URL may have expired.\"},\"error\":\"Failed to download file with s3key 'https://tmpfiles.org/dl/wwwtv9oG3Pr2/kesher-daily-20260706-hebrew-dubbed.mp4': storage returned HTTP 404. The file may not exist, may have been deleted, or the download URL may have expired.\",\"tool_slug\":\"YOUTUBE_MULTIPART_UPLOAD_VIDEO\",\"index\":0}],\"total_count\":1,\"success_count\":0,\"error_count\":1,\"session\":{\"id\":\"look\",\"instructions\":\"REQUIRED: Pass session_id \\\"look\\\" in ALL subsequent meta tool calls for this workflow.\"}},\"error\":\"1 out of 1 tools failed\",\"log_id\":\"log_6g_kolrTRfDr\",\"successful\":false}"
+    }
+  ],
+  "isError": true
+}
