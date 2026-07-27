@@ -75,7 +75,7 @@ const BlogPost: React.FC = () => {
 
   return (
     <article className={styles.post}>
-      <MetaTags title={`${post.title} | ${SITE_CONFIG.brand}`} description={post.excerpt} ogType="article" image={post.image} />
+      <MetaTags title={post.title} description={post.excerpt} ogType="article" image={post.image} />
       <SchemaOrg data={schemaData} />
       <header className={styles.header}>
         <div className="container">
