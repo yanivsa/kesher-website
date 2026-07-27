@@ -141,6 +141,8 @@ const Header: React.FC = () => {
               <button type="button" className={styles.navLink}>שירותים</button>
               <div className={styles.dropdownContent}>
                 <Link to="/services/couples" onClick={closeMenu}>ייעוץ זוגי</Link>
+                <Link to="/services/premarital-first-year" onClick={closeMenu}>הכנה לנישואים והשנה הראשונה</Link>
+                <Link to="/services/couples-aliyah-relocation" onClick={closeMenu}>זוגיות בעלייה וברילוקיישן</Link>
                 <Link to="/services/late-singleness" onClick={closeMenu}>ייעוץ ברווקות מאוחרת</Link>
                 <Link to="/services/finding-relationship" onClick={closeMenu}>ליווי למציאת זוגיות</Link>
                 <Link to="/services/parenting" onClick={closeMenu}>הדרכת הורים</Link>
@@ -153,7 +155,7 @@ const Header: React.FC = () => {
                 <Link to="/services/gifted-parenting" onClick={closeMenu}>הורים לילדים מחוננים</Link>
                 <Link to="/services/parenting" onClick={closeMenu}>הכנה לכיתה א׳</Link>
                 <Link to="/services/gifted-parenting#gifted-framework" onClick={closeMenu}>כניסה למסגרת מחוננים</Link>
-                <Link to="/services/aliyah-families" onClick={closeMenu}>עולים ותושבים חוזרים</Link>
+                <Link to="/services/aliyah-families" onClick={closeMenu}>הורות ומשפחה אחרי עלייה</Link>
               </div>
             </div>
             <Link to="/blog" onClick={closeMenu}>בלוג</Link>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="חוליות אלכסוניות ולב">
+  <rect width="64" height="64" rx="16" fill="#DCEAF1"/>
+  <g transform="rotate(-35 32 32)" fill="none" stroke-width="8">
+    <rect x="8" y="23" width="29" height="18" rx="9" stroke="#4F6D7A"/>
+    <rect x="27" y="23" width="29" height="18" rx="9" stroke="#83A9B7"/>
+  </g>
+  <path d="M32 47 23 38.5c-4.5-4.3 1.8-10.2 5.8-6.2l3.2 3.2 3.2-3.2c4-4 10.3 1.9 5.8 6.2Z" fill="#D98F8D"/>
+</svg>

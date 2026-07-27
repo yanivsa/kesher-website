@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="שתי חוליות מחוברות">
+  <rect width="64" height="64" rx="16" fill="#3F5E49"/>
+  <g fill="none" stroke-linecap="round" stroke-width="8">
+    <path d="M27 23h-5a9 9 0 0 0 0 18h9a9 9 0 0 0 7-3.4" stroke="#FAF7F4"/>
+    <path d="M37 41h5a9 9 0 0 0 0-18h-9a9 9 0 0 0-7 3.4" stroke="#E5A882"/>
+  </g>
+</svg>

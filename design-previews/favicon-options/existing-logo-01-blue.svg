@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="16" fill="#F4F1ED"/>
+  <g fill="none" stroke-linecap="round">
+    <circle cx="32" cy="32" r="25" stroke="#91A7C2" stroke-width="2" stroke-dasharray="5 3"/>
+    <circle cx="32" cy="32" r="23" stroke="#B9C8D9" stroke-width="1.6" stroke-dasharray="3 5"/>
+  </g>
+  <text x="32" y="39" text-anchor="middle" font-family="Snell Roundhand,Savoye LET,cursive" font-size="35" fill="#536B91">S</text>
+  <text x="32" y="52" text-anchor="middle" font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="6.5" font-weight="600" fill="#536B91">שירה סהרוני</text>
+</svg>

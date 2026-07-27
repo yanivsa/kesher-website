@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <path id="top11" d="M11 34a21 21 0 0 1 42 0"/>
+    <path id="bottom11" d="M13 38a22 22 0 0 0 38 0"/>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#F4F0E8"/>
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#A7A0BE" stroke-width="2.2" stroke-dasharray="4 2"/>
+  <circle cx="32" cy="32" r="20.5" fill="#FFFDF9"/>
+  <text x="32" y="43" text-anchor="middle" font-family="Snell Roundhand,Savoye LET,cursive" font-size="36" fill="#686080">S</text>
+  <text font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="5.6" font-weight="700" fill="#686080"><textPath href="#top11" startOffset="50%" text-anchor="middle">שירה</textPath></text>
+  <text font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="5.6" font-weight="700" fill="#A16E74"><textPath href="#bottom11" startOffset="50%" text-anchor="middle">סהרוני</textPath></text>
+</svg>

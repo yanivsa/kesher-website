@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="חוליות מרווה ולב אפרסק">
+  <rect width="64" height="64" rx="16" fill="#DDE9E0"/>
+  <g fill="none" stroke-linecap="round" stroke-width="8">
+    <path d="M27 22h-7a10 10 0 0 0 0 20h10" stroke="#4D6B57"/>
+    <path d="M37 42h7a10 10 0 0 0 0-20H34" stroke="#87A58F"/>
+  </g>
+  <path d="M32 44 22.5 35c-4.8-4.6 1.9-10.8 6.1-6.6L32 31.8l3.4-3.4c4.2-4.2 10.9 2 6.1 6.6Z" fill="#E7A27F"/>
+</svg>
