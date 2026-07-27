@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>צ'ק-ליסט מעבר רך לכיתה א' לילדי קשב וריכוז (ADHD) | קשר</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2a5c8a;
+      --primary-light: #eaf1f7;
+      --text: #2c3e50;
+      --text-muted: #7f8c8d;
+      --border: #dcdde1;
+      --success: #2ecc71;
+      --bg: #f9fbfd;
+      --card-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Rubik', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(42, 92, 138, 0.08);
+      border: 1px solid var(--primary-light);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 20px;
+    }
+
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: var(--primary);
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+
+    .intro {
+      font-size: 15px;
+      color: var(--text);
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 30px auto;
+    }
+
+    .section-title {
+      font-size: 18px;
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 5px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .checklist-item:hover {
+      background-color: var(--primary-light);
+    }
+
+    .checkbox {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 3px;
+      background-color: white;
+    }
+
+    .checklist-item.checked .checkbox {
+      border-color: var(--success);
+      background-color: var(--success);
+    }
+
+    .checklist-item.checked .checkbox::after {
+      content: "✓";
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .checklist-item.checked .item-text {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .item-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .item-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Print Footer */
+    footer {
+      text-align: center;
+      border-top: 1px solid var(--border);
+      padding-top: 25px;
+      margin-top: 40px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Print styling */
+    @media print {
+      body {
+        background-color: white;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .checklist-item {
+        border-bottom: 1px dashed #eee;
+        padding: 6px 0;
+        page-break-inside: avoid;
+      }
+      .checkbox {
+        border: 2px solid black !important;
+      }
+      .section-title {
+        color: black !important;
+        border-bottom: 2px solid black !important;
+      }
+      h1 {
+        color: black !important;
+      }
+      footer {
+        font-size: 11px;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="logo">KESHER</div>
+      <div class="subtitle">שירה שחרוני — ייעוץ זוגי, הדרכת הורים וגישור באשדוד ובדרום</div>
+      <h1>צ'ק-ליסט הכנה למעבר לכיתה א' (ADHD)</h1>
+      <p class="intro">
+        ארגז כלים מובנה ומעשי להורים. מיועד לסייע לכם להכין את ילדכם למעבר הגדול מהגן לכיתה א' בצורה הדרגתית, רגועה ומותאמת לקשיי קשב וריכוז.
+      </p>
+    </header>
+
+    <div class="section-title">שלב א': חודשיים לפני (יוני - יולי) — מגרש ביתי והפחתת מתח</div>
+    
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">סיור מקדים בבית הספר</div>
+        <div class="item-desc">לכו לבקר יחד בחופש. היכן הכיתה, היכן השירותים, חצר המשחקים, המזכירות והכניסה הראשית. צלמו את המקומות הללו כדי להראות שוב בבית.</div>
+      </div>
+    </div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">פגישות היכרות חברתיות</div>
+        <div class="item-desc">קבעו 2-3 מפגשי משחק (Playdates) עם ילדים נוספים שאתם יודעים שיהיו באותה כיתה או שכבה. פנים מוכרות בהפסקה מפחיתות חרדה חברתית.</div>
+      </div>
+    </div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">משחקי סימולציה בבית</div>
+        <div class="item-desc">שחקו יחד ב"בית ספר". תרגלו ישיבה קצרה ליד שולחן, הקשבה להוראה ("עכשיו כולנו פותחים את הספר"), ואפילו יציאה ל"הפסקה" של אכילת כריך מקופסה.</div>
+      </div>
+    </div>
+
+    <div class="section-title">שלב ב': שבועיים לפני (אמצע אוגוסט) — איפוס שעונים והרגלים</div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">כיוון הדרגתי של שעות השינה</div>
+        <div class="item-desc">הקדימו את שעת השינה והיקיצה ב-15 דקות מדי יומיים. אל תחכו ל-31 באוגוסט; מוח ה-ADHD זקוק לזמן רב כדי לייצב מחדש את השעון הביולוגי שלו.</div>
+      </div>
+    </div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">תרגול מסלול הבוקר בזמן אמת</div>
+        <div class="item-desc">צאו מהבית בבוקר בשעה המדויקת שבה תצטרכו לצאת לבית הספר. לכו או סעו במסלול, בדקו עומסי תנועה והתרגלו לאווירת הבוקר בחוץ.</div>
+      </div>
+    </div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">תליית לוח התארגנות בוקר ויזואלי</div>
+        <div class="item-desc">הגדירו יחד את שלבי הבוקר ותלו לוח ויזואלי (מומלץ בציורים). תנו לילד לתרגל סימון וי עוד לפני שהלימודים מתחילים כדי לייצר הצלחות קלות.</div>
+      </div>
+    </div>
+
+    <div class="section-title">שלב ג': שבוע לפני (סוף אוגוסט) — ציוד נטול מוסחות וקשר אישי</div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">רכישת קלמר מינימליסטי</div>
+        <div class="item-desc">קנו קלמר פשוט בעל תא אחד. ללא רוכסנים מורכבים, ללא קומות וללא קישוטים מסיחי דעת. מלאו אותו אך ורק בציוד הנדרש.</div>
+      </div>
+    </div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">קביעת קוד צבעים למקצועות</div>
+        <div class="item-desc">הגדירו צבע לכל מקצוע (למשל: חשבון = כחול). עטפו את מחברת חשבון בעטיפה כחולה, את הספר בכחול ורכשו תיקיית מסמכים כחולה. הדבר יקל מאוד על ההתארגנות בכיתה.</div>
+      </div>
+    </div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">שליחת הודעת פתיחה למחנכת</div>
+        <div class="item-desc">שלחו הודעה קצרה ומכבדת למחנכת: "שלום, אנו שמחים מאוד להצטרף לכיתה. לילדנו יש קשיי קשב וריכוז, נשמח לשתף פעולה ולספר לך מה מסייע לו ללמוד".</div>
+      </div>
+    </div>
+
+    <div class="section-title">שלב ד': השבוע הראשון ללימודים — נחיתה רכה ויציבות</div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">הקדמה בבוקר</div>
+        <div class="item-desc">בימים הראשונים, הגיעו לשער בית הספר כ-15 דקות לפני הצלצול. לחץ זמן וריצה של הרגע האחרון מרוקנים את המשאבים הניהוליים של הילד בשלב מוקדם מאוד.</div>
+      </div>
+    </div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">טקס פרידה קבוע וקצר</div>
+        <div class="item-desc">הגדירו מראש טקס פרידה קבוע ("חיבוק, נשיקה, ונתראה בשער בשעה שתיים"). הימנעו מפרידות ארוכות או דרמטיות שמגבירות את החרדה וההתקשרות.</div>
+      </div>
+    </div>
+
+    <div class="checklist-item" onclick="this.classList.toggle('checked')">
+      <div class="checkbox"></div>
+      <div class="item-content">
+        <div class="item-title">שיחת 'כוכבים ונקודות אור' בצהריים</div>
+        <div class="item-desc">במקום לשאול "איך היה?", שאלו שאלות ממוקדות: "מה הדבר הכי נחמד שקרה היום בהפסקה?", "עם מי שיחקת?". התמקדו בחוויות חיוביות כדי לחזק את הביטחון של הילד.</div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 20px;" class="no-print">
+      <button onclick="window.print()" style="padding: 12px 24px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 16px;">
+        🖨️ הדפסה או שמירה כ-PDF
+      </button>
+    </div>
+
+    <footer>
+      <p>שירה שחרוני — קליניקה להדרכת הורים, ייעוץ זוגי וגישור באשדוד ובדרום</p>
+      <p>לפגישות אישיות והדרכה ממוקדת: <a href="https://kesher.saharoni.com" target="_blank">kesher.saharoni.com</a> | טלפון: 050-XXXXXXX</p>
+    </footer>
+  </div>
+
+</body>
+</html>
