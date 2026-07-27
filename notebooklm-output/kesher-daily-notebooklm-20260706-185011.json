@@ -1,0 +1,51 @@
+{
+  "started_at": "2026-07-06T18:50:11.080421",
+  "notebook_url": "https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63?hl=en",
+  "candidates": [
+    {
+      "url": "https://www.youtube.com/watch?v=QVzjpD48iuA",
+      "topic": "הורות עדינה, ויסות רגשי וגבולות בבית"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=ScaveTQhsb0",
+      "topic": "חוסן רגשי אצל ילדים ותגובה הורית רגועה"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=OmhvFzqX_Ic",
+      "topic": "גבולות עם ילדים בלי לאבד חיבור רגשי"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=KnSc1dJwcs0",
+      "topic": "שתיקה, ריבים ותקשורת זוגית"
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=AL5jkox11sg",
+      "topic": "טעות הורית נפוצה, אחריות וגבולות"
+    }
+  ],
+  "attempts": [
+    {
+      "url": "https://www.youtube.com/watch?v=QVzjpD48iuA",
+      "topic": "הורות עדינה, ויסות רגשי וגבולות בבית",
+      "started_at": "2026-07-06T18:50:19.595084",
+      "source_add": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"success\": true,\n  \"data\": {\n    \"success\": true,\n    \"sourceId\": \"source-6\",\n    \"sourceName\": \"Mom shares insights on 'Gentle Parenting' and the importance of emotional regulation l GMA\",\n    \"status\": \"ready\"\n  }\n}"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "data": {
+            "success": true,
+            "sourceId": "source-6",
+            "sourceName": "Mom shares insights on 'Gentle Parenting' and the importance of emotional regulation l GMA",
+            "status": "ready"
+          }
+        }
+      }
+    }
+  ],
+  "output_path": "/Users/ninja/Documents/Kesher/notebooklm-output/kesher-daily-notebooklm-20260706-185011.mp4"
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="צמיחה משותפת בגוני מרווה">
+  <rect width="64" height="64" rx="16" fill="#DCE9DF"/>
+  <path d="M32 51V29" fill="none" stroke="#496653" stroke-width="6" stroke-linecap="round"/>
+  <path d="M30 31C17 32 12 24 13 13c11-1 20 4 19 17Z" fill="#779982"/>
+  <path d="M34 35c13 1 18-7 17-18-11-1-20 4-19 17Z" fill="#A8C4AF"/>
+  <path d="M21 50h22" fill="none" stroke="#496653" stroke-width="6" stroke-linecap="round"/>
+</svg>

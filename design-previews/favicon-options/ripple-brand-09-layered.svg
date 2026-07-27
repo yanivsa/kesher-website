@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs><linearGradient id="rb9" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#EDF7F5"/><stop offset="1" stop-color="#D9ECE8"/></linearGradient></defs>
+  <rect width="100" height="100" rx="24" fill="url(#rb9)"/>
+  <ellipse cx="50" cy="72" rx="42" ry="14" fill="none" stroke="#C4DDD7" stroke-width="3"/>
+  <ellipse cx="50" cy="72" rx="31" ry="10" fill="none" stroke="#9DC7BD" stroke-width="3"/>
+  <ellipse cx="50" cy="72" rx="19" ry="6" fill="none" stroke="#6DA89A" stroke-width="3"/>
+  <text x="50" y="38" text-anchor="middle" font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="23" font-weight="750" fill="#2F6257">שירה</text>
+  <text x="50" y="57" text-anchor="middle" font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="14" font-weight="650" fill="#527E74">סהרוני</text>
+</svg>

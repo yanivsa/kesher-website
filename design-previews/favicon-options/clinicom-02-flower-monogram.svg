@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="16" fill="#FAF3E9"/>
+  <circle cx="32" cy="32" r="22" fill="none" stroke="#B39A78" stroke-width="2"/>
+  <text x="34" y="46" text-anchor="middle" font-family="Georgia,.SF Hebrew,serif" font-size="40" font-weight="500" fill="#30323B">ש</text>
+  <path d="M18 40c7-5 9-13 8-22M26 21c-5-5-9-3-10 2 4 2 8 1 10-2ZM26 28c5-5 9-3 10 2-4 2-8 1-10-2Z" fill="none" stroke="#9A7EA1" stroke-width="2" stroke-linecap="round"/>
+</svg>

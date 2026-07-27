@@ -140,6 +140,7 @@ const CouplesCounseling: React.FC = () => {
             <span>תחום התמחות מרכזי</span>
             <h2>הכנה לחתונה לזוגות שרוצים להתחיל נכון</h2>
             <p>תהליך ממוקד לבניית שפה זוגית, הסכמות וכלים מעשיים לפני החתונה. בתוך התהליך ניתן מקום מיוחד לסיפורי המשפחה ולדרך שבה ADHD משפיע על הקשר.</p>
+            <Link to="/services/premarital-first-year">לעמוד המלא על הכנה לנישואים וליווי בשנה הראשונה</Link>
           </div>
           <div className={styles.specializationsGrid}>
             <article className={styles.specializationCard}>

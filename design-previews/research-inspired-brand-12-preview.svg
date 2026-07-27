@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1240" viewBox="0 0 1600 1240">
+  <rect width="1600" height="1240" fill="#F8F5F1"/>
+  <style>
+    .card{fill:#fff;stroke:#E3DED8;stroke-width:2}
+    .title{font:700 22px Arial,sans-serif;fill:#292522}
+    .desc{font:15px Arial,sans-serif;fill:#756C67}
+    .source{font:13px Arial,sans-serif;fill:#9A8F89}
+    .brand{font:700 17px Arial,sans-serif;fill:#292522}
+    .tab{fill:#F1EFED}
+    .heb{font-family:".SF Hebrew","Arial Hebrew",Arial,sans-serif}
+  </style>
+  <text x="800" y="58" text-anchor="middle" font-family="Arial" font-size="36" font-weight="700" fill="#292522">12 כיוונים חדשים בעקבות סקירת אתרים בארץ ובעולם</text>
+  <text x="800" y="96" text-anchor="middle" font-family="Arial" font-size="18" fill="#756C67">כל הצעה היא עיבוד מקורי לדפוס מיתוג שנמצא בשוק — לא העתקה של לוגו קיים</text>
+
+  <!-- 1 Esther Perel pattern: tiny initials -->
+  <g transform="translate(55 130)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#F5EFE7"/>
+    <text x="91" y="108" text-anchor="middle" font-family="Georgia, Times New Roman, serif" font-size="48" font-weight="700" letter-spacing="-6" fill="#22204F">SS</text>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <rect x="187" y="46" width="25" height="25" rx="6" fill="#F5EFE7"/>
+    <text x="199.5" y="64" text-anchor="middle" font-family="Georgia,serif" font-size="12" font-weight="700" letter-spacing="-2" fill="#22204F">SS</text>
+    <text x="221" y="64" class="brand">שירה סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">1 — ראשי תיבות שקטים</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">מינימליסטי, אישי ובינלאומי</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא אצל Esther Perel</text>
+  </g>
+
+  <!-- 2 Gottman pattern: interlocking monogram -->
+  <g transform="translate(435 130)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#F7ECE7"/>
+    <path d="M92 41a36 36 0 1 0 0 72" fill="none" stroke="#E48267" stroke-width="13" stroke-linecap="round"/>
+    <path d="M90 113a36 36 0 1 0 0-72" fill="none" stroke="#425767" stroke-width="13" stroke-linecap="round"/>
+    <text x="91" y="104" text-anchor="middle" class="heb" font-size="42" font-weight="700" fill="#FFF">ש</text>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <circle cx="199" cy="59" r="13" fill="#425767"/>
+    <text x="221" y="64" class="brand">שירה סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">2 — מונוגרמה מחוברת</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">שני חלקים שיוצרים שלם</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא אצל Gottman Institute</text>
+  </g>
+
+  <!-- 3 Relate pattern: wordmark -->
+  <g transform="translate(815 130)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#FFF"/>
+    <text x="91" y="83" text-anchor="middle" class="heb" font-size="31" font-weight="900" fill="#111">שירה</text>
+    <text x="91" y="113" text-anchor="middle" class="heb" font-size="22" font-weight="700" fill="#111">סהרוני</text>
+    <path d="M48 124h86" stroke="#D28B74" stroke-width="6" stroke-linecap="round"/>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <text x="190" y="65" class="heb" font-size="18" font-weight="900" fill="#111">שירה</text>
+    <text x="242" y="64" class="brand">סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">3 — השם הוא הסמל</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">לוגוטייפ חזק ללא איור</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא אצל Relate</text>
+  </g>
+
+  <!-- 4 Regain pattern: chat heart -->
+  <g transform="translate(1195 130)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#E7F4F4"/>
+    <path d="M45 43h92v68H91l-24 19v-19H45a17 17 0 0 1-17-17V60a17 17 0 0 1 17-17Z" fill="none" stroke="#2595A3" stroke-width="8"/>
+    <path d="M91 104 71 86c-11-10 4-24 13-15l7 7 7-7c9-9 24 5 13 15Z" fill="#D9857E"/>
+    <text x="91" y="82" text-anchor="middle" class="heb" font-size="28" font-weight="700" fill="#2595A3">ש</text>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <rect x="187" y="46" width="25" height="25" rx="7" fill="#2595A3"/>
+    <text x="221" y="64" class="brand">שירה סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">4 — שיחה מהלב</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">מסר טיפולי מיידי ולא ילדותי</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא אצל Regain</text>
+  </g>
+
+  <!-- 5 Talkspace pattern: abstract blocks -->
+  <g transform="translate(55 490)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#DCEDEE"/>
+    <path d="M49 46h69v52H90v27L72 98H49a12 12 0 0 1-12-12V58a12 12 0 0 1 12-12Z" fill="#19656B"/>
+    <path d="M81 65h48a12 12 0 0 1 12 12v39H107l-17 15v-15H81Z" fill="#5E9195"/>
+    <circle cx="66" cy="72" r="5" fill="#FFF"/>
+    <circle cx="82" cy="72" r="5" fill="#FFF"/>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <rect x="187" y="46" width="25" height="25" rx="6" fill="#19656B"/>
+    <text x="221" y="64" class="brand">שירה סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">5 — מרחב לשני קולות</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">מופשט, דיגיטלי ועכשווי</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא אצל Talkspace</text>
+  </g>
+
+  <!-- 6 BetterHelp pattern: supportive hands -->
+  <g transform="translate(435 490)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#E7F0E8"/>
+    <path d="M38 91c18-3 29-13 40-34 5-9 16-6 14 5-4 20-16 38-39 48Z" fill="#3D8254"/>
+    <path d="M144 91c-18-3-29-13-40-34-5-9-16-6-14 5 4 20 16 38 39 48Z" fill="#68A071"/>
+    <path d="M91 119 77 106c-7-7 3-16 9-10l5 5 5-5c6-6 16 3 9 10Z" fill="#E6A07F"/>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <path d="M190 58c7-1 11-5 15-12 2-3 5-2 4 2-1 8-6 14-15 18Z" fill="#3D8254"/>
+    <text x="221" y="64" class="brand">שירה סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">6 — ידיים תומכות</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">אמפתיה, ליווי וצמיחה</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא אצל BetterHelp</text>
+  </g>
+
+  <!-- 7 Couples Institute pattern: human abstraction -->
+  <g transform="translate(815 490)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#EEE9F6"/>
+    <circle cx="66" cy="51" r="10" fill="#4B397B"/>
+    <circle cx="116" cy="51" r="10" fill="#7862A7"/>
+    <path d="M46 122 66 69l25 35 25-35 20 53M66 69l25 35M116 69l-25 35" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="9" stroke="#5A458C"/>
+    <circle cx="91" cy="104" r="8" fill="#E59B8A"/>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <circle cx="198" cy="58" r="12" fill="#5A458C"/>
+    <text x="221" y="64" class="brand">שירה סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">7 — שניים במרכז</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">אנושי, תנועתי ומקצועי</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא אצל Couples Institute</text>
+  </g>
+
+  <!-- 8 Ricki Romm pattern: editorial personal identity -->
+  <g transform="translate(1195 490)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#282521"/>
+    <text x="91" y="73" text-anchor="middle" class="heb" font-size="26" font-weight="400" fill="#FFF">שירה</text>
+    <text x="91" y="105" text-anchor="middle" class="heb" font-size="31" font-weight="800" fill="#E9A58D">סהרוני</text>
+    <path d="M53 118h76" stroke="#FFF" stroke-width="2"/>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <rect x="187" y="46" width="25" height="25" rx="4" fill="#282521"/>
+    <text x="221" y="64" class="brand">שירה סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">8 — זהות עריכתית</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">בוטיק, בוגר ואישי מאוד</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא במיתוג Ricki Romm</text>
+  </g>
+
+  <!-- 9 Shira Yanko pattern: name + linked circles -->
+  <g transform="translate(55 850)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#F3E5EF"/>
+    <circle cx="70" cy="78" r="30" fill="none" stroke="#8C3478" stroke-width="8"/>
+    <circle cx="108" cy="78" r="30" fill="none" stroke="#C05A94" stroke-width="8"/>
+    <text x="70" y="90" text-anchor="middle" class="heb" font-size="30" font-weight="700" fill="#8C3478">ש</text>
+    <text x="108" y="90" text-anchor="middle" class="heb" font-size="30" font-weight="700" fill="#C05A94">ס</text>
+    <path d="M89 116 81 109c-4-4 1-9 5-5l3 3 3-3c4-4 9 1 5 5Z" fill="#8C3478"/>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <circle cx="199" cy="58" r="12" fill="none" stroke="#8C3478" stroke-width="4"/>
+    <text x="221" y="64" class="brand">שירה סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">9 — אותיות בדיאלוג</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">שם משפחה וקשר במבנה אחד</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא באתר שירה ינקו</text>
+  </g>
+
+  <!-- 10 personal portrait pattern, adapted as distinctive profile silhouette -->
+  <g transform="translate(435 850)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="63" fill="#DDECEE"/>
+    <circle cx="91" cy="68" r="25" fill="#547782"/>
+    <path d="M48 142c4-35 20-53 43-53s39 18 43 53" fill="#547782"/>
+    <text x="91" y="79" text-anchor="middle" class="heb" font-size="29" font-weight="700" fill="#FFF">ש</text>
+    <path d="M91 128 81 119c-5-5 2-11 6-7l4 4 4-4c4-4 11 2 6 7Z" fill="#E49A91"/>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <circle cx="199" cy="58" r="13" fill="#547782"/>
+    <text x="221" y="64" class="brand">שירה סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">10 — נוכחות אישית</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">אדם לפני סמל מסחרי</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא באתר שירי טל אטיאס</text>
+  </g>
+
+  <!-- 11 Mor Peleg pattern: signature -->
+  <g transform="translate(815 850)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#F3EFE7"/>
+    <text x="91" y="82" text-anchor="middle" class="heb" font-size="28" font-style="italic" font-weight="600" fill="#173F6A">שירה סהרוני</text>
+    <path d="M46 101c26-11 54-10 92 2" fill="none" stroke="#173F6A" stroke-width="3" stroke-linecap="round"/>
+    <path d="M105 112c8 0 14 5 15 13-8 0-14-5-15-13Z" fill="#D69A7E"/>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <text x="188" y="64" class="heb" font-size="14" font-style="italic" font-weight="600" fill="#173F6A">שירה</text>
+    <text x="230" y="64" class="brand">סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">11 — חתימה מקצועית</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">אישי, ישראלי ולא תאגידי</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא באתר מור פלג</text>
+  </g>
+
+  <!-- 12 Yael Shahar pattern: growth person heart -->
+  <g transform="translate(1195 850)">
+    <rect class="card" width="350" height="330" rx="24"/>
+    <rect x="28" y="25" width="126" height="126" rx="24" fill="#E7F0DD"/>
+    <circle cx="63" cy="64" r="10" fill="#4E8A3A"/>
+    <path d="M63 76v38M63 88c17-21 37-22 53-9-10 21-30 28-53 15M63 88C47 67 29 65 18 79c9 17 24 23 45 15" fill="none" stroke="#4E8A3A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M63 127 52 117c-6-6 2-13 7-8l4 4 4-4c5-5 13 2 7 8Z" fill="#D88F76"/>
+    <rect class="tab" x="176" y="37" width="145" height="43" rx="10"/>
+    <circle cx="199" cy="58" r="12" fill="#4E8A3A"/>
+    <text x="221" y="64" class="brand">שירה סהרוני</text>
+    <text x="175" y="210" text-anchor="middle" class="title">12 — אדם שצומח בקשר</text>
+    <text x="175" y="243" text-anchor="middle" class="desc">משפחה, התפתחות וליווי</text>
+    <text x="175" y="290" text-anchor="middle" class="source">דפוס שנמצא באתר יעל שחר</text>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="24" fill="#EEF1FA"/>
+  <ellipse cx="42" cy="72" rx="34" ry="10" fill="none" stroke="#BDC6E0" stroke-width="3"/>
+  <ellipse cx="42" cy="72" rx="20" ry="6" fill="none" stroke="#8796C1" stroke-width="3"/>
+  <path d="M42 72c18-9 30-23 39-43" fill="none" stroke="#8796C1" stroke-width="4" stroke-linecap="round" stroke-dasharray="5 5"/>
+  <circle cx="81" cy="29" r="5" fill="#D99189"/>
+  <text x="44" y="40" text-anchor="middle" font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="21" font-weight="750" fill="#4F5C83">שירה</text>
+  <text x="44" y="58" text-anchor="middle" font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="14" font-weight="650" fill="#7480A3">סהרוני</text>
+</svg>

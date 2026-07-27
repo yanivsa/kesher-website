@@ -36,6 +36,22 @@ const servicePages: SearchItem[] = [
     category: 'שירותים'
   },
   {
+    id: 'service-premarital-first-year',
+    type: 'service',
+    title: 'הכנה לנישואים וליווי בשנה הראשונה',
+    body: 'פגישות הכנה לנישואים וליווי זוגי בשנה הראשונה. כסף, מגורים משותפים, חלוקת אחריות, משפחות, אינטימיות, ריבים ותיקון.',
+    url: '/services/premarital-first-year',
+    category: 'תחומי התמחות'
+  },
+  {
+    id: 'service-couples-aliyah-relocation',
+    type: 'service',
+    title: 'ייעוץ זוגי לעולים ולזוגות ברילוקיישן',
+    body: 'ייעוץ זוגי לפני עלייה או רילוקיישן, בזמן ההסתגלות ואחרי החזרה. שינוי תפקידים, קריירה, כסף, בדידות, שייכות ופערי הסתגלות.',
+    url: '/services/couples-aliyah-relocation',
+    category: 'תחומי התמחות'
+  },
+  {
     id: 'service-late-singleness',
     type: 'service',
     title: 'ייעוץ במצבי רווקות מאוחרת',

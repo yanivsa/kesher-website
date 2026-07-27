@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="שתי בועות שיחה בגוני לבנדר">
+  <rect width="64" height="64" rx="16" fill="#E6DDF0"/>
+  <path d="M8 15h31a7 7 0 0 1 7 7v10a7 7 0 0 1-7 7H23l-9 7v-7H8a7 7 0 0 1-7-7V22a7 7 0 0 1 7-7Z" fill="#6B587C"/>
+  <path d="M29 30h27a7 7 0 0 1 7 7v8a7 7 0 0 1-7 7H48v7l-9-7H29a7 7 0 0 1-7-7v-8a7 7 0 0 1 7-7Z" fill="#B18DC5"/>
+  <circle cx="14" cy="27" r="3" fill="#FFF9F6"/>
+  <circle cx="24" cy="27" r="3" fill="#FFF9F6"/>
+  <circle cx="34" cy="27" r="3" fill="#FFF9F6"/>
+</svg>

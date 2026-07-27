@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="האות שין ולב">
+  <rect width="64" height="64" rx="16" fill="#DDE9E0"/>
+  <text x="32" y="47" text-anchor="middle" font-family=".SF Hebrew, Arial Hebrew, Arial, sans-serif" font-size="43" font-weight="700" fill="#3F5E49">ש</text>
+  <path d="M32 55 26.5 50c-3-2.8 1.1-6.6 3.7-4l1.8 1.8 1.8-1.8c2.6-2.6 6.7 1.2 3.7 4Z" fill="#D98F8D"/>
+</svg>

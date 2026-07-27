@@ -12,6 +12,7 @@ permissions:
   contents: write
   pull-requests: write
   checks: read
+  actions: write
 
 concurrency:
   group: auto-merge-kesher-article-prs
@@ -61,13 +62,36 @@ jobs:
             api "https://api.github.com/repos/${REPO}/commits/${sha}/check-runs?per_page=100" > checks.json
 
             if ! python3 - <<'PY'
-          import json, sys
+          import json, sys, re, urllib.request, hashlib, os
           pr = json.load(open("pr.json"))
-          files = [f["filename"] for f in json.load(open("files.json"))]
+          files_data = json.load(open("files.json"))
+          files = [f["filename"] for f in files_data]
           checks = json.load(open("checks.json")).get("check_runs", [])
           allowed_files = {"src/data/posts.json", "public/sitemap.xml", "public/llms.txt", "public/llms-full.txt"}
           allowed = all(f in allowed_files or f.startswith("public/images/generated/blog/") for f in files)
           ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
+
+          image_file = next((f for f in files_data if f["filename"].startswith("public/images/generated/blog/")), None)
+          if image_file:
+              match = re.search(r"Image SHA-256:\s*([a-f0-9]{64})", pr.get("body") or "")
+              if not match:
+                  print("Missing or invalid Image SHA-256 in PR body")
+                  sys.exit(1)
+              expected_sha = match.group(1).lower()
+
+              url = image_file["raw_url"]
+              req = urllib.request.Request(url, headers={"Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}"} if "GITHUB_TOKEN" in os.environ else {})
+              try:
+                  with urllib.request.urlopen(req) as response:
+                      img_data = response.read()
+                      actual_sha = hashlib.sha256(img_data).hexdigest()
+                      if expected_sha != actual_sha:
+                          print(f"Hash mismatch! Expected {expected_sha}, got {actual_sha}")
+                          sys.exit(1)
+              except Exception as e:
+                  print(f"Failed to fetch image: {e}")
+                  sys.exit(1)
+
           eligible = (
               pr.get("state") == "open"
               and not pr.get("draft")
@@ -86,5 +110,17 @@ jobs:
 
             api -X PUT \
               -d '{"commit_title":"Auto-merge validated Kesher article","merge_method":"squash"}' \
-              "https://api.github.com/repos/${REPO}/pulls/${number}/merge"
+              "https://api.github.com/repos/${REPO}/pulls/${number}/merge" > merge.json
+            python3 - <<'PY'
+          import json, sys
+          with open("merge.json", encoding="utf-8") as fh:
+              response = json.load(fh)
+          if response.get("merged") is not True:
+              print(f"Article merge did not complete: {response}", file=sys.stderr)
+              sys.exit(1)
+          PY
+            api -X POST \
+              -d '{"ref":"main"}' \
+              "https://api.github.com/repos/${REPO}/actions/workflows/deploy.yml/dispatches"
+            echo "Deploy workflow dispatched for main after article merge."
           done < pr-numbers.txt

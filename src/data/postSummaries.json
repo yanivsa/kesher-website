@@ -1,5 +1,41 @@
 [
   {
+    "id": "relocation-couple-conversations-before-moving",
+    "title": "רילוקיישן זוגי: 7 שיחות שחייבים לעשות לפני שאורזים",
+    "date": "2026-07-26",
+    "category": "זוגיות",
+    "subcategory": "זוגיות בעלייה ורילוקיישן",
+    "excerpt": "כולם מדברים על ויזה, דירה ובית ספר. אבל מי מוותר על קריירה, איך מנהלים כסף ומה קורה אם אחד רוצה לחזור? שבע שיחות שיכולות למנוע את הריב הראשון עוד לפני הטיסה.",
+    "image": "/images/generated/services/couples-aliyah-relocation.webp"
+  },
+  {
+    "id": "aliyah-partners-different-adjustment-pace",
+    "title": "אחד כבר בבית והשני עדיין אורח: מה עושים כשבני זוג מסתגלים לישראל בקצב שונה?",
+    "date": "2026-07-25",
+    "category": "זוגיות",
+    "subcategory": "זוגיות בעלייה ורילוקיישן",
+    "excerpt": "אחד מדבר עברית, מכיר את המערכת ומרגיש שחזר הביתה. השני תלוי בו לכל טופס ושיחה. כך עוצרים את הפער לפני שהוא הופך לבדידות, ביקורת וכעס.",
+    "image": "/images/generated/blog/aliyah-partners-adjustment-pace.webp"
+  },
+  {
+    "id": "premarital-questions-before-wedding",
+    "title": "לפני שאומרים כן: 12 שאלות שחייבים לשאול לפני החתונה",
+    "date": "2026-07-24",
+    "category": "זוגיות",
+    "subcategory": "הכנה לנישואים והשנה הראשונה",
+    "excerpt": "לא שאלות על צבע המפיות, אלא על כסף, חובות, משפחות, בית, ילדים וריבים. שתים־עשרה שיחות שיחסכו את המשפט ״אבל הייתי בטוח שסיכמנו״.",
+    "image": "/images/generated/services/premarital-first-year.webp"
+  },
+  {
+    "id": "newlywed-first-year-conflicts",
+    "title": "השנה הראשונה לנישואים: 8 מריבות שמפתיעות זוגות טובים",
+    "date": "2026-07-23",
+    "category": "זוגיות",
+    "subcategory": "הכנה לנישואים והשנה הראשונה",
+    "excerpt": "למה מתווכחים פתאום על כלים, שבת אצל ההורים וקנייה קטנה באשראי? שמונה ריבים נפוצים בשנה הראשונה — והמשפט שיעזור לפתוח כל אחד אחרת.",
+    "image": "/images/generated/blog/newlywed-first-year-conflicts.webp"
+  },
+  {
     "id": "child-after-school-restraint-collapse",
     "title": "מלאך בגן, שד בבית: למה הילד מתפרק דווקא איתכם",
     "date": "2026-07-20",
