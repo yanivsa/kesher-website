@@ -27,4 +27,12 @@ describe('route hydration', () => {
       false,
     )).toBe(false);
   });
+
+  it('mounts the interaction-heavy beta as a fresh client tree', () => {
+    expect(shouldHydrateRoute(
+      '/b/',
+      'https://kesher.saharoni.com/b',
+      true,
+    )).toBe(false);
+  });
 });

@@ -62,8 +62,21 @@ test('beta is isolated from production chrome and remains noindex', async ({ pag
   await expect(page.getByRole('heading', { name: /לא חייבים להישאר/ })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
   await expect(page.getByRole('banner')).toHaveCount(1);
+  await expect(page.getByRole('complementary', { name: 'אפשרויות ליצירת קשר' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'WhatsApp', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'חיפוש באתר' })).toHaveCount(0);
   await expect(page.locator('elevenlabs-convai')).toHaveCount(0);
+});
+
+test('beta hydrates cleanly with reduced motion enabled', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (message) => {
+    if (message.type() === 'error') errors.push(message.text());
+  });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/b/');
+  await expect(page.getByRole('heading', { name: /לא חייבים להישאר/ })).toBeVisible();
+  expect(errors).toEqual([]);
 });
 
 test('unknown blog posts render the noindex 404 page', async ({ page }) => {
