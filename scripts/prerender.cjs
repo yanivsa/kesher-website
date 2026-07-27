@@ -52,6 +52,11 @@ const writeRoute = (route, html) => {
   const file = path.join(dist, `${route.replace(/^\//, '')}.html`);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, html);
+  if (route === '/b') {
+    const betaDirectory = path.join(dist, 'b');
+    fs.mkdirSync(betaDirectory, { recursive: true });
+    fs.writeFileSync(path.join(betaDirectory, 'index.html'), html);
+  }
 };
 
 (async () => {
