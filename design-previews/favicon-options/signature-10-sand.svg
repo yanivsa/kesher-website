@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="16" fill="#EEE5D8"/>
+  <text x="32" y="32" text-anchor="middle" font-family="Times New Roman,.SF Hebrew,serif" font-size="20" font-weight="700" fill="#5A514B">שירה</text>
+  <text x="32" y="46" text-anchor="middle" font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="10" font-weight="500" letter-spacing=".5" fill="#806F63">סהרוני</text>
+  <circle cx="32" cy="53" r="2.5" fill="#C18C6F"/>
+</svg>

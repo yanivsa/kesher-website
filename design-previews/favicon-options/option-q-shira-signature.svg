@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="חתימת שירה">
+  <rect width="64" height="64" rx="16" fill="#F6E4D8"/>
+  <path d="M10 44c12-2 21-1 44 2" fill="none" stroke="#C4937D" stroke-width="3" stroke-linecap="round"/>
+  <text x="32" y="39" text-anchor="middle" font-family=".SF Hebrew, Arial Hebrew, Arial, sans-serif" font-size="24" font-weight="600" font-style="italic" fill="#765348">שירה</text>
+</svg>

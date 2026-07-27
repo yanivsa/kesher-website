@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="16" fill="#E7C8C5"/>
+  <text x="31" y="50" text-anchor="middle" font-family=".SF Hebrew,Arial Hebrew,Arial" font-size="48" font-weight="800" fill="#875C64">ש</text>
+  <path d="M39 17c5-5 10-5 15-2-4 1-6 3-8 6 4-1 7 0 10 3-8 2-14 0-17-7Z" fill="#FFF9F6"/>
+</svg>

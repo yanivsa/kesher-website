@@ -61,7 +61,7 @@ const AliyahFamiliesPage: React.FC = () => {
             </p>
             <div className={styles.heroActions}>
               <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת ייעוץ</Link>
-              <Link to="/contact" className={styles.secondaryButton}>אפשרויות יצירת קשר</Link>
+              <Link to="/services/couples-aliyah-relocation" className={styles.secondaryButton}>ייעוץ זוגי סביב עלייה ורילוקיישן</Link>
             </div>
           </div>
           <aside className={styles.heroPanel} aria-label="נושאים בליווי משפחות עולים">

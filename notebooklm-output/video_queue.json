@@ -1,0 +1,158 @@
+{
+  "queue": [
+    {
+      "id": "normal-20260710-160838",
+      "type": "normal",
+      "topic": "YouTube video AQNQyhDVEng",
+      "source_url": "https://www.youtube.com/watch?v=AQNQyhDVEng",
+      "notebooklm_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "raw_mp4_path": "/Users/ninja/Documents/Kesher/notebooklm-output/kesher-raw-normal-20260710-160838.mp4",
+      "remotion_mp4_path": "/Users/ninja/Documents/Kesher/remotion-output/kesher-upgraded-normal-20260710-160838.mp4",
+      "creation_status": "done",
+      "remotion_status": "done",
+      "verified": true,
+      "uploaded": true,
+      "created_at": "2026-07-10T16:23:42.918230",
+      "uploaded_at": "2026-07-16T00:33:14.433442",
+      "upload_history": [
+        {
+          "youtube_id": "Wn086StJ-JA",
+          "youtube_url": "https://youtu.be/Wn086StJ-JA",
+          "uploaded_at": "2026-07-10T17:14:56",
+          "invalidated_at": "2026-07-16T00:29:10.897012",
+          "reason": "video is missing, private, or deleted"
+        }
+      ],
+      "upload_status": "public_verified",
+      "youtube_id": "vLCifr5kwnE",
+      "youtube_url": "https://youtu.be/vLCifr5kwnE",
+      "youtube_verification": {
+        "video_id": "vLCifr5kwnE",
+        "channel_id": "UCx5fEFvdVf28HLAR2dFW64Q",
+        "privacy_status": "public",
+        "upload_status": "processed",
+        "title": "מלכודת המתקן: למה עזרה פוגעת בזוגיות?"
+      },
+      "last_verified_at": "2026-07-26T18:02:02.669285"
+    },
+    {
+      "id": "short-20260710-162342",
+      "type": "short",
+      "topic": "YouTube video AQNQyhDVEng",
+      "source_url": "https://www.youtube.com/watch?v=AQNQyhDVEng",
+      "notebooklm_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "raw_mp4_path": "/Users/ninja/Documents/Kesher/notebooklm-output/kesher-raw-short-20260710-162342.mp4",
+      "remotion_mp4_path": "/Users/ninja/Documents/Kesher/remotion-output/kesher-upgraded-short-20260710-162342-vertical.mp4",
+      "creation_status": "done",
+      "remotion_status": "done",
+      "verified": true,
+      "media": {
+        "duration": 36.05,
+        "width": 720,
+        "height": 1280
+      },
+      "uploaded": true,
+      "created_at": "2026-07-10T16:38:55.609038",
+      "uploaded_at": "2026-07-16T00:33:31.028564",
+      "upload_history": [
+        {
+          "youtube_id": "gm2NOq22Jaw",
+          "youtube_url": "https://youtu.be/gm2NOq22Jaw",
+          "uploaded_at": "2026-07-10T17:15:15",
+          "invalidated_at": "2026-07-16T00:29:12.094063",
+          "reason": "video is missing, private, or deleted"
+        }
+      ],
+      "upload_status": "public_verified",
+      "youtube_id": "dWbdbgwX44c",
+      "youtube_url": "https://youtu.be/dWbdbgwX44c",
+      "youtube_verification": {
+        "video_id": "dWbdbgwX44c",
+        "channel_id": "UCx5fEFvdVf28HLAR2dFW64Q",
+        "privacy_status": "public",
+        "upload_status": "processed",
+        "title": "למה עצות טובות הורסות את הקשר? 💔"
+      },
+      "last_verified_at": "2026-07-26T18:02:03.989064"
+    },
+    {
+      "id": "normal-20260716-004218",
+      "type": "normal",
+      "topic": "YouTube video BtRWJCGdT0I",
+      "source_url": "https://www.youtube.com/watch?v=BtRWJCGdT0I",
+      "notebooklm_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "raw_mp4_path": "/Users/ninja/Documents/Kesher/notebooklm-output/kesher-raw-normal-20260716-004218.mp4",
+      "remotion_mp4_path": "/Users/ninja/Documents/Kesher/remotion-output/kesher-upgraded-normal-20260716-004218.mp4",
+      "creation_status": "done",
+      "remotion_status": "done",
+      "verified": true,
+      "media": {
+        "duration": 153.98,
+        "width": 1280,
+        "height": 720
+      },
+      "youtube_metadata": {
+        "title": "למה הוא לא מבין מה עובר עלייך? מלכודת קריאת המחשבות",
+        "description": "אנחנו מצפים לפעמים שבן או בת הזוג יבינו לבד מה אנחנו צריכים, ואז נפגעים כשהם לא מצליחים לנחש. הסרטון מסביר איך הציפייה לקריאת מחשבות יוצרת ריחוק, ואיך בקשה ישירה יכולה להפוך את השיחה בבית.\n\nלמידע נוסף ותיאום פגישה:\nhttps://kesher.saharoni.com\n\nקשר - ייעוץ זוגי ומשפחתי",
+        "tags": [
+          "ייעוץ זוגי",
+          "זוגיות",
+          "תקשורת זוגית",
+          "צרכים בזוגיות",
+          "קריאת מחשבות בזוגיות",
+          "הדרכת הורים",
+          "משפחה",
+          "אשדוד",
+          "שירה סהרוני"
+        ]
+      },
+      "uploaded": true,
+      "created_at": "2026-07-16T01:04:40.133896",
+      "youtube_id": "Rt0nwzI8DFU",
+      "youtube_url": "https://youtu.be/Rt0nwzI8DFU",
+      "uploaded_at": "2026-07-16T14:03:21.576009",
+      "upload_status": "public_verified",
+      "last_verified_at": "2026-07-26T18:02:05.547387",
+      "youtube_verification": {
+        "video_id": "Rt0nwzI8DFU",
+        "channel_id": "UCx5fEFvdVf28HLAR2dFW64Q",
+        "privacy_status": "public",
+        "upload_status": "processed",
+        "title": "למה הוא לא מבין מה עובר עלייך? מלכודת קריאת המחשבות"
+      }
+    },
+    {
+      "id": "short-20260716-010440",
+      "type": "short",
+      "topic": "YouTube video BtRWJCGdT0I",
+      "source_url": "https://www.youtube.com/watch?v=BtRWJCGdT0I",
+      "notebooklm_id": "e101e7d7-5305-45b3-a611-21a5475ceb63",
+      "raw_mp4_path": "/Users/ninja/Documents/Kesher/notebooklm-output/kesher-raw-short-20260716-010440.mp4",
+      "remotion_mp4_path": "/Users/ninja/Documents/Kesher/remotion-output/kesher-upgraded-short-20260716-010440.mp4",
+      "creation_status": "done",
+      "remotion_status": "rejected_source_not_vertical_short",
+      "verified": false,
+      "media": {
+        "duration": 98.38,
+        "width": 1280,
+        "height": 720,
+        "rejection_reason": "NotebookLM source was generated as a 98-second 16:9 video; it must be regenerated natively as a 35-55 second 9:16 Short."
+      },
+      "youtube_metadata": {
+        "title": "למה אנחנו מתנתקים דווקא בערב? #Shorts",
+        "description": "רגע קצר שמפענח למה דווקא בסוף היום בני זוג עלולים להרגיש רחוקים, ומה אפשר לעשות כדי לחזור לחיבור.\n\nלמידע נוסף ותיאום פגישה:\nhttps://kesher.saharoni.com\n\nקשר - ייעוץ זוגי ומשפחתי\n\n#זוגיות #תקשורתזוגית #ייעוץזוגי #Shorts",
+        "tags": [
+          "ייעוץ זוגי",
+          "זוגיות",
+          "תקשורת זוגית",
+          "חיבור זוגי",
+          "משפחה",
+          "הדרכת הורים",
+          "shorts"
+        ]
+      },
+      "uploaded": false,
+      "created_at": "2026-07-16T01:19:59.771795"
+    }
+  ]
+}

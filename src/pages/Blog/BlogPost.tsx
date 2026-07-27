@@ -72,10 +72,16 @@ const BlogPost: React.FC = () => {
     return <NotFound />;
   }
   const safeContent = DOMPurify.sanitize(post.content);
+  const relatedService = 'serviceUrl' in post
+    && 'serviceLabel' in post
+    && typeof post.serviceUrl === 'string'
+    && typeof post.serviceLabel === 'string'
+    ? { url: post.serviceUrl, label: post.serviceLabel }
+    : null;
 
   return (
     <article className={styles.post}>
-      <MetaTags title={`${post.title} | ${SITE_CONFIG.brand}`} description={post.excerpt} ogType="article" image={post.image} />
+      <MetaTags title={post.title} description={post.excerpt} ogType="article" image={post.image} />
       <SchemaOrg data={schemaData} />
       <header className={styles.header}>
         <div className="container">
@@ -104,6 +110,9 @@ const BlogPost: React.FC = () => {
           <div className={styles.ctaCard}>
             <h3>צריכים עזרה עם הנושא הזה?</h3>
             <p>אני כאן כדי ללוות אתכם בתהליך אישי ומותאם לכם.</p>
+            {relatedService && (
+              <Link to={relatedService.url} className={styles.ctaButton}>{relatedService.label}</Link>
+            )}
             <Link to={SITE_CONFIG.links.appointment} className={styles.ctaButton}>קביעת פגישת ייעוץ</Link>
           </div>
         </aside>

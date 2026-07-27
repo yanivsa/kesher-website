@@ -1,0 +1,59 @@
+{
+  "source_url": "https://www.youtube.com/watch?v=x5f-Yk8CPQU",
+  "notebook_url": "https://notebooklm.google.com/notebook/e101e7d7-5305-45b3-a611-21a5475ceb63",
+  "output_path": "/Users/ninja/Documents/Kesher/notebooklm-output/kesher-daily-video-20260705-181424.mp4",
+  "started_at": "20260705-181424",
+  "source_add": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": false,\n  \"data\": {\n    \"success\": false,\n    \"sourceName\": \"Emotional immaturity parenting inspiration - transformed original Hebrew version\",\n    \"error\": \"Source not found after upload - dialog closed but source not visible in list\",\n    \"status\": \"failed\"\n  },\n  \"error\": \"Source not found after upload - dialog closed but source not visible in list\"\n}"
+      }
+    ],
+    "structuredContent": {
+      "success": false,
+      "data": {
+        "success": false,
+        "sourceName": "Emotional immaturity parenting inspiration - transformed original Hebrew version",
+        "error": "Source not found after upload - dialog closed but source not visible in list",
+        "status": "failed"
+      },
+      "error": "Source not found after upload - dialog closed but source not visible in list"
+    }
+  },
+  "content_generate": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": false,\n  \"data\": {\n    \"success\": false,\n    \"contentType\": \"video\",\n    \"error\": \"Chat fallback failed: Chat input not found\"\n  },\n  \"error\": \"Chat fallback failed: Chat input not found\"\n}"
+      }
+    ],
+    "structuredContent": {
+      "success": false,
+      "data": {
+        "success": false,
+        "contentType": "video",
+        "error": "Chat fallback failed: Chat input not found"
+      },
+      "error": "Chat fallback failed: Chat input not found"
+    }
+  },
+  "content_download": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": false,\n  \"data\": {\n    \"success\": false,\n    \"error\": \"Download failed: Download button not found\"\n  },\n  \"error\": \"Download failed: Download button not found\"\n}"
+      }
+    ],
+    "structuredContent": {
+      "success": false,
+      "data": {
+        "success": false,
+        "error": "Download failed: Download button not found"
+      },
+      "error": "Download failed: Download button not found"
+    }
+  },
+  "file_exists": false,
+  "file_size": 0
+}

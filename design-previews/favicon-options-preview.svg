@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <rect width="1200" height="760" fill="#FAF7F4"/>
+  <text x="600" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="700" fill="#2D2926">חלופות לאייקון האתר</text>
+  <text x="600" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#7A6F6A">כל אפשרות נבדקה גם בתצוגה זעירה של לשונית דפדפן</text>
+
+  <g transform="translate(70 155)">
+    <rect width="245" height="490" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="../public/favicon.svg" x="42.5" y="42" width="160" height="160"/>
+    <image href="../public/favicon.svg" x="104.5" y="225" width="36" height="36"/>
+    <text x="122.5" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#2D2926">הקיים</text>
+    <text x="122.5" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#7A6F6A">דמויות מחוברות</text>
+    <text x="122.5" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#7A6F6A">רך ואנושי</text>
+  </g>
+
+  <g transform="translate(335 155)">
+    <rect width="245" height="490" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-a-linked-rings.svg" x="42.5" y="42" width="160" height="160"/>
+    <image href="favicon-options/option-a-linked-rings.svg" x="104.5" y="225" width="36" height="36"/>
+    <text x="122.5" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#2D2926">א — חוליות</text>
+    <text x="122.5" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#7A6F6A">הכי מזוהה עם ״קשר״</text>
+    <text x="122.5" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#7A6F6A">חד וברור בגודל קטן</text>
+  </g>
+
+  <g transform="translate(600 155)">
+    <rect width="245" height="490" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-b-heart-dialogue.svg" x="42.5" y="42" width="160" height="160"/>
+    <image href="favicon-options/option-b-heart-dialogue.svg" x="104.5" y="225" width="36" height="36"/>
+    <text x="122.5" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#2D2926">ב — שיחה ולב</text>
+    <text x="122.5" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#7A6F6A">טיפול, הקשבה וחום</text>
+    <text x="122.5" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#7A6F6A">הבחירה המומלצת</text>
+  </g>
+
+  <g transform="translate(865 155)">
+    <rect width="245" height="490" rx="24" fill="#fff" stroke="#E5E1DD" stroke-width="2"/>
+    <image href="favicon-options/option-c-bridge.svg" x="42.5" y="42" width="160" height="160"/>
+    <image href="favicon-options/option-c-bridge.svg" x="104.5" y="225" width="36" height="36"/>
+    <text x="122.5" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#2D2926">ג — גשר</text>
+    <text x="122.5" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#7A6F6A">שני אנשים מתקרבים</text>
+    <text x="122.5" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#7A6F6A">אישי וטיפולי</text>
+  </g>
+
+  <g transform="translate(467.5 665)">
+    <image href="favicon-options/option-d-family-home.svg" x="0" y="0" width="54" height="54"/>
+    <text x="70" y="35" font-family="Arial, sans-serif" font-size="19" fill="#2D2926">ד — בית ולב: מתאים במיוחד אם רוצים להדגיש משפחה והורות</text>
+  </g>
+</svg>

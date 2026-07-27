@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="חוליות רכות ולב">
+  <rect width="64" height="64" rx="16" fill="#F2DDDC"/>
+  <g fill="none" stroke-linecap="round" stroke-width="8">
+    <path d="M27 22h-7a10 10 0 0 0 0 20h10" stroke="#775D66"/>
+    <path d="M37 42h7a10 10 0 0 0 0-20H34" stroke="#B7838D"/>
+  </g>
+  <path d="M32 43 23.5 35c-4.5-4.3 1.8-10.1 5.7-6.2L32 31.6l2.8-2.8c3.9-3.9 10.2 1.9 5.7 6.2Z" fill="#FFF9F6"/>
+</svg>

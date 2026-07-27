@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="גשר של קשר">
+  <rect width="64" height="64" rx="16" fill="#945035"/>
+  <circle cx="18" cy="23" r="7" fill="#FAF7F4"/>
+  <circle cx="46" cy="23" r="7" fill="#FAF7F4"/>
+  <path d="M13 48V38c0-6 4-10 10-10 4.5 0 7.3 2.3 9 5.5 1.7-3.2 4.5-5.5 9-5.5 6 0 10 4 10 10v10" fill="none" stroke="#FAF7F4" stroke-width="7" stroke-linecap="round"/>
+  <path d="m25 37 7 7 7-7" fill="none" stroke="#E5A882" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

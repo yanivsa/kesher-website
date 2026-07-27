@@ -12,6 +12,7 @@ permissions:
   contents: write
   pull-requests: write
   checks: read
+  actions: write
 
 concurrency:
   group: auto-merge-kesher-article-prs
@@ -109,5 +110,17 @@ jobs:
 
             api -X PUT \
               -d '{"commit_title":"Auto-merge validated Kesher article","merge_method":"squash"}' \
-              "https://api.github.com/repos/${REPO}/pulls/${number}/merge"
+              "https://api.github.com/repos/${REPO}/pulls/${number}/merge" > merge.json
+            python3 - <<'PY'
+          import json, sys
+          with open("merge.json", encoding="utf-8") as fh:
+              response = json.load(fh)
+          if response.get("merged") is not True:
+              print(f"Article merge did not complete: {response}", file=sys.stderr)
+              sys.exit(1)
+          PY
+            api -X POST \
+              -d '{"ref":"main"}' \
+              "https://api.github.com/repos/${REPO}/actions/workflows/deploy.yml/dispatches"
+            echo "Deploy workflow dispatched for main after article merge."
           done < pr-numbers.txt
