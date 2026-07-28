@@ -133,19 +133,9 @@ const InteractiveHeroVisual = () => {
         </div>
         <div className={styles.glassNote}>
           <span className={styles.noteIcon}><FiHeart aria-hidden="true" /></span>
-          <div className={styles.credentialCopy}>
-            <span>הכשרות מקצועיות רלוונטיות</span>
-            <small>לימודים, תעודות ופרקטיקום</small>
-            <ul>
-              <li>מנחת הורים קבוצתית</li>
-              <li>מנחת הורים פרטנית עם התמחות ב־ADHD</li>
-              <li>יועצת זוגית ומשפחתית</li>
-              <li>מגשרת מוסמכת</li>
-            </ul>
-          </div>
-        </div>
-        <div className={styles.roleCard}>
-          <span>רקע קודם · עורכת דין בהכשרתה</span>
+          <p>
+            <strong>יועצת זוגית ומנחת הורים</strong>
+          </p>
         </div>
       </div>
       <span className={styles.visualHalo} aria-hidden="true" />
@@ -361,24 +351,34 @@ const BetaPage: React.FC = () => {
             <span className={styles.kicker}>נעים מאוד, שירה</span>
             <h2>מקצועיות שמחזיקה את המורכבות. שיחה שנשארת אנושית.</h2>
             <p className={styles.aboutLead}>
-              אני מנחת הורים קבוצתית, מנחת הורים פרטנית עם התמחות ב־ADHD,
-              יועצת זוגית ומשפחתית ומגשרת מוסמכת. ההכשרות המקצועיות מגובות
-              בלימודים, בתעודות ובפרקטיקום, ונשענות על למידה מקצועית רבת שנים.
+              אני מלווה זוגות והורים ברגעים שבהם התקשורת נתקעת, העומס גובר
+              או הבית מבקש דרך חדשה. המטרה שלי היא לחבר בין הבנה עמוקה לבין
+              צעדים מעשיים שאפשר ליישם בחיים עצמם.
             </p>
             <p>
-              בעברי הוכשרתי גם כעורכת דין. בחרתי לעבור מעולם המשפט לעולמות ההנחיה,
-              הייעוץ והחינוך, ולפרק יחד מצבים שנראים מסובכים כדי להבין מה אפשר
-              לנסות אחרת כבר השבוע.
+              יחד נפרק מצבים שנראים מסובכים, נזהה את הדפוסים שחוזרים
+              ונבנה אפשרות אחרת — רגישה, בהירה ומותאמת למשפחה שלכם.
             </p>
             <ul className={styles.focusList}>
               {focusAreas.map((area) => (
                 <li key={area}><FiCheck aria-hidden="true" />{area}</li>
               ))}
             </ul>
+            <aside className={styles.professionalProfile} aria-label="הכשרה מקצועית">
+              <span>הכשרה מקצועית מוסמכת</span>
+              <p>
+                העשייה שלי נשענת על הכשרה בייעוץ זוגי ומשפחתי, בהנחיית הורים
+                קבוצתית ופרטנית עם התמחות ב־ADHD, ובגישור.
+              </p>
+              <small>
+                ההכשרות כוללות לימודים מקצועיים, תעודות ופרקטיקום מעשי.
+              </small>
+            </aside>
             <Link to="/about" className={styles.textLink}>
               עוד עליי ועל אופן העבודה
               <FiArrowLeft aria-hidden="true" />
             </Link>
+            <p className={styles.legalBackground}>רקע נוסף: עורכת דין בהכשרתי.</p>
           </div>
         </section>
 

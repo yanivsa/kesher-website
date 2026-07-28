@@ -63,6 +63,15 @@ test('beta is isolated from production chrome and remains noindex', async ({ pag
   await page.goto('/b/');
   await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
   await expect(page.getByRole('banner').getByText('BETA 2', { exact: true })).toBeVisible();
+  const hero = page.locator('#top');
+  await expect(hero.getByText('יועצת זוגית ומנחת הורים', { exact: true })).toBeVisible();
+  await expect(hero.getByText(/עורכת דין/)).toHaveCount(0);
+  const professionalProfile = page.getByRole('complementary', { name: 'הכשרה מקצועית' });
+  await expect(professionalProfile.getByText('הכשרה מקצועית מוסמכת', { exact: true })).toBeVisible();
+  await expect(professionalProfile).toContainText('ייעוץ זוגי ומשפחתי');
+  await expect(professionalProfile).toContainText('התמחות ב־ADHD');
+  await expect(professionalProfile).toContainText('תעודות ופרקטיקום מעשי');
+  await expect(page.getByText('רקע נוסף: עורכת דין בהכשרתי.', { exact: true })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
   await expect(page.getByRole('banner')).toHaveCount(1);
   await expect(page.getByRole('complementary', { name: 'אפשרויות ליצירת קשר' })).toBeVisible();
