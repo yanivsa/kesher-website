@@ -61,8 +61,8 @@ test('unknown routes render the noindex 404 page', async ({ page }) => {
 
 test('beta is isolated from production chrome and remains noindex', async ({ page }) => {
   await page.goto('/b/');
-  await expect(page.getByRole('heading', { name: /יש דרך לדבר/ })).toBeVisible();
-  await expect(page.getByRole('banner').getByText('BETA 3', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
+  await expect(page.getByRole('banner').getByText('BETA 2', { exact: true })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
   await expect(page.getByRole('banner')).toHaveCount(1);
   await expect(page.getByRole('complementary', { name: 'אפשרויות ליצירת קשר' })).toBeVisible();
@@ -78,7 +78,7 @@ test('beta hydrates cleanly with reduced motion enabled', async ({ page }) => {
   });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/b/');
-  await expect(page.getByRole('heading', { name: /יש דרך לדבר/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
