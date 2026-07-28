@@ -43,7 +43,7 @@ services.forEach(service => {
     const serviceContent = fs.readFileSync(service.path, 'utf8');
 
     // Extract text from <p>, <li>, <h1>, <h2>, <h3>
-    const tagsRegex = /<(p|li|h1|h2|h3)[^>]*>(.*?)<\/\1>/gs;
+    const tagsRegex = /<(p|li|h1|h2|h3)(?:\s+[^>]*)?>(.*?)<\/\1>/gs;
     let match;
     while ((match = tagsRegex.exec(serviceContent)) !== null) {
       let text = match[2]
