@@ -133,14 +133,19 @@ const InteractiveHeroVisual = () => {
         </div>
         <div className={styles.glassNote}>
           <span className={styles.noteIcon}><FiHeart aria-hidden="true" /></span>
-          <p>
-            <span>תחומי הליווי המרכזיים</span>
-            <strong>יועצת זוגית ומנחת הורים</strong>
-          </p>
+          <div className={styles.credentialCopy}>
+            <span>הכשרות מקצועיות רלוונטיות</span>
+            <small>לימודים, תעודות ופרקטיקום</small>
+            <ul>
+              <li>מנחת הורים קבוצתית</li>
+              <li>מנחת הורים פרטנית עם התמחות ב־ADHD</li>
+              <li>יועצת זוגית ומשפחתית</li>
+              <li>מגשרת מוסמכת</li>
+            </ul>
+          </div>
         </div>
         <div className={styles.roleCard}>
-          <span>עורכת דין בהכשרתה</span>
-          <strong>מגשרת מוסמכת</strong>
+          <span>רקע קודם · עורכת דין בהכשרתה</span>
         </div>
       </div>
       <span className={styles.visualHalo} aria-hidden="true" />
@@ -356,12 +361,14 @@ const BetaPage: React.FC = () => {
             <span className={styles.kicker}>נעים מאוד, שירה</span>
             <h2>מקצועיות שמחזיקה את המורכבות. שיחה שנשארת אנושית.</h2>
             <p className={styles.aboutLead}>
-              אני עורכת דין בהכשרתי ומגשרת מוסמכת, שבחרה לעבור מעולם המשפט
-              לעולמות ההנחיה, הייעוץ והחינוך.
+              אני מנחת הורים קבוצתית, מנחת הורים פרטנית עם התמחות ב־ADHD,
+              יועצת זוגית ומשפחתית ומגשרת מוסמכת. ההכשרות המקצועיות מגובות
+              בלימודים, בתעודות ובפרקטיקום, ונשענות על למידה מקצועית רבת שנים.
             </p>
             <p>
-              אני אוהבת לפרק יחד מצב שנראה מסובך: להבין מי נפגע, מה חוזר על עצמו
-              ומה אפשר לנסות אחרת כבר השבוע.
+              בעברי הוכשרתי גם כעורכת דין. בחרתי לעבור מעולם המשפט לעולמות ההנחיה,
+              הייעוץ והחינוך, ולפרק יחד מצבים שנראים מסובכים כדי להבין מה אפשר
+              לנסות אחרת כבר השבוע.
             </p>
             <ul className={styles.focusList}>
               {focusAreas.map((area) => (
