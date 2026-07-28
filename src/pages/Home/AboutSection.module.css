@@ -128,7 +128,7 @@
 
 @media (max-width: 600px) {
   .experienceBadge {
-    right: -5px;
+    right: 10px;
     bottom: -15px;
     padding: 1rem;
   }
