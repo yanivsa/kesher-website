@@ -109,6 +109,7 @@
   top: 0;
   z-index: 100;
   padding: 1rem clamp(1rem, 4vw, 4rem);
+  padding-block-start: max(1rem, env(safe-area-inset-top, 0px));
 }
 
 .headerInner {
@@ -1035,7 +1036,7 @@
 
 .legalBackground {
   margin: 0.8rem 0 0 !important;
-  color: color-mix(in srgb, var(--beta-muted) 78%, transparent) !important;
+  color: var(--beta-muted) !important;
   font-size: 0.76rem !important;
   line-height: 1.5 !important;
 }
@@ -1162,7 +1163,7 @@
 .quickDock {
   position: fixed;
   inset-inline-start: 50%;
-  inset-block-end: 1.1rem;
+  inset-block-end: max(1.1rem, env(safe-area-inset-bottom, 0px));
   z-index: 90;
   min-height: 58px;
   padding: 0.45rem 0.55rem 0.45rem 1rem;
@@ -1426,6 +1427,7 @@
 @media (max-width: 780px) {
   .header {
     padding: 0.65rem;
+    padding-block-start: max(0.65rem, env(safe-area-inset-top, 0px));
   }
 
   .headerInner {
@@ -1559,7 +1561,7 @@
   .footer {
     align-items: flex-start;
     flex-direction: column;
-    padding-bottom: 7rem;
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
   }
 
   .quickDock {
