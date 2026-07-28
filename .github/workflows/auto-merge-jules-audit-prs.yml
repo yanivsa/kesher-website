@@ -1,6 +1,10 @@
 name: Auto-merge Jules audit PRs
 
 on:
+  schedule:
+    # Rescan after CI runs dispatched with GITHUB_TOKEN, whose completion may
+    # not emit another workflow_run event because of GitHub recursion guards.
+    - cron: "17,47 * * * *"
   pull_request_target:
     types: [opened, synchronize, reopened, ready_for_review]
   workflow_run:
@@ -104,6 +108,28 @@ jobs:
 
                   title_match = re.search(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review):", pr.get("title") or "", re.I)
                   audit_kind = title_match.group(1).lower() if title_match else ""
+
+                  if title_match and pr.get("state") == "open" and not files:
+                      api(
+                          "POST",
+                          f"/repos/{repo}/issues/{number}/comments",
+                          data={
+                              "body": (
+                                  "Auto-closed by the Jules audit controller: the PR has zero changed files "
+                                  "against current main, so it is a stale/duplicate no-op."
+                              )
+                          },
+                          allow_codes=[201],
+                      )
+                      api(
+                          "PATCH",
+                          f"/repos/{repo}/pulls/{number}",
+                          data={"state": "closed"},
+                          allow_codes=[200],
+                      )
+                      print(f"PR #{number}: Closed zero-file stale/duplicate audit PR.")
+                      continue
+
                   allowed_prefixes = ("src/", "public/", "docs/")
                   if audit_kind == "seo geo review":
                       allowed_prefixes += ("scripts/",)
@@ -154,7 +180,10 @@ jobs:
                           print(f"PR #{number}: Merged successfully.")
                           dispatch_deploy()
                           continue
-                      print(f"PR #{number}: Merge failed with {merge_status}. Checking if branch is behind...")
+                      print(
+                          f"PR #{number}: Merge failed with {merge_status}: {merge_resp}. "
+                          "Checking if branch is behind..."
+                      )
                   elif v_conclusion is not None:
                       print(f"PR #{number}: verify check concluded with '{v_conclusion}'. Needs fix. Not merging.")
                       continue
@@ -205,7 +234,13 @@ jobs:
                       if v_status in ["queued", "in_progress"]:
                           print(f"PR #{number}: verify check is {v_status}. Not dispatching duplicate CI.")
                       elif v_conclusion == "success":
-                          print(f"PR #{number}: verify check is successful. Not dispatching duplicate CI.")
+                          print(
+                              f"PR #{number}: verify is successful and the branch is {compare_status}, "
+                              f"but the merge API still rejected the PR: {merge_resp}. "
+                              "Failing explicitly instead of reporting false success.",
+                              file=sys.stderr,
+                          )
+                          sys.exit(1)
                       elif v_status == "missing" or v_conclusion == "action_required":
                           print(f"PR #{number}: verify check is action_required/missing. Dispatching CI...")
                           dispatch_status, dispatch_resp = api("POST", f"/repos/{repo}/actions/workflows/ci.yml/dispatches",

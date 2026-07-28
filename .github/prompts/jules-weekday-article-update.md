@@ -53,7 +53,9 @@ Invented names must be explicitly hypothetical or omitted. No guarantees that gr
 Before completion/ready state after a requested repair, require a changed authoritative remote PR head, exact remote file/body evidence, and fresh successful verify CI on that head; local-only or unchanged-head completion is forbidden.
 
 ## Final Scope and Submission Contract
-Before any commit or PR, remove every scratch, helper, cache, and temporary file. Refresh `origin/main`, then run `git diff --name-only origin/main...HEAD`. The final diff may contain only `src/data/posts.json`, an independently verified new image under `public/images/generated/blog/`, and the minimal generated sitemap/llms files required for that one article. A helper such as `add_post.py` is forbidden final scope.
+Before any commit or PR, remove every scratch, helper, cache, and temporary file. Refresh `origin/main`, then run `git diff --name-only origin/main...HEAD`. The final diff may contain only `src/data/posts.json`, `src/data/postSummaries.json`, an independently verified new image under `public/images/generated/blog/`, and the minimal generated sitemap/llms files required for that one article. A helper such as `add_post.py` is forbidden final scope.
+
+After the final `src/data/posts.json` edit, run `npm run generate`. Extract the new article id and prove that it appears exactly once in `src/data/posts.json`, `src/data/postSummaries.json`, `public/sitemap.xml`, and the required llms output. A stale summary for an older article, a missing current summary, or generated files created before the final article edit is a hard failure: clean the branch and repair it before opening or updating a PR. The PR body changed-file list must exactly match the remote GitHub diff.
 
 This is an article publication, not a content-review audit. The non-draft PR title must start with `Publish Kesher article:` and must never use a `[jules-automerge] Kesher content review:`, mobile-review, or SEO-review prefix.
 
