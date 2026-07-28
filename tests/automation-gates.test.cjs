@@ -35,7 +35,7 @@ pr = json.load(open("pr.json"))
 files_data = json.load(open("files.json"))
 files = [f["filename"] for f in files_data]
 checks = json.load(open("checks.json")).get("check_runs", [])
-allowed_files = {"src/data/posts.json", "public/sitemap.xml", "public/llms.txt", "public/llms-full.txt"}
+allowed_files = {"src/data/posts.json", "src/data/postSummaries.json", "public/sitemap.xml", "public/llms.txt", "public/llms-full.txt"}
 allowed = all(f in allowed_files or f.startswith("public/images/generated/blog/") for f in files)
 ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
 
@@ -155,6 +155,10 @@ function testContentValidatorContracts() {
         validator.includes('if (i === 0)'),
         'Newly observed phrase guards must target the latest article without retroactively blocking old content'
     );
+    assert(
+        validator.includes('Post summaries are stale or incomplete; run npm run generate after the final posts.json edit.'),
+        'Content validation must reject a missing or stale generated post summary'
+    );
 }
 
 function testAutomergeDeployContracts() {
@@ -180,6 +184,34 @@ function testAutomergeDeployContracts() {
     assert(
         articleWorkflow.indexOf('merge.json') < articleWorkflow.indexOf('/actions/workflows/deploy.yml/dispatches'),
         'Article deploy dispatch must occur only after checking the merge response'
+    );
+    assert(
+        articleWorkflow.includes('"src/data/postSummaries.json"'),
+        'Article auto-merge must accept the generated post summary index'
+    );
+    assert(
+        auditWorkflow.includes('Closed zero-file stale/duplicate audit PR.'),
+        'Audit auto-merge must close zero-file stale duplicate PRs'
+    );
+    assert(
+        auditWorkflow.includes('Failing explicitly instead of reporting false success.'),
+        'Audit auto-merge must not return green after a rejected merge'
+    );
+    assert(
+        auditWorkflow.includes('cron: "17,47 * * * *"'),
+        'Audit auto-merge must rescan after token-dispatched CI completion'
+    );
+
+    const seoWorkflow = fs.readFileSync('.github/workflows/jules-daily-seo-geo-review.yml', 'utf8');
+    assert(
+        seoWorkflow.includes('Final live-duplicate gate:'),
+        'SEO/GEO prompt must recheck current main and forbid zero-file duplicate PRs'
+    );
+
+    const articlePolicy = fs.readFileSync('.github/prompts/jules-weekday-article-update.md', 'utf8');
+    assert(
+        articlePolicy.includes('appears exactly once in `src/data/posts.json`, `src/data/postSummaries.json`'),
+        'Article policy must require generated-index consistency for the new article id'
     );
 }
 

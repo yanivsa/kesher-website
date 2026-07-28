@@ -73,6 +73,15 @@ jobs:
           }
           JSON
 
+          python3 - <<'PY'
+          import json
+          with open("payload.json", encoding="utf-8") as fh:
+              payload = json.load(fh)
+          payload["prompt"] += "\n\nFinal live-duplicate gate: immediately before commit and again immediately before PR creation, fetch current origin/main and verify both that the chosen issue is still unfixed on current main and that `git diff --name-only origin/main...HEAD` is non-empty. If an equivalent fix merged while this session was running, or the remote diff has zero files, delete/reset the stale branch state and finish as a factual clean no-op with no changeSet, commit, push, or PR. A stale base, cached branch list, earlier plan, or successful local test must never justify a zero-file or duplicate PR. Log the superseding PR/commit when known."
+          with open("payload.json", "w", encoding="utf-8") as fh:
+              json.dump(payload, fh, ensure_ascii=False)
+          PY
+
           curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
             -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \

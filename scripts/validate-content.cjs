@@ -4,6 +4,7 @@ const { ROOT, STATIC_ROUTES, isPublishable, blogRoute, wordCount, headingCount, 
 
 const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
 const published = posts.filter(isPublishable);
+const postSummaries = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/postSummaries.json'), 'utf8'));
 const errors = [];
 const ensureUnique = (label, values) => {
   const seen = new Set();
@@ -16,6 +17,19 @@ const ensureUnique = (label, values) => {
 ensureUnique('post id', published.map((post) => post.id));
 ensureUnique('post title', published.map((post) => post.title));
 ensureUnique('post image', published.map((post) => post.image).filter(Boolean));
+
+const expectedPostSummaries = published.map(({ id, title, date, category, subcategory, excerpt, image }) => ({
+  id,
+  title,
+  date,
+  category,
+  ...(subcategory ? { subcategory } : {}),
+  excerpt,
+  image,
+}));
+if (JSON.stringify(postSummaries) !== JSON.stringify(expectedPostSummaries)) {
+  errors.push('Post summaries are stale or incomplete; run npm run generate after the final posts.json edit.');
+}
 
 for (let i = 0; i < published.length; i++) {
   const post = published[i];
