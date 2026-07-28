@@ -46,6 +46,16 @@
 ## Image Provenance and Fallback
 Any image PR body must use exact structured lines `Image Source URL: https://...` and `Image SHA-256: <64 lowercase hex>`, include dimensions, and a factual visual-match sentence. If no image is independently source- and pixel-verified, require truthful no-image fallback: omit/remove the image file and post `image` field, and state the fallback.
 
+For a no-image fallback, generic text such as “Unsplash failed” or “no matching image was found” is forbidden evidence. The PR body must include these exact structured fields without exposing secrets:
+
+- `Image Generation Attempt: DeepAI`
+- `Image Generation Result: unavailable|blocked|api_error|rejected_visual_quality`
+- `Image Fallback Attempt: Unsplash/Pexels`
+- `Image Fallback Result: no_pixel_verified_match|unavailable|blocked`
+- `Image Source URL: none`
+
+Choose the result token that truthfully describes the observed failure. `unavailable` includes a missing `DEEPAI_API_KEY`; never print the key. A no-image PR is a hard failure until it records the DeepAI-first attempt, the concrete failure class, the royalty-safe fallback attempt, and the reason no image passed pixel-level visual verification.
+
 ## Article Constraints
 Invented names must be explicitly hypothetical or omitted. No guarantees that grief/relationship dynamics self-resolve. Do not use generic final H3 headings like "סיכום" or "צעדים הבאים" (ordinary prose is allowed).
 

@@ -213,6 +213,18 @@ function testAutomergeDeployContracts() {
         articlePolicy.includes('appears exactly once in `src/data/posts.json`, `src/data/postSummaries.json`'),
         'Article policy must require generated-index consistency for the new article id'
     );
+    for (const requiredEvidence of [
+        'Image Generation Attempt: DeepAI',
+        'Image Generation Result: unavailable|blocked|api_error|rejected_visual_quality',
+        'Image Fallback Attempt: Unsplash/Pexels',
+        'Image Fallback Result: no_pixel_verified_match|unavailable|blocked',
+        'Image Source URL: none',
+    ]) {
+        assert(
+            articlePolicy.includes(requiredEvidence),
+            `Article policy must require structured no-image evidence: ${requiredEvidence}`
+        );
+    }
 }
 
 testGenericH3();

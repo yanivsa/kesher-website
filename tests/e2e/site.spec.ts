@@ -31,6 +31,8 @@ for (const route of routes) {
     page.on('console', (message) => {
       if (message.type() === 'error') errors.push(message.text());
     });
+    // Axe must inspect the settled color state, not an intermediate animation frame.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(route);
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('meta[name="description"]')).toHaveCount(1);
