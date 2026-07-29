@@ -45,7 +45,7 @@ const MarriagePrepPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
-        title="הכנה לנישואים וליווי בשנה הראשונה | שירה סהרוני"
+        title="הכנה לנישואים וליווי בשנה הראשונה"
         description="תכנון נכון של הזוגיות לפני החתונה: פגישות הכנה לנישואים וליווי לשנה הראשונה, למניעת משברים וביסוס תקשורת זוגית בריאה."
         image="/images/generated/site/marriage-prep-hero.jpg"
       />

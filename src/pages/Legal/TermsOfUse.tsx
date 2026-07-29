@@ -5,7 +5,7 @@ import styles from './LegalPage.module.css';
 const TermsOfUse: React.FC = () => {
   return (
     <div className={styles.page}>
-      <MetaTags title="תנאי שימוש | שירה סהרוני" description="תנאי השימוש באתר שירה סהרוני. אנא קראו את התנאים בקפידה לפני הגלישה באתר." />
+      <MetaTags title="תנאי שימוש" description="תנאי השימוש באתר שירה סהרוני. אנא קראו את התנאים בקפידה לפני הגלישה באתר." />
       <header className={styles.header}>
         <div className="container">
           <h1>תנאי שימוש</h1>

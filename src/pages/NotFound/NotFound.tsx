@@ -6,7 +6,7 @@ import styles from './NotFound.module.css';
 const NotFound: React.FC = () => (
   <section className={styles.page}>
     <MetaTags
-      title="העמוד לא נמצא | שירה סהרוני"
+      title="העמוד לא נמצא"
       description="העמוד שביקשתם אינו קיים."
       noIndex
     />
