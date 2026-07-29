@@ -46,7 +46,7 @@ const parenting = loadable(() => import('./pages/Services/Parenting/ParentingGui
 const mediation = loadable(() => import('./pages/Services/Mediation/MediationPage'));
 const gifted = loadable(() => import('./pages/Services/Gifted/GiftedParentingPage'));
 const aliyah = loadable(() => import('./pages/Services/Aliyah/AliyahFamiliesPage'));
-const relocation = loadable(() => import('./pages/Services/Aliyah/CouplesAliyahRelocationPage'));
+const relocation = loadable(() => import('./pages/Services/Relocation/CouplesAliyahRelocationPage'));
 const lateSingleness = loadable(() => import('./pages/Services/Singles/LateSinglenessPage'));
 const findingRelationship = loadable(() => import('./pages/Services/Singles/FindingRelationshipPage'));
 const blogList = loadable(() => import('./pages/Blog/BlogList'));
