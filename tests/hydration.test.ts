@@ -28,10 +28,10 @@ describe('route hydration', () => {
     )).toBe(false);
   });
 
-  it('mounts the interaction-heavy beta as a fresh client tree', () => {
+  it('mounts the interaction-heavy homepage as a fresh client tree', () => {
     expect(shouldHydrateRoute(
-      '/b/',
-      'https://kesher.saharoni.com/b',
+      '/',
+      'https://kesher.saharoni.com/',
       true,
     )).toBe(false);
   });

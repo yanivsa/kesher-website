@@ -219,17 +219,6 @@
   gap: 0.7rem;
 }
 
-.betaTag {
-  padding: 0.3rem 0.55rem;
-  border: 1px solid rgba(185, 111, 104, 0.3);
-  border-radius: 999px;
-  color: #8b4f4a;
-  background: rgba(248, 225, 218, 0.7);
-  font-size: 0.62rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-}
-
 .headerCta,
 .primaryCta,
 .lightCta,
@@ -593,21 +582,21 @@
   position: absolute;
   z-index: 3;
   inset-inline-start: auto;
-  inset-inline-end: 0.75rem;
-  inset-block-start: 4rem;
+  inset-inline-end: 1.25rem;
+  inset-block-start: 64%;
   inset-block-end: auto;
-  width: min(265px, 70%);
-  padding: 0.85rem;
+  width: min(245px, 68%);
+  padding: 0.68rem 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  border-radius: 22px;
+  gap: 0.7rem;
+  border-radius: 18px;
 }
 
 .noteIcon {
-  width: 36px;
-  height: 36px;
-  flex: 0 0 36px;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
   display: grid;
   place-items: center;
   border-radius: 14px;
@@ -1292,15 +1281,6 @@
   color: var(--beta-sage-dark);
 }
 
-.footerBeta {
-  padding: 0.4rem 0.7rem;
-  border: 1px solid rgba(185, 111, 104, 0.24);
-  border-radius: 999px;
-  color: #8b5e58;
-  font-size: 0.67rem;
-  font-weight: 800;
-}
-
 @keyframes heroEnter {
   from { opacity: 0; transform: translateY(22px); }
   to { opacity: 1; transform: translateY(0); }
@@ -1411,8 +1391,9 @@
 
   .glassNote {
     inset-inline-start: auto;
-    inset-inline-end: 0.75rem;
-    inset-block-start: 2.25rem;
+    inset-inline-end: 1.25rem;
+    inset-block-start: 63%;
+    inset-block-end: auto;
   }
 
   .primaryService {
@@ -1479,10 +1460,10 @@
 
   .glassNote {
     inset-inline-start: auto;
-    inset-inline-end: 0.75rem;
-    inset-block-start: 1.75rem;
+    inset-inline-end: 1.25rem;
+    inset-block-start: 65%;
     inset-block-end: auto;
-    width: min(265px, 76%);
+    width: min(245px, 72%);
   }
 
   .signalBar {
@@ -1605,8 +1586,9 @@
 
   .glassNote {
     inset-inline-start: auto;
-    inset-inline-end: 0.5rem;
-    width: min(250px, 76%);
+    inset-inline-end: 1rem;
+    inset-block-start: 66%;
+    width: min(230px, 72%);
   }
 
   .section {

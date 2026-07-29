@@ -2,7 +2,6 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 const routes = [
-  '/b',
   '/',
   '/about',
   '/services/couples',
@@ -59,10 +58,10 @@ test('unknown routes render the noindex 404 page', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test('beta is isolated from production chrome and remains noindex', async ({ page }) => {
-  await page.goto('/b/');
+test('the promoted homepage is indexable and uses the standalone design', async ({ page }) => {
+  await page.goto('/');
   await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
-  await expect(page.getByRole('banner').getByText('BETA 2', { exact: true })).toBeVisible();
+  await expect(page.getByText('BETA 2', { exact: true })).toHaveCount(0);
   const hero = page.locator('#top');
   await expect(hero.getByText('יועצת זוגית ומנחת הורים', { exact: true })).toBeVisible();
   await expect(hero.getByText(/עורכת דין/)).toHaveCount(0);
@@ -72,23 +71,50 @@ test('beta is isolated from production chrome and remains noindex', async ({ pag
   await expect(professionalProfile).toContainText('התמחות ב־ADHD');
   await expect(professionalProfile).toContainText('תעודות ופרקטיקום מעשי');
   await expect(page.getByText('רקע נוסף: עורכת דין בהכשרתי.', { exact: true })).toBeVisible();
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, nofollow');
+  await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://kesher.saharoni.com/',
+  );
+  const structuredData = page.locator('script[type="application/ld+json"]');
+  await expect(structuredData).toHaveCount(1);
+  const schemaText = await structuredData.textContent();
+  expect(schemaText).toContain('LocalBusiness');
+  expect(schemaText).toContain('יועצת זוגית');
   await expect(page.getByRole('banner')).toHaveCount(1);
   await expect(page.getByRole('complementary', { name: 'אפשרויות ליצירת קשר' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'WhatsApp', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'חיפוש באתר' })).toHaveCount(0);
   await expect(page.locator('elevenlabs-convai')).toHaveCount(0);
+
+  const placement = await hero.evaluate((element) => {
+    const image = element.querySelector('img')?.getBoundingClientRect();
+    const label = element.querySelector('[class*="glassNote"]')?.getBoundingClientRect();
+    if (!image || !label) return null;
+    return {
+      labelCenter: label.top + (label.height / 2),
+      safePortraitLine: image.top + (image.height * 0.58),
+    };
+  });
+  expect(placement).not.toBeNull();
+  expect(placement!.labelCenter).toBeGreaterThan(placement!.safePortraitLine);
 });
 
-test('beta hydrates cleanly with reduced motion enabled', async ({ page }) => {
+test('homepage mounts cleanly with reduced motion enabled', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (message) => {
     if (message.type() === 'error') errors.push(message.text());
   });
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/b/');
+  await page.goto('/');
   await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
   expect(errors).toEqual([]);
+});
+
+test('the former beta route resolves to the primary homepage', async ({ page }) => {
+  await page.goto('/b/');
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
 });
 
 test('unknown blog posts render the noindex 404 page', async ({ page }) => {
@@ -103,7 +129,7 @@ test('unknown blog posts render the noindex 404 page', async ({ page }) => {
 });
 
 test('AI chat is desktop-only and consent gated', async ({ page }, testInfo) => {
-  await page.goto('/');
+  await page.goto('/about');
   await expect(page.locator('script[data-kesher-ai-chat]')).toHaveCount(0);
   const consentButton = page.locator('button.ai-chat-consent');
 
@@ -117,7 +143,7 @@ test('AI chat is desktop-only and consent gated', async ({ page }, testInfo) => 
 
 test('mobile menu has an obvious close action and supports Escape', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/');
+  await page.goto('/about');
 
   await page.getByRole('button', { name: 'פתיחת תפריט' }).click();
   await expect(page.getByRole('button', { name: 'סגירת תפריט', exact: true })).toBeVisible();
@@ -143,7 +169,7 @@ test('mobile menu has an obvious close action and supports Escape', async ({ pag
 });
 
 test('global search opens its first result with Enter and restores focus', async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/about');
   const searchButton = page.getByRole('button', { name: 'חיפוש באתר' });
   await searchButton.click();
   const searchInput = page.getByRole('textbox', { name: 'חיפוש באתר' });
@@ -171,10 +197,8 @@ test('appointment page embeds Shira Calendly and keeps a direct fallback', async
     .toHaveAttribute('href', 'https://calendly.com/shira-saharoni/50');
 });
 
-test('gifted framework links reach the dedicated section', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('link', { name: 'הכנה לכניסה למסגרת מחוננים' }).click();
-  await expect(page).toHaveURL(/\/services\/gifted-parenting#gifted-framework$/);
+test('gifted framework anchor reaches the dedicated section', async ({ page }) => {
+  await page.goto('/services/gifted-parenting#gifted-framework');
   await expect(page.locator('#gifted-framework')).toBeInViewport();
 });
 

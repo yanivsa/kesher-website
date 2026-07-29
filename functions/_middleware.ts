@@ -19,8 +19,17 @@ export const legacyRedirectTarget = (requestUrl: string) => {
   return `${PRIMARY_ORIGIN}${destinationPath}`;
 };
 
+export const canonicalRedirectTarget = (requestUrl: string) => {
+  const url = new URL(requestUrl);
+  if (url.hostname !== 'kesher.saharoni.com') return null;
+  if (url.pathname !== '/b' && url.pathname !== '/b/') return null;
+  return `${PRIMARY_ORIGIN}/`;
+};
+
 export const onRequest: PagesFunction = async (context) => {
-  const redirectTarget = legacyRedirectTarget(context.request.url);
+  const redirectTarget =
+    canonicalRedirectTarget(context.request.url)
+    || legacyRedirectTarget(context.request.url);
   if (redirectTarget) {
     return Response.redirect(redirectTarget, 301);
   }

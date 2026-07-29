@@ -28,12 +28,6 @@ for (const route of routes) {
 const notFound = fs.readFileSync(path.join(ROOT, 'dist/404.html'), 'utf8');
 if (!notFound.includes('noindex, nofollow')) errors.push('404 page is not noindex');
 
-const beta = fs.readFileSync(path.join(ROOT, 'dist/b.html'), 'utf8');
-if (!beta.includes('noindex, nofollow')) errors.push('Beta page is not noindex');
-if (!/<h1[\s>]/.test(beta)) errors.push('Beta page is missing its primary heading');
-const betaWithTrailingSlash = fs.readFileSync(path.join(ROOT, 'dist/b/index.html'), 'utf8');
-if (betaWithTrailingSlash !== beta) errors.push('Beta trailing-slash output does not match /b');
-
 if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);

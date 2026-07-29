@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { legacyRedirectTarget } from '../functions/_middleware';
+import {
+  canonicalRedirectTarget,
+  legacyRedirectTarget,
+} from '../functions/_middleware';
 
 describe('legacy domain migration', () => {
   it('redirects the legacy homepage to the primary homepage', () => {
@@ -24,5 +27,20 @@ describe('legacy domain migration', () => {
 
   it('does not redirect the primary domain', () => {
     expect(legacyRedirectTarget('https://kesher.saharoni.com/')).toBeNull();
+  });
+});
+
+describe('canonical route redirects', () => {
+  it('redirects the former beta route to the primary homepage', () => {
+    expect(canonicalRedirectTarget('https://kesher.saharoni.com/b')).toBe(
+      'https://kesher.saharoni.com/',
+    );
+    expect(canonicalRedirectTarget('https://kesher.saharoni.com/b/')).toBe(
+      'https://kesher.saharoni.com/',
+    );
+  });
+
+  it('leaves other primary routes unchanged', () => {
+    expect(canonicalRedirectTarget('https://kesher.saharoni.com/about')).toBeNull();
   });
 });
