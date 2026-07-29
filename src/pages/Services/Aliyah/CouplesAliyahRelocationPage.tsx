@@ -45,7 +45,7 @@ const CouplesAliyahRelocationPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
-        title="ייעוץ זוגי לעולים ולמשפחות ברילוקיישן | שירה סהרוני"
+        title="ייעוץ זוגי לעולים ולמשפחות ברילוקיישן"
         description="ייעוץ זוגי למשברי רילוקיישן ועלייה: התמודדות עם בדידות, פערי שפה, אובדן סטטוס מקצועי ומרחק מרשת התמיכה. פגישות אונליין מכל מקום בעולם."
         image="/images/generated/site/relocation-hero.jpg"
       />

@@ -45,7 +45,7 @@ const AliyahFamiliesPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
-        title="ייעוץ למשפחות עולים ותושבים חוזרים | שירה סהרוני"
+        title="ייעוץ למשפחות עולים ותושבים חוזרים"
         description="ייעוץ זוגי והנחיית הורים למשפחות עולים ותושבים חוזרים: הסתגלות, מסגרות חינוכיות, זוגיות, הורות ושייכות."
         image="/images/generated/site/home-hero.jpg"
       />

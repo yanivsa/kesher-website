@@ -45,7 +45,7 @@ const MediationPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
-        title="גישור באשדוד ובאונליין | שירה סהרוני — מגשרת מוסמכת"
+        title="גישור באשדוד ובאונליין | מגשרת מוסמכת"
         description="גישור מכבד ומעשי לבני זוג, משפחות, הורים, שכנים ושותפים. מסגרת ברורה להקשבה, הפחתת מתחים ובניית הסכמות."
         image="/images/generated/services/mediation-room.jpg"
       />

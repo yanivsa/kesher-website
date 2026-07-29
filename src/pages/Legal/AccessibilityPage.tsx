@@ -5,7 +5,7 @@ import styles from './LegalPage.module.css';
 const AccessibilityPage: React.FC = () => {
   return (
     <div className={styles.page}>
-      <MetaTags title="הצהרת נגישות | שירה סהרוני" description="הצהרת נגישות לאתר שירה סהרוני. אנו פועלים להנגשת האתר לכלל האוכלוסייה." />
+      <MetaTags title="הצהרת נגישות" description="הצהרת נגישות לאתר שירה סהרוני. אנו פועלים להנגשת האתר לכלל האוכלוסייה." />
       <header className={styles.header}>
         <div className="container">
           <h1>הצהרת נגישות</h1>

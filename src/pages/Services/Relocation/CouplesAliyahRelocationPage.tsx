@@ -59,7 +59,7 @@ const schemaData = {
 const CouplesAliyahRelocationPage: React.FC = () => (
   <div className={styles.page}>
     <MetaTags
-      title="ייעוץ זוגי לעולים ולזוגות ברילוקיישן | שירה סהרוני"
+      title="ייעוץ זוגי לעולים ולזוגות ברילוקיישן"
       description="ייעוץ זוגי לפני עלייה או רילוקיישן, בתקופת ההסתגלות ולאחר החזרה: תפקידים, כסף, בדידות, שייכות ותקשורת זוגית."
       image="/images/generated/services/couples-aliyah-relocation.webp"
     />

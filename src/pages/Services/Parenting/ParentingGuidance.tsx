@@ -62,7 +62,7 @@ const ParentingGuidance: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags 
-        title="הדרכת הורים | מחוננים, ADHD והכנה לכיתה א' | שירה סהרוני"
+        title="הדרכת הורים | מחוננים, ADHD והכנה לכיתה א'"
         description="הדרכת הורים באשדוד ובאונליין לילדים מחוננים, לילדים עם ADHD ולהכנה לכיתה א' דרך תפקודים ניהוליים, ויסות ועצמאות."
         image="/images/generated/services/parenting-room.jpg"
       />

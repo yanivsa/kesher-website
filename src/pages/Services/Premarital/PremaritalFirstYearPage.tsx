@@ -59,7 +59,7 @@ const schemaData = {
 const PremaritalFirstYearPage: React.FC = () => (
   <div className={styles.page}>
     <MetaTags
-      title="הכנה לנישואים וליווי בשנה הראשונה | שירה סהרוני"
+      title="הכנה לנישואים וליווי בשנה הראשונה"
       description="פגישות הכנה לנישואים וליווי זוגי בשנה הראשונה: כסף, בית, משפחות, אינטימיות, חלוקת אחריות ותקשורת בזמן מחלוקת."
       image="/images/generated/services/premarital-first-year.webp"
     />
