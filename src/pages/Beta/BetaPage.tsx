@@ -16,6 +16,8 @@ import {
   FiX,
 } from 'react-icons/fi';
 import MetaTags from '../../components/SEO/MetaTags';
+import SchemaOrg from '../../components/SEO/SchemaOrg';
+import { homeSchema } from '../../constants/homeSchema';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './BetaPage.module.css';
 
@@ -163,12 +165,12 @@ const BetaPage: React.FC = () => {
   return (
     <div className={styles.page} dir="rtl">
       <MetaTags
-        title="Beta 2 — שירה סהרוני"
-        description="גרסת Beta 2 הניסיונית של שירה סהרוני — ייעוץ זוגי, הנחיית הורים וגישור באשדוד ובאונליין."
-        canonical={`${SITE_CONFIG.url}/b`}
+        title="שירה סהרוני — ייעוץ זוגי והנחיית הורים"
+        description={SITE_CONFIG.description}
+        canonical={`${SITE_CONFIG.url}/`}
         image="/images/shira-saharoni.webp"
-        noIndex
       />
+      <SchemaOrg data={homeSchema} />
       <ScrollProgress />
 
       <div className={styles.ambient} aria-hidden="true">
@@ -187,7 +189,7 @@ const BetaPage: React.FC = () => {
             </span>
           </a>
 
-          <nav className={styles.desktopNav} aria-label="ניווט בגרסת הבטא">
+          <nav className={styles.desktopNav} aria-label="ניווט ראשי">
             <a href="#services">איך אוכל לעזור</a>
             <a href="#about">אודות</a>
             <a href="#process">איך זה עובד</a>
@@ -195,7 +197,6 @@ const BetaPage: React.FC = () => {
           </nav>
 
           <div className={styles.headerActions}>
-            <span className={styles.betaTag}>BETA 2</span>
             <Link to={SITE_CONFIG.links.appointment} className={styles.headerCta}>
               קביעת פגישה
               <FiArrowLeft aria-hidden="true" />
@@ -205,7 +206,7 @@ const BetaPage: React.FC = () => {
               className={styles.menuButton}
               aria-label={menuOpen ? 'סגירת תפריט' : 'פתיחת תפריט'}
               aria-expanded={menuOpen}
-              aria-controls="beta-mobile-menu"
+              aria-controls="main-mobile-menu"
               onClick={() => setMenuOpen((open) => !open)}
             >
               {menuOpen ? <FiX aria-hidden="true" /> : <FiMenu aria-hidden="true" />}
@@ -214,7 +215,7 @@ const BetaPage: React.FC = () => {
         </div>
 
         {menuOpen && (
-          <nav id="beta-mobile-menu" className={styles.mobileNav} aria-label="ניווט בגרסת הבטא למובייל">
+          <nav id="main-mobile-menu" className={styles.mobileNav} aria-label="ניווט ראשי">
             <a href="#services" onClick={() => setMenuOpen(false)}>איך אוכל לעזור</a>
             <a href="#about" onClick={() => setMenuOpen(false)}>אודות</a>
             <a href="#process" onClick={() => setMenuOpen(false)}>איך זה עובד</a>
@@ -442,11 +443,11 @@ const BetaPage: React.FC = () => {
           </div>
         </div>
         <div className={styles.footerLinks}>
+          <Link to="/contact">יצירת קשר</Link>
+          <Link to="/blog">מאמרים</Link>
           <Link to="/privacy">פרטיות</Link>
           <Link to="/accessibility">נגישות</Link>
-          <Link to="/">לאתר הנוכחי</Link>
         </div>
-        <span className={styles.footerBeta}>גרסת BETA 2 ניסיונית</span>
       </footer>
     </div>
   );

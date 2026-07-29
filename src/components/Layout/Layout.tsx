@@ -14,9 +14,11 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { pathname } = useLocation();
-  const isBeta = pathname === '/b' || pathname === '/b/';
+  const usesStandaloneHomepage = pathname === '/'
+    || pathname === '/b'
+    || pathname === '/b/';
 
-  if (isBeta) {
+  if (usesStandaloneHomepage) {
     return (
       <div className={styles.wrapper}>
         <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>
