@@ -207,11 +207,43 @@ function testAutomergeDeployContracts() {
         seoWorkflow.includes('Final live-duplicate gate:'),
         'SEO/GEO prompt must recheck current main and forbid zero-file duplicate PRs'
     );
+    assert(
+        seoWorkflow.includes('Discovery-to-action invariant:'),
+        'SEO/GEO prompt must convert discovery into autonomous action instead of a question'
+    );
+    const mobileWorkflow = fs.readFileSync('.github/workflows/jules-daily-mobile-review.yml', 'utf8');
+    assert(
+        mobileWorkflow.includes('Asking whether to fix that issue or inspect another page is forbidden.'),
+        'Mobile prompt must proceed autonomously after reproducing an issue'
+    );
+    const siteFixWorkflow = fs.readFileSync('.github/workflows/jules-nightly-site-fixes.yml', 'utf8');
+    assert(
+        siteFixWorkflow.includes('Offering those paths to the user is forbidden.'),
+        'Site-fix prompt must complete the selected terminal path without asking'
+    );
 
     const articlePolicy = fs.readFileSync('.github/prompts/jules-weekday-article-update.md', 'utf8');
     assert(
         articlePolicy.includes('appears exactly once in `src/data/posts.json`, `src/data/postSummaries.json`'),
         'Article policy must require generated-index consistency for the new article id'
+    );
+    for (const observedArticleFailure of [
+        'זה קורה כמעט לכל מי',
+        'טבעית לחלוטין',
+        'הצעד הראשון להתמודדות',
+        'המלכודת הגדולה ביותר',
+        'הקצב שלכם הוא הקצב שלכם',
+        'אין לוח זמנים אוניברסלי',
+        'מלאים ושלמים יותר',
+    ]) {
+        assert(
+            articlePolicy.includes(observedArticleFailure),
+            `Article prompt must forbid observed formulaic output: ${observedArticleFailure}`
+        );
+    }
+    assert(
+        articlePolicy.includes('הכותרת, הפתיח וגוף המאמר חייבים לשמור על אותה אסטרטגיית פנייה'),
+        'Article prompt must require consistent inclusive address across title and body'
     );
     for (const requiredEvidence of [
         'Image Generation Attempt: DeepAI',
