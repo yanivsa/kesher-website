@@ -41,7 +41,7 @@ const loadable = (loader: () => Promise<PageModule>) => {
 
 const home = loadable(() => import('./pages/Beta/BetaPage'));
 const couples = loadable(() => import('./pages/Services/Couples/CouplesCounseling'));
-const premarital = loadable(() => import('./pages/Services/MarriagePrep/MarriagePrepPage'));
+const premarital = loadable(() => import('./pages/Services/Premarital/PremaritalFirstYearPage'));
 const parenting = loadable(() => import('./pages/Services/Parenting/ParentingGuidance'));
 const mediation = loadable(() => import('./pages/Services/Mediation/MediationPage'));
 const gifted = loadable(() => import('./pages/Services/Gifted/GiftedParentingPage'));
