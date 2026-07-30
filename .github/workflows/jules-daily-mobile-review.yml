@@ -18,6 +18,9 @@ jobs:
   start-jules:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
       - name: Stop if mobile review PR is already open
         id: backlog_gate
         env:
@@ -82,8 +85,23 @@ jobs:
               json.dump(payload, fh, ensure_ascii=False)
           PY
 
-          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
+          status="$(curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
+            -o response.json -w '%{http_code}' \
             -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
             -d @payload.json \
-            https://jules.googleapis.com/v1alpha/sessions
+            https://jules.googleapis.com/v1alpha/sessions)"
+          cat response.json
+          test "${status}" = "200" -o "${status}" = "201"
+
+      - name: Enforce autonomous terminal Jules state
+        if: steps.backlog_gate.outputs.blocked != 'true'
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          python3 .github/scripts/watch-jules-session.py \
+            --payload payload.json \
+            --response response.json \
+            --max-seconds 2400 \
+            --poll-seconds 10 \
+            --max-replacements 1

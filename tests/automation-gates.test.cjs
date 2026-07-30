@@ -203,10 +203,41 @@ function testAutomergeDeployContracts() {
     );
 
     const seoWorkflow = fs.readFileSync('.github/workflows/jules-daily-seo-geo-review.yml', 'utf8');
+    const mobileWorkflow = fs.readFileSync('.github/workflows/jules-daily-mobile-review.yml', 'utf8');
+    const watchdog = fs.readFileSync('.github/scripts/watch-jules-session.py', 'utf8');
     assert(
         seoWorkflow.includes('Final live-duplicate gate:'),
         'SEO/GEO prompt must recheck current main and forbid zero-file duplicate PRs'
     );
+    for (const [name, workflow] of [
+        ['SEO/GEO', seoWorkflow],
+        ['mobile', mobileWorkflow],
+    ]) {
+        assert(
+            workflow.includes('Enforce autonomous terminal Jules state'),
+            `${name} workflow must verify Jules completion instead of only session creation`
+        );
+        assert(
+            workflow.includes('.github/scripts/watch-jules-session.py'),
+            `${name} workflow must run the shared Jules terminal-state watchdog`
+        );
+        assert(
+            workflow.indexOf('actions/checkout@') < workflow.indexOf('.github/scripts/watch-jules-session.py'),
+            `${name} workflow must checkout before running the repository-owned watchdog`
+        );
+    }
+    for (const contract of [
+        'AWAITING_USER_FEEDBACK',
+        'WAITING_FOR_USER',
+        ':sendMessage',
+        'max_replacements',
+        'AUTONOMOUS RECOVERY REQUIREMENT',
+    ]) {
+        assert(
+            watchdog.includes(contract),
+            `Jules watchdog is missing terminal-state contract: ${contract}`
+        );
+    }
 
     const articlePolicy = fs.readFileSync('.github/prompts/jules-weekday-article-update.md', 'utf8');
     assert(
