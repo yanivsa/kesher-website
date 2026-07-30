@@ -29,6 +29,13 @@ RECOVERY_SUFFIX = (
     "smallest safe repo-consistent option through validation and a non-draft PR, or finish "
     "as a factual clean no-op with no changeSet, branch, commit, push, or PR."
 )
+INVALID_OUTPUT_CONTINUATION = (
+    "Your COMPLETED state is invalid because it contains a changeSet without a pull "
+    "request. Refresh origin/main, remove all inherited or incidental files, and finish "
+    "the focused change as one validated non-draft PR. If the change is stale or cannot "
+    "be isolated, remove the changeSet and finish as a true clean no-op. Do not ask a "
+    "question and do not report COMPLETED again with a changeSet but no PR."
+)
 
 
 def request_json(
@@ -85,6 +92,15 @@ def create_replacement(payload: dict, api_key: str) -> str:
     return name
 
 
+def terminal_output_contract(session: dict) -> tuple[bool, str]:
+    outputs = session.get("outputs") or []
+    has_change_set = any("changeSet" in output for output in outputs)
+    has_pull_request = any("pullRequest" in output for output in outputs)
+    if has_change_set and not has_pull_request:
+        return False, "COMPLETED with changeSet but no pullRequest"
+    return True, f"{len(outputs)} output artifact(s)"
+
+
 def watch(
     initial_session: str,
     payload: dict,
@@ -98,6 +114,7 @@ def watch(
     continued: set[str] = set()
     replacements = 0
     last_state = ""
+    invalid_completed_polls: dict[str, int] = {}
 
     while time.monotonic() < deadline:
         session = request_json("GET", f"/{current}", api_key)
@@ -107,12 +124,41 @@ def watch(
             last_state = state
 
         if state in SUCCESS_STATES:
-            outputs = session.get("outputs") or []
-            print(
-                f"Jules session completed with {len(outputs)} output artifact(s): {current}",
-                flush=True,
-            )
-            return 0
+            valid, evidence = terminal_output_contract(session)
+            if valid:
+                print(
+                    f"Jules session completed with {evidence}: {current}",
+                    flush=True,
+                )
+                return 0
+
+            polls = invalid_completed_polls.get(current, 0)
+            if polls == 0:
+                request_json(
+                    "POST",
+                    f"/{current}:sendMessage",
+                    api_key,
+                    {"prompt": INVALID_OUTPUT_CONTINUATION},
+                )
+                print(
+                    f"Rejected false terminal success and requested cleanup: "
+                    f"{current} ({evidence})",
+                    flush=True,
+                )
+            invalid_completed_polls[current] = polls + 1
+            if polls >= 5:
+                if replacements >= max_replacements:
+                    print(
+                        f"Jules session retained invalid output after autonomous cleanup: "
+                        f"{current} ({evidence})",
+                        file=sys.stderr,
+                    )
+                    return 1
+                current = create_replacement(payload, api_key)
+                replacements += 1
+                last_state = ""
+            time.sleep(poll_seconds)
+            continue
 
         if state in WAITING_STATES:
             if current not in continued:

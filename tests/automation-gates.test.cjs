@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { execSync } = require('child_process');
+const { execFileSync, execSync } = require('child_process');
 const fs = require('fs');
 
 function testGenericH3() {
@@ -232,12 +232,22 @@ function testAutomergeDeployContracts() {
         ':sendMessage',
         'max_replacements',
         'AUTONOMOUS RECOVERY REQUIREMENT',
+        'COMPLETED with changeSet but no pullRequest',
     ]) {
         assert(
             watchdog.includes(contract),
             `Jules watchdog is missing terminal-state contract: ${contract}`
         );
     }
+    execFileSync('python3', ['-c', `
+import runpy
+watchdog = runpy.run_path(".github/scripts/watch-jules-session.py")
+validate = watchdog["terminal_output_contract"]
+assert validate({"outputs": []})[0]
+assert validate({"outputs": [{"pullRequest": {"url": "https://example.test/pr/1"}}]})[0]
+assert not validate({"outputs": [{"changeSet": {"gitPatch": {}}}]})[0]
+assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https://example.test/pr/1"}}]})[0]
+`]);
     assert(
         seoWorkflow.includes('Discovery-to-action invariant:'),
         'SEO/GEO prompt must convert discovery into autonomous action instead of a question'
