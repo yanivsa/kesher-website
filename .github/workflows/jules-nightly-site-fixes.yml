@@ -43,7 +43,7 @@ jobs:
           import json
           with open("payload.json", encoding="utf-8") as fh:
               payload = json.load(fh)
-          payload["prompt"] += "\n\nNo-safe-fix completion rule: if inspection finds no safe non-duplicate high-confidence fix, that is a complete successful no-op. Immediately finish with a plain session summary naming the checked open PRs/categories, with no question, no file edit, no changeSet, no branch, no commit, and no PR."
+          payload["prompt"] += "\n\nNo-safe-fix completion rule: if inspection finds no safe non-duplicate high-confidence fix, that is a complete successful no-op. Immediately finish with a plain session summary naming the checked open PRs/categories, with no question, no file edit, no changeSet, no branch, no commit, and no PR.\n\nDiscovery-to-terminal rule: a discovery summary must never end by asking which area/file to inspect or whether to terminate as a no-op. Once the audit has either one safe focused candidate or no safe candidate, Jules must immediately execute the corresponding terminal path itself: implement/test/submit the one candidate, or prove a clean no-op and complete. Offering those paths to the user is forbidden."
           with open("payload.json", "w", encoding="utf-8") as fh:
               json.dump(payload, fh, ensure_ascii=False)
           PY
