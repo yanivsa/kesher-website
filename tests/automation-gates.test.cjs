@@ -267,6 +267,11 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
         'Mobile prompt must proceed autonomously after reproducing an issue'
     );
     assert(
+        mobileWorkflow.includes('Known-regression priority:') &&
+        mobileWorkflow.includes('`.heroWhatsapp` and `.quickDock`'),
+        'Mobile prompt must prioritize the known fixed-dock/hero CTA collision'
+    );
+    assert(
         siteFixWorkflow.includes('Offering those paths to the user is forbidden.'),
         'Site-fix prompt must complete the selected terminal path without asking'
     );
