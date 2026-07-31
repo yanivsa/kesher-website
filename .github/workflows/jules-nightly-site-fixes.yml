@@ -17,6 +17,9 @@ jobs:
   start-jules:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
       - name: Start Jules autonomous site-fix session
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
@@ -43,28 +46,27 @@ jobs:
           import json
           with open("payload.json", encoding="utf-8") as fh:
               payload = json.load(fh)
-          payload["prompt"] += "\n\nNo-safe-fix completion rule: if inspection finds no safe non-duplicate high-confidence fix, that is a complete successful no-op. Immediately finish with a plain session summary naming the checked open PRs/categories, with no question, no file edit, no changeSet, no branch, no commit, and no PR.\n\nDiscovery-to-terminal rule: a discovery summary must never end by asking which area/file to inspect or whether to terminate as a no-op. Once the audit has either one safe focused candidate or no safe candidate, Jules must immediately execute the corresponding terminal path itself: implement/test/submit the one candidate, or prove a clean no-op and complete. Offering those paths to the user is forbidden."
+          payload["prompt"] += "\n\nNo-safe-fix completion rule: if inspection finds no safe non-duplicate high-confidence fix, that is a complete successful no-op. Immediately finish with a plain session summary naming the checked open PRs/categories, with no question, no file edit, no changeSet, no branch, no commit, and no PR.\n\nDiscovery-to-terminal rule: a discovery summary must never end by asking which area/file to inspect or whether to terminate as a no-op. Once the audit has either one safe focused candidate or no safe candidate, Jules must immediately execute the corresponding terminal path itself: implement/test/submit the one candidate, or prove a clean no-op and complete. Offering those paths to the user is forbidden.\n\nWarning-only guardrail: a Vite or build-tool recommendation is not by itself a verified defect. Do not migrate between @vitejs/plugin-react-swc and @vitejs/plugin-react, change package dependencies, or open a PR solely to silence a recommendation. Build-tool changes require a reproduced build/reliability failure and focused validation; otherwise choose another measured issue or finish a clean no-op.\n\nTerminal invariant: never report COMPLETED with a changeSet but no pull request. A meaningful change must end in one validated non-draft PR. If submit/rebase/API failure prevents that, retry boundedly, then remove the changeSet and finish as a factual clean no-op or explicit failure without asking the user."
           with open("payload.json", "w", encoding="utf-8") as fh:
               json.dump(payload, fh, ensure_ascii=False)
           PY
 
-          for attempt in 1 2 3; do
-            status="$(curl -sS -o response.json -w '%{http_code}' \
-              -H "x-goog-api-key: ${JULES_API_KEY}" \
-              -H "Content-Type: application/json" \
-              -d @payload.json \
-              https://jules.googleapis.com/v1alpha/sessions || true)"
-            cat response.json
-            if [ "${status}" = "200" ] || [ "${status}" = "201" ]; then
-              exit 0
-            fi
-            if [ "${status}" = "429" ] || [ "${status}" -ge 500 ]; then
-              echo "Jules API returned ${status}; retrying attempt ${attempt}/3."
-              sleep $((attempt * 20))
-              continue
-            fi
-            exit 1
-          done
+          status="$(curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
+            -o response.json -w '%{http_code}' \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            https://jules.googleapis.com/v1alpha/sessions)"
+          cat response.json
+          test "${status}" = "200" -o "${status}" = "201"
 
-          echo "Jules API did not create a site-fix session after retries; failing with explicit external-infrastructure status."
-          exit 1
+      - name: Enforce autonomous terminal Jules state
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          python3 .github/scripts/watch-jules-session.py \
+            --payload payload.json \
+            --response response.json \
+            --max-seconds 3600 \
+            --poll-seconds 10 \
+            --max-replacements 1
