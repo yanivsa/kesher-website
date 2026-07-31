@@ -33,7 +33,7 @@ const BlogPreview: React.FC = () => {
               <div className={styles.content}>
                 <h3 className={styles.postTitle}>{post.title}</h3>
                 <p className={styles.excerpt}>{post.excerpt}</p>
-                <Link to={`/blog/${post.id}`} className={styles.readMore}>קרא עוד</Link>
+                <Link to={`/blog/${post.id}`} className={styles.readMore} aria-label={`קרא עוד על ${post.title}`}>קרא עוד</Link>
               </div>
             </article>
           ))}
