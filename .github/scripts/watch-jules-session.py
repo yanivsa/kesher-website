@@ -13,6 +13,7 @@ import urllib.request
 from pathlib import Path
 
 API_BASE = "https://jules.googleapis.com/v1alpha"
+AUTONOMOUS_CLEANUP_GRACE_SECONDS = 600
 WAITING_STATES = {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER"}
 SUCCESS_STATES = {"COMPLETED"}
 FAILURE_STATES = {"FAILED", "CANCELLED"}
@@ -144,6 +145,13 @@ def watch(
                     f"Rejected false terminal success and requested cleanup: "
                     f"{current} ({evidence})",
                     flush=True,
+                )
+                # A false COMPLETED state often arrives near the workflow's original
+                # deadline. Give the same session a bounded fresh window to submit or
+                # clean up instead of timing out immediately after the correction.
+                deadline = max(
+                    deadline,
+                    time.monotonic() + AUTONOMOUS_CLEANUP_GRACE_SECONDS,
                 )
             invalid_completed_polls[current] = polls + 1
             if polls >= 5:

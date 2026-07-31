@@ -211,6 +211,7 @@ function testAutomergeDeployContracts() {
 
     const seoWorkflow = fs.readFileSync('.github/workflows/jules-daily-seo-geo-review.yml', 'utf8');
     const mobileWorkflow = fs.readFileSync('.github/workflows/jules-daily-mobile-review.yml', 'utf8');
+    const siteFixWorkflow = fs.readFileSync('.github/workflows/jules-nightly-site-fixes.yml', 'utf8');
     const watchdog = fs.readFileSync('.github/scripts/watch-jules-session.py', 'utf8');
     assert(
         seoWorkflow.includes('Final live-duplicate gate:'),
@@ -219,6 +220,7 @@ function testAutomergeDeployContracts() {
     for (const [name, workflow] of [
         ['SEO/GEO', seoWorkflow],
         ['mobile', mobileWorkflow],
+        ['site-fix', siteFixWorkflow],
     ]) {
         assert(
             workflow.includes('Enforce autonomous terminal Jules state'),
@@ -240,6 +242,7 @@ function testAutomergeDeployContracts() {
         'max_replacements',
         'AUTONOMOUS RECOVERY REQUIREMENT',
         'COMPLETED with changeSet but no pullRequest',
+        'AUTONOMOUS_CLEANUP_GRACE_SECONDS',
     ]) {
         assert(
             watchdog.includes(contract),
@@ -263,10 +266,22 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
         mobileWorkflow.includes('Asking whether to fix that issue or inspect another page is forbidden.'),
         'Mobile prompt must proceed autonomously after reproducing an issue'
     );
-    const siteFixWorkflow = fs.readFileSync('.github/workflows/jules-nightly-site-fixes.yml', 'utf8');
+    assert(
+        mobileWorkflow.includes('Known-regression priority:') &&
+        mobileWorkflow.includes('`.heroWhatsapp` and `.quickDock`'),
+        'Mobile prompt must prioritize the known fixed-dock/hero CTA collision'
+    );
     assert(
         siteFixWorkflow.includes('Offering those paths to the user is forbidden.'),
         'Site-fix prompt must complete the selected terminal path without asking'
+    );
+    assert(
+        siteFixWorkflow.includes('a Vite or build-tool recommendation is not by itself a verified defect'),
+        'Site-fix prompt must reject warning-only dependency migrations'
+    );
+    assert(
+        seoWorkflow.includes('must not bulk-rewrite article bodies'),
+        'SEO/GEO prompt must not turn a technical review into bulk article publication work'
     );
 
     const articlePolicy = fs.readFileSync('.github/prompts/jules-weekday-article-update.md', 'utf8');
