@@ -85,6 +85,7 @@ const AboutPage: React.FC = () => {
               alt="שירה סהרוני, יועצת זוגית ומשפחתית, מגשרת ומנחת הורים"
               width="1271"
               height="1280"
+              fetchPriority="high"
             />
             <div className={styles.imageBadge}>מקשיבים • מבינים • מתקדמים</div>
           </div>
