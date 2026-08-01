@@ -169,7 +169,7 @@ const BlogList: React.FC = () => {
                     alt={post.title}
                     className={styles.image}
                     loading="lazy"
-                    {...getImageDimensions(post.image)}
+                    {...getImageDimensions(post.image || "")}
                   />
                   <span className={styles.categoryBadge}>
                     {('subcategory' in post && post.subcategory) ? post.subcategory : post.category}

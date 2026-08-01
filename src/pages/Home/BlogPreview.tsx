@@ -26,7 +26,7 @@ const BlogPreview: React.FC = () => {
                   alt={post.title}
                   className={styles.postImage}
                   loading="lazy"
-                  {...getImageDimensions(post.image)}
+                  {...getImageDimensions(post.image || "")}
                 />
                 <span className={styles.category}>{post.category}</span>
               </div>
