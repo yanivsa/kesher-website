@@ -7,7 +7,7 @@
 .ai-chat-consent {
   position: fixed;
   inset-inline-start: 1rem;
-  bottom: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
   z-index: 999;
   border: 1px solid var(--color-primary-dark);
   border-radius: 999px;
@@ -38,7 +38,7 @@
   .ai-chat-consent {
     inset-inline-start: auto;
     inset-inline-end: 1rem;
-    bottom: 5rem;
+    bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
     padding: 0.8rem;
   }
   .ai-chat-text {
