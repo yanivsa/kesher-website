@@ -1447,6 +1447,10 @@
     width: 100%;
   }
 
+  .heroWhatsapp {
+    margin-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
   .trustRow {
     gap: 0.65rem 1rem;
   }
