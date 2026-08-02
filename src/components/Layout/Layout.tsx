@@ -14,7 +14,10 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { pathname } = useLocation();
-  const usesStandaloneHomepage = pathname === '/'
+  const usesStandaloneHomepage = pathname === '/beta'
+    || pathname === '/beta/'
+    || pathname === '/beta2'
+    || pathname === '/beta2/'
     || pathname === '/b'
     || pathname === '/b/';
 
