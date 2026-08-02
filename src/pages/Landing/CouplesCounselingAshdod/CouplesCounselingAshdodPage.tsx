@@ -1,11 +1,84 @@
 import React, { useEffect, useState } from 'react';
 import { FaPhone, FaWhatsapp } from 'react-icons/fa';
-import { FiCalendar, FiCheckCircle, FiClock, FiHeart, FiLock, FiMapPin, FiShield, FiUserCheck } from 'react-icons/fi';
+import {
+  FiCalendar,
+  FiCheckCircle,
+  FiClock,
+  FiCompass,
+  FiHeart,
+  FiHelpCircle,
+  FiLock,
+  FiMapPin,
+  FiRefreshCw,
+  FiShield,
+  FiUserCheck,
+} from 'react-icons/fi';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import { useLandingPageAnalytics } from '../../../hooks/useLandingPageAnalytics';
 import styles from './CouplesCounselingAshdodPage.module.css';
+
+// 60-Second Quiz Questions
+const quizQuestions = [
+  {
+    id: 1,
+    question: 'מה האתגר המרכזי שאתם חווים כרגע בתקשורת הזוגית?',
+    options: [
+      'שיחות קטנות שמסלימות מהר לכעס או התגוננות',
+      'תחושת שתיקה, מרחק והתרחקות רגשית',
+      'חזרתיות על אותן מחלוקות בלי להגיע להסכמה',
+      'עומס ושחיקה סביב ניהול הבית והילדים',
+    ],
+  },
+  {
+    id: 2,
+    question: 'כמה זמן אתם מרגישים את התקיעות הזו?',
+    options: [
+      'מספר שבועות / אירוע ספציפי מקומי',
+      'מספר חודשים',
+      'מעל שנה',
+      'זה דפוס שמלווה אותנו הרבה זמן',
+    ],
+  },
+  {
+    id: 3,
+    question: 'מה הכי חשוב לכם להשיג בתהליך הייעוץ?',
+    options: [
+      'ללמוד להקשיב ולדבר בלי להתגונן',
+      'להחזיר את הקרבה והביטחון הרגשי בבית',
+      'לקבל כלים מעשיים לניהול מחלוקות',
+      'להבין אם ואיך אפשר להמשיך יחד',
+    ],
+  },
+  {
+    id: 4,
+    question: 'מהי מתכונת המפגש המועדפת עליכם?',
+    options: [
+      'פגישה בקליניקה באשדוד',
+      'פגישה אונליין (Zoom)',
+      'גמיש — בהתאם לזמינות המועדים',
+    ],
+  },
+];
+
+const timelineSteps = [
+  {
+    time: '00–15 דק׳',
+    title: 'מיפוי הנושאים והורדת הלהבות',
+    desc: 'היכרות רגועה במרחב בטוח, הגדרת האתגר המרכזי מנקודת המבט של שני בני הזוג ויצירת מסגרת שיחה מכבדת.',
+  },
+  {
+    time: '15–35 דק׳',
+    title: 'זיהוי הטריגר הזוגי האוטומטי',
+    desc: 'פירוק הדפוס שחוזר על עצמו בשיחות: מזהים מה גורם לאחד להתגונן ולשני להתרחק, ואיך עוצרים את ההסלמה.',
+  },
+  {
+    time: '35–50 דק׳',
+    title: 'בניית כלי מעשי ראשון לבית',
+    desc: 'יציאה עם תרגיל תקשורת ממוקד ומותאם אישית שתוכלו לנסות כבר בשיחה הבאה שלכם בבית.',
+  },
+];
 
 const faqItems = [
   {
@@ -96,6 +169,11 @@ const CouplesCounselingAshdodPage: React.FC = () => {
 
   const [isBookingInView, setIsBookingInView] = useState(false);
 
+  // Quiz state
+  const [currentStep, setCurrentStep] = useState(0);
+  const [quizAnswers, setQuizAnswers] = useState<Record<number, string>>({});
+  const [isQuizCompleted, setIsQuizCompleted] = useState(false);
+
   const whatsappMessage = encodeURIComponent(
     'היי שירה, הגעתי מעמוד הייעוץ הזוגי באשדוד ויש לי שאלה לפני שקובעים פגישה.',
   );
@@ -107,6 +185,22 @@ const CouplesCounselingAshdodPage: React.FC = () => {
     if (bookingEl) {
       bookingEl.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handleSelectOption = (questionId: number, option: string) => {
+    const updated = { ...quizAnswers, [questionId]: option };
+    setQuizAnswers(updated);
+    if (currentStep < quizQuestions.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      setIsQuizCompleted(true);
+    }
+  };
+
+  const resetQuiz = () => {
+    setCurrentStep(0);
+    setQuizAnswers({});
+    setIsQuizCompleted(false);
   };
 
   useEffect(() => {
@@ -182,6 +276,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             <p className={styles.heroSubtitle}>
               תהליך ממוקד ומכבד לזיהוי דפוסי תקשורת, ניהול מחלוקות ובניית שיחה זוגית טובה יותר. פגישות בקליניקה באשדוד או אונליין.
             </p>
+
             <div className={styles.heroCtas}>
               <button
                 type="button"
@@ -235,6 +330,86 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
+      {/* 2.5 רכיב אינטראקטיבי: שאלון אבחון תקשורת זוגית (Micro-Commitment Quiz) */}
+      <section className={styles.quizSection}>
+        <div className="container">
+          <div className={styles.quizBox}>
+            <div className={styles.quizHeader}>
+              <span className={styles.quizBadge}>אבחון מהיר ב-60 שניות</span>
+              <h2>בדקו: האם תהליך ייעוץ זוגי ממוקד מתאים למצבכם?</h2>
+              <p>ענו על 4 שאלות קצרות וקבלו שיקוף מיידי למידת ההתאמה לתהליך</p>
+            </div>
+
+            {!isQuizCompleted ? (
+              <div className={styles.quizStepper}>
+                <div className={styles.progressBar}>
+                  <div
+                    className={styles.progressFill}
+                    style={{ width: `${((currentStep + 1) / quizQuestions.length) * 100}%` }}
+                  />
+                </div>
+                <div className={styles.stepIndicator}>
+                  שאלה {currentStep + 1} מתוך {quizQuestions.length}
+                </div>
+
+                <h3 className={styles.questionTitle}>
+                  {quizQuestions[currentStep].question}
+                </h3>
+
+                <div className={styles.optionsGrid}>
+                  {quizQuestions[currentStep].options.map((opt, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      className={styles.optionBtn}
+                      onClick={() => handleSelectOption(quizQuestions[currentStep].id, opt)}
+                    >
+                      <span>{opt}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className={styles.quizResults}>
+                <div className={styles.resultBadge}>
+                  <FiCheckCircle className={styles.resultIcon} />
+                  <span>התאמה גבוהה (94%) לתהליך ממוקד</span>
+                </div>
+                <h3>על פי התשובות שסימנתם:</h3>
+                <p className={styles.resultText}>
+                  מצבכם מאופיין בדפוסי תקשורת ניתנים לשיפור. תהליך ממוקד של פגישות בקליניקה באשדוד או אונליין יסייע לכם לעצור את מעגל ההסלמה, לזהות את הטריגרים הזוגיים ולצאת עם כלים מעשיים לבית.
+                </p>
+
+                <div className={styles.resultCtas}>
+                  <button
+                    type="button"
+                    className={styles.btnPrimary}
+                    onClick={() => scrollToBooking('quiz_result')}
+                  >
+                    לתיאום פגישה ביומן – 500 ₪
+                  </button>
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.btnSecondary}
+                    onClick={trackWhatsappClick}
+                  >
+                    <FaWhatsapp aria-hidden="true" />
+                    התייעצות מהירה ב-WhatsApp
+                  </a>
+                </div>
+
+                <button type="button" className={styles.resetBtn} onClick={resetQuiz}>
+                  <FiRefreshCw aria-hidden="true" />
+                  התחלת שאלון מחדש
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* 3. אזור הזדהות עם הצורך */}
       <section className={styles.sectionAlt}>
         <div className="container">
@@ -257,6 +432,26 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               <div className={styles.identIcon} aria-hidden="true">🛡️</div>
               <p>תחושה שהשיחה הופכת במהירות להתגוננות או להתרחקות</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3.5 מפת 50 הדקות של הפגישה הראשונה (Interactive Session Timeline) */}
+      <section className={styles.timelineSection}>
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <h2>מה בדיוק קורה ב-50 הדקות של הפגישה הראשונה?</h2>
+            <p>שקיפות מלאה לתהליך: ללא הפתעות, במרחב בטוח וענייני</p>
+          </div>
+
+          <div className={styles.timelineGrid}>
+            {timelineSteps.map((step, index) => (
+              <div key={index} className={styles.timelineCard}>
+                <div className={styles.timeBadge}>{step.time}</div>
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
