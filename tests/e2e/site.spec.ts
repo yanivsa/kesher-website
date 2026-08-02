@@ -227,3 +227,81 @@ test('couples counseling Ashdod landing page renders correctly with Calendly, 50
   expect(dataLayerHasView).toBe(true);
 });
 
+test('copy variants A, B, and C render their respective H1 titles', async ({ page }) => {
+  // Variant A (default)
+  await page.goto('/couples-counseling-ashdod');
+  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי באשדוד – דרך מעשית לדבר אחרת', level: 1 })).toBeVisible();
+
+  // Variant B
+  await page.goto('/couples-counseling-ashdod?variant=B');
+  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי באשדוד בתהליך ממוקד ומכבד', level: 1 })).toBeVisible();
+
+  // Variant C
+  await page.goto('/couples-counseling-ashdod?variant=C');
+  await expect(page.getByRole('heading', { name: 'משנים את דרך השיחה – צעד אחר צעד', level: 1 })).toBeVisible();
+});
+
+test('thank-you pages render with noindex and standalone layout', async ({ page }) => {
+  // Booked Thank-You Page
+  await page.goto('/thank-you-booked');
+  await expect(page.getByRole('heading', { name: 'הפגישה נקבעה', level: 1 })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  
+  const bookedDataLayer = await page.evaluate(() => {
+    return Array.isArray(window.dataLayer) && window.dataLayer.some((evt) => evt.event === 'thank_you_view');
+  });
+  expect(bookedDataLayer).toBe(true);
+
+  // Contact Thank-You Page
+  await page.goto('/thank-you-contact');
+  await expect(page.getByRole('heading', { name: 'הפנייה התקבלה', level: 1 })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
+  
+  const contactDataLayer = await page.evaluate(() => {
+    return Array.isArray(window.dataLayer) && window.dataLayer.some((evt) => evt.event === 'thank_you_view');
+  });
+  expect(contactDataLayer).toBe(true);
+});
+
+test('Calendly postMessage event scheduled triggers booking_confirmed dataLayer event and deduplicates', async ({ page }) => {
+  await page.goto('/couples-counseling-ashdod');
+
+  // Trigger postMessage simulation
+  await page.evaluate(() => {
+    window.postMessage(
+      {
+        event: 'calendly.event_scheduled',
+        payload: { event: { uri: 'test_uri_123' } },
+      },
+      '*',
+    );
+  });
+
+  // Wait for dataLayer to record booking_confirmed
+  await page.waitForFunction(() => {
+    return Array.isArray(window.dataLayer) && window.dataLayer.some((evt) => evt.event === 'booking_confirmed');
+  });
+
+  const bookingCount = await page.evaluate(() => {
+    return window.dataLayer.filter((evt) => evt.event === 'booking_confirmed').length;
+  });
+  expect(bookingCount).toBe(1);
+
+  // Repeat same event - deduplication should prevent second trigger
+  await page.evaluate(() => {
+    window.postMessage(
+      {
+        event: 'calendly.event_scheduled',
+        payload: { event: { uri: 'test_uri_123' } },
+      },
+      '*',
+    );
+  });
+
+  const newBookingCount = await page.evaluate(() => {
+    return window.dataLayer.filter((evt) => evt.event === 'booking_confirmed').length;
+  });
+  expect(newBookingCount).toBe(1);
+});
+
+

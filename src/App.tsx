@@ -61,6 +61,8 @@ const accessibility = loadable(() => import('./pages/Legal/AccessibilityPage'));
 const privacy = loadable(() => import('./pages/Legal/PrivacyPolicy'));
 const terms = loadable(() => import('./pages/Legal/TermsOfUse'));
 const couplesCounselingAshdod = loadable(() => import('./pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage'));
+const thankYouBooked = loadable(() => import('./pages/ThankYou/ThankYouBookedPage'));
+const thankYouContact = loadable(() => import('./pages/ThankYou/ThankYouContactPage'));
 const notFound = loadable(() => import('./pages/NotFound/NotFound'));
 
 const {
@@ -87,12 +89,16 @@ const { Page: AccessibilityPage } = accessibility;
 const { Page: PrivacyPolicy } = privacy;
 const { Page: TermsOfUse } = terms;
 const { Page: CouplesCounselingAshdodPage } = couplesCounselingAshdod;
+const { Page: ThankYouBookedPage } = thankYouBooked;
+const { Page: ThankYouContactPage } = thankYouContact;
 const { Page: NotFound } = notFound;
 
 const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/$/, home.preload],
   [/^\/beta2\/?$/, beta2.preload],
   [/^\/couples-counseling-ashdod\/?$/, couplesCounselingAshdod.preload],
+  [/^\/thank-you-booked\/?$/, thankYouBooked.preload],
+  [/^\/thank-you-contact\/?$/, thankYouContact.preload],
   [/^\/about\/?$/, about.preload],
   [/^\/services\/couples\/?$/, couples.preload],
   [/^\/services\/premarital-first-year\/?$/, premarital.preload],
@@ -129,6 +135,8 @@ function App() {
           <Route path="/beta" element={<Beta />} />
           <Route path="/beta2" element={<Beta2 />} />
           <Route path="/couples-counseling-ashdod" element={<CouplesCounselingAshdodPage />} />
+          <Route path="/thank-you-booked" element={<ThankYouBookedPage />} />
+          <Route path="/thank-you-contact" element={<ThankYouContactPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services/couples" element={<CouplesCounseling />} />
           <Route path="/services/premarital-first-year" element={<PremaritalPage />} />

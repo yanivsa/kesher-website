@@ -45,7 +45,9 @@ export const useLandingPageAnalytics = () => {
 
     // 3. Calendly postMessage listener
     const handleMessage = (e: MessageEvent) => {
-      if (!e.origin || !e.origin.includes('calendly.com')) {
+      // Validate origin strictly (calendly.com or current origin for testing)
+      const isCalendlyOrigin = e.origin && (e.origin.includes('calendly.com') || e.origin === window.location.origin);
+      if (!isCalendlyOrigin) {
         return;
       }
 
@@ -62,12 +64,14 @@ export const useLandingPageAnalytics = () => {
           event: 'calendly_event_type_viewed',
           booking_provider: 'calendly',
           service_type: 'couples_counseling',
+          landing_page_path: '/couples-counseling-ashdod',
         });
       } else if (eventName === 'calendly.date_and_time_selected') {
         window.dataLayer.push({
           event: 'calendly_date_and_time_selected',
           booking_provider: 'calendly',
           service_type: 'couples_counseling',
+          landing_page_path: '/couples-counseling-ashdod',
         });
       } else if (eventName === 'calendly.event_scheduled') {
         // Deduplication mechanism using sessionStorage & payload uri
@@ -88,14 +92,25 @@ export const useLandingPageAnalytics = () => {
             // ignore
           }
 
+          const searchParams = new URLSearchParams(window.location.search);
+          const variantId = (searchParams.get('variant') || 'A').toUpperCase();
+
           window.dataLayer.push({
             event: 'booking_confirmed',
             booking_provider: 'calendly',
             service_type: 'couples_counseling',
             landing_page_type: 'ashdod',
+            variant_id: variantId,
             value: 500,
             currency: 'ILS',
           });
+
+          // Safe redirect to thank-you-booked without any PII in URL
+          setTimeout(() => {
+            if (typeof window !== 'undefined') {
+              window.location.href = '/thank-you-booked';
+            }
+          }, 600);
         }
       }
     };

@@ -18,6 +18,8 @@ const STATIC_ROUTES = [
   '/blog',
   '/faq',
   '/couples-counseling-ashdod',
+  '/thank-you-booked',
+  '/thank-you-contact',
   '/accessibility',
   '/privacy',
   '/terms',

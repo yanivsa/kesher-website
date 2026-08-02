@@ -179,6 +179,24 @@ const schemaData = {
   ],
 };
 
+// Controlled Copy Variants Architecture (Variant A = Default Production, B = Trust & Process, C = Pattern)
+type VariantId = 'A' | 'B' | 'C';
+
+const copyVariants: Record<VariantId, { h1: string; subtitle: string }> = {
+  A: {
+    h1: 'ייעוץ זוגי באשדוד – דרך מעשית לדבר אחרת',
+    subtitle: 'תהליך ממוקד ומכבד לזיהוי דפוסי תקשורת, ניהול מחלוקות ובניית שיחה זוגית טובה יותר. פגישות בקליניקה באשדוד או אונליין.',
+  },
+  B: {
+    h1: 'ייעוץ זוגי באשדוד בתהליך ממוקד ומכבד',
+    subtitle: 'מרחב מסודר ומקצועי לזיהוי נקודות המחלוקת, רכישת כלים מעשיים והחזרת השקט לבית. פגישות בקליניקה באשדוד או אונליין.',
+  },
+  C: {
+    h1: 'משנים את דרך השיחה – צעד אחר צעד',
+    subtitle: 'מפסיקים לחזור על אותם וויכוחים: תהליך ייעוץ זוגי ממוקד באשדוד לניהול שיחות רגועות ובניית תקשורת מקרבת.',
+  },
+};
+
 const CouplesCounselingAshdodPage: React.FC = () => {
   const {
     trackCtaClick,
@@ -188,40 +206,14 @@ const CouplesCounselingAshdodPage: React.FC = () => {
   } = useLandingPageAnalytics();
 
   const [isBookingInView, setIsBookingInView] = useState(false);
-
-  // Quiz state
-  const [currentStep, setCurrentStep] = useState(0);
-  const [quizAnswers, setQuizAnswers] = useState<Record<number, string>>({});
-  const [isQuizCompleted, setIsQuizCompleted] = useState(false);
-
-  const whatsappMessage = encodeURIComponent(
-    'היי שירה, הגעתי מעמוד הייעוץ הזוגי באשדוד ויש לי שאלה לפני שקובעים פגישה.',
-  );
-  const whatsappUrl = `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${whatsappMessage}`;
-
-  const scrollToBooking = (location: string) => {
-    trackCtaClick('קביעת פגישת ייעוץ – 500 ₪', location);
-    const bookingEl = document.getElementById('booking');
-    if (bookingEl) {
-      bookingEl.scrollIntoView({ behavior: 'smooth' });
+  const [variantId] = useState<VariantId>(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const v = (params.get('variant') || '').toUpperCase() as VariantId;
+      if (v === 'B' || v === 'C') return v;
     }
-  };
-
-  const handleSelectOption = (questionId: number, option: string) => {
-    const updated = { ...quizAnswers, [questionId]: option };
-    setQuizAnswers(updated);
-    if (currentStep < quizQuestions.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      setIsQuizCompleted(true);
-    }
-  };
-
-  const resetQuiz = () => {
-    setCurrentStep(0);
-    setQuizAnswers({});
-    setIsQuizCompleted(false);
-  };
+    return 'A';
+  });
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -291,10 +283,10 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               <span>ייעוץ זוגי באשדוד והסביבה</span>
             </div>
             <h1 className={styles.heroTitle}>
-              ייעוץ זוגי באשדוד – דרך מעשית לדבר אחרת
+              {copyVariants[variantId].h1}
             </h1>
             <p className={styles.heroSubtitle}>
-              תהליך ממוקד ומכבד לזיהוי דפוסי תקשורת, ניהול מחלוקות ובניית שיחה זוגית טובה יותר. פגישות בקליניקה באשדוד או אונליין.
+              {copyVariants[variantId].subtitle}
             </p>
 
             <div className={styles.heroCtas}>

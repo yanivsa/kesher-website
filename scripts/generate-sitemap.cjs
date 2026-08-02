@@ -19,18 +19,21 @@ const serviceRoutes = new Set([
   '/couples-counseling-ashdod',
   '/faq',
 ]);
+const noindexRoutes = new Set(['/thank-you-booked', '/thank-you-contact']);
 const buildSitemap = (posts) => {
   const published = posts.filter(isPublishable);
   const newestPostDate = published.reduce(
     (latest, post) => post.date > latest ? post.date : latest,
     '',
   );
-  const staticEntries = STATIC_ROUTES.map((route) => ({
-    route,
-    lastmod: route === '/blog' ? newestPostDate : '',
-    changefreq: route === '/' || route === '/blog' ? 'weekly' : legalRoutes.has(route) ? 'yearly' : 'monthly',
-    priority: route === '/' ? '1.0' : route === '/blog' ? '0.9' : serviceRoutes.has(route) ? '0.8' : '0.3',
-  }));
+  const staticEntries = STATIC_ROUTES
+    .filter((route) => !noindexRoutes.has(route))
+    .map((route) => ({
+      route,
+      lastmod: route === '/blog' ? newestPostDate : '',
+      changefreq: route === '/' || route === '/blog' ? 'weekly' : legalRoutes.has(route) ? 'yearly' : 'monthly',
+      priority: route === '/' ? '1.0' : route === '/blog' ? '0.9' : serviceRoutes.has(route) ? '0.8' : '0.3',
+    }));
   const postEntries = published.map((post) => ({
     route: blogRoute(post),
     lastmod: post.date,

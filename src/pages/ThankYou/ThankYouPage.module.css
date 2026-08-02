@@ -1,0 +1,140 @@
+/* Thank You Pages Standalone Styling */
+.page {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: Arial, 'Arial Hebrew', 'Noto Sans Hebrew', sans-serif;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 1.25rem 0;
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.brandTitle {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-primary-dark);
+  display: block;
+}
+
+.brandSubtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  margin: 0 auto;
+}
+
+.iconWrapper {
+  width: 72px;
+  height: 72px;
+  background: #E8F5E9;
+  color: #2E7D32;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  margin: 0 auto 1.5rem;
+}
+
+.card h1 {
+  font-size: 2rem;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+.card p {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btnPrimary {
+  background: var(--color-primary);
+  color: white;
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnPrimary:hover {
+  background: var(--color-primary-dark);
+  color: white;
+}
+
+.btnSecondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnSecondary:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.footer {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: 1.5rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #B0A79E;
+}
