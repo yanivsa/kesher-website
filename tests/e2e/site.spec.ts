@@ -220,11 +220,19 @@ test('couples counseling Ashdod landing page renders correctly with Calendly, 50
   const calendlyFrame = page.locator('iframe[title*="Calendly"]');
   await expect(calendlyFrame).toBeVisible();
 
-  // Verify GTM dataLayer landing_page_view event was pushed
+  // Verify GTM dataLayer landing_page_view event was pushed with variant_id
   const dataLayerHasView = await page.evaluate(() => {
-    return Array.isArray(window.dataLayer) && window.dataLayer.some((evt) => evt.event === 'landing_page_view');
+    return Array.isArray(window.dataLayer) && window.dataLayer.some(
+      (evt) => evt.event === 'landing_page_view' && evt.variant_id === 'A'
+    );
   });
   expect(dataLayerHasView).toBe(true);
+
+  // Regression: no fabricated quiz or testimonials
+  await expect(page.getByText('94%')).not.toBeVisible();
+  await expect(page.getByText('אבחון מהיר')).not.toBeVisible();
+  await expect(page.getByText('ז׳ ו-נ׳')).not.toBeVisible();
+  await expect(page.getByText('PLACEHOLDER')).not.toBeVisible();
 });
 
 test('copy variants A, B, and C render their respective H1 titles', async ({ page }) => {
@@ -238,7 +246,7 @@ test('copy variants A, B, and C render their respective H1 titles', async ({ pag
 
   // Variant C
   await page.goto('/couples-counseling-ashdod?variant=C');
-  await expect(page.getByRole('heading', { name: 'משנים את דרך השיחה – צעד אחר צעד', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'כשהשיחות חוזרות לאותו דפוס – ייעוץ זוגי באשדוד', level: 1 })).toBeVisible();
 });
 
 test('thank-you pages render with noindex and standalone layout', async ({ page }) => {

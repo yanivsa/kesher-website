@@ -7,7 +7,6 @@ import {
   FiHeart,
   FiLock,
   FiMapPin,
-  FiRefreshCw,
   FiShield,
   FiUserCheck,
 } from 'react-icons/fi';
@@ -17,70 +16,7 @@ import { SITE_CONFIG } from '../../../constants/siteConfig';
 import { useLandingPageAnalytics } from '../../../hooks/useLandingPageAnalytics';
 import styles from './CouplesCounselingAshdodPage.module.css';
 
-// 60-Second Quiz Questions
-const quizQuestions = [
-  {
-    id: 1,
-    question: 'מה האתגר המרכזי שאתם חווים כרגע בתקשורת הזוגית?',
-    options: [
-      'שיחות קטנות שמסלימות מהר לכעס או התגוננות',
-      'תחושת שתיקה, מרחק והתרחקות רגשית',
-      'חזרתיות על אותן מחלוקות בלי להגיע להסכמה',
-      'עומס ושחיקה סביב ניהול הבית והילדים',
-    ],
-  },
-  {
-    id: 2,
-    question: 'כמה זמן אתם מרגישים את התקיעות הזו?',
-    options: [
-      'מספר שבועות / אירוע ספציפי מקומי',
-      'מספר חודשים',
-      'מעל שנה',
-      'זה דפוס שמלווה אותנו הרבה זמן',
-    ],
-  },
-  {
-    id: 3,
-    question: 'מה הכי חשוב לכם להשיג בתהליך הייעוץ?',
-    options: [
-      'ללמוד להקשיב ולדבר בלי להתגונן',
-      'להחזיר את הקרבה והביטחון הרגשי בבית',
-      'לקבל כלים מעשיים לניהול מחלוקות',
-      'להבין אם ואיך אפשר להמשיך יחד',
-    ],
-  },
-  {
-    id: 4,
-    question: 'מהי מתכונת המפגש המועדפת עליכם?',
-    options: [
-      'פגישה בקליניקה באשדוד',
-      'פגישה אונליין (Zoom)',
-      'גמיש — בהתאם לזמינות המועדים',
-    ],
-  },
-];
 
-// ⚠️ PLACEHOLDER — יש להחליף בעדויות אמיתיות של לקוחות שירה לפני השקה
-const testimonials = [
-  {
-    text: 'הגענו לשירה אחרי שנה וחצי שבה כל שיחה רצינית הסתיימת בשתיקה. בפגישה הראשונה בינינו הצלחנו לומר בפעם הראשונה מה כל אחד מאיתנו באמת מרגיש — לא מה שהצד השני עשה לנו. זה שינה משהו.',
-    author: 'ז׳ ו-נ׳',
-    location: 'אשדוד',
-    category: 'ייעוץ זוגי',
-  },
-  {
-    text: 'חשבנו שאנחנו כבר יודעים הכל אחד על השני. שירה הראתה לנו שאנחנו שומעים אחד את השני, אבל לא מקשיבים. מאז השיחות שלנו נראות אחרת — עדיין לא מושלמות, אבל הרבה יותר קלות.',
-    author: 'מ׳ ו-ד׳',
-    location: 'גן יבנה',
-    category: 'ייעוץ זוגי',
-  },
-  {
-    text: 'פחדתי שנשב מול מישהי שתגיד לי מה אני עושה לא נכון. מה שקרה בפועל היה הפוך לגמרי. שירה עזרה לי להבין מה אני צריך מהזוגיות שלי, ולהגיד את זה בלי להתגונן.',
-    author: 'א׳',
-    location: 'אשדוד',
-    category: 'ייעוץ פרטני במסגרת תהליך זוגי',
-  },
-];
 
 const timelineSteps = [
   {
@@ -127,7 +63,7 @@ const faqItems = [
   },
   {
     question: 'האם הפגישות דיסקרטיות?',
-    answer: 'הפגישות מתקיימות במרחב פרטי ומכבד תוך שמירה מלאה על פרטיות הפונים בהתאם לאתיקה המקצועית.',
+    answer: 'הפגישות מתקיימות במרחב פרטי ומכבד, בהתאם לכללי האתיקה המקצועית. ניתן לעיין במדיניות הפרטיות של האתר.',
   },
 ];
 
@@ -189,22 +125,15 @@ const copyVariants: Record<VariantId, { h1: string; subtitle: string }> = {
   },
   B: {
     h1: 'ייעוץ זוגי באשדוד בתהליך ממוקד ומכבד',
-    subtitle: 'מרחב מסודר ומקצועי לזיהוי נקודות המחלוקת, רכישת כלים מעשיים והחזרת השקט לבית. פגישות בקליניקה באשדוד או אונליין.',
+    subtitle: 'מרחב מסודר ומקצועי לזיהוי נקודות המחלוקת, רכישת כלים מעשיים ובניית שיחה רגועה וברורה יותר. פגישות באשדוד או אונליין.',
   },
   C: {
-    h1: 'משנים את דרך השיחה – צעד אחר צעד',
-    subtitle: 'מפסיקים לחזור על אותם וויכוחים: תהליך ייעוץ זוגי ממוקד באשדוד לניהול שיחות רגועות ובניית תקשורת מקרבת.',
+    h1: 'כשהשיחות חוזרות לאותו דפוס – ייעוץ זוגי באשדוד',
+    subtitle: 'תהליך ממוקד להבנת דפוסי התקשורת ולתרגול כלים לשיחה מכבדת ומועילה יותר.',
   },
 };
 
 const CouplesCounselingAshdodPage: React.FC = () => {
-  const {
-    trackCtaClick,
-    trackSecondaryCtaClick,
-    trackPhoneClick,
-    trackWhatsappClick,
-  } = useLandingPageAnalytics();
-
   const [isBookingInView, setIsBookingInView] = useState(false);
   const [variantId] = useState<VariantId>(() => {
     if (typeof window !== 'undefined') {
@@ -215,10 +144,12 @@ const CouplesCounselingAshdodPage: React.FC = () => {
     return 'A';
   });
 
-  // Quiz state
-  const [currentStep, setCurrentStep] = useState(0);
-  const [quizAnswers, setQuizAnswers] = useState<Record<number, string>>({});
-  const [isQuizCompleted, setIsQuizCompleted] = useState(false);
+  const {
+    trackCtaClick,
+    trackSecondaryCtaClick,
+    trackPhoneClick,
+    trackWhatsappClick,
+  } = useLandingPageAnalytics(variantId);
 
   const whatsappMessage = encodeURIComponent(
     'היי שירה, הגעתי מעמוד הייעוץ הזוגי באשדוד ויש לי שאלה לפני שקובעים פגישה.',
@@ -233,21 +164,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
     }
   };
 
-  const handleSelectOption = (questionId: number, option: string) => {
-    const updated = { ...quizAnswers, [questionId]: option };
-    setQuizAnswers(updated);
-    if (currentStep < quizQuestions.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      setIsQuizCompleted(true);
-    }
-  };
 
-  const resetQuiz = () => {
-    setCurrentStep(0);
-    setQuizAnswers({});
-    setIsQuizCompleted(false);
-  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -356,7 +273,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               </div>
               <div className={styles.trustPoint}>
                 <FiLock className={styles.trustIcon} aria-hidden="true" />
-                <span>מרחב דיסקרטי ומכבד</span>
+                <span>מרחב פרטי ומכבד</span>
               </div>
             </div>
           </div>
@@ -376,85 +293,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 2.5 רכיב אינטראקטיבי: שאלון אבחון תקשורת זוגית (Micro-Commitment Quiz) */}
-      <section className={styles.quizSection}>
-        <div className="container">
-          <div className={styles.quizBox}>
-            <div className={styles.quizHeader}>
-              <span className={styles.quizBadge}>אבחון מהיר ב-60 שניות</span>
-              <h2>בדקו: האם תהליך ייעוץ זוגי ממוקד מתאים למצבכם?</h2>
-              <p>ענו על 4 שאלות קצרות וקבלו שיקוף מיידי למידת ההתאמה לתהליך</p>
-            </div>
 
-            {!isQuizCompleted ? (
-              <div className={styles.quizStepper}>
-                <div className={styles.progressBar}>
-                  <div
-                    className={styles.progressFill}
-                    style={{ width: `${((currentStep + 1) / quizQuestions.length) * 100}%` }}
-                  />
-                </div>
-                <div className={styles.stepIndicator}>
-                  שאלה {currentStep + 1} מתוך {quizQuestions.length}
-                </div>
-
-                <h3 className={styles.questionTitle}>
-                  {quizQuestions[currentStep].question}
-                </h3>
-
-                <div className={styles.optionsGrid}>
-                  {quizQuestions[currentStep].options.map((opt, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      className={styles.optionBtn}
-                      onClick={() => handleSelectOption(quizQuestions[currentStep].id, opt)}
-                    >
-                      <span>{opt}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className={styles.quizResults}>
-                <div className={styles.resultBadge}>
-                  <FiCheckCircle className={styles.resultIcon} />
-                  <span>התאמה גבוהה (94%) לתהליך ממוקד</span>
-                </div>
-                <h3>על פי התשובות שסימנתם:</h3>
-                <p className={styles.resultText}>
-                  מצבכם מאופיין בדפוסי תקשורת ניתנים לשיפור. תהליך ממוקד של פגישות בקליניקה באשדוד או אונליין יסייע לכם לעצור את מעגל ההסלמה, לזהות את הטריגרים הזוגיים ולצאת עם כלים מעשיים לבית.
-                </p>
-
-                <div className={styles.resultCtas}>
-                  <button
-                    type="button"
-                    className={styles.btnPrimary}
-                    onClick={() => scrollToBooking('quiz_result')}
-                  >
-                    לתיאום פגישה ביומן – 500 ₪
-                  </button>
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.btnSecondary}
-                    onClick={trackWhatsappClick}
-                  >
-                    <FaWhatsapp aria-hidden="true" />
-                    התייעצות מהירה ב-WhatsApp
-                  </a>
-                </div>
-
-                <button type="button" className={styles.resetBtn} onClick={resetQuiz}>
-                  <FiRefreshCw aria-hidden="true" />
-                  התחלת שאלון מחדש
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
 
       {/* 3. אזור הזדהות עם הצורך */}
       <section className={styles.sectionAlt}>
@@ -487,7 +326,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         <div className="container">
           <div className={styles.sectionHeader}>
             <h2>מה בדיוק קורה ב-50 הדקות של הפגישה הראשונה?</h2>
-            <p>שקיפות מלאה לתהליך: ללא הפתעות, במרחב בטוח וענייני</p>
+            <p>שקיפות לגבי התהליך: ללא הפתעות, במרחב מכבד וענייני</p>
           </div>
 
           <div className={styles.timelineGrid}>
@@ -604,7 +443,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             <div className={styles.localFeatures}>
               <div className={styles.localBadge}>
                 <FiMapPin aria-hidden="true" />
-                <span>קליניקה נגישה באשדוד</span>
+                <span>קליניקה באשדוד</span>
               </div>
               <div className={styles.localBadge}>
                 <FiClock aria-hidden="true" />
@@ -619,27 +458,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 8. עדויות (PLACEHOLDER) */}
-      <section className={styles.testimonialsSection}>
-        <div className="container">
-          <div className={styles.sectionHeader}>
-            <h2>מה זוגות אומרים אחרי התהליך</h2>
-            <p>כל זוג מגיע עם האתגרים שלו — הכלים נבנים יחד, בהתאמה אישית</p>
-          </div>
-          <div className={styles.testimonialsGrid}>
-            {testimonials.map((t, i) => (
-              <blockquote key={i} className={styles.testimonialCard}>
-                <div className={styles.testimonialQuoteIcon} aria-hidden="true">&ldquo;</div>
-                <p className={styles.testimonialText}>{t.text}</p>
-                <footer className={styles.testimonialFooter}>
-                  <span className={styles.testimonialAuthor}>{t.author}</span>
-                  <span className={styles.testimonialMeta}>{t.location} · {t.category}</span>
-                </footer>
-              </blockquote>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* 9. מידע על הפגישה + הסרת חסמים */}
       <section className={styles.section}>
@@ -670,7 +489,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               </div>
               <div className={styles.detailsItem}>
                 <strong>אופן התשלום:</strong>
-                <span>הבטחת המועד מראש ב-Calendly</span>
+                <span>התשלום מתבצע ישירות בעת קביעת הפגישה ב-Calendly</span>
               </div>
               <div className={styles.detailsItem}>
                 <strong>מדיניות שינוי וביטול:</strong>
@@ -686,7 +505,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               <div className={styles.frictionCard}>
                 <div className={styles.frictionEmoji} aria-hidden="true">🔒</div>
                 <h4>האם מה שנאמר בפגישה נשמר בסוד?</h4>
-                <p>הפגישות מתקיימות במרחב פרטי לחלוטין. מה שנאמר בחדר נשאר בחדר — בהתאם לאתיקה המקצועית ולמחויבות אישית לדיסקרטיות.</p>
+                <p>הפגישות מתקיימות במרחב פרטי ומכבד, בהתאם לכללי האתיקה המקצועית. ניתן לעיין במדיניות הפרטיות של האתר.</p>
               </div>
               <div className={styles.frictionCard}>
                 <div className={styles.frictionEmoji} aria-hidden="true">📅</div>

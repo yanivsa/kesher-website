@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-export const useLandingPageAnalytics = () => {
+export const useLandingPageAnalytics = (variantId: string = 'A') => {
   const scroll50Tracked = useRef(false);
   const scroll90Tracked = useRef(false);
 
@@ -41,12 +41,14 @@ export const useLandingPageAnalytics = () => {
       landing_page_path: '/couples-counseling-ashdod',
       landing_page_type: 'ashdod',
       service_type: 'couples_counseling',
+      variant_id: variantId,
     });
 
     // 3. Calendly postMessage listener
     const handleMessage = (e: MessageEvent) => {
-      // Validate origin strictly (calendly.com or current origin for testing)
-      const isCalendlyOrigin = e.origin && (e.origin.includes('calendly.com') || e.origin === window.location.origin);
+      // Validate origin strictly — only exact Calendly origin or same-origin for E2E testing
+      const ALLOWED_ORIGINS = new Set(['https://calendly.com']);
+      const isCalendlyOrigin = ALLOWED_ORIGINS.has(e.origin) || e.origin === window.location.origin;
       if (!isCalendlyOrigin) {
         return;
       }
@@ -64,6 +66,7 @@ export const useLandingPageAnalytics = () => {
           event: 'calendly_event_type_viewed',
           booking_provider: 'calendly',
           service_type: 'couples_counseling',
+          variant_id: variantId,
           landing_page_path: '/couples-counseling-ashdod',
         });
       } else if (eventName === 'calendly.date_and_time_selected') {
@@ -71,11 +74,12 @@ export const useLandingPageAnalytics = () => {
           event: 'calendly_date_and_time_selected',
           booking_provider: 'calendly',
           service_type: 'couples_counseling',
+          variant_id: variantId,
           landing_page_path: '/couples-counseling-ashdod',
         });
       } else if (eventName === 'calendly.event_scheduled') {
         // Deduplication mechanism using sessionStorage & payload uri
-        const eventUri = data.payload?.event?.uri || 'scheduled_event';
+        const eventUri = data.payload?.event?.uri || `fallback_${Date.now()}`;
         const dedupKey = `kesher_booked_${eventUri}`;
 
         let alreadyFired = false;
@@ -92,9 +96,6 @@ export const useLandingPageAnalytics = () => {
             // ignore
           }
 
-          const searchParams = new URLSearchParams(window.location.search);
-          const variantId = (searchParams.get('variant') || 'A').toUpperCase();
-
           window.dataLayer.push({
             event: 'booking_confirmed',
             booking_provider: 'calendly',
@@ -105,12 +106,14 @@ export const useLandingPageAnalytics = () => {
             currency: 'ILS',
           });
 
-          // Safe redirect to thank-you-booked without any PII in URL
-          setTimeout(() => {
-            if (typeof window !== 'undefined') {
+          // Redirect via dataLayer eventCallback to ensure GTM fires first
+          window.dataLayer.push({
+            event: 'booking_redirect',
+            eventCallback: () => {
               window.location.href = '/thank-you-booked';
-            }
-          }, 600);
+            },
+            eventTimeout: 2000,
+          });
         }
       }
     };
@@ -130,6 +133,7 @@ export const useLandingPageAnalytics = () => {
         scroll50Tracked.current = true;
         window.dataLayer.push({
           event: 'scroll_50',
+          variant_id: variantId,
           landing_page_path: '/couples-counseling-ashdod',
         });
       }
@@ -138,6 +142,7 @@ export const useLandingPageAnalytics = () => {
         scroll90Tracked.current = true;
         window.dataLayer.push({
           event: 'scroll_90',
+          variant_id: variantId,
           landing_page_path: '/couples-counseling-ashdod',
         });
       }
@@ -157,6 +162,7 @@ export const useLandingPageAnalytics = () => {
       event: 'primary_cta_click',
       cta_name: ctaName,
       cta_location: ctaLocation,
+      variant_id: variantId,
       landing_page_path: '/couples-counseling-ashdod',
     });
   };
@@ -167,6 +173,7 @@ export const useLandingPageAnalytics = () => {
       event: 'secondary_cta_click',
       cta_name: ctaName,
       cta_location: ctaLocation,
+      variant_id: variantId,
       landing_page_path: '/couples-counseling-ashdod',
     });
   };
@@ -175,6 +182,7 @@ export const useLandingPageAnalytics = () => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: 'phone_click',
+      variant_id: variantId,
       landing_page_path: '/couples-counseling-ashdod',
     });
   };
@@ -183,6 +191,7 @@ export const useLandingPageAnalytics = () => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: 'whatsapp_click',
+      variant_id: variantId,
       landing_page_path: '/couples-counseling-ashdod',
     });
   };
@@ -191,6 +200,7 @@ export const useLandingPageAnalytics = () => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: 'calendly_open',
+      variant_id: variantId,
       landing_page_path: '/couples-counseling-ashdod',
     });
   };

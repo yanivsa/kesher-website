@@ -10,8 +10,38 @@
     <meta name="theme-color" content="#5A7A65" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>שירה סהרוני | ייעוץ זוגי, הנחיית הורים וגישור</title>
+    <!-- Google Consent Mode v2 defaults (must load before GTM) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'analytics_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'wait_for_update': 500
+      });
+    </script>
+    <!-- Google Tag Manager (conditionally loaded via env var at build time) -->
+    <script>
+      (function(){
+        var id = '%VITE_GTM_CONTAINER_ID%';
+        if (!id || id.indexOf('VITE_') === 0) return;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtm.js?id=' + id;
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+      })();
+    </script>
   </head>
   <body>
+    <!-- GTM noscript fallback -->
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=%VITE_GTM_CONTAINER_ID%"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
