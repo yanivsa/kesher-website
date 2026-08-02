@@ -163,19 +163,26 @@ const BlogList: React.FC = () => {
           <div className={styles.grid}>
             {filteredPosts.map((post) => (
               <article key={post.id} className={styles.card}>
-                <div className={styles.imageWrapper}>
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className={styles.image}
-                    loading="lazy"
-                    {...getImageDimensions(post.image || "")}
-                  />
-                  <span className={styles.categoryBadge}>
-                    {('subcategory' in post && post.subcategory) ? post.subcategory : post.category}
-                  </span>
-                </div>
+                {post.image && (
+                  <div className={styles.imageWrapper}>
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className={styles.image}
+                      loading="lazy"
+                      {...getImageDimensions(post.image)}
+                    />
+                    <span className={styles.categoryBadge}>
+                      {('subcategory' in post && post.subcategory) ? post.subcategory : post.category}
+                    </span>
+                  </div>
+                )}
                 <div className={styles.content}>
+                  {!post.image && (
+                    <span className={styles.categoryBadgeNoImage}>
+                      {('subcategory' in post && post.subcategory) ? post.subcategory : post.category}
+                    </span>
+                  )}
                   <span className={styles.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
                   <h2 className={styles.title}>{post.title}</h2>
                   <p className={styles.excerpt}>{post.excerpt}</p>

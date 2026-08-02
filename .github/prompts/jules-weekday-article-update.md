@@ -47,7 +47,7 @@
 לפני יצירת בקשת השינויים יש לקרוא את המאמר בקול ולבצע עריכת אנושיות נוספת. אם אפשר להעביר פסקה שלמה למאמר אחר בלי לשנותה, אם הפסקאות נשמעות אחידות מדי, או אם הסיום מסכם שוב את כל המאמר — יש לשכתב. בסיכום בקשת השינויים יש לאשר במפורש שבוצעו בדיקת כפילות, בדיקת עברית טבעית ובדיקת קול אנושי.
 
 ## Image Provenance and Fallback
-Any image PR body must use exact structured lines `Image Source URL: https://...` and `Image SHA-256: <64 lowercase hex>`, include dimensions, and a factual visual-match sentence. If no image is independently source- and pixel-verified, require truthful no-image fallback: omit/remove the image file and post `image` field, and state the fallback.
+Any image PR body must use exact structured lines `Image Source URL: https://...` and `Image SHA-256: <64 lowercase hex>`, include dimensions, and a factual visual-match sentence. If no image is independently source- and pixel-verified, require truthful no-image fallback: omit/remove the image file and post `image` field, and state the fallback. The schema image property must be omitted entirely, and rendering components must conditionally render image elements rather than passing an empty string to getImageDimensions.
 
 For a no-image fallback, generic text such as “Unsplash failed” or “no matching image was found” is forbidden evidence. The PR body must include these exact structured fields without exposing secrets:
 
