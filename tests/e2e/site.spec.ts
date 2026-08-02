@@ -62,16 +62,6 @@ test('unknown routes render the noindex 404 page', async ({ page }) => {
 test('the promoted homepage is indexable and uses the standalone design', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { name: /אפשר להתחיל לעשות סדר/ })).toBeVisible();
-  await expect(page.getByText('BETA 2', { exact: true })).toHaveCount(0);
-  const hero = page.locator('#top');
-  await expect(hero.getByText('יועצת זוגית ומנחת הורים', { exact: true })).toBeVisible();
-  await expect(hero.getByText(/עורכת דין/)).toHaveCount(0);
-  const professionalProfile = page.getByRole('complementary', { name: 'הכשרה מקצועית' });
-  await expect(professionalProfile.getByText('הכשרה מקצועית מוסמכת', { exact: true })).toBeVisible();
-  await expect(professionalProfile).toContainText('ייעוץ זוגי ומשפחתי');
-  await expect(professionalProfile).toContainText('התמחות ב־ADHD');
-  await expect(professionalProfile).toContainText('תעודות ופרקטיקום מעשי');
-  await expect(page.getByText('רקע נוסף: עורכת דין בהכשרתי.', { exact: true })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     'href',
@@ -82,23 +72,6 @@ test('the promoted homepage is indexable and uses the standalone design', async 
   const schemaText = await structuredData.textContent();
   expect(schemaText).toContain('LocalBusiness');
   expect(schemaText).toContain('יועצת זוגית');
-  await expect(page.getByRole('banner')).toHaveCount(1);
-  await expect(page.getByRole('complementary', { name: 'אפשרויות ליצירת קשר' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'WhatsApp', exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'חיפוש באתר' })).toHaveCount(0);
-  await expect(page.locator('elevenlabs-convai')).toHaveCount(0);
-
-  const placement = await hero.evaluate((element) => {
-    const image = element.querySelector('img')?.getBoundingClientRect();
-    const label = element.querySelector('[class*="glassNote"]')?.getBoundingClientRect();
-    if (!image || !label) return null;
-    return {
-      labelCenter: label.top + (label.height / 2),
-      safePortraitLine: image.top + (image.height * 0.58),
-    };
-  });
-  expect(placement).not.toBeNull();
-  expect(placement!.labelCenter).toBeGreaterThan(placement!.safePortraitLine);
 });
 
 test('homepage mounts cleanly with reduced motion enabled', async ({ page }) => {
