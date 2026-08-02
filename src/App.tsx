@@ -39,7 +39,8 @@ const loadable = (loader: () => Promise<PageModule>) => {
   return { Page: LoadablePage, preload };
 };
 
-const home = loadable(() => import('./pages/Beta/BetaPage'));
+const home = loadable(() => import('./pages/Home/Home'));
+const beta = loadable(() => import('./pages/Beta/BetaPage'));
 const beta2 = loadable(() => import('./pages/Beta/Beta2Page'));
 const couples = loadable(() => import('./pages/Services/Couples/CouplesCounseling'));
 const premarital = loadable(() => import('./pages/Services/Premarital/PremaritalFirstYearPage'));
@@ -64,6 +65,7 @@ const notFound = loadable(() => import('./pages/NotFound/NotFound'));
 const {
   Page: Home,
 } = home;
+const { Page: Beta } = beta;
 const { Page: Beta2 } = beta2;
 const { Page: CouplesCounseling } = couples;
 const { Page: PremaritalPage } = premarital;
@@ -121,6 +123,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/beta" element={<Beta />} />
           <Route path="/beta2" element={<Beta2 />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services/couples" element={<CouplesCounseling />} />
