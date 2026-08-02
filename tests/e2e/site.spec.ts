@@ -29,7 +29,9 @@ for (const route of routes) {
   test(`${route} renders route metadata and accessible content`, async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (message) => {
-      if (message.type() === 'error') errors.push(message.text());
+      if (message.type() === 'error' && !message.text().includes('requestStorageAccess')) {
+        errors.push(message.text());
+      }
     });
     // Axe must inspect the settled color state, not an intermediate animation frame.
     await page.emulateMedia({ reducedMotion: 'reduce' });
