@@ -30,6 +30,17 @@ const upsertCanonical = (href: string) => {
   if (!element.parentElement) document.head.appendChild(element);
 };
 
+const upsertHreflang = (hreflang: string, href: string) => {
+  const matches = [...document.head.querySelectorAll<HTMLLinkElement>(`link[rel="alternate"][hreflang="${hreflang}"]`)];
+  const element = matches.shift() || document.createElement('link');
+  for (const duplicate of matches) duplicate.remove();
+  element.rel = 'alternate';
+  element.setAttribute('hreflang', hreflang);
+  element.href = href;
+  element.dataset.kesherSeo = 'true';
+  if (!element.parentElement) document.head.appendChild(element);
+};
+
 const MetaTags = ({
   title,
   description,
@@ -53,6 +64,8 @@ const MetaTags = ({
     document.title = fullTitle;
     upsertMeta('meta[name="description"]', { name: 'description', content: description });
     upsertCanonical(currentUrl);
+    upsertHreflang('he-IL', currentUrl);
+    upsertHreflang('x-default', currentUrl);
 
     const meta = [
       ['meta[name="author"]', { name: 'author', content: SITE_CONFIG.author }],

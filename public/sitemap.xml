@@ -1,328 +1,463 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://kesher.saharoni.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/"/>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/b</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/b"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/b"/>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/beta</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/beta"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/beta"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/about"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/contact"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/appointment</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/appointment"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/appointment"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/services/couples</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/services/couples"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/services/couples"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/services/parenting</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/services/parenting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/services/parenting"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/services/mediation</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/services/mediation"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/services/mediation"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/services/gifted-parenting</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/services/gifted-parenting"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/services/gifted-parenting"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/services/aliyah-families</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/services/aliyah-families"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/services/aliyah-families"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/services/couples-aliyah-relocation</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/services/couples-aliyah-relocation"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/services/couples-aliyah-relocation"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/services/premarital-first-year</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/services/premarital-first-year"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/services/premarital-first-year"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/services/late-singleness</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/services/late-singleness"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/services/late-singleness"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/services/finding-relationship</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/services/finding-relationship"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/services/finding-relationship"/>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/couples-counseling-ashdod</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/couples-counseling-ashdod"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/couples-counseling-ashdod"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog</loc>
     <lastmod>2026-07-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/faq</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/faq"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/faq"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/accessibility</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/accessibility"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/accessibility"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/privacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/privacy"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/terms"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/terms"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/dating-communication-early-stages</loc>
     <lastmod>2026-07-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/dating-communication-early-stages"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/dating-communication-early-stages"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/relocation-couple-conversations-before-moving</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/relocation-couple-conversations-before-moving"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/relocation-couple-conversations-before-moving"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/aliyah-partners-different-adjustment-pace</loc>
     <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/aliyah-partners-different-adjustment-pace"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/aliyah-partners-different-adjustment-pace"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/premarital-questions-before-wedding</loc>
     <lastmod>2026-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/premarital-questions-before-wedding"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/premarital-questions-before-wedding"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/newlywed-first-year-conflicts</loc>
     <lastmod>2026-07-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/newlywed-first-year-conflicts"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/newlywed-first-year-conflicts"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/child-after-school-restraint-collapse</loc>
     <lastmod>2026-07-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/child-after-school-restraint-collapse"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/child-after-school-restraint-collapse"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/toddler-independence-morning-struggles</loc>
     <lastmod>2026-07-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/toddler-independence-morning-struggles"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/toddler-independence-morning-struggles"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/invisible-mental-load-couples</loc>
     <lastmod>2026-07-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/invisible-mental-load-couples"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/invisible-mental-load-couples"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/asking-for-help-without-yelling</loc>
     <lastmod>2026-07-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/asking-for-help-without-yelling"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/asking-for-help-without-yelling"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/children-lying-fear-disappointment</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/children-lying-fear-disappointment"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/children-lying-fear-disappointment"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/listening-vs-fixing-relationship-communication</loc>
     <lastmod>2026-07-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/listening-vs-fixing-relationship-communication"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/listening-vs-fixing-relationship-communication"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/mental-load-relationship-invisible-labor</loc>
     <lastmod>2026-07-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/mental-load-relationship-invisible-labor"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/mental-load-relationship-invisible-labor"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/i-told-you-so-criticism-in-relationships</loc>
     <lastmod>2026-07-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/i-told-you-so-criticism-in-relationships"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/i-told-you-so-criticism-in-relationships"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/screens-relationship-intimacy</loc>
     <lastmod>2026-07-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/screens-relationship-intimacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/screens-relationship-intimacy"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/separation-anxiety-morning-dropoff</loc>
     <lastmod>2026-07-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/separation-anxiety-morning-dropoff"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/separation-anxiety-morning-dropoff"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/child-perfectionism-fear-of-failure</loc>
     <lastmod>2026-06-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/child-perfectionism-fear-of-failure"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/child-perfectionism-fear-of-failure"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/surviving-the-after-work-transition</loc>
     <lastmod>2026-06-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/surviving-the-after-work-transition"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/surviving-the-after-work-transition"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/bedtime-battles-emotional-regulation</loc>
     <lastmod>2026-06-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/bedtime-battles-emotional-regulation"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/bedtime-battles-emotional-regulation"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/breaking-the-yelling-cycle</loc>
     <lastmod>2024-11-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/breaking-the-yelling-cycle"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/breaking-the-yelling-cycle"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/unspoken-expectations-in-relationships</loc>
     <lastmod>2026-06-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/unspoken-expectations-in-relationships"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/unspoken-expectations-in-relationships"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/breaking-silent-treatment-relationship</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/breaking-silent-treatment-relationship"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/breaking-silent-treatment-relationship"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/connecting-with-withdrawn-teenager</loc>
     <lastmod>2026-06-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/connecting-with-withdrawn-teenager"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/connecting-with-withdrawn-teenager"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/when-children-say-i-hate-you</loc>
     <lastmod>2024-06-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/when-children-say-i-hate-you"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/when-children-say-i-hate-you"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/boundaries-extended-family</loc>
     <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/boundaries-extended-family"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/boundaries-extended-family"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/defensiveness-in-relationships</loc>
     <lastmod>2026-06-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/defensiveness-in-relationships"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/defensiveness-in-relationships"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/mental-load-couples</loc>
     <lastmod>2026-06-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/mental-load-couples"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/mental-load-couples"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/parenting-style-differences</loc>
     <lastmod>2026-06-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/parenting-style-differences"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/parenting-style-differences"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/sibling-rivalry-parent-intervention</loc>
     <lastmod>2026-06-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/sibling-rivalry-parent-intervention"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/sibling-rivalry-parent-intervention"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/repairing-relationship-after-resentment</loc>
     <lastmod>2026-06-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/repairing-relationship-after-resentment"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/repairing-relationship-after-resentment"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/exhausted-couple-communication</loc>
     <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/exhausted-couple-communication"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/exhausted-couple-communication"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/adhd-first-grade-preparation</loc>
     <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/adhd-first-grade-preparation"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/adhd-first-grade-preparation"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/premarital-counseling-divorced-parents</loc>
     <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/premarital-counseling-divorced-parents"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/premarital-counseling-divorced-parents"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/couples-adhd-partner</loc>
     <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/couples-adhd-partner"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/couples-adhd-partner"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/communication-breakdown</loc>
     <lastmod>2026-06-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/communication-breakdown"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/communication-breakdown"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/public-tantrums-emotional-regulation</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/public-tantrums-emotional-regulation"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/public-tantrums-emotional-regulation"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/adhd-morning-routine</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/adhd-morning-routine"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/adhd-morning-routine"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/boundaries-without-punishments</loc>
     <lastmod>2026-05-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/boundaries-without-punishments"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/boundaries-without-punishments"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/healing-after-infidelity</loc>
     <lastmod>2026-05-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/healing-after-infidelity"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/healing-after-infidelity"/>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/late-singleness-intrusive-family-questions</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="he-IL" href="https://kesher.saharoni.com/blog/late-singleness-intrusive-family-questions"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://kesher.saharoni.com/blog/late-singleness-intrusive-family-questions"/>
   </url>
 </urlset>

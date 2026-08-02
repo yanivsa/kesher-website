@@ -26,7 +26,7 @@ const AboutSection: React.FC = () => {
         <div className={styles.content}>
           <h2 className={styles.title}>נעים מאוד, שירה סהרוני</h2>
           <p className={styles.lead}>
-            עורכת דין בהכשרתי ומגשרת מוסמכת, שבחרה לעבור מעולם המשפט לעולמות ההנחיה, הייעוץ והחינוך.
+            עורכת דין בהכשרתי ומגשרת מוסמכת, שבחרתי לעבור מעולם המשפט לעולמות ההנחיה, הייעוץ והחינוך.
           </p>
           <div className={styles.description}>
             <p>

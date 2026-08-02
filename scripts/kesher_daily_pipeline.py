@@ -7,6 +7,7 @@ import time
 import shutil
 import hashlib
 import argparse
+import atexit
 import subprocess
 import urllib.request
 import urllib.parse
@@ -28,6 +29,9 @@ YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
 COMPOSIO_CONNECTED_ACCOUNT = "youtube_ransom-winish"
 SITE_URL = "https://kesher.saharoni.com"
 MAX_GENERATION_SOURCE_ATTEMPTS = 3
+NOTEBOOKLM_SOURCE_ADD_TIMEOUT_SECONDS = 90
+LOCALTUNNEL_ATTEMPTS = 3
+PREFLIGHT_SOURCE_URL = "https://www.youtube.com/watch?v=hVlcqr78jdc"
 
 # Directories
 PROJECT_DIR = Path("/Users/ninja/Documents/Kesher")
@@ -99,7 +103,7 @@ def search_youtube_candidates(query, max_results=5):
         })
     return candidates
 
-def add_source_to_notebooklm(client, candidate_url):
+def add_source_to_notebooklm(client, candidate_url, timeout=NOTEBOOKLM_SOURCE_ADD_TIMEOUT_SECONDS):
     print(f"Adding source to NotebookLM: {candidate_url}")
     try:
         result = client.call_tool(
@@ -109,7 +113,7 @@ def add_source_to_notebooklm(client, candidate_url):
                 "url": candidate_url,
                 "notebook_url": NOTEBOOK_URL,
             },
-            timeout=180
+            timeout=timeout,
         )
         raw = json.dumps(result, ensure_ascii=False).lower()
         if "success" in raw or "source" in raw or "title" in raw:
@@ -471,7 +475,23 @@ def get_youtube_video_record(mcp_client, video_id):
 def verify_public_youtube_video(mcp_client, video_id):
     record = get_youtube_video_record(mcp_client, video_id)
     if not record:
-        return False, "video is missing, private, or deleted"
+        # A missing Composio response is not evidence that YouTube deleted a
+        # public video.  Keep the queue immutable unless YouTube itself gives a
+        # definitive unavailable response; otherwise a transient API failure can
+        # create a duplicate upload.
+        try:
+            oembed = requests.get(
+                "https://www.youtube.com/oembed",
+                params={"url": f"https://www.youtube.com/watch?v={video_id}", "format": "json"},
+                timeout=20,
+            )
+            if oembed.status_code in (401, 404):
+                return False, "definitive: video is missing, private, or deleted"
+            if oembed.ok:
+                return False, "transient: Composio returned no video record although YouTube still serves the video"
+            return False, f"transient: YouTube availability probe returned HTTP {oembed.status_code}"
+        except requests.RequestException as exc:
+            return False, f"transient: could not confirm YouTube availability ({exc})"
 
     snippet = record.get("snippet") or {}
     status = record.get("status") or {}
@@ -481,20 +501,20 @@ def verify_public_youtube_video(mcp_client, video_id):
     title = snippet.get("title") or ""
 
     if channel_id != YOUTUBE_CHANNEL_ID:
-        return False, f"wrong channel: {channel_id!r}"
+        return False, f"definitive: wrong channel: {channel_id!r}"
     if privacy != "public":
-        return False, f"privacy status is {privacy!r}, not 'public'"
+        return False, f"definitive: privacy status is {privacy!r}, not 'public'"
     if SITE_URL not in description:
-        return False, "Kesher site URL is missing from the description"
+        return False, "definitive: Kesher site URL is missing from the description"
     if not re.search(r"[\u0590-\u05ff]", title):
-        return False, "YouTube title is not in Hebrew"
+        return False, "definitive: YouTube title is not in Hebrew"
     valid_metadata, reason = validate_hebrew_metadata({
         "title": title,
         "description": description,
         "tags": ["עברית"],
     })
     if not valid_metadata:
-        return False, f"YouTube metadata language check failed: {reason}"
+        return False, f"definitive: YouTube metadata language check failed: {reason}"
 
     return True, {
         "video_id": video_id,
@@ -535,61 +555,64 @@ def serve_video_through_localtunnel(video_path):
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
-    tunnel_process = subprocess.Popen(
-        [
-            "npx",
-            "--yes",
-            "localtunnel",
-            "--port",
-            str(port),
-            "--local-host",
-            "127.0.0.1",
-        ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    tunnel_process = None
     try:
-        tunnel_url = None
-        deadline = time.time() + 45
-        while time.time() < deadline:
-            ready, _, _ = select.select([tunnel_process.stdout], [], [], 1)
-            if ready:
-                line = tunnel_process.stdout.readline().strip()
-                if "your url is:" in line:
-                    tunnel_url = line.split("your url is:", 1)[1].strip()
-                    break
-            if tunnel_process.poll() is not None:
-                stderr = tunnel_process.stderr.read().strip()
-                raise RuntimeError(f"localtunnel exited early: {stderr}")
-        if not tunnel_url:
-            raise RuntimeError("localtunnel did not provide a public URL")
-
-        public_url = f"{tunnel_url}/{urllib.parse.quote(video_path.name)}"
-        probe = requests.get(
-            public_url,
-            headers={
-                "User-Agent": "KesherVideoPipeline/1.0",
-                "bypass-tunnel-reminder": "true",
-            },
-            stream=True,
-            timeout=45,
-        )
-        probe.raise_for_status()
-        content_length = int(probe.headers.get("Content-Length") or 0)
-        first_chunk = next(probe.iter_content(chunk_size=32), b"")
-        probe.close()
-        if content_length != expected_size:
-            raise RuntimeError(
-                f"Tunnel size mismatch: expected {expected_size}, got {content_length}"
+        failures = []
+        public_url = None
+        for attempt in range(1, LOCALTUNNEL_ATTEMPTS + 1):
+            print(f"Starting localtunnel attempt {attempt}/{LOCALTUNNEL_ATTEMPTS}...")
+            tunnel_process = subprocess.Popen(
+                ["npx", "--yes", "localtunnel", "--port", str(port), "--local-host", "127.0.0.1"],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
             )
-        if len(first_chunk) < 12 or first_chunk[4:8] != b"ftyp":
-            raise RuntimeError("Tunnel response is not an MP4 file")
+            tunnel_url = None
+            deadline = time.time() + 45
+            while time.time() < deadline:
+                ready, _, _ = select.select([tunnel_process.stdout], [], [], 1)
+                if ready:
+                    line = tunnel_process.stdout.readline().strip()
+                    if "your url is:" in line:
+                        tunnel_url = line.split("your url is:", 1)[1].strip()
+                        break
+                if tunnel_process.poll() is not None:
+                    break
+            if tunnel_url:
+                candidate_url = f"{tunnel_url}/{urllib.parse.quote(video_path.name)}"
+                try:
+                    probe = requests.get(candidate_url, headers={"User-Agent": "KesherVideoPipeline/1.0", "bypass-tunnel-reminder": "true"}, stream=True, timeout=45)
+                    probe.raise_for_status()
+                    content_length = int(probe.headers.get("Content-Length") or 0)
+                    first_chunk = next(probe.iter_content(chunk_size=32), b"")
+                    probe.close()
+                    if content_length != expected_size:
+                        raise RuntimeError(f"size mismatch: expected {expected_size}, got {content_length}")
+                    if len(first_chunk) < 12 or first_chunk[4:8] != b"ftyp":
+                        raise RuntimeError("response is not an MP4 file")
+                    public_url = candidate_url
+                    break
+                except Exception as exc:
+                    failures.append(f"attempt {attempt}: probe failed ({exc})")
+            else:
+                stderr = tunnel_process.stderr.read().strip() if tunnel_process.poll() is not None else "no public URL"
+                failures.append(f"attempt {attempt}: {stderr or 'no public URL'}")
+            tunnel_process.terminate()
+            try:
+                tunnel_process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                tunnel_process.kill()
+            tunnel_process = None
+            if attempt < LOCALTUNNEL_ATTEMPTS:
+                time.sleep(3)
+        if not public_url:
+            raise RuntimeError("localtunnel failed after retries: " + "; ".join(failures))
         yield public_url, expected_size
     finally:
-        tunnel_process.terminate()
+        if tunnel_process is not None:
+            tunnel_process.terminate()
         http_process.terminate()
         for process in (tunnel_process, http_process):
+            if process is None:
+                continue
             try:
                 process.wait(timeout=10)
             except subprocess.TimeoutExpired:
@@ -617,6 +640,11 @@ def reconcile_uploaded_queue(queue_data):
                 item["last_verified_at"] = datetime.now().isoformat()
                 item["upload_status"] = "public_verified"
                 item.pop("last_upload_error", None)
+                continue
+
+            if str(verification).startswith("transient:"):
+                item["last_verification_error"] = str(verification)
+                print(f"Keeping {video_id} uploaded: {verification}")
                 continue
 
             item.setdefault("upload_history", []).append(
@@ -786,16 +814,57 @@ def acquire_pipeline_lock():
     handle.flush()
     return handle
 
+
+def release_pipeline_lock(handle):
+    """Release the advisory lock and remove only this run's diagnostic file."""
+    try:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+    except (OSError, ValueError):
+        pass
+    try:
+        handle.close()
+    except OSError:
+        pass
+    try:
+        if RUN_LOCK_FILE.exists() and f"pid={os.getpid()}" in RUN_LOCK_FILE.read_text():
+            RUN_LOCK_FILE.unlink()
+    except OSError:
+        pass
+
 def main():
     os.environ["PATH"] = "/Users/ninja/.nvm/versions/node/v22.21.1/bin:" + os.environ.get("PATH", "")
     parser = argparse.ArgumentParser()
     parser.add_argument("--test-mode", action="store_true", help="Run in dry run test mode without real generation/upload")
     parser.add_argument("--upload-only", action="store_true", help="Reconcile and upload ready queue items without generating new videos")
     parser.add_argument("--skip-reconcile", action="store_true", help="Skip live YouTube reconciliation before processing the queue")
+    parser.add_argument(
+        "--preflight",
+        action="store_true",
+        help="Verify NotebookLM source ingestion only; never generate, render, or upload.",
+    )
     args = parser.parse_args()
     pipeline_lock = acquire_pipeline_lock()
+    atexit.register(release_pipeline_lock, pipeline_lock)
     
     print(f"=== Daily YouTube Video Pipeline - {datetime.now().isoformat()} ===")
+
+    if args.preflight:
+        print("=== NotebookLM preflight: source ingestion only ===")
+        client = NotebookLMClient()
+        try:
+            client.connect()
+            source_success, source_details = add_source_to_notebooklm(
+                client, PREFLIGHT_SOURCE_URL
+            )
+            if not source_success:
+                raise RuntimeError(
+                    "NotebookLM source-ingestion preflight failed: "
+                    f"{source_details}"
+                )
+            print("NOTEBOOKLM_PREFLIGHT_OK: source_add completed within 60 seconds.")
+            return
+        finally:
+            client.disconnect()
     
     # 1. Load Queue
     queue_data = load_queue()

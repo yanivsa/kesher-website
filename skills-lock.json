@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "hebrew-content-writer": {
+      "source": "skills-il/localization",
+      "sourceType": "github",
+      "computedHash": "825476a1507f29c584b6e350d7a35c795ed0348aa3595193d0d19279aca47e9f"
+    },
+    "hebrew-seo-geo-toolkit": {
+      "source": "skills-il/marketing-growth",
+      "sourceType": "github",
+      "computedHash": "00bfe0a64438fb4fc618aec1008c392065de89f8a2f7462b93dd5592026a7086"
+    },
+    "israeli-content-marketing": {
+      "source": "skills-il/marketing-growth",
+      "sourceType": "github",
+      "computedHash": "2a301511e9c1ed8dd12be30ad1a7124d8dc8f012aadf02ecf49004374a74bc76"
+    }
+  }
+}

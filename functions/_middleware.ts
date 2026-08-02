@@ -19,11 +19,9 @@ export const legacyRedirectTarget = (requestUrl: string) => {
   return `${PRIMARY_ORIGIN}${destinationPath}`;
 };
 
-export const canonicalRedirectTarget = (requestUrl: string) => {
-  const url = new URL(requestUrl);
-  if (url.hostname !== 'kesher.saharoni.com') return null;
-  if (url.pathname !== '/b' && url.pathname !== '/b/') return null;
-  return `${PRIMARY_ORIGIN}/`;
+export const canonicalRedirectTarget = (_requestUrl: string) => {
+  // Allow /b and /beta routes to serve the scrollytelling experience on kesher.saharoni.com
+  return null;
 };
 
 export const onRequest: PagesFunction = async (context) => {

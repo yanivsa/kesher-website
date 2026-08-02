@@ -16,6 +16,7 @@ const serviceRoutes = new Set([
   '/services/premarital-first-year',
   '/services/late-singleness',
   '/services/finding-relationship',
+  '/couples-counseling-ashdod',
   '/faq',
 ]);
 const buildSitemap = (posts) => {
@@ -38,17 +39,22 @@ const buildSitemap = (posts) => {
   }));
 
   const entries = [...staticEntries, ...postEntries]
-    .map(({ route, lastmod, changefreq, priority }) => [
-      '  <url>',
-      `    <loc>https://kesher.saharoni.com${route === '/' ? '/' : route}</loc>`,
-      ...(lastmod ? [`    <lastmod>${lastmod}</lastmod>`] : []),
-      `    <changefreq>${changefreq}</changefreq>`,
-      `    <priority>${priority}</priority>`,
-      '  </url>',
-    ].join('\n'))
+    .map(({ route, lastmod, changefreq, priority }) => {
+      const loc = `https://kesher.saharoni.com${route === '/' ? '/' : route}`;
+      return [
+        '  <url>',
+        `    <loc>${loc}</loc>`,
+        ...(lastmod ? [`    <lastmod>${lastmod}</lastmod>`] : []),
+        `    <changefreq>${changefreq}</changefreq>`,
+        `    <priority>${priority}</priority>`,
+        `    <xhtml:link rel="alternate" hreflang="he-IL" href="${loc}"/>`,
+        `    <xhtml:link rel="alternate" hreflang="x-default" href="${loc}"/>`,
+        '  </url>',
+      ].join('\n');
+    })
     .join('\n');
 
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${entries}\n</urlset>\n`;
 };
 
 if (require.main === module) {

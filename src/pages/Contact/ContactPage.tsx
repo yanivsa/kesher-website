@@ -10,7 +10,7 @@ const schemaData = {
   "@graph": [
     {
       "@type": "ContactPage",
-      "name": "צור קשר | שירה סהרוני",
+      "name": "צרו קשר | שירה סהרוני",
       "description": "צרו קשר עם שירה סהרוני לתיאום ייעוץ זוגי, הנחיית הורים או גישור. זמינה באשדוד ובאונליין.",
       "url": `${SITE_CONFIG.url}/contact`,
       "mainEntity": {
@@ -38,7 +38,7 @@ const schemaData = {
         {
           "@type": "ListItem",
           "position": 2,
-          "name": "צור קשר",
+          "name": "צרו קשר",
           "item": `${SITE_CONFIG.url}/contact`
         }
       ]
@@ -52,7 +52,7 @@ const ContactPage: React.FC = () => {
     <div className={styles.page}>
       <SchemaOrg data={schemaData} />
       <MetaTags 
-        title="צור קשר"
+        title="צרו קשר"
         description="צרו קשר עם שירה סהרוני לתיאום ייעוץ זוגי, הנחיית הורים או גישור. זמינה באשדוד ובאונליין."
       />
       <header className={styles.header}>

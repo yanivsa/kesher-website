@@ -1,455 +1,657 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import {
-  FiArrowLeft,
-  FiCalendar,
-  FiCheck,
-  FiChevronDown,
-  FiCompass,
-  FiHeart,
-  FiMapPin,
-  FiMenu,
-  FiMessageCircle,
-  FiMonitor,
-  FiShield,
-  FiUsers,
-  FiX,
-} from 'react-icons/fi';
+import React, { useRef, useState, useEffect } from 'react';
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
+import { FiArrowDown, FiMessageCircle, FiChevronLeft, FiAward, FiShield, FiHeart } from 'react-icons/fi';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
-import { homeSchema } from '../../constants/homeSchema';
-import { SITE_CONFIG } from '../../constants/siteConfig';
+import AssessmentModal from './AssessmentModal';
 import styles from './BetaPage.module.css';
 
-const services = [
-  {
-    title: 'ייעוץ זוגי',
-    description: 'כשהשיחות מסתיימות שוב באותו מקום, נלמד לזהות את הדפוס וליצור דרך חדשה להיפגש.',
-    link: '/services/couples',
-    icon: FiHeart,
-    accent: 'rose',
-    tags: ['תקשורת', 'קרבה', 'אמון'],
-  },
-  {
-    title: 'הדרכת הורים',
-    description: 'גבולות ושגרה שנשענים על הבנה וקשר — גם בתקופות עמוסות, רגישות ומבלבלות.',
-    link: '/services/parenting',
-    icon: FiUsers,
-    accent: 'sage',
-    tags: ['גבולות', 'שגרה', 'וויסות'],
-  },
-  {
-    title: 'גישור',
-    description: 'מרחב ענייני לניהול מחלוקת, הפחתת המתח וניסוח הסכמות שאפשר באמת לקיים.',
-    link: '/services/mediation',
-    icon: FiCompass,
-    accent: 'sand',
-    tags: ['הקשבה', 'הסכמות', 'בהירות'],
-  },
-];
-
-const focusAreas = [
-  'זוגיות בתקופות של ריחוק ושחיקה',
-  'הורות לילדים מחוננים וילדים עם ADHD',
-  'הכנה לנישואים והשנה הראשונה',
-  'משפחות בעלייה, בחזרה לישראל וברילוקיישן',
-  'רווקות מאוחרת וליווי למציאת זוגיות',
-];
-
-const process = [
-  {
-    number: '01',
-    title: 'מתחילים במה שקורה עכשיו',
-    text: 'ממפים יחד את הקושי, את הרגעים שבהם הוא מופיע ואת השינוי שהכי חשוב לכם להרגיש.',
-  },
-  {
-    number: '02',
-    title: 'מבינים את הדפוס',
-    text: 'מזהים מה מפעיל אתכם, מה משמר את התקיעות ואיפה אפשר לייצר תגובה חדשה.',
-  },
-  {
-    number: '03',
-    title: 'מתרגלים דרך אחרת',
-    text: 'יוצאים מהפגישה עם כיוון ברור וכלים שאפשר לנסות בבית, בקצב שמתאים לכם.',
-  },
-];
-
-const testimonials = [
-  {
-    text: 'הגענו לשירה בשיא המשבר. היא עזרה לנו להוריד את גובה הלהבות ולדבר בפעם הראשונה מזה שנים.',
-    author: 'א׳ ו־מ׳, אשדוד',
-    type: 'ייעוץ זוגי',
-  },
-  {
-    text: 'הדרכת ההורים עזרה לנו להבין טוב יותר את הקושי של הבן שלנו ולבנות שגרה רגועה וברורה יותר.',
-    author: 'משפחת ל׳, גן יבנה',
-    type: 'הדרכת הורים',
-  },
-  {
-    text: 'הרגישות והכלים המעשיים נתנו לנו דרך להתחיל להתקרב מחדש.',
-    author: 'ד׳ ס׳, דרום',
-    type: 'ליווי זוגי',
-  },
-];
-
-const ScrollProgress = () => {
-  return <div className={styles.scrollProgress} aria-hidden="true" />;
-};
-
-const InteractiveHeroVisual = () => {
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === 'touch') return;
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width;
-    const y = (event.clientY - bounds.top) / bounds.height;
-    event.currentTarget.style.setProperty('--tilt-x', `${(0.5 - y) * 5}deg`);
-    event.currentTarget.style.setProperty('--tilt-y', `${(x - 0.5) * 7}deg`);
-    event.currentTarget.style.setProperty('--glow-x', `${x * 100}%`);
-    event.currentTarget.style.setProperty('--glow-y', `${y * 100}%`);
-  };
-
-  const resetTilt = (event: React.PointerEvent<HTMLDivElement>) => {
-    event.currentTarget.style.removeProperty('--tilt-x');
-    event.currentTarget.style.removeProperty('--tilt-y');
-    event.currentTarget.style.removeProperty('--glow-x');
-    event.currentTarget.style.removeProperty('--glow-y');
-  };
-
-  return (
-    <div className={styles.heroVisualStage}>
-      <div
-        className={styles.heroVisual}
-        onPointerMove={handlePointerMove}
-        onPointerLeave={resetTilt}
-      >
-        <div className={styles.imageFrame}>
-          <img
-            src="/images/shira-saharoni.webp"
-            alt="שירה סהרוני, יועצת זוגית, מנחת הורים ומגשרת"
-            width="1271"
-            height="1280"
-            fetchPriority="high"
-          />
-          <div className={styles.imageWash} />
-          <span className={styles.visualReflection} aria-hidden="true" />
-        </div>
-        <div className={styles.glassNote}>
-          <span className={styles.noteIcon}><FiHeart aria-hidden="true" /></span>
-          <p>
-            <strong>יועצת זוגית ומנחת הורים</strong>
-          </p>
-        </div>
-      </div>
-      <span className={styles.visualHalo} aria-hidden="true" />
-    </div>
-  );
-};
+/* ----------------------------------------------------------------
+   Scene thresholds (progress 0…1 over 1000 vh scroll track)
+   Scene 1: 0.00 – 0.30   (300 vh, 5 beats  → 60 vh each)
+   Scene 2: 0.30 – 0.72   (420 vh, 10 beats → 42 vh each)
+   Scene 3: 0.72 – 1.00   (280 vh, 3 beats  → ~93 vh each)
+   ---------------------------------------------------------------- */
+const S1_END = 0.30;
+const S2_END = 0.72;
+const S2_SPAN = S2_END - S1_END; // 0.42
 
 const BetaPage: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeScene, setActiveScene] = useState<1 | 2 | 3>(1);
+  const [currentProgress, setCurrentProgress] = useState(0);
+  const [scene2Progress, setScene2Progress] = useState(0);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
 
+  const v1Ref = useRef<HTMLVideoElement>(null);
+  const v2Ref = useRef<HTMLVideoElement>(null);
+  const v3Ref = useRef<HTMLVideoElement>(null);
+
+  // ---- Responsive + a11y ----
   useEffect(() => {
-    if (!menuOpen) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMenuOpen(false);
-    };
-    document.addEventListener('keydown', closeOnEscape);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener('keydown', closeOnEscape);
-    };
-  }, [menuOpen]);
+    // Mobile check is now handled via CSS classes
+  }, []);
+
+  // ---- Scroll tracking ----
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  });
+
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+    setCurrentProgress(latest);
+
+    if (latest < S1_END) {
+      setActiveScene(1);
+    } else if (latest < S2_END) {
+      setActiveScene(2);
+      setScene2Progress(Math.min(1, Math.max(0, (latest - S1_END) / S2_SPAN)));
+    } else {
+      setActiveScene(3);
+    }
+  });
+
+  // ---- Keep active video playing ----
+  useEffect(() => {
+    const refs = [v1Ref, v2Ref, v3Ref];
+    refs.forEach((ref, i) => {
+      if (ref.current) {
+        if (i + 1 === activeScene && ref.current.paused) {
+          ref.current.play().catch(() => {});
+        }
+      }
+    });
+  }, [activeScene]);
+
+  // ---- Schema.org ----
+  const homeSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CounselingService',
+    name: 'שירה סהרוני — קשר | ייעוץ זוגי, הנחיית הורים וגישור באשדוד',
+    url: 'https://kesher.saharoni.com/beta',
+    telephone: '+972-50-0000000',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'אשדוד',
+      addressRegion: 'מחוז הדרום',
+      addressCountry: 'IL',
+    },
+    description:
+      'מאיבוד תקשורת לחיבור זוגי יציב. תהליך ממוקד ודיסקרטי בקליניקה באשדוד ובאונליין.',
+  };
+
+  /* ==============================================================
+     HELPER — build video className
+     ============================================================== */
+  const videoClass = (scene: number) =>
+    `${styles.videoBackground} ${activeScene === scene ? styles.videoVisible : styles.videoHidden}`;
+
+  /* ==============================================================
+     SCENE 1 BEAT RANGES (5 beats across 0.00–0.30)
+     ============================================================== */
+  const s1Beat = (idx: number) => {
+    const step = S1_END / 5; // 0.06 each
+    return currentProgress >= step * idx && currentProgress < step * (idx + 1);
+  };
+
+  /* ==============================================================
+     SCENE 2 BEAT RANGES (10 beats across scene2Progress 0..1)
+     ============================================================== */
+  const s2Beat = (idx: number) => {
+    const step = 0.1;
+    return scene2Progress >= step * idx && scene2Progress < step * (idx + 1);
+  };
+  // Last beat (brand reveal) gets everything from 0.9 onward
+  const s2LastBeat = scene2Progress >= 0.9;
+
+  /* ==============================================================
+     SCENE 3 BEAT RANGES (3 beats across 0.72–1.00)
+     ============================================================== */
+  const s3Step = (1 - S2_END) / 3; // ~0.093
+  const s3Beat = (idx: number) => {
+    const start = S2_END + s3Step * idx;
+    const end = idx === 2 ? 1.01 : S2_END + s3Step * (idx + 1);
+    return currentProgress >= start && currentProgress < end;
+  };
 
   return (
-    <div className={styles.page} dir="rtl">
+    <>
       <MetaTags
-        title="שירה סהרוני — ייעוץ זוגי והנחיית הורים"
-        description={SITE_CONFIG.description}
-        canonical={`${SITE_CONFIG.url}/`}
-        image="/images/shira-saharoni.webp"
+        title="שירה סהרוני | קשר — ייעוץ זוגי, הנחיית הורים וגישור באשדוד"
+        description="חוויה סינמטית: מאיבוד תקשורת לחיבור זוגי יציב. תהליך ממוקד, דיסקרטי ומבוסס כלים מעשיים בקליניקה באשדוד ובאונליין."
+        canonical="https://kesher.saharoni.com/beta"
       />
       <SchemaOrg data={homeSchema} />
-      <ScrollProgress />
 
-      <div className={styles.ambient} aria-hidden="true">
-        <span className={styles.orbOne} />
-        <span className={styles.orbTwo} />
-        <span className={styles.gridTexture} />
-      </div>
+      <main id="main-content" className={styles.scrollytellingPage} dir="rtl">
+        {/* Accessible SEO Heading */}
+        <h1 className="sr-only">
+          שירה סהרוני | קשר — ייעוץ זוגי, הנחיית הורים וגישור באשדוד
+        </h1>
 
-      <header className={styles.header}>
-        <div className={styles.headerInner}>
-          <a href="#top" className={styles.brand} aria-label="שירה סהרוני — לראש העמוד">
-            <span className={styles.brandMark}>ש</span>
-            <span>
-              <strong>שירה סהרוני</strong>
-              <small>ייעוץ · הורות · גישור</small>
-            </span>
-          </a>
-
-          <nav className={styles.desktopNav} aria-label="ניווט ראשי">
-            <a href="#services">איך אוכל לעזור</a>
-            <a href="#about">אודות</a>
-            <a href="#process">איך זה עובד</a>
-            <Link to="/blog">מאמרים</Link>
-          </nav>
-
-          <div className={styles.headerActions}>
-            <Link to={SITE_CONFIG.links.appointment} className={styles.headerCta}>
-              קביעת פגישה
-              <FiArrowLeft aria-hidden="true" />
-            </Link>
-            <button
-              type="button"
-              className={styles.menuButton}
-              aria-label={menuOpen ? 'סגירת תפריט' : 'פתיחת תפריט'}
-              aria-expanded={menuOpen}
-              aria-controls="main-mobile-menu"
-              onClick={() => setMenuOpen((open) => !open)}
-            >
-              {menuOpen ? <FiX aria-hidden="true" /> : <FiMenu aria-hidden="true" />}
-            </button>
-          </div>
-        </div>
-
-        {menuOpen && (
-          <nav id="main-mobile-menu" className={styles.mobileNav} aria-label="ניווט ראשי">
-            <a href="#services" onClick={() => setMenuOpen(false)}>איך אוכל לעזור</a>
-            <a href="#about" onClick={() => setMenuOpen(false)}>אודות</a>
-            <a href="#process" onClick={() => setMenuOpen(false)}>איך זה עובד</a>
-            <Link to="/blog" onClick={() => setMenuOpen(false)}>מאמרים</Link>
-            <Link to={SITE_CONFIG.links.appointment} onClick={() => setMenuOpen(false)}>קביעת פגישה</Link>
-          </nav>
+        {/* ============================================================
+            FLOATING CTA
+            ============================================================ */}
+        {currentProgress > 0.12 && (
+          <motion.a
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            href="https://wa.me/972500000000?text=%D7%A9%D7%9C%D7%95%D7%9D%20%D7%A9%D7%99%D7%A8%D7%94%2C%20%D7%90%D7%A0%D7%99%20%D7%9E%D7%95%D7%A2%D7%A0%D7%99%D7%99%D7%9D%20%D7%91%D7%A9%D7%99%D7%97%D7%AA%20%D7%90%D7%91%D7%97%D7%95%D7%9F%20%D7%95%D7%97%D7%99%D7%91%D7%95%D7%A8%20%D7%96%D7%95%D7%92%D7%99%20%D7%91%D7%90%D7%A9%D7%93%D7%95%D7%93"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.floatingCta}
+          >
+            <FiMessageCircle className={styles.floatingCtaIcon} />
+            <span>לתיאום שיחת אבחון באשדוד / אונליין</span>
+          </motion.a>
         )}
-      </header>
 
-      <main id="main-content" className={styles.main}>
-        <section id="top" className={styles.hero}>
-          <div className={styles.heroCopy}>
-            <div className={styles.eyebrow}>
-              <span className={styles.pulse} aria-hidden="true" />
-              פגישות באשדוד ובאונליין
-            </div>
-            <h1>
-              אפשר לבחור לבנות
-              <span> את הקשר אחרת. יחד.</span>
-            </h1>
-            <p className={styles.heroLead}>
-              גם כשהשיחות נתקעות והמרחק גדל, אפשר להבין מה קורה ביניכם,
-              לבחור צעדים חדשים וליצור תנועה שמחזירה תקווה לקשר.
-            </p>
-            <div className={styles.heroActions}>
-              <Link to={SITE_CONFIG.links.appointment} className={styles.primaryCta}>
-                <FiCalendar aria-hidden="true" />
-                קביעת פגישת ייעוץ
-              </Link>
-              <a href="#services" className={styles.secondaryCta}>
-                למצוא את הליווי המתאים
-                <FiChevronDown aria-hidden="true" />
-              </a>
-            </div>
-            <a href={SITE_CONFIG.links.whatsapp} className={styles.heroWhatsapp}>
-              <FiMessageCircle aria-hidden="true" />
-              מעדיפים להתחיל בהודעה? כתבו לי ב־WhatsApp
-              <FiArrowLeft aria-hidden="true" />
-            </a>
-            <div className={styles.trustRow} aria-label="פרטי השירות">
-              <span><FiMapPin aria-hidden="true" /> אשדוד</span>
-              <span><FiMonitor aria-hidden="true" /> אונליין</span>
-              <span><FiShield aria-hidden="true" /> מרחב אישי ומכבד</span>
-            </div>
-          </div>
+        {/* ============================================================
+            PART 1 — THE CINEMATIC JOURNEY
+            ============================================================ */}
+          <div ref={containerRef} className={styles.scrollTrack}>
+            <div className={styles.stickyViewport}>
 
-          <InteractiveHeroVisual />
-        </section>
-
-        <section className={styles.signalBar} aria-label="תחומי העיסוק של שירה">
-          <span>ייעוץ זוגי</span>
-          <i aria-hidden="true" />
-          <span>הנחיית הורים</span>
-          <i aria-hidden="true" />
-          <span>גישור</span>
-          <i aria-hidden="true" />
-          <span>ליווי בתקופות מעבר</span>
-        </section>
-
-        <section id="services" className={`${styles.section} ${styles.revealSection}`}>
-          <div className={styles.sectionHeading}>
-            <span className={styles.kicker}>לא צריך לדעת מראש מה הכותרת המדויקת לקושי.</span>
-            <h2>מתחילים מהמקום שבו<br />הקשר מבקש שינוי.</h2>
-            <p>אפשר להתחיל מהנושא שהכי מעסיק אתכם עכשיו. את החיבורים בין הדברים נבין יחד.</p>
-          </div>
-
-          <div className={styles.serviceGrid}>
-            {services.map(({ title, description, link, icon: Icon, accent, tags }, index) => (
-              <Link
-                to={link}
-                className={`${styles.serviceCard} ${styles[accent]} ${index < 2 ? styles.primaryService : styles.secondaryService}`}
-                key={title}
-                style={{ '--delay': `${index * 90}ms` } as React.CSSProperties}
-              >
-                <span className={styles.serviceIcon}><Icon aria-hidden="true" /></span>
-                <span
-                  className={styles.serviceIndex}
-                  data-index={`0${index + 1}`}
-                  aria-hidden="true"
-                />
-                <h3>{title}</h3>
-                <p>{description}</p>
-                <span className={styles.serviceTags} aria-label={`נושאים מרכזיים ב${title}`}>
-                  {tags.map((tag) => <small key={tag}>{tag}</small>)}
-                </span>
-                <span className={styles.cardLink}>
-                  לקריאה נוספת
-                  <FiArrowLeft aria-hidden="true" />
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <section className={`${styles.section} ${styles.trustSection} ${styles.revealSection}`}>
-          <div className={styles.trustHeading}>
-            <span className={styles.kicker}>אמון נבנה בחוויה</span>
-            <h2>מה משתנה כשמצליחים לדבר אחרת.</h2>
-            <p>הפרטים המזהים הושמטו כדי לשמור על פרטיות הפונים.</p>
-          </div>
-          <div className={styles.quoteGrid}>
-            {testimonials.map((testimonial, index) => (
-              <blockquote
-                className={`${styles.quoteCard} ${index === 0 ? styles.featuredQuote : ''}`}
-                key={testimonial.author}
-              >
-                <span className={styles.quoteType}>{testimonial.type}</span>
-                <FiMessageCircle aria-hidden="true" />
-                <p>“{testimonial.text}”</p>
-                <footer>{testimonial.author}</footer>
-              </blockquote>
-            ))}
-          </div>
-        </section>
-
-        <section id="about" className={`${styles.section} ${styles.aboutSection} ${styles.revealSection}`}>
-          <div className={styles.aboutVisual}>
-            <div className={styles.aboutImage}>
-              <img
-                src="/images/generated/site/home-hero.jpg"
-                alt="חדר הייעוץ של שירה סהרוני באשדוד"
-                width="1600"
-                height="900"
-                loading="lazy"
+              {/* ---- Scene 1 Videos ---- */}
+              <video
+                ref={v1Ref}
+                src="/videos/scene1.mp4"
+                poster="/videos/scene1_poster.jpg"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className={`${videoClass(1)} ${styles.videoDesktop}`}
               />
-            </div>
-            <div className={styles.aboutQuote}>
-              <FiMessageCircle aria-hidden="true" />
-              <p><strong>יש דרך לדבר.</strong><br />גם כשכבר קשה<br />לשמוע.</p>
+              <video
+                src="/videos/scene1_m.mp4"
+                poster="/videos/scene1_poster.jpg"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className={`${videoClass(1)} ${styles.videoMobile}`}
+              />
+
+              {/* ---- Scene 2 Videos ---- */}
+              <video
+                ref={v2Ref}
+                src="/videos/scene2.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className={`${videoClass(2)} ${styles.videoDesktop}`}
+              />
+              <video
+                src="/videos/scene2_m.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className={`${videoClass(2)} ${styles.videoMobile}`}
+              />
+
+              {/* ---- Scene 3 Videos ---- */}
+              <video
+                ref={v3Ref}
+                src="/videos/scene3.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className={`${videoClass(3)} ${styles.videoDesktop}`}
+              />
+              <video
+                src="/videos/scene3_m.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className={`${videoClass(3)} ${styles.videoMobile}`}
+              />
+
+              {/* ---- Vignette Overlay ---- */}
+              <div className={styles.vignetteOverlay} />
+
+              {/* ---- Text Overlay Beats ---- */}
+              <div className={styles.textOverlayContainer}>
+
+                {/* ========== SCENE 1 — הזדהות ========== */}
+                {activeScene === 1 && (
+                  <div className={styles.beatContainer}>
+                    {s1Beat(0) && (
+                      <motion.div
+                        key="s1-b1"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          השעה תשע וחצי בערב. הילדים נרדמו.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {s1Beat(1) && (
+                      <motion.div
+                        key="s1-b2"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          הבית שקט, אבל הסלון עמוס במתח.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {s1Beat(2) && (
+                      <motion.div
+                        key="s1-b3"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          שניכם יושבים על אותה ספה.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {s1Beat(3) && (
+                      <motion.div
+                        key="s1-b4"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        className={styles.goldAccentCard}
+                      >
+                        <p className={`${styles.textBeatBold} ${styles.goldText}`}>
+                          ומרגישים בשתי יבשות נפרדות.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {s1Beat(4) && (
+                      <motion.div
+                        key="s1-b5"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          מתי הפכנו לשותפים לניהול משק הבית?
+                        </p>
+                      </motion.div>
+                    )}
+                  </div>
+                )}
+
+                {/* ========== SCENE 2 — הסלמה, גילוי וחשיפה ========== */}
+                {activeScene === 2 && (
+                  <div className={styles.beatContainer}>
+                    {/* Beat 1 */}
+                    {s2Beat(0) && (
+                      <motion.div
+                        key="s2-b1"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          השתיקות הפכו לארוכות יותר מהשיחות.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {/* Beat 2 */}
+                    {s2Beat(1) && (
+                      <motion.div
+                        key="s2-b2"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          המריבות הקטנות כבר לא באמת על הכלים.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {/* Beat 3 */}
+                    {s2Beat(2) && (
+                      <motion.div
+                        key="s2-b3"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          שנים של תסכול צבור שוקעות פנימה.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {/* Beat 4 — ⚠️ Threat / Warning */}
+                    {s2Beat(3) && (
+                      <motion.div
+                        key="s2-b4"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className={styles.warningCard}
+                      >
+                        <p className={styles.warningText}>
+                          ⚠️ אם שום דבר לא ישתנה — זה המסלול לפירוק.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {/* Beat 5 */}
+                    {s2Beat(4) && (
+                      <motion.div
+                        key="s2-b5"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          אבל האמת היא פשוטה יותר.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {/* Beat 6 — bold */}
+                    {s2Beat(5) && (
+                      <motion.div
+                        key="s2-b6"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className={styles.loveCard}
+                      >
+                        <p className={styles.loveText}>
+                          זה לא שאין אהבה.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {/* Beat 7 — bold gold */}
+                    {s2Beat(6) && (
+                      <motion.div
+                        key="s2-b7"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className={styles.loveCard}
+                      >
+                        <p className={`${styles.loveText} ${styles.goldText}`}>
+                          פשוט איבדתם את השפה.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {/* Beat 8 */}
+                    {s2Beat(7) && (
+                      <motion.div
+                        key="s2-b8"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          איש לא אשם, ואין צורך לשפוט.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {/* Beat 9 */}
+                    {s2Beat(8) && (
+                      <motion.div
+                        key="s2-b9"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          צריך רק את הגישור הנכון.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {/* Beat 10 — GIANT BRAND REVEAL */}
+                    {s2LastBeat && (
+                      <motion.div
+                        key="s2-reveal"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ type: 'spring', damping: 15 }}
+                        className={styles.brandRevealWrap}
+                      >
+                        <h2 className={styles.giantBrandText}>
+                          שירה סהרוני | קשר
+                        </h2>
+                        <p className={styles.brandTagline}>
+                          ייעוץ זוגי, הנחיית הורים וגישור באשדוד
+                        </p>
+                      </motion.div>
+                    )}
+                  </div>
+                )}
+
+                {/* ========== SCENE 3 — הפתרון ========== */}
+                {activeScene === 3 && (
+                  <div className={styles.beatContainer}>
+                    {s3Beat(0) && (
+                      <motion.div
+                        key="s3-b1"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          פירוק דפוסי המאבק והחזרת ההקשבה.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {s3Beat(1) && (
+                      <motion.div
+                        key="s3-b2"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={styles.glassCard}
+                      >
+                        <p className={styles.textBeat}>
+                          תהליך ממוקד, דיסקרטי ומבוסס כלים מעשיים.
+                        </p>
+                      </motion.div>
+                    )}
+
+                    {s3Beat(2) && (
+                      <motion.div
+                        key="s3-b3"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className={styles.closingGoldCard}
+                      >
+                        <p className={styles.closingGoldText}>
+                          בניית שפה זוגית חדשה שמשאירה אתכם יחד.
+                        </p>
+                      </motion.div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* ---- Scroll Down Indicator ---- */}
+              {currentProgress < 0.92 && (
+                <div className={styles.scrollIndicator}>
+                  <span className={styles.scrollIndicatorText}>גללו להמשך הסרט</span>
+                  <FiArrowDown className={styles.scrollIndicatorIcon} />
+                </div>
+              )}
             </div>
           </div>
 
-          <div className={styles.aboutCopy}>
-            <span className={styles.kicker}>נעים מאוד, שירה</span>
-            <h2>מקצועיות שמחזיקה את המורכבות. שיחה שנשארת אנושית.</h2>
-            <p className={styles.aboutLead}>
-              אני מלווה זוגות והורים ברגעים שבהם התקשורת נתקעת, העומס גובר
-              או הבית מבקש דרך חדשה. המטרה שלי היא לחבר בין הבנה עמוקה לבין
-              צעדים מעשיים שאפשר ליישם בחיים עצמם.
-            </p>
-            <p>
-              יחד נפרק מצבים שנראים מסובכים, נזהה את הדפוסים שחוזרים
-              ונבנה אפשרות אחרת — רגישה, בהירה ומותאמת למשפחה שלכם.
-            </p>
-            <ul className={styles.focusList}>
-              {focusAreas.map((area) => (
-                <li key={area}><FiCheck aria-hidden="true" />{area}</li>
-              ))}
-            </ul>
-            <aside className={styles.professionalProfile} aria-label="הכשרה מקצועית">
-              <span>הכשרה מקצועית מוסמכת</span>
-              <p>
-                העשייה שלי נשענת על הכשרה בייעוץ זוגי ומשפחתי, בהנחיית הורים
-                קבוצתית ופרטנית עם התמחות ב־ADHD, ובגישור.
+        {/* ============================================================
+            PART 2 — THE MARKETING LANDING PAGE
+            ============================================================ */}
+        <section className={styles.part2Section}>
+          <div className={styles.part2Container}>
+
+            {/* ---- HERO / POSITIONING ---- */}
+            <div className={styles.heroSection}>
+              <span className={styles.heroBadge}>
+                קליניקה ממוקדת באשדוד ובפגישות אונליין
+              </span>
+              <h2 className={styles.heroTitle}>
+                מאיבוד תקשורת לחיבור זוגי יציב
+              </h2>
+              <p className={styles.heroDescription}>
+                ייעוץ זוגי, הנחיית הורים וגישור מקצועי בקליניקה הדיסקרטית באשדוד.
+                תהליך מובנה בגובה העיניים, המעניק כלים מעשיים להחזרת הקרבה
+                והביטחון הביתה.
               </p>
-              <small>
-                ההכשרות כוללות לימודים מקצועיים, תעודות ופרקטיקום מעשי.
-              </small>
-            </aside>
-            <Link to="/about" className={styles.textLink}>
-              עוד עליי ועל אופן העבודה
-              <FiArrowLeft aria-hidden="true" />
-            </Link>
-            <p className={styles.legalBackground}>רקע נוסף: עורכת דין בהכשרתי.</p>
-          </div>
-        </section>
 
-        <section id="process" className={`${styles.section} ${styles.processSection} ${styles.revealSection}`}>
-          <div className={styles.sectionHeading}>
-            <span className={styles.kicker}>איך מתחילים</span>
-            <h2>בהירות לפני הכול.</h2>
-            <p>לא צריך להגיע עם ניסוח מדויק. מתחילים ממה שקשה עכשיו ומתקדמים צעד אחר צעד.</p>
-          </div>
-          <div className={styles.processGrid}>
-            {process.map((step) => (
-              <article
-                className={styles.processCard}
-                key={step.number}
-                style={{ '--process-delay': `${Number(step.number) * 65}ms` } as React.CSSProperties}
+              <div className={styles.ctaRow}>
+                <a
+                  href="https://wa.me/972500000000?text=%D7%A9%D7%9C%D7%95%D7%9D%20%D7%A9%D7%99%D7%A8%D7%94%2C%20%D7%90%D7%A0%D7%99%20%D7%9E%D7%95%D7%A2%D7%A0%D7%99%D7%99%D7%9D%20%D7%91%D7%A9%D7%99%D7%97%D7%AA%20%D7%90%D7%91%D7%97%D7%95%D7%9F%20%D7%95%D7%97%D7%99%D7%91%D7%95%D7%A8%20%D7%96%D7%95%D7%92%D7%99%20%D7%91%D7%90%D7%A9%D7%93%D7%95%D7%93"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.ctaButtonPrimary}
+                >
+                  <span>לתיאום שיחת אבחון והתאמה ללא התחייבות</span>
+                  <FiChevronLeft className={styles.ctaIcon} />
+                </a>
+                <button
+                  onClick={() => setIsQuizOpen(true)}
+                  className={styles.ctaButtonSecondary}
+                >
+                  <span>להתחלת שאלון האבחון הזוגי (60 שניות)</span>
+                </button>
+              </div>
+            </div>
+
+            {/* ---- TESTIMONIAL ---- */}
+            <div className={styles.testimonialSection}>
+              <div className={styles.testimonialCard}>
+                <div className={styles.starRating}>
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className={styles.star}>★</span>
+                  ))}
+                </div>
+                <blockquote className={styles.testimonialQuote}>
+                  &ldquo;הגענו לשירה אחרי שנתיים של שתיקות עמוקות ומריבות בלתי
+                  פוסקות. תוך מספר פגישות ממוקדות בקליניקה באשדוד, למדנו לראשונה
+                  להקשיב בלי להתגונן. שירה לא שפטה אף אחד מאיתנו — היא פשוט
+                  בנתה לנו גשר מחדש.&rdquo;
+                </blockquote>
+                <div className={styles.testimonialAuthorWrap}>
+                  <p className={styles.testimonialAuthor}>מיכל ורועי</p>
+                  <p className={styles.testimonialLocation}>
+                    אשדוד | תהליך ייעוץ זוגי ממוקד באשדוד
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* ---- AUTHORITY & LOCATION ---- */}
+            <div className={styles.featureGrid}>
+              <div className={styles.featureCard}>
+                <div className={styles.featureIconWrap}>
+                  <FiShield />
+                </div>
+                <h3 className={styles.featureTitle}>עורכת דין בהכשרתה ומגשרת</h3>
+                <p className={styles.featureDescription}>
+                  רקע משפטי וגישורי הנותן תפיסה מובנית, עניינית ונטולת שיפוטיות
+                  לניהול קונפליקטים.
+                </p>
+              </div>
+
+              <div className={styles.featureCard}>
+                <div className={styles.featureIconWrap}>
+                  <FiHeart />
+                </div>
+                <h3 className={styles.featureTitle}>התמחות בתקשורת זוגית</h3>
+                <p className={styles.featureDescription}>
+                  פירוק דפוסי מאבק אוטומטיים, החזרת הקרבה והקשבה רגשית עמוקה
+                  בבית.
+                </p>
+              </div>
+
+              <div className={styles.featureCard}>
+                <div className={styles.featureIconWrap}>
+                  <FiAward />
+                </div>
+                <h3 className={styles.featureTitle}>אשדוד והסביבה / אונליין</h3>
+                <p className={styles.featureDescription}>
+                  קליניקה שקטה ודיסקרטית באשדוד, המשרתת את תושבי אשדוד, גן יבנה,
+                  השפלה והדרום.
+                </p>
+              </div>
+            </div>
+
+            {/* ---- QUIZ BANNER ---- */}
+            <div className={styles.quizBanner}>
+              <div>
+                <span className={styles.quizBannerLabel}>
+                  אבחון זוגי מהיר (60 שניות)
+                </span>
+                <h3 className={styles.quizBannerTitle}>
+                  האם הזוגיות שלכם נמצאת במסלול של שחיקה או צמיחה?
+                </h3>
+                <p className={styles.quizBannerDesc}>
+                  ענו על 4 שאלות קצרות וקבלו שיקוף מיידי לגבי מצב התקשורת בבית.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsQuizOpen(true)}
+                className={styles.quizBannerButton}
               >
-                <span className={styles.processNumber}>{step.number}</span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </article>
-            ))}
-          </div>
-        </section>
+                להתחלת השאלון הקצר
+              </button>
+            </div>
 
-        <section className={`${styles.finalCta} ${styles.revealSection}`}>
-          <div>
-            <span className={styles.kicker}>אפשר להתחיל מכאן</span>
-            <h2>השיחה הראשונה לא חייבת לפתור הכול.<br />היא רק צריכה לפתוח דרך.</h2>
-          </div>
-          <div className={styles.finalActions}>
-            <Link to={SITE_CONFIG.links.appointment} className={styles.lightCta}>
-              <FiCalendar aria-hidden="true" />
-              קביעת פגישה
-            </Link>
-            <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappCta}>
-              <FiMessageCircle aria-hidden="true" />
-              כתבו לי ב־WhatsApp
-            </a>
+            {/* ---- CLOSING ---- */}
+            <div className={styles.closingSection}>
+              <p className={styles.closingQuote}>
+                &ldquo;זוגיות חזקה אינה היעדר קונפליקטים, אלא היכולת לגשר עליהם
+                יחד.&rdquo;
+              </p>
+              <p className={styles.closingCredits}>
+                שירה סהרוני — ייעוץ זוגי, הנחיית הורים וגישור באשדוד ובאונליין.
+              </p>
+
+              <div className={styles.footerLinks}>
+                <a href="/privacy" className={styles.footerLink}>מדיניות פרטיות</a>
+                <span className={styles.footerDot}>•</span>
+                <a href="/terms" className={styles.footerLink}>תנאי שימוש</a>
+                <span className={styles.footerDot}>•</span>
+                <a href="/accessibility" className={styles.footerLink}>הצהרת נגישות</a>
+              </div>
+
+              <p className={styles.copyright}>
+                © 2026 שירה סהרוני — קשר | אשדוד. כל הזכויות שמורות.
+              </p>
+            </div>
+
           </div>
         </section>
       </main>
 
-      <aside className={styles.quickDock} aria-label="אפשרויות ליצירת קשר">
-        <span className={styles.quickDockLabel}>אפשר להתחיל בדרך שנוחה לכם</span>
-        <Link to={SITE_CONFIG.links.appointment}>
-          <FiCalendar aria-hidden="true" />
-          <span>פגישה</span>
-        </Link>
-        <a href={SITE_CONFIG.links.whatsapp}>
-          <FiMessageCircle aria-hidden="true" />
-          <span>WhatsApp</span>
-        </a>
-      </aside>
-
-      <footer className={styles.footer}>
-        <div className={styles.footerBrand}>
-          <span className={styles.brandMark}>ש</span>
-          <div>
-            <strong>שירה סהרוני</strong>
-            <small>ייעוץ זוגי · הנחיית הורים · גישור</small>
-          </div>
-        </div>
-        <div className={styles.footerLinks}>
-          <Link to="/contact">יצירת קשר</Link>
-          <Link to="/blog">מאמרים</Link>
-          <Link to="/privacy">פרטיות</Link>
-          <Link to="/accessibility">נגישות</Link>
-        </div>
-      </footer>
-    </div>
+      {/* 60-Second Relationship Assessment Modal */}
+      <AssessmentModal isOpen={isQuizOpen} onClose={() => setIsQuizOpen(false)} />
+    </>
   );
 };
 

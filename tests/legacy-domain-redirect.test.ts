@@ -31,13 +31,9 @@ describe('legacy domain migration', () => {
 });
 
 describe('canonical route redirects', () => {
-  it('redirects the former beta route to the primary homepage', () => {
-    expect(canonicalRedirectTarget('https://kesher.saharoni.com/b')).toBe(
-      'https://kesher.saharoni.com/',
-    );
-    expect(canonicalRedirectTarget('https://kesher.saharoni.com/b/')).toBe(
-      'https://kesher.saharoni.com/',
-    );
+  it('allows the beta route on the primary domain', () => {
+    expect(canonicalRedirectTarget('https://kesher.saharoni.com/b')).toBeNull();
+    expect(canonicalRedirectTarget('https://kesher.saharoni.com/b/')).toBeNull();
   });
 
   it('leaves other primary routes unchanged', () => {

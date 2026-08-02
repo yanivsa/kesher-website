@@ -48,7 +48,7 @@ const LateSinglenessPage: React.FC = () => (
             רווקות שנמשכת מעבר למה שקיוויתם יכולה להביא איתה עייפות, השוואות ושאלות שלא תמיד נעים לענות עליהן. הייעוץ מאפשר להבין מה מכביד עכשיו, בלי להציג את הרווקות כתקלה ובלי לחפש הסבר אחד לכל מה שקרה עד היום.
           </p>
           <div className={styles.heroActions}>
-            <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת ייעוץ</Link>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>לקבוע פגישת ייעוץ</Link>
             <Link to="/services/finding-relationship" className={styles.secondaryButton}>ליווי מעשי למציאת זוגיות</Link>
           </div>
         </div>
@@ -68,7 +68,7 @@ const LateSinglenessPage: React.FC = () => (
       <div className="container">
         <div className={styles.sectionHeader}>
           <h2>כשהרווקות תופסת יותר מדי מקום</h2>
-          <p>המטרה אינה לשכנע אתכם לחשוב חיובי. בודקים מה שוחק, מה עדיין חשוב לכם ואיך לחיות ולהכיר בלי שכל שבוע יימדד לפי השאלה אם התחיל קשר.</p>
+          <p>המטרה היא לא לשכנע אתכם לחשוב חיובי. בודקים מה שוחק, מה עדיין חשוב לכם ואיך לחיות ולהכיר בלי שכל שבוע יימדד לפי השאלה אם התחיל קשר.</p>
         </div>
         <div className={styles.cardGrid}>
           <article className={styles.card}>
@@ -109,7 +109,7 @@ const LateSinglenessPage: React.FC = () => (
       <div className="container">
         <div className={styles.sectionHeader}>
           <h2>איך נראה הייעוץ?</h2>
-          <p>מתחילים במה שקורה בתקופה הנוכחית ובוחרים מוקד אחד שאפשר לעבוד עליו, בלי להבטיח תוצאה שאין לאיש שליטה עליה.</p>
+          <p>מתחילים במה שקורה בתקופה הנוכחית ובוחרים מוקד אחד שאפשר לעבוד עליו, בלי להבטיח תוצאה שאין עליה שליטה.</p>
         </div>
         <div className={styles.processGrid}>
           <article className={styles.processStep}><h3>ממפים את העומס</h3><p>מזהים באילו מצבים הרווקות נעשית קשה במיוחד ומה אתם עושים כשזה קורה.</p></article>
@@ -133,7 +133,7 @@ const LateSinglenessPage: React.FC = () => (
       <div className="container">
         <h2>לא צריך להתמודד עם כל השאלות לבד</h2>
         <p>אפשר לקיים פגישות באשדוד או אונליין.</p>
-        <a href={SITE_CONFIG.links.whatsapp} className={styles.primaryButton}>שליחת הודעה לשירה</a>
+        <a href={SITE_CONFIG.links.whatsapp} className={styles.primaryButton}>לשלוח לי הודעה</a>
       </div>
     </section>
   </div>

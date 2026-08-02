@@ -261,3 +261,16 @@
   .grid { grid-template-columns: 1fr; }
   .specializationsGrid { grid-template-columns: 1fr; }
 }
+
+.geoResearchNote {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary-light);
+  border-inline-start: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+

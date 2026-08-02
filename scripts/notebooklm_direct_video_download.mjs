@@ -36,7 +36,7 @@ async function clickFirstVisible(page, selectors, timeout = 1500) {
 }
 
 async function artifactSummary(page) {
-  return await page.locator(".artifact-more-button").evaluateAll((buttons) =>
+  return await page.locator('button:has-text("more_vert"), mat-icon:has-text("more_vert"), .artifact-more-button, [aria-label*="More options"]').evaluateAll((buttons) =>
     buttons.map((button, index) => {
       let card = button;
       while (card && card.parentElement && card.parentElement.textContent?.trim().length < 4) {

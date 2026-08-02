@@ -3,6 +3,11 @@ import json
 import time
 import os
 import sys
+import signal
+
+
+class NotebookLMTimeoutError(TimeoutError):
+    """A bounded NotebookLM MCP operation did not produce a response."""
 
 class NotebookLMClient:
     def __init__(self):
@@ -19,7 +24,8 @@ class NotebookLMClient:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            bufsize=1
+            bufsize=1,
+            start_new_session=True,
         )
         
         # 1. Send initialize
@@ -38,9 +44,9 @@ class NotebookLMClient:
         self._write_line(init_msg)
         
         # Read response for initialize
-        init_resp = self._read_response(init_id)
+        init_resp = self._read_response(init_id, timeout=45)
         if not init_resp:
-            raise Exception("Failed to initialize MCP Server (no response)")
+            raise NotebookLMTimeoutError("NotebookLM MCP initialization timed out after 45 seconds")
             
         # 2. Send initialized notification (no ID, it is a notification)
         initialized_msg = {
@@ -74,7 +80,9 @@ class NotebookLMClient:
         # Read tool response
         resp = self._read_response(call_id, timeout=timeout)
         if not resp:
-            raise Exception(f"No response received for tool {name}")
+            raise NotebookLMTimeoutError(
+                f"NotebookLM tool {name} timed out after {timeout} seconds"
+            )
             
         if "error" in resp:
             raise Exception(f"Tool {name} returned error: {resp['error']}")
@@ -84,9 +92,42 @@ class NotebookLMClient:
     def disconnect(self):
         if self.proc:
             print("Disconnecting from MCP Server...")
-            self.proc.terminate()
-            self.proc.wait()
+            descendants = self._descendant_pids(self.proc.pid)
+            for pid in reversed(descendants):
+                self._signal_if_alive(pid, signal.SIGTERM)
+            if self.proc.poll() is None:
+                self.proc.terminate()
+                try:
+                    self.proc.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    print("NotebookLM MCP did not exit cleanly; killing it.")
+                    for pid in reversed(descendants):
+                        self._signal_if_alive(pid, signal.SIGKILL)
+                    self.proc.kill()
+                    self.proc.wait(timeout=10)
             self.proc = None
+
+    @staticmethod
+    def _descendant_pids(parent_pid):
+        """Return the MCP server's current child-process tree, deepest first."""
+        descendants = []
+        pending = [parent_pid]
+        while pending:
+            pid = pending.pop()
+            result = subprocess.run(
+                ["pgrep", "-P", str(pid)], capture_output=True, text=True, check=False
+            )
+            children = [int(value) for value in result.stdout.split() if value.isdigit()]
+            descendants.extend(children)
+            pending.extend(children)
+        return descendants
+
+    @staticmethod
+    def _signal_if_alive(pid, sig):
+        try:
+            os.kill(pid, sig)
+        except ProcessLookupError:
+            pass
 
     def _write_line(self, obj):
         line = json.dumps(obj) + "\n"
@@ -94,14 +135,19 @@ class NotebookLMClient:
         self.proc.stdin.flush()
 
     def _read_response(self, expected_id, timeout=30):
+        import select
         start_time = time.time()
         while time.time() - start_time < timeout:
+            rlist, _, _ = select.select([self.proc.stdout], [], [], 1.0)
+            if not rlist:
+                if self.proc.poll() is not None:
+                    raise Exception("MCP Server process terminated unexpectedly")
+                continue
             line = self.proc.stdout.readline()
             if not line:
                 # Check if process died
                 if self.proc.poll() is not None:
                     raise Exception("MCP Server process terminated unexpectedly")
-                time.sleep(0.1)
                 continue
             
             # Print server logs if they are outputted as warnings or info (optional)

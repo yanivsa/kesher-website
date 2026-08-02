@@ -5,6 +5,7 @@ import posts from '../../data/publishedPosts';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
+import ShareButtons from '../../components/Blog/ShareButtons';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
@@ -103,6 +104,7 @@ const BlogPost: React.FC = () => {
             />
           </div>
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
+          <ShareButtons title={post.title} />
           <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
           <LeadMagnet />
         </div>

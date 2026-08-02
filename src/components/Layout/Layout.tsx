@@ -14,11 +14,13 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { pathname } = useLocation();
-  const usesStandaloneHomepage = pathname === '/'
-    || pathname === '/b'
-    || pathname === '/b/';
+  const cleanPath = pathname.length > 1 && pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+  const usesStandalonePage = cleanPath === '/'
+    || cleanPath === '/b'
+    || cleanPath === '/beta'
+    || cleanPath === '/couples-counseling-ashdod';
 
-  if (usesStandaloneHomepage) {
+  if (usesStandalonePage) {
     return (
       <div className={styles.wrapper}>
         <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>

@@ -39,7 +39,8 @@ const loadable = (loader: () => Promise<PageModule>) => {
   return { Page: LoadablePage, preload };
 };
 
-const home = loadable(() => import('./pages/Beta/BetaPage'));
+const home = loadable(() => import('./pages/Home/Home'));
+const beta = loadable(() => import('./pages/Beta/BetaPage'));
 const couples = loadable(() => import('./pages/Services/Couples/CouplesCounseling'));
 const premarital = loadable(() => import('./pages/Services/MarriagePrep/MarriagePrepPage'));
 const parenting = loadable(() => import('./pages/Services/Parenting/ParentingGuidance'));
@@ -49,6 +50,7 @@ const aliyah = loadable(() => import('./pages/Services/Aliyah/AliyahFamiliesPage
 const relocation = loadable(() => import('./pages/Services/Relocation/CouplesAliyahRelocationPage'));
 const lateSingleness = loadable(() => import('./pages/Services/Singles/LateSinglenessPage'));
 const findingRelationship = loadable(() => import('./pages/Services/Singles/FindingRelationshipPage'));
+const couplesCounselingAshdod = loadable(() => import('./pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage'));
 const blogList = loadable(() => import('./pages/Blog/BlogList'));
 const blogPost = loadable(() => import('./pages/Blog/BlogPost'));
 const faq = loadable(() => import('./pages/FAQ/FAQ'));
@@ -63,6 +65,7 @@ const notFound = loadable(() => import('./pages/NotFound/NotFound'));
 const {
   Page: Home,
 } = home;
+const { Page: Beta } = beta;
 const { Page: CouplesCounseling } = couples;
 const { Page: PremaritalPage } = premarital;
 const { Page: ParentingGuidance } = parenting;
@@ -72,6 +75,7 @@ const { Page: AliyahFamiliesPage } = aliyah;
 const { Page: RelocationPage } = relocation;
 const { Page: LateSinglenessPage } = lateSingleness;
 const { Page: FindingRelationshipPage } = findingRelationship;
+const { Page: CouplesCounselingAshdodPage } = couplesCounselingAshdod;
 const { Page: BlogList } = blogList;
 const { Page: BlogPost } = blogPost;
 const { Page: FAQ } = faq;
@@ -85,6 +89,8 @@ const { Page: NotFound } = notFound;
 
 const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/$/, home.preload],
+  [/^\/b\/?$/, beta.preload],
+  [/^\/beta\/?$/, beta.preload],
   [/^\/about\/?$/, about.preload],
   [/^\/services\/couples\/?$/, couples.preload],
   [/^\/services\/premarital-first-year\/?$/, premarital.preload],
@@ -95,6 +101,7 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/services\/couples-aliyah-relocation\/?$/, relocation.preload],
   [/^\/services\/late-singleness\/?$/, lateSingleness.preload],
   [/^\/services\/finding-relationship\/?$/, findingRelationship.preload],
+  [/^\/couples-counseling-ashdod\/?$/, couplesCounselingAshdod.preload],
   [/^\/blog\/?$/, blogList.preload],
   [/^\/blog\/[^/]+\/?$/, blogPost.preload],
   [/^\/faq\/?$/, faq.preload],
@@ -129,12 +136,14 @@ function App() {
           <Route path="/services/late-singleness" element={<LateSinglenessPage />} />
           <Route path="/services/finding-relationship" element={<FindingRelationshipPage />} />
           <Route path="/services/singles-guidance" element={<Navigate to="/services/late-singleness" replace />} />
+          <Route path="/couples-counseling-ashdod" element={<CouplesCounselingAshdodPage />} />
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/appointment" element={<AppointmentPage />} />
-          <Route path="/b" element={<Navigate to="/" replace />} />
+          <Route path="/b" element={<Beta />} />
+          <Route path="/beta" element={<Beta />} />
           <Route path="/accessibility" element={<AccessibilityPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />

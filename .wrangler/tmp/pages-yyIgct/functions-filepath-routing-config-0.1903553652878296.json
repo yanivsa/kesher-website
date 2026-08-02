@@ -1,0 +1,21 @@
+{
+  "routes": [
+    {
+      "routePath": "/api/contact",
+      "mountPath": "/api",
+      "method": "",
+      "module": [
+        "api/contact.ts:onRequest"
+      ]
+    },
+    {
+      "routePath": "/",
+      "mountPath": "/",
+      "method": "",
+      "middleware": [
+        "_middleware.ts:onRequest"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}

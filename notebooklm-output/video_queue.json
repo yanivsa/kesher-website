@@ -13,7 +13,7 @@
       "verified": true,
       "uploaded": true,
       "created_at": "2026-07-10T16:23:42.918230",
-      "uploaded_at": "2026-07-16T00:33:14.433442",
+      "uploaded_at": "2026-08-02T14:34:08.121286",
       "upload_history": [
         {
           "youtube_id": "Wn086StJ-JA",
@@ -21,19 +21,19 @@
           "uploaded_at": "2026-07-10T17:14:56",
           "invalidated_at": "2026-07-16T00:29:10.897012",
           "reason": "video is missing, private, or deleted"
+        },
+        {
+          "youtube_id": "vLCifr5kwnE",
+          "youtube_url": "https://youtu.be/vLCifr5kwnE",
+          "uploaded_at": "2026-07-16T00:33:14.433442",
+          "invalidated_at": "2026-08-01T21:41:46.543590",
+          "reason": "video is missing, private, or deleted"
         }
       ],
       "upload_status": "public_verified",
-      "youtube_id": "vLCifr5kwnE",
-      "youtube_url": "https://youtu.be/vLCifr5kwnE",
-      "youtube_verification": {
-        "video_id": "vLCifr5kwnE",
-        "channel_id": "UCx5fEFvdVf28HLAR2dFW64Q",
-        "privacy_status": "public",
-        "upload_status": "processed",
-        "title": "מלכודת המתקן: למה עזרה פוגעת בזוגיות?"
-      },
-      "last_verified_at": "2026-07-26T18:02:02.669285"
+      "last_verified_at": "2026-08-02T14:34:08.121475",
+      "youtube_id": "Uu7xekSNk6k",
+      "youtube_url": "https://youtu.be/Uu7xekSNk6k"
     },
     {
       "id": "short-20260710-162342",
@@ -73,7 +73,7 @@
         "upload_status": "processed",
         "title": "למה עצות טובות הורסות את הקשר? 💔"
       },
-      "last_verified_at": "2026-07-26T18:02:03.989064"
+      "last_verified_at": "2026-08-02T14:32:48.016684"
     },
     {
       "id": "normal-20260716-004218",
@@ -112,7 +112,7 @@
       "youtube_url": "https://youtu.be/Rt0nwzI8DFU",
       "uploaded_at": "2026-07-16T14:03:21.576009",
       "upload_status": "public_verified",
-      "last_verified_at": "2026-07-26T18:02:05.547387",
+      "last_verified_at": "2026-08-02T14:32:49.125871",
       "youtube_verification": {
         "video_id": "Rt0nwzI8DFU",
         "channel_id": "UCx5fEFvdVf28HLAR2dFW64Q",

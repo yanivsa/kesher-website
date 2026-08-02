@@ -3,6 +3,8 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const STATIC_ROUTES = [
   '/',
+  '/b',
+  '/beta',
   '/about',
   '/contact',
   '/appointment',
@@ -15,6 +17,7 @@ const STATIC_ROUTES = [
   '/services/premarital-first-year',
   '/services/late-singleness',
   '/services/finding-relationship',
+  '/couples-counseling-ashdod',
   '/blog',
   '/faq',
   '/accessibility',

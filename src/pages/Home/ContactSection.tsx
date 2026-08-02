@@ -50,16 +50,16 @@ const ContactSection: React.FC = () => {
         <div className={styles.info}>
           <h2 className={styles.title}>אפשר לפנות בדרך שנוחה לכם</h2>
           <p className={styles.subtitle}>
-            פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.
+            תבחרו מועד לפגישה ישירות ביומן, או תפנו אליי בדרך שנוחה לכם.
           </p>
           <div className={styles.contactActions}>
             <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
               <FiCalendar aria-hidden="true" />
-              בחירת מועד לפגישה
+              לבחור מועד לפגישה
             </Link>
             <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
               <FaWhatsapp aria-hidden="true" />
-              שליחת הודעה בוואטסאפ
+              לשלוח הודעה בוואטסאפ
             </a>
           </div>
           <div className={styles.contactDetails}>
@@ -91,7 +91,7 @@ const ContactSection: React.FC = () => {
             <div className={styles.successMessage}>
               <div className={styles.successIcon}>✓</div>
               <h3>תודה רבה! פנייתכם התקבלה בהצלחה</h3>
-              <p>פרטי הקשר שלכם התקבלו. אחזור אליכם לתיאום המשך.</p>
+              <p>פרטי הקשר שלכם התקבלו. אחזור אליכם כדי לקבוע.</p>
               <button 
                 type="button" 
                 className={styles.resetBtn} 
@@ -197,7 +197,7 @@ const ContactSection: React.FC = () => {
                 ></textarea>
               </div>
               <button type="submit" className={styles.submitBtn} disabled={submitStatus === 'submitting'}>
-                {submitStatus === 'submitting' ? 'שולחת...' : 'שליחת פנייה'}
+                {submitStatus === 'submitting' ? 'שולחת...' : 'לשלוח פנייה'}
               </button>
               <div className={styles.privacyNote}>
                 <FiShield aria-hidden="true" />

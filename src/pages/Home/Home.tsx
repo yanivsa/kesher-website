@@ -22,8 +22,37 @@ const schemaData = {
       "name": SITE_CONFIG.author,
       "alternateName": "Shira Saharoni",
       "url": SITE_CONFIG.url,
-      "telephone": SITE_CONFIG.contact.phone,
+      "telephone": "+972-50-2763802",
+      "priceCurrency": "ILS",
+      "priceRange": "₪₪₪",
       "description": SITE_CONFIG.description,
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": ["h1", "h2", "p"]
+      },
+      "sameAs": [
+        SITE_CONFIG.links.facebook,
+        SITE_CONFIG.links.instagram
+      ],
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 31.8044,
+        "longitude": 34.6553
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+          "opens": "09:00",
+          "closes": "20:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Friday",
+          "opens": "09:00",
+          "closes": "13:00"
+        }
+      ],
       "areaServed": [
         {
           "@type": "City",
@@ -34,10 +63,11 @@ const schemaData = {
           "name": "ישראל"
         }
       ],
-      "availableLanguage": "he",
+      "availableLanguage": "he-IL",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "אשדוד",
+        "addressRegion": "מחוז הדרום",
         "addressCountry": "IL"
       },
       "knowsAbout": [
@@ -142,7 +172,6 @@ const schemaData = {
         }
       ],
       "image": `${SITE_CONFIG.url}/images/generated/site/home-hero.jpg`,
-      "priceRange": "$$",
       "potentialAction": {
         "@type": "ReserveAction",
         "target": {
@@ -197,7 +226,7 @@ const schemaData = {
 const Home: React.FC = () => {
 
   return (
-    <div className={styles.home}>
+    <main id="main-content" className={styles.home}>
       <MetaTags 
         title={`${SITE_CONFIG.author} — ייעוץ זוגי, הנחיית הורים וגישור באשדוד`}
         description={SITE_CONFIG.description}
@@ -214,7 +243,7 @@ const Home: React.FC = () => {
         <LeadMagnet />
       </div>
       <ContactSection />
-    </div>
+    </main>
   );
 };
 

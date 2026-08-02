@@ -14,6 +14,10 @@ const faqSchema = {
   "@graph": [
     {
       "@type": "FAQPage",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": ["h3", "p"]
+      },
       "mainEntity": faqs.map(faq => ({
         "@type": "Question",
         "name": faq.question,

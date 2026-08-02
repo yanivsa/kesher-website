@@ -1,0 +1,79 @@
+.shareContainer {
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-sm);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.shareTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.buttonsGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.shareBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+}
+
+.whatsappBtn {
+  background-color: #126B37;
+  color: white !important;
+}
+
+.whatsappBtn:hover {
+  background-color: #0E542B;
+  transform: translateY(-2px);
+}
+
+.facebookBtn {
+  background-color: #0B57C1;
+  color: white !important;
+}
+
+.facebookBtn:hover {
+  background-color: #0947A0;
+  transform: translateY(-2px);
+}
+
+.copyBtn {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.copyBtn:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.copiedMessage {
+  font-size: 0.85rem;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
