@@ -99,7 +99,7 @@ const BlogPost: React.FC = () => {
               alt={post.title}
               className={styles.image}
               fetchPriority="high"
-              {...getImageDimensions(post.image)}
+              {...getImageDimensions(post.image || "")}
             />
           </div>
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
