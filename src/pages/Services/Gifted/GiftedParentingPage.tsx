@@ -19,6 +19,7 @@ const schemaData = {
         '@id': `${SITE_CONFIG.url}/#business`,
       },
       description: 'הנחיית הורים לילדים מחוננים באשדוד ובאונליין, כולל מחוננות לצד ADHD והכנה רגשית וניהולית למסגרת מחוננים.',
+      image: `${SITE_CONFIG.url}/images/generated/services/parenting-room.jpg`,
       areaServed: 'ישראל',
     },
     {
