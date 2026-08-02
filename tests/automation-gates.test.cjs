@@ -212,6 +212,7 @@ function testAutomergeDeployContracts() {
     const seoWorkflow = fs.readFileSync('.github/workflows/jules-daily-seo-geo-review.yml', 'utf8');
     const mobileWorkflow = fs.readFileSync('.github/workflows/jules-daily-mobile-review.yml', 'utf8');
     const siteFixWorkflow = fs.readFileSync('.github/workflows/jules-nightly-site-fixes.yml', 'utf8');
+    const industryWorkflow = fs.readFileSync('.github/workflows/jules-daily-industry-benchmarking.yml', 'utf8');
     const watchdog = fs.readFileSync('.github/scripts/watch-jules-session.py', 'utf8');
     assert(
         seoWorkflow.includes('Final live-duplicate gate:'),
@@ -221,6 +222,7 @@ function testAutomergeDeployContracts() {
         ['SEO/GEO', seoWorkflow],
         ['mobile', mobileWorkflow],
         ['site-fix', siteFixWorkflow],
+        ['industry-benchmarking', industryWorkflow],
     ]) {
         assert(
             workflow.includes('Enforce autonomous terminal Jules state'),
@@ -288,6 +290,11 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
         siteFixWorkflow.includes('`AIChatbot` returns `null` at viewports up to 768px') &&
         siteFixWorkflow.includes('a hidden consent launcher as a mobile defect'),
         'Site-fix prompt must reject dead-code mobile AI-chat positioning changes'
+    );
+    assert(
+        industryWorkflow.includes('exact public competitor page URLs actually inspected') &&
+        industryWorkflow.includes('never report COMPLETED with a changeSet but no pull request'),
+        'Industry benchmarking must require source evidence and a verified terminal PR/no-op'
     );
     assert(
         seoWorkflow.includes('must not bulk-rewrite article bodies'),
