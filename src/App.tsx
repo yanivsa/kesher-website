@@ -40,6 +40,7 @@ const loadable = (loader: () => Promise<PageModule>) => {
 };
 
 const home = loadable(() => import('./pages/Beta/BetaPage'));
+const beta2 = loadable(() => import('./pages/Beta/Beta2Page'));
 const couples = loadable(() => import('./pages/Services/Couples/CouplesCounseling'));
 const premarital = loadable(() => import('./pages/Services/Premarital/PremaritalFirstYearPage'));
 const parenting = loadable(() => import('./pages/Services/Parenting/ParentingGuidance'));
@@ -63,6 +64,7 @@ const notFound = loadable(() => import('./pages/NotFound/NotFound'));
 const {
   Page: Home,
 } = home;
+const { Page: Beta2 } = beta2;
 const { Page: CouplesCounseling } = couples;
 const { Page: PremaritalPage } = premarital;
 const { Page: ParentingGuidance } = parenting;
@@ -85,6 +87,7 @@ const { Page: NotFound } = notFound;
 
 const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/$/, home.preload],
+  [/^\/beta2\/?$/, beta2.preload],
   [/^\/about\/?$/, about.preload],
   [/^\/services\/couples\/?$/, couples.preload],
   [/^\/services\/premarital-first-year\/?$/, premarital.preload],
@@ -118,6 +121,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/beta2" element={<Beta2 />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services/couples" element={<CouplesCounseling />} />
           <Route path="/services/premarital-first-year" element={<PremaritalPage />} />

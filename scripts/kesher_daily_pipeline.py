@@ -763,6 +763,41 @@ def load_queue():
     except Exception:
         return {"queue": []}
 
+
+def upload_eligible(item):
+    """Only a fully evidenced, content-bound item may reach YouTube."""
+    metadata = item.get("youtube_metadata") or {}
+    required_metadata = ("title", "description", "tags")
+    required_statuses = {
+        "technical_verified": True,
+        "verified": True,
+        "visual_review_status": "approved",
+        "semantic_review_status": "approved",
+        "metadata_review_status": "approved",
+    }
+    for field, expected in required_statuses.items():
+        if item.get(field) != expected:
+            return False, f"{field} is not {expected!r}"
+    if not all(metadata.get(field) for field in required_metadata):
+        return False, "content-bound Hebrew metadata is missing"
+    if not item.get("content_manifest"):
+        return False, "content manifest is missing"
+    return True, ""
+
+
+def quarantine_ineligible_unuploaded_items(queue_data):
+    changed = False
+    for item in queue_data.get("queue", []):
+        if item.get("uploaded") or item.get("remotion_status") != "done":
+            continue
+        eligible, reason = upload_eligible(item)
+        if not eligible:
+            item["upload_status"] = "quarantined_missing_content_evidence"
+            item["last_upload_error"] = reason
+            item["verified"] = False
+            changed = True
+    return changed
+
 def save_queue(q_data):
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     temporary_file = QUEUE_FILE.with_suffix(".json.tmp")
@@ -799,31 +834,25 @@ def main():
     
     # 1. Load Queue
     queue_data = load_queue()
+    if quarantine_ineligible_unuploaded_items(queue_data):
+        print("Quarantined queue items without complete visual, semantic, and metadata evidence.")
+        save_queue(queue_data)
     if not args.test_mode and not args.skip_reconcile:
         if reconcile_uploaded_queue(queue_data):
             print("Reconciled deleted or unavailable YouTube items back into the upload queue.")
             save_queue(queue_data)
     
     # 2. Upload Phase: Find ready-to-upload items
-    ready_normal = [item for item in queue_data["queue"] if item["type"] == "normal" and item["remotion_status"] == "done" and item["verified"] and not item["uploaded"]]
-    ready_short = [item for item in queue_data["queue"] if item["type"] == "short" and item["remotion_status"] == "done" and item["verified"] and not item["uploaded"]]
+    ready_normal = [item for item in queue_data["queue"] if item["type"] == "normal" and not item["uploaded"] and upload_eligible(item)[0]]
+    ready_short = [item for item in queue_data["queue"] if item["type"] == "short" and not item["uploaded"] and upload_eligible(item)[0]]
     
     uploaded_items = []
     
     # Upload Normal
     if ready_normal:
         item = ready_normal[0]
-        default_title = "מלכודת המתקן: למה עזרה פוגעת בזוגיות?"
-        default_description = (
-            "לפעמים אנחנו מנסים לעזור לבן או בת הזוג מהר מדי, ודווקא שם הקשר נסגר.\n\n"
-            "בסרטון הזה נראה דרך סיפור קצר איך עצות טובות יכולות להישמע כמו ביקורת, "
-            "למה הקשבה רגועה חשובה לפני פתרונות, ואיך אפשר ליצור בבית מרחב רגשי בטוח יותר.\n\n"
-            "למידע נוסף ותיאום פגישה:\nhttps://kesher.saharoni.com\n\nקשר - ייעוץ זוגי ומשפחתי"
-        )
         metadata = item.get("youtube_metadata") or {}
-        title = metadata.get("title") or default_title
-        description = metadata.get("description") or default_description
-        tags = metadata.get("tags") or DEFAULT_TAGS
+        title, description, tags = metadata["title"], metadata["description"], metadata["tags"]
         success, yt_id, yt_url = verify_channel_and_upload(
             Path(item["remotion_mp4_path"]), title, description, tags, is_test=args.test_mode
         )
@@ -843,16 +872,8 @@ def main():
     # Upload Short
     if ready_short:
         item = ready_short[0]
-        default_title = "למה עצות טובות הורסות את הקשר? 💔"
-        default_description = (
-            "מנסים לעזור לבן או בת הזוג ומקבלים כעס? הנה הסיבה והפתרון.\n\n"
-            "למידע נוסף ותיאום פגישה:\nhttps://kesher.saharoni.com\n\nקשר - ייעוץ זוגי ומשפחתי\n\n"
-            "#ייעוץזוגי #הדרכתהורים #זוגיות #הורות #shorts"
-        )
         metadata = item.get("youtube_metadata") or {}
-        title = metadata.get("title") or default_title
-        description = metadata.get("description") or default_description
-        tags = metadata.get("tags") or ["ייעוץ זוגי", "זוגיות", "תקשורת זוגית", "הורות", "shorts"]
+        title, description, tags = metadata["title"], metadata["description"], metadata["tags"]
         success, yt_id, yt_url = verify_channel_and_upload(
             Path(item["remotion_mp4_path"]), title, description, tags, is_test=args.test_mode
         )
@@ -1015,6 +1036,8 @@ def main():
                             "technical_verified": True,
                             "verified": False,
                             "visual_review_status": "pending",
+                            "semantic_review_status": "pending",
+                            "metadata_review_status": "pending",
                             "visual_review_path": str(review_path),
                             "visual_review_rules": [
                                 "Hebrew visual text only; URL and Shorts are the only Latin exceptions",
@@ -1024,6 +1047,12 @@ def main():
                             ],
                             "media": verification,
                             "youtube_metadata": details.get("youtube_metadata"),
+                            "content_manifest": {
+                                "raw_sha256": hashlib.sha256(raw_path.read_bytes()).hexdigest(),
+                                "rendered_sha256": hashlib.sha256(remotion_path.read_bytes()).hexdigest(),
+                                "source_url": selected_source["url"],
+                                "topic": selected_source["topic"],
+                            },
                             "uploaded": False,
                             "created_at": datetime.now().isoformat()
                         })
