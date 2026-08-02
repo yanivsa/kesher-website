@@ -212,6 +212,7 @@ function testAutomergeDeployContracts() {
     const seoWorkflow = fs.readFileSync('.github/workflows/jules-daily-seo-geo-review.yml', 'utf8');
     const mobileWorkflow = fs.readFileSync('.github/workflows/jules-daily-mobile-review.yml', 'utf8');
     const siteFixWorkflow = fs.readFileSync('.github/workflows/jules-nightly-site-fixes.yml', 'utf8');
+    const industryWorkflow = fs.readFileSync('.github/workflows/jules-daily-industry-benchmarking.yml', 'utf8');
     const watchdog = fs.readFileSync('.github/scripts/watch-jules-session.py', 'utf8');
     assert(
         seoWorkflow.includes('Final live-duplicate gate:'),
@@ -221,6 +222,7 @@ function testAutomergeDeployContracts() {
         ['SEO/GEO', seoWorkflow],
         ['mobile', mobileWorkflow],
         ['site-fix', siteFixWorkflow],
+        ['industry-benchmarking', industryWorkflow],
     ]) {
         assert(
             workflow.includes('Enforce autonomous terminal Jules state'),
@@ -249,6 +251,11 @@ function testAutomergeDeployContracts() {
             `Jules watchdog is missing terminal-state contract: ${contract}`
         );
     }
+    assert.strictEqual(
+        watchdog.split('deadline = time.monotonic() + max_seconds').length - 1,
+        3,
+        'Each bounded replacement must receive a fresh full session budget'
+    );
     execFileSync('python3', ['-c', `
 import runpy
 watchdog = runpy.run_path(".github/scripts/watch-jules-session.py")
@@ -278,6 +285,16 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
     assert(
         siteFixWorkflow.includes('a Vite or build-tool recommendation is not by itself a verified defect'),
         'Site-fix prompt must reject warning-only dependency migrations'
+    );
+    assert(
+        siteFixWorkflow.includes('`AIChatbot` returns `null` at viewports up to 768px') &&
+        siteFixWorkflow.includes('a hidden consent launcher as a mobile defect'),
+        'Site-fix prompt must reject dead-code mobile AI-chat positioning changes'
+    );
+    assert(
+        industryWorkflow.includes('exact public competitor page URLs actually inspected') &&
+        industryWorkflow.includes('never report COMPLETED with a changeSet but no pull request'),
+        'Industry benchmarking must require source evidence and a verified terminal PR/no-op'
     );
     assert(
         seoWorkflow.includes('must not bulk-rewrite article bodies'),

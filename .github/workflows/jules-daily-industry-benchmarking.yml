@@ -18,6 +18,9 @@ jobs:
   start-jules:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
       - name: Stop if benchmarking PR is already open
         id: backlog_gate
         env:
@@ -71,11 +74,26 @@ jobs:
           }
           JSON
 
-          jq '.prompt += "\n\nHard evidence guardrail: Never invent, infer, strengthen, or generalize credentials, certifications, degrees, clinical experience, years of experience, client volume, locations served, testimonials, outcomes, or professional claims. Treat competitor claims only as layout/content-pattern inspiration, never as facts about Shira. If the chosen improvement would require unsupported facts, choose another focused improvement or finish as a no-op. Never replace a missing-fact TODO with generic authority copy."' payload.json > payload.tmp
+          jq '.prompt += "\n\nHard evidence guardrail: Never invent, infer, strengthen, or generalize credentials, certifications, degrees, clinical experience, years of experience, client volume, locations served, testimonials, outcomes, or professional claims. Treat competitor claims only as layout/content-pattern inspiration, never as facts about Shira. If the chosen improvement would require unsupported facts, choose another focused improvement or finish as a no-op. Never replace a missing-fact TODO with generic authority copy. The PR body must name the exact search query and exact public competitor page URLs actually inspected, plus the specific observed pattern used. Search-result snippets, generic domain names, or unrecorded browsing are not evidence. If exact evidence is unavailable, make no edit and finish as a clean no-op.\n\nTerminal invariant: never report COMPLETED with a changeSet but no pull request. A meaningful change must be current-main based, validated, committed, pushed, and represented by one non-draft PR with the required [jules-review] prefix and exact evidence. If submission or evidence fails, remove the changeSet and finish as a factual clean no-op or explicit failure without asking the user."' payload.json > payload.tmp
           mv payload.tmp payload.json
 
-          curl --fail-with-body -sS \
+          status="$(curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
+            -o response.json -w '%{http_code}' \
             -H "x-goog-api-key: ${JULES_API_KEY}" \
             -H "Content-Type: application/json" \
             -d @payload.json \
-            https://jules.googleapis.com/v1alpha/sessions
+            https://jules.googleapis.com/v1alpha/sessions)"
+          cat response.json
+          test "${status}" = "200" -o "${status}" = "201"
+
+      - name: Enforce autonomous terminal Jules state
+        if: steps.backlog_gate.outputs.blocked != 'true'
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          python3 .github/scripts/watch-jules-session.py \
+            --payload payload.json \
+            --response response.json \
+            --max-seconds 3600 \
+            --poll-seconds 10 \
+            --max-replacements 1
