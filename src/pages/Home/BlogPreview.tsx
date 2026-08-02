@@ -20,17 +20,22 @@ const BlogPreview: React.FC = () => {
         <div className={styles.grid}>
           {latestPosts.map((post) => (
             <article key={post.id} className={styles.card}>
-              <div className={styles.imageWrapper}>
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className={styles.postImage}
-                  loading="lazy"
-                  {...getImageDimensions(post.image || "")}
-                />
-                <span className={styles.category}>{post.category}</span>
-              </div>
+              {post.image && (
+                <div className={styles.imageWrapper}>
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className={styles.postImage}
+                    loading="lazy"
+                    {...getImageDimensions(post.image)}
+                  />
+                  <span className={styles.category}>{post.category}</span>
+                </div>
+              )}
               <div className={styles.content}>
+                {!post.image && (
+                  <span className={styles.categoryNoImage}>{post.category}</span>
+                )}
                 <h3 className={styles.postTitle}>{post.title}</h3>
                 <p className={styles.excerpt}>{post.excerpt}</p>
                 <Link to={`/blog/${post.id}`} className={styles.readMore} aria-label={`קרא עוד על ${post.title}`}>קרא עוד</Link>
