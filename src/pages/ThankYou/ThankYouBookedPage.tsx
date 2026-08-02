@@ -30,7 +30,7 @@ const ThankYouBookedPage: React.FC = () => {
         title="הפגישה נקבעה | שירה סהרוני"
         description="אישור קביעת פגישת ייעוץ זוגי."
         canonical={`${SITE_CONFIG.url}/thank-you-booked`}
-        noindex={true}
+        noIndex={true}
       />
 
       <header className={styles.header}>

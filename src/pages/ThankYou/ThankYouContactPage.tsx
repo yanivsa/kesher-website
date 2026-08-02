@@ -29,7 +29,7 @@ const ThankYouContactPage: React.FC = () => {
         title="הפנייה התקבלה | שירה סהרוני"
         description="אישור קבלת פנייה."
         canonical={`${SITE_CONFIG.url}/thank-you-contact`}
-        noindex={true}
+        noIndex={true}
       />
 
       <header className={styles.header}>
