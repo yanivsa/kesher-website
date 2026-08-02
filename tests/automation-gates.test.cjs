@@ -306,6 +306,10 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
         articlePolicy.includes('appears exactly once in `src/data/posts.json`, `src/data/postSummaries.json`'),
         'Article policy must require generated-index consistency for the new article id'
     );
+    assert(
+        articlePolicy.includes('schema image property must be omitted entirely, and rendering components must conditionally render image elements rather than passing an empty string to getImageDimensions'),
+        'Article policy must enforce truthful no-image fallback rendering'
+    );
     for (const observedArticleFailure of [
         'זה קורה כמעט לכל מי',
         'טבעית לחלוטין',

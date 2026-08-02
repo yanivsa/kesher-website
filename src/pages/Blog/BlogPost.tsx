@@ -22,7 +22,7 @@ const BlogPost: React.FC = () => {
       {
         "@type": "Article",
         "headline": post?.title || "",
-        "image": `${SITE_CONFIG.url}${post?.image || ""}`,
+        ...(post?.image ? { "image": `${SITE_CONFIG.url}${post.image}` } : {}),
         "url": `${SITE_CONFIG.url}/blog/${post?.id || ""}`,
         "datePublished": post?.date || "",
         "dateModified": post?.date || "",
@@ -66,7 +66,7 @@ const BlogPost: React.FC = () => {
         ]
       }
     ]
-  }), [post?.title, post?.image, post?.id, post?.date, post?.excerpt, post?.content]);
+  }), [post]);
 
   if (!post) {
     return <NotFound />;
@@ -93,15 +93,17 @@ const BlogPost: React.FC = () => {
       </header>
       <div className={`container ${styles.container}`}>
         <div className={styles.mainContent}>
-          <div className={styles.imageWrapper}>
-            <img
-              src={post.image}
-              alt={post.title}
-              className={styles.image}
-              fetchPriority="high"
-              {...getImageDimensions(post.image || "")}
-            />
-          </div>
+          {post.image && (
+            <div className={styles.imageWrapper}>
+              <img
+                src={post.image}
+                alt={post.title}
+                className={styles.image}
+                fetchPriority="high"
+                {...getImageDimensions(post.image)}
+              />
+            </div>
+          )}
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
           <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
           <LeadMagnet />
