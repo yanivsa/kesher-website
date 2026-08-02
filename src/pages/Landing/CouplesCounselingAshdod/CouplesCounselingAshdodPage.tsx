@@ -215,6 +215,40 @@ const CouplesCounselingAshdodPage: React.FC = () => {
     return 'A';
   });
 
+  // Quiz state
+  const [currentStep, setCurrentStep] = useState(0);
+  const [quizAnswers, setQuizAnswers] = useState<Record<number, string>>({});
+  const [isQuizCompleted, setIsQuizCompleted] = useState(false);
+
+  const whatsappMessage = encodeURIComponent(
+    'היי שירה, הגעתי מעמוד הייעוץ הזוגי באשדוד ויש לי שאלה לפני שקובעים פגישה.',
+  );
+  const whatsappUrl = `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${whatsappMessage}`;
+
+  const scrollToBooking = (location: string) => {
+    trackCtaClick('קביעת פגישת ייעוץ – 500 ₪', location);
+    const bookingEl = document.getElementById('booking');
+    if (bookingEl) {
+      bookingEl.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleSelectOption = (questionId: number, option: string) => {
+    const updated = { ...quizAnswers, [questionId]: option };
+    setQuizAnswers(updated);
+    if (currentStep < quizQuestions.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      setIsQuizCompleted(true);
+    }
+  };
+
+  const resetQuiz = () => {
+    setCurrentStep(0);
+    setQuizAnswers({});
+    setIsQuizCompleted(false);
+  };
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
