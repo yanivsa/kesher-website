@@ -249,6 +249,11 @@ function testAutomergeDeployContracts() {
             `Jules watchdog is missing terminal-state contract: ${contract}`
         );
     }
+    assert.strictEqual(
+        watchdog.split('deadline = time.monotonic() + max_seconds').length - 1,
+        3,
+        'Each bounded replacement must receive a fresh full session budget'
+    );
     execFileSync('python3', ['-c', `
 import runpy
 watchdog = runpy.run_path(".github/scripts/watch-jules-session.py")
@@ -278,6 +283,11 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
     assert(
         siteFixWorkflow.includes('a Vite or build-tool recommendation is not by itself a verified defect'),
         'Site-fix prompt must reject warning-only dependency migrations'
+    );
+    assert(
+        siteFixWorkflow.includes('`AIChatbot` returns `null` at viewports up to 768px') &&
+        siteFixWorkflow.includes('a hidden consent launcher as a mobile defect'),
+        'Site-fix prompt must reject dead-code mobile AI-chat positioning changes'
     );
     assert(
         seoWorkflow.includes('must not bulk-rewrite article bodies'),

@@ -164,6 +164,10 @@ def watch(
                     return 1
                 current = create_replacement(payload, api_key)
                 replacements += 1
+                # A replacement is a new autonomous attempt, not the tail end of
+                # the failed session's budget. Give it the same bounded window as
+                # the original so it has time to validate, push, and open a PR.
+                deadline = time.monotonic() + max_seconds
                 last_state = ""
             time.sleep(poll_seconds)
             continue
@@ -191,6 +195,10 @@ def watch(
                 return 1
             current = create_replacement(payload, api_key)
             replacements += 1
+            # Reset the per-session budget for the bounded replacement. Without
+            # this, a replacement created near the original deadline can time out
+            # minutes later while Jules is still performing required validation.
+            deadline = time.monotonic() + max_seconds
             last_state = ""
 
         time.sleep(poll_seconds)
