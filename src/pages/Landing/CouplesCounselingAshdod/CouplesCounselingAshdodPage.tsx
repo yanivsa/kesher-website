@@ -513,7 +513,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       {/* 5. אזור נעים להכיר */}
       <section className={styles.sectionAlt}>
         <div className={`container ${styles.aboutGrid}`}>
-          <div>
+          <div className={styles.aboutImageWrapper}>
             <img
               src="/images/shira-saharoni.webp"
               alt="שירה סהרוני - יועצת זוגית ומגשרת"

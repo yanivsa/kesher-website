@@ -651,10 +651,21 @@
   }
 }
 
+.aboutImageWrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  max-width: 460px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .aboutImage {
   width: 100%;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
+  height: auto;
+  aspect-ratio: 1271 / 1280;
+  object-fit: cover;
   display: block;
 }
 
