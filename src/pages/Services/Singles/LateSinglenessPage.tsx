@@ -18,6 +18,7 @@ const schemaData = {
       url: `${SITE_CONFIG.url}/services/late-singleness`,
       provider: { '@type': 'LocalBusiness', '@id': `${SITE_CONFIG.url}/#business` },
       description: 'ייעוץ אישי לרווקות ולרווקים המתמודדים עם שחיקה, לחץ מהסביבה, בדידות ודפוסים חוזרים, באשדוד ובאונליין.',
+      image: `${SITE_CONFIG.url}/images/generated/services/couples-room.jpg`,
       areaServed: 'ישראל',
     },
     {

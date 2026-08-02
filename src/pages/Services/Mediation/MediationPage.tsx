@@ -19,6 +19,7 @@ const schemaData = {
         '@id': `${SITE_CONFIG.url}/#business`,
       },
       description: 'גישור באשדוד ובאונליין לבני זוג, משפחות, הורים, שכנים ושותפים המבקשים לבנות הסכמות מעשיות בשיח מכבד.',
+      image: `${SITE_CONFIG.url}/images/generated/services/mediation-room.jpg`,
       areaServed: 'ישראל',
     },
     {

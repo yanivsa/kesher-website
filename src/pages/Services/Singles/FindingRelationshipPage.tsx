@@ -18,6 +18,7 @@ const schemaData = {
       url: `${SITE_CONFIG.url}/services/finding-relationship`,
       provider: { '@type': 'LocalBusiness', '@id': `${SITE_CONFIG.url}/#business` },
       description: 'ליווי אישי סביב היכרויות, דייטים, בחירת קשר, תקשורת, גבולות והמעבר מהיכרות לזוגיות, באשדוד ובאונליין.',
+      image: `${SITE_CONFIG.url}/images/generated/services/couples-room.jpg`,
       areaServed: 'ישראל',
     },
     {

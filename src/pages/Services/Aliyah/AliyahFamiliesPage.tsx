@@ -19,6 +19,7 @@ const schemaData = {
         '@id': `${SITE_CONFIG.url}/#business`,
       },
       description: 'ייעוץ זוגי והנחיית הורים למשפחות עולים לישראל ולתושבים חוזרים, באשדוד ובאונליין.',
+      image: `${SITE_CONFIG.url}/images/generated/site/home-hero.jpg`,
       areaServed: 'ישראל',
     },
     {
