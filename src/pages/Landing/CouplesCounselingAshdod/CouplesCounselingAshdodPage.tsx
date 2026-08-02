@@ -447,7 +447,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           <div className={styles.calendlyWrapper}>
             <iframe
               src={SITE_CONFIG.links.calendly}
-              title="יומן קביעת פגישת ייעוץ זוגי באשדוד - שירה סהרוני"
+              title="יומן קביעת פגישת ייעוץ זוגי באשדוד Calendly - שירה סהרוני"
               className={styles.calendlyFrame}
               loading="eager"
             />
