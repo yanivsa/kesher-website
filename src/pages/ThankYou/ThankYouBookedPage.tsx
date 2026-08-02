@@ -42,7 +42,7 @@ const ThankYouBookedPage: React.FC = () => {
         </div>
       </header>
 
-      <main className={styles.mainContent}>
+      <main id="main-content" className={styles.mainContent}>
         <div className={styles.card}>
           <div className={styles.iconWrapper}>
             <FiCheckCircle aria-hidden="true" />
