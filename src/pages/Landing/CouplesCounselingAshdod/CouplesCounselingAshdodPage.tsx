@@ -60,6 +60,28 @@ const quizQuestions = [
   },
 ];
 
+// ⚠️ PLACEHOLDER — יש להחליף בעדויות אמיתיות של לקוחות שירה לפני השקה
+const testimonials = [
+  {
+    text: 'הגענו לשירה אחרי שנה וחצי שבה כל שיחה רצינית הסתיימת בשתיקה. בפגישה הראשונה בינינו הצלחנו לומר בפעם הראשונה מה כל אחד מאיתנו באמת מרגיש — לא מה שהצד השני עשה לנו. זה שינה משהו.',
+    author: 'ז׳ ו-נ׳',
+    location: 'אשדוד',
+    category: 'ייעוץ זוגי',
+  },
+  {
+    text: 'חשבנו שאנחנו כבר יודעים הכל אחד על השני. שירה הראתה לנו שאנחנו שומעים אחד את השני, אבל לא מקשיבים. מאז השיחות שלנו נראות אחרת — עדיין לא מושלמות, אבל הרבה יותר קלות.',
+    author: 'מ׳ ו-ד׳',
+    location: 'גן יבנה',
+    category: 'ייעוץ זוגי',
+  },
+  {
+    text: 'פחדתי שנשב מול מישהי שתגיד לי מה אני עושה לא נכון. מה שקרה בפועל היה הפוך לגמרי. שירה עזרה לי להבין מה אני צריך מהזוגיות שלי, ולהגיד את זה בלי להתגונן.',
+    author: 'א׳',
+    location: 'אשדוד',
+    category: 'ייעוץ פרטני במסגרת תהליך זוגי',
+  },
+];
+
 const timelineSteps = [
   {
     time: '00–15 דק׳',
@@ -571,12 +593,36 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 9. מידע על הפגישה */}
+      {/* 8. עדויות (PLACEHOLDER) */}
+      <section className={styles.testimonialsSection}>
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <h2>מה זוגות אומרים אחרי התהליך</h2>
+            <p>כל זוג מגיע עם האתגרים שלו — הכלים נבנים יחד, בהתאמה אישית</p>
+          </div>
+          <div className={styles.testimonialsGrid}>
+            {testimonials.map((t, i) => (
+              <blockquote key={i} className={styles.testimonialCard}>
+                <div className={styles.testimonialQuoteIcon} aria-hidden="true">&ldquo;</div>
+                <p className={styles.testimonialText}>{t.text}</p>
+                <footer className={styles.testimonialFooter}>
+                  <span className={styles.testimonialAuthor}>{t.author}</span>
+                  <span className={styles.testimonialMeta}>{t.location} · {t.category}</span>
+                </footer>
+              </blockquote>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 9. מידע על הפגישה + הסרת חסמים */}
       <section className={styles.section}>
         <div className="container">
           <div className={styles.sectionHeader}>
             <h2>מידע מעשי לפני שקובעים</h2>
           </div>
+
+          {/* כרטיס פרטי פגישה */}
           <div className={styles.detailsCard}>
             <div className={styles.priceTag}>500 ₪</div>
             <div className={styles.detailsList}>
@@ -603,6 +649,43 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               <div className={styles.detailsItem}>
                 <strong>מדיניות שינוי וביטול:</strong>
                 <span>שינוי או ביטול מועד מתבצעים בקלות באמצעות הקישור באישור ההזמנה</span>
+              </div>
+            </div>
+          </div>
+
+          {/* הסרת חסמים — Fear Removal */}
+          <div className={styles.frictionBox}>
+            <h3 className={styles.frictionTitle}>שאלות שעולות לפני שמחליטים לקבוע</h3>
+            <div className={styles.frictionGrid}>
+              <div className={styles.frictionCard}>
+                <div className={styles.frictionEmoji} aria-hidden="true">🔒</div>
+                <h4>האם מה שנאמר בפגישה נשמר בסוד?</h4>
+                <p>הפגישות מתקיימות במרחב פרטי לחלוטין. מה שנאמר בחדר נשאר בחדר — בהתאם לאתיקה המקצועית ולמחויבות אישית לדיסקרטיות.</p>
+              </div>
+              <div className={styles.frictionCard}>
+                <div className={styles.frictionEmoji} aria-hidden="true">📅</div>
+                <h4>מה קורה אם אנחנו לא מוכנים להמשיך אחרי הפגישה הראשונה?</h4>
+                <p>אין שום מחויבות להמשיך. הפגישה הראשונה היא נקודת היכרות והערכה הדדית. דרך ההמשך נקבעת רק אם שני הצדדים מרגישים שזה מתאים.</p>
+              </div>
+              <div className={styles.frictionCard}>
+                <div className={styles.frictionEmoji} aria-hidden="true">🤔</div>
+                <h4>מה אם בן/בת הזוג שלי לא מוכן/ה לבוא?</h4>
+                <p>כדאי לשאול — לפעמים הצד שמסרב לבוא רק צריך להבין מה מחכה לו שם. אפשר לפנות לשירה ב-WhatsApp לפני שקובעים, ולקבל תשובה לשאלה הזו ספציפית.</p>
+              </div>
+              <div className={styles.frictionCard}>
+                <div className={styles.frictionEmoji} aria-hidden="true">❌</div>
+                <h4>מה קורה אם צריך לבטל את הפגישה?</h4>
+                <p>ביטול ושינוי מועד מתבצעים בקלות מהקישור באישור ההזמנה מ-Calendly — בלי שיחות טלפון ובלי לחץ.</p>
+              </div>
+              <div className={styles.frictionCard}>
+                <div className={styles.frictionEmoji} aria-hidden="true">🎯</div>
+                <h4>האם שירה תגיד לנו מי צודק?</h4>
+                <p>לא. המטרה אינה לשפוט מי צודק, אלא להבין ביחד מה קורה בינינו ולמצוא דרך שתעבוד לשניהם.</p>
+              </div>
+              <div className={styles.frictionCard}>
+                <div className={styles.frictionEmoji} aria-hidden="true">💬</div>
+                <h4>יש לנו שאלה לפני שקובעים — איך פונים?</h4>
+                <p>אפשר לכתוב לשירה ישירות ב-WhatsApp. היא תחזור בהקדם עם תשובה ממוקדת, בלי מחויבות לקביעת פגישה.</p>
               </div>
             </div>
           </div>
