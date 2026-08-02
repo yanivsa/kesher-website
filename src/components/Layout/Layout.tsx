@@ -14,12 +14,11 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { pathname } = useLocation();
-  const usesStandaloneHomepage = pathname === '/beta'
-    || pathname === '/beta/'
-    || pathname === '/beta2'
-    || pathname === '/beta2/'
-    || pathname === '/b'
-    || pathname === '/b/';
+  const cleanPath = pathname.replace(/\/$/, '');
+  const usesStandaloneHomepage = cleanPath === '/beta'
+    || cleanPath === '/beta2'
+    || cleanPath === '/b'
+    || cleanPath === '/couples-counseling-ashdod';
 
   if (usesStandaloneHomepage) {
     return (

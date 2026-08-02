@@ -16,6 +16,7 @@ const serviceRoutes = new Set([
   '/services/premarital-first-year',
   '/services/late-singleness',
   '/services/finding-relationship',
+  '/couples-counseling-ashdod',
   '/faq',
 ]);
 const buildSitemap = (posts) => {

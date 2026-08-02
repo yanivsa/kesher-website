@@ -13,6 +13,7 @@ const routes = [
   '/services/premarital-first-year',
   '/services/late-singleness',
   '/services/finding-relationship',
+  '/couples-counseling-ashdod',
   '/blog',
   '/blog/child-after-school-restraint-collapse',
   '/blog/relocation-couple-conversations-before-moving',
@@ -230,3 +231,24 @@ test('relocation and premarital service pages expose their practical article hub
   await expect(page.getByRole('link', { name: 'פגישות הכנה לנישואים' }))
     .toHaveAttribute('href', '/services/premarital-first-year');
 });
+
+test('couples counseling Ashdod landing page renders correctly with Calendly, 500 NIS pricing, and GTM dataLayer', async ({ page }) => {
+  await page.goto('/couples-counseling-ashdod?gclid=test_gclid&utm_source=google');
+
+  // Verify Single H1
+  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי באשדוד – דרך מעשית לדבר אחרת', level: 1 })).toBeVisible();
+
+  // Verify Price tag visible
+  await expect(page.getByText('500 ₪').first()).toBeVisible();
+
+  // Verify Calendly iframe embed exists
+  const calendlyFrame = page.locator('iframe[title*="Calendly"]');
+  await expect(calendlyFrame).toBeVisible();
+
+  // Verify GTM dataLayer landing_page_view event was pushed
+  const dataLayerHasView = await page.evaluate(() => {
+    return Array.isArray(window.dataLayer) && window.dataLayer.some((evt) => evt.event === 'landing_page_view');
+  });
+  expect(dataLayerHasView).toBe(true);
+});
+

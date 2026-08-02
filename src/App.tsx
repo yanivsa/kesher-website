@@ -60,6 +60,7 @@ const appointment = loadable(() => import('./pages/Appointment/AppointmentPage')
 const accessibility = loadable(() => import('./pages/Legal/AccessibilityPage'));
 const privacy = loadable(() => import('./pages/Legal/PrivacyPolicy'));
 const terms = loadable(() => import('./pages/Legal/TermsOfUse'));
+const couplesCounselingAshdod = loadable(() => import('./pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage'));
 const notFound = loadable(() => import('./pages/NotFound/NotFound'));
 
 const {
@@ -85,11 +86,13 @@ const { Page: AppointmentPage } = appointment;
 const { Page: AccessibilityPage } = accessibility;
 const { Page: PrivacyPolicy } = privacy;
 const { Page: TermsOfUse } = terms;
+const { Page: CouplesCounselingAshdodPage } = couplesCounselingAshdod;
 const { Page: NotFound } = notFound;
 
 const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/$/, home.preload],
   [/^\/beta2\/?$/, beta2.preload],
+  [/^\/couples-counseling-ashdod\/?$/, couplesCounselingAshdod.preload],
   [/^\/about\/?$/, about.preload],
   [/^\/services\/couples\/?$/, couples.preload],
   [/^\/services\/premarital-first-year\/?$/, premarital.preload],
@@ -125,6 +128,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/beta" element={<Beta />} />
           <Route path="/beta2" element={<Beta2 />} />
+          <Route path="/couples-counseling-ashdod" element={<CouplesCounselingAshdodPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/services/couples" element={<CouplesCounseling />} />
           <Route path="/services/premarital-first-year" element={<PremaritalPage />} />

@@ -17,6 +17,7 @@ const STATIC_ROUTES = [
   '/services/finding-relationship',
   '/blog',
   '/faq',
+  '/couples-counseling-ashdod',
   '/accessibility',
   '/privacy',
   '/terms',
