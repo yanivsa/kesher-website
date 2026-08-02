@@ -1424,9 +1424,13 @@
 
   .hero {
     min-height: auto;
-    padding-top: 3rem;
+    padding-top: 1rem;
     grid-template-columns: 1fr;
     gap: 3rem;
+  }
+
+  .heroCopy {
+    animation: none;
   }
 
   .hero h1 {
@@ -1439,6 +1443,7 @@
   }
 
   .heroActions {
+    margin-top: 1rem;
     display: grid;
   }
 
@@ -1448,10 +1453,12 @@
   }
 
   .heroWhatsapp {
-    margin-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+    margin-bottom: 0;
   }
 
   .trustRow {
+    margin-top: 1rem;
+    margin-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
     gap: 0.65rem 1rem;
   }
 
@@ -1577,7 +1584,7 @@
   }
 
   .hero h1 {
-    font-size: clamp(2.85rem, 15vw, 4rem);
+    font-size: clamp(2.85rem, 13.75vw, 4rem);
   }
 
   .heroVisualStage {
