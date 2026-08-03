@@ -33,7 +33,7 @@ const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
             <p className={styles.subtitle}>{heroSubtitle}</p>
           </div>
           <div className={styles.heroImageWrapper}>
-            <img src={image} alt={heroTitle} className={styles.heroImage} />
+            <img src={image} alt={heroTitle} className={styles.heroImage} fetchPriority="high" />
           </div>
         </div>
       </header>
