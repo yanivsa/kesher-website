@@ -279,6 +279,12 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
         'Mobile prompt must prioritize the known fixed-dock/hero CTA collision'
     );
     assert(
+        mobileWorkflow.includes('Public-route gate:') &&
+        mobileWorkflow.includes('`/beta`, `/beta2`, route experiments, route-specific 404s') &&
+        mobileWorkflow.includes('--max-seconds 3600'),
+        'Mobile prompt must reject unpublished routes and allow enough time for autonomous completion'
+    );
+    assert(
         siteFixWorkflow.includes('Offering those paths to the user is forbidden.'),
         'Site-fix prompt must complete the selected terminal path without asking'
     );
@@ -295,6 +301,12 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
         industryWorkflow.includes('exact public competitor page URLs actually inspected') &&
         industryWorkflow.includes('never report COMPLETED with a changeSet but no pull request'),
         'Industry benchmarking must require source evidence and a verified terminal PR/no-op'
+    );
+    assert(
+        industryWorkflow.includes('Evidence-before-edit gate:') &&
+        industryWorkflow.includes('Clinical boundaries, treatment contraindications') &&
+        industryWorkflow.includes('Do not create scratch search scripts in the repository.'),
+        'Industry benchmarking must gather evidence before edits and reject unsupported clinical changes'
     );
     assert(
         seoWorkflow.includes('must not bulk-rewrite article bodies'),
