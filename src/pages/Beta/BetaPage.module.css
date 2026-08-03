@@ -1554,7 +1554,7 @@
   .footer {
     align-items: flex-start;
     flex-direction: column;
-    padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
   }
 
   .quickDock {
