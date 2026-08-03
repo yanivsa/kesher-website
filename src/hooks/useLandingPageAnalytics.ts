@@ -154,7 +154,7 @@ export const useLandingPageAnalytics = (variantId: string = 'A') => {
       window.removeEventListener('message', handleMessage);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [variantId]);
 
   const trackCtaClick = (ctaName: string, ctaLocation: string) => {
     window.dataLayer = window.dataLayer || [];

@@ -1,0 +1,30 @@
+{
+  "campaign_name": "AdvantagePlus_LeadGen_Ashdod_V1",
+  "objective": "LEAD_GENERATION",
+  "optimization_goal": "LEAD",
+  "target_audience": {
+    "locations": [
+      {
+        "name": "Ashdod",
+        "radius_km": 15
+      }
+    ],
+    "age_range": {
+      "min": 25,
+      "max": 55
+    },
+    "languages": ["he"]
+  },
+  "ad_creative": {
+    "primary_text": "מרגישים שהשיחות בבית חוזרות על עצמן? ייעוץ זוגי בקליניקה באשדוד מעניק כלים מעשיים לתקשורת מקרבת, במרחב פרטי ומכבד.",
+    "headline": "ייעוץ זוגי באשדוד - מרחב פרטי ומכבד",
+    "call_to_action": "BOOK_TRAVEL",
+    "destination_url": "https://kesher.saharoni.com/ashdod"
+  },
+  "budget": {
+    "amount_nis_ex_vat": 3000,
+    "vat_rate": 0.18,
+    "total_billed_nis": 3540,
+    "billing_period": "MONTHLY"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "gtm_container_id": "GTM-XXXXXXX",
+  "consent_mode": {
+    "default": {
+      "ad_storage": "denied",
+      "analytics_storage": "denied",
+      "ad_user_data": "denied",
+      "ad_personalization": "denied"
+    },
+    "note": "Required for EEA/UK and standard best practice for Amendment 13 compliance"
+  },
+  "events_mapping": [
+    {
+      "event_name": "booking_confirmed",
+      "trigger": "calendly_booking_scheduled",
+      "tags": [
+        "GA4_Event_Booking",
+        "GoogleAds_Conversion_Booking",
+        "MetaPixel_Lead"
+      ],
+      "type": "macro_conversion"
+    },
+    {
+      "event_name": "phone_click",
+      "trigger": "click_tel_link",
+      "tags": [
+        "GA4_Event_PhoneClick",
+        "GoogleAds_Conversion_PhoneClick"
+      ],
+      "type": "micro_conversion"
+    },
+    {
+      "event_name": "whatsapp_click",
+      "trigger": "click_wa_me_link",
+      "tags": [
+        "GA4_Event_WhatsAppClick",
+        "MetaPixel_Contact"
+      ],
+      "type": "micro_conversion"
+    }
+  ]
+}

@@ -80,6 +80,9 @@ async function main() {
       'button:has-text("Studio")',
       'a:has-text("Studio")',
       '[aria-label*="Studio"]',
+      'button:has-text("סטודיו")',
+      '[role="tab"]:has-text("סטודיו")',
+      'mat-tab-header [role="tab"]:nth-child(3)',
     ]);
     console.log(`studio-selector=${studioSelector}`);
     await page.waitForTimeout(2500);

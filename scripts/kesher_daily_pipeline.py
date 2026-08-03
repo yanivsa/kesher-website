@@ -28,6 +28,7 @@ YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
 COMPOSIO_CONNECTED_ACCOUNT = "youtube_ransom-winish"
 SITE_URL = "https://kesher.saharoni.com"
 MAX_GENERATION_SOURCE_ATTEMPTS = 3
+NOTEBOOKLM_SOURCE_ADD_TIMEOUT_SECONDS = 180
 
 # Directories
 PROJECT_DIR = Path("/Users/ninja/Documents/Kesher")

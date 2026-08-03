@@ -94,30 +94,33 @@ class NotebookLMClient:
         self.proc.stdin.flush()
 
     def _read_response(self, expected_id, timeout=30):
+        import select
         start_time = time.time()
         while time.time() - start_time < timeout:
-            line = self.proc.stdout.readline()
-            if not line:
-                # Check if process died
+            remaining = timeout - (time.time() - start_time)
+            if remaining <= 0:
+                break
+            rlist, _, _ = select.select([self.proc.stdout], [], [], min(remaining, 1.0))
+            if not rlist:
                 if self.proc.poll() is not None:
                     raise Exception("MCP Server process terminated unexpectedly")
-                time.sleep(0.1)
+                continue
+            line = self.proc.stdout.readline()
+            if not line:
+                if self.proc.poll() is not None:
+                    raise Exception("MCP Server process terminated unexpectedly")
                 continue
             
-            # Print server logs if they are outputted as warnings or info (optional)
-            # Typically standard JSON-RPC responses have "id" or "method" (for notifications)
             try:
                 msg = json.loads(line.strip())
-                # Check if it is a response to our ID
                 if msg.get("id") == expected_id:
                     return msg
-                # If it is a log message or notification, we can print it
                 if "method" in msg and msg["method"] == "notifications/message":
                     print(f"[MCP LOG]: {msg.get('params', {}).get('message')}")
             except Exception:
-                # Could be a plain text print, ignore or print for debug
                 pass
         return None
+
 
 if __name__ == "__main__":
     # Test client

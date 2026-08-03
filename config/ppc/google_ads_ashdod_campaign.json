@@ -1,0 +1,74 @@
+{
+  "campaign_name": "Search_CouplesCounseling_Ashdod_V1",
+  "objective": "SEARCH_LEAD_GEN",
+  "target_locations": [
+    {
+      "name": "Ashdod",
+      "radius_km": 15,
+      "type": "LOCATION_WITH_RADIUS"
+    }
+  ],
+  "languages": ["he", "en"],
+  "bidding_strategy": {
+    "type": "MAXIMIZE_CONVERSIONS",
+    "note": "ECPC is deprecated by Google as of March 2025. Moving to Maximize Conversions with Target CPA after 15+ conversions."
+  },
+  "budget": {
+    "amount_nis_ex_vat": 3000,
+    "vat_rate": 0.18,
+    "total_billed_nis": 3540,
+    "billing_period": "MONTHLY"
+  },
+  "dayparting": {
+    "timezone": "Asia/Jerusalem",
+    "pause_schedule": [
+      {
+        "day": "Friday",
+        "start_time": "14:00",
+        "end_time": "23:59"
+      },
+      {
+        "day": "Saturday",
+        "start_time": "00:00",
+        "end_time": "20:00"
+      }
+    ]
+  },
+  "keywords": {
+    "exact_and_phrase": [
+      "ייעוץ זוגי באשדוד",
+      "טיפול זוגי באשדוד",
+      "יועץ זוגי באשדוד",
+      "יועצת זוגית באשדוד",
+      "ייעוץ נישואין באשדוד",
+      "couple therapy ashdod"
+    ],
+    "negative": [
+      "חינם",
+      "חינמי",
+      "שירות לאומי",
+      "לימודים",
+      "קורס",
+      "עבודה סוציאלית",
+      "רווחה",
+      "דרושים"
+    ]
+  },
+  "ads": [
+    {
+      "type": "RESPONSIVE_SEARCH_AD",
+      "headlines": [
+        "ייעוץ זוגי מקצועי באשדוד",
+        "בניית שיחה רגועה וברורה",
+        "קליניקה פרטית באשדוד",
+        "רוצים להחזיר את התקשורת?",
+        "תיאום פגישה בדיסקרטיות"
+      ],
+      "descriptions": [
+        "מרחב פרטי ומכבד בהתאם לכללי האתיקה. תיאום שיחה ראשונית בקליניקה באשדוד.",
+        "כשהשיחות חוזרות לאותו דפוס – ייעוץ זוגי באשדוד מסייע ליצור שפה משותפת. קבעו מועד."
+      ],
+      "final_url": "https://kesher.saharoni.com/ashdod"
+    }
+  ]
+}
