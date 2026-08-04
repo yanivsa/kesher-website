@@ -102,6 +102,6 @@ jobs:
           python3 .github/scripts/watch-jules-session.py \
             --payload payload.json \
             --response response.json \
-            --max-seconds 2400 \
+            --max-seconds 7200 \
             --poll-seconds 10 \
             --max-replacements 1
