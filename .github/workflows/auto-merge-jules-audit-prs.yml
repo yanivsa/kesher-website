@@ -106,7 +106,7 @@ jobs:
                   status, files_data = api("GET", f"/repos/{repo}/pulls/{number}/files?per_page=100")
                   files = [f["filename"] for f in files_data]
 
-                  title_match = re.search(r"^\[jules-automerge\] Kesher (content review|mobile review|SEO GEO review):", pr.get("title") or "", re.I)
+                  title_match = re.search(r"^\[jules-(?:automerge|review)\] Kesher (content review|mobile review|SEO GEO review|industry review|site fixes|accessibility review):", pr.get("title") or "", re.I)
                   audit_kind = title_match.group(1).lower() if title_match else ""
 
                   if title_match and pr.get("state") == "open" and not files:
