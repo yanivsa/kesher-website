@@ -9,7 +9,7 @@ describe('BlogPreview image-less fallback', () => {
     const html = renderToStaticMarkup(
       createElement(MemoryRouter, null, createElement(BlogPreview)),
     );
-    const title = 'רשימת הדרישות והמציאות';
+    const title = 'הדייט מרגיש כמו ראיון עבודה? איך לצאת מחקירות ולייצר היכרות אמיתית';
     const titleIndex = html.indexOf(title);
     expect(titleIndex).toBeGreaterThan(-1);
 
