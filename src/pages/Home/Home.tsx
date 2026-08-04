@@ -6,6 +6,7 @@ import WhyMeSection from './WhyMeSection';
 import Testimonials from './Testimonials';
 import AboutSection from './AboutSection';
 import BlogPreview from './BlogPreview';
+import FAQSection from './FAQSection';
 import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
 import ContactSection from './ContactSection';
 import MetaTags from '../../components/SEO/MetaTags';
@@ -210,6 +211,7 @@ const Home: React.FC = () => {
       <WhyMeSection />
       <Testimonials />
       <BlogPreview />
+      <FAQSection />
       <div className="container">
         <LeadMagnet />
       </div>
