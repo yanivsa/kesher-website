@@ -281,8 +281,25 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
     assert(
         mobileWorkflow.includes('Public-route gate:') &&
         mobileWorkflow.includes('`/beta`, `/beta2`, route experiments, route-specific 404s') &&
-        mobileWorkflow.includes('--max-seconds 3600'),
+        mobileWorkflow.includes('Route HTTP status: 200') &&
+        mobileWorkflow.includes('--max-seconds 7200'),
         'Mobile prompt must reject unpublished routes and allow enough time for autonomous completion'
+    );
+    assert(
+        siteFixWorkflow.includes('Public-route evidence rule:') &&
+        siteFixWorkflow.includes('a component filename such as `BetaPage`') &&
+        siteFixWorkflow.includes('--max-seconds 7200'),
+        'Site-fix prompt must reject dead route evidence and allow enough time for autonomous completion'
+    );
+    assert(
+        seoWorkflow.includes('--max-seconds 7200'),
+        'SEO/GEO watchdog must allow enough time for a terminal PR or clean no-op'
+    );
+    assert(
+        auditWorkflow.includes('mobile_route_evidence_valid') &&
+        auditWorkflow.includes('exact route, HTTP 200, canonical, heading') &&
+        auditWorkflow.includes('{"/beta", "/beta2"}'),
+        'Audit auto-merge must independently reject dead/experimental mobile route evidence'
     );
     assert(
         siteFixWorkflow.includes('Offering those paths to the user is forbidden.'),

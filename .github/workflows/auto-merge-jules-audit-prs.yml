@@ -108,6 +108,16 @@ jobs:
 
                   title_match = re.search(r"^\[jules-(?:automerge|review)\] Kesher (content review|mobile review|SEO GEO review|industry review|site fixes|accessibility review):", pr.get("title") or "", re.I)
                   audit_kind = title_match.group(1).lower() if title_match else ""
+                  body = pr.get("body") or ""
+
+                  route_match = re.search(r"(?im)^Route inspected:\s*`?([^\s`]+)`?\s*$", body)
+                  route_status = re.search(r"(?im)^Route HTTP status:\s*200\s*$", body)
+                  route_canonical = re.search(r"(?im)^Route canonical:\s*https://kesher\.saharoni\.com/\S*\s*$", body)
+                  route_heading = re.search(r"(?im)^Route heading:\s*\S.+$", body)
+                  invalid_route = bool(route_match and route_match.group(1).rstrip("/") in {"/beta", "/beta2"})
+                  mobile_route_evidence_valid = audit_kind != "mobile review" or bool(
+                      route_match and route_status and route_canonical and route_heading and not invalid_route
+                  )
 
                   if title_match and pr.get("state") == "open" and not files:
                       api(
@@ -149,9 +159,15 @@ jobs:
                       and pr.get("head", {}).get("repo", {}).get("full_name") == pr.get("base", {}).get("repo", {}).get("full_name")
                       and allowed
                       and not forbidden
+                      and mobile_route_evidence_valid
                   )
 
                   if not eligible:
+                      if audit_kind == "mobile review" and not mobile_route_evidence_valid:
+                          print(
+                              f"PR #{number} rejected: mobile audit lacks valid public-route evidence "
+                              "(exact route, HTTP 200, canonical, heading) or targets /beta or /beta2."
+                          )
                       print(f"PR #{number} is not an eligible audit PR.")
                       continue
 
