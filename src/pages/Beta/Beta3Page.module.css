@@ -702,7 +702,7 @@
   margin: 0;
 }
 
-/* Apple Testimonials 3-Column Grid (Desktop > 1024px) & Edge-to-Edge Scroll-Snap (Mobile & Tablet <= 1024px) */
+/* Apple Testimonials 3-Column Grid (> 1180px) & Scroll-Snap Carousel (<= 1180px) */
 .testimonialsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -710,7 +710,7 @@
   width: 100%;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1180px) {
   .testimonialsGrid {
     display: flex;
     overflow-x: auto;
@@ -728,8 +728,8 @@
 
   .quoteCard {
     scroll-snap-align: center;
-    min-width: min(360px, calc(100vw - 4rem));
-    max-width: min(360px, calc(100vw - 4rem));
+    min-width: min(340px, calc(100vw - 4rem));
+    max-width: min(340px, calc(100vw - 4rem));
     flex-shrink: 0;
   }
 }
@@ -765,6 +765,7 @@
   margin: 0 0 1.5rem 0;
   font-weight: 400;
   word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .quoteAuthor {
