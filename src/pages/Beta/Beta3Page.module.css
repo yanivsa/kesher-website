@@ -75,7 +75,7 @@
 .headerInner {
   max-width: 1080px;
   margin: 0 auto;
-  height: 56px;
+  min-height: 56px;
   padding: 0.4rem 1.2rem;
   display: flex;
   align-items: center;
@@ -108,6 +108,7 @@
   font-size: 1.1rem;
   font-weight: 800;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
 }
 
 .brandText {
@@ -119,12 +120,14 @@
   font-size: 0.95rem;
   letter-spacing: -0.01em;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .brandTag {
   font-size: 0.7rem;
   color: var(--apple-muted);
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .desktopNav {
@@ -140,6 +143,7 @@
   font-weight: 500;
   opacity: 0.8;
   transition: opacity 0.2s ease;
+  white-space: nowrap;
 }
 
 .desktopNav a:hover {
@@ -165,6 +169,7 @@
   align-items: center;
   gap: 0.4rem;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
 }
 
 .menuButton {
@@ -192,7 +197,7 @@
   left: 0;
   right: 0;
   z-index: 201;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(25px);
   border-top-left-radius: 28px;
   border-top-right-radius: 28px;
@@ -237,7 +242,7 @@
 .hero {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 4rem 1.5rem 5rem;
+  padding: clamp(2rem, 5vw, 4rem) 1.5rem clamp(3rem, 6vw, 5rem);
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -270,12 +275,13 @@
   border-radius: 50%;
   background: #34c759;
   box-shadow: 0 0 8px #34c759;
+  flex-shrink: 0;
 }
 
 .heroTitle {
-  font-size: clamp(2.8rem, 5.2vw, 4.5rem);
+  font-size: clamp(2.5rem, 5vw, 4.2rem);
   font-weight: 800;
-  line-height: 1.05;
+  line-height: 1.08;
   letter-spacing: -0.035em;
   margin: 0 0 1.2rem 0;
   color: #1d1d1f;
@@ -289,8 +295,8 @@
 }
 
 .heroLead {
-  font-size: 1.2rem;
-  line-height: 1.6;
+  font-size: 1.15rem;
+  line-height: 1.65;
   color: var(--apple-muted);
   font-weight: 400;
   margin: 0 0 2rem 0;
@@ -319,6 +325,7 @@
   box-shadow: 0 8px 24px rgba(0, 113, 227, 0.28);
   border: none;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .secondaryAppleBtn {
@@ -335,6 +342,7 @@
   gap: 0.5rem;
   border: 1px solid var(--apple-glass-border);
   backdrop-filter: blur(10px);
+  white-space: nowrap;
 }
 
 .heroWhatsapp {
@@ -342,7 +350,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #34c759;
+  color: #2e7d32;
   font-weight: 600;
   font-size: 0.9rem;
   text-decoration: none;
@@ -353,11 +361,12 @@
   perspective: 1000px;
   display: flex;
   justify-content: center;
+  width: 100%;
 }
 
 .glassHeroCard {
   width: 100%;
-  max-width: 440px;
+  max-width: min(440px, 100%);
   aspect-ratio: 0.85;
   border-radius: 36px;
   background: rgba(255, 255, 255, 0.55);
@@ -387,17 +396,17 @@
 .floatingGlassBadge {
   position: absolute;
   bottom: 1.5rem;
-  right: 1.5rem;
-  left: 1.5rem;
-  padding: 0.9rem 1.2rem;
+  right: 1.2rem;
+  left: 1.2rem;
+  padding: 0.85rem 1.1rem;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.75rem;
   transform: translateZ(30px);
 }
 
@@ -410,16 +419,17 @@
   display: grid;
   place-items: center;
   font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
 .badgeText strong {
   display: block;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   color: var(--apple-text);
 }
 
 .badgeText span {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--apple-muted);
 }
 
@@ -427,13 +437,13 @@
 .section {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 5rem 1.5rem;
+  padding: clamp(3rem, 7vw, 5.5rem) 1.5rem;
 }
 
 .sectionHeader {
   text-align: center;
-  max-width: 600px;
-  margin: 0 auto 3.5rem;
+  max-width: 620px;
+  margin: 0 auto 3rem;
 }
 
 .sectionKicker {
@@ -447,17 +457,17 @@
 }
 
 .sectionTitle {
-  font-size: clamp(2.2rem, 3.8vw, 3.2rem);
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.1;
+  line-height: 1.12;
   margin: 0 0 1rem 0;
 }
 
 .sectionSubtitle {
-  font-size: 1.1rem;
+  font-size: 1.08rem;
   color: var(--apple-muted);
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0;
 }
 
@@ -485,12 +495,12 @@
 
 .bentoLarge {
   grid-column: span 6;
-  min-height: 360px;
+  min-height: 340px;
 }
 
 .bentoFull {
   grid-column: span 12;
-  min-height: 240px;
+  min-height: 220px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -505,6 +515,7 @@
   font-size: 1.4rem;
   color: white;
   margin-bottom: 1.5rem;
+  flex-shrink: 0;
 }
 
 .iconRose { background: linear-gradient(135deg, #e35d6a, #f28482); }
@@ -512,7 +523,7 @@
 .iconSand { background: linear-gradient(135deg, #d4a373, #f2cc8f); }
 
 .bentoCard h3 {
-  font-size: 1.6rem;
+  font-size: 1.55rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0 0 0.6rem 0;
@@ -547,13 +558,15 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--apple-blue);
-  margin-top: auto;
+  margin-top: 1.2rem;
 }
 
-/* Physics Snapping Carousel */
+/* Physics Snapping Carousel - Prevent Cut-off */
 .carouselViewport {
+  width: 100%;
   overflow: hidden;
-  padding: 1rem 0 2rem;
+  padding: 1.5rem 0.5rem 2.5rem;
+  margin: 0 -0.5rem;
   cursor: grab;
 }
 
@@ -565,13 +578,16 @@
   display: flex;
   gap: 1.5rem;
   width: max-content;
+  padding: 0 1rem;
 }
 
 .quoteCard {
-  width: 360px;
+  width: clamp(290px, 82vw, 380px);
+  flex-shrink: 0;
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--apple-glass-border);
   box-shadow: var(--apple-glass-shadow);
   padding: 1.8rem;
@@ -592,7 +608,7 @@
 
 .quoteText {
   font-size: 1.05rem;
-  line-height: 1.6;
+  line-height: 1.65;
   color: var(--apple-text);
   margin: 0 0 1.5rem 0;
   font-weight: 400;
@@ -611,20 +627,23 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 99;
+  max-width: calc(100vw - 1.5rem);
 }
 
 .appleDock {
   height: 60px;
   padding: 0 0.8rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(25px) saturate(180%);
   -webkit-backdrop-filter: blur(25px) saturate(180%);
   border: 1px solid var(--apple-glass-border);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
+  width: max-content;
+  max-width: 100%;
 }
 
 .dockItem {
@@ -637,6 +656,7 @@
   color: var(--apple-text);
   font-size: 0.85rem;
   font-weight: 600;
+  white-space: nowrap;
   transition: background 0.2s ease;
 }
 
@@ -675,6 +695,7 @@
 .footerLinks {
   display: flex;
   gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
 .footerLinks a {
@@ -703,6 +724,11 @@
 
   .bentoLarge {
     grid-column: span 12;
+  }
+
+  .bentoFull {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .desktopNav {
