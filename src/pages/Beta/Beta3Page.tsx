@@ -4,6 +4,7 @@ import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motio
 import {
   FiArrowLeft,
   FiCalendar,
+  FiCheck,
   FiChevronDown,
   FiCompass,
   FiHeart,
@@ -47,6 +48,32 @@ const services = [
     iconClass: styles.iconSand,
     accent: 'full',
     tags: ['הקשבה', 'הסכמות', 'בהירות'],
+  },
+];
+
+const focusAreas = [
+  'זוגיות בתקופות של ריחוק ושחיקה',
+  'הורות לילדים מחוננים וילדים עם ADHD',
+  'הכנה לנישואים והשנה הראשונה',
+  'משפחות בעלייה, בחזרה לישראל וברילוקיישן',
+  'רווקות מאוחרת וליווי למציאת זוגיות',
+];
+
+const processSteps = [
+  {
+    number: '01',
+    title: 'מתחילים במה שקורה עכשיו',
+    text: 'ממפים יחד את הקושי, את הרגעים שבהם הוא מופיע ואת השינוי שהכי חשוב לכם להרגיש.',
+  },
+  {
+    number: '02',
+    title: 'מבינים את הדפוס',
+    text: 'מזהים מה מפעיל אתכם, מה משמר את התקיעות ואיפה אפשר לייצר תגובה חדשה.',
+  },
+  {
+    number: '03',
+    title: 'מתרגלים דרך אחרת',
+    text: 'יוצאים מהפגישה עם כיוון ברור וכלים שאפשר לנסות בבית, בקצב שמתאים לכם.',
   },
 ];
 
@@ -371,7 +398,97 @@ const Beta3Page: React.FC = () => {
           </div>
         </section>
 
-        {/* Apple Physics Testimonials Carousel - Cut-off Fixed */}
+        {/* About Section (#about) */}
+        <section id="about" className={styles.section}>
+          <div className={styles.aboutGrid}>
+            <motion.div 
+              className={styles.aboutVisual}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
+            >
+              <div className={styles.aboutImageFrame}>
+                <img
+                  src="/images/generated/site/home-hero.jpg"
+                  alt="חדר הייעוץ של שירה סהרוני באשדוד"
+                  width="1600"
+                  height="900"
+                  loading="lazy"
+                />
+              </div>
+            </motion.div>
+
+            <motion.div 
+              className={styles.aboutCopy}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
+            >
+              <span className={styles.sectionKicker}>נעים מאוד, שירה</span>
+              <h2>מקצועיות שמחזיקה את המורכבות. שיחה שנשארת אנושית.</h2>
+              <p className={styles.aboutLead}>
+                אני מלווה זוגות והורים ברגעים שבהם התקשורת נתקעת, העומס גובר או הבית מבקש דרך חדשה. המטרה שלי היא להקשיב ולפרק יחד מצבים מסובכים לצעדים מעשיים שאפשר ליישם בחיים עצמם.
+              </p>
+              
+              <ul className={styles.focusGrid}>
+                {focusAreas.map((area) => (
+                  <motion.li 
+                    key={area} 
+                    className={styles.focusItem}
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ type: 'spring', bounce: 0, duration: 0.2 }}
+                  >
+                    <FiCheck className={styles.focusCheckIcon} />
+                    <span>{area}</span>
+                  </motion.li>
+                ))}
+              </ul>
+
+              <div className={styles.credentialGlassCard}>
+                <span className={styles.credentialTitle}>הכשרה מקצועית מוסמכת</span>
+                <p className={styles.credentialText}>
+                  העשייה שלי נשענת על הכשרה בייעוץ זוגי ומשפחתי, בהנחיית הורים (עם התמחות ב-ADHD), ובגישור. רקע נוסף: עורכת דין בהכשרתי.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Process Section (#process) */}
+        <section id="process" className={styles.section}>
+          <motion.div 
+            className={styles.sectionHeader}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
+          >
+            <span className={styles.sectionKicker}>תהליך עבודה</span>
+            <h2 className={styles.sectionTitle}>בהירות לפני הכול.</h2>
+            <p className={styles.sectionSubtitle}>
+              לא צריך להגיע עם ניסוח מדויק. מתחילים ממה שקשה עכשיו ומתקדמים צעד אחר צעד.
+            </p>
+          </motion.div>
+
+          <div className={styles.processGrid}>
+            {processSteps.map((step) => (
+              <motion.div 
+                key={step.number} 
+                className={styles.processCard}
+                whileHover={{ scale: 1.03, y: -4 }}
+                transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
+              >
+                <span className={styles.processNumber}>{step.number}</span>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* Apple Physics Testimonials Carousel */}
         <section className={styles.section}>
           <motion.div 
             className={styles.sectionHeader}
@@ -407,6 +524,37 @@ const Beta3Page: React.FC = () => {
             </motion.div>
           </div>
         </section>
+
+        {/* Final Apple Glass Banner CTA */}
+        <motion.section 
+          className={styles.finalBanner}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
+        >
+          <h2>השיחה הראשונה לא חייבת לפתור הכול.<br />היא רק צריכה לפתוח דרך.</h2>
+          <div className={styles.finalBannerActions}>
+            <MotionLink 
+              to={SITE_CONFIG.links.appointment} 
+              className={styles.primaryAppleBtn}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              <FiCalendar />
+              תיאום פגישת ייעוץ
+            </MotionLink>
+            <motion.a 
+              href={SITE_CONFIG.links.whatsapp} 
+              className={styles.secondaryAppleBtn}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              <FiMessageCircle />
+              כתבו לי ב-WhatsApp
+            </motion.a>
+          </div>
+        </motion.section>
       </main>
 
       {/* Floating Apple Dock */}
