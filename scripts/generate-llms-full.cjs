@@ -34,7 +34,8 @@ const services = [
   { name: 'ייעוץ זוגי לעולים ולזוגות ברילוקיישן', url: '/services/couples-aliyah-relocation', path: path.join(__dirname, '../src/pages/Services/Relocation/CouplesAliyahRelocationPage.tsx') },
   { name: 'הכנה לנישואים וליווי בשנה הראשונה', url: '/services/premarital-first-year', path: path.join(__dirname, '../src/pages/Services/Premarital/PremaritalFirstYearPage.tsx') },
   { name: 'ייעוץ במצבי רווקות מאוחרת', url: '/services/late-singleness', path: path.join(__dirname, '../src/pages/Services/Singles/LateSinglenessPage.tsx') },
-  { name: 'ליווי למציאת זוגיות', url: '/services/finding-relationship', path: path.join(__dirname, '../src/pages/Services/Singles/FindingRelationshipPage.tsx') }
+  { name: 'ליווי למציאת זוגיות', url: '/services/finding-relationship', path: path.join(__dirname, '../src/pages/Services/Singles/FindingRelationshipPage.tsx') },
+  { name: 'ייעוץ זוגי באשדוד', url: '/couples-counseling-ashdod', path: path.join(__dirname, '../src/pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage.tsx') }
 ];
 
 services.forEach(service => {
