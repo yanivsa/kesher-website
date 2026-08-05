@@ -164,18 +164,20 @@ const BlogList: React.FC = () => {
             {filteredPosts.map((post) => (
               <article key={post.id} className={styles.card}>
                 {post.image && (
-                  <div className={styles.imageWrapper}>
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className={styles.image}
-                      loading="lazy"
-                      {...getImageDimensions(post.image)}
-                    />
-                    <span className={styles.categoryBadge}>
-                      {('subcategory' in post && post.subcategory) ? post.subcategory : post.category}
-                    </span>
-                  </div>
+                  <Link to={`/blog/${post.id}`} className={styles.imageLink} aria-label={post.title}>
+                    <div className={styles.imageWrapper}>
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className={styles.image}
+                        loading="lazy"
+                        {...getImageDimensions(post.image)}
+                      />
+                      <span className={styles.categoryBadge}>
+                        {('subcategory' in post && post.subcategory) ? post.subcategory : post.category}
+                      </span>
+                    </div>
+                  </Link>
                 )}
                 <div className={styles.content}>
                   {!post.image && (
@@ -184,7 +186,11 @@ const BlogList: React.FC = () => {
                     </span>
                   )}
                   <span className={styles.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
-                  <h2 className={styles.title}>{post.title}</h2>
+                  <h2 className={styles.title}>
+                    <Link to={`/blog/${post.id}`} className={styles.titleLink}>
+                      {post.title}
+                    </Link>
+                  </h2>
                   <p className={styles.excerpt}>{post.excerpt}</p>
                   <Link to={`/blog/${post.id}`} className={styles.link} aria-label={`קרא עוד על ${post.title}`}>קרא עוד ←</Link>
                 </div>

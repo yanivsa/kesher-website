@@ -21,22 +21,28 @@ const BlogPreview: React.FC = () => {
           {latestPosts.map((post) => (
             <article key={post.id} className={styles.card}>
               {post.image && (
-                <div className={styles.imageWrapper}>
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className={styles.postImage}
-                    loading="lazy"
-                    {...getImageDimensions(post.image)}
-                  />
-                  <span className={styles.category}>{post.category}</span>
-                </div>
+                <Link to={`/blog/${post.id}`} className={styles.imageLink} aria-label={post.title}>
+                  <div className={styles.imageWrapper}>
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className={styles.postImage}
+                      loading="lazy"
+                      {...getImageDimensions(post.image)}
+                    />
+                    <span className={styles.category}>{post.category}</span>
+                  </div>
+                </Link>
               )}
               <div className={styles.content}>
                 {!post.image && (
                   <span className={styles.categoryNoImage}>{post.category}</span>
                 )}
-                <h3 className={styles.postTitle}>{post.title}</h3>
+                <h3 className={styles.postTitle}>
+                  <Link to={`/blog/${post.id}`} className={styles.titleLink}>
+                    {post.title}
+                  </Link>
+                </h3>
                 <p className={styles.excerpt}>{post.excerpt}</p>
                 <Link to={`/blog/${post.id}`} className={styles.readMore} aria-label={`קרא עוד על ${post.title}`}>קרא עוד</Link>
               </div>

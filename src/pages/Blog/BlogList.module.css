@@ -217,10 +217,26 @@
   margin-bottom: 0.5rem;
 }
 
+.imageLink {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
 .title {
   font-size: 1.25rem;
   margin-bottom: var(--spacing-sm);
   line-height: 1.3;
+}
+
+.titleLink {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.titleLink:hover {
+  color: var(--color-primary);
 }
 
 .excerpt {
