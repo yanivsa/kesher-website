@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 import {
@@ -156,23 +156,6 @@ const GlassHeroCard = () => {
 
 const Beta3Page: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [dragWidth, setDragWidth] = useState(0);
-
-  useEffect(() => {
-    const updateConstraint = () => {
-      if (carouselRef.current && trackRef.current) {
-        const carouselWidth = carouselRef.current.offsetWidth;
-        const trackWidth = trackRef.current.scrollWidth;
-        const diff = trackWidth - carouselWidth;
-        setDragWidth(diff > 0 ? diff : 0);
-      }
-    };
-    updateConstraint();
-    window.addEventListener('resize', updateConstraint);
-    return () => window.removeEventListener('resize', updateConstraint);
-  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -488,7 +471,7 @@ const Beta3Page: React.FC = () => {
           </div>
         </section>
 
-        {/* Apple Physics Testimonials Carousel */}
+        {/* Apple Testimonials 3-Column Grid (Desktop) / Scroll Snap (Mobile) */}
         <section className={styles.section}>
           <motion.div 
             className={styles.sectionHeader}
@@ -501,27 +484,19 @@ const Beta3Page: React.FC = () => {
             <h2 className={styles.sectionTitle}>מה משתנה בקשר.</h2>
           </motion.div>
 
-          <div className={styles.carouselViewport} ref={carouselRef}>
-            <motion.div 
-              ref={trackRef}
-              className={styles.carouselTrack}
-              drag="x"
-              dragConstraints={{ left: -dragWidth, right: dragWidth }}
-              dragElastic={0.12}
-              transition={{ type: 'spring', bounce: 0.1, duration: 0.5 }}
-            >
-              {testimonials.map((t) => (
-                <motion.div 
-                  key={t.author} 
-                  className={styles.quoteCard}
-                  whileHover={{ scale: 1.02 }}
-                >
-                  <span className={styles.quoteType}>{t.type}</span>
-                  <p className={styles.quoteText}>“{t.text}”</p>
-                  <span className={styles.quoteAuthor}>{t.author}</span>
-                </motion.div>
-              ))}
-            </motion.div>
+          <div className={styles.testimonialsGrid}>
+            {testimonials.map((t) => (
+              <motion.div 
+                key={t.author} 
+                className={styles.quoteCard}
+                whileHover={{ scale: 1.02, y: -4 }}
+                transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+              >
+                <span className={styles.quoteType}>{t.type}</span>
+                <p className={styles.quoteText}>“{t.text}”</p>
+                <span className={styles.quoteAuthor}>{t.author}</span>
+              </motion.div>
+            ))}
           </div>
         </section>
 

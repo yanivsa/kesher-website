@@ -561,65 +561,6 @@
   margin-top: 1.2rem;
 }
 
-/* Physics Snapping Carousel - Prevent Cut-off */
-.carouselViewport {
-  width: 100%;
-  overflow: hidden;
-  padding: 1.5rem 0.5rem 2.5rem;
-  margin: 0 -0.5rem;
-  cursor: grab;
-}
-
-.carouselViewport:active {
-  cursor: grabbing;
-}
-
-.carouselTrack {
-  display: flex;
-  gap: 1.5rem;
-  width: max-content;
-  padding: 0 1rem;
-}
-
-.quoteCard {
-  width: clamp(290px, 82vw, 380px);
-  flex-shrink: 0;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--apple-glass-border);
-  box-shadow: var(--apple-glass-shadow);
-  padding: 1.8rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.quoteType {
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--apple-blue);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.8rem;
-  display: block;
-}
-
-.quoteText {
-  font-size: 1.05rem;
-  line-height: 1.65;
-  color: var(--apple-text);
-  margin: 0 0 1.5rem 0;
-  font-weight: 400;
-}
-
-.quoteAuthor {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--apple-muted);
-}
-
 /* About Section Apple Glass Style */
 .aboutGrid {
   display: grid;
@@ -759,6 +700,76 @@
   color: var(--apple-muted);
   line-height: 1.6;
   margin: 0;
+}
+
+/* Apple Testimonials 3-Column Grid (Desktop) & Scroll-Snap (Mobile) - Zero Cut-off */
+.testimonialsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .testimonialsGrid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.5rem 0 1.5rem;
+    gap: 1rem;
+    scrollbar-width: none;
+  }
+
+  .testimonialsGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .quoteCard {
+    scroll-snap-align: center;
+    min-width: calc(100vw - 3.5rem);
+    max-width: calc(100vw - 3.5rem);
+    flex-shrink: 0;
+  }
+}
+
+.quoteCard {
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--apple-glass-border);
+  box-shadow: var(--apple-glass-shadow);
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.quoteType {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--apple-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.quoteText {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--apple-text);
+  margin: 0 0 1.5rem 0;
+  font-weight: 400;
+  word-break: break-word;
+}
+
+.quoteAuthor {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--apple-muted);
 }
 
 /* Final Banner CTA */
