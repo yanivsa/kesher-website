@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useMotionValue, useSpring, AnimatePresence, useMotionTemplate } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useMotionTemplate } from 'framer-motion';
 
 import {
   FiArrowLeft,
@@ -23,7 +23,7 @@ import { homeSchema } from '../../constants/homeSchema';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './Beta3Page.module.css';
 
-const MotionLink = motion.create ? motion.create(Link) : (motion as any)(Link);
+const MotionLink = motion.create(Link);
 
 const services = [
   {
@@ -145,7 +145,7 @@ const InteractiveHeroVisual = () => {
           rotateY: smoothTiltY,
           '--glow-x': glowXStr,
           '--glow-y': glowYStr,
-        } as any}
+        } as unknown as React.CSSProperties}
       >
         <div className={styles.imageFrame}>
           <img
