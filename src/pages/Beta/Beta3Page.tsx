@@ -493,7 +493,7 @@ const Beta3Page: React.FC = () => {
                 transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
               >
                 <span className={styles.quoteType}>{t.type}</span>
-                <p className={styles.quoteText}>“{t.text}”</p>
+                <p className={styles.quoteText}>"{t.text}"</p>
                 <span className={styles.quoteAuthor}>{t.author}</span>
               </motion.div>
             ))}

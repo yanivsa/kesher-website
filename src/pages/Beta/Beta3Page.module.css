@@ -673,7 +673,7 @@
   padding: 2.2rem 1.8rem;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-start;
   position: relative;
 }
 
@@ -746,6 +746,7 @@
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .quoteType {
@@ -764,6 +765,9 @@
   color: var(--apple-text);
   margin: 0 0 1.5rem 0;
   font-weight: 400;
+  text-align: right;
+  direction: rtl;
+  unicode-bidi: isolate;
   word-break: break-word;
   overflow-wrap: break-word;
 }
