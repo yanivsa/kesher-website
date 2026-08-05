@@ -12,6 +12,7 @@ import {
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import ServiceFAQ from '../../../components/FAQ/ServiceFAQ';
+import TherapistBio from '../../../components/TherapistBio/TherapistBio';
 import faqs from '../../../data/faqs';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from '../shared/SpecialtyServicePage.module.css';
@@ -206,6 +207,9 @@ const PremaritalFirstYearPage: React.FC = () => (
     </section>
 
     <ServiceFAQ category={faqCategory} />
+
+      <TherapistBio />
+
 
     <section className={styles.cta}>
       <div className="container">

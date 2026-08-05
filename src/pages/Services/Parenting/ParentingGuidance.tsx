@@ -4,6 +4,7 @@ import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
 import ServiceFAQ from '../../../components/FAQ/ServiceFAQ';
+import TherapistBio from '../../../components/TherapistBio/TherapistBio';
 import faqs from '../../../data/faqs';
 import { FiTarget, FiZap, FiSmile } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
@@ -187,6 +188,8 @@ const ParentingGuidance: React.FC = () => {
       </section>
 
       <ServiceFAQ category="הדרכת הורים" />
+
+      <TherapistBio />
 
       <section className={styles.ctaArea}>
         <div className="container">
