@@ -7,7 +7,7 @@ export const RemotionRoot: React.FC = () => {
     <>
       <Composition
         id="ArticleShort"
-        component={ArticleShort}
+        component={ArticleShort as unknown as React.ComponentType<Record<string, unknown>>}
         durationInFrames={900}
         fps={30}
         width={1080}

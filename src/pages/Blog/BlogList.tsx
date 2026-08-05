@@ -1,161 +1,147 @@
 import React, { useState, useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { FiSearch, FiFilter } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import MetaTags from '../../components/SEO/MetaTags';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 import posts from '../../data/postSummaries.json';
 import { getImageDimensions } from '../../data/imageDimensions';
-import Fuse from 'fuse.js';
-import MetaTags from '../../components/SEO/MetaTags';
-import SchemaOrg from '../../components/SEO/SchemaOrg';
-import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './BlogList.module.css';
 
-const categories = ['הכל', 'זוגיות', 'הדרכת הורים'];
-
-const subcategories: Record<string, string[]> = {
-  'זוגיות': ['הכל', 'הכנה לחתונה', 'הכנה לנישואים והשנה הראשונה', 'זוגיות בעלייה ורילוקיישן', 'רווקות מאוחרת', 'מציאת זוגיות'],
-  'הדרכת הורים': ['הכל', "הכנה לכיתה א' ו-ADHD"]
-};
-
-const schemaData = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Blog",
-      "name": "הבלוג של שירה סהרוני | זוגיות, הורות וגישור",
-      "description": "מאמרים, טיפים ותובנות על זוגיות והורות. כל מה שצריך כדי לבנות מערכות יחסים טובות יותר.",
-      "url": `${SITE_CONFIG.url}/blog`,
-      "publisher": {
-        "@type": "Organization",
-        "name": SITE_CONFIG.brand,
-        "logo": {
-          "@type": "ImageObject",
-          "url": `${SITE_CONFIG.url}/apple-touch-icon.png`
-        }
-      },
-      "blogPost": posts.slice(0, 5).map(post => ({
-        "@type": "BlogPosting",
-        "headline": post.title,
-        "url": `${SITE_CONFIG.url}/blog/${post.id}`,
-        "datePublished": post.date,
-        "author": {
-          "@type": "Person",
-          "name": SITE_CONFIG.author
-        }
-      }))
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "עמוד הבית",
-          "item": SITE_CONFIG.url
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "בלוג",
-          "item": `${SITE_CONFIG.url}/blog`
-        }
-      ]
-    }
-  ]
-};
+// Extract unique categories from actual posts data
+const CATEGORIES = ['הכל', ...Array.from(new Set(posts.map(p => p.category)))];
 
 const BlogList: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedCategory, setSelectedCategory] = useState('הכל');
   const [searchQuery, setSearchQuery] = useState('');
-  const activeCategory = searchParams.get('category') || 'הכל';
-  const activeSubcategory = searchParams.get('subcategory') || 'הכל';
 
-  const handleCategoryChange = (category: string) => {
-    setSearchParams(category === 'הכל' ? {} : { category });
-  };
+  // Combine categories and subcategories for filter tags
+  const subcategoriesMap = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    posts.forEach(p => {
+      if ('subcategory' in p && p.subcategory) {
+        if (!map.has(p.category)) {
+          map.set(p.category, new Set());
+        }
+        map.get(p.category)!.add(p.subcategory);
+      }
+    });
+    return map;
+  }, []);
 
-  const handleSubcategoryChange = (subcategory: string) => {
-    const params: Record<string, string> = {};
-    if (activeCategory !== 'הכל') params.category = activeCategory;
-    if (subcategory !== 'הכל') params.subcategory = subcategory;
-    setSearchParams(params);
-  };
+  const filteredPosts = useMemo(() => {
+    return posts.filter((post) => {
+      const matchesCategory =
+        selectedCategory === 'הכל' ||
+        post.category === selectedCategory ||
+        (('subcategory' in post && post.subcategory) ? post.subcategory === selectedCategory : false);
 
-  const fuse = useMemo(() => new Fuse(posts, {
-    keys: ['title', 'excerpt'],
-    threshold: 0.3,
-  }), []);
+      const matchesSearch =
+        searchQuery.trim() === '' ||
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (('subcategory' in post && post.subcategory) ? post.subcategory.toLowerCase().includes(searchQuery.toLowerCase()) : false);
 
-  let filteredPosts = searchQuery ? fuse.search(searchQuery).map(res => res.item) : posts;
-  if (activeCategory !== 'הכל') {
-    filteredPosts = filteredPosts.filter(post => post.category === activeCategory);
-  }
-  if (activeSubcategory !== 'הכל') {
-    filteredPosts = filteredPosts.filter(post => 'subcategory' in post && post.subcategory === activeSubcategory);
-  }
-
-  const resetFilters = () => {
-    setSearchQuery('');
-    setSearchParams({});
-  };
+      return matchesCategory && matchesSearch;
+    });
+  }, [selectedCategory, searchQuery]);
 
   return (
-    <div className={styles.blog}>
-      <SchemaOrg data={schemaData} />
-      <MetaTags 
-        title="הבלוג של שירה סהרוני | זוגיות, הורות וגישור"
-        description="מאמרים, טיפים ותובנות על זוגיות והורות. כל מה שצריך כדי לבנות מערכות יחסים טובות יותר."
+    <div className={styles.page}>
+      <MetaTags
+        title="מאמרים וקריאה מעשירה | שירה סהרוני — ייעוץ זוגי והדרכת הורים"
+        description="מאמרים מקצועיים, תובנות וכלים מעשיים בנושאי ייעוץ זוגי, הדרכת הורים, תקשורת, גבולות ופתרון מחלוקות במשפחה. שירה סהרוני, אשדוד."
+        canonical={`${SITE_CONFIG.url}/blog`}
       />
-      <header className={styles.header}>
-        <div className="container">
-          <h1>הבלוג המקצועי</h1>
-          <p>תובנות, כלים וסיפורים מהקליניקה.</p>
-        </div>
-      </header>
 
-      <div className="container">
-        <div className={styles.controls}>
+      <main className={styles.main}>
+        {/* Header Section */}
+        <header className={styles.header}>
+          <div className={styles.headerContent}>
+            <span className={styles.kicker}>תובנות וכלים מהקליניקה</span>
+            <h1 className={styles.title}>מאמרים וקריאה מעשירה</h1>
+            <p className={styles.subtitle}>
+              מחשבות, נקודות למחשבה וכלים מעשיים לחיים זוגיים ומשפחתיים שמחים ורגועים יותר.
+            </p>
+          </div>
+        </header>
+
+        {/* Search Bar */}
+        <div className={styles.searchSection}>
           <div className={styles.searchWrapper}>
-            <FiSearch className={styles.searchIcon} />
-            <input 
-              type="text" 
-              placeholder="חיפוש מאמרים..." 
-              aria-label="חיפוש מאמרים"
+            <span className={styles.searchIcon} aria-hidden="true">🔍</span>
+            <input
+              type="text"
+              className={styles.searchInput}
+              placeholder="חפשי מאמר לפי נושא, מילת מפתח או תחום..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles.searchInput}
+              aria-label="חיפוש מאמרים"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                className={styles.clearSearch}
+                onClick={() => setSearchQuery('')}
+                aria-label="ניקוי חיפוש"
+              >
+                ✕
+              </button>
+            )}
           </div>
-          <div className={styles.filterWrapper}>
-            <FiFilter className={styles.filterIcon} />
-            <div className={styles.categories}>
-              {categories.map(cat => (
-                <button 
+        </div>
+
+        {/* Filter Categories */}
+        <div className={styles.filterSection}>
+          <div className={styles.categoriesContainer} role="tablist" aria-label="סינון לפי נושא">
+            {CATEGORIES.map((category) => (
+              <React.Fragment key={category}>
+                <button
                   type="button"
-                  key={cat}
-                  className={`${styles.categoryBtn} ${activeCategory === cat ? styles.active : ''}`}
-                  onClick={() => handleCategoryChange(cat)}
+                  role="tab"
+                  aria-selected={selectedCategory === category}
+                  className={`${styles.categoryTab} ${selectedCategory === category ? styles.activeTab : ''}`}
+                  onClick={() => setSelectedCategory(category)}
                 >
-                  {cat}
+                  {category}
                 </button>
-              ))}
-            </div>
+
+                {/* Render subcategories inline if parent category is selected */}
+                {selectedCategory === category && subcategoriesMap.has(category) && (
+                  Array.from(subcategoriesMap.get(category)!).map(sub => (
+                    <button
+                      key={sub}
+                      type="button"
+                      role="tab"
+                      aria-selected={selectedCategory === sub}
+                      className={`${styles.categoryTab} ${styles.subcategoryTab} ${selectedCategory === sub ? styles.activeTab : ''}`}
+                      onClick={() => setSelectedCategory(sub)}
+                    >
+                      {sub}
+                    </button>
+                  ))
+                )}
+              </React.Fragment>
+            ))}
           </div>
-          {subcategories[activeCategory] && (
-            <div className={styles.subcategoryRow}>
-              <span>תחום התמחות:</span>
-              <div className={styles.categories}>
-                {subcategories[activeCategory].map(subcategory => (
-                  <button
-                    type="button"
-                    key={subcategory}
-                    className={`${styles.categoryBtn} ${activeSubcategory === subcategory ? styles.active : ''}`}
-                    onClick={() => handleSubcategoryChange(subcategory)}
-                  >
-                    {subcategory}
-                  </button>
-                ))}
-              </div>
-            </div>
+        </div>
+
+        {/* Articles Grid */}
+        <div className={styles.postsSummary}>
+          <span>
+            {filteredPosts.length === posts.length
+              ? `מציג את כל ${posts.length} המאמרים`
+              : `נמצאו ${filteredPosts.length} מאמרים`}
+          </span>
+          {(selectedCategory !== 'הכל' || searchQuery) && (
+            <button
+              type="button"
+              className={styles.resetFilters}
+              onClick={() => {
+                setSelectedCategory('הכל');
+                setSearchQuery('');
+              }}
+            >
+              איפוס סינונים
+            </button>
           )}
         </div>
 
@@ -168,7 +154,7 @@ const BlogList: React.FC = () => {
                     <div className={styles.imageWrapper}>
                       <img
                         src={post.image}
-                        alt={post.imageAlt || post.title}
+                        alt={('imageAlt' in post && typeof post.imageAlt === 'string') ? post.imageAlt : post.title}
                         className={styles.image}
                         loading="lazy"
                         {...getImageDimensions(post.image)}
@@ -180,30 +166,51 @@ const BlogList: React.FC = () => {
                   </Link>
                 )}
                 <div className={styles.content}>
-                  {!post.image && (
-                    <span className={styles.categoryBadgeNoImage}>
-                      {('subcategory' in post && post.subcategory) ? post.subcategory : post.category}
-                    </span>
-                  )}
-                  <span className={styles.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
-                  <h2 className={styles.title}>
+                  <div className={styles.meta}>
+                    <time dateTime={post.date}>
+                      {new Date(post.date).toLocaleDateString('he-IL', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </time>
+                  </div>
+
+                  <h2 className={styles.cardTitle}>
                     <Link to={`/blog/${post.id}`} className={styles.titleLink}>
                       {post.title}
                     </Link>
                   </h2>
+
                   <p className={styles.excerpt}>{post.excerpt}</p>
-                  <Link to={`/blog/${post.id}`} className={styles.link} aria-label={`קרא עוד על ${post.title}`}>קרא עוד ←</Link>
+
+                  <div className={styles.cardFooter}>
+                    <Link to={`/blog/${post.id}`} className={styles.readMore} aria-label={`קרא עוד על ${post.title}`}>
+                      קרא עוד ←
+                    </Link>
+                  </div>
                 </div>
               </article>
             ))}
           </div>
         ) : (
-          <div className={styles.noResults}>
-            <h3>לא נמצאו מאמרים התואמים את החיפוש שלך.</h3>
-            <button type="button" onClick={resetFilters} className={styles.resetBtn}>נקה חיפוש</button>
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>🔍</div>
+            <h3>לא נמצאו מאמרים תואמים</h3>
+            <p>נסה לחפש מילים אחרות או לאפס את הניווט והסינונים.</p>
+            <button
+              type="button"
+              className={styles.emptyButton}
+              onClick={() => {
+                setSelectedCategory('הכל');
+                setSearchQuery('');
+              }}
+            >
+              הצג את כל המאמרים
+            </button>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 };

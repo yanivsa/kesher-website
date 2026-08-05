@@ -25,7 +25,7 @@ const BlogPreview: React.FC = () => {
                   <div className={styles.imageWrapper}>
                     <img
                       src={post.image}
-                      alt={post.imageAlt || post.title}
+                      alt={('imageAlt' in post && typeof post.imageAlt === 'string') ? post.imageAlt : post.title}
                       className={styles.postImage}
                       loading="lazy"
                       {...getImageDimensions(post.image)}
