@@ -17,6 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const cleanPath = pathname.replace(/\/$/, '');
   const usesStandaloneHomepage = cleanPath === '/beta'
     || cleanPath === '/beta2'
+    || cleanPath === '/beta3'
     || cleanPath === '/b'
     || cleanPath === '/couples-counseling-ashdod'
     || cleanPath === '/thank-you-booked'
