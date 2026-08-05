@@ -97,7 +97,7 @@ const BlogPost: React.FC = () => {
             <div className={styles.imageWrapper}>
               <img
                 src={post.image}
-                alt={post.title}
+                alt={post.imageAlt || post.title}
                 className={styles.image}
                 fetchPriority="high"
                 {...getImageDimensions(post.image)}

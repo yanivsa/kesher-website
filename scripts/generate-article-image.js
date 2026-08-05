@@ -7,6 +7,15 @@ const __dirname = path.dirname(__filename);
 
 const MAX_IMAGE_BYTES = 15 * 1024 * 1024;
 
+const SEO_KEYWORD_MAP = {
+  relocation: "ייעוץ זוגי ברילוקיישן ועלייה - שירה סהרוני",
+  dating: "מציאת זוגיות ודייטים - יועצת זוגית ומנחת הורים",
+  singleness: "התמודדות עם רווקות מאוחרת - שירה סהרוני ייעוץ זוגי",
+  boundaries: "גבולות אישיים בזוגיות ובנישואים - יועצת זוגית באשדוד",
+  parenting: "הדרכת הורים והנחיית משפחה - שירה סהרוני",
+  default: "ייעוץ זוגי והדרכת הורים - שירה סהרוני אשדוד"
+};
+
 const FALLBACK_PHOTO_POOLS = {
   relocation: [
     "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
@@ -38,16 +47,25 @@ const FALLBACK_PHOTO_POOLS = {
   ]
 };
 
-function selectFallbackImageUrl(slug, title) {
+function getCategoryKey(slug, title) {
   const combined = (slug + " " + title).toLowerCase();
-  let category = "default";
-  if (combined.includes("relocation") || combined.includes("רילוקיישן")) category = "relocation";
-  else if (combined.includes("dating") || combined.includes("דייט") || combined.includes("סמס")) category = "dating";
-  else if (combined.includes("singleness") || combined.includes("רווקות") || combined.includes("חברים")) category = "singleness";
-  else if (combined.includes("boundaries") || combined.includes("מרחב") || combined.includes("מחנק")) category = "boundaries";
-  else if (combined.includes("parent") || combined.includes("הורים") || combined.includes("ילדים")) category = "parenting";
+  if (combined.includes("relocation") || combined.includes("רילוקיישן")) return "relocation";
+  if (combined.includes("dating") || combined.includes("דייט") || combined.includes("סמס")) return "dating";
+  if (combined.includes("singleness") || combined.includes("רווקות") || combined.includes("חברים")) return "singleness";
+  if (combined.includes("boundaries") || combined.includes("מרחב") || combined.includes("מחנק")) return "boundaries";
+  if (combined.includes("parent") || combined.includes("הורים") || combined.includes("ילדים")) return "parenting";
+  return "default";
+}
 
-  const pool = FALLBACK_PHOTO_POOLS[category] || FALLBACK_PHOTO_POOLS.default;
+export function generateSeoAltText(slug, title) {
+  const categoryKey = getCategoryKey(slug, title);
+  const keywordSuffix = SEO_KEYWORD_MAP[categoryKey] || SEO_KEYWORD_MAP.default;
+  return `${title} - ${keywordSuffix}`;
+}
+
+function selectFallbackImageUrl(slug, title) {
+  const categoryKey = getCategoryKey(slug, title);
+  const pool = FALLBACK_PHOTO_POOLS[categoryKey] || FALLBACK_PHOTO_POOLS.default;
   let hash = 0;
   for (let i = 0; i < slug.length; i++) {
     hash = (hash << 5) - hash + slug.charCodeAt(i);
@@ -92,6 +110,46 @@ function buildPrompt(title, customPrompt = "") {
   ].filter(Boolean).join(" ");
 }
 
+async function tryGeminiImagen(apiKey, title, customPrompt) {
+  const prompt = buildPrompt(title, customPrompt);
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:generateImages?key=${apiKey}`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      prompt,
+      config: { numberOfImages: 1, aspectRatio: "16:9", outputMimeType: "image/jpeg" }
+    })
+  });
+  if (!response.ok) {
+    throw new Error(`Gemini Imagen API returned status ${response.status}`);
+  }
+  const data = await response.json();
+  if (data.generatedImages && data.generatedImages[0]?.image?.imageBytes) {
+    return Buffer.from(data.generatedImages[0].image.imageBytes, "base64");
+  }
+  throw new Error("Gemini Imagen response missing image bytes");
+}
+
+async function tryDeepAi(apiKey, title, customPrompt) {
+  const response = await fetch("https://api.deepai.org/api/text2img", {
+    method: "POST",
+    headers: {
+      "Api-Key": apiKey,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({ text: buildPrompt(title, customPrompt) }),
+  });
+  if (!response.ok) {
+    throw new Error(`DeepAI returned status ${response.status}`);
+  }
+  const data = await response.json();
+  if (data.output_url) {
+    return data.output_url;
+  }
+  throw new Error("DeepAI output_url missing");
+}
+
 async function main() {
   const [slug, title = slug, customPrompt = ""] = process.argv.slice(2);
   if (!slug) {
@@ -107,43 +165,53 @@ async function main() {
   fs.mkdirSync(outputDir, { recursive: true });
   const outputPath = path.join(outputDir, `${slug}.jpg`);
 
-  const apiKey = process.env.DEEPAI_API_KEY;
-  delete process.env.DEEPAI_API_KEY;
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  const deepaiKey = process.env.DEEPAI_API_KEY;
 
-  if (apiKey) {
+  // 1. Try Gemini Imagen API if key available
+  if (geminiKey) {
     try {
-      const response = await fetch("https://api.deepai.org/api/text2img", {
-        method: "POST",
-        headers: {
-          "Api-Key": apiKey,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({ text: buildPrompt(title, customPrompt) }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.output_url) {
-          await downloadImage(data.output_url, outputPath);
-          console.log(`/images/generated/blog/${slug}.jpg`);
-          return;
-        }
-      }
-      console.warn("WARNING: DeepAI call failed or returned no image. Switching to royalty-free fallback.");
+      console.warn("Attempting image generation via Google Gemini Imagen API...");
+      const imgBuffer = await tryGeminiImagen(geminiKey, title, customPrompt);
+      fs.writeFileSync(outputPath, imgBuffer);
+      console.log(`/images/generated/blog/${slug}.jpg`);
+      return;
     } catch (error) {
-      console.warn(`WARNING: DeepAI image generation failed: ${error.message}. Switching to royalty-free fallback.`);
+      console.warn(`WARNING: Gemini Imagen API failed: ${error.message}. Trying next provider.`);
     }
-  } else {
-    console.warn("WARNING: DEEPAI_API_KEY is missing. Using high-quality royalty-free image fallback.");
   }
 
-  // Royalty-free fallback download
+  // 2. Try DeepAI API if key available
+  if (deepaiKey) {
+    try {
+      console.warn("Attempting image generation via DeepAI API...");
+      const imgUrl = await tryDeepAi(deepaiKey, title, customPrompt);
+      await downloadImage(imgUrl, outputPath);
+      console.log(`/images/generated/blog/${slug}.jpg`);
+      return;
+    } catch (error) {
+      console.warn(`WARNING: DeepAI API failed: ${error.message}. Trying next provider.`);
+    }
+  }
+
+  // 3. Try Pollinations.ai API
+  try {
+    const promptEnc = encodeURIComponent(buildPrompt(title, customPrompt));
+    const pollinationsUrl = `https://image.pollinations.ai/prompt/${promptEnc}?width=1200&height=800&nologo=true`;
+    await downloadImage(pollinationsUrl, outputPath);
+    console.log(`/images/generated/blog/${slug}.jpg`);
+    return;
+  } catch (error) {
+    console.warn(`WARNING: Pollinations.ai failed: ${error.message}. Using Unsplash royalty-free photo fallback.`);
+  }
+
+  // 4. Royalty-free stock photo fallback (Unsplash/Pexels)
   try {
     const fallbackUrl = selectFallbackImageUrl(slug, title);
     await downloadImage(fallbackUrl, outputPath);
     console.log(`/images/generated/blog/${slug}.jpg`);
   } catch (error) {
-    console.error(`ERROR: Royalty-free image fallback failed: ${error.message}`);
+    console.error(`ERROR: All image generation and fallback providers failed: ${error.message}`);
     process.exit(1);
   }
 }

@@ -168,7 +168,7 @@ const BlogList: React.FC = () => {
                     <div className={styles.imageWrapper}>
                       <img
                         src={post.image}
-                        alt={post.title}
+                        alt={post.imageAlt || post.title}
                         className={styles.image}
                         loading="lazy"
                         {...getImageDimensions(post.image)}
