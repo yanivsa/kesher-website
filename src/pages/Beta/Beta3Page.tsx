@@ -1,19 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useMotionValue, useSpring, useMotionTemplate } from 'framer-motion';
-
+import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 import {
   FiArrowLeft,
   FiCalendar,
-  FiCheck,
   FiChevronDown,
   FiCompass,
   FiHeart,
-  FiMapPin,
   FiMenu,
   FiMessageCircle,
-  FiMonitor,
-  FiShield,
   FiUsers,
   FiX,
 } from 'react-icons/fi';
@@ -31,7 +26,8 @@ const services = [
     description: 'כשהשיחות מסתיימות שוב באותו מקום, נלמד לזהות את הדפוס וליצור דרך חדשה להיפגש.',
     link: '/services/couples',
     icon: FiHeart,
-    accent: 'rose',
+    iconClass: styles.iconRose,
+    accent: 'large',
     tags: ['תקשורת', 'קרבה', 'אמון'],
   },
   {
@@ -39,42 +35,18 @@ const services = [
     description: 'גבולות ושגרה שנשענים על הבנה וקשר — גם בתקופות עמוסות, רגישות ומבלבלות.',
     link: '/services/parenting',
     icon: FiUsers,
-    accent: 'sage',
+    iconClass: styles.iconSage,
+    accent: 'large',
     tags: ['גבולות', 'שגרה', 'וויסות'],
   },
   {
-    title: 'גישור',
+    title: 'גישור ופתרון מחלוקות',
     description: 'מרחב ענייני לניהול מחלוקת, הפחתת המתח וניסוח הסכמות שאפשר באמת לקיים.',
     link: '/services/mediation',
     icon: FiCompass,
-    accent: 'sand',
+    iconClass: styles.iconSand,
+    accent: 'full',
     tags: ['הקשבה', 'הסכמות', 'בהירות'],
-  },
-];
-
-const focusAreas = [
-  'זוגיות בתקופות של ריחוק ושחיקה',
-  'הורות לילדים מחוננים וילדים עם ADHD',
-  'הכנה לנישואים והשנה הראשונה',
-  'משפחות בעלייה, בחזרה לישראל וברילוקיישן',
-  'רווקות מאוחרת וליווי למציאת זוגיות',
-];
-
-const process = [
-  {
-    number: '01',
-    title: 'מתחילים במה שקורה עכשיו',
-    text: 'ממפים יחד את הקושי, את הרגעים שבהם הוא מופיע ואת השינוי שהכי חשוב לכם להרגיש.',
-  },
-  {
-    number: '02',
-    title: 'מבינים את הדפוס',
-    text: 'מזהים מה מפעיל אתכם, מה משמר את התקיעות ואיפה אפשר לייצר תגובה חדשה.',
-  },
-  {
-    number: '03',
-    title: 'מתרגלים דרך אחרת',
-    text: 'יוצאים מהפגישה עם כיוון ברור וכלים שאפשר לנסות בבית, בקצב שמתאים לכם.',
   },
 ];
 
@@ -96,24 +68,14 @@ const testimonials = [
   },
 ];
 
-const ScrollProgress = () => {
-  return <div className={styles.scrollProgress} aria-hidden="true" />;
-};
-
-const InteractiveHeroVisual = () => {
+/* Apple 3D Interactive Hero Card */
+const GlassHeroCard = () => {
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
-  const glowX = useMotionValue(50);
-  const glowY = useMotionValue(50);
 
-  const springConfig = { damping: 1, stiffness: 150, bounce: 0 };
+  const springConfig = { damping: 15, stiffness: 150, mass: 0.5 };
   const smoothTiltX = useSpring(tiltX, springConfig);
   const smoothTiltY = useSpring(tiltY, springConfig);
-  const smoothGlowX = useSpring(glowX, springConfig);
-  const smoothGlowY = useSpring(glowY, springConfig);
-  
-  const glowXStr = useMotionTemplate`${smoothGlowX}%`;
-  const glowYStr = useMotionTemplate`${smoothGlowY}%`;
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'touch') return;
@@ -121,58 +83,53 @@ const InteractiveHeroVisual = () => {
     const x = (event.clientX - bounds.left) / bounds.width;
     const y = (event.clientY - bounds.top) / bounds.height;
     
-    tiltX.set((0.5 - y) * 15);
-    tiltY.set((x - 0.5) * 15);
-    glowX.set(x * 100);
-    glowY.set(y * 100);
+    tiltX.set((0.5 - y) * 12);
+    tiltY.set((x - 0.5) * 12);
   };
 
   const resetTilt = () => {
     tiltX.set(0);
     tiltY.set(0);
-    glowX.set(50);
-    glowY.set(50);
   };
 
   return (
     <div className={styles.heroVisualStage}>
       <motion.div
-        className={styles.heroVisual}
+        className={styles.glassHeroCard}
         onPointerMove={handlePointerMove}
         onPointerLeave={resetTilt}
         style={{
           rotateX: smoothTiltX,
           rotateY: smoothTiltY,
-          '--glow-x': glowXStr,
-          '--glow-y': glowYStr,
-        } as unknown as React.CSSProperties}
+        }}
+        whileHover={{ scale: 1.02 }}
+        transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
       >
-        <div className={styles.imageFrame}>
+        <div className={styles.heroImageContainer}>
           <img
             src="/images/shira-saharoni.webp"
             alt="שירה סהרוני, יועצת זוגית, מנחת הורים ומגשרת"
             width="1271"
             height="1280"
-            fetchPriority="high"
           />
-          <div className={styles.imageWash} />
-          <span className={styles.visualReflection} aria-hidden="true" />
         </div>
-        <div className={styles.glassNote}>
-          <span className={styles.noteIcon}><FiHeart aria-hidden="true" /></span>
-          <p>
-            <strong>יועצת זוגית ומנחת הורים</strong>
-          </p>
+        <div className={styles.floatingGlassBadge}>
+          <div className={styles.badgeIcon}>
+            <FiHeart />
+          </div>
+          <div className={styles.badgeText}>
+            <strong>שירה סהרוני</strong>
+            <span>ייעוץ זוגי · הדרכת הורים · גישור</span>
+          </div>
         </div>
       </motion.div>
-      <span className={styles.visualHalo} aria-hidden="true" />
     </div>
   );
 };
 
 const Beta3Page: React.FC = () => {
-  const carouselRef = React.useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -189,7 +146,7 @@ const Beta3Page: React.FC = () => {
   }, [menuOpen]);
 
   return (
-    <div className={styles.page} dir="rtl">
+    <div className={styles.page}>
       <MetaTags
         title="שירה סהרוני — ייעוץ זוגי והנחיית הורים"
         description={SITE_CONFIG.description}
@@ -197,293 +154,297 @@ const Beta3Page: React.FC = () => {
         image="/images/shira-saharoni.webp"
       />
       <SchemaOrg data={homeSchema} />
-      <ScrollProgress />
 
+      {/* Ambient Apple Glow */}
       <div className={styles.ambient} aria-hidden="true">
         <span className={styles.orbOne} />
         <span className={styles.orbTwo} />
-        <span className={styles.gridTexture} />
+        <span className={styles.orbThree} />
       </div>
 
+      {/* Floating Apple Header */}
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <motion.a href="#top" className={styles.brand} aria-label="שירה סהרוני — לראש העמוד" whileTap={{ scale: 0.95 }} transition={{ type: 'spring', bounce: 0, duration: 0.4 }}>
-            <span className={styles.brandMark}>ש</span>
-            <span>
-              <strong>שירה סהרוני</strong>
-              <small>ייעוץ · הורות · גישור</small>
-            </span>
-          </motion.a>
+          <MotionLink 
+            to="/" 
+            className={styles.brand} 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+          >
+            <div className={styles.brandMark}>ש</div>
+            <div className={styles.brandText}>
+              <span className={styles.brandName}>שירה סהרוני</span>
+              <span className={styles.brandTag}>ייעוץ זוגי · הורות</span>
+            </div>
+          </MotionLink>
 
           <nav className={styles.desktopNav} aria-label="ניווט ראשי">
-            <motion.a href="#services">איך אוכל לעזור</motion.a>
-            <motion.a href="#about">אודות</motion.a>
-            <motion.a href="#process">איך זה עובד</motion.a>
-            <MotionLink to="/blog">מאמרים</MotionLink>
+            <a href="#services">איך אוכל לעזור</a>
+            <a href="#about">אודות</a>
+            <a href="#process">תהליך עבודה</a>
+            <Link to="/blog">מאמרים</Link>
           </nav>
 
           <div className={styles.headerActions}>
-            <MotionLink to={SITE_CONFIG.links.appointment} className={styles.headerCta}>
+            <MotionLink 
+              to={SITE_CONFIG.links.appointment} 
+              className={styles.headerCta}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+            >
               קביעת פגישה
-              <FiArrowLeft aria-hidden="true" />
+              <FiArrowLeft />
             </MotionLink>
             <button
               type="button"
               className={styles.menuButton}
-              aria-label={menuOpen ? 'סגירת תפריט' : 'פתיחת תפריט'}
-              aria-expanded={menuOpen}
-              aria-controls="main-mobile-menu"
-              onClick={() => setMenuOpen((open) => !open)}
+              aria-label="תפריט"
+              onClick={() => setMenuOpen(!menuOpen)}
             >
-              {menuOpen ? <FiX aria-hidden="true" /> : <FiMenu aria-hidden="true" />}
+              {menuOpen ? <FiX /> : <FiMenu />}
             </button>
           </div>
         </div>
-
-        {menuOpen && (
-          <nav id="main-mobile-menu" className={styles.mobileNav} aria-label="ניווט ראשי">
-            <motion.a href="#services" onClick={() => setMenuOpen(false)}>איך אוכל לעזור</motion.a>
-            <motion.a href="#about" onClick={() => setMenuOpen(false)}>אודות</motion.a>
-            <motion.a href="#process" onClick={() => setMenuOpen(false)}>איך זה עובד</motion.a>
-            <MotionLink to="/blog" onClick={() => setMenuOpen(false)}>מאמרים</MotionLink>
-            <MotionLink to={SITE_CONFIG.links.appointment} onClick={() => setMenuOpen(false)}>קביעת פגישה</MotionLink>
-          </nav>
-        )}
       </header>
 
+      {/* Apple Drag Bottom Sheet Mobile Menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            <motion.div 
+              className={styles.mobileSheetOverlay}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMenuOpen(false)}
+            />
+            <motion.div 
+              className={styles.mobileSheet}
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
+              drag="y"
+              dragConstraints={{ top: 0 }}
+              dragElastic={0.2}
+              onDragEnd={(_, info) => {
+                if (info.offset.y > 100 || info.velocity.y > 500) {
+                  setMenuOpen(false);
+                }
+              }}
+            >
+              <div className={styles.sheetHandle} />
+              <nav className={styles.mobileSheetNav}>
+                <a href="#services" onClick={() => setMenuOpen(false)}>איך אוכל לעזור</a>
+                <a href="#about" onClick={() => setMenuOpen(false)}>אודות</a>
+                <a href="#process" onClick={() => setMenuOpen(false)}>תהליך עבודה</a>
+                <Link to="/blog" onClick={() => setMenuOpen(false)}>מאמרים</Link>
+                <Link to={SITE_CONFIG.links.appointment} onClick={() => setMenuOpen(false)}>קביעת פגישה</Link>
+              </nav>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       <main id="main-content" className={styles.main}>
-        <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ type: 'spring', bounce: 0, duration: 0.6 }} id="top" className={styles.hero}>
-          <div className={styles.heroCopy}>
-            <div className={styles.eyebrow}>
-              <span className={styles.pulse} aria-hidden="true" />
-              פגישות באשדוד ובאונליין
+        {/* Apple Hero Section */}
+        <section className={styles.hero}>
+          <motion.div 
+            className={styles.heroCopy}
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
+          >
+            <div className={styles.applePill}>
+              <span className={styles.greenDot} />
+              פגישות בקליניקה באשדוד ובאונליין
             </div>
-            <h1>
-              אפשר לבחור לבנות
-              <span> את הקשר אחרת. יחד.</span>
+            <h1 className={styles.heroTitle}>
+              אפשר לבנות
+              <span className={styles.gradientText}>את הקשר אחרת. יחד.</span>
             </h1>
             <p className={styles.heroLead}>
-              גם כשהשיחות נתקעות והמרחק גדל, אפשר להבין מה קורה ביניכם,
-              לבחור צעדים חדשים וליצור תנועה שמחזירה תקווה לקשר.
+              גם כשהשיחות נתקעות והמרחק גדל, אפשר להבין מה מפעיל אתכם ולייצר דרך חדשה שמחזירה את הקרבה והתקווה.
             </p>
             <div className={styles.heroActions}>
-              <MotionLink to={SITE_CONFIG.links.appointment} className={styles.primaryCta} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', bounce: 0, duration: 0.4 }}>
-                <FiCalendar aria-hidden="true" />
-                קביעת פגישת ייעוץ
+              <MotionLink 
+                to={SITE_CONFIG.links.appointment} 
+                className={styles.primaryAppleBtn}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+              >
+                <FiCalendar />
+                תיאום שיחת ייעוץ
               </MotionLink>
-              <motion.a href="#services" className={styles.secondaryCta} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', bounce: 0, duration: 0.4 }}>
-                למצוא את הליווי המתאים
-                <FiChevronDown aria-hidden="true" />
+              <motion.a 
+                href="#services" 
+                className={styles.secondaryAppleBtn}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+              >
+                מסלולי ליווי
+                <FiChevronDown />
               </motion.a>
             </div>
-            <motion.a href={SITE_CONFIG.links.whatsapp} className={styles.heroWhatsapp} whileTap={{ scale: 0.97 }} transition={{ type: 'spring', bounce: 0, duration: 0.4 }}>
-              <FiMessageCircle aria-hidden="true" />
-              מעדיפים להתחיל בהודעה? כתבו לי ב־WhatsApp
-              <FiArrowLeft aria-hidden="true" />
+            <motion.a 
+              href={SITE_CONFIG.links.whatsapp} 
+              className={styles.heroWhatsapp}
+              whileHover={{ x: -4 }}
+              transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+            >
+              <FiMessageCircle />
+              מעדיפים הודעה? כתבו לי ב-WhatsApp
+              <FiArrowLeft />
             </motion.a>
-            <div className={styles.trustRow} aria-label="פרטי השירות">
-              <span><FiMapPin aria-hidden="true" /> אשדוד</span>
-              <span><FiMonitor aria-hidden="true" /> אונליין</span>
-              <span><FiShield aria-hidden="true" /> מרחב אישי ומכבד</span>
-            </div>
+          </motion.div>
+
+          <GlassHeroCard />
+        </section>
+
+        {/* Bento Grid Services */}
+        <section id="services" className={styles.section}>
+          <motion.div 
+            className={styles.sectionHeader}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
+          >
+            <span className={styles.sectionKicker}>תחומי ליווי</span>
+            <h2 className={styles.sectionTitle}>איך אוכל לעזור לכם?</h2>
+            <p className={styles.sectionSubtitle}>
+              מתחילים מהמקום שבו הקשר מבקש שינוי. את החיבורים בין הדברים נבין יחד.
+            </p>
+          </motion.div>
+
+          <div className={styles.bentoGrid}>
+            {services.map((service) => {
+              const Icon = service.icon;
+              const isFull = service.accent === 'full';
+              return (
+                <MotionLink
+                  to={service.link}
+                  key={service.title}
+                  className={`${styles.bentoCard} ${isFull ? styles.bentoFull : styles.bentoLarge}`}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
+                >
+                  <div>
+                    <div className={`${styles.bentoCardIcon} ${service.iconClass}`}>
+                      <Icon />
+                    </div>
+                    <h3>{service.title}</h3>
+                    <p>{service.description}</p>
+                    <div className={styles.bentoTagList}>
+                      {service.tags.map((tag) => (
+                        <span key={tag} className={styles.bentoTag}>{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className={styles.cardArrow}>
+                    קראי עוד <FiArrowLeft />
+                  </div>
+                </MotionLink>
+              );
+            })}
           </div>
+        </section>
 
-          <InteractiveHeroVisual />
-        </motion.section>
+        {/* Apple Physics Testimonials Carousel */}
+        <section className={styles.section}>
+          <motion.div 
+            className={styles.sectionHeader}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', bounce: 0, duration: 0.6 }}
+          >
+            <span className={styles.sectionKicker}>מחוויות המטופלים</span>
+            <h2 className={styles.sectionTitle}>מה משתנה בקשר.</h2>
+          </motion.div>
 
-        <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ type: 'spring', bounce: 0, duration: 0.6 }} className={styles.signalBar} aria-label="תחומי העיסוק של שירה">
-          <span>ייעוץ זוגי</span>
-          <i aria-hidden="true" />
-          <span>הנחיית הורים</span>
-          <i aria-hidden="true" />
-          <span>גישור</span>
-          <i aria-hidden="true" />
-          <span>ליווי בתקופות מעבר</span>
-        </motion.section>
-
-        <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ type: 'spring', bounce: 0, duration: 0.6 }} id="services" className={`${styles.section} ${styles.revealSection}`}>
-          <div className={styles.sectionHeading}>
-            <span className={styles.kicker}>לא צריך לדעת מראש מה הכותרת המדויקת לקושי.</span>
-            <h2>מתחילים מהמקום שבו<br />הקשר מבקש שינוי.</h2>
-            <p>אפשר להתחיל מהנושא שהכי מעסיק אתכם עכשיו. את החיבורים בין הדברים נבין יחד.</p>
-          </div>
-
-          <div className={styles.serviceGrid}>
-            {services.map(({ title, description, link, icon: Icon, accent, tags }, index) => (
-              <MotionLink
-                to={link}
-                className={`${styles.serviceCard} ${styles[accent]} ${index < 2 ? styles.primaryService : styles.secondaryService}`}
-                key={title}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
-                transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-              >
-                <span className={styles.serviceIcon}><Icon aria-hidden="true" /></span>
-                <span
-                  className={styles.serviceIndex}
-                  data-index={`0${index + 1}`}
-                  aria-hidden="true"
-                />
-                <h3>{title}</h3>
-                <p>{description}</p>
-                <span className={styles.serviceTags} aria-label={`נושאים מרכזיים ב${title}`}>
-                  {tags.map((tag) => <small key={tag}>{tag}</small>)}
-                </span>
-                <span className={styles.cardLink}>
-                  לקריאה נוספת
-                  <FiArrowLeft aria-hidden="true" />
-                </span>
-              </MotionLink>
-            ))}
-          </div>
-        </motion.section>
-
-        <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ type: 'spring', bounce: 0, duration: 0.6 }} className={`${styles.section} ${styles.trustSection} ${styles.revealSection}`}>
-          <div className={styles.trustHeading}>
-            <span className={styles.kicker}>אמון נבנה בחוויה</span>
-            <h2>מה משתנה כשמצליחים לדבר אחרת.</h2>
-            <p>הפרטים המזהים הושמטו כדי לשמור על פרטיות הפונים.</p>
-          </div>
-          <div className={styles.carouselContainer} ref={carouselRef}>
+          <div className={styles.carouselViewport} ref={carouselRef}>
             <motion.div 
-              className={styles.quoteGrid}
+              className={styles.carouselTrack}
               drag="x"
               dragConstraints={carouselRef}
-              whileTap={{ cursor: "grabbing" }}
-              dragElastic={0.2}
-              transition={{ type: 'spring', bounce: 0, duration: 0.5 }}
+              dragElastic={0.15}
+              transition={{ type: 'spring', bounce: 0.1, duration: 0.5 }}
             >
-              {testimonials.map((testimonial, index) => (
-                <blockquote
-                  className={`${styles.quoteCard} ${index === 0 ? styles.featuredQuote : ''}`}
-                  key={testimonial.author}
+              {testimonials.map((t) => (
+                <motion.div 
+                  key={t.author} 
+                  className={styles.quoteCard}
+                  whileHover={{ scale: 1.02 }}
                 >
-                  <span className={styles.quoteType}>{testimonial.type}</span>
-                  <FiMessageCircle aria-hidden="true" />
-                  <p>“{testimonial.text}”</p>
-                  <footer>{testimonial.author}</footer>
-                </blockquote>
+                  <span className={styles.quoteType}>{t.type}</span>
+                  <p className={styles.quoteText}>“{t.text}”</p>
+                  <span className={styles.quoteAuthor}>{t.author}</span>
+                </motion.div>
               ))}
             </motion.div>
           </div>
-        </motion.section>
-
-        <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ type: 'spring', bounce: 0, duration: 0.6 }} id="about" className={`${styles.section} ${styles.aboutSection} ${styles.revealSection}`}>
-          <div className={styles.aboutVisual}>
-            <div className={styles.aboutImage}>
-              <img
-                src="/images/generated/site/home-hero.jpg"
-                alt="חדר הייעוץ של שירה סהרוני באשדוד"
-                width="1600"
-                height="900"
-                loading="lazy"
-              />
-            </div>
-            <div className={styles.aboutQuote}>
-              <FiMessageCircle aria-hidden="true" />
-              <p><strong>יש דרך לדבר.</strong><br />גם כשכבר קשה<br />לשמוע.</p>
-            </div>
-          </div>
-
-          <div className={styles.aboutCopy}>
-            <span className={styles.kicker}>נעים מאוד, שירה</span>
-            <h2>מקצועיות שמחזיקה את המורכבות. שיחה שנשארת אנושית.</h2>
-            <p className={styles.aboutLead}>
-              אני מלווה זוגות והורים ברגעים שבהם התקשורת נתקעת, העומס גובר
-              או הבית מבקש דרך חדשה. המטרה שלי היא להקשיב ולהבין יחד את הקושי,
-              ולחבר אותו לצעדים מעשיים שאפשר ליישם בחיים עצמם.
-            </p>
-            <p>
-              יחד נפרק מצבים שנראים מסובכים, נזהה את הדפוסים שחוזרים
-              ונבנה אפשרות אחרת — רגישה, בהירה ומותאמת למשפחה שלכם.
-            </p>
-            <ul className={styles.focusList}>
-              {focusAreas.map((area) => (
-                <li key={area}><FiCheck aria-hidden="true" />{area}</li>
-              ))}
-            </ul>
-            <aside className={styles.professionalProfile} aria-label="הכשרה מקצועית">
-              <span>הכשרה מקצועית מוסמכת</span>
-              <p>
-                העשייה שלי נשענת על הכשרה בייעוץ זוגי ומשפחתי, בהנחיית הורים
-                קבוצתית ופרטנית עם התמחות ב־ADHD, ובגישור.
-              </p>
-              <small>
-                ההכשרות כוללות לימודים מקצועיים, תעודות ופרקטיקום מעשי.
-              </small>
-            </aside>
-            <MotionLink to="/about" className={styles.textLink}>
-              עוד עליי ועל אופן העבודה
-              <FiArrowLeft aria-hidden="true" />
-            </MotionLink>
-            <p className={styles.legalBackground}>רקע נוסף: עורכת דין בהכשרתי.</p>
-          </div>
-        </motion.section>
-
-        <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ type: 'spring', bounce: 0, duration: 0.6 }} id="process" className={`${styles.section} ${styles.processSection} ${styles.revealSection}`}>
-          <div className={styles.sectionHeading}>
-            <span className={styles.kicker}>איך מתחילים</span>
-            <h2>בהירות לפני הכול.</h2>
-            <p>לא צריך להגיע עם ניסוח מדויק. מתחילים ממה שקשה עכשיו ומתקדמים צעד אחר צעד.</p>
-          </div>
-          <div className={styles.processGrid}>
-            {process.map((step) => (
-              <article
-                className={styles.processCard}
-                key={step.number}
-                style={{ '--process-delay': `${Number(step.number) * 65}ms` } as React.CSSProperties}
-              >
-                <span className={styles.processNumber}>{step.number}</span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </article>
-            ))}
-          </div>
-        </motion.section>
-
-        <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ type: 'spring', bounce: 0, duration: 0.6 }} className={`${styles.finalCta} ${styles.revealSection}`}>
-          <div>
-            <span className={styles.kicker}>אפשר להתחיל מכאן</span>
-            <h2>השיחה הראשונה לא חייבת לפתור הכול.<br />היא רק צריכה לפתוח דרך.</h2>
-          </div>
-          <div className={styles.finalActions}>
-            <MotionLink to={SITE_CONFIG.links.appointment} className={styles.lightCta}>
-              <FiCalendar aria-hidden="true" />
-              קביעת פגישה
-            </MotionLink>
-            <motion.a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappCta}>
-              <FiMessageCircle aria-hidden="true" />
-              כתבו לי ב־WhatsApp
-            </motion.a>
-          </div>
-        </motion.section>
+        </section>
       </main>
 
-      <aside className={styles.quickDock} aria-label="אפשרויות ליצירת קשר">
-        <span className={styles.quickDockLabel}>אפשר להתחיל בדרך שנוחה לכם</span>
-        <MotionLink to={SITE_CONFIG.links.appointment}>
-          <FiCalendar aria-hidden="true" />
-          <span>פגישה</span>
-        </MotionLink>
-        <motion.a href={SITE_CONFIG.links.whatsapp}>
-          <FiMessageCircle aria-hidden="true" />
-          <span>WhatsApp</span>
-        </motion.a>
-      </aside>
+      {/* Floating Apple Dock */}
+      <div className={styles.appleDockContainer}>
+        <motion.div 
+          className={styles.appleDock}
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring', bounce: 0, duration: 0.5 }}
+        >
+          <MotionLink 
+            to={SITE_CONFIG.links.appointment} 
+            className={`${styles.dockItem} ${styles.dockPrimary}`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <FiCalendar />
+            <span>פגישה</span>
+          </MotionLink>
+          <motion.a 
+            href={SITE_CONFIG.links.whatsapp} 
+            className={styles.dockItem}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <FiMessageCircle />
+            <span>WhatsApp</span>
+          </motion.a>
+          <motion.a 
+            href="#services" 
+            className={styles.dockItem}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <FiCompass />
+            <span>שירותים</span>
+          </motion.a>
+        </motion.div>
+      </div>
 
+      {/* Footer */}
       <footer className={styles.footer}>
         <div className={styles.footerBrand}>
-          <span className={styles.brandMark}>ש</span>
+          <div className={styles.brandMark}>ש</div>
           <div>
             <strong>שירה סהרוני</strong>
-            <small>ייעוץ זוגי · הנחיית הורים · גישור</small>
+            <br />
+            <small style={{ color: 'var(--apple-muted)' }}>ייעוץ זוגי · הדרכת הורים · גישור</small>
           </div>
         </div>
         <div className={styles.footerLinks}>
-          <MotionLink to="/contact">יצירת קשר</MotionLink>
-          <MotionLink to="/blog">מאמרים</MotionLink>
-          <MotionLink to="/privacy">פרטיות</MotionLink>
-          <MotionLink to="/accessibility">נגישות</MotionLink>
+          <Link to="/contact">יצירת קשר</Link>
+          <Link to="/blog">מאמרים</Link>
+          <Link to="/privacy">פרטיות</Link>
+          <Link to="/accessibility">נגישות</Link>
         </div>
       </footer>
     </div>
