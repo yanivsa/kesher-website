@@ -702,7 +702,7 @@
   margin: 0;
 }
 
-/* Apple Testimonials 3-Column Grid (Desktop) & Scroll-Snap (Mobile) - Zero Cut-off */
+/* Apple Testimonials 3-Column Grid (Desktop > 1024px) & Edge-to-Edge Scroll-Snap (Mobile & Tablet <= 1024px) */
 .testimonialsGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -710,14 +710,15 @@
   width: 100%;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .testimonialsGrid {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    padding: 0.5rem 0 1.5rem;
-    gap: 1rem;
+    padding: 0.5rem 1.5rem 1.5rem;
+    margin: 0 -1.5rem;
+    gap: 1.25rem;
     scrollbar-width: none;
   }
 
@@ -727,8 +728,8 @@
 
   .quoteCard {
     scroll-snap-align: center;
-    min-width: calc(100vw - 3.5rem);
-    max-width: calc(100vw - 3.5rem);
+    min-width: min(360px, calc(100vw - 4rem));
+    max-width: min(360px, calc(100vw - 4rem));
     flex-shrink: 0;
   }
 }
@@ -893,8 +894,8 @@
   color: var(--apple-text);
 }
 
-/* Responsive */
-@media (max-width: 900px) {
+/* Responsive Breakpoint 1024px */
+@media (max-width: 1024px) {
   .hero {
     grid-template-columns: 1fr;
     text-align: center;
