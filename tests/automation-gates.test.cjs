@@ -397,6 +397,12 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
         'Industry benchmarking must gather evidence before edits and reject unsupported clinical changes'
     );
     assert(
+        industryWorkflow.includes('title_pattern = re.compile') &&
+        industryWorkflow.includes('branch_pattern = re.compile') &&
+        !industryWorkflow.includes('(pr.get("body") or "")'),
+        'Industry backlog gate must use task identity, not generic service terms in arbitrary PR bodies'
+    );
+    assert(
         seoWorkflow.includes('must not bulk-rewrite article bodies'),
         'SEO/GEO prompt must not turn a technical review into bulk article publication work'
     );
