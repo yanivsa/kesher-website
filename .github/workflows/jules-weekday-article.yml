@@ -165,6 +165,29 @@ jobs:
           from zoneinfo import ZoneInfo
           with open("payload.json", encoding="utf-8") as fh:
               payload = json.load(fh)
+          stale_media_block = "\n".join([
+              "Image and Video requirements:",
+              "- Every new article MUST have both a local image AND a vibrant 9:16 mobile Remotion video file saved locally and wired into src/data/posts.json.",
+              "- 3-Tier Image Pipeline:",
+              "  1. Try AI image generation using `node scripts/generate-article-image.js <slug> <title> '<specific visual scene description>'`.",
+              "  2. Uses Gemini API / DeepAI API if keys configured.",
+              "  3. Automatic fallback to high-quality royalty-free photography (Unsplash/Pexels) saved to public/images/generated/blog/<slug>.jpg.",
+              "  4. Generate rich SEO metadata `imageAlt` containing target Hebrew keywords (יועצת זוגית, הדרכת הורים, אשדוד, etc.) in posts.json.",
+              "- Vibrant Remotion Video Generation:",
+              "  1. Always run `node scripts/render-article-video.js <slug>`.",
+              "  2. Generates an exciting, vibrant, colorful 9:16 vertical video for mobile (Reels/Shorts format) with animated cards, smooth transitions, and dynamic typography.",
+              "  3. Save video to public/videos/generated/<slug>.mp4 and set `video: \"/videos/generated/<slug>.mp4\"` in posts.json.",
+          ])
+          current_media_block = "\n".join([
+              "Image requirements:",
+              "- Try the configured image generator first, then an independently source- and pixel-verified royalty-safe fallback.",
+              "- Keep a local image and image metadata only when the provider/source URL, committed SHA-256, actual dimensions, and concrete visual match are all verified and mutually consistent.",
+              "- If image generation or visual verification fails, use the truthful no-image fallback and omit the image file, `image`, and `imageAlt`.",
+              "- Article publication runs do not generate videos. Do not run the Remotion renderer, add a `video` field, or commit anything under `public/videos/`. Placeholder or header-only MP4 files are forbidden.",
+          ])
+          if stale_media_block not in payload["prompt"]:
+              raise SystemExit("Expected stale article media block was not found for deterministic replacement")
+          payload["prompt"] = payload["prompt"].replace(stale_media_block, current_media_block)
           payload["prompt"] += "\n\nImage Provenance: Any image PR body must use exact structured lines `Image Source URL: https://...` and `Image SHA-256: <64 lowercase hex>`, include dimensions, and a factual visual-match sentence. If no image is independently source- and pixel-verified, require truthful no-image fallback: omit/remove the image file and post `image` field, and state the fallback."
           payload["prompt"] += "\n\nConstraints: Invented names must be explicitly hypothetical or omitted. No guarantees that grief/relationship dynamics self-resolve. Do not use generic final H3 headings like \"סיכום\" or \"צעדים הבאים\" (ordinary prose is allowed)."
           payload["prompt"] += "\n\nCompletion: Before completion/ready state after a requested repair, require a changed authoritative remote PR head, exact remote file/body evidence, and fresh successful verify CI on that head; local-only or unchanged-head completion is forbidden."
@@ -186,6 +209,8 @@ jobs:
               "She is strictly defined as a couples counselor",
               "Do NOT write about, mention, or refer to divorce",
               "Do not write about, mention, or refer to divorce",
+              "Every new article MUST have both a local image AND a vibrant 9:16 mobile Remotion video",
+              "Always run `node scripts/render-article-video.js",
           ]
           if any(rule in payload["prompt"] for rule in forbidden_stale_rules):
               raise SystemExit("Stale contradictory Jules article rule remains in runtime prompt")
