@@ -42,7 +42,10 @@ async function main() {
         category: post.category,
         image: post.image || ""
       });
-      execSync(`npx remotion render src/remotion/index.ts ArticleShort ${outputPath} --props='${props}'`, {
+      const remotionBin = fs.existsSync(path.join(__dirname, "..", "node_modules", ".bin", "remotion"))
+        ? path.join(__dirname, "..", "node_modules", ".bin", "remotion")
+        : "npx remotion";
+      execSync(`${remotionBin} render src/remotion/index.ts ArticleShort ${outputPath} --props='${props}'`, {
         stdio: "inherit"
       });
       console.log(`/videos/generated/${slug}.mp4`);

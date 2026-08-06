@@ -194,10 +194,10 @@ async function main() {
     }
   }
 
-  // 3. Try Pollinations.ai API
+  // 3. Try Pollinations.ai API (Flux Model for high-res realism)
   try {
     const promptEnc = encodeURIComponent(buildPrompt(title, customPrompt));
-    const pollinationsUrl = `https://image.pollinations.ai/prompt/${promptEnc}?width=1200&height=800&nologo=true`;
+    const pollinationsUrl = `https://image.pollinations.ai/prompt/${promptEnc}?width=1200&height=675&model=flux&nologo=true&enhance=true`;
     await downloadImage(pollinationsUrl, outputPath);
     console.log(`/images/generated/blog/${slug}.jpg`);
     return;
