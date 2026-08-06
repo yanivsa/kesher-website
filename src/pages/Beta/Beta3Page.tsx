@@ -178,6 +178,7 @@ const Beta3Page: React.FC = () => {
         description={SITE_CONFIG.description}
         canonical={`${SITE_CONFIG.url}/`}
         image="/images/shira-saharoni.webp"
+        noIndex={true}
       />
       <SchemaOrg data={homeSchema} />
 
