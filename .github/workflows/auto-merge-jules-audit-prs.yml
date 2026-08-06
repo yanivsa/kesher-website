@@ -110,10 +110,11 @@ jobs:
                   audit_kind = title_match.group(1).lower() if title_match else ""
                   body = pr.get("body") or ""
 
-                  route_match = re.search(r"(?im)^Route inspected:\s*`?([^\s`]+)`?\s*$", body)
-                  route_status = re.search(r"(?im)^Route HTTP status:\s*200\s*$", body)
-                  route_canonical = re.search(r"(?im)^Route canonical:\s*https://kesher\.saharoni\.com/\S*\s*$", body)
-                  route_heading = re.search(r"(?im)^Route heading:\s*\S.+$", body)
+                  evidence_prefix = r"^\s*(?:[-*]\s*)?"
+                  route_match = re.search(evidence_prefix + r"Route inspected:\s*`?([^\s`]+)`?\s*$", body, re.I | re.M)
+                  route_status = re.search(evidence_prefix + r"Route HTTP status:\s*200\s*$", body, re.I | re.M)
+                  route_canonical = re.search(evidence_prefix + r"Route canonical:\s*https://kesher\.saharoni\.com/\S*\s*$", body, re.I | re.M)
+                  route_heading = re.search(evidence_prefix + r"Route heading:\s*\S.+$", body, re.I | re.M)
                   invalid_route = bool(route_match and route_match.group(1).rstrip("/") in {"/beta", "/beta2"})
                   mobile_route_evidence_valid = audit_kind != "mobile review" or bool(
                       route_match and route_status and route_canonical and route_heading and not invalid_route

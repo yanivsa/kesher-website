@@ -168,6 +168,68 @@ function testContentValidatorContracts() {
     );
 }
 
+function testIndependentArticlePrGate() {
+    const workflow = fs.readFileSync('.github/workflows/auto-merge-article-prs.yml', 'utf8');
+    const gate = fs.readFileSync('.github/scripts/validate-article-pr.py', 'utf8');
+    assert(
+        workflow.includes('python3 .github/scripts/validate-article-pr.py pr.json files.json checks.json'),
+        'Article auto-merge must execute the independent trusted quality gate'
+    );
+    for (const contract of [
+        'New article word count must be 700-1100',
+        'Article PRs may not contain video files',
+        'New article may not contain a video field',
+        'Committed image requires Image Generation Result success|generated',
+        'Image Visual Match',
+        'Image dimensions mismatch',
+        'Expected exactly one new article',
+        'Article publication PR may not modify or remove existing posts',
+    ]) {
+        assert(gate.includes(contract), `Independent article gate is missing contract: ${contract}`);
+    }
+
+    execFileSync('python3', ['-c', `
+import runpy
+gate = runpy.run_path('.github/scripts/validate-article-pr.py')
+evaluate = gate['evaluate']
+base = [{'id': 'older'}]
+pr = {
+    'state': 'open', 'draft': False, 'title': 'Publish Kesher article: valid-new-post',
+    'body': '''Image Generation Attempt: DeepAI
+Image Generation Result: blocked
+Image Fallback Attempt: Unsplash/Pexels
+Image Fallback Result: no_pixel_verified_match
+Image Source URL: none''',
+    'base': {'ref': 'main', 'repo': {'full_name': 'test/repo'}},
+    'head': {'repo': {'full_name': 'test/repo'}},
+}
+checks = [{'name': 'verify', 'conclusion': 'success'}]
+files = [{'filename': 'src/data/posts.json'}]
+valid = {'id': 'valid-new-post', 'content': '<p>' + ('מילה ' * 700) + '</p>' + ('<h3>שאלה</h3>' * 5)}
+assert evaluate(pr, files, checks, base, base + [valid], lambda _: b'') == []
+
+thin = dict(valid, content='<p>' + ('מילה ' * 603) + '</p>' + ('<h3>שאלה</h3>' * 5))
+errors = evaluate(pr, files, checks, base, base + [thin], lambda _: b'')
+assert any('found 608' in error for error in errors), errors
+
+video = dict(valid, video='/videos/generated/placeholder.mp4')
+video_files = files + [{'filename': 'public/videos/generated/placeholder.mp4'}]
+errors = evaluate(pr, video_files, checks, base, base + [video], lambda _: b'')
+assert any('video' in error.lower() for error in errors), errors
+
+image_pr = dict(pr, body='''Image Generation Attempt: DeepAI
+Image Generation Result: blocked
+Image Source URL: https://api.deepai.org/example.jpg
+Image SHA-256: 0000000000000000000000000000000000000000000000000000000000000000
+Image Dimensions: 1x1
+Image Visual Match: Friday dinner family scene is visible.''')
+image_post = dict(valid, image='/images/generated/blog/valid-new-post.jpg', imageAlt='תיאור')
+image_files = files + [{'filename': 'public/images/generated/blog/valid-new-post.jpg'}]
+errors = evaluate(image_pr, image_files, checks, base, base + [image_post], lambda _: b'not-an-image')
+assert any('requires Image Generation Result success|generated' in error for error in errors), errors
+`]);
+}
+
 function testAutomergeDeployContracts() {
     const auditWorkflow = fs.readFileSync('.github/workflows/auto-merge-jules-audit-prs.yml', 'utf8');
     const articleWorkflow = fs.readFileSync('.github/workflows/auto-merge-article-prs.yml', 'utf8');
@@ -192,9 +254,14 @@ function testAutomergeDeployContracts() {
         articleWorkflow.indexOf('merge.json') < articleWorkflow.indexOf('/actions/workflows/deploy.yml/dispatches'),
         'Article deploy dispatch must occur only after checking the merge response'
     );
+    const articleGate = fs.readFileSync('.github/scripts/validate-article-pr.py', 'utf8');
     assert(
-        articleWorkflow.includes('"src/data/postSummaries.json"'),
+        articleGate.includes('"src/data/postSummaries.json"'),
         'Article auto-merge must accept the generated post summary index'
+    );
+    assert(
+        articleWorkflow.includes('Checkout trusted article gate'),
+        'Article auto-merge must checkout trusted main before running its validator'
     );
     assert(
         auditWorkflow.includes('Closed zero-file stale/duplicate audit PR.'),
@@ -302,6 +369,10 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
         'Audit auto-merge must independently reject dead/experimental mobile route evidence'
     );
     assert(
+        auditWorkflow.includes('                  evidence_prefix = r"^\\s*(?:[-*]\\s*)?"'),
+        'Audit auto-merge must accept exact route evidence with or without a Markdown bullet'
+    );
+    assert(
         siteFixWorkflow.includes('Offering those paths to the user is forbidden.'),
         'Site-fix prompt must complete the selected terminal path without asking'
     );
@@ -331,6 +402,12 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
     );
 
     const articlePolicy = fs.readFileSync('.github/prompts/jules-weekday-article-update.md', 'utf8');
+    const articleRuntimeWorkflow = fs.readFileSync('.github/workflows/jules-weekday-article.yml', 'utf8');
+    assert(
+        !articleRuntimeWorkflow.includes('\n- Every new article MUST have both') &&
+        articleRuntimeWorkflow.includes('stale_media_block = "\\n".join(['),
+        'Article runtime prompt replacement must stay indented inside the YAML run block'
+    );
     assert(
         articlePolicy.includes('appears exactly once in `src/data/posts.json`, `src/data/postSummaries.json`'),
         'Article policy must require generated-index consistency for the new article id'
@@ -369,11 +446,18 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
             `Article policy must require structured no-image evidence: ${requiredEvidence}`
         );
     }
+    assert(
+        articlePolicy.includes('700-1,100 whitespace-delimited words') &&
+        articlePolicy.includes('Article publication runs do not create videos') &&
+        articlePolicy.includes('Image Generation Result: success|generated'),
+        'Article policy must reject short articles, placeholder video, and contradictory image success evidence'
+    );
 }
 
 testGenericH3();
 testImageExtraction();
 testWorkflowGate();
 testContentValidatorContracts();
+testIndependentArticlePrGate();
 testAutomergeDeployContracts();
 console.log('All automation gates tests passed.');
