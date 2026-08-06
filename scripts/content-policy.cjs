@@ -23,7 +23,6 @@ const STATIC_ROUTES = [
   '/accessibility',
   '/privacy',
   '/terms',
-  '/beta3',
 ];
 
 const stripHtml = (html) => html.replace(/<[^>]+>/g, ' ');
