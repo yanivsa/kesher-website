@@ -104,23 +104,26 @@ const BlogPost: React.FC = () => {
               />
             </div>
           )}
-          {'video' in post && post.video && (
-            <div className={styles.videoWrapper}>
-              <video
-                src={post.video as string}
-                controls
-                playsInline
-                preload="metadata"
-                className={styles.video}
-                poster={post.image || undefined}
-              />
-            </div>
-          )}
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
           <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
           <LeadMagnet />
         </div>
         <aside className={styles.sidebar}>
+          {'video' in post && post.video && (
+            <div className={styles.videoCard}>
+              <h3>🎬 הסבר קצר בנושא</h3>
+              <div className={styles.videoWrapper}>
+                <video
+                  src={post.video as string}
+                  controls
+                  playsInline
+                  preload="metadata"
+                  className={styles.video}
+                  poster={post.image || undefined}
+                />
+              </div>
+            </div>
+          )}
           <div className={styles.ctaCard}>
             <h3>צריכים עזרה עם הנושא הזה?</h3>
             <p>אני כאן כדי ללוות אתכם בתהליך אישי ומותאם לכם.</p>

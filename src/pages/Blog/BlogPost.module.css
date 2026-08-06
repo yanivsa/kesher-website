@@ -50,20 +50,35 @@
   object-fit: cover;
 }
 
+.videoCard {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.videoCard h3 {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-primary-dark);
+}
+
 .videoWrapper {
   width: 100%;
-  max-width: 420px;
-  margin: 0 auto var(--spacing-md) auto;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   background: #000;
 }
 
 .video {
   width: 100%;
   height: auto;
-  max-height: 600px;
+  max-height: 480px;
   display: block;
 }
 
