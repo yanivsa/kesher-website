@@ -104,6 +104,18 @@ const BlogPost: React.FC = () => {
               />
             </div>
           )}
+          {'video' in post && post.video && (
+            <div className={styles.videoWrapper}>
+              <video
+                src={post.video as string}
+                controls
+                playsInline
+                preload="metadata"
+                className={styles.video}
+                poster={post.image || undefined}
+              />
+            </div>
+          )}
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
           <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
           <LeadMagnet />

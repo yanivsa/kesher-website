@@ -50,6 +50,23 @@
   object-fit: cover;
 }
 
+.videoWrapper {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto var(--spacing-md) auto;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #000;
+}
+
+.video {
+  width: 100%;
+  height: auto;
+  max-height: 600px;
+  display: block;
+}
+
 .container {
   display: grid;
   grid-template-columns: 2fr 1fr;
