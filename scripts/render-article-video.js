@@ -45,7 +45,7 @@ async function main() {
       const remotionBin = fs.existsSync(path.join(__dirname, "..", "node_modules", ".bin", "remotion"))
         ? path.join(__dirname, "..", "node_modules", ".bin", "remotion")
         : "npx remotion";
-      execSync(`${remotionBin} render src/remotion/index.ts ArticleShort ${outputPath} --props='${props}'`, {
+      execSync(`${remotionBin} render src/remotion/index.ts ArticleShort ${outputPath} --props='${props}' --timeout=90000 --concurrency=1`, {
         stdio: "inherit"
       });
       console.log(`/videos/generated/${slug}.mp4`);
