@@ -135,8 +135,14 @@
   }
   .form {
     flex-direction: column;
+    width: 100%;
+  }
+  .input {
+    flex: none;
+    width: 100%;
   }
   .button {
+    width: 100%;
     justify-content: center;
   }
 }
