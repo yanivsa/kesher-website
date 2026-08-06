@@ -49,6 +49,8 @@
 ## Image Provenance and Fallback
 Any image PR body must use exact structured lines `Image Source URL: https://...` and `Image SHA-256: <64 lowercase hex>`, include dimensions, and a factual visual-match sentence. If no image is independently source- and pixel-verified, require truthful no-image fallback: omit/remove the image file and post `image` field, and state the fallback. The schema image property must be omitted entirely, and rendering components must conditionally render image elements rather than passing an empty string to getImageDimensions.
 
+An image-bearing PR must also include the exact fields `Image Generation Attempt: DeepAI`, `Image Generation Result: success|generated`, `Image Dimensions: <actual-width>x<actual-height>`, and `Image Visual Match: <concrete description of what is visibly relevant to this article>`. A committed image, image URL, or image field is forbidden when the generation result is `unavailable`, `blocked`, `api_error`, or `rejected_visual_quality`. The declared dimensions and SHA-256 must match the committed binary. A generic portrait that does not visibly represent the article's concrete situation is not a match.
+
 For a no-image fallback, generic text such as “Unsplash failed” or “no matching image was found” is forbidden evidence. The PR body must include these exact structured fields without exposing secrets:
 
 - `Image Generation Attempt: DeepAI`
@@ -62,11 +64,15 @@ Choose the result token that truthfully describes the observed failure. `unavail
 ## Article Constraints
 Invented names must be explicitly hypothetical or omitted. No guarantees that grief/relationship dynamics self-resolve. Do not use generic final H3 headings like "סיכום" or "צעדים הבאים" (ordinary prose is allowed).
 
+The final rendered article body must contain 700-1,100 whitespace-delimited words, excluding title, excerpt, metadata, and navigation. Count the final HTML after stripping tags and record the exact result in the PR body. A 500-word legacy publishability threshold is not permission to submit a shorter new article.
+
+Article publication runs do not create videos. Do not run the Remotion article renderer, add a `video` field, or commit anything under `public/videos/`. A placeholder, header-only, truncated, or otherwise unplayable MP4 is a hard failure and must be removed before the PR is opened.
+
 ## Completion Requirements
 Before completion/ready state after a requested repair, require a changed authoritative remote PR head, exact remote file/body evidence, and fresh successful verify CI on that head; local-only or unchanged-head completion is forbidden.
 
 ## Final Scope and Submission Contract
-Before any commit or PR, remove every scratch, helper, cache, and temporary file. Refresh `origin/main`, then run `git diff --name-only origin/main...HEAD`. The final diff may contain only `src/data/posts.json`, `src/data/postSummaries.json`, an independently verified new image under `public/images/generated/blog/`, and the minimal generated sitemap/llms files required for that one article. A helper such as `add_post.py` is forbidden final scope.
+Before any commit or PR, remove every scratch, helper, cache, temporary, and video file. Refresh `origin/main`, then run `git diff --name-only origin/main...HEAD`. The final diff may contain only `src/data/posts.json`, `src/data/postSummaries.json`, an independently verified new image under `public/images/generated/blog/`, and the minimal generated sitemap/llms files required for that one article. A helper such as `add_post.py`, any path under `public/videos/`, and any article `video` field are forbidden final scope.
 
 After the final `src/data/posts.json` edit, run `npm run generate`. Extract the new article id and prove that it appears exactly once in `src/data/posts.json`, `src/data/postSummaries.json`, `public/sitemap.xml`, and the required llms output. A stale summary for an older article, a missing current summary, or generated files created before the final article edit is a hard failure: clean the branch and repair it before opening or updating a PR. The PR body changed-file list must exactly match the remote GitHub diff.
 
