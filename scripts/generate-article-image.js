@@ -194,24 +194,24 @@ async function main() {
     }
   }
 
-  // 3. Try Pollinations.ai API (Flux Model for high-res realism)
+  // 3. Curated high-resolution professional photography pool (Unsplash / Pexels)
+  try {
+    const fallbackUrl = selectFallbackImageUrl(slug, title);
+    await downloadImage(fallbackUrl, outputPath);
+    console.log(`/images/generated/blog/${slug}.jpg`);
+    return;
+  } catch (error) {
+    console.warn(`WARNING: Curated photo pool failed: ${error.message}`);
+  }
+
+  // 4. Pollinations.ai API fallback
   try {
     const promptEnc = encodeURIComponent(buildPrompt(title, customPrompt));
     const pollinationsUrl = `https://image.pollinations.ai/prompt/${promptEnc}?width=1200&height=675&model=flux&nologo=true&enhance=true`;
     await downloadImage(pollinationsUrl, outputPath);
     console.log(`/images/generated/blog/${slug}.jpg`);
-    return;
   } catch (error) {
-    console.warn(`WARNING: Pollinations.ai failed: ${error.message}. Using Unsplash royalty-free photo fallback.`);
-  }
-
-  // 4. Royalty-free stock photo fallback (Unsplash/Pexels)
-  try {
-    const fallbackUrl = selectFallbackImageUrl(slug, title);
-    await downloadImage(fallbackUrl, outputPath);
-    console.log(`/images/generated/blog/${slug}.jpg`);
-  } catch (error) {
-    console.error(`ERROR: All image generation and fallback providers failed: ${error.message}`);
+    console.error(`ERROR: All image providers failed: ${error.message}`);
     process.exit(1);
   }
 }
