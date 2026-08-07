@@ -61,22 +61,28 @@ const BlogList: React.FC = () => {
     return map;
   }, []);
 
+  const categoryFilteredPosts = useMemo(() => {
+    return selectedCategory === 'הכל'
+      ? posts
+      : posts.filter(post =>
+          post.category === selectedCategory ||
+          (('subcategory' in post && post.subcategory) ? post.subcategory === selectedCategory : false)
+        );
+  }, [selectedCategory]);
+
   const filteredPosts = useMemo(() => {
-    return posts.filter((post) => {
-      const matchesCategory =
-        selectedCategory === 'הכל' ||
-        post.category === selectedCategory ||
-        (('subcategory' in post && post.subcategory) ? post.subcategory === selectedCategory : false);
+    const trimmedQuery = searchQuery.trim().toLowerCase();
 
-      const matchesSearch =
-        searchQuery.trim() === '' ||
-        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (('subcategory' in post && post.subcategory) ? post.subcategory.toLowerCase().includes(searchQuery.toLowerCase()) : false);
+    if (trimmedQuery === '') {
+      return categoryFilteredPosts;
+    }
 
-      return matchesCategory && matchesSearch;
-    });
-  }, [selectedCategory, searchQuery]);
+    return categoryFilteredPosts.filter(post =>
+      post.title.toLowerCase().includes(trimmedQuery) ||
+      post.excerpt.toLowerCase().includes(trimmedQuery) ||
+      (('subcategory' in post && post.subcategory) ? post.subcategory.toLowerCase().includes(trimmedQuery) : false)
+    );
+  }, [categoryFilteredPosts, searchQuery]);
 
   return (
     <div className={styles.page}>
