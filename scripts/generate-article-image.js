@@ -150,6 +150,22 @@ async function tryDeepAi(apiKey, title, customPrompt) {
   throw new Error("DeepAI output_url missing");
 }
 
+async function tryUnsplashApi(accessKey, query) {
+  const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&orientation=landscape&per_page=10`;
+  const response = await fetch(url, {
+    headers: { Authorization: `Client-ID ${accessKey}` }
+  });
+  if (!response.ok) {
+    throw new Error(`Unsplash API returned status ${response.status}`);
+  }
+  const data = await response.json();
+  if (data.results && data.results.length > 0) {
+    const photo = data.results[Math.floor(Math.random() * Math.min(5, data.results.length))];
+    return `${photo.urls.raw}&auto=format&fit=crop&w=1200&q=80`;
+  }
+  throw new Error("No Unsplash search results found");
+}
+
 async function main() {
   const [slug, title = slug, customPrompt = ""] = process.argv.slice(2);
   if (!slug) {
@@ -165,10 +181,44 @@ async function main() {
   fs.mkdirSync(outputDir, { recursive: true });
   const outputPath = path.join(outputDir, `${slug}.jpg`);
 
+  const unsplashKey = process.env.UNSPLASH_ACCESS_KEY;
   const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   const deepaiKey = process.env.DEEPAI_API_KEY;
 
-  // 1. Try Gemini Imagen API if key available
+  // 1. Try Unsplash Search API for topic-matched HD photo if key available
+  if (unsplashKey) {
+    try {
+      console.warn("Attempting image search via Unsplash Search API...");
+      const categoryKey = getCategoryKey(slug, title);
+      const queryMap = {
+        relocation: "couple relocation moving discussion daylight",
+        dating: "couple cozy conversation coffee shop",
+        singleness: "woman thoughtful reflection home daylight",
+        boundaries: "couple sitting living room respectful discussion",
+        parenting: "parent child warm emotional support home",
+        default: "couple warm conversation authentic living room"
+      };
+      const query = queryMap[categoryKey] || queryMap.default;
+      const imgUrl = await tryUnsplashApi(unsplashKey, query);
+      await downloadImage(imgUrl, outputPath);
+      console.log(`/images/generated/blog/${slug}.jpg`);
+      return;
+    } catch (error) {
+      console.warn(`WARNING: Unsplash API search failed: ${error.message}. Trying next provider.`);
+    }
+  }
+
+  // 2. Curated high-resolution professional photography pool (Unsplash / Pexels)
+  try {
+    const fallbackUrl = selectFallbackImageUrl(slug, title);
+    await downloadImage(fallbackUrl, outputPath);
+    console.log(`/images/generated/blog/${slug}.jpg`);
+    return;
+  } catch (error) {
+    console.warn(`WARNING: Curated photo pool failed: ${error.message}`);
+  }
+
+  // 3. Try Gemini Imagen API if key available
   if (geminiKey) {
     try {
       console.warn("Attempting image generation via Google Gemini Imagen API...");
@@ -181,7 +231,7 @@ async function main() {
     }
   }
 
-  // 2. Try DeepAI API if key available
+  // 4. Try DeepAI API if key available
   if (deepaiKey) {
     try {
       console.warn("Attempting image generation via DeepAI API...");
@@ -194,17 +244,7 @@ async function main() {
     }
   }
 
-  // 3. Curated high-resolution professional photography pool (Unsplash / Pexels)
-  try {
-    const fallbackUrl = selectFallbackImageUrl(slug, title);
-    await downloadImage(fallbackUrl, outputPath);
-    console.log(`/images/generated/blog/${slug}.jpg`);
-    return;
-  } catch (error) {
-    console.warn(`WARNING: Curated photo pool failed: ${error.message}`);
-  }
-
-  // 4. Pollinations.ai API fallback
+  // 5. Pollinations.ai API fallback
   try {
     const promptEnc = encodeURIComponent(buildPrompt(title, customPrompt));
     const pollinationsUrl = `https://image.pollinations.ai/prompt/${promptEnc}?width=1200&height=675&model=flux&nologo=true&enhance=true`;
