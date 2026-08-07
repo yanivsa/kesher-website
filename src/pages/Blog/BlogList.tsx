@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import MetaTags from '../../components/SEO/MetaTags';
+import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import posts from '../../data/postSummaries.json';
 import { getImageDimensions } from '../../data/imageDimensions';
@@ -8,6 +9,39 @@ import styles from './BlogList.module.css';
 
 // Extract unique categories from actual posts data
 const CATEGORIES = ['הכל', ...Array.from(new Set(posts.map(p => p.category)))];
+
+const schemaData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Blog",
+      "@id": `${SITE_CONFIG.url}/blog/#blog`,
+      "url": `${SITE_CONFIG.url}/blog`,
+      "name": "מאמרים וקריאה מעשירה",
+      "description": "מאמרים מקצועיים, תובנות וכלים מעשיים בנושאי ייעוץ זוגי, הדרכת הורים, תקשורת, גבולות ופתרון מחלוקות במשפחה.",
+      "publisher": {
+        "@id": `${SITE_CONFIG.url}/#business`
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "עמוד הבית",
+          "item": SITE_CONFIG.url
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "בלוג",
+          "item": `${SITE_CONFIG.url}/blog`
+        }
+      ]
+    }
+  ]
+};
 
 const BlogList: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('הכל');
@@ -51,6 +85,7 @@ const BlogList: React.FC = () => {
         description="מאמרים מקצועיים, תובנות וכלים מעשיים בנושאי ייעוץ זוגי, הדרכת הורים, תקשורת, גבולות ופתרון מחלוקות במשפחה. שירה סהרוני, אשדוד."
         canonical={`${SITE_CONFIG.url}/blog`}
       />
+      <SchemaOrg data={schemaData} />
 
       <main className={styles.main}>
         {/* Header Section */}
