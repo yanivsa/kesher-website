@@ -11,25 +11,6 @@ interface MetaTagsProps {
   noIndex?: boolean;
 }
 
-const upsertMeta = (selector: string, attributes: Record<string, string>) => {
-  const matches = [...document.head.querySelectorAll<HTMLMetaElement>(selector)];
-  const element = matches.shift() || document.createElement('meta');
-  for (const duplicate of matches) duplicate.remove();
-  for (const [name, value] of Object.entries(attributes)) element.setAttribute(name, value);
-  element.dataset.kesherSeo = 'true';
-  if (!element.parentElement) document.head.appendChild(element);
-};
-
-const upsertCanonical = (href: string) => {
-  const matches = [...document.head.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]')];
-  const element = matches.shift() || document.createElement('link');
-  for (const duplicate of matches) duplicate.remove();
-  element.rel = 'canonical';
-  element.href = href;
-  element.dataset.kesherSeo = 'true';
-  if (!element.parentElement) document.head.appendChild(element);
-};
-
 const MetaTags = ({
   title,
   description,
@@ -49,34 +30,76 @@ const MetaTags = ({
 
   useEffect(() => {
     const fullTitle = title.includes(SITE_CONFIG.brand) ? title : `${title} | ${SITE_CONFIG.brand}`;
-
     document.title = fullTitle;
-    upsertMeta('meta[name="description"]', { name: 'description', content: description });
-    upsertCanonical(currentUrl);
 
-    const meta = [
-      ['meta[name="author"]', { name: 'author', content: SITE_CONFIG.author }],
-      ['meta[property="og:type"]', { property: 'og:type', content: ogType }],
-      ['meta[property="og:locale"]', { property: 'og:locale', content: 'he_IL' }],
-      ['meta[property="og:title"]', { property: 'og:title', content: fullTitle }],
-      ['meta[property="og:description"]', { property: 'og:description', content: description }],
-      ['meta[property="og:url"]', { property: 'og:url', content: currentUrl }],
-      ['meta[property="og:site_name"]', { property: 'og:site_name', content: SITE_CONFIG.author }],
-      ['meta[property="og:image"]', { property: 'og:image', content: imageUrl }],
-      ['meta[name="twitter:card"]', { name: 'twitter:card', content: 'summary_large_image' }],
-      ['meta[name="twitter:title"]', { name: 'twitter:title', content: fullTitle }],
-      ['meta[name="twitter:description"]', { name: 'twitter:description', content: description }],
-      ['meta[name="twitter:image"]', { name: 'twitter:image', content: imageUrl }],
-    ] as const;
+    const headChildren = document.head.children;
+    const existingMeta = new Map<string, HTMLMetaElement>();
+    let existingCanonical: HTMLLinkElement | null = null;
 
-    for (const [selector, attributes] of meta) upsertMeta(selector, attributes);
-
-    const robots = [...document.head.querySelectorAll<HTMLMetaElement>('meta[name="robots"]')];
-    if (noIndex) {
-      upsertMeta('meta[name="robots"]', { name: 'robots', content: 'noindex, nofollow' });
-    } else {
-      for (const element of robots) element.remove();
+    for (let i = headChildren.length - 1; i >= 0; i--) {
+      const el = headChildren[i];
+      if (el.tagName === 'META') {
+        const metaEl = el as HTMLMetaElement;
+        const name = metaEl.getAttribute('name');
+        const property = metaEl.getAttribute('property');
+        if (name === 'robots' && !noIndex) {
+          metaEl.remove();
+          continue;
+        }
+        const key = name ? `name:${name}` : property ? `property:${property}` : null;
+        if (key) {
+          if (existingMeta.has(key)) {
+            metaEl.remove();
+          } else {
+            existingMeta.set(key, metaEl);
+          }
+        }
+      } else if (el.tagName === 'LINK' && el.getAttribute('rel') === 'canonical') {
+        const linkEl = el as HTMLLinkElement;
+        if (existingCanonical) {
+          linkEl.remove();
+        } else {
+          existingCanonical = linkEl;
+        }
+      }
     }
+
+    const upsert = (key: string, attrs: Record<string, string>) => {
+      let element = existingMeta.get(key);
+      if (!element) {
+        element = document.createElement('meta');
+        document.head.appendChild(element);
+      }
+      for (const [k, v] of Object.entries(attrs)) {
+        if (element.getAttribute(k) !== v) element.setAttribute(k, v);
+      }
+      element.dataset.kesherSeo = 'true';
+    };
+
+    upsert('name:description', { name: 'description', content: description });
+    upsert('name:author', { name: 'author', content: SITE_CONFIG.author });
+    upsert('property:og:type', { property: 'og:type', content: ogType });
+    upsert('property:og:locale', { property: 'og:locale', content: 'he_IL' });
+    upsert('property:og:title', { property: 'og:title', content: fullTitle });
+    upsert('property:og:description', { property: 'og:description', content: description });
+    upsert('property:og:url', { property: 'og:url', content: currentUrl });
+    upsert('property:og:site_name', { property: 'og:site_name', content: SITE_CONFIG.author });
+    upsert('property:og:image', { property: 'og:image', content: imageUrl });
+    upsert('name:twitter:card', { name: 'twitter:card', content: 'summary_large_image' });
+    upsert('name:twitter:title', { name: 'twitter:title', content: fullTitle });
+    upsert('name:twitter:description', { name: 'twitter:description', content: description });
+    upsert('name:twitter:image', { name: 'twitter:image', content: imageUrl });
+    if (noIndex) {
+      upsert('name:robots', { name: 'robots', content: 'noindex, nofollow' });
+    }
+
+    if (!existingCanonical) {
+      existingCanonical = document.createElement('link');
+      existingCanonical.rel = 'canonical';
+      document.head.appendChild(existingCanonical);
+    }
+    if (existingCanonical.href !== currentUrl) existingCanonical.href = currentUrl;
+    existingCanonical.dataset.kesherSeo = 'true';
   }, [currentUrl, description, imageUrl, noIndex, ogType, title]);
 
   return null;
