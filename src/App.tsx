@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { BrowserRouter as Router, Navigate, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout/Layout'
 import ScrollToTop from './components/ScrollToTop'
@@ -19,7 +19,7 @@ const loadable = (loader: () => Promise<PageModule>) => {
   const LoadablePage = () => {
     const [, refresh] = useState(0);
 
-    useEffect(() => {
+    React.useEffect(() => {
       if (Component) return;
       let active = true;
       preload().then(() => {
