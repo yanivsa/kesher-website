@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FiArrowLeft,
@@ -148,7 +148,7 @@ const InteractiveHeroVisual = () => {
 const BetaPage: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!menuOpen) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
