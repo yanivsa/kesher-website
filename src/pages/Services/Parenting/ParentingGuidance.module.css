@@ -292,9 +292,9 @@
 
 @media (max-width: 992px) {
   .header, .segments, .giftedCallout, .howItWorks, .specialization, .ctaArea { padding: 3rem 0; }
-  .heroContainer { grid-template-columns: 1fr; text-align: center; }
+  .heroContainer { grid-template-columns: minmax(0, 1fr); text-align: center; }
   .heroContent h1 { font-size: 2.8rem; }
   .subtitle { margin: 0 auto 2rem; }
   .heroImageWrapper { display: none; }
-  .segmentGrid, .processSteps, .specializationGrid { grid-template-columns: 1fr; }
+  .segmentGrid, .processSteps, .specializationGrid { grid-template-columns: minmax(0, 1fr); }
 }

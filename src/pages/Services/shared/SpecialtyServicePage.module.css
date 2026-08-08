@@ -343,7 +343,7 @@
 @media (max-width: 992px) {
   .heroGrid,
   .twoColumns {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .cardGrid,
@@ -356,7 +356,7 @@
   .cardGrid,
   .processGrid,
   .articleLinks {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .heroActions {

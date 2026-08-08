@@ -299,10 +299,10 @@
 
 @media (max-width: 992px) {
   .hero, .painPoints, .approach, .howItWorks, .specializations, .boundaries, .ctaSection { padding: 3rem 0; }
-  .heroContainer { grid-template-columns: 1fr; text-align: center; }
+  .heroContainer { grid-template-columns: minmax(0, 1fr); text-align: center; }
   .heroContent h1 { font-size: 2.8rem; }
   .subtitle { margin: 0 auto 2rem; }
   .heroImageWrapper { display: none; }
-  .grid, .processSteps { grid-template-columns: 1fr; }
-  .specializationsGrid { grid-template-columns: 1fr; }
+  .grid, .processSteps { grid-template-columns: minmax(0, 1fr); }
+  .specializationsGrid { grid-template-columns: minmax(0, 1fr); }
 }
