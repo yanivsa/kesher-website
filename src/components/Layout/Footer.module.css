@@ -68,7 +68,7 @@
     padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
   }
   .container {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--spacing-md);
   }
 }

@@ -131,7 +131,7 @@
 
 @media (max-width: 900px) {
   .heroGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
   }
 }
@@ -302,7 +302,7 @@
 
 @media (max-width: 900px) {
   .timelineGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -421,7 +421,7 @@
 
 @media (max-width: 900px) {
   .stepsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -478,7 +478,7 @@
 
 @media (max-width: 900px) {
   .aboutGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
   }
 }
@@ -524,7 +524,7 @@
 /* === Fit Section === */
 .fitGrid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 2rem;
   max-width: 900px;
   margin: 0 auto;
@@ -941,7 +941,7 @@
 
 @media (max-width: 580px) {
   .frictionGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

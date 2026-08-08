@@ -53,7 +53,7 @@
 
 @media (max-width: 992px) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     max-width: 600px;
     margin: 0 auto;
   }

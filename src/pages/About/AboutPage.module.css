@@ -224,7 +224,7 @@
 
 @media (max-width: 900px) {
   .storyGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .imageWrapper {
@@ -241,7 +241,7 @@
 @media (max-width: 620px) {
   .valuesGrid,
   .focusGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .imageBadge {
