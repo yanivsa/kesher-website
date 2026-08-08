@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
@@ -47,9 +47,11 @@ const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   const [activeCategory, setActiveCategory] = useState('הכל');
 
-  const filteredFaqs = activeCategory === 'הכל' 
-    ? faqs 
-    : faqs.filter(f => f.category === activeCategory);
+  const filteredFaqs = useMemo(() => {
+    return activeCategory === 'הכל'
+      ? faqs
+      : faqs.filter(f => f.category === activeCategory);
+  }, [activeCategory]);
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
