@@ -65,6 +65,7 @@ const CouplesCounseling: React.FC = () => {
       <MetaTags 
         title="ייעוץ זוגי באשדוד ואונליין"
         description="ייעוץ זוגי מקצועי ורגיש באשדוד ובאונליין (Zoom). שיפור תקשורת זוגית, חיזוק האינטימיות, התמודדות עם משברים והכנה לחתונה."
+        canonical={`${SITE_CONFIG.url}/services/couples`}
         image="/images/generated/services/couples-room.jpg"
       />
       <SchemaOrg data={schemaData} />
