@@ -316,6 +316,9 @@ function testAutomergeDeployContracts() {
         'max_waiting_continuations',
         'Use Jules built-in PR submission',
         '"PAUSED"',
+        'DELIVERY RECOVERY REQUIREMENT:',
+        'max_delivery_replacements',
+        'Previous changeSet candidate paths:',
     ]) {
         assert(
             watchdog.includes(contract),
@@ -324,7 +327,7 @@ function testAutomergeDeployContracts() {
     }
     assert.strictEqual(
         watchdog.split('deadline = time.monotonic() + max_seconds').length - 1,
-        4,
+        5,
         'Each bounded replacement must receive a fresh full session budget'
     );
     execFileSync('python3', ['-c', `
@@ -335,6 +338,11 @@ assert validate({"outputs": []})[0]
 assert validate({"outputs": [{"pullRequest": {"url": "https://example.test/pr/1"}}]})[0]
 assert not validate({"outputs": [{"changeSet": {"gitPatch": {}}}]})[0]
 assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https://example.test/pr/1"}}]})[0]
+paths = watchdog["change_set_paths"]({"outputs": [
+    {"changeSet": {"gitPatch": {"unidiffPatch": "diff --git a/src/a.ts b/src/a.ts\\n"}}},
+    {"changeSet": {"gitPatch": {"unidiffPatch": "diff --git a/src/a.ts b/src/a.ts\\ndiff --git a/src/b.ts b/src/b.ts\\n"}}},
+]})
+assert paths == ["src/a.ts", "src/b.ts"]
 `]);
     assert(
         seoWorkflow.includes('Discovery-to-action invariant:'),

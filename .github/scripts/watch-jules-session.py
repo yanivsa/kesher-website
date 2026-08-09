@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -45,6 +46,15 @@ INVALID_OUTPUT_CONTINUATION = (
     "the focused change as one validated non-draft PR. If the change is stale or cannot "
     "be isolated, remove the changeSet and finish as a true clean no-op. Do not ask a "
     "question and do not report COMPLETED again with a changeSet but no PR."
+)
+DELIVERY_RECOVERY_SUFFIX = (
+    "\n\nDELIVERY RECOVERY REQUIREMENT: A previous AUTO_CREATE_PR session produced a "
+    "final changeSet but failed to publish its branch and pull request. Do not repeat "
+    "broad discovery. Re-inspect current origin/main and the candidate paths listed "
+    "below, reproduce only the one smallest still-valid coherent fix, run the required "
+    "validation, and publish one non-draft PR through Jules built-in PR submission. "
+    "Exclude any inherited, incidental, stale, or already-merged path. If no candidate "
+    "remains valid, finish as a true clean no-op with no changeSet, branch, commit, or PR."
 )
 
 
@@ -102,6 +112,46 @@ def create_replacement(payload: dict, api_key: str) -> str:
     return name
 
 
+def change_set_paths(session: dict) -> list[str]:
+    """Return unique repository paths from the session's final changeSet patches."""
+    paths: list[str] = []
+    for output in session.get("outputs") or []:
+        patch = (
+            output.get("changeSet", {})
+            .get("gitPatch", {})
+            .get("unidiffPatch", "")
+        )
+        for _before, after in re.findall(
+            r"^diff --git a/(.+?) b/(.+?)$", patch, flags=re.MULTILINE
+        ):
+            if after not in paths:
+                paths.append(after)
+    return paths
+
+
+def create_delivery_replacement(
+    payload: dict,
+    api_key: str,
+    invalid_session: dict,
+) -> str:
+    replacement = dict(payload)
+    replacement["title"] = (
+        f"{payload.get('title', 'Jules automation')} (delivery recovery)"
+    )
+    paths = change_set_paths(invalid_session)
+    path_evidence = "\n".join(f"- {path}" for path in paths[:20])
+    if not path_evidence:
+        path_evidence = "- No parseable path; inspect only the original task's smallest issue."
+    replacement["prompt"] = (
+        f"{payload.get('prompt', '')}{DELIVERY_RECOVERY_SUFFIX}\n\n"
+        f"Previous changeSet candidate paths:\n{path_evidence}"
+    )
+    created = request_json("POST", "/sessions", api_key, replacement)
+    name = session_name(created)
+    print(f"Created one bounded delivery replacement: {name}", flush=True)
+    return name
+
+
 def terminal_output_contract(session: dict) -> tuple[bool, str]:
     outputs = session.get("outputs") or []
     has_change_set = any("changeSet" in output for output in outputs)
@@ -119,12 +169,14 @@ def watch(
     poll_seconds: int,
     max_replacements: int,
     max_waiting_continuations: int,
+    max_delivery_replacements: int,
 ) -> int:
     deadline = time.monotonic() + max_seconds
     current = initial_session
     waiting_continuations: dict[str, int] = {}
     actively_waiting: set[str] = set()
     replacements = 0
+    delivery_replacements = 0
     last_state = ""
     invalid_completed_polls: dict[str, int] = {}
 
@@ -166,6 +218,13 @@ def watch(
                 )
             invalid_completed_polls[current] = polls + 1
             if polls >= 5:
+                if delivery_replacements < max_delivery_replacements:
+                    current = create_delivery_replacement(payload, api_key, session)
+                    delivery_replacements += 1
+                    deadline = time.monotonic() + max_seconds
+                    last_state = ""
+                    time.sleep(poll_seconds)
+                    continue
                 if replacements >= max_replacements:
                     print(
                         f"Jules session retained invalid output after autonomous cleanup: "
@@ -252,6 +311,7 @@ def main() -> int:
     parser.add_argument("--poll-seconds", type=int, default=10)
     parser.add_argument("--max-replacements", type=int, default=1)
     parser.add_argument("--max-waiting-continuations", type=int, default=2)
+    parser.add_argument("--max-delivery-replacements", type=int, default=1)
     args = parser.parse_args()
 
     api_key = os.environ.get("JULES_API_KEY", "")
@@ -268,6 +328,7 @@ def main() -> int:
         args.poll_seconds,
         args.max_replacements,
         args.max_waiting_continuations,
+        args.max_delivery_replacements,
     )
 
 
