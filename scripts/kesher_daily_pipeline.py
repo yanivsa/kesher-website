@@ -91,7 +91,7 @@ def search_youtube_candidates(query, max_results=5):
     video_ids = re.findall(r'"videoId":"([a-zA-Z0-9_-]{11})"', html)
     seen = set()
     unique_ids = [x for x in video_ids if not (x in seen or seen.add(x))]
-    
+
     candidates = []
     for vid in unique_ids[:max_results]:
         candidates.append({
@@ -284,7 +284,7 @@ def generate_and_download_notebooklm(client, format_type, custom_prompt, output_
                 "new_count": baseline_count + 1,
                 "youtube_metadata": metadata_from_generation(gen_result, format_type),
             }
-            
+
         return False, f"Download empty. Playwright err: {res.stderr}"
     except Exception as e:
         return False, str(e)
@@ -294,7 +294,7 @@ def run_remotion_render(input_mp4, output_mp4, metadata, format_type):
     # Copy input to remotion public folder
     public_input = REMOTION_DIR / "public" / "kesher-input.mp4"
     shutil.copy2(input_mp4, public_input)
-    
+
     # Run Remotion CLI render
     source = media_metadata(input_mp4)
     if not source:
@@ -313,7 +313,7 @@ def run_remotion_render(input_mp4, output_mp4, metadata, format_type):
         "sourceDurationInFrames": round(source["duration"] * fps),
         **remotion_content_plan(metadata),
     })
-    
+
     composition_id = "KesherShort" if format_type == "short" else "KesherVideo"
     cmd = [
         "npx", "remotion", "render", "src/index.ts", composition_id,
@@ -321,7 +321,7 @@ def run_remotion_render(input_mp4, output_mp4, metadata, format_type):
         "--props", props,
         "--concurrency=4",
     ]
-    
+
     try:
         res = subprocess.run(cmd, cwd=str(REMOTION_DIR), capture_output=True, text=True, timeout=3600)
         if res.returncode == 0 and output_mp4.exists() and output_mp4.stat().st_size > 0:
@@ -645,7 +645,7 @@ def verify_channel_and_upload(video_path, title, description, tags, is_test=Fals
     if is_test:
         print("[TEST MODE] Skipped upload.")
         return True, "test_video_id", "https://youtube.com/watch?v=test_video_id"
-        
+
     try:
         file_name = video_path.name
         with serve_video_through_localtunnel(video_path) as (direct_url, expected_size):
@@ -691,7 +691,7 @@ uploaded, err = upload_local_file(local_path)
 if err:
     print("S3 Upload error:", err)
     sys.exit(1)
-    
+
 s3key = uploaded["s3key"]
 print("Uploaded to S3. Key:", s3key)
 
@@ -716,7 +716,7 @@ result, yt_err = run_composio_tool("YOUTUBE_MULTIPART_UPLOAD_VIDEO", {{
 if yt_err:
     print("YouTube Upload error:", yt_err)
     sys.exit(1)
-    
+
 print("YouTube Upload Success:", json.dumps(result, ensure_ascii=False))
 '''
 
@@ -752,7 +752,7 @@ print("YouTube Upload Success:", json.dumps(result, ensure_ascii=False))
                 return False, "; ".join(verification_errors[-3:]), ""
             finally:
                 mcp_client.disconnect()
-            
+
     except Exception as e:
         return False, str(e), ""
 
@@ -787,17 +787,11 @@ def upload_eligible(item):
 
 
 def quarantine_ineligible_unuploaded_items(queue_data):
+    from pipeline_state import quarantine_legacy_items
     changed = False
-    for item in queue_data.get("queue", []):
-        if item.get("uploaded") or item.get("remotion_status") != "done":
-            continue
-        eligible, reason = upload_eligible(item)
-        if not eligible:
-            item["upload_status"] = "quarantined_missing_content_evidence"
-            item["last_upload_error"] = reason
-            item["verified"] = False
-            changed = True
-    return changed
+    original = json.dumps(queue_data)
+    quarantine_legacy_items(queue_data)
+    return json.dumps(queue_data) != original
 
 def save_queue(q_data):
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -808,19 +802,11 @@ def save_queue(q_data):
     os.replace(temporary_file, QUEUE_FILE)
 
 
-def acquire_pipeline_lock():
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    handle = RUN_LOCK_FILE.open("a+")
-    try:
-        fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
-        handle.close()
-        raise RuntimeError("Another Kesher daily pipeline run is already active")
-    handle.seek(0)
-    handle.truncate()
-    handle.write(f"pid={os.getpid()} started_at={datetime.now().isoformat()}\n")
-    handle.flush()
-    return handle
+def acquire_pipeline_lock(test_mode=False):
+    from pipeline_state import PipelineLock
+    lock = PipelineLock(RUN_LOCK_FILE, test_mode)
+    lock.acquire()
+    return lock
 
 def main():
     os.environ["PATH"] = "/Users/ninja/.nvm/versions/node/v22.21.1/bin:" + os.environ.get("PATH", "")
@@ -829,255 +815,260 @@ def main():
     parser.add_argument("--upload-only", action="store_true", help="Reconcile and upload ready queue items without generating new videos")
     parser.add_argument("--skip-reconcile", action="store_true", help="Skip live YouTube reconciliation before processing the queue")
     args = parser.parse_args()
-    pipeline_lock = acquire_pipeline_lock()
-    
-    print(f"=== Daily YouTube Video Pipeline - {datetime.now().isoformat()} ===")
-    
-    # 1. Load Queue
-    queue_data = load_queue()
-    if quarantine_ineligible_unuploaded_items(queue_data):
-        print("Quarantined queue items without complete visual, semantic, and metadata evidence.")
-        save_queue(queue_data)
-    if not args.test_mode and not args.skip_reconcile:
-        if reconcile_uploaded_queue(queue_data):
-            print("Reconciled deleted or unavailable YouTube items back into the upload queue.")
+    pipeline_lock = acquire_pipeline_lock(args.test_mode)
+    try:
+
+        print(f"=== Daily YouTube Video Pipeline - {datetime.now().isoformat()} ===")
+
+        # 1. Load Queue
+        queue_data = load_queue()
+        if quarantine_ineligible_unuploaded_items(queue_data):
+            print("Quarantined queue items without complete visual, semantic, and metadata evidence.")
             save_queue(queue_data)
-    
-    # 2. Upload Phase: Find ready-to-upload items
-    ready_normal = [item for item in queue_data["queue"] if item["type"] == "normal" and not item["uploaded"] and upload_eligible(item)[0]]
-    ready_short = [item for item in queue_data["queue"] if item["type"] == "short" and not item["uploaded"] and upload_eligible(item)[0]]
-    
-    uploaded_items = []
-    
-    # Upload Normal
-    if ready_normal:
-        item = ready_normal[0]
-        metadata = item.get("youtube_metadata") or {}
-        title, description, tags = metadata["title"], metadata["description"], metadata["tags"]
-        success, yt_id, yt_url = verify_channel_and_upload(
-            Path(item["remotion_mp4_path"]), title, description, tags, is_test=args.test_mode
-        )
-        if success:
-            item["uploaded"] = True
-            item["youtube_id"] = yt_id
-            item["youtube_url"] = yt_url
-            item["uploaded_at"] = datetime.now().isoformat()
-            item["upload_status"] = "public_verified"
-            item["last_verified_at"] = datetime.now().isoformat()
-            item.pop("last_upload_error", None)
-            uploaded_items.append(item)
-            print(f"Normal video uploaded: {yt_url}")
-        else:
-            print(f"Failed to upload Normal video: {yt_id}")
-            
-    # Upload Short
-    if ready_short:
-        item = ready_short[0]
-        metadata = item.get("youtube_metadata") or {}
-        title, description, tags = metadata["title"], metadata["description"], metadata["tags"]
-        success, yt_id, yt_url = verify_channel_and_upload(
-            Path(item["remotion_mp4_path"]), title, description, tags, is_test=args.test_mode
-        )
-        if success:
-            item["uploaded"] = True
-            item["youtube_id"] = yt_id
-            item["youtube_url"] = yt_url
-            item["uploaded_at"] = datetime.now().isoformat()
-            item["upload_status"] = "public_verified"
-            item["last_verified_at"] = datetime.now().isoformat()
-            item.pop("last_upload_error", None)
-            uploaded_items.append(item)
-            print(f"Short video uploaded: {yt_url}")
-        else:
-            print(f"Failed to upload Short video: {yt_id}")
-            
-    save_queue(queue_data)
+        if not args.test_mode and not args.skip_reconcile:
+            if reconcile_uploaded_queue(queue_data):
+                print("Reconciled deleted or unavailable YouTube items back into the upload queue.")
+                save_queue(queue_data)
 
-    if args.upload_only:
-        print("Upload-only pipeline execution complete.")
-        return
-    
-    # 3. Generation Phase: If we don't have enough ready items for next run, generate them
-    needed_types = []
-    # Rejected media is retained for auditability, but must never suppress a
-    # replacement generation for its format.
-    def is_active_unuploaded(item):
-        return (
-            not item.get("uploaded", False)
-            and not str(item.get("remotion_status", "")).startswith("rejected")
-            and item.get("visual_review_status") != "rejected"
-        )
+        # 2. Upload Phase: Find ready-to-upload items
+        ready_normal = [item for item in queue_data["queue"] if item["type"] == "normal" and not item["uploaded"] and upload_eligible(item)[0]]
+        ready_short = [item for item in queue_data["queue"] if item["type"] == "short" and not item["uploaded"] and upload_eligible(item)[0]]
 
-    active_normal = [item for item in queue_data["queue"] if item["type"] == "normal" and is_active_unuploaded(item)]
-    active_short = [item for item in queue_data["queue"] if item["type"] == "short" and is_active_unuploaded(item)]
-    
-    if len(active_normal) < 1:
-        needed_types.append("normal")
-    if len(active_short) < 1:
-        needed_types.append("short")
-        
-    if needed_types:
-        print(f"Generating new content. Needed types: {needed_types}")
-        
-        # Search YouTube for source topics
-        queries = ["טיפים לזוגיות", "הדרכת הורים גבולות", "תקשורת זוגית בבית"]
-        selected_source = None
-        candidates = []
-        for q in queries:
-            candidates.extend(search_youtube_candidates(q, max_results=3))
-            
-        client = NotebookLMClient()
-        try:
-            client.connect()
-            
-            # Now generate for each needed type
-            for t in needed_types:
-                stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-                raw_path = OUTPUT_DIR / f"kesher-raw-{t}-{stamp}.mp4"
-                remotion_path = REMOTION_OUTPUT_DIR / f"kesher-upgraded-{t}-{stamp}.mp4"
-                REMOTION_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-                
-                duration_prompt = (
-                    "זהו סרטון YouTube רגיל ביחס 16:9. אורך הסרטון חייב להיות בין 90 ל-180 שניות."
-                    if t == "normal" else
-                    "צור מלכתחילה YouTube Short עצמאי ואנכי ביחס 9:16 וברזולוציה אנכית. "
-                    "אל תיצור סרטון 16:9 ואל תיצור גרסה ארוכה שאמורה להיחתך לאחר מכן. "
-                    "האורך הסופי המלא חייב להיות 35-55 שניות, וכל הקריינות, הסצנות והטקסט המוטמע חייבים להסתיים בתוך משך זה. "
-                    "מקם כל טקסט באזור הבטוח המרכזי של מסך 9:16, בשורות קצרות, בלי טקסט שנוגע בשוליים. "
-                    "התוכן צריך להיות ממוקד ומהיר: הוק, רעיון אחד, דוגמה אחת וסיום אחד."
-                )
-                custom_instructions = CONTENT_PROMPT_TEMPLATE + f"\n{duration_prompt}"
-                
-                if args.test_mode:
-                    selected_source = candidates[0] if candidates else {"url": "", "topic": "נושא בדיקה"}
-                    print(f"[TEST MODE] Skipping generation/download/remotion steps for {t}.")
-                    # Create mock entry
-                    queue_data["queue"].append({
-                        "id": f"mock-{stamp}-{t}",
-                        "type": t,
-                        "topic": "נושא בדיקה",
-                        "source_url": selected_source["url"],
-                        "notebooklm_id": NOTEBOOK_ID,
-                        "raw_mp4_path": str(raw_path),
-                        "remotion_mp4_path": str(remotion_path),
-                        "creation_status": "done",
-                        "remotion_status": "done",
-                        "verified": True,
-                        "uploaded": False,
-                        "created_at": datetime.now().isoformat()
-                    })
-                    continue
-                    
-                # Real generation
-                success = False
-                details = ""
-                selected_source = None
-                attempted_generation_sources = 0
-                attempted_urls = set()
+        uploaded_items = []
 
-                for candidate in candidates:
-                    if candidate["url"] in attempted_urls:
-                        continue
-                    attempted_urls.add(candidate["url"])
+        # Upload Normal
+        if ready_normal:
+            item = ready_normal[0]
+            metadata = item.get("youtube_metadata") or {}
+            title, description, tags = metadata["title"], metadata["description"], metadata["tags"]
+            success, yt_id, yt_url = verify_channel_and_upload(
+                Path(item["remotion_mp4_path"]), title, description, tags, is_test=args.test_mode
+            )
+            if success:
+                item["uploaded"] = True
+                item["youtube_id"] = yt_id
+                item["youtube_url"] = yt_url
+                item["uploaded_at"] = datetime.now().isoformat()
+                item["upload_status"] = "public_verified"
+                item["last_verified_at"] = datetime.now().isoformat()
+                item.pop("last_upload_error", None)
+                uploaded_items.append(item)
+                print(f"Normal video uploaded: {yt_url}")
+            else:
+                print(f"Failed to upload Normal video: {yt_id}")
 
-                    source_success, source_details = add_source_to_notebooklm(client, candidate["url"])
-                    if not source_success:
-                        print(f"Failed to add source {candidate['url']}: {source_details}")
-                        continue
+        # Upload Short
+        if ready_short:
+            item = ready_short[0]
+            metadata = item.get("youtube_metadata") or {}
+            title, description, tags = metadata["title"], metadata["description"], metadata["tags"]
+            success, yt_id, yt_url = verify_channel_and_upload(
+                Path(item["remotion_mp4_path"]), title, description, tags, is_test=args.test_mode
+            )
+            if success:
+                item["uploaded"] = True
+                item["youtube_id"] = yt_id
+                item["youtube_url"] = yt_url
+                item["uploaded_at"] = datetime.now().isoformat()
+                item["upload_status"] = "public_verified"
+                item["last_verified_at"] = datetime.now().isoformat()
+                item.pop("last_upload_error", None)
+                uploaded_items.append(item)
+                print(f"Short video uploaded: {yt_url}")
+            else:
+                print(f"Failed to upload Short video: {yt_id}")
 
-                    selected_source = candidate
-                    attempted_generation_sources += 1
-                    print(
-                        f"Added source successfully for {t} attempt "
-                        f"{attempted_generation_sources}/{MAX_GENERATION_SOURCE_ATTEMPTS}: {candidate['url']}"
+        save_queue(queue_data)
+
+        if args.upload_only:
+            print("Upload-only pipeline execution complete.")
+            return
+
+        # 3. Generation Phase: If we don't have enough ready items for next run, generate them
+        needed_types = []
+        # Rejected media is retained for auditability, but must never suppress a
+        # replacement generation for its format.
+        def is_active_unuploaded(item):
+            return (
+                not item.get("uploaded", False)
+                and not str(item.get("remotion_status", "")).startswith("rejected")
+                and item.get("visual_review_status") != "rejected"
+            )
+
+        active_normal = [item for item in queue_data["queue"] if item["type"] == "normal" and is_active_unuploaded(item)]
+        active_short = [item for item in queue_data["queue"] if item["type"] == "short" and is_active_unuploaded(item)]
+
+        if len(active_normal) < 1:
+            needed_types.append("normal")
+        if len(active_short) < 1:
+            needed_types.append("short")
+
+        if needed_types:
+            print(f"Generating new content. Needed types: {needed_types}")
+
+            # Search YouTube for source topics
+            queries = ["טיפים לזוגיות", "הדרכת הורים גבולות", "תקשורת זוגית בבית"]
+            selected_source = None
+            candidates = []
+            for q in queries:
+                candidates.extend(search_youtube_candidates(q, max_results=3))
+
+            client = NotebookLMClient()
+            try:
+                client.connect()
+
+                # Now generate for each needed type
+                for t in needed_types:
+                    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+                    raw_path = OUTPUT_DIR / f"kesher-raw-{t}-{stamp}.mp4"
+                    remotion_path = REMOTION_OUTPUT_DIR / f"kesher-upgraded-{t}-{stamp}.mp4"
+                    REMOTION_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+                    duration_prompt = (
+                        "זהו סרטון YouTube רגיל ביחס 16:9. אורך הסרטון חייב להיות בין 90 ל-180 שניות."
+                        if t == "normal" else
+                        "צור מלכתחילה YouTube Short עצמאי ואנכי ביחס 9:16 וברזולוציה אנכית. "
+                        "אל תיצור סרטון 16:9 ואל תיצור גרסה ארוכה שאמורה להיחתך לאחר מכן. "
+                        "האורך הסופי המלא חייב להיות 35-55 שניות, וכל הקריינות, הסצנות והטקסט המוטמע חייבים להסתיים בתוך משך זה. "
+                        "מקם כל טקסט באזור הבטוח המרכזי של מסך 9:16, בשורות קצרות, בלי טקסט שנוגע בשוליים. "
+                        "התוכן צריך להיות ממוקד ומהיר: הוק, רעיון אחד, דוגמה אחת וסיום אחד."
                     )
+                    custom_instructions = CONTENT_PROMPT_TEMPLATE + f"\n{duration_prompt}"
 
-                    success, details = generate_and_download_notebooklm(
-                        client, t, custom_instructions, raw_path
-                    )
-                    if success:
-                        break
-
-                    print(
-                        f"NotebookLM generation attempt failed for {t} "
-                        f"with source {candidate['url']}: {details}"
-                    )
-                    raw_path.unlink(missing_ok=True)
-
-                    if attempted_generation_sources >= MAX_GENERATION_SOURCE_ATTEMPTS:
-                        break
-
-                if attempted_generation_sources == 0:
-                    details = "Failed to add any YouTube candidates to NotebookLM."
-                
-                if success:
-                    print(f"NotebookLM generation complete for {t}.")
-                    # Run Remotion Upgrade
-                    youtube_metadata = details.get("youtube_metadata") or {}
-                    rem_success, rem_err = run_remotion_render(raw_path, remotion_path, youtube_metadata, t)
-                    if rem_success:
-                        verified, verification = verify_rendered_video(remotion_path, t)
-                        if not verified:
-                            print(f"Rendered {t} video failed verification: {verification}")
-                            continue
-                        review_path, review_error = create_visual_contact_sheet(remotion_path, t)
-                        if not review_path:
-                            print(f"Rendered {t} video could not enter visual review: {review_error}")
-                            continue
+                    if args.test_mode:
+                        selected_source = candidates[0] if candidates else {"url": "", "topic": "נושא בדיקה"}
+                        print(f"[TEST MODE] Skipping generation/download/remotion steps for {t}.")
+                        # Create mock entry
                         queue_data["queue"].append({
-                            "id": f"{t}-{stamp}",
+                            "id": f"mock-{stamp}-{t}",
                             "type": t,
-                            "topic": selected_source["topic"],
+                            "topic": "נושא בדיקה",
                             "source_url": selected_source["url"],
                             "notebooklm_id": NOTEBOOK_ID,
                             "raw_mp4_path": str(raw_path),
                             "remotion_mp4_path": str(remotion_path),
                             "creation_status": "done",
                             "remotion_status": "done",
-                            "technical_verified": True,
-                            "verified": False,
-                            "visual_review_status": "pending",
-                            "semantic_review_status": "pending",
-                            "metadata_review_status": "pending",
-                            "visual_review_path": str(review_path),
-                            "visual_review_rules": [
-                                "Hebrew visual text only; URL and Shorts are the only Latin exceptions",
-                                "No gibberish, presentation slides, information cards, tables, or arrow diagrams",
-                                "No cropped text, overlay collisions, black frames, or repeated static layouts",
-                                "Normal must feel cinematic; Short must be native 9:16 with all content in the safe area",
-                            ],
-                            "media": verification,
-                            "youtube_metadata": details.get("youtube_metadata"),
-                            "content_manifest": {
-                                "raw_sha256": hashlib.sha256(raw_path.read_bytes()).hexdigest(),
-                                "rendered_sha256": hashlib.sha256(remotion_path.read_bytes()).hexdigest(),
-                                "source_url": selected_source["url"],
-                                "topic": selected_source["topic"],
-                            },
+                            "verified": True,
                             "uploaded": False,
                             "created_at": datetime.now().isoformat()
                         })
-                        save_queue(queue_data)
-                        print(f"Successfully processed and queue'd {t} video.")
+                        continue
+
+                    # Real generation
+                    success = False
+                    details = ""
+                    selected_source = None
+                    attempted_generation_sources = 0
+                    attempted_urls = set()
+
+                    for candidate in candidates:
+                        if candidate["url"] in attempted_urls:
+                            continue
+                        attempted_urls.add(candidate["url"])
+
+                        source_success, source_details = add_source_to_notebooklm(client, candidate["url"])
+                        if not source_success:
+                            print(f"Failed to add source {candidate['url']}: {source_details}")
+                            continue
+
+                        selected_source = candidate
+                        attempted_generation_sources += 1
+                        print(
+                            f"Added source successfully for {t} attempt "
+                            f"{attempted_generation_sources}/{MAX_GENERATION_SOURCE_ATTEMPTS}: {candidate['url']}"
+                        )
+
+                        success, details = generate_and_download_notebooklm(
+                            client, t, custom_instructions, raw_path
+                        )
+                        if success:
+                            break
+
+                        print(
+                            f"NotebookLM generation attempt failed for {t} "
+                            f"with source {candidate['url']}: {details}"
+                        )
+                        raw_path.unlink(missing_ok=True)
+
+                        if attempted_generation_sources >= MAX_GENERATION_SOURCE_ATTEMPTS:
+                            break
+
+                    if attempted_generation_sources == 0:
+                        details = "Failed to add any YouTube candidates to NotebookLM."
+
+                    if success:
+                        print(f"NotebookLM generation complete for {t}.")
+                        # Run Remotion Upgrade
+                        youtube_metadata = details.get("youtube_metadata") or {}
+                        rem_success, rem_err = run_remotion_render(raw_path, remotion_path, youtube_metadata, t)
+                        if rem_success:
+                            verified, verification = verify_rendered_video(remotion_path, t)
+                            if not verified:
+                                print(f"Rendered {t} video failed verification: {verification}")
+                                continue
+                            review_path, review_error = create_visual_contact_sheet(remotion_path, t)
+                            if not review_path:
+                                print(f"Rendered {t} video could not enter visual review: {review_error}")
+                                continue
+                            queue_data["queue"].append({
+                                "id": f"{t}-{stamp}",
+                                "type": t,
+                                "topic": selected_source["topic"],
+                                "source_url": selected_source["url"],
+                                "notebooklm_id": NOTEBOOK_ID,
+                                "raw_mp4_path": str(raw_path),
+                                "remotion_mp4_path": str(remotion_path),
+                                "creation_status": "done",
+                                "remotion_status": "done",
+                                "technical_verified": True,
+                                "verified": False,
+                                "visual_review_status": "pending",
+                                "semantic_review_status": "pending",
+                                "metadata_review_status": "pending",
+                                "visual_review_path": str(review_path),
+                                "visual_review_rules": [
+                                    "Hebrew visual text only; URL and Shorts are the only Latin exceptions",
+                                    "No gibberish, presentation slides, information cards, tables, or arrow diagrams",
+                                    "No cropped text, overlay collisions, black frames, or repeated static layouts",
+                                    "Normal must feel cinematic; Short must be native 9:16 with all content in the safe area",
+                                ],
+                                "media": verification,
+                                "youtube_metadata": details.get("youtube_metadata"),
+                                "content_manifest": {
+                                    "raw_sha256": hashlib.sha256(raw_path.read_bytes()).hexdigest(),
+                                    "rendered_sha256": hashlib.sha256(remotion_path.read_bytes()).hexdigest(),
+                                    "source_url": selected_source["url"],
+                                    "topic": selected_source["topic"],
+                                },
+                                "uploaded": False,
+                                "created_at": datetime.now().isoformat()
+                            })
+                            save_queue(queue_data)
+                            print(f"Successfully processed and queue'd {t} video.")
+                        else:
+                            print(f"Remotion render failed: {rem_err}")
                     else:
-                        print(f"Remotion render failed: {rem_err}")
-                else:
-                    print(f"NotebookLM generation failed for {t}: {details}")
-                    
-        finally:
-            client.disconnect()
-            
-    save_queue(queue_data)
-    print("Pipeline execution complete.")
-    
-    # 4. Report in Hebrew
-    for item in uploaded_items:
-        print(f"\n--- סרטון הועלה בהצלחה! ---")
-        print(f"כותרת: {item.get('topic')}")
-        print(f"קישור: {item.get('youtube_url')}")
-        print(f"סוג: {item.get('type')}")
-        print(f"סטטוס: Public")
-        print(f"נוצר בעברית מלכתחילה: כן")
+                        print(f"NotebookLM generation failed for {t}: {details}")
+
+            finally:
+                client.disconnect()
+
+        save_queue(queue_data)
+        print("Pipeline execution complete.")
+
+        # 4. Report in Hebrew
+        for item in uploaded_items:
+            print(f"\n--- סרטון הועלה בהצלחה! ---")
+            print(f"כותרת: {item.get('topic')}")
+            print(f"קישור: {item.get('youtube_url')}")
+            print(f"סוג: {item.get('type')}")
+            print(f"סטטוס: Public")
+            print(f"נוצר בעברית מלכתחילה: כן")
+
+
+    finally:
+        pipeline_lock.release()
 
 if __name__ == "__main__":
     main()
