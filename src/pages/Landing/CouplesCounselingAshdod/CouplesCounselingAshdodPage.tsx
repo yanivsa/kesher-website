@@ -86,9 +86,8 @@ const schemaData = {
         addressCountry: 'IL',
       },
       provider: {
-        '@type': 'Person',
-        name: SITE_CONFIG.author,
-        jobTitle: 'יועצת זוגית, עורכת דין בהכשרתה ומגשרת מוסמכת',
+        '@type': 'LocalBusiness',
+        '@id': `${SITE_CONFIG.url}/#business`,
       },
       areaServed: [
         {
