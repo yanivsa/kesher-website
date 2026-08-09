@@ -315,6 +315,7 @@ function testAutomergeDeployContracts() {
         'REPEATED_WAITING_CONTINUATION',
         'max_waiting_continuations',
         'Use Jules built-in PR submission',
+        '"PAUSED"',
     ]) {
         assert(
             watchdog.includes(contract),
@@ -378,8 +379,10 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
     );
     assert(
         articleWorkflow.includes('Failing the PR-scoped check so a rejected article cannot look green.') &&
-        articleWorkflow.includes('if [ "${EVENT_NAME}" = "pull_request_target" ]; then'),
-        'A rejected article must leave a failing PR-scoped quality check'
+        articleWorkflow.includes('[ "${article_scope}" = "true" ]') &&
+        articleWorkflow.includes('path == "src/data/posts.json"') &&
+        articleWorkflow.includes('path.startswith("public/images/generated/blog/")'),
+        'A rejected article must fail its PR-scoped check without failing unrelated PRs'
     );
     assert(
         auditWorkflow.includes('                  evidence_prefix = r"^\\s*(?:[-*]\\s*)?"'),
