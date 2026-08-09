@@ -69,6 +69,10 @@ jobs:
             if ! python3 .github/scripts/validate-article-pr.py pr.json files.json checks.json
             then
               echo "PR #${number} failed the independent article quality gate."
+              if [ "${EVENT_NAME}" = "pull_request_target" ]; then
+                echo "Failing the PR-scoped check so a rejected article cannot look green."
+                exit 1
+              fi
               continue
             fi
 
