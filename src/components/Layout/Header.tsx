@@ -160,7 +160,7 @@ const Header: React.FC = () => {
             </div>
             <Link to="/blog" onClick={closeMenu}>בלוג</Link>
             <Link to="/faq" onClick={closeMenu}>שאלות נפוצות</Link>
-            <Link to={SITE_CONFIG.links.appointment} className={styles.cta} onClick={closeMenu}>קביעת פגישה</Link>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.cta} onClick={closeMenu}>לתיאום פגישה</Link>
           </nav>
         </div>
       </header>
