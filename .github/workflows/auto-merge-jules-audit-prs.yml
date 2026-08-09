@@ -106,7 +106,14 @@ jobs:
                   status, files_data = api("GET", f"/repos/{repo}/pulls/{number}/files?per_page=100")
                   files = [f["filename"] for f in files_data]
 
-                  title_match = re.search(r"^\[jules-(?:automerge|review)\] Kesher (content review|mobile review|SEO GEO review|industry review|site fixes|accessibility review):", pr.get("title") or "", re.I)
+                  title = pr.get("title") or ""
+                  if re.search(r"^\[jules-review\] Kesher industry review:", title, re.I):
+                      print(
+                          f"PR #{number} is an industry review and requires manual review; "
+                          "the audit controller will never auto-merge it."
+                      )
+                      continue
+                  title_match = re.search(r"^\[jules-(?:automerge|review)\] Kesher (content review|mobile review|SEO GEO review|site fixes|accessibility review):", title, re.I)
                   audit_kind = title_match.group(1).lower() if title_match else ""
                   body = pr.get("body") or ""
 

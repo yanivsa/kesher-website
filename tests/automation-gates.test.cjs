@@ -312,6 +312,9 @@ function testAutomergeDeployContracts() {
         'AUTONOMOUS RECOVERY REQUIREMENT',
         'COMPLETED with changeSet but no pullRequest',
         'AUTONOMOUS_CLEANUP_GRACE_SECONDS',
+        'REPEATED_WAITING_CONTINUATION',
+        'max_waiting_continuations',
+        'Use Jules built-in PR submission',
     ]) {
         assert(
             watchdog.includes(contract),
@@ -320,7 +323,7 @@ function testAutomergeDeployContracts() {
     }
     assert.strictEqual(
         watchdog.split('deadline = time.monotonic() + max_seconds').length - 1,
-        3,
+        4,
         'Each bounded replacement must receive a fresh full session budget'
     );
     execFileSync('python3', ['-c', `
@@ -367,6 +370,16 @@ assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https:/
         auditWorkflow.includes('exact route, HTTP 200, canonical, heading') &&
         auditWorkflow.includes('{"/beta", "/beta2"}'),
         'Audit auto-merge must independently reject dead/experimental mobile route evidence'
+    );
+    assert(
+        auditWorkflow.includes('is an industry review and requires manual review') &&
+        !auditWorkflow.includes('content review|mobile review|SEO GEO review|industry review|site fixes'),
+        'Industry benchmarking PRs must never enter the audit auto-merge eligibility regex'
+    );
+    assert(
+        articleWorkflow.includes('Failing the PR-scoped check so a rejected article cannot look green.') &&
+        articleWorkflow.includes('if [ "${EVENT_NAME}" = "pull_request_target" ]; then'),
+        'A rejected article must leave a failing PR-scoped quality check'
     );
     assert(
         auditWorkflow.includes('                  evidence_prefix = r"^\\s*(?:[-*]\\s*)?"'),

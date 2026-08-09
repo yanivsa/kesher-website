@@ -22,7 +22,16 @@ CONTINUATION = (
     "for confirmation, review, approval, or implementation choices. Refresh origin/main, "
     "choose the smallest safe repo-consistent path, and finish with either one focused "
     "validated non-draft PR or a factual clean no-op with no changeSet, branch, commit, "
-    "push, or PR. Remove temporary artifacts and report the exact terminal evidence."
+    "push, or PR. Use Jules built-in PR submission; a sandboxed git push is not a user "
+    "decision and must never become a question. Remove temporary artifacts and report "
+    "the exact terminal evidence."
+)
+REPEATED_WAITING_CONTINUATION = (
+    "This is a repeated forbidden wait. Do not ask whether to push, choose a title, "
+    "select a file, or approve a plan. Use the built-in submission path now for one "
+    "focused validated non-draft PR. If submission is unavailable or the change is no "
+    "longer current-main based and isolated, discard every edit/branch/changeSet and "
+    "finish as a factual clean no-op. Do not ask another question."
 )
 RECOVERY_SUFFIX = (
     "\n\nAUTONOMOUS RECOVERY REQUIREMENT: A previous session failed after emitting a "
@@ -109,10 +118,12 @@ def watch(
     max_seconds: int,
     poll_seconds: int,
     max_replacements: int,
+    max_waiting_continuations: int,
 ) -> int:
     deadline = time.monotonic() + max_seconds
     current = initial_session
-    continued: set[str] = set()
+    waiting_continuations: dict[str, int] = {}
+    actively_waiting: set[str] = set()
     replacements = 0
     last_state = ""
     invalid_completed_polls: dict[str, int] = {}
@@ -173,19 +184,41 @@ def watch(
             continue
 
         if state in WAITING_STATES:
-            if current not in continued:
+            if current not in actively_waiting:
+                count = waiting_continuations.get(current, 0)
+                if count >= max_waiting_continuations:
+                    if replacements >= max_replacements:
+                        print(
+                            f"Jules session repeated a forbidden wait after "
+                            f"{count} autonomous continuation(s): {current}",
+                            file=sys.stderr,
+                        )
+                        return 1
+                    current = create_replacement(payload, api_key)
+                    replacements += 1
+                    deadline = time.monotonic() + max_seconds
+                    last_state = ""
+                    continue
+                continuation = (
+                    CONTINUATION if count == 0 else REPEATED_WAITING_CONTINUATION
+                )
                 request_json(
                     "POST",
                     f"/{current}:sendMessage",
                     api_key,
-                    {"prompt": CONTINUATION},
+                    {"prompt": continuation},
                 )
-                continued.add(current)
+                waiting_continuations[current] = count + 1
+                actively_waiting.add(current)
                 print(
-                    f"Continued waiting Jules session without user input: {current}",
+                    f"Continued waiting Jules session without user input "
+                    f"({count + 1}/{max_waiting_continuations}): {current}",
                     flush=True,
                 )
-        elif state in FAILURE_STATES:
+        else:
+            actively_waiting.discard(current)
+
+        if state in FAILURE_STATES:
             if replacements >= max_replacements:
                 print(
                     f"Jules session reached {state} after {replacements} replacement(s): "
@@ -218,6 +251,7 @@ def main() -> int:
     parser.add_argument("--max-seconds", type=int, default=2400)
     parser.add_argument("--poll-seconds", type=int, default=10)
     parser.add_argument("--max-replacements", type=int, default=1)
+    parser.add_argument("--max-waiting-continuations", type=int, default=2)
     args = parser.parse_args()
 
     api_key = os.environ.get("JULES_API_KEY", "")
@@ -233,6 +267,7 @@ def main() -> int:
         args.max_seconds,
         args.poll_seconds,
         args.max_replacements,
+        args.max_waiting_continuations,
     )
 
 
