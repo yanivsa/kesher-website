@@ -21,7 +21,7 @@ const Hero: React.FC = () => {
           <div className={styles.actions}>
             <Link to={SITE_CONFIG.links.appointment} className={styles.primaryBtn}>
               <FiCalendar aria-hidden="true" />
-              קביעת פגישת ייעוץ
+              לתיאום פגישת ייעוץ
             </Link>
             <Link to="/#services" className={styles.secondaryBtn}>
               מציאת הליווי המתאים

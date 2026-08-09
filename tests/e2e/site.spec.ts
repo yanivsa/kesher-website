@@ -132,7 +132,7 @@ test('mobile menu has an obvious close action and supports Escape', async ({ pag
   await page.getByRole('button', { name: 'פתיחת תפריט' }).click();
   const closeButton = page.getByRole('button', { name: 'סגירת תפריט', exact: true });
   const appointmentLink = page.getByRole('navigation', { name: 'ניווט ראשי' })
-    .getByRole('link', { name: 'קביעת פגישה' });
+    .getByRole('link', { name: 'לתיאום פגישה' });
   await appointmentLink.focus();
   await page.keyboard.press('Tab');
   await expect(closeButton).toBeFocused();
