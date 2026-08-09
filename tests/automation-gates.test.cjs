@@ -315,6 +315,7 @@ function testAutomergeDeployContracts() {
         'REPEATED_WAITING_CONTINUATION',
         'max_waiting_continuations',
         'Use Jules built-in PR submission',
+        '"PAUSED"',
     ]) {
         assert(
             watchdog.includes(contract),
