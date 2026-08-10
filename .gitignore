@@ -26,6 +26,13 @@ test-results
 *.sw?
 
 # Generated files
+notebooklm-storage-state.json
+scripts/client_secrets.json
+scripts/token*.pickle
+scripts/*oauth*.json
+notebooklm-output/cloud/
+.kesher-video-state/
+.cache/huggingface/
 src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts

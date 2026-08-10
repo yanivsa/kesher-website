@@ -1,1083 +1,974 @@
 #!/usr/bin/env python3
-import os
-import sys
-import re
-import json
-import time
-import shutil
-import hashlib
+"""Fail-closed cloud pipeline for Kesher NotebookLM Video Overviews.
+
+This file is the only supported entrypoint for generation, review and upload.
+It deliberately creates one Hebrew 16:9 Explainer Video Overview at a time.
+Shorts, alternate generators, alternate uploaders and default metadata are not
+part of this pipeline.
+"""
+
+from __future__ import annotations
+
 import argparse
+import hashlib
+import html
+import importlib.metadata
+import json
+import os
+import re
 import subprocess
-import urllib.request
-import urllib.parse
-import contextlib
-import select
-import socket
-import fcntl
-from datetime import datetime
+import sys
+import time
+from datetime import date, datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
+from typing import Any
+from zoneinfo import ZoneInfo
+
 import requests
 
-sys.path.append("scripts")
-from notebooklm_client import NotebookLMClient
 
-# Configuration constants
-NOTEBOOK_ID = "e101e7d7-5305-45b3-a611-21a5475ceb63"
-NOTEBOOK_URL = f"https://notebooklm.google.com/notebook/{NOTEBOOK_ID}?hl=en"
+PROJECT_DIR = Path(__file__).resolve().parents[1]
+POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
+STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
+STATE_FILE = STATE_DIR / "state.json"
+NOTEBOOK_ID = os.environ.get("KESHER_NOTEBOOK_ID", "e101e7d7-5305-45b3-a611-21a5475ceb63")
+NOTEBOOKLM_BIN = os.environ.get("NOTEBOOKLM_BIN", "notebooklm")
+NOTEBOOKLM_REQUIRED_VERSION = "0.8.0"
 YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
-COMPOSIO_CONNECTED_ACCOUNT = "youtube_ransom-winish"
 SITE_URL = "https://kesher.saharoni.com"
-MAX_GENERATION_SOURCE_ATTEMPTS = 3
-NOTEBOOKLM_SOURCE_ADD_TIMEOUT_SECONDS = 180
+STATE_VERSION = 1
+POLL_INTERVAL_SECONDS = 30
+ALLOWED_REVIEW = {"approved", "rejected"}
 
-# Directories
-PROJECT_DIR = Path("/Users/ninja/Documents/Kesher")
-OUTPUT_DIR = PROJECT_DIR / "notebooklm-output"
-REMOTION_DIR = PROJECT_DIR / "remotion-kesher"
-REMOTION_OUTPUT_DIR = PROJECT_DIR / "remotion-output"
-QUEUE_FILE = OUTPUT_DIR / "video_queue.json"
-RUN_LOCK_FILE = OUTPUT_DIR / "kesher_daily_pipeline.lock"
 
-# Content Prompt
-CONTENT_PROMPT_TEMPLATE = (
-    "אתה במאי, תסריטאי ועורך וידאו ויראלי לערוץ 'קשר' לייעוץ זוגי ומשפחתי. "
-    "צור Video Overview מקורי לחלוטין שנכתב, מוקלט ונערך בעברית מלכתחילה. "
-    "כל הדיבור, הטקסט המוטמע, הכותרת, התיאור והתגיות חייבים להיות בעברית; "
-    "החריגים היחידים הם https://kesher.saharoni.com והמונח Shorts. "
-    "אל תתרגם תסריט אנגלי ואל תחזיר כותרת או תיאור באנגלית. "
-    "איסור מוחלט: אל תציג בפריימים מילים באנגלית, אותיות לטיניות, טקסט דמה או ג'יבריש. "
-    "אם אינך בטוח שתוכל לכתוב עברית תקינה בתוך תמונה, אל תציג טקסט בתמונה בכלל; העדף סיפור חזותי ללא מילים. "
-    "צור סרטון faceless קולנועי, חם, רגשי, ברור, מקצועי ומכבד. "
-    "אסור מראה של מצגת: אין שקופיות, כרטיסיות מידע, תרשימי חצים, רשימות, טבלאות, מסגרות טקסט או מסכים סטטיים עם כותרת גדולה. "
-    "בחר רעיון אחד בלבד שהצופה מזהה מיד מחיי הבית. השתמש בשמות עבריים חדשים ואל תעתיק שמות, דמויות, מבנה או ניסוחים מהמקור. "
-    "מבנה חובה: בתוך 0-3 שניות משפט מסקרן שמציג מחיר רגשי או סתירה; מיד אחריו סיטואציה ביתית קונקרטית; "
-    "לאחר מכן הסבר מפתיע אחד; נקודת מפנה עם פעולה אחת שאפשר לבצע היום; וסיום קצר שסוגר את ההבטחה מהפתיחה. "
-    "אל תפתח בהקדמה, לוגו, ברכה, הגדרה כללית או 'בסרטון הזה'. אל תחזור על אותו רעיון בניסוחים שונים. "
-    "הקריינות תהיה טבעית, במשפטים קצרים ובקצב אנושי. הימנע מאבחון, הבטחות טיפוליות, הפחדה או טון מטיף. "
-    "תכנון חזותי חובה: ספר סיפור באמצעות סצנות ולא באמצעות הסברים כתובים. התאם כל סצנה למשפט הנאמר; "
-    "החלף סוג פריים, זווית, מרחק או תנועה כל 3-6 שניות; "
-    "שלב שלושה pattern interrupts עדינים בנקודות מפתח; השתמש ב-B-roll ביתי אמין, מחוות ידיים, מרחק בין בני זוג, דלת, שולחן או טלפון רק כשהם משרתים את הסיפור. "
-    "אין להציג פנים מדברות למצלמה ואין להשתמש באותו שוט שוב ושוב. "
-    "טקסט מוטמע הוא מוצא אחרון בלבד, לא כתוביות: עברית תקינה בלבד, עד 4 מילים בשורה, עד 2 שורות, ניגודיות גבוהה ובאזור הבטוח. "
-    "לפני סיום בדוק בעצמך: אין אף מילה באנגלית, אין ג'יבריש, אין שקופיות, אין טקסט חתוך, והסיום משלים את המשפט והסיפור בלי קטיעה. "
-    "בסוף התשובה החזר בדיוק: "
-    "YT_TITLE: כותרת עברית מסקרנת וספציפית עד 70 תווים, בלי clickbait מטעה; "
-    "YT_DESCRIPTION: 2-4 משפטים בעברית שמסבירים את הערך בלי לגלות הכול; "
-    "YT_TAGS: 6-12 תגיות עבריות מופרדות בפסיקים; "
-    "REMOTION_THEME: אחת מהאפשרויות mind-reading, listening, boundaries, connection; "
-    "REMOTION_BEATS: שלושה שלבים קצרים בעברית, 2-5 מילים כל אחד, מופרדים בסימן |. "
-)
+class PipelineError(RuntimeError):
+    pass
 
-DEFAULT_TAGS = [
-    "ייעוץ זוגי", "הדרכת הורים", "הנחיית הורים", "הורות", "זוגיות",
-    "תקשורת זוגית", "גבולות", "ויסות רגשי", "משפחה", "אשדוד", "שירה סהרוני",
-]
 
-def search_youtube_candidates(query, max_results=5):
-    print(f"Searching YouTube for candidates: '{query}'...")
-    url = f"https://www.youtube.com/results?search_query={urllib.parse.quote(query)}"
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+class _TextExtractor(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.parts: list[str] = []
+
+    def handle_data(self, data: str) -> None:
+        value = " ".join(data.split())
+        if value:
+            self.parts.append(value)
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def israel_now() -> datetime:
+    return datetime.now(ZoneInfo("Asia/Jerusalem"))
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def sha256_text(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def atomic_json_write(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    os.replace(temporary, path)
+
+
+def load_state() -> dict[str, Any]:
+    if not STATE_FILE.exists():
+        return {"version": STATE_VERSION, "items": [], "updated_at": utc_now()}
+    try:
+        state = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise PipelineError(f"State file is unreadable: {type(exc).__name__}") from exc
+    if state.get("version") != STATE_VERSION or not isinstance(state.get("items"), list):
+        raise PipelineError("State schema is unsupported")
+    return state
+
+
+def save_state(state: dict[str, Any]) -> None:
+    state["updated_at"] = utc_now()
+    atomic_json_write(STATE_FILE, state)
+
+
+def clean_article_html(value: str) -> str:
+    parser = _TextExtractor()
+    parser.feed(value)
+    return html.unescape("\n\n".join(parser.parts))
+
+
+def require_hebrew(value: str, field: str, allow_url: bool = False) -> None:
+    checked = value
+    if allow_url:
+        checked = re.sub(
+            rf"{re.escape(SITE_URL)}(?:/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*)?",
+            "",
+            checked,
+        )
+    if re.search(r"[A-Za-z]", checked):
+        raise PipelineError(f"{field} contains unsupported Latin text")
+    if not re.search(r"[\u0590-\u05ff]", checked):
+        raise PipelineError(f"{field} contains no Hebrew")
+
+
+def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
+    required = ("id", "slug", "title", "date", "category", "excerpt", "content")
+    missing = [field for field in required if not str(post.get(field, "")).strip()]
+    if missing:
+        raise PipelineError(f"Article is missing authoritative fields: {', '.join(missing)}")
+    title = str(post["title"]).strip()
+    excerpt = clean_article_html(str(post["excerpt"]))
+    article_text = clean_article_html(str(post["content"]))
+    category = str(post["category"]).strip()
+    subcategory = str(post.get("subcategory", "")).strip()
+    canonical_url = f"{SITE_URL}/blog/{post['slug']}"
+    for field, value in (("title", title), ("excerpt", excerpt), ("article", article_text), ("category", category)):
+        require_hebrew(value, field)
+    if subcategory:
+        require_hebrew(subcategory, "subcategory")
+    body = "\n\n".join(
+        part
+        for part in (
+            title,
+            excerpt,
+            article_text,
+            f"מקור: {canonical_url}",
+        )
+        if part
+    )
+    content_hash = sha256_text(body)
+    tags = [category]
+    if subcategory and subcategory not in tags:
+        tags.append(subcategory)
+    for tag in tags:
+        require_hebrew(tag, "tag")
+    description = f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"
+    require_hebrew(description, "description", allow_url=True)
+    return {
+        "id": str(post["id"]),
+        "slug": str(post["slug"]),
+        "title": title,
+        "date": str(post["date"]),
+        "category": category,
+        "subcategory": subcategory,
+        "excerpt": excerpt,
+        "canonical_url": canonical_url,
+        "body": body,
+        "content_sha256": content_hash,
+        "youtube_metadata": {
+            "title": title[:100],
+            "description": description,
+            "tags": tags,
+        },
     }
-    req = urllib.request.Request(url, headers=headers)
-    try:
-        with urllib.request.urlopen(req, timeout=30) as response:
-            html = response.read().decode('utf-8')
-    except Exception as e:
-        print(f"Error fetching YouTube: {e}")
-        return []
-
-    # Regex fallback extraction of video IDs
-    video_ids = re.findall(r'"videoId":"([a-zA-Z0-9_-]{11})"', html)
-    seen = set()
-    unique_ids = [x for x in video_ids if not (x in seen or seen.add(x))]
-    
-    candidates = []
-    for vid in unique_ids[:max_results]:
-        candidates.append({
-            "url": f"https://www.youtube.com/watch?v={vid}",
-            "topic": f"YouTube video {vid}"
-        })
-    return candidates
-
-def add_source_to_notebooklm(client, candidate_url):
-    print(f"Adding source to NotebookLM: {candidate_url}")
-    try:
-        result = client.call_tool(
-            "source_add",
-            {
-                "source_type": "youtube",
-                "url": candidate_url,
-                "notebook_url": NOTEBOOK_URL,
-            },
-            timeout=180
-        )
-        raw = json.dumps(result, ensure_ascii=False).lower()
-        if "success" in raw or "source" in raw or "title" in raw:
-            return True, result
-        return False, result
-    except Exception as e:
-        return False, str(e)
 
 
-def notebooklm_artifact_count():
-    cmd = [
-        "node",
-        str(PROJECT_DIR / "scripts/notebooklm_direct_video_download.mjs"),
-        "/tmp/kesher-notebooklm-count-only.mp4",
-        "--count-only",
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
-    if result.returncode != 0:
-        raise RuntimeError(f"Unable to count NotebookLM artifacts: {result.stderr}")
-    for line in reversed(result.stdout.splitlines()):
+def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
+    if not POSTS_FILE.exists():
+        raise PipelineError(f"Article source does not exist: {POSTS_FILE}")
+    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+    if not isinstance(posts, list):
+        raise PipelineError("posts.json must contain a list")
+    used_hashes = {item.get("source", {}).get("content_sha256") for item in state["items"]}
+    used_slugs = {item.get("source", {}).get("slug") for item in state["items"]}
+    today = israel_now().date()
+    eligible: list[tuple[date, int, dict[str, Any]]] = []
+    for index, post in enumerate(posts):
         try:
-            payload = json.loads(line)
-        except json.JSONDecodeError:
+            metadata = source_metadata(post)
+            published = date.fromisoformat(metadata["date"])
+        except (PipelineError, ValueError, TypeError):
             continue
-        if payload.get("success") and isinstance(payload.get("artifactCount"), int):
-            return payload["artifactCount"]
-    raise RuntimeError("NotebookLM artifact count was missing from browser output")
+        if published <= today and metadata["content_sha256"] not in used_hashes and metadata["slug"] not in used_slugs:
+            eligible.append((published, -index, metadata))
+    if not eligible:
+        raise PipelineError("No unused published Hebrew article is available")
+    eligible.sort(reverse=True, key=lambda row: (row[0], row[1]))
+    return eligible[0][2]
 
 
-def generation_text(result):
-    if isinstance(result, dict):
-        data = result.get("structuredContent", {}).get("data", {})
-        if isinstance(data.get("textContent"), str):
-            return data["textContent"]
-    for payload in decode_mcp_payloads(result):
-        if isinstance(payload, dict):
-            text_content = payload.get("textContent")
-            if isinstance(text_content, str):
-                return text_content
-    return ""
-
-
-def metadata_from_generation(result, format_type):
-    text = generation_text(result)
-    title_match = re.search(r"YT_TITLE:\s*(.+)", text)
-    description_match = re.search(
-        r"YT_DESCRIPTION:\s*(.*?)(?=\n\s*YT_TAGS:|$)", text, re.DOTALL
-    )
-    tags_match = re.search(r"YT_TAGS:\s*(.+)", text)
-    theme_match = re.search(r"REMOTION_THEME:\s*(mind-reading|listening|boundaries|connection)", text, re.I)
-    beats_match = re.search(r"REMOTION_BEATS:\s*(.+)", text)
-
-    if not title_match:
-        title_match = re.search(r"כותרות[^\n]*\n([^\n]+)", text)
-    if not description_match:
-        description_match = re.search(
-            r"תיאור הסרטון[^:]*:\s*(.*?)(?=\n\s*תגיות|\n\s*רעיונות|$)",
-            text,
-            re.DOTALL,
-        )
-    if not tags_match:
-        tags_match = re.search(r"תגיות[^:]*:\s*([^\n]+)", text)
-
-    title = title_match.group(1).strip() if title_match else "כלי קטן שמשנה את השיחה בבית"
-    title = re.sub(r"\s*\(מומלצת[^)]*\)\s*$", "", title).strip(' "')[:100]
-    if format_type == "short" and "#shorts" not in title.lower():
-        title = f"{title[:90]} #Shorts"
-
-    description_body = (
-        description_match.group(1).strip()
-        if description_match
-        else "סיפור קצר וכלי מעשי לתקשורת טובה יותר בבית ובזוגיות."
-    )
-    required_footer = (
-        "למידע נוסף ותיאום פגישה:\n"
-        f"{SITE_URL}\n\n"
-        "קשר - ייעוץ זוגי ומשפחתי"
-    )
-    if SITE_URL not in description_body:
-        description_body = f"{description_body}\n\n{required_footer}"
-    if format_type == "short" and "#shorts" not in description_body.lower():
-        description_body = f"{description_body}\n\n#Shorts"
-
-    tags = DEFAULT_TAGS.copy()
-    if tags_match:
-        parsed_tags = [tag.strip().lstrip("#") for tag in tags_match.group(1).split(",")]
-        tags = [tag for tag in parsed_tags if tag][:20] or tags
-    if format_type == "short" and "shorts" not in [tag.lower() for tag in tags]:
-        tags.append("shorts")
-
-    metadata = {"title": title, "description": description_body, "tags": tags}
-    if theme_match:
-        metadata["contentTheme"] = theme_match.group(1).lower()
-    if beats_match:
-        beats = [part.strip() for part in beats_match.group(1).split("|") if part.strip()]
-        if len(beats) == 3 and all(re.search(r"[\u0590-\u05ff]", beat) for beat in beats):
-            metadata["beatLabels"] = beats
-    ok, reason = validate_hebrew_metadata(metadata)
-    if not ok:
-        raise RuntimeError(f"NotebookLM returned invalid non-Hebrew metadata: {reason}")
-    return metadata
-
-
-def validate_hebrew_metadata(metadata):
-    for field in ("title", "description"):
-        value = metadata.get(field, "")
-        letters = re.findall(r"[A-Za-z\u0590-\u05ff]", value.replace(SITE_URL, ""))
-        hebrew = re.findall(r"[\u0590-\u05ff]", value)
-        if not hebrew:
-            return False, f"{field} contains no Hebrew"
-        if letters and len(hebrew) / len(letters) < 0.72:
-            return False, f"{field} is not predominantly Hebrew"
-    tags_text = " ".join(metadata.get("tags") or []).replace("shorts", "")
-    if not re.search(r"[\u0590-\u05ff]", tags_text):
-        return False, "tags contain no Hebrew"
-    return True, ""
-
-
-def remotion_content_plan(metadata):
-    if metadata.get("contentTheme") and len(metadata.get("beatLabels") or []) == 3:
-        return {
-            "contentTheme": metadata["contentTheme"],
-            "beatLabels": metadata["beatLabels"],
-        }
-    text = f"{metadata.get('title', '')} {metadata.get('description', '')}"
-    plans = [
-        (("מחשב", "מנחש", "ציפ"), "mind-reading", ["מה ציפיתי שיבינו?", "לבקש במקום לנחש", "לנסח צורך ברור"]),
-        (("גבול", "מאבק", "ילד"), "boundaries", ["לזהות את הגבול", "להישאר רגועים", "לפעול באותו צד"]),
-        (("הקשב", "עצה", "ביקורת"), "listening", ["לעצור לפני עצה", "להקשיב לרגש", "לשאול מה נחוץ"]),
-    ]
-    for keywords, motif, beats in plans:
-        if any(keyword in text for keyword in keywords):
-            return {"contentTheme": motif, "beatLabels": beats}
-    return {"contentTheme": "connection", "beatLabels": ["לזהות את הרגע", "לומר את הצורך", "לבנות חיבור"]}
-
-
-def generate_and_download_notebooklm(client, format_type, custom_prompt, output_path):
-    print(f"Generating {format_type} video in NotebookLM...")
+def notebooklm_env() -> dict[str, str]:
+    auth_json = os.environ.get("NOTEBOOKLM_AUTH_JSON", "").strip()
+    if not auth_json:
+        raise PipelineError("NOTEBOOKLM_AUTH_JSON is missing")
     try:
-        baseline_count = notebooklm_artifact_count()
-        print(f"NotebookLM artifact baseline: {baseline_count}")
-        gen_result = client.call_tool(
-            "content_generate",
-            {
-                "content_type": "video",
-                "video_style": "cinematic",
-                "custom_instructions": custom_prompt,
-                "language": "Hebrew",
-                "notebook_url": NOTEBOOK_URL,
-            },
-            timeout=900,
-        )
-        print(f"Generation started/ready: {gen_result}")
+        parsed = json.loads(auth_json)
+    except json.JSONDecodeError as exc:
+        raise PipelineError("NOTEBOOKLM_AUTH_JSON is invalid JSON") from exc
+    if not isinstance(parsed, dict) or not isinstance(parsed.get("cookies"), list) or not parsed["cookies"]:
+        raise PipelineError("NOTEBOOKLM_AUTH_JSON is not a nonempty storage-state object")
+    env = os.environ.copy()
+    env["NOTEBOOKLM_AUTH_JSON"] = auth_json
+    env["NOTEBOOKLM_NOTEBOOK"] = NOTEBOOK_ID
+    return env
 
-        print("Waiting for a new completed Studio artifact before downloading...")
-        output_path.unlink(missing_ok=True)
-        cmd = [
-            "node",
-            str(PROJECT_DIR / "scripts/notebooklm_direct_video_download.mjs"),
-            str(output_path),
-            f"--min-artifact-count={baseline_count + 1}",
-            "--wait-seconds=3600",
-        ]
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=4200)
-        print("Playwright script output:", res.stdout)
-        if res.returncode == 0 and output_path.exists() and output_path.stat().st_size > 0:
-            print("New NotebookLM artifact downloaded successfully.")
-            return True, {
-                "method": "playwright-new-artifact",
-                "baseline_count": baseline_count,
-                "new_count": baseline_count + 1,
-                "youtube_metadata": metadata_from_generation(gen_result, format_type),
-            }
-            
-        return False, f"Download empty. Playwright err: {res.stderr}"
-    except Exception as e:
-        return False, str(e)
 
-def run_remotion_render(input_mp4, output_mp4, metadata, format_type):
-    print(f"Running Remotion Render: {input_mp4} -> {output_mp4}")
-    # Copy input to remotion public folder
-    public_input = REMOTION_DIR / "public" / "kesher-input.mp4"
-    shutil.copy2(input_mp4, public_input)
-    
-    # Run Remotion CLI render
-    source = media_metadata(input_mp4)
-    if not source:
-        return False, "Unable to read source video metadata."
-    if format_type == "short" and not 35 <= source["duration"] <= 55:
-        return False, f"Short source is {source['duration']:.2f}s; refusing to cut it arbitrarily to 35-55s. Regeneration required."
-    if format_type == "short" and source["height"] <= source["width"]:
-        return False, f"Short source is {source['width']}x{source['height']}; it must be generated vertically in 9:16. Regeneration required."
-    if format_type == "normal" and not 90 <= source["duration"] <= 180:
-        return False, f"Normal source is outside 90-180s: {source['duration']:.2f}s."
-    fps = 24 if format_type == "short" else 30
-    props = json.dumps({
-        "videoSrc": "kesher-input.mp4",
-        "title": "",  # No subtitles/text overlays as requested
-        "hook": "",
-        "sourceDurationInFrames": round(source["duration"] * fps),
-        **remotion_content_plan(metadata),
-    })
-    
-    composition_id = "KesherShort" if format_type == "short" else "KesherVideo"
-    cmd = [
-        "npx", "remotion", "render", "src/index.ts", composition_id,
-        str(output_mp4),
-        "--props", props,
-        "--concurrency=4",
-    ]
-    
+def run_notebooklm(arguments: list[str], timeout: int = 180) -> dict[str, Any]:
+    command = [NOTEBOOKLM_BIN, *arguments, "--json"]
     try:
-        res = subprocess.run(cmd, cwd=str(REMOTION_DIR), capture_output=True, text=True, timeout=3600)
-        if res.returncode == 0 and output_mp4.exists() and output_mp4.stat().st_size > 0:
-            print("Remotion rendering completed successfully.")
-            return True, ""
-        return False, f"Remotion failed: {res.stderr}\nStdout: {res.stdout}"
-    except Exception as e:
-        return False, str(e)
-
-def media_metadata(video_path):
-    try:
-        import imageio_ffmpeg
-        ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
         result = subprocess.run(
-            [ffmpeg, "-hide_banner", "-i", str(video_path)],
+            command,
+            env=notebooklm_env(),
             capture_output=True,
             text=True,
-            timeout=60,
+            timeout=timeout,
+            check=False,
         )
-        output = result.stderr
-        duration_match = re.search(r"Duration:\s*(\d+):(\d+):(\d+(?:\.\d+)?)", output)
-        size_match = re.search(r"\b(\d{3,5})x(\d{3,5})\b", output)
-        if not duration_match or not size_match:
-            return None
-        hours, minutes, seconds = duration_match.groups()
-        return {
-            "duration": int(hours) * 3600 + int(minutes) * 60 + float(seconds),
-            "width": int(size_match.group(1)),
-            "height": int(size_match.group(2)),
-        }
-    except Exception:
-        return None
-
-def verify_rendered_video(video_path, format_type):
-    metadata = media_metadata(video_path)
-    if not metadata:
-        return False, "Unable to read rendered video metadata."
-    if format_type == "short":
-        if metadata["height"] <= metadata["width"]:
-            return False, f"Short must be vertical, got {metadata['width']}x{metadata['height']}."
-        if not 35 <= metadata["duration"] <= 55:
-            return False, f"Short must be 35-55 seconds, got {metadata['duration']:.2f}."
-    elif not 90 <= metadata["duration"] <= 180:
-        return False, f"Normal video must be 90-180 seconds, got {metadata['duration']:.2f}."
-    return True, metadata
-
-
-def create_visual_contact_sheet(video_path, format_type):
-    """Create four evenly spaced frames for the automation's mandatory visual review."""
-    metadata = media_metadata(video_path)
-    if not metadata or metadata["duration"] <= 0:
-        return None, "Unable to read video for visual review."
+    except FileNotFoundError as exc:
+        raise PipelineError("notebooklm CLI is not installed") from exc
+    except subprocess.TimeoutExpired as exc:
+        raise PipelineError(f"NotebookLM command timed out: {' '.join(arguments[:2])}") from exc
     try:
-        import imageio_ffmpeg
-        ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
-        frame_rate = 4 / metadata["duration"]
-        scale = "360:640" if format_type == "short" else "640:360"
-        sheet_path = video_path.with_name(f"{video_path.stem}-visual-review.png")
-        command = [
-            ffmpeg, "-y", "-i", str(video_path),
-            "-vf", f"fps={frame_rate:.8f},scale={scale},tile=2x2",
-            "-frames:v", "1", "-update", "1", str(sheet_path),
-        ]
-        result = subprocess.run(command, capture_output=True, text=True, timeout=180)
-        if result.returncode != 0 or not sheet_path.exists() or sheet_path.stat().st_size == 0:
-            return None, f"Contact-sheet creation failed: {result.stderr[-500:]}"
-        return sheet_path, ""
-    except Exception as exc:
-        return None, str(exc)
+        payload = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        payload = {}
+    if result.returncode != 0:
+        error_type = nested_identifier(payload, ("error_type", "type")) or "NotebookLMCommandError"
+        message = nested_identifier(payload, ("error", "message")) or "command failed"
+        message = re.sub(r"https://accounts\.google\.com/\S+", "Google sign-in redirect", str(message))
+        raise PipelineError(f"{error_type}: {message[:300]}")
+    if not isinstance(payload, dict):
+        raise PipelineError("NotebookLM returned non-object JSON")
+    return payload
 
 
-def iter_nested_values(value):
-    if isinstance(value, dict):
-        for child in value.values():
-            yield from iter_nested_values(child)
-    elif isinstance(value, list):
-        for child in value:
-            yield from iter_nested_values(child)
-    else:
-        yield value
-
-
-def decode_mcp_payloads(result):
-    payloads = []
-    pending = [result]
-    decoded_strings = set()
-    while pending:
-        payload = pending.pop(0)
-        payloads.append(payload)
-        for value in iter_nested_values(payload):
-            if not isinstance(value, str):
-                continue
-            stripped = value.strip()
-            if not stripped or stripped[0] not in "[{" or stripped in decoded_strings:
-                continue
-            try:
-                decoded = json.loads(stripped)
-            except json.JSONDecodeError:
-                continue
-            decoded_strings.add(stripped)
-            pending.append(decoded)
-    return payloads
-
-
-def find_video_record(value, video_id):
-    if isinstance(value, dict):
-        if value.get("id") == video_id and ("snippet" in value or "status" in value):
-            return value
-        for child in value.values():
-            found = find_video_record(child, video_id)
+def nested_identifier(payload: Any, keys: tuple[str, ...]) -> str | None:
+    if isinstance(payload, dict):
+        for key in keys:
+            value = payload.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+        for value in payload.values():
+            found = nested_identifier(value, keys)
             if found:
                 return found
-    elif isinstance(value, list):
-        for child in value:
-            found = find_video_record(child, video_id)
+    elif isinstance(payload, list):
+        for value in payload:
+            found = nested_identifier(value, keys)
             if found:
                 return found
     return None
 
 
-def get_youtube_video_record(mcp_client, video_id):
-    result = mcp_client.call_tool(
-        "COMPOSIO_MULTI_EXECUTE_TOOL",
-        {
-            "sync_response_to_workbench": False,
-            "current_step": "VERIFYING_PUBLIC_VIDEO",
-            "memory": {},
-            "tools": [
-                {
-                    "tool_slug": "YOUTUBE_GET_VIDEO_DETAILS_BATCH",
-                    "connected_account_id": COMPOSIO_CONNECTED_ACCOUNT,
-                    "arguments": {
-                        "id": [video_id],
-                        "parts": ["snippet", "status"],
-                    },
-                }
-            ],
-        },
-        timeout=120,
+def auth_preflight() -> dict[str, Any]:
+    try:
+        version = importlib.metadata.version("notebooklm-py")
+    except importlib.metadata.PackageNotFoundError as exc:
+        raise PipelineError("notebooklm-py is not installed") from exc
+    if version != NOTEBOOKLM_REQUIRED_VERSION:
+        raise PipelineError(f"notebooklm-py must be {NOTEBOOKLM_REQUIRED_VERSION}, got {version}")
+    payload = run_notebooklm(["auth", "check", "--test"], timeout=120)
+    checks = payload.get("checks") or {}
+    if payload.get("status") != "ok" or checks.get("token_fetch") is not True:
+        raise PipelineError("NotebookLM authentication network test failed")
+    return {"package_version": version, "auth_status": "ok", "token_fetch": True}
+
+
+def generation_prompt(source: dict[str, Any]) -> str:
+    prompt = (
+        "צור סקירת וידאו מסוג הסבר, בעברית טבעית בלבד, המבוססת אך ורק על המקור שנבחר. "
+        "אורך היעד הוא בין תשעים למאה ושמונים שניות, ביחס אופקי טבעי של שש עשרה לתשע. "
+        "הצג רעיון מרכזי אחד, דוגמה ביתית מוחשית ופעולה אחת שאפשר לנסות. "
+        "אל תערבב בין הורות לזוגיות אם המקור עוסק רק באחד מהם. "
+        "אין להוסיף טענות, תארים מקצועיים, אבחנות או הבטחות שאינם כתובים במקור. "
+        "כל קריינות או טקסט חזותי יהיו בעברית תקינה. אין להשתמש באנגלית, בג׳יבריש, "
+        "בשקופיות, בכרטיסיות מידע, בטבלאות או בתרשימים. העדף סיפור חזותי רציף וברור. "
+        "אין ליצור כותרת ליוטיוב, תיאור ליוטיוב או תגיות בתוך הסרטון. "
+        f"הנושא המדויק הוא: {source['title']}"
     )
-    for payload in decode_mcp_payloads(result):
-        record = find_video_record(payload, video_id)
-        if record:
-            return record
-    return None
+    require_hebrew(prompt, "generation prompt")
+    return prompt
 
 
-def verify_public_youtube_video(mcp_client, video_id):
-    record = get_youtube_video_record(mcp_client, video_id)
-    if not record:
-        return False, "video is missing, private, or deleted"
-
-    snippet = record.get("snippet") or {}
-    status = record.get("status") or {}
-    channel_id = snippet.get("channelId")
-    privacy = status.get("privacyStatus")
-    description = snippet.get("description") or ""
-    title = snippet.get("title") or ""
-
-    if channel_id != YOUTUBE_CHANNEL_ID:
-        return False, f"wrong channel: {channel_id!r}"
-    if privacy != "public":
-        return False, f"privacy status is {privacy!r}, not 'public'"
-    if SITE_URL not in description:
-        return False, "Kesher site URL is missing from the description"
-    if not re.search(r"[\u0590-\u05ff]", title):
-        return False, "YouTube title is not in Hebrew"
-    valid_metadata, reason = validate_hebrew_metadata({
-        "title": title,
-        "description": description,
-        "tags": ["עברית"],
-    })
-    if not valid_metadata:
-        return False, f"YouTube metadata language check failed: {reason}"
-
-    return True, {
-        "video_id": video_id,
-        "channel_id": channel_id,
-        "privacy_status": privacy,
-        "upload_status": status.get("uploadStatus"),
-        "title": title,
+def new_item(source: dict[str, Any]) -> dict[str, Any]:
+    stamp = israel_now().strftime("%Y%m%d-%H%M%S")
+    return {
+        "id": f"video-{stamp}-{source['content_sha256'][:10]}",
+        "type": "video_overview",
+        "status": "source_selected",
+        "source": {key: value for key, value in source.items() if key not in {"body", "youtube_metadata"}},
+        "youtube_metadata": source["youtube_metadata"],
+        "notebook_id": NOTEBOOK_ID,
+        "source_id": None,
+        "task_id": None,
+        "artifact_id": None,
+        "raw_mp4": None,
+        "final_mp4": None,
+        "visual_review_path": None,
+        "manifest_path": None,
+        "technical_verified": False,
+        "visual_review_status": "pending",
+        "semantic_review_status": "pending",
+        "metadata_review_status": "pending",
+        "review_notes": {
+            "technical": "",
+            "visual": "ממתין לבדיקת ארבעת הפריימים בפועל",
+            "semantic": "ממתין להשוואת הווידאו והמקור למטא־דאטה",
+            "metadata": "ממתין לאימות עברית ותמיכה מלאה במקור",
+        },
+        "uploaded": False,
+        "created_at": utc_now(),
+        "updated_at": utc_now(),
     }
 
 
-def extract_uploaded_video_candidates(result):
-    candidates = []
-    for payload in decode_mcp_payloads(result):
-        texts = [value for value in iter_nested_values(payload) if isinstance(value, str)]
-        for text in texts:
-            if "YouTube Upload Success:" not in text:
-                continue
-            success_text = text.split("YouTube Upload Success:", 1)[1]
-            for candidate in re.findall(r'"id"\s*:\s*"([a-zA-Z0-9_-]{11})"', success_text):
-                if candidate not in candidates:
-                    candidates.append(candidate)
-    return candidates
+def active_item(state: dict[str, Any]) -> dict[str, Any] | None:
+    active_statuses = {"source_selected", "source_added", "generating", "downloaded", "pending_review", "approved", "uploading"}
+    matches = [item for item in state["items"] if item.get("status") in active_statuses and not item.get("uploaded")]
+    if len(matches) > 1:
+        raise PipelineError("More than one active video exists; refusing duplicate work")
+    return matches[0] if matches else None
 
 
-def find_free_port():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.bind(("127.0.0.1", 0))
-        return sock.getsockname()[1]
+def article_body_for_item(item: dict[str, Any]) -> str:
+    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+    for post in posts:
+        if post.get("slug") == item["source"]["slug"]:
+            source = source_metadata(post)
+            if source["content_sha256"] != item["source"]["content_sha256"]:
+                raise PipelineError("Article content changed after selection")
+            return source["body"]
+    raise PipelineError("Selected article no longer exists")
 
 
-@contextlib.contextmanager
-def serve_video_through_localtunnel(video_path):
-    expected_size = video_path.stat().st_size
-    port = find_free_port()
-    http_process = subprocess.Popen(
-        [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"],
-        cwd=str(video_path.parent),
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
+    body = article_body_for_item(item)
+    payload = run_notebooklm(
+        ["source", "add", body, "--type", "text", "--title", item["source"]["title"], "--notebook", NOTEBOOK_ID],
+        timeout=180,
     )
-    tunnel_process = subprocess.Popen(
+    source_id = nested_identifier(payload, ("source_id", "sourceId", "id"))
+    if not source_id:
+        raise PipelineError("NotebookLM source add returned no source ID")
+    item["source_id"] = source_id
+    item["status"] = "source_added"
+    item["updated_at"] = utc_now()
+    save_state(state)
+    print(f"SOURCE_ADDED item={item['id']} source_id={source_id}")
+
+
+def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
+    prompt_path = STATE_DIR / f"{item['id']}-prompt-he.txt"
+    prompt_path.write_text(generation_prompt(item["source"]), encoding="utf-8")
+    payload = run_notebooklm(
         [
-            "npx",
-            "--yes",
-            "localtunnel",
-            "--port",
-            str(port),
-            "--local-host",
-            "127.0.0.1",
+            "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
+            "--source", item["source_id"], "--format", "explainer", "--style", "classic",
+            "--language", "he", "--no-wait",
         ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
+        timeout=180,
     )
-    try:
-        tunnel_url = None
-        deadline = time.time() + 45
-        while time.time() < deadline:
-            ready, _, _ = select.select([tunnel_process.stdout], [], [], 1)
-            if ready:
-                line = tunnel_process.stdout.readline().strip()
-                if "your url is:" in line:
-                    tunnel_url = line.split("your url is:", 1)[1].strip()
-                    break
-            if tunnel_process.poll() is not None:
-                stderr = tunnel_process.stderr.read().strip()
-                raise RuntimeError(f"localtunnel exited early: {stderr}")
-        if not tunnel_url:
-            raise RuntimeError("localtunnel did not provide a public URL")
+    task_id = nested_identifier(payload, ("task_id", "taskId", "artifact_id", "id"))
+    if not task_id:
+        raise PipelineError("NotebookLM generation returned no task ID")
+    item["task_id"] = task_id
+    item["artifact_id"] = task_id
+    item["status"] = "generating"
+    item["generation_started_at"] = utc_now()
+    item["updated_at"] = utc_now()
+    save_state(state)
+    print(f"GENERATION_STARTED item={item['id']} task_id={task_id}")
 
-        public_url = f"{tunnel_url}/{urllib.parse.quote(video_path.name)}"
-        probe = requests.get(
-            public_url,
-            headers={
-                "User-Agent": "KesherVideoPipeline/1.0",
-                "bypass-tunnel-reminder": "true",
-            },
-            stream=True,
-            timeout=45,
+
+def artifact_status(payload: dict[str, Any]) -> str:
+    value = nested_identifier(payload, ("status", "state", "generation_status"))
+    return (value or "unknown").lower().replace(" ", "_")
+
+
+def wait_for_generation(state: dict[str, Any], item: dict[str, Any], max_wait_seconds: int) -> bool:
+    deadline = time.monotonic() + max(0, max_wait_seconds)
+    while True:
+        payload = run_notebooklm(["artifact", "poll", item["task_id"], "--notebook", NOTEBOOK_ID], timeout=120)
+        status = artifact_status(payload)
+        item["last_provider_status"] = status
+        item["last_polled_at"] = utc_now()
+        item["updated_at"] = utc_now()
+        save_state(state)
+        if status in {"completed", "complete", "ready", "succeeded", "success"}:
+            return True
+        if status in {"failed", "error", "cancelled", "canceled", "rejected"}:
+            item["status"] = "rejected"
+            item["rejection_reason"] = f"NotebookLM generation ended with {status}"
+            save_state(state)
+            raise PipelineError(item["rejection_reason"])
+        if time.monotonic() >= deadline:
+            print(f"GENERATION_PENDING item={item['id']} provider_status={status}")
+            return False
+        time.sleep(min(POLL_INTERVAL_SECONDS, max(1, int(deadline - time.monotonic()))))
+
+
+def download_artifact(state: dict[str, Any], item: dict[str, Any]) -> Path:
+    raw_path = STATE_DIR / f"{item['id']}-notebooklm.mp4"
+    if raw_path.exists() and raw_path.stat().st_size > 0:
+        return raw_path
+    run_notebooklm(
+        ["download", "video", str(raw_path), "--notebook", NOTEBOOK_ID, "--artifact", item["artifact_id"], "--force"],
+        timeout=900,
+    )
+    if not raw_path.exists() or raw_path.stat().st_size < 1024:
+        raise PipelineError("NotebookLM download did not produce a usable MP4")
+    item["raw_mp4"] = raw_path.name
+    item["raw_sha256"] = sha256_file(raw_path)
+    item["status"] = "downloaded"
+    item["downloaded_at"] = utc_now()
+    item["updated_at"] = utc_now()
+    save_state(state)
+    return raw_path
+
+
+def ffprobe(path: Path) -> dict[str, Any]:
+    command = [
+        "ffprobe", "-v", "error",
+        "-show_entries", "stream=codec_type,codec_name,width,height,duration:format=duration,format_name",
+        "-of", "json", str(path),
+    ]
+    result = subprocess.run(command, capture_output=True, text=True, timeout=120, check=False)
+    if result.returncode != 0:
+        raise PipelineError("ffprobe could not inspect the MP4")
+    payload = json.loads(result.stdout)
+    streams = payload.get("streams") or []
+    video_streams = [stream for stream in streams if stream.get("codec_type") == "video"]
+    audio_streams = [stream for stream in streams if stream.get("codec_type") == "audio"]
+    if not video_streams:
+        raise PipelineError("MP4 has no video stream")
+    if not audio_streams:
+        raise PipelineError("MP4 has no audio stream")
+    stream = video_streams[0]
+    duration = float(stream.get("duration") or payload.get("format", {}).get("duration") or 0)
+    return {
+        "codec": stream.get("codec_name"),
+        "audio_codec": audio_streams[0].get("codec_name"),
+        "width": int(stream.get("width") or 0),
+        "height": int(stream.get("height") or 0),
+        "duration": round(duration, 3),
+        "format": payload.get("format", {}).get("format_name"),
+    }
+
+
+def transcribe_hebrew(video_path: Path, item: dict[str, Any]) -> Path:
+    transcript_path = STATE_DIR / f"{item['id']}-transcript-he.txt"
+    if transcript_path.exists() and transcript_path.stat().st_size > 0:
+        return transcript_path
+    try:
+        from faster_whisper import WhisperModel
+    except ImportError as exc:
+        raise PipelineError("faster-whisper is required for semantic review evidence") from exc
+    model_name = os.environ.get("KESHER_WHISPER_MODEL", "small")
+    model = WhisperModel(model_name, device="cpu", compute_type="int8")
+    segments, info = model.transcribe(str(video_path), language="he", vad_filter=True, beam_size=5)
+    lines = [segment.text.strip() for segment in segments if segment.text.strip()]
+    transcript = "\n".join(lines).strip()
+    if not transcript or len(re.findall(r"[\u0590-\u05ff]", transcript)) < 40:
+        raise PipelineError("Hebrew transcript is empty or too weak for semantic review")
+    if getattr(info, "language", "he") not in {"he", "iw"}:
+        raise PipelineError("Transcription did not identify Hebrew narration")
+    transcript_path.write_text(transcript + "\n", encoding="utf-8")
+    return transcript_path
+
+
+def brand_video(raw_path: Path, item: dict[str, Any]) -> Path:
+    output_path = STATE_DIR / f"{item['id']}-final.mp4"
+    if output_path.exists() and output_path.stat().st_size > 0:
+        return output_path
+    font_candidates = (
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+    )
+    font = next((value for value in font_candidates if Path(value).exists()), None)
+    if not font:
+        raise PipelineError("No supported font exists for the Kesher URL watermark")
+    escaped_url = SITE_URL.replace(":", r"\:")
+    drawtext = (
+        f"drawtext=fontfile='{font}':text='{escaped_url}':fontcolor=white:fontsize=26:"
+        "box=1:boxcolor=black@0.62:boxborderw=10:x=24:y=h-th-24"
+    )
+    command = [
+        "ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(raw_path),
+        "-vf", drawtext, "-c:v", "libx264", "-preset", "medium", "-crf", "18",
+        "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(output_path),
+    ]
+    result = subprocess.run(command, capture_output=True, text=True, timeout=1800, check=False)
+    if result.returncode != 0 or not output_path.exists() or output_path.stat().st_size < 1024:
+        raise PipelineError(f"Branding render failed: {result.stderr[-300:]}")
+    return output_path
+
+
+def create_contact_sheet(video_path: Path, item: dict[str, Any], duration: float) -> Path:
+    frame_dir = STATE_DIR / f"{item['id']}-frames"
+    frame_dir.mkdir(parents=True, exist_ok=True)
+    timestamps = [duration * fraction for fraction in (0.08, 0.35, 0.65, 0.92)]
+    frames: list[Path] = []
+    for index, timestamp in enumerate(timestamps, start=1):
+        frame = frame_dir / f"frame-{index}.png"
+        command = [
+            "ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-ss", f"{timestamp:.3f}",
+            "-i", str(video_path), "-frames:v", "1", "-vf", "scale=960:-2", str(frame),
+        ]
+        result = subprocess.run(command, capture_output=True, text=True, timeout=120, check=False)
+        if result.returncode != 0 or not frame.exists() or frame.stat().st_size == 0:
+            raise PipelineError(f"Frame extraction failed for frame {index}")
+        frames.append(frame)
+    sheet = STATE_DIR / f"{item['id']}-visual-review.png"
+    command = [
+        "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+        *sum((["-i", str(frame)] for frame in frames), []),
+        "-filter_complex", "[0:v][1:v]hstack=inputs=2[top];[2:v][3:v]hstack=inputs=2[bottom];[top][bottom]vstack=inputs=2[out]",
+        "-map", "[out]", "-frames:v", "1", str(sheet),
+    ]
+    result = subprocess.run(command, capture_output=True, text=True, timeout=180, check=False)
+    if result.returncode != 0 or not sheet.exists() or sheet.stat().st_size == 0:
+        raise PipelineError("Contact-sheet creation failed")
+    return sheet
+
+
+def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path: Path) -> None:
+    final_path = brand_video(raw_path, item)
+    media = ffprobe(final_path)
+    if media["codec"] != "h264":
+        raise PipelineError(f"Final video codec must be h264, got {media['codec']}")
+    if not 90 <= media["duration"] <= 180:
+        raise PipelineError(f"Final video must be 90-180 seconds, got {media['duration']}")
+    if media["width"] <= media["height"] or not 1.70 <= media["width"] / media["height"] <= 1.82:
+        raise PipelineError(f"Final video is not natural 16:9: {media['width']}x{media['height']}")
+    metadata = item["youtube_metadata"]
+    require_hebrew(metadata["title"], "YouTube title")
+    require_hebrew(metadata["description"], "YouTube description", allow_url=True)
+    for tag in metadata["tags"]:
+        require_hebrew(tag, "YouTube tag")
+    if SITE_URL not in metadata["description"]:
+        raise PipelineError("YouTube description is missing the Kesher URL")
+    sheet = create_contact_sheet(final_path, item, media["duration"])
+    item["final_mp4"] = final_path.name
+    item["final_sha256"] = sha256_file(final_path)
+    item["media"] = media
+    item["visual_review_path"] = sheet.name
+    item["visual_review_sha256"] = sha256_file(sheet)
+    item["technical_verified"] = True
+    item["review_notes"]["technical"] = (
+        f"אומת קובץ MP4 תקין, H.264, יחס {media['width']}x{media['height']}, "
+        f"משך {media['duration']} שניות וחותמת SHA-256"
+    )
+    manifest = {
+        "schema_version": 1,
+        "item_id": item["id"],
+        "created_at": utc_now(),
+        "source": item["source"],
+        "notebook_id": item["notebook_id"],
+        "source_id": item["source_id"],
+        "task_id": item["task_id"],
+        "artifact_id": item["artifact_id"],
+        "raw_mp4": item["raw_mp4"],
+        "raw_sha256": item["raw_sha256"],
+        "final_mp4": item["final_mp4"],
+        "final_sha256": item["final_sha256"],
+        "media": media,
+        "youtube_metadata": metadata,
+    }
+    transcript_path = transcribe_hebrew(final_path, item)
+    item["transcript_path"] = transcript_path.name
+    item["transcript_sha256"] = sha256_file(transcript_path)
+    source_path = STATE_DIR / f"{item['id']}-source-he.txt"
+    source_path.write_text(article_body_for_item(item) + "\n", encoding="utf-8")
+    item["source_path"] = source_path.name
+    item["source_file_sha256"] = sha256_file(source_path)
+    item["frame_paths"] = [
+        str(path.relative_to(STATE_DIR))
+        for path in sorted((STATE_DIR / f"{item['id']}-frames").glob("frame-*.png"))
+    ]
+    if len(item["frame_paths"]) != 4:
+        raise PipelineError("Exactly four review frames are required")
+    item["frame_sha256"] = {
+        relative: sha256_file(STATE_DIR / relative) for relative in item["frame_paths"]
+    }
+    manifest["transcript_path"] = item["transcript_path"]
+    manifest["transcript_sha256"] = item["transcript_sha256"]
+    manifest["source_path"] = item["source_path"]
+    manifest["source_file_sha256"] = item["source_file_sha256"]
+    manifest["frame_paths"] = item["frame_paths"]
+    manifest["frame_sha256"] = item["frame_sha256"]
+    manifest["visual_review_path"] = item["visual_review_path"]
+    manifest["visual_review_sha256"] = item["visual_review_sha256"]
+    manifest_path = STATE_DIR / f"{item['id']}-manifest.json"
+    atomic_json_write(manifest_path, manifest)
+    item["manifest_path"] = manifest_path.name
+    item["manifest_sha256"] = sha256_file(manifest_path)
+    item["status"] = "pending_review"
+    item["updated_at"] = utc_now()
+    save_state(state)
+    print(f"PENDING_REVIEW item={item['id']} review={sheet} manifest={manifest_path}")
+
+
+def run_generation(max_wait_seconds: int, require_israel_hour: int | None) -> int:
+    if require_israel_hour is not None and israel_now().hour != require_israel_hour:
+        print(f"SCHEDULE_SKIPPED israel_hour={israel_now().hour}")
+        return 0
+    auth_preflight()
+    state = load_state()
+    item = active_item(state)
+    if item and item["status"] in {"pending_review", "approved", "uploading"}:
+        print(f"NO_GENERATION active_item={item['id']} status={item['status']}")
+        return 0
+    if not item:
+        source = select_newest_unused_article(state)
+        item = new_item(source)
+        state["items"].append(item)
+        save_state(state)
+        print(f"SOURCE_SELECTED item={item['id']} slug={source['slug']}")
+    if item["status"] == "source_selected":
+        add_source(state, item)
+    if item["status"] == "source_added":
+        start_generation(state, item)
+    if item["status"] == "generating":
+        if not wait_for_generation(state, item, max_wait_seconds):
+            return 0
+        raw_path = download_artifact(state, item)
+    elif item["status"] == "downloaded":
+        raw_path = STATE_DIR / item["raw_mp4"]
+    else:
+        return 0
+    validate_and_manifest(state, item, raw_path)
+    return 0
+
+
+def update_review(args: argparse.Namespace) -> int:
+    state = load_state()
+    matches = [item for item in state["items"] if item.get("id") == args.review_item]
+    if len(matches) != 1:
+        raise PipelineError("Review item was not found uniquely")
+    item = matches[0]
+    if item.get("status") != "pending_review" or item.get("technical_verified") is not True:
+        raise PipelineError("Only technically verified pending items may be reviewed")
+    for field in ("visual", "semantic", "metadata"):
+        status = getattr(args, f"{field}_status")
+        note = getattr(args, f"{field}_note").strip()
+        if status not in ALLOWED_REVIEW or not re.search(r"[\u0590-\u05ff]", note):
+            raise PipelineError(f"{field} review requires approved/rejected and a Hebrew note")
+    final_path = STATE_DIR / item["final_mp4"]
+    manifest_path = STATE_DIR / item["manifest_path"]
+    review_path = STATE_DIR / item["visual_review_path"]
+    transcript_path = STATE_DIR / item.get("transcript_path", "")
+    source_path = STATE_DIR / item.get("source_path", "")
+    frame_paths = [STATE_DIR / relative for relative in item.get("frame_paths") or []]
+    if not final_path.exists() or not manifest_path.exists() or not review_path.exists():
+        raise PipelineError("Review evidence is incomplete")
+    if sha256_file(final_path) != item["final_sha256"] or sha256_file(manifest_path) != item["manifest_sha256"]:
+        raise PipelineError("Review evidence hash mismatch")
+    if sha256_file(review_path) != item.get("visual_review_sha256"):
+        raise PipelineError("Visual review sheet hash mismatch")
+    if not transcript_path.is_file() or sha256_file(transcript_path) != item.get("transcript_sha256"):
+        raise PipelineError("Transcript evidence hash mismatch")
+    if not source_path.is_file() or sha256_file(source_path) != item.get("source_file_sha256"):
+        raise PipelineError("Source evidence hash mismatch")
+    if len(frame_paths) != 4 or any(not path.is_file() for path in frame_paths):
+        raise PipelineError("Four frame evidence files are required")
+    for relative, expected in (item.get("frame_sha256") or {}).items():
+        if sha256_file(STATE_DIR / relative) != expected:
+            raise PipelineError("Frame evidence hash mismatch")
+    for field in ("visual", "semantic", "metadata"):
+        item[f"{field}_review_status"] = getattr(args, f"{field}_status")
+        item["review_notes"][field] = getattr(args, f"{field}_note").strip()
+    statuses = [item[f"{field}_review_status"] for field in ("visual", "semantic", "metadata")]
+    item["status"] = "approved" if statuses == ["approved", "approved", "approved"] else "rejected"
+    item["reviewed_at"] = utc_now()
+    reviewer_session = getattr(args, "reviewer_session", None)
+    if reviewer_session:
+        item["reviewer"] = {"type": "jules", "session": reviewer_session}
+    item["updated_at"] = utc_now()
+    save_state(state)
+    print(f"REVIEW_RECORDED item={item['id']} status={item['status']}")
+    return 0
+
+
+def youtube_access_token() -> str:
+    required = ("YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN")
+    missing = [key for key in required if not os.environ.get(key, "").strip()]
+    if missing:
+        raise PipelineError(f"YouTube OAuth secrets are missing: {', '.join(missing)}")
+    response = requests.post(
+        "https://oauth2.googleapis.com/token",
+        data={
+            "client_id": os.environ["YOUTUBE_CLIENT_ID"],
+            "client_secret": os.environ["YOUTUBE_CLIENT_SECRET"],
+            "refresh_token": os.environ["YOUTUBE_REFRESH_TOKEN"],
+            "grant_type": "refresh_token",
+        },
+        timeout=30,
+    )
+    if response.status_code != 200 or not response.json().get("access_token"):
+        raise PipelineError(f"YouTube OAuth refresh failed with HTTP {response.status_code}")
+    return str(response.json()["access_token"])
+
+
+def youtube_get(path: str, token: str, params: dict[str, str]) -> dict[str, Any]:
+    response = requests.get(
+        f"https://www.googleapis.com/youtube/v3/{path}",
+        headers={"Authorization": f"Bearer {token}"},
+        params=params,
+        timeout=30,
+    )
+    if response.status_code != 200:
+        raise PipelineError(f"YouTube {path} failed with HTTP {response.status_code}")
+    return response.json()
+
+
+def verify_authenticated_channel(token: str) -> None:
+    payload = youtube_get("channels", token, {"part": "id", "mine": "true"})
+    ids = [row.get("id") for row in payload.get("items", [])]
+    if ids != [YOUTUBE_CHANNEL_ID]:
+        raise PipelineError("Authenticated YouTube channel does not match the Kesher channel")
+
+
+def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: str, video_path: Path) -> str:
+    metadata = item["youtube_metadata"]
+    body = {
+        "snippet": {
+            "title": metadata["title"],
+            "description": metadata["description"],
+            "tags": metadata["tags"],
+            "categoryId": "22",
+            "defaultLanguage": "he",
+            "defaultAudioLanguage": "he",
+        },
+        "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False},
+    }
+    response = requests.post(
+        "https://www.googleapis.com/upload/youtube/v3/videos",
+        params={"uploadType": "resumable", "part": "snippet,status"},
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json; charset=UTF-8",
+            "X-Upload-Content-Length": str(video_path.stat().st_size),
+            "X-Upload-Content-Type": "video/mp4",
+        },
+        json=body,
+        timeout=60,
+    )
+    location = response.headers.get("Location")
+    if response.status_code not in {200, 201} or not location:
+        raise PipelineError(f"YouTube resumable session creation failed with HTTP {response.status_code}")
+    item["upload_session_uri"] = location
+    item["upload_session_created_at"] = utc_now()
+    item["status"] = "uploading"
+    save_state(state)
+    return location
+
+
+def resume_offset(session_uri: str, token: str, total: int) -> int:
+    response = requests.put(
+        session_uri,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Length": "0",
+            "Content-Range": f"bytes */{total}",
+        },
+        timeout=60,
+    )
+    if response.status_code in {200, 201}:
+        return total
+    if response.status_code == 308:
+        match = re.search(r"bytes=0-(\d+)", response.headers.get("Range", ""))
+        return int(match.group(1)) + 1 if match else 0
+    if response.status_code in {404, 410}:
+        raise PipelineError("Saved YouTube upload session expired; refusing a second insert automatically")
+    raise PipelineError(f"YouTube upload status query failed with HTTP {response.status_code}")
+
+
+def upload_bytes(session_uri: str, token: str, video_path: Path, offset: int) -> str:
+    total = video_path.stat().st_size
+    if offset >= total:
+        raise PipelineError("Upload session reports complete but no video ID is persisted")
+    with video_path.open("rb") as handle:
+        handle.seek(offset)
+        data = handle.read()
+    response = requests.put(
+        session_uri,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "video/mp4",
+            "Content-Length": str(len(data)),
+            "Content-Range": f"bytes {offset}-{total - 1}/{total}",
+        },
+        data=data,
+        timeout=1200,
+    )
+    if response.status_code not in {200, 201}:
+        raise PipelineError(f"YouTube media upload failed with HTTP {response.status_code}")
+    video_id = response.json().get("id")
+    if not video_id:
+        raise PipelineError("YouTube upload response contained no video ID")
+    return str(video_id)
+
+
+def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int = 900) -> dict[str, Any]:
+    deadline = time.monotonic() + timeout_seconds
+    while True:
+        payload = youtube_get(
+            "videos", token,
+            {"part": "snippet,status,processingDetails", "id": item["youtube_id"]},
         )
-        probe.raise_for_status()
-        content_length = int(probe.headers.get("Content-Length") or 0)
-        first_chunk = next(probe.iter_content(chunk_size=32), b"")
-        probe.close()
-        if content_length != expected_size:
-            raise RuntimeError(
-                f"Tunnel size mismatch: expected {expected_size}, got {content_length}"
-            )
-        if len(first_chunk) < 12 or first_chunk[4:8] != b"ftyp":
-            raise RuntimeError("Tunnel response is not an MP4 file")
-        yield public_url, expected_size
-    finally:
-        tunnel_process.terminate()
-        http_process.terminate()
-        for process in (tunnel_process, http_process):
-            try:
-                process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                process.kill()
+        rows = payload.get("items") or []
+        if len(rows) != 1:
+            raise PipelineError("Uploaded YouTube video is not uniquely visible")
+        row = rows[0]
+        snippet = row.get("snippet") or {}
+        status = row.get("status") or {}
+        processing = row.get("processingDetails") or {}
+        if snippet.get("channelId") != YOUTUBE_CHANNEL_ID:
+            raise PipelineError("Uploaded video belongs to the wrong YouTube channel")
+        if snippet.get("title") != item["youtube_metadata"]["title"]:
+            raise PipelineError("Uploaded title differs from the approved metadata")
+        if SITE_URL not in str(snippet.get("description", "")):
+            raise PipelineError("Uploaded description is missing the Kesher URL")
+        require_hebrew(str(snippet.get("title", "")), "uploaded title")
+        require_hebrew(str(snippet.get("description", "")), "uploaded description", allow_url=True)
+        process_status = processing.get("processingStatus")
+        if status.get("privacyStatus") == "public" and process_status == "succeeded":
+            return {
+                "video_id": item["youtube_id"],
+                "channel_id": snippet.get("channelId"),
+                "privacy_status": status.get("privacyStatus"),
+                "processing_status": process_status,
+                "default_language": snippet.get("defaultLanguage"),
+                "default_audio_language": snippet.get("defaultAudioLanguage"),
+            }
+        if process_status in {"failed", "terminated"}:
+            raise PipelineError(f"YouTube processing ended with {process_status}")
+        if time.monotonic() >= deadline:
+            raise PipelineError("YouTube processing did not become public and complete in time")
+        time.sleep(20)
 
 
-def reconcile_uploaded_queue(queue_data):
-    uploaded_items = [item for item in queue_data.get("queue", []) if item.get("uploaded")]
-    if not uploaded_items:
-        return False
-
-    changed = False
-    from composio_mcp_client import ComposioMCPClient
-    mcp_client = ComposioMCPClient()
-    mcp_client.connect()
-    try:
-        for item in uploaded_items:
-            video_id = item.get("youtube_id")
-            if not video_id:
-                ok, verification = False, "queue item has no YouTube ID"
-            else:
-                ok, verification = verify_public_youtube_video(mcp_client, video_id)
-            if ok:
-                item["youtube_verification"] = verification
-                item["last_verified_at"] = datetime.now().isoformat()
-                item["upload_status"] = "public_verified"
-                item.pop("last_upload_error", None)
-                continue
-
-            item.setdefault("upload_history", []).append(
-                {
-                    "youtube_id": video_id,
-                    "youtube_url": item.get("youtube_url"),
-                    "uploaded_at": item.get("uploaded_at"),
-                    "invalidated_at": datetime.now().isoformat(),
-                    "reason": verification,
-                }
-            )
-            item["uploaded"] = False
-            item["upload_status"] = "deleted_or_unavailable"
-            item["last_upload_error"] = verification
-            item.pop("youtube_id", None)
-            item.pop("youtube_url", None)
-            item.pop("youtube_verification", None)
-            changed = True
-    finally:
-        mcp_client.disconnect()
-    return changed
-
-def verify_channel_and_upload(video_path, title, description, tags, is_test=False):
-    print(f"Uploading {video_path} via a verified local tunnel and Composio Remote Workbench...")
-    if is_test:
-        print("[TEST MODE] Skipped upload.")
-        return True, "test_video_id", "https://youtube.com/watch?v=test_video_id"
-        
-    try:
-        file_name = video_path.name
-        with serve_video_through_localtunnel(video_path) as (direct_url, expected_size):
-            print(f"Verified tunnel URL for {expected_size} bytes.")
-
-            # Prepare workbench code
-            workbench_code = f'''
-import urllib.request
-import json
-import sys
-import os
-
-download_url = "{direct_url}"
-local_path = "/tmp/{file_name}"
-expected_size = {expected_size}
-
-print("Step 1: Downloading verified video inside sandbox...")
-req = urllib.request.Request(download_url, headers={{
-    "User-Agent": "KesherVideoPipeline/1.0",
-    "bypass-tunnel-reminder": "true",
-}})
-with urllib.request.urlopen(req, timeout=300) as response:
-    with open(local_path, "wb") as f:
-        while True:
-            chunk = response.read(1024 * 1024)
-            if not chunk:
-                break
-            f.write(chunk)
-
-actual_size = os.path.getsize(local_path)
-with open(local_path, "rb") as f:
-    header = f.read(12)
-if actual_size != expected_size:
-    print(f"Downloaded size mismatch: expected {{expected_size}}, got {{actual_size}}")
-    sys.exit(1)
-if len(header) < 12 or header[4:8] != b"ftyp":
-    print("Downloaded file is not an MP4")
-    sys.exit(1)
-print("Downloaded and verified MP4, size:", actual_size)
-
-print("Step 2: Uploading to S3...")
-uploaded, err = upload_local_file(local_path)
-if err:
-    print("S3 Upload error:", err)
-    sys.exit(1)
-    
-s3key = uploaded["s3key"]
-print("Uploaded to S3. Key:", s3key)
-
-print("Step 3: Running YouTube Multipart Upload...")
-title = {repr(title)}
-description = {repr(description)}
-tags = {repr(tags)}
-
-result, yt_err = run_composio_tool("YOUTUBE_MULTIPART_UPLOAD_VIDEO", {{
-    "title": title,
-    "description": description,
-    "tags": tags,
-    "categoryId": "22",
-    "privacyStatus": "public",
-    "videoFile": {{
-        "name": "{file_name}",
-        "mimetype": "video/mp4",
-        "s3key": s3key
-    }}
-}}, account="kesher")
-
-if yt_err:
-    print("YouTube Upload error:", yt_err)
-    sys.exit(1)
-    
-print("YouTube Upload Success:", json.dumps(result, ensure_ascii=False))
-'''
-
-            # Run via ComposioMCPClient while the tunnel stays open.
-            from composio_mcp_client import ComposioMCPClient
-            mcp_client = ComposioMCPClient()
-            mcp_client.connect()
-            try:
-                result = mcp_client.call_tool(
-                    "COMPOSIO_REMOTE_WORKBENCH",
-                    {
-                        "code_to_execute": workbench_code,
-                        "sync_response_to_workbench": False,
-                    },
-                    timeout=600
-                )
-                print("Workbench result:", result)
-
-                candidate_ids = extract_uploaded_video_candidates(result)
-                if not candidate_ids:
-                    return False, "Upload response did not contain a YouTube video ID", ""
-
-                verification_errors = []
-                for yt_id in candidate_ids:
-                    for attempt in range(6):
-                        ok, verification = verify_public_youtube_video(mcp_client, yt_id)
-                        if ok:
-                            return True, yt_id, f"https://youtu.be/{yt_id}"
-                        verification_errors.append(f"{yt_id}: {verification}")
-                        if attempt < 5:
-                            time.sleep(10)
-
-                return False, "; ".join(verification_errors[-3:]), ""
-            finally:
-                mcp_client.disconnect()
-            
-    except Exception as e:
-        return False, str(e), ""
-
-def load_queue():
-    if not QUEUE_FILE.exists():
-        return {"queue": []}
-    try:
-        return json.loads(QUEUE_FILE.read_text(encoding="utf-8"))
-    except Exception:
-        return {"queue": []}
-
-
-def upload_eligible(item):
-    """Only a fully evidenced, content-bound item may reach YouTube."""
-    metadata = item.get("youtube_metadata") or {}
-    required_metadata = ("title", "description", "tags")
-    required_statuses = {
+def upload_only() -> int:
+    state = load_state()
+    approved = [
+        item for item in state["items"]
+        if item.get("status") in {"approved", "uploading"} and not item.get("uploaded")
+    ]
+    if not approved:
+        print("NO_APPROVED_UPLOAD")
+        return 0
+    if len(approved) != 1:
+        raise PipelineError("More than one approved item exists")
+    item = approved[0]
+    required_gates = {
         "technical_verified": True,
-        "verified": True,
         "visual_review_status": "approved",
         "semantic_review_status": "approved",
         "metadata_review_status": "approved",
     }
-    for field, expected in required_statuses.items():
+    for field, expected in required_gates.items():
         if item.get(field) != expected:
-            return False, f"{field} is not {expected!r}"
-    if not all(metadata.get(field) for field in required_metadata):
-        return False, "content-bound Hebrew metadata is missing"
-    if not item.get("content_manifest"):
-        return False, "content manifest is missing"
-    return True, ""
+            raise PipelineError(f"Upload gate failed: {field}")
+    for field in ("technical", "visual", "semantic", "metadata"):
+        if not re.search(r"[\u0590-\u05ff]", str(item.get("review_notes", {}).get(field, ""))):
+            raise PipelineError(f"Upload gate is missing a Hebrew {field} review note")
+    video_path = STATE_DIR / item["final_mp4"]
+    manifest_path = STATE_DIR / item["manifest_path"]
+    review_path = STATE_DIR / item["visual_review_path"]
+    if not all(path.exists() for path in (video_path, manifest_path, review_path)):
+        raise PipelineError("Approved item is missing MP4, manifest or review path")
+    if sha256_file(video_path) != item["final_sha256"] or sha256_file(manifest_path) != item["manifest_sha256"]:
+        raise PipelineError("Approved evidence hash mismatch")
+    if sha256_file(review_path) != item.get("visual_review_sha256"):
+        raise PipelineError("Approved visual review sheet hash mismatch")
+    transcript_path = STATE_DIR / item.get("transcript_path", "")
+    source_path = STATE_DIR / item.get("source_path", "")
+    if not transcript_path.is_file() or sha256_file(transcript_path) != item.get("transcript_sha256"):
+        raise PipelineError("Approved transcript hash mismatch")
+    if not source_path.is_file() or sha256_file(source_path) != item.get("source_file_sha256"):
+        raise PipelineError("Approved source hash mismatch")
+    frame_hashes = item.get("frame_sha256") or {}
+    if len(frame_hashes) != 4:
+        raise PipelineError("Approved item must retain exactly four frame hashes")
+    for relative, expected in frame_hashes.items():
+        frame_path = STATE_DIR / relative
+        if not frame_path.is_file() or sha256_file(frame_path) != expected:
+            raise PipelineError("Approved frame hash mismatch")
+    token = youtube_access_token()
+    verify_authenticated_channel(token)
+    session_uri = item.get("upload_session_uri")
+    if not session_uri:
+        session_uri = start_resumable_upload(state, item, token, video_path)
+        offset = 0
+    else:
+        offset = resume_offset(session_uri, token, video_path.stat().st_size)
+    video_id = upload_bytes(session_uri, token, video_path, offset)
+    item["youtube_id"] = video_id
+    item["youtube_url"] = f"https://youtu.be/{video_id}"
+    item["upload_response_at"] = utc_now()
+    save_state(state)
+    verification = verify_public_upload(item, token)
+    item["youtube_verification"] = verification
+    item["uploaded"] = True
+    item["status"] = "uploaded"
+    item["uploaded_at"] = utc_now()
+    item.pop("upload_session_uri", None)
+    save_state(state)
+    print(f"UPLOADED item={item['id']} url={item['youtube_url']}")
+    return 0
 
 
-def quarantine_ineligible_unuploaded_items(queue_data):
-    changed = False
-    for item in queue_data.get("queue", []):
-        if item.get("uploaded") or item.get("remotion_status") != "done":
-            continue
-        eligible, reason = upload_eligible(item)
-        if not eligible:
-            item["upload_status"] = "quarantined_missing_content_evidence"
-            item["last_upload_error"] = reason
-            item["verified"] = False
-            changed = True
-    return changed
-
-def save_queue(q_data):
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    temporary_file = QUEUE_FILE.with_suffix(".json.tmp")
-    temporary_file.write_text(
-        json.dumps(q_data, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
-    os.replace(temporary_file, QUEUE_FILE)
+def report() -> int:
+    state = load_state()
+    counts: dict[str, int] = {}
+    for item in state["items"]:
+        counts[item.get("status", "unknown")] = counts.get(item.get("status", "unknown"), 0) + 1
+    print(json.dumps({"state_file": str(STATE_FILE), "counts": counts, "items": state["items"]}, ensure_ascii=False, indent=2))
+    return 0
 
 
-def acquire_pipeline_lock():
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    handle = RUN_LOCK_FILE.open("a+")
-    try:
-        fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
-        handle.close()
-        raise RuntimeError("Another Kesher daily pipeline run is already active")
-    handle.seek(0)
-    handle.truncate()
-    handle.write(f"pid={os.getpid()} started_at={datetime.now().isoformat()}\n")
-    handle.flush()
-    return handle
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Kesher cloud NotebookLM Video Overview pipeline")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--preflight", action="store_true")
+    mode.add_argument("--upload-only", action="store_true")
+    mode.add_argument("--review-item")
+    mode.add_argument("--report-json", action="store_true")
+    parser.add_argument("--max-wait-seconds", type=int, default=3600)
+    parser.add_argument("--require-israel-hour", type=int, choices=range(24))
+    parser.add_argument("--visual-status", choices=sorted(ALLOWED_REVIEW))
+    parser.add_argument("--semantic-status", choices=sorted(ALLOWED_REVIEW))
+    parser.add_argument("--metadata-status", choices=sorted(ALLOWED_REVIEW))
+    parser.add_argument("--visual-note")
+    parser.add_argument("--semantic-note")
+    parser.add_argument("--metadata-note")
+    parser.add_argument("--reviewer-session")
+    return parser
 
-def main():
-    os.environ["PATH"] = "/Users/ninja/.nvm/versions/node/v22.21.1/bin:" + os.environ.get("PATH", "")
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--test-mode", action="store_true", help="Run in dry run test mode without real generation/upload")
-    parser.add_argument("--upload-only", action="store_true", help="Reconcile and upload ready queue items without generating new videos")
-    parser.add_argument("--skip-reconcile", action="store_true", help="Skip live YouTube reconciliation before processing the queue")
-    args = parser.parse_args()
-    pipeline_lock = acquire_pipeline_lock()
-    
-    print(f"=== Daily YouTube Video Pipeline - {datetime.now().isoformat()} ===")
-    
-    # 1. Load Queue
-    queue_data = load_queue()
-    if quarantine_ineligible_unuploaded_items(queue_data):
-        print("Quarantined queue items without complete visual, semantic, and metadata evidence.")
-        save_queue(queue_data)
-    if not args.test_mode and not args.skip_reconcile:
-        if reconcile_uploaded_queue(queue_data):
-            print("Reconciled deleted or unavailable YouTube items back into the upload queue.")
-            save_queue(queue_data)
-    
-    # 2. Upload Phase: Find ready-to-upload items
-    ready_normal = [item for item in queue_data["queue"] if item["type"] == "normal" and not item["uploaded"] and upload_eligible(item)[0]]
-    ready_short = [item for item in queue_data["queue"] if item["type"] == "short" and not item["uploaded"] and upload_eligible(item)[0]]
-    
-    uploaded_items = []
-    
-    # Upload Normal
-    if ready_normal:
-        item = ready_normal[0]
-        metadata = item.get("youtube_metadata") or {}
-        title, description, tags = metadata["title"], metadata["description"], metadata["tags"]
-        success, yt_id, yt_url = verify_channel_and_upload(
-            Path(item["remotion_mp4_path"]), title, description, tags, is_test=args.test_mode
-        )
-        if success:
-            item["uploaded"] = True
-            item["youtube_id"] = yt_id
-            item["youtube_url"] = yt_url
-            item["uploaded_at"] = datetime.now().isoformat()
-            item["upload_status"] = "public_verified"
-            item["last_verified_at"] = datetime.now().isoformat()
-            item.pop("last_upload_error", None)
-            uploaded_items.append(item)
-            print(f"Normal video uploaded: {yt_url}")
-        else:
-            print(f"Failed to upload Normal video: {yt_id}")
-            
-    # Upload Short
-    if ready_short:
-        item = ready_short[0]
-        metadata = item.get("youtube_metadata") or {}
-        title, description, tags = metadata["title"], metadata["description"], metadata["tags"]
-        success, yt_id, yt_url = verify_channel_and_upload(
-            Path(item["remotion_mp4_path"]), title, description, tags, is_test=args.test_mode
-        )
-        if success:
-            item["uploaded"] = True
-            item["youtube_id"] = yt_id
-            item["youtube_url"] = yt_url
-            item["uploaded_at"] = datetime.now().isoformat()
-            item["upload_status"] = "public_verified"
-            item["last_verified_at"] = datetime.now().isoformat()
-            item.pop("last_upload_error", None)
-            uploaded_items.append(item)
-            print(f"Short video uploaded: {yt_url}")
-        else:
-            print(f"Failed to upload Short video: {yt_id}")
-            
-    save_queue(queue_data)
 
+def main() -> int:
+    args = build_parser().parse_args()
+    if args.preflight:
+        print(json.dumps({"preflight": "passed", **auth_preflight()}, ensure_ascii=False))
+        return 0
     if args.upload_only:
-        print("Upload-only pipeline execution complete.")
-        return
-    
-    # 3. Generation Phase: If we don't have enough ready items for next run, generate them
-    needed_types = []
-    # Rejected media is retained for auditability, but must never suppress a
-    # replacement generation for its format.
-    def is_active_unuploaded(item):
-        return (
-            not item.get("uploaded", False)
-            and not str(item.get("remotion_status", "")).startswith("rejected")
-            and item.get("visual_review_status") != "rejected"
+        return upload_only()
+    if args.review_item:
+        required = (
+            args.visual_status, args.semantic_status, args.metadata_status,
+            args.visual_note, args.semantic_note, args.metadata_note,
         )
+        if any(value is None for value in required):
+            raise PipelineError("Atomic review requires all three statuses and Hebrew notes")
+        return update_review(args)
+    if args.report_json:
+        return report()
+    return run_generation(args.max_wait_seconds, args.require_israel_hour)
 
-    active_normal = [item for item in queue_data["queue"] if item["type"] == "normal" and is_active_unuploaded(item)]
-    active_short = [item for item in queue_data["queue"] if item["type"] == "short" and is_active_unuploaded(item)]
-    
-    if len(active_normal) < 1:
-        needed_types.append("normal")
-    if len(active_short) < 1:
-        needed_types.append("short")
-        
-    if needed_types:
-        print(f"Generating new content. Needed types: {needed_types}")
-        
-        # Search YouTube for source topics
-        queries = ["טיפים לזוגיות", "הדרכת הורים גבולות", "תקשורת זוגית בבית"]
-        selected_source = None
-        candidates = []
-        for q in queries:
-            candidates.extend(search_youtube_candidates(q, max_results=3))
-            
-        client = NotebookLMClient()
-        try:
-            client.connect()
-            
-            # Now generate for each needed type
-            for t in needed_types:
-                stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-                raw_path = OUTPUT_DIR / f"kesher-raw-{t}-{stamp}.mp4"
-                remotion_path = REMOTION_OUTPUT_DIR / f"kesher-upgraded-{t}-{stamp}.mp4"
-                REMOTION_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-                
-                duration_prompt = (
-                    "זהו סרטון YouTube רגיל ביחס 16:9. אורך הסרטון חייב להיות בין 90 ל-180 שניות."
-                    if t == "normal" else
-                    "צור מלכתחילה YouTube Short עצמאי ואנכי ביחס 9:16 וברזולוציה אנכית. "
-                    "אל תיצור סרטון 16:9 ואל תיצור גרסה ארוכה שאמורה להיחתך לאחר מכן. "
-                    "האורך הסופי המלא חייב להיות 35-55 שניות, וכל הקריינות, הסצנות והטקסט המוטמע חייבים להסתיים בתוך משך זה. "
-                    "מקם כל טקסט באזור הבטוח המרכזי של מסך 9:16, בשורות קצרות, בלי טקסט שנוגע בשוליים. "
-                    "התוכן צריך להיות ממוקד ומהיר: הוק, רעיון אחד, דוגמה אחת וסיום אחד."
-                )
-                custom_instructions = CONTENT_PROMPT_TEMPLATE + f"\n{duration_prompt}"
-                
-                if args.test_mode:
-                    selected_source = candidates[0] if candidates else {"url": "", "topic": "נושא בדיקה"}
-                    print(f"[TEST MODE] Skipping generation/download/remotion steps for {t}.")
-                    # Create mock entry
-                    queue_data["queue"].append({
-                        "id": f"mock-{stamp}-{t}",
-                        "type": t,
-                        "topic": "נושא בדיקה",
-                        "source_url": selected_source["url"],
-                        "notebooklm_id": NOTEBOOK_ID,
-                        "raw_mp4_path": str(raw_path),
-                        "remotion_mp4_path": str(remotion_path),
-                        "creation_status": "done",
-                        "remotion_status": "done",
-                        "verified": True,
-                        "uploaded": False,
-                        "created_at": datetime.now().isoformat()
-                    })
-                    continue
-                    
-                # Real generation
-                success = False
-                details = ""
-                selected_source = None
-                attempted_generation_sources = 0
-                attempted_urls = set()
-
-                for candidate in candidates:
-                    if candidate["url"] in attempted_urls:
-                        continue
-                    attempted_urls.add(candidate["url"])
-
-                    source_success, source_details = add_source_to_notebooklm(client, candidate["url"])
-                    if not source_success:
-                        print(f"Failed to add source {candidate['url']}: {source_details}")
-                        continue
-
-                    selected_source = candidate
-                    attempted_generation_sources += 1
-                    print(
-                        f"Added source successfully for {t} attempt "
-                        f"{attempted_generation_sources}/{MAX_GENERATION_SOURCE_ATTEMPTS}: {candidate['url']}"
-                    )
-
-                    success, details = generate_and_download_notebooklm(
-                        client, t, custom_instructions, raw_path
-                    )
-                    if success:
-                        break
-
-                    print(
-                        f"NotebookLM generation attempt failed for {t} "
-                        f"with source {candidate['url']}: {details}"
-                    )
-                    raw_path.unlink(missing_ok=True)
-
-                    if attempted_generation_sources >= MAX_GENERATION_SOURCE_ATTEMPTS:
-                        break
-
-                if attempted_generation_sources == 0:
-                    details = "Failed to add any YouTube candidates to NotebookLM."
-                
-                if success:
-                    print(f"NotebookLM generation complete for {t}.")
-                    # Run Remotion Upgrade
-                    youtube_metadata = details.get("youtube_metadata") or {}
-                    rem_success, rem_err = run_remotion_render(raw_path, remotion_path, youtube_metadata, t)
-                    if rem_success:
-                        verified, verification = verify_rendered_video(remotion_path, t)
-                        if not verified:
-                            print(f"Rendered {t} video failed verification: {verification}")
-                            continue
-                        review_path, review_error = create_visual_contact_sheet(remotion_path, t)
-                        if not review_path:
-                            print(f"Rendered {t} video could not enter visual review: {review_error}")
-                            continue
-                        queue_data["queue"].append({
-                            "id": f"{t}-{stamp}",
-                            "type": t,
-                            "topic": selected_source["topic"],
-                            "source_url": selected_source["url"],
-                            "notebooklm_id": NOTEBOOK_ID,
-                            "raw_mp4_path": str(raw_path),
-                            "remotion_mp4_path": str(remotion_path),
-                            "creation_status": "done",
-                            "remotion_status": "done",
-                            "technical_verified": True,
-                            "verified": False,
-                            "visual_review_status": "pending",
-                            "semantic_review_status": "pending",
-                            "metadata_review_status": "pending",
-                            "visual_review_path": str(review_path),
-                            "visual_review_rules": [
-                                "Hebrew visual text only; URL and Shorts are the only Latin exceptions",
-                                "No gibberish, presentation slides, information cards, tables, or arrow diagrams",
-                                "No cropped text, overlay collisions, black frames, or repeated static layouts",
-                                "Normal must feel cinematic; Short must be native 9:16 with all content in the safe area",
-                            ],
-                            "media": verification,
-                            "youtube_metadata": details.get("youtube_metadata"),
-                            "content_manifest": {
-                                "raw_sha256": hashlib.sha256(raw_path.read_bytes()).hexdigest(),
-                                "rendered_sha256": hashlib.sha256(remotion_path.read_bytes()).hexdigest(),
-                                "source_url": selected_source["url"],
-                                "topic": selected_source["topic"],
-                            },
-                            "uploaded": False,
-                            "created_at": datetime.now().isoformat()
-                        })
-                        save_queue(queue_data)
-                        print(f"Successfully processed and queue'd {t} video.")
-                    else:
-                        print(f"Remotion render failed: {rem_err}")
-                else:
-                    print(f"NotebookLM generation failed for {t}: {details}")
-                    
-        finally:
-            client.disconnect()
-            
-    save_queue(queue_data)
-    print("Pipeline execution complete.")
-    
-    # 4. Report in Hebrew
-    for item in uploaded_items:
-        print(f"\n--- סרטון הועלה בהצלחה! ---")
-        print(f"כותרת: {item.get('topic')}")
-        print(f"קישור: {item.get('youtube_url')}")
-        print(f"סוג: {item.get('type')}")
-        print(f"סטטוס: Public")
-        print(f"נוצר בעברית מלכתחילה: כן")
 
 if __name__ == "__main__":
-    main()
+    try:
+        raise SystemExit(main())
+    except (PipelineError, OSError, ValueError, json.JSONDecodeError) as exc:
+        print(f"PIPELINE_BLOCKED {exc}", file=sys.stderr)
+        raise SystemExit(1)

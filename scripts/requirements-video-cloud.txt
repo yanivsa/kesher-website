@@ -1,0 +1,3 @@
+notebooklm-py @ git+https://github.com/teng-lin/notebooklm-py.git@8fb61cb125be9f59dfe163561e355922967c604a
+faster-whisper==1.2.1
+requests==2.32.5
