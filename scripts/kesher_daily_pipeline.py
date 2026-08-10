@@ -199,16 +199,26 @@ def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
 
 def notebooklm_env() -> dict[str, str]:
     auth_json = os.environ.get("NOTEBOOKLM_AUTH_JSON", "").strip()
-    if not auth_json:
-        raise PipelineError("NOTEBOOKLM_AUTH_JSON is missing")
-    try:
-        parsed = json.loads(auth_json)
-    except json.JSONDecodeError as exc:
-        raise PipelineError("NOTEBOOKLM_AUTH_JSON is invalid JSON") from exc
-    if not isinstance(parsed, dict) or not isinstance(parsed.get("cookies"), list) or not parsed["cookies"]:
-        raise PipelineError("NOTEBOOKLM_AUTH_JSON is not a nonempty storage-state object")
     env = os.environ.copy()
-    env["NOTEBOOKLM_AUTH_JSON"] = auth_json
+    if auth_json:
+        try:
+            parsed = json.loads(auth_json)
+        except json.JSONDecodeError as exc:
+            raise PipelineError("NOTEBOOKLM_AUTH_JSON is invalid JSON") from exc
+        if not isinstance(parsed, dict) or not isinstance(parsed.get("cookies"), list) or not parsed["cookies"]:
+            raise PipelineError("NOTEBOOKLM_AUTH_JSON is not a nonempty storage-state object")
+        env["NOTEBOOKLM_AUTH_JSON"] = auth_json
+    else:
+        notebooklm_home = Path(env.get("NOTEBOOKLM_HOME", Path.home() / ".notebooklm"))
+        storage_path = notebooklm_home / "profiles" / "default" / "storage_state.json"
+        if not storage_path.is_file():
+            raise PipelineError("NotebookLM auth storage is missing")
+        try:
+            parsed = json.loads(storage_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise PipelineError("NotebookLM auth storage is invalid JSON") from exc
+        if not isinstance(parsed, dict) or not isinstance(parsed.get("cookies"), list) or not parsed["cookies"]:
+            raise PipelineError("NotebookLM auth storage is not a nonempty storage-state object")
     env["NOTEBOOKLM_NOTEBOOK"] = NOTEBOOK_ID
     return env
 
