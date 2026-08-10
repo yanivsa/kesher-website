@@ -146,6 +146,26 @@ class PipelineTestCase(unittest.TestCase):
             self.assertEqual(pipeline.run_generation(0, None), 0)
         select.assert_not_called()
 
+    def test_manual_canary_override_selects_a_different_unused_source(self) -> None:
+        prior_post = hebrew_post(slug="prior")
+        prior_post["title"] = "מאמר קודם על הורות"
+        prior_source = pipeline.source_metadata(prior_post)
+        prior = pipeline.new_item(prior_source)
+        prior["status"] = "rejected"
+        state = {"version": 1, "items": [prior], "updated_at": pipeline.utc_now()}
+        pipeline.save_state(state)
+        next_post = hebrew_post(slug="next")
+        next_post["title"] = "מאמר חדש על הסתגלות"
+        next_source = pipeline.source_metadata(next_post)
+        with mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+            pipeline, "select_newest_unused_article", return_value=next_source
+        ) as select, mock.patch.object(pipeline, "add_source"):
+            self.assertEqual(pipeline.run_generation(0, None, allow_additional_canary=True), 0)
+        select.assert_called_once()
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 2)
+        self.assertNotEqual(saved[0]["source"]["content_sha256"], saved[1]["source"]["content_sha256"])
+
     def test_pending_poll_never_starts_a_second_generation(self) -> None:
         item = {"id": "one", "task_id": "task-one", "status": "generating"}
         state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}

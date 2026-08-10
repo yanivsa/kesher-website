@@ -27,6 +27,11 @@ on:
           - preflight
           - generate
           - upload
+      allow_additional_canary:
+        description: Manually start one additional unused-source canary today
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   actions: read
@@ -189,12 +194,17 @@ jobs:
         run: |
           set -euo pipefail
           schedule_guard=()
+          canary_override=()
           if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
             schedule_guard=(--require-israel-hour 9)
           fi
+          if [ "${{ inputs.allow_additional_canary || false }}" = "true" ]; then
+            canary_override=(--allow-additional-canary)
+          fi
           python -u scripts/kesher_daily_pipeline.py \
             --max-wait-seconds 150 \
-            "${schedule_guard[@]}"
+            "${schedule_guard[@]}" \
+            "${canary_override[@]}"
 
       - name: Detect pending Jules review
         if: ${{ github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'generate' }}
