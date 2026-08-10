@@ -1,0 +1,300 @@
+from __future__ import annotations
+
+import importlib.util
+import json
+import os
+import shutil
+import subprocess
+import tempfile
+import unittest
+from pathlib import Path
+from types import SimpleNamespace
+from unittest import mock
+
+
+MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "kesher_daily_pipeline.py"
+SPEC = importlib.util.spec_from_file_location("kesher_daily_pipeline", MODULE_PATH)
+pipeline = importlib.util.module_from_spec(SPEC)
+assert SPEC and SPEC.loader
+SPEC.loader.exec_module(pipeline)
+
+REVIEWER_PATH = Path(__file__).resolve().parents[1] / "scripts" / "jules_video_reviewer.py"
+REVIEWER_SPEC = importlib.util.spec_from_file_location("jules_video_reviewer", REVIEWER_PATH)
+reviewer = importlib.util.module_from_spec(REVIEWER_SPEC)
+assert REVIEWER_SPEC and REVIEWER_SPEC.loader
+REVIEWER_SPEC.loader.exec_module(reviewer)
+
+
+def hebrew_post(slug: str = "new-post", published: str = "2026-08-10") -> dict:
+    return {
+        "id": slug,
+        "slug": slug,
+        "title": "איך עוזרים לילד להסתגל לשינוי?",
+        "date": published,
+        "category": "הדרכת הורים",
+        "subcategory": "ילדים מחוננים",
+        "excerpt": "שינוי במסגרת עלול לעורר חשש. הנה דרך מעשית לעזור לילד.",
+        "content": "<p>הקשיבו לחשש, הגדירו תקופת ניסיון ודברו שוב לאחר כמה מפגשים.</p>",
+    }
+
+
+class PipelineTestCase(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory()
+        self.root = Path(self.temporary.name)
+        self.state_dir = self.root / "state"
+        self.posts_file = self.root / "posts.json"
+        self.patches = [
+            mock.patch.object(pipeline, "STATE_DIR", self.state_dir),
+            mock.patch.object(pipeline, "STATE_FILE", self.state_dir / "state.json"),
+            mock.patch.object(pipeline, "POSTS_FILE", self.posts_file),
+        ]
+        for patcher in self.patches:
+            patcher.start()
+
+    def tearDown(self) -> None:
+        for patcher in reversed(self.patches):
+            patcher.stop()
+        self.temporary.cleanup()
+
+    def write_posts(self, posts: list[dict]) -> None:
+        self.posts_file.write_text(json.dumps(posts, ensure_ascii=False), encoding="utf-8")
+
+    def test_selects_newest_unused_published_hebrew_article(self) -> None:
+        older = hebrew_post("older", "2026-08-01")
+        newest = hebrew_post("newest", "2026-08-10")
+        future = hebrew_post("future", "2099-01-01")
+        self.write_posts([older, newest, future])
+        state = {"version": 1, "items": [], "updated_at": pipeline.utc_now()}
+        selected = pipeline.select_newest_unused_article(state)
+        self.assertEqual(selected["slug"], "newest")
+        state["items"].append({"source": {"slug": "newest", "content_sha256": selected["content_sha256"]}})
+        selected = pipeline.select_newest_unused_article(state)
+        self.assertEqual(selected["slug"], "older")
+
+    def test_source_metadata_has_no_default_or_unsupported_metadata(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        metadata = source["youtube_metadata"]
+        self.assertEqual(metadata["title"], "איך עוזרים לילד להסתגל לשינוי?")
+        self.assertIn(pipeline.SITE_URL, metadata["description"])
+        self.assertEqual(metadata["tags"], ["הדרכת הורים", "ילדים מחוננים"])
+        pipeline.require_hebrew(metadata["description"], "description", allow_url=True)
+
+    def test_latin_visible_metadata_is_rejected(self) -> None:
+        post = hebrew_post()
+        post["title"] = "טיפ Parenting"
+        with self.assertRaisesRegex(pipeline.PipelineError, "Latin"):
+            pipeline.source_metadata(post)
+
+    def test_auth_json_must_be_nonempty_storage_state(self) -> None:
+        with mock.patch.dict(os.environ, {}, clear=True):
+            with self.assertRaisesRegex(pipeline.PipelineError, "missing"):
+                pipeline.notebooklm_env()
+        with mock.patch.dict(os.environ, {"NOTEBOOKLM_AUTH_JSON": "{}"}, clear=True):
+            with self.assertRaisesRegex(pipeline.PipelineError, "storage-state"):
+                pipeline.notebooklm_env()
+
+    def test_preflight_requires_exact_pinned_version_and_live_token(self) -> None:
+        with mock.patch.object(pipeline.importlib.metadata, "version", return_value="0.8.0"), mock.patch.object(
+            pipeline, "run_notebooklm", return_value={"status": "ok", "checks": {"token_fetch": True}}
+        ):
+            self.assertEqual(pipeline.auth_preflight()["auth_status"], "ok")
+        with mock.patch.object(pipeline.importlib.metadata, "version", return_value="0.8.1"):
+            with self.assertRaisesRegex(pipeline.PipelineError, "must be 0.8.0"):
+                pipeline.auth_preflight()
+
+    def test_generation_persists_exact_task_and_source_ids(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        self.write_posts([hebrew_post()])
+        item = pipeline.new_item(source)
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        pipeline.save_state(state)
+        with mock.patch.object(pipeline, "run_notebooklm", return_value={"source": {"id": "source-exact"}}):
+            pipeline.add_source(state, item)
+        self.assertEqual(item["source_id"], "source-exact")
+        with mock.patch.object(pipeline, "run_notebooklm", return_value={"task_id": "task-exact"}):
+            pipeline.start_generation(state, item)
+        self.assertEqual(item["task_id"], "task-exact")
+        self.assertEqual(item["artifact_id"], "task-exact")
+        self.assertEqual(item["status"], "generating")
+
+    def test_pending_poll_never_starts_a_second_generation(self) -> None:
+        item = {"id": "one", "task_id": "task-one", "status": "generating"}
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        with mock.patch.object(pipeline, "run_notebooklm", return_value={"status": "processing"}) as run:
+            self.assertFalse(pipeline.wait_for_generation(state, item, 0))
+        run.assert_called_once_with(["artifact", "poll", "task-one", "--notebook", pipeline.NOTEBOOK_ID], timeout=120)
+        self.assertEqual(item["status"], "generating")
+
+    def test_technical_validation_rejects_wrong_duration_or_aspect(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        item = pipeline.new_item(source)
+        item.update({"raw_mp4": "raw.mp4", "raw_sha256": "0" * 64})
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        raw = self.state_dir / "raw.mp4"
+        raw.parent.mkdir(parents=True)
+        raw.write_bytes(b"raw")
+        final = self.state_dir / "final.mp4"
+        final.write_bytes(b"final")
+        with mock.patch.object(pipeline, "brand_video", return_value=final), mock.patch.object(
+            pipeline, "ffprobe", return_value={"codec": "h264", "width": 1280, "height": 720, "duration": 60.0, "format": "mp4"}
+        ):
+            with self.assertRaisesRegex(pipeline.PipelineError, "90-180"):
+                pipeline.validate_and_manifest(state, item, raw)
+
+    def make_pending_item(self) -> tuple[dict, dict]:
+        source = pipeline.source_metadata(hebrew_post())
+        item = pipeline.new_item(source)
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        final = self.state_dir / "final.mp4"
+        manifest = self.state_dir / "manifest.json"
+        review = self.state_dir / "review.png"
+        final.write_bytes(b"real-mp4-evidence")
+        manifest.write_text("{}", encoding="utf-8")
+        review.write_bytes(b"real-review-evidence")
+        item.update(
+            {
+                "status": "pending_review",
+                "technical_verified": True,
+                "final_mp4": final.name,
+                "final_sha256": pipeline.sha256_file(final),
+                "manifest_path": manifest.name,
+                "manifest_sha256": pipeline.sha256_file(manifest),
+                "visual_review_path": review.name,
+                "visual_review_sha256": pipeline.sha256_file(review),
+                "transcript_path": "transcript.txt",
+                "source_path": "source.txt",
+                "frame_paths": [f"frames/frame-{index}.png" for index in range(1, 5)],
+            }
+        )
+        (self.state_dir / "transcript.txt").write_text("תמלול עברי מלא לצורך ביקורת סמנטית", encoding="utf-8")
+        (self.state_dir / "source.txt").write_text("תוכן מקור עברי מלא לצורך השוואה", encoding="utf-8")
+        item["transcript_sha256"] = pipeline.sha256_file(self.state_dir / "transcript.txt")
+        item["source_file_sha256"] = pipeline.sha256_file(self.state_dir / "source.txt")
+        item["frame_sha256"] = {}
+        for relative in item["frame_paths"]:
+            path = self.state_dir / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(relative.encode("utf-8"))
+            item["frame_sha256"][relative] = pipeline.sha256_file(path)
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        pipeline.save_state(state)
+        return state, item
+
+    def test_review_is_atomic_and_requires_hebrew_notes(self) -> None:
+        _, item = self.make_pending_item()
+        args = SimpleNamespace(
+            review_item=item["id"],
+            visual_status="approved",
+            semantic_status="approved",
+            metadata_status="approved",
+            visual_note="ארבעת הפריימים נבדקו ואין טקסט חתוך או פריים שחור",
+            semantic_note="הווידאו עוסק בדיוק בהסתגלות הילד המתוארת במקור",
+            metadata_note="הכותרת התיאור והתגיות בעברית ונתמכים במאמר",
+        )
+        pipeline.update_review(args)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "approved")
+        self.assertEqual(saved["visual_review_status"], "approved")
+        self.assertEqual(saved["semantic_review_status"], "approved")
+        self.assertEqual(saved["metadata_review_status"], "approved")
+
+    def test_any_rejected_gate_rejects_whole_item(self) -> None:
+        _, item = self.make_pending_item()
+        args = SimpleNamespace(
+            review_item=item["id"],
+            visual_status="rejected",
+            semantic_status="approved",
+            metadata_status="approved",
+            visual_note="הפריים השני כולל טקסט חתוך ולכן הסרטון נפסל",
+            semantic_note="הנושא תואם למקור",
+            metadata_note="המטא־דאטה נתמך במקור",
+        )
+        pipeline.update_review(args)
+        self.assertEqual(pipeline.load_state()["items"][0]["status"], "rejected")
+
+    def test_upload_cannot_start_without_all_four_gates(self) -> None:
+        state, item = self.make_pending_item()
+        item["status"] = "approved"
+        item["visual_review_status"] = "approved"
+        item["semantic_review_status"] = "pending"
+        item["metadata_review_status"] = "approved"
+        pipeline.save_state(state)
+        with mock.patch.object(pipeline, "youtube_access_token") as token:
+            with self.assertRaisesRegex(pipeline.PipelineError, "semantic_review_status"):
+                pipeline.upload_only()
+        token.assert_not_called()
+
+    def test_authenticated_channel_must_match_exactly(self) -> None:
+        with mock.patch.object(pipeline, "youtube_get", return_value={"items": [{"id": "wrong"}]}):
+            with self.assertRaisesRegex(pipeline.PipelineError, "does not match"):
+                pipeline.verify_authenticated_channel("token")
+
+    def test_expired_resumable_session_fails_closed(self) -> None:
+        response = SimpleNamespace(status_code=410, headers={})
+        with mock.patch.object(pipeline.requests, "put", return_value=response):
+            with self.assertRaisesRegex(pipeline.PipelineError, "refusing a second insert"):
+                pipeline.resume_offset("https://upload.invalid/session", "token", 100)
+
+    @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg tools unavailable")
+    def test_real_ffmpeg_brand_probe_and_four_frame_evidence(self) -> None:
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        raw = self.state_dir / "synthetic.mp4"
+        subprocess.run(
+            [
+                "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+                "-f", "lavfi", "-i", "color=c=blue:s=1280x720:r=25",
+                "-f", "lavfi", "-i", "sine=frequency=440:sample_rate=44100",
+                "-t", "2", "-c:v", "libx264", "-c:a", "aac", str(raw),
+            ],
+            check=True,
+            timeout=60,
+        )
+        item = {"id": "media-smoke"}
+        final = pipeline.brand_video(raw, item)
+        media = pipeline.ffprobe(final)
+        self.assertEqual(media["codec"], "h264")
+        self.assertEqual(media["audio_codec"], "aac")
+        self.assertEqual((media["width"], media["height"]), (1280, 720))
+        sheet = pipeline.create_contact_sheet(final, item, media["duration"])
+        self.assertTrue(sheet.is_file())
+        self.assertEqual(len(list((self.state_dir / "media-smoke-frames").glob("frame-*.png"))), 4)
+
+    def test_jules_decision_requires_all_exact_hashes_and_four_observations(self) -> None:
+        hashes = {
+            "manifest_sha256": "a" * 64,
+            "final_sha256": "b" * 64,
+            "transcript_sha256": "c" * 64,
+            "source_file_sha256": "d" * 64,
+            "visual_review_sha256": "e" * 64,
+            "frame_sha256": {f"frames/frame-{i}.png": str(i) * 64 for i in range(1, 5)},
+        }
+        decision = {
+            "item_id": "item-1",
+            **hashes,
+            "frame_observations": [
+                "נראית סצנה ביתית ברורה ללא טקסט חתוך בפריים הזה"
+                for _ in range(4)
+            ],
+            "visual_status": "approved",
+            "semantic_status": "approved",
+            "metadata_status": "approved",
+            "visual_note": "ארבעת הפריימים תקינים ללא אנגלית ג׳יבריש או מסכים שחורים",
+            "semantic_note": "התמלול והסצנות עוסקים בדיוק בנושא ההסתגלות שבמאמר המקור",
+            "metadata_note": "הכותרת התיאור וכל התגיות בעברית ונתמכים ישירות במקור",
+        }
+        reviewer.validate_decision(decision, {"id": "item-1"}, hashes)
+        decision["final_sha256"] = "e" * 64
+        with self.assertRaisesRegex(reviewer.ReviewError, "final_sha256"):
+            reviewer.validate_decision(decision, {"id": "item-1"}, hashes)
+
+    def test_jules_message_must_end_in_parseable_marked_json(self) -> None:
+        payload = {"item_id": "item-1"}
+        message = f"בדיקה הושלמה\n{reviewer.FINAL_MARKER}\n{json.dumps(payload)}"
+        self.assertEqual(reviewer.parse_decision(message), payload)
+        with self.assertRaises(reviewer.ReviewError):
+            reviewer.parse_decision(f"{reviewer.FINAL_MARKER}\nnot-json")
+
+
+if __name__ == "__main__":
+    unittest.main()
