@@ -544,30 +544,46 @@ def create_contact_sheet(video_path: Path, item: dict[str, Any], duration: float
 def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path: Path) -> None:
     final_path = brand_video(raw_path, item)
     media = ffprobe(final_path)
-    if media["codec"] != "h264":
-        raise PipelineError(f"Final video codec must be h264, got {media['codec']}")
-    if not 90 <= media["duration"] <= 180:
-        raise PipelineError(f"Final video must be 90-180 seconds, got {media['duration']}")
-    if media["width"] <= media["height"] or not 1.70 <= media["width"] / media["height"] <= 1.82:
-        raise PipelineError(f"Final video is not natural 16:9: {media['width']}x{media['height']}")
-    metadata = item["youtube_metadata"]
-    require_hebrew(metadata["title"], "YouTube title")
-    require_hebrew(metadata["description"], "YouTube description", allow_url=True)
-    for tag in metadata["tags"]:
-        require_hebrew(tag, "YouTube tag")
-    if SITE_URL not in metadata["description"]:
-        raise PipelineError("YouTube description is missing the Kesher URL")
     sheet = create_contact_sheet(final_path, item, media["duration"])
     item["final_mp4"] = final_path.name
     item["final_sha256"] = sha256_file(final_path)
     item["media"] = media
     item["visual_review_path"] = sheet.name
     item["visual_review_sha256"] = sha256_file(sheet)
-    item["technical_verified"] = True
-    item["review_notes"]["technical"] = (
-        f"אומת קובץ MP4 תקין, H.264, יחס {media['width']}x{media['height']}, "
-        f"משך {media['duration']} שניות וחותמת SHA-256"
-    )
+    item["frame_paths"] = [
+        str(path.relative_to(STATE_DIR))
+        for path in sorted((STATE_DIR / f"{item['id']}-frames").glob("frame-*.png"))
+    ]
+    if len(item["frame_paths"]) != 4:
+        raise PipelineError("Exactly four review frames are required")
+    item["frame_sha256"] = {
+        relative: sha256_file(STATE_DIR / relative) for relative in item["frame_paths"]
+    }
+
+    technical_failures: list[str] = []
+    if media["codec"] != "h264":
+        technical_failures.append(f"קודק הווידאו הוא {media['codec']} ולא H.264")
+    if not 90 <= media["duration"] <= 180:
+        technical_failures.append(
+            f"משך הווידאו הוא {media['duration']} שניות ואינו בטווח 90–180 שניות"
+        )
+    if media["width"] <= media["height"] or not 1.70 <= media["width"] / media["height"] <= 1.82:
+        technical_failures.append(
+            f"יחס התמונה {media['width']}x{media['height']} אינו יחס אופקי טבעי 16:9"
+        )
+    metadata = item["youtube_metadata"]
+    metadata_failure = ""
+    try:
+        require_hebrew(metadata["title"], "YouTube title")
+        require_hebrew(metadata["description"], "YouTube description", allow_url=True)
+        for tag in metadata["tags"]:
+            require_hebrew(tag, "YouTube tag")
+        if SITE_URL not in metadata["description"]:
+            raise PipelineError("YouTube description is missing the Kesher URL")
+    except (KeyError, PipelineError) as exc:
+        metadata_failure = f"המטא־דאטה אינו עומד בשער העברית והמקור: {exc}"
+        technical_failures.append(metadata_failure)
+
     manifest = {
         "schema_version": 1,
         "item_id": item["id"],
@@ -583,7 +599,35 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "final_sha256": item["final_sha256"],
         "media": media,
         "youtube_metadata": metadata,
+        "frame_paths": item["frame_paths"],
+        "frame_sha256": item["frame_sha256"],
+        "visual_review_path": item["visual_review_path"],
+        "visual_review_sha256": item["visual_review_sha256"],
     }
+
+    if technical_failures:
+        item["technical_verified"] = False
+        item["review_notes"]["technical"] = "נפסל טכנית: " + "; ".join(technical_failures)
+        if metadata_failure:
+            item["metadata_review_status"] = "rejected"
+            item["review_notes"]["metadata"] = metadata_failure
+        item["status"] = "rejected"
+        item["rejected_at"] = utc_now()
+        manifest["technical_verified"] = False
+        manifest["rejection_reasons"] = technical_failures
+        manifest_path = STATE_DIR / f"{item['id']}-manifest.json"
+        atomic_json_write(manifest_path, manifest)
+        item["manifest_path"] = manifest_path.name
+        item["manifest_sha256"] = sha256_file(manifest_path)
+        save_state(state)
+        print(f"TECHNICAL_REJECTED item={item['id']} reasons={len(technical_failures)}")
+        return
+
+    item["technical_verified"] = True
+    item["review_notes"]["technical"] = (
+        f"אומת קובץ MP4 תקין, H.264, יחס {media['width']}x{media['height']}, "
+        f"משך {media['duration']} שניות וחותמת SHA-256"
+    )
     transcript_path = transcribe_hebrew(final_path, item)
     item["transcript_path"] = transcript_path.name
     item["transcript_sha256"] = sha256_file(transcript_path)
@@ -591,15 +635,6 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
     source_path.write_text(article_body_for_item(item) + "\n", encoding="utf-8")
     item["source_path"] = source_path.name
     item["source_file_sha256"] = sha256_file(source_path)
-    item["frame_paths"] = [
-        str(path.relative_to(STATE_DIR))
-        for path in sorted((STATE_DIR / f"{item['id']}-frames").glob("frame-*.png"))
-    ]
-    if len(item["frame_paths"]) != 4:
-        raise PipelineError("Exactly four review frames are required")
-    item["frame_sha256"] = {
-        relative: sha256_file(STATE_DIR / relative) for relative in item["frame_paths"]
-    }
     manifest["transcript_path"] = item["transcript_path"]
     manifest["transcript_sha256"] = item["transcript_sha256"]
     manifest["source_path"] = item["source_path"]
