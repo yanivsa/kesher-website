@@ -8,6 +8,9 @@ on:
       - scripts/jules_video_reviewer.py
       - scripts/prepare_jules_video_evidence.py
       - scripts/requirements-video-cloud.txt
+      - package.json
+      - package-lock.json
+      - src/remotion/**
       - tests/test_kesher_daily_pipeline.py
   schedule:
     # Four short resumable slices during Israel's 09:00 hour. For each minute,
@@ -28,6 +31,11 @@ on:
           - preflight
           - generate
           - upload
+          - rebuild
+      rebuild_item_id:
+        description: Exact visually rejected item to rebuild with Remotion
+        required: false
+        type: string
       allow_additional_canary:
         description: Manually start one additional unused-source canary today
         required: false
@@ -67,6 +75,12 @@ jobs:
           cache: pip
           cache-dependency-path: scripts/requirements-video-cloud.txt
 
+      - name: Set up Node 22 for Remotion
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: "22"
+          cache: npm
+
       - name: Install system media dependencies
         run: |
           set -euo pipefail
@@ -78,7 +92,9 @@ jobs:
           set -euo pipefail
           python -m pip install --upgrade pip
           python -m pip install -r scripts/requirements-video-cloud.txt
+          npm ci --no-audit --no-fund
           notebooklm --version
+          npx remotion versions
           ffmpeg -version | head -1
           ffprobe -version | head -1
 
@@ -232,8 +248,16 @@ jobs:
             "${schedule_guard[@]}" \
             "${canary_override[@]}"
 
+      - name: Rebuild exact rejected visuals with Remotion
+        if: ${{ inputs.operation == 'rebuild' }}
+        run: |
+          set -euo pipefail
+          test -n "${{ inputs.rebuild_item_id }}"
+          python -u scripts/kesher_daily_pipeline.py \
+            --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
+
       - name: Detect pending Jules review
-        if: ${{ github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'generate' }}
+        if: ${{ github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' }}
         id: pending
         run: |
           python - <<'PY'
@@ -312,7 +336,7 @@ jobs:
           gh api --method DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/${REVIEW_BRANCH}"
 
       - name: Upload only after the four approved gates
-        if: ${{ github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'upload' }}
+        if: ${{ github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
