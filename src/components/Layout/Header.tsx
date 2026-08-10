@@ -89,7 +89,7 @@ const Header: React.FC = () => {
           <Link to="/" className={styles.logoLink} onClick={closeMenu}>
             <div className={styles.logo}>
               <span className={styles.brand}>{SITE_CONFIG.brand}</span>
-              <span className={styles.subtitle}>ייעוץ זוגי, הנחיית הורים וגישור</span>
+              <span className={styles.subtitle}>ייעוץ זוגי והנחיית הורים</span>
             </div>
           </Link>
 
