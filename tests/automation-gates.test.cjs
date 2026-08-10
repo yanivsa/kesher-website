@@ -482,6 +482,13 @@ assert paths == ["src/a.ts", "src/b.ts"]
         articlePolicy.includes('Image Generation Result: success|generated'),
         'Article policy must reject short articles, placeholder video, and contradictory image success evidence'
     );
+    assert(
+        articlePolicy.includes('describe actual visible pixels') &&
+        articlePolicy.includes('visibly contain both an adult and a child in a supportive interaction') &&
+        articlePolicy.includes('Abstract symbolism such as hands forming a heart') &&
+        articlePolicy.includes('record the structured truthful no-image fallback'),
+        'Article policy must explicitly require strict pixel-level semantic image verification and reject abstract symbolism'
+    );
 }
 
 testGenericH3();
