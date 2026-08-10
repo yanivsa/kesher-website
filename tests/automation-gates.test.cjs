@@ -2,6 +2,50 @@ const assert = require('assert');
 const { execFileSync, execSync } = require('child_process');
 const fs = require('fs');
 
+
+function testControllerHardening() {
+    const seoWorkflow = fs.readFileSync('.github/workflows/jules-daily-seo-geo-review.yml', 'utf8');
+    const mobileWorkflow = fs.readFileSync('.github/workflows/jules-daily-mobile-review.yml', 'utf8');
+    const siteFixWorkflow = fs.readFileSync('.github/workflows/jules-nightly-site-fixes.yml', 'utf8');
+    const industryWorkflow = fs.readFileSync('.github/workflows/jules-daily-industry-benchmarking.yml', 'utf8');
+    const weeklyWorkflow = fs.readFileSync('.github/workflows/jules-weekly-content-review.yml', 'utf8');
+    const articlePolicy = fs.readFileSync('.github/prompts/jules-weekday-article-update.md', 'utf8');
+
+    for (const [name, content] of [
+        ['SEO/GEO', seoWorkflow],
+        ['mobile', mobileWorkflow],
+        ['site-fix', siteFixWorkflow],
+        ['industry-benchmarking', industryWorkflow],
+        ['weekly-content-review', weeklyWorkflow],
+    ]) {
+        assert(
+            content.includes('strictly defined as a couples counselor'),
+            `${name} workflow must strictly define couples counselor`
+        );
+        assert(
+            (content.includes('Do NOT add, change, or refer to divorce (גירושין)') || content.includes('Do NOT optimize for, benchmark against, add, or refer to divorce (גירושין)')) && content.includes('legal services (עריכת דין / עו') && content.includes('ד), or family mediation (גישור)'),
+            `${name} workflow must strictly forbid divorce, legal, and mediation`
+        );
+    }
+
+    assert(
+        !articlePolicy.includes('מגשרת מוסמכת'),
+        'Article policy must not include mediator credentials'
+    );
+    assert(
+        !articlePolicy.includes('עורכת דין בהכשרתה'),
+        'Article policy must not include lawyer credentials'
+    );
+    assert(
+        !articlePolicy.includes('גישור כהליך רצוני'),
+        'Article policy must not present mediation as an allowed topic'
+    );
+    assert(
+        articlePolicy.includes('Do NOT write about, mention, or refer to divorce (גירושין)') && articlePolicy.includes('legal services (עריכת דין / עו') && articlePolicy.includes('ד), or family mediation (גישור)'),
+        'Article policy must strictly forbid divorce, legal, and mediation in new articles'
+    );
+}
+
 function testGenericH3() {
     const regex = /<h3[^>]*>\s*(סיכום|לסיכום|סיכום וצעדים הבאים|צעדים הבאים)\s*<\/h3>/;
     assert(regex.test("<h3>סיכום</h3>"), "Should reject generic H3");
@@ -491,6 +535,7 @@ assert paths == ["src/a.ts", "src/b.ts"]
     );
 }
 
+testControllerHardening();
 testGenericH3();
 testImageExtraction();
 testWorkflowGate();
