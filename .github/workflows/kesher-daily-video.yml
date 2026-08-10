@@ -94,6 +94,48 @@ jobs:
           python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
           echo "Restored state artifact ${artifact_id}."
 
+      - name: Seed an exact orphaned-task recovery state
+        if: ${{ github.event_name != 'pull_request' && (github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'generate') }}
+        env:
+          KESHER_RECOVERY_STATE_JSON: ${{ secrets.KESHER_RECOVERY_STATE_JSON }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          state_dir = Path(os.environ["KESHER_STATE_DIR"])
+          state_path = state_dir / "state.json"
+          if state_path.exists():
+              print("Durable state already restored; recovery seed ignored.")
+              raise SystemExit(0)
+
+          raw = os.environ.get("KESHER_RECOVERY_STATE_JSON", "").strip()
+          if not raw:
+              print("No recovery seed configured.")
+              raise SystemExit(0)
+          state = json.loads(raw)
+          items = state.get("items") if isinstance(state, dict) else None
+          if state.get("version") != 1 or not isinstance(items, list) or len(items) != 1:
+              raise SystemExit("Recovery seed must contain exactly one version-1 item")
+          item = items[0]
+          required = ("id", "source_id", "task_id", "artifact_id", "status", "source")
+          if not isinstance(item, dict) or any(not item.get(key) for key in required):
+              raise SystemExit("Recovery seed is missing exact provider identifiers")
+          if item["task_id"] != item["artifact_id"] or item["status"] != "generating":
+              raise SystemExit("Recovery seed must resume one exact generating artifact")
+          source = item["source"]
+          if not isinstance(source, dict) or not source.get("slug") or not source.get("content_sha256"):
+              raise SystemExit("Recovery seed source identity is incomplete")
+
+          state_dir.mkdir(parents=True, exist_ok=True)
+          temp_path = state_dir / "state.json.tmp"
+          temp_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          temp_path.replace(state_path)
+          print(f"Recovered exact item {item['id']} task {item['task_id']}.")
+          PY
+
       - name: Materialize NotebookLM credentials without exposing them
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || github.event_name == 'schedule') }}
         env:
@@ -181,6 +223,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           compression-level: 0
+          include-hidden-files: true
 
       - name: Jules inspects four frames, transcript, source and metadata
         if: ${{ steps.pending.outputs.found == 'true' }}
@@ -217,6 +260,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           compression-level: 0
+          include-hidden-files: true
 
       - name: Write concise Hebrew status
         if: ${{ always() }}
