@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 import json
 import os
+import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -233,6 +235,30 @@ class PipelineTestCase(unittest.TestCase):
         with mock.patch.object(pipeline.requests, "put", return_value=response):
             with self.assertRaisesRegex(pipeline.PipelineError, "refusing a second insert"):
                 pipeline.resume_offset("https://upload.invalid/session", "token", 100)
+
+    @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg tools unavailable")
+    def test_real_ffmpeg_brand_probe_and_four_frame_evidence(self) -> None:
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        raw = self.state_dir / "synthetic.mp4"
+        subprocess.run(
+            [
+                "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+                "-f", "lavfi", "-i", "color=c=blue:s=1280x720:r=25",
+                "-f", "lavfi", "-i", "sine=frequency=440:sample_rate=44100",
+                "-t", "2", "-c:v", "libx264", "-c:a", "aac", str(raw),
+            ],
+            check=True,
+            timeout=60,
+        )
+        item = {"id": "media-smoke"}
+        final = pipeline.brand_video(raw, item)
+        media = pipeline.ffprobe(final)
+        self.assertEqual(media["codec"], "h264")
+        self.assertEqual(media["audio_codec"], "aac")
+        self.assertEqual((media["width"], media["height"]), (1280, 720))
+        sheet = pipeline.create_contact_sheet(final, item, media["duration"])
+        self.assertTrue(sheet.is_file())
+        self.assertEqual(len(list((self.state_dir / "media-smoke-frames").glob("frame-*.png"))), 4)
 
     def test_jules_decision_requires_all_exact_hashes_and_four_observations(self) -> None:
         hashes = {
