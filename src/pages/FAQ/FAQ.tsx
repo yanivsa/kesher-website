@@ -14,6 +14,8 @@ const faqSchema = {
   "@graph": [
     {
       "@type": "FAQPage",
+      "url": `${SITE_CONFIG.url}/faq`,
+      "description": "תשובות על ייעוץ זוגי, הכנה לנישואים, השנה הראשונה, זוגיות בעלייה וברילוקיישן, רווקות מאוחרת, הנחיית הורים וגישור.",
       "mainEntity": faqs.map(faq => ({
         "@type": "Question",
         "name": faq.question,
