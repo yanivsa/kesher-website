@@ -488,35 +488,53 @@ def transcribe_hebrew(video_path: Path, item: dict[str, Any]) -> Path:
     return transcript_path
 
 
-def brand_video(raw_path: Path, item: dict[str, Any]) -> Path:
-    output_path = STATE_DIR / f"{item['id']}-final.mp4"
+def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
+    output_path = STATE_DIR / f"{item['id']}-remotion-final.mp4"
     if output_path.exists() and output_path.stat().st_size > 0:
         return output_path
-    font_candidates = (
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/System/Library/Fonts/Supplemental/Arial.ttf",
-    )
-    font = next((value for value in font_candidates if Path(value).exists()), None)
-    if not font:
-        raise PipelineError("No supported font exists for the Kesher URL watermark")
-    escaped_url = SITE_URL.replace(":", r"\:")
-    drawtext = (
-        f"drawtext=fontfile='{font}':text='{escaped_url}':fontcolor=white:fontsize=26:"
-        "box=1:boxcolor=black@0.62:boxborderw=10:x=24:y=h-th-24"
+    remotion = PROJECT_DIR / "node_modules" / ".bin" / "remotion"
+    if not remotion.is_file():
+        raise PipelineError("Remotion dependencies are not installed")
+    raw_media = ffprobe(raw_path)
+    duration_frames = round(float(raw_media["duration"]) * 30)
+    if duration_frames <= 0:
+        raise PipelineError("NotebookLM audio duration is invalid for Remotion")
+    props_path = STATE_DIR / f"{item['id']}-remotion-props.json"
+    atomic_json_write(
+        props_path,
+        {
+            "audioSrc": raw_path.name,
+            "durationInFrames": duration_frames,
+            "title": item["source"]["title"],
+            "category": item["source"]["category"],
+            "url": SITE_URL,
+        },
     )
     command = [
-        "ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(raw_path),
-        "-vf", drawtext, "-c:v", "libx264", "-preset", "medium", "-crf", "18",
-        "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(output_path),
+        str(remotion), "render", "src/remotion/index.ts", "KesherOverview", str(output_path),
+        f"--props={props_path}", f"--public-dir={STATE_DIR}", "--codec=h264",
+        "--audio-codec=aac", "--concurrency=2", "--timeout=120000",
     ]
-    result = subprocess.run(command, capture_output=True, text=True, timeout=1800, check=False)
+    result = subprocess.run(
+        command,
+        cwd=PROJECT_DIR,
+        capture_output=True,
+        text=True,
+        timeout=3600,
+        check=False,
+    )
     if result.returncode != 0 or not output_path.exists() or output_path.stat().st_size < 1024:
-        raise PipelineError(f"Branding render failed: {result.stderr[-300:]}")
+        detail = (result.stderr or result.stdout)[-500:]
+        raise PipelineError(f"Remotion visual rebuild failed: {detail}")
+    item["visual_pipeline"] = "remotion-v1-notebooklm-audio"
+    item["remotion_props_path"] = props_path.name
+    item["remotion_props_sha256"] = sha256_file(props_path)
     return output_path
 
 
 def create_contact_sheet(video_path: Path, item: dict[str, Any], duration: float) -> Path:
-    frame_dir = STATE_DIR / f"{item['id']}-frames"
+    suffix = "-remotion" if item.get("visual_pipeline") == "remotion-v1-notebooklm-audio" else ""
+    frame_dir = STATE_DIR / f"{item['id']}{suffix}-frames"
     frame_dir.mkdir(parents=True, exist_ok=True)
     timestamps = [duration * fraction for fraction in (0.08, 0.35, 0.65, 0.92)]
     frames: list[Path] = []
@@ -530,7 +548,7 @@ def create_contact_sheet(video_path: Path, item: dict[str, Any], duration: float
         if result.returncode != 0 or not frame.exists() or frame.stat().st_size == 0:
             raise PipelineError(f"Frame extraction failed for frame {index}")
         frames.append(frame)
-    sheet = STATE_DIR / f"{item['id']}-visual-review.png"
+    sheet = STATE_DIR / f"{item['id']}{suffix}-visual-review.png"
     command = [
         "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
         *sum((["-i", str(frame)] for frame in frames), []),
@@ -544,7 +562,7 @@ def create_contact_sheet(video_path: Path, item: dict[str, Any], duration: float
 
 
 def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path: Path) -> None:
-    final_path = brand_video(raw_path, item)
+    final_path = render_remotion_video(raw_path, item)
     media = ffprobe(final_path)
     sheet = create_contact_sheet(final_path, item, media["duration"])
     item["final_mp4"] = final_path.name
@@ -554,7 +572,12 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
     item["visual_review_sha256"] = sha256_file(sheet)
     item["frame_paths"] = [
         str(path.relative_to(STATE_DIR))
-        for path in sorted((STATE_DIR / f"{item['id']}-frames").glob("frame-*.png"))
+        for path in sorted(
+            (
+                STATE_DIR
+                / f"{item['id']}{'-remotion' if item.get('visual_pipeline') == 'remotion-v1-notebooklm-audio' else ''}-frames"
+            ).glob("frame-*.png")
+        )
     ]
     if len(item["frame_paths"]) != 4:
         raise PipelineError("Exactly four review frames are required")
@@ -599,6 +622,9 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "raw_sha256": item["raw_sha256"],
         "final_mp4": item["final_mp4"],
         "final_sha256": item["final_sha256"],
+        "visual_pipeline": item.get("visual_pipeline"),
+        "remotion_props_path": item.get("remotion_props_path"),
+        "remotion_props_sha256": item.get("remotion_props_sha256"),
         "media": media,
         "youtube_metadata": metadata,
         "frame_paths": item["frame_paths"],
@@ -617,7 +643,7 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         item["rejected_at"] = utc_now()
         manifest["technical_verified"] = False
         manifest["rejection_reasons"] = technical_failures
-        manifest_path = STATE_DIR / f"{item['id']}-manifest.json"
+        manifest_path = STATE_DIR / f"{item['id']}-remotion-manifest.json"
         atomic_json_write(manifest_path, manifest)
         item["manifest_path"] = manifest_path.name
         item["manifest_sha256"] = sha256_file(manifest_path)
@@ -645,7 +671,7 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
     manifest["frame_sha256"] = item["frame_sha256"]
     manifest["visual_review_path"] = item["visual_review_path"]
     manifest["visual_review_sha256"] = item["visual_review_sha256"]
-    manifest_path = STATE_DIR / f"{item['id']}-manifest.json"
+    manifest_path = STATE_DIR / f"{item['id']}-remotion-manifest.json"
     atomic_json_write(manifest_path, manifest)
     item["manifest_path"] = manifest_path.name
     item["manifest_sha256"] = sha256_file(manifest_path)
@@ -699,6 +725,57 @@ def run_generation(
     else:
         return 0
     validate_and_manifest(state, item, raw_path)
+    return 0
+
+
+def rebuild_rejected_with_remotion(item_id: str) -> int:
+    state = load_state()
+    matches = [item for item in state["items"] if item.get("id") == item_id]
+    if len(matches) != 1:
+        raise PipelineError("Remotion rebuild item was not found uniquely")
+    item = matches[0]
+    if item.get("status") != "rejected" or item.get("visual_review_status") != "rejected":
+        raise PipelineError("Remotion rebuild is allowed only for a visually rejected item")
+    if item.get("uploaded") is True or item.get("youtube_id"):
+        raise PipelineError("Uploaded media cannot be rebuilt")
+    raw_path = STATE_DIR / item.get("raw_mp4", "")
+    if not raw_path.is_file() or sha256_file(raw_path) != item.get("raw_sha256"):
+        raise PipelineError("Original NotebookLM MP4 is missing or changed")
+    required_identity = ("notebook_id", "source_id", "task_id", "artifact_id", "source", "youtube_metadata")
+    if any(not item.get(field) for field in required_identity):
+        raise PipelineError("Provider identity or metadata is incomplete")
+
+    item.setdefault("evidence_history", []).append(
+        {
+            "recorded_at": utc_now(),
+            "status": item.get("status"),
+            "final_mp4": item.get("final_mp4"),
+            "final_sha256": item.get("final_sha256"),
+            "manifest_path": item.get("manifest_path"),
+            "manifest_sha256": item.get("manifest_sha256"),
+            "visual_review_path": item.get("visual_review_path"),
+            "visual_review_sha256": item.get("visual_review_sha256"),
+            "frame_paths": item.get("frame_paths"),
+            "frame_sha256": item.get("frame_sha256"),
+            "review_notes": item.get("review_notes"),
+        }
+    )
+    for field in (
+        "final_mp4", "final_sha256", "manifest_path", "manifest_sha256",
+        "visual_review_path", "visual_review_sha256", "frame_paths", "frame_sha256",
+        "remotion_props_path", "remotion_props_sha256", "rejected_at",
+    ):
+        item.pop(field, None)
+    item["status"] = "downloaded"
+    item["technical_verified"] = False
+    item["visual_review_status"] = "pending"
+    item["semantic_review_status"] = "pending"
+    item["metadata_review_status"] = "pending"
+    item["review_notes"] = {"technical": "", "visual": "", "semantic": "", "metadata": ""}
+    item["remotion_rebuild_started_at"] = utc_now()
+    save_state(state)
+    validate_and_manifest(state, item, raw_path)
+    print(f"REMOTION_REBUILT item={item_id} status={item['status']}")
     return 0
 
 
@@ -801,7 +878,11 @@ def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: s
             "defaultLanguage": "he",
             "defaultAudioLanguage": "he",
         },
-        "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False},
+        "status": {
+            "privacyStatus": "public",
+            "selfDeclaredMadeForKids": False,
+            "containsSyntheticMedia": True,
+        },
     }
     response = requests.post(
         "https://www.googleapis.com/upload/youtube/v3/videos",
@@ -995,6 +1076,7 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--preflight", action="store_true")
     mode.add_argument("--upload-only", action="store_true")
     mode.add_argument("--review-item")
+    mode.add_argument("--remotion-rebuild-item")
     mode.add_argument("--report-json", action="store_true")
     parser.add_argument("--max-wait-seconds", type=int, default=3600)
     parser.add_argument("--require-israel-hour", type=int, choices=range(24))
@@ -1024,6 +1106,8 @@ def main() -> int:
         if any(value is None for value in required):
             raise PipelineError("Atomic review requires all three statuses and Hebrew notes")
         return update_review(args)
+    if args.remotion_rebuild_item:
+        return rebuild_rejected_with_remotion(args.remotion_rebuild_item)
     if args.report_json:
         return report()
     return run_generation(

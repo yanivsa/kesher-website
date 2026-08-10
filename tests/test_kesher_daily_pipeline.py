@@ -195,7 +195,7 @@ class PipelineTestCase(unittest.TestCase):
         frame_dir.mkdir()
         for index in range(1, 5):
             (frame_dir / f"frame-{index}.png").write_bytes(f"frame-{index}".encode())
-        with mock.patch.object(pipeline, "brand_video", return_value=final), mock.patch.object(
+        with mock.patch.object(pipeline, "render_remotion_video", return_value=final), mock.patch.object(
             pipeline, "ffprobe", return_value={"codec": "h264", "width": 1280, "height": 720, "duration": 60.0, "format": "mp4"}
         ), mock.patch.object(
             pipeline, "create_contact_sheet", return_value=review
@@ -278,6 +278,34 @@ class PipelineTestCase(unittest.TestCase):
         pipeline.update_review(args)
         self.assertEqual(pipeline.load_state()["items"][0]["status"], "rejected")
 
+    def test_remotion_rebuild_preserves_rejected_evidence_history(self) -> None:
+        state, item = self.make_pending_item()
+        raw = self.state_dir / "raw-notebooklm.mp4"
+        raw.write_bytes(b"original-notebooklm")
+        item.update(
+            {
+                "status": "rejected",
+                "visual_review_status": "rejected",
+                "semantic_review_status": "approved",
+                "metadata_review_status": "approved",
+                "raw_mp4": raw.name,
+                "raw_sha256": pipeline.sha256_file(raw),
+                "source_id": "source",
+                "task_id": "artifact",
+                "artifact_id": "artifact",
+            }
+        )
+        pipeline.save_state(state)
+        with mock.patch.object(pipeline, "validate_and_manifest") as validate:
+            pipeline.rebuild_rejected_with_remotion(item["id"])
+
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "downloaded")
+        self.assertEqual(saved["visual_review_status"], "pending")
+        self.assertEqual(len(saved["evidence_history"]), 1)
+        self.assertEqual(saved["evidence_history"][0]["status"], "rejected")
+        validate.assert_called_once()
+
     def test_upload_cannot_start_without_all_four_gates(self) -> None:
         state, item = self.make_pending_item()
         item["status"] = "approved"
@@ -295,6 +323,26 @@ class PipelineTestCase(unittest.TestCase):
             with self.assertRaisesRegex(pipeline.PipelineError, "does not match"):
                 pipeline.verify_authenticated_channel("token")
 
+    def test_youtube_upload_declares_synthetic_media(self) -> None:
+        video = self.state_dir / "final.mp4"
+        video.parent.mkdir(parents=True, exist_ok=True)
+        video.write_bytes(b"video")
+        item = {
+            "id": "item",
+            "status": "approved",
+            "youtube_metadata": {
+                "title": "כותרת בעברית",
+                "description": "תיאור בעברית",
+                "tags": ["זוגיות"],
+            },
+        }
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        response = SimpleNamespace(status_code=200, headers={"Location": "https://upload.invalid/session"})
+        with mock.patch.object(pipeline.requests, "post", return_value=response) as post:
+            pipeline.start_resumable_upload(state, item, "token", video)
+
+        self.assertIs(post.call_args.kwargs["json"]["status"]["containsSyntheticMedia"], True)
+
     def test_expired_resumable_session_fails_closed(self) -> None:
         response = SimpleNamespace(status_code=410, headers={})
         with mock.patch.object(pipeline.requests, "put", return_value=response):
@@ -302,7 +350,7 @@ class PipelineTestCase(unittest.TestCase):
                 pipeline.resume_offset("https://upload.invalid/session", "token", 100)
 
     @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg tools unavailable")
-    def test_real_ffmpeg_brand_probe_and_four_frame_evidence(self) -> None:
+    def test_real_ffmpeg_probe_and_four_frame_evidence(self) -> None:
         self.state_dir.mkdir(parents=True, exist_ok=True)
         raw = self.state_dir / "synthetic.mp4"
         subprocess.run(
@@ -316,14 +364,42 @@ class PipelineTestCase(unittest.TestCase):
             timeout=60,
         )
         item = {"id": "media-smoke"}
-        final = pipeline.brand_video(raw, item)
-        media = pipeline.ffprobe(final)
+        media = pipeline.ffprobe(raw)
         self.assertEqual(media["codec"], "h264")
         self.assertEqual(media["audio_codec"], "aac")
         self.assertEqual((media["width"], media["height"]), (1280, 720))
-        sheet = pipeline.create_contact_sheet(final, item, media["duration"])
+        sheet = pipeline.create_contact_sheet(raw, item, media["duration"])
         self.assertTrue(sheet.is_file())
         self.assertEqual(len(list((self.state_dir / "media-smoke-frames").glob("frame-*.png"))), 4)
+
+    def test_remotion_rebuild_preserves_notebooklm_audio_source(self) -> None:
+        raw = self.state_dir / "item-notebooklm.mp4"
+        raw.parent.mkdir(parents=True, exist_ok=True)
+        raw.write_bytes(b"raw-notebooklm-audio")
+        output = self.state_dir / "item-remotion-final.mp4"
+        item = {
+            "id": "item",
+            "source": {"title": "כותרת בעברית", "category": "זוגיות"},
+        }
+        remotion = pipeline.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
+        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda path: path == remotion), mock.patch.object(
+            pipeline, "ffprobe", return_value={"duration": 104.0}
+        ), mock.patch.object(pipeline.subprocess, "run") as run:
+            def finish(*_args: object, **_kwargs: object) -> SimpleNamespace:
+                output.write_bytes(b"rendered-video" * 100)
+                return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            run.side_effect = finish
+            rendered = pipeline.render_remotion_video(raw, item)
+
+        self.assertEqual(rendered, output)
+        command = run.call_args.args[0]
+        self.assertIn("KesherOverview", command)
+        self.assertIn(f"--public-dir={self.state_dir}", command)
+        props = json.loads((self.state_dir / "item-remotion-props.json").read_text(encoding="utf-8"))
+        self.assertEqual(props["audioSrc"], raw.name)
+        self.assertEqual(props["durationInFrames"], 3120)
+        self.assertEqual(item["visual_pipeline"], "remotion-v1-notebooklm-audio")
 
     def test_jules_decision_requires_all_exact_hashes_and_four_observations(self) -> None:
         hashes = {
