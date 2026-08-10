@@ -31,7 +31,7 @@ MAX_GENERATION_SOURCE_ATTEMPTS = 3
 NOTEBOOKLM_SOURCE_ADD_TIMEOUT_SECONDS = 180
 
 # Directories
-PROJECT_DIR = Path("/Users/ninja/Documents/Kesher")
+PROJECT_DIR = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = PROJECT_DIR / "notebooklm-output"
 REMOTION_DIR = PROJECT_DIR / "remotion-kesher"
 REMOTION_OUTPUT_DIR = PROJECT_DIR / "remotion-output"
@@ -520,241 +520,6 @@ def extract_uploaded_video_candidates(result):
     return candidates
 
 
-def find_free_port():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.bind(("127.0.0.1", 0))
-        return sock.getsockname()[1]
-
-
-@contextlib.contextmanager
-def serve_video_through_localtunnel(video_path):
-    expected_size = video_path.stat().st_size
-    port = find_free_port()
-    http_process = subprocess.Popen(
-        [sys.executable, "-m", "http.server", str(port), "--bind", "127.0.0.1"],
-        cwd=str(video_path.parent),
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    tunnel_process = subprocess.Popen(
-        [
-            "npx",
-            "--yes",
-            "localtunnel",
-            "--port",
-            str(port),
-            "--local-host",
-            "127.0.0.1",
-        ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-    try:
-        tunnel_url = None
-        deadline = time.time() + 45
-        while time.time() < deadline:
-            ready, _, _ = select.select([tunnel_process.stdout], [], [], 1)
-            if ready:
-                line = tunnel_process.stdout.readline().strip()
-                if "your url is:" in line:
-                    tunnel_url = line.split("your url is:", 1)[1].strip()
-                    break
-            if tunnel_process.poll() is not None:
-                stderr = tunnel_process.stderr.read().strip()
-                raise RuntimeError(f"localtunnel exited early: {stderr}")
-        if not tunnel_url:
-            raise RuntimeError("localtunnel did not provide a public URL")
-
-        public_url = f"{tunnel_url}/{urllib.parse.quote(video_path.name)}"
-        probe = requests.get(
-            public_url,
-            headers={
-                "User-Agent": "KesherVideoPipeline/1.0",
-                "bypass-tunnel-reminder": "true",
-            },
-            stream=True,
-            timeout=45,
-        )
-        probe.raise_for_status()
-        content_length = int(probe.headers.get("Content-Length") or 0)
-        first_chunk = next(probe.iter_content(chunk_size=32), b"")
-        probe.close()
-        if content_length != expected_size:
-            raise RuntimeError(
-                f"Tunnel size mismatch: expected {expected_size}, got {content_length}"
-            )
-        if len(first_chunk) < 12 or first_chunk[4:8] != b"ftyp":
-            raise RuntimeError("Tunnel response is not an MP4 file")
-        yield public_url, expected_size
-    finally:
-        tunnel_process.terminate()
-        http_process.terminate()
-        for process in (tunnel_process, http_process):
-            try:
-                process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                process.kill()
-
-
-def reconcile_uploaded_queue(queue_data):
-    uploaded_items = [item for item in queue_data.get("queue", []) if item.get("uploaded")]
-    if not uploaded_items:
-        return False
-
-    changed = False
-    from composio_mcp_client import ComposioMCPClient
-    mcp_client = ComposioMCPClient()
-    mcp_client.connect()
-    try:
-        for item in uploaded_items:
-            video_id = item.get("youtube_id")
-            if not video_id:
-                ok, verification = False, "queue item has no YouTube ID"
-            else:
-                ok, verification = verify_public_youtube_video(mcp_client, video_id)
-            if ok:
-                item["youtube_verification"] = verification
-                item["last_verified_at"] = datetime.now().isoformat()
-                item["upload_status"] = "public_verified"
-                item.pop("last_upload_error", None)
-                continue
-
-            item.setdefault("upload_history", []).append(
-                {
-                    "youtube_id": video_id,
-                    "youtube_url": item.get("youtube_url"),
-                    "uploaded_at": item.get("uploaded_at"),
-                    "invalidated_at": datetime.now().isoformat(),
-                    "reason": verification,
-                }
-            )
-            item["uploaded"] = False
-            item["upload_status"] = "deleted_or_unavailable"
-            item["last_upload_error"] = verification
-            item.pop("youtube_id", None)
-            item.pop("youtube_url", None)
-            item.pop("youtube_verification", None)
-            changed = True
-    finally:
-        mcp_client.disconnect()
-    return changed
-
-def verify_channel_and_upload(video_path, title, description, tags, is_test=False):
-    print(f"Uploading {video_path} via a verified local tunnel and Composio Remote Workbench...")
-    if is_test:
-        print("[TEST MODE] Skipped upload.")
-        return True, "test_video_id", "https://youtube.com/watch?v=test_video_id"
-
-    try:
-        file_name = video_path.name
-        with serve_video_through_localtunnel(video_path) as (direct_url, expected_size):
-            print(f"Verified tunnel URL for {expected_size} bytes.")
-
-            # Prepare workbench code
-            workbench_code = f'''
-import urllib.request
-import json
-import sys
-import os
-
-download_url = "{direct_url}"
-local_path = "/tmp/{file_name}"
-expected_size = {expected_size}
-
-print("Step 1: Downloading verified video inside sandbox...")
-req = urllib.request.Request(download_url, headers={{
-    "User-Agent": "KesherVideoPipeline/1.0",
-    "bypass-tunnel-reminder": "true",
-}})
-with urllib.request.urlopen(req, timeout=300) as response:
-    with open(local_path, "wb") as f:
-        while True:
-            chunk = response.read(1024 * 1024)
-            if not chunk:
-                break
-            f.write(chunk)
-
-actual_size = os.path.getsize(local_path)
-with open(local_path, "rb") as f:
-    header = f.read(12)
-if actual_size != expected_size:
-    print(f"Downloaded size mismatch: expected {{expected_size}}, got {{actual_size}}")
-    sys.exit(1)
-if len(header) < 12 or header[4:8] != b"ftyp":
-    print("Downloaded file is not an MP4")
-    sys.exit(1)
-print("Downloaded and verified MP4, size:", actual_size)
-
-print("Step 2: Uploading to S3...")
-uploaded, err = upload_local_file(local_path)
-if err:
-    print("S3 Upload error:", err)
-    sys.exit(1)
-
-s3key = uploaded["s3key"]
-print("Uploaded to S3. Key:", s3key)
-
-print("Step 3: Running YouTube Multipart Upload...")
-title = {repr(title)}
-description = {repr(description)}
-tags = {repr(tags)}
-
-result, yt_err = run_composio_tool("YOUTUBE_MULTIPART_UPLOAD_VIDEO", {{
-    "title": title,
-    "description": description,
-    "tags": tags,
-    "categoryId": "22",
-    "privacyStatus": "public",
-    "videoFile": {{
-        "name": "{file_name}",
-        "mimetype": "video/mp4",
-        "s3key": s3key
-    }}
-}}, account="kesher")
-
-if yt_err:
-    print("YouTube Upload error:", yt_err)
-    sys.exit(1)
-
-print("YouTube Upload Success:", json.dumps(result, ensure_ascii=False))
-'''
-
-            # Run via ComposioMCPClient while the tunnel stays open.
-            from composio_mcp_client import ComposioMCPClient
-            mcp_client = ComposioMCPClient()
-            mcp_client.connect()
-            try:
-                result = mcp_client.call_tool(
-                    "COMPOSIO_REMOTE_WORKBENCH",
-                    {
-                        "code_to_execute": workbench_code,
-                        "sync_response_to_workbench": False,
-                    },
-                    timeout=600
-                )
-                print("Workbench result:", result)
-
-                candidate_ids = extract_uploaded_video_candidates(result)
-                if not candidate_ids:
-                    return False, "Upload response did not contain a YouTube video ID", ""
-
-                verification_errors = []
-                for yt_id in candidate_ids:
-                    for attempt in range(6):
-                        ok, verification = verify_public_youtube_video(mcp_client, yt_id)
-                        if ok:
-                            return True, yt_id, f"https://youtu.be/{yt_id}"
-                        verification_errors.append(f"{yt_id}: {verification}")
-                        if attempt < 5:
-                            time.sleep(10)
-
-                return False, "; ".join(verification_errors[-3:]), ""
-            finally:
-                mcp_client.disconnect()
-
-    except Exception as e:
-        return False, str(e), ""
 
 def load_queue():
     if not QUEUE_FILE.exists():
@@ -809,7 +574,6 @@ def acquire_pipeline_lock(test_mode=False):
     return lock
 
 def main():
-    os.environ["PATH"] = "/Users/ninja/.nvm/versions/node/v22.21.1/bin:" + os.environ.get("PATH", "")
     parser = argparse.ArgumentParser()
     parser.add_argument("--test-mode", action="store_true", help="Run in dry run test mode without real generation/upload")
     parser.add_argument("--upload-only", action="store_true", help="Reconcile and upload ready queue items without generating new videos")
@@ -896,12 +660,11 @@ def main():
             )
 
         active_normal = [item for item in queue_data["queue"] if item["type"] == "normal" and is_active_unuploaded(item)]
-        active_short = [item for item in queue_data["queue"] if item["type"] == "short" and is_active_unuploaded(item)]
+
 
         if len(active_normal) < 1:
             needed_types.append("normal")
-        if len(active_short) < 1:
-            needed_types.append("short")
+
 
         if needed_types:
             print(f"Generating new content. Needed types: {needed_types}")

@@ -159,26 +159,42 @@ class ManifestSchema:
             if not art_id or "placeholder" in art_id: raise SchemaError("real artifact_id required")
 
         if idx >= STATES.index("downloaded"):
-            if not data.get("raw_path") or not data.get("raw_sha256"): raise SchemaError("raw_path and raw_sha256 required")
-            if not data.get("render_path") or not data.get("render_sha256"): raise SchemaError("render_path and render_sha256 required")
+            raw = data.get("raw_path")
+            render = data.get("render_path")
+            if not raw or not Path(raw).exists(): raise SchemaError(f"raw_path required and must exist: {raw}")
+            if not data.get("raw_sha256") or data.get("raw_sha256") != hashlib.sha256(Path(raw).read_bytes()).hexdigest():
+                raise SchemaError("raw_sha256 mismatch")
+            if not render or not Path(render).exists(): raise SchemaError("render_path required and must exist")
+            if not data.get("render_sha256") or data.get("render_sha256") != hashlib.sha256(Path(render).read_bytes()).hexdigest():
+                raise SchemaError("render_sha256 mismatch")
 
         if idx >= STATES.index("technically_verified"):
-            if not data.get("width") or not data.get("height") or not data.get("duration"):
-                raise SchemaError("width/height/duration required")
-            if not data.get("audio_evidence"): raise SchemaError("audio_evidence required")
+            w = data.get("width")
+            h = data.get("height")
+            d = data.get("duration")
+            if not w or not h or not d: raise SchemaError("width/height/duration required")
+            w = int(w); h = int(h); d = int(d)
+            if w * 9 != h * 16: raise SchemaError("16:9 geometry required")
+            if not (90 <= d <= 180): raise SchemaError("90-180s duration required")
+
+            aud = data.get("audio_evidence")
+            if not aud or not isinstance(aud, dict) or not aud.get("has_audio"): raise SchemaError("audio_evidence structure required")
 
             gates = data.get("machine_gate_results")
-            if not gates or not isinstance(gates, dict): raise SchemaError("machine_gate_results dictionary required")
-            if len(gates) < 4: raise SchemaError("at least four machine gate results required")
+            if not gates or not isinstance(gates, dict) or len(gates) < 4: raise SchemaError("at least four machine gate results required")
 
         if idx >= STATES.index("review_pending"):
-            if not data.get("visual_review_path") or not data.get("visual_review_sha256"):
-                raise SchemaError("visual_review_path and sha256 required")
+            rev = data.get("visual_review_path")
+            if not rev or not Path(rev).exists(): raise SchemaError("visual_review_path required and must exist")
+            if not data.get("visual_review_sha256") or data.get("visual_review_sha256") != hashlib.sha256(Path(rev).read_bytes()).hexdigest():
+                raise SchemaError("visual_review_sha256 mismatch")
             meta = data.get("exact_youtube_metadata")
             if not meta or not isinstance(meta, dict):
                 raise SchemaError("exact_youtube_metadata required")
             if not meta.get("title") or not meta.get("description") or not meta.get("tags"):
                 raise SchemaError("empty or default metadata not allowed")
+            if not re.search(r'[\u0590-\u05FF]', meta.get("title", "")) or not re.search(r'[\u0590-\u05FF]', meta.get("description", "")):
+                raise SchemaError("Hebrew metadata required")
 
     @staticmethod
     def transition(data, to_state):
@@ -189,14 +205,27 @@ class ManifestSchema:
             return
 
         current = data.get("state")
+        if current == to_state:
+            return  # Idempotent
+
         curr_idx = STATES.index(current) if current in STATES else -1
         target_idx = STATES.index(to_state)
 
         if target_idx < curr_idx:
             raise StateError("Backward transitions not allowed")
+        if target_idx > curr_idx + 1:
+            raise StateError("Skipping forward states not allowed")
 
+        old_state = data.get("state")
         data["state"] = to_state
-        ManifestSchema.validate(data)
+        try:
+            ManifestSchema.validate(data)
+        except Exception:
+            if old_state:
+                data["state"] = old_state
+            else:
+                data.pop("state", None)
+            raise
 
 def is_duplicate(new_item, history):
     n_url = normalize_url(new_item.get("source_url", ""))
@@ -220,7 +249,7 @@ def is_duplicate(new_item, history):
         if n_ren and n_ren == item.get("render_sha256"): return True
     return False
 
-def check_review_transition(item_data, review_notes, is_approved, file_hashes_match=True):
+def check_review_transition(item_data, review_notes, visual_approved, semantic_approved, metadata_approved, file_hashes_match=True):
     if item_data.get("state") != "review_pending":
         raise StateError("Must be in review_pending state")
 
@@ -237,6 +266,7 @@ def check_review_transition(item_data, review_notes, is_approved, file_hashes_ma
     if "הדרכת הורים" in src_type and "זוגיות" in desc:
         raise StateError("Parenting source with couples metadata fixture rejected")
 
+    is_approved = visual_approved and semantic_approved and metadata_approved
     if is_approved:
         gates = item_data.get("machine_gate_results", {})
         if gates.get("semantic") == "auto-approved":
