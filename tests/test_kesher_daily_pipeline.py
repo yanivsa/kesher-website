@@ -124,11 +124,27 @@ class PipelineTestCase(unittest.TestCase):
         with mock.patch.object(pipeline, "run_notebooklm", return_value={"source": {"id": "source-exact"}}):
             pipeline.add_source(state, item)
         self.assertEqual(item["source_id"], "source-exact")
-        with mock.patch.object(pipeline, "run_notebooklm", return_value={"task_id": "task-exact"}):
+        with mock.patch.object(pipeline, "run_notebooklm", return_value={"task_id": "task-exact"}) as run:
             pipeline.start_generation(state, item)
         self.assertEqual(item["task_id"], "task-exact")
         self.assertEqual(item["artifact_id"], "task-exact")
         self.assertEqual(item["status"], "generating")
+        arguments = run.call_args.args[0]
+        self.assertEqual(arguments[arguments.index("--style") + 1], "custom")
+        style_prompt = arguments[arguments.index("--style-prompt") + 1]
+        self.assertIn("ללא מילים על המסך", style_prompt)
+
+    def test_rejected_item_blocks_a_second_new_video_on_same_israel_date(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        item = pipeline.new_item(source)
+        item["status"] = "rejected"
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        pipeline.save_state(state)
+        with mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+            pipeline, "select_newest_unused_article"
+        ) as select:
+            self.assertEqual(pipeline.run_generation(0, None), 0)
+        select.assert_not_called()
 
     def test_pending_poll_never_starts_a_second_generation(self) -> None:
         item = {"id": "one", "task_id": "task-one", "status": "generating"}

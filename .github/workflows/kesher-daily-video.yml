@@ -9,10 +9,12 @@ on:
       - scripts/requirements-video-cloud.txt
       - tests/test_kesher_daily_pipeline.py
   schedule:
-    # 09:17 Israel time across daylight-saving changes. The local-hour guard
-    # makes exactly one of these two UTC schedules do work.
-    - cron: "17 6 * * *"
-    - cron: "17 7 * * *"
+    # Four short resumable slices during Israel's 09:00 hour. For each minute,
+    # exactly one UTC entry survives the in-pipeline Israel-hour guard across
+    # daylight-saving changes. Short slices avoid long-lived NotebookLM cookie
+    # expiry while every slice resumes the exact persisted task ID.
+    - cron: "5,20,35,50 6 * * *"
+    - cron: "5,20,35,50 7 * * *"
   workflow_dispatch:
     inputs:
       operation:
@@ -191,7 +193,7 @@ jobs:
             schedule_guard=(--require-israel-hour 9)
           fi
           python -u scripts/kesher_daily_pipeline.py \
-            --max-wait-seconds 5400 \
+            --max-wait-seconds 150 \
             "${schedule_guard[@]}"
 
       - name: Detect pending Jules review

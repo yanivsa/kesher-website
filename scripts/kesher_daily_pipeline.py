@@ -288,6 +288,7 @@ def generation_prompt(source: dict[str, Any]) -> str:
     prompt = (
         "צור סקירת וידאו מסוג הסבר, בעברית טבעית בלבד, המבוססת אך ורק על המקור שנבחר. "
         "אורך היעד הוא בין תשעים למאה ושמונים שניות, ביחס אופקי טבעי של שש עשרה לתשע. "
+        "הקריינות כולה תהיה תמציתית ותכיל לכל היותר מאתיים ושישים מילים. "
         "הצג רעיון מרכזי אחד, דוגמה ביתית מוחשית ופעולה אחת שאפשר לנסות. "
         "אל תערבב בין הורות לזוגיות אם המקור עוסק רק באחד מהם. "
         "אין להוסיף טענות, תארים מקצועיים, אבחנות או הבטחות שאינם כתובים במקור. "
@@ -300,11 +301,23 @@ def generation_prompt(source: dict[str, Any]) -> str:
     return prompt
 
 
+def generation_style_prompt() -> str:
+    prompt = (
+        "סיפור מאויר קולנועי רציף של הורה וילד בסצנות ביתיות ומציאותיות, עם תנועה טבעית "
+        "ומעברים עדינים. אין להציג טקסט חזותי, אותיות, כותרות, כתוביות, שקופיות, כרטיסיות, "
+        "רשימות, טבלאות, תרשימים, סמלים צפים או מסכי מצגת. אין להציג מיתוג של גוגל, ג׳מיני "
+        "או נוטבוק. התמונות עצמן מספרות את הסיפור ללא מילים על המסך."
+    )
+    require_hebrew(prompt, "generation style prompt")
+    return prompt
+
+
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
     stamp = israel_now().strftime("%Y%m%d-%H%M%S")
     return {
         "id": f"video-{stamp}-{source['content_sha256'][:10]}",
         "type": "video_overview",
+        "israel_date": israel_now().date().isoformat(),
         "status": "source_selected",
         "source": {key: value for key, value in source.items() if key not in {"body", "youtube_metadata"}},
         "youtube_metadata": source["youtube_metadata"],
@@ -373,7 +386,8 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     payload = run_notebooklm(
         [
             "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
-            "--source", item["source_id"], "--format", "explainer", "--style", "classic",
+            "--source", item["source_id"], "--format", "explainer", "--style", "custom",
+            "--style-prompt", generation_style_prompt(),
             "--language", "he", "--no-wait",
         ],
         timeout=180,
@@ -664,6 +678,15 @@ def run_generation(max_wait_seconds: int, require_israel_hour: int | None) -> in
         print(f"NO_GENERATION active_item={item['id']} status={item['status']}")
         return 0
     if not item:
+        today = israel_now().date().isoformat()
+        attempted_today = any(
+            candidate.get("israel_date") == today
+            or str(candidate.get("created_at", "")).startswith(today)
+            for candidate in state["items"]
+        )
+        if attempted_today:
+            print(f"DAILY_ATTEMPT_ALREADY_RECORDED israel_date={today}")
+            return 0
         source = select_newest_unused_article(state)
         item = new_item(source)
         state["items"].append(item)
