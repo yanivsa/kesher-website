@@ -148,11 +148,23 @@ class PipelineTestCase(unittest.TestCase):
         raw.write_bytes(b"raw")
         final = self.state_dir / "final.mp4"
         final.write_bytes(b"final")
+        review = self.state_dir / "review.png"
+        review.write_bytes(b"review")
+        frame_dir = self.state_dir / f"{item['id']}-frames"
+        frame_dir.mkdir()
+        for index in range(1, 5):
+            (frame_dir / f"frame-{index}.png").write_bytes(f"frame-{index}".encode())
         with mock.patch.object(pipeline, "brand_video", return_value=final), mock.patch.object(
             pipeline, "ffprobe", return_value={"codec": "h264", "width": 1280, "height": 720, "duration": 60.0, "format": "mp4"}
+        ), mock.patch.object(
+            pipeline, "create_contact_sheet", return_value=review
         ):
-            with self.assertRaisesRegex(pipeline.PipelineError, "90-180"):
-                pipeline.validate_and_manifest(state, item, raw)
+            pipeline.validate_and_manifest(state, item, raw)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "rejected")
+        self.assertFalse(saved["technical_verified"])
+        self.assertIn("90–180", saved["review_notes"]["technical"])
+        self.assertTrue((self.state_dir / saved["manifest_path"]).is_file())
 
     def make_pending_item(self) -> tuple[dict, dict]:
         source = pipeline.source_metadata(hebrew_post())
