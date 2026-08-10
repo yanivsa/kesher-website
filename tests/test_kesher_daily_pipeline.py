@@ -368,6 +368,29 @@ class PipelineTestCase(unittest.TestCase):
         )
         self.assertEqual(reviewer.parse_decision(message), payload)
 
+    @mock.patch.object(reviewer, "request_json")
+    @mock.patch.object(reviewer, "list_activities")
+    def test_jules_wait_uses_last_parseable_marked_message(
+        self,
+        activities: mock.Mock,
+        request: mock.Mock,
+    ) -> None:
+        payload = {"item_id": "item-1", "visual_status": "rejected"}
+        valid = f"{reviewer.FINAL_MARKER}\n{json.dumps(payload)}"
+        trailing_prose = (
+            "The review is complete and the KESHER_REVIEW_JSON was already provided."
+        )
+        request.return_value = {"state": "COMPLETED"}
+        activities.return_value = [
+            {"agentMessaged": {"agentMessage": valid}},
+            {"agentMessaged": {"agentMessage": trailing_prose}},
+        ]
+
+        selected = reviewer.wait_for_message("key", "sessions/1", 1)
+
+        self.assertEqual(selected, valid)
+        self.assertEqual(reviewer.parse_decision(selected), payload)
+
     def test_jules_evidence_tree_excludes_video_and_verifies_hashes(self) -> None:
         _, item = self.make_pending_item()
         raw = self.state_dir / "raw.mp4"

@@ -169,9 +169,15 @@ def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
                 if isinstance(message, str):
                     messages.append(message)
             marked = [message for message in messages if FINAL_MARKER in message]
+            for message in reversed(marked):
+                try:
+                    parse_decision(message)
+                except ReviewError:
+                    continue
+                return message
             if not marked:
                 raise ReviewError("Jules completed without structured review JSON")
-            return marked[-1]
+            raise ReviewError("Jules completed without parseable structured review JSON")
         if state in TERMINAL_FAILURES:
             raise ReviewError(f"Jules review ended with {state}")
         if state in WAITING_STATES and not continued:
