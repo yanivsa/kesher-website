@@ -130,9 +130,8 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(item["artifact_id"], "task-exact")
         self.assertEqual(item["status"], "generating")
         arguments = run.call_args.args[0]
-        self.assertEqual(arguments[arguments.index("--style") + 1], "custom")
-        style_prompt = arguments[arguments.index("--style-prompt") + 1]
-        self.assertIn("ללא מילים על המסך", style_prompt)
+        self.assertEqual(arguments[arguments.index("--style") + 1], "auto")
+        self.assertNotIn("--style-prompt", arguments)
 
     def test_rejected_item_blocks_a_second_new_video_on_same_israel_date(self) -> None:
         source = pipeline.source_metadata(hebrew_post())

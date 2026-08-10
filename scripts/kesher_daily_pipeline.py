@@ -301,17 +301,6 @@ def generation_prompt(source: dict[str, Any]) -> str:
     return prompt
 
 
-def generation_style_prompt() -> str:
-    prompt = (
-        "סיפור מאויר קולנועי רציף של הורה וילד בסצנות ביתיות ומציאותיות, עם תנועה טבעית "
-        "ומעברים עדינים. אין להציג טקסט חזותי, אותיות, כותרות, כתוביות, שקופיות, כרטיסיות, "
-        "רשימות, טבלאות, תרשימים, סמלים צפים או מסכי מצגת. אין להציג מיתוג של גוגל, ג׳מיני "
-        "או נוטבוק. התמונות עצמן מספרות את הסיפור ללא מילים על המסך."
-    )
-    require_hebrew(prompt, "generation style prompt")
-    return prompt
-
-
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
     stamp = israel_now().strftime("%Y%m%d-%H%M%S")
     return {
@@ -386,8 +375,7 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     payload = run_notebooklm(
         [
             "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
-            "--source", item["source_id"], "--format", "explainer", "--style", "custom",
-            "--style-prompt", generation_style_prompt(),
+            "--source", item["source_id"], "--format", "explainer", "--style", "auto",
             "--language", "he", "--no-wait",
         ],
         timeout=180,
