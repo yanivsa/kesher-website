@@ -6,6 +6,7 @@ on:
       - .github/workflows/kesher-daily-video.yml
       - scripts/kesher_daily_pipeline.py
       - scripts/jules_video_reviewer.py
+      - scripts/prepare_jules_video_evidence.py
       - scripts/requirements-video-cloud.txt
       - tests/test_kesher_daily_pipeline.py
   schedule:
@@ -35,7 +36,7 @@ on:
 
 permissions:
   actions: read
-  contents: read
+  contents: write
 
 concurrency:
   group: kesher-daily-notebooklm-video
@@ -262,6 +263,33 @@ jobs:
           compression-level: 0
           include-hidden-files: true
 
+      - name: Publish minimal evidence branch for Jules
+        if: ${{ steps.pending.outputs.found == 'true' }}
+        id: review_branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          review_branch="kesher-video-review-${GITHUB_RUN_ID}"
+          evidence_root=".jules-video-review/${GITHUB_RUN_ID}"
+          review_worktree="$(mktemp -d /tmp/kesher-jules-evidence.XXXXXX)"
+          git worktree add --detach "$review_worktree" "$GITHUB_SHA"
+          python -u scripts/prepare_jules_video_evidence.py \
+            --state-dir "$KESHER_STATE_DIR" \
+            --output-dir "$review_worktree/$evidence_root"
+          git -C "$review_worktree" config user.name "Kesher Video Automation"
+          git -C "$review_worktree" config user.email "actions@users.noreply.github.com"
+          git -C "$review_worktree" switch -c "$review_branch"
+          git -C "$review_worktree" add "$evidence_root"
+          git -C "$review_worktree" commit -m "Publish immutable Jules video evidence ${GITHUB_RUN_ID}"
+          git -C "$review_worktree" push \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            "HEAD:refs/heads/${review_branch}"
+          {
+            echo "branch=${review_branch}"
+            echo "evidence_root=${evidence_root}"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Jules inspects four frames, transcript, source and metadata
         if: ${{ steps.pending.outputs.found == 'true' }}
         env:
@@ -270,9 +298,18 @@ jobs:
           set -euo pipefail
           python -u scripts/jules_video_reviewer.py \
             --state-dir "$KESHER_STATE_DIR" \
-            --run-id "$GITHUB_RUN_ID" \
-            --artifact-name "kesher-video-review-${GITHUB_RUN_ID}" \
+            --review-branch "${{ steps.review_branch.outputs.branch }}" \
+            --evidence-root "${{ steps.review_branch.outputs.evidence_root }}" \
             --timeout-seconds 3600
+
+      - name: Delete temporary Jules evidence branch
+        if: ${{ always() && steps.review_branch.outputs.branch != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEW_BRANCH: ${{ steps.review_branch.outputs.branch }}
+        run: |
+          set -euo pipefail
+          gh api --method DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/${REVIEW_BRANCH}"
 
       - name: Upload only after the four approved gates
         if: ${{ github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'upload' }}

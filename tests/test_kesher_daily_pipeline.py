@@ -24,6 +24,12 @@ reviewer = importlib.util.module_from_spec(REVIEWER_SPEC)
 assert REVIEWER_SPEC and REVIEWER_SPEC.loader
 REVIEWER_SPEC.loader.exec_module(reviewer)
 
+EVIDENCE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "prepare_jules_video_evidence.py"
+EVIDENCE_SPEC = importlib.util.spec_from_file_location("prepare_jules_video_evidence", EVIDENCE_PATH)
+evidence = importlib.util.module_from_spec(EVIDENCE_SPEC)
+assert EVIDENCE_SPEC and EVIDENCE_SPEC.loader
+EVIDENCE_SPEC.loader.exec_module(evidence)
+
 
 def hebrew_post(slug: str = "new-post", published: str = "2026-08-10") -> dict:
     return {
@@ -353,6 +359,31 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(reviewer.parse_decision(message), payload)
         with self.assertRaises(reviewer.ReviewError):
             reviewer.parse_decision(f"{reviewer.FINAL_MARKER}\nnot-json")
+
+    def test_jules_message_accepts_fenced_json_with_trailing_text(self) -> None:
+        payload = {"item_id": "item-1", "visual_status": "rejected"}
+        message = (
+            f"{reviewer.FINAL_MARKER}\n```json\n"
+            f"{json.dumps(payload)}\n```\nהביקורת הסתיימה"
+        )
+        self.assertEqual(reviewer.parse_decision(message), payload)
+
+    def test_jules_evidence_tree_excludes_video_and_verifies_hashes(self) -> None:
+        _, item = self.make_pending_item()
+        raw = self.state_dir / "raw.mp4"
+        raw.write_bytes(b"raw-video-must-not-be-published")
+        item["raw_mp4"] = raw.name
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+        output = self.root / "evidence"
+        prepared = evidence.prepare(self.state_dir, output)
+        self.assertEqual(prepared["id"], item["id"])
+        self.assertFalse((output / raw.name).exists())
+        self.assertFalse((output / item["final_mp4"]).exists())
+        self.assertTrue((output / item["manifest_path"]).is_file())
+        self.assertEqual(len(list(output.glob("**/frame-*.png"))), 4)
+        published_state = json.loads((output / "state.json").read_text(encoding="utf-8"))
+        self.assertNotIn("raw_mp4", published_state["items"][0])
+        self.assertNotIn("final_mp4", published_state["items"][0])
 
 
 if __name__ == "__main__":

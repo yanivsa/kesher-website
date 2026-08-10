@@ -83,21 +83,23 @@ def expected_hashes(state_dir: Path, item: dict[str, Any]) -> dict[str, Any]:
     return hashes
 
 
-def build_prompt(run_id: str, artifact_name: str, item: dict[str, Any], hashes: dict[str, Any]) -> str:
+def build_prompt(
+    evidence_root: str,
+    item: dict[str, Any],
+    hashes: dict[str, Any],
+) -> str:
     return f"""Perform one strict READ-ONLY Kesher Video Overview review. Do not edit the repository, create a branch/commit/changeSet/PR, generate another video, contact NotebookLM, or contact YouTube.
 
-Download the exact GitHub Actions evidence bundle:
-`gh run download {run_id} --repo {REPO} --name {artifact_name} --dir /tmp/kesher-video-review`
-If authentication or download fails, report the blocker and do not approve anything.
+The exact secret-free evidence is already checked out in `{evidence_root}` on this session's starting branch. Do not use `gh`, GitHub APIs, network downloads, or files outside that directory. If the directory or a required file is missing, reject or report the blocker and do not approve anything.
 
 Expected item: `{item['id']}`.
 Expected evidence hashes (must recompute locally with sha256sum and match exactly):
 {json.dumps(hashes, ensure_ascii=False, indent=2)}
 
-Locate the downloaded state.json and the exact item. Open and visually inspect EACH of its four `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
+Open `{evidence_root}/state.json` and locate the exact item. Open and visually inspect EACH of its four `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
 
 Apply four gates fail-closed:
-1. Technical is already machine-verified; independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds and all hashes match.
+1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
 2. Visual: reject English except the Kesher URL, gibberish, slide/card/chart presentation, cropped text, black frame, repeated/static layout, unreadable branding, or any visible mismatch. Describe what is actually visible in all four frames.
 3. Semantic: compare all four frames and the complete narration transcript with the complete source. Reject any topic mismatch, especially parenting/child versus couples/relationship, unsupported claims, or missing central subject.
 4. Metadata: compare title, description and every tag with source and transcript. Reject unsupported metadata, default/generic metadata, English, or missing `https://kesher.saharoni.com`.
@@ -122,13 +124,13 @@ You may approve only after doing the actual file reads and image inspection. Not
 """
 
 
-def create_session(api_key: str, prompt: str, item_id: str) -> str:
+def create_session(api_key: str, prompt: str, item_id: str, review_branch: str) -> str:
     payload = {
         "title": f"Kesher Video Evidence Review {item_id}",
         "prompt": prompt,
         "sourceContext": {
             "source": SOURCE,
-            "githubRepoContext": {"startingBranch": "main"},
+            "githubRepoContext": {"startingBranch": review_branch},
         },
         "requirePlanApproval": False,
     }
@@ -186,8 +188,10 @@ def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
 
 def parse_decision(message: str) -> dict[str, Any]:
     tail = message.split(FINAL_MARKER, 1)[1].strip()
+    if tail.startswith("```"):
+        tail = re.sub(r"^```(?:json)?\s*", "", tail, count=1, flags=re.IGNORECASE)
     try:
-        decision = json.loads(tail)
+        decision, _ = json.JSONDecoder().raw_decode(tail)
     except json.JSONDecodeError as exc:
         raise ReviewError("Jules review JSON is invalid") from exc
     if not isinstance(decision, dict):
@@ -239,8 +243,8 @@ def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--state-dir", type=Path, required=True)
-    parser.add_argument("--run-id", required=True)
-    parser.add_argument("--artifact-name", required=True)
+    parser.add_argument("--review-branch", required=True)
+    parser.add_argument("--evidence-root", required=True)
     parser.add_argument("--timeout-seconds", type=int, default=3600)
     args = parser.parse_args()
     api_key = os.environ.get("JULES_API_KEY", "").strip()
@@ -248,8 +252,8 @@ def main() -> int:
         raise ReviewError("JULES_API_KEY is missing")
     _, item = load_pending(args.state_dir)
     hashes = expected_hashes(args.state_dir, item)
-    prompt = build_prompt(args.run_id, args.artifact_name, item, hashes)
-    session = create_session(api_key, prompt, item["id"])
+    prompt = build_prompt(args.evidence_root, item, hashes)
+    session = create_session(api_key, prompt, item["id"], args.review_branch)
     message = wait_for_message(api_key, session, args.timeout_seconds)
     decision = parse_decision(message)
     validate_decision(decision, item, hashes)
