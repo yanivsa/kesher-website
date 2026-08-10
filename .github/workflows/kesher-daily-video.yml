@@ -44,6 +44,7 @@ jobs:
       KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
       KESHER_WHISPER_MODEL: small
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
+      NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
 
     steps:
       - name: Checkout current main
@@ -93,6 +94,42 @@ jobs:
           python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
           echo "Restored state artifact ${artifact_id}."
 
+      - name: Materialize NotebookLM credentials without exposing them
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || github.event_name == 'schedule') }}
+        env:
+          NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
+          NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          storage_raw = os.environ.get("NOTEBOOKLM_STORAGE_STATE_SECRET", "").strip()
+          if not storage_raw:
+              raise SystemExit("NotebookLM storage-state secret is missing")
+          storage = json.loads(storage_raw)
+          if not isinstance(storage, dict) or not storage.get("cookies"):
+              raise SystemExit("NotebookLM storage-state secret is invalid")
+
+          profile = Path(os.environ["NOTEBOOKLM_HOME"]) / "profiles" / "default"
+          profile.mkdir(parents=True, exist_ok=True)
+          storage_path = profile / "storage_state.json"
+          storage_path.write_text(json.dumps(storage, separators=(",", ":")), encoding="utf-8")
+          storage_path.chmod(0o600)
+
+          master_raw = os.environ.get("NOTEBOOKLM_MASTER_TOKEN_SECRET", "").strip()
+          if master_raw:
+              master = json.loads(master_raw)
+              required = {"version", "email", "android_id", "master_token"}
+              if not isinstance(master, dict) or not required.issubset(master) or not all(master[key] for key in required):
+                  raise SystemExit("NotebookLM master-token secret is invalid")
+              master_path = profile / "master_token.json"
+              master_path.write_text(json.dumps(master, separators=(",", ":")), encoding="utf-8")
+              master_path.chmod(0o600)
+          PY
+
       - name: Run hermetic cloud pipeline tests on pull requests
         if: ${{ github.event_name == 'pull_request' }}
         env:
@@ -101,14 +138,10 @@ jobs:
 
       - name: NotebookLM read-only preflight
         if: ${{ inputs.operation == 'preflight' }}
-        env:
-          NOTEBOOKLM_AUTH_JSON: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
         run: python -u scripts/kesher_daily_pipeline.py --preflight
 
       - name: Generate or resume exact Video Overview
         if: ${{ github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'generate' }}
-        env:
-          NOTEBOOKLM_AUTH_JSON: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
         run: |
           set -euo pipefail
           schedule_guard=()

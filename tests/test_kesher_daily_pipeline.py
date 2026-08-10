@@ -87,12 +87,24 @@ class PipelineTestCase(unittest.TestCase):
             pipeline.source_metadata(post)
 
     def test_auth_json_must_be_nonempty_storage_state(self) -> None:
-        with mock.patch.dict(os.environ, {}, clear=True):
+        with mock.patch.dict(os.environ, {"NOTEBOOKLM_HOME": str(self.root / "missing")}, clear=True):
             with self.assertRaisesRegex(pipeline.PipelineError, "missing"):
                 pipeline.notebooklm_env()
         with mock.patch.dict(os.environ, {"NOTEBOOKLM_AUTH_JSON": "{}"}, clear=True):
             with self.assertRaisesRegex(pipeline.PipelineError, "storage-state"):
                 pipeline.notebooklm_env()
+
+    def test_auth_file_allows_master_token_recovery_path(self) -> None:
+        profile = self.root / "notebooklm" / "profiles" / "default"
+        profile.mkdir(parents=True)
+        (profile / "storage_state.json").write_text(
+            json.dumps({"cookies": [{"name": "fixture", "value": "redacted"}]}),
+            encoding="utf-8",
+        )
+        with mock.patch.dict(os.environ, {"NOTEBOOKLM_HOME": str(self.root / "notebooklm")}, clear=True):
+            env = pipeline.notebooklm_env()
+        self.assertNotIn("NOTEBOOKLM_AUTH_JSON", env)
+        self.assertEqual(env["NOTEBOOKLM_HOME"], str(self.root / "notebooklm"))
 
     def test_preflight_requires_exact_pinned_version_and_live_token(self) -> None:
         with mock.patch.object(pipeline.importlib.metadata, "version", return_value="0.8.0"), mock.patch.object(
