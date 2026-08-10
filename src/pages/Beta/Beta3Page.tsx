@@ -135,7 +135,7 @@ const GlassHeroCard = () => {
         <div className={styles.heroImageContainer}>
           <img
             src="/images/shira-saharoni.webp"
-            alt="שירה סהרוני, יועצת זוגית, מנחת הורים ומגשרת"
+            alt="שירה סהרוני, יועצת זוגית ומנחת הורים"
             width="1271"
             height="1280"
           />
@@ -433,7 +433,7 @@ const Beta3Page: React.FC = () => {
               <div className={styles.credentialGlassCard}>
                 <span className={styles.credentialTitle}>הכשרה מקצועית מוסמכת</span>
                 <p className={styles.credentialText}>
-                  העשייה שלי נשענת על הכשרה בייעוץ זוגי ומשפחתי, בהנחיית הורים (עם התמחות ב-ADHD), ובגישור. רקע נוסף: עורכת דין בהכשרתי.
+                  העשייה שלי נשענת על הכשרה בייעוץ זוגי ומשפחתי, בהנחיית הורים (עם התמחות ב-ADHD), . רקע נוסף: עורכת דין בהכשרתי.
                 </p>
               </div>
             </motion.div>

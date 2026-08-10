@@ -177,7 +177,6 @@ const ContactSection: React.FC = () => {
                   <option value="late-singleness">ייעוץ במצבי רווקות מאוחרת</option>
                   <option value="finding-relationship">ליווי למציאת זוגיות</option>
                   <option value="parenting">הדרכת הורים</option>
-                  <option value="mediation">גישור</option>
                   <option value="gifted-parenting">הנחיית הורים לילדים מחוננים</option>
                   <option value="first-grade">הכנה לכיתה א׳ ותפקודים ניהוליים</option>
                   <option value="gifted-framework">הכנה למסגרת מחוננים</option>

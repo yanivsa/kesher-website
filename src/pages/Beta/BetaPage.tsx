@@ -125,7 +125,7 @@ const InteractiveHeroVisual = () => {
         <div className={styles.imageFrame}>
           <img
             src="/images/shira-saharoni.webp"
-            alt="שירה סהרוני, יועצת זוגית, מנחת הורים ומגשרת"
+            alt="שירה סהרוני, יועצת זוגית ומנחת הורים"
             width="1271"
             height="1280"
             fetchPriority="high"
@@ -185,7 +185,7 @@ const BetaPage: React.FC = () => {
             <span className={styles.brandMark}>ש</span>
             <span>
               <strong>שירה סהרוני</strong>
-              <small>ייעוץ · הורות · גישור</small>
+              <small>ייעוץ · הורות</small>
             </span>
           </a>
 
@@ -269,8 +269,7 @@ const BetaPage: React.FC = () => {
           <span>ייעוץ זוגי</span>
           <i aria-hidden="true" />
           <span>הנחיית הורים</span>
-          <i aria-hidden="true" />
-          <span>גישור</span>
+
           <i aria-hidden="true" />
           <span>ליווי בתקופות מעבר</span>
         </section>
@@ -369,7 +368,7 @@ const BetaPage: React.FC = () => {
               <span>הכשרה מקצועית מוסמכת</span>
               <p>
                 העשייה שלי נשענת על הכשרה בייעוץ זוגי ומשפחתי, בהנחיית הורים
-                קבוצתית ופרטנית עם התמחות ב־ADHD, ובגישור.
+                קבוצתית ופרטנית עם התמחות ב־ADHD, .
               </p>
               <small>
                 ההכשרות כוללות לימודים מקצועיים, תעודות ופרקטיקום מעשי.
@@ -379,7 +378,7 @@ const BetaPage: React.FC = () => {
               עוד עליי ועל אופן העבודה
               <FiArrowLeft aria-hidden="true" />
             </Link>
-            <p className={styles.legalBackground}>רקע נוסף: עורכת דין בהכשרתי.</p>
+
           </div>
         </section>
 
@@ -439,7 +438,7 @@ const BetaPage: React.FC = () => {
           <span className={styles.brandMark}>ש</span>
           <div>
             <strong>שירה סהרוני</strong>
-            <small>ייעוץ זוגי · הנחיית הורים · גישור</small>
+            <small>ייעוץ זוגי · הנחיית הורים</small>
           </div>
         </div>
         <div className={styles.footerLinks}>

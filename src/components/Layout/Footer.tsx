@@ -10,15 +10,14 @@ const Footer: React.FC = () => {
         <div className={styles.info}>
           <div className={styles.logo}>
             <span className={styles.brand}>{SITE_CONFIG.brand}</span>
-            <span className={styles.subtitle}>ייעוץ זוגי, הנחיית הורים וגישור</span>
+            <span className={styles.subtitle}>ייעוץ זוגי והנחיית הורים</span>
           </div>
-          <p>יועצת זוגית, מנחת הורים ומגשרת מוסמכת.</p>
+          <p>יועצת זוגית ומנחת הורים.</p>
         </div>
         <div className={styles.links}>
           <h4>ניווט מהיר</h4>
           <Link to="/">דף הבית</Link>
           <Link to="/about">אודות</Link>
-          <Link to="/services/mediation">גישור</Link>
           <Link to="/services/premarital-first-year">הכנה לנישואים והשנה הראשונה</Link>
           <Link to="/services/couples-aliyah-relocation">זוגיות בעלייה וברילוקיישן</Link>
           <Link to="/services/late-singleness">ייעוץ ברווקות מאוחרת</Link>
@@ -36,7 +35,7 @@ const Footer: React.FC = () => {
           <p>{`מיקום: ${SITE_CONFIG.contact.location}`}</p>
         </div>
         <div className={styles.legal}>
-          <h4>מידע משפטי</h4>
+          <h4>מידע</h4>
           <Link to="/accessibility">הצהרת נגישות</Link>
           <Link to="/privacy">מדיניות פרטיות</Link>
           <Link to="/terms">תנאי שימוש</Link>

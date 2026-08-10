@@ -123,7 +123,6 @@ const claimFiles = [
   'src/pages/About/AboutPage.tsx',
   'src/pages/Services/Couples/CouplesCounseling.tsx',
   'src/pages/Services/Parenting/ParentingGuidance.tsx',
-  'src/pages/Services/Mediation/MediationPage.tsx',
   'src/pages/Services/Gifted/GiftedParentingPage.tsx',
   'src/pages/Services/Aliyah/AliyahFamiliesPage.tsx',
   'src/pages/Services/Relocation/CouplesAliyahRelocationPage.tsx',

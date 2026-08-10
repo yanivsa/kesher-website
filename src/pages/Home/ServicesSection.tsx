@@ -20,13 +20,6 @@ const services = [
     highlights: ['הורים לילדים מחוננים', 'ADHD ותפקודים ניהוליים', 'הכנה למסגרות חינוכיות'],
     link: '/services/parenting'
   },
-  {
-    title: 'גישור',
-    description: 'לבני זוג, בני משפחה, הורים, שכנים או שותפים שרוצים לנהל מחלוקת בצורה מסודרת ולנסח הסכמות שאפשר לקיים.',
-    icon: <FiCompass aria-hidden="true" />,
-    highlights: ['בירור צרכים ונושאים', 'הפחתת מתח והאשמות', 'הסכמות ישימות וברורות'],
-    link: '/services/mediation'
-  }
 ];
 
 const specializations = [

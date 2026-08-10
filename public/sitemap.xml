@@ -31,11 +31,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/services/mediation</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://kesher.saharoni.com/services/gifted-parenting</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

@@ -279,14 +279,14 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           <div className={styles.heroImageWrapper}>
             <img
               src="/images/shira-saharoni.webp"
-              alt="שירה סהרוני - יועצת זוגית ומגשרת באשדוד"
+              alt="שירה סהרוני - יועצת זוגית באשדוד"
               className={styles.heroImage}
               width="1271"
               height="1280"
               fetchPriority="high"
             />
             <div className={styles.heroImageBadge}>
-              שירה סהרוני | יועצת זוגית ומגשרת מוסמכת
+              שירה סהרוני | יועצת זוגית ומנחת הורים
             </div>
           </div>
         </div>
@@ -380,7 +380,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           <div className={styles.aboutImageWrapper}>
             <img
               src="/images/shira-saharoni.webp"
-              alt="שירה סהרוני - יועצת זוגית ומגשרת"
+              alt="שירה סהרוני - יועצת זוגית ומנחת הורים"
               className={styles.aboutImage}
               width="1271"
               height="1280"

@@ -116,7 +116,7 @@ export const homeSchema = {
       alternateName: 'Shira Saharoni',
       url: `${SITE_CONFIG.url}/about`,
       image: `${SITE_CONFIG.url}/images/shira-saharoni.webp`,
-      jobTitle: ['יועצת זוגית', 'מנחת הורים', 'מגשרת מוסמכת'],
+      jobTitle: ['יועצת זוגית', 'מנחת הורים', ],
       worksFor: { '@id': `${SITE_CONFIG.url}/#business` },
       knowsAbout: [
         'ייעוץ זוגי ומשפחתי',

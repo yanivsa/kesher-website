@@ -6,7 +6,7 @@ import { SITE_CONFIG } from '../../constants/siteConfig';
 import faqs from '../../data/faqs';
 import styles from './FAQ.module.css';
 
-const categories = ['הכל', 'ייעוץ זוגי', 'הכנה לנישואים והשנה הראשונה', 'זוגיות בעלייה ורילוקיישן', 'רווקות מאוחרת', 'מציאת זוגיות', 'הדרכת הורים', 'גישור', 'תחומי התמחות', 'כללי'];
+const categories = ['הכל', 'ייעוץ זוגי', 'הכנה לנישואים והשנה הראשונה', 'זוגיות בעלייה ורילוקיישן', 'רווקות מאוחרת', 'מציאת זוגיות', 'הדרכת הורים', 'תחומי התמחות', 'כללי'];
 
 // FAQPage Schema for SEO/GEO
 const faqSchema = {
@@ -15,7 +15,7 @@ const faqSchema = {
     {
       "@type": "FAQPage",
       "url": `${SITE_CONFIG.url}/faq`,
-      "description": "תשובות על ייעוץ זוגי, הכנה לנישואים, השנה הראשונה, זוגיות בעלייה וברילוקיישן, רווקות מאוחרת, הנחיית הורים וגישור.",
+      "description": "תשובות על ייעוץ זוגי, הכנה לנישואים, השנה הראשונה, זוגיות בעלייה וברילוקיישן, רווקות מאוחרת, הנחיית הורים.",
       "mainEntity": faqs.map(faq => ({
         "@type": "Question",
         "name": faq.question,
@@ -63,8 +63,8 @@ const FAQ: React.FC = () => {
   return (
     <div className={styles.faq}>
       <MetaTags 
-        title="שאלות נפוצות | ייעוץ, הנחיית הורים וגישור"
-        description="תשובות על ייעוץ זוגי, הכנה לנישואים, השנה הראשונה, זוגיות בעלייה וברילוקיישן, רווקות מאוחרת, הנחיית הורים וגישור."
+        title="שאלות נפוצות | ייעוץ והנחיית הורים"
+        description="תשובות על ייעוץ זוגי, הכנה לנישואים, השנה הראשונה, זוגיות בעלייה וברילוקיישן, רווקות מאוחרת, הנחיית הורים."
       />
       <SchemaOrg data={faqSchema} />
       <header className={styles.header}>

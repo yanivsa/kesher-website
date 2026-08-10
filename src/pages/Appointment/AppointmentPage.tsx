@@ -44,7 +44,7 @@ const AppointmentPage: React.FC = () => (
   <div className={styles.page}>
     <MetaTags
       title="קביעת פגישת ייעוץ עם שירה סהרוני"
-      description="בחרו מועד לפגישת ייעוץ אישית עם שירה סהרוני — ייעוץ זוגי, הנחיית הורים או גישור, באשדוד או אונליין."
+      description="בחרו מועד לפגישת ייעוץ אישית עם שירה סהרוני — ייעוץ זוגי או הנחיית הורים, באשדוד או אונליין."
     />
     <SchemaOrg data={schemaData} />
 

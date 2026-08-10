@@ -11,7 +11,7 @@ const AboutSection: React.FC = () => {
           <div className={styles.imageWrapper}>
             <img
               src="/images/shira-saharoni.webp"
-              alt="שירה סהרוני, יועצת זוגית ומשפחתית, מגשרת ומנחת הורים"
+              alt="שירה סהרוני, יועצת זוגית ומשפחתית ומנחת הורים"
               className={styles.aboutImage}
               width="1271"
               height="1280"
@@ -26,7 +26,7 @@ const AboutSection: React.FC = () => {
         <div className={styles.content}>
           <h2 className={styles.title}>נעים מאוד, שירה סהרוני</h2>
           <p className={styles.lead}>
-            עורכת דין בהכשרתי ומגשרת מוסמכת, שבחרה לעבור מעולם המשפט לעולמות ההנחיה, הייעוץ והחינוך.
+            יועצת זוגית ומנחת הורים המלווה זוגות ומשפחות.
           </p>
           <div className={styles.description}>
             <p>
@@ -36,7 +36,7 @@ const AboutSection: React.FC = () => {
           <div className={styles.credentials}>
             <div className={styles.credential}>
               <span className={styles.icon}><FiCompass aria-hidden="true" /></span>
-              <span>ייעוץ זוגי וגישור סביב תקשורת, קירבה ובניית הסכמות</span>
+              <span>ייעוץ זוגי סביב תקשורת וקירבה</span>
             </div>
             <div className={styles.credential}>
               <span className={styles.icon}><FiAward aria-hidden="true" /></span>

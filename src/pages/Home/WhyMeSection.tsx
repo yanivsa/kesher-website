@@ -1,13 +1,8 @@
 import React from 'react';
-import { FiAward, FiHeart, FiShield, FiTrendingUp } from 'react-icons/fi';
+import { FiHeart, FiShield, FiTrendingUp } from 'react-icons/fi';
 import styles from './WhyMeSection.module.css';
 
 const points = [
-  {
-    icon: <FiAward />,
-    title: 'רקע משפטי וגישורי',
-    description: 'ההכשרה כעורכת דין וכמגשרת מסייעת לי להחזיק שיחה מורכבת, לשמוע יותר מצד אחד ולנסח דברים באופן ברור.'
-  },
   {
     icon: <FiHeart />,
     title: 'מקום גם למה שלא מסתדר',
