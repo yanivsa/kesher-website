@@ -1,6 +1,13 @@
 name: Kesher Daily NotebookLM Video Overview
 
 on:
+  pull_request:
+    paths:
+      - .github/workflows/kesher-daily-video.yml
+      - scripts/kesher_daily_pipeline.py
+      - scripts/jules_video_reviewer.py
+      - scripts/requirements-video-cloud.txt
+      - tests/test_kesher_daily_pipeline.py
   schedule:
     # 09:17 Israel time across daylight-saving changes. The local-hour guard
     # makes exactly one of these two UTC schedules do work.
@@ -33,7 +40,6 @@ jobs:
     timeout-minutes: 180
     env:
       KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state
-      NOTEBOOKLM_AUTH_JSON: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
       NOTEBOOKLM_BIN: notebooklm
       KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
       KESHER_WHISPER_MODEL: small
@@ -81,12 +87,22 @@ jobs:
           python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
           echo "Restored state artifact ${artifact_id}."
 
+      - name: Run hermetic cloud pipeline tests on pull requests
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
+        run: python -m unittest tests.test_kesher_daily_pipeline -v
+
       - name: NotebookLM read-only preflight
         if: ${{ inputs.operation == 'preflight' }}
+        env:
+          NOTEBOOKLM_AUTH_JSON: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
         run: python -u scripts/kesher_daily_pipeline.py --preflight
 
       - name: Generate or resume exact Video Overview
         if: ${{ github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'generate' }}
+        env:
+          NOTEBOOKLM_AUTH_JSON: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
         run: |
           set -euo pipefail
           schedule_guard=()
