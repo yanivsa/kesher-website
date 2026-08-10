@@ -86,6 +86,11 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(metadata["tags"], ["הדרכת הורים", "ילדים מחוננים"])
         pipeline.require_hebrew(metadata["description"], "description", allow_url=True)
 
+    def test_generation_prompt_always_requests_female_hebrew_voice(self) -> None:
+        prompt = pipeline.generation_prompt(pipeline.source_metadata(hebrew_post()))
+        self.assertIn("קול של אישה ישראלית", prompt)
+        self.assertIn("בעברית טבעית בלבד", prompt)
+
     def test_latin_visible_metadata_is_rejected(self) -> None:
         post = hebrew_post()
         post["title"] = "טיפ Parenting"
@@ -135,6 +140,8 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(item["task_id"], "task-exact")
         self.assertEqual(item["artifact_id"], "task-exact")
         self.assertEqual(item["status"], "generating")
+        self.assertIn("קול של אישה ישראלית", item["generation_prompt"])
+        self.assertEqual(item["generation_prompt_sha256"], pipeline.sha256_text(item["generation_prompt"]))
         arguments = run.call_args.args[0]
         self.assertEqual(arguments[arguments.index("--style") + 1], "auto")
         self.assertNotIn("--style-prompt", arguments)
@@ -399,7 +406,34 @@ class PipelineTestCase(unittest.TestCase):
         props = json.loads((self.state_dir / "item-remotion-props.json").read_text(encoding="utf-8"))
         self.assertEqual(props["audioSrc"], raw.name)
         self.assertEqual(props["durationInFrames"], 3120)
+        self.assertEqual(props["url"], "kesher.saharoni.com")
         self.assertEqual(item["visual_pipeline"], "remotion-v1-notebooklm-audio")
+
+    def test_prune_uploaded_media_keeps_small_review_evidence(self) -> None:
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        for name in ("raw.mp4", "final.mp4", "props.json", "manifest.json", "review.png"):
+            (self.state_dir / name).write_bytes(name.encode())
+        state = {
+            "version": 1,
+            "updated_at": pipeline.utc_now(),
+            "items": [{
+                "id": "uploaded",
+                "uploaded": True,
+                "youtube_verification": {"privacy_status": "public"},
+                "raw_mp4": "raw.mp4",
+                "final_mp4": "final.mp4",
+                "remotion_props_path": "props.json",
+                "manifest_path": "manifest.json",
+                "visual_review_path": "review.png",
+            }],
+        }
+        pipeline.save_state(state)
+        pipeline.prune_uploaded_media()
+        self.assertFalse((self.state_dir / "raw.mp4").exists())
+        self.assertFalse((self.state_dir / "final.mp4").exists())
+        self.assertFalse((self.state_dir / "props.json").exists())
+        self.assertTrue((self.state_dir / "manifest.json").exists())
+        self.assertTrue((self.state_dir / "review.png").exists())
 
     def test_jules_decision_requires_all_exact_hashes_and_four_observations(self) -> None:
         hashes = {

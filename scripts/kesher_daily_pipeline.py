@@ -37,6 +37,7 @@ NOTEBOOKLM_BIN = os.environ.get("NOTEBOOKLM_BIN", "notebooklm")
 NOTEBOOKLM_REQUIRED_VERSION = "0.8.0"
 YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
 SITE_URL = "https://kesher.saharoni.com"
+DISPLAY_URL = "kesher.saharoni.com"
 STATE_VERSION = 1
 POLL_INTERVAL_SECONDS = 30
 ALLOWED_REVIEW = {"approved", "rejected"}
@@ -288,6 +289,7 @@ def generation_prompt(source: dict[str, Any]) -> str:
     prompt = (
         "צור סקירת וידאו מסוג הסבר, בעברית טבעית בלבד, המבוססת אך ורק על המקור שנבחר. "
         "אורך היעד הוא בין תשעים למאה ושמונים שניות, ביחס אופקי טבעי של שש עשרה לתשע. "
+        "השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות. "
         "הקריינות כולה תהיה תמציתית ותכיל לכל היותר מאתיים ושישים מילים. "
         "הצג רעיון מרכזי אחד, דוגמה ביתית מוחשית ופעולה אחת שאפשר לנסות. "
         "אל תערבב בין הורות לזוגיות אם המקור עוסק רק באחד מהם. "
@@ -371,7 +373,8 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     prompt_path = STATE_DIR / f"{item['id']}-prompt-he.txt"
-    prompt_path.write_text(generation_prompt(item["source"]), encoding="utf-8")
+    prompt = generation_prompt(item["source"])
+    prompt_path.write_text(prompt, encoding="utf-8")
     payload = run_notebooklm(
         [
             "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
@@ -385,6 +388,8 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
         raise PipelineError("NotebookLM generation returned no task ID")
     item["task_id"] = task_id
     item["artifact_id"] = task_id
+    item["generation_prompt"] = prompt
+    item["generation_prompt_sha256"] = sha256_text(prompt)
     item["status"] = "generating"
     item["generation_started_at"] = utc_now()
     item["updated_at"] = utc_now()
@@ -507,7 +512,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
             "durationInFrames": duration_frames,
             "title": item["source"]["title"],
             "category": item["source"]["category"],
-            "url": SITE_URL,
+            "url": DISPLAY_URL,
         },
     )
     command = [
@@ -618,6 +623,8 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "source_id": item["source_id"],
         "task_id": item["task_id"],
         "artifact_id": item["artifact_id"],
+        "generation_prompt": item.get("generation_prompt"),
+        "generation_prompt_sha256": item.get("generation_prompt_sha256"),
         "raw_mp4": item["raw_mp4"],
         "raw_sha256": item["raw_sha256"],
         "final_mp4": item["final_mp4"],
@@ -776,6 +783,27 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
     save_state(state)
     validate_and_manifest(state, item, raw_path)
     print(f"REMOTION_REBUILT item={item_id} status={item['status']}")
+    return 0
+
+
+def prune_uploaded_media() -> int:
+    state = load_state()
+    removed = 0
+    for item in state["items"]:
+        if item.get("uploaded") is not True or not item.get("youtube_verification"):
+            continue
+        candidates = [item.get("raw_mp4"), item.get("final_mp4"), item.get("remotion_props_path")]
+        for relative in candidates:
+            if not isinstance(relative, str) or not relative:
+                continue
+            path = (STATE_DIR / relative).resolve()
+            if STATE_DIR.resolve() not in path.parents or not path.is_file():
+                continue
+            path.unlink()
+            removed += 1
+        item["large_media_pruned_at"] = utc_now()
+    save_state(state)
+    print(f"UPLOADED_MEDIA_PRUNED files={removed}")
     return 0
 
 
@@ -1077,6 +1105,7 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--upload-only", action="store_true")
     mode.add_argument("--review-item")
     mode.add_argument("--remotion-rebuild-item")
+    mode.add_argument("--prune-uploaded-media", action="store_true")
     mode.add_argument("--report-json", action="store_true")
     parser.add_argument("--max-wait-seconds", type=int, default=3600)
     parser.add_argument("--require-israel-hour", type=int, choices=range(24))
@@ -1108,6 +1137,8 @@ def main() -> int:
         return update_review(args)
     if args.remotion_rebuild_item:
         return rebuild_rejected_with_remotion(args.remotion_rebuild_item)
+    if args.prune_uploaded_media:
+        return prune_uploaded_media()
     if args.report_json:
         return report()
     return run_generation(
