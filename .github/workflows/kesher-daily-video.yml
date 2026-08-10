@@ -58,6 +58,12 @@ jobs:
           cache: pip
           cache-dependency-path: scripts/requirements-video-cloud.txt
 
+      - name: Install system media dependencies
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y ffmpeg fonts-dejavu-core
+
       - name: Install pinned cloud dependencies
         run: |
           set -euo pipefail
