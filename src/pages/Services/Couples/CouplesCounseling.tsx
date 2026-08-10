@@ -6,7 +6,8 @@ import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
 import ServiceFAQ from '../../../components/FAQ/ServiceFAQ';
 import TherapistBio from '../../../components/TherapistBio/TherapistBio';
 import faqs from '../../../data/faqs';
-import { FiMessageCircle, FiShield, FiStar } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
+import { FiCalendar, FiMessageCircle, FiShield, FiStar } from 'react-icons/fi';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './CouplesCounseling.module.css';
 
@@ -76,7 +77,16 @@ const CouplesCounseling: React.FC = () => {
             <div className={styles.badge}>ייעוץ זוגי באשדוד ובאונליין</div>
             <h1>לדבר על מה שקורה <br /><span>בלי לחזור לאותו ריב</span></h1>
             <p className={styles.subtitle}>פגישה לשני בני הזוג, שבה אפשר להבין את הדפוס שחוזר ולבדוק מה ניתן לשנות.</p>
-            <Link to={SITE_CONFIG.links.appointment} className={styles.ctaBtn}>קביעת פגישת ייעוץ</Link>
+            <div className={styles.heroActions}>
+              <Link to={SITE_CONFIG.links.appointment} className={styles.primaryBtn}>
+                <FiCalendar aria-hidden="true" />
+                לתיאום פגישת ייעוץ
+              </Link>
+              <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn} target="_blank" rel="noopener noreferrer">
+                <FaWhatsapp aria-hidden="true" />
+                התייעצות קצרה בוואטסאפ
+              </a>
+            </div>
           </div>
           <div className={styles.heroImageWrapper}>
             <img src="/images/generated/services/couples-room.jpg" alt="מרחב שיחה זוגי נעים" width="1600" height="900" fetchPriority="high" />

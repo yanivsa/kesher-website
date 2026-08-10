@@ -42,8 +42,16 @@
   margin-bottom: 2rem;
 }
 
-.ctaBtn {
-  display: inline-block;
+.heroActions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   background: var(--color-primary-dark);
   color: white !important;
   padding: 1.1rem 2.5rem;
@@ -51,6 +59,29 @@
   font-weight: 800;
   box-shadow: var(--shadow-md);
   transition: all 0.2s;
+}
+
+.primaryBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.whatsappBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: #075e54 !important;
+  border: 2px solid #075e54;
+  padding: 1.1rem 2.5rem;
+  border-radius: 8px;
+  font-weight: 800;
+  transition: all 0.2s;
+}
+
+.whatsappBtn:hover {
+  background: #075e54;
+  color: white !important;
 }
 
 .heroImageWrapper {
