@@ -148,24 +148,49 @@ jobs:
         env:
           NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
           NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
         run: |
           set -euo pipefail
+          profile="$NOTEBOOKLM_HOME/profiles/default"
+          storage_path="$profile/storage_state.json"
+          sealed_path="$KESHER_STATE_DIR/notebooklm-storage-state.json.enc"
+          mkdir -p "$profile"
+
+          if [ -s "$sealed_path" ]; then
+            if [ -z "${NOTEBOOKLM_STATE_KEY:-}" ]; then
+              echo "Encrypted NotebookLM state exists but NOTEBOOKLM_STATE_KEY is missing." >&2
+              exit 1
+            fi
+            decrypted_path="$(mktemp "$profile/storage_state.XXXXXX.json")"
+            trap 'rm -f "$decrypted_path"' EXIT
+            openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 \
+              -in "$sealed_path" \
+              -out "$decrypted_path" \
+              -pass env:NOTEBOOKLM_STATE_KEY
+            chmod 600 "$decrypted_path"
+            mv "$decrypted_path" "$storage_path"
+            trap - EXIT
+            echo "Restored encrypted rotating NotebookLM credentials."
+          fi
+
           python - <<'PY'
           import json
           import os
           from pathlib import Path
 
-          storage_raw = os.environ.get("NOTEBOOKLM_STORAGE_STATE_SECRET", "").strip()
-          if not storage_raw:
-              raise SystemExit("NotebookLM storage-state secret is missing")
-          storage = json.loads(storage_raw)
-          if not isinstance(storage, dict) or not storage.get("cookies"):
-              raise SystemExit("NotebookLM storage-state secret is invalid")
-
           profile = Path(os.environ["NOTEBOOKLM_HOME"]) / "profiles" / "default"
           profile.mkdir(parents=True, exist_ok=True)
           storage_path = profile / "storage_state.json"
-          storage_path.write_text(json.dumps(storage, separators=(",", ":")), encoding="utf-8")
+          if storage_path.exists():
+              storage = json.loads(storage_path.read_text(encoding="utf-8"))
+          else:
+              storage_raw = os.environ.get("NOTEBOOKLM_STORAGE_STATE_SECRET", "").strip()
+              if not storage_raw:
+                  raise SystemExit("NotebookLM storage-state secret is missing")
+              storage = json.loads(storage_raw)
+              storage_path.write_text(json.dumps(storage, separators=(",", ":")), encoding="utf-8")
+          if not isinstance(storage, dict) or not storage.get("cookies"):
+              raise SystemExit("NotebookLM storage-state is invalid")
           storage_path.chmod(0o600)
 
           master_raw = os.environ.get("NOTEBOOKLM_MASTER_TOKEN_SECRET", "").strip()
@@ -262,6 +287,27 @@ jobs:
             exit 0
           fi
           python -u scripts/kesher_daily_pipeline.py --upload-only
+
+      - name: Seal refreshed NotebookLM credentials into durable state
+        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.notebooklm/profiles/default/storage_state.json') != '' }}
+        env:
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${NOTEBOOKLM_STATE_KEY:-}" ]; then
+            echo "NOTEBOOKLM_STATE_KEY is missing; refusing to persist plaintext credentials." >&2
+            exit 1
+          fi
+          mkdir -p "$KESHER_STATE_DIR"
+          sealed_path="$KESHER_STATE_DIR/notebooklm-storage-state.json.enc"
+          sealed_tmp="${sealed_path}.tmp"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -md sha256 \
+            -in "$NOTEBOOKLM_HOME/profiles/default/storage_state.json" \
+            -out "$sealed_tmp" \
+            -pass env:NOTEBOOKLM_STATE_KEY
+          chmod 600 "$sealed_tmp"
+          mv "$sealed_tmp" "$sealed_path"
+          echo "Persisted refreshed NotebookLM credentials as encrypted state."
 
       - name: Persist latest state and media evidence
         if: ${{ always() && hashFiles('.kesher-video-state/**') != '' }}
