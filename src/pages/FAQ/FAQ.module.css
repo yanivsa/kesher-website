@@ -35,7 +35,8 @@
 }
 
 .categoryBtn {
-  padding: 0.6rem 1.4rem;
+  padding: 0.8rem 1.4rem;
+  min-height: 44px;
   background: white;
   border: 1px solid var(--color-border);
   border-radius: 99px;
