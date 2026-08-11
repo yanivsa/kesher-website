@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import os
+import sys
 import hashlib
 import json
 from pathlib import Path
@@ -6,7 +8,10 @@ from pathlib import Path
 import requests
 
 
-API_KEY = "ck_-hh6vYTdFqm5Mt_vvIDp"
+API_KEY = os.environ.get("COMPOSIO_API_KEY")
+if not API_KEY:
+    print("Error: COMPOSIO_API_KEY environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 BASE_URLS = [
     "https://backend.composio.dev",
     "https://api.composio.dev",

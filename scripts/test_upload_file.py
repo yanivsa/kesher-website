@@ -1,7 +1,12 @@
+import os
+import sys
 import urllib.request
 import json
 
-api_key = "ck_-hh6vYTdFqm5Mt_vvIDp"
+api_key = os.environ.get("COMPOSIO_API_KEY")
+if not api_key:
+    print("Error: COMPOSIO_API_KEY environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 headers = {
     "Authorization": f"Bearer {api_key}",
     "Content-Type": "application/json"
