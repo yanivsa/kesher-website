@@ -15,8 +15,8 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { pathname } = useLocation();
   const cleanPath = pathname.replace(/\/$/, '');
-  const usesStandaloneHomepage = cleanPath === '/beta'
-    || cleanPath === '/beta2'
+  const usesStandaloneHomepage = cleanPath === ''
+    || cleanPath === '/beta'
     || cleanPath === '/beta3'
     || cleanPath === '/b'
     || cleanPath === '/couples-counseling-ashdod'

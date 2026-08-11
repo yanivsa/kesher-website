@@ -40,6 +40,15 @@ describe('canonical route redirects', () => {
     );
   });
 
+  it('redirects the promoted beta2 route to the primary homepage', () => {
+    expect(canonicalRedirectTarget('https://kesher.saharoni.com/beta2')).toBe(
+      'https://kesher.saharoni.com/',
+    );
+    expect(canonicalRedirectTarget('https://kesher.saharoni.com/beta2/')).toBe(
+      'https://kesher.saharoni.com/',
+    );
+  });
+
   it('leaves other primary routes unchanged', () => {
     expect(canonicalRedirectTarget('https://kesher.saharoni.com/about')).toBeNull();
   });
