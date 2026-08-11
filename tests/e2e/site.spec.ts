@@ -63,7 +63,7 @@ test('unknown routes render the noindex 404 page', async ({ page }) => {
 
 test('the promoted homepage is indexable and uses the standalone design', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: /אפשר להתחיל לעשות סדר/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     'href',
@@ -83,14 +83,14 @@ test('homepage mounts cleanly with reduced motion enabled', async ({ page }) => 
   });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: /אפשר להתחיל לעשות סדר/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
   expect(errors).toEqual([]);
 });
 
 test('the former beta route resolves to the primary homepage', async ({ page }) => {
   await page.goto('/b/');
   await expect(page).toHaveURL(/\/$/);
-  await expect(page.getByRole('heading', { name: /אפשר להתחיל לעשות סדר/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
 });
 
 test('unknown blog posts render the noindex 404 page', async ({ page }) => {
