@@ -101,6 +101,23 @@ const schemaData = {
       ],
     },
     {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'עמוד הבית',
+          item: SITE_CONFIG.url,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'ייעוץ זוגי באשדוד',
+          item: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
+        },
+      ],
+    },
+    {
       '@type': 'FAQPage',
       mainEntity: faqItems.map((item) => ({
         '@type': 'Question',
