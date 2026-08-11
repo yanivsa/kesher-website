@@ -104,4 +104,4 @@ jobs:
             --response response.json \
             --max-seconds 7200 \
             --poll-seconds 10 \
-            --max-replacements 1
+            --max-replacements 2

@@ -449,6 +449,11 @@ assert paths == ["src/a.ts", "src/b.ts"]
         'Site-fix prompt must reject warning-only dependency migrations'
     );
     assert(
+        siteFixWorkflow.includes('Reject any file list that includes `.github/workflows/kesher-daily-video.yml`, Remotion scripts') &&
+        siteFixWorkflow.includes('`pr_body.txt`'),
+        'Site-fix prompt must reject expanded file lists that inherit unrelated history or video PRs'
+    );
+    assert(
         siteFixWorkflow.includes('`AIChatbot` returns `null` at viewports up to 768px') &&
         siteFixWorkflow.includes('a hidden consent launcher as a mobile defect'),
         'Site-fix prompt must reject dead-code mobile AI-chat positioning changes'

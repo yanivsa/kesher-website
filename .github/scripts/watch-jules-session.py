@@ -175,6 +175,7 @@ def watch(
     current = initial_session
     waiting_continuations: dict[str, int] = {}
     actively_waiting: set[str] = set()
+    last_update_times: dict[str, str] = {}
     replacements = 0
     delivery_replacements = 0
     last_state = ""
@@ -243,6 +244,8 @@ def watch(
             continue
 
         if state in WAITING_STATES:
+
+
             if current not in actively_waiting:
                 count = waiting_continuations.get(current, 0)
                 if count >= max_waiting_continuations:
