@@ -8,7 +8,10 @@ os.environ["COMPOSIO_NO_CACHE_REFRESH"] = "true"
 
 from composio import ComposioToolSet, Action, App
 
-api_key = "ck_-hh6vYTdFqm5Mt_vvIDp"
+api_key = os.environ.get("COMPOSIO_API_KEY")
+if not api_key:
+    print("Error: COMPOSIO_API_KEY environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 video_path = "/Users/ninja/Documents/Kesher/output/test_video.mp4"
 metadata_path = "/Users/ninja/Documents/Kesher/output/metadata_06r1-_wBFDo_איך_מגיעים_לשיח_רגשי_בזוגיות.json"
 

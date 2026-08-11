@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import os
+import sys
 import hashlib
 import json
 from pathlib import Path
@@ -7,7 +9,10 @@ import requests
 from composio import Action, App, Composio
 
 
-API_KEY = "ck_-hh6vYTdFqm5Mt_vvIDp"
+API_KEY = os.environ.get("COMPOSIO_API_KEY")
+if not API_KEY:
+    print("Error: COMPOSIO_API_KEY environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 CONNECTED_ACCOUNT_ID = "youtube_ransom-winish"
 VIDEO_PATH = Path("/Users/ninja/Documents/Kesher/dub-output/kesher-daily-20260706-hebrew-dubbed.mp4")
 RESULT_PATH = Path("/Users/ninja/Documents/Kesher/notebooklm-output/kesher-daily-20260706-youtube-upload.json")

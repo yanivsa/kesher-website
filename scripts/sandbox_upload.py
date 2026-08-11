@@ -1,3 +1,4 @@
+import sys
 import os
 import hashlib
 import requests
@@ -5,7 +6,10 @@ import json
 from composio import Composio
 
 # 1. Initialize Composio client with the user's ck_ key
-api_key = "ck_-hh6vYTdFqm5Mt_vvIDp"
+api_key = os.environ.get("COMPOSIO_API_KEY")
+if not api_key:
+    print("Error: COMPOSIO_API_KEY environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 print("Initializing Composio Client with user key...")
 c = Composio(api_key=api_key)
 

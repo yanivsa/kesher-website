@@ -1,10 +1,14 @@
+import sys
 import subprocess
 import json
 import time
 import os
 
 env = os.environ.copy()
-env["COMPOSIO_API_KEY"] = "ck_-hh6vYTdFqm5Mt_vvIDp"
+api_key = env.get("COMPOSIO_API_KEY")
+if not api_key:
+    print("Error: COMPOSIO_API_KEY environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 env["PATH"] = "/Users/ninja/.nvm/versions/node/v22.21.1/bin:" + env.get("PATH", "")
 
 proc = subprocess.Popen(
