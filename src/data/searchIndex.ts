@@ -82,6 +82,14 @@ const servicePages: SearchItem[] = [
     body: 'ייעוץ זוגי והנחיית הורים למשפחות עולים לישראל ולתושבים חוזרים. הסתגלות, מסגרות חינוכיות, שינוי תפקידים, שגרה ושייכות.',
     url: '/services/aliyah-families',
     category: 'תחומי התמחות'
+  },
+  {
+    id: 'service-couples-counseling-ashdod',
+    type: 'service',
+    title: 'ייעוץ זוגי באשדוד – דרך מעשית לדבר אחרת',
+    body: 'תהליך ממוקד ומכבד לזיהוי דפוסי תקשורת, ניהול מחלוקות ובניית שיחה זוגית טובה יותר. פגישות בקליניקה באשדוד או אונליין.',
+    url: '/couples-counseling-ashdod',
+    category: 'תחומי התמחות'
   }
 ];
 
