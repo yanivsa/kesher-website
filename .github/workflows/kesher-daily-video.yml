@@ -13,10 +13,10 @@ on:
       - src/remotion/**
       - tests/test_kesher_daily_pipeline.py
   schedule:
-    # Four short resumable slices during Israel's 19:00 hour. For each minute,
-    # exactly one UTC entry survives the in-pipeline Israel-hour guard across
-    # daylight-saving changes. Short slices avoid long-lived NotebookLM cookie
-    # expiry while every slice resumes the exact persisted task ID.
+    # Primary slices target Israel's 19:00 hour. During daylight saving, the
+    # 17 UTC entries provide an additional 20:00 recovery hour if GitHub cron
+    # is delayed. In winter, the 16 UTC entries remain outside the guard.
+    # Every accepted slice resumes the exact persisted task ID.
     - cron: "5,20,35,50 16 * * *"
     - cron: "5,20,35,50 17 * * *"
   workflow_dispatch:
@@ -238,7 +238,12 @@ jobs:
           schedule_guard=()
           canary_override=()
           if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
-            schedule_guard=(--require-israel-hour 19)
+            israel_hour="$(TZ=Asia/Jerusalem date +%-H)"
+            if [ "$israel_hour" = "19" ] || [ "$israel_hour" = "20" ]; then
+              schedule_guard=(--require-israel-hour "$israel_hour")
+            else
+              schedule_guard=(--require-israel-hour 19)
+            fi
           fi
           if [ "${{ inputs.allow_additional_canary || false }}" = "true" ]; then
             canary_override=(--allow-additional-canary)
