@@ -41,7 +41,7 @@ function testControllerHardening() {
         'Article policy must not present mediation as an allowed topic'
     );
     assert(
-        articlePolicy.includes('Do NOT write about, mention, or refer to divorce (גירושין)') && articlePolicy.includes('legal services (עריכת דין / עו') && articlePolicy.includes('ד), or family mediation (גישור)'),
+        articlePolicy.includes('אין להוסיף, לשנות או להתייחס לגירושין, שירותים משפטיים') && articlePolicy.includes('או גישור משפחתי בשום מקום במאמר'),
         'Article policy must strictly forbid divorce, legal, and mediation in new articles'
     );
 }
@@ -214,10 +214,13 @@ function testContentValidatorContracts() {
 
 function testIndependentArticlePrGate() {
     const workflow = fs.readFileSync('.github/workflows/auto-merge-article-prs.yml', 'utf8');
+    const controller = fs.readFileSync('.github/scripts/article-pr-controller.py', 'utf8');
     const gate = fs.readFileSync('.github/scripts/validate-article-pr.py', 'utf8');
     assert(
-        workflow.includes('python3 .github/scripts/validate-article-pr.py pr.json files.json checks.json'),
-        'Article auto-merge must execute the independent trusted quality gate'
+        workflow.includes('python3 .github/scripts/article-pr-controller.py') &&
+        controller.includes('load_validator()') &&
+        controller.includes('validator.evaluate('),
+        'Article auto-merge must execute the independent trusted quality gate through the self-healing controller'
     );
     for (const contract of [
         'New article word count must be 700-1100',
@@ -277,12 +280,13 @@ assert any('requires Image Generation Result success|generated' in error for err
 function testAutomergeDeployContracts() {
     const auditWorkflow = fs.readFileSync('.github/workflows/auto-merge-jules-audit-prs.yml', 'utf8');
     const articleWorkflow = fs.readFileSync('.github/workflows/auto-merge-article-prs.yml', 'utf8');
-    for (const [name, workflow] of [
-        ['audit', auditWorkflow],
-        ['article', articleWorkflow],
+    const articleController = fs.readFileSync('.github/scripts/article-pr-controller.py', 'utf8');
+    for (const [name, workflow, deploySource] of [
+        ['audit', auditWorkflow, auditWorkflow],
+        ['article', articleWorkflow, articleController],
     ]) {
         assert(
-            workflow.includes('/actions/workflows/deploy.yml/dispatches'),
+            deploySource.includes('/actions/workflows/deploy.yml/dispatches'),
             `${name} auto-merge must dispatch deployment after a successful merge`
         );
         assert(
@@ -295,7 +299,7 @@ function testAutomergeDeployContracts() {
         'Audit deploy dispatch must occur only after a successful merge'
     );
     assert(
-        articleWorkflow.indexOf('merge.json') < articleWorkflow.indexOf('/actions/workflows/deploy.yml/dispatches'),
+        articleController.indexOf('merged = request_json(') < articleController.indexOf('/actions/workflows/deploy.yml/dispatches'),
         'Article deploy dispatch must occur only after checking the merge response'
     );
     const articleGate = fs.readFileSync('.github/scripts/validate-article-pr.py', 'utf8');
@@ -304,8 +308,8 @@ function testAutomergeDeployContracts() {
         'Article auto-merge must accept the generated post summary index'
     );
     assert(
-        articleWorkflow.includes('Checkout trusted article gate'),
-        'Article auto-merge must checkout trusted main before running its validator'
+        articleWorkflow.includes('Checkout trusted article controller') && articleWorkflow.includes('ref: main'),
+        'Article auto-merge must checkout trusted main before running its controller and validator'
     );
     assert(
         auditWorkflow.includes('Closed zero-file stale/duplicate audit PR.'),
@@ -430,11 +434,13 @@ assert paths == ["src/a.ts", "src/b.ts"]
         'Industry benchmarking PRs must never enter the audit auto-merge eligibility regex'
     );
     assert(
-        articleWorkflow.includes('Failing the PR-scoped check so a rejected article cannot look green.') &&
-        articleWorkflow.includes('[ "${article_scope}" = "true" ]') &&
-        articleWorkflow.includes('path == "src/data/posts.json"') &&
-        articleWorkflow.includes('path.startswith("public/images/generated/blog/")'),
-        'A rejected article must fail its PR-scoped check without failing unrelated PRs'
+        articleController.includes('def is_article_scope(') &&
+        articleController.includes('path == "src/data/posts.json"') &&
+        articleController.includes('path.startswith(IMAGE_PREFIX)') &&
+        articleController.includes('send_jules_repair(') &&
+        articleController.includes('Repair THE SAME PR AND THE SAME BRANCH') &&
+        articleController.includes('MAX_REPAIRS = 2'),
+        'Rejected article PRs must enter bounded same-PR Jules self-repair without affecting unrelated PRs'
     );
     assert(
         auditWorkflow.includes('                  evidence_prefix = r"^\\s*(?:[-*]\\s*)?"'),
