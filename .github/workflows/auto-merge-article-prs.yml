@@ -56,7 +56,7 @@ jobs:
           PY
           fi
 
-      - name: Clean, repair, validate and publish article PRs
+      - name: Sync, clean, repair, validate and publish article PRs
         env:
           GITHUB_TOKEN: ${{ github.token }}
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
@@ -66,6 +66,82 @@ jobs:
           test -n "${JULES_API_KEY:-}"
           while read -r number; do
             [ -n "${number}" ] || continue
+
+            # Keep article PRs automatically current with main. This prevents a
+            # previously-valid article from getting stuck after an infrastructure,
+            # policy, validator or test fix lands on main.
+            curl --fail-with-body -sS \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${REPO}/pulls/${number}" \
+              > current-pr.json
+
+            readarray -t pr_meta < <(python3 - <<'PY'
+          import json
+          pr = json.load(open("current-pr.json", encoding="utf-8"))
+          print(pr.get("title") or "")
+          print((pr.get("head") or {}).get("ref") or "")
+          print((pr.get("head") or {}).get("sha") or "")
+          print((pr.get("base") or {}).get("ref") or "")
+          PY
+            )
+            pr_title="${pr_meta[0]:-}"
+            head_ref="${pr_meta[1]:-}"
+            head_sha="${pr_meta[2]:-}"
+            base_ref="${pr_meta[3]:-}"
+
+            if [[ "${pr_title}" == "Publish Kesher article:"* ]] && [ -n "${head_ref}" ] && [ -n "${head_sha}" ] && [ -n "${base_ref}" ]; then
+              compare_url="https://api.github.com/repos/${REPO}/compare/${base_ref}...${head_ref}"
+              curl --fail-with-body -sS \
+                -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                -H "Accept: application/vnd.github+json" \
+                "${compare_url}" > compare.json
+              behind_by="$(python3 -c 'import json; print(int(json.load(open("compare.json"))["behind_by"]))')"
+
+              if [ "${behind_by}" -gt 0 ]; then
+                python3 - "${head_sha}" > update-branch.json <<'PY'
+          import json, sys
+          print(json.dumps({"expected_head_sha": sys.argv[1]}))
+          PY
+                curl --fail-with-body -sS -X PUT \
+                  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "Content-Type: application/json" \
+                  -d @update-branch.json \
+                  "https://api.github.com/repos/${REPO}/pulls/${number}/update-branch" \
+                  > update-result.json
+
+                new_head_sha="${head_sha}"
+                for _ in $(seq 1 20); do
+                  sleep 2
+                  curl --fail-with-body -sS \
+                    -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                    -H "Accept: application/vnd.github+json" \
+                    "https://api.github.com/repos/${REPO}/pulls/${number}" \
+                    > refreshed-pr.json
+                  new_head_sha="$(python3 -c 'import json; print(json.load(open("refreshed-pr.json"))["head"]["sha"])')"
+                  [ "${new_head_sha}" != "${head_sha}" ] && break
+                done
+                if [ "${new_head_sha}" = "${head_sha}" ]; then
+                  echo "Article PR #${number} update-branch did not advance the head in time."
+                  exit 1
+                fi
+
+                python3 - "${head_ref}" > dispatch.json <<'PY'
+          import json, sys
+          print(json.dumps({"ref": sys.argv[1]}))
+          PY
+                curl --fail-with-body -sS -X POST \
+                  -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+                  -H "Accept: application/vnd.github+json" \
+                  -H "Content-Type: application/json" \
+                  -d @dispatch.json \
+                  "https://api.github.com/repos/${REPO}/actions/workflows/ci.yml/dispatches"
+                echo "Auto-synced article PR #${number} with ${base_ref} and dispatched fresh CI."
+                continue
+              fi
+            fi
+
             set +e
             controller_output="$(python3 .github/scripts/article-pr-controller.py \
               --repo "${REPO}" \
