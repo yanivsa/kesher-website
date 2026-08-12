@@ -11,6 +11,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
   checks: read
   actions: write
 
@@ -22,27 +23,19 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout trusted article gate
+      - name: Checkout trusted article controller
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           ref: main
           persist-credentials: false
-      - name: Merge eligible article PRs after CI
+
+      - name: Select article PRs
         env:
           GITHUB_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
-
-          api() {
-            curl --fail-with-body -sS \
-              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              -H "Content-Type: application/json" \
-              "$@"
-          }
-
           if [ "${EVENT_NAME}" = "pull_request_target" ]; then
             python3 - <<'PY' > pr-numbers.txt
           import json, os
@@ -50,7 +43,11 @@ jobs:
               print(json.load(fh)["pull_request"]["number"])
           PY
           else
-            api "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" > open-prs.json
+            curl --fail-with-body -sS \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
+              > open-prs.json
             python3 - <<'PY' > pr-numbers.txt
           import json
           with open("open-prs.json", encoding="utf-8") as fh:
@@ -59,51 +56,17 @@ jobs:
           PY
           fi
 
+      - name: Clean, repair, validate and publish article PRs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          test -n "${JULES_API_KEY:-}"
           while read -r number; do
             [ -n "${number}" ] || continue
-            api "https://api.github.com/repos/${REPO}/pulls/${number}" > pr.json
-            api "https://api.github.com/repos/${REPO}/pulls/${number}/files?per_page=100" > files.json
-            sha="$(python3 -c 'import json; print(json.load(open("pr.json"))["head"]["sha"])')"
-            api "https://api.github.com/repos/${REPO}/commits/${sha}/check-runs?per_page=100" > checks.json
-            article_scope="$(python3 - <<'PY'
-          import json
-          with open("pr.json", encoding="utf-8") as fh:
-              pr = json.load(fh)
-          with open("files.json", encoding="utf-8") as fh:
-              paths = [item.get("filename") or "" for item in json.load(fh)]
-          title = pr.get("title") or ""
-          scoped = title.startswith("Publish Kesher article:") or any(
-              path == "src/data/posts.json"
-              or path.startswith("public/images/generated/blog/")
-              for path in paths
-          )
-          print("true" if scoped else "false")
-          PY
-          )"
-
-            if ! python3 .github/scripts/validate-article-pr.py pr.json files.json checks.json
-            then
-              echo "PR #${number} failed the independent article quality gate."
-              if [ "${EVENT_NAME}" = "pull_request_target" ] && [ "${article_scope}" = "true" ]; then
-                echo "Failing the PR-scoped check so a rejected article cannot look green."
-                exit 1
-              fi
-              continue
-            fi
-
-            api -X PUT \
-              -d '{"commit_title":"Auto-merge validated Kesher article","merge_method":"squash"}' \
-              "https://api.github.com/repos/${REPO}/pulls/${number}/merge" > merge.json
-            python3 - <<'PY'
-          import json, sys
-          with open("merge.json", encoding="utf-8") as fh:
-              response = json.load(fh)
-          if response.get("merged") is not True:
-              print(f"Article merge did not complete: {response}", file=sys.stderr)
-              sys.exit(1)
-          PY
-            api -X POST \
-              -d '{"ref":"main"}' \
-              "https://api.github.com/repos/${REPO}/actions/workflows/deploy.yml/dispatches"
-            echo "Deploy workflow dispatched for main after article merge."
+            python3 .github/scripts/article-pr-controller.py \
+              --repo "${REPO}" \
+              --pr "${number}"
           done < pr-numbers.txt
