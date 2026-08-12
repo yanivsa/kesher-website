@@ -197,6 +197,17 @@ const schemaData = {
         "רווקות מאוחרת",
         "מציאת זוגיות"
       ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "עמוד הבית",
+          "item": SITE_CONFIG.url
+        }
+      ]
     }
   ]
 };
