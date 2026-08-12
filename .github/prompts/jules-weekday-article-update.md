@@ -76,9 +76,6 @@ Article publication runs do not create videos. Do not run the Remotion article r
 ## Completion Requirements
 Before completion/ready state after a requested repair, require a changed authoritative remote PR head, exact remote file/body evidence, and fresh successful verify CI on that head; local-only or unchanged-head completion is forbidden.
 
-## Article Constraints
-Do NOT write about, mention, or refer to divorce (גירושין), legal services (עריכת דין / עו"ד), or family mediation (גישור) anywhere in site copy, metadata, or prompts.
-
 ## Final Scope and Submission Contract
 Before any commit or PR, remove every scratch, helper, cache, temporary, and video file. Refresh `origin/main`, then run `git diff --name-only origin/main...HEAD`. The final diff may contain only `src/data/posts.json`, `src/data/postSummaries.json`, an independently verified new image under `public/images/generated/blog/`, and the minimal generated sitemap/llms files required for that one article. A helper such as `add_post.py`, any path under `public/videos/`, and any article `video` field are forbidden final scope.
 
