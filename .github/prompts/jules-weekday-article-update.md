@@ -67,8 +67,6 @@ For a no-image fallback, generic text such as “Unsplash failed” or “no mat
 Choose the result token that truthfully describes the observed failure. `unavailable` includes a missing `DEEPAI_API_KEY`; never print the key. A no-image PR is a hard failure until it records the DeepAI-first attempt, the concrete failure class, the royalty-safe fallback attempt, and the reason no image passed pixel-level visual verification.
 
 ## Article Constraints
-Do NOT write about, mention, or refer to divorce (גירושין), legal services (עריכת דין / עו"ד), or family mediation (גישור) anywhere in site copy, metadata, or prompts.
-
 Invented names must be explicitly hypothetical or omitted. No guarantees that grief/relationship dynamics self-resolve. Do not use generic final H3 headings like "סיכום" or "צעדים הבאים" (ordinary prose is allowed).
 
 The final rendered article body must contain 700-1,100 whitespace-delimited words, excluding title, excerpt, metadata, and navigation. Count the final HTML after stripping tags and record the exact result in the PR body. A 500-word legacy publishability threshold is not permission to submit a shorter new article.
