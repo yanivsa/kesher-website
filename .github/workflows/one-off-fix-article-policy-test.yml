@@ -1,0 +1,35 @@
+name: One-off fix article policy regression test
+
+on:
+  push:
+    paths:
+      - .github/workflows/one-off-fix-article-policy-test.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+      - name: Update stale article policy assertion
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('tests/automation-gates.test.cjs')
+          text = path.read_text(encoding='utf-8')
+          old = """    assert(\n        articlePolicy.includes('Do NOT write about, mention, or refer to divorce (גירושין)') && articlePolicy.includes('legal services (עריכת דין / עו') && articlePolicy.includes('ד), or family mediation (גישור)'),\n        'Article policy must strictly forbid divorce, legal, and mediation in new articles'\n    );"""
+          new = """    assert(\n        articlePolicy.includes('אין להוסיף, לשנות או להתייחס לגירושין, שירותים משפטיים') && articlePolicy.includes('או גישור משפחתי בשום מקום במאמר'),\n        'Article policy must strictly forbid divorce, legal, and mediation in new articles'\n    );"""
+          if old not in text:
+              raise SystemExit('Expected stale article-policy assertion was not found')
+          path.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/automation-gates.test.cjs
+          git diff --cached --check
+          git commit -m "Align article policy regression test with current policy"
+          git push origin HEAD:main
