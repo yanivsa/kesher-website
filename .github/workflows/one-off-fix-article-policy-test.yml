@@ -32,4 +32,4 @@ jobs:
           git add tests/automation-gates.test.cjs
           git diff --cached --check
           git commit -m "Align article policy regression test with current policy"
-          git push origin HEAD:main
+          git push --force origin HEAD:refs/heads/automation/article-policy-test-fix
