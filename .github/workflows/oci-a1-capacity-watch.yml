@@ -1,0 +1,46 @@
+name: OCI A1 Capacity Watch
+
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/oci-a1-capacity-watch.yml]
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: oci-a1-capacity-watch
+  cancel-in-progress: false
+
+jobs:
+  retry-if-needed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rerun secure OCI provision only while A1 is unavailable
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROVISION_RUN_ID: '31666856848'
+        run: |
+          set -euo pipefail
+          status="$(gh run view "$PROVISION_RUN_ID" --repo "$GITHUB_REPOSITORY" --json status --jq .status)"
+          if [ "$status" != completed ]; then
+            echo "OCI provision is already $status; no duplicate rerun."
+            exit 0
+          fi
+
+          logs="$(mktemp)"
+          gh run view "$PROVISION_RUN_ID" --repo "$GITHUB_REPOSITORY" --log > "$logs" || true
+          if grep -Eq 'OCI_RESULT_STATUS=(created|existing)' "$logs"; then
+            echo "OCI A1/OpenClaw has already been provisioned; watcher is now a no-op."
+            exit 0
+          fi
+          if ! grep -q 'OCI_RESULT_STATUS=no_capacity' "$logs"; then
+            echo "Last OCI run did not end in the expected no-capacity state; refusing blind rerun." >&2
+            exit 1
+          fi
+
+          gh run rerun "$PROVISION_RUN_ID" --repo "$GITHUB_REPOSITORY"
+          echo "Requested one safe OCI A1 capacity retry."
