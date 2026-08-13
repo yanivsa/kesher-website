@@ -176,7 +176,7 @@ const Beta3Page: React.FC = () => {
       <MetaTags
         title="שירה סהרוני — ייעוץ זוגי והנחיית הורים"
         description={SITE_CONFIG.description}
-        canonical={`${SITE_CONFIG.url}/`}
+        canonical={SITE_CONFIG.url}
         image="/images/shira-saharoni.webp"
         noIndex={true}
       />

@@ -20,9 +20,9 @@ const MetaTags = ({
   noIndex = false,
 }: MetaTagsProps) => {
   const location = useLocation();
-  const cleanPath = location.pathname.length > 1 && location.pathname.endsWith('/')
+  const cleanPath = location.pathname === '/' ? '' : (location.pathname.length > 1 && location.pathname.endsWith('/')
     ? location.pathname.slice(0, -1)
-    : location.pathname;
+    : location.pathname);
   const currentUrl = canonical || `${SITE_CONFIG.url}${cleanPath}`;
   const imageUrl = image?.startsWith('/')
     ? `${SITE_CONFIG.url}${image}`
