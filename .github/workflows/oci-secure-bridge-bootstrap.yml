@@ -1,0 +1,99 @@
+name: OCI Secure Bridge Bootstrap
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/oci-secure-bridge-bootstrap.yml
+
+permissions:
+  contents: read
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 22
+
+      - name: Create and deploy one-time encrypted OCI bridge
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          work="$(mktemp -d)"
+          trap 'rm -rf "$work"' EXIT
+          cd "$work"
+
+          openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:3072 -out bridge-private.pem >/dev/null 2>&1
+          openssl pkey -in bridge-private.pem -pubout -outform DER | base64 -w0 > public.b64
+          public_key="$(cat public.b64)"
+
+          cat > worker.mjs <<'JS'
+          function b64ToBytes(value) {
+            const raw = atob(value);
+            const out = new Uint8Array(raw.length);
+            for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+            return out;
+          }
+          function pemToBytes(pem) {
+            return b64ToBytes(pem.replace(/-----[^-]+-----/g, '').replace(/\s+/g, ''));
+          }
+          export default {
+            async fetch(request, env) {
+              const url = new URL(request.url);
+              if (url.pathname === '/health') {
+                return new Response('ok', {headers: {'cache-control': 'no-store'}});
+              }
+              if (url.pathname !== '/decrypt' || request.method !== 'POST') return new Response('not found', {status: 404});
+              const auth = request.headers.get('authorization') || '';
+              if (!env.CONTROL_TOKEN || auth !== `Bearer ${env.CONTROL_TOKEN}`) return new Response('forbidden', {status: 403});
+              try {
+                const payload = await request.json();
+                const privateKey = await crypto.subtle.importKey(
+                  'pkcs8', pemToBytes(env.BOOTSTRAP_PRIVATE_KEY),
+                  {name: 'RSA-OAEP', hash: 'SHA-256'}, false, ['decrypt']
+                );
+                const aesRaw = await crypto.subtle.decrypt({name: 'RSA-OAEP'}, privateKey, b64ToBytes(payload.wrapped_key));
+                const aesKey = await crypto.subtle.importKey('raw', aesRaw, {name: 'AES-GCM'}, false, ['decrypt']);
+                const plaintext = await crypto.subtle.decrypt(
+                  {name: 'AES-GCM', iv: b64ToBytes(payload.iv)},
+                  aesKey, b64ToBytes(payload.ciphertext)
+                );
+                return new Response(plaintext, {
+                  headers: {'content-type': 'application/json', 'cache-control': 'no-store'}
+                });
+              } catch (_) {
+                return new Response('decrypt failed', {status: 400, headers: {'cache-control': 'no-store'}});
+              }
+            }
+          };
+          JS
+
+          cat > wrangler.jsonc <<'JSON'
+          {
+            "name": "yanivsa-oci-bootstrap",
+            "main": "worker.mjs",
+            "compatibility_date": "2026-08-13"
+          }
+          JSON
+
+          npx --yes wrangler@4.100.0 deploy >/tmp/oci-wrangler-deploy.log
+          cat bridge-private.pem | npx --yes wrangler@4.100.0 secret put BOOTSTRAP_PRIVATE_KEY >/dev/null
+          random_token="$(openssl rand -hex 32)"
+          printf '%s' "$random_token" | npx --yes wrangler@4.100.0 secret put CONTROL_TOKEN >/dev/null
+
+          subdomain="$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" \
+            | python3 -c 'import json,sys; print(json.load(sys.stdin)["result"]["subdomain"])')"
+          worker_url="https://yanivsa-oci-bootstrap.${subdomain}.workers.dev"
+
+          echo "OCI_BRIDGE_PUBLIC_KEY_B64=${public_key}"
+          echo "OCI_BRIDGE_URL=${worker_url}"
+          curl -fsS "$worker_url/health" >/dev/null
+          echo "OCI_BRIDGE_READY=true"
