@@ -6,6 +6,12 @@ on:
       - Kesher Daily NotebookLM Video Overview
     types:
       - completed
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/kesher_youtube_advisory_upload.py
+      - .github/workflows/kesher-youtube-advisory-upload.yml
 
 permissions:
   actions: write
@@ -17,7 +23,7 @@ concurrency:
 
 jobs:
   upload:
-    if: ${{ github.event.workflow_run.event != 'pull_request' }}
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.event != 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -37,24 +43,32 @@ jobs:
       - name: Install pinned upload dependency
         run: python -m pip install requests==2.32.5
 
-      - name: Restore state from triggering video run
+      - name: Restore authoritative video state
         env:
           GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           set -euo pipefail
           mkdir -p "$KESHER_STATE_DIR"
-          artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}/artifacts?per_page=100" \
-            --jq '[.artifacts[] | select(.expired == false and .name == "kesher-video-state")] | sort_by(.created_at) | reverse | .[0].id // empty')"
+          if [ "$EVENT_NAME" = "workflow_run" ]; then
+            artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}/artifacts?per_page=100" \
+              --jq '[.artifacts[] | select(.expired == false and .name == "kesher-video-state")] | sort_by(.created_at) | reverse | .[0].id // empty')"
+            source_label="run ${SOURCE_RUN_ID}"
+          else
+            artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+              --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].id // empty')"
+            source_label="newest durable state"
+          fi
           if [ -z "$artifact_id" ]; then
-            echo "Triggering video run has no durable kesher-video-state artifact." >&2
+            echo "No durable kesher-video-state artifact is available." >&2
             exit 1
           fi
           archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive"
           unzip -oq "$archive" -d "$KESHER_STATE_DIR"
           test -s "$KESHER_STATE_DIR/state.json"
-          echo "Restored state artifact ${artifact_id} from run ${SOURCE_RUN_ID}."
+          echo "Restored state artifact ${artifact_id} from ${source_label}."
 
       - name: Continue to YouTube regardless of Jules quality decision
         env:

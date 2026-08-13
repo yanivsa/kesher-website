@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Upload a technically verified Kesher video even when Jules quality review rejects it.
+"""Upload the newest technically verified Kesher video regardless of Jules quality review.
 
 Jules review remains advisory. YouTube/public-processing is the only publication gate.
 """
@@ -25,9 +25,21 @@ def _candidate(state: dict) -> dict | None:
     ]
     if not candidates:
         return None
-    if len(candidates) != 1:
-        raise pipeline.PipelineError(f"Expected exactly one technically verified upload candidate, found {len(candidates)}")
-    return candidates[0]
+
+    dated = [item for item in candidates if str(item.get("israel_date") or "").strip()]
+    if dated:
+        newest_date = max(str(item["israel_date"]) for item in dated)
+        newest = [item for item in dated if str(item["israel_date"]) == newest_date]
+    else:
+        newest = candidates
+
+    if len(newest) != 1:
+        newest.sort(key=lambda item: str(item.get("id") or ""), reverse=True)
+        if not newest or (len(newest) > 1 and str(newest[0].get("id")) == str(newest[1].get("id"))):
+            raise pipeline.PipelineError(f"Newest upload candidate is ambiguous; found {len(newest)} candidates")
+    item = newest[0]
+    print(f"UPLOAD_CANDIDATE item={item.get('id')} israel_date={item.get('israel_date')}")
+    return item
 
 
 def _verify_immutable_evidence(item: dict) -> None:
