@@ -90,7 +90,7 @@ def build_prompt(
 ) -> str:
     return f"""Perform one strict READ-ONLY Kesher Video Overview review. Do not edit the repository, create a branch/commit/changeSet/PR, generate another video, contact NotebookLM, or contact YouTube.
 
-The exact secret-free evidence is already checked out in `{evidence_root}` on this session's starting branch. Do not use `gh`, GitHub APIs, network downloads, or files outside that directory. If the directory or a required file is missing, reject or report the blocker and do not approve anything.
+The exact secret-free evidence is already checked out in `{evidence_root}` on this session's starting branch. Do not use `gh`, GitHub APIs, network downloads, or files outside that directory. If the directory or a required file is missing, report the blocker and do not invent evidence.
 
 Expected item: `{item['id']}`.
 Expected evidence hashes (must recompute locally with sha256sum and match exactly):
@@ -98,14 +98,26 @@ Expected evidence hashes (must recompute locally with sha256sum and match exactl
 
 Open `{evidence_root}/state.json` and locate the exact item. Open and visually inspect EACH of its four `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
 
-Apply four gates fail-closed:
-1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
-2. Visual: reject English except the Kesher URL, gibberish, slide/card/chart presentation, cropped text, black frame, repeated/static layout, unreadable branding, or any visible mismatch. Describe what is actually visible in all four frames.
-   The visible website label must be exactly `kesher.saharoni.com`, without `https://`, a trailing slash, or other protocol text. Require meaningful visual progression across the four samples: clearly different compositions, motion states and scene ideas that support the narration. Reject generic decorative motion, repetitive abstract layouts, or visually dull output that does not help tell the source's story. Remotion does not need to replace every original pixel in principle, but every retained area must be contextually useful and free of forbidden slides, cards, charts, English branding and cropped text.
-3. Semantic: compare all four frames and the complete narration transcript with the complete source. Reject any topic mismatch, especially parenting/child versus couples/relationship, unsupported claims, or missing central subject.
-4. Metadata: compare title, description and every tag with source and transcript. Reject unsupported metadata, default/generic metadata, English, or missing `https://kesher.saharoni.com`. Separately confirm that `generation_prompt` explicitly requests a female Hebrew voice; this confirms the required request was sent to NotebookLM, but do not claim the resulting voice was independently verified from transcript-only evidence.
+IMPORTANT: Jules is an ADVISORY reviewer here, not a publication gate. Your approved/rejected statuses are quality signals for improvement only. They must not be treated as permission to block a technically valid YouTube upload.
 
-You may approve only after doing the actual file reads and image inspection. Notes must be factual Hebrew. Finish with `{FINAL_MARKER}` on its own line followed by exactly one JSON object and no Markdown fence:
+Apply four advisory review dimensions:
+1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
+
+2. Visual creative review — concentrate especially on the CORNERS, EDGES, SAFE MARGINS and SUPPORTING OVERLAYS. Treat the central roughly 70% of the frame as the primary storytelling area. Remotion should ideally ENRICH the main story rather than visually take over the entire screen. Favor purposeful peripheral additions: tasteful corner accents, edge motion, contextual icons or recognizable objects, subtle depth, light highlights, restrained labels, framing elements and small story cues. Flag designs that unnecessarily cover, compete with, or replace the central storytelling area.
+
+   Inspect all four frames and describe what is actually visible. The visible website label must be exactly `kesher.saharoni.com`, without `https://`, a trailing slash, or other protocol text. Report English except the Kesher URL, gibberish, cropped text, black frames, unreadable branding, or obvious visual mismatch.
+
+   Judge ENERGY, CLARITY and INTEREST — not just technical cleanliness. Prefer clear, recognizable, story-related visual ideas over unexplained decorative motion. Good examples depend on the article and can include a phone, bill, table, doorway, two people, distance/connection metaphor, conversation cue, home object, money cue, parenting object, calendar, message bubble, key, chair, cup, toy, or another concrete symbol that actually supports the narration. Avoid relying on meaningless circles, blobs, lines, floating geometric shapes, repeated gradients, or abstract animations that a viewer cannot connect to the story.
+
+   Motion should feel intentional, elegant and lively. Across the four samples there should be visual progression, different compositions or story beats, and some emotional build — but not chaos, visual noise or childish effects. The target is a polished, emotionally engaging relationship/parenting editorial video, not a generic motion-graphics screensaver.
+
+   If the output is visually dull, too abstract, repetitive, or overly full-screen, the `visual_note` MUST include 2-4 concrete actionable improvements. Prioritize what should change in the corners/edges/overlays, identify which abstract element is weak, and name a more meaningful visual device that could replace it. Do not merely say "make it more engaging".
+
+3. Semantic: compare all four frames and the complete narration transcript with the complete source. Report any topic mismatch, especially parenting/child versus couples/relationship, unsupported claims, or missing central subject. Small stylistic paraphrases, metaphors or natural spoken-language variations are not by themselves serious defects when the original meaning is preserved.
+
+4. Metadata: compare title, description and every tag with source and transcript. Report unsupported metadata, default/generic metadata, English, or missing `https://kesher.saharoni.com`. Separately confirm that `generation_prompt` explicitly requests a female Hebrew voice; this confirms the required request was sent to NotebookLM, but do not claim the resulting voice was independently verified from transcript-only evidence.
+
+You may complete the review only after doing the actual file reads and image inspection. Notes must be factual Hebrew. Finish with `{FINAL_MARKER}` on its own line followed by exactly one JSON object and no Markdown fence:
 {{
   "item_id": "{item['id']}",
   "manifest_sha256": "...",
@@ -118,7 +130,7 @@ You may approve only after doing the actual file reads and image inspection. Not
   "visual_status": "approved or rejected",
   "semantic_status": "approved or rejected",
   "metadata_status": "approved or rejected",
-  "visual_note": "הערה עובדתית בעברית",
+  "visual_note": "הערה עובדתית בעברית, ואם נדרש שיפור ויזואלי — 2-4 פעולות קונקרטיות",
   "semantic_note": "הערה עובדתית בעברית",
   "metadata_note": "הערה עובדתית בעברית"
 }}
@@ -186,7 +198,7 @@ def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
                 "POST",
                 f"/{session}:sendMessage",
                 api_key,
-                {"prompt": "Continue the read-only evidence review autonomously. Do not ask a question. If evidence access fails, reject or report the blocker; never approve without inspection."},
+                {"prompt": "Continue the read-only evidence review autonomously. Do not ask a question. If evidence access fails, report the blocker; never invent inspection results."},
             )
             continued = True
         time.sleep(10)
