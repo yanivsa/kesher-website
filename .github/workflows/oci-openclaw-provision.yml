@@ -150,3 +150,5 @@ jobs:
       - name: Remove plaintext credentials and temporary SSH key
         if: ${{ always() }}
         run: rm -f /tmp/oci-credentials.json /tmp/oci_api_key.pem /tmp/oci_config /tmp/openclaw_bootstrap_key /tmp/openclaw_bootstrap_key.pub
+
+# retry after corrected encrypted bundle
