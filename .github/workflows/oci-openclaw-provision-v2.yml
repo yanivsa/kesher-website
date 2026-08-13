@@ -35,7 +35,17 @@ jobs:
           token="$(openssl rand -hex 32)"
           printf '%s' "$token" | npx --yes wrangler@4.100.0 secret put CONTROL_TOKEN --name "$BRIDGE_NAME" >/dev/null
           subdomain="$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" | python3 -c 'import json,sys;print(json.load(sys.stdin)["result"]["subdomain"])')"
-          curl -fsS -H "Authorization: Bearer $token" -H 'Content-Type: application/json' --data-binary @.github/oci-bootstrap/encrypted-oci-bundle.json "https://${BRIDGE_NAME}.${subdomain}.workers.dev/decrypt" >/tmp/oci.json
+          url="https://${BRIDGE_NAME}.${subdomain}.workers.dev/decrypt"
+          code=000
+          for i in $(seq 1 12); do
+            code="$(curl -sS -o /tmp/oci.json -w '%{http_code}' -H "Authorization: Bearer $token" -H 'Content-Type: application/json' --data-binary @.github/oci-bootstrap/encrypted-oci-bundle.json "$url")"
+            [ "$code" = 200 ] && break
+            if [ "$code" = 403 ]; then sleep 5; continue; fi
+            echo "OCI bridge returned HTTP $code" >&2
+            cat /tmp/oci.json >&2 || true
+            exit 1
+          done
+          [ "$code" = 200 ] || { echo "OCI bridge token did not propagate in time" >&2; exit 1; }
           python3 - <<'PY'
           import json
           from pathlib import Path
