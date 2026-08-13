@@ -1,0 +1,28 @@
+name: One-off Kesher Video Canary Dispatch
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/kesher-video-canary-dispatch.yml
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch one additional Kesher video canary
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-daily-video.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref main \
+            -f operation=full \
+            -f allow_additional_canary=true
+          echo "Dispatched one additional unused-source canary."
