@@ -1,0 +1,94 @@
+name: OCI Always Free OpenClaw Provision V2
+
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/oci-openclaw-provision-v2.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      BRIDGE_NAME: yanivsa-oci-bootstrap
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 22
+      - name: Install OCI SDK
+        run: python -m pip install 'oci==2.183.0'
+      - name: Decrypt OCI bundle through Cloudflare bridge
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          token="$(openssl rand -hex 32)"
+          printf '%s' "$token" | npx --yes wrangler@4.100.0 secret put CONTROL_TOKEN --name "$BRIDGE_NAME" >/dev/null
+          subdomain="$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" | python3 -c 'import json,sys;print(json.load(sys.stdin)["result"]["subdomain"])')"
+          url="https://${BRIDGE_NAME}.${subdomain}.workers.dev/decrypt"
+          code=000
+          for i in $(seq 1 12); do
+            code="$(curl -sS -o /tmp/oci.json -w '%{http_code}' -H "Authorization: Bearer $token" -H 'Content-Type: application/json' --data-binary @.github/oci-bootstrap/encrypted-oci-bundle.json "$url")"
+            [ "$code" = 200 ] && break
+            if [ "$code" = 403 ]; then sleep 5; continue; fi
+            echo "OCI bridge returned HTTP $code" >&2
+            cat /tmp/oci.json >&2 || true
+            exit 1
+          done
+          [ "$code" = 200 ] || { echo "OCI bridge token did not propagate in time" >&2; exit 1; }
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.load(open('/tmp/oci.json'))
+          assert all(d.get(k) for k in ('user','fingerprint','tenancy','region','private_key_pem'))
+          Path('/tmp/oci.pem').write_text(d['private_key_pem'])
+          Path('/tmp/oci.pem').chmod(0o600)
+          Path('/tmp/oci.cfg').write_text('[DEFAULT]\nuser='+d['user']+'\nfingerprint='+d['fingerprint']+'\ntenancy='+d['tenancy']+'\nregion='+d['region']+'\nkey_file=/tmp/oci.pem\n')
+          Path('/tmp/oci.cfg').chmod(0o600)
+          PY
+          echo OCI_BRIDGE_OK=true
+      - name: Provision A1 and OpenClaw
+        run: |
+          set -euo pipefail
+          ssh-keygen -q -t ed25519 -N '' -f /tmp/bootkey
+          ip="$(curl -fsS https://api.ipify.org)"
+          python -u scripts/oci_openclaw_bootstrap.py --config /tmp/oci.cfg --ssh-public-key-file /tmp/bootkey.pub --bootstrap-cidr "$ip/32" --result-json /tmp/result.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/result.json'))
+          print('OCI_RESULT_STATUS='+str(d.get('status')))
+          for k in ('shape','availability_domain','lifecycle_state','public_ip','os'):
+              if d.get(k): print('OCI_'+k.upper()+'='+str(d[k]))
+          PY
+      - name: Verify new OpenClaw install
+        run: |
+          set -euo pipefail
+          status="$(python3 -c 'import json;print(json.load(open("/tmp/result.json")).get("status",""))')"
+          [ "$status" = created ] || { echo "Verification skipped: $status"; exit 0; }
+          ip="$(python3 -c 'import json;print(json.load(open("/tmp/result.json"))["public_ip"])')"
+          os="$(python3 -c 'import json;print(json.load(open("/tmp/result.json"))["os"])')"
+          [ "$os" = 'Canonical Ubuntu' ] && user=ubuntu || user=opc
+          for i in $(seq 1 60); do ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -i /tmp/bootkey "$user@$ip" 'echo ok' >/dev/null 2>&1 && break; sleep 10; done
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /tmp/bootkey "$user@$ip" 'sudo cloud-init status --wait; sudo test -f /var/lib/openclaw-installed; sudo cat /var/lib/openclaw-version.txt'
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /tmp/bootkey "$user@$ip" 'sudo -H bash -lc '\''B=$(command -v openclaw || find /root -type f -name openclaw -perm -111 2>/dev/null | head -1); "$B" config set agents.defaults.model.primary openai/gpt-5.6-sol'\'''
+          echo OPENCLAW_INSTALL_VERIFIED=true
+      - name: Close bootstrap SSH
+        if: ${{ always() }}
+        run: |
+          if [ -s /tmp/result.json ] && [ -s /tmp/oci.cfg ]; then
+            sl="$(python3 -c 'import json;print(json.load(open("/tmp/result.json")).get("security_list_id") or "")')"
+            [ -z "$sl" ] || python -u scripts/oci_openclaw_bootstrap.py --config /tmp/oci.cfg --close-ssh --security-list-id "$sl"
+          fi
+      - name: Cleanup
+        if: ${{ always() }}
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/bootkey /tmp/bootkey.pub
