@@ -5,7 +5,10 @@ on:
     branches: [main]
     paths: [.github/workflows/oci-a1-capacity-watch.yml]
   schedule:
-    - cron: '17 * * * *'
+    # A1 Always Free capacity can appear briefly. Retry every 15 minutes,
+    # never in parallel, and only while the last secure provision run ended
+    # specifically with OCI_RESULT_STATUS=no_capacity.
+    - cron: '2,17,32,47 * * * *'
 
 permissions:
   actions: write
