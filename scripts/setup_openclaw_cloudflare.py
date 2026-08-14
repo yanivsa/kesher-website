@@ -61,17 +61,9 @@ def main():
         raise RuntimeError(f"Active Cloudflare zone not visible for {zone_name}")
     zone_id = zone["id"]
 
-    # Make sure the account has at least one usable login method. We do not
-    # modify identity providers here; current Cloudflare accounts normally have
-    # the Cloudflare IdP, while existing accounts may have OTP or another IdP.
-    idps = paged(f"/accounts/{ACCOUNT}/access/identity_providers")
-    print("CF_IDP_COUNT=" + str(len(idps)))
-    for p in idps:
-        print("CF_IDP=" + str(p.get("type", "")) + "|" + str(p.get("name", "")))
-    if not idps:
-        raise RuntimeError("NO_ACCESS_IDENTITY_PROVIDER_CONFIGURED")
-
     # Access first: deny-by-default until the one explicit email policy matches.
+    # We intentionally do not query identity providers because the existing API
+    # token is scoped to Apps/Policies/Tunnels but not IdP administration.
     apps = paged(f"/accounts/{ACCOUNT}/access/apps")
     app = next((a for a in apps if a.get("domain") == HOSTNAME), None)
     if not app:
@@ -99,7 +91,6 @@ def main():
         policy = request("POST", f"/accounts/{ACCOUNT}/access/apps/{app_id}/policies", desired_policy)
         print("CF_ACCESS_POLICY_CREATED=true")
     else:
-        # Keep the policy exact and idempotent if a partial earlier run exists.
         request("PUT", f"/accounts/{ACCOUNT}/access/apps/{app_id}/policies/{policy['id']}", desired_policy)
         print("CF_ACCESS_POLICY_CREATED=false")
 
@@ -144,7 +135,6 @@ def main():
         request("POST", f"/zones/{zone_id}/dns_records", desired_dns)
         print("CF_DNS_CREATED=true")
 
-    # Fetch token only to prove the workflow has permission. Never print it.
     tunnel_token = request("GET", f"/accounts/{ACCOUNT}/cfd_tunnel/{tunnel_id}/token")
     if not isinstance(tunnel_token, str) or len(tunnel_token) < 50:
         raise RuntimeError("INVALID_TUNNEL_TOKEN_RESPONSE")
