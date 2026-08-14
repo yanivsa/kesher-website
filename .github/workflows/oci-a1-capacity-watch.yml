@@ -5,9 +5,8 @@ on:
     branches: [main]
     paths: [.github/workflows/oci-a1-capacity-watch.yml]
   schedule:
-    # A1 Always Free capacity can appear briefly. Retry every 15 minutes,
-    # never in parallel, and only while the last secure provision run ended
-    # specifically with OCI_RESULT_STATUS=no_capacity.
+    # A1 Always Free capacity can appear briefly. Retry every 15 minutes only
+    # while neither Plan B nor A1 has successfully provisioned OpenClaw.
     - cron: '2,17,32,47 * * * *'
 
 permissions:
@@ -22,12 +21,31 @@ jobs:
   retry-if-needed:
     runs-on: ubuntu-latest
     steps:
-      - name: Rerun secure OCI provision only while A1 is unavailable
+      - name: Rerun secure OCI provision only while OpenClaw is unprovisioned
         env:
           GH_TOKEN: ${{ github.token }}
           PROVISION_RUN_ID: '31666856848'
         run: |
           set -euo pipefail
+
+          # Plan B is now the live OpenClaw host. If its latest run created or
+          # found the E2 instance and verified OpenClaw, never create an A1
+          # duplicate later just because capacity becomes available.
+          plan_b_run="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow oci-openclaw-plan-b-e2.yml --limit 1 --json databaseId,status --jq '.[0].databaseId // empty')"
+          if [ -n "$plan_b_run" ]; then
+            plan_b_status="$(gh run view "$plan_b_run" --repo "$GITHUB_REPOSITORY" --json status --jq .status)"
+            if [ "$plan_b_status" = completed ]; then
+              plan_b_logs="$(mktemp)"
+              gh run view "$plan_b_run" --repo "$GITHUB_REPOSITORY" --log > "$plan_b_logs" || true
+              if grep -Eq 'OCI_RESULT_STATUS=(created|existing)' "$plan_b_logs" \
+                 && grep -q 'OPENCLAW_PLAN_B_VERIFIED=true' "$plan_b_logs" \
+                 && grep -q 'BOOTSTRAP_SSH_CLOSED' "$plan_b_logs"; then
+                echo "OpenClaw Plan B is verified; A1 capacity watcher is permanently a no-op."
+                exit 0
+              fi
+            fi
+          fi
+
           status="$(gh run view "$PROVISION_RUN_ID" --repo "$GITHUB_REPOSITORY" --json status --jq .status)"
           if [ "$status" != completed ]; then
             echo "OCI provision is already $status; no duplicate rerun."
