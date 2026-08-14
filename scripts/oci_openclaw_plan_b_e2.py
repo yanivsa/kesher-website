@@ -76,6 +76,14 @@ def retryable_capacity_error(exc: ServiceError) -> bool:
     return any(x in text for x in needles)
 
 
+def retryable_ad_placement_error(exc: ServiceError) -> bool:
+    # OCI documents that E2.1.Micro is offered in only one AD in multi-AD
+    # regions. A shape/resource that is not exposed in a particular AD may
+    # surface as 404 NotAuthorizedOrNotFound, so try the remaining ADs before
+    # declaring a real authorization blocker.
+    return exc.status == 404 and (exc.code or "") == "NotAuthorizedOrNotFound"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True)
@@ -160,19 +168,17 @@ def main():
             err = {"status": exc.status, "code": exc.code, "message": (exc.message or "")[:240], "ad": ad.name}
             errors.append(err)
             log("E2_INSTANCE_LAUNCH_FAILED", **err)
-            if retryable_capacity_error(exc):
+            if retryable_capacity_error(exc) or retryable_ad_placement_error(exc):
                 continue
-            # E2.1.Micro is only offered in one AD in multi-AD regions; OCI may
-            # report unsupported/invalid shape placement with a generic 400.
             if exc.status == 400 and "shape" in (exc.message or "").lower():
                 continue
             result = {"status": "blocked", "shape": SHAPE, "errors": errors}
             Path(args.result_json).write_text(json.dumps(result))
             return 0
 
-    result = {"status": "no_capacity_plan_b", "shape": SHAPE, "errors": errors}
+    result = {"status": "blocked_after_all_ads", "shape": SHAPE, "errors": errors}
     Path(args.result_json).write_text(json.dumps(result))
-    log("E2_PLAN_B_UNAVAILABLE")
+    log("E2_PLAN_B_ALL_ADS_EXHAUSTED")
     return 0
 
 
