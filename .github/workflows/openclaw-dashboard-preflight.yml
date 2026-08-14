@@ -1,0 +1,54 @@
+name: OpenClaw Dashboard Preflight
+
+on:
+  push:
+    branches: [setup/openclaw-secure-dashboard]
+    paths: [.github/workflows/openclaw-dashboard-preflight.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Cloudflare zones and Zero Trust capabilities
+        env:
+          CF_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, urllib.request, urllib.error
+          token=os.environ['CF_TOKEN']; account=os.environ['CF_ACCOUNT']
+          headers={'Authorization':f'Bearer {token}','Content-Type':'application/json'}
+          def get(url):
+              req=urllib.request.Request(url,headers=headers)
+              try:
+                  with urllib.request.urlopen(req,timeout=30) as r:
+                      return r.status,json.load(r)
+              except urllib.error.HTTPError as e:
+                  body=e.read().decode('utf-8','replace')
+                  try: data=json.loads(body)
+                  except Exception: data={'raw':body[:500]}
+                  return e.code,data
+          status,zones=get('https://api.cloudflare.com/client/v4/zones?status=active&per_page=50')
+          print('CF_ZONES_HTTP='+str(status))
+          for z in (zones.get('result') or []):
+              print('CF_ZONE='+z.get('name','')+'|'+z.get('id',''))
+          status,tunnels=get(f'https://api.cloudflare.com/client/v4/accounts/{account}/cfd_tunnel?is_deleted=false&per_page=5')
+          print('CF_TUNNEL_API_HTTP='+str(status))
+          if status==200:
+              print('CF_TUNNEL_API_OK=true')
+          else:
+              print('CF_TUNNEL_API_OK=false')
+              print('CF_TUNNEL_ERROR='+json.dumps(tunnels.get('errors') or tunnels)[:700])
+          status,apps=get(f'https://api.cloudflare.com/client/v4/accounts/{account}/access/apps?per_page=5')
+          print('CF_ACCESS_API_HTTP='+str(status))
+          if status==200:
+              print('CF_ACCESS_API_OK=true')
+          else:
+              print('CF_ACCESS_API_OK=false')
+              print('CF_ACCESS_ERROR='+json.dumps(apps.get('errors') or apps)[:700])
+          PY
