@@ -23,6 +23,5 @@ jobs:
           gh workflow run kesher-daily-video.yml \
             --repo "$GITHUB_REPOSITORY" \
             --ref main \
-            -f operation=full \
-            -f allow_additional_canary=false
+            -f operation=full
           echo "Resumed the current Kesher video canary."

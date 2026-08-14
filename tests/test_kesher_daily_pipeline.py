@@ -146,19 +146,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(arguments[arguments.index("--style") + 1], "auto")
         self.assertNotIn("--style-prompt", arguments)
 
-    def test_rejected_item_blocks_a_second_new_video_on_same_israel_date(self) -> None:
-        source = pipeline.source_metadata(hebrew_post())
-        item = pipeline.new_item(source)
-        item["status"] = "rejected"
-        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
-        pipeline.save_state(state)
-        with mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
-            pipeline, "select_newest_unused_article"
-        ) as select:
-            self.assertEqual(pipeline.run_generation(0, None), 0)
-        select.assert_not_called()
-
-    def test_manual_canary_override_selects_a_different_unused_source(self) -> None:
+    def test_rejected_same_day_item_allows_different_unused_source(self) -> None:
         prior_post = hebrew_post(slug="prior")
         prior_post["title"] = "מאמר קודם על הורות"
         prior_source = pipeline.source_metadata(prior_post)
@@ -166,17 +154,56 @@ class PipelineTestCase(unittest.TestCase):
         prior["status"] = "rejected"
         state = {"version": 1, "items": [prior], "updated_at": pipeline.utc_now()}
         pipeline.save_state(state)
+
         next_post = hebrew_post(slug="next")
         next_post["title"] = "מאמר חדש על הסתגלות"
+        self.write_posts([prior_post, next_post])
+
         next_source = pipeline.source_metadata(next_post)
         with mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
             pipeline, "select_newest_unused_article", return_value=next_source
         ) as select, mock.patch.object(pipeline, "add_source"):
-            self.assertEqual(pipeline.run_generation(0, None, allow_additional_canary=True), 0)
+            self.assertEqual(pipeline.run_generation(0, None), 0)
         select.assert_called_once()
         saved = pipeline.load_state()["items"]
         self.assertEqual(len(saved), 2)
         self.assertNotEqual(saved[0]["source"]["content_sha256"], saved[1]["source"]["content_sha256"])
+
+    def test_active_item_concurrency_prevention(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        self.write_posts([hebrew_post()])
+
+        # Test active statuses that skip or resume pipeline
+        for status in ("source_selected", "source_added", "generating", "downloaded", "pending_review", "approved", "uploading"):
+            item = pipeline.new_item(source)
+            item["status"] = status
+            if status == "downloaded":
+                item["raw_mp4"] = "synthetic-raw.mp4"
+            state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+            pipeline.save_state(state)
+
+            with mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+                pipeline, "select_newest_unused_article"
+            ) as select, mock.patch.object(pipeline, "add_source"), mock.patch.object(
+                pipeline, "start_generation"
+            ), mock.patch.object(pipeline, "wait_for_generation", return_value=False), mock.patch.object(
+                pipeline, "validate_and_manifest"
+            ):
+                self.assertEqual(pipeline.run_generation(0, None), 0)
+            select.assert_not_called()
+
+        # Test duplicate active items raises PipelineError
+        item1 = pipeline.new_item(source)
+        item1["id"] = "video-active-1"
+        item1["status"] = "generating"
+        item2 = pipeline.new_item(source)
+        item2["id"] = "video-active-2"
+        item2["status"] = "downloaded"
+        state = {"version": 1, "items": [item1, item2], "updated_at": pipeline.utc_now()}
+        pipeline.save_state(state)
+        with mock.patch.object(pipeline, "auth_preflight"):
+            with self.assertRaisesRegex(pipeline.PipelineError, "More than one active video exists"):
+                pipeline.run_generation(0, None)
 
     def test_pending_poll_never_starts_a_second_generation(self) -> None:
         item = {"id": "one", "task_id": "task-one", "status": "generating"}

@@ -691,7 +691,6 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
 def run_generation(
     max_wait_seconds: int,
     require_israel_hour: int | None,
-    allow_additional_canary: bool = False,
 ) -> int:
     if require_israel_hour is not None and israel_now().hour != require_israel_hour:
         print(f"SCHEDULE_SKIPPED israel_hour={israel_now().hour}")
@@ -703,17 +702,6 @@ def run_generation(
         print(f"NO_GENERATION active_item={item['id']} status={item['status']}")
         return 0
     if not item:
-        today = israel_now().date().isoformat()
-        attempted_today = any(
-            candidate.get("israel_date") == today
-            or str(candidate.get("created_at", "")).startswith(today)
-            for candidate in state["items"]
-        )
-        if attempted_today and not allow_additional_canary:
-            print(f"DAILY_ATTEMPT_ALREADY_RECORDED israel_date={today}")
-            return 0
-        if attempted_today:
-            print(f"MANUAL_ADDITIONAL_CANARY israel_date={today}")
         source = select_newest_unused_article(state)
         item = new_item(source)
         state["items"].append(item)
@@ -1109,7 +1097,6 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--report-json", action="store_true")
     parser.add_argument("--max-wait-seconds", type=int, default=3600)
     parser.add_argument("--require-israel-hour", type=int, choices=range(24))
-    parser.add_argument("--allow-additional-canary", action="store_true")
     parser.add_argument("--visual-status", choices=sorted(ALLOWED_REVIEW))
     parser.add_argument("--semantic-status", choices=sorted(ALLOWED_REVIEW))
     parser.add_argument("--metadata-status", choices=sorted(ALLOWED_REVIEW))
@@ -1144,7 +1131,6 @@ def main() -> int:
     return run_generation(
         args.max_wait_seconds,
         args.require_israel_hour,
-        allow_additional_canary=args.allow_additional_canary,
     )
 
 

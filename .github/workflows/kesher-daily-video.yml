@@ -36,11 +36,6 @@ on:
         description: Exact visually rejected item to rebuild with Remotion
         required: false
         type: string
-      allow_additional_canary:
-        description: Manually start one additional unused-source canary today
-        required: false
-        default: false
-        type: boolean
 
 permissions:
   actions: write
@@ -236,7 +231,6 @@ jobs:
         run: |
           set -euo pipefail
           schedule_guard=()
-          canary_override=()
           if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
             israel_hour="$(TZ=Asia/Jerusalem date +%-H)"
             if [ "$israel_hour" = "19" ] || [ "$israel_hour" = "20" ]; then
@@ -245,13 +239,9 @@ jobs:
               schedule_guard=(--require-israel-hour 19)
             fi
           fi
-          if [ "${{ inputs.allow_additional_canary || false }}" = "true" ]; then
-            canary_override=(--allow-additional-canary)
-          fi
           python -u scripts/kesher_daily_pipeline.py \
             --max-wait-seconds 150 \
-            "${schedule_guard[@]}" \
-            "${canary_override[@]}"
+            "${schedule_guard[@]}"
 
       - name: Rebuild exact rejected visuals with Remotion
         if: ${{ inputs.operation == 'rebuild' }}
