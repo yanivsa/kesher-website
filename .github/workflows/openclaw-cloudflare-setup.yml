@@ -1,0 +1,27 @@
+name: OpenClaw Cloudflare Setup
+
+on:
+  push:
+    branches: [setup/openclaw-secure-dashboard]
+    paths:
+      - scripts/setup_openclaw_cloudflare.py
+      - .github/workflows/openclaw-cloudflare-setup.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: setup/openclaw-secure-dashboard
+      - name: Configure secure Cloudflare edge
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          OPENCLAW_HOSTNAME: openclaw.the-israeli-lawyer.com
+          OPENCLAW_ALLOWED_EMAIL: yanivsa@gmail.com
+        run: python3 scripts/setup_openclaw_cloudflare.py
