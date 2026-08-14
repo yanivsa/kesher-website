@@ -61,13 +61,13 @@ def main():
         raise RuntimeError(f"Active Cloudflare zone not visible for {zone_name}")
     zone_id = zone["id"]
 
-    # Access first: deny-by-default until the one explicit email policy matches.
-    # We intentionally do not query identity providers because the existing API
-    # token is scoped to Apps/Policies/Tunnels but not IdP administration.
-    apps = paged(f"/accounts/{ACCOUNT}/access/apps")
+    # Use the narrower zone-scoped Access API. The existing token can see this
+    # zone but is intentionally not an account-wide Access administrator.
+    access_base = f"/zones/{zone_id}/access"
+    apps = paged(f"{access_base}/apps")
     app = next((a for a in apps if a.get("domain") == HOSTNAME), None)
     if not app:
-        app = request("POST", f"/accounts/{ACCOUNT}/access/apps", {
+        app = request("POST", f"{access_base}/apps", {
             "name": APP_NAME,
             "domain": HOSTNAME,
             "type": "self_hosted",
@@ -79,7 +79,7 @@ def main():
         print("CF_ACCESS_APP_CREATED=false")
     app_id = app["id"]
 
-    policies = paged(f"/accounts/{ACCOUNT}/access/apps/{app_id}/policies")
+    policies = paged(f"{access_base}/apps/{app_id}/policies")
     policy = next((p for p in policies if p.get("name") == POLICY_NAME), None)
     desired_policy = {
         "name": POLICY_NAME,
@@ -88,10 +88,10 @@ def main():
         "include": [{"email": {"email": ALLOWED_EMAIL}}],
     }
     if not policy:
-        policy = request("POST", f"/accounts/{ACCOUNT}/access/apps/{app_id}/policies", desired_policy)
+        policy = request("POST", f"{access_base}/apps/{app_id}/policies", desired_policy)
         print("CF_ACCESS_POLICY_CREATED=true")
     else:
-        request("PUT", f"/accounts/{ACCOUNT}/access/apps/{app_id}/policies/{policy['id']}", desired_policy)
+        request("PUT", f"{access_base}/apps/{app_id}/policies/{policy['id']}", desired_policy)
         print("CF_ACCESS_POLICY_CREATED=false")
 
     tunnels = paged(f"/accounts/{ACCOUNT}/cfd_tunnel?is_deleted=false")
