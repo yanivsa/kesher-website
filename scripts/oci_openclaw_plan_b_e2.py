@@ -20,6 +20,7 @@ from oci_openclaw_bootstrap import (
 
 NAME = "openclaw-e2-plan-b"
 SHAPE = "VM.Standard.E2.1.Micro"
+RUN_COMMAND_PLUGIN = "Compute Instance Run Command"
 
 
 def existing_instance(compute, compartment_id):
@@ -29,6 +30,64 @@ def existing_instance(compute, compartment_id):
         return None
     live.sort(key=lambda x: x.time_created, reverse=True)
     return live[0]
+
+
+def ensure_run_command_plugin(compute, instance):
+    """Enable only the OCI management path we need, preserving other plugin choices."""
+    cfg = instance.agent_config
+    plugins = []
+    found = False
+    for p in list(getattr(cfg, "plugins_config", None) or []):
+        desired = p.desired_state
+        if p.name == RUN_COMMAND_PLUGIN:
+            desired = "ENABLED"
+            found = True
+        plugins.append(
+            oci.core.models.InstanceAgentPluginConfigDetails(
+                name=p.name,
+                desired_state=desired,
+            )
+        )
+    if not found:
+        plugins.append(
+            oci.core.models.InstanceAgentPluginConfigDetails(
+                name=RUN_COMMAND_PLUGIN,
+                desired_state="ENABLED",
+            )
+        )
+    log(
+        "OCI_AGENT_CONFIG_BEFORE",
+        management_disabled=getattr(cfg, "is_management_disabled", None),
+        all_plugins_disabled=getattr(cfg, "are_all_plugins_disabled", None),
+        run_command_present=found,
+    )
+    compute.update_instance(
+        instance.id,
+        oci.core.models.UpdateInstanceDetails(
+            agent_config=oci.core.models.UpdateInstanceAgentConfigDetails(
+                is_monitoring_disabled=getattr(cfg, "is_monitoring_disabled", None),
+                is_management_disabled=False,
+                are_all_plugins_disabled=False,
+                plugins_config=plugins,
+            )
+        ),
+    )
+    for _ in range(24):
+        current = compute.get_instance(instance.id).data
+        c = current.agent_config
+        rc = next((p for p in (c.plugins_config or []) if p.name == RUN_COMMAND_PLUGIN), None)
+        if (
+            getattr(c, "is_management_disabled", None) is False
+            and getattr(c, "are_all_plugins_disabled", None) is False
+            and rc is not None
+            and rc.desired_state == "ENABLED"
+        ):
+            log("OCI_RUN_COMMAND_PLUGIN_ENABLED", desired_state=rc.desired_state)
+            time.sleep(15)
+            return current
+        time.sleep(5)
+    log("OCI_RUN_COMMAND_PLUGIN_ENABLE_NOT_CONFIRMED")
+    return compute.get_instance(instance.id).data
 
 
 def run_agent_probe(config, compartment_id, instance_id):
@@ -47,7 +106,7 @@ systemctl is-active tailscaled 2>/dev/null | sed 's/^/TAILSCALED=/' || true
         agent = oci.compute_instance_agent.ComputeInstanceAgentClient(config)
         details = oci.compute_instance_agent.models.CreateInstanceAgentCommandDetails(
             compartment_id=compartment_id,
-            execution_time_out_in_seconds=180,
+            execution_time_out_in_seconds=240,
             display_name="openclaw-maintenance-probe",
             target=oci.compute_instance_agent.models.InstanceAgentCommandTarget(instance_id=instance_id),
             content=oci.compute_instance_agent.models.InstanceAgentCommandContent(
@@ -61,7 +120,7 @@ systemctl is-active tailscaled 2>/dev/null | sed 's/^/TAILSCALED=/' || true
         )
         command = agent.create_instance_agent_command(details).data
         log("OCI_AGENT_PROBE_CREATED", command_id=command.id)
-        deadline = time.time() + 240
+        deadline = time.time() + 330
         while time.time() < deadline:
             try:
                 execution = agent.get_instance_agent_command_execution(
@@ -83,11 +142,13 @@ systemctl is-active tailscaled 2>/dev/null | sed 's/^/TAILSCALED=/' || true
                 print("OCI_AGENT_PROBE_OUTPUT_BEGIN", flush=True)
                 print(text, flush=True)
                 print("OCI_AGENT_PROBE_OUTPUT_END", flush=True)
-                return
+                return True
             time.sleep(5)
         log("OCI_AGENT_PROBE_TIMEOUT")
+        return False
     except ServiceError as exc:
         log("OCI_AGENT_PROBE_UNAVAILABLE", status=exc.status, code=exc.code, message=json.dumps((exc.message or "")[:200]))
+        return False
 
 
 def choose_image(compute, compartment_id):
@@ -157,13 +218,15 @@ def main():
     if existing:
         ip = instance_public_ip(compute, vnet, compartment_id, existing.id)
         log("OPENCLAW_PLAN_B_EXISTS", state=existing.lifecycle_state, shape=existing.shape, public_ip=ip)
-        run_agent_probe(config, compartment_id, existing.id)
+        existing = ensure_run_command_plugin(compute, existing)
+        agent_ok = run_agent_probe(config, compartment_id, existing.id)
         result = {
             "status": "existing",
             "instance_id": existing.id,
             "lifecycle_state": existing.lifecycle_state,
             "shape": existing.shape,
             "public_ip": ip,
+            "agent_probe_ok": agent_ok,
         }
         Path(args.result_json).write_text(json.dumps(result))
         return 0
