@@ -8,12 +8,13 @@ from pathlib import Path
 
 import oci
 
-INSTANCE_NAME = "openclaw-e2-plan-b"
+DEFAULT_INSTANCE_NAME = "openclaw-e2-plan-b"
+RUN_COMMAND_PLUGIN = "Compute Instance Run Command"
 TERMINAL = {"SUCCEEDED", "FAILED", "TIMED_OUT", "CANCELED", "EXPIRED"}
 
 
-def find_instance(compute, compartment_id: str):
-    rows = compute.list_instances(compartment_id=compartment_id, display_name=INSTANCE_NAME).data
+def find_instance(compute, compartment_id: str, instance_name: str):
+    rows = compute.list_instances(compartment_id=compartment_id, display_name=instance_name).data
     live = [x for x in rows if x.lifecycle_state not in {"TERMINATED", "TERMINATING"}]
     if not live:
         raise RuntimeError("OPENCLAW_INSTANCE_NOT_FOUND")
@@ -21,11 +22,49 @@ def find_instance(compute, compartment_id: str):
     return live[0]
 
 
+def enable_run_command(compute, inst):
+    cfg = inst.agent_config
+    plugins = []
+    found = False
+    for p in list(getattr(cfg, "plugins_config", None) or []):
+        desired = p.desired_state
+        if p.name == RUN_COMMAND_PLUGIN:
+            desired = "ENABLED"
+            found = True
+        plugins.append(
+            oci.core.models.InstanceAgentPluginConfigDetails(
+                name=p.name,
+                desired_state=desired,
+            )
+        )
+    if not found:
+        plugins.append(
+            oci.core.models.InstanceAgentPluginConfigDetails(
+                name=RUN_COMMAND_PLUGIN,
+                desired_state="ENABLED",
+            )
+        )
+    compute.update_instance(
+        inst.id,
+        oci.core.models.UpdateInstanceDetails(
+            agent_config=oci.core.models.UpdateInstanceAgentConfigDetails(
+                is_monitoring_disabled=getattr(cfg, "is_monitoring_disabled", None),
+                is_management_disabled=False,
+                are_all_plugins_disabled=False,
+                plugins_config=plugins,
+            )
+        ),
+    )
+    print("OCI_RUN_COMMAND_PLUGIN_REQUESTED=true", flush=True)
+    time.sleep(15)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True)
     ap.add_argument("--script-file", required=True)
     ap.add_argument("--timeout", type=int, default=600)
+    ap.add_argument("--instance-name", default=DEFAULT_INSTANCE_NAME)
     args = ap.parse_args()
 
     config = oci.config.from_file(args.config, "DEFAULT")
@@ -33,7 +72,10 @@ def main() -> int:
     compartment_id = config["tenancy"]
     compute = oci.core.ComputeClient(config)
     agent = oci.compute_instance_agent.ComputeInstanceAgentClient(config)
-    inst = find_instance(compute, compartment_id)
+    inst = find_instance(compute, compartment_id, args.instance_name)
+    print(f"OCI_INSTANCE_NAME={args.instance_name}", flush=True)
+    print(f"OCI_INSTANCE_STATE={inst.lifecycle_state}", flush=True)
+    enable_run_command(compute, inst)
     script = Path(args.script_file).read_text()
 
     details = oci.compute_instance_agent.models.CreateInstanceAgentCommandDetails(
