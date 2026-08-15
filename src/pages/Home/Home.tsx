@@ -426,8 +426,8 @@ const Home: React.FC = () => {
               <span> את הקשר אחרת. יחד.</span>
             </h1>
             <p className={styles.heroLead}>
-              גם כשהשיחות נתקעות והמרחק גדל, אפשר להבין מה קורה ביניכם,
-              לבחור צעדים חדשים וליצור תנועה שמחזירה תקווה לקשר.
+              גם כשהשיחות נתקעות והעומס גדל, אפשר להבין מה קורה בזוגיות או בבית,
+              לבחור צעדים חדשים וליצור תנועה שמחזירה תקווה לקשר ולמשפחה.
             </p>
             <div className={styles.heroActions}>
               <Link to={SITE_CONFIG.links.appointment} className={styles.primaryCta}>
