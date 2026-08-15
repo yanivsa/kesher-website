@@ -63,8 +63,8 @@ jobs:
               else:
                   sunset = sunset.astimezone(tz)
               target = sunset + dt.timedelta(hours=1)
-              # A 30-minute window tolerates normal cron delay. The video
-              # pipeline itself is stateful and refuses a second daily attempt.
+              # A 30-minute window tolerates normal cron delay.
+              # The downstream pipeline still prevents concurrent active items.
               allow = target <= now < target + dt.timedelta(minutes=30)
               reason = (
                   f"ashdod-sunset={sunset:%H:%M};target={target:%H:%M};"
@@ -87,6 +87,5 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             "repos/${GITHUB_REPOSITORY}/actions/workflows/kesher-daily-video.yml/dispatches" \
             -f ref=main \
-            -f 'inputs[operation]=full' \
-            -f 'inputs[allow_additional_canary]=false'
+            -f 'inputs[operation]=full'
           echo "Dispatched kesher-daily-video.yml operation=full"
