@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/oci-openclaw-plan-b-e2.yml
       - scripts/oci_openclaw_plan_b_e2.py
+      - scripts/oci_openclaw_console_diag.py
 
 permissions:
   contents: read
@@ -75,6 +76,12 @@ jobs:
           if d.get('errors'):
               print('OCI_PLAN_B_ERRORS='+json.dumps(d['errors']))
           PY
+      - name: Redacted replacement console diagnostics
+        if: ${{ always() }}
+        run: |
+          if [ -s /tmp/oci.cfg ]; then
+            python -u scripts/oci_openclaw_console_diag.py --config /tmp/oci.cfg
+          fi
       - name: Verify new OpenClaw install
         run: |
           set -euo pipefail
