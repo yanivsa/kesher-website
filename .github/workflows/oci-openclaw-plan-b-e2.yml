@@ -167,8 +167,9 @@ jobs:
           Requires=tailscaled.service
 
           [Service]
-          Type=oneshot
+          Type=simple
           ExecStart=/usr/local/sbin/openclaw-wait-tailnet.sh
+          TimeoutStartSec=0
 
           [Install]
           WantedBy=multi-user.target
