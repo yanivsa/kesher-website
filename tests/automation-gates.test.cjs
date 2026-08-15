@@ -242,7 +242,7 @@ evaluate = gate['evaluate']
 base = [{'id': 'older'}]
 pr = {
     'state': 'open', 'draft': False, 'title': 'Publish Kesher article: valid-new-post',
-    'body': '''Image Generation Attempt: DeepAI
+    'body': '''Image Generation Attempt: DeepAI/Gemini/Fallback pool
 Image Generation Result: blocked
 Image Fallback Attempt: Unsplash/Pexels
 Image Fallback Result: no_pixel_verified_match
