@@ -89,7 +89,7 @@ jobs:
 
           gateway_token="$(openssl rand -hex 32)"
           set +e
-          remote_output="$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /tmp/bootkey "ubuntu@$ip" "sudo bash -s -- '$gateway_token'" <<'REMOTE'
+          remote_output="$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=15 -o ServerAliveCountMax=40 -o TCPKeepAlive=yes -o ConnectTimeout=10 -i /tmp/bootkey "ubuntu@$ip" "sudo bash -s -- '$gateway_token'" <<'REMOTE'
           set -Eeuo pipefail
           TOKEN="$1"
           export HOME=/root
