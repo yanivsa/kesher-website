@@ -185,10 +185,40 @@ async function main() {
   const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   const deepaiKey = process.env.DEEPAI_API_KEY;
 
-  // 1. Try Unsplash Search API for topic-matched HD photo if key available
+  // 1. DeepAI
+  if (deepaiKey) {
+    try {
+      console.warn("Attempting image generation via DeepAI API...");
+      const imgUrl = await tryDeepAi(deepaiKey, title, customPrompt);
+      await downloadImage(imgUrl, outputPath);
+      console.log(`/images/generated/blog/${slug}.jpg`);
+      return;
+    } catch (error) {
+      console.warn(`WARNING: DeepAI API failed: ${error.message}. Trying Gemini.`);
+    }
+  } else {
+    console.warn("WARNING: DEEPAI_API_KEY unavailable. Trying Gemini.");
+  }
+
+  // 2. Gemini Imagen
+  if (geminiKey) {
+    try {
+      console.warn("Attempting image generation via Google Gemini Imagen API...");
+      const imgBuffer = await tryGeminiImagen(geminiKey, title, customPrompt);
+      fs.writeFileSync(outputPath, imgBuffer);
+      console.log(`/images/generated/blog/${slug}.jpg`);
+      return;
+    } catch (error) {
+      console.warn(`WARNING: Gemini Imagen API failed: ${error.message}. Trying royalty-safe fallback.`);
+    }
+  } else {
+    console.warn("WARNING: GEMINI_API_KEY/GOOGLE_API_KEY unavailable. Trying royalty-safe fallback.");
+  }
+
+  // 3. Royalty-safe photography fallback: Unsplash API, then curated Unsplash/Pexels pool
   if (unsplashKey) {
     try {
-      console.warn("Attempting image search via Unsplash Search API...");
+      console.warn("Attempting image fallback via Unsplash Search API...");
       const categoryKey = getCategoryKey(slug, title);
       const queryMap = {
         relocation: "couple relocation moving discussion daylight",
@@ -204,56 +234,20 @@ async function main() {
       console.log(`/images/generated/blog/${slug}.jpg`);
       return;
     } catch (error) {
-      console.warn(`WARNING: Unsplash API search failed: ${error.message}. Trying next provider.`);
+      console.warn(`WARNING: Unsplash API fallback failed: ${error.message}. Trying curated photo pool.`);
     }
   }
 
-  // 2. Curated high-resolution professional photography pool (Unsplash / Pexels)
   try {
     const fallbackUrl = selectFallbackImageUrl(slug, title);
     await downloadImage(fallbackUrl, outputPath);
     console.log(`/images/generated/blog/${slug}.jpg`);
     return;
   } catch (error) {
-    console.warn(`WARNING: Curated photo pool failed: ${error.message}`);
-  }
-
-  // 3. Try Gemini Imagen API if key available
-  if (geminiKey) {
-    try {
-      console.warn("Attempting image generation via Google Gemini Imagen API...");
-      const imgBuffer = await tryGeminiImagen(geminiKey, title, customPrompt);
-      fs.writeFileSync(outputPath, imgBuffer);
-      console.log(`/images/generated/blog/${slug}.jpg`);
-      return;
-    } catch (error) {
-      console.warn(`WARNING: Gemini Imagen API failed: ${error.message}. Trying next provider.`);
-    }
-  }
-
-  // 4. Try DeepAI API if key available
-  if (deepaiKey) {
-    try {
-      console.warn("Attempting image generation via DeepAI API...");
-      const imgUrl = await tryDeepAi(deepaiKey, title, customPrompt);
-      await downloadImage(imgUrl, outputPath);
-      console.log(`/images/generated/blog/${slug}.jpg`);
-      return;
-    } catch (error) {
-      console.warn(`WARNING: DeepAI API failed: ${error.message}. Trying next provider.`);
-    }
-  }
-
-  // 5. Pollinations.ai API fallback
-  try {
-    const promptEnc = encodeURIComponent(buildPrompt(title, customPrompt));
-    const pollinationsUrl = `https://image.pollinations.ai/prompt/${promptEnc}?width=1200&height=675&model=flux&nologo=true&enhance=true`;
-    await downloadImage(pollinationsUrl, outputPath);
-    console.log(`/images/generated/blog/${slug}.jpg`);
-  } catch (error) {
-    console.error(`ERROR: All image providers failed: ${error.message}`);
+    console.error(`ERROR: DeepAI, Gemini, and royalty-safe fallback all failed: ${error.message}`);
     process.exit(1);
   }
+
 }
 
 main();
