@@ -31,6 +31,65 @@ def existing_instance(compute, compartment_id):
     return live[0]
 
 
+def run_agent_probe(config, compartment_id, instance_id):
+    """Use OCI Run Command without reopening SSH to inspect maintenance access."""
+    script = r'''set +e
+echo "RUN_USER=$(id -un)"
+echo "RUN_UID=$(id -u)"
+if sudo -n true 2>/dev/null; then echo "RUN_SUDO_NOPASSWD=true"; else echo "RUN_SUDO_NOPASSWD=false"; fi
+printf 'OPENCLAW_BIN='; command -v openclaw || true
+[ -x /usr/local/bin/openclaw ] && echo 'OPENCLAW_USR_LOCAL=true' || echo 'OPENCLAW_USR_LOCAL=false'
+[ -x /usr/bin/openclaw ] && echo 'OPENCLAW_USR_BIN=true' || echo 'OPENCLAW_USR_BIN=false'
+systemctl is-active oracle-cloud-agent 2>/dev/null | sed 's/^/ORACLE_AGENT=/' || true
+systemctl is-active tailscaled 2>/dev/null | sed 's/^/TAILSCALED=/' || true
+'''
+    try:
+        agent = oci.compute_instance_agent.ComputeInstanceAgentClient(config)
+        details = oci.compute_instance_agent.models.CreateInstanceAgentCommandDetails(
+            compartment_id=compartment_id,
+            execution_time_out_in_seconds=180,
+            display_name="openclaw-maintenance-probe",
+            target=oci.compute_instance_agent.models.InstanceAgentCommandTarget(instance_id=instance_id),
+            content=oci.compute_instance_agent.models.InstanceAgentCommandContent(
+                source=oci.compute_instance_agent.models.InstanceAgentCommandSourceViaTextDetails(
+                    source_type="TEXT", text=script
+                ),
+                output=oci.compute_instance_agent.models.InstanceAgentCommandOutputViaTextDetails(
+                    output_type="TEXT"
+                ),
+            ),
+        )
+        command = agent.create_instance_agent_command(details).data
+        log("OCI_AGENT_PROBE_CREATED", command_id=command.id)
+        deadline = time.time() + 240
+        while time.time() < deadline:
+            try:
+                execution = agent.get_instance_agent_command_execution(
+                    instance_agent_command_id=command.id,
+                    instance_id=instance_id,
+                ).data
+            except ServiceError as exc:
+                if exc.status == 404:
+                    time.sleep(5)
+                    continue
+                raise
+            state = getattr(execution, "lifecycle_state", None)
+            delivery = getattr(execution, "delivery_state", None)
+            content = getattr(execution, "content", None)
+            exit_code = getattr(content, "exit_code", None) if content else None
+            if exit_code is not None or state in {"SUCCEEDED", "FAILED", "TIMED_OUT", "CANCELED", "EXPIRED"}:
+                text = getattr(content, "text", "") or ""
+                log("OCI_AGENT_PROBE_DONE", state=state, delivery=delivery, exit_code=exit_code)
+                print("OCI_AGENT_PROBE_OUTPUT_BEGIN", flush=True)
+                print(text, flush=True)
+                print("OCI_AGENT_PROBE_OUTPUT_END", flush=True)
+                return
+            time.sleep(5)
+        log("OCI_AGENT_PROBE_TIMEOUT")
+    except ServiceError as exc:
+        log("OCI_AGENT_PROBE_UNAVAILABLE", status=exc.status, code=exc.code, message=json.dumps((exc.message or "")[:200]))
+
+
 def choose_image(compute, compartment_id):
     for os_name in ("Canonical Ubuntu", "Oracle Linux"):
         rows = compute.list_images(
@@ -77,10 +136,6 @@ def retryable_capacity_error(exc: ServiceError) -> bool:
 
 
 def retryable_ad_placement_error(exc: ServiceError) -> bool:
-    # OCI documents that E2.1.Micro is offered in only one AD in multi-AD
-    # regions. A shape/resource that is not exposed in a particular AD may
-    # surface as 404 NotAuthorizedOrNotFound, so try the remaining ADs before
-    # declaring a real authorization blocker.
     return exc.status == 404 and (exc.code or "") == "NotAuthorizedOrNotFound"
 
 
@@ -101,6 +156,8 @@ def main():
     existing = existing_instance(compute, compartment_id)
     if existing:
         ip = instance_public_ip(compute, vnet, compartment_id, existing.id)
+        log("OPENCLAW_PLAN_B_EXISTS", state=existing.lifecycle_state, shape=existing.shape, public_ip=ip)
+        run_agent_probe(config, compartment_id, existing.id)
         result = {
             "status": "existing",
             "instance_id": existing.id,
@@ -109,7 +166,6 @@ def main():
             "public_ip": ip,
         }
         Path(args.result_json).write_text(json.dumps(result))
-        log("OPENCLAW_PLAN_B_EXISTS", state=existing.lifecycle_state, shape=existing.shape, public_ip=ip)
         return 0
 
     _, subnet, sl = ensure_network(vnet, compartment_id, args.bootstrap_cidr)
