@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import time
+from pathlib import Path
+
+import oci
+
+INSTANCE_NAME = "openclaw-e2-plan-b"
+TERMINAL = {"SUCCEEDED", "FAILED", "TIMED_OUT", "CANCELED", "EXPIRED"}
+
+
+def find_instance(compute, compartment_id: str):
+    rows = compute.list_instances(compartment_id=compartment_id, display_name=INSTANCE_NAME).data
+    live = [x for x in rows if x.lifecycle_state not in {"TERMINATED", "TERMINATING"}]
+    if not live:
+        raise RuntimeError("OPENCLAW_INSTANCE_NOT_FOUND")
+    live.sort(key=lambda x: x.time_created, reverse=True)
+    return live[0]
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--config", required=True)
+    ap.add_argument("--script-file", required=True)
+    ap.add_argument("--timeout", type=int, default=600)
+    args = ap.parse_args()
+
+    config = oci.config.from_file(args.config, "DEFAULT")
+    oci.config.validate_config(config)
+    compartment_id = config["tenancy"]
+    compute = oci.core.ComputeClient(config)
+    agent = oci.compute_instance_agent.ComputeInstanceAgentClient(config)
+    inst = find_instance(compute, compartment_id)
+    script = Path(args.script_file).read_text()
+
+    details = oci.compute_instance_agent.models.CreateInstanceAgentCommandDetails(
+        compartment_id=compartment_id,
+        execution_time_out_in_seconds=args.timeout,
+        display_name="openclaw-maintenance",
+        target=oci.compute_instance_agent.models.InstanceAgentCommandTarget(instance_id=inst.id),
+        content=oci.compute_instance_agent.models.InstanceAgentCommandContent(
+            source=oci.compute_instance_agent.models.InstanceAgentCommandSourceViaTextDetails(
+                source_type="TEXT", text=script
+            ),
+            output=oci.compute_instance_agent.models.InstanceAgentCommandOutputViaTextDetails(
+                output_type="TEXT"
+            ),
+        ),
+    )
+    created = agent.create_instance_agent_command(details).data
+    print(f"OCI_AGENT_COMMAND_ID={created.id}", flush=True)
+    print(f"OCI_INSTANCE_ID={inst.id}", flush=True)
+
+    deadline = time.time() + args.timeout + 120
+    last = None
+    while time.time() < deadline:
+        try:
+            execution = agent.get_instance_agent_command_execution(
+                instance_agent_command_id=created.id,
+                instance_id=inst.id,
+            ).data
+        except oci.exceptions.ServiceError as exc:
+            if exc.status == 404:
+                time.sleep(5)
+                continue
+            raise
+        state = getattr(execution, "lifecycle_state", None)
+        delivery = getattr(execution, "delivery_state", None)
+        key = (state, delivery)
+        if key != last:
+            print(f"OCI_AGENT_STATE={state} delivery={delivery}", flush=True)
+            last = key
+        content = getattr(execution, "content", None)
+        exit_code = getattr(content, "exit_code", None) if content else None
+        if state in TERMINAL or exit_code is not None:
+            text = getattr(content, "text", "") or ""
+            message = getattr(content, "message", "") or ""
+            print(f"OCI_AGENT_EXIT_CODE={exit_code}", flush=True)
+            if message:
+                print("OCI_AGENT_MESSAGE=" + json.dumps(message[:1000]), flush=True)
+            print("OCI_AGENT_OUTPUT_BEGIN", flush=True)
+            print(text, flush=True)
+            print("OCI_AGENT_OUTPUT_END", flush=True)
+            return 0 if exit_code in (None, 0) and state not in {"FAILED", "TIMED_OUT", "CANCELED", "EXPIRED"} else 2
+        time.sleep(5)
+    raise TimeoutError("OCI_AGENT_COMMAND_WAIT_TIMEOUT")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
