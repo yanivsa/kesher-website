@@ -6,9 +6,8 @@ on:
     branches: [main]
     paths:
       - .github/workflows/oci-openclaw-plan-b-e2.yml
+      - scripts/oci_openclaw_rebuild_ssh.py
       - scripts/oci_openclaw_plan_b_e2.py
-      - scripts/oci_openclaw_console_diag.py
-      - scripts/oci_openclaw_agent_command.py
 
 permissions:
   contents: read
@@ -47,7 +46,6 @@ jobs:
             [ "$code" = 200 ] && break
             if [ "$code" = 403 ]; then sleep 5; continue; fi
             echo "OCI bridge returned HTTP $code" >&2
-            cat /tmp/oci.json >&2 || true
             exit 1
           done
           [ "$code" = 200 ] || { echo "OCI bridge token did not propagate in time" >&2; exit 1; }
@@ -56,72 +54,148 @@ jobs:
           from pathlib import Path
           d=json.load(open('/tmp/oci.json'))
           assert all(d.get(k) for k in ('user','fingerprint','tenancy','region','private_key_pem'))
-          Path('/tmp/oci.pem').write_text(d['private_key_pem'])
-          Path('/tmp/oci.pem').chmod(0o600)
-          Path('/tmp/oci.cfg').write_text('[DEFAULT]\nuser='+d['user']+'\nfingerprint='+d['fingerprint']+'\ntenancy='+d['tenancy']+'\nregion='+d['region']+'\nkey_file=/tmp/oci.pem\n')
-          Path('/tmp/oci.cfg').chmod(0o600)
+          Path('/tmp/oci.pem').write_text(d['private_key_pem']); Path('/tmp/oci.pem').chmod(0o600)
+          Path('/tmp/oci.cfg').write_text('[DEFAULT]\nuser='+d['user']+'\nfingerprint='+d['fingerprint']+'\ntenancy='+d['tenancy']+'\nregion='+d['region']+'\nkey_file=/tmp/oci.pem\n'); Path('/tmp/oci.cfg').chmod(0o600)
           PY
           echo OCI_BRIDGE_OK=true
-      - name: Provision E2 Micro Plan B and OpenClaw
+      - name: Rebuild broken Tailscale VM with temporary SSH
         run: |
           set -euo pipefail
-          ssh-keygen -q -t rsa -b 2048 -N '' -f /tmp/bootkey
+          ssh-keygen -q -t rsa -b 3072 -N '' -f /tmp/bootkey
           ip="$(curl -fsS https://api.ipify.org)"
-          python -u scripts/oci_openclaw_plan_b_e2.py --config /tmp/oci.cfg --ssh-public-key-file /tmp/bootkey.pub --bootstrap-cidr "$ip/32" --result-json /tmp/result.json
+          python -u scripts/oci_openclaw_rebuild_ssh.py \
+            --config /tmp/oci.cfg \
+            --ssh-public-key-file /tmp/bootkey.pub \
+            --bootstrap-cidr "$ip/32" \
+            --result-json /tmp/rebuild.json
           python3 - <<'PY'
           import json
-          d=json.load(open('/tmp/result.json'))
-          print('OCI_RESULT_STATUS='+str(d.get('status')))
-          for k in ('shape','availability_domain','lifecycle_state','public_ip','os','plan'):
-              if d.get(k): print('OCI_'+k.upper()+'='+str(d[k]))
-          if d.get('errors'):
-              print('OCI_PLAN_B_ERRORS='+json.dumps(d['errors']))
+          d=json.load(open('/tmp/rebuild.json'))
+          print('REBUILD_STATUS='+str(d.get('status')))
+          for k in ('shape','availability_domain','lifecycle_state','public_ip'):
+              if d.get(k): print('REBUILD_'+k.upper()+'='+str(d[k]))
           PY
-      - name: Redacted replacement console diagnostics
-        if: ${{ always() }}
-        run: |
-          if [ -s /tmp/oci.cfg ]; then
-            python -u scripts/oci_openclaw_console_diag.py --config /tmp/oci.cfg
-          fi
-      - name: Probe replacement OCI agent
-        if: ${{ always() }}
-        continue-on-error: true
-        run: |
-          if [ -s /tmp/oci.cfg ]; then
-            cat >/tmp/replacement-probe.sh <<'SH'
-          set +e
-          echo "RUN_USER=$(id -un)"
-          echo "RUN_UID=$(id -u)"
-          echo "CLOUD_INIT_STATUS_BEGIN"
-          cloud-init status --long 2>&1 || true
-          echo "CLOUD_INIT_STATUS_END"
-          systemctl is-active oracle-cloud-agent 2>/dev/null | sed 's/^/ORACLE_AGENT=/' || true
-          systemctl is-active tailscaled 2>/dev/null | sed 's/^/TAILSCALED=/' || true
-          test -f /usr/local/sbin/bootstrap-openclaw-tailscale.sh && echo "BOOTSTRAP_SCRIPT_EXISTS=true" || echo "BOOTSTRAP_SCRIPT_EXISTS=false"
-          test -f /var/lib/openclaw-version.txt && { echo "OPENCLAW_VERSION_FILE=true"; cat /var/lib/openclaw-version.txt; } || echo "OPENCLAW_VERSION_FILE=false"
-          SH
-            python -u scripts/oci_openclaw_agent_command.py --config /tmp/oci.cfg --instance-name openclaw-e2-tailscale --script-file /tmp/replacement-probe.sh --timeout 180
-          fi
-      - name: Verify new OpenClaw install
+      - name: Install OpenClaw and Tailscale over SSH
         run: |
           set -euo pipefail
-          status="$(python3 -c 'import json;print(json.load(open("/tmp/result.json")).get("status",""))')"
-          [ "$status" = created ] || { echo "Verification skipped: $status"; exit 0; }
-          ip="$(python3 -c 'import json;print(json.load(open("/tmp/result.json"))["public_ip"])')"
-          os="$(python3 -c 'import json;print(json.load(open("/tmp/result.json"))["os"])')"
-          [ "$os" = 'Canonical Ubuntu' ] && user=ubuntu || user=opc
-          for i in $(seq 1 90); do ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -i /tmp/bootkey "$user@$ip" 'echo ok' >/dev/null 2>&1 && break; sleep 10; done
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /tmp/bootkey "$user@$ip" 'sudo cloud-init status --wait; sudo test -f /var/lib/openclaw-installed; sudo cat /var/lib/openclaw-version.txt; swapon --show'
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /tmp/bootkey "$user@$ip" 'sudo -H bash -lc '\''B=$(command -v openclaw || find /root -type f -name openclaw -perm -111 2>/dev/null | head -1); "$B" config set agents.defaults.model.primary openai/gpt-5.6-sol'\'''
-          echo OPENCLAW_INSTALL_VERIFIED=true
-          echo OPENCLAW_PLAN_B_VERIFIED=true
-      - name: Close bootstrap SSH
+          status="$(python3 -c 'import json;print(json.load(open("/tmp/rebuild.json")).get("status",""))')"
+          [ "$status" = created ] || { echo "SSH setup skipped: $status"; exit 0; }
+          ip="$(python3 -c 'import json;print(json.load(open("/tmp/rebuild.json"))["public_ip"])')"
+          for i in $(seq 1 90); do
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -i /tmp/bootkey "ubuntu@$ip" 'echo ok' >/dev/null 2>&1 && break
+            sleep 5
+          done
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=10 -i /tmp/bootkey "ubuntu@$ip" 'echo SSH_BOOTSTRAP_OK=true'
+
+          gateway_token="$(openssl rand -hex 32)"
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /tmp/bootkey "ubuntu@$ip" "sudo bash -s -- '$gateway_token'" <<'REMOTE'
+          set -Eeuo pipefail
+          TOKEN="$1"
+          export HOME=/root
+          export OPENCLAW_NO_PROMPT=1
+
+          if ! swapon --show | grep -q /swapfile; then
+            (fallocate -l 2G /swapfile || dd if=/dev/zero of=/swapfile bs=1M count=2048)
+            chmod 600 /swapfile
+            mkswap /swapfile
+            swapon /swapfile
+            grep -q '^/swapfile ' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+          fi
+
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y curl ca-certificates git
+          if ! command -v openclaw >/dev/null 2>&1 && ! find /root -type f -name openclaw -perm -111 -print -quit 2>/dev/null | grep -q .; then
+            curl -fsSL --proto '=https' --tlsv1.2 https://openclaw.ai/install.sh | bash -s -- --no-prompt --no-onboard >>/var/log/openclaw-install.log 2>&1
+          fi
+          B="$(command -v openclaw || find /root -type f -name openclaw -perm -111 2>/dev/null | head -1)"
+          test -n "$B"
+          "$B" --version | tee /var/lib/openclaw-version.txt
+          "$B" config set gateway.mode local
+          "$B" config set gateway.bind tailnet
+          "$B" config set gateway.auth.mode token
+          "$B" config set gateway.auth.token "$TOKEN"
+          "$B" config set gateway.tailscale.mode off
+          "$B" config set agents.defaults.model.primary openai/gpt-5.6-sol
+          "$B" config validate
+
+          cat >/etc/systemd/system/openclaw-gateway.service <<EOF
+          [Unit]
+          Description=OpenClaw Gateway
+          After=network-online.target tailscaled.service
+          Wants=network-online.target tailscaled.service
+
+          [Service]
+          Type=simple
+          Environment=HOME=/root
+          Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.local/bin
+          ExecStart=$B gateway --port 18789
+          Restart=always
+          RestartSec=5
+          RestartPreventExitStatus=78
+          TimeoutStopSec=30
+          SuccessExitStatus=0 143
+          OOMPolicy=continue
+
+          [Install]
+          WantedBy=multi-user.target
+          EOF
+          systemctl daemon-reload
+          systemctl enable openclaw-gateway.service
+
+          curl -fsSL https://tailscale.com/install.sh | sh
+          systemctl enable --now tailscaled
+          timeout 25s tailscale up --ssh --hostname=openclaw > /var/log/tailscale-up.log 2>&1 || true
+
+          cat >/usr/local/sbin/openclaw-wait-tailnet.sh <<'EOF'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          for i in $(seq 1 17280); do
+            state="$(tailscale status --json 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get("BackendState", ""))' 2>/dev/null || true)"
+            if [ "$state" = Running ]; then
+              systemctl restart openclaw-gateway.service
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
+          EOF
+          chmod 700 /usr/local/sbin/openclaw-wait-tailnet.sh
+          cat >/etc/systemd/system/openclaw-wait-tailnet.service <<'EOF'
+          [Unit]
+          Description=Start OpenClaw after Tailscale authentication
+          After=tailscaled.service
+          Requires=tailscaled.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/local/sbin/openclaw-wait-tailnet.sh
+
+          [Install]
+          WantedBy=multi-user.target
+          EOF
+          systemctl daemon-reload
+          systemctl enable --now openclaw-wait-tailnet.service
+          echo OPENCLAW_TAILNET_BOOTSTRAP_INSTALLED=true
+          REMOTE
+
+          ts_url="$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /tmp/bootkey "ubuntu@$ip" "sudo grep -oE 'https://login\.tailscale\.com/[^[:space:]]+' /var/log/tailscale-up.log | tail -1" || true)"
+          if [ -z "$ts_url" ]; then
+            echo "TAILSCALE_AUTH_URL_MISSING=true"
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /tmp/bootkey "ubuntu@$ip" "sudo tailscale status --json 2>/dev/null | python3 -c 'import json,sys; print(\"TAILSCALE_BACKEND_STATE=\"+json.load(sys.stdin).get(\"BackendState\",\"unknown\"))'" || true
+            exit 1
+          fi
+          cipher_url="$(printf '%s' "$ts_url" | python3 -c 'import sys; from scripts.oci_openclaw_plan_b_e2 import encrypt_for_chat; print(encrypt_for_chat(sys.stdin.read().strip()))')"
+          cipher_token="$(printf '%s' "$gateway_token" | python3 -c 'import sys; from scripts.oci_openclaw_plan_b_e2 import encrypt_for_chat; print(encrypt_for_chat(sys.stdin.read().strip()))')"
+          echo "TAILSCALE_AUTH_URL_ENCRYPTED=$cipher_url"
+          echo "OPENCLAW_GATEWAY_TOKEN_ENCRYPTED=$cipher_token"
+          echo OPENCLAW_TAILSCALE_LOGIN_READY=true
+      - name: Close temporary SSH
         if: ${{ always() }}
         run: |
-          if [ -s /tmp/result.json ] && [ -s /tmp/oci.cfg ]; then
-            sl="$(python3 -c 'import json;print(json.load(open("/tmp/result.json")).get("security_list_id") or "")')"
+          if [ -s /tmp/rebuild.json ] && [ -s /tmp/oci.cfg ]; then
+            sl="$(python3 -c 'import json;print(json.load(open("/tmp/rebuild.json")).get("security_list_id") or "")')"
             [ -z "$sl" ] || python -u scripts/oci_openclaw_bootstrap.py --config /tmp/oci.cfg --close-ssh --security-list-id "$sl"
           fi
       - name: Cleanup
         if: ${{ always() }}
-        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/bootkey /tmp/bootkey.pub /tmp/replacement-probe.sh
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/bootkey /tmp/bootkey.pub /tmp/rebuild.json
