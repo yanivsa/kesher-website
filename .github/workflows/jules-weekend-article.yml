@@ -1,0 +1,228 @@
+name: Jules Weekend Kesher Article
+
+on:
+  schedule:
+    # Friday morning year-round: 06:00 UTC = 08:00 IST / 09:00 IDT.
+    - cron: "0 6 * * 5"
+    # Saturday probes are intentionally lightweight. The gate below allows
+    # exactly the window beginning one hour after Ashdod sunset.
+    - cron: "0,15,30,45 15-19 * * 6"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: jules-weekend-kesher-article
+  cancel-in-progress: false
+
+jobs:
+  schedule-gate:
+    runs-on: ubuntu-latest
+    outputs:
+      allow: ${{ steps.gate.outputs.allow }}
+      reason: ${{ steps.gate.outputs.reason }}
+    steps:
+      - name: Allow Friday morning or one hour after Saturday sunset in Ashdod
+        id: gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          import urllib.request
+          from zoneinfo import ZoneInfo
+
+          tz = ZoneInfo("Asia/Jerusalem")
+          now = dt.datetime.now(tz)
+          event = os.environ.get("EVENT_NAME", "")
+          allow = False
+          reason = "outside-weekend-window"
+
+          if event == "workflow_dispatch":
+              allow = True
+              reason = "manual-dispatch"
+          elif now.isoweekday() == 5:
+              # The only Friday cron is 06:00 UTC, which is always morning in Israel.
+              allow = True
+              reason = f"friday-morning-{now:%H:%M}"
+          elif now.isoweekday() == 6:
+              url = (
+                  "https://www.hebcal.com/zmanim?cfg=json&geonameid=295629"
+                  f"&date={now.date().isoformat()}&sec=1"
+              )
+              req = urllib.request.Request(url, headers={"User-Agent": "Kesher-Automation/1.0"})
+              with urllib.request.urlopen(req, timeout=20) as response:
+                  payload = json.load(response)
+              sunset_raw = (payload.get("times") or {}).get("sunset")
+              if not sunset_raw:
+                  raise SystemExit("Hebcal response is missing times.sunset")
+              sunset = dt.datetime.fromisoformat(sunset_raw)
+              if sunset.tzinfo is None:
+                  sunset = sunset.replace(tzinfo=tz)
+              else:
+                  sunset = sunset.astimezone(tz)
+              target = sunset + dt.timedelta(hours=1)
+              # A 45-minute acceptance window tolerates normal GitHub cron delay.
+              allow = target <= now < target + dt.timedelta(minutes=45)
+              reason = (
+                  f"ashdod-sunset={sunset:%H:%M};target={target:%H:%M};"
+                  f"now={now:%H:%M};allow={str(allow).lower()}"
+              )
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"allow={'true' if allow else 'false'}\n")
+              out.write(f"reason={reason}\n")
+          print(reason)
+          PY
+
+  start-jules:
+    needs: schedule-gate
+    if: needs.schedule-gate.outputs.allow == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current main and authoritative article policy
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          persist-credentials: false
+
+      - name: Stop if today's article already exists or a fresh article PR is open
+        id: article_gate
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          import re
+          import urllib.request
+          from zoneinfo import ZoneInfo
+
+          today = dt.datetime.now(ZoneInfo("Asia/Jerusalem")).date().isoformat()
+          with open("src/data/posts.json", encoding="utf-8") as fh:
+              posts = json.load(fh)
+          already_today = any(str(post.get("date", "")) == today for post in posts if isinstance(post, dict))
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          token = os.environ.get("GITHUB_TOKEN", "")
+          headers = {"Accept": "application/vnd.github+json", "User-Agent": "Kesher-Automation/1.0"}
+          if token:
+              headers["Authorization"] = f"Bearer {token}"
+          req = urllib.request.Request(
+              f"https://api.github.com/repos/{repo}/pulls?state=open&per_page=100",
+              headers=headers,
+          )
+          with urllib.request.urlopen(req, timeout=30) as response:
+              prs = json.load(response)
+
+          blockers = []
+          for pr in prs:
+              title = str(pr.get("title") or "")
+              body = str(pr.get("body") or "")
+              head = str((pr.get("head") or {}).get("ref") or "")
+              if not re.search(r"Publish Kesher article:|kesher[- ]article|weekday[- ]article|מאמר", f"{title}\n{body}\n{head}", re.I):
+                  continue
+              number = pr.get("number")
+              if not number:
+                  continue
+              files_req = urllib.request.Request(
+                  f"https://api.github.com/repos/{repo}/pulls/{number}/files?per_page=100",
+                  headers=headers,
+              )
+              with urllib.request.urlopen(files_req, timeout=30) as response:
+                  files = json.load(response)
+              if any(row.get("filename") == "src/data/posts.json" for row in files):
+                  blockers.append(f"#{number} {title}")
+
+          launch = not already_today and not blockers
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"launch_required={'true' if launch else 'false'}\n")
+          if already_today:
+              print(f"Article dated {today} already exists on main; skipping duplicate weekend article.")
+          if blockers:
+              print("Fresh article PR already open; skipping duplicate weekend article:")
+              for blocker in blockers:
+                  print(f"- {blocker}")
+          PY
+
+      - name: Start Jules autonomous weekend article session
+        if: steps.article_gate.outputs.launch_required == 'true'
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+          DEEPAI_API_KEY: ${{ secrets.DEEPAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${JULES_API_KEY:-}"
+          test -s ".github/prompts/jules-weekday-article-update.md"
+          python3 - <<'PY'
+          import datetime as dt
+          import json
+          from zoneinfo import ZoneInfo
+
+          today = dt.datetime.now(ZoneInfo("Asia/Jerusalem")).date().isoformat()
+          policy = open(".github/prompts/jules-weekday-article-update.md", encoding="utf-8").read()
+          prompt = f"""Run fully autonomously. This is the weekend Kesher article publication run for Israel date {today}.
+
+Repository: yanivsa/kesher-website. Start from current main.
+
+Create exactly ONE new Hebrew article, no backlog catch-up and no second article. Before writing, inspect the recent articles and any current open article PRs. If current main already contains an article dated {today}, or a real open article PR already modifies src/data/posts.json, finish as a truthful no-op without edits or a PR.
+
+The authoritative policy below is mandatory and supersedes any stale assumptions. Follow it completely, including topic freshness, human Israeli Hebrew, practical usefulness, SEO/GEO/AI answer-engine quality, image provenance/fallback, generated-index integrity, validation, clean final scope, and PR requirements. Run the required checks and create the article PR automatically without asking the user for approval.
+
+Runtime publication date: use {today}; never future-date the article.
+
+AUTHORITATIVE CURRENT ARTICLE POLICY:
+
+{policy}
+"""
+          payload = {
+              "title": "Weekend Kesher Hebrew article",
+              "prompt": prompt,
+              "sourceContext": {
+                  "source": "sources/github/yanivsa/kesher-website",
+                  "githubRepoContext": {"startingBranch": "main"},
+                  "environmentVariablesEnabled": True,
+              },
+              "requirePlanApproval": False,
+              "automationMode": "AUTO_CREATE_PR",
+          }
+          with open("payload.json", "w", encoding="utf-8") as fh:
+              json.dump(payload, fh, ensure_ascii=False)
+          PY
+          set +e
+          HTTP_STATUS=$(curl -w "%{http_code}" -sS --retry 3 --retry-all-errors --retry-delay 2 \
+            -o response.json \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            https://jules.googleapis.com/v1alpha/sessions)
+          CURL_EXIT_CODE=$?
+          set -e
+          if [ "$CURL_EXIT_CODE" -ne 0 ]; then
+            exit "$CURL_EXIT_CODE"
+          fi
+          if [ "$HTTP_STATUS" -ge 400 ]; then
+            echo "Jules API request failed with HTTP ${HTTP_STATUS}"
+            cat response.json
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json
+          import os
+          data = json.load(open("response.json", encoding="utf-8"))
+          session_id = data.get("name") or data.get("id")
+          session_url = data.get("url") or data.get("agentUrl") or data.get("sessionUrl")
+          if not session_id or not session_url:
+              raise SystemExit("Jules response missing session identity or URL")
+          print(f"Session started: {session_id}")
+          print(f"URL: {session_url}")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
+              out.write("### Weekend Jules article session\n\n")
+              out.write(f"- Session: `{session_id}`\n- URL: {session_url}\n")
+          PY
