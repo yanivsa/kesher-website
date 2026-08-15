@@ -120,8 +120,11 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
         expected_sha = exact_field(body, "Image SHA-256")
         declared_dimensions = exact_field(body, "Image Dimensions")
         visual_match = exact_field(body, "Image Visual Match")
-        if exact_field(body, "Image Generation Attempt") != "DeepAI":
-            errors.append("Image Generation Attempt must be DeepAI")
+        generation_attempt = exact_field(body, "Image Generation Attempt")
+        if generation_attempt not in {"DeepAI", "DeepAI/Gemini", "DeepAI/Gemini/Fallback pool"}:
+            errors.append("Image Generation Attempt must truthfully record the DeepAI -> Gemini -> fallback chain")
+        if generation_attempt == "DeepAI/Gemini/Fallback pool" and exact_field(body, "Image Fallback Attempt") != "Unsplash/Pexels":
+            errors.append("Fallback image attempt must record Unsplash/Pexels")
         if generation_result not in {"success", "generated"}:
             errors.append("Committed image requires Image Generation Result success|generated")
         if not source_url or not re.fullmatch(r"https://\S+", source_url) or source_url == "https://none":
@@ -147,8 +150,8 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
             errors.append("No-image article may not add an image file")
         generation_result = exact_field(body, "Image Generation Result")
         fallback_result = exact_field(body, "Image Fallback Result")
-        if exact_field(body, "Image Generation Attempt") != "DeepAI":
-            errors.append("No-image fallback must record the DeepAI attempt")
+        if exact_field(body, "Image Generation Attempt") != "DeepAI/Gemini/Fallback pool":
+            errors.append("No-image fallback must record DeepAI/Gemini/Fallback pool")
         if generation_result not in FAILURE_IMAGE_RESULTS:
             errors.append("No-image fallback must record an allowed generation failure")
         if exact_field(body, "Image Fallback Attempt") != "Unsplash/Pexels":

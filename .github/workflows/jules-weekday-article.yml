@@ -180,7 +180,8 @@ jobs:
           ])
           current_media_block = "\n".join([
               "Image requirements:",
-              "- Try the configured image generator first, then an independently source- and pixel-verified royalty-safe fallback.",
+              "- Use exactly three image tiers in this order: DeepAI, then Gemini, then independently source- and pixel-verified royalty-safe Unsplash/Pexels fallback.",
+              "- Record `Image Generation Attempt` truthfully as `DeepAI`, `DeepAI/Gemini`, or `DeepAI/Gemini/Fallback pool`; no-image requires the full chain.",
               "- Keep a local image and image metadata only when the provider/source URL, committed SHA-256, actual dimensions, and concrete visual match are all verified and mutually consistent.",
               "- If image generation or visual verification fails, use the truthful no-image fallback and omit the image file, `image`, and `imageAlt`.",
               "- Article publication runs do not generate videos. Do not run the Remotion renderer, add a `video` field, or commit anything under `public/videos/`. Placeholder or header-only MP4 files are forbidden.",
