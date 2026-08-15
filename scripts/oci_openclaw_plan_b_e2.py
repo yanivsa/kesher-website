@@ -218,7 +218,7 @@ def capture_console(compute, instance_id):
     deadline = time.time() + 180
     while time.time() < deadline:
         history = compute.get_console_history(history.id).data
-        if history.state == "SUCCEEDED":
+        if history.lifecycle_state == "SUCCEEDED":
             response = compute.get_console_history_content(history.id)
             data = response.data
             if hasattr(data, "content"):
@@ -228,7 +228,7 @@ def capture_console(compute, instance_id):
             if isinstance(data, bytes):
                 return data.decode("utf-8", "replace")
             return str(data)
-        if history.state == "FAILED":
+        if history.lifecycle_state == "FAILED":
             raise RuntimeError("CONSOLE_HISTORY_FAILED")
         time.sleep(5)
     raise TimeoutError("CONSOLE_HISTORY_TIMEOUT")
