@@ -8,6 +8,7 @@ on:
       - .github/workflows/oci-openclaw-plan-b-e2.yml
       - scripts/oci_openclaw_plan_b_e2.py
       - scripts/oci_openclaw_console_diag.py
+      - scripts/oci_openclaw_agent_command.py
 
 permissions:
   contents: read
@@ -82,6 +83,25 @@ jobs:
           if [ -s /tmp/oci.cfg ]; then
             python -u scripts/oci_openclaw_console_diag.py --config /tmp/oci.cfg
           fi
+      - name: Probe replacement OCI agent
+        if: ${{ always() }}
+        continue-on-error: true
+        run: |
+          if [ -s /tmp/oci.cfg ]; then
+            cat >/tmp/replacement-probe.sh <<'SH'
+          set +e
+          echo "RUN_USER=$(id -un)"
+          echo "RUN_UID=$(id -u)"
+          echo "CLOUD_INIT_STATUS_BEGIN"
+          cloud-init status --long 2>&1 || true
+          echo "CLOUD_INIT_STATUS_END"
+          systemctl is-active oracle-cloud-agent 2>/dev/null | sed 's/^/ORACLE_AGENT=/' || true
+          systemctl is-active tailscaled 2>/dev/null | sed 's/^/TAILSCALED=/' || true
+          test -f /usr/local/sbin/bootstrap-openclaw-tailscale.sh && echo "BOOTSTRAP_SCRIPT_EXISTS=true" || echo "BOOTSTRAP_SCRIPT_EXISTS=false"
+          test -f /var/lib/openclaw-version.txt && { echo "OPENCLAW_VERSION_FILE=true"; cat /var/lib/openclaw-version.txt; } || echo "OPENCLAW_VERSION_FILE=false"
+          SH
+            python -u scripts/oci_openclaw_agent_command.py --config /tmp/oci.cfg --instance-name openclaw-e2-tailscale --script-file /tmp/replacement-probe.sh --timeout 180
+          fi
       - name: Verify new OpenClaw install
         run: |
           set -euo pipefail
@@ -104,4 +124,4 @@ jobs:
           fi
       - name: Cleanup
         if: ${{ always() }}
-        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/bootkey /tmp/bootkey.pub
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/bootkey /tmp/bootkey.pub /tmp/replacement-probe.sh
