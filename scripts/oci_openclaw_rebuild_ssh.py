@@ -14,7 +14,7 @@ from oci_openclaw_bootstrap import ensure_network, instance_public_ip, load_conf
 OLD_NAME = "openclaw-e2-plan-b"
 NAME = "openclaw-e2-tailscale"
 SHAPE = "VM.Standard.E2.1.Micro"
-MANAGED_TAG = "ssh-recovery-v1"
+MANAGED_TAG = "ssh-recovery-v2"
 
 
 def live_named(compute, compartment_id, name):
@@ -62,24 +62,16 @@ def main():
     vnet = oci.core.VirtualNetworkClient(cfg)
     identity = oci.identity.IdentityClient(cfg)
 
+    # Any live replacement reaching this workflow is incomplete: a successful
+    # setup ends with SSH closed and does not need this rebuild workflow again.
+    # Recycling it also breaks any older stuck SSH session before a fresh key
+    # is generated. We wait for TERMINATED before reopening the shared SSH rule.
     replacement = live_named(compute, compartment_id, NAME)
-    if replacement and (replacement.freeform_tags or {}).get("bootstrap-mode") == MANAGED_TAG:
-        result = {
-            "status": "existing_managed",
-            "instance_id": replacement.id,
-            "shape": replacement.shape,
-            "lifecycle_state": replacement.lifecycle_state,
-            "public_ip": instance_public_ip(compute, vnet, compartment_id, replacement.id),
-        }
-        Path(args.result_json).write_text(json.dumps(result))
-        log("TAILSCALE_SSH_REPLACEMENT_EXISTS", public_ip=result["public_ip"])
-        return 0
-
     if replacement:
-        log("TERMINATING_BROKEN_TAILSCALE_REPLACEMENT", instance_id=replacement.id)
+        log("TERMINATING_INCOMPLETE_TAILSCALE_REPLACEMENT", instance_id=replacement.id)
         compute.terminate_instance(replacement.id, preserve_boot_volume=False)
         wait_terminated(compute, replacement.id)
-        log("BROKEN_TAILSCALE_REPLACEMENT_TERMINATED")
+        log("INCOMPLETE_TAILSCALE_REPLACEMENT_TERMINATED")
 
     old = live_named(compute, compartment_id, OLD_NAME)
     if not old:
