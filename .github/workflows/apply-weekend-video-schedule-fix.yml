@@ -1,0 +1,52 @@
+name: Apply Weekend Video Schedule Fix
+
+on:
+  push:
+    paths:
+      - .github/workflows/apply-weekend-video-schedule-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+
+      - name: Restrict regular evening video cron to Sunday-Thursday
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('.github/workflows/kesher-daily-video.yml')
+          text = path.read_text(encoding='utf-8')
+          old1 = '- cron: "5,20,35,50 16 * * *"'
+          old2 = '- cron: "5,20,35,50 17 * * *"'
+          new1 = '- cron: "5,20,35,50 16 * * 0,1,2,3,4"'
+          new2 = '- cron: "5,20,35,50 17 * * 0,1,2,3,4"'
+          if old1 not in text or old2 not in text:
+              raise SystemExit('Expected daily video cron lines were not found')
+          text = text.replace(old1, new1, 1).replace(old2, new2, 1)
+          text = text.replace(
+              "# Primary slices target Israel's 19:00 hour. During daylight saving, the\n    # 17 UTC entries provide an additional 20:00 recovery hour if GitHub cron\n    # is delayed. In winter, the 16 UTC entries remain outside the guard.\n    # Every accepted slice resumes the exact persisted task ID.",
+              "# Sunday-Thursday evening slices target Israel's 19:00 hour. Weekend\n    # runs are scheduled separately: Friday morning and Saturday one hour after\n    # Ashdod sunset. Every accepted slice resumes the exact persisted task ID.",
+              1,
+          )
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Commit the schedule change and remove this one-time workflow
+        run: |
+          set -euo pipefail
+          git config user.name "Kesher Automation"
+          git config user.email "actions@users.noreply.github.com"
+          git rm .github/workflows/apply-weekend-video-schedule-fix.yml
+          git add .github/workflows/kesher-daily-video.yml
+          git diff --cached --check
+          git commit -m "Make regular video schedule Sunday-Thursday"
+          git push origin HEAD:main
