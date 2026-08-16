@@ -466,10 +466,58 @@ class PipelineTestCase(unittest.TestCase):
         self.assertIn("KesherOverview", command)
         self.assertIn(f"--public-dir={self.state_dir}", command)
         props = json.loads((self.state_dir / "item-remotion-props.json").read_text(encoding="utf-8"))
+        self.assertEqual(props["videoSrc"], raw.name)
         self.assertEqual(props["audioSrc"], raw.name)
+        self.assertIn("motionPlan", props)
         self.assertEqual(props["durationInFrames"], 3120)
         self.assertEqual(props["url"], "kesher.saharoni.com")
         self.assertEqual(item["visual_pipeline"], "remotion-v1-notebooklm-audio")
+
+    def test_motion_plan_generator_data_driven_and_non_semantic(self) -> None:
+        video = self.state_dir / "sample-input.mp4"
+        video.parent.mkdir(parents=True, exist_ok=True)
+        video.write_bytes(b"sample-video-bytes-for-motion-plan")
+        plan_path = self.state_dir / "motion-plan.json"
+
+        plan1 = pipeline.generate_motion_plan(video, plan_path)
+        plan2 = pipeline.generate_motion_plan(video)
+
+        self.assertEqual(plan1, plan2)
+        self.assertTrue(plan_path.is_file())
+        self.assertIn("segments", plan1)
+        self.assertGreater(len(plan1["segments"]), 0)
+
+        first = plan1["segments"][0]
+        for field in ("startFrame", "endFrame", "transformType", "scaleStart", "scaleEnd", "panXStart", "panXEnd", "originX", "originY"):
+            self.assertIn(field, first)
+
+        serialized = json.dumps(plan1).lower()
+        for forbidden in ("couple", "parent", "child", "card", "zogiot", "horut"):
+            self.assertNotIn(forbidden, serialized)
+
+    def test_remotion_props_and_source_video_contract(self) -> None:
+        raw = self.state_dir / "test-source-video.mp4"
+        raw.parent.mkdir(parents=True, exist_ok=True)
+        raw.write_bytes(b"test-source-video-content")
+        item = {"id": "test-item-123", "source": {"title": "איך להקשיב לילדים", "category": "הורות"}}
+        output = self.state_dir / f"{item['id']}-remotion-final.mp4"
+
+        remotion = pipeline.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
+        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p == remotion), mock.patch.object(
+            pipeline, "ffprobe", return_value={"duration": 90.0}
+        ), mock.patch.object(pipeline.subprocess, "run") as run:
+            def finish(*_args: object, **_kwargs: object) -> SimpleNamespace:
+                output.write_bytes(b"rendered-mp4" * 100)
+                return SimpleNamespace(returncode=0, stdout="", stderr="")
+
+            run.side_effect = finish
+            rendered = pipeline.render_remotion_video(raw, item)
+
+        self.assertEqual(rendered, output)
+        props = json.loads((self.state_dir / f"{item['id']}-remotion-props.json").read_text(encoding="utf-8"))
+        self.assertEqual(props["videoSrc"], raw.name)
+        self.assertIn("motionPlan", props)
+        self.assertEqual(props["motionPlan"]["durationInFrames"], 2700)
 
     def test_prune_uploaded_media_keeps_small_review_evidence(self) -> None:
         self.state_dir.mkdir(parents=True, exist_ok=True)

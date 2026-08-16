@@ -27,8 +27,18 @@ from zoneinfo import ZoneInfo
 
 import requests
 
-
 PROJECT_DIR = Path(__file__).resolve().parents[1]
+SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+if str(PROJECT_DIR) not in sys.path:
+    sys.path.insert(0, str(PROJECT_DIR))
+
+try:
+    from motion_plan_generator import generate_motion_plan
+except ImportError:
+    from scripts.motion_plan_generator import generate_motion_plan
+
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
 STATE_FILE = STATE_DIR / "state.json"
@@ -510,11 +520,15 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     duration_frames = round(float(raw_media["duration"]) * 30)
     if duration_frames <= 0:
         raise PipelineError("NotebookLM audio duration is invalid for Remotion")
+    motion_plan_path = STATE_DIR / f"{item['id']}-motion-plan.json"
+    motion_plan = generate_motion_plan(raw_path, motion_plan_path, duration=float(raw_media["duration"]))
     props_path = STATE_DIR / f"{item['id']}-remotion-props.json"
     atomic_json_write(
         props_path,
         {
+            "videoSrc": raw_path.name,
             "audioSrc": raw_path.name,
+            "motionPlan": motion_plan,
             "durationInFrames": duration_frames,
             "title": item["source"]["title"],
             "category": item["source"]["category"],
