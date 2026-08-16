@@ -473,6 +473,29 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(props["url"], "kesher.saharoni.com")
         self.assertEqual(item["visual_pipeline"], "remotion-v1-notebooklm-audio")
 
+    def test_motion_plan_tracks_high_contrast_target_region(self) -> None:
+        from motion_plan_generator import analyze_frame_saliency, ANALYSIS_W, ANALYSIS_H
+
+        # Construct frame with high contrast detail in TOP-RIGHT quadrant
+        top_right_pixels = bytearray(ANALYSIS_W * ANALYSIS_H)
+        for y in range(10, 40):
+            for x in range(100, 150):
+                top_right_pixels[y * ANALYSIS_W + x] = 255 if (x + y) % 2 == 0 else 0
+
+        saliency_top_right = analyze_frame_saliency(bytes(top_right_pixels))
+        self.assertGreater(saliency_top_right["originX"], 60.0)
+        self.assertLess(saliency_top_right["originY"], 45.0)
+
+        # Construct frame with high contrast detail in BOTTOM-LEFT quadrant
+        bottom_left_pixels = bytearray(ANALYSIS_W * ANALYSIS_H)
+        for y in range(50, 80):
+            for x in range(10, 50):
+                bottom_left_pixels[y * ANALYSIS_W + x] = 255 if (x + y) % 2 == 0 else 0
+
+        saliency_bottom_left = analyze_frame_saliency(bytes(bottom_left_pixels))
+        self.assertLess(saliency_bottom_left["originX"], 40.0)
+        self.assertGreater(saliency_bottom_left["originY"], 55.0)
+
     def test_motion_plan_generator_data_driven_and_non_semantic(self) -> None:
         video = self.state_dir / "sample-input.mp4"
         video.parent.mkdir(parents=True, exist_ok=True)
@@ -518,6 +541,8 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(props["videoSrc"], raw.name)
         self.assertIn("motionPlan", props)
         self.assertEqual(props["motionPlan"]["durationInFrames"], 2700)
+        self.assertEqual(item["motion_plan_path"], f"{item['id']}-motion-plan.json")
+        self.assertTrue((self.state_dir / item["motion_plan_path"]).is_file())
 
     def test_prune_uploaded_media_keeps_small_review_evidence(self) -> None:
         self.state_dir.mkdir(parents=True, exist_ok=True)

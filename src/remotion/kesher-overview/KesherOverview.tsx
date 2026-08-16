@@ -108,7 +108,7 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
 
   return (
     <AbsoluteFill style={{backgroundColor: palette.ink, overflow: "hidden"}}>
-      {/* Continuous full-screen base video with frame-driven motion transforms */}
+      {/* Continuous full-screen base video with frame-driven motion transforms (no CSS transition) */}
       <Video
         src={staticFile(mediaFile)}
         style={{
@@ -117,7 +117,6 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
           objectFit: "cover",
           transform: `scale(${scale}) translate(${panX}px, ${panY}px)`,
           transformOrigin: `${originX}% ${originY}%`,
-          transition: "transform 0.05s linear",
         }}
       />
 

@@ -61,12 +61,15 @@ def prepare(state_dir: Path, output_dir: Path) -> dict[str, Any]:
     if item.get("technical_verified") is not True:
         raise EvidenceError("Pending item is not technically verified")
 
-    scalar_files = (
+    scalar_files = [
         ("manifest_path", "manifest_sha256"),
         ("transcript_path", "transcript_sha256"),
         ("source_path", "source_file_sha256"),
         ("visual_review_path", "visual_review_sha256"),
-    )
+    ]
+    if item.get("motion_plan_path") and item.get("motion_plan_sha256"):
+        scalar_files.append(("motion_plan_path", "motion_plan_sha256"))
+
     for path_key, hash_key in scalar_files:
         relative = item.get(path_key)
         expected = item.get(hash_key)
