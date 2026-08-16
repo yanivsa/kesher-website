@@ -8,6 +8,7 @@ on:
       - .github/workflows/openclaw-offline-boot-repair.yml
       - scripts/oci_openclaw_offline_repair.py
       - scripts/oci_openclaw_offline_repair_v2.py
+      - scripts/oci_openclaw_wait_helper_console.py
       - scripts/oci_openclaw_verify_console.py
       - scripts/openclaw_offline_mount_repair.sh
       - scripts/openclaw_verify_offline_repair.sh
@@ -86,7 +87,7 @@ jobs:
       - name: Verify authenticated boot disk patch through OCI helper console
         run: |
           set -euo pipefail
-          python -u scripts/oci_openclaw_offline_repair_v2.py wait-helper \
+          python -u scripts/oci_openclaw_wait_helper_console.py \
             --config /tmp/oci.cfg \
             --state-json /tmp/offline.json \
             --timeout 600
