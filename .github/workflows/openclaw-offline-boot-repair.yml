@@ -10,6 +10,7 @@ on:
       - scripts/oci_openclaw_offline_repair_v2.py
       - scripts/oci_openclaw_offline_repair_v3.py
       - scripts/oci_openclaw_helper_run_command.py
+      - scripts/oci_openclaw_finalize_run_command.py
       - scripts/oci_openclaw_run_command_iam.py
       - scripts/oci_openclaw_wait_helper_console.py
       - scripts/oci_openclaw_verify_console.py
@@ -114,10 +115,10 @@ jobs:
           print('OPENCLAW_TARGET_PUBLIC_IP='+d['target_ip'])
           PY
 
-      - name: Verify OpenClaw RPC and Tailscale Serve through OCI console
+      - name: Finalize and verify OpenClaw RPC and Tailscale Serve through OCI Run Command
         run: |
           set -euo pipefail
-          python -u scripts/oci_openclaw_verify_console.py \
+          python -u scripts/oci_openclaw_finalize_run_command.py \
             --config /tmp/oci.cfg \
             --instance-name openclaw-e2-tailscale \
             --timeout 900 \
