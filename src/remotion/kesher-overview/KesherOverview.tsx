@@ -16,12 +16,12 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
   videoSrc,
   audioSrc,
   title,
-  category,
+  _category,
   url = "kesher.saharoni.com",
   motionPlan,
-}) => {
+}: KesherOverviewProps & {_category?: string}) => {
   const frame = useCurrentFrame();
-  const {fps, durationInFrames, width, height} = useVideoConfig();
+  const {fps, durationInFrames} = useVideoConfig();
 
   // Primary source video path
   const mediaFile = videoSrc || audioSrc || "kesher-input.mp4";
