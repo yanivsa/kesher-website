@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/openclaw-offline-boot-repair.yml
       - scripts/oci_openclaw_offline_repair.py
+      - scripts/oci_openclaw_offline_repair_v2.py
       - scripts/oci_openclaw_verify_console.py
       - scripts/openclaw_offline_mount_repair.sh
       - scripts/openclaw_verify_offline_repair.sh
@@ -18,7 +19,7 @@ permissions:
 jobs:
   repair:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 45
     env:
       BRIDGE_NAME: yanivsa-oci-bootstrap
       OPENCLAW_SECURITY_LIST_ID: ocid1.securitylist.oc1.iad.aaaaaaaapfyvmzc532rruphk3k4ldjb66aglj2npofc5q2aof6xuoudpa4aq
@@ -67,50 +68,33 @@ jobs:
           PY
           echo OCI_BRIDGE_OK=true
 
-      - name: Prepare repair helper and attach authenticated boot disk
+      - name: Prepare cloud-init repair helper and attach authenticated boot disk
         run: |
           set -euo pipefail
-          ssh-keygen -q -t rsa -b 3072 -N '' -f /tmp/offlinekey
-          runner_ip="$(curl -fsS https://api.ipify.org)"
-          python -u scripts/oci_openclaw_offline_repair.py prepare \
+          python -u scripts/oci_openclaw_offline_repair_v2.py prepare \
             --config /tmp/oci.cfg \
-            --ssh-public-key-file /tmp/offlinekey.pub \
-            --bootstrap-cidr "$runner_ip/32" \
+            --repair-script-file scripts/openclaw_offline_mount_repair.sh \
             --result-json /tmp/offline.json
           python3 - <<'PY'
           import json
           d=json.load(open('/tmp/offline.json'))
           print('OFFLINE_PREPARE_STATUS='+d['status'])
-          print('OFFLINE_HELPER_IP='+d['helper_ip'])
+          print('OFFLINE_HELPER_TRANSPORT='+d['helper_transport'])
           print('OFFLINE_TARGET_BOOT_PRESERVED=true')
           PY
 
-      - name: Patch authenticated boot disk from helper
+      - name: Verify authenticated boot disk patch through OCI helper console
         run: |
           set -euo pipefail
-          helper_ip="$(python3 -c 'import json;print(json.load(open("/tmp/offline.json"))["helper_ip"])')"
-          ready=0
-          for i in $(seq 1 120); do
-            if ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -i /tmp/offlinekey "ubuntu@$helper_ip" 'echo ok' >/dev/null 2>&1; then
-              ready=1
-              break
-            fi
-            sleep 5
-          done
-          [ "$ready" = 1 ] || { echo OFFLINE_HELPER_SSH_NOT_READY=true; exit 1; }
-          pub_b64="$(base64 -w0 /tmp/offlinekey.pub)"
-          remote_output="$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-            -o ServerAliveInterval=15 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes \
-            -i /tmp/offlinekey "ubuntu@$helper_ip" "sudo bash -s -- '$pub_b64'" \
-            < scripts/openclaw_offline_mount_repair.sh)"
-          printf '%s\n' "$remote_output" | grep -E '^OFFLINE_REPAIR_' || true
-          printf '%s\n' "$remote_output" | grep -q '^OFFLINE_REPAIR_TARGET_SSH_KEY_REMOVED=true$'
-          printf '%s\n' "$remote_output" | grep -q '^OFFLINE_REPAIR_DISK_PATCHED=true$'
+          python -u scripts/oci_openclaw_offline_repair_v2.py wait-helper \
+            --config /tmp/oci.cfg \
+            --state-json /tmp/offline.json \
+            --timeout 600
 
       - name: Detach repaired disk, remove helper, and relaunch OpenClaw
         run: |
           set -euo pipefail
-          python -u scripts/oci_openclaw_offline_repair.py finish \
+          python -u scripts/oci_openclaw_offline_repair_v2.py finish \
             --config /tmp/oci.cfg \
             --state-json /tmp/offline.json
           python3 - <<'PY'
@@ -153,4 +137,4 @@ jobs:
 
       - name: Cleanup
         if: ${{ always() }}
-        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offlinekey /tmp/offlinekey.pub /tmp/offline.json /tmp/openclaw-ready.json
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offline.json /tmp/openclaw-ready.json
