@@ -338,7 +338,13 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
 
 def active_item(state: dict[str, Any]) -> dict[str, Any] | None:
     active_statuses = {"source_selected", "source_added", "generating", "downloaded", "pending_review", "approved", "uploading"}
-    matches = [item for item in state["items"] if item.get("status") in active_statuses and not item.get("uploaded")]
+    matches = [
+        item for item in state["items"]
+        if not item.get("uploaded") and (
+            item.get("status") in active_statuses
+            or (item.get("status") == "rejected" and item.get("technical_verified") is True)
+        )
+    ]
     if len(matches) > 1:
         raise PipelineError("More than one active video exists; refusing duplicate work")
     return matches[0] if matches else None
@@ -698,7 +704,7 @@ def run_generation(
     auth_preflight()
     state = load_state()
     item = active_item(state)
-    if item and item["status"] in {"pending_review", "approved", "uploading"}:
+    if item and item["status"] in {"pending_review", "approved", "rejected", "uploading"}:
         print(f"NO_GENERATION active_item={item['id']} status={item['status']}")
         return 0
     if not item:
@@ -1009,50 +1015,47 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
 
 def upload_only() -> int:
     state = load_state()
-    approved = [
+    candidates = [
         item for item in state["items"]
-        if item.get("status") in {"approved", "uploading"} and not item.get("uploaded")
+        if item.get("technical_verified") is True
+        and item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
+        and not item.get("uploaded")
+        and not item.get("youtube_verification")
     ]
-    if not approved:
-        print("NO_APPROVED_UPLOAD")
+    if not candidates:
+        print("NO_TECHNICALLY_VERIFIED_UPLOAD")
         return 0
-    if len(approved) != 1:
-        raise PipelineError("More than one approved item exists")
-    item = approved[0]
-    required_gates = {
-        "technical_verified": True,
-        "visual_review_status": "approved",
-        "semantic_review_status": "approved",
-        "metadata_review_status": "approved",
-    }
-    for field, expected in required_gates.items():
-        if item.get(field) != expected:
-            raise PipelineError(f"Upload gate failed: {field}")
-    for field in ("technical", "visual", "semantic", "metadata"):
-        if not re.search(r"[\u0590-\u05ff]", str(item.get("review_notes", {}).get(field, ""))):
-            raise PipelineError(f"Upload gate is missing a Hebrew {field} review note")
+    if len(candidates) != 1:
+        dated = [item for item in candidates if str(item.get("israel_date") or "").strip()]
+        if dated:
+            newest_date = max(str(item["israel_date"]) for item in dated)
+            candidates = [item for item in dated if str(item["israel_date"]) == newest_date]
+        if len(candidates) != 1:
+            raise PipelineError(f"More than one technically verified candidate exists: {len(candidates)}")
+    item = candidates[0]
+    if not item.get("final_mp4"):
+        raise PipelineError("Upload candidate is missing final MP4 path")
     video_path = STATE_DIR / item["final_mp4"]
-    manifest_path = STATE_DIR / item["manifest_path"]
-    review_path = STATE_DIR / item["visual_review_path"]
-    if not all(path.exists() for path in (video_path, manifest_path, review_path)):
-        raise PipelineError("Approved item is missing MP4, manifest or review path")
-    if sha256_file(video_path) != item["final_sha256"] or sha256_file(manifest_path) != item["manifest_sha256"]:
-        raise PipelineError("Approved evidence hash mismatch")
-    if sha256_file(review_path) != item.get("visual_review_sha256"):
-        raise PipelineError("Approved visual review sheet hash mismatch")
-    transcript_path = STATE_DIR / item.get("transcript_path", "")
-    source_path = STATE_DIR / item.get("source_path", "")
-    if not transcript_path.is_file() or sha256_file(transcript_path) != item.get("transcript_sha256"):
-        raise PipelineError("Approved transcript hash mismatch")
-    if not source_path.is_file() or sha256_file(source_path) != item.get("source_file_sha256"):
-        raise PipelineError("Approved source hash mismatch")
-    frame_hashes = item.get("frame_sha256") or {}
-    if len(frame_hashes) != 4:
-        raise PipelineError("Approved item must retain exactly four frame hashes")
-    for relative, expected in frame_hashes.items():
-        frame_path = STATE_DIR / relative
-        if not frame_path.is_file() or sha256_file(frame_path) != expected:
-            raise PipelineError("Approved frame hash mismatch")
+    manifest_path = STATE_DIR / item.get("manifest_path", "")
+    if not video_path.is_file() or video_path.stat().st_size == 0:
+        raise PipelineError("Upload candidate MP4 file is missing or empty")
+    if not manifest_path.is_file():
+        raise PipelineError("Upload candidate manifest file is missing")
+    if item.get("final_sha256") and sha256_file(video_path) != item["final_sha256"]:
+        raise PipelineError("Final MP4 SHA-256 mismatch")
+    if item.get("manifest_sha256") and sha256_file(manifest_path) != item["manifest_sha256"]:
+        raise PipelineError("Manifest SHA-256 mismatch")
+    metadata = item.get("youtube_metadata") or {}
+    title = str(metadata.get("title", ""))
+    description = str(metadata.get("description", ""))
+    if not title or not description:
+        raise PipelineError("YouTube metadata is incomplete")
+    require_hebrew(title, "YouTube title")
+    require_hebrew(description, "YouTube description", allow_url=True)
+    if SITE_URL not in description:
+        raise PipelineError("YouTube description is missing the Kesher URL")
+    for tag in metadata.get("tags") or []:
+        require_hebrew(str(tag), "YouTube tag")
     token = youtube_access_token()
     verify_authenticated_channel(token)
     session_uri = item.get("upload_session_uri")

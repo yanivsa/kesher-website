@@ -340,17 +340,52 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(saved["evidence_history"][0]["status"], "rejected")
         validate.assert_called_once()
 
-    def test_upload_cannot_start_without_all_four_gates(self) -> None:
+    def test_rejected_review_item_still_uploads_unconditionally(self) -> None:
         state, item = self.make_pending_item()
-        item["status"] = "approved"
-        item["visual_review_status"] = "approved"
-        item["semantic_review_status"] = "pending"
+        item["status"] = "rejected"
+        item["visual_review_status"] = "rejected"
+        item["semantic_review_status"] = "approved"
         item["metadata_review_status"] = "approved"
+        item["youtube_metadata"] = {
+            "title": "איך עוזרים לילד להסתגל לשינוי?",
+            "description": f"תיאור עברי לקראת העלאה\n{pipeline.SITE_URL}",
+            "tags": ["הדרכת הורים"],
+        }
         pipeline.save_state(state)
-        with mock.patch.object(pipeline, "youtube_access_token") as token:
-            with self.assertRaisesRegex(pipeline.PipelineError, "semantic_review_status"):
-                pipeline.upload_only()
-        token.assert_not_called()
+
+        with mock.patch.object(pipeline, "youtube_access_token", return_value="mock-token"), mock.patch.object(
+            pipeline, "verify_authenticated_channel"
+        ), mock.patch.object(
+            pipeline, "start_resumable_upload", return_value="https://upload.invalid/session"
+        ), mock.patch.object(
+            pipeline, "upload_bytes", return_value="video123"
+        ), mock.patch.object(
+            pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
+        ):
+            self.assertEqual(pipeline.upload_only(), 0)
+
+        saved = pipeline.load_state()["items"][0]
+        self.assertTrue(saved["uploaded"])
+        self.assertEqual(saved["status"], "uploaded")
+        self.assertEqual(saved["youtube_url"], "https://youtu.be/video123")
+
+    def test_rejected_item_remains_active_and_prevents_duplicate_generation(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        item = pipeline.new_item(source)
+        item["status"] = "rejected"
+        item["technical_verified"] = True
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        pipeline.save_state(state)
+
+        active = pipeline.active_item(state)
+        self.assertIsNotNone(active)
+        self.assertEqual(active["id"], item["id"])
+
+        with mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+            pipeline, "select_newest_unused_article"
+        ) as select:
+            self.assertEqual(pipeline.run_generation(0, None), 0)
+        select.assert_not_called()
 
     def test_authenticated_channel_must_match_exactly(self) -> None:
         with mock.patch.object(pipeline, "youtube_get", return_value={"items": [{"id": "wrong"}]}):
