@@ -14,7 +14,7 @@ repair_exit() {
   if [ "$rc" -ne 0 ]; then
     printf 'OFFLINE_REPAIR_SCRIPT_FAILED_RC=%s\n' "$rc"
   fi
-  exit 0
+  exit "$rc"
 }
 trap repair_exit EXIT
 
@@ -174,20 +174,25 @@ mkdir -p "$MNT/etc/systemd/system/multi-user.target.wants"
 ln -sfn ../openclaw-offline-finalize.service "$MNT/etc/systemd/system/multi-user.target.wants/openclaw-offline-finalize.service"
 
 # Remove any recovery key left by earlier attempts. The final VM does not need
-# public SSH at all; verification happens through OCI serial console history.
+# public SSH at all; verification happens through OCI APIs.
 if [ -f "$MNT/home/ubuntu/.ssh/authorized_keys" ]; then
   sed -i '/ openclaw-offline-recovery$/d' "$MNT/home/ubuntu/.ssh/authorized_keys"
 fi
 
-# The helper's lifecycle state is used as an OCI-native success signal. It only
-# powers itself off after the target disk has been patched, synced and cleanly
-# unmounted. This avoids relying on serial-console text delivery.
 sync
 echo OFFLINE_REPAIR_TARGET_SSH_KEY_REMOVED=true
 echo OFFLINE_REPAIR_DISK_PATCHED=true
 sync
 umount "$MNT"
 trap - EXIT
+
+# OCI Run Command must remain alive long enough to return its exit code and
+# output. The older cloud-init fallback may still use intentional poweroff.
+if [ "${OPENCLAW_REPAIR_NO_POWEROFF:-0}" = "1" ]; then
+  echo OFFLINE_REPAIR_RUN_COMMAND_COMPLETE=true
+  exit 0
+fi
+
 echo OFFLINE_REPAIR_HELPER_SUCCESS_POWEROFF=true
 systemctl poweroff
 exit 0

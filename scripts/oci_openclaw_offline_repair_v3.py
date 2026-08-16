@@ -1,0 +1,157 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import base64
+import json
+import time
+from pathlib import Path
+
+import oci
+
+from oci_openclaw_bootstrap import ensure_network, instance_public_ip, load_config, log, wait
+from oci_openclaw_offline_repair_v2 import (
+    HELPER_NAME,
+    SHAPE,
+    ATTACH_NAME,
+    NO_SSH_CIDR,
+    choose_image,
+    cleanup_existing_helper,
+    current_target_boot,
+    wait_boot_available,
+    wait_terminated,
+    wait_volume_attachment,
+)
+
+RUN_COMMAND_PLUGIN = "Compute Instance Run Command"
+
+
+def helper_cloud_init() -> str:
+    # Run Command executes as `ocarun`. Oracle documents sudo as an explicit
+    # prerequisite for administrator operations, so grant only this maintenance
+    # account passwordless sudo on the disposable helper. The helper has no
+    # inbound SSH rule; its public IP exists solely for outbound OCI/GitHub HTTPS.
+    cloud_config = """#cloud-config
+write_files:
+  - path: /etc/sudoers.d/101-oracle-cloud-agent-run-command
+    owner: root:root
+    permissions: '0440'
+    content: |
+      ocarun ALL=(ALL) NOPASSWD:ALL
+runcmd:
+  - [ sh, -c, "visudo -cf /etc/sudoers.d/101-oracle-cloud-agent-run-command" ]
+"""
+    return base64.b64encode(cloud_config.encode()).decode()
+
+
+def prepare(args) -> int:
+    cfg = load_config(args.config)
+    compartment_id = cfg["tenancy"]
+    compute = oci.core.ComputeClient(cfg)
+    vnet = oci.core.VirtualNetworkClient(cfg)
+    block = oci.core.BlockstorageClient(cfg)
+
+    target, boot_id = current_target_boot(compute, block, compartment_id)
+    log("OFFLINE_REPAIR_BOOT_IDENTIFIED", boot_id=boot_id)
+
+    _, subnet, sl = ensure_network(vnet, compartment_id, NO_SSH_CIDR)
+    cleanup_existing_helper(compute, compartment_id, boot_id)
+
+    if target:
+        log("OFFLINE_REPAIR_TERMINATING_TARGET_PRESERVE_BOOT", target_id=target.id)
+        compute.terminate_instance(target.id, preserve_boot_volume=True)
+        wait_terminated(compute, target.id)
+
+    boot = wait_boot_available(block, boot_id)
+
+    live_e2 = [
+        x for x in compute.list_instances(compartment_id=compartment_id).data
+        if x.lifecycle_state not in {"TERMINATED", "TERMINATING"} and x.shape == SHAPE
+    ]
+    log("OFFLINE_REPAIR_LIVE_E2_BEFORE_HELPER", count=len(live_e2))
+    if len(live_e2) >= 2:
+        raise RuntimeError("ALWAYS_FREE_E2_LIMIT_GUARD_BEFORE_HELPER")
+
+    image = choose_image(compute, compartment_id)
+    helper = compute.launch_instance(
+        oci.core.models.LaunchInstanceDetails(
+            availability_domain=boot.availability_domain,
+            compartment_id=compartment_id,
+            display_name=HELPER_NAME,
+            shape=SHAPE,
+            source_details=oci.core.models.InstanceSourceViaImageDetails(
+                source_type="image", image_id=image.id
+            ),
+            create_vnic_details=oci.core.models.CreateVnicDetails(
+                subnet_id=subnet.id,
+                # The public address provides outbound HTTPS in this public
+                # subnet. Inbound SSH remains blocked by the security list.
+                assign_public_ip=True,
+                display_name=f"{HELPER_NAME}-vnic",
+            ),
+            agent_config=oci.core.models.LaunchInstanceAgentConfigDetails(
+                is_management_disabled=False,
+                are_all_plugins_disabled=False,
+                plugins_config=[
+                    oci.core.models.InstanceAgentPluginConfigDetails(
+                        name=RUN_COMMAND_PLUGIN,
+                        desired_state="ENABLED",
+                    )
+                ],
+            ),
+            metadata={"user_data": helper_cloud_init()},
+            freeform_tags={
+                "managed-by": "chatgpt",
+                "purpose": "openclaw-offline-repair-helper-run-command",
+            },
+        )
+    ).data
+    helper = wait(compute.get_instance, helper.id, desired=("RUNNING",), timeout=1200)
+
+    helper_ip = None
+    for _ in range(36):
+        helper_ip = instance_public_ip(compute, vnet, compartment_id, helper.id)
+        if helper_ip:
+            break
+        time.sleep(5)
+    if not helper_ip:
+        raise RuntimeError("HELPER_OUTBOUND_PUBLIC_IP_NOT_ASSIGNED")
+    log("OFFLINE_REPAIR_HELPER_RUNNING", helper_id=helper.id, transport="oci-run-command")
+
+    attach = compute.attach_volume(
+        oci.core.models.AttachParavirtualizedVolumeDetails(
+            instance_id=helper.id,
+            volume_id=boot_id,
+            display_name=ATTACH_NAME,
+            is_read_only=False,
+        )
+    ).data
+    attach = wait_volume_attachment(compute, attach.id, {"ATTACHED"})
+    log("OFFLINE_REPAIR_BOOT_ATTACHED_AS_DATA", attachment_id=attach.id)
+
+    result = {
+        "status": "prepared",
+        "target_boot_id": boot_id,
+        "target_availability_domain": boot.availability_domain,
+        "helper_id": helper.id,
+        "helper_ip": helper_ip,
+        "attachment_id": attach.id,
+        "subnet_id": subnet.id,
+        "security_list_id": sl.id,
+        "shape": SHAPE,
+        "helper_transport": "oci-run-command",
+    }
+    Path(args.result_json).write_text(json.dumps(result))
+    return 0
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--config", required=True)
+    ap.add_argument("--result-json", required=True)
+    args = ap.parse_args()
+    return prepare(args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
