@@ -12,6 +12,7 @@ if [ -n "$root_parent" ]; then
 else
   root_disk="$root_src"
 fi
+printf 'OFFLINE_REPAIR_HELPER_ROOT_DISK=%s\n' "$root_disk"
 
 target_disk=""
 for i in $(seq 1 120); do
@@ -24,25 +25,32 @@ for i in $(seq 1 120); do
   [ -n "$target_disk" ] && break
   sleep 2
 done
-[ -n "$target_disk" ] || { echo OFFLINE_REPAIR_DATA_DISK_NOT_FOUND=true; exit 1; }
+[ -n "$target_disk" ] || {
+  echo OFFLINE_REPAIR_DATA_DISK_NOT_FOUND=true
+  lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS || true
+  exit 1
+}
 echo OFFLINE_REPAIR_DATA_DISK="$target_disk"
 
+# Do not depend on lsblk/udev having populated FSTYPE for a newly attached OCI
+# boot volume. Try every partition on the non-helper disk, largest first; if
+# there are no partitions, try the whole disk. mount(8) will auto-detect the
+# filesystem and harmlessly reject EFI/swap/non-filesystem candidates.
 mapfile -t candidates < <(
-  lsblk -brnpo NAME,SIZE,TYPE,FSTYPE "$target_disk" \
-    | awk '$3=="part" && ($4=="ext4" || $4=="xfs") {print $1, $2}' \
+  lsblk -brnpo NAME,SIZE,TYPE "$target_disk" \
+    | awk '$3=="part" {print $1, $2}' \
     | sort -k2,2nr | awk '{print $1}'
 )
 if [ "${#candidates[@]}" -eq 0 ]; then
-  fs="$(lsblk -dnpo FSTYPE "$target_disk" | head -1)"
-  if [ "$fs" = ext4 ] || [ "$fs" = xfs ]; then
-    candidates=("$target_disk")
-  fi
+  candidates=("$target_disk")
 fi
-[ "${#candidates[@]}" -gt 0 ] || { echo OFFLINE_REPAIR_ROOT_CANDIDATES_NOT_FOUND=true; exit 1; }
+printf 'OFFLINE_REPAIR_CANDIDATE_COUNT=%s\n' "${#candidates[@]}"
 
 root_part=""
 for part in "${candidates[@]}"; do
-  if mount -o rw "$part" "$MNT" 2>/dev/null; then
+  printf 'OFFLINE_REPAIR_TRY_PART=%s\n' "$part"
+  mountpoint -q "$MNT" && umount "$MNT" || true
+  if mount -o rw "$part" "$MNT" 2>/tmp/openclaw-mount.err; then
     if [ -f "$MNT/etc/os-release" ] && [ -d "$MNT/var/lib/tailscale" ]; then
       root_part="$part"
       break
@@ -50,7 +58,13 @@ for part in "${candidates[@]}"; do
     umount "$MNT"
   fi
 done
-[ -n "$root_part" ] || { echo OFFLINE_REPAIR_TARGET_ROOT_NOT_FOUND=true; exit 1; }
+[ -n "$root_part" ] || {
+  echo OFFLINE_REPAIR_TARGET_ROOT_NOT_FOUND=true
+  lsblk -o NAME,SIZE,TYPE,FSTYPE,PARTLABEL,PARTUUID,MOUNTPOINTS || true
+  blkid || true
+  sed -E 's#https?://[^[:space:]]+#<REDACTED_URL>#g' /tmp/openclaw-mount.err 2>/dev/null || true
+  exit 1
+}
 echo OFFLINE_REPAIR_TARGET_ROOT="$root_part"
 
 cleanup() {
