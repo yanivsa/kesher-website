@@ -16,6 +16,7 @@ FALLBACK_NAME = "openclaw-e2-plan-b"
 HELPER_NAME = "openclaw-e2-repair-helper"
 SHAPE = "VM.Standard.E2.1.Micro"
 RECOVERY_TAG = "authenticated-tailnet-recovery"
+RECOVERY_DISPLAY_NAME = "openclaw-authenticated-tailnet-recovery"
 ATTACH_NAME = "openclaw-authenticated-boot-repair"
 
 
@@ -78,21 +79,24 @@ def boot_for_instance(compute, compartment_id: str, inst):
 
 def tagged_boot(block, compartment_id: str):
     rows = block.list_boot_volumes(compartment_id=compartment_id).data
-    rows = [x for x in rows
-            if x.lifecycle_state != "TERMINATED"
-            and (x.freeform_tags or {}).get("openclaw-recovery") == RECOVERY_TAG]
+    rows = [
+        x for x in rows
+        if x.lifecycle_state != "TERMINATED"
+        and (
+            x.display_name == RECOVERY_DISPLAY_NAME
+            or (x.freeform_tags or {}).get("openclaw-recovery") == RECOVERY_TAG
+        )
+    ]
     rows.sort(key=lambda x: x.time_created, reverse=True)
     return rows[0] if rows else None
 
 
 def mark_boot(block, boot_id: str):
-    obj = block.get_boot_volume(boot_id).data
-    tags = dict(obj.freeform_tags or {})
-    tags.update({"managed-by": "chatgpt", "openclaw-recovery": RECOVERY_TAG})
     block.update_boot_volume(
         boot_id,
-        oci.core.models.UpdateBootVolumeDetails(freeform_tags=tags),
+        oci.core.models.UpdateBootVolumeDetails(display_name=RECOVERY_DISPLAY_NAME),
     )
+    log("OFFLINE_REPAIR_BOOT_MARKED", boot_id=boot_id, display_name=RECOVERY_DISPLAY_NAME)
 
 
 def choose_image(compute, compartment_id: str):
