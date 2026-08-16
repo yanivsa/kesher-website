@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/openclaw-offline-boot-repair.yml
       - scripts/oci_openclaw_offline_repair.py
+      - scripts/oci_openclaw_verify_console.py
       - scripts/openclaw_offline_mount_repair.sh
       - scripts/openclaw_verify_offline_repair.sh
       - scripts/encrypt_openclaw_repair_result.py
@@ -103,6 +104,7 @@ jobs:
             -i /tmp/offlinekey "ubuntu@$helper_ip" "sudo bash -s -- '$pub_b64'" \
             < scripts/openclaw_offline_mount_repair.sh)"
           printf '%s\n' "$remote_output" | grep -E '^OFFLINE_REPAIR_' || true
+          printf '%s\n' "$remote_output" | grep -q '^OFFLINE_REPAIR_TARGET_SSH_KEY_REMOVED=true$'
           printf '%s\n' "$remote_output" | grep -q '^OFFLINE_REPAIR_DISK_PATCHED=true$'
 
       - name: Detach repaired disk, remove helper, and relaunch OpenClaw
@@ -119,36 +121,22 @@ jobs:
           print('OPENCLAW_TARGET_PUBLIC_IP='+d['target_ip'])
           PY
 
-      - name: Verify OpenClaw RPC and Tailscale Serve
+      - name: Verify OpenClaw RPC and Tailscale Serve through OCI console
         run: |
           set -euo pipefail
-          target_ip="$(python3 -c 'import json;print(json.load(open("/tmp/offline.json"))["target_ip"])')"
-          ready=0
-          for i in $(seq 1 120); do
-            if ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -i /tmp/offlinekey "ubuntu@$target_ip" 'echo ok' >/dev/null 2>&1; then
-              ready=1
-              break
-            fi
-            sleep 5
-          done
-          [ "$ready" = 1 ] || { echo OPENCLAW_REPAIRED_SSH_NOT_READY=true; exit 1; }
-          set +e
-          remote_output="$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-            -o ServerAliveInterval=15 -o ServerAliveCountMax=40 -o TCPKeepAlive=yes \
-            -i /tmp/offlinekey "ubuntu@$target_ip" 'sudo bash -s' \
-            < scripts/openclaw_verify_offline_repair.sh)"
-          rc=$?
-          set -e
-          printf '%s\n' "$remote_output" | grep -E '^(TAILSCALE_BACKEND_STATE|OPENCLAW_GATEWAY_RPC_OK|TAILSCALE_SERVE_ACTIVE|OPENCLAW_RECOVERY_KEY_REMOVED|OPENCLAW_VERIFY_OK|OPENCLAW_VERIFY_[A-Z_]+)=' || true
-          if [ "$rc" -ne 0 ]; then
-            printf '%s\n' "$remote_output" | sed -E '/^OPENCLAW_READY_URL=/d; s#https?://[^[:space:]]+#<REDACTED_URL>#g'
-            exit "$rc"
-          fi
-          ready_url="$(printf '%s\n' "$remote_output" | sed -n 's/^OPENCLAW_READY_URL=//p' | tail -1)"
-          [ -n "$ready_url" ]
-          cipher="$(printf '%s' "$ready_url" | python3 scripts/encrypt_openclaw_repair_result.py)"
-          echo "OPENCLAW_READY_URL_ENCRYPTED=$cipher"
-          echo OPENCLAW_OFFLINE_REPAIR_COMPLETE=true
+          python -u scripts/oci_openclaw_verify_console.py \
+            --config /tmp/oci.cfg \
+            --instance-name openclaw-e2-tailscale \
+            --timeout 900 \
+            --result-json /tmp/openclaw-ready.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/openclaw-ready.json'))
+          assert d['status'] == 'ready'
+          print('OPENCLAW_READY_DNS='+d['dns'])
+          print('OPENCLAW_READY_URL='+d['ready_url'])
+          print('OPENCLAW_OFFLINE_REPAIR_COMPLETE=true')
+          PY
 
       - name: Close temporary SSH
         if: ${{ always() }}
@@ -165,4 +153,4 @@ jobs:
 
       - name: Cleanup
         if: ${{ always() }}
-        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offlinekey /tmp/offlinekey.pub /tmp/offline.json
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offlinekey /tmp/offlinekey.pub /tmp/offline.json /tmp/openclaw-ready.json
