@@ -24,7 +24,7 @@ const schemaData = {
         "@type": "LocalBusiness",
         "@id": `${SITE_CONFIG.url}/#business`
       },
-      "description": "הכנה לחתונה לזוגות שרוצים להתחיל נכון, ולזוגות שבהם אחד או שני בני הזוג מתמודדים עם ADHD.",
+      "description": "הכנה לחתונה לזוגות שרוצים להתחיל נכון, כולל ליווי למתחתנים שהוריהם גרושים ולזוגות שבהם אחד או שני בני הזוג מתמודדים עם ADHD.",
       "image": `${SITE_CONFIG.url}/images/generated/services/couples-room.jpg`
     },
     {
@@ -169,7 +169,7 @@ const CouplesCounseling: React.FC = () => {
           </div>
           <div className={styles.specializationsGrid}>
             <article className={styles.specializationCard}>
-              <h3>מתחתנים כשההורים נפרדו</h3>
+              <h3>מתחתנים כשההורים גרושים</h3>
               <p>
                 נותנים מקום לחששות, לנאמנויות משפחתיות ולדפוסים שנלמדו בבית, בלי להפוך את הסיפור של ההורים לנבואה.
                 בונים יחד דרך חדשה לניהול מחלוקות, גבולות וקשר עם משפחות המוצא.
