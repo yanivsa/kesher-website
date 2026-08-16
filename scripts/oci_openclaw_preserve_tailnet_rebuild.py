@@ -13,6 +13,7 @@ from oci_openclaw_bootstrap import ensure_network, instance_public_ip, load_conf
 
 NAME = "openclaw-e2-tailscale"
 SHAPE = "VM.Standard.E2.1.Micro"
+RECOVERY_TAG = "authenticated-tailnet-recovery"
 
 
 def live_named(compute, compartment_id: str, name: str):
@@ -33,6 +34,26 @@ def boot_volume_for_instance(compute, compartment_id: str, inst):
         raise RuntimeError("OPENCLAW_BOOT_VOLUME_ATTACHMENT_NOT_FOUND")
     rows.sort(key=lambda x: x.time_created, reverse=True)
     return rows[0].boot_volume_id
+
+
+def tagged_recovery_boot_volume(block, compartment_id: str):
+    rows = block.list_boot_volumes(compartment_id=compartment_id).data
+    rows = [x for x in rows
+            if x.lifecycle_state != "TERMINATED"
+            and (x.freeform_tags or {}).get("openclaw-recovery") == RECOVERY_TAG]
+    rows.sort(key=lambda x: x.time_created, reverse=True)
+    return rows[0] if rows else None
+
+
+def mark_recovery_boot_volume(block, boot_volume_id: str):
+    boot = block.get_boot_volume(boot_volume_id).data
+    tags = dict(boot.freeform_tags or {})
+    tags["managed-by"] = "chatgpt"
+    tags["openclaw-recovery"] = RECOVERY_TAG
+    block.update_boot_volume(
+        boot_volume_id,
+        oci.core.models.UpdateBootVolumeDetails(freeform_tags=tags),
+    )
 
 
 def wait_terminated(compute, instance_id: str, timeout: int = 900):
@@ -94,6 +115,7 @@ for i in $(seq 1 60); do
   tailscale serve status 2>/dev/null | grep -q 'https://' && break
   sleep 2
 done
+tailscale serve status 2>/dev/null | grep -q 'https://'
 
 DNS="$(tailscale status --json | python3 -c 'import json,sys; d=json.load(sys.stdin); print((d.get("Self",{}).get("DNSName") or "").rstrip("."))')"
 TSIP="$(tailscale ip -4 | head -1)"
@@ -136,33 +158,39 @@ def main() -> int:
     vnet = oci.core.VirtualNetworkClient(cfg)
     block = oci.core.BlockstorageClient(cfg)
 
-    inst = live_named(compute, compartment_id, NAME)
-    if not inst:
-        raise RuntimeError("OPENCLAW_TAILSCALE_INSTANCE_NOT_FOUND")
-    if inst.shape != SHAPE:
-        raise RuntimeError(f"UNEXPECTED_OPENCLAW_SHAPE_{inst.shape}")
-
     live_e2 = [x for x in compute.list_instances(compartment_id=compartment_id).data
                if x.lifecycle_state not in {"TERMINATED", "TERMINATING"} and x.shape == SHAPE]
     if len(live_e2) > 2:
         raise RuntimeError("ALWAYS_FREE_E2_LIMIT_ALREADY_EXCEEDED")
 
-    boot_volume_id = boot_volume_for_instance(compute, compartment_id, inst)
-    log("PRESERVING_AUTHENTICATED_BOOT_VOLUME", boot_volume_id=boot_volume_id)
+    inst = live_named(compute, compartment_id, NAME)
+    if inst:
+        if inst.shape != SHAPE:
+            raise RuntimeError(f"UNEXPECTED_OPENCLAW_SHAPE_{inst.shape}")
+        boot_volume_id = boot_volume_for_instance(compute, compartment_id, inst)
+        mark_recovery_boot_volume(block, boot_volume_id)
+        log("PRESERVING_AUTHENTICATED_BOOT_VOLUME", boot_volume_id=boot_volume_id)
+    else:
+        tagged = tagged_recovery_boot_volume(block, compartment_id)
+        if not tagged:
+            raise RuntimeError("OPENCLAW_TAILSCALE_INSTANCE_AND_RECOVERY_BOOT_NOT_FOUND")
+        boot_volume_id = tagged.id
+        log("RESUMING_FROM_PRESERVED_BOOT_VOLUME", boot_volume_id=boot_volume_id)
 
     _, subnet, sl = ensure_network(vnet, compartment_id, args.bootstrap_cidr)
     result = {
         "status": "starting",
-        "old_instance_id": inst.id,
+        "old_instance_id": inst.id if inst else None,
         "boot_volume_id": boot_volume_id,
         "security_list_id": sl.id,
         "shape": SHAPE,
     }
     Path(args.result_json).write_text(json.dumps(result))
 
-    compute.terminate_instance(inst.id, preserve_boot_volume=True)
-    wait_terminated(compute, inst.id)
-    log("AUTHENTICATED_VM_TERMINATED_BOOT_PRESERVED", instance_id=inst.id)
+    if inst:
+        compute.terminate_instance(inst.id, preserve_boot_volume=True)
+        wait_terminated(compute, inst.id)
+        log("AUTHENTICATED_VM_TERMINATED_BOOT_PRESERVED", instance_id=inst.id)
 
     boot = wait_boot_available(block, boot_volume_id)
     ssh_key = Path(args.ssh_public_key_file).read_text().strip()
