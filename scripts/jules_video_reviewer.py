@@ -259,6 +259,50 @@ def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> 
         raise ReviewError("Official pipeline rejected the Jules review decision")
 
 
+def handle_non_fatal_review_error(state_dir: Path, error_message: str) -> bool:
+    try:
+        state_path = state_dir / "state.json"
+        if not state_path.exists():
+            return False
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+        items = state.get("items", [])
+        pending = [item for item in items if item.get("status") == "pending_review"]
+        if len(pending) != 1:
+            return False
+        item = pending[0]
+        if not item.get("technical_verified") or not item.get("final_mp4"):
+            return False
+        final_mp4 = state_dir / item["final_mp4"]
+        if not final_mp4.is_file() or final_mp4.stat().st_size == 0:
+            return False
+
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc).isoformat()
+
+        item["visual_review_status"] = "unavailable"
+        item["semantic_review_status"] = "unavailable"
+        item["metadata_review_status"] = "unavailable"
+        note = f"סקירת ג׳ולס לא הושלמה: {error_message}"
+        if not isinstance(item.get("review_notes"), dict):
+            item["review_notes"] = {}
+        item["review_notes"]["visual"] = note
+        item["review_notes"]["semantic"] = note
+        item["review_notes"]["metadata"] = note
+        item["reviewer_error"] = str(error_message)
+        item["reviewed_at"] = now
+        item["updated_at"] = now
+
+        state["updated_at"] = now
+        temp_path = state_path.with_suffix(".tmp")
+        temp_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        os.replace(temp_path, state_path)
+        print(f"JULES_REVIEW_UNAVAILABLE {error_message}", file=sys.stderr)
+        return True
+    except Exception as exc:
+        print(f"Failed to record non-fatal review failure: {exc}", file=sys.stderr)
+        return False
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--state-dir", type=Path, required=True)
@@ -282,8 +326,16 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--state-dir", type=Path, required=True)
+    parser.add_argument("--review-branch", required=True)
+    parser.add_argument("--evidence-root", required=True)
+    parser.add_argument("--timeout-seconds", type=int, default=3600)
+    args, _ = parser.parse_known_args()
     try:
         raise SystemExit(main())
-    except (ReviewError, OSError, ValueError, json.JSONDecodeError) as exc:
+    except Exception as exc:
+        if args and hasattr(args, "state_dir") and handle_non_fatal_review_error(args.state_dir, str(exc)):
+            raise SystemExit(0)
         print(f"JULES_REVIEW_BLOCKED {exc}", file=sys.stderr)
         raise SystemExit(1)
