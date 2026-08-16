@@ -30,11 +30,12 @@ export const RemotionRoot: React.FC = () => {
         height={720}
         calculateMetadata={({props}) => ({durationInFrames: props.durationInFrames})}
         defaultProps={{
+          videoSrc: "kesher-input.mp4",
           audioSrc: "kesher-input.mp4",
           durationInFrames: 3120,
           title: "איך לדבר כשהלב סגור",
           category: "זוגיות",
-          url: "https://kesher.saharoni.com",
+          url: "kesher.saharoni.com",
         }}
       />
     </>

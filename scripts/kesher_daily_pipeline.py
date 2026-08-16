@@ -27,8 +27,18 @@ from zoneinfo import ZoneInfo
 
 import requests
 
-
 PROJECT_DIR = Path(__file__).resolve().parents[1]
+SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+if str(PROJECT_DIR) not in sys.path:
+    sys.path.insert(0, str(PROJECT_DIR))
+
+try:
+    from motion_plan_generator import generate_motion_plan
+except ImportError:
+    from scripts.motion_plan_generator import generate_motion_plan
+
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
 STATE_FILE = STATE_DIR / "state.json"
@@ -510,11 +520,15 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     duration_frames = round(float(raw_media["duration"]) * 30)
     if duration_frames <= 0:
         raise PipelineError("NotebookLM audio duration is invalid for Remotion")
+    motion_plan_path = STATE_DIR / f"{item['id']}-motion-plan.json"
+    motion_plan = generate_motion_plan(raw_path, motion_plan_path, duration=float(raw_media["duration"]))
     props_path = STATE_DIR / f"{item['id']}-remotion-props.json"
     atomic_json_write(
         props_path,
         {
+            "videoSrc": raw_path.name,
             "audioSrc": raw_path.name,
+            "motionPlan": motion_plan,
             "durationInFrames": duration_frames,
             "title": item["source"]["title"],
             "category": item["source"]["category"],
@@ -540,6 +554,8 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     item["visual_pipeline"] = "remotion-v1-notebooklm-audio"
     item["remotion_props_path"] = props_path.name
     item["remotion_props_sha256"] = sha256_file(props_path)
+    item["motion_plan_path"] = motion_plan_path.name
+    item["motion_plan_sha256"] = sha256_file(motion_plan_path)
     return output_path
 
 
@@ -638,6 +654,8 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "visual_pipeline": item.get("visual_pipeline"),
         "remotion_props_path": item.get("remotion_props_path"),
         "remotion_props_sha256": item.get("remotion_props_sha256"),
+        "motion_plan_path": item.get("motion_plan_path"),
+        "motion_plan_sha256": item.get("motion_plan_sha256"),
         "media": media,
         "youtube_metadata": metadata,
         "frame_paths": item["frame_paths"],
@@ -764,7 +782,7 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
     for field in (
         "final_mp4", "final_sha256", "manifest_path", "manifest_sha256",
         "visual_review_path", "visual_review_sha256", "frame_paths", "frame_sha256",
-        "remotion_props_path", "remotion_props_sha256", "rejected_at",
+        "remotion_props_path", "remotion_props_sha256", "motion_plan_path", "motion_plan_sha256", "rejected_at",
     ):
         item.pop(field, None)
     item["status"] = "downloaded"
@@ -786,7 +804,7 @@ def prune_uploaded_media() -> int:
     for item in state["items"]:
         if item.get("uploaded") is not True or not item.get("youtube_verification"):
             continue
-        candidates = [item.get("raw_mp4"), item.get("final_mp4"), item.get("remotion_props_path")]
+        candidates = [item.get("raw_mp4"), item.get("final_mp4"), item.get("remotion_props_path"), item.get("motion_plan_path")]
         for relative in candidates:
             if not isinstance(relative, str) or not relative:
                 continue
