@@ -5,6 +5,21 @@ PUB_B64="${1:?public key b64 required}"
 MNT=/mnt/openclaw-target
 mkdir -p "$MNT"
 
+# The caller captures stdout in a command substitution. If this script exits
+# non-zero, bash -e on the runner would otherwise hide the useful diagnostics.
+# Always return transport success after printing a failure marker; the caller
+# still fails the workflow unless OFFLINE_REPAIR_DISK_PATCHED=true is present.
+repair_exit() {
+  rc=$?
+  sync || true
+  mountpoint -q "$MNT" && umount "$MNT" || true
+  if [ "$rc" -ne 0 ]; then
+    printf 'OFFLINE_REPAIR_SCRIPT_FAILED_RC=%s\n' "$rc"
+  fi
+  exit 0
+}
+trap repair_exit EXIT
+
 root_src="$(findmnt -n -o SOURCE /)"
 root_parent="$(lsblk -no PKNAME "$root_src" 2>/dev/null | head -1 || true)"
 if [ -n "$root_parent" ]; then
@@ -66,12 +81,6 @@ done
   exit 1
 }
 echo OFFLINE_REPAIR_TARGET_ROOT="$root_part"
-
-cleanup() {
-  sync || true
-  mountpoint -q "$MNT" && umount "$MNT" || true
-}
-trap cleanup EXIT
 
 install -d -m 755 "$MNT/usr/local/sbin"
 cat >"$MNT/usr/local/sbin/openclaw-offline-finalize.sh" <<'TARGET'
