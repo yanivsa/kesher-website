@@ -1,0 +1,1 @@
+OpenClaw final verification uses OCI serial console and leaves the final VM without recovery SSH.
