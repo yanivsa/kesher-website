@@ -10,6 +10,7 @@ on:
       - scripts/oci_openclaw_offline_repair_v2.py
       - scripts/oci_openclaw_offline_repair_v3.py
       - scripts/oci_openclaw_helper_run_command.py
+      - scripts/oci_openclaw_run_command_iam.py
       - scripts/oci_openclaw_wait_helper_console.py
       - scripts/oci_openclaw_verify_console.py
       - scripts/openclaw_offline_mount_repair.sh
@@ -70,6 +71,11 @@ jobs:
           Path('/tmp/oci.cfg').write_text('[DEFAULT]\nuser='+d['user']+'\nfingerprint='+d['fingerprint']+'\ntenancy='+d['tenancy']+'\nregion='+d['region']+'\nkey_file=/tmp/oci.pem\n'); Path('/tmp/oci.cfg').chmod(0o600)
           PY
           echo OCI_BRIDGE_OK=true
+
+      - name: Ensure OCI Run Command IAM before helper creation
+        run: |
+          set -euo pipefail
+          python -u scripts/oci_openclaw_run_command_iam.py --config /tmp/oci.cfg
 
       - name: Prepare OCI Run Command repair helper and attach authenticated boot disk
         run: |
