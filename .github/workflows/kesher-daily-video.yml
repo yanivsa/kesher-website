@@ -332,14 +332,14 @@ jobs:
           gh api --method DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/${REVIEW_BRANCH}"
 
       - name: Delete completed Jules review artifact
-        if: ${{ success() && steps.review_artifact.outputs.artifact-id != '' }}
+        if: ${{ always() && steps.review_artifact.outputs.artifact-id != '' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REVIEW_ARTIFACT_ID: ${{ steps.review_artifact.outputs.artifact-id }}
-        run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${REVIEW_ARTIFACT_ID}"
+        run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${REVIEW_ARTIFACT_ID}" || true
 
       - name: Unconditional upload after usable MP4 exists (advisory review)
-        if: ${{ github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' }}
+        if: ${{ always() && !cancelled() && (github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}

@@ -653,6 +653,127 @@ class PipelineTestCase(unittest.TestCase):
         self.assertNotIn("raw_mp4", published_state["items"][0])
         self.assertNotIn("final_mp4", published_state["items"][0])
 
+    def test_jules_review_parse_failure_non_fatal_and_upload_eligible(self) -> None:
+        _, item = self.make_pending_item()
+        error_msg = "Jules completed without parseable structured review JSON"
+        handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
+        self.assertTrue(handled)
+
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["visual_review_status"], "unavailable")
+        self.assertIn("סקירת ג׳ולס לא הושלמה", saved["review_notes"]["visual"])
+
+        with mock.patch.object(pipeline, "youtube_access_token", return_value="mock-token"), mock.patch.object(
+            pipeline, "verify_authenticated_channel"
+        ), mock.patch.object(
+            pipeline, "start_resumable_upload", return_value="https://upload.invalid/session"
+        ), mock.patch.object(
+            pipeline, "upload_bytes", return_value="video-parse-fail"
+        ), mock.patch.object(
+            pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
+        ):
+            self.assertEqual(pipeline.upload_only(), 0)
+
+        uploaded = pipeline.load_state()["items"][0]
+        self.assertTrue(uploaded["uploaded"])
+        self.assertEqual(uploaded["youtube_url"], "https://youtu.be/video-parse-fail")
+
+    def test_jules_review_api_timeout_non_fatal_and_upload_eligible(self) -> None:
+        _, item = self.make_pending_item()
+        error_msg = "Jules review timed out"
+        handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
+        self.assertTrue(handled)
+
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["visual_review_status"], "unavailable")
+
+        with mock.patch.object(pipeline, "youtube_access_token", return_value="mock-token"), mock.patch.object(
+            pipeline, "verify_authenticated_channel"
+        ), mock.patch.object(
+            pipeline, "start_resumable_upload", return_value="https://upload.invalid/session"
+        ), mock.patch.object(
+            pipeline, "upload_bytes", return_value="video-timeout"
+        ), mock.patch.object(
+            pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
+        ):
+            self.assertEqual(pipeline.upload_only(), 0)
+
+        uploaded = pipeline.load_state()["items"][0]
+        self.assertTrue(uploaded["uploaded"])
+
+    def test_jules_valid_rejected_review_preserves_review_and_upload_eligible(self) -> None:
+        _, item = self.make_pending_item()
+        args = SimpleNamespace(
+            review_item=item["id"],
+            visual_status="rejected",
+            semantic_status="approved",
+            metadata_status="approved",
+            visual_note="הפריים השני אינו קריא בסלולר ולכן נפסל",
+            semantic_note="תומך במאמר المקור",
+            metadata_note="המטא־דאטה תקין",
+        )
+        pipeline.update_review(args)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "rejected")
+        self.assertEqual(saved["visual_review_status"], "rejected")
+
+        with mock.patch.object(pipeline, "youtube_access_token", return_value="mock-token"), mock.patch.object(
+            pipeline, "verify_authenticated_channel"
+        ), mock.patch.object(
+            pipeline, "start_resumable_upload", return_value="https://upload.invalid/session"
+        ), mock.patch.object(
+            pipeline, "upload_bytes", return_value="video-rejected"
+        ), mock.patch.object(
+            pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
+        ):
+            self.assertEqual(pipeline.upload_only(), 0)
+
+        uploaded = pipeline.load_state()["items"][0]
+        self.assertTrue(uploaded["uploaded"])
+
+    def test_jules_valid_approved_review_preserves_review_and_upload_eligible(self) -> None:
+        _, item = self.make_pending_item()
+        args = SimpleNamespace(
+            review_item=item["id"],
+            visual_status="approved",
+            semantic_status="approved",
+            metadata_status="approved",
+            visual_note="כל הפריימים נבדקו ואושר למאמר",
+            semantic_note="תואם למקור",
+            metadata_note="המטא־דאטה בעברית",
+        )
+        pipeline.update_review(args)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "approved")
+
+        with mock.patch.object(pipeline, "youtube_access_token", return_value="mock-token"), mock.patch.object(
+            pipeline, "verify_authenticated_channel"
+        ), mock.patch.object(
+            pipeline, "start_resumable_upload", return_value="https://upload.invalid/session"
+        ), mock.patch.object(
+            pipeline, "upload_bytes", return_value="video-approved"
+        ), mock.patch.object(
+            pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
+        ):
+            self.assertEqual(pipeline.upload_only(), 0)
+
+        uploaded = pipeline.load_state()["items"][0]
+        self.assertTrue(uploaded["uploaded"])
+
+    def test_technical_verification_failure_fatal_and_blocks_upload(self) -> None:
+        state, item = self.make_pending_item()
+        item["technical_verified"] = False
+        pipeline.save_state(state)
+
+        handled = reviewer.handle_non_fatal_review_error(self.state_dir, "technical error")
+        self.assertFalse(handled)
+
+        with mock.patch.object(pipeline, "youtube_access_token", return_value="mock-token"):
+            self.assertEqual(pipeline.upload_only(), 0)
+
+        saved = pipeline.load_state()["items"][0]
+        self.assertFalse(saved.get("uploaded", False))
+
 
 if __name__ == "__main__":
     unittest.main()
