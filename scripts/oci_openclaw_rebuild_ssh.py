@@ -15,6 +15,15 @@ OLD_NAME = "openclaw-e2-plan-b"
 NAME = "openclaw-e2-tailscale"
 SHAPE = "VM.Standard.E2.1.Micro"
 MANAGED_TAG = "ssh-recovery-v2"
+CURRENT_CHAT_PUBLIC_KEY = """-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv/TohWyq6lfOM+OBaz5l
+VO//N0UE4Eb0V2mRyYYdcqJJGH/9LkupMtFKFL+GO8dfhOE1R5+GWTtKgTxN6s8O
+pbuI9jTzQHtc/BqTH7U48SXPOacVOap7TgZubMYCZJ5Ua2bpgeHPSZ+j+xyXd9lK
+fKRcGz8wnLlbT0XuPaCnri1ksWrBIrHEi+0FgReDYIIvKomQ7yxoyI3mKKUzpR2B
+pnYBgWXNJYs77gYoi9ZGr4LF9PfH2TcEyyTjGlwKbE1U1awI2oHFgn554ITrgFGC
++z0EYfOV311E5ITf9g+98HOb2WRRpPDJZYMW4rF0Qyz7Oefqpf7kX9bVZijtm+fu
+oQIDAQAB
+-----END PUBLIC KEY-----"""
 
 
 def live_named(compute, compartment_id, name):
@@ -52,8 +61,21 @@ def main():
     # The workflow later imports scripts.oci_openclaw_plan_b_e2 from the repo root.
     # That module historically imports oci_openclaw_bootstrap as a top-level module.
     # Create a runner-local compatibility shim so the encryption helper can load.
-    shim = Path(__file__).resolve().parent.parent / "oci_openclaw_bootstrap.py"
+    repo_root = Path(__file__).resolve().parent.parent
+    shim = repo_root / "oci_openclaw_bootstrap.py"
     shim.write_text("from scripts.oci_openclaw_bootstrap import *\n")
+
+    # Rotate only the runner-local copy of the public key used to encrypt the
+    # one-time Tailscale URL and gateway token. The private half never enters GitHub.
+    plan_file = Path(__file__).resolve().parent / "oci_openclaw_plan_b_e2.py"
+    plan_text = plan_file.read_text()
+    before, marker, after = plan_text.partition("AUTH_URL_PUBLIC_KEY = ")
+    if not marker:
+        raise RuntimeError("CHAT_PUBLIC_KEY_MARKER_NOT_FOUND")
+    _, sep, suffix = after.partition("\n\n")
+    if not sep:
+        raise RuntimeError("CHAT_PUBLIC_KEY_BLOCK_END_NOT_FOUND")
+    plan_file.write_text(before + "AUTH_URL_PUBLIC_KEY = " + repr(CURRENT_CHAT_PUBLIC_KEY) + "\n\n" + suffix)
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True)
