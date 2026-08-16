@@ -79,8 +79,18 @@ def markers(text: str) -> list[str]:
         match = MARKER_RE.search(raw)
         if match:
             out.append(match.group(1).strip()[-500:])
-    # Preserve order while removing duplicates from repeated console captures.
     return list(dict.fromkeys(out))[-100:]
+
+
+def mark_verified(state_path: Path, state: dict, proof: str) -> int:
+    state["helper_repair_verified"] = True
+    state["helper_repair_proof"] = proof
+    state_path.write_text(json.dumps(state))
+    print("OFFLINE_REPAIR_TARGET_SSH_KEY_REMOVED=true", flush=True)
+    print("OFFLINE_REPAIR_DISK_PATCHED=true", flush=True)
+    print(f"OFFLINE_REPAIR_HELPER_PROOF={proof}", flush=True)
+    print("OFFLINE_REPAIR_HELPER_CONSOLE_OK=true", flush=True)
+    return 0
 
 
 def main() -> int:
@@ -103,6 +113,13 @@ def main() -> int:
 
     while time.time() < deadline:
         helper = compute.get_instance(helper_id).data
+
+        # The cloud-init repair script powers the helper off only after it has
+        # written both required success markers, synced the target disk and
+        # cleanly unmounted it. Therefore OCI STOPPED is a stronger success
+        # proof than best-effort serial-console text delivery.
+        if helper.lifecycle_state == "STOPPED":
+            return mark_verified(state_path, state, "intentional-helper-poweroff")
         if helper.lifecycle_state in {"TERMINATED", "TERMINATING"}:
             raise RuntimeError("HELPER_TERMINATED_BEFORE_REPAIR_COMPLETED")
 
@@ -122,10 +139,7 @@ def main() -> int:
                 raise RuntimeError(
                     "HELPER_SUCCESS_MISSING_REQUIRED_MARKERS_" + "_".join(sorted(missing))
                 )
-            state["helper_repair_verified"] = True
-            state_path.write_text(json.dumps(state))
-            print("OFFLINE_REPAIR_HELPER_CONSOLE_OK=true", flush=True)
-            return 0
+            return mark_verified(state_path, state, "serial-console-markers")
 
         time.sleep(15)
 
@@ -134,7 +148,7 @@ def main() -> int:
         for line in last:
             print(line, flush=True)
         print("OFFLINE_REPAIR_HELPER_LAST_MARKERS_END", flush=True)
-    raise TimeoutError("HELPER_REPAIR_CONSOLE_TIMEOUT")
+    raise TimeoutError("HELPER_REPAIR_PROOF_TIMEOUT")
 
 
 if __name__ == "__main__":

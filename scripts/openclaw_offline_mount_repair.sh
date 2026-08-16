@@ -179,6 +179,15 @@ if [ -f "$MNT/home/ubuntu/.ssh/authorized_keys" ]; then
   sed -i '/ openclaw-offline-recovery$/d' "$MNT/home/ubuntu/.ssh/authorized_keys"
 fi
 
+# The helper's lifecycle state is used as an OCI-native success signal. It only
+# powers itself off after the target disk has been patched, synced and cleanly
+# unmounted. This avoids relying on serial-console text delivery.
 sync
 echo OFFLINE_REPAIR_TARGET_SSH_KEY_REMOVED=true
 echo OFFLINE_REPAIR_DISK_PATCHED=true
+sync
+umount "$MNT"
+trap - EXIT
+echo OFFLINE_REPAIR_HELPER_SUCCESS_POWEROFF=true
+systemctl poweroff
+exit 0
