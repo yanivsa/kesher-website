@@ -58,7 +58,7 @@ def enable_run_command(compute, inst) -> None:
     print("OCI_RUN_COMMAND_PLUGIN_REQUESTED=true", flush=True)
 
 
-def wait_plugin(config, compartment_id: str, instance_id: str, timeout: int = 300) -> None:
+def wait_plugin(config, compartment_id: str, instance_id: str, timeout: int = 600) -> None:
     client = oci.compute_instance_agent.PluginClient(config)
     deadline = time.time() + timeout
     last = None
@@ -69,12 +69,20 @@ def wait_plugin(config, compartment_id: str, instance_id: str, timeout: int = 30
                 instanceagent_id=instance_id,
                 name=RUN_COMMAND_PLUGIN,
             ).data
+            status = rows[0].status if rows else "MISSING"
         except oci.exceptions.ServiceError as exc:
-            if exc.status in {404, 409}:
-                time.sleep(5)
-                continue
-            raise
-        status = rows[0].status if rows else "MISSING"
+            # Oracle documents that enabling a plugin can take up to ten
+            # minutes. During that registration window the plugin endpoint can
+            # report that the requested plugin is not present yet.
+            transient_not_present = (
+                exc.status == 400
+                and exc.code == "InvalidParameter"
+                and "not present for instance" in (exc.message or "")
+            )
+            if exc.status in {404, 409} or transient_not_present:
+                status = "REGISTERING"
+            else:
+                raise
         if status != last:
             print(f"OCI_RUN_COMMAND_PLUGIN_STATUS={status}", flush=True)
             last = status
