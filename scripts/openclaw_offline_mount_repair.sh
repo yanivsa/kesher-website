@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-PUB_B64="${1:?public key b64 required}"
+# The helper still receives the temporary bootstrap key for compatibility, but
+# the repaired OpenClaw VM itself is deliberately left without a recovery key.
+PUB_B64="${1:-}"
 MNT=/mnt/openclaw-target
 mkdir -p "$MNT"
 
-# The caller captures stdout in a command substitution. If this script exits
-# non-zero, bash -e on the runner would otherwise hide the useful diagnostics.
-# Always return transport success after printing a failure marker; the caller
-# still fails the workflow unless OFFLINE_REPAIR_DISK_PATCHED=true is present.
 repair_exit() {
   rc=$?
   sync || true
@@ -22,11 +20,7 @@ trap repair_exit EXIT
 
 root_src="$(findmnt -n -o SOURCE /)"
 root_parent="$(lsblk -no PKNAME "$root_src" 2>/dev/null | head -1 || true)"
-if [ -n "$root_parent" ]; then
-  root_disk="/dev/$root_parent"
-else
-  root_disk="$root_src"
-fi
+if [ -n "$root_parent" ]; then root_disk="/dev/$root_parent"; else root_disk="$root_src"; fi
 printf 'OFFLINE_REPAIR_HELPER_ROOT_DISK=%s\n' "$root_disk"
 
 target_disk=""
@@ -47,18 +41,12 @@ done
 }
 echo OFFLINE_REPAIR_DATA_DISK="$target_disk"
 
-# Do not depend on lsblk/udev having populated FSTYPE for a newly attached OCI
-# boot volume. Try every partition on the non-helper disk, largest first; if
-# there are no partitions, try the whole disk. mount(8) will auto-detect the
-# filesystem and harmlessly reject EFI/swap/non-filesystem candidates.
 mapfile -t candidates < <(
   lsblk -brnpo NAME,SIZE,TYPE "$target_disk" \
     | awk '$3=="part" {print $1, $2}' \
     | sort -k2,2nr | awk '{print $1}'
 )
-if [ "${#candidates[@]}" -eq 0 ]; then
-  candidates=("$target_disk")
-fi
+if [ "${#candidates[@]}" -eq 0 ]; then candidates=("$target_disk"); fi
 printf 'OFFLINE_REPAIR_CANDIDATE_COUNT=%s\n' "${#candidates[@]}"
 
 root_part=""
@@ -88,9 +76,11 @@ cat >"$MNT/usr/local/sbin/openclaw-offline-finalize.sh" <<'TARGET'
 set -Eeuo pipefail
 export HOME=/root
 export OPENCLAW_NO_PROMPT=1
-exec >>/var/log/openclaw-offline-finalize.log 2>&1
+# Write safe progress markers both to disk and to OCI serial console. This lets
+# GitHub verify the final VM through OCI without opening SSH on the target.
+exec > >(tee -a /var/log/openclaw-offline-finalize.log /dev/console) 2>&1
 
-echo "FINALIZE_START=$(date -Is)"
+echo "OPENCLAW_FINALIZE_START=$(date -Is)"
 systemctl enable --now tailscaled.service
 for i in $(seq 1 120); do
   state="$(tailscale status --json 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get("BackendState", ""))' 2>/dev/null || true)"
@@ -98,10 +88,11 @@ for i in $(seq 1 120); do
   sleep 2
 done
 state="$(tailscale status --json 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get("BackendState", ""))' 2>/dev/null || true)"
-[ "$state" = Running ] || { echo "TAILSCALE_NOT_RUNNING=$state"; exit 20; }
+echo TAILSCALE_BACKEND_STATE="$state"
+[ "$state" = Running ] || { echo "OPENCLAW_FINALIZE_FAILED=TAILSCALE_NOT_RUNNING"; exit 20; }
 
 B="$(command -v openclaw || find /root -type f -name openclaw -perm -111 2>/dev/null | head -1)"
-[ -n "$B" ] || { echo OPENCLAW_BINARY_MISSING=true; exit 21; }
+[ -n "$B" ] || { echo OPENCLAW_FINALIZE_FAILED=OPENCLAW_BINARY_MISSING; exit 21; }
 "$B" config set gateway.mode local >/dev/null
 "$B" config set gateway.bind loopback >/dev/null
 "$B" config set gateway.tailscale.mode serve >/dev/null
@@ -115,16 +106,15 @@ systemctl enable openclaw-gateway.service >/dev/null
 systemctl restart openclaw-gateway.service
 
 for i in $(seq 1 60); do
-  if "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then
-    break
-  fi
+  if "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then break; fi
   sleep 2
 done
 "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1 || {
-  echo OPENCLAW_GATEWAY_RPC_FAILED=true
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RPC
   tail -80 /tmp/openclaw-gateway-status.txt || true
   exit 22
 }
+echo OPENCLAW_GATEWAY_RPC_OK=true
 
 if ! tailscale serve status 2>/dev/null | grep -q 'https://'; then
   set +e
@@ -133,7 +123,7 @@ if ! tailscale serve status 2>/dev/null | grep -q 'https://'; then
   set -e
   printf '%s\n' "$serve_out" | sed -E 's#https?://[^[:space:]]+#<REDACTED_URL>#g'
   if [ "$serve_rc" -ne 0 ]; then
-    echo TAILSCALE_SERVE_COMMAND_FAILED=true
+    echo OPENCLAW_FINALIZE_FAILED=TAILSCALE_SERVE_COMMAND
     exit 23
   fi
 fi
@@ -142,11 +132,12 @@ for i in $(seq 1 60); do
   sleep 2
 done
 SERVE="$(tailscale serve status 2>/dev/null || true)"
-printf '%s\n' "$SERVE" | grep -q 'https://' || { echo TAILSCALE_SERVE_NOT_READY=true; exit 24; }
+printf '%s\n' "$SERVE" | grep -q 'https://' || { echo OPENCLAW_FINALIZE_FAILED=TAILSCALE_SERVE_NOT_READY; exit 24; }
+echo TAILSCALE_SERVE_ACTIVE=true
 
 DNS="$(tailscale status --json | python3 -c 'import json,sys; d=json.load(sys.stdin); print((d.get("Self",{}).get("DNSName") or "").rstrip("."))')"
 TSIP="$(tailscale ip -4 | head -1)"
-[ -n "$DNS" ] || { echo TAILSCALE_DNS_MISSING=true; exit 25; }
+[ -n "$DNS" ] || { echo OPENCLAW_FINALIZE_FAILED=TAILSCALE_DNS_MISSING; exit 25; }
 mkdir -p /var/lib
 cat >/var/lib/openclaw-ready.txt <<EOF
 OPENCLAW_TAILSCALE_FINALIZED=true
@@ -155,6 +146,10 @@ OPENCLAW_TAILSCALE_DNS=$DNS
 OPENCLAW_TAILSCALE_IP=$TSIP
 OPENCLAW_READY_URL=https://$DNS/
 EOF
+# The DNS name is not a credential and is reachable only from the authenticated
+# tailnet. Emitting it lets the OCI-only verifier return the final URL.
+echo OPENCLAW_TAILSCALE_DNS="$DNS"
+echo OPENCLAW_READY_URL="https://$DNS/"
 echo OPENCLAW_OFFLINE_FINALIZE_SUCCESS=true
 TARGET
 chmod 755 "$MNT/usr/local/sbin/openclaw-offline-finalize.sh"
@@ -178,15 +173,12 @@ UNIT
 mkdir -p "$MNT/etc/systemd/system/multi-user.target.wants"
 ln -sfn ../openclaw-offline-finalize.service "$MNT/etc/systemd/system/multi-user.target.wants/openclaw-offline-finalize.service"
 
-pub="$(printf '%s' "$PUB_B64" | base64 -d)"
-read -r keytype keydata _ <<<"$pub"
-[ -n "$keytype" ] && [ -n "$keydata" ]
-install -d -m 700 "$MNT/home/ubuntu/.ssh"
-touch "$MNT/home/ubuntu/.ssh/authorized_keys"
-sed -i '/ openclaw-offline-recovery$/d' "$MNT/home/ubuntu/.ssh/authorized_keys"
-printf '%s %s openclaw-offline-recovery\n' "$keytype" "$keydata" >>"$MNT/home/ubuntu/.ssh/authorized_keys"
-chmod 600 "$MNT/home/ubuntu/.ssh/authorized_keys"
-chown -R 1000:1000 "$MNT/home/ubuntu/.ssh"
+# Remove any recovery key left by earlier attempts. The final VM does not need
+# public SSH at all; verification happens through OCI serial console history.
+if [ -f "$MNT/home/ubuntu/.ssh/authorized_keys" ]; then
+  sed -i '/ openclaw-offline-recovery$/d' "$MNT/home/ubuntu/.ssh/authorized_keys"
+fi
 
 sync
+echo OFFLINE_REPAIR_TARGET_SSH_KEY_REMOVED=true
 echo OFFLINE_REPAIR_DISK_PATCHED=true
