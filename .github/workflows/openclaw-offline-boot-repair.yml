@@ -1,0 +1,168 @@
+name: Repair OpenClaw Offline and Enable Tailscale Serve
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/openclaw-offline-boot-repair.yml
+      - scripts/oci_openclaw_offline_repair.py
+      - scripts/openclaw_offline_mount_repair.sh
+      - scripts/openclaw_verify_offline_repair.sh
+      - scripts/encrypt_openclaw_repair_result.py
+
+permissions:
+  contents: read
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      BRIDGE_NAME: yanivsa-oci-bootstrap
+      OPENCLAW_SECURITY_LIST_ID: ocid1.securitylist.oc1.iad.aaaaaaaapfyvmzc532rruphk3k4ldjb66aglj2npofc5q2aof6xuoudpa4aq
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 22
+
+      - name: Install OCI SDK
+        run: python -m pip install 'oci==2.183.0'
+
+      - name: Decrypt OCI bundle through Cloudflare bridge
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          token="$(openssl rand -hex 32)"
+          printf '%s' "$token" | npx --yes wrangler@4.100.0 secret put CONTROL_TOKEN --name "$BRIDGE_NAME" >/dev/null
+          subdomain="$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" | python3 -c 'import json,sys;print(json.load(sys.stdin)["result"]["subdomain"])')"
+          url="https://${BRIDGE_NAME}.${subdomain}.workers.dev/decrypt"
+          code=000
+          for i in $(seq 1 12); do
+            code="$(curl -sS -o /tmp/oci.json -w '%{http_code}' -H "Authorization: Bearer $token" -H 'Content-Type: application/json' --data-binary @.github/oci-bootstrap/encrypted-oci-bundle.json "$url")"
+            [ "$code" = 200 ] && break
+            if [ "$code" = 403 ]; then sleep 5; continue; fi
+            echo "OCI bridge returned HTTP $code" >&2
+            exit 1
+          done
+          [ "$code" = 200 ] || { echo "OCI bridge token did not propagate in time" >&2; exit 1; }
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.load(open('/tmp/oci.json'))
+          assert all(d.get(k) for k in ('user','fingerprint','tenancy','region','private_key_pem'))
+          Path('/tmp/oci.pem').write_text(d['private_key_pem']); Path('/tmp/oci.pem').chmod(0o600)
+          Path('/tmp/oci.cfg').write_text('[DEFAULT]\nuser='+d['user']+'\nfingerprint='+d['fingerprint']+'\ntenancy='+d['tenancy']+'\nregion='+d['region']+'\nkey_file=/tmp/oci.pem\n'); Path('/tmp/oci.cfg').chmod(0o600)
+          PY
+          echo OCI_BRIDGE_OK=true
+
+      - name: Prepare repair helper and attach authenticated boot disk
+        run: |
+          set -euo pipefail
+          ssh-keygen -q -t rsa -b 3072 -N '' -f /tmp/offlinekey
+          runner_ip="$(curl -fsS https://api.ipify.org)"
+          python -u scripts/oci_openclaw_offline_repair.py prepare \
+            --config /tmp/oci.cfg \
+            --ssh-public-key-file /tmp/offlinekey.pub \
+            --bootstrap-cidr "$runner_ip/32" \
+            --result-json /tmp/offline.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/offline.json'))
+          print('OFFLINE_PREPARE_STATUS='+d['status'])
+          print('OFFLINE_HELPER_IP='+d['helper_ip'])
+          print('OFFLINE_TARGET_BOOT_PRESERVED=true')
+          PY
+
+      - name: Patch authenticated boot disk from helper
+        run: |
+          set -euo pipefail
+          helper_ip="$(python3 -c 'import json;print(json.load(open("/tmp/offline.json"))["helper_ip"])')"
+          ready=0
+          for i in $(seq 1 120); do
+            if ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -i /tmp/offlinekey "ubuntu@$helper_ip" 'echo ok' >/dev/null 2>&1; then
+              ready=1
+              break
+            fi
+            sleep 5
+          done
+          [ "$ready" = 1 ] || { echo OFFLINE_HELPER_SSH_NOT_READY=true; exit 1; }
+          pub_b64="$(base64 -w0 /tmp/offlinekey.pub)"
+          remote_output="$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            -o ServerAliveInterval=15 -o ServerAliveCountMax=20 -o TCPKeepAlive=yes \
+            -i /tmp/offlinekey "ubuntu@$helper_ip" "sudo bash -s -- '$pub_b64'" \
+            < scripts/openclaw_offline_mount_repair.sh)"
+          printf '%s\n' "$remote_output" | grep -E '^OFFLINE_REPAIR_' || true
+          printf '%s\n' "$remote_output" | grep -q '^OFFLINE_REPAIR_DISK_PATCHED=true$'
+
+      - name: Detach repaired disk, remove helper, and relaunch OpenClaw
+        run: |
+          set -euo pipefail
+          python -u scripts/oci_openclaw_offline_repair.py finish \
+            --config /tmp/oci.cfg \
+            --state-json /tmp/offline.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/offline.json'))
+          print('OFFLINE_FINISH_STATUS='+d['status'])
+          print('OPENCLAW_TARGET_STATE='+d['target_lifecycle_state'])
+          print('OPENCLAW_TARGET_PUBLIC_IP='+d['target_ip'])
+          PY
+
+      - name: Verify OpenClaw RPC and Tailscale Serve
+        run: |
+          set -euo pipefail
+          target_ip="$(python3 -c 'import json;print(json.load(open("/tmp/offline.json"))["target_ip"])')"
+          ready=0
+          for i in $(seq 1 120); do
+            if ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -i /tmp/offlinekey "ubuntu@$target_ip" 'echo ok' >/dev/null 2>&1; then
+              ready=1
+              break
+            fi
+            sleep 5
+          done
+          [ "$ready" = 1 ] || { echo OPENCLAW_REPAIRED_SSH_NOT_READY=true; exit 1; }
+          set +e
+          remote_output="$(ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+            -o ServerAliveInterval=15 -o ServerAliveCountMax=40 -o TCPKeepAlive=yes \
+            -i /tmp/offlinekey "ubuntu@$target_ip" 'sudo bash -s' \
+            < scripts/openclaw_verify_offline_repair.sh)"
+          rc=$?
+          set -e
+          printf '%s\n' "$remote_output" | grep -E '^(TAILSCALE_BACKEND_STATE|OPENCLAW_GATEWAY_RPC_OK|TAILSCALE_SERVE_ACTIVE|OPENCLAW_RECOVERY_KEY_REMOVED|OPENCLAW_VERIFY_OK|OPENCLAW_VERIFY_[A-Z_]+)=' || true
+          if [ "$rc" -ne 0 ]; then
+            printf '%s\n' "$remote_output" | sed -E '/^OPENCLAW_READY_URL=/d; s#https?://[^[:space:]]+#<REDACTED_URL>#g'
+            exit "$rc"
+          fi
+          ready_url="$(printf '%s\n' "$remote_output" | sed -n 's/^OPENCLAW_READY_URL=//p' | tail -1)"
+          [ -n "$ready_url" ]
+          cipher="$(printf '%s' "$ready_url" | python3 scripts/encrypt_openclaw_repair_result.py)"
+          echo "OPENCLAW_READY_URL_ENCRYPTED=$cipher"
+          echo OPENCLAW_OFFLINE_REPAIR_COMPLETE=true
+
+      - name: Close temporary SSH
+        if: ${{ always() }}
+        run: |
+          set +e
+          if [ -s /tmp/oci.cfg ]; then
+            sl="$OPENCLAW_SECURITY_LIST_ID"
+            if [ -s /tmp/offline.json ]; then
+              candidate="$(python3 -c 'import json;print(json.load(open("/tmp/offline.json")).get("security_list_id") or "")' 2>/dev/null)"
+              [ -z "$candidate" ] || sl="$candidate"
+            fi
+            python -u scripts/oci_openclaw_bootstrap.py --config /tmp/oci.cfg --close-ssh --security-list-id "$sl"
+          fi
+
+      - name: Cleanup
+        if: ${{ always() }}
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offlinekey /tmp/offlinekey.pub /tmp/offline.json
