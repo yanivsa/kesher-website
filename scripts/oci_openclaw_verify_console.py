@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 
 import oci
+from oci.exceptions import ServiceError
 
 SUCCESS = "OPENCLAW_OFFLINE_FINALIZE_SUCCESS=true"
 FAIL_PREFIX = "OPENCLAW_FINALIZE_FAILED="
@@ -23,6 +24,26 @@ SAFE_PREFIXES = (
 )
 
 
+def delete_history(compute, history_id: str) -> None:
+    try:
+        compute.delete_console_history(history_id)
+    except ServiceError as exc:
+        if exc.status != 404:
+            print(f"OPENCLAW_CONSOLE_HISTORY_DELETE_WARN={exc.status}", flush=True)
+
+
+def purge_histories(compute, compartment_id: str, instance_id: str) -> None:
+    rows = compute.list_console_histories(
+        compartment_id=compartment_id,
+        instance_id=instance_id,
+        limit=50,
+    ).data
+    for row in rows:
+        delete_history(compute, row.id)
+    if rows:
+        print(f"OPENCLAW_CONSOLE_HISTORIES_PURGED={len(rows)}", flush=True)
+
+
 def capture_text(compute, instance_id: str) -> str:
     hist = compute.capture_console_history(
         oci.core.models.CaptureConsoleHistoryDetails(
@@ -30,34 +51,39 @@ def capture_text(compute, instance_id: str) -> str:
             display_name="openclaw-final-verification",
         )
     ).data
-    for _ in range(36):
-        obj = compute.get_console_history(hist.id).data
-        if obj.lifecycle_state == "SUCCEEDED":
-            break
-        if obj.lifecycle_state == "FAILED":
-            raise RuntimeError("OPENCLAW_CONSOLE_CAPTURE_FAILED")
-        time.sleep(2)
-    else:
-        raise TimeoutError("OPENCLAW_CONSOLE_CAPTURE_TIMEOUT")
+    try:
+        for _ in range(36):
+            obj = compute.get_console_history(hist.id).data
+            if obj.lifecycle_state == "SUCCEEDED":
+                break
+            if obj.lifecycle_state == "FAILED":
+                raise RuntimeError("OPENCLAW_CONSOLE_CAPTURE_FAILED")
+            time.sleep(2)
+        else:
+            raise TimeoutError("OPENCLAW_CONSOLE_CAPTURE_TIMEOUT")
 
-    data = compute.get_console_history_content(hist.id).data
-    if hasattr(data, "content"):
-        data = data.content
-    if hasattr(data, "read"):
-        data = data.read()
-    if isinstance(data, bytes):
-        return data.decode("utf-8", "replace")
-    return str(data)
+        data = compute.get_console_history_content(hist.id).data
+        if hasattr(data, "content"):
+            data = data.content
+        if hasattr(data, "read"):
+            data = data.read()
+        if isinstance(data, bytes):
+            return data.decode("utf-8", "replace")
+        return str(data)
+    finally:
+        delete_history(compute, hist.id)
 
 
 def safe_markers(text: str) -> list[str]:
     out: list[str] = []
     for raw in text.splitlines():
-        line = raw.strip()
-        if line.startswith(SAFE_PREFIXES):
-            # Only the known marker vocabulary is ever printed by this verifier.
-            out.append(line[-500:])
-    return out[-50:]
+        for prefix in SAFE_PREFIXES:
+            pos = raw.find(prefix)
+            if pos >= 0:
+                line = raw[pos:].strip()
+                out.append(line[-500:])
+                break
+    return list(dict.fromkeys(out))[-80:]
 
 
 def main() -> int:
@@ -80,6 +106,7 @@ def main() -> int:
     live.sort(key=lambda x: x.time_created, reverse=True)
     inst = live[0]
     print(f"OPENCLAW_CONSOLE_INSTANCE_STATE={inst.lifecycle_state}", flush=True)
+    purge_histories(compute, comp, inst.id)
 
     deadline = time.time() + args.timeout
     last_markers: list[str] = []
