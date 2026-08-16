@@ -49,6 +49,12 @@ def choose_image(compute, compartment_id):
 
 
 def main():
+    # The workflow later imports scripts.oci_openclaw_plan_b_e2 from the repo root.
+    # That module historically imports oci_openclaw_bootstrap as a top-level module.
+    # Create a runner-local compatibility shim so the encryption helper can load.
+    shim = Path(__file__).resolve().parent.parent / "oci_openclaw_bootstrap.py"
+    shim.write_text("from scripts.oci_openclaw_bootstrap import *\n")
+
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True)
     ap.add_argument("--ssh-public-key-file", required=True)
