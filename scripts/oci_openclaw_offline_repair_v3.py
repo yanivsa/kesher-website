@@ -15,7 +15,6 @@ from oci_openclaw_offline_repair_v2 import (
     SHAPE,
     ATTACH_NAME,
     NO_SSH_CIDR,
-    choose_image,
     cleanup_existing_helper,
     current_target_boot,
     wait_boot_available,
@@ -26,11 +25,28 @@ from oci_openclaw_offline_repair_v2 import (
 RUN_COMMAND_PLUGIN = "Compute Instance Run Command"
 
 
+def choose_run_command_image(compute, compartment_id: str):
+    # OCI Run Command's documented supported Linux platform images include
+    # Oracle Linux. Use a current Oracle-provided Oracle Linux image rather than
+    # relying on Ubuntu plugin availability.
+    rows = compute.list_images(
+        compartment_id=compartment_id,
+        shape=SHAPE,
+        operating_system="Oracle Linux",
+        sort_by="TIMECREATED",
+        sort_order="DESC",
+    ).data
+    rows = [x for x in rows if x.lifecycle_state == "AVAILABLE"]
+    if not rows:
+        raise RuntimeError("NO_ORACLE_LINUX_E2_IMAGE")
+    return rows[0]
+
+
 def helper_cloud_init() -> str:
     # Run Command executes as `ocarun`. Oracle documents sudo as an explicit
     # prerequisite for administrator operations, so grant only this maintenance
-    # account passwordless sudo on the disposable helper. The helper has no
-    # inbound SSH rule; its public IP exists solely for outbound OCI/GitHub HTTPS.
+    # account passwordless sudo on the disposable helper. Inbound SSH remains
+    # blocked; the public IP is for outbound OCI/GitHub HTTPS only.
     cloud_config = """#cloud-config
 write_files:
   - path: /etc/sudoers.d/101-oracle-cloud-agent-run-command
@@ -72,7 +88,13 @@ def prepare(args) -> int:
     if len(live_e2) >= 2:
         raise RuntimeError("ALWAYS_FREE_E2_LIMIT_GUARD_BEFORE_HELPER")
 
-    image = choose_image(compute, compartment_id)
+    image = choose_run_command_image(compute, compartment_id)
+    log(
+        "OFFLINE_REPAIR_HELPER_IMAGE_SELECTED",
+        os=image.operating_system,
+        version=image.operating_system_version,
+        image_id=image.id,
+    )
     helper = compute.launch_instance(
         oci.core.models.LaunchInstanceDetails(
             availability_domain=boot.availability_domain,
@@ -84,8 +106,8 @@ def prepare(args) -> int:
             ),
             create_vnic_details=oci.core.models.CreateVnicDetails(
                 subnet_id=subnet.id,
-                # The public address provides outbound HTTPS in this public
-                # subnet. Inbound SSH remains blocked by the security list.
+                # Public address provides outbound HTTPS in this public subnet.
+                # Inbound SSH remains blocked by the security list.
                 assign_public_ip=True,
                 display_name=f"{HELPER_NAME}-vnic",
             ),
@@ -135,6 +157,9 @@ def prepare(args) -> int:
         "target_availability_domain": boot.availability_domain,
         "helper_id": helper.id,
         "helper_ip": helper_ip,
+        "helper_image_id": image.id,
+        "helper_os": image.operating_system,
+        "helper_os_version": image.operating_system_version,
         "attachment_id": attach.id,
         "subnet_id": subnet.id,
         "security_list_id": sl.id,
