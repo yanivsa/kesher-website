@@ -115,14 +115,25 @@ jobs:
           print('OPENCLAW_TARGET_PUBLIC_IP='+d['target_ip'])
           PY
 
-      - name: Finalize and verify OpenClaw RPC and Tailscale Serve through OCI Run Command
+      - name: Finalize and verify OpenClaw RPC and Tailscale Serve
         run: |
           set -euo pipefail
+          set +e
           python -u scripts/oci_openclaw_finalize_run_command.py \
             --config /tmp/oci.cfg \
             --instance-name openclaw-e2-tailscale \
             --timeout 900 \
             --result-json /tmp/openclaw-ready.json
+          rc=$?
+          set -e
+          if [ "$rc" -ne 0 ]; then
+            echo OPENCLAW_TARGET_RUN_COMMAND_FALLBACK_TO_CONSOLE=true
+            python -u scripts/oci_openclaw_verify_console.py \
+              --config /tmp/oci.cfg \
+              --instance-name openclaw-e2-tailscale \
+              --timeout 900 \
+              --result-json /tmp/openclaw-ready.json
+          fi
           python3 - <<'PY'
           import json
           d=json.load(open('/tmp/openclaw-ready.json'))
