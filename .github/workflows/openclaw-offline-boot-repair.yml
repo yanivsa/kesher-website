@@ -16,6 +16,7 @@ on:
       - scripts/oci_openclaw_verify_console.py
       - scripts/openclaw_offline_mount_repair.sh
       - scripts/openclaw_offline_mount_repair_early.sh
+      - scripts/openclaw_offline_read_ready.sh
       - scripts/openclaw_verify_offline_repair.sh
       - scripts/encrypt_openclaw_repair_result.py
 
@@ -25,7 +26,7 @@ permissions:
 jobs:
   repair:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 75
     env:
       BRIDGE_NAME: yanivsa-oci-bootstrap
       OPENCLAW_SECURITY_LIST_ID: ocid1.securitylist.oc1.iad.aaaaaaaapfyvmzc532rruphk3k4ldjb66aglj2npofc5q2aof6xuoudpa4aq
@@ -119,6 +120,8 @@ jobs:
       - name: Finalize and verify OpenClaw RPC and Tailscale Serve
         run: |
           set -euo pipefail
+          ready=0
+
           set +e
           python -u scripts/oci_openclaw_finalize_run_command.py \
             --config /tmp/oci.cfg \
@@ -127,14 +130,70 @@ jobs:
             --result-json /tmp/openclaw-ready.json
           rc=$?
           set -e
-          if [ "$rc" -ne 0 ]; then
+          if [ "$rc" -eq 0 ]; then
+            ready=1
+          else
             echo OPENCLAW_TARGET_RUN_COMMAND_FALLBACK_TO_CONSOLE=true
+            set +e
             python -u scripts/oci_openclaw_verify_console.py \
               --config /tmp/oci.cfg \
               --instance-name openclaw-e2-tailscale \
               --timeout 900 \
               --result-json /tmp/openclaw-ready.json
+            console_rc=$?
+            set -e
+            if [ "$console_rc" -eq 0 ]; then
+              ready=1
+            fi
           fi
+
+          if [ "$ready" -ne 1 ]; then
+            echo OPENCLAW_LIVE_VERIFY_FALLBACK_TO_OFFLINE_MARKER=true
+            python -u scripts/oci_openclaw_offline_repair_v3.py \
+              --config /tmp/oci.cfg \
+              --result-json /tmp/offline.json
+
+            set +e
+            python -u scripts/oci_openclaw_helper_run_command.py \
+              --config /tmp/oci.cfg \
+              --state-json /tmp/offline.json \
+              --script-file scripts/openclaw_offline_read_ready.sh \
+              --timeout 600 | tee /tmp/openclaw-offline-ready.log
+            marker_rc=${PIPESTATUS[0]}
+            set -e
+
+            python -u scripts/oci_openclaw_offline_repair_v2.py finish \
+              --config /tmp/oci.cfg \
+              --state-json /tmp/offline.json
+
+            if [ "$marker_rc" -ne 0 ]; then
+              echo OPENCLAW_OFFLINE_MARKER_VERIFY_FAILED=true
+              exit "$marker_rc"
+            fi
+
+            python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          text=Path('/tmp/openclaw-offline-ready.log').read_text(errors='replace')
+          required=[
+              'OPENCLAW_GATEWAY_RPC_OK=true',
+              'TAILSCALE_SERVE_ACTIVE=true',
+              'OPENCLAW_OFFLINE_FINALIZE_SUCCESS=true',
+              'OPENCLAW_OFFLINE_VERIFY_MARKERS_OK=true',
+          ]
+          for marker in required:
+              assert marker in text, marker
+          urls=re.findall(r'^OPENCLAW_READY_URL=(https://[A-Za-z0-9._-]+/?)$', text, re.M)
+          assert urls, 'OPENCLAW_READY_URL missing from offline marker verification'
+          url=urls[-1]
+          if not url.endswith('/'):
+              url += '/'
+          dns=url.removeprefix('https://').rstrip('/')
+          Path('/tmp/openclaw-ready.json').write_text(json.dumps({'status':'ready','dns':dns,'ready_url':url}))
+          print('OPENCLAW_OFFLINE_MARKER_VERIFY_OK=true')
+          PY
+          fi
+
           python3 - <<'PY'
           import json
           d=json.load(open('/tmp/openclaw-ready.json'))
@@ -159,4 +218,4 @@ jobs:
 
       - name: Cleanup
         if: ${{ always() }}
-        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offline.json /tmp/openclaw-ready.json
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offline.json /tmp/openclaw-ready.json /tmp/openclaw-offline-ready.log
