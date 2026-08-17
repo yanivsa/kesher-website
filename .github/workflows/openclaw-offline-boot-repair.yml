@@ -9,6 +9,7 @@ on:
       - scripts/oci_openclaw_offline_repair.py
       - scripts/oci_openclaw_offline_repair_v2.py
       - scripts/oci_openclaw_offline_repair_v3.py
+      - scripts/oci_openclaw_offline_finish_v4.py
       - scripts/oci_openclaw_helper_run_command.py
       - scripts/oci_openclaw_finalize_run_command.py
       - scripts/oci_openclaw_run_command_iam.py
@@ -105,7 +106,7 @@ jobs:
       - name: Detach repaired disk, remove helper, and relaunch OpenClaw
         run: |
           set -euo pipefail
-          python -u scripts/oci_openclaw_offline_repair_v2.py finish \
+          python -u scripts/oci_openclaw_offline_finish_v4.py \
             --config /tmp/oci.cfg \
             --state-json /tmp/offline.json
           python3 - <<'PY'
@@ -114,6 +115,7 @@ jobs:
           print('OFFLINE_FINISH_STATUS='+d['status'])
           print('OPENCLAW_TARGET_STATE='+d['target_lifecycle_state'])
           print('OPENCLAW_TARGET_PUBLIC_IP='+d['target_ip'])
+          print('OPENCLAW_TARGET_BOOTSTRAP='+d.get('target_bootstrap',''))
           PY
 
       - name: Finalize and verify OpenClaw RPC and Tailscale Serve
