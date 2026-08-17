@@ -97,7 +97,7 @@ for (let i = 0; i < published.length; i++) {
 }
 
 const sitemap = fs.readFileSync(path.join(ROOT, 'public/sitemap.xml'), 'utf8');
-const noindexRoutes = new Set(['/thank-you-booked', '/thank-you-contact', '/beta3']);
+const noindexRoutes = new Set(['/thank-you-booked', '/thank-you-contact']);
 const indexableStaticRoutes = STATIC_ROUTES.filter((route) => !noindexRoutes.has(route));
 for (const route of [...indexableStaticRoutes, ...published.map(blogRoute)]) {
   const url = `https://kesher.saharoni.com${route === '/' ? '/' : route}`;
