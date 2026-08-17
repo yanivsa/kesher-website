@@ -29,10 +29,6 @@ HELPER_FAILURE_PREFIXES = (
     "OFFLINE_REPAIR_DATA_DISK_NOT_FOUND=true",
     "OFFLINE_REPAIR_TARGET_ROOT_NOT_FOUND=true",
 )
-# TEST-NET-1 is deliberately non-routable. ensure_network currently requires a
-# CIDR, but the cloud-init helper does not accept inbound SSH at all because its
-# VNIC has no public IP. This keeps the existing network helper reusable without
-# granting the GitHub runner network access to the maintenance VM.
 NO_SSH_CIDR = "192.0.2.1/32"
 
 
@@ -170,11 +166,20 @@ def helper_cloud_init(repair_script_file: str) -> str:
         + "\n"
     )
     encoded = base64.b64encode(payload.encode()).decode()
-    # OCI limits metadata + extended metadata to 32 KB. Leave headroom for any
-    # provider metadata and fail before creating a helper that cannot bootstrap.
     if len(encoded.encode()) > 28_000:
         raise RuntimeError("HELPER_CLOUD_INIT_TOO_LARGE")
     return encoded
+
+
+def target_cloud_init() -> str:
+    payload = (
+        "#!/usr/bin/env bash\n"
+        "set -Eeuo pipefail\n"
+        "exec > >(tee -a /var/log/openclaw-target-relaunch.log /dev/console) 2>&1\n"
+        "echo OPENCLAW_TARGET_CLOUD_INIT_START=true\n"
+        "/usr/local/sbin/openclaw-offline-finalize.sh\n"
+    )
+    return base64.b64encode(payload.encode()).decode()
 
 
 def capture_console_text(compute, instance_id: str) -> str:
@@ -384,6 +389,7 @@ def finish(args) -> int:
                 assign_public_ip=True,
                 display_name=f"{TARGET_NAME}-vnic",
             ),
+            metadata={"user_data": target_cloud_init()},
             freeform_tags={
                 "managed-by": "chatgpt",
                 "purpose": "openclaw-tailscale-always-free",
