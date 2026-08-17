@@ -41,9 +41,27 @@ done
 }
 echo OFFLINE_REPAIR_DATA_DISK="$target_disk"
 
+# The preserved OpenClaw boot volume may use LVM. A raw LVM physical-volume
+# partition cannot be mounted directly, which made prior recovery attempts try
+# sda3/sda2/sda1 and report TARGET_ROOT_NOT_FOUND. Activate any volume groups
+# exposed by the attached target disk before building the candidate list.
+if command -v vgscan >/dev/null 2>&1; then
+  udevadm settle 2>/dev/null || true
+  pvscan --cache >/dev/null 2>&1 || true
+  vgscan --mknodes >/dev/null 2>&1 || true
+  if vgchange -ay >/dev/null 2>&1; then
+    echo OFFLINE_REPAIR_LVM_ACTIVATED=true
+  else
+    echo OFFLINE_REPAIR_LVM_ACTIVATED=false
+  fi
+  udevadm settle 2>/dev/null || true
+else
+  echo OFFLINE_REPAIR_LVM_TOOLING_PRESENT=false
+fi
+
 mapfile -t candidates < <(
   lsblk -brnpo NAME,SIZE,TYPE "$target_disk" \
-    | awk '$3=="part" {print $1, $2}' \
+    | awk '$3=="part" || $3=="lvm" {print $1, $2}' \
     | sort -k2,2nr | awk '{print $1}'
 )
 if [ "${#candidates[@]}" -eq 0 ]; then candidates=("$target_disk"); fi
@@ -55,10 +73,7 @@ for part in "${candidates[@]}"; do
   mountpoint -q "$MNT" && umount "$MNT" || true
   if mount -o rw "$part" "$MNT" 2>/tmp/openclaw-mount.err; then
     # Identify the OS root by stable root-filesystem markers, not by Tailscale
-    # state. Earlier recovery attempts proved the authenticated disk can mount
-    # successfully while /var/lib/tailscale is temporarily absent or moved.
-    # Tailscale authentication is verified later on the relaunched target, so
-    # broadening root detection here does not weaken the final success gate.
+    # state. Tailscale authentication is validated later on the final target.
     if [ -f "$MNT/etc/os-release" ] && [ -d "$MNT/etc/systemd/system" ] && [ -d "$MNT/usr" ]; then
       root_part="$part"
       if [ -d "$MNT/var/lib/tailscale" ]; then
@@ -86,8 +101,6 @@ cat >"$MNT/usr/local/sbin/openclaw-offline-finalize.sh" <<'TARGET'
 set -Eeuo pipefail
 export HOME=/root
 export OPENCLAW_NO_PROMPT=1
-# Write safe progress markers both to disk and to OCI serial console. This lets
-# GitHub verify the final VM through OCI without opening SSH on the target.
 exec > >(tee -a /var/log/openclaw-offline-finalize.log /dev/console) 2>&1
 
 echo "OPENCLAW_FINALIZE_START=$(date -Is)"
@@ -156,8 +169,6 @@ OPENCLAW_TAILSCALE_DNS=$DNS
 OPENCLAW_TAILSCALE_IP=$TSIP
 OPENCLAW_READY_URL=https://$DNS/
 EOF
-# The DNS name is not a credential and is reachable only from the authenticated
-# tailnet. Emitting it lets the OCI-only verifier return the final URL.
 echo OPENCLAW_TAILSCALE_DNS="$DNS"
 echo OPENCLAW_READY_URL="https://$DNS/"
 echo OPENCLAW_OFFLINE_FINALIZE_SUCCESS=true
@@ -183,8 +194,6 @@ UNIT
 mkdir -p "$MNT/etc/systemd/system/multi-user.target.wants"
 ln -sfn ../openclaw-offline-finalize.service "$MNT/etc/systemd/system/multi-user.target.wants/openclaw-offline-finalize.service"
 
-# Remove any recovery key left by earlier attempts. The final VM does not need
-# public SSH at all; verification happens through OCI APIs.
 if [ -f "$MNT/home/ubuntu/.ssh/authorized_keys" ]; then
   sed -i '/ openclaw-offline-recovery$/d' "$MNT/home/ubuntu/.ssh/authorized_keys"
 fi
@@ -196,8 +205,6 @@ sync
 umount "$MNT"
 trap - EXIT
 
-# OCI Run Command must remain alive long enough to return its exit code and
-# output. The older cloud-init fallback may still use intentional poweroff.
 if [ "${OPENCLAW_REPAIR_NO_POWEROFF:-0}" = "1" ]; then
   echo OFFLINE_REPAIR_RUN_COMMAND_COMPLETE=true
   exit 0
