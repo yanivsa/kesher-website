@@ -92,6 +92,45 @@ jobs:
           print('OFFLINE_TARGET_BOOT_PRESERVED=true')
           PY
 
+      - name: Guard recovery root by authenticated Tailscale state
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/openclaw_offline_mount_repair.sh')
+          s=p.read_text()
+          old='''    # Identify the OS root by stable root-filesystem markers, not by Tailscale
+              # state. Tailscale authentication is validated later on the final target.
+              if [ -f "$MNT/etc/os-release" ] && [ -d "$MNT/etc/systemd/system" ] && [ -d "$MNT/usr" ]; then
+                root_part="$part"
+                if [ -d "$MNT/var/lib/tailscale" ]; then
+                  echo OFFLINE_REPAIR_TAILSCALE_STATE_PRESENT=true
+                else
+                  echo OFFLINE_REPAIR_TAILSCALE_STATE_PRESENT=false
+                fi
+                break
+              fi
+          '''
+          old=old.replace('              ','')
+          new='''    # Recovery must preserve the already-authenticated tailnet identity.
+              # Reject Linux roots without Tailscale state; this prevents selecting
+              # the helper root when LVM names collide with the attached boot volume.
+              if [ -f "$MNT/etc/os-release" ] && [ -d "$MNT/etc/systemd/system" ] && [ -d "$MNT/usr" ]; then
+                if [ -d "$MNT/var/lib/tailscale" ]; then
+                  root_part="$part"
+                  echo OFFLINE_REPAIR_TAILSCALE_STATE_PRESENT=true
+                  break
+                fi
+                echo OFFLINE_REPAIR_REJECT_ROOT_WITHOUT_TAILSCALE_STATE="$part"
+              fi
+          '''
+          new=new.replace('              ','')
+          if old not in s:
+              raise SystemExit('OPENCLAW_ROOT_GUARD_PATCH_CONTEXT_NOT_FOUND')
+          p.write_text(s.replace(old,new,1))
+          print('OPENCLAW_ROOT_GUARD_PATCHED=true')
+          PY
+
       - name: Patch authenticated boot disk through OCI Run Command
         run: |
           set -euo pipefail
