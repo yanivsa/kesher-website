@@ -59,9 +59,22 @@ else
   echo OFFLINE_REPAIR_LVM_TOOLING_PRESENT=false
 fi
 
+# Build candidates from the whole block-device graph, but only keep devices
+# whose reverse dependency chain contains the attached target disk. This is
+# critical when the helper and target both use an LVM volume named
+# /dev/mapper/ocivolume-root: the helper LV must never be mistaken for the
+# preserved OpenClaw root filesystem.
 mapfile -t candidates < <(
-  lsblk -brnpo NAME,SIZE,TYPE "$target_disk" \
-    | awk '$3=="part" || $3=="lvm" {print $1, $2}' \
+  while read -r dev size typ; do
+    case "$typ" in
+      part|lvm) ;;
+      *) continue ;;
+    esac
+    [ "$dev" = "$root_src" ] && continue
+    if lsblk -srnpo NAME "$dev" 2>/dev/null | grep -Fxq "$target_disk"; then
+      printf '%s %s\n' "$dev" "$size"
+    fi
+  done < <(lsblk -brnpo NAME,SIZE,TYPE) \
     | sort -k2,2nr | awk '{print $1}'
 )
 if [ "${#candidates[@]}" -eq 0 ]; then candidates=("$target_disk"); fi
