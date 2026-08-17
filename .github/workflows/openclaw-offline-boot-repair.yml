@@ -15,6 +15,7 @@ on:
       - scripts/oci_openclaw_wait_helper_console.py
       - scripts/oci_openclaw_verify_console.py
       - scripts/openclaw_offline_mount_repair.sh
+      - scripts/openclaw_offline_mount_repair_early.sh
       - scripts/openclaw_verify_offline_repair.sh
       - scripts/encrypt_openclaw_repair_result.py
 
@@ -98,7 +99,7 @@ jobs:
           python -u scripts/oci_openclaw_helper_run_command.py \
             --config /tmp/oci.cfg \
             --state-json /tmp/offline.json \
-            --script-file scripts/openclaw_offline_mount_repair.sh \
+            --script-file scripts/openclaw_offline_mount_repair_early.sh \
             --timeout 600
 
       - name: Detach repaired disk, remove helper, and relaunch OpenClaw
