@@ -19,8 +19,11 @@ repair_exit() {
 trap repair_exit EXIT
 
 root_src="$(findmnt -n -o SOURCE /)"
-root_parent="$(lsblk -no PKNAME "$root_src" 2>/dev/null | head -1 || true)"
-if [ -n "$root_parent" ]; then root_disk="/dev/$root_parent"; else root_disk="$root_src"; fi
+# root_src is commonly an LVM LV. Walk the reverse dependency chain all the
+# way to the physical disk; a one-hop PKNAME can stop at a partition and cause
+# the helper's own boot disk to be mistaken for the attached OpenClaw disk.
+root_disk="$(lsblk -srnpo NAME,TYPE "$root_src" 2>/dev/null | awk '$2=="disk" {print $1; exit}')"
+[ -n "$root_disk" ] || root_disk="$root_src"
 printf 'OFFLINE_REPAIR_HELPER_ROOT_DISK=%s\n' "$root_disk"
 
 target_disk=""
