@@ -12,6 +12,9 @@ from pathlib import Path
 from typing import Any
 
 
+REVIEW_FRAME_COUNT = 8
+
+
 class EvidenceError(RuntimeError):
     pass
 
@@ -79,8 +82,8 @@ def prepare(state_dir: Path, output_dir: Path) -> dict[str, Any]:
 
     frame_paths = item.get("frame_paths") or []
     frame_hashes = item.get("frame_sha256") or {}
-    if len(frame_paths) != 4 or set(frame_paths) != set(frame_hashes):
-        raise EvidenceError("Exactly four identified frames are required")
+    if len(frame_paths) != REVIEW_FRAME_COUNT or set(frame_paths) != set(frame_hashes):
+        raise EvidenceError(f"Exactly {REVIEW_FRAME_COUNT} identified frames are required")
     for relative in frame_paths:
         copy_verified(state_dir, output_dir, relative, frame_hashes[relative])
 

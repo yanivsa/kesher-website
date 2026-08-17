@@ -51,6 +51,7 @@ DISPLAY_URL = "kesher.saharoni.com"
 STATE_VERSION = 1
 POLL_INTERVAL_SECONDS = 30
 ALLOWED_REVIEW = {"approved", "rejected"}
+REVIEW_FRAME_COUNT = 8
 
 
 class PipelineError(RuntimeError):
@@ -336,7 +337,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
         "metadata_review_status": "pending",
         "review_notes": {
             "technical": "",
-            "visual": "ממתין לבדיקת ארבעת הפריימים בפועל",
+            "visual": "ממתין לבדיקת שמונת הפריימים בפועל",
             "semantic": "ממתין להשוואת הווידאו והמקור למטא־דאטה",
             "metadata": "ממתין לאימות עברית ותמיכה מלאה במקור",
         },
@@ -563,7 +564,8 @@ def create_contact_sheet(video_path: Path, item: dict[str, Any], duration: float
     suffix = "-remotion" if item.get("visual_pipeline") == "remotion-v1-notebooklm-audio" else ""
     frame_dir = STATE_DIR / f"{item['id']}{suffix}-frames"
     frame_dir.mkdir(parents=True, exist_ok=True)
-    timestamps = [duration * fraction for fraction in (0.08, 0.35, 0.65, 0.92)]
+    fractions = (0.05, 0.18, 0.31, 0.44, 0.57, 0.70, 0.83, 0.95)
+    timestamps = [duration * fraction for fraction in fractions]
     frames: list[Path] = []
     for index, timestamp in enumerate(timestamps, start=1):
         frame = frame_dir / f"frame-{index}.png"
@@ -576,10 +578,15 @@ def create_contact_sheet(video_path: Path, item: dict[str, Any], duration: float
             raise PipelineError(f"Frame extraction failed for frame {index}")
         frames.append(frame)
     sheet = STATE_DIR / f"{item['id']}{suffix}-visual-review.png"
+    filter_complex = (
+        "[0:v][1:v][2:v][3:v]hstack=inputs=4[top];"
+        "[4:v][5:v][6:v][7:v]hstack=inputs=4[bottom];"
+        "[top][bottom]vstack=inputs=2[out]"
+    )
     command = [
         "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
         *sum((["-i", str(frame)] for frame in frames), []),
-        "-filter_complex", "[0:v][1:v]hstack=inputs=2[top];[2:v][3:v]hstack=inputs=2[bottom];[top][bottom]vstack=inputs=2[out]",
+        "-filter_complex", filter_complex,
         "-map", "[out]", "-frames:v", "1", str(sheet),
     ]
     result = subprocess.run(command, capture_output=True, text=True, timeout=180, check=False)
@@ -606,8 +613,8 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
             ).glob("frame-*.png")
         )
     ]
-    if len(item["frame_paths"]) != 4:
-        raise PipelineError("Exactly four review frames are required")
+    if len(item["frame_paths"]) != REVIEW_FRAME_COUNT:
+        raise PipelineError(f"Exactly {REVIEW_FRAME_COUNT} review frames are required")
     item["frame_sha256"] = {
         relative: sha256_file(STATE_DIR / relative) for relative in item["frame_paths"]
     }
@@ -848,8 +855,8 @@ def update_review(args: argparse.Namespace) -> int:
         raise PipelineError("Transcript evidence hash mismatch")
     if not source_path.is_file() or sha256_file(source_path) != item.get("source_file_sha256"):
         raise PipelineError("Source evidence hash mismatch")
-    if len(frame_paths) != 4 or any(not path.is_file() for path in frame_paths):
-        raise PipelineError("Four frame evidence files are required")
+    if len(frame_paths) != REVIEW_FRAME_COUNT or any(not path.is_file() for path in frame_paths):
+        raise PipelineError(f"Exactly {REVIEW_FRAME_COUNT} frame evidence files are required")
     for relative, expected in (item.get("frame_sha256") or {}).items():
         if sha256_file(STATE_DIR / relative) != expected:
             raise PipelineError("Frame evidence hash mismatch")
