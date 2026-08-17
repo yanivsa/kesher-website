@@ -101,8 +101,10 @@ cat >"$MNT/usr/local/sbin/openclaw-offline-finalize.sh" <<'TARGET'
 set -Eeuo pipefail
 export HOME=/root
 export OPENCLAW_NO_PROMPT=1
-exec > >(tee -a /var/log/openclaw-offline-finalize.log /dev/console) 2>&1
 
+# systemd owns logging via StandardOutput/StandardError=journal+console.
+# Avoid a second tee to /dev/console here: during early boot that device can
+# transiently be unavailable and terminate the script before its first marker.
 echo "OPENCLAW_FINALIZE_START=$(date -Is)"
 command -v tailscale >/dev/null 2>&1 || { echo OPENCLAW_FINALIZE_FAILED=TAILSCALE_BINARY_MISSING; exit 19; }
 if ! systemctl enable --now tailscaled.service; then
