@@ -72,16 +72,18 @@ for part in "${candidates[@]}"; do
   printf 'OFFLINE_REPAIR_TRY_PART=%s\n' "$part"
   mountpoint -q "$MNT" && umount "$MNT" || true
   if mount -o rw "$part" "$MNT" 2>/tmp/openclaw-mount.err; then
-    # Identify the OS root by stable root-filesystem markers, not by Tailscale
-    # state. Tailscale authentication is validated later on the final target.
+    # The authenticated OpenClaw root must contain both stable OS-root markers
+    # and the preserved Tailscale state. Requiring the tailstate prevents a
+    # duplicate helper LVM (for example /dev/mapper/ocivolume-root) from being
+    # mistaken for the attached OpenClaw boot volume.
     if [ -f "$MNT/etc/os-release" ] && [ -d "$MNT/etc/systemd/system" ] && [ -d "$MNT/usr" ]; then
-      root_part="$part"
       if [ -d "$MNT/var/lib/tailscale" ]; then
         echo OFFLINE_REPAIR_TAILSCALE_STATE_PRESENT=true
-      else
-        echo OFFLINE_REPAIR_TAILSCALE_STATE_PRESENT=false
+        root_part="$part"
+        break
       fi
-      break
+      echo OFFLINE_REPAIR_TAILSCALE_STATE_PRESENT=false
+      echo OFFLINE_REPAIR_REJECT_NON_TAILSCALE_ROOT="$part"
     fi
     umount "$MNT"
   fi
