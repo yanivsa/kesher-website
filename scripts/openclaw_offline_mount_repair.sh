@@ -197,8 +197,10 @@ chmod 755 "$MNT/usr/local/sbin/openclaw-offline-finalize.sh"
 cat >"$MNT/etc/systemd/system/openclaw-offline-finalize.service" <<'UNIT'
 [Unit]
 Description=Finalize OpenClaw securely on the authenticated Tailscale tailnet
-After=network-online.target
-Wants=network-online.target
+# Do not wait for network-online.target here. On recovered OCI boots that target
+# can remain pending while cloud-init/network wait services settle. The finalizer
+# starts tailscaled itself and has its own bounded readiness loops.
+After=local-fs.target
 
 [Service]
 Type=oneshot
