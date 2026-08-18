@@ -1,0 +1,93 @@
+name: YouTube OAuth diagnostic
+
+on:
+  push:
+    branches:
+      - fix/youtube-oauth-diagnostic
+    paths:
+      - .github/workflows/youtube-oauth-diagnostic.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Diagnose YouTube OAuth safely
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          EXPECTED_CHANNEL_ID: UCx5fEFvdVf28HLAR2dFW64Q
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import sys
+          import urllib.parse
+          import urllib.request
+          import urllib.error
+
+          required = ["YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN"]
+          missing = [k for k in required if not os.environ.get(k, "").strip()]
+          if missing:
+              print("DIAGNOSIS missing_secret=" + ",".join(missing))
+              raise SystemExit(2)
+
+          data = urllib.parse.urlencode({
+              "client_id": os.environ["YOUTUBE_CLIENT_ID"],
+              "client_secret": os.environ["YOUTUBE_CLIENT_SECRET"],
+              "refresh_token": os.environ["YOUTUBE_REFRESH_TOKEN"],
+              "grant_type": "refresh_token",
+          }).encode()
+          req = urllib.request.Request("https://oauth2.googleapis.com/token", data=data, method="POST")
+          try:
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  payload = json.loads(resp.read().decode())
+          except urllib.error.HTTPError as exc:
+              raw = exc.read().decode(errors="replace")
+              try:
+                  payload = json.loads(raw)
+              except Exception:
+                  payload = {}
+              err = str(payload.get("error") or "unknown_error")[:120]
+              desc = str(payload.get("error_description") or "")[:240].replace("\n", " ")
+              print(f"DIAGNOSIS token_refresh_failed http={exc.code} error={err} description={desc}")
+              raise SystemExit(3)
+
+          token = payload.get("access_token")
+          if not token:
+              print("DIAGNOSIS token_refresh_failed http=200 error=missing_access_token")
+              raise SystemExit(4)
+
+          req = urllib.request.Request(
+              "https://www.googleapis.com/youtube/v3/channels?part=id&mine=true",
+              headers={"Authorization": "Bearer " + token},
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  channel_payload = json.loads(resp.read().decode())
+          except urllib.error.HTTPError as exc:
+              raw = exc.read().decode(errors="replace")
+              try:
+                  payload = json.loads(raw)
+              except Exception:
+                  payload = {}
+              reason = ""
+              try:
+                  reason = payload["error"]["errors"][0]["reason"]
+              except Exception:
+                  pass
+              print(f"DIAGNOSIS channel_check_failed http={exc.code} reason={reason}")
+              raise SystemExit(5)
+
+          ids = [x.get("id") for x in channel_payload.get("items", [])]
+          expected = os.environ["EXPECTED_CHANNEL_ID"]
+          if ids != [expected]:
+              print("DIAGNOSIS channel_mismatch count=%d expected_match=false" % len(ids))
+              raise SystemExit(6)
+
+          print("DIAGNOSIS success token_refresh=true channel_match=true")
+          PY
