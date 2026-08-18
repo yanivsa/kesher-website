@@ -1,9 +1,10 @@
 {
-  "updated_at": "2026-08-18T20:45:52.931933+00:00",
-  "stage": "video_running",
-  "ok": true,
+  "updated_at": "2026-08-18T20:50:26.451580+00:00",
+  "stage": "video_completed",
+  "ok": false,
   "article_url": "https://kesher.saharoni.com/blog/gifted-children-perfectionism-tears",
   "video_action": "dispatched",
   "video_run_id": 32184076656,
-  "video_run_url": "https://github.com/yanivsa/kesher-website/actions/runs/32184076656"
+  "video_run_url": "https://github.com/yanivsa/kesher-website/actions/runs/32184076656",
+  "video_conclusion": "failure"
 }
