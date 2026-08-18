@@ -113,7 +113,10 @@ jobs:
           archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive"
           unzip -oq "$archive" -d "$KESHER_STATE_DIR"
-          test -s "$KESHER_STATE_DIR/state.json"
+          if [ ! -s "$KESHER_STATE_DIR/state.json" ]; then
+            echo "Newest artifact ${artifact_id} has no state.json; retaining any encrypted NotebookLM credentials and starting with a fresh pipeline state."
+            exit 0
+          fi
           python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
           echo "Restored state artifact ${artifact_id}."
 
@@ -405,6 +408,10 @@ jobs:
           CURRENT_STATE_ARTIFACT_ID: ${{ steps.persist_state.outputs.artifact-id }}
         run: |
           set -euo pipefail
+          if [ ! -s "$KESHER_STATE_DIR/state.json" ]; then
+            echo "Current artifact has no state.json; keeping older durable state artifacts."
+            exit 0
+          fi
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
             --jq '.artifacts[] | select(.expired == false) | .id' \
             | while read -r artifact_id; do
