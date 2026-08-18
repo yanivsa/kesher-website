@@ -6,6 +6,9 @@ on:
       - fix/youtube-oauth-diagnostic
     paths:
       - .github/workflows/youtube-oauth-diagnostic.yml
+  pull_request:
+    paths:
+      - .github/workflows/youtube-oauth-diagnostic.yml
   workflow_dispatch:
 
 permissions:
@@ -25,7 +28,6 @@ jobs:
           python - <<'PY'
           import json
           import os
-          import sys
           import urllib.parse
           import urllib.request
           import urllib.error
