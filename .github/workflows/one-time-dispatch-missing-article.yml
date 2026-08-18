@@ -1,4 +1,4 @@
-name: One-time recover missing Kesher article then video
+name: One-time resume Kesher article then video
 
 on:
   push:
@@ -9,18 +9,19 @@ on:
 
 permissions:
   actions: write
-  contents: read
-  pull-requests: read
+  contents: write
 
 jobs:
   recover:
     runs-on: ubuntu-latest
-    timeout-minutes: 270
+    timeout-minutes: 190
     steps:
-      - name: Recover one article, verify it is live, then dispatch video
+      - name: Verify merged article is public, then resume one video run
         env:
           GH_TOKEN: ${{ github.token }}
           BASELINE_SLUG: gifted-adhd-executive-functions-struggle
+          STATUS_BRANCH: ops/run-missing-article-20260818
+          STATUS_PATH: .ops/kesher-content-recovery-status.json
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -35,164 +36,113 @@ jobs:
 
           repo = os.environ["GITHUB_REPOSITORY"]
           token = os.environ["GH_TOKEN"]
-          baseline_slug = os.environ["BASELINE_SLUG"]
+          baseline = os.environ["BASELINE_SLUG"]
+          branch = os.environ["STATUS_BRANCH"]
+          status_path = os.environ["STATUS_PATH"]
           api = f"https://api.github.com/repos/{repo}"
-          started = dt.datetime.now(dt.UTC)
-          lookback = started - dt.timedelta(minutes=20)
 
           def call(method, path, body=None, timeout=45):
-              data = None if body is None else json.dumps(body).encode("utf-8")
+              data = None if body is None else json.dumps(body).encode()
               headers = {
                   "Authorization": f"Bearer {token}",
                   "Accept": "application/vnd.github+json",
                   "X-GitHub-Api-Version": "2022-11-28",
-                  "User-Agent": "kesher-one-time-recovery",
+                  "User-Agent": "kesher-unified-recovery",
               }
               if body is not None:
                   headers["Content-Type"] = "application/json"
-              req = urllib.request.Request(f"{api}{path}", data=data, headers=headers, method=method)
-              with urllib.request.urlopen(req, timeout=timeout) as response:
-                  raw = response.read()
+              req = urllib.request.Request(api + path, data=data, headers=headers, method=method)
+              with urllib.request.urlopen(req, timeout=timeout) as r:
+                  raw = r.read()
                   return json.loads(raw) if raw else {}
+
+          def write_status(payload):
+              payload = {"updated_at": dt.datetime.now(dt.UTC).isoformat(), **payload}
+              encoded = base64.b64encode((json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode()).decode()
+              query = urllib.parse.urlencode({"ref": branch})
+              sha = None
+              try:
+                  current = call("GET", f"/contents/{status_path}?{query}")
+                  sha = current.get("sha")
+              except urllib.error.HTTPError as exc:
+                  if exc.code != 404:
+                      raise
+              body = {"message": "Update Kesher unified recovery status", "content": encoded, "branch": branch}
+              if sha:
+                  body["sha"] = sha
+              call("PUT", f"/contents/{status_path}", body)
+
+          posts_file = call("GET", "/contents/src/data/posts.json?ref=main")
+          posts = json.loads(base64.b64decode(posts_file["content"]).decode())
+          if not posts:
+              raise SystemExit("posts.json is empty")
+          latest = posts[0]
+          slug = latest.get("slug")
+          title = latest.get("title")
+          if not slug or slug == baseline:
+              write_status({"stage": "article", "ok": False, "reason": "latest article did not advance", "slug": slug})
+              raise SystemExit("Latest article did not advance beyond baseline")
+
+          public_url = f"https://kesher.saharoni.com/blog/{slug}"
+          write_status({"stage": "article_live_check", "ok": False, "slug": slug, "title": title, "article_url": public_url})
+          live = False
+          last_error = ""
+          deadline = time.monotonic() + 15 * 60
+          while time.monotonic() < deadline:
+              try:
+                  req = urllib.request.Request(public_url, headers={"User-Agent": "KesherRecovery/2.0"})
+                  with urllib.request.urlopen(req, timeout=30) as response:
+                      html = response.read().decode("utf-8", errors="replace")
+                      if response.status == 200 and (title in html or slug in html):
+                          live = True
+                          break
+                      last_error = f"http={response.status} title_match={title in html} slug_match={slug in html}"
+              except Exception as exc:
+                  last_error = f"{type(exc).__name__}: {exc}"[:500]
+              time.sleep(20)
+          if not live:
+              write_status({"stage": "article_live_check", "ok": False, "slug": slug, "title": title, "article_url": public_url, "reason": last_error})
+              raise SystemExit("Merged article did not become publicly verifiable")
+
+          write_status({"stage": "article_live", "ok": True, "slug": slug, "title": title, "article_url": public_url})
 
           def parse_time(value):
               return dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
 
-          def recent_runs(workflow, since):
-              query = urllib.parse.urlencode({
-                  "event": "workflow_dispatch",
-                  "branch": "main",
-                  "per_page": "30",
-              })
-              data = call("GET", f"/actions/workflows/{workflow}/runs?{query}")
-              runs = [r for r in data.get("workflow_runs", []) if parse_time(r["created_at"]) >= since]
-              runs.sort(key=lambda r: parse_time(r["created_at"]), reverse=True)
-              return runs
-
-          # A previous tiny dispatcher may have fired seconds before this controller.
-          # Reuse that article run if it exists, otherwise dispatch exactly one now.
-          article_runs = recent_runs("jules-weekday-article.yml", lookback)
-          active_or_recent = [
-              r for r in article_runs
-              if r.get("status") in {"queued", "in_progress", "waiting", "pending", "requested"}
-              or (r.get("status") == "completed" and r.get("conclusion") == "success")
-          ]
-          if active_or_recent:
-              article_run = active_or_recent[0]
-              print(f"ARTICLE_RUN_REUSED id={article_run['id']} url={article_run['html_url']}", flush=True)
+          query = urllib.parse.urlencode({"event": "workflow_dispatch", "branch": "main", "per_page": "30"})
+          runs = call("GET", f"/actions/workflows/kesher-daily-video.yml/runs?{query}").get("workflow_runs", [])
+          active = [r for r in runs if r.get("status") in {"queued", "in_progress", "waiting", "pending", "requested"}]
+          if active:
+              video_run = sorted(active, key=lambda r: parse_time(r["created_at"]), reverse=True)[0]
+              action = "reused"
           else:
-              call("POST", "/actions/workflows/jules-weekday-article.yml/dispatches", {"ref": "main"})
-              print("ARTICLE_WORKFLOW_DISPATCHED ref=main", flush=True)
-              article_run = None
-              for _ in range(24):
-                  time.sleep(5)
-                  candidates = recent_runs("jules-weekday-article.yml", started - dt.timedelta(minutes=1))
-                  if candidates:
-                      article_run = candidates[0]
-                      break
-              if not article_run:
-                  raise SystemExit("Article workflow dispatch was accepted but no run appeared")
-              print(f"ARTICLE_RUN_STARTED id={article_run['id']} url={article_run['html_url']}", flush=True)
-
-          article_run_id = article_run["id"]
-          article_deadline = time.monotonic() + 175 * 60
-          while True:
-              run = call("GET", f"/actions/runs/{article_run_id}")
-              print(f"ARTICLE_RUN_STATE status={run.get('status')} conclusion={run.get('conclusion')}", flush=True)
-              if run.get("status") == "completed":
-                  if run.get("conclusion") != "success":
-                      raise SystemExit(f"Article workflow failed: {run.get('conclusion')}")
-                  break
-              if time.monotonic() >= article_deadline:
-                  raise SystemExit("Timed out waiting for article workflow")
-              time.sleep(20)
-
-          def find_new_article_pr():
-              pulls = call("GET", "/pulls?state=all&sort=created&direction=desc&per_page=50")
-              matches = []
-              for pr in pulls:
-                  if not str(pr.get("title") or "").startswith("Publish Kesher article:"):
-                      continue
-                  created = parse_time(pr["created_at"])
-                  if created >= lookback:
-                      matches.append(pr)
-              matches.sort(key=lambda pr: parse_time(pr["created_at"]), reverse=True)
-              return matches[0] if matches else None
-
-          article_pr = None
-          for _ in range(40):
-              article_pr = find_new_article_pr()
-              if article_pr:
-                  break
-              time.sleep(15)
-          if not article_pr:
-              raise SystemExit("Article workflow succeeded but no fresh article PR was found")
-
-          number = article_pr["number"]
-          print(f"ARTICLE_PR_FOUND number={number} url={article_pr['html_url']}", flush=True)
-          merge_deadline = time.monotonic() + 75 * 60
-          while True:
-              pr = call("GET", f"/pulls/{number}")
-              if pr.get("merged_at"):
-                  print(f"ARTICLE_PR_MERGED number={number} merged_at={pr['merged_at']}", flush=True)
-                  break
-              if pr.get("state") == "closed":
-                  raise SystemExit(f"Article PR #{number} closed without merge")
-              if time.monotonic() >= merge_deadline:
-                  raise SystemExit(f"Timed out waiting for article PR #{number} to merge")
-              time.sleep(20)
-
-          # Confirm main really contains a new article rather than trusting PR state alone.
-          posts_file = call("GET", "/contents/src/data/posts.json?ref=main")
-          posts = json.loads(base64.b64decode(posts_file["content"]).decode("utf-8"))
-          if not posts or posts[0].get("slug") == baseline_slug:
-              raise SystemExit("Article PR merged but main still has the old latest article")
-          latest = posts[0]
-          slug = latest["slug"]
-          title = latest["title"]
-          print(f"ARTICLE_ON_MAIN slug={slug} date={latest.get('date')} title={title}", flush=True)
-
-          # Wait for the deployed page, not merely the Git commit.
-          public_url = f"https://kesher.saharoni.com/blog/{slug}"
-          live_deadline = time.monotonic() + 25 * 60
-          while True:
-              try:
-                  req = urllib.request.Request(public_url, headers={"User-Agent": "KesherRecovery/1.0"})
-                  with urllib.request.urlopen(req, timeout=30) as response:
-                      html = response.read().decode("utf-8", errors="replace")
-                      if response.status == 200 and (title in html or slug in html):
-                          print(f"ARTICLE_LIVE url={public_url}", flush=True)
-                          break
-              except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
-                  pass
-              if time.monotonic() >= live_deadline:
-                  raise SystemExit(f"Article merged but did not become live in time: {public_url}")
-              time.sleep(20)
-
-          # Only now start the NotebookLM/Remotion video flow on current main.
-          video_dispatch_time = dt.datetime.now(dt.UTC)
-          existing_video = [
-              r for r in recent_runs("kesher-daily-video.yml", video_dispatch_time - dt.timedelta(minutes=5))
-              if r.get("status") in {"queued", "in_progress", "waiting", "pending", "requested"}
-          ]
-          if existing_video:
-              video_run = existing_video[0]
-              print(f"VIDEO_RUN_REUSED id={video_run['id']} url={video_run['html_url']}", flush=True)
-          else:
-              call("POST", "/actions/workflows/kesher-daily-video.yml/dispatches", {
-                  "ref": "main",
-                  "inputs": {"operation": "full"},
-              })
+              dispatch_time = dt.datetime.now(dt.UTC)
+              call("POST", "/actions/workflows/kesher-daily-video.yml/dispatches", {"ref": "main", "inputs": {"operation": "full"}})
               video_run = None
-              for _ in range(24):
-                  time.sleep(5)
-                  candidates = recent_runs("kesher-daily-video.yml", video_dispatch_time - dt.timedelta(minutes=1))
-                  if candidates:
-                      video_run = candidates[0]
+              for _ in range(30):
+                  time.sleep(4)
+                  runs = call("GET", f"/actions/workflows/kesher-daily-video.yml/runs?{query}").get("workflow_runs", [])
+                  fresh = [r for r in runs if parse_time(r["created_at"]) >= dispatch_time - dt.timedelta(seconds=15)]
+                  if fresh:
+                      video_run = sorted(fresh, key=lambda r: parse_time(r["created_at"]), reverse=True)[0]
                       break
               if not video_run:
-                  raise SystemExit("Video workflow dispatch was accepted but no run appeared")
-              print(f"VIDEO_RUN_STARTED id={video_run['id']} url={video_run['html_url']}", flush=True)
+                  write_status({"stage": "video_dispatch", "ok": False, "article_url": public_url, "reason": "dispatch accepted but run not found"})
+                  raise SystemExit("Video dispatch accepted but run not found")
+              action = "dispatched"
 
-          print("RECOVERY_CHAIN_HANDOFF_COMPLETE article_live=true video_started=true", flush=True)
+          run_id = video_run["id"]
+          run_url = video_run["html_url"]
+          write_status({"stage": "video_running", "ok": True, "article_url": public_url, "video_action": action, "video_run_id": run_id, "video_run_url": run_url})
+
+          deadline = time.monotonic() + 165 * 60
+          while True:
+              run = call("GET", f"/actions/runs/{run_id}")
+              if run.get("status") == "completed":
+                  conclusion = run.get("conclusion")
+                  write_status({"stage": "video_completed", "ok": conclusion == "success", "article_url": public_url, "video_action": action, "video_run_id": run_id, "video_run_url": run_url, "video_conclusion": conclusion})
+                  if conclusion != "success":
+                      raise SystemExit(f"Video workflow completed with {conclusion}")
+                  break
+              time.sleep(30)
           PY
