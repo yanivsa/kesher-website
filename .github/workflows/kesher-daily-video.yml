@@ -97,28 +97,64 @@ jobs:
           ffmpeg -version | head -1
           ffprobe -version | head -1
 
-      - name: Restore newest durable pipeline state
+      - name: Restore newest valid durable pipeline state
         if: ${{ github.event_name == 'schedule' || inputs.operation != 'preflight' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p "$KESHER_STATE_DIR"
-          artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
-            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].id // empty')"
-          if [ -z "$artifact_id" ]; then
+
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/artifacts.txt || true
+
+          if [ ! -s /tmp/artifacts.txt ]; then
             echo "No previous state artifact exists; starting with an empty state."
             exit 0
+          else
+            restored="false"
+            while read -r artifact_id; do
+              echo "Attempting to restore state artifact ${artifact_id}..."
+              archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
+
+              if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
+                echo "Failed to download artifact ${artifact_id}; skipping."
+                rm -f "$archive"
+                continue
+              fi
+
+              temp_extract="$(mktemp -d)"
+              if ! unzip -oq "$archive" -d "$temp_extract" 2>/dev/null; then
+                echo "Failed to unzip artifact ${artifact_id}; skipping."
+                rm -f "$archive"
+                rm -rf "$temp_extract"
+                continue
+              fi
+
+              if [ -s "$temp_extract/state.json" ] && python -c 'import json, sys; json.load(sys.stdin)' < "$temp_extract/state.json" 2>/dev/null; then
+                echo "Found valid state.json in artifact ${artifact_id}."
+                cp -r "$temp_extract/"* "$KESHER_STATE_DIR/" || true
+                rm -f "$archive"
+                rm -rf "$temp_extract"
+                python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
+                echo "Restored valid state artifact ${artifact_id}."
+                restored="true"
+                break
+              fi
+
+              echo "Artifact ${artifact_id} is missing or has invalid state.json; skipping."
+              if [ -s "$temp_extract/notebooklm-storage-state.json.enc" ]; then
+                cp "$temp_extract/notebooklm-storage-state.json.enc" "$KESHER_STATE_DIR/" || true
+              fi
+
+              rm -f "$archive"
+              rm -rf "$temp_extract"
+            done < /tmp/artifacts.txt
+
+            if [ "$restored" != "true" ]; then
+              echo "No valid state.json found in any unexpired artifact; starting with a fresh pipeline state."
+            fi
           fi
-          archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
-          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive"
-          unzip -oq "$archive" -d "$KESHER_STATE_DIR"
-          if [ ! -s "$KESHER_STATE_DIR/state.json" ]; then
-            echo "Newest artifact ${artifact_id} has no state.json; retaining any encrypted NotebookLM credentials and starting with a fresh pipeline state."
-            exit 0
-          fi
-          python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
-          echo "Restored state artifact ${artifact_id}."
 
       - name: Seed an exact orphaned-task recovery state
         if: ${{ github.event_name != 'pull_request' && (github.event_name == 'schedule' || inputs.operation == 'full' || inputs.operation == 'generate') }}
@@ -390,7 +426,7 @@ jobs:
           echo "Persisted refreshed NotebookLM credentials as encrypted state."
 
       - name: Persist latest state and media evidence
-        if: ${{ always() && hashFiles('.kesher-video-state/**') != '' }}
+        if: ${{ always() && hashFiles('.kesher-video-state/state.json') != '' }}
         id: persist_state
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

@@ -843,5 +843,175 @@ class PipelineTestCase(unittest.TestCase):
             self.assertNotIn(removed, prompt)
 
 
+
+    def test_workflow_restore_skips_invalid_state_and_restores_valid_older(self) -> None:
+        import subprocess
+        import tempfile
+        import json
+        import os
+        from pathlib import Path
+
+        workflow_path = Path(".github/workflows/kesher-daily-video.yml")
+        workflow = workflow_path.read_text(encoding="utf-8")
+
+        start_idx = workflow.find("- name: Restore newest valid durable pipeline state")
+        self.assertNotEqual(start_idx, -1)
+        run_idx = workflow.find("run: |", start_idx)
+        self.assertNotEqual(run_idx, -1)
+        end_idx = workflow.find("- name: Seed an exact orphaned-task recovery state", run_idx)
+
+        script = workflow[run_idx + 6:end_idx].strip()
+        lines = script.split("\n")
+        indent = len(lines[0]) - len(lines[0].lstrip())
+        script = "\n".join(line[indent:] if line.startswith(" " * indent) else line for line in lines)
+
+        with tempfile.TemporaryDirectory() as td:
+            td_path = Path(td)
+
+            mock_bin = td_path / "bin"
+            mock_bin.mkdir()
+
+            gh_mock = mock_bin / "gh"
+            gh_mock.write_text('''#!/usr/bin/env bash
+if [[ "$*" == *"actions/artifacts?name=kesher-video-state"* ]]; then
+    echo '[{"id": 3, "created_at": "2023-10-03"}, {"id": 2, "created_at": "2023-10-02"}, {"id": 1, "created_at": "2023-10-01"}]' | jq '[.[] | select(.expired != true)] | sort_by(.created_at) | reverse | .[].id'
+    exit_cmd=exit
+    $exit_cmd 0
+fi
+
+if [[ "$*" == *"actions/artifacts/3/zip"* ]]; then
+    echo "bad zip data"
+    exit_cmd=exit
+    $exit_cmd 0
+fi
+
+if [[ "$*" == *"actions/artifacts/2/zip"* ]]; then
+    mkdir -p "$KESHER_STATE_DIR"
+    echo '{"bad_json": }' > "$KESHER_STATE_DIR/temp2.json"
+    cd "$KESHER_STATE_DIR" && zip -q -0 zip2.zip temp2.json && mv zip2.zip "$KESHER_STATE_DIR/out2.zip"
+    cat "$KESHER_STATE_DIR/out2.zip"
+    exit_cmd=exit
+    $exit_cmd 0
+fi
+
+if [[ "$*" == *"actions/artifacts/1/zip"* ]]; then
+    mkdir -p "$KESHER_STATE_DIR"
+    echo '{"valid": true}' > "$KESHER_STATE_DIR/state.json"
+    cd "$KESHER_STATE_DIR" && zip -q -0 zip1.zip state.json && mv zip1.zip "$KESHER_STATE_DIR/out1.zip"
+    cat "$KESHER_STATE_DIR/out1.zip"
+    exit_cmd=exit
+    $exit_cmd 0
+fi
+
+echo "Unexpected gh call: $*" >&2
+exit_cmd=exit
+$exit_cmd 1
+''')
+            gh_mock.chmod(0o755)
+
+            python_mock = mock_bin / "python"
+            python_mock.write_text('''#!/usr/bin/env bash
+if [[ "$*" == *"--report-json"* ]]; then
+    echo "mocked report"
+    exit_cmd=exit
+    $exit_cmd 0
+fi
+exec /usr/bin/python3 "$@"
+''')
+            python_mock.chmod(0o755)
+
+            env = os.environ.copy()
+            env["PATH"] = f"{mock_bin}:{env.get('PATH', '')}"
+            env["GITHUB_REPOSITORY"] = "test/repo"
+            env["KESHER_STATE_DIR"] = str(td_path / "state")
+
+            result = subprocess.run(
+                ["bash", "-c", script],
+                env=env,
+                capture_output=True,
+                text=True
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Attempting to restore state artifact 3", result.stdout)
+            self.assertIn("Attempting to restore state artifact 2", result.stdout)
+            self.assertIn("Attempting to restore state artifact 1", result.stdout)
+            self.assertIn("Restored valid state artifact 1", result.stdout)
+
+            state_json = td_path / "state" / "state.json"
+            self.assertTrue(state_json.exists())
+            self.assertEqual(json.loads(state_json.read_text())["valid"], True)
+
+    def test_workflow_restore_starts_fresh_if_no_valid_artifact(self) -> None:
+        import subprocess
+        import tempfile
+        import json
+        import os
+        from pathlib import Path
+
+        workflow_path = Path(".github/workflows/kesher-daily-video.yml")
+        workflow = workflow_path.read_text(encoding="utf-8")
+
+        start_idx = workflow.find("- name: Restore newest valid durable pipeline state")
+        self.assertNotEqual(start_idx, -1)
+        run_idx = workflow.find("run: |", start_idx)
+        end_idx = workflow.find("- name: Seed an exact orphaned-task recovery state", run_idx)
+        script = workflow[run_idx + 6:end_idx].strip()
+        lines = script.split("\n")
+        indent = len(lines[0]) - len(lines[0].lstrip())
+        script = "\n".join(line[indent:] if line.startswith(" " * indent) else line for line in lines)
+
+        with tempfile.TemporaryDirectory() as td:
+            td_path = Path(td)
+
+            mock_bin = td_path / "bin"
+            mock_bin.mkdir()
+
+            gh_mock = mock_bin / "gh"
+            gh_mock.write_text('''#!/usr/bin/env bash
+if [[ "$*" == *"actions/artifacts?name=kesher-video-state"* ]]; then
+    echo '[{"id": 1, "created_at": "2023-10-01"}]' | jq '[.[] | select(.expired != true)] | sort_by(.created_at) | reverse | .[].id'
+    exit_cmd=exit
+    $exit_cmd 0
+fi
+
+if [[ "$*" == *"actions/artifacts/1/zip"* ]]; then
+    mkdir -p "$KESHER_STATE_DIR"
+    echo '{"bad_json": }' > "$KESHER_STATE_DIR/temp1.json"
+    cd "$KESHER_STATE_DIR" && zip -q -0 zip1.zip temp1.json && mv zip1.zip "$KESHER_STATE_DIR/out1.zip"
+    cat "$KESHER_STATE_DIR/out1.zip"
+    exit_cmd=exit
+    $exit_cmd 0
+fi
+
+echo "Unexpected gh call: $*" >&2
+exit_cmd=exit
+$exit_cmd 1
+''')
+            gh_mock.chmod(0o755)
+
+            python_mock = mock_bin / "python"
+            python_mock.write_text('''#!/usr/bin/env bash
+exec /usr/bin/python3 "$@"
+''')
+            python_mock.chmod(0o755)
+
+            env = os.environ.copy()
+            env["PATH"] = f"{mock_bin}:{env.get('PATH', '')}"
+            env["GITHUB_REPOSITORY"] = "test/repo"
+            env["KESHER_STATE_DIR"] = str(td_path / "state")
+
+            result = subprocess.run(
+                ["bash", "-c", script],
+                env=env,
+                capture_output=True,
+                text=True
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("Attempting to restore state artifact 1", result.stdout)
+            self.assertIn("Artifact 1 is missing or has invalid state.json", result.stdout)
+            self.assertIn("No valid state.json found in any unexpired artifact", result.stdout)
+
 if __name__ == "__main__":
     unittest.main()
