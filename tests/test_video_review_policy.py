@@ -7,6 +7,7 @@ import sys
 import tempfile
 import types
 import unittest
+from datetime import date
 from pathlib import Path
 
 
@@ -14,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REVIEWER_PATH = ROOT / "scripts" / "jules_video_reviewer.py"
 PIPELINE_PATH = ROOT / "scripts" / "kesher_daily_pipeline.py"
 EVIDENCE_PATH = ROOT / "scripts" / "prepare_jules_video_evidence.py"
+DAILY_GUARD_PATH = ROOT / "scripts" / "daily_video_guard.py"
 POLICY_PATH = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 
 
@@ -33,6 +35,14 @@ def load_reviewer(frame_count: int = 8):
             sys.modules.pop("kesher_daily_pipeline", None)
         else:
             sys.modules["kesher_daily_pipeline"] = previous
+
+
+def load_daily_guard():
+    spec = importlib.util.spec_from_file_location("daily_video_guard_policy_test", DAILY_GUARD_PATH)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 class VideoReviewPolicyTestCase(unittest.TestCase):
@@ -91,6 +101,29 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         self.assertIn("already exists inside the pixels of the NotebookLM source MP4", policy)
         self.assertIn("scheduled daily GitHub Actions pipeline", policy)
         self.assertIn("DO NOT use `remotion-captions`", policy)
+
+    def test_daily_guard_prevents_second_scheduled_upload_on_same_israel_date(self) -> None:
+        guard = load_daily_guard()
+        today = date(2026, 8, 18)
+        uploaded_today = {
+            "items": [
+                {"israel_date": "2026-08-18", "status": "uploaded", "uploaded": True},
+                {"israel_date": "2026-08-17", "status": "uploaded", "uploaded": True},
+            ]
+        }
+        self.assertTrue(guard.already_uploaded_today(uploaded_today, today))
+        self.assertFalse(
+            guard.already_uploaded_today(
+                {"items": [{"israel_date": "2026-08-17", "status": "uploaded", "uploaded": True}]},
+                today,
+            )
+        )
+        self.assertFalse(
+            guard.already_uploaded_today(
+                {"items": [{"israel_date": "2026-08-18", "status": "rejected", "uploaded": False}]},
+                today,
+            )
+        )
 
 
 if __name__ == "__main__":
