@@ -1,5 +1,28 @@
-🎯 **What:** Removed `process.env.DEEPAI_API_KEY` from the environment immediately after copying it to a local variable in `scripts/generate-article-image.js`.
+This PR publishes a new Kesher article on the requested topic.
 
-⚠️ **Risk:** Storing third-party API keys within the global `process.env` throughout the lifecycle of a script exposes the secret to unintended leakage. If the script spawns child processes, or encounters an uncaught exception triggering a crash dump, the complete environment block containing the secret key may be printed to logs, published to external services, or otherwise exposed.
+Selected keyword/topic: Preparation for first grade through executive functions
+Hook: Buying the best backpack but worrying about morning routines because the child is still on the floor, half-dressed.
+Category: הדרכת הורים
+Subcategory: הכנה לכיתה א
 
-🛡️ **Solution:** Using the principle of least privilege for memory/state, the script now immediately uses `delete process.env.DEEPAI_API_KEY;` after extracting the key. This ensures subsequent execution scopes cannot inadvertently expose the key while retaining functionality.
+Image Generation Attempt: DeepAI/Gemini/Fallback pool
+Image Generation Result: unavailable
+Image Fallback Attempt: Unsplash/Pexels
+Image Fallback Result: no_pixel_verified_match
+Image Source URL: none
+
+Changed files:
+- src/data/posts.json
+- src/data/postSummaries.json
+- public/sitemap.xml
+- public/llms-full.txt
+
+Validation commands:
+- `npm run generate`
+- `npm run check` (all tests, including content validation, passed)
+- `python3 fix_content.py` to remove a forbidden phrase
+
+Skipped checks: None.
+Tests run and their results: `npm run check` executed `test:content`, `test:video-policy`, `vitest run`, `verify:dist`, and `playwright test` - all passed successfully. Word count after stripping HTML is 1056 words. No Latin letters were found in the visible text.
+
+Confirmation: No manual Start/approval was required, and the task was executed autonomously.
