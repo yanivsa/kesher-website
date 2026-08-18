@@ -762,11 +762,29 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
     item = matches[0]
     if item.get("status") != "rejected" or item.get("visual_review_status") != "rejected":
         raise PipelineError("Remotion rebuild is allowed only for a visually rejected item")
-    if item.get("uploaded") is True or item.get("youtube_id"):
-        raise PipelineError("Uploaded media cannot be rebuilt")
+
+    youtube_id = item.pop("youtube_id", None)
+    if youtube_id:
+        item.setdefault("superseded_history", []).append({
+            "youtube_id": youtube_id,
+            "recorded_at": utc_now(),
+            "reason": "superseded_by_rebuild",
+        })
+    item["uploaded"] = False
+
     raw_path = STATE_DIR / item.get("raw_mp4", "")
     if not raw_path.is_file() or sha256_file(raw_path) != item.get("raw_sha256"):
-        raise PipelineError("Original NotebookLM MP4 is missing or changed")
+        print(f"Original NotebookLM MP4 is missing. Attempting to redownload artifact {item.get('artifact_id')}")
+        raw_path = STATE_DIR / f"{item['id']}-notebooklm.mp4"
+        run_notebooklm(
+            ["download", "video", str(raw_path), "--notebook", NOTEBOOK_ID, "--artifact", item["artifact_id"], "--force"],
+            timeout=900,
+        )
+        if not raw_path.exists() or raw_path.stat().st_size < 1024:
+            raise PipelineError("NotebookLM redownload did not produce a usable MP4")
+        item["raw_mp4"] = raw_path.name
+        item["raw_sha256"] = sha256_file(raw_path)
+
     required_identity = ("notebook_id", "source_id", "task_id", "artifact_id", "source", "youtube_metadata")
     if any(not item.get(field) for field in required_identity):
         raise PipelineError("Provider identity or metadata is incomplete")

@@ -19,8 +19,8 @@ Remotion must take the **EXISTING NotebookLM MP4** and **UPGRADE** it.
 1. **Exact NotebookLM Source Audio & Narration**: Always preserve the exact source MP4 audio without alteration or replacement.
 2. **Explicit Female Voice Generation Prompt Requirement**: Every NotebookLM generation prompt MUST explicitly include:
    > `השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות.`
-3. **Advisory Jules Review**: The automated Jules visual, semantic, and metadata review is advisory only and acts as a quality signal for improvement.
-4. **Unconditional YouTube Upload**: Once a technically valid MP4 exists and YouTube OAuth succeeds, the video MUST be uploaded to YouTube unconditionally, regardless of whether Jules review approved, rejected, or was unavailable.
+3. **Strict mandatory visual rejection language for slide/card-like**: The automated Jules visual review MUST reject any video that is composed of slide/card-like, text-heavy, timeline/diagram, repeated-frame, or generic illustrative visuals.
+4. **Upload must require explicit approved technical, visual, semantic, and metadata gates.**: Once a technically valid MP4 exists and YouTube OAuth succeeds, the video MUST only be uploaded to YouTube if the explicit technical, visual, semantic, and metadata gates are all approved.
 5. **Daily Automation**: Changes to review policy or Remotion implementation MUST preserve the scheduled daily GitHub Actions pipeline and its durable resume behavior. Do not turn the daily flow into a manual-only process.
 
 ---
