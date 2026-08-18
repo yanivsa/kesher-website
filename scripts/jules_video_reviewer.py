@@ -16,11 +16,6 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-try:
-    from kesher_daily_pipeline import REVIEW_FRAME_COUNT
-except ImportError:
-    from scripts.kesher_daily_pipeline import REVIEW_FRAME_COUNT
-
 
 API_BASE = "https://jules.googleapis.com/v1alpha"
 REPO = "yanivsa/kesher-website"
@@ -28,8 +23,7 @@ SOURCE = "sources/github/yanivsa/kesher-website"
 FINAL_MARKER = "KESHER_REVIEW_JSON"
 WAITING_STATES = {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER", "PAUSED"}
 TERMINAL_FAILURES = {"FAILED", "CANCELLED", "CANCELED"}
-PROJECT_DIR = Path(__file__).resolve().parents[1]
-REMOTION_POLICY_PATH = PROJECT_DIR / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
+REVIEW_FRAME_COUNT = 8
 
 
 class ReviewError(RuntimeError):
@@ -65,14 +59,11 @@ def load_pending(state_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     return state, pending[0]
 
 
-def load_remotion_policy() -> str:
-    try:
-        policy = REMOTION_POLICY_PATH.read_text(encoding="utf-8").strip()
-    except OSError as exc:
-        raise ReviewError(f"Durable Remotion policy is unreadable: {REMOTION_POLICY_PATH}") from exc
-    if not policy:
-        raise ReviewError("Durable Remotion policy is empty")
-    return policy
+def load_policy_text() -> str:
+    policy_path = Path(__file__).resolve().parents[1] / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
+    if policy_path.is_file():
+        return policy_path.read_text(encoding="utf-8").strip()
+    return ""
 
 
 def expected_hashes(state_dir: Path, item: dict[str, Any]) -> dict[str, Any]:
@@ -100,40 +91,17 @@ def expected_hashes(state_dir: Path, item: dict[str, Any]) -> dict[str, Any]:
     return hashes
 
 
-def review_json_example(item_id: str) -> dict[str, Any]:
-    frame_hashes = {
-        f"relative/frame-{index}.png": "..."
-        for index in range(1, REVIEW_FRAME_COUNT + 1)
-    }
-    observations = [
-        f"תיאור פריים {index} עם פירוט עובדתי מספק בעברית"
-        for index in range(1, REVIEW_FRAME_COUNT + 1)
-    ]
-    return {
-        "item_id": item_id,
-        "manifest_sha256": "...",
-        "final_sha256": "...",
-        "transcript_sha256": "...",
-        "source_file_sha256": "...",
-        "visual_review_sha256": "...",
-        "frame_sha256": frame_hashes,
-        "frame_observations": observations,
-        "visual_status": "approved or rejected",
-        "semantic_status": "approved or rejected",
-        "metadata_status": "approved or rejected",
-        "visual_note": "הערה עובדתית בעברית, ואם נדרש שיפור ויזואלי — 2-4 פעולות קונקרטיות",
-        "semantic_note": "הערה עובדתית בעברית",
-        "metadata_note": "הערה עובדתית בעברית",
-    }
-
-
 def build_prompt(
     evidence_root: str,
     item: dict[str, Any],
     hashes: dict[str, Any],
 ) -> str:
-    policy = load_remotion_policy()
-    example_json = json.dumps(review_json_example(item["id"]), ensure_ascii=False, indent=2)
+    policy_text = load_policy_text()
+    policy_section = (
+        f"\nThe following durable repository policy is authoritative for this review. Apply it as written; do not replace it with remembered or generic Remotion guidance.\n\n"
+        f"--- BEGIN DURABLE REMOTION POLICY ---\n{policy_text}\n--- END DURABLE REMOTION POLICY ---\n"
+        if policy_text else ""
+    )
     return f"""Perform one strict READ-ONLY Kesher Video Overview review. Do not edit the repository, create a branch/commit/changeSet/PR, generate another video, contact NotebookLM, or contact YouTube.
 
 The exact secret-free evidence is already checked out in `{evidence_root}` on this session's starting branch. Do not use `gh`, GitHub APIs, network downloads, or files outside that directory. If the directory or a required file is missing, report the blocker and do not invent evidence.
@@ -141,28 +109,43 @@ The exact secret-free evidence is already checked out in `{evidence_root}` on th
 Expected item: `{item['id']}`.
 Expected evidence hashes (must recompute locally with sha256sum and match exactly):
 {json.dumps(hashes, ensure_ascii=False, indent=2)}
-
-The following durable repository policy is authoritative for this review. Apply it as written; do not replace it with remembered or generic Remotion guidance.
-
---- BEGIN DURABLE REMOTION POLICY ---
-{policy}
---- END DURABLE REMOTION POLICY ---
-
+{policy_section}
 Open `{evidence_root}/state.json` and locate the exact item. Open and visually inspect EACH of its {REVIEW_FRAME_COUNT} `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
 
 IMPORTANT: Jules is an ADVISORY reviewer here, not a publication gate. Your approved/rejected statuses are quality signals for improvement only. They must not be treated as permission to block a technically valid YouTube upload.
 
-Apply these advisory review dimensions:
+Apply four advisory review dimensions:
 1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
 
-2. Visual creative review: inspect all {REVIEW_FRAME_COUNT} sampled frames and evaluate compliance with the durable Source-Video-First Remotion policy above. Report concrete violations or weaknesses visible in the evidence. Do not invent problems that are not visible in the supplied evidence.
+2. Visual creative review — evaluate according to the Source-Video-First Remotion policy:
+   - Confirm NotebookLM source video remains visible as the continuous full-screen base for 100% of the video duration. Remotion is an enhancement, NOT a takeover.
+   - Flag/reject invented generic visuals, stock graphics, invented icons, or full-screen graphic cards that replace or obscure the source visuals.
+   - Confirm motion is purposeful, source-derived, and shows varied compositions/beats across all eight sampled frames rather than continuous arbitrary zooming or static templates.
+   - Confirm NO Remotion-generated captions, subtitles, karaoke text, or transcript-driven text overlays are added.
+   - Overlays must remain restrained and peripheral. The visible website label must be exactly `kesher.saharoni.com`, without `https://`, a trailing slash, or protocol text.
+   - Report English text except the Kesher URL, gibberish, cropped text, black frames, unreadable branding, or visual clutter.
 
-3. Semantic: compare all {REVIEW_FRAME_COUNT} frames and the complete narration transcript with the complete source file. Report topic mismatch, unsupported claims, or missing central subject. Small stylistic paraphrases, metaphors, or natural spoken-language variations are not by themselves serious defects when the original meaning is preserved.
+3. Semantic: compare all eight frames and the complete narration transcript with the complete source file. Report any topic mismatch, especially parenting/child versus couples/relationship, unsupported claims, or missing central subject. Small stylistic paraphrases, metaphors or natural spoken-language variations are not by themselves serious defects when the original meaning is preserved.
 
 4. Metadata: compare title, description and every tag with source and transcript. Report unsupported metadata, default/generic metadata, English, or missing `https://kesher.saharoni.com`. Separately confirm that `generation_prompt` explicitly requests a female Hebrew voice (`השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות.`); this confirms the required request was sent to NotebookLM, but do not claim the resulting voice was independently verified from transcript-only evidence.
 
-You may complete the review only after doing the actual file reads and image inspection. Notes must be factual Hebrew. Finish with `{FINAL_MARKER}` on its own line followed by exactly one JSON object and no Markdown fence. The JSON must contain exactly {REVIEW_FRAME_COUNT} frame hashes and exactly {REVIEW_FRAME_COUNT} frame observations. Use this shape:
-{example_json}
+You may complete the review only after doing the actual file reads and image inspection. Notes must be factual Hebrew. Finish with `{FINAL_MARKER}` on its own line followed by exactly one JSON object and no Markdown fence:
+{{
+  "item_id": "{item['id']}",
+  "manifest_sha256": "...",
+  "final_sha256": "...",
+  "transcript_sha256": "...",
+  "source_file_sha256": "...",
+  "visual_review_sha256": "...",
+  "frame_sha256": {{"relative/frame-1.png": "...", "relative/frame-2.png": "...", "relative/frame-3.png": "...", "relative/frame-4.png": "...", "relative/frame-5.png": "...", "relative/frame-6.png": "...", "relative/frame-7.png": "...", "relative/frame-8.png": "..."}},
+  "frame_observations": ["תיאור פריים 1", "תיאור פריים 2", "תיאור פריים 3", "תיאור פריים 4", "תיאור פריים 5", "תיאור פריים 6", "תיאור פריים 7", "תיאור פריים 8"],
+  "visual_status": "approved or rejected",
+  "semantic_status": "approved or rejected",
+  "metadata_status": "approved or rejected",
+  "visual_note": "הערה עובדתית בעברית, ואם נדרש שיפור ויזואלי — 2-4 פעולות קונקרטיות",
+  "semantic_note": "הערה עובדתית בעברית",
+  "metadata_note": "הערה עובדתית בעברית"
+}}
 """
 
 

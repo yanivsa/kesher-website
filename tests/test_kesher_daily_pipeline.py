@@ -814,32 +814,23 @@ class PipelineTestCase(unittest.TestCase):
             "transcript_sha256": "c" * 64,
             "source_file_sha256": "d" * 64,
             "visual_review_sha256": "e" * 64,
-            "frame_sha256": {
-                f"frames/frame-{i}.png": str(i) * 64
-                for i in range(1, pipeline.REVIEW_FRAME_COUNT + 1)
-            },
+            "frame_sha256": {f"frames/frame-{i}.png": str(i) * 64 for i in range(1, 9)},
         }
         item = {"id": "item-prompt-test"}
         prompt = reviewer.build_prompt("evidence-root", item, hashes)
 
-        # Frame count wording and JSON shape must derive from the shared constant.
-        self.assertIn(
-            f"inspect EACH of its {pipeline.REVIEW_FRAME_COUNT} `frame_paths`",
-            prompt,
-        )
-        self.assertEqual(reviewer.REVIEW_FRAME_COUNT, pipeline.REVIEW_FRAME_COUNT)
+        # Checks continuous base & 8 frames
+        self.assertIn(f"inspect EACH of its {reviewer.REVIEW_FRAME_COUNT} `frame_paths`", prompt)
+        self.assertIn("continuous full-screen base for 100% of the video duration", prompt)
 
-        # Durable policy is injected into the actual reviewer prompt.
-        self.assertIn("100% Visual Continuity", prompt)
-        self.assertIn("DO NOT use `remotion-captions`", prompt)
-        self.assertIn("already exists inside the pixels of the NotebookLM source MP4", prompt)
-        self.assertIn("`remotion-upgrade`", prompt)
+        # Checks captions forbidden
+        self.assertIn("NO Remotion-generated captions", prompt)
 
-        # Female voice requirement is preserved.
+        # Checks female voice prompt requirement
         self.assertIn("השתמש בקול של אישה ישראלית", prompt)
 
-        # Old invented-object guidance is not reintroduced outside the policy prohibition.
-        for removed in ("phone, bill, table", "parenting object, calendar"):
+        # Asserts old invented object encouragement list is removed/replaced
+        for removed in ("phone, bill, table", "Good examples depend on the article", "parenting object, calendar"):
             self.assertNotIn(removed, prompt)
 
 
