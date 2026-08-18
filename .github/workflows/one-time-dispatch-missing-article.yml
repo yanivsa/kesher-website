@@ -1,0 +1,26 @@
+name: One-time dispatch missing Kesher article
+
+on:
+  push:
+    branches:
+      - ops/run-missing-article-20260818
+    paths:
+      - .github/workflows/one-time-dispatch-missing-article.yml
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch current main article workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/jules-weekday-article.yml/dispatches" \
+            -f ref=main
+          echo "ARTICLE_WORKFLOW_DISPATCHED ref=main"
