@@ -11,8 +11,10 @@ import shutil
 from pathlib import Path
 from typing import Any
 
-
-REVIEW_FRAME_COUNT = 8
+try:
+    from kesher_daily_pipeline import REVIEW_FRAME_COUNT
+except ImportError:
+    from scripts.kesher_daily_pipeline import REVIEW_FRAME_COUNT
 
 
 class EvidenceError(RuntimeError):
