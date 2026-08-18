@@ -1,10 +1,8 @@
 {
-  "updated_at": "2026-08-18T20:50:26.451580+00:00",
-  "stage": "video_completed",
+  "updated_at": "2026-08-18T20:53:51.964490+00:00",
+  "stage": "article_live_check",
   "ok": false,
-  "article_url": "https://kesher.saharoni.com/blog/gifted-children-perfectionism-tears",
-  "video_action": "dispatched",
-  "video_run_id": 32184076656,
-  "video_run_url": "https://github.com/yanivsa/kesher-website/actions/runs/32184076656",
-  "video_conclusion": "failure"
+  "slug": "gifted-children-perfectionism-tears",
+  "title": "העיפרון החליק והדף נקרע: התמודדות עם פרפקציוניזם אצל ילדים מחוננים",
+  "article_url": "https://kesher.saharoni.com/blog/gifted-children-perfectionism-tears"
 }
