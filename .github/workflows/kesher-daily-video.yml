@@ -4,19 +4,23 @@ on:
   pull_request:
     paths:
       - .github/workflows/kesher-daily-video.yml
+      - .github/prompts/jules-remotion-video-upgrade.md
       - scripts/kesher_daily_pipeline.py
       - scripts/jules_video_reviewer.py
       - scripts/prepare_jules_video_evidence.py
+      - scripts/daily_video_guard.py
       - scripts/requirements-video-cloud.txt
       - package.json
       - package-lock.json
       - src/remotion/**
       - tests/test_kesher_daily_pipeline.py
+      - tests/test_video_review_policy.py
   schedule:
     # Primary slices target Israel's 19:00 hour. During daylight saving, the
     # 17 UTC entries provide an additional 20:00 recovery hour if GitHub cron
     # is delayed. In winter, the 16 UTC entries remain outside the guard.
-    # Every accepted slice resumes the exact persisted task ID.
+    # Every accepted slice resumes the exact persisted task ID. Once a video
+    # is uploaded for the current Israel date, later recovery slices are no-op.
     - cron: "5,20,35,50 16 * * *"
     - cron: "5,20,35,50 17 * * *"
   workflow_dispatch:
@@ -220,7 +224,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         env:
           NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
-        run: python -m unittest tests.test_kesher_daily_pipeline -v
+        run: python -m unittest tests.test_kesher_daily_pipeline tests.test_video_review_policy -v
 
       - name: NotebookLM read-only preflight
         if: ${{ inputs.operation == 'preflight' }}
@@ -237,6 +241,11 @@ jobs:
               schedule_guard=(--require-israel-hour "$israel_hour")
             else
               schedule_guard=(--require-israel-hour 19)
+            fi
+            daily_done="$(python -u scripts/daily_video_guard.py)"
+            if [ "$daily_done" = "true" ]; then
+              echo "DAILY_ALREADY_COMPLETED israel_date=$(TZ=Asia/Jerusalem date +%F)"
+              exit 0
             fi
           fi
           python -u scripts/kesher_daily_pipeline.py \
@@ -310,7 +319,7 @@ jobs:
             echo "evidence_root=${evidence_root}"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Jules inspects four frames, transcript, source and metadata
+      - name: Jules inspects review frames, transcript, source and metadata
         if: ${{ steps.pending.outputs.found == 'true' }}
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}

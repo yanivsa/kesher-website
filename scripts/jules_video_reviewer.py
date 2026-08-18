@@ -16,6 +16,11 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+try:
+    from kesher_daily_pipeline import REVIEW_FRAME_COUNT
+except ImportError:
+    from scripts.kesher_daily_pipeline import REVIEW_FRAME_COUNT
+
 
 API_BASE = "https://jules.googleapis.com/v1alpha"
 REPO = "yanivsa/kesher-website"
@@ -23,6 +28,8 @@ SOURCE = "sources/github/yanivsa/kesher-website"
 FINAL_MARKER = "KESHER_REVIEW_JSON"
 WAITING_STATES = {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER", "PAUSED"}
 TERMINAL_FAILURES = {"FAILED", "CANCELLED", "CANCELED"}
+PROJECT_DIR = Path(__file__).resolve().parents[1]
+REMOTION_POLICY_PATH = PROJECT_DIR / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 
 
 class ReviewError(RuntimeError):
@@ -58,6 +65,16 @@ def load_pending(state_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     return state, pending[0]
 
 
+def load_remotion_policy() -> str:
+    try:
+        policy = REMOTION_POLICY_PATH.read_text(encoding="utf-8").strip()
+    except OSError as exc:
+        raise ReviewError(f"Durable Remotion policy is unreadable: {REMOTION_POLICY_PATH}") from exc
+    if not policy:
+        raise ReviewError("Durable Remotion policy is empty")
+    return policy
+
+
 def expected_hashes(state_dir: Path, item: dict[str, Any]) -> dict[str, Any]:
     hashes = {
         "manifest_sha256": item.get("manifest_sha256"),
@@ -76,11 +93,38 @@ def expected_hashes(state_dir: Path, item: dict[str, Any]) -> dict[str, Any]:
         hashes["frame_sha256"][relative] = hashlib.sha256(path.read_bytes()).hexdigest()
         if hashes["frame_sha256"][relative] != (item.get("frame_sha256") or {}).get(relative):
             raise ReviewError(f"Stored frame hash mismatch: {relative}")
-    if len(hashes["frame_sha256"]) != 4:
-        raise ReviewError("Exactly four frame hashes are required")
+    if len(hashes["frame_sha256"]) != REVIEW_FRAME_COUNT:
+        raise ReviewError(f"Exactly {REVIEW_FRAME_COUNT} frame hashes are required")
     if any(not value for key, value in hashes.items() if key != "frame_sha256"):
         raise ReviewError("Evidence hashes are incomplete")
     return hashes
+
+
+def review_json_example(item_id: str) -> dict[str, Any]:
+    frame_hashes = {
+        f"relative/frame-{index}.png": "..."
+        for index in range(1, REVIEW_FRAME_COUNT + 1)
+    }
+    observations = [
+        f"תיאור פריים {index} עם פירוט עובדתי מספק בעברית"
+        for index in range(1, REVIEW_FRAME_COUNT + 1)
+    ]
+    return {
+        "item_id": item_id,
+        "manifest_sha256": "...",
+        "final_sha256": "...",
+        "transcript_sha256": "...",
+        "source_file_sha256": "...",
+        "visual_review_sha256": "...",
+        "frame_sha256": frame_hashes,
+        "frame_observations": observations,
+        "visual_status": "approved or rejected",
+        "semantic_status": "approved or rejected",
+        "metadata_status": "approved or rejected",
+        "visual_note": "הערה עובדתית בעברית, ואם נדרש שיפור ויזואלי — 2-4 פעולות קונקרטיות",
+        "semantic_note": "הערה עובדתית בעברית",
+        "metadata_note": "הערה עובדתית בעברית",
+    }
 
 
 def build_prompt(
@@ -88,6 +132,8 @@ def build_prompt(
     item: dict[str, Any],
     hashes: dict[str, Any],
 ) -> str:
+    policy = load_remotion_policy()
+    example_json = json.dumps(review_json_example(item["id"]), ensure_ascii=False, indent=2)
     return f"""Perform one strict READ-ONLY Kesher Video Overview review. Do not edit the repository, create a branch/commit/changeSet/PR, generate another video, contact NotebookLM, or contact YouTube.
 
 The exact secret-free evidence is already checked out in `{evidence_root}` on this session's starting branch. Do not use `gh`, GitHub APIs, network downloads, or files outside that directory. If the directory or a required file is missing, report the blocker and do not invent evidence.
@@ -96,44 +142,27 @@ Expected item: `{item['id']}`.
 Expected evidence hashes (must recompute locally with sha256sum and match exactly):
 {json.dumps(hashes, ensure_ascii=False, indent=2)}
 
-Open `{evidence_root}/state.json` and locate the exact item. Open and visually inspect EACH of its four `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
+The following durable repository policy is authoritative for this review. Apply it as written; do not replace it with remembered or generic Remotion guidance.
+
+--- BEGIN DURABLE REMOTION POLICY ---
+{policy}
+--- END DURABLE REMOTION POLICY ---
+
+Open `{evidence_root}/state.json` and locate the exact item. Open and visually inspect EACH of its {REVIEW_FRAME_COUNT} `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
 
 IMPORTANT: Jules is an ADVISORY reviewer here, not a publication gate. Your approved/rejected statuses are quality signals for improvement only. They must not be treated as permission to block a technically valid YouTube upload.
 
-Apply four advisory review dimensions:
+Apply these advisory review dimensions:
 1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
 
-2. Visual creative review — concentrate especially on the CORNERS, EDGES, SAFE MARGINS and SUPPORTING OVERLAYS. Treat the central roughly 70% of the frame as the primary storytelling area. Remotion should ideally ENRICH the main story rather than visually take over the entire screen. Favor purposeful peripheral additions: tasteful corner accents, edge motion, contextual icons or recognizable objects, subtle depth, light highlights, restrained labels, framing elements and small story cues. Flag designs that unnecessarily cover, compete with, or replace the central storytelling area.
+2. Visual creative review: inspect all {REVIEW_FRAME_COUNT} sampled frames and evaluate compliance with the durable Source-Video-First Remotion policy above. Report concrete violations or weaknesses visible in the evidence. Do not invent problems that are not visible in the supplied evidence.
 
-   Inspect all four frames and describe what is actually visible. The visible website label must be exactly `kesher.saharoni.com`, without `https://`, a trailing slash, or other protocol text. Report English except the Kesher URL, gibberish, cropped text, black frames, unreadable branding, or obvious visual mismatch.
+3. Semantic: compare all {REVIEW_FRAME_COUNT} frames and the complete narration transcript with the complete source file. Report topic mismatch, unsupported claims, or missing central subject. Small stylistic paraphrases, metaphors, or natural spoken-language variations are not by themselves serious defects when the original meaning is preserved.
 
-   Judge ENERGY, CLARITY and INTEREST — not just technical cleanliness. Prefer clear, recognizable, story-related visual ideas over unexplained decorative motion. Good examples depend on the article and can include a phone, bill, table, doorway, two people, distance/connection metaphor, conversation cue, home object, money cue, parenting object, calendar, message bubble, key, chair, cup, toy, or another concrete symbol that actually supports the narration. Avoid relying on meaningless circles, blobs, lines, floating geometric shapes, repeated gradients, or abstract animations that a viewer cannot connect to the story.
+4. Metadata: compare title, description and every tag with source and transcript. Report unsupported metadata, default/generic metadata, English, or missing `https://kesher.saharoni.com`. Separately confirm that `generation_prompt` explicitly requests a female Hebrew voice (`השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות.`); this confirms the required request was sent to NotebookLM, but do not claim the resulting voice was independently verified from transcript-only evidence.
 
-   Motion should feel intentional, elegant and lively. Across the four samples there should be visual progression, different compositions or story beats, and some emotional build — but not chaos, visual noise or childish effects. The target is a polished, emotionally engaging relationship/parenting editorial video, not a generic motion-graphics screensaver.
-
-   If the output is visually dull, too abstract, repetitive, or overly full-screen, the `visual_note` MUST include 2-4 concrete actionable improvements. Prioritize what should change in the corners/edges/overlays, identify which abstract element is weak, and name a more meaningful visual device that could replace it. Do not merely say "make it more engaging".
-
-3. Semantic: compare all four frames and the complete narration transcript with the complete source. Report any topic mismatch, especially parenting/child versus couples/relationship, unsupported claims, or missing central subject. Small stylistic paraphrases, metaphors or natural spoken-language variations are not by themselves serious defects when the original meaning is preserved.
-
-4. Metadata: compare title, description and every tag with source and transcript. Report unsupported metadata, default/generic metadata, English, or missing `https://kesher.saharoni.com`. Separately confirm that `generation_prompt` explicitly requests a female Hebrew voice; this confirms the required request was sent to NotebookLM, but do not claim the resulting voice was independently verified from transcript-only evidence.
-
-You may complete the review only after doing the actual file reads and image inspection. Notes must be factual Hebrew. Finish with `{FINAL_MARKER}` on its own line followed by exactly one JSON object and no Markdown fence:
-{{
-  "item_id": "{item['id']}",
-  "manifest_sha256": "...",
-  "final_sha256": "...",
-  "transcript_sha256": "...",
-  "source_file_sha256": "...",
-  "visual_review_sha256": "...",
-  "frame_sha256": {{"relative/frame-1.png": "...", "relative/frame-2.png": "...", "relative/frame-3.png": "...", "relative/frame-4.png": "..."}},
-  "frame_observations": ["תיאור פריים ראשון", "תיאור פריים שני", "תיאור פריים שלישי", "תיאור פריים רביעי"],
-  "visual_status": "approved or rejected",
-  "semantic_status": "approved or rejected",
-  "metadata_status": "approved or rejected",
-  "visual_note": "הערה עובדתית בעברית, ואם נדרש שיפור ויזואלי — 2-4 פעולות קונקרטיות",
-  "semantic_note": "הערה עובדתית בעברית",
-  "metadata_note": "הערה עובדתית בעברית"
-}}
+You may complete the review only after doing the actual file reads and image inspection. Notes must be factual Hebrew. Finish with `{FINAL_MARKER}` on its own line followed by exactly one JSON object and no Markdown fence. The JSON must contain exactly {REVIEW_FRAME_COUNT} frame hashes and exactly {REVIEW_FRAME_COUNT} frame observations. Use this shape:
+{example_json}
 """
 
 
@@ -225,8 +254,8 @@ def validate_decision(decision: dict[str, Any], item: dict[str, Any], hashes: di
         if decision.get(field) != hashes[field]:
             raise ReviewError(f"Jules evidence mismatch: {field}")
     observations = decision.get("frame_observations")
-    if not isinstance(observations, list) or len(observations) != 4:
-        raise ReviewError("Jules must describe exactly four frames")
+    if not isinstance(observations, list) or len(observations) != REVIEW_FRAME_COUNT:
+        raise ReviewError(f"Jules must describe exactly {REVIEW_FRAME_COUNT} frames")
     for observation in observations:
         if not isinstance(observation, str) or len(re.findall(r"[\u0590-\u05ff]", observation)) < 8:
             raise ReviewError("Each Jules frame observation must be substantive Hebrew")
