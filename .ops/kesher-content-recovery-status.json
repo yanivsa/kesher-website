@@ -1,8 +1,10 @@
 {
-  "updated_at": "2026-08-18T23:56:59.336448+00:00",
-  "stage": "article_live",
+  "updated_at": "2026-08-18T23:57:00.915862+00:00",
+  "stage": "video_rebuild_running",
   "ok": true,
-  "slug": "first-grade-preparation-morning-routine",
-  "title": "הילקוט מוכן אבל הילד עוד בפיג'מה: התארגנות עצמאית לקראת כיתה אלף",
-  "article_url": "https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine"
+  "article_url": "https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine",
+  "video_item_id": "video-20260819-011621-abab0957a6",
+  "video_action": "reused",
+  "video_run_id": 32198888908,
+  "video_run_url": "https://github.com/yanivsa/kesher-website/actions/runs/32198888908"
 }
