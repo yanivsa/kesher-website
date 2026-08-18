@@ -83,6 +83,14 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         self.assertIn("relative/frame-3.png", example["frame_sha256"])
         self.assertNotIn("relative/frame-4.png", example["frame_sha256"])
 
+    def test_prompt_makes_visual_review_a_strict_publication_gate(self) -> None:
+        reviewer = load_reviewer()
+        prompt = self.build_with_policy(reviewer, "fixture policy")
+        self.assertIn("MANDATORY reviewer", prompt)
+        self.assertIn("must not be uploaded", prompt)
+        for forbidden in ("slide/card-like", "text-heavy", "timeline or diagram", "repeated identical", "generic illustrative"):
+            self.assertIn(forbidden, prompt)
+
     def test_pipeline_is_single_source_of_truth_for_frame_count(self) -> None:
         pipeline_source = PIPELINE_PATH.read_text(encoding="utf-8")
         reviewer_source = REVIEWER_PATH.read_text(encoding="utf-8")

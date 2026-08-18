@@ -340,7 +340,77 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(saved["evidence_history"][0]["status"], "rejected")
         validate.assert_called_once()
 
-    def test_rejected_review_item_still_uploads_unconditionally(self) -> None:
+    def test_remotion_rebuild_redownloads_raw_if_missing(self) -> None:
+        state, item = self.make_pending_item()
+        item.update(
+            {
+                "status": "rejected",
+                "visual_review_status": "rejected",
+                "semantic_review_status": "approved",
+                "metadata_review_status": "approved",
+                "raw_mp4": "missing.mp4",
+                "raw_sha256": "fake-hash",
+                "source_id": "source",
+                "task_id": "artifact",
+                "artifact_id": "artifact",
+            }
+        )
+        pipeline.save_state(state)
+
+        with mock.patch.object(pipeline, "run_notebooklm") as mock_run:
+            def side_effect(args, **kwargs):
+                if args[0] == "download":
+                    path = Path(args[2])
+                    path.write_bytes(b"downloaded-notebooklm" * 100)
+                return {}
+            mock_run.side_effect = side_effect
+
+            with mock.patch.object(pipeline, "validate_and_manifest") as validate:
+                pipeline.rebuild_rejected_with_remotion(item["id"])
+
+        mock_run.assert_called_once()
+        self.assertIn("download", mock_run.call_args[0][0])
+        self.assertIn("artifact", mock_run.call_args[0][0])
+
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "downloaded")
+        self.assertEqual(saved["visual_review_status"], "pending")
+        raw_path = pipeline.STATE_DIR / saved["raw_mp4"]
+        self.assertTrue(raw_path.exists())
+
+    def test_remotion_rebuild_preserves_superseded_youtube_id(self) -> None:
+        state, item = self.make_pending_item()
+        raw = self.state_dir / "raw-notebooklm.mp4"
+        raw.write_bytes(b"original-notebooklm")
+        item.update(
+            {
+                "status": "rejected",
+                "visual_review_status": "rejected",
+                "semantic_review_status": "approved",
+                "metadata_review_status": "approved",
+                "raw_mp4": raw.name,
+                "raw_sha256": pipeline.sha256_file(raw),
+                "source_id": "source",
+                "task_id": "artifact",
+                "artifact_id": "artifact",
+                "uploaded": True,
+                "youtube_id": "old-youtube-id",
+            }
+        )
+        pipeline.save_state(state)
+        with mock.patch.object(pipeline, "validate_and_manifest") as validate:
+            pipeline.rebuild_rejected_with_remotion(item["id"])
+
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "downloaded")
+        self.assertEqual(saved["visual_review_status"], "pending")
+        self.assertFalse(saved["uploaded"])
+        self.assertNotIn("youtube_id", saved)
+        self.assertEqual(len(saved["superseded_history"]), 1)
+        self.assertEqual(saved["superseded_history"][0]["youtube_id"], "old-youtube-id")
+        self.assertEqual(saved["superseded_history"][0]["reason"], "superseded_by_rebuild")
+
+    def test_rejected_review_item_does_not_upload(self) -> None:
         state, item = self.make_pending_item()
         item["status"] = "rejected"
         item["visual_review_status"] = "rejected"
@@ -365,9 +435,9 @@ class PipelineTestCase(unittest.TestCase):
             self.assertEqual(pipeline.upload_only(), 0)
 
         saved = pipeline.load_state()["items"][0]
-        self.assertTrue(saved["uploaded"])
-        self.assertEqual(saved["status"], "uploaded")
-        self.assertEqual(saved["youtube_url"], "https://youtu.be/video123")
+        self.assertFalse(saved.get("uploaded", False))
+        self.assertEqual(saved["status"], "rejected")
+        self.assertNotIn("youtube_url", saved)
 
     def test_rejected_item_remains_active_and_prevents_duplicate_generation(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
@@ -653,7 +723,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertNotIn("raw_mp4", published_state["items"][0])
         self.assertNotIn("final_mp4", published_state["items"][0])
 
-    def test_jules_review_parse_failure_non_fatal_and_upload_eligible(self) -> None:
+    def test_jules_review_parse_failure_remains_blocked_from_upload(self) -> None:
         _, item = self.make_pending_item()
         error_msg = "Jules completed without parseable structured review JSON"
         handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
@@ -674,11 +744,11 @@ class PipelineTestCase(unittest.TestCase):
         ):
             self.assertEqual(pipeline.upload_only(), 0)
 
-        uploaded = pipeline.load_state()["items"][0]
-        self.assertTrue(uploaded["uploaded"])
-        self.assertEqual(uploaded["youtube_url"], "https://youtu.be/video-parse-fail")
+        blocked = pipeline.load_state()["items"][0]
+        self.assertFalse(blocked.get("uploaded", False))
+        self.assertNotIn("youtube_url", blocked)
 
-    def test_jules_review_api_timeout_non_fatal_and_upload_eligible(self) -> None:
+    def test_jules_review_api_timeout_remains_blocked_from_upload(self) -> None:
         _, item = self.make_pending_item()
         error_msg = "Jules review timed out"
         handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
@@ -698,10 +768,11 @@ class PipelineTestCase(unittest.TestCase):
         ):
             self.assertEqual(pipeline.upload_only(), 0)
 
-        uploaded = pipeline.load_state()["items"][0]
-        self.assertTrue(uploaded["uploaded"])
+        blocked = pipeline.load_state()["items"][0]
+        self.assertFalse(blocked.get("uploaded", False))
+        self.assertNotIn("youtube_url", blocked)
 
-    def test_jules_valid_rejected_review_preserves_review_and_upload_eligible(self) -> None:
+    def test_jules_valid_rejected_review_preserves_review_and_blocks_upload(self) -> None:
         _, item = self.make_pending_item()
         args = SimpleNamespace(
             review_item=item["id"],
@@ -728,8 +799,10 @@ class PipelineTestCase(unittest.TestCase):
         ):
             self.assertEqual(pipeline.upload_only(), 0)
 
-        uploaded = pipeline.load_state()["items"][0]
-        self.assertTrue(uploaded["uploaded"])
+        blocked = pipeline.load_state()["items"][0]
+        self.assertFalse(blocked.get("uploaded", False))
+        self.assertEqual(blocked["status"], "rejected")
+        self.assertNotIn("youtube_url", blocked)
 
     def test_jules_valid_approved_review_preserves_review_and_upload_eligible(self) -> None:
         _, item = self.make_pending_item()
@@ -803,9 +876,9 @@ class PipelineTestCase(unittest.TestCase):
         # Female voice requirement
         self.assertIn("השתמש בקול של אישה ישראלית", text)
 
-        # Advisory review and unconditional upload
-        self.assertIn("Advisory Jules Review", text)
-        self.assertIn("Unconditional YouTube Upload", text)
+        # Mandatory review and policy gates
+        self.assertIn("Upload must require explicit approved technical, visual, semantic, and metadata gates.", text)
+        self.assertIn("Strict mandatory visual rejection language for slide/card-like", text)
 
     def test_reviewer_prompt_evaluates_source_video_first_and_no_invented_objects(self) -> None:
         hashes = {
