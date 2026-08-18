@@ -161,7 +161,7 @@ test('global search opens its first result with Enter and restores focus', async
   await expect(searchButton).toBeFocused();
 });
 
-test('appointment page embeds Shira Calendly and keeps a direct fallback', async ({ page }) => {
+test('appointment page uses the auto-resizing Calendly embed and keeps a direct fallback', async ({ page }) => {
   await page.goto('/appointment');
   await expect(page.getByRole('heading', { name: 'קביעת פגישת ייעוץ עם שירה' })).toBeVisible();
   await expect(page.locator('meta[name="description"]')).toHaveCount(1);
@@ -173,8 +173,10 @@ test('appointment page embeds Shira Calendly and keeps a direct fallback', async
   expect(width.scrollWidth).toBe(width.clientWidth);
   const results = await new AxeBuilder({ page }).exclude('iframe').analyze();
   expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact || ''))).toEqual([]);
-  await expect(page.locator('iframe[title="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]'))
-    .toHaveAttribute('src', 'https://calendly.com/shira-saharoni/50');
+  await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]'))
+    .toBeVisible();
+  await expect(page.locator('script[src="https://assets.calendly.com/assets/external/widget.js"]'))
+    .toHaveCount(1);
   await expect(page.getByRole('link', { name: 'פתחו את Calendly בחלון חדש' }))
     .toHaveAttribute('href', 'https://calendly.com/shira-saharoni/50');
 });
@@ -317,5 +319,3 @@ test('Calendly postMessage event scheduled triggers booking_confirmed dataLayer 
   });
   expect(newBookingCount).toBe(1);
 });
-
-
