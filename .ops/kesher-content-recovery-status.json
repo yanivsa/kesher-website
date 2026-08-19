@@ -1,10 +1,15 @@
 {
-  "updated_at": "2026-08-19T09:06:06.720015+00:00",
+  "updated_at": "2026-08-19T09:07:40.811293+00:00",
   "stage": "video_upload_wait",
   "ok": false,
   "article_url": "https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine",
   "article_slug": "first-grade-preparation-morning-routine",
   "video_item_id": "video-20260819-011621-abab0957a6",
-  "video_run_id": "",
-  "reason": "existing production run already active"
+  "video_run_id": "32234871333",
+  "video_run_sha": "45298b0e41474fc62cf4dc57876e509ea217e6c7",
+  "current_main_sha": "2f29b9d7405ef0ca71614b69191d844e7214a91a",
+  "run_is_current_main": false,
+  "run_status": "in_progress",
+  "run_event": "workflow_dispatch",
+  "reason": "existing production run already active on older main; wait for it before retrying current main"
 }
