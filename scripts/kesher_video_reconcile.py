@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """Reconcile Kesher video state around the authoritative article of the Israel day.
 
-This layer keeps the legacy video worker narrow while enforcing two production
+This layer keeps the legacy video worker narrow while enforcing production
 rules owned by the controller architecture:
 1. stale unfinished items from older articles may not block today's article;
-2. Jules review is advisory, so a technically verified MP4 stays uploadable.
+2. technical retries stay pinned to the exact authoritative article;
+3. Jules review is advisory, so a technically verified MP4 stays uploadable;
+4. a persisted YouTube ID is verified in place and is never inserted twice.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-from datetime import date
 from typing import Any
 
 try:
@@ -127,6 +128,27 @@ def advisory_outcome(item: dict[str, Any]) -> str:
     return "unavailable"
 
 
+def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) -> bool:
+    """Finish public verification after an earlier upload already returned its ID."""
+    if not item.get("youtube_id") or item.get("uploaded") is True:
+        return False
+    token = pipeline.youtube_access_token()
+    pipeline.verify_authenticated_channel(token)
+    verification = pipeline.verify_public_upload(item, token)
+    item["youtube_verification"] = verification
+    item["youtube_url"] = f"https://www.youtube.com/watch?v={item['youtube_id']}"
+    item["uploaded"] = True
+    item["status"] = "uploaded"
+    item["uploaded_at"] = pipeline.utc_now()
+    item["updated_at"] = pipeline.utc_now()
+    pipeline.save_state(state)
+    print(
+        "VIDEO_YOUTUBE_ID_RECOVERED "
+        f"item={item.get('id')} youtube_id={item.get('youtube_id')}"
+    )
+    return True
+
+
 def prepare_upload() -> int:
     state = pipeline.load_state()
     source = authoritative_article()
@@ -146,6 +168,8 @@ def prepare_upload() -> int:
             f"More than one technically verified upload candidate exists for {source['slug']}"
         )
     item = candidates[0]
+    if recover_persisted_youtube_id(state, item):
+        return 0
     item["advisory_review_decision"] = advisory_outcome(item)
     item["review_is_advisory"] = True
     if item.get("status") != "uploading":
