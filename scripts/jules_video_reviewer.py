@@ -33,6 +33,8 @@ STRUCTURED_OUTPUT_REPAIR_GRACE_SECONDS = 60
 MAX_REVIEW_SESSION_ATTEMPTS = 2
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 REMOTION_POLICY_PATH = PROJECT_DIR / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
+REVIEW_SCHEMA_VERSION = 1
+REMOTION_POLICY_VERSION = 1
 
 
 class ReviewError(RuntimeError):
@@ -75,6 +77,11 @@ def load_remotion_policy() -> str:
         raise ReviewError(f"Durable Remotion policy is unreadable: {REMOTION_POLICY_PATH}") from exc
     if not policy:
         raise ReviewError("Durable Remotion policy is empty")
+    versions = re.findall(r"(?m)^Policy-Version:\s*(\d+)\s*$", policy)
+    if versions != [str(REMOTION_POLICY_VERSION)]:
+        raise ReviewError(
+            f"Durable Remotion policy version mismatch: expected {REMOTION_POLICY_VERSION}, found {versions}"
+        )
     return policy
 
 
@@ -113,6 +120,8 @@ def review_json_example(item_id: str) -> dict[str, Any]:
         for index in range(1, REVIEW_FRAME_COUNT + 1)
     ]
     return {
+        "schema_version": REVIEW_SCHEMA_VERSION,
+        "policy_version": REMOTION_POLICY_VERSION,
         "item_id": item_id,
         "manifest_sha256": "...",
         "final_sha256": "...",
@@ -121,6 +130,9 @@ def review_json_example(item_id: str) -> dict[str, Any]:
         "visual_review_sha256": "...",
         "frame_sha256": frame_hashes,
         "frame_observations": observations,
+        "decision": "approved or rejected",
+        "blocking_issues": [],
+        "recommendations": [],
         "visual_status": "approved or rejected",
         "semantic_status": "approved or rejected",
         "metadata_status": "approved or rejected",
@@ -154,6 +166,8 @@ The following durable repository policy is authoritative for this review. Apply 
 Open `{evidence_root}/state.json` and locate the exact item. Open and visually inspect EACH of its {REVIEW_FRAME_COUNT} `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
 
 IMPORTANT: Jules is a MANDATORY reviewer and strict publication gate. A video must not be uploaded unless the visual, semantic, and metadata gates are explicitly approved.
+
+Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate`, stable uppercase `code`, and factual Hebrew `message`. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements and never substitute for blocking issues.
 
 Apply these mandatory review dimensions:
 1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
@@ -284,7 +298,13 @@ def parse_decision(message: str) -> dict[str, Any]:
     return decision
 
 
-def validate_decision(decision: dict[str, Any], item: dict[str, Any], hashes: dict[str, Any]) -> None:
+def validate_decision(
+    decision: dict[str, Any],
+    item: dict[str, Any],
+    hashes: dict[str, Any],
+    *,
+    strict_schema: bool = False,
+) -> None:
     if decision.get("item_id") != item["id"]:
         raise ReviewError("Jules reviewed the wrong item")
     for field in ("manifest_sha256", "final_sha256", "transcript_sha256", "source_file_sha256", "visual_review_sha256", "frame_sha256"):
@@ -302,6 +322,58 @@ def validate_decision(decision: dict[str, Any], item: dict[str, Any], hashes: di
         note = decision.get(f"{gate}_note")
         if not isinstance(note, str) or len(re.findall(r"[\u0590-\u05ff]", note)) < 12:
             raise ReviewError(f"Jules returned a weak or non-Hebrew {gate} note")
+    if strict_schema:
+        validate_structured_contract(decision)
+
+
+def validate_structured_contract(decision: dict[str, Any]) -> None:
+    expected_keys = {
+        "schema_version", "policy_version", "item_id",
+        "manifest_sha256", "final_sha256", "transcript_sha256",
+        "source_file_sha256", "visual_review_sha256", "frame_sha256",
+        "frame_observations", "decision", "blocking_issues", "recommendations",
+        "visual_status", "semantic_status", "metadata_status",
+        "visual_note", "semantic_note", "metadata_note",
+    }
+    actual_keys = set(decision)
+    if actual_keys != expected_keys:
+        missing = sorted(expected_keys - actual_keys)
+        extra = sorted(actual_keys - expected_keys)
+        raise ReviewError(f"Jules review schema keys mismatch: missing={missing} extra={extra}")
+    if decision.get("schema_version") != REVIEW_SCHEMA_VERSION:
+        raise ReviewError("Jules review schema_version mismatch")
+    if decision.get("policy_version") != REMOTION_POLICY_VERSION:
+        raise ReviewError("Jules review policy_version mismatch")
+
+    statuses = [decision.get(f"{gate}_status") for gate in ("visual", "semantic", "metadata")]
+    expected_decision = "approved" if statuses == ["approved", "approved", "approved"] else "rejected"
+    if decision.get("decision") != expected_decision:
+        raise ReviewError("Jules top-level decision is inconsistent with gate statuses")
+
+    issues = decision.get("blocking_issues")
+    if not isinstance(issues, list):
+        raise ReviewError("Jules blocking_issues must be a list")
+    if expected_decision == "approved" and issues:
+        raise ReviewError("Approved Jules review must have no blocking_issues")
+    if expected_decision == "rejected" and not issues:
+        raise ReviewError("Rejected Jules review must include blocking_issues")
+    for issue in issues:
+        if not isinstance(issue, dict) or set(issue) != {"gate", "code", "message"}:
+            raise ReviewError("Each Jules blocking issue must contain exactly gate, code and message")
+        if issue.get("gate") not in {"visual", "semantic", "metadata"}:
+            raise ReviewError("Jules blocking issue has invalid gate")
+        if not isinstance(issue.get("code"), str) or not re.fullmatch(r"[A-Z0-9_]{3,64}", issue["code"]):
+            raise ReviewError("Jules blocking issue code is invalid")
+        message = issue.get("message")
+        if not isinstance(message, str) or len(re.findall(r"[\u0590-\u05ff]", message)) < 8:
+            raise ReviewError("Jules blocking issue message must be substantive Hebrew")
+
+    recommendations = decision.get("recommendations")
+    if not isinstance(recommendations, list) or len(recommendations) > 8:
+        raise ReviewError("Jules recommendations must be a list of at most 8 items")
+    for recommendation in recommendations:
+        if not isinstance(recommendation, str) or len(re.findall(r"[\u0590-\u05ff]", recommendation)) < 8:
+            raise ReviewError("Each Jules recommendation must be substantive Hebrew")
 
 
 def obtain_validated_decision(
@@ -318,7 +390,7 @@ def obtain_validated_decision(
             session = create_session(api_key, prompt, item["id"], review_branch)
             message = wait_for_message(api_key, session, timeout_seconds)
             decision = parse_decision(message)
-            validate_decision(decision, item, hashes)
+            validate_decision(decision, item, hashes, strict_schema=True)
             return decision, session
         except ReviewError as exc:
             last_error = exc
