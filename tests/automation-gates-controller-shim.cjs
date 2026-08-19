@@ -5,7 +5,7 @@
 // superseded by the controller architecture: the retired weekday article
 // workflow and the former mandatory Jules upload gate. Every other file read
 // remains untouched. Current behavior is covered directly by the controller,
-// reconciliation and video-policy regression suites.
+// reconciliation and video-policy regression suites. Keep this shim test-only.
 
 const fs = require('fs');
 const originalReadFileSync = fs.readFileSync.bind(fs);
