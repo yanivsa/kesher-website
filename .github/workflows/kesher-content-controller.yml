@@ -3,6 +3,12 @@ name: Kesher Content Controller
 on:
   push:
     branches: [main]
+  workflow_run:
+    workflows:
+      - Kesher Article Generation
+      - Kesher Daily NotebookLM Video Overview
+      - Deploy to Cloudflare Pages
+    types: [completed]
   schedule:
     # Dynamic recovery heartbeat. The controller itself decides whether work is needed.
     - cron: "7,37 * * * *"
@@ -19,6 +25,7 @@ concurrency:
 
 jobs:
   controller:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.event != 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
