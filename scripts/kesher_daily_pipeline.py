@@ -134,16 +134,17 @@ def require_hebrew(value: str, field: str, allow_url: bool = False) -> None:
 
 
 def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
-    required = ("id", "slug", "title", "date", "category", "excerpt", "content")
+    required = ("id", "title", "date", "category", "excerpt", "content")
     missing = [field for field in required if not str(post.get(field, "")).strip()]
     if missing:
         raise PipelineError(f"Article is missing authoritative fields: {', '.join(missing)}")
+    slug = str(post.get("slug") or post["id"]).strip()
     title = str(post["title"]).strip()
     excerpt = clean_article_html(str(post["excerpt"]))
     article_text = clean_article_html(str(post["content"]))
     category = str(post["category"]).strip()
     subcategory = str(post.get("subcategory", "")).strip()
-    canonical_url = f"{SITE_URL}/blog/{post['slug']}"
+    canonical_url = f"{SITE_URL}/blog/{slug}"
     for field, value in (("title", title), ("excerpt", excerpt), ("article", article_text), ("category", category)):
         require_hebrew(value, field)
     if subcategory:
@@ -168,7 +169,7 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
     require_hebrew(description, "description", allow_url=True)
     return {
         "id": str(post["id"]),
-        "slug": str(post["slug"]),
+        "slug": slug,
         "title": title,
         "date": str(post["date"]),
         "category": category,
@@ -364,8 +365,8 @@ def active_item(state: dict[str, Any]) -> dict[str, Any] | None:
 def article_body_for_item(item: dict[str, Any]) -> str:
     posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
     for post in posts:
-        if post.get("slug") == item["source"]["slug"]:
-            source = source_metadata(post)
+        source = source_metadata(post)
+        if source["slug"] == item["source"]["slug"]:
             if source["content_sha256"] != item["source"]["content_sha256"]:
                 raise PipelineError("Article content changed after selection")
             return source["body"]
