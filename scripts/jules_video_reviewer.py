@@ -298,7 +298,13 @@ def parse_decision(message: str) -> dict[str, Any]:
     return decision
 
 
-def validate_decision(decision: dict[str, Any], item: dict[str, Any], hashes: dict[str, Any]) -> None:
+def validate_decision(
+    decision: dict[str, Any],
+    item: dict[str, Any],
+    hashes: dict[str, Any],
+    *,
+    strict_schema: bool = False,
+) -> None:
     if decision.get("item_id") != item["id"]:
         raise ReviewError("Jules reviewed the wrong item")
     for field in ("manifest_sha256", "final_sha256", "transcript_sha256", "source_file_sha256", "visual_review_sha256", "frame_sha256"):
@@ -316,6 +322,8 @@ def validate_decision(decision: dict[str, Any], item: dict[str, Any], hashes: di
         note = decision.get(f"{gate}_note")
         if not isinstance(note, str) or len(re.findall(r"[\u0590-\u05ff]", note)) < 12:
             raise ReviewError(f"Jules returned a weak or non-Hebrew {gate} note")
+    if strict_schema:
+        validate_structured_contract(decision)
 
 
 def validate_structured_contract(decision: dict[str, Any]) -> None:
@@ -382,8 +390,7 @@ def obtain_validated_decision(
             session = create_session(api_key, prompt, item["id"], review_branch)
             message = wait_for_message(api_key, session, timeout_seconds)
             decision = parse_decision(message)
-            validate_decision(decision, item, hashes)
-            validate_structured_contract(decision)
+            validate_decision(decision, item, hashes, strict_schema=True)
             return decision, session
         except ReviewError as exc:
             last_error = exc
