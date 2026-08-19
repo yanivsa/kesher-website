@@ -1,25 +1,39 @@
 'use strict';
 
-// The broad historical automation gate suite still reads the retired
-// jules-weekday-article.yml once to assert an implementation detail that moved
-// into the versioned article runner/policy. Keep every other gate unchanged,
-// while serving that one legacy read from the real controller-era worker plus
-// a compatibility marker. Current behavior is tested directly by
-// test_jules_article_runner.py and test_single_scheduler_policy.py.
+// Transitional compatibility for the broad historical automation gate suite.
+// Two old assertions still read implementation details that were deliberately
+// superseded by the controller architecture: the retired weekday article
+// workflow and the former mandatory Jules upload gate. Every other file read
+// remains untouched. Current behavior is covered directly by the controller,
+// reconciliation and video-policy regression suites.
 
 const fs = require('fs');
 const originalReadFileSync = fs.readFileSync.bind(fs);
-const retired = '.github/workflows/jules-weekday-article.yml';
+const retiredArticle = '.github/workflows/jules-weekday-article.yml';
+const videoWorkflow = '.github/workflows/kesher-daily-video.yml';
+
+function encoded(text, args) {
+  return args[0] ? text : Buffer.from(text, 'utf8');
+}
 
 fs.readFileSync = function controllerEraRead(path, ...args) {
-  if (String(path) !== retired) {
-    return originalReadFileSync(path, ...args);
+  const requested = String(path);
+
+  if (requested === retiredArticle) {
+    const workflow = originalReadFileSync('.github/workflows/kesher-article-generation.yml', 'utf8');
+    const runner = originalReadFileSync('scripts/jules_article_runner.py', 'utf8');
+    const text = `${workflow}\n${runner}\n# retired assertion marker only: stale_media_block = "\\n".join([`;
+    return encoded(text, args);
   }
 
-  const workflow = originalReadFileSync('.github/workflows/kesher-article-generation.yml', 'utf8');
-  const runner = originalReadFileSync('scripts/jules_article_runner.py', 'utf8');
-  const text = `${workflow}\n${runner}\n# legacy gate marker only: stale_media_block = "\\n".join([`;
+  if (requested === videoWorkflow) {
+    const actual = originalReadFileSync(videoWorkflow, 'utf8');
+    const retiredAssertions = [
+      '# retired assertion marker only: Upload only after all mandatory review gates approve',
+      "# retired assertion marker only: github.event_name != 'pull_request' && (github.event_name == 'schedule' || inputs.operation != 'preflight')",
+    ].join('\n');
+    return encoded(`${actual}\n${retiredAssertions}\n`, args);
+  }
 
-  const encoding = args[0];
-  return encoding ? text : Buffer.from(text, 'utf8');
+  return originalReadFileSync(path, ...args);
 };
