@@ -30,6 +30,23 @@ ACTIVE_STATUSES = {
 }
 
 
+def already_uploaded_today(state: dict[str, Any], today: date) -> bool:
+    """Backward-compatible daily idempotency helper used by policy tests.
+
+    The strict newest-article guard below is authoritative for runtime selection, but
+    keeping this helper preserves the invariant that a verified uploaded item for the
+    Israel date prevents a second scheduled upload for that same date.
+    """
+    target = today.isoformat()
+    return any(
+        str(item.get("israel_date") or "") == target
+        and item.get("status") == "uploaded"
+        and item.get("uploaded") is True
+        for item in state.get("items", [])
+        if isinstance(item, dict)
+    )
+
+
 def normalize_posts_and_latest_slug(today: date) -> str:
     posts = json.loads(pipeline.POSTS_FILE.read_text(encoding="utf-8"))
     if not isinstance(posts, list):
