@@ -13,7 +13,7 @@
     "lint": "eslint src functions tests scripts/*.cjs scripts/generate-article-image.js vite.config.js",
     "test": "vitest run",
     "test:content": "node scripts/validate-content.cjs && node tests/automation-gates.test.cjs",
-    "test:video-policy": "python3 -m unittest tests.test_video_review_policy tests.test_video_review_schema -v",
+    "test:video-policy": "python3 -m unittest tests.test_kesher_daily_pipeline tests.test_video_review_policy tests.test_video_review_schema -v",
     "test:controller": "python3 -m unittest tests.test_kesher_content_controller tests.test_controller_artifact_download tests.test_jules_article_runner -v",
     "test:e2e": "playwright test",
     "verify:dist": "node scripts/verify-dist.cjs",
