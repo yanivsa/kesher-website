@@ -40,8 +40,6 @@ const loadable = (loader: () => Promise<PageModule>) => {
 };
 
 const home = loadable(() => import('./pages/Home/Home'));
-const beta = loadable(() => import('./pages/Beta/BetaPage'));
-const beta3 = loadable(() => import('./pages/Beta/Beta3Page'));
 const couples = loadable(() => import('./pages/Services/Couples/CouplesCounseling'));
 const premarital = loadable(() => import('./pages/Services/Premarital/PremaritalFirstYearPage'));
 const parenting = loadable(() => import('./pages/Services/Parenting/ParentingGuidance'));
@@ -68,8 +66,6 @@ const notFound = loadable(() => import('./pages/NotFound/NotFound'));
 const {
   Page: Home,
 } = home;
-const { Page: Beta } = beta;
-const { Page: Beta3 } = beta3;
 const { Page: CouplesCounseling } = couples;
 const { Page: PremaritalPage } = premarital;
 const { Page: ParentingGuidance } = parenting;
@@ -95,7 +91,6 @@ const { Page: NotFound } = notFound;
 
 const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/$/, home.preload],
-  [/^\/beta3\/?$/, beta3.preload],
   [/^\/couples-counseling-ashdod\/?$/, couplesCounselingAshdod.preload],
   [/^\/thank-you-booked\/?$/, thankYouBooked.preload],
   [/^\/thank-you-contact\/?$/, thankYouContact.preload],
@@ -132,9 +127,6 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/beta" element={<Beta />} />
-          <Route path="/beta2" element={<Navigate to="/" replace />} />
-          <Route path="/beta3" element={<Beta3 />} />
           <Route path="/couples-counseling-ashdod" element={<CouplesCounselingAshdodPage />} />
           <Route path="/thank-you-booked" element={<ThankYouBookedPage />} />
           <Route path="/thank-you-contact" element={<ThankYouContactPage />} />
@@ -154,7 +146,6 @@ function App() {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/appointment" element={<AppointmentPage />} />
-          <Route path="/b" element={<Navigate to="/" replace />} />
           <Route path="/accessibility" element={<AccessibilityPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />

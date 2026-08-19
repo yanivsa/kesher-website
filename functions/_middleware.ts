@@ -22,8 +22,7 @@ export const legacyRedirectTarget = (requestUrl: string) => {
 export const canonicalRedirectTarget = (requestUrl: string) => {
   const url = new URL(requestUrl);
   if (url.hostname !== 'kesher.saharoni.com') return null;
-  if (url.pathname !== '/b' && url.pathname !== '/b/' && url.pathname !== '/beta2' && url.pathname !== '/beta2/') return null;
-  return `${PRIMARY_ORIGIN}/`;
+  return null;
 };
 
 export const onRequest: PagesFunction = async (context) => {
