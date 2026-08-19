@@ -19,17 +19,9 @@ Remotion must take the **EXISTING NotebookLM MP4** and **UPGRADE** it.
 1. **Exact NotebookLM Source Audio & Narration**: Always preserve the exact source MP4 audio without alteration or replacement.
 2. **Explicit Female Voice Generation Prompt Requirement**: Every NotebookLM generation prompt MUST explicitly include:
    > `השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות.`
-3. **Strict mandatory visual rejection language for slide/card-like output**: The automated Jules visual review MUST reject any video that is composed of slide/card-like, text-heavy, timeline/diagram, repeated-frame, or generic illustrative visuals. This rejection remains strict review feedback but is advisory for publication.
-4. **Jules is advisory; technical and YouTube verification are mandatory publication gates**: A technically verified MP4 is eligible for upload regardless of whether Jules approves, rejects, times out, is unavailable, or returns malformed review output. Jules may flag visual, semantic, or metadata defects and may recommend a later targeted rebuild, but Jules MUST NOT block upload of a technically verified MP4. After upload, the pipeline MUST verify the concrete YouTube video ID, expected channel ID, Hebrew metadata, `privacy=public`, and `processing=succeeded`; failure of those post-upload checks is a real publication failure.
+3. **Strict mandatory visual rejection language for slide/card-like**: The automated Jules visual review MUST reject any video that is composed of slide/card-like, text-heavy, timeline/diagram, repeated-frame, or generic illustrative visuals.
+4. **Upload must require explicit approved technical, visual, semantic, and metadata gates.**: Once a technically valid MP4 exists and YouTube OAuth succeeds, the video MUST only be uploaded to YouTube if the explicit technical, visual, semantic, and metadata gates are all approved.
 5. **Daily Automation**: Changes to review policy or Remotion implementation MUST preserve the scheduled daily GitHub Actions pipeline and its durable resume behavior. Do not turn the daily flow into a manual-only process.
-
-### Superseded compatibility marker — MUST NOT be applied
-
-The following exact sentence is retained only so older repository compatibility tests can detect the historical policy wording. It is **obsolete, non-operative, and explicitly superseded by invariant 4 above**:
-
-> Upload must require explicit approved technical, visual, semantic, and metadata gates.
-
-Do **not** interpret or apply that legacy sentence as a publication rule. Jules approval is advisory; technical verification before upload and concrete YouTube verification after upload are the active mandatory gates.
 
 ---
 
