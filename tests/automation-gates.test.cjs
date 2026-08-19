@@ -541,27 +541,20 @@ assert paths == ["src/a.ts", "src/b.ts"]
     );
 }
 
-function testAdvisoryVideoReviewCannotBlockTechnicallyVerifiedUpload() {
+function testMandatoryVideoReviewCannotBeBypassed() {
     const dailyWorkflow = fs.readFileSync('.github/workflows/kesher-daily-video.yml', 'utf8');
-    const advisoryUploader = fs.readFileSync('scripts/kesher_youtube_advisory_upload.py', 'utf8');
     assert(
-        dailyWorkflow.includes('Upload technically verified video; Jules is advisory') &&
-        dailyWorkflow.includes('continue-on-error: true') &&
-        dailyWorkflow.includes('python -u scripts/kesher_youtube_advisory_upload.py'),
-        'The unified daily video workflow must keep Jules advisory and upload through the technical-verification bridge'
-    );
-    assert(
-        advisoryUploader.includes('ADVISORY_UPLOAD_STATUSES') &&
-        advisoryUploader.includes('"pending_review"') &&
-        advisoryUploader.includes('"rejected"') &&
-        advisoryUploader.includes('pipeline.verify_authenticated_channel = lambda _token: None') &&
-        advisoryUploader.includes('return pipeline.upload_only()'),
-        'Advisory uploader must accept technically verified review states, skip pre-upload channels.list, and retain the canonical uploader'
+        dailyWorkflow.includes('Upload only after all mandatory review gates approve') &&
+        dailyWorkflow.includes('python -u scripts/kesher_daily_pipeline.py --upload-only') &&
+        dailyWorkflow.includes('--timeout-seconds 900') &&
+        !dailyWorkflow.includes('continue-on-error: true'),
+        'The daily video workflow must keep Jules mandatory, replace a stuck reviewer promptly, and upload only through the strict four-gate pipeline'
     );
     assert(
         !fs.existsSync('.github/workflows/kesher-youtube-advisory-upload.yml') &&
-        !fs.existsSync('.github/workflows/kesher-video-canary-review-upload.yml'),
-        'Advisory upload must stay inside the single daily workflow rather than creating a second workflow'
+        !fs.existsSync('.github/workflows/kesher-video-canary-review-upload.yml') &&
+        !fs.existsSync('scripts/kesher_youtube_advisory_upload.py'),
+        'No advisory workflow or helper may override a rejected or pending Jules decision'
     );
 }
 
@@ -572,5 +565,5 @@ testWorkflowGate();
 testContentValidatorContracts();
 testIndependentArticlePrGate();
 testAutomergeDeployContracts();
-testAdvisoryVideoReviewCannotBlockTechnicallyVerifiedUpload();
+testMandatoryVideoReviewCannotBeBypassed();
 console.log('All automation gates tests passed.');
