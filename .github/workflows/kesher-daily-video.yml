@@ -86,7 +86,8 @@ jobs:
           command -v ffmpeg
           command -v ffprobe
           command -v fc-match
-          fc-match "DejaVu Sans" | grep -qi "DejaVuSans"
+          matched_font="$(fc-match -f '%{family}\n' 'DejaVu Sans')"
+          grep -qi "DejaVu Sans" <<<"$matched_font"
 
       - name: Install pinned cloud dependencies
         run: |
