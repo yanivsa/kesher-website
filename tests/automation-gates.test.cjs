@@ -561,6 +561,11 @@ function testMandatoryVideoReviewCannotBeBypassed() {
         dailyWorkflow.includes("always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != ''"),
         'Pull request validation must never restore, replace, or delete the durable production video state'
     );
+    assert(
+        dailyWorkflow.includes('switch --orphan "$review_branch"') &&
+        dailyWorkflow.includes('grep -v "^${evidence_root}/"'),
+        'Jules must receive a minimal orphan branch containing only the immutable review evidence'
+    );
 }
 
 testControllerHardening();
