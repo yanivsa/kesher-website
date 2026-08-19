@@ -1,8 +1,10 @@
 name: Kesher Content Controller
 
 on:
+  push:
+    branches: [main]
   schedule:
-    # Dynamic heartbeat. The controller itself decides whether work is needed.
+    # Dynamic recovery heartbeat. The controller itself decides whether work is needed.
     - cron: "7,37 * * * *"
   workflow_dispatch:
 
