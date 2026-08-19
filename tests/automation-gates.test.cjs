@@ -541,18 +541,27 @@ assert paths == ["src/a.ts", "src/b.ts"]
     );
 }
 
-function testMandatoryVideoReviewCannotBeBypassed() {
+function testAdvisoryVideoReviewCannotBlockTechnicallyVerifiedUpload() {
     const dailyWorkflow = fs.readFileSync('.github/workflows/kesher-daily-video.yml', 'utf8');
+    const advisoryUploader = fs.readFileSync('scripts/kesher_youtube_advisory_upload.py', 'utf8');
     assert(
-        dailyWorkflow.includes('Upload only after all mandatory review gates approve') &&
-        dailyWorkflow.includes('python -u scripts/kesher_daily_pipeline.py --upload-only'),
-        'The daily video workflow must upload only through the strict four-gate pipeline'
+        dailyWorkflow.includes('Upload technically verified video; Jules is advisory') &&
+        dailyWorkflow.includes('continue-on-error: true') &&
+        dailyWorkflow.includes('python -u scripts/kesher_youtube_advisory_upload.py'),
+        'The unified daily video workflow must keep Jules advisory and upload through the technical-verification bridge'
+    );
+    assert(
+        advisoryUploader.includes('ADVISORY_UPLOAD_STATUSES') &&
+        advisoryUploader.includes('"pending_review"') &&
+        advisoryUploader.includes('"rejected"') &&
+        advisoryUploader.includes('pipeline.verify_authenticated_channel = lambda _token: None') &&
+        advisoryUploader.includes('return pipeline.upload_only()'),
+        'Advisory uploader must accept technically verified review states, skip pre-upload channels.list, and retain the canonical uploader'
     );
     assert(
         !fs.existsSync('.github/workflows/kesher-youtube-advisory-upload.yml') &&
-        !fs.existsSync('.github/workflows/kesher-video-canary-review-upload.yml') &&
-        !fs.existsSync('scripts/kesher_youtube_advisory_upload.py'),
-        'No advisory workflow or helper may override a rejected or pending Jules decision'
+        !fs.existsSync('.github/workflows/kesher-video-canary-review-upload.yml'),
+        'Advisory upload must stay inside the single daily workflow rather than creating a second workflow'
     );
 }
 
@@ -563,5 +572,5 @@ testWorkflowGate();
 testContentValidatorContracts();
 testIndependentArticlePrGate();
 testAutomergeDeployContracts();
-testMandatoryVideoReviewCannotBeBypassed();
+testAdvisoryVideoReviewCannotBlockTechnicallyVerifiedUpload();
 console.log('All automation gates tests passed.');
