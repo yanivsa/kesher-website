@@ -12,10 +12,10 @@ from __future__ import annotations
 
 import sys
 
-try:
+if __package__:
+    from . import kesher_content_controller as controller
+else:
     import kesher_content_controller as controller
-except ImportError:
-    from scripts import kesher_content_controller as controller
 
 
 _base_matching = controller.matching_video_items
