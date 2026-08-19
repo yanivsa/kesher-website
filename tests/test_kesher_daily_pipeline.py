@@ -86,6 +86,14 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(metadata["tags"], ["הדרכת הורים", "ילדים מחוננים"])
         pipeline.require_hebrew(metadata["description"], "description", allow_url=True)
 
+    def test_article_body_uses_id_when_published_post_has_no_slug(self) -> None:
+        post = hebrew_post("id-only-article")
+        post.pop("slug")
+        self.write_posts([post])
+        source = pipeline.source_metadata(post)
+
+        self.assertEqual(pipeline.article_body_for_item({"source": source}), source["body"])
+
     def test_generation_prompt_always_requests_female_hebrew_voice(self) -> None:
         prompt = pipeline.generation_prompt(pipeline.source_metadata(hebrew_post()))
         self.assertIn("קול של אישה ישראלית", prompt)
