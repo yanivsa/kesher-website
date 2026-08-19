@@ -30,6 +30,7 @@ WAITING_STATES = {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER", "PAUSED"}
 TERMINAL_FAILURES = {"FAILED", "CANCELLED", "CANCELED"}
 MAX_STRUCTURED_OUTPUT_REPAIRS = 2
 STRUCTURED_OUTPUT_REPAIR_GRACE_SECONDS = 60
+MAX_REVIEW_SESSION_ATTEMPTS = 2
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 REMOTION_POLICY_PATH = PROJECT_DIR / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 
@@ -303,6 +304,35 @@ def validate_decision(decision: dict[str, Any], item: dict[str, Any], hashes: di
             raise ReviewError(f"Jules returned a weak or non-Hebrew {gate} note")
 
 
+def obtain_validated_decision(
+    api_key: str,
+    prompt: str,
+    item: dict[str, Any],
+    hashes: dict[str, Any],
+    review_branch: str,
+    timeout_seconds: int,
+) -> tuple[dict[str, Any], str]:
+    last_error: ReviewError | None = None
+    for attempt in range(1, MAX_REVIEW_SESSION_ATTEMPTS + 1):
+        try:
+            session = create_session(api_key, prompt, item["id"], review_branch)
+            message = wait_for_message(api_key, session, timeout_seconds)
+            decision = parse_decision(message)
+            validate_decision(decision, item, hashes)
+            return decision, session
+        except ReviewError as exc:
+            last_error = exc
+            if attempt >= MAX_REVIEW_SESSION_ATTEMPTS:
+                break
+            print(
+                "JULES_REVIEW_SESSION_REPLACEMENT "
+                f"attempt={attempt + 1} reason={exc}",
+                flush=True,
+            )
+    assert last_error is not None
+    raise last_error
+
+
 def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> None:
     command = [
         sys.executable,
@@ -381,10 +411,14 @@ def main() -> int:
     _, item = load_pending(args.state_dir)
     hashes = expected_hashes(args.state_dir, item)
     prompt = build_prompt(args.evidence_root, item, hashes)
-    session = create_session(api_key, prompt, item["id"], args.review_branch)
-    message = wait_for_message(api_key, session, args.timeout_seconds)
-    decision = parse_decision(message)
-    validate_decision(decision, item, hashes)
+    decision, session = obtain_validated_decision(
+        api_key,
+        prompt,
+        item,
+        hashes,
+        args.review_branch,
+        args.timeout_seconds,
+    )
     record_decision(args.state_dir, decision, session)
     print(f"JULES_REVIEW_RECORDED session={session} item={item['id']}")
     return 0

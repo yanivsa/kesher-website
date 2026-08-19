@@ -741,6 +741,36 @@ class PipelineTestCase(unittest.TestCase):
             mock.ANY,
         )
 
+    @mock.patch.object(reviewer, "validate_decision")
+    @mock.patch.object(reviewer, "wait_for_message")
+    @mock.patch.object(reviewer, "create_session")
+    def test_jules_review_replaces_timed_out_session_autonomously(
+        self,
+        create: mock.Mock,
+        wait: mock.Mock,
+        validate: mock.Mock,
+    ) -> None:
+        decision = {"item_id": "item-1"}
+        create.side_effect = ["sessions/first", "sessions/replacement"]
+        wait.side_effect = [
+            reviewer.ReviewError("Jules review timed out"),
+            f"{reviewer.FINAL_MARKER}\n{json.dumps(decision)}",
+        ]
+
+        selected, session = reviewer.obtain_validated_decision(
+            "key",
+            "prompt",
+            {"id": "item-1"},
+            {"manifest_sha256": "a" * 64},
+            "review-branch",
+            3600,
+        )
+
+        self.assertEqual(selected, decision)
+        self.assertEqual(session, "sessions/replacement")
+        self.assertEqual(create.call_count, 2)
+        validate.assert_called_once()
+
     def test_jules_evidence_tree_excludes_video_and_verifies_hashes(self) -> None:
         _, item = self.make_pending_item()
         raw = self.state_dir / "raw.mp4"
