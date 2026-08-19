@@ -80,11 +80,13 @@ jobs:
           node-version: "22"
           cache: npm
 
-      - name: Install system media dependencies
+      - name: Verify runner media dependencies
         run: |
           set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y ffmpeg fonts-dejavu-core
+          command -v ffmpeg
+          command -v ffprobe
+          command -v fc-match
+          fc-match "DejaVu Sans" | grep -qi "DejaVuSans"
 
       - name: Install pinned cloud dependencies
         run: |
