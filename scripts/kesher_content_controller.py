@@ -378,21 +378,33 @@ class GitHubClient:
             if isinstance(row, dict) and not row.get("expired")
         ] if isinstance(payload, dict) else []
         artifacts.sort(key=lambda row: str(row.get("created_at") or ""), reverse=True)
+        failures: list[str] = []
         for artifact in artifacts:
+            artifact_id = artifact.get("id") or "unknown"
             archive_url = artifact.get("archive_download_url")
             if not archive_url:
+                failures.append(f"artifact {artifact_id}: missing archive_download_url")
                 continue
             try:
                 raw = self.download_artifact_archive(str(archive_url))
                 with zipfile.ZipFile(io.BytesIO(raw)) as archive:
                     names = [name for name in archive.namelist() if name.endswith("state.json")]
                     if not names:
+                        failures.append(f"artifact {artifact_id}: missing state.json")
                         continue
                     state = json.loads(archive.read(names[0]).decode("utf-8"))
                     if isinstance(state, dict) and isinstance(state.get("items"), list):
                         return state
-            except (zipfile.BadZipFile, json.JSONDecodeError, UnicodeDecodeError, KeyError):
+                    failures.append(f"artifact {artifact_id}: unsupported state schema")
+            except ControllerError as exc:
+                failures.append(f"artifact {artifact_id}: {exc}")
                 continue
+            except (zipfile.BadZipFile, json.JSONDecodeError, UnicodeDecodeError, KeyError) as exc:
+                failures.append(f"artifact {artifact_id}: {type(exc).__name__}")
+                continue
+        if artifacts:
+            detail = " | ".join(failures[-5:]) or "no valid state artifact"
+            raise ControllerError(f"VIDEO_STATE_ARTIFACTS_UNRECOVERABLE: {detail}")
         return {"version": 1, "items": []}
 
 
