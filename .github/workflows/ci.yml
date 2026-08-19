@@ -31,7 +31,9 @@ jobs:
         run: npm ci
 
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        # GitHub's ubuntu runner already carries Chromium's shared libraries.
+        # Avoid a network-dependent apt transaction that can hang the required check.
+        run: npx playwright install chromium
 
       - name: Run full quality gate
         run: npm run check

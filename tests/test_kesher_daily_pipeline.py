@@ -706,6 +706,41 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(selected, valid)
         self.assertEqual(reviewer.parse_decision(selected), payload)
 
+    @mock.patch.object(reviewer.time, "sleep")
+    @mock.patch.object(reviewer, "request_json")
+    @mock.patch.object(reviewer, "list_activities")
+    def test_jules_wait_repairs_missing_structured_output_autonomously(
+        self,
+        activities: mock.Mock,
+        request: mock.Mock,
+        sleep: mock.Mock,
+    ) -> None:
+        payload = {"item_id": "item-1", "visual_status": "rejected"}
+        valid = f"{reviewer.FINAL_MARKER}\n{json.dumps(payload)}"
+        request.side_effect = [
+            {"state": "COMPLETED"},
+            {},
+            {"state": "COMPLETED"},
+        ]
+        activities.side_effect = [
+            [{"agentMessaged": {"agentMessage": "Review complete."}}],
+            [{"agentMessaged": {"agentMessage": valid}}],
+        ]
+        previous_grace = reviewer.STRUCTURED_OUTPUT_REPAIR_GRACE_SECONDS
+        reviewer.STRUCTURED_OUTPUT_REPAIR_GRACE_SECONDS = 0
+        try:
+            selected = reviewer.wait_for_message("key", "sessions/1", 30)
+        finally:
+            reviewer.STRUCTURED_OUTPUT_REPAIR_GRACE_SECONDS = previous_grace
+
+        self.assertEqual(selected, valid)
+        request.assert_any_call(
+            "POST",
+            "/sessions/1:sendMessage",
+            "key",
+            mock.ANY,
+        )
+
     def test_jules_evidence_tree_excludes_video_and_verifies_hashes(self) -> None:
         _, item = self.make_pending_item()
         raw = self.state_dir / "raw.mp4"
