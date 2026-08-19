@@ -541,6 +541,21 @@ assert paths == ["src/a.ts", "src/b.ts"]
     );
 }
 
+function testMandatoryVideoReviewCannotBeBypassed() {
+    const dailyWorkflow = fs.readFileSync('.github/workflows/kesher-daily-video.yml', 'utf8');
+    assert(
+        dailyWorkflow.includes('Upload only after all mandatory review gates approve') &&
+        dailyWorkflow.includes('python -u scripts/kesher_daily_pipeline.py --upload-only'),
+        'The daily video workflow must upload only through the strict four-gate pipeline'
+    );
+    assert(
+        !fs.existsSync('.github/workflows/kesher-youtube-advisory-upload.yml') &&
+        !fs.existsSync('.github/workflows/kesher-video-canary-review-upload.yml') &&
+        !fs.existsSync('scripts/kesher_youtube_advisory_upload.py'),
+        'No advisory workflow or helper may override a rejected or pending Jules decision'
+    );
+}
+
 testControllerHardening();
 testGenericH3();
 testImageExtraction();
@@ -548,4 +563,5 @@ testWorkflowGate();
 testContentValidatorContracts();
 testIndependentArticlePrGate();
 testAutomergeDeployContracts();
+testMandatoryVideoReviewCannotBeBypassed();
 console.log('All automation gates tests passed.');
