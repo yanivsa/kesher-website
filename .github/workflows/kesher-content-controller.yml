@@ -1,0 +1,59 @@
+name: Kesher Content Controller
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: kesher-content-controller
+  cancel-in-progress: false
+
+jobs:
+  controller:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Run autonomous controller tick
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          KESHER_CONTROLLER_STATE_REF: automation-state
+        run: |
+          set -euo pipefail
+          python3 -u scripts/kesher_content_controller.py --report-json | tee /tmp/kesher-controller.json
+
+      - name: Write concise controller summary
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          path = Path('/tmp/kesher-controller.json')
+          if not path.exists():
+              text = 'Controller did not produce a state report.'
+          else:
+              payload = json.loads(path.read_text(encoding='utf-8'))
+              state = payload.get('state') or {}
+              article = state.get('article') or {}
+              video = state.get('video') or {}
+              text = (
+                  f"Cycle: {state.get('cycle')}\n\n"
+                  f"Status: {state.get('status')}\n\n"
+                  f"Action: {payload.get('action')} — {payload.get('reason')}\n\n"
+                  f"Article: {article.get('url') or article.get('pr_url') or 'pending'}\n\n"
+                  f"Video: {video.get('youtube_url') or video.get('item_id') or 'pending'}"
+              )
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
+              out.write('### Kesher Content Controller\n\n' + text + '\n')
+          PY
