@@ -347,13 +347,14 @@ jobs:
           evidence_root=".jules-video-review/${GITHUB_RUN_ID}"
           review_worktree="$(mktemp -d /tmp/kesher-jules-evidence.XXXXXX)"
           git worktree add --detach "$review_worktree" "$GITHUB_SHA"
+          git -C "$review_worktree" switch --orphan "$review_branch"
           python -u scripts/prepare_jules_video_evidence.py \
             --state-dir "$KESHER_STATE_DIR" \
             --output-dir "$review_worktree/$evidence_root"
           git -C "$review_worktree" config user.name "Kesher Video Automation"
           git -C "$review_worktree" config user.email "actions@users.noreply.github.com"
-          git -C "$review_worktree" switch -c "$review_branch"
           git -C "$review_worktree" add "$evidence_root"
+          test -z "$(git -C "$review_worktree" diff --cached --name-only | grep -v "^${evidence_root}/" || true)"
           git -C "$review_worktree" commit -m "Publish immutable Jules video evidence ${GITHUB_RUN_ID}"
           git -C "$review_worktree" push \
             "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
