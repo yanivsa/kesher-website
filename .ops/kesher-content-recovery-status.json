@@ -1,15 +1,16 @@
 {
-  "updated_at": "2026-08-19T09:10:24.740669+00:00",
-  "stage": "video_upload_dispatched",
+  "updated_at": "2026-08-19T09:11:22.073414+00:00",
+  "stage": "video_upload_running",
   "ok": false,
   "article_url": "https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine",
   "article_slug": "first-grade-preparation-morning-routine",
   "video_item_id": "video-20260819-011621-abab0957a6",
-  "video_run_id": "",
+  "video_run_id": "32236244994",
   "video_run_sha": "2f29b9d7405ef0ca71614b69191d844e7214a91a",
   "current_main_sha": "2f29b9d7405ef0ca71614b69191d844e7214a91a",
   "run_is_current_main": true,
-  "run_status": "queued",
+  "run_status": "pending",
+  "run_conclusion": "",
   "run_event": "workflow_dispatch",
-  "reason": "stale run cleared if necessary; upload continuation dispatched on current main"
+  "reason": "monitoring already-dispatched current-main upload continuation"
 }
