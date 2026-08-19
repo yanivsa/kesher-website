@@ -103,7 +103,7 @@ jobs:
           ffprobe -version | head -1
 
       - name: Restore newest valid durable pipeline state
-        if: ${{ github.event_name == 'schedule' || inputs.operation != 'preflight' }}
+        if: ${{ github.event_name != 'pull_request' && (github.event_name == 'schedule' || inputs.operation != 'preflight') }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -431,7 +431,7 @@ jobs:
           echo "Persisted refreshed NotebookLM credentials as encrypted state."
 
       - name: Persist latest state and media evidence
-        if: ${{ always() && hashFiles('.kesher-video-state/state.json') != '' }}
+        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != '' }}
         id: persist_state
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

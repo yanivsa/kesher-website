@@ -556,6 +556,11 @@ function testMandatoryVideoReviewCannotBeBypassed() {
         !fs.existsSync('scripts/kesher_youtube_advisory_upload.py'),
         'No advisory workflow or helper may override a rejected or pending Jules decision'
     );
+    assert(
+        dailyWorkflow.includes("github.event_name != 'pull_request' && (github.event_name == 'schedule' || inputs.operation != 'preflight')") &&
+        dailyWorkflow.includes("always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != ''"),
+        'Pull request validation must never restore, replace, or delete the durable production video state'
+    );
 }
 
 testControllerHardening();
