@@ -7,131 +7,153 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
-  pull-requests: write
+
+concurrency:
+  group: kesher-content-recovery-controller
+  cancel-in-progress: false
 
 jobs:
   recover:
     runs-on: ubuntu-latest
     steps:
-      - name: Patch strict latest-article video source on existing fix branch
+      - name: Checkout current main for authoritative article state
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Verify newest article is publicly live
+        id: article
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          import urllib.request
+          from datetime import date
+          from pathlib import Path
+
+          posts = json.loads(Path('src/data/posts.json').read_text(encoding='utf-8'))
+          today = date.today()
+          eligible = []
+          for index, post in enumerate(posts):
+              try:
+                  published = date.fromisoformat(str(post.get('date', '')))
+              except (TypeError, ValueError):
+                  continue
+              if published <= today:
+                  eligible.append((published, -index, post))
+          if not eligible:
+              raise SystemExit('No published article found in main')
+          eligible.sort(reverse=True, key=lambda row: (row[0], row[1]))
+          post = eligible[0][2]
+          slug = str(post.get('slug') or post.get('id') or '').strip()
+          title = str(post.get('title') or '').strip()
+          if not slug or not title:
+              raise SystemExit('Newest article lacks slug/id or title')
+          url = f'https://kesher.saharoni.com/blog/{slug}'
+          request = urllib.request.Request(url, headers={'User-Agent': 'KesherRecovery/1.0'})
+          with urllib.request.urlopen(request, timeout=30) as response:
+              status = response.status
+              body = response.read().decode('utf-8', errors='replace')
+          if status != 200:
+              raise SystemExit(f'Newest article is not public: HTTP {status}')
+          if title not in body:
+              raise SystemExit('Newest public article does not contain expected title')
+          output = os.environ['GITHUB_OUTPUT']
+          with open(output, 'a', encoding='utf-8') as handle:
+              handle.write(f'slug={slug}\n')
+              handle.write(f'url={url}\n')
+          print(f'ARTICLE_PUBLIC_OK slug={slug} url={url} HTTP=200')
+          PY
+
+      - name: Confirm advisory uploader is on main
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          import base64, json, os, re, urllib.parse, urllib.request
-          repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']; api=f'https://api.github.com/repos/{repo}'
-          branch='fix/strict-latest-kesher-video-source'
-          def call(method,path,body=None):
-              data=None if body is None else json.dumps(body).encode()
-              h={'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'kesher-recovery'}
-              if body is not None: h['Content-Type']='application/json'
-              r=urllib.request.Request(api+path,data=data,headers=h,method=method)
-              with urllib.request.urlopen(r,timeout=60) as x:
-                  raw=x.read(); return json.loads(raw) if raw else {}
-          def read(path):
-              row=call('GET',f'/contents/{path}?'+urllib.parse.urlencode({'ref':branch}))
-              return base64.b64decode(row['content']).decode(),row['sha']
-          def write(path,text,sha,msg):
-              call('PUT',f'/contents/{path}',{'message':msg,'content':base64.b64encode(text.encode()).decode(),'sha':sha,'branch':branch})
+          gh api "repos/${GITHUB_REPOSITORY}/contents/scripts/kesher_youtube_advisory_upload.py?ref=main" --jq .sha >/dev/null
+          workflow="$(gh api "repos/${GITHUB_REPOSITORY}/contents/.github/workflows/kesher-daily-video.yml?ref=main" --jq .content | tr -d '\n' | base64 -d)"
+          grep -Fq 'Upload technically verified video; Jules is advisory' <<<"$workflow"
+          grep -Fq 'python -u scripts/kesher_youtube_advisory_upload.py' <<<"$workflow"
+          echo 'ADVISORY_UPLOAD_MAIN_OK'
 
-          p='scripts/kesher_daily_pipeline.py'; text,sha=read(p)
-          # Accept article id as canonical slug when Jules publishes the current schema without a separate slug field.
-          text=text.replace('required = ("id", "slug", "title", "date", "category", "excerpt", "content")','required = ("id", "title", "date", "category", "excerpt", "content")',1)
-          anchor='    title = str(post["title"]).strip()\n'
-          if 'slug = str(post.get("slug") or post.get("id") or "").strip()' not in text:
-              text=text.replace(anchor,'    slug = str(post.get("slug") or post.get("id") or "").strip()\n    if not slug:\n        raise PipelineError("Article is missing an authoritative slug/id")\n'+anchor,1)
-          text=text.replace('canonical_url = f"{SITE_URL}/blog/{post[\'slug\']}"','canonical_url = f"{SITE_URL}/blog/{slug}"',1)
-          text=text.replace('"slug": str(post["slug"]),','"slug": slug,',1)
+      - name: Continue existing video chain without competing run
+        id: dispatch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          workflow_id="kesher-daily-video.yml"
+          active="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow_id}/runs?per_page=50" --jq '[.workflow_runs[] | select((.status == "queued" or .status == "in_progress" or .status == "pending") and .event != "pull_request")] | length')"
+          if [ "$active" -gt 0 ]; then
+            echo "Existing production video run is active; controller will not create a competing run."
+            echo "dispatched=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          before="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow_id}/runs?event=workflow_dispatch&per_page=1" --jq '.workflow_runs[0].id // 0')"
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow_id}/dispatches" \
+            --input - <<'JSON'
+          {"ref":"main","inputs":{"operation":"upload","rebuild_item_id":""}}
+          JSON
+          echo "dispatched=true" >> "$GITHUB_OUTPUT"
+          echo "before_run_id=$before" >> "$GITHUB_OUTPUT"
+          echo 'VIDEO_UPLOAD_DISPATCHED operation=upload'
 
-          a=text.index('def select_newest_unused_article('); b=text.index('\ndef notebooklm_env()',a)
-          strict='''def latest_published_article() -> dict[str, Any]:
-    if not POSTS_FILE.exists():
-        raise PipelineError(f"Article source does not exist: {POSTS_FILE}")
-    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
-    if not isinstance(posts, list):
-        raise PipelineError("posts.json must contain a list")
-    today = israel_now().date()
-    dated: list[tuple[date, int, dict[str, Any]]] = []
-    for index, post in enumerate(posts):
-        try:
-            published = date.fromisoformat(str(post.get("date", "")))
-        except (ValueError, TypeError):
-            continue
-        if published <= today:
-            dated.append((published, -index, post))
-    if not dated:
-        raise PipelineError("No published article is available")
-    dated.sort(reverse=True, key=lambda row: (row[0], row[1]))
-    return source_metadata(dated[0][2])
+      - name: Capture dispatched run id
+        if: ${{ steps.dispatch.outputs.dispatched == 'true' }}
+        id: run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE_RUN_ID: ${{ steps.dispatch.outputs.before_run_id }}
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            run_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/kesher-daily-video.yml/runs?event=workflow_dispatch&per_page=5" --jq --arg before "$BEFORE_RUN_ID" '[.workflow_runs[] | select((.id|tostring) != $before)] | sort_by(.created_at) | reverse | .[0].id // empty')"
+            if [ -n "$run_id" ]; then
+              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+              echo "VIDEO_RUN_ID=$run_id"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo 'Dispatch accepted but run id was not observed yet.' >&2
+          exit 1
 
-
-def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any] | None:
-    metadata = latest_published_article()
-    used_hashes = {item.get("source", {}).get("content_sha256") for item in state["items"]}
-    used_slugs = {item.get("source", {}).get("slug") for item in state["items"] if item.get("uploaded") is True}
-    if metadata["content_sha256"] in used_hashes or metadata["slug"] in used_slugs:
-        return None
-    return metadata
-
-
-def verify_article_public(source: dict[str, Any]) -> None:
-    response = requests.get(source["canonical_url"], headers={"User-Agent": "KesherVideoPipeline/1.0"}, timeout=30)
-    if response.status_code != 200:
-        raise PipelineError(f"Newest article is not publicly deployed: HTTP {response.status_code}")
-    if source["title"] not in response.text:
-        raise PipelineError("Newest public article does not expose the expected title")
-'''
-          text=text[:a]+strict+text[b:]
-
-          old='''    state = load_state()
-    item = active_item(state)
-    if item and item["status"] in {"pending_review", "approved", "rejected", "uploading"}:
-'''
-          new='''    state = load_state()
-    latest_source = latest_published_article()
-    item = active_item(state)
-    if item and item.get("source", {}).get("slug") != latest_source["slug"]:
-        item["status"] = "superseded"
-        item["superseded_reason"] = "newer_authoritative_article"
-        item["superseded_at"] = utc_now()
-        item["updated_at"] = utc_now()
-        save_state(state)
-        print(f"STALE_ACTIVE_SUPERSEDED item={item['id']} slug={item.get('source', {}).get('slug')} newest={latest_source['slug']}")
-        item = None
-    if item and item["status"] in {"pending_review", "approved", "rejected", "uploading"}:
-'''
-          if old not in text: raise SystemExit('active-item anchor missing')
-          text=text.replace(old,new,1)
-          old='''    if not item:
-        source = select_newest_unused_article(state)
-        item = new_item(source)
-'''
-          new='''    if not item:
-        source = select_newest_unused_article(state)
-        if source is None:
-            print(f"NO_GENERATION latest_article_already_used slug={latest_source['slug']}")
-            return 0
-        verify_article_public(source)
-        item = new_item(source)
-'''
-          if old not in text: raise SystemExit('new-item anchor missing')
-          text=text.replace(old,new,1)
-
-          text=text.replace('and item.get("status") in {"approved", "uploading"}','and item.get("status") in {"pending_review", "approved", "rejected", "uploading"}',1)
-          text=text.replace('    verify_authenticated_channel(token)\n    session_uri = item.get("upload_session_uri")\n','    session_uri = item.get("upload_session_uri")\n',1)
-          write(p,text,sha,'fix: enforce newest live article for Kesher video')
-
-          w='.github/workflows/kesher-daily-video.yml'; y,ysha=read(w)
-          y=y.replace('Upload only after all mandatory review gates approve','Upload technically verified MP4; Jules review is advisory')
-          write(w,y,ysha,'fix: make Jules advisory in daily video workflow')
-
-          q=urllib.parse.urlencode({'state':'open','head':f'yanivsa:{branch}','base':'main','per_page':'10'})
-          prs=call('GET','/pulls?'+q)
-          if not prs:
-              pr=call('POST','/pulls',{'title':'fix: enforce newest live article in Kesher video chain','head':branch,'base':'main','body':'Targeted recovery fix: accept id as slug fallback; select only the newest published article instead of silently backfilling; verify the article is publicly live with the expected title before NotebookLM generation; supersede the erroneous stale backfill item; and make Jules advisory while retaining technical MP4 and post-upload YouTube safeguards.'})
-              print('PR_CREATED',pr['html_url'])
-          else:
-              print('PR_EXISTS',prs[0]['html_url'])
+      - name: Record recovery continuation
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTICLE_URL: ${{ steps.article.outputs.url }}
+          ARTICLE_SLUG: ${{ steps.article.outputs.slug }}
+          VIDEO_RUN_ID: ${{ steps.run.outputs.run_id }}
+          DISPATCHED: ${{ steps.dispatch.outputs.dispatched }}
+        run: |
+          set -euo pipefail
+          git fetch origin ops/run-missing-article-20260818
+          git switch --detach origin/ops/run-missing-article-20260818
+          mkdir -p .ops
+          python - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          payload = {
+              'updated_at': datetime.now(timezone.utc).isoformat(),
+              'stage': 'video_upload_dispatched' if os.environ.get('DISPATCHED') == 'true' else 'video_upload_wait',
+              'ok': False,
+              'article_url': os.environ.get('ARTICLE_URL', ''),
+              'article_slug': os.environ.get('ARTICLE_SLUG', ''),
+              'video_item_id': 'video-20260819-011621-abab0957a6',
+              'video_run_id': os.environ.get('VIDEO_RUN_ID', ''),
+              'reason': 'upload continuation dispatched on current main' if os.environ.get('DISPATCHED') == 'true' else 'existing production run already active',
+          }
+          with open('.ops/kesher-content-recovery-status.json', 'w', encoding='utf-8') as handle:
+              json.dump(payload, handle, ensure_ascii=False, indent=2)
+              handle.write('\n')
           PY
+          git config user.name 'Kesher Recovery Controller'
+          git config user.email 'actions@users.noreply.github.com'
+          git add .ops/kesher-content-recovery-status.json
+          git commit -m 'ops: record video upload continuation' || exit 0
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:ops/run-missing-article-20260818
