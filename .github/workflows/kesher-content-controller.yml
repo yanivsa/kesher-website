@@ -25,7 +25,9 @@ concurrency:
 
 jobs:
   controller:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.event != 'pull_request' }}
+    # Successful child completion can advance immediately. Failed children wait
+    # for the next heartbeat, avoiding tight failure/retry loops.
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.event != 'pull_request' && github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
