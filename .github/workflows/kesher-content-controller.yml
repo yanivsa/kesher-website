@@ -37,14 +37,14 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - name: Run autonomous controller tick
+      - name: Run autonomous queue-aware controller tick
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
           KESHER_CONTROLLER_STATE_REF: automation-state
         run: |
           set -euo pipefail
-          python3 -u scripts/kesher_content_controller.py --report-json | tee /tmp/kesher-controller.json
+          python3 -u scripts/kesher_content_controller_entry.py --report-json | tee /tmp/kesher-controller.json
 
       - name: Write concise controller summary
         if: always()
