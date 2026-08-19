@@ -35,15 +35,6 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - name: Disable superseded scheduled article workflows
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          for workflow in jules-weekday-article.yml jules-weekend-article.yml; do
-            gh api --method PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow}/disable"
-          done
-
       - name: Run autonomous controller tick
         env:
           GH_TOKEN: ${{ github.token }}
