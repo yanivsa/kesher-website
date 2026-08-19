@@ -17,6 +17,7 @@ concurrency:
 jobs:
   recover:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout current main for authoritative article state
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
@@ -79,7 +80,7 @@ jobs:
           grep -Fq 'python -u scripts/kesher_youtube_advisory_upload.py' <<<"$workflow"
           echo 'ADVISORY_UPLOAD_MAIN_OK'
 
-      - name: Continue existing video chain without competing run
+      - name: Replace stale production run or continue current one
         id: dispatch
         env:
           GH_TOKEN: ${{ github.token }}
@@ -89,25 +90,39 @@ jobs:
           current_main_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq .object.sha)"
           active_json="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow_id}/runs?per_page=50" --jq '[.workflow_runs[] | select((.status == "queued" or .status == "in_progress" or .status == "pending") and .event != "pull_request")] | sort_by(.created_at) | reverse')"
           active_count="$(jq 'length' <<<"$active_json")"
+
           if [ "$active_count" -gt 0 ]; then
             run_id="$(jq -r '.[0].id' <<<"$active_json")"
             run_sha="$(jq -r '.[0].head_sha' <<<"$active_json")"
             run_status="$(jq -r '.[0].status' <<<"$active_json")"
             run_event="$(jq -r '.[0].event' <<<"$active_json")"
-            echo "Existing production video run is active; controller will not create a competing run."
-            echo "dispatched=false" >> "$GITHUB_OUTPUT"
-            echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-            echo "run_sha=$run_sha" >> "$GITHUB_OUTPUT"
-            echo "run_status=$run_status" >> "$GITHUB_OUTPUT"
-            echo "run_event=$run_event" >> "$GITHUB_OUTPUT"
-            echo "current_main_sha=$current_main_sha" >> "$GITHUB_OUTPUT"
             if [ "$run_sha" = "$current_main_sha" ]; then
+              echo "Current-main production video run already active; no duplicate dispatch."
+              echo "dispatched=false" >> "$GITHUB_OUTPUT"
+              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+              echo "run_sha=$run_sha" >> "$GITHUB_OUTPUT"
+              echo "run_status=$run_status" >> "$GITHUB_OUTPUT"
+              echo "run_event=$run_event" >> "$GITHUB_OUTPUT"
+              echo "current_main_sha=$current_main_sha" >> "$GITHUB_OUTPUT"
               echo "run_is_current_main=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "run_is_current_main=false" >> "$GITHUB_OUTPUT"
+              exit 0
             fi
-            echo "ACTIVE_VIDEO_RUN id=$run_id event=$run_event status=$run_status sha=$run_sha current_main=$current_main_sha"
-            exit 0
+
+            echo "Cancelling stale production run id=$run_id sha=$run_sha before current-main continuation."
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/cancel" || true
+            for attempt in $(seq 1 60); do
+              stale_status="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq .status)"
+              if [ "$stale_status" = "completed" ]; then
+                break
+              fi
+              sleep 5
+            done
+            stale_status="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq .status)"
+            if [ "$stale_status" != "completed" ]; then
+              echo "Stale production run did not terminate; refusing competing dispatch." >&2
+              exit 1
+            fi
+            echo "STALE_VIDEO_RUN_TERMINATED id=$run_id"
           fi
 
           before="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow_id}/runs?event=workflow_dispatch&per_page=1" --jq '.workflow_runs[0].id // 0')"
@@ -119,7 +134,7 @@ jobs:
           echo "before_run_id=$before" >> "$GITHUB_OUTPUT"
           echo "current_main_sha=$current_main_sha" >> "$GITHUB_OUTPUT"
           echo "run_is_current_main=true" >> "$GITHUB_OUTPUT"
-          echo 'VIDEO_UPLOAD_DISPATCHED operation=upload'
+          echo 'VIDEO_UPLOAD_DISPATCHED operation=upload current_main=true'
 
       - name: Capture dispatched run id
         if: ${{ steps.dispatch.outputs.dispatched == 'true' }}
@@ -167,10 +182,10 @@ jobs:
           dispatched = os.environ.get('DISPATCHED') == 'true'
           current = os.environ.get('RUN_IS_CURRENT_MAIN') == 'true'
           if dispatched:
-              reason = 'upload continuation dispatched on current main'
+              reason = 'stale run cleared if necessary; upload continuation dispatched on current main'
               stage = 'video_upload_dispatched'
           else:
-              reason = 'existing production run already active on current main' if current else 'existing production run already active on older main; wait for it before retrying current main'
+              reason = 'current-main production run already active; no duplicate dispatch'
               stage = 'video_upload_wait'
           payload = {
               'updated_at': datetime.now(timezone.utc).isoformat(),
@@ -194,5 +209,5 @@ jobs:
           git config user.name 'Kesher Recovery Controller'
           git config user.email 'actions@users.noreply.github.com'
           git add .ops/kesher-content-recovery-status.json
-          git commit -m 'ops: record active video production run' || exit 0
+          git commit -m 'ops: record current-main video upload continuation' || exit 0
           git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:ops/run-missing-article-20260818
