@@ -44,8 +44,10 @@ class FakeGitHub:
     def open_article_prs(self):
         return copy.deepcopy(self.prs)
 
-    def active_workflow_run(self, workflow):
+    def active_workflow_run(self, workflow, *, production_only=False):
         value = self.active.get(workflow)
+        if value and production_only and value.get("event") == "pull_request":
+            return None
         return copy.deepcopy(value) if value else None
 
     def dispatch(self, workflow, inputs=None):
@@ -157,6 +159,20 @@ class ControllerTests(unittest.TestCase):
             (controller.VIDEO_WORKFLOW, {"operation": "full"})
         ])
         self.assertTrue(state["article"]["live"])
+
+    def test_video_pr_validation_does_not_block_production_dispatch(self):
+        gh = FakeGitHub()
+        gh.posts = [article()]
+        gh.active[controller.VIDEO_WORKFLOW] = {
+            "id": 66, "status": "in_progress", "event": "pull_request"
+        }
+        site = FakeSite(status=200, body="כותרת מאמר")
+        state, action = self.make(gh, site).tick()
+        self.assertEqual(action.kind, "dispatch_video")
+        self.assertEqual(state["status"], "video_running")
+        self.assertEqual(gh.dispatches[-1], (
+            controller.VIDEO_WORKFLOW, {"operation": "full"}
+        ))
 
     def test_active_video_run_is_resumed_not_duplicated(self):
         gh = FakeGitHub()
