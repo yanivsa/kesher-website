@@ -1,10 +1,11 @@
 {
-  "updated_at": "2026-08-18T23:57:00.915862+00:00",
-  "stage": "video_rebuild_running",
+  "updated_at": "2026-08-19T00:13:36.180345+00:00",
+  "stage": "video_rebuild_completed",
   "ok": true,
   "article_url": "https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine",
   "video_item_id": "video-20260819-011621-abab0957a6",
   "video_action": "reused",
   "video_run_id": 32198888908,
-  "video_run_url": "https://github.com/yanivsa/kesher-website/actions/runs/32198888908"
+  "video_run_url": "https://github.com/yanivsa/kesher-website/actions/runs/32198888908",
+  "video_conclusion": "success"
 }
