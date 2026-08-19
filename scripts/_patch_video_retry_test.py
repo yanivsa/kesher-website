@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 from pathlib import Path
 
-path = Path('tests/test_kesher_daily_pipeline.py')
+path = Path('scripts/jules_video_reviewer.py')
 text = path.read_text(encoding='utf-8')
-old = '''    @mock.patch.object(reviewer, "validate_decision")\n    @mock.patch.object(reviewer, "wait_for_message")\n    @mock.patch.object(reviewer, "create_session")\n    def test_jules_review_replaces_timed_out_session_autonomously(\n        self,\n        create: mock.Mock,\n        wait: mock.Mock,\n        validate: mock.Mock,\n    ) -> None:\n'''
-new = '''    @mock.patch.object(reviewer, "validate_structured_contract")\n    @mock.patch.object(reviewer, "validate_decision")\n    @mock.patch.object(reviewer, "wait_for_message")\n    @mock.patch.object(reviewer, "create_session")\n    def test_jules_review_replaces_timed_out_session_autonomously(\n        self,\n        create: mock.Mock,\n        wait: mock.Mock,\n        validate: mock.Mock,\n        validate_contract: mock.Mock,\n    ) -> None:\n'''
-if text.count(old) != 1:
-    raise SystemExit('retry test decorator target not unique')
-text = text.replace(old, new, 1)
-old_assert = '''        self.assertEqual(create.call_count, 2)\n        validate.assert_called_once()\n'''
-new_assert = '''        self.assertEqual(create.call_count, 2)\n        validate.assert_called_once()\n        validate_contract.assert_called_once_with(decision)\n'''
-if text.count(old_assert) != 1:
-    raise SystemExit('retry test assertion target not unique')
-path.write_text(text.replace(old_assert, new_assert, 1), encoding='utf-8')
+old_signature = '''def validate_decision(decision: dict[str, Any], item: dict[str, Any], hashes: dict[str, Any]) -> None:\n'''
+new_signature = '''def validate_decision(\n    decision: dict[str, Any],\n    item: dict[str, Any],\n    hashes: dict[str, Any],\n    *,\n    strict_schema: bool = False,\n) -> None:\n'''
+if text.count(old_signature) != 1:
+    raise SystemExit('validate_decision signature target not unique')
+text = text.replace(old_signature, new_signature, 1)
+old_tail = '''        if not isinstance(note, str) or len(re.findall(r"[\\u0590-\\u05ff]", note)) < 12:\n            raise ReviewError(f"Jules returned a weak or non-Hebrew {gate} note")\n\n\ndef validate_structured_contract'''
+new_tail = '''        if not isinstance(note, str) or len(re.findall(r"[\\u0590-\\u05ff]", note)) < 12:\n            raise ReviewError(f"Jules returned a weak or non-Hebrew {gate} note")\n    if strict_schema:\n        validate_structured_contract(decision)\n\n\ndef validate_structured_contract'''
+if text.count(old_tail) != 1:
+    raise SystemExit('validate_decision tail target not unique')
+text = text.replace(old_tail, new_tail, 1)
+old_runtime = '''            validate_decision(decision, item, hashes)\n            validate_structured_contract(decision)\n            return decision, session\n'''
+new_runtime = '''            validate_decision(decision, item, hashes, strict_schema=True)\n            return decision, session\n'''
+if text.count(old_runtime) != 1:
+    raise SystemExit('runtime validation target not unique')
+path.write_text(text.replace(old_runtime, new_runtime, 1), encoding='utf-8')
