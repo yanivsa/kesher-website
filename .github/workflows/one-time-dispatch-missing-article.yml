@@ -17,197 +17,71 @@ concurrency:
 jobs:
   recover:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
-      - name: Checkout current main for authoritative article state
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
-        with:
-          ref: main
-          persist-credentials: false
-
-      - name: Verify newest article is publicly live
-        id: article
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          import json
-          import os
-          import urllib.request
-          from datetime import date
-          from pathlib import Path
-
-          posts = json.loads(Path('src/data/posts.json').read_text(encoding='utf-8'))
-          today = date.today()
-          eligible = []
-          for index, post in enumerate(posts):
-              try:
-                  published = date.fromisoformat(str(post.get('date', '')))
-              except (TypeError, ValueError):
-                  continue
-              if published <= today:
-                  eligible.append((published, -index, post))
-          if not eligible:
-              raise SystemExit('No published article found in main')
-          eligible.sort(reverse=True, key=lambda row: (row[0], row[1]))
-          post = eligible[0][2]
-          slug = str(post.get('slug') or post.get('id') or '').strip()
-          title = str(post.get('title') or '').strip()
-          if not slug or not title:
-              raise SystemExit('Newest article lacks slug/id or title')
-          url = f'https://kesher.saharoni.com/blog/{slug}'
-          request = urllib.request.Request(url, headers={'User-Agent': 'KesherRecovery/1.0'})
-          with urllib.request.urlopen(request, timeout=30) as response:
-              status = response.status
-              body = response.read().decode('utf-8', errors='replace')
-          if status != 200:
-              raise SystemExit(f'Newest article is not public: HTTP {status}')
-          if title not in body:
-              raise SystemExit('Newest public article does not contain expected title')
-          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as handle:
-              handle.write(f'slug={slug}\n')
-              handle.write(f'url={url}\n')
-          print(f'ARTICLE_PUBLIC_OK slug={slug} url={url} HTTP=200')
-          PY
-
-      - name: Confirm advisory uploader is on main
+      - name: Locate the already-dispatched current-main video run
+        id: locate
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh api "repos/${GITHUB_REPOSITORY}/contents/scripts/kesher_youtube_advisory_upload.py?ref=main" --jq .sha >/dev/null
-          workflow="$(gh api "repos/${GITHUB_REPOSITORY}/contents/.github/workflows/kesher-daily-video.yml?ref=main" --jq .content | tr -d '\n' | base64 -d)"
-          grep -Fq 'Upload technically verified video; Jules is advisory' <<<"$workflow"
-          grep -Fq 'python -u scripts/kesher_youtube_advisory_upload.py' <<<"$workflow"
-          echo 'ADVISORY_UPLOAD_MAIN_OK'
-
-      - name: Replace stale production run or continue current one
-        id: dispatch
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          workflow_id="kesher-daily-video.yml"
           current_main_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq .object.sha)"
-          active_json="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow_id}/runs?per_page=50" --jq '[.workflow_runs[] | select((.status == "queued" or .status == "in_progress" or .status == "pending") and .event != "pull_request")] | sort_by(.created_at) | reverse')"
-          active_count="$(jq 'length' <<<"$active_json")"
-
-          if [ "$active_count" -gt 0 ]; then
-            run_id="$(jq -r '.[0].id' <<<"$active_json")"
-            run_sha="$(jq -r '.[0].head_sha' <<<"$active_json")"
-            run_status="$(jq -r '.[0].status' <<<"$active_json")"
-            run_event="$(jq -r '.[0].event' <<<"$active_json")"
-            if [ "$run_sha" = "$current_main_sha" ]; then
-              echo "Current-main production video run already active; no duplicate dispatch."
-              echo "dispatched=false" >> "$GITHUB_OUTPUT"
-              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-              echo "run_sha=$run_sha" >> "$GITHUB_OUTPUT"
-              echo "run_status=$run_status" >> "$GITHUB_OUTPUT"
-              echo "run_event=$run_event" >> "$GITHUB_OUTPUT"
-              echo "current_main_sha=$current_main_sha" >> "$GITHUB_OUTPUT"
-              echo "run_is_current_main=true" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-
-            echo "Cancelling stale production run id=$run_id sha=$run_sha before current-main continuation."
-            gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/cancel" || true
-            for attempt in $(seq 1 60); do
-              stale_status="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq .status)"
-              if [ "$stale_status" = "completed" ]; then
-                break
-              fi
-              sleep 5
-            done
-            stale_status="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}" --jq .status)"
-            if [ "$stale_status" != "completed" ]; then
-              echo "Stale production run did not terminate; refusing competing dispatch." >&2
-              exit 1
-            fi
-            echo "STALE_VIDEO_RUN_TERMINATED id=$run_id"
+          runs="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/kesher-daily-video.yml/runs?per_page=50")"
+          row="$(jq -c --arg sha "$current_main_sha" '[.workflow_runs[] | select(.event != "pull_request" and .head_sha == $sha)] | sort_by(.created_at) | reverse | .[0] // empty' <<<"$runs")"
+          if [ -z "$row" ]; then
+            echo "No current-main production run is visible after the accepted dispatch." >&2
+            exit 1
           fi
+          run_id="$(jq -r .id <<<"$row")"
+          status="$(jq -r .status <<<"$row")"
+          conclusion="$(jq -r '.conclusion // ""' <<<"$row")"
+          event="$(jq -r .event <<<"$row")"
+          {
+            echo "run_id=$run_id"
+            echo "status=$status"
+            echo "conclusion=$conclusion"
+            echo "event=$event"
+            echo "current_main_sha=$current_main_sha"
+          } >> "$GITHUB_OUTPUT"
+          echo "CURRENT_MAIN_VIDEO_RUN id=$run_id status=$status conclusion=$conclusion event=$event sha=$current_main_sha"
 
-          before="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow_id}/runs?event=workflow_dispatch&per_page=1" --jq '.workflow_runs[0].id // 0')"
-          gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow_id}/dispatches" \
-            --input - <<'JSON'
-          {"ref":"main","inputs":{"operation":"upload","rebuild_item_id":""}}
-          JSON
-          echo "dispatched=true" >> "$GITHUB_OUTPUT"
-          echo "before_run_id=$before" >> "$GITHUB_OUTPUT"
-          echo "current_main_sha=$current_main_sha" >> "$GITHUB_OUTPUT"
-          echo "run_is_current_main=true" >> "$GITHUB_OUTPUT"
-          echo 'VIDEO_UPLOAD_DISPATCHED operation=upload current_main=true'
-
-      - name: Capture dispatched run id
-        if: ${{ steps.dispatch.outputs.dispatched == 'true' }}
-        id: run
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BEFORE_RUN_ID: ${{ steps.dispatch.outputs.before_run_id }}
-        run: |
-          set -euo pipefail
-          for attempt in $(seq 1 30); do
-            run_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/kesher-daily-video.yml/runs?event=workflow_dispatch&per_page=5" --jq --arg before "$BEFORE_RUN_ID" '[.workflow_runs[] | select((.id|tostring) != $before)] | sort_by(.created_at) | reverse | .[0].id // empty')"
-            if [ -n "$run_id" ]; then
-              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
-              echo "VIDEO_RUN_ID=$run_id"
-              exit 0
-            fi
-            sleep 2
-          done
-          echo 'Dispatch accepted but run id was not observed yet.' >&2
-          exit 1
-
-      - name: Record recovery continuation
+      - name: Record active run for unified recovery
         if: ${{ always() }}
         env:
           GH_TOKEN: ${{ github.token }}
-          ARTICLE_URL: ${{ steps.article.outputs.url }}
-          ARTICLE_SLUG: ${{ steps.article.outputs.slug }}
-          ACTIVE_RUN_ID: ${{ steps.dispatch.outputs.run_id }}
-          DISPATCHED_RUN_ID: ${{ steps.run.outputs.run_id }}
-          ACTIVE_RUN_SHA: ${{ steps.dispatch.outputs.run_sha }}
-          CURRENT_MAIN_SHA: ${{ steps.dispatch.outputs.current_main_sha }}
-          RUN_IS_CURRENT_MAIN: ${{ steps.dispatch.outputs.run_is_current_main }}
-          RUN_STATUS: ${{ steps.dispatch.outputs.run_status }}
-          RUN_EVENT: ${{ steps.dispatch.outputs.run_event }}
-          DISPATCHED: ${{ steps.dispatch.outputs.dispatched }}
+          VIDEO_RUN_ID: ${{ steps.locate.outputs.run_id }}
+          RUN_STATUS: ${{ steps.locate.outputs.status }}
+          RUN_CONCLUSION: ${{ steps.locate.outputs.conclusion }}
+          RUN_EVENT: ${{ steps.locate.outputs.event }}
+          CURRENT_MAIN_SHA: ${{ steps.locate.outputs.current_main_sha }}
         run: |
           set -euo pipefail
-          git fetch origin ops/run-missing-article-20260818
-          git switch --detach origin/ops/run-missing-article-20260818
-          mkdir -p .ops
-          python - <<'PY'
+          python - <<'PY' >/tmp/status.json
           import json, os
           from datetime import datetime, timezone
-          run_id = os.environ.get('DISPATCHED_RUN_ID') or os.environ.get('ACTIVE_RUN_ID', '')
-          dispatched = os.environ.get('DISPATCHED') == 'true'
-          current = os.environ.get('RUN_IS_CURRENT_MAIN') == 'true'
-          if dispatched:
-              reason = 'stale run cleared if necessary; upload continuation dispatched on current main'
-              stage = 'video_upload_dispatched'
-          else:
-              reason = 'current-main production run already active; no duplicate dispatch'
-              stage = 'video_upload_wait'
+          status = os.environ.get('RUN_STATUS', '')
+          conclusion = os.environ.get('RUN_CONCLUSION', '')
           payload = {
               'updated_at': datetime.now(timezone.utc).isoformat(),
-              'stage': stage,
-              'ok': False,
-              'article_url': os.environ.get('ARTICLE_URL', ''),
-              'article_slug': os.environ.get('ARTICLE_SLUG', ''),
+              'stage': 'video_upload_complete' if status == 'completed' else 'video_upload_running',
+              'ok': status == 'completed' and conclusion == 'success',
+              'article_url': 'https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine',
+              'article_slug': 'first-grade-preparation-morning-routine',
               'video_item_id': 'video-20260819-011621-abab0957a6',
-              'video_run_id': run_id,
-              'video_run_sha': os.environ.get('ACTIVE_RUN_SHA', '') or os.environ.get('CURRENT_MAIN_SHA', ''),
+              'video_run_id': os.environ.get('VIDEO_RUN_ID', ''),
+              'video_run_sha': os.environ.get('CURRENT_MAIN_SHA', ''),
               'current_main_sha': os.environ.get('CURRENT_MAIN_SHA', ''),
-              'run_is_current_main': current or dispatched,
-              'run_status': os.environ.get('RUN_STATUS', '') or ('queued' if dispatched else ''),
-              'run_event': os.environ.get('RUN_EVENT', '') or ('workflow_dispatch' if dispatched else ''),
-              'reason': reason,
+              'run_is_current_main': True,
+              'run_status': status,
+              'run_conclusion': conclusion,
+              'run_event': os.environ.get('RUN_EVENT', ''),
+              'reason': 'monitoring already-dispatched current-main upload continuation',
           }
-          with open('.ops/kesher-content-recovery-status.json', 'w', encoding='utf-8') as handle:
-              json.dump(payload, handle, ensure_ascii=False, indent=2)
-              handle.write('\n')
+          print(json.dumps(payload, ensure_ascii=False, indent=2))
           PY
-          git config user.name 'Kesher Recovery Controller'
-          git config user.email 'actions@users.noreply.github.com'
-          git add .ops/kesher-content-recovery-status.json
-          git commit -m 'ops: record current-main video upload continuation' || exit 0
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:ops/run-missing-article-20260818
+          sha="$(gh api "repos/${GITHUB_REPOSITORY}/contents/.ops/kesher-content-recovery-status.json?ref=ops/run-missing-article-20260818" --jq .sha)"
+          content="$(base64 -w0 /tmp/status.json)"
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/.ops/kesher-content-recovery-status.json" \
+            -f message='ops: monitor current-main video upload run' \
+            -f content="$content" \
+            -f sha="$sha" \
+            -f branch='ops/run-missing-article-20260818' >/dev/null
