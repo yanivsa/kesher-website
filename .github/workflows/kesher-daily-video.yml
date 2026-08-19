@@ -14,6 +14,7 @@ on:
       - package-lock.json
       - src/remotion/**
       - tests/test_kesher_daily_pipeline.py
+      - tests/kesher_daily_pipeline_suite.py
       - tests/test_video_review_policy.py
       - tests/test_video_reconcile.py
   workflow_dispatch:
@@ -258,7 +259,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         env:
           NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
-        run: python -m unittest tests.test_kesher_daily_pipeline tests.test_video_review_policy tests.test_video_reconcile -v
+        run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_reconcile -v
 
       - name: NotebookLM read-only preflight
         if: ${{ inputs.operation == 'preflight' }}
