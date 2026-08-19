@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+# Runtime contract regression suite for the mandatory Jules review gate.
 import importlib.util
 import sys
 import types
