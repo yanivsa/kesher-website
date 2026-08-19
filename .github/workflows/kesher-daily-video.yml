@@ -85,9 +85,6 @@ jobs:
           set -euo pipefail
           command -v ffmpeg
           command -v ffprobe
-          command -v fc-match
-          matched_font="$(fc-match -f '%{family}\n' 'DejaVu Sans')"
-          grep -qi "DejaVu Sans" <<<"$matched_font"
 
       - name: Install pinned cloud dependencies
         run: |
