@@ -159,6 +159,8 @@ class ControllerTests(unittest.TestCase):
             (controller.VIDEO_WORKFLOW, {"operation": "full"})
         ])
         self.assertTrue(state["article"]["live"])
+        self.assertEqual(state["video"]["attempts"], 1)
+        self.assertEqual(state["video"]["resume_dispatches"], 0)
 
     def test_video_pr_validation_does_not_block_production_dispatch(self):
         gh = FakeGitHub()
@@ -184,22 +186,89 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(state["video"]["run_id"], 77)
         self.assertEqual(gh.dispatches, [])
 
-    def test_visual_rejection_dispatches_exact_rebuild(self):
+    def test_existing_generation_resume_does_not_burn_start_attempts(self):
+        gh = FakeGitHub()
+        gh.posts = [article()]
+        gh.video_state = {"items": [{
+            "id": "video-1",
+            "status": "generating",
+            "technical_verified": False,
+            "source": {"slug": "today-article"},
+        }]}
+        site = FakeSite(status=200, body="כותרת מאמר")
+
+        state, action = self.make(gh, site).tick()
+        self.assertEqual(action.kind, "dispatch_video")
+        self.assertEqual(gh.dispatches[-1], (
+            controller.VIDEO_WORKFLOW, {"operation": "full"}
+        ))
+        self.assertEqual(state["video"]["attempts"], 0)
+        self.assertEqual(state["video"]["resume_dispatches"], 1)
+
+        # Simulate the short recovery slice completing while NotebookLM is still processing.
+        gh.active.pop(controller.VIDEO_WORKFLOW, None)
+        state, action = self.make(gh, site).tick()
+        self.assertEqual(action.kind, "dispatch_video")
+        self.assertEqual(state["video"]["attempts"], 0)
+        self.assertEqual(state["video"]["resume_dispatches"], 2)
+
+    def test_jules_visual_rejection_dispatches_upload_not_rebuild(self):
         gh = FakeGitHub()
         gh.posts = [article()]
         gh.video_state = {"items": [{
             "id": "video-1",
             "status": "rejected",
+            "technical_verified": True,
             "visual_review_status": "rejected",
+            "semantic_review_status": "approved",
+            "metadata_review_status": "approved",
+            "source": {"slug": "today-article"},
+        }]}
+        site = FakeSite(status=200, body="כותרת מאמר")
+        state, action = self.make(gh, site).tick()
+        self.assertEqual(action.kind, "dispatch_video")
+        self.assertEqual(gh.dispatches[-1], (
+            controller.VIDEO_WORKFLOW, {"operation": "upload"}
+        ))
+        self.assertEqual(state["video"]["attempts"], 0)
+        self.assertEqual(state["video"]["resume_dispatches"], 1)
+
+    def test_unavailable_pending_review_dispatches_upload(self):
+        gh = FakeGitHub()
+        gh.posts = [article()]
+        gh.video_state = {"items": [{
+            "id": "video-1",
+            "status": "pending_review",
+            "technical_verified": True,
+            "visual_review_status": "unavailable",
+            "semantic_review_status": "unavailable",
+            "metadata_review_status": "unavailable",
             "source": {"slug": "today-article"},
         }]}
         site = FakeSite(status=200, body="כותרת מאמר")
         _, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
         self.assertEqual(gh.dispatches[-1], (
-            controller.VIDEO_WORKFLOW,
-            {"operation": "rebuild", "rebuild_item_id": "video-1"},
+            controller.VIDEO_WORKFLOW, {"operation": "upload"}
         ))
+
+    def test_technical_rejection_resumes_full_same_source_recovery(self):
+        gh = FakeGitHub()
+        gh.posts = [article()]
+        gh.video_state = {"items": [{
+            "id": "video-1",
+            "status": "rejected",
+            "technical_verified": False,
+            "source": {"slug": "today-article"},
+        }]}
+        site = FakeSite(status=200, body="כותרת מאמר")
+        state, action = self.make(gh, site).tick()
+        self.assertEqual(action.kind, "dispatch_video")
+        self.assertEqual(gh.dispatches[-1], (
+            controller.VIDEO_WORKFLOW, {"operation": "full"}
+        ))
+        self.assertEqual(state["video"]["attempts"], 0)
+        self.assertEqual(state["video"]["resume_dispatches"], 1)
 
     def test_verified_public_youtube_is_the_only_complete_state(self):
         gh = FakeGitHub()
