@@ -1,0 +1,36 @@
+name: Kesher Article Generation
+
+on:
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: Israel publication date (YYYY-MM-DD)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: kesher-article-generation-${{ inputs.slot }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Run one autonomous Jules article task
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 -u scripts/jules_article_runner.py --slot "${{ inputs.slot }}"
