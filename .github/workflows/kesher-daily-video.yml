@@ -80,9 +80,12 @@ jobs:
           node-version: "22"
           cache: npm
 
-      - name: Verify runner media dependencies
+      - name: Ensure runner media dependencies
         run: |
           set -euo pipefail
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo timeout 300 apt-get install --no-install-recommends -y ffmpeg
+          fi
           command -v ffmpeg
           command -v ffprobe
 
