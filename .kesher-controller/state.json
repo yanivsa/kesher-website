@@ -1,26 +1,17 @@
 {
   "schema_version": 1,
-  "cycle": "2026-08-19",
-  "status": "blocked",
+  "cycle": "2026-08-20",
+  "status": "article_generating",
   "article": {
-    "attempts": 0,
+    "attempts": 1,
     "deploy_attempts": 0,
-    "slug": "first-grade-preparation-morning-routine",
-    "title": "הילקוט מוכן אבל הילד עוד בפיג'מה: התארגנות עצמאית לקראת כיתה אלף",
-    "url": "https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine",
-    "published_date": "2026-08-19",
-    "live": true,
-    "live_verified_at": "2026-08-19T16:42:01.037218+00:00"
+    "last_dispatch_at": "2026-08-19T21:41:30.111806+00:00"
   },
   "video": {
-    "attempts": 0
+    "attempts": 0,
+    "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "controller",
-    "code": "GITHUB_HTTP_401",
-    "message": "GITHUB_HTTP_401: GET https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/9368039749/zip failed: ﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>InvalidAuthenticationInfo</Code><Message>Server failed to authenticate the request. Please refer to the information in the www-authenticate header.\nRequestId:cb250bad-001e-0042-03f9-2f9982000000\nTime:2026-08-19T16:42:01.6368988Z</Message><AuthenticationErrorDetail>The access token was missing or malformed.</AuthenticationErrorDetail></Error>",
-    "at": "2026-08-19T16:42:01.652958+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-19T16:42:01.037235+00:00",
@@ -36,7 +27,16 @@
       "details": {
         "message": "GITHUB_HTTP_401: GET https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/9368039749/zip failed: ﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>InvalidAuthenticationInfo</Code><Message>Server failed to authenticate the request. Please refer to the information in the www-authenticate header.\nRequestId:cb250bad-001e-0042-03f9-2f9982000000\nTime:2026-08-19T16:42:01.6368988Z</Message><AuthenticationErrorDetail>The access token was missing or malformed.</AuthenticationErrorDetail></Error>"
       }
+    },
+    {
+      "at": "2026-08-19T21:41:30.111819+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "article workflow dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-08-19T16:42:01.652976+00:00"
+  "updated_at": "2026-08-19T21:41:30.111825+00:00"
 }
