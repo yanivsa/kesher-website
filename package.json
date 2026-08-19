@@ -14,9 +14,10 @@
     "test": "vitest run",
     "test:content": "node scripts/validate-content.cjs && node tests/automation-gates.test.cjs",
     "test:video-policy": "python3 -m unittest tests.test_video_review_policy -v",
+    "test:controller": "python3 -m unittest tests.test_kesher_content_controller -v",
     "test:e2e": "playwright test",
     "verify:dist": "node scripts/verify-dist.cjs",
-    "check": "npm run generate && npm run lint && npm run test:content && npm run test:video-policy && npm run test && npm run build && npm run verify:dist && npm run test:e2e"
+    "check": "npm run generate && npm run lint && npm run test:content && npm run test:video-policy && npm run test:controller && npm run test && npm run build && npm run verify:dist && npm run test:e2e"
   },
   "repository": {
     "type": "git",
@@ -60,7 +61,7 @@
     "@types/react-dom": "^19.2.3",
     "eslint": "^10.5.0",
     "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.3",
+    "eslint-plugin-react-refresh": "^0.5.0",
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
     "playwright": "^1.60.0",
