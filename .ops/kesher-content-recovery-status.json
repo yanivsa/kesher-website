@@ -1,11 +1,8 @@
 {
-  "updated_at": "2026-08-19T01:55:59.790502+00:00",
-  "stage": "video_workflow_completed",
-  "ok": true,
+  "updated_at": "2026-08-19T02:31:09.834474+00:00",
+  "stage": "video_upload_wait",
+  "ok": false,
   "article_url": "https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine",
   "video_item_id": "video-20260819-011621-abab0957a6",
-  "video_action": "full_dispatched",
-  "video_run_id": 32206459518,
-  "video_run_url": "https://github.com/yanivsa/kesher-website/actions/runs/32206459518",
-  "video_conclusion": "success"
+  "reason": "no durable target item found"
 }
