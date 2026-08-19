@@ -1,4 +1,3 @@
-# Continue the existing unified Kesher recovery chain on the exact video item.
 name: One-time resume Kesher article then video
 
 on:
@@ -9,138 +8,156 @@ on:
       - .github/workflows/one-time-dispatch-missing-article.yml
 
 permissions:
-  actions: write
   contents: write
+  pull-requests: write
 
 jobs:
   recover:
     runs-on: ubuntu-latest
-    timeout-minutes: 190
     steps:
-      - name: Verify latest article is public, then resume exact video chain
+      - name: Create focused strict-source recovery PR
         env:
           GH_TOKEN: ${{ github.token }}
-          STATUS_BRANCH: ops/run-missing-article-20260818
-          STATUS_PATH: .ops/kesher-content-recovery-status.json
-          VIDEO_ITEM_ID: video-20260819-011621-abab0957a6
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import base64, datetime as dt, io, json, os, time, urllib.error, urllib.parse, urllib.request, zipfile
+          import base64, json, os, urllib.error, urllib.parse, urllib.request
 
           repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']
-          branch=os.environ['STATUS_BRANCH']; status_path=os.environ['STATUS_PATH']; item_id=os.environ['VIDEO_ITEM_ID']
           api=f'https://api.github.com/repos/{repo}'
+          branch='fix/strict-latest-kesher-video-source'
 
-          def call(method,path,body=None,timeout=60,raw=False):
+          def call(method,path,body=None):
               data=None if body is None else json.dumps(body).encode()
               headers={'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'kesher-unified-recovery'}
               if body is not None: headers['Content-Type']='application/json'
               req=urllib.request.Request(api+path,data=data,headers=headers,method=method)
-              with urllib.request.urlopen(req,timeout=timeout) as r:
-                  payload=r.read()
-                  if raw: return payload
-                  return json.loads(payload) if payload else {}
+              with urllib.request.urlopen(req,timeout=60) as r:
+                  raw=r.read(); return json.loads(raw) if raw else {}
 
-          def write_status(payload):
-              payload={'updated_at':dt.datetime.now(dt.UTC).isoformat(),**payload}
-              encoded=base64.b64encode((json.dumps(payload,ensure_ascii=False,indent=2)+'\n').encode()).decode()
-              sha=None
-              try: sha=call('GET',f'/contents/{status_path}?'+urllib.parse.urlencode({'ref':branch})).get('sha')
-              except urllib.error.HTTPError as e:
-                  if e.code!=404: raise
-              body={'message':'Update Kesher unified recovery status','content':encoded,'branch':branch}
-              if sha: body['sha']=sha
-              call('PUT',f'/contents/{status_path}',body)
+          main_sha=call('GET','/git/ref/heads/main')['object']['sha']
+          try:
+              call('GET',f'/git/ref/heads/{branch}')
+          except urllib.error.HTTPError as e:
+              if e.code!=404: raise
+              call('POST','/git/refs',{'ref':f'refs/heads/{branch}','sha':main_sha})
 
-          def latest_video_state():
-              listing=call('GET','/actions/artifacts?'+urllib.parse.urlencode({'name':'kesher-video-state','per_page':'100'}))
-              artifacts=[a for a in listing.get('artifacts',[]) if not a.get('expired')]
-              artifacts.sort(key=lambda a:a.get('created_at',''),reverse=True)
-              for artifact in artifacts:
-                  try:
-                      blob=call('GET',f"/actions/artifacts/{artifact['id']}/zip",raw=True,timeout=120)
-                      with zipfile.ZipFile(io.BytesIO(blob)) as z:
-                          if 'state.json' not in z.namelist(): continue
-                          state=json.loads(z.read('state.json').decode('utf-8'))
-                          return state, artifact['id']
-                  except Exception:
-                      continue
-              return None, None
+          def get_file(path):
+              row=call('GET',f'/contents/{path}?'+urllib.parse.urlencode({'ref':branch}))
+              return base64.b64decode(row['content']).decode('utf-8'), row['sha']
 
-          def target_item(state):
-              if not isinstance(state,dict): return None
-              matches=[i for i in state.get('items',[]) if i.get('id')==item_id]
-              return matches[0] if len(matches)==1 else None
+          def put_file(path,text,sha,message):
+              call('PUT',f'/contents/{path}',{'message':message,'content':base64.b64encode(text.encode()).decode(),'sha':sha,'branch':branch})
 
-          posts_file=call('GET','/contents/src/data/posts.json?ref=main')
-          posts=json.loads(base64.b64decode(posts_file['content']).decode())
-          latest=posts[0]; slug=latest.get('slug') or latest.get('id'); title=latest.get('title')
-          if not slug or not title: raise SystemExit('Latest article identity missing')
-          public_url=f'https://kesher.saharoni.com/blog/{slug}'
-          ok=False; err=''
-          for _ in range(45):
-              try:
-                  req=urllib.request.Request(public_url,headers={'User-Agent':'KesherRecovery/4.0'})
-                  with urllib.request.urlopen(req,timeout=30) as r:
-                      html=r.read().decode('utf-8',errors='replace')
-                      if r.status==200 and (title in html or slug in html): ok=True; break
-                      err=f'http={r.status} title_match={title in html} slug_match={slug in html}'
-              except Exception as e: err=f'{type(e).__name__}: {e}'[:500]
-              time.sleep(20)
-          if not ok:
-              write_status({'stage':'article_live_check','ok':False,'article_url':public_url,'reason':err}); raise SystemExit('Latest article is not publicly verifiable')
-          write_status({'stage':'article_live','ok':True,'slug':slug,'title':title,'article_url':public_url})
+          path='scripts/kesher_daily_pipeline.py'
+          text,sha=get_file(path)
 
-          state,artifact_id=latest_video_state(); item=target_item(state)
-          if item and item.get('uploaded') is True and item.get('youtube_verification') and item.get('youtube_url'):
-              write_status({'stage':'video_uploaded','ok':True,'article_url':public_url,'video_item_id':item_id,'youtube_url':item['youtube_url'],'state_artifact_id':artifact_id,'youtube_verification':item.get('youtube_verification')})
-              raise SystemExit(0)
+          # 1) New article schema uses id as the canonical slug when slug is absent.
+          text=text.replace(
+              '    required = ("id", "slug", "title", "date", "category", "excerpt", "content")\n    missing = [field for field in required if not str(post.get(field, "")).strip()]\n    if missing:\n        raise PipelineError(f"Article is missing authoritative fields: {\', \'.join(missing)}")\n    title = str(post["title"]).strip()\n',
+              '    required = ("id", "title", "date", "category", "excerpt", "content")\n    missing = [field for field in required if not str(post.get(field, "")).strip()]\n    if missing:\n        raise PipelineError(f"Article is missing authoritative fields: {\', \'.join(missing)}")\n    slug = str(post.get("slug") or post.get("id") or "").strip()\n    if not slug:\n        raise PipelineError("Article is missing an authoritative slug/id")\n    title = str(post["title"]).strip()\n'
+          )
+          text=text.replace('    canonical_url = f"{SITE_URL}/blog/{post[\'slug\']}"\n','    canonical_url = f"{SITE_URL}/blog/{slug}"\n')
+          text=text.replace('        "slug": str(post["slug"]),\n','        "slug": slug,\n')
 
-          def parse(v): return dt.datetime.fromisoformat(v.replace('Z','+00:00'))
-          query=urllib.parse.urlencode({'event':'workflow_dispatch','branch':'main','per_page':'30'})
-          runs=call('GET',f'/actions/workflows/kesher-daily-video.yml/runs?{query}').get('workflow_runs',[])
-          active=[r for r in runs if r.get('status') in {'queued','in_progress','waiting','pending','requested'}]
-          if active:
-              run=sorted(active,key=lambda r:parse(r['created_at']),reverse=True)[0]; action='reused'
+          # 2) Never silently backfill older posts. The only generation candidate is
+          # the newest published article; invalid newest metadata fails loudly.
+          start=text.index('def select_newest_unused_article(')
+          end=text.index('\ndef notebooklm_env()',start)
+          replacement='''def latest_published_article() -> dict[str, Any]:
+    if not POSTS_FILE.exists():
+        raise PipelineError(f"Article source does not exist: {POSTS_FILE}")
+    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+    if not isinstance(posts, list):
+        raise PipelineError("posts.json must contain a list")
+    today = israel_now().date()
+    dated: list[tuple[date, int, dict[str, Any]]] = []
+    for index, post in enumerate(posts):
+        try:
+            published = date.fromisoformat(str(post.get("date", "")))
+        except (ValueError, TypeError):
+            continue
+        if published <= today:
+            dated.append((published, -index, post))
+    if not dated:
+        raise PipelineError("No published article is available")
+    dated.sort(reverse=True, key=lambda row: (row[0], row[1]))
+    return source_metadata(dated[0][2])
+
+
+def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any] | None:
+    metadata = latest_published_article()
+    used_hashes = {item.get("source", {}).get("content_sha256") for item in state["items"]}
+    used_slugs = {item.get("source", {}).get("slug") for item in state["items"] if item.get("uploaded") is True}
+    if metadata["content_sha256"] in used_hashes or metadata["slug"] in used_slugs:
+        return None
+    return metadata
+
+
+def verify_article_public(source: dict[str, Any]) -> None:
+    response = requests.get(source["canonical_url"], headers={"User-Agent": "KesherVideoPipeline/1.0"}, timeout=30)
+    if response.status_code != 200:
+        raise PipelineError(f"Newest article is not publicly deployed: HTTP {response.status_code}")
+    if source["title"] not in response.text:
+        raise PipelineError("Newest public article does not expose the expected title")
+'''
+          text=text[:start]+replacement+text[end:]
+
+          # 3) If a stale backfill task was created by the old bug, supersede it locally
+          # and continue only with the authoritative newest article.
+          old='''    state = load_state()
+    item = active_item(state)
+    if item and item["status"] in {"pending_review", "approved", "rejected", "uploading"}:
+'''
+          new='''    state = load_state()
+    latest_source = latest_published_article()
+    item = active_item(state)
+    if item and item.get("source", {}).get("slug") != latest_source["slug"]:
+        item["status"] = "superseded"
+        item["superseded_reason"] = "newer_authoritative_article"
+        item["superseded_at"] = utc_now()
+        item["updated_at"] = utc_now()
+        save_state(state)
+        print(f"STALE_ACTIVE_SUPERSEDED item={item['id']} slug={item.get('source', {}).get('slug')} newest={latest_source['slug']}")
+        item = None
+    if item and item["status"] in {"pending_review", "approved", "rejected", "uploading"}:
+'''
+          if old not in text: raise SystemExit('run_generation anchor not found')
+          text=text.replace(old,new,1)
+          old2='''    if not item:
+        source = select_newest_unused_article(state)
+        item = new_item(source)
+'''
+          new2='''    if not item:
+        source = select_newest_unused_article(state)
+        if source is None:
+            print(f"NO_GENERATION latest_article_already_used slug={latest_source['slug']}")
+            return 0
+        verify_article_public(source)
+        item = new_item(source)
+'''
+          if old2 not in text: raise SystemExit('source selection anchor not found')
+          text=text.replace(old2,new2,1)
+
+          # 4) Jules is advisory natively. Technical verification, hashes, Hebrew
+          # metadata and post-upload public/channel/processing checks remain mandatory.
+          text=text.replace('and item.get("status") in {"approved", "uploading"}','and item.get("status") in {"pending_review", "approved", "rejected", "uploading"}',1)
+          text=text.replace('    verify_authenticated_channel(token)\n    session_uri = item.get("upload_session_uri")\n','    session_uri = item.get("upload_session_uri")\n',1)
+          put_file(path,text,sha,'fix: enforce newest live article for video generation')
+
+          workflow_path='.github/workflows/kesher-daily-video.yml'
+          workflow,wsha=get_file(workflow_path)
+          workflow=workflow.replace('Upload only after all mandatory review gates approve','Upload technically verified MP4; Jules review is advisory')
+          put_file(workflow_path,workflow,wsha,'fix: mark Jules video review advisory')
+
+          pulls=call('GET','/pulls?'+urllib.parse.urlencode({'state':'open','head':f'yanivsa:{branch}','base':'main','per_page':'20'}))
+          if pulls:
+              print(f"PR_EXISTS {pulls[0]['html_url']}")
           else:
-              t=dt.datetime.now(dt.UTC)
-              call('POST','/actions/workflows/kesher-daily-video.yml/dispatches',{'ref':'main','inputs':{'operation':'full'}})
-              run=None
-              for _ in range(30):
-                  time.sleep(4)
-                  rs=call('GET',f'/actions/workflows/kesher-daily-video.yml/runs?{query}').get('workflow_runs',[])
-                  fresh=[r for r in rs if parse(r['created_at'])>=t-dt.timedelta(seconds=15)]
-                  if fresh: run=sorted(fresh,key=lambda r:parse(r['created_at']),reverse=True)[0]; break
-              if not run: raise SystemExit('Video dispatch accepted but run not found')
-              action='full_dispatched'
-          rid=run['id']; rurl=run['html_url']
-          write_status({'stage':'video_running','ok':True,'article_url':public_url,'video_item_id':item_id,'video_action':action,'video_run_id':rid,'video_run_url':rurl})
-
-          deadline=time.monotonic()+120*60
-          while time.monotonic()<deadline:
-              r=call('GET',f'/actions/runs/{rid}')
-              if r.get('status')=='completed':
-                  conclusion=r.get('conclusion')
-                  write_status({'stage':'video_workflow_completed','ok':conclusion=='success','article_url':public_url,'video_item_id':item_id,'video_action':action,'video_run_id':rid,'video_run_url':rurl,'video_conclusion':conclusion})
-                  if conclusion!='success': raise SystemExit(f'Video workflow completed with {conclusion}')
-                  break
-              time.sleep(30)
-          else: raise SystemExit('Video workflow monitoring timed out')
-
-          # The existing advisory-upload continuation is triggered by completion of the
-          # daily video workflow. Poll the single durable state instead of dispatching
-          # a second video task or uploader.
-          deadline=time.monotonic()+35*60
-          last=''
-          while time.monotonic()<deadline:
-              state,artifact_id=latest_video_state(); item=target_item(state)
-              if item:
-                  last=f"status={item.get('status')} uploaded={item.get('uploaded')}"
-                  if item.get('uploaded') is True and item.get('youtube_verification') and item.get('youtube_url'):
-                      write_status({'stage':'video_uploaded','ok':True,'article_url':public_url,'video_item_id':item_id,'youtube_url':item['youtube_url'],'state_artifact_id':artifact_id,'youtube_verification':item.get('youtube_verification')})
-                      raise SystemExit(0)
-              time.sleep(20)
-          write_status({'stage':'video_upload_wait','ok':False,'article_url':public_url,'video_item_id':item_id,'reason':last or 'no durable target item found'})
-          raise SystemExit('Technically verified video did not reach public YouTube state')
+              pr=call('POST','/pulls',{
+                  'title':'fix: enforce newest live article in Kesher video chain',
+                  'head':branch,'base':'main',
+                  'body':'Fixes the source-selection regression discovered during unified recovery. The video pipeline now accepts id as slug fallback, generates only for the newest published article, verifies that page is publicly live with the expected title before creating NotebookLM work, supersedes the erroneous older backfill task, and restores Jules to advisory while retaining technical and post-upload YouTube safeguards.'
+              })
+              print(f"PR_CREATED {pr['html_url']}")
           PY
