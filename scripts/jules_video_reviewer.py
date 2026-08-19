@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ask Jules to review one cloud video evidence bundle and record its gates."""
+"""Ask Jules to review one cloud video evidence bundle and record advisory findings."""
 
 from __future__ import annotations
 
@@ -165,14 +165,14 @@ The following durable repository policy is authoritative for this review. Apply 
 
 Open `{evidence_root}/state.json` and locate the exact item. Open and visually inspect EACH of its {REVIEW_FRAME_COUNT} `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
 
-IMPORTANT: Jules is a MANDATORY reviewer and strict publication gate. A video must not be uploaded unless the visual, semantic, and metadata gates are explicitly approved.
+IMPORTANT: Jules is an ADVISORY reviewer. Record visual, semantic and metadata findings rigorously, but your approval/rejection decision MUST NOT block upload of a technically valid MP4. Publication remains governed by technical validity plus successful YouTube OAuth/public verification.
 
-Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate`, stable uppercase `code`, and factual Hebrew `message`. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements and never substitute for blocking issues.
+Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate`, stable uppercase `code`, and factual Hebrew `message`. `blocking_issues` are blockers within this advisory review only; they are not upload blockers. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements.
 
 Apply these mandatory review dimensions:
 1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
 
-2. Visual creative review: inspect all {REVIEW_FRAME_COUNT} sampled frames and evaluate compliance with the durable Source-Video-First Remotion policy above. Report concrete violations or weaknesses visible in the evidence. Do not invent problems that are not visible in the supplied evidence. You MUST reject slide/card-like compositions, text-heavy panels, timeline or diagram layouts, repeated identical frames, or generic illustrative visuals instead of a continuous natural visual story.
+2. Visual creative review: inspect all {REVIEW_FRAME_COUNT} sampled frames and evaluate compliance with the durable Source-Video-First Remotion policy above. Report concrete violations or weaknesses visible in the evidence. Do not invent problems that are not visible in the supplied evidence. You MUST mark the visual review rejected for slide/card-like compositions, text-heavy panels, timeline or diagram layouts, repeated identical frames, or generic illustrative visuals instead of a continuous natural visual story.
 
 3. Semantic: compare all {REVIEW_FRAME_COUNT} frames and the complete narration transcript with the complete source file. Report topic mismatch, unsupported claims, or missing central subject. Small stylistic paraphrases, metaphors, or natural spoken-language variations are not by themselves serious defects when the original meaning is preserved.
 

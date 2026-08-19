@@ -25,7 +25,9 @@ concurrency:
 
 jobs:
   controller:
-    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.event != 'pull_request' }}
+    # Successful child completion can advance immediately. Failed children wait
+    # for the next heartbeat, avoiding tight failure/retry loops.
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.event != 'pull_request' && github.event.workflow_run.conclusion == 'success') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -35,23 +37,14 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - name: Disable superseded scheduled article workflows
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          for workflow in jules-weekday-article.yml jules-weekend-article.yml; do
-            gh api --method PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow}/disable"
-          done
-
-      - name: Run autonomous controller tick
+      - name: Run autonomous queue-aware controller tick
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
           KESHER_CONTROLLER_STATE_REF: automation-state
         run: |
           set -euo pipefail
-          python3 -u scripts/kesher_content_controller.py --report-json | tee /tmp/kesher-controller.json
+          python3 -u scripts/kesher_content_controller_entry.py --report-json | tee /tmp/kesher-controller.json
 
       - name: Write concise controller summary
         if: always()
