@@ -12,10 +12,10 @@ import argparse
 import json
 from typing import Any
 
-try:
+if __package__:
+    from . import kesher_daily_pipeline as pipeline
+else:
     import kesher_daily_pipeline as pipeline
-except ImportError:
-    from scripts import kesher_daily_pipeline as pipeline
 
 UNRESOLVED_STATUSES = {
     "source_selected", "source_added", "generating", "downloaded",
