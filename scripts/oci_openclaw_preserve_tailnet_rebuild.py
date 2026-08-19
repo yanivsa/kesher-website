@@ -48,6 +48,13 @@ def tagged_recovery_boot_volume(block, compartment_id: str):
 def mark_recovery_boot_volume(block, boot_volume_id: str):
     boot = block.get_boot_volume(boot_volume_id).data
     tags = dict(boot.freeform_tags or {})
+    desired = {
+        "managed-by": "chatgpt",
+        "openclaw-recovery": RECOVERY_TAG,
+    }
+    if all(tags.get(key) == value for key, value in desired.items()):
+        log("RECOVERY_BOOT_VOLUME_ALREADY_TAGGED", boot_volume_id=boot_volume_id)
+        return
     tags["managed-by"] = "chatgpt"
     tags["openclaw-recovery"] = RECOVERY_TAG
     block.update_boot_volume(
