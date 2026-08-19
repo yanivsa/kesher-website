@@ -80,11 +80,14 @@ jobs:
           node-version: "22"
           cache: npm
 
-      - name: Install system media dependencies
+      - name: Ensure runner media dependencies
         run: |
           set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y ffmpeg fonts-dejavu-core
+          if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            sudo timeout 300 apt-get install --no-install-recommends -y ffmpeg
+          fi
+          command -v ffmpeg
+          command -v ffprobe
 
       - name: Install pinned cloud dependencies
         run: |
