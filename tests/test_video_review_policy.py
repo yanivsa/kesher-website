@@ -50,7 +50,10 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
     def build_with_policy(self, reviewer, policy_text: str) -> str:
         with tempfile.TemporaryDirectory() as temporary:
             policy_path = Path(temporary) / "policy.md"
-            policy_path.write_text(policy_text, encoding="utf-8")
+            policy_path.write_text(
+                f"Policy-Version: {reviewer.REMOTION_POLICY_VERSION}\n\n{policy_text}",
+                encoding="utf-8",
+            )
             reviewer.REMOTION_POLICY_PATH = policy_path
             return reviewer.build_prompt(
                 ".jules-video-review/fixture",
