@@ -274,17 +274,17 @@ jobs:
         run: |
           set -euo pipefail
           schedule_guard=()
+          daily_done="$(python -u scripts/daily_video_guard.py)"
+          if [ "$daily_done" = "true" ]; then
+            echo "LATEST_ARTICLE_ALREADY_COMPLETED israel_date=$(TZ=Asia/Jerusalem date +%F)"
+            exit 0
+          fi
           if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
             israel_hour="$(TZ=Asia/Jerusalem date +%-H)"
             if [ "$israel_hour" = "19" ] || [ "$israel_hour" = "20" ]; then
               schedule_guard=(--require-israel-hour "$israel_hour")
             else
               schedule_guard=(--require-israel-hour 19)
-            fi
-            daily_done="$(python -u scripts/daily_video_guard.py)"
-            if [ "$daily_done" = "true" ]; then
-              echo "DAILY_ALREADY_COMPLETED israel_date=$(TZ=Asia/Jerusalem date +%F)"
-              exit 0
             fi
           fi
           python -u scripts/kesher_daily_pipeline.py \

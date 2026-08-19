@@ -28,6 +28,8 @@ SOURCE = "sources/github/yanivsa/kesher-website"
 FINAL_MARKER = "KESHER_REVIEW_JSON"
 WAITING_STATES = {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER", "PAUSED"}
 TERMINAL_FAILURES = {"FAILED", "CANCELLED", "CANCELED"}
+MAX_STRUCTURED_OUTPUT_REPAIRS = 2
+STRUCTURED_OUTPUT_REPAIR_GRACE_SECONDS = 60
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 REMOTION_POLICY_PATH = PROJECT_DIR / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 
@@ -201,6 +203,8 @@ def list_activities(api_key: str, session: str) -> list[dict[str, Any]]:
 def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
     deadline = time.monotonic() + timeout_seconds
     continued = False
+    structured_output_repairs = 0
+    next_structured_output_repair_at = 0.0
     while time.monotonic() < deadline:
         current = request_json("GET", f"/{session}", api_key)
         state = str(current.get("state", "UNKNOWN")).upper()
@@ -217,9 +221,41 @@ def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
                 except ReviewError:
                     continue
                 return message
-            if not marked:
-                raise ReviewError("Jules completed without structured review JSON")
-            raise ReviewError("Jules completed without parseable structured review JSON")
+            error = (
+                "Jules completed without structured review JSON"
+                if not marked
+                else "Jules completed without parseable structured review JSON"
+            )
+            now = time.monotonic()
+            if structured_output_repairs < MAX_STRUCTURED_OUTPUT_REPAIRS:
+                if now < next_structured_output_repair_at:
+                    time.sleep(10)
+                    continue
+                request_json(
+                    "POST",
+                    f"/{session}:sendMessage",
+                    api_key,
+                    {
+                        "prompt": (
+                            "Your evidence review did not end in the required machine-readable "
+                            f"format. Reuse only the evidence you already inspected. Reply with "
+                            f"{FINAL_MARKER} on its own line followed by exactly one valid JSON "
+                            "object matching the requested schema, with no Markdown fence or "
+                            "trailing prose. Do not edit files or invent evidence."
+                        )
+                    },
+                )
+                structured_output_repairs += 1
+                next_structured_output_repair_at = now + STRUCTURED_OUTPUT_REPAIR_GRACE_SECONDS
+                deadline = max(deadline, now + STRUCTURED_OUTPUT_REPAIR_GRACE_SECONDS + 60)
+                print(
+                    "JULES_REVIEW_FORMAT_REPAIR "
+                    f"session={session} attempt={structured_output_repairs}",
+                    flush=True,
+                )
+                time.sleep(10)
+                continue
+            raise ReviewError(error)
         if state in TERMINAL_FAILURES:
             raise ReviewError(f"Jules review ended with {state}")
         if state in WAITING_STATES and not continued:

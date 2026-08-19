@@ -17,6 +17,7 @@ PIPELINE_PATH = ROOT / "scripts" / "kesher_daily_pipeline.py"
 EVIDENCE_PATH = ROOT / "scripts" / "prepare_jules_video_evidence.py"
 DAILY_GUARD_PATH = ROOT / "scripts" / "daily_video_guard.py"
 POLICY_PATH = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
+WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
 
 
 def load_reviewer(frame_count: int = 8):
@@ -131,6 +132,32 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
                 {"items": [{"israel_date": "2026-08-18", "status": "rejected", "uploaded": False}]},
                 today,
             )
+        )
+
+    def test_daily_guard_runs_for_manual_and_scheduled_generation(self) -> None:
+        workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
+        generation = workflow.split("- name: Generate or resume exact Video Overview", 1)[1]
+        guard_call = generation.index("python -u scripts/daily_video_guard.py")
+        schedule_only = generation.index('if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then')
+        self.assertLess(guard_call, schedule_only)
+
+    def test_daily_guard_supersedes_old_pending_review(self) -> None:
+        guard = load_daily_guard()
+        state = {
+            "items": [
+                {
+                    "id": "old-item",
+                    "status": "pending_review",
+                    "uploaded": False,
+                    "source": {"slug": "older-article"},
+                }
+            ]
+        }
+        self.assertTrue(guard.reconcile_stale_active(state, "newest-article"))
+        self.assertEqual(state["items"][0]["status"], "superseded")
+        self.assertEqual(
+            state["items"][0]["superseded_reason"],
+            "newer_authoritative_article",
         )
 
 
