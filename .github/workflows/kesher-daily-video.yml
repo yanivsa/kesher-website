@@ -372,6 +372,10 @@ jobs:
 
       - name: Keep technically valid MP4 uploadable regardless of Jules outcome
         if: ${{ always() && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-upload
 
       - name: Upload technically valid MP4; Jules is advisory only
