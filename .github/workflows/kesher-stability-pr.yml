@@ -1,0 +1,39 @@
+name: Kesher Stability PR Validation
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kesher-stability-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout pull-request merge commit
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Run controller and video stability regression suite
+        run: |
+          set -euo pipefail
+          python -m unittest \
+            tests.kesher_daily_pipeline_suite \
+            tests.test_video_review_policy \
+            tests.test_video_review_schema \
+            tests.test_video_reconcile \
+            tests.test_kesher_content_controller \
+            tests.test_kesher_controller_queue \
+            tests.test_controller_artifact_download \
+            tests.test_jules_article_runner \
+            tests.test_single_scheduler_policy \
+            -v
