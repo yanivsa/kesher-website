@@ -165,6 +165,46 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(saved["status"], "approved")
         self.assertEqual(saved["advisory_review_decision"], "unavailable")
 
+    def test_persisted_youtube_id_is_verified_without_second_insert(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        item = pipeline.new_item(source)
+        item.update({
+            "status": "uploading",
+            "technical_verified": True,
+            "youtube_id": "already-inserted",
+            "uploaded": False,
+        })
+        pipeline.save_state({
+            "version": 1,
+            "items": [item],
+            "updated_at": pipeline.utc_now(),
+        })
+
+        verification = {
+            "channel_id": pipeline.YOUTUBE_CHANNEL_ID,
+            "privacy_status": "public",
+            "processing_status": "succeeded",
+        }
+        with mock.patch.object(pipeline, "youtube_access_token", return_value="token"), mock.patch.object(
+            pipeline, "verify_authenticated_channel"
+        ) as channel, mock.patch.object(
+            pipeline, "verify_public_upload", return_value=verification
+        ) as verify, mock.patch.object(
+            pipeline, "start_resumable_upload"
+        ) as insert:
+            self.assertEqual(reconcile.prepare_upload(), 0)
+
+        saved = pipeline.load_state()["items"][0]
+        self.assertTrue(saved["uploaded"])
+        self.assertEqual(saved["status"], "uploaded")
+        self.assertEqual(saved["youtube_url"], "https://www.youtube.com/watch?v=already-inserted")
+        self.assertEqual(saved["youtube_verification"], verification)
+        channel.assert_called_once_with("token")
+        verify.assert_called_once()
+        insert.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()
