@@ -1,4 +1,4 @@
-# Continue the existing unified Kesher recovery chain on the exact rejected video item.
+# Continue the existing unified Kesher recovery chain on the exact video item.
 name: One-time resume Kesher article then video
 
 on:
@@ -17,30 +17,32 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 190
     steps:
-      - name: Verify latest article is public, then resume exact video rebuild
+      - name: Verify latest article is public, then resume exact video chain
         env:
           GH_TOKEN: ${{ github.token }}
           STATUS_BRANCH: ops/run-missing-article-20260818
           STATUS_PATH: .ops/kesher-content-recovery-status.json
-          REBUILD_ITEM_ID: video-20260819-011621-abab0957a6
+          VIDEO_ITEM_ID: video-20260819-011621-abab0957a6
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import base64, datetime as dt, json, os, time, urllib.error, urllib.parse, urllib.request
+          import base64, datetime as dt, io, json, os, time, urllib.error, urllib.parse, urllib.request, zipfile
 
           repo=os.environ['GITHUB_REPOSITORY']; token=os.environ['GH_TOKEN']
-          branch=os.environ['STATUS_BRANCH']; status_path=os.environ['STATUS_PATH']; item_id=os.environ['REBUILD_ITEM_ID']
+          branch=os.environ['STATUS_BRANCH']; status_path=os.environ['STATUS_PATH']; item_id=os.environ['VIDEO_ITEM_ID']
           api=f'https://api.github.com/repos/{repo}'
 
-          def call(method,path,body=None,timeout=45):
+          def call(method,path,body=None,timeout=60,raw=False):
               data=None if body is None else json.dumps(body).encode()
               headers={'Authorization':f'Bearer {token}','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'kesher-unified-recovery'}
               if body is not None: headers['Content-Type']='application/json'
               req=urllib.request.Request(api+path,data=data,headers=headers,method=method)
               with urllib.request.urlopen(req,timeout=timeout) as r:
-                  raw=r.read(); return json.loads(raw) if raw else {}
+                  payload=r.read()
+                  if raw: return payload
+                  return json.loads(payload) if payload else {}
 
-          def status(payload):
+          def write_status(payload):
               payload={'updated_at':dt.datetime.now(dt.UTC).isoformat(),**payload}
               encoded=base64.b64encode((json.dumps(payload,ensure_ascii=False,indent=2)+'\n').encode()).decode()
               sha=None
@@ -51,6 +53,26 @@ jobs:
               if sha: body['sha']=sha
               call('PUT',f'/contents/{status_path}',body)
 
+          def latest_video_state():
+              listing=call('GET','/actions/artifacts?'+urllib.parse.urlencode({'name':'kesher-video-state','per_page':'100'}))
+              artifacts=[a for a in listing.get('artifacts',[]) if not a.get('expired')]
+              artifacts.sort(key=lambda a:a.get('created_at',''),reverse=True)
+              for artifact in artifacts:
+                  try:
+                      blob=call('GET',f"/actions/artifacts/{artifact['id']}/zip",raw=True,timeout=120)
+                      with zipfile.ZipFile(io.BytesIO(blob)) as z:
+                          if 'state.json' not in z.namelist(): continue
+                          state=json.loads(z.read('state.json').decode('utf-8'))
+                          return state, artifact['id']
+                  except Exception:
+                      continue
+              return None, None
+
+          def target_item(state):
+              if not isinstance(state,dict): return None
+              matches=[i for i in state.get('items',[]) if i.get('id')==item_id]
+              return matches[0] if len(matches)==1 else None
+
           posts_file=call('GET','/contents/src/data/posts.json?ref=main')
           posts=json.loads(base64.b64decode(posts_file['content']).decode())
           latest=posts[0]; slug=latest.get('slug') or latest.get('id'); title=latest.get('title')
@@ -59,7 +81,7 @@ jobs:
           ok=False; err=''
           for _ in range(45):
               try:
-                  req=urllib.request.Request(public_url,headers={'User-Agent':'KesherRecovery/3.0'})
+                  req=urllib.request.Request(public_url,headers={'User-Agent':'KesherRecovery/4.0'})
                   with urllib.request.urlopen(req,timeout=30) as r:
                       html=r.read().decode('utf-8',errors='replace')
                       if r.status==200 and (title in html or slug in html): ok=True; break
@@ -67,8 +89,13 @@ jobs:
               except Exception as e: err=f'{type(e).__name__}: {e}'[:500]
               time.sleep(20)
           if not ok:
-              status({'stage':'article_live_check','ok':False,'article_url':public_url,'reason':err}); raise SystemExit('Latest article is not publicly verifiable')
-          status({'stage':'article_live','ok':True,'slug':slug,'title':title,'article_url':public_url})
+              write_status({'stage':'article_live_check','ok':False,'article_url':public_url,'reason':err}); raise SystemExit('Latest article is not publicly verifiable')
+          write_status({'stage':'article_live','ok':True,'slug':slug,'title':title,'article_url':public_url})
+
+          state,artifact_id=latest_video_state(); item=target_item(state)
+          if item and item.get('uploaded') is True and item.get('youtube_verification') and item.get('youtube_url'):
+              write_status({'stage':'video_uploaded','ok':True,'article_url':public_url,'video_item_id':item_id,'youtube_url':item['youtube_url'],'state_artifact_id':artifact_id,'youtube_verification':item.get('youtube_verification')})
+              raise SystemExit(0)
 
           def parse(v): return dt.datetime.fromisoformat(v.replace('Z','+00:00'))
           query=urllib.parse.urlencode({'event':'workflow_dispatch','branch':'main','per_page':'30'})
@@ -78,25 +105,42 @@ jobs:
               run=sorted(active,key=lambda r:parse(r['created_at']),reverse=True)[0]; action='reused'
           else:
               t=dt.datetime.now(dt.UTC)
-              call('POST','/actions/workflows/kesher-daily-video.yml/dispatches',{'ref':'main','inputs':{'operation':'rebuild','rebuild_item_id':item_id}})
+              call('POST','/actions/workflows/kesher-daily-video.yml/dispatches',{'ref':'main','inputs':{'operation':'full'}})
               run=None
               for _ in range(30):
                   time.sleep(4)
                   rs=call('GET',f'/actions/workflows/kesher-daily-video.yml/runs?{query}').get('workflow_runs',[])
                   fresh=[r for r in rs if parse(r['created_at'])>=t-dt.timedelta(seconds=15)]
                   if fresh: run=sorted(fresh,key=lambda r:parse(r['created_at']),reverse=True)[0]; break
-              if not run: raise SystemExit('Rebuild dispatch accepted but run not found')
-              action='rebuild_dispatched'
+              if not run: raise SystemExit('Video dispatch accepted but run not found')
+              action='full_dispatched'
           rid=run['id']; rurl=run['html_url']
-          status({'stage':'video_rebuild_running','ok':True,'article_url':public_url,'video_item_id':item_id,'video_action':action,'video_run_id':rid,'video_run_url':rurl})
-          deadline=time.monotonic()+165*60
+          write_status({'stage':'video_running','ok':True,'article_url':public_url,'video_item_id':item_id,'video_action':action,'video_run_id':rid,'video_run_url':rurl})
+
+          deadline=time.monotonic()+120*60
           while time.monotonic()<deadline:
               r=call('GET',f'/actions/runs/{rid}')
               if r.get('status')=='completed':
                   conclusion=r.get('conclusion')
-                  status({'stage':'video_rebuild_completed','ok':conclusion=='success','article_url':public_url,'video_item_id':item_id,'video_action':action,'video_run_id':rid,'video_run_url':rurl,'video_conclusion':conclusion})
-                  if conclusion!='success': raise SystemExit(f'Rebuild completed with {conclusion}')
+                  write_status({'stage':'video_workflow_completed','ok':conclusion=='success','article_url':public_url,'video_item_id':item_id,'video_action':action,'video_run_id':rid,'video_run_url':rurl,'video_conclusion':conclusion})
+                  if conclusion!='success': raise SystemExit(f'Video workflow completed with {conclusion}')
                   break
               time.sleep(30)
-          else: raise SystemExit('Rebuild monitoring timed out')
+          else: raise SystemExit('Video workflow monitoring timed out')
+
+          # The existing advisory-upload continuation is triggered by completion of the
+          # daily video workflow. Poll the single durable state instead of dispatching
+          # a second video task or uploader.
+          deadline=time.monotonic()+35*60
+          last=''
+          while time.monotonic()<deadline:
+              state,artifact_id=latest_video_state(); item=target_item(state)
+              if item:
+                  last=f"status={item.get('status')} uploaded={item.get('uploaded')}"
+                  if item.get('uploaded') is True and item.get('youtube_verification') and item.get('youtube_url'):
+                      write_status({'stage':'video_uploaded','ok':True,'article_url':public_url,'video_item_id':item_id,'youtube_url':item['youtube_url'],'state_artifact_id':artifact_id,'youtube_verification':item.get('youtube_verification')})
+                      raise SystemExit(0)
+              time.sleep(20)
+          write_status({'stage':'video_upload_wait','ok':False,'article_url':public_url,'video_item_id':item_id,'reason':last or 'no durable target item found'})
+          raise SystemExit('Technically verified video did not reach public YouTube state')
           PY
