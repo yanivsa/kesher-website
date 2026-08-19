@@ -1,24 +1,8 @@
 {
-  "updated_at": "2026-08-19T09:13:18.094844+00:00",
-  "stage": "complete",
+  "updated_at": "2026-08-19T13:19:57.911006+00:00",
+  "stage": "video_fresh_run_dispatched",
   "ok": true,
-  "article_url": "https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine",
-  "article_slug": "first-grade-preparation-morning-routine",
-  "video_item_id": "video-20260819-101504-32da84edf9",
-  "video_run_id": "32236244994",
-  "video_run_sha": "2f29b9d7405ef0ca71614b69191d844e7214a91a",
-  "run_is_current_main": true,
-  "run_status": "completed",
-  "run_conclusion": "success",
-  "run_event": "workflow_dispatch",
-  "youtube_id": "sMG93XXme_0",
-  "youtube_url": "https://youtu.be/sMG93XXme_0",
-  "youtube_verification": {
-    "channel_id": "UCx5fEFvdVf28HLAR2dFW64Q",
-    "privacy_status": "public",
-    "processing_status": "succeeded",
-    "default_language": "iw",
-    "default_audio_language": "iw"
-  },
-  "reason": "newest public article uploaded through technically verified advisory-Jules path"
+  "video_run_id": "32257473714",
+  "current_main_sha": "20d9ffce1b4e6b4bbbbb4780502cc16b125f1830",
+  "reason": "fresh workflow_dispatch after minimal Jules evidence branch fix"
 }
