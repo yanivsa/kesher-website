@@ -9,6 +9,7 @@ prompt only supplies the slot, task identity and terminal-output contract.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -22,7 +23,10 @@ from typing import Any
 API_BASE = "https://jules.googleapis.com/v1alpha"
 REPO = "yanivsa/kesher-website"
 SOURCE = "sources/github/yanivsa/kesher-website"
-POLICY_PATH = Path(__file__).resolve().parents[1] / ".github" / "prompts" / "jules-weekday-article-update.md"
+PROMPTS_DIR = Path(__file__).resolve().parents[1] / ".github" / "prompts"
+POLICY_PATH = PROMPTS_DIR / "jules-weekday-article-update.md"
+POLICY_META_PATH = PROMPTS_DIR / "jules-weekday-article-update.meta.json"
+ARTICLE_POLICY_VERSION = 1
 MAX_ATTEMPTS = 4
 SESSION_SECONDS = 36 * 60
 WAITING_STATES = {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER", "PAUSED"}
@@ -53,14 +57,30 @@ def request_json(method: str, url: str, headers: dict[str, str], body: dict[str,
     raise ArticleRunnerError(f"request failed after retries: {last}")
 
 
-def load_policy(path: Path = POLICY_PATH) -> str:
+def git_blob_sha1(payload: bytes) -> str:
+    header = f"blob {len(payload)}\0".encode("ascii")
+    return hashlib.sha1(header + payload).hexdigest()
+
+
+def load_policy(path: Path = POLICY_PATH, meta_path: Path = POLICY_META_PATH) -> str:
     try:
-        value = path.read_text(encoding="utf-8").strip()
-    except OSError as exc:
-        raise ArticleRunnerError(f"article policy is unreadable: {path}") from exc
-    if not value:
+        raw = path.read_bytes()
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ArticleRunnerError("article policy or version manifest is unreadable") from exc
+    if not raw.strip():
         raise ArticleRunnerError("article policy is empty")
-    return value
+    if not isinstance(meta, dict) or meta.get("policy_version") != ARTICLE_POLICY_VERSION:
+        raise ArticleRunnerError(
+            f"article policy version mismatch: expected {ARTICLE_POLICY_VERSION}"
+        )
+    expected_blob = str(meta.get("git_blob_sha1") or "").strip().lower()
+    actual_blob = git_blob_sha1(raw)
+    if not re.fullmatch(r"[0-9a-f]{40}", expected_blob) or expected_blob != actual_blob:
+        raise ArticleRunnerError(
+            f"article policy content drift: expected blob {expected_blob or 'missing'}, actual {actual_blob}"
+        )
+    return raw.decode("utf-8").strip()
 
 
 def article_exists_for_slot(posts: list[dict[str, Any]], slot: str) -> bool:
@@ -73,6 +93,7 @@ def build_prompt(slot: str, policy: str) -> str:
 Publication slot: `{slot}` (Israel date). Create at most ONE article for this slot. If current `main` already contains an article with `date == {slot}`, or a currently open `Publish Kesher article:` PR already modifies `src/data/posts.json`, stop cleanly without editing anything and without creating another PR.
 
 Repository: {REPO}. Start from current `main`.
+Article policy version: `{ARTICLE_POLICY_VERSION}`.
 
 Execution contract:
 1. Read the durable policy below first and follow it exactly.
