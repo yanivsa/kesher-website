@@ -117,7 +117,7 @@ def new_cycle_state(day: date, old: dict[str, Any] | None = None) -> dict[str, A
         "cycle": day.isoformat(),
         "status": "article_needed",
         "article": {"attempts": 0, "deploy_attempts": 0},
-        "video": {"attempts": 0},
+        "video": {"attempts": 0, "resume_dispatches": 0},
         "last_error": None,
         "history": history,
         "updated_at": utc_now(),
@@ -592,31 +592,43 @@ class Controller:
             transition(state, "video_running", "video workflow already active")
             return Action("wait", "video workflow active")
 
-        attempts = int(state["video"].get("attempts") or 0)
-        if attempts >= MAX_ATTEMPTS["video"]:
-            block(state, "video", "VIDEO_ATTEMPTS_EXHAUSTED",
-                  f"video pipeline exhausted {attempts} attempts")
-            return Action("blocked", "video attempts exhausted")
-
-        operation = "full"
-        inputs: dict[str, str] = {"operation": operation}
         if item:
             state["video"].update({"item_id": item.get("id"), "status": item.get("status")})
-            if item.get("status") == "rejected" and item.get("visual_review_status") == "rejected":
-                operation = "rebuild"
-                inputs = {"operation": operation, "rebuild_item_id": str(item.get("id") or "")}
-            elif item.get("status") == "uploaded":
+            if item.get("status") == "uploaded":
                 block(state, "video", "UPLOADED_VIDEO_NOT_VERIFIED",
                       "video has upload identity but lacks authoritative public verification")
                 return Action("blocked", "uploaded video requires reconciliation")
 
+            if item.get("technical_verified") is True and item.get("status") in {
+                "pending_review", "approved", "rejected", "uploading"
+            }:
+                operation = "upload"
+            else:
+                operation = "full"
+            inputs = {"operation": operation}
+            self.github.dispatch(VIDEO_WORKFLOW, inputs)
+            resumes = int(state["video"].get("resume_dispatches") or 0) + 1
+            state["video"].update({
+                "resume_dispatches": resumes, "last_dispatch_at": utc_now(),
+            })
+            transition(state, "video_running", "existing video item dispatched/resumed",
+                       operation=operation, resume=resumes)
+            return Action("dispatch_video", "existing article video is incomplete", inputs)
+
+        attempts = int(state["video"].get("attempts") or 0)
+        if attempts >= MAX_ATTEMPTS["video"]:
+            block(state, "video", "VIDEO_ATTEMPTS_EXHAUSTED",
+                  f"video pipeline exhausted {attempts} start attempts")
+            return Action("blocked", "video start attempts exhausted")
+
+        inputs = {"operation": "full"}
         self.github.dispatch(VIDEO_WORKFLOW, inputs)
         state["video"].update({
             "attempts": attempts + 1, "last_dispatch_at": utc_now(),
         })
-        transition(state, "video_running", "video workflow dispatched/resumed",
-                   operation=operation, attempt=attempts + 1)
-        return Action("dispatch_video", "article live and video incomplete", inputs)
+        transition(state, "video_running", "new video workflow dispatched",
+                   operation="full", attempt=attempts + 1)
+        return Action("dispatch_video", "article live and no matching video item exists", inputs)
 
 
 def main() -> int:
