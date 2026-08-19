@@ -1,5 +1,7 @@
 # Durable Repo Policy: Kesher Remotion Video Upgrade & Review Policy
 
+Policy-Version: 1
+
 This durable repository policy governs all Jules tasks, automated routines, and code changes that modify, render, or evaluate Remotion implementation for the Kesher video pipeline.
 
 ---
