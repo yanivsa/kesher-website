@@ -1,4 +1,4 @@
-name: One-time resume Kesher article then video
+name: One-time resume current Kesher video
 
 on:
   push:
@@ -15,73 +15,72 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  recover:
+  dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Locate the already-dispatched current-main video run
-        id: locate
+      - name: Dispatch fresh production video run from current main
+        id: dispatch
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           current_main_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq .object.sha)"
-          runs="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/kesher-daily-video.yml/runs?per_page=50")"
-          row="$(jq -c --arg sha "$current_main_sha" '[.workflow_runs[] | select(.event != "pull_request" and .head_sha == $sha)] | sort_by(.created_at) | reverse | .[0] // empty' <<<"$runs")"
-          if [ -z "$row" ]; then
-            echo "No current-main production run is visible after the accepted dispatch." >&2
+          dispatched_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          python - <<'PY' >/tmp/dispatch.json
+          import json
+          print(json.dumps({"ref": "main", "inputs": {"operation": "full"}}))
+          PY
+          gh api --method POST \
+            -H "Accept: application/vnd.github+json" \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/kesher-daily-video.yml/dispatches" \
+            --input /tmp/dispatch.json
+
+          run_id=""
+          for _ in $(seq 1 30); do
+            sleep 2
+            runs="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/kesher-daily-video.yml/runs?event=workflow_dispatch&per_page=30")"
+            run_id="$(jq -r --arg sha "$current_main_sha" --arg since "$dispatched_at" '[.workflow_runs[] | select(.head_sha == $sha and .created_at >= $since)] | sort_by(.created_at) | reverse | .[0].id // empty' <<<"$runs")"
+            [ -n "$run_id" ] && break
+          done
+          if [ -z "$run_id" ]; then
+            echo "Fresh current-main video run was not observed after dispatch." >&2
             exit 1
           fi
-          run_id="$(jq -r .id <<<"$row")"
-          status="$(jq -r .status <<<"$row")"
-          conclusion="$(jq -r '.conclusion // ""' <<<"$row")"
-          event="$(jq -r .event <<<"$row")"
           {
             echo "run_id=$run_id"
-            echo "status=$status"
-            echo "conclusion=$conclusion"
-            echo "event=$event"
-            echo "current_main_sha=$current_main_sha"
+            echo "main_sha=$current_main_sha"
           } >> "$GITHUB_OUTPUT"
-          echo "CURRENT_MAIN_VIDEO_RUN id=$run_id status=$status conclusion=$conclusion event=$event sha=$current_main_sha"
+          echo "FRESH_VIDEO_RUN id=$run_id sha=$current_main_sha"
 
-      - name: Record active run for unified recovery
-        if: ${{ always() }}
+      - name: Record dispatched run for unified recovery
         env:
           GH_TOKEN: ${{ github.token }}
-          VIDEO_RUN_ID: ${{ steps.locate.outputs.run_id }}
-          RUN_STATUS: ${{ steps.locate.outputs.status }}
-          RUN_CONCLUSION: ${{ steps.locate.outputs.conclusion }}
-          RUN_EVENT: ${{ steps.locate.outputs.event }}
-          CURRENT_MAIN_SHA: ${{ steps.locate.outputs.current_main_sha }}
+          VIDEO_RUN_ID: ${{ steps.dispatch.outputs.run_id }}
+          CURRENT_MAIN_SHA: ${{ steps.dispatch.outputs.main_sha }}
         run: |
           set -euo pipefail
           python - <<'PY' >/tmp/status.json
           import json, os
           from datetime import datetime, timezone
-          status = os.environ.get('RUN_STATUS', '')
-          conclusion = os.environ.get('RUN_CONCLUSION', '')
           payload = {
-              'updated_at': datetime.now(timezone.utc).isoformat(),
-              'stage': 'video_upload_complete' if status == 'completed' else 'video_upload_running',
-              'ok': status == 'completed' and conclusion == 'success',
-              'article_url': 'https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine',
-              'article_slug': 'first-grade-preparation-morning-routine',
-              'video_item_id': 'video-20260819-011621-abab0957a6',
-              'video_run_id': os.environ.get('VIDEO_RUN_ID', ''),
-              'video_run_sha': os.environ.get('CURRENT_MAIN_SHA', ''),
-              'current_main_sha': os.environ.get('CURRENT_MAIN_SHA', ''),
-              'run_is_current_main': True,
-              'run_status': status,
-              'run_conclusion': conclusion,
-              'run_event': os.environ.get('RUN_EVENT', ''),
-              'reason': 'monitoring already-dispatched current-main upload continuation',
+              "updated_at": datetime.now(timezone.utc).isoformat(),
+              "stage": "video_fresh_run_dispatched",
+              "ok": True,
+              "video_run_id": os.environ["VIDEO_RUN_ID"],
+              "current_main_sha": os.environ["CURRENT_MAIN_SHA"],
+              "reason": "fresh workflow_dispatch after minimal Jules evidence branch fix",
           }
           print(json.dumps(payload, ensure_ascii=False, indent=2))
           PY
-          sha="$(gh api "repos/${GITHUB_REPOSITORY}/contents/.ops/kesher-content-recovery-status.json?ref=ops/run-missing-article-20260818" --jq .sha)"
+          path='.ops/kesher-content-recovery-status.json'
+          sha="$(gh api "repos/${GITHUB_REPOSITORY}/contents/${path}?ref=ops/run-missing-article-20260818" --jq .sha 2>/dev/null || true)"
           content="$(base64 -w0 /tmp/status.json)"
-          gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/.ops/kesher-content-recovery-status.json" \
-            -f message='ops: monitor current-main video upload run' \
-            -f content="$content" \
-            -f sha="$sha" \
-            -f branch='ops/run-missing-article-20260818' >/dev/null
+          if [ -n "$sha" ]; then
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${path}" \
+              -f message='ops: dispatch fresh current-main video run' \
+              -f content="$content" -f sha="$sha" -f branch='ops/run-missing-article-20260818' >/dev/null
+          else
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${path}" \
+              -f message='ops: dispatch fresh current-main video run' \
+              -f content="$content" -f branch='ops/run-missing-article-20260818' >/dev/null
+          fi
