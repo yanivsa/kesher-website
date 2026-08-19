@@ -1,6 +1,11 @@
 name: Kesher Content Controller
 
 on:
+  push:
+    branches: [main]
+  schedule:
+    # Dynamic recovery heartbeat. The controller itself decides whether work is needed.
+    - cron: "7,37 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -15,13 +20,22 @@ concurrency:
 jobs:
   controller:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Checkout current main
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
           ref: main
           persist-credentials: false
+
+      - name: Disable superseded scheduled article workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for workflow in jules-weekday-article.yml jules-weekend-article.yml; do
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/${workflow}/disable"
+          done
 
       - name: Run autonomous controller tick
         env:

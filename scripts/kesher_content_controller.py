@@ -254,8 +254,12 @@ class GitHubClient:
             return []
         return [row for row in payload.get("workflow_runs") or [] if isinstance(row, dict)]
 
-    def active_workflow_run(self, workflow: str) -> dict[str, Any] | None:
+    def active_workflow_run(
+        self, workflow: str, *, production_only: bool = False
+    ) -> dict[str, Any] | None:
         for run in self.workflow_runs(workflow):
+            if production_only and str(run.get("event") or "") == "pull_request":
+                continue
             if str(run.get("status") or "") in ACTIVE_RUN_STATUSES:
                 return run
         return None
@@ -522,7 +526,7 @@ class Controller:
             return Action("blocked", "duplicate video items")
 
         item = active_matches[0] if active_matches else (matches[-1] if matches else None)
-        active_run = self.github.active_workflow_run(VIDEO_WORKFLOW)
+        active_run = self.github.active_workflow_run(VIDEO_WORKFLOW, production_only=True)
         if active_run:
             state["video"]["run_id"] = active_run.get("id")
             if item:
