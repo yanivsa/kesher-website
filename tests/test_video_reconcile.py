@@ -51,38 +51,38 @@ class VideoReconcileTests(unittest.TestCase):
     def write_posts(self, rows: list[dict]) -> None:
         self.posts_file.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
 
-    def test_stale_active_item_cannot_block_authoritative_daily_article(self) -> None:
-        self.write_posts([post("today")])
-        state = {
+    def test_prior_day_active_item_is_preserved_as_backlog(self) -> None:
+        today = post("today")
+        yesterday = post("yesterday", "2026-08-18")
+        self.write_posts([today, yesterday])
+        old = pipeline.new_item(pipeline.source_metadata(yesterday))
+        old.update({"status": "generating", "task_id": "old-task", "artifact_id": "old-task"})
+        pipeline.save_state({
             "version": 1,
-            "items": [{
-                "id": "old-video",
-                "status": "pending_review",
-                "uploaded": False,
-                "source": {"slug": "yesterday"},
-            }],
+            "items": [old],
             "updated_at": pipeline.utc_now(),
-        }
-        pipeline.save_state(state)
+        })
 
         self.assertEqual(reconcile.prepare_generation(), 0)
-        saved = pipeline.load_state()
-        self.assertEqual(saved["items"][0]["status"], "superseded")
-        self.assertEqual(
-            saved["items"][0]["superseded_reason"],
-            "newer_authoritative_article",
-        )
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["status"], "generating")
+        self.assertEqual(saved[0]["source"]["slug"], "yesterday")
+        self.assertNotIn("superseded_reason", saved[0])
 
-    def test_technical_rejection_retries_same_source_not_another_article(self) -> None:
+    def test_prior_day_technical_rejection_retries_same_source_not_today(self) -> None:
         today = post("today")
         older = post("older", "2026-08-18")
         self.write_posts([today, older])
-        source = pipeline.source_metadata(today)
+        source = pipeline.source_metadata(older)
         rejected = pipeline.new_item(source)
         rejected["status"] = "rejected"
         rejected["technical_verified"] = False
-        state = {"version": 1, "items": [rejected], "updated_at": pipeline.utc_now()}
-        pipeline.save_state(state)
+        pipeline.save_state({
+            "version": 1,
+            "items": [rejected],
+            "updated_at": pipeline.utc_now(),
+        })
 
         self.assertEqual(reconcile.prepare_generation(), 0)
         saved = pipeline.load_state()
@@ -91,7 +91,7 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(old["status"], "superseded")
         self.assertEqual(old["superseded_reason"], "technical_retry_same_source")
         self.assertEqual(replacement["status"], "source_selected")
-        self.assertEqual(replacement["source"]["slug"], "today")
+        self.assertEqual(replacement["source"]["slug"], "older")
         self.assertEqual(
             replacement["source"]["content_sha256"],
             source["content_sha256"],
@@ -116,6 +116,30 @@ class VideoReconcileTests(unittest.TestCase):
         })
         with self.assertRaisesRegex(pipeline.PipelineError, "Technical retry limit"):
             reconcile.prepare_generation()
+
+    def test_prior_day_review_item_is_uploadable_before_today(self) -> None:
+        today = post("today")
+        yesterday = post("yesterday", "2026-08-18")
+        self.write_posts([today, yesterday])
+        item = pipeline.new_item(pipeline.source_metadata(yesterday))
+        item.update({
+            "status": "pending_review",
+            "technical_verified": True,
+            "visual_review_status": "unavailable",
+            "semantic_review_status": "unavailable",
+            "metadata_review_status": "unavailable",
+        })
+        pipeline.save_state({
+            "version": 1,
+            "items": [item],
+            "updated_at": pipeline.utc_now(),
+        })
+
+        reconcile.prepare_upload()
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["source"]["slug"], "yesterday")
+        self.assertEqual(saved["status"], "approved")
+        self.assertEqual(saved["advisory_review_decision"], "unavailable")
 
     def test_jules_rejection_is_advisory_and_remains_uploadable(self) -> None:
         today = post("today")
