@@ -1,5 +1,6 @@
 name: Kesher Canary Force-Now Controller
 
+# One-time approved exception: force the 2026-08-21 canary before the normal Friday window.
 on:
   push:
     branches: [main]
