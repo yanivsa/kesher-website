@@ -1,32 +1,32 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
     "last_error": {
       "stage": "article",
       "code": "ARTICLE_WORKFLOW_FAILED",
-      "message": "article run 32418499227 completed with conclusion=failure but no structured result was available",
+      "message": "article run 32421630429 completed with conclusion=failure but no structured result was available",
       "retryable": true,
-      "retry_at": "2026-08-20T21:42:19.048709+00:00",
-      "at": "2026-08-20T21:37:19.048730+00:00"
+      "retry_at": "2026-08-20T22:11:35.942977+00:00",
+      "at": "2026-08-20T21:56:35.942996+00:00"
     },
-    "next_retry_at": null,
+    "next_retry_at": "2026-08-20T22:11:35.942977+00:00",
     "run_id": 32421630429,
-    "processed_run_id": 32418499227,
+    "processed_run_id": 32421630429,
     "provider_id": null,
     "failure_fingerprint": "ARTICLE_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "same_failure_streak": 2,
     "failure_count_by_type": {
-      "ARTICLE_WORKFLOW_FAILED": 1
+      "ARTICLE_WORKFLOW_FAILED": 2
     },
     "attempts": 2,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-08-20T21:53:17.540621+00:00",
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 32418499227
+    "last_failed_run_id": 32421630429
   },
   "video": {
     "attempt_count": 0,
@@ -42,7 +42,14 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_WORKFLOW_FAILED",
+    "message": "article run 32421630429 completed with conclusion=failure but no structured result was available",
+    "retryable": true,
+    "retry_at": "2026-08-20T22:11:35.942977+00:00",
+    "at": "2026-08-20T21:56:35.942996+00:00"
+  },
   "history": [
     {
       "at": "2026-08-20T08:32:38.285655+00:00",
@@ -640,9 +647,22 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-08-20T21:56:35.943000+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "ARTICLE_WORKFLOW_FAILED",
+      "details": {
+        "message": "article run 32421630429 completed with conclusion=failure but no structured result was available",
+        "retry_at": "2026-08-20T22:11:35.942977+00:00",
+        "failure_streak": 2,
+        "run_id": 32421630429,
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-08-20T21:53:17.540635+00:00",
+  "updated_at": "2026-08-20T21:56:35.943005+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
