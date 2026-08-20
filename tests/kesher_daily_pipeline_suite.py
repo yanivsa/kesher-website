@@ -21,6 +21,7 @@ OBSOLETE_TESTS = {
     "PipelineTestCase.test_jules_review_parse_failure_remains_blocked_from_upload",
     "PipelineTestCase.test_jules_review_api_timeout_remains_blocked_from_upload",
     "PipelineTestCase.test_technical_verification_failure_fatal_and_blocks_upload",
+    "PipelineTestCase.test_jules_review_replaces_timed_out_session_autonomously",
 }
 
 
