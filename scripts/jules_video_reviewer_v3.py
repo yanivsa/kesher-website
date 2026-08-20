@@ -27,10 +27,41 @@ REVIEW_FRAME_COUNT = legacy.REVIEW_FRAME_COUNT
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 REMOTION_POLICY_PATH = PROJECT_DIR / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 ReviewError = legacy.ReviewError
-review_json_example = legacy.review_json_example
 validate_structured_contract = legacy.validate_structured_contract
 validate_decision = legacy.validate_decision
 parse_decision = legacy.parse_decision
+
+
+def review_json_example(item_id: str) -> dict[str, Any]:
+    frame_hashes = {
+        f"relative/frame-{index}.png": "..."
+        for index in range(1, REVIEW_FRAME_COUNT + 1)
+    }
+    observations = [
+        f"תיאור פריים {index} עם פירוט עובדתי מספק בעברית"
+        for index in range(1, REVIEW_FRAME_COUNT + 1)
+    ]
+    return {
+        "schema_version": REVIEW_SCHEMA_VERSION,
+        "policy_version": REMOTION_POLICY_VERSION,
+        "item_id": item_id,
+        "manifest_sha256": "...",
+        "final_sha256": "...",
+        "transcript_sha256": "...",
+        "source_file_sha256": "...",
+        "visual_review_sha256": "...",
+        "frame_sha256": frame_hashes,
+        "frame_observations": observations,
+        "decision": "approved or rejected",
+        "blocking_issues": [],
+        "recommendations": [],
+        "visual_status": "approved or rejected",
+        "semantic_status": "approved or rejected",
+        "metadata_status": "approved or rejected",
+        "visual_note": "הערה עובדתית בעברית, ואם נדרש שיפור ויזואלי — 2-4 פעולות קונקרטיות",
+        "semantic_note": "הערה עובדתית בעברית",
+        "metadata_note": "הערה עובדתית בעברית",
+    }
 
 
 def load_remotion_policy() -> str:
