@@ -1,6 +1,6 @@
 {
   "contract_version": 3,
-  "controller_state_schema_version": 2,
+  "controller_state_schema_version": 3,
   "scheduler": {
     "owner": "kesher-content-controller",
     "heartbeat_minutes": 15,
@@ -24,6 +24,8 @@
     "max_attempts": 3,
     "provider_order": ["gemini", "unsplash", "pexels", "local-curated"],
     "gemini_model": "gemini-3.1-flash-image",
+    "visual_verifier_model": "gemini-3.5-flash",
+    "external_stock_requires_pixel_verification": true,
     "fallback_must_be_local": true,
     "no_image_publication_allowed": false
   },
