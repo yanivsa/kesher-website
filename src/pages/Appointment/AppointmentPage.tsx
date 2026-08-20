@@ -1,24 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiCalendar, FiClock, FiMapPin, FiShield } from 'react-icons/fi';
+import CalendlyBookingEmbed from '../../components/Booking/CalendlyBookingEmbed';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './AppointmentPage.module.css';
-
-const CALENDLY_WIDGET_SRC = 'https://assets.calendly.com/assets/external/widget.js';
-
-type CalendlyApi = {
-  initInlineWidget: (options: {
-    url: string;
-    parentElement: HTMLElement;
-    resize: boolean;
-  }) => void;
-};
-
-type WindowWithCalendly = Window & {
-  Calendly?: CalendlyApi;
-};
 
 const schemaData = {
   '@context': 'https://schema.org',
@@ -55,59 +42,6 @@ const schemaData = {
 };
 
 const AppointmentPage: React.FC = () => {
-  const calendlyContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const container = calendlyContainerRef.current;
-    if (!container) return undefined;
-
-    let disposed = false;
-
-    const initializeCalendly = () => {
-      if (disposed) return;
-
-      const calendly = (window as WindowWithCalendly).Calendly;
-      if (!calendly) return;
-
-      container.replaceChildren();
-      calendly.initInlineWidget({
-        url: SITE_CONFIG.links.calendly,
-        parentElement: container,
-        resize: true,
-      });
-    };
-
-    if ((window as WindowWithCalendly).Calendly) {
-      initializeCalendly();
-      return () => {
-        disposed = true;
-      };
-    }
-
-    const existingScript = document.querySelector<HTMLScriptElement>(
-      `script[src="${CALENDLY_WIDGET_SRC}"]`,
-    );
-
-    if (existingScript) {
-      existingScript.addEventListener('load', initializeCalendly);
-      return () => {
-        disposed = true;
-        existingScript.removeEventListener('load', initializeCalendly);
-      };
-    }
-
-    const script = document.createElement('script');
-    script.src = CALENDLY_WIDGET_SRC;
-    script.async = true;
-    script.addEventListener('load', initializeCalendly);
-    document.head.appendChild(script);
-
-    return () => {
-      disposed = true;
-      script.removeEventListener('load', initializeCalendly);
-    };
-  }, []);
-
   return (
     <div className={styles.page}>
       <MetaTags
@@ -160,17 +94,11 @@ const AppointmentPage: React.FC = () => {
           </aside>
 
           <div className={styles.calendlyCard}>
-            <div
-              ref={calendlyContainerRef}
-              className={styles.calendlyFrame}
-              aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"
+            <CalendlyBookingEmbed
+              ariaLabel="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"
+              serviceType="general_consultation"
+              bookingPagePath="/appointment"
             />
-            <p className={styles.externalFallback}>
-              לוח הזמנים לא נטען?{' '}
-              <a href={SITE_CONFIG.links.calendly} target="_blank" rel="noopener noreferrer">
-                פתחו את Calendly בחלון חדש
-              </a>
-            </p>
           </div>
         </div>
       </section>
