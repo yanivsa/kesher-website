@@ -10,6 +10,8 @@ on:
       - scripts/oci_openclaw_offline_repair_v2.py
       - scripts/oci_openclaw_offline_repair_v3.py
       - scripts/oci_openclaw_helper_run_command.py
+      - scripts/oci_openclaw_helper_run_command_v2.py
+      - scripts/oci_openclaw_cleanup_unverified.py
       - scripts/oci_openclaw_helper_proof.py
       - scripts/oci_openclaw_finalize_run_command.py
       - scripts/oci_openclaw_run_command_iam.py
@@ -17,6 +19,7 @@ on:
       - scripts/oci_openclaw_verify_console.py
       - scripts/openclaw_offline_mount_repair.sh
       - scripts/openclaw_offline_mount_repair_early.sh
+      - scripts/openclaw_offline_mount_repair_base.sh
       - scripts/openclaw_offline_proof.sh
       - scripts/openclaw_verify_offline_repair.sh
       - scripts/encrypt_openclaw_repair_result.py
@@ -116,15 +119,32 @@ jobs:
           PY
 
       - name: Patch authenticated boot disk through OCI Run Command
+        id: patch
+        continue-on-error: true
         run: |
           set -euo pipefail
-          python -u scripts/oci_openclaw_helper_run_command.py \
+          python -u scripts/oci_openclaw_helper_run_command_v2.py \
             --config /tmp/oci.cfg \
             --state-json /tmp/offline.json \
             --script-file scripts/openclaw_offline_mount_repair_early.sh \
             --timeout 600
 
+      - name: Recover preserved target after unverified patch failure
+        if: ${{ steps.patch.outcome != 'success' }}
+        run: |
+          set -euo pipefail
+          python -u scripts/oci_openclaw_cleanup_unverified.py \
+            --config /tmp/oci.cfg \
+            --state-json /tmp/offline.json
+
+      - name: Fail after safe patch cleanup
+        if: ${{ steps.patch.outcome != 'success' }}
+        run: |
+          echo OPENCLAW_PATCH_FAILED_TARGET_SAFELY_RELAUNCHED=true
+          exit 1
+
       - name: Detach repaired disk, remove helper, and relaunch OpenClaw
+        if: ${{ steps.patch.outcome == 'success' }}
         run: |
           set -euo pipefail
           python -u scripts/oci_openclaw_offline_repair_v2.py finish \
@@ -139,12 +159,14 @@ jobs:
           PY
 
       - name: Allow guest finalizer to complete
+        if: ${{ steps.patch.outcome == 'success' }}
         run: |
           set -euo pipefail
           echo OPENCLAW_GUEST_FINALIZER_WAIT_SECONDS=420
           sleep 420
 
       - name: Verify OpenClaw from preserved boot disk
+        if: ${{ steps.patch.outcome == 'success' }}
         id: finalize
         run: |
           set -euo pipefail
@@ -162,15 +184,17 @@ jobs:
             --timeout 600
           proof_rc=$?
           set -e
-          finish_rc=0
-          set +e
-          python -u scripts/oci_openclaw_offline_repair_v2.py finish \
-            --config /tmp/oci.cfg \
-            --state-json /tmp/proof.json
-          finish_rc=$?
-          set -e
-          [ "$finish_rc" -eq 0 ] || { echo OPENCLAW_OFFLINE_PROOF_RELAUNCH_FAILED=true; exit "$finish_rc"; }
-          [ "$proof_rc" -eq 0 ] || exit "$proof_rc"
+          if [ "$proof_rc" -eq 0 ]; then
+            python -u scripts/oci_openclaw_offline_repair_v2.py finish \
+              --config /tmp/oci.cfg \
+              --state-json /tmp/proof.json
+          else
+            echo OPENCLAW_OFFLINE_PROOF_FAILED_SAFE_RELAUNCH=true
+            python -u scripts/oci_openclaw_cleanup_unverified.py \
+              --config /tmp/oci.cfg \
+              --state-json /tmp/proof.json
+            exit "$proof_rc"
+          fi
           python3 - <<'PY'
           import json
           d=json.load(open('/tmp/openclaw-ready.json'))
@@ -231,7 +255,7 @@ jobs:
           fi
           OPENCLAW_STATUS="$status" \
           OPENCLAW_READY_URL_VALUE="$ready_url" \
-          OPENCLAW_FAILURE_HINT="job_status=$JOB_STATUS; finalize_outcome=$FINALIZE_OUTCOME" \
+          OPENCLAW_FAILURE_HINT="job_status=$JOB_STATUS; patch_outcome=${{ steps.patch.outcome }}; finalize_outcome=$FINALIZE_OUTCOME" \
           OPENCLAW_OFFLINE_REPAIR_COMPLETE_VALUE="$offline" \
           OPENCLAW_GATEWAY_RPC_OK_VALUE="$rpc" \
           TAILSCALE_SERVE_ACTIVE_VALUE="$serve" \
