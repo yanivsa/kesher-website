@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "cycle": "2026-08-20",
-  "status": "video_retry_wait",
+  "status": "video_running",
   "article": {
     "attempts": 4,
     "deploy_attempts": 0,
@@ -21,22 +21,22 @@
     "url": "https://kesher.saharoni.com/blog/dating-transition-to-relationship-boundaries",
     "published_date": "2026-08-20",
     "live": true,
-    "live_verified_at": "2026-08-20T08:32:38.285634+00:00",
+    "live_verified_at": "2026-08-20T08:38:46.080251+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
     "attempts": 0,
-    "resume_dispatches": 1,
+    "resume_dispatches": 2,
     "failure_count_by_type": {
       "VIDEO_WORKFLOW_FAILED": 1
     },
     "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
     "same_failure_streak": 1,
-    "next_retry_at": "2026-08-20T08:33:55.004782+00:00",
+    "next_retry_at": null,
     "processed_run_id": 32346614046,
     "item_id": "video-20260819-101504-32da84edf9",
-    "status": "rejected",
-    "last_dispatch_at": "2026-08-20T07:59:44.366898+00:00",
+    "status": "pending_review",
+    "last_dispatch_at": "2026-08-20T08:38:51.618702+00:00",
     "run_id": 32346614046,
     "last_run_conclusion": "failure",
     "last_failed_run_id": 32346614046
@@ -210,7 +210,23 @@
       "details": {
         "retry_at": "2026-08-20T08:33:55.004782+00:00"
       }
+    },
+    {
+      "at": "2026-08-20T08:38:46.080265+00:00",
+      "from": "video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-20T08:38:51.618718+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-08-20T08:32:43.229227+00:00"
+  "updated_at": "2026-08-20T08:38:51.618723+00:00"
 }
