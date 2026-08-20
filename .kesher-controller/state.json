@@ -1,19 +1,23 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "cycle": "2026-08-20",
   "status": "complete",
   "article": {
-    "attempts": 4,
-    "deploy_attempts": 0,
+    "attempt_count": 4,
+    "status": "complete",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": 32336909431,
+    "processed_run_id": 32330070921,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "ARTICLE_WORKFLOW_FAILED": 1
     },
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "next_retry_at": null,
-    "processed_run_id": 32330070921,
+    "attempts": 4,
+    "deploy_attempts": 0,
     "last_dispatch_at": "2026-08-20T05:46:51.398563+00:00",
-    "run_id": 32336909431,
     "last_run_conclusion": "failure",
     "last_failed_run_id": 32330070921,
     "slug": "dating-transition-to-relationship-boundaries",
@@ -21,23 +25,26 @@
     "url": "https://kesher.saharoni.com/blog/dating-transition-to-relationship-boundaries",
     "published_date": "2026-08-20",
     "live": true,
-    "live_verified_at": "2026-08-20T18:15:07.250588+00:00",
+    "live_verified_at": "2026-08-20T19:04:29.887938+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
-    "attempts": 1,
-    "resume_dispatches": 5,
+    "attempt_count": 6,
+    "status": "complete",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": 32364540375,
+    "processed_run_id": 32357961134,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "VIDEO_WORKFLOW_FAILED": 4
     },
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "next_retry_at": null,
-    "processed_run_id": 32357961134,
+    "attempts": 1,
+    "resume_dispatches": 5,
     "item_id": "video-20260820-120959-dbf3d22025",
-    "status": "uploaded",
     "last_dispatch_at": "2026-08-20T11:35:25.910444+00:00",
-    "run_id": 32364540375,
     "last_run_conclusion": "failure",
     "last_failed_run_id": 32357961134,
     "youtube_id": "nbINO-NJNz8",
@@ -698,7 +705,37 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-08-20T19:04:19.147348+00:00",
+      "from": "complete",
+      "to": "complete",
+      "reason": "controller state migrated from schema 2 to schema v3"
+    },
+    {
+      "at": "2026-08-20T19:04:29.887956+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-20T19:04:31.548324+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-08-20T18:15:09.785603+00:00"
+  "updated_at": "2026-08-20T19:04:31.548351+00:00",
+  "image": {
+    "attempt_count": 0,
+    "status": "complete",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
