@@ -1,0 +1,97 @@
+name: Kesher Canary Force-Now Controller
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/kesher-canary-force-now.yml
+  workflow_run:
+    workflows:
+      - Kesher Article Generation
+      - Kesher Trusted Article Image
+      - Kesher Daily NotebookLM Video Overview
+      - Deploy to Cloudflare Pages
+    types: [completed]
+  schedule:
+    - cron: "3,18,33,48 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: kesher-content-controller
+  cancel-in-progress: false
+
+jobs:
+  canary:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.event != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout trusted current main
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Allow only the approved 2026-08-21 pre-08:00 Israel canary window
+        id: gate
+        run: |
+          python3 - <<'PY'
+          from datetime import datetime, time
+          from zoneinfo import ZoneInfo
+          import os
+          now = datetime.now(ZoneInfo('Asia/Jerusalem'))
+          active = now.date().isoformat() == '2026-08-21' and now.time() < time(8, 0)
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+              out.write(f"active={'true' if active else 'false'}\n")
+          print(f"CANARY_FORCE_WINDOW active={active} now={now.isoformat()}")
+          PY
+
+      - name: Run one forced-window Controller v3 tick
+        if: ${{ steps.gate.outputs.active == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          KESHER_CONTROLLER_STATE_REF: automation-state
+          KESHER_TRIGGER_EVENT: ${{ github.event_name }}
+          KESHER_CHILD_RUN_ID: ${{ github.event.workflow_run.id }}
+          KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name }}
+          KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: |
+          set -euo pipefail
+          python3 -u - <<'PY' | tee /tmp/kesher-canary-controller.json
+          import sys
+          sys.path.insert(0, 'scripts')
+          import kesher_content_controller_v3_entry as v3
+          v3.V3Controller.article_slot_open = lambda self: True
+          sys.argv = ['kesher_content_controller_v3_entry.py', '--report-json']
+          raise SystemExit(v3.main())
+          PY
+
+      - name: Write canary status
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          p = Path('/tmp/kesher-canary-controller.json')
+          if not p.exists():
+              text = 'Canary force window inactive or controller did not emit a report.'
+          else:
+              payload = json.loads(p.read_text(encoding='utf-8'))
+              state = payload.get('state') or {}
+              text = (
+                  f"Cycle: {state.get('cycle')}\n\n"
+                  f"Status: {state.get('status')}\n\n"
+                  f"Action: {payload.get('action')} — {payload.get('reason')}\n\n"
+                  f"Article attempts: {(state.get('article') or {}).get('attempt_count', 0)}/3\n\n"
+                  f"Image attempts: {(state.get('image') or {}).get('attempt_count', 0)}/3\n\n"
+                  f"Video attempts: {(state.get('video') or {}).get('attempt_count', 0)}/3"
+              )
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
+              out.write('### Kesher one-time force-now canary\n\n' + text + '\n')
+          PY
