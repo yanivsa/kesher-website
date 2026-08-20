@@ -35,13 +35,22 @@ class FakeCorrelationGitHub:
         self.article_results = {}
         self.saved_state = None
 
+    @staticmethod
+    def _lookup(mapping, run_id):
+        if run_id in mapping:
+            return mapping[run_id]
+        text = str(run_id)
+        if text in mapping:
+            return mapping[text]
+        if text.isdigit() and int(text) in mapping:
+            return mapping[int(text)]
+        return None
+
     def workflow_run_by_id(self, run_id):
-        return copy.deepcopy(self.runs.get(str(run_id)) or self.runs.get(run_id))
+        return copy.deepcopy(self._lookup(self.runs, run_id))
 
     def article_result_for_run(self, run_id):
-        return copy.deepcopy(
-            self.article_results.get(str(run_id)) or self.article_results.get(run_id)
-        )
+        return copy.deepcopy(self._lookup(self.article_results, run_id))
 
     def save_controller_state(self, state):
         self.saved_state = copy.deepcopy(state)
