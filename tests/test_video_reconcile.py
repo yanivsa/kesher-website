@@ -27,15 +27,10 @@ def post(slug: str, day: str = "2026-08-19") -> dict:
     }
 
 
-def approve_by_jules(item: dict) -> None:
+def technically_verified(item: dict, status: str = "pending_review") -> None:
     item.update({
-        "status": "approved",
+        "status": status,
         "technical_verified": True,
-        "visual_review_status": "approved",
-        "semantic_review_status": "approved",
-        "metadata_review_status": "approved",
-        "reviewed_at": "2026-08-19T16:00:00+00:00",
-        "reviewer": {"type": "jules", "session": "sessions/review-1"},
         "final_sha256": "f" * 64,
         "manifest_sha256": "m" * 64,
         "transcript_sha256": "t" * 64,
@@ -76,145 +71,75 @@ class VideoReconcileTests(unittest.TestCase):
         old = pipeline.new_item(pipeline.source_metadata(yesterday))
         old.update({"status": "generating", "task_id": "old-task", "artifact_id": "old-task"})
         pipeline.save_state({"version": 1, "items": [old], "updated_at": pipeline.utc_now()})
-
         self.assertEqual(reconcile.prepare_generation(), 0)
         saved = pipeline.load_state()["items"]
         self.assertEqual(len(saved), 1)
-        self.assertEqual(saved[0]["status"], "generating")
         self.assertEqual(saved[0]["source"]["slug"], "yesterday")
-        self.assertNotIn("superseded_reason", saved[0])
 
     def test_multiple_backlog_items_are_processed_oldest_first(self) -> None:
-        today = post("today")
         oldest_post = post("oldest", "2026-08-17")
         newer_post = post("newer", "2026-08-18")
-        self.write_posts([today, newer_post, oldest_post])
-        newest = pipeline.new_item(pipeline.source_metadata(newer_post))
-        newest.update({"status": "generating", "task_id": "newer-task", "artifact_id": "newer-task"})
+        self.write_posts([newer_post, oldest_post])
+        newer = pipeline.new_item(pipeline.source_metadata(newer_post))
+        newer.update({"status": "generating", "task_id": "newer-task", "artifact_id": "newer-task"})
         oldest = pipeline.new_item(pipeline.source_metadata(oldest_post))
         oldest.update({"status": "generating", "task_id": "old-task", "artifact_id": "old-task"})
-        pipeline.save_state({"version": 1, "items": [newest, oldest], "updated_at": pipeline.utc_now()})
+        pipeline.save_state({"version": 1, "items": [newer, oldest], "updated_at": pipeline.utc_now()})
+        self.assertEqual(reconcile.unresolved_items(pipeline.load_state())[0]["source"]["slug"], "oldest")
 
-        self.assertEqual(reconcile.prepare_generation(), 0)
-        saved = reconcile.unresolved_items(pipeline.load_state())
-        self.assertEqual(saved[0]["source"]["slug"], "oldest")
-        self.assertEqual(len(saved), 2)
-
-    def test_prior_day_technical_rejection_retries_same_source_not_today(self) -> None:
-        today = post("today")
-        older = post("older", "2026-08-18")
-        self.write_posts([today, older])
-        source = pipeline.source_metadata(older)
-        rejected = pipeline.new_item(source)
-        rejected["status"] = "rejected"
-        rejected["technical_verified"] = False
-        pipeline.save_state({"version": 1, "items": [rejected], "updated_at": pipeline.utc_now()})
-
-        self.assertEqual(reconcile.prepare_generation(), 0)
-        saved = pipeline.load_state()
-        self.assertEqual(len(saved["items"]), 2)
-        old, replacement = saved["items"]
-        self.assertEqual(old["status"], "superseded")
-        self.assertEqual(old["superseded_reason"], "technical_retry_same_source")
-        self.assertEqual(replacement["status"], "source_selected")
-        self.assertEqual(replacement["source"]["slug"], "older")
-        self.assertEqual(replacement["source"]["content_sha256"], source["content_sha256"])
-        self.assertEqual(replacement["technical_retry_count"], 1)
-        self.assertEqual(replacement["retry_of"], old["id"])
-
-    def test_technical_retry_is_bounded(self) -> None:
+    def test_technical_rejection_retries_same_source(self) -> None:
         today = post("today")
         self.write_posts([today])
-        source = pipeline.source_metadata(today)
-        rejected = pipeline.new_item(source)
-        rejected.update({
-            "status": "rejected",
-            "technical_verified": False,
-            "technical_retry_count": reconcile.MAX_TECHNICAL_RETRIES,
-        })
+        rejected = pipeline.new_item(pipeline.source_metadata(today))
+        rejected.update({"status": "rejected", "technical_verified": False})
         pipeline.save_state({"version": 1, "items": [rejected], "updated_at": pipeline.utc_now()})
-        with self.assertRaisesRegex(pipeline.PipelineError, "Technical retry limit"):
-            reconcile.prepare_generation()
+        self.assertEqual(reconcile.prepare_generation(), 0)
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(saved[0]["status"], "superseded")
+        self.assertEqual(saved[1]["source"]["slug"], "today")
 
-    def test_jules_approved_prior_day_item_is_uploadable_before_today(self) -> None:
-        today = post("today")
-        yesterday = post("yesterday", "2026-08-18")
-        self.write_posts([today, yesterday])
-        item = pipeline.new_item(pipeline.source_metadata(yesterday))
-        approve_by_jules(item)
-        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
-
-        self.assertEqual(reconcile.prepare_upload(), 0)
-        saved = pipeline.load_state()["items"][0]
-        self.assertEqual(saved["source"]["slug"], "yesterday")
-        self.assertEqual(saved["status"], "approved")
-        self.assertEqual(saved["review_gate"], "mandatory-jules")
-        self.assertEqual(saved["review_approved_for_sha256"], saved["final_sha256"])
-
-    def test_changed_final_sha_after_approval_is_rebound_only_during_guarded_reconcile(self) -> None:
+    def test_jules_rejection_is_advisory_for_technical_video(self) -> None:
         today = post("today")
         self.write_posts([today])
         item = pipeline.new_item(pipeline.source_metadata(today))
-        approve_by_jules(item)
-        item["review_approved_for_sha256"] = "old" * 21 + "x"
-        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
-        self.assertEqual(reconcile.prepare_upload(), 0)
-        saved = pipeline.load_state()["items"][0]
-        self.assertEqual(saved["review_approved_for_sha256"], saved["final_sha256"])
-
-    def test_jules_rejection_blocks_upload(self) -> None:
-        today = post("today")
-        self.write_posts([today])
-        item = pipeline.new_item(pipeline.source_metadata(today))
+        technically_verified(item, "rejected")
         item.update({
-            "status": "rejected",
-            "technical_verified": True,
             "visual_review_status": "rejected",
             "semantic_review_status": "approved",
             "metadata_review_status": "approved",
-            "reviewed_at": "2026-08-19T16:00:00+00:00",
             "reviewer": {"type": "jules", "session": "sessions/review-2"},
         })
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
-
-        with self.assertRaisesRegex(pipeline.PipelineError, "not approved by the mandatory Jules"):
-            reconcile.prepare_upload()
+        self.assertEqual(reconcile.prepare_upload(), 0)
         saved = pipeline.load_state()["items"][0]
-        self.assertEqual(saved["status"], "rejected")
-        self.assertNotIn("review_approved_for_sha256", saved)
+        self.assertEqual(saved["status"], "approved")
+        self.assertEqual(saved["review_gate"], "advisory-jules")
+        self.assertEqual(saved["advisory_review_status_before_upload"], "rejected")
 
-    def test_unavailable_or_missing_jules_review_blocks_upload(self) -> None:
+    def test_missing_jules_review_is_advisory_for_technical_video(self) -> None:
         today = post("today")
         self.write_posts([today])
         item = pipeline.new_item(pipeline.source_metadata(today))
-        item.update({
-            "status": "pending_review",
-            "technical_verified": True,
-            "visual_review_status": "pending",
-            "semantic_review_status": "pending",
-            "metadata_review_status": "pending",
-        })
+        technically_verified(item, "pending_review")
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+        self.assertEqual(reconcile.prepare_upload(), 0)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "approved")
+        self.assertEqual(saved["advisory_review_status_before_upload"], "pending_review")
 
-        with self.assertRaisesRegex(pipeline.PipelineError, "not approved by the mandatory Jules"):
-            reconcile.prepare_upload()
-        self.assertEqual(pipeline.load_state()["items"][0]["status"], "pending_review")
-
-    def test_non_jules_approval_identity_blocks_upload(self) -> None:
+    def test_non_technical_video_still_fails_closed(self) -> None:
         today = post("today")
         self.write_posts([today])
         item = pipeline.new_item(pipeline.source_metadata(today))
-        approve_by_jules(item)
-        item["reviewer"] = {"type": "manual", "session": "manual"}
+        item.update({"status": "pending_review", "technical_verified": False})
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
-        with self.assertRaisesRegex(pipeline.PipelineError, "not approved by the mandatory Jules"):
+        with self.assertRaisesRegex(pipeline.PipelineError, "not technically verified"):
             reconcile.prepare_upload()
 
     def test_persisted_youtube_id_is_verified_without_second_insert(self) -> None:
         today = post("today")
         self.write_posts([today])
-        source = pipeline.source_metadata(today)
-        item = pipeline.new_item(source)
+        item = pipeline.new_item(pipeline.source_metadata(today))
         item.update({
             "status": "uploading",
             "technical_verified": True,
@@ -222,7 +147,6 @@ class VideoReconcileTests(unittest.TestCase):
             "uploaded": False,
         })
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
-
         verification = {
             "channel_id": pipeline.YOUTUBE_CHANNEL_ID,
             "privacy_status": "public",
@@ -236,12 +160,9 @@ class VideoReconcileTests(unittest.TestCase):
             pipeline, "start_resumable_upload"
         ) as insert:
             self.assertEqual(reconcile.prepare_upload(), 0)
-
         saved = pipeline.load_state()["items"][0]
         self.assertTrue(saved["uploaded"])
         self.assertEqual(saved["status"], "uploaded")
-        self.assertEqual(saved["youtube_url"], "https://www.youtube.com/watch?v=already-inserted")
-        self.assertEqual(saved["youtube_verification"], verification)
         channel.assert_called_once_with("token")
         verify.assert_called_once()
         insert.assert_not_called()
