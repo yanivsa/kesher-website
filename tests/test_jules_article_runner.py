@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from scripts import jules_article_runner as runner
 
@@ -87,6 +88,111 @@ class JulesArticleRunnerTests(unittest.TestCase):
         prompt = runner.build_prompt("2026-08-19", policy)
         self.assertEqual(prompt.count(policy), 1)
         self.assertLess(len(prompt.replace(policy, "")), 2600)
+
+    def test_create_session_uses_auto_create_pr_and_never_retries_post(self):
+        with mock.patch.object(
+            runner,
+            "request_json",
+            return_value={"name": "sessions/123", "url": "https://jules.google/session/123"},
+        ) as request:
+            session, url = runner.create_session("key", "prompt", "2026-08-19")
+
+        self.assertEqual(session, "sessions/123")
+        self.assertEqual(url, "https://jules.google/session/123")
+        args, kwargs = request.call_args
+        self.assertEqual(args[0], "POST")
+        self.assertEqual(args[1], f"{runner.API_BASE}/sessions")
+        self.assertEqual(args[3]["automationMode"], "AUTO_CREATE_PR")
+        self.assertFalse(args[3]["requirePlanApproval"])
+        self.assertEqual(kwargs["max_attempts"], 1)
+
+    def test_existing_active_slot_session_is_reused_without_create(self):
+        listed = {
+            "sessions": [{
+                "name": "sessions/oldest",
+                "title": "Kesher article 2026-08-19",
+                "state": "IN_PROGRESS",
+                "createTime": "2026-08-19T04:00:00Z",
+            }]
+        }
+        with mock.patch.object(runner, "request_json", return_value=listed) as request, mock.patch.object(
+            runner, "create_session"
+        ) as create:
+            session = runner.acquire_session("key", "prompt", "2026-08-19")
+
+        self.assertEqual(session[0], "sessions/oldest")
+        create.assert_not_called()
+        self.assertEqual(request.call_args.args[0], "GET")
+
+    def test_duplicate_active_slot_sessions_are_reduced_to_one(self):
+        listed = {
+            "sessions": [
+                {
+                    "name": "sessions/newer",
+                    "title": "Kesher article 2026-08-19",
+                    "state": "PLANNING",
+                    "createTime": "2026-08-19T04:01:00Z",
+                },
+                {
+                    "name": "sessions/oldest",
+                    "title": "Kesher article 2026-08-19",
+                    "state": "IN_PROGRESS",
+                    "createTime": "2026-08-19T04:00:00Z",
+                },
+            ]
+        }
+        with mock.patch.object(runner, "request_json", side_effect=[listed, {}]) as request:
+            session = runner.recover_active_slot_session("key", "2026-08-19")
+
+        self.assertEqual(session[0], "sessions/oldest")
+        delete_call = request.call_args_list[1]
+        self.assertEqual(delete_call.args[0], "DELETE")
+        self.assertTrue(delete_call.args[1].endswith("/sessions/newer"))
+        self.assertEqual(delete_call.kwargs["max_attempts"], 1)
+
+    def test_uncertain_create_response_recovers_same_session_before_retry(self):
+        network = runner.ArticleRunnerError("JULES_NETWORK_ERROR", "response lost")
+        with mock.patch.object(
+            runner,
+            "recover_active_slot_session",
+            side_effect=[None, ("sessions/recovered", "")],
+        ) as recover, mock.patch.object(
+            runner, "create_session", side_effect=network
+        ) as create:
+            session = runner.acquire_session("key", "prompt", "2026-08-19")
+
+        self.assertEqual(session[0], "sessions/recovered")
+        self.assertEqual(recover.call_count, 2)
+        create.assert_called_once()
+
+    def test_uncertain_create_without_recovery_is_retryable_but_safe(self):
+        network = runner.ArticleRunnerError("JULES_NETWORK_ERROR", "response lost")
+        with mock.patch.object(
+            runner,
+            "recover_active_slot_session",
+            return_value=None,
+        ), mock.patch.object(
+            runner, "create_session", side_effect=network
+        ), mock.patch.object(
+            runner.time, "sleep"
+        ):
+            with self.assertRaisesRegex(runner.ArticleRunnerError, "create response was uncertain") as ctx:
+                runner.acquire_session("key", "prompt", "2026-08-19")
+
+        self.assertEqual(ctx.exception.code, "JULES_CREATE_UNCERTAIN")
+        self.assertTrue(runner.retryable_code(ctx.exception.code))
+
+    def test_timeout_with_unconfirmed_delete_has_distinct_retryable_outcome(self):
+        with mock.patch.object(runner.time, "monotonic", side_effect=[0.0, 2.0]), mock.patch.object(
+            runner,
+            "request_json",
+            side_effect=runner.ArticleRunnerError("JULES_NETWORK_ERROR", "delete uncertain"),
+        ):
+            outcome, _, message = runner.poll("key", "sessions/123", timeout_seconds=1)
+
+        self.assertEqual(outcome, "JULES_TIMEOUT_CANCELLATION_UNCONFIRMED")
+        self.assertIn("cancellation could not be confirmed", message)
+        self.assertTrue(runner.retryable_code(outcome))
 
 
 if __name__ == "__main__":
