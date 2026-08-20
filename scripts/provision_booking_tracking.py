@@ -90,6 +90,17 @@ def cloudflare_result(response: dict[str, Any]) -> Any:
     return response.get("result")
 
 
+def list_all_d1(account_id: str, token: str) -> list[dict[str, Any]]:
+    query = urllib.parse.urlencode({"per_page": "100"})
+    result = cloudflare_result(
+        request_json(
+            f"{CLOUDFLARE_API}/accounts/{account_id}/d1/database?{query}",
+            token=token,
+        )
+    ) or []
+    return [item for item in result if isinstance(item, dict)]
+
+
 def ensure_d1(account_id: str, token: str) -> tuple[str, bool]:
     query = urllib.parse.urlencode({"name": DATABASE_NAME, "per_page": "100"})
     listed = cloudflare_result(
@@ -119,9 +130,10 @@ def ensure_d1(account_id: str, token: str) -> tuple[str, bool]:
         ) or {}
     except ProvisioningError as exc:
         if '"code":7406' in str(exc) or 'databases per account' in str(exc):
+            inventory_rows = list_all_d1(account_id, token)
             names = sorted(
                 str(item.get("name") or "").strip()
-                for item in listed
+                for item in inventory_rows
                 if str(item.get("name") or "").strip()
             )
             inventory = ", ".join(names) if names else "(none returned by API)"
