@@ -1,5 +1,6 @@
 interface BookingEnv {
   BOOKING_DB?: D1Database;
+  BOOKING_KV?: KVNamespace;
 }
 
 interface BrowserBookingPayload {
@@ -43,6 +44,12 @@ const cleanNullable = (value: unknown, maxLength: number) => {
 const isCalendlyEventUri = (value: string) =>
   value.startsWith(CALENDLY_EVENT_PREFIX) && value.length <= 500;
 
+const getEventId = (eventUri: string) => {
+  const eventId = eventUri.slice(CALENDLY_EVENT_PREFIX.length).split("/")[0]?.trim() || "";
+  if (!eventId || eventId.length > 180) return "";
+  return eventId;
+};
+
 const isSameOriginRequest = (request: Request) => {
   const origin = request.headers.get("Origin");
   if (!origin) return true;
@@ -51,6 +58,91 @@ const isSameOriginRequest = (request: Request) => {
   } catch {
     return false;
   }
+};
+
+const storeInD1 = async (
+  db: D1Database,
+  values: {
+    eventUri: string;
+    inviteeUri: string;
+    observedAt: string;
+    serviceType: string | null;
+    bookingPagePath: string | null;
+    landingPageType: string | null;
+    variantId: string | null;
+    entryPagePath: string | null;
+    utmSource: string | null;
+    utmMedium: string | null;
+    utmCampaign: string | null;
+    utmTerm: string | null;
+    utmContent: string | null;
+    googleClickIdPresent: number;
+    now: string;
+  },
+) => {
+  await db.prepare(
+    `INSERT INTO booking_attribution (
+      calendly_event_uri,
+      calendly_invitee_uri,
+      browser_seen_at,
+      status,
+      service_type,
+      booking_page_path,
+      landing_page_type,
+      variant_id,
+      entry_page_path,
+      utm_source,
+      utm_medium,
+      utm_campaign,
+      utm_term,
+      utm_content,
+      google_click_id_present,
+      created_at,
+      updated_at
+    ) VALUES (?, ?, ?, 'browser_seen', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(calendly_event_uri) DO UPDATE SET
+      calendly_invitee_uri = COALESCE(booking_attribution.calendly_invitee_uri, excluded.calendly_invitee_uri),
+      browser_seen_at = COALESCE(booking_attribution.browser_seen_at, excluded.browser_seen_at),
+      service_type = COALESCE(booking_attribution.service_type, excluded.service_type),
+      booking_page_path = COALESCE(booking_attribution.booking_page_path, excluded.booking_page_path),
+      landing_page_type = COALESCE(booking_attribution.landing_page_type, excluded.landing_page_type),
+      variant_id = COALESCE(booking_attribution.variant_id, excluded.variant_id),
+      entry_page_path = COALESCE(booking_attribution.entry_page_path, excluded.entry_page_path),
+      utm_source = COALESCE(booking_attribution.utm_source, excluded.utm_source),
+      utm_medium = COALESCE(booking_attribution.utm_medium, excluded.utm_medium),
+      utm_campaign = COALESCE(booking_attribution.utm_campaign, excluded.utm_campaign),
+      utm_term = COALESCE(booking_attribution.utm_term, excluded.utm_term),
+      utm_content = COALESCE(booking_attribution.utm_content, excluded.utm_content),
+      google_click_id_present = MAX(booking_attribution.google_click_id_present, excluded.google_click_id_present),
+      updated_at = excluded.updated_at`,
+  )
+    .bind(
+      values.eventUri,
+      values.inviteeUri || null,
+      values.observedAt,
+      values.serviceType,
+      values.bookingPagePath,
+      values.landingPageType,
+      values.variantId,
+      values.entryPagePath,
+      values.utmSource,
+      values.utmMedium,
+      values.utmCampaign,
+      values.utmTerm,
+      values.utmContent,
+      values.googleClickIdPresent,
+      values.now,
+      values.now,
+    )
+    .run();
+};
+
+const storeInKv = async (
+  kv: KVNamespace,
+  eventId: string,
+  record: Record<string, unknown>,
+) => {
+  await kv.put(`booking:browser:${eventId}`, JSON.stringify(record));
 };
 
 export async function handleBrowserBookingConfirmation(
@@ -92,15 +184,16 @@ export async function handleBrowserBookingConfirmation(
 
   const eventUri = clean(payload.calendly_event_uri, 500);
   const inviteeUri = clean(payload.calendly_invitee_uri, 500);
+  const eventId = getEventId(eventUri);
 
-  if (!eventUri || !isCalendlyEventUri(eventUri)) {
+  if (!eventUri || !eventId || !isCalendlyEventUri(eventUri)) {
     return json({ success: false, message: "Invalid Calendly event URI" }, 400);
   }
   if (inviteeUri && !isCalendlyEventUri(inviteeUri)) {
     return json({ success: false, message: "Invalid Calendly invitee URI" }, 400);
   }
 
-  if (!env.BOOKING_DB) {
+  if (!env.BOOKING_DB && !env.BOOKING_KV) {
     return json(
       {
         success: true,
@@ -113,68 +206,60 @@ export async function handleBrowserBookingConfirmation(
 
   const now = new Date().toISOString();
   const observedAt = clean(payload.observed_at, 40) || now;
+  const record = {
+    schema_version: 1,
+    channel: "browser",
+    calendly_event_uri: eventUri,
+    calendly_invitee_uri: inviteeUri || null,
+    browser_seen_at: observedAt,
+    status: "browser_seen",
+    service_type: cleanNullable(payload.service_type, 80),
+    booking_page_path: cleanNullable(payload.booking_page_path, 300),
+    landing_page_type: cleanNullable(payload.landing_page_type, 80),
+    variant_id: cleanNullable(payload.variant_id, 20),
+    entry_page_path: cleanNullable(payload.entry_page_path, 300),
+    utm_source: cleanNullable(payload.utm_source, 254),
+    utm_medium: cleanNullable(payload.utm_medium, 254),
+    utm_campaign: cleanNullable(payload.utm_campaign, 254),
+    utm_term: cleanNullable(payload.utm_term, 254),
+    utm_content: cleanNullable(payload.utm_content, 254),
+    google_click_id_present: payload.google_click_id_present === true,
+    updated_at: now,
+  };
+
+  if (env.BOOKING_DB) {
+    try {
+      await storeInD1(env.BOOKING_DB, {
+        eventUri,
+        inviteeUri,
+        observedAt,
+        serviceType: record.service_type,
+        bookingPagePath: record.booking_page_path,
+        landingPageType: record.landing_page_type,
+        variantId: record.variant_id,
+        entryPagePath: record.entry_page_path,
+        utmSource: record.utm_source,
+        utmMedium: record.utm_medium,
+        utmCampaign: record.utm_campaign,
+        utmTerm: record.utm_term,
+        utmContent: record.utm_content,
+        googleClickIdPresent: record.google_click_id_present ? 1 : 0,
+        now,
+      });
+      return json({ success: true, stored: true, storage: "d1" });
+    } catch {
+      if (!env.BOOKING_KV) {
+        return json({ success: false, message: "Booking storage unavailable" }, 503);
+      }
+    }
+  }
 
   try {
-    await env.BOOKING_DB.prepare(
-      `INSERT INTO booking_attribution (
-        calendly_event_uri,
-        calendly_invitee_uri,
-        browser_seen_at,
-        status,
-        service_type,
-        booking_page_path,
-        landing_page_type,
-        variant_id,
-        entry_page_path,
-        utm_source,
-        utm_medium,
-        utm_campaign,
-        utm_term,
-        utm_content,
-        google_click_id_present,
-        created_at,
-        updated_at
-      ) VALUES (?, ?, ?, 'browser_seen', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(calendly_event_uri) DO UPDATE SET
-        calendly_invitee_uri = COALESCE(booking_attribution.calendly_invitee_uri, excluded.calendly_invitee_uri),
-        browser_seen_at = COALESCE(booking_attribution.browser_seen_at, excluded.browser_seen_at),
-        service_type = COALESCE(booking_attribution.service_type, excluded.service_type),
-        booking_page_path = COALESCE(booking_attribution.booking_page_path, excluded.booking_page_path),
-        landing_page_type = COALESCE(booking_attribution.landing_page_type, excluded.landing_page_type),
-        variant_id = COALESCE(booking_attribution.variant_id, excluded.variant_id),
-        entry_page_path = COALESCE(booking_attribution.entry_page_path, excluded.entry_page_path),
-        utm_source = COALESCE(booking_attribution.utm_source, excluded.utm_source),
-        utm_medium = COALESCE(booking_attribution.utm_medium, excluded.utm_medium),
-        utm_campaign = COALESCE(booking_attribution.utm_campaign, excluded.utm_campaign),
-        utm_term = COALESCE(booking_attribution.utm_term, excluded.utm_term),
-        utm_content = COALESCE(booking_attribution.utm_content, excluded.utm_content),
-        google_click_id_present = MAX(booking_attribution.google_click_id_present, excluded.google_click_id_present),
-        updated_at = excluded.updated_at`,
-    )
-      .bind(
-        eventUri,
-        inviteeUri || null,
-        observedAt,
-        cleanNullable(payload.service_type, 80),
-        cleanNullable(payload.booking_page_path, 300),
-        cleanNullable(payload.landing_page_type, 80),
-        cleanNullable(payload.variant_id, 20),
-        cleanNullable(payload.entry_page_path, 300),
-        cleanNullable(payload.utm_source, 254),
-        cleanNullable(payload.utm_medium, 254),
-        cleanNullable(payload.utm_campaign, 254),
-        cleanNullable(payload.utm_term, 254),
-        cleanNullable(payload.utm_content, 254),
-        payload.google_click_id_present === true ? 1 : 0,
-        now,
-        now,
-      )
-      .run();
+    await storeInKv(env.BOOKING_KV as KVNamespace, eventId, record);
+    return json({ success: true, stored: true, storage: "kv" });
   } catch {
     return json({ success: false, message: "Booking storage unavailable" }, 503);
   }
-
-  return json({ success: true, stored: true });
 }
 
 export const onRequest: PagesFunction<BookingEnv> = async (context) =>
