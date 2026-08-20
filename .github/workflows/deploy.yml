@@ -18,7 +18,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      VITE_GTM_CONTAINER_ID: ${{ secrets.VITE_GTM_CONTAINER_ID }}
+      VITE_GTM_CONTAINER_ID: ${{ secrets.VITE_GTM_CONTAINER_ID || 'disabled' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
@@ -29,13 +29,17 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Validate production measurement configuration
+      - name: Inspect production measurement configuration
+        id: measurement
         shell: bash
         run: |
           set -euo pipefail
-          if [[ ! "$VITE_GTM_CONTAINER_ID" =~ ^GTM-[A-Za-z0-9]+$ ]]; then
-            echo "::error::VITE_GTM_CONTAINER_ID GitHub secret is missing or invalid; refusing to deploy a production build with PPC measurement disabled."
-            exit 1
+          if [[ "$VITE_GTM_CONTAINER_ID" =~ ^GTM-[A-Za-z0-9]+$ ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "Google Tag Manager container configuration is present."
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::VITE_GTM_CONTAINER_ID is not configured. Booking UX and Calendly event capture will deploy, while Google Ads cookie attribution remains inactive until a GTM container is configured."
           fi
 
       - name: Install dependencies
@@ -47,17 +51,27 @@ jobs:
       - name: Run full quality gate
         run: npm run check
 
-      - name: Verify GTM container was injected into the build
+      - name: Verify analytics bootstrap build output
         shell: bash
+        env:
+          MEASUREMENT_READY: ${{ steps.measurement.outputs.ready }}
         run: |
           set -euo pipefail
-          grep -F "data-gtm-id=\"$VITE_GTM_CONTAINER_ID\"" dist/index.html >/dev/null || {
-            echo "::error::The configured GTM container ID was not injected into dist/index.html"
-            exit 1
-          }
           if grep -F '%VITE_GTM_CONTAINER_ID%' dist/index.html >/dev/null; then
             echo "::error::The production build still contains the unresolved GTM placeholder"
             exit 1
+          fi
+
+          if [ "$MEASUREMENT_READY" = "true" ]; then
+            grep -F "data-gtm-id=\"$VITE_GTM_CONTAINER_ID\"" dist/index.html >/dev/null || {
+              echo "::error::The configured GTM container ID was not injected into dist/index.html"
+              exit 1
+            }
+          else
+            grep -F 'data-gtm-id="disabled"' dist/index.html >/dev/null || {
+              echo "::error::The measurement-disabled production build is not explicit"
+              exit 1
+            }
           fi
 
       - name: Deploy to Cloudflare Pages
@@ -68,24 +82,36 @@ jobs:
           wranglerVersion: 4.100.0
           command: pages deploy dist --project-name=kesher-website --branch=main
 
-      - name: Publish production deployment status
+      - name: Publish production deployment statuses
         if: ${{ always() }}
         env:
           GH_TOKEN: ${{ github.token }}
           JOB_STATUS: ${{ job.status }}
+          MEASUREMENT_READY: ${{ steps.measurement.outputs.ready }}
         shell: bash
         run: |
           set -euo pipefail
+
+          publish_status() {
+            local state="$1"
+            local context="$2"
+            local description="$3"
+            gh api --method POST \
+              "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+              -f state="$state" \
+              -f context="$context" \
+              -f description="$description" \
+              -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >/dev/null
+          }
+
           if [ "$JOB_STATUS" = "success" ]; then
-            state="success"
-            description="Cloudflare deploy succeeded with GTM measurement enabled"
+            publish_status success "booking-tracking/production-deploy" "Cloudflare production deployment succeeded"
           else
-            state="failure"
-            description="Production deploy failed; inspect Deploy to Cloudflare Pages"
+            publish_status failure "booking-tracking/production-deploy" "Production deploy failed; inspect Deploy to Cloudflare Pages"
           fi
-          gh api --method POST \
-            "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
-            -f state="$state" \
-            -f context="booking-tracking/production-deploy" \
-            -f description="$description" \
-            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >/dev/null
+
+          if [ "$MEASUREMENT_READY" = "true" ]; then
+            publish_status success "booking-tracking/google-measurement" "GTM container is injected into the production build"
+          else
+            publish_status pending "booking-tracking/google-measurement" "GTM container ID is not configured; Google Ads attribution is pending"
+          fi
