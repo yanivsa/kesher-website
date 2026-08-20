@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "cycle": "2026-08-20",
-  "status": "video_running",
+  "status": "video_retry_wait",
   "article": {
     "attempts": 4,
     "deploy_attempts": 0,
@@ -21,25 +21,25 @@
     "url": "https://kesher.saharoni.com/blog/dating-transition-to-relationship-boundaries",
     "published_date": "2026-08-20",
     "live": true,
-    "live_verified_at": "2026-08-20T09:08:57.112431+00:00",
+    "live_verified_at": "2026-08-20T09:42:42.867720+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
     "attempts": 1,
     "resume_dispatches": 3,
     "failure_count_by_type": {
-      "VIDEO_WORKFLOW_FAILED": 2
+      "VIDEO_WORKFLOW_FAILED": 3
     },
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "next_retry_at": null,
-    "processed_run_id": 32352160047,
+    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "next_retry_at": "2026-08-20T09:47:44.655715+00:00",
+    "processed_run_id": 32352392926,
     "item_id": "video-20260819-101504-32da84edf9",
     "status": "pending_review",
     "last_dispatch_at": "2026-08-20T09:08:59.703123+00:00",
     "run_id": 32352392926,
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 32349847331
+    "last_run_conclusion": "failure",
+    "last_failed_run_id": 32352392926
   },
   "last_error": null,
   "history": [
@@ -301,7 +301,35 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-08-20T09:42:42.867741+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-20T09:42:44.655740+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "VIDEO_WORKFLOW_FAILED",
+      "details": {
+        "message": "video run 32352392926 completed with conclusion=failure",
+        "retry_at": "2026-08-20T09:47:44.655715+00:00",
+        "failure_streak": 1,
+        "run_id": 32352392926,
+        "session_id": null
+      }
+    },
+    {
+      "at": "2026-08-20T09:42:44.655766+00:00",
+      "from": "video_retry_wait",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-08-20T09:47:44.655715+00:00"
+      }
     }
   ],
-  "updated_at": "2026-08-20T09:08:59.703150+00:00"
+  "updated_at": "2026-08-20T09:42:44.655771+00:00"
 }
