@@ -9,6 +9,8 @@ from scripts.kesher_automation_policy import POLICY_PATH, load_policy
 
 ROOT = Path(__file__).resolve().parents[1]
 LEGACY_POLICY = ROOT / "config" / "kesher-automation-policy.json"
+VIDEO_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
+VIDEO_REVIEW_POLICY = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 
 
 class ProductionContractV3Tests(unittest.TestCase):
@@ -47,6 +49,30 @@ class ProductionContractV3Tests(unittest.TestCase):
 
     def test_legacy_policy_is_not_the_runtime_policy(self) -> None:
         self.assertNotEqual(POLICY_PATH, LEGACY_POLICY)
+
+    def test_video_workflow_cannot_restore_mandatory_jules_gate(self) -> None:
+        workflow = VIDEO_WORKFLOW.read_text(encoding="utf-8")
+        review_policy = VIDEO_REVIEW_POLICY.read_text(encoding="utf-8")
+        forbidden = (
+            "mandatory Jules",
+            "Jules-approved MP4",
+            "upload_requires_approved_review",
+            'review_gate"] == "mandatory"',
+            "mandatory publication gate",
+        )
+        for text in forbidden:
+            self.assertNotIn(text.lower(), workflow.lower())
+            self.assertNotIn(text.lower(), review_policy.lower())
+        self.assertIn("Prepare technically verified upload", workflow)
+        self.assertIn("Upload exact technically verified MP4", workflow)
+        self.assertIn("Jules performs strict advisory review", workflow)
+
+    def test_video_workflow_retention_matches_contract(self) -> None:
+        workflow = VIDEO_WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("Keep the newest three durable state artifacts", workflow)
+        self.assertIn("| .[3:] | .[].id", workflow)
+        self.assertNotIn("| .[7:]", workflow)
+        self.assertIn("retention-days: 14", workflow)
 
 
 if __name__ == "__main__":
