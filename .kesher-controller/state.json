@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "article_retry_wait",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -42,14 +42,7 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_WORKFLOW_FAILED",
-    "message": "article run 32423995482 completed with conclusion=failure but no structured result was available",
-    "retryable": true,
-    "retry_at": "2026-08-20T22:53:11.809885+00:00",
-    "at": "2026-08-20T22:38:11.809907+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-20T08:32:38.285655+00:00",
@@ -694,9 +687,15 @@
         "run_id": 32423995482,
         "session_id": null
       }
+    },
+    {
+      "at": "2026-08-20T22:38:43.682087+00:00",
+      "from": "article_retry_wait",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-08-20T22:38:11.809917+00:00",
+  "updated_at": "2026-08-20T22:38:43.682099+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
