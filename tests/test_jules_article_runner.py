@@ -124,7 +124,39 @@ class JulesArticleRunnerTests(unittest.TestCase):
         create.assert_not_called()
         self.assertEqual(request.call_args.args[0], "GET")
 
-    def test_duplicate_active_slot_sessions_are_reduced_to_one(self):
+    def test_session_inventory_follows_all_documented_pages(self):
+        first = {
+            "sessions": [{
+                "name": "sessions/unrelated",
+                "title": "Kesher article 2026-08-18",
+                "state": "IN_PROGRESS",
+                "createTime": "2026-08-18T04:00:00Z",
+            }],
+            "nextPageToken": "page two/with spaces",
+        }
+        second = {
+            "sessions": [{
+                "name": "sessions/current",
+                "title": "Kesher article 2026-08-19",
+                "state": "PLANNING",
+                "createTime": "2026-08-19T04:00:00Z",
+            }]
+        }
+        with mock.patch.object(runner, "request_json", side_effect=[first, second]) as request:
+            active = runner.list_active_slot_sessions("key", "2026-08-19")
+
+        self.assertEqual([row["name"] for row in active], ["sessions/current"])
+        self.assertEqual(request.call_count, 2)
+        self.assertIn("pageToken=page+two%2Fwith+spaces", request.call_args_list[1].args[1])
+
+    def test_repeated_session_page_token_fails_closed(self):
+        repeated = {"sessions": [], "nextPageToken": "same"}
+        with mock.patch.object(runner, "request_json", side_effect=[repeated, repeated]):
+            with self.assertRaisesRegex(runner.ArticleRunnerError, "repeated a page token") as ctx:
+                runner.list_active_slot_sessions("key", "2026-08-19")
+        self.assertEqual(ctx.exception.code, "JULES_SESSION_LIST_ERROR")
+
+    def test_duplicate_active_slot_sessions_fail_closed_without_delete(self):
         listed = {
             "sessions": [
                 {
@@ -141,14 +173,14 @@ class JulesArticleRunnerTests(unittest.TestCase):
                 },
             ]
         }
-        with mock.patch.object(runner, "request_json", side_effect=[listed, {}]) as request:
-            session = runner.recover_active_slot_session("key", "2026-08-19")
+        with mock.patch.object(runner, "request_json", return_value=listed) as request:
+            with self.assertRaisesRegex(runner.ArticleRunnerError, "multiple active Jules sessions") as ctx:
+                runner.recover_active_slot_session("key", "2026-08-19")
 
-        self.assertEqual(session[0], "sessions/oldest")
-        delete_call = request.call_args_list[1]
-        self.assertEqual(delete_call.args[0], "DELETE")
-        self.assertTrue(delete_call.args[1].endswith("/sessions/newer"))
-        self.assertEqual(delete_call.kwargs["max_attempts"], 1)
+        self.assertEqual(ctx.exception.code, "JULES_DUPLICATE_SESSIONS")
+        self.assertTrue(runner.retryable_code(ctx.exception.code))
+        self.assertEqual(request.call_count, 1)
+        self.assertEqual(request.call_args.args[0], "GET")
 
     def test_uncertain_create_response_recovers_same_session_before_retry(self):
         network = runner.ArticleRunnerError("JULES_NETWORK_ERROR", "response lost")
@@ -182,17 +214,16 @@ class JulesArticleRunnerTests(unittest.TestCase):
         self.assertEqual(ctx.exception.code, "JULES_CREATE_UNCERTAIN")
         self.assertTrue(runner.retryable_code(ctx.exception.code))
 
-    def test_timeout_with_unconfirmed_delete_has_distinct_retryable_outcome(self):
+    def test_timeout_preserves_session_for_same_session_recovery_without_delete(self):
         with mock.patch.object(runner.time, "monotonic", side_effect=[0.0, 2.0]), mock.patch.object(
-            runner,
-            "request_json",
-            side_effect=runner.ArticleRunnerError("JULES_NETWORK_ERROR", "delete uncertain"),
-        ):
+            runner, "request_json"
+        ) as request:
             outcome, _, message = runner.poll("key", "sessions/123", timeout_seconds=1)
 
-        self.assertEqual(outcome, "JULES_TIMEOUT_CANCELLATION_UNCONFIRMED")
-        self.assertIn("cancellation could not be confirmed", message)
+        self.assertEqual(outcome, "JULES_TIMEOUT_SESSION_ACTIVE")
+        self.assertIn("left active", message)
         self.assertTrue(runner.retryable_code(outcome))
+        request.assert_not_called()
 
 
 if __name__ == "__main__":
