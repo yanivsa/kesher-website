@@ -98,7 +98,43 @@ jobs:
           fi
 
           echo "Watching Cloudflare deployment workflow run $run_id"
+          set +e
           gh run watch "$run_id" --exit-status
+          watch_exit=$?
+          set -e
+
+          if [ "$watch_exit" -eq 0 ]; then
+            exit 0
+          fi
+
+          conclusion="$(gh run view "$run_id" --json conclusion --jq '.conclusion // ""')"
+          if [ "$conclusion" != "cancelled" ]; then
+            echo "::error::Post-provision deployment $run_id concluded as ${conclusion:-unknown}"
+            exit "$watch_exit"
+          fi
+
+          echo "::notice::Deployment $run_id was superseded by a newer main deployment; verifying the replacement deployment."
+          replacement_id=""
+          for attempt in $(seq 1 60); do
+            replacement_id="$(gh run list \
+              --workflow=deploy.yml \
+              --branch=main \
+              --limit=30 \
+              --json databaseId,status,conclusion \
+              --jq ".[] | select(.databaseId > $run_id and .status == \"completed\" and .conclusion == \"success\") | .databaseId" \
+              | head -n 1)"
+            if [ -n "$replacement_id" ]; then
+              break
+            fi
+            sleep 5
+          done
+
+          if [ -z "$replacement_id" ]; then
+            echo "::error::The post-provision deployment was cancelled and no newer successful main deployment was observed"
+            exit 1
+          fi
+
+          echo "A newer successful production deployment ($replacement_id) superseded cancelled run $run_id."
 
       - name: Publish booking infrastructure statuses
         if: ${{ always() }}
