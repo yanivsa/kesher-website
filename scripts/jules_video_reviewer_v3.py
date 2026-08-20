@@ -27,6 +27,10 @@ REVIEW_FRAME_COUNT = legacy.REVIEW_FRAME_COUNT
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 REMOTION_POLICY_PATH = PROJECT_DIR / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 ReviewError = legacy.ReviewError
+review_json_example = legacy.review_json_example
+validate_structured_contract = legacy.validate_structured_contract
+validate_decision = legacy.validate_decision
+parse_decision = legacy.parse_decision
 
 
 def load_remotion_policy() -> str:
@@ -50,7 +54,7 @@ def load_remotion_policy() -> str:
 
 def build_prompt(evidence_root: str, item: dict[str, Any], hashes: dict[str, Any]) -> str:
     policy = load_remotion_policy()
-    example_json = json.dumps(legacy.review_json_example(item["id"]), ensure_ascii=False, indent=2)
+    example_json = json.dumps(review_json_example(item["id"]), ensure_ascii=False, indent=2)
     return f"""Perform one strict READ-ONLY Kesher Video Overview quality review. Do not edit the repository, create a branch/commit/changeSet/PR, generate another video, contact NotebookLM, or contact YouTube.
 
 The exact secret-free evidence is already checked out in `{evidence_root}` on this session's starting branch. Do not use `gh`, GitHub APIs, network downloads, or files outside that directory. If the directory or a required file is missing, report the blocker and do not invent evidence.
