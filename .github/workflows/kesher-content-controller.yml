@@ -10,8 +10,8 @@ on:
       - Deploy to Cloudflare Pages
     types: [completed]
   schedule:
-    # Dynamic recovery heartbeat. The controller itself decides whether work is needed.
-    - cron: "7,37 * * * *"
+    # Recovery heartbeat only. Normal progress is event-driven by child completion.
+    - cron: "3,18,33,48 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -25,9 +25,9 @@ concurrency:
 
 jobs:
   controller:
-    # Successful child completion can advance immediately. Failed children wait
-    # for the next heartbeat, avoiding tight failure/retry loops.
-    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.event != 'pull_request' && github.event.workflow_run.conclusion == 'success') }}
+    # Ignore PR-validation child runs, but wake immediately for success, failure,
+    # cancellation or timeout of every production child run.
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.event != 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -37,11 +37,15 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - name: Run autonomous queue-aware controller tick
+      - name: Run autonomous queue-aware reconciliation tick
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
           KESHER_CONTROLLER_STATE_REF: automation-state
+          KESHER_TRIGGER_EVENT: ${{ github.event_name }}
+          KESHER_CHILD_RUN_ID: ${{ github.event.workflow_run.id }}
+          KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name }}
+          KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
         run: |
           set -euo pipefail
           python3 -u scripts/kesher_content_controller_entry.py --report-json | tee /tmp/kesher-controller.json
@@ -61,12 +65,18 @@ jobs:
               state = payload.get('state') or {}
               article = state.get('article') or {}
               video = state.get('video') or {}
+              article_retry = article.get('next_retry_at') or 'none'
+              video_retry = video.get('next_retry_at') or 'none'
+              last_error = state.get('last_error') or {}
               text = (
                   f"Cycle: {state.get('cycle')}\n\n"
                   f"Status: {state.get('status')}\n\n"
                   f"Action: {payload.get('action')} — {payload.get('reason')}\n\n"
                   f"Article: {article.get('url') or article.get('pr_url') or 'pending'}\n\n"
-                  f"Video: {video.get('youtube_url') or video.get('item_id') or 'pending'}"
+                  f"Article attempts: {article.get('attempts', 0)} | next retry: {article_retry}\n\n"
+                  f"Video: {video.get('youtube_url') or video.get('item_id') or 'pending'}\n\n"
+                  f"Video next retry: {video_retry}\n\n"
+                  f"Last error: {last_error.get('code') or 'none'}"
               )
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
               out.write('### Kesher Content Controller\n\n' + text + '\n')
