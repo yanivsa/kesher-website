@@ -1,8 +1,7 @@
 name: Kesher Trusted Article Image
+run-name: Kesher Image PR ${{ inputs.pr_number }}
 
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
     inputs:
       pr_number:
@@ -16,13 +15,13 @@ permissions:
   actions: write
 
 concurrency:
-  group: kesher-article-image-${{ github.event.pull_request.number || inputs.pr_number }}
+  group: kesher-article-image-${{ inputs.pr_number }}
   cancel-in-progress: false
 
 jobs:
   attach-image:
-    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.base.ref == 'main' && github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout trusted image worker
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
@@ -30,7 +29,7 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - name: Attach required trusted image
+      - name: Attach required trusted image exactly once
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
@@ -38,10 +37,10 @@ jobs:
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           REPO: ${{ github.repository }}
-          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+          PR_NUMBER: ${{ inputs.pr_number }}
         run: |
           set -euo pipefail
-          python3 .github/scripts/article-image-worker.py "${REPO}" "${PR_NUMBER}" | tee image-worker.log
+          python3 .github/scripts/article-image-worker-v3.py "${REPO}" "${PR_NUMBER}" | tee image-worker.log
 
           if ! grep -q '^ARTICLE_IMAGE_COMMITTED ' image-worker.log; then
             echo 'Trusted image already present or this is not an article publication PR.'
