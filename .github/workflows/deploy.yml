@@ -16,6 +16,8 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      VITE_GTM_CONTAINER_ID: ${{ secrets.VITE_GTM_CONTAINER_ID }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
@@ -26,6 +28,15 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Validate production measurement configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "$VITE_GTM_CONTAINER_ID" =~ ^GTM-[A-Za-z0-9]+$ ]]; then
+            echo "::error::VITE_GTM_CONTAINER_ID GitHub secret is missing or invalid; refusing to deploy a production build with PPC measurement disabled."
+            exit 1
+          fi
+
       - name: Install dependencies
         run: npm ci
 
@@ -34,6 +45,19 @@ jobs:
 
       - name: Run full quality gate
         run: npm run check
+
+      - name: Verify GTM container was injected into the build
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F "data-gtm-id=\"$VITE_GTM_CONTAINER_ID\"" dist/index.html >/dev/null || {
+            echo "::error::The configured GTM container ID was not injected into dist/index.html"
+            exit 1
+          }
+          if grep -F '%VITE_GTM_CONTAINER_ID%' dist/index.html >/dev/null; then
+            echo "::error::The production build still contains the unresolved GTM placeholder"
+            exit 1
+          fi
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0
