@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Autonomous Kesher article -> video orchestration.
+"""Autonomous Kesher article -> video reconciliation controller.
 
-GitHub Actions remains the execution surface for secret-bearing jobs. This
-controller owns ordering, idempotency, durable state, retries and public success
-checks so a later heartbeat can always resume from reality instead of starting
-another copy of the same work.
+GitHub Actions remains the execution surface for secret-bearing jobs. The
+controller is the single owner of ordering, durable state, retry/backoff,
+idempotency and public success checks. Workers perform bounded work and report
+reality; a later event or heartbeat can always resume without creating a second
+copy of the same daily task.
 """
 
 from __future__ import annotations
@@ -26,21 +27,28 @@ from datetime import date, datetime, time as dt_time, timedelta, timezone
 from typing import Any
 from zoneinfo import ZoneInfo
 
+try:
+    from .kesher_automation_policy import article_retry_backoff_minutes, load_policy
+except ImportError:
+    from kesher_automation_policy import article_retry_backoff_minutes, load_policy
+
 SITE_URL = "https://kesher.saharoni.com"
 STATE_REF = os.environ.get("KESHER_CONTROLLER_STATE_REF", "automation-state")
 STATE_PATH = ".kesher-controller/state.json"
-STATE_SCHEMA_VERSION = 1
+STATE_SCHEMA_VERSION = 2
 ARTICLE_WORKFLOW = "kesher-article-generation.yml"
 VIDEO_WORKFLOW = "kesher-daily-video.yml"
 DEPLOY_WORKFLOW = "deploy.yml"
 VIDEO_STATE_ARTIFACT = "kesher-video-state"
+ARTICLE_RESULT_ARTIFACT_PREFIX = "kesher-article-result-"
 YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
 ACTIVE_RUN_STATUSES = {"queued", "in_progress", "waiting", "requested", "pending"}
 ACTIVE_VIDEO_STATUSES = {
     "source_selected", "source_added", "generating", "downloaded",
     "pending_review", "approved", "uploading",
 }
-MAX_ATTEMPTS = {"article": 4, "deploy": 3, "video": 4}
+MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF = 3
+MAX_VIDEO_START_ATTEMPTS_BEFORE_LONG_BACKOFF = 4
 ISRAEL_TZ = ZoneInfo("Asia/Jerusalem")
 HEBCAL_ASHDOD_URL = (
     "https://www.hebcal.com/zmanim?cfg=json&geonameid=295629&date={date}&sec=1"
@@ -60,6 +68,18 @@ class Action:
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def parse_timestamp(value: Any) -> datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
 
 
 def canonical_slug(post: dict[str, Any]) -> str:
@@ -98,6 +118,19 @@ def verified_youtube_item(item: dict[str, Any], slug: str) -> bool:
     )
 
 
+def mandatory_video_review_approved(item: dict[str, Any]) -> bool:
+    statuses = [item.get(f"{gate}_review_status") for gate in ("visual", "semantic", "metadata")]
+    reviewer = item.get("reviewer") or {}
+    return bool(
+        item.get("technical_verified") is True
+        and item.get("status") in {"approved", "uploading"}
+        and statuses == ["approved", "approved", "approved"]
+        and reviewer.get("type") == "jules"
+        and reviewer.get("session")
+        and item.get("reviewed_at")
+    )
+
+
 def matching_video_items(video_state: dict[str, Any], slug: str) -> list[dict[str, Any]]:
     matches: list[dict[str, Any]] = []
     for item in video_state.get("items") or []:
@@ -110,18 +143,63 @@ def matching_video_items(video_state: dict[str, Any], slug: str) -> list[dict[st
     return matches
 
 
+def _stage_defaults() -> dict[str, Any]:
+    return {
+        "failure_count_by_type": {},
+        "failure_fingerprint": None,
+        "same_failure_streak": 0,
+        "next_retry_at": None,
+        "processed_run_id": None,
+    }
+
+
 def new_cycle_state(day: date, old: dict[str, Any] | None = None) -> dict[str, Any]:
     history = list((old or {}).get("history") or [])[-80:]
     return {
         "schema_version": STATE_SCHEMA_VERSION,
         "cycle": day.isoformat(),
         "status": "article_needed",
-        "article": {"attempts": 0, "deploy_attempts": 0},
-        "video": {"attempts": 0, "resume_dispatches": 0},
+        "article": {
+            "attempts": 0,
+            "deploy_attempts": 0,
+            **_stage_defaults(),
+        },
+        "video": {
+            "attempts": 0,
+            "resume_dispatches": 0,
+            **_stage_defaults(),
+        },
         "last_error": None,
         "history": history,
         "updated_at": utc_now(),
     }
+
+
+def migrate_same_cycle_state(existing: dict[str, Any], day: date) -> dict[str, Any]:
+    migrated = new_cycle_state(day, existing)
+    migrated["status"] = str(existing.get("status") or "article_needed")
+    for stage in ("article", "video"):
+        source = existing.get(stage) or {}
+        if not isinstance(source, dict):
+            continue
+        for key, value in source.items():
+            migrated[stage][key] = value
+        for key, value in _stage_defaults().items():
+            migrated[stage].setdefault(key, value)
+    migrated["article"].setdefault("attempts", 0)
+    migrated["article"].setdefault("deploy_attempts", 0)
+    migrated["video"].setdefault("attempts", 0)
+    migrated["video"].setdefault("resume_dispatches", 0)
+    migrated["last_error"] = existing.get("last_error")
+    migrated["updated_at"] = utc_now()
+    migrated.setdefault("history", []).append({
+        "at": utc_now(),
+        "from": existing.get("status"),
+        "to": migrated["status"],
+        "reason": "controller state migrated to schema v2",
+    })
+    migrated["history"] = migrated["history"][-100:]
+    return migrated
 
 
 def transition(state: dict[str, Any], status: str, reason: str, **details: Any) -> None:
@@ -151,6 +229,70 @@ def block(state: dict[str, Any], stage: str, code: str, message: str) -> None:
     })
     state["history"] = state["history"][-100:]
     state["updated_at"] = utc_now()
+
+
+def retry_ready(stage_state: dict[str, Any], now: datetime) -> bool:
+    retry_at = parse_timestamp(stage_state.get("next_retry_at"))
+    return retry_at is None or now.astimezone(timezone.utc) >= retry_at
+
+
+def record_retryable_failure(
+    state: dict[str, Any],
+    stage: str,
+    code: str,
+    message: str,
+    *,
+    run_id: Any = None,
+    session_id: Any = None,
+    minimum_minutes: int | None = None,
+) -> None:
+    stage_state = state[stage]
+    counts = stage_state.setdefault("failure_count_by_type", {})
+    counts[code] = int(counts.get(code) or 0) + 1
+    if stage_state.get("failure_fingerprint") == code:
+        streak = int(stage_state.get("same_failure_streak") or 0) + 1
+    else:
+        streak = 1
+    stage_state["failure_fingerprint"] = code
+    stage_state["same_failure_streak"] = streak
+    delay = article_retry_backoff_minutes(streak)
+    if minimum_minutes is not None:
+        delay = max(delay, int(minimum_minutes))
+    retry_at = datetime.now(timezone.utc) + timedelta(minutes=delay)
+    stage_state["next_retry_at"] = retry_at.isoformat()
+    if run_id:
+        stage_state["last_failed_run_id"] = run_id
+    if session_id:
+        stage_state["last_jules_session_id"] = session_id
+    previous = state.get("status")
+    status = f"{stage}_retry_wait"
+    state["status"] = status
+    state["last_error"] = {
+        "stage": stage,
+        "code": code,
+        "message": message,
+        "retryable": True,
+        "retry_at": stage_state["next_retry_at"],
+        "at": utc_now(),
+    }
+    state.setdefault("history", []).append({
+        "at": utc_now(), "from": previous, "to": status, "reason": code,
+        "details": {
+            "message": message,
+            "retry_at": stage_state["next_retry_at"],
+            "failure_streak": streak,
+            "run_id": run_id,
+            "session_id": session_id,
+        },
+    })
+    state["history"] = state["history"][-100:]
+    state["updated_at"] = utc_now()
+
+
+def clear_failure(stage_state: dict[str, Any]) -> None:
+    stage_state["failure_fingerprint"] = None
+    stage_state["same_failure_streak"] = 0
+    stage_state["next_retry_at"] = None
 
 
 def article_window_open(now: datetime, saturday_sunset: datetime | None = None) -> bool:
@@ -276,9 +418,7 @@ class GitHubClient:
             raise ControllerError("GITHUB_PRS_INVALID")
         matches: list[dict[str, Any]] = []
         for pr in prs:
-            if not isinstance(pr, dict) or not str(pr.get("title") or "").startswith(
-                "Publish Kesher article:"
-            ):
+            if not isinstance(pr, dict):
                 continue
             number = pr.get("number")
             if not number:
@@ -300,6 +440,10 @@ class GitHubClient:
             return []
         return [row for row in payload.get("workflow_runs") or [] if isinstance(row, dict)]
 
+    def workflow_run_by_id(self, run_id: int | str) -> dict[str, Any] | None:
+        payload = self.request("GET", f"{self.api}/actions/runs/{run_id}", allow_404=True)
+        return payload if isinstance(payload, dict) else None
+
     def active_workflow_run(
         self, workflow: str, *, production_only: bool = False
     ) -> dict[str, Any] | None:
@@ -316,6 +460,33 @@ class GitHubClient:
             body["inputs"] = inputs
         name = urllib.parse.quote(workflow, safe="")
         self.request("POST", f"{self.api}/actions/workflows/{name}/dispatches", body)
+
+    def article_result_for_run(self, run_id: int | str) -> dict[str, Any] | None:
+        payload = self.request("GET", f"{self.api}/actions/runs/{run_id}/artifacts?per_page=100")
+        artifacts = payload.get("artifacts") if isinstance(payload, dict) else None
+        expected_name = f"{ARTICLE_RESULT_ARTIFACT_PREFIX}{run_id}"
+        candidates = [
+            row for row in (artifacts or [])
+            if isinstance(row, dict)
+            and row.get("name") == expected_name
+            and not row.get("expired")
+            and row.get("archive_download_url")
+        ]
+        if not candidates:
+            return None
+        candidates.sort(key=lambda row: str(row.get("created_at") or ""), reverse=True)
+        raw = self.download_artifact_archive(str(candidates[0]["archive_download_url"]))
+        try:
+            with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+                names = [name for name in archive.namelist() if name.endswith("result.json")]
+                if len(names) != 1:
+                    return None
+                result = json.loads(archive.read(names[0]).decode("utf-8"))
+        except (zipfile.BadZipFile, json.JSONDecodeError, UnicodeDecodeError, KeyError):
+            return None
+        if not isinstance(result, dict) or result.get("schema_version") != 1:
+            return None
+        return result
 
     def main_sha(self) -> str:
         payload = self.request("GET", f"{self.api}/git/ref/heads/main")
@@ -411,7 +582,7 @@ class GitHubClient:
 class PublicSiteClient:
     def get(self, url: str) -> tuple[int, str]:
         request = urllib.request.Request(
-            url, headers={"User-Agent": "Kesher-Content-Controller/1.0"}
+            url, headers={"User-Agent": "Kesher-Content-Controller/2.0"}
         )
         try:
             with urllib.request.urlopen(request, timeout=30) as response:
@@ -423,7 +594,7 @@ class PublicSiteClient:
 def fetch_ashdod_sunset(day: date) -> datetime:
     request = urllib.request.Request(
         HEBCAL_ASHDOD_URL.format(date=day.isoformat()),
-        headers={"User-Agent": "Kesher-Content-Controller/1.0"},
+        headers={"User-Agent": "Kesher-Content-Controller/2.0"},
     )
     with urllib.request.urlopen(request, timeout=20) as response:
         payload = json.load(response)
@@ -449,15 +620,19 @@ class Controller:
         self.site = site
         self.now = (now or datetime.now(ISRAEL_TZ)).astimezone(ISRAEL_TZ)
         self.saturday_sunset = saturday_sunset
+        self.policy = load_policy()
 
     def state(self) -> dict[str, Any]:
         existing = self.github.load_controller_state()
-        if (
-            not isinstance(existing, dict)
-            or existing.get("schema_version") != STATE_SCHEMA_VERSION
-            or existing.get("cycle") != self.now.date().isoformat()
-        ):
-            return new_cycle_state(self.now.date(), existing)
+        today = self.now.date()
+        if not isinstance(existing, dict) or existing.get("cycle") != today.isoformat():
+            return new_cycle_state(today, existing)
+        if existing.get("schema_version") != STATE_SCHEMA_VERSION:
+            return migrate_same_cycle_state(existing, today)
+        for stage in ("article", "video"):
+            existing.setdefault(stage, {})
+            for key, value in _stage_defaults().items():
+                existing[stage].setdefault(key, value)
         return existing
 
     def article_slot_open(self) -> bool:
@@ -476,6 +651,96 @@ class Controller:
             action = Action("blocked", str(exc))
         self.github.save_controller_state(state)
         return state, action
+
+    def _workflow_run(self, run_id: Any) -> dict[str, Any] | None:
+        getter = getattr(self.github, "workflow_run_by_id", None)
+        if not run_id or getter is None:
+            return None
+        return getter(run_id)
+
+    def _article_result(self, run_id: Any) -> dict[str, Any] | None:
+        getter = getattr(self.github, "article_result_for_run", None)
+        if not run_id or getter is None:
+            return None
+        return getter(run_id)
+
+    def _reconcile_completed_article_run(self, state: dict[str, Any]) -> Action | None:
+        article_state = state["article"]
+        run_id = article_state.get("run_id")
+        if not run_id or article_state.get("processed_run_id") == run_id:
+            return None
+        run = self._workflow_run(run_id)
+        if not run or str(run.get("status") or "") != "completed":
+            return None
+
+        article_state["processed_run_id"] = run_id
+        article_state["last_run_conclusion"] = run.get("conclusion")
+        result = self._article_result(run_id)
+        if result:
+            article_state["last_worker_result"] = result
+            session_id = result.get("session_id")
+            if session_id:
+                article_state["last_jules_session_id"] = session_id
+            outcome = str(result.get("outcome") or "ARTICLE_RESULT_INVALID")
+            if outcome in {"PR_CREATED", "ARTICLE_ALREADY_IN_PROGRESS", "ARTICLE_ALREADY_PUBLISHED"}:
+                clear_failure(article_state)
+                article_state["next_retry_at"] = (
+                    datetime.now(timezone.utc) + timedelta(minutes=2)
+                ).isoformat()
+                transition(
+                    state,
+                    "article_result_wait",
+                    "article worker reported progress; waiting for GitHub/main reconciliation",
+                    run_id=run_id,
+                    outcome=outcome,
+                    pr_url=result.get("pr_url"),
+                )
+                return Action("wait", f"article worker outcome {outcome}; reconciling reality")
+            if result.get("retryable") is True:
+                record_retryable_failure(
+                    state,
+                    "article",
+                    outcome,
+                    str(result.get("message") or outcome),
+                    run_id=run_id,
+                    session_id=session_id,
+                )
+                return Action("wait", f"retryable article failure {outcome}")
+            block(state, "article", outcome, str(result.get("message") or outcome))
+            return Action("blocked", f"non-retryable article failure {outcome}")
+
+        conclusion = str(run.get("conclusion") or "unknown")
+        code = "ARTICLE_RESULT_MISSING" if conclusion == "success" else "ARTICLE_WORKFLOW_FAILED"
+        record_retryable_failure(
+            state,
+            "article",
+            code,
+            f"article run {run_id} completed with conclusion={conclusion} but no structured result was available",
+            run_id=run_id,
+        )
+        return Action("wait", code)
+
+    def _reconcile_completed_video_run(self, state: dict[str, Any]) -> None:
+        video_state = state["video"]
+        run_id = video_state.get("run_id")
+        if not run_id or video_state.get("processed_run_id") == run_id:
+            return
+        run = self._workflow_run(run_id)
+        if not run or str(run.get("status") or "") != "completed":
+            return
+        video_state["processed_run_id"] = run_id
+        conclusion = str(run.get("conclusion") or "unknown")
+        video_state["last_run_conclusion"] = conclusion
+        if conclusion == "success":
+            clear_failure(video_state)
+            return
+        record_retryable_failure(
+            state,
+            "video",
+            "VIDEO_WORKFLOW_FAILED",
+            f"video run {run_id} completed with conclusion={conclusion}",
+            run_id=run_id,
+        )
 
     def _tick(self, state: dict[str, Any]) -> Action:
         if not self.article_slot_open():
@@ -502,26 +767,36 @@ class Controller:
                 state["article"].update({
                     "pr_number": pr.get("number"), "pr_url": pr.get("html_url"),
                 })
+                clear_failure(state["article"])
                 transition(state, "article_pr_open", "existing article PR is authoritative")
                 return Action("wait", "article PR already open")
+
             active = self.github.active_workflow_run(ARTICLE_WORKFLOW)
             if active:
                 state["article"]["run_id"] = active.get("id")
                 transition(state, "article_generating", "article workflow already active")
                 return Action("wait", "article workflow active")
-            attempts = int(state["article"].get("attempts") or 0)
-            if attempts >= MAX_ATTEMPTS["article"]:
-                block(state, "article", "ARTICLE_ATTEMPTS_EXHAUSTED",
-                      f"article generation exhausted {attempts} attempts")
-                return Action("blocked", "article attempts exhausted")
+
+            reconciled = self._reconcile_completed_article_run(state)
+            if reconciled is not None:
+                return reconciled
+
+            if not retry_ready(state["article"], self.now):
+                retry_at = state["article"].get("next_retry_at")
+                transition(state, "article_retry_wait", "article retry backoff is active", retry_at=retry_at)
+                return Action("wait", f"article retry scheduled for {retry_at}")
+
             inputs = {"slot": self.now.date().isoformat()}
             self.github.dispatch(ARTICLE_WORKFLOW, inputs)
+            attempts = int(state["article"].get("attempts") or 0) + 1
             state["article"].update({
-                "attempts": attempts + 1, "last_dispatch_at": utc_now(),
+                "attempts": attempts,
+                "last_dispatch_at": utc_now(),
+                "next_retry_at": None,
             })
-            transition(state, "article_generating", "article workflow dispatched",
-                       attempt=attempts + 1)
-            return Action("dispatch_article", "no article or PR exists", inputs)
+            transition(state, "article_generating", "single article worker attempt dispatched",
+                       attempt=attempts)
+            return Action("dispatch_article", "no article or PR exists and retry window is open", inputs)
 
         article = todays[0]
         slug = canonical_slug(article)
@@ -531,6 +806,7 @@ class Controller:
             "slug": slug, "title": title, "url": url,
             "published_date": str(article.get("date") or ""),
         })
+        clear_failure(state["article"])
         if open_prs:
             block(state, "article", "STALE_OR_DUPLICATE_ARTICLE_PR",
                   f"published article exists while {len(open_prs)} article PR(s) remain open")
@@ -541,20 +817,31 @@ class Controller:
             if self.github.active_workflow_run(DEPLOY_WORKFLOW):
                 transition(state, "article_deploying", "deployment already active")
                 return Action("wait", "deployment active")
-            attempts = int(state["article"].get("deploy_attempts") or 0)
-            if attempts >= MAX_ATTEMPTS["deploy"]:
-                block(state, "article", "ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
-                      f"article page not public after {attempts} deploy attempts")
-                return Action("blocked", "article deploy attempts exhausted")
+            next_deploy = parse_timestamp(state["article"].get("next_deploy_retry_at"))
+            if next_deploy and self.now.astimezone(timezone.utc) < next_deploy:
+                transition(state, "article_deploy_wait", "deploy retry backoff is active",
+                           retry_at=next_deploy.isoformat())
+                return Action("wait", f"deploy retry scheduled for {next_deploy.isoformat()}")
+            attempts = int(state["article"].get("deploy_attempts") or 0) + 1
             self.github.dispatch(DEPLOY_WORKFLOW)
+            delay_index = max(1, attempts - MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF + 1)
+            delay = 5 if attempts <= MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF else article_retry_backoff_minutes(delay_index)
             state["article"].update({
-                "deploy_attempts": attempts + 1, "last_deploy_dispatch_at": utc_now(),
+                "deploy_attempts": attempts,
+                "last_deploy_dispatch_at": utc_now(),
+                "next_deploy_retry_at": (
+                    datetime.now(timezone.utc) + timedelta(minutes=delay)
+                ).isoformat(),
             })
-            transition(state, "article_deploying", "public article check failed; deploy dispatched",
-                       http_status=status, attempt=attempts + 1)
+            transition(state, "article_deploying", "public article check failed; recovery deploy dispatched",
+                       http_status=status, attempt=attempts)
             return Action("dispatch_deploy", "article not public yet")
 
-        state["article"].update({"live": True, "live_verified_at": utc_now()})
+        state["article"].update({
+            "live": True,
+            "live_verified_at": utc_now(),
+            "next_deploy_retry_at": None,
+        })
         transition(state, "article_live", "HTTP 200 and expected title verified")
 
         video_state = self.github.newest_video_state()
@@ -571,6 +858,7 @@ class Controller:
                 "youtube_id": item.get("youtube_id"), "youtube_url": item.get("youtube_url"),
                 "verified": True,
             })
+            clear_failure(state["video"])
             transition(state, "complete", "public article and YouTube video verified")
             return Action("complete", "public article and video verified")
 
@@ -592,6 +880,12 @@ class Controller:
             transition(state, "video_running", "video workflow already active")
             return Action("wait", "video workflow active")
 
+        self._reconcile_completed_video_run(state)
+        if not retry_ready(state["video"], self.now):
+            retry_at = state["video"].get("next_retry_at")
+            transition(state, "video_retry_wait", "video retry backoff is active", retry_at=retry_at)
+            return Action("wait", f"video retry scheduled for {retry_at}")
+
         if item:
             state["video"].update({"item_id": item.get("id"), "status": item.get("status")})
             if item.get("status") == "uploaded":
@@ -599,35 +893,52 @@ class Controller:
                       "video has upload identity but lacks authoritative public verification")
                 return Action("blocked", "uploaded video requires reconciliation")
 
-            if item.get("technical_verified") is True and item.get("status") in {
-                "pending_review", "approved", "rejected", "uploading"
-            }:
+            if mandatory_video_review_approved(item):
                 operation = "upload"
+                inputs = {"operation": operation}
+            elif item.get("status") == "rejected" and item.get("technical_verified") is not True:
+                operation = "full"
+                inputs = {"operation": operation}
+            elif item.get("status") == "rejected" and item.get("visual_review_status") == "rejected":
+                operation = "rebuild"
+                inputs = {"operation": operation, "rebuild_item_id": str(item.get("id") or "")}
+            elif item.get("status") == "rejected":
+                block(
+                    state,
+                    "video",
+                    "VIDEO_REVIEW_REJECTED",
+                    "mandatory Jules review rejected semantic or metadata quality; automatic visual rebuild cannot safely repair it",
+                )
+                return Action("blocked", "mandatory Jules review rejected non-visual quality")
             else:
                 operation = "full"
-            inputs = {"operation": operation}
+                inputs = {"operation": operation}
+
             self.github.dispatch(VIDEO_WORKFLOW, inputs)
             resumes = int(state["video"].get("resume_dispatches") or 0) + 1
             state["video"].update({
-                "resume_dispatches": resumes, "last_dispatch_at": utc_now(),
+                "resume_dispatches": resumes,
+                "last_dispatch_at": utc_now(),
+                "next_retry_at": None,
             })
             transition(state, "video_running", "existing video item dispatched/resumed",
                        operation=operation, resume=resumes)
             return Action("dispatch_video", "existing article video is incomplete", inputs)
 
-        attempts = int(state["video"].get("attempts") or 0)
-        if attempts >= MAX_ATTEMPTS["video"]:
-            block(state, "video", "VIDEO_ATTEMPTS_EXHAUSTED",
-                  f"video pipeline exhausted {attempts} start attempts")
-            return Action("blocked", "video start attempts exhausted")
-
+        attempts = int(state["video"].get("attempts") or 0) + 1
         inputs = {"operation": "full"}
         self.github.dispatch(VIDEO_WORKFLOW, inputs)
         state["video"].update({
-            "attempts": attempts + 1, "last_dispatch_at": utc_now(),
+            "attempts": attempts,
+            "last_dispatch_at": utc_now(),
+            "next_retry_at": None,
         })
         transition(state, "video_running", "new video workflow dispatched",
-                   operation="full", attempt=attempts + 1)
+                   operation="full", attempt=attempts)
+        if attempts > MAX_VIDEO_START_ATTEMPTS_BEFORE_LONG_BACKOFF:
+            state["video"]["next_retry_at"] = (
+                datetime.now(timezone.utc) + timedelta(minutes=60)
+            ).isoformat()
         return Action("dispatch_video", "article live and no matching video item exists", inputs)
 
 
