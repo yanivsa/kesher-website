@@ -1,0 +1,84 @@
+.banner {
+  position: fixed;
+  z-index: 10000;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 1rem 1.1rem;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #d9d4cf);
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(20, 30, 25, 0.18);
+  color: var(--color-text, #26322c);
+}
+
+.banner p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.banner a {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+}
+
+.accept,
+.reject,
+.settingsButton {
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-primary, #5a7a65);
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.accept {
+  background: var(--color-primary, #5a7a65);
+  color: #fff;
+}
+
+.reject,
+.settingsButton {
+  background: var(--color-surface, #fff);
+  color: var(--color-primary-dark, #3d5b47);
+}
+
+.settingsButton {
+  position: fixed;
+  z-index: 9999;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  min-height: 38px;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.78rem;
+  opacity: 0.82;
+}
+
+@media (max-width: 600px) {
+  .banner {
+    right: 0.6rem;
+    bottom: 0.6rem;
+    left: 0.6rem;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .accept,
+  .reject {
+    width: 100%;
+  }
+}
