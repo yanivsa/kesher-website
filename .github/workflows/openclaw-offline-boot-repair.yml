@@ -1,4 +1,5 @@
 name: Repair OpenClaw Offline and Enable Tailscale Serve
+# Operational recovery re-run trigger: 2026-08-20
 
 on:
   workflow_dispatch:
