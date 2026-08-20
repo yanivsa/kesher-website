@@ -10,13 +10,12 @@ import {
   FiShield,
   FiUserCheck,
 } from 'react-icons/fi';
+import CalendlyBookingEmbed from '../../../components/Booking/CalendlyBookingEmbed';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import { useLandingPageAnalytics } from '../../../hooks/useLandingPageAnalytics';
 import styles from './CouplesCounselingAshdodPage.module.css';
-
-
 
 const timelineSteps = [
   {
@@ -131,7 +130,6 @@ const schemaData = {
   ],
 };
 
-// Controlled Copy Variants Architecture (Variant A = Default Production, B = Trust & Process, C = Pattern)
 type VariantId = 'A' | 'B' | 'C';
 
 const copyVariants: Record<VariantId, { h1: string; subtitle: string }> = {
@@ -179,8 +177,6 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       bookingEl.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
-
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -308,8 +304,6 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           </div>
         </div>
       </section>
-
-
 
       {/* 3. אזור הזדהות עם הצורך */}
       <section className={styles.sectionAlt}>
@@ -474,8 +468,6 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-
-
       {/* 9. מידע על הפגישה + הסרת חסמים */}
       <section className={styles.section}>
         <div className="container">
@@ -483,7 +475,6 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             <h2>מידע מעשי לפני שקובעים</h2>
           </div>
 
-          {/* כרטיס פרטי פגישה */}
           <div className={styles.detailsCard}>
             <div className={styles.priceTag}>500 ₪</div>
             <div className={styles.detailsList}>
@@ -514,7 +505,6 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             </div>
           </div>
 
-          {/* הסרת חסמים — Fear Removal */}
           <div className={styles.frictionBox}>
             <h3 className={styles.frictionTitle}>שאלות שעולות לפני שמחליטים לקבוע</h3>
             <div className={styles.frictionGrid}>
@@ -582,11 +572,14 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           </div>
 
           <div className={styles.calendlyWrapper}>
-            <iframe
-              src={SITE_CONFIG.links.calendly}
-              title="יומן קביעת פגישת ייעוץ זוגי באשדוד Calendly - שירה סהרוני"
-              className={styles.calendlyFrame}
-              loading="eager"
+            <CalendlyBookingEmbed
+              ariaLabel="לוח זמנים לקביעת פגישת ייעוץ זוגי באשדוד עם שירה סהרוני"
+              serviceType="couples_counseling"
+              bookingPagePath="/couples-counseling-ashdod"
+              landingPageType="ashdod"
+              variantId={variantId}
+              value={500}
+              currency="ILS"
             />
           </div>
 
@@ -647,7 +640,6 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </footer>
 
-      {/* Mobile Sticky Bottom Bar */}
       {!isBookingInView && (
         <div className={styles.mobileStickyBar}>
           <button

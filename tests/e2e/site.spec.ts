@@ -33,7 +33,6 @@ for (const route of routes) {
         errors.push(message.text());
       }
     });
-    // Axe must inspect the settled color state, not an intermediate animation frame.
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(route);
     await expect(page.locator('h1')).toHaveCount(1);
@@ -215,74 +214,113 @@ test('relocation and premarital service pages expose their practical article hub
     .toHaveAttribute('href', '/services/premarital-first-year');
 });
 
-test('couples counseling Ashdod landing page renders correctly with Calendly, 500 NIS pricing, and GTM dataLayer', async ({ page }) => {
-  await page.goto('/couples-counseling-ashdod?gclid=test_gclid&utm_source=google');
+test('couples counseling Ashdod landing page uses the trackable Calendly embed and captures campaign context', async ({ page }) => {
+  await page.goto('/couples-counseling-ashdod?gclid=test_gclid&utm_source=google&utm_campaign=ashdod_search');
 
-  // Verify Single H1
   await expect(page.getByRole('heading', { name: 'ייעוץ זוגי באשדוד – דרך מעשית לדבר אחרת', level: 1 })).toBeVisible();
-
-  // Verify Price tag visible
   await expect(page.getByText('500 ₪').first()).toBeVisible();
+  await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ זוגי באשדוד עם שירה סהרוני"]'))
+    .toBeVisible();
+  await expect(page.locator('script[src="https://assets.calendly.com/assets/external/widget.js"]'))
+    .toHaveCount(1);
 
-  // Verify Calendly iframe embed exists
-  const calendlyFrame = page.locator('iframe[title*="Calendly"]');
-  await expect(calendlyFrame).toBeVisible();
-
-  // Verify GTM dataLayer landing_page_view event was pushed with variant_id
-  const dataLayerHasView = await page.evaluate(() => {
-    return Array.isArray(window.dataLayer) && window.dataLayer.some(
+  const trackingState = await page.evaluate(() => ({
+    source: sessionStorage.getItem('kesher_attr_utm_source'),
+    campaign: sessionStorage.getItem('kesher_attr_utm_campaign'),
+    googleClickPresent: sessionStorage.getItem('kesher_attr_google_click_id_present'),
+    rawGclid: sessionStorage.getItem('kesher_gclid'),
+    dataLayerHasView: Array.isArray(window.dataLayer) && window.dataLayer.some(
       (evt) => evt.event === 'landing_page_view' && evt.variant_id === 'A'
-    );
+    ),
+  }));
+  expect(trackingState).toEqual({
+    source: 'google',
+    campaign: 'ashdod_search',
+    googleClickPresent: 'true',
+    rawGclid: null,
+    dataLayerHasView: true,
   });
-  expect(dataLayerHasView).toBe(true);
 
-  // Regression: no fabricated quiz or testimonials
   await expect(page.getByText('94%')).not.toBeVisible();
   await expect(page.getByText('אבחון מהיר')).not.toBeVisible();
   await expect(page.getByText('ז׳ ו-נ׳')).not.toBeVisible();
   await expect(page.getByText('PLACEHOLDER')).not.toBeVisible();
 });
 
+test('PPC attribution survives home to appointment navigation without persisting raw click ids', async ({ page }) => {
+  await page.goto('/?utm_source=google&utm_medium=cpc&utm_campaign=home_search&gclid=raw-click-id-should-not-be-stored');
+  await page.waitForFunction(() => sessionStorage.getItem('kesher_attr_utm_campaign') === 'home_search');
+
+  await page.goto('/appointment');
+  const attribution = await page.evaluate(() => ({
+    entry: sessionStorage.getItem('kesher_attr_entry_page_path'),
+    source: sessionStorage.getItem('kesher_attr_utm_source'),
+    medium: sessionStorage.getItem('kesher_attr_utm_medium'),
+    campaign: sessionStorage.getItem('kesher_attr_utm_campaign'),
+    clickPresent: sessionStorage.getItem('kesher_attr_google_click_id_present'),
+    containsRawClickId: Object.keys(sessionStorage).some((key) =>
+      String(sessionStorage.getItem(key)).includes('raw-click-id-should-not-be-stored')
+    ),
+  }));
+
+  expect(attribution).toEqual({
+    entry: '/',
+    source: 'google',
+    medium: 'cpc',
+    campaign: 'home_search',
+    clickPresent: 'true',
+    containsRawClickId: false,
+  });
+});
+
+test('privacy choice persists and updates the measurement state', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'אישור מדידה' })).toBeVisible();
+  await page.getByRole('button', { name: 'אישור מדידה' }).click();
+  await expect(page.getByRole('button', { name: 'פתיחת הגדרות פרטיות ומדידה' })).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem('kesher_consent_v2'))).toBe('granted');
+
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'פתיחת הגדרות פרטיות ומדידה' })).toBeVisible();
+  await page.getByRole('button', { name: 'פתיחת הגדרות פרטיות ומדידה' }).click();
+  await page.getByRole('button', { name: 'המשך ללא cookies' }).click();
+  expect(await page.evaluate(() => localStorage.getItem('kesher_consent_v2'))).toBe('denied');
+});
+
 test('copy variants A, B, and C render their respective H1 titles', async ({ page }) => {
-  // Variant A (default)
   await page.goto('/couples-counseling-ashdod');
   await expect(page.getByRole('heading', { name: 'ייעוץ זוגי באשדוד – דרך מעשית לדבר אחרת', level: 1 })).toBeVisible();
 
-  // Variant B
   await page.goto('/couples-counseling-ashdod?variant=B');
   await expect(page.getByRole('heading', { name: 'ייעוץ זוגי באשדוד בתהליך ממוקד ומכבד', level: 1 })).toBeVisible();
 
-  // Variant C
   await page.goto('/couples-counseling-ashdod?variant=C');
   await expect(page.getByRole('heading', { name: 'כשהשיחות חוזרות לאותו דפוס – ייעוץ זוגי באשדוד', level: 1 })).toBeVisible();
 });
 
 test('thank-you pages render with noindex and standalone layout', async ({ page }) => {
-  // Booked Thank-You Page
   await page.goto('/thank-you-booked');
   await expect(page.getByRole('heading', { name: 'הפגישה נקבעה', level: 1 })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
-  
+
   const bookedDataLayer = await page.evaluate(() => {
     return Array.isArray(window.dataLayer) && window.dataLayer.some((evt) => evt.event === 'thank_you_view');
   });
   expect(bookedDataLayer).toBe(true);
 
-  // Contact Thank-You Page
   await page.goto('/thank-you-contact');
   await expect(page.getByRole('heading', { name: 'הפנייה התקבלה', level: 1 })).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
-  
+
   const contactDataLayer = await page.evaluate(() => {
     return Array.isArray(window.dataLayer) && window.dataLayer.some((evt) => evt.event === 'thank_you_view');
   });
   expect(contactDataLayer).toBe(true);
 });
 
-test('Calendly postMessage event scheduled triggers booking_confirmed dataLayer event and deduplicates', async ({ page }) => {
+test('Calendly postMessage event scheduled triggers one booking_confirmed event and deduplicates', async ({ page }) => {
   await page.goto('/couples-counseling-ashdod');
 
-  // Trigger postMessage simulation
   await page.evaluate(() => {
     window.postMessage(
       {
@@ -293,7 +331,6 @@ test('Calendly postMessage event scheduled triggers booking_confirmed dataLayer 
     );
   });
 
-  // Wait for dataLayer to record booking_confirmed
   await page.waitForFunction(() => {
     return Array.isArray(window.dataLayer) && window.dataLayer.some((evt) => evt.event === 'booking_confirmed');
   });
@@ -303,7 +340,6 @@ test('Calendly postMessage event scheduled triggers booking_confirmed dataLayer 
   });
   expect(bookingCount).toBe(1);
 
-  // Repeat same event - deduplication should prevent second trigger
   await page.evaluate(() => {
     window.postMessage(
       {
@@ -318,4 +354,24 @@ test('Calendly postMessage event scheduled triggers booking_confirmed dataLayer 
     return window.dataLayer.filter((evt) => evt.event === 'booking_confirmed').length;
   });
   expect(newBookingCount).toBe(1);
+});
+
+test('booking listener rejects Calendly-shaped messages from an untrusted origin', async ({ page }) => {
+  await page.goto('/couples-counseling-ashdod');
+  await page.evaluate(() => {
+    window.dispatchEvent(new MessageEvent('message', {
+      origin: 'https://attacker.example',
+      data: {
+        event: 'calendly.event_scheduled',
+        payload: {
+          event: { uri: 'https://api.calendly.com/scheduled_events/fake-event' },
+        },
+      },
+    }));
+  });
+
+  const bookingCount = await page.evaluate(() =>
+    window.dataLayer.filter((evt) => evt.event === 'booking_confirmed').length
+  );
+  expect(bookingCount).toBe(0);
 });
