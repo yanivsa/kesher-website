@@ -12,6 +12,7 @@ concurrency:
 
 permissions:
   contents: read
+  statuses: write
 
 jobs:
   deploy:
@@ -23,7 +24,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
       - name: Set up Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        uses: actions/setup-node@48b55a011dba9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: 22
           cache: npm
@@ -66,3 +67,24 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: 4.100.0
           command: pages deploy dist --project-name=kesher-website --branch=main
+
+      - name: Publish production deployment status
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "$JOB_STATUS" = "success" ]; then
+            state="success"
+            description="Cloudflare deploy succeeded with GTM measurement enabled"
+          else
+            state="failure"
+            description="Production deploy failed; inspect Deploy to Cloudflare Pages"
+          fi
+          gh api --method POST \
+            "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+            -f state="$state" \
+            -f context="booking-tracking/production-deploy" \
+            -f description="$description" >/dev/null
