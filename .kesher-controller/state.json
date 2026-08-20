@@ -1,17 +1,15 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "waiting_for_article_window",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "exhausted",
     "last_error": {
       "stage": "article",
-      "code": "ARTICLE_WORKFLOW_FAILED",
-      "message": "article run 32423995482 completed with conclusion=failure but no structured result was available",
-      "retryable": true,
-      "retry_at": "2026-08-20T22:53:11.809885+00:00",
-      "at": "2026-08-20T22:38:11.809907+00:00"
+      "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "message": "article exhausted 3 total controller dispatch attempts",
+      "at": "2026-08-20T23:12:04.617962+00:00"
     },
     "next_retry_at": "2026-08-20T22:53:11.809885+00:00",
     "run_id": 32423995482,
@@ -42,7 +40,12 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "article exhausted 3 total controller dispatch attempts",
+    "at": "2026-08-20T23:12:04.617962+00:00"
+  },
   "history": [
     {
       "at": "2026-08-20T08:32:38.285655+00:00",
@@ -693,9 +696,18 @@
       "from": "article_retry_wait",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-08-20T23:12:04.618004+00:00",
+      "from": "waiting_for_article_window",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "article exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-08-20T23:08:51.657131+00:00",
+  "updated_at": "2026-08-20T23:12:04.618010+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
