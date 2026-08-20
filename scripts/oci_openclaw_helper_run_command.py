@@ -22,40 +22,60 @@ REQUIRED = {
 MARKER_RE = re.compile(r"OFFLINE_REPAIR_[A-Z0-9_]+=[^\r\n]*")
 
 
-def enable_run_command(compute, inst) -> None:
-    cfg = inst.agent_config
-    plugins = []
-    found = False
-    for p in list(getattr(cfg, "plugins_config", None) or []):
-        desired = p.desired_state
-        if p.name == RUN_COMMAND_PLUGIN:
-            desired = "ENABLED"
-            found = True
-        plugins.append(
-            oci.core.models.InstanceAgentPluginConfigDetails(
-                name=p.name,
-                desired_state=desired,
+def enable_run_command(compute, inst, timeout: int = 180) -> None:
+    deadline = time.time() + timeout
+    attempt = 0
+    while True:
+        attempt += 1
+        current = compute.get_instance(inst.id).data
+        cfg = current.agent_config
+        plugins = []
+        found = False
+        for p in list(getattr(cfg, "plugins_config", None) or []):
+            desired = p.desired_state
+            if p.name == RUN_COMMAND_PLUGIN:
+                desired = "ENABLED"
+                found = True
+            plugins.append(
+                oci.core.models.InstanceAgentPluginConfigDetails(
+                    name=p.name,
+                    desired_state=desired,
+                )
             )
-        )
-    if not found:
-        plugins.append(
-            oci.core.models.InstanceAgentPluginConfigDetails(
-                name=RUN_COMMAND_PLUGIN,
-                desired_state="ENABLED",
+        if not found:
+            plugins.append(
+                oci.core.models.InstanceAgentPluginConfigDetails(
+                    name=RUN_COMMAND_PLUGIN,
+                    desired_state="ENABLED",
+                )
             )
-        )
-    compute.update_instance(
-        inst.id,
-        oci.core.models.UpdateInstanceDetails(
-            agent_config=oci.core.models.UpdateInstanceAgentConfigDetails(
-                is_monitoring_disabled=getattr(cfg, "is_monitoring_disabled", None),
-                is_management_disabled=False,
-                are_all_plugins_disabled=False,
-                plugins_config=plugins,
+        try:
+            compute.update_instance(
+                current.id,
+                oci.core.models.UpdateInstanceDetails(
+                    agent_config=oci.core.models.UpdateInstanceAgentConfigDetails(
+                        is_monitoring_disabled=getattr(cfg, "is_monitoring_disabled", None),
+                        is_management_disabled=False,
+                        are_all_plugins_disabled=False,
+                        plugins_config=plugins,
+                    )
+                ),
             )
-        ),
-    )
-    print("OCI_RUN_COMMAND_PLUGIN_REQUESTED=true", flush=True)
+            print("OCI_RUN_COMMAND_PLUGIN_REQUESTED=true", flush=True)
+            return
+        except oci.exceptions.ServiceError as exc:
+            transient_modify_conflict = (
+                exc.status == 409
+                and exc.code == "Conflict"
+                and "currently being modified" in (exc.message or "")
+            )
+            if not transient_modify_conflict or time.time() >= deadline:
+                raise
+            print(
+                f"OCI_RUN_COMMAND_PLUGIN_UPDATE_RETRY=attempt_{attempt}",
+                flush=True,
+            )
+            time.sleep(min(5 * attempt, 20))
 
 
 def wait_plugin(config, compartment_id: str, instance_id: str, timeout: int = 600) -> None:
