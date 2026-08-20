@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "article_generating",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -668,9 +668,15 @@
       "details": {
         "attempt": 3
       }
+    },
+    {
+      "at": "2026-08-20T22:34:36.675392+00:00",
+      "from": "article_generating",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-08-20T22:22:56.240867+00:00",
+  "updated_at": "2026-08-20T22:34:36.675398+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
