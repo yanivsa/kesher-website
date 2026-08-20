@@ -37,6 +37,11 @@ def approve_by_jules(item: dict) -> None:
         "reviewed_at": "2026-08-19T16:00:00+00:00",
         "reviewer": {"type": "jules", "session": "sessions/review-1"},
         "final_sha256": "f" * 64,
+        "manifest_sha256": "m" * 64,
+        "transcript_sha256": "t" * 64,
+        "source_file_sha256": "q" * 64,
+        "visual_review_sha256": "v" * 64,
+        "frame_sha256": {"frame-1.png": "a" * 64},
     })
 
 
@@ -144,6 +149,17 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(saved["source"]["slug"], "yesterday")
         self.assertEqual(saved["status"], "approved")
         self.assertEqual(saved["review_gate"], "mandatory-jules")
+        self.assertEqual(saved["review_approved_for_sha256"], saved["final_sha256"])
+
+    def test_changed_final_sha_after_approval_is_rebound_only_during_guarded_reconcile(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        item = pipeline.new_item(pipeline.source_metadata(today))
+        approve_by_jules(item)
+        item["review_approved_for_sha256"] = "old" * 21 + "x"
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+        self.assertEqual(reconcile.prepare_upload(), 0)
+        saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["review_approved_for_sha256"], saved["final_sha256"])
 
     def test_jules_rejection_blocks_upload(self) -> None:
