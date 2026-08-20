@@ -1,5 +1,6 @@
 interface CalendlyWebhookEnv {
   BOOKING_DB?: D1Database;
+  BOOKING_KV?: KVNamespace;
   CALENDLY_WEBHOOK_SIGNING_KEY?: string;
 }
 
@@ -48,6 +49,12 @@ const clean = (value: unknown, maxLength: number) =>
 const cleanNullable = (value: unknown, maxLength: number) => {
   const result = clean(value, maxLength);
   return result || null;
+};
+
+const getEventId = (eventUri: string) => {
+  const eventId = eventUri.slice(CALENDLY_EVENT_PREFIX.length).split("/")[0]?.trim() || "";
+  if (!eventId || eventId.length > 180) return "";
+  return eventId;
 };
 
 const parseSignatureHeader = (header: string) => {
@@ -106,6 +113,95 @@ const getEventUri = (payload: CalendlyWebhookPayload) => {
   return "";
 };
 
+const storeWebhookInD1 = async (
+  db: D1Database,
+  values: {
+    eventUri: string;
+    inviteeUri: string;
+    webhookSeenAt: string;
+    eventType: string;
+    status: string;
+    isRescheduled: boolean;
+    oldInviteeUri: string | null;
+    newInviteeUri: string | null;
+    utmSource: string | null;
+    utmMedium: string | null;
+    utmCampaign: string | null;
+    utmTerm: string | null;
+    utmContent: string | null;
+    now: string;
+  },
+) => {
+  await db.prepare(
+    `INSERT INTO booking_attribution (
+      calendly_event_uri,
+      calendly_invitee_uri,
+      webhook_seen_at,
+      webhook_event_type,
+      status,
+      rescheduled,
+      old_invitee_uri,
+      new_invitee_uri,
+      utm_source,
+      utm_medium,
+      utm_campaign,
+      utm_term,
+      utm_content,
+      created_at,
+      updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(calendly_event_uri) DO UPDATE SET
+      calendly_invitee_uri = COALESCE(excluded.calendly_invitee_uri, booking_attribution.calendly_invitee_uri),
+      webhook_seen_at = excluded.webhook_seen_at,
+      webhook_event_type = excluded.webhook_event_type,
+      status = excluded.status,
+      rescheduled = excluded.rescheduled,
+      old_invitee_uri = COALESCE(excluded.old_invitee_uri, booking_attribution.old_invitee_uri),
+      new_invitee_uri = COALESCE(excluded.new_invitee_uri, booking_attribution.new_invitee_uri),
+      utm_source = COALESCE(excluded.utm_source, booking_attribution.utm_source),
+      utm_medium = COALESCE(excluded.utm_medium, booking_attribution.utm_medium),
+      utm_campaign = COALESCE(excluded.utm_campaign, booking_attribution.utm_campaign),
+      utm_term = COALESCE(excluded.utm_term, booking_attribution.utm_term),
+      utm_content = COALESCE(excluded.utm_content, booking_attribution.utm_content),
+      updated_at = excluded.updated_at
+    WHERE booking_attribution.webhook_seen_at IS NULL
+      OR excluded.webhook_seen_at >= booking_attribution.webhook_seen_at`,
+  )
+    .bind(
+      values.eventUri,
+      values.inviteeUri,
+      values.webhookSeenAt,
+      values.eventType,
+      values.status,
+      values.isRescheduled ? 1 : 0,
+      values.oldInviteeUri,
+      values.newInviteeUri,
+      values.utmSource,
+      values.utmMedium,
+      values.utmCampaign,
+      values.utmTerm,
+      values.utmContent,
+      values.now,
+      values.now,
+    )
+    .run();
+};
+
+const storeWebhookInKv = async (
+  kv: KVNamespace,
+  eventId: string,
+  webhookSeenAt: string,
+  record: Record<string, unknown>,
+) => {
+  const key = `booking:webhook:${eventId}`;
+  const existing = await kv.get(key, "json") as { webhook_seen_at?: unknown } | null;
+  const existingTimestamp = typeof existing?.webhook_seen_at === "string"
+    ? existing.webhook_seen_at
+    : "";
+  if (existingTimestamp && existingTimestamp > webhookSeenAt) return;
+  await kv.put(key, JSON.stringify(record));
+};
+
 export async function handleCalendlyWebhook(
   request: Request,
   env: CalendlyWebhookEnv = {},
@@ -117,7 +213,7 @@ export async function handleCalendlyWebhook(
   if (!env.CALENDLY_WEBHOOK_SIGNING_KEY) {
     return json({ success: false, message: "Webhook verification is not configured" }, 503);
   }
-  if (!env.BOOKING_DB) {
+  if (!env.BOOKING_DB && !env.BOOKING_KV) {
     return json({ success: false, message: "Booking reconciliation storage is not configured" }, 503);
   }
 
@@ -164,7 +260,8 @@ export async function handleCalendlyWebhook(
 
   const eventUri = getEventUri(payload);
   const inviteeUri = clean(payload.uri, 500);
-  if (!eventUri || !inviteeUri.startsWith(CALENDLY_EVENT_PREFIX)) {
+  const eventId = getEventId(eventUri);
+  if (!eventUri || !eventId || !inviteeUri.startsWith(CALENDLY_EVENT_PREFIX)) {
     return json({ success: false, message: "Missing Calendly identifiers" }, 400);
   }
 
@@ -175,64 +272,57 @@ export async function handleCalendlyWebhook(
   const tracking = payload.tracking || {};
   const now = new Date().toISOString();
   const webhookSeenAt = clean(body.created_at, 40) || now;
+  const record = {
+    schema_version: 1,
+    channel: "webhook",
+    calendly_event_uri: eventUri,
+    calendly_invitee_uri: inviteeUri,
+    webhook_seen_at: webhookSeenAt,
+    webhook_event_type: eventType,
+    status,
+    rescheduled: isRescheduled,
+    old_invitee_uri: cleanNullable(payload.old_invitee, 500),
+    new_invitee_uri: cleanNullable(payload.new_invitee, 500),
+    utm_source: cleanNullable(tracking.utm_source, 254),
+    utm_medium: cleanNullable(tracking.utm_medium, 254),
+    utm_campaign: cleanNullable(tracking.utm_campaign, 254),
+    utm_term: cleanNullable(tracking.utm_term, 254),
+    utm_content: cleanNullable(tracking.utm_content, 254),
+    updated_at: now,
+  };
 
-  try {
-    await env.BOOKING_DB.prepare(
-      `INSERT INTO booking_attribution (
-        calendly_event_uri,
-        calendly_invitee_uri,
-        webhook_seen_at,
-        webhook_event_type,
-        status,
-        rescheduled,
-        old_invitee_uri,
-        new_invitee_uri,
-        utm_source,
-        utm_medium,
-        utm_campaign,
-        utm_term,
-        utm_content,
-        created_at,
-        updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT(calendly_event_uri) DO UPDATE SET
-        calendly_invitee_uri = COALESCE(excluded.calendly_invitee_uri, booking_attribution.calendly_invitee_uri),
-        webhook_seen_at = excluded.webhook_seen_at,
-        webhook_event_type = excluded.webhook_event_type,
-        status = excluded.status,
-        rescheduled = excluded.rescheduled,
-        old_invitee_uri = COALESCE(excluded.old_invitee_uri, booking_attribution.old_invitee_uri),
-        new_invitee_uri = COALESCE(excluded.new_invitee_uri, booking_attribution.new_invitee_uri),
-        utm_source = COALESCE(excluded.utm_source, booking_attribution.utm_source),
-        utm_medium = COALESCE(excluded.utm_medium, booking_attribution.utm_medium),
-        utm_campaign = COALESCE(excluded.utm_campaign, booking_attribution.utm_campaign),
-        utm_term = COALESCE(excluded.utm_term, booking_attribution.utm_term),
-        utm_content = COALESCE(excluded.utm_content, booking_attribution.utm_content),
-        updated_at = excluded.updated_at`,
-    )
-      .bind(
+  if (env.BOOKING_DB) {
+    try {
+      await storeWebhookInD1(env.BOOKING_DB, {
         eventUri,
         inviteeUri,
         webhookSeenAt,
         eventType,
         status,
-        isRescheduled ? 1 : 0,
-        cleanNullable(payload.old_invitee, 500),
-        cleanNullable(payload.new_invitee, 500),
-        cleanNullable(tracking.utm_source, 254),
-        cleanNullable(tracking.utm_medium, 254),
-        cleanNullable(tracking.utm_campaign, 254),
-        cleanNullable(tracking.utm_term, 254),
-        cleanNullable(tracking.utm_content, 254),
+        isRescheduled,
+        oldInviteeUri: record.old_invitee_uri,
+        newInviteeUri: record.new_invitee_uri,
+        utmSource: record.utm_source,
+        utmMedium: record.utm_medium,
+        utmCampaign: record.utm_campaign,
+        utmTerm: record.utm_term,
+        utmContent: record.utm_content,
         now,
-        now,
-      )
-      .run();
+      });
+      return json({ success: true, reconciled: true, storage: "d1" });
+    } catch {
+      if (!env.BOOKING_KV) {
+        return json({ success: false, message: "Booking reconciliation failed" }, 503);
+      }
+    }
+  }
+
+  try {
+    await storeWebhookInKv(env.BOOKING_KV as KVNamespace, eventId, webhookSeenAt, record);
+    return json({ success: true, reconciled: true, storage: "kv" });
   } catch {
     return json({ success: false, message: "Booking reconciliation failed" }, 503);
   }
-
-  return json({ success: true, reconciled: true });
 }
 
 export const onRequest: PagesFunction<CalendlyWebhookEnv> = async (context) =>

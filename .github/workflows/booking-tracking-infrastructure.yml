@@ -38,7 +38,7 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Provision D1 schema and Pages binding
+      - name: Provision booking storage and Pages binding
         id: cloudflare
         run: python3 scripts/provision_booking_tracking.py cloudflare
 
@@ -65,7 +65,7 @@ jobs:
       - name: Report missing Calendly API token
         if: ${{ env.CALENDLY_API_TOKEN == '' }}
         run: |
-          echo "::notice::CALENDLY_API_TOKEN is not configured. D1 reconciliation is active, but Calendly server-side verification remains pending."
+          echo "::notice::CALENDLY_API_TOKEN is not configured. Browser booking reconciliation storage is active, but Calendly server-side verification remains pending."
 
       - name: Redeploy Pages after binding or webhook activation
         id: redeploy
@@ -106,6 +106,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           CALENDLY_TOKEN_PRESENT: ${{ env.CALENDLY_API_TOKEN != '' }}
           CLOUDFLARE_OUTCOME: ${{ steps.cloudflare.outcome }}
+          STORAGE_TYPE: ${{ steps.cloudflare.outputs.storage_type }}
           WEBHOOK_EXISTS: ${{ steps.calendly.outputs.webhook_exists }}
           WEBHOOK_CHECK_OUTCOME: ${{ steps.calendly.outcome }}
           WEBHOOK_CREATE_OUTCOME: ${{ steps.webhook_create.outcome }}
@@ -127,9 +128,9 @@ jobs:
           }
 
           if [ "$CLOUDFLARE_OUTCOME" = "success" ]; then
-            publish_status success "booking-tracking/cloudflare" "D1 schema and Pages BOOKING_DB binding are ready"
+            publish_status success "booking-tracking/cloudflare" "Cloudflare $STORAGE_TYPE booking storage and Pages binding are ready"
           else
-            publish_status failure "booking-tracking/cloudflare" "Cloudflare D1 or Pages binding provisioning failed"
+            publish_status failure "booking-tracking/cloudflare" "Cloudflare booking storage or Pages binding provisioning failed"
           fi
 
           if [ "$CALENDLY_TOKEN_PRESENT" != "true" ]; then
@@ -155,7 +156,8 @@ jobs:
       - name: Infrastructure summary
         if: ${{ always() }}
         run: |
-          echo "D1 database: ${{ steps.cloudflare.outputs.database_created == 'true' && 'created' || 'existing' }}"
+          echo "Booking storage type: ${{ steps.cloudflare.outputs.storage_type || 'unavailable' }}"
+          echo "Booking storage resource: ${{ steps.cloudflare.outputs.storage_created == 'true' && 'created' || 'existing/unavailable' }}"
           echo "Pages binding changed: ${{ steps.cloudflare.outputs.binding_changed || 'unknown' }}"
           if [ -z "$CALENDLY_API_TOKEN" ]; then
             echo "Calendly webhook: pending token"
