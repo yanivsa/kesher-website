@@ -32,6 +32,7 @@ def item(
 class FakeCorrelationGitHub:
     def __init__(self) -> None:
         self.runs = {}
+        self.workflow_history = {}
         self.article_results = {}
         self.saved_state = None
 
@@ -48,6 +49,9 @@ class FakeCorrelationGitHub:
 
     def workflow_run_by_id(self, run_id):
         return copy.deepcopy(self._lookup(self.runs, run_id))
+
+    def workflow_runs(self, workflow):
+        return copy.deepcopy(self.workflow_history.get(workflow, []))
 
     def article_result_for_run(self, run_id):
         return copy.deepcopy(self._lookup(self.article_results, run_id))
@@ -149,6 +153,16 @@ class ControllerQueueTests(unittest.TestCase):
         }
         state = {"last_dispatch_at": "2026-08-19T04:00:00+00:00"}
         self.assertTrue(entry.article_run_matches_cycle(legacy, "2026-08-19", state))
+
+    def test_named_stale_same_day_run_cannot_override_latest_dispatch(self) -> None:
+        stale = {
+            "id": 79,
+            "event": "workflow_dispatch",
+            "display_title": "Kesher Article 2026-08-19",
+            "created_at": "2026-08-19T04:00:00Z",
+        }
+        state = {"last_dispatch_at": "2026-08-19T05:00:00+00:00", "run_id": 78}
+        self.assertFalse(entry.article_run_matches_cycle(stale, "2026-08-19", state))
 
     def test_fast_article_completion_is_adopted_before_controller_retry(self) -> None:
         gh = FakeCorrelationGitHub()
@@ -279,6 +293,51 @@ class ControllerQueueTests(unittest.TestCase):
             )
         )
         self.assertEqual(state["video"]["run_id"], 91)
+
+    def test_heartbeat_adopts_completed_article_run_before_event_handler(self) -> None:
+        gh = FakeCorrelationGitHub()
+        state = {
+            "schema_version": 2,
+            "cycle": "2026-08-19",
+            "article": {
+                "last_dispatch_at": "2026-08-19T07:00:00+00:00",
+                "run_id": 80,
+            },
+            "video": {},
+        }
+        gh.workflow_history[controller.ARTICLE_WORKFLOW] = [{
+            "id": 92,
+            "status": "completed",
+            "conclusion": "failure",
+            "event": "workflow_dispatch",
+            "display_title": "Kesher Article 2026-08-19",
+            "created_at": "2026-08-19T07:00:03Z",
+        }]
+        self.assertTrue(entry.adopt_latest_dispatched_children(gh, state, "2026-08-19"))
+        self.assertEqual(state["article"]["run_id"], 92)
+        self.assertEqual(gh.saved_state["article"]["run_id"], 92)
+
+    def test_heartbeat_adopts_completed_video_run_before_event_handler(self) -> None:
+        gh = FakeCorrelationGitHub()
+        state = {
+            "schema_version": 2,
+            "cycle": "2026-08-19",
+            "article": {},
+            "video": {
+                "last_dispatch_at": "2026-08-19T08:00:00+00:00",
+                "run_id": None,
+            },
+        }
+        gh.workflow_history[controller.VIDEO_WORKFLOW] = [{
+            "id": 93,
+            "status": "completed",
+            "conclusion": "failure",
+            "event": "workflow_dispatch",
+            "display_title": "Kesher Daily NotebookLM Video Overview",
+            "created_at": "2026-08-19T08:00:02Z",
+        }]
+        self.assertTrue(entry.adopt_latest_dispatched_children(gh, state, "2026-08-19"))
+        self.assertEqual(state["video"]["run_id"], 93)
 
 
 if __name__ == "__main__":
