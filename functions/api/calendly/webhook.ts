@@ -132,16 +132,11 @@ export async function handleCalendlyWebhook(
   }
 
   const signatureHeader = request.headers.get("Calendly-Webhook-Signature") || "";
-  let verified = false;
-  try {
-    verified = await verifySignature(
-      rawBody,
-      signatureHeader,
-      env.CALENDLY_WEBHOOK_SIGNING_KEY,
-    );
-  } catch {
-    verified = false;
-  }
+  const verified = await verifySignature(
+    rawBody,
+    signatureHeader,
+    env.CALENDLY_WEBHOOK_SIGNING_KEY,
+  ).catch(() => false);
   if (!verified) {
     return json({ success: false, message: "Invalid webhook signature" }, 401);
   }
