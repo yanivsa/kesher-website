@@ -20,8 +20,8 @@ class UploadGuardError(RuntimeError):
 def source_date(item: dict) -> str:
     source = item.get("source") or {}
     return str(
-        item.get("israel_date")
-        or source.get("date")
+        source.get("date")
+        or item.get("israel_date")
         or item.get("created_at")
         or item.get("updated_at")
         or "9999-12-31"
