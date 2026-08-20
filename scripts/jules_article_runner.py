@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Run exactly one Jules article-generation attempt for one publication slot.
+"""Run one bounded Jules article worker for one publication slot.
 
-The daily controller owns retries and backoff. This worker performs one bounded
-Jules session, records a machine-readable result artifact, and exits. Keeping
-business retries out of the worker prevents nested retry storms and makes every
-attempt observable by the controller.
+The daily controller owns business retries and backoff. This worker creates or
+resumes at most one authoritative Jules session for the slot, records a
+machine-readable result artifact, and exits. Unsafe Jules mutations are never
+blindly retried: if a create response is uncertain, a later lookup/retry adopts
+the existing slot session instead of starting a duplicate.
 """
 
 from __future__ import annotations
@@ -30,10 +31,11 @@ POLICY_PATH = PROMPTS_DIR / "jules-weekday-article-update.md"
 POLICY_META_PATH = PROMPTS_DIR / "jules-weekday-article-update.meta.json"
 ARTICLE_POLICY_VERSION = 1
 SESSION_SECONDS = 36 * 60
-WAITING_STATES = {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER", "PAUSED"}
 TERMINAL_FAILURES = {"FAILED", "CANCELLED", "CANCELED"}
 RESULT_SCHEMA_VERSION = 1
 DEFAULT_RESULT_PATH = Path("/tmp/kesher-article-result.json")
+SESSION_LOOKUP_ATTEMPTS_AFTER_UNCERTAIN_CREATE = 4
+SESSION_LOOKUP_DELAY_SECONDS = 5
 
 
 class ArticleRunnerError(RuntimeError):
@@ -80,10 +82,26 @@ def emit_result(
     return payload
 
 
-def request_json(method: str, url: str, headers: dict[str, str], body: dict[str, Any] | None = None) -> Any:
+def request_json(
+    method: str,
+    url: str,
+    headers: dict[str, str],
+    body: dict[str, Any] | None = None,
+    *,
+    max_attempts: int = 4,
+) -> Any:
+    """HTTP helper.
+
+    Safe reads retain bounded transport retries. Callers performing a mutation
+    whose duplicate side effect would be harmful must pass ``max_attempts=1``
+    and reconcile uncertainty explicitly.
+    """
+
+    if max_attempts < 1:
+        raise ValueError("max_attempts must be at least 1")
     data = None if body is None else json.dumps(body, ensure_ascii=False).encode("utf-8")
     last: Exception | None = None
-    for attempt in range(4):
+    for attempt in range(max_attempts):
         req = urllib.request.Request(url, data=data, method=method, headers=headers)
         try:
             with urllib.request.urlopen(req, timeout=45) as response:
@@ -93,20 +111,19 @@ def request_json(method: str, url: str, headers: dict[str, str], body: dict[str,
             detail = exc.read().decode("utf-8", errors="replace")[:1200]
             if exc.code in {401, 403}:
                 raise ArticleRunnerError("JULES_AUTH_ERROR", f"HTTP {exc.code}: {detail}") from exc
-            if exc.code == 429:
-                last = exc
-            elif exc.code in {500, 502, 503, 504}:
+            if exc.code == 429 or exc.code in {500, 502, 503, 504}:
                 last = exc
             else:
                 raise ArticleRunnerError("JULES_API_ERROR", f"HTTP {exc.code}: {detail}") from exc
         except urllib.error.URLError as exc:
             last = exc
-        time.sleep(2 ** attempt)
+        if attempt + 1 < max_attempts:
+            time.sleep(2 ** attempt)
     if isinstance(last, urllib.error.HTTPError) and last.code == 429:
-        raise ArticleRunnerError("JULES_RATE_LIMIT", f"request failed after retries: {last}")
+        raise ArticleRunnerError("JULES_RATE_LIMIT", f"request failed after {max_attempts} attempt(s): {last}")
     if isinstance(last, urllib.error.HTTPError):
-        raise ArticleRunnerError("JULES_SERVER_ERROR", f"request failed after retries: {last}")
-    raise ArticleRunnerError("JULES_NETWORK_ERROR", f"request failed after retries: {last}")
+        raise ArticleRunnerError("JULES_SERVER_ERROR", f"request failed after {max_attempts} attempt(s): {last}")
+    raise ArticleRunnerError("JULES_NETWORK_ERROR", f"request failed after {max_attempts} attempt(s): {last}")
 
 
 def git_blob_sha1(payload: bytes) -> str:
@@ -217,25 +234,134 @@ def preflight(slot: str, token: str) -> str:
     return "READY"
 
 
+def slot_session_title(slot: str) -> str:
+    return f"Kesher article {slot}"
+
+
+def normalize_session_name(payload: dict[str, Any]) -> str:
+    name = str(payload.get("name") or payload.get("id") or "").strip()
+    if name and not name.startswith("sessions/"):
+        name = f"sessions/{name}"
+    return name
+
+
+def list_active_slot_sessions(api_key: str, slot: str) -> list[dict[str, Any]]:
+    payload = request_json(
+        "GET",
+        f"{API_BASE}/sessions?pageSize=100",
+        jules_headers(api_key),
+    )
+    sessions = payload.get("sessions") if isinstance(payload, dict) else None
+    if not isinstance(sessions, list):
+        raise ArticleRunnerError("JULES_SESSION_LIST_ERROR", "Jules session list response is invalid")
+    title = slot_session_title(slot)
+    active: list[dict[str, Any]] = []
+    for session in sessions:
+        if not isinstance(session, dict) or str(session.get("title") or "") != title:
+            continue
+        state = str(session.get("state") or "UNKNOWN").upper()
+        if state == "COMPLETED" or state in TERMINAL_FAILURES:
+            continue
+        if not normalize_session_name(session):
+            continue
+        active.append(session)
+    active.sort(key=lambda row: (str(row.get("createTime") or ""), normalize_session_name(row)))
+    return active
+
+
+def recover_active_slot_session(api_key: str, slot: str) -> tuple[str, str] | None:
+    """Reuse one live session for the slot and clean up accidental extras."""
+
+    active = list_active_slot_sessions(api_key, slot)
+    if not active:
+        return None
+    authoritative = active[0]
+    for extra in active[1:]:
+        extra_name = normalize_session_name(extra)
+        try:
+            request_json(
+                "DELETE",
+                f"{API_BASE}/{extra_name}",
+                jules_headers(api_key),
+                max_attempts=1,
+            )
+        except ArticleRunnerError as exc:
+            raise ArticleRunnerError(
+                "JULES_DUPLICATE_SESSION_CLEANUP",
+                f"multiple active Jules sessions exist for {slot}; cleanup of {extra_name} was not confirmed: {exc}",
+            ) from exc
+        print(f"JULES_ARTICLE_DUPLICATE_CANCELLED session={extra_name}", flush=True)
+
+    name = normalize_session_name(authoritative)
+    url = str(
+        authoritative.get("url")
+        or authoritative.get("agentUrl")
+        or authoritative.get("sessionUrl")
+        or ""
+    )
+    print(f"JULES_ARTICLE_REUSED session={name}", flush=True)
+    return name, url
+
+
 def create_session(api_key: str, prompt: str, slot: str) -> tuple[str, str]:
     payload = {
-        "title": f"Kesher article {slot}",
+        "title": slot_session_title(slot),
         "prompt": prompt,
         "sourceContext": {
             "source": SOURCE,
             "githubRepoContext": {"startingBranch": "main"},
         },
         "requirePlanApproval": False,
+        "automationMode": "AUTO_CREATE_PR",
     }
-    created = request_json("POST", f"{API_BASE}/sessions", jules_headers(api_key), payload)
-    name = str((created or {}).get("name") or (created or {}).get("id") or "")
-    url = str((created or {}).get("url") or (created or {}).get("agentUrl") or (created or {}).get("sessionUrl") or "")
-    if not name or not url:
+    # Session creation is not documented as idempotent. Never retry the POST
+    # blindly; reconcile an uncertain response through list/get instead.
+    created = request_json(
+        "POST",
+        f"{API_BASE}/sessions",
+        jules_headers(api_key),
+        payload,
+        max_attempts=1,
+    )
+    if not isinstance(created, dict):
+        raise ArticleRunnerError("JULES_CREATE_ERROR", f"Jules create response is invalid: {created}")
+    name = normalize_session_name(created)
+    url = str(created.get("url") or created.get("agentUrl") or created.get("sessionUrl") or "")
+    if not name:
         raise ArticleRunnerError("JULES_CREATE_ERROR", f"Jules create response missing identity: {created}")
-    if not name.startswith("sessions/"):
-        name = f"sessions/{name}"
-    print(f"JULES_ARTICLE_STARTED session={name} url={url}", flush=True)
+    print(f"JULES_ARTICLE_STARTED session={name} url={url or 'n/a'}", flush=True)
     return name, url
+
+
+def acquire_session(api_key: str, prompt: str, slot: str) -> tuple[str, str]:
+    existing = recover_active_slot_session(api_key, slot)
+    if existing:
+        return existing
+    try:
+        return create_session(api_key, prompt, slot)
+    except ArticleRunnerError as exc:
+        if exc.code not in {"JULES_CREATE_ERROR", "JULES_SERVER_ERROR", "JULES_NETWORK_ERROR"}:
+            raise
+        original = exc
+
+    # The create request may have reached Jules even when its response was lost.
+    # Reconcile by title before allowing the controller to retry this worker.
+    last_lookup_error: ArticleRunnerError | None = None
+    for attempt in range(SESSION_LOOKUP_ATTEMPTS_AFTER_UNCERTAIN_CREATE):
+        if attempt:
+            time.sleep(SESSION_LOOKUP_DELAY_SECONDS)
+        try:
+            recovered = recover_active_slot_session(api_key, slot)
+        except ArticleRunnerError as exc:
+            last_lookup_error = exc
+            continue
+        if recovered:
+            print("JULES_ARTICLE_CREATE_RESPONSE_RECOVERED", flush=True)
+            return recovered
+    detail = f"create response was uncertain: {original}"
+    if last_lookup_error is not None:
+        detail += f"; final reconciliation error: {last_lookup_error}"
+    raise ArticleRunnerError("JULES_CREATE_UNCERTAIN", detail) from original
 
 
 def pr_urls(session_payload: dict[str, Any]) -> list[str]:
@@ -253,6 +379,7 @@ def send_message(api_key: str, sid: str, prompt: str) -> None:
         f"{API_BASE}/sessions/{sid}:sendMessage",
         jules_headers(api_key),
         {"prompt": prompt},
+        max_attempts=1,
     )
 
 
@@ -282,7 +409,13 @@ def poll(api_key: str, session: str, timeout_seconds: int = SESSION_SECONDS) -> 
             continued = True
             print("JULES_ARTICLE_CONTINUED", flush=True)
         elif state == "AWAITING_PLAN_APPROVAL" and not approved:
-            request_json("POST", f"{API_BASE}/sessions/{sid}:approvePlan", jules_headers(api_key), {})
+            request_json(
+                "POST",
+                f"{API_BASE}/sessions/{sid}:approvePlan",
+                jules_headers(api_key),
+                {},
+                max_attempts=1,
+            )
             approved = True
             print("JULES_ARTICLE_PLAN_AUTO_APPROVED", flush=True)
         elif state == "PAUSED" and not paused_nudged:
@@ -297,11 +430,19 @@ def poll(api_key: str, session: str, timeout_seconds: int = SESSION_SECONDS) -> 
 
     print(f"JULES_ARTICLE_TIMEOUT session={session}", file=sys.stderr, flush=True)
     try:
-        request_json("DELETE", f"{API_BASE}/sessions/{sid}", jules_headers(api_key))
-        message = "Jules session timed out and was cancelled"
+        request_json(
+            "DELETE",
+            f"{API_BASE}/sessions/{sid}",
+            jules_headers(api_key),
+            max_attempts=1,
+        )
+        return "JULES_TIMEOUT", "", "Jules session timed out and was cancelled"
     except ArticleRunnerError as exc:
-        message = f"Jules session timed out; cancellation could not be confirmed: {exc}"
-    return "JULES_TIMEOUT", "", message
+        return (
+            "JULES_TIMEOUT_CANCELLATION_UNCONFIRMED",
+            "",
+            f"Jules session timed out; cancellation could not be confirmed: {exc}",
+        )
 
 
 def retryable_code(code: str) -> bool:
@@ -309,10 +450,14 @@ def retryable_code(code: str) -> bool:
         "COMPLETED_WITHOUT_PR",
         "JULES_TERMINAL_FAILURE",
         "JULES_TIMEOUT",
+        "JULES_TIMEOUT_CANCELLATION_UNCONFIRMED",
         "JULES_RATE_LIMIT",
         "JULES_SERVER_ERROR",
         "JULES_NETWORK_ERROR",
         "JULES_CREATE_ERROR",
+        "JULES_CREATE_UNCERTAIN",
+        "JULES_DUPLICATE_SESSION_CLEANUP",
+        "JULES_SESSION_LIST_ERROR",
     }
 
 
@@ -326,7 +471,7 @@ def run_slot(slot: str, github_token: str, api_key: str) -> int:
         return 0
 
     prompt = build_prompt(slot, load_policy())
-    session, _ = create_session(api_key, prompt, slot)
+    session, _ = acquire_session(api_key, prompt, slot)
     outcome, pr_url, message = poll(api_key, session)
     emit_result(
         slot,
