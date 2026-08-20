@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "blocked",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -40,12 +40,7 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "article exhausted 3 total controller dispatch attempts",
-    "at": "2026-08-20T23:44:12.198182+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-20T08:32:38.285655+00:00",
@@ -720,9 +715,15 @@
       "details": {
         "message": "article exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-08-20T23:45:10.659425+00:00",
+      "from": "blocked",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-08-20T23:44:12.198195+00:00",
+  "updated_at": "2026-08-20T23:45:10.659431+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
