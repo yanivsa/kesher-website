@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
-"""Queue-aware, event-correlated entrypoint for the Kesher content controller.
+"""Queue-aware, run-correlated entrypoint for the Kesher content controller.
 
 The base controller owns the state machine. This entrypoint adds two production
 invariants that are awkward to express inside GitHub Actions YAML alone:
 
 1. unresolved prior-day videos are drained oldest-first before the current
    article starts a new video;
-2. a fast child-workflow completion is correlated back to the exact controller
-   dispatch before the base controller evaluates retry/backoff.
+2. every dispatched child run is correlated back to the exact controller cycle
+   before retry/backoff is evaluated, whether the tick was triggered by the
+   child's completion event or by the recovery heartbeat.
 
-The second invariant closes a race where workflow_dispatch returns no run id:
-a child can finish before the next 15-minute heartbeat has discovered its run.
-Without correlation, a failed fast child could be redispatched immediately and
-skip the controller's backoff. Article active-run discovery is also scoped to
-the current publication slot so a stale prior-day article worker cannot block a
-new day's article.
+GitHub workflow_dispatch returns no run id. A fast child can therefore finish
+before the next heartbeat has observed it. Correlation by the persisted dispatch
+time (and, for new article runs, the exact slot-bearing run name) prevents a
+failed child from being mistaken for "no run" and immediately duplicated.
 """
 
 from __future__ import annotations
@@ -36,6 +35,8 @@ _original_active_workflow_run = controller.GitHubClient.active_workflow_run
 ISRAEL_TZ = ZoneInfo("Asia/Jerusalem")
 ARTICLE_WORKFLOW_NAME = "Kesher Article Generation"
 VIDEO_WORKFLOW_NAME = "Kesher Daily NotebookLM Video Overview"
+DISPATCH_CORRELATION_EARLY_SECONDS = 30
+DISPATCH_CORRELATION_LATE_SECONDS = 300
 _article_correlation_cycle = ""
 _article_correlation_state: dict[str, Any] = {}
 
@@ -109,17 +110,29 @@ def _same_id(left: Any, right: Any) -> bool:
     return bool(left is not None and right is not None and str(left) == str(right))
 
 
+def _run_matches_latest_dispatch(run: dict[str, Any], stage_state: dict[str, Any]) -> bool:
+    if str(run.get("event") or "") != "workflow_dispatch":
+        return False
+    dispatched = _timestamp(stage_state.get("last_dispatch_at"))
+    created = _timestamp(run.get("created_at"))
+    if not dispatched or not created:
+        return False
+    delta = (created - dispatched).total_seconds()
+    return -DISPATCH_CORRELATION_EARLY_SECONDS <= delta <= DISPATCH_CORRELATION_LATE_SECONDS
+
+
 def article_run_matches_cycle(
     run: dict[str, Any],
     cycle: str,
     article_state: dict[str, Any] | None,
 ) -> bool:
-    """Return True only when an article run belongs to this controller cycle.
+    """Match the run for the latest dispatch of one Israel publication slot.
 
-    New workers carry the slot in ``display_title``. During a rolling upgrade we
-    also accept the exact persisted run id or a run created immediately after
-    this cycle's recorded dispatch. That preserves an already-running legacy
-    worker without allowing an older day's active worker to block today.
+    The exact persisted run id always wins. Once ``last_dispatch_at`` exists, a
+    different run must be temporally tied to that latest dispatch; this prevents
+    a delayed completion from an older same-day attempt from replacing a newer
+    attempt. The slot-bearing run name is a safe fallback only when no dispatch
+    timestamp is available yet.
     """
 
     if not isinstance(run, dict):
@@ -127,16 +140,12 @@ def article_run_matches_cycle(
     stage = article_state or {}
     if _same_id(run.get("id"), stage.get("run_id")):
         return True
-    if str(run.get("display_title") or "") == f"Kesher Article {cycle}":
-        return True
-    if str(run.get("event") or "") != "workflow_dispatch":
-        return False
-    dispatched = _timestamp(stage.get("last_dispatch_at"))
-    created = _timestamp(run.get("created_at"))
-    if not dispatched or not created:
-        return False
-    delta = (created - dispatched).total_seconds()
-    return -30 <= delta <= 300
+    if stage.get("last_dispatch_at"):
+        return _run_matches_latest_dispatch(run, stage)
+    return bool(
+        str(run.get("event") or "") == "workflow_dispatch"
+        and str(run.get("display_title") or "") == f"Kesher Article {cycle}"
+    )
 
 
 def _correlated_active_article_run(
@@ -200,23 +209,32 @@ def triggered_child_matches_cycle(
     if stage == "article":
         if article_run_matches_cycle(run, cycle, stage_state):
             return True
+        # A structured result can recover correlation if dispatch metadata was
+        # lost, but must never override a newer recorded dispatch.
+        if stage_state.get("last_dispatch_at"):
+            return False
         try:
             result = github.article_result_for_run(run.get("id"))
         except controller.ControllerError:
             result = None
         return bool(isinstance(result, dict) and result.get("slot") == cycle)
 
-    # Video workflow concurrency is global, so a controller-dispatched completion
-    # is safely identified by the persisted dispatch timestamp. This also works
-    # during rolling upgrades before video run names carry a cycle token.
-    if str(run.get("event") or "") != "workflow_dispatch":
+    return _run_matches_latest_dispatch(run, stage_state)
+
+
+def _set_stage_run_id(github: Any, state: dict[str, Any], stage: str, run: dict[str, Any]) -> bool:
+    stage_state = state.get(stage)
+    if not isinstance(stage_state, dict) or not run.get("id"):
         return False
-    dispatched = _timestamp(stage_state.get("last_dispatch_at"))
-    created = _timestamp(run.get("created_at"))
-    if not dispatched or not created:
+    if _same_id(stage_state.get("run_id"), run.get("id")):
         return False
-    delta = (created - dispatched).total_seconds()
-    return -30 <= delta <= 300
+    stage_state["run_id"] = run.get("id")
+    github.save_controller_state(state)
+    print(
+        f"KESHER_CHILD_CORRELATED stage={stage} run_id={run.get('id')} cycle={state.get('cycle')}",
+        flush=True,
+    )
+    return True
 
 
 def adopt_triggered_child(
@@ -225,7 +243,7 @@ def adopt_triggered_child(
     cycle: str,
     env: Mapping[str, str] | None = None,
 ) -> bool:
-    """Persist the exact just-completed child run id before controller.tick()."""
+    """Persist the exact completion-event child before controller.tick()."""
 
     variables = os.environ if env is None else env
     if variables.get("KESHER_TRIGGER_EVENT") != "workflow_run":
@@ -241,25 +259,77 @@ def adopt_triggered_child(
         run = github.workflow_run_by_id(child_id)
     except controller.ControllerError:
         return False
-    if not isinstance(run, dict):
-        return False
-    if str(run.get("event") or "") == "pull_request":
+    if not isinstance(run, dict) or str(run.get("event") or "") == "pull_request":
         return False
     if not triggered_child_matches_cycle(github, run, stage, cycle, state):
         return False
+    return _set_stage_run_id(github, state, stage, run)
 
-    stage_state = state.get(stage)
-    if not isinstance(stage_state, dict):
+
+def _nearest_dispatched_run(
+    runs: list[dict[str, Any]],
+    stage_state: dict[str, Any],
+) -> dict[str, Any] | None:
+    dispatched = _timestamp(stage_state.get("last_dispatch_at"))
+    if not dispatched:
+        return None
+    candidates: list[tuple[float, dict[str, Any]]] = []
+    for run in runs:
+        if not isinstance(run, dict) or not _run_matches_latest_dispatch(run, stage_state):
+            continue
+        created = _timestamp(run.get("created_at"))
+        if created is None:
+            continue
+        candidates.append((abs((created - dispatched).total_seconds()), run))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda pair: (pair[0], str(pair[1].get("id") or "")))
+    return candidates[0][1]
+
+
+def adopt_latest_dispatched_children(
+    github: Any,
+    state: dict[str, Any] | None,
+    cycle: str,
+) -> bool:
+    """Recover child run ids on any tick, including a heartbeat.
+
+    This is the fallback that makes event ordering irrelevant: even if a
+    heartbeat acquires the controller concurrency lock before the completion
+    event, the just-finished child is discovered from workflow history and its
+    result is reconciled instead of dispatching a duplicate.
+    """
+
+    if not isinstance(state, dict) or state.get("cycle") != cycle:
         return False
-    if _same_id(stage_state.get("run_id"), run.get("id")):
-        return False
-    stage_state["run_id"] = run.get("id")
-    github.save_controller_state(state)
-    print(
-        f"KESHER_CHILD_CORRELATED stage={stage} run_id={run.get('id')} cycle={cycle}",
-        flush=True,
-    )
-    return True
+    changed = False
+    for stage, workflow in (
+        ("article", controller.ARTICLE_WORKFLOW),
+        ("video", controller.VIDEO_WORKFLOW),
+    ):
+        stage_state = state.get(stage)
+        if not isinstance(stage_state, dict) or not stage_state.get("last_dispatch_at"):
+            continue
+        try:
+            runs = github.workflow_runs(workflow)
+        except controller.ControllerError:
+            continue
+        production = [
+            run for run in runs
+            if isinstance(run, dict) and str(run.get("event") or "") == "workflow_dispatch"
+        ]
+        candidate = _nearest_dispatched_run(production, stage_state)
+        if candidate is None or _same_id(stage_state.get("run_id"), candidate.get("id")):
+            continue
+        stage_state["run_id"] = candidate.get("id")
+        changed = True
+        print(
+            f"KESHER_DISPATCH_CORRELATED stage={stage} run_id={candidate.get('id')} cycle={cycle}",
+            flush=True,
+        )
+    if changed:
+        github.save_controller_state(state)
+    return changed
 
 
 def main() -> int:
@@ -272,8 +342,9 @@ def main() -> int:
     if token:
         github = controller.GitHubClient(repo, token)
         state = github.load_controller_state()
-        adopted = adopt_triggered_child(github, state, cycle)
-        if adopted:
+        changed = adopt_latest_dispatched_children(github, state, cycle)
+        changed = adopt_triggered_child(github, state, cycle) or changed
+        if changed:
             state = github.load_controller_state()
 
     install_article_run_correlation(state, cycle)
