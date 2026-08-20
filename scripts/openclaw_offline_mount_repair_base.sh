@@ -138,8 +138,11 @@ fi
 [ -n "$B" ] || { echo OPENCLAW_FINALIZE_FAILED=OPENCLAW_BINARY_MISSING; exit 21; }
 echo OPENCLAW_BINARY_DISCOVERED=true
 run_config() {
-  timeout 30 "$B" config "$@" >/dev/null || {
-    echo OPENCLAW_FINALIZE_FAILED=CONFIG_COMMAND
+  config_stage="$1"
+  [ "$config_stage" != set ] || config_stage="$2"
+  echo OPENCLAW_CONFIG_STAGE="$config_stage"
+  timeout 60 "$B" config "$@" >/tmp/openclaw-config-command.txt 2>&1 || {
+    echo OPENCLAW_FINALIZE_FAILED="CONFIG_COMMAND_${config_stage}"
     exit 21
   }
 }
