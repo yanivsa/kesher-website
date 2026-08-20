@@ -141,17 +141,43 @@ run_config() {
   config_stage="$1"
   [ "$config_stage" != set ] || config_stage="$2"
   echo OPENCLAW_CONFIG_STAGE="$config_stage"
-  timeout 60 "$B" config "$@" >/tmp/openclaw-config-command.txt 2>&1 || {
+  set +e
+  timeout 15 "$B" config "$@" >/tmp/openclaw-config-command.txt 2>&1
+  config_rc=$?
+  set -e
+  if [ "$config_rc" -eq 124 ]; then
+    echo OPENCLAW_CONFIG_COMMAND_TIMED_OUT_AFTER_WRITE="$config_stage"
+  elif [ "$config_rc" -ne 0 ]; then
     echo OPENCLAW_FINALIZE_FAILED="CONFIG_COMMAND_${config_stage}"
     exit 21
-  }
+  fi
 }
 run_config set gateway.mode local
 run_config set gateway.bind loopback
 run_config set gateway.tailscale.mode serve
 run_config set gateway.auth.allowTailscale true --strict-json
 run_config set agents.defaults.model.primary openai/gpt-5.6-sol
-run_config validate
+if ! python3 - <<'PY'
+import json
+from pathlib import Path
+
+path = Path('/root/.openclaw/openclaw.json')
+data = json.loads(path.read_text())
+checks = {
+    'gateway.mode': data.get('gateway', {}).get('mode') == 'local',
+    'gateway.bind': data.get('gateway', {}).get('bind') == 'loopback',
+    'gateway.tailscale.mode': data.get('gateway', {}).get('tailscale', {}).get('mode') == 'serve',
+    'gateway.auth.allowTailscale': data.get('gateway', {}).get('auth', {}).get('allowTailscale') is True,
+    'agents.defaults.model.primary': data.get('agents', {}).get('defaults', {}).get('model', {}).get('primary') == 'openai/gpt-5.6-sol',
+}
+missing = [key for key, ok in checks.items() if not ok]
+if missing:
+    raise SystemExit('OPENCLAW_CONFIG_VERIFY_FAILED=' + ','.join(missing))
+PY
+then
+  echo OPENCLAW_FINALIZE_FAILED=CONFIG_VERIFY
+  exit 21
+fi
 echo OPENCLAW_CONFIG_VALIDATED=true
 
 systemctl disable --now openclaw-wait-tailnet.service >/dev/null 2>&1 || true
