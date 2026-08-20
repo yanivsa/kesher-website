@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 """Queue-aware, run-correlated entrypoint for the Kesher content controller.
 
-The base controller owns the state machine. This entrypoint adds production
+The base controller owns the state machine. This entrypoint adds two production
 invariants that are awkward to express inside GitHub Actions YAML alone:
 
 1. unresolved prior-day videos are drained oldest-first before the current
    article starts a new video;
 2. every dispatched child run is correlated back to the exact controller cycle
-   before retry/backoff is evaluated;
-3. technically verified videos are publication-ready regardless of Jules review
-   outcome; Jules remains advisory;
-4. failed child completion events do not drive an immediate retry tick. They are
-   reconciled by the recovery heartbeat instead, preventing tight retry loops.
+   before retry/backoff is evaluated, whether the tick was triggered by the
+   child's completion event or by the recovery heartbeat.
+
+GitHub workflow_dispatch returns no run id. A fast child can therefore finish
+before the next heartbeat has observed it. Correlation by the persisted dispatch
+time (and, for new article runs, the exact slot-bearing run name) prevents a
+failed child from being mistaken for "no run" and immediately duplicated.
 """
 
 from __future__ import annotations
 
-import json
 import os
 import sys
 from datetime import datetime, timezone
@@ -89,22 +90,6 @@ def queue_aware_matching(video_state: dict, requested_slug: str) -> list[dict]:
     return direct
 
 
-def advisory_video_publication_ready(item: dict[str, Any]) -> bool:
-    """Compatibility hook for the base controller's historical gate function."""
-    try:
-        policy = controller.load_policy()
-    except Exception:
-        return False
-    video_policy = policy.get("video") or {}
-    return bool(
-        video_policy.get("publication_gate") == "technical"
-        and video_policy.get("jules_is_advisory") is True
-        and item.get("technical_verified") is True
-        and item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
-        and item.get("final_sha256")
-    )
-
-
 def _timestamp(value: Any) -> datetime | None:
     if not value:
         return None
@@ -141,6 +126,15 @@ def article_run_matches_cycle(
     cycle: str,
     article_state: dict[str, Any] | None,
 ) -> bool:
+    """Match the run for the latest dispatch of one Israel publication slot.
+
+    The exact persisted run id always wins. Once ``last_dispatch_at`` exists, a
+    different run must be temporally tied to that latest dispatch; this prevents
+    a delayed completion from an older same-day attempt from replacing a newer
+    attempt. The slot-bearing run name is a safe fallback only when no dispatch
+    timestamp is available yet.
+    """
+
     if not isinstance(run, dict):
         return False
     stage = article_state or {}
@@ -181,6 +175,8 @@ def install_article_run_correlation(
     state: dict[str, Any] | None,
     cycle: str,
 ) -> None:
+    """Scope article active-run discovery to the exact publication cycle."""
+
     global _article_correlation_cycle, _article_correlation_state
     _article_correlation_cycle = cycle
     _article_correlation_state = {}
@@ -213,6 +209,8 @@ def triggered_child_matches_cycle(
     if stage == "article":
         if article_run_matches_cycle(run, cycle, stage_state):
             return True
+        # A structured result can recover correlation if dispatch metadata was
+        # lost, but must never override a newer recorded dispatch.
         if stage_state.get("last_dispatch_at"):
             return False
         try:
@@ -245,6 +243,8 @@ def adopt_triggered_child(
     cycle: str,
     env: Mapping[str, str] | None = None,
 ) -> bool:
+    """Persist the exact completion-event child before controller.tick()."""
+
     variables = os.environ if env is None else env
     if variables.get("KESHER_TRIGGER_EVENT") != "workflow_run":
         return False
@@ -292,6 +292,14 @@ def adopt_latest_dispatched_children(
     state: dict[str, Any] | None,
     cycle: str,
 ) -> bool:
+    """Recover child run ids on any tick, including a heartbeat.
+
+    This is the fallback that makes event ordering irrelevant: even if a
+    heartbeat acquires the controller concurrency lock before the completion
+    event, the just-finished child is discovered from workflow history and its
+    result is reconciled instead of dispatching a duplicate.
+    """
+
     if not isinstance(state, dict) or state.get("cycle") != cycle:
         return False
     changed = False
@@ -324,27 +332,8 @@ def adopt_latest_dispatched_children(
     return changed
 
 
-def failed_child_waits_for_heartbeat(env: Mapping[str, str] | None = None) -> bool:
-    variables = os.environ if env is None else env
-    return bool(
-        variables.get("KESHER_TRIGGER_EVENT") == "workflow_run"
-        and str(variables.get("KESHER_CHILD_CONCLUSION") or "").lower() not in {"", "success"}
-    )
-
-
-def emit_heartbeat_wait_report(state: dict[str, Any] | None, cycle: str) -> None:
-    current = state if isinstance(state, dict) else controller.new_cycle_state(datetime.now(ISRAEL_TZ).date())
-    payload = {
-        "action": "wait",
-        "reason": "failed child deferred to recovery heartbeat",
-        "state": current,
-    }
-    print(json.dumps(payload, ensure_ascii=False, indent=2))
-
-
 def main() -> int:
     controller.matching_video_items = queue_aware_matching
-    controller.mandatory_video_review_approved = advisory_video_publication_ready
 
     cycle = current_cycle()
     token = os.environ.get("GITHUB_TOKEN", "").strip()
@@ -353,13 +342,6 @@ def main() -> int:
     if token:
         github = controller.GitHubClient(repo, token)
         state = github.load_controller_state()
-
-        # Failed/cancelled/timed-out child completions are intentionally passive.
-        # The next scheduled heartbeat discovers the run and applies retry/backoff.
-        if failed_child_waits_for_heartbeat():
-            emit_heartbeat_wait_report(state, cycle)
-            return 0
-
         changed = adopt_latest_dispatched_children(github, state, cycle)
         changed = adopt_triggered_child(github, state, cycle) or changed
         if changed:
