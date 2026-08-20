@@ -6,22 +6,32 @@
     "heartbeat_minutes": 15,
     "failure_recovery": "heartbeat"
   },
+  "retry": {
+    "max_attempts_per_stage": 3,
+    "backoff_minutes": [5, 15],
+    "attempts_include_initial_run": true
+  },
   "article": {
     "generator": "jules",
     "worker_session_attempts": 1,
-    "retry_backoff_minutes": [5, 15, 30, 60],
-    "circuit_breaker_after_same_failure": 4,
-    "circuit_breaker_minutes": 60
+    "max_attempts": 3,
+    "retry_backoff_minutes": [5, 15]
   },
   "image": {
     "required_for_article": true,
     "worker_owner": "github-actions",
-    "fallback_must_be_local": true
+    "worker_attempts_per_dispatch": 1,
+    "max_attempts": 3,
+    "provider_order": ["gemini", "unsplash", "pexels", "local-curated"],
+    "gemini_model": "gemini-3.1-flash-image",
+    "fallback_must_be_local": true,
+    "no_image_publication_allowed": false
   },
   "video": {
     "publication_gate": "technical",
     "jules_review": "advisory",
     "queue_order": "fifo",
+    "max_attempts_per_stage": 3,
     "durable_state_artifacts_to_keep": 3,
     "durable_state_retention_days": 14
   },

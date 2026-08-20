@@ -31,7 +31,7 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - name: Run exactly one autonomous Jules article attempt
+      - name: Run exactly one autonomous Jules article text attempt
         id: article_worker
         continue-on-error: true
         env:
@@ -40,7 +40,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$(dirname "$KESHER_ARTICLE_RESULT_PATH")"
-          python3 -u scripts/jules_article_runner.py --slot "${{ inputs.slot }}"
+          python3 -u scripts/jules_article_runner_v3.py --slot "${{ inputs.slot }}"
 
       - name: Persist structured article attempt result
         if: ${{ always() && hashFiles('.kesher-article-result/result.json') != '' }}
@@ -55,5 +55,5 @@ jobs:
       - name: Fail workflow when the article worker failed
         if: ${{ steps.article_worker.outcome == 'failure' }}
         run: |
-          echo "The single article worker attempt failed; the controller owns retry/backoff." >&2
+          echo "The single article text worker attempt failed; the controller owns retry/backoff." >&2
           exit 1

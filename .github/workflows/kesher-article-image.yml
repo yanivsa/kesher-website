@@ -1,0 +1,68 @@
+name: Kesher Trusted Article Image
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Article PR number
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: kesher-article-image-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: false
+
+jobs:
+  attach-image:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.base.ref == 'main' && github.event.pull_request.draft == false)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout trusted image worker
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Attach required trusted image
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/article-image-worker.py "${REPO}" "${PR_NUMBER}" | tee image-worker.log
+
+          if ! grep -q '^ARTICLE_IMAGE_COMMITTED ' image-worker.log; then
+            echo 'Trusted image already present or this is not an article publication PR.'
+            exit 0
+          fi
+
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls/${PR_NUMBER}" \
+            > refreshed-pr.json
+          head_ref="$(python3 -c 'import json; print(json.load(open("refreshed-pr.json"))["head"]["ref"])')"
+
+          python3 - "${head_ref}" > dispatch.json <<'PY'
+          import json, sys
+          print(json.dumps({"ref": sys.argv[1]}))
+          PY
+          curl --fail-with-body -sS -X POST \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            -d @dispatch.json \
+            "https://api.github.com/repos/${REPO}/actions/workflows/ci.yml/dispatches"
+          echo "Dispatched fresh CI for image-bearing article head ${head_ref}."

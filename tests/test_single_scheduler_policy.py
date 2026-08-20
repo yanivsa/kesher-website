@@ -62,7 +62,8 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
 
     def test_article_worker_is_single_attempt_and_persists_result(self):
         text = ARTICLE.read_text(encoding="utf-8")
-        self.assertIn("Run exactly one autonomous Jules article attempt", text)
+        self.assertIn("Run exactly one autonomous Jules article text attempt", text)
+        self.assertIn("python3 -u scripts/jules_article_runner_v3.py", text)
         self.assertIn("kesher-article-result-${{ github.run_id }}", text)
         self.assertIn("the controller owns retry/backoff", text)
 

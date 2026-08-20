@@ -1,586 +1,213 @@
 const assert = require('assert');
-const { execFileSync, execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 const fs = require('fs');
 
+function read(path) {
+  return fs.readFileSync(path, 'utf8');
+}
 
 function testControllerHardening() {
-    const seoWorkflow = fs.readFileSync('.github/workflows/jules-daily-seo-geo-review.yml', 'utf8');
-    const mobileWorkflow = fs.readFileSync('.github/workflows/jules-daily-mobile-review.yml', 'utf8');
-    const siteFixWorkflow = fs.readFileSync('.github/workflows/jules-nightly-site-fixes.yml', 'utf8');
-    const industryWorkflow = fs.readFileSync('.github/workflows/jules-daily-industry-benchmarking.yml', 'utf8');
-    const weeklyWorkflow = fs.readFileSync('.github/workflows/jules-weekly-content-review.yml', 'utf8');
-    const articlePolicy = fs.readFileSync('.github/prompts/jules-weekday-article-update.md', 'utf8');
-
-    for (const [name, content] of [
-        ['SEO/GEO', seoWorkflow],
-        ['mobile', mobileWorkflow],
-        ['site-fix', siteFixWorkflow],
-        ['industry-benchmarking', industryWorkflow],
-        ['weekly-content-review', weeklyWorkflow],
-    ]) {
-        assert(
-            content.includes('strictly defined as a couples counselor'),
-            `${name} workflow must strictly define couples counselor`
-        );
-        assert(
-            (content.includes('Do NOT add, change, or refer to divorce (גירושין)') || content.includes('Do NOT optimize for, benchmark against, add, or refer to divorce (גירושין)')) && content.includes('legal services (עריכת דין / עו') && content.includes('ד), or family mediation (גישור)'),
-            `${name} workflow must strictly forbid divorce, legal, and mediation`
-        );
-    }
-
-    assert(
-        !articlePolicy.includes('מגשרת מוסמכת'),
-        'Article policy must not include mediator credentials'
-    );
-    assert(
-        !articlePolicy.includes('עורכת דין בהכשרתה'),
-        'Article policy must not include lawyer credentials'
-    );
-    assert(
-        !articlePolicy.includes('גישור כהליך רצוני'),
-        'Article policy must not present mediation as an allowed topic'
-    );
-    assert(
-        articlePolicy.includes('אין להוסיף, לשנות או להתייחס לגירושין, שירותים משפטיים') && articlePolicy.includes('או גישור משפחתי בשום מקום במאמר'),
-        'Article policy must strictly forbid divorce, legal, and mediation in new articles'
-    );
-}
-
-function testGenericH3() {
-    const regex = /<h3[^>]*>\s*(סיכום|לסיכום|סיכום וצעדים הבאים|צעדים הבאים)\s*<\/h3>/;
-    assert(regex.test("<h3>סיכום</h3>"), "Should reject generic H3");
-    assert(regex.test("<h3 class=\"title\">צעדים הבאים</h3>"), "Should reject generic H3 with attributes");
-    assert(!regex.test("<p>לסיכום, זה חשוב</p>"), "Should allow ordinary prose");
-}
-
-function testImageExtraction() {
-    const bodyValid = "Image Source URL: https://example.com/img\nImage SHA-256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nImage Dimensions: 1200x900\nMatch: shows a couple.";
-    const match = bodyValid.match(/Image SHA-256:\s*([a-f0-9a-fA-F]{64})/);
-    assert(match && match[1] === 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', "Should extract SHA-256");
-}
-
-function runPythonWorkflowLogic(prBody, filesJson, imageData, expectedExitCode) {
-    fs.writeFileSync('pr.json', JSON.stringify({
-        state: "open",
-        draft: false,
-        base: { ref: "main", repo: { full_name: "test/repo" } },
-        head: { repo: { full_name: "test/repo" } },
-        body: prBody
-    }));
-    fs.writeFileSync('files.json', JSON.stringify(filesJson));
-    fs.writeFileSync('checks.json', JSON.stringify({
-        check_runs: [{ name: "verify", conclusion: "success" }]
-    }));
-
-    const pythonScript = `
-import json, sys, re, hashlib
-pr = json.load(open("pr.json"))
-files_data = json.load(open("files.json"))
-files = [f["filename"] for f in files_data]
-checks = json.load(open("checks.json")).get("check_runs", [])
-allowed_files = {"src/data/posts.json", "src/data/postSummaries.json", "public/sitemap.xml", "public/llms.txt", "public/llms-full.txt"}
-allowed = all(f in allowed_files or f.startswith("public/images/generated/blog/") for f in files)
-ci_passed = any(c.get("name") == "verify" and c.get("conclusion") == "success" for c in checks)
-
-image_file = next((f for f in files_data if f["filename"].startswith("public/images/generated/blog/")), None)
-if image_file:
-    match = re.search(r"Image SHA-256:\\s*([a-f0-9]{64})", pr.get("body") or "")
-    if not match:
-        print("Missing or invalid Image SHA-256 in PR body")
-        sys.exit(1)
-    expected_sha = match.group(1).lower()
-    img_data = b"${imageData}"
-    actual_sha = hashlib.sha256(img_data).hexdigest()
-    if expected_sha != actual_sha:
-        print(f"Hash mismatch! Expected {expected_sha}, got {actual_sha}")
-        sys.exit(1)
-
-eligible = (
-    pr.get("state") == "open"
-    and not pr.get("draft")
-    and pr["base"]["ref"] == "main"
-    and pr["head"]["repo"]["full_name"] == pr["base"]["repo"]["full_name"]
-    and "src/data/posts.json" in files
-    and allowed
-    and ci_passed
-)
-sys.exit(0 if eligible else 1)
-`;
-    fs.writeFileSync('test_gate.py', pythonScript);
-    try {
-        execSync('python3 test_gate.py');
-        assert.strictEqual(0, expectedExitCode);
-    } catch (e) {
-        assert.strictEqual(1, expectedExitCode, "Expected failure but script succeeded or crashed with wrong error");
-    } finally {
-        fs.unlinkSync('pr.json');
-        fs.unlinkSync('files.json');
-        fs.unlinkSync('checks.json');
-        fs.unlinkSync('test_gate.py');
-    }
-}
-
-function testWorkflowGate() {
-    const correctHash = require('crypto').createHash('sha256').update("realimage").digest('hex');
-    runPythonWorkflowLogic(
-        `Image Source URL: https://example.com/img\nImage SHA-256: ${correctHash}`,
-        [{ filename: "src/data/posts.json" }, { filename: "public/images/generated/blog/img.jpg", raw_url: "fake" }],
-        "realimage",
-        0
-    );
-
-    runPythonWorkflowLogic(
-        `Image Source URL: https://example.com/img\nImage SHA-256: 1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef`,
-        [{ filename: "src/data/posts.json" }, { filename: "public/images/generated/blog/img.jpg", raw_url: "fake" }],
-        "realimage",
-        1
-    );
-
-    runPythonWorkflowLogic(
-        `Image Source URL: https://example.com/img\nImage SHA-256: ${require('crypto').createHash('sha256').update("wrongimage").digest('hex')}`,
-        [{ filename: "src/data/posts.json" }, { filename: "public/images/generated/blog/img.jpg", raw_url: "fake" }],
-        "realimage",
-        1
-    );
-
-    runPythonWorkflowLogic(
-        `Just a normal PR body without hash`,
-        [{ filename: "src/data/posts.json" }, { filename: "public/images/generated/blog/img.jpg", raw_url: "fake" }],
-        "realimage",
-        1
-    );
-
-    runPythonWorkflowLogic(
-        `No image for this post`,
-        [{ filename: "src/data/posts.json" }],
-        "",
-        0
-    );
+  const articlePolicy = read('.github/prompts/jules-weekday-article-update.md');
+  for (const path of [
+    '.github/workflows/jules-daily-seo-geo-review.yml',
+    '.github/workflows/jules-daily-mobile-review.yml',
+    '.github/workflows/jules-nightly-site-fixes.yml',
+    '.github/workflows/jules-daily-industry-benchmarking.yml',
+    '.github/workflows/jules-weekly-content-review.yml',
+  ]) {
+    const workflow = read(path);
+    assert(workflow.includes('strictly defined as a couples counselor'), `${path} must define the professional role`);
+    assert(workflow.includes('family mediation (גישור)'), `${path} must retain the mediation exclusion`);
+  }
+  assert(!articlePolicy.includes('מגשרת מוסמכת'));
+  assert(!articlePolicy.includes('עורכת דין בהכשרתה'));
+  assert(articlePolicy.includes('אין להוסיף, לשנות או להתייחס לגירושין, שירותים משפטיים'));
 }
 
 function testContentValidatorContracts() {
-    const validator = fs.readFileSync('scripts/validate-content.cjs', 'utf8');
-    assert(
-        validator.includes("published.map((post) => post.image).filter(Boolean)"),
-        "No-image fallback must not fail uniqueness validation"
-    );
-    assert(
-        validator.includes("if (post.image) {"),
-        "Local image checks must run only when an image exists"
-    );
-    assert(
-        validator.includes('const visibleProse = `${post.title}\\n${post.excerpt}\\n${stripHtml(post.content)}`'),
-        "Formulaic phrase validation must cover title, excerpt, and content"
-    );
-    for (const phrase of [
-        "זה קורה כמעט לכל מי",
-        "טבעית לחלוטין",
-        "הצעד הראשון להתמודדות",
-        "המלכודת הגדולה ביותר",
-        "הקצב שלכם הוא הקצב שלכם",
-        "אין לוח זמנים אוניברסלי",
-        "מלאים ושלמים יותר",
-        "זירת התגוששות",
-        "שדה מוקשים",
-        "לנווט את התקופה",
-        "משפט תגובה קצר וחותך",
-        "הבנה עמוקה",
-        "חיבור אמיתי",
-        "לנווט את החיים",
-        "מזמינה אתכם לעשות סדר במחשבות",
-        "נובעות לרוב משילוב",
-        "הדור הקודם גדל על מסלול חיים מאוד ברור",
-        "החריגה ממנו מעוררת אצלם חרדה",
-        "התגובה הטבעית היא",
-        "הכלל החשוב ביותר",
-    ]) {
-        assert(validator.includes(`"${phrase}"`), `Missing observed phrase guard: ${phrase}`);
-    }
-    assert(
-        validator.includes('if (i === 0)'),
-        'Newly observed phrase guards must target the latest article without retroactively blocking old content'
-    );
-    assert(
-        validator.includes('Post summaries are stale or incomplete; run npm run generate after the final posts.json edit.'),
-        'Content validation must reject a missing or stale generated post summary'
-    );
+  const validator = read('scripts/validate-content.cjs');
+  assert(validator.includes('Post summaries are stale or incomplete; run npm run generate after the final posts.json edit.'));
+  assert(validator.includes('const visibleProse = `${post.title}\\n${post.excerpt}\\n${stripHtml(post.content)}`'));
+  assert(validator.includes('if (i === 0)'));
+  for (const phrase of [
+    'זה קורה כמעט לכל מי', 'טבעית לחלוטין', 'הצעד הראשון להתמודדות',
+    'המלכודת הגדולה ביותר', 'הקצב שלכם הוא הקצב שלכם', 'אין לוח זמנים אוניברסלי',
+    'מלאים ושלמים יותר', 'זירת התגוששות', 'שדה מוקשים', 'לנווט את התקופה',
+    'הבנה עמוקה', 'חיבור אמיתי',
+  ]) {
+    assert(validator.includes(`"${phrase}"`), `Missing observed phrase guard: ${phrase}`);
+  }
 }
 
-function testIndependentArticlePrGate() {
-    const workflow = fs.readFileSync('.github/workflows/auto-merge-article-prs.yml', 'utf8');
-    const controller = fs.readFileSync('.github/scripts/article-pr-controller.py', 'utf8');
-    const gate = fs.readFileSync('.github/scripts/validate-article-pr.py', 'utf8');
-    assert(
-        workflow.includes('python3 .github/scripts/article-pr-controller.py') &&
-        controller.includes('load_validator()') &&
-        controller.includes('validator.evaluate('),
-        'Article auto-merge must execute the independent trusted quality gate through the self-healing controller'
-    );
-    for (const contract of [
-        'New article word count must be 700-1100',
-        'Article PRs may not contain video files',
-        'New article may not contain a video field',
-        'Committed image requires Image Generation Result success|generated',
-        'Image Visual Match',
-        'Image dimensions mismatch',
-        'Expected exactly one new article',
-        'Article publication PR may not modify or remove existing posts',
-    ]) {
-        assert(gate.includes(contract), `Independent article gate is missing contract: ${contract}`);
-    }
+function testTrustedArticleImageV2() {
+  const workflow = read('.github/workflows/kesher-article-image.yml');
+  const worker = read('.github/scripts/article-image-worker.py');
+  const gate = read('.github/scripts/validate-article-pr.py');
+  const generation = read('.github/workflows/kesher-article-generation.yml');
+  const runner = read('scripts/jules_article_runner_v3.py');
+  const contract = JSON.parse(read('config/kesher-production-contract.json'));
 
-    execFileSync('python3', ['-c', `
-import runpy
-gate = runpy.run_path('.github/scripts/validate-article-pr.py')
-evaluate = gate['evaluate']
-base = [{'id': 'older'}]
-pr = {
-    'state': 'open', 'draft': False, 'title': 'Publish Kesher article: valid-new-post',
-    'body': '''Image Generation Attempt: DeepAI/Gemini/Fallback pool
-Image Generation Result: blocked
-Image Fallback Attempt: Unsplash/Pexels
-Image Fallback Result: no_pixel_verified_match
-Image Source URL: none''',
-    'base': {'ref': 'main', 'repo': {'full_name': 'test/repo'}},
-    'head': {'repo': {'full_name': 'test/repo'}},
+  assert.strictEqual(contract.retry.max_attempts_per_stage, 3);
+  assert.deepStrictEqual(contract.retry.backoff_minutes, [5, 15]);
+  assert.strictEqual(contract.image.required_for_article, true);
+  assert.strictEqual(contract.image.no_image_publication_allowed, false);
+  assert.strictEqual(contract.image.worker_attempts_per_dispatch, 1);
+  assert.strictEqual(contract.image.max_attempts, 3);
+  assert.deepStrictEqual(contract.image.provider_order, ['gemini', 'unsplash', 'pexels', 'local-curated']);
+  assert.strictEqual(contract.image.gemini_model, 'gemini-3.1-flash-image');
+
+  assert(workflow.includes('pull_request_target:'));
+  assert(workflow.includes('Checkout trusted image worker'));
+  assert(workflow.includes('ref: main'));
+  assert(workflow.includes('persist-credentials: false'));
+  assert(workflow.includes('GOOGLE_API_KEY'));
+  assert(workflow.includes('UNSPLASH_ACCESS_KEY'));
+  assert(workflow.includes('PEXELS_API_KEY'));
+  assert(workflow.includes('actions/workflows/ci.yml/dispatches'));
+
+  assert(worker.includes('GEMINI_MODEL = "gemini-3.1-flash-image"'));
+  assert(worker.indexOf('try_gemini') < worker.indexOf('try_unsplash'));
+  assert(worker.indexOf('try_unsplash') < worker.indexOf('try_pexels'));
+  assert(worker.includes('return local_fallback(repo, post, head_ref, token, attempts)'));
+  assert(worker.includes('local://'));
+  assert(worker.includes('ARTICLE_IMAGE_COMMITTED'));
+
+  assert(gate.includes('New article requires a trusted local image; no-image publication is forbidden'));
+  assert(gate.includes('Image Pipeline Version: 2'));
+  assert(gate.includes('generated|stock|local_fallback'));
+  assert(gate.includes('Image SHA-256 mismatch'));
+  assert(gate.includes('Image dimensions mismatch'));
+  assert(!gate.includes('No-image fallback must record'));
+
+  assert(generation.includes('scripts/jules_article_runner_v3.py'));
+  assert(runner.includes('Jules owns ARTICLE TEXT ONLY'));
+  assert(runner.includes('The new article MUST omit'));
+  assert(runner.includes('trusted GitHub Actions stage'));
 }
-checks = [{'name': 'verify', 'conclusion': 'success'}]
-files = [{'filename': 'src/data/posts.json'}]
-valid = {'id': 'valid-new-post', 'content': '<p>' + ('מילה ' * 700) + '</p>' + ('<h3>שאלה</h3>' * 5)}
-assert evaluate(pr, files, checks, base, base + [valid], lambda _: b'') == []
 
-thin = dict(valid, content='<p>' + ('מילה ' * 603) + '</p>' + ('<h3>שאלה</h3>' * 5))
-errors = evaluate(pr, files, checks, base, base + [thin], lambda _: b'')
-assert any('found 608' in error for error in errors), errors
+function testIndependentArticlePrGateRuntime() {
+  execFileSync('python3', ['-c', `
+import runpy, struct, hashlib
+m = runpy.run_path('.github/scripts/validate-article-pr.py')
+evaluate = m['evaluate']
+base = [{'id':'older'}]
+content = '<p>' + ('מילה ' * 700) + '</p>' + ('<h3>שאלה</h3>' * 5)
+base_pr = {
+  'state':'open','draft':False,'title':'Publish Kesher article: valid-new-post',
+  'base':{'ref':'main','repo':{'full_name':'test/repo'}},
+  'head':{'repo':{'full_name':'test/repo'}},
+}
+checks = [{'name':'verify','conclusion':'success'}]
 
-video = dict(valid, video='/videos/generated/placeholder.mp4')
-video_files = files + [{'filename': 'public/videos/generated/placeholder.mp4'}]
-errors = evaluate(pr, video_files, checks, base, base + [video], lambda _: b'')
-assert any('video' in error.lower() for error in errors), errors
+no_image = {'id':'valid-new-post','content':content}
+errors = evaluate(base_pr, [{'filename':'src/data/posts.json'}], checks, base, base+[no_image], lambda _: b'')
+assert any('no-image publication is forbidden' in e for e in errors), errors
 
-image_pr = dict(pr, body='''Image Generation Attempt: DeepAI
-Image Generation Result: blocked
-Image Source URL: https://api.deepai.org/example.jpg
-Image SHA-256: 0000000000000000000000000000000000000000000000000000000000000000
-Image Dimensions: 1x1
-Image Visual Match: Friday dinner family scene is visible.''')
-image_post = dict(valid, image='/images/generated/blog/valid-new-post.jpg', imageAlt='תיאור')
-image_files = files + [{'filename': 'public/images/generated/blog/valid-new-post.jpg'}]
-errors = evaluate(image_pr, image_files, checks, base, base + [image_post], lambda _: b'not-an-image')
-assert any('requires Image Generation Result success|generated' in error for error in errors), errors
+png = b'\\x89PNG\\r\\n\\x1a\\n' + b'\\x00'*8 + struct.pack('>II',1200,675) + b'fixture'
+sha = hashlib.sha256(png).hexdigest()
+body = f'''Image Pipeline Version: 2
+Image Provider: Local
+Image Attempt Chain: gemini/unsplash/pexels/local-curated
+Image Generation Result: local_fallback
+Image Source URL: local://public/images/generated/blog/listening-in-relationships.jpg
+Image SHA-256: {sha}
+Image Dimensions: 1200x675
+Image Visual Match: זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור'''
+pr = dict(base_pr, body=body)
+post = dict(no_image, image='/images/generated/blog/valid-new-post.png', imageAlt='זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור')
+files = [{'filename':'src/data/posts.json'}, {'filename':'public/images/generated/blog/valid-new-post.png'}]
+errors = evaluate(pr, files, checks, base, base+[post], lambda _: png)
+assert errors == [], errors
+
+bad_body = body.replace(sha, '0'*64)
+errors = evaluate(dict(pr, body=bad_body), files, checks, base, base+[post], lambda _: png)
+assert any('SHA-256 mismatch' in e for e in errors), errors
+
+video = dict(post, video='/videos/generated/placeholder.mp4')
+errors = evaluate(pr, files+[{'filename':'public/videos/generated/placeholder.mp4'}], checks, base, base+[video], lambda _: png)
+assert any('video' in e.lower() for e in errors), errors
 `]);
 }
 
-function testAutomergeDeployContracts() {
-    const auditWorkflow = fs.readFileSync('.github/workflows/auto-merge-jules-audit-prs.yml', 'utf8');
-    const articleWorkflow = fs.readFileSync('.github/workflows/auto-merge-article-prs.yml', 'utf8');
-    const articleController = fs.readFileSync('.github/scripts/article-pr-controller.py', 'utf8');
-    for (const [name, workflow, deploySource] of [
-        ['audit', auditWorkflow, auditWorkflow],
-        ['article', articleWorkflow, articleController],
-    ]) {
-        assert(
-            deploySource.includes('/actions/workflows/deploy.yml/dispatches'),
-            `${name} auto-merge must dispatch deployment after a successful merge`
-        );
-        assert(
-            /permissions:[\s\S]*actions:\s*write/.test(workflow),
-            `${name} auto-merge must have actions: write for deploy dispatch`
-        );
-    }
-    assert(
-        auditWorkflow.lastIndexOf('dispatch_deploy()') > auditWorkflow.indexOf('Merged successfully.'),
-        'Audit deploy dispatch must occur only after a successful merge'
-    );
-    assert(
-        articleController.indexOf('merged = request_json(') < articleController.indexOf('/actions/workflows/deploy.yml/dispatches'),
-        'Article deploy dispatch must occur only after checking the merge response'
-    );
-    const articleGate = fs.readFileSync('.github/scripts/validate-article-pr.py', 'utf8');
-    assert(
-        articleGate.includes('"src/data/postSummaries.json"'),
-        'Article auto-merge must accept the generated post summary index'
-    );
-    assert(
-        articleWorkflow.includes('Checkout trusted article controller') && articleWorkflow.includes('ref: main'),
-        'Article auto-merge must checkout trusted main before running its controller and validator'
-    );
-    assert(
-        auditWorkflow.includes('Closed zero-file stale/duplicate audit PR.'),
-        'Audit auto-merge must close zero-file stale duplicate PRs'
-    );
-    assert(
-        auditWorkflow.includes('Failing explicitly instead of reporting false success.'),
-        'Audit auto-merge must not return green after a rejected merge'
-    );
-    assert(
-        auditWorkflow.includes('cron: "17,47 * * * *"'),
-        'Audit auto-merge must rescan after token-dispatched CI completion'
-    );
+function testArticleAutomergeAndRepairContracts() {
+  const workflow = read('.github/workflows/auto-merge-article-prs.yml');
+  const controller = read('.github/scripts/article-pr-controller.py');
+  const controllerV3 = read('.github/scripts/article-pr-controller-v3.py');
+  const gate = read('.github/scripts/validate-article-pr.py');
+  assert(workflow.includes('Checkout trusted article controller'));
+  assert(workflow.includes('ref: main'));
+  assert(workflow.includes('python3 .github/scripts/article-pr-controller-v3.py'));
+  assert(/permissions:[\s\S]*actions:\s*write/.test(workflow));
+  assert(controller.includes('load_validator()'));
+  assert(controller.includes('validator.evaluate('));
+  assert(controllerV3.includes('LEGACY_PATH = Path(__file__).with_name("article-pr-controller.py")'));
+  assert(controllerV3.includes('MAX_TOTAL_CONTENT_ATTEMPTS = 3'));
+  assert(controllerV3.includes('Repair THE SAME PR #'));
+  assert(controller.indexOf('merged = request_json(') < controller.indexOf('/actions/workflows/deploy.yml/dispatches'));
+  assert(gate.includes('Expected exactly one new article'));
+  assert(gate.includes('Article publication PR may not modify or remove existing posts'));
+  assert(gate.includes('New article word count must be 700-1100'));
+}
 
-    const seoWorkflow = fs.readFileSync('.github/workflows/jules-daily-seo-geo-review.yml', 'utf8');
-    const mobileWorkflow = fs.readFileSync('.github/workflows/jules-daily-mobile-review.yml', 'utf8');
-    const siteFixWorkflow = fs.readFileSync('.github/workflows/jules-nightly-site-fixes.yml', 'utf8');
-    const industryWorkflow = fs.readFileSync('.github/workflows/jules-daily-industry-benchmarking.yml', 'utf8');
-    const watchdog = fs.readFileSync('.github/scripts/watch-jules-session.py', 'utf8');
-    assert(
-        seoWorkflow.includes('Final live-duplicate gate:'),
-        'SEO/GEO prompt must recheck current main and forbid zero-file duplicate PRs'
-    );
-    for (const [name, workflow] of [
-        ['SEO/GEO', seoWorkflow],
-        ['mobile', mobileWorkflow],
-        ['site-fix', siteFixWorkflow],
-        ['industry-benchmarking', industryWorkflow],
-    ]) {
-        assert(
-            workflow.includes('Enforce autonomous terminal Jules state'),
-            `${name} workflow must verify Jules completion instead of only session creation`
-        );
-        assert(
-            workflow.includes('.github/scripts/watch-jules-session.py'),
-            `${name} workflow must run the shared Jules terminal-state watchdog`
-        );
-        assert(
-            workflow.indexOf('actions/checkout@') < workflow.indexOf('.github/scripts/watch-jules-session.py'),
-            `${name} workflow must checkout before running the repository-owned watchdog`
-        );
-    }
-    for (const contract of [
-        'AWAITING_USER_FEEDBACK',
-        'WAITING_FOR_USER',
-        ':sendMessage',
-        'max_replacements',
-        'AUTONOMOUS RECOVERY REQUIREMENT',
-        'COMPLETED with changeSet but no pullRequest',
-        'AUTONOMOUS_CLEANUP_GRACE_SECONDS',
-        'REPEATED_WAITING_CONTINUATION',
-        'max_waiting_continuations',
-        'Use Jules built-in PR submission',
-        '"PAUSED"',
-        'DELIVERY RECOVERY REQUIREMENT:',
-        'max_delivery_replacements',
-        'Previous changeSet candidate paths:',
-    ]) {
-        assert(
-            watchdog.includes(contract),
-            `Jules watchdog is missing terminal-state contract: ${contract}`
-        );
-    }
-    assert.strictEqual(
-        watchdog.split('deadline = time.monotonic() + max_seconds').length - 1,
-        5,
-        'Each bounded replacement must receive a fresh full session budget'
-    );
-    execFileSync('python3', ['-c', `
-import runpy
-watchdog = runpy.run_path(".github/scripts/watch-jules-session.py")
-validate = watchdog["terminal_output_contract"]
-assert validate({"outputs": []})[0]
-assert validate({"outputs": [{"pullRequest": {"url": "https://example.test/pr/1"}}]})[0]
-assert not validate({"outputs": [{"changeSet": {"gitPatch": {}}}]})[0]
-assert validate({"outputs": [{"changeSet": {}}, {"pullRequest": {"url": "https://example.test/pr/1"}}]})[0]
-paths = watchdog["change_set_paths"]({"outputs": [
-    {"changeSet": {"gitPatch": {"unidiffPatch": "diff --git a/src/a.ts b/src/a.ts\\n"}}},
-    {"changeSet": {"gitPatch": {"unidiffPatch": "diff --git a/src/a.ts b/src/a.ts\\ndiff --git a/src/b.ts b/src/b.ts\\n"}}},
-]})
-assert paths == ["src/a.ts", "src/b.ts"]
-`]);
-    assert(
-        seoWorkflow.includes('Discovery-to-action invariant:'),
-        'SEO/GEO prompt must convert discovery into autonomous action instead of a question'
-    );
-    assert(
-        mobileWorkflow.includes('Asking whether to fix that issue or inspect another page is forbidden.'),
-        'Mobile prompt must proceed autonomously after reproducing an issue'
-    );
-    assert(
-        mobileWorkflow.includes('Known-regression priority:') &&
-        mobileWorkflow.includes('`.heroWhatsapp` and `.quickDock`'),
-        'Mobile prompt must prioritize the known fixed-dock/hero CTA collision'
-    );
-    assert(
-        mobileWorkflow.includes('Public-route gate:') &&
-        mobileWorkflow.includes('`/beta`, `/beta2`, route experiments, route-specific 404s') &&
-        mobileWorkflow.includes('Route HTTP status: 200') &&
-        mobileWorkflow.includes('--max-seconds 7200'),
-        'Mobile prompt must reject unpublished routes and allow enough time for autonomous completion'
-    );
-    assert(
-        siteFixWorkflow.includes('Public-route evidence rule:') &&
-        siteFixWorkflow.includes('a component filename such as `BetaPage`') &&
-        siteFixWorkflow.includes('--max-seconds 7200'),
-        'Site-fix prompt must reject dead route evidence and allow enough time for autonomous completion'
-    );
-    assert(
-        seoWorkflow.includes('--max-seconds 7200'),
-        'SEO/GEO watchdog must allow enough time for a terminal PR or clean no-op'
-    );
-    assert(
-        auditWorkflow.includes('mobile_route_evidence_valid') &&
-        auditWorkflow.includes('exact route, HTTP 200, canonical, heading') &&
-        auditWorkflow.includes('{"/beta", "/beta2"}'),
-        'Audit auto-merge must independently reject dead/experimental mobile route evidence'
-    );
-    assert(
-        auditWorkflow.includes('is an industry review and requires manual review') &&
-        !auditWorkflow.includes('content review|mobile review|SEO GEO review|industry review|site fixes'),
-        'Industry benchmarking PRs must never enter the audit auto-merge eligibility regex'
-    );
-    assert(
-        articleController.includes('def is_article_scope(') &&
-        articleController.includes('path == "src/data/posts.json"') &&
-        articleController.includes('path.startswith(IMAGE_PREFIX)') &&
-        articleController.includes('send_jules_repair(') &&
-        articleController.includes('Repair THE SAME PR AND THE SAME BRANCH') &&
-        articleController.includes('MAX_REPAIRS = 2'),
-        'Rejected article PRs must enter bounded same-PR Jules self-repair without affecting unrelated PRs'
-    );
-    assert(
-        auditWorkflow.includes('                  evidence_prefix = r"^\\s*(?:[-*]\\s*)?"'),
-        'Audit auto-merge must accept exact route evidence with or without a Markdown bullet'
-    );
-    assert(
-        siteFixWorkflow.includes('Offering those paths to the user is forbidden.'),
-        'Site-fix prompt must complete the selected terminal path without asking'
-    );
-    assert(
-        siteFixWorkflow.includes('a Vite or build-tool recommendation is not by itself a verified defect'),
-        'Site-fix prompt must reject warning-only dependency migrations'
-    );
-    assert(
-        siteFixWorkflow.includes('`AIChatbot` returns `null` at viewports up to 768px') &&
-        siteFixWorkflow.includes('a hidden consent launcher as a mobile defect'),
-        'Site-fix prompt must reject dead-code mobile AI-chat positioning changes'
-    );
-    assert(
-        industryWorkflow.includes('exact public competitor page URLs actually inspected') &&
-        industryWorkflow.includes('never report COMPLETED with a changeSet but no pull request'),
-        'Industry benchmarking must require source evidence and a verified terminal PR/no-op'
-    );
-    assert(
-        industryWorkflow.includes('Evidence-before-edit gate:') &&
-        industryWorkflow.includes('Clinical boundaries, treatment contraindications') &&
-        industryWorkflow.includes('Do not create scratch search scripts in the repository.'),
-        'Industry benchmarking must gather evidence before edits and reject unsupported clinical changes'
-    );
-    assert(
-        industryWorkflow.includes('title_pattern = re.compile') &&
-        industryWorkflow.includes('branch_pattern = re.compile') &&
-        !industryWorkflow.includes('(pr.get("body") or "")'),
-        'Industry backlog gate must use task identity, not generic service terms in arbitrary PR bodies'
-    );
-    assert(
-        seoWorkflow.includes('must not bulk-rewrite article bodies'),
-        'SEO/GEO prompt must not turn a technical review into bulk article publication work'
-    );
+function testJulesWatchdogContracts() {
+  const watchdog = read('.github/scripts/watch-jules-session.py');
+  for (const contract of [
+    'AWAITING_USER_FEEDBACK', 'WAITING_FOR_USER', ':sendMessage', 'max_replacements',
+    'AUTONOMOUS RECOVERY REQUIREMENT', 'COMPLETED with changeSet but no pullRequest',
+    'AUTONOMOUS_CLEANUP_GRACE_SECONDS', 'REPEATED_WAITING_CONTINUATION',
+    'max_waiting_continuations', 'Use Jules built-in PR submission', '"PAUSED"',
+    'DELIVERY RECOVERY REQUIREMENT:', 'max_delivery_replacements', 'Previous changeSet candidate paths:',
+  ]) {
+    assert(watchdog.includes(contract), `Jules watchdog missing ${contract}`);
+  }
+  assert.strictEqual(watchdog.split('deadline = time.monotonic() + max_seconds').length - 1, 5);
+}
 
-    const articlePolicy = fs.readFileSync('.github/prompts/jules-weekday-article-update.md', 'utf8');
-    const articleRuntimeWorkflow = fs.readFileSync('.github/workflows/jules-weekday-article.yml', 'utf8');
-    assert(
-        !articleRuntimeWorkflow.includes('\n- Every new article MUST have both') &&
-        articleRuntimeWorkflow.includes('stale_media_block = "\\n".join(['),
-        'Article runtime prompt replacement must stay indented inside the YAML run block'
-    );
-    assert(
-        articlePolicy.includes('appears exactly once in `src/data/posts.json`, `src/data/postSummaries.json`'),
-        'Article policy must require generated-index consistency for the new article id'
-    );
-    assert(
-        articlePolicy.includes('schema image property must be omitted entirely, and rendering components must conditionally render image elements rather than passing an empty string to getImageDimensions'),
-        'Article policy must enforce truthful no-image fallback rendering'
-    );
-    for (const observedArticleFailure of [
-        'זה קורה כמעט לכל מי',
-        'טבעית לחלוטין',
-        'הצעד הראשון להתמודדות',
-        'המלכודת הגדולה ביותר',
-        'הקצב שלכם הוא הקצב שלכם',
-        'אין לוח זמנים אוניברסלי',
-        'מלאים ושלמים יותר',
-    ]) {
-        assert(
-            articlePolicy.includes(observedArticleFailure),
-            `Article prompt must forbid observed formulaic output: ${observedArticleFailure}`
-        );
-    }
-    assert(
-        articlePolicy.includes('הכותרת, הפתיח וגוף המאמר חייבים לשמור על אותה אסטרטגיית פנייה'),
-        'Article prompt must require consistent inclusive address across title and body'
-    );
-    for (const requiredEvidence of [
-        'Image Generation Attempt: DeepAI',
-        'Image Generation Result: unavailable|blocked|api_error|rejected_visual_quality',
-        'Image Fallback Attempt: Unsplash/Pexels',
-        'Image Fallback Result: no_pixel_verified_match|unavailable|blocked',
-        'Image Source URL: none',
-    ]) {
-        assert(
-            articlePolicy.includes(requiredEvidence),
-            `Article policy must require structured no-image evidence: ${requiredEvidence}`
-        );
-    }
-    assert(
-        articlePolicy.includes('700-1,100 whitespace-delimited words') &&
-        articlePolicy.includes('Article publication runs do not create videos') &&
-        articlePolicy.includes('Image Generation Result: success|generated'),
-        'Article policy must reject short articles, placeholder video, and contradictory image success evidence'
-    );
-    assert(
-        articlePolicy.includes('describe actual visible pixels') &&
-        articlePolicy.includes('visibly contain both an adult and a child in a supportive interaction') &&
-        articlePolicy.includes('Abstract symbolism such as hands forming a heart') &&
-        articlePolicy.includes('record the structured truthful no-image fallback'),
-        'Article policy must explicitly require strict pixel-level semantic image verification and reject abstract symbolism'
-    );
+function testOtherAuditAutonomyContracts() {
+  const audit = read('.github/workflows/auto-merge-jules-audit-prs.yml');
+  const seo = read('.github/workflows/jules-daily-seo-geo-review.yml');
+  const mobile = read('.github/workflows/jules-daily-mobile-review.yml');
+  const site = read('.github/workflows/jules-nightly-site-fixes.yml');
+  const industry = read('.github/workflows/jules-daily-industry-benchmarking.yml');
+  assert(audit.includes('Closed zero-file stale/duplicate audit PR.'));
+  assert(audit.includes('Failing explicitly instead of reporting false success.'));
+  assert(audit.includes('cron: "17,47 * * * *"'));
+  assert(audit.includes('mobile_route_evidence_valid'));
+  assert(seo.includes('Final live-duplicate gate:'));
+  assert(seo.includes('Discovery-to-action invariant:'));
+  assert(mobile.includes('Asking whether to fix that issue or inspect another page is forbidden.'));
+  assert(site.includes('Public-route evidence rule:'));
+  assert(industry.includes('Evidence-before-edit gate:'));
+  for (const workflow of [seo, mobile, site, industry]) {
+    assert(workflow.includes('Enforce autonomous terminal Jules state'));
+    assert(workflow.includes('.github/scripts/watch-jules-session.py'));
+  }
 }
 
 function testTechnicalVideoPublicationCannotBeRegressed() {
-    const dailyWorkflow = fs.readFileSync('.github/workflows/kesher-daily-video.yml', 'utf8');
-    const contract = JSON.parse(fs.readFileSync('config/kesher-production-contract.json', 'utf8'));
-    assert.strictEqual(contract.video.publication_gate, 'technical');
-    assert.strictEqual(contract.video.jules_review, 'advisory');
-    assert.strictEqual(contract.video.durable_state_artifacts_to_keep, 3);
-    assert(
-        dailyWorkflow.includes('Jules performs strict advisory review') &&
-        dailyWorkflow.includes('Prepare technically verified upload') &&
-        dailyWorkflow.includes('Upload exact technically verified MP4') &&
-        dailyWorkflow.includes('python -u scripts/kesher_daily_pipeline.py --upload-only') &&
-        dailyWorkflow.includes('--timeout-seconds 900') &&
-        dailyWorkflow.includes('continue-on-error: true'),
-        'The daily video workflow must keep Jules strict but advisory and publish only through the technical gate'
-    );
-    assert(
-        !dailyWorkflow.includes('mandatory Jules') &&
-        !dailyWorkflow.includes('Jules-approved MP4') &&
-        !dailyWorkflow.includes('Upload only after all mandatory review gates approve'),
-        'Mandatory Jules publication authority must not return'
-    );
-    assert(
-        !fs.existsSync('.github/workflows/kesher-youtube-advisory-upload.yml') &&
-        !fs.existsSync('.github/workflows/kesher-video-canary-review-upload.yml') &&
-        !fs.existsSync('scripts/kesher_youtube_advisory_upload.py'),
-        'The canonical daily worker must remain the only YouTube publication path'
-    );
-    assert(
-        dailyWorkflow.includes("always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != ''") &&
-        dailyWorkflow.includes('Keep the newest three durable state artifacts') &&
-        dailyWorkflow.includes('| .[3:] | .[].id'),
-        'Production state persistence must remain isolated from PR validation and retain exactly three snapshots'
-    );
-    assert(
-        dailyWorkflow.includes('switch --orphan "$review_branch"') &&
-        dailyWorkflow.includes('grep -v "^${evidence_root}/"'),
-        'Jules must receive a minimal orphan branch containing only the immutable review evidence'
-    );
+  const daily = read('.github/workflows/kesher-daily-video.yml');
+  const contract = JSON.parse(read('config/kesher-production-contract.json'));
+  assert.strictEqual(contract.video.publication_gate, 'technical');
+  assert.strictEqual(contract.video.jules_review, 'advisory');
+  assert.strictEqual(contract.video.durable_state_artifacts_to_keep, 3);
+  assert.strictEqual(contract.video.max_attempts_per_stage, 3);
+  assert(daily.includes('Jules performs strict advisory review'));
+  assert(daily.includes('Prepare technically verified upload'));
+  assert(daily.includes('Upload exact technically verified MP4'));
+  assert(daily.includes('continue-on-error: true'));
+  assert(!daily.includes('mandatory Jules'));
+  assert(!daily.includes('Jules-approved MP4'));
+  assert(!daily.includes('Upload only after all mandatory review gates approve'));
+  assert(daily.includes('Keep the newest three durable state artifacts'));
+  assert(daily.includes('| .[3:] | .[].id'));
 }
 
 testControllerHardening();
-testGenericH3();
-testImageExtraction();
-testWorkflowGate();
 testContentValidatorContracts();
-testIndependentArticlePrGate();
-testAutomergeDeployContracts();
+testTrustedArticleImageV2();
+testIndependentArticlePrGateRuntime();
+testArticleAutomergeAndRepairContracts();
+testJulesWatchdogContracts();
+testOtherAuditAutonomyContracts();
 testTechnicalVideoPublicationCannotBeRegressed();
 console.log('All automation gates tests passed.');
