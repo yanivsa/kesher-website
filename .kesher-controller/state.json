@@ -26,14 +26,7 @@
     "next_retry_at": null,
     "processed_run_id": null
   },
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_WORKFLOW_FAILED",
-    "message": "article run 32330070921 completed with conclusion=failure but no structured result was available",
-    "retryable": true,
-    "retry_at": "2026-08-20T05:43:56.006182+00:00",
-    "at": "2026-08-20T05:38:56.006203+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-19T16:42:01.037235+00:00",
@@ -95,7 +88,16 @@
         "run_id": 32330070921,
         "session_id": null
       }
+    },
+    {
+      "at": "2026-08-20T05:43:27.452070+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-08-20T05:43:56.006182+00:00"
+      }
     }
   ],
-  "updated_at": "2026-08-20T05:38:56.006213+00:00"
+  "updated_at": "2026-08-20T05:43:27.452088+00:00"
 }
