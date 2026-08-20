@@ -37,21 +37,18 @@ const persistChoice = (choice: ConsentChoice) => {
 };
 
 const ConsentBanner: React.FC = () => {
-  const [choice, setChoice] = useState<ConsentChoice | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [state, setState] = useState<{ choice: ConsentChoice | null; isOpen: boolean }>(() => {
+    const stored = readStoredChoice();
+    return { choice: stored, isOpen: stored === null };
+  });
 
   useEffect(() => {
-    const stored = readStoredChoice();
-    setChoice(stored);
-    setIsOpen(stored === null);
-    if (stored) updateGoogleConsent(stored);
-  }, []);
+    if (state.choice) updateGoogleConsent(state.choice);
+  }, [state.choice]);
 
   const choose = (nextChoice: ConsentChoice) => {
     persistChoice(nextChoice);
-    updateGoogleConsent(nextChoice);
-    setChoice(nextChoice);
-    setIsOpen(false);
+    setState({ choice: nextChoice, isOpen: false });
 
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
@@ -60,12 +57,12 @@ const ConsentBanner: React.FC = () => {
     });
   };
 
-  if (!isOpen) {
+  if (!state.isOpen) {
     return (
       <button
         type="button"
         className={styles.settingsButton}
-        onClick={() => setIsOpen(true)}
+        onClick={() => setState((current) => ({ ...current, isOpen: true }))}
         aria-label="פתיחת הגדרות פרטיות ומדידה"
       >
         הגדרות פרטיות
@@ -88,8 +85,8 @@ const ConsentBanner: React.FC = () => {
           המשך ללא cookies
         </button>
       </div>
-      {choice && (
-        <span className="sr-only">הבחירה הנוכחית: {choice === 'granted' ? 'אישור' : 'ללא cookies'}</span>
+      {state.choice && (
+        <span className="sr-only">הבחירה הנוכחית: {state.choice === 'granted' ? 'אישור' : 'ללא cookies'}</span>
       )}
     </aside>
   );
