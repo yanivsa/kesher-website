@@ -3,9 +3,9 @@
   "cycle": "2026-08-20",
   "status": "article_generating",
   "article": {
-    "attempts": 2,
+    "attempts": 3,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-20T01:47:56.386169+00:00",
+    "last_dispatch_at": "2026-08-20T03:57:05.500803+00:00",
     "run_id": 32322313570
   },
   "video": {
@@ -46,7 +46,16 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-08-20T03:57:05.500825+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow dispatched",
+      "details": {
+        "attempt": 3
+      }
     }
   ],
-  "updated_at": "2026-08-20T03:07:02.551442+00:00"
+  "updated_at": "2026-08-20T03:57:05.500831+00:00"
 }
