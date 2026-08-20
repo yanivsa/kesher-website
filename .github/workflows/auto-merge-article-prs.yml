@@ -116,7 +116,7 @@ jobs:
             local status=1
             for retry in $(seq 1 18); do
               set +e
-              output="$(python3 .github/scripts/article-pr-controller.py \
+              output="$(python3 .github/scripts/article-pr-controller-v3.py \
                 --repo "${REPO}" \
                 --pr "${number}" 2>&1)"
               status=$?
