@@ -21,12 +21,28 @@ def article(slug: str = "today-article", title: str = "כותרת מאמר") -> 
     }
 
 
+def jules_approved_video() -> dict:
+    return {
+        "id": "video-1",
+        "status": "approved",
+        "technical_verified": True,
+        "visual_review_status": "approved",
+        "semantic_review_status": "approved",
+        "metadata_review_status": "approved",
+        "reviewed_at": "2026-08-19T16:00:00+00:00",
+        "reviewer": {"type": "jules", "session": "sessions/review-1"},
+        "source": {"slug": "today-article"},
+    }
+
+
 class FakeGitHub:
     def __init__(self) -> None:
         self.saved_state = None
         self.posts = []
         self.prs = []
         self.active = {}
+        self.runs = {}
+        self.article_results = {}
         self.video_state = {"version": 1, "items": []}
         self.dispatches = []
 
@@ -50,9 +66,19 @@ class FakeGitHub:
             return None
         return copy.deepcopy(value) if value else None
 
+    def workflow_run_by_id(self, run_id):
+        return copy.deepcopy(self.runs.get(run_id))
+
+    def article_result_for_run(self, run_id):
+        return copy.deepcopy(self.article_results.get(run_id))
+
     def dispatch(self, workflow, inputs=None):
         self.dispatches.append((workflow, copy.deepcopy(inputs)))
-        self.active[workflow] = {"id": len(self.dispatches), "status": "in_progress"}
+        self.active[workflow] = {
+            "id": len(self.dispatches),
+            "status": "in_progress",
+            "event": "workflow_dispatch",
+        }
 
     def newest_video_state(self):
         return copy.deepcopy(self.video_state)
@@ -89,18 +115,31 @@ class ControllerTests(unittest.TestCase):
         self.assertFalse(controller.article_is_public("<h1>משהו אחר</h1>", "כותרת מאמר"))
 
     def test_article_windows_are_israel_local(self):
-        # Wednesday
         self.assertFalse(controller.article_window_open(self.now(0, 34)))
         self.assertTrue(controller.article_window_open(self.now(0, 35)))
-        # Friday
         friday = datetime(2026, 8, 21, 7, 59, tzinfo=TZ)
         self.assertFalse(controller.article_window_open(friday))
         self.assertTrue(controller.article_window_open(friday.replace(hour=8, minute=0)))
-        # Saturday only one hour after Ashdod sunset
         saturday = datetime(2026, 8, 22, 20, 0, tzinfo=TZ)
         sunset = datetime(2026, 8, 22, 19, 10, tzinfo=TZ)
         self.assertFalse(controller.article_window_open(saturday, sunset))
         self.assertTrue(controller.article_window_open(saturday.replace(minute=10), sunset))
+
+    def test_schema_one_same_day_state_is_migrated_not_discarded(self):
+        gh = FakeGitHub()
+        gh.saved_state = {
+            "schema_version": 1,
+            "cycle": "2026-08-19",
+            "status": "article_generating",
+            "article": {"attempts": 3, "run_id": 123, "deploy_attempts": 0},
+            "video": {"attempts": 0, "resume_dispatches": 0},
+            "history": [],
+        }
+        state = self.make(gh).state()
+        self.assertEqual(state["schema_version"], 2)
+        self.assertEqual(state["article"]["attempts"], 3)
+        self.assertEqual(state["article"]["run_id"], 123)
+        self.assertIn("failure_count_by_type", state["article"])
 
     def test_missing_article_dispatches_exactly_one_generation(self):
         gh = FakeGitHub()
@@ -111,11 +150,49 @@ class ControllerTests(unittest.TestCase):
         ])
         self.assertEqual(state["article"]["attempts"], 1)
 
-        # A later heartbeat sees the existing active run and must not duplicate it.
         state, action = self.make(gh).tick()
         self.assertEqual(action.kind, "wait")
         self.assertEqual(len(gh.dispatches), 1)
         self.assertEqual(state["status"], "article_generating")
+
+    def test_completed_article_worker_failure_is_backed_off_not_immediately_redispatched(self):
+        gh = FakeGitHub()
+        gh.saved_state = controller.new_cycle_state(self.now().date())
+        gh.saved_state["article"].update({"attempts": 1, "run_id": 41})
+        gh.runs[41] = {"id": 41, "status": "completed", "conclusion": "failure"}
+        gh.article_results[41] = {
+            "schema_version": 1,
+            "slot": "2026-08-19",
+            "outcome": "JULES_TIMEOUT",
+            "retryable": True,
+            "message": "timed out",
+            "session_id": "sessions/41",
+        }
+        state, action = self.make(gh).tick()
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(state["status"], "article_retry_wait")
+        self.assertEqual(state["article"]["failure_fingerprint"], "JULES_TIMEOUT")
+        self.assertEqual(state["article"]["last_jules_session_id"], "sessions/41")
+        self.assertEqual(gh.dispatches, [])
+
+    def test_completed_article_worker_progress_waits_for_reality_before_retry(self):
+        gh = FakeGitHub()
+        gh.saved_state = controller.new_cycle_state(self.now().date())
+        gh.saved_state["article"].update({"attempts": 1, "run_id": 42})
+        gh.runs[42] = {"id": 42, "status": "completed", "conclusion": "success"}
+        gh.article_results[42] = {
+            "schema_version": 1,
+            "slot": "2026-08-19",
+            "outcome": "PR_CREATED",
+            "retryable": False,
+            "message": "",
+            "session_id": "sessions/42",
+            "pr_url": "https://example/pr/500",
+        }
+        state, action = self.make(gh).tick()
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(state["status"], "article_result_wait")
+        self.assertEqual(gh.dispatches, [])
 
     def test_existing_article_pr_is_resumed_not_duplicated(self):
         gh = FakeGitHub()
@@ -205,14 +282,13 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(state["video"]["attempts"], 0)
         self.assertEqual(state["video"]["resume_dispatches"], 1)
 
-        # Simulate the short recovery slice completing while NotebookLM is still processing.
         gh.active.pop(controller.VIDEO_WORKFLOW, None)
         state, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
         self.assertEqual(state["video"]["attempts"], 0)
         self.assertEqual(state["video"]["resume_dispatches"], 2)
 
-    def test_jules_visual_rejection_dispatches_upload_not_rebuild(self):
+    def test_jules_visual_rejection_dispatches_exact_rebuild_not_upload(self):
         gh = FakeGitHub()
         gh.posts = [article()]
         gh.video_state = {"items": [{
@@ -228,23 +304,52 @@ class ControllerTests(unittest.TestCase):
         state, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
         self.assertEqual(gh.dispatches[-1], (
-            controller.VIDEO_WORKFLOW, {"operation": "upload"}
+            controller.VIDEO_WORKFLOW,
+            {"operation": "rebuild", "rebuild_item_id": "video-1"},
         ))
-        self.assertEqual(state["video"]["attempts"], 0)
         self.assertEqual(state["video"]["resume_dispatches"], 1)
 
-    def test_unavailable_pending_review_dispatches_upload(self):
+    def test_pending_review_retries_review_path_and_never_uploads(self):
         gh = FakeGitHub()
         gh.posts = [article()]
         gh.video_state = {"items": [{
             "id": "video-1",
             "status": "pending_review",
             "technical_verified": True,
-            "visual_review_status": "unavailable",
-            "semantic_review_status": "unavailable",
-            "metadata_review_status": "unavailable",
+            "visual_review_status": "pending",
+            "semantic_review_status": "pending",
+            "metadata_review_status": "pending",
             "source": {"slug": "today-article"},
         }]}
+        site = FakeSite(status=200, body="כותרת מאמר")
+        _, action = self.make(gh, site).tick()
+        self.assertEqual(action.kind, "dispatch_video")
+        self.assertEqual(gh.dispatches[-1], (
+            controller.VIDEO_WORKFLOW, {"operation": "full"}
+        ))
+
+    def test_semantic_or_metadata_rejection_blocks_upload(self):
+        gh = FakeGitHub()
+        gh.posts = [article()]
+        gh.video_state = {"items": [{
+            "id": "video-1",
+            "status": "rejected",
+            "technical_verified": True,
+            "visual_review_status": "approved",
+            "semantic_review_status": "rejected",
+            "metadata_review_status": "approved",
+            "source": {"slug": "today-article"},
+        }]}
+        site = FakeSite(status=200, body="כותרת מאמר")
+        state, action = self.make(gh, site).tick()
+        self.assertEqual(action.kind, "blocked")
+        self.assertEqual(state["last_error"]["code"], "VIDEO_REVIEW_REJECTED")
+        self.assertEqual(gh.dispatches, [])
+
+    def test_jules_approved_video_dispatches_upload(self):
+        gh = FakeGitHub()
+        gh.posts = [article()]
+        gh.video_state = {"items": [jules_approved_video()]}
         site = FakeSite(status=200, body="כותרת מאמר")
         _, action = self.make(gh, site).tick()
         self.assertEqual(action.kind, "dispatch_video")
