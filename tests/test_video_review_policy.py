@@ -16,6 +16,8 @@ PIPELINE_PATH = ROOT / "scripts" / "kesher_daily_pipeline.py"
 EVIDENCE_PATH = ROOT / "scripts" / "prepare_jules_video_evidence.py"
 POLICY_PATH = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
+AUTOMATION_POLICY_PATH = ROOT / "config" / "kesher-automation-policy.json"
+UPLOAD_GUARD_PATH = ROOT / "scripts" / "kesher_video_upload_guard.py"
 
 
 def load_reviewer(frame_count: int = 8):
@@ -41,7 +43,9 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             policy_path = Path(temporary) / "policy.md"
             policy_path.write_text(
-                f"Policy-Version: {reviewer.REMOTION_POLICY_VERSION}\n\n{policy_text}",
+                f"Policy-Version: {reviewer.REMOTION_POLICY_VERSION}\n\n"
+                "Jules review is a mandatory publication gate\n\n"
+                f"{policy_text}",
                 encoding="utf-8",
             )
             reviewer.REMOTION_POLICY_PATH = policy_path
@@ -77,13 +81,13 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         self.assertIn("relative/frame-3.png", example["frame_sha256"])
         self.assertNotIn("relative/frame-4.png", example["frame_sha256"])
 
-    def test_prompt_makes_jules_advisory_but_strict_in_findings(self) -> None:
+    def test_prompt_makes_jules_a_mandatory_publication_gate(self) -> None:
         reviewer = load_reviewer()
         prompt = self.build_with_policy(reviewer, "fixture policy")
-        self.assertIn("ADVISORY reviewer", prompt)
-        self.assertIn("MUST NOT block upload", prompt)
-        self.assertIn("they are not upload blockers", prompt)
-        self.assertNotIn("must not be uploaded unless", prompt)
+        self.assertIn("MANDATORY publication reviewer", prompt)
+        self.assertIn("Upload is allowed only when", prompt)
+        self.assertNotIn("ADVISORY reviewer", prompt)
+        self.assertNotIn("MUST NOT block upload", prompt)
         for expected in (
             "slide/card-like", "text-heavy", "timeline or diagram",
             "repeated identical", "generic illustrative",
@@ -101,31 +105,56 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         self.assertIn("from kesher_daily_pipeline import REVIEW_FRAME_COUNT", reviewer_source)
         self.assertIn("from kesher_daily_pipeline import REVIEW_FRAME_COUNT", evidence_source)
 
-    def test_durable_policy_covers_advisory_review_upgrade_captions_and_daily_automation(self) -> None:
+    def test_durable_policy_covers_mandatory_review_upgrade_captions_and_daily_automation(self) -> None:
         policy = POLICY_PATH.read_text(encoding="utf-8")
-        self.assertIn("Jules review is advisory, never an upload gate", policy)
-        self.assertIn("MUST NOT block daily publication", policy)
+        self.assertIn("Jules review is a mandatory publication gate", policy)
+        self.assertIn("MUST NOT be uploaded to YouTube until Jules", policy)
+        self.assertIn("Never bypass Jules", policy)
         self.assertIn("`remotion-upgrade`", policy)
         self.assertIn("Never auto-upgrade", policy)
         self.assertIn("already exists inside the pixels of the NotebookLM source MP4", policy)
         self.assertIn("controller-driven daily GitHub Actions pipeline", policy)
         self.assertIn("DO NOT use `remotion-captions`", policy)
 
-    def test_video_worker_is_dispatch_only_and_reconciles_before_generate_and_upload(self) -> None:
+    def test_central_policy_requires_mandatory_jules_gate(self) -> None:
+        policy = json.loads(AUTOMATION_POLICY_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(policy["video"]["review_gate"], "mandatory")
+        self.assertTrue(policy["video"]["jules_review_required"])
+        self.assertTrue(policy["video"]["upload_requires_approved_review"])
+        self.assertEqual(policy["article"]["worker_session_attempts"], 1)
+        self.assertTrue(policy["invariants"]["controller_owns_retries"])
+
+    def test_video_worker_is_dispatch_only_and_fails_closed_before_upload(self) -> None:
         workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
         trigger_block = workflow.split("permissions:", 1)[0]
         self.assertNotIn("  schedule:", trigger_block)
         self.assertIn("scripts/kesher_video_reconcile.py --prepare-generation", workflow)
         self.assertIn("scripts/kesher_video_reconcile.py --prepare-upload", workflow)
-        self.assertIn("Jules is advisory only", workflow)
+        self.assertIn("Jules performs mandatory publication review", workflow)
+        self.assertIn("Upload only the exact Jules-approved MP4", workflow)
+        self.assertNotIn("Jules is advisory only", workflow)
+        self.assertNotIn("regardless of Jules", workflow)
         self.assertNotIn("daily_video_guard.py", workflow)
 
-    def test_video_worker_fails_closed_on_unrecoverable_state_and_keeps_three_snapshots(self) -> None:
+    def test_upload_guard_binds_approval_to_exact_final_sha(self) -> None:
+        guard = UPLOAD_GUARD_PATH.read_text(encoding="utf-8")
+        self.assertIn('approved_sha != final_sha', guard)
+        self.assertIn('reviewer.get("type") != "jules"', guard)
+        self.assertIn('statuses != ["approved", "approved", "approved"]', guard)
+
+    def test_video_worker_fails_closed_on_unrecoverable_state_and_keeps_seven_snapshots(self) -> None:
         workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
         self.assertIn("none is trustworthy; refusing a fresh state", workflow)
-        self.assertIn("Keep the newest three durable state artifacts", workflow)
-        self.assertIn("| .[3:] | .[].id", workflow)
+        self.assertIn("Keep the newest seven durable state artifacts", workflow)
+        self.assertIn("| .[7:] | .[].id", workflow)
         self.assertIn("retention-days: 14", workflow)
+
+    def test_reviewer_has_one_session_attempt_so_controller_owns_retry(self) -> None:
+        reviewer = load_reviewer()
+        self.assertEqual(reviewer.MAX_REVIEW_SESSION_ATTEMPTS, 1)
+        source = REVIEWER_PATH.read_text(encoding="utf-8")
+        self.assertNotIn("handle_non_fatal_review_error", source)
+        self.assertNotIn("JULES_REVIEW_SESSION_REPLACEMENT", source)
 
 
 if __name__ == "__main__":
