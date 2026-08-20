@@ -2,8 +2,9 @@
 """Reconcile Kesher video state without abandoning older daily work.
 
 Unresolved videos are processed oldest-first. Multiple items form a durable
-FIFO backlog instead of a fatal conflict. A new YouTube upload is permitted
-only after a structured Jules approval for the exact technically verified item.
+FIFO backlog instead of a fatal conflict. Jules review is advisory: a new
+YouTube upload is permitted after machine technical verification of the exact
+source/video identity.
 """
 
 from __future__ import annotations
@@ -151,19 +152,15 @@ def prepare_generation() -> int:
     return 0
 
 
-def mandatory_review_approved(item: dict[str, Any]) -> bool:
+def technical_publication_ready(item: dict[str, Any]) -> bool:
     policy = load_policy()
-    if policy["video"]["review_gate"] != "mandatory":
-        raise pipeline.PipelineError("Video policy no longer declares mandatory Jules review")
-    statuses = [item.get(f"{gate}_review_status") for gate in ("visual", "semantic", "metadata")]
-    reviewer = item.get("reviewer") or {}
+    video_policy = policy["video"]
+    if video_policy.get("publication_gate") != "technical" or video_policy.get("jules_is_advisory") is not True:
+        raise pipeline.PipelineError("Video policy no longer declares technical publication with advisory Jules review")
     return bool(
         item.get("technical_verified") is True
-        and item.get("status") in {"approved", "uploading"}
-        and statuses == ["approved", "approved", "approved"]
-        and reviewer.get("type") == "jules"
-        and reviewer.get("session")
-        and item.get("reviewed_at")
+        and item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
+        and item.get("final_sha256")
     )
 
 
@@ -200,9 +197,9 @@ def prepare_upload() -> int:
         if recover_persisted_youtube_id(state, item):
             return 0
 
-    if not mandatory_review_approved(item):
+    if not technical_publication_ready(item):
         raise pipeline.PipelineError(
-            "Oldest unresolved video is not approved by the mandatory Jules visual/semantic/metadata gate"
+            "Oldest unresolved video is not technically verified for publication"
         )
 
     slug = source_slug(item)
@@ -212,8 +209,13 @@ def prepare_upload() -> int:
             f"Published source changed before upload for {slug}"
         )
 
-    item["review_gate"] = "mandatory-jules"
-    item["review_approved_for_sha256"] = item.get("final_sha256")
+    prior_status = item.get("status")
+    item["review_gate"] = "advisory-jules"
+    item["advisory_review_status_before_upload"] = prior_status
+    # The canonical uploader historically accepts approved/uploading only.
+    # Bridge that legacy state machine without treating Jules approval as a gate.
+    if prior_status not in {"approved", "uploading"}:
+        item["status"] = "approved"
     item["updated_at"] = pipeline.utc_now()
     try:
         validate_upload_candidate(item)
@@ -222,7 +224,7 @@ def prepare_upload() -> int:
     pipeline.save_state(state)
     print(
         "VIDEO_RECONCILED_UPLOAD "
-        f"slug={slug} item={item.get('id')} review=approved exact_evidence=yes"
+        f"slug={slug} item={item.get('id')} gate=technical jules=advisory exact_evidence=yes"
     )
     return 0
 

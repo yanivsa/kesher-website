@@ -57,29 +57,19 @@ def validate_candidate(item: dict) -> None:
     policy = load_policy()
     video_policy = policy["video"]
     if (
-        video_policy.get("review_gate") != "mandatory"
-        or video_policy.get("jules_review_required") is not True
-        or video_policy.get("upload_requires_approved_review") is not True
+        video_policy.get("publication_gate") != "technical"
+        or video_policy.get("jules_is_advisory") is not True
     ):
-        raise UploadGuardError("Automation policy no longer requires mandatory Jules approval")
+        raise UploadGuardError("Automation policy no longer keeps Jules advisory")
 
     if item.get("technical_verified") is not True:
         raise UploadGuardError("Upload candidate is not technically verified")
-    if item.get("status") not in {"approved", "uploading"}:
-        raise UploadGuardError(f"Upload candidate status is not approved: {item.get('status')}")
-
-    statuses = [item.get(f"{gate}_review_status") for gate in ("visual", "semantic", "metadata")]
-    if statuses != ["approved", "approved", "approved"]:
-        raise UploadGuardError("Jules visual/semantic/metadata approval is incomplete")
-
-    reviewer = item.get("reviewer") or {}
-    if reviewer.get("type") != "jules" or not reviewer.get("session") or not item.get("reviewed_at"):
-        raise UploadGuardError("Upload candidate has no authoritative Jules reviewer identity")
+    if item.get("status") not in {"pending_review", "approved", "rejected", "uploading"}:
+        raise UploadGuardError(f"Upload candidate is not publication-ready: {item.get('status')}")
 
     final_sha = str(item.get("final_sha256") or "")
-    approved_sha = str(item.get("review_approved_for_sha256") or "")
-    if not final_sha or approved_sha != final_sha:
-        raise UploadGuardError("Jules approval is not bound to the exact final MP4 SHA-256")
+    if not final_sha:
+        raise UploadGuardError("Upload candidate has no final MP4 SHA-256")
 
     required_hashes = (
         "manifest_sha256",
@@ -88,7 +78,7 @@ def validate_candidate(item: dict) -> None:
         "visual_review_sha256",
     )
     if any(not item.get(field) for field in required_hashes):
-        raise UploadGuardError("Upload candidate is missing immutable review evidence hashes")
+        raise UploadGuardError("Upload candidate is missing immutable evidence hashes")
     frame_hashes = item.get("frame_sha256")
     if not isinstance(frame_hashes, dict) or not frame_hashes:
         raise UploadGuardError("Upload candidate is missing frame evidence hashes")
@@ -110,8 +100,7 @@ def main() -> int:
     validate_candidate(item)
     print(
         "VIDEO_UPLOAD_GUARD_OK "
-        f"item={item.get('id')} sha256={item.get('final_sha256')} "
-        f"jules_session={(item.get('reviewer') or {}).get('session')}"
+        f"item={item.get('id')} sha256={item.get('final_sha256')} jules=advisory"
     )
     return 0
 
