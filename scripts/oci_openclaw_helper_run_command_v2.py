@@ -10,6 +10,8 @@ from urllib.parse import quote
 
 import oci_openclaw_helper_run_command as base
 
+ORIGINAL_ENABLE_RUN_COMMAND = base.enable_run_command
+
 
 def pinned_wrapper(script_file: str) -> str:
     repo = os.environ.get("GITHUB_REPOSITORY", "")
@@ -57,7 +59,7 @@ def enable_run_command_with_conflict_retry(compute, inst) -> None:
         attempt += 1
         current = compute.get_instance(inst.id).data
         try:
-            base.enable_run_command(compute, current)
+            ORIGINAL_ENABLE_RUN_COMMAND(compute, current)
             if attempt > 1:
                 print(f"OCI_RUN_COMMAND_PLUGIN_UPDATE_RETRY_OK attempts={attempt}", flush=True)
             return
