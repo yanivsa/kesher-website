@@ -1,0 +1,111 @@
+name: Provision booking tracking infrastructure
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/booking-tracking-infrastructure.yml'
+      - 'scripts/provision_booking_tracking.py'
+      - 'migrations/0001_booking_attribution.sql'
+      - 'functions/api/booking/**'
+      - 'functions/api/calendly/**'
+  workflow_dispatch:
+
+concurrency:
+  group: booking-tracking-infrastructure
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CALENDLY_API_TOKEN: ${{ secrets.CALENDLY_API_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Provision D1 schema and Pages binding
+        id: cloudflare
+        run: python3 scripts/provision_booking_tracking.py cloudflare
+
+      - name: Check Calendly webhook state
+        id: calendly
+        if: ${{ env.CALENDLY_API_TOKEN != '' }}
+        run: python3 scripts/provision_booking_tracking.py calendly-status
+
+      - name: Create and store Calendly webhook signing key
+        if: ${{ env.CALENDLY_API_TOKEN != '' && steps.calendly.outputs.webhook_exists == 'false' }}
+        run: |
+          set -euo pipefail
+          signing_key="$(openssl rand -hex 32)"
+          echo "::add-mask::$signing_key"
+          echo "CALENDLY_WEBHOOK_SIGNING_KEY=$signing_key" >> "$GITHUB_ENV"
+          printf '%s' "$signing_key" | npx --yes wrangler@4.100.0 pages secret put CALENDLY_WEBHOOK_SIGNING_KEY --project-name=kesher-website
+
+      - name: Register Calendly booking webhook
+        if: ${{ env.CALENDLY_API_TOKEN != '' && steps.calendly.outputs.webhook_exists == 'false' }}
+        run: python3 scripts/provision_booking_tracking.py calendly-create
+
+      - name: Report missing Calendly API token
+        if: ${{ env.CALENDLY_API_TOKEN == '' }}
+        run: |
+          echo "::notice::CALENDLY_API_TOKEN is not configured. D1 reconciliation is active, but Calendly server-side verification remains pending."
+
+      - name: Redeploy Pages after binding or webhook activation
+        id: redeploy
+        if: ${{ steps.cloudflare.outputs.binding_changed == 'true' || (env.CALENDLY_API_TOKEN != '' && steps.calendly.outputs.webhook_exists == 'false') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run deploy.yml --ref main
+
+          run_id=""
+          for attempt in $(seq 1 30); do
+            run_id="$(gh run list \
+              --workflow=deploy.yml \
+              --branch=main \
+              --event=workflow_dispatch \
+              --limit=20 \
+              --json databaseId,headSha \
+              --jq '.[] | select(.headSha == env.GITHUB_SHA) | .databaseId' \
+              | head -n 1)"
+            if [ -n "$run_id" ]; then
+              break
+            fi
+            sleep 2
+          done
+
+          if [ -z "$run_id" ]; then
+            echo "::error::Could not locate the post-provision deployment for $GITHUB_SHA"
+            exit 1
+          fi
+
+          echo "Watching Cloudflare deployment workflow run $run_id"
+          gh run watch "$run_id" --exit-status
+
+      - name: Infrastructure summary
+        if: ${{ always() }}
+        run: |
+          echo "D1 database: ${{ steps.cloudflare.outputs.database_created == 'true' && 'created' || 'existing' }}"
+          echo "Pages binding changed: ${{ steps.cloudflare.outputs.binding_changed || 'unknown' }}"
+          if [ -z "$CALENDLY_API_TOKEN" ]; then
+            echo "Calendly webhook: pending token"
+          elif [ "${{ steps.calendly.outputs.webhook_exists }}" = "true" ]; then
+            echo "Calendly webhook: already active"
+          else
+            echo "Calendly webhook: activation attempted"
+          fi
