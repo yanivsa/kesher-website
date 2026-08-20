@@ -5,11 +5,12 @@ on:
     paths:
       - .github/workflows/kesher-daily-video.yml
       - .github/prompts/jules-remotion-video-upgrade.md
-      - config/kesher-automation-policy.json
+      - config/kesher-production-contract.json
       - scripts/kesher_automation_policy.py
       - scripts/kesher_daily_pipeline.py
       - scripts/kesher_video_reconcile.py
       - scripts/jules_video_reviewer.py
+      - scripts/jules_video_reviewer_v3.py
       - scripts/prepare_jules_video_evidence.py
       - scripts/requirements-video-cloud.txt
       - package.json
@@ -20,6 +21,7 @@ on:
       - tests/test_video_review_policy.py
       - tests/test_video_review_schema.py
       - tests/test_video_reconcile.py
+      - tests/test_production_contract_v3.py
   workflow_dispatch:
     inputs:
       operation:
@@ -99,14 +101,17 @@ jobs:
           ffmpeg -version | head -1
           ffprobe -version | head -1
 
-      - name: Validate durable automation policy
+      - name: Validate canonical production contract
         run: |
           python - <<'PY'
           from scripts.kesher_automation_policy import load_policy
           policy = load_policy()
-          assert policy["video"]["review_gate"] == "mandatory"
-          assert policy["video"]["upload_requires_approved_review"] is True
-          print("KESHER_AUTOMATION_POLICY_OK")
+          assert policy["video"]["publication_gate"] == "technical"
+          assert policy["video"]["jules_review"] == "advisory"
+          assert policy["video"]["queue_order"] == "fifo"
+          assert policy["video"]["durable_state_artifacts_to_keep"] == 3
+          assert policy["video"]["durable_state_retention_days"] == 14
+          print("KESHER_PRODUCTION_CONTRACT_V3_OK")
           PY
 
       - name: Restore newest valid durable pipeline state
@@ -260,7 +265,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         env:
           NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
-        run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_review_schema tests.test_video_reconcile -v
+        run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_review_schema tests.test_video_reconcile tests.test_production_contract_v3 -v
 
       - name: NotebookLM read-only preflight
         if: ${{ inputs.operation == 'preflight' }}
@@ -281,9 +286,10 @@ jobs:
           test -n "${{ inputs.rebuild_item_id }}"
           python -u scripts/kesher_daily_pipeline.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
 
-      - name: Detect pending mandatory Jules review
+      - name: Detect pending advisory Jules review
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' }}
         id: pending
+        continue-on-error: true
         run: |
           python - <<'PY'
           import json
@@ -298,12 +304,13 @@ jobs:
               output.write(f"found={'true' if len(pending) == 1 else 'false'}\n")
               output.write(f"item_id={pending[0]['id'] if len(pending) == 1 else ''}\n")
           if len(pending) > 1:
-              raise SystemExit("More than one pending review item; controller/reconciler must select one oldest item")
+              raise SystemExit("More than one pending review item; advisory review skipped until controller reconciliation")
           PY
 
-      - name: Publish immutable evidence bundle for Jules
+      - name: Publish immutable evidence bundle for advisory Jules review
         if: ${{ steps.pending.outputs.found == 'true' }}
         id: review_artifact
+        continue-on-error: true
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: kesher-video-review-${{ github.run_id }}
@@ -313,9 +320,10 @@ jobs:
           compression-level: 0
           include-hidden-files: true
 
-      - name: Publish minimal evidence branch for Jules
+      - name: Publish minimal evidence branch for advisory Jules review
         if: ${{ steps.pending.outputs.found == 'true' }}
         id: review_branch
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -341,13 +349,14 @@ jobs:
             echo "evidence_root=${evidence_root}"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Jules performs mandatory publication review
-        if: ${{ steps.pending.outputs.found == 'true' }}
+      - name: Jules performs strict advisory review
+        if: ${{ steps.pending.outputs.found == 'true' && steps.review_branch.outputs.branch != '' }}
+        continue-on-error: true
         env:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
         run: |
           set -euo pipefail
-          python -u scripts/jules_video_reviewer.py \
+          python -u scripts/jules_video_reviewer_v3.py \
             --state-dir "$KESHER_STATE_DIR" \
             --review-branch "${{ steps.review_branch.outputs.branch }}" \
             --evidence-root "${{ steps.review_branch.outputs.evidence_root }}" \
@@ -367,16 +376,16 @@ jobs:
           REVIEW_ARTIFACT_ID: ${{ steps.review_artifact.outputs.artifact-id }}
         run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${REVIEW_ARTIFACT_ID}" || true
 
-      - name: Enforce mandatory Jules approval before upload
-        if: ${{ success() && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+      - name: Prepare technically verified upload
+        if: ${{ !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-upload
 
-      - name: Upload only the exact Jules-approved MP4
-        if: ${{ success() && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+      - name: Upload exact technically verified MP4
+        if: ${{ !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -384,7 +393,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${YOUTUBE_CLIENT_ID:-}" ] || [ -z "${YOUTUBE_CLIENT_SECRET:-}" ] || [ -z "${YOUTUBE_REFRESH_TOKEN:-}" ]; then
-            echo "YouTube OAuth secrets are incomplete; publication remains blocked." >&2
+            echo "YouTube OAuth secrets are incomplete; technical publication remains blocked." >&2
             exit 1
           fi
           python -u scripts/kesher_daily_pipeline.py --upload-only
@@ -425,7 +434,7 @@ jobs:
           compression-level: 0
           include-hidden-files: true
 
-      - name: Keep the newest seven durable state artifacts
+      - name: Keep the newest three durable state artifacts
         if: ${{ always() && steps.persist_state.outputs.artifact-id != '' }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -436,7 +445,7 @@ jobs:
             exit 0
           fi
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
-            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[7:] | .[].id' \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[3:] | .[].id' \
             | while read -r artifact_id; do
                 [ -n "$artifact_id" ] || continue
                 gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}"
@@ -454,8 +463,9 @@ jobs:
           uploaded = sum(item.get("status") == "uploaded" for item in items)
           approved = sum(item.get("status") == "approved" for item in items)
           rejected = sum(item.get("status") == "rejected" for item in items)
+          technical = sum(item.get("technical_verified") is True and item.get("status") != "uploaded" for item in items)
           pending = sum(item.get("status") in {"source_selected", "source_added", "generating", "downloaded", "pending_review", "uploading"} for item in items)
-          summary = f"הועלה: {uploaded} | מאושר על ידי Jules: {approved} | נדחה: {rejected} | ממתין/בתהליך: {pending}"
+          summary = f"הועלה: {uploaded} | מוכן טכנית: {technical} | ביקורת Jules אושרה: {approved} | ביקורת Jules דחתה: {rejected} | ממתין/בתהליך: {pending}"
           print(summary)
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as output:
               output.write(f"### צינור הווידאו של קשר\n\n{summary}\n")
