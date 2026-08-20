@@ -4,19 +4,55 @@ import MetaTags from '../../components/SEO/MetaTags';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './ThankYouPage.module.css';
 
+const LAST_BOOKING_CONTEXT_KEY = 'kesher_last_booking_context';
+
+type BookingThankYouContext = {
+  service_type?: string;
+  booking_page_path?: string;
+  landing_page_type?: string;
+  variant_id?: string;
+  entry_page_path?: string;
+};
+
+const readBookingContext = (): BookingThankYouContext => {
+  try {
+    const raw = window.sessionStorage.getItem(LAST_BOOKING_CONTEXT_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== 'object') return {};
+
+    const record = parsed as Record<string, unknown>;
+    const result: BookingThankYouContext = {};
+    const assignString = (key: keyof BookingThankYouContext) => {
+      const value = record[key];
+      if (typeof value === 'string' && value.trim()) {
+        result[key] = value.slice(0, 254);
+      }
+    };
+
+    assignString('service_type');
+    assignString('booking_page_path');
+    assignString('landing_page_type');
+    assignString('variant_id');
+    assignString('entry_page_path');
+    return result;
+  } catch {
+    return {};
+  }
+};
+
 const ThankYouBookedPage: React.FC = () => {
   useEffect(() => {
-    // Push thank_you_view event to dataLayer safely (does NOT push duplicate booking_confirmed)
-    if (typeof window !== 'undefined') {
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: 'thank_you_view',
-        page_type: 'thank_you_booked',
-        service_type: 'couples_counseling',
-        service_region: 'ashdod',
-        timestamp: new Date().toISOString(),
-      });
-    }
+    if (typeof window === 'undefined') return;
+
+    const bookingContext = readBookingContext();
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'thank_you_view',
+      page_type: 'thank_you_booked',
+      ...bookingContext,
+      timestamp: new Date().toISOString(),
+    });
   }, []);
 
   const whatsappMessage = encodeURIComponent(
@@ -28,7 +64,7 @@ const ThankYouBookedPage: React.FC = () => {
     <div className={styles.page}>
       <MetaTags
         title="הפגישה נקבעה | שירה סהרוני"
-        description="אישור קביעת פגישת ייעוץ זוגי."
+        description="אישור קביעת פגישת ייעוץ עם שירה סהרוני."
         canonical={`${SITE_CONFIG.url}/thank-you-booked`}
         noIndex={true}
       />
@@ -37,7 +73,7 @@ const ThankYouBookedPage: React.FC = () => {
         <div className={`container ${styles.headerInner}`}>
           <a href="/" className={styles.brand} aria-label="לדף הבית של שירה סהרוני">
             <span className={styles.brandTitle}>שירה סהרוני</span>
-            <span className={styles.brandSubtitle}>קשר | ייעוץ זוגי</span>
+            <span className={styles.brandSubtitle}>קשר | ייעוץ · הורות · גישור</span>
           </a>
         </div>
       </header>
