@@ -12,8 +12,12 @@ import json
 import os
 import sys
 
-from scripts import jules_article_runner_core as core
-from scripts import jules_article_diagnostics as diagnostics
+if __package__:
+    from . import jules_article_runner_core as core
+    from . import jules_article_diagnostics as diagnostics
+else:
+    import jules_article_runner_core as core
+    import jules_article_diagnostics as diagnostics
 
 _legacy_build_prompt = core.build_prompt
 
