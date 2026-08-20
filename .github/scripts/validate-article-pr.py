@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Independent quality gate for Jules article publication PRs."""
+"""Independent trusted quality gate for Kesher article publication PRs."""
 
 from __future__ import annotations
 
@@ -14,7 +14,6 @@ import sys
 import urllib.parse
 import urllib.request
 
-
 ALLOWED_FILES = {
     "src/data/posts.json",
     "src/data/postSummaries.json",
@@ -23,8 +22,8 @@ ALLOWED_FILES = {
     "public/llms-full.txt",
 }
 IMAGE_PREFIX = "public/images/generated/blog/"
-FAILURE_IMAGE_RESULTS = {"unavailable", "blocked", "api_error", "rejected_visual_quality"}
-FALLBACK_FAILURE_RESULTS = {"no_pixel_verified_match", "unavailable", "blocked"}
+IMAGE_PROVIDERS = {"Gemini", "Unsplash", "Pexels", "Local"}
+IMAGE_RESULTS = {"generated", "stock", "local_fallback"}
 
 
 def word_count(content: str) -> int:
@@ -106,60 +105,68 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
     if post.get("video"):
         errors.append("New article may not contain a video field")
 
-    image_files = [entry for entry in files_data if entry["filename"].startswith(IMAGE_PREFIX)]
+    # Pipeline v2 invariant: publication without an independently verified local
+    # image is impossible. Provider outages must have been absorbed by the
+    # trusted repository-curated fallback before this gate runs.
     image_path = post.get("image")
-    if image_path:
-        expected_path = "public/" + image_path.lstrip("/")
-        matching = [entry for entry in image_files if entry["filename"] == expected_path]
-        if len(matching) != 1:
-            errors.append("Image-bearing article must add exactly its referenced local image")
-            return errors
+    if not image_path:
+        errors.append("New article requires a trusted local image; no-image publication is forbidden")
+        return errors
+    if not post.get("imageAlt") or len(str(post.get("imageAlt"))) < 20:
+        errors.append("Image-bearing article requires concrete imageAlt text")
 
-        generation_result = exact_field(body, "Image Generation Result")
-        source_url = exact_field(body, "Image Source URL")
-        expected_sha = exact_field(body, "Image SHA-256")
-        declared_dimensions = exact_field(body, "Image Dimensions")
-        visual_match = exact_field(body, "Image Visual Match")
-        generation_attempt = exact_field(body, "Image Generation Attempt")
-        if generation_attempt not in {"DeepAI", "DeepAI/Gemini", "DeepAI/Gemini/Fallback pool"}:
-            errors.append("Image Generation Attempt must truthfully record the DeepAI -> Gemini -> fallback chain")
-        if generation_attempt == "DeepAI/Gemini/Fallback pool" and exact_field(body, "Image Fallback Attempt") != "Unsplash/Pexels":
-            errors.append("Fallback image attempt must record Unsplash/Pexels")
-        if generation_result not in {"success", "generated"}:
-            errors.append("Committed image requires Image Generation Result success|generated")
-        if not source_url or not re.fullmatch(r"https://\S+", source_url) or source_url == "https://none":
-            errors.append("Committed image requires an exact HTTPS source URL")
-        if not expected_sha or not re.fullmatch(r"[a-f0-9]{64}", expected_sha):
-            errors.append("Committed image requires a lowercase SHA-256")
-        if not visual_match or len(visual_match) < 24:
-            errors.append("Committed image requires a concrete Image Visual Match sentence")
-        try:
-            image_data = image_loader(matching[0])
-            actual_sha = hashlib.sha256(image_data).hexdigest()
-            if expected_sha and actual_sha != expected_sha:
-                errors.append(f"Image SHA-256 mismatch: expected {expected_sha}, got {actual_sha}")
-            width, height = image_dimensions(image_data)
-            if declared_dimensions != f"{width}x{height}":
-                errors.append(f"Image dimensions mismatch: expected {width}x{height}")
-        except Exception as exc:
-            errors.append(f"Image validation failed: {exc}")
-    else:
-        if post.get("imageAlt"):
-            errors.append("No-image article may not retain imageAlt")
-        if image_files:
-            errors.append("No-image article may not add an image file")
-        generation_result = exact_field(body, "Image Generation Result")
-        fallback_result = exact_field(body, "Image Fallback Result")
-        if exact_field(body, "Image Generation Attempt") != "DeepAI/Gemini/Fallback pool":
-            errors.append("No-image fallback must record DeepAI/Gemini/Fallback pool")
-        if generation_result not in FAILURE_IMAGE_RESULTS:
-            errors.append("No-image fallback must record an allowed generation failure")
-        if exact_field(body, "Image Fallback Attempt") != "Unsplash/Pexels":
-            errors.append("No-image fallback must record Unsplash/Pexels attempt")
-        if fallback_result not in FALLBACK_FAILURE_RESULTS:
-            errors.append("No-image fallback must record an allowed stock fallback failure")
-        if exact_field(body, "Image Source URL") != "none":
-            errors.append("No-image fallback must use Image Source URL: none")
+    expected_path = "public/" + image_path.lstrip("/")
+    image_files = [entry for entry in files_data if entry["filename"].startswith(IMAGE_PREFIX)]
+    matching = [entry for entry in image_files if entry["filename"] == expected_path]
+    if len(matching) != 1:
+        errors.append("Image-bearing article must add exactly its referenced local image")
+        return errors
+
+    pipeline_version = exact_field(body, "Image Pipeline Version")
+    provider = exact_field(body, "Image Provider")
+    attempt_chain = exact_field(body, "Image Attempt Chain")
+    generation_result = exact_field(body, "Image Generation Result")
+    source_url = exact_field(body, "Image Source URL")
+    expected_sha = exact_field(body, "Image SHA-256")
+    declared_dimensions = exact_field(body, "Image Dimensions")
+    visual_match = exact_field(body, "Image Visual Match")
+
+    if pipeline_version != "2":
+        errors.append("Committed image requires Image Pipeline Version: 2")
+    if provider not in IMAGE_PROVIDERS:
+        errors.append("Committed image requires a trusted Image Provider")
+    if not attempt_chain or attempt_chain.split("/")[0] != "gemini" or attempt_chain.split("/")[-1] not in {"gemini", "unsplash", "pexels", "local-curated"}:
+        errors.append("Image Attempt Chain must truthfully begin with gemini and record provider fallthrough")
+    if generation_result not in IMAGE_RESULTS:
+        errors.append("Committed image requires Image Generation Result generated|stock|local_fallback")
+    if provider == "Gemini" and generation_result != "generated":
+        errors.append("Gemini image must record generated result")
+    if provider in {"Unsplash", "Pexels"} and generation_result != "stock":
+        errors.append("Stock provider image must record stock result")
+    if provider == "Local" and generation_result != "local_fallback":
+        errors.append("Local provider image must record local_fallback result")
+    if provider == "Local":
+        if not source_url or not source_url.startswith("local://public/images/generated/blog/"):
+            errors.append("Local fallback requires exact local:// repository source")
+    elif not source_url or not re.fullmatch(r"https://\S+", source_url):
+        errors.append("External provider image requires an exact HTTPS source URL")
+    if not expected_sha or not re.fullmatch(r"[a-f0-9]{64}", expected_sha):
+        errors.append("Committed image requires a lowercase SHA-256")
+    if not visual_match or len(visual_match) < 24:
+        errors.append("Committed image requires a concrete Image Visual Match sentence")
+
+    try:
+        image_data = image_loader(matching[0])
+        actual_sha = hashlib.sha256(image_data).hexdigest()
+        if expected_sha and actual_sha != expected_sha:
+            errors.append(f"Image SHA-256 mismatch: expected {expected_sha}, got {actual_sha}")
+        width, height = image_dimensions(image_data)
+        if width < 640 or height < 360:
+            errors.append(f"Image dimensions too small: {width}x{height}")
+        if declared_dimensions != f"{width}x{height}":
+            errors.append(f"Image dimensions mismatch: expected {width}x{height}")
+    except Exception as exc:
+        errors.append(f"Image validation failed: {exc}")
 
     return errors
 
