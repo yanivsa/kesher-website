@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import os
 import re
+import time
 from pathlib import Path
 from urllib.parse import quote
 
@@ -49,7 +50,37 @@ def pinned_wrapper(script_file: str) -> str:
     return wrapper
 
 
+_original_enable_run_command = base.enable_run_command
+
+
+def enable_run_command_with_conflict_retry(compute, inst) -> None:
+    """Retry only OCI's transient post-launch instance-modification conflict."""
+    deadline = time.time() + 180
+    attempt = 0
+    while True:
+        attempt += 1
+        latest = compute.get_instance(inst.id).data
+        try:
+            _original_enable_run_command(compute, latest)
+            return
+        except base.oci.exceptions.ServiceError as exc:
+            transient = (
+                exc.status == 409
+                and exc.code == "Conflict"
+                and "currently being modified" in (exc.message or "").lower()
+            )
+            if not transient or time.time() >= deadline:
+                raise
+            delay = min(5 * attempt, 20)
+            print(
+                f"OCI_RUN_COMMAND_PLUGIN_UPDATE_CONFLICT_RETRY attempt={attempt} delay={delay}",
+                flush=True,
+            )
+            time.sleep(delay)
+
+
 base.pinned_wrapper = pinned_wrapper
+base.enable_run_command = enable_run_command_with_conflict_retry
 
 if __name__ == "__main__":
     raise SystemExit(base.main())
