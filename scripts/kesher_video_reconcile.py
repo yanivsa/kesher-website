@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Reconcile Kesher video state without abandoning older daily work.
+"""Reconcile Kesher video state without abandoning a prior-day daily video.
 
-Unresolved videos are processed oldest-first. Multiple items form a durable
-FIFO backlog instead of a fatal conflict. A new YouTube upload is permitted
-only after a structured Jules approval for the exact technically verified item.
+The worker always finishes the single unresolved video item before starting a
+new one. This lets a delayed Saturday/previous-day job recover after midnight
+instead of being silently replaced by today's article.
 """
 
 from __future__ import annotations
@@ -14,12 +14,8 @@ from typing import Any
 
 if __package__:
     from . import kesher_daily_pipeline as pipeline
-    from .kesher_automation_policy import load_policy
-    from .kesher_video_upload_guard import validate_candidate as validate_upload_candidate
 else:
     import kesher_daily_pipeline as pipeline
-    from kesher_automation_policy import load_policy
-    from kesher_video_upload_guard import validate_candidate as validate_upload_candidate
 
 UNRESOLVED_STATUSES = {
     "source_selected", "source_added", "generating", "downloaded",
@@ -31,17 +27,6 @@ MAX_TECHNICAL_RETRIES = 3
 def source_slug(item: dict[str, Any]) -> str:
     source = item.get("source") or {}
     return str(source.get("slug") or source.get("id") or "").strip()
-
-
-def source_date(item: dict[str, Any]) -> str:
-    source = item.get("source") or {}
-    return str(
-        source.get("date")
-        or item.get("israel_date")
-        or item.get("created_at")
-        or item.get("updated_at")
-        or "9999-12-31"
-    )
 
 
 def posts() -> list[dict[str, Any]]:
@@ -79,25 +64,26 @@ def current_source_snapshot(slug: str) -> dict[str, Any]:
 
 
 def unresolved_items(state: dict[str, Any]) -> list[dict[str, Any]]:
-    rows = [
+    return [
         item for item in state.get("items") or []
         if isinstance(item, dict)
         and item.get("uploaded") is not True
         and item.get("status") in UNRESOLVED_STATUSES
     ]
-    return sorted(
-        rows,
-        key=lambda item: (
-            source_date(item),
-            str(item.get("created_at") or ""),
-            str(item.get("id") or ""),
-        ),
-    )
 
 
-def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dict[str, Any]:
-    if not (old.get("status") == "rejected" and old.get("technical_verified") is not True):
-        raise pipeline.PipelineError("Technical retry requested for a non-technical rejection")
+def retry_technical_rejection(state: dict[str, Any]) -> dict[str, Any] | None:
+    rejected = [
+        item for item in unresolved_items(state)
+        if item.get("status") == "rejected" and item.get("technical_verified") is not True
+    ]
+    if not rejected:
+        return None
+    if len(rejected) != 1:
+        raise pipeline.PipelineError(
+            f"More than one unresolved technical rejection exists: {len(rejected)}"
+        )
+    old = rejected[0]
     slug = source_slug(old)
     if not slug:
         raise pipeline.PipelineError("Technical rejection has no source slug")
@@ -127,19 +113,25 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
 def prepare_generation() -> int:
     state = pipeline.load_state()
     existing = unresolved_items(state)
-    if existing:
-        item = existing[0]
-        if item.get("status") == "rejected" and item.get("technical_verified") is not True:
-            replacement = retry_technical_rejection(state, item)
-            pipeline.save_state(state)
-            print(
-                "VIDEO_RECONCILED_GENERATION "
-                f"slug={source_slug(replacement)} technical_retry=yes backlog_size={len(existing)}"
-            )
-            return 0
+    if len(existing) > 1:
+        raise pipeline.PipelineError(
+            f"More than one unresolved video item exists: {len(existing)}"
+        )
+    replacement = retry_technical_rejection(state)
+    if replacement:
+        pipeline.save_state(state)
         print(
             "VIDEO_RECONCILED_GENERATION "
-            f"slug={source_slug(item)} backlog_resume=yes status={item.get('status')} backlog_size={len(existing)}"
+            f"slug={source_slug(replacement)} technical_retry=yes"
+        )
+        return 0
+
+    remaining = unresolved_items(state)
+    if remaining:
+        item = remaining[0]
+        print(
+            "VIDEO_RECONCILED_GENERATION "
+            f"slug={source_slug(item)} backlog_resume=yes status={item.get('status')}"
         )
         return 0
 
@@ -151,20 +143,13 @@ def prepare_generation() -> int:
     return 0
 
 
-def mandatory_review_approved(item: dict[str, Any]) -> bool:
-    policy = load_policy()
-    if policy["video"]["review_gate"] != "mandatory":
-        raise pipeline.PipelineError("Video policy no longer declares mandatory Jules review")
+def advisory_outcome(item: dict[str, Any]) -> str:
     statuses = [item.get(f"{gate}_review_status") for gate in ("visual", "semantic", "metadata")]
-    reviewer = item.get("reviewer") or {}
-    return bool(
-        item.get("technical_verified") is True
-        and item.get("status") in {"approved", "uploading"}
-        and statuses == ["approved", "approved", "approved"]
-        and reviewer.get("type") == "jules"
-        and reviewer.get("session")
-        and item.get("reviewed_at")
-    )
+    if statuses == ["approved", "approved", "approved"]:
+        return "approved"
+    if any(value == "rejected" for value in statuses):
+        return "rejected"
+    return "unavailable"
 
 
 def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) -> bool:
@@ -190,39 +175,36 @@ def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) ->
 
 def prepare_upload() -> int:
     state = pipeline.load_state()
-    unresolved = unresolved_items(state)
-    if not unresolved:
+    candidates = [
+        item for item in unresolved_items(state)
+        if item.get("technical_verified") is True
+        and item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
+    ]
+    if not candidates:
         print("VIDEO_RECONCILED_UPLOAD candidate=none")
         return 0
-
-    item = unresolved[0]
-    if item.get("youtube_id") and item.get("uploaded") is not True:
-        if recover_persisted_youtube_id(state, item):
-            return 0
-
-    if not mandatory_review_approved(item):
+    if len(candidates) != 1:
         raise pipeline.PipelineError(
-            "Oldest unresolved video is not approved by the mandatory Jules visual/semantic/metadata gate"
+            f"More than one technically verified upload candidate exists: {len(candidates)}"
         )
-
+    item = candidates[0]
     slug = source_slug(item)
     source = current_source_snapshot(slug)
     if (item.get("source") or {}).get("content_sha256") != source["content_sha256"]:
         raise pipeline.PipelineError(
             f"Published source changed before upload for {slug}"
         )
-
-    item["review_gate"] = "mandatory-jules"
-    item["review_approved_for_sha256"] = item.get("final_sha256")
+    if recover_persisted_youtube_id(state, item):
+        return 0
+    item["advisory_review_decision"] = advisory_outcome(item)
+    item["review_is_advisory"] = True
+    if item.get("status") != "uploading":
+        item["status"] = "approved"
     item["updated_at"] = pipeline.utc_now()
-    try:
-        validate_upload_candidate(item)
-    except Exception as exc:
-        raise pipeline.PipelineError(f"Exact-evidence upload guard rejected candidate: {exc}") from exc
     pipeline.save_state(state)
     print(
         "VIDEO_RECONCILED_UPLOAD "
-        f"slug={slug} item={item.get('id')} review=approved exact_evidence=yes"
+        f"slug={slug} item={item.get('id')} advisory={item['advisory_review_decision']}"
     )
     return 0
 

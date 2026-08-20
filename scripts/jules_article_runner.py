@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Run exactly one Jules article-generation attempt for one publication slot.
+"""Launch exactly one autonomous Jules article session for a publication slot.
 
-The daily controller owns retries and backoff. This worker performs one bounded
-Jules session, records a machine-readable result artifact, and exits. Keeping
-business retries out of the worker prevents nested retry storms and makes every
-attempt observable by the controller.
+This runner deliberately keeps the GitHub Actions YAML thin. The durable article
+policy lives in `.github/prompts/jules-weekday-article-update.md`; the runtime
+prompt only supplies the slot, task identity and terminal-output contract.
 """
 
 from __future__ import annotations
@@ -18,7 +17,6 @@ import sys
 import time
 import urllib.error
 import urllib.request
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -29,55 +27,14 @@ PROMPTS_DIR = Path(__file__).resolve().parents[1] / ".github" / "prompts"
 POLICY_PATH = PROMPTS_DIR / "jules-weekday-article-update.md"
 POLICY_META_PATH = PROMPTS_DIR / "jules-weekday-article-update.meta.json"
 ARTICLE_POLICY_VERSION = 1
+MAX_ATTEMPTS = 4
 SESSION_SECONDS = 36 * 60
 WAITING_STATES = {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER", "PAUSED"}
 TERMINAL_FAILURES = {"FAILED", "CANCELLED", "CANCELED"}
-RESULT_SCHEMA_VERSION = 1
-DEFAULT_RESULT_PATH = Path("/tmp/kesher-article-result.json")
 
 
 class ArticleRunnerError(RuntimeError):
-    def __init__(self, code: str, message: str):
-        super().__init__(message)
-        self.code = code
-
-
-def utc_now() -> str:
-    return datetime.now(timezone.utc).isoformat()
-
-
-def result_path() -> Path:
-    configured = os.environ.get("KESHER_ARTICLE_RESULT_PATH", "").strip()
-    return Path(configured) if configured else DEFAULT_RESULT_PATH
-
-
-def emit_result(
-    slot: str,
-    outcome: str,
-    *,
-    retryable: bool,
-    message: str = "",
-    session_id: str = "",
-    pr_url: str = "",
-) -> dict[str, Any]:
-    payload: dict[str, Any] = {
-        "schema_version": RESULT_SCHEMA_VERSION,
-        "slot": slot,
-        "outcome": outcome,
-        "retryable": bool(retryable),
-        "message": str(message),
-        "session_id": str(session_id),
-        "pr_url": str(pr_url),
-        "github_run_id": str(os.environ.get("GITHUB_RUN_ID") or ""),
-        "completed_at": utc_now(),
-    }
-    path = result_path()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    temporary.replace(path)
-    print("KESHER_ARTICLE_RESULT " + json.dumps(payload, ensure_ascii=False, separators=(",", ":")), flush=True)
-    return payload
+    pass
 
 
 def request_json(method: str, url: str, headers: dict[str, str], body: dict[str, Any] | None = None) -> Any:
@@ -91,22 +48,13 @@ def request_json(method: str, url: str, headers: dict[str, str], body: dict[str,
                 return json.loads(raw.decode("utf-8")) if raw else {}
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")[:1200]
-            if exc.code in {401, 403}:
-                raise ArticleRunnerError("JULES_AUTH_ERROR", f"HTTP {exc.code}: {detail}") from exc
-            if exc.code == 429:
-                last = exc
-            elif exc.code in {500, 502, 503, 504}:
-                last = exc
-            else:
-                raise ArticleRunnerError("JULES_API_ERROR", f"HTTP {exc.code}: {detail}") from exc
+            if exc.code not in {429, 500, 502, 503, 504}:
+                raise ArticleRunnerError(f"HTTP {exc.code}: {detail}") from exc
+            last = exc
         except urllib.error.URLError as exc:
             last = exc
         time.sleep(2 ** attempt)
-    if isinstance(last, urllib.error.HTTPError) and last.code == 429:
-        raise ArticleRunnerError("JULES_RATE_LIMIT", f"request failed after retries: {last}")
-    if isinstance(last, urllib.error.HTTPError):
-        raise ArticleRunnerError("JULES_SERVER_ERROR", f"request failed after retries: {last}")
-    raise ArticleRunnerError("JULES_NETWORK_ERROR", f"request failed after retries: {last}")
+    raise ArticleRunnerError(f"request failed after retries: {last}")
 
 
 def git_blob_sha1(payload: bytes) -> str:
@@ -119,20 +67,18 @@ def load_policy(path: Path = POLICY_PATH, meta_path: Path = POLICY_META_PATH) ->
         raw = path.read_bytes()
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise ArticleRunnerError("ARTICLE_POLICY_ERROR", "article policy or version manifest is unreadable") from exc
+        raise ArticleRunnerError("article policy or version manifest is unreadable") from exc
     if not raw.strip():
-        raise ArticleRunnerError("ARTICLE_POLICY_ERROR", "article policy is empty")
+        raise ArticleRunnerError("article policy is empty")
     if not isinstance(meta, dict) or meta.get("policy_version") != ARTICLE_POLICY_VERSION:
         raise ArticleRunnerError(
-            "ARTICLE_POLICY_ERROR",
-            f"article policy version mismatch: expected {ARTICLE_POLICY_VERSION}",
+            f"article policy version mismatch: expected {ARTICLE_POLICY_VERSION}"
         )
     expected_blob = str(meta.get("git_blob_sha1") or "").strip().lower()
     actual_blob = git_blob_sha1(raw)
     if not re.fullmatch(r"[0-9a-f]{40}", expected_blob) or expected_blob != actual_blob:
         raise ArticleRunnerError(
-            "ARTICLE_POLICY_ERROR",
-            f"article policy content drift: expected blob {expected_blob or 'missing'}, actual {actual_blob}",
+            f"article policy content drift: expected blob {expected_blob or 'missing'}, actual {actual_blob}"
         )
     return raw.decode("utf-8").strip()
 
@@ -158,7 +104,7 @@ Execution contract:
 6. Use Jules built-in PR submission. The non-draft PR title MUST start exactly with `Publish Kesher article:`.
 7. Never ask the user for approval, confirmation, topic choice, image choice, Start clicks or plan approval. Choose the smallest high-quality repo-consistent option and continue.
 8. Do not edit workflows, tests, scripts, package files or existing articles. Do not create scratch/helper/cache files in the final diff.
-9. A session is successful only when it produces a real pull request output. A completed session with no pull request is a failed attempt. The controller, not this worker, decides whether and when to retry.
+9. A session is successful only when it produces a real pull request output. A completed session with no pull request is a failed attempt and will be replaced.
 
 --- BEGIN AUTHORITATIVE ARTICLE POLICY ---
 {policy}
@@ -184,7 +130,7 @@ def open_article_prs(token: str) -> list[dict[str, Any]]:
     prs = request_json("GET", f"https://api.github.com/repos/{REPO}/pulls?state=open&per_page=100", headers)
     matches: list[dict[str, Any]] = []
     for pr in prs if isinstance(prs, list) else []:
-        if not isinstance(pr, dict):
+        if not isinstance(pr, dict) or not str(pr.get("title") or "").startswith("Publish Kesher article:"):
             continue
         number = pr.get("number")
         if not number:
@@ -200,26 +146,23 @@ def open_article_prs(token: str) -> list[dict[str, Any]]:
 def preflight(slot: str, token: str) -> str:
     posts_path = Path("src/data/posts.json")
     if not posts_path.is_file():
-        raise ArticleRunnerError("ARTICLE_SOURCE_ERROR", "src/data/posts.json is missing")
-    try:
-        posts = json.loads(posts_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise ArticleRunnerError("ARTICLE_SOURCE_ERROR", "src/data/posts.json is invalid JSON") from exc
+        raise ArticleRunnerError("src/data/posts.json is missing")
+    posts = json.loads(posts_path.read_text(encoding="utf-8"))
     if not isinstance(posts, list):
-        raise ArticleRunnerError("ARTICLE_SOURCE_ERROR", "src/data/posts.json is not a list")
+        raise ArticleRunnerError("src/data/posts.json is not a list")
     if article_exists_for_slot(posts, slot):
         return "ARTICLE_ALREADY_PUBLISHED"
     prs = open_article_prs(token)
     if len(prs) > 1:
-        raise ArticleRunnerError("DUPLICATE_ARTICLE_PRS", f"duplicate open article PRs detected: {len(prs)}")
+        raise ArticleRunnerError(f"duplicate open article PRs detected: {len(prs)}")
     if len(prs) == 1:
         return f"ARTICLE_ALREADY_IN_PROGRESS pr={prs[0].get('number')}"
     return "READY"
 
 
-def create_session(api_key: str, prompt: str, slot: str) -> tuple[str, str]:
+def create_session(api_key: str, prompt: str, attempt: int) -> tuple[str, str]:
     payload = {
-        "title": f"Kesher article {slot}",
+        "title": f"Kesher article slot {attempt}",
         "prompt": prompt,
         "sourceContext": {
             "source": SOURCE,
@@ -231,10 +174,10 @@ def create_session(api_key: str, prompt: str, slot: str) -> tuple[str, str]:
     name = str((created or {}).get("name") or (created or {}).get("id") or "")
     url = str((created or {}).get("url") or (created or {}).get("agentUrl") or (created or {}).get("sessionUrl") or "")
     if not name or not url:
-        raise ArticleRunnerError("JULES_CREATE_ERROR", f"Jules create response missing identity: {created}")
+        raise ArticleRunnerError(f"Jules create response missing identity: {created}")
     if not name.startswith("sessions/"):
         name = f"sessions/{name}"
-    print(f"JULES_ARTICLE_STARTED session={name} url={url}", flush=True)
+    print(f"JULES_ARTICLE_STARTED attempt={attempt} session={name} url={url}", flush=True)
     return name, url
 
 
@@ -256,7 +199,7 @@ def send_message(api_key: str, sid: str, prompt: str) -> None:
     )
 
 
-def poll(api_key: str, session: str, timeout_seconds: int = SESSION_SECONDS) -> tuple[str, str, str]:
+def poll(api_key: str, session: str, timeout_seconds: int = SESSION_SECONDS) -> str | None:
     sid = session.removeprefix("sessions/")
     deadline = time.monotonic() + timeout_seconds
     continued = False
@@ -268,11 +211,13 @@ def poll(api_key: str, session: str, timeout_seconds: int = SESSION_SECONDS) -> 
         urls = pr_urls(current if isinstance(current, dict) else {})
         if urls:
             print(f"JULES_ARTICLE_PR {urls[0]}", flush=True)
-            return "PR_CREATED", urls[0], ""
+            return urls[0]
         if state == "COMPLETED":
-            return "COMPLETED_WITHOUT_PR", "", "Jules completed without creating a pull request"
+            print("JULES_ARTICLE_COMPLETED_WITHOUT_PR", file=sys.stderr, flush=True)
+            return None
         if state in TERMINAL_FAILURES:
-            return "JULES_TERMINAL_FAILURE", "", f"Jules ended with terminal state {state}"
+            print(f"JULES_ARTICLE_TERMINAL_FAILURE state={state}", file=sys.stderr, flush=True)
+            return None
         if state in {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER"} and not continued:
             send_message(
                 api_key,
@@ -294,49 +239,12 @@ def poll(api_key: str, session: str, timeout_seconds: int = SESSION_SECONDS) -> 
             paused_nudged = True
             print("JULES_ARTICLE_RESUMED", flush=True)
         time.sleep(15)
-
     print(f"JULES_ARTICLE_TIMEOUT session={session}", file=sys.stderr, flush=True)
     try:
         request_json("DELETE", f"{API_BASE}/sessions/{sid}", jules_headers(api_key))
-        message = "Jules session timed out and was cancelled"
-    except ArticleRunnerError as exc:
-        message = f"Jules session timed out; cancellation could not be confirmed: {exc}"
-    return "JULES_TIMEOUT", "", message
-
-
-def retryable_code(code: str) -> bool:
-    return code in {
-        "COMPLETED_WITHOUT_PR",
-        "JULES_TERMINAL_FAILURE",
-        "JULES_TIMEOUT",
-        "JULES_RATE_LIMIT",
-        "JULES_SERVER_ERROR",
-        "JULES_NETWORK_ERROR",
-        "JULES_CREATE_ERROR",
-    }
-
-
-def run_slot(slot: str, github_token: str, api_key: str) -> int:
-    gate = preflight(slot, github_token)
-    if gate == "ARTICLE_ALREADY_PUBLISHED":
-        emit_result(slot, gate, retryable=False, message="Article already exists in main")
-        return 0
-    if gate.startswith("ARTICLE_ALREADY_IN_PROGRESS"):
-        emit_result(slot, "ARTICLE_ALREADY_IN_PROGRESS", retryable=False, message=gate)
-        return 0
-
-    prompt = build_prompt(slot, load_policy())
-    session, _ = create_session(api_key, prompt, slot)
-    outcome, pr_url, message = poll(api_key, session)
-    emit_result(
-        slot,
-        outcome,
-        retryable=retryable_code(outcome),
-        message=message,
-        session_id=session,
-        pr_url=pr_url,
-    )
-    return 0 if outcome == "PR_CREATED" else 1
+    except Exception as exc:
+        print(f"JULES_ARTICLE_DELETE_WARNING {exc}", file=sys.stderr)
+    return None
 
 
 def main() -> int:
@@ -344,23 +252,33 @@ def main() -> int:
     parser.add_argument("--slot", required=True)
     args = parser.parse_args()
     if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", args.slot):
-        raise ArticleRunnerError("ARTICLE_SLOT_ERROR", "--slot must be YYYY-MM-DD")
+        raise ArticleRunnerError("--slot must be YYYY-MM-DD")
     github_token = os.environ.get("GITHUB_TOKEN", "").strip()
     api_key = os.environ.get("JULES_API_KEY", "").strip()
     if not github_token:
-        raise ArticleRunnerError("GITHUB_TOKEN_MISSING", "GITHUB_TOKEN is missing")
+        raise ArticleRunnerError("GITHUB_TOKEN is missing")
     if not api_key:
-        raise ArticleRunnerError("JULES_API_KEY_MISSING", "JULES_API_KEY is missing")
-    try:
-        return run_slot(args.slot, github_token, api_key)
-    except ArticleRunnerError as exc:
-        emit_result(
-            args.slot,
-            exc.code,
-            retryable=retryable_code(exc.code),
-            message=str(exc),
-        )
-        raise
+        raise ArticleRunnerError("JULES_API_KEY is missing")
+
+    gate = preflight(args.slot, github_token)
+    if gate != "READY":
+        print(gate)
+        return 0
+
+    prompt = build_prompt(args.slot, load_policy())
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        session, _ = create_session(api_key, prompt, attempt)
+        if poll(api_key, session):
+            return 0
+        if attempt < MAX_ATTEMPTS:
+            # Recheck reality before replacing a failed session. A slow prior attempt
+            # may have produced a PR after the terminal signal was observed.
+            gate = preflight(args.slot, github_token)
+            if gate != "READY":
+                print(gate)
+                return 0
+            print(f"JULES_ARTICLE_REPLACEMENT next_attempt={attempt + 1}", flush=True)
+    raise ArticleRunnerError(f"all {MAX_ATTEMPTS} Jules article attempts failed to create a PR")
 
 
 if __name__ == "__main__":

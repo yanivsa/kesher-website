@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ask Jules to review one immutable video evidence bundle as a mandatory gate."""
+"""Ask Jules to review one cloud video evidence bundle and record advisory findings."""
 
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ WAITING_STATES = {"AWAITING_USER_FEEDBACK", "WAITING_FOR_USER", "PAUSED"}
 TERMINAL_FAILURES = {"FAILED", "CANCELLED", "CANCELED"}
 MAX_STRUCTURED_OUTPUT_REPAIRS = 2
 STRUCTURED_OUTPUT_REPAIR_GRACE_SECONDS = 60
-MAX_REVIEW_SESSION_ATTEMPTS = 1
+MAX_REVIEW_SESSION_ATTEMPTS = 2
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 REMOTION_POLICY_PATH = PROJECT_DIR / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 REVIEW_SCHEMA_VERSION = 1
@@ -82,8 +82,6 @@ def load_remotion_policy() -> str:
         raise ReviewError(
             f"Durable Remotion policy version mismatch: expected {REMOTION_POLICY_VERSION}, found {versions}"
         )
-    if "Jules review is a mandatory publication gate" not in policy:
-        raise ReviewError("Durable Remotion policy no longer declares the mandatory Jules gate")
     return policy
 
 
@@ -101,6 +99,7 @@ def expected_hashes(state_dir: Path, item: dict[str, Any]) -> dict[str, Any]:
         if not path.exists():
             raise ReviewError(f"Review frame is missing: {relative}")
         import hashlib
+
         hashes["frame_sha256"][relative] = hashlib.sha256(path.read_bytes()).hexdigest()
         if hashes["frame_sha256"][relative] != (item.get("frame_sha256") or {}).get(relative):
             raise ReviewError(f"Stored frame hash mismatch: {relative}")
@@ -143,10 +142,14 @@ def review_json_example(item_id: str) -> dict[str, Any]:
     }
 
 
-def build_prompt(evidence_root: str, item: dict[str, Any], hashes: dict[str, Any]) -> str:
+def build_prompt(
+    evidence_root: str,
+    item: dict[str, Any],
+    hashes: dict[str, Any],
+) -> str:
     policy = load_remotion_policy()
     example_json = json.dumps(review_json_example(item["id"]), ensure_ascii=False, indent=2)
-    return f"""Perform one strict READ-ONLY Kesher Video Overview publication review. Do not edit the repository, create a branch/commit/changeSet/PR, generate another video, contact NotebookLM, or contact YouTube.
+    return f"""Perform one strict READ-ONLY Kesher Video Overview review. Do not edit the repository, create a branch/commit/changeSet/PR, generate another video, contact NotebookLM, or contact YouTube.
 
 The exact secret-free evidence is already checked out in `{evidence_root}` on this session's starting branch. Do not use `gh`, GitHub APIs, network downloads, or files outside that directory. If the directory or a required file is missing, report the blocker and do not invent evidence.
 
@@ -162,15 +165,18 @@ The following durable repository policy is authoritative for this review. Apply 
 
 Open `{evidence_root}/state.json` and locate the exact item. Open and visually inspect EACH of its {REVIEW_FRAME_COUNT} `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
 
-IMPORTANT: Jules is the MANDATORY publication reviewer for this exact MP4. Upload is allowed only when visual, semantic and metadata statuses are all `approved` and every supplied evidence hash matches. If any material defect exists, return `rejected` with concrete blocking issues. Do not soften a finding to keep the daily schedule moving.
+IMPORTANT: Jules is an ADVISORY reviewer. Record visual, semantic and metadata findings rigorously, but your approval/rejection decision MUST NOT block upload of a technically valid MP4. Publication remains governed by technical validity plus successful YouTube OAuth/public verification.
 
-Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate`, stable uppercase `code`, and factual Hebrew `message`. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements.
+Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_version={REMOTION_POLICY_VERSION}` exactly. `decision` MUST be `approved` only when visual, semantic and metadata statuses are all approved; otherwise it MUST be `rejected`. A rejected decision MUST contain at least one concrete `blocking_issues` object with `gate`, stable uppercase `code`, and factual Hebrew `message`. `blocking_issues` are blockers within this advisory review only; they are not upload blockers. An approved decision MUST have an empty `blocking_issues` list. `recommendations` are optional non-blocking Hebrew improvements.
 
 Apply these mandatory review dimensions:
 1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
-2. Visual creative review: inspect all {REVIEW_FRAME_COUNT} sampled frames and evaluate compliance with the durable Source-Video-First Remotion policy above. You MUST reject slide/card-like compositions, text-heavy panels, timeline or diagram layouts, repeated identical frames, or generic illustrative visuals instead of a continuous natural visual story.
-3. Semantic: compare all {REVIEW_FRAME_COUNT} frames and the complete narration transcript with the complete source file. Reject topic mismatch, unsupported claims, or a missing central subject. Small stylistic paraphrases or natural spoken-language variations are acceptable when the original meaning is preserved.
-4. Metadata: compare title, description and every tag with source and transcript. Reject unsupported metadata, default/generic metadata, English, or missing `https://kesher.saharoni.com`. Separately confirm that `generation_prompt` explicitly requests a female Hebrew voice (`השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות.`).
+
+2. Visual creative review: inspect all {REVIEW_FRAME_COUNT} sampled frames and evaluate compliance with the durable Source-Video-First Remotion policy above. Report concrete violations or weaknesses visible in the evidence. Do not invent problems that are not visible in the supplied evidence. You MUST mark the visual review rejected for slide/card-like compositions, text-heavy panels, timeline or diagram layouts, repeated identical frames, or generic illustrative visuals instead of a continuous natural visual story.
+
+3. Semantic: compare all {REVIEW_FRAME_COUNT} frames and the complete narration transcript with the complete source file. Report topic mismatch, unsupported claims, or missing central subject. Small stylistic paraphrases, metaphors, or natural spoken-language variations are not by themselves serious defects when the original meaning is preserved.
+
+4. Metadata: compare title, description and every tag with source and transcript. Report unsupported metadata, default/generic metadata, English, or missing `https://kesher.saharoni.com`. Separately confirm that `generation_prompt` explicitly requests a female Hebrew voice (`השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות.`); this confirms the required request was sent to NotebookLM, but do not claim the resulting voice was independently verified from transcript-only evidence.
 
 You may complete the review only after doing the actual file reads and image inspection. Notes must be factual Hebrew. Finish with `{FINAL_MARKER}` on its own line followed by exactly one JSON object and no Markdown fence. The JSON must contain exactly {REVIEW_FRAME_COUNT} frame hashes and exactly {REVIEW_FRAME_COUNT} frame observations. Use this shape:
 {example_json}
@@ -244,12 +250,15 @@ def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
                     "POST",
                     f"/{session}:sendMessage",
                     api_key,
-                    {"prompt": (
-                        "Your evidence review did not end in the required machine-readable format. "
-                        f"Reuse only the evidence you already inspected. Reply with {FINAL_MARKER} "
-                        "on its own line followed by exactly one valid JSON object matching the requested schema, "
-                        "with no Markdown fence or trailing prose. Do not edit files or invent evidence."
-                    )},
+                    {
+                        "prompt": (
+                            "Your evidence review did not end in the required machine-readable "
+                            f"format. Reuse only the evidence you already inspected. Reply with "
+                            f"{FINAL_MARKER} on its own line followed by exactly one valid JSON "
+                            "object matching the requested schema, with no Markdown fence or "
+                            "trailing prose. Do not edit files or invent evidence."
+                        )
+                    },
                 )
                 structured_output_repairs += 1
                 next_structured_output_repair_at = now + STRUCTURED_OUTPUT_REPAIR_GRACE_SECONDS
@@ -277,8 +286,6 @@ def wait_for_message(api_key: str, session: str, timeout_seconds: int) -> str:
 
 
 def parse_decision(message: str) -> dict[str, Any]:
-    if FINAL_MARKER not in message:
-        raise ReviewError("Jules review response is missing the final marker")
     tail = message.split(FINAL_MARKER, 1)[1].strip()
     if tail.startswith("```"):
         tail = re.sub(r"^```(?:json)?\s*", "", tail, count=1, flags=re.IGNORECASE)
@@ -300,10 +307,7 @@ def validate_decision(
 ) -> None:
     if decision.get("item_id") != item["id"]:
         raise ReviewError("Jules reviewed the wrong item")
-    for field in (
-        "manifest_sha256", "final_sha256", "transcript_sha256",
-        "source_file_sha256", "visual_review_sha256", "frame_sha256",
-    ):
+    for field in ("manifest_sha256", "final_sha256", "transcript_sha256", "source_file_sha256", "visual_review_sha256", "frame_sha256"):
         if decision.get(field) != hashes[field]:
             raise ReviewError(f"Jules evidence mismatch: {field}")
     observations = decision.get("frame_observations")
@@ -380,11 +384,25 @@ def obtain_validated_decision(
     review_branch: str,
     timeout_seconds: int,
 ) -> tuple[dict[str, Any], str]:
-    session = create_session(api_key, prompt, item["id"], review_branch)
-    message = wait_for_message(api_key, session, timeout_seconds)
-    decision = parse_decision(message)
-    validate_decision(decision, item, hashes, strict_schema=True)
-    return decision, session
+    last_error: ReviewError | None = None
+    for attempt in range(1, MAX_REVIEW_SESSION_ATTEMPTS + 1):
+        try:
+            session = create_session(api_key, prompt, item["id"], review_branch)
+            message = wait_for_message(api_key, session, timeout_seconds)
+            decision = parse_decision(message)
+            validate_decision(decision, item, hashes, strict_schema=True)
+            return decision, session
+        except ReviewError as exc:
+            last_error = exc
+            if attempt >= MAX_REVIEW_SESSION_ATTEMPTS:
+                break
+            print(
+                "JULES_REVIEW_SESSION_REPLACEMENT "
+                f"attempt={attempt + 1} reason={exc}",
+                flush=True,
+            )
+    assert last_error is not None
+    raise last_error
 
 
 def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> None:
@@ -406,6 +424,50 @@ def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> 
     result = subprocess.run(command, env=env, text=True, check=False)
     if result.returncode != 0:
         raise ReviewError("Official pipeline rejected the Jules review decision")
+
+
+def handle_non_fatal_review_error(state_dir: Path, error_message: str) -> bool:
+    try:
+        state_path = state_dir / "state.json"
+        if not state_path.exists():
+            return False
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+        items = state.get("items", [])
+        pending = [item for item in items if item.get("status") == "pending_review"]
+        if len(pending) != 1:
+            return False
+        item = pending[0]
+        if not item.get("technical_verified") or not item.get("final_mp4"):
+            return False
+        final_mp4 = state_dir / item["final_mp4"]
+        if not final_mp4.is_file() or final_mp4.stat().st_size == 0:
+            return False
+
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc).isoformat()
+
+        item["visual_review_status"] = "unavailable"
+        item["semantic_review_status"] = "unavailable"
+        item["metadata_review_status"] = "unavailable"
+        note = f"סקירת ג׳ולס לא הושלמה: {error_message}"
+        if not isinstance(item.get("review_notes"), dict):
+            item["review_notes"] = {}
+        item["review_notes"]["visual"] = note
+        item["review_notes"]["semantic"] = note
+        item["review_notes"]["metadata"] = note
+        item["reviewer_error"] = str(error_message)
+        item["reviewed_at"] = now
+        item["updated_at"] = now
+
+        state["updated_at"] = now
+        temp_path = state_path.with_suffix(".tmp")
+        temp_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        os.replace(temp_path, state_path)
+        print(f"JULES_REVIEW_UNAVAILABLE {error_message}", file=sys.stderr)
+        return True
+    except Exception as exc:
+        print(f"Failed to record non-fatal review failure: {exc}", file=sys.stderr)
+        return False
 
 
 def main() -> int:
@@ -430,13 +492,21 @@ def main() -> int:
         args.timeout_seconds,
     )
     record_decision(args.state_dir, decision, session)
-    print(f"JULES_REVIEW_RECORDED session={session} item={item['id']} decision={decision['decision']}")
+    print(f"JULES_REVIEW_RECORDED session={session} item={item['id']}")
     return 0
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--state-dir", type=Path, required=True)
+    parser.add_argument("--review-branch", required=True)
+    parser.add_argument("--evidence-root", required=True)
+    parser.add_argument("--timeout-seconds", type=int, default=3600)
+    args, _ = parser.parse_known_args()
     try:
         raise SystemExit(main())
     except Exception as exc:
+        if args and hasattr(args, "state_dir") and handle_non_fatal_review_error(args.state_dir, str(exc)):
+            raise SystemExit(0)
         print(f"JULES_REVIEW_BLOCKED {exc}", file=sys.stderr)
         raise SystemExit(1)

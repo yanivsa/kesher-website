@@ -2,8 +2,8 @@
 
 The production topology moved scheduling, durable-state recovery and Jules upload
 policy into the controller/reconciliation layer. Keep the broad low-level suite
-running, but retire only assertions that encode superseded implementation
-mechanics. Their current replacements live in test_video_review_policy,
+running, but retire exactly the three assertions that encode the superseded
+pre-controller behavior. Their replacements live in test_video_review_policy,
 test_controller_artifact_download and test_video_reconcile.
 """
 
@@ -18,10 +18,6 @@ OBSOLETE_TESTS = {
     "PipelineTestCase.test_durable_remotion_policy_file_exists_and_contains_required_rules",
     "PipelineTestCase.test_workflow_restore_skips_invalid_state_and_restores_valid_older",
     "PipelineTestCase.test_workflow_restore_starts_fresh_if_no_valid_artifact",
-    "PipelineTestCase.test_jules_review_parse_failure_remains_blocked_from_upload",
-    "PipelineTestCase.test_jules_review_api_timeout_remains_blocked_from_upload",
-    "PipelineTestCase.test_technical_verification_failure_fatal_and_blocks_upload",
-    "PipelineTestCase.test_jules_review_replaces_timed_out_session_autonomously",
 }
 
 
