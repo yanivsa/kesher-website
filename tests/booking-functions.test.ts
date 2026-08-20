@@ -39,6 +39,23 @@ const createFakeDb = () => {
   return { db, calls };
 };
 
+const createFakeKv = () => {
+  const values = new Map<string, string>();
+  const puts: Array<{ key: string; value: string }> = [];
+  const kv = {
+    get: async (key: string, type?: string) => {
+      const value = values.get(key);
+      if (value === undefined) return null;
+      return type === 'json' ? JSON.parse(value) : value;
+    },
+    put: async (key: string, value: string) => {
+      values.set(key, value);
+      puts.push({ key, value });
+    },
+  } as unknown as KVNamespace;
+  return { kv, puts, values };
+};
+
 describe('browser booking confirmation endpoint', () => {
   it('accepts an official Calendly event URI without requiring storage', async () => {
     const request = new Request('https://kesher.saharoni.com/api/booking/browser-confirmation', {
@@ -78,10 +95,42 @@ describe('browser booking confirmation endpoint', () => {
     });
     expect((await handleBrowserBookingConfirmation(invalidUri, {})).status).toBe(400);
   });
+
+  it('stores browser attribution in KV without requiring D1', async () => {
+    const { kv, puts } = createFakeKv();
+    const request = new Request('https://kesher.saharoni.com/api/booking/browser-confirmation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Origin: 'https://kesher.saharoni.com',
+      },
+      body: JSON.stringify({
+        calendly_event_uri: eventUri,
+        calendly_invitee_uri: inviteeUri,
+        service_type: 'couples_counseling',
+        utm_source: 'google',
+        utm_campaign: 'ashdod_search',
+        google_click_id_present: true,
+      }),
+    });
+
+    const response = await handleBrowserBookingConfirmation(request, { BOOKING_KV: kv });
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ success: true, stored: true, storage: 'kv' });
+    expect(puts).toHaveLength(1);
+    expect(puts[0].key).toBe('booking:browser:event-123');
+    expect(JSON.parse(puts[0].value)).toMatchObject({
+      channel: 'browser',
+      calendly_event_uri: eventUri,
+      utm_source: 'google',
+      utm_campaign: 'ashdod_search',
+      google_click_id_present: true,
+    });
+  });
 });
 
 describe('Calendly webhook endpoint', () => {
-  it('fails closed when webhook verification or D1 is not configured', async () => {
+  it('fails closed when webhook verification or booking storage is not configured', async () => {
     const request = new Request('https://kesher.saharoni.com/api/calendly/webhook', {
       method: 'POST',
       body: '{}',
@@ -103,7 +152,7 @@ describe('Calendly webhook endpoint', () => {
     expect(response.status).toBe(401);
   });
 
-  it('verifies a signed invitee.created event and reconciles UTM data', async () => {
+  it('verifies a signed invitee.created event and reconciles UTM data in D1', async () => {
     const { db, calls } = createFakeDb();
     const signingKey = 'test-signing-key';
     const rawBody = JSON.stringify({
@@ -135,7 +184,7 @@ describe('Calendly webhook endpoint', () => {
     });
 
     expect(response.status).toBe(200);
-    expect(await response.json()).toMatchObject({ success: true, reconciled: true });
+    expect(await response.json()).toMatchObject({ success: true, reconciled: true, storage: 'd1' });
     expect(calls).toHaveLength(1);
     expect(calls[0][0]).toBe(eventUri);
     expect(calls[0][1]).toBe(inviteeUri);
@@ -145,7 +194,60 @@ describe('Calendly webhook endpoint', () => {
     expect(calls[0][10]).toBe('ashdod_search');
   });
 
-  it('marks a signed reschedule cancellation without creating a second conversion path', async () => {
+  it('stores a signed webhook in KV and preserves the newest lifecycle event', async () => {
+    const { kv, puts, values } = createFakeKv();
+    const signingKey = 'test-signing-key';
+
+    const createdBody = JSON.stringify({
+      event: 'invitee.created',
+      created_at: '2026-08-20T04:00:00.000000Z',
+      payload: {
+        uri: inviteeUri,
+        event: eventUri,
+        rescheduled: false,
+        tracking: { utm_source: 'google', utm_campaign: 'ashdod_search' },
+      },
+    });
+    const createdRequest = new Request('https://kesher.saharoni.com/api/calendly/webhook', {
+      method: 'POST',
+      headers: { 'Calendly-Webhook-Signature': await makeSignature(createdBody, signingKey) },
+      body: createdBody,
+    });
+    const createdResponse = await handleCalendlyWebhook(createdRequest, {
+      BOOKING_KV: kv,
+      CALENDLY_WEBHOOK_SIGNING_KEY: signingKey,
+    });
+    expect(createdResponse.status).toBe(200);
+    expect(await createdResponse.json()).toMatchObject({ storage: 'kv' });
+
+    const canceledBody = JSON.stringify({
+      event: 'invitee.canceled',
+      created_at: '2026-08-20T05:00:00.000000Z',
+      payload: {
+        uri: inviteeUri,
+        event: eventUri,
+        rescheduled: true,
+        new_invitee: `${eventUri}/invitees/new-invitee`,
+      },
+    });
+    const canceledRequest = new Request('https://kesher.saharoni.com/api/calendly/webhook', {
+      method: 'POST',
+      headers: { 'Calendly-Webhook-Signature': await makeSignature(canceledBody, signingKey) },
+      body: canceledBody,
+    });
+    const canceledResponse = await handleCalendlyWebhook(canceledRequest, {
+      BOOKING_KV: kv,
+      CALENDLY_WEBHOOK_SIGNING_KEY: signingKey,
+    });
+    expect(canceledResponse.status).toBe(200);
+
+    expect(puts).toHaveLength(2);
+    expect(puts[0].key).toBe('booking:webhook:event-123');
+    const latest = JSON.parse(values.get('booking:webhook:event-123') || '{}');
+    expect(latest).toMatchObject({ status: 'rescheduled', rescheduled: true });
+  });
+
+  it('marks a signed reschedule cancellation in D1 without creating a second conversion path', async () => {
     const { db, calls } = createFakeDb();
     const signingKey = 'test-signing-key';
     const rawBody = JSON.stringify({
