@@ -1,211 +1,37 @@
 {
   "schema_version": 3,
-  "cycle": "2026-08-20",
-  "status": "complete",
+  "cycle": "2026-08-21",
+  "status": "waiting_for_article_window",
   "article": {
-    "attempt_count": 4,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 32336909431,
-    "processed_run_id": 32330070921,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "ARTICLE_WORKFLOW_FAILED": 1
-    },
-    "attempts": 4,
-    "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-20T05:46:51.398563+00:00",
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 32330070921,
-    "slug": "dating-transition-to-relationship-boundaries",
-    "title": "המעבר מהיכרות לקשר: איך מנהלים את קצב ההתקרבות?",
-    "url": "https://kesher.saharoni.com/blog/dating-transition-to-relationship-boundaries",
-    "published_date": "2026-08-20",
-    "live": true,
-    "live_verified_at": "2026-08-20T20:38:17.353674+00:00",
-    "next_deploy_retry_at": null
+    "failure_count_by_type": {},
+    "attempts": 0,
+    "deploy_attempts": 0
   },
   "video": {
-    "attempt_count": 6,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 32364540375,
-    "processed_run_id": 32357961134,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "VIDEO_WORKFLOW_FAILED": 4
-    },
-    "attempts": 1,
-    "resume_dispatches": 5,
-    "item_id": "video-20260820-120959-dbf3d22025",
-    "last_dispatch_at": "2026-08-20T11:35:25.910444+00:00",
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 32357961134,
-    "youtube_id": "nbINO-NJNz8",
-    "youtube_url": "https://youtu.be/nbINO-NJNz8",
-    "verified": true
+    "failure_count_by_type": {},
+    "attempts": 0,
+    "resume_dispatches": 0
   },
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-19T16:42:01.037235+00:00",
-      "from": "article_needed",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-19T16:42:01.652972+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "GITHUB_HTTP_401",
-      "details": {
-        "message": "GITHUB_HTTP_401: GET https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/9368039749/zip failed: ﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>InvalidAuthenticationInfo</Code><Message>Server failed to authenticate the request. Please refer to the information in the www-authenticate header.\nRequestId:cb250bad-001e-0042-03f9-2f9982000000\nTime:2026-08-19T16:42:01.6368988Z</Message><AuthenticationErrorDetail>The access token was missing or malformed.</AuthenticationErrorDetail></Error>"
-      }
-    },
-    {
-      "at": "2026-08-19T21:41:30.111819+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "article workflow dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-08-20T01:47:56.386188+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow dispatched",
-      "details": {
-        "attempt": 2
-      }
-    },
-    {
-      "at": "2026-08-20T03:57:05.500825+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow dispatched",
-      "details": {
-        "attempt": 3
-      }
-    },
-    {
-      "at": "2026-08-20T04:49:20.584849+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "controller state migrated to schema v2"
-    },
-    {
-      "at": "2026-08-20T05:38:56.006208+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "ARTICLE_WORKFLOW_FAILED",
-      "details": {
-        "message": "article run 32330070921 completed with conclusion=failure but no structured result was available",
-        "retry_at": "2026-08-20T05:43:56.006182+00:00",
-        "failure_streak": 1,
-        "run_id": 32330070921,
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-08-20T05:43:27.452070+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-08-20T05:43:56.006182+00:00"
-      }
-    },
-    {
-      "at": "2026-08-20T05:46:51.398584+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 4
-      }
-    },
-    {
-      "at": "2026-08-20T07:59:38.055684+00:00",
-      "from": "article_generating",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-20T07:59:44.366918+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "rebuild",
-        "resume": 1
-      }
-    },
-    {
-      "at": "2026-08-20T08:28:49.533917+00:00",
-      "from": "video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-20T08:28:55.004804+00:00",
-      "from": "article_live",
-      "to": "video_retry_wait",
-      "reason": "VIDEO_WORKFLOW_FAILED",
-      "details": {
-        "message": "video run 32346614046 completed with conclusion=failure",
-        "retry_at": "2026-08-20T08:33:55.004782+00:00",
-        "failure_streak": 1,
-        "run_id": 32346614046,
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-08-20T08:28:55.004826+00:00",
-      "from": "video_retry_wait",
-      "to": "video_retry_wait",
-      "reason": "video retry backoff is active",
-      "details": {
-        "retry_at": "2026-08-20T08:33:55.004782+00:00"
-      }
-    },
-    {
-      "at": "2026-08-20T08:29:26.864816+00:00",
-      "from": "video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-20T08:29:28.789748+00:00",
-      "from": "article_live",
-      "to": "video_retry_wait",
-      "reason": "video retry backoff is active",
-      "details": {
-        "retry_at": "2026-08-20T08:33:55.004782+00:00"
-      }
-    },
-    {
-      "at": "2026-08-20T08:29:58.362532+00:00",
-      "from": "video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-20T08:30:01.082586+00:00",
-      "from": "article_live",
-      "to": "video_retry_wait",
-      "reason": "video retry backoff is active",
-      "details": {
-        "retry_at": "2026-08-20T08:33:55.004782+00:00"
-      }
-    },
     {
       "at": "2026-08-20T08:32:38.285655+00:00",
       "from": "video_retry_wait",
@@ -747,12 +573,24 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-08-20T21:01:45.357952+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-08-20T21:01:45.357985+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-08-20T20:38:31.131994+00:00",
+  "updated_at": "2026-08-20T21:01:45.357989+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
