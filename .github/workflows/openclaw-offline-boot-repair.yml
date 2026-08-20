@@ -1,5 +1,4 @@
 name: Repair OpenClaw Offline and Enable Tailscale Serve
-# Operational recovery re-run trigger: 2026-08-20
 
 on:
   workflow_dispatch:
@@ -11,12 +10,14 @@ on:
       - scripts/oci_openclaw_offline_repair_v2.py
       - scripts/oci_openclaw_offline_repair_v3.py
       - scripts/oci_openclaw_helper_run_command.py
+      - scripts/oci_openclaw_helper_proof.py
       - scripts/oci_openclaw_finalize_run_command.py
       - scripts/oci_openclaw_run_command_iam.py
       - scripts/oci_openclaw_wait_helper_console.py
       - scripts/oci_openclaw_verify_console.py
       - scripts/openclaw_offline_mount_repair.sh
       - scripts/openclaw_offline_mount_repair_early.sh
+      - scripts/openclaw_offline_proof.sh
       - scripts/openclaw_verify_offline_repair.sh
       - scripts/encrypt_openclaw_repair_result.py
       - scripts/openclaw_publish_status.sh
@@ -29,7 +30,7 @@ permissions:
 jobs:
   repair:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     env:
       BRIDGE_NAME: yanivsa-oci-bootstrap
       OPENCLAW_SECURITY_LIST_ID: ocid1.securitylist.oc1.iad.aaaaaaaapfyvmzc532rruphk3k4ldjb66aglj2npofc5q2aof6xuoudpa4aq
@@ -100,7 +101,7 @@ jobs:
           set -euo pipefail
           python -u scripts/oci_openclaw_run_command_iam.py --config /tmp/oci.cfg
 
-      - name: Prepare OCI Run Command repair helper and attach authenticated boot disk
+      - name: Prepare repair helper and attach authenticated boot disk
         run: |
           set -euo pipefail
           python -u scripts/oci_openclaw_offline_repair_v3.py \
@@ -137,26 +138,39 @@ jobs:
           print('OPENCLAW_TARGET_PUBLIC_IP='+d['target_ip'])
           PY
 
-      - name: Finalize and verify OpenClaw RPC and Tailscale Serve
+      - name: Allow guest finalizer to complete
+        run: |
+          set -euo pipefail
+          echo OPENCLAW_GUEST_FINALIZER_WAIT_SECONDS=420
+          sleep 420
+
+      - name: Verify OpenClaw from preserved boot disk
         id: finalize
         run: |
           set -euo pipefail
-          set +e
-          python -u scripts/oci_openclaw_finalize_run_command.py \
+          rm -f /tmp/openclaw-ready.json /tmp/proof.json
+          python -u scripts/oci_openclaw_offline_repair_v3.py \
             --config /tmp/oci.cfg \
-            --instance-name openclaw-e2-tailscale \
-            --timeout 900 \
-            --result-json /tmp/openclaw-ready.json
-          rc=$?
+            --result-json /tmp/proof.json
+          proof_rc=0
+          set +e
+          python -u scripts/oci_openclaw_helper_proof.py \
+            --config /tmp/oci.cfg \
+            --state-json /tmp/proof.json \
+            --script-file scripts/openclaw_offline_proof.sh \
+            --result-json /tmp/openclaw-ready.json \
+            --timeout 600
+          proof_rc=$?
           set -e
-          if [ "$rc" -ne 0 ]; then
-            echo OPENCLAW_TARGET_RUN_COMMAND_FALLBACK_TO_CONSOLE=true
-            python -u scripts/oci_openclaw_verify_console.py \
-              --config /tmp/oci.cfg \
-              --instance-name openclaw-e2-tailscale \
-              --timeout 900 \
-              --result-json /tmp/openclaw-ready.json
-          fi
+          finish_rc=0
+          set +e
+          python -u scripts/oci_openclaw_offline_repair_v2.py finish \
+            --config /tmp/oci.cfg \
+            --state-json /tmp/proof.json
+          finish_rc=$?
+          set -e
+          [ "$finish_rc" -eq 0 ] || { echo OPENCLAW_OFFLINE_PROOF_RELAUNCH_FAILED=true; exit "$finish_rc"; }
+          [ "$proof_rc" -eq 0 ] || exit "$proof_rc"
           python3 - <<'PY'
           import json
           d=json.load(open('/tmp/openclaw-ready.json'))
@@ -167,6 +181,7 @@ jobs:
           print('TAILSCALE_SERVE_ACTIVE=true')
           print('OPENCLAW_OFFLINE_FINALIZE_SUCCESS=true')
           print('OPENCLAW_OFFLINE_REPAIR_COMPLETE=true')
+          print('OPENCLAW_STRICT_SUCCESS_PROOF=preserved-boot-disk')
           PY
 
       - name: Close temporary SSH
@@ -175,10 +190,13 @@ jobs:
           set +e
           if [ -s /tmp/oci.cfg ]; then
             sl="$OPENCLAW_SECURITY_LIST_ID"
-            if [ -s /tmp/offline.json ]; then
+            candidate=''
+            if [ -s /tmp/proof.json ]; then
+              candidate="$(python3 -c 'import json;print(json.load(open("/tmp/proof.json")).get("security_list_id") or "")' 2>/dev/null)"
+            elif [ -s /tmp/offline.json ]; then
               candidate="$(python3 -c 'import json;print(json.load(open("/tmp/offline.json")).get("security_list_id") or "")' 2>/dev/null)"
-              [ -z "$candidate" ] || sl="$candidate"
             fi
+            [ -z "$candidate" ] || sl="$candidate"
             python -u scripts/oci_openclaw_bootstrap.py --config /tmp/oci.cfg --close-ssh --security-list-id "$sl"
           fi
 
@@ -222,4 +240,4 @@ jobs:
 
       - name: Cleanup
         if: ${{ always() }}
-        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offline.json /tmp/openclaw-ready.json
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offline.json /tmp/proof.json /tmp/openclaw-ready.json
