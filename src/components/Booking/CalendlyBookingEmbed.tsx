@@ -10,6 +10,7 @@ import styles from './CalendlyBookingEmbed.module.css';
 const CALENDLY_WIDGET_SRC = 'https://assets.calendly.com/assets/external/widget.js';
 const CALENDLY_ORIGIN = 'https://calendly.com';
 const AUTO_RESIZE_ACTIVE_ATTRIBUTE = 'data-kesher-calendly-auto-resize';
+const LAST_BOOKING_CONTEXT_KEY = 'kesher_last_booking_context';
 
 type CalendlyApi = {
   initInlineWidget: (options: {
@@ -167,11 +168,14 @@ const CalendlyBookingEmbed: React.FC<CalendlyBookingEmbedProps> = ({
       const data = messageEvent.data as CalendlyMessage;
       if (!data || typeof data !== 'object' || typeof data.event !== 'string') return;
 
-      // Production accepts only Calendly. A deliberately narrow same-origin path
-      // keeps the existing E2E harness useful without trusting arbitrary origins.
+      // Production accepts booking events only from Calendly. The same-origin
+      // simulation path is restricted to the local Playwright preview host.
       const isCalendlyOrigin = messageEvent.origin === CALENDLY_ORIGIN;
+      const isLocalTestHost = window.location.hostname === '127.0.0.1'
+        || window.location.hostname === 'localhost';
       const isE2ESimulation =
-        messageEvent.origin === window.location.origin
+        isLocalTestHost
+        && messageEvent.origin === window.location.origin
         && messageEvent.source === window
         && data.payload?.event?.uri?.startsWith('test_') === true;
       if (!isCalendlyOrigin && !isE2ESimulation) return;
@@ -205,6 +209,22 @@ const CalendlyBookingEmbed: React.FC<CalendlyBookingEmbedProps> = ({
       if (safeSessionGet(dedupeKey) === 'true') return;
       safeSessionSet(dedupeKey, 'true');
 
+      const attribution = getStoredAttribution();
+      safeSessionSet(
+        LAST_BOOKING_CONTEXT_KEY,
+        JSON.stringify({
+          service_type: serviceType,
+          booking_page_path: resolvedBookingPath,
+          ...(landingPageType ? { landing_page_type: landingPageType } : {}),
+          ...(variantId || attribution.variant_id
+            ? { variant_id: variantId || attribution.variant_id }
+            : {}),
+          ...(attribution.entry_page_path
+            ? { entry_page_path: attribution.entry_page_path }
+            : {}),
+        }),
+      );
+
       const bookingEvent: Record<string, unknown> = {
         event: 'booking_confirmed',
         ...contextFields(),
@@ -218,7 +238,6 @@ const CalendlyBookingEmbed: React.FC<CalendlyBookingEmbedProps> = ({
 
       window.dataLayer.push(bookingEvent);
 
-      const attribution = getStoredAttribution();
       void sendBrowserBookingConfirmation({
         calendly_event_uri: eventUri,
         calendly_invitee_uri: inviteeUri,
