@@ -1,30 +1,40 @@
 {
   "schema_version": 2,
   "cycle": "2026-08-20",
-  "status": "article_generating",
+  "status": "video_running",
   "article": {
     "attempts": 4,
     "deploy_attempts": 0,
     "failure_count_by_type": {
       "ARTICLE_WORKFLOW_FAILED": 1
     },
-    "failure_fingerprint": "ARTICLE_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "next_retry_at": null,
     "processed_run_id": 32330070921,
     "last_dispatch_at": "2026-08-20T05:46:51.398563+00:00",
     "run_id": 32336909431,
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 32330070921
+    "last_failed_run_id": 32330070921,
+    "slug": "dating-transition-to-relationship-boundaries",
+    "title": "המעבר מהיכרות לקשר: איך מנהלים את קצב ההתקרבות?",
+    "url": "https://kesher.saharoni.com/blog/dating-transition-to-relationship-boundaries",
+    "published_date": "2026-08-20",
+    "live": true,
+    "live_verified_at": "2026-08-20T07:59:38.055667+00:00",
+    "next_deploy_retry_at": null
   },
   "video": {
     "attempts": 0,
-    "resume_dispatches": 0,
+    "resume_dispatches": 1,
     "failure_count_by_type": {},
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "next_retry_at": null,
-    "processed_run_id": null
+    "processed_run_id": null,
+    "item_id": "video-20260819-101504-32da84edf9",
+    "status": "rejected",
+    "last_dispatch_at": "2026-08-20T07:59:44.366898+00:00"
   },
   "last_error": null,
   "history": [
@@ -106,7 +116,23 @@
       "details": {
         "attempt": 4
       }
+    },
+    {
+      "at": "2026-08-20T07:59:38.055684+00:00",
+      "from": "article_generating",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-20T07:59:44.366918+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "rebuild",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-08-20T07:12:07.661424+00:00"
+  "updated_at": "2026-08-20T07:59:44.366925+00:00"
 }
