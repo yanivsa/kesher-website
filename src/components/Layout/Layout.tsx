@@ -6,6 +6,7 @@ import FloatingWhatsApp from './FloatingWhatsApp';
 import GeoBanner from '../GEO/GeoBanner';
 import MobileStickyBar from './MobileStickyBar';
 import AIChatbot from '../AIChatbot/AIChatbot';
+import SiteAttributionTracker from '../Analytics/SiteAttributionTracker';
 import styles from './Layout.module.css';
 
 interface LayoutProps {
@@ -26,6 +27,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   if (usesStandaloneHomepage) {
     return (
       <div className={styles.wrapper}>
+        <SiteAttributionTracker />
         <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>
         {children}
       </div>
@@ -34,6 +36,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className={styles.wrapper}>
+      <SiteAttributionTracker />
       <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>
       <GeoBanner />
       <Header />
