@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import unittest
 from pathlib import Path
 
@@ -8,6 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTROLLER = ROOT / ".github" / "workflows" / "kesher-content-controller.yml"
 ARTICLE = ROOT / ".github" / "workflows" / "kesher-article-generation.yml"
 VIDEO = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
+ENTRY = ROOT / "scripts" / "kesher_content_controller_entry.py"
+POLICY = ROOT / "config" / "kesher-automation-policy.json"
 LEGACY_WEEKDAY = ROOT / ".github" / "workflows" / "jules-weekday-article.yml"
 LEGACY_WEEKEND = ROOT / ".github" / "workflows" / "jules-weekend-article.yml"
 
@@ -32,22 +35,15 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         self.assertFalse(LEGACY_WEEKDAY.exists())
         self.assertFalse(LEGACY_WEEKEND.exists())
 
-    def test_controller_wakes_on_every_production_child_completion(self):
-        text = CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn("workflow_run:", text)
-        for name in (
-            "Kesher Article Generation",
-            "Kesher Daily NotebookLM Video Overview",
-            "Deploy to Cloudflare Pages",
-        ):
-            self.assertIn(name, text)
-        self.assertIn("types: [completed]", text)
-        self.assertNotIn("github.event.workflow_run.conclusion == 'success'", text)
-        self.assertNotIn('github.event.workflow_run.conclusion == "success"', text)
-
-    def test_controller_ignores_only_pull_request_validation_completion(self):
-        text = CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn("github.event.workflow_run.event != 'pull_request'", text)
+    def test_child_completion_is_observable_but_failed_child_waits_for_heartbeat(self):
+        workflow = CONTROLLER.read_text(encoding="utf-8")
+        entry = ENTRY.read_text(encoding="utf-8")
+        self.assertIn("workflow_run:", workflow)
+        self.assertIn("types: [completed]", workflow)
+        self.assertIn("KESHER_CHILD_CONCLUSION", workflow)
+        self.assertIn("failed_child_waits_for_heartbeat", entry)
+        self.assertIn("failed child deferred to recovery heartbeat", entry)
+        self.assertIn('variables.get("KESHER_TRIGGER_EVENT") == "workflow_run"', entry)
 
     def test_heartbeat_is_recovery_only_and_runs_every_fifteen_minutes(self):
         text = CONTROLLER.read_text(encoding="utf-8")
@@ -66,12 +62,20 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         self.assertIn("kesher-article-result-${{ github.run_id }}", text)
         self.assertIn("the controller owns retry/backoff", text)
 
-    def test_video_state_has_extended_recovery_retention(self):
+    def test_technically_verified_video_uses_advisory_publication_hook(self):
+        entry = ENTRY.read_text(encoding="utf-8")
+        policy = json.loads(POLICY.read_text(encoding="utf-8"))
+        self.assertIn("advisory_video_publication_ready", entry)
+        self.assertIn("controller.mandatory_video_review_approved = advisory_video_publication_ready", entry)
+        self.assertEqual(policy["video"]["publication_gate"], "technical")
+        self.assertTrue(policy["video"]["jules_is_advisory"])
+
+    def test_video_state_keeps_durable_14_day_recovery_window(self):
         text = VIDEO.read_text(encoding="utf-8")
+        policy = json.loads(POLICY.read_text(encoding="utf-8"))
         self.assertIn("name: kesher-video-state", text)
         self.assertIn("retention-days: 14", text)
-        self.assertIn("Keep the newest seven durable state artifacts", text)
-        self.assertIn("| .[7:] | .[].id", text)
+        self.assertGreaterEqual(int(policy["video"]["durable_state_artifacts_to_keep"]), 3)
 
 
 if __name__ == "__main__":
