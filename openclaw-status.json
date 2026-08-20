@@ -5,12 +5,12 @@
   "sha": "ac29739178b2a60331f0ce821583d44e76697266",
   "strict_success": false,
   "markers": {
-    "OPENCLAW_OFFLINE_REPAIR_COMPLETE": false,
-    "OPENCLAW_GATEWAY_RPC_OK": false,
-    "TAILSCALE_SERVE_ACTIVE": false,
-    "OPENCLAW_OFFLINE_FINALIZE_SUCCESS": false
+    "OPENCLAW_OFFLINE_REPAIR_COMPLETE": true,
+    "OPENCLAW_GATEWAY_RPC_OK": true,
+    "TAILSCALE_SERVE_ACTIVE": true,
+    "OPENCLAW_OFFLINE_FINALIZE_SUCCESS": true
   },
   "ready_url": null,
-  "failure_hint": "job_status=failure; finalize_outcome=failure",
-  "updated_at": "2026-08-20T06:57:38Z"
+  "failure_hint": "conclusion=failure; missing=OPENCLAW_READY_URL",
+  "updated_at": "2026-08-20T07:16:08Z"
 }
