@@ -132,15 +132,17 @@ assert any('video' in e.lower() for e in errors), errors
 function testArticleAutomergeAndRepairContracts() {
   const workflow = read('.github/workflows/auto-merge-article-prs.yml');
   const controller = read('.github/scripts/article-pr-controller.py');
+  const controllerV3 = read('.github/scripts/article-pr-controller-v3.py');
   const gate = read('.github/scripts/validate-article-pr.py');
   assert(workflow.includes('Checkout trusted article controller'));
   assert(workflow.includes('ref: main'));
-  assert(workflow.includes('python3 .github/scripts/article-pr-controller.py'));
+  assert(workflow.includes('python3 .github/scripts/article-pr-controller-v3.py'));
   assert(/permissions:[\s\S]*actions:\s*write/.test(workflow));
   assert(controller.includes('load_validator()'));
   assert(controller.includes('validator.evaluate('));
-  assert(controller.includes('Repair THE SAME PR AND THE SAME BRANCH'));
-  assert(controller.includes('MAX_REPAIRS = 2'));
+  assert(controllerV3.includes('LEGACY_PATH = Path(__file__).with_name("article-pr-controller.py")'));
+  assert(controllerV3.includes('MAX_TOTAL_CONTENT_ATTEMPTS = 3'));
+  assert(controllerV3.includes('Repair THE SAME PR #'));
   assert(controller.indexOf('merged = request_json(') < controller.indexOf('/actions/workflows/deploy.yml/dispatches'));
   assert(gate.includes('Expected exactly one new article'));
   assert(gate.includes('Article publication PR may not modify or remove existing posts'));
