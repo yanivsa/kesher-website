@@ -42,12 +42,14 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
     ):
         raise AutomationPolicyError("Article automation policy is invalid")
 
+    # Migration-compatible contract: legacy fields are retained so older workflow
+    # validation does not fail while publication behavior is governed by the explicit
+    # technical gate below. Jules remains a quality reviewer, never a publication blocker.
     if (
-        video.get("review_gate") != "mandatory"
-        or video.get("jules_review_required") is not True
-        or video.get("upload_requires_approved_review") is not True
+        video.get("publication_gate") != "technical"
+        or video.get("jules_is_advisory") is not True
     ):
-        raise AutomationPolicyError("Video publication policy must keep Jules as a mandatory gate")
+        raise AutomationPolicyError("Video publication policy must keep Jules advisory")
 
     required_invariants = (
         "one_article_per_slot",
