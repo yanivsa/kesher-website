@@ -1,0 +1,31 @@
+.embedShell {
+  width: 100%;
+  min-width: 0;
+}
+
+.embedContainer {
+  display: block;
+  width: 100%;
+  min-width: min(320px, 100%);
+  min-height: 700px;
+  border: 0;
+  background: #fff;
+}
+
+.status {
+  margin: 0.75rem 0 0;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.status a {
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .embedContainer {
+    min-height: 720px;
+  }
+}
