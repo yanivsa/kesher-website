@@ -32,7 +32,7 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         self.assertFalse(LEGACY_WEEKDAY.exists())
         self.assertFalse(LEGACY_WEEKEND.exists())
 
-    def test_controller_wakes_on_child_completion(self):
+    def test_controller_wakes_on_every_production_child_completion(self):
         text = CONTROLLER.read_text(encoding="utf-8")
         self.assertIn("workflow_run:", text)
         for name in (
@@ -41,10 +41,18 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
             "Deploy to Cloudflare Pages",
         ):
             self.assertIn(name, text)
+        self.assertIn("types: [completed]", text)
+        self.assertNotIn("github.event.workflow_run.conclusion == 'success'", text)
+        self.assertNotIn('github.event.workflow_run.conclusion == "success"', text)
 
-    def test_controller_ignores_pull_request_validation_completion(self):
+    def test_controller_ignores_only_pull_request_validation_completion(self):
         text = CONTROLLER.read_text(encoding="utf-8")
         self.assertIn("github.event.workflow_run.event != 'pull_request'", text)
+
+    def test_heartbeat_is_recovery_only_and_runs_every_fifteen_minutes(self):
+        text = CONTROLLER.read_text(encoding="utf-8")
+        self.assertIn('cron: "3,18,33,48 * * * *"', text)
+        self.assertIn("Recovery heartbeat only", text)
 
     def test_controller_has_no_runtime_scheduler_mutation(self):
         text = CONTROLLER.read_text(encoding="utf-8")
@@ -52,11 +60,18 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         self.assertNotIn("jules-weekday-article.yml", text)
         self.assertNotIn("jules-weekend-article.yml", text)
 
+    def test_article_worker_is_single_attempt_and_persists_result(self):
+        text = ARTICLE.read_text(encoding="utf-8")
+        self.assertIn("Run exactly one autonomous Jules article attempt", text)
+        self.assertIn("kesher-article-result-${{ github.run_id }}", text)
+        self.assertIn("the controller owns retry/backoff", text)
+
     def test_video_state_has_extended_recovery_retention(self):
         text = VIDEO.read_text(encoding="utf-8")
         self.assertIn("name: kesher-video-state", text)
         self.assertIn("retention-days: 14", text)
-        self.assertIn("Keep the newest three durable state artifacts", text)
+        self.assertIn("Keep the newest seven durable state artifacts", text)
+        self.assertIn("| .[7:] | .[].id", text)
 
 
 if __name__ == "__main__":
