@@ -15,9 +15,11 @@ from typing import Any
 if __package__:
     from . import kesher_daily_pipeline as pipeline
     from .kesher_automation_policy import load_policy
+    from .kesher_video_upload_guard import validate_candidate as validate_upload_candidate
 else:
     import kesher_daily_pipeline as pipeline
     from kesher_automation_policy import load_policy
+    from kesher_video_upload_guard import validate_candidate as validate_upload_candidate
 
 UNRESOLVED_STATUSES = {
     "source_selected", "source_added", "generating", "downloaded",
@@ -213,10 +215,14 @@ def prepare_upload() -> int:
     item["review_gate"] = "mandatory-jules"
     item["review_approved_for_sha256"] = item.get("final_sha256")
     item["updated_at"] = pipeline.utc_now()
+    try:
+        validate_upload_candidate(item)
+    except Exception as exc:
+        raise pipeline.PipelineError(f"Exact-evidence upload guard rejected candidate: {exc}") from exc
     pipeline.save_state(state)
     print(
         "VIDEO_RECONCILED_UPLOAD "
-        f"slug={slug} item={item.get('id')} review=approved"
+        f"slug={slug} item={item.get('id')} review=approved exact_evidence=yes"
     )
     return 0
 
