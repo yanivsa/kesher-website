@@ -74,7 +74,7 @@ const ConsentBanner: React.FC = () => {
   }
 
   return (
-    <aside className={styles.banner} role="dialog" aria-label="העדפות פרטיות ומדידה">
+    <aside className={styles.banner} aria-label="העדפות פרטיות ומדידה">
       <p>
         האתר משתמש בכלי מדידה של Google כדי להבין ביצועים של פרסום ושימוש באתר.
         ניתן לאשר מדידה מבוססת cookies או להמשיך ללא cookies.{' '}
