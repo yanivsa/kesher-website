@@ -36,6 +36,8 @@ _original_active_workflow_run = controller.GitHubClient.active_workflow_run
 ISRAEL_TZ = ZoneInfo("Asia/Jerusalem")
 ARTICLE_WORKFLOW_NAME = "Kesher Article Generation"
 VIDEO_WORKFLOW_NAME = "Kesher Daily NotebookLM Video Overview"
+_article_correlation_cycle = ""
+_article_correlation_state: dict[str, Any] = {}
 
 
 def source_slug(item: dict) -> str:
@@ -148,9 +150,8 @@ def _correlated_active_article_run(
             self, workflow, production_only=production_only
         )
 
-    context = getattr(self, "_kesher_article_correlation", None) or {}
-    cycle = str(context.get("cycle") or current_cycle())
-    article_state = context.get("article_state") or {}
+    cycle = _article_correlation_cycle or current_cycle()
+    article_state = _article_correlation_state
     for run in self.workflow_runs(workflow):
         if production_only and str(run.get("event") or "") == "pull_request":
             continue
@@ -167,26 +168,14 @@ def install_article_run_correlation(
 ) -> None:
     """Scope article active-run discovery to the exact publication cycle."""
 
-    article_state: dict[str, Any] = {}
+    global _article_correlation_cycle, _article_correlation_state
+    _article_correlation_cycle = cycle
+    _article_correlation_state = {}
     if isinstance(state, dict) and state.get("cycle") == cycle:
         candidate = state.get("article")
         if isinstance(candidate, dict):
-            article_state = candidate
-
+            _article_correlation_state = dict(candidate)
     controller.GitHubClient.active_workflow_run = _correlated_active_article_run
-    original_init = controller.GitHubClient.__init__
-    if getattr(original_init, "_kesher_correlation_wrapped", False):
-        return
-
-    def correlated_init(self, *args, **kwargs):
-        original_init(self, *args, **kwargs)
-        self._kesher_article_correlation = {
-            "cycle": cycle,
-            "article_state": article_state,
-        }
-
-    correlated_init._kesher_correlation_wrapped = True  # type: ignore[attr-defined]
-    controller.GitHubClient.__init__ = correlated_init
 
 
 def _trigger_stage(workflow_name: str) -> tuple[str, str] | None:
@@ -238,7 +227,7 @@ def adopt_triggered_child(
 ) -> bool:
     """Persist the exact just-completed child run id before controller.tick()."""
 
-    variables = env or os.environ
+    variables = os.environ if env is None else env
     if variables.get("KESHER_TRIGGER_EVENT") != "workflow_run":
         return False
     if not isinstance(state, dict) or state.get("cycle") != cycle:
@@ -283,9 +272,8 @@ def main() -> int:
     if token:
         github = controller.GitHubClient(repo, token)
         state = github.load_controller_state()
-        adopt_triggered_child(github, state, cycle)
-        if isinstance(state, dict):
-            # Reload only when adoption could have persisted a newer copy.
+        adopted = adopt_triggered_child(github, state, cycle)
+        if adopted:
             state = github.load_controller_state()
 
     install_article_run_correlation(state, cycle)
