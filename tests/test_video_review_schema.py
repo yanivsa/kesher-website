@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-# Runtime contract regression suite for the mandatory Jules review gate.
+# Runtime contract regression suite for the strict advisory Jules review.
 import importlib.util
 import sys
 import types
@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REVIEWER_PATH = ROOT / "scripts" / "jules_video_reviewer.py"
+REVIEWER_PATH = ROOT / "scripts" / "jules_video_reviewer_v3.py"
 POLICY_PATH = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 
 
@@ -23,6 +23,7 @@ def load_reviewer(frame_count: int = 8):
         assert spec and spec.loader
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
+        module.REVIEW_FRAME_COUNT = frame_count
         return module
     finally:
         if previous is None:
@@ -85,7 +86,7 @@ class VideoReviewSchemaTests(unittest.TestCase):
         with self.assertRaisesRegex(reviewer.ReviewError, "inconsistent"):
             reviewer.validate_structured_contract(decision)
 
-    def test_rejection_requires_structured_blocking_issue(self):
+    def test_rejection_requires_structured_quality_issue(self):
         reviewer = load_reviewer()
         decision = approved_decision(reviewer)
         decision["decision"] = "rejected"
@@ -102,7 +103,7 @@ class VideoReviewSchemaTests(unittest.TestCase):
         ]
         reviewer.validate_structured_contract(decision)
 
-    def test_prompt_declares_versioned_machine_contract(self):
+    def test_prompt_declares_versioned_machine_contract_without_publication_authority(self):
         reviewer = load_reviewer(frame_count=3)
         prompt = reviewer.build_prompt(
             ".jules-video-review/fixture",
@@ -120,6 +121,8 @@ class VideoReviewSchemaTests(unittest.TestCase):
         self.assertIn("policy_version=1", prompt)
         self.assertIn("blocking_issues", prompt)
         self.assertIn("recommendations", prompt)
+        self.assertIn("MUST NOT block upload", prompt)
+        self.assertNotIn("Upload is allowed only when", prompt)
 
 
 if __name__ == "__main__":

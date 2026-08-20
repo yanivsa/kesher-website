@@ -66,12 +66,14 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         self.assertIn("kesher-article-result-${{ github.run_id }}", text)
         self.assertIn("the controller owns retry/backoff", text)
 
-    def test_video_state_has_extended_recovery_retention(self):
+    def test_video_state_retains_exactly_three_snapshots_for_fourteen_days(self):
         text = VIDEO.read_text(encoding="utf-8")
         self.assertIn("name: kesher-video-state", text)
         self.assertIn("retention-days: 14", text)
-        self.assertIn("Keep the newest seven durable state artifacts", text)
-        self.assertIn("| .[7:] | .[].id", text)
+        self.assertIn("Keep the newest three durable state artifacts", text)
+        self.assertIn("| .[3:] | .[].id", text)
+        self.assertNotIn("newest seven", text)
+        self.assertNotIn("| .[7:]", text)
 
 
 if __name__ == "__main__":
