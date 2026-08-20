@@ -108,14 +108,29 @@ def ensure_d1(account_id: str, token: str) -> tuple[str, bool]:
             raise ProvisioningError("Existing D1 database response did not contain an ID")
         return database_id, False
 
-    created = cloudflare_result(
-        request_json(
-            f"{CLOUDFLARE_API}/accounts/{account_id}/d1/database",
-            method="POST",
-            token=token,
-            payload={"name": DATABASE_NAME},
-        )
-    ) or {}
+    try:
+        created = cloudflare_result(
+            request_json(
+                f"{CLOUDFLARE_API}/accounts/{account_id}/d1/database",
+                method="POST",
+                token=token,
+                payload={"name": DATABASE_NAME},
+            )
+        ) or {}
+    except ProvisioningError as exc:
+        if '"code":7406' in str(exc) or 'databases per account' in str(exc):
+            names = sorted(
+                str(item.get("name") or "").strip()
+                for item in listed
+                if str(item.get("name") or "").strip()
+            )
+            inventory = ", ".join(names) if names else "(none returned by API)"
+            raise ProvisioningError(
+                "Cloudflare D1 account limit reached. Existing database names: "
+                + inventory
+            ) from exc
+        raise
+
     database_id = str(created.get("uuid") or created.get("id") or "")
     if not database_id:
         raise ProvisioningError("Created D1 database response did not contain an ID")
