@@ -9,9 +9,8 @@
     "circuit_breaker_minutes": 60
   },
   "video": {
-    "review_gate": "mandatory",
-    "jules_review_required": true,
-    "upload_requires_approved_review": true,
+    "publication_gate": "technical",
+    "jules_is_advisory": true,
     "durable_state_artifacts_to_keep": 7
   },
   "invariants": {
