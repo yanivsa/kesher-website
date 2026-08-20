@@ -11,7 +11,8 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REVIEWER_PATH = ROOT / "scripts" / "jules_video_reviewer.py"
+REVIEWER_PATH = ROOT / "scripts" / "jules_video_reviewer_v3.py"
+LEGACY_REVIEWER_PATH = ROOT / "scripts" / "jules_video_reviewer.py"
 PIPELINE_PATH = ROOT / "scripts" / "kesher_daily_pipeline.py"
 EVIDENCE_PATH = ROOT / "scripts" / "prepare_jules_video_evidence.py"
 POLICY_PATH = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
@@ -44,7 +45,7 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
             policy_path = Path(temporary) / "policy.md"
             policy_path.write_text(
                 f"Policy-Version: {reviewer.REMOTION_POLICY_VERSION}\n\n"
-                "Jules review is strict and advisory; technical verification owns publication\n\n"
+                "Jules review is strict and advisory; technical verification owns publication. MUST NOT block upload.\n\n"
                 f"{policy_text}",
                 encoding="utf-8",
             )
@@ -97,12 +98,15 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
     def test_pipeline_is_single_source_of_truth_for_frame_count(self) -> None:
         pipeline_source = PIPELINE_PATH.read_text(encoding="utf-8")
         reviewer_source = REVIEWER_PATH.read_text(encoding="utf-8")
+        legacy_source = LEGACY_REVIEWER_PATH.read_text(encoding="utf-8")
         evidence_source = EVIDENCE_PATH.read_text(encoding="utf-8")
         literal = re.compile(r"^\s*REVIEW_FRAME_COUNT\s*=\s*\d+\s*$", re.MULTILINE)
         self.assertEqual(len(literal.findall(pipeline_source)), 1)
         self.assertEqual(literal.findall(reviewer_source), [])
+        self.assertEqual(literal.findall(legacy_source), [])
         self.assertEqual(literal.findall(evidence_source), [])
-        self.assertIn("from kesher_daily_pipeline import REVIEW_FRAME_COUNT", reviewer_source)
+        self.assertIn("legacy.REVIEW_FRAME_COUNT", reviewer_source)
+        self.assertIn("from kesher_daily_pipeline import REVIEW_FRAME_COUNT", legacy_source)
         self.assertIn("from kesher_daily_pipeline import REVIEW_FRAME_COUNT", evidence_source)
 
     def test_durable_policy_covers_review_upgrade_captions_and_daily_automation(self) -> None:
@@ -132,6 +136,7 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         self.assertNotIn("  schedule:", trigger_block)
         self.assertIn("scripts/kesher_video_reconcile.py --prepare-generation", workflow)
         self.assertIn("scripts/kesher_video_reconcile.py --prepare-upload", workflow)
+        self.assertIn("scripts/jules_video_reviewer_v3.py", workflow)
         self.assertIn("Jules performs strict advisory review", workflow)
         self.assertIn("Prepare technically verified upload", workflow)
         self.assertIn("Upload exact technically verified MP4", workflow)
