@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -32,14 +33,21 @@ validate_decision = legacy.validate_decision
 parse_decision = legacy.parse_decision
 
 
+def effective_frame_count() -> int:
+    active = sys.modules.get("kesher_daily_pipeline")
+    value = getattr(active, "REVIEW_FRAME_COUNT", None) if active is not None else None
+    return int(value or REVIEW_FRAME_COUNT)
+
+
 def review_json_example(item_id: str) -> dict[str, Any]:
+    frame_count = effective_frame_count()
     frame_hashes = {
         f"relative/frame-{index}.png": "..."
-        for index in range(1, REVIEW_FRAME_COUNT + 1)
+        for index in range(1, frame_count + 1)
     }
     observations = [
         f"תיאור פריים {index} עם פירוט עובדתי מספק בעברית"
-        for index in range(1, REVIEW_FRAME_COUNT + 1)
+        for index in range(1, frame_count + 1)
     ]
     return {
         "schema_version": REVIEW_SCHEMA_VERSION,
@@ -85,6 +93,7 @@ def load_remotion_policy() -> str:
 
 def build_prompt(evidence_root: str, item: dict[str, Any], hashes: dict[str, Any]) -> str:
     policy = load_remotion_policy()
+    frame_count = effective_frame_count()
     example_json = json.dumps(review_json_example(item["id"]), ensure_ascii=False, indent=2)
     return f"""Perform one strict READ-ONLY Kesher Video Overview quality review. Do not edit the repository, create a branch/commit/changeSet/PR, generate another video, contact NotebookLM, or contact YouTube.
 
@@ -100,7 +109,7 @@ The following durable repository policy is authoritative for this review. Apply 
 {policy}
 --- END DURABLE REMOTION POLICY ---
 
-Open `{evidence_root}/state.json` and locate the exact item. Open and visually inspect EACH of its {REVIEW_FRAME_COUNT} `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
+Open `{evidence_root}/state.json` and locate the exact item. Open and visually inspect EACH of its {frame_count} `frame_paths` plus `visual_review_path` using the available image-viewing capability. Read the COMPLETE Hebrew transcript, COMPLETE Hebrew source file, manifest, source title/topic, YouTube title, description and every tag.
 
 IMPORTANT: Jules is the STRICT ADVISORY reviewer for this exact MP4. Return an honest `approved` or `rejected` quality decision and concrete findings. Your result MUST NOT block upload: publication permission belongs exclusively to the independent technical gate. Do not soften a finding to keep the schedule moving, and do not describe your decision as upload authorization.
 
@@ -108,11 +117,11 @@ Machine contract: return `schema_version={REVIEW_SCHEMA_VERSION}` and `policy_ve
 
 Apply these strict review dimensions:
 1. Technical is already machine-verified. Independently confirm the manifest identifies a 16:9 H.264 video lasting 90-180 seconds. Recompute every checked-out file hash. The MP4 is deliberately excluded; confirm its expected final SHA-256 is identical in state.json, the manifest and the expected hashes above.
-2. Visual creative review: inspect all {REVIEW_FRAME_COUNT} sampled frames and evaluate compliance with the durable Source-Video-First Remotion policy above. You MUST reject slide/card-like compositions, text-heavy panels, timeline or diagram layouts, repeated identical frames, or generic illustrative visuals instead of a continuous natural visual story.
-3. Semantic: compare all {REVIEW_FRAME_COUNT} frames and the complete narration transcript with the complete source file. Reject topic mismatch, unsupported claims, or a missing central subject. Small stylistic paraphrases or natural spoken-language variations are acceptable when the original meaning is preserved.
+2. Visual creative review: inspect all {frame_count} sampled frames and evaluate compliance with the durable Source-Video-First Remotion policy above. You MUST reject slide/card-like compositions, text-heavy panels, timeline or diagram layouts, repeated identical frames, or generic illustrative visuals instead of a continuous natural visual story.
+3. Semantic: compare all {frame_count} frames and the complete narration transcript with the complete source file. Reject topic mismatch, unsupported claims, or a missing central subject. Small stylistic paraphrases or natural spoken-language variations are acceptable when the original meaning is preserved.
 4. Metadata: compare title, description and every tag with source and transcript. Reject unsupported metadata, default/generic metadata, English, or missing `https://kesher.saharoni.com`. Separately confirm that `generation_prompt` explicitly requests a female Hebrew voice (`השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות.`).
 
-You may complete the review only after doing the actual file reads and image inspection. Notes must be factual Hebrew. Finish with `{FINAL_MARKER}` on its own line followed by exactly one JSON object and no Markdown fence. The JSON must contain exactly {REVIEW_FRAME_COUNT} frame hashes and exactly {REVIEW_FRAME_COUNT} frame observations. Use this shape:
+You may complete the review only after doing the actual file reads and image inspection. Notes must be factual Hebrew. Finish with `{FINAL_MARKER}` on its own line followed by exactly one JSON object and no Markdown fence. The JSON must contain exactly {frame_count} frame hashes and exactly {frame_count} frame observations. Use this shape:
 {example_json}
 """
 
