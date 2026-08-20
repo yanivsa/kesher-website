@@ -1,16 +1,26 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "cycle": "2026-08-20",
   "status": "article_generating",
   "article": {
     "attempts": 3,
     "deploy_attempts": 0,
+    "failure_count_by_type": {},
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "next_retry_at": null,
+    "processed_run_id": null,
     "last_dispatch_at": "2026-08-20T03:57:05.500803+00:00",
     "run_id": 32330070921
   },
   "video": {
     "attempts": 0,
-    "resume_dispatches": 0
+    "resume_dispatches": 0,
+    "failure_count_by_type": {},
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "next_retry_at": null,
+    "processed_run_id": null
   },
   "last_error": null,
   "history": [
@@ -55,7 +65,13 @@
       "details": {
         "attempt": 3
       }
+    },
+    {
+      "at": "2026-08-20T04:49:20.584849+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "controller state migrated to schema v2"
     }
   ],
-  "updated_at": "2026-08-20T04:48:52.885793+00:00"
+  "updated_at": "2026-08-20T04:49:32.336854+00:00"
 }
