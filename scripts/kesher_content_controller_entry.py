@@ -2,10 +2,10 @@
 """Queue-aware entrypoint for the Kesher content controller.
 
 The base controller owns the state machine. This entrypoint adds one cross-day
-invariant: an unresolved video from an earlier article is finished before the
-current article starts a new video. That preserves the promise of one video per
-published daily article even if a run crosses midnight or an external provider
-recovers late.
+invariant: unresolved prior-day videos are drained oldest-first before the
+current article starts a new video. More than one backlog item is a queue, not a
+fatal conflict, so an external provider outage cannot permanently stop future
+daily recovery.
 """
 
 from __future__ import annotations
@@ -24,6 +24,17 @@ _base_matching = controller.matching_video_items
 def source_slug(item: dict) -> str:
     source = item.get("source") or {}
     return str(source.get("slug") or source.get("id") or "").strip()
+
+
+def source_date(item: dict) -> str:
+    source = item.get("source") or {}
+    return str(
+        item.get("israel_date")
+        or source.get("date")
+        or item.get("created_at")
+        or item.get("updated_at")
+        or "9999-12-31"
+    )
 
 
 def needs_recovery(item: dict) -> bool:
@@ -46,16 +57,16 @@ def queue_aware_matching(video_state: dict, requested_slug: str) -> list[dict]:
         and source_slug(item) != requested_slug
         and needs_recovery(item)
     ]
-    direct_unresolved = [item for item in direct if needs_recovery(item)]
-
-    unresolved = backlog + direct_unresolved
-    if len(unresolved) > 1:
-        identities = ",".join(str(item.get("id") or "unknown") for item in unresolved)
-        raise controller.ControllerError(
-            f"VIDEO_BACKLOG_CONFLICT: more than one unresolved daily video exists: {identities}"
-        )
     if backlog:
-        return backlog
+        oldest = sorted(
+            backlog,
+            key=lambda item: (
+                source_date(item),
+                str(item.get("created_at") or ""),
+                str(item.get("id") or ""),
+            ),
+        )[0]
+        return [oldest]
     return direct
 
 
