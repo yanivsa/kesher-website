@@ -83,7 +83,8 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
     if any(invariants.get(name) is not True for name in required_invariants):
         raise AutomationPolicyError("Required Kesher production invariants are not enabled")
 
-    # Temporary read-only compatibility aliases for consumers migrated in phase B.
+    # Transitional aliases only. Phase B removes these after every consumer
+    # reads the canonical v3 fields directly; they must never be persisted.
     video["jules_is_advisory"] = video["jules_review"] == "advisory"
     video["review_gate"] = "mandatory"
     video["upload_requires_approved_review"] = True
