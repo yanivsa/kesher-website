@@ -1,18 +1,18 @@
 {
   "schema_version": 2,
   "cycle": "2026-08-20",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempts": 3,
+    "attempts": 4,
     "deploy_attempts": 0,
     "failure_count_by_type": {
       "ARTICLE_WORKFLOW_FAILED": 1
     },
     "failure_fingerprint": "ARTICLE_WORKFLOW_FAILED",
     "same_failure_streak": 1,
-    "next_retry_at": "2026-08-20T05:43:56.006182+00:00",
+    "next_retry_at": null,
     "processed_run_id": 32330070921,
-    "last_dispatch_at": "2026-08-20T03:57:05.500803+00:00",
+    "last_dispatch_at": "2026-08-20T05:46:51.398563+00:00",
     "run_id": 32330070921,
     "last_run_conclusion": "failure",
     "last_failed_run_id": 32330070921
@@ -97,7 +97,16 @@
       "details": {
         "retry_at": "2026-08-20T05:43:56.006182+00:00"
       }
+    },
+    {
+      "at": "2026-08-20T05:46:51.398584+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 4
+      }
     }
   ],
-  "updated_at": "2026-08-20T05:43:27.452088+00:00"
+  "updated_at": "2026-08-20T05:46:51.398589+00:00"
 }
