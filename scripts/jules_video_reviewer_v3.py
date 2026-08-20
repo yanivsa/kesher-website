@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import json
 import re
-import sys
 from pathlib import Path
 from typing import Any
 
@@ -34,9 +33,10 @@ parse_decision = legacy.parse_decision
 
 
 def effective_frame_count() -> int:
-    active = sys.modules.get("kesher_daily_pipeline")
-    value = getattr(active, "REVIEW_FRAME_COUNT", None) if active is not None else None
-    return int(value or REVIEW_FRAME_COUNT)
+    # Production initializes this value from the canonical pipeline constant.
+    # Tests may override this module-level value explicitly without depending on
+    # global import-cache state from the legacy module.
+    return int(REVIEW_FRAME_COUNT)
 
 
 def review_json_example(item_id: str) -> dict[str, Any]:
