@@ -41,14 +41,19 @@ if [[ "$status" != "completed" ]]; then
 fi
 
 logs="$(gh run view "$run_id" --repo "$GITHUB_REPOSITORY" --log 2>&1 || true)"
+# gh run view prefixes real log records with job/step/timestamp fields. Require the
+# proof token to terminate the record so echoed shell/Python source such as
+# print('OPENCLAW_...=true') cannot masquerade as execution proof.
 check_marker() {
-  grep -Fq "$1" <<<"$logs" && printf true || printf false
+  local escaped
+  escaped="$(printf '%s' "$1" | sed 's/[][\\.^$*+?{}|()]/\\&/g')"
+  grep -Eq "(^|[[:space:]])${escaped}[[:space:]]*$" <<<"$logs" && printf true || printf false
 }
 offline="$(check_marker 'OPENCLAW_OFFLINE_REPAIR_COMPLETE=true')"
 rpc="$(check_marker 'OPENCLAW_GATEWAY_RPC_OK=true')"
 serve="$(check_marker 'TAILSCALE_SERVE_ACTIVE=true')"
 finalize="$(check_marker 'OPENCLAW_OFFLINE_FINALIZE_SUCCESS=true')"
-ready_url="$(grep -Eo 'OPENCLAW_READY_URL=https://[A-Za-z0-9._-]+/?' <<<"$logs" | tail -1 | cut -d= -f2- || true)"
+ready_url="$(grep -Eo '(^|[[:space:]])OPENCLAW_READY_URL=https://[A-Za-z0-9._-]+/?[[:space:]]*$' <<<"$logs" | sed -E 's/^.*OPENCLAW_READY_URL=/https:\/\//' | sed 's#https://https://#https://#' | tr -d '[:space:]' | tail -1 || true)"
 
 if [[ "$conclusion" == "success" && "$offline" == true && "$rpc" == true && "$serve" == true && "$finalize" == true && "$ready_url" == https://* ]]; then
   OPENCLAW_STATUS=success \
