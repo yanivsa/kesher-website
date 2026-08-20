@@ -45,10 +45,39 @@ done
 rm -f "$MNT/var/lib/openclaw-ready.txt"
 : > "$MNT/var/log/openclaw-offline-finalize.log"
 
-# Give the real gateway and Serve endpoints substantially more time to become
-# ready on an E2.1.Micro after cold boot.
-sed -i 's/for i in $(seq 1 60); do/for i in $(seq 1 300); do/g' \
-  "$MNT/usr/local/sbin/openclaw-offline-finalize.sh"
+# Keep the gateway retry budget inside the workflow's 420-second proof window.
+# More attempts are retained than the original baseline, but each RPC probe is
+# deliberately short so proof does not power off the guest mid-finalization.
+python3 - "$MNT/usr/local/sbin/openclaw-offline-finalize.sh" <<'PY'
+from pathlib import Path
+import sys
+p = Path(sys.argv[1])
+s = p.read_text()
+old = '''for i in $(seq 1 60); do
+  if "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then break; fi
+  sleep 2
+done
+"$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1 || {
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RPC
+  tail -80 /tmp/openclaw-gateway-status.txt || true
+  exit 22
+}'''
+new = '''for i in $(seq 1 90); do
+  if "$B" gateway status --require-rpc --timeout 1 >/tmp/openclaw-gateway-status.txt 2>&1; then break; fi
+  sleep 1
+done
+"$B" gateway status --require-rpc --timeout 1 >/tmp/openclaw-gateway-status.txt 2>&1 || {
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RPC
+  echo OPENCLAW_GATEWAY_UNIT_ACTIVE="$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)"
+  echo OPENCLAW_GATEWAY_UNIT_RESULT="$(systemctl show openclaw-gateway.service -p Result --value 2>/dev/null || true)"
+  echo OPENCLAW_GATEWAY_UNIT_EXEC_STATUS="$(systemctl show openclaw-gateway.service -p ExecMainStatus --value 2>/dev/null || true)"
+  tail -80 /tmp/openclaw-gateway-status.txt || true
+  exit 22
+}'''
+if old not in s:
+    raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_BLOCK_NOT_FOUND')
+p.write_text(s.replace(old, new, 1))
+PY
 
 # Run finalization only after the network/tailscale service is wanted and ordered.
 # Retry a failed oneshot instead of permanently leaving the boot in a failed state.
