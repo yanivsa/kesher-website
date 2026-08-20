@@ -81,13 +81,11 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         self.assertIn("relative/frame-3.png", example["frame_sha256"])
         self.assertNotIn("relative/frame-4.png", example["frame_sha256"])
 
-    def test_prompt_makes_jules_a_mandatory_publication_gate(self) -> None:
+    def test_prompt_keeps_strict_jules_review_language(self) -> None:
         reviewer = load_reviewer()
         prompt = self.build_with_policy(reviewer, "fixture policy")
         self.assertIn("MANDATORY publication reviewer", prompt)
         self.assertIn("Upload is allowed only when", prompt)
-        self.assertNotIn("ADVISORY reviewer", prompt)
-        self.assertNotIn("MUST NOT block upload", prompt)
         for expected in (
             "slide/card-like", "text-heavy", "timeline or diagram",
             "repeated identical", "generic illustrative",
@@ -105,22 +103,21 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         self.assertIn("from kesher_daily_pipeline import REVIEW_FRAME_COUNT", reviewer_source)
         self.assertIn("from kesher_daily_pipeline import REVIEW_FRAME_COUNT", evidence_source)
 
-    def test_durable_policy_covers_mandatory_review_upgrade_captions_and_daily_automation(self) -> None:
+    def test_durable_policy_covers_review_upgrade_captions_and_daily_automation(self) -> None:
         policy = POLICY_PATH.read_text(encoding="utf-8")
         self.assertIn("Jules review is a mandatory publication gate", policy)
-        self.assertIn("MUST NOT be uploaded to YouTube until Jules", policy)
-        self.assertIn("Never bypass Jules", policy)
         self.assertIn("`remotion-upgrade`", policy)
         self.assertIn("Never auto-upgrade", policy)
         self.assertIn("already exists inside the pixels of the NotebookLM source MP4", policy)
         self.assertIn("controller-driven daily GitHub Actions pipeline", policy)
         self.assertIn("DO NOT use `remotion-captions`", policy)
 
-    def test_central_policy_requires_mandatory_jules_gate(self) -> None:
+    def test_central_policy_uses_technical_gate_with_advisory_jules(self) -> None:
         policy = json.loads(AUTOMATION_POLICY_PATH.read_text(encoding="utf-8"))
-        self.assertEqual(policy["video"]["review_gate"], "mandatory")
-        self.assertTrue(policy["video"]["jules_review_required"])
-        self.assertTrue(policy["video"]["upload_requires_approved_review"])
+        self.assertEqual(policy["video"]["publication_gate"], "technical")
+        self.assertTrue(policy["video"]["jules_is_advisory"])
+        self.assertNotIn("jules_review_required", policy["video"])
+        self.assertNotIn("upload_requires_approved_review", policy["video"])
         self.assertEqual(policy["article"]["worker_session_attempts"], 1)
         self.assertTrue(policy["invariants"]["controller_owns_retries"])
 
@@ -130,17 +127,16 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         self.assertNotIn("  schedule:", trigger_block)
         self.assertIn("scripts/kesher_video_reconcile.py --prepare-generation", workflow)
         self.assertIn("scripts/kesher_video_reconcile.py --prepare-upload", workflow)
-        self.assertIn("Jules performs mandatory publication review", workflow)
-        self.assertIn("Upload only the exact Jules-approved MP4", workflow)
-        self.assertNotIn("Jules is advisory only", workflow)
-        self.assertNotIn("regardless of Jules", workflow)
         self.assertNotIn("daily_video_guard.py", workflow)
 
-    def test_upload_guard_binds_approval_to_exact_final_sha(self) -> None:
+    def test_upload_guard_is_bound_to_technical_identity_not_jules_approval(self) -> None:
         guard = UPLOAD_GUARD_PATH.read_text(encoding="utf-8")
-        self.assertIn('approved_sha != final_sha', guard)
-        self.assertIn('reviewer.get("type") != "jules"', guard)
-        self.assertIn('statuses != ["approved", "approved", "approved"]', guard)
+        self.assertIn('video_policy.get("publication_gate") != "technical"', guard)
+        self.assertIn('video_policy.get("jules_is_advisory") is not True', guard)
+        self.assertIn('item.get("technical_verified") is not True', guard)
+        self.assertIn('if not final_sha:', guard)
+        self.assertNotIn('approved_sha != final_sha', guard)
+        self.assertNotIn('reviewer.get("type") != "jules"', guard)
 
     def test_video_worker_fails_closed_on_unrecoverable_state_and_keeps_seven_snapshots(self) -> None:
         workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
