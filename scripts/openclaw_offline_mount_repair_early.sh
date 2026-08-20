@@ -3,8 +3,20 @@ set -Eeuo pipefail
 
 # Run the proven baseline patch first, but keep the helper alive so we can
 # harden boot-time finalization before the authenticated boot disk is detached.
+# The OCI Run Command helper receives this script as a standalone pinned file,
+# so repository-relative sibling paths do not exist on the helper. Fetch the
+# known-good baseline from the immutable merge commit that introduced this
+# cold-boot hardening, then execute it locally.
 export OPENCLAW_REPAIR_NO_POWEROFF=1
-bash scripts/openclaw_offline_mount_repair_base.sh "$@"
+BASE_COMMIT=47eb2156451b1f445f6c9212cf972c6e3106dbf9
+BASE_URL="https://raw.githubusercontent.com/yanivsa/kesher-website/${BASE_COMMIT}/scripts/openclaw_offline_mount_repair_base.sh"
+BASE_TMP="$(mktemp)"
+cleanup_base() { rm -f "$BASE_TMP"; }
+trap cleanup_base EXIT
+curl -fsSL --retry 5 --retry-delay 2 "$BASE_URL" -o "$BASE_TMP"
+bash "$BASE_TMP" "$@"
+rm -f "$BASE_TMP"
+trap - EXIT
 
 MNT=/mnt/openclaw-target
 mkdir -p "$MNT"
