@@ -12,7 +12,9 @@
     "review_gate": "mandatory",
     "jules_review_required": true,
     "upload_requires_approved_review": true,
-    "durable_state_artifacts_to_keep": 7
+    "publication_gate": "technical",
+    "jules_is_advisory": true,
+    "durable_state_artifacts_to_keep": 3
   },
   "invariants": {
     "one_article_per_slot": true,
