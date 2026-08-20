@@ -21,7 +21,7 @@
     "url": "https://kesher.saharoni.com/blog/dating-transition-to-relationship-boundaries",
     "published_date": "2026-08-20",
     "live": true,
-    "live_verified_at": "2026-08-20T08:29:58.362519+00:00",
+    "live_verified_at": "2026-08-20T08:32:38.285634+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
@@ -195,7 +195,22 @@
       "details": {
         "retry_at": "2026-08-20T08:33:55.004782+00:00"
       }
+    },
+    {
+      "at": "2026-08-20T08:32:38.285655+00:00",
+      "from": "video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-20T08:32:43.229207+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-08-20T08:33:55.004782+00:00"
+      }
     }
   ],
-  "updated_at": "2026-08-20T08:30:01.082596+00:00"
+  "updated_at": "2026-08-20T08:32:43.229227+00:00"
 }
