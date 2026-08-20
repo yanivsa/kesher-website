@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Provision Kesher booking reconciliation resources without exposing secrets.
 
+Cloudflare storage preference:
+  1. Dedicated D1 database when account capacity allows it.
+  2. Dedicated Workers KV namespace when D1 is at the account database limit.
+
 Modes:
-  cloudflare       Ensure D1 exists, apply schema, and bind BOOKING_DB to Pages.
+  cloudflare       Ensure booking storage exists and bind it to Pages.
   calendly-status  Check whether the target Calendly webhook already exists.
   calendly-create  Create a user-scoped Calendly webhook using a supplied signing key.
 
@@ -23,8 +27,9 @@ import urllib.request
 from typing import Any
 
 PROJECT_NAME = "kesher-website"
-DATABASE_NAME = "kesher-booking-attribution"
-BOOKING_BINDING = "BOOKING_DB"
+STORAGE_NAME = "kesher-booking-attribution"
+D1_BINDING = "BOOKING_DB"
+KV_BINDING = "BOOKING_KV"
 WEBHOOK_URL = "https://kesher.saharoni.com/api/calendly/webhook"
 CALENDLY_API = "https://api.calendly.com"
 CLOUDFLARE_API = "https://api.cloudflare.com/client/v4"
@@ -32,6 +37,10 @@ MIGRATION_FILE = pathlib.Path("migrations/0001_booking_attribution.sql")
 
 
 class ProvisioningError(RuntimeError):
+    pass
+
+
+class D1CapacityReached(ProvisioningError):
     pass
 
 
@@ -55,7 +64,7 @@ def request_json(
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/json",
-        "User-Agent": "kesher-booking-provisioner/1",
+        "User-Agent": "kesher-booking-provisioner/2",
     }
     if body is not None:
         headers["Content-Type"] = "application/json"
@@ -102,7 +111,7 @@ def list_all_d1(account_id: str, token: str) -> list[dict[str, Any]]:
 
 
 def ensure_d1(account_id: str, token: str) -> tuple[str, bool]:
-    query = urllib.parse.urlencode({"name": DATABASE_NAME, "per_page": "100"})
+    query = urllib.parse.urlencode({"name": STORAGE_NAME, "per_page": "100"})
     listed = cloudflare_result(
         request_json(
             f"{CLOUDFLARE_API}/accounts/{account_id}/d1/database?{query}",
@@ -110,9 +119,9 @@ def ensure_d1(account_id: str, token: str) -> tuple[str, bool]:
         )
     ) or []
 
-    matches = [item for item in listed if item.get("name") == DATABASE_NAME]
+    matches = [item for item in listed if item.get("name") == STORAGE_NAME]
     if len(matches) > 1:
-        raise ProvisioningError(f"Multiple D1 databases named {DATABASE_NAME} exist")
+        raise ProvisioningError(f"Multiple D1 databases named {STORAGE_NAME} exist")
     if matches:
         database_id = str(matches[0].get("uuid") or matches[0].get("id") or "")
         if not database_id:
@@ -125,21 +134,19 @@ def ensure_d1(account_id: str, token: str) -> tuple[str, bool]:
                 f"{CLOUDFLARE_API}/accounts/{account_id}/d1/database",
                 method="POST",
                 token=token,
-                payload={"name": DATABASE_NAME},
+                payload={"name": STORAGE_NAME},
             )
         ) or {}
     except ProvisioningError as exc:
-        if '"code":7406' in str(exc) or 'databases per account' in str(exc):
-            inventory_rows = list_all_d1(account_id, token)
+        if '"code":7406' in str(exc) or "databases per account" in str(exc):
             names = sorted(
                 str(item.get("name") or "").strip()
-                for item in inventory_rows
+                for item in list_all_d1(account_id, token)
                 if str(item.get("name") or "").strip()
             )
             inventory = ", ".join(names) if names else "(none returned by API)"
-            raise ProvisioningError(
-                "Cloudflare D1 account limit reached. Existing database names: "
-                + inventory
+            raise D1CapacityReached(
+                "D1 account limit reached; switching to KV. Existing D1 names: " + inventory
             ) from exc
         raise
 
@@ -149,7 +156,7 @@ def ensure_d1(account_id: str, token: str) -> tuple[str, bool]:
     return database_id, True
 
 
-def apply_schema(account_id: str, token: str, database_id: str) -> None:
+def apply_d1_schema(account_id: str, token: str, database_id: str) -> None:
     if not MIGRATION_FILE.exists():
         raise ProvisioningError(f"Migration file is missing: {MIGRATION_FILE}")
     sql = MIGRATION_FILE.read_text(encoding="utf-8").strip()
@@ -168,30 +175,70 @@ def apply_schema(account_id: str, token: str, database_id: str) -> None:
         raise ProvisioningError("D1 schema query returned an unsuccessful statement")
 
 
-def ensure_pages_binding(account_id: str, token: str, database_id: str) -> bool:
-    project_response = request_json(
+def list_kv_namespaces(account_id: str, token: str) -> list[dict[str, Any]]:
+    query = urllib.parse.urlencode({"per_page": "1000", "order": "title", "direction": "asc"})
+    result = cloudflare_result(
+        request_json(
+            f"{CLOUDFLARE_API}/accounts/{account_id}/storage/kv/namespaces?{query}",
+            token=token,
+        )
+    ) or []
+    return [item for item in result if isinstance(item, dict)]
+
+
+def ensure_kv(account_id: str, token: str) -> tuple[str, bool]:
+    listed = list_kv_namespaces(account_id, token)
+    matches = [item for item in listed if item.get("title") == STORAGE_NAME]
+    if len(matches) > 1:
+        raise ProvisioningError(f"Multiple KV namespaces titled {STORAGE_NAME} exist")
+    if matches:
+        namespace_id = str(matches[0].get("id") or "")
+        if not namespace_id:
+            raise ProvisioningError("Existing KV namespace response did not contain an ID")
+        return namespace_id, False
+
+    created = cloudflare_result(
+        request_json(
+            f"{CLOUDFLARE_API}/accounts/{account_id}/storage/kv/namespaces",
+            method="POST",
+            token=token,
+            payload={"title": STORAGE_NAME},
+        )
+    ) or {}
+    namespace_id = str(created.get("id") or "")
+    if not namespace_id:
+        raise ProvisioningError("Created KV namespace response did not contain an ID")
+    return namespace_id, True
+
+
+def get_pages_project(account_id: str, token: str) -> dict[str, Any]:
+    response = request_json(
         f"{CLOUDFLARE_API}/accounts/{account_id}/pages/projects/{PROJECT_NAME}",
         token=token,
     )
-    project = cloudflare_result(project_response) or {}
-    configs = project.get("deployment_configs") or {}
+    project = cloudflare_result(response) or {}
+    if not isinstance(project, dict):
+        raise ProvisioningError("Pages project response was invalid")
+    return project
 
+
+def ensure_pages_d1_binding(account_id: str, token: str, database_id: str) -> bool:
+    project = get_pages_project(account_id, token)
+    configs = project.get("deployment_configs") or {}
     production = configs.get("production") or {}
     preview = configs.get("preview") or {}
     production_d1 = dict(production.get("d1_databases") or {})
     preview_d1 = dict(preview.get("d1_databases") or {})
-
     desired = {"id": database_id}
     changed = (
-        production_d1.get(BOOKING_BINDING) != desired
-        or preview_d1.get(BOOKING_BINDING) != desired
+        production_d1.get(D1_BINDING) != desired
+        or preview_d1.get(D1_BINDING) != desired
     )
     if not changed:
         return False
 
-    production_d1[BOOKING_BINDING] = desired
-    preview_d1[BOOKING_BINDING] = desired
-
+    production_d1[D1_BINDING] = desired
+    preview_d1[D1_BINDING] = desired
     patch = {
         "deployment_configs": {
             "production": {"d1_databases": production_d1},
@@ -209,19 +256,63 @@ def ensure_pages_binding(account_id: str, token: str, database_id: str) -> bool:
     return True
 
 
+def ensure_pages_kv_binding(account_id: str, token: str, namespace_id: str) -> bool:
+    project = get_pages_project(account_id, token)
+    configs = project.get("deployment_configs") or {}
+    production = configs.get("production") or {}
+    preview = configs.get("preview") or {}
+    production_kv = dict(production.get("kv_namespaces") or {})
+    preview_kv = dict(preview.get("kv_namespaces") or {})
+    desired = {"namespace_id": namespace_id}
+    changed = (
+        production_kv.get(KV_BINDING) != desired
+        or preview_kv.get(KV_BINDING) != desired
+    )
+    if not changed:
+        return False
+
+    production_kv[KV_BINDING] = desired
+    preview_kv[KV_BINDING] = desired
+    patch = {
+        "deployment_configs": {
+            "production": {"kv_namespaces": production_kv},
+            "preview": {"kv_namespaces": preview_kv},
+        }
+    }
+    cloudflare_result(
+        request_json(
+            f"{CLOUDFLARE_API}/accounts/{account_id}/pages/projects/{PROJECT_NAME}",
+            method="PATCH",
+            token=token,
+            payload=patch,
+        )
+    )
+    return True
+
+
 def cloudflare_mode() -> None:
     account_id = require_env("CLOUDFLARE_ACCOUNT_ID")
     token = require_env("CLOUDFLARE_API_TOKEN")
 
-    database_id, created = ensure_d1(account_id, token)
-    apply_schema(account_id, token, database_id)
-    binding_changed = ensure_pages_binding(account_id, token, database_id)
+    storage_type = "d1"
+    storage_created = False
+    try:
+        storage_id, storage_created = ensure_d1(account_id, token)
+        apply_d1_schema(account_id, token, storage_id)
+        binding_changed = ensure_pages_d1_binding(account_id, token, storage_id)
+    except D1CapacityReached as exc:
+        print(str(exc), file=sys.stderr)
+        storage_type = "kv"
+        storage_id, storage_created = ensure_kv(account_id, token)
+        binding_changed = ensure_pages_kv_binding(account_id, token, storage_id)
 
-    emit_output("database_id", database_id)
-    emit_output("database_created", "true" if created else "false")
+    emit_output("storage_type", storage_type)
+    emit_output("storage_id", storage_id)
+    emit_output("storage_created", "true" if storage_created else "false")
     emit_output("binding_changed", "true" if binding_changed else "false")
     print(
-        f"Cloudflare booking reconciliation ready: database={'created' if created else 'existing'}, "
+        f"Cloudflare booking reconciliation ready: storage={storage_type}, "
+        f"resource={'created' if storage_created else 'existing'}, "
         f"binding={'updated' if binding_changed else 'already-current'}"
     )
 
