@@ -62,18 +62,31 @@ done
   tail -80 /tmp/openclaw-gateway-status.txt || true
   exit 22
 }'''
-new = '''for i in $(seq 1 90); do
-  if "$B" gateway status --require-rpc --timeout 1 >/tmp/openclaw-gateway-status.txt 2>&1; then break; fi
+new = '''rpc_ok=false
+rpc_source=""
+for i in $(seq 1 90); do
+  if "$B" gateway status --require-rpc --timeout 1 >/tmp/openclaw-gateway-status.txt 2>&1; then
+    rpc_ok=true
+    rpc_source="gateway-status"
+    break
+  fi
+  if "$B" gateway health --timeout 1 --json >/tmp/openclaw-gateway-health.json 2>&1; then
+    rpc_ok=true
+    rpc_source="gateway-health"
+    break
+  fi
   sleep 1
 done
-"$B" gateway status --require-rpc --timeout 1 >/tmp/openclaw-gateway-status.txt 2>&1 || {
+if [ "$rpc_ok" != true ]; then
   echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RPC
   echo OPENCLAW_GATEWAY_UNIT_ACTIVE="$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)"
   echo OPENCLAW_GATEWAY_UNIT_RESULT="$(systemctl show openclaw-gateway.service -p Result --value 2>/dev/null || true)"
   echo OPENCLAW_GATEWAY_UNIT_EXEC_STATUS="$(systemctl show openclaw-gateway.service -p ExecMainStatus --value 2>/dev/null || true)"
   tail -80 /tmp/openclaw-gateway-status.txt || true
+  tail -80 /tmp/openclaw-gateway-health.json 2>/dev/null || true
   exit 22
-}'''
+fi
+echo OPENCLAW_GATEWAY_RPC_SOURCE="$rpc_source"'''
 if old not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_BLOCK_NOT_FOUND')
 p.write_text(s.replace(old, new, 1))
