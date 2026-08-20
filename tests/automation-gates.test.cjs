@@ -72,7 +72,6 @@ function runPythonWorkflowLogic(prBody, filesJson, imageData, expectedExitCode) 
         check_runs: [{ name: "verify", conclusion: "success" }]
     }));
 
-    // Create dummy image file to bypass network fetch in test environment by mocking the urllib call
     const pythonScript = `
 import json, sys, re, hashlib
 pr = json.load(open("pr.json"))
@@ -122,7 +121,6 @@ sys.exit(0 if eligible else 1)
 }
 
 function testWorkflowGate() {
-    // 1. Correct structured URL plus actual image hash passes
     const correctHash = require('crypto').createHash('sha256').update("realimage").digest('hex');
     runPythonWorkflowLogic(
         `Image Source URL: https://example.com/img\nImage SHA-256: ${correctHash}`,
@@ -131,7 +129,6 @@ function testWorkflowGate() {
         0
     );
 
-    // 2. Unrelated URL/hash fails validation
     runPythonWorkflowLogic(
         `Image Source URL: https://example.com/img\nImage SHA-256: 1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef`,
         [{ filename: "src/data/posts.json" }, { filename: "public/images/generated/blog/img.jpg", raw_url: "fake" }],
@@ -139,7 +136,6 @@ function testWorkflowGate() {
         1
     );
 
-    // 3. Wrong hash fails
     runPythonWorkflowLogic(
         `Image Source URL: https://example.com/img\nImage SHA-256: ${require('crypto').createHash('sha256').update("wrongimage").digest('hex')}`,
         [{ filename: "src/data/posts.json" }, { filename: "public/images/generated/blog/img.jpg", raw_url: "fake" }],
@@ -147,7 +143,6 @@ function testWorkflowGate() {
         1
     );
 
-    // 4. Missing hash lines in body when image is present fails
     runPythonWorkflowLogic(
         `Just a normal PR body without hash`,
         [{ filename: "src/data/posts.json" }, { filename: "public/images/generated/blog/img.jpg", raw_url: "fake" }],
@@ -155,7 +150,6 @@ function testWorkflowGate() {
         1
     );
 
-    // 5. No-image fallback passes
     runPythonWorkflowLogic(
         `No image for this post`,
         [{ filename: "src/data/posts.json" }],
@@ -179,14 +173,14 @@ function testContentValidatorContracts() {
         "Formulaic phrase validation must cover title, excerpt, and content"
     );
     for (const phrase of [
-                "זה קורה כמעט לכל מי",
+        "זה קורה כמעט לכל מי",
         "טבעית לחלוטין",
         "הצעד הראשון להתמודדות",
         "המלכודת הגדולה ביותר",
         "הקצב שלכם הוא הקצב שלכם",
         "אין לוח זמנים אוניברסלי",
         "מלאים ושלמים יותר",
-"זירת התגוששות",
+        "זירת התגוששות",
         "שדה מוקשים",
         "לנווט את התקופה",
         "משפט תגובה קצר וחותך",
@@ -541,25 +535,38 @@ assert paths == ["src/a.ts", "src/b.ts"]
     );
 }
 
-function testMandatoryVideoReviewCannotBeBypassed() {
+function testTechnicalVideoPublicationCannotBeRegressed() {
     const dailyWorkflow = fs.readFileSync('.github/workflows/kesher-daily-video.yml', 'utf8');
+    const contract = JSON.parse(fs.readFileSync('config/kesher-production-contract.json', 'utf8'));
+    assert.strictEqual(contract.video.publication_gate, 'technical');
+    assert.strictEqual(contract.video.jules_review, 'advisory');
+    assert.strictEqual(contract.video.durable_state_artifacts_to_keep, 3);
     assert(
-        dailyWorkflow.includes('Upload only after all mandatory review gates approve') &&
+        dailyWorkflow.includes('Jules performs strict advisory review') &&
+        dailyWorkflow.includes('Prepare technically verified upload') &&
+        dailyWorkflow.includes('Upload exact technically verified MP4') &&
         dailyWorkflow.includes('python -u scripts/kesher_daily_pipeline.py --upload-only') &&
         dailyWorkflow.includes('--timeout-seconds 900') &&
-        !dailyWorkflow.includes('continue-on-error: true'),
-        'The daily video workflow must keep Jules mandatory, replace a stuck reviewer promptly, and upload only through the strict four-gate pipeline'
+        dailyWorkflow.includes('continue-on-error: true'),
+        'The daily video workflow must keep Jules strict but advisory and publish only through the technical gate'
+    );
+    assert(
+        !dailyWorkflow.includes('mandatory Jules') &&
+        !dailyWorkflow.includes('Jules-approved MP4') &&
+        !dailyWorkflow.includes('Upload only after all mandatory review gates approve'),
+        'Mandatory Jules publication authority must not return'
     );
     assert(
         !fs.existsSync('.github/workflows/kesher-youtube-advisory-upload.yml') &&
         !fs.existsSync('.github/workflows/kesher-video-canary-review-upload.yml') &&
         !fs.existsSync('scripts/kesher_youtube_advisory_upload.py'),
-        'No advisory workflow or helper may override a rejected or pending Jules decision'
+        'The canonical daily worker must remain the only YouTube publication path'
     );
     assert(
-        dailyWorkflow.includes("github.event_name != 'pull_request' && (github.event_name == 'schedule' || inputs.operation != 'preflight')") &&
-        dailyWorkflow.includes("always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != ''"),
-        'Pull request validation must never restore, replace, or delete the durable production video state'
+        dailyWorkflow.includes("always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != ''") &&
+        dailyWorkflow.includes('Keep the newest three durable state artifacts') &&
+        dailyWorkflow.includes('| .[3:] | .[].id'),
+        'Production state persistence must remain isolated from PR validation and retain exactly three snapshots'
     );
     assert(
         dailyWorkflow.includes('switch --orphan "$review_branch"') &&
@@ -575,5 +582,5 @@ testWorkflowGate();
 testContentValidatorContracts();
 testIndependentArticlePrGate();
 testAutomergeDeployContracts();
-testMandatoryVideoReviewCannotBeBypassed();
+testTechnicalVideoPublicationCannotBeRegressed();
 console.log('All automation gates tests passed.');
