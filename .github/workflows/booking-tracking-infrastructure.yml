@@ -19,6 +19,7 @@ concurrency:
 permissions:
   contents: read
   actions: write
+  statuses: write
 
 jobs:
   provision:
@@ -47,6 +48,7 @@ jobs:
         run: python3 scripts/provision_booking_tracking.py calendly-status
 
       - name: Create and store Calendly webhook signing key
+        id: signing_key
         if: ${{ env.CALENDLY_API_TOKEN != '' && steps.calendly.outputs.webhook_exists == 'false' }}
         run: |
           set -euo pipefail
@@ -56,6 +58,7 @@ jobs:
           printf '%s' "$signing_key" | npx --yes wrangler@4.100.0 pages secret put CALENDLY_WEBHOOK_SIGNING_KEY --project-name=kesher-website
 
       - name: Register Calendly booking webhook
+        id: webhook_create
         if: ${{ env.CALENDLY_API_TOKEN != '' && steps.calendly.outputs.webhook_exists == 'false' }}
         run: python3 scripts/provision_booking_tracking.py calendly-create
 
@@ -96,6 +99,57 @@ jobs:
 
           echo "Watching Cloudflare deployment workflow run $run_id"
           gh run watch "$run_id" --exit-status
+
+      - name: Publish booking infrastructure statuses
+        if: ${{ always() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CALENDLY_TOKEN_PRESENT: ${{ env.CALENDLY_API_TOKEN != '' }}
+          CLOUDFLARE_OUTCOME: ${{ steps.cloudflare.outcome }}
+          WEBHOOK_EXISTS: ${{ steps.calendly.outputs.webhook_exists }}
+          WEBHOOK_CHECK_OUTCOME: ${{ steps.calendly.outcome }}
+          WEBHOOK_CREATE_OUTCOME: ${{ steps.webhook_create.outcome }}
+          REDEPLOY_OUTCOME: ${{ steps.redeploy.outcome }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          publish_status() {
+            local state="$1"
+            local context="$2"
+            local description="$3"
+            gh api --method POST \
+              "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
+              -f state="$state" \
+              -f context="$context" \
+              -f description="$description" >/dev/null
+          }
+
+          if [ "$CLOUDFLARE_OUTCOME" = "success" ]; then
+            publish_status success "booking-tracking/cloudflare" "D1 schema and Pages BOOKING_DB binding are ready"
+          else
+            publish_status failure "booking-tracking/cloudflare" "Cloudflare D1 or Pages binding provisioning failed"
+          fi
+
+          if [ "$CALENDLY_TOKEN_PRESENT" != "true" ]; then
+            publish_status pending "booking-tracking/calendly-webhook" "CALENDLY_API_TOKEN is required to activate server verification"
+          elif [ "$WEBHOOK_CHECK_OUTCOME" != "success" ]; then
+            publish_status failure "booking-tracking/calendly-webhook" "Calendly webhook state check failed"
+          elif [ "$WEBHOOK_EXISTS" = "true" ]; then
+            publish_status success "booking-tracking/calendly-webhook" "Calendly booking webhook is already active"
+          elif [ "$WEBHOOK_CREATE_OUTCOME" = "success" ]; then
+            publish_status success "booking-tracking/calendly-webhook" "Calendly booking webhook was created"
+          else
+            publish_status failure "booking-tracking/calendly-webhook" "Calendly webhook activation failed"
+          fi
+
+          if [ "$REDEPLOY_OUTCOME" = "failure" ]; then
+            publish_status failure "booking-tracking/post-provision-deploy" "Post-provision Cloudflare deployment failed"
+          elif [ "$REDEPLOY_OUTCOME" = "success" ]; then
+            publish_status success "booking-tracking/post-provision-deploy" "Post-provision Cloudflare deployment succeeded"
+          else
+            publish_status success "booking-tracking/post-provision-deploy" "No additional post-provision deployment was required"
+          fi
 
       - name: Infrastructure summary
         if: ${{ always() }}
