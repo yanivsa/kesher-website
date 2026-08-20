@@ -1,17 +1,21 @@
 {
   "schema_version": 2,
   "cycle": "2026-08-20",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempts": 3,
     "deploy_attempts": 0,
-    "failure_count_by_type": {},
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "next_retry_at": null,
-    "processed_run_id": null,
+    "failure_count_by_type": {
+      "ARTICLE_WORKFLOW_FAILED": 1
+    },
+    "failure_fingerprint": "ARTICLE_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "next_retry_at": "2026-08-20T05:43:56.006182+00:00",
+    "processed_run_id": 32330070921,
     "last_dispatch_at": "2026-08-20T03:57:05.500803+00:00",
-    "run_id": 32330070921
+    "run_id": 32330070921,
+    "last_run_conclusion": "failure",
+    "last_failed_run_id": 32330070921
   },
   "video": {
     "attempts": 0,
@@ -22,7 +26,14 @@
     "next_retry_at": null,
     "processed_run_id": null
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_WORKFLOW_FAILED",
+    "message": "article run 32330070921 completed with conclusion=failure but no structured result was available",
+    "retryable": true,
+    "retry_at": "2026-08-20T05:43:56.006182+00:00",
+    "at": "2026-08-20T05:38:56.006203+00:00"
+  },
   "history": [
     {
       "at": "2026-08-19T16:42:01.037235+00:00",
@@ -71,7 +82,20 @@
       "from": "article_generating",
       "to": "article_generating",
       "reason": "controller state migrated to schema v2"
+    },
+    {
+      "at": "2026-08-20T05:38:56.006208+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "ARTICLE_WORKFLOW_FAILED",
+      "details": {
+        "message": "article run 32330070921 completed with conclusion=failure but no structured result was available",
+        "retry_at": "2026-08-20T05:43:56.006182+00:00",
+        "failure_streak": 1,
+        "run_id": 32330070921,
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-08-20T05:36:52.960900+00:00"
+  "updated_at": "2026-08-20T05:38:56.006213+00:00"
 }
