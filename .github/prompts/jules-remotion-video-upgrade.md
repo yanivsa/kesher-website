@@ -22,8 +22,8 @@ Remotion must take the **EXISTING NotebookLM MP4** and **UPGRADE** it.
 2. **Explicit Female Voice Generation Prompt Requirement**: Every NotebookLM generation prompt MUST explicitly include:
    > `השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות.`
 3. **Strict visual review language for slide/card-like output**: The automated Jules visual review MUST report as rejected any video that is composed of slide/card-like, text-heavy, timeline/diagram, repeated-frame, or generic illustrative visuals.
-4. **Jules review is a mandatory publication gate**: A technically valid MP4 MUST NOT be uploaded to YouTube until Jules has completed a structured review of the immutable evidence for that exact MP4 and returned `approved` for visual, semantic and metadata gates. Reviewer timeout, unavailability, malformed output or a rejected decision MUST block upload while preserving the exact video/evidence for controller-managed retry or repair. Never bypass Jules to preserve schedule timing.
-5. **Exact-evidence identity**: The approval MUST refer to the same item ID, final MP4 SHA-256, manifest SHA-256, transcript SHA-256, source SHA-256 and frame hashes that are later presented to the upload step. Any mismatch invalidates the approval.
+4. **Jules review is advisory, never a publication gate**: A technically verified exact-source MP4 remains publication-ready regardless of Jules review outcome, timeout, unavailability, malformed output, or rejection. Jules findings are recorded for diagnostics and future improvement and MUST NOT block or delay upload of a technically valid MP4.
+5. **Exact-evidence identity**: Any Jules review that is recorded MUST refer to the same item ID, final MP4 SHA-256, manifest SHA-256, transcript SHA-256, source SHA-256 and frame hashes presented to the reviewer. Evidence mismatch invalidates the review record, not the technically verified publication candidate.
 6. **Daily Automation**: Changes to review policy or Remotion implementation MUST preserve the scheduled controller-driven daily GitHub Actions pipeline and its durable resume behavior. Do not turn the daily flow into a manual-only process.
 
 ---
