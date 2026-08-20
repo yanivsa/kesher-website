@@ -276,10 +276,7 @@ def record_retryable_failure(
         "at": utc_now(),
     }
     state.setdefault("history", []).append({
-        "at": utc_now(),
-        "from": previous,
-        "to": status,
-        "reason": code,
+        "at": utc_now(), "from": previous, "to": status, "reason": code,
         "details": {
             "message": message,
             "retry_at": stage_state["next_retry_at"],
@@ -898,6 +895,9 @@ class Controller:
 
             if mandatory_video_review_approved(item):
                 operation = "upload"
+                inputs = {"operation": operation}
+            elif item.get("status") == "rejected" and item.get("technical_verified") is not True:
+                operation = "full"
                 inputs = {"operation": operation}
             elif item.get("status") == "rejected" and item.get("visual_review_status") == "rejected":
                 operation = "rebuild"
