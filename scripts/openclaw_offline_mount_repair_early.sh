@@ -92,56 +92,6 @@ if old not in s:
 p.write_text(s.replace(old, new, 1))
 PY
 
-# `gateway status --require-rpc` is a useful service+RPC check but OpenClaw has
-# had releases where that aggregated status path reports an auth/probe false
-# negative while direct WebSocket gateway health succeeds. Preserve status as
-# the first probe, then fall back to the direct RPC health command. Either path
-# still proves a real RPC response before we emit OPENCLAW_GATEWAY_RPC_OK=true.
-python3 - "$MNT/usr/local/sbin/openclaw-offline-finalize.sh" <<'PY'
-from pathlib import Path
-import sys
-p = Path(sys.argv[1])
-s = p.read_text()
-old = '''for i in $(seq 1 300); do
-  if "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then break; fi
-  sleep 2
-done
-"$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1 || {
-  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RPC
-  tail -80 /tmp/openclaw-gateway-status.txt || true
-  exit 22
-}
-echo OPENCLAW_GATEWAY_RPC_OK=true
-'''
-new = '''rpc_ok=false
-rpc_source=""
-for i in $(seq 1 300); do
-  if "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then
-    rpc_ok=true
-    rpc_source="gateway-status"
-    break
-  fi
-  if "$B" gateway health --timeout 5 --json >/tmp/openclaw-gateway-health.json 2>&1; then
-    rpc_ok=true
-    rpc_source="gateway-health"
-    break
-  fi
-  sleep 2
-done
-if [ "$rpc_ok" != true ]; then
-  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RPC
-  tail -80 /tmp/openclaw-gateway-status.txt 2>/dev/null || true
-  tail -80 /tmp/openclaw-gateway-health.json 2>/dev/null || true
-  exit 22
-fi
-echo OPENCLAW_GATEWAY_RPC_SOURCE="$rpc_source"
-echo OPENCLAW_GATEWAY_RPC_OK=true
-'''
-if old not in s:
-    raise SystemExit('OPENCLAW_BOOTFIX_RPC_BLOCK_NOT_FOUND')
-p.write_text(s.replace(old, new, 1))
-PY
-
 # Run finalization only after the network/tailscale service is wanted and ordered.
 # Retry a failed oneshot instead of permanently leaving the boot in a failed state.
 cat >"$MNT/etc/systemd/system/openclaw-offline-finalize.service" <<'UNIT'

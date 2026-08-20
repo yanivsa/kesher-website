@@ -119,14 +119,37 @@ state="$(tailscale status --json 2>/dev/null | python3 -c 'import json,sys; prin
 echo TAILSCALE_BACKEND_STATE="$state"
 [ "$state" = Running ] || { echo "OPENCLAW_FINALIZE_FAILED=TAILSCALE_NOT_RUNNING"; exit 20; }
 
-B="$(command -v openclaw || find /root -type f -name openclaw -perm -111 2>/dev/null | head -1)"
+B="$(command -v openclaw 2>/dev/null || true)"
+if [ -z "$B" ]; then
+  for candidate in \
+    /usr/local/bin/openclaw \
+    /usr/bin/openclaw \
+    /root/.local/bin/openclaw \
+    /root/.npm-global/bin/openclaw; do
+    if [ -x "$candidate" ]; then
+      B="$candidate"
+      break
+    fi
+  done
+fi
+if [ -z "$B" ]; then
+  B="$(timeout 20 find /root/.local /root/.npm /root/.openclaw -xdev -type f -name openclaw -perm -111 -print -quit 2>/dev/null || true)"
+fi
 [ -n "$B" ] || { echo OPENCLAW_FINALIZE_FAILED=OPENCLAW_BINARY_MISSING; exit 21; }
-"$B" config set gateway.mode local >/dev/null
-"$B" config set gateway.bind loopback >/dev/null
-"$B" config set gateway.tailscale.mode serve >/dev/null
-"$B" config set gateway.auth.allowTailscale true --strict-json >/dev/null
-"$B" config set agents.defaults.model.primary openai/gpt-5.6-sol >/dev/null
-"$B" config validate >/dev/null
+echo OPENCLAW_BINARY_DISCOVERED=true
+run_config() {
+  timeout 30 "$B" config "$@" >/dev/null || {
+    echo OPENCLAW_FINALIZE_FAILED=CONFIG_COMMAND
+    exit 21
+  }
+}
+run_config set gateway.mode local
+run_config set gateway.bind loopback
+run_config set gateway.tailscale.mode serve
+run_config set gateway.auth.allowTailscale true --strict-json
+run_config set agents.defaults.model.primary openai/gpt-5.6-sol
+run_config validate
+echo OPENCLAW_CONFIG_VALIDATED=true
 
 systemctl disable --now openclaw-wait-tailnet.service >/dev/null 2>&1 || true
 systemctl daemon-reload
