@@ -50,7 +50,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@cloudflare/workers-types": "^4.20260617.1",
-    "@eslint/js": "^10.5.0",
+    "@eslint/js": "^10.0.1",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@ffprobe-installer/ffprobe": "^1.1.2",
     "@playwright/test": "^1.61.0",
