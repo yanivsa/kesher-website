@@ -41,12 +41,15 @@ function testContentValidatorContracts() {
 
 function testTrustedArticleImageV2() {
   const workflow = read('.github/workflows/kesher-article-image.yml');
-  const worker = read('.github/scripts/article-image-worker.py');
+  const trigger = workflow.split('permissions:', 1)[0];
+  const worker = read('.github/scripts/article-image-worker-v3.py');
   const gate = read('.github/scripts/validate-article-pr.py');
   const generation = read('.github/workflows/kesher-article-generation.yml');
   const runner = read('scripts/jules_article_runner_v3.py');
+  const controllerWorkflow = read('.github/workflows/kesher-content-controller.yml');
   const contract = JSON.parse(read('config/kesher-production-contract.json'));
 
+  assert.strictEqual(contract.controller_state_schema_version, 3);
   assert.strictEqual(contract.retry.max_attempts_per_stage, 3);
   assert.deepStrictEqual(contract.retry.backoff_minutes, [5, 15]);
   assert.strictEqual(contract.image.required_for_article, true);
@@ -55,21 +58,31 @@ function testTrustedArticleImageV2() {
   assert.strictEqual(contract.image.max_attempts, 3);
   assert.deepStrictEqual(contract.image.provider_order, ['gemini', 'unsplash', 'pexels', 'local-curated']);
   assert.strictEqual(contract.image.gemini_model, 'gemini-3.1-flash-image');
+  assert.strictEqual(contract.image.visual_verifier_model, 'gemini-3.5-flash');
+  assert.strictEqual(contract.image.external_stock_requires_pixel_verification, true);
 
-  assert(workflow.includes('pull_request_target:'));
+  assert(!trigger.includes('pull_request_target:'));
+  assert(trigger.includes('workflow_dispatch:'));
+  assert(workflow.includes('run-name: Kesher Image PR'));
   assert(workflow.includes('Checkout trusted image worker'));
   assert(workflow.includes('ref: main'));
   assert(workflow.includes('persist-credentials: false'));
   assert(workflow.includes('GOOGLE_API_KEY'));
   assert(workflow.includes('UNSPLASH_ACCESS_KEY'));
   assert(workflow.includes('PEXELS_API_KEY'));
+  assert(workflow.includes('article-image-worker-v3.py'));
   assert(workflow.includes('actions/workflows/ci.yml/dispatches'));
+  assert(controllerWorkflow.includes('Kesher Trusted Article Image'));
+  assert(controllerWorkflow.includes('kesher_content_controller_v3_entry.py'));
 
   assert(worker.includes('GEMINI_MODEL = "gemini-3.1-flash-image"'));
+  assert(worker.includes('VERIFY_MODEL = "gemini-3.5-flash"'));
   assert(worker.indexOf('try_gemini') < worker.indexOf('try_unsplash'));
   assert(worker.indexOf('try_unsplash') < worker.indexOf('try_pexels'));
   assert(worker.includes('return local_fallback(repo, post, head_ref, token, attempts)'));
-  assert(worker.includes('local://'));
+  assert(worker.includes('/v1/models/{GEMINI_MODEL}:generateContent'));
+  assert(worker.includes('verify_pixels(post, data, ext)'));
+  assert(worker.includes('source_path, "main", token'));
   assert(worker.includes('ARTICLE_IMAGE_COMMITTED'));
 
   assert(gate.includes('New article requires a trusted local image; no-image publication is forbidden'));

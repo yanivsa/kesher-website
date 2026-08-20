@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import importlib.util
+import inspect
 import json
 import struct
 import sys
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKER_PATH = ROOT / ".github" / "scripts" / "article-image-worker.py"
+WORKER_PATH = ROOT / ".github" / "scripts" / "article-image-worker-v3.py"
 VALIDATOR_PATH = ROOT / ".github" / "scripts" / "validate-article-pr.py"
 WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-article-image.yml"
 CONTRACT_PATH = ROOT / "config" / "kesher-production-contract.json"
@@ -30,6 +32,7 @@ def fake_png(width: int = 1200, height: int = 675) -> bytes:
 class ArticleImageWorkerTests(unittest.TestCase):
     def test_contract_caps_every_stage_at_three_total_attempts(self):
         contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(contract["controller_state_schema_version"], 3)
         self.assertEqual(contract["retry"]["max_attempts_per_stage"], 3)
         self.assertEqual(contract["retry"]["backoff_minutes"], [5, 15])
         self.assertTrue(contract["retry"]["attempts_include_initial_run"])
@@ -42,14 +45,16 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertTrue(contract["image"]["fallback_must_be_local"])
         self.assertFalse(contract["image"]["no_image_publication_allowed"])
         self.assertEqual(contract["image"]["gemini_model"], "gemini-3.1-flash-image")
+        self.assertEqual(contract["image"]["visual_verifier_model"], "gemini-3.5-flash")
+        self.assertTrue(contract["image"]["external_stock_requires_pixel_verification"])
 
     def test_all_external_failures_fall_through_to_local(self):
-        worker = load(WORKER_PATH, "article_image_worker_test")
+        worker = load(WORKER_PATH, "article_image_worker_v3_fallback_test")
         calls = []
         worker.try_gemini = lambda post, attempts: (attempts.append("gemini"), calls.append("gemini"), None)[2]
         worker.try_unsplash = lambda post, attempts: (attempts.append("unsplash"), calls.append("unsplash"), None)[2]
         worker.try_pexels = lambda post, attempts: (attempts.append("pexels"), calls.append("pexels"), None)[2]
-        worker.local_fallback = lambda repo, post, ref, token, attempts: worker.ImageCandidate(
+        worker.local_fallback = lambda repo, post, ref, token, attempts: worker.core.ImageCandidate(
             "Local", fake_png(), "png", "local://public/images/generated/blog/listening-in-relationships.jpg",
             "זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור", attempts + ["local-curated"]
         )
@@ -58,11 +63,56 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertEqual(candidate.provider, "Local")
         self.assertEqual(candidate.attempts, ["gemini", "unsplash", "pexels", "local-curated"])
 
+    def test_local_fallback_is_read_only_from_trusted_main(self):
+        worker = load(WORKER_PATH, "article_image_worker_v3_trusted_main_test")
+        seen = {}
+
+        def fake_content(repo, path, ref, token):
+            seen.update({"repo": repo, "path": path, "ref": ref, "token": token})
+            return {"content": ""}
+
+        worker.core.github_content = fake_content
+        worker.core.decode_content = lambda payload: fake_png()
+        worker.local_fallback("o/r", {"title": "שיחה", "id": "x"}, "untrusted-pr-sha", "t", [])
+        self.assertEqual(seen["ref"], "main")
+
+    def test_gemini_generation_uses_current_official_generate_content_shape(self):
+        source = WORKER_PATH.read_text(encoding="utf-8")
+        self.assertIn(f"/v1/models/{{GEMINI_MODEL}}:generateContent", source)
+        self.assertIn('"responseModalities": ["IMAGE"]', source)
+        self.assertIn('"responseFormat": {"image": {"aspectRatio": "16:9"}}', source)
+        self.assertIn('part.get("inlineData")', source)
+        self.assertNotIn("/v1beta/interactions", source)
+
+    def test_external_stock_is_never_accepted_from_search_metadata_alone(self):
+        source = WORKER_PATH.read_text(encoding="utf-8")
+        self.assertIn("verify_pixels(post, data, ext)", source)
+        self.assertIn("if not google_key():\n        return None", source)
+        self.assertIn("Do not claim anything not visible", source)
+
+    def test_partial_github_failure_is_recoverable_by_writing_evidence_before_commit(self):
+        worker = load(WORKER_PATH, "article_image_worker_v3_atomicity_test")
+        source = inspect.getsource(worker.ensure_image)
+        self.assertLess(source.index("patch_pr_body"), source.index("commit_files("))
+        self.assertIn("trusted_image_present", source)
+
+    def test_summary_generation_matches_publishable_content_policy(self):
+        worker = load(WORKER_PATH, "article_image_worker_v3_summary_test")
+        thick = {
+            "id": "thick", "title": "כותרת", "date": "2026-08-20", "category": "זוגיות",
+            "excerpt": "תקציר", "content": "<p>" + ("מילה " * 500) + "</p>" + ("<h3>שאלה</h3>" * 5),
+        }
+        thin = {
+            "id": "thin", "title": "ישן", "date": "2024-01-01", "category": "זוגיות",
+            "excerpt": "ישן", "content": "<p>קצר</p>",
+        }
+        self.assertEqual([row["id"] for row in worker.summaries([thick, thin])], ["thick"])
+
     def test_worker_accepts_only_article_sized_png_or_jpeg(self):
-        worker = load(WORKER_PATH, "article_image_worker_dimensions_test")
-        self.assertEqual(worker.validate_candidate(fake_png())[:2], (1200, 675))
+        worker = load(WORKER_PATH, "article_image_worker_v3_dimensions_test")
+        self.assertEqual(worker.core.validate_candidate(fake_png())[:2], (1200, 675))
         with self.assertRaisesRegex(RuntimeError, "too small"):
-            worker.validate_candidate(fake_png(320, 180))
+            worker.core.validate_candidate(fake_png(320, 180))
 
     def test_validator_forbids_no_image_publication(self):
         validator = load(VALIDATOR_PATH, "article_validator_image_test")
@@ -76,15 +126,25 @@ class ArticleImageWorkerTests(unittest.TestCase):
             "base": {"ref": "main", "repo": {"full_name": "x/y"}},
             "head": {"repo": {"full_name": "x/y"}},
         }
-        errors = validator.evaluate(pr, [{"filename": "src/data/posts.json"}], [{"name": "verify", "conclusion": "success"}], base, base + [new], lambda _: b"")
+        errors = validator.evaluate(
+            pr,
+            [{"filename": "src/data/posts.json"}],
+            [{"name": "verify", "conclusion": "success"}],
+            base,
+            base + [new],
+            lambda _: b"",
+        )
         self.assertTrue(any("no-image publication is forbidden" in error for error in errors), errors)
 
-    def test_workflow_executes_only_trusted_main_worker_and_dispatches_fresh_ci(self):
+    def test_workflow_is_controller_owned_and_executes_only_trusted_main_worker(self):
         workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
-        self.assertIn("pull_request_target:", workflow)
+        trigger = workflow.split("permissions:", 1)[0]
+        self.assertNotIn("pull_request_target:", trigger)
+        self.assertIn("workflow_dispatch:", trigger)
+        self.assertIn("run-name: Kesher Image PR", workflow)
         self.assertIn("ref: main", workflow)
         self.assertIn("persist-credentials: false", workflow)
-        self.assertIn("article-image-worker.py", workflow)
+        self.assertIn("article-image-worker-v3.py", workflow)
         self.assertIn("GOOGLE_API_KEY", workflow)
         self.assertIn("UNSPLASH_ACCESS_KEY", workflow)
         self.assertIn("PEXELS_API_KEY", workflow)
