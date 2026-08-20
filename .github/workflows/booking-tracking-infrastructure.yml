@@ -65,7 +65,47 @@ jobs:
           echo "::notice::CALENDLY_API_TOKEN is not configured. D1 reconciliation is active, but Calendly server-side verification remains pending."
 
       - name: Redeploy Pages after binding or webhook activation
+        id: redeploy
         if: ${{ steps.cloudflare.outputs.binding_changed == 'true' || (env.CALENDLY_API_TOKEN != '' && steps.calendly.outputs.webhook_exists == 'false') }}
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run deploy.yml --ref main
+        run: |
+          set -euo pipefail
+          gh workflow run deploy.yml --ref main
+
+          run_id=""
+          for attempt in $(seq 1 30); do
+            run_id="$(gh run list \
+              --workflow=deploy.yml \
+              --branch=main \
+              --event=workflow_dispatch \
+              --limit=20 \
+              --json databaseId,headSha \
+              --jq '.[] | select(.headSha == env.GITHUB_SHA) | .databaseId' \
+              | head -n 1)"
+            if [ -n "$run_id" ]; then
+              break
+            fi
+            sleep 2
+          done
+
+          if [ -z "$run_id" ]; then
+            echo "::error::Could not locate the post-provision deployment for $GITHUB_SHA"
+            exit 1
+          fi
+
+          echo "Watching Cloudflare deployment workflow run $run_id"
+          gh run watch "$run_id" --exit-status
+
+      - name: Infrastructure summary
+        if: ${{ always() }}
+        run: |
+          echo "D1 database: ${{ steps.cloudflare.outputs.database_created == 'true' && 'created' || 'existing' }}"
+          echo "Pages binding changed: ${{ steps.cloudflare.outputs.binding_changed || 'unknown' }}"
+          if [ -z "$CALENDLY_API_TOKEN" ]; then
+            echo "Calendly webhook: pending token"
+          elif [ "${{ steps.calendly.outputs.webhook_exists }}" = "true" ]; then
+            echo "Calendly webhook: already active"
+          else
+            echo "Calendly webhook: activation attempted"
+          fi
