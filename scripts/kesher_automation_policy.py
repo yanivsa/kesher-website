@@ -6,8 +6,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-POLICY_PATH = ROOT / "config" / "kesher-automation-policy.json"
-EXPECTED_SCHEMA_VERSION = 1
+POLICY_PATH = ROOT / "config" / "kesher-production-contract.json"
+EXPECTED_CONTRACT_VERSION = 3
 
 
 class AutomationPolicyError(RuntimeError):
@@ -18,19 +18,30 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
     try:
         policy = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        raise AutomationPolicyError(f"Automation policy is unreadable: {path}") from exc
+        raise AutomationPolicyError(f"Production contract is unreadable: {path}") from exc
     if not isinstance(policy, dict):
-        raise AutomationPolicyError("Automation policy must be a JSON object")
-    if policy.get("schema_version") != EXPECTED_SCHEMA_VERSION:
+        raise AutomationPolicyError("Production contract must be a JSON object")
+    if policy.get("contract_version") != EXPECTED_CONTRACT_VERSION:
         raise AutomationPolicyError(
-            f"Automation policy schema mismatch: expected {EXPECTED_SCHEMA_VERSION}"
+            f"Production contract mismatch: expected version {EXPECTED_CONTRACT_VERSION}"
         )
 
+    scheduler = policy.get("scheduler")
     article = policy.get("article")
+    image = policy.get("image")
     video = policy.get("video")
     invariants = policy.get("invariants")
-    if not isinstance(article, dict) or not isinstance(video, dict) or not isinstance(invariants, dict):
-        raise AutomationPolicyError("Automation policy is missing article/video/invariants sections")
+    if not all(isinstance(section, dict) for section in (scheduler, article, image, video, invariants)):
+        raise AutomationPolicyError(
+            "Production contract is missing scheduler/article/image/video/invariants sections"
+        )
+
+    if (
+        scheduler.get("owner") != "kesher-content-controller"
+        or scheduler.get("heartbeat_minutes") != 15
+        or scheduler.get("failure_recovery") != "heartbeat"
+    ):
+        raise AutomationPolicyError("Scheduler contract is invalid")
 
     backoff = article.get("retry_backoff_minutes")
     if (
@@ -40,14 +51,24 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         or not backoff
         or any(not isinstance(value, int) or value <= 0 for value in backoff)
     ):
-        raise AutomationPolicyError("Article automation policy is invalid")
+        raise AutomationPolicyError("Article automation contract is invalid")
+
+    if (
+        image.get("required_for_article") is not True
+        or image.get("worker_owner") != "github-actions"
+        or image.get("fallback_must_be_local") is not True
+    ):
+        raise AutomationPolicyError("Image production contract is invalid")
 
     if (
         video.get("publication_gate") != "technical"
-        or video.get("jules_is_advisory") is not True
+        or video.get("jules_review") != "advisory"
+        or video.get("queue_order") != "fifo"
+        or video.get("durable_state_artifacts_to_keep") != 3
+        or video.get("durable_state_retention_days") != 14
     ):
         raise AutomationPolicyError(
-            "Video publication policy must use the technical gate with advisory Jules review"
+            "Video contract must use technical publication, advisory Jules, FIFO, and 3 snapshots/14 days"
         )
 
     required_invariants = (
@@ -56,16 +77,17 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         "workers_are_single_attempt",
         "controller_owns_retries",
         "heartbeat_is_recovery_only",
+        "provider_ids_are_persisted_before_followup",
+        "youtube_insert_is_idempotent",
     )
     if any(invariants.get(name) is not True for name in required_invariants):
-        raise AutomationPolicyError("Required Kesher automation invariants are not enabled")
+        raise AutomationPolicyError("Required Kesher production invariants are not enabled")
 
-    # Transitional compatibility for the existing workflow validation step.
-    # Canonical policy is the technical publication gate above; these aliases
-    # must not be consumed by publication logic and can be removed once the
-    # workflow wording is migrated in a dedicated cleanup.
-    video.setdefault("review_gate", "mandatory")
-    video.setdefault("upload_requires_approved_review", True)
+    # Transitional aliases only. Phase B removes these after every consumer
+    # reads the canonical v3 fields directly; they must never be persisted.
+    video["jules_is_advisory"] = video["jules_review"] == "advisory"
+    video["review_gate"] = "mandatory"
+    video["upload_requires_approved_review"] = True
     return policy
 
 
@@ -83,6 +105,6 @@ def article_retry_backoff_minutes(failure_streak: int, policy: dict[str, Any] | 
 def durable_video_state_artifacts_to_keep(policy: dict[str, Any] | None = None) -> int:
     current = policy or load_policy()
     value = int(current["video"].get("durable_state_artifacts_to_keep") or 0)
-    if value < 3:
-        raise AutomationPolicyError("At least three durable video-state artifacts must be retained")
+    if value != 3:
+        raise AutomationPolicyError("Exactly three durable video-state artifacts must be retained")
     return value
