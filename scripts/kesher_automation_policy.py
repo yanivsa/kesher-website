@@ -59,6 +59,13 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
     )
     if any(invariants.get(name) is not True for name in required_invariants):
         raise AutomationPolicyError("Required Kesher automation invariants are not enabled")
+
+    # Transitional compatibility for the existing workflow validation step.
+    # Canonical policy is the technical publication gate above; these aliases
+    # must not be consumed by publication logic and can be removed once the
+    # workflow wording is migrated in a dedicated cleanup.
+    video.setdefault("review_gate", "mandatory")
+    video.setdefault("upload_requires_approved_review", True)
     return policy
 
 
