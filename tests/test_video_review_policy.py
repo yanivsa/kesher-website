@@ -31,6 +31,7 @@ def load_reviewer(frame_count: int = 8):
         assert spec and spec.loader
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
+        module.REVIEW_FRAME_COUNT = frame_count
         return module
     finally:
         if previous is None:
