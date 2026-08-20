@@ -6,6 +6,7 @@ import FloatingWhatsApp from './FloatingWhatsApp';
 import GeoBanner from '../GEO/GeoBanner';
 import MobileStickyBar from './MobileStickyBar';
 import AIChatbot from '../AIChatbot/AIChatbot';
+import ConsentBanner from '../Analytics/ConsentBanner';
 import SiteAttributionTracker from '../Analytics/SiteAttributionTracker';
 import styles from './Layout.module.css';
 
@@ -28,6 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
       <div className={styles.wrapper}>
         <SiteAttributionTracker />
+        <ConsentBanner />
         <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>
         {children}
       </div>
@@ -37,6 +39,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className={styles.wrapper}>
       <SiteAttributionTracker />
+      <ConsentBanner />
       <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>
       <GeoBanner />
       <Header />
