@@ -1,4 +1,5 @@
 name: Kesher Article Generation
+run-name: Kesher Article ${{ inputs.slot }}
 
 on:
   workflow_dispatch:
