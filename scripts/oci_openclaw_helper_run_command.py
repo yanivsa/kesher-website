@@ -71,9 +71,6 @@ def wait_plugin(config, compartment_id: str, instance_id: str, timeout: int = 60
             ).data
             status = rows[0].status if rows else "MISSING"
         except oci.exceptions.ServiceError as exc:
-            # Oracle documents that enabling a plugin can take up to ten
-            # minutes. During that registration window the plugin endpoint can
-            # report that the requested plugin is not present yet.
             transient_not_present = (
                 exc.status == 400
                 and exc.code == "InvalidParameter"
@@ -87,7 +84,6 @@ def wait_plugin(config, compartment_id: str, instance_id: str, timeout: int = 60
             print(f"OCI_RUN_COMMAND_PLUGIN_STATUS={status}", flush=True)
             last = status
         if status == "RUNNING":
-            # Give the minimal cloud-init sudoers file a short window to land.
             time.sleep(20)
             return
         time.sleep(5)
@@ -99,20 +95,30 @@ def pinned_wrapper(script_file: str) -> str:
     sha = os.environ.get("GITHUB_SHA", "")
     if not repo or not re.fullmatch(r"[0-9a-f]{40}", sha):
         raise RuntimeError("GITHUB_REPOSITORY_OR_SHA_MISSING")
+
     local = Path(script_file)
     data = local.read_bytes()
     digest = hashlib.sha256(data).hexdigest()
     rel = local.as_posix().lstrip("./")
-    # Pin the download to the exact workflow commit and verify the bytes before
-    # executing anything as root. No credentials are carried in this script.
     url = f"https://raw.githubusercontent.com/{repo}/{sha}/{quote(rel, safe='/')}"
+
+    dependency = Path("scripts/openclaw_offline_mount_repair_base.sh")
+    dep_data = dependency.read_bytes()
+    dep_digest = hashlib.sha256(dep_data).hexdigest()
+    dep_rel = dependency.as_posix()
+    dep_url = f"https://raw.githubusercontent.com/{repo}/{sha}/{quote(dep_rel, safe='/')}"
+
     wrapper = f"""#!/usr/bin/env bash
 set -Eeuo pipefail
-tmp=$(mktemp)
-trap 'rm -f "$tmp"' EXIT
-curl -fsSL --retry 5 --retry-delay 2 '{url}' -o "$tmp"
-printf '%s  %s\n' '{digest}' "$tmp" | sha256sum -c -
-sudo -n env OPENCLAW_REPAIR_NO_POWEROFF=1 bash "$tmp"
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+mkdir -p "$work/scripts"
+curl -fsSL --retry 5 --retry-delay 2 '{url}' -o "$work/{rel}"
+printf '%s  %s\n' '{digest}' "$work/{rel}" | sha256sum -c -
+curl -fsSL --retry 5 --retry-delay 2 '{dep_url}' -o "$work/{dep_rel}"
+printf '%s  %s\n' '{dep_digest}' "$work/{dep_rel}" | sha256sum -c -
+cd "$work"
+sudo -n env OPENCLAW_REPAIR_NO_POWEROFF=1 bash "{rel}"
 """
     if len(wrapper.encode()) > 3900:
         raise RuntimeError("OCI_RUN_COMMAND_WRAPPER_TOO_LARGE")
