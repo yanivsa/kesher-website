@@ -34,7 +34,8 @@
     "processed_run_id": null,
     "item_id": "video-20260819-101504-32da84edf9",
     "status": "rejected",
-    "last_dispatch_at": "2026-08-20T07:59:44.366898+00:00"
+    "last_dispatch_at": "2026-08-20T07:59:44.366898+00:00",
+    "run_id": 32346614046
   },
   "last_error": null,
   "history": [
