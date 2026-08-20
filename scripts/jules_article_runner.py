@@ -18,6 +18,7 @@ import re
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,6 +37,7 @@ RESULT_SCHEMA_VERSION = 1
 DEFAULT_RESULT_PATH = Path("/tmp/kesher-article-result.json")
 SESSION_LOOKUP_ATTEMPTS_AFTER_UNCERTAIN_CREATE = 4
 SESSION_LOOKUP_DELAY_SECONDS = 5
+MAX_SESSION_LIST_PAGES = 100
 
 
 class ArticleRunnerError(RuntimeError):
@@ -246,52 +248,73 @@ def normalize_session_name(payload: dict[str, Any]) -> str:
 
 
 def list_active_slot_sessions(api_key: str, slot: str) -> list[dict[str, Any]]:
-    payload = request_json(
-        "GET",
-        f"{API_BASE}/sessions?pageSize=100",
-        jules_headers(api_key),
-    )
-    sessions = payload.get("sessions") if isinstance(payload, dict) else None
-    if not isinstance(sessions, list):
-        raise ArticleRunnerError("JULES_SESSION_LIST_ERROR", "Jules session list response is invalid")
+    """List every active Jules session for the exact slot, across all pages."""
+
     title = slot_session_title(slot)
     active: list[dict[str, Any]] = []
-    for session in sessions:
-        if not isinstance(session, dict) or str(session.get("title") or "") != title:
-            continue
-        state = str(session.get("state") or "UNKNOWN").upper()
-        if state == "COMPLETED" or state in TERMINAL_FAILURES:
-            continue
-        if not normalize_session_name(session):
-            continue
-        active.append(session)
+    page_token = ""
+    seen_tokens: set[str] = set()
+
+    for _ in range(MAX_SESSION_LIST_PAGES):
+        query = {"pageSize": "100"}
+        if page_token:
+            query["pageToken"] = page_token
+        payload = request_json(
+            "GET",
+            f"{API_BASE}/sessions?{urllib.parse.urlencode(query)}",
+            jules_headers(api_key),
+        )
+        sessions = payload.get("sessions") if isinstance(payload, dict) else None
+        if not isinstance(sessions, list):
+            raise ArticleRunnerError("JULES_SESSION_LIST_ERROR", "Jules session list response is invalid")
+        for session in sessions:
+            if not isinstance(session, dict) or str(session.get("title") or "") != title:
+                continue
+            state = str(session.get("state") or "UNKNOWN").upper()
+            if state == "COMPLETED" or state in TERMINAL_FAILURES:
+                continue
+            if not normalize_session_name(session):
+                continue
+            active.append(session)
+
+        next_token = str((payload or {}).get("nextPageToken") or "").strip()
+        if not next_token:
+            break
+        if next_token in seen_tokens:
+            raise ArticleRunnerError("JULES_SESSION_LIST_ERROR", "Jules session pagination repeated a page token")
+        seen_tokens.add(next_token)
+        page_token = next_token
+    else:
+        raise ArticleRunnerError(
+            "JULES_SESSION_LIST_ERROR",
+            f"Jules session inventory exceeded {MAX_SESSION_LIST_PAGES} pages; refusing unsafe create",
+        )
+
     active.sort(key=lambda row: (str(row.get("createTime") or ""), normalize_session_name(row)))
     return active
 
 
 def recover_active_slot_session(api_key: str, slot: str) -> tuple[str, str] | None:
-    """Reuse one live session for the slot and clean up accidental extras."""
+    """Reuse exactly one live slot session; fail closed on ambiguous duplicates.
+
+    Jules' documented v1alpha Session API has create/get/list/sendMessage and
+    approvePlan, but no documented cancel/delete method. Therefore duplicate
+    active sessions are reported instead of invoking an unsupported destructive
+    endpoint. The controller will back off; once one session creates a PR,
+    GitHub preflight prevents a new session from being created.
+    """
 
     active = list_active_slot_sessions(api_key, slot)
     if not active:
         return None
-    authoritative = active[0]
-    for extra in active[1:]:
-        extra_name = normalize_session_name(extra)
-        try:
-            request_json(
-                "DELETE",
-                f"{API_BASE}/{extra_name}",
-                jules_headers(api_key),
-                max_attempts=1,
-            )
-        except ArticleRunnerError as exc:
-            raise ArticleRunnerError(
-                "JULES_DUPLICATE_SESSION_CLEANUP",
-                f"multiple active Jules sessions exist for {slot}; cleanup of {extra_name} was not confirmed: {exc}",
-            ) from exc
-        print(f"JULES_ARTICLE_DUPLICATE_CANCELLED session={extra_name}", flush=True)
+    if len(active) > 1:
+        identities = ",".join(normalize_session_name(row) for row in active[:8])
+        raise ArticleRunnerError(
+            "JULES_DUPLICATE_SESSIONS",
+            f"multiple active Jules sessions exist for {slot}; refusing create or unsupported cancellation: {identities}",
+        )
 
+    authoritative = active[0]
     name = normalize_session_name(authoritative)
     url = str(
         authoritative.get("url")
@@ -428,35 +451,29 @@ def poll(api_key: str, session: str, timeout_seconds: int = SESSION_SECONDS) -> 
             print("JULES_ARTICLE_RESUMED", flush=True)
         time.sleep(15)
 
-    print(f"JULES_ARTICLE_TIMEOUT session={session}", file=sys.stderr, flush=True)
-    try:
-        request_json(
-            "DELETE",
-            f"{API_BASE}/sessions/{sid}",
-            jules_headers(api_key),
-            max_attempts=1,
-        )
-        return "JULES_TIMEOUT", "", "Jules session timed out and was cancelled"
-    except ArticleRunnerError as exc:
-        return (
-            "JULES_TIMEOUT_CANCELLATION_UNCONFIRMED",
-            "",
-            f"Jules session timed out; cancellation could not be confirmed: {exc}",
-        )
+    # The public Jules v1alpha REST API currently documents no session
+    # cancel/delete method. Keep the timed-out session authoritative and let the
+    # controller retry later; the next worker will list and resume this same
+    # slot session instead of creating another one.
+    print(f"JULES_ARTICLE_TIMEOUT session={session} session_preserved=yes", file=sys.stderr, flush=True)
+    return (
+        "JULES_TIMEOUT_SESSION_ACTIVE",
+        "",
+        "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+    )
 
 
 def retryable_code(code: str) -> bool:
     return code in {
         "COMPLETED_WITHOUT_PR",
         "JULES_TERMINAL_FAILURE",
-        "JULES_TIMEOUT",
-        "JULES_TIMEOUT_CANCELLATION_UNCONFIRMED",
+        "JULES_TIMEOUT_SESSION_ACTIVE",
         "JULES_RATE_LIMIT",
         "JULES_SERVER_ERROR",
         "JULES_NETWORK_ERROR",
         "JULES_CREATE_ERROR",
         "JULES_CREATE_UNCERTAIN",
-        "JULES_DUPLICATE_SESSION_CLEANUP",
+        "JULES_DUPLICATE_SESSIONS",
         "JULES_SESSION_LIST_ERROR",
     }
 
