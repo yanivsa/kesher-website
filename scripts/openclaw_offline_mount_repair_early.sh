@@ -140,13 +140,11 @@ timeout 15 systemctl restart --no-block openclaw-gateway.service || {
 }
 echo OPENCLAW_GATEWAY_START_REQUESTED=true'''
 new_start = '''echo OPENCLAW_SYSTEMD_STAGE=start-gateway
-# Runtime systemctl/symlink activation has repeatedly hung on the constrained
-# OCI E2 guest. The unit is persisted offline before boot; launch the same
-# loopback-only gateway directly in a fully detached session for this boot.
-# RPC checks below remain the authority for readiness.
-setsid -f env HOME=/root OPENCLAW_NO_PROMPT=1 OPENCLAW_SERVICE_REPAIR_POLICY=external \
-  "$B" gateway --port 18789 \
-  >/var/log/openclaw-gateway-direct.log 2>&1 </dev/null || true
+# The gateway unit is already persisted offline into multi-user.target.wants.
+# Runtime activation calls have repeatedly hung on this constrained E2 guest,
+# including systemctl and setsid. Do not launch a second process here.
+# Continue directly to bounded RPC/health proof; if systemd did not start the
+# persisted unit successfully, those probes fail closed with diagnostics.
 echo OPENCLAW_GATEWAY_START_REQUESTED=true'''
 if old_start not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_START_BLOCK_NOT_FOUND')
