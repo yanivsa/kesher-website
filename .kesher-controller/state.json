@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "image_retry_wait",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -59,8 +59,8 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/504"
   },
   "image": {
-    "attempt_count": 1,
-    "status": "retry_wait",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": {
       "stage": "image",
       "code": "IMAGE_WORKFLOW_FAILED",
@@ -69,7 +69,7 @@
       "retry_at": "2026-08-21T09:40:16.782464+00:00",
       "at": "2026-08-21T09:35:16.782493+00:00"
     },
-    "next_retry_at": "2026-08-21T09:40:16.782464+00:00",
+    "next_retry_at": null,
     "run_id": 32468430226,
     "processed_run_id": 32468430226,
     "provider_id": null,
@@ -78,7 +78,7 @@
     "failure_count_by_type": {
       "IMAGE_WORKFLOW_FAILED": 1
     },
-    "last_dispatch_at": "2026-08-21T09:33:04.330616+00:00",
+    "last_dispatch_at": "2026-08-21T09:46:00.045714+00:00",
     "last_run_conclusion": "failure",
     "last_failed_run_id": 32468430226
   },
@@ -96,14 +96,7 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_WORKFLOW_FAILED",
-    "message": "trusted image run 32468430226 completed with conclusion=failure but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-08-21T09:40:16.782464+00:00",
-    "at": "2026-08-21T09:35:16.782493+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-21T07:02:00+00:00",
@@ -167,7 +160,17 @@
         "failure_streak": 1,
         "run_id": 32468430226
       }
+    },
+    {
+      "at": "2026-08-21T09:46:00.045726+00:00",
+      "from": "image_retry_wait",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 2,
+        "pr_number": 504
+      }
     }
   ],
-  "updated_at": "2026-08-21T09:35:16.782506+00:00"
+  "updated_at": "2026-08-21T09:46:00.045732+00:00"
 }
