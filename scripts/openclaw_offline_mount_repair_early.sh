@@ -51,6 +51,11 @@ from pathlib import Path
 import sys
 p = Path(sys.argv[1])
 s = p.read_text()
+old_output = 'exec > >(tee -a /var/log/openclaw-offline-finalize.log /dev/console) 2>&1'
+new_output = 'exec > >(tee -a /var/log/openclaw-offline-finalize.log) 2>&1'
+if old_output not in s:
+    raise SystemExit('OPENCLAW_BOOTFIX_CONSOLE_TEE_NOT_FOUND')
+s = s.replace(old_output, new_output, 1)
 old = '''for i in $(seq 1 60); do
   if "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then break; fi
   sleep 2
@@ -151,6 +156,7 @@ if old_start not in s:
 s = s.replace(old_start, new_start, 1)
 p.write_text(s)
 PY
+echo OFFLINE_REPAIR_FINALIZER_SAFE_LOGGING=true
 
 # Persist the gateway unit activation while the authenticated disk is offline.
 # This avoids any runtime mkdir/ln/systemctl activation boundary on the E2 guest.
@@ -175,8 +181,8 @@ RemainAfterExit=yes
 TimeoutStartSec=1800
 Restart=on-failure
 RestartSec=30
-StandardOutput=journal+console
-StandardError=journal+console
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
