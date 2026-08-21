@@ -56,6 +56,22 @@ new_output = 'exec > >(tee -a /var/log/openclaw-offline-finalize.log) 2>&1'
 if old_output not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_CONSOLE_TEE_NOT_FOUND')
 s = s.replace(old_output, new_output, 1)
+start_anchor = 'echo "OPENCLAW_FINALIZE_START=$(date -Is)"'
+start_guard = '''echo "OPENCLAW_FINALIZE_START=$(date -Is)"
+# Make the persisted swap explicit before Node/systemd work begins. On the
+# 1 GB Always Free E2 guest the finalizer itself must survive gateway startup
+# long enough to write readiness proof.
+if ! swapon --show=NAME --noheadings 2>/dev/null | grep -Fxq /swapfile; then
+  swapon /swapfile >/dev/null 2>&1 || true
+fi
+if swapon --show=NAME --noheadings 2>/dev/null | grep -Fxq /swapfile; then
+  echo OPENCLAW_FINALIZER_SWAP_ACTIVE=true
+else
+  echo OPENCLAW_FINALIZER_SWAP_ACTIVE=false
+fi'''
+if start_anchor not in s:
+    raise SystemExit('OPENCLAW_BOOTFIX_FINALIZER_START_ANCHOR_NOT_FOUND')
+s = s.replace(start_anchor, start_guard, 1)
 old = '''for i in $(seq 1 60); do
   if "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then break; fi
   sleep 2
@@ -121,6 +137,7 @@ TimeoutStopSec=30
 TimeoutStartSec=30
 SuccessExitStatus=0 143
 OOMPolicy=continue
+OOMScoreAdjust=500
 KillMode=control-group
 
 [Install]
@@ -196,8 +213,8 @@ echo OFFLINE_REPAIR_GATEWAY_UNIT_PERSISTED=true
 cat >"$MNT/etc/systemd/system/openclaw-offline-finalize.service" <<'UNIT'
 [Unit]
 Description=Finalize OpenClaw securely on the authenticated Tailscale tailnet
-Wants=network-online.target tailscaled.service
-After=local-fs.target network-online.target tailscaled.service
+Wants=network-online.target tailscaled.service swap.target
+After=local-fs.target swap.target network-online.target tailscaled.service
 StartLimitIntervalSec=0
 
 [Service]
@@ -207,6 +224,7 @@ RemainAfterExit=yes
 TimeoutStartSec=1800
 Restart=on-failure
 RestartSec=30
+OOMScoreAdjust=-1000
 StandardOutput=journal
 StandardError=journal
 
