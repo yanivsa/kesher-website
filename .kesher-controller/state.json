@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "article_image_running",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -60,27 +60,27 @@
   },
   "image": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "retry_wait",
     "last_error": {
       "stage": "image",
       "code": "IMAGE_WORKFLOW_FAILED",
-      "message": "trusted image run 32469446245 completed with conclusion=failure but no validated image is present",
+      "message": "trusted image run 32474524184 completed with conclusion=failure but no validated image is present",
       "retryable": true,
-      "retry_at": "2026-08-21T10:30:05.992961+00:00",
-      "at": "2026-08-21T10:15:05.992987+00:00"
+      "retry_at": "2026-08-21T11:47:27.137285+00:00",
+      "at": "2026-08-21T11:32:27.137316+00:00"
     },
-    "next_retry_at": null,
+    "next_retry_at": "2026-08-21T11:47:27.137285+00:00",
     "run_id": 32474524184,
-    "processed_run_id": 32469446245,
+    "processed_run_id": 32474524184,
     "provider_id": null,
     "failure_fingerprint": "IMAGE_WORKFLOW_FAILED",
-    "same_failure_streak": 2,
+    "same_failure_streak": 3,
     "failure_count_by_type": {
-      "IMAGE_WORKFLOW_FAILED": 2
+      "IMAGE_WORKFLOW_FAILED": 3
     },
     "last_dispatch_at": "2026-08-21T10:51:24.740658+00:00",
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 32469446245
+    "last_failed_run_id": 32474524184
   },
   "video": {
     "attempt_count": 0,
@@ -96,7 +96,14 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_WORKFLOW_FAILED",
+    "message": "trusted image run 32474524184 completed with conclusion=failure but no validated image is present",
+    "retryable": true,
+    "retry_at": "2026-08-21T11:47:27.137285+00:00",
+    "at": "2026-08-21T11:32:27.137316+00:00"
+  },
   "history": [
     {
       "at": "2026-08-21T07:02:00+00:00",
@@ -192,7 +199,19 @@
         "attempt": 3,
         "pr_number": 504
       }
+    },
+    {
+      "at": "2026-08-21T11:32:27.137325+00:00",
+      "from": "article_image_running",
+      "to": "image_retry_wait",
+      "reason": "IMAGE_WORKFLOW_FAILED",
+      "details": {
+        "message": "trusted image run 32474524184 completed with conclusion=failure but no validated image is present",
+        "retry_at": "2026-08-21T11:47:27.137285+00:00",
+        "failure_streak": 3,
+        "run_id": 32474524184
+      }
     }
   ],
-  "updated_at": "2026-08-21T10:51:24.740686+00:00"
+  "updated_at": "2026-08-21T11:32:27.137330+00:00"
 }
