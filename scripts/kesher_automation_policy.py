@@ -11,6 +11,7 @@ EXPECTED_CONTRACT_VERSION = 3
 EXPECTED_STATE_SCHEMA_VERSION = 3
 EXPECTED_MAX_ATTEMPTS = 3
 EXPECTED_BACKOFF = [5, 15]
+EXPECTED_VIDEO_POLL_SECONDS = 1800
 
 
 class AutomationPolicyError(RuntimeError):
@@ -92,11 +93,13 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         or video.get("jules_review") != "advisory"
         or video.get("queue_order") != "fifo"
         or video.get("max_attempts_per_stage") != EXPECTED_MAX_ATTEMPTS
+        or video.get("provider_poll_seconds_per_dispatch") != EXPECTED_VIDEO_POLL_SECONDS
+        or video.get("provider_pending_is_failure") is not False
         or video.get("durable_state_artifacts_to_keep") != 3
         or video.get("durable_state_retention_days") != 14
     ):
         raise AutomationPolicyError(
-            "Video contract must use technical publication, advisory Jules, three attempts, FIFO, and 3 snapshots/14 days"
+            "Video contract must use technical publication, advisory Jules, three attempts, FIFO, normal provider-pending polling, and 3 snapshots/14 days"
         )
 
     required_invariants = (
