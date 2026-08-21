@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "blocked",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -40,23 +40,8 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "article exhausted 3 total controller dispatch attempts",
-    "at": "2026-08-21T03:11:50.697684+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-08-20T09:06:14.417109+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "upload",
-        "resume": 3
-      }
-    },
     {
       "at": "2026-08-20T09:08:57.112451+00:00",
       "from": "video_running",
@@ -745,9 +730,15 @@
       "details": {
         "message": "article exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-08-21T04:04:16.325808+00:00",
+      "from": "blocked",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-08-21T03:11:50.697697+00:00",
+  "updated_at": "2026-08-21T04:04:16.325815+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
