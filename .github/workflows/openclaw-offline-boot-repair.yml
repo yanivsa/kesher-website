@@ -162,8 +162,11 @@ jobs:
         if: ${{ steps.patch.outcome == 'success' }}
         run: |
           set -euo pipefail
-          echo OPENCLAW_GUEST_FINALIZER_WAIT_SECONDS=420
-          sleep 420
+          # The finalizer can spend ~75s on config writes and several minutes on
+          # gateway RPC retries on an E2 cold boot. Do not stop the authenticated
+          # target for preserved-disk proof while that bounded finalization is active.
+          echo OPENCLAW_GUEST_FINALIZER_WAIT_SECONDS=720
+          sleep 720
 
       - name: Verify OpenClaw from preserved boot disk
         if: ${{ steps.patch.outcome == 'success' }}
