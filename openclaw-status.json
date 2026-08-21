@@ -11,6 +11,6 @@
     "OPENCLAW_OFFLINE_FINALIZE_SUCCESS": false
   },
   "ready_url": null,
-  "failure_hint": "job_status=failure; patch_outcome=success; finalize_outcome=failure",
-  "updated_at": "2026-08-21T15:54:15Z"
+  "failure_hint": "conclusion=failure; missing=OPENCLAW_OFFLINE_REPAIR_COMPLETE,OPENCLAW_GATEWAY_RPC_OK,TAILSCALE_SERVE_ACTIVE,OPENCLAW_OFFLINE_FINALIZE_SUCCESS,OPENCLAW_READY_URL",
+  "updated_at": "2026-08-21T15:54:30Z"
 }
