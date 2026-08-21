@@ -1,16 +1,16 @@
 {
-  "status": "failure",
-  "run_id": 32477622721,
-  "run_url": "https://github.com/yanivsa/kesher-website/actions/runs/32477622721",
-  "sha": "a1690b723a14d18904a026d2d61a6042b02078a4",
+  "status": "in_progress",
+  "run_id": 32481831764,
+  "run_url": "https://github.com/yanivsa/kesher-website/actions/runs/32481831764",
+  "sha": "771b07a2a75e57aaab5536de0d00818e85995ccc",
   "strict_success": false,
   "markers": {
-    "OPENCLAW_OFFLINE_REPAIR_COMPLETE": false,
-    "OPENCLAW_GATEWAY_RPC_OK": false,
-    "TAILSCALE_SERVE_ACTIVE": false,
-    "OPENCLAW_OFFLINE_FINALIZE_SUCCESS": false
+    "OPENCLAW_OFFLINE_REPAIR_COMPLETE": null,
+    "OPENCLAW_GATEWAY_RPC_OK": null,
+    "TAILSCALE_SERVE_ACTIVE": null,
+    "OPENCLAW_OFFLINE_FINALIZE_SUCCESS": null
   },
   "ready_url": null,
-  "failure_hint": "job_status=failure; patch_outcome=success; finalize_outcome=failure",
-  "updated_at": "2026-08-21T12:07:31Z"
+  "failure_hint": "workflow_started",
+  "updated_at": "2026-08-21T12:25:57Z"
 }
