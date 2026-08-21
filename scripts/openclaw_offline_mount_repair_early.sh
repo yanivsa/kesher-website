@@ -187,6 +187,53 @@ if old in s:
     s = s.replace(old, new, 1)
 elif new not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_BLOCK_NOT_FOUND')
+
+old_serve = '''if ! tailscale serve status 2>/dev/null | grep -q 'https://'; then
+  set +e
+  serve_out="$(tailscale serve --bg --yes http://127.0.0.1:18789 2>&1)"
+  serve_rc=$?
+  set -e
+  printf '%s\\n' "$serve_out" | sed -E 's#https?://[^[:space:]]+#<REDACTED_URL>#g'
+  if [ "$serve_rc" -ne 0 ]; then
+    echo OPENCLAW_FINALIZE_FAILED=TAILSCALE_SERVE_COMMAND
+    exit 23
+  fi
+fi
+for i in $(seq 1 60); do
+  tailscale serve status 2>/dev/null | grep -q 'https://' && break
+  sleep 2
+done
+SERVE="$(tailscale serve status 2>/dev/null || true)"
+printf '%s\\n' "$SERVE" | grep -q 'https://' || { echo OPENCLAW_FINALIZE_FAILED=TAILSCALE_SERVE_NOT_READY; exit 24; }
+echo TAILSCALE_SERVE_ACTIVE=true'''
+new_serve = '''echo OPENCLAW_TAILSCALE_SERVE_STAGE=check-existing
+serve_status="$(timeout 8 tailscale serve status 2>/dev/null || true)"
+if ! printf '%s\\n' "$serve_status" | grep -q 'https://'; then
+  echo OPENCLAW_TAILSCALE_SERVE_STAGE=configure
+  set +e
+  serve_out="$(timeout 20 tailscale serve --bg --yes http://127.0.0.1:18789 2>&1)"
+  serve_rc=$?
+  set -e
+  printf '%s\\n' "$serve_out" | sed -E 's#https?://[^[:space:]]+#<REDACTED_URL>#g'
+  if [ "$serve_rc" -ne 0 ]; then
+    echo OPENCLAW_FINALIZE_FAILED=TAILSCALE_SERVE_COMMAND
+    echo OPENCLAW_TAILSCALE_SERVE_RC="$serve_rc"
+    exit 23
+  fi
+fi
+for i in $(seq 1 30); do
+  serve_status="$(timeout 8 tailscale serve status 2>/dev/null || true)"
+  printf '%s\\n' "$serve_status" | grep -q 'https://' && break
+  sleep 2
+done
+SERVE="$(timeout 8 tailscale serve status 2>/dev/null || true)"
+printf '%s\\n' "$SERVE" | grep -q 'https://' || { echo OPENCLAW_FINALIZE_FAILED=TAILSCALE_SERVE_NOT_READY; exit 24; }
+echo TAILSCALE_SERVE_ACTIVE=true'''
+if old_serve in s:
+    s = s.replace(old_serve, new_serve, 1)
+elif new_serve not in s:
+    raise SystemExit('OPENCLAW_BOOTFIX_TAILSCALE_SERVE_BLOCK_NOT_FOUND')
+
 anchor = '''echo OPENCLAW_SYSTEMD_STAGE=disable-wait-tailnet
 '''
 unit = '''# Refresh the system-level gateway unit from the canonical OpenClaw Linux service shape.
