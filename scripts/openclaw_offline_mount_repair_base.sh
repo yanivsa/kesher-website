@@ -180,10 +180,24 @@ then
 fi
 echo OPENCLAW_CONFIG_VALIDATED=true
 
-systemctl disable --now openclaw-wait-tailnet.service >/dev/null 2>&1 || true
-systemctl daemon-reload
-systemctl enable openclaw-gateway.service >/dev/null
-systemctl restart openclaw-gateway.service
+echo OPENCLAW_SYSTEMD_STAGE=disable-wait-tailnet
+timeout 15 systemctl disable openclaw-wait-tailnet.service >/dev/null 2>&1 || true
+timeout 15 systemctl stop --no-block openclaw-wait-tailnet.service >/dev/null 2>&1 || true
+echo OPENCLAW_SYSTEMD_STAGE=daemon-reload
+timeout 30 systemctl daemon-reload || {
+  echo OPENCLAW_FINALIZE_FAILED=SYSTEMD_DAEMON_RELOAD
+  exit 22
+}
+echo OPENCLAW_SYSTEMD_STAGE=start-gateway
+timeout 15 systemctl enable openclaw-gateway.service >/dev/null || {
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_ENABLE
+  exit 22
+}
+timeout 15 systemctl restart --no-block openclaw-gateway.service || {
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RESTART
+  exit 22
+}
+echo OPENCLAW_GATEWAY_START_REQUESTED=true
 
 for i in $(seq 1 60); do
   if "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then break; fi
