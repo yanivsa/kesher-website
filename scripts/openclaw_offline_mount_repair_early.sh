@@ -64,13 +64,16 @@ done
 }'''
 new = '''rpc_ok=false
 rpc_source=""
-for i in $(seq 1 90); do
-  if "$B" gateway status --require-rpc --timeout 1 >/tmp/openclaw-gateway-status.txt 2>&1; then
+for i in $(seq 1 30); do
+  if timeout 5 "$B" gateway status --require-rpc --timeout 1 >/tmp/openclaw-gateway-status.txt 2>&1; then
     rpc_ok=true
     rpc_source="gateway-status"
     break
   fi
-  if "$B" gateway health --timeout 1 --json >/tmp/openclaw-gateway-health.json 2>&1; then
+  health_rc=0
+  rm -f /tmp/openclaw-gateway-health.json
+  timeout 5 "$B" gateway health --timeout 1 --json >/tmp/openclaw-gateway-health.json 2>&1 || health_rc=$?
+  if [ "$health_rc" -eq 0 ] || python3 -c 'import json; d=json.load(open("/tmp/openclaw-gateway-health.json")); assert isinstance(d, dict) and d' 2>/dev/null; then
     rpc_ok=true
     rpc_source="gateway-health"
     break
