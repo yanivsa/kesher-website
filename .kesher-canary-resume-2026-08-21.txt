@@ -1,0 +1,1 @@
+Resume production canary after PR #491 fixed direct Jules runner execution.
