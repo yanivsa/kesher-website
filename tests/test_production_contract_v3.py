@@ -38,6 +38,8 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertEqual(video["publication_gate"], "technical")
         self.assertEqual(video["jules_review"], "advisory")
         self.assertEqual(video["queue_order"], "fifo")
+        self.assertEqual(video["provider_poll_seconds_per_dispatch"], 1800)
+        self.assertFalse(video["provider_pending_is_failure"])
         self.assertEqual(video["durable_state_artifacts_to_keep"], 3)
         self.assertEqual(video["durable_state_retention_days"], 14)
 
@@ -73,6 +75,14 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn("Prepare technically verified upload", workflow)
         self.assertIn("Upload exact technically verified MP4", workflow)
         self.assertIn("Jules performs strict advisory review", workflow)
+
+    def test_video_worker_polls_same_provider_task_without_false_failure(self) -> None:
+        workflow = VIDEO_WORKFLOW.read_text(encoding="utf-8")
+        reconcile = (ROOT / "scripts" / "kesher_video_reconcile.py").read_text(encoding="utf-8")
+        self.assertIn("--max-wait-seconds 1800", workflow)
+        self.assertNotIn("--max-wait-seconds 150", workflow)
+        self.assertIn("PROVIDER_PROGRESS_STATUSES", reconcile)
+        self.assertIn("VIDEO_RECONCILED_UPLOAD candidate=pending", reconcile)
 
     def test_video_workflow_retention_matches_contract(self) -> None:
         workflow = VIDEO_WORKFLOW.read_text(encoding="utf-8")
