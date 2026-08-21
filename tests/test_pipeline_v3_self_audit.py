@@ -10,6 +10,7 @@ from zoneinfo import ZoneInfo
 
 from scripts import kesher_content_controller as core
 from scripts import kesher_content_controller_v3_entry as v3
+from scripts import kesher_content_controller_v3_best_effort as best_effort
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config" / "kesher-production-contract.json"
@@ -72,9 +73,9 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
         self.assertEqual(contract["video"]["max_attempts_per_stage"], 3)
         self.assertEqual(v3.MAX_STAGE_ATTEMPTS, 3)
 
-    def test_image_stage_dispatches_once_then_blocks_fourth_dispatch(self):
+    def test_image_stage_dispatches_then_defers_without_blocking_article(self):
         github = DummyGithub()
-        controller = v3.V3Controller(
+        controller = best_effort.BestEffortController(
             github,
             DummySite(),
             now=datetime(2026, 8, 21, 9, 0, tzinfo=ZoneInfo("Asia/Jerusalem")),
@@ -86,8 +87,13 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
             self.assertEqual(first.kind, "dispatch_image")
             self.assertEqual(state["image"]["attempt_count"], 1)
             state["image"]["attempt_count"] = 3
-            with self.assertRaises(v3.StageAttemptsExhausted):
-                controller._handle_open_article_pr(state, pr)
+            state["status"] = "blocked"
+            state["last_error"] = {"stage": "image", "code": "IMAGE_ATTEMPTS_EXHAUSTED"}
+            second = controller._handle_open_article_pr(state, pr)
+            self.assertEqual(second.kind, "wait")
+            self.assertEqual(state["image"]["status"], "deferred")
+            self.assertEqual(state["status"], "article_pr_open")
+            self.assertIsNone(state["last_error"])
             self.assertEqual(dispatch.call_count, 1)
 
     def test_retry_backoff_is_five_then_fifteen_minutes(self):
@@ -104,7 +110,7 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
     def test_image_child_is_part_of_event_driven_controller_but_failures_still_defer(self):
         workflow = CONTROLLER_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Kesher Trusted Article Image", workflow)
-        self.assertIn("scripts/kesher_content_controller_v3_entry.py", workflow)
+        self.assertIn("scripts/kesher_content_controller_v3_best_effort.py", workflow)
         self.assertIn('cron: "3,18,33,48 * * * *"', workflow)
         env = {
             "KESHER_TRIGGER_EVENT": "workflow_run",

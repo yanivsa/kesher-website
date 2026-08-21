@@ -40,10 +40,13 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertEqual(video["durable_state_artifacts_to_keep"], 3)
         self.assertEqual(video["durable_state_retention_days"], 14)
 
-    def test_image_stage_is_required_and_has_guaranteed_local_fallback(self) -> None:
+    def test_image_stage_is_best_effort_with_guaranteed_local_fallback(self) -> None:
         contract = load_policy()
         image = contract["image"]
-        self.assertTrue(image["required_for_article"])
+        self.assertFalse(image["required_for_article"])
+        self.assertFalse(image["publication_blocking"])
+        self.assertTrue(image["no_image_publication_allowed"])
+        self.assertEqual(image["failure_mode"], "best-effort-defer")
         self.assertEqual(image["worker_owner"], "github-actions")
         self.assertTrue(image["fallback_must_be_local"])
 
