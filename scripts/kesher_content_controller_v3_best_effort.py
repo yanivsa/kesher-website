@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
 """Production adapter: article images are best effort, never a publication gate.
 
-The underlying v3 controller still owns retries and image orchestration. This
-adapter changes only the terminal image-failure behavior so an article can
-publish and the video pipeline can continue after image retries are exhausted.
+The underlying v3 controller owns retries and image orchestration. This adapter
+keeps image terminal failure non-blocking and distinguishes a real video worker
+attempt from a heartbeat that merely resumes the exact same persisted NotebookLM
+task. Provider polling must not consume the three-attempt retry budget.
 """
 
 from __future__ import annotations
 
 import json
 import sys
+from typing import Any
 
 if __package__:
     from . import kesher_content_controller_v3_entry as v3
 else:
     import kesher_content_controller_v3_entry as v3
+
+
+VIDEO_PROVIDER_PROGRESS = {"generating"}
 
 
 class BestEffortController(v3.V3Controller):
@@ -60,6 +65,57 @@ class BestEffortController(v3.V3Controller):
             )
 
         return super()._handle_open_article_pr(state, pr)
+
+    @staticmethod
+    def _video_item_sort_key(item: dict[str, Any]) -> tuple[str, str, str]:
+        source = item.get("source") or {}
+        return (
+            str(source.get("date") or item.get("israel_date") or item.get("created_at") or "9999-12-31"),
+            str(item.get("created_at") or ""),
+            str(item.get("id") or ""),
+        )
+
+    def _persisted_provider_resume(self) -> dict[str, Any] | None:
+        """Return the oldest exact NotebookLM task that is still generating."""
+        try:
+            video_state = self.github.newest_video_state()
+        except v3.core.ControllerError:
+            return None
+        items = [
+            item for item in (video_state.get("items") or [])
+            if isinstance(item, dict)
+            and item.get("uploaded") is not True
+            and item.get("status") in VIDEO_PROVIDER_PROGRESS
+        ]
+        if not items:
+            return None
+        item = sorted(items, key=self._video_item_sort_key)[0]
+        source_id = str(item.get("source_id") or "").strip()
+        task_id = str(item.get("task_id") or "").strip()
+        artifact_id = str(item.get("artifact_id") or "").strip()
+        if not source_id or not task_id or not artifact_id or task_id != artifact_id:
+            return None
+        return item
+
+    def _dispatch_budgeted(self, state, stage, workflow, inputs):
+        # A persisted NotebookLM task already represents the real provider
+        # attempt. A later heartbeat that dispatches the worker only to poll and
+        # resume that exact task is recovery, not another generation attempt.
+        if stage == "video":
+            item = self._persisted_provider_resume()
+            if item is not None:
+                v3.core.GitHubClient.dispatch(self.github, workflow, inputs)
+                current = state["video"]
+                current["attempt_count"] = max(1, int(current.get("attempt_count") or 0))
+                current["resume_dispatches"] = int(current.get("resume_dispatches") or 0) + 1
+                current["last_dispatch_at"] = v3.core.utc_now()
+                current["status"] = "running"
+                current["next_retry_at"] = None
+                current["source_id"] = item.get("source_id")
+                current["artifact_id"] = item.get("artifact_id")
+                current["provider_id"] = item.get("task_id")
+                return
+        return super()._dispatch_budgeted(state, stage, workflow, inputs)
 
     def _sync_stage_views(self, state, action):
         image_was_deferred = (state.get("image") or {}).get("status") == "deferred"
