@@ -1,116 +1,34 @@
 {
   "schema_version": 3,
-  "cycle": "2026-08-21",
-  "status": "complete",
+  "cycle": "2026-08-22",
+  "status": "waiting_for_article_window",
   "article": {
-    "attempt_count": 2,
-    "status": "complete",
-    "last_error": {
-      "stage": "article",
-      "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I have successfully generated a new article about handling unmatched setups for the \"2026-08-21\" slot, meeting word count and style policies. I then received code review feedback regarding a few minor stylistic violations (a gendered title, a banned generalization phrase, and an overly long/generic Call to Action). I have just created a Node.js script (`fix_content.cjs`) to apply these fixes to `src/data/posts.json` and am about to execute it, followed by regenerating the index files. Should I proceed with executing the fix and finalizing the pre-commit steps before submitting the PR?",
-      "retryable": true,
-      "retry_at": "2026-08-21T08:05:16.016635+00:00",
-      "at": "2026-08-21T08:00:16.016649+00:00"
-    },
-    "next_retry_at": null,
-    "run_id": 32465236057,
-    "processed_run_id": 32457131613,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
-    },
-    "attempts": 2,
-    "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-21T08:53:07.421094+00:00",
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-08-21",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I have successfully generated a new article about handling unmatched setups for the \"2026-08-21\" slot, meeting word count and style policies. I then received code review feedback regarding a few minor stylistic violations (a gendered title, a banned generalization phrase, and an overly long/generic Call to Action). I have just created a Node.js script (`fix_content.cjs`) to apply these fixes to `src/data/posts.json` and am about to execute it, followed by regenerating the index files. Should I proceed with executing the fix and finalizing the pre-commit steps before submitting the PR?",
-      "session_id": "sessions/11810319403096449392",
-      "pr_url": "",
-      "github_run_id": "32457131613",
-      "completed_at": "2026-08-21T07:42:49.857303+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 78,
-        "change_set_count": 70,
-        "change_set_fingerprints": [],
-        "last_agent_message": "I have successfully generated a new article about handling unmatched setups for the \"2026-08-21\" slot, meeting word count and style policies. I then received code review feedback regarding a few minor stylistic violations (a gendered title, a banned generalization phrase, and an overly long/generic Call to Action). I have just created a Node.js script (`fix_content.cjs`) to apply these fixes to `src/data/posts.json` and am about to execute it, followed by regenerating the index files. Should I proceed with executing the fix and finalizing the pre-commit steps before submitting the PR?",
-        "last_progress": "Successfully recreated and ran `verify_content.cjs`, confirming the word coun... — Successfully recreated and ran `verify_content.cjs`, confirming the word count is 769 and heading count is 5. `npm run test:content` also passed.",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/11810319403096449392",
-    "last_failed_run_id": 32457131613,
-    "pr_number": 504,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/504",
-    "slug": "gifted-children-framework-preparation",
-    "title": "הוא מחונן אבל מסרב להיכנס לשער: למה המעבר למסגרת חדשה כל כך מציף?",
-    "url": "https://kesher.saharoni.com/blog/gifted-children-framework-preparation",
-    "published_date": "2026-08-21",
-    "live": true,
-    "live_verified_at": "2026-08-21T20:34:54.506654+00:00",
-    "next_deploy_retry_at": null
-  },
-  "image": {
-    "attempt_count": 3,
-    "status": "deferred",
-    "last_error": {
-      "stage": "image",
-      "code": "IMAGE_ATTEMPTS_EXHAUSTED",
-      "message": "image exhausted 3 total controller dispatch attempts",
-      "at": "2026-08-21T14:00:38.440790+00:00",
-      "retryable": false
-    },
-    "next_retry_at": null,
-    "run_id": 32474524184,
-    "processed_run_id": 32474524184,
-    "provider_id": null,
-    "failure_fingerprint": "IMAGE_WORKFLOW_FAILED",
-    "same_failure_streak": 3,
-    "failure_count_by_type": {
-      "IMAGE_WORKFLOW_FAILED": 3
-    },
-    "last_dispatch_at": "2026-08-21T10:51:24.740658+00:00",
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 32474524184,
-    "deferred_reason": "best_effort_attempts_exhausted"
-  },
-  "video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 32496910334,
-    "processed_run_id": 32491536164,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "VIDEO_WORKFLOW_FAILED": 1
-    },
-    "attempts": 1,
-    "resume_dispatches": 1,
-    "last_dispatch_at": "2026-08-21T15:18:48.508640+00:00",
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 32491536164,
-    "item_id": "video-20260821-172623-00d614a082",
-    "youtube_id": "PQVjwkZEzro",
-    "youtube_url": "https://youtu.be/PQVjwkZEzro",
-    "verified": true
+    "failure_count_by_type": {},
+    "attempts": 0,
+    "deploy_attempts": 0
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "attempts": 0,
+    "resume_dispatches": 0
   },
   "last_error": null,
   "history": [
@@ -568,13 +486,31 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-08-21T21:03:37.082763+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-08-21T21:03:37.575352+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-08-21T20:34:57.705979+00:00",
-  "last_warning": {
-    "stage": "image",
-    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
-    "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-08-21T14:00:38.440790+00:00"
+  "updated_at": "2026-08-21T21:03:37.575370+00:00",
+  "image": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
