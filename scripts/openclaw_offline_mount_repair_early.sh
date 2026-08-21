@@ -45,7 +45,10 @@ done
 rm -f "$MNT/var/lib/openclaw-ready.txt"
 : > "$MNT/var/log/openclaw-offline-finalize.log"
 
-# Keep the gateway retry budget inside the workflow's proof window.
+# Keep the gateway retry budget inside the workflow's proof window and avoid
+# spawning multiple Node config processes while the 1 GB E2 guest is bringing
+# up the gateway. The finalizer writes the same JSON values directly, then
+# validates them before RPC proof.
 python3 - "$MNT/usr/local/sbin/openclaw-offline-finalize.sh" <<'PY'
 from pathlib import Path
 import sys
@@ -53,9 +56,10 @@ p = Path(sys.argv[1])
 s = p.read_text()
 old_output = 'exec > >(tee -a /var/log/openclaw-offline-finalize.log /dev/console) 2>&1'
 new_output = 'exec > >(tee -a /var/log/openclaw-offline-finalize.log) 2>&1'
-if old_output not in s:
+if old_output in s:
+    s = s.replace(old_output, new_output, 1)
+elif new_output not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_CONSOLE_TEE_NOT_FOUND')
-s = s.replace(old_output, new_output, 1)
 start_anchor = 'echo "OPENCLAW_FINALIZE_START=$(date -Is)"'
 start_guard = '''echo "OPENCLAW_FINALIZE_START=$(date -Is)"
 # Make the persisted swap explicit before Node/systemd work begins. On the
@@ -69,9 +73,47 @@ if swapon --show=NAME --noheadings 2>/dev/null | grep -Fxq /swapfile; then
 else
   echo OPENCLAW_FINALIZER_SWAP_ACTIVE=false
 fi'''
-if start_anchor not in s:
-    raise SystemExit('OPENCLAW_BOOTFIX_FINALIZER_START_ANCHOR_NOT_FOUND')
-s = s.replace(start_anchor, start_guard, 1)
+if start_guard not in s:
+    if start_anchor not in s:
+        raise SystemExit('OPENCLAW_BOOTFIX_FINALIZER_START_ANCHOR_NOT_FOUND')
+    s = s.replace(start_anchor, start_guard, 1)
+
+old_config_calls = '''run_config set gateway.mode local
+run_config set gateway.bind loopback
+run_config set gateway.tailscale.mode serve
+run_config set gateway.auth.allowTailscale true --strict-json
+run_config set agents.defaults.model.primary openai/gpt-5.6-sol'''
+new_config_calls = '''echo OPENCLAW_CONFIG_STAGE=direct-json
+python3 - <<'PYCFG'
+import json
+from pathlib import Path
+
+path = Path('/root/.openclaw/openclaw.json')
+path.parent.mkdir(parents=True, exist_ok=True)
+try:
+    data = json.loads(path.read_text()) if path.exists() else {}
+except Exception:
+    data = {}
+
+gateway = data.setdefault('gateway', {})
+gateway['mode'] = 'local'
+gateway['bind'] = 'loopback'
+gateway.setdefault('tailscale', {})['mode'] = 'serve'
+gateway.setdefault('auth', {})['allowTailscale'] = True
+agents = data.setdefault('agents', {})
+defaults = agents.setdefault('defaults', {})
+defaults.setdefault('model', {})['primary'] = 'openai/gpt-5.6-sol'
+
+tmp = path.with_suffix('.json.tmp')
+tmp.write_text(json.dumps(data, indent=2, sort_keys=True) + '\\n')
+tmp.replace(path)
+PYCFG
+echo OPENCLAW_CONFIG_DIRECT_JSON_WRITTEN=true'''
+if old_config_calls in s:
+    s = s.replace(old_config_calls, new_config_calls, 1)
+elif new_config_calls not in s:
+    raise SystemExit('OPENCLAW_BOOTFIX_CONFIG_CALLS_NOT_FOUND')
+
 old = '''for i in $(seq 1 60); do
   if "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then break; fi
   sleep 2
@@ -109,9 +151,10 @@ if [ "$rpc_ok" != true ]; then
   exit 22
 fi
 echo OPENCLAW_GATEWAY_RPC_SOURCE="$rpc_source"'''
-if old not in s:
+if old in s:
+    s = s.replace(old, new, 1)
+elif new not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_BLOCK_NOT_FOUND')
-s = s.replace(old, new, 1)
 anchor = '''echo OPENCLAW_SYSTEMD_STAGE=disable-wait-tailnet
 '''
 unit = '''# Refresh the system-level gateway unit from the canonical OpenClaw Linux service shape.
@@ -148,9 +191,10 @@ echo OPENCLAW_GATEWAY_SYSTEM_UNIT_REFRESHED=true
 
 echo OPENCLAW_SYSTEMD_STAGE=disable-wait-tailnet
 '''
-if anchor not in s:
-    raise SystemExit('OPENCLAW_BOOTFIX_SYSTEMD_ANCHOR_NOT_FOUND')
-s = s.replace(anchor, unit, 1)
+if unit not in s:
+    if anchor not in s:
+        raise SystemExit('OPENCLAW_BOOTFIX_SYSTEMD_ANCHOR_NOT_FOUND')
+    s = s.replace(anchor, unit, 1)
 old_start = '''echo OPENCLAW_SYSTEMD_STAGE=start-gateway
 timeout 15 systemctl enable openclaw-gateway.service >/dev/null || {
   echo OPENCLAW_FINALIZE_FAILED=GATEWAY_ENABLE
@@ -175,6 +219,7 @@ elif new_start not in s:
 p.write_text(s)
 PY
 echo OFFLINE_REPAIR_FINALIZER_SAFE_LOGGING=true
+echo OFFLINE_REPAIR_FINALIZER_DIRECT_JSON_CONFIG=true
 
 # The Always Free E2 guest has only 1 GB of RAM. Starting the Node gateway can
 # otherwise invoke the OOM killer while the oneshot finalizer is still writing
