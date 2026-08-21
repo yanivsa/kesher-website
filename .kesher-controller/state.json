@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "image_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -60,14 +60,12 @@
   },
   "image": {
     "attempt_count": 3,
-    "status": "retry_wait",
+    "status": "exhausted",
     "last_error": {
       "stage": "image",
-      "code": "IMAGE_WORKFLOW_FAILED",
-      "message": "trusted image run 32474524184 completed with conclusion=failure but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-08-21T11:47:27.137285+00:00",
-      "at": "2026-08-21T11:32:27.137316+00:00"
+      "code": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "message": "image exhausted 3 total controller dispatch attempts",
+      "at": "2026-08-21T12:07:06.755702+00:00"
     },
     "next_retry_at": "2026-08-21T11:47:27.137285+00:00",
     "run_id": 32474524184,
@@ -96,7 +94,12 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
+    "message": "image exhausted 3 total controller dispatch attempts",
+    "at": "2026-08-21T12:07:06.755702+00:00"
+  },
   "history": [
     {
       "at": "2026-08-21T07:02:00+00:00",
@@ -222,7 +225,16 @@
       "details": {
         "retry_at": "2026-08-21T11:47:27.137285+00:00"
       }
+    },
+    {
+      "at": "2026-08-21T12:07:06.755718+00:00",
+      "from": "image_retry_wait",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-08-21T11:36:01.682124+00:00"
+  "updated_at": "2026-08-21T12:07:06.755723+00:00"
 }
