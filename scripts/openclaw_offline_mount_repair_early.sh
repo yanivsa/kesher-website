@@ -96,44 +96,6 @@ echo OPENCLAW_GATEWAY_RPC_SOURCE="$rpc_source"'''
 if old not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_BLOCK_NOT_FOUND')
 s = s.replace(old, new, 1)
-anchor = '''echo OPENCLAW_SYSTEMD_STAGE=disable-wait-tailnet
-'''
-unit = '''# Refresh the system-level gateway unit from the canonical OpenClaw Linux service shape.
-# The authenticated host is headless and system-owned, so do not depend on a user session.
-cat >/etc/systemd/system/openclaw-gateway.service <<UNIT
-[Unit]
-Description=OpenClaw Gateway
-After=network-online.target tailscaled.service
-Wants=network-online.target tailscaled.service
-StartLimitBurst=5
-StartLimitIntervalSec=60
-
-[Service]
-Type=simple
-Environment=HOME=/root
-Environment=OPENCLAW_NO_PROMPT=1
-Environment=OPENCLAW_SERVICE_REPAIR_POLICY=external
-ExecStart="$B" gateway --port 18789
-Restart=always
-RestartSec=5
-RestartPreventExitStatus=78
-TimeoutStopSec=30
-TimeoutStartSec=30
-SuccessExitStatus=0 143
-OOMPolicy=continue
-KillMode=control-group
-
-[Install]
-WantedBy=multi-user.target
-UNIT
-chmod 0644 /etc/systemd/system/openclaw-gateway.service
-echo OPENCLAW_GATEWAY_SYSTEM_UNIT_REFRESHED=true
-
-echo OPENCLAW_SYSTEMD_STAGE=disable-wait-tailnet
-'''
-if anchor not in s:
-    raise SystemExit('OPENCLAW_BOOTFIX_SYSTEMD_ANCHOR_NOT_FOUND')
-s = s.replace(anchor, unit, 1)
 old_start = '''echo OPENCLAW_SYSTEMD_STAGE=start-gateway
 timeout 15 systemctl enable openclaw-gateway.service >/dev/null || {
   echo OPENCLAW_FINALIZE_FAILED=GATEWAY_ENABLE
@@ -184,12 +146,57 @@ sed -i '\#^[[:space:]]*/swapfile[[:space:]]#d' "$MNT/etc/fstab"
 printf '/swapfile none swap sw 0 0\n' >>"$MNT/etc/fstab"
 echo OFFLINE_REPAIR_E2_SWAP_PERSISTED=true
 
-# Persist the gateway unit activation while the authenticated disk is offline.
-# This avoids any runtime mkdir/ln/systemctl activation boundary on the E2 guest.
+# Persist the launcher, unit, and activation while the authenticated disk is
+# offline. The unit must exist before systemd reads multi-user.target wants;
+# creating it later inside the finalizer cannot start it on the same boot.
+mkdir -p "$MNT/usr/local/sbin" "$MNT/etc/systemd/system"
+cat >"$MNT/usr/local/sbin/openclaw-gateway-launch.sh" <<'LAUNCHER'
+#!/usr/bin/env bash
+set -Eeuo pipefail
+B="$(command -v openclaw 2>/dev/null || true)"
+if [ -z "$B" ]; then
+  for candidate in /usr/local/bin/openclaw /usr/bin/openclaw /root/.local/bin/openclaw /root/.npm-global/bin/openclaw; do
+    if [ -x "$candidate" ]; then B="$candidate"; break; fi
+  done
+fi
+if [ -z "$B" ]; then
+  B="$(timeout 20 find /root/.local /root/.npm /root/.openclaw -xdev -type f -name openclaw -perm -111 -print -quit 2>/dev/null || true)"
+fi
+[ -n "$B" ] || exit 127
+exec "$B" gateway --port 18789
+LAUNCHER
+chmod 0755 "$MNT/usr/local/sbin/openclaw-gateway-launch.sh"
+cat >"$MNT/etc/systemd/system/openclaw-gateway.service" <<'UNIT'
+[Unit]
+Description=OpenClaw Gateway
+After=network-online.target tailscaled.service
+Wants=network-online.target tailscaled.service
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+[Service]
+Type=simple
+Environment=HOME=/root
+Environment=OPENCLAW_NO_PROMPT=1
+Environment=OPENCLAW_SERVICE_REPAIR_POLICY=external
+ExecStart=/usr/local/sbin/openclaw-gateway-launch.sh
+Restart=always
+RestartSec=5
+RestartPreventExitStatus=78
+TimeoutStopSec=30
+TimeoutStartSec=30
+SuccessExitStatus=0 143
+OOMPolicy=continue
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+chmod 0644 "$MNT/etc/systemd/system/openclaw-gateway.service"
 mkdir -p "$MNT/etc/systemd/system/multi-user.target.wants"
 ln -sfn ../openclaw-gateway.service \
   "$MNT/etc/systemd/system/multi-user.target.wants/openclaw-gateway.service"
-echo OFFLINE_REPAIR_GATEWAY_UNIT_PERSISTED=true
+echo OFFLINE_REPAIR_GATEWAY_UNIT_WRITTEN_AND_PERSISTED=true
 
 # Run finalization only after the network/tailscale service is wanted and ordered.
 # Retry a failed oneshot instead of permanently leaving the boot in a failed state.

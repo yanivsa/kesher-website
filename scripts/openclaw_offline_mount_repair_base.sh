@@ -177,14 +177,6 @@ then
 fi
 echo OPENCLAW_CONFIG_VALIDATED=true
 
-echo OPENCLAW_SYSTEMD_STAGE=disable-wait-tailnet
-timeout 15 systemctl disable openclaw-wait-tailnet.service >/dev/null 2>&1 || true
-timeout 15 systemctl stop --no-block openclaw-wait-tailnet.service >/dev/null 2>&1 || true
-echo OPENCLAW_SYSTEMD_STAGE=daemon-reload
-timeout 30 systemctl daemon-reload || {
-  echo OPENCLAW_FINALIZE_FAILED=SYSTEMD_DAEMON_RELOAD
-  exit 22
-}
 echo OPENCLAW_SYSTEMD_STAGE=start-gateway
 # The gateway unit is already persisted offline into multi-user.target.wants.
 # Runtime activation calls have repeatedly hung on this constrained E2 guest,
