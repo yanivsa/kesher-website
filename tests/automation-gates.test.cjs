@@ -42,8 +42,10 @@ function testContentValidatorContracts() {
 function testTrustedArticleImageV2() {
   const workflow = read('.github/workflows/kesher-article-image.yml');
   const trigger = workflow.split('permissions:', 1)[0];
-  const worker = read('.github/scripts/article-image-worker-v3.py');
+  const workerV3 = read('.github/scripts/article-image-worker-v3.py');
+  const workerV4 = read('.github/scripts/article-image-worker-v4.py');
   const gate = read('.github/scripts/validate-article-pr.py');
+  const articleController = read('.github/scripts/article-pr-controller-v3.py');
   const generation = read('.github/workflows/kesher-article-generation.yml');
   const runner = read('scripts/jules_article_runner_v3.py');
   const controllerWorkflow = read('.github/workflows/kesher-content-controller.yml');
@@ -52,8 +54,10 @@ function testTrustedArticleImageV2() {
   assert.strictEqual(contract.controller_state_schema_version, 3);
   assert.strictEqual(contract.retry.max_attempts_per_stage, 3);
   assert.deepStrictEqual(contract.retry.backoff_minutes, [5, 15]);
-  assert.strictEqual(contract.image.required_for_article, true);
-  assert.strictEqual(contract.image.no_image_publication_allowed, false);
+  assert.strictEqual(contract.image.required_for_article, false);
+  assert.strictEqual(contract.image.publication_blocking, false);
+  assert.strictEqual(contract.image.no_image_publication_allowed, true);
+  assert.strictEqual(contract.image.failure_mode, 'best-effort-defer');
   assert.strictEqual(contract.image.worker_attempts_per_dispatch, 1);
   assert.strictEqual(contract.image.max_attempts, 3);
   assert.deepStrictEqual(contract.image.provider_order, ['gemini', 'unsplash', 'pexels', 'local-curated']);
@@ -70,22 +74,29 @@ function testTrustedArticleImageV2() {
   assert(workflow.includes('GOOGLE_API_KEY'));
   assert(workflow.includes('UNSPLASH_ACCESS_KEY'));
   assert(workflow.includes('PEXELS_API_KEY'));
-  assert(workflow.includes('article-image-worker-v3.py'));
+  assert(workflow.includes('article-image-worker-v4.py'));
   assert(workflow.includes('actions/workflows/ci.yml/dispatches'));
   assert(controllerWorkflow.includes('Kesher Trusted Article Image'));
-  assert(controllerWorkflow.includes('kesher_content_controller_v3_entry.py'));
+  assert(controllerWorkflow.includes('kesher_content_controller_v3_best_effort.py'));
 
-  assert(worker.includes('GEMINI_MODEL = "gemini-3.1-flash-image"'));
-  assert(worker.includes('VERIFY_MODEL = "gemini-3.5-flash"'));
-  assert(worker.indexOf('try_gemini') < worker.indexOf('try_unsplash'));
-  assert(worker.indexOf('try_unsplash') < worker.indexOf('try_pexels'));
-  assert(worker.includes('return local_fallback(repo, post, head_ref, token, attempts)'));
-  assert(worker.includes('/v1/models/{GEMINI_MODEL}:generateContent'));
-  assert(worker.includes('verify_pixels(post, data, ext)'));
-  assert(worker.includes('source_path, "main", token'));
-  assert(worker.includes('ARTICLE_IMAGE_COMMITTED'));
+  assert(workerV3.includes('GEMINI_MODEL = "gemini-3.1-flash-image"'));
+  assert(workerV3.includes('VERIFY_MODEL = "gemini-3.5-flash"'));
+  assert(workerV3.indexOf('try_gemini') < workerV3.indexOf('try_unsplash'));
+  assert(workerV3.indexOf('try_unsplash') < workerV3.indexOf('try_pexels'));
+  assert(workerV3.includes('/v1/models/{GEMINI_MODEL}:generateContent'));
+  assert(workerV3.includes('verify_pixels(post, data, ext)'));
+  assert(workerV3.includes('ARTICLE_IMAGE_COMMITTED'));
 
+  assert(workerV4.includes('candidate_path.read_bytes()'));
+  assert(workerV4.includes('IMAGE_PROVIDER_PREFLIGHT'));
+  assert(workerV4.includes('"local": True'));
+  assert(!workerV4.includes('core.github_content(repo, source_path'));
+
+  // The raw gate remains strict for any image-bearing PR, while the production
+  // article controller removes only the exact missing-image publication error.
   assert(gate.includes('New article requires a trusted local image; no-image publication is forbidden'));
+  assert(articleController.includes('NO_IMAGE_GATE_ERROR'));
+  assert(articleController.includes('load_validator_best_effort'));
   assert(gate.includes('Image Pipeline Version: 2'));
   assert(gate.includes('generated|stock|local_fallback'));
   assert(gate.includes('Image SHA-256 mismatch'));
@@ -101,8 +112,9 @@ function testTrustedArticleImageV2() {
 function testIndependentArticlePrGateRuntime() {
   execFileSync('python3', ['-c', `
 import runpy, struct, hashlib
-m = runpy.run_path('.github/scripts/validate-article-pr.py')
-evaluate = m['evaluate']
+controller = runpy.run_path('.github/scripts/article-pr-controller-v3.py')
+validator = controller['load_validator_best_effort']()
+evaluate = validator.evaluate
 base = [{'id':'older'}]
 content = '<p>' + ('מילה ' * 700) + '</p>' + ('<h3>שאלה</h3>' * 5)
 base_pr = {
@@ -114,7 +126,7 @@ checks = [{'name':'verify','conclusion':'success'}]
 
 no_image = {'id':'valid-new-post','content':content}
 errors = evaluate(base_pr, [{'filename':'src/data/posts.json'}], checks, base, base+[no_image], lambda _: b'')
-assert any('no-image publication is forbidden' in e for e in errors), errors
+assert not any('no-image publication is forbidden' in e for e in errors), errors
 
 png = b'\\x89PNG\\r\\n\\x1a\\n' + b'\\x00'*8 + struct.pack('>II',1200,675) + b'fixture'
 sha = hashlib.sha256(png).hexdigest()
@@ -156,6 +168,7 @@ function testArticleAutomergeAndRepairContracts() {
   assert(controllerV3.includes('LEGACY_PATH = Path(__file__).with_name("article-pr-controller.py")'));
   assert(controllerV3.includes('MAX_TOTAL_CONTENT_ATTEMPTS = 3'));
   assert(controllerV3.includes('Repair THE SAME PR #'));
+  assert(controllerV3.includes('A missing image is not a content failure'));
   assert(controller.indexOf('merged = request_json(') < controller.indexOf('/actions/workflows/deploy.yml/dispatches'));
   assert(gate.includes('Expected exactly one new article'));
   assert(gate.includes('Article publication PR may not modify or remove existing posts'));
