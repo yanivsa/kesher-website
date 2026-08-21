@@ -158,6 +158,31 @@ p.write_text(s)
 PY
 echo OFFLINE_REPAIR_FINALIZER_SAFE_LOGGING=true
 
+# The Always Free E2 guest has only 1 GB of RAM. Starting the Node gateway can
+# otherwise invoke the OOM killer while the oneshot finalizer is still writing
+# readiness proof. Persist swap on the authenticated boot volume so it is
+# available before multi-user services start; this consumes no extra OCI
+# compute resource and leaves the E2 instance-count guard unchanged.
+swapfile="$MNT/swapfile"
+swap_bytes=1073741824
+available_kb="$(df -Pk "$MNT" | awk 'NR==2 {print $4}')"
+current_bytes="$(stat -c %s "$swapfile" 2>/dev/null || echo 0)"
+if [ "$current_bytes" -lt "$swap_bytes" ]; then
+  [ "$available_kb" -ge 1310720 ] || {
+    echo OFFLINE_REPAIR_SWAP_FAILED=INSUFFICIENT_DISK
+    exit 1
+  }
+  rm -f "$swapfile"
+  if ! fallocate -l 1G "$swapfile"; then
+    dd if=/dev/zero of="$swapfile" bs=1M count=1024 status=none
+  fi
+fi
+chmod 0600 "$swapfile"
+mkswap -f "$swapfile" >/dev/null
+sed -i '\#^[[:space:]]*/swapfile[[:space:]]#d' "$MNT/etc/fstab"
+printf '/swapfile none swap sw 0 0\n' >>"$MNT/etc/fstab"
+echo OFFLINE_REPAIR_E2_SWAP_PERSISTED=true
+
 # Persist the gateway unit activation while the authenticated disk is offline.
 # This avoids any runtime mkdir/ln/systemctl activation boundary on the E2 guest.
 mkdir -p "$MNT/etc/systemd/system/multi-user.target.wants"
