@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "article_generating",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -54,11 +54,13 @@
       }
     },
     "last_jules_session_id": "sessions/11810319403096449392",
-    "last_failed_run_id": 32457131613
+    "last_failed_run_id": 32457131613,
+    "pr_number": 504,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/504"
   },
   "image": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -66,7 +68,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-08-21T09:33:04.330616+00:00"
   },
   "video": {
     "attempt_count": 0,
@@ -124,7 +127,17 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-08-21T09:33:04.330638+00:00",
+      "from": "article_generating",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 1,
+        "pr_number": 504
+      }
     }
   ],
-  "updated_at": "2026-08-21T08:53:07.421107+00:00"
+  "updated_at": "2026-08-21T09:33:04.330644+00:00"
 }
