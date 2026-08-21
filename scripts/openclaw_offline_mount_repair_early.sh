@@ -45,6 +45,38 @@ done
 rm -f "$MNT/var/lib/openclaw-ready.txt"
 : > "$MNT/var/log/openclaw-offline-finalize.log"
 
+# The gateway unit is persisted and starts during multi-user boot, before the
+# finalizer's runtime JSON write. Preseed the exact validated gateway config on
+# the offline authenticated disk so the first gateway process starts with the
+# intended loopback/Tailscale settings and does not require a risky runtime
+# restart on the constrained E2 guest.
+python3 - "$MNT/root/.openclaw/openclaw.json" <<'PYCFG'
+import json
+from pathlib import Path
+import sys
+
+path = Path(sys.argv[1])
+path.parent.mkdir(parents=True, exist_ok=True)
+try:
+    data = json.loads(path.read_text()) if path.exists() else {}
+except Exception:
+    data = {}
+
+gateway = data.setdefault('gateway', {})
+gateway['mode'] = 'local'
+gateway['bind'] = 'loopback'
+gateway.setdefault('tailscale', {})['mode'] = 'serve'
+gateway.setdefault('auth', {})['allowTailscale'] = True
+agents = data.setdefault('agents', {})
+defaults = agents.setdefault('defaults', {})
+defaults.setdefault('model', {})['primary'] = 'openai/gpt-5.6-sol'
+
+tmp = path.with_suffix('.json.tmp')
+tmp.write_text(json.dumps(data, indent=2, sort_keys=True) + '\n')
+tmp.replace(path)
+PYCFG
+echo OFFLINE_REPAIR_GATEWAY_CONFIG_PRESEEDED=true
+
 # Keep the gateway retry budget inside the workflow's proof window and avoid
 # spawning multiple Node config processes while the 1 GB E2 guest is bringing
 # up the gateway. The finalizer writes the same JSON values directly, then
