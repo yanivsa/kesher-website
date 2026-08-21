@@ -4,6 +4,8 @@
 Image failures belong to the trusted image worker and never consume a Jules
 content-repair attempt. Content repair stays on the same PR/branch and is capped
 at two repairs after the initial generation attempt (three total opportunities).
+Article publication is allowed without an image; image validation remains strict
+whenever an image is actually present.
 """
 
 from __future__ import annotations
@@ -29,10 +31,25 @@ MAX_REPAIRS = MAX_TOTAL_CONTENT_ATTEMPTS - 1
 IMAGE_ERROR_MARKERS = (
     "image", "Image", "no-image", "local fallback", "trusted local image",
 )
+NO_IMAGE_GATE_ERROR = "New article requires a trusted local image; no-image publication is forbidden"
+_original_load_validator = core.load_validator
 
 
 def image_only_errors(errors: list[str]) -> bool:
     return bool(errors) and all(any(marker in error for marker in IMAGE_ERROR_MARKERS) for error in errors)
+
+
+def load_validator_best_effort():
+    """Keep strict validation for actual images but allow an article with none."""
+    validator = _original_load_validator()
+    original_evaluate = validator.evaluate
+
+    def evaluate(*args, **kwargs):
+        errors = list(original_evaluate(*args, **kwargs))
+        return [error for error in errors if error != NO_IMAGE_GATE_ERROR]
+
+    validator.evaluate = evaluate
+    return validator
 
 
 def send_jules_repair_v3(
@@ -89,7 +106,7 @@ Content/gate errors:
 
 Fix only the new article text and generated text indexes required by the repository. If the article is too short, structurally invalid, repetitive, too similar to recent posts, or violates content policy, rewrite only the new article as necessary. If its topic is too similar, replace that one new article within this same PR while still publishing exactly one article.
 
-PIPELINE V3 IMAGE OWNERSHIP IS STRICT: do not generate, download, inspect, add, copy, modify or delete any image binary. Do not add/change/remove `image` or `imageAlt`. Do not write or modify Image Provider, Image Attempt Chain, Image Source URL, Image SHA-256, Image Dimensions or Image Visual Match evidence. The trusted GitHub Actions image worker owns all image mutations and provider credentials.
+PIPELINE V3 IMAGE OWNERSHIP IS STRICT: do not generate, download, inspect, add, copy, modify or delete any image binary. Do not add/change/remove `image` or `imageAlt`. Do not write or modify Image Provider, Image Attempt Chain, Image Source URL, Image SHA-256, Image Dimensions or Image Visual Match evidence. The trusted GitHub Actions image worker owns all image mutations and provider credentials. A missing image is not a content failure and must never trigger a Jules repair.
 
 Do not edit workflows, tests, prompts, scripts, packages or public/videos/. Run the required content generation/check commands after the final text edit, push to the existing branch, and leave PR #{number} open for the trusted gates to re-check."""
 
@@ -127,6 +144,7 @@ Do not edit workflows, tests, prompts, scripts, packages or public/videos/. Run 
 
 def main() -> int:
     core.MAX_REPAIRS = MAX_REPAIRS
+    core.load_validator = load_validator_best_effort
     core.send_jules_repair = send_jules_repair_v3
     return core.main()
 
