@@ -1,10 +1,10 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,8 +13,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "deploy_attempts": 0
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-08-21T07:05:44.248198+00:00"
   },
   "image": {
     "attempt_count": 0,
@@ -53,7 +54,16 @@
         "previous_failure": "ARTICLE_ATTEMPTS_EXHAUSTED",
         "fixed_commit": "19a14b5be0ef1f4499b636195352ee6135ecbb20"
       }
+    },
+    {
+      "at": "2026-08-21T07:05:44.248204+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-08-21T07:02:00+00:00"
+  "updated_at": "2026-08-21T07:05:44.248209+00:00"
 }
