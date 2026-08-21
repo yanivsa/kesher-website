@@ -36,6 +36,8 @@
     "jules_review": "advisory",
     "queue_order": "fifo",
     "max_attempts_per_stage": 3,
+    "provider_poll_seconds_per_dispatch": 1800,
+    "provider_pending_is_failure": false,
     "durable_state_artifacts_to_keep": 3,
     "durable_state_retention_days": 14
   },
