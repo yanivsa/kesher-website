@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "video_retry_wait",
+  "status": "video_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -62,7 +62,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-framework-preparation",
     "published_date": "2026-08-21",
     "live": true,
-    "live_verified_at": "2026-08-21T14:47:03.300252+00:00",
+    "live_verified_at": "2026-08-21T15:18:40.372025+00:00",
     "next_deploy_retry_at": null
   },
   "image": {
@@ -90,10 +90,10 @@
     "deferred_reason": "best_effort_attempts_exhausted"
   },
   "video": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-08-21T14:52:07.942147+00:00",
+    "next_retry_at": null,
     "run_id": 32491536164,
     "processed_run_id": 32491536164,
     "provider_id": null,
@@ -103,10 +103,11 @@
       "VIDEO_WORKFLOW_FAILED": 1
     },
     "attempts": 1,
-    "resume_dispatches": 0,
-    "last_dispatch_at": "2026-08-21T14:19:39.519503+00:00",
+    "resume_dispatches": 1,
+    "last_dispatch_at": "2026-08-21T15:18:48.508640+00:00",
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 32491536164
+    "last_failed_run_id": 32491536164,
+    "item_id": "video-20260821-172623-00d614a082"
   },
   "last_error": null,
   "history": [
@@ -368,9 +369,25 @@
       "details": {
         "retry_at": "2026-08-21T14:52:07.942147+00:00"
       }
+    },
+    {
+      "at": "2026-08-21T15:18:40.372042+00:00",
+      "from": "video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-21T15:18:48.508650+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-08-21T14:47:07.942197+00:00",
+  "updated_at": "2026-08-21T15:18:48.508658+00:00",
   "last_warning": {
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
