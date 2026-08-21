@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "blocked",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -40,26 +40,8 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "article exhausted 3 total controller dispatch attempts",
-    "at": "2026-08-21T04:37:29.197464+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-08-20T09:42:44.655740+00:00",
-      "from": "article_live",
-      "to": "video_retry_wait",
-      "reason": "VIDEO_WORKFLOW_FAILED",
-      "details": {
-        "message": "video run 32352392926 completed with conclusion=failure",
-        "retry_at": "2026-08-20T09:47:44.655715+00:00",
-        "failure_streak": 1,
-        "run_id": 32352392926,
-        "session_id": null
-      }
-    },
     {
       "at": "2026-08-20T09:42:44.655766+00:00",
       "from": "video_retry_wait",
@@ -743,9 +725,15 @@
       "details": {
         "message": "article exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-08-21T04:57:14.306907+00:00",
+      "from": "blocked",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-08-21T04:37:29.197479+00:00",
+  "updated_at": "2026-08-21T04:57:14.306913+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
