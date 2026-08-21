@@ -109,6 +109,8 @@ jobs:
           assert policy["video"]["publication_gate"] == "technical"
           assert policy["video"]["jules_review"] == "advisory"
           assert policy["video"]["queue_order"] == "fifo"
+          assert policy["video"]["provider_poll_seconds_per_dispatch"] == 1800
+          assert policy["video"]["provider_pending_is_failure"] is False
           assert policy["video"]["durable_state_artifacts_to_keep"] == 3
           assert policy["video"]["durable_state_retention_days"] == 14
           print("KESHER_PRODUCTION_CONTRACT_V3_OK")
@@ -277,7 +279,7 @@ jobs:
 
       - name: Generate or resume exact Video Overview
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
-        run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150
+        run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 1800
 
       - name: Rebuild exact visually rejected item with Remotion
         if: ${{ inputs.operation == 'rebuild' }}
