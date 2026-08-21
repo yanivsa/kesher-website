@@ -140,22 +140,26 @@ timeout 15 systemctl restart --no-block openclaw-gateway.service || {
 }
 echo OPENCLAW_GATEWAY_START_REQUESTED=true'''
 new_start = '''echo OPENCLAW_SYSTEMD_STAGE=start-gateway
-mkdir -p /etc/systemd/system/multi-user.target.wants
-ln -sfn ../openclaw-gateway.service /etc/systemd/system/multi-user.target.wants/openclaw-gateway.service
-echo OPENCLAW_GATEWAY_UNIT_ENABLED_BY_SYMLINK=true
-# Some OCI E2 boots can leave systemctl blocked on a transient systemd job even
-# with --no-block. Submit the restart from a detached helper so the finalizer
-# always progresses into the bounded RPC checks instead of hanging indefinitely.
-(
-  timeout --kill-after=5 15 systemctl restart --no-block openclaw-gateway.service \
-    >/tmp/openclaw-gateway-restart.txt 2>&1 || true
-) </dev/null >/dev/null 2>&1 &
+# Runtime systemctl/symlink activation has repeatedly hung on the constrained
+# OCI E2 guest. The unit is persisted offline before boot; launch the same
+# loopback-only gateway directly in a fully detached session for this boot.
+# RPC checks below remain the authority for readiness.
+setsid -f env HOME=/root OPENCLAW_NO_PROMPT=1 OPENCLAW_SERVICE_REPAIR_POLICY=external \
+  "$B" gateway --port 18789 \
+  >/var/log/openclaw-gateway-direct.log 2>&1 </dev/null || true
 echo OPENCLAW_GATEWAY_START_REQUESTED=true'''
 if old_start not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_START_BLOCK_NOT_FOUND')
 s = s.replace(old_start, new_start, 1)
 p.write_text(s)
 PY
+
+# Persist the gateway unit activation while the authenticated disk is offline.
+# This avoids any runtime mkdir/ln/systemctl activation boundary on the E2 guest.
+mkdir -p "$MNT/etc/systemd/system/multi-user.target.wants"
+ln -sfn ../openclaw-gateway.service \
+  "$MNT/etc/systemd/system/multi-user.target.wants/openclaw-gateway.service"
+echo OFFLINE_REPAIR_GATEWAY_UNIT_PERSISTED=true
 
 # Run finalization only after the network/tailscale service is wanted and ordered.
 # Retry a failed oneshot instead of permanently leaving the boot in a failed state.
