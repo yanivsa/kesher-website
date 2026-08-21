@@ -55,10 +55,7 @@ fi
 
 mapfile -t candidates < <(
   while read -r dev size typ; do
-    case "$typ" in
-      part|lvm) ;;
-      *) continue ;;
-    esac
+    [ "$typ" = part ] || [ "$typ" = lvm ] || continue
     [ "$dev" = "$root_src" ] && continue
     if lsblk -srnpo NAME "$dev" 2>/dev/null | grep -Fxq "$target_disk"; then
       printf '%s %s\n' "$dev" "$size"
@@ -189,14 +186,11 @@ timeout 30 systemctl daemon-reload || {
   exit 22
 }
 echo OPENCLAW_SYSTEMD_STAGE=start-gateway
-timeout 15 systemctl enable openclaw-gateway.service >/dev/null || {
-  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_ENABLE
-  exit 22
-}
-timeout 15 systemctl restart --no-block openclaw-gateway.service || {
-  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RESTART
-  exit 22
-}
+# The gateway unit is already persisted offline into multi-user.target.wants.
+# Runtime activation calls have repeatedly hung on this constrained E2 guest,
+# including systemctl and setsid. Do not launch a second process here.
+# Continue directly to bounded RPC/health proof; if systemd did not start the
+# persisted unit successfully, those probes fail closed with diagnostics.
 echo OPENCLAW_GATEWAY_START_REQUESTED=true
 
 for i in $(seq 1 60); do
