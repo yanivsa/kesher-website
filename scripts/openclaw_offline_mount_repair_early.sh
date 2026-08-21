@@ -45,9 +45,7 @@ done
 rm -f "$MNT/var/lib/openclaw-ready.txt"
 : > "$MNT/var/log/openclaw-offline-finalize.log"
 
-# Keep the gateway retry budget inside the workflow's 420-second proof window.
-# More attempts are retained than the original baseline, but each RPC probe is
-# deliberately short so proof does not power off the guest mid-finalization.
+# Keep the gateway retry budget inside the workflow's proof window.
 python3 - "$MNT/usr/local/sbin/openclaw-offline-finalize.sh" <<'PY'
 from pathlib import Path
 import sys
@@ -92,7 +90,46 @@ fi
 echo OPENCLAW_GATEWAY_RPC_SOURCE="$rpc_source"'''
 if old not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_BLOCK_NOT_FOUND')
-p.write_text(s.replace(old, new, 1))
+s = s.replace(old, new, 1)
+anchor = '''echo OPENCLAW_SYSTEMD_STAGE=disable-wait-tailnet
+'''
+unit = '''# Refresh the system-level gateway unit from the canonical OpenClaw Linux service shape.
+# The authenticated host is headless and system-owned, so do not depend on a user session.
+cat >/etc/systemd/system/openclaw-gateway.service <<UNIT
+[Unit]
+Description=OpenClaw Gateway
+After=network-online.target tailscaled.service
+Wants=network-online.target tailscaled.service
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+[Service]
+Type=simple
+Environment=HOME=/root
+Environment=OPENCLAW_NO_PROMPT=1
+Environment=OPENCLAW_SERVICE_REPAIR_POLICY=external
+ExecStart="$B" gateway --port 18789
+Restart=always
+RestartSec=5
+RestartPreventExitStatus=78
+TimeoutStopSec=30
+TimeoutStartSec=30
+SuccessExitStatus=0 143
+OOMPolicy=continue
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+chmod 0644 /etc/systemd/system/openclaw-gateway.service
+echo OPENCLAW_GATEWAY_SYSTEM_UNIT_REFRESHED=true
+
+echo OPENCLAW_SYSTEMD_STAGE=disable-wait-tailnet
+'''
+if anchor not in s:
+    raise SystemExit('OPENCLAW_BOOTFIX_SYSTEMD_ANCHOR_NOT_FOUND')
+s = s.replace(anchor, unit, 1)
+p.write_text(s)
 PY
 
 # Run finalization only after the network/tailscale service is wanted and ordered.
