@@ -22,7 +22,7 @@ done < <(lsblk -dnpo NAME,TYPE)
 
 mapfile -t candidates < <(
   while read -r dev size typ; do
-    case "$typ" in part|lvm) ;; *) continue ;; esac
+    [ "$typ" = part ] || [ "$typ" = lvm ] || continue
     if lsblk -srnpo NAME "$dev" 2>/dev/null | grep -Fxq "$target_disk"; then
       printf '%s %s\n' "$dev" "$size"
     fi
