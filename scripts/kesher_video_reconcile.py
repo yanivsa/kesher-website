@@ -4,7 +4,8 @@
 Unresolved videos are processed oldest-first. Multiple items form a durable
 FIFO backlog instead of a fatal conflict. Jules review is advisory: a new
 YouTube upload is permitted after machine technical verification of the exact
-source/video identity.
+source/video identity. A durable NotebookLM task that is still generating is
+normal progress, not an upload failure.
 """
 
 from __future__ import annotations
@@ -26,6 +27,7 @@ UNRESOLVED_STATUSES = {
     "source_selected", "source_added", "generating", "downloaded",
     "pending_review", "approved", "rejected", "uploading",
 }
+PROVIDER_PROGRESS_STATUSES = {"source_selected", "source_added", "generating", "downloaded"}
 MAX_TECHNICAL_RETRIES = 3
 
 
@@ -198,6 +200,16 @@ def prepare_upload() -> int:
             return 0
 
     if not technical_publication_ready(item):
+        # source_selected/source_added/generating/downloaded are durable provider
+        # progress states. They are not evidence of failure and must not turn a
+        # healthy NotebookLM poll timeout into a failed GitHub Actions run.
+        if item.get("status") in PROVIDER_PROGRESS_STATUSES and item.get("technical_verified") is not True:
+            print(
+                "VIDEO_RECONCILED_UPLOAD candidate=pending "
+                f"slug={source_slug(item)} status={item.get('status')} "
+                f"task_id={item.get('task_id') or 'none'}"
+            )
+            return 0
         raise pipeline.PipelineError(
             "Oldest unresolved video is not technically verified for publication"
         )
