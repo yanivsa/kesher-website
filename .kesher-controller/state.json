@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "video_running",
+  "status": "video_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -62,7 +62,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-framework-preparation",
     "published_date": "2026-08-21",
     "live": true,
-    "live_verified_at": "2026-08-21T14:19:36.421336+00:00",
+    "live_verified_at": "2026-08-21T14:47:03.300252+00:00",
     "next_deploy_retry_at": null
   },
   "image": {
@@ -93,16 +93,20 @@
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-08-21T14:52:07.942147+00:00",
     "run_id": 32491536164,
-    "processed_run_id": null,
+    "processed_run_id": 32491536164,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "VIDEO_WORKFLOW_FAILED": 1
+    },
     "attempts": 1,
     "resume_dispatches": 0,
-    "last_dispatch_at": "2026-08-21T14:19:39.519503+00:00"
+    "last_dispatch_at": "2026-08-21T14:19:39.519503+00:00",
+    "last_run_conclusion": "failure",
+    "last_failed_run_id": 32491536164
   },
   "last_error": null,
   "history": [
@@ -336,9 +340,37 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-08-21T14:47:03.300268+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-21T14:47:07.942170+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "VIDEO_WORKFLOW_FAILED",
+      "details": {
+        "message": "video run 32491536164 completed with conclusion=failure",
+        "retry_at": "2026-08-21T14:52:07.942147+00:00",
+        "failure_streak": 1,
+        "run_id": 32491536164,
+        "session_id": null
+      }
+    },
+    {
+      "at": "2026-08-21T14:47:07.942194+00:00",
+      "from": "video_retry_wait",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-08-21T14:52:07.942147+00:00"
+      }
     }
   ],
-  "updated_at": "2026-08-21T14:19:39.519516+00:00",
+  "updated_at": "2026-08-21T14:47:07.942197+00:00",
   "last_warning": {
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
