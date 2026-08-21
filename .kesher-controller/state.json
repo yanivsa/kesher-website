@@ -62,7 +62,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-framework-preparation",
     "published_date": "2026-08-21",
     "live": true,
-    "live_verified_at": "2026-08-21T15:18:40.372025+00:00",
+    "live_verified_at": "2026-08-21T15:20:52.510124+00:00",
     "next_deploy_retry_at": null
   },
   "image": {
@@ -91,7 +91,7 @@
   },
   "video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 32496910334,
@@ -385,9 +385,21 @@
         "operation": "full",
         "resume": 1
       }
+    },
+    {
+      "at": "2026-08-21T15:20:52.510141+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-21T15:20:54.365559+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-08-21T15:18:48.508658+00:00",
+  "updated_at": "2026-08-21T15:20:54.365577+00:00",
   "last_warning": {
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
