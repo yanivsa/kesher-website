@@ -1,21 +1,60 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
-    "last_error": null,
-    "next_retry_at": null,
+    "last_error": {
+      "stage": "article",
+      "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I have successfully generated a new article about handling unmatched setups for the \"2026-08-21\" slot, meeting word count and style policies. I then received code review feedback regarding a few minor stylistic violations (a gendered title, a banned generalization phrase, and an overly long/generic Call to Action). I have just created a Node.js script (`fix_content.cjs`) to apply these fixes to `src/data/posts.json` and am about to execute it, followed by regenerating the index files. Should I proceed with executing the fix and finalizing the pre-commit steps before submitting the PR?",
+      "retryable": true,
+      "retry_at": "2026-08-21T08:05:16.016635+00:00",
+      "at": "2026-08-21T08:00:16.016649+00:00"
+    },
+    "next_retry_at": "2026-08-21T08:05:16.016635+00:00",
     "run_id": 32457131613,
-    "processed_run_id": null,
+    "processed_run_id": 32457131613,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "JULES_TIMEOUT_SESSION_ACTIVE": 1
+    },
     "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-21T07:05:44.248198+00:00"
+    "last_dispatch_at": "2026-08-21T07:05:44.248198+00:00",
+    "last_run_conclusion": "failure",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-08-21",
+      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "retryable": true,
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I have successfully generated a new article about handling unmatched setups for the \"2026-08-21\" slot, meeting word count and style policies. I then received code review feedback regarding a few minor stylistic violations (a gendered title, a banned generalization phrase, and an overly long/generic Call to Action). I have just created a Node.js script (`fix_content.cjs`) to apply these fixes to `src/data/posts.json` and am about to execute it, followed by regenerating the index files. Should I proceed with executing the fix and finalizing the pre-commit steps before submitting the PR?",
+      "session_id": "sessions/11810319403096449392",
+      "pr_url": "",
+      "github_run_id": "32457131613",
+      "completed_at": "2026-08-21T07:42:49.857303+00:00",
+      "diagnostic": {
+        "source": {
+          "name": "sources/github/yanivsa/kesher-website",
+          "owner": "yanivsa",
+          "repo": "kesher-website",
+          "default_branch": "main",
+          "main_available": true
+        },
+        "activity_count": 78,
+        "change_set_count": 70,
+        "change_set_fingerprints": [],
+        "last_agent_message": "I have successfully generated a new article about handling unmatched setups for the \"2026-08-21\" slot, meeting word count and style policies. I then received code review feedback regarding a few minor stylistic violations (a gendered title, a banned generalization phrase, and an overly long/generic Call to Action). I have just created a Node.js script (`fix_content.cjs`) to apply these fixes to `src/data/posts.json` and am about to execute it, followed by regenerating the index files. Should I proceed with executing the fix and finalizing the pre-commit steps before submitting the PR?",
+        "last_progress": "Successfully recreated and ran `verify_content.cjs`, confirming the word coun... — Successfully recreated and ran `verify_content.cjs`, confirming the word count is 769 and heading count is 5. `npm run test:content` also passed.",
+        "last_description": "",
+        "session_failed_reason": ""
+      }
+    },
+    "last_jules_session_id": "sessions/11810319403096449392",
+    "last_failed_run_id": 32457131613
   },
   "image": {
     "attempt_count": 0,
@@ -43,7 +82,14 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I have successfully generated a new article about handling unmatched setups for the \"2026-08-21\" slot, meeting word count and style policies. I then received code review feedback regarding a few minor stylistic violations (a gendered title, a banned generalization phrase, and an overly long/generic Call to Action). I have just created a Node.js script (`fix_content.cjs`) to apply these fixes to `src/data/posts.json` and am about to execute it, followed by regenerating the index files. Should I proceed with executing the fix and finalizing the pre-commit steps before submitting the PR?",
+    "retryable": true,
+    "retry_at": "2026-08-21T08:05:16.016635+00:00",
+    "at": "2026-08-21T08:00:16.016649+00:00"
+  },
   "history": [
     {
       "at": "2026-08-21T07:02:00+00:00",
@@ -63,7 +109,20 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-08-21T08:00:16.016653+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I have successfully generated a new article about handling unmatched setups for the \"2026-08-21\" slot, meeting word count and style policies. I then received code review feedback regarding a few minor stylistic violations (a gendered title, a banned generalization phrase, and an overly long/generic Call to Action). I have just created a Node.js script (`fix_content.cjs`) to apply these fixes to `src/data/posts.json` and am about to execute it, followed by regenerating the index files. Should I proceed with executing the fix and finalizing the pre-commit steps before submitting the PR?",
+        "retry_at": "2026-08-21T08:05:16.016635+00:00",
+        "failure_streak": 1,
+        "run_id": 32457131613,
+        "session_id": "sessions/11810319403096449392"
+      }
     }
   ],
-  "updated_at": "2026-08-21T07:38:41.329252+00:00"
+  "updated_at": "2026-08-21T08:00:16.016656+00:00"
 }
