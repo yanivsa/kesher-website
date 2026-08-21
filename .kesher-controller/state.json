@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "article_pr_open",
+  "status": "video_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -17,8 +17,8 @@
     "run_id": 32465236057,
     "processed_run_id": 32457131613,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
@@ -56,7 +56,14 @@
     "last_jules_session_id": "sessions/11810319403096449392",
     "last_failed_run_id": 32457131613,
     "pr_number": 504,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/504"
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/504",
+    "slug": "gifted-children-framework-preparation",
+    "title": "הוא מחונן אבל מסרב להיכנס לשער: למה המעבר למסגרת חדשה כל כך מציף?",
+    "url": "https://kesher.saharoni.com/blog/gifted-children-framework-preparation",
+    "published_date": "2026-08-21",
+    "live": true,
+    "live_verified_at": "2026-08-21T14:19:36.421336+00:00",
+    "next_deploy_retry_at": null
   },
   "image": {
     "attempt_count": 3,
@@ -83,8 +90,8 @@
     "deferred_reason": "best_effort_attempts_exhausted"
   },
   "video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -93,8 +100,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "resume_dispatches": 0
+    "attempts": 1,
+    "resume_dispatches": 0,
+    "last_dispatch_at": "2026-08-21T14:19:39.519503+00:00"
   },
   "last_error": null,
   "history": [
@@ -312,9 +320,25 @@
       "details": {
         "pr_number": 504
       }
+    },
+    {
+      "at": "2026-08-21T14:19:36.421356+00:00",
+      "from": "article_pr_open",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-21T14:19:39.519510+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-08-21T14:11:09.648771+00:00",
+  "updated_at": "2026-08-21T14:19:39.519516+00:00",
   "last_warning": {
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
