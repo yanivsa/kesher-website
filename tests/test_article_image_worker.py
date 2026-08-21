@@ -5,12 +5,15 @@ import inspect
 import json
 import struct
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKER_PATH = ROOT / ".github" / "scripts" / "article-image-worker-v3.py"
+PRODUCTION_WORKER_PATH = ROOT / ".github" / "scripts" / "article-image-worker-v4.py"
+CONTROLLER_PATH = ROOT / ".github" / "scripts" / "article-pr-controller-v3.py"
 VALIDATOR_PATH = ROOT / ".github" / "scripts" / "validate-article-pr.py"
 WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-article-image.yml"
 CONTRACT_PATH = ROOT / "config" / "kesher-production-contract.json"
@@ -43,13 +46,14 @@ class ArticleImageWorkerTests(unittest.TestCase):
         contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
         self.assertEqual(contract["image"]["provider_order"], ["gemini", "unsplash", "pexels", "local-curated"])
         self.assertTrue(contract["image"]["fallback_must_be_local"])
-        self.assertFalse(contract["image"]["no_image_publication_allowed"])
+        self.assertTrue(contract["image"]["no_image_publication_allowed"])
+        self.assertFalse(contract["image"]["publication_blocking"])
         self.assertEqual(contract["image"]["gemini_model"], "gemini-3.1-flash-image")
         self.assertEqual(contract["image"]["visual_verifier_model"], "gemini-3.5-flash")
         self.assertTrue(contract["image"]["external_stock_requires_pixel_verification"])
 
     def test_all_external_failures_fall_through_to_local(self):
-        worker = load(WORKER_PATH, "article_image_worker_v3_fallback_test")
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_fallback_test")
         calls = []
         worker.try_gemini = lambda post, attempts: (attempts.append("gemini"), calls.append("gemini"), None)[2]
         worker.try_unsplash = lambda post, attempts: (attempts.append("unsplash"), calls.append("unsplash"), None)[2]
@@ -63,18 +67,27 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertEqual(candidate.provider, "Local")
         self.assertEqual(candidate.attempts, ["gemini", "unsplash", "pexels", "local-curated"])
 
-    def test_local_fallback_is_read_only_from_trusted_main(self):
-        worker = load(WORKER_PATH, "article_image_worker_v3_trusted_main_test")
-        seen = {}
+    def test_local_fallback_reads_only_from_trusted_checkout(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_trusted_checkout_test")
+        with tempfile.TemporaryDirectory() as tmp:
+            worker.REPO_ROOT = Path(tmp)
+            source_path, _description = worker.core.LOCAL_FALLBACKS["couples"]
+            target = worker.REPO_ROOT / source_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(fake_png())
+            with mock.patch.object(worker.core, "github_content", side_effect=AssertionError("local fallback must not use GitHub API")):
+                candidate = worker.local_fallback(
+                    "o/r", {"title": "שיחה", "id": "x"}, "untrusted-pr-sha", "t", []
+                )
+        self.assertEqual(candidate.provider, "Local")
+        self.assertEqual(candidate.data, fake_png())
+        self.assertEqual(candidate.attempts, ["local-curated"])
 
-        def fake_content(repo, path, ref, token):
-            seen.update({"repo": repo, "path": path, "ref": ref, "token": token})
-            return {"content": ""}
-
-        worker.core.github_content = fake_content
-        worker.core.decode_content = lambda payload: fake_png()
-        worker.local_fallback("o/r", {"title": "שיחה", "id": "x"}, "untrusted-pr-sha", "t", [])
-        self.assertEqual(seen["ref"], "main")
+    def test_provider_preflight_never_requires_external_secrets(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_preflight_test")
+        with mock.patch.dict("os.environ", {}, clear=True):
+            availability = worker.provider_preflight()
+        self.assertEqual(availability, {"gemini": False, "unsplash": False, "pexels": False, "local": True})
 
     def test_gemini_generation_uses_current_official_generate_content_shape(self):
         source = WORKER_PATH.read_text(encoding="utf-8")
@@ -114,8 +127,9 @@ class ArticleImageWorkerTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "too small"):
             worker.core.validate_candidate(fake_png(320, 180))
 
-    def test_validator_forbids_no_image_publication(self):
-        validator = load(VALIDATOR_PATH, "article_validator_image_test")
+    def test_production_article_gate_allows_no_image(self):
+        controller = load(CONTROLLER_PATH, "article_controller_best_effort_test")
+        validator = controller.load_validator_best_effort()
         base = [{"id": "old"}]
         new = {
             "id": "new", "title": "כותרת", "date": "2026-08-20", "category": "זוגיות",
@@ -134,7 +148,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
             base + [new],
             lambda _: b"",
         )
-        self.assertTrue(any("no-image publication is forbidden" in error for error in errors), errors)
+        self.assertFalse(any("no-image publication is forbidden" in error for error in errors), errors)
 
     def test_workflow_is_controller_owned_and_executes_only_trusted_main_worker(self):
         workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
@@ -144,7 +158,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIn("run-name: Kesher Image PR", workflow)
         self.assertIn("ref: main", workflow)
         self.assertIn("persist-credentials: false", workflow)
-        self.assertIn("article-image-worker-v3.py", workflow)
+        self.assertIn("article-image-worker-v4.py", workflow)
         self.assertIn("GOOGLE_API_KEY", workflow)
         self.assertIn("UNSPLASH_ACCESS_KEY", workflow)
         self.assertIn("PEXELS_API_KEY", workflow)
