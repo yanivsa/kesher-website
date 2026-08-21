@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "blocked",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -60,14 +60,15 @@
   },
   "image": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "deferred",
     "last_error": {
       "stage": "image",
       "code": "IMAGE_ATTEMPTS_EXHAUSTED",
       "message": "image exhausted 3 total controller dispatch attempts",
-      "at": "2026-08-21T14:00:38.440790+00:00"
+      "at": "2026-08-21T14:00:38.440790+00:00",
+      "retryable": false
     },
-    "next_retry_at": "2026-08-21T11:47:27.137285+00:00",
+    "next_retry_at": null,
     "run_id": 32474524184,
     "processed_run_id": 32474524184,
     "provider_id": null,
@@ -78,7 +79,8 @@
     },
     "last_dispatch_at": "2026-08-21T10:51:24.740658+00:00",
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 32474524184
+    "last_failed_run_id": 32474524184,
+    "deferred_reason": "best_effort_attempts_exhausted"
   },
   "video": {
     "attempt_count": 0,
@@ -94,12 +96,7 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
-    "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-08-21T14:00:38.440790+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-21T07:02:00+00:00",
@@ -306,7 +303,22 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-08-21T14:11:09.648755+00:00",
+      "from": "blocked",
+      "to": "article_pr_open",
+      "reason": "image best-effort exhausted; article publication remains allowed",
+      "details": {
+        "pr_number": 504
+      }
     }
   ],
-  "updated_at": "2026-08-21T14:00:38.440808+00:00"
+  "updated_at": "2026-08-21T14:11:09.648771+00:00",
+  "last_warning": {
+    "stage": "image",
+    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
+    "message": "image exhausted 3 total controller dispatch attempts",
+    "at": "2026-08-21T14:00:38.440790+00:00"
+  }
 }
