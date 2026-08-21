@@ -9,7 +9,16 @@ from pathlib import Path
 
 import oci
 
-from oci_openclaw_bootstrap import ensure_network, instance_public_ip, load_config, log, wait
+from oci_openclaw_bootstrap import (
+    SECURITY_LIST_NAME,
+    SUBNET_NAME,
+    VCN_NAME,
+    ensure_network,
+    instance_public_ip,
+    load_config,
+    log,
+    wait,
+)
 from oci_openclaw_offline_repair_v2 import (
     HELPER_NAME,
     SHAPE,
@@ -60,6 +69,65 @@ runcmd:
     return base64.b64encode(cloud_config.encode()).decode()
 
 
+def _ssh_rule_allows_untrusted(rule) -> bool:
+    if str(getattr(rule, "protocol", "")) != "6":
+        return False
+    tcp = getattr(rule, "tcp_options", None)
+    ports = getattr(tcp, "destination_port_range", None) if tcp else None
+    if not ports:
+        return True
+    minimum = int(getattr(ports, "min", 0) or 0)
+    maximum = int(getattr(ports, "max", 65535) or 65535)
+    if not (minimum <= 22 <= maximum):
+        return False
+    return getattr(rule, "source", None) != NO_SSH_CIDR
+
+
+def existing_closed_network(vnet, compartment_id: str):
+    """Reuse the durable recovery network without issuing an OCI update.
+
+    The repair/proof helper needs outbound HTTPS only. Re-writing an already
+    closed security list is unnecessary and can hit OCI control-plane rate or
+    capacity limits. If the named recovery network exists, require that it does
+    not expose SSH to any source other than the documentation-only NO_SSH_CIDR,
+    then reuse it as-is. Missing resources fall back to ensure_network().
+    """
+    vcns = [
+        x for x in vnet.list_vcns(compartment_id=compartment_id).data
+        if x.lifecycle_state != "TERMINATED" and x.display_name == VCN_NAME
+    ]
+    if not vcns:
+        return None
+    vcn = vcns[0]
+
+    sls = [
+        x for x in vnet.list_security_lists(
+            compartment_id=compartment_id, vcn_id=vcn.id
+        ).data
+        if x.lifecycle_state != "TERMINATED"
+        and x.display_name == SECURITY_LIST_NAME
+    ]
+    subnets = [
+        x for x in vnet.list_subnets(
+            compartment_id=compartment_id, vcn_id=vcn.id
+        ).data
+        if x.lifecycle_state != "TERMINATED" and x.display_name == SUBNET_NAME
+    ]
+    if not sls or not subnets:
+        return None
+
+    sl = sls[0]
+    unsafe = [
+        rule for rule in (sl.ingress_security_rules or [])
+        if _ssh_rule_allows_untrusted(rule)
+    ]
+    if unsafe:
+        raise RuntimeError("OPENCLAW_RECOVERY_NETWORK_PUBLIC_SSH_NOT_CLOSED")
+
+    log("OPENCLAW_RECOVERY_NETWORK_REUSED_NO_UPDATE", security_list=sl.id)
+    return vcn, subnets[0], sl
+
+
 def prepare(args) -> int:
     cfg = load_config(args.config)
     compartment_id = cfg["tenancy"]
@@ -70,7 +138,10 @@ def prepare(args) -> int:
     target, boot_id = current_target_boot(compute, block, compartment_id)
     log("OFFLINE_REPAIR_BOOT_IDENTIFIED", boot_id=boot_id)
 
-    _, subnet, sl = ensure_network(vnet, compartment_id, NO_SSH_CIDR)
+    network = existing_closed_network(vnet, compartment_id)
+    if network is None:
+        network = ensure_network(vnet, compartment_id, NO_SSH_CIDR)
+    _, subnet, sl = network
     cleanup_existing_helper(compute, compartment_id, boot_id)
 
     if target:
