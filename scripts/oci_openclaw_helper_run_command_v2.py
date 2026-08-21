@@ -26,7 +26,9 @@ def pinned_wrapper(script_file: str) -> str:
         "#!/usr/bin/env bash",
         "set -Eeuo pipefail",
         "root=$(mktemp -d)",
-        "trap 'rm -rf \"$root\"' EXIT",
+        "cleanup() { rc=$?; rm -rf \"$root\"; if [ \"$rc\" -ne 0 ]; then echo OFFLINE_REPAIR_WRAPPER_FAILED_RC=$rc; fi; exit \"$rc\"; }",
+        "trap cleanup EXIT",
+        "echo OFFLINE_REPAIR_WRAPPER_STARTED=true",
     ]
     for local in files:
         data = local.read_bytes()
@@ -35,13 +37,20 @@ def pinned_wrapper(script_file: str) -> str:
         url = f"https://raw.githubusercontent.com/{repo}/{sha}/{quote(rel, safe='/')}"
         commands.extend([
             f"mkdir -p \"$root/{Path(rel).parent.as_posix()}\"",
-            f"curl -fsSL --retry 5 --retry-delay 2 '{url}' -o \"$root/{rel}\"",
+            f"curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 '{url}' -o \"$root/{rel}\"",
             f"printf '%s  %s\\n' '{digest}' \"$root/{rel}\" | sha256sum -c -",
+            f"echo OFFLINE_REPAIR_WRAPPER_FETCHED_{local.name.upper().replace('.', '_').replace('-', '_')}=true",
         ])
 
     primary_rel = primary.as_posix().lstrip("./")
     commands.extend([
         "cd \"$root\"",
+        "sudo_deadline=$((SECONDS + 180))",
+        "until sudo -n true 2>/dev/null; do",
+        "  if [ \"$SECONDS\" -ge \"$sudo_deadline\" ]; then echo OFFLINE_REPAIR_WRAPPER_SUDO_NOT_READY=true; exit 1; fi",
+        "  sleep 5",
+        "done",
+        "echo OFFLINE_REPAIR_WRAPPER_SUDO_READY=true",
         f"sudo -n env OPENCLAW_REPAIR_NO_POWEROFF=1 bash '{primary_rel}'",
     ])
     wrapper = "\n".join(commands) + "\n"
