@@ -129,6 +129,28 @@ echo OPENCLAW_SYSTEMD_STAGE=disable-wait-tailnet
 if anchor not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_SYSTEMD_ANCHOR_NOT_FOUND')
 s = s.replace(anchor, unit, 1)
+old_start = '''echo OPENCLAW_SYSTEMD_STAGE=start-gateway
+timeout 15 systemctl enable openclaw-gateway.service >/dev/null || {
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_ENABLE
+  exit 22
+}
+timeout 15 systemctl restart --no-block openclaw-gateway.service || {
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RESTART
+  exit 22
+}
+echo OPENCLAW_GATEWAY_START_REQUESTED=true'''
+new_start = '''echo OPENCLAW_SYSTEMD_STAGE=start-gateway
+mkdir -p /etc/systemd/system/multi-user.target.wants
+ln -sfn ../openclaw-gateway.service /etc/systemd/system/multi-user.target.wants/openclaw-gateway.service
+echo OPENCLAW_GATEWAY_UNIT_ENABLED_BY_SYMLINK=true
+timeout 15 systemctl restart --no-block openclaw-gateway.service || {
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RESTART
+  exit 22
+}
+echo OPENCLAW_GATEWAY_START_REQUESTED=true'''
+if old_start not in s:
+    raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_START_BLOCK_NOT_FOUND')
+s = s.replace(old_start, new_start, 1)
 p.write_text(s)
 PY
 
