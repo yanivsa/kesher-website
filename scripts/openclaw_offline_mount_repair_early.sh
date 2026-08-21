@@ -143,10 +143,13 @@ new_start = '''echo OPENCLAW_SYSTEMD_STAGE=start-gateway
 mkdir -p /etc/systemd/system/multi-user.target.wants
 ln -sfn ../openclaw-gateway.service /etc/systemd/system/multi-user.target.wants/openclaw-gateway.service
 echo OPENCLAW_GATEWAY_UNIT_ENABLED_BY_SYMLINK=true
-timeout 15 systemctl restart --no-block openclaw-gateway.service || {
-  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RESTART
-  exit 22
-}
+# Some OCI E2 boots can leave systemctl blocked on a transient systemd job even
+# with --no-block. Submit the restart from a detached helper so the finalizer
+# always progresses into the bounded RPC checks instead of hanging indefinitely.
+(
+  timeout --kill-after=5 15 systemctl restart --no-block openclaw-gateway.service \
+    >/tmp/openclaw-gateway-restart.txt 2>&1 || true
+) </dev/null >/dev/null 2>&1 &
 echo OPENCLAW_GATEWAY_START_REQUESTED=true'''
 if old_start not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_START_BLOCK_NOT_FOUND')
