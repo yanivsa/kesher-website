@@ -151,9 +151,10 @@ new_start = '''echo OPENCLAW_SYSTEMD_STAGE=start-gateway
 # Continue directly to bounded RPC/health proof; if systemd did not start the
 # persisted unit successfully, those probes fail closed with diagnostics.
 echo OPENCLAW_GATEWAY_START_REQUESTED=true'''
-if old_start not in s:
+if old_start in s:
+    s = s.replace(old_start, new_start, 1)
+elif new_start not in s:
     raise SystemExit('OPENCLAW_BOOTFIX_GATEWAY_START_BLOCK_NOT_FOUND')
-s = s.replace(old_start, new_start, 1)
 p.write_text(s)
 PY
 echo OFFLINE_REPAIR_FINALIZER_SAFE_LOGGING=true
