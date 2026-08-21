@@ -1,10 +1,10 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-21",
-  "status": "video_running",
+  "status": "complete",
   "article": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": {
       "stage": "article",
       "code": "JULES_TIMEOUT_SESSION_ACTIVE",
@@ -62,7 +62,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-framework-preparation",
     "published_date": "2026-08-21",
     "live": true,
-    "live_verified_at": "2026-08-21T15:23:52.613991+00:00",
+    "live_verified_at": "2026-08-21T16:00:23.036681+00:00",
     "next_deploy_retry_at": null
   },
   "image": {
@@ -91,14 +91,14 @@
   },
   "video": {
     "attempt_count": 2,
-    "status": "generating",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 32496910334,
     "processed_run_id": 32491536164,
     "provider_id": null,
-    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "VIDEO_WORKFLOW_FAILED": 1
     },
@@ -107,7 +107,10 @@
     "last_dispatch_at": "2026-08-21T15:18:48.508640+00:00",
     "last_run_conclusion": "failure",
     "last_failed_run_id": 32491536164,
-    "item_id": "video-20260821-172623-00d614a082"
+    "item_id": "video-20260821-172623-00d614a082",
+    "youtube_id": "PQVjwkZEzro",
+    "youtube_url": "https://youtu.be/PQVjwkZEzro",
+    "verified": true
   },
   "last_error": null,
   "history": [
@@ -409,9 +412,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-08-21T16:00:23.036701+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-21T16:00:24.154694+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-08-21T15:23:56.850067+00:00",
+  "updated_at": "2026-08-21T16:00:24.154711+00:00",
   "last_warning": {
     "stage": "image",
     "code": "IMAGE_ATTEMPTS_EXHAUSTED",
