@@ -84,6 +84,38 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(saved[0]["source"]["slug"], "yesterday")
         self.assertNotIn("superseded_reason", saved[0])
 
+    def test_provider_pending_item_is_not_an_upload_failure(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        item = pipeline.new_item(pipeline.source_metadata(today))
+        item.update({
+            "status": "generating",
+            "source_id": "source-1",
+            "task_id": "task-1",
+            "artifact_id": "task-1",
+            "last_provider_status": "pending",
+        })
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        self.assertEqual(reconcile.prepare_upload(), 0)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "generating")
+        self.assertEqual(saved["task_id"], "task-1")
+        self.assertNotIn("review_gate", saved)
+
+    def test_inconsistent_pending_review_without_technical_verification_fails_closed(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        item = pipeline.new_item(pipeline.source_metadata(today))
+        item.update({
+            "status": "pending_review",
+            "technical_verified": False,
+            "final_sha256": "f" * 64,
+        })
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+        with self.assertRaisesRegex(pipeline.PipelineError, "not technically verified"):
+            reconcile.prepare_upload()
+
     def test_multiple_backlog_items_are_processed_oldest_first(self) -> None:
         today = post("today")
         oldest_post = post("oldest", "2026-08-17")
