@@ -1,11 +1,11 @@
 name: Auto-merge Kesher article PRs
 
+# The Kesher Content Controller is the sole owner of article publication order.
+# It dispatches this workflow only after the trusted image stage has reached a
+# persisted terminal state (complete or best-effort deferred). Keeping this
+# workflow dispatch-only prevents pull_request/CI events from racing ahead of
+# the controller-owned image attempt.
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened, ready_for_review]
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -33,28 +33,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
-          if [ "${EVENT_NAME}" = "pull_request_target" ]; then
-            python3 - <<'PY' > pr-numbers.txt
-          import json, os
-          with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as fh:
-              print(json.load(fh)["pull_request"]["number"])
-          PY
-          else
-            curl --fail-with-body -sS \
-              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
-              > open-prs.json
-            python3 - <<'PY' > pr-numbers.txt
+          curl --fail-with-body -sS \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
+            > open-prs.json
+          python3 - <<'PY' > pr-numbers.txt
           import json
           with open("open-prs.json", encoding="utf-8") as fh:
               for pr in json.load(fh):
                   print(pr["number"])
           PY
-          fi
 
       - name: Sync, clean, repair, validate and publish article PRs
         env:
