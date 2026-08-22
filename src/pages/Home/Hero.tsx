@@ -15,7 +15,7 @@ const Hero: React.FC = () => {
             <span>אפשר להתחיל לעשות סדר.</span>
           </h1>
           <p className={styles.description}>
-            ייעוץ זוגי, הנחיית הורים וגישור עם שירה סהרוני.
+            ייעוץ זוגי והנחיית הורים עם שירה סהרוני.
             פגישות באשדוד ובאונליין, בקצב שמתאים למה שקורה אצלכם עכשיו.
           </p>
           <div className={styles.actions}>
@@ -30,7 +30,6 @@ const Hero: React.FC = () => {
           </div>
           <div className={styles.trustBar} aria-label="תחומי התמחות">
             <span>עורכת דין בהכשרתה</span>
-            <span>מגשרת מוסמכת</span>
             <span>יועצת זוגית</span>
             <span>מנחת הורים</span>
           </div>
