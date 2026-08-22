@@ -5,6 +5,11 @@ The underlying v3 controller owns retries and image orchestration. This adapter
 keeps image terminal failure non-blocking and distinguishes a real video worker
 attempt from a heartbeat that merely resumes the exact same persisted NotebookLM
 task. Provider polling must not consume the three-attempt retry budget.
+
+Article auto-merge remains fully automatic, but only after the controller-owned
+image stage has reached a persisted terminal state. The first tick records that
+terminal state; a later heartbeat dispatches the existing auto-merge workflow,
+which prevents the merge workflow from racing ahead of the image attempt.
 """
 
 from __future__ import annotations
@@ -20,12 +25,30 @@ else:
 
 
 VIDEO_PROVIDER_PROGRESS = {"generating"}
+AUTO_MERGE_WORKFLOW = "auto-merge-article-prs.yml"
+IMAGE_TERMINAL_STATES = {"complete", "deferred"}
 
 
 class BestEffortController(v3.V3Controller):
+    def _dispatch_auto_merge_after_persisted_image_terminal(
+        self,
+        state: dict[str, Any],
+        *,
+        image_was_terminal: bool,
+    ) -> None:
+        """Dispatch merge only when terminal image state existed before this tick."""
+        if not image_was_terminal:
+            return
+        article = state["article"]
+        if article.get("merge_dispatch_at"):
+            return
+        self.github.dispatch(AUTO_MERGE_WORKFLOW)
+        article["merge_dispatch_at"] = v3.core.utc_now()
+
     def _handle_open_article_pr(self, state, pr):
         number = int(pr.get("number") or 0)
         state["article"].update({"pr_number": number, "pr_url": pr.get("html_url")})
+        image_was_terminal = str((state.get("image") or {}).get("status") or "") in IMAGE_TERMINAL_STATES
 
         ready, evidence = self.github.article_pr_image_ready(pr)
         if ready:
@@ -40,6 +63,10 @@ class BestEffortController(v3.V3Controller):
                 state,
                 "article_pr_open",
                 "article PR has trusted image and remains authoritative",
+            )
+            self._dispatch_auto_merge_after_persisted_image_terminal(
+                state,
+                image_was_terminal=image_was_terminal,
             )
             return v3.core.Action("wait", "article PR image ready; waiting for gate/merge")
 
@@ -58,6 +85,10 @@ class BestEffortController(v3.V3Controller):
                 "article_pr_open",
                 "image best-effort exhausted; article publication remains allowed",
                 pr_number=number,
+            )
+            self._dispatch_auto_merge_after_persisted_image_terminal(
+                state,
+                image_was_terminal=image_was_terminal,
             )
             return v3.core.Action(
                 "wait",
