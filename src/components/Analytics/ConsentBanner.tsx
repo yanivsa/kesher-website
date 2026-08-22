@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './ConsentBanner.module.css';
 
 const CONSENT_STORAGE_KEY = 'kesher_consent_v2';
+const CONSENT_REGION_ENDPOINT = '/api/consent-region';
 type ConsentChoice = 'granted' | 'denied';
 
 declare global {
@@ -37,14 +38,47 @@ const persistChoice = (choice: ConsentChoice) => {
 };
 
 const ConsentBanner: React.FC = () => {
-  const [state, setState] = useState<{ choice: ConsentChoice | null; isOpen: boolean }>(() => {
-    const stored = readStoredChoice();
-    return { choice: stored, isOpen: stored === null };
-  });
+  const [state, setState] = useState<{ choice: ConsentChoice | null; isOpen: boolean }>(() => ({
+    choice: readStoredChoice(),
+    isOpen: false,
+  }));
+  const [requiresConsent, setRequiresConsent] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch(CONSENT_REGION_ENDPOINT, {
+      credentials: 'same-origin',
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Consent region lookup failed');
+        const payload = await response.json() as { requiresConsent?: unknown };
+        if (typeof payload.requiresConsent !== 'boolean') {
+          throw new Error('Invalid consent region response');
+        }
+        if (active) setRequiresConsent(payload.requiresConsent);
+      })
+      .catch(() => {
+        // Fail closed: if geolocation is unavailable, keep the consent prompt.
+        if (active) setRequiresConsent(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (state.choice) updateGoogleConsent(state.choice);
   }, [state.choice]);
+
+  useEffect(() => {
+    if (requiresConsent === true && state.choice === null && !state.isOpen) {
+      setState((current) => ({ ...current, isOpen: true }));
+    }
+  }, [requiresConsent, state.choice, state.isOpen]);
 
   const choose = (nextChoice: ConsentChoice) => {
     persistChoice(nextChoice);
@@ -56,6 +90,11 @@ const ConsentBanner: React.FC = () => {
       consent_choice: nextChoice,
     });
   };
+
+  // Visitors outside the EEA/UK/Switzerland should not be interrupted by a
+  // consent banner. The regional defaults in analytics-bootstrap.js preserve
+  // measurement there. Existing explicit choices are still honored by GTM.
+  if (requiresConsent === false || requiresConsent === null) return null;
 
   if (!state.isOpen) {
     return (
