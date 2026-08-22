@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-22",
-  "status": "article_generating",
+  "status": "video_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -15,11 +15,18 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-22T17:31:25.007999+00:00"
+    "last_dispatch_at": "2026-08-22T17:31:25.007999+00:00",
+    "slug": "relocation-language-barrier-isolation",
+    "title": "שפה שנייה, שתיקה ראשונה: איך קשיי שפה ברילוקיישן משפיעים על הזוגיות?",
+    "url": "https://kesher.saharoni.com/blog/relocation-language-barrier-isolation",
+    "published_date": "2026-08-22",
+    "live": true,
+    "live_verified_at": "2026-08-22T18:41:25.401591+00:00",
+    "next_deploy_retry_at": null
   },
   "video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -28,8 +35,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "resume_dispatches": 0
+    "attempts": 1,
+    "resume_dispatches": 0,
+    "last_dispatch_at": "2026-08-22T18:41:34.680689+00:00"
   },
   "last_error": null,
   "history": [
@@ -508,9 +516,25 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-08-22T18:41:25.401605+00:00",
+      "from": "article_generating",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-22T18:41:34.680696+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-08-22T17:53:08.713705+00:00",
+  "updated_at": "2026-08-22T18:41:34.680702+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
