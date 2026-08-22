@@ -5,11 +5,14 @@ Image failures belong to the trusted image worker and never consume a Jules
 content-repair attempt. Content repair stays on the same PR/branch and is capped
 at two repairs after the initial generation attempt (three total opportunities).
 Article publication is allowed without an image; image validation remains strict
-whenever an image is actually present.
+whenever an image is actually present. Auto-merge is deferred until the
+controller-owned trusted image stage has made at least one attempt and reached a
+terminal best-effort state (complete or deferred).
 """
 
 from __future__ import annotations
 
+import base64
 import importlib.util
 import json
 import os
@@ -32,7 +35,10 @@ IMAGE_ERROR_MARKERS = (
     "image", "Image", "no-image", "local fallback", "trusted local image",
 )
 NO_IMAGE_GATE_ERROR = "New article requires a trusted local image; no-image publication is forbidden"
+CONTROLLER_STATE_REF = "automation-state"
+CONTROLLER_STATE_PATH = ".kesher-controller/state.json"
 _original_load_validator = core.load_validator
+_original_merge_and_deploy = core.merge_and_deploy
 
 
 def image_only_errors(errors: list[str]) -> bool:
@@ -50,6 +56,49 @@ def load_validator_best_effort():
 
     validator.evaluate = evaluate
     return validator
+
+
+def controller_image_stage_terminal(repo: str, pr: dict, github_token: str) -> bool:
+    """Require persisted proof that the controller owned at least one image attempt."""
+    number = int(pr["number"])
+    payload = core.request_json(
+        "GET",
+        f"https://api.github.com/repos/{repo}/contents/{CONTROLLER_STATE_PATH}?ref={CONTROLLER_STATE_REF}",
+        github_token,
+    )
+    if not isinstance(payload, dict) or not payload.get("content"):
+        raise RuntimeError("Kesher controller state is unavailable; refusing article merge")
+    try:
+        raw = base64.b64decode(str(payload["content"]).replace("\n", ""))
+        state = json.loads(raw.decode("utf-8"))
+    except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError("Kesher controller state is invalid; refusing article merge") from exc
+
+    article = state.get("article") if isinstance(state, dict) else None
+    image = state.get("image") if isinstance(state, dict) else None
+    if not isinstance(article, dict) or not isinstance(image, dict):
+        return False
+    try:
+        state_pr = int(article.get("pr_number") or 0)
+        attempts = int(image.get("attempt_count") or 0)
+    except (TypeError, ValueError):
+        return False
+    return bool(
+        state_pr == number
+        and attempts >= 1
+        and str(image.get("status") or "") in {"complete", "deferred"}
+    )
+
+
+def merge_and_deploy_after_image_stage(repo: str, pr: dict, token: str) -> None:
+    """Prevent the auto-merge workflow from racing ahead of trusted image best effort."""
+    if not controller_image_stage_terminal(repo, pr, token):
+        print(
+            f"PR #{pr['number']} passed content gates but the controller-owned trusted image "
+            "stage is not terminal yet; merge deferred without consuming a content attempt."
+        )
+        return
+    _original_merge_and_deploy(repo, pr, token)
 
 
 def send_jules_repair_v3(
@@ -108,7 +157,7 @@ Fix only the new article text and generated text indexes required by the reposit
 
 PIPELINE V3 IMAGE OWNERSHIP IS STRICT: do not generate, download, inspect, add, copy, modify or delete any image binary. Do not add/change/remove `image` or `imageAlt`. Do not write or modify Image Provider, Image Attempt Chain, Image Source URL, Image SHA-256, Image Dimensions or Image Visual Match evidence. The trusted GitHub Actions image worker owns all image mutations and provider credentials. A missing image is not a content failure and must never trigger a Jules repair.
 
-Do not edit workflows, tests, prompts, scripts, packages or public/videos/. Run the required content generation/check commands after the final text edit, push to the existing branch, and leave PR #{number} open for the trusted gates to re-check."""
+Do not edit workflows, tests, prompts, scripts, packages or public/videos/. Run the required content generation/check commands after the final text edit, push to the existing branch, and leave PR #{number} open for the trusted gates to re-check automatically."""
 
     request = urllib.request.Request(
         f"https://jules.googleapis.com/v1alpha/sessions/{session_id}:sendMessage",
@@ -146,6 +195,7 @@ def main() -> int:
     core.MAX_REPAIRS = MAX_REPAIRS
     core.load_validator = load_validator_best_effort
     core.send_jules_repair = send_jules_repair_v3
+    core.merge_and_deploy = merge_and_deploy_after_image_stage
     return core.main()
 
 
