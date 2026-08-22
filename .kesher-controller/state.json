@@ -21,7 +21,7 @@
     "url": "https://kesher.saharoni.com/blog/relocation-language-barrier-isolation",
     "published_date": "2026-08-22",
     "live": true,
-    "live_verified_at": "2026-08-22T18:41:25.401591+00:00",
+    "live_verified_at": "2026-08-22T19:08:25.310553+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
@@ -30,14 +30,18 @@
     "last_error": null,
     "next_retry_at": null,
     "run_id": 32591486811,
-    "processed_run_id": null,
-    "provider_id": null,
+    "processed_run_id": 32591486811,
+    "provider_id": "9b1205a4-5d7a-4807-88bc-4d1f4ab7176c",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 1,
-    "resume_dispatches": 0,
-    "last_dispatch_at": "2026-08-22T18:41:34.680689+00:00"
+    "resume_dispatches": 2,
+    "last_dispatch_at": "2026-08-22T19:08:32.057506+00:00",
+    "last_run_conclusion": "success",
+    "item_id": "video-20260822-214228-a1717546fa",
+    "source_id": "8f79eecf-c619-40dd-8353-b2561d790e3c",
+    "artifact_id": "9b1205a4-5d7a-4807-88bc-4d1f4ab7176c"
   },
   "last_error": null,
   "history": [
@@ -532,9 +536,25 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-08-22T19:08:25.310573+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-22T19:08:32.057513+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-08-22T18:41:34.680702+00:00",
+  "updated_at": "2026-08-22T19:08:32.057521+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
