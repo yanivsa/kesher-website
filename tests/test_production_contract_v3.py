@@ -11,6 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 LEGACY_POLICY = ROOT / "config" / "kesher-automation-policy.json"
 VIDEO_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
 VIDEO_REVIEW_POLICY = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
+ARTICLE_PR_CONTROLLER_V3 = ROOT / ".github" / "scripts" / "article-pr-controller-v3.py"
+BEST_EFFORT_CONTROLLER = ROOT / "scripts" / "kesher_content_controller_v3_best_effort.py"
 
 
 class ProductionContractV3Tests(unittest.TestCase):
@@ -49,6 +51,22 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertEqual(image["failure_mode"], "best-effort-defer")
         self.assertEqual(image["worker_owner"], "github-actions")
         self.assertTrue(image["fallback_must_be_local"])
+
+    def test_article_auto_merge_cannot_race_ahead_of_image_best_effort(self) -> None:
+        controller = ARTICLE_PR_CONTROLLER_V3.read_text(encoding="utf-8")
+        self.assertIn("controller_image_stage_terminal", controller)
+        self.assertIn('attempts >= 1', controller)
+        self.assertIn('{"complete", "deferred"}', controller)
+        self.assertIn("core.merge_and_deploy = merge_and_deploy_after_image_stage", controller)
+        self.assertIn("merge deferred without consuming a content attempt", controller)
+
+    def test_persisted_terminal_image_state_retriggers_auto_merge(self) -> None:
+        controller = BEST_EFFORT_CONTROLLER.read_text(encoding="utf-8")
+        self.assertIn('AUTO_MERGE_WORKFLOW = "auto-merge-article-prs.yml"', controller)
+        self.assertIn('IMAGE_TERMINAL_STATES = {"complete", "deferred"}', controller)
+        self.assertIn("image_was_terminal", controller)
+        self.assertIn("merge_dispatch_at", controller)
+        self.assertIn("self.github.dispatch(AUTO_MERGE_WORKFLOW)", controller)
 
     def test_legacy_policy_is_not_the_runtime_policy(self) -> None:
         self.assertNotEqual(POLICY_PATH, LEGACY_POLICY)
