@@ -1,26 +1,26 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-23",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
     "last_error": {
       "stage": "article",
       "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Removed all temporary .cjs files used for category counting, article generati... — Removed all temporary .cjs files used for category counting, article generation, and content policy testing, and verified their deletion with ls.",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I have successfully generated a new article titled \"אורזים מזוודות ומתרחקים: למה ההכנות למעבר מדינה יוצרות נתק זוגי?\" on the topic of \"זוגיות בעלייה ורילוקיישן\" for the publication slot 2026-08-23. The word count is 939 (within the 700-1100 range) and it has exactly 5 H3 headings. However, when I run `npm run check`, it fails with the following error from `test:content`: `Topic too similar: 'late-singleness-friends-moving-forward' shares specific theme keywords (late, singleness) with recent post 'late-singleness-intrusive-family-questions'. Please write about a substantially fresh topic.` This error is caused by a similarity check between two *pre-existing* older posts (\"late-singleness-friends-moving-forward\" from 2026-07-30 and \"late-singleness-intrusive-family-questions\" f…",
       "retryable": true,
-      "retry_at": "2026-08-22T22:35:50.640546+00:00",
-      "at": "2026-08-22T22:30:50.640563+00:00"
+      "retry_at": "2026-08-23T00:04:25.835203+00:00",
+      "at": "2026-08-22T23:49:25.835221+00:00"
     },
-    "next_retry_at": null,
+    "next_retry_at": "2026-08-23T00:04:25.835203+00:00",
     "run_id": 32603704825,
-    "processed_run_id": 32600325636,
+    "processed_run_id": 32603704825,
     "provider_id": null,
     "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "same_failure_streak": 2,
     "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
+      "JULES_TIMEOUT_SESSION_ACTIVE": 2
     },
     "attempts": 2,
     "deploy_attempts": 0,
@@ -31,11 +31,11 @@
       "slot": "2026-08-23",
       "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
       "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Removed all temporary .cjs files used for category counting, article generati... — Removed all temporary .cjs files used for category counting, article generation, and content policy testing, and verified their deletion with ls.",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I have successfully generated a new article titled \"אורזים מזוודות ומתרחקים: למה ההכנות למעבר מדינה יוצרות נתק זוגי?\" on the topic of \"זוגיות בעלייה ורילוקיישן\" for the publication slot 2026-08-23. The word count is 939 (within the 700-1100 range) and it has exactly 5 H3 headings. However, when I run `npm run check`, it fails with the following error from `test:content`: `Topic too similar: 'late-singleness-friends-moving-forward' shares specific theme keywords (late, singleness) with recent post 'late-singleness-intrusive-family-questions'. Please write about a substantially fresh topic.` This error is caused by a similarity check between two *pre-existing* older posts (\"late-singleness-friends-moving-forward\" from 2026-07-30 and \"late-singleness-intrusive-family-questions\" f…",
       "session_id": "sessions/5244873110139377485",
       "pr_url": "",
-      "github_run_id": "32600325636",
-      "completed_at": "2026-08-22T22:18:47.762483+00:00",
+      "github_run_id": "32603704825",
+      "completed_at": "2026-08-22T23:30:40.355218+00:00",
       "diagnostic": {
         "source": {
           "name": "sources/github/yanivsa/kesher-website",
@@ -44,17 +44,17 @@
           "default_branch": "main",
           "main_available": true
         },
-        "activity_count": 76,
-        "change_set_count": 74,
+        "activity_count": 160,
+        "change_set_count": 155,
         "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "Removed all temporary .cjs files used for category counting, article generati... — Removed all temporary .cjs files used for category counting, article generation, and content policy testing, and verified their deletion with ls.",
+        "last_agent_message": "I have successfully generated a new article titled \"אורזים מזוודות ומתרחקים: למה ההכנות למעבר מדינה יוצרות נתק זוגי?\" on the topic of \"זוגיות בעלייה ורילוקיישן\" for the publication slot 2026-08-23. The word count is 939 (within the 700-1100 range) and it has exactly 5 H3 headings. However, when I run `npm run check`, it fails with the following error from `test:content`: `Topic too similar: 'late-singleness-friends-moving-forward' shares specific theme keywords (late, singleness) with recent post 'late-singleness-intrusive-family-questions'. Please write about a substantially fresh topic.` This error is caused by a similarity check between two *pre-existing* older posts (\"late-singleness-friends-moving-forward\" from 2026-07-30 and \"late-singleness-intrusive-family-questions\" from 2026-07-26). Because my new post is inserted at the top of the array, the older posts are shifted into the 3…",
+        "last_progress": "Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a single new Kesher article for the `2026-08-23` slot while strictly adhering to the provided authoritative policy, which explicitly forbids modifying existing articles. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article (\"הוא, היא וההורים שלו: למה משפחות המוצא מסבכות את השנה הראשונה?\") that matches the requested date and correctly omits image fields as dictated by the Pipeline V3 Image-Stage Override. * **Safety & Side Effects:** The pat…",
         "last_description": "",
         "session_failed_reason": ""
       }
     },
     "last_jules_session_id": "sessions/5244873110139377485",
-    "last_failed_run_id": 32600325636
+    "last_failed_run_id": 32603704825
   },
   "video": {
     "attempt_count": 0,
@@ -70,7 +70,14 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I have successfully generated a new article titled \"אורזים מזוודות ומתרחקים: למה ההכנות למעבר מדינה יוצרות נתק זוגי?\" on the topic of \"זוגיות בעלייה ורילוקיישן\" for the publication slot 2026-08-23. The word count is 939 (within the 700-1100 range) and it has exactly 5 H3 headings. However, when I run `npm run check`, it fails with the following error from `test:content`: `Topic too similar: 'late-singleness-friends-moving-forward' shares specific theme keywords (late, singleness) with recent post 'late-singleness-intrusive-family-questions'. Please write about a substantially fresh topic.` This error is caused by a similarity check between two *pre-existing* older posts (\"late-singleness-friends-moving-forward\" from 2026-07-30 and \"late-singleness-intrusive-family-questions\" f…",
+    "retryable": true,
+    "retry_at": "2026-08-23T00:04:25.835203+00:00",
+    "at": "2026-08-22T23:49:25.835221+00:00"
+  },
   "history": [
     {
       "at": "2026-08-21T07:02:00+00:00",
@@ -682,9 +689,22 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-08-22T23:49:25.835225+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I have successfully generated a new article titled \"אורזים מזוודות ומתרחקים: למה ההכנות למעבר מדינה יוצרות נתק זוגי?\" on the topic of \"זוגיות בעלייה ורילוקיישן\" for the publication slot 2026-08-23. The word count is 939 (within the 700-1100 range) and it has exactly 5 H3 headings. However, when I run `npm run check`, it fails with the following error from `test:content`: `Topic too similar: 'late-singleness-friends-moving-forward' shares specific theme keywords (late, singleness) with recent post 'late-singleness-intrusive-family-questions'. Please write about a substantially fresh topic.` This error is caused by a similarity check between two *pre-existing* older posts (\"late-singleness-friends-moving-forward\" from 2026-07-30 and \"late-singleness-intrusive-family-questions\" f…",
+        "retry_at": "2026-08-23T00:04:25.835203+00:00",
+        "failure_streak": 2,
+        "run_id": 32603704825,
+        "session_id": "sessions/5244873110139377485"
+      }
     }
   ],
-  "updated_at": "2026-08-22T23:28:50.924199+00:00",
+  "updated_at": "2026-08-22T23:49:25.835229+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
