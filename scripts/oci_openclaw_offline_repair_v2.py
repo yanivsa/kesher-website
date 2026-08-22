@@ -345,7 +345,7 @@ def finish(args) -> int:
     block = oci.core.BlockstorageClient(cfg)
     state = json.loads(Path(args.state_json).read_text())
 
-    if not state.get("helper_repair_verified"):
+    if not (state.get("helper_repair_verified") or state.get("helper_proof_verified")):
         raise RuntimeError("HELPER_REPAIR_NOT_VERIFIED")
 
     boot_id = state["target_boot_id"]
