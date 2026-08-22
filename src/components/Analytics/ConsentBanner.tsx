@@ -74,12 +74,6 @@ const ConsentBanner: React.FC = () => {
     if (state.choice) updateGoogleConsent(state.choice);
   }, [state.choice]);
 
-  useEffect(() => {
-    if (requiresConsent === true && state.choice === null && !state.isOpen) {
-      setState((current) => ({ ...current, isOpen: true }));
-    }
-  }, [requiresConsent, state.choice, state.isOpen]);
-
   const choose = (nextChoice: ConsentChoice) => {
     persistChoice(nextChoice);
     setState({ choice: nextChoice, isOpen: false });
@@ -96,7 +90,9 @@ const ConsentBanner: React.FC = () => {
   // measurement there. Existing explicit choices are still honored by GTM.
   if (requiresConsent === false || requiresConsent === null) return null;
 
-  if (!state.isOpen) {
+  const isOpen = state.isOpen || state.choice === null;
+
+  if (!isOpen) {
     return (
       <button
         type="button"
