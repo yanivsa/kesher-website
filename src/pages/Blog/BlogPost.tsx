@@ -5,6 +5,7 @@ import posts from '../../data/publishedPosts';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
+import ShareButtons from '../../components/ShareButtons/ShareButtons';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
@@ -13,8 +14,6 @@ import styles from './BlogPost.module.css';
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const post = posts.find(p => p.id === id);
-
-
 
   const schemaData = useMemo(() => ({
     "@context": "https://schema.org",
@@ -71,7 +70,9 @@ const BlogPost: React.FC = () => {
   if (!post) {
     return <NotFound />;
   }
+
   const safeContent = DOMPurify.sanitize(post.content);
+  const shareUrl = `${SITE_CONFIG.url}/blog/${post.id}`;
   const relatedService = 'serviceUrl' in post
     && 'serviceLabel' in post
     && typeof post.serviceUrl === 'string'
@@ -89,6 +90,12 @@ const BlogPost: React.FC = () => {
           <span className={styles.category}>{post.category}</span>
           <h1 className={styles.title}>{post.title}</h1>
           <span className={styles.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
+          <ShareButtons
+            title={post.title}
+            url={shareUrl}
+            itemId={post.id}
+            placement="article_top"
+          />
         </div>
       </header>
       <div className={`container ${styles.container}`}>
@@ -105,6 +112,12 @@ const BlogPost: React.FC = () => {
             </div>
           )}
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
+          <ShareButtons
+            title={post.title}
+            url={shareUrl}
+            itemId={post.id}
+            placement="article_bottom"
+          />
           <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
           <LeadMagnet />
         </div>
