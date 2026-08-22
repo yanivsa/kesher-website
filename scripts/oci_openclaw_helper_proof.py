@@ -178,6 +178,8 @@ def main() -> int:
                 )
             url = urls[-1]
             dns = url.removeprefix("https://").rstrip("/")
+            state["helper_proof_verified"] = True
+            Path(args.state_json).write_text(json.dumps(state))
             Path(args.result_json).write_text(json.dumps({
                 "status": "ready",
                 "dns": dns,
