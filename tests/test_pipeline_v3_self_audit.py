@@ -26,6 +26,7 @@ class DummySite:
 class DummyGithub:
     def __init__(self):
         self.saved = None
+        self.video_state = {"version": 1, "items": []}
 
     def load_controller_state(self):
         return None
@@ -38,6 +39,9 @@ class DummyGithub:
 
     def active_image_run(self, pr_number):
         return None
+
+    def newest_video_state(self):
+        return self.video_state
 
 
 class PipelineV3SelfAuditTests(unittest.TestCase):
@@ -95,6 +99,63 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
             self.assertEqual(state["status"], "article_pr_open")
             self.assertIsNone(state["last_error"])
             self.assertEqual(dispatch.call_count, 1)
+
+    def test_exact_notebooklm_resume_does_not_consume_another_video_attempt(self):
+        github = DummyGithub()
+        github.video_state = {
+            "version": 1,
+            "items": [{
+                "id": "video-oldest",
+                "status": "generating",
+                "uploaded": False,
+                "source_id": "source-123",
+                "task_id": "task-456",
+                "artifact_id": "task-456",
+                "created_at": "2026-08-21T12:00:00+00:00",
+                "source": {"slug": "article", "date": "2026-08-21"},
+            }],
+        }
+        controller = best_effort.BestEffortController(
+            github,
+            DummySite(),
+            now=datetime(2026, 8, 21, 15, 0, tzinfo=ZoneInfo("Asia/Jerusalem")),
+        )
+        state = v3.normalize_state(None, date(2026, 8, 21))
+        state["video"]["attempt_count"] = 1
+        with mock.patch.object(v3.core.GitHubClient, "dispatch", autospec=True) as dispatch:
+            controller._dispatch_budgeted(state, "video", core.VIDEO_WORKFLOW, {"operation": "full"})
+        self.assertEqual(state["video"]["attempt_count"], 1)
+        self.assertEqual(state["video"]["resume_dispatches"], 1)
+        self.assertEqual(state["video"]["provider_id"], "task-456")
+        self.assertEqual(state["video"]["source_id"], "source-123")
+        self.assertEqual(state["video"]["artifact_id"], "task-456")
+        dispatch.assert_called_once()
+
+    def test_missing_provider_identity_is_a_real_video_attempt(self):
+        github = DummyGithub()
+        github.video_state = {
+            "version": 1,
+            "items": [{
+                "id": "video-new",
+                "status": "generating",
+                "uploaded": False,
+                "source_id": "source-123",
+                "task_id": "",
+                "artifact_id": "",
+                "source": {"slug": "article", "date": "2026-08-21"},
+            }],
+        }
+        controller = best_effort.BestEffortController(
+            github,
+            DummySite(),
+            now=datetime(2026, 8, 21, 15, 0, tzinfo=ZoneInfo("Asia/Jerusalem")),
+        )
+        state = v3.normalize_state(None, date(2026, 8, 21))
+        with mock.patch.object(v3.core.GitHubClient, "dispatch", autospec=True) as dispatch:
+            controller._dispatch_budgeted(state, "video", core.VIDEO_WORKFLOW, {"operation": "full"})
+        self.assertEqual(state["video"]["attempt_count"], 1)
+        self.assertEqual(state["video"].get("resume_dispatches", 0), 0)
+        dispatch.assert_called_once()
 
     def test_retry_backoff_is_five_then_fifteen_minutes(self):
         state = v3.normalize_state(None, date(2026, 8, 21))

@@ -42,15 +42,18 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertEqual(contract["image"]["max_attempts"], 3)
         self.assertEqual(contract["image"]["worker_attempts_per_dispatch"], 1)
 
-    def test_provider_order_ends_in_guaranteed_local_fallback(self):
+    def test_provider_order_ends_in_local_best_effort_fallback(self):
         contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
-        self.assertEqual(contract["image"]["provider_order"], ["gemini", "unsplash", "pexels", "local-curated"])
-        self.assertTrue(contract["image"]["fallback_must_be_local"])
-        self.assertTrue(contract["image"]["no_image_publication_allowed"])
-        self.assertFalse(contract["image"]["publication_blocking"])
-        self.assertEqual(contract["image"]["gemini_model"], "gemini-3.1-flash-image")
-        self.assertEqual(contract["image"]["visual_verifier_model"], "gemini-3.5-flash")
-        self.assertTrue(contract["image"]["external_stock_requires_pixel_verification"])
+        image = contract["image"]
+        self.assertEqual(image["provider_order"], ["gemini", "unsplash", "pexels", "local-curated"])
+        self.assertTrue(image["fallback_must_be_local"])
+        self.assertTrue(image["no_image_publication_allowed"])
+        self.assertFalse(image["publication_blocking"])
+        self.assertFalse(image["required_for_article"])
+        self.assertEqual(image["failure_mode"], "best-effort-defer")
+        self.assertEqual(image["gemini_model"], "gemini-3.1-flash-image")
+        self.assertEqual(image["visual_verifier_model"], "gemini-3.5-flash")
+        self.assertTrue(image["external_stock_requires_pixel_verification"])
 
     def test_all_external_failures_fall_through_to_local(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_fallback_test")
@@ -59,7 +62,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         worker.try_unsplash = lambda post, attempts: (attempts.append("unsplash"), calls.append("unsplash"), None)[2]
         worker.try_pexels = lambda post, attempts: (attempts.append("pexels"), calls.append("pexels"), None)[2]
         worker.local_fallback = lambda repo, post, ref, token, attempts: worker.core.ImageCandidate(
-            "Local", fake_png(), "png", "local://public/images/generated/blog/listening-in-relationships.jpg",
+            "Local", fake_png(), "png", "local://public/images/generated/blog/dating-communication-early-stages.jpg",
             "זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור", attempts + ["local-curated"]
         )
         candidate = worker.choose_candidate("o/r", {"title": "שיחה זוגית", "id": "x"}, "sha", "token")
@@ -67,12 +70,30 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertEqual(candidate.provider, "Local")
         self.assertEqual(candidate.attempts, ["gemini", "unsplash", "pexels", "local-curated"])
 
+    def test_every_curated_fallback_candidate_is_real_and_publishable(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_real_fallback_test")
+        self.assertEqual(
+            set(worker.LOCAL_FALLBACK_CANDIDATES),
+            {"dating", "singles", "relocation", "premarital", "parenting", "gifted", "adhd", "couples"},
+        )
+        for category, candidates in worker.LOCAL_FALLBACK_CANDIDATES.items():
+            self.assertTrue(candidates, category)
+            for source_path, description in candidates:
+                data = (ROOT / source_path).read_bytes()
+                width, height, ext = worker.core.validate_candidate(data)
+                self.assertGreaterEqual(width, 640, (category, source_path))
+                self.assertGreaterEqual(height, 360, (category, source_path))
+                self.assertIn(ext, {"jpg", "png"})
+                self.assertGreaterEqual(len(description), 24)
+
     def test_local_fallback_reads_only_from_trusted_checkout(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_trusted_checkout_test")
         with tempfile.TemporaryDirectory() as tmp:
             worker.REPO_ROOT = Path(tmp)
-            source_path, _description = worker.core.LOCAL_FALLBACKS["couples"]
-            target = worker.REPO_ROOT / source_path
+            worker.LOCAL_FALLBACK_CANDIDATES = {
+                "couples": [("public/images/generated/blog/fallback.png", "זוג בשיחה פנים אל פנים המדגישה תקשורת וקשר")]
+            }
+            target = worker.REPO_ROOT / "public/images/generated/blog/fallback.png"
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(fake_png())
             with mock.patch.object(worker.core, "github_content", side_effect=AssertionError("local fallback must not use GitHub API")):
@@ -82,6 +103,23 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertEqual(candidate.provider, "Local")
         self.assertEqual(candidate.data, fake_png())
         self.assertEqual(candidate.attempts, ["local-curated"])
+
+    def test_local_fallback_skips_invalid_candidate_and_uses_next(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_runtime_fallback_test")
+        with tempfile.TemporaryDirectory() as tmp:
+            worker.REPO_ROOT = Path(tmp)
+            worker.LOCAL_FALLBACK_CANDIDATES = {
+                "couples": [
+                    ("public/images/generated/blog/bad.png", "תמונה ראשונה שאינה עומדת בחוזה הטכני ולכן תידחה"),
+                    ("public/images/generated/blog/good.png", "זוג בשיחה פנים אל פנים המדגישה תקשורת וקשר"),
+                ]
+            }
+            root = worker.REPO_ROOT / "public/images/generated/blog"
+            root.mkdir(parents=True, exist_ok=True)
+            (root / "bad.png").write_bytes(fake_png(200, 100))
+            (root / "good.png").write_bytes(fake_png())
+            candidate = worker.local_fallback("o/r", {"title": "שיחה", "id": "x"}, "sha", "t", [])
+        self.assertTrue(candidate.source_url.endswith("good.png"))
 
     def test_provider_preflight_never_requires_external_secrets(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_preflight_test")

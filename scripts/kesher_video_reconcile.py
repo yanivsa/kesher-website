@@ -4,13 +4,15 @@
 Unresolved videos are processed oldest-first. Multiple items form a durable
 FIFO backlog instead of a fatal conflict. Jules review is advisory: a new
 YouTube upload is permitted after machine technical verification of the exact
-source/video identity.
+source/video identity. A durable NotebookLM task that is still generating is
+normal progress, not an upload failure.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 from typing import Any
 
 if __package__:
@@ -26,7 +28,17 @@ UNRESOLVED_STATUSES = {
     "source_selected", "source_added", "generating", "downloaded",
     "pending_review", "approved", "rejected", "uploading",
 }
+PROVIDER_PROGRESS_STATUSES = {"source_selected", "source_added", "generating", "downloaded"}
 MAX_TECHNICAL_RETRIES = 3
+
+
+def workflow_output(name: str, value: str) -> None:
+    """Expose a workflow decision without making pending provider work fail."""
+    path = (os.environ.get("GITHUB_OUTPUT") or "").strip()
+    if not path:
+        return
+    with open(path, "a", encoding="utf-8") as output:
+        output.write(f"{name}={value}\n")
 
 
 def source_slug(item: dict[str, Any]) -> str:
@@ -189,15 +201,27 @@ def prepare_upload() -> int:
     state = pipeline.load_state()
     unresolved = unresolved_items(state)
     if not unresolved:
+        workflow_output("ready", "false")
         print("VIDEO_RECONCILED_UPLOAD candidate=none")
         return 0
 
     item = unresolved[0]
     if item.get("youtube_id") and item.get("uploaded") is not True:
         if recover_persisted_youtube_id(state, item):
+            workflow_output("ready", "false")
             return 0
 
     if not technical_publication_ready(item):
+        # Provider progress is not a failed publication attempt. Preserve the
+        # exact provider IDs and let the next poll resume the same task.
+        if item.get("status") in PROVIDER_PROGRESS_STATUSES and item.get("technical_verified") is not True:
+            workflow_output("ready", "false")
+            print(
+                "VIDEO_RECONCILED_UPLOAD candidate=pending "
+                f"slug={source_slug(item)} status={item.get('status')} "
+                f"task_id={item.get('task_id') or 'none'}"
+            )
+            return 0
         raise pipeline.PipelineError(
             "Oldest unresolved video is not technically verified for publication"
         )
@@ -212,8 +236,6 @@ def prepare_upload() -> int:
     prior_status = item.get("status")
     item["review_gate"] = "advisory-jules"
     item["advisory_review_status_before_upload"] = prior_status
-    # The canonical uploader historically accepts approved/uploading only.
-    # Bridge that legacy state machine without treating Jules approval as a gate.
     if prior_status not in {"approved", "uploading"}:
         item["status"] = "approved"
     item["updated_at"] = pipeline.utc_now()
@@ -222,6 +244,7 @@ def prepare_upload() -> int:
     except Exception as exc:
         raise pipeline.PipelineError(f"Exact-evidence upload guard rejected candidate: {exc}") from exc
     pipeline.save_state(state)
+    workflow_output("ready", "true")
     print(
         "VIDEO_RECONCILED_UPLOAD "
         f"slug={slug} item={item.get('id')} gate=technical jules=advisory exact_evidence=yes"
