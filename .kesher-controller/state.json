@@ -21,7 +21,7 @@
     "url": "https://kesher.saharoni.com/blog/relocation-language-barrier-isolation",
     "published_date": "2026-08-22",
     "live": true,
-    "live_verified_at": "2026-08-22T19:46:36.667785+00:00",
+    "live_verified_at": "2026-08-22T20:00:01.202834+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
@@ -591,9 +591,21 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-08-22T20:00:01.202851+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-22T20:00:02.901785+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-08-22T19:46:43.167996+00:00",
+  "updated_at": "2026-08-22T20:00:02.901801+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
