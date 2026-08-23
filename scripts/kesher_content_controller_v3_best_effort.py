@@ -43,6 +43,18 @@ class BestEffortController(v3.V3Controller):
         if not image_was_terminal:
             return
         article = state["article"]
+
+        # Merge recovery belongs to the exact image attempt that reached a
+        # persisted terminal state. If a later trusted-image retry replaces or
+        # revalidates that attempt, stale merge dispatches must not consume the
+        # new attempt's recovery budget. Persisting the attempt marker also lets
+        # an already-running cycle recover immediately after this fix lands.
+        image_attempt_count = int((state.get("image") or {}).get("attempt_count") or 0)
+        if int(article.get("merge_image_attempt_count") or 0) != image_attempt_count:
+            article["merge_dispatch_at"] = None
+            article["merge_dispatch_count"] = 0
+            article["merge_image_attempt_count"] = image_attempt_count
+
         if self.github.active_workflow_run(AUTO_MERGE_WORKFLOW, production_only=True):
             return
 

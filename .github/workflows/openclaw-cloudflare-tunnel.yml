@@ -18,6 +18,10 @@ jobs:
     env:
       BRIDGE_NAME: yanivsa-oci-bootstrap
       TUNNEL_ID: 58988d44-b0c4-4ad0-ba9d-c25b9914e773
+      ACCESS_APP_ID: bc7954d0-cac9-481b-92f6-dbffc8a8e2ab
+      ACCESS_POLICY_ID: bd0532e4-71b5-4234-97c3-c4c725c810cf
+      PUBLIC_ZONE: saharoni.com
+      PUBLIC_HOSTNAME: openclaw.saharoni.com
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
@@ -57,23 +61,96 @@ jobs:
           Path('/tmp/oci.cfg').write_text('[DEFAULT]\nuser='+d['user']+'\nfingerprint='+d['fingerprint']+'\ntenancy='+d['tenancy']+'\nregion='+d['region']+'\nkey_file=/tmp/oci.pem\n'); Path('/tmp/oci.cfg').chmod(0o600)
           PY
           echo OCI_BRIDGE_OK=true
-      - name: Fetch tunnel token securely
+      - name: Preflight Cloudflare permissions and resources
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
-          curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/cfd_tunnel/$TUNNEL_ID/token" \
-            -o /tmp/tunnel-token.json
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          curl -fsS -H "$auth" "https://api.cloudflare.com/client/v4/zones?name=${PUBLIC_ZONE}&status=active&per_page=50" -o /tmp/zones.json
+          curl -fsS -H "$auth" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/access/apps/$ACCESS_APP_ID" -o /tmp/access-app.json
+          curl -fsS -H "$auth" "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/cfd_tunnel/$TUNNEL_ID/token" -o /tmp/tunnel-token.json
           python3 - <<'PY'
-          import base64, json
+          import json, os
+          from pathlib import Path
+          z=json.load(open('/tmp/zones.json')); a=json.load(open('/tmp/access-app.json')); t=json.load(open('/tmp/tunnel-token.json'))
+          assert z.get('success') and len(z.get('result') or []) == 1, 'SAHARONI_ZONE_NOT_FOUND_OR_AMBIGUOUS'
+          zone=z['result'][0]
+          assert zone.get('name') == os.environ['PUBLIC_ZONE']
+          assert a.get('success') and (a.get('result') or {}).get('type') == 'self_hosted', 'ACCESS_APP_NOT_READY'
+          assert t.get('success') and t.get('result'), 'TUNNEL_TOKEN_UNAVAILABLE'
+          Path('/tmp/zone-id').write_text(zone['id'])
+          print('CLOUDFLARE_PREFLIGHT_OK=true')
+          PY
+      - name: Configure Access, Tunnel, and DNS
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          zone_id="$(cat /tmp/zone-id)"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          app=json.load(open('/tmp/access-app.json'))['result']
+          host=os.environ['PUBLIC_HOSTNAME']
+          payload={'name': app.get('name') or 'OpenClaw', 'domain': host, 'type': 'self_hosted'}
+          for k in ('session_duration','allowed_idps','auto_redirect_to_identity','app_launcher_visible','http_only_cookie_attribute','enable_binding_cookie','skip_interstitial','options_preflight_bypass','allow_authenticate_via_warp','tags'):
+              if k in app and app[k] is not None:
+                  payload[k]=app[k]
+          if app.get('policies'):
+              payload['policies']=app['policies']
+          else:
+              payload['policies']=[os.environ['ACCESS_POLICY_ID']]
+          if app.get('destinations'):
+              payload['destinations']=[{'type':'public','uri':host}]
+          Path('/tmp/access-update.json').write_text(json.dumps(payload,separators=(',',':')))
+          tunnel={'config':{'ingress':[{'hostname':host,'service':'http://127.0.0.1:18789','originRequest':{}},{'service':'http_status:404'}]}}
+          Path('/tmp/tunnel-config.json').write_text(json.dumps(tunnel,separators=(',',':')))
+          PY
+          curl -fsS -X PUT -H "$auth" -H 'Content-Type: application/json' --data-binary @/tmp/access-update.json \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/access/apps/$ACCESS_APP_ID" -o /tmp/access-update-response.json
+          curl -fsS -X PUT -H "$auth" -H 'Content-Type: application/json' --data-binary @/tmp/tunnel-config.json \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/cfd_tunnel/$TUNNEL_ID/configurations" -o /tmp/tunnel-config-response.json
+          curl -fsS -H "$auth" "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records?name=$PUBLIC_HOSTNAME&per_page=100" -o /tmp/dns-existing.json
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          body={'type':'CNAME','name':os.environ['PUBLIC_HOSTNAME'],'content':os.environ['TUNNEL_ID']+'.cfargotunnel.com','proxied':True,'ttl':1}
+          Path('/tmp/dns-body.json').write_text(json.dumps(body,separators=(',',':')))
+          rows=json.load(open('/tmp/dns-existing.json')).get('result') or []
+          if len(rows) > 1: raise SystemExit('MULTIPLE_OPENCLAW_DNS_RECORDS')
+          Path('/tmp/dns-record-id').write_text(rows[0]['id'] if rows else '')
+          PY
+          dns_id="$(cat /tmp/dns-record-id)"
+          if [ -n "$dns_id" ]; then
+            curl -fsS -X PUT -H "$auth" -H 'Content-Type: application/json' --data-binary @/tmp/dns-body.json \
+              "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records/$dns_id" -o /tmp/dns-write-response.json
+          else
+            curl -fsS -X POST -H "$auth" -H 'Content-Type: application/json' --data-binary @/tmp/dns-body.json \
+              "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records" -o /tmp/dns-write-response.json
+          fi
+          python3 - <<'PY'
+          import json, os
+          for path,label in [('/tmp/access-update-response.json','ACCESS'),('/tmp/tunnel-config-response.json','TUNNEL'),('/tmp/dns-write-response.json','DNS')]:
+              d=json.load(open(path)); assert d.get('success'), f'{label}_CONFIG_FAILED: {d.get("errors")}'
+          print('CLOUDFLARE_ACCESS_CONFIGURED=true')
+          print('CLOUDFLARE_TUNNEL_CONFIGURED=true')
+          print('CLOUDFLARE_DNS_CONFIGURED=true')
+          PY
+      - name: Build tunnel deployment script
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64, json, os
           from pathlib import Path
           d=json.load(open('/tmp/tunnel-token.json'))
-          assert d.get('success') and d.get('result')
           b64=base64.b64encode(d['result'].encode()).decode()
           template=Path('scripts/openclaw_enable_cloudflare_tunnel.sh').read_text()
-          Path('/tmp/openclaw-cloudflare.sh').write_text("export CLOUDFLARE_TUNNEL_TOKEN_B64='"+b64+"'\n"+template)
+          prefix="export CLOUDFLARE_TUNNEL_TOKEN_B64='"+b64+"'\nexport PUBLIC_HOSTNAME='"+os.environ['PUBLIC_HOSTNAME']+"'\n"
+          Path('/tmp/openclaw-cloudflare.sh').write_text(prefix+template)
           Path('/tmp/openclaw-cloudflare.sh').chmod(0o700)
           PY
           rm -f /tmp/tunnel-token.json
@@ -89,7 +166,7 @@ jobs:
       - name: Verify Access protects public hostname
         run: |
           set -euo pipefail
-          code="$(curl -sS -o /tmp/public-body -D /tmp/public-headers -w '%{http_code}' --max-time 20 https://openclaw.the-israeli-lawyer.com/ || true)"
+          code="$(curl -sS -o /tmp/public-body -D /tmp/public-headers -w '%{http_code}' --max-time 20 "https://${PUBLIC_HOSTNAME}/" || true)"
           location="$(awk 'BEGIN{IGNORECASE=1} /^location:/ {sub(/^[^:]+:[[:space:]]*/,""); gsub(/\r/,""); print; exit}' /tmp/public-headers)"
           if [ "$code" = 302 ] || [ "$code" = 303 ] || [ "$code" = 307 ] || [ "$code" = 308 ]; then
             printf '%s' "$location" | grep -qi 'cloudflareaccess.com' || { echo "Unexpected redirect: $location"; exit 1; }
@@ -98,7 +175,7 @@ jobs:
             grep -Eqi 'cloudflare access|access login' /tmp/public-body || { echo "Unexpected public HTTP status: $code"; exit 1; }
             echo CLOUDFLARE_ACCESS_PROTECTED=true
           fi
-          echo OPENCLAW_PUBLIC_URL=https://openclaw.the-israeli-lawyer.com/
+          echo "OPENCLAW_PUBLIC_URL=https://${PUBLIC_HOSTNAME}/"
       - name: Cleanup
         if: ${{ always() }}
-        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/openclaw-cloudflare.sh /tmp/tunnel-token.json /tmp/public-body /tmp/public-headers
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/openclaw-cloudflare.sh /tmp/tunnel-token.json /tmp/public-body /tmp/public-headers /tmp/zones.json /tmp/access-app.json /tmp/access-update.json /tmp/access-update-response.json /tmp/tunnel-config.json /tmp/tunnel-config-response.json /tmp/dns-existing.json /tmp/dns-body.json /tmp/dns-write-response.json /tmp/dns-record-id /tmp/zone-id

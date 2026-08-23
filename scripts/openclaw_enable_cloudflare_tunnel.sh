@@ -4,6 +4,7 @@ export HOME=/root
 export OPENCLAW_NO_PROMPT=1
 
 : "${CLOUDFLARE_TUNNEL_TOKEN_B64:?missing tunnel token}"
+PUBLIC_HOSTNAME="${PUBLIC_HOSTNAME:-openclaw.saharoni.com}"
 TOKEN="$(printf '%s' "$CLOUDFLARE_TUNNEL_TOKEN_B64" | base64 -d)"
 unset CLOUDFLARE_TUNNEL_TOKEN_B64
 
@@ -65,4 +66,4 @@ echo OPENCLAW_GATEWAY_RPC_OK=true
 echo OPENCLAW_GATEWAY_BIND=loopback
 echo OPENCLAW_GATEWAY_PORT="$PORT"
 echo CLOUDFLARED_SERVICE_ACTIVE=true
-echo OPENCLAW_PUBLIC_URL=https://openclaw.the-israeli-lawyer.com/
+echo "OPENCLAW_PUBLIC_URL=https://${PUBLIC_HOSTNAME}/"
