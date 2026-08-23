@@ -1,26 +1,20 @@
 {
   "schema_version": 3,
-  "cycle": "2026-08-23",
-  "status": "article_pr_open",
+  "cycle": "2026-08-24",
+  "status": "waiting_for_article_window",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 32616938123,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
-    "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-23T04:04:19.738817+00:00",
-    "pr_number": 531,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/531",
-    "merge_dispatch_at": "2026-08-23T15:32:48.504689+00:00",
-    "merge_dispatch_count": 3,
-    "merge_image_attempt_count": 3
+    "attempts": 0,
+    "deploy_attempts": 0
   },
   "video": {
     "attempt_count": 0,
@@ -135,26 +129,31 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "article PR has trusted image and remains authoritative"
+    },
+    {
+      "at": "2026-08-23T21:28:34.746787+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-08-23T21:28:34.746850+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-08-23T20:55:18.244935+00:00",
+  "updated_at": "2026-08-23T21:28:34.746855+00:00",
   "image": {
-    "attempt_count": 3,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 32636767714,
-    "processed_run_id": 32631496630,
-    "provider_id": "Local",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 2
-    },
-    "last_dispatch_at": "2026-08-23T11:31:08.940112+00:00",
-    "artifact_sha256": "12371ac5046f21d7874161fafe2d751ecbb3738c43b775062c23d1035a80dc67",
-    "source_id": "local://public/images/generated/blog/dating-communication-early-stages.jpg",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 32631496630
+    "failure_count_by_type": {}
   }
 }
