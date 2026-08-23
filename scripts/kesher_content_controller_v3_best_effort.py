@@ -63,10 +63,12 @@ class BestEffortController(v3.V3Controller):
     def _reconcile_image_run(self, state, pr):
         """Re-read the PR after an image child completes before validating its output."""
         number = int(pr.get("number") or 0)
-        if number:
-            latest = self.github.request(
+        request = getattr(self.github, "request", None)
+        api = str(getattr(self.github, "api", "") or "")
+        if number and callable(request) and api:
+            latest = request(
                 "GET",
-                f"{self.github.api}/pulls/{number}",
+                f"{api}/pulls/{number}",
                 allow_404=True,
             )
             if isinstance(latest, dict):
