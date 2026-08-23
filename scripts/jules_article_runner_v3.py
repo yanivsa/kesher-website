@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +26,8 @@ else:
     import jules_article_diagnostics as diagnostics
 
 _legacy_build_prompt = core.build_prompt
+_legacy_poll = core.poll
+TERMINAL_SETTLE_SECONDS = 15 * 60
 
 
 def build_prompt(slot: str, policy: str) -> str:
@@ -49,8 +52,53 @@ fallback chain. An article cannot be published until that stage succeeds.
 """
 
 
+def poll(api_key: str, session: str, timeout_seconds: int = core.SESSION_SECONDS) -> tuple[str, str, str]:
+    """Do not expose a PR as stable until its Jules session is terminal.
+
+    Jules can emit a PR output before its AUTO_CREATE_PR session has actually
+    stopped mutating that branch. Returning success at the first PR URL lets the
+    trusted image worker commit image metadata while Jules is still active, and
+    a later Jules commit can erase that trusted metadata. Keep the exact session
+    authoritative and fail retryably until it reaches COMPLETED.
+    """
+    outcome, pr_url, message = _legacy_poll(api_key, session, timeout_seconds)
+    if outcome != "PR_CREATED":
+        return outcome, pr_url, message
+
+    sid = session.removeprefix("sessions/")
+    deadline = time.monotonic() + TERMINAL_SETTLE_SECONDS
+    while time.monotonic() < deadline:
+        current = core.request_json(
+            "GET",
+            f"{core.API_BASE}/sessions/{sid}",
+            core.jules_headers(api_key),
+        )
+        state = str((current or {}).get("state") or "UNKNOWN").upper()
+        urls = core.pr_urls(current if isinstance(current, dict) else {})
+        if state == "COMPLETED":
+            if not urls:
+                return "COMPLETED_WITHOUT_PR", "", "Jules completed after previously exposing a PR, but no PR output remained"
+            print(f"JULES_ARTICLE_TERMINAL_PR session={session} pr={urls[0]}", flush=True)
+            return "PR_CREATED", urls[0], ""
+        if state in core.TERMINAL_FAILURES:
+            return "JULES_TERMINAL_FAILURE", "", f"Jules ended with terminal state {state} after exposing a PR"
+        time.sleep(15)
+
+    print(
+        f"JULES_ARTICLE_PR_NOT_TERMINAL session={session} session_preserved=yes",
+        file=sys.stderr,
+        flush=True,
+    )
+    return (
+        "JULES_TIMEOUT_SESSION_ACTIVE",
+        pr_url,
+        "Jules exposed a PR but the session remained active; exact session preserved for safe resume before trusted image mutation",
+    )
+
+
 def main() -> int:
     core.build_prompt = build_prompt
+    core.poll = poll
     return core.main()
 
 
