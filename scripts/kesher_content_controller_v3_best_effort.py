@@ -72,6 +72,21 @@ class BestEffortController(v3.V3Controller):
         article["merge_dispatch_at"] = now.isoformat()
         article["merge_dispatch_count"] = dispatch_count + 1
 
+    def _reconcile_image_run(self, state, pr):
+        """Re-read the PR after an image child completes before validating its output."""
+        number = int(pr.get("number") or 0)
+        request = getattr(self.github, "request", None)
+        api = str(getattr(self.github, "api", "") or "")
+        if number and callable(request) and api:
+            latest = request(
+                "GET",
+                f"{api}/pulls/{number}",
+                allow_404=True,
+            )
+            if isinstance(latest, dict):
+                pr = latest
+        return super()._reconcile_image_run(state, pr)
+
     def _handle_open_article_pr(self, state, pr):
         number = int(pr.get("number") or 0)
         state["article"].update({"pr_number": number, "pr_url": pr.get("html_url")})
