@@ -18,6 +18,7 @@ jobs:
     env:
       BRIDGE_NAME: yanivsa-oci-bootstrap
       TUNNEL_ID: 58988d44-b0c4-4ad0-ba9d-c25b9914e773
+      PUBLIC_HOSTNAME: openclaw.saharoni.com
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
         with:
@@ -89,7 +90,7 @@ jobs:
       - name: Verify Access protects public hostname
         run: |
           set -euo pipefail
-          code="$(curl -sS -o /tmp/public-body -D /tmp/public-headers -w '%{http_code}' --max-time 20 https://openclaw.the-israeli-lawyer.com/ || true)"
+          code="$(curl -sS -o /tmp/public-body -D /tmp/public-headers -w '%{http_code}' --max-time 20 "https://${PUBLIC_HOSTNAME}/" || true)"
           location="$(awk 'BEGIN{IGNORECASE=1} /^location:/ {sub(/^[^:]+:[[:space:]]*/,""); gsub(/\r/,""); print; exit}' /tmp/public-headers)"
           if [ "$code" = 302 ] || [ "$code" = 303 ] || [ "$code" = 307 ] || [ "$code" = 308 ]; then
             printf '%s' "$location" | grep -qi 'cloudflareaccess.com' || { echo "Unexpected redirect: $location"; exit 1; }
@@ -98,7 +99,7 @@ jobs:
             grep -Eqi 'cloudflare access|access login' /tmp/public-body || { echo "Unexpected public HTTP status: $code"; exit 1; }
             echo CLOUDFLARE_ACCESS_PROTECTED=true
           fi
-          echo OPENCLAW_PUBLIC_URL=https://openclaw.the-israeli-lawyer.com/
+          echo "OPENCLAW_PUBLIC_URL=https://${PUBLIC_HOSTNAME}/"
       - name: Cleanup
         if: ${{ always() }}
         run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/openclaw-cloudflare.sh /tmp/tunnel-token.json /tmp/public-body /tmp/public-headers
