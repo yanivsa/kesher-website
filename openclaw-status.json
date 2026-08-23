@@ -11,6 +11,6 @@
     "OPENCLAW_OFFLINE_FINALIZE_SUCCESS": true
   },
   "ready_url": "https://openclaw.tail3b2afe.ts.net/",
-  "failure_hint": "job_status=success; patch_outcome=success; finalize_outcome=success",
-  "updated_at": "2026-08-23T04:40:25Z"
+  "failure_hint": null,
+  "updated_at": "2026-08-23T04:51:15Z"
 }
