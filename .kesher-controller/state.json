@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-23",
-  "status": "article_pr_open",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -35,7 +35,14 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_OUTPUT_MISSING",
+    "message": "trusted image run 32631496630 completed with conclusion=success but no validated image is present",
+    "retryable": true,
+    "retry_at": "2026-08-23T11:07:13.362129+00:00",
+    "at": "2026-08-23T11:02:13.362168+00:00"
+  },
   "history": [
     {
       "at": "2026-08-23T03:33:48+00:00",
@@ -106,26 +113,45 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "article PR has trusted image and remains authoritative"
+    },
+    {
+      "at": "2026-08-23T11:02:13.362175+00:00",
+      "from": "article_pr_open",
+      "to": "image_retry_wait",
+      "reason": "IMAGE_OUTPUT_MISSING",
+      "details": {
+        "message": "trusted image run 32631496630 completed with conclusion=success but no validated image is present",
+        "retry_at": "2026-08-23T11:07:13.362129+00:00",
+        "failure_streak": 1,
+        "run_id": 32631496630
+      }
     }
   ],
-  "updated_at": "2026-08-23T10:36:25.935428+00:00",
+  "updated_at": "2026-08-23T11:02:13.362180+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "complete",
-    "last_error": null,
-    "next_retry_at": null,
+    "status": "retry_wait",
+    "last_error": {
+      "stage": "image",
+      "code": "IMAGE_OUTPUT_MISSING",
+      "message": "trusted image run 32631496630 completed with conclusion=success but no validated image is present",
+      "retryable": true,
+      "retry_at": "2026-08-23T11:07:13.362129+00:00",
+      "at": "2026-08-23T11:02:13.362168+00:00"
+    },
+    "next_retry_at": "2026-08-23T11:07:13.362129+00:00",
     "run_id": 32631496630,
-    "processed_run_id": 32619022988,
+    "processed_run_id": 32631496630,
     "provider_id": "Local",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
+    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
+    "same_failure_streak": 1,
     "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 1
+      "IMAGE_OUTPUT_MISSING": 2
     },
     "last_dispatch_at": "2026-08-23T09:37:03.104810+00:00",
     "artifact_sha256": "12371ac5046f21d7874161fafe2d751ecbb3738c43b775062c23d1035a80dc67",
     "source_id": "local://public/images/generated/blog/dating-communication-early-stages.jpg",
     "last_run_conclusion": "success",
-    "last_failed_run_id": 32619022988
+    "last_failed_run_id": 32631496630
   }
 }
