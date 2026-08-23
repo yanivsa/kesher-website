@@ -80,7 +80,12 @@ const ConsentBanner: React.FC = () => {
         <button type="button" className={styles.accept} onClick={() => choose('granted')}>
           אישור מדידה
         </button>
-        <button type="button" className={styles.reject} onClick={() => choose('denied')}>
+        <button
+          type="button"
+          className={styles.reject}
+          onClick={() => choose('denied')}
+          aria-label="המשך ללא cookies"
+        >
           ללא cookies
         </button>
       </div>
