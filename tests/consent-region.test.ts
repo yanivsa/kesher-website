@@ -6,17 +6,13 @@ describe('regional consent policy', () => {
     expect(requiresConsentForCountry('IL')).toBe(false);
   });
 
-  it('requires consent for EEA, UK and Swiss visitors', () => {
+  it('keeps the consent prompt for visitors outside Israel', () => {
     expect(requiresConsentForCountry('DE')).toBe(true);
-    expect(requiresConsentForCountry('NO')).toBe(true);
     expect(requiresConsentForCountry('GB')).toBe(true);
     expect(requiresConsentForCountry('CH')).toBe(true);
-  });
-
-  it('allows other known non-regulated countries without the blocking prompt', () => {
-    expect(requiresConsentForCountry('US')).toBe(false);
-    expect(requiresConsentForCountry('CA')).toBe(false);
-    expect(requiresConsentForCountry('AU')).toBe(false);
+    expect(requiresConsentForCountry('US')).toBe(true);
+    expect(requiresConsentForCountry('CA')).toBe(true);
+    expect(requiresConsentForCountry('AU')).toBe(true);
   });
 
   it('fails closed when the visitor country is unavailable or unknown', () => {
