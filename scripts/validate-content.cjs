@@ -76,21 +76,20 @@ for (let i = 0; i < published.length; i++) {
           errors.push(`Forbidden observed phrase found in latest article ${post.id}: "${phrase}"`);
         }
       }
-    }
 
+      const STOP_WORDS = new Set(['couples', 'parenting', 'relationship', 'children', 'child', 'with', 'about', 'how', 'why', 'what', 'when', 'your', 'their']);
+      const getWords = (id) => new Set(id.split('-').filter(w => w.length > 3 && !STOP_WORDS.has(w.toLowerCase())));
+      const currentWords = getWords(post.id);
 
-    const STOP_WORDS = new Set(['couples', 'parenting', 'relationship', 'children', 'child', 'with', 'about', 'how', 'why', 'what', 'when', 'your', 'their']);
-    const getWords = (id) => new Set(id.split('-').filter(w => w.length > 3 && !STOP_WORDS.has(w.toLowerCase())));
-    const currentWords = getWords(post.id);
+      for (let j = i + 1; j < Math.min(i + 31, published.length); j++) {
+        const olderPost = published[j];
+        const olderWords = getWords(olderPost.id);
+        const intersection = [...currentWords].filter(x => olderWords.has(x));
 
-    for (let j = i + 1; j < Math.min(i + 31, published.length); j++) {
-      const olderPost = published[j];
-      const olderWords = getWords(olderPost.id);
-      const intersection = [...currentWords].filter(x => olderWords.has(x));
-
-      if (intersection.length >= 2) {
-        errors.push(`Topic too similar: '${post.id}' shares specific theme keywords (${intersection.join(', ')}) with recent post '${olderPost.id}'. Please write about a substantially fresh topic.`);
-        break;
+        if (intersection.length >= 2) {
+          errors.push(`Topic too similar: '${post.id}' shares specific theme keywords (${intersection.join(', ')}) with recent post '${olderPost.id}'. Please write about a substantially fresh topic.`);
+          break;
+        }
       }
     }
   }
