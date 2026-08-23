@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaFacebookF, FaWhatsapp } from 'react-icons/fa';
 import { FiCheck, FiCopy, FiShare2 } from 'react-icons/fi';
 import styles from './ShareButtons.module.css';
@@ -52,8 +52,12 @@ const copyToClipboard = async (value: string) => {
 const ShareButtons = ({ title, url, itemId, placement }: ShareButtonsProps) => {
   const [copied, setCopied] = useState(false);
   const [status, setStatus] = useState('');
-  const canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+  const [canNativeShare, setCanNativeShare] = useState(false);
   const shareMessage = `${title}\n${url}`;
+
+  useEffect(() => {
+    setCanNativeShare(typeof navigator.share === 'function');
+  }, []);
 
   const shareWhatsApp = () => {
     trackShare('WhatsApp', itemId, placement);
@@ -86,7 +90,7 @@ const ShareButtons = ({ title, url, itemId, placement }: ShareButtonsProps) => {
     try {
       await navigator.share({ title, url });
       trackShare('Native', itemId, placement);
-      setStatus('המאמר שותף');
+      setStatus('אפשרויות השיתוף נפתחו');
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return;
       setStatus('השיתוף לא הושלם. אפשר לבחור WhatsApp, Facebook או העתקת קישור.');
