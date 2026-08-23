@@ -19,6 +19,19 @@ SERVE_OK="${TAILSCALE_SERVE_ACTIVE_VALUE:-unknown}"
 FINALIZE_OK="${OPENCLAW_OFFLINE_FINALIZE_SUCCESS_VALUE:-unknown}"
 STRICT_MODE="${OPENCLAW_STATUS_STRICT:-0}"
 
+# Defensively collapse a duplicated ready URL such as
+# https://host/https://host/ back to a single canonical endpoint.
+if [[ "$READY_URL" == https://*/*https://* ]]; then
+  ready_rest="${READY_URL#https://}"
+  if [[ "$ready_rest" == */https://* ]]; then
+    ready_first="https://${ready_rest%%/https://*}/"
+    ready_second="https://${ready_rest#*/https://}"
+    if [[ "$ready_first" == "$ready_second" ]]; then
+      READY_URL="$ready_first"
+    fi
+  fi
+fi
+
 bool_json() {
   case "$1" in
     true) printf 'true' ;;
