@@ -85,9 +85,9 @@ const ConsentBanner: React.FC = () => {
     });
   };
 
-  // Visitors outside the EEA/UK/Switzerland should not be interrupted by a
-  // consent banner. The regional defaults in analytics-bootstrap.js preserve
-  // measurement there. Existing explicit choices are still honored by GTM.
+  // Israeli visitors should not be interrupted by the blocking prompt.
+  // Other locations retain the existing conservative consent flow. Any
+  // explicit choice already stored on the device is still honored by GTM.
   if (requiresConsent === false || requiresConsent === null) return null;
 
   const isOpen = state.isOpen || state.choice === null;
