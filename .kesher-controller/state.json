@@ -9,7 +9,7 @@
       "stage": "article",
       "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
       "message": "article exhausted 3 total controller dispatch attempts",
-      "at": "2026-08-23T02:25:58.120497+00:00"
+      "at": "2026-08-23T02:29:24.473458+00:00"
     },
     "next_retry_at": "2026-08-23T01:58:20.876321+00:00",
     "run_id": 32606952749,
@@ -73,7 +73,7 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "article exhausted 3 total controller dispatch attempts",
-    "at": "2026-08-23T02:25:58.120497+00:00"
+    "at": "2026-08-23T02:29:24.473458+00:00"
   },
   "history": [
     {
@@ -739,9 +739,18 @@
       "details": {
         "message": "article exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-08-23T02:29:24.473467+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "article exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-08-23T02:25:58.120510+00:00",
+  "updated_at": "2026-08-23T02:29:24.473473+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
