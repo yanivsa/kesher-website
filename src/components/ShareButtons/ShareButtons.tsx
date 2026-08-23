@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { FaFacebookF, FaWhatsapp } from 'react-icons/fa';
 import { FiCheck, FiCopy, FiShare2 } from 'react-icons/fi';
 import styles from './ShareButtons.module.css';
@@ -49,15 +49,19 @@ const copyToClipboard = async (value: string) => {
   if (!copied) throw new Error('Clipboard copy failed');
 };
 
+const subscribeToShareCapability = () => () => {};
+const getShareCapability = () => typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+const getServerShareCapability = () => false;
+
 const ShareButtons = ({ title, url, itemId, placement }: ShareButtonsProps) => {
   const [copied, setCopied] = useState(false);
   const [status, setStatus] = useState('');
-  const [canNativeShare, setCanNativeShare] = useState(false);
+  const canNativeShare = useSyncExternalStore(
+    subscribeToShareCapability,
+    getShareCapability,
+    getServerShareCapability,
+  );
   const shareMessage = `${title}\n${url}`;
-
-  useEffect(() => {
-    setCanNativeShare(typeof navigator.share === 'function');
-  }, []);
 
   const shareWhatsApp = () => {
     trackShare('WhatsApp', itemId, placement);
