@@ -1,24 +1,35 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "cycle": "2026-08-23",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempts": 0,
-    "deploy_attempts": 0,
-    "failure_count_by_type": {},
+    "attempt_count": 1,
+    "status": "running",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "next_retry_at": null,
-    "processed_run_id": null
+    "failure_count_by_type": {},
+    "attempts": 1,
+    "deploy_attempts": 0,
+    "last_dispatch_at": "2026-08-23T04:04:19.738817+00:00"
   },
   "video": {
-    "attempts": 0,
-    "resume_dispatches": 0,
-    "failure_count_by_type": {},
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "next_retry_at": null,
-    "processed_run_id": null
+    "failure_count_by_type": {},
+    "attempts": 0,
+    "resume_dispatches": 0
   },
   "last_error": null,
   "history": [
@@ -32,7 +43,34 @@
         "fixed_commit": "029e860d87bda8421292642613cf342805079fed",
         "acceptance_requires_new_post_fix_article": true
       }
+    },
+    {
+      "at": "2026-08-23T04:03:57.627105+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 2 to schema v3"
+    },
+    {
+      "at": "2026-08-23T04:04:19.738824+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-08-23T03:33:48+00:00"
+  "updated_at": "2026-08-23T04:04:19.738829+00:00",
+  "image": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
