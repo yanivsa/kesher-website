@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import sys
+from datetime import datetime, timezone
 from typing import Any
 
 if __package__:
@@ -27,6 +28,8 @@ else:
 VIDEO_PROVIDER_PROGRESS = {"generating"}
 AUTO_MERGE_WORKFLOW = "auto-merge-article-prs.yml"
 IMAGE_TERMINAL_STATES = {"complete", "deferred"}
+AUTO_MERGE_REDISPATCH_SECONDS = 15 * 60
+MAX_AUTO_MERGE_DISPATCHES = 3
 
 
 class BestEffortController(v3.V3Controller):
@@ -36,14 +39,26 @@ class BestEffortController(v3.V3Controller):
         *,
         image_was_terminal: bool,
     ) -> None:
-        """Dispatch merge only when terminal image state existed before this tick."""
+        """Dispatch or recover auto-merge only after a persisted image terminal state."""
         if not image_was_terminal:
             return
         article = state["article"]
-        if article.get("merge_dispatch_at"):
+        if self.github.active_workflow_run(AUTO_MERGE_WORKFLOW, production_only=True):
             return
+
+        now = datetime.now(timezone.utc)
+        last_dispatch = v3.core.parse_timestamp(article.get("merge_dispatch_at"))
+        dispatch_count = int(article.get("merge_dispatch_count") or 0)
+        if last_dispatch is not None:
+            age_seconds = (now - last_dispatch).total_seconds()
+            if age_seconds < AUTO_MERGE_REDISPATCH_SECONDS:
+                return
+        if dispatch_count >= MAX_AUTO_MERGE_DISPATCHES:
+            return
+
         self.github.dispatch(AUTO_MERGE_WORKFLOW)
-        article["merge_dispatch_at"] = v3.core.utc_now()
+        article["merge_dispatch_at"] = now.isoformat()
+        article["merge_dispatch_count"] = dispatch_count + 1
 
     def _handle_open_article_pr(self, state, pr):
         number = int(pr.get("number") or 0)
