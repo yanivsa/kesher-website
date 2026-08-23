@@ -65,7 +65,7 @@ const ConsentBanner: React.FC = () => {
         onClick={() => setState((current) => ({ ...current, isOpen: true }))}
         aria-label="פתיחת הגדרות פרטיות ומדידה"
       >
-        הגדרות פרטיות
+        פרטיות
       </button>
     );
   }
@@ -73,16 +73,20 @@ const ConsentBanner: React.FC = () => {
   return (
     <aside className={styles.banner} aria-label="העדפות פרטיות ומדידה">
       <p>
-        האתר משתמש בכלי מדידה של Google כדי להבין ביצועים של פרסום ושימוש באתר.
-        ניתן לאשר מדידה מבוססת cookies או להמשיך ללא cookies.{' '}
-        <a href="/privacy">למדיניות הפרטיות</a>.
+        האתר משתמש בכלי Google למדידת שימוש ופרסום. אפשר לאשר cookies או להמשיך בלעדיהם.{' '}
+        <a href="/privacy">מדיניות פרטיות</a>.
       </p>
       <div className={styles.actions}>
         <button type="button" className={styles.accept} onClick={() => choose('granted')}>
           אישור מדידה
         </button>
-        <button type="button" className={styles.reject} onClick={() => choose('denied')}>
-          המשך ללא cookies
+        <button
+          type="button"
+          className={styles.reject}
+          onClick={() => choose('denied')}
+          aria-label="המשך ללא cookies"
+        >
+          ללא cookies
         </button>
       </div>
       {state.choice && (
