@@ -1,19 +1,11 @@
-const CONSENT_REQUIRED_COUNTRIES = new Set([
-  // European Economic Area (EU + Iceland, Liechtenstein and Norway)
-  'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR',
-  'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK',
-  'SI', 'ES', 'SE', 'IS', 'LI', 'NO',
-  // Google EU User Consent Policy also covers the UK and Switzerland.
-  'GB', 'CH',
-]);
-
 export const requiresConsentForCountry = (country?: string | null) => {
   const normalized = country?.trim().toUpperCase();
 
-  // Fail closed when Cloudflare cannot determine the visitor country.
-  if (!normalized || normalized === 'XX' || normalized === 'T1') return true;
-
-  return CONSENT_REQUIRED_COUNTRIES.has(normalized);
+  // The site's paid-search campaign is Israeli. Suppress the blocking prompt
+  // only for visitors Cloudflare identifies as being in Israel. Keep the
+  // existing consent flow everywhere else rather than making legal assumptions
+  // about other jurisdictions. Unknown geolocation therefore fails closed.
+  return normalized !== 'IL';
 };
 
 export const onRequest: PagesFunction = async (context) => {
