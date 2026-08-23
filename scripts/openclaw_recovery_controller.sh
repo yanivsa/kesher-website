@@ -53,7 +53,7 @@ offline="$(check_marker 'OPENCLAW_OFFLINE_REPAIR_COMPLETE=true')"
 rpc="$(check_marker 'OPENCLAW_GATEWAY_RPC_OK=true')"
 serve="$(check_marker 'TAILSCALE_SERVE_ACTIVE=true')"
 finalize="$(check_marker 'OPENCLAW_OFFLINE_FINALIZE_SUCCESS=true')"
-ready_url="$(grep -Eo '(^|[[:space:]])OPENCLAW_READY_URL=https://[A-Za-z0-9._-]+/?[[:space:]]*$' <<<"$logs" | sed -E 's/^.*OPENCLAW_READY_URL=/https:\/\//' | sed 's#https://https://#https://#' | tr -d '[:space:]' | tail -1 || true)"
+ready_url="$(bash scripts/openclaw_extract_ready_url.sh <<<"$logs" || true)"
 
 if [[ "$conclusion" == "success" && "$offline" == true && "$rpc" == true && "$serve" == true && "$finalize" == true && "$ready_url" == https://* ]]; then
   OPENCLAW_STATUS=success \
