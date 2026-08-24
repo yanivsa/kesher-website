@@ -55,8 +55,12 @@ class ProductionContractV3Tests(unittest.TestCase):
     def test_article_auto_merge_cannot_race_ahead_of_image_best_effort(self) -> None:
         controller = ARTICLE_PR_CONTROLLER_V3.read_text(encoding="utf-8")
         self.assertIn("controller_image_stage_terminal", controller)
-        self.assertIn('attempts >= 1', controller)
-        self.assertIn('{"complete", "deferred"}', controller)
+        self.assertIn('image_status == "complete"', controller)
+        self.assertIn('image_status == "deferred"', controller)
+        self.assertIn('image.get("provider_id")', controller)
+        self.assertIn('image.get("source_id")', controller)
+        self.assertIn('image.get("artifact_sha256")', controller)
+        self.assertIn("attempts >= 1", controller)
         self.assertIn("core.merge_and_deploy = merge_and_deploy_after_image_stage", controller)
         self.assertIn("merge deferred without consuming a content attempt", controller)
 
