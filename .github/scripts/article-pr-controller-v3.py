@@ -59,7 +59,13 @@ def load_validator_best_effort():
 
 
 def controller_image_stage_terminal(repo: str, pr: dict, github_token: str) -> bool:
-    """Require persisted proof that the controller owned at least one image attempt."""
+    """Require durable proof that the controller-owned image stage is terminal.
+
+    A cycle rollover can legitimately reset the per-cycle attempt counter while
+    retaining the still-authoritative open article PR and its already-persisted
+    image result. In that case the terminal image record itself is the durable
+    proof of the prior trusted attempt; refusing it would deadlock auto-merge.
+    """
     number = int(pr["number"])
     payload = core.request_json(
         "GET",
@@ -83,10 +89,27 @@ def controller_image_stage_terminal(repo: str, pr: dict, github_token: str) -> b
         attempts = int(image.get("attempt_count") or 0)
     except (TypeError, ValueError):
         return False
+
+    status = str(image.get("status") or "")
+    direct_attempt_proof = attempts >= 1
+    persisted_complete_proof = bool(
+        status == "complete"
+        and image.get("provider_id")
+        and image.get("source_id")
+        and image.get("artifact_sha256")
+    )
+    persisted_deferred_proof = bool(
+        status == "deferred"
+        and (
+            image.get("processed_run_id")
+            or image.get("last_error")
+            or image.get("failure_count_by_type")
+        )
+    )
     return bool(
         state_pr == number
-        and attempts >= 1
-        and str(image.get("status") or "") in {"complete", "deferred"}
+        and status in {"complete", "deferred"}
+        and (direct_attempt_proof or persisted_complete_proof or persisted_deferred_proof)
     )
 
 
