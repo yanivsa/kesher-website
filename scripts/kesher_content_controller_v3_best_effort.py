@@ -50,7 +50,10 @@ class BestEffortController(v3.V3Controller):
         # new attempt's recovery budget. Persisting the attempt marker also lets
         # an already-running cycle recover immediately after this fix lands.
         image_attempt_count = int((state.get("image") or {}).get("attempt_count") or 0)
-        if int(article.get("merge_image_attempt_count") or 0) != image_attempt_count:
+        if (
+            "merge_image_attempt_count" not in article
+            or int(article.get("merge_image_attempt_count") or 0) != image_attempt_count
+        ):
             article["merge_dispatch_at"] = None
             article["merge_dispatch_count"] = 0
             article["merge_image_attempt_count"] = image_attempt_count
