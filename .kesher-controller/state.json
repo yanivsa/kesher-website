@@ -26,7 +26,7 @@
     "url": "https://kesher.saharoni.com/blog/marriage-prep-financial-expectations-2026-08-24",
     "published_date": "2026-08-24",
     "live": true,
-    "live_verified_at": "2026-08-24T09:07:47.659067+00:00",
+    "live_verified_at": "2026-08-24T10:08:37.152259+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
@@ -35,14 +35,18 @@
     "last_error": null,
     "next_retry_at": null,
     "run_id": 32709841767,
-    "processed_run_id": null,
-    "provider_id": null,
+    "processed_run_id": 32709841767,
+    "provider_id": "96da152a-5b7a-403d-abdf-27dc6ce7f6d8",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 1,
-    "resume_dispatches": 0,
-    "last_dispatch_at": "2026-08-24T09:07:52.365305+00:00"
+    "resume_dispatches": 2,
+    "last_dispatch_at": "2026-08-24T10:08:48.286865+00:00",
+    "last_run_conclusion": "success",
+    "item_id": "video-20260824-120857-cc99a2d026",
+    "source_id": "4018f135-0187-476b-b435-37556705d169",
+    "artifact_id": "96da152a-5b7a-403d-abdf-27dc6ce7f6d8"
   },
   "last_error": null,
   "history": [
@@ -202,9 +206,25 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-08-24T10:08:37.152278+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-24T10:08:48.286870+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-08-24T09:07:52.365320+00:00",
+  "updated_at": "2026-08-24T10:08:48.286875+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
