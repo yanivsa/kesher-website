@@ -26,7 +26,7 @@
     "url": "https://kesher.saharoni.com/blog/marriage-prep-financial-expectations-2026-08-24",
     "published_date": "2026-08-24",
     "live": true,
-    "live_verified_at": "2026-08-24T11:36:47.805095+00:00",
+    "live_verified_at": "2026-08-24T12:16:47.989427+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
@@ -249,9 +249,21 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-08-24T12:16:47.989456+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-24T12:16:52.045830+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-08-24T11:36:51.693559+00:00",
+  "updated_at": "2026-08-24T12:16:52.045845+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
