@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-24",
-  "status": "article_generating",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -15,8 +15,8 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "pr_number": 531,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/531",
+    "pr_number": 540,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/540",
     "merge_dispatch_at": "2026-08-24T04:08:58.943900+00:00",
     "merge_dispatch_count": 3,
     "merge_image_attempt_count": 0,
@@ -162,12 +162,22 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-08-24T05:56:21.426594+00:00",
+      "from": "article_generating",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 1,
+        "pr_number": 540
+      }
     }
   ],
-  "updated_at": "2026-08-24T05:05:17.162614+00:00",
+  "updated_at": "2026-08-24T05:56:21.426599+00:00",
   "image": {
-    "attempt_count": 0,
-    "status": "complete",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -177,6 +187,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "artifact_sha256": "12371ac5046f21d7874161fafe2d751ecbb3738c43b775062c23d1035a80dc67",
-    "source_id": "local://public/images/generated/blog/dating-communication-early-stages.jpg"
+    "source_id": "local://public/images/generated/blog/dating-communication-early-stages.jpg",
+    "last_dispatch_at": "2026-08-24T05:56:21.426571+00:00"
   }
 }
