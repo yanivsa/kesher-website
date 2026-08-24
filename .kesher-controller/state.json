@@ -1,21 +1,60 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-25",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
-    "last_error": null,
-    "next_retry_at": null,
+    "last_error": {
+      "stage": "article",
+      "code": "COMPLETED_WITHOUT_PR",
+      "message": "Jules completed without creating a pull request; Jules diagnostic: Resolved topic similarity issues. — Replaced ID and installed required `pip` and `npm` test dependencies, including playwright browsers. Executed full `npm run check` which passed all controller, policy, and e2e tests. Restored unneeded package JSON churn and removed helper file `open_prs.json`. Verified final staged scope matches exact policy rules.",
+      "retryable": true,
+      "retry_at": "2026-08-24T22:44:53.412225+00:00",
+      "at": "2026-08-24T22:39:53.412243+00:00"
+    },
+    "next_retry_at": "2026-08-24T22:44:53.412225+00:00",
     "run_id": 32780532839,
-    "processed_run_id": null,
+    "processed_run_id": 32780532839,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "COMPLETED_WITHOUT_PR": 1
+    },
     "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-24T21:37:59.859681+00:00"
+    "last_dispatch_at": "2026-08-24T21:37:59.859681+00:00",
+    "last_run_conclusion": "failure",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-08-25",
+      "outcome": "COMPLETED_WITHOUT_PR",
+      "retryable": true,
+      "message": "Jules completed without creating a pull request; Jules diagnostic: Resolved topic similarity issues. — Replaced ID and installed required `pip` and `npm` test dependencies, including playwright browsers. Executed full `npm run check` which passed all controller, policy, and e2e tests. Restored unneeded package JSON churn and removed helper file `open_prs.json`. Verified final staged scope matches exact policy rules.",
+      "session_id": "sessions/10689233498762461006",
+      "pr_url": "",
+      "github_run_id": "32780532839",
+      "completed_at": "2026-08-24T22:05:49.069504+00:00",
+      "diagnostic": {
+        "source": {
+          "name": "sources/github/yanivsa/kesher-website",
+          "owner": "yanivsa",
+          "repo": "kesher-website",
+          "default_branch": "main",
+          "main_available": true
+        },
+        "activity_count": 36,
+        "change_set_count": 34,
+        "change_set_fingerprints": [],
+        "last_agent_message": "",
+        "last_progress": "Resolved topic similarity issues. — Replaced ID and installed required `pip` and `npm` test dependencies, including playwright browsers. Executed full `npm run check` which passed all controller, policy, and e2e tests. Restored unneeded package JSON churn and removed helper file `open_prs.json`. Verified final staged scope matches exact policy rules.",
+        "last_description": "",
+        "session_failed_reason": ""
+      }
+    },
+    "last_jules_session_id": "sessions/10689233498762461006",
+    "last_failed_run_id": 32780532839
   },
   "video": {
     "attempt_count": 0,
@@ -31,7 +70,14 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "COMPLETED_WITHOUT_PR",
+    "message": "Jules completed without creating a pull request; Jules diagnostic: Resolved topic similarity issues. — Replaced ID and installed required `pip` and `npm` test dependencies, including playwright browsers. Executed full `npm run check` which passed all controller, policy, and e2e tests. Restored unneeded package JSON churn and removed helper file `open_prs.json`. Verified final staged scope matches exact policy rules.",
+    "retryable": true,
+    "retry_at": "2026-08-24T22:44:53.412225+00:00",
+    "at": "2026-08-24T22:39:53.412243+00:00"
+  },
   "history": [
     {
       "at": "2026-08-23T03:33:48+00:00",
@@ -388,9 +434,22 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-08-24T22:39:53.412247+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "COMPLETED_WITHOUT_PR",
+      "details": {
+        "message": "Jules completed without creating a pull request; Jules diagnostic: Resolved topic similarity issues. — Replaced ID and installed required `pip` and `npm` test dependencies, including playwright browsers. Executed full `npm run check` which passed all controller, policy, and e2e tests. Restored unneeded package JSON churn and removed helper file `open_prs.json`. Verified final staged scope matches exact policy rules.",
+        "retry_at": "2026-08-24T22:44:53.412225+00:00",
+        "failure_streak": 1,
+        "run_id": 32780532839,
+        "session_id": "sessions/10689233498762461006"
+      }
     }
   ],
-  "updated_at": "2026-08-24T22:03:40.269467+00:00",
+  "updated_at": "2026-08-24T22:39:53.412251+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
