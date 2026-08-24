@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-24",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -172,12 +172,18 @@
         "attempt": 1,
         "pr_number": 540
       }
+    },
+    {
+      "at": "2026-08-24T07:13:22.363479+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "article PR has trusted image and remains authoritative"
     }
   ],
-  "updated_at": "2026-08-24T05:56:21.426599+00:00",
+  "updated_at": "2026-08-24T07:13:22.363496+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 32695314542,
