@@ -65,7 +65,7 @@
     "url": "https://kesher.saharoni.com/blog/dating-emotional-needs-vs-checklists",
     "published_date": "2026-08-25",
     "live": true,
-    "live_verified_at": "2026-08-25T05:07:52.134010+00:00",
+    "live_verified_at": "2026-08-25T05:50:17.895804+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
@@ -74,14 +74,14 @@
     "last_error": null,
     "next_retry_at": null,
     "run_id": 32811625354,
-    "processed_run_id": 32808901622,
+    "processed_run_id": 32811625354,
     "provider_id": "8ad09aef-dab9-4229-8a88-a6dd22c9b3be",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 1,
-    "resume_dispatches": 6,
-    "last_dispatch_at": "2026-08-25T05:07:55.745894+00:00",
+    "resume_dispatches": 8,
+    "last_dispatch_at": "2026-08-25T05:50:27.120459+00:00",
     "last_run_conclusion": "success",
     "item_id": "video-20260825-054835-2a2dd66800",
     "source_id": "d71f54e6-2cc1-47ce-9d23-473e71aa3e82",
@@ -546,9 +546,25 @@
         "operation": "full",
         "resume": 6
       }
+    },
+    {
+      "at": "2026-08-25T05:50:17.895825+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-25T05:50:27.120466+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 8
+      }
     }
   ],
-  "updated_at": "2026-08-25T05:07:55.745909+00:00",
+  "updated_at": "2026-08-25T05:50:27.120473+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
