@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-25",
-  "status": "video_running",
+  "status": "video_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -65,27 +65,30 @@
     "url": "https://kesher.saharoni.com/blog/dating-emotional-needs-vs-checklists",
     "published_date": "2026-08-25",
     "live": true,
-    "live_verified_at": "2026-08-25T11:36:19.222264+00:00",
+    "live_verified_at": "2026-08-25T12:16:36.663469+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-08-25T12:21:38.919812+00:00",
     "run_id": 32843198173,
-    "processed_run_id": 32839561921,
+    "processed_run_id": 32843198173,
     "provider_id": "8ad09aef-dab9-4229-8a88-a6dd22c9b3be",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "VIDEO_WORKFLOW_FAILED": 1
+    },
     "attempts": 1,
     "resume_dispatches": 22,
     "last_dispatch_at": "2026-08-25T11:36:37.123203+00:00",
-    "last_run_conclusion": "success",
+    "last_run_conclusion": "failure",
     "item_id": "video-20260825-054835-2a2dd66800",
     "source_id": "d71f54e6-2cc1-47ce-9d23-473e71aa3e82",
-    "artifact_id": "8ad09aef-dab9-4229-8a88-a6dd22c9b3be"
+    "artifact_id": "8ad09aef-dab9-4229-8a88-a6dd22c9b3be",
+    "last_failed_run_id": 32843198173
   },
   "last_error": null,
   "history": [
@@ -674,9 +677,37 @@
         "operation": "full",
         "resume": 22
       }
+    },
+    {
+      "at": "2026-08-25T12:16:36.663490+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-25T12:16:38.919841+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "VIDEO_WORKFLOW_FAILED",
+      "details": {
+        "message": "video run 32843198173 completed with conclusion=failure",
+        "retry_at": "2026-08-25T12:21:38.919812+00:00",
+        "failure_streak": 1,
+        "run_id": 32843198173,
+        "session_id": null
+      }
+    },
+    {
+      "at": "2026-08-25T12:16:38.919870+00:00",
+      "from": "video_retry_wait",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-08-25T12:21:38.919812+00:00"
+      }
     }
   ],
-  "updated_at": "2026-08-25T11:36:37.123219+00:00",
+  "updated_at": "2026-08-25T12:16:38.919875+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
