@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-25",
-  "status": "article_pr_open",
+  "status": "video_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -17,8 +17,8 @@
     "run_id": 32787643468,
     "processed_run_id": 32780532839,
     "provider_id": null,
-    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
@@ -59,11 +59,18 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/541",
     "merge_dispatch_at": "2026-08-25T01:48:09.032722+00:00",
     "merge_dispatch_count": 1,
-    "merge_image_attempt_count": 1
+    "merge_image_attempt_count": 1,
+    "slug": "dating-emotional-needs-vs-checklists",
+    "title": "עוד דייט, אותו תסריט: למה רשימות המכולת שלנו משאירות אותנו לבד",
+    "url": "https://kesher.saharoni.com/blog/dating-emotional-needs-vs-checklists",
+    "published_date": "2026-08-25",
+    "live": true,
+    "live_verified_at": "2026-08-25T02:47:33.149474+00:00",
+    "next_deploy_retry_at": null
   },
   "video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -72,8 +79,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "resume_dispatches": 0
+    "attempts": 1,
+    "resume_dispatches": 0,
+    "last_dispatch_at": "2026-08-25T02:47:36.915687+00:00"
   },
   "last_error": null,
   "history": [
@@ -470,9 +478,25 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "article PR has trusted image and remains authoritative"
+    },
+    {
+      "at": "2026-08-25T02:47:33.149484+00:00",
+      "from": "article_pr_open",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-25T02:47:36.915692+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-08-25T01:48:08.296486+00:00",
+  "updated_at": "2026-08-25T02:47:36.915698+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
