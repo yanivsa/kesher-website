@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-26",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -626,20 +626,28 @@
         "attempt": 1,
         "pr_number": 542
       }
+    },
+    {
+      "at": "2026-08-25T23:10:18.670737+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "article PR has trusted image and remains authoritative"
     }
   ],
-  "updated_at": "2026-08-25T22:39:32.912533+00:00",
+  "updated_at": "2026-08-25T23:10:18.670756+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 32907190117,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "Local",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-08-25T22:39:32.912503+00:00"
+    "last_dispatch_at": "2026-08-25T22:39:32.912503+00:00",
+    "artifact_sha256": "12371ac5046f21d7874161fafe2d751ecbb3738c43b775062c23d1035a80dc67",
+    "source_id": "local://public/images/generated/blog/dating-communication-early-stages.jpg"
   }
 }
