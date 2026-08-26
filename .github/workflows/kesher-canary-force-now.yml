@@ -13,8 +13,6 @@ on:
       - Kesher Daily NotebookLM Video Overview
       - Deploy to Cloudflare Pages
     types: [completed]
-  schedule:
-    - cron: "3,18,33,48 * * * *"
   workflow_dispatch:
 
 permissions:
