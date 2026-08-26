@@ -1,10 +1,10 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-26",
-  "status": "video_running",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 32901933059,
@@ -26,12 +26,12 @@
     "url": "https://kesher.saharoni.com/blog/new-relationship-initial-intentions",
     "published_date": "2026-08-26",
     "live": true,
-    "live_verified_at": "2026-08-26T01:53:37.898931+00:00",
+    "live_verified_at": "2026-08-26T03:13:53.837233+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 32920680471,
@@ -46,7 +46,10 @@
     "last_run_conclusion": "success",
     "item_id": "video-20260826-030245-6fb3595492",
     "source_id": "2017cdcb-263a-4ff9-9583-c1808b298695",
-    "artifact_id": "3d6abc66-6f6c-4387-8c44-9aedda43fdb1"
+    "artifact_id": "3d6abc66-6f6c-4387-8c44-9aedda43fdb1",
+    "youtube_id": "T6HRcvZ_39g",
+    "youtube_url": "https://youtu.be/T6HRcvZ_39g",
+    "verified": true
   },
   "last_error": null,
   "history": [
@@ -679,9 +682,21 @@
         "operation": "full",
         "resume": 2
       }
+    },
+    {
+      "at": "2026-08-26T03:13:53.837251+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-26T03:13:55.223554+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-08-26T01:53:49.107578+00:00",
+  "updated_at": "2026-08-26T03:13:55.223573+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
