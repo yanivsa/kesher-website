@@ -103,7 +103,7 @@ const ShareButtons = ({ title, url, itemId, placement }: ShareButtonsProps) => {
 
   return (
     <section className={styles.share} aria-label="שיתוף המאמר">
-      <span className={styles.label}>שתפו את המאמר:</span>
+      <span className={styles.label}>שיתוף:</span>
       <div className={styles.actions}>
         <button
           type="button"

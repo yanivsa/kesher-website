@@ -1,0 +1,220 @@
+.card {
+  margin: 0 0 var(--spacing-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.facade,
+.playerShell {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #101010;
+}
+
+.facade {
+  padding: 0;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  text-align: start;
+}
+
+.poster,
+.posterFallback,
+.shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.poster {
+  object-fit: cover;
+  transform: scale(1.001);
+  transition: transform 220ms ease;
+}
+
+.posterFallback {
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+}
+
+.shade {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08) 30%, rgba(0, 0, 0, 0.62) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.2), transparent 55%);
+}
+
+.facade:hover .poster {
+  transform: scale(1.018);
+}
+
+.facade:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.badge {
+  position: absolute;
+  inset-block-start: 1rem;
+  inset-inline-start: 1rem;
+  z-index: 2;
+  padding: 0.38rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.46);
+  backdrop-filter: blur(8px);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.playButton {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  z-index: 2;
+  display: grid;
+  width: clamp(58px, 8vw, 76px);
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  color: var(--color-primary-dark);
+  transform: translate(-50%, -50%);
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.facade:hover .playButton {
+  background: #fff;
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.playIcon {
+  margin-inline-start: 0.18rem;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  line-height: 1;
+}
+
+.facadeCaption {
+  position: absolute;
+  inset-inline: 1rem;
+  inset-block-end: 0.85rem;
+  z-index: 2;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.player {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: 1rem 1.15rem 1.1rem;
+}
+
+.copy {
+  min-width: 0;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.copy h2 {
+  margin: 0;
+  color: var(--color-primary-dark);
+  font-family: inherit;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+}
+
+.copy p {
+  margin: 0.25rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.youtubeLink {
+  flex: 0 0 auto;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-primary-dark);
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.youtubeLink:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .card {
+    margin-bottom: 1rem;
+    border-radius: 12px;
+  }
+
+  .meta {
+    align-items: center;
+    flex-direction: row;
+    gap: 0.55rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .eyebrow,
+  .copy p,
+  .facadeCaption {
+    display: none;
+  }
+
+  .copy h2 {
+    font-size: 1rem;
+  }
+
+  .youtubeLink {
+    align-self: center;
+    padding: 0.48rem 0.62rem;
+    font-size: 0.8rem;
+  }
+
+  .badge {
+    inset-block-start: 0.65rem;
+    inset-inline-start: 0.65rem;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.72rem;
+  }
+
+  .playButton {
+    width: 54px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poster,
+  .playButton,
+  .youtubeLink {
+    transition: none;
+  }
+}
