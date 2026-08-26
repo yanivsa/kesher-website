@@ -26,7 +26,7 @@
     "url": "https://kesher.saharoni.com/blog/new-relationship-initial-intentions",
     "published_date": "2026-08-26",
     "live": true,
-    "live_verified_at": "2026-08-26T10:45:38.288656+00:00",
+    "live_verified_at": "2026-08-26T11:15:26.876882+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
@@ -53,18 +53,6 @@
   },
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-24T13:22:40.998858+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-24T14:21:27.424688+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-08-24T14:21:30.478441+00:00",
       "from": "article_live",
@@ -750,9 +738,21 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-08-26T11:15:26.876900+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-26T11:15:42.129728+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-08-26T10:45:39.619927+00:00",
+  "updated_at": "2026-08-26T11:15:42.129745+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
