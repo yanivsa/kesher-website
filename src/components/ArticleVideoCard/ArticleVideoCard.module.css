@@ -171,18 +171,43 @@
 }
 
 @media (max-width: 640px) {
+  .card {
+    margin-bottom: 1rem;
+    border-radius: 12px;
+  }
+
   .meta {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 0.75rem;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.55rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .eyebrow,
+  .copy p,
+  .facadeCaption {
+    display: none;
+  }
+
+  .copy h2 {
+    font-size: 1rem;
   }
 
   .youtubeLink {
-    align-self: flex-start;
+    align-self: center;
+    padding: 0.48rem 0.62rem;
+    font-size: 0.8rem;
   }
 
-  .facadeCaption {
+  .badge {
+    inset-block-start: 0.65rem;
+    inset-inline-start: 0.65rem;
+    padding: 0.3rem 0.55rem;
     font-size: 0.72rem;
+  }
+
+  .playButton {
+    width: 54px;
   }
 }
 

@@ -116,6 +116,7 @@ const BlogPost: React.FC = () => {
               />
             </div>
           )}
+          <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
           {articleVideo && (
             <ArticleVideoCard
               youtubeId={articleVideo.youtubeId}
@@ -123,7 +124,6 @@ const BlogPost: React.FC = () => {
               poster={post.image || undefined}
             />
           )}
-          <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
           <ShareButtons
             title={post.title}
             url={shareUrl}
