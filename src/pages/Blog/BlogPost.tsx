@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import posts from '../../data/publishedPosts';
@@ -9,11 +9,16 @@ import ShareButtons from '../../components/ShareButtons/ShareButtons';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
+import articleVideoMap from '../../data/articleVideos.json';
 import styles from './BlogPost.module.css';
+
+type ArticleVideo = { youtubeId: string; title: string };
+const articleVideos = articleVideoMap as Record<string, ArticleVideo>;
 
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const post = posts.find(p => p.id === id);
+  const [videoActive, setVideoActive] = useState(false);
 
   const schemaData = useMemo(() => ({
     "@context": "https://schema.org",
@@ -73,6 +78,7 @@ const BlogPost: React.FC = () => {
 
   const safeContent = DOMPurify.sanitize(post.content);
   const shareUrl = `${SITE_CONFIG.url}/blog/${post.id}`;
+  const articleVideo = articleVideos[post.id];
   const relatedService = 'serviceUrl' in post
     && 'serviceLabel' in post
     && typeof post.serviceUrl === 'string'
@@ -110,6 +116,45 @@ const BlogPost: React.FC = () => {
                 {...getImageDimensions(post.image)}
               />
             </div>
+          )}
+          {articleVideo && (
+            <section className={styles.articleVideoCard} aria-label="וידאו נלווה למאמר">
+              <div className={styles.articleVideoHeader}>
+                <span className={styles.articleVideoEyebrow}>גם בווידאו</span>
+                <h2>{articleVideo.title}</h2>
+                <p>מעדיפים לצפות? הסרטון מסכם ומרחיב את הנקודות המרכזיות במאמר.</p>
+              </div>
+              <div className={styles.articleVideoFrame}>
+                {videoActive ? (
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${articleVideo.youtubeId}?autoplay=1&rel=0`}
+                    title={articleVideo.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.articleVideoFacade}
+                    onClick={() => setVideoActive(true)}
+                    aria-label={`נגן את הסרטון: ${articleVideo.title}`}
+                  >
+                    {post.image && <img src={post.image} alt="" loading="lazy" aria-hidden="true" />}
+                    <span className={styles.articleVideoShade} />
+                    <span className={styles.articleVideoPlay} aria-hidden="true">▶</span>
+                  </button>
+                )}
+              </div>
+              <a
+                className={styles.articleVideoLink}
+                href={`https://www.youtube.com/watch?v=${articleVideo.youtubeId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                צפייה ישירה ב-YouTube ↗
+              </a>
+            </section>
           )}
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
           <ShareButtons
