@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import posts from '../../data/publishedPosts';
+import articleVideos from '../../data/articleVideos.json';
+import ArticleVideoCard from '../../components/ArticleVideoCard/ArticleVideoCard';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
@@ -14,6 +16,9 @@ import styles from './BlogPost.module.css';
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const post = posts.find(p => p.id === id);
+  const articleVideo = id
+    ? (articleVideos as Record<string, { youtubeId: string; title?: string }>)[id]
+    : undefined;
 
   const schemaData = useMemo(() => ({
     "@context": "https://schema.org",
@@ -110,6 +115,13 @@ const BlogPost: React.FC = () => {
                 {...getImageDimensions(post.image)}
               />
             </div>
+          )}
+          {articleVideo && (
+            <ArticleVideoCard
+              youtubeId={articleVideo.youtubeId}
+              title={articleVideo.title || post.title}
+              poster={post.image || undefined}
+            />
           )}
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
           <ShareButtons
