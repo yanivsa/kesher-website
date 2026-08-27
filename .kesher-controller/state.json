@@ -71,14 +71,7 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Fixed heading count so post is publishable, regenerated artifacts, and verifi... — Fixed heading count so post is publishable, regenerated artifacts, and verified the ID appears exactly once in each file.",
-    "retryable": true,
-    "retry_at": "2026-08-27T19:49:05.017576+00:00",
-    "at": "2026-08-27T19:44:05.017594+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-25T07:52:59.936585+00:00",
@@ -666,9 +659,18 @@
         "run_id": 33082929463,
         "session_id": "sessions/5137415637576561933"
       }
+    },
+    {
+      "at": "2026-08-27T19:45:03.698285+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-08-27T19:49:05.017576+00:00"
+      }
     }
   ],
-  "updated_at": "2026-08-27T19:44:05.017602+00:00",
+  "updated_at": "2026-08-27T19:45:03.698299+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
