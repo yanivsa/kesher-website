@@ -8,6 +8,9 @@ declare module 'react' {
         'data-theme'?: string;
         'data-initialized'?: string;
       };
+      'div': React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
+        'google-add-preferred-source-btn'?: string;
+      };
     }
   }
 }
