@@ -92,8 +92,8 @@ const ConsentBanner: React.FC = () => {
   return (
     <aside className={styles.banner} aria-label="העדפות פרטיות ומדידה">
       <p>
-        באתר נעשה שימוש בקובצי Cookies ובכלי המדידה של Google לצורך סטטיסטיקה, שיפור האתר ומדידת פרסום.{' '}
-        <a href="/privacy#cookies-measurement">לפרטים נוספים</a>
+        באתר נעשה שימוש בקובצי Cookies ובכלי המדידה של Google לצורך סטטיסטיקה, שיפור חוויית הגלישה ומדידת יעילות הפרסום.{' '}
+        <a href="/privacy#cookies-measurement">מידע נוסף</a>
       </p>
       <div className={styles.actions}>
         <button
