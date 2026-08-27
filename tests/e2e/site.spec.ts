@@ -29,11 +29,7 @@ for (const route of routes) {
   test(`${route} renders route metadata and accessible content`, async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (message) => {
-      if (
-        message.type() === 'error' &&
-        !message.text().includes('requestStorageAccess') &&
-        !message.text().includes('Content Security Policy directive: "frame-ancestors')
-      ) {
+      if (message.type() === 'error' && !message.text().includes('requestStorageAccess')) {
         errors.push(message.text());
       }
     });
@@ -47,7 +43,7 @@ for (const route of routes) {
       clientWidth: document.documentElement.clientWidth,
     }));
     expect(width.scrollWidth).toBe(width.clientWidth);
-    const results = await new AxeBuilder({ page }).exclude('iframe').exclude('google-add-preferred-source-btn').analyze();
+    const results = await new AxeBuilder({ page }).exclude('iframe').analyze();
     expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact || ''))).toEqual([]);
     expect(errors).toEqual([]);
   });

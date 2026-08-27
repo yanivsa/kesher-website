@@ -13,6 +13,15 @@ test.describe('Google Preferred Source Integration', () => {
     // Verify fallback link is present and correct
     const fallbackLink = page.locator('a[href="https://www.google.com/preferences/source?q=kesher.saharoni.com"]');
     await expect(fallbackLink.first()).toBeVisible();
+    await fallbackLink.first().focus();
+    await expect(fallbackLink.first()).toBeFocused();
+
+    // Ensure no mobile overflow
+    const width = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+    }));
+    expect(width.scrollWidth).toBe(width.clientWidth);
 
     // Verify script is injected exactly once and in head
     const scriptLocator = page.locator('head script[src="https://news.google.com/swg/js/v1/publisher.js"]');
