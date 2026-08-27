@@ -48,7 +48,7 @@ const LecturesPage: React.FC = () => {
                   controls 
                   preload="metadata" 
                   className={styles.videoPlayer}
-                  poster="/images/shira_ashdod_poster.jpg"
+                  poster="/images/lectures/shira_lecture_ashdod_podium.jpg"
                 >
                   <source src="/videos/shira_mahut_ashdod.mp4" type="video/mp4" />
                   הדפדפן שלך אינו תומך בהצגת וידאו.
@@ -78,7 +78,7 @@ const LecturesPage: React.FC = () => {
                   controls 
                   preload="metadata" 
                   className={styles.videoPlayer}
-                  poster="/images/shira_revava_poster.jpg"
+                  poster="/images/lectures/shira_lecture_revava_smile.jpg"
                 >
                   <source src="/videos/shira_revava.mp4" type="video/mp4" />
                   הדפדפן שלך אינו תומך בהצגת וידאו.
@@ -138,6 +138,73 @@ const LecturesPage: React.FC = () => {
               </div>
             </article>
 
+          </div>
+
+          {/* Photo Gallery Section */}
+          <div className={styles.gallerySection}>
+            <div className={styles.galleryHeading}>
+              <h2 className={styles.galleryTitle}>רגעים מתוך ההרצאות והסדנאות</h2>
+              <p className={styles.gallerySubtitle}>
+                תמונות נבחרות מהרצאות, כנסים וסדנאות בהנחיית שירה סהרוני
+              </p>
+            </div>
+            <div className={styles.galleryGrid}>
+              <article className={styles.galleryCard}>
+                <div className={styles.galleryImageWrapper}>
+                  <img 
+                    src="/images/lectures/shira_lecture_ashdod_podium.jpg" 
+                    alt="שירה סהרוני בהרצאה במרכז מהו״ת אשדוד"
+                    className={styles.galleryImage}
+                    loading="lazy"
+                  />
+                </div>
+                <div className={styles.galleryCaption}>
+                  נוכחות בימתית על הפודיום | מרכז מהו״ת אשדוד
+                </div>
+              </article>
+
+              <article className={styles.galleryCard}>
+                <div className={styles.galleryImageWrapper}>
+                  <img 
+                    src="/images/lectures/shira_lecture_ashdod_gesture.jpg" 
+                    alt="שירה סהרוני בהדרכה והסבר דינמי בהרצאה"
+                    className={styles.galleryImage}
+                    loading="lazy"
+                  />
+                </div>
+                <div className={styles.galleryCaption}>
+                  הדרכה מעמיקה והבעה דינמית | מרכז מהו״ת אשדוד
+                </div>
+              </article>
+
+              <article className={styles.galleryCard}>
+                <div className={styles.galleryImageWrapper}>
+                  <img 
+                    src="/images/lectures/shira_lecture_revava_smile.jpg" 
+                    alt="שירה סהרוני בקשר חם ומחייך עם הקהל בהרצאה"
+                    className={styles.galleryImage}
+                    loading="lazy"
+                  />
+                </div>
+                <div className={styles.galleryCaption}>
+                  קשר חם ומחייך עם הקהל | הרצאה מקצועית
+                </div>
+              </article>
+
+              <article className={styles.galleryCard}>
+                <div className={styles.galleryImageWrapper}>
+                  <img 
+                    src="/images/lectures/shira_lecture_revava_speaking.jpg" 
+                    alt="שירה סהרוני בהנחיה מקצועית"
+                    className={styles.galleryImage}
+                    loading="lazy"
+                  />
+                </div>
+                <div className={styles.galleryCaption}>
+                  הנחיה מקצועית ומעצימה | הרצאה למנחי הורים
+                </div>
+              </article>
+            </div>
           </div>
         </div>
       </section>

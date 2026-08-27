@@ -151,6 +151,77 @@
   color: var(--color-primary-dark);
 }
 
+.gallerySection {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.galleryHeading {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.galleryTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-gray-900);
+  margin-bottom: 0.5rem;
+}
+
+.gallerySubtitle {
+  color: var(--color-gray-600);
+  font-size: 1.05rem;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.galleryCard {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-100);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.galleryCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.galleryImageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: var(--color-gray-100);
+}
+
+.galleryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.galleryCard:hover .galleryImage {
+  transform: scale(1.03);
+}
+
+.galleryCaption {
+  padding: 1rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-gray-800);
+  background: white;
+}
+
 @media (max-width: 768px) {
   .header {
     padding: 3rem 0;
@@ -166,5 +237,9 @@
   
   .lectureTitle {
     font-size: 1.25rem;
+  }
+
+  .galleryGrid {
+    grid-template-columns: 1fr;
   }
 }
