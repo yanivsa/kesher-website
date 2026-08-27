@@ -20,19 +20,13 @@ const SignatureMark: React.FC<SignatureMarkProps> = ({
   const [visible, setVisible] = useState(!animated);
 
   useEffect(() => {
-    if (!animated) {
-      setVisible(true);
-      return;
-    }
+    if (!animated) return;
 
     const node = rootRef.current;
     if (!node) return;
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (reducedMotion.matches) {
-      setVisible(true);
-      return;
-    }
+    if (reducedMotion.matches) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
