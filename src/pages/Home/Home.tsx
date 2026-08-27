@@ -17,6 +17,7 @@ import {
 } from 'react-icons/fi';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
+import SignatureMark from '../../components/Signature/SignatureMark';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './Home.module.css';
 
@@ -564,6 +565,7 @@ const Home: React.FC = () => {
                 ההכשרות כוללות לימודים מקצועיים, תעודות ופרקטיקום מעשי.
               </small>
             </aside>
+            <SignatureMark tone="homeAbout" animated className={styles.aboutSignature} />
             <Link to="/about" className={styles.textLink}>
               עוד עליי ועל אופן העבודה
               <FiArrowLeft aria-hidden="true" />

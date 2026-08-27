@@ -11,6 +11,10 @@
   --signature-color: var(--color-primary-dark);
 }
 
+.homeAbout {
+  --signature-color: var(--beta-sage-dark, #654735);
+}
+
 .article {
   --signature-color: var(--color-text);
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './SignatureMark.module.css';
 
-type SignatureTone = 'about' | 'article' | 'footer';
+type SignatureTone = 'about' | 'homeAbout' | 'article' | 'footer';
 
 interface SignatureMarkProps {
   tone: SignatureTone;
