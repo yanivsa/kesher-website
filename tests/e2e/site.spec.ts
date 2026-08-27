@@ -27,6 +27,7 @@ const routes = [
 
 for (const route of routes) {
   test(`${route} renders route metadata and accessible content`, async ({ page }) => {
+    await page.route('https://news.google.com/**', route => route.fulfill({ status: 200, body: '' }));
     const errors: string[] = [];
     page.on('console', (message) => {
       if (message.type() === 'error' && !message.text().includes('requestStorageAccess')) {
@@ -50,7 +51,8 @@ for (const route of routes) {
 }
 
 test('unknown routes render the noindex 404 page', async ({ page }) => {
-  const errors: string[] = [];
+  await page.route('https://news.google.com/**', route => route.fulfill({ status: 200, body: '' }));
+    const errors: string[] = [];
   page.on('console', (message) => {
     if (message.type() === 'error') errors.push(message.text());
   });
@@ -76,7 +78,8 @@ test('the promoted homepage is indexable and uses the standalone design', async 
 });
 
 test('homepage mounts cleanly with reduced motion enabled', async ({ page }) => {
-  const errors: string[] = [];
+  await page.route('https://news.google.com/**', route => route.fulfill({ status: 200, body: '' }));
+    const errors: string[] = [];
   page.on('console', (message) => {
     if (message.type() === 'error') errors.push(message.text());
   });
@@ -99,7 +102,8 @@ test('the promoted beta2 route resolves to the primary homepage', async ({ page 
 });
 
 test('unknown blog posts render the noindex 404 page', async ({ page }) => {
-  const errors: string[] = [];
+  await page.route('https://news.google.com/**', route => route.fulfill({ status: 200, body: '' }));
+    const errors: string[] = [];
   page.on('console', (message) => {
     if (message.type() === 'error') errors.push(message.text());
   });
