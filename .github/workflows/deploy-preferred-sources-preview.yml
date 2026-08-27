@@ -14,8 +14,12 @@ jobs:
     env:
       VITE_GTM_CONTAINER_ID: disabled
     steps:
-      - name: Clone preview branch
-        run: git clone --depth=1 --branch preferred-sources-preview https://github.com/${GITHUB_REPOSITORY}.git .
+      - name: Sparse clone preview branch
+        run: |
+          git clone --filter=blob:none --no-checkout --depth=1 --branch preferred-sources-preview https://github.com/${GITHUB_REPOSITORY}.git .
+          git sparse-checkout init --cone
+          git sparse-checkout set src public scripts functions config tests
+          git checkout
 
       - name: Set up Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
