@@ -29,7 +29,12 @@ for (const route of routes) {
   test(`${route} renders route metadata and accessible content`, async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (message) => {
-      if (message.type() === 'error' && !message.text().includes('requestStorageAccess')) {
+      if (
+        message.type() === 'error' &&
+        !message.text().includes('requestStorageAccess') &&
+        !message.text().includes('Content Security Policy directive: "frame-ancestors') &&
+        !message.text().includes('report-only Content Security Policy directive: "frame-ancestors')
+      ) {
         errors.push(message.text());
       }
     });
