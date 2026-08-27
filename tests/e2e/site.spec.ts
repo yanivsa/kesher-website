@@ -48,7 +48,7 @@ for (const route of routes) {
       clientWidth: document.documentElement.clientWidth,
     }));
     expect(width.scrollWidth).toBe(width.clientWidth);
-    const results = await new AxeBuilder({ page }).exclude('iframe').analyze();
+    const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact || ''))).toEqual([]);
     expect(errors).toEqual([]);
   });
