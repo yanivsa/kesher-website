@@ -1,61 +1,20 @@
 {
   "schema_version": 3,
-  "cycle": "2026-08-27",
-  "status": "article_retry_wait",
+  "cycle": "2026-08-28",
+  "status": "waiting_for_article_window",
   "article": {
-    "attempt_count": 2,
-    "status": "running",
-    "last_error": {
-      "stage": "article",
-      "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Fixed heading count so post is publishable, regenerated artifacts, and verifi... — Fixed heading count so post is publishable, regenerated artifacts, and verified the ID appears exactly once in each file.",
-      "retryable": true,
-      "retry_at": "2026-08-27T19:49:05.017576+00:00",
-      "at": "2026-08-27T19:44:05.017594+00:00"
-    },
-    "next_retry_at": "2026-08-27T19:49:05.017576+00:00",
-    "run_id": 33082929463,
-    "processed_run_id": 33082929463,
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "COMPLETED_WITHOUT_PR": 1,
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
-    },
-    "attempts": 2,
-    "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-27T14:33:50.541999+00:00",
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-08-27",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Fixed heading count so post is publishable, regenerated artifacts, and verifi... — Fixed heading count so post is publishable, regenerated artifacts, and verified the ID appears exactly once in each file.",
-      "session_id": "sessions/5137415637576561933",
-      "pr_url": "",
-      "github_run_id": "33082929463",
-      "completed_at": "2026-08-27T15:11:13.580526+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 27,
-        "change_set_count": 25,
-        "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "Fixed heading count so post is publishable, regenerated artifacts, and verifi... — Fixed heading count so post is publishable, regenerated artifacts, and verified the ID appears exactly once in each file.",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/5137415637576561933",
-    "last_failed_run_id": 33082929463
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "attempts": 0,
+    "deploy_attempts": 0
   },
   "video": {
     "attempt_count": 0,
@@ -73,64 +32,6 @@
   },
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-25T07:52:59.936585+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 12
-      }
-    },
-    {
-      "at": "2026-08-25T08:53:11.174507+00:00",
-      "from": "video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-25T08:53:20.403799+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 14
-      }
-    },
-    {
-      "at": "2026-08-25T09:44:16.487047+00:00",
-      "from": "video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-25T09:44:20.324107+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 16
-      }
-    },
-    {
-      "at": "2026-08-25T10:15:25.610427+00:00",
-      "from": "video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-25T10:15:29.971878+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 18
-      }
-    },
     {
       "at": "2026-08-25T10:54:16.979316+00:00",
       "from": "video_running",
@@ -677,9 +578,21 @@
       "details": {
         "retry_at": "2026-08-27T19:49:05.017576+00:00"
       }
+    },
+    {
+      "at": "2026-08-27T22:15:58.897876+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-08-27T22:15:58.897902+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-08-27T19:48:42.567242+00:00",
+  "updated_at": "2026-08-27T22:15:58.897905+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
