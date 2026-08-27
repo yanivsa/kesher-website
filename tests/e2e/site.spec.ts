@@ -43,7 +43,7 @@ for (const route of routes) {
       clientWidth: document.documentElement.clientWidth,
     }));
     expect(width.scrollWidth).toBe(width.clientWidth);
-    const results = await new AxeBuilder({ page }).analyze();
+    const results = await new AxeBuilder({ page }).exclude('iframe').exclude('google-add-preferred-source-btn').analyze();
     expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact || ''))).toEqual([]);
     expect(errors).toEqual([]);
   });

@@ -9,7 +9,7 @@
 .fallbackLink {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background-color: var(--primary-color, #4a90e2);
+  background-color: var(--color-primary, #4A6854);
   color: white;
   text-decoration: none;
   border-radius: 4px;
@@ -19,7 +19,7 @@
 }
 
 .fallbackLink:hover, .fallbackLink:focus {
-  background-color: var(--primary-dark-color, #357abd);
+  background-color: var(--color-primary-dark, #3F5E49);
   color: white;
   text-decoration: none;
 }

@@ -49,12 +49,13 @@ const GooglePreferredSource: React.FC = () => {
           הוסיפו אותנו כמקור מועדף ב-Google
         </a>
       </noscript>
-      <div className={styles.jsFallback} aria-hidden="true">
+      <div className={styles.jsFallback} aria-hidden="true" tabIndex={-1}>
         <a
           href={fallbackUrl}
           target="_blank"
           rel="noopener noreferrer"
           className={styles.fallbackLink}
+          tabIndex={-1}
         >
           הוסיפו אותנו כמקור מועדף ב-Google
         </a>
