@@ -566,10 +566,16 @@ const Home: React.FC = () => {
               </small>
             </aside>
             <SignatureMark tone="homeAbout" animated className={styles.aboutSignature} />
-            <Link to="/about" className={styles.textLink}>
-              עוד עליי ועל אופן העבודה
-              <FiArrowLeft aria-hidden="true" />
-            </Link>
+            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+              <Link to="/about" className={styles.textLink}>
+                עוד עליי ועל אופן העבודה
+                <FiArrowLeft aria-hidden="true" />
+              </Link>
+              <Link to="/lectures" className={styles.textLink}>
+                צפו בהרצאות ובסדנאות
+                <FiArrowLeft aria-hidden="true" />
+              </Link>
+            </div>
             <p className={styles.legalBackground}>רקע נוסף: עורכת דין בהכשרתי.</p>
           </div>
         </section>

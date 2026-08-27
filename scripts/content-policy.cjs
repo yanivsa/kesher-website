@@ -4,6 +4,7 @@ const ROOT = path.resolve(__dirname, '..');
 const STATIC_ROUTES = [
   '/',
   '/about',
+  '/lectures',
   '/contact',
   '/appointment',
   '/services/couples',

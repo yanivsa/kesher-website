@@ -60,6 +60,7 @@ const appointment = loadable(() => import('./pages/Appointment/AppointmentPage')
 const accessibility = loadable(() => import('./pages/Legal/AccessibilityPage'));
 const privacy = loadable(() => import('./pages/Legal/PrivacyPolicy'));
 const terms = loadable(() => import('./pages/Legal/TermsOfUse'));
+const lectures = loadable(() => import('./pages/Lectures/LecturesPage'));
 const couplesCounselingAshdod = loadable(() => import('./pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage'));
 const thankYouBooked = loadable(() => import('./pages/ThankYou/ThankYouBookedPage'));
 const thankYouContact = loadable(() => import('./pages/ThankYou/ThankYouContactPage'));
@@ -83,6 +84,7 @@ const { Page: BlogList } = blogList;
 const { Page: BlogPost } = blogPost;
 const { Page: FAQ } = faq;
 const { Page: AboutPage } = about;
+const { Page: LecturesPage } = lectures;
 const { Page: ContactPage } = contact;
 const { Page: AppointmentPage } = appointment;
 const { Page: AccessibilityPage } = accessibility;
@@ -100,6 +102,7 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/thank-you-booked\/?$/, thankYouBooked.preload],
   [/^\/thank-you-contact\/?$/, thankYouContact.preload],
   [/^\/about\/?$/, about.preload],
+  [/^\/lectures\/?$/, lectures.preload],
   [/^\/services\/couples\/?$/, couples.preload],
   [/^\/services\/premarital-first-year\/?$/, premarital.preload],
   [/^\/services\/parenting\/?$/, parenting.preload],
@@ -139,6 +142,7 @@ function App() {
           <Route path="/thank-you-booked" element={<ThankYouBookedPage />} />
           <Route path="/thank-you-contact" element={<ThankYouContactPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/lectures" element={<LecturesPage />} />
           <Route path="/services/couples" element={<CouplesCounseling />} />
           <Route path="/services/premarital-first-year" element={<PremaritalPage />} />
           <Route path="/services/parenting" element={<ParentingGuidance />} />

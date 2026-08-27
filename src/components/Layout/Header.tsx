@@ -158,6 +158,7 @@ const Header: React.FC = () => {
                 <Link to="/services/aliyah-families" onClick={closeMenu}>הורות ומשפחה אחרי עלייה</Link>
               </div>
             </div>
+            <Link to="/lectures" onClick={closeMenu}>הרצאות וסדנאות</Link>
             <Link to="/blog" onClick={closeMenu}>בלוג</Link>
             <Link to="/faq" onClick={closeMenu}>שאלות נפוצות</Link>
             <Link to={SITE_CONFIG.links.appointment} className={styles.cta} onClick={closeMenu}>לתיאום פגישה</Link>

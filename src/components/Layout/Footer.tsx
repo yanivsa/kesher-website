@@ -22,6 +22,7 @@ const Footer: React.FC = () => {
           <h4>ניווט מהיר</h4>
           <Link to="/">דף הבית</Link>
           <Link to="/about">אודות</Link>
+          <Link to="/lectures">הרצאות וסדנאות</Link>
           <Link to="/services/mediation">גישור</Link>
           <Link to="/services/premarital-first-year">הכנה לנישואים והשנה הראשונה</Link>
           <Link to="/services/couples-aliyah-relocation">זוגיות בעלייה וברילוקיישן</Link>
