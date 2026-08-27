@@ -29,7 +29,7 @@ for (const route of routes) {
   test(`${route} renders route metadata and accessible content`, async ({ page }) => {
     const errors: string[] = [];
     page.on('console', (message) => {
-      if (message.type() === 'error' && !message.text().includes('requestStorageAccess') && !message.text().includes('frame-ancestors')) {
+      if (message.type() === 'error' && !message.text().includes('requestStorageAccess')) {
         errors.push(message.text());
       }
     });
