@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiPlayCircle, FiCalendar, FiMapPin, FiExternalLink } from 'react-icons/fi';
+import { FiCalendar, FiMapPin, FiExternalLink } from 'react-icons/fi';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
