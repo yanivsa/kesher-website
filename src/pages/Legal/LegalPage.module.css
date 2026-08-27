@@ -27,6 +27,18 @@
   color: var(--color-primary-dark);
 }
 
+.content a {
+  color: var(--color-primary-dark);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.content a:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}
+
 .content ul {
   padding-right: 1.5rem;
 }
