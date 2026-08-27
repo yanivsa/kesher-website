@@ -668,9 +668,18 @@
       "details": {
         "retry_at": "2026-08-27T19:49:05.017576+00:00"
       }
+    },
+    {
+      "at": "2026-08-27T19:48:42.567224+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-08-27T19:49:05.017576+00:00"
+      }
     }
   ],
-  "updated_at": "2026-08-27T19:45:03.698299+00:00",
+  "updated_at": "2026-08-27T19:48:42.567242+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
