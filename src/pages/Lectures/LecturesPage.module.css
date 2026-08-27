@@ -80,6 +80,27 @@
   display: block;
 }
 
+.imageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: var(--color-gray-100);
+  overflow: hidden;
+}
+
+.lectureCoverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform var(--transition-normal);
+}
+
+.lectureCard:hover .lectureCoverImage {
+  transform: scale(1.03);
+}
+
 .facebookEmbedContainer {
   width: 100%;
   background-color: var(--color-gray-50);

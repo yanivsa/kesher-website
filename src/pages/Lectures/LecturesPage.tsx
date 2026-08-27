@@ -102,38 +102,38 @@ const LecturesPage: React.FC = () => {
 
             {/* Lecture 3: Y.N.R Revava */}
             <article className={styles.lectureCard}>
-              <div className={styles.facebookEmbedContainer}>
-                <iframe 
-                  src="https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fynrcollege%2Fposts%2F7033553070047976&show_text=true&width=500" 
-                  width="100%" 
-                  height="450" 
-                  style={{ border: 'none', overflow: 'hidden', borderRadius: '8px' }} 
-                  scrolling="no" 
-                  frameBorder="0" 
-                  allowFullScreen={true} 
-                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                  title="הרצאה בי.נ.ר"
-                ></iframe>
+              <div className={styles.imageContainer}>
+                <img 
+                  src="/images/lectures/ynr_lecture_classroom.jpg" 
+                  alt="הרצאת שירה סהרוני במדרשת רבבה - מכללת י.נ.ר"
+                  className={styles.lectureCoverImage}
+                  loading="lazy"
+                />
               </div>
               <div className={styles.lectureContent}>
-                <span className={styles.tag}>רווקות מאוחרת וייעוץ זוגי</span>
-                <h2 className={styles.lectureTitle}>נשארתי לבד - על התסכול ותחושת הבדידות ברווקות מאוחרת</h2>
+                <span className={styles.tag}>הומור, זוגיות והעצמה</span>
+                <h2 className={styles.lectureTitle}>על נישואין בהומור – צחוק והומור לשיפור האווירה המשפחתית והקשר הזוגי</h2>
                 <div className={styles.metaInfo}>
                   <div className={styles.metaItem}>
                     <FiMapPin aria-hidden="true" />
-                    <span>מדרשת רבבה - המדרשה להעצמה (מכללת י.נ.ר)</span>
+                    <span>מדרשת רבבה (מכללת י.נ.ר - לימודי ייעוץ וטיפול)</span>
                   </div>
                   <div className={styles.metaItem}>
                     <FiCalendar aria-hidden="true" />
-                    <span>כ"ח אדר א' (תשפ"ב)</span>
+                    <span>מדרשת רבבה להעצמה אישית ומשפחתית</span>
                   </div>
                 </div>
                 <p className={styles.description}>
-                  הרצאה מקצועית מאת שירה סהרוני (עו"ד ומגשרת, מומחית בייעוץ זוגי) שניתנה במסגרת לוח הזמנים של "מדרשת רבבה" – המדרשה להעצמה אישית, זוגית ומשפחתית. ההרצאה עסקה בהתמודדות הרגשית, התסכול, ותחושת הבדידות המלווים את תקופת הרווקות המאוחרת, תוך מתן כלים מקצועיים מהשטח.
+                  הרצאה סוחפת, מעצימה ומלאת הומור שניתנה על ידי שירה סהרוני במדרשת רבבה. ההרצאה עוסקת בכוחם של הצחוק וההומור לפרוק מתחים יומיומיים, לגשר על פערי תקשורת, לחזק את האינטימיות והחברות בין בני הזוג, ולשפר את האווירה הכללית בבית ובמשפחה. (בנוסף ניתנה במדרשה הרצאה מקצועית בנושא התמודדות רגשית עם אתגרי הרווקות המאוחרת).
                 </p>
-                <a href="https://www.facebook.com/ynrcollege/posts/7033553070047976" target="_blank" rel="noopener noreferrer" className={styles.externalLink}>
+                <a 
+                  href="https://www.facebook.com/ynrcollege/posts/pfbid02FKpfmoVzzvvw8jDehMsveAJFygoMJwow73NJML6TRzVJkcszK1CFGVfwM2oWR3RPl" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className={styles.externalLink}
+                >
                   <FiExternalLink aria-hidden="true" />
-                  צפייה בפוסט המלא בפייסבוק
+                  צפייה בפרסום המקורי של מכללת י.נ.ר בפייסבוק
                 </a>
               </div>
             </article>
