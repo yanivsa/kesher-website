@@ -8,6 +8,7 @@ import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
 import ShareButtons from '../../components/ShareButtons/ShareButtons';
+import SignatureMark from '../../components/Signature/SignatureMark';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
@@ -124,6 +125,7 @@ const BlogPost: React.FC = () => {
               poster={post.image || undefined}
             />
           )}
+          <SignatureMark tone="article" label="שלכם," className={styles.articleSignature} />
           <ShareButtons
             title={post.title}
             url={shareUrl}

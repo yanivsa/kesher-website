@@ -98,6 +98,11 @@
   flex: 0 0 auto;
 }
 
+.signature {
+  width: min(100%, 320px);
+  margin: 0 0 var(--spacing-md) auto;
+}
+
 .cta {
   display: inline-block;
   background: var(--color-accent);

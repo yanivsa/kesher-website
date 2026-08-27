@@ -4,6 +4,16 @@
   padding-top: var(--spacing-lg);
 }
 
+.signatureRow {
+  display: flex;
+  justify-content: center;
+  padding-bottom: var(--spacing-md);
+}
+
+.signature {
+  width: min(100%, 360px);
+}
+
 .container {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -67,7 +77,17 @@
   .footer {
     padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
   }
-  .container {
+  .signatureRow {
+  display: flex;
+  justify-content: center;
+  padding-bottom: var(--spacing-md);
+}
+
+.signature {
+  width: min(100%, 360px);
+}
+
+.container {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--spacing-md);
   }

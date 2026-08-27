@@ -1,0 +1,69 @@
+.signature {
+  --signature-color: var(--color-primary-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  max-width: 100%;
+}
+
+.about {
+  --signature-color: var(--color-primary-dark);
+}
+
+.article {
+  --signature-color: var(--color-text);
+}
+
+.footer {
+  --signature-color: var(--color-primary-light);
+  align-items: center;
+}
+
+.label {
+  color: var(--signature-color);
+  font-size: 1rem;
+  line-height: 1.2;
+  margin-inline-start: 0.25rem;
+}
+
+.mark {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1196 / 385;
+  background: var(--signature-color);
+  -webkit-mask: url('/images/signature/signature-mask.svg') center / contain no-repeat;
+  mask: url('/images/signature/signature-mask.svg') center / contain no-repeat;
+}
+
+.animated .mark {
+  clip-path: inset(0 0 0 100%);
+  opacity: 0;
+}
+
+.animated.visible .mark {
+  animation: signatureReveal 1.65s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+@keyframes signatureReveal {
+  0% {
+    clip-path: inset(0 0 0 100%);
+    opacity: 0.25;
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    clip-path: inset(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated .mark,
+  .animated.visible .mark {
+    animation: none;
+    clip-path: none;
+    opacity: 1;
+  }
+}

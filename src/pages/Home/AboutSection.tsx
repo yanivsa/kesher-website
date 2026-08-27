@@ -1,6 +1,7 @@
 import React from 'react';
 import { FiAward, FiCompass, FiBookOpen } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import SignatureMark from '../../components/Signature/SignatureMark';
 import styles from './AboutSection.module.css';
 
 const AboutSection: React.FC = () => {
@@ -47,6 +48,7 @@ const AboutSection: React.FC = () => {
               <span>ליווי משפחות במעברים חינוכיים, בעלייה ובחזרה לישראל</span>
             </div>
           </div>
+          <SignatureMark tone="about" animated className={styles.signature} />
           <Link to="/about" className={styles.cta}>עוד עליי ועל אופן העבודה</Link>
         </div>
       </div>

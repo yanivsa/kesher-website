@@ -99,6 +99,11 @@
   line-height: 1.8;
 }
 
+.articleSignature {
+  width: min(82%, 300px);
+  margin: var(--spacing-lg) 0 var(--spacing-md) auto;
+}
+
 .disclaimer {
   margin: 2rem 0;
   padding: 1rem;

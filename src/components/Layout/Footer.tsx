@@ -1,11 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import SignatureMark from '../Signature/SignatureMark';
 import styles from './Footer.module.css';
 
 const Footer: React.FC = () => {
   return (
     <footer className={styles.footer}>
+      <div className={`container ${styles.signatureRow}`}>
+        <SignatureMark tone="footer" animated className={styles.signature} />
+      </div>
       <div className={`container ${styles.container}`}>
         <div className={styles.info}>
           <div className={styles.logo}>
