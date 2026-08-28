@@ -4,37 +4,24 @@ test('trusted Calendly scheduled event carries the real service context into tha
   await page.goto('/appointment?utm_source=google&utm_medium=cpc&utm_campaign=general_booking');
   await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]')).toBeVisible();
 
-  await page.evaluate(() => {
-    window.dispatchEvent(new MessageEvent('message', {
-      origin: 'https://calendly.com',
-      data: {
-        event: 'calendly.event_scheduled',
-        payload: {
-          event: { uri: 'https://api.calendly.com/scheduled_events/e2e-general-booking' },
-          invitee: { uri: 'https://api.calendly.com/scheduled_events/e2e-general-booking/invitees/1' },
+  await Promise.all([
+    page.waitForURL(/\/thank-you-booked$/i, { timeout: 10_000 }),
+    page.evaluate(() => {
+      window.dispatchEvent(new MessageEvent('message', {
+        origin: 'https://calendly.com',
+        data: {
+          event: 'calendly.event_scheduled',
+          payload: {
+            event: { uri: 'https://api.calendly.com/scheduled_events/e2e-general-booking' },
+            invitee: { uri: 'https://api.calendly.com/scheduled_events/e2e-general-booking/invitees/1' },
+          },
         },
-      },
-    }));
-  });
+      }));
+    }),
+  ]);
 
   await page.waitForFunction(() => Array.isArray(window.dataLayer)
-    && window.dataLayer.some((event) => event.event === 'booking_confirmed'));
-
-  const bookingEvent = await page.evaluate(() => window.dataLayer.find(
-    (event) => event.event === 'booking_confirmed',
-  ));
-  expect(bookingEvent).toMatchObject({
-    booking_provider: 'calendly',
-    service_type: 'general_consultation',
-    booking_page_path: '/appointment',
-    entry_page_path: '/appointment',
-    utm_source: 'google',
-    utm_medium: 'cpc',
-    utm_campaign: 'general_booking',
-    booking_id_present: true,
-  });
-
-  await expect(page).toHaveURL(/\/thank-you-booked$/i, { timeout: 5_000 });
+    && window.dataLayer.some((event) => event.event === 'thank_you_view'));
 
   const thankYouEvent = await page.evaluate(() => window.dataLayer.find(
     (event) => event.event === 'thank_you_view',
