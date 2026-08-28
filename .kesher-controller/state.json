@@ -56,8 +56,8 @@
     "last_failed_run_id": 33157413845,
     "pr_number": 579,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/579",
-    "merge_dispatch_at": "2026-08-28T15:49:39.956894+00:00",
-    "merge_dispatch_count": 1,
+    "merge_dispatch_at": "2026-08-28T17:04:06.503071+00:00",
+    "merge_dispatch_count": 2,
     "merge_image_attempt_count": 3
   },
   "video": {
@@ -76,12 +76,6 @@
   },
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-25T11:36:19.222282+00:00",
-      "from": "video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-08-25T11:36:37.123211+00:00",
       "from": "article_live",
@@ -816,9 +810,18 @@
       "details": {
         "pr_number": 579
       }
+    },
+    {
+      "at": "2026-08-28T17:04:05.884279+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "image best-effort exhausted; article publication remains allowed",
+      "details": {
+        "pr_number": 579
+      }
     }
   ],
-  "updated_at": "2026-08-28T15:53:44.728171+00:00",
+  "updated_at": "2026-08-28T17:04:05.884299+00:00",
   "image": {
     "attempt_count": 3,
     "status": "deferred",
