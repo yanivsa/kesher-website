@@ -113,6 +113,52 @@
   font-size: 0.95rem;
 }
 
+.articleContactCta {
+  margin: 0 0 2rem;
+  text-align: center;
+}
+
+.articleContactCta h3 {
+  font-family: inherit;
+  font-size: 1.2rem;
+  margin: 0 0 var(--spacing-sm);
+  color: var(--color-primary-dark);
+}
+
+.contactActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.appointmentBtn,
+.whatsappBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  color: white !important;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  box-shadow: var(--shadow-sm);
+}
+
+.appointmentBtn {
+  background: var(--color-primary-dark);
+}
+
+.whatsappBtn {
+  background: var(--color-whatsapp);
+}
+
+.appointmentBtn:hover,
+.whatsappBtn:hover {
+  filter: brightness(0.95);
+  transform: translateY(-2px);
+}
+
 .content h3 {
   margin-top: var(--spacing-md);
   color: var(--color-primary-dark);

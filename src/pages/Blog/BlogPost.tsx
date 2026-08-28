@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { FaWhatsapp } from 'react-icons/fa';
+import { FiCalendar } from 'react-icons/fi';
 import DOMPurify from 'dompurify';
 import posts from '../../data/publishedPosts';
 import articleVideos from '../../data/articleVideos.json';
@@ -135,6 +137,19 @@ const BlogPost: React.FC = () => {
           />
           <GooglePreferredSource />
           <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
+          <div className={styles.articleContactCta}>
+            <h3>רוצה לדבר על מה שקורה אצלך?</h3>
+            <div className={styles.contactActions}>
+              <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
+                <FiCalendar aria-hidden="true" />
+                בחירת מועד לפגישה
+              </Link>
+              <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
+                <FaWhatsapp aria-hidden="true" />
+                שליחת הודעה בוואטסאפ
+              </a>
+            </div>
+          </div>
           <LeadMagnet />
         </div>
         <aside className={styles.sidebar}>
