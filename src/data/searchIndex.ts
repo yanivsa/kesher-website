@@ -20,6 +20,14 @@ const servicePages: SearchItem[] = [
     category: 'שירותים'
   },
   {
+    id: 'service-couples-ashdod',
+    type: 'service',
+    title: 'ייעוץ זוגי באשדוד',
+    body: 'כשהשיחות חוזרות שוב ושוב לאותו ריב — אפשר ללמוד לדבר אחרת. ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. הבנת דפוסי שיחה שחוזרים, תרגול תקשורת וכלים מעשיים להתמודדות עם מחלוקות.',
+    url: '/couples-counseling-ashdod',
+    category: 'שירותים'
+  },
+  {
     id: 'service-parenting',
     type: 'service',
     title: 'הדרכת הורים',
