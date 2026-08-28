@@ -393,7 +393,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       <section className={styles.sectionAlt} aria-labelledby="process-title">
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 id="process-title">דרך מסודרת להבין מה קורה ולנסות משהו אחרת</h2>
+            <h2 id="process-title">דרך מסודרת להבין מה קורה ולנסות דרך אחרת</h2>
             <p>
               הייעוץ מתמקד במה שקורה ביניכם עכשיו ובצעדים שאפשר לבחון בחיים עצמם.
             </p>
