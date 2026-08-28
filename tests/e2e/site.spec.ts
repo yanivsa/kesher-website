@@ -221,7 +221,10 @@ test('relocation and premarital service pages expose their practical article hub
 test('couples counseling Ashdod landing page uses the trackable Calendly embed and captures campaign context', async ({ page }) => {
   await page.goto('/couples-counseling-ashdod?gclid=test_gclid&utm_source=google&utm_campaign=ashdod_search');
 
-  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי באשדוד – דרך מעשית לדבר אחרת', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', {
+    name: 'כשהשיחות חוזרות שוב ושוב לאותו ריב — אפשר ללמוד לדבר אחרת',
+    level: 1,
+  })).toBeVisible();
   await expect(page.getByText('500 ₪').first()).toBeVisible();
   await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ זוגי באשדוד עם שירה סהרוני"]'))
     .toBeVisible();
@@ -293,13 +296,22 @@ test('privacy choice persists and updates the measurement state', async ({ page 
 
 test('copy variants A, B, and C render their respective H1 titles', async ({ page }) => {
   await page.goto('/couples-counseling-ashdod');
-  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי באשדוד – דרך מעשית לדבר אחרת', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', {
+    name: 'כשהשיחות חוזרות שוב ושוב לאותו ריב — אפשר ללמוד לדבר אחרת',
+    level: 1,
+  })).toBeVisible();
 
   await page.goto('/couples-counseling-ashdod?variant=B');
-  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי באשדוד בתהליך ממוקד ומכבד', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', {
+    name: 'לעצור את מעגל הריבים, להבין מה קורה ביניכם ולבנות דרך אחרת לדבר',
+    level: 1,
+  })).toBeVisible();
 
   await page.goto('/couples-counseling-ashdod?variant=C');
-  await expect(page.getByRole('heading', { name: 'כשהשיחות חוזרות לאותו דפוס – ייעוץ זוגי באשדוד', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', {
+    name: 'גם כשכבר קשה לדבר בלי להיפגע — אפשר ליצור שיחה אחרת ביניכם',
+    level: 1,
+  })).toBeVisible();
 });
 
 test('thank-you pages render with noindex and standalone layout', async ({ page }) => {
@@ -435,4 +447,3 @@ test('couples before-separation landing page (/services/couples/before-separatio
   // Verify non-legal disclaimer exists
   await expect(page.getByText('אינו מהווה ייעוץ משפטי').first()).toBeVisible();
 });
-
