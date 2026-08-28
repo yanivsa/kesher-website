@@ -26,24 +26,32 @@ interface FAQItem {
 
 const FAQS: FAQItem[] = [
   {
-    q: 'האם התהליך מיועד רק לזוגות שרוצים להישאר יחד בכל מחיר?',
-    a: 'לא. המטרה היא בירור זוגי רגוע וכנה. אנחנו בודקים האם קיימת אפשרות ורצון הדדי לשיקום הקשר, ואם מחליטים להיפרד – איך לעשות זאת בהסכמה, בכבוד ובמינימום פגיעה בילדים.',
+    q: 'האם חייבים ששני בני הזוג יגיעו?',
+    a: 'מומלץ להגיע יחד לפגישת הבירור כדי לקבל תמונה מלאה ולשמוע את שני הצדדים. במידת הצורך ניתן לפנות מראש ב-WhatsApp להתייעצות ראשונית.',
+  },
+  {
+    q: 'מה אם אחד מבני הזוג לא רוצה טיפול?',
+    a: 'זה מובן ונפוץ בצומת החלטה. מול חושש או מיואש, אפשר להתחיל בשיחת התייעצות קצרה ב-WhatsApp כדי לבחון איך להציע את המפגש בצורה רגועה וללא לחץ.',
+  },
+  {
+    q: 'האם זה מתאים לפני החלטה על פרידה?',
+    a: 'כן, בדיוק לשם כך מיועד המפגש: מרחב בירור זוגי רגוע להבנת המצב, בחינת מרחב השינוי והאפשרויות להמשך לפני שנוקטים צעדים חד-צדדיים.',
+  },
+  {
+    q: 'האם הפגישה דיסקרטית?',
+    a: 'בהחלט. כל הפגישות מתקיימות במרחב פרטי, מכבד ודיסקרטי לחלוטין.',
+  },
+  {
+    q: 'האם אפשר אונליין?',
+    a: 'כן. ניתן לקיים את פגישת הבירור בקליניקה באשדוד או אונליין בזום.',
+  },
+  {
+    q: 'כמה זמן נמשכת פגישה?',
+    a: 'פגישת בירור וייעוץ אורכת 50 דקות מלאות. המחיר הוא 500 ₪ לפגישה, ללא התחייבות להמשך תהליך.',
   },
   {
     q: 'מה ההבדל בין ייעוץ זוגי בצומת החלטה לבין ייעוץ משפטי?',
-    a: 'הייעוץ אינו מהווה ייעוץ משפטי ואינו תחליף לייצוג משפטי. מטרתו היא בירור רגשי, זוגי ותקשורתי, וכן בניית הסכמות ענייניות במידה ופונים לנתיב גישור.',
-  },
-  {
-    q: 'מה קורה אם צד אחד רוצה לנסות והצד השני כבר מיואש?',
-    a: 'זהו מצב נפוץ מאוד בצמתים כאלה. הפגישה מאפשרת לשים את הפערים על השולחן בצורה מכבדת ולבחון ללא לחץ האם יש מקום להזדמנות אמיתית או להבנה משותפת.',
-  },
-  {
-    q: 'כמה זמן נמשכת פגישה ומה עלותה?',
-    a: 'פגישת ייעוץ ובירור אורכת 50 דקות מלאות. המחיר הוא 500 ₪ כולל מע״מ לפגישה, ללא כל התחייבות לסדרת מפגשים.',
-  },
-  {
-    q: 'איפה מתקיימות הפגישות?',
-    a: 'בקליניקה נעימה ודיסקרטית באשדוד, או בפגישת זום מאובטחת אונליין לפי העדפתכם.',
+    a: 'הייעוץ מיועד לבירור זוגי, רגשי ותקשורתי ואינו מהווה ייעוץ משפטי. במידת הצורך בייצוג משפטי מומלץ לפנות לעו״ד מייצג.',
   },
 ];
 
@@ -195,43 +203,47 @@ const CouplesBeforeSeparationPage: React.FC = () => {
           </p>
 
           <div className={styles.heroCtaGroup}>
-            <button
-              type="button"
-              className={styles.primaryCta}
-              onClick={() => scrollToBooking('hero_primary')}
-            >
-              <FiCheckCircle aria-hidden="true" />
-              <span>תיאום פגישת בירור – 500 ₪</span>
-            </button>
-
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.secondaryCta}
+              className={styles.primaryCta}
               onClick={() => {
-                trackSecondaryCtaClick('WhatsApp פתיח', 'hero');
+                trackCtaClick('כתבו לי ב-WhatsApp', 'hero_primary');
                 trackWhatsappClick();
               }}
-              aria-label="שיחת התייעצות דיסקרטית ב-WhatsApp עם שירה סהרוני"
+              aria-label="כתבו לי ב-WhatsApp"
             >
               <FaWhatsapp aria-hidden="true" />
-              <span>התייעצות דיסקרטית ב-WhatsApp</span>
+              <span>כתבו לי ב-WhatsApp</span>
             </a>
+
+            <button
+              type="button"
+              className={styles.secondaryCta}
+              onClick={() => scrollToBooking('hero_secondary')}
+            >
+              <FiCheckCircle aria-hidden="true" />
+              <span>קביעת פגישת ייעוץ – 500 ₪</span>
+            </button>
           </div>
 
           <div className={styles.heroTrustRow}>
             <div className={styles.trustItem}>
               <FiMapPin className={styles.trustIcon} aria-hidden="true" />
-              <span>קליניקה באשדוד / אונליין בזום</span>
+              <span>אשדוד</span>
             </div>
             <div className={styles.trustItem}>
               <FiClock className={styles.trustIcon} aria-hidden="true" />
-              <span>50 דקות לפגישה</span>
+              <span>אונליין בזום</span>
+            </div>
+            <div className={styles.trustItem}>
+              <FiClock className={styles.trustIcon} aria-hidden="true" />
+              <span>פגישה 50 דקות</span>
             </div>
             <div className={styles.trustItem}>
               <FiShield className={styles.trustIcon} aria-hidden="true" />
-              <span>דיסקרטיות מלאה וללא שיפוטיות</span>
+              <span>דיסקרטיות מלאה</span>
             </div>
           </div>
         </div>

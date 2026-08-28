@@ -10,6 +10,16 @@ describe('preloadRoute', () => {
     const couplesPromise = preloadRoute('/services/couples');
     expect(couplesPromise).not.toBe(aboutPromise);
 
+    const couplesAshdodPromise1 = preloadRoute('/couples-counseling-ashdod');
+    const couplesAshdodPromise2 = preloadRoute('/services/couples/ashdod');
+    expect(couplesAshdodPromise1).toBe(couplesAshdodPromise2);
+
+    const couplesCrisisPromise = preloadRoute('/services/couples/crisis');
+    expect(couplesCrisisPromise).not.toBe(couplesAshdodPromise1);
+
+    const couplesBeforeSeparationPromise = preloadRoute('/services/couples/before-separation');
+    expect(couplesBeforeSeparationPromise).not.toBe(couplesCrisisPromise);
+
     const notFoundPromise1 = preloadRoute('/this-does-not-exist');
     const notFoundPromise2 = preloadRoute('/also-missing');
 

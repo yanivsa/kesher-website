@@ -26,24 +26,28 @@ interface FAQItem {
 
 const FAQS: FAQItem[] = [
   {
-    q: 'האם חייבים להגיע ביחד לפגישה הראשונה?',
-    a: 'מומלץ מאוד להגיע כזוג כדי להתחיל מתמונת מצב משותפת. עם זאת, אם אחד מבני הזוג מתלבט או חושש, ניתן לתאם פגישת היכרות והתייעצות ראשונית כדי להבין איך לרתום את שניכם לתהליך.',
+    q: 'האם חייבים ששני בני הזוג יגיעו?',
+    a: 'מומלץ מאוד להגיע כזוג כדי להתחיל מתמונת מצב משותפת. עם זאת, אם בן/בת הזוג מהססים, אפשר להתחיל בפנייה או בשיחת התייעצות ראשונית ב-WhatsApp כדי להבין איך לרתום את שניכם לתהליך.',
   },
   {
-    q: 'מה קורה אם אנחנו כבר לא מצליחים לדבר בלי לצעוק?',
-    a: 'זהו בדיוק התפקיד של חדר הייעוץ: לספק מרחב מוגן ומובנה, עם כללים ברורים שמונעים הסלמה ומאפשרים לכל אחד להישמע בלי להיכנס מיד למגננה.',
+    q: 'מה אם אחד מבני הזוג לא רוצה טיפול?',
+    a: 'זה מובן ונפוץ מאוד במצבי משבר. אפשר לפנות לשירה ב-WhatsApp להתייעצות קצרה ללא מחויבות, ולקבל כלים איך להציע את המפגש בצורה מזמינה ולא מאיימת.',
   },
   {
-    q: 'כמה זמן נמשכת פגישה ומה המחיר?',
-    a: 'פגישת ייעוץ זוגי אורכת 50 דקות מלאות וממוקדות. המחיר הוא 500 ₪ כולל מע״מ לפגישה, ללא התחייבות לסדרת טיפולים מראש.',
+    q: 'האם זה מתאים לפני החלטה על פרידה?',
+    a: 'כן. ייעוץ זוגי במצב משבר מעניק מרחב בטוח לעצור את ההסלמה, לברר את דפוסי התקשורת ולבחון את האפשרויות לשיקום הקשר לפני קבלת החלטות כבדות.',
   },
   {
-    q: 'איפה מתקיימות הפגישות והאם יש אפשרות לאונליין?',
-    a: 'הקליניקה ממוקמת באשדוד עם גישה נוחה וחניה. כמו כן, ניתן לקיים את כל הפגישות או חלקן בזום (אונליין) מכל מקום בארץ ובעולם.',
+    q: 'האם הפגישה דיסקרטית?',
+    a: 'בהחלט. כל הפגישות מתקיימות במרחב פרטי, מכבד ודיסקרטי לחלוטין, בהתאם לכללי האתיקה המקצועית.',
   },
   {
-    q: 'מה הרקע המקצועי של שירה סהרוני?',
-    a: 'שירה היא יועצת זוגית, מנחת הורים ומגשרת מוסמכת, עורכת דין בהכשרתה. הגישה משלבת הקשבה עמוקה, ראייה מערכתית וכלים מעשיים ותקשורתיים המותאמים למציאות היומיומית.',
+    q: 'האם אפשר אונליין?',
+    a: 'כן. לצד הפגישות בקליניקה באשדוד, קיימת אפשרות מלאה לקיים פגישות אונליין בזום מכל מקום.',
+  },
+  {
+    q: 'כמה זמן נמשכת פגישה?',
+    a: 'פגישת ייעוץ זוגי אורכת 50 דקות מלאות וממוקדות. המחיר הוא 500 ₪ לפגישה, ללא התחייבות מראש לסדרת מפגשים.',
   },
 ];
 
@@ -195,43 +199,47 @@ const CouplesCrisisPage: React.FC = () => {
           </p>
 
           <div className={styles.heroCtaGroup}>
-            <button
-              type="button"
-              className={styles.primaryCta}
-              onClick={() => scrollToBooking('hero_primary')}
-            >
-              <FiCheckCircle aria-hidden="true" />
-              <span>תיאום פגישת ייעוץ – 500 ₪</span>
-            </button>
-
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.secondaryCta}
+              className={styles.primaryCta}
               onClick={() => {
-                trackSecondaryCtaClick('WhatsApp פתיח', 'hero');
+                trackCtaClick('כתבו לי ב-WhatsApp', 'hero_primary');
                 trackWhatsappClick();
               }}
-              aria-label="התייעצות דיסקרטית ב-WhatsApp עם שירה סהרוני"
+              aria-label="כתבו לי ב-WhatsApp"
             >
               <FaWhatsapp aria-hidden="true" />
-              <span>התייעצות מהירה ב-WhatsApp</span>
+              <span>כתבו לי ב-WhatsApp</span>
             </a>
+
+            <button
+              type="button"
+              className={styles.secondaryCta}
+              onClick={() => scrollToBooking('hero_secondary')}
+            >
+              <FiCheckCircle aria-hidden="true" />
+              <span>קביעת פגישת ייעוץ – 500 ₪</span>
+            </button>
           </div>
 
           <div className={styles.heroTrustRow}>
             <div className={styles.trustItem}>
               <FiMapPin className={styles.trustIcon} aria-hidden="true" />
-              <span>קליניקה באשדוד / אונליין בזום</span>
+              <span>אשדוד</span>
             </div>
             <div className={styles.trustItem}>
               <FiClock className={styles.trustIcon} aria-hidden="true" />
-              <span>50 דקות לפגישה</span>
+              <span>אונליין בזום</span>
+            </div>
+            <div className={styles.trustItem}>
+              <FiClock className={styles.trustIcon} aria-hidden="true" />
+              <span>פגישה 50 דקות</span>
             </div>
             <div className={styles.trustItem}>
               <FiShield className={styles.trustIcon} aria-hidden="true" />
-              <span>דיסקרטיות מלאה וללא התחייבות</span>
+              <span>דיסקרטיות מלאה</span>
             </div>
           </div>
         </div>

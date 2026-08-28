@@ -37,32 +37,32 @@ const timelineSteps = [
 
 const faqItems = [
   {
-    question: 'מה קורה בפגישה הראשונה?',
-    answer: 'הפגישה הראשונה מיועדת להיכרות, להבנת הנושאים שמעסיקים את בני הזוג ולמיפוי דפוסי התקשורת והמטרות להמשך.',
-  },
-  {
-    question: 'האם צריך להגיע יחד?',
+    question: 'האם חייבים ששני בני הזוג יגיעו?',
     answer: 'מומלץ להגיע יחד לפגישה הזוגית, שכן התהליך מתמקד בתקשורת ובדפוסים שבין בני הזוג. במידת הצורך ניתן להתייעץ מראש לפני הפגישה.',
   },
   {
-    question: 'כמה פגישות נדרשות?',
-    answer: 'אין מספר קבוע שמתאים לכל זוג. לאחר הפגישה הראשונה ניתן להעריך יחד את הצרכים ואת דרך ההמשך.',
+    question: 'מה אם אחד מבני הזוג לא רוצה טיפול?',
+    answer: 'זה מובן ונפוץ. במקרים רבים אפשר להתחיל בפנייה או בשיחת התייעצות ראשונית ב-WhatsApp כדי להבין איך לרתום את בן/בת הזוג בצורה רגועה וללא לחץ.',
   },
   {
-    question: 'האם אפשר להיפגש אונליין?',
-    answer: 'כן. לצד הפגישות בקליניקה באשדוד, קיימת אפשרות לקיים פגישה אונליין.',
+    question: 'האם זה מתאים לפני החלטה על פרידה?',
+    answer: 'כן. ייעוץ זוגי מעניק מרחב בירור רגוע וממוקד לבחינת דפוסי התקשורת, מרחב השינוי והאפשרויות להמשך לפני קבלת החלטות כבדות.',
   },
   {
-    question: 'מה מחיר הפגישה?',
-    answer: 'מחיר פגישת ייעוץ הוא 500 ₪.',
+    question: 'האם הפגישה דיסקרטית?',
+    answer: 'בהחלט. הפגישות מתקיימות במרחב פרטי ומכבד, בהתאם לכללי האתיקה המקצועית והדיסקרטיות המלאה.',
   },
   {
-    question: 'כיצד משנים או מבטלים פגישה?',
-    answer: 'ניתן לשנות או לבטל את הפגישה בקלות באמצעות הקישור המופיע באישור ההזמנה מ־Calendly או בפנייה ישרה.',
+    question: 'האם אפשר אונליין?',
+    answer: 'כן. לצד הפגישות בקליניקה באשדוד, קיימת אפשרות לקיים פגישה אונליין בזום מכל מקום.',
   },
   {
-    question: 'האם הפגישות דיסקרטיות?',
-    answer: 'הפגישות מתקיימות במרחב פרטי ומכבד, בהתאם לכללי האתיקה המקצועית. ניתן לעיין במדיניות הפרטיות של האתר.',
+    question: 'כמה זמן נמשכת פגישה?',
+    answer: 'פגישת ייעוץ זוגי אורכת 50 דקות מלאות וממוקדות. עלות הפגישה היא 500 ₪.',
+  },
+  {
+    question: 'מה קורה בפגישה הראשונה?',
+    answer: 'הפגישה הראשונה מיועדת להיכרות, מיפוי הנושאים והורדת הלהבות, זיהוי הטריגר האוטומטי ויציאה עם כלי מעשי ראשון לבית.',
   },
 ];
 
@@ -134,12 +134,12 @@ type VariantId = 'A' | 'B' | 'C';
 
 const copyVariants: Record<VariantId, { h1: string; subtitle: string }> = {
   A: {
-    h1: 'ייעוץ זוגי באשדוד – דרך מעשית לדבר אחרת',
-    subtitle: 'תהליך ממוקד ומכבד לזיהוי דפוסי תקשורת, ניהול מחלוקות ובניית שיחה זוגית טובה יותר. פגישות בקליניקה באשדוד או אונליין.',
+    h1: 'ייעוץ זוגי באשדוד לזוגות שכבר קשה להם לדבר',
+    subtitle: 'תהליך ממוקד ומכבד לטיפול זוגי באשדוד או אונליין. לזיהוי דפוסי תקשורת, ניהול מחלוקות ובניית שיחה זוגית רגועה וטובה יותר.',
   },
   B: {
-    h1: 'ייעוץ זוגי באשדוד בתהליך ממוקד ומכבד',
-    subtitle: 'מרחב מסודר ומקצועי לזיהוי נקודות המחלוקת, רכישת כלים מעשיים ובניית שיחה רגועה וברורה יותר. פגישות באשדוד או אונליין.',
+    h1: 'טיפול זוגי באשדוד בתהליך ממוקד ומכבד',
+    subtitle: 'מרחב מסודר ומקצועי עם יועצת ומטפלת זוגית באשדוד. רכישת כלים מעשיים ובניית שיחה רגועה וברורה יותר. פגישות באשדוד או אונליין.',
   },
   C: {
     h1: 'כשהשיחות חוזרות לאותו דפוס – ייעוץ זוגי באשדוד',
@@ -253,39 +253,43 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             </p>
 
             <div className={styles.heroCtas}>
-              <button
-                type="button"
-                className={styles.btnPrimary}
-                onClick={() => scrollToBooking('hero_primary')}
-              >
-                קביעת פגישת ייעוץ – 500 ₪
-              </button>
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={styles.btnSecondary}
+                className={styles.btnPrimary}
                 onClick={() => {
-                  trackSecondaryCtaClick('יש לכם שאלה לפני שקובעים?', 'hero_secondary');
+                  trackCtaClick('כתבו לי ב-WhatsApp', 'hero_primary');
                   trackWhatsappClick();
                 }}
               >
                 <FaWhatsapp aria-hidden="true" />
-                יש לכם שאלה לפני שקובעים?
+                כתבו לי ב-WhatsApp
               </a>
+              <button
+                type="button"
+                className={styles.btnSecondary}
+                onClick={() => scrollToBooking('hero_secondary')}
+              >
+                קביעת פגישת ייעוץ – 500 ₪
+              </button>
             </div>
             <div className={styles.trustPoints} aria-label="נקודות אמון">
               <div className={styles.trustPoint}>
                 <FiMapPin className={styles.trustIcon} aria-hidden="true" />
-                <span>קליניקה באשדוד</span>
+                <span>אשדוד</span>
               </div>
               <div className={styles.trustPoint}>
                 <FiClock className={styles.trustIcon} aria-hidden="true" />
-                <span>אפשרות לפגישה אונליין</span>
+                <span>אונליין בזום</span>
+              </div>
+              <div className={styles.trustPoint}>
+                <FiClock className={styles.trustIcon} aria-hidden="true" />
+                <span>פגישה 50 דקות</span>
               </div>
               <div className={styles.trustPoint}>
                 <FiLock className={styles.trustIcon} aria-hidden="true" />
-                <span>מרחב פרטי ומכבד</span>
+                <span>דיסקרטיות מלאה</span>
               </div>
             </div>
           </div>
@@ -642,13 +646,27 @@ const CouplesCounselingAshdodPage: React.FC = () => {
 
       {!isBookingInView && (
         <div className={styles.mobileStickyBar}>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.mobileStickyWhatsappBtn}
+            onClick={() => {
+              trackSecondaryCtaClick('WhatsApp סרגל מובייל', 'mobile_sticky');
+              trackWhatsappClick();
+            }}
+            aria-label="הודעה ב-WhatsApp לשירה סהרוני"
+          >
+            <FaWhatsapp aria-hidden="true" />
+            <span>WhatsApp</span>
+          </a>
           <button
             type="button"
             className={styles.mobileStickyBtn}
             onClick={() => scrollToBooking('mobile_sticky')}
           >
             <FiCheckCircle aria-hidden="true" />
-            קביעת פגישה – 500 ₪
+            <span>קביעת פגישה – 500 ₪</span>
           </button>
         </div>
       )}
