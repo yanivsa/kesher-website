@@ -20,5 +20,12 @@ describe('searchIndex structure', () => {
     expect(couplesService).toBeDefined();
     expect(couplesService?.title).toContain('ייעוץ זוגי');
     expect(couplesService?.category).toBe('שירותים');
+
+    const ashdodService = searchIndex.find(item => item.id === 'service-couples-ashdod');
+    expect(ashdodService).toBeDefined();
+    expect(ashdodService?.url).toBe('/couples-counseling-ashdod');
+    expect(ashdodService?.type).toBe('service');
+    expect(ashdodService?.title).toContain('ייעוץ זוגי באשדוד');
+    expect(ashdodService?.category).toBe('שירותים');
   });
 });
