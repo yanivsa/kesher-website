@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-28",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -805,31 +805,32 @@
         "attempt": 3,
         "pr_number": 579
       }
+    },
+    {
+      "at": "2026-08-28T15:21:13.938686+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "article PR has trusted image and remains authoritative"
     }
   ],
-  "updated_at": "2026-08-28T15:17:04.256607+00:00",
+  "updated_at": "2026-08-28T15:21:13.938705+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "running",
-    "last_error": {
-      "stage": "image",
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 33166226564 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-08-28T15:04:30.674702+00:00",
-      "at": "2026-08-28T14:49:30.674728+00:00"
-    },
+    "status": "complete",
+    "last_error": null,
     "next_retry_at": null,
     "run_id": 33184376959,
     "processed_run_id": 33166226564,
-    "provider_id": null,
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 2,
+    "provider_id": "Local",
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 2
     },
     "last_dispatch_at": "2026-08-28T15:17:04.256575+00:00",
     "last_run_conclusion": "success",
-    "last_failed_run_id": 33166226564
+    "last_failed_run_id": 33166226564,
+    "artifact_sha256": "96d628b4b7f2ec98dd4afcbd7dd8d262c7e7c745f8f1713a38a0d5ebcc799106",
+    "source_id": "local://public/images/generated/blog/late-singleness-friends-moving-forward.jpg"
   }
 }
