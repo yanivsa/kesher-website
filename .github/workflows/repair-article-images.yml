@@ -1,0 +1,68 @@
+name: Repair Article Hero Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Repair scope
+        required: true
+        default: all
+        type: choice
+        options:
+          - critical
+          - all
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: repair-article-hero-images
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Repair missing, duplicate, placeholder and invalid hero images
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/repair-article-images.py --scope "${{ inputs.scope }}"
+
+      - name: Open repair pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "No repository changes required."
+            exit 0
+          fi
+
+          branch="automation/repair-article-images-${GITHUB_RUN_ID}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "${branch}"
+          git add src/data/posts.json src/data/postSummaries.json public/images/generated/blog
+          git commit -m "fix: repair article hero images"
+          git push origin "${branch}"
+
+          gh pr create \
+            --base main \
+            --head "${branch}" \
+            --title "fix: repair article hero images" \
+            --body $'Direct repair for #549 and #555.\n\n- replaces missing/broken/duplicate/banned hero images\n- scope: `${{ inputs.scope }}`\n- preserves Gemini -> Unsplash -> Pexels -> unique local fallback\n- regenerates posts summaries\n- repair script performs a deterministic post-repair audit\n\nRefs #549\nRefs #555'
