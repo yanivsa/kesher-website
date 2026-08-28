@@ -62,9 +62,20 @@
         var item = arguments[i];
         if (item && typeof item === 'object' && typeof item.event === 'string' && item.event !== 'gtm.js') {
           var eventName = item.event;
-          var params = Object.assign({}, item);
-          delete params.event;
+          var params = {};
+          for (var key in item) {
+            if (Object.prototype.hasOwnProperty.call(item, key) && key !== 'event' && typeof item[key] !== 'function') {
+              params[key] = item[key];
+            }
+          }
           window.gtag('event', eventName, params);
+          if (typeof item.eventCallback === 'function') {
+            try {
+              setTimeout(item.eventCallback, 0);
+            } catch (_cbErr) {
+              // Safe callback execution
+            }
+          }
         }
       }
       return originalPush.apply(window.dataLayer, arguments);
