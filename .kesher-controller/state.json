@@ -1,9 +1,9 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-28",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": {
       "stage": "article",
@@ -13,7 +13,7 @@
       "retry_at": "2026-08-28T08:20:04.556389+00:00",
       "at": "2026-08-28T08:15:04.556407+00:00"
     },
-    "next_retry_at": "2026-08-28T08:20:04.556389+00:00",
+    "next_retry_at": null,
     "run_id": 33152942720,
     "processed_run_id": 33152942720,
     "provider_id": null,
@@ -23,9 +23,9 @@
       "JULES_TIMEOUT_SESSION_ACTIVE": 1,
       "COMPLETED_WITHOUT_PR": 1
     },
-    "attempts": 2,
+    "attempts": 3,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-28T07:49:59.565881+00:00",
+    "last_dispatch_at": "2026-08-28T08:57:49.830047+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -71,14 +71,7 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "article",
-    "code": "COMPLETED_WITHOUT_PR",
-    "message": "Jules completed without creating a pull request; Jules diagnostic: I've drafted a new article titled \"מי משלם ומי יוזם? איך לצלוח את הציפיות המגדריות בדייטים\" in the \"מציאת זוגיות\" category (which complies with the prompt's condition to pick a subcategory with fewer posts, although \"רווקות מאוחרת\" and others had to be bypassed due to topic similarity errors from the strict `test:content` check). The article successfully passes the word count (700-1100 words), heading count (min 5 H3), and content similarity tests, and `npm run check` has completed successfully on all points, including Playwright E2E and Python automation-gates tests. Temporary files have been cleaned up and only `src/data/posts.json` is modified and staged (the generated files will be staged via `npm run generate` output handling just before finalizing). Are there any specific changes you'd like me to make before procee…",
-    "retryable": true,
-    "retry_at": "2026-08-28T08:20:04.556389+00:00",
-    "at": "2026-08-28T08:15:04.556407+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-25T10:54:16.979316+00:00",
@@ -682,9 +675,18 @@
         "run_id": 33152942720,
         "session_id": "sessions/12720340233365064954"
       }
+    },
+    {
+      "at": "2026-08-28T08:57:49.830053+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 3
+      }
     }
   ],
-  "updated_at": "2026-08-28T08:15:04.556415+00:00",
+  "updated_at": "2026-08-28T08:57:49.830060+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
