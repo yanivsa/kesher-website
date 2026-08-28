@@ -138,10 +138,12 @@ def verify_pixels(post: dict[str, Any], data: bytes, ext: str) -> tuple[bool, st
     return True, description
 
 
-def try_gemini(post: dict[str, Any], attempts: list[str]) -> core.ImageCandidate | None:
+def try_gemini(post: dict[str, Any], attempts: list[str], used_shas: set[str] | None = None) -> core.ImageCandidate | None:
     attempts.append("gemini")
     if not google_key():
         return None
+    if used_shas is None:
+        used_shas = core.get_used_hero_shas(exclude_id=post.get("id"))
     try:
         payload = google_json(
             f"https://generativelanguage.googleapis.com/v1/models/{GEMINI_MODEL}:generateContent",
@@ -157,6 +159,10 @@ def try_gemini(post: dict[str, Any], attempts: list[str]) -> core.ImageCandidate
         if not data:
             raise RuntimeError("Gemini returned no inline image")
         _w, _h, ext = core.validate_candidate(data)
+        digest = hashlib.sha256(data).hexdigest()
+        if digest in used_shas:
+            print(f"IMAGE_PROVIDER_REJECTED provider=gemini reason=duplicate_sha sha={digest[:8]}", file=sys.stderr)
+            return None
         matched, description = verify_pixels(post, data, ext)
         if not matched:
             print("IMAGE_PROVIDER_REJECTED provider=gemini reason=pixel_mismatch", file=sys.stderr)
@@ -171,11 +177,13 @@ def try_gemini(post: dict[str, Any], attempts: list[str]) -> core.ImageCandidate
         return None
 
 
-def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str) -> core.ImageCandidate | None:
+def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str, used_shas: set[str] | None = None) -> core.ImageCandidate | None:
     # Stock search metadata is not visual evidence. Without a pixel verifier we
     # skip stock entirely and use the repository-curated fallback.
     if not google_key():
         return None
+    if used_shas is None:
+        used_shas = core.get_used_hero_shas(exclude_id=post.get("id"))
     query = urllib.parse.quote(core.stock_query(post))
     try:
         if provider == "unsplash":
@@ -184,7 +192,7 @@ def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str) -
                 return None
             result = core.request_json(
                 "GET",
-                f"https://api.unsplash.com/search/photos?query={query}&orientation=landscape&per_page=5",
+                f"https://api.unsplash.com/search/photos?query={query}&orientation=landscape&per_page=10",
                 headers={"Authorization": f"Client-ID {key}"},
             )
             rows = [
@@ -198,7 +206,7 @@ def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str) -
                 return None
             result = core.request_json(
                 "GET",
-                f"https://api.pexels.com/v1/search?query={query}&orientation=landscape&per_page=5",
+                f"https://api.pexels.com/v1/search?query={query}&orientation=landscape&per_page=10",
                 headers={"Authorization": key},
             )
             rows = [
@@ -211,6 +219,10 @@ def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str) -
                 continue
             data = core.download(str(url))
             _w, _h, ext = core.validate_candidate(data)
+            digest = hashlib.sha256(data).hexdigest()
+            if digest in used_shas:
+                print(f"IMAGE_PROVIDER_REJECTED provider={provider} reason=duplicate_sha sha={digest[:8]}", file=sys.stderr)
+                continue
             matched, description = verify_pixels(post, data, ext)
             if matched:
                 return core.ImageCandidate(label, data, ext, str(source), description, attempts.copy())
@@ -219,34 +231,50 @@ def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str) -
     return None
 
 
-def try_unsplash(post: dict[str, Any], attempts: list[str]) -> core.ImageCandidate | None:
+def try_unsplash(post: dict[str, Any], attempts: list[str], used_shas: set[str] | None = None) -> core.ImageCandidate | None:
     attempts.append("unsplash")
-    return _stock_candidate(post, attempts, "unsplash")
+    return _stock_candidate(post, attempts, "unsplash", used_shas=used_shas)
 
 
-def try_pexels(post: dict[str, Any], attempts: list[str]) -> core.ImageCandidate | None:
+def try_pexels(post: dict[str, Any], attempts: list[str], used_shas: set[str] | None = None) -> core.ImageCandidate | None:
     attempts.append("pexels")
-    return _stock_candidate(post, attempts, "pexels")
+    return _stock_candidate(post, attempts, "pexels", used_shas=used_shas)
 
 
-def local_fallback(repo: str, post: dict[str, Any], _head_ref: str, token: str, attempts: list[str]) -> core.ImageCandidate:
+def local_fallback(repo: str, post: dict[str, Any], _head_ref: str, token: str, attempts: list[str], used_shas: set[str] | None = None) -> core.ImageCandidate:
     attempts.append("local-curated")
-    source_path, description = core.LOCAL_FALLBACKS[core.article_key(post)]
-    # Security/trust invariant: the curated source is always read from trusted
-    # main, never from a PR-controlled head SHA.
-    payload = core.github_content(repo, source_path, "main", token)
-    data = core.decode_content(payload)
-    _w, _h, ext = core.validate_candidate(data)
-    return core.ImageCandidate("Local", data, ext, f"local://{source_path}", description, attempts.copy())
+    if used_shas is None:
+        used_shas = core.get_used_hero_shas(exclude_id=post.get("id"))
+
+    key = core.article_key(post)
+    cat_fallback = core.LOCAL_FALLBACKS.get(key) or core.LOCAL_FALLBACKS["couples"]
+    all_fallbacks = [cat_fallback] + [fb for k, fb in core.LOCAL_FALLBACKS.items() if fb != cat_fallback]
+
+    failures = []
+    for source_path, description in all_fallbacks:
+        try:
+            payload = core.github_content(repo, source_path, "main", token)
+            data = core.decode_content(payload)
+            _w, _h, ext = core.validate_candidate(data)
+            digest = hashlib.sha256(data).hexdigest()
+            if digest in used_shas:
+                raise RuntimeError(f"duplicate_sha:{digest[:8]}")
+            return core.ImageCandidate("Local", data, ext, f"local://{source_path}", description, attempts.copy())
+        except Exception as exc:
+            failures.append(f"{source_path}:{str(exc)}")
+
+    raise RuntimeError("No valid non-duplicate trusted local fallback remained: " + ", ".join(failures))
 
 
-def choose_candidate(repo: str, post: dict[str, Any], head_ref: str, token: str) -> core.ImageCandidate:
+def choose_candidate(repo: str, post: dict[str, Any], head_ref: str, token: str, used_shas: set[str] | None = None) -> core.ImageCandidate:
+    if used_shas is None:
+        used_shas = core.get_used_hero_shas(exclude_id=post.get("id"))
     attempts: list[str] = []
     for provider in (try_gemini, try_unsplash, try_pexels):
-        candidate = provider(post, attempts)
+        candidate = provider(post, attempts, used_shas=used_shas)
         if candidate:
             return candidate
-    return local_fallback(repo, post, head_ref, token, attempts)
+    return local_fallback(repo, post, head_ref, token, attempts, used_shas=used_shas)
 
 
 def word_count(html: str) -> int:

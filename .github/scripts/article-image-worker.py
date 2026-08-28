@@ -149,14 +149,66 @@ def article_key(post: dict[str, Any]) -> str:
     return "couples"
 
 
+def get_used_hero_shas(
+    posts: list[dict[str, Any]] | None = None,
+    exclude_id: str | None = None,
+    repo_root: Path | None = None,
+) -> set[str]:
+    if repo_root is None:
+        repo_root = Path(__file__).resolve().parents[2]
+    if posts is None:
+        posts_file = repo_root / "src/data/posts.json"
+        if posts_file.is_file():
+            try:
+                posts = json.loads(posts_file.read_text(encoding="utf-8"))
+            except Exception:
+                posts = []
+        else:
+            posts = []
+    used = set()
+    for p in posts:
+        if not isinstance(p, dict):
+            continue
+        pid = p.get("id")
+        if exclude_id and pid == exclude_id:
+            continue
+        img = p.get("image")
+        if not img or not isinstance(img, str):
+            continue
+        rel = img.lstrip("/")
+        if not rel.startswith("public/"):
+            rel = "public/" + rel
+        img_file = repo_root / rel
+        if img_file.is_file():
+            try:
+                used.add(hashlib.sha256(img_file.read_bytes()).hexdigest())
+            except Exception:
+                pass
+    return used
+
+
 def image_prompt(post: dict[str, Any]) -> str:
+    title = str(post.get("title") or "").strip()
+    category = str(post.get("category") or "").strip()
+    subcategory = str(post.get("subcategory") or "").strip()
+    excerpt = str(post.get("excerpt") or "").strip()[:500]
+
+    context_str = f"Title: {title}."
+    if subcategory:
+        context_str += f" Subcategory: {subcategory}."
+    if category:
+        context_str += f" Category: {category}."
+    if excerpt:
+        context_str += f" Excerpt: {excerpt}"
+
     return (
-        "Create one photorealistic editorial hero photograph for a Hebrew professional article. "
-        "No text, no logos, no infographic, no illustration, no symbolic hands/hearts, no empty room. "
-        "Show real people in a natural Israeli everyday setting and a concrete interaction relevant to the topic. "
-        "Warm natural light, candid documentary feel, 16:9 landscape. "
-        f"Article title: {post.get('title','')}. Category: {post.get('category','')}. "
-        f"Context: {post.get('excerpt','')[:500]}"
+        "Create one photorealistic editorial hero photograph for a Hebrew professional counseling article. "
+        f"Article topic details: {context_str}. "
+        "Create a visually distinct concrete scene derived directly from the specific article theme, title, subcategory, and excerpt above. "
+        "Show real people in a realistic, natural Israeli everyday setting (such as a living room, kitchen table, quiet coffee spot, or home entrance) "
+        "with props, physical postures, and spatial arrangement unique to this specific situation. "
+        "Do NOT produce a generic couple-talking or generic smiling stock fallback. Avoid text, logos, watermarks, infographics, illustrations, or symbolic floating icons. "
+        "16:9 landscape orientation, candid documentary photography, warm natural daylight, sharp focus, natural textures."
     )
 
 
@@ -209,9 +261,27 @@ def try_gemini(post: dict[str, Any], attempts: list[str]) -> ImageCandidate | No
         return None
 
 
+HEBREW_TO_ENGLISH_KEYWORDS = [
+    (("מסכים", "מסך", "טלפון", "סמארטפון", "screen"), "screens smartphone digital"),
+    (("בית ספר", "כיתה", "לימודים", "מורה", "שיעורי בית", "school", "מחוננ"), "school classroom homework learning"),
+    (("זעם", "צעקות", "תסכול", "התפרצות", "בכי", "tantrum", "ויסות"), "emotional meltdown frustration crying support"),
+    (("כסף", "תקציב", "כלכלה", "פיננסי", "money", "financial"), "money budget financial conversation"),
+    (("רילוקיישן", "מעבר", "אריזה", "חו\"ל", "relocation", "moving"), "moving boxes relocation home"),
+    (("בגידה", "אמון", "משבר", "infidelity", "trust"), "emotional conversation healing trust support"),
+    (("מתבגר", "נוער", "teen"), "teenager parent conversation talk"),
+    (("תינוק", "לידה", "הורות צעירה", "baby", "birth"), "baby parent newborn home"),
+    (("עומס", "שחיקה", "עייפות", "עבודה", "mental load", "exhausted"), "tired exhausted mental load home resting"),
+    (("ארוחה", "משפחה", "חגים", "משפחה מורחבת", "dinner"), "family dinner table conversation"),
+    (("דייט", "היכרות", "אפליקציות", "date", "dating", "סמס"), "coffee date couple talking initial meeting"),
+    (("חברים", "חברות", "רווקות", "singles"), "adult friends group talking indoor"),
+    (("חתונה", "נישואים", "שנה ראשונה", "premarital", "wedding"), "engaged couple planning home conversation"),
+    (("קשב", "adhd", "אבחון"), "parent child focus learning home support"),
+]
+
+
 def stock_query(post: dict[str, Any]) -> str:
     key = article_key(post)
-    return {
+    base_queries = {
         "dating": "couple talking coffee date relationship",
         "singles": "adult friends conversation social",
         "relocation": "couple moving home boxes conversation",
@@ -220,7 +290,30 @@ def stock_query(post: dict[str, Any]) -> str:
         "gifted": "parent child studying supportive",
         "adhd": "parent child school routine supportive",
         "couples": "couple talking listening relationship home",
-    }[key]
+    }
+    base = base_queries.get(key, "couple talking listening relationship home")
+
+    text = " ".join([
+        str(post.get("title") or ""),
+        str(post.get("subcategory") or ""),
+        str(post.get("excerpt") or ""),
+    ]).lower()
+
+    matched_extra = []
+    for keywords, eng_str in HEBREW_TO_ENGLISH_KEYWORDS:
+        if any(kw in text for kw in keywords):
+            matched_extra.append(eng_str)
+
+    full_query = base + " " + " ".join(matched_extra) if matched_extra else base
+
+    words = []
+    for w in full_query.split():
+        if w not in words:
+            words.append(w)
+    result = " ".join(words)
+    if len(result) > 100:
+        result = result[:100].rsplit(" ", 1)[0]
+    return result
 
 
 def try_unsplash(post: dict[str, Any], attempts: list[str]) -> ImageCandidate | None:

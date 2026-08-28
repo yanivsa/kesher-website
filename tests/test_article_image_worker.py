@@ -58,10 +58,10 @@ class ArticleImageWorkerTests(unittest.TestCase):
     def test_all_external_failures_fall_through_to_local(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_fallback_test")
         calls = []
-        worker.try_gemini = lambda post, attempts: (attempts.append("gemini"), calls.append("gemini"), None)[2]
-        worker.try_unsplash = lambda post, attempts: (attempts.append("unsplash"), calls.append("unsplash"), None)[2]
-        worker.try_pexels = lambda post, attempts: (attempts.append("pexels"), calls.append("pexels"), None)[2]
-        worker.local_fallback = lambda repo, post, ref, token, attempts: worker.core.ImageCandidate(
+        worker.try_gemini = lambda post, attempts, **kw: (attempts.append("gemini"), calls.append("gemini"), None)[2]
+        worker.try_unsplash = lambda post, attempts, **kw: (attempts.append("unsplash"), calls.append("unsplash"), None)[2]
+        worker.try_pexels = lambda post, attempts, **kw: (attempts.append("pexels"), calls.append("pexels"), None)[2]
+        worker.local_fallback = lambda repo, post, ref, token, attempts, **kw: worker.core.ImageCandidate(
             "Local", fake_png(), "png", "local://public/images/generated/blog/dating-communication-early-stages.jpg",
             "זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור", attempts + ["local-curated"]
         )
@@ -187,6 +187,89 @@ class ArticleImageWorkerTests(unittest.TestCase):
             lambda _: b"",
         )
         self.assertFalse(any("no-image publication is forbidden" in error for error in errors), errors)
+
+    def test_get_used_hero_shas_extracts_all_published_hero_shas(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_shas_test")
+        posts = [
+            {"id": "p1", "image": "/images/generated/blog/dating-communication-early-stages.jpg"},
+            {"id": "p2", "image": "/images/generated/blog/child-after-school-restraint-collapse.jpg"},
+            {"id": "p3"},
+        ]
+        shas = worker.core.get_used_hero_shas(posts=posts, repo_root=ROOT)
+        self.assertEqual(len(shas), 2)
+
+        # Exclude p1
+        shas_ex = worker.core.get_used_hero_shas(posts=posts, exclude_id="p1", repo_root=ROOT)
+        self.assertEqual(len(shas_ex), 1)
+
+    def test_duplicate_sha_is_rejected_in_all_providers(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_dup_rejection_test")
+        fake_data = fake_png()
+        import hashlib
+        target_sha = hashlib.sha256(fake_data).hexdigest()
+        used_shas = {target_sha}
+
+        post = {
+            "id": "new-post",
+            "title": "ניהול משימות שקופות בזוגיות",
+            "subcategory": "תקשורת זוגית",
+            "excerpt": "איך מחלקים את העומס המנטלי בצורה הוגנת",
+            "category": "זוגיות"
+        }
+
+        # Mock Gemini returns duplicate
+        with mock.patch.object(worker.v3, "google_json", return_value={"candidates": [{"content": {"parts": [{"inlineData": {"data": worker.v3.base64.b64encode(fake_data).decode("ascii")}}]}}]}):
+            with mock.patch.dict("os.environ", {"GOOGLE_API_KEY": "fake_key"}):
+                res = worker.try_gemini(post, [], used_shas=used_shas)
+                self.assertIsNone(res)
+
+        # Mock Unsplash returns duplicate
+        with mock.patch.object(worker.core, "request_json", return_value={"results": [{"urls": {"regular": "http://example.com/img.jpg"}, "links": {"html": "http://example.com"}}]}), \
+             mock.patch.object(worker.core, "download", return_value=fake_data):
+            with mock.patch.dict("os.environ", {"GOOGLE_API_KEY": "fake", "UNSPLASH_ACCESS_KEY": "fake"}):
+                res = worker.try_unsplash(post, [], used_shas=used_shas)
+                self.assertIsNone(res)
+
+        # Mock Pexels returns duplicate
+        with mock.patch.object(worker.core, "request_json", return_value={"photos": [{"src": {"large": "http://example.com/img.jpg"}, "url": "http://example.com"}]}), \
+             mock.patch.object(worker.core, "download", return_value=fake_data):
+            with mock.patch.dict("os.environ", {"GOOGLE_API_KEY": "fake", "PEXELS_API_KEY": "fake"}):
+                res = worker.try_pexels(post, [], used_shas=used_shas)
+                self.assertIsNone(res)
+
+    def test_local_fallback_raises_when_all_candidates_are_duplicates(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_local_dup_test")
+        with tempfile.TemporaryDirectory() as tmp:
+            worker.REPO_ROOT = Path(tmp)
+            worker.LOCAL_FALLBACK_CANDIDATES = {
+                "couples": [("public/images/generated/blog/c1.png", "תיאור 1 שדורש מינימום 24 תווים לתיאור תמונה")]
+            }
+            c1 = worker.REPO_ROOT / "public/images/generated/blog/c1.png"
+            c1.parent.mkdir(parents=True, exist_ok=True)
+            c1.write_bytes(fake_png())
+            import hashlib
+            dup_sha = hashlib.sha256(fake_png()).hexdigest()
+
+            with self.assertRaisesRegex(RuntimeError, "No valid non-duplicate trusted local fallback remained"):
+                worker.local_fallback("o/r", {"title": "שיחה", "id": "x"}, "sha", "t", [], used_shas={dup_sha})
+
+    def test_article_specific_query_and_prompt_generation(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_inputs_test")
+        post = {
+            "title": "איך מתמודדים עם התפרצויות זעם של ילדים בבית",
+            "subcategory": "הדרכת הורים",
+            "excerpt": "ילדים חווים קשיים בוויסות רגשי שמובילים לצעקות ובכי בבית",
+            "category": "הורות"
+        }
+        prompt = worker.core.image_prompt(post)
+        query = worker.core.stock_query(post)
+
+        self.assertIn("איך מתמודדים עם התפרצויות זעם של ילדים בבית", prompt)
+        self.assertIn("הדרכת הורים", prompt)
+        self.assertIn("Do NOT produce a generic couple-talking", prompt)
+
+        self.assertIn("parent child", query)
+        self.assertIn("emotional meltdown frustration crying support", query)
 
     def test_workflow_is_controller_owned_and_executes_only_trusted_main_worker(self):
         workflow = WORKFLOW_PATH.read_text(encoding="utf-8")

@@ -97,19 +97,34 @@ def local_fallback(
     _head_ref: str,
     _token: str,
     attempts: list[str],
+    used_shas: set[str] | None = None,
 ) -> core.ImageCandidate:
-    """Return the first valid curated landscape image from trusted main bytes."""
+    """Return the first valid non-duplicate curated landscape image from trusted main bytes."""
+    import hashlib
     attempts.append("local-curated")
+    if used_shas is None:
+        used_shas = core.get_used_hero_shas(exclude_id=post.get("id"), repo_root=REPO_ROOT)
+
     category = core.article_key(post)
-    candidates = LOCAL_FALLBACK_CANDIDATES.get(category) or LOCAL_FALLBACK_CANDIDATES["couples"]
+    cat_candidates = LOCAL_FALLBACK_CANDIDATES.get(category) or LOCAL_FALLBACK_CANDIDATES["couples"]
+    # Also fall through all other category candidates if primary candidates are used/invalid
+    all_candidates = list(cat_candidates)
+    for cat_name, cand_list in LOCAL_FALLBACK_CANDIDATES.items():
+        for item in cand_list:
+            if item not in all_candidates:
+                all_candidates.append(item)
+
     failures: list[str] = []
-    for source_path, description in candidates:
+    for source_path, description in all_candidates:
         try:
             candidate_path = _trusted_candidate_path(source_path)
             if not candidate_path.is_file():
                 raise RuntimeError("missing")
             data = candidate_path.read_bytes()
             width, height, ext = core.validate_candidate(data)
+            digest = hashlib.sha256(data).hexdigest()
+            if digest in used_shas:
+                raise RuntimeError(f"duplicate_sha:{digest[:8]}")
             print(
                 f"IMAGE_LOCAL_FALLBACK_READY category={category} path={source_path} dimensions={width}x{height}",
                 file=sys.stderr,
@@ -124,24 +139,26 @@ def local_fallback(
                 attempts.copy(),
             )
         except Exception as exc:
-            failures.append(f"{source_path}:{type(exc).__name__}")
+            failures.append(f"{source_path}:{str(exc)}")
             print(
-                f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} error={type(exc).__name__}",
+                f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} error={str(exc)}",
                 file=sys.stderr,
                 flush=True,
             )
     raise RuntimeError(
-        "No valid trusted local fallback remained for " + category + ": " + ", ".join(failures)
+        "No valid non-duplicate trusted local fallback remained for " + category + ": " + ", ".join(failures)
     )
 
 
-def choose_candidate(repo: str, post: dict[str, Any], head_ref: str, token: str) -> core.ImageCandidate:
+def choose_candidate(repo: str, post: dict[str, Any], head_ref: str, token: str, used_shas: set[str] | None = None) -> core.ImageCandidate:
+    if used_shas is None:
+        used_shas = core.get_used_hero_shas(exclude_id=post.get("id"), repo_root=REPO_ROOT)
     attempts: list[str] = []
     for provider in (try_gemini, try_unsplash, try_pexels):
-        candidate = provider(post, attempts)
+        candidate = provider(post, attempts, used_shas=used_shas)
         if candidate:
             return candidate
-    return local_fallback(repo, post, head_ref, token, attempts)
+    return local_fallback(repo, post, head_ref, token, attempts, used_shas=used_shas)
 
 
 v3.local_fallback = local_fallback
