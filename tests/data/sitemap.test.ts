@@ -43,7 +43,7 @@ describe('sitemap generation', () => {
   it('omits unsupported lastmod dates from static routes', () => {
     const sitemap = buildSitemap([]);
     const homepage = sitemap.match(
-      /<loc>https:\/\/kesher\.saharoni\.com\/<\/loc>([\s\S]*?)<\/url>/,
+      /<loc>https:\/\/kesher\.saharoni\.com<\/loc>([\s\S]*?)<\/url>/,
     )?.[1];
 
     expect(homepage).toBeDefined();

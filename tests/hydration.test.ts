@@ -10,7 +10,7 @@ describe('route hydration', () => {
     )).toBe(true);
     expect(shouldHydrateRoute(
       '/blog/missing-post',
-      'https://kesher.saharoni.com/',
+      'https://kesher.saharoni.com',
       true,
     )).toBe(false);
   });
@@ -31,7 +31,7 @@ describe('route hydration', () => {
   it('mounts the interaction-heavy homepage as a fresh client tree', () => {
     expect(shouldHydrateRoute(
       '/',
-      'https://kesher.saharoni.com/',
+      'https://kesher.saharoni.com',
       true,
     )).toBe(false);
   });

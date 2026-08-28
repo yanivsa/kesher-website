@@ -23,7 +23,8 @@ const MetaTags = ({
   const cleanPath = location.pathname.length > 1 && location.pathname.endsWith('/')
     ? location.pathname.slice(0, -1)
     : location.pathname;
-  const currentUrl = canonical || `${SITE_CONFIG.url}${cleanPath}`;
+  const normalizedPath = cleanPath === '/' ? '' : cleanPath;
+  const currentUrl = canonical || `${SITE_CONFIG.url}${normalizedPath}`;
   const imageUrl = image?.startsWith('/')
     ? `${SITE_CONFIG.url}${image}`
     : image || `${SITE_CONFIG.url}/apple-touch-icon.png`;

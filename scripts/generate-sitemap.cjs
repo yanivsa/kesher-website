@@ -48,7 +48,7 @@ const buildSitemap = (posts) => {
   const entries = [...staticEntries, ...postEntries]
     .map(({ route, lastmod, changefreq, priority }) => [
       '  <url>',
-      `    <loc>https://kesher.saharoni.com${route === '/' ? '/' : route}</loc>`,
+      `    <loc>https://kesher.saharoni.com${route === '/' ? '' : route}</loc>`,
       ...(lastmod ? [`    <lastmod>${lastmod}</lastmod>`] : []),
       `    <changefreq>${changefreq}</changefreq>`,
       `    <priority>${priority}</priority>`,

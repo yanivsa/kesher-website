@@ -14,7 +14,7 @@ export const legacyRedirectTarget = (requestUrl: string) => {
   const destinationPath =
     LEGACY_POST_PATH.test(url.pathname) || url.pathname.startsWith('/search')
       ? '/blog'
-      : LEGACY_PAGE_TARGETS[url.pathname] || '/';
+      : LEGACY_PAGE_TARGETS[url.pathname] || '';
 
   return `${PRIMARY_ORIGIN}${destinationPath}`;
 };
@@ -23,7 +23,7 @@ export const canonicalRedirectTarget = (requestUrl: string) => {
   const url = new URL(requestUrl);
   if (url.hostname !== 'kesher.saharoni.com') return null;
   if (url.pathname !== '/b' && url.pathname !== '/b/' && url.pathname !== '/beta2' && url.pathname !== '/beta2/') return null;
-  return `${PRIMARY_ORIGIN}/`;
+  return PRIMARY_ORIGIN;
 };
 
 export const onRequest: PagesFunction = async (context) => {
