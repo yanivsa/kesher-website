@@ -174,6 +174,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
     trackSecondaryCtaClick,
     trackPhoneClick,
     trackWhatsappClick,
+    trackFaqInteraction,
   } = useLandingPageAnalytics(variantId);
 
   const whatsappMessage = encodeURIComponent(
@@ -187,18 +188,6 @@ const CouplesCounselingAshdodPage: React.FC = () => {
     if (bookingEl) {
       bookingEl.scrollIntoView({ behavior: 'smooth' });
     }
-  };
-
-  const trackFaqInteraction = (index: number) => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: 'faq_interaction',
-      faq_index: index,
-      variant_id: variantId,
-      landing_page_path: '/couples-counseling-ashdod',
-      landing_page_type: 'ashdod',
-      service_type: 'couples_counseling',
-    });
   };
 
   useEffect(() => {
