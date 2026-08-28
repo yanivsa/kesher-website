@@ -2,17 +2,9 @@ name: Kesher Canary Force-Now Controller
 
 # One-time approved exception: force the 2026-08-21 canary before the normal Friday window.
 on:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/kesher-canary-force-now.yml
-  workflow_run:
-    workflows:
-      - Kesher Article Generation
-      - Kesher Trusted Article Image
-      - Kesher Daily NotebookLM Video Overview
-      - Deploy to Cloudflare Pages
-    types: [completed]
+  # Historical one-time canary is intentionally inert after 2026-08-21.
+  # Manual dispatch remains available only for diagnostics; the date gate below
+  # prevents the expired force window from executing production work.
   workflow_dispatch:
 
 permissions:
@@ -21,7 +13,7 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: kesher-content-controller
+  group: kesher-expired-force-now-canary
   cancel-in-progress: false
 
 jobs:
