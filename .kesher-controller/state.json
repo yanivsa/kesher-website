@@ -77,16 +77,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-08-25T10:54:20.881868+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 20
-      }
-    },
-    {
       "at": "2026-08-25T11:36:19.222282+00:00",
       "from": "video_running",
       "to": "article_live",
@@ -817,9 +807,18 @@
       "details": {
         "pr_number": 579
       }
+    },
+    {
+      "at": "2026-08-28T15:53:44.728159+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "image best-effort exhausted; article publication remains allowed",
+      "details": {
+        "pr_number": 579
+      }
     }
   ],
-  "updated_at": "2026-08-28T15:49:39.194182+00:00",
+  "updated_at": "2026-08-28T15:53:44.728171+00:00",
   "image": {
     "attempt_count": 3,
     "status": "deferred",
