@@ -1,17 +1,15 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-28",
-  "status": "article_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "exhausted",
     "last_error": {
       "stage": "article",
-      "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new Hebrew blog post for a specific date (2026-08-28) following strict content policies and a Pipeline V3 override that strictly forbids any image generation or related metadata. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an article on an approved topic (Relocation and Relationship Adjustments), properly configures the metadata, inserts the HTML content into `posts.json`, and correctly updates the `postSummaries.json`, `sitemap.xml`, and `llm…",
-      "retryable": true,
-      "retry_at": "2026-08-28T11:50:43.586938+00:00",
-      "at": "2026-08-28T11:45:43.586957+00:00"
+      "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "message": "article exhausted 3 total controller dispatch attempts",
+      "at": "2026-08-28T13:01:48.936235+00:00"
     },
     "next_retry_at": "2026-08-28T11:50:43.586938+00:00",
     "run_id": 33157413845,
@@ -73,7 +71,12 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "article exhausted 3 total controller dispatch attempts",
+    "at": "2026-08-28T13:01:48.936235+00:00"
+  },
   "history": [
     {
       "at": "2026-08-25T10:54:16.979316+00:00",
@@ -749,9 +752,18 @@
       "details": {
         "retry_at": "2026-08-28T11:50:43.586938+00:00"
       }
+    },
+    {
+      "at": "2026-08-28T13:01:48.936245+00:00",
+      "from": "article_retry_wait",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "article exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-08-28T11:49:01.181209+00:00",
+  "updated_at": "2026-08-28T13:01:48.936251+00:00",
   "image": {
     "attempt_count": 2,
     "status": "running",
