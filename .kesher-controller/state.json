@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-28",
-  "status": "blocked",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 3,
     "status": "exhausted",
@@ -54,8 +54,8 @@
     },
     "last_jules_session_id": "sessions/8234813210541801432",
     "last_failed_run_id": 33157413845,
-    "pr_number": 563,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/563"
+    "pr_number": 579,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/579"
   },
   "video": {
     "attempt_count": 0,
@@ -72,10 +72,12 @@
     "resume_dispatches": 0
   },
   "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "article exhausted 3 total controller dispatch attempts",
-    "at": "2026-08-28T13:51:10.834604+00:00"
+    "stage": "image",
+    "code": "IMAGE_OUTPUT_MISSING",
+    "message": "trusted image run 33166226564 completed with conclusion=success but no validated image is present",
+    "retryable": true,
+    "retry_at": "2026-08-28T15:04:30.674702+00:00",
+    "at": "2026-08-28T14:49:30.674728+00:00"
   },
   "history": [
     {
@@ -779,31 +781,43 @@
       "details": {
         "message": "article exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-08-28T14:49:30.674735+00:00",
+      "from": "blocked",
+      "to": "image_retry_wait",
+      "reason": "IMAGE_OUTPUT_MISSING",
+      "details": {
+        "message": "trusted image run 33166226564 completed with conclusion=success but no validated image is present",
+        "retry_at": "2026-08-28T15:04:30.674702+00:00",
+        "failure_streak": 2,
+        "run_id": 33166226564
+      }
     }
   ],
-  "updated_at": "2026-08-28T13:51:10.834619+00:00",
+  "updated_at": "2026-08-28T14:49:30.674740+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "retry_wait",
     "last_error": {
       "stage": "image",
       "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 33159993094 completed with conclusion=success but no validated image is present",
+      "message": "trusted image run 33166226564 completed with conclusion=success but no validated image is present",
       "retryable": true,
-      "retry_at": "2026-08-28T09:42:38.183722+00:00",
-      "at": "2026-08-28T09:37:38.183765+00:00"
+      "retry_at": "2026-08-28T15:04:30.674702+00:00",
+      "at": "2026-08-28T14:49:30.674728+00:00"
     },
-    "next_retry_at": null,
+    "next_retry_at": "2026-08-28T15:04:30.674702+00:00",
     "run_id": 33166226564,
-    "processed_run_id": 33159993094,
+    "processed_run_id": 33166226564,
     "provider_id": null,
     "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
+    "same_failure_streak": 2,
     "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 1
+      "IMAGE_OUTPUT_MISSING": 2
     },
     "last_dispatch_at": "2026-08-28T11:11:43.236016+00:00",
     "last_run_conclusion": "success",
-    "last_failed_run_id": 33159993094
+    "last_failed_run_id": 33166226564
   }
 }
