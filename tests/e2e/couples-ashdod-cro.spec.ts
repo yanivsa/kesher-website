@@ -8,12 +8,13 @@ for (const width of mobileWidths) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto('/couples-counseling-ashdod');
 
-    await expect(page.getByRole('heading', {
+    const hero = page.locator('section[aria-labelledby="couples-ashdod-title"]');
+    await expect(hero.getByRole('heading', {
       name: 'כשהשיחות חוזרות שוב ושוב לאותו ריב — אפשר ללמוד לדבר אחרת',
       level: 1,
     })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'קביעת פגישה' }).first()).toBeInViewport();
-    await expect(page.getByRole('link', { name: 'יש לי שאלה לפני שקובעים' }).first()).toBeVisible();
+    await expect(hero.getByRole('button', { name: 'קביעת פגישה' })).toBeInViewport();
+    await expect(hero.getByRole('link', { name: 'יש לי שאלה לפני שקובעים' })).toBeVisible();
 
     const widthState = await page.evaluate(() => ({
       scrollWidth: document.documentElement.scrollWidth,
