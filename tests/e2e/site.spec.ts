@@ -447,3 +447,23 @@ test('couples before-separation landing page (/services/couples/before-separatio
   // Verify non-legal disclaimer exists
   await expect(page.getByText('אינו מהווה ייעוץ משפטי').first()).toBeVisible();
 });
+
+test('couples counseling page (/services/couples) hero renders appointment CTA and secondary WhatsApp CTA', async ({ page }) => {
+  await page.goto('/services/couples');
+  await expect(page.getByRole('heading', { name: /לדבר על מה שקורה/ })).toBeVisible();
+
+  const appointmentBtn = page.getByRole('link', { name: 'קביעת פגישת ייעוץ' }).first();
+  await expect(appointmentBtn).toHaveAttribute('href', '/appointment');
+
+  const whatsappBtn = page.getByRole('link', { name: /WhatsApp/i }).first();
+  await expect(whatsappBtn).toHaveAttribute('href', /wa\.me/);
+
+  for (const width of [360, 390, 430]) {
+    await page.setViewportSize({ width, height: 800 });
+    const overflowWidth = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+    }));
+    expect(overflowWidth.scrollWidth).toBe(overflowWidth.clientWidth);
+  }
+});
