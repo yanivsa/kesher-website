@@ -81,10 +81,10 @@ const AboutPage: React.FC = () => {
         <div className={`container ${styles.storyGrid}`}>
           <div className={styles.imageWrapper}>
             <img
-              src="/images/shira-saharoni.webp"
+              src="/images/shira/shira-professional.webp"
               alt="שירה סהרוני, יועצת זוגית ומשפחתית, מגשרת ומנחת הורים"
-              width="1271"
-              height="1280"
+              width="520"
+              height="779"
               fetchPriority="high"
             />
             <div className={styles.imageBadge}>מקשיבים • מבינים • מתקדמים</div>
@@ -128,6 +128,31 @@ const AboutPage: React.FC = () => {
               <p>צעדים שאפשר לתרגל בין המפגשים ולבחון בתוך השגרה האמיתית של הבית.</p>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section className={styles.personal}>
+        <div className={`container ${styles.personalGrid}`}>
+          <div className={styles.personalContent}>
+            <span className={styles.eyebrow}>גם האדם שמאחורי המקצוע</span>
+            <h2>מקצועיות שמרגישה אישית</h2>
+            <p className={styles.personalLead}>
+              מעבר להכשרה, לניסיון ולכלים, קשר טוב מתחיל בתחושה שאפשר לדבר בגובה העיניים. לכן היה לי חשוב שהאתר יאפשר לכם להכיר גם מעט מהאדם שמאחורי התפקיד.
+            </p>
+            <p>
+              המטרה היא ליצור מרחב נעים, ברור ולא שיפוטי — כזה שאפשר להרגיש בו מספיק בטוחים כדי לדבר בכנות, להבין מה קורה ולבחור את הצעד הבא.
+            </p>
+          </div>
+          <figure className={styles.momentsFigure}>
+            <img
+              src="/images/shira/shira-moments.webp"
+              alt="שירה סהרוני"
+              width="380"
+              height="475"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
         </div>
       </section>
 
