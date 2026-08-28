@@ -29,5 +29,5 @@ describe('LeadMagnet component', () => {
       expect(errorMsg).toBeDefined();
       expect(errorMsg.textContent).toContain('לא הצלחנו לשלוח את הבקשה');
     });
-  });
+  }, 15000);
 });

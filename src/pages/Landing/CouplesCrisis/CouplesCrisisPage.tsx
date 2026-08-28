@@ -319,7 +319,7 @@ const CouplesCrisisPage: React.FC = () => {
           <div className={styles.bioCard}>
             <div className={styles.bioHeader}>
               <img
-                src="/images/shira-profile.jpg"
+                src="/images/shira-saharoni.webp"
                 alt="שירה סהרוני - יועצת זוגית ומגשרת מוסמכת"
                 className={styles.bioAvatar}
                 width="90"

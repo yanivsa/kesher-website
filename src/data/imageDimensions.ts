@@ -1,8 +1,9 @@
 const dimensions: Record<string, { width: number; height: number }> = {
   '/images/generated/site/home-hero.jpg': { width: 1600, height: 900 },
-  '/images/generated/site/about-office.png': { width: 1024, height: 1024 },
-  '/images/shira-saharoni.webp': { width: 1271, height: 1280 },
-  '/images/generated/services/couples-room.jpg': { width: 1600, height: 900 },
+  '/images/shira-saharoni.webp': { width: 477, height: 1024 },
+  '/images/shira-saharoni-consult.webp': { width: 477, height: 1024 },
+  '/images/shira-saharoni-sea.webp': { width: 477, height: 1024 },
+  '/images/shira-saharoni-about.webp': { width: 477, height: 1024 },
   '/images/generated/services/parenting-room.jpg': { width: 1600, height: 900 },
   '/images/generated/services/couples-aliyah-relocation.webp': { width: 1600, height: 900 },
   '/images/generated/services/premarital-first-year.webp': { width: 1600, height: 900 },

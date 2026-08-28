@@ -370,6 +370,7 @@
   height: 90px;
   border-radius: 50%;
   object-fit: cover;
+  object-position: 50% 15%;
   border: 3px solid var(--color-primary-light);
 }
 

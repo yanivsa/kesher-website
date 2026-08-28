@@ -20,6 +20,7 @@ const vite = spawn(process.execPath, [
   '127.0.0.1',
   '--port',
   String(port),
+  '--strictPort',
 ], { cwd: ROOT, stdio: 'inherit' });
 vite.on('exit', (code) => {
   viteExitCode = code;
@@ -59,10 +60,10 @@ const writeRoute = (route, html) => {
     await waitForServer();
     browser = await chromium.launch();
     const page = await browser.newPage();
+    await page.route(/\.(png|jpg|jpeg|webp|svg|gif|mp4|webm|woff2?)$/i, (route) => route.abort());
+    await page.route(/(googletagmanager|google-analytics|calendly)\.com/, (route) => route.abort());
 
     for (const route of routes) {
-      // Third-party embeds (notably Calendly) can keep background requests open
-      // indefinitely. The route is ready once its own main heading renders.
       await page.goto(`http://127.0.0.1:${port}${route}`, { waitUntil: 'domcontentloaded' });
       await page.waitForSelector('#main-content h1');
       await page.waitForSelector('link[rel="canonical"]', { state: 'attached' });

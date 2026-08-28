@@ -48,31 +48,6 @@
   }
 
   if (/^G-[A-Z0-9]+$/i.test(containerId)) {
-    var nativePush = Array.prototype.push;
-    var _googlePush = null;
-
-    try {
-      Object.defineProperty(window.dataLayer, 'push', {
-        configurable: true,
-        enumerable: false,
-        get: function () {
-          return function () {
-            for (var i = 0; i < arguments.length; i++) {
-              nativePush.call(window.dataLayer, arguments[i]);
-            }
-            if (_googlePush && typeof _googlePush === 'function') {
-              return _googlePush.apply(window.dataLayer, arguments);
-            }
-          };
-        },
-        set: function (newPush) {
-          _googlePush = newPush;
-        },
-      });
-    } catch (_defErr) {
-      // Safe fallback if property cannot be defined
-    }
-
     window.gtag('js', new Date());
     window.gtag('config', containerId);
 
