@@ -1,9 +1,9 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-28",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": {
       "stage": "article",
@@ -13,7 +13,7 @@
       "retry_at": "2026-08-28T07:46:03.072751+00:00",
       "at": "2026-08-28T07:41:03.072793+00:00"
     },
-    "next_retry_at": "2026-08-28T07:46:03.072751+00:00",
+    "next_retry_at": null,
     "run_id": 33149290251,
     "processed_run_id": 33149290251,
     "provider_id": null,
@@ -22,9 +22,9 @@
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
-    "attempts": 1,
+    "attempts": 2,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-28T06:50:15.625857+00:00",
+    "last_dispatch_at": "2026-08-28T07:49:59.565881+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -70,14 +70,7 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Deleted all temporary scripts and the draft JSON file. — Verified with ls that they are removed and git status is clean of untracked files.",
-    "retryable": true,
-    "retry_at": "2026-08-28T07:46:03.072751+00:00",
-    "at": "2026-08-28T07:41:03.072793+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-25T10:54:16.979316+00:00",
@@ -659,9 +652,18 @@
         "run_id": 33149290251,
         "session_id": "sessions/12720340233365064954"
       }
+    },
+    {
+      "at": "2026-08-28T07:49:59.565890+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 2
+      }
     }
   ],
-  "updated_at": "2026-08-28T07:41:03.072802+00:00",
+  "updated_at": "2026-08-28T07:49:59.565897+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
