@@ -94,13 +94,12 @@ const BlogList: React.FC = () => {
       <SchemaOrg data={schemaData} />
 
       <main className={styles.main}>
-        {/* Header Section */}
+        {/* Compact header: keep the articles visible high on the page */}
         <header className={styles.header}>
           <div className={styles.headerContent}>
-            <span className={styles.kicker}>תובנות וכלים מהקליניקה</span>
             <h1 className={styles.title}>מאמרים וקריאה מעשירה</h1>
             <p className={styles.subtitle}>
-              מחשבות, נקודות למחשבה וכלים מעשיים לחיים זוגיים ומשפחתיים שמחים ורגועים יותר.
+              תובנות וכלים מהקליניקה — מחשבות וכלים מעשיים לחיים זוגיים ומשפחתיים.
             </p>
           </div>
         </header>
