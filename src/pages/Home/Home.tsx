@@ -534,7 +534,7 @@ const Home: React.FC = () => {
             </div>
             <div className={styles.aboutQuote}>
               <FiMessageCircle aria-hidden="true" />
-              <p><strong>יש דרך לדבר.</strong><br />גם כשכבר קשה<br />לשמוע.</p>
+              <p><strong>יש דרך לדבר.</strong><br />גם כשכבר קשה לשמוע.</p>
             </div>
           </div>
 

@@ -213,7 +213,7 @@
     "category": "זוגיות",
     "subcategory": "זוגיות בעלייה ורילוקיישן",
     "excerpt": "כולם מדברים על ויזה, דירה ובית ספר. אבל מי מוותר על קריירה, איך מנהלים כסף ומה קורה אם אחד רוצה לחזור? שבע שיחות שיכולות למנוע את הריב הראשון עוד לפני הטיסה.",
-    "image": "/images/generated/services/couples-aliyah-relocation.webp"
+    "image": "/images/generated/blog/relocation-couple-conversations-before-moving.jpg"
   },
   {
     "id": "late-singleness-intrusive-family-questions",
@@ -231,7 +231,7 @@
     "category": "זוגיות",
     "subcategory": "זוגיות בעלייה ורילוקיישן",
     "excerpt": "אחד מדבר עברית, מכיר את המערכת ומרגיש שחזר הביתה. השני תלוי בו לכל טופס ושיחה. כך עוצרים את הפער לפני שהוא הופך לבדידות, ביקורת וכעס.",
-    "image": "/images/generated/blog/aliyah-partners-adjustment-pace.webp"
+    "image": "/images/generated/blog/aliyah-partners-different-adjustment-pace.jpg"
   },
   {
     "id": "premarital-questions-before-wedding",
@@ -240,7 +240,7 @@
     "category": "זוגיות",
     "subcategory": "הכנה לנישואים והשנה הראשונה",
     "excerpt": "לא שאלות על צבע המפיות, אלא על כסף, חובות, משפחות, בית, ילדים וריבים. שתים־עשרה שיחות שיחסכו את המשפט ״אבל הייתי בטוח שסיכמנו״.",
-    "image": "/images/generated/services/premarital-first-year.webp"
+    "image": "/images/generated/blog/premarital-questions-before-wedding.jpg"
   },
   {
     "id": "newlywed-first-year-conflicts",
@@ -249,7 +249,7 @@
     "category": "זוגיות",
     "subcategory": "הכנה לנישואים והשנה הראשונה",
     "excerpt": "למה מתווכחים פתאום על כלים, שבת אצל ההורים וקנייה קטנה באשראי? שמונה ריבים נפוצים בשנה הראשונה — והמשפט שיעזור לפתוח כל אחד אחרת.",
-    "image": "/images/generated/blog/newlywed-first-year-conflicts.webp"
+    "image": "/images/generated/blog/newlywed-first-year-conflicts.jpg"
   },
   {
     "id": "child-after-school-restraint-collapse",
@@ -297,7 +297,7 @@
     "date": "2026-07-09",
     "category": "ייעוץ זוגי",
     "excerpt": "כשבן הזוג משתף ביום קשה בעבודה, התגובה האוטומטית שלנו היא להציע פתרון מעשי. אבל למה זה דווקא גורם לו להרגיש לא מובן ולכעוס יותר? כל מה שאתם צריכים לדעת על תקשורת מקרבת, ואיך להפוך מיועצים לשותפים רגשיים.",
-    "image": "/images/generated/blog/listening-in-relationships.jpg"
+    "image": "/images/generated/blog/listening-vs-fixing-relationship-communication.jpg"
   },
   {
     "id": "mental-load-relationship-invisible-labor",
@@ -361,7 +361,7 @@
     "date": "2026-06-24",
     "category": "זוגיות",
     "excerpt": "את מסדרת את הבית באפיסת כוחות, והוא פשוט יושב על הספה וצופה בטלוויזיה. איך הציפייה השקטה שלנו שבן הזוג 'יבין לבד' מייצרת תסכול מתמשך, ואיך אפשר ללמוד לבקש במקום לכעוס.",
-    "image": "/images/generated/blog/unspoken-expectations.jpg"
+    "image": "/images/generated/blog/unspoken-expectations-in-relationships.jpg"
   },
   {
     "id": "breaking-silent-treatment-relationship",
@@ -433,7 +433,7 @@
     "date": "2026-06-07",
     "category": "זוגיות",
     "excerpt": "שניכם חוזרים מהעבודה, מרדימים את הילדים, וקורסים מול המסך. הקשר לא במשבר, אבל המרחק גדל. איך מוצאים מחדש את החיבור כשהמצברים ריקים?",
-    "image": "/images/generated/blog/exhausted-couple-conversation.jpg"
+    "image": "/images/generated/blog/exhausted-couple-communication.jpg"
   },
   {
     "id": "adhd-first-grade-preparation",
@@ -460,7 +460,7 @@
     "category": "זוגיות",
     "subcategory": "הכנה לחתונה",
     "excerpt": "כאשר אחד או שני בני הזוג מתמודדים עם ADHD, כדאי לבנות לפני החתונה כללים זוגיים לניהול זמן, משימות, עומס ותקשורת, בלי שאחד יהפוך למנהל של השני.",
-    "image": "/images/generated/blog/couples-adhd-premarital-planning.jpg"
+    "image": "/images/generated/blog/couples-adhd-partner.jpg"
   },
   {
     "id": "communication-breakdown",
@@ -476,7 +476,7 @@
     "date": "2026-06-03",
     "category": "הדרכת הורים",
     "excerpt": "כשילד משתטח על הרצפה בקניון באשדוד, הבושה והלחץ משתלטים. איך עוזרים לילד להירגע מבלי להיכנע לדרישותיו וללא איומים ועונשים, ומה באמת מסתתר מאחורי ההתקף.",
-    "image": "/images/generated/blog/child-tantrum-regulation.jpg"
+    "image": "/images/generated/blog/public-tantrums-emotional-regulation.jpg"
   },
   {
     "id": "adhd-morning-routine",

@@ -17,8 +17,6 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      VITE_GTM_CONTAINER_ID: ${{ secrets.VITE_GTM_CONTAINER_ID || 'disabled' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
@@ -32,6 +30,8 @@ jobs:
       - name: Inspect production measurement configuration
         id: measurement
         shell: bash
+        env:
+          VITE_GTM_CONTAINER_ID: ${{ secrets.VITE_GTM_CONTAINER_ID || 'disabled' }}
         run: |
           set -euo pipefail
           if [[ "$VITE_GTM_CONTAINER_ID" =~ ^(GTM|G)-[A-Za-z0-9]+$ ]]; then
@@ -49,12 +49,45 @@ jobs:
         run: npx playwright install chromium
 
       - name: Run full quality gate
+        # Keep deployment-only measurement values out of prerender/e2e. The same
+        # commit passes CI without them, while injecting `disabled` during build
+        # can prevent the prerender browser from reaching the app heading.
         run: npm run check
+
+      - name: Finalize production measurement configuration
+        shell: bash
+        env:
+          VITE_GTM_CONTAINER_ID: ${{ secrets.VITE_GTM_CONTAINER_ID || 'disabled' }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          placeholder = '%VITE_GTM_CONTAINER_ID%'
+          value = os.environ['VITE_GTM_CONTAINER_ID']
+          html_files = list(Path('dist').rglob('*.html'))
+          if not html_files:
+              raise SystemExit('No HTML files found in dist')
+
+          for file in html_files:
+              text = file.read_text(encoding='utf-8')
+              if placeholder in text:
+                  file.write_text(text.replace(placeholder, value), encoding='utf-8')
+
+          unresolved = [
+              str(file) for file in html_files
+              if placeholder in file.read_text(encoding='utf-8')
+          ]
+          if unresolved:
+              raise SystemExit('Unresolved GTM placeholder remains in: ' + ', '.join(unresolved))
+          PY
 
       - name: Verify analytics bootstrap build output
         shell: bash
         env:
           MEASUREMENT_READY: ${{ steps.measurement.outputs.ready }}
+          VITE_GTM_CONTAINER_ID: ${{ secrets.VITE_GTM_CONTAINER_ID || 'disabled' }}
         run: |
           set -euo pipefail
           if grep -F '%VITE_GTM_CONTAINER_ID%' dist/index.html >/dev/null; then

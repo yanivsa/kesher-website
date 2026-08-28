@@ -87,15 +87,31 @@ import hashlib
 
 
 def collect_existing_hashes(repo_root: Path) -> set[str]:
-    hashes = set()
-    blog_dir = repo_root / "public" / "images" / "generated" / "blog"
-    if blog_dir.is_dir():
-        for path in blog_dir.glob("*.*"):
-            if path.is_file() and path.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}:
-                try:
-                    hashes.add(hashlib.sha256(path.read_bytes()).hexdigest())
-                except Exception:
-                    pass
+    """Hash only hero bytes that are already assigned to published articles.
+
+    Curated-but-unused local fallback files must remain eligible. Hashing every
+    file in the blog directory makes each fallback collide with itself before
+    it can ever be selected.
+    """
+    hashes: set[str] = set()
+    posts_path = repo_root / "src" / "data" / "posts.json"
+    try:
+        posts = json.loads(posts_path.read_text(encoding="utf-8"))
+    except Exception:
+        return hashes
+    for post in posts if isinstance(posts, list) else []:
+        if not isinstance(post, dict):
+            continue
+        image = str(post.get("image") or "").strip()
+        if not image.startswith("/images/"):
+            continue
+        path = repo_root / "public" / image.lstrip("/")
+        if not path.is_file():
+            continue
+        try:
+            hashes.add(hashlib.sha256(path.read_bytes()).hexdigest())
+        except Exception:
+            pass
     return hashes
 
 
