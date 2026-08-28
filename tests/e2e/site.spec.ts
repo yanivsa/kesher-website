@@ -68,7 +68,7 @@ test('the promoted homepage is indexable and uses the standalone design', async 
   await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     'href',
-    'https://kesher.saharoni.com/',
+    'https://kesher.saharoni.com',
   );
   const structuredData = page.locator('script[type="application/ld+json"]');
   await expect(structuredData).toHaveCount(1);

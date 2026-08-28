@@ -7,7 +7,7 @@ import {
 describe('legacy domain migration', () => {
   it('redirects the legacy homepage to the primary homepage', () => {
     expect(legacyRedirectTarget('https://shira.saharoni.com/')).toBe(
-      'https://kesher.saharoni.com/',
+      'https://kesher.saharoni.com',
     );
   });
 
@@ -33,19 +33,19 @@ describe('legacy domain migration', () => {
 describe('canonical route redirects', () => {
   it('redirects the former beta route to the primary homepage', () => {
     expect(canonicalRedirectTarget('https://kesher.saharoni.com/b')).toBe(
-      'https://kesher.saharoni.com/',
+      'https://kesher.saharoni.com',
     );
     expect(canonicalRedirectTarget('https://kesher.saharoni.com/b/')).toBe(
-      'https://kesher.saharoni.com/',
+      'https://kesher.saharoni.com',
     );
   });
 
   it('redirects the promoted beta2 route to the primary homepage', () => {
     expect(canonicalRedirectTarget('https://kesher.saharoni.com/beta2')).toBe(
-      'https://kesher.saharoni.com/',
+      'https://kesher.saharoni.com',
     );
     expect(canonicalRedirectTarget('https://kesher.saharoni.com/beta2/')).toBe(
-      'https://kesher.saharoni.com/',
+      'https://kesher.saharoni.com',
     );
   });
 

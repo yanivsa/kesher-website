@@ -117,7 +117,7 @@ const sitemap = fs.readFileSync(path.join(ROOT, 'public/sitemap.xml'), 'utf8');
 const noindexRoutes = new Set(['/thank-you-booked', '/thank-you-contact', '/beta3']);
 const indexableStaticRoutes = STATIC_ROUTES.filter((route) => !noindexRoutes.has(route));
 for (const route of [...indexableStaticRoutes, ...published.map(blogRoute)]) {
-  const url = `https://kesher.saharoni.com${route === '/' ? '/' : route}`;
+  const url = `https://kesher.saharoni.com${route === '/' ? '' : route}`;
   if (!sitemap.includes(`<loc>${url}</loc>`)) errors.push(`Missing sitemap URL: ${url}`);
 }
 for (const post of posts.filter((post) => !isPublishable(post))) {

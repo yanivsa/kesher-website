@@ -56,7 +56,7 @@ export const homeSchema = {
       '@id': `${SITE_CONFIG.url}/#business`,
       name: SITE_CONFIG.author,
       alternateName: 'Shira Saharoni',
-      url: `${SITE_CONFIG.url}/`,
+      url: SITE_CONFIG.url,
       telephone: SITE_CONFIG.contact.phone,
       description: SITE_CONFIG.description,
       image: `${SITE_CONFIG.url}/images/shira-saharoni.webp`,
@@ -103,7 +103,7 @@ export const homeSchema = {
     {
       '@type': 'WebSite',
       '@id': `${SITE_CONFIG.url}/#website`,
-      url: `${SITE_CONFIG.url}/`,
+      url: SITE_CONFIG.url,
       name: SITE_CONFIG.title,
       description: SITE_CONFIG.description,
       publisher: { '@id': `${SITE_CONFIG.url}/#business` },
