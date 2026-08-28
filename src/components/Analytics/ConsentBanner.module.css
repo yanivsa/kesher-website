@@ -1,54 +1,57 @@
 .banner {
   position: fixed;
   z-index: 10000;
-  right: 1rem;
-  bottom: 1rem;
-  left: 1rem;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
   align-items: center;
   gap: 0.7rem;
-  max-width: 680px;
-  margin-inline: auto;
-  padding: 0.7rem 0.85rem;
-  background: var(--color-surface, #fff);
-  border: 1px solid var(--color-border, #d9d4cf);
-  border-radius: 14px;
-  box-shadow: 0 8px 28px rgba(20, 30, 25, 0.16);
+  padding: 0.55rem max(1rem, calc((100vw - 1180px) / 2));
+  background: color-mix(in srgb, var(--color-surface, #fff) 96%, var(--color-primary, #5a7a65) 4%);
+  border-top: 1px solid var(--color-border, #d9d4cf);
+  box-shadow: 0 -4px 16px rgba(20, 30, 25, 0.08);
   color: var(--color-text, #26322c);
-  font-size: 0.9rem;
+  font-size: 0.86rem;
 }
 
 .banner p {
+  flex: 1 1 auto;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.35;
 }
 
 .banner a {
-  font-weight: 700;
+  font-weight: 800;
+  color: var(--color-primary-dark, #3d5b47);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .actions {
   display: flex;
-  gap: 0.45rem;
+  flex: 0 0 auto;
+  gap: 0.4rem;
   margin: 0;
-  flex-shrink: 0;
 }
 
 .accept,
 .reject,
-.settingsButton {
-  min-height: 44px;
-  padding: 0.5rem 0.8rem;
-  border-radius: 999px;
+.settingsButton,
+.closeButton {
   border: 1px solid var(--color-primary, #5a7a65);
   font: inherit;
-  font-size: 0.86rem;
   font-weight: 800;
-  line-height: 1.15;
   cursor: pointer;
+}
+
+.accept,
+.reject {
+  min-height: 40px;
+  padding: 0.42rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  line-height: 1;
 }
 
 .accept {
@@ -57,14 +60,30 @@
 }
 
 .reject,
-.settingsButton {
+.settingsButton,
+.closeButton {
   background: var(--color-surface, #fff);
   color: var(--color-primary-dark, #3d5b47);
+}
+
+.closeButton {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-color: var(--color-border, #d9d4cf);
+  border-radius: 50%;
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1;
 }
 
 .accept:focus-visible,
 .reject:focus-visible,
 .settingsButton:focus-visible,
+.closeButton:focus-visible,
 .banner a:focus-visible {
   outline: 3px solid currentColor;
   outline-offset: 2px;
@@ -74,48 +93,57 @@
   position: fixed;
   z-index: 9999;
   left: 0.65rem;
-  bottom: 0.65rem;
-  min-height: 40px;
-  padding: 0.4rem 0.7rem;
-  font-size: 0.76rem;
+  bottom: max(0.65rem, env(safe-area-inset-bottom));
+  min-height: 38px;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
   opacity: 0.82;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 720px) {
   .banner {
-    right: 0.45rem;
-    bottom: max(0.45rem, env(safe-area-inset-bottom));
-    left: 0.45rem;
-    display: block;
-    max-width: none;
-    padding: 0.45rem 0.55rem;
-    border-radius: 11px;
-    font-size: 0.78rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.35rem 0.45rem;
+    padding: 0.42rem 0.55rem max(0.42rem, env(safe-area-inset-bottom));
+    font-size: 0.76rem;
   }
 
   .banner p {
-    line-height: 1.22;
+    grid-column: 1;
+    grid-row: 1;
+    line-height: 1.24;
+  }
+
+  .closeButton {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+    width: 34px;
+    height: 34px;
+    font-size: 1.25rem;
   }
 
   .actions {
-    display: flex;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
     gap: 0.35rem;
-    margin-top: 0.35rem;
   }
 
   .accept,
   .reject {
-    flex: 1 1 0;
-    min-height: 40px;
-    padding: 0.32rem 0.45rem;
-    font-size: 0.76rem;
+    min-height: 38px;
+    padding: 0.34rem 0.65rem;
+    font-size: 0.74rem;
   }
 
   .settingsButton {
     left: 0.45rem;
     bottom: max(0.45rem, env(safe-area-inset-bottom));
-    min-height: 38px;
-    padding: 0.3rem 0.55rem;
-    font-size: 0.72rem;
+    min-height: 36px;
+    padding: 0.28rem 0.52rem;
+    font-size: 0.7rem;
   }
 }

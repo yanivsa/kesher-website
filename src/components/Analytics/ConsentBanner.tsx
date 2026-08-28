@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './ConsentBanner.module.css';
 
 const CONSENT_STORAGE_KEY = 'kesher_consent_v2';
+const CONSENT_DISMISSED_SESSION_KEY = 'kesher_consent_dismissed_v1';
 type ConsentChoice = 'granted' | 'denied';
 
 declare global {
@@ -28,6 +29,14 @@ const readStoredChoice = (): ConsentChoice | null => {
   }
 };
 
+const wasDismissedThisSession = () => {
+  try {
+    return window.sessionStorage.getItem(CONSENT_DISMISSED_SESSION_KEY) === 'true';
+  } catch {
+    return false;
+  }
+};
+
 const persistChoice = (choice: ConsentChoice) => {
   try {
     window.localStorage.setItem(CONSENT_STORAGE_KEY, choice);
@@ -39,7 +48,7 @@ const persistChoice = (choice: ConsentChoice) => {
 const ConsentBanner: React.FC = () => {
   const [state, setState] = useState<{ choice: ConsentChoice | null; isOpen: boolean }>(() => {
     const stored = readStoredChoice();
-    return { choice: stored, isOpen: stored === null };
+    return { choice: stored, isOpen: stored === null && !wasDismissedThisSession() };
   });
 
   useEffect(() => {
@@ -55,6 +64,16 @@ const ConsentBanner: React.FC = () => {
       event: 'privacy_consent_update',
       consent_choice: nextChoice,
     });
+  };
+
+  const dismiss = () => {
+    try {
+      window.sessionStorage.setItem(CONSENT_DISMISSED_SESSION_KEY, 'true');
+    } catch {
+      // Dismissal can remain page-local if session storage is unavailable.
+    }
+
+    setState((current) => ({ ...current, isOpen: false }));
   };
 
   if (!state.isOpen) {
@@ -73,12 +92,17 @@ const ConsentBanner: React.FC = () => {
   return (
     <aside className={styles.banner} aria-label="העדפות פרטיות ומדידה">
       <p>
-        האתר משתמש בכלי Google למדידת שימוש ופרסום. אפשר לאשר cookies או להמשיך בלעדיהם.{' '}
-        <a href="/privacy">מדיניות פרטיות</a>.
+        באתר נעשה שימוש בקובצי Cookies ובכלי המדידה של Google לצורך סטטיסטיקה, שיפור חוויית הגלישה ומדידת יעילות הפרסום.{' '}
+        <a href="/privacy#cookies-measurement">מידע נוסף</a>
       </p>
       <div className={styles.actions}>
-        <button type="button" className={styles.accept} onClick={() => choose('granted')}>
-          אישור מדידה
+        <button
+          type="button"
+          className={styles.accept}
+          onClick={() => choose('granted')}
+          aria-label="אישור מדידה"
+        >
+          אישור
         </button>
         <button
           type="button"
@@ -86,9 +110,18 @@ const ConsentBanner: React.FC = () => {
           onClick={() => choose('denied')}
           aria-label="המשך ללא cookies"
         >
-          ללא cookies
+          ללא Cookies
         </button>
       </div>
+      <button
+        type="button"
+        className={styles.closeButton}
+        onClick={dismiss}
+        aria-label="סגירה והשארת cookies לא-חיוניים חסומים"
+        title="סגירה"
+      >
+        ×
+      </button>
       {state.choice && (
         <span className="sr-only">הבחירה הנוכחית: {state.choice === 'granted' ? 'אישור' : 'ללא cookies'}</span>
       )}
