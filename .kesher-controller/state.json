@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-28",
-  "status": "image_retry_wait",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -717,12 +717,22 @@
       "details": {
         "retry_at": "2026-08-28T09:42:38.183722+00:00"
       }
+    },
+    {
+      "at": "2026-08-28T11:11:43.236040+00:00",
+      "from": "image_retry_wait",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 2,
+        "pr_number": 563
+      }
     }
   ],
-  "updated_at": "2026-08-28T09:41:18.879575+00:00",
+  "updated_at": "2026-08-28T11:11:43.236048+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "retry_wait",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": {
       "stage": "image",
       "code": "IMAGE_OUTPUT_MISSING",
@@ -731,7 +741,7 @@
       "retry_at": "2026-08-28T09:42:38.183722+00:00",
       "at": "2026-08-28T09:37:38.183765+00:00"
     },
-    "next_retry_at": "2026-08-28T09:42:38.183722+00:00",
+    "next_retry_at": null,
     "run_id": 33159993094,
     "processed_run_id": 33159993094,
     "provider_id": null,
@@ -740,7 +750,7 @@
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 1
     },
-    "last_dispatch_at": "2026-08-28T09:35:23.450350+00:00",
+    "last_dispatch_at": "2026-08-28T11:11:43.236016+00:00",
     "last_run_conclusion": "success",
     "last_failed_run_id": 33159993094
   }
