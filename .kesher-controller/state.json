@@ -55,7 +55,10 @@
     "last_jules_session_id": "sessions/8234813210541801432",
     "last_failed_run_id": 33157413845,
     "pr_number": 579,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/579"
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/579",
+    "merge_dispatch_at": "2026-08-28T15:49:39.956894+00:00",
+    "merge_dispatch_count": 1,
+    "merge_image_attempt_count": 3
   },
   "video": {
     "attempt_count": 0,
@@ -73,12 +76,6 @@
   },
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-25T10:54:16.979316+00:00",
-      "from": "video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-08-25T10:54:20.881868+00:00",
       "from": "article_live",
@@ -811,12 +808,21 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "article PR has trusted image and remains authoritative"
+    },
+    {
+      "at": "2026-08-28T15:49:39.194171+00:00",
+      "from": "article_pr_open",
+      "to": "article_pr_open",
+      "reason": "image best-effort exhausted; article publication remains allowed",
+      "details": {
+        "pr_number": 579
+      }
     }
   ],
-  "updated_at": "2026-08-28T15:21:13.938705+00:00",
+  "updated_at": "2026-08-28T15:49:39.194182+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "complete",
+    "status": "deferred",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 33184376959,
@@ -831,6 +837,7 @@
     "last_run_conclusion": "success",
     "last_failed_run_id": 33166226564,
     "artifact_sha256": "96d628b4b7f2ec98dd4afcbd7dd8d262c7e7c745f8f1713a38a0d5ebcc799106",
-    "source_id": "local://public/images/generated/blog/late-singleness-friends-moving-forward.jpg"
+    "source_id": "local://public/images/generated/blog/late-singleness-friends-moving-forward.jpg",
+    "deferred_reason": "best_effort_attempts_exhausted"
   }
 }
