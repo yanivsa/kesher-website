@@ -1,26 +1,26 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-28",
-  "status": "article_image_running",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 3,
     "status": "running",
     "last_error": {
       "stage": "article",
-      "code": "COMPLETED_WITHOUT_PR",
-      "message": "Jules completed without creating a pull request; Jules diagnostic: I've drafted a new article titled \"מי משלם ומי יוזם? איך לצלוח את הציפיות המגדריות בדייטים\" in the \"מציאת זוגיות\" category (which complies with the prompt's condition to pick a subcategory with fewer posts, although \"רווקות מאוחרת\" and others had to be bypassed due to topic similarity errors from the strict `test:content` check). The article successfully passes the word count (700-1100 words), heading count (min 5 H3), and content similarity tests, and `npm run check` has completed successfully on all points, including Playwright E2E and Python automation-gates tests. Temporary files have been cleaned up and only `src/data/posts.json` is modified and staged (the generated files will be staged via `npm run generate` output handling just before finalizing). Are there any specific changes you'd like me to make before procee…",
+      "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new Hebrew blog post for a specific date (2026-08-28) following strict content policies and a Pipeline V3 override that strictly forbids any image generation or related metadata. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an article on an approved topic (Relocation and Relationship Adjustments), properly configures the metadata, inserts the HTML content into `posts.json`, and correctly updates the `postSummaries.json`, `sitemap.xml`, and `llm…",
       "retryable": true,
-      "retry_at": "2026-08-28T08:20:04.556389+00:00",
-      "at": "2026-08-28T08:15:04.556407+00:00"
+      "retry_at": "2026-08-28T11:50:43.586938+00:00",
+      "at": "2026-08-28T11:45:43.586957+00:00"
     },
-    "next_retry_at": null,
+    "next_retry_at": "2026-08-28T11:50:43.586938+00:00",
     "run_id": 33157413845,
-    "processed_run_id": 33152942720,
+    "processed_run_id": 33157413845,
     "provider_id": null,
-    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
+    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
     "same_failure_streak": 1,
     "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1,
+      "JULES_TIMEOUT_SESSION_ACTIVE": 2,
       "COMPLETED_WITHOUT_PR": 1
     },
     "attempts": 3,
@@ -30,13 +30,13 @@
     "last_worker_result": {
       "schema_version": 1,
       "slot": "2026-08-28",
-      "outcome": "COMPLETED_WITHOUT_PR",
+      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
       "retryable": true,
-      "message": "Jules completed without creating a pull request; Jules diagnostic: I've drafted a new article titled \"מי משלם ומי יוזם? איך לצלוח את הציפיות המגדריות בדייטים\" in the \"מציאת זוגיות\" category (which complies with the prompt's condition to pick a subcategory with fewer posts, although \"רווקות מאוחרת\" and others had to be bypassed due to topic similarity errors from the strict `test:content` check). The article successfully passes the word count (700-1100 words), heading count (min 5 H3), and content similarity tests, and `npm run check` has completed successfully on all points, including Playwright E2E and Python automation-gates tests. Temporary files have been cleaned up and only `src/data/posts.json` is modified and staged (the generated files will be staged via `npm run generate` output handling just before finalizing). Are there any specific changes you'd like me to make before procee…",
-      "session_id": "sessions/12720340233365064954",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new Hebrew blog post for a specific date (2026-08-28) following strict content policies and a Pipeline V3 override that strictly forbids any image generation or related metadata. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an article on an approved topic (Relocation and Relationship Adjustments), properly configures the metadata, inserts the HTML content into `posts.json`, and correctly updates the `postSummaries.json`, `sitemap.xml`, and `llm…",
+      "session_id": "sessions/8234813210541801432",
       "pr_url": "",
-      "github_run_id": "33152942720",
-      "completed_at": "2026-08-28T08:04:26.136844+00:00",
+      "github_run_id": "33157413845",
+      "completed_at": "2026-08-28T09:35:21.045014+00:00",
       "diagnostic": {
         "source": {
           "name": "sources/github/yanivsa/kesher-website",
@@ -45,17 +45,17 @@
           "default_branch": "main",
           "main_available": true
         },
-        "activity_count": 108,
-        "change_set_count": 104,
+        "activity_count": 10,
+        "change_set_count": 7,
         "change_set_fingerprints": [],
-        "last_agent_message": "I've drafted a new article titled \"מי משלם ומי יוזם? איך לצלוח את הציפיות המגדריות בדייטים\" in the \"מציאת זוגיות\" category (which complies with the prompt's condition to pick a subcategory with fewer posts, although \"רווקות מאוחרת\" and others had to be bypassed due to topic similarity errors from the strict `test:content` check). The article successfully passes the word count (700-1100 words), heading count (min 5 H3), and content similarity tests, and `npm run check` has completed successfully on all points, including Playwright E2E and Python automation-gates tests. Temporary files have been cleaned up and only `src/data/posts.json` is modified and staged (the generated files will be staged via `npm run generate` output handling just before finalizing). Are there any specific changes you'd like me to make before proceeding with the final checks and opening the PR?",
-        "last_progress": "All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
+        "last_agent_message": "",
+        "last_progress": "Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new Hebrew blog post for a specific date (2026-08-28) following strict content policies and a Pipeline V3 override that strictly forbids any image generation or related metadata. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an article on an approved topic (Relocation and Relationship Adjustments), properly configures the metadata, inserts the HTML content into `posts.json`, and correctly updates the `postSummaries.json`, `sitemap.xml`, and `llm…",
         "last_description": "",
         "session_failed_reason": ""
       }
     },
-    "last_jules_session_id": "sessions/12720340233365064954",
-    "last_failed_run_id": 33152942720,
+    "last_jules_session_id": "sessions/8234813210541801432",
+    "last_failed_run_id": 33157413845,
     "pr_number": 563,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/563"
   },
@@ -73,7 +73,14 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new Hebrew blog post for a specific date (2026-08-28) following strict content policies and a Pipeline V3 override that strictly forbids any image generation or related metadata. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an article on an approved topic (Relocation and Relationship Adjustments), properly configures the metadata, inserts the HTML content into `posts.json`, and correctly updates the `postSummaries.json`, `sitemap.xml`, and `llm…",
+    "retryable": true,
+    "retry_at": "2026-08-28T11:50:43.586938+00:00",
+    "at": "2026-08-28T11:45:43.586957+00:00"
+  },
   "history": [
     {
       "at": "2026-08-25T10:54:16.979316+00:00",
@@ -727,9 +734,22 @@
         "attempt": 2,
         "pr_number": 563
       }
+    },
+    {
+      "at": "2026-08-28T11:45:43.586961+00:00",
+      "from": "article_image_running",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new Hebrew blog post for a specific date (2026-08-28) following strict content policies and a Pipeline V3 override that strictly forbids any image generation or related metadata. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates an article on an approved topic (Relocation and Relationship Adjustments), properly configures the metadata, inserts the HTML content into `posts.json`, and correctly updates the `postSummaries.json`, `sitemap.xml`, and `llm…",
+        "retry_at": "2026-08-28T11:50:43.586938+00:00",
+        "failure_streak": 1,
+        "run_id": 33157413845,
+        "session_id": "sessions/8234813210541801432"
+      }
     }
   ],
-  "updated_at": "2026-08-28T11:11:43.236048+00:00",
+  "updated_at": "2026-08-28T11:45:43.586967+00:00",
   "image": {
     "attempt_count": 2,
     "status": "running",
