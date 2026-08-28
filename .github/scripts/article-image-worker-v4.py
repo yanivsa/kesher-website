@@ -83,6 +83,22 @@ def provider_preflight() -> dict[str, bool]:
     return availability
 
 
+import hashlib
+
+
+def collect_existing_hashes(repo_root: Path) -> set[str]:
+    hashes = set()
+    blog_dir = repo_root / "public" / "images" / "generated" / "blog"
+    if blog_dir.is_dir():
+        for path in blog_dir.glob("*.*"):
+            if path.is_file() and path.suffix.lower() in {".jpg", ".jpeg", ".png", ".webp"}:
+                try:
+                    hashes.add(hashlib.sha256(path.read_bytes()).hexdigest())
+                except Exception:
+                    pass
+    return hashes
+
+
 def _trusted_candidate_path(source_path: str) -> Path:
     candidate_path = (REPO_ROOT / source_path).resolve()
     trusted_root = REPO_ROOT.resolve()
@@ -97,7 +113,10 @@ def local_fallback(
     _head_ref: str,
     _token: str,
     attempts: list[str],
-) -> core.ImageCandidate:
+    *args: Any,
+    existing_hashes: set[str] | None = None,
+    **kwargs: Any,
+) -> core.ImageCandidate | None:
     """Return the first valid curated landscape image from trusted main bytes."""
     attempts.append("local-curated")
     category = core.article_key(post)
@@ -110,6 +129,15 @@ def local_fallback(
                 raise RuntimeError("missing")
             data = candidate_path.read_bytes()
             width, height, ext = core.validate_candidate(data)
+            digest = hashlib.sha256(data).hexdigest()
+            if existing_hashes and digest in existing_hashes:
+                print(
+                    f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} reason=sha256_collision",
+                    file=sys.stderr,
+                    flush=True,
+                )
+                failures.append(f"{source_path}:sha256_collision")
+                continue
             print(
                 f"IMAGE_LOCAL_FALLBACK_READY category={category} path={source_path} dimensions={width}x{height}",
                 file=sys.stderr,
@@ -130,18 +158,37 @@ def local_fallback(
                 file=sys.stderr,
                 flush=True,
             )
-    raise RuntimeError(
-        "No valid trusted local fallback remained for " + category + ": " + ", ".join(failures)
+    print(
+        "IMAGE_LOCAL_FALLBACK_EXHAUSTED category=" + category + " errors=" + ", ".join(failures),
+        file=sys.stderr,
+        flush=True,
     )
+    return None
 
 
-def choose_candidate(repo: str, post: dict[str, Any], head_ref: str, token: str) -> core.ImageCandidate:
+def choose_candidate(
+    repo: str,
+    post: dict[str, Any],
+    head_ref: str,
+    token: str,
+    *args: Any,
+    existing_hashes: set[str] | None = None,
+    **kwargs: Any,
+) -> core.ImageCandidate | None:
+    if existing_hashes is None:
+        existing_hashes = collect_existing_hashes(REPO_ROOT)
     attempts: list[str] = []
     for provider in (try_gemini, try_unsplash, try_pexels):
-        candidate = provider(post, attempts)
+        try:
+            candidate = provider(post, attempts, existing_hashes=existing_hashes)
+        except TypeError:
+            candidate = provider(post, attempts)
         if candidate:
             return candidate
-    return local_fallback(repo, post, head_ref, token, attempts)
+    try:
+        return local_fallback(repo, post, head_ref, token, attempts, existing_hashes=existing_hashes)
+    except TypeError:
+        return local_fallback(repo, post, head_ref, token, attempts)
 
 
 v3.local_fallback = local_fallback

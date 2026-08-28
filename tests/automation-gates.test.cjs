@@ -90,6 +90,9 @@ function testTrustedArticleImageV2() {
   assert(workerV4.includes('candidate_path.read_bytes()'));
   assert(workerV4.includes('IMAGE_PROVIDER_PREFLIGHT'));
   assert(workerV4.includes('"local": True'));
+  assert(workerV4.includes('collect_existing_hashes'));
+  assert(workerV4.includes('sha256_collision'));
+  assert(workerV3.includes('stock_queries'));
   assert(!workerV4.includes('core.github_content(repo, source_path'));
 
   // The raw gate remains strict for any image-bearing PR, while the production

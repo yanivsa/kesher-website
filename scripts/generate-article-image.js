@@ -219,16 +219,29 @@ async function main() {
   if (unsplashKey) {
     try {
       console.warn("Attempting image fallback via Unsplash Search API...");
-      const categoryKey = getCategoryKey(slug, title);
-      const queryMap = {
-        relocation: "couple relocation moving discussion daylight",
-        dating: "couple cozy conversation coffee shop",
-        singleness: "woman thoughtful reflection home daylight",
-        boundaries: "couple sitting living room respectful discussion",
-        parenting: "parent child warm emotional support home",
-        default: "couple warm conversation authentic living room"
-      };
-      const query = queryMap[categoryKey] || queryMap.default;
+      const text = (slug + " " + title).toLowerCase();
+      let query = "couple warm conversation authentic living room";
+      if (/כסף|חשבון|כלכלי|הוצאות|budget|money|financial/.test(text)) {
+        query = "couple money finances budget conversation table";
+      } else if (/טלפון|מסך|הסחות דעת|distraction|screen|phone/.test(text)) {
+        query = "couple smartphone distraction living room disconnect";
+      } else if (/בגיד|אמון|שקר|infidelity|trust/.test(text)) {
+        query = "couple emotional reconciliation serious discussion daylight";
+      } else if (/רווקות|שישי|singleness|single/.test(text)) {
+        query = "thoughtful person reflection dining table warm light";
+      } else if (/רילוקיישן|שפה|relocation|aliyah/.test(text)) {
+        query = "couple living room relocation moving boxes conversation";
+      } else if (/מחוננ|פרפקציוניזם|gifted|perfectionism/.test(text)) {
+        query = "parent comforting young child desk studying";
+      } else if (/קשב|adhd|ילקוט|בוקר|routine/.test(text)) {
+        query = "parent helping young child morning routine school bag";
+      } else if (/דייט|היכרות|dating/.test(text)) {
+        query = "two people coffee date outdoor seating authentic conversation";
+      } else if (/נישוא|חתונה|premarital|wedding/.test(text)) {
+        query = "engaged couple planning table smiling natural light";
+      } else if (/הור|ילד|parent|child/.test(text)) {
+        query = "parent child warm emotional support home";
+      }
       const imgUrl = await tryUnsplashApi(unsplashKey, query);
       await downloadImage(imgUrl, outputPath);
       console.log(`/images/generated/blog/${slug}.jpg`);

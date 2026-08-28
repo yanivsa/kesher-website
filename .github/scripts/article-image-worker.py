@@ -149,14 +149,65 @@ def article_key(post: dict[str, Any]) -> str:
     return "couples"
 
 
+KEYWORD_QUERY_RULES: list[tuple[str, str]] = [
+    (r"כסף|חשבון|כלכלי|הוצאות|פזרנ|חסכנ", "couple money finances budget conversation table"),
+    (r"טלפון|מסך|הסחות דעת|אל הקיר|סמארטפון", "couple smartphone distraction living room disconnect"),
+    (r"בגיד|אמון|שקר|לסדוק|לב שבור", "couple emotional reconciliation serious discussion daylight"),
+    (r"התגוננ|האשמות|להתווכח|מריב", "couple honest talk conflict resolution calm"),
+    (r"רווקות|שישי|ארוחת שישי|רווק|לחץ משפחתי", "thoughtful person reflection dining table warm light"),
+    (r"שחיקה|דייטים|היכרויות|אפליקציות|כוונות", "young adult thoughtful coffee shop candid portrait"),
+    (r"רילוקיישן|שפה|הגירה|עולים|זרות", "couple living room relocation moving boxes conversation"),
+    (r"מחוננ|פרפקציוניזם|דף נקרע|תסכול", "parent comforting young child desk studying"),
+    (r"הפרעת קשב|adhd|קשב|ילקוט|בוקר|פיג'מה", "parent helping young child morning routine school bag"),
+    (r"כיתה א|מסגרת חדשה|מעבר לבית ספר", "parent child walking together school morning"),
+    (r"עבודה|חמש אחר הצהריים|עייפות", "couple greeting home entrance evening reunion"),
+    (r"דייט|היכרות|התקרבות|סמס", "two people coffee date outdoor seating authentic conversation"),
+    (r"נישוא|חתונה|הכנה לנישואים", "engaged couple planning table smiling natural light"),
+]
+
+
+def stock_queries(post: dict[str, Any]) -> list[str]:
+    text = " ".join([str(post.get(k) or "") for k in ("id", "title", "excerpt", "category", "subcategory")]).lower()
+    queries: list[str] = []
+    for pattern, query in KEYWORD_QUERY_RULES:
+        if re.search(pattern, text, re.I):
+            if query not in queries:
+                queries.append(query)
+    key = article_key(post)
+    default_query = {
+        "dating": "couple talking coffee date relationship",
+        "singles": "adult friends conversation social",
+        "relocation": "couple moving home boxes conversation",
+        "premarital": "engaged couple planning together home",
+        "parenting": "parent child supportive conversation home",
+        "gifted": "parent child studying supportive",
+        "adhd": "parent child school routine supportive",
+        "couples": "couple talking listening relationship home",
+    }.get(key, "couple talking listening relationship home")
+    if default_query not in queries:
+        queries.append(default_query)
+    return queries
+
+
+def stock_query(post: dict[str, Any]) -> str:
+    return stock_queries(post)[0]
+
+
 def image_prompt(post: dict[str, Any]) -> str:
+    title = str(post.get("title") or "").strip()
+    category = str(post.get("category") or "").strip()
+    subcategory = str(post.get("subcategory") or "").strip()
+    excerpt = str(post.get("excerpt") or "").strip()
     return (
-        "Create one photorealistic editorial hero photograph for a Hebrew professional article. "
-        "No text, no logos, no infographic, no illustration, no symbolic hands/hearts, no empty room. "
-        "Show real people in a natural Israeli everyday setting and a concrete interaction relevant to the topic. "
-        "Warm natural light, candid documentary feel, 16:9 landscape. "
-        f"Article title: {post.get('title','')}. Category: {post.get('category','')}. "
-        f"Context: {post.get('excerpt','')[:500]}"
+        "Create one photorealistic editorial hero photograph for a Hebrew professional counseling article. "
+        "Style: Authentic documentary editorial photography, 35mm lens, natural warm daylight, 16:9 landscape aspect ratio. "
+        "Setting: Realistic everyday Israeli apartment, home kitchen, balcony, or neighborhood cafe. "
+        "Subjects: Real Israeli people with natural, candid expressions and genuine emotional interaction. "
+        "Strict rules: Absolutely no text, no captions, no logos, no watermarks, no illustrations, no 3D renders, "
+        "no infographic diagrams, no surreal symbolism, no floating objects, no empty clinic rooms. "
+        f"Article title: {title}. "
+        f"Category: {category}{(' - ' + subcategory) if subcategory else ''}. "
+        f"Context: {excerpt[:500]}"
     )
 
 
@@ -182,7 +233,7 @@ def extract_image_block(value: Any) -> tuple[bytes, str] | None:
     return None
 
 
-def try_gemini(post: dict[str, Any], attempts: list[str]) -> ImageCandidate | None:
+def try_gemini(post: dict[str, Any], attempts: list[str], existing_hashes: set[str] | None = None) -> ImageCandidate | None:
     attempts.append("gemini")
     key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not key:
@@ -203,85 +254,93 @@ def try_gemini(post: dict[str, Any], attempts: list[str]) -> ImageCandidate | No
             return None
         data, _mime = found
         _w, _h, ext = validate_candidate(data)
+        digest = hashlib.sha256(data).hexdigest()
+        if existing_hashes and digest in existing_hashes:
+            print("IMAGE_PROVIDER_REJECTED provider=gemini reason=sha256_collision", file=sys.stderr)
+            return None
         return ImageCandidate("Gemini", data, ext, f"https://ai.google.dev/gemini-api/docs/image-generation#{GEMINI_MODEL}", "תמונה פוטוריאליסטית שנוצרה ישירות מהכותרת והתקציר של המאמר", attempts.copy())
     except Exception as exc:
         print(f"IMAGE_PROVIDER_FAILED provider=gemini error={type(exc).__name__}", file=sys.stderr)
         return None
 
 
-def stock_query(post: dict[str, Any]) -> str:
-    key = article_key(post)
-    return {
-        "dating": "couple talking coffee date relationship",
-        "singles": "adult friends conversation social",
-        "relocation": "couple moving home boxes conversation",
-        "premarital": "engaged couple planning together home",
-        "parenting": "parent child supportive conversation home",
-        "gifted": "parent child studying supportive",
-        "adhd": "parent child school routine supportive",
-        "couples": "couple talking listening relationship home",
-    }[key]
-
-
-def try_unsplash(post: dict[str, Any], attempts: list[str]) -> ImageCandidate | None:
+def try_unsplash(post: dict[str, Any], attempts: list[str], existing_hashes: set[str] | None = None) -> ImageCandidate | None:
     attempts.append("unsplash")
     key = os.environ.get("UNSPLASH_ACCESS_KEY")
     if not key:
         return None
     try:
-        q = urllib.parse.quote(stock_query(post))
-        result = request_json("GET", f"https://api.unsplash.com/search/photos?query={q}&orientation=landscape&per_page=5", headers={"Authorization": f"Client-ID {key}"})
-        for photo in result.get("results", []):
-            url = (photo.get("urls") or {}).get("regular")
-            source = (photo.get("links") or {}).get("html")
-            if not url or not source:
-                continue
-            data = download(url)
-            _w, _h, ext = validate_candidate(data)
-            return ImageCandidate("Unsplash", data, ext, source, f"צילום נוף אופקי שנבחר בחיפוש ממוקד: {stock_query(post)}", attempts.copy())
+        for query_text in stock_queries(post):
+            q = urllib.parse.quote(query_text)
+            result = request_json("GET", f"https://api.unsplash.com/search/photos?query={q}&orientation=landscape&per_page=5", headers={"Authorization": f"Client-ID {key}"})
+            for photo in result.get("results", []):
+                url = (photo.get("urls") or {}).get("regular")
+                source = (photo.get("links") or {}).get("html")
+                if not url or not source:
+                    continue
+                data = download(url)
+                _w, _h, ext = validate_candidate(data)
+                digest = hashlib.sha256(data).hexdigest()
+                if existing_hashes and digest in existing_hashes:
+                    print("IMAGE_PROVIDER_REJECTED provider=unsplash reason=sha256_collision", file=sys.stderr)
+                    continue
+                return ImageCandidate("Unsplash", data, ext, source, f"צילום נוף אופקי שנבחר בחיפוש ממוקד: {query_text}", attempts.copy())
     except Exception as exc:
         print(f"IMAGE_PROVIDER_FAILED provider=unsplash error={type(exc).__name__}", file=sys.stderr)
     return None
 
 
-def try_pexels(post: dict[str, Any], attempts: list[str]) -> ImageCandidate | None:
+def try_pexels(post: dict[str, Any], attempts: list[str], existing_hashes: set[str] | None = None) -> ImageCandidate | None:
     attempts.append("pexels")
     key = os.environ.get("PEXELS_API_KEY")
     if not key:
         return None
     try:
-        q = urllib.parse.quote(stock_query(post))
-        result = request_json("GET", f"https://api.pexels.com/v1/search?query={q}&orientation=landscape&per_page=5", headers={"Authorization": key})
-        for photo in result.get("photos", []):
-            src = photo.get("src") or {}
-            url = src.get("large") or src.get("large2x")
-            source = photo.get("url")
-            if not url or not source:
-                continue
-            data = download(url)
-            _w, _h, ext = validate_candidate(data)
-            return ImageCandidate("Pexels", data, ext, source, f"צילום נוף אופקי שנבחר בחיפוש ממוקד: {stock_query(post)}", attempts.copy())
+        for query_text in stock_queries(post):
+            q = urllib.parse.quote(query_text)
+            result = request_json("GET", f"https://api.pexels.com/v1/search?query={q}&orientation=landscape&per_page=5", headers={"Authorization": key})
+            for photo in result.get("photos", []):
+                src = photo.get("src") or {}
+                url = src.get("large") or src.get("large2x")
+                source = photo.get("url")
+                if not url or not source:
+                    continue
+                data = download(url)
+                _w, _h, ext = validate_candidate(data)
+                digest = hashlib.sha256(data).hexdigest()
+                if existing_hashes and digest in existing_hashes:
+                    print("IMAGE_PROVIDER_REJECTED provider=pexels reason=sha256_collision", file=sys.stderr)
+                    continue
+                return ImageCandidate("Pexels", data, ext, source, f"צילום נוף אופקי שנבחר בחיפוש ממוקד: {query_text}", attempts.copy())
     except Exception as exc:
         print(f"IMAGE_PROVIDER_FAILED provider=pexels error={type(exc).__name__}", file=sys.stderr)
     return None
 
 
-def local_fallback(repo: str, post: dict[str, Any], head_ref: str, token: str, attempts: list[str]) -> ImageCandidate:
+def local_fallback(repo: str, post: dict[str, Any], head_ref: str, token: str, attempts: list[str], existing_hashes: set[str] | None = None) -> ImageCandidate | None:
     attempts.append("local-curated")
     source_path, description = LOCAL_FALLBACKS[article_key(post)]
     payload = github_content(repo, source_path, head_ref, token)
     data = decode_content(payload)
     _w, _h, ext = validate_candidate(data)
+    digest = hashlib.sha256(data).hexdigest()
+    if existing_hashes and digest in existing_hashes:
+        print("IMAGE_LOCAL_FALLBACK_REJECTED reason=sha256_collision", file=sys.stderr)
+        return None
     return ImageCandidate("Local", data, ext, f"local://{source_path}", description, attempts.copy())
 
 
-def choose_candidate(repo: str, post: dict[str, Any], head_ref: str, token: str) -> ImageCandidate:
+def choose_candidate(repo: str, post: dict[str, Any], head_ref: str, token: str, existing_hashes: set[str] | None = None) -> ImageCandidate | None:
     attempts: list[str] = []
-    for provider in (try_gemini, try_unsplash, try_pexels):
+    for provider in (
+        lambda p, att: try_gemini(p, att, existing_hashes),
+        lambda p, att: try_unsplash(p, att, existing_hashes),
+        lambda p, att: try_pexels(p, att, existing_hashes),
+    ):
         candidate = provider(post, attempts)
         if candidate:
             return candidate
-    return local_fallback(repo, post, head_ref, token, attempts)
+    return local_fallback(repo, post, head_ref, token, attempts, existing_hashes)
 
 
 def summaries(posts: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -361,6 +420,9 @@ def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
         return False
 
     candidate = choose_candidate(repo, post, pr["head"]["sha"], token)
+    if candidate is None:
+        print(f"ARTICLE_IMAGE_SKIPPED id={post.get('id')} reason=no_unique_image_available")
+        return False
     width, height, ext = validate_candidate(candidate.data)
     image_path = f"{IMAGE_PREFIX}{post['id']}.{ext}"
     public_path = f"{PUBLIC_PREFIX}{post['id']}.{ext}"

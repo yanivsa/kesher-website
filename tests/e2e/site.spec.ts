@@ -379,3 +379,58 @@ test('booking listener rejects Calendly-shaped messages from an untrusted origin
   );
   expect(bookingCount).toBe(0);
 });
+
+test('couples crisis landing page (/services/couples/crisis) captures crisis intent and trackable embed', async ({ page }) => {
+  await page.goto('/services/couples/crisis?gclid=test_crisis_gclid&utm_source=google&utm_campaign=crisis_search');
+
+  await expect(page.getByRole('heading', { name: 'זוגיות במשבר? אפשר להתחיל משיחה אחת רגועה', level: 1 })).toBeVisible();
+  await expect(page.getByText('500 ₪').first()).toBeVisible();
+  await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ זוגי עם שירה סהרוני"]')).toBeVisible();
+
+  const trackingState = await page.evaluate(() => ({
+    source: sessionStorage.getItem('kesher_attr_utm_source'),
+    campaign: sessionStorage.getItem('kesher_attr_utm_campaign'),
+    googleClickPresent: sessionStorage.getItem('kesher_attr_google_click_id_present'),
+    dataLayerHasView: Array.isArray(window.dataLayer) && window.dataLayer.some(
+      (evt) => evt.event === 'landing_page_view' && evt.landing_page_type === 'crisis'
+    ),
+  }));
+
+  expect(trackingState).toEqual({
+    source: 'google',
+    campaign: 'crisis_search',
+    googleClickPresent: 'true',
+    dataLayerHasView: true,
+  });
+
+  const whatsappLink = page.getByRole('link', { name: /WhatsApp/i }).first();
+  await expect(whatsappLink).toHaveAttribute('href', /wa\.me/);
+});
+
+test('couples before-separation landing page (/services/couples/before-separation) renders non-legal framing and trackable embed', async ({ page }) => {
+  await page.goto('/services/couples/before-separation?gclid=test_sep_gclid&utm_source=google&utm_campaign=before_sep_search');
+
+  await expect(page.getByRole('heading', { name: 'לפני שמקבלים החלטה כבדה – בירור זוגי רגוע וממוקד', level: 1 })).toBeVisible();
+  await expect(page.getByText('500 ₪').first()).toBeVisible();
+  await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת בירור וייעוץ זוגי עם שירה סהרוני"]')).toBeVisible();
+
+  const trackingState = await page.evaluate(() => ({
+    source: sessionStorage.getItem('kesher_attr_utm_source'),
+    campaign: sessionStorage.getItem('kesher_attr_utm_campaign'),
+    googleClickPresent: sessionStorage.getItem('kesher_attr_google_click_id_present'),
+    dataLayerHasView: Array.isArray(window.dataLayer) && window.dataLayer.some(
+      (evt) => evt.event === 'landing_page_view' && evt.landing_page_type === 'before_separation'
+    ),
+  }));
+
+  expect(trackingState).toEqual({
+    source: 'google',
+    campaign: 'before_sep_search',
+    googleClickPresent: 'true',
+    dataLayerHasView: true,
+  });
+
+  // Verify non-legal disclaimer exists
+  await expect(page.getByText('אינו מהווה ייעוץ משפטי').first()).toBeVisible();
+});
+

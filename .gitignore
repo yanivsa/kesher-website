@@ -46,3 +46,22 @@ src/**/*.d.ts.map
 vite.config.js.map
 vite.config.d.ts
 vite.config.d.ts.map
+
+# Local ad management scratch scripts & media
+dub-output/
+notebooklm-output/
+remotion-output/
+kesher_google_ads_*
+upload_*.py
+scripts/*_ads*
+scripts/*campaign*
+scripts/*auth*
+scripts/*notebooklm*
+scripts/list_*.py
+scripts/upload_*.py
+scripts/upload_*.cjs
+scripts/verify_*.py
+scripts/verify_*.cjs
+scripts/test_*.py
+scripts/inspect_*.mjs
+

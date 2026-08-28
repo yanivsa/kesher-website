@@ -138,7 +138,7 @@ def verify_pixels(post: dict[str, Any], data: bytes, ext: str) -> tuple[bool, st
     return True, description
 
 
-def try_gemini(post: dict[str, Any], attempts: list[str]) -> core.ImageCandidate | None:
+def try_gemini(post: dict[str, Any], attempts: list[str], existing_hashes: set[str] | None = None) -> core.ImageCandidate | None:
     attempts.append("gemini")
     if not google_key():
         return None
@@ -157,6 +157,10 @@ def try_gemini(post: dict[str, Any], attempts: list[str]) -> core.ImageCandidate
         if not data:
             raise RuntimeError("Gemini returned no inline image")
         _w, _h, ext = core.validate_candidate(data)
+        digest = hashlib.sha256(data).hexdigest()
+        if existing_hashes and digest in existing_hashes:
+            print("IMAGE_PROVIDER_REJECTED provider=gemini reason=sha256_collision", file=sys.stderr)
+            return None
         matched, description = verify_pixels(post, data, ext)
         if not matched:
             print("IMAGE_PROVIDER_REJECTED provider=gemini reason=pixel_mismatch", file=sys.stderr)
@@ -171,65 +175,70 @@ def try_gemini(post: dict[str, Any], attempts: list[str]) -> core.ImageCandidate
         return None
 
 
-def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str) -> core.ImageCandidate | None:
+def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str, existing_hashes: set[str] | None = None) -> core.ImageCandidate | None:
     # Stock search metadata is not visual evidence. Without a pixel verifier we
     # skip stock entirely and use the repository-curated fallback.
     if not google_key():
         return None
-    query = urllib.parse.quote(core.stock_query(post))
-    try:
-        if provider == "unsplash":
-            key = os.environ.get("UNSPLASH_ACCESS_KEY", "").strip()
-            if not key:
-                return None
-            result = core.request_json(
-                "GET",
-                f"https://api.unsplash.com/search/photos?query={query}&orientation=landscape&per_page=5",
-                headers={"Authorization": f"Client-ID {key}"},
-            )
-            rows = [
-                ((photo.get("urls") or {}).get("regular"), (photo.get("links") or {}).get("html"))
-                for photo in (result.get("results") or []) if isinstance(photo, dict)
-            ]
-            label = "Unsplash"
-        else:
-            key = os.environ.get("PEXELS_API_KEY", "").strip()
-            if not key:
-                return None
-            result = core.request_json(
-                "GET",
-                f"https://api.pexels.com/v1/search?query={query}&orientation=landscape&per_page=5",
-                headers={"Authorization": key},
-            )
-            rows = [
-                (((photo.get("src") or {}).get("large") or (photo.get("src") or {}).get("large2x")), photo.get("url"))
-                for photo in (result.get("photos") or []) if isinstance(photo, dict)
-            ]
-            label = "Pexels"
-        for url, source in rows:
-            if not url or not source:
-                continue
-            data = core.download(str(url))
-            _w, _h, ext = core.validate_candidate(data)
-            matched, description = verify_pixels(post, data, ext)
-            if matched:
-                return core.ImageCandidate(label, data, ext, str(source), description, attempts.copy())
-    except Exception as exc:
-        print(f"IMAGE_PROVIDER_FAILED provider={provider} error={type(exc).__name__}", file=sys.stderr)
+    for query_text in core.stock_queries(post):
+        query = urllib.parse.quote(query_text)
+        try:
+            if provider == "unsplash":
+                key = os.environ.get("UNSPLASH_ACCESS_KEY", "").strip()
+                if not key:
+                    return None
+                result = core.request_json(
+                    "GET",
+                    f"https://api.unsplash.com/search/photos?query={query}&orientation=landscape&per_page=5",
+                    headers={"Authorization": f"Client-ID {key}"},
+                )
+                rows = [
+                    ((photo.get("urls") or {}).get("regular"), (photo.get("links") or {}).get("html"))
+                    for photo in (result.get("results") or []) if isinstance(photo, dict)
+                ]
+                label = "Unsplash"
+            else:
+                key = os.environ.get("PEXELS_API_KEY", "").strip()
+                if not key:
+                    return None
+                result = core.request_json(
+                    "GET",
+                    f"https://api.pexels.com/v1/search?query={query}&orientation=landscape&per_page=5",
+                    headers={"Authorization": key},
+                )
+                rows = [
+                    (((photo.get("src") or {}).get("large") or (photo.get("src") or {}).get("large2x")), photo.get("url"))
+                    for photo in (result.get("photos") or []) if isinstance(photo, dict)
+                ]
+                label = "Pexels"
+            for url, source in rows:
+                if not url or not source:
+                    continue
+                data = core.download(str(url))
+                _w, _h, ext = core.validate_candidate(data)
+                digest = hashlib.sha256(data).hexdigest()
+                if existing_hashes and digest in existing_hashes:
+                    print(f"IMAGE_STOCK_REJECTED provider={provider} reason=sha256_collision", file=sys.stderr)
+                    continue
+                matched, description = verify_pixels(post, data, ext)
+                if matched:
+                    return core.ImageCandidate(label, data, ext, str(source), description, attempts.copy())
+        except Exception as exc:
+            print(f"IMAGE_PROVIDER_FAILED provider={provider} error={type(exc).__name__}", file=sys.stderr)
     return None
 
 
-def try_unsplash(post: dict[str, Any], attempts: list[str]) -> core.ImageCandidate | None:
+def try_unsplash(post: dict[str, Any], attempts: list[str], existing_hashes: set[str] | None = None) -> core.ImageCandidate | None:
     attempts.append("unsplash")
-    return _stock_candidate(post, attempts, "unsplash")
+    return _stock_candidate(post, attempts, "unsplash", existing_hashes)
 
 
-def try_pexels(post: dict[str, Any], attempts: list[str]) -> core.ImageCandidate | None:
+def try_pexels(post: dict[str, Any], attempts: list[str], existing_hashes: set[str] | None = None) -> core.ImageCandidate | None:
     attempts.append("pexels")
-    return _stock_candidate(post, attempts, "pexels")
+    return _stock_candidate(post, attempts, "pexels", existing_hashes)
 
 
-def local_fallback(repo: str, post: dict[str, Any], _head_ref: str, token: str, attempts: list[str]) -> core.ImageCandidate:
+def local_fallback(repo: str, post: dict[str, Any], _head_ref: str, token: str, attempts: list[str], existing_hashes: set[str] | None = None) -> core.ImageCandidate | None:
     attempts.append("local-curated")
     source_path, description = core.LOCAL_FALLBACKS[core.article_key(post)]
     # Security/trust invariant: the curated source is always read from trusted
@@ -237,16 +246,26 @@ def local_fallback(repo: str, post: dict[str, Any], _head_ref: str, token: str, 
     payload = core.github_content(repo, source_path, "main", token)
     data = core.decode_content(payload)
     _w, _h, ext = core.validate_candidate(data)
+    digest = hashlib.sha256(data).hexdigest()
+    if existing_hashes and digest in existing_hashes:
+        print("IMAGE_LOCAL_FALLBACK_REJECTED reason=sha256_collision", file=sys.stderr)
+        return None
     return core.ImageCandidate("Local", data, ext, f"local://{source_path}", description, attempts.copy())
 
 
-def choose_candidate(repo: str, post: dict[str, Any], head_ref: str, token: str) -> core.ImageCandidate:
+def choose_candidate(repo: str, post: dict[str, Any], head_ref: str, token: str, existing_hashes: set[str] | None = None) -> core.ImageCandidate | None:
     attempts: list[str] = []
     for provider in (try_gemini, try_unsplash, try_pexels):
-        candidate = provider(post, attempts)
+        try:
+            candidate = provider(post, attempts, existing_hashes=existing_hashes)
+        except TypeError:
+            candidate = provider(post, attempts)
         if candidate:
             return candidate
-    return local_fallback(repo, post, head_ref, token, attempts)
+    try:
+        return local_fallback(repo, post, head_ref, token, attempts, existing_hashes=existing_hashes)
+    except TypeError:
+        return local_fallback(repo, post, head_ref, token, attempts)
 
 
 def word_count(html: str) -> int:
@@ -375,6 +394,9 @@ def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
         return False
 
     candidate = choose_candidate(repo, post, pr["head"]["sha"], token)
+    if candidate is None:
+        print(f"ARTICLE_IMAGE_SKIPPED id={post.get('id')} reason=no_unique_image_available")
+        return False
     width, height, ext = core.validate_candidate(candidate.data)
     image_path = f"{IMAGE_PREFIX}{post['id']}.{ext}"
     public_path = f"{PUBLIC_PREFIX}{post['id']}.{ext}"

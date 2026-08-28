@@ -62,6 +62,8 @@ const privacy = loadable(() => import('./pages/Legal/PrivacyPolicy'));
 const terms = loadable(() => import('./pages/Legal/TermsOfUse'));
 const lectures = loadable(() => import('./pages/Lectures/LecturesPage'));
 const couplesCounselingAshdod = loadable(() => import('./pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage'));
+const couplesCrisis = loadable(() => import('./pages/Landing/CouplesCrisis/CouplesCrisisPage'));
+const couplesBeforeSeparation = loadable(() => import('./pages/Landing/CouplesBeforeSeparation/CouplesBeforeSeparationPage'));
 const thankYouBooked = loadable(() => import('./pages/ThankYou/ThankYouBookedPage'));
 const thankYouContact = loadable(() => import('./pages/ThankYou/ThankYouContactPage'));
 const notFound = loadable(() => import('./pages/NotFound/NotFound'));
@@ -91,6 +93,8 @@ const { Page: AccessibilityPage } = accessibility;
 const { Page: PrivacyPolicy } = privacy;
 const { Page: TermsOfUse } = terms;
 const { Page: CouplesCounselingAshdodPage } = couplesCounselingAshdod;
+const { Page: CouplesCrisisPage } = couplesCrisis;
+const { Page: CouplesBeforeSeparationPage } = couplesBeforeSeparation;
 const { Page: ThankYouBookedPage } = thankYouBooked;
 const { Page: ThankYouContactPage } = thankYouContact;
 const { Page: NotFound } = notFound;
@@ -99,6 +103,9 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/$/, home.preload],
   [/^\/beta3\/?$/, beta3.preload],
   [/^\/couples-counseling-ashdod\/?$/, couplesCounselingAshdod.preload],
+  [/^\/services\/couples\/ashdod\/?$/, couplesCounselingAshdod.preload],
+  [/^\/services\/couples\/crisis\/?$/, couplesCrisis.preload],
+  [/^\/services\/couples\/before-separation\/?$/, couplesBeforeSeparation.preload],
   [/^\/thank-you-booked\/?$/, thankYouBooked.preload],
   [/^\/thank-you-contact\/?$/, thankYouContact.preload],
   [/^\/about\/?$/, about.preload],
@@ -139,6 +146,9 @@ function App() {
           <Route path="/beta2" element={<Navigate to="/" replace />} />
           <Route path="/beta3" element={<Beta3 />} />
           <Route path="/couples-counseling-ashdod" element={<CouplesCounselingAshdodPage />} />
+          <Route path="/services/couples/ashdod" element={<CouplesCounselingAshdodPage />} />
+          <Route path="/services/couples/crisis" element={<CouplesCrisisPage />} />
+          <Route path="/services/couples/before-separation" element={<CouplesBeforeSeparationPage />} />
           <Route path="/thank-you-booked" element={<ThankYouBookedPage />} />
           <Route path="/thank-you-contact" element={<ThankYouContactPage />} />
           <Route path="/about" element={<AboutPage />} />

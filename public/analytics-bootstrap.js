@@ -30,17 +30,44 @@
 
   var bootstrapScript = document.currentScript;
   var containerId = bootstrapScript && bootstrapScript.getAttribute('data-gtm-id');
-  if (!containerId || containerId.indexOf('VITE_') === 0 || !/^GTM-[A-Z0-9]+$/i.test(containerId)) {
+  if (!containerId || containerId.indexOf('VITE_') === 0 || containerId === 'disabled') {
     return;
   }
 
-  window.dataLayer.push({
-    'gtm.start': new Date().getTime(),
-    event: 'gtm.js',
-  });
+  if (/^GTM-[A-Z0-9]+$/i.test(containerId)) {
+    window.dataLayer.push({
+      'gtm.start': new Date().getTime(),
+      event: 'gtm.js',
+    });
 
-  var script = document.createElement('script');
-  script.async = true;
-  script.src = 'https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(containerId);
-  document.head.appendChild(script);
+    var gtmScript = document.createElement('script');
+    gtmScript.async = true;
+    gtmScript.src = 'https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(containerId);
+    document.head.appendChild(gtmScript);
+    return;
+  }
+
+  if (/^G-[A-Z0-9]+$/i.test(containerId)) {
+    var gaScript = document.createElement('script');
+    gaScript.async = true;
+    gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(containerId);
+    document.head.appendChild(gaScript);
+
+    window.gtag('js', new Date());
+    window.gtag('config', containerId);
+
+    var originalPush = window.dataLayer.push;
+    window.dataLayer.push = function () {
+      for (var i = 0; i < arguments.length; i++) {
+        var item = arguments[i];
+        if (item && typeof item === 'object' && typeof item.event === 'string' && item.event !== 'gtm.js') {
+          var eventName = item.event;
+          var params = Object.assign({}, item);
+          delete params.event;
+          window.gtag('event', eventName, params);
+        }
+      }
+      return originalPush.apply(window.dataLayer, arguments);
+    };
+  }
 })();

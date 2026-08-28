@@ -71,6 +71,7 @@ const writeRoute = (route, html) => {
 
     await page.goto(`http://127.0.0.1:${port}/__not-found__`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#main-content h1');
+    await page.waitForSelector('meta[name="robots"][content*="noindex"]', { state: 'attached' });
     fs.writeFileSync(path.join(dist, '404.html'), await page.content());
   } finally {
     if (browser) await browser.close();

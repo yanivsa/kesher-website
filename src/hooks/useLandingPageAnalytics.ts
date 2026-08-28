@@ -1,16 +1,49 @@
 import { useEffect, useRef } from 'react';
 
-export const useLandingPageAnalytics = (variantId: string = 'A') => {
+export interface LandingPageAnalyticsOptions {
+  variantId?: string;
+  landingPagePath?: string;
+  landingPageType?: string;
+  serviceType?: string;
+}
+
+export function useLandingPageAnalytics(variantId?: string): {
+  trackCtaClick: (ctaName: string, ctaLocation: string) => void;
+  trackSecondaryCtaClick: (ctaName: string, ctaLocation: string) => void;
+  trackPhoneClick: () => void;
+  trackWhatsappClick: () => void;
+  trackCalendlyOpen: () => void;
+};
+export function useLandingPageAnalytics(options: LandingPageAnalyticsOptions): {
+  trackCtaClick: (ctaName: string, ctaLocation: string) => void;
+  trackSecondaryCtaClick: (ctaName: string, ctaLocation: string) => void;
+  trackPhoneClick: () => void;
+  trackWhatsappClick: () => void;
+  trackCalendlyOpen: () => void;
+};
+export function useLandingPageAnalytics(
+  optionsOrVariantId: string | LandingPageAnalyticsOptions = 'A',
+) {
   const scroll50Tracked = useRef(false);
   const scroll90Tracked = useRef(false);
+
+  const options: LandingPageAnalyticsOptions =
+    typeof optionsOrVariantId === 'string'
+      ? { variantId: optionsOrVariantId }
+      : optionsOrVariantId || {};
+
+  const variantId = options.variantId || 'A';
+  const landingPagePath = options.landingPagePath || '/couples-counseling-ashdod';
+  const landingPageType = options.landingPageType || 'ashdod';
+  const serviceType = options.serviceType || 'couples_counseling';
 
   useEffect(() => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: 'landing_page_view',
-      landing_page_path: '/couples-counseling-ashdod',
-      landing_page_type: 'ashdod',
-      service_type: 'couples_counseling',
+      landing_page_path: landingPagePath,
+      landing_page_type: landingPageType,
+      service_type: serviceType,
       variant_id: variantId,
     });
 
@@ -26,7 +59,9 @@ export const useLandingPageAnalytics = (variantId: string = 'A') => {
         window.dataLayer.push({
           event: 'scroll_50',
           variant_id: variantId,
-          landing_page_path: '/couples-counseling-ashdod',
+          landing_page_path: landingPagePath,
+          landing_page_type: landingPageType,
+          service_type: serviceType,
         });
       }
 
@@ -35,7 +70,9 @@ export const useLandingPageAnalytics = (variantId: string = 'A') => {
         window.dataLayer.push({
           event: 'scroll_90',
           variant_id: variantId,
-          landing_page_path: '/couples-counseling-ashdod',
+          landing_page_path: landingPagePath,
+          landing_page_type: landingPageType,
+          service_type: serviceType,
         });
       }
     };
@@ -45,7 +82,7 @@ export const useLandingPageAnalytics = (variantId: string = 'A') => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [variantId]);
+  }, [variantId, landingPagePath, landingPageType, serviceType]);
 
   const trackCtaClick = (ctaName: string, ctaLocation: string) => {
     window.dataLayer = window.dataLayer || [];
@@ -54,7 +91,9 @@ export const useLandingPageAnalytics = (variantId: string = 'A') => {
       cta_name: ctaName,
       cta_location: ctaLocation,
       variant_id: variantId,
-      landing_page_path: '/couples-counseling-ashdod',
+      landing_page_path: landingPagePath,
+      landing_page_type: landingPageType,
+      service_type: serviceType,
     });
   };
 
@@ -65,7 +104,9 @@ export const useLandingPageAnalytics = (variantId: string = 'A') => {
       cta_name: ctaName,
       cta_location: ctaLocation,
       variant_id: variantId,
-      landing_page_path: '/couples-counseling-ashdod',
+      landing_page_path: landingPagePath,
+      landing_page_type: landingPageType,
+      service_type: serviceType,
     });
   };
 
@@ -74,7 +115,9 @@ export const useLandingPageAnalytics = (variantId: string = 'A') => {
     window.dataLayer.push({
       event: 'phone_click',
       variant_id: variantId,
-      landing_page_path: '/couples-counseling-ashdod',
+      landing_page_path: landingPagePath,
+      landing_page_type: landingPageType,
+      service_type: serviceType,
     });
   };
 
@@ -83,7 +126,9 @@ export const useLandingPageAnalytics = (variantId: string = 'A') => {
     window.dataLayer.push({
       event: 'whatsapp_click',
       variant_id: variantId,
-      landing_page_path: '/couples-counseling-ashdod',
+      landing_page_path: landingPagePath,
+      landing_page_type: landingPageType,
+      service_type: serviceType,
     });
   };
 
@@ -92,7 +137,9 @@ export const useLandingPageAnalytics = (variantId: string = 'A') => {
     window.dataLayer.push({
       event: 'calendly_open',
       variant_id: variantId,
-      landing_page_path: '/couples-counseling-ashdod',
+      landing_page_path: landingPagePath,
+      landing_page_type: landingPageType,
+      service_type: serviceType,
     });
   };
 
@@ -103,4 +150,4 @@ export const useLandingPageAnalytics = (variantId: string = 'A') => {
     trackWhatsappClick,
     trackCalendlyOpen,
   };
-};
+}

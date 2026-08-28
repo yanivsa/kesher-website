@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import inspect
 import json
@@ -203,6 +204,39 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIn("actions/workflows/ci.yml/dispatches", workflow)
         self.assertNotIn("actions/checkout@v", workflow)
 
+    def test_sha256_uniqueness_enforced_and_collision_rejected(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_sha_test")
+        fake_data = fake_png()
+        fake_sha = hashlib.sha256(fake_data).hexdigest()
+        existing_hashes = {fake_sha}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            worker.REPO_ROOT = Path(tmp)
+            worker.LOCAL_FALLBACK_CANDIDATES = {
+                "couples": [("public/images/generated/blog/colliding.png", "זוג בשיחה פנים אל פנים המדגישה תקשורת וקשר")]
+            }
+            target = worker.REPO_ROOT / "public/images/generated/blog/colliding.png"
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(fake_data)
+
+            # When existing_hashes contains the candidate hash, local_fallback must reject it
+            candidate = worker.local_fallback(
+                "o/r", {"title": "שיחה", "id": "x"}, "sha", "t", [], existing_hashes=existing_hashes
+            )
+            self.assertIsNone(candidate)
+
+    def test_contextual_stock_queries_generated_from_post_content(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_queries_test")
+        queries_finance = worker.core.stock_queries({"title": "ניהול תקציב וחשבון משותף לזוגות צעירים", "category": "זוגיות"})
+        self.assertTrue(any("money" in q or "finances" in q or "budget" in q for q in queries_finance), queries_finance)
+
+        queries_phone = worker.core.stock_queries({"title": "הסחות דעת ומסכים בקשר הזוגי", "category": "זוגיות"})
+        self.assertTrue(any("distraction" in q or "smartphone" in q for q in queries_phone), queries_phone)
+
+        queries_adhd = worker.core.stock_queries({"title": "התארגנות בוקר עם ילד עם הפרעת קשב וריכוז", "category": "הורות"})
+        self.assertTrue(any("school" in q or "routine" in q for q in queries_adhd), queries_adhd)
+
 
 if __name__ == "__main__":
     unittest.main()
+

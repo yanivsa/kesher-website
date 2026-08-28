@@ -34,9 +34,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "$VITE_GTM_CONTAINER_ID" =~ ^GTM-[A-Za-z0-9]+$ ]]; then
+          if [[ "$VITE_GTM_CONTAINER_ID" =~ ^(GTM|G)-[A-Za-z0-9]+$ ]]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
-            echo "Google Tag Manager container configuration is present."
+            echo "Google Analytics / GTM measurement configuration is present."
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
             echo "::notice::VITE_GTM_CONTAINER_ID is not configured. Booking UX and Calendly event capture will deploy, while Google Ads cookie attribution remains inactive until a GTM container is configured."
@@ -111,7 +111,7 @@ jobs:
           fi
 
           if [ "$MEASUREMENT_READY" = "true" ]; then
-            publish_status success "booking-tracking/google-measurement" "GTM container is injected into the production build"
+            publish_status success "booking-tracking/google-measurement" "Measurement container is injected into the production build"
           else
-            publish_status pending "booking-tracking/google-measurement" "GTM container ID is not configured; Google Ads attribution is pending"
+            publish_status pending "booking-tracking/google-measurement" "Measurement container ID is not configured; Google Ads attribution is pending"
           fi

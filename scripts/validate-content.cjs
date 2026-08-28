@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { ROOT, STATIC_ROUTES, isPublishable, blogRoute, wordCount, headingCount, stripHtml } = require('./content-policy.cjs');
@@ -17,6 +18,22 @@ const ensureUnique = (label, values) => {
 ensureUnique('post id', published.map((post) => post.id));
 ensureUnique('post title', published.map((post) => post.title));
 ensureUnique('post image', published.map((post) => post.image).filter(Boolean));
+
+const seenImageShas = new Map();
+for (const post of posts) {
+  if (post.image) {
+    const imagePath = path.join(ROOT, 'public', post.image.replace(/^\//, ''));
+    if (fs.existsSync(imagePath)) {
+      const fileBytes = fs.readFileSync(imagePath);
+      const hash = crypto.createHash('sha256').update(fileBytes).digest('hex');
+      if (seenImageShas.has(hash)) {
+        errors.push(`Duplicate image content (SHA-256 hash collision ${hash.slice(0, 12)}...) between '${post.id}' and '${seenImageShas.get(hash)}'`);
+      } else {
+        seenImageShas.set(hash, post.id);
+      }
+    }
+  }
+}
 
 const expectedPostSummaries = published.map(({ id, title, date, category, subcategory, excerpt, image }) => ({
   id,
@@ -38,6 +55,7 @@ for (let i = 0; i < published.length; i++) {
   if (post.image) {
     if (!post.image.startsWith('/images/')) errors.push(`Non-local image: ${post.id}`);
     if (!fs.existsSync(path.join(ROOT, 'public', post.image.replace(/^\//, '')))) errors.push(`Missing image: ${post.id}`);
+    if (!post.imageAlt || post.imageAlt.trim().length < 20) errors.push(`Missing or underspecified imageAlt in post: ${post.id}`);
   }
   if (/<script|onerror=|onclick=|javascript:/i.test(post.content)) errors.push(`Unsafe HTML: ${post.id}`);
   if (wordCount(post.content) < 500 || headingCount(post.content) < 5) errors.push(`Thin content: ${post.id}`);
