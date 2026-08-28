@@ -324,8 +324,10 @@ test('thank-you pages render with noindex and standalone layout', async ({ page 
 
 test('Calendly postMessage event scheduled triggers one booking_confirmed event and deduplicates', async ({ page }) => {
   await page.goto('/couples-counseling-ashdod');
+  await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ זוגי באשדוד עם שירה סהרוני"]')).toBeVisible();
 
   await page.evaluate(() => {
+    window.location.assign = () => {};
     window.postMessage(
       {
         event: 'calendly.event_scheduled',

@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('trusted Calendly scheduled event carries the real service context into thank-you analytics', async ({ page }) => {
   await page.goto('/appointment?utm_source=google&utm_medium=cpc&utm_campaign=general_booking');
+  await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]')).toBeVisible();
 
   await page.evaluate(() => {
     window.dispatchEvent(new MessageEvent('message', {
@@ -52,6 +53,7 @@ test('trusted Calendly scheduled event carries the real service context into tha
 
 test('untrusted Calendly-shaped message cannot produce a booking conversion', async ({ page }) => {
   await page.goto('/appointment');
+  await page.waitForLoadState('networkidle');
 
   await page.evaluate(() => {
     window.dispatchEvent(new MessageEvent('message', {
