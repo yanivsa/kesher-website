@@ -124,7 +124,7 @@
 
 .heroGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.15fr 0.85fr;
   gap: 3rem;
   align-items: center;
 }
@@ -150,14 +150,14 @@
   color: var(--color-primary-dark);
   padding: 0.35rem 0.85rem;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 1.25rem;
 }
 
 .heroTitle {
-  font-size: 2.5rem;
-  line-height: 1.2;
+  font-size: 2.35rem;
+  line-height: 1.25;
   margin-bottom: 1.25rem;
   color: var(--color-text);
   font-weight: 800;
@@ -171,16 +171,24 @@
 
 .heroSubtitle {
   font-size: 1.15rem;
-  line-height: 1.6;
-  color: var(--color-text-muted);
-  margin-bottom: 2rem;
+  line-height: 1.65;
+  color: var(--color-text);
+  margin-bottom: 1.75rem;
 }
 
 .heroCtas {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.heroMicrocopy {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  margin-bottom: 1.5rem;
 }
 
 .btnPrimary {
@@ -235,7 +243,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1.25rem;
-  padding-top: 1rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--color-border);
 }
 
@@ -251,6 +259,7 @@
 .trustIcon {
   color: var(--color-primary);
   font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
 .heroImageWrapper {
@@ -258,13 +267,17 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
+  aspect-ratio: 4 / 5;
+  max-width: 440px;
+  margin: 0 auto;
 }
 
 .heroImage {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
   object-fit: cover;
+  object-position: 50% 15%;
 }
 
 .heroImageBadge {
@@ -284,12 +297,136 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+/* === Section Layouts === */
+.section {
+  padding: 4.5rem 0;
+}
 
+.sectionAlt {
+  padding: 4.5rem 0;
+  background: var(--color-surface);
+}
 
-/* === Timeline Section === */
-.timelineSection {
-  padding: 4rem 0;
+.sectionHeader {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 3rem;
+}
+
+.sectionHeader h2 {
+  font-size: 2.1rem;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.sectionHeader p {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .section,
+  .sectionAlt {
+    padding: 3.5rem 0;
+  }
+
+  .sectionHeader h2 {
+    font-size: 1.75rem;
+  }
+}
+
+/* === Recognition Section === */
+.recognitionGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .recognitionGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .recognitionGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.recognitionCard {
   background: var(--color-bg);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: var(--transition);
+}
+
+.recognitionCard:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.cardTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.cardDesc {
+  margin: 0;
+  font-size: 0.98rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* === Hope / Transition Section === */
+.hopeBox {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2.5rem;
+  max-width: 840px;
+  margin: 0 auto;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.hopeBox h2 {
+  font-size: 2.1rem;
+  color: var(--color-primary-dark);
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+}
+
+.hopeContent {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--color-text);
+  margin-bottom: 2rem;
+  text-align: right;
+}
+
+.hopeContent p {
+  margin-bottom: 1rem;
+}
+
+.hopeContent p:last-child {
+  margin-bottom: 0;
+}
+
+/* === Timeline / First Session Section === */
+.timelineSection {
+  padding: 4.5rem 0;
+  background: var(--color-surface);
 }
 
 .timelineGrid {
@@ -297,7 +434,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   max-width: 960px;
-  margin: 0 auto;
+  margin: 0 auto 2.5rem;
 }
 
 @media (max-width: 900px) {
@@ -307,7 +444,7 @@
 }
 
 .timelineCard {
-  background: var(--color-surface);
+  background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   padding: 1.75rem;
@@ -337,123 +474,9 @@
 
 .timelineCard p {
   color: var(--color-text-muted);
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   line-height: 1.6;
   margin: 0;
-}
-
-/* === Section Layouts === */
-.section {
-  padding: 4rem 0;
-}
-
-.sectionAlt {
-  padding: 4rem 0;
-  background: var(--color-surface);
-}
-
-.sectionHeader {
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto 3rem;
-}
-
-.sectionHeader h2 {
-  font-size: 2.1rem;
-  color: var(--color-text);
-  margin-bottom: 1rem;
-}
-
-.sectionHeader p {
-  font-size: 1.1rem;
-  color: var(--color-text-muted);
-  margin: 0;
-}
-
-@media (max-width: 768px) {
-  .sectionHeader h2 {
-    font-size: 1.7rem;
-  }
-}
-
-/* === Identification Section === */
-.identificationGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
-
-.identCard {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  padding: 1.75rem;
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.identIcon {
-  font-size: 1.5rem;
-  color: var(--color-accent);
-  background: var(--color-accent-light);
-  padding: 0.75rem;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.identCard p {
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: 600;
-  line-height: 1.5;
-}
-
-/* === Value Proposition (3 Steps) === */
-.stepsGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-}
-
-@media (max-width: 900px) {
-  .stepsGrid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-.stepCard {
-  background: var(--color-bg);
-  border-radius: var(--radius-md);
-  padding: 2rem 1.5rem;
-  border: 1px solid var(--color-border);
-  position: relative;
-}
-
-.stepNumber {
-  display: inline-block;
-  background: var(--color-primary);
-  color: white;
-  font-weight: 800;
-  font-size: 0.9rem;
-  padding: 0.3rem 0.75rem;
-  border-radius: 12px;
-  margin-bottom: 1rem;
-}
-
-.stepCard h3 {
-  font-size: 1.3rem;
-  margin-bottom: 0.75rem;
-  color: var(--color-text);
-}
-
-.stepCard p {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 1rem;
 }
 
 .sessionsNote {
@@ -465,7 +488,51 @@
   font-weight: 600;
   font-size: 1.05rem;
   max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+.centerCta {
+  text-align: center;
+}
+
+/* === Partner Resistance Section === */
+.resistanceSection {
+  padding: 4.5rem 0;
+  background: #FAF8F5;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.resistanceBox {
+  max-width: 840px;
   margin: 0 auto;
+  background: var(--color-surface);
+  border: 1px solid #E2D7CC;
+  border-radius: var(--radius-lg);
+  padding: 2.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.resistanceBox h2 {
+  font-size: 1.95rem;
+  color: var(--color-text);
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+}
+
+.resistanceBody {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--color-text);
+  margin-bottom: 2rem;
+}
+
+.resistanceBody p {
+  margin-bottom: 1.25rem;
+}
+
+.resistanceBody p:last-child {
+  margin-bottom: 0;
 }
 
 /* === About / Meet Shira === */
@@ -496,7 +563,7 @@
 .aboutImage {
   width: 100%;
   height: auto;
-  aspect-ratio: 1271 / 1280;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   display: block;
 }
@@ -511,7 +578,7 @@
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--color-accent);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .aboutContent p {
@@ -521,47 +588,25 @@
   margin-bottom: 1.25rem;
 }
 
-/* === Fit Section === */
-.fitGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.fitCard {
-  background: var(--color-surface);
-  border-radius: var(--radius-md);
-  padding: 2rem;
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-sm);
-}
-
-.fitCard h3 {
-  font-size: 1.4rem;
-  color: var(--color-primary-dark);
-  margin-bottom: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.fitList {
+.trustPointsList {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 1.5rem 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.fitList li {
-  position: relative;
+.trustPointsList li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
   padding-right: 1.75rem;
-  margin-bottom: 0.85rem;
-  font-size: 1.05rem;
-  line-height: 1.5;
+  position: relative;
+  font-size: 1rem;
 }
 
-.fitList li::before {
+.trustPointsList li::before {
   content: "✓";
   position: absolute;
   right: 0;
@@ -571,71 +616,28 @@
   font-size: 1.1rem;
 }
 
-.cautionCard {
-  background: #FFF8E1;
-  border: 1px solid #FFE082;
-  border-radius: var(--radius-md);
-  padding: 1.75rem;
-}
-
-.cautionCard h3 {
-  font-size: 1.2rem;
-  color: #B71C1C;
-  margin-bottom: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.cautionCard p {
-  margin: 0;
-  color: #3E2723;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-/* === Local Section === */
-.localBox {
-  background: var(--color-primary-light);
-  border-radius: var(--radius-lg);
-  padding: 2.5rem;
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.localBox h2 {
-  font-size: 2rem;
-  color: var(--color-primary-dark);
-  margin-bottom: 1rem;
-}
-
-.localBox p {
-  font-size: 1.15rem;
+.trustPointsList strong {
   color: var(--color-text);
-  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
 }
 
-.localFeatures {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 1.5rem;
+.trustPointsList span {
+  color: var(--color-text-muted);
+  line-height: 1.5;
 }
 
-.localBadge {
-  background: var(--color-surface);
-  padding: 0.75rem 1.25rem;
-  border-radius: var(--radius-md);
-  font-weight: 700;
+.aboutLink {
   color: var(--color-primary-dark);
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  font-weight: 700;
+  text-decoration: underline;
+  font-size: 1rem;
 }
 
-/* === Meeting Details Card === */
+.aboutLink:hover {
+  color: var(--color-primary);
+}
+
+/* === Meeting Details / Price Card === */
 .detailsCard {
   background: var(--color-surface);
   border: 2px solid var(--color-primary);
@@ -665,6 +667,7 @@
   grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
   gap: 1.5rem;
   margin-top: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .detailsItem {
@@ -682,6 +685,22 @@
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--color-text);
+}
+
+.detailsClosing {
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.5rem;
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--color-text);
+  margin-bottom: 1.75rem;
+}
+
+.detailsCtas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 /* === FAQ Accordion === */
@@ -757,13 +776,6 @@
   min-height: 680px;
 }
 
-.calendlyFrame {
-  width: 100%;
-  height: 650px;
-  border: none;
-  border-radius: var(--radius-md);
-}
-
 .bookingHelp {
   text-align: center;
   margin-top: 1.5rem;
@@ -784,7 +796,7 @@
 .closingCta {
   background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
   color: white;
-  padding: 4rem 0;
+  padding: 4.5rem 0;
   text-align: center;
 }
 
@@ -800,12 +812,30 @@
   margin-bottom: 2rem;
 }
 
+.closingCtas {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
 .closingCta .btnPrimary {
   background: var(--color-accent);
 }
 
 .closingCta .btnPrimary:hover {
   background: var(--color-accent-dark);
+}
+
+.closingCta .btnSecondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.closingCta .btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 /* === Minimal Footer === */
@@ -879,6 +909,8 @@
 @media (max-width: 768px) {
   .mobileStickyBar {
     display: flex;
+    align-items: center;
+    gap: 0.5rem;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -892,7 +924,7 @@
   }
 
   .mobileStickyBtn {
-    width: 100%;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -900,82 +932,30 @@
     background: var(--color-accent);
     color: white;
     font-weight: 800;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     padding: 0.85rem;
     border-radius: var(--radius-md);
     text-decoration: none;
     min-height: 48px;
     border: none;
     cursor: pointer;
+    white-space: nowrap;
   }
-}
 
-
-
-/* === Friction Removal (Fear Removal) Section === */
-.frictionBox {
-  margin-top: 3rem;
-  padding-top: 2.5rem;
-  border-top: 2px dashed var(--color-border);
-}
-
-.frictionTitle {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.frictionGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-}
-
-@media (max-width: 900px) {
-  .frictionGrid {
-    grid-template-columns: 1fr 1fr;
+  .mobileStickyWhatsappBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    background: #25D366;
+    color: white;
+    font-size: 1.35rem;
+    text-decoration: none;
+    flex-shrink: 0;
   }
-}
 
-@media (max-width: 580px) {
-  .frictionGrid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-.frictionCard {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: 1.35rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.frictionEmoji {
-  font-size: 1.6rem;
-  line-height: 1;
-}
-
-.frictionCard h4 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--color-text);
-  margin: 0;
-  line-height: 1.35;
-}
-
-.frictionCard p {
-  font-size: 0.92rem;
-  color: var(--color-text-muted);
-  line-height: 1.6;
-  margin: 0;
-}
-
-@media (max-width: 768px) {
   .footer {
     padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
   }

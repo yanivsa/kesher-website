@@ -318,8 +318,8 @@ const InteractiveHeroVisual = () => {
           <img
             src="/images/shira-saharoni.webp"
             alt="שירה סהרוני, יועצת זוגית, מנחת הורים ומגשרת"
-            width="1271"
-            height="1280"
+            width="477"
+            height="1024"
             fetchPriority="high"
           />
           <div className={styles.imageWash} />

@@ -24,7 +24,7 @@ const schemaData = {
         "@type": "LocalBusiness",
         "@id": `${SITE_CONFIG.url}/#business`
       },
-      "description": "הכנה לחתונה לזוגות שרוצים להתחיל נכון, כולל ליווי למתחתנים שהוריהם גרושים ולזוגות שבהם אחד או שני בני הזוג מתמודדים עם ADHD.",
+      "description": "ייעוץ זוגי ממוקד ומעשי באשדוד ובאונליין לזוגות המתמודדים עם קשיי תקשורת, ריבים חוזרים, משברים ורצון בשיפור הקשר.",
       "image": `${SITE_CONFIG.url}/images/generated/services/couples-room.jpg`
     },
     {

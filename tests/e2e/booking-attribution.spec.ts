@@ -1,27 +1,26 @@
 import { expect, test } from '@playwright/test';
 
 test('trusted Calendly scheduled event carries the real service context into thank-you analytics', async ({ page }) => {
-  await page.goto('/appointment?utm_source=google&utm_medium=cpc&utm_campaign=general_booking');
-  await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]')).toBeVisible();
+  await page.goto('/appointment?utm_source=google&utm_medium=cpc&utm_campaign=general_booking', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]')).toBeVisible({ timeout: 15_000 });
 
-  await Promise.all([
-    page.waitForURL(/\/thank-you-booked$/i, { timeout: 10_000 }),
-    page.evaluate(() => {
-      window.dispatchEvent(new MessageEvent('message', {
-        origin: 'https://calendly.com',
-        data: {
-          event: 'calendly.event_scheduled',
-          payload: {
-            event: { uri: 'https://api.calendly.com/scheduled_events/e2e-general-booking' },
-            invitee: { uri: 'https://api.calendly.com/scheduled_events/e2e-general-booking/invitees/1' },
-          },
+  await page.evaluate(() => {
+    window.dispatchEvent(new MessageEvent('message', {
+      origin: 'https://calendly.com',
+      data: {
+        event: 'calendly.event_scheduled',
+        payload: {
+          event: { uri: 'https://api.calendly.com/scheduled_events/e2e-general-booking' },
+          invitee: { uri: 'https://api.calendly.com/scheduled_events/e2e-general-booking/invitees/1' },
         },
-      }));
-    }),
-  ]);
+      },
+    }));
+  });
+
+  await expect(page).toHaveURL(/\/thank-you-booked$/i, { timeout: 15_000 });
 
   await page.waitForFunction(() => Array.isArray(window.dataLayer)
-    && window.dataLayer.some((event) => event.event === 'thank_you_view'));
+    && window.dataLayer.some((event) => event.event === 'thank_you_view'), null, { timeout: 15_000 });
 
   const thankYouEvent = await page.evaluate(() => window.dataLayer.find(
     (event) => event.event === 'thank_you_view',

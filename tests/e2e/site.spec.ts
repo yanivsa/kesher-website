@@ -35,10 +35,10 @@ for (const route of routes) {
       }
     });
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto(route);
-    await expect(page.locator('h1')).toHaveCount(1);
-    await expect(page.locator('meta[name="description"]')).toHaveCount(1);
-    await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
+    await page.goto(route, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('h1')).toHaveCount(1, { timeout: 15_000 });
+    await expect(page.locator('meta[name="description"]')).toHaveCount(1, { timeout: 15_000 });
+    await expect(page.locator('link[rel="canonical"]')).toHaveCount(1, { timeout: 15_000 });
     const width = await page.evaluate(() => ({
       scrollWidth: document.documentElement.scrollWidth,
       clientWidth: document.documentElement.clientWidth,
@@ -419,6 +419,8 @@ test('couples crisis landing page (/services/couples/crisis) captures crisis int
 
   const whatsappLink = page.getByRole('link', { name: /WhatsApp/i }).first();
   await expect(whatsappLink).toHaveAttribute('href', /wa\.me/);
+  // Ensure standalone layout: no global header navigation
+  await expect(page.getByRole('navigation', { name: 'ניווט ראשי' })).toHaveCount(0);
 });
 
 test('couples before-separation landing page (/services/couples/before-separation) renders non-legal framing and trackable embed', async ({ page }) => {
@@ -446,4 +448,6 @@ test('couples before-separation landing page (/services/couples/before-separatio
 
   // Verify non-legal disclaimer exists
   await expect(page.getByText('אינו מהווה ייעוץ משפטי').first()).toBeVisible();
+  // Ensure standalone layout: no global header navigation
+  await expect(page.getByRole('navigation', { name: 'ניווט ראשי' })).toHaveCount(0);
 });

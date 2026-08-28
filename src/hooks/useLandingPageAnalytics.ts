@@ -13,7 +13,7 @@ export function useLandingPageAnalytics(variantId?: string): {
   trackPhoneClick: () => void;
   trackWhatsappClick: () => void;
   trackCalendlyOpen: () => void;
-  trackFaqInteraction: (faqIndex: number) => void;
+  trackFaqInteraction: (faqIndex?: number) => void;
 };
 export function useLandingPageAnalytics(options: LandingPageAnalyticsOptions): {
   trackCtaClick: (ctaName: string, ctaLocation: string) => void;
@@ -21,7 +21,7 @@ export function useLandingPageAnalytics(options: LandingPageAnalyticsOptions): {
   trackPhoneClick: () => void;
   trackWhatsappClick: () => void;
   trackCalendlyOpen: () => void;
-  trackFaqInteraction: (faqIndex: number) => void;
+  trackFaqInteraction: (faqIndex?: number) => void;
 };
 export function useLandingPageAnalytics(
   optionsOrVariantId: string | LandingPageAnalyticsOptions = 'A',
@@ -145,11 +145,11 @@ export function useLandingPageAnalytics(
     });
   };
 
-  const trackFaqInteraction = (faqIndex: number) => {
+  const trackFaqInteraction = (faqIndex?: number) => {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: 'faq_interaction',
-      faq_index: faqIndex,
+      ...(typeof faqIndex === 'number' ? { faq_index: faqIndex } : {}),
       variant_id: variantId,
       landing_page_path: landingPagePath,
       landing_page_type: landingPageType,

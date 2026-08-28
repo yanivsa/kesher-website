@@ -6,8 +6,7 @@ import {
   FiClock,
   FiHeart,
   FiLock,
-  FiMapPin,
-  FiShield,
+  FiUserCheck,
 } from 'react-icons/fi';
 import CalendlyBookingEmbed from '../../../components/Booking/CalendlyBookingEmbed';
 import MetaTags from '../../../components/SEO/MetaTags';
@@ -16,21 +15,48 @@ import { SITE_CONFIG } from '../../../constants/siteConfig';
 import { useLandingPageAnalytics } from '../../../hooks/useLandingPageAnalytics';
 import styles from './CouplesCounselingAshdodPage.module.css';
 
+const recognitionItems = [
+  {
+    title: 'שוב אותו ויכוח',
+    desc: 'הנושא משתנה, אבל השיחה כמעט תמיד מגיעה לאותו מקום.',
+  },
+  {
+    title: 'אחד מדבר, השני נסגר',
+    desc: 'ככל שאחד מנסה להסביר יותר, השני מתרחק או מתגונן.',
+  },
+  {
+    title: 'דברים קטנים מתפוצצים מהר',
+    desc: 'שיחה שהתחילה בעניין יומיומי הופכת במהירות למאבק.',
+  },
+  {
+    title: 'נוצר ריחוק',
+    desc: 'מדברים על הבית, הילדים והמשימות — אבל פחות על מה שקורה ביניכם.',
+  },
+  {
+    title: 'נמנעים משיחות',
+    desc: 'יש דברים שכבר לא מעלים, כי לא רוצים עוד ערב של מתח.',
+  },
+  {
+    title: 'רוצים שינוי, אבל תקועים',
+    desc: 'שניכם אולי רוצים שיהיה אחרת, אבל לא יודעים איך לצאת מהדפוס שנוצר.',
+  },
+];
+
 const timelineSteps = [
   {
     time: '00–15 דק׳',
     title: 'מתחילים ממה שקורה עכשיו',
-    desc: 'מבינים מה מביא אתכם לפגישה. כל אחד מקבל מקום לתאר איך הוא חווה את המצב ומה היה רוצה שייראה אחרת. המטרה היא ליצור תמונה משותפת — לא להכריע בין שתי גרסאות.',
+    desc: 'נבין מה מביא אתכם לפגישה. כל אחד מקבל מקום לתאר איך הוא חווה את המצב ומה היה רוצה שייראה אחרת. המטרה בשלב הזה היא ליצור תמונה משותפת — לא להכריע בין שתי גרסאות.',
   },
   {
     time: '15–35 דק׳',
     title: 'מזהים מה קורה כשהשיחה מסתבכת',
-    desc: 'בודקים איך מתחילות השיחות שמסתיימות שוב באותו מקום, איפה נוצרת התגוננות או התרחקות ואיזה דפוס חוזר ביניכם גם כששניכם התכוונתם למשהו אחר.',
+    desc: 'נבדוק איך מתחילות השיחות שמסתיימות שוב באותו מקום. מה מפעיל כל אחד. איפה מתחילה ההתגוננות, ההתרחקות או ההסלמה. ואיזה דפוס חוזר ביניכם גם כששניכם התכוונתם בכלל למשהו אחר.',
   },
   {
     time: '35–50 דק׳',
     title: 'יוצאים עם כיוון מעשי ראשון',
-    desc: 'בוחרים דרך אחת שאפשר להתחיל לתרגל — למשל איך לפתוח שיחה אחרת, לעצור הסלמה או להקשיב לפני שמגיבים.',
+    desc: 'נבחר דרך אחת שאפשר להתחיל לתרגל. זו יכולה להיות דרך לפתוח שיחה אחרת, לעצור הסלמה או להקשיב לפני שמגיבים. המטרה היא לצאת מהפגישה עם כיוון ברור שאפשר לנסות גם בבית.',
   },
 ];
 
@@ -45,15 +71,15 @@ const faqItems = [
   },
   {
     question: 'מה אם בן או בת הזוג עדיין לא בטוחים לגבי ייעוץ?',
-    answer: 'לא צריך להגיע מתוך הסכמה על מי צודק או מתוך אותה נקודת מבט על הבעיה. המטרה היא לא לבחור צד, אלא להבין מה קורה ביניכם כשהשיחה מסתבכת ולבדוק דרך אחרת לנהל אותה. אם יש חשש מסוים לפני שקובעים, אפשר לכתוב לשירה ב־WhatsApp ולשאול.',
+    answer: 'לא חייבים להגיע מתוך הסכמה על מי צודק או אפילו מתוך אותה נקודת מבט על הבעיה. המטרה בפגישה היא לא לבחור צד, אלא להבין מה קורה ביניכם כשהשיחה מסתבכת ולבדוק דרך אחרת לנהל אותה. אם יש חשש מסוים לפני שקובעים, אפשר לכתוב לשירה ב-WhatsApp ולשאול.',
   },
   {
     question: 'כמה זמן נמשכת פגישה?',
-    answer: 'פגישת ייעוץ נמשכת 50 דקות.',
+    answer: 'פגישת ייעוץ נמשכת 50 דקות מלאות.',
   },
   {
     question: 'האם אפשר לקיים את הפגישה אונליין?',
-    answer: 'כן. לצד הפגישות בקליניקה באשדוד, קיימת אפשרות לקיים פגישה אונליין.',
+    answer: 'כן. לצד הפגישות בקליניקה באשדוד, קיימת אפשרות לקיים פגישה אונליין (Zoom).',
   },
   {
     question: 'איפה מתקיימות הפגישות?',
@@ -61,11 +87,11 @@ const faqItems = [
   },
   {
     question: 'מה מחיר הפגישה?',
-    answer: 'מחיר פגישת ייעוץ הוא 500 ₪.',
+    answer: 'מחיר פגישת ייעוץ הוא 500 ₪ כולל מע״מ.',
   },
   {
     question: 'איך קובעים פגישה?',
-    answer: 'לוחצים על "קביעת פגישה", בוחרים מועד פנוי ביומן ומשלימים את ההזמנה. אם לא מצאתם מועד מתאים או שיש לכם שאלה לפני ההזמנה, אפשר לפנות לשירה ב־WhatsApp.',
+    answer: 'לוחצים על "קביעת פגישה", בוחרים מועד פנוי ביומן ומשלימים את ההזמנה. אם לא מצאתם מועד מתאים או שיש לכם שאלה לפני ההזמנה, אפשר לפנות לשירה ב-WhatsApp.',
   },
   {
     question: 'האם השיחה דיסקרטית?',
@@ -85,11 +111,11 @@ const schemaData = {
       '@id': `${SITE_CONFIG.url}/couples-counseling-ashdod#service`,
       name: 'ייעוץ זוגי באשדוד | שירה סהרוני',
       url: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
-      image: `${SITE_CONFIG.url}/images/shira-saharoni.webp`,
+      image: `${SITE_CONFIG.url}/images/shira-saharoni-sea.webp`,
       telephone: SITE_CONFIG.contact.phone,
       email: SITE_CONFIG.contact.email,
       priceRange: '₪500',
-      description: 'ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. הבנת דפוסי שיחה שחוזרים, תרגול תקשורת וכלים מעשיים להתמודדות עם מחלוקות.',
+      description: 'ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. כשאותם ריבים ודפוסי שיחה חוזרים שוב ושוב, אפשר להבין מה קורה ולתרגל דרך אחרת לדבר. פגישה של 50 דקות, 500 ₪.',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'אשדוד',
@@ -143,16 +169,19 @@ const schemaData = {
 
 type VariantId = 'A' | 'B' | 'C';
 
-const copyVariants: Record<VariantId, { h1: string; subtitle: string }> = {
+const copyVariants: Record<VariantId, { eyebrow: string; h1: string; subtitle: string }> = {
   A: {
+    eyebrow: 'ייעוץ זוגי מעשי וממוקד באשדוד ובאונליין',
     h1: 'כשהשיחות חוזרות שוב ושוב לאותו ריב — אפשר ללמוד לדבר אחרת',
-    subtitle: 'אם כל ניסיון לדבר נגמר שוב בוויכוח, בהתגוננות או בשתיקה, אפשר לעצור ולבדוק מה קורה ביניכם. בייעוץ זוגי ממוקד נבין את הדפוס שחוזר בשיחות ונתרגל דרך אחרת לדבר ולהתמודד עם מחלוקות — בלי לחפש מי אשם ומי צודק.',
+    subtitle: 'אם כל ניסיון לדבר נגמר שוב בוויכוח, בהתגוננות או בשתיקה, אפשר לעצור ולבדוק מה קורה ביניכם. בייעוץ זוגי ממוקד נבין את הדפוס שחוזר בשיחות, ונתרגל דרך אחרת לדבר, להקשיב ולהתמודד עם מחלוקות — בלי לחפש מי אשם ומי צודק.',
   },
   B: {
+    eyebrow: 'ייעוץ זוגי באשדוד | תהליך ממוקד ומעשי',
     h1: 'לעצור את מעגל הריבים, להבין מה קורה ביניכם ולבנות דרך אחרת לדבר',
     subtitle: 'ייעוץ זוגי מסודר שמתמקד במה שקורה בשיחות שלכם עכשיו: מזהים את הדפוס שחוזר, מבינים איפה השיחה מסתבכת ומתרגלים כלים מעשיים שאפשר לקחת הביתה.',
   },
   C: {
+    eyebrow: 'ייעוץ זוגי באשדוד ובאונליין',
     h1: 'גם כשכבר קשה לדבר בלי להיפגע — אפשר ליצור שיחה אחרת ביניכם',
     subtitle: 'כשיש עדיין רצון להבין, להתקרב או פשוט להפסיק לחזור שוב לאותו ויכוח, ייעוץ זוגי ממוקד יכול לעזור לעשות סדר במה שקורה ולבחון דרך אחרת להתמודד עם הרגעים הקשים.',
   },
@@ -211,15 +240,16 @@ const CouplesCounselingAshdodPage: React.FC = () => {
   }, []);
 
   return (
-    <main id="main-content" className={styles.page} dir="rtl">
+    <main id="main-content" className={styles.page}>
       <MetaTags
         title="ייעוץ זוגי באשדוד | שירה סהרוני"
         description="ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. כשאותם ריבים ודפוסי שיחה חוזרים שוב ושוב, אפשר להבין מה קורה ולתרגל דרך אחרת לדבר. פגישה של 50 דקות, 500 ₪."
         canonical={`${SITE_CONFIG.url}/couples-counseling-ashdod`}
-        image="/images/shira-saharoni.webp"
+        image="/images/shira-saharoni-sea.webp"
       />
       <SchemaOrg data={schemaData} />
 
+      {/* 1. Header מצומצם */}
       <header className={styles.header}>
         <div className={`container ${styles.headerInner}`}>
           <a href="/" className={styles.brand} aria-label="לדף הבית של שירה סהרוני">
@@ -248,12 +278,13 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </header>
 
+      {/* 2. אזור Hero */}
       <section className={styles.heroSection} aria-labelledby="couples-ashdod-title">
         <div className={`container ${styles.heroGrid}`}>
           <div className={styles.heroContent}>
             <div className={styles.heroTag}>
               <FiHeart aria-hidden="true" />
-              <span>ייעוץ זוגי מעשי וממוקד באשדוד ובאונליין</span>
+              <span>{copyVariants[variantId].eyebrow}</span>
             </div>
             <h1 id="couples-ashdod-title" className={styles.heroTitle}>
               {copyVariants[variantId].h1}
@@ -284,19 +315,18 @@ const CouplesCounselingAshdodPage: React.FC = () => {
                 יש לי שאלה לפני שקובעים
               </a>
             </div>
+            <div className={styles.heroMicrocopy}>
+              50 דקות · 500 ₪ · קליניקה באשדוד או פגישה אונליין
+            </div>
 
-            <div className={styles.trustPoints} aria-label="פרטי הפגישה">
+            <div className={styles.trustPoints} aria-label="נקודות אמון">
+              <div className={styles.trustPoint}>
+                <FiUserCheck className={styles.trustIcon} aria-hidden="true" />
+                <span>מקום לשני בני הזוג</span>
+              </div>
               <div className={styles.trustPoint}>
                 <FiClock className={styles.trustIcon} aria-hidden="true" />
-                <span>50 דקות</span>
-              </div>
-              <div className={styles.trustPoint}>
-                <FiCheckCircle className={styles.trustIcon} aria-hidden="true" />
-                <span>500 ₪</span>
-              </div>
-              <div className={styles.trustPoint}>
-                <FiMapPin className={styles.trustIcon} aria-hidden="true" />
-                <span>קליניקה באשדוד או אונליין</span>
+                <span>גישה ממוקדת ומעשית</span>
               </div>
               <div className={styles.trustPoint}>
                 <FiLock className={styles.trustIcon} aria-hidden="true" />
@@ -304,74 +334,59 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               </div>
             </div>
           </div>
-
           <div className={styles.heroImageWrapper}>
             <img
-              src="/images/shira-saharoni.webp"
-              alt="שירה סהרוני, יועצת זוגית באשדוד"
+              src="/images/shira-saharoni-sea.webp"
+              alt="שירה סהרוני - ייעוץ זוגי באשדוד"
               className={styles.heroImage}
-              width="1271"
-              height="1280"
+              width="477"
+              height="1024"
               fetchPriority="high"
             />
             <div className={styles.heroImageBadge}>
-              שירה סהרוני | יועצת זוגית ומנחת הורים
+              שירה סהרוני | יועצת זוגית ומגשרת מוסמכת
             </div>
           </div>
         </div>
       </section>
 
-      <section className={styles.sectionAlt} aria-labelledby="recognition-title">
+      {/* 3. אזור הזדהות עם הצורך (Recognition) */}
+      <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 id="recognition-title">כשהבעיה כבר לא היא על מה רבים — אלא איך השיחה מתנהלת</h2>
+            <h2>כשהבעיה כבר לא היא על מה רבים — אלא איך השיחה מתנהלת</h2>
             <p>
-              לפעמים זה מתחיל ממשהו קטן. מנסים להסביר משהו חשוב, ותוך כמה דקות שוב נמצאים בדיוק באותו ויכוח. לפעמים כבר מעדיפים לא לפתוח נושאים מסוימים, רק כדי לא להיכנס שוב לאותו מעגל.
+              לפעמים זה מתחיל ממשהו קטן. מנסים להסביר משהו חשוב — ותוך כמה דקות שוב נמצאים בדיוק באותו ויכוח. אחד מנסה לדבר והשני נסגר. אחד מרגיש שלא מקשיבים לו, והשני מרגיש שכל שיחה הופכת לביקורת. דברים קטנים מקבלים מהר מאוד עוצמה שלא התכוונתם אליה. ולפעמים כבר מעדיפים לא לפתוח נושאים מסוימים, רק כדי לא להיכנס שוב לאותו מעגל.
             </p>
           </div>
-          <div className={styles.identificationGrid}>
-            <div className={styles.identCard}>
-              <div className={styles.identIcon} aria-hidden="true">↻</div>
-              <p>הנושא משתנה, אבל השיחה כמעט תמיד מגיעה לאותו מקום.</p>
-            </div>
-            <div className={styles.identCard}>
-              <div className={styles.identIcon} aria-hidden="true">↔</div>
-              <p>ככל שאחד מנסה להסביר יותר, השני נסגר, מתרחק או מתגונן.</p>
-            </div>
-            <div className={styles.identCard}>
-              <div className={styles.identIcon} aria-hidden="true">!</div>
-              <p>שיחה שהתחילה בעניין יומיומי הופכת מהר מאוד למאבק.</p>
-            </div>
-            <div className={styles.identCard}>
-              <div className={styles.identIcon} aria-hidden="true">…</div>
-              <p>מדברים על הבית, הילדים והמשימות — אבל פחות על מה שקורה ביניכם.</p>
-            </div>
-            <div className={styles.identCard}>
-              <div className={styles.identIcon} aria-hidden="true">○</div>
-              <p>יש דברים שכבר לא מעלים, כי לא רוצים עוד ערב של מתח.</p>
-            </div>
-            <div className={styles.identCard}>
-              <div className={styles.identIcon} aria-hidden="true">→</div>
-              <p>רוצים שיהיה אחרת, אבל לא יודעים איך לצאת מהדפוס שנוצר.</p>
-            </div>
+          <div className={styles.recognitionGrid}>
+            {recognitionItems.map((item, index) => (
+              <article key={index} className={styles.recognitionCard}>
+                <h3 className={styles.cardTitle}>{item.title}</h3>
+                <p className={styles.cardDesc}>{item.desc}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="hope-title">
+      {/* 4. אזור תקווה ומעבר מעשי (Hope / Transition) */}
+      <section className={styles.section}>
         <div className="container">
-          <div className={styles.localBox}>
-            <h2 id="hope-title">לא צריך לפתור את כל הזוגיות בשיחה אחת</h2>
-            <p>
-              אפשר להתחיל ממשהו פשוט יותר: לעצור רגע את הדפוס שחוזר ביניכם, להבין מה קורה בשיחה לפני שהיא הופכת לעימות, ולתרגל דרך אחרת להגיב, להקשיב ולדבר.
-            </p>
-            <p>
-              המטרה אינה לייצר זוגיות בלי מחלוקות. המטרה היא ללמוד לנהל את המחלוקות בצורה שמאפשרת לשניכם להישאר בשיחה.
-            </p>
+          <div className={styles.hopeBox}>
+            <h2>לא צריך לפתור את כל הזוגיות בשיחה אחת</h2>
+            <div className={styles.hopeContent}>
+              <p>
+                אפשר להתחיל ממשהו פשוט יותר: לעצור רגע את הדפוס שחוזר ביניכם. להבין מה קורה בשיחה לפני שהיא הופכת לעימות. לראות מה כל אחד מנסה לומר — ומה הצד השני שומע באותו רגע.
+              </p>
+              <p>
+                ומתוך ההבנה הזאת, לתרגל דרך אחרת להגיב, להקשיב ולדבר. המטרה אינה לייצר זוגיות בלי מחלוקות — המטרה היא ללמוד לנהל את המחלוקות בצורה שמאפשרת לשניכם להישאר בשיחה.
+              </p>
+            </div>
             <button
               type="button"
               className={styles.btnPrimary}
-              onClick={() => scrollToBooking('hope')}
+              onClick={() => scrollToBooking('hope_section')}
             >
               קביעת פגישה
             </button>
@@ -379,108 +394,65 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.sectionAlt} aria-labelledby="process-title">
+      {/* 5. מה קורה בפגישה הראשונה? (Process / 3 Steps) */}
+      <section className={styles.timelineSection}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 id="process-title">דרך מסודרת להבין מה קורה ולנסות דרך אחרת</h2>
+            <h2>מה קורה בפגישה הראשונה?</h2>
             <p>
-              הייעוץ מתמקד במה שקורה ביניכם עכשיו ובצעדים שאפשר לבחון בחיים עצמם.
-            </p>
-          </div>
-
-          <div className={styles.stepsGrid}>
-            <article className={styles.stepCard}>
-              <span className={styles.stepNumber}>שלב 1</span>
-              <h3>מתחילים במה שקורה עכשיו</h3>
-              <p>ממפים את הקושי ואת הרגעים שבהם השיחה נתקעת או הופכת למתוחה.</p>
-            </article>
-            <article className={styles.stepCard}>
-              <span className={styles.stepNumber}>שלב 2</span>
-              <h3>מבינים את הדפוס</h3>
-              <p>מזהים מה מפעיל כל אחד ומה גורם לשיחה לחזור שוב לאותו מקום.</p>
-            </article>
-            <article className={styles.stepCard}>
-              <span className={styles.stepNumber}>שלב 3</span>
-              <h3>מתרגלים דרך אחרת</h3>
-              <p>בוחרים כלים מעשיים שאפשר לנסות בבית ולבדוק מה עוזר ומה עדיין דורש דיוק.</p>
-            </article>
-          </div>
-
-          <div className={styles.sessionsNote}>
-            אין מספר קבוע של פגישות שמתאים לכל זוג. דרך ההמשך נקבעת לפי מה שעולה בפגישה ולפי הצרכים שלכם.
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.section} aria-labelledby="about-shira-title">
-        <div className={`container ${styles.aboutGrid}`}>
-          <div className={styles.aboutImageWrapper}>
-            <img
-              src="/images/shira-saharoni.webp"
-              alt="שירה סהרוני"
-              className={styles.aboutImage}
-              width="1271"
-              height="1280"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <div className={styles.aboutContent}>
-            <h2 id="about-shira-title">כדי לדבר על הדברים הכי רגישים, צריך להרגיש שיש מקום לשני הצדדים</h2>
-            <span className={styles.aboutRole}>שירה סהרוני | יועצת זוגית ומנחת הורים</span>
-            <p>
-              הגישה של שירה משלבת הקשבה לשתי נקודות המבט, הסתכלות מסודרת על מה שקורה בין בני הזוג וכלים מעשיים שאפשר לקחת גם לחיים בבית.
-            </p>
-            <p>
-              המטרה אינה לקבוע מי צודק, אלא לעזור לכם להבין את הדפוס שנוצר ביניכם, לפרק שיחות עמוסות למשהו שאפשר להבין ולעבוד איתו, ולבחון דרך תקשורת מכבדת ומועילה יותר.
-            </p>
-            <ul className={styles.fitList}>
-              <li>מקום לשתי נקודות המבט</li>
-              <li>בהירות וסדר במקום שיחה שמסתבכת</li>
-              <li>כלים מעשיים שאפשר לתרגל גם בבית</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.timelineSection} aria-labelledby="first-session-title">
-        <div className="container">
-          <div className={styles.sectionHeader}>
-            <h2 id="first-session-title">מה קורה ב־50 הדקות של הפגישה הראשונה?</h2>
-            <p>
-              50 דקות ממוקדות שנותנות מקום לשני בני הזוג ומאפשרות להתחיל לעשות סדר במה שקורה ביניכם. לא מגיעים כדי להוכיח מי צודק.
+              50 דקות ממוקדות שנותנות מקום לשני בני הזוג ומאפשרות להתחיל לעשות סדר במה שקורה ביניכם. המטרה אינה להגיע כדי להוכיח מי צודק. מתחילים מהמצב כפי שכל אחד מכם חווה אותו, מזהים את הדפוס שחוזר בשיחות ובוחרים נקודה מעשית שאפשר להתחיל לעבוד עליה.
             </p>
           </div>
 
           <div className={styles.timelineGrid}>
-            {timelineSteps.map((step) => (
-              <article key={step.time} className={styles.timelineCard}>
+            {timelineSteps.map((step, index) => (
+              <div key={index} className={styles.timelineCard}>
                 <div className={styles.timeBadge}>{step.time}</div>
                 <h3>{step.title}</h3>
                 <p>{step.desc}</p>
-              </article>
+              </div>
             ))}
+          </div>
+
+          <div className={styles.sessionsNote}>
+            אין מספר קבוע של פגישות שמתאים לכל זוג. אחרי הפגישה הראשונה אפשר להבין יחד מה נכון עבורכם בהמשך.
+          </div>
+
+          <div className={styles.centerCta}>
+            <button
+              type="button"
+              className={styles.btnPrimary}
+              onClick={() => scrollToBooking('first_session')}
+            >
+              קביעת פגישה
+            </button>
           </div>
         </div>
       </section>
 
-      <section className={styles.sectionAlt} aria-labelledby="partner-objection-title">
+      {/* 6. התמודדות עם התנגדות בן/בת הזוג (Partner Resistance) */}
+      <section className={styles.resistanceSection}>
         <div className="container">
-          <div className={styles.localBox}>
-            <h2 id="partner-objection-title">ומה אם אחד מאיתנו פחות רוצה להגיע?</h2>
-            <p>
-              זה לא חריג שאחד מבני הזוג יוזם את הפנייה והשני פחות משוכנע. לפעמים עצם הרעיון של ייעוץ זוגי מעלה חשש שיחליטו מי צודק, שיצביעו על אחד מכם כבעיה או שתיכנסו לתהליך ארוך בלי לדעת לאן הוא הולך.
-            </p>
-            <p>
-              זו לא מטרת הפגישה. המטרה היא להבין מה קורה ביניכם כשהשיחה מסתבכת, לתת מקום לשתי נקודות המבט ולבדוק אם אפשר לנהל את אותם רגעים בצורה אחרת.
-            </p>
+          <div className={styles.resistanceBox}>
+            <h2>ומה אם אחד מאיתנו פחות רוצה להגיע?</h2>
+            <div className={styles.resistanceBody}>
+              <p>
+                זה לא חריג שאחד מבני הזוג יוזם את הפנייה והשני פחות משוכנע. לפעמים עצם הרעיון של ייעוץ זוגי מעלה חשש: שיבואו להחליט מי צודק, שיצביעו על אחד מכם כ״הבעיה״, או שתיכנסו לתהליך ארוך בלי לדעת לאן הוא הולך.
+              </p>
+              <p>
+                זו לא מטרת הפגישה. אין צורך להגיע כדי להוכיח מי צודק ומי טועה. המטרה היא להבין מה קורה ביניכם כשהשיחה מסתבכת, לתת מקום לשתי נקודות המבט ולבדוק אם אפשר לנהל את אותם רגעים בצורה אחרת.
+              </p>
+              <p>
+                אם יש חשש או שאלה לפני שקובעים, אפשר לשאול את שירה ישירות ב-WhatsApp.
+              </p>
+            </div>
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.btnSecondary}
               onClick={() => {
-                trackSecondaryCtaClick('יש לי שאלה לפני שקובעים', 'partner_objection');
+                trackSecondaryCtaClick('יש לי שאלה לפני שקובעים', 'resistance_section');
                 trackWhatsappClick();
               }}
             >
@@ -491,61 +463,66 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="trust-title">
-        <div className="container">
-          <div className={styles.localBox}>
-            <h2 id="trust-title">מה חשוב לדעת לפני שמגיעים</h2>
-            <div className={styles.localFeatures}>
-              <div className={styles.localBadge}>
-                <FiHeart aria-hidden="true" />
-                <span>מקום לשני בני הזוג</span>
-              </div>
-              <div className={styles.localBadge}>
-                <FiCheckCircle aria-hidden="true" />
-                <span>גישה ממוקדת ומעשית</span>
-              </div>
-              <div className={styles.localBadge}>
-                <FiMapPin aria-hidden="true" />
-                <span>קליניקה באשדוד</span>
-              </div>
-              <div className={styles.localBadge}>
-                <FiClock aria-hidden="true" />
-                <span>אפשרות לפגישה אונליין</span>
-              </div>
-              <div className={styles.localBadge}>
-                <FiLock aria-hidden="true" />
-                <span>מרחב פרטי ומכבד</span>
-              </div>
-            </div>
+      {/* 7. למה שירה / נעים להכיר (Why Shira) */}
+      <section className={styles.sectionAlt}>
+        <div className={`container ${styles.aboutGrid}`}>
+          <div className={styles.aboutImageWrapper}>
+            <img
+              src="/images/generated/services/couples-room.jpg"
+              alt="מרחב שיחה וייעוץ זוגי - שירה סהרוני"
+              className={styles.aboutImage}
+              width="1600"
+              height="900"
+              loading="lazy"
+            />
           </div>
+          <div className={styles.aboutContent}>
+            <h2>כדי לדבר על הדברים הכי רגישים, צריך להרגיש שיש מקום לשני הצדדים</h2>
+            <span className={styles.aboutRole}>
+              שירה סהרוני | יועצת זוגית, מנחת הורים ומגשרת מוסמכת, עורכת דין בהכשרתה
+            </span>
+            <p>
+              הגישה שלי משלבת הקשבה לשתי נקודות המבט, הסתכלות מסודרת על מה שקורה בין בני הזוג וכלים מעשיים שאפשר לקחת גם לחיים בבית.
+            </p>
+            <p>
+              המטרה אינה לקבוע מי צודק. המטרה היא לעזור לכם להבין את הדפוס שנוצר ביניכם, לפרק שיחות עמוסות למשהו שאפשר להבין ולעבוד איתו, ולבחון דרך תקשורת מכבדת ומועילה יותר.
+            </p>
 
-          <div className={styles.fitGrid}>
-            <div className={styles.cautionCard}>
-              <h3>
-                <FiShield aria-hidden="true" />
-                מתי נדרש מענה אחר?
-              </h3>
-              <p>
-                במצבים הכוללים סכנה מיידית, אלימות, איום, משבר נפשי חריף או צורך באבחון ובטיפול קליני, יש לפנות לגורם חירום או לאיש מקצוע טיפולי מתאים.
-              </p>
-            </div>
+            <ul className={styles.trustPointsList}>
+              <li>
+                <strong>מקום לשני הצדדים:</strong>
+                <span>כל אחד מבני הזוג מקבל מקום להסביר איך הוא חווה את המצב.</span>
+              </li>
+              <li>
+                <strong>בהירות וסדר:</strong>
+                <span>מנסים להבין מה קורה בשיחות שלכם, בלי להפוך את הדברים למסובכים יותר.</span>
+              </li>
+              <li>
+                <strong>כלים מעשיים:</strong>
+                <span>הדגש הוא על דברים שאפשר לתרגל ולבדוק גם מחוץ לפגישה.</span>
+              </li>
+            </ul>
+
+            <a href="/about" className={styles.aboutLink}>
+              עוד על שירה ועל אופן העבודה ←
+            </a>
           </div>
         </div>
       </section>
 
-      <section className={styles.sectionAlt} aria-labelledby="practical-title">
+      {/* 8. מידע מעשי ומחיר (Practical Details / Price) */}
+      <section className={styles.section}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 id="practical-title">כל מה שצריך לדעת לפני שקובעים</h2>
-            <p>המחיר, משך הפגישה ואופן הקביעה מוצגים מראש כדי שתדעו למה לצפות.</p>
+            <h2>כל מה שצריך לדעת לפני שקובעים</h2>
           </div>
 
           <div className={styles.detailsCard}>
             <div className={styles.priceTag}>500 ₪</div>
             <div className={styles.detailsList}>
               <div className={styles.detailsItem}>
-                <strong>מחיר הפגישה:</strong>
-                <span>500 ₪</span>
+                <strong>מחיר פגישה:</strong>
+                <span>500 ₪ (כולל מע״מ)</span>
               </div>
               <div className={styles.detailsItem}>
                 <strong>משך הפגישה:</strong>
@@ -557,7 +534,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               </div>
               <div className={styles.detailsItem}>
                 <strong>אפשרות נוספת:</strong>
-                <span>פגישה אונליין</span>
+                <span>פגישה אונליין (Zoom)</span>
               </div>
               <div className={styles.detailsItem}>
                 <strong>קביעת מועד:</strong>
@@ -565,30 +542,54 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               </div>
               <div className={styles.detailsItem}>
                 <strong>שינוי או ביטול:</strong>
-                <span>באמצעות הקישור שמתקבל באישור ההזמנה</span>
+                <span>ניתן לשנות או לבטל מועד בקלות באמצעות הקישור באישור ההזמנה</span>
               </div>
             </div>
-          </div>
 
-          <div className={styles.sessionsNote}>
-            אין צורך להתחייב מראש למספר קבוע של פגישות. אחרי הפגישה הראשונה אפשר להבין יחד מה נכון להמשך.
+            <div className={styles.detailsClosing}>
+              אין צורך להתחייב מראש למספר קבוע של פגישות. אחרי הפגישה הראשונה תוכלו להבין יחד עם שירה מה נכון להמשך.
+            </div>
+
+            <div className={styles.detailsCtas}>
+              <button
+                type="button"
+                className={styles.btnPrimary}
+                onClick={() => scrollToBooking('details_card')}
+              >
+                קביעת פגישה
+              </button>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.btnSecondary}
+                onClick={() => {
+                  trackSecondaryCtaClick('יש לי שאלה לפני שקובעים', 'details_card');
+                  trackWhatsappClick();
+                }}
+              >
+                <FaWhatsapp aria-hidden="true" />
+                יש לי שאלה לפני שקובעים
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className={styles.section} aria-labelledby="faq-title">
+      {/* 9. שאלות נפוצות (FAQ) */}
+      <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 id="faq-title">שאלות שכדאי לדעת עליהן לפני הפגישה</h2>
+            <h2>שאלות שכדאי לדעת עליהן לפני הפגישה</h2>
           </div>
           <div className={styles.faqAccordion}>
             {faqItems.map((item, index) => (
               <div key={item.question} className={styles.faqItem}>
-                <details
-                  onToggle={(event) => {
-                    if (event.currentTarget.open) trackFaqInteraction(index);
-                  }}
-                >
+                <details onToggle={(e) => {
+                  if ((e.target as HTMLDetailsElement).open) {
+                    trackFaqInteraction(index);
+                  }
+                }}>
                   <summary>{item.question}</summary>
                   <p className={styles.faqAnswer}>{item.answer}</p>
                 </details>
@@ -598,13 +599,14 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      <section id="booking" className={`${styles.sectionAlt} ${styles.bookingSection}`} aria-labelledby="booking-title">
+      {/* 10. אזור הזמנת פגישה (Booking / Calendly) */}
+      <section id="booking" className={`${styles.section} ${styles.bookingSection}`}>
         <div className="container">
           <div className={styles.sectionHeader}>
             <FiCalendar aria-hidden="true" style={{ fontSize: '2rem', color: 'var(--color-accent)' }} />
-            <h2 id="booking-title">אפשר להתחיל מפגישה אחת מסודרת</h2>
+            <h2>אפשר להתחיל מפגישה אחת מסודרת</h2>
             <p>
-              אם השיחות חוזרות שוב לאותו מקום ואתם רוצים לבדוק דרך אחרת להתמודד עם זה, אפשר לבחור מועד לפגישת ייעוץ. 50 דקות · 500 ₪ · אשדוד או אונליין.
+              אם אתם מרגישים שהשיחות חוזרות שוב לאותו מקום ורוצים לבדוק דרך אחרת להתמודד עם זה, אפשר לבחור מועד לפגישת ייעוץ. הפגישה מתקיימת בקליניקה באשדוד או אונליין.
             </p>
           </div>
 
@@ -621,13 +623,43 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           </div>
 
           <div className={styles.bookingHelp}>
-            <span>לא בטוחים לגבי משהו לפני ההזמנה?</span>
+            <span>לא מצאתם מועד מתאים או שיש לכם שאלה לפני ההזמנה?</span>
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => {
-                trackSecondaryCtaClick('יש לי שאלה לפני שקובעים', 'booking_help');
+                trackSecondaryCtaClick('WhatsApp עזרה בהזמנה', 'booking_help');
+                trackWhatsappClick();
+              }}
+            >
+              <FaWhatsapp aria-hidden="true" />
+              כתבו לשירה ב-WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 11. CTA מסכם */}
+      <section className={styles.closingCta}>
+        <div className="container">
+          <h2>לא חייבים לדעת כבר עכשיו איך לפתור הכול</h2>
+          <p>מספיק להתחיל מלהבין מה קורה בשיחות שלכם — ולבדוק אם אפשר לעשות משהו אחרת.</p>
+          <div className={styles.closingCtas}>
+            <button
+              type="button"
+              className={styles.btnPrimary}
+              onClick={() => scrollToBooking('closing_cta')}
+            >
+              קביעת פגישה
+            </button>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.btnSecondary}
+              onClick={() => {
+                trackSecondaryCtaClick('יש לי שאלה לפני שקובעים', 'closing_cta');
                 trackWhatsappClick();
               }}
             >
@@ -638,23 +670,12 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      <section className={styles.closingCta} aria-labelledby="closing-title">
-        <div className="container">
-          <h2 id="closing-title">לא חייבים לדעת כבר עכשיו איך לפתור הכול</h2>
-          <p>מספיק להתחיל מלהבין מה קורה בשיחות שלכם — ולבדוק אם אפשר לעשות משהו אחרת.</p>
-          <button
-            type="button"
-            className={styles.btnPrimary}
-            onClick={() => scrollToBooking('closing_cta')}
-          >
-            קביעת פגישה
-          </button>
-        </div>
-      </section>
-
+      {/* 12. Footer מצומצם */}
       <footer className={styles.footer}>
         <div className={`container ${styles.footerGrid}`}>
-          <div className={styles.footerBrand}>שירה סהרוני — קשר</div>
+          <div className={styles.footerBrand}>
+            שירה סהרוני — קשר
+          </div>
           <div className={styles.footerContact}>
             <a href={`tel:${SITE_CONFIG.contact.phone.replace(/-/g, '')}`} onClick={trackPhoneClick}>
               טלפון: {SITE_CONFIG.contact.phone}
@@ -662,7 +683,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             <a href={`mailto:${SITE_CONFIG.contact.email}`}>
               דוא״ל: {SITE_CONFIG.contact.email}
             </a>
-            <span>ייעוץ זוגי באשדוד / אונליין</span>
+            <span>קליניקה באשדוד / אונליין</span>
           </div>
           <div className={styles.footerLinks}>
             <a href="/privacy">מדיניות פרטיות</a>
@@ -676,6 +697,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </footer>
 
+      {/* 13. Mobile Sticky Bar */}
       {!isBookingInView && (
         <div className={styles.mobileStickyBar}>
           <button
@@ -686,6 +708,19 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             <FiCheckCircle aria-hidden="true" />
             קביעת פגישה
           </button>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.mobileStickyWhatsappBtn}
+            aria-label="פנייה לשירה ב-WhatsApp"
+            onClick={() => {
+              trackSecondaryCtaClick('WhatsApp Sticky', 'mobile_sticky');
+              trackWhatsappClick();
+            }}
+          >
+            <FaWhatsapp aria-hidden="true" />
+          </a>
         </div>
       )}
     </main>
