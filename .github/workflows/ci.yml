@@ -35,6 +35,9 @@ jobs:
         # Avoid a network-dependent apt transaction that can hang the required check.
         run: npx playwright install chromium
 
+      - name: Validate article hero images
+        run: python3 .github/scripts/validate-article-images.py
+
       - name: Run full quality gate
         run: npm run check
 
