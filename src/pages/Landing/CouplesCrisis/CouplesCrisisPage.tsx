@@ -201,7 +201,7 @@ const CouplesCrisisPage: React.FC = () => {
               onClick={() => scrollToBooking('hero_primary')}
             >
               <FiCheckCircle aria-hidden="true" />
-              <span>תיאום פגישת ייעוץ – 500 ₪</span>
+              <span>קביעת פגישת ייעוץ</span>
             </button>
 
             <a

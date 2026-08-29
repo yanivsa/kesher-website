@@ -201,7 +201,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
               onClick={() => scrollToBooking('hero_primary')}
             >
               <FiCheckCircle aria-hidden="true" />
-              <span>תיאום פגישת בירור – 500 ₪</span>
+              <span>קביעת פגישת בירור</span>
             </button>
 
             <a
