@@ -34,6 +34,7 @@
       "trigger": "click_wa_me_link",
       "tags": [
         "GA4_Event_WhatsAppClick",
+        "GoogleAds_Conversion_WhatsAppClick",
         "MetaPixel_Contact"
       ],
       "type": "micro_conversion"
