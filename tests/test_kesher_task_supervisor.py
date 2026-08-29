@@ -69,6 +69,10 @@ class KesherTaskSupervisorTests(unittest.TestCase):
         pr = {"body": ""}
         self.assertEqual(supervisor.live_urls(issue, pr), ["https://kesher.saharoni.com/"])
 
+    def test_workflow_failure_marker(self):
+        issue = {"body": "<!-- kesher-supervisor-workflow-failure:12345 -->"}
+        self.assertEqual(supervisor.workflow_failure_id(issue), 12345)
+
 
 if __name__ == "__main__":
     unittest.main()
