@@ -6,6 +6,7 @@ on:
       - ".github/workflows/kesher-task-supervisor-controller.yml"
       - ".github/scripts/kesher_task_supervisor.py"
       - ".github/scripts/kesher_task_supervisor_runtime.py"
+      - ".github/scripts/kesher_task_supervisor_runtime_v2.py"
       - "tests/test_kesher_task_supervisor.py"
       - "tests/test_kesher_task_supervisor_runtime.py"
   push:
@@ -14,6 +15,7 @@ on:
       - ".github/workflows/kesher-task-supervisor-controller.yml"
       - ".github/scripts/kesher_task_supervisor.py"
       - ".github/scripts/kesher_task_supervisor_runtime.py"
+      - ".github/scripts/kesher_task_supervisor_runtime_v2.py"
       - "tests/test_kesher_task_supervisor.py"
       - "tests/test_kesher_task_supervisor_runtime.py"
   schedule:
@@ -28,7 +30,7 @@ on:
       max_new_sessions:
         description: "Bound new Jules tasks per run; existing sessions are always preferred"
         required: false
-        default: "2"
+        default: "1"
         type: string
 
 permissions:
@@ -50,7 +52,9 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
       - name: Validate supervisor controller
-        run: python3 -m unittest tests.test_kesher_task_supervisor tests.test_kesher_task_supervisor_runtime -v
+        run: |
+          python3 -m unittest tests.test_kesher_task_supervisor tests.test_kesher_task_supervisor_runtime -v
+          python3 -m py_compile .github/scripts/kesher_task_supervisor_runtime_v2.py
 
   supervise:
     if: github.event_name != 'pull_request'
@@ -61,7 +65,7 @@ jobs:
       JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
       SUPERVISOR_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
       SUPERVISOR_MAX_NEW_SESSIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.max_new_sessions || '1' }}
-      SUPERVISOR_NEW_SESSION_INTERVAL_HOURS: "2"
+      SUPERVISOR_NEW_SESSION_INTERVAL_HOURS: "3"
       SUPERVISOR_FORCE_NEW_SESSIONS: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
       SUPERVISOR_MAX_MESSAGES_PER_RUN: "30"
       SUPERVISOR_DEPLOY_WAIT_SECONDS: "900"
@@ -79,4 +83,4 @@ jobs:
       - name: Rebuild inventory and advance every open Kesher task
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python3 .github/scripts/kesher_task_supervisor_runtime.py
+        run: python3 .github/scripts/kesher_task_supervisor_runtime_v2.py
