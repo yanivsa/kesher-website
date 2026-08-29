@@ -54,10 +54,10 @@ function testTrustedArticleImageV2() {
   assert.strictEqual(contract.controller_state_schema_version, 3);
   assert.strictEqual(contract.retry.max_attempts_per_stage, 3);
   assert.deepStrictEqual(contract.retry.backoff_minutes, [5, 15]);
-  assert.strictEqual(contract.image.required_for_article, false);
-  assert.strictEqual(contract.image.publication_blocking, false);
-  assert.strictEqual(contract.image.no_image_publication_allowed, true);
-  assert.strictEqual(contract.image.failure_mode, 'best-effort-defer');
+  assert.strictEqual(contract.image.required_for_article, true);
+  assert.strictEqual(contract.image.publication_blocking, true);
+  assert.strictEqual(contract.image.no_image_publication_allowed, false);
+  assert.strictEqual(contract.image.failure_mode, 'blocking-retry');
   assert.strictEqual(contract.image.worker_attempts_per_dispatch, 1);
   assert.strictEqual(contract.image.max_attempts, 3);
   assert.deepStrictEqual(contract.image.provider_order, ['gemini', 'unsplash', 'pexels', 'local-curated']);
@@ -98,7 +98,6 @@ function testTrustedArticleImageV2() {
   // The raw gate remains strict for any image-bearing PR, while the production
   // article controller removes only the exact missing-image publication error.
   assert(gate.includes('New article requires a trusted local image; no-image publication is forbidden'));
-  assert(articleController.includes('NO_IMAGE_GATE_ERROR'));
   assert(articleController.includes('load_validator_best_effort'));
   assert(gate.includes('Image Pipeline Version: 2'));
   assert(gate.includes('generated|stock|local_fallback'));
@@ -129,7 +128,7 @@ checks = [{'name':'verify','conclusion':'success'}]
 
 no_image = {'id':'valid-new-post','content':content}
 errors = evaluate(base_pr, [{'filename':'src/data/posts.json'}], checks, base, base+[no_image], lambda _: b'')
-assert not any('no-image publication is forbidden' in e for e in errors), errors
+assert any('no-image publication is forbidden' in e for e in errors), errors
 
 png = b'\\x89PNG\\r\\n\\x1a\\n' + b'\\x00'*8 + struct.pack('>II',1200,675) + b'fixture'
 sha = hashlib.sha256(png).hexdigest()
