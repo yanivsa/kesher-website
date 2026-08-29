@@ -9,7 +9,7 @@
       "stage": "article",
       "code": "DUPLICATE_ARTICLE_PRS",
       "message": "2 open article PRs modify posts.json",
-      "at": "2026-08-29T17:59:09.414340+00:00"
+      "at": "2026-08-29T18:26:44.539772+00:00"
     },
     "next_retry_at": null,
     "run_id": null,
@@ -39,7 +39,7 @@
     "stage": "article",
     "code": "DUPLICATE_ARTICLE_PRS",
     "message": "2 open article PRs modify posts.json",
-    "at": "2026-08-29T17:59:09.414340+00:00"
+    "at": "2026-08-29T18:26:44.539772+00:00"
   },
   "history": [
     {
@@ -676,9 +676,18 @@
       "details": {
         "message": "2 open article PRs modify posts.json"
       }
+    },
+    {
+      "at": "2026-08-29T18:26:44.539790+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "DUPLICATE_ARTICLE_PRS",
+      "details": {
+        "message": "2 open article PRs modify posts.json"
+      }
     }
   ],
-  "updated_at": "2026-08-29T17:59:09.414363+00:00",
+  "updated_at": "2026-08-29T18:26:44.539795+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
