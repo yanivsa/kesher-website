@@ -25,6 +25,16 @@ const schemaData = {
         "@type": "LocalBusiness",
         "@id": `${SITE_CONFIG.url}/#business`
       },
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "אשדוד"
+        },
+        {
+          "@type": "Country",
+          "name": "ישראל"
+        }
+      ],
       "description": "ייעוץ זוגי ממוקד ומעשי באשדוד ובאונליין לזוגות המתמודדים עם קשיי תקשורת, ריבים חוזרים, משברים ורצון בשיפור הקשר.",
       "image": `${SITE_CONFIG.url}/images/generated/services/couples-room.jpg`
     },
