@@ -131,25 +131,6 @@ async function tryGeminiImagen(apiKey, title, customPrompt) {
   throw new Error("Gemini Imagen response missing image bytes");
 }
 
-async function tryDeepAi(apiKey, title, customPrompt) {
-  const response = await fetch("https://api.deepai.org/api/text2img", {
-    method: "POST",
-    headers: {
-      "Api-Key": apiKey,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({ text: buildPrompt(title, customPrompt) }),
-  });
-  if (!response.ok) {
-    throw new Error(`DeepAI returned status ${response.status}`);
-  }
-  const data = await response.json();
-  if (data.output_url) {
-    return data.output_url;
-  }
-  throw new Error("DeepAI output_url missing");
-}
-
 async function tryUnsplashApi(accessKey, query) {
   const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&orientation=landscape&per_page=10`;
   const response = await fetch(url, {
