@@ -10,6 +10,7 @@ from __future__ import annotations
 import importlib.util
 import pathlib
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -102,18 +103,69 @@ def process_issue_scoped(
 
 
 def observe_push_deploy() -> datetime:
-    """Do not dispatch deploy.yml; merge-to-main already triggers it.
-
-    Return a slightly earlier timestamp so the base poller can discover the
-    push-triggered run even if GitHub creates it a few seconds before this call.
-    """
+    """Do not dispatch deploy.yml; merge-to-main already triggers it."""
     base.meaningful_changes.append("Awaiting normal push-triggered deploy; duplicate deploy dispatch suppressed")
     return datetime.now(timezone.utc) - timedelta(minutes=2)
+
+
+def current_main_sha() -> str:
+    _, ref = base.gh("GET", f"/repos/{base.REPO}/git/ref/heads/main")
+    return str((ref.get("object") or {}).get("sha") or "")
+
+
+def wait_for_push_deploy(after: datetime | None) -> base.GateState:
+    """Require a successful automatic deploy for the current main SHA.
+
+    This prevents an unrelated earlier deploy inside the timestamp window from
+    being mistaken for the deployment that contains the just-merged change.
+    """
+    if after is None:
+        return base.GateState("pending", "dry-run deploy")
+
+    deadline = time.monotonic() + base.DEPLOY_WAIT_SECONDS
+    last_seen = "none"
+    while time.monotonic() < deadline:
+        expected_sha = current_main_sha()
+        _, data = base.gh(
+            "GET",
+            f"/repos/{base.REPO}/actions/workflows/deploy.yml/runs?branch=main&per_page=20",
+        )
+        candidates = []
+        for run in data.get("workflow_runs") or []:
+            created = base.parse_time(str(run.get("created_at") or ""))
+            if created < after:
+                continue
+            if str(run.get("head_sha") or "") != expected_sha:
+                continue
+            candidates.append(run)
+
+        if candidates:
+            run = candidates[0]
+            last_seen = str(run.get("id") or "unknown")
+            status = str(run.get("status") or "")
+            conclusion = str(run.get("conclusion") or "")
+            if status == "completed":
+                if conclusion == "success":
+                    return base.GateState(
+                        "green",
+                        f"automatic deploy run {last_seen} succeeded for main {expected_sha[:12]}",
+                    )
+                return base.GateState(
+                    "failed",
+                    f"automatic deploy run {last_seen} concluded {conclusion} for main {expected_sha[:12]}",
+                )
+        time.sleep(base.DEPLOY_POLL_SECONDS)
+
+    return base.GateState(
+        "pending",
+        f"automatic deploy run {last_seen} for current main did not finish within controller window",
+    )
 
 
 ORIGINAL_PROCESS_ISSUE = base.process_issue
 base.process_issue = process_issue_scoped
 base.dispatch_deploy = observe_push_deploy
+base.wait_for_deploy = wait_for_push_deploy
 
 
 if __name__ == "__main__":
