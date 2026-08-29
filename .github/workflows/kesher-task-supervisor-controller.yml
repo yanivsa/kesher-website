@@ -5,13 +5,17 @@ on:
     paths:
       - ".github/workflows/kesher-task-supervisor-controller.yml"
       - ".github/scripts/kesher_task_supervisor.py"
+      - ".github/scripts/kesher_task_supervisor_runtime.py"
       - "tests/test_kesher_task_supervisor.py"
+      - "tests/test_kesher_task_supervisor_runtime.py"
   push:
     branches: [main]
     paths:
       - ".github/workflows/kesher-task-supervisor-controller.yml"
       - ".github/scripts/kesher_task_supervisor.py"
+      - ".github/scripts/kesher_task_supervisor_runtime.py"
       - "tests/test_kesher_task_supervisor.py"
+      - "tests/test_kesher_task_supervisor_runtime.py"
   schedule:
     - cron: "7 * * * *"
   workflow_dispatch:
@@ -46,7 +50,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
       - name: Validate supervisor controller
-        run: python3 -m unittest tests.test_kesher_task_supervisor -v
+        run: python3 -m unittest tests.test_kesher_task_supervisor tests.test_kesher_task_supervisor_runtime -v
 
   supervise:
     if: github.event_name != 'pull_request'
@@ -72,7 +76,7 @@ jobs:
           set -euo pipefail
           test -n "${JULES_API_KEY:-}"
 
-      - name: Rebuild inventory and advance every open task
+      - name: Rebuild inventory and advance every open Kesher task
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python3 .github/scripts/kesher_task_supervisor.py
+        run: python3 .github/scripts/kesher_task_supervisor_runtime.py
