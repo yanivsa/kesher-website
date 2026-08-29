@@ -155,6 +155,20 @@ def _stage_defaults() -> dict[str, Any]:
 
 def new_cycle_state(day: date, old: dict[str, Any] | None = None) -> dict[str, Any]:
     history = list((old or {}).get("history") or [])[-80:]
+    backlog = list((old or {}).get("backlog") or [])
+    if isinstance(old, dict) and old.get("cycle") and old.get("cycle") != day.isoformat():
+        prev_article = old.get("article") if isinstance(old.get("article"), dict) else {}
+        prev_status = str(old.get("status") or "")
+        # If previous cycle ended without completing the article (and had an open PR or active session/attempts)
+        if prev_status not in {"complete", "article_live"} and (
+            prev_article.get("pr_number") or prev_article.get("last_jules_session_id") or int(prev_article.get("attempts") or 0) > 0
+        ):
+            backlog.append({
+                "cycle": old.get("cycle"),
+                "status": prev_status,
+                "article": prev_article,
+                "archived_at": utc_now(),
+            })
     return {
         "schema_version": STATE_SCHEMA_VERSION,
         "cycle": day.isoformat(),
@@ -169,6 +183,7 @@ def new_cycle_state(day: date, old: dict[str, Any] | None = None) -> dict[str, A
             "resume_dispatches": 0,
             **_stage_defaults(),
         },
+        "backlog": backlog[-20:],
         "last_error": None,
         "history": history,
         "updated_at": utc_now(),
@@ -412,7 +427,7 @@ class GitHubClient:
             raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}")
         return json.loads(base64.b64decode(payload.get("content") or "").decode("utf-8"))
 
-    def open_article_prs(self) -> list[dict[str, Any]]:
+    def open_article_prs(self, target_slot: str | None = None) -> list[dict[str, Any]]:
         prs = self.request("GET", f"{self.api}/pulls?state=open&per_page=100")
         if not isinstance(prs, list):
             raise ControllerError("GITHUB_PRS_INVALID")
@@ -421,14 +436,35 @@ class GitHubClient:
             if not isinstance(pr, dict):
                 continue
             number = pr.get("number")
+            title = str(pr.get("title") or "").strip()
             if not number:
                 continue
+            # Article publication PRs must be titled 'Publish Kesher article: ...'
+            if not title.startswith("Publish Kesher article:"):
+                continue
+
             files = self.request("GET", f"{self.api}/pulls/{number}/files?per_page=100")
-            if isinstance(files, list) and any(
+            if not (isinstance(files, list) and any(
                 isinstance(row, dict) and row.get("filename") == "src/data/posts.json"
                 for row in files
-            ):
-                matches.append(pr)
+            )):
+                continue
+
+            if target_slot:
+                head_sha = str((pr.get("head") or {}).get("sha") or "")
+                base_sha = str((pr.get("base") or {}).get("sha") or "main")
+                try:
+                    base_posts = self.contents_json("src/data/posts.json", base_sha)
+                    head_posts = self.contents_json("src/data/posts.json", head_sha)
+                    if isinstance(base_posts, list) and isinstance(head_posts, list):
+                        base_ids = {row.get("id") for row in base_posts if isinstance(row, dict)}
+                        new_posts = [row for row in head_posts if isinstance(row, dict) and row.get("id") not in base_ids]
+                        if not any(str(row.get("date") or "").strip() == target_slot for row in new_posts):
+                            continue
+                except ControllerError:
+                    pass
+
+            matches.append(pr)
         return matches
 
     def workflow_runs(self, workflow: str, limit: int = 20) -> list[dict[str, Any]]:
@@ -756,7 +792,7 @@ class Controller:
                   f"{len(todays)} articles share Israel date {self.now.date()}")
             return Action("blocked", "duplicate published articles")
 
-        open_prs = self.github.open_article_prs()
+        open_prs = self.github.open_article_prs(self.now.date().isoformat())
         if not todays:
             if len(open_prs) > 1:
                 block(state, "article", "DUPLICATE_ARTICLE_PRS",

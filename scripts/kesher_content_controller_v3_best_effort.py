@@ -191,6 +191,21 @@ class BestEffortController(v3.V3Controller):
                 current["artifact_id"] = item.get("artifact_id")
                 current["provider_id"] = item.get("task_id")
                 return
+        if stage == "article":
+            current = state["article"]
+            last_error = current.get("last_error") or {}
+            last_code = str(last_error.get("code") or "")
+            last_session = current.get("last_jules_session_id")
+            # If the previous worker run timed out or completed without PR while preserving
+            # an active session, resuming that session is session recovery, not a new semantic generation attempt.
+            if last_session and last_code in {"JULES_TIMEOUT_SESSION_ACTIVE", "COMPLETED_WITHOUT_PR"}:
+                v3.core.GitHubClient.dispatch(self.github, workflow, inputs)
+                current["attempt_count"] = max(1, int(current.get("attempt_count") or 0))
+                current["resume_dispatches"] = int(current.get("resume_dispatches") or 0) + 1
+                current["last_dispatch_at"] = v3.core.utc_now()
+                current["status"] = "running"
+                current["next_retry_at"] = None
+                return
         return super()._dispatch_budgeted(state, stage, workflow, inputs)
 
     def _sync_stage_views(self, state, action):
