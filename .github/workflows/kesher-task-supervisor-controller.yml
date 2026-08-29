@@ -6,6 +6,12 @@ on:
       - ".github/workflows/kesher-task-supervisor-controller.yml"
       - ".github/scripts/kesher_task_supervisor.py"
       - "tests/test_kesher_task_supervisor.py"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kesher-task-supervisor-controller.yml"
+      - ".github/scripts/kesher_task_supervisor.py"
+      - "tests/test_kesher_task_supervisor.py"
   schedule:
     - cron: "7 * * * *"
   workflow_dispatch:
@@ -50,7 +56,9 @@ jobs:
     env:
       JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
       SUPERVISOR_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
-      SUPERVISOR_MAX_NEW_SESSIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.max_new_sessions || '2' }}
+      SUPERVISOR_MAX_NEW_SESSIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.max_new_sessions || '1' }}
+      SUPERVISOR_NEW_SESSION_INTERVAL_HOURS: "2"
+      SUPERVISOR_FORCE_NEW_SESSIONS: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
       SUPERVISOR_MAX_MESSAGES_PER_RUN: "30"
       SUPERVISOR_DEPLOY_WAIT_SECONDS: "900"
       SUPERVISOR_DEPLOY_POLL_SECONDS: "15"
