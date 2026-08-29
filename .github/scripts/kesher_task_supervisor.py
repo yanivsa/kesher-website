@@ -32,7 +32,9 @@ REPO = os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 JULES_API_KEY = os.environ.get("JULES_API_KEY", "")
 DRY_RUN = os.environ.get("SUPERVISOR_DRY_RUN", "false").lower() == "true"
-MAX_NEW_SESSIONS = int(os.environ.get("SUPERVISOR_MAX_NEW_SESSIONS", "2"))
+MAX_NEW_SESSIONS = int(os.environ.get("SUPERVISOR_MAX_NEW_SESSIONS", "1"))
+NEW_SESSION_INTERVAL_HOURS = int(os.environ.get("SUPERVISOR_NEW_SESSION_INTERVAL_HOURS", "2"))
+FORCE_NEW_SESSIONS = os.environ.get("SUPERVISOR_FORCE_NEW_SESSIONS", "false").lower() == "true"
 MAX_MESSAGES = int(os.environ.get("SUPERVISOR_MAX_MESSAGES_PER_RUN", "30"))
 DEPLOY_WAIT_SECONDS = int(os.environ.get("SUPERVISOR_DEPLOY_WAIT_SECONDS", "900"))
 DEPLOY_POLL_SECONDS = int(os.environ.get("SUPERVISOR_DEPLOY_POLL_SECONDS", "15"))
@@ -72,7 +74,6 @@ ALLOWED_MAIN_FAILURE_WORKFLOWS = {
     "CI",
     "Deploy to Cloudflare Pages",
     "Kesher Content Controller",
-    "Kesher Stability PR Validation",
 }
 
 new_sessions = 0
@@ -297,6 +298,19 @@ def create_session(issue: dict[str, Any], starting_branch: str = "main", pr_numb
     global new_sessions
     if new_sessions >= MAX_NEW_SESSIONS:
         warnings.append(f"Issue #{issue['number']}: new-session budget exhausted")
+        return None
+
+    # Scheduled runs deliberately pace brand-new Jules tasks to stay within the
+    # free-plan rolling allowance (at most 12/day with the default 2h interval).
+    # Existing sessions are still continued every hour and do not wait for this gate.
+    if (
+        not FORCE_NEW_SESSIONS
+        and NEW_SESSION_INTERVAL_HOURS > 1
+        and datetime.now(timezone.utc).hour % NEW_SESSION_INTERVAL_HOURS != 0
+    ):
+        warnings.append(
+            f"Issue #{issue['number']}: no existing Jules session; new-session pacing gate deferred creation"
+        )
         return None
 
     number = int(issue["number"])
@@ -665,6 +679,55 @@ def close_issue_if_open(issue_number: int, note: str) -> None:
     meaningful_changes.append(f"Issue #{issue_number}: verified Done")
 
 
+def workflow_failure_id(issue: dict[str, Any]) -> int | None:
+    match = re.search(
+        r"<!-- kesher-supervisor-workflow-failure:(\d+) -->",
+        str(issue.get("body") or ""),
+    )
+    return int(match.group(1)) if match else None
+
+
+def sync_workflow_failure_issue(issue: dict[str, Any]) -> bool:
+    """Return True when a synthetic workflow issue needs no Jules action this run."""
+    workflow_id = workflow_failure_id(issue)
+    if workflow_id is None:
+        return False
+    _, data = gh(
+        "GET",
+        f"/repos/{REPO}/actions/workflows/{workflow_id}/runs?branch=main&per_page=1",
+    )
+    runs = data.get("workflow_runs") or []
+    if not runs:
+        return False
+    latest = runs[0]
+    status = str(latest.get("status") or "")
+    conclusion = str(latest.get("conclusion") or "")
+    number = int(issue["number"])
+
+    if status != "completed":
+        # A newer recovery run is active. Do not create more code work while it is running.
+        return True
+
+    if conclusion == "success":
+        if issue.get("state") == "open":
+            if not DRY_RUN:
+                gh(
+                    "PATCH",
+                    f"/repos/{REPO}/issues/{number}",
+                    {"state": "closed", "state_reason": "completed"},
+                )
+                comment_issue(
+                    number,
+                    f"Kesher Supervisor auto-closed this workflow incident: latest main run "
+                    f"{latest.get('html_url')} succeeded.",
+                )
+            meaningful_changes.append(
+                f"Issue #{number}: workflow recovered on run {latest.get('id')}"
+            )
+        return True
+    return False
+
+
 def process_issue(
     issue: dict[str, Any],
     prs_for_issue: list[dict[str, Any]],
@@ -672,6 +735,9 @@ def process_issue(
 ) -> None:
     number = int(issue["number"])
     comments = get_issue_comments(number)
+
+    if sync_workflow_failure_issue(issue):
+        return
 
     if issue_is_human_blocked(issue):
         return
@@ -794,7 +860,7 @@ def process_issue(
     )
 
 
-def active_main_failures(open_issues: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def active_main_failures(all_issues: list[dict[str, Any]]) -> list[dict[str, Any]]:
     _, data = gh("GET", f"/repos/{REPO}/actions/runs?branch=main&per_page=100")
     latest_by_name: dict[str, dict[str, Any]] = {}
     for run in data.get("workflow_runs") or []:
@@ -803,17 +869,45 @@ def active_main_failures(open_issues: list[dict[str, Any]]) -> list[dict[str, An
             continue
         latest_by_name[name] = run
 
-    markers = "\n".join(str(i.get("body") or "") for i in open_issues)
-    created: list[dict[str, Any]] = []
+    existing_by_workflow: dict[int, dict[str, Any]] = {}
+    for issue in all_issues:
+        if "pull_request" in issue:
+            continue
+        workflow_id = workflow_failure_id(issue)
+        if workflow_id is not None:
+            existing_by_workflow[workflow_id] = issue
+
+    adopted: list[dict[str, Any]] = []
     for name, run in latest_by_name.items():
         if str(run.get("status")) != "completed":
             continue
         conclusion = str(run.get("conclusion") or "")
         if conclusion not in {"failure", "timed_out", "action_required"}:
             continue
-        marker = f"{WORKFLOW_MARKER}{run.get('workflow_id')} -->"
-        if marker in markers:
+
+        workflow_id = int(run.get("workflow_id") or 0)
+        existing = existing_by_workflow.get(workflow_id)
+        if existing:
+            if existing.get("state") != "open":
+                if not DRY_RUN:
+                    gh(
+                        "PATCH",
+                        f"/repos/{REPO}/issues/{existing['number']}",
+                        {"state": "open", "state_reason": "reopened"},
+                    )
+                    comment_issue(
+                        int(existing["number"]),
+                        f"Kesher Supervisor reopened this incident for a new failing main run: "
+                        f"{run.get('html_url')} (`{conclusion}`).",
+                    )
+                existing["state"] = "open"
+                adopted.append(existing)
+                meaningful_changes.append(
+                    f"Issue #{existing['number']}: reopened for recurring workflow failure {name}"
+                )
             continue
+
+        marker = f"{WORKFLOW_MARKER}{workflow_id} -->"
         title = f"[Supervisor] Active workflow failure: {name}"
         body = (
             f"{marker}\n"
@@ -824,6 +918,7 @@ def active_main_failures(open_issues: list[dict[str, Any]]) -> list[dict[str, An
             "Definition of Done:\n"
             "- diagnose the exact root cause;\n"
             "- apply only the smallest safe repo/workflow repair if the failure is code/config related;\n"
+            "- if the failure is an external/retryable provider condition already owned by heartbeat/backoff, do not create duplicate recovery work;\n"
             "- keep existing security/CI/content idempotency safeguards;\n"
             "- get the relevant workflow green again;\n"
             "- for Deploy failures, verify the public site after recovery.\n\n"
@@ -833,9 +928,9 @@ def active_main_failures(open_issues: list[dict[str, Any]]) -> list[dict[str, An
             meaningful_changes.append(f"DRY-RUN: would create issue for active workflow failure {name}")
             continue
         _, issue = gh("POST", f"/repos/{REPO}/issues", {"title": title, "body": body}, allow={201})
-        created.append(issue)
+        adopted.append(issue)
         meaningful_changes.append(f"Created Issue #{issue.get('number')} for active workflow failure {name}")
-    return created
+    return adopted
 
 
 def main() -> int:
@@ -844,14 +939,19 @@ def main() -> int:
         print("Missing required secret(s): " + ", ".join(missing), file=sys.stderr)
         return 2
 
-    all_issues = gh_pages(f"/repos/{REPO}/issues?state=open")
-    issues = [i for i in all_issues if "pull_request" not in i]
+    all_repo_items = gh_pages(f"/repos/{REPO}/issues?state=all")
+    issues = [
+        i for i in all_repo_items
+        if "pull_request" not in i and i.get("state") == "open"
+    ]
     prs = gh_pages(f"/repos/{REPO}/pulls?state=open")
     sessions = jules_sessions()
 
-    # Convert active unowned main failures into deduplicated issues, then process them in this same run.
-    created = active_main_failures(issues)
-    issues.extend(created)
+    # Convert active unowned main failures into persistent deduplicated issues,
+    # reopening the same incident on recurrence instead of creating duplicates.
+    adopted = active_main_failures(all_repo_items)
+    known_numbers = {int(i["number"]) for i in issues}
+    issues.extend(i for i in adopted if int(i["number"]) not in known_numbers)
 
     mapping = linked_pr_map(prs)
     issues.sort(
