@@ -57,7 +57,7 @@ class FakeGitHub:
         assert ref == "main"
         return copy.deepcopy(self.posts)
 
-    def open_article_prs(self):
+    def open_article_prs(self, target_slot: str | None = None):
         return copy.deepcopy(self.prs)
 
     def active_workflow_run(self, workflow, *, production_only=False):
@@ -202,6 +202,35 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(state["status"], "article_pr_open")
         self.assertEqual(state["article"]["pr_number"], 500)
         self.assertEqual(gh.dispatches, [])
+
+    def test_cycle_rollover_records_undelivered_article_in_backlog(self):
+        old_state = controller.new_cycle_state(datetime(2026, 8, 27, tzinfo=TZ).date())
+        old_state["status"] = "article_pr_open"
+        old_state["article"].update({"attempts": 2, "pr_number": 550, "last_jules_session_id": "sessions/550"})
+        new_state = controller.new_cycle_state(datetime(2026, 8, 28, tzinfo=TZ).date(), old_state)
+        self.assertEqual(len(new_state["backlog"]), 1)
+        self.assertEqual(new_state["backlog"][0]["cycle"], "2026-08-27")
+        self.assertEqual(new_state["backlog"][0]["article"]["pr_number"], 550)
+
+    def test_unrelated_pr_563_is_not_adopted_as_article_pr(self):
+        gh = FakeGitHub()
+        # PR #563 is titled differently and does not add a post for 2026-08-19
+        gh.prs = [{
+            "number": 563,
+            "title": "[jules-automerge] Kesher content review / article image backlog",
+            "html_url": "https://github.com/yanivsa/kesher-website/pull/563",
+        }]
+        # Real GitHubClient open_article_prs filters out non-'Publish Kesher article:' PRs
+        client = controller.GitHubClient("yanivsa/kesher-website", "fake-token")
+        client.request = lambda method, url, body=None, **kwargs: [
+            {
+                "number": 563,
+                "title": "[jules-automerge] Kesher content review / article image backlog",
+                "html_url": "https://github.com/yanivsa/kesher-website/pull/563",
+            }
+        ] if "pulls?state=open" in url else []
+        filtered_prs = client.open_article_prs("2026-08-19")
+        self.assertEqual(filtered_prs, [])
 
     def test_duplicate_article_prs_fail_closed(self):
         gh = FakeGitHub()
