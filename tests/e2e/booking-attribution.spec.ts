@@ -38,8 +38,8 @@ test('trusted Calendly scheduled event carries the real service context into tha
 });
 
 test('untrusted Calendly-shaped message cannot produce a booking conversion', async ({ page }) => {
-  await page.goto('/appointment');
-  await page.waitForLoadState('networkidle');
+  await page.goto('/appointment', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]')).toBeVisible({ timeout: 15_000 });
 
   await page.evaluate(() => {
     window.dispatchEvent(new MessageEvent('message', {
