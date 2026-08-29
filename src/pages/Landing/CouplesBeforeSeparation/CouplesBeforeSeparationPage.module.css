@@ -163,12 +163,12 @@
   }
 }
 
-.primaryCta {
+.primaryWhatsappCta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  background: var(--color-accent);
+  background: #25D366;
   color: white;
   font-size: 1.15rem;
   font-weight: 800;
@@ -177,25 +177,26 @@
   text-decoration: none;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
   transition: var(--transition);
   min-height: 52px;
 }
 
-.primaryCta:hover {
-  background: var(--color-accent-hover, #c2410c);
+.primaryWhatsappCta:hover {
+  background: #1EBE5B;
+  color: white;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.45);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
 }
 
-.secondaryCta {
+.secondaryBookingCta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
   background: var(--color-surface);
-  color: var(--color-whatsapp);
-  border: 2px solid var(--color-whatsapp);
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
   font-size: 1.15rem;
   font-weight: 700;
   padding: 0.85rem 1.6rem;
@@ -203,10 +204,11 @@
   text-decoration: none;
   transition: var(--transition);
   min-height: 52px;
+  cursor: pointer;
 }
 
-.secondaryCta:hover {
-  background: #E8F5E9;
+.secondaryBookingCta:hover {
+  background: var(--color-primary-light);
   transform: translateY(-2px);
 }
 
@@ -515,6 +517,26 @@
   line-height: 1.6;
 }
 
+/* === Closing CTA === */
+.closingCta {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%);
+  color: white;
+  padding: 4.5rem 0;
+  text-align: center;
+}
+
+.closingCta h2 {
+  color: white;
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+}
+
+.closingCta p {
+  color: var(--color-primary-light);
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
 /* === Minimal Footer === */
 .footer {
   background: #0F172A;
@@ -570,10 +592,9 @@
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    background: #E8F5E9;
-    color: var(--color-whatsapp);
-    border: 1.5px solid var(--color-whatsapp);
-    font-weight: 700;
+    background: #25D366;
+    color: white;
+    font-weight: 800;
     font-size: 0.95rem;
     padding: 0.65rem 0.5rem;
     border-radius: var(--radius-md);
@@ -583,7 +604,7 @@
   }
 
   .mobileStickyBtn {
-    flex: 1.4;
+    flex: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;

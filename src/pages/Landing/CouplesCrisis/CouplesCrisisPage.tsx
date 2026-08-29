@@ -10,6 +10,8 @@ import {
   FiPhone,
   FiChevronDown,
   FiChevronUp,
+  FiCalendar,
+  FiUserCheck,
 } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import MetaTags from '../../../components/SEO/MetaTags';
@@ -26,24 +28,28 @@ interface FAQItem {
 
 const FAQS: FAQItem[] = [
   {
-    q: 'האם חייבים להגיע ביחד לפגישה הראשונה?',
-    a: 'מומלץ מאוד להגיע כזוג כדי להתחיל מתמונת מצב משותפת. עם זאת, אם אחד מבני הזוג מתלבט או חושש, ניתן לתאם פגישת היכרות והתייעצות ראשונית כדי להבין איך לרתום את שניכם לתהליך.',
+    q: 'האם חייבים ששני בני הזוג יגיעו לפגישה הראשונה?',
+    a: 'מומלץ מאוד להגיע יחד כדי להתחיל מתמונת מצב משותפת. עם זאת, אם בן או בת הזוג חוששים או מתלבטים, ניתן להתחיל מפגישת היכרות קצרה או לכתוב לשירה ב-WhatsApp להתייעצות לפני הקביעה.',
   },
   {
-    q: 'מה קורה אם אנחנו כבר לא מצליחים לדבר בלי לצעוק?',
-    a: 'זהו בדיוק התפקיד של חדר הייעוץ: לספק מרחב מוגן ומובנה, עם כללים ברורים שמונעים הסלמה ומאפשרים לכל אחד להישמע בלי להיכנס מיד למגננה.',
+    q: 'מה אם אחד מבני הזוג לא רוצה טיפול או מיואש?',
+    a: 'חשש או שחיקה הם טבעיים במצבי משבר. התהליך בחדר הייעוץ אינו מיועד לשפוט, להאשים או לקבוע מי צודק, אלא להאט את המתח, להבין איפה השיחה מסתבכת ולבדוק האם קיימת דרך מועילה יותר לתקשר.',
+  },
+  {
+    q: 'האם זה מתאים גם לפני החלטה על פרידה?',
+    a: 'כן. לפני שמקבלים החלטות כבדות או מפרקים את הקשר, בירור זוגי רגוע מאפשר להבין לעומק מה קורה ביניכם, לבחון אם ומה ניתן לשנות, ולהגיע להחלטות שקולות ואחראיות.',
+  },
+  {
+    q: 'האם הפגישה דיסקרטית?',
+    a: 'בהחלט. כל פגישה מתקיימת במרחב פרטי, בטוח ומכבד בדיסקרטיות מלאה בהתאם לכללי האתיקה המקצועית.',
+  },
+  {
+    q: 'האם אפשר לקיים את הפגישה אונליין?',
+    a: 'כן. לצד הקליניקה באשדוד, ניתן לקיים את פגישות הייעוץ אונליין בזום (Zoom) מכל מקום בארץ ובעולם.',
   },
   {
     q: 'כמה זמן נמשכת פגישה ומה המחיר?',
-    a: 'פגישת ייעוץ זוגי אורכת 50 דקות מלאות וממוקדות. המחיר הוא 500 ₪ כולל מע״מ לפגישה, ללא התחייבות לסדרת טיפולים מראש.',
-  },
-  {
-    q: 'איפה מתקיימות הפגישות והאם יש אפשרות לאונליין?',
-    a: 'הקליניקה ממוקמת באשדוד עם גישה נוחה וחניה. כמו כן, ניתן לקיים את כל הפגישות או חלקן בזום (אונליין) מכל מקום בארץ ובעולם.',
-  },
-  {
-    q: 'מה הרקע המקצועי של שירה סהרוני?',
-    a: 'שירה היא יועצת זוגית, מנחת הורים ומגשרת מוסמכת, עורכת דין בהכשרתה. הגישה משלבת הקשבה עמוקה, ראייה מערכתית וכלים מעשיים ותקשורתיים המותאמים למציאות היומיומית.',
+    a: 'פגישת ייעוץ זוגי אורכת 50 דקות מלאות וממוקדות. העלות היא 500 ₪ כולל מע״מ לפגישה, ללא התחייבות מראש לסדרת מפגשים.',
   },
 ];
 
@@ -67,7 +73,7 @@ const CouplesCrisisPage: React.FC = () => {
 
   const whatsappPhone = SITE_CONFIG.contact.phone.replace(/[^0-9]/g, '');
   const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(
-    'היי שירה, אנחנו חווים תקופה מורכבת בזוגיות ונשמח לבדוק התאמה לפגישת ייעוץ זוגי.',
+    'היי שירה, אנחנו חווים תקופה מורכבת בזוגיות ונשמח להתייעץ בדיסקרטיות.',
   )}`;
 
   useEffect(() => {
@@ -104,7 +110,7 @@ const CouplesCrisisPage: React.FC = () => {
     '@graph': [
       {
         '@type': 'Service',
-        name: 'ייעוץ זוגי במצבי משבר',
+        name: 'ייעוץ זוגי במצבי משבר | שירה סהרוני',
         serviceType: 'Couples Crisis Counseling',
         provider: {
           '@type': 'Person',
@@ -141,20 +147,20 @@ const CouplesCrisisPage: React.FC = () => {
   return (
     <main id="main-content" className={styles.page}>
       <MetaTags
-        title="ייעוץ זוגי במשבר | שירה סהרוני – עצירת הסלמה וחידוש התקשורת"
-        description="זוגיות במשבר? כשהשיחות חוזרות על עצמן ונגמרות בכעס או בריחוק, אפשר להתחיל משיחה אחת רגועה. ייעוץ זוגי ממוקד ומעשי באשדוד או אונליין. 500 ₪ לפגישה."
+        title="זוגיות במשבר | שירה סהרוני – ייעוץ זוגי מעשי באשדוד ובאונליין"
+        description="זוגיות במשבר? כשהוויכוחים מתלקחים בשניות והשתיקות מעמיקות, אפשר להתחיל משיחה אחת רגועה. ייעוץ זוגי ממוקד באשדוד או אונליין. 50 דקות, 500 ₪."
         canonical="https://kesher.saharoni.com/services/couples/crisis"
       />
       <SchemaOrg data={schemaData} />
 
-      {/* Minimal Header */}
+      {/* Header */}
       <header className={styles.header}>
         <div className={`container ${styles.headerInner}`}>
           <a href="/" className={styles.brand} aria-label="מעבר לדף הבית של שירה סהרוני">
             <img src="/logo-kesher.svg" alt="קשר - שירה סהרוני" className={styles.brandLogo} width="40" height="40" />
             <div className={styles.brandText}>
               <span className={styles.brandTitle}>שירה סהרוני</span>
-              <span className={styles.brandSubtitle}>ייעוץ זוגי, הנחיית הורים וגישור</span>
+              <span className={styles.brandSubtitle}>ייעוץ זוגי במשבר | אשדוד ואונליין</span>
             </div>
           </a>
 
@@ -172,13 +178,13 @@ const CouplesCrisisPage: React.FC = () => {
               className={styles.headerCtaBtn}
               onClick={() => scrollToBooking('header')}
             >
-              קביעת פגישה
+              קביעת פגישת ייעוץ
             </button>
           </div>
         </div>
       </header>
 
-      {/* Hero Section (Above the Fold) */}
+      {/* Hero Section */}
       <section className={styles.hero}>
         <div className={`container ${styles.heroContent}`}>
           <div className={styles.heroBadge}>
@@ -191,59 +197,63 @@ const CouplesCrisisPage: React.FC = () => {
           </h1>
 
           <p className={styles.heroSubtitle}>
-            כשהוויכוחים מתלקחים בשניות, השתיקות הופכות לריחוק והעומס מכריע – לא חייבים להמשיך להסתובב באותו מעגל. ייעוץ זוגי ממוקד ומעשי שמייצר הבנה, בהירות וכלים לתקשורת.
+            כשהוויכוחים מתלקחים בשניות, השתיקות הופכות לריחוק ואובדן האמון מעמיק — לא חייבים להמשיך להסתובב באותו מעגל שוחק. ייעוץ זוגי ממוקד ומעשי לעצירת ההסלמה, הבנת הדפוס ולמידת דרך אחרת לדבר.
           </p>
 
           <div className={styles.heroCtaGroup}>
-            <button
-              type="button"
-              className={styles.primaryCta}
-              onClick={() => scrollToBooking('hero_primary')}
-            >
-              <FiCheckCircle aria-hidden="true" />
-              <span>תיאום פגישת ייעוץ – 500 ₪</span>
-            </button>
-
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.secondaryCta}
+              className={styles.primaryWhatsappCta}
               onClick={() => {
-                trackSecondaryCtaClick('WhatsApp פתיח', 'hero');
+                trackSecondaryCtaClick('כתבו לי ב-WhatsApp', 'hero');
                 trackWhatsappClick();
               }}
-              aria-label="התייעצות דיסקרטית ב-WhatsApp עם שירה סהרוני"
+              aria-label="כתבו לי ב-WhatsApp"
             >
               <FaWhatsapp aria-hidden="true" />
-              <span>התייעצות מהירה ב-WhatsApp</span>
+              <span>כתבו לי ב-WhatsApp</span>
             </a>
+
+            <button
+              type="button"
+              className={styles.secondaryBookingCta}
+              onClick={() => scrollToBooking('hero_secondary')}
+            >
+              <FiCalendar aria-hidden="true" />
+              <span>קביעת פגישת ייעוץ</span>
+            </button>
           </div>
 
           <div className={styles.heroTrustRow}>
             <div className={styles.trustItem}>
               <FiMapPin className={styles.trustIcon} aria-hidden="true" />
-              <span>קליניקה באשדוד / אונליין בזום</span>
+              <span>אשדוד</span>
+            </div>
+            <div className={styles.trustItem}>
+              <FiUserCheck className={styles.trustIcon} aria-hidden="true" />
+              <span>אונליין ב-Zoom</span>
             </div>
             <div className={styles.trustItem}>
               <FiClock className={styles.trustIcon} aria-hidden="true" />
-              <span>50 דקות לפגישה</span>
+              <span>פגישה 50 דקות</span>
             </div>
             <div className={styles.trustItem}>
               <FiShield className={styles.trustIcon} aria-hidden="true" />
-              <span>דיסקרטיות מלאה וללא התחייבות</span>
+              <span>דיסקרטיות מלאה</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Crisis Symptoms Section */}
+      {/* PROBLEM Section */}
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>מתי פונים לייעוץ זוגי ממוקד משבר?</h2>
+            <h2 className={styles.sectionTitle}>איך נראה משבר בזוגיות?</h2>
             <p className={styles.sectionSubtitle}>
-              משבר זוגי הוא לא סוף הדרך – לרוב הוא איתות לכך שהדפוסים הישנים כבר אינם משרתים אתכם.
+              משבר זוגי נוצר כשהדפוסים הישנים מפסיקים לעבוד, והתקשורת הופכת למאבק שוחק או לריחוק כואב.
             </p>
           </div>
 
@@ -252,68 +262,68 @@ const CouplesCrisisPage: React.FC = () => {
               <FiAlertCircle className={styles.painIcon} aria-hidden="true" />
               <h3 className={styles.painTitle}>הסלמה מהירה ופיצוצים</h3>
               <p className={styles.painDesc}>
-                נושאים קטנים ביומיום הופכים למריבות קשות, עם תחושה שאף אחד לא מקשיב באמת ושכל מילה הופכת להתקפה.
+                נושאים קטנים ביומיום הופכים מהר מאוד למריבות קשות, מלווים בתחושה שאף אחד לא מקשיב באמת ושכל מילה נתפסת כביקורת.
               </p>
             </div>
 
             <div className={styles.painCard}>
               <FiMessageSquare className={styles.painIcon} aria-hidden="true" />
-              <h3 className={styles.painTitle}>שתיקות, ריחוק וניתוק</h3>
+              <h3 className={styles.painTitle}>שתיקות, ריחוק ואובדן אמון</h3>
               <p className={styles.painDesc}>
-                ויתור על שיחות עומק, הליכה "על ביצים", תחושת בדידות עמוקה בתוך הבית וחיים כשותפים לדירה בלבד.
+                הימנעות משיחות עומק, הליכה "על ביצים", תחושת בדידות עמוקה בתוך הבית וספקות גוברים לגבי עתיד הקשר.
               </p>
             </div>
 
             <div className={styles.painCard}>
               <FiHeart className={styles.painIcon} aria-hidden="true" />
-              <h3 className={styles.painTitle}>עומס הורים ושחיקה</h3>
+              <h3 className={styles.painTitle}>עייפות ושחיקה מתמשכת</h3>
               <p className={styles.painDesc}>
-                הילדים, הקריירה והלחצים הכלכליים דוחקים את הזוגיות לתחתית סדר העדיפויות, עד שלא נשאר כוח אחד לשני.
+                עומס משימות הבית והילדים דוחק את היחסים לתחתית הסדר, עד שנגמר הכוח לנסות ולדבר שוב.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3 Step Approach */}
+      {/* SOLUTION Section */}
       <section className={styles.section}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>איך נראה התהליך בפועל?</h2>
+            <h2 className={styles.sectionTitle}>הפתרון: עצירת ההסלמה ובניית שיח חדש</h2>
             <p className={styles.sectionSubtitle}>
-              גישה מובנית, מכבדת ומעשית שנועדה לתת מענה מידי ולאפשר שינוי הדרגתי ויציב.
+              תהליך ממוקד המאפשר להבין את המנגנון שמפעיל את הריב, לנטרל את ההתגוננות ולצאת עם צעד מעשי אחד.
             </p>
           </div>
 
           <div className={styles.stepsGrid}>
             <div className={styles.stepCard}>
               <div className={styles.stepNumber}>1</div>
-              <h3 className={styles.stepTitle}>פגישת מיפוי והיכרות</h3>
+              <h3 className={styles.stepTitle}>מיפוי דפוס השיחה</h3>
               <p className={styles.stepDesc}>
-                הבנת מוקדי החיכוך, זיהוי נקודות ההסלמה והגדרת הצרכים המרכזיים של כל אחד מכם במרחב רגוע ולא שיפוטי.
+                מבינים איפה השיחה נתקעת, מה גורם לאחד להתגונן ולשני להתרחק, בלי לבחור צדדים ובלי לחפש מי אשם.
               </p>
             </div>
 
             <div className={styles.stepCard}>
               <div className={styles.stepNumber}>2</div>
-              <h3 className={styles.stepTitle}>עצירת דפוסי הפגיעה</h3>
+              <h3 className={styles.stepTitle}>הפחתת מתח ועצירת הסלמה</h3>
               <p className={styles.stepDesc}>
-                רכישת כלים מידיים לשיח אחר: איך לעצור ויכוח לפני שהוא מתפוצץ, איך להקשיב בלי להתגונן ואיך לבטא צורך בלי להאשים.
+                רוכשים כלים מעשיים לעצירת התדרדרות השיחה בזמן אמת ולהקשבה מכבדת גם כשקיימת מחלוקת.
               </p>
             </div>
 
             <div className={styles.stepCard}>
               <div className={styles.stepNumber}>3</div>
-              <h3 className={styles.stepTitle}>בניית הסכמות וחידוש הקשר</h3>
+              <h3 className={styles.stepTitle}>צעד מעשי ראשון לבית</h3>
               <p className={styles.stepDesc}>
-                קביעת הסכמות יומיומיות סביב חלוקת עומסים, הורות וזמן זוגי, שמאפשרות להחזיר את האמון והקרבה לקשר.
+                יוצאים מהפגישה הראשונה עם כלי מוגדר אחד לתרגול יומיומי בבית להחזרת השקט והביטחון ביחסים.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Bio Section */}
+      {/* WHY SHIRA Section */}
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.bioCard}>
@@ -327,13 +337,13 @@ const CouplesCrisisPage: React.FC = () => {
                 loading="lazy"
               />
               <div>
-                <h2 className={styles.bioName}>שירה סהרוני</h2>
-                <p className={styles.bioRole}>יועצת זוגית, מנחת הורים ומגשרת מוסמכת</p>
+                <h2 className={styles.bioName}>למה לפנות לשירה סהרוני?</h2>
+                <p className={styles.bioRole}>יועצת זוגית, מנחת הורים ומגשרת מוסמכת, עורכת דין בהכשרתה</p>
               </div>
             </div>
 
             <p className={styles.bioText}>
-              עורכת דין בהכשרתה שבחרה להקדיש את פעילותה המקצועית לליווי זוגות ומשפחות. הגישה שלי משלבת הקשבה אמפתית, ראייה מערכתית וכלים מובנים ליצירת שיח בונה. אני מאמינה שגם במשברים עמוקים, כשיש מרחב בטוח ומכוון, אפשר למצוא מחדש את הדרך אחד אל השני.
+              הגישה המקצועית שלי משלבת הקשבה בגובה העיניים, ראייה מערכתית וכלים מעשיים وتקשורתיים. אני פוגשת זוגות ברגעי עומס ומשבר ומסייעת להם לעשות סדר, להפחית הסלמה ולהחזיר את האמון והקרבה.
             </p>
 
             <div className={styles.credentialsList}>
@@ -341,29 +351,28 @@ const CouplesCrisisPage: React.FC = () => {
               <span className={styles.credentialPill}>✓ מנחת הורים מוסמכת</span>
               <span className={styles.credentialPill}>✓ מגשרת מוסמכת</span>
               <span className={styles.credentialPill}>✓ עורכת דין בהכשרתה</span>
-              <span className={styles.credentialPill}>✓ קליניקה באשדוד ובזום</span>
+              <span className={styles.credentialPill}>✓ קליניקה באשדוד וב-Zoom</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Transparent Pricing Card */}
+      {/* PRICING & BOOKING Section */}
       <section className={styles.section}>
         <div className="container">
           <div className={styles.priceCard}>
-            <h2 className={styles.priceTitle}>פגישת ייעוץ זוגי ממוקדת</h2>
+            <h2 className={styles.priceTitle}>פגישת ייעוץ זוגי במצב משבר</h2>
             <div className={styles.priceAmount}>500 ₪</div>
             <p className={styles.priceNote}>
-              לפגישה בת 50 דקות מלאות (כולל מע״מ כחוק). ללא תשלום מראש וללא התחייבות לסדרת מפגשים.
+              לפגישה בת 50 דקות מלאות (כולל מע״מ כחוק). דיסקרטיות מלאה, ללא התחייבות לסדרת טיפולים מראש.
             </p>
           </div>
 
-          {/* Booking Embed Section */}
           <div ref={bookingRef} className={styles.bookingContainer}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>קביעת מועד לפגישה</h2>
               <p className={styles.sectionSubtitle}>
-                בחרו את המועד המתאים לכם ביומן לקביעת פגישה בקליניקה באשדוד או אונליין בזום.
+                בחרו את המועד המתאים לכם ביומן לפגישה בקליניקה באשדוד או אונליין בזום.
               </p>
             </div>
 
@@ -381,7 +390,7 @@ const CouplesCrisisPage: React.FC = () => {
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>שאלות נפוצות על ייעוץ זוגי</h2>
+            <h2 className={styles.sectionTitle}>שאלות נפוצות על ייעוץ זוגי במשבר</h2>
           </div>
 
           <div className={styles.faqList}>
@@ -407,7 +416,38 @@ const CouplesCrisisPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Minimal Footer */}
+      {/* FINAL CTA Section */}
+      <section className={styles.closingCta}>
+        <div className="container">
+          <h2>אפשר להחזיר את השקט והביטחון ליחסים</h2>
+          <p>התחלה קצרה ודיסקרטית משיחה אחת ממוקדת.</p>
+          <div className={styles.heroCtaGroup}>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.primaryWhatsappCta}
+              onClick={() => {
+                trackSecondaryCtaClick('כתבו לי ב-WhatsApp', 'closing_cta');
+                trackWhatsappClick();
+              }}
+            >
+              <FaWhatsapp aria-hidden="true" />
+              <span>כתבו לי ב-WhatsApp</span>
+            </a>
+            <button
+              type="button"
+              className={styles.secondaryBookingCta}
+              onClick={() => scrollToBooking('closing_cta')}
+            >
+              <FiCalendar aria-hidden="true" />
+              <span>קביעת פגישת ייעוץ</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
       <footer className={styles.footer}>
         <div className="container">
           <div className={styles.footerLinks}>
@@ -419,7 +459,7 @@ const CouplesCrisisPage: React.FC = () => {
             <a href="/privacy">מדיניות פרטיות</a>
             <a href="/accessibility">הצהרת נגישות</a>
           </div>
-          <p>© {new Date().getFullYear()} שירה סהרוני. כל הזכויות שמורות.</p>
+          <p>© {new Date().getFullYear()} שירה סהרוני — קשר. כל הזכויות שמורות.</p>
         </div>
       </footer>
 
@@ -435,10 +475,10 @@ const CouplesCrisisPage: React.FC = () => {
               trackSecondaryCtaClick('WhatsApp סרגל מובייל', 'mobile_sticky');
               trackWhatsappClick();
             }}
-            aria-label="הודעה ב-WhatsApp לשירה סהרוני"
+            aria-label="כתבו לי ב-WhatsApp"
           >
             <FaWhatsapp aria-hidden="true" />
-            <span>WhatsApp</span>
+            <span>כתבו לי ב-WhatsApp</span>
           </a>
           <button
             type="button"
@@ -446,7 +486,7 @@ const CouplesCrisisPage: React.FC = () => {
             onClick={() => scrollToBooking('mobile_sticky')}
           >
             <FiCheckCircle aria-hidden="true" />
-            <span>קביעת פגישה – 500 ₪</span>
+            <span>קביעת פגישה</span>
           </button>
         </div>
       )}

@@ -10,6 +10,8 @@ import {
   FiChevronDown,
   FiChevronUp,
   FiInfo,
+  FiCalendar,
+  FiUserCheck,
 } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import MetaTags from '../../../components/SEO/MetaTags';
@@ -26,24 +28,28 @@ interface FAQItem {
 
 const FAQS: FAQItem[] = [
   {
-    q: 'האם התהליך מיועד רק לזוגות שרוצים להישאר יחד בכל מחיר?',
-    a: 'לא. המטרה היא בירור זוגי רגוע וכנה. אנחנו בודקים האם קיימת אפשרות ורצון הדדי לשיקום הקשר, ואם מחליטים להיפרד – איך לעשות זאת בהסכמה, בכבוד ובמינימום פגיעה בילדים.',
+    q: 'האם חייבים ששני בני הזוג יגיעו לפגישה?',
+    a: 'מומלץ מאוד להגיע כזוג כדי ששני בני הזוג יוכלו להשמיע את נקודת מבטם. עם זאת, אם אחד מבני הזוג מתלבט או חושש, ניתן לפנות לשירה ב-WhatsApp ולהתייעץ מראש לפני ההחלטה.',
   },
   {
-    q: 'מה ההבדל בין ייעוץ זוגי בצומת החלטה לבין ייעוץ משפטי?',
-    a: 'הייעוץ אינו מהווה ייעוץ משפטי ואינו תחליף לייצוג משפטי. מטרתו היא בירור רגשי, זוגי ותקשורתי, וכן בניית הסכמות ענייניות במידה ופונים לנתיב גישור.',
+    q: 'מה אם אחד מבני הזוג לא רוצה טיפול או כבר מיואש?',
+    a: 'זהו מצב שכיח מאוד בצמתים כאלה. הפגישה אינה מיועדת לשפוט, להכריע מי אשם או לכפות תהליך ארוך, אלא להניח את הפערים והחששות על השולחן בצורה מכבדת ולבדוק ללא לחץ האם קיימת דרך אחרת.',
   },
   {
-    q: 'מה קורה אם צד אחד רוצה לנסות והצד השני כבר מיואש?',
-    a: 'זהו מצב נפוץ מאוד בצמתים כאלה. הפגישה מאפשרת לשים את הפערים על השולחן בצורה מכבדת ולבחון ללא לחץ האם יש מקום להזדמנות אמיתית או להבנה משותפת.',
+    q: 'האם התהליך מתאים לפני החלטה על פרידה?',
+    a: 'כן. לפני שמקבלים החלטות כבדות או לפני שמפרקים את הקשר, מומלץ לעצור לבירור זוגי רגוע. הפגישה מעניקה מרחב להבין אם ומה ניתן לשנות, ולבחון את המשך הדרך באחריות ובבהירות.',
   },
   {
-    q: 'כמה זמן נמשכת פגישה ומה עלותה?',
-    a: 'פגישת ייעוץ ובירור אורכת 50 דקות מלאות. המחיר הוא 500 ₪ כולל מע״מ לפגישה, ללא כל התחייבות לסדרת מפגשים.',
+    q: 'האם הפגישה דיסקרטית?',
+    a: 'בהחלט. כל פגישה מתקיימת בדיסקרטיות מלאה ובמרחב פרטי ומכבד בהתאם לכללי האתיקה המקצועית.',
   },
   {
-    q: 'איפה מתקיימות הפגישות?',
-    a: 'בקליניקה נעימה ודיסקרטית באשדוד, או בפגישת זום מאובטחת אונליין לפי העדפתכם.',
+    q: 'האם אפשר לקיים את הפגישה אונליין?',
+    a: 'כן. לצד הקליניקה באשדוד, ניתן לקיים את פגישת הבירור והייעוץ אונליין ב-Zoom.',
+  },
+  {
+    q: 'כמה זמן נמשכת פגישה ומה המחיר?',
+    a: 'פגישת בירור וייעוץ זוגי נמשכת 50 דקות מלאות. העלות היא 500 ₪ כולל מע״מ, ללא כל התחייבות מראש להמשך תהליך.',
   },
 ];
 
@@ -67,7 +73,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
 
   const whatsappPhone = SITE_CONFIG.contact.phone.replace(/[^0-9]/g, '');
   const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(
-    'היי שירה, אנחנו בצומת החלטה משמעותי בזוגיות ונשמח לתאם פגישת בירור וייעוץ.',
+    'היי שירה, אנחנו בצומת החלטה בזוגיות ונשמח לבדוק פגישת בירור זוגי.',
   )}`;
 
   useEffect(() => {
@@ -104,7 +110,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
     '@graph': [
       {
         '@type': 'Service',
-        name: 'ייעוץ ובירור זוגי בצומת החלטה ולפני פרידה',
+        name: 'בירור וייעוץ זוגי לפני החלטות כבדות | שירה סהרוני',
         serviceType: 'Couples Discernment and Counseling',
         provider: {
           '@type': 'Person',
@@ -141,20 +147,20 @@ const CouplesBeforeSeparationPage: React.FC = () => {
   return (
     <main id="main-content" className={styles.page}>
       <MetaTags
-        title="בירור זוגי לפני החלטות כבדות | שירה סהרוני – ייעוץ זוגי וגישור"
-        description="מתלבטים לגבי עתיד הקשר? לפני שמקבלים החלטות כבדות, מרחב בירור זוגי רגוע וממוקד לבדיקת מרחב השינוי והאפשרויות להמשך. 500 ₪ לפגישה באשדוד או בזום."
+        title="לפני שמקבלים החלטה כבדה – בירור זוגי רגוע | שירה סהרוני"
+        description="לפני שמפרקים את הקשר, עצירה לבירור זוגי רגוע וממוקד. מרחב להבין אם ומה ניתן לשנות ביחסים בטרם החלטות כבדות. 50 דקות, 500 ₪ באשדוד או בזום."
         canonical="https://kesher.saharoni.com/services/couples/before-separation"
       />
       <SchemaOrg data={schemaData} />
 
-      {/* Minimal Header */}
+      {/* Header */}
       <header className={styles.header}>
         <div className={`container ${styles.headerInner}`}>
           <a href="/" className={styles.brand} aria-label="מעבר לדף הבית של שירה סהרוני">
             <img src="/logo-kesher.svg" alt="קשר - שירה סהרוני" className={styles.brandLogo} width="40" height="40" />
             <div className={styles.brandText}>
               <span className={styles.brandTitle}>שירה סהרוני</span>
-              <span className={styles.brandSubtitle}>ייעוץ זוגי, הנחיית הורים וגישור</span>
+              <span className={styles.brandSubtitle}>בירור זוגי לפני החלטות כבדות | אשדוד ואונליין</span>
             </div>
           </a>
 
@@ -172,7 +178,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
               className={styles.headerCtaBtn}
               onClick={() => scrollToBooking('header')}
             >
-              קביעת פגישה
+              קביעת פגישת ייעוץ
             </button>
           </div>
         </div>
@@ -191,59 +197,63 @@ const CouplesBeforeSeparationPage: React.FC = () => {
           </h1>
 
           <p className={styles.heroSubtitle}>
-            כשהספקות מכבידים והעתיד לא ברור, לא חייבים למהר להחלטות חד-צדדיות. מרחב מקצועי ומאפשר להבין איפה אתם עומדים, מה ניתן לשנות, ואיך לקבל החלטות נכונות ואחראיות עבור שניכם ועבור המשפחה.
+            לפני שמפרקים את הקשר או מקבלים החלטות דרמטיות, עוצרים להבין מה קורה ביניכם. פגישת ייעוץ ובירור מעניקה מרחב להבין אם ומה ניתן לשנות ביחסים, ולבחון את האפשרויות בבהירות ובאחריות.
           </p>
 
           <div className={styles.heroCtaGroup}>
-            <button
-              type="button"
-              className={styles.primaryCta}
-              onClick={() => scrollToBooking('hero_primary')}
-            >
-              <FiCheckCircle aria-hidden="true" />
-              <span>תיאום פגישת בירור – 500 ₪</span>
-            </button>
-
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.secondaryCta}
+              className={styles.primaryWhatsappCta}
               onClick={() => {
-                trackSecondaryCtaClick('WhatsApp פתיח', 'hero');
+                trackSecondaryCtaClick('כתבו לי ב-WhatsApp', 'hero');
                 trackWhatsappClick();
               }}
-              aria-label="שיחת התייעצות דיסקרטית ב-WhatsApp עם שירה סהרוני"
+              aria-label="כתבו לי ב-WhatsApp"
             >
               <FaWhatsapp aria-hidden="true" />
-              <span>התייעצות דיסקרטית ב-WhatsApp</span>
+              <span>כתבו לי ב-WhatsApp</span>
             </a>
+
+            <button
+              type="button"
+              className={styles.secondaryBookingCta}
+              onClick={() => scrollToBooking('hero_secondary')}
+            >
+              <FiCalendar aria-hidden="true" />
+              <span>קביעת פגישת ייעוץ</span>
+            </button>
           </div>
 
           <div className={styles.heroTrustRow}>
             <div className={styles.trustItem}>
               <FiMapPin className={styles.trustIcon} aria-hidden="true" />
-              <span>קליניקה באשדוד / אונליין בזום</span>
+              <span>אשדוד</span>
+            </div>
+            <div className={styles.trustItem}>
+              <FiUserCheck className={styles.trustIcon} aria-hidden="true" />
+              <span>אונליין ב-Zoom</span>
             </div>
             <div className={styles.trustItem}>
               <FiClock className={styles.trustIcon} aria-hidden="true" />
-              <span>50 דקות לפגישה</span>
+              <span>פגישה 50 דקות</span>
             </div>
             <div className={styles.trustItem}>
               <FiShield className={styles.trustIcon} aria-hidden="true" />
-              <span>דיסקרטיות מלאה וללא שיפוטיות</span>
+              <span>דיסקרטיות מלאה</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Decision Dilemmas Section */}
+      {/* PROBLEM Section */}
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>למי מתאימה פגישת בירור זוגי?</h2>
+            <h2 className={styles.sectionTitle}>כשהספקות מכבידים והעתיד לא ברור</h2>
             <p className={styles.sectionSubtitle}>
-              המרחב מיועד לזוגות שנמצאים בצומת דרכים משמעותי ומבקשים לעשות סדר במחשבות לפני צעדים בלתי הפיכים.
+              הימצאות בצומת החלטה זוגי מלווה לרוב בעומס רגשי, בלבול וחשש מצעדים בלתי הפיכים.
             </p>
           </div>
 
@@ -252,7 +262,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
               <FiHelpCircle className={styles.clarityIcon} aria-hidden="true" />
               <h3 className={styles.clarityTitle}>התלבטות האם לנסות שוב</h3>
               <p className={styles.clarityDesc}>
-                בדיקה אמיתית האם נשארה מוטיבציה הדדית, אילו שינויים נדרשים כדי שזה יעבוד, והאם שניכם מוכנים להתגייס לתהליך.
+                תחושה שהקשר נתקע במעגל סגור, לצד רצון לבדוק באמת האם קיימת אפשרות ומוטיבציה הדדית לשינוי.
               </p>
             </div>
 
@@ -260,7 +270,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
               <FiCompass className={styles.clarityIcon} aria-hidden="true" />
               <h3 className={styles.clarityTitle}>פערים בעמדות ובכוונות</h3>
               <p className={styles.clarityDesc}>
-                מצבים שבהם אחד מבני הזוג נוטה לסיום הקשר והשני מבקש הזדמנות, ויש צורך בשיח כן, רגיש וללא לחץ כדי לראות את התמונה המלאה.
+                מצבים שבהם אחד מבני הזוג נוטה לסיום הקשר והשני מבקש הזדמנות, ונדרש שיח כן ורגיש ללא מלחמות.
               </p>
             </div>
 
@@ -268,60 +278,60 @@ const CouplesBeforeSeparationPage: React.FC = () => {
               <FiShield className={styles.clarityIcon} aria-hidden="true" />
               <h3 className={styles.clarityTitle}>שמירה על כבוד ועל הילדים</h3>
               <p className={styles.clarityDesc}>
-                הבנה שכל החלטה שתתקבל – שיקום הקשר או פרידה בהסכמה – חייבת להתבצע באחריות, בכבוד הדדי ובמניעת מלחמות מזיקות.
+                הבנה שכל החלטה שתתקבל חייבת להיעשות באחריות ובכבוד הדדי, כדי למנוע פגיעה מיותרת במשפחה.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3 Step Pathway */}
+      {/* SOLUTION Section (3 Steps) */}
       <section className={styles.section}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>שלושת השלבים בתהליך הבירור</h2>
+            <h2 className={styles.sectionTitle}>התהליך: 3 שלבים לבירור זוגי רגוע</h2>
             <p className={styles.sectionSubtitle}>
-              תהליך מובנה ומאפשר שמעניק לכם בהירות ומתווה דרך להמשך.
+              מרחב מובנה שמביא בהירות ומאפשר לקבל החלטות מושכלות.
             </p>
           </div>
 
           <div className={styles.stepsGrid}>
             <div className={styles.stepCard}>
               <div className={styles.stepNumber}>1</div>
-              <h3 className={styles.stepTitle}>בירור צרכים ועמדות</h3>
+              <h3 className={styles.stepTitle}>בירור עמדות וצרכים</h3>
               <p className={styles.stepDesc}>
-                מיפוי הרגשות, הקשיים והציפיות של כל צד במרחב ניטרלי, המאפשר לכל אחד להציג את נקודת מבטו ללא מתקפות.
+                מיפוי הרגשות, החששות והציפיות של כל צד במרחב ניטרלי ומכבד, המאפשר לכל אחד להשמיע את קולו.
               </p>
             </div>
 
             <div className={styles.stepCard}>
               <div className={styles.stepNumber}>2</div>
-              <h3 className={styles.stepTitle}>בחינת מרחב השינוי</h3>
+              <h3 className={styles.stepTitle}>הבנת מרחב השינוי</h3>
               <p className={styles.stepDesc}>
-                בדיקה כנה של התנאים הנדרשים לשיקום הקשר לעומת המשמעויות של פרידה, תוך בחינת היכולת לייצר הסכמות מעשיות.
+                בדיקה כנה של התנאים והכלים הנדרשים לשיקום התקשורת והאמון, לעומת בחינת האפשרויות במידה ומחליטים להיפרד.
               </p>
             </div>
 
             <div className={styles.stepCard}>
               <div className={styles.stepNumber}>3</div>
-              <h3 className={styles.stepTitle}>בחירת הנתיב הנכון</h3>
+              <h3 className={styles.stepTitle}>קבלת החלטה אחראית</h3>
               <p className={styles.stepDesc}>
-                החלטה מודעת ומשותפת: יציאה לתהליך ייעוץ זוגי לשיקום הקשר, או מעבר לתהליך גישור מכבד ורגוע לבניית הסכמות.
+                גיבוש דרך פעולה ברורה בהסכמה: יציאה לדרך של ייעוץ זוגי ממוקד או פנייה לתהליך גישור מכבד.
               </p>
             </div>
           </div>
 
-          {/* Non-legal Disclaimer */}
+          {/* Legal Guardrail & Professional Disclaimer */}
           <div className={styles.disclaimerBox}>
             <FiInfo className={styles.disclaimerIcon} aria-hidden="true" />
             <p className={styles.disclaimerText}>
-              <strong>הבהרה מקצועית:</strong> המפגש מיועד לבירור זוגי, רגשי ותקשורתי ואינו מהווה ייעוץ משפטי או חוות דעת משפטית. שירה סהרוני היא יועצת זוגית ומגשרת מוסמכת (עורכת דין בהכשרתה). במידת הצורך בייצוג משפטי או עריכת הסכמים משפטיים פורמליים, מומלץ לפנות לעו״ד מייצג.
+              <strong>הבהרה מקצועית:</strong> המפגש מיועד לבירור זוגי, רגשי ותקשורתי ואינו מהווה ייעוץ משפטי, אינו מעניק חוות דעת משפטית ואינו מבטיח למנוע גירושין. שירה סהרוני היא יועצת זוגית ומגשרת מוסמכת (עורכת דין בהכשרתה). במידת הצורך בייעוץ או ייצוג משפטי, יש לפנות לעו״ד בתחום המשפחה.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Bio Section */}
+      {/* WHY SHIRA Section */}
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.bioCard}>
@@ -335,13 +345,13 @@ const CouplesBeforeSeparationPage: React.FC = () => {
                 loading="lazy"
               />
               <div>
-                <h2 className={styles.bioName}>שירה סהרוני</h2>
-                <p className={styles.bioRole}>יועצת זוגית, מנחת הורים ומגשרת מוסמכת</p>
+                <h2 className={styles.bioName}>למה לפנות לשירה סהרוני?</h2>
+                <p className={styles.bioRole}>יועצת זוגית, מנחת הורים ומגשרת מוסמכת, עורכת דין בהכשרתה</p>
               </div>
             </div>
 
             <p className={styles.bioText}>
-              בעלת רקע משפטי כעורכת דין בהכשרתי, בחרתי להתמקד בעולמות ההנחיה, הייעוץ הזוגי והגישור. אני פוגשת זוגות ברגעי ההכרעה הרגישים ביותר ומסייעת להם לייצר שקט ובהירות. הניסיון מלמד כי שיח רגוע ומובנה בצומת החלטה חוסך כאב רב, מאפשר הבנה עמוקה ומגן על עתיד המשפחה.
+              בעלת רקע כמגשרת ויועצת זוגית (עורכת דין בהכשרתי), אני פוגשת זוגות ברגעי ההכרעה הרגישים ביותר. הניסיון מלמד כי שיח רגוע ומובנה בצומת החלטה חוסך כאב רב, מאפשר הבנה עמוקה ומגן על עתיד המשפחה — בין אם מדובר בשיקום הקשר ובין אם בבניית הסכמות.
             </p>
 
             <div className={styles.credentialsList}>
@@ -349,24 +359,23 @@ const CouplesBeforeSeparationPage: React.FC = () => {
               <span className={styles.credentialPill}>✓ מגשרת מוסמכת</span>
               <span className={styles.credentialPill}>✓ מנחת הורים מוסמכת</span>
               <span className={styles.credentialPill}>✓ עורכת דין בהכשרתה</span>
-              <span className={styles.credentialPill}>✓ קליניקה באשדוד ובזום</span>
+              <span className={styles.credentialPill}>✓ קליניקה באשדוד וב-Zoom</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Transparent Pricing Card */}
+      {/* PRICING & BOOKING Section */}
       <section className={styles.section}>
         <div className="container">
           <div className={styles.priceCard}>
             <h2 className={styles.priceTitle}>פגישת בירור וייעוץ זוגי</h2>
             <div className={styles.priceAmount}>500 ₪</div>
             <p className={styles.priceNote}>
-              לפגישה בת 50 דקות מלאות (כולל מע״מ כחוק). ללא תשלום מראש וללא התחייבות להמשך תהליך.
+              לפגישה בת 50 דקות מלאות (כולל מע״מ כחוק). דיסקרטיות מלאה, ללא התחייבות מראש להמשך תהליך.
             </p>
           </div>
 
-          {/* Booking Embed Section */}
           <div ref={bookingRef} className={styles.bookingContainer}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>קביעת מועד לפגישה</h2>
@@ -389,7 +398,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>שאלות נפוצות על צומת החלטה זוגי</h2>
+            <h2 className={styles.sectionTitle}>שאלות נפוצות על בירור זוגי לפני החלטות כבדות</h2>
           </div>
 
           <div className={styles.faqList}>
@@ -415,7 +424,38 @@ const CouplesBeforeSeparationPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Minimal Footer */}
+      {/* FINAL CTA Section */}
+      <section className={styles.closingCta}>
+        <div className="container">
+          <h2>לפני שמקבלים החלטה כבדה — עוצרים לבירור רגוע</h2>
+          <p>התחלה קצרה ודיסקרטית להבנת המצב והאפשרויות העומדות בפניכם.</p>
+          <div className={styles.heroCtaGroup}>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.primaryWhatsappCta}
+              onClick={() => {
+                trackSecondaryCtaClick('כתבו לי ב-WhatsApp', 'closing_cta');
+                trackWhatsappClick();
+              }}
+            >
+              <FaWhatsapp aria-hidden="true" />
+              <span>כתבו לי ב-WhatsApp</span>
+            </a>
+            <button
+              type="button"
+              className={styles.secondaryBookingCta}
+              onClick={() => scrollToBooking('closing_cta')}
+            >
+              <FiCalendar aria-hidden="true" />
+              <span>קביעת פגישת ייעוץ</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
       <footer className={styles.footer}>
         <div className="container">
           <div className={styles.footerLinks}>
@@ -427,7 +467,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
             <a href="/privacy">מדיניות פרטיות</a>
             <a href="/accessibility">הצהרת נגישות</a>
           </div>
-          <p>© {new Date().getFullYear()} שירה סהרוני. כל הזכויות שמורות.</p>
+          <p>© {new Date().getFullYear()} שירה סהרוני — קשר. כל הזכויות שמורות.</p>
         </div>
       </footer>
 
@@ -443,10 +483,10 @@ const CouplesBeforeSeparationPage: React.FC = () => {
               trackSecondaryCtaClick('WhatsApp סרגל מובייל', 'mobile_sticky');
               trackWhatsappClick();
             }}
-            aria-label="הודעה ב-WhatsApp לשירה סהרוני"
+            aria-label="כתבו לי ב-WhatsApp"
           >
             <FaWhatsapp aria-hidden="true" />
-            <span>WhatsApp</span>
+            <span>כתבו לי ב-WhatsApp</span>
           </a>
           <button
             type="button"
@@ -454,7 +494,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
             onClick={() => scrollToBooking('mobile_sticky')}
           >
             <FiCheckCircle aria-hidden="true" />
-            <span>קביעת פגישה – 500 ₪</span>
+            <span>קביעת פגישה</span>
           </button>
         </div>
       )}
