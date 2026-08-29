@@ -165,6 +165,22 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
             errors.append(f"Image dimensions too small: {width}x{height}")
         if declared_dimensions != f"{width}x{height}":
             errors.append(f"Image dimensions mismatch: expected {width}x{height}")
+
+        # Enforce SHA-256 uniqueness against all existing base posts
+        for base_post in base_posts:
+            if not isinstance(base_post, dict):
+                continue
+            base_img = str(base_post.get("image") or "").strip()
+            if not base_img.startswith("/images/"):
+                continue
+            try:
+                base_entry = {"raw_url": f"https://raw.githubusercontent.com/{pr.get('base',{}).get('repo',{}).get('full_name')}/{pr['base']['sha']}/public{base_img}"}
+                base_data = image_loader(base_entry)
+                if hashlib.sha256(base_data).hexdigest() == actual_sha:
+                    errors.append(f"Hero image SHA-256 collides with existing article {base_post.get('id')}")
+                    break
+            except Exception:
+                pass
     except Exception as exc:
         errors.append(f"Image validation failed: {exc}")
 

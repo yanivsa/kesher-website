@@ -51,22 +51,10 @@
 
 פני יצירת בקשת השינויים יש לקרוא את המאמר בקול ולבצע עריכת אנושיות נוספת. אם אפשר להעביר פסקה שלמה למאמר אחר בלי לשנותה, אם הפסקאות נשמעות אחידות מדי, או אם הסיום מסכם שוב את כל המאמר — יש לשכתב. בסיכום בקשת השינויים יש לאשר במפורש שבוצעו בדיקת כפילות, בדיקת עברית טבעית ובדיקת קול אנושי.
 
-## Image Provenance and Fallback
-The required three-tier article image pipeline is **DeepAI → Gemini → royalty-safe Unsplash/Pexels fallback**. Do not use Pollinations or any fourth provider in article publication runs. `Image Generation Attempt` must truthfully record the attempted chain as `DeepAI`, `DeepAI/Gemini`, or `DeepAI/Gemini/Fallback pool`.
+## Image Provenance and Policy
+The active article image pipeline is a 4-tier provider chain: **Gemini → Unsplash → Pexels → trusted local curated fallback**. Jules owns article text only and must NOT generate, pass, or request image provider credentials directly. Trusted automation owns image generation/attachment and operates from trusted `main` code.
 
-Any image PR body must use exact structured lines `Image Source URL: https://...` and `Image SHA-256: <64 lowercase hex>`, include dimensions, and a factual visual-match sentence. If no image is independently source- and pixel-verified, require truthful no-image fallback: omit/remove the image file and post `image` field, and state the fallback. The schema image property must be omitted entirely, and rendering components must conditionally render image elements rather than passing an empty string to getImageDimensions.
-
-An image-bearing PR must also include the exact fields `Image Generation Attempt: DeepAI|DeepAI/Gemini|DeepAI/Gemini/Fallback pool`, `Image Generation Result: success|generated`, `Image Dimensions: <actual-width>x<actual-height>`, and `Image Visual Match: <concrete description of what is visibly relevant to this article>`. The article worker must describe actual visible pixels, not the intended generation prompt. When the article topic specifically concerns a parent and child, a committed image must visibly contain both an adult and a child in a supportive interaction. Abstract symbolism such as hands forming a heart, silhouettes, sunsets, generic couples, or empty rooms is not a topic match. If inspection cannot verify the required subjects and interaction, the worker must delete the image, omit image fields, and record the structured truthful no-image fallback. A committed image, image URL, or image field is forbidden when the generation result is `unavailable`, `blocked`, `api_error`, or `rejected_visual_quality`. The declared dimensions and SHA-256 must match the committed binary. A generic portrait that does not visibly represent the article's concrete situation is not a match.
-
-For a no-image fallback, generic text such as “Unsplash failed” or “no matching image was found” is forbidden evidence. The PR body must include these exact structured fields without exposing secrets:
-
-- `Image Generation Attempt: DeepAI/Gemini/Fallback pool`
-- `Image Generation Result: unavailable|blocked|api_error|rejected_visual_quality`
-- `Image Fallback Attempt: Unsplash/Pexels`
-- `Image Fallback Result: no_pixel_verified_match|unavailable|blocked`
-- `Image Source URL: none`
-
-Choose the result token that truthfully describes the observed failure. `unavailable` includes a missing `DEEPAI_API_KEY`; never print the key. A no-image PR is a hard failure until it records the full DeepAI → Gemini → fallback chain, the concrete failure class, the royalty-safe fallback attempt, and the reason no image passed pixel-level visual verification.
+Every published article must have a valid, topic-relevant, and visually unique hero image enforced by byte SHA-256 uniqueness. Duplicate hero images across published articles are strictly forbidden. Publication requires a unique valid hero image; no article may publish with a missing or duplicate hero image.
 
 ## Article Constraints
 Invented names must be explicitly hypothetical or omitted. No guarantees that grief/relationship dynamics self-resolve. Do not use generic final H3 headings like "סיכום" or "צעדים הבאים" (ordinary prose is allowed).

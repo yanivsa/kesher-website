@@ -183,24 +183,8 @@ async function main() {
 
   const unsplashKey = process.env.UNSPLASH_ACCESS_KEY;
   const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-  const deepaiKey = process.env.DEEPAI_API_KEY;
 
-  // 1. DeepAI
-  if (deepaiKey) {
-    try {
-      console.warn("Attempting image generation via DeepAI API...");
-      const imgUrl = await tryDeepAi(deepaiKey, title, customPrompt);
-      await downloadImage(imgUrl, outputPath);
-      console.log(`/images/generated/blog/${slug}.jpg`);
-      return;
-    } catch (error) {
-      console.warn(`WARNING: DeepAI API failed: ${error.message}. Trying Gemini.`);
-    }
-  } else {
-    console.warn("WARNING: DEEPAI_API_KEY unavailable. Trying Gemini.");
-  }
-
-  // 2. Gemini Imagen
+  // 1. Gemini Imagen
   if (geminiKey) {
     try {
       console.warn("Attempting image generation via Google Gemini Imagen API...");
