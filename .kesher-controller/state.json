@@ -1,38 +1,20 @@
 {
   "schema_version": 3,
-  "cycle": "2026-08-29",
-  "status": "blocked",
+  "cycle": "2026-08-30",
+  "status": "waiting_for_article_window",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
-    "last_error": {
-      "stage": "article",
-      "code": "DUPLICATE_ARTICLE_PRS",
-      "message": "duplicate open article PRs detected: 2",
-      "at": "2026-08-29T18:53:25.348548+00:00"
-    },
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
     "next_retry_at": null,
-    "run_id": 33269290594,
-    "processed_run_id": 33269290594,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
-    "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-29T18:49:30.803825+00:00",
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-08-29",
-      "outcome": "DUPLICATE_ARTICLE_PRS",
-      "retryable": false,
-      "message": "duplicate open article PRs detected: 2",
-      "session_id": "",
-      "pr_url": "",
-      "github_run_id": "33269290594",
-      "completed_at": "2026-08-29T18:50:02.418092+00:00"
-    }
+    "attempts": 0,
+    "deploy_attempts": 0
   },
   "video": {
     "attempt_count": 0,
@@ -48,82 +30,47 @@
     "attempts": 0,
     "resume_dispatches": 0
   },
-  "last_error": {
-    "stage": "article",
-    "code": "DUPLICATE_ARTICLE_PRS",
-    "message": "duplicate open article PRs detected: 2",
-    "at": "2026-08-29T18:53:25.348548+00:00"
-  },
+  "backlog": [
+    {
+      "cycle": "2026-08-29",
+      "status": "blocked",
+      "article": {
+        "attempt_count": 1,
+        "status": "running",
+        "last_error": {
+          "stage": "article",
+          "code": "DUPLICATE_ARTICLE_PRS",
+          "message": "duplicate open article PRs detected: 2",
+          "at": "2026-08-29T18:53:25.348548+00:00"
+        },
+        "next_retry_at": null,
+        "run_id": 33269290594,
+        "processed_run_id": 33269290594,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "deploy_attempts": 0,
+        "last_dispatch_at": "2026-08-29T18:49:30.803825+00:00",
+        "last_run_conclusion": "failure",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-08-29",
+          "outcome": "DUPLICATE_ARTICLE_PRS",
+          "retryable": false,
+          "message": "duplicate open article PRs detected: 2",
+          "session_id": "",
+          "pr_url": "",
+          "github_run_id": "33269290594",
+          "completed_at": "2026-08-29T18:50:02.418092+00:00"
+        }
+      },
+      "archived_at": "2026-08-29T21:19:11.245164+00:00"
+    }
+  ],
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-08-25T20:49:18.698696+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-25T21:36:34.325235+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-08-25T21:36:56.337807+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-08-25T22:39:32.912526+00:00",
-      "from": "article_generating",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 542
-      }
-    },
-    {
-      "at": "2026-08-25T23:10:18.670737+00:00",
-      "from": "article_image_running",
-      "to": "article_pr_open",
-      "reason": "article PR has trusted image and remains authoritative"
-    },
-    {
-      "at": "2026-08-26T00:01:50.797636+00:00",
-      "from": "article_pr_open",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T00:01:56.633697+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "new video workflow dispatched",
-      "details": {
-        "operation": "full",
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-08-26T01:53:37.898949+00:00",
-      "from": "video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T01:53:49.107569+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 2
-      }
-    },
     {
       "at": "2026-08-26T03:13:53.837251+00:00",
       "from": "video_running",
@@ -734,9 +681,21 @@
       "details": {
         "message": "duplicate open article PRs detected: 2"
       }
+    },
+    {
+      "at": "2026-08-29T21:19:11.245191+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-08-29T21:19:11.245217+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-08-29T18:53:25.348568+00:00",
+  "updated_at": "2026-08-29T21:19:11.245221+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
