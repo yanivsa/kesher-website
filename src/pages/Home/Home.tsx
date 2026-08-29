@@ -601,6 +601,29 @@ const Home: React.FC = () => {
           </div>
         </section>
 
+
+        <section id="faq" className={`${styles.section} ${styles.faqSection} ${styles.revealSection}`}>
+          <div className={styles.sectionHeading}>
+            <span className={styles.kicker}>שאלות נפוצות</span>
+            <h2>מידע נוסף שכדאי לדעת.</h2>
+            <p>אם השאלה שלכם לא מופיעה כאן, אפשר תמיד לפנות אליי ישירות לבירור.</p>
+          </div>
+          <div className={styles.faqGrid}>
+            <article className={styles.faqCard}>
+              <h3 className={styles.faqQuestion}>האם ייעוץ זוגי מתאים רק לזוגות במשבר?</h3>
+              <p className={styles.faqAnswer}>לא. גם זוגות שרוצים לחזק את הקשר, לשפר את התקשורת ביניהם או לעבור יחד תקופה מאתגרת, מוזמנים להגיע. פנייה מוקדמת יכולה למנוע משברים עתידיים ולהעניק כלים לחיים משותפים טובים יותר.</p>
+            </article>
+            <article className={styles.faqCard}>
+              <h3 className={styles.faqQuestion}>האם הדרכת הורים מתקיימת עם הילדים?</h3>
+              <p className={styles.faqAnswer}>בדרך כלל ההדרכה מיועדת להורים בלבד. אנו מתמקדים במתן כלים, הבנה וביטחון להורים כדי שיוכלו להוביל שינוי משמעותי בבית. במקרים מסוימים ולפי הצורך, ניתן לשלב מפגש משותף.</p>
+            </article>
+            <article className={styles.faqCard}>
+              <h3 className={styles.faqQuestion}>האם ניתן לקיים פגישות מרחוק (אונליין)?</h3>
+              <p className={styles.faqAnswer}>כן. חלק מהפגישות מתקיימות באונליין (Zoom), בהתאם לנוחות, לצורך ולהעדפה שלכם. ניתן לשלב בין מפגשים בקליניקה למפגשים מקוונים.</p>
+            </article>
+          </div>
+        </section>
+
         <section className={`${styles.finalCta} ${styles.revealSection}`}>
           <div>
             <span className={styles.kicker}>אפשר להתחיל מכאן</span>
