@@ -585,12 +585,8 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           <div className={styles.faqAccordion}>
             {faqItems.map((item, index) => (
               <div key={item.question} className={styles.faqItem}>
-                <details onToggle={(e) => {
-                  if ((e.target as HTMLDetailsElement).open) {
-                    trackFaqInteraction(index);
-                  }
-                }}>
-                  <summary>{item.question}</summary>
+                <details>
+                  <summary onClick={() => trackFaqInteraction(index)}>{item.question}</summary>
                   <p className={styles.faqAnswer}>{item.answer}</p>
                 </details>
               </div>
