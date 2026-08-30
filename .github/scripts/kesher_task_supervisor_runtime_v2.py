@@ -144,7 +144,7 @@ def _activity_stream(activities: list[dict[str, Any]]) -> list[tuple[str, str]]:
 
 def _recovery_kind(text: str) -> str:
     lowered = text.lower()
-    if any(term in lowered for term in ("too broad", "unrelated", "dirty", "mergeable=false", "scope repair", "changed files")):
+    if any(term in lowered for term in ("too broad", "unrelated", "dirty", "mergeable=false", "scope repair", "changed files", "reconstruct", "rebase")):
         return "branch-contamination"
     if any(term in lowered for term in ("ci failure", "check-runs", "check run", "workflow failure")):
         return "ci-failure"
@@ -161,23 +161,49 @@ def _recovery_kind(text: str) -> str:
     return "generic"
 
 
-def _recovery_key(prompt: str, reason: str) -> str:
+def _recovery_key(prompt: str, reason: str, *, kind: str | None = None) -> str:
     haystack = f"{reason}\n{prompt}"
     issue_match = re.search(r"Issue #(\d+)", haystack, flags=re.IGNORECASE)
     pr_match = re.search(r"PR #(\d+)", haystack, flags=re.IGNORECASE)
     issue = issue_match.group(1) if issue_match else "na"
     pr = pr_match.group(1) if pr_match else "na"
-    return f"issue-{issue}-pr-{pr}-{_recovery_kind(haystack)}"
+    return f"issue-{issue}-pr-{pr}-{kind or _recovery_kind(haystack)}"
+
+
+def _legacy_attempt_count(activities: list[dict[str, Any]], kind: str) -> int:
+    """Count observable pre-ladder attempts so recurring old failures do not restart at stage 1."""
+    tokens = {
+        "branch-contamination": ("dirty", "mergeable=false", "rebase", "reconstruct", "clean branch", "unrelated"),
+        "ci-failure": ("ci failure", "failing check", "workflow failure", "check-runs"),
+        "generated-text": ("צמצום חרדי", "regenerate", "bad text", "source of truth", "occurrence"),
+        "generated-artifact": (".pyc", "generated artifact", "generated file"),
+        "evidence-overclaim": ("launched", "unsupported", "evidence", "source url", "ad id"),
+        "image-backfill": ("backfill", "duplicate sha", "missing=0", "broken=0"),
+        "deploy-live": ("deploy", "live verification", "production url"),
+        "generic": (),
+    }[kind]
+    if not tokens:
+        return 0
+    count = 0
+    for side, message in _activity_stream(activities):
+        if side != "user" or RECOVERY_MARKER in message:
+            continue
+        lowered = message.lower()
+        if any(token in lowered for token in tokens):
+            count += 1
+    return count
 
 
 def _recovery_state(
-    activities: list[dict[str, Any]], key: str
+    activities: list[dict[str, Any]], key: str, *, initial_stage: int = 1
 ) -> tuple[int, bool, list[str]]:
     """Return (next_stage, may_send, recent_agent_messages).
 
     A stage only advances after Jules has produced an observable agent response
     to the previous recovery instruction. This prevents the hourly controller
-    from spamming a session while Jules is still working.
+    from spamming a session while Jules is still working. Legacy attempts can
+    seed a higher starting stage, capped at stage 3, so long-running failures
+    do not forget work performed before the ladder was installed.
     """
     stream = _activity_stream(activities)
     marker = f"{RECOVERY_MARKER} key={key} stage="
@@ -196,7 +222,7 @@ def _recovery_state(
             prior_stages.append(int(match.group(1)))
 
     if not prior_positions:
-        return 1, True, recent_agents[-3:]
+        return max(1, min(RECOVERY_MAX_STAGE, initial_stage)), True, recent_agents[-3:]
 
     last_position = prior_positions[-1]
     responded = any(side == "agent" for side, _ in stream[last_position + 1 :])
@@ -285,30 +311,61 @@ def _stage_instruction(stage: int, kind: str, recent_agents: list[str]) -> str:
 
 def _is_recovery_reason(reason: str) -> bool:
     lowered = reason.lower()
-    if "final qa" in lowered:
-        return False
     return any(term in lowered for term in RECOVERY_REASON_TERMS)
+
+
+def _should_use_recovery(reason: str, activities: list[dict[str, Any]]) -> bool:
+    """Use plain QA once; a second QA round is evidence of a failed prior attempt."""
+    lowered = reason.lower()
+    if "final qa" not in lowered:
+        return _is_recovery_reason(reason)
+    prior_qa = sum(
+        1
+        for side, message in _activity_stream(activities)
+        if side == "user" and str(base.QA_REQUEST) in message
+    )
+    return prior_qa > 0
+
+
+def _send_with_transient_jules_retry(
+    session: dict[str, Any], prompt: str, *, reason: str
+) -> bool:
+    """Retry only Jules' short-lived session-creation 404 consistency window."""
+    for attempt, delay in enumerate((0, 2, 4), start=1):
+        if delay:
+            time.sleep(delay)
+        try:
+            return RUNTIME_SEND_TO_SESSION(session, prompt, reason=reason)
+        except base.ApiError as exc:
+            if "404" not in str(exc) or attempt == 3:
+                raise
+    return False
 
 
 def send_to_session_with_recovery(
     session: dict[str, Any], prompt: str, *, reason: str
 ) -> bool:
     """Wrap runtime messaging with a five-stage autonomous recovery ladder."""
-    if not _is_recovery_reason(reason):
-        return RUNTIME_SEND_TO_SESSION(session, prompt, reason=reason)
-
     name = str(session.get("name") or "")
     try:
         activities = base.jules_activities(name) if name.startswith("sessions/") else []
     except Exception:
         activities = []
 
-    key = _recovery_key(prompt, reason)
-    stage, may_send, recent_agents = _recovery_state(activities, key)
+    if not _should_use_recovery(reason, activities):
+        return _send_with_transient_jules_retry(session, prompt, reason=reason)
+
+    history_text = "\n".join(message for _, message in _activity_stream(activities)[-30:])
+    kind = _recovery_kind(f"{reason}\n{prompt}\n{history_text}")
+    key = _recovery_key(prompt, reason, kind=kind)
+    legacy_attempts = _legacy_attempt_count(activities, kind)
+    initial_stage = min(3, 1 + legacy_attempts)
+    stage, may_send, recent_agents = _recovery_state(
+        activities, key, initial_stage=initial_stage
+    )
     if not may_send:
         return False
 
-    kind = _recovery_kind(f"{reason}\n{prompt}")
     stage_instruction = _stage_instruction(stage, kind, recent_agents)
     enriched = f"""{prompt}
 
@@ -328,7 +385,7 @@ Global recovery invariants:
 
 {RECOVERY_MARKER} key={key} stage={stage}
 """
-    sent = RUNTIME_SEND_TO_SESSION(
+    sent = _send_with_transient_jules_retry(
         session,
         enriched,
         reason=f"{reason} recovery-stage-{stage}",
@@ -340,11 +397,57 @@ Global recovery invariants:
     return sent
 
 
+def process_issue_with_mergeability_recovery(
+    issue: dict[str, Any],
+    prs_for_issue: list[dict[str, Any]],
+    sessions: list[dict[str, Any]],
+) -> None:
+    """Run normal supervision, then recover a still-open non-mergeable PR if nothing else acted."""
+    before_messages = base.messages_sent
+    RUNTIME_PROCESS_ISSUE(issue, prs_for_issue, sessions)
+
+    if base.messages_sent != before_messages or base.issue_is_human_blocked(issue) or not prs_for_issue:
+        return
+
+    candidates = sorted(
+        prs_for_issue,
+        key=lambda pr: base.parse_time(str(pr.get("updated_at") or pr.get("created_at") or "")),
+        reverse=True,
+    )
+    pr = candidates[0]
+    pr_number = int(pr["number"])
+    _, fresh_pr = base.gh("GET", f"/repos/{base.REPO}/pulls/{pr_number}")
+    if fresh_pr.get("state") != "open" or fresh_pr.get("draft"):
+        return
+    if str(fresh_pr.get("base", {}).get("ref")) != "main":
+        return
+    if fresh_pr.get("mergeable") is not False:
+        return
+
+    number = int(issue["number"])
+    comments = base.get_issue_comments(number)
+    session = base.ensure_session(issue, fresh_pr, sessions, comments)
+    if not session:
+        return
+    if str(session.get("state") or "").upper() in base.ACTIVE_STATES:
+        return
+
+    base.send_to_session(
+        session,
+        f"""Issue #{number}, PR #{pr_number}: GitHub still reports mergeable=false on the current HEAD after the normal supervisor cycle. Treat this as a repeated mergeability/branch-contamination blocker, not a request to retry the same rebase.
+
+Preserve the SAME Issue, Jules session, branch, and PR. Reconcile against current origin/main. If the branch is broad or contaminated, reconstruct the SAME branch from clean main, derive an explicit allowlist from the Issue's actual intent, re-apply only those intended changes, and prove `git diff --name-only origin/main...HEAD` matches that allowlist before push. Do not create a replacement PR and do not trigger article/video generation or upload.""",
+        reason=f"PR #{pr_number} mergeability recovery",
+    )
+
+
 # Override the intermediate runtime's push-observation policy. This explicit
 # dispatch is safe because workflow_dispatch is the documented recursion-safe
 # way to trigger a workflow from another workflow using GITHUB_TOKEN.
 RUNTIME_SEND_TO_SESSION = base.send_to_session
+RUNTIME_PROCESS_ISSUE = base.process_issue
 base.send_to_session = send_to_session_with_recovery
+base.process_issue = process_issue_with_mergeability_recovery
 base.dispatch_deploy = dispatch_supervisor_deploy
 base.wait_for_deploy = wait_for_supervisor_deploy
 
