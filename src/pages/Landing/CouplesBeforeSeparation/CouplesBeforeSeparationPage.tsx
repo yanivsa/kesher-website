@@ -135,6 +135,23 @@ const CouplesBeforeSeparationPage: React.FC = () => {
           },
         })),
       },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'עמוד הבית',
+            item: 'https://kesher.saharoni.com',
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'בירור זוגי בצומת החלטה ולפני פרידה',
+            item: 'https://kesher.saharoni.com/services/couples/before-separation',
+          },
+        ],
+      },
     ],
   };
 
