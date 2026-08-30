@@ -1,11 +1,10 @@
 {
-  "campaign_name": "Search_CouplesCounseling_Ashdod_V1",
+  "campaign_name": "Search_CouplesCounseling_Crisis_V1",
   "objective": "SEARCH_LEAD_GEN",
   "target_locations": [
     {
-      "name": "Ashdod",
-      "radius_km": 15,
-      "type": "LOCATION_WITH_RADIUS"
+      "name": "Israel",
+      "type": "COUNTRY"
     }
   ],
   "languages": ["he", "en"],
@@ -36,21 +35,20 @@
   },
   "keywords": {
     "exact_and_phrase": [
-      "ייעוץ זוגי באשדוד",
-      "טיפול זוגי באשדוד",
-      "יועץ זוגי באשדוד",
-      "יועצת זוגית באשדוד",
-      "ייעוץ נישואין באשדוד",
-      "couple therapy ashdod"
+      "ייעוץ זוגי במשבר",
+      "טיפול זוגי במשבר",
+      "זוגיות במשבר",
+      "משבר בנישואין",
+      "משבר זוגי"
     ],
     "negative": [
       "חינם",
       "חינמי",
-      "שירות לאומי",
-      "לימודים",
-      "קורס",
+      "משפטי",
+      "עורך דין גירושין",
+      "תביעה",
+      "בית משפט",
       "עבודה סוציאלית",
-      "רווחה",
       "דרושים"
     ]
   },
@@ -58,28 +56,28 @@
     {
       "type": "RESPONSIVE_SEARCH_AD",
       "headlines": [
-        "ייעוץ זוגי מקצועי באשדוד",
-        "בניית שיחה רגועה וברורה",
-        "קליניקה פרטית באשדוד",
-        "רוצים להחזיר את התקשורת?",
-        "תיאום פגישה בדיסקרטיות"
+        "ייעוץ זוגי במשבר",
+        "עצירת הסלמה וחידוש השיח",
+        "למצוא דרך לצאת מהמשבר",
+        "קליניקה באשדוד ובזום",
+        "תיאום שיחה דיסקרטית"
       ],
       "descriptions": [
-        "מרחב פרטי ומכבד בהתאם לכללי האתיקה. תיאום שיחה ראשונית בקליניקה באשדוד.",
-        "כשהשיחות חוזרות לאותו דפוס – ייעוץ זוגי באשדוד מסייע ליצור שפה משותפת. קבעו מועד."
+        "כשהשיחות חוזרות על עצמן ונגמרות בכעס – ייעוץ זוגי ממוקד עוזר לעצור את ההסלמה.",
+        "מרחב בטוח ומקצועי להבנה ולחידוש התקשורת. פגישה של 50 דקות באשדוד או אונליין."
       ],
-      "final_url": "https://kesher.saharoni.com/services/couples/ashdod?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_Ashdod_V1&utm_content=Couples_Counseling_Ashdod_Core"
+      "final_url": "https://kesher.saharoni.com/services/couples/crisis?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_Crisis_V1&utm_content=Couples_Counseling_Crisis"
     }
   ],
   "extensions": {
     "sitelinks": [
       {
-        "title": "קליניקה באשדוד",
-        "url": "https://kesher.saharoni.com/services/couples/ashdod"
-      },
-      {
         "title": "ייעוץ במשבר",
         "url": "https://kesher.saharoni.com/services/couples/crisis"
+      },
+      {
+        "title": "קליניקה באשדוד",
+        "url": "https://kesher.saharoni.com/services/couples/ashdod"
       },
       {
         "title": "בירור לפני פרידה",
@@ -92,7 +90,7 @@
     ],
     "callouts": [
       "50 דקות לפגישה",
-      "דיסקרטיות מלאה",
+      "עצירת הסלמה ממוקדת",
       "קליניקה באשדוד או בזום",
       "ללא התחייבות לתהליך"
     ],
