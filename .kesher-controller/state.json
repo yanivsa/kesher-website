@@ -1,9 +1,9 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-30",
-  "status": "blocked",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": {
       "stage": "article",
@@ -18,9 +18,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 2,
+    "attempts": 3,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-30T02:48:59.369515+00:00",
+    "last_dispatch_at": "2026-08-30T06:08:57.471147+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -87,12 +87,7 @@
       "archived_at": "2026-08-29T21:19:11.245164+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "DUPLICATE_ARTICLE_PRS",
-    "message": "duplicate open article PRs detected: 2",
-    "at": "2026-08-30T02:52:28.937643+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-26T03:13:53.837251+00:00",
@@ -752,9 +747,18 @@
       "details": {
         "message": "duplicate open article PRs detected: 2"
       }
+    },
+    {
+      "at": "2026-08-30T06:08:57.471152+00:00",
+      "from": "blocked",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 3
+      }
     }
   ],
-  "updated_at": "2026-08-30T02:52:28.937661+00:00",
+  "updated_at": "2026-08-30T06:08:57.471158+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
