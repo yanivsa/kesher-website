@@ -72,6 +72,26 @@ class KesherTaskSupervisorRecoveryTests(unittest.TestCase):
         self.assertEqual(stage, 5)
         self.assertTrue(may_send)
 
+    def test_legacy_attempts_can_seed_stage_three(self):
+        key = "issue-1-pr-2-generated-text"
+        activities = [
+            {
+                "createTime": "2026-08-30T04:00:00Z",
+                "userMessaged": {"userMessage": "Fix צמצום חרדי and regenerate."},
+            },
+            {
+                "createTime": "2026-08-30T05:00:00Z",
+                "userMessaged": {"userMessage": "The same occurrence remains; regenerate from source."},
+            },
+        ]
+        count = runtime_v2._legacy_attempt_count(activities, "generated-text")
+        self.assertGreaterEqual(count, 2)
+        stage, may_send, _ = runtime_v2._recovery_state(
+            activities, key, initial_stage=min(3, 1 + count)
+        )
+        self.assertEqual(stage, 3)
+        self.assertTrue(may_send)
+
     def test_branch_contamination_pattern_changes_strategy(self):
         kind = runtime_v2._recovery_kind("PR is dirty, mergeable=false, unrelated changed files")
         self.assertEqual(kind, "branch-contamination")
@@ -86,9 +106,23 @@ class KesherTaskSupervisorRecoveryTests(unittest.TestCase):
         self.assertIn("source of truth", strategy)
         self.assertIn("zero bad occurrences", strategy)
 
-    def test_final_qa_is_not_treated_as_recovery(self):
-        self.assertFalse(runtime_v2._is_recovery_reason("PR #22 final QA"))
-        self.assertTrue(runtime_v2._is_recovery_reason("PR #22 scope repair"))
+    def test_first_final_qa_is_plain_but_recurring_qa_enters_recovery(self):
+        self.assertFalse(runtime_v2._should_use_recovery("PR #22 final QA", []))
+        activities = [
+            {
+                "createTime": "2026-08-30T06:00:00Z",
+                "userMessaged": {
+                    "userMessage": f"{runtime_v2.base.QA_REQUEST} PR #22 HEAD abc123"
+                },
+            }
+        ]
+        self.assertTrue(runtime_v2._should_use_recovery("PR #22 final QA", activities))
+        self.assertTrue(runtime_v2._should_use_recovery("PR #22 scope repair", []))
+
+    def test_history_can_classify_recurring_qa_as_generated_text(self):
+        history = "Previous attempt still contains צמצום חרדי after regenerate"
+        kind = runtime_v2._recovery_kind(f"PR #582 final QA\n{history}")
+        self.assertEqual(kind, "generated-text")
 
 
 if __name__ == "__main__":
