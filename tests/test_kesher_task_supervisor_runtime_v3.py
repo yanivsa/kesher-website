@@ -126,7 +126,7 @@ class KesherTaskSupervisorAdaptiveRecoveryTests(unittest.TestCase):
         send.assert_not_called()
 
     def test_pending_ci_remains_non_mutating_in_inherited_processor(self):
-        source = inspect.getsource(runtime_v3.runtime_v2.RUNTIME_PROCESS_ISSUE)
+        source = inspect.getsource(runtime_v3.runtime_v2.runtime.ORIGINAL_PROCESS_ISSUE)
         self.assertIn('if ci.state == "pending":', source)
         pending_block = source.split('if ci.state == "pending":', 1)[1].split('if ci.state == "failed":', 1)[0]
         self.assertIn("return", pending_block)
