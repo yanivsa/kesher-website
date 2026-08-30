@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-30",
-  "status": "article_generating",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -9,11 +9,11 @@
       "stage": "article",
       "code": "DUPLICATE_ARTICLE_PRS",
       "message": "duplicate open article PRs detected: 2",
-      "at": "2026-08-30T02:52:28.937643+00:00"
+      "at": "2026-08-30T06:12:06.885651+00:00"
     },
     "next_retry_at": null,
     "run_id": 33296238795,
-    "processed_run_id": 33288853878,
+    "processed_run_id": 33296238795,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -30,8 +30,8 @@
       "message": "duplicate open article PRs detected: 2",
       "session_id": "",
       "pr_url": "",
-      "github_run_id": "33288853878",
-      "completed_at": "2026-08-30T02:49:27.086436+00:00"
+      "github_run_id": "33296238795",
+      "completed_at": "2026-08-30T06:09:19.667936+00:00"
     }
   },
   "video": {
@@ -87,7 +87,12 @@
       "archived_at": "2026-08-29T21:19:11.245164+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "DUPLICATE_ARTICLE_PRS",
+    "message": "duplicate open article PRs detected: 2",
+    "at": "2026-08-30T06:12:06.885651+00:00"
+  },
   "history": [
     {
       "at": "2026-08-26T03:13:53.837251+00:00",
@@ -756,9 +761,18 @@
       "details": {
         "attempt": 3
       }
+    },
+    {
+      "at": "2026-08-30T06:12:06.885662+00:00",
+      "from": "article_generating",
+      "to": "blocked",
+      "reason": "DUPLICATE_ARTICLE_PRS",
+      "details": {
+        "message": "duplicate open article PRs detected: 2"
+      }
     }
   ],
-  "updated_at": "2026-08-30T06:08:57.471158+00:00",
+  "updated_at": "2026-08-30T06:12:06.885667+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
