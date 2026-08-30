@@ -1,38 +1,21 @@
 {
   "schema_version": 3,
-  "cycle": "2026-08-30",
-  "status": "blocked",
+  "cycle": "2026-08-31",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 3,
-    "status": "exhausted",
-    "last_error": {
-      "stage": "article",
-      "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "message": "article exhausted 3 total controller dispatch attempts",
-      "at": "2026-08-30T20:05:09.005605+00:00"
-    },
+    "attempt_count": 1,
+    "status": "running",
+    "last_error": null,
     "next_retry_at": null,
-    "run_id": 33296238795,
-    "processed_run_id": 33296238795,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 3,
+    "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-30T06:08:57.471147+00:00",
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-08-30",
-      "outcome": "DUPLICATE_ARTICLE_PRS",
-      "retryable": false,
-      "message": "duplicate open article PRs detected: 2",
-      "session_id": "",
-      "pr_url": "",
-      "github_run_id": "33296238795",
-      "completed_at": "2026-08-30T06:09:19.667936+00:00"
-    }
+    "last_dispatch_at": "2026-08-30T22:48:44.138666+00:00"
   },
   "video": {
     "attempt_count": 0,
@@ -85,135 +68,47 @@
         }
       },
       "archived_at": "2026-08-29T21:19:11.245164+00:00"
+    },
+    {
+      "cycle": "2026-08-30",
+      "status": "blocked",
+      "article": {
+        "attempt_count": 3,
+        "status": "exhausted",
+        "last_error": {
+          "stage": "article",
+          "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+          "message": "article exhausted 3 total controller dispatch attempts",
+          "at": "2026-08-30T20:05:09.005605+00:00"
+        },
+        "next_retry_at": null,
+        "run_id": 33296238795,
+        "processed_run_id": 33296238795,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 3,
+        "deploy_attempts": 0,
+        "last_dispatch_at": "2026-08-30T06:08:57.471147+00:00",
+        "last_run_conclusion": "failure",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-08-30",
+          "outcome": "DUPLICATE_ARTICLE_PRS",
+          "retryable": false,
+          "message": "duplicate open article PRs detected: 2",
+          "session_id": "",
+          "pr_url": "",
+          "github_run_id": "33296238795",
+          "completed_at": "2026-08-30T06:09:19.667936+00:00"
+        }
+      },
+      "archived_at": "2026-08-30T22:48:37.691529+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "article exhausted 3 total controller dispatch attempts",
-    "at": "2026-08-30T20:05:09.005605+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-08-26T03:13:53.837251+00:00",
-      "from": "video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T03:13:55.223554+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-26T04:05:56.948086+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T04:05:58.194284+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-26T04:58:14.654834+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T04:58:16.610290+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-26T05:41:40.228582+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T05:41:41.551381+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-26T06:20:17.575813+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T06:20:24.294607+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-26T07:28:57.427128+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T07:29:02.954021+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-26T08:11:10.311537+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T08:11:12.210203+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-26T09:05:32.054810+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T09:05:35.997171+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-26T10:00:30.025323+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T10:00:33.006836+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-08-26T10:45:38.288677+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-26T10:45:39.619907+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-08-26T11:15:26.876900+00:00",
       "from": "complete",
@@ -878,9 +773,24 @@
       "details": {
         "message": "article exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-08-30T22:48:37.691559+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-08-30T22:48:44.138672+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-08-30T20:05:09.005621+00:00",
+  "updated_at": "2026-08-30T22:48:44.138678+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
