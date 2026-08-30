@@ -7,8 +7,10 @@ on:
       - ".github/scripts/kesher_task_supervisor.py"
       - ".github/scripts/kesher_task_supervisor_runtime.py"
       - ".github/scripts/kesher_task_supervisor_runtime_v2.py"
+      - ".github/jules-templates/recovery-playbook.md"
       - "tests/test_kesher_task_supervisor.py"
       - "tests/test_kesher_task_supervisor_runtime.py"
+      - "tests/test_kesher_task_supervisor_runtime_v2.py"
   push:
     branches: [main]
     paths:
@@ -16,8 +18,10 @@ on:
       - ".github/scripts/kesher_task_supervisor.py"
       - ".github/scripts/kesher_task_supervisor_runtime.py"
       - ".github/scripts/kesher_task_supervisor_runtime_v2.py"
+      - ".github/jules-templates/recovery-playbook.md"
       - "tests/test_kesher_task_supervisor.py"
       - "tests/test_kesher_task_supervisor_runtime.py"
+      - "tests/test_kesher_task_supervisor_runtime_v2.py"
   schedule:
     - cron: "7 * * * *"
   workflow_dispatch:
@@ -53,7 +57,7 @@ jobs:
 
       - name: Validate supervisor controller
         run: |
-          python3 -m unittest tests.test_kesher_task_supervisor tests.test_kesher_task_supervisor_runtime -v
+          python3 -m unittest tests.test_kesher_task_supervisor tests.test_kesher_task_supervisor_runtime tests.test_kesher_task_supervisor_runtime_v2 -v
           python3 -m py_compile .github/scripts/kesher_task_supervisor_runtime_v2.py
 
   supervise:
@@ -68,6 +72,7 @@ jobs:
       SUPERVISOR_NEW_SESSION_INTERVAL_HOURS: "3"
       SUPERVISOR_FORCE_NEW_SESSIONS: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
       SUPERVISOR_MAX_MESSAGES_PER_RUN: "30"
+      SUPERVISOR_RECOVERY_MAX_STAGE: "5"
       SUPERVISOR_DEPLOY_WAIT_SECONDS: "900"
       SUPERVISOR_DEPLOY_POLL_SECONDS: "15"
 
