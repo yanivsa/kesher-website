@@ -43,15 +43,15 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertEqual(contract["image"]["max_attempts"], 3)
         self.assertEqual(contract["image"]["worker_attempts_per_dispatch"], 1)
 
-    def test_provider_order_ends_in_local_best_effort_fallback(self):
+    def test_provider_order_ends_in_local_curated_fallback(self):
         contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
         image = contract["image"]
         self.assertEqual(image["provider_order"], ["gemini", "unsplash", "pexels", "local-curated"])
         self.assertTrue(image["fallback_must_be_local"])
-        self.assertTrue(image["no_image_publication_allowed"])
-        self.assertFalse(image["publication_blocking"])
-        self.assertFalse(image["required_for_article"])
-        self.assertEqual(image["failure_mode"], "best-effort-defer")
+        self.assertFalse(image["no_image_publication_allowed"])
+        self.assertTrue(image["publication_blocking"])
+        self.assertTrue(image["required_for_article"])
+        self.assertEqual(image["failure_mode"], "blocking-retry")
         self.assertEqual(image["gemini_model"], "gemini-3.1-flash-image")
         self.assertEqual(image["visual_verifier_model"], "gemini-3.5-flash")
         self.assertTrue(image["external_stock_requires_pixel_verification"])
@@ -166,7 +166,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "too small"):
             worker.core.validate_candidate(fake_png(320, 180))
 
-    def test_production_article_gate_allows_no_image(self):
+    def test_production_article_gate_forbids_no_image(self):
         controller = load(CONTROLLER_PATH, "article_controller_best_effort_test")
         validator = controller.load_validator_best_effort()
         base = [{"id": "old"}]
@@ -187,7 +187,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
             base + [new],
             lambda _: b"",
         )
-        self.assertFalse(any("no-image publication is forbidden" in error for error in errors), errors)
+        self.assertTrue(any("no-image publication is forbidden" in error for error in errors), errors)
 
     def test_workflow_is_controller_owned_and_executes_only_trusted_main_worker(self):
         workflow = WORKFLOW_PATH.read_text(encoding="utf-8")

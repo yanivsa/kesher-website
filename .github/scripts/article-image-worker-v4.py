@@ -36,33 +36,39 @@ commit_files = v3.commit_files
 
 # All candidates are repository-versioned assets. Runtime still validates every
 # byte and can fall through to a second candidate where one exists.
+# Each category has distinct, non-overlapping curated fallback candidates.
 LOCAL_FALLBACK_CANDIDATES: dict[str, list[tuple[str, str]]] = {
     "dating": [
         ("public/images/generated/blog/dating-communication-early-stages.jpg", "שני אנשים בשיחה רגועה בשלב היכרות זוגית"),
+        ("public/images/generated/blog/dating-second-chance-criteria.jpg", "מפגש היכרות נינוח בסביבה ביתית חמה"),
     ],
     "singles": [
         ("public/images/generated/blog/late-singleness-friends-moving-forward.jpg", "אדם בסיטואציה חברתית המתאימה לנושא רווקות וקשרים"),
-        ("public/images/generated/blog/dating-communication-early-stages.jpg", "שני אנשים בשיחה רגועה סביב היכרות וקשר"),
+        ("public/images/generated/blog/single-hood-family-dinners-pressure.jpg", "שיחה משפחתית רגועה המציגה התמודדות עם רווקות"),
     ],
     "relocation": [
         ("public/images/generated/blog/relocation-career-loss-and-dependence.jpg", "זוג בסיטואציה ביתית הקשורה לשינויי חיים ורילוקיישן"),
-        ("public/images/generated/blog/dating-communication-early-stages.jpg", "זוג בשיחה פנים אל פנים על שינוי בחיים המשותפים"),
+        ("public/images/generated/blog/relocation-language-barrier-isolation.jpg", "זוג בסלון הבית בדיון על הסתגלות ומעבר"),
     ],
     "premarital": [
-        ("public/images/generated/blog/dating-communication-early-stages.jpg", "זוג בשיחה רגועה לקראת בניית חיים משותפים"),
+        ("public/images/generated/blog/premarital-questions-before-wedding.jpg", "זוג בשיחה פתוחה סביב ציפיות ותכנון קשר"),
+        ("public/images/generated/blog/marriage-preparation-money-fights.jpg", "זוג בדיון רגוע סביב תכנון תקציבי ונושאי חיים"),
     ],
     "parenting": [
-        ("public/images/generated/blog/child-after-school-restraint-collapse.jpg", "ילד בבית לאחר יום לימודים לצד נוכחות הורית תומכת"),
+        ("public/images/generated/blog/asking-for-help-without-yelling.jpg", "הורה וילד באינטראקציה ביתית תומכת"),
+        ("public/images/generated/blog/breaking-the-yelling-cycle.jpg", "הורה וילד בסביבה ביתית רגועה ותומכת"),
     ],
     "gifted": [
-        ("public/images/generated/blog/child-after-school-restraint-collapse.jpg", "ילד לאחר מסגרת לימודית ברגע רגשי הדורש תמיכה והכלה"),
+        ("public/images/generated/blog/child-perfectionism-fear-of-failure.jpg", "ילד בסביבה לימודית עם נוכחות תומכת של מבוגר"),
+        ("public/images/generated/blog/gifted-children-perfectionism-tears.jpg", "ילד ברגע לימודי רגשי הזקוק להכלה והדרכה"),
     ],
     "adhd": [
+        ("public/images/generated/blog/adhd-first-grade-preparation.jpg", "הורה וילד מתארגנים יחד לקראת מסגרת לימודית"),
         ("public/images/generated/blog/adhd-and-screen-addiction-strategies.jpg", "ילד בסביבה ביתית המתאימה להדרכת הורים סביב קשב וויסות"),
-        ("public/images/generated/blog/child-after-school-restraint-collapse.jpg", "ילד בבית לאחר יום לימודים לצד נוכחות הורית תומכת"),
     ],
     "couples": [
-        ("public/images/generated/blog/dating-communication-early-stages.jpg", "זוג בשיחה פנים אל פנים המדגישה תקשורת וקשר"),
+        ("public/images/generated/blog/defensiveness-in-relationships.jpg", "זוג בשיח כנה בסלון הבית סביב תקשורת זוגית"),
+        ("public/images/generated/blog/couples-communication-distance.jpg", "זוג בסלון הבית בדיון רגוע על הקשבה וקרבה"),
     ],
 }
 

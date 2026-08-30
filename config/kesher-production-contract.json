@@ -18,8 +18,8 @@
     "retry_backoff_minutes": [5, 15]
   },
   "image": {
-    "required_for_article": false,
-    "publication_blocking": false,
+    "required_for_article": true,
+    "publication_blocking": true,
     "worker_owner": "github-actions",
     "worker_attempts_per_dispatch": 1,
     "max_attempts": 3,
@@ -28,8 +28,8 @@
     "visual_verifier_model": "gemini-3.5-flash",
     "external_stock_requires_pixel_verification": true,
     "fallback_must_be_local": true,
-    "no_image_publication_allowed": true,
-    "failure_mode": "best-effort-defer"
+    "no_image_publication_allowed": false,
+    "failure_mode": "blocking-retry"
   },
   "video": {
     "publication_gate": "technical",

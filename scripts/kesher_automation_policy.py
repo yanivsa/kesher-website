@@ -67,13 +67,12 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
     ):
         raise AutomationPolicyError("Article automation contract is invalid")
 
-    # Images are a trusted best-effort enrichment stage. A valid article must
-    # never be held back solely because image providers or the image worker are
-    # unavailable. If an image is present, downstream validators still enforce
-    # strict provenance, pixel validation and local fallback rules.
+    # Images are required and publication-blocking. A published article must
+    # have a valid unique hero image. Downstream validators enforce
+    # strict provenance, SHA-256 uniqueness, pixel validation and local fallback rules.
     if (
-        image.get("required_for_article") is not False
-        or image.get("publication_blocking") is not False
+        image.get("required_for_article") is not True
+        or image.get("publication_blocking") is not True
         or image.get("worker_owner") != "github-actions"
         or image.get("worker_attempts_per_dispatch") != 1
         or image.get("max_attempts") != EXPECTED_MAX_ATTEMPTS
@@ -82,8 +81,8 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         or image.get("visual_verifier_model") != "gemini-3.5-flash"
         or image.get("external_stock_requires_pixel_verification") is not True
         or image.get("fallback_must_be_local") is not True
-        or image.get("no_image_publication_allowed") is not True
-        or image.get("failure_mode") != "best-effort-defer"
+        or image.get("no_image_publication_allowed") is not False
+        or image.get("failure_mode") != "blocking-retry"
     ):
         raise AutomationPolicyError("Image production contract is invalid")
 
