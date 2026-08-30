@@ -7,10 +7,12 @@ on:
       - ".github/scripts/kesher_task_supervisor.py"
       - ".github/scripts/kesher_task_supervisor_runtime.py"
       - ".github/scripts/kesher_task_supervisor_runtime_v2.py"
+      - ".github/scripts/kesher_task_supervisor_runtime_v3.py"
       - ".github/jules-templates/recovery-playbook.md"
       - "tests/test_kesher_task_supervisor.py"
       - "tests/test_kesher_task_supervisor_runtime.py"
       - "tests/test_kesher_task_supervisor_runtime_v2.py"
+      - "tests/test_kesher_task_supervisor_runtime_v3.py"
   push:
     branches: [main]
     paths:
@@ -18,10 +20,12 @@ on:
       - ".github/scripts/kesher_task_supervisor.py"
       - ".github/scripts/kesher_task_supervisor_runtime.py"
       - ".github/scripts/kesher_task_supervisor_runtime_v2.py"
+      - ".github/scripts/kesher_task_supervisor_runtime_v3.py"
       - ".github/jules-templates/recovery-playbook.md"
       - "tests/test_kesher_task_supervisor.py"
       - "tests/test_kesher_task_supervisor_runtime.py"
       - "tests/test_kesher_task_supervisor_runtime_v2.py"
+      - "tests/test_kesher_task_supervisor_runtime_v3.py"
   schedule:
     - cron: "7 * * * *"
   workflow_dispatch:
@@ -57,8 +61,8 @@ jobs:
 
       - name: Validate supervisor controller
         run: |
-          python3 -m unittest tests.test_kesher_task_supervisor tests.test_kesher_task_supervisor_runtime tests.test_kesher_task_supervisor_runtime_v2 -v
-          python3 -m py_compile .github/scripts/kesher_task_supervisor_runtime_v2.py
+          python3 -m unittest tests.test_kesher_task_supervisor tests.test_kesher_task_supervisor_runtime tests.test_kesher_task_supervisor_runtime_v2 tests.test_kesher_task_supervisor_runtime_v3 -v
+          python3 -m py_compile .github/scripts/kesher_task_supervisor_runtime_v2.py .github/scripts/kesher_task_supervisor_runtime_v3.py
 
   supervise:
     if: github.event_name != 'pull_request'
@@ -88,4 +92,4 @@ jobs:
       - name: Rebuild inventory and advance every open Kesher task
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: python3 .github/scripts/kesher_task_supervisor_runtime_v2.py
+        run: python3 .github/scripts/kesher_task_supervisor_runtime_v3.py
