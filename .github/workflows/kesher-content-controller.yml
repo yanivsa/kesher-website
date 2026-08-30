@@ -49,7 +49,7 @@ jobs:
           KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
         run: |
           set -euo pipefail
-          python3 -u scripts/kesher_content_controller_v3_best_effort.py --report-json | tee /tmp/kesher-controller.json
+          python3 -u scripts/kesher_content_controller_v4_structural_hold.py --report-json | tee /tmp/kesher-controller.json
 
       - name: Write concise controller summary
         if: always()
