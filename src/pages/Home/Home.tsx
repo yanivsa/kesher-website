@@ -357,7 +357,7 @@ const Home: React.FC = () => {
   return (
     <div className={styles.page} dir="rtl">
       <MetaTags 
-        title={`${SITE_CONFIG.author} — ייעוץ זוגי, הנחיית הורים וגישור באשדוד`}
+        title={SITE_CONFIG.title}
         description={SITE_CONFIG.description}
       />
       <SchemaOrg data={schemaData} />
