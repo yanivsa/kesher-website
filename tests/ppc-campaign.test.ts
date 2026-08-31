@@ -22,7 +22,7 @@ interface GtmConfig {
   gtm_container_id: string;
   events_mapping: Array<{
     event_name: string;
-    trigger: string;
+    trigger?: string;
     tags: string[];
     type: string;
   }>;
@@ -123,24 +123,38 @@ describe('PPC Campaign Configurations & Conversion Tracking', () => {
     const gtmPath = path.join(PPC_DIR, 'gtm_tags_ppc_config.json');
     const gtmConfig: GtmConfig = JSON.parse(fs.readFileSync(gtmPath, 'utf-8'));
 
-    it('maps macro and micro conversion events to Google Ads tags', () => {
+    it('maps primary conversions to Google Ads and keeps micro events in GA4', () => {
       const bookingEvent = gtmConfig.events_mapping.find(
-        (e) => e.event_name === 'booking_confirmed',
+        (e) => e.event_name === 'booking_complete',
       );
       expect(bookingEvent).toBeDefined();
       expect(bookingEvent?.tags).toContain('GoogleAds_Conversion_Booking');
+
+      const leadEvent = gtmConfig.events_mapping.find(
+        (e) => e.event_name === 'generate_lead',
+      );
+      expect(leadEvent).toBeDefined();
+      expect(leadEvent?.tags).toContain('GoogleAds_Conversion_Lead');
 
       const whatsappEvent = gtmConfig.events_mapping.find(
         (e) => e.event_name === 'whatsapp_click',
       );
       expect(whatsappEvent).toBeDefined();
-      expect(whatsappEvent?.tags).toContain('GoogleAds_Conversion_WhatsAppClick');
+      expect(whatsappEvent?.tags).toContain('GA4_Event_WhatsAppClick');
+      expect(whatsappEvent?.tags.some((tag) => tag.startsWith('GoogleAds_Conversion_'))).toBe(false);
 
       const phoneEvent = gtmConfig.events_mapping.find(
         (e) => e.event_name === 'phone_click',
       );
       expect(phoneEvent).toBeDefined();
-      expect(phoneEvent?.tags).toContain('GoogleAds_Conversion_PhoneClick');
+      expect(phoneEvent?.tags).toContain('GA4_Event_PhoneClick');
+      expect(phoneEvent?.tags.some((tag) => tag.startsWith('GoogleAds_Conversion_'))).toBe(false);
+
+      const legacyBookingEvent = gtmConfig.events_mapping.find(
+        (e) => e.event_name === 'booking_confirmed',
+      );
+      expect(legacyBookingEvent).toBeDefined();
+      expect(legacyBookingEvent?.tags).not.toContain('GoogleAds_Conversion_Booking');
     });
   });
 });
