@@ -86,7 +86,7 @@ const CouplesCounseling: React.FC = () => {
           <div className={styles.heroContent}>
             <div className={styles.badge}>ייעוץ זוגי באשדוד ובאונליין</div>
             <h1>לדבר על מה שקורה <br /><span>בלי לחזור לאותו ריב</span></h1>
-            <p className={styles.subtitle}>פגישה לשני בני הזוג, שבה אפשר להבין את הדפוס שחוזר ולבדוק מה ניתן לשנות.</p>
+            <p className={styles.subtitle}>לצאת ממעגל הוויכוחים, להחזיר את הקרבה ולהתחיל לתקשר באמת. מרחב בטוח שבו מפסיקים להאשים ומתחילים להבין יחד איך לשפר את הקשר.</p>
             <div className={styles.heroActions}>
               <Link to={SITE_CONFIG.links.appointment} className={styles.ctaBtn}>
                 קביעת פגישת ייעוץ
