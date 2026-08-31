@@ -147,14 +147,7 @@
       "archived_at": "2026-08-30T22:48:37.691529+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new article for the Kesher website for the `2026-08-31` slot, following strict topic, formatting, length, and image pipeline constraints, without altering any existing content. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article answering to the chosen valid subcategory (\"זוגיות בעלייה ורילוקיישן\"). The date is correctly set to `2026-08-31`. Word count is ~830 words, which sits comfortably within the required 700-1,100 range. The agent p…",
-    "retryable": true,
-    "retry_at": "2026-08-31T13:19:11.985090+00:00",
-    "at": "2026-08-31T13:14:11.985127+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-26T11:15:26.876900+00:00",
@@ -921,9 +914,18 @@
         "run_id": 33370138242,
         "session_id": "sessions/9157959808032322046"
       }
+    },
+    {
+      "at": "2026-08-31T13:18:06.789342+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-08-31T13:19:11.985090+00:00"
+      }
     }
   ],
-  "updated_at": "2026-08-31T13:14:11.985138+00:00",
+  "updated_at": "2026-08-31T13:18:06.789361+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
