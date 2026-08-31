@@ -4,12 +4,12 @@
   "status": "blocked",
   "article": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "exhausted",
     "last_error": {
       "stage": "article",
-      "code": "DUPLICATE_ARTICLE_PRS",
-      "message": "duplicate open article PRs detected: 2",
-      "at": "2026-08-31T03:58:41.019348+00:00"
+      "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "message": "article exhausted 3 total controller dispatch attempts",
+      "at": "2026-08-31T07:32:40.111092+00:00"
     },
     "next_retry_at": null,
     "run_id": 33355379802,
@@ -126,9 +126,9 @@
   ],
   "last_error": {
     "stage": "article",
-    "code": "DUPLICATE_ARTICLE_PRS",
-    "message": "duplicate open article PRs detected: 2",
-    "at": "2026-08-31T03:58:41.019348+00:00"
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "article exhausted 3 total controller dispatch attempts",
+    "at": "2026-08-31T07:32:40.111092+00:00"
   },
   "history": [
     {
@@ -855,9 +855,18 @@
       "details": {
         "message": "duplicate open article PRs detected: 2"
       }
+    },
+    {
+      "at": "2026-08-31T07:32:40.111106+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "article exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-08-31T03:58:41.019366+00:00",
+  "updated_at": "2026-08-31T07:32:40.111113+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
