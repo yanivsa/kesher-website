@@ -1,6 +1,7 @@
 (function () {
   'use strict';
 
+  window.__kesherMeasurementMode = 'disabled';
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function () {
     window.dataLayer.push(arguments);
@@ -35,6 +36,7 @@
   }
 
   if (/^GTM-[A-Z0-9]+$/i.test(containerId)) {
+    window.__kesherMeasurementMode = 'gtm';
     window.dataLayer.push({
       'gtm.start': new Date().getTime(),
       event: 'gtm.js',
@@ -48,6 +50,7 @@
   }
 
   if (/^G-[A-Z0-9]+$/i.test(containerId)) {
+    window.__kesherMeasurementMode = 'ga4';
     window.gtag('js', new Date());
     window.gtag('config', containerId);
 
