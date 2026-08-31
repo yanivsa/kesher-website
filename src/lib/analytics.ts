@@ -84,7 +84,8 @@ export const pushAnalyticsEvent = (eventName: string, params: AnalyticsParams = 
   // GTM, send custom events through gtag as well. In GTM mode, dataLayer is the
   // single source to avoid duplicate events.
   if (window.__kesherMeasurementMode === 'ga4' && typeof window.gtag === 'function') {
-    const { event: _event, ...gaParams } = payload;
+    const gaParams = { ...payload };
+    delete gaParams.event;
     window.gtag('event', eventName, gaParams);
   }
 };
