@@ -5,6 +5,19 @@ test('trusted Calendly scheduled event carries the real service context into tha
   await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]')).toBeVisible({ timeout: 15_000 });
 
   await page.evaluate(() => {
+    window.dataLayer = window.dataLayer || [];
+    const originalPush = window.dataLayer.push.bind(window.dataLayer);
+    window.dataLayer.push = (...events) => {
+      for (const event of events) {
+        if (event?.event === 'booking_complete') {
+          window.sessionStorage.setItem('e2e_booking_complete', JSON.stringify(event));
+        }
+      }
+      return originalPush(...events);
+    };
+  });
+
+  await page.evaluate(() => {
     window.dispatchEvent(new MessageEvent('message', {
       origin: 'https://calendly.com',
       data: {
@@ -36,9 +49,10 @@ test('trusted Calendly scheduled event carries the real service context into tha
     service_region: 'ashdod',
   });
 
-  const bookingCompleteEvent = await page.evaluate(() => window.dataLayer.find(
-    (event) => event.event === 'booking_complete',
-  ));
+  const bookingCompleteEvent = await page.evaluate(() => {
+    const raw = window.sessionStorage.getItem('e2e_booking_complete');
+    return raw ? JSON.parse(raw) : null;
+  });
   expect(bookingCompleteEvent).toMatchObject({
     service_type: 'general_consultation',
     booking_page_path: '/appointment',
