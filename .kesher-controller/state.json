@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-31",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -17,8 +17,8 @@
     "run_id": 33396422143,
     "processed_run_id": 33370138242,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
@@ -58,7 +58,11 @@
     "last_failed_run_id": 33370138242,
     "resume_dispatches": 1,
     "pr_number": 604,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/604"
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/604",
+    "slug": "aliyah-couples-cultural-gaps-identity",
+    "title": "מדברים בשתי שפות: כיצד להתמודד עם פערי תרבות ושפה בזוגיות בעלייה",
+    "url": "https://kesher.saharoni.com/blog/aliyah-couples-cultural-gaps-identity",
+    "published_date": "2026-08-31"
   },
   "video": {
     "attempt_count": 0,
@@ -960,9 +964,15 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "article PR has trusted image and remains authoritative"
+    },
+    {
+      "at": "2026-08-31T19:49:50.933094+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-08-31T15:23:11.330602+00:00",
+  "updated_at": "2026-08-31T19:49:50.933117+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
