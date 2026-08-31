@@ -58,11 +58,26 @@ jobs:
           import json
           import os
           from pathlib import Path
+
           path = Path('/tmp/kesher-controller.json')
-          if not path.exists():
-              text = 'Controller did not produce a state report.'
+          payload = None
+          if path.exists():
+              raw = path.read_text(encoding='utf-8')
+              # The controller may emit diagnostic log lines before the final
+              # JSON report. Extract the report instead of assuming stdout is
+              # pure JSON, and never let summary rendering fail the workflow.
+              markers = ('{\n  "action":', '{"action":')
+              starts = [raw.find(marker) for marker in markers]
+              starts = [start for start in starts if start >= 0]
+              if starts:
+                  try:
+                      payload = json.loads(raw[min(starts):])
+                  except json.JSONDecodeError:
+                      payload = None
+
+          if not isinstance(payload, dict):
+              text = 'Controller ran, but its structured state report could not be parsed.'
           else:
-              payload = json.loads(path.read_text(encoding='utf-8'))
               state = payload.get('state') or {}
               article = state.get('article') or {}
               image = state.get('image') or {}
@@ -80,6 +95,7 @@ jobs:
                   f"Video attempts: {video.get('attempt_count', 0)}/3 | next retry: {video.get('next_retry_at') or 'none'}\n\n"
                   f"Last error: {last_error.get('code') or 'none'}"
               )
+
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
               out.write('### Kesher Content Controller\n\n' + text + '\n')
           PY
