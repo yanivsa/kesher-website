@@ -5,6 +5,7 @@ import {
   getCalendlyUtm,
   getStoredAttribution,
 } from '../../lib/attribution';
+import { pushAnalyticsEvent, resetBookingStart, trackBookingStart } from '../../lib/analytics';
 import styles from './CalendlyBookingEmbed.module.css';
 
 const CALENDLY_WIDGET_SRC = 'https://assets.calendly.com/assets/external/widget.js';
@@ -184,6 +185,10 @@ const CalendlyBookingEmbed: React.FC<CalendlyBookingEmbedProps> = ({
       window.dataLayer = window.dataLayer || [];
 
       if (data.event === 'calendly.event_type_viewed') {
+        trackBookingStart({
+          ...contextFields(),
+          cta_location: 'calendly_embed',
+        });
         window.dataLayer.push({
           event: 'calendly_event_type_viewed',
           ...contextFields(),
@@ -236,7 +241,13 @@ const CalendlyBookingEmbed: React.FC<CalendlyBookingEmbedProps> = ({
         bookingEvent.currency = currency;
       }
 
+      pushAnalyticsEvent('booking_complete', {
+        ...contextFields(),
+        booking_id_present: Boolean(eventUri || inviteeUri),
+        ...(typeof value === 'number' ? { value, currency } : {}),
+      });
       window.dataLayer.push(bookingEvent);
+      resetBookingStart();
 
       void sendBrowserBookingConfirmation({
         calendly_event_uri: eventUri,

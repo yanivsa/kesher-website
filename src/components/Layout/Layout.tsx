@@ -8,6 +8,7 @@ import MobileStickyBar from './MobileStickyBar';
 import AIChatbot from '../AIChatbot/AIChatbot';
 import ConsentBanner from '../Analytics/ConsentBanner';
 import SiteAttributionTracker from '../Analytics/SiteAttributionTracker';
+import GlobalConversionTracker from '../Analytics/GlobalConversionTracker';
 import styles from './Layout.module.css';
 
 interface LayoutProps {
@@ -32,6 +33,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
       <div className={styles.wrapper}>
         <SiteAttributionTracker />
+        <GlobalConversionTracker />
         <ConsentBanner />
         <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>
         {children}
@@ -42,6 +44,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className={styles.wrapper}>
       <SiteAttributionTracker />
+      <GlobalConversionTracker />
       <ConsentBanner />
       <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>
       <GeoBanner />

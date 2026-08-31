@@ -1,5 +1,5 @@
 {
-  "gtm_container_id": "GTM-XXXXXXX",
+  "gtm_container_id": "injected-from-VITE_GTM_CONTAINER_ID",
   "consent_mode": {
     "default": {
       "ad_storage": "denied",
@@ -7,37 +7,73 @@
       "ad_user_data": "denied",
       "ad_personalization": "denied"
     },
-    "note": "Required for EEA/UK and standard best practice for Amendment 13 compliance"
+    "note": "Consent Mode defaults remain denied until the visitor makes a consent choice."
   },
+  "required_tags": [
+    "Google tag / GA4 configuration - all pages",
+    "Conversion Linker - all pages"
+  ],
   "events_mapping": [
     {
-      "event_name": "booking_confirmed",
-      "trigger": "calendly_booking_scheduled",
+      "event_name": "booking_start",
       "tags": [
-        "GA4_Event_Booking",
-        "GoogleAds_Conversion_Booking",
-        "MetaPixel_Lead"
+        "GA4_Event_BookingStart"
       ],
-      "type": "macro_conversion"
+      "type": "funnel_event"
+    },
+    {
+      "event_name": "booking_complete",
+      "tags": [
+        "GA4_Event_BookingComplete",
+        "GoogleAds_Conversion_Booking"
+      ],
+      "type": "primary_conversion"
+    },
+    {
+      "event_name": "generate_lead",
+      "tags": [
+        "GA4_Event_GenerateLead",
+        "GoogleAds_Conversion_Lead"
+      ],
+      "type": "primary_conversion"
+    },
+    {
+      "event_name": "lead_submit",
+      "tags": [
+        "GA4_Event_LeadSubmit"
+      ],
+      "type": "compatibility_event"
     },
     {
       "event_name": "phone_click",
-      "trigger": "click_tel_link",
       "tags": [
-        "GA4_Event_PhoneClick",
-        "GoogleAds_Conversion_PhoneClick"
+        "GA4_Event_PhoneClick"
       ],
-      "type": "micro_conversion"
+      "type": "secondary_conversion"
     },
     {
       "event_name": "whatsapp_click",
-      "trigger": "click_wa_me_link",
       "tags": [
-        "GA4_Event_WhatsAppClick",
-        "GoogleAds_Conversion_WhatsAppClick",
-        "MetaPixel_Contact"
+        "GA4_Event_WhatsAppClick"
       ],
-      "type": "micro_conversion"
+      "type": "secondary_conversion"
+    },
+    {
+      "event_name": "booking_confirmed",
+      "tags": [
+        "GA4_Event_BookingConfirmedLegacy"
+      ],
+      "type": "legacy_compatibility"
     }
-  ]
+  ],
+  "attribution": {
+    "capture": [
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "utm_term",
+      "utm_content"
+    ],
+    "google_click_ids": "handled by Google auto-tagging + Conversion Linker; application stores presence only"
+  }
 }

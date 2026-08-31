@@ -35,6 +35,18 @@ test('trusted Calendly scheduled event carries the real service context into tha
     service_type: 'couples_counseling',
     service_region: 'ashdod',
   });
+
+  const bookingCompleteEvent = await page.evaluate(() => window.dataLayer.find(
+    (event) => event.event === 'booking_complete',
+  ));
+  expect(bookingCompleteEvent).toMatchObject({
+    service_type: 'general_consultation',
+    booking_page_path: '/appointment',
+    entry_page_path: '/appointment',
+    utm_source: 'google',
+    utm_medium: 'cpc',
+    utm_campaign: 'general_booking',
+  });
 });
 
 test('untrusted Calendly-shaped message cannot produce a booking conversion', async ({ page }) => {
@@ -53,9 +65,10 @@ test('untrusted Calendly-shaped message cannot produce a booking conversion', as
     }));
   });
 
-  const bookingCount = await page.evaluate(() => window.dataLayer.filter(
-    (event) => event.event === 'booking_confirmed',
-  ).length);
-  expect(bookingCount).toBe(0);
+  const bookingCounts = await page.evaluate(() => ({
+    legacy: window.dataLayer.filter((event) => event.event === 'booking_confirmed').length,
+    complete: window.dataLayer.filter((event) => event.event === 'booking_complete').length,
+  }));
+  expect(bookingCounts).toEqual({ legacy: 0, complete: 0 });
   await expect(page).toHaveURL(/\/appointment$/);
 });

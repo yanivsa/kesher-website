@@ -4,6 +4,7 @@ import { FiCalendar, FiShield } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { submitContact } from '../../lib/contactApi';
+import { pushAnalyticsEvent } from '../../lib/analytics';
 import styles from './ContactSection.module.css';
 
 const ContactSection: React.FC = () => {
@@ -35,6 +36,13 @@ const ContactSection: React.FC = () => {
         company,
         startedAt: startedAt.current,
       });
+      const leadContext = {
+        service_type: formData.service,
+        lead_type: 'contact_form',
+        cta_location: 'contact_form',
+      };
+      pushAnalyticsEvent('generate_lead', leadContext);
+      pushAnalyticsEvent('lead_submit', leadContext);
       setSubmitStatus('success');
       setFormData({ name: '', email: '', phone: '', service: 'couples', message: '' });
       setCompany('');
