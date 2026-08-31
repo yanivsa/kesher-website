@@ -1,18 +1,27 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-31",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
-    "last_error": null,
-    "next_retry_at": null,
+    "last_error": {
+      "stage": "article",
+      "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new article for the Kesher website for the `2026-08-31` slot, following strict topic, formatting, length, and image pipeline constraints, without altering any existing content. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article answering to the chosen valid subcategory (\"זוגיות בעלייה ורילוקיישן\"). The date is correctly set to `2026-08-31`. Word count is ~830 words, which sits comfortably within the required 700-1,100 range. The agent p…",
+      "retryable": true,
+      "retry_at": "2026-08-31T13:19:11.985090+00:00",
+      "at": "2026-08-31T13:14:11.985127+00:00"
+    },
+    "next_retry_at": "2026-08-31T13:19:11.985090+00:00",
     "run_id": 33370138242,
-    "processed_run_id": null,
+    "processed_run_id": 33370138242,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "JULES_TIMEOUT_SESSION_ACTIVE": 1
+    },
     "attempts": 1,
     "deploy_attempts": 0,
     "last_dispatch_at": "2026-08-31T07:50:16.440033+00:00",
@@ -20,15 +29,33 @@
     "last_worker_result": {
       "schema_version": 1,
       "slot": "2026-08-31",
-      "outcome": "DUPLICATE_ARTICLE_PRS",
-      "retryable": false,
-      "message": "duplicate open article PRs detected: 2",
-      "session_id": "",
+      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "retryable": true,
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new article for the Kesher website for the `2026-08-31` slot, following strict topic, formatting, length, and image pipeline constraints, without altering any existing content. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article answering to the chosen valid subcategory (\"זוגיות בעלייה ורילוקיישן\"). The date is correctly set to `2026-08-31`. Word count is ~830 words, which sits comfortably within the required 700-1,100 range. The agent p…",
+      "session_id": "sessions/9157959808032322046",
       "pr_url": "",
-      "github_run_id": "33355379802",
-      "completed_at": "2026-08-31T03:55:57.565294+00:00"
+      "github_run_id": "33370138242",
+      "completed_at": "2026-08-31T08:32:43.647398+00:00",
+      "diagnostic": {
+        "source": {
+          "name": "sources/github/yanivsa/kesher-website",
+          "owner": "yanivsa",
+          "repo": "kesher-website",
+          "default_branch": "main",
+          "main_available": true
+        },
+        "activity_count": 53,
+        "change_set_count": 49,
+        "change_set_fingerprints": [],
+        "last_agent_message": "",
+        "last_progress": "Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new article for the Kesher website for the `2026-08-31` slot, following strict topic, formatting, length, and image pipeline constraints, without altering any existing content. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article answering to the chosen valid subcategory (\"זוגיות בעלייה ורילוקיישן\"). The date is correctly set to `2026-08-31`. Word count is ~830 words, which sits comfortably within the required 700-1,100 range. The agent p…",
+        "last_description": "",
+        "session_failed_reason": ""
+      }
     },
-    "slot_scoped_duplicate_recovery_applied": true
+    "slot_scoped_duplicate_recovery_applied": true,
+    "last_jules_session_id": "sessions/9157959808032322046",
+    "last_failed_run_id": 33370138242
   },
   "video": {
     "attempt_count": 0,
@@ -120,7 +147,14 @@
       "archived_at": "2026-08-30T22:48:37.691529+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new article for the Kesher website for the `2026-08-31` slot, following strict topic, formatting, length, and image pipeline constraints, without altering any existing content. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article answering to the chosen valid subcategory (\"זוגיות בעלייה ורילוקיישן\"). The date is correctly set to `2026-08-31`. Word count is ~830 words, which sits comfortably within the required 700-1,100 range. The agent p…",
+    "retryable": true,
+    "retry_at": "2026-08-31T13:19:11.985090+00:00",
+    "at": "2026-08-31T13:14:11.985127+00:00"
+  },
   "history": [
     {
       "at": "2026-08-26T11:15:26.876900+00:00",
@@ -874,9 +908,22 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-08-31T13:14:11.985132+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new article for the Kesher website for the `2026-08-31` slot, following strict topic, formatting, length, and image pipeline constraints, without altering any existing content. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article answering to the chosen valid subcategory (\"זוגיות בעלייה ורילוקיישן\"). The date is correctly set to `2026-08-31`. Word count is ~830 words, which sits comfortably within the required 700-1,100 range. The agent p…",
+        "retry_at": "2026-08-31T13:19:11.985090+00:00",
+        "failure_streak": 1,
+        "run_id": 33370138242,
+        "session_id": "sessions/9157959808032322046"
+      }
     }
   ],
-  "updated_at": "2026-08-31T07:54:06.073179+00:00",
+  "updated_at": "2026-08-31T13:14:11.985138+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
