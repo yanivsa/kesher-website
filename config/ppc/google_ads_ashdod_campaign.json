@@ -72,7 +72,34 @@
         "לפני החלטות כבדות: בירור זוגי רגוע וממוקד. מרחב פרטי ומכבד באשדוד או אונליין.",
         "מזהים איפה השיחה מסתבכת ויוצאים עם כלים מעשיים. ללא התחייבות לתהליך ארוך."
       ],
-      "final_url": "https://kesher.saharoni.com/ashdod"
+      "final_url": "https://kesher.saharoni.com/services/couples/ashdod?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_Ashdod_V1&utm_content=Couples_Counseling_Ashdod_Core"
     }
-  ]
+  ],
+  "extensions": {
+    "sitelinks": [
+      {
+        "title": "קליניקה באשדוד",
+        "url": "https://kesher.saharoni.com/services/couples/ashdod"
+      },
+      {
+        "title": "ייעוץ במשבר",
+        "url": "https://kesher.saharoni.com/services/couples/crisis"
+      },
+      {
+        "title": "בירור לפני פרידה",
+        "url": "https://kesher.saharoni.com/services/couples/before-separation"
+      },
+      {
+        "title": "קביעת פגישה",
+        "url": "https://kesher.saharoni.com/appointment"
+      }
+    ],
+    "callouts": [
+      "50 דקות לפגישה",
+      "דיסקרטיות מלאה",
+      "קליניקה באשדוד או בזום",
+      "ללא התחייבות לתהליך"
+    ],
+    "call_phone": "+972-50-2763802"
+  }
 }
