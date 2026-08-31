@@ -35,7 +35,7 @@
 
 - Google Search: נוסחו כותרות ותיאורים סביב כוונה מקומית, דפוסי ריב ובירור לפני החלטה כבדה.
 - Meta: נוסח primary text שאינו מבטיח תוצאה ואינו מייחס טענה למתחרים.
-- CTA של Meta מוגדר `LEARN_MORE`; אין שימוש ב-CTA לא מתאים מסוג `BOOK_TRAVEL`.
+- CTA של Meta מוגדר `CONTACT_US`; אין שימוש ב-CTA לא מתאים מסוג `BOOK_TRAVEL`.
 
 ## מגבלות evidence
 
