@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-31",
-  "status": "article_deploying",
+  "status": "video_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -62,11 +62,14 @@
     "slug": "aliyah-couples-cultural-gaps-identity",
     "title": "מדברים בשתי שפות: כיצד להתמודד עם פערי תרבות ושפה בזוגיות בעלייה",
     "url": "https://kesher.saharoni.com/blog/aliyah-couples-cultural-gaps-identity",
-    "published_date": "2026-08-31"
+    "published_date": "2026-08-31",
+    "live": true,
+    "live_verified_at": "2026-08-31T19:53:47.816876+00:00",
+    "next_deploy_retry_at": null
   },
   "video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -75,8 +78,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
-    "resume_dispatches": 0
+    "attempts": 1,
+    "resume_dispatches": 0,
+    "last_dispatch_at": "2026-08-31T19:53:54.631579+00:00"
   },
   "backlog": [
     {
@@ -970,9 +974,25 @@
       "from": "article_pr_open",
       "to": "article_deploying",
       "reason": "deployment already active"
+    },
+    {
+      "at": "2026-08-31T19:53:47.816895+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-08-31T19:53:54.631585+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-08-31T19:49:50.933117+00:00",
+  "updated_at": "2026-08-31T19:53:54.631592+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
