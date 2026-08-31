@@ -1,26 +1,21 @@
 {
   "schema_version": 3,
   "cycle": "2026-08-31",
-  "status": "blocked",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 3,
-    "status": "exhausted",
-    "last_error": {
-      "stage": "article",
-      "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "message": "article exhausted 3 total controller dispatch attempts",
-      "at": "2026-08-31T07:32:40.111092+00:00"
-    },
+    "attempt_count": 1,
+    "status": "running",
+    "last_error": null,
     "next_retry_at": null,
-    "run_id": 33355379802,
-    "processed_run_id": 33355379802,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 3,
+    "attempts": 1,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-08-31T03:55:27.222838+00:00",
+    "last_dispatch_at": "2026-08-31T07:50:16.440033+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -32,7 +27,8 @@
       "pr_url": "",
       "github_run_id": "33355379802",
       "completed_at": "2026-08-31T03:55:57.565294+00:00"
-    }
+    },
+    "slot_scoped_duplicate_recovery_applied": true
   },
   "video": {
     "attempt_count": 0,
@@ -124,12 +120,7 @@
       "archived_at": "2026-08-30T22:48:37.691529+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "article exhausted 3 total controller dispatch attempts",
-    "at": "2026-08-31T07:32:40.111092+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-26T11:15:26.876900+00:00",
@@ -864,9 +855,28 @@
       "details": {
         "message": "article exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-08-31T07:50:09.822699+00:00",
+      "from": "blocked",
+      "to": "article_needed",
+      "reason": "slot_scoped_duplicate_guard_recovery",
+      "details": {
+        "previous_worker_outcome": "DUPLICATE_ARTICLE_PRS",
+        "attempt_budget_reset": true
+      }
+    },
+    {
+      "at": "2026-08-31T07:50:16.440039+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-08-31T07:32:40.111113+00:00",
+  "updated_at": "2026-08-31T07:50:16.440082+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
