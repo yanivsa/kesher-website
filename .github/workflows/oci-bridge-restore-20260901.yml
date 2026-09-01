@@ -83,7 +83,6 @@ jobs:
         run: |
           set -euo pipefail
           auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
-          version_id="$(cat /tmp/candidate-id)"
           python3 - <<'PY'
           import json
           from pathlib import Path
@@ -111,14 +110,79 @@ jobs:
           print('OCI_BRIDGE_KNOWN_GOOD_VERSION_RESTORED=true')
           PY
 
-      - name: Refresh control token and verify encrypted bundle decrypts
+      - name: Refresh control token as version and deploy it
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
           token="$(openssl rand -hex 32)"
-          printf '%s' "$token" | npx --yes wrangler@4.100.0 secret put CONTROL_TOKEN --name "$BRIDGE_NAME" >/dev/null
+          printf '%s' "$token" > /tmp/control-token
+          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          printf '%s' "$token" | npx --yes wrangler@4.100.0 versions secret put CONTROL_TOKEN \
+            --name "$BRIDGE_NAME" --message 'Refresh control token on restored OCI bridge' >/tmp/version-secret.log
+          curl -fsS -H "$auth" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$BRIDGE_NAME/versions?deployable=true" \
+            -o /tmp/versions-after-secret.json
+          BEFORE="$before" python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def dt(value):
+              return datetime.fromisoformat(value.replace('Z', '+00:00')).astimezone(timezone.utc)
+
+          payload=json.load(open('/tmp/versions-after-secret.json'))
+          assert payload.get('success'), payload.get('errors')
+          result=payload.get('result') or {}
+          rows=(result.get('items') or []) if isinstance(result,dict) else result
+          assert isinstance(rows,list), 'CLOUDFLARE_VERSIONS_ITEMS_NOT_LIST_AFTER_SECRET'
+          before=dt(os.environ['BEFORE'])
+          candidates=[]
+          for row in rows:
+              if not isinstance(row,dict) or not row.get('id'):
+                  continue
+              created=((row.get('metadata') or {}).get('created_on')) or row.get('created_on')
+              if created and dt(created) >= before:
+                  candidates.append((dt(created),row))
+          assert candidates, 'NO_VERSION_CREATED_BY_VERSIONED_SECRET_PUT'
+          created,row=max(candidates,key=lambda x:x[0])
+          Path('/tmp/token-version-id').write_text(row['id'])
+          print('OCI_BRIDGE_TOKEN_VERSION_CREATED=true')
+          print('OCI_BRIDGE_TOKEN_VERSION_NUMBER='+str(row.get('number') or 'unknown'))
+          PY
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          version_id=Path('/tmp/token-version-id').read_text().strip()
+          body={
+            'strategy':'percentage',
+            'versions':[{'version_id':version_id,'percentage':100}],
+            'annotations':{'workers/message':'Deploy restored OCI bridge with refreshed control token'}
+          }
+          Path('/tmp/token-deploy.json').write_text(json.dumps(body,separators=(',',':')))
+          PY
+          code="$(curl -sS -X POST -H "$auth" -H 'Content-Type: application/json' \
+            --data-binary @/tmp/token-deploy.json \
+            -o /tmp/token-deploy-response.json -w '%{http_code}' \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$BRIDGE_NAME/deployments?force=true")"
+          python3 - "$code" <<'PY'
+          import json,sys
+          code=int(sys.argv[1]); d=json.load(open('/tmp/token-deploy-response.json'))
+          if not (200 <= code < 300 and d.get('success')):
+              errors=[{'code':e.get('code'),'message':e.get('message')} for e in (d.get('errors') or []) if isinstance(e,dict)]
+              raise SystemExit(f'CLOUDFLARE_TOKEN_VERSION_DEPLOY_FAILED http={code} errors={errors}')
+          print('OCI_BRIDGE_TOKEN_VERSION_DEPLOYED=true')
+          PY
+
+      - name: Verify encrypted bundle decrypts
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          token="$(cat /tmp/control-token)"
           subdomain="$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
             "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" \
             | python3 -c 'import json,sys;print(json.load(sys.stdin)["result"]["subdomain"])')"
@@ -130,10 +194,26 @@ jobs:
               --data-binary @.github/oci-bootstrap/encrypted-oci-bundle.json "$url")"
             [ "$code" = 200 ] && break
             [ "$code" = 403 ] && { sleep 5; continue; }
-            echo "OCI bridge verification returned HTTP $code" >&2
-            exit 1
+            break
           done
-          [ "$code" = 200 ] || { echo "OCI bridge control token did not propagate" >&2; exit 1; }
+          if [ "$code" != 200 ]; then
+            echo "OCI bridge verification returned HTTP $code; restoring known-good version" >&2
+            auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+            python3 - <<'PY'
+            import json
+            from pathlib import Path
+            version_id=Path('/tmp/candidate-id').read_text().strip()
+            Path('/tmp/fallback-deploy.json').write_text(json.dumps({
+              'strategy':'percentage',
+              'versions':[{'version_id':version_id,'percentage':100}],
+              'annotations':{'workers/message':'Safety rollback after control-token verification failure'}
+            },separators=(',',':')))
+            PY
+            curl -fsS -X POST -H "$auth" -H 'Content-Type: application/json' \
+              --data-binary @/tmp/fallback-deploy.json \
+              "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$BRIDGE_NAME/deployments?force=true" >/dev/null
+            exit 1
+          fi
           python3 - <<'PY'
           import json
           d=json.load(open('/tmp/decrypted.json'))
@@ -143,4 +223,4 @@ jobs:
 
       - name: Cleanup
         if: ${{ always() }}
-        run: rm -f /tmp/versions.json /tmp/candidate-id /tmp/deploy.json /tmp/deploy-response.json /tmp/decrypted.json
+        run: rm -f /tmp/versions.json /tmp/candidate-id /tmp/deploy.json /tmp/deploy-response.json /tmp/control-token /tmp/version-secret.log /tmp/versions-after-secret.json /tmp/token-version-id /tmp/token-deploy.json /tmp/token-deploy-response.json /tmp/decrypted.json /tmp/fallback-deploy.json
