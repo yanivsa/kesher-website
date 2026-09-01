@@ -137,6 +137,7 @@ const Header: React.FC = () => {
               </button>
             </div>
             <Link to="/about" onClick={closeMenu}>אודות</Link>
+            <Link to="/now" onClick={closeMenu}>עכשיו</Link>
             <div className={styles.dropdown}>
               <button type="button" className={styles.navLink}>שירותים</button>
               <div className={styles.dropdownContent}>
