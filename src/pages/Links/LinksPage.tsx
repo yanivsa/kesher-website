@@ -1,6 +1,5 @@
 import React from 'react';
 import MetaTags from '../../components/SEO/MetaTags';
-import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './LinksPage.module.css';
 
 const resources = [
