@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-01",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -10,18 +10,18 @@
       "code": "COMPLETED_WITHOUT_PR",
       "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
       "retryable": true,
-      "retry_at": "2026-09-01T08:23:15.932756+00:00",
-      "at": "2026-09-01T08:18:15.932770+00:00"
+      "retry_at": "2026-09-01T10:04:03.211957+00:00",
+      "at": "2026-09-01T09:49:03.211975+00:00"
     },
-    "next_retry_at": null,
+    "next_retry_at": "2026-09-01T10:04:03.211957+00:00",
     "run_id": 33488709183,
-    "processed_run_id": 33482830454,
+    "processed_run_id": 33488709183,
     "provider_id": null,
     "failure_fingerprint": "COMPLETED_WITHOUT_PR",
-    "same_failure_streak": 1,
+    "same_failure_streak": 2,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 2,
-      "COMPLETED_WITHOUT_PR": 1
+      "COMPLETED_WITHOUT_PR": 2
     },
     "attempts": 4,
     "deploy_attempts": 0,
@@ -33,10 +33,10 @@
       "outcome": "COMPLETED_WITHOUT_PR",
       "retryable": true,
       "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
-      "session_id": "sessions/17753174176638167845",
+      "session_id": "sessions/5987084725949200775",
       "pr_url": "",
-      "github_run_id": "33482830454",
-      "completed_at": "2026-09-01T08:07:15.712838+00:00",
+      "github_run_id": "33488709183",
+      "completed_at": "2026-09-01T09:21:56.318388+00:00",
       "diagnostic": {
         "source": {
           "name": "sources/github/yanivsa/kesher-website",
@@ -45,8 +45,8 @@
           "default_branch": "main",
           "main_available": true
         },
-        "activity_count": 34,
-        "change_set_count": 31,
+        "activity_count": 63,
+        "change_set_count": 60,
         "change_set_fingerprints": [],
         "last_agent_message": "",
         "last_progress": "All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
@@ -54,8 +54,8 @@
         "session_failed_reason": ""
       }
     },
-    "last_jules_session_id": "sessions/17753174176638167845",
-    "last_failed_run_id": 33482830454,
+    "last_jules_session_id": "sessions/5987084725949200775",
+    "last_failed_run_id": 33488709183,
     "resume_dispatches": 3
   },
   "video": {
@@ -218,7 +218,14 @@
       "archived_at": "2026-08-31T21:01:56.978470+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "COMPLETED_WITHOUT_PR",
+    "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
+    "retryable": true,
+    "retry_at": "2026-09-01T10:04:03.211957+00:00",
+    "at": "2026-09-01T09:49:03.211975+00:00"
+  },
   "history": [
     {
       "at": "2026-08-26T19:45:31.798577+00:00",
@@ -1032,9 +1039,22 @@
       "details": {
         "attempt": 4
       }
+    },
+    {
+      "at": "2026-09-01T09:49:03.211978+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "COMPLETED_WITHOUT_PR",
+      "details": {
+        "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
+        "retry_at": "2026-09-01T10:04:03.211957+00:00",
+        "failure_streak": 2,
+        "run_id": 33488709183,
+        "session_id": "sessions/5987084725949200775"
+      }
     }
   ],
-  "updated_at": "2026-09-01T09:06:00.331881+00:00",
+  "updated_at": "2026-09-01T09:49:03.211982+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
