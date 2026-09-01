@@ -199,16 +199,8 @@ jobs:
           if [ "$code" != 200 ]; then
             echo "OCI bridge verification returned HTTP $code; restoring known-good version" >&2
             auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
-            python3 - <<'PY'
-            import json
-            from pathlib import Path
-            version_id=Path('/tmp/candidate-id').read_text().strip()
-            Path('/tmp/fallback-deploy.json').write_text(json.dumps({
-              'strategy':'percentage',
-              'versions':[{'version_id':version_id,'percentage':100}],
-              'annotations':{'workers/message':'Safety rollback after control-token verification failure'}
-            },separators=(',',':')))
-            PY
+            candidate="$(cat /tmp/candidate-id)"
+            CANDIDATE_ID="$candidate" python3 -c 'import json,os; open("/tmp/fallback-deploy.json","w").write(json.dumps({"strategy":"percentage","versions":[{"version_id":os.environ["CANDIDATE_ID"],"percentage":100}],"annotations":{"workers/message":"Safety rollback after control-token verification failure"}},separators=(",",":")))'
             curl -fsS -X POST -H "$auth" -H 'Content-Type: application/json' \
               --data-binary @/tmp/fallback-deploy.json \
               "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$BRIDGE_NAME/deployments?force=true" >/dev/null
