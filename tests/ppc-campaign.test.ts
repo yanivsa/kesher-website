@@ -28,12 +28,16 @@ interface GtmConfig {
   }>;
 }
 
+const expectedLandingPathByFile: Record<string, string> = {
+  'google_ads_ashdod_campaign.json': '/couples-counseling-ashdod',
+  'google_ads_crisis_campaign.json': '/services/couples/crisis',
+  'google_ads_before_separation_campaign.json': '/services/couples/before-separation',
+};
+
+const allowedSearchLandingPaths = new Set(Object.values(expectedLandingPathByFile));
+
 describe('PPC Campaign Configurations & Conversion Tracking', () => {
-  const jsonFiles = [
-    'google_ads_ashdod_campaign.json',
-    'google_ads_crisis_campaign.json',
-    'google_ads_before_separation_campaign.json',
-  ];
+  const jsonFiles = Object.keys(expectedLandingPathByFile);
 
   jsonFiles.forEach((fileName) => {
     describe(`JSON Config: ${fileName}`, () => {
@@ -63,12 +67,13 @@ describe('PPC Campaign Configurations & Conversion Tracking', () => {
           const url = new URL(ad.final_url);
           expect(url.origin).toBe('https://kesher.saharoni.com');
           expect(url.pathname.endsWith('/')).toBe(false);
-          expect(url.pathname).toMatch(/^\/services\/couples\/(ashdod|crisis|before-separation)$/);
+          expect(url.pathname).toBe(expectedLandingPathByFile[fileName]);
 
           expect(url.searchParams.get('utm_source')).toBe('google');
           expect(url.searchParams.get('utm_medium')).toBe('cpc');
           expect(url.searchParams.get('utm_campaign')).toBeTruthy();
           expect(url.searchParams.get('utm_content')).toBeTruthy();
+          expect(url.searchParams.get('utm_term')).toBe('{keyword}');
         });
       });
     });
@@ -95,7 +100,7 @@ describe('PPC Campaign Configurations & Conversion Tracking', () => {
       expect(campaigns).toContain('Search_CouplesCounseling_BeforeSeparation_V1');
     });
 
-    it('validates responsive search ad headlines, descriptions, and canonical Final URLs', () => {
+    it('validates responsive search ad headlines, descriptions, canonical Final URLs, and keyword attribution', () => {
       const rsaRows = lines.slice(1).filter((l) => l.includes('Responsive search ad'));
       expect(rsaRows.length).toBe(3);
 
@@ -111,10 +116,12 @@ describe('PPC Campaign Configurations & Conversion Tracking', () => {
         const url = new URL(finalUrlStr);
         expect(url.origin).toBe('https://kesher.saharoni.com');
         expect(url.pathname.endsWith('/')).toBe(false);
-        expect(url.pathname).toMatch(/^\/services\/couples\/(ashdod|crisis|before-separation)$/);
+        expect(allowedSearchLandingPaths.has(url.pathname)).toBe(true);
         expect(url.searchParams.get('utm_source')).toBe('google');
         expect(url.searchParams.get('utm_medium')).toBe('cpc');
         expect(url.searchParams.get('utm_campaign')).toBeTruthy();
+        expect(url.searchParams.get('utm_content')).toBeTruthy();
+        expect(url.searchParams.get('utm_term')).toBe('{keyword}');
       });
     });
   });
