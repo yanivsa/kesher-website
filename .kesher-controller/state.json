@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-01",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -13,7 +13,7 @@
       "retry_at": "2026-09-01T05:51:52.920062+00:00",
       "at": "2026-09-01T05:36:52.920082+00:00"
     },
-    "next_retry_at": "2026-09-01T05:51:52.920062+00:00",
+    "next_retry_at": null,
     "run_id": 33468239656,
     "processed_run_id": 33468239656,
     "provider_id": null,
@@ -22,9 +22,9 @@
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 2
     },
-    "attempts": 2,
+    "attempts": 3,
     "deploy_attempts": 0,
-    "last_dispatch_at": "2026-09-01T04:00:29.156603+00:00",
+    "last_dispatch_at": "2026-09-01T07:35:05.790377+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -55,7 +55,7 @@
     },
     "last_jules_session_id": "sessions/8478404235247107172",
     "last_failed_run_id": 33468239656,
-    "resume_dispatches": 1
+    "resume_dispatches": 2
   },
   "video": {
     "attempt_count": 0,
@@ -217,14 +217,7 @@
       "archived_at": "2026-08-31T21:01:56.978470+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I successfully wrote an article about dating app fatigue and setting boundaries. The article passed all automated CI tests (`npm run check`, `test:content`, `test:e2e`), meaning it technically satisfies the publishability constraints (like word count and heading count) and didn't trigger any automated bans. However, the code review flagged two main issues: 1. **Unrelated edit in `llms-full.txt`:** I inadvertently modified an existing section that injected a banned phrase (\"מרחב בטוח\"). This shouldn't have happened as I simply ran `npm run generate` to build it. I should revert that change or regenerate it properly to isolate just my new article. 2. **Editorial structural constraint violation:** The policy says: \"אין להשתמש בכל מאמר באותה נוסחה של משבר דרמטי, הסבר רגשי, רשימת כ…",
-    "retryable": true,
-    "retry_at": "2026-09-01T05:51:52.920062+00:00",
-    "at": "2026-09-01T05:36:52.920082+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-26T19:45:31.798577+00:00",
@@ -998,9 +991,18 @@
         "run_id": 33468239656,
         "session_id": "sessions/8478404235247107172"
       }
+    },
+    {
+      "at": "2026-09-01T07:35:05.790384+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 3
+      }
     }
   ],
-  "updated_at": "2026-09-01T05:36:52.920089+00:00",
+  "updated_at": "2026-09-01T07:35:05.790391+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
