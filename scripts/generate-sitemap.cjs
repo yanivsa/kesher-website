@@ -5,6 +5,8 @@ const { ROOT, STATIC_ROUTES, isPublishable, blogRoute } = require('./content-pol
 const legalRoutes = new Set(['/accessibility', '/privacy', '/terms']);
 const serviceRoutes = new Set([
   '/about',
+  '/now',
+  '/friends',
   '/lectures',
   '/contact',
   '/appointment',

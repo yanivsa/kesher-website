@@ -22,8 +22,8 @@ const Footer: React.FC = () => {
           <h4>ניווט מהיר</h4>
           <Link to="/">דף הבית</Link>
           <Link to="/about">אודות</Link>
-          <Link to="/now">מה אני עושה עכשיו</Link>
-          <Link to="/links">קישורים ומקורות מקצועיים</Link>
+          <Link to="/now">מה אני עושה עכשיו (Now)</Link>
+          <Link to="/friends">חברים ומשאבים (Friends)</Link>
           <Link to="/lectures">הרצאות וסדנאות</Link>
           <Link to="/services/mediation">גישור</Link>
           <Link to="/services/premarital-first-year">הכנה לנישואים והשנה הראשונה</Link>
@@ -43,7 +43,9 @@ const Footer: React.FC = () => {
           <p>{`מיקום: ${SITE_CONFIG.contact.location}`}</p>
         </div>
         <div className={styles.legal}>
-          <h4>מידע משפטי</h4>
+          <h4>מידע משפטי ורשת</h4>
+          <Link to="/now">עמוד Now</Link>
+          <Link to="/friends">דף שותפים וקישורים</Link>
           <Link to="/accessibility">הצהרת נגישות</Link>
           <Link to="/privacy">מדיניות פרטיות</Link>
           <Link to="/terms">תנאי שימוש</Link>

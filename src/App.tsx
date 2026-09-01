@@ -55,13 +55,13 @@ const blogList = loadable(() => import('./pages/Blog/BlogList'));
 const blogPost = loadable(() => import('./pages/Blog/BlogPost'));
 const faq = loadable(() => import('./pages/FAQ/FAQ'));
 const about = loadable(() => import('./pages/About/AboutPage'));
-const now = loadable(() => import('./pages/Now/NowPage'));
-const links = loadable(() => import('./pages/Links/LinksPage'));
 const contact = loadable(() => import('./pages/Contact/ContactPage'));
 const appointment = loadable(() => import('./pages/Appointment/AppointmentPage'));
 const accessibility = loadable(() => import('./pages/Legal/AccessibilityPage'));
 const privacy = loadable(() => import('./pages/Legal/PrivacyPolicy'));
 const terms = loadable(() => import('./pages/Legal/TermsOfUse'));
+const now = loadable(() => import('./pages/Now/NowPage'));
+const friends = loadable(() => import('./pages/Friends/FriendsPage'));
 const lectures = loadable(() => import('./pages/Lectures/LecturesPage'));
 const couplesCounselingAshdod = loadable(() => import('./pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage'));
 const couplesCrisis = loadable(() => import('./pages/Landing/CouplesCrisis/CouplesCrisisPage'));
@@ -89,7 +89,7 @@ const { Page: BlogPost } = blogPost;
 const { Page: FAQ } = faq;
 const { Page: AboutPage } = about;
 const { Page: NowPage } = now;
-const { Page: LinksPage } = links;
+const { Page: FriendsPage } = friends;
 const { Page: LecturesPage } = lectures;
 const { Page: ContactPage } = contact;
 const { Page: AppointmentPage } = appointment;
@@ -114,7 +114,8 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/thank-you-contact\/?$/, thankYouContact.preload],
   [/^\/about\/?$/, about.preload],
   [/^\/now\/?$/, now.preload],
-  [/^\/links\/?$/, links.preload],
+  [/^\/friends\/?$/, friends.preload],
+  [/^\/links\/?$/, friends.preload],
   [/^\/lectures\/?$/, lectures.preload],
   [/^\/services\/couples\/?$/, couples.preload],
   [/^\/services\/premarital-first-year\/?$/, premarital.preload],
@@ -159,7 +160,8 @@ function App() {
           <Route path="/thank-you-contact" element={<ThankYouContactPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/now" element={<NowPage />} />
-          <Route path="/links" element={<LinksPage />} />
+          <Route path="/friends" element={<FriendsPage />} />
+          <Route path="/links" element={<FriendsPage />} />
           <Route path="/lectures" element={<LecturesPage />} />
           <Route path="/services/couples" element={<CouplesCounseling />} />
           <Route path="/services/premarital-first-year" element={<PremaritalPage />} />

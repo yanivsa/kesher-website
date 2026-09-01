@@ -48,5 +48,7 @@ describe('sitemap generation', () => {
 
     expect(homepage).toBeDefined();
     expect(homepage).not.toContain('<lastmod>');
+    expect(sitemap).toContain('<loc>https://kesher.saharoni.com/now</loc>');
+    expect(sitemap).toContain('<loc>https://kesher.saharoni.com/friends</loc>');
   });
 });

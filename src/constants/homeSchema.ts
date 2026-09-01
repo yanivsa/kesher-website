@@ -59,6 +59,10 @@ export const homeSchema = {
       url: SITE_CONFIG.url,
       telephone: SITE_CONFIG.contact.phone,
       description: SITE_CONFIG.description,
+      sameAs: [
+        SITE_CONFIG.links.facebook,
+        SITE_CONFIG.links.instagram,
+      ],
       image: `${SITE_CONFIG.url}/images/shira-saharoni.webp`,
       priceRange: '$$',
       areaServed: [
@@ -115,6 +119,10 @@ export const homeSchema = {
       name: SITE_CONFIG.author,
       alternateName: 'Shira Saharoni',
       url: `${SITE_CONFIG.url}/about`,
+      sameAs: [
+        SITE_CONFIG.links.facebook,
+        SITE_CONFIG.links.instagram,
+      ],
       image: `${SITE_CONFIG.url}/images/shira-saharoni.webp`,
       jobTitle: ['יועצת זוגית', 'מנחת הורים', 'מגשרת מוסמכת'],
       worksFor: { '@id': `${SITE_CONFIG.url}/#business` },
