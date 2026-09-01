@@ -55,6 +55,8 @@ const blogList = loadable(() => import('./pages/Blog/BlogList'));
 const blogPost = loadable(() => import('./pages/Blog/BlogPost'));
 const faq = loadable(() => import('./pages/FAQ/FAQ'));
 const about = loadable(() => import('./pages/About/AboutPage'));
+const now = loadable(() => import('./pages/Now/NowPage'));
+const links = loadable(() => import('./pages/Links/LinksPage'));
 const contact = loadable(() => import('./pages/Contact/ContactPage'));
 const appointment = loadable(() => import('./pages/Appointment/AppointmentPage'));
 const accessibility = loadable(() => import('./pages/Legal/AccessibilityPage'));
@@ -86,6 +88,8 @@ const { Page: BlogList } = blogList;
 const { Page: BlogPost } = blogPost;
 const { Page: FAQ } = faq;
 const { Page: AboutPage } = about;
+const { Page: NowPage } = now;
+const { Page: LinksPage } = links;
 const { Page: LecturesPage } = lectures;
 const { Page: ContactPage } = contact;
 const { Page: AppointmentPage } = appointment;
@@ -109,6 +113,8 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/thank-you-booked\/?$/, thankYouBooked.preload],
   [/^\/thank-you-contact\/?$/, thankYouContact.preload],
   [/^\/about\/?$/, about.preload],
+  [/^\/now\/?$/, now.preload],
+  [/^\/links\/?$/, links.preload],
   [/^\/lectures\/?$/, lectures.preload],
   [/^\/services\/couples\/?$/, couples.preload],
   [/^\/services\/premarital-first-year\/?$/, premarital.preload],
@@ -152,6 +158,8 @@ function App() {
           <Route path="/thank-you-booked" element={<ThankYouBookedPage />} />
           <Route path="/thank-you-contact" element={<ThankYouContactPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/now" element={<NowPage />} />
+          <Route path="/links" element={<LinksPage />} />
           <Route path="/lectures" element={<LecturesPage />} />
           <Route path="/services/couples" element={<CouplesCounseling />} />
           <Route path="/services/premarital-first-year" element={<PremaritalPage />} />
