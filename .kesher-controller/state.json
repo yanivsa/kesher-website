@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-01",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1106,31 +1106,32 @@
         "attempt": 2,
         "pr_number": 616
       }
+    },
+    {
+      "at": "2026-09-01T11:25:47.189441+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "article PR has trusted image and remains authoritative"
     }
   ],
-  "updated_at": "2026-09-01T11:19:54.201122+00:00",
+  "updated_at": "2026-09-01T11:25:47.189458+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "running",
-    "last_error": {
-      "stage": "image",
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 33500960809 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-09-01T11:17:27.187163+00:00",
-      "at": "2026-09-01T11:12:27.187191+00:00"
-    },
+    "status": "complete",
+    "last_error": null,
     "next_retry_at": null,
     "run_id": 33501930781,
     "processed_run_id": 33500960809,
-    "provider_id": null,
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
+    "provider_id": "Local",
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 1
     },
     "last_dispatch_at": "2026-09-01T11:19:54.201092+00:00",
     "last_run_conclusion": "success",
-    "last_failed_run_id": 33500960809
+    "last_failed_run_id": 33500960809,
+    "artifact_sha256": "189ba412b357e237eb4c3a3239bf03226ea4d5f55a9da9853b29bb1ed50b0d12",
+    "source_id": "local://public/images/generated/blog/relocation-career-loss-and-dependence.jpg"
   }
 }
