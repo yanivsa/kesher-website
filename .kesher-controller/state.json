@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-01",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -225,12 +225,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-26T22:16:14.808447+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
     {
       "at": "2026-08-26T22:16:46.076535+00:00",
       "from": "article_needed",
@@ -1140,26 +1134,25 @@
         "attempt": 3,
         "pr_number": 616
       }
+    },
+    {
+      "at": "2026-09-01T11:59:47.527487+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "article PR has trusted image and remains authoritative"
     }
   ],
-  "updated_at": "2026-09-01T11:55:50.730873+00:00",
+  "updated_at": "2026-09-01T11:59:47.527504+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "running",
-    "last_error": {
-      "stage": "image",
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 33501930781 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-09-01T11:55:25.307907+00:00",
-      "at": "2026-09-01T11:50:25.307934+00:00"
-    },
+    "status": "complete",
+    "last_error": null,
     "next_retry_at": null,
     "run_id": 33504978751,
     "processed_run_id": 33501930781,
     "provider_id": "Local",
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 2
     },
