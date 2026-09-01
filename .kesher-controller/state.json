@@ -59,8 +59,8 @@
     "resume_dispatches": 4,
     "pr_number": 616,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/616",
-    "merge_dispatch_at": "2026-09-01T12:17:58.455329+00:00",
-    "merge_dispatch_count": 2,
+    "merge_dispatch_at": "2026-09-01T12:57:10.540876+00:00",
+    "merge_dispatch_count": 3,
     "merge_image_attempt_count": 3
   },
   "video": {
@@ -1142,7 +1142,7 @@
       "reason": "article PR has trusted image and remains authoritative"
     }
   ],
-  "updated_at": "2026-09-01T12:30:11.617985+00:00",
+  "updated_at": "2026-09-01T12:57:09.895235+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
