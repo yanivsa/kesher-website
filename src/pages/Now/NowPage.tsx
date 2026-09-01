@@ -17,6 +17,7 @@ const schemaData = {
     '@id': `${SITE_CONFIG.url}/#person`,
     name: SITE_CONFIG.author,
     alternateName: 'Shira Saharoni',
+    sameAs: [SITE_CONFIG.links.facebook, SITE_CONFIG.links.instagram],
   },
 };
 
