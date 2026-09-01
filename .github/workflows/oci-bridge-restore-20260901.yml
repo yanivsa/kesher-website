@@ -1,0 +1,132 @@
+name: Restore OCI Bridge Known-Good Version
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/oci-bridge-restore-20260901.yml
+
+permissions:
+  contents: read
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BRIDGE_NAME: yanivsa-oci-bootstrap
+      KNOWN_GOOD_START: '2026-09-01T08:18:30Z'
+      ACCIDENTAL_ROTATION_AT: '2026-09-01T09:01:08Z'
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          ref: main
+
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 22
+
+      - name: Select last known-good bridge version
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          curl -fsS -H "$auth" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$BRIDGE_NAME/versions?per_page=100&page=1" \
+            -o /tmp/versions.json
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def dt(value):
+              return datetime.fromisoformat(value.replace('Z', '+00:00')).astimezone(timezone.utc)
+
+          payload = json.load(open('/tmp/versions.json'))
+          assert payload.get('success'), payload.get('errors')
+          start = dt(os.environ['KNOWN_GOOD_START'])
+          cutoff = dt(os.environ['ACCIDENTAL_ROTATION_AT'])
+          candidates = []
+          for row in payload.get('result') or []:
+              created = ((row.get('metadata') or {}).get('created_on'))
+              if not created:
+                  continue
+              created_dt = dt(created)
+              if start <= created_dt < cutoff and row.get('id'):
+                  candidates.append((created_dt, row))
+          assert candidates, 'NO_KNOWN_GOOD_BRIDGE_VERSION_IN_PROVEN_WINDOW'
+          created_dt, row = max(candidates, key=lambda x: x[0])
+          Path('/tmp/candidate-id').write_text(row['id'])
+          print('OCI_BRIDGE_RESTORE_CANDIDATE_VERSION='+str(row.get('number') or 'unknown'))
+          print('OCI_BRIDGE_RESTORE_CANDIDATE_CREATED='+created_dt.isoformat())
+          PY
+
+      - name: Restore known-good Worker version
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          version_id="$(cat /tmp/candidate-id)"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          version_id=Path('/tmp/candidate-id').read_text().strip()
+          body={
+            'strategy':'percentage',
+            'versions':[{'version_id':version_id,'percentage':100}],
+            'annotations':{
+              'workers/message':'Restore OCI bridge version proven good before accidental 2026-09-01 key rotation',
+              'workers/triggered_by':'manual-recovery'
+            }
+          }
+          Path('/tmp/deploy.json').write_text(json.dumps(body,separators=(',',':')))
+          PY
+          curl -fsS -X POST -H "$auth" -H 'Content-Type: application/json' \
+            --data-binary @/tmp/deploy.json \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$BRIDGE_NAME/deployments?force=true" \
+            -o /tmp/deploy-response.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/deploy-response.json'))
+          assert d.get('success'), d.get('errors')
+          print('OCI_BRIDGE_KNOWN_GOOD_VERSION_RESTORED=true')
+          PY
+
+      - name: Refresh control token and verify encrypted bundle decrypts
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          token="$(openssl rand -hex 32)"
+          printf '%s' "$token" | npx --yes wrangler@4.100.0 secret put CONTROL_TOKEN --name "$BRIDGE_NAME" >/dev/null
+          subdomain="$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" \
+            | python3 -c 'import json,sys;print(json.load(sys.stdin)["result"]["subdomain"])')"
+          url="https://${BRIDGE_NAME}.${subdomain}.workers.dev/decrypt"
+          code=000
+          for i in $(seq 1 12); do
+            code="$(curl -sS -o /tmp/decrypted.json -w '%{http_code}' \
+              -H "Authorization: Bearer $token" -H 'Content-Type: application/json' \
+              --data-binary @.github/oci-bootstrap/encrypted-oci-bundle.json "$url")"
+            [ "$code" = 200 ] && break
+            [ "$code" = 403 ] && { sleep 5; continue; }
+            echo "OCI bridge verification returned HTTP $code" >&2
+            exit 1
+          done
+          [ "$code" = 200 ] || { echo "OCI bridge control token did not propagate" >&2; exit 1; }
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/decrypted.json'))
+          assert all(d.get(k) for k in ('user','fingerprint','tenancy','region','private_key_pem'))
+          print('OCI_BRIDGE_DECRYPT_OK=true')
+          PY
+
+      - name: Cleanup
+        if: ${{ always() }}
+        run: rm -f /tmp/versions.json /tmp/candidate-id /tmp/deploy.json /tmp/deploy-response.json /tmp/decrypted.json
