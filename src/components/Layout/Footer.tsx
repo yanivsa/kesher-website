@@ -22,6 +22,8 @@ const Footer: React.FC = () => {
           <h4>ניווט מהיר</h4>
           <Link to="/">דף הבית</Link>
           <Link to="/about">אודות</Link>
+          <Link to="/now">מה אני עושה עכשיו</Link>
+          <Link to="/links">קישורים ומקורות מקצועיים</Link>
           <Link to="/lectures">הרצאות וסדנאות</Link>
           <Link to="/services/mediation">גישור</Link>
           <Link to="/services/premarital-first-year">הכנה לנישואים והשנה הראשונה</Link>
