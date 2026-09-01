@@ -1,0 +1,34 @@
+name: AboutIdeasNow one-time submission
+
+on:
+  push:
+    branches:
+      - automation/aboutideasnow-submit-2026-09-01
+    paths:
+      - .github/workflows/aboutideasnow-submit-once.yml
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Submit official AboutIdeasNow form
+        shell: bash
+        run: |
+          set -euo pipefail
+          response_file="$(mktemp)"
+          http_code="$(curl --silent --show-error --location \
+            --output "$response_file" \
+            --write-out '%{http_code}' \
+            --request POST \
+            --header 'Content-Type: application/x-www-form-urlencoded' \
+            --data-urlencode 'domain=kesher.saharoni.com' \
+            --data-urlencode 'email=shira@saharoni.com' \
+            'https://aboutideasnow.com/')"
+          echo "HTTP status: $http_code"
+          head -c 4000 "$response_file"
+          echo
+          test "$http_code" -ge 200
+          test "$http_code" -lt 400
