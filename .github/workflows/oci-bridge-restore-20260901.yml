@@ -47,11 +47,22 @@ jobs:
 
           payload = json.load(open('/tmp/versions.json'))
           assert payload.get('success'), payload.get('errors')
+          result = payload.get('result') or {}
+          if isinstance(result, dict):
+              rows = result.get('items') or []
+          elif isinstance(result, list):
+              rows = result
+          else:
+              raise AssertionError(f'UNEXPECTED_CLOUDFLARE_VERSIONS_RESULT_TYPE={type(result).__name__}')
+          assert isinstance(rows, list), 'CLOUDFLARE_VERSIONS_ITEMS_NOT_LIST'
+
           start = dt(os.environ['KNOWN_GOOD_START'])
           cutoff = dt(os.environ['ACCIDENTAL_ROTATION_AT'])
           candidates = []
-          for row in payload.get('result') or []:
-              created = ((row.get('metadata') or {}).get('created_on'))
+          for row in rows:
+              if not isinstance(row, dict):
+                  continue
+              created = ((row.get('metadata') or {}).get('created_on')) or row.get('created_on')
               if not created:
                   continue
               created_dt = dt(created)
