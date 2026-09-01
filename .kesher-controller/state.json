@@ -218,14 +218,7 @@
       "archived_at": "2026-08-31T21:01:56.978470+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "COMPLETED_WITHOUT_PR",
-    "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
-    "retryable": true,
-    "retry_at": "2026-09-01T10:04:03.211957+00:00",
-    "at": "2026-09-01T09:49:03.211975+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-26T19:45:31.798577+00:00",
@@ -1052,9 +1045,18 @@
         "run_id": 33488709183,
         "session_id": "sessions/5987084725949200775"
       }
+    },
+    {
+      "at": "2026-09-01T09:52:38.633088+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-01T10:04:03.211957+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-01T09:49:03.211982+00:00",
+  "updated_at": "2026-09-01T09:52:38.633105+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
