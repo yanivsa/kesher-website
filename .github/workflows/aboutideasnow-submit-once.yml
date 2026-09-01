@@ -24,6 +24,8 @@ jobs:
             --write-out '%{http_code}' \
             --request POST \
             --header 'Content-Type: application/x-www-form-urlencoded' \
+            --header 'Origin: https://aboutideasnow.com' \
+            --header 'Referer: https://aboutideasnow.com/' \
             --data-urlencode 'domain=kesher.saharoni.com' \
             --data-urlencode 'email=shira@saharoni.com' \
             'https://aboutideasnow.com/')"
