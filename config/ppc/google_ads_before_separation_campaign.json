@@ -65,7 +65,7 @@
         "לפני צעדים חד צדדיים: בירור זוגי ממוקד לבחינת מרחב השינוי והאפשרויות להמשך.",
         "מרחב מקצועי ומכבד לקבלת החלטות נכונות ואחראיות עבור שניכם והמשפחה. קבעו מועד."
       ],
-      "final_url": "https://kesher.saharoni.com/services/couples/before-separation?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_BeforeSeparation_V1&utm_content=Couples_Counseling_Before_Separation"
+      "final_url": "https://kesher.saharoni.com/services/couples/before-separation?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_BeforeSeparation_V1&utm_content=Couples_Counseling_Before_Separation&utm_term={keyword}"
     }
   ],
   "extensions": {
@@ -80,7 +80,7 @@
       },
       {
         "title": "קליניקה באשדוד",
-        "url": "https://kesher.saharoni.com/services/couples/ashdod"
+        "url": "https://kesher.saharoni.com/couples-counseling-ashdod"
       },
       {
         "title": "קביעת פגישה",

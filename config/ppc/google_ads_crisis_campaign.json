@@ -66,7 +66,7 @@
         "כשהשיחות חוזרות על עצמן ונגמרות בכעס – ייעוץ זוגי ממוקד עוזר לעצור את ההסלמה.",
         "מרחב בטוח ומקצועי להבנה ולחידוש התקשורת. פגישה של 50 דקות באשדוד או אונליין."
       ],
-      "final_url": "https://kesher.saharoni.com/services/couples/crisis?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_Crisis_V1&utm_content=Couples_Counseling_Crisis"
+      "final_url": "https://kesher.saharoni.com/services/couples/crisis?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_Crisis_V1&utm_content=Couples_Counseling_Crisis&utm_term={keyword}"
     }
   ],
   "extensions": {
@@ -77,7 +77,7 @@
       },
       {
         "title": "קליניקה באשדוד",
-        "url": "https://kesher.saharoni.com/services/couples/ashdod"
+        "url": "https://kesher.saharoni.com/couples-counseling-ashdod"
       },
       {
         "title": "בירור לפני פרידה",

@@ -72,14 +72,14 @@
         "לפני החלטות כבדות: בירור זוגי רגוע וממוקד. מרחב פרטי ומכבד באשדוד או אונליין.",
         "מזהים איפה השיחה מסתבכת ויוצאים עם כלים מעשיים. ללא התחייבות לתהליך ארוך."
       ],
-      "final_url": "https://kesher.saharoni.com/services/couples/ashdod?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_Ashdod_V1&utm_content=Couples_Counseling_Ashdod_Core"
+      "final_url": "https://kesher.saharoni.com/couples-counseling-ashdod?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_Ashdod_V1&utm_content=Couples_Counseling_Ashdod_Core&utm_term={keyword}"
     }
   ],
   "extensions": {
     "sitelinks": [
       {
         "title": "קליניקה באשדוד",
-        "url": "https://kesher.saharoni.com/services/couples/ashdod"
+        "url": "https://kesher.saharoni.com/couples-counseling-ashdod"
       },
       {
         "title": "ייעוץ במשבר",
