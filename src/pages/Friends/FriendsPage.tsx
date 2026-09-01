@@ -20,7 +20,7 @@ const resources: Array<{
   items: FriendResource[];
 }> = [
   {
-    categoryTitle: 'איגודים מקצועיים וגופי אסדרה בישראל',
+    categoryTitle: 'איגודים וארגונים מקצועיים בישראל',
     icon: <FiAward className={styles.categoryIcon} aria-hidden="true" />,
     items: [
       {
