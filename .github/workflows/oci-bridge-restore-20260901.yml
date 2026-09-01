@@ -35,7 +35,7 @@ jobs:
           set -euo pipefail
           auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
           curl -fsS -H "$auth" \
-            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$BRIDGE_NAME/versions?per_page=100&page=1" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$BRIDGE_NAME/versions?deployable=true" \
             -o /tmp/versions.json
           python3 - <<'PY'
           import json, os
@@ -68,11 +68,12 @@ jobs:
               created_dt = dt(created)
               if start <= created_dt < cutoff and row.get('id'):
                   candidates.append((created_dt, row))
-          assert candidates, 'NO_KNOWN_GOOD_BRIDGE_VERSION_IN_PROVEN_WINDOW'
+          assert candidates, 'NO_DEPLOYABLE_KNOWN_GOOD_BRIDGE_VERSION_IN_PROVEN_WINDOW'
           created_dt, row = max(candidates, key=lambda x: x[0])
           Path('/tmp/candidate-id').write_text(row['id'])
           print('OCI_BRIDGE_RESTORE_CANDIDATE_VERSION='+str(row.get('number') or 'unknown'))
           print('OCI_BRIDGE_RESTORE_CANDIDATE_CREATED='+created_dt.isoformat())
+          print('OCI_BRIDGE_RESTORE_CANDIDATE_DEPLOYABLE=true')
           PY
 
       - name: Restore known-good Worker version
@@ -97,14 +98,17 @@ jobs:
           }
           Path('/tmp/deploy.json').write_text(json.dumps(body,separators=(',',':')))
           PY
-          curl -fsS -X POST -H "$auth" -H 'Content-Type: application/json' \
+          code="$(curl -sS -X POST -H "$auth" -H 'Content-Type: application/json' \
             --data-binary @/tmp/deploy.json \
-            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$BRIDGE_NAME/deployments?force=true" \
-            -o /tmp/deploy-response.json
-          python3 - <<'PY'
-          import json
+            -o /tmp/deploy-response.json -w '%{http_code}' \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/scripts/$BRIDGE_NAME/deployments?force=true")"
+          python3 - "$code" <<'PY'
+          import json, sys
+          code=int(sys.argv[1])
           d=json.load(open('/tmp/deploy-response.json'))
-          assert d.get('success'), d.get('errors')
+          if not (200 <= code < 300 and d.get('success')):
+              errors=[{'code':e.get('code'),'message':e.get('message')} for e in (d.get('errors') or []) if isinstance(e,dict)]
+              raise SystemExit(f'CLOUDFLARE_DEPLOY_FAILED http={code} errors={errors}')
           print('OCI_BRIDGE_KNOWN_GOOD_VERSION_RESTORED=true')
           PY
 
