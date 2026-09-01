@@ -19,6 +19,7 @@ import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import SignatureMark from '../../components/Signature/SignatureMark';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import ContactSection from './ContactSection';
 import styles from './Home.module.css';
 
 const schemaData = {
@@ -624,22 +625,7 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        <section className={`${styles.finalCta} ${styles.revealSection}`}>
-          <div>
-            <span className={styles.kicker}>אפשר להתחיל מכאן</span>
-            <h2>השיחה הראשונה לא חייבת לפתור הכול.<br />היא רק צריכה לפתוח דרך.</h2>
-          </div>
-          <div className={styles.finalActions}>
-            <Link to={SITE_CONFIG.links.appointment} className={styles.lightCta}>
-              <FiCalendar aria-hidden="true" />
-              קביעת פגישה
-            </Link>
-            <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappCta}>
-              <FiMessageCircle aria-hidden="true" />
-              כתבו לי ב־WhatsApp
-            </a>
-          </div>
-        </section>
+        <ContactSection />
       </main>
 
       <aside className={styles.quickDock} aria-label="אפשרויות ליצירת קשר">
