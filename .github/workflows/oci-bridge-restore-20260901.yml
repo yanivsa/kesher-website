@@ -92,8 +92,7 @@ jobs:
             'strategy':'percentage',
             'versions':[{'version_id':version_id,'percentage':100}],
             'annotations':{
-              'workers/message':'Restore OCI bridge version proven good before accidental 2026-09-01 key rotation',
-              'workers/triggered_by':'manual-recovery'
+              'workers/message':'Restore OCI bridge version proven good before accidental 2026-09-01 key rotation'
             }
           }
           Path('/tmp/deploy.json').write_text(json.dumps(body,separators=(',',':')))
