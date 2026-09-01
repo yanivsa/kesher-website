@@ -58,7 +58,7 @@ const ContactSection: React.FC = () => {
         <div className={styles.info}>
           <h2 className={styles.title}>אפשר לפנות בדרך שנוחה לכם</h2>
           <p className={styles.subtitle}>
-            פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי לשיחת בירור קצרה בדרך שנוחה לכם.
+            פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.
           </p>
           <div className={styles.contactActions}>
             <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
