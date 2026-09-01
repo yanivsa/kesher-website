@@ -1,26 +1,26 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-01",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": {
       "stage": "article",
       "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Created `insert_article.cjs` using a bash heredoc with the new article metadata.",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I successfully wrote an article about dating app fatigue and setting boundaries. The article passed all automated CI tests (`npm run check`, `test:content`, `test:e2e`), meaning it technically satisfies the publishability constraints (like word count and heading count) and didn't trigger any automated bans. However, the code review flagged two main issues: 1. **Unrelated edit in `llms-full.txt`:** I inadvertently modified an existing section that injected a banned phrase (\"מרחב בטוח\"). This shouldn't have happened as I simply ran `npm run generate` to build it. I should revert that change or regenerate it properly to isolate just my new article. 2. **Editorial structural constraint violation:** The policy says: \"אין להשתמש בכל מאמר באותה נוסחה של משבר דרמטי, הסבר רגשי, רשימת כ…",
       "retryable": true,
-      "retry_at": "2026-09-01T00:38:36.601329+00:00",
-      "at": "2026-09-01T00:33:36.601349+00:00"
+      "retry_at": "2026-09-01T05:51:52.920062+00:00",
+      "at": "2026-09-01T05:36:52.920082+00:00"
     },
-    "next_retry_at": null,
+    "next_retry_at": "2026-09-01T05:51:52.920062+00:00",
     "run_id": 33468239656,
-    "processed_run_id": 33442685938,
+    "processed_run_id": 33468239656,
     "provider_id": null,
     "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "same_failure_streak": 2,
     "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
+      "JULES_TIMEOUT_SESSION_ACTIVE": 2
     },
     "attempts": 2,
     "deploy_attempts": 0,
@@ -31,11 +31,11 @@
       "slot": "2026-09-01",
       "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
       "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Created `insert_article.cjs` using a bash heredoc with the new article metadata.",
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I successfully wrote an article about dating app fatigue and setting boundaries. The article passed all automated CI tests (`npm run check`, `test:content`, `test:e2e`), meaning it technically satisfies the publishability constraints (like word count and heading count) and didn't trigger any automated bans. However, the code review flagged two main issues: 1. **Unrelated edit in `llms-full.txt`:** I inadvertently modified an existing section that injected a banned phrase (\"מרחב בטוח\"). This shouldn't have happened as I simply ran `npm run generate` to build it. I should revert that change or regenerate it properly to isolate just my new article. 2. **Editorial structural constraint violation:** The policy says: \"אין להשתמש בכל מאמר באותה נוסחה של משבר דרמטי, הסבר רגשי, רשימת כ…",
       "session_id": "sessions/8478404235247107172",
       "pr_url": "",
-      "github_run_id": "33442685938",
-      "completed_at": "2026-08-31T22:20:42.007251+00:00",
+      "github_run_id": "33468239656",
+      "completed_at": "2026-09-01T04:38:02.737513+00:00",
       "diagnostic": {
         "source": {
           "name": "sources/github/yanivsa/kesher-website",
@@ -44,17 +44,17 @@
           "default_branch": "main",
           "main_available": true
         },
-        "activity_count": 64,
-        "change_set_count": 60,
+        "activity_count": 159,
+        "change_set_count": 150,
         "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "Created `insert_article.cjs` using a bash heredoc with the new article metadata.",
+        "last_agent_message": "I successfully wrote an article about dating app fatigue and setting boundaries. The article passed all automated CI tests (`npm run check`, `test:content`, `test:e2e`), meaning it technically satisfies the publishability constraints (like word count and heading count) and didn't trigger any automated bans. However, the code review flagged two main issues: 1. **Unrelated edit in `llms-full.txt`:** I inadvertently modified an existing section that injected a banned phrase (\"מרחב בטוח\"). This shouldn't have happened as I simply ran `npm run generate` to build it. I should revert that change or regenerate it properly to isolate just my new article. 2. **Editorial structural constraint violation:** The policy says: \"אין להשתמש בכל מאמר באותה נוסחה של משבר דרמטי, הסבר רגשי, רשימת כלים וסיום מעודד.\" The reviewer felt my article followed this exact forbidden template. It also mentioned I used …",
+        "last_progress": "Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new blog article for the `2026-09-01` slot that adheres to strict editorial policies (no banned phrases, correct structural choices, exact word count constraints) and skips image generation according to a pipeline override. 2. **Evaluation of the Solution:** * **Core Functionality:** The agent successfully authored a new article (\"לגבש זהות אישית שלמה: החיים מעבר לסטטוס הזוגי\") that matches the approved topics (\"רווקות מאוחרת\"), fits within the 700-1,100 word count limits, correctly omits the…",
         "last_description": "",
         "session_failed_reason": ""
       }
     },
     "last_jules_session_id": "sessions/8478404235247107172",
-    "last_failed_run_id": 33442685938,
+    "last_failed_run_id": 33468239656,
     "resume_dispatches": 1
   },
   "video": {
@@ -217,7 +217,14 @@
       "archived_at": "2026-08-31T21:01:56.978470+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I successfully wrote an article about dating app fatigue and setting boundaries. The article passed all automated CI tests (`npm run check`, `test:content`, `test:e2e`), meaning it technically satisfies the publishability constraints (like word count and heading count) and didn't trigger any automated bans. However, the code review flagged two main issues: 1. **Unrelated edit in `llms-full.txt`:** I inadvertently modified an existing section that injected a banned phrase (\"מרחב בטוח\"). This shouldn't have happened as I simply ran `npm run generate` to build it. I should revert that change or regenerate it properly to isolate just my new article. 2. **Editorial structural constraint violation:** The policy says: \"אין להשתמש בכל מאמר באותה נוסחה של משבר דרמטי, הסבר רגשי, רשימת כ…",
+    "retryable": true,
+    "retry_at": "2026-09-01T05:51:52.920062+00:00",
+    "at": "2026-09-01T05:36:52.920082+00:00"
+  },
   "history": [
     {
       "at": "2026-08-26T19:45:31.798577+00:00",
@@ -978,9 +985,22 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-09-01T05:36:52.920085+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I successfully wrote an article about dating app fatigue and setting boundaries. The article passed all automated CI tests (`npm run check`, `test:content`, `test:e2e`), meaning it technically satisfies the publishability constraints (like word count and heading count) and didn't trigger any automated bans. However, the code review flagged two main issues: 1. **Unrelated edit in `llms-full.txt`:** I inadvertently modified an existing section that injected a banned phrase (\"מרחב בטוח\"). This shouldn't have happened as I simply ran `npm run generate` to build it. I should revert that change or regenerate it properly to isolate just my new article. 2. **Editorial structural constraint violation:** The policy says: \"אין להשתמש בכל מאמר באותה נוסחה של משבר דרמטי, הסבר רגשי, רשימת כ…",
+        "retry_at": "2026-09-01T05:51:52.920062+00:00",
+        "failure_streak": 2,
+        "run_id": 33468239656,
+        "session_id": "sessions/8478404235247107172"
+      }
     }
   ],
-  "updated_at": "2026-09-01T04:04:56.363577+00:00",
+  "updated_at": "2026-09-01T05:36:52.920089+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
