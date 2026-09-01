@@ -1,0 +1,66 @@
+name: Diagnose OpenClaw Cloudflare Preflight
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/openclaw-cloudflare-preflight-diagnostic.yml
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TUNNEL_ID: 58988d44-b0c4-4ad0-ba9d-c25b9914e773
+      ACCESS_APP_ID: bc7954d0-cac9-481b-92f6-dbffc8a8e2ab
+      PUBLIC_ZONE: saharoni.com
+    steps:
+      - name: Check Cloudflare preflight permissions read-only
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          zone_code="$(curl -sS -H "$auth" -o /tmp/zone.json -w '%{http_code}' \
+            "https://api.cloudflare.com/client/v4/zones?name=${PUBLIC_ZONE}&status=active&per_page=50")"
+          access_code="$(curl -sS -H "$auth" -o /tmp/access.json -w '%{http_code}' \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/access/apps/$ACCESS_APP_ID")"
+          tunnel_code="$(curl -sS -H "$auth" -o /tmp/tunnel.json -w '%{http_code}' \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/cfd_tunnel/$TUNNEL_ID/token")"
+          ZONE_CODE="$zone_code" ACCESS_CODE="$access_code" TUNNEL_CODE="$tunnel_code" python3 - <<'PY'
+          import json, os
+
+          checks=[
+            ('ZONE', os.environ['ZONE_CODE'], '/tmp/zone.json'),
+            ('ACCESS_APP', os.environ['ACCESS_CODE'], '/tmp/access.json'),
+            ('TUNNEL_TOKEN', os.environ['TUNNEL_CODE'], '/tmp/tunnel.json'),
+          ]
+          failed=[]
+          for label,code,path in checks:
+              try:
+                  data=json.load(open(path))
+              except Exception:
+                  data={}
+              success=bool(data.get('success')) and code.startswith('2')
+              errors=[]
+              for e in data.get('errors') or []:
+                  if isinstance(e,dict):
+                      errors.append({'code':e.get('code'),'message':e.get('message')})
+              print(f'CLOUDFLARE_{label}_HTTP={code}')
+              print(f'CLOUDFLARE_{label}_OK={str(success).lower()}')
+              if not success:
+                  print(f'CLOUDFLARE_{label}_ERRORS={errors}')
+                  failed.append(label)
+          if failed:
+              raise SystemExit('CLOUDFLARE_PREFLIGHT_FAILED=' + ','.join(failed))
+          print('CLOUDFLARE_PREFLIGHT_READ_ONLY_OK=true')
+          PY
+
+      - name: Cleanup
+        if: ${{ always() }}
+        run: rm -f /tmp/zone.json /tmp/access.json /tmp/tunnel.json
