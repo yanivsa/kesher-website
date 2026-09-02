@@ -20,6 +20,36 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Test CI profile selector
+        run: python3 -m unittest tests.test_ci_profile -v
+
+      - name: Select CI profile
+        id: profile
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          profile="full"
+          if [[ "${EVENT_NAME}" == "pull_request" ]]; then
+            git diff --name-only "${BASE_SHA}" "${HEAD_SHA}" > changed-files.txt
+            echo "Changed files:"
+            cat changed-files.txt
+            profile="$(python3 .github/scripts/select-ci-profile.py < changed-files.txt)"
+          elif [[ "${EVENT_NAME}" == "workflow_dispatch" && "${REF_NAME}" != "main" ]]; then
+            git fetch --no-tags origin main
+            git diff --name-only "origin/main...HEAD" > changed-files.txt
+            echo "Changed files since main:"
+            cat changed-files.txt
+            profile="$(python3 .github/scripts/select-ci-profile.py < changed-files.txt)"
+          fi
+          echo "Selected CI profile: ${profile}"
+          echo "profile=${profile}" >> "${GITHUB_OUTPUT}"
 
       - name: Set up Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -30,15 +60,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run focused article quality gate
+        if: ${{ steps.profile.outputs.profile == 'article' }}
+        run: |
+          set -euo pipefail
+          npm run generate
+          npm run test:content
+          npx vitest run tests/blog-preview.test.ts tests/app-routing.test.ts
+          npm run build
+          npm run verify:dist
+
       - name: Install Chromium
+        if: ${{ steps.profile.outputs.profile == 'full' }}
         # GitHub's ubuntu runner already carries Chromium's shared libraries.
         # Avoid a network-dependent apt transaction that can hang the required check.
         run: npx playwright install chromium
 
       - name: Validate article hero images
+        if: ${{ steps.profile.outputs.profile == 'full' }}
         run: python3 .github/scripts/validate-article-images.py
 
       - name: Run full quality gate
+        if: ${{ steps.profile.outputs.profile == 'full' }}
         run: npm run check
 
       - name: Publish protected verify status for dispatched CI
@@ -52,7 +95,7 @@ jobs:
           print(json.dumps({
               "state": "success",
               "context": "verify",
-              "description": "Full CI quality gate passed on this exact commit",
+              "description": "CI quality gate passed on this exact commit",
               "target_url": f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
           }))
           PY
