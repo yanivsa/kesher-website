@@ -30,7 +30,7 @@ async function bootstrap(token:string){
     ['liner','I support couples, parents and families through communication, conflict, parenting challenges and major life transitions.'],
     ['why','I want to help people understand what is happening between them and build practical, respectful ways to move forward together.'],
     ['thought','Complex relationship and family challenges become more workable when we make them clear, practical and human.'],
-    ['red','טעויות נפוצות שהורסות כל זוגיות - ואיך להימנע מהן — Shira Saharoni']
+    ['red','Children: The Challenge — Rudolf Dreikurs & Vicki Soltz']
   ];
   const profileStatuses:Record<string,number>={}; for(const [qcode,answer] of answers){profileStatuses[qcode]=(await postForm('/profile',{qcode,answer},cookie)).status;}
   let photoStatus:number|null=null,photoUploaded=false; const src=await fetch('https://kesher.saharoni.com/images/shira_revava_poster.jpg'); if(src.ok){const fd=new FormData();fd.append('photo',await src.blob(),'shira-saharoni.jpg');const p=await nnnFetch('/photo',{method:'POST',headers:{cookie:`ok=${cookie}`,'user-agent':'Kesher-Saharoni-NNN-Setup/1.0'},body:fd});photoStatus=p.status;photoUploaded=p.status>=200&&p.status<400;}
