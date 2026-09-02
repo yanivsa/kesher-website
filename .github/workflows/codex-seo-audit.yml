@@ -58,6 +58,73 @@ jobs:
           git -C "${CODEX_DIR}" checkout --detach FETCH_HEAD
           test "$(git -C "${CODEX_DIR}" rev-parse HEAD)" = "${CODEX_SEO_COMMIT}"
 
+      - name: Apply verified Codex SEO compatibility fixes
+        run: |
+          set -euo pipefail
+          export CODEX_DIR="${RUNNER_TEMP}/codex-seo"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["CODEX_DIR"])
+
+          geo_path = root / "scripts/analyze_geo.py"
+          geo_text = geo_path.read_text(encoding="utf-8")
+          geo_old = '''        if not line or ":" not in line:
+              continue
+          '''
+          geo_new = '''        if not line:
+              current_agents = []
+              continue
+          if ":" not in line:
+              current_agents = []
+              continue
+          '''
+          if geo_text.count(geo_old) != 1:
+              raise RuntimeError("Codex SEO robots parser patch anchor changed; refusing silent patch")
+          geo_path.write_text(geo_text.replace(geo_old, geo_new, 1), encoding="utf-8")
+
+          sitemap_path = root / "scripts/analyze_sitemap.py"
+          sitemap_text = sitemap_path.read_text(encoding="utf-8")
+          import_old = "import requests\nimport defusedxml.ElementTree as ET\n"
+          import_new = "import requests\nimport defusedxml.ElementTree as ET\nfrom bs4 import BeautifulSoup\n"
+          if sitemap_text.count(import_old) != 1:
+              raise RuntimeError("Codex SEO sitemap import patch anchor changed; refusing silent patch")
+          sitemap_text = sitemap_text.replace(import_old, import_new, 1)
+
+          canonical_old = '''            marker = 'rel="canonical"'
+              if marker in lowered:
+                  idx = lowered.index(marker)
+                  href_marker = 'href="'
+                  href_idx = lowered.rfind(href_marker, max(0, idx - 400), idx + 400)
+                  if href_idx != -1:
+                      href_start = href_idx + len(href_marker)
+                      href_end = text.find('"', href_start)
+                      if href_end != -1:
+                          canonical = text[href_start:href_end].strip()
+          '''
+          canonical_new = '''            soup = BeautifulSoup(text, "html.parser")
+              canonical_link = soup.find("link", rel="canonical")
+              if canonical_link and canonical_link.get("href"):
+                  canonical = str(canonical_link["href"]).strip()
+          '''
+          if sitemap_text.count(canonical_old) != 1:
+              raise RuntimeError("Codex SEO canonical parser patch anchor changed; refusing silent patch")
+          sitemap_path.write_text(sitemap_text.replace(canonical_old, canonical_new, 1), encoding="utf-8")
+
+          report = {
+              "upstream_commit": os.environ["CODEX_SEO_COMMIT"],
+              "fixes": [
+                  "Reset robots.txt user-agent grouping on blank/non-directive lines.",
+                  "Parse canonical href from the canonical link element instead of a nearby href.",
+              ],
+          }
+          Path(os.environ["GITHUB_WORKSPACE"], "codex-seo-compatibility.json").write_text(
+              json.dumps(report, indent=2), encoding="utf-8"
+          )
+          PY
+
       - name: Install Codex SEO core and visual dependencies
         run: |
           set -euo pipefail
@@ -143,5 +210,6 @@ jobs:
             codex-seo-environment.json
             codex-seo-run.json
             codex-seo-sitemap.json
+            codex-seo-compatibility.json
           if-no-files-found: warn
           retention-days: 30
