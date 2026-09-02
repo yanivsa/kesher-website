@@ -21,6 +21,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kesher.saharoni.com/links</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://kesher.saharoni.com/lectures</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -93,11 +98,6 @@
   </url>
   <url>
     <loc>https://kesher.saharoni.com/couples-counseling-ashdod</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://kesher.saharoni.com/services/couples/ashdod</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
