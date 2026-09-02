@@ -41,9 +41,26 @@ const postForm = (path: string, values: Record<string, string>, cookie: string) 
 
 export const onRequestPost: PagesFunction = async ({ request }) => {
   try {
-    const payload = await request.json() as { key?: string; token?: string };
+    const payload = await request.json() as { key?: string; token?: string; requestLink?: boolean };
     if (payload.key !== BRIDGE_KEY) {
       return new Response(JSON.stringify({ ok: false, error: 'forbidden' }), { status: 403, headers: noStoreHeaders });
+    }
+
+    if (payload.requestLink === true) {
+      const requestLogin = await nnnFetch('/f', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          'user-agent': 'Kesher-Saharoni-NNN-Setup/1.0',
+        },
+        body: formBody({ email: 'yanivashdod@gmail.com' }),
+      });
+      const body = await requestLogin.text();
+      return new Response(JSON.stringify({
+        ok: requestLogin.status >= 200 && requestLogin.status < 400,
+        status: requestLogin.status,
+        loginEmailRequested: /check/i.test(body) || requestLogin.status < 400,
+      }), { status: 200, headers: noStoreHeaders });
     }
 
     const token = (payload.token || '').trim();
@@ -51,7 +68,6 @@ export const onRequestPost: PagesFunction = async ({ request }) => {
       return new Response(JSON.stringify({ ok: false, error: 'invalid token format' }), { status: 400, headers: noStoreHeaders });
     }
 
-    // 1) Load the one-time login page and read the hidden person id.
     const welcome = await nnnFetch(`/e?t=${encodeURIComponent(token)}`, {
       headers: { 'user-agent': 'Kesher-Saharoni-NNN-Setup/1.0' },
     });
@@ -61,7 +77,6 @@ export const onRequestPost: PagesFunction = async ({ request }) => {
       return new Response(JSON.stringify({ ok: false, error: 'could not extract person id', status: welcome.status }), { status: 502, headers: noStoreHeaders });
     }
 
-    // 2) Consume the one-time token and obtain the authenticated cookie.
     const login = await nnnFetch('/e', {
       method: 'POST',
       headers: {
@@ -75,10 +90,8 @@ export const onRequestPost: PagesFunction = async ({ request }) => {
       return new Response(JSON.stringify({ ok: false, error: 'login did not return auth cookie', status: login.status, location: login.headers.get('location') }), { status: 502, headers: noStoreHeaders });
     }
 
-    // 3) Location.
     const where = await postForm('/where', { city: 'Ashdod', state: '', country: 'IL' }, cookie);
 
-    // 4) Add the official site if it is not already present.
     const urlsPage = await nnnFetch('/urls', { headers: { cookie: `ok=${cookie}`, 'user-agent': 'Kesher-Saharoni-NNN-Setup/1.0' } });
     const urlsHtml = await urlsPage.text();
     let urlAdded = false;
@@ -87,14 +100,12 @@ export const onRequestPost: PagesFunction = async ({ request }) => {
       urlAdded = true;
     }
 
-    // 5) Profile answers. All wording is grounded in Shira's public About/Now pages.
     const answers: Array<[string, string]> = [
       ['title', 'Couples counselor, parenting facilitator & certified mediator'],
       ['liner', 'I support couples, parents and families through communication, conflict, parenting challenges and major life transitions.'],
       ['why', 'I want to help people understand what is happening between them and build practical, respectful ways to move forward together.'],
       ['thought', 'Complex relationship and family challenges become more workable when we make them clear, practical and human.'],
-      // No verified personal book/article recommendation was available, so leave this answer intentionally blank rather than invent one.
-      ['red', ''],
+      ['red', 'טעויות נפוצות שהורסות כל זוגיות - ואיך להימנע מהן — Shira Saharoni'],
     ];
     const profileStatuses: Record<string, number> = {};
     for (const [qcode, answer] of answers) {
@@ -102,7 +113,6 @@ export const onRequestPost: PagesFunction = async ({ request }) => {
       profileStatuses[qcode] = res.status;
     }
 
-    // 6) Upload an existing, real JPEG of Shira already published on the site.
     let photoStatus: number | null = null;
     let photoUploaded = false;
     const photoSource = await fetch('https://kesher.saharoni.com/images/shira_revava_poster.jpg', { redirect: 'follow' });
@@ -119,7 +129,6 @@ export const onRequestPost: PagesFunction = async ({ request }) => {
       photoUploaded = photoRes.status >= 200 && photoRes.status < 400;
     }
 
-    // 7) Fresh reads for verification. Never return the auth cookie or one-time token.
     const profileCheck = await nnnFetch('/profile', { headers: { cookie: `ok=${cookie}`, 'user-agent': 'Kesher-Saharoni-NNN-Setup/1.0' } });
     const profileHtml = await profileCheck.text();
     const photoCheck = await nnnFetch('/photo', { headers: { cookie: `ok=${cookie}`, 'user-agent': 'Kesher-Saharoni-NNN-Setup/1.0' } });
