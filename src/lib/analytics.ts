@@ -18,6 +18,12 @@ const CONVERSION_EVENTS = new Set([
   'generate_lead',
   'lead_submit',
 ]);
+const GOOGLE_ADS_CONVERSION_DESTINATIONS: Record<string, string> = {
+  lead_submit: 'AW-985068949/V3vgCPCR_-scEJXr29UD',
+  booking_complete: 'AW-985068949/CAZLCPOR_-scEJXr29UD',
+  phone_click: 'AW-985068949/GZrxCPaR_-scEJXr29UD',
+  whatsapp_click: 'AW-985068949/k2mNCPmR_-scEJXr29UD',
+};
 const recentEvents = new Map<string, number>();
 
 const safeSessionGet = (key: string): string | null => {
@@ -50,6 +56,19 @@ const inferServiceType = (pathname: string): string | undefined => {
   if (serviceMatch?.[1]) return serviceMatch[1].replace(/-/g, '_');
   if (pathname === '/appointment') return 'general_consultation';
   return undefined;
+};
+
+const reportGoogleAdsConversion = (eventName: string) => {
+  if (window.__kesherMeasurementMode !== 'ga4' || typeof window.gtag !== 'function') return;
+
+  const destination = GOOGLE_ADS_CONVERSION_DESTINATIONS[eventName];
+  if (!destination) return;
+
+  window.gtag('event', 'conversion', {
+    send_to: destination,
+    value: 1,
+    currency: 'ILS',
+  });
 };
 
 export const pushAnalyticsEvent = (eventName: string, params: AnalyticsParams = {}) => {
@@ -87,6 +106,7 @@ export const pushAnalyticsEvent = (eventName: string, params: AnalyticsParams = 
     const gaParams = { ...payload };
     delete gaParams.event;
     window.gtag('event', eventName, gaParams);
+    reportGoogleAdsConversion(eventName);
   }
 };
 
