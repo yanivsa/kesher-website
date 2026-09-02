@@ -71,6 +71,25 @@ jobs:
 
           geo_path = root / "scripts/analyze_geo.py"
           geo_text = geo_path.read_text(encoding="utf-8")
+
+          taxonomy_old = (
+              'AI_SEARCH_CRAWLERS = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-SearchBot", "Claude-User", "PerplexityBot"]\n'
+              'AI_TRAINING_CRAWLERS = ["anthropic-ai", "CCBot", "Bytespider", "cohere-ai", "Google-Extended"]\n'
+          )
+          taxonomy_new = (
+              'AI_SEARCH_CRAWLERS = ["OAI-SearchBot", "ChatGPT-User", "Claude-SearchBot", "Claude-User", "PerplexityBot"]\n'
+              'AI_TRAINING_CRAWLERS = ["GPTBot", "ClaudeBot", "anthropic-ai", "CCBot", "Bytespider", "cohere-ai", "Google-Extended"]\n'
+          )
+          if geo_text.count(taxonomy_old) != 1:
+              raise RuntimeError("Codex SEO crawler taxonomy patch anchor changed; refusing silent patch")
+          geo_text = geo_text.replace(taxonomy_old, taxonomy_new, 1)
+
+          priority_old = '    priority_agents = {"GPTBot", "OAI-SearchBot", "ClaudeBot", "PerplexityBot"}\n'
+          priority_new = '    priority_agents = {"OAI-SearchBot", "Claude-SearchBot", "PerplexityBot"}\n'
+          if geo_text.count(priority_old) != 1:
+              raise RuntimeError("Codex SEO crawler priority patch anchor changed; refusing silent patch")
+          geo_text = geo_text.replace(priority_old, priority_new, 1)
+
           geo_old = '        if not line or ":" not in line:\n            continue\n'
           geo_new = '        if not line:\n            current_agents = []\n            continue\n        if ":" not in line:\n            current_agents = []\n            continue\n'
           if geo_text.count(geo_old) != 1:
@@ -110,6 +129,7 @@ jobs:
           report = {
               "upstream_commit": os.environ["CODEX_SEO_COMMIT"],
               "fixes": [
+                  "Classify GPTBot and ClaudeBot as training crawlers, not search crawlers.",
                   "Reset robots.txt user-agent grouping on blank/non-directive lines.",
                   "Parse canonical href from the canonical link element instead of a nearby href.",
               ],
