@@ -34,12 +34,19 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           profile="full"
           if [[ "${EVENT_NAME}" == "pull_request" ]]; then
             git diff --name-only "${BASE_SHA}" "${HEAD_SHA}" > changed-files.txt
             echo "Changed files:"
+            cat changed-files.txt
+            profile="$(python3 .github/scripts/select-ci-profile.py < changed-files.txt)"
+          elif [[ "${EVENT_NAME}" == "workflow_dispatch" && "${REF_NAME}" != "main" ]]; then
+            git fetch --no-tags origin main
+            git diff --name-only "origin/main...HEAD" > changed-files.txt
+            echo "Changed files since main:"
             cat changed-files.txt
             profile="$(python3 .github/scripts/select-ci-profile.py < changed-files.txt)"
           fi
@@ -90,7 +97,7 @@ jobs:
           print(json.dumps({
               "state": "success",
               "context": "verify",
-              "description": "Full CI quality gate passed on this exact commit",
+              "description": "CI quality gate passed on this exact commit",
               "target_url": f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
           }))
           PY
