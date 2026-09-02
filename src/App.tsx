@@ -153,7 +153,7 @@ function App() {
           <Route path="/beta2" element={<Navigate to="/" replace />} />
           <Route path="/beta3" element={<Beta3 />} />
           <Route path="/couples-counseling-ashdod" element={<CouplesCounselingAshdodPage />} />
-          <Route path="/services/couples/ashdod" element={<CouplesCounselingAshdodPage />} />
+          <Route path="/services/couples/ashdod" element={<Navigate to="/couples-counseling-ashdod" replace />} />
           <Route path="/services/couples/crisis" element={<CouplesCrisisPage />} />
           <Route path="/services/couples/before-separation" element={<CouplesBeforeSeparationPage />} />
           <Route path="/thank-you-booked" element={<ThankYouBookedPage />} />
