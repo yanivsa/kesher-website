@@ -32,7 +32,7 @@
   "author": "Shira Saharoni",
   "license": "ISC",
   "bugs": {
-    "url": "https://api.github.com/repos/yanivsa/kesher-website/issues{/number}"
+    "url": "https://github.com/yanivsa/kesher-website/issues"
   },
   "homepage": "https://kesher.saharoni.com",
   "dependencies": {
