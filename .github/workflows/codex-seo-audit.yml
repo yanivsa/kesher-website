@@ -25,7 +25,7 @@ concurrency:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     env:
       # Codex SEO v1.9.6-codex.5, pinned to the release commit rather than a movable branch.
       CODEX_SEO_COMMIT: "9a4a0b9e3c44eec2ceedcc21d10659427ee3bc1c"
@@ -62,11 +62,14 @@ jobs:
           git -C "${CODEX_DIR}" checkout --detach FETCH_HEAD
           test "$(git -C "${CODEX_DIR}" rev-parse HEAD)" = "${CODEX_SEO_COMMIT}"
 
-      - name: Install Codex SEO core dependencies
+      - name: Install Codex SEO core and visual dependencies
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
-          python -m pip install -r "${RUNNER_TEMP}/codex-seo/requirements-core.txt"
+          python -m pip install \
+            -r "${RUNNER_TEMP}/codex-seo/requirements-core.txt" \
+            -r "${RUNNER_TEMP}/codex-seo/requirements-visual.txt"
+          python -m playwright install --with-deps chromium
 
       - name: Verify Codex SEO runtime
         run: |
@@ -87,6 +90,16 @@ jobs:
             --premium-report never \
             --output-root "${OUTPUT_ROOT}" \
             --json | tee "${GITHUB_WORKSPACE}/codex-seo-run.json"
+
+      - name: Preserve Codex SEO evidence cache
+        if: always()
+        run: |
+          set -euo pipefail
+          CACHE_DIR="${RUNNER_TEMP}/codex-seo/.seo-cache"
+          if [[ -d "${CACHE_DIR}" ]]; then
+            rm -rf "${GITHUB_WORKSPACE}/codex-seo-cache"
+            cp -R "${CACHE_DIR}" "${GITHUB_WORKSPACE}/codex-seo-cache"
+          fi
 
       - name: Add audit action plan to job summary
         if: always()
@@ -121,6 +134,7 @@ jobs:
           name: codex-seo-audit-${{ github.run_id }}
           path: |
             codex-seo-output/
+            codex-seo-cache/
             codex-seo-environment.json
             codex-seo-run.json
           if-no-files-found: warn
