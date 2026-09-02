@@ -87,6 +87,15 @@ jobs:
             --output-root "${OUTPUT_ROOT}" \
             --json | tee "${GITHUB_WORKSPACE}/codex-seo-run.json"
 
+      - name: Capture detailed sitemap evidence
+        run: |
+          set -euo pipefail
+          cd "${RUNNER_TEMP}/codex-seo"
+          python scripts/analyze_sitemap.py \
+            "${TARGET_URL}" \
+            --check-limit 500 \
+            --json | tee "${GITHUB_WORKSPACE}/codex-seo-sitemap.json"
+
       - name: Preserve Codex SEO evidence cache
         if: always()
         run: |
@@ -133,5 +142,6 @@ jobs:
             codex-seo-cache/
             codex-seo-environment.json
             codex-seo-run.json
+            codex-seo-sitemap.json
           if-no-files-found: warn
           retention-days: 30
