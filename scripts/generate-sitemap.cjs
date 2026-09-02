@@ -20,6 +20,7 @@ const serviceRoutes = new Set([
   '/services/late-singleness',
   '/services/finding-relationship',
   '/couples-counseling-ashdod',
+  '/services/couples/ashdod',
   '/services/couples/crisis',
   '/services/couples/before-separation',
   '/faq',
