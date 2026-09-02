@@ -189,7 +189,7 @@ const CouplesCrisisPage: React.FC = () => {
         <div className={`container ${styles.heroContent}`}>
           <div className={styles.heroBadge}>
             <FiAlertCircle aria-hidden="true" />
-            <span>מרחב בטוח לעצירת ההסלמה והחזרת השקט</span>
+            <span>מרחב בטוח לעצירת ההסלמה ודיסקרטיות מלאה</span>
           </div>
 
           <h1 className={styles.heroTitle}>
@@ -316,7 +316,7 @@ const CouplesCrisisPage: React.FC = () => {
               <div className={styles.stepNumber}>3</div>
               <h3 className={styles.stepTitle}>צעד מעשי ראשון לבית</h3>
               <p className={styles.stepDesc}>
-                יוצאים מהפגישה הראשונה עם כלי מוגדר אחד לתרגול יומיומי בבית להחזרת השקט והביטחון ביחסים.
+                יוצאים מהפגישה הראשונה עם כלי מוגדר אחד לתרגול יומיומי בבית כדי לבחון תקשורת רגועה יותר.
               </p>
             </div>
           </div>
@@ -343,7 +343,7 @@ const CouplesCrisisPage: React.FC = () => {
             </div>
 
             <p className={styles.bioText}>
-              הגישה המקצועית שלי משלבת הקשבה בגובה העיניים, ראייה מערכתית וכלים מעשיים وتקשורתיים. אני פוגשת זוגות ברגעי עומס ומשבר ומסייעת להם לעשות סדר, להפחית הסלמה ולהחזיר את האמון והקרבה.
+              הגישה המקצועית שלי משלבת הקשבה בגובה העיניים, ראייה מערכתית וכלים מעשיים ותקשורתיים. אני פוגשת זוגות ברגעי עומס ומשבר ומסייעת להם לעשות סדר, להפחית הסלמה ולבחון דרך אחרת להתקרב.
             </p>
 
             <div className={styles.credentialsList}>
@@ -419,7 +419,7 @@ const CouplesCrisisPage: React.FC = () => {
       {/* FINAL CTA Section */}
       <section className={styles.closingCta}>
         <div className="container">
-          <h2>אפשר להחזיר את השקט והביטחון ליחסים</h2>
+          <h2>אפשר להתחיל משיחה אחת רגועה</h2>
           <p>התחלה קצרה ודיסקרטית משיחה אחת ממוקדת.</p>
           <div className={styles.heroCtaGroup}>
             <a

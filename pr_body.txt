@@ -1,5 +1,7 @@
-🎯 **What:** Removed `process.env.DEEPAI_API_KEY` from the environment immediately after copying it to a local variable in `scripts/generate-article-image.js`.
-
-⚠️ **Risk:** Storing third-party API keys within the global `process.env` throughout the lifecycle of a script exposes the secret to unintended leakage. If the script spawns child processes, or encounters an uncaught exception triggering a crash dump, the complete environment block containing the secret key may be printed to logs, published to external services, or otherwise exposed.
-
-🛡️ **Solution:** Using the principle of least privilege for memory/state, the script now immediately uses `delete process.env.DEEPAI_API_KEY;` after extracting the key. This ensures subsequent execution scopes cannot inadvertently expose the key while retaining functionality.
+SEO/GEO area reviewed: Schema.org structured data
+Issue found: The `BreadcrumbList` object was missing from the Schema.org definition for the Couples Before Separation and Couples Crisis landing pages.
+Changed files:
+- `src/pages/Landing/CouplesBeforeSeparation/CouplesBeforeSeparationPage.tsx`
+- `src/pages/Landing/CouplesCrisis/CouplesCrisisPage.tsx`
+Validation command: `npm run check` (All builds and tests passed)
+Remaining larger recommendations: Implement a systematic way to manage Schema across landing pages to prevent divergence.

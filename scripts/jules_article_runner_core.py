@@ -206,7 +206,8 @@ def open_article_prs(token: str) -> list[dict[str, Any]]:
         if not isinstance(pr, dict):
             continue
         number = pr.get("number")
-        if not number:
+        title = str(pr.get("title") or "").strip()
+        if not number or not title.startswith("Publish Kesher article:"):
             continue
         files = request_json("GET", f"https://api.github.com/repos/{REPO}/pulls/{number}/files?per_page=100", headers)
         if isinstance(files, list) and any(
