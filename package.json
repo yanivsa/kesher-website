@@ -32,7 +32,7 @@
   "author": "Shira Saharoni",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yanivsa/kesher-website/issues"
+    "url": "https://api.github.com/repos/yanivsa/kesher-website/issues{/number}"
   },
   "homepage": "https://kesher.saharoni.com",
   "dependencies": {
@@ -53,9 +53,9 @@
     "@cloudflare/workers-types": "^4.20260617.1",
     "@eslint/js": "^10.0.1",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
-    "@ffprobe-installer/ffprobe": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^2.1.2",
     "@playwright/test": "^1.61.0",
-    "@remotion/cli": "4.0.506",
+    "@remotion/cli": "^4.0.506",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.17",
