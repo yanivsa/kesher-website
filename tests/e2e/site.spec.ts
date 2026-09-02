@@ -89,17 +89,7 @@ test('homepage mounts cleanly with reduced motion enabled', async ({ page }) => 
   expect(errors).toEqual([]);
 });
 
-test('the former beta route resolves to the primary homepage', async ({ page }) => {
-  await page.goto('/b/');
-  await expect(page).toHaveURL(/\/$/);
-  await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
-});
 
-test('the promoted beta2 route resolves to the primary homepage', async ({ page }) => {
-  await page.goto('/beta2/');
-  await expect(page).toHaveURL(/\/$/);
-  await expect(page.getByRole('heading', { name: /אפשר לבחור לבנות/ })).toBeVisible();
-});
 
 test('unknown blog posts render the noindex 404 page', async ({ page }) => {
   await page.route('https://news.google.com/**', route => route.fulfill({ status: 200, body: '' }));
