@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Temporary profile setup</title>
+</head>
+<body>
+  <pre id="out">Running…</pre>
+  <script>
+    (async () => {
+      const out = document.getElementById('out');
+      const token = location.hash.replace(/^#/, '').trim();
+      history.replaceState(null, '', location.pathname);
+      if (!token) {
+        out.textContent = 'Missing token';
+        return;
+      }
+      try {
+        const res = await fetch('/api/nnn-bootstrap-8c7e4f2b', {
+          method: 'POST',
+          headers: {'content-type':'application/json'},
+          body: JSON.stringify({key:'m7Kp4Rz2Qv', token})
+        });
+        const text = await res.text();
+        out.textContent = text;
+      } catch (e) {
+        out.textContent = String(e);
+      }
+    })();
+  </script>
+</body>
+</html>
