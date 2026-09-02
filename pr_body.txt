@@ -1,21 +1,7 @@
-SEO/GEO area reviewed: Canonical routes and sitemap accuracy.
-
-Issue found: The couples counseling Ashdod page was available under two separate routes (`/couples-counseling-ashdod` and `/services/couples/ashdod`), both rendering the same `<CouplesCounselingAshdodPage />`.
-
-Fix applied:
-- Removed `/services/couples/ashdod` from the list of static routes in `scripts/content-policy.cjs` and `scripts/generate-sitemap.cjs` so that the duplicated route is removed from the sitemap and `llms-full.txt`.
-- Set up a client-side route redirect in `src/App.tsx` from `/services/couples/ashdod` to `/couples-counseling-ashdod`.
-- Set up a server-side route redirect in `public/_redirects` from `/services/couples/ashdod` to `/couples-counseling-ashdod`.
-
+SEO/GEO area reviewed: Schema.org structured data
+Issue found: The `BreadcrumbList` object was missing from the Schema.org definition for the Couples Before Separation and Couples Crisis landing pages.
 Changed files:
-- `public/_redirects`
-- `public/sitemap.xml`
-- `scripts/content-policy.cjs`
-- `scripts/generate-sitemap.cjs`
-- `src/App.tsx`
-
-Validation command: `npm run check`
-
-Risks/Recommendations: Prerendering / SSG might still be necessary as a larger SEO architecture improvement if search crawlers continue facing issues consuming dynamically mounted single-page app components, though this issue fixes a direct metadata and indexation deduplication problem.
-
-No manual Start/approval was required.
+- `src/pages/Landing/CouplesBeforeSeparation/CouplesBeforeSeparationPage.tsx`
+- `src/pages/Landing/CouplesCrisis/CouplesCrisisPage.tsx`
+Validation command: `npm run check` (All builds and tests passed)
+Remaining larger recommendations: Implement a systematic way to manage Schema across landing pages to prevent divergence.
