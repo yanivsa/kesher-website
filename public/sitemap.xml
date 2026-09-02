@@ -102,11 +102,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/services/couples/ashdod</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://kesher.saharoni.com/services/couples/crisis</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
