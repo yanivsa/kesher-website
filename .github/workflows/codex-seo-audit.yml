@@ -71,16 +71,8 @@ jobs:
 
           geo_path = root / "scripts/analyze_geo.py"
           geo_text = geo_path.read_text(encoding="utf-8")
-          geo_old = '''        if not line or ":" not in line:
-              continue
-          '''
-          geo_new = '''        if not line:
-              current_agents = []
-              continue
-          if ":" not in line:
-              current_agents = []
-              continue
-          '''
+          geo_old = '        if not line or ":" not in line:\n            continue\n'
+          geo_new = '        if not line:\n            current_agents = []\n            continue\n        if ":" not in line:\n            current_agents = []\n            continue\n'
           if geo_text.count(geo_old) != 1:
               raise RuntimeError("Codex SEO robots parser patch anchor changed; refusing silent patch")
           geo_path.write_text(geo_text.replace(geo_old, geo_new, 1), encoding="utf-8")
@@ -93,22 +85,24 @@ jobs:
               raise RuntimeError("Codex SEO sitemap import patch anchor changed; refusing silent patch")
           sitemap_text = sitemap_text.replace(import_old, import_new, 1)
 
-          canonical_old = '''            marker = 'rel="canonical"'
-              if marker in lowered:
-                  idx = lowered.index(marker)
-                  href_marker = 'href="'
-                  href_idx = lowered.rfind(href_marker, max(0, idx - 400), idx + 400)
-                  if href_idx != -1:
-                      href_start = href_idx + len(href_marker)
-                      href_end = text.find('"', href_start)
-                      if href_end != -1:
-                          canonical = text[href_start:href_end].strip()
-          '''
-          canonical_new = '''            soup = BeautifulSoup(text, "html.parser")
-              canonical_link = soup.find("link", rel="canonical")
-              if canonical_link and canonical_link.get("href"):
-                  canonical = str(canonical_link["href"]).strip()
-          '''
+          canonical_old = (
+              "            marker = 'rel=\"canonical\"'\n"
+              "            if marker in lowered:\n"
+              "                idx = lowered.index(marker)\n"
+              "                href_marker = 'href=\"'\n"
+              "                href_idx = lowered.rfind(href_marker, max(0, idx - 400), idx + 400)\n"
+              "                if href_idx != -1:\n"
+              "                    href_start = href_idx + len(href_marker)\n"
+              "                    href_end = text.find('\"', href_start)\n"
+              "                    if href_end != -1:\n"
+              "                        canonical = text[href_start:href_end].strip()\n"
+          )
+          canonical_new = (
+              '            soup = BeautifulSoup(text, "html.parser")\n'
+              '            canonical_link = soup.find("link", rel="canonical")\n'
+              '            if canonical_link and canonical_link.get("href"):\n'
+              '                canonical = str(canonical_link["href"]).strip()\n'
+          )
           if sitemap_text.count(canonical_old) != 1:
               raise RuntimeError("Codex SEO canonical parser patch anchor changed; refusing silent patch")
           sitemap_path.write_text(sitemap_text.replace(canonical_old, canonical_new, 1), encoding="utf-8")
