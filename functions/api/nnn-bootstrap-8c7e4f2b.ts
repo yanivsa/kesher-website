@@ -3,7 +3,7 @@ const BRIDGE_KEY = 'm7Kp4Rz2Qv';
 const SHIRA_PERSON_ID = '473901';
 const noStoreHeaders = {'content-type':'application/json; charset=utf-8','cache-control':'no-store, max-age=0'};
 const formBody = (v: Record<string,string>) => { const b=new URLSearchParams(); for (const [k,x] of Object.entries(v)) b.set(k,x); return b; };
-const nnnFetch = (path:string, init:RequestInit={}) => fetch(`${ORIGIN}${path}`, {...init, redirect:'manual', cache:'no-store'});
+const nnnFetch = (path:string, init:RequestInit={}) => fetch(`${ORIGIN}${path}`, {...init, redirect:'manual'});
 const postForm = (path:string, values:Record<string,string>, cookie:string) => nnnFetch(path,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded;charset=UTF-8',cookie:`ok=${cookie}`,'user-agent':'Kesher-Saharoni-NNN-Setup/1.0','cache-control':'no-cache'},body:formBody(values)});
 const extractInputValue=(html:string,name:string)=>{const e=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');return new RegExp(`<input[^>]*name=["']${e}["'][^>]*value=["']([^"']*)["']`,'i').exec(html)?.[1]??new RegExp(`<input[^>]*value=["']([^"']*)["'][^>]*name=["']${e}["']`,'i').exec(html)?.[1]??null;};
 const extractOkCookie=(r:Response)=>/(?:^|,|;)\s*ok=([^;]+)/i.exec(r.headers.get('set-cookie')||'')?.[1]??null;
@@ -35,7 +35,7 @@ async function bootstrap(token:string){
     ['red','Children: The Challenge — Rudolf Dreikurs & Vicki Soltz']
   ];
   const profileStatuses:Record<string,number>={}; for(const [qcode,answer] of answers){profileStatuses[qcode]=(await postForm('/profile',{qcode,answer},cookie)).status;}
-  let photoStatus:number|null=null,photoUploaded=false; const src=await fetch('https://kesher.saharoni.com/images/shira_revava_poster.jpg',{cache:'no-store'}); if(src.ok){const fd=new FormData();fd.append('photo',await src.blob(),'shira-saharoni.jpg');const p=await nnnFetch('/photo',{method:'POST',headers:{cookie:`ok=${cookie}`,'user-agent':'Kesher-Saharoni-NNN-Setup/1.0'},body:fd});photoStatus=p.status;photoUploaded=p.status>=200&&p.status<400;}
+  let photoStatus:number|null=null,photoUploaded=false; const src=await fetch('https://kesher.saharoni.com/images/shira_revava_poster.jpg'); if(src.ok){const fd=new FormData();fd.append('photo',await src.blob(),'shira-saharoni.jpg');const p=await nnnFetch('/photo',{method:'POST',headers:{cookie:`ok=${cookie}`,'user-agent':'Kesher-Saharoni-NNN-Setup/1.0'},body:fd});photoStatus=p.status;photoUploaded=p.status>=200&&p.status<400;}
   const profileHtml=await (await nnnFetch('/profile',{headers:{cookie:`ok=${cookie}`,'user-agent':'Kesher-Saharoni-NNN-Setup/1.0','cache-control':'no-cache'}})).text();
   const photoHtml=await (await nnnFetch('/photo',{headers:{cookie:`ok=${cookie}`,'user-agent':'Kesher-Saharoni-NNN-Setup/1.0','cache-control':'no-cache'}})).text();
   return json({ok:true,personId,loginStatus:login.status,locationStatus:where.status,urlAdded,profileStatuses,profileComplete:!profileHtml.includes('name="qcode"')&&!profileHtml.includes('Professional title?'),photoUploaded,photoStatus,photoPageShowsImage:/<img\b/i.test(photoHtml),permanentProfile:'https://nownownow.com/p/Y5Gp'});
