@@ -60,11 +60,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Chromium
-        # Both article and full profiles can invoke prerender/build steps that launch Playwright.
-        # Install the browser before either quality gate to avoid missing executable failures.
-        run: npx playwright install chromium
-
       - name: Run focused article quality gate
         if: ${{ steps.profile.outputs.profile == 'article' }}
         run: |
@@ -74,6 +69,12 @@ jobs:
           npx vitest run tests/blog-preview.test.ts tests/app-routing.test.ts
           npm run build
           npm run verify:dist
+
+      - name: Install Chromium
+        if: ${{ steps.profile.outputs.profile == 'full' }}
+        # GitHub's ubuntu runner already carries Chromium's shared libraries.
+        # Avoid a network-dependent apt transaction that can hang the required check.
+        run: npx playwright install chromium
 
       - name: Validate article hero images
         if: ${{ steps.profile.outputs.profile == 'full' }}
