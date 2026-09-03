@@ -3,6 +3,7 @@ import unittest
 from scripts.kesher_article_normalizer import (
     ArticleNormalizationError,
     extract_target_article,
+    normalization_required,
     normalized_posts,
 )
 
@@ -56,6 +57,32 @@ class ArticleNormalizerTests(unittest.TestCase):
     def test_rejects_missing_target_article(self):
         with self.assertRaises(ArticleNormalizationError):
             extract_target_article(self.main_posts, self.main_posts, "2026-08-27")
+
+    def test_dirty_head_requires_normalization(self):
+        dirty_head = [
+            {"id": "sep-03", "date": "2026-09-03", "title": "MUTATED", "content": "BAD"},
+            self.target,
+            {"id": "aug-26", "date": "2026-08-26", "title": "older", "content": "C"},
+        ]
+        self.assertTrue(
+            normalization_required(
+                self.main_posts,
+                dirty_head,
+                "2026-08-27",
+                ["src/data/posts.json", "src/pages/Home/Home.module.css"],
+            )
+        )
+
+    def test_clean_canonical_head_does_not_require_normalization(self):
+        clean_head = normalized_posts(self.main_posts, self.target)
+        self.assertFalse(
+            normalization_required(
+                self.main_posts,
+                clean_head,
+                "2026-08-27",
+                ["src/data/posts.json", "src/data/postSummaries.json", "public/rss.xml"],
+            )
+        )
 
 
 if __name__ == "__main__":
