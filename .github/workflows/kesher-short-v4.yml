@@ -31,12 +31,25 @@ on:
           - upload
           - rebuild
           - release
+          - derive
       rebuild_item_id:
         description: Exact technically rejected item to rebuild with Remotion
         required: false
         type: string
       release_slug:
         description: Exact article slug to release without a Short
+        required: false
+        type: string
+      derive_slug:
+        description: Exact article slug whose long-form provider identity should feed the Short
+        required: false
+        type: string
+      derive_content_sha256:
+        description: Exact authoritative article content hash
+        required: false
+        type: string
+      derive_long_item_id:
+        description: Exact published long-form durable item id to reuse
         required: false
         type: string
 
@@ -165,7 +178,7 @@ jobs:
           fi
 
       - name: Materialize NotebookLM credentials without exposing them
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild') }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
         env:
           NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
           NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
@@ -228,12 +241,64 @@ jobs:
           test -n "$RELEASE_SLUG"
           python -u scripts/kesher_video_reconcile.py --release-without-short "$RELEASE_SLUG"
 
+
+      - name: Restore exact long-form durable state for Short derivation
+        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'derive' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          long_dir="${GITHUB_WORKSPACE}/.kesher-long-video-state"
+          mkdir -p "$long_dir"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/long-video-artifacts.txt
+          test -s /tmp/long-video-artifacts.txt
+          restored="false"
+          while read -r artifact_id; do
+            [ -n "$artifact_id" ] || continue
+            archive="$(mktemp /tmp/kesher-long-video.XXXXXX.zip)"
+            if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
+              rm -f "$archive"
+              continue
+            fi
+            temp_extract="$(mktemp -d)"
+            if unzip -oq "$archive" -d "$temp_extract" 2>/dev/null \
+              && [ -s "$temp_extract/state.json" ] \
+              && python -c 'import json,sys; s=json.load(sys.stdin); assert s.get("version") == 1 and isinstance(s.get("items"), list)' < "$temp_extract/state.json" 2>/dev/null; then
+              cp "$temp_extract/state.json" "$long_dir/state.json"
+              restored="true"
+              rm -f "$archive"
+              rm -rf "$temp_extract"
+              break
+            fi
+            rm -f "$archive"
+            rm -rf "$temp_extract"
+          done < /tmp/long-video-artifacts.txt
+          test "$restored" = "true"
+
+      - name: Adopt exact published long-form provider identity for Short
+        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'derive' }}
+        env:
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
+          DERIVE_CONTENT_SHA256: ${{ inputs.derive_content_sha256 }}
+          DERIVE_LONG_ITEM_ID: ${{ inputs.derive_long_item_id }}
+        run: |
+          set -euo pipefail
+          test -n "$DERIVE_SLUG"
+          test -n "$DERIVE_CONTENT_SHA256"
+          test -n "$DERIVE_LONG_ITEM_ID"
+          python -u scripts/kesher_video_reconcile.py \
+            --adopt-long-form-state "${GITHUB_WORKSPACE}/.kesher-long-video-state/state.json" \
+            --slug "$DERIVE_SLUG" \
+            --content-sha256 "$DERIVE_CONTENT_SHA256" \
+            --long-item-id "$DERIVE_LONG_ITEM_ID"
+
       - name: Reconcile exact article or existing provider identity before generation
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate') }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation
 
       - name: Generate or resume exact NotebookLM-derived Short
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate') }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
         run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150
 
       - name: Rebuild exact rejected Short with Remotion
@@ -244,7 +309,7 @@ jobs:
           python -u scripts/kesher_short_pipeline_v4.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
 
       - name: Prepare exact technically verified Short upload
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -252,7 +317,7 @@ jobs:
         run: python -u scripts/kesher_video_reconcile.py --prepare-upload
 
       - name: Upload exact Short once and verify it public
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -265,7 +330,7 @@ jobs:
           python -u scripts/kesher_short_pipeline_v4.py --upload-only
 
       - name: Remove uploaded media after public verification
-        if: ${{ github.event_name != 'pull_request' && success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        if: ${{ github.event_name != 'pull_request' && success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
         run: python -u scripts/kesher_short_pipeline_v4.py --prune-uploaded-media
 
       - name: Seal refreshed NotebookLM credentials into durable state

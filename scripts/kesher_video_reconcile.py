@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from pathlib import Path
 from typing import Any
 
 if __package__:
@@ -319,17 +320,130 @@ def prepare_upload() -> int:
     return 0
 
 
+
+def adopt_long_form_provider(state_path: str, slug: str, content_sha256: str, long_item_id: str) -> int:
+    """Seed/resume one Short from an already-published long-form provider identity.
+
+    This path never calls NotebookLM generation. It only copies the exact durable
+    provider identity into Short state, after verifying the current article and
+    the long-form public YouTube evidence.
+    """
+    slug = str(slug or "").strip()
+    content_sha256 = str(content_sha256 or "").strip()
+    long_item_id = str(long_item_id or "").strip()
+    if not slug or not content_sha256 or not long_item_id:
+        raise pipeline.PipelineError("Short derive requires slug, content hash and long-form item id")
+
+    source = current_source_snapshot(slug)
+    if str(source.get("content_sha256") or "") != content_sha256:
+        raise pipeline.PipelineError(f"Published source hash changed before Short derive for {slug}")
+
+    path = Path(state_path)
+    if not path.is_file():
+        raise pipeline.PipelineError("Long-form durable state is missing for Short derive")
+    long_state = json.loads(path.read_text(encoding="utf-8"))
+    if long_state.get("version") != 1 or not isinstance(long_state.get("items"), list):
+        raise pipeline.PipelineError("Long-form durable state schema is unsupported")
+
+    matches = [
+        item for item in long_state["items"]
+        if isinstance(item, dict)
+        and str(item.get("id") or "") == long_item_id
+        and source_slug(item) == slug
+        and str((item.get("source") or {}).get("content_sha256") or "") == content_sha256
+    ]
+    if len(matches) != 1:
+        raise pipeline.PipelineError("Exact long-form provider item was not found uniquely")
+    long_item = matches[0]
+    verification = long_item.get("youtube_verification") or {}
+    if not (
+        long_item.get("uploaded") is True
+        and long_item.get("status") == "uploaded"
+        and long_item.get("youtube_id")
+        and verification.get("channel_id") == pipeline.YOUTUBE_CHANNEL_ID
+        and verification.get("privacy_status") == "public"
+        and verification.get("processing_status") == "succeeded"
+    ):
+        raise pipeline.PipelineError("Long-form provider item is not authoritatively public")
+
+    source_id = str(long_item.get("source_id") or "").strip()
+    task_id = str(long_item.get("task_id") or "").strip()
+    artifact_id = str(long_item.get("artifact_id") or "").strip()
+    if not source_id or not task_id or not artifact_id or task_id != artifact_id:
+        raise pipeline.PipelineError("Long-form provider identity is incomplete")
+
+    state = pipeline.load_state()
+    same_source = [
+        item for item in state.get("items") or []
+        if isinstance(item, dict)
+        and source_slug(item) == slug
+        and str((item.get("source") or {}).get("content_sha256") or "") == content_sha256
+    ]
+    uploaded = [item for item in same_source if item.get("uploaded") is True and item.get("status") == "uploaded"]
+    if uploaded:
+        print(f"SHORT_DERIVE_ALREADY_PUBLIC slug={slug} item={uploaded[-1].get('id')}")
+        return 0
+
+    unresolved = [item for item in same_source if item.get("uploaded") is not True and item.get("status") in UNRESOLVED_STATUSES]
+    if len(unresolved) > 1:
+        raise pipeline.PipelineError("More than one unresolved Short exists for derived source")
+    if unresolved:
+        item = unresolved[0]
+        existing_identity = (
+            str(item.get("source_id") or ""),
+            str(item.get("task_id") or ""),
+            str(item.get("artifact_id") or ""),
+        )
+        if any(existing_identity) and existing_identity != (source_id, task_id, artifact_id):
+            raise pipeline.PipelineError("Existing Short provider identity differs from long-form source")
+        item.update({
+            "source_id": source_id,
+            "task_id": task_id,
+            "artifact_id": artifact_id,
+            "adopted_from_long_item_id": long_item_id,
+            "shared_provider_identity": True,
+            "updated_at": pipeline.utc_now(),
+        })
+        if item.get("status") in {"source_selected", "source_added"}:
+            item["status"] = "generating"
+        pipeline.save_state(state)
+        print(f"SHORT_DERIVE_RESUMED slug={slug} item={item.get('id')} long_item={long_item_id}")
+        return 0
+
+    item = pipeline.new_item(source)
+    item.update({
+        "type": "article_short",
+        "source_mode": "overview-segment",
+        "fresh_generation_attempt": 0,
+        "status": "generating",
+        "source_id": source_id,
+        "task_id": task_id,
+        "artifact_id": artifact_id,
+        "adopted_from_long_item_id": long_item_id,
+        "shared_provider_identity": True,
+    })
+    state.setdefault("items", []).append(item)
+    pipeline.save_state(state)
+    print(f"SHORT_DERIVE_ADOPTED slug={slug} item={item.get('id')} long_item={long_item_id}")
+    return 0
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--prepare-generation", action="store_true")
     mode.add_argument("--prepare-upload", action="store_true")
     mode.add_argument("--release-without-short", metavar="SLUG")
+    mode.add_argument("--adopt-long-form-state", metavar="STATE_PATH")
+    parser.add_argument("--slug", default="")
+    parser.add_argument("--content-sha256", default="")
+    parser.add_argument("--long-item-id", default="")
     args = parser.parse_args()
     if args.prepare_generation:
         return prepare_generation()
     if args.prepare_upload:
         return prepare_upload()
+    if args.adopt_long_form_state:
+        return adopt_long_form_provider(args.adopt_long_form_state, args.slug, args.content_sha256, args.long_item_id)
     return release_without_short(str(args.release_without_short))
 
 

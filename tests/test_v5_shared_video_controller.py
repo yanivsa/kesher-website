@@ -48,6 +48,7 @@ def verified_item(source: dict, youtube_id: str, *, item_id: str, provider: bool
 
 class FakeGitHub:
     def __init__(self) -> None:
+        self.api = "https://api.github.test/repos/yanivsa/kesher-website"
         self.saved_state = None
         self.posts = [article()]
         self.prs = []
@@ -56,6 +57,21 @@ class FakeGitHub:
         self.long_state = {"version": 1, "items": []}
         self.short_state = {"version": 1, "items": []}
         self.dispatches = []
+
+
+    def request(self, method, path, body=None, allow_404=False):
+        if method == "POST" and "/actions/workflows/" in path and path.endswith("/dispatches"):
+            import urllib.parse
+            workflow = urllib.parse.unquote(path.split("/actions/workflows/", 1)[1].rsplit("/dispatches", 1)[0])
+            inputs = copy.deepcopy((body or {}).get("inputs"))
+            self.dispatches.append((workflow, inputs))
+            self.active[workflow] = {
+                "id": len(self.dispatches),
+                "status": "in_progress",
+                "event": "workflow_dispatch",
+            }
+            return {}
+        raise AssertionError(f"unexpected request {method} {path}")
 
     def load_controller_state(self):
         return copy.deepcopy(self.saved_state)
