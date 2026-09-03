@@ -44,7 +44,7 @@ jobs:
           posts.insert(0, article)
           posts_path.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
-          source = Path('public/images/generated/blog/aliyah-couples-cultural-gaps.jpg')
+          source = Path('public/images/generated/blog/relocation-crisis.jpg')
           target = Path('public/images/generated/blog/aliyah-homesickness-balance.jpg')
           if not source.is_file():
               raise SystemExit('validated relocation fallback missing on main')
