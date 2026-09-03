@@ -4,6 +4,8 @@ import copy
 from datetime import date
 from typing import Any
 
+from scripts.kesher_article_contract import forbidden_article_paths
+
 
 class ArticleNormalizationError(RuntimeError):
     pass
@@ -88,3 +90,15 @@ def normalized_posts(
     if not inserted:
         result.append(target)
     return result
+
+
+def normalization_required(
+    base_posts: list[dict[str, Any]],
+    head_posts: list[dict[str, Any]],
+    slot: str,
+    changed_paths: list[str],
+) -> bool:
+    """Return True when the article branch is not the canonical current-main diff."""
+    article = extract_target_article(base_posts, head_posts, slot)
+    expected_posts = normalized_posts(base_posts, article)
+    return bool(forbidden_article_paths(changed_paths) or head_posts != expected_posts)
