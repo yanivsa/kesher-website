@@ -117,6 +117,34 @@ def _oldest_unresolved_item(video_state: dict[str, Any]) -> dict[str, Any] | Non
     )[0]
 
 
+
+def _reconcile_video_dispatch_inputs(
+    inputs: dict[str, str] | None,
+    item: dict[str, Any] | None,
+) -> dict[str, str] | None:
+    """Revalidate an exact rebuild request against the newest durable Short state.
+
+    Controller decisions and workflow dispatches are separated by API reads. If
+    the Short state advances in that window, never dispatch a stale rebuild id
+    into a worker that will restore the newer durable state.
+    """
+    if not isinstance(inputs, dict) or str(inputs.get("operation") or "") != "rebuild":
+        return inputs
+    if not isinstance(item, dict):
+        return None
+    if (
+        str(item.get("status") or "") != "rejected"
+        or item.get("technical_verified") is not True
+        or str(item.get("visual_review_status") or "") != "rejected"
+    ):
+        return None
+    fresh_id = str(item.get("id") or "").strip()
+    if not fresh_id:
+        return None
+    reconciled = copy.deepcopy(inputs)
+    reconciled["rebuild_item_id"] = fresh_id
+    return reconciled
+
 def _infer_slot(pr: dict[str, Any], base_posts: list[dict[str, Any]], head_posts: list[dict[str, Any]]) -> str:
     title = str(pr.get("title") or "")
     matches = re.findall(r"\b20\d{2}-\d{2}-\d{2}\b", title)
@@ -297,6 +325,10 @@ class V4Controller(legacy.BestEffortController):
         current = state["video"]
         video_state = self.github.newest_video_state()
         item = _oldest_unresolved_item(video_state)
+        if isinstance(inputs, dict) and str(inputs.get("operation") or "") == "rebuild":
+            inputs = _reconcile_video_dispatch_inputs(inputs, item)
+            if inputs is None:
+                return
         if item and str(item.get("status") or "") == RELEASED_SHORT_STATUS:
             raise ShortReleased(_source_slug(item))
 
