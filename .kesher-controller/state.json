@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-03",
-  "status": "image_retry_wait",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -17,8 +17,8 @@
     "run_id": 33703982682,
     "processed_run_id": 33686725078,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
@@ -60,7 +60,11 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/647",
     "merge_dispatch_at": "2026-09-03T07:35:17.986545+00:00",
     "merge_dispatch_count": 1,
-    "merge_image_attempt_count": 2
+    "merge_image_attempt_count": 2,
+    "slug": "smart-youth-focus-tasks-organization",
+    "title": "הילד נבון מאוד אבל מתקשה להתארגן: מה קורה כשהמחוננות פוגשת קשיי קשב",
+    "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
+    "published_date": "2026-09-03"
   },
   "video": {
     "attempt_count": 0,
@@ -1121,9 +1125,15 @@
       "details": {
         "retry_at": "2026-09-03T08:16:21.945383+00:00"
       }
+    },
+    {
+      "at": "2026-09-03T08:21:44.587148+00:00",
+      "from": "image_retry_wait",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-09-03T08:14:50.927669+00:00",
+  "updated_at": "2026-09-03T08:21:44.587165+00:00",
   "image": {
     "attempt_count": 2,
     "status": "retry_wait",
