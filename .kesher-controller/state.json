@@ -1,10 +1,10 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-03",
-  "status": "video_running",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": {
       "stage": "article",
       "code": "JULES_TIMEOUT_SESSION_ACTIVE",
@@ -66,12 +66,12 @@
     "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
     "published_date": "2026-09-03",
     "live": true,
-    "live_verified_at": "2026-09-03T09:13:14.247610+00:00",
+    "live_verified_at": "2026-09-03T09:50:31.829063+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
     "attempt_count": 2,
-    "status": "generating",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 33736293009,
@@ -86,7 +86,10 @@
     "last_dispatch_at": "2026-09-03T08:58:46.174827+00:00",
     "source_id": "aef6e7c7-db56-4599-ad73-6a98efc059e3",
     "artifact_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
-    "last_run_conclusion": "success"
+    "last_run_conclusion": "success",
+    "youtube_id": "cK5JxdtgGQY",
+    "youtube_url": "https://youtu.be/cK5JxdtgGQY",
+    "verified": true
   },
   "backlog": [
     {
@@ -327,24 +330,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-29T18:30:37.922673+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_PRS",
-      "details": {
-        "message": "2 open article PRs modify posts.json"
-      }
-    },
-    {
-      "at": "2026-08-29T18:35:00.875357+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_PRS",
-      "details": {
-        "message": "2 open article PRs modify posts.json"
-      }
-    },
     {
       "at": "2026-08-29T18:49:30.803832+00:00",
       "from": "blocked",
@@ -1178,12 +1163,24 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-03T09:50:31.829080+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-03T09:50:33.847488+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-09-03T09:13:18.818763+00:00",
+  "updated_at": "2026-09-03T09:50:33.847506+00:00",
   "image": {
     "attempt_count": 2,
-    "status": "retry_wait",
+    "status": "complete",
     "last_error": {
       "stage": "image",
       "code": "IMAGE_OUTPUT_MISSING",
