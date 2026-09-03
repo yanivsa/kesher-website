@@ -1,24 +1,28 @@
 import React from "react";
 import { Composition } from "remotion";
 import { ArticleShort } from "./ArticleShort";
+import type { ArticleShortProps } from "./ArticleShort";
 import { KesherOverview } from "./kesher-overview/KesherOverview";
 import type { KesherOverviewProps } from "./kesher-overview/types";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      <Composition
+      <Composition<ArticleShortProps>
         id="ArticleShort"
-        component={ArticleShort as unknown as React.ComponentType<Record<string, unknown>>}
-        durationInFrames={900}
+        component={ArticleShort}
+        durationInFrames={1350}
         fps={30}
         width={1080}
         height={1920}
+        calculateMetadata={({props}) => ({durationInFrames: props.durationInFrames})}
         defaultProps={{
+          videoSrc: "kesher-input.mp4",
+          sourceStartFrame: 0,
+          durationInFrames: 1350,
           title: "כותרת המאמר היומי",
-          excerpt: "תקציר המאמר וטיפים זהב מתוך הקליניקה לחיים זוגיים ומשפחתיים שמחים יותר.",
           category: "זוגיות",
-          image: ""
+          url: "kesher.saharoni.com",
         }}
       />
       <Composition<KesherOverviewProps>

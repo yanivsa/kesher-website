@@ -1,136 +1,120 @@
 import React from "react";
-import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import {Video} from "@remotion/media";
+import {
+  AbsoluteFill,
+  interpolate,
+  staticFile,
+  useCurrentFrame,
+  useVideoConfig,
+} from "remotion";
 
 export interface ArticleShortProps {
+  videoSrc: string;
+  sourceStartFrame: number;
+  durationInFrames: number;
   title: string;
-  excerpt: string;
   category: string;
-  image?: string;
+  url: string;
 }
 
 export const ArticleShort: React.FC<ArticleShortProps> = ({
+  videoSrc,
+  sourceStartFrame,
+  durationInFrames,
   title,
-  excerpt,
   category,
-  image
+  url,
 }) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-
-  const titleSpring = spring({ frame, fps, config: { damping: 12 } });
-  const contentSpring = spring({ frame: frame - 30, fps, config: { damping: 14 } });
-  const ctaSpring = spring({ frame: frame - 60, fps, config: { damping: 15 } });
-
-  const bgHue = interpolate(frame, [0, 900], [140, 200]);
+  const {fps} = useVideoConfig();
+  const intro = interpolate(frame, [0, Math.max(1, Math.round(0.45 * fps))], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const outroStart = Math.max(0, durationInFrames - Math.round(2.5 * fps));
+  const outro = interpolate(frame, [outroStart, durationInFrames - 1], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
   return (
-    <AbsoluteFill
-      style={{
-        background: `linear-gradient(135deg, hsl(${bgHue}, 45%, 20%), hsl(${bgHue + 40}, 55%, 12%))`,
-        fontFamily: "'Heebo', 'Rubik', sans-serif",
-        color: "#ffffff",
-        direction: "rtl",
-        padding: "80px 60px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        alignItems: "center",
-        textAlign: "center"
-      }}
-    >
-      {/* Background Image with Blur & Dark Overlay */}
-      {image && (
-        <AbsoluteFill style={{ opacity: 0.25, filter: "blur(8px)" }}>
-          <img src={image} style={{ width: "100%", height: "100%", objectFit: "cover" }} alt="" />
-        </AbsoluteFill>
-      )}
+    <AbsoluteFill style={{backgroundColor: "#101714"}}>
+      <Video
+        src={staticFile(videoSrc)}
+        trimBefore={sourceStartFrame}
+        durationInFrames={durationInFrames}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center center",
+        }}
+      />
 
-      {/* Top Header Badge */}
+      <AbsoluteFill
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(6,14,10,0.68) 0%, rgba(6,14,10,0.08) 25%, rgba(6,14,10,0.04) 64%, rgba(6,14,10,0.76) 100%)",
+        }}
+      />
+
       <div
         style={{
-          transform: `scale(${titleSpring})`,
-          background: "linear-gradient(90deg, #7c9e87, #4a7c59)",
-          padding: "16px 40px",
-          borderRadius: "50px",
-          fontSize: "36px",
-          fontWeight: 800,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.3)"
+          position: "absolute",
+          top: 76,
+          left: 54,
+          right: 54,
+          direction: "rtl",
+          textAlign: "right",
+          opacity: intro,
+          translate: `0 ${interpolate(intro, [0, 1], [-18, 0])}px`,
+          fontFamily: "Heebo, Rubik, Arial, sans-serif",
+          color: "white",
+          textShadow: "0 3px 18px rgba(0,0,0,0.72)",
         }}
       >
-        {category || "ייעוץ זוגי והדרכת הורים"}
-      </div>
-
-      {/* Main Title & Excerpt */}
-      <div style={{ zIndex: 2, margin: "auto 0" }}>
-        <h1
+        <div
           style={{
-            transform: `translateY(${interpolate(titleSpring, [0, 1], [50, 0])}px)`,
-            opacity: titleSpring,
-            fontSize: "64px",
-            lineHeight: 1.25,
+            display: "inline-block",
+            padding: "9px 20px",
+            borderRadius: 999,
+            backgroundColor: "rgba(29,72,52,0.88)",
+            fontSize: 30,
+            fontWeight: 700,
+            marginBottom: 18,
+          }}
+        >
+          {category}
+        </div>
+        <div
+          style={{
+            fontSize: 54,
+            lineHeight: 1.12,
             fontWeight: 900,
-            textShadow: "0 4px 20px rgba(0,0,0,0.6)",
-            marginBottom: "40px",
-            color: "#ffffff"
+            maxWidth: 930,
           }}
         >
           {title}
-        </h1>
-
-        <div
-          style={{
-            transform: `translateY(${interpolate(contentSpring, [0, 1], [40, 0])}px)`,
-            opacity: contentSpring,
-            background: "rgba(255, 255, 255, 0.12)",
-            backdropFilter: "blur(12px)",
-            borderRadius: "24px",
-            padding: "40px",
-            border: "1px solid rgba(255, 255, 255, 0.2)",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.3)"
-          }}
-        >
-          <p
-            style={{
-              fontSize: "40px",
-              lineHeight: 1.4,
-              fontWeight: 500,
-              color: "#f0f4f1",
-              margin: 0
-            }}
-          >
-            {excerpt}
-          </p>
         </div>
       </div>
 
-      {/* Bottom CTA Footer */}
       <div
         style={{
-          transform: `scale(${ctaSpring})`,
-          opacity: ctaSpring,
-          zIndex: 2,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "16px"
+          position: "absolute",
+          left: 52,
+          right: 52,
+          bottom: 76,
+          direction: "rtl",
+          textAlign: "center",
+          opacity: Math.max(0.78, outro),
+          fontFamily: "Heebo, Rubik, Arial, sans-serif",
+          color: "white",
+          fontSize: 30,
+          fontWeight: 800,
+          textShadow: "0 2px 14px rgba(0,0,0,0.8)",
         }}
       >
-        <div
-          style={{
-            background: "linear-gradient(90deg, #e6af2e, #f4d068)",
-            color: "#1a2e22",
-            padding: "20px 60px",
-            borderRadius: "50px",
-            fontSize: "40px",
-            fontWeight: 900,
-            boxShadow: "0 10px 30px rgba(230, 175, 46, 0.4)"
-          }}
-        >
-          לקריאת המאמר המלא ↺
-        </div>
-        <span style={{ fontSize: "32px", color: "rgba(255,255,255,0.8)", fontWeight: 700 }}>
-          שירה סהרוני | kesher.saharoni.com
-        </span>
+        שירה סהרוני · {url}
       </div>
     </AbsoluteFill>
   );
