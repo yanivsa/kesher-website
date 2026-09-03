@@ -3,7 +3,8 @@
 
 Keep the V4 state machine independent from a concrete workflow filename/name,
 then bind the single production Short worker here. This prevents the legacy
-horizontal Video Overview workflow from being dispatched by the controller.
+horizontal Video Overview workflow or its durable state from being adopted by
+Short V4.
 """
 
 from __future__ import annotations
@@ -17,10 +18,12 @@ else:
 
 SHORT_WORKFLOW_FILE = "kesher-short-v4.yml"
 SHORT_WORKFLOW_NAME = "Kesher Daily Article Short V4"
+SHORT_STATE_ARTIFACT = "kesher-short-v4-state"
 
 
 def install_runtime() -> None:
     v4.core.VIDEO_WORKFLOW = SHORT_WORKFLOW_FILE
+    v4.core.VIDEO_STATE_ARTIFACT = SHORT_STATE_ARTIFACT
     v4.v3.entry.VIDEO_WORKFLOW_NAME = SHORT_WORKFLOW_NAME
 
 
