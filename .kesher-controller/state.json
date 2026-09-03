@@ -66,12 +66,12 @@
     "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
     "published_date": "2026-09-03",
     "live": true,
-    "live_verified_at": "2026-09-03T08:58:34.358876+00:00",
+    "live_verified_at": "2026-09-03T09:01:48.015507+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 33736293009,
@@ -327,21 +327,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-28T15:21:13.938686+00:00",
-      "from": "article_image_running",
-      "to": "article_pr_open",
-      "reason": "article PR has trusted image and remains authoritative"
-    },
-    {
-      "at": "2026-08-28T15:49:39.194171+00:00",
-      "from": "article_pr_open",
-      "to": "article_pr_open",
-      "reason": "image best-effort exhausted; article publication remains allowed",
-      "details": {
-        "pr_number": 579
-      }
-    },
     {
       "at": "2026-08-28T15:53:44.728159+00:00",
       "from": "article_pr_open",
@@ -1199,9 +1184,21 @@
         "operation": "full",
         "resume": 4
       }
+    },
+    {
+      "at": "2026-09-03T09:01:48.015524+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-03T09:01:50.342696+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-03T08:58:46.174841+00:00",
+  "updated_at": "2026-09-03T09:01:50.342716+00:00",
   "image": {
     "attempt_count": 2,
     "status": "retry_wait",
