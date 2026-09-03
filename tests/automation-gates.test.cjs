@@ -77,7 +77,8 @@ function testTrustedArticleImageV2() {
   assert(workflow.includes('article-image-worker-v4.py'));
   assert(workflow.includes('actions/workflows/ci.yml/dispatches'));
   assert(controllerWorkflow.includes('Kesher Trusted Article Image'));
-  assert(controllerWorkflow.includes('kesher_content_controller_v3_best_effort.py'));
+  assert(controllerWorkflow.includes('kesher_content_controller_v4_runtime.py'));
+  assert(!controllerWorkflow.includes('kesher_content_controller_v3_best_effort.py --report-json'));
 
   assert(workerV3.includes('GEMINI_MODEL = "gemini-3.1-flash-image"'));
   assert(workerV3.includes('VERIFY_MODEL = "gemini-3.5-flash"'));
