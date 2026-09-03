@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-03",
-  "status": "article_deploying",
+  "status": "video_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -64,21 +64,28 @@
     "slug": "smart-youth-focus-tasks-organization",
     "title": "הילד נבון מאוד אבל מתקשה להתארגן: מה קורה כשהמחוננות פוגשת קשיי קשב",
     "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
-    "published_date": "2026-09-03"
+    "published_date": "2026-09-03",
+    "live": true,
+    "live_verified_at": "2026-09-03T08:24:51.608763+00:00",
+    "next_deploy_retry_at": null
   },
   "video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "3c54276b-2077-4177-a50b-e85dca187c6d",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "resume_dispatches": 0
+    "resume_dispatches": 2,
+    "item_id": "video-20260831-225502-2b94464a89",
+    "last_dispatch_at": "2026-09-03T08:25:03.236901+00:00",
+    "source_id": "d47ce1cc-381d-491c-b014-5a74abd562c7",
+    "artifact_id": "3c54276b-2077-4177-a50b-e85dca187c6d"
   },
   "backlog": [
     {
@@ -1131,9 +1138,25 @@
       "from": "image_retry_wait",
       "to": "article_deploying",
       "reason": "deployment already active"
+    },
+    {
+      "at": "2026-09-03T08:24:51.608783+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-03T08:25:03.236908+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-09-03T08:21:44.587165+00:00",
+  "updated_at": "2026-09-03T08:25:03.236915+00:00",
   "image": {
     "attempt_count": 2,
     "status": "retry_wait",
