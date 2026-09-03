@@ -914,7 +914,7 @@
       "reason": "controller state migrated from schema 4 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-03T23:46:06.564971+00:00",
+  "updated_at": "2026-09-03T23:53:55.071053+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
