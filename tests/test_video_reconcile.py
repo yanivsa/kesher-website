@@ -304,5 +304,68 @@ class VideoReconcileTests(unittest.TestCase):
         insert.assert_not_called()
 
 
+    def test_adopt_long_form_provider_seeds_short_without_new_generation_identity(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        long_item = pipeline.new_item(source)
+        long_item.update({
+            "id": "long-1",
+            "status": "uploaded",
+            "uploaded": True,
+            "source_id": "source-1",
+            "task_id": "task-1",
+            "artifact_id": "task-1",
+            "youtube_id": "long123",
+            "youtube_url": "https://youtu.be/long123",
+            "youtube_verification": {
+                "channel_id": pipeline.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        })
+        long_path = self.root / "long-state.json"
+        long_path.write_text(json.dumps({"version": 1, "items": [long_item]}), encoding="utf-8")
+
+        self.assertEqual(
+            reconcile.adopt_long_form_provider(str(long_path), "today", source["content_sha256"], "long-1"),
+            0,
+        )
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["status"], "generating")
+        self.assertEqual(saved[0]["type"], "article_short")
+        self.assertEqual(saved[0]["fresh_generation_attempt"], 0)
+        self.assertEqual(saved[0]["source_id"], "source-1")
+        self.assertEqual(saved[0]["task_id"], "task-1")
+        self.assertEqual(saved[0]["artifact_id"], "task-1")
+        self.assertEqual(saved[0]["adopted_from_long_item_id"], "long-1")
+        self.assertTrue(saved[0]["shared_provider_identity"])
+
+    def test_adopt_long_form_provider_rejects_content_hash_mismatch(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        long_item = pipeline.new_item(source)
+        long_item.update({
+            "id": "long-1",
+            "status": "uploaded",
+            "uploaded": True,
+            "source_id": "source-1",
+            "task_id": "task-1",
+            "artifact_id": "task-1",
+            "youtube_id": "long123",
+            "youtube_verification": {
+                "channel_id": pipeline.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        })
+        long_path = self.root / "long-state.json"
+        long_path.write_text(json.dumps({"version": 1, "items": [long_item]}), encoding="utf-8")
+        with self.assertRaisesRegex(pipeline.PipelineError, "hash changed"):
+            reconcile.adopt_long_form_provider(str(long_path), "today", "0" * 64, "long-1")
+
+
 if __name__ == "__main__":
     unittest.main()

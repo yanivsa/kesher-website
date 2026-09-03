@@ -17,12 +17,13 @@ V4_RUNTIME = ROOT / "scripts" / "kesher_content_controller_v4_runtime.py"
 
 
 class V4RuntimeActivationTests(unittest.TestCase):
-    def test_content_controller_runs_v4_and_listens_to_short_v4(self):
+    def test_content_controller_runs_v5_and_listens_to_both_video_products(self):
         workflow = CONTROLLER_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Kesher Daily Article Short V4", workflow)
-        self.assertNotIn("Kesher Daily NotebookLM Video Overview", workflow)
-        self.assertIn("scripts/kesher_content_controller_v4_runtime.py --report-json", workflow)
-        self.assertIn("Video fresh attempts: {video.get('attempt_count', 0)}/4", workflow)
+        self.assertIn("Kesher Daily NotebookLM Video Overview", workflow)
+        self.assertIn("scripts/kesher_content_controller_v5_runtime.py --report-json", workflow)
+        self.assertIn("Long video:", workflow)
+        self.assertIn("Short:", workflow)
 
     def test_v4_runtime_dispatches_only_the_dedicated_short_workflow(self):
         source = V4_RUNTIME.read_text(encoding="utf-8")
@@ -93,8 +94,11 @@ class V4RuntimeActivationTests(unittest.TestCase):
         self.assertIn("name: Kesher Daily Article Short V4", workflow)
         self.assertIn("scripts/kesher_short_pipeline_v4.py", workflow)
         self.assertIn("- release", workflow)
+        self.assertIn("- derive", workflow)
         self.assertIn("release_slug:", workflow)
+        self.assertIn("derive_long_item_id:", workflow)
         self.assertIn("--release-without-short", workflow)
+        self.assertIn("--adopt-long-form-state", workflow)
         self.assertNotIn("Generate or resume exact Video Overview", workflow)
 
     def test_article_short_embeds_the_notebooklm_video_and_audio(self):

@@ -8,6 +8,7 @@ on:
       - Kesher Article Generation
       - Kesher Normalize Article PR
       - Kesher Trusted Article Image
+      - Kesher Daily NotebookLM Video Overview
       - Kesher Daily Article Short V4
       - Deploy to Cloudflare Pages
     types: [completed]
@@ -50,7 +51,7 @@ jobs:
           KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
         run: |
           set -euo pipefail
-          python3 -u scripts/kesher_content_controller_v4_runtime.py --report-json | tee /tmp/kesher-controller.json
+          python3 -u scripts/kesher_content_controller_v5_runtime.py --report-json | tee /tmp/kesher-controller.json
 
       - name: Write concise controller summary
         if: always()
@@ -74,14 +75,14 @@ jobs:
                       payload = None
 
           if not isinstance(payload, dict):
-              text = 'Controller V4 ran, but its structured state report could not be parsed.'
+              text = 'Controller V5 ran, but its structured state report could not be parsed.'
           else:
               state = payload.get('state') or {}
               article = state.get('article') or {}
               image = state.get('image') or {}
-              video = state.get('video') or {}
+              long_video = state.get('long_video') or {}
+              short = state.get('short') or {}
               last_error = state.get('last_error') or {}
-              fifth = 'used' if video.get('fifth_attempt_recovery_only_used') else 'unused'
               text = (
                   f"Cycle: {state.get('cycle')}\n\n"
                   f"Status: {state.get('status')}\n\n"
@@ -90,12 +91,13 @@ jobs:
                   f"Article attempts: {article.get('attempt_count', 0)}/3 | normalization: {article.get('normalization_status') or 'pending'}\n\n"
                   f"Image: {image.get('provider_id') or image.get('status') or 'pending'}\n\n"
                   f"Image attempts: {image.get('attempt_count', 0)}/3 | next retry: {image.get('next_retry_at') or 'none'}\n\n"
-                  f"Short: {video.get('youtube_url') or video.get('item_id') or video.get('status') or 'pending'}\n\n"
-                  f"Video fresh attempts: {video.get('attempt_count', 0)}/4 | round 5 exact-recovery only: {fifth}\n\n"
-                  f"Next Short retry: {video.get('next_retry_at') or 'none'}\n\n"
+                  f"Long video: {long_video.get('youtube_url') or long_video.get('item_id') or long_video.get('status') or 'pending'}\n\n"
+                  f"Short: {short.get('youtube_url') or short.get('item_id') or short.get('status') or 'pending'}\n\n"
+                  f"Long attempts: {long_video.get('attempt_count', 0)} | Short derive attempts: {short.get('attempt_count', 0)}/4\n\n"
+                  f"Next Short retry: {short.get('next_retry_at') or 'none'}\n\n"
                   f"Last error: {last_error.get('code') or 'none'}"
               )
 
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
-              out.write('### Kesher Content Controller V4\n\n' + text + '\n')
+              out.write('### Kesher Content Controller V5\n\n' + text + '\n')
           PY
