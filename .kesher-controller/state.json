@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-03",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1063,20 +1063,28 @@
         "attempt": 1,
         "pr_number": 647
       }
+    },
+    {
+      "at": "2026-09-03T03:02:13.224610+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "article PR has trusted image and remains authoritative"
     }
   ],
-  "updated_at": "2026-09-03T02:58:28.811039+00:00",
+  "updated_at": "2026-09-03T03:02:13.224628+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 33709627569,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "Local",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-03T02:58:28.811006+00:00"
+    "last_dispatch_at": "2026-09-03T02:58:28.811006+00:00",
+    "artifact_sha256": "525369f588cd4da827ad763c7c7f5cd9a90fe0923a7e1998fe27b8d780b2b0ca",
+    "source_id": "local://public/images/generated/blog/adhd-first-grade-preparation.jpg"
   }
 }
