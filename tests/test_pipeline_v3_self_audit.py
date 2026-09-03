@@ -192,7 +192,7 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
     def test_image_child_is_part_of_event_driven_controller_but_failures_still_defer(self):
         workflow = CONTROLLER_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Kesher Trusted Article Image", workflow)
-        self.assertIn("scripts/kesher_content_controller_v4_runtime.py", workflow)
+        self.assertIn("scripts/kesher_content_controller_v5_runtime.py", workflow)
         self.assertNotIn("scripts/kesher_content_controller_v3_best_effort.py", workflow)
         self.assertIn('cron: "3,18,33,48 * * * *"', workflow)
         env = {
