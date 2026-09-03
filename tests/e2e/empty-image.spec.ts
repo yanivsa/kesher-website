@@ -8,7 +8,7 @@ test.describe('Article image rendering', () => {
 
     const article = page.locator('article', { has: page.locator('h1', { hasText: title }) });
     await expect(article).toHaveCount(1);
-    await expect(article.locator('img')).toHaveCount(1);
+    await expect(article.locator('img[src^="/images/"]')).toHaveCount(1);
 
     const schemas = await page.locator('script[type="application/ld+json"]').allTextContents();
     const nodes = schemas.flatMap((content) => {
