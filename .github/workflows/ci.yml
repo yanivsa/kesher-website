@@ -30,6 +30,7 @@ jobs:
             tests.test_kesher_article_contract \
             tests.test_kesher_article_normalizer \
             tests.test_short_retry_policy_v4 \
+            tests.test_pipeline_v4 \
             -v
 
       - name: Select CI profile
