@@ -12,6 +12,7 @@ import copy
 import hashlib
 import html
 import json
+import os
 import re
 import sys
 from html.parser import HTMLParser
@@ -21,10 +22,14 @@ if __package__:
     from . import kesher_content_controller as core
     from . import kesher_content_controller_v3_entry as v3
     from . import kesher_content_controller_v4 as v4
+    from . import kesher_content_watchdog as watchdog
+    from . import jules_article_runner_core as jules
 else:
     import kesher_content_controller as core
     import kesher_content_controller_v3_entry as v3
     import kesher_content_controller_v4 as v4
+    import kesher_content_watchdog as watchdog
+    import jules_article_runner_core as jules
 
 STATE_SCHEMA_VERSION = 5
 LONG_VIDEO_WORKFLOW = "kesher-daily-video.yml"
@@ -116,6 +121,52 @@ class V5GitHubClient(v4.V4GitHubClient):
     def newest_short_state(self) -> dict[str, Any]:
         return self.newest_state_for_artifact(SHORT_STATE_ARTIFACT)
 
+    def article_session_snapshot(self, slot: str) -> dict[str, Any] | None:
+        api_key = os.environ.get("JULES_API_KEY", "").strip()
+        if not api_key:
+            return None
+        recovered = jules.recover_active_slot_session(api_key, slot)
+        if not recovered:
+            return None
+        session_name, _ = recovered
+        sid = session_name.removeprefix("sessions/")
+        payload = jules.request_json(
+            "GET",
+            f"{jules.API_BASE}/sessions/{sid}",
+            jules.jules_headers(api_key),
+        )
+        current = payload if isinstance(payload, dict) else {}
+        state = str(current.get("state") or "UNKNOWN").upper()
+        urls = jules.pr_urls(current)
+        progress_payload = {
+            "state": state,
+            "update_time": current.get("updateTime") or current.get("updatedAt") or current.get("lastActivityTime"),
+            "outputs": current.get("outputs") or [],
+            "pr_urls": urls,
+        }
+        fingerprint = hashlib.sha256(
+            json.dumps(progress_payload, ensure_ascii=False, sort_keys=True, default=str).encode("utf-8")
+        ).hexdigest()
+        return {
+            "session_id": session_name,
+            "state": state,
+            "pr_urls": urls,
+            "fingerprint": fingerprint,
+        }
+
+    def nudge_article_session(self, session_id: str) -> None:
+        api_key = os.environ.get("JULES_API_KEY", "").strip()
+        if not api_key:
+            raise core.ControllerError("JULES_API_KEY_MISSING")
+        jules.send_message(
+            api_key,
+            session_id.removeprefix("sessions/"),
+            "Continue autonomously and finish the existing article task, validate it, and create the required PR. Do not start a new task or ask a question.",
+        )
+
+    def cancel_workflow_run(self, run_id: int | str) -> None:
+        self.request("POST", f"{self.api}/actions/runs/{run_id}/cancel", {})
+
 
 class V5Controller(v4.V4Controller):
     def state(self) -> dict[str, Any]:
@@ -155,6 +206,57 @@ class V5Controller(v4.V4Controller):
         if state.get("status") in {"complete", "article_complete_without_short"}:
             state["status"] = "article_live" if (state.get("article") or {}).get("live") else "article_needed"
         return state
+
+    def _article_watchdog(self, state: dict[str, Any]) -> core.Action | None:
+        if not self.article_slot_open():
+            return None
+        posts = self.github.contents_json("src/data/posts.json", "main")
+        if not isinstance(posts, list) or core.today_articles(posts, self.now.date()):
+            return None
+        slot = self.now.date().isoformat()
+        open_prs = self.github.open_article_prs(slot)
+        if open_prs:
+            return None
+        active = self.github.active_workflow_run(core.ARTICLE_WORKFLOW)
+        if not active:
+            return None
+
+        snapshot_getter = getattr(self.github, "article_session_snapshot", None)
+        snapshot = snapshot_getter(slot) if snapshot_getter is not None else None
+        session_id = str((snapshot or {}).get("session_id") or "").strip() or None
+        fingerprint = str((snapshot or {}).get("fingerprint") or "").strip() or None
+        watchdog.observe_article(
+            state["article"],
+            identity=slot,
+            run_started_at=active.get("run_started_at") or active.get("created_at"),
+            session_id=session_id,
+            fingerprint=fingerprint,
+            now=self.now,
+        )
+        state["article"]["run_id"] = active.get("id")
+        decision = watchdog.article_decision(state["article"], now=self.now, active_run_id=active.get("id"))
+
+        if decision == "nudge":
+            self.github.nudge_article_session(session_id)
+            watchdog.mark_article_nudge(state["article"], now=self.now)
+            core.transition(state, "article_watchdog_nudge", "article stalled; nudged authoritative Jules session", session_id=session_id)
+            return core.Action("article_watchdog_nudge", "nudged same Jules article session")
+
+        if decision == "restart":
+            run_id = active.get("id")
+            self.github.cancel_workflow_run(run_id)
+            self.github.dispatch(core.ARTICLE_WORKFLOW, {"slot": slot})
+            watchdog.mark_article_restart(state["article"], now=self.now, run_id=run_id)
+            state["article"]["run_id"] = None
+            core.transition(state, "article_watchdog_restart", "article stalled after nudge; restarted GitHub worker for same Jules slot/session", session_id=session_id, cancelled_run_id=run_id)
+            return core.Action("article_watchdog_restart", "restarted article worker for same slot/session", {"slot": slot})
+
+        if decision == "blocked":
+            core.block(state, "article", "ARTICLE_WATCHDOG_RECOVERY_EXHAUSTED", "article worker stalled after two same-session recovery restarts")
+            return core.Action("blocked", "article watchdog recovery exhausted")
+
+        core.transition(state, "article_generating", "article workflow active; watchdog observing progress", session_id=session_id)
+        return core.Action("wait", "article workflow active")
 
     def _dispatch_budgeted(self, state, stage, workflow, inputs):
         if stage == "video":
@@ -283,6 +385,10 @@ class V5Controller(v4.V4Controller):
 
     def tick(self) -> tuple[dict[str, Any], core.Action]:
         state = self.state()
+        article_watchdog_action = self._article_watchdog(state)
+        if article_watchdog_action is not None:
+            self.github.save_controller_state(state)
+            return state, article_watchdog_action
         source = self._article_source()
         if source is not None:
             # Evidence-only migration: a matching V4 public Short is durable

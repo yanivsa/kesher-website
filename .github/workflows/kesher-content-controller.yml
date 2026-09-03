@@ -14,7 +14,7 @@ on:
     types: [completed]
   schedule:
     # Recovery heartbeat only. Normal successful progress is event-driven.
-    - cron: "3,18,33,48 * * * *"
+    - cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -44,6 +44,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
           KESHER_CONTROLLER_STATE_REF: automation-state
           KESHER_TRIGGER_EVENT: ${{ github.event_name }}
           KESHER_CHILD_RUN_ID: ${{ github.event.workflow_run.id }}
