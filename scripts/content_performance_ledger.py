@@ -9,6 +9,7 @@ remain missing rather than being inferred or invented.
 from __future__ import annotations
 
 import argparse
+from datetime import datetime
 import json
 from pathlib import Path
 from typing import Any
@@ -54,6 +55,12 @@ def validate_record(record: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("source must be a non-empty string")
     if not isinstance(record["observed_at"], str) or not record["observed_at"].strip():
         raise ValueError("observed_at must be a non-empty ISO-8601 string")
+    try:
+        observed_at = datetime.fromisoformat(record["observed_at"].replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError("observed_at must be a valid ISO-8601 timestamp") from exc
+    if observed_at.tzinfo is None:
+        raise ValueError("observed_at must include a timezone offset")
 
     metrics = record["metrics"]
     if not isinstance(metrics, dict) or not metrics:
