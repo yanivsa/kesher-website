@@ -1,7 +1,7 @@
 {
   "schema_version": 4,
   "cycle": "2026-09-03",
-  "status": "video_running",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -66,13 +66,13 @@
     "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
     "published_date": "2026-09-03",
     "live": true,
-    "live_verified_at": "2026-09-03T13:45:37.925993+00:00",
+    "live_verified_at": "2026-09-03T13:49:55.605940+00:00",
     "next_deploy_retry_at": null,
     "normalization_status": "pending"
   },
   "video": {
     "attempt_count": 0,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 33762937440,
@@ -85,7 +85,10 @@
     "resume_dispatches": 2,
     "fifth_attempt_recovery_only_used": false,
     "item_id": "video-20260903-160614-065fc982d0",
-    "last_dispatch_at": "2026-09-03T13:45:41.516299+00:00"
+    "last_dispatch_at": "2026-09-03T13:45:41.516299+00:00",
+    "youtube_id": "L3a1e3giH6g",
+    "youtube_url": "https://youtu.be/L3a1e3giH6g",
+    "verified": true
   },
   "backlog": [
     {
@@ -326,24 +329,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-30T09:56:21.612901+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "article exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-08-30T10:00:13.439824+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "article exhausted 3 total controller dispatch attempts"
-      }
-    },
     {
       "at": "2026-08-30T13:14:36.789823+00:00",
       "from": "blocked",
@@ -1130,9 +1115,21 @@
         "operation": "full",
         "resume": 2
       }
+    },
+    {
+      "at": "2026-09-03T13:49:55.605959+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-03T13:50:02.886565+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-09-03T13:45:41.516313+00:00",
+  "updated_at": "2026-09-03T13:50:02.886585+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
