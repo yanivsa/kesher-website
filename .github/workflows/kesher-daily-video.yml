@@ -311,7 +311,7 @@ jobs:
         if: ${{ steps.pending.outputs.found == 'true' }}
         id: review_artifact
         continue-on-error: true
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: kesher-video-review-${{ github.run_id }}
           path: ${{ env.KESHER_STATE_DIR }}
@@ -425,7 +425,7 @@ jobs:
       - name: Persist latest state and media evidence
         if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != '' }}
         id: persist_state
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: kesher-video-state
           path: ${{ env.KESHER_STATE_DIR }}
