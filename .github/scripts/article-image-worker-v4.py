@@ -50,7 +50,6 @@ LOCAL_FALLBACK_CANDIDATES: dict[str, list[tuple[str, str]]] = {
     "relocation": [
         ("public/images/generated/blog/relocation-career-loss-and-dependence.jpg", "זוג בסיטואציה ביתית הקשורה לשינויי חיים ורילוקיישן"),
         ("public/images/generated/blog/relocation-language-barrier-isolation.jpg", "זוג בסלון הבית בדיון על הסתגלות ומעבר"),
-        ("public/images/generated/blog/exhausted-couple-conversation.jpg", "זוג יושב יחד בבית בשיחה שקטה ותומכת סביב געגוע, הסתגלות ומעבר"),
     ],
     "premarital": [
         ("public/images/generated/blog/premarital-questions-before-wedding.jpg", "זוג בשיחה פתוחה סביב ציפיות ותכנון קשר"),
