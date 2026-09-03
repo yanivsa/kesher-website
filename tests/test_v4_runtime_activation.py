@@ -23,8 +23,24 @@ class V4RuntimeActivationTests(unittest.TestCase):
         source = V4_RUNTIME.read_text(encoding="utf-8")
         self.assertIn('SHORT_WORKFLOW_FILE = "kesher-short-v4.yml"', source)
         self.assertIn('SHORT_WORKFLOW_NAME = "Kesher Daily Article Short V4"', source)
+        self.assertIn('SHORT_STATE_ARTIFACT = "kesher-short-v4-state"', source)
         self.assertIn("v4.core.VIDEO_WORKFLOW = SHORT_WORKFLOW_FILE", source)
+        self.assertIn("v4.core.VIDEO_STATE_ARTIFACT = SHORT_STATE_ARTIFACT", source)
         self.assertIn("v4.v3.entry.VIDEO_WORKFLOW_NAME = SHORT_WORKFLOW_NAME", source)
+
+    def test_v4_runtime_reuses_existing_protected_article_merge_worker(self):
+        source = V4_RUNTIME.read_text(encoding="utf-8")
+        self.assertIn('ARTICLE_AUTO_MERGE_WORKFLOW = "auto-merge-article-prs.yml"', source)
+        self.assertIn("v4.AUTO_MERGE_WORKFLOW = ARTICLE_AUTO_MERGE_WORKFLOW", source)
+        self.assertNotIn('ARTICLE_AUTO_MERGE_WORKFLOW = "auto-merge-article-prs-v4.yml"', source)
+
+    def test_v4_runtime_archives_same_day_legacy_video_state_instead_of_adopting_it(self):
+        source = V4_RUNTIME.read_text(encoding="utf-8")
+        self.assertIn('state.setdefault("migration", {})["legacy_video_v3"]', source)
+        self.assertIn('"attempts": 0', source)
+        self.assertIn('"resume_dispatches": 0', source)
+        self.assertIn('"fifth_attempt_recovery_only_used": False', source)
+        self.assertIn('state["status"] = "article_live"', source)
 
     def test_short_workflow_is_the_single_controller_owned_v4_worker(self):
         workflow = SHORT_WORKFLOW.read_text(encoding="utf-8")
