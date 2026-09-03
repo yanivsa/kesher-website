@@ -18,6 +18,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install image tooling
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
       - name: Rebuild article cleanly on current main
         shell: bash
         run: |
@@ -51,20 +56,13 @@ jobs:
               raise SystemExit('relocation source image missing')
 
           ffmpeg = shutil.which('ffmpeg')
-          magick = shutil.which('magick') or shutil.which('convert')
-          if ffmpeg:
-              subprocess.run([
-                  ffmpeg, '-y', '-loglevel', 'error', '-i', str(source),
-                  '-vf', 'hflip,crop=iw*0.94:ih*0.94:(iw-iw*0.94)/2:(ih-ih*0.94)/2,scale=1200:675',
-                  '-q:v', '3', str(target)
-              ], check=True)
-          elif magick:
-              subprocess.run([
-                  magick, str(source), '-flop', '-resize', '1200x675^',
-                  '-gravity', 'center', '-extent', '1200x675', str(target)
-              ], check=True)
-          else:
-              raise SystemExit('no image transformation tool available')
+          if not ffmpeg:
+              raise SystemExit('ffmpeg installation unavailable')
+          subprocess.run([
+              ffmpeg, '-y', '-loglevel', 'error', '-i', str(source),
+              '-vf', 'hflip,crop=iw*0.94:ih*0.94:(iw-iw*0.94)/2:(ih-ih*0.94)/2,scale=1200:675',
+              '-q:v', '3', str(target)
+          ], check=True)
           PY
 
           npm run generate
