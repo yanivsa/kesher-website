@@ -48,6 +48,19 @@ describe('content performance ledger', () => {
     expect(run(negative, ledger).status).not.toBe(0);
   });
 
+  it('rejects malformed or timezone-less observation timestamps', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'kesher-ledger-'));
+    const ledger = join(dir, 'ledger.jsonl');
+
+    const malformed = sample();
+    malformed.observed_at = 'not-a-timestamp';
+    expect(run(malformed, ledger).status).not.toBe(0);
+
+    const withoutTimezone = sample();
+    withoutTimezone.observed_at = '2026-09-04T00:00:00';
+    expect(run(withoutTimezone, ledger).status).not.toBe(0);
+  });
+
   it('upserts the same content/window/source instead of duplicating it', () => {
     const dir = mkdtempSync(join(tmpdir(), 'kesher-ledger-'));
     const ledger = join(dir, 'ledger.jsonl');
