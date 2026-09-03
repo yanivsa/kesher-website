@@ -7,7 +7,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONTROLLER = ROOT / ".github" / "workflows" / "kesher-content-controller.yml"
 ARTICLE = ROOT / ".github" / "workflows" / "kesher-article-generation.yml"
-VIDEO = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
+SHORT = ROOT / ".github" / "workflows" / "kesher-short-v4.yml"
+LEGACY_VIDEO = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
 LEGACY_WEEKDAY = ROOT / ".github" / "workflows" / "jules-weekday-article.yml"
 LEGACY_WEEKEND = ROOT / ".github" / "workflows" / "jules-weekend-article.yml"
 
@@ -21,12 +22,14 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
     def test_controller_is_the_only_scheduler_in_unified_content_pipeline(self):
         controller = trigger_block(CONTROLLER)
         article = trigger_block(ARTICLE)
-        video = trigger_block(VIDEO)
+        short = trigger_block(SHORT)
+        legacy_video = trigger_block(LEGACY_VIDEO)
         self.assertIn("  schedule:", controller)
         self.assertNotIn("  schedule:", article)
-        self.assertNotIn("  schedule:", video)
+        self.assertNotIn("  schedule:", short)
+        self.assertNotIn("  schedule:", legacy_video)
         self.assertIn("workflow_dispatch:", article)
-        self.assertIn("workflow_dispatch:", video)
+        self.assertIn("workflow_dispatch:", short)
 
     def test_superseded_article_scheduler_files_are_removed(self):
         self.assertFalse(LEGACY_WEEKDAY.exists())
@@ -37,10 +40,13 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         self.assertIn("workflow_run:", text)
         for name in (
             "Kesher Article Generation",
-            "Kesher Daily NotebookLM Video Overview",
+            "Kesher Normalize Article PR",
+            "Kesher Trusted Article Image",
+            "Kesher Daily Article Short V4",
             "Deploy to Cloudflare Pages",
         ):
             self.assertIn(name, text)
+        self.assertNotIn("Kesher Daily NotebookLM Video Overview", text)
         self.assertIn("types: [completed]", text)
         self.assertNotIn("github.event.workflow_run.conclusion == 'success'", text)
         self.assertNotIn('github.event.workflow_run.conclusion == "success"', text)
@@ -67,11 +73,11 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         self.assertIn("kesher-article-result-${{ github.run_id }}", text)
         self.assertIn("the controller owns retry/backoff", text)
 
-    def test_video_state_retains_exactly_three_snapshots_for_fourteen_days(self):
-        text = VIDEO.read_text(encoding="utf-8")
-        self.assertIn("name: kesher-video-state", text)
+    def test_short_state_retains_exactly_three_snapshots_for_fourteen_days(self):
+        text = SHORT.read_text(encoding="utf-8")
+        self.assertIn("name: kesher-short-v4-state", text)
         self.assertIn("retention-days: 14", text)
-        self.assertIn("Keep the newest three durable state artifacts", text)
+        self.assertIn("Keep only the newest three Short V4 state artifacts", text)
         self.assertIn("| .[3:] | .[].id", text)
         self.assertNotIn("newest seven", text)
         self.assertNotIn("| .[7:]", text)
