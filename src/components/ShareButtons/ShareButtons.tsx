@@ -1,6 +1,7 @@
 import { useState, useSyncExternalStore } from 'react';
 import { FaFacebookF, FaWhatsapp } from 'react-icons/fa';
 import { FiCheck, FiCopy, FiShare2 } from 'react-icons/fi';
+import { pushAnalyticsEvent } from '../../lib/analytics';
 import styles from './ShareButtons.module.css';
 
 type ShareMethod = 'Facebook' | 'WhatsApp' | 'CopyLink' | 'Native';
@@ -14,13 +15,10 @@ interface ShareButtonsProps {
 }
 
 const trackShare = (method: ShareMethod, itemId: string, placement: SharePlacement) => {
-  if (typeof window === 'undefined') return;
-
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({
-    event: 'share',
+  pushAnalyticsEvent('share', {
     method,
     content_type: 'article',
+    content_id: itemId,
     item_id: itemId,
     share_placement: placement,
   });

@@ -58,6 +58,16 @@ const inferServiceType = (pathname: string): string | undefined => {
   return undefined;
 };
 
+const inferContentContext = (pathname: string): AnalyticsParams => {
+  const articleMatch = pathname.match(/^\/blog\/([^/]+)/);
+  if (!articleMatch?.[1]) return {};
+
+  return {
+    content_type: 'article',
+    content_id: decodeURIComponent(articleMatch[1]),
+  };
+};
+
 const reportGoogleAdsConversion = (eventName: string) => {
   if (window.__kesherMeasurementMode !== 'ga4' || typeof window.gtag !== 'function') return;
 
@@ -84,6 +94,7 @@ export const pushAnalyticsEvent = (eventName: string, params: AnalyticsParams = 
     page_path: window.location.pathname,
     landing_page: attribution.entry_page_path || window.location.pathname,
     ...getAttributionDataLayerFields(),
+    ...inferContentContext(window.location.pathname),
     ...(serviceType ? { service_type: serviceType, service: serviceType } : {}),
     ...params,
   };
