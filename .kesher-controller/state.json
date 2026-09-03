@@ -66,7 +66,7 @@
     "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
     "published_date": "2026-09-03",
     "live": true,
-    "live_verified_at": "2026-09-03T08:24:51.608763+00:00",
+    "live_verified_at": "2026-09-03T08:46:17.818750+00:00",
     "next_deploy_retry_at": null
   },
   "video": {
@@ -1154,9 +1154,21 @@
         "operation": "full",
         "resume": 2
       }
+    },
+    {
+      "at": "2026-09-03T08:46:17.818769+00:00",
+      "from": "video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-03T08:46:19.925313+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-03T08:25:03.236915+00:00",
+  "updated_at": "2026-09-03T08:46:19.925335+00:00",
   "image": {
     "attempt_count": 2,
     "status": "retry_wait",
