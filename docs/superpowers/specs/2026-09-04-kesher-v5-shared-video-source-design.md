@@ -155,7 +155,7 @@ Wait/resume the same provider task. Do not start Short generation.
 
 ### Long-form upload failure with reusable artifact
 
-The controller may continue retrying long-form upload. Short derivation can be enabled once the provider artifact is proven retrievable and exact identity is stable; however, the first implementation should prefer the simpler conservative gate of deriving Short after long-form public verification unless tests prove earlier derivation materially improves recovery without weakening identity guarantees.
+The controller may continue retrying long-form upload. V5 production derives the Short only after the matching long-form video is verified public. This conservative gate is intentional: it keeps the first rollout deterministic, ensures the shared provider identity is durably settled, and avoids introducing a second partial-completion path.
 
 ### Provider artifact unavailable
 
@@ -168,6 +168,10 @@ Retry/rebuild the exact Short item derived from the shared artifact. Never regen
 ### One product succeeds and the other fails
 
 Persist the successful product. Retry only the missing product. Never duplicate the successful upload.
+
+### Retry budget exhausted
+
+The article remains public, but V5 must not translate an exhausted video retry budget into controller success. `complete_without_short` and analogous missing-long-form success states are not valid V5 completion states. Persist the successful outputs, mark the missing product blocked/exhausted with exact evidence, and require targeted recovery while preserving all completed identities.
 
 ## Testing Strategy
 
