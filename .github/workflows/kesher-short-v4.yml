@@ -32,6 +32,7 @@ on:
           - rebuild
           - release
           - derive
+          - historical
       rebuild_item_id:
         description: Exact technically rejected item to rebuild with Remotion
         required: false
@@ -50,6 +51,18 @@ on:
         type: string
       derive_long_item_id:
         description: Exact published long-form durable item id to reuse
+        required: false
+        type: string
+      historical_commit:
+        description: Immutable evidence commit containing the historical state snapshot
+        required: false
+        type: string
+      historical_path:
+        description: Repository path to the historical evidence state.json
+        required: false
+        type: string
+      historical_item_id:
+        description: Exact historical provider item id to adopt without regeneration
         required: false
         type: string
 
@@ -178,7 +191,7 @@ jobs:
           fi
 
       - name: Materialize NotebookLM credentials without exposing them
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
         env:
           NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
           NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
@@ -293,12 +306,89 @@ jobs:
             --content-sha256 "$DERIVE_CONTENT_SHA256" \
             --long-item-id "$DERIVE_LONG_ITEM_ID"
 
+      - name: Adopt exact historical provider identity from immutable evidence
+        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'historical' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HISTORICAL_COMMIT: ${{ inputs.historical_commit }}
+          HISTORICAL_PATH: ${{ inputs.historical_path }}
+          HISTORICAL_ITEM_ID: ${{ inputs.historical_item_id }}
+        run: |
+          set -euo pipefail
+          test -n "$HISTORICAL_COMMIT"
+          test -n "$HISTORICAL_PATH"
+          test -n "$HISTORICAL_ITEM_ID"
+          gh api "repos/${GITHUB_REPOSITORY}/contents/${HISTORICAL_PATH}?ref=${HISTORICAL_COMMIT}" --jq .content | tr -d '\n' | base64 -d > /tmp/historical-state.json
+          python - <<'PY'
+          import copy
+          import json
+          import os
+          from pathlib import Path
+          from scripts import kesher_daily_pipeline as pipeline
+
+          historical = json.loads(Path('/tmp/historical-state.json').read_text(encoding='utf-8'))
+          item_id = os.environ['HISTORICAL_ITEM_ID'].strip()
+          matches = [row for row in historical.get('items', []) if isinstance(row, dict) and row.get('id') == item_id]
+          if len(matches) != 1:
+              raise SystemExit('Historical evidence must contain exactly one requested item')
+          old = matches[0]
+          source = old.get('source') or {}
+          slug = str(source.get('slug') or source.get('id') or '').strip()
+          content_sha = str(source.get('content_sha256') or '').strip()
+          if not slug or not content_sha:
+              raise SystemExit('Historical source identity is incomplete')
+          if not old.get('source_id') or not old.get('task_id') or old.get('task_id') != old.get('artifact_id'):
+              raise SystemExit('Historical provider identity is incomplete')
+
+          posts = json.loads(pipeline.POSTS_FILE.read_text(encoding='utf-8'))
+          current = [pipeline.source_metadata(row) for row in posts if str(row.get('slug') or row.get('id') or '').strip() == slug]
+          if len(current) != 1 or current[0].get('content_sha256') != content_sha:
+              raise SystemExit('Published article identity no longer matches historical evidence')
+
+          state = pipeline.load_state()
+          same_source = [row for row in state.get('items', []) if isinstance(row, dict) and str((row.get('source') or {}).get('slug') or (row.get('source') or {}).get('id') or '').strip() == slug and str((row.get('source') or {}).get('content_sha256') or '') == content_sha]
+          if any(row.get('uploaded') is True and row.get('status') == 'uploaded' for row in same_source):
+              print(f'SHORT_HISTORICAL_ALREADY_PUBLIC slug={slug}')
+              raise SystemExit(0)
+          same_provider = [row for row in state.get('items', []) if isinstance(row, dict) and row.get('task_id') == old.get('task_id')]
+          if len(same_provider) > 1:
+              raise SystemExit('Historical provider identity is duplicated in Short state')
+          if same_provider:
+              row = same_provider[0]
+              if str((row.get('source') or {}).get('content_sha256') or '') != content_sha:
+                  raise SystemExit('Existing historical provider identity points at a different source')
+              print(f'SHORT_HISTORICAL_ALREADY_ADOPTED item={row.get("id")}')
+              raise SystemExit(0)
+
+          item = copy.deepcopy(old)
+          item['id'] = f"short-historical-{item_id}"
+          item['type'] = 'article_short'
+          item['source_mode'] = 'overview-segment'
+          item['status'] = 'generating'
+          item['uploaded'] = False
+          item['technical_verified'] = False
+          item['fresh_generation_attempt'] = 0
+          item['shared_provider_identity'] = True
+          item['adopted_from_historical_item_id'] = item_id
+          item['historical_evidence_commit'] = os.environ['HISTORICAL_COMMIT']
+          item['historical_evidence_path'] = os.environ['HISTORICAL_PATH']
+          for key in ('raw_mp4','raw_sha256','downloaded_at','final_mp4','final_sha256','media','visual_review_path','visual_review_sha256','manifest_path','manifest_sha256','motion_plan_path','motion_plan_sha256','remotion_props_path','remotion_props_sha256','frame_paths','frame_sha256','transcript_path','transcript_sha256','source_path','source_file_sha256','youtube_id','youtube_url','youtube_verification','uploaded_at','rejected_at'):
+              item.pop(key, None)
+          item['visual_review_status'] = 'pending'
+          item['semantic_review_status'] = 'pending'
+          item['metadata_review_status'] = 'pending'
+          item['updated_at'] = pipeline.utc_now()
+          state.setdefault('items', []).append(item)
+          pipeline.save_state(state)
+          print(f'SHORT_HISTORICAL_ADOPTED item={item["id"]} task={item["task_id"]}')
+          PY
+
       - name: Reconcile exact article or existing provider identity before generation
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate') }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation
 
       - name: Generate or resume exact NotebookLM-derived Short
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
         run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150
 
       - name: Rebuild exact rejected Short with Remotion
@@ -309,7 +399,7 @@ jobs:
           python -u scripts/kesher_short_pipeline_v4.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
 
       - name: Prepare exact technically verified Short upload
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -317,7 +407,7 @@ jobs:
         run: python -u scripts/kesher_video_reconcile.py --prepare-upload
 
       - name: Upload exact Short once and verify it public
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -330,7 +420,7 @@ jobs:
           python -u scripts/kesher_short_pipeline_v4.py --upload-only
 
       - name: Remove uploaded media after public verification
-        if: ${{ github.event_name != 'pull_request' && success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
+        if: ${{ github.event_name != 'pull_request' && success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
         run: python -u scripts/kesher_short_pipeline_v4.py --prune-uploaded-media
 
       - name: Seal refreshed NotebookLM credentials into durable state
