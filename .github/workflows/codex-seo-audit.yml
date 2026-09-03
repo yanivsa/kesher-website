@@ -1,0 +1,229 @@
+name: Codex SEO Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_url:
+        description: "Live URL to audit"
+        required: false
+        default: "https://kesher.saharoni.com"
+        type: string
+  schedule:
+    # Weekly Sunday audit. 01:15 UTC = 04:15 Israel during daylight saving.
+    - cron: "15 1 * * 0"
+  pull_request:
+    paths:
+      - ".github/workflows/codex-seo-audit.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codex-seo-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      # Codex SEO v1.9.6-codex.5, pinned to the release commit rather than a movable branch.
+      CODEX_SEO_COMMIT: "9a4a0b9e3c44eec2ceedcc21d10659427ee3bc1c"
+      TARGET_URL: ${{ inputs.target_url || 'https://kesher.saharoni.com' }}
+      OUTPUT_ROOT: ${{ github.workspace }}/codex-seo-output
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Verify live target is reachable
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --location --silent --show-error \
+            --retry 3 --retry-all-errors --retry-delay 2 \
+            --user-agent "Mozilla/5.0 (compatible; Kesher-CodexSEO-Audit/1.0)" \
+            --output /dev/null \
+            "${TARGET_URL}"
+
+      - name: Fetch pinned Codex SEO release
+        run: |
+          set -euo pipefail
+          CODEX_DIR="${RUNNER_TEMP}/codex-seo"
+          rm -rf "${CODEX_DIR}"
+          git init "${CODEX_DIR}"
+          git -C "${CODEX_DIR}" remote add origin https://github.com/AgriciDaniel/codex-seo.git
+          git -C "${CODEX_DIR}" fetch --depth 1 origin "${CODEX_SEO_COMMIT}"
+          git -C "${CODEX_DIR}" checkout --detach FETCH_HEAD
+          test "$(git -C "${CODEX_DIR}" rev-parse HEAD)" = "${CODEX_SEO_COMMIT}"
+
+      - name: Apply verified Codex SEO compatibility fixes
+        run: |
+          set -euo pipefail
+          export CODEX_DIR="${RUNNER_TEMP}/codex-seo"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["CODEX_DIR"])
+
+          geo_path = root / "scripts/analyze_geo.py"
+          geo_text = geo_path.read_text(encoding="utf-8")
+
+          taxonomy_old = (
+              'AI_SEARCH_CRAWLERS = ["GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-SearchBot", "Claude-User", "PerplexityBot"]\n'
+              'AI_TRAINING_CRAWLERS = ["anthropic-ai", "CCBot", "Bytespider", "cohere-ai", "Google-Extended"]\n'
+          )
+          taxonomy_new = (
+              'AI_SEARCH_CRAWLERS = ["OAI-SearchBot", "ChatGPT-User", "Claude-SearchBot", "Claude-User", "PerplexityBot"]\n'
+              'AI_TRAINING_CRAWLERS = ["GPTBot", "ClaudeBot", "anthropic-ai", "CCBot", "Bytespider", "cohere-ai", "Google-Extended"]\n'
+          )
+          if geo_text.count(taxonomy_old) != 1:
+              raise RuntimeError("Codex SEO crawler taxonomy patch anchor changed; refusing silent patch")
+          geo_text = geo_text.replace(taxonomy_old, taxonomy_new, 1)
+
+          priority_old = '    priority_agents = {"GPTBot", "OAI-SearchBot", "ClaudeBot", "PerplexityBot"}\n'
+          priority_new = '    priority_agents = {"OAI-SearchBot", "Claude-SearchBot", "PerplexityBot"}\n'
+          if geo_text.count(priority_old) != 1:
+              raise RuntimeError("Codex SEO crawler priority patch anchor changed; refusing silent patch")
+          geo_text = geo_text.replace(priority_old, priority_new, 1)
+
+          geo_old = '        if not line or ":" not in line:\n            continue\n'
+          geo_new = '        if not line:\n            current_agents = []\n            continue\n        if ":" not in line:\n            current_agents = []\n            continue\n'
+          if geo_text.count(geo_old) != 1:
+              raise RuntimeError("Codex SEO robots parser patch anchor changed; refusing silent patch")
+          geo_path.write_text(geo_text.replace(geo_old, geo_new, 1), encoding="utf-8")
+
+          sitemap_path = root / "scripts/analyze_sitemap.py"
+          sitemap_text = sitemap_path.read_text(encoding="utf-8")
+          import_old = "import requests\nimport defusedxml.ElementTree as ET\n"
+          import_new = "import requests\nimport defusedxml.ElementTree as ET\nfrom bs4 import BeautifulSoup\n"
+          if sitemap_text.count(import_old) != 1:
+              raise RuntimeError("Codex SEO sitemap import patch anchor changed; refusing silent patch")
+          sitemap_text = sitemap_text.replace(import_old, import_new, 1)
+
+          canonical_old = (
+              "            marker = 'rel=\"canonical\"'\n"
+              "            if marker in lowered:\n"
+              "                idx = lowered.index(marker)\n"
+              "                href_marker = 'href=\"'\n"
+              "                href_idx = lowered.rfind(href_marker, max(0, idx - 400), idx + 400)\n"
+              "                if href_idx != -1:\n"
+              "                    href_start = href_idx + len(href_marker)\n"
+              "                    href_end = text.find('\"', href_start)\n"
+              "                    if href_end != -1:\n"
+              "                        canonical = text[href_start:href_end].strip()\n"
+          )
+          canonical_new = (
+              '            soup = BeautifulSoup(text, "html.parser")\n'
+              '            canonical_link = soup.find("link", rel="canonical")\n'
+              '            if canonical_link and canonical_link.get("href"):\n'
+              '                canonical = str(canonical_link["href"]).strip()\n'
+          )
+          if sitemap_text.count(canonical_old) != 1:
+              raise RuntimeError("Codex SEO canonical parser patch anchor changed; refusing silent patch")
+          sitemap_path.write_text(sitemap_text.replace(canonical_old, canonical_new, 1), encoding="utf-8")
+
+          report = {
+              "upstream_commit": os.environ["CODEX_SEO_COMMIT"],
+              "fixes": [
+                  "Classify GPTBot and ClaudeBot as training crawlers, not search crawlers.",
+                  "Reset robots.txt user-agent grouping on blank/non-directive lines.",
+                  "Parse canonical href from the canonical link element instead of a nearby href.",
+              ],
+          }
+          Path(os.environ["GITHUB_WORKSPACE"], "codex-seo-compatibility.json").write_text(
+              json.dumps(report, indent=2), encoding="utf-8"
+          )
+          PY
+
+      - name: Install Codex SEO core and visual dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install \
+            -r "${RUNNER_TEMP}/codex-seo/requirements-core.txt" \
+            -r "${RUNNER_TEMP}/codex-seo/requirements-visual.txt"
+          python -m playwright install --with-deps chromium
+
+      - name: Verify Codex SEO runtime
+        run: |
+          set -euo pipefail
+          cd "${RUNNER_TEMP}/codex-seo"
+          python scripts/verify_environment.py \
+            --target "${TARGET_URL}" \
+            --json | tee "${GITHUB_WORKSPACE}/codex-seo-environment.json"
+
+      - name: Run deterministic Codex SEO audit
+        run: |
+          set -euo pipefail
+          rm -rf "${OUTPUT_ROOT}"
+          mkdir -p "${OUTPUT_ROOT}"
+          cd "${RUNNER_TEMP}/codex-seo"
+          python scripts/run_headless_audit.py \
+            "${TARGET_URL}" \
+            --premium-report never \
+            --output-root "${OUTPUT_ROOT}" \
+            --json | tee "${GITHUB_WORKSPACE}/codex-seo-run.json"
+
+      - name: Capture detailed sitemap evidence
+        run: |
+          set -euo pipefail
+          cd "${RUNNER_TEMP}/codex-seo"
+          python scripts/analyze_sitemap.py \
+            "${TARGET_URL}" \
+            --check-limit 500 \
+            --json | tee "${GITHUB_WORKSPACE}/codex-seo-sitemap.json"
+
+      - name: Preserve Codex SEO evidence cache
+        if: always()
+        run: |
+          set -euo pipefail
+          CACHE_DIR="${RUNNER_TEMP}/codex-seo/.seo-cache"
+          if [[ -d "${CACHE_DIR}" ]]; then
+            rm -rf "${GITHUB_WORKSPACE}/codex-seo-cache"
+            cp -R "${CACHE_DIR}" "${GITHUB_WORKSPACE}/codex-seo-cache"
+          fi
+
+      - name: Add audit action plan to job summary
+        if: always()
+        run: |
+          set -euo pipefail
+          ACTION_PLAN="$(find "${OUTPUT_ROOT}" -type f -name 'ACTION-PLAN.md' -print -quit 2>/dev/null || true)"
+          SUMMARY_JSON="$(find "${OUTPUT_ROOT}" -type f -name 'SUMMARY.json' -print -quit 2>/dev/null || true)"
+          {
+            echo "## Codex SEO audit"
+            echo
+            echo "Target: ${TARGET_URL}"
+            echo
+            if [[ -n "${ACTION_PLAN}" && -f "${ACTION_PLAN}" ]]; then
+              echo "### Action plan"
+              echo
+              sed -n '1,220p' "${ACTION_PLAN}"
+            else
+              echo "No ACTION-PLAN.md was produced. Inspect the uploaded runtime logs/artifacts."
+            fi
+            if [[ -n "${SUMMARY_JSON}" && -f "${SUMMARY_JSON}" ]]; then
+              echo
+              echo "### Summary artifact"
+              echo
+              echo "Generated: \`${SUMMARY_JSON#${GITHUB_WORKSPACE}/}\`"
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Upload Codex SEO audit artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: codex-seo-audit-${{ github.run_id }}
+          path: |
+            codex-seo-output/
+            codex-seo-cache/
+            codex-seo-environment.json
+            codex-seo-run.json
+            codex-seo-sitemap.json
+            codex-seo-compatibility.json
+          if-no-files-found: warn
+          retention-days: 30

@@ -27,7 +27,7 @@ published.sort((a, b) => (b.date > a.date ? 1 : -1));
 
 const buildRss = (items) => {
   const latestDate = items[0]?.date ? new Date(items[0].date).toUTCString() : new Date().toUTCString();
-
+  
   const itemXml = items.map((post) => {
     const postDate = new Date(post.date).toUTCString();
     const postUrl = `https://kesher.saharoni.com/blog/${post.id}`;
