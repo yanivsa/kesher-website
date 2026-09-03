@@ -27,7 +27,7 @@ const LecturesPage: React.FC = () => {
     <div className={styles.page}>
       <MetaTags 
         title="הרצאות וסדנאות" 
-        description="הרצאות וסדנאות מאת שירה סהרוני בנושאי זוגיות, הורות ונושאים נוספים מתוך תחומי התוכן באתר. ניתן לפנות להזמנת הרצאה לארגון, קהילה או קבוצה."
+        description="הרצאות וסדנאות מאת שירה סהרוני בנושאי זוגיות, הורות ונושאים נוספים מתוך תחומי התוכן באתר. ניתן לפנות להזמנת הרצאה לארגון, קהילה או קבוצה." 
       />
       <SchemaOrg data={schemaData} />
 
@@ -288,14 +288,14 @@ const LecturesPage: React.FC = () => {
                 ניתן לפנות לגבי הרצאות בנושאי זוגיות, הורות ונושאים נוספים מתוך תחומי התוכן באתר. ספרו בקצרה מי הקהל ומה הנושא שמעניין אתכם, ואחזור אליכם לתיאום.
               </p>
               <div className={styles.ctaActions}>
-                <Link
+                <Link 
                   to="/contact?service=lectures"
                   className={styles.ctaButtonPrimary}
                 >
                   <span>השארת פרטים להזמנת הרצאה</span>
                 </Link>
                 <a 
-                  href={lectureWhatsAppUrl}
+                  href={lectureWhatsAppUrl} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className={styles.ctaButtonSecondary}
