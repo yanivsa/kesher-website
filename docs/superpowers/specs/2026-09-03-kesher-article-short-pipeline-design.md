@@ -29,6 +29,8 @@ The core operating rule is:
 
 `config/kesher-production-contract.json` remains the single canonical policy source. Runtime adapters must not override its semantics.
 
+Implementation will bump `contract_version` from 3 to 4 because the contract gains a distinct downstream Short stage and removes the image best-effort ambiguity. `controller_state_schema_version` will also move to 4 with an explicit migration from schema v3.
+
 The implemented contract will explicitly state:
 
 - controller owns orchestration, retries, recovery, and ordering;
@@ -163,7 +165,7 @@ The article gate verifies:
 - generated outputs are consistent;
 - text rules pass;
 - hero image rules pass;
-- PR head is synchronized closely enough with current `main` for safe publication;
+- PR head is reconciled against current `main` before merge;
 - the `verify` status belongs to the exact current head SHA.
 
 The general full CI continues to run whenever code, tests, workflow, package, or unknown paths are touched.
@@ -330,23 +332,39 @@ Only then does the controller mark `short_public` / daily `complete`.
 
 ## State and Recovery
 
-### 21. Separate Durable Article and Short Success
+### 21. State Schema V4 and Separate Durable Article/Short Success
 
-Controller state must preserve independent stage status. At minimum:
+Controller state schema v4 preserves independent stage status. At minimum:
 
 - article identity and live verification;
 - article PR/run/image identities;
 - Short source provider identity;
+- Short source mode (`direct-short` or `overview-segment`);
 - Remotion output identity;
+- selected segment timestamps/evidence when applicable;
 - YouTube upload/verification identity;
 - attempt counts by stage;
 - retry timestamps;
 - failure fingerprints;
 - backlog entries.
 
+Schema-v3 migration must preserve all known article/image/video provider identities, retry history, and unresolved work. A v3 item must never disappear merely because v4 changes the final product to a Short.
+
 Cycle rollover must never lose unresolved Short work from earlier dates.
 
-### 22. Heartbeat Is Recovery Only
+### 22. Legacy Video Overview Migration
+
+Existing public YouTube videos remain untouched.
+
+Existing unresolved NotebookLM Video Overview items are migrated as follows:
+
+- if the exact NotebookLM source/artifact identity and raw MP4 are recoverable, the item becomes a legacy `overview-segment` Short source and is converted to the new 9:16 final product;
+- if the artifact can be re-downloaded from persisted provider identity, recovery may redownload it and then convert it;
+- unresolved legacy Overview items are not uploaded automatically as new long-form videos after v4 activation;
+- if provider identity is incomplete or unrecoverable, preserve an auditable terminal legacy state and allow newer article/Short work to continue instead of globally blocking production;
+- no migration creates a second YouTube upload for an article that already has a verified authoritative public result.
+
+### 23. Heartbeat Is Recovery Only
 
 Normal progress remains event-driven through workflow completion and pushes.
 
@@ -366,6 +384,7 @@ A heartbeat does not create duplicate semantic work.
 
 Implement and verify:
 
+- production contract v4 article semantics;
 - shared article publication contract module;
 - RSS alignment;
 - deterministic normalizer/repair;
@@ -389,15 +408,16 @@ Implement:
 - advisory Jules evidence path;
 - YouTube idempotent upload and verification.
 
-### Phase C — Controller Integration
+### Phase C — Controller Integration and State Migration
 
-Extend durable state and orchestration so that:
+Implement schema-v4 migration and orchestration so that:
 
 - article completion is independent;
 - Short starts only after `article_live`;
 - unresolved Shorts form FIFO backlog;
 - Short failure does not block next article;
-- exact identities survive retries and cycle rollover.
+- exact identities survive retries and cycle rollover;
+- legacy unresolved Video Overviews migrate to Short source work when recoverable.
 
 ### Phase D — End-to-End Validation
 
@@ -411,7 +431,8 @@ Run controlled production-like tests including:
 6. successful article publication followed by forced Short failure;
 7. Short recovery without article rollback;
 8. interrupted YouTube upload/verification resumed without duplicate insert;
-9. successful public Short verification.
+9. migration of one recoverable unresolved legacy Overview;
+10. successful public Short verification.
 
 ### Phase E — Simplify Compatibility Layers
 
@@ -435,6 +456,8 @@ Required automated coverage includes:
 - contract tests proving image is blocking and Jules video review is advisory;
 - state-machine tests proving Short failure cannot undo `article_live`;
 - FIFO Short backlog tests;
+- schema-v3 to v4 migration tests;
+- recoverable and unrecoverable legacy Overview migration tests;
 - NotebookLM direct-short capability/fallback tests;
 - Remotion output geometry/duration/audio-preservation tests;
 - upload idempotency tests with persisted upload session and YouTube ID;
@@ -448,6 +471,7 @@ Required automated coverage includes:
 - Rewriting the entire controller stack before the new path is proven.
 - Making visual Jules review a publication blocker.
 - Allowing article publication without a validated hero image.
+- Deleting or replacing already-public legacy videos solely to adopt v4.
 
 ## Definition of Done
 
