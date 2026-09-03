@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
@@ -41,6 +43,22 @@ class V4RuntimeActivationTests(unittest.TestCase):
         self.assertIn('"resume_dispatches": 0', source)
         self.assertIn('"fifth_attempt_recovery_only_used": False', source)
         self.assertIn('state["status"] = "article_live"', source)
+
+    def test_direct_script_import_mode_matches_github_actions(self):
+        code = (
+            "import os,sys; "
+            "root=os.getcwd(); scripts=os.path.join(root,'scripts'); "
+            "sys.path=[scripts]+[p for p in sys.path if p not in ('',root)]; "
+            "import kesher_content_controller_v4_runtime"
+        )
+        result = subprocess.run(
+            [sys.executable, "-c", code],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_short_workflow_is_the_single_controller_owned_v4_worker(self):
         workflow = SHORT_WORKFLOW.read_text(encoding="utf-8")
