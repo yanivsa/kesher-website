@@ -29,7 +29,9 @@ Supported metrics are users, sessions, pageviews, engagement seconds, shares, le
 Run:
 
 ```bash
-python3 -m unittest tests.content_performance_ledger_test
+npx vitest run tests/content-performance-ledger.test.ts
 ```
+
+The same test is part of the repository's Vitest quality gate, so the persistence contract is protected by normal PR CI.
 
 This phase intentionally stops before authenticated metric retrieval. It provides the deterministic persistence contract that a GA4/Search Console collector can write to without inventing data or adding secrets to the repository.
