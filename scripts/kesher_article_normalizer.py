@@ -4,7 +4,10 @@ import copy
 from datetime import date
 from typing import Any
 
-from scripts.kesher_article_contract import forbidden_article_paths
+try:
+    from .kesher_article_contract import forbidden_article_paths
+except ImportError:
+    from kesher_article_contract import forbidden_article_paths
 
 
 class ArticleNormalizationError(RuntimeError):
