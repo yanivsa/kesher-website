@@ -25,15 +25,17 @@ from typing import Any
 
 if __package__:
     from . import kesher_daily_pipeline as core
+    from .kesher_short_motion_plan import build_motion_plan
 else:
     import kesher_daily_pipeline as core
+    from kesher_short_motion_plan import build_motion_plan
 
 SHORT_MIN_SECONDS = 30.0
 SHORT_MAX_SECONDS = 55.0
 SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
 SHORT_FPS = 30
-VISUAL_PIPELINE = "remotion-v4-notebooklm-short"
+VISUAL_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
 
 _base_new_item = core.new_item
 
@@ -41,7 +43,7 @@ _base_new_item = core.new_item
 def generation_prompt(source: dict[str, Any]) -> str:
     prompt = (
         "צור וידאו קצר מאוד בעברית טבעית בלבד, המבוסס אך ורק על המקור שנבחר. "
-        "אורך היעד הוא 45 עד 55 שניות. השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי. "
+        "אורך היעד הוא 45 עד 55 שניות. השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות. "
         "הרעיון השלם חייב להופיע בתחילת הווידאו: פתח במשפט שמציג בעיה או שאלה ברורה, "
         "המשך בתובנה אחת בלבד ובדוגמה אחת קצרה, וסיים בפעולה מעשית אחת. "
         "גם אם המערכת מייצרת וידאו ארוך יותר, 55 השניות הראשונות חייבות לעמוד בפני עצמן "
@@ -106,6 +108,11 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     start_seconds, duration_seconds = short_window(float(raw_media["duration"]))
     duration_frames = max(1, round(duration_seconds * SHORT_FPS))
     start_frame = max(0, round(start_seconds * SHORT_FPS))
+
+    motion_plan = build_motion_plan(raw_path, duration_seconds, SHORT_FPS)
+    motion_plan_path = core.STATE_DIR / f"{item['id']}-short-motion-plan.json"
+    core.atomic_json_write(motion_plan_path, motion_plan)
+
     props_path = core.STATE_DIR / f"{item['id']}-short-remotion-props.json"
     core.atomic_json_write(
         props_path,
@@ -116,6 +123,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
             "title": item["source"]["title"],
             "category": item["source"]["category"],
             "url": core.DISPLAY_URL,
+            "motionPlan": motion_plan["targets"],
         },
     )
     command = [
@@ -147,6 +155,8 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     item["source_mode"] = "overview-segment" if float(raw_media["duration"]) > SHORT_MAX_SECONDS else "direct-short"
     item["short_start_seconds"] = start_seconds
     item["short_duration_seconds"] = duration_seconds
+    item["motion_plan_path"] = motion_plan_path.name
+    item["motion_plan_sha256"] = core.sha256_file(motion_plan_path)
     item["remotion_props_path"] = props_path.name
     item["remotion_props_sha256"] = core.sha256_file(props_path)
     return output_path
@@ -214,6 +224,8 @@ def validate_and_manifest(
         "visual_pipeline": item.get("visual_pipeline"),
         "short_start_seconds": item.get("short_start_seconds"),
         "short_duration_seconds": item.get("short_duration_seconds"),
+        "motion_plan_path": item.get("motion_plan_path"),
+        "motion_plan_sha256": item.get("motion_plan_sha256"),
         "remotion_props_path": item.get("remotion_props_path"),
         "remotion_props_sha256": item.get("remotion_props_sha256"),
         "media": media,
