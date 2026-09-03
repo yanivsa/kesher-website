@@ -28,6 +28,7 @@ jobs:
           python3 -m unittest \
             tests.test_ci_profile \
             tests.test_kesher_article_contract \
+            tests.test_kesher_article_normalizer \
             tests.test_short_retry_policy_v4 \
             -v
 
