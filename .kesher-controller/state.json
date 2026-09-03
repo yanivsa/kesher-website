@@ -1,7 +1,7 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "cycle": "2026-09-03",
-  "status": "complete",
+  "status": "video_running",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -66,30 +66,26 @@
     "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
     "published_date": "2026-09-03",
     "live": true,
-    "live_verified_at": "2026-09-03T11:38:18.007819+00:00",
-    "next_deploy_retry_at": null
+    "live_verified_at": "2026-09-03T13:45:37.925993+00:00",
+    "next_deploy_retry_at": null,
+    "normalization_status": "pending"
   },
   "video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 33736293009,
-    "processed_run_id": 33735519409,
-    "provider_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
-    "resume_dispatches": 4,
-    "item_id": "video-20260903-115113-065fc982d0",
-    "last_dispatch_at": "2026-09-03T08:58:46.174827+00:00",
-    "source_id": "aef6e7c7-db56-4599-ad73-6a98efc059e3",
-    "artifact_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
-    "last_run_conclusion": "success",
-    "youtube_id": "cK5JxdtgGQY",
-    "youtube_url": "https://youtu.be/cK5JxdtgGQY",
-    "verified": true
+    "attempts": 0,
+    "resume_dispatches": 2,
+    "fifth_attempt_recovery_only_used": false,
+    "item_id": "video-20260903-160614-065fc982d0",
+    "last_dispatch_at": "2026-09-03T13:45:41.516299+00:00"
   },
   "backlog": [
     {
@@ -330,33 +326,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-30T08:55:38.156741+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "article exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-08-30T09:41:37.127913+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "article exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-08-30T09:45:12.701073+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "article exhausted 3 total controller dispatch attempts"
-      }
-    },
     {
       "at": "2026-08-30T09:56:21.612901+00:00",
       "from": "blocked",
@@ -1139,9 +1108,31 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-03T13:45:36.292688+00:00",
+      "from": "complete",
+      "to": "complete",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-03T13:45:36.292712+00:00",
+      "from": "legacy-video-state",
+      "to": "article_live",
+      "reason": "V4 rolling upgrade archived legacy Video Overview and opened a fresh Short stage"
+    },
+    {
+      "at": "2026-09-03T13:45:41.516305+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-09-03T11:38:22.828737+00:00",
+  "updated_at": "2026-09-03T13:45:41.516313+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
@@ -1167,5 +1158,29 @@
     "source_id": "local://public/images/generated/blog/adhd-first-grade-preparation.jpg",
     "last_run_conclusion": "success",
     "last_failed_run_id": 33726421611
+  },
+  "migration": {
+    "legacy_video_v3": {
+      "attempt_count": 2,
+      "status": "complete",
+      "last_error": null,
+      "next_retry_at": null,
+      "run_id": 33736293009,
+      "processed_run_id": 33735519409,
+      "provider_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
+      "failure_fingerprint": null,
+      "same_failure_streak": 0,
+      "failure_count_by_type": {},
+      "attempts": 1,
+      "resume_dispatches": 4,
+      "item_id": "video-20260903-115113-065fc982d0",
+      "last_dispatch_at": "2026-09-03T08:58:46.174827+00:00",
+      "source_id": "aef6e7c7-db56-4599-ad73-6a98efc059e3",
+      "artifact_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
+      "last_run_conclusion": "success",
+      "youtube_id": "cK5JxdtgGQY",
+      "youtube_url": "https://youtu.be/cK5JxdtgGQY",
+      "verified": true
+    }
   }
 }
