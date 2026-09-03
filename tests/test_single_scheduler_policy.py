@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import json
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTROLLER = ROOT / ".github" / "workflows" / "kesher-content-controller.yml"
+PRODUCTION_CONTRACT = ROOT / "config" / "kesher-production-contract.json"
 ARTICLE = ROOT / ".github" / "workflows" / "kesher-article-generation.yml"
 SHORT = ROOT / ".github" / "workflows" / "kesher-short-v4.yml"
 LEGACY_VIDEO = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
@@ -59,6 +61,10 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         text = CONTROLLER.read_text(encoding="utf-8")
         self.assertIn('cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"', text)
         self.assertIn("Recovery heartbeat only", text)
+
+    def test_production_contract_declares_five_minute_recovery_heartbeat(self):
+        contract = json.loads(PRODUCTION_CONTRACT.read_text(encoding="utf-8"))
+        self.assertEqual(contract["scheduler"]["heartbeat_minutes"], 5)
 
     def test_controller_has_no_runtime_scheduler_mutation(self):
         text = CONTROLLER.read_text(encoding="utf-8")

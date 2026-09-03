@@ -3,7 +3,7 @@
   "controller_state_schema_version": 3,
   "scheduler": {
     "owner": "kesher-content-controller",
-    "heartbeat_minutes": 15,
+    "heartbeat_minutes": 5,
     "failure_recovery": "heartbeat"
   },
   "retry": {
