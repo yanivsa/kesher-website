@@ -66,7 +66,7 @@
     "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
     "published_date": "2026-09-03",
     "live": true,
-    "live_verified_at": "2026-09-03T19:07:47.740265+00:00",
+    "live_verified_at": "2026-09-03T20:41:31.277095+00:00",
     "next_deploy_retry_at": null,
     "normalization_status": "pending"
   },
@@ -329,28 +329,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-31T07:50:16.440039+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-08-31T13:14:11.985132+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new article for the Kesher website for the `2026-08-31` slot, following strict topic, formatting, length, and image pipeline constraints, without altering any existing content. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article answering to the chosen valid subcategory (\"זוגיות בעלייה ורילוקיישן\"). The date is correctly set to `2026-08-31`. Word count is ~830 words, which sits comfortably within the required 700-1,100 range. The agent p…",
-        "retry_at": "2026-08-31T13:19:11.985090+00:00",
-        "failure_streak": 1,
-        "run_id": 33370138242,
-        "session_id": "sessions/9157959808032322046"
-      }
-    },
     {
       "at": "2026-08-31T13:18:06.789342+00:00",
       "from": "article_retry_wait",
@@ -1093,9 +1071,21 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-03T20:41:31.277120+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-03T20:41:33.706900+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-09-03T19:07:48.366931+00:00",
+  "updated_at": "2026-09-03T20:41:33.706923+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
