@@ -87,7 +87,7 @@
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -125,6 +125,12 @@
     <loc>https://kesher.saharoni.com/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/singlehood-holiday-meals-inquiries</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/aliyah-couples-cultural-gaps-identity</loc>
