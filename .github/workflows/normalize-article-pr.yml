@@ -1,0 +1,155 @@
+name: Kesher Normalize Article PR
+run-name: Kesher Normalize PR ${{ inputs.pr_number }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Article PR number
+        required: true
+        type: string
+      slot:
+        description: Authoritative Israel publication slot (YYYY-MM-DD)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: read
+  actions: write
+
+concurrency:
+  group: kesher-normalize-article-pr-${{ inputs.pr_number }}
+  cancel-in-progress: false
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout trusted current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install trusted generator dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Rebuild exact article publication diff on current main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+          SLOT: ${{ inputs.slot }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from datetime import date
+          import os
+          slot = os.environ['SLOT']
+          if date.fromisoformat(slot).isoformat() != slot:
+              raise SystemExit(f'invalid slot: {slot}')
+          PY
+
+          gh api "repos/${REPO}/pulls/${PR_NUMBER}" > /tmp/pr.json
+          readarray -t meta < <(python3 - <<'PY'
+          import json
+          pr = json.load(open('/tmp/pr.json', encoding='utf-8'))
+          print((pr.get('head') or {}).get('ref') or '')
+          print((pr.get('head') or {}).get('sha') or '')
+          print(((pr.get('head') or {}).get('repo') or {}).get('full_name') or '')
+          print((pr.get('base') or {}).get('ref') or '')
+          print(pr.get('title') or '')
+          PY
+          )
+          head_ref="${meta[0]:-}"
+          old_head_sha="${meta[1]:-}"
+          head_repo="${meta[2]:-}"
+          base_ref="${meta[3]:-}"
+          title="${meta[4]:-}"
+
+          if [ -z "${head_ref}" ] || [ -z "${old_head_sha}" ]; then
+            echo 'Article PR is missing head identity.' >&2
+            exit 1
+          fi
+          if [ "${head_repo}" != "${REPO}" ] || [ "${base_ref}" != "main" ]; then
+            echo 'Refusing to normalize a cross-repository or non-main PR.' >&2
+            exit 1
+          fi
+          case "${title}" in
+            "Publish Kesher article:"*) ;;
+            *) echo 'Refusing to normalize a non-article PR.' >&2; exit 1 ;;
+          esac
+
+          # Read the untrusted branch as data only. Never execute its scripts,
+          # workflows, package files, or generators.
+          git fetch --no-tags origin "refs/heads/${head_ref}:refs/remotes/origin/${head_ref}"
+          git show "refs/remotes/origin/${head_ref}:src/data/posts.json" > /tmp/head-posts.json
+          cp src/data/posts.json /tmp/main-posts.json
+
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from scripts.kesher_article_normalizer import extract_target_article, normalized_posts
+
+          base = json.loads(Path('/tmp/main-posts.json').read_text(encoding='utf-8'))
+          head = json.loads(Path('/tmp/head-posts.json').read_text(encoding='utf-8'))
+          article = extract_target_article(base, head, os.environ['SLOT'])
+
+          # Pipeline V4 ownership: the trusted image worker is the only image
+          # mutator. Discard any legacy/untrusted article-image attachment here.
+          article.pop('image', None)
+          article.pop('imageAlt', None)
+
+          normalized = normalized_posts(base, article)
+          Path('src/data/posts.json').write_text(
+              json.dumps(normalized, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          print(f"ARTICLE_NORMALIZED slot={os.environ['SLOT']} id={article.get('id') or article.get('slug')}")
+          PY
+
+          # All generators come from trusted current main.
+          npm run generate
+
+          git diff --name-only > /tmp/normalized-paths.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          from scripts.kesher_article_contract import forbidden_article_paths
+          paths = Path('/tmp/normalized-paths.txt').read_text(encoding='utf-8').splitlines()
+          forbidden = forbidden_article_paths(paths)
+          if forbidden:
+              raise SystemExit('Normalizer produced forbidden paths: ' + ', '.join(forbidden))
+          if 'src/data/posts.json' not in paths:
+              raise SystemExit('Normalizer did not produce an article posts diff')
+          print('NORMALIZED_ARTICLE_PATHS ' + ' '.join(paths))
+          PY
+
+          git config user.name "Kesher Article Normalizer"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A -- \
+            src/data/posts.json \
+            src/data/postSummaries.json \
+            public/sitemap.xml \
+            public/rss.xml \
+            public/llms.txt \
+            public/llms-full.txt
+          git commit -m "normalize: rebuild article PR on current main"
+          new_sha="$(git rev-parse HEAD)"
+
+          # Re-root the existing PR branch onto current main, but only if it is
+          # still exactly the head we inspected. This prevents racing Jules or
+          # another repair worker from being overwritten.
+          git push \
+            --force-with-lease="refs/heads/${head_ref}:${old_head_sha}" \
+            origin "HEAD:refs/heads/${head_ref}"
+          echo "ARTICLE_NORMALIZER_PUSHED old=${old_head_sha} new=${new_sha} branch=${head_ref}"
