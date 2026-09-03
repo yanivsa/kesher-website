@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { pushAnalyticsEvent, trackBookingStart } from '../lib/analytics';
 
 export interface LandingPageAnalyticsOptions {
   variantId?: string;
@@ -112,37 +113,24 @@ export function useLandingPageAnalytics(
     });
   };
 
+  const conversionContext = {
+    variant_id: variantId,
+    landing_page_path: landingPagePath,
+    landing_page_type: landingPageType,
+    service_type: serviceType,
+  };
+
   const trackPhoneClick = () => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: 'phone_click',
-      variant_id: variantId,
-      landing_page_path: landingPagePath,
-      landing_page_type: landingPageType,
-      service_type: serviceType,
-    });
+    pushAnalyticsEvent('phone_click', { ...conversionContext, cta_location: 'landing_page' });
   };
 
   const trackWhatsappClick = () => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: 'whatsapp_click',
-      variant_id: variantId,
-      landing_page_path: landingPagePath,
-      landing_page_type: landingPageType,
-      service_type: serviceType,
-    });
+    pushAnalyticsEvent('whatsapp_click', { ...conversionContext, cta_location: 'landing_page' });
   };
 
   const trackCalendlyOpen = () => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: 'calendly_open',
-      variant_id: variantId,
-      landing_page_path: landingPagePath,
-      landing_page_type: landingPageType,
-      service_type: serviceType,
-    });
+    pushAnalyticsEvent('calendly_open', conversionContext);
+    trackBookingStart({ ...conversionContext, cta_location: 'landing_page' });
   };
 
   const trackFaqInteraction = (faqIndex?: number) => {

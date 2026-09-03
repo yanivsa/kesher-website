@@ -33,6 +33,13 @@ if [ "$PORT" != "18789" ]; then
   exit 41
 fi
 
+# Fail closed if the gateway is ever exposed beyond loopback before starting the tunnel.
+non_loopback_listener="$(ss -ltnH 2>/dev/null | awk '$4 ~ /:18789$/ {print $4}' | grep -Ev '^(127\.0\.0\.1|\[::1\]|::1):18789$' || true)"
+if [ -n "$non_loopback_listener" ]; then
+  echo "OPENCLAW_CLOUDFLARE_FAILED=PUBLIC_GATEWAY_LISTENER_DETECTED"
+  exit 43
+fi
+
 arch="$(uname -m)"
 case "$arch" in
   aarch64|arm64) asset=cloudflared-linux-arm64 ;;

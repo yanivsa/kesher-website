@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "node scripts/prepare-shira-images.mjs",
     "dev": "vite",
-    "generate": "node scripts/generate-post-summaries.cjs && node scripts/generate-sitemap.cjs && node scripts/generate-llms-full.cjs",
+    "generate": "node scripts/generate-post-summaries.cjs && node scripts/generate-sitemap.cjs && node scripts/generate-llms-full.cjs && node scripts/generate-rss.cjs",
     "prebuild": "node scripts/prepare-shira-images.mjs && npm run generate",
     "typecheck": "tsc && tsc -p tsconfig.functions.json",
     "build": "npm run typecheck && vite build && node scripts/prerender.cjs",

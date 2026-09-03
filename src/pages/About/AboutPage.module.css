@@ -75,6 +75,10 @@
   font-size: 1.2rem;
   font-weight: 700;
 }
+.personalSignature {
+  width: min(100%, 280px);
+  margin-top: var(--spacing-sm);
+}
 .momentsFigure {
   margin: 0;
   width: min(100%, 440px);

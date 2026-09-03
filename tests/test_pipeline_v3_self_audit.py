@@ -100,6 +100,27 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
             self.assertIsNone(state["last_error"])
             self.assertEqual(dispatch.call_count, 1)
 
+    def test_article_session_timeout_recovery_does_not_increment_attempt_count(self):
+        github = DummyGithub()
+        controller = best_effort.BestEffortController(
+            github,
+            DummySite(),
+            now=datetime(2026, 8, 21, 15, 0, tzinfo=ZoneInfo("Asia/Jerusalem")),
+        )
+        state = v3.normalize_state(None, date(2026, 8, 21))
+        state["article"]["attempt_count"] = 1
+        state["article"]["last_jules_session_id"] = "sessions/123"
+        state["article"]["last_error"] = {
+            "stage": "article",
+            "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+            "message": "timed out",
+        }
+        with mock.patch.object(v3.core.GitHubClient, "dispatch", autospec=True) as dispatch:
+            controller._dispatch_budgeted(state, "article", "kesher-article-generation.yml", {"slot": "2026-08-21"})
+        self.assertEqual(state["article"]["attempt_count"], 1)
+        self.assertEqual(state["article"]["resume_dispatches"], 1)
+        dispatch.assert_called_once()
+
     def test_exact_notebooklm_resume_does_not_consume_another_video_attempt(self):
         github = DummyGithub()
         github.video_state = {

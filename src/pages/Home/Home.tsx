@@ -19,6 +19,7 @@ import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import SignatureMark from '../../components/Signature/SignatureMark';
 import { SITE_CONFIG } from '../../constants/siteConfig';
+import ContactSection from './ContactSection';
 import styles from './Home.module.css';
 
 const schemaData = {
@@ -357,7 +358,7 @@ const Home: React.FC = () => {
   return (
     <div className={styles.page} dir="rtl">
       <MetaTags 
-        title={`${SITE_CONFIG.author} — ייעוץ זוגי, הנחיית הורים וגישור באשדוד`}
+        title={SITE_CONFIG.title}
         description={SITE_CONFIG.description}
       />
       <SchemaOrg data={schemaData} />
@@ -601,22 +602,30 @@ const Home: React.FC = () => {
           </div>
         </section>
 
-        <section className={`${styles.finalCta} ${styles.revealSection}`}>
-          <div>
-            <span className={styles.kicker}>אפשר להתחיל מכאן</span>
-            <h2>השיחה הראשונה לא חייבת לפתור הכול.<br />היא רק צריכה לפתוח דרך.</h2>
+
+        <section id="faq" className={`${styles.section} ${styles.faqSection} ${styles.revealSection}`}>
+          <div className={styles.sectionHeading}>
+            <span className={styles.kicker}>שאלות נפוצות</span>
+            <h2>מידע נוסף שכדאי לדעת.</h2>
+            <p>אם השאלה שלכם לא מופיעה כאן, אפשר תמיד לפנות אליי ישירות לבירור.</p>
           </div>
-          <div className={styles.finalActions}>
-            <Link to={SITE_CONFIG.links.appointment} className={styles.lightCta}>
-              <FiCalendar aria-hidden="true" />
-              קביעת פגישה
-            </Link>
-            <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappCta}>
-              <FiMessageCircle aria-hidden="true" />
-              כתבו לי ב־WhatsApp
-            </a>
+          <div className={styles.faqGrid}>
+            <article className={styles.faqCard}>
+              <h3 className={styles.faqQuestion}>האם ייעוץ זוגי מתאים רק לזוגות במשבר?</h3>
+              <p className={styles.faqAnswer}>לא. גם זוגות שרוצים לחזק את הקשר, לשפר את התקשורת ביניהם או לעבור יחד תקופה מאתגרת, מוזמנים להגיע. המפגשים יכולים להעניק כלים נוספים להתמודדות משותפת עם השגרה והאתגרים.</p>
+            </article>
+            <article className={styles.faqCard}>
+              <h3 className={styles.faqQuestion}>האם הדרכת הורים מתקיימת עם הילדים?</h3>
+              <p className={styles.faqAnswer}>בדרך כלל ההדרכה מיועדת להורים בלבד. אנו מתמקדים במתן כלים, הבנה וביטחון להורים כדי לסייע להם להתמודד עם המצבים השונים שעולים בבית. במקרים מסוימים ולפי הצורך, ניתן לשלב מפגש משותף.</p>
+            </article>
+            <article className={styles.faqCard}>
+              <h3 className={styles.faqQuestion}>האם ניתן לקיים פגישות מרחוק (אונליין)?</h3>
+              <p className={styles.faqAnswer}>כן. חלק מהפגישות יכולות להתקיים באונליין, בהתאם לנוחות ולהעדפה שלכם. ניתן לשלב בין מפגשים בקליניקה למפגשים מקוונים.</p>
+            </article>
           </div>
         </section>
+
+        <ContactSection />
       </main>
 
       <aside className={styles.quickDock} aria-label="אפשרויות ליצירת קשר">

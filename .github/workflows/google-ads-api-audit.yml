@@ -1,0 +1,51 @@
+name: Google Ads API Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      customer_id:
+        description: Google Ads customer ID (digits only)
+        required: true
+        default: '3920602983'
+        type: string
+      login_customer_id:
+        description: Optional manager account ID (digits only)
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Run read-only Google Ads audit
+        env:
+          GOOGLE_ADS_API_VERSION: v25
+          GOOGLE_ADS_CUSTOMER_ID: ${{ inputs.customer_id }}
+          GOOGLE_ADS_LOGIN_CUSTOMER_ID: ${{ inputs.login_customer_id }}
+          GOOGLE_ADS_DEVELOPER_TOKEN: ${{ secrets.GOOGLE_ADS_DEVELOPER_TOKEN }}
+          GOOGLE_ADS_CLIENT_ID: ${{ secrets.GOOGLE_ADS_CLIENT_ID }}
+          GOOGLE_ADS_CLIENT_SECRET: ${{ secrets.GOOGLE_ADS_CLIENT_SECRET }}
+          GOOGLE_ADS_REFRESH_TOKEN: ${{ secrets.GOOGLE_ADS_REFRESH_TOKEN }}
+        run: node scripts/google_ads_api_audit.mjs
+
+      - name: Upload audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: google-ads-audit
+          path: output/google-ads-audit.json
+          if-no-files-found: warn
+          retention-days: 14

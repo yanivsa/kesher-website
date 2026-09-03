@@ -24,6 +24,16 @@ const schemaData = {
         "@type": "LocalBusiness",
         "@id": `${SITE_CONFIG.url}/#business`
       },
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "אשדוד"
+        },
+        {
+          "@type": "Country",
+          "name": "ישראל"
+        }
+      ],
       "description": "הדרכת הורים באשדוד ובאונליין לילדים מחוננים, לילדים עם ADHD ולמשפחות המתכוננות לכיתה א' ולמעברים חינוכיים.",
       "image": `${SITE_CONFIG.url}/images/generated/services/parenting-room.jpg`
     },

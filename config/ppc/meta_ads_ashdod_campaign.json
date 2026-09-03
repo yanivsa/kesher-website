@@ -16,10 +16,10 @@
     "languages": ["he"]
   },
   "ad_creative": {
-    "primary_text": "מרגישים שהשיחות בבית חוזרות על עצמן? ייעוץ זוגי בקליניקה באשדוד מעניק כלים מעשיים לתקשורת מקרבת, במרחב פרטי ומכבד.",
+    "primary_text": "מרגישים שכל ניסיון לדבר בבית נגמר שוב בוויכוח, בהתגוננות או בשתיקה? לפני שמקבלים החלטות כבדות, אפשר לעצור ולבדוק מה קורה ביניכם. בייעוץ זוגי ממוקד בקליניקה באשדוד (או בזום) נזהה את הדפוס שחוזר בשיחות ונתרגל דרך אחרת לדבר ולהקשיב — במרחב פרטי, מכבד וללא שיפוטיות.",
     "headline": "ייעוץ זוגי באשדוד - מרחב פרטי ומכבד",
-    "call_to_action": "BOOK_TRAVEL",
-    "destination_url": "https://kesher.saharoni.com/ashdod"
+    "call_to_action": "CONTACT_US",
+    "destination_url": "https://kesher.saharoni.com/services/couples/ashdod?utm_source=meta&utm_medium=paid_social&utm_campaign=AdvantagePlus_LeadGen_Ashdod_V1&utm_content=Couples_Counseling_Ashdod_Core"
   },
   "budget": {
     "amount_nis_ex_vat": 3000,

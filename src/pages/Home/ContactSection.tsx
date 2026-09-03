@@ -4,6 +4,7 @@ import { FiCalendar, FiShield } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { submitContact } from '../../lib/contactApi';
+import { pushAnalyticsEvent } from '../../lib/analytics';
 import styles from './ContactSection.module.css';
 
 const ContactSection: React.FC = () => {
@@ -35,6 +36,13 @@ const ContactSection: React.FC = () => {
         company,
         startedAt: startedAt.current,
       });
+      const leadContext = {
+        service_type: formData.service,
+        lead_type: 'contact_form',
+        cta_location: 'contact_form',
+      };
+      pushAnalyticsEvent('generate_lead', leadContext);
+      pushAnalyticsEvent('lead_submit', leadContext);
       setSubmitStatus('success');
       setFormData({ name: '', email: '', phone: '', service: 'couples', message: '' });
       setCompany('');
@@ -50,7 +58,7 @@ const ContactSection: React.FC = () => {
         <div className={styles.info}>
           <h2 className={styles.title}>אפשר לפנות בדרך שנוחה לכם</h2>
           <p className={styles.subtitle}>
-            פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי לשיחת בירור קצרה בדרך שנוחה לכם.
+            פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.
           </p>
           <div className={styles.contactActions}>
             <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>

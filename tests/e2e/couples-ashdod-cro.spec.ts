@@ -48,6 +48,11 @@ test('FAQ interaction tracking stays aggregate and variant-aware', async ({ page
   const firstFaq = page.locator('details').first();
   await firstFaq.locator('summary').click();
 
+  await expect.poll(async () => page.evaluate(() => {
+    const events = Array.isArray(window.dataLayer) ? window.dataLayer : [];
+    return events.some((event) => event.event === 'faq_interaction');
+  })).toBe(true);
+
   const faqEvent = await page.evaluate(() => {
     const events = Array.isArray(window.dataLayer) ? window.dataLayer : [];
     return events.find((event) => event.event === 'faq_interaction');

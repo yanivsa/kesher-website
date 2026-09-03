@@ -33,11 +33,11 @@ LOCAL_FALLBACKS = {
     "dating": ("public/images/generated/blog/dating-communication-early-stages.jpg", "שני אנשים בשיחה רגועה בשלב היכרות זוגית"),
     "singles": ("public/images/generated/blog/late-singleness-friends-moving-forward.jpg", "אדם בסיטואציה חברתית המתאימה לנושא רווקות וקשרים"),
     "relocation": ("public/images/generated/blog/relocation-career-loss-and-dependence.jpg", "זוג בסיטואציה ביתית הקשורה לשינויי חיים ורילוקיישן"),
-    "premarital": ("public/images/generated/blog/couples-adhd-premarital-planning.jpg", "זוג יושב יחד ומתכנן נושאים לקראת חיים משותפים"),
+    "premarital": ("public/images/generated/blog/premarital-questions-before-wedding.jpg", "זוג בשיחה פתוחה סביב ציפיות ותכנון קשר"),
     "parenting": ("public/images/generated/blog/asking-for-help-without-yelling.jpg", "הורה וילד באינטראקציה ביתית תומכת"),
     "gifted": ("public/images/generated/blog/child-perfectionism-fear-of-failure.jpg", "ילד בסביבה לימודית עם נוכחות תומכת של מבוגר"),
     "adhd": ("public/images/generated/blog/adhd-first-grade-preparation.jpg", "הורה וילד מתארגנים יחד לקראת מסגרת לימודית"),
-    "couples": ("public/images/generated/blog/listening-in-relationships.jpg", "זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת"),
+    "couples": ("public/images/generated/blog/defensiveness-in-relationships.jpg", "זוג בשיח כנה בסלון הבית סביב תקשורת זוגית"),
 }
 
 

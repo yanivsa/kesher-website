@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiBookOpen, FiCompass, FiHeart, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
+import SignatureMark from '../../components/Signature/SignatureMark';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './AboutPage.module.css';
 
@@ -20,6 +21,10 @@ const schemaData = {
         "jobTitle": ["יועצת זוגית", "מנחת הורים", "מגשרת מוסמכת"],
         "description": "שירה סהרוני היא יועצת זוגית, מנחת הורים ומגשרת מוסמכת, עורכת דין בהכשרתה, המלווה זוגות ומשפחות באשדוד ובאונליין.",
         "url": `${SITE_CONFIG.url}/about`,
+        "sameAs": [
+          SITE_CONFIG.links.facebook,
+          SITE_CONFIG.links.instagram
+        ],
         "image": `${SITE_CONFIG.url}/images/shira-saharoni.webp`,
         "knowsAbout": [
           "ייעוץ זוגי",
@@ -142,6 +147,7 @@ const AboutPage: React.FC = () => {
             <p>
               המטרה היא ליצור מרחב נעים, ברור ולא שיפוטי — כזה שאפשר להרגיש בו מספיק בטוחים כדי לדבר בכנות, להבין מה קורה ולבחור את הצעד הבא.
             </p>
+            <SignatureMark tone="about" animated className={styles.personalSignature} />
           </div>
           <figure className={styles.momentsFigure}>
             <img

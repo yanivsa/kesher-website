@@ -30,9 +30,66 @@ AUTO_MERGE_WORKFLOW = "auto-merge-article-prs.yml"
 IMAGE_TERMINAL_STATES = {"complete", "deferred"}
 AUTO_MERGE_REDISPATCH_SECONDS = 15 * 60
 MAX_AUTO_MERGE_DISPATCHES = 3
+FALSE_DUPLICATE_RECOVERY_MARKER = "slot_scoped_duplicate_recovery_applied"
 
 
 class BestEffortController(v3.V3Controller):
+    def state(self) -> dict[str, Any]:
+        """Recover once from attempt exhaustion caused by the old global PR guard.
+
+        Before the article worker became slot-scoped, unrelated open publication
+        PRs from older dates could return DUPLICATE_ARTICLE_PRS and consume all
+        three attempts without ever creating a Jules session or PR for the
+        current slot. Once this code is deployed, that historical failure is
+        safe to retry exactly once: the corrected worker will only consider PRs
+        that actually contain the current publication date.
+        """
+        state = super().state()
+        article = state.get("article") if isinstance(state.get("article"), dict) else {}
+        worker_result = article.get("last_worker_result") if isinstance(article.get("last_worker_result"), dict) else {}
+        top_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
+
+        should_recover = bool(
+            state.get("status") == "blocked"
+            and article.get("status") == "exhausted"
+            and str(top_error.get("code") or "") == "ARTICLE_ATTEMPTS_EXHAUSTED"
+            and str(worker_result.get("outcome") or "") == "DUPLICATE_ARTICLE_PRS"
+            and not str(worker_result.get("session_id") or "").strip()
+            and not str(worker_result.get("pr_url") or "").strip()
+            and not article.get(FALSE_DUPLICATE_RECOVERY_MARKER)
+        )
+        if not should_recover:
+            return state
+
+        previous = str(state.get("status") or "blocked")
+        article[FALSE_DUPLICATE_RECOVERY_MARKER] = True
+        article["attempt_count"] = 0
+        article["attempts"] = 0
+        article["status"] = "pending"
+        article["last_error"] = None
+        article["next_retry_at"] = None
+        article["run_id"] = None
+        article["processed_run_id"] = None
+        article["provider_id"] = None
+        article["failure_fingerprint"] = None
+        article["same_failure_streak"] = 0
+        article["failure_count_by_type"] = {}
+        state["status"] = "article_needed"
+        state["last_error"] = None
+        state.setdefault("history", []).append({
+            "at": v3.core.utc_now(),
+            "from": previous,
+            "to": "article_needed",
+            "reason": "slot_scoped_duplicate_guard_recovery",
+            "details": {
+                "previous_worker_outcome": "DUPLICATE_ARTICLE_PRS",
+                "attempt_budget_reset": True,
+            },
+        })
+        state["history"] = state["history"][-100:]
+        state["updated_at"] = v3.core.utc_now()
+        return state
+
     def _dispatch_auto_merge_after_persisted_image_terminal(
         self,
         state: dict[str, Any],
@@ -190,6 +247,21 @@ class BestEffortController(v3.V3Controller):
                 current["source_id"] = item.get("source_id")
                 current["artifact_id"] = item.get("artifact_id")
                 current["provider_id"] = item.get("task_id")
+                return
+        if stage == "article":
+            current = state["article"]
+            last_error = current.get("last_error") or {}
+            last_code = str(last_error.get("code") or "")
+            last_session = current.get("last_jules_session_id")
+            # If the previous worker run timed out or completed without PR while preserving
+            # an active session, resuming that session is session recovery, not a new semantic generation attempt.
+            if last_session and last_code in {"JULES_TIMEOUT_SESSION_ACTIVE", "COMPLETED_WITHOUT_PR"}:
+                v3.core.GitHubClient.dispatch(self.github, workflow, inputs)
+                current["attempt_count"] = max(1, int(current.get("attempt_count") or 0))
+                current["resume_dispatches"] = int(current.get("resume_dispatches") or 0) + 1
+                current["last_dispatch_at"] = v3.core.utc_now()
+                current["status"] = "running"
+                current["next_retry_at"] = None
                 return
         return super()._dispatch_budgeted(state, stage, workflow, inputs)
 

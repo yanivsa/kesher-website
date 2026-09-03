@@ -41,6 +41,7 @@
       "יועץ זוגי באשדוד",
       "יועצת זוגית באשדוד",
       "ייעוץ נישואין באשדוד",
+      "בירור זוגי לפני פרידה",
       "couple therapy ashdod"
     ],
     "negative": [
@@ -59,16 +60,46 @@
       "type": "RESPONSIVE_SEARCH_AD",
       "headlines": [
         "ייעוץ זוגי מקצועי באשדוד",
-        "בניית שיחה רגועה וברורה",
-        "קליניקה פרטית באשדוד",
+        "בירור זוגי רגוע וממוקד",
+        "עוצרים את מעגל הריבים",
         "רוצים להחזיר את התקשורת?",
-        "תיאום פגישה בדיסקרטיות"
+        "פגישת בירור באשדוד או בזום",
+        "תיאום פגישה בדיסקרטיות",
+        "מרחב פרטי ומכבד בזוגיות"
       ],
       "descriptions": [
-        "מרחב פרטי ומכבד בהתאם לכללי האתיקה. תיאום שיחה ראשונית בקליניקה באשדוד.",
-        "כשהשיחות חוזרות לאותו דפוס – ייעוץ זוגי באשדוד מסייע ליצור שפה משותפת. קבעו מועד."
+        "כשהשיחות חוזרות לאותו דפוס – ייעוץ זוגי באשדוד מסייע ליצור שפה משותפת. קבעו מועד.",
+        "לפני החלטות כבדות: בירור זוגי רגוע וממוקד. מרחב פרטי ומכבד באשדוד או אונליין.",
+        "מזהים איפה השיחה מסתבכת ויוצאים עם כלים מעשיים. ללא התחייבות לתהליך ארוך."
       ],
-      "final_url": "https://kesher.saharoni.com/ashdod"
+      "final_url": "https://kesher.saharoni.com/couples-counseling-ashdod?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_Ashdod_V1&utm_content=Couples_Counseling_Ashdod_Core&utm_term={keyword}"
     }
-  ]
+  ],
+  "extensions": {
+    "sitelinks": [
+      {
+        "title": "קליניקה באשדוד",
+        "url": "https://kesher.saharoni.com/couples-counseling-ashdod"
+      },
+      {
+        "title": "ייעוץ במשבר",
+        "url": "https://kesher.saharoni.com/services/couples/crisis"
+      },
+      {
+        "title": "בירור לפני פרידה",
+        "url": "https://kesher.saharoni.com/services/couples/before-separation"
+      },
+      {
+        "title": "קביעת פגישה",
+        "url": "https://kesher.saharoni.com/appointment"
+      }
+    ],
+    "callouts": [
+      "50 דקות לפגישה",
+      "דיסקרטיות מלאה",
+      "קליניקה באשדוד או בזום",
+      "ללא התחייבות לתהליך"
+    ],
+    "call_phone": "+972-50-2763802"
+  }
 }

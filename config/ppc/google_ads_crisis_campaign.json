@@ -1,0 +1,99 @@
+{
+  "campaign_name": "Search_CouplesCounseling_Crisis_V1",
+  "objective": "SEARCH_LEAD_GEN",
+  "target_locations": [
+    {
+      "name": "Israel",
+      "type": "COUNTRY"
+    }
+  ],
+  "languages": ["he", "en"],
+  "bidding_strategy": {
+    "type": "MAXIMIZE_CONVERSIONS",
+    "note": "ECPC is deprecated by Google as of March 2025. Moving to Maximize Conversions with Target CPA after 15+ conversions."
+  },
+  "budget": {
+    "amount_nis_ex_vat": 3000,
+    "vat_rate": 0.18,
+    "total_billed_nis": 3540,
+    "billing_period": "MONTHLY"
+  },
+  "dayparting": {
+    "timezone": "Asia/Jerusalem",
+    "pause_schedule": [
+      {
+        "day": "Friday",
+        "start_time": "14:00",
+        "end_time": "23:59"
+      },
+      {
+        "day": "Saturday",
+        "start_time": "00:00",
+        "end_time": "20:00"
+      }
+    ]
+  },
+  "keywords": {
+    "exact_and_phrase": [
+      "ייעוץ זוגי במשבר",
+      "טיפול זוגי במשבר",
+      "זוגיות במשבר",
+      "משבר בנישואין",
+      "משבר זוגי"
+    ],
+    "negative": [
+      "חינם",
+      "חינמי",
+      "משפטי",
+      "עורך דין גירושין",
+      "תביעה",
+      "בית משפט",
+      "עבודה סוציאלית",
+      "דרושים"
+    ]
+  },
+  "ads": [
+    {
+      "type": "RESPONSIVE_SEARCH_AD",
+      "headlines": [
+        "ייעוץ זוגי במשבר",
+        "עצירת הסלמה וחידוש השיח",
+        "למצוא דרך לצאת מהמשבר",
+        "קליניקה באשדוד ובזום",
+        "תיאום שיחה דיסקרטית"
+      ],
+      "descriptions": [
+        "כשהשיחות חוזרות על עצמן ונגמרות בכעס – ייעוץ זוגי ממוקד עוזר לעצור את ההסלמה.",
+        "מרחב בטוח ומקצועי להבנה ולחידוש התקשורת. פגישה של 50 דקות באשדוד או אונליין."
+      ],
+      "final_url": "https://kesher.saharoni.com/services/couples/crisis?utm_source=google&utm_medium=cpc&utm_campaign=Search_CouplesCounseling_Crisis_V1&utm_content=Couples_Counseling_Crisis&utm_term={keyword}"
+    }
+  ],
+  "extensions": {
+    "sitelinks": [
+      {
+        "title": "ייעוץ במשבר",
+        "url": "https://kesher.saharoni.com/services/couples/crisis"
+      },
+      {
+        "title": "קליניקה באשדוד",
+        "url": "https://kesher.saharoni.com/couples-counseling-ashdod"
+      },
+      {
+        "title": "בירור לפני פרידה",
+        "url": "https://kesher.saharoni.com/services/couples/before-separation"
+      },
+      {
+        "title": "קביעת פגישה",
+        "url": "https://kesher.saharoni.com/appointment"
+      }
+    ],
+    "callouts": [
+      "50 דקות לפגישה",
+      "עצירת הסלמה ממוקדת",
+      "קליניקה באשדוד או בזום",
+      "ללא התחייבות לתהליך"
+    ],
+    "call_phone": "+972-50-2763802"
+  }
+}

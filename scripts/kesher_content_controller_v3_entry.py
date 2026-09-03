@@ -409,7 +409,7 @@ class V3Controller(core.Controller):
                 raise core.ControllerError("ARTICLE_SOURCE_INVALID")
             todays = core.today_articles(posts, self.now.date())
             if not todays:
-                open_prs = self.github.open_article_prs()
+                open_prs = self.github.open_article_prs(self.now.date().isoformat())
                 if len(open_prs) > 1:
                     core.block(
                         state,

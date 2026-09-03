@@ -11,6 +11,21 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kesher.saharoni.com/now</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/friends</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/links</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
     <loc>https://kesher.saharoni.com/lectures</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -72,7 +87,7 @@
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog</loc>
-    <lastmod>2026-08-27</lastmod>
+    <lastmod>2026-08-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -115,6 +130,18 @@
     <loc>https://kesher.saharoni.com/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/parenting-back-to-school-screen-limits</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/aliyah-couples-cultural-gaps-identity</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/new-relationship-initial-intentions</loc>
@@ -479,12 +506,6 @@
   <url>
     <loc>https://kesher.saharoni.com/blog/when-children-say-i-hate-you</loc>
     <lastmod>2024-06-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://kesher.saharoni.com/blog/parenting-end-of-summer-screen-time-routine</loc>
-    <lastmod>2026-08-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

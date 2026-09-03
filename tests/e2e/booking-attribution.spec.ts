@@ -5,6 +5,19 @@ test('trusted Calendly scheduled event carries the real service context into tha
   await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]')).toBeVisible({ timeout: 15_000 });
 
   await page.evaluate(() => {
+    window.dataLayer = window.dataLayer || [];
+    const originalPush = window.dataLayer.push.bind(window.dataLayer);
+    window.dataLayer.push = (...events) => {
+      for (const event of events) {
+        if (event?.event === 'booking_complete') {
+          window.sessionStorage.setItem('e2e_booking_complete', JSON.stringify(event));
+        }
+      }
+      return originalPush(...events);
+    };
+  });
+
+  await page.evaluate(() => {
     window.dispatchEvent(new MessageEvent('message', {
       origin: 'https://calendly.com',
       data: {
@@ -35,11 +48,24 @@ test('trusted Calendly scheduled event carries the real service context into tha
     service_type: 'couples_counseling',
     service_region: 'ashdod',
   });
+
+  const bookingCompleteEvent = await page.evaluate(() => {
+    const raw = window.sessionStorage.getItem('e2e_booking_complete');
+    return raw ? JSON.parse(raw) : null;
+  });
+  expect(bookingCompleteEvent).toMatchObject({
+    service_type: 'general_consultation',
+    booking_page_path: '/appointment',
+    entry_page_path: '/appointment',
+    utm_source: 'google',
+    utm_medium: 'cpc',
+    utm_campaign: 'general_booking',
+  });
 });
 
 test('untrusted Calendly-shaped message cannot produce a booking conversion', async ({ page }) => {
-  await page.goto('/appointment');
-  await page.waitForLoadState('networkidle');
+  await page.goto('/appointment', { waitUntil: 'domcontentloaded' });
+  await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]')).toBeVisible({ timeout: 15_000 });
 
   await page.evaluate(() => {
     window.dispatchEvent(new MessageEvent('message', {
@@ -53,9 +79,10 @@ test('untrusted Calendly-shaped message cannot produce a booking conversion', as
     }));
   });
 
-  const bookingCount = await page.evaluate(() => window.dataLayer.filter(
-    (event) => event.event === 'booking_confirmed',
-  ).length);
-  expect(bookingCount).toBe(0);
+  const bookingCounts = await page.evaluate(() => ({
+    legacy: window.dataLayer.filter((event) => event.event === 'booking_confirmed').length,
+    complete: window.dataLayer.filter((event) => event.event === 'booking_complete').length,
+  }));
+  expect(bookingCounts).toEqual({ legacy: 0, complete: 0 });
   await expect(page).toHaveURL(/\/appointment$/);
 });

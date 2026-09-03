@@ -10,9 +10,20 @@ import styles from './BlogList.module.css';
 // Extract unique categories from actual posts data
 const CATEGORIES = ['הכל', ...Array.from(new Set(posts.map(p => p.category)))];
 
+
 const schemaData = {
   "@context": "https://schema.org",
   "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": `${SITE_CONFIG.url}/blog/#webpage`,
+      "url": `${SITE_CONFIG.url}/blog`,
+      "name": "מאמרים וקריאה מעשירה",
+      "description": "מאמרים מקצועיים, תובנות וכלים מעשיים בנושאי ייעוץ זוגי, הדרכת הורים, תקשורת, גבולות ופתרון מחלוקות במשפחה.",
+      "isPartOf": {
+        "@id": `${SITE_CONFIG.url}/#website`
+      }
+    },
     {
       "@type": "Blog",
       "@id": `${SITE_CONFIG.url}/blog/#blog`,
@@ -21,6 +32,9 @@ const schemaData = {
       "description": "מאמרים מקצועיים, תובנות וכלים מעשיים בנושאי ייעוץ זוגי, הדרכת הורים, תקשורת, גבולות ופתרון מחלוקות במשפחה.",
       "publisher": {
         "@id": `${SITE_CONFIG.url}/#business`
+      },
+      "mainEntityOfPage": {
+        "@id": `${SITE_CONFIG.url}/blog/#webpage`
       }
     },
     {

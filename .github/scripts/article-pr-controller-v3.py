@@ -46,16 +46,8 @@ def image_only_errors(errors: list[str]) -> bool:
 
 
 def load_validator_best_effort():
-    """Keep strict validation for actual images but allow an article with none."""
-    validator = _original_load_validator()
-    original_evaluate = validator.evaluate
-
-    def evaluate(*args, **kwargs):
-        errors = list(original_evaluate(*args, **kwargs))
-        return [error for error in errors if error != NO_IMAGE_GATE_ERROR]
-
-    validator.evaluate = evaluate
-    return validator
+    """Return canonical validator enforcing strict image requirements."""
+    return _original_load_validator()
 
 
 def controller_image_stage_terminal(repo: str, pr: dict, github_token: str) -> bool:

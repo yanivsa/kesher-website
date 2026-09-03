@@ -316,7 +316,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               </a>
             </div>
             <div className={styles.heroMicrocopy}>
-              50 דקות · 500 ₪ · קליניקה באשדוד או פגישה אונליין
+              50 דקות · קליניקה באשדוד או פגישה אונליין · ללא התחייבות לתהליך ארוך
             </div>
 
             <div className={styles.trustPoints} aria-label="נקודות אמון">

@@ -1,11 +1,7 @@
 name: OCI Secure Bridge Bootstrap
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/oci-secure-bridge-bootstrap.yml
+  workflow_dispatch:
 
 permissions:
   contents: read
