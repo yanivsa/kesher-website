@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Reconcile Kesher video state without abandoning older daily work.
+"""Reconcile Kesher Short/video state without duplicate generation.
 
-Unresolved videos are processed oldest-first. Multiple items form a durable
-FIFO backlog instead of a fatal conflict. Jules review is advisory: a new
-YouTube upload is permitted after machine technical verification of the exact
-source/video identity. A durable NotebookLM task that is still generating is
-normal progress, not an upload failure.
+Unresolved work is processed oldest-first. Multiple items form a durable FIFO
+backlog instead of a fatal conflict. Jules review is advisory: a new YouTube
+upload is permitted after machine technical verification of the exact
+source/video identity. Provider polling resumes persisted IDs instead of
+creating duplicate videos.
+
+V4 adds a durable ``released_without_short`` tombstone. Four fresh generation
+rounds are the maximum (initial + three technical retries). Once that budget is
+exhausted, or the V4 controller explicitly releases the article, the slug is
+persisted as released and is never selected for generation again.
 """
 
 from __future__ import annotations
@@ -29,6 +34,8 @@ UNRESOLVED_STATUSES = {
     "pending_review", "approved", "rejected", "uploading",
 }
 PROVIDER_PROGRESS_STATUSES = {"source_selected", "source_added", "generating", "downloaded"}
+RELEASED_STATUS = "released_without_short"
+# Initial generation + three replacement generations = four fresh videos max.
 MAX_TECHNICAL_RETRIES = 3
 
 
@@ -108,7 +115,61 @@ def unresolved_items(state: dict[str, Any]) -> list[dict[str, Any]]:
     )
 
 
-def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dict[str, Any]:
+def _mark_released(item: dict[str, Any], reason: str) -> None:
+    item["status"] = RELEASED_STATUS
+    item["uploaded"] = False
+    item["release_reason"] = reason
+    item["released_without_short_at"] = pipeline.utc_now()
+    item["updated_at"] = pipeline.utc_now()
+
+
+def release_without_short(slug: str, reason: str = "controller_bounded_release") -> int:
+    """Persist a terminal no-Short result for one exact published article.
+
+    If an item already exists, preserve its provider/upload identity as history
+    but remove it from the unresolved FIFO. If no item exists, write a minimal
+    tombstone containing the article source identity so future selection still
+    treats this article as consumed.
+    """
+    slug = str(slug or "").strip()
+    if not slug:
+        raise pipeline.PipelineError("Release requires an exact article slug")
+    source = current_source_snapshot(slug)
+    state = pipeline.load_state()
+    matches = [
+        item
+        for item in state.get("items") or []
+        if isinstance(item, dict) and source_slug(item) == slug
+    ]
+    if matches:
+        for item in matches:
+            if item.get("uploaded") is True:
+                # A public result already wins over a later release request.
+                continue
+            _mark_released(item, reason)
+    else:
+        state.setdefault("items", []).append({
+            "id": f"short-release-{slug}-{source['content_sha256'][:10]}",
+            "type": "short_release",
+            "israel_date": pipeline.israel_now().date().isoformat(),
+            "status": RELEASED_STATUS,
+            "source": {
+                key: value
+                for key, value in source.items()
+                if key not in {"body", "youtube_metadata"}
+            },
+            "uploaded": False,
+            "release_reason": reason,
+            "released_without_short_at": pipeline.utc_now(),
+            "created_at": pipeline.utc_now(),
+            "updated_at": pipeline.utc_now(),
+        })
+    pipeline.save_state(state)
+    print(f"SHORT_RELEASED_WITHOUT_VIDEO slug={slug} reason={reason}")
+    return 0
+
+
+def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dict[str, Any] | None:
     if not (old.get("status") == "rejected" and old.get("technical_verified") is not True):
         raise pipeline.PipelineError("Technical retry requested for a non-technical rejection")
     slug = source_slug(old)
@@ -121,9 +182,8 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
         )
     retries = int(old.get("technical_retry_count") or 0)
     if retries >= MAX_TECHNICAL_RETRIES:
-        raise pipeline.PipelineError(
-            f"Technical retry limit reached for authoritative article {slug}"
-        )
+        _mark_released(old, "fresh_generation_budget_exhausted")
+        return None
 
     old["status"] = "superseded"
     old["superseded_reason"] = "technical_retry_same_source"
@@ -132,6 +192,7 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
 
     replacement = pipeline.new_item(source)
     replacement["technical_retry_count"] = retries + 1
+    replacement["fresh_generation_attempt"] = retries + 2
     replacement["retry_of"] = old.get("id")
     state.setdefault("items", []).append(replacement)
     return replacement
@@ -145,6 +206,12 @@ def prepare_generation() -> int:
         if item.get("status") == "rejected" and item.get("technical_verified") is not True:
             replacement = retry_technical_rejection(state, item)
             pipeline.save_state(state)
+            if replacement is None:
+                print(
+                    "VIDEO_RECONCILED_GENERATION "
+                    f"slug={source_slug(item)} released_without_short=yes fresh_attempts=4"
+                )
+                return 0
             print(
                 "VIDEO_RECONCILED_GENERATION "
                 f"slug={source_slug(replacement)} technical_retry=yes backlog_size={len(existing)}"
@@ -257,10 +324,13 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--prepare-generation", action="store_true")
     mode.add_argument("--prepare-upload", action="store_true")
+    mode.add_argument("--release-without-short", metavar="SLUG")
     args = parser.parse_args()
     if args.prepare_generation:
         return prepare_generation()
-    return prepare_upload()
+    if args.prepare_upload:
+        return prepare_upload()
+    return release_without_short(str(args.release_without_short))
 
 
 if __name__ == "__main__":

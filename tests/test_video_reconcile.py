@@ -156,7 +156,7 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(replacement["technical_retry_count"], 1)
         self.assertEqual(replacement["retry_of"], old["id"])
 
-    def test_technical_retry_is_bounded(self) -> None:
+    def test_technical_retry_is_bounded_to_four_fresh_generations(self) -> None:
         today = post("today")
         self.write_posts([today])
         source = pipeline.source_metadata(today)
@@ -167,8 +167,36 @@ class VideoReconcileTests(unittest.TestCase):
             "technical_retry_count": reconcile.MAX_TECHNICAL_RETRIES,
         })
         pipeline.save_state({"version": 1, "items": [rejected], "updated_at": pipeline.utc_now()})
-        with self.assertRaisesRegex(pipeline.PipelineError, "Technical retry limit"):
-            reconcile.prepare_generation()
+        self.assertEqual(reconcile.prepare_generation(), 0)
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "released_without_short")
+        self.assertEqual(saved["release_reason"], "fresh_generation_budget_exhausted")
+        self.assertEqual(reconcile.unresolved_items(pipeline.load_state()), [])
+
+    def test_explicit_release_marks_existing_item_and_prevents_fifo_retry(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        item = pipeline.new_item(pipeline.source_metadata(today))
+        item.update({"status": "generating", "source_id": "s", "task_id": "t", "artifact_id": "t"})
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+        self.assertEqual(reconcile.release_without_short("today"), 0)
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["status"], "released_without_short")
+        self.assertEqual(saved[0]["source"]["slug"], "today")
+        self.assertEqual(reconcile.unresolved_items(pipeline.load_state()), [])
+
+    def test_explicit_release_creates_tombstone_when_no_video_item_exists(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        pipeline.save_state({"version": 1, "items": [], "updated_at": pipeline.utc_now()})
+        self.assertEqual(reconcile.release_without_short("today"), 0)
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 1)
+        self.assertEqual(saved[0]["status"], "released_without_short")
+        self.assertEqual(saved[0]["type"], "short_release")
+        self.assertEqual(saved[0]["source"]["slug"], "today")
+        self.assertFalse(saved[0]["uploaded"])
 
     def test_technically_verified_prior_day_item_is_uploadable_before_today(self) -> None:
         today = post("today")

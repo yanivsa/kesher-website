@@ -23,8 +23,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Test CI profile selector
-        run: python3 -m unittest tests.test_ci_profile -v
+      - name: Test CI and production contracts
+        run: |
+          python3 -m unittest \
+            tests.test_ci_profile \
+            tests.test_kesher_article_contract \
+            tests.test_kesher_article_normalizer \
+            tests.test_short_retry_policy_v4 \
+            tests.test_pipeline_v4 \
+            -v
 
       - name: Select CI profile
         id: profile

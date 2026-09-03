@@ -20,6 +20,7 @@ class CiProfileTests(unittest.TestCase):
             "src/data/posts.json",
             "src/data/postSummaries.json",
             "public/sitemap.xml",
+            "public/rss.xml",
             "public/llms.txt",
             "public/llms-full.txt",
             "public/images/generated/blog/example.webp",
