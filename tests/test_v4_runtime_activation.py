@@ -3,7 +3,10 @@ from __future__ import annotations
 import subprocess
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
+
+from scripts import kesher_content_controller_v4 as v4
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTROLLER_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-content-controller.yml"
@@ -59,6 +62,31 @@ class V4RuntimeActivationTests(unittest.TestCase):
             check=False,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_stale_rebuild_is_not_dispatched_after_latest_state_advanced(self):
+        class FakeGitHub:
+            def newest_video_state(self):
+                return {
+                    "version": 1,
+                    "items": [{
+                        "id": "video-current",
+                        "status": "uploaded",
+                        "uploaded": True,
+                        "youtube_id": "public-current",
+                        "source": {"slug": "today-article"},
+                    }],
+                }
+
+        controller = object.__new__(v4.V4Controller)
+        controller.github = FakeGitHub()
+        state = {
+            "article": {"slug": "today-article"},
+            "video": {"attempt_count": 0, "resume_dispatches": 0},
+        }
+        stale = {"operation": "rebuild", "rebuild_item_id": "video-stale"}
+        with mock.patch.object(v4.core.GitHubClient, "dispatch") as dispatch:
+            controller._dispatch_budgeted(state, "video", "kesher-short-v4.yml", stale)
+        dispatch.assert_not_called()
 
     def test_short_workflow_is_the_single_controller_owned_v4_worker(self):
         workflow = SHORT_WORKFLOW.read_text(encoding="utf-8")
