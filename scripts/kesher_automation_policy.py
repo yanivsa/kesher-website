@@ -11,6 +11,7 @@ EXPECTED_CONTRACT_VERSION = 3
 EXPECTED_STATE_SCHEMA_VERSION = 3
 EXPECTED_MAX_ATTEMPTS = 3
 EXPECTED_BACKOFF = [5, 15]
+EXPECTED_HEARTBEAT_MINUTES = 5
 
 
 class AutomationPolicyError(RuntimeError):
@@ -46,7 +47,7 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
 
     if (
         scheduler.get("owner") != "kesher-content-controller"
-        or scheduler.get("heartbeat_minutes") != 15
+        or scheduler.get("heartbeat_minutes") != EXPECTED_HEARTBEAT_MINUTES
         or scheduler.get("failure_recovery") != "heartbeat"
     ):
         raise AutomationPolicyError("Scheduler contract is invalid")

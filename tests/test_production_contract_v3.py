@@ -27,7 +27,7 @@ class ProductionContractV3Tests(unittest.TestCase):
     def test_scheduler_and_retry_ownership_are_locked(self) -> None:
         contract = load_policy()
         self.assertEqual(contract["scheduler"]["owner"], "kesher-content-controller")
-        self.assertEqual(contract["scheduler"]["heartbeat_minutes"], 15)
+        self.assertEqual(contract["scheduler"]["heartbeat_minutes"], 5)
         self.assertEqual(contract["scheduler"]["failure_recovery"], "heartbeat")
         self.assertTrue(contract["invariants"]["controller_owns_retries"])
         self.assertTrue(contract["invariants"]["workers_are_single_attempt"])
