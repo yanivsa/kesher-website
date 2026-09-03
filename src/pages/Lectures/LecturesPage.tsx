@@ -1,9 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FiCalendar, FiMapPin, FiExternalLink, FiVideo, FiCamera, FiPhone, FiMessageCircle } from 'react-icons/fi';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './LecturesPage.module.css';
+
+const lectureWhatsAppUrl = `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent('היי שירה, אני מעוניין/ת לקבל פרטים על הזמנת הרצאה או סדנה בנושא זוגיות, הורות או נושא אחר מהאתר.')}`;
 
 const schemaData = {
   "@context": "https://schema.org",
@@ -13,7 +16,7 @@ const schemaData = {
       "@id": `${SITE_CONFIG.url}/lectures`,
       "url": `${SITE_CONFIG.url}/lectures`,
       "name": `הרצאות וסדנאות | ${SITE_CONFIG.title}`,
-      "description": "הרצאות וסדנאות מקצועיות מאת שירה סהרוני בנושאי הדרכת הורים, זוגיות והפרעות קשב וריכוז (ADHD).",
+      "description": "הרצאות וסדנאות מאת שירה סהרוני בנושאי זוגיות, הורות ונושאים נוספים מתוך תחומי התוכן באתר.",
       "inLanguage": "he-IL"
     }
   ]
@@ -24,7 +27,7 @@ const LecturesPage: React.FC = () => {
     <div className={styles.page}>
       <MetaTags 
         title="הרצאות וסדנאות" 
-        description="צפו בהרצאות וסדנאות מאת שירה סהרוני. הרצאות מקצועיות ומעשירות בנושאי הדרכת הורים, זוגיות והתמודדות עם ADHD." 
+        description="הרצאות וסדנאות מאת שירה סהרוני בנושאי זוגיות, הורות ונושאים נוספים מתוך תחומי התוכן באתר. ניתן לפנות להזמנת הרצאה לארגון, קהילה או קבוצה." 
       />
       <SchemaOrg data={schemaData} />
 
@@ -34,7 +37,7 @@ const LecturesPage: React.FC = () => {
           <span className={styles.eyebrow}>הרצאות, סדנאות והדרכות</span>
           <h1 className={styles.title}>הרצאות וסדנאות</h1>
           <p className={styles.subtitle}>
-            מגוון הרצאות בנושאי הורות, זוגיות, הפרעות קשב וריכוז (ADHD) והתפתחות משפחתית
+            הרצאות בנושאי זוגיות, הורות ונושאים נוספים מתוך תחומי התוכן באתר, בהתאמה לקהל ולמטרת המפגש
           </p>
           <div className={styles.headerBadges}>
             <span className={styles.headerBadge}>כלים מעשיים וישימים</span>
@@ -92,7 +95,7 @@ const LecturesPage: React.FC = () => {
                 </p>
                 <div className={styles.cardFooter}>
                   <a 
-                    href={SITE_CONFIG.links.whatsapp}
+                    href={lectureWhatsAppUrl}
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className={styles.cardActionLink}
@@ -138,7 +141,7 @@ const LecturesPage: React.FC = () => {
                 </p>
                 <div className={styles.cardFooter}>
                   <a 
-                    href={SITE_CONFIG.links.whatsapp}
+                    href={lectureWhatsAppUrl}
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className={styles.cardActionLink}
@@ -280,19 +283,25 @@ const LecturesPage: React.FC = () => {
           {/* Bottom CTA Box */}
           <div className={styles.ctaBox}>
             <div className={styles.ctaContent}>
-              <h3 className={styles.ctaTitle}>מעוניינים להזמין הרצאה או סדנה לארגון שלכם?</h3>
+              <h3 className={styles.ctaTitle}>מעוניינים להזמין הרצאה או סדנה?</h3>
               <p className={styles.ctaDescription}>
-                הרצאות חווייתיות ומעשירות המותאמות במיוחד לצוותי חינוך, ארגונים, חברות, קהילות וקבוצות הורים.
+                ניתן לפנות לגבי הרצאות בנושאי זוגיות, הורות ונושאים נוספים מתוך תחומי התוכן באתר. ספרו בקצרה מי הקהל ומה הנושא שמעניין אתכם, ואחזור אליכם לתיאום.
               </p>
               <div className={styles.ctaActions}>
-                <a 
-                  href={SITE_CONFIG.links.whatsapp} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <Link 
+                  to="/contact?service=lectures"
                   className={styles.ctaButtonPrimary}
                 >
+                  <span>השארת פרטים להזמנת הרצאה</span>
+                </Link>
+                <a 
+                  href={lectureWhatsAppUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className={styles.ctaButtonSecondary}
+                >
                   <FiMessageCircle aria-hidden="true" />
-                  <span>תיאום הרצאה בוואטסאפ</span>
+                  <span>פנייה בוואטסאפ</span>
                 </a>
                 <a 
                   href={`tel:${SITE_CONFIG.contact.phone}`} 
