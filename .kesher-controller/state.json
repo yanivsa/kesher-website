@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-03",
-  "status": "image_retry_wait",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -313,14 +313,7 @@
       "archived_at": "2026-09-02T21:43:50.058431+00:00"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 33709627569 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-09-03T06:31:22.656103+00:00",
-    "at": "2026-09-03T06:26:22.656129+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-08-28T15:21:13.938686+00:00",
@@ -1091,12 +1084,22 @@
         "failure_streak": 1,
         "run_id": 33709627569
       }
+    },
+    {
+      "at": "2026-09-03T07:06:17.422244+00:00",
+      "from": "image_retry_wait",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 2,
+        "pr_number": 647
+      }
     }
   ],
-  "updated_at": "2026-09-03T06:26:22.656140+00:00",
+  "updated_at": "2026-09-03T07:06:17.422252+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "retry_wait",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": {
       "stage": "image",
       "code": "IMAGE_OUTPUT_MISSING",
@@ -1105,7 +1108,7 @@
       "retry_at": "2026-09-03T06:31:22.656103+00:00",
       "at": "2026-09-03T06:26:22.656129+00:00"
     },
-    "next_retry_at": "2026-09-03T06:31:22.656103+00:00",
+    "next_retry_at": null,
     "run_id": 33709627569,
     "processed_run_id": 33709627569,
     "provider_id": "Local",
@@ -1114,7 +1117,7 @@
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 1
     },
-    "last_dispatch_at": "2026-09-03T02:58:28.811006+00:00",
+    "last_dispatch_at": "2026-09-03T07:06:17.422222+00:00",
     "artifact_sha256": "525369f588cd4da827ad763c7c7f5cd9a90fe0923a7e1998fe27b8d780b2b0ca",
     "source_id": "local://public/images/generated/blog/adhd-first-grade-preparation.jpg",
     "last_run_conclusion": "success",
