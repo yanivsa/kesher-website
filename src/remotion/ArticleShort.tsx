@@ -8,6 +8,15 @@ import {
   useVideoConfig,
 } from "remotion";
 
+export interface MotionTarget {
+  startFrame: number;
+  endFrame: number;
+  focusX: number;
+  focusY: number;
+  zoom: number;
+  rotation: number;
+}
+
 export interface ArticleShortProps {
   videoSrc: string;
   sourceStartFrame: number;
@@ -15,7 +24,10 @@ export interface ArticleShortProps {
   title: string;
   category: string;
   url: string;
+  motionPlan?: MotionTarget[];
 }
+
+const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
 
 export const ArticleShort: React.FC<ArticleShortProps> = ({
   videoSrc,
@@ -24,6 +36,7 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
   title,
   category,
   url,
+  motionPlan = [],
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -37,8 +50,21 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
     extrapolateRight: "clamp",
   });
 
+  const target = motionPlan.find(
+    (entry) => frame >= entry.startFrame && frame <= entry.endFrame,
+  );
+  const targetSpan = target ? Math.max(1, target.endFrame - target.startFrame) : 1;
+  const targetProgress = target ? clamp01((frame - target.startFrame) / targetSpan) : 0;
+  const pulse = Math.sin(targetProgress * Math.PI);
+  const zoom = target ? 1 + (Math.max(1.08, target.zoom) - 1) * pulse : 1;
+  const focusX = target ? clamp01(target.focusX) : 0.5;
+  const focusY = target ? clamp01(target.focusY) : 0.5;
+  const translateX = target ? (0.5 - focusX) * 110 * pulse : 0;
+  const translateY = target ? (0.5 - focusY) * 170 * pulse : 0;
+  const rotation = target ? target.rotation * pulse : 0;
+
   return (
-    <AbsoluteFill style={{backgroundColor: "#101714"}}>
+    <AbsoluteFill style={{backgroundColor: "#101714", overflow: "hidden"}}>
       <Video
         src={staticFile(videoSrc)}
         trimBefore={sourceStartFrame}
@@ -48,6 +74,8 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
           height: "100%",
           objectFit: "cover",
           objectPosition: "center center",
+          transform: `scale(${zoom}) translate(${translateX}px, ${translateY}px) rotate(${rotation}deg)`,
+          transformOrigin: "center center",
         }}
       />
 
