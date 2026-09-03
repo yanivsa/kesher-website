@@ -57,6 +57,9 @@ class FakeGitHub:
         self.long_state = {"version": 1, "items": []}
         self.short_state = {"version": 1, "items": []}
         self.dispatches = []
+        self.jules_snapshots = {}
+        self.jules_nudges = []
+        self.cancelled_runs = []
 
 
     def request(self, method, path, body=None, allow_404=False):
@@ -123,6 +126,16 @@ class FakeGitHub:
 
     def newest_short_state(self):
         return copy.deepcopy(self.short_state)
+
+    def article_session_snapshot(self, slot):
+        return copy.deepcopy(self.jules_snapshots.get(slot))
+
+    def nudge_article_session(self, session_id):
+        self.jules_nudges.append(session_id)
+
+    def cancel_workflow_run(self, run_id):
+        self.cancelled_runs.append(run_id)
+        self.active.pop(core.ARTICLE_WORKFLOW, None)
 
 
 class FakeSite:
@@ -195,6 +208,84 @@ class V5SharedVideoControllerTests(unittest.TestCase):
         state, action = self.make(gh).tick()
         self.assertEqual(action.kind, "blocked")
         self.assertEqual((state.get("last_error") or {}).get("code"), "LONG_VIDEO_IDENTITY_MISMATCH")
+        self.assertEqual(gh.dispatches, [])
+
+    def test_stalled_article_run_after_fifteen_minutes_nudges_same_jules_session_once(self):
+        gh = FakeGitHub()
+        gh.posts = []
+        gh.active[core.ARTICLE_WORKFLOW] = {
+            "id": 101,
+            "status": "in_progress",
+            "event": "workflow_dispatch",
+            "run_started_at": "2026-08-19T15:40:00Z",
+        }
+        gh.jules_snapshots["2026-08-19"] = {
+            "session_id": "sessions/article-1",
+            "state": "IN_PROGRESS",
+            "fingerprint": "fp-1",
+        }
+
+        state, action = self.make(gh).tick()
+
+        self.assertEqual(action.kind, "article_watchdog_nudge")
+        self.assertEqual(gh.jules_nudges, ["sessions/article-1"])
+        self.assertEqual(gh.cancelled_runs, [])
+        self.assertEqual(state["article"]["watchdog"]["nudge_count"], 1)
+
+        gh.saved_state = copy.deepcopy(state)
+        state2, action2 = self.make(gh).tick()
+        self.assertEqual(action2.kind, "wait")
+        self.assertEqual(gh.jules_nudges, ["sessions/article-1"])
+        self.assertEqual(state2["article"]["watchdog"]["nudge_count"], 1)
+
+    def test_stalled_article_run_after_twenty_five_minutes_restarts_worker_for_same_slot(self):
+        gh = FakeGitHub()
+        gh.posts = []
+        gh.active[core.ARTICLE_WORKFLOW] = {
+            "id": 202,
+            "status": "in_progress",
+            "event": "workflow_dispatch",
+            "run_started_at": "2026-08-19T15:30:00Z",
+        }
+        gh.jules_snapshots["2026-08-19"] = {
+            "session_id": "sessions/article-2",
+            "state": "IN_PROGRESS",
+            "fingerprint": "fp-2",
+        }
+        controller = self.make(gh)
+        state = controller.state()
+        state["article"]["watchdog"] = {
+            "identity": "2026-08-19",
+            "session_id": "sessions/article-2",
+            "last_progress_at": "2026-08-19T15:30:00+00:00",
+            "last_fingerprint": "fp-2",
+            "last_nudge_at": "2026-08-19T15:44:00+00:00",
+            "nudge_count": 1,
+            "worker_restart_count": 0,
+            "last_restart_run_id": None,
+        }
+        gh.saved_state = copy.deepcopy(state)
+
+        state2, action = self.make(gh).tick()
+
+        self.assertEqual(action.kind, "article_watchdog_restart")
+        self.assertEqual(gh.cancelled_runs, [202])
+        self.assertEqual(gh.dispatches, [(core.ARTICLE_WORKFLOW, {"slot": "2026-08-19"})])
+        self.assertEqual(state2["article"]["watchdog"]["session_id"], "sessions/article-2")
+        self.assertEqual(state2["article"]["watchdog"]["worker_restart_count"], 1)
+
+    def test_watchdog_never_restarts_article_worker_without_authoritative_jules_session(self):
+        gh = FakeGitHub()
+        gh.posts = []
+        gh.active[core.ARTICLE_WORKFLOW] = {
+            "id": 303,
+            "status": "in_progress",
+            "event": "workflow_dispatch",
+            "run_started_at": "2026-08-19T15:20:00Z",
+        }
+        state, action = self.make(gh).tick()
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(gh.cancelled_runs, [])
         self.assertEqual(gh.dispatches, [])
 
 

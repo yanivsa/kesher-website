@@ -55,9 +55,9 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         text = CONTROLLER.read_text(encoding="utf-8")
         self.assertIn("github.event.workflow_run.event != 'pull_request'", text)
 
-    def test_heartbeat_is_recovery_only_and_runs_every_fifteen_minutes(self):
+    def test_heartbeat_is_recovery_only_and_runs_every_five_minutes(self):
         text = CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn('cron: "3,18,33,48 * * * *"', text)
+        self.assertIn('cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"', text)
         self.assertIn("Recovery heartbeat only", text)
 
     def test_controller_has_no_runtime_scheduler_mutation(self):
