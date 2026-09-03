@@ -11,6 +11,10 @@ import styles from './ContactSection.module.css';
 const ContactSection: React.FC = () => {
   const [searchParams] = useSearchParams();
   const initialService = resolveContactService(searchParams.get('service'));
+  const isLectureInquiry = initialService === 'lectures';
+  const whatsappHref = isLectureInquiry
+    ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent('היי שירה, אני מעוניין/ת לקבל פרטים על הזמנת הרצאה או סדנה בנושא זוגיות, הורות או נושא אחר מהאתר.')}`
+    : SITE_CONFIG.links.whatsapp;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -59,18 +63,31 @@ const ContactSection: React.FC = () => {
     <section id="contact" className={styles.contact}>
       <div className={`container ${styles.container}`}>
         <div className={styles.info}>
-          <h2 className={styles.title}>אפשר לפנות בדרך שנוחה לכם</h2>
+          <h2 className={styles.title}>
+            {isLectureInquiry ? 'להזמנת הרצאה או סדנה' : 'אפשר לפנות בדרך שנוחה לכם'}
+          </h2>
           <p className={styles.subtitle}>
-            פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.
+            {isLectureInquiry
+              ? 'ספרו בקצרה מי הקהל, מה הנושא שמעניין אתכם וכל פרט רלוונטי על האירוע. אפשר להשאיר פרטים בטופס או לפנות ישירות בוואטסאפ.'
+              : 'פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.'}
           </p>
           <div className={styles.contactActions}>
-            <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
-              <FiCalendar aria-hidden="true" />
-              בחירת מועד לפגישה
-            </Link>
-            <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
+            {!isLectureInquiry && (
+              <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
+                <FiCalendar aria-hidden="true" />
+                בחירת מועד לפגישה
+              </Link>
+            )}
+            <a
+              href={whatsappHref}
+              className={styles.whatsappBtn}
+              onClick={() => pushAnalyticsEvent('whatsapp_click', {
+                service_type: isLectureInquiry ? 'lectures' : formData.service,
+                cta_location: isLectureInquiry ? 'lecture_contact' : 'contact_section',
+              })}
+            >
               <FaWhatsapp aria-hidden="true" />
-              שליחת הודעה בוואטסאפ
+              {isLectureInquiry ? 'פנייה בוואטסאפ על הרצאה' : 'שליחת הודעה בוואטסאפ'}
             </a>
           </div>
           <div className={styles.contactDetails}>
@@ -195,7 +212,7 @@ const ContactSection: React.FC = () => {
                   rows={4} 
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder="ספרו לי קצת על הפנייה שלכם..."
+                  placeholder={isLectureInquiry ? 'למשל: סוג הקהל, נושא מועדף, מועד משוער ומיקום...' : 'ספרו לי קצת על הפנייה שלכם...'}
                 ></textarea>
               </div>
               <button type="submit" className={styles.submitBtn} disabled={submitStatus === 'submitting'}>
