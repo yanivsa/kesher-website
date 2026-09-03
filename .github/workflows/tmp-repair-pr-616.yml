@@ -1,0 +1,69 @@
+name: Temporary Repair PR 616
+
+on:
+  push:
+    branches:
+      - article-2026-09-01-18138683782389957430
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rebuild article cleanly on current main
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch='article-2026-09-01-18138683782389957430'
+          old="$(git rev-parse HEAD)"
+          git fetch origin main
+          main="$(git rev-parse origin/main)"
+          git show "${old}:src/data/posts.json" > /tmp/old-posts.json
+          git checkout --detach origin/main
+
+          python3 - <<'PY'
+          import json
+          import shutil
+          from pathlib import Path
+
+          article_id = 'aliyah-homesickness-balance'
+          old_posts = json.loads(Path('/tmp/old-posts.json').read_text(encoding='utf-8'))
+          article = next(p for p in old_posts if p.get('id') == article_id)
+
+          posts_path = Path('src/data/posts.json')
+          posts = json.loads(posts_path.read_text(encoding='utf-8'))
+          posts = [p for p in posts if p.get('id') != article_id]
+          posts.insert(0, article)
+          posts_path.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          source = Path('public/images/generated/blog/aliyah-couples-cultural-gaps.jpg')
+          target = Path('public/images/generated/blog/aliyah-homesickness-balance.jpg')
+          if not source.is_file():
+              raise SystemExit('validated relocation fallback missing on main')
+          shutil.copyfile(source, target)
+          PY
+
+          npm run generate
+          python3 .github/scripts/validate-article-images.py
+
+          git config user.name 'Kesher Repair Bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add \
+            src/data/posts.json \
+            src/data/postSummaries.json \
+            public/sitemap.xml \
+            public/rss.xml \
+            public/llms-full.txt \
+            public/images/generated/blog/aliyah-homesickness-balance.jpg
+
+          tree="$(git write-tree)"
+          merge_commit="$(printf '%s\n' 'repair(article): rebase PR 616 cleanly onto main' | git commit-tree "$tree" -p "$old" -p "$main")"
+          git push origin "${merge_commit}:refs/heads/${branch}"
