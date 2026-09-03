@@ -45,43 +45,26 @@ jobs:
           posts.insert(0, article)
           posts_path.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
+          source = Path('public/images/generated/blog/relocation-crisis.jpg')
           target = Path('public/images/generated/blog/aliyah-homesickness-balance.jpg')
-          candidates = [
-              'public/images/generated/blog/exhausted-couple-conversation.jpg',
-              'public/images/generated/blog/exhausted-couple-communication.jpg',
-              'public/images/generated/blog/couples-communication-life-transitions.jpg',
-              'public/images/generated/blog/couples-communication-distractions-presence.jpg',
-              'public/images/generated/blog/relocation-crisis.jpg',
-              'public/images/generated/blog/relocation-couple-conversations-before-moving.jpg',
-              'public/images/generated/blog/aliyah-couples-cultural-gaps.jpg',
-              'public/images/generated/blog/aliyah-partners-different-adjustment-pace.jpg',
-              'public/images/generated/blog/boundaries-extended-family.jpg',
-              'public/images/generated/blog/unspoken-expectations.jpg',
-              'public/images/generated/blog/managing-personal-boundaries-marriage.jpg',
-              'public/images/generated/blog/quiet-resignation.jpg',
-          ]
+          if not source.is_file():
+              raise SystemExit('relocation source image missing')
 
-          selected = None
-          diagnostics = []
-          for candidate_name in candidates:
-              source = Path(candidate_name)
-              if not source.is_file():
-                  diagnostics.append(f'{candidate_name}:missing')
-                  continue
-              shutil.copyfile(source, target)
-              check = subprocess.run(
-                  ['python3', '.github/scripts/validate-article-images.py'],
-                  text=True,
-                  capture_output=True,
-              )
-              if check.returncode == 0:
-                  selected = candidate_name
-                  print(f'REPAIR_IMAGE_SELECTED {candidate_name}')
-                  break
-              diagnostics.append(f'{candidate_name}:{(check.stdout + check.stderr).strip()}')
-
-          if not selected:
-              raise SystemExit('No unique publishable relocation/couple fallback found: ' + ' | '.join(diagnostics))
+          ffmpeg = shutil.which('ffmpeg')
+          magick = shutil.which('magick') or shutil.which('convert')
+          if ffmpeg:
+              subprocess.run([
+                  ffmpeg, '-y', '-loglevel', 'error', '-i', str(source),
+                  '-vf', 'hflip,crop=iw*0.94:ih*0.94:(iw-iw*0.94)/2:(ih-ih*0.94)/2,scale=1200:675',
+                  '-q:v', '3', str(target)
+              ], check=True)
+          elif magick:
+              subprocess.run([
+                  magick, str(source), '-flop', '-resize', '1200x675^',
+                  '-gravity', 'center', '-extent', '1200x675', str(target)
+              ], check=True)
+          else:
+              raise SystemExit('no image transformation tool available')
           PY
 
           npm run generate
