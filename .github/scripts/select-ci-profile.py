@@ -3,33 +3,20 @@
 
 Only a pure article-publication diff may use the focused article gate. Any
 unknown, mixed, empty, workflow, code, test, or infrastructure change falls back
-to the full gate.
+to the full gate. Article publication paths come from one canonical module.
 """
 
 from __future__ import annotations
 
 import sys
 from collections.abc import Iterable
+from pathlib import Path
 
-ARTICLE_EXACT_PATHS = {
-    "src/data/posts.json",
-    "src/data/postSummaries.json",
-    "public/sitemap.xml",
-    "public/llms.txt",
-    "public/llms-full.txt",
-}
-ARTICLE_PREFIXES = (
-    "public/images/generated/blog/",
-)
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-
-def is_article_publication_path(path: str) -> bool:
-    normalized = path.strip().lstrip("./")
-    if not normalized:
-        return False
-    return normalized in ARTICLE_EXACT_PATHS or any(
-        normalized.startswith(prefix) for prefix in ARTICLE_PREFIXES
-    )
+from scripts.kesher_article_contract import is_article_publication_path
 
 
 def classify_paths(paths: Iterable[str]) -> str:
