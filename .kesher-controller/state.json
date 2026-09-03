@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "cycle": "2026-09-04",
   "status": "waiting_for_article_window",
   "article": {
@@ -16,21 +16,6 @@
     "attempts": 0,
     "deploy_attempts": 0,
     "normalization_status": "pending"
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "attempts": 0,
-    "resume_dispatches": 0,
-    "fifth_attempt_recovery_only_used": false
   },
   "backlog": [
     {
@@ -921,9 +906,15 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-09-03T21:54:36.085236+00:00",
+      "from": "waiting_for_article_window",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 4 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-03T21:23:31.323665+00:00",
+  "updated_at": "2026-09-03T21:54:36.306247+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -935,5 +926,49 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {}
+  },
+  "long_video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  },
+  "short": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "attempts": 0,
+    "resume_dispatches": 0,
+    "fifth_attempt_recovery_only_used": false
+  },
+  "migration": {
+    "v4_short_controller_state": {
+      "attempt_count": 0,
+      "status": "pending",
+      "last_error": null,
+      "next_retry_at": null,
+      "run_id": null,
+      "processed_run_id": null,
+      "provider_id": null,
+      "failure_fingerprint": null,
+      "same_failure_streak": 0,
+      "failure_count_by_type": {},
+      "attempts": 0,
+      "resume_dispatches": 0,
+      "fifth_attempt_recovery_only_used": false
+    }
   }
 }
