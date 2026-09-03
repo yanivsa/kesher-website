@@ -274,6 +274,32 @@ class V5SharedVideoControllerTests(unittest.TestCase):
         self.assertEqual(state2["article"]["watchdog"]["session_id"], "sessions/article-2")
         self.assertEqual(state2["article"]["watchdog"]["worker_restart_count"], 1)
 
+    def test_active_article_watchdog_runs_even_after_article_window_closes(self):
+        gh = FakeGitHub()
+        gh.posts = []
+        gh.active[core.ARTICLE_WORKFLOW] = {
+            "id": 404,
+            "status": "in_progress",
+            "event": "workflow_dispatch",
+            "run_started_at": "2026-08-18T22:40:00Z",
+        }
+        gh.jules_snapshots["2026-08-21"] = {
+            "session_id": "sessions/article-night",
+            "state": "IN_PROGRESS",
+            "fingerprint": "fp-night",
+        }
+        controller = v5.V5Controller(
+            gh,
+            FakeSite(),
+            now=datetime(2026, 8, 21, 2, 0, tzinfo=TZ),
+        )
+
+        state, action = controller.tick()
+
+        self.assertEqual(action.kind, "article_watchdog_nudge")
+        self.assertEqual(gh.jules_nudges, ["sessions/article-night"])
+        self.assertEqual(state["article"]["watchdog"]["nudge_count"], 1)
+
     def test_watchdog_never_restarts_article_worker_without_authoritative_jules_session(self):
         gh = FakeGitHub()
         gh.posts = []

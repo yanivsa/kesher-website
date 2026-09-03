@@ -208,8 +208,9 @@ class V5Controller(v4.V4Controller):
         return state
 
     def _article_watchdog(self, state: dict[str, Any]) -> core.Action | None:
-        if not self.article_slot_open():
-            return None
+        # The publication window gates starting new article work, not recovery.
+        # Once a worker is already active it must remain supervised across
+        # window boundaries (for example a Friday pre-08:00 recovery run).
         posts = self.github.contents_json("src/data/posts.json", "main")
         if not isinstance(posts, list) or core.today_articles(posts, self.now.date()):
             return None
