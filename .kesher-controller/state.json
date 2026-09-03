@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "cycle": "2026-09-03",
-  "status": "article_pr_open",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -313,7 +313,14 @@
       "archived_at": "2026-09-02T21:43:50.058431+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_OUTPUT_MISSING",
+    "message": "trusted image run 33709627569 completed with conclusion=success but no validated image is present",
+    "retryable": true,
+    "retry_at": "2026-09-03T06:31:22.656103+00:00",
+    "at": "2026-09-03T06:26:22.656129+00:00"
+  },
   "history": [
     {
       "at": "2026-08-28T15:21:13.938686+00:00",
@@ -1072,22 +1079,45 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "article PR has trusted image and remains authoritative"
+    },
+    {
+      "at": "2026-09-03T06:26:22.656135+00:00",
+      "from": "article_pr_open",
+      "to": "image_retry_wait",
+      "reason": "IMAGE_OUTPUT_MISSING",
+      "details": {
+        "message": "trusted image run 33709627569 completed with conclusion=success but no validated image is present",
+        "retry_at": "2026-09-03T06:31:22.656103+00:00",
+        "failure_streak": 1,
+        "run_id": 33709627569
+      }
     }
   ],
-  "updated_at": "2026-09-03T05:33:02.936372+00:00",
+  "updated_at": "2026-09-03T06:26:22.656140+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "complete",
-    "last_error": null,
-    "next_retry_at": null,
+    "status": "retry_wait",
+    "last_error": {
+      "stage": "image",
+      "code": "IMAGE_OUTPUT_MISSING",
+      "message": "trusted image run 33709627569 completed with conclusion=success but no validated image is present",
+      "retryable": true,
+      "retry_at": "2026-09-03T06:31:22.656103+00:00",
+      "at": "2026-09-03T06:26:22.656129+00:00"
+    },
+    "next_retry_at": "2026-09-03T06:31:22.656103+00:00",
     "run_id": 33709627569,
-    "processed_run_id": null,
+    "processed_run_id": 33709627569,
     "provider_id": "Local",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "IMAGE_OUTPUT_MISSING": 1
+    },
     "last_dispatch_at": "2026-09-03T02:58:28.811006+00:00",
     "artifact_sha256": "525369f588cd4da827ad763c7c7f5cd9a90fe0923a7e1998fe27b8d780b2b0ca",
-    "source_id": "local://public/images/generated/blog/adhd-first-grade-preparation.jpg"
+    "source_id": "local://public/images/generated/blog/adhd-first-grade-preparation.jpg",
+    "last_run_conclusion": "success",
+    "last_failed_run_id": 33709627569
   }
 }
