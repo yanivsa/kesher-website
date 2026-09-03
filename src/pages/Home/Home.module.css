@@ -1441,7 +1441,6 @@
   .hero h1 {
     font-size: clamp(3.15rem, 15vw, 5rem);
     line-height: 0.98;
-    margin-bottom: 0.5rem;
   }
 
   .heroLead {
@@ -1449,7 +1448,7 @@
   }
 
   .heroActions {
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     display: grid;
   }
 

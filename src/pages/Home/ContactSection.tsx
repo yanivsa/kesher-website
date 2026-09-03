@@ -1,25 +1,18 @@
 import React, { useRef, useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiCalendar, FiShield } from 'react-icons/fi';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { submitContact } from '../../lib/contactApi';
 import { pushAnalyticsEvent } from '../../lib/analytics';
-import { CONTACT_SERVICE_OPTIONS, resolveContactService } from '../../lib/contactServices';
 import styles from './ContactSection.module.css';
 
 const ContactSection: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const initialService = resolveContactService(searchParams.get('service'));
-  const isLectureInquiry = initialService === 'lectures';
-  const whatsappHref = isLectureInquiry
-    ? `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${encodeURIComponent('היי שירה, אני מעוניין/ת לקבל פרטים על הזמנת הרצאה או סדנה בנושא זוגיות, הורות או נושא אחר מהאתר.')}`
-    : SITE_CONFIG.links.whatsapp;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    service: initialService as string,
+    service: 'couples',
     message: ''
   });
   const [company, setCompany] = useState('');
@@ -51,7 +44,7 @@ const ContactSection: React.FC = () => {
       pushAnalyticsEvent('generate_lead', leadContext);
       pushAnalyticsEvent('lead_submit', leadContext);
       setSubmitStatus('success');
-      setFormData({ name: '', email: '', phone: '', service: initialService, message: '' });
+      setFormData({ name: '', email: '', phone: '', service: 'couples', message: '' });
       setCompany('');
       startedAt.current = 0;
     } catch {
@@ -63,31 +56,18 @@ const ContactSection: React.FC = () => {
     <section id="contact" className={styles.contact}>
       <div className={`container ${styles.container}`}>
         <div className={styles.info}>
-          <h2 className={styles.title}>
-            {isLectureInquiry ? 'להזמנת הרצאה או סדנה' : 'אפשר לפנות בדרך שנוחה לכם'}
-          </h2>
+          <h2 className={styles.title}>אפשר לפנות בדרך שנוחה לכם</h2>
           <p className={styles.subtitle}>
-            {isLectureInquiry
-              ? 'ספרו בקצרה מי הקהל, מה הנושא שמעניין אתכם וכל פרט רלוונטי על האירוע. אפשר להשאיר פרטים בטופס או לפנות ישירות בוואטסאפ.'
-              : 'פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.'}
+            פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.
           </p>
           <div className={styles.contactActions}>
-            {!isLectureInquiry && (
-              <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
-                <FiCalendar aria-hidden="true" />
-                בחירת מועד לפגישה
-              </Link>
-            )}
-            <a
-              href={whatsappHref}
-              className={styles.whatsappBtn}
-              onClick={() => pushAnalyticsEvent('whatsapp_click', {
-                service_type: isLectureInquiry ? 'lectures' : formData.service,
-                cta_location: isLectureInquiry ? 'lecture_contact' : 'contact_section',
-              })}
-            >
+            <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
+              <FiCalendar aria-hidden="true" />
+              בחירת מועד לפגישה
+            </Link>
+            <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
               <FaWhatsapp aria-hidden="true" />
-              {isLectureInquiry ? 'פנייה בוואטסאפ על הרצאה' : 'שליחת הודעה בוואטסאפ'}
+              שליחת הודעה בוואטסאפ
             </a>
           </div>
           <div className={styles.contactDetails}>
@@ -199,9 +179,18 @@ const ContactSection: React.FC = () => {
                   value={formData.service}
                   onChange={handleChange}
                 >
-                  {CONTACT_SERVICE_OPTIONS.map(({ value, label }) => (
-                    <option key={value} value={value}>{label}</option>
-                  ))}
+                  <option value="couples">ייעוץ זוגי</option>
+                  <option value="premarital-first-year">הכנה לנישואים וליווי בשנה הראשונה</option>
+                  <option value="couples-aliyah-relocation">ייעוץ זוגי בעלייה או ברילוקיישן</option>
+                  <option value="late-singleness">ייעוץ במצבי רווקות מאוחרת</option>
+                  <option value="finding-relationship">ליווי למציאת זוגיות</option>
+                  <option value="parenting">הדרכת הורים</option>
+                  <option value="mediation">גישור</option>
+                  <option value="gifted-parenting">הנחיית הורים לילדים מחוננים</option>
+                  <option value="first-grade">הכנה לכיתה א׳ ותפקודים ניהוליים</option>
+                  <option value="gifted-framework">הכנה למסגרת מחוננים</option>
+                  <option value="aliyah-families">עולים ותושבים חוזרים</option>
+                  <option value="other">אחר</option>
                 </select>
               </div>
               <div className={styles.formGroup}>
@@ -212,7 +201,7 @@ const ContactSection: React.FC = () => {
                   rows={4} 
                   value={formData.message}
                   onChange={handleChange}
-                  placeholder={isLectureInquiry ? 'למשל: סוג הקהל, נושא מועדף, מועד משוער ומיקום...' : 'ספרו לי קצת על הפנייה שלכם...'}
+                  placeholder="ספרו לי קצת על הפנייה שלכם..."
                 ></textarea>
               </div>
               <button type="submit" className={styles.submitBtn} disabled={submitStatus === 'submitting'}>
