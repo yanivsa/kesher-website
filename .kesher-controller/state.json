@@ -1,95 +1,36 @@
 {
   "schema_version": 4,
-  "cycle": "2026-09-03",
-  "status": "video_running",
+  "cycle": "2026-09-04",
+  "status": "waiting_for_article_window",
   "article": {
-    "attempt_count": 1,
-    "status": "complete",
-    "last_error": {
-      "stage": "article",
-      "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Verified exactly the expected files (posts.json, postSummaries.json, sitemap.... — Verified exactly the expected files (posts.json, postSummaries.json, sitemap.xml, llms-full.txt, and rss.xml) are changed, and the scratch file generate_post.py was deleted.",
-      "retryable": true,
-      "retry_at": "2026-09-02T23:40:56.020187+00:00",
-      "at": "2026-09-02T23:35:56.020207+00:00"
-    },
-    "next_retry_at": null,
-    "run_id": 33703982682,
-    "processed_run_id": 33686725078,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
-    },
-    "attempts": 2,
-    "deploy_attempts": 0,
-    "last_dispatch_at": "2026-09-03T01:31:26.866004+00:00",
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-09-03",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Verified exactly the expected files (posts.json, postSummaries.json, sitemap.... — Verified exactly the expected files (posts.json, postSummaries.json, sitemap.xml, llms-full.txt, and rss.xml) are changed, and the scratch file generate_post.py was deleted.",
-      "session_id": "sessions/3761228665442180957",
-      "pr_url": "",
-      "github_run_id": "33686725078",
-      "completed_at": "2026-09-02T22:22:16.411713+00:00",
-      "diagnostic": {
-        "source": {
-          "name": "sources/github/yanivsa/kesher-website",
-          "owner": "yanivsa",
-          "repo": "kesher-website",
-          "default_branch": "main",
-          "main_available": true
-        },
-        "activity_count": 34,
-        "change_set_count": 32,
-        "change_set_fingerprints": [],
-        "last_agent_message": "",
-        "last_progress": "Verified exactly the expected files (posts.json, postSummaries.json, sitemap.... — Verified exactly the expected files (posts.json, postSummaries.json, sitemap.xml, llms-full.txt, and rss.xml) are changed, and the scratch file generate_post.py was deleted.",
-        "last_description": "",
-        "session_failed_reason": ""
-      }
-    },
-    "last_jules_session_id": "sessions/3761228665442180957",
-    "last_failed_run_id": 33686725078,
-    "resume_dispatches": 1,
-    "pr_number": 647,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/647",
-    "merge_dispatch_at": "2026-09-03T07:35:17.986545+00:00",
-    "merge_dispatch_count": 1,
-    "merge_image_attempt_count": 2,
-    "slug": "smart-youth-focus-tasks-organization",
-    "title": "הילד נבון מאוד אבל מתקשה להתארגן: מה קורה כשהמחוננות פוגשת קשיי קשב",
-    "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
-    "published_date": "2026-09-03",
-    "live": true,
-    "live_verified_at": "2026-09-03T20:54:24.485756+00:00",
-    "next_deploy_retry_at": null,
-    "normalization_status": "pending"
-  },
-  "video": {
     "attempt_count": 0,
-    "status": "running",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 33762937440,
-    "processed_run_id": 33762937440,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "resume_dispatches": 4,
-    "fifth_attempt_recovery_only_used": false,
-    "item_id": "video-20260903-235059-65b5bb9c69",
-    "last_dispatch_at": "2026-09-03T20:54:29.013229+00:00",
-    "youtube_id": "L3a1e3giH6g",
-    "youtube_url": "https://youtu.be/L3a1e3giH6g",
-    "verified": true,
-    "last_run_conclusion": "success"
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "attempts": 0,
+    "resume_dispatches": 0,
+    "fifth_attempt_recovery_only_used": false
   },
   "backlog": [
     {
@@ -326,196 +267,83 @@
         "merge_image_attempt_count": 1
       },
       "archived_at": "2026-09-02T21:43:50.058431+00:00"
+    },
+    {
+      "cycle": "2026-09-03",
+      "status": "video_running",
+      "article": {
+        "attempt_count": 1,
+        "status": "complete",
+        "last_error": {
+          "stage": "article",
+          "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+          "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Verified exactly the expected files (posts.json, postSummaries.json, sitemap.... — Verified exactly the expected files (posts.json, postSummaries.json, sitemap.xml, llms-full.txt, and rss.xml) are changed, and the scratch file generate_post.py was deleted.",
+          "retryable": true,
+          "retry_at": "2026-09-02T23:40:56.020187+00:00",
+          "at": "2026-09-02T23:35:56.020207+00:00"
+        },
+        "next_retry_at": null,
+        "run_id": 33703982682,
+        "processed_run_id": 33686725078,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {
+          "JULES_TIMEOUT_SESSION_ACTIVE": 1
+        },
+        "attempts": 2,
+        "deploy_attempts": 0,
+        "last_dispatch_at": "2026-09-03T01:31:26.866004+00:00",
+        "last_run_conclusion": "failure",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-09-03",
+          "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+          "retryable": true,
+          "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Verified exactly the expected files (posts.json, postSummaries.json, sitemap.... — Verified exactly the expected files (posts.json, postSummaries.json, sitemap.xml, llms-full.txt, and rss.xml) are changed, and the scratch file generate_post.py was deleted.",
+          "session_id": "sessions/3761228665442180957",
+          "pr_url": "",
+          "github_run_id": "33686725078",
+          "completed_at": "2026-09-02T22:22:16.411713+00:00",
+          "diagnostic": {
+            "source": {
+              "name": "sources/github/yanivsa/kesher-website",
+              "owner": "yanivsa",
+              "repo": "kesher-website",
+              "default_branch": "main",
+              "main_available": true
+            },
+            "activity_count": 34,
+            "change_set_count": 32,
+            "change_set_fingerprints": [],
+            "last_agent_message": "",
+            "last_progress": "Verified exactly the expected files (posts.json, postSummaries.json, sitemap.... — Verified exactly the expected files (posts.json, postSummaries.json, sitemap.xml, llms-full.txt, and rss.xml) are changed, and the scratch file generate_post.py was deleted.",
+            "last_description": "",
+            "session_failed_reason": ""
+          }
+        },
+        "last_jules_session_id": "sessions/3761228665442180957",
+        "last_failed_run_id": 33686725078,
+        "resume_dispatches": 1,
+        "pr_number": 647,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/647",
+        "merge_dispatch_at": "2026-09-03T07:35:17.986545+00:00",
+        "merge_dispatch_count": 1,
+        "merge_image_attempt_count": 2,
+        "slug": "smart-youth-focus-tasks-organization",
+        "title": "הילד נבון מאוד אבל מתקשה להתארגן: מה קורה כשהמחוננות פוגשת קשיי קשב",
+        "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
+        "published_date": "2026-09-03",
+        "live": true,
+        "live_verified_at": "2026-09-03T20:54:24.485756+00:00",
+        "next_deploy_retry_at": null,
+        "normalization_status": "pending"
+      },
+      "archived_at": "2026-09-03T21:23:31.323565+00:00"
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-31T15:23:11.330585+00:00",
-      "from": "article_image_running",
-      "to": "article_pr_open",
-      "reason": "article PR has trusted image and remains authoritative"
-    },
-    {
-      "at": "2026-08-31T19:49:50.933094+00:00",
-      "from": "article_pr_open",
-      "to": "article_deploying",
-      "reason": "deployment already active"
-    },
-    {
-      "at": "2026-08-31T19:53:47.816895+00:00",
-      "from": "article_deploying",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-08-31T19:53:54.631585+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "new video workflow dispatched",
-      "details": {
-        "operation": "full",
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-08-31T21:01:56.978495+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-08-31T21:01:56.978524+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-08-31T21:42:16.572482+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-01T00:33:36.601354+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Created `insert_article.cjs` using a bash heredoc with the new article metadata.",
-        "retry_at": "2026-09-01T00:38:36.601329+00:00",
-        "failure_streak": 1,
-        "run_id": 33442685938,
-        "session_id": "sessions/8478404235247107172"
-      }
-    },
-    {
-      "at": "2026-09-01T04:00:29.156609+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 2
-      }
-    },
-    {
-      "at": "2026-09-01T05:36:52.920085+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: I successfully wrote an article about dating app fatigue and setting boundaries. The article passed all automated CI tests (`npm run check`, `test:content`, `test:e2e`), meaning it technically satisfies the publishability constraints (like word count and heading count) and didn't trigger any automated bans. However, the code review flagged two main issues: 1. **Unrelated edit in `llms-full.txt`:** I inadvertently modified an existing section that injected a banned phrase (\"מרחב בטוח\"). This shouldn't have happened as I simply ran `npm run generate` to build it. I should revert that change or regenerate it properly to isolate just my new article. 2. **Editorial structural constraint violation:** The policy says: \"אין להשתמש בכל מאמר באותה נוסחה של משבר דרמטי, הסבר רגשי, רשימת כ…",
-        "retry_at": "2026-09-01T05:51:52.920062+00:00",
-        "failure_streak": 2,
-        "run_id": 33468239656,
-        "session_id": "sessions/8478404235247107172"
-      }
-    },
-    {
-      "at": "2026-09-01T07:35:05.790384+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 3
-      }
-    },
-    {
-      "at": "2026-09-01T08:18:15.932774+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "COMPLETED_WITHOUT_PR",
-      "details": {
-        "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
-        "retry_at": "2026-09-01T08:23:15.932756+00:00",
-        "failure_streak": 1,
-        "run_id": 33482830454,
-        "session_id": "sessions/17753174176638167845"
-      }
-    },
-    {
-      "at": "2026-09-01T08:21:42.390467+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-01T08:23:15.932756+00:00"
-      }
-    },
-    {
-      "at": "2026-09-01T08:45:50.098984+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 4
-      }
-    },
-    {
-      "at": "2026-09-01T09:49:03.211978+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "COMPLETED_WITHOUT_PR",
-      "details": {
-        "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
-        "retry_at": "2026-09-01T10:04:03.211957+00:00",
-        "failure_streak": 2,
-        "run_id": 33488709183,
-        "session_id": "sessions/5987084725949200775"
-      }
-    },
-    {
-      "at": "2026-09-01T09:52:38.633088+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-01T10:04:03.211957+00:00"
-      }
-    },
-    {
-      "at": "2026-09-01T10:30:11.070289+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 5
-      }
-    },
-    {
-      "at": "2026-09-01T11:08:39.803446+00:00",
-      "from": "article_generating",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 616
-      }
-    },
-    {
-      "at": "2026-09-01T11:12:27.187197+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 33500960809 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-01T11:17:27.187163+00:00",
-        "failure_streak": 1,
-        "run_id": 33500960809
-      }
-    },
-    {
-      "at": "2026-09-01T11:15:26.308616+00:00",
-      "from": "image_retry_wait",
-      "to": "image_retry_wait",
-      "reason": "trusted image retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-01T11:17:27.187163+00:00"
-      }
-    },
     {
       "at": "2026-09-01T11:19:54.201114+00:00",
       "from": "image_retry_wait",
@@ -1075,57 +903,37 @@
         "operation": "full",
         "resume": 4
       }
+    },
+    {
+      "at": "2026-09-03T21:23:31.323593+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-03T21:23:31.323597+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-03T21:23:31.323662+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-09-03T20:54:29.013246+00:00",
+  "updated_at": "2026-09-03T21:23:31.323665+00:00",
   "image": {
-    "attempt_count": 2,
-    "status": "complete",
-    "last_error": {
-      "stage": "image",
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 33726421611 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-09-03T08:16:21.945383+00:00",
-      "at": "2026-09-03T08:11:21.945412+00:00"
-    },
-    "next_retry_at": "2026-09-03T08:16:21.945383+00:00",
-    "run_id": 33726421611,
-    "processed_run_id": 33726421611,
-    "provider_id": "Local",
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 2
-    },
-    "last_dispatch_at": "2026-09-03T07:06:17.422222+00:00",
-    "artifact_sha256": "525369f588cd4da827ad763c7c7f5cd9a90fe0923a7e1998fe27b8d780b2b0ca",
-    "source_id": "local://public/images/generated/blog/adhd-first-grade-preparation.jpg",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 33726421611
-  },
-  "migration": {
-    "legacy_video_v3": {
-      "attempt_count": 2,
-      "status": "complete",
-      "last_error": null,
-      "next_retry_at": null,
-      "run_id": 33736293009,
-      "processed_run_id": 33735519409,
-      "provider_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
-      "failure_fingerprint": null,
-      "same_failure_streak": 0,
-      "failure_count_by_type": {},
-      "attempts": 1,
-      "resume_dispatches": 4,
-      "item_id": "video-20260903-115113-065fc982d0",
-      "last_dispatch_at": "2026-09-03T08:58:46.174827+00:00",
-      "source_id": "aef6e7c7-db56-4599-ad73-6a98efc059e3",
-      "artifact_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
-      "last_run_conclusion": "success",
-      "youtube_id": "cK5JxdtgGQY",
-      "youtube_url": "https://youtu.be/cK5JxdtgGQY",
-      "verified": true
-    }
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
