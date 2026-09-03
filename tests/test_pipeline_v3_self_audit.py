@@ -194,7 +194,7 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
         self.assertIn("Kesher Trusted Article Image", workflow)
         self.assertIn("scripts/kesher_content_controller_v5_runtime.py", workflow)
         self.assertNotIn("scripts/kesher_content_controller_v3_best_effort.py", workflow)
-        self.assertIn('cron: "3,18,33,48 * * * *"', workflow)
+        self.assertIn('cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"', workflow)
         env = {
             "KESHER_TRIGGER_EVENT": "workflow_run",
             "KESHER_CHILD_WORKFLOW": "Kesher Trusted Article Image",
