@@ -42,11 +42,11 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
             "Kesher Article Generation",
             "Kesher Normalize Article PR",
             "Kesher Trusted Article Image",
+            "Kesher Daily NotebookLM Video Overview",
             "Kesher Daily Article Short V4",
             "Deploy to Cloudflare Pages",
         ):
             self.assertIn(name, text)
-        self.assertNotIn("Kesher Daily NotebookLM Video Overview", text)
         self.assertIn("types: [completed]", text)
         self.assertNotIn("github.event.workflow_run.conclusion == 'success'", text)
         self.assertNotIn('github.event.workflow_run.conclusion == "success"', text)
