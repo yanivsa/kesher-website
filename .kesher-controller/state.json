@@ -66,7 +66,7 @@
     "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
     "published_date": "2026-09-03",
     "live": true,
-    "live_verified_at": "2026-09-03T15:07:39.507126+00:00",
+    "live_verified_at": "2026-09-03T15:11:17.550027+00:00",
     "next_deploy_retry_at": null,
     "normalization_status": "pending"
   },
@@ -329,21 +329,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-08-30T20:05:09.005616+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "article exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-08-30T22:48:37.691559+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
     {
       "at": "2026-08-30T22:48:44.138672+00:00",
       "from": "article_needed",
@@ -1121,9 +1106,21 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-03T15:11:17.550045+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-03T15:11:18.483003+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-09-03T15:07:42.658454+00:00",
+  "updated_at": "2026-09-03T15:11:18.483019+00:00",
   "image": {
     "attempt_count": 2,
     "status": "complete",
