@@ -67,7 +67,7 @@ LOCAL_FALLBACK_CANDIDATES: dict[str, list[tuple[str, str]]] = {
     "adhd": [
         ("public/images/generated/blog/adhd-first-grade-preparation.jpg", "הורה וילד מתארגנים יחד לקראת מסגרת לימודית"),
         ("public/images/generated/blog/adhd-and-screen-addiction-strategies.jpg", "ילד בסביבה ביתית המתאימה להדרכת הורים סביב קשב וויסות"),
-        ("public/images/generated/blog/adhd-morning-routine.jpg", "ילד מתארגן בסביבה ביתית סביב שגרה, קשב ומשימות"),
+        ("public/images/generated/blog/separation-anxiety-morning-dropoff.jpg", "ילד והורה בסביבת מסגרת לימודית, מתאים לנושא קשב, הסתגלות והתארגנות"),
     ],
     "couples": [
         ("public/images/generated/blog/defensiveness-in-relationships.jpg", "זוג בשיח כנה בסלון הבית סביב תקשורת זוגית"),
