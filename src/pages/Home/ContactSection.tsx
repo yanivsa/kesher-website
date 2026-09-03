@@ -1,18 +1,21 @@
 import React, { useRef, useState } from 'react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FiCalendar, FiShield } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { submitContact } from '../../lib/contactApi';
 import { pushAnalyticsEvent } from '../../lib/analytics';
+import { CONTACT_SERVICE_OPTIONS, resolveContactService } from '../../lib/contactServices';
 import styles from './ContactSection.module.css';
 
 const ContactSection: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const initialService = resolveContactService(searchParams.get('service'));
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    service: 'couples',
+    service: initialService as string,
     message: ''
   });
   const [company, setCompany] = useState('');
@@ -44,7 +47,7 @@ const ContactSection: React.FC = () => {
       pushAnalyticsEvent('generate_lead', leadContext);
       pushAnalyticsEvent('lead_submit', leadContext);
       setSubmitStatus('success');
-      setFormData({ name: '', email: '', phone: '', service: 'couples', message: '' });
+      setFormData({ name: '', email: '', phone: '', service: initialService, message: '' });
       setCompany('');
       startedAt.current = 0;
     } catch {
@@ -179,18 +182,9 @@ const ContactSection: React.FC = () => {
                   value={formData.service}
                   onChange={handleChange}
                 >
-                  <option value="couples">ייעוץ זוגי</option>
-                  <option value="premarital-first-year">הכנה לנישואים וליווי בשנה הראשונה</option>
-                  <option value="couples-aliyah-relocation">ייעוץ זוגי בעלייה או ברילוקיישן</option>
-                  <option value="late-singleness">ייעוץ במצבי רווקות מאוחרת</option>
-                  <option value="finding-relationship">ליווי למציאת זוגיות</option>
-                  <option value="parenting">הדרכת הורים</option>
-                  <option value="mediation">גישור</option>
-                  <option value="gifted-parenting">הנחיית הורים לילדים מחוננים</option>
-                  <option value="first-grade">הכנה לכיתה א׳ ותפקודים ניהוליים</option>
-                  <option value="gifted-framework">הכנה למסגרת מחוננים</option>
-                  <option value="aliyah-families">עולים ותושבים חוזרים</option>
-                  <option value="other">אחר</option>
+                  {CONTACT_SERVICE_OPTIONS.map(({ value, label }) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
                 </select>
               </div>
               <div className={styles.formGroup}>
