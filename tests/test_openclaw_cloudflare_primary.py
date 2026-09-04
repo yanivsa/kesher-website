@@ -17,6 +17,16 @@ class OpenClawCloudflarePrimaryContractTest(unittest.TestCase):
         self.assertNotIn('&& "$serve" == true', text)
         self.assertNotIn("missing+=(TAILSCALE_SERVE_ACTIVE)", text)
 
+    def test_controller_auto_dispatches_recovery_after_recovery_code_merge(self):
+        workflow = read_repo(".github/workflows/openclaw-recovery-controller.yml")
+        controller = read_repo("scripts/openclaw_recovery_controller.sh")
+        self.assertIn("push:", workflow)
+        self.assertIn("scripts/openclaw_recovery_controller.sh", workflow)
+        self.assertIn(".github/workflows/openclaw-offline-boot-repair.yml", workflow)
+        self.assertIn("OPENCLAW_CONTROLLER_FORCE_DISPATCH", workflow)
+        self.assertIn('OPENCLAW_CONTROLLER_FORCE_DISPATCH:-0', controller)
+        self.assertIn("controller_forced_dispatch", controller)
+
     def test_status_strict_success_requires_cloudflare_not_tailscale(self):
         text = read_repo("scripts/openclaw_publish_status.sh")
         self.assertIn("CLOUDFLARED_SERVICE_ACTIVE_VALUE", text)
