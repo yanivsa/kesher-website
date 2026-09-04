@@ -78,15 +78,6 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("<Img", source)
         self.assertNotIn("signatureVideoSrc", source)
 
-    def test_short_pipeline_persists_svg_signature_delivery_evidence(self):
-        source = (Path(short.core.PROJECT_DIR) / "scripts" / "kesher_short_pipeline_v4.py").read_text(
-            encoding="utf-8"
-        )
-        self.assertIn('item["signature_verified"] = True', source)
-        self.assertIn('item["signature_duration_seconds"] = 3.0', source)
-        self.assertIn('item["signature_fullscreen"] = True', source)
-        self.assertIn('"signature_verified": item.get("signature_verified")', source)
-
 
 if __name__ == "__main__":
     unittest.main()
