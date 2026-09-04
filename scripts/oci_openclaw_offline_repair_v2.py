@@ -126,15 +126,43 @@ def choose_image(compute, compartment_id: str):
 
 
 def current_target_boot(compute, block, compartment_id: str):
-    target = live_named(compute, compartment_id, TARGET_NAME)
-    if target:
-        boot_id = boot_for_instance(compute, compartment_id, target)
-        mark_boot(block, boot_id)
-        return target, boot_id
+    # Only select one of the two historically managed OpenClaw instance names.
+    # Do not guess from arbitrary OCI instances or untagged boot volumes.
+    for name in (TARGET_NAME, FALLBACK_NAME):
+        target = live_named(compute, compartment_id, name)
+        if target:
+            log(
+                "OPENCLAW_TARGET_SELECTED",
+                display_name=name,
+                lifecycle_state=target.lifecycle_state,
+                shape=target.shape,
+            )
+            boot_id = boot_for_instance(compute, compartment_id, target)
+            mark_boot(block, boot_id)
+            return target, boot_id
+
     boot = tagged_boot(block, compartment_id)
-    if not boot:
-        raise RuntimeError("NO_LIVE_TARGET_OR_TAGGED_RECOVERY_BOOT")
-    return None, boot.id
+    if boot:
+        log(
+            "OPENCLAW_TARGET_SELECTED",
+            display_name=boot.display_name,
+            lifecycle_state=boot.lifecycle_state,
+            shape="preserved-boot-volume",
+        )
+        return None, boot.id
+
+    live_e2 = [
+        x for x in compute.list_instances(compartment_id=compartment_id).data
+        if x.lifecycle_state not in {"TERMINATED", "TERMINATING"} and x.shape == SHAPE
+    ]
+    live_e2_names = sorted({str(x.display_name or "") for x in live_e2})
+    log(
+        "OPENCLAW_TARGET_DISCOVERY_FAILED",
+        checked_names=f"{TARGET_NAME},{FALLBACK_NAME}",
+        live_e2_names=json.dumps(live_e2_names),
+        required_recovery_tag=RECOVERY_TAG,
+    )
+    raise RuntimeError("NO_LIVE_TARGET_OR_TAGGED_RECOVERY_BOOT")
 
 
 def cleanup_existing_helper(compute, compartment_id: str, boot_id: str):
