@@ -4,6 +4,16 @@ on:
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/openclaw-offline-boot-repair.yml
+      - .github/workflows/openclaw-recovery-controller.yml
+      - scripts/openclaw_recovery_controller.sh
+      - scripts/openclaw_publish_status.sh
+      - scripts/openclaw_offline_mount_repair_cloudflare.sh
+      - scripts/openclaw_local_proof.sh
+      - scripts/oci_openclaw_helper_local_proof.py
 
 permissions:
   actions: write
@@ -27,6 +37,7 @@ jobs:
       - name: Inspect latest OpenClaw recovery and publish durable status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENCLAW_CONTROLLER_FORCE_DISPATCH: ${{ github.event_name == 'push' && '1' || '0' }}
           OPENCLAW_STATUS_ISSUE_NUMBER: '465'
           OPENCLAW_STATUS_BRANCH: ops/openclaw-status
           OPENCLAW_STATUS_PATH: openclaw-status.json

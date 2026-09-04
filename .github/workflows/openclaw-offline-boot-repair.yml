@@ -1,9 +1,10 @@
-name: Repair OpenClaw Offline and Enable Tailscale Serve
+name: Repair OpenClaw Offline and Verify Cloudflare Access
 
 on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
   issues: write
   statuses: write
@@ -15,6 +16,7 @@ jobs:
     env:
       BRIDGE_NAME: yanivsa-oci-bootstrap
       OPENCLAW_SECURITY_LIST_ID: ocid1.securitylist.oc1.iad.aaaaaaaapfyvmzc532rruphk3k4ldjb66aglj2npofc5q2aof6xuoudpa4aq
+      OPENCLAW_PUBLIC_URL: https://openclaw.saharoni.com/
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -62,11 +64,18 @@ jobs:
           for i in $(seq 1 12); do
             code="$(curl -sS -o /tmp/oci.json -w '%{http_code}' -H "Authorization: Bearer $token" -H 'Content-Type: application/json' --data-binary @.github/oci-bootstrap/encrypted-oci-bundle.json "$url")"
             [ "$code" = 200 ] && break
-            if [ "$code" = 403 ]; then sleep 5; continue; fi
-            echo "OCI bridge returned HTTP $code" >&2
-            exit 1
+            case "$code" in
+              400|403|429|500|502|503|504)
+                echo "OCI bridge transient HTTP $code attempt=$i" >&2
+                sleep 5
+                ;;
+              *)
+                echo "OCI bridge returned HTTP $code" >&2
+                exit 1
+                ;;
+            esac
           done
-          [ "$code" = 200 ] || { echo "OCI bridge token did not propagate in time" >&2; exit 1; }
+          [ "$code" = 200 ] || { echo "OCI bridge did not become ready in time (last HTTP $code)" >&2; exit 1; }
           python3 - <<'PY'
           import json
           from pathlib import Path
@@ -96,7 +105,7 @@ jobs:
           print('OFFLINE_TARGET_BOOT_PRESERVED=true')
           PY
 
-      - name: Patch authenticated boot disk through OCI Run Command
+      - name: Patch authenticated boot disk for Cloudflare-primary recovery
         id: patch
         continue-on-error: true
         run: |
@@ -104,7 +113,7 @@ jobs:
           python -u scripts/oci_openclaw_helper_run_command_v2.py \
             --config /tmp/oci.cfg \
             --state-json /tmp/offline.json \
-            --script-file scripts/openclaw_offline_mount_repair_early.sh \
+            --script-file scripts/openclaw_offline_mount_repair_cloudflare.sh \
             --timeout 600
 
       - name: Recover preserved target after unverified patch failure
@@ -136,32 +145,29 @@ jobs:
           print('OPENCLAW_TARGET_PUBLIC_IP='+d['target_ip'])
           PY
 
-      - name: Allow guest finalizer to complete
+      - name: Allow local guest finalizer to complete
         if: ${{ steps.patch.outcome == 'success' }}
         run: |
           set -euo pipefail
-          # The finalizer can spend ~75s on config writes and several minutes on
-          # gateway RPC retries on an E2 cold boot. Do not stop the authenticated
-          # target for preserved-disk proof while that bounded finalization is active.
           echo OPENCLAW_GUEST_FINALIZER_WAIT_SECONDS=720
           sleep 720
 
-      - name: Verify OpenClaw from preserved boot disk
+      - name: Verify local OpenClaw gateway from preserved boot disk
         if: ${{ steps.patch.outcome == 'success' }}
         id: finalize
         run: |
           set -euo pipefail
-          rm -f /tmp/openclaw-ready.json /tmp/proof.json
+          rm -f /tmp/openclaw-local-ready.json /tmp/proof.json
           python -u scripts/oci_openclaw_offline_repair_v3.py \
             --config /tmp/oci.cfg \
             --result-json /tmp/proof.json
           proof_rc=0
           set +e
-          python -u scripts/oci_openclaw_helper_proof.py \
+          python -u scripts/oci_openclaw_helper_local_proof.py \
             --config /tmp/oci.cfg \
             --state-json /tmp/proof.json \
-            --script-file scripts/openclaw_offline_proof.sh \
-            --result-json /tmp/openclaw-ready.json \
+            --script-file scripts/openclaw_local_proof.sh \
+            --result-json /tmp/openclaw-local-ready.json \
             --timeout 600
           proof_rc=$?
           set -e
@@ -178,16 +184,62 @@ jobs:
           fi
           python3 - <<'PY'
           import json
-          d=json.load(open('/tmp/openclaw-ready.json'))
-          assert d['status'] == 'ready'
-          print('OPENCLAW_READY_DNS='+d['dns'])
-          print('OPENCLAW_READY_URL='+d['ready_url'])
+          d=json.load(open('/tmp/openclaw-local-ready.json'))
+          assert d['status'] == 'local-ready'
+          assert d['gateway_bind'] == 'loopback'
+          assert d['gateway_port'] == 18789
           print('OPENCLAW_GATEWAY_RPC_OK=true')
-          print('TAILSCALE_SERVE_ACTIVE=true')
+          print('OPENCLAW_LOCAL_READY=true')
           print('OPENCLAW_OFFLINE_FINALIZE_SUCCESS=true')
           print('OPENCLAW_OFFLINE_REPAIR_COMPLETE=true')
-          print('OPENCLAW_STRICT_SUCCESS_PROOF=preserved-boot-disk')
+          print('OPENCLAW_LOCAL_SUCCESS_PROOF=preserved-boot-disk')
           PY
+
+      - name: Deploy and verify Cloudflare public access
+        if: ${{ steps.finalize.outcome == 'success' }}
+        id: cloudflare
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          workflow=openclaw-cloudflare-tunnel.yml
+          before="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow "$workflow" --branch main --limit 30 --json databaseId --jq 'map(.databaseId) | max // 0')"
+          gh workflow run "$workflow" --repo "$GITHUB_REPOSITORY" --ref main
+
+          child_id=''
+          for _ in $(seq 1 60); do
+            rows="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow "$workflow" --branch main --event workflow_dispatch --limit 30 --json databaseId,status,conclusion,url)"
+            child_id="$(jq -r --argjson before "$before" '[.[] | select(.databaseId > $before)] | sort_by(.databaseId) | last | .databaseId // empty' <<<"$rows")"
+            [ -n "$child_id" ] && break
+            sleep 3
+          done
+          [ -n "$child_id" ] || { echo OPENCLAW_CLOUDFLARE_FAILED=DISPATCH_RUN_NOT_FOUND; exit 71; }
+          echo OPENCLAW_CLOUDFLARE_RUN_ID="$child_id"
+
+          conclusion=''
+          for _ in $(seq 1 180); do
+            row="$(gh run view "$child_id" --repo "$GITHUB_REPOSITORY" --json status,conclusion,url)"
+            status="$(jq -r '.status' <<<"$row")"
+            conclusion="$(jq -r '.conclusion // ""' <<<"$row")"
+            [ "$status" = completed ] && break
+            sleep 5
+          done
+          [ "$conclusion" = success ] || { echo "OPENCLAW_CLOUDFLARE_FAILED=CHILD_${conclusion:-timeout}"; exit 72; }
+
+          logs="$(gh run view "$child_id" --repo "$GITHUB_REPOSITORY" --log 2>&1 || true)"
+          check_marker() {
+            local escaped
+            escaped="$(printf '%s' "$1" | sed 's/[][\\.^$*+?{}|()]/\\&/g')"
+            grep -Eq "(^|[[:space:]])${escaped}[[:space:]]*$" <<<"$logs"
+          }
+          check_marker 'CLOUDFLARED_SERVICE_ACTIVE=true' || { echo OPENCLAW_CLOUDFLARE_FAILED=CLOUDFLARED_PROOF_MISSING; exit 73; }
+          check_marker 'CLOUDFLARE_ACCESS_PROTECTED=true' || { echo OPENCLAW_CLOUDFLARE_FAILED=ACCESS_PROOF_MISSING; exit 74; }
+          check_marker 'OPENCLAW_PUBLIC_URL=https://openclaw.saharoni.com/' || { echo OPENCLAW_CLOUDFLARE_FAILED=PUBLIC_URL_PROOF_MISSING; exit 75; }
+
+          echo CLOUDFLARED_SERVICE_ACTIVE=true
+          echo CLOUDFLARE_ACCESS_PROTECTED=true
+          echo OPENCLAW_READY_URL=https://openclaw.saharoni.com/
+          echo OPENCLAW_CLOUDFLARE_PRIMARY=true
 
       - name: Close temporary SSH
         if: ${{ always() }}
@@ -214,6 +266,7 @@ jobs:
           OPENCLAW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           OPENCLAW_HEAD_SHA: ${{ github.sha }}
           FINALIZE_OUTCOME: ${{ steps.finalize.outcome }}
+          CLOUDFLARE_OUTCOME: ${{ steps.cloudflare.outcome }}
           JOB_STATUS: ${{ job.status }}
           OPENCLAW_STATUS_ISSUE_NUMBER: '465'
           OPENCLAW_STATUS_BRANCH: ops/openclaw-status
@@ -224,25 +277,30 @@ jobs:
           ready_url=''
           offline=false
           rpc=false
+          cloudflared=false
+          access=false
           serve=false
           finalize=false
-          if [[ "$FINALIZE_OUTCOME" == success && -s /tmp/openclaw-ready.json ]]; then
+          if [[ "$FINALIZE_OUTCOME" == success && "$CLOUDFLARE_OUTCOME" == success && -s /tmp/openclaw-local-ready.json ]]; then
             status=success
-            ready_url="$(python3 -c 'import json; print(json.load(open("/tmp/openclaw-ready.json"))["ready_url"])')"
+            ready_url="$OPENCLAW_PUBLIC_URL"
             offline=true
             rpc=true
-            serve=true
+            cloudflared=true
+            access=true
             finalize=true
           fi
           OPENCLAW_STATUS="$status" \
           OPENCLAW_READY_URL_VALUE="$ready_url" \
-          OPENCLAW_FAILURE_HINT="job_status=$JOB_STATUS; patch_outcome=${{ steps.patch.outcome }}; finalize_outcome=$FINALIZE_OUTCOME" \
+          OPENCLAW_FAILURE_HINT="job_status=$JOB_STATUS; patch_outcome=${{ steps.patch.outcome }}; finalize_outcome=$FINALIZE_OUTCOME; cloudflare_outcome=$CLOUDFLARE_OUTCOME" \
           OPENCLAW_OFFLINE_REPAIR_COMPLETE_VALUE="$offline" \
           OPENCLAW_GATEWAY_RPC_OK_VALUE="$rpc" \
+          CLOUDFLARED_SERVICE_ACTIVE_VALUE="$cloudflared" \
+          CLOUDFLARE_ACCESS_PROTECTED_VALUE="$access" \
           TAILSCALE_SERVE_ACTIVE_VALUE="$serve" \
           OPENCLAW_OFFLINE_FINALIZE_SUCCESS_VALUE="$finalize" \
             bash scripts/openclaw_publish_status.sh
 
       - name: Cleanup
         if: ${{ always() }}
-        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offline.json /tmp/proof.json /tmp/openclaw-ready.json
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/offline.json /tmp/proof.json /tmp/openclaw-local-ready.json
