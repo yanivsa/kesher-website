@@ -6,7 +6,9 @@ from datetime import datetime, timedelta, timezone
 
 from scripts import kesher_content_controller as core
 from scripts import kesher_content_controller_v5 as v5
+from scripts import kesher_content_controller_v5_runtime as runtime
 from scripts import kesher_content_watchdog as watchdog
+from scripts import kesher_e2e_delivery_guard as delivery_guard
 
 
 def source() -> dict:
@@ -31,14 +33,48 @@ def public_item(*, youtube_id: str, width: int, height: int) -> dict:
     }
 
 
+class MiniGitHub:
+    def __init__(self, item):
+        self.item = item
+
+    def newest_short_state(self):
+        return {"version": 1, "items": [copy.deepcopy(self.item)]}
+
+
 class V5DeliveryWatchdogContractTests(unittest.TestCase):
+    def short_verified(self, item):
+        return delivery_guard.short_public_portrait_verified(
+            item,
+            source(),
+            youtube_verified=core.verified_youtube_item,
+        )
+
     def test_horizontal_public_upload_is_not_a_valid_short(self):
         item = public_item(youtube_id="horizontal", width=1920, height=1080)
-        self.assertFalse(v5.short_public_portrait_verified(item, source()))
+        self.assertFalse(self.short_verified(item))
 
     def test_portrait_public_upload_is_a_valid_short(self):
         item = public_item(youtube_id="portrait", width=1080, height=1920)
-        self.assertTrue(v5.short_public_portrait_verified(item, source()))
+        self.assertTrue(self.short_verified(item))
+
+    def test_runtime_controller_refuses_to_adopt_horizontal_short(self):
+        item = public_item(youtube_id="horizontal", width=1920, height=1080)
+        controller = object.__new__(runtime.RuntimeV5Controller)
+        controller.github = MiniGitHub(item)
+        state = {"short": v5.v3._stage_template()}
+        self.assertIsNone(controller._adopt_existing_short(state, source()))
+        self.assertNotEqual(state["short"].get("status"), "complete")
+
+    def test_runtime_controller_adopts_only_verified_portrait_short(self):
+        item = public_item(youtube_id="portrait", width=1080, height=1920)
+        controller = object.__new__(runtime.RuntimeV5Controller)
+        controller.github = MiniGitHub(item)
+        state = {"short": v5.v3._stage_template()}
+        adopted = controller._adopt_existing_short(state, source())
+        self.assertIsNotNone(adopted)
+        self.assertTrue(state["short"]["portrait_verified"])
+        self.assertEqual(state["short"]["width"], 1080)
+        self.assertEqual(state["short"]["height"], 1920)
 
     def test_delivery_contract_requires_article_overview_and_portrait_short_links(self):
         state = {
@@ -50,7 +86,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
                 "portrait_verified": True,
             },
         }
-        ready, deliverables = v5.delivery_contract(state)
+        ready, deliverables = delivery_guard.delivery_contract(state)
         self.assertTrue(ready)
         self.assertEqual(
             deliverables,
@@ -63,7 +99,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         )
 
         state["short"]["portrait_verified"] = False
-        ready2, _ = v5.delivery_contract(state)
+        ready2, _ = delivery_guard.delivery_contract(state)
         self.assertFalse(ready2)
 
     def test_media_watchdog_recovers_then_blocks_unchanged_stall(self):
