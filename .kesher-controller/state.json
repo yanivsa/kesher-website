@@ -1,13 +1,13 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-04",
-  "status": "waiting_for_article_window",
+  "status": "article_generating",
   "article": {
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 33819114085,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -15,7 +15,18 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "normalization_status": "pending",
+    "watchdog": {
+      "identity": "2026-09-04",
+      "session_id": "sessions/4437648991138987114",
+      "last_progress_at": "2026-09-03T23:47:36+00:00",
+      "last_fingerprint": "045f8be0d4daccb82f317850331ef3c621a8f7d0112e01651ff459bfefe51699",
+      "last_nudge_at": null,
+      "nudge_count": 0,
+      "worker_restart_count": 0,
+      "last_restart_at": null,
+      "last_restart_run_id": null
+    }
   },
   "backlog": [
     {
@@ -912,9 +923,18 @@
       "from": "waiting_for_article_window",
       "to": "v5_migrated",
       "reason": "controller state migrated from schema 4 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-09-04T00:00:58.274840+00:00",
+      "from": "waiting_for_article_window",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": "sessions/4437648991138987114"
+      }
     }
   ],
-  "updated_at": "2026-09-03T23:53:55.071053+00:00",
+  "updated_at": "2026-09-04T00:00:58.274848+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
