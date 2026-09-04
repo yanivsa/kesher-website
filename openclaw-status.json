@@ -13,6 +13,6 @@
     "OPENCLAW_OFFLINE_FINALIZE_SUCCESS": null
   },
   "ready_url": null,
-  "failure_hint": "workflow_started",
-  "updated_at": "2026-09-04T13:07:08Z"
+  "failure_hint": "github_status=in_progress",
+  "updated_at": "2026-09-04T13:30:41Z"
 }
