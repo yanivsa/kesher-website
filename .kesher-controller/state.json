@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-04",
-  "status": "waiting_for_article_window",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -26,7 +26,14 @@
       "worker_restart_count": 0,
       "last_restart_at": null,
       "last_restart_run_id": null
-    }
+    },
+    "slug": "newlyweds-domestic-duties-sharing",
+    "title": "השנה הראשונה לנישואים: כשהסכמות על חלוקת תפקידים פוגשות את המציאות",
+    "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
+    "published_date": "2026-09-04",
+    "live": true,
+    "live_verified_at": "2026-09-04T06:25:23.446615+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -956,9 +963,25 @@
       "from": "article_generating",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-09-04T06:25:23.446638+00:00",
+      "from": "waiting_for_article_window",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-04T06:25:28.333356+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-04T04:42:50.410813+00:00",
+  "updated_at": "2026-09-04T06:25:28.333365+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -972,8 +995,8 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -981,7 +1004,9 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-04T06:25:28.333349+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
