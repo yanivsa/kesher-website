@@ -6,6 +6,21 @@ set -euo pipefail
 export GH_TOKEN="$GITHUB_TOKEN"
 
 workflow="openclaw-offline-boot-repair.yml"
+
+# A push that changes the recovery lane is an explicit request to verify that
+# exact merged recovery code. Dispatch once from the push-triggered controller;
+# scheduled controller runs remain observational and cannot create retry loops.
+if [[ "${OPENCLAW_CONTROLLER_FORCE_DISPATCH:-0}" == "1" ]]; then
+  gh api --method POST "repos/$GITHUB_REPOSITORY/actions/workflows/$workflow/dispatches" -f ref=main >/dev/null
+  OPENCLAW_STATUS=queued \
+  OPENCLAW_FAILURE_HINT=controller_forced_dispatch \
+  OPENCLAW_HEAD_SHA="${GITHUB_SHA:-}" \
+  OPENCLAW_STATUS_STRICT=1 \
+    bash scripts/openclaw_publish_status.sh
+  echo "OPENCLAW_CONTROLLER_FORCED_DISPATCH=true"
+  exit 0
+fi
+
 runs="$(gh api --method GET "repos/$GITHUB_REPOSITORY/actions/workflows/$workflow/runs" -f branch=main -f per_page=20)"
 run="$(jq -c '[.workflow_runs[] | select(.event=="push" or .event=="workflow_dispatch")][0] // empty' <<<"$runs")"
 
