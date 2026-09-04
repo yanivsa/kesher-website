@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
     "published_date": "2026-09-04",
     "live": true,
-    "live_verified_at": "2026-09-04T13:59:57.421211+00:00",
+    "live_verified_at": "2026-09-04T14:03:58.583471+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -349,35 +349,9 @@
     "stage": "short",
     "code": "SHORT_SIGNATURE_ASSET_MISSING",
     "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4",
-    "at": "2026-09-04T14:00:02.491269+00:00"
+    "at": "2026-09-04T14:04:02.314222+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-03T08:50:16.888428+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "new video workflow dispatched",
-      "details": {
-        "operation": "full",
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-03T08:58:34.358893+00:00",
-      "from": "video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T08:58:46.174833+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 4
-      }
-    },
     {
       "at": "2026-09-03T09:01:48.015524+00:00",
       "from": "video_running",
@@ -1021,9 +995,30 @@
       "details": {
         "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
       }
+    },
+    {
+      "at": "2026-09-04T14:03:58.583492+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-04T14:04:00.606805+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-04T14:04:02.314237+00:00",
+      "from": "long_video_complete",
+      "to": "blocked",
+      "reason": "SHORT_SIGNATURE_ASSET_MISSING",
+      "details": {
+        "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
+      }
     }
   ],
-  "updated_at": "2026-09-04T14:00:02.491288+00:00",
+  "updated_at": "2026-09-04T14:04:02.314244+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
