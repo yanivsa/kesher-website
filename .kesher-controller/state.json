@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
     "published_date": "2026-09-04",
     "live": true,
-    "live_verified_at": "2026-09-04T06:25:23.446615+00:00",
+    "live_verified_at": "2026-09-04T06:30:07.018156+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -979,9 +979,25 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-04T06:30:07.018178+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-04T06:30:20.984195+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-09-04T06:25:28.333365+00:00",
+  "updated_at": "2026-09-04T06:30:20.984202+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1001,12 +1017,16 @@
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-04T06:25:28.333349+00:00",
-    "attempts": 1
+    "last_dispatch_at": "2026-09-04T06:30:20.984188+00:00",
+    "attempts": 1,
+    "item_id": "video-20260904-092627-214ba5a25e",
+    "resume_dispatches": 2,
+    "source_id": "4e708746-fdc1-454d-9741-2a4f4e2371fb",
+    "artifact_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d"
   },
   "short": {
     "attempt_count": 0,
