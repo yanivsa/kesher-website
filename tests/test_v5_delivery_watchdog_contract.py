@@ -53,8 +53,6 @@ class MiniGitHubHistoricalOverview:
         self.history_calls = 0
 
     def newest_video_state(self):
-        # Reproduces the production failure: the newest state artifact no longer
-        # carries the already-public Overview for the target article.
         return {"version": 1, "items": []}
 
     def verified_video_item_from_history(self, src):
@@ -82,7 +80,7 @@ class HistoricalOverviewController(runtime.RuntimeV5Controller):
 
 class MissingSignatureController(runtime.RuntimeV5Controller):
     def _signature_asset_path(self):
-        return Path("/definitely/missing/shira-signature.mp4")
+        return Path("/definitely/missing/signature-mask.svg")
 
 
 class V5DeliveryWatchdogContractTests(unittest.TestCase):
@@ -99,6 +97,20 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
 
     def test_portrait_public_upload_with_signature_is_a_valid_short(self):
         item = public_item(youtube_id="portrait", width=1080, height=1920)
+        self.assertTrue(self.short_verified(item))
+
+    def test_portrait_public_upload_with_svg_signature_is_a_valid_short(self):
+        item = public_item(youtube_id="portrait-svg", width=1080, height=1920)
+        item.pop("signature_video_sha256")
+        item.pop("signature_verified")
+        item.pop("signature_duration_seconds")
+        item.pop("signature_fullscreen")
+        item.update({
+            "technical_verified": True,
+            "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+            "signature_asset": "signature-mask.svg",
+            "signature_sha256": "c" * 64,
+        })
         self.assertTrue(self.short_verified(item))
 
     def test_portrait_public_upload_without_signature_is_not_a_valid_short(self):
