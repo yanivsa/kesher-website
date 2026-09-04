@@ -13,6 +13,8 @@ VIDEO_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
 VIDEO_REVIEW_POLICY = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
 ARTICLE_PR_CONTROLLER_V3 = ROOT / ".github" / "scripts" / "article-pr-controller-v3.py"
 BEST_EFFORT_CONTROLLER = ROOT / "scripts" / "kesher_content_controller_v3_best_effort.py"
+RUNTIME_V5_CONTROLLER = ROOT / "scripts" / "kesher_content_controller_v5_runtime.py"
+SHORT_PIPELINE_V4 = ROOT / "scripts" / "kesher_short_pipeline_v4.py"
 
 
 class ProductionContractV3Tests(unittest.TestCase):
@@ -98,6 +100,13 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn("| .[3:] | .[].id", workflow)
         self.assertNotIn("| .[7:]", workflow)
         self.assertIn("retention-days: 14", workflow)
+
+    def test_short_controller_uses_same_approved_svg_signature_as_renderer(self) -> None:
+        runtime = RUNTIME_V5_CONTROLLER.read_text(encoding="utf-8")
+        pipeline = SHORT_PIPELINE_V4.read_text(encoding="utf-8")
+        self.assertIn('SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")', pipeline)
+        self.assertIn('DEFAULT_SIGNATURE_ASSET = "public/images/signature/signature-mask.svg"', runtime)
+        self.assertNotIn('DEFAULT_SIGNATURE_ASSET = "public/shira-signature.mp4"', runtime)
 
 
 if __name__ == "__main__":
