@@ -14,6 +14,8 @@ on:
       - scripts/openclaw_offline_mount_repair_cloudflare.sh
       - scripts/openclaw_local_proof.sh
       - scripts/oci_openclaw_helper_local_proof.py
+      - scripts/oci_openclaw_offline_repair_v2.py
+      - scripts/oci_openclaw_offline_repair_v3.py
 
 permissions:
   actions: write
