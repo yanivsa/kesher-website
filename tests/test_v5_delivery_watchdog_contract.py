@@ -41,6 +41,56 @@ class MiniGitHub:
         return {"version": 1, "items": [copy.deepcopy(self.item)]}
 
 
+class MiniGitHubHistoricalOverview:
+    def __init__(self, item):
+        self.item = copy.deepcopy(item)
+        self.saved_state = None
+        self.history_calls = 0
+
+    def newest_video_state(self):
+        # Reproduces the production failure: the newest state artifact no longer
+        # carries the already-public Overview for the target article.
+        return {"version": 1, "items": []}
+
+    def verified_video_item_from_history(self, src):
+        self.history_calls += 1
+        if (self.item.get("source") or {}) == src:
+            return copy.deepcopy(self.item)
+        return None
+
+    def save_controller_state(self, state):
+        self.saved_state = copy.deepcopy(state)
+
+
+class HistoricalOverviewController(runtime.RuntimeV5Controller):
+    def __init__(self, item):
+        self.github = MiniGitHubHistoricalOverview(item)
+        self.now = datetime(2026, 9, 4, 9, 30, tzinfo=timezone.utc)
+        self.dispatched_from = None
+
+    def state(self):
+        return {
+            "article": {
+                "live": True,
+                "url": "https://kesher.saharoni.com/blog/today-article",
+                "status": "complete",
+            },
+            "image": {"status": "complete"},
+            "long_video": v5.v3._stage_template(),
+            "short": v5.v3._stage_template(),
+            "deliverables": {},
+        }
+
+    def _article_source(self):
+        return source()
+
+    def _tick_short(self, state, src, long_item):
+        self.dispatched_from = copy.deepcopy(long_item)
+        state["short"]["attempt_count"] = 1
+        state["short"]["status"] = "running"
+        return core.Action("dispatch_short", "historical Overview adopted; Short dispatched")
+
+
 class V5DeliveryWatchdogContractTests(unittest.TestCase):
     def short_verified(self, item):
         return delivery_guard.short_public_portrait_verified(
@@ -75,6 +125,20 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         self.assertTrue(state["short"]["portrait_verified"])
         self.assertEqual(state["short"]["width"], 1080)
         self.assertEqual(state["short"]["height"], 1920)
+
+    def test_historical_public_overview_is_adopted_and_advances_short_same_tick(self):
+        overview = public_item(youtube_id="overview", width=1920, height=1080)
+        controller = HistoricalOverviewController(overview)
+
+        state, action = controller.tick()
+
+        self.assertEqual(controller.github.history_calls, 1)
+        self.assertEqual(action.kind, "dispatch_short")
+        self.assertIsNotNone(controller.dispatched_from)
+        self.assertEqual(controller.dispatched_from["youtube_url"], "https://youtu.be/overview")
+        self.assertEqual(state["long_video"]["status"], "complete")
+        self.assertEqual(state["long_video"]["youtube_url"], "https://youtu.be/overview")
+        self.assertEqual(state["short"]["attempt_count"], 1)
 
     def test_delivery_contract_requires_article_overview_and_portrait_short_links(self):
         state = {
