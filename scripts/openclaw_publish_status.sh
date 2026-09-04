@@ -15,6 +15,8 @@ READY_URL="${OPENCLAW_READY_URL_VALUE:-}"
 FAILURE_HINT="${OPENCLAW_FAILURE_HINT:-}"
 OFFLINE_COMPLETE="${OPENCLAW_OFFLINE_REPAIR_COMPLETE_VALUE:-unknown}"
 RPC_OK="${OPENCLAW_GATEWAY_RPC_OK_VALUE:-unknown}"
+CLOUDFLARED_OK="${CLOUDFLARED_SERVICE_ACTIVE_VALUE:-unknown}"
+ACCESS_OK="${CLOUDFLARE_ACCESS_PROTECTED_VALUE:-unknown}"
 SERVE_OK="${TAILSCALE_SERVE_ACTIVE_VALUE:-unknown}"
 FINALIZE_OK="${OPENCLAW_OFFLINE_FINALIZE_SUCCESS_VALUE:-unknown}"
 STRICT_MODE="${OPENCLAW_STATUS_STRICT:-0}"
@@ -41,7 +43,7 @@ bool_json() {
 }
 
 strict_success=false
-if [[ "$STATUS" == "success" && "$OFFLINE_COMPLETE" == "true" && "$RPC_OK" == "true" && "$SERVE_OK" == "true" && "$FINALIZE_OK" == "true" && "$READY_URL" == https://* ]]; then
+if [[ "$STATUS" == "success" && "$OFFLINE_COMPLETE" == "true" && "$RPC_OK" == "true" && "$CLOUDFLARED_OK" == "true" && "$ACCESS_OK" == "true" && "$FINALIZE_OK" == "true" && "$READY_URL" == "https://openclaw.saharoni.com/" ]]; then
   strict_success=true
 fi
 
@@ -57,9 +59,11 @@ status_json="$(jq -n \
   --argjson strict_success "$strict_success" \
   --argjson offline_complete "$(bool_json "$OFFLINE_COMPLETE")" \
   --argjson rpc_ok "$(bool_json "$RPC_OK")" \
+  --argjson cloudflared_ok "$(bool_json "$CLOUDFLARED_OK")" \
+  --argjson access_ok "$(bool_json "$ACCESS_OK")" \
   --argjson serve_ok "$(bool_json "$SERVE_OK")" \
   --argjson finalize_ok "$(bool_json "$FINALIZE_OK")" \
-  '{status:$status,run_id:(if $run_id=="" then null else ($run_id|tonumber) end),run_url:(if $run_url=="" then null else $run_url end),sha:(if $sha=="" then null else $sha end),strict_success:$strict_success,markers:{OPENCLAW_OFFLINE_REPAIR_COMPLETE:$offline_complete,OPENCLAW_GATEWAY_RPC_OK:$rpc_ok,TAILSCALE_SERVE_ACTIVE:$serve_ok,OPENCLAW_OFFLINE_FINALIZE_SUCCESS:$finalize_ok},ready_url:(if $ready_url=="" then null else $ready_url end),failure_hint:(if $failure_hint=="" then null else ($failure_hint[0:500]) end),updated_at:$updated_at}')"
+  '{status:$status,run_id:(if $run_id=="" then null else ($run_id|tonumber) end),run_url:(if $run_url=="" then null else $run_url end),sha:(if $sha=="" then null else $sha end),strict_success:$strict_success,markers:{OPENCLAW_OFFLINE_REPAIR_COMPLETE:$offline_complete,OPENCLAW_GATEWAY_RPC_OK:$rpc_ok,CLOUDFLARED_SERVICE_ACTIVE:$cloudflared_ok,CLOUDFLARE_ACCESS_PROTECTED:$access_ok,TAILSCALE_SERVE_ACTIVE:$serve_ok,OPENCLAW_OFFLINE_FINALIZE_SUCCESS:$finalize_ok},ready_url:(if $ready_url=="" then null else $ready_url end),failure_hint:(if $failure_hint=="" then null else ($failure_hint[0:500]) end),updated_at:$updated_at}')"
 
 issue_body="$(cat <<EOF_BODY
 Managed status surface for the autonomous OpenClaw recovery controller.
@@ -72,6 +76,8 @@ RUN_URL=$RUN_URL
 STRICT_SUCCESS=$strict_success
 OPENCLAW_OFFLINE_REPAIR_COMPLETE=$OFFLINE_COMPLETE
 OPENCLAW_GATEWAY_RPC_OK=$RPC_OK
+CLOUDFLARED_SERVICE_ACTIVE=$CLOUDFLARED_OK
+CLOUDFLARE_ACCESS_PROTECTED=$ACCESS_OK
 TAILSCALE_SERVE_ACTIVE=$SERVE_OK
 OPENCLAW_OFFLINE_FINALIZE_SUCCESS=$FINALIZE_OK
 OPENCLAW_READY_URL=$READY_URL
@@ -122,7 +128,7 @@ case "$STATUS" in
 esac
 if [[ -n "$HEAD_SHA" ]]; then
   description="OpenClaw recovery $STATUS"
-  [[ "$strict_success" == "true" ]] && description="OpenClaw strict recovery verified"
+  [[ "$strict_success" == "true" ]] && description="OpenClaw Cloudflare recovery verified"
   if ! gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
       -f state="$commit_state" \
       -f target_url="$RUN_URL" \
