@@ -57,18 +57,19 @@ def delivery_contract(state: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
 
 
 def media_fingerprint(item: dict[str, Any]) -> str:
-    """Stable progress fingerprint; changes only when provider/publication evidence changes."""
+    """Stable fingerprint of real provider/publication progress, not poll timestamps."""
     payload = {
         "id": item.get("id"),
         "status": item.get("status"),
-        "updated_at": item.get("updated_at"),
+        "last_provider_status": item.get("last_provider_status"),
         "task_id": item.get("task_id"),
         "artifact_id": item.get("artifact_id"),
+        "raw_sha256": item.get("raw_sha256"),
         "technical_verified": item.get("technical_verified"),
+        "final_sha256": item.get("final_sha256"),
         "uploaded": item.get("uploaded"),
         "youtube_id": item.get("youtube_id"),
         "youtube_verification": item.get("youtube_verification"),
-        "final_sha256": item.get("final_sha256"),
     }
     return hashlib.sha256(
         json.dumps(payload, sort_keys=True, ensure_ascii=False, default=str).encode("utf-8")
