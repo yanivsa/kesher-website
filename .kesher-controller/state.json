@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-04",
-  "status": "article_generating",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -950,9 +950,15 @@
       "details": {
         "session_id": "sessions/1913142869326346610"
       }
+    },
+    {
+      "at": "2026-09-04T01:30:17.756988+00:00",
+      "from": "article_generating",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-09-04T01:27:09.387115+00:00",
+  "updated_at": "2026-09-04T01:30:17.757002+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
