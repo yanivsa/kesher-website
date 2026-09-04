@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
     "published_date": "2026-09-04",
     "live": true,
-    "live_verified_at": "2026-09-04T11:25:01.348270+00:00",
+    "live_verified_at": "2026-09-04T11:25:43.225179+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -347,24 +347,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-01T11:25:47.189441+00:00",
-      "from": "article_image_running",
-      "to": "article_pr_open",
-      "reason": "article PR has trusted image and remains authoritative"
-    },
-    {
-      "at": "2026-09-01T11:50:25.307940+00:00",
-      "from": "article_pr_open",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 33501930781 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-01T11:55:25.307907+00:00",
-        "failure_streak": 1,
-        "run_id": 33501930781
-      }
-    },
     {
       "at": "2026-09-01T11:54:05.800653+00:00",
       "from": "image_retry_wait",
@@ -1061,9 +1043,21 @@
         "operation": "full",
         "resume": 9
       }
+    },
+    {
+      "at": "2026-09-04T11:25:43.225194+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-04T11:25:45.603402+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-04T11:25:14.315043+00:00",
+  "updated_at": "2026-09-04T11:25:45.603421+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1078,10 +1072,10 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 33867858252,
     "processed_run_id": null,
     "provider_id": "b547c72b-4628-4f2e-99cd-45751ff147e7",
     "failure_fingerprint": null,
