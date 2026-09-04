@@ -76,6 +76,17 @@ class OpenClawCloudflarePrimaryContractTest(unittest.TestCase):
         self.assertIn("scripts/oci_openclaw_offline_repair_v2.py", workflow)
         self.assertIn("scripts/oci_openclaw_offline_repair_v3.py", workflow)
 
+    def test_run_command_wrapper_fetches_cloudflare_transitive_dependencies(self):
+        text = read_repo("scripts/oci_openclaw_helper_run_command_v2.py")
+        self.assertIn('"openclaw_offline_mount_repair_cloudflare.sh"', text)
+        self.assertIn('"openclaw_offline_mount_repair_early.sh"', text)
+        self.assertIn('"openclaw_offline_mount_repair_base.sh"', text)
+        self.assertIn("files.extend", text)
+
+    def test_helper_wrapper_changes_trigger_fresh_recovery(self):
+        workflow = read_repo(".github/workflows/openclaw-recovery-controller.yml")
+        self.assertIn("scripts/oci_openclaw_helper_run_command_v2.py", workflow)
+
 
 if __name__ == "__main__":
     unittest.main()
