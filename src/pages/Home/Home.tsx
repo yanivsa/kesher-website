@@ -389,7 +389,7 @@ const Home: React.FC = () => {
 
           <div className={styles.headerActions}>
             <Link to={SITE_CONFIG.links.appointment} className={styles.headerCta}>
-              קביעת פגישה
+              תיאום שיחת היכרות
               <FiArrowLeft aria-hidden="true" />
             </Link>
             <button
@@ -411,7 +411,7 @@ const Home: React.FC = () => {
             <a href="#about" onClick={() => setMenuOpen(false)}>אודות</a>
             <a href="#process" onClick={() => setMenuOpen(false)}>איך זה עובד</a>
             <Link to="/blog" onClick={() => setMenuOpen(false)}>מאמרים</Link>
-            <Link to={SITE_CONFIG.links.appointment} onClick={() => setMenuOpen(false)}>קביעת פגישה</Link>
+            <Link to={SITE_CONFIG.links.appointment} onClick={() => setMenuOpen(false)}>תיאום שיחת היכרות</Link>
           </nav>
         )}
       </header>
@@ -434,7 +434,7 @@ const Home: React.FC = () => {
             <div className={styles.heroActions}>
               <Link to={SITE_CONFIG.links.appointment} className={styles.primaryCta}>
                 <FiCalendar aria-hidden="true" />
-                קביעת פגישת ייעוץ
+                תיאום שיחת היכרות
               </Link>
               <a href="#services" className={styles.secondaryCta}>
                 למצוא את הליווי המתאים
