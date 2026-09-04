@@ -18,9 +18,9 @@
     "normalization_status": "pending",
     "watchdog": {
       "identity": "2026-09-04",
-      "session_id": "sessions/4437648991138987114",
-      "last_progress_at": "2026-09-04T00:10:44.288957+00:00",
-      "last_fingerprint": "73812442e20e4e9f4aac0e0ebeaf910e5d6a8a7f6a2f83836a642b3c897a1917",
+      "session_id": "sessions/1913142869326346610",
+      "last_progress_at": "2026-09-04T01:25:55.943930+00:00",
+      "last_fingerprint": "f3d1acf4d300f650cfdd9edb9aafc80eb2c69bdb7e9a3e2bee75465cc1749100",
       "last_nudge_at": null,
       "nudge_count": 0,
       "worker_restart_count": 0,
@@ -941,9 +941,18 @@
       "details": {
         "session_id": "sessions/4437648991138987114"
       }
+    },
+    {
+      "at": "2026-09-04T01:27:09.387107+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": "sessions/1913142869326346610"
+      }
     }
   ],
-  "updated_at": "2026-09-04T00:11:57.173042+00:00",
+  "updated_at": "2026-09-04T01:27:09.387115+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
