@@ -1,0 +1,13 @@
+<<<<<<< SEARCH
+  .heroWhatsapp {
+    margin-bottom: 0;
+  }
+
+  .trustRow {
+=======
+  .heroWhatsapp {
+    margin-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .trustRow {
+>>>>>>> REPLACE
