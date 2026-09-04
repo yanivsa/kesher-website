@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
     "published_date": "2026-09-04",
     "live": true,
-    "live_verified_at": "2026-09-04T10:15:42.334578+00:00",
+    "live_verified_at": "2026-09-04T11:25:01.348270+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -347,16 +347,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-01T11:19:54.201114+00:00",
-      "from": "image_retry_wait",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 2,
-        "pr_number": 616
-      }
-    },
     {
       "at": "2026-09-01T11:25:47.189441+00:00",
       "from": "article_image_running",
@@ -1055,9 +1045,25 @@
         "operation": "full",
         "resume": 7
       }
+    },
+    {
+      "at": "2026-09-04T11:25:01.348289+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-04T11:25:14.315026+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 9
+      }
     }
   ],
-  "updated_at": "2026-09-04T10:15:47.109907+00:00",
+  "updated_at": "2026-09-04T11:25:14.315043+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1081,10 +1087,10 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-04T10:15:47.109894+00:00",
+    "last_dispatch_at": "2026-09-04T11:25:14.315015+00:00",
     "attempts": 1,
     "item_id": "video-20260904-130652-65b5bb9c69",
-    "resume_dispatches": 7,
+    "resume_dispatches": 9,
     "source_id": "aaca2ef2-ba99-4c88-952f-a95d9a3c5c20",
     "artifact_id": "b547c72b-4628-4f2e-99cd-45751ff147e7",
     "watchdog": {
