@@ -96,7 +96,7 @@ jobs:
                   f"Status: {state.get('status')}\n\n"
                   f"Action: {payload.get('action')} — {payload.get('reason')}\n\n"
                   f"Article: {deliverables.get('article_url') or article.get('url') or article.get('pr_url') or 'pending'}\n\n"
-                  f"Overview: {deliverables.get('overview_youtube_url') or long_video.get('item_id') or long_video.get('status') or 'pending'}\n\n"
+                  f"Long video: {deliverables.get('overview_youtube_url') or long_video.get('item_id') or long_video.get('status') or 'pending'} (Overview)\n\n"
                   f"Short: {deliverables.get('short_youtube_url') or short.get('item_id') or short.get('status') or 'pending'}\n\n"
                   f"Short portrait verified: {deliverables.get('short_portrait_verified') is True}\n\n"
                   f"Delivery contract complete: {delivery_complete}\n\n"
