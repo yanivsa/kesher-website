@@ -2,6 +2,7 @@ import React from "react";
 import {Video} from "@remotion/media";
 import {
   AbsoluteFill,
+  Img,
   Sequence,
   interpolate,
   staticFile,
@@ -25,7 +26,7 @@ export interface ArticleShortProps {
   title: string;
   category: string;
   url: string;
-  signatureVideoSrc?: string;
+  signatureImageSrc?: string;
   motionPlan?: MotionTarget[];
 }
 
@@ -39,7 +40,7 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
   title,
   category,
   url,
-  signatureVideoSrc = "shira-signature.mp4",
+  signatureImageSrc = "signature-mask.svg",
   motionPlan = [],
 }) => {
   const frame = useCurrentFrame();
@@ -146,14 +147,19 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
       </div>
 
       <Sequence from={signatureStart} durationInFrames={signatureDurationFrames}>
-        <AbsoluteFill style={{backgroundColor: "black"}}>
-          <Video
-            src={staticFile(signatureVideoSrc)}
-            durationInFrames={signatureDurationFrames}
+        <AbsoluteFill
+          style={{
+            backgroundColor: "white",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Img
+            src={staticFile(signatureImageSrc)}
             style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
+              width: "88%",
+              height: "88%",
+              objectFit: "contain",
               objectPosition: "center center",
             }}
           />
