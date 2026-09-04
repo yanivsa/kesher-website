@@ -34,6 +34,7 @@ jobs:
             tests.test_v4_runtime_activation \
             tests.test_v5_shared_video_controller \
             tests.test_v5_delivery_watchdog_contract \
+            tests.test_openclaw_cloudflare_primary \
             -v
 
       - name: Select CI profile
