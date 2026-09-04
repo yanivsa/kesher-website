@@ -1020,9 +1020,18 @@
       "details": {
         "item_id": "video-20260904-092627-214ba5a25e"
       }
+    },
+    {
+      "at": "2026-09-04T07:50:35.211734+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20260904-092627-214ba5a25e"
+      }
     }
   ],
-  "updated_at": "2026-09-04T07:39:14.797920+00:00",
+  "updated_at": "2026-09-04T07:50:35.211752+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
