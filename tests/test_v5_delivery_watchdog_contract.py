@@ -68,22 +68,6 @@ class HistoricalOverviewController(runtime.RuntimeV5Controller):
         self.now = datetime(2026, 9, 4, 9, 30, tzinfo=timezone.utc)
         self.dispatched_from = None
 
-    def state(self):
-        return {
-            "article": {
-                "live": True,
-                "url": "https://kesher.saharoni.com/blog/today-article",
-                "status": "complete",
-            },
-            "image": {"status": "complete"},
-            "long_video": v5.v3._stage_template(),
-            "short": v5.v3._stage_template(),
-            "deliverables": {},
-        }
-
-    def _article_source(self):
-        return source()
-
     def _tick_short(self, state, src, long_item):
         self.dispatched_from = copy.deepcopy(long_item)
         state["short"]["attempt_count"] = 1
@@ -129,8 +113,19 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
     def test_historical_public_overview_is_adopted_and_advances_short_same_tick(self):
         overview = public_item(youtube_id="overview", width=1920, height=1080)
         controller = HistoricalOverviewController(overview)
+        state = {
+            "article": {
+                "live": True,
+                "url": "https://kesher.saharoni.com/blog/today-article",
+                "status": "complete",
+            },
+            "image": {"status": "complete"},
+            "long_video": v5.v3._stage_template(),
+            "short": v5.v3._stage_template(),
+            "deliverables": {},
+        }
 
-        state, action = controller.tick()
+        action = controller._reconcile_historical_long_and_advance_short(state, source())
 
         self.assertEqual(controller.github.history_calls, 1)
         self.assertEqual(action.kind, "dispatch_short")
