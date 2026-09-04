@@ -41,21 +41,23 @@ if [[ "$status" != "completed" ]]; then
 fi
 
 logs="$(gh run view "$run_id" --repo "$GITHUB_REPOSITORY" --log 2>&1 || true)"
-# gh run view prefixes real log records with job/step/timestamp fields. Require the
-# proof token to terminate the record so echoed shell/Python source such as
-# print('OPENCLAW_...=true') cannot masquerade as execution proof.
+# Require proof tokens to terminate real log records so echoed source code cannot
+# masquerade as execution proof.
 check_marker() {
   local escaped
   escaped="$(printf '%s' "$1" | sed 's/[][\\.^$*+?{}|()]/\\&/g')"
   grep -Eq "(^|[[:space:]])${escaped}[[:space:]]*$" <<<"$logs" && printf true || printf false
 }
+
 offline="$(check_marker 'OPENCLAW_OFFLINE_REPAIR_COMPLETE=true')"
 rpc="$(check_marker 'OPENCLAW_GATEWAY_RPC_OK=true')"
+cloudflared="$(check_marker 'CLOUDFLARED_SERVICE_ACTIVE=true')"
+access="$(check_marker 'CLOUDFLARE_ACCESS_PROTECTED=true')"
 serve="$(check_marker 'TAILSCALE_SERVE_ACTIVE=true')"
 finalize="$(check_marker 'OPENCLAW_OFFLINE_FINALIZE_SUCCESS=true')"
 ready_url="$(bash scripts/openclaw_extract_ready_url.sh <<<"$logs" || true)"
 
-if [[ "$conclusion" == "success" && "$offline" == true && "$rpc" == true && "$serve" == true && "$finalize" == true && "$ready_url" == https://* ]]; then
+if [[ "$conclusion" == "success" && "$offline" == true && "$rpc" == true && "$cloudflared" == true && "$access" == true && "$finalize" == true && "$ready_url" == "https://openclaw.saharoni.com/" ]]; then
   OPENCLAW_STATUS=success \
   OPENCLAW_RUN_ID="$run_id" \
   OPENCLAW_RUN_URL="$run_url" \
@@ -63,7 +65,9 @@ if [[ "$conclusion" == "success" && "$offline" == true && "$rpc" == true && "$se
   OPENCLAW_READY_URL_VALUE="$ready_url" \
   OPENCLAW_OFFLINE_REPAIR_COMPLETE_VALUE=true \
   OPENCLAW_GATEWAY_RPC_OK_VALUE=true \
-  TAILSCALE_SERVE_ACTIVE_VALUE=true \
+  CLOUDFLARED_SERVICE_ACTIVE_VALUE=true \
+  CLOUDFLARE_ACCESS_PROTECTED_VALUE=true \
+  TAILSCALE_SERVE_ACTIVE_VALUE="$serve" \
   OPENCLAW_OFFLINE_FINALIZE_SUCCESS_VALUE=true \
   OPENCLAW_STATUS_STRICT=1 \
     bash scripts/openclaw_publish_status.sh
@@ -76,10 +80,12 @@ fi
 missing=()
 [[ "$offline" == true ]] || missing+=(OPENCLAW_OFFLINE_REPAIR_COMPLETE)
 [[ "$rpc" == true ]] || missing+=(OPENCLAW_GATEWAY_RPC_OK)
-[[ "$serve" == true ]] || missing+=(TAILSCALE_SERVE_ACTIVE)
+[[ "$cloudflared" == true ]] || missing+=(CLOUDFLARED_SERVICE_ACTIVE)
+[[ "$access" == true ]] || missing+=(CLOUDFLARE_ACCESS_PROTECTED)
 [[ "$finalize" == true ]] || missing+=(OPENCLAW_OFFLINE_FINALIZE_SUCCESS)
-[[ "$ready_url" == https://* ]] || missing+=(OPENCLAW_READY_URL)
+[[ "$ready_url" == "https://openclaw.saharoni.com/" ]] || missing+=(OPENCLAW_READY_URL)
 missing_csv="$(IFS=,; echo "${missing[*]:-none}")"
+
 OPENCLAW_STATUS=failure \
 OPENCLAW_RUN_ID="$run_id" \
 OPENCLAW_RUN_URL="$run_url" \
@@ -88,6 +94,8 @@ OPENCLAW_READY_URL_VALUE="$ready_url" \
 OPENCLAW_FAILURE_HINT="conclusion=${conclusion:-unknown}; missing=$missing_csv" \
 OPENCLAW_OFFLINE_REPAIR_COMPLETE_VALUE="$offline" \
 OPENCLAW_GATEWAY_RPC_OK_VALUE="$rpc" \
+CLOUDFLARED_SERVICE_ACTIVE_VALUE="$cloudflared" \
+CLOUDFLARE_ACCESS_PROTECTED_VALUE="$access" \
 TAILSCALE_SERVE_ACTIVE_VALUE="$serve" \
 OPENCLAW_OFFLINE_FINALIZE_SUCCESS_VALUE="$finalize" \
 OPENCLAW_STATUS_STRICT=1 \
