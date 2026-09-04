@@ -1,13 +1,13 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-04",
-  "status": "blocked",
+  "cycle": "2026-09-05",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 33819114085,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -15,25 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
-    "watchdog": {
-      "identity": "2026-09-04",
-      "session_id": "sessions/1913142869326346610",
-      "last_progress_at": "2026-09-04T01:25:55.943930+00:00",
-      "last_fingerprint": "f3d1acf4d300f650cfdd9edb9aafc80eb2c69bdb7e9a3e2bee75465cc1749100",
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "slug": "newlyweds-domestic-duties-sharing",
-    "title": "השנה הראשונה לנישואים: כשהסכמות על חלוקת תפקידים פוגשות את המציאות",
-    "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
-    "published_date": "2026-09-04",
-    "live": true,
-    "live_verified_at": "2026-09-04T20:58:39.738679+00:00",
-    "next_deploy_retry_at": null
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -345,137 +327,8 @@
       "archived_at": "2026-09-03T21:23:31.323565+00:00"
     }
   ],
-  "last_error": {
-    "stage": "short",
-    "code": "SHORT_SIGNATURE_ASSET_MISSING",
-    "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4",
-    "at": "2026-09-04T20:58:46.752195+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-03T11:38:18.007836+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T11:38:22.828721+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T13:45:36.292688+00:00",
-      "from": "complete",
-      "to": "complete",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-03T13:45:36.292712+00:00",
-      "from": "legacy-video-state",
-      "to": "article_live",
-      "reason": "V4 rolling upgrade archived legacy Video Overview and opened a fresh Short stage"
-    },
-    {
-      "at": "2026-09-03T13:45:41.516305+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 2
-      }
-    },
-    {
-      "at": "2026-09-03T13:49:55.605959+00:00",
-      "from": "video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T13:50:02.886565+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T15:07:39.507146+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T15:07:42.658436+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T15:11:17.550045+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T15:11:18.483003+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T15:14:16.256894+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T15:14:16.802136+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T18:43:32.965912+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T18:43:33.557616+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T19:03:58.161733+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T19:03:58.662551+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T19:07:47.740280+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T19:07:48.366911+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T20:41:31.277120+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-03T20:41:33.706900+00:00",
       "from": "article_live",
@@ -1040,9 +893,33 @@
       "details": {
         "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
       }
+    },
+    {
+      "at": "2026-09-04T21:03:13.319675+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-04T21:03:13.319682+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-04T21:03:13.320168+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-09-04T21:03:14.914067+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-09-04T20:58:46.752219+00:00",
+  "updated_at": "2026-09-04T21:03:14.914085+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1056,74 +933,30 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 33867858252,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-04T11:25:14.315015+00:00",
-    "attempts": 1,
-    "item_id": "video-20260904-092627-214ba5a25e",
-    "resume_dispatches": 9,
-    "source_id": "4e708746-fdc1-454d-9741-2a4f4e2371fb",
-    "artifact_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d",
-    "watchdog": {
-      "identity": "long_video:newlyweds-domestic-duties-sharing:video-20260904-092627-214ba5a25e",
-      "last_progress_at": "2026-09-04T07:39:11.796269+00:00",
-      "last_fingerprint": "62d4942afdefce7c8a9b54e00f1673d94e6606088aad94ad83dbcdab9903a437",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-09-04T09:00:38.207549+00:00"
-    },
-    "youtube_id": "mT7DuI3XJWc",
-    "youtube_url": "https://youtu.be/mT7DuI3XJWc",
-    "verified": true
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 1,
-    "status": "blocked",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 33871621217,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "attempts": 0,
-    "resume_dispatches": 0,
-    "fifth_attempt_recovery_only_used": false,
-    "last_dispatch_at": "2026-09-04T12:12:35.645371+00:00",
-    "artifact_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d",
-    "source_id": "4e708746-fdc1-454d-9741-2a4f4e2371fb",
-    "adopted_from_long_item_id": "video-20260904-092627-214ba5a25e"
+    "failure_count_by_type": {}
   },
   "migration": {
-    "v4_short_controller_state": {
-      "attempt_count": 0,
-      "status": "pending",
-      "last_error": null,
-      "next_retry_at": null,
-      "run_id": null,
-      "processed_run_id": null,
-      "provider_id": null,
-      "failure_fingerprint": null,
-      "same_failure_streak": 0,
-      "failure_count_by_type": {},
-      "attempts": 0,
-      "resume_dispatches": 0,
-      "fifth_attempt_recovery_only_used": false
-    }
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
-    "overview_youtube_url": "https://youtu.be/mT7DuI3XJWc",
-    "short_youtube_url": null,
-    "short_portrait_verified": false,
-    "short_signature_verified": false
+    "v4_short_controller_state": null
   }
 }
