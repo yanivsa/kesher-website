@@ -63,7 +63,16 @@ echo OPENCLAW_LOCAL_PROOF_ROOT="$root_part"
 READY="$MNT/var/lib/openclaw-ready.txt"
 LOG="$MNT/var/log/openclaw-offline-finalize.log"
 
-[ -s "$READY" ] || { echo OPENCLAW_LOCAL_PROOF_FAILED=READY_FILE_MISSING; exit 63; }
+if [ ! -s "$READY" ]; then
+  echo OPENCLAW_LOCAL_PROOF_FAILED=READY_FILE_MISSING
+  echo OPENCLAW_LOCAL_PROOF_FINALIZER_LOG_BEGIN=true
+  tail -160 "$LOG" 2>/dev/null || true
+  echo OPENCLAW_LOCAL_PROOF_FINALIZER_LOG_END=true
+  echo OPENCLAW_LOCAL_PROOF_GATEWAY_UNIT_BEGIN=true
+  sed -n '1,120p' "$MNT/etc/systemd/system/openclaw-gateway.service" 2>/dev/null || true
+  echo OPENCLAW_LOCAL_PROOF_GATEWAY_UNIT_END=true
+  exit 63
+fi
 [ -s "$LOG" ] || { echo OPENCLAW_LOCAL_PROOF_FAILED=FINALIZER_LOG_MISSING; exit 64; }
 
 grep -E '^(OPENCLAW_LOCAL_FINALIZED|OPENCLAW_GATEWAY_BIND|OPENCLAW_GATEWAY_PORT|OPENCLAW_LOCAL_READY|OPENCLAW_OFFLINE_FINALIZE_SUCCESS)=' "$READY" || true
