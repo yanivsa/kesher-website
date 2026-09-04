@@ -6,6 +6,8 @@ from typing import Any
 ARTICLE_NUDGE_AFTER = timedelta(minutes=15)
 ARTICLE_RESTART_AFTER = timedelta(minutes=25)
 MAX_ARTICLE_WORKER_RESTARTS = 2
+MEDIA_STALL_AFTER = timedelta(minutes=20)
+MAX_MEDIA_RECOVERIES = 3
 
 
 def _parse(value: Any) -> datetime | None:
@@ -114,3 +116,64 @@ def mark_article_restart(stage: dict[str, Any], *, now: datetime, run_id: Any) -
     current["last_restart_run_id"] = run_id
     current["last_nudge_at"] = None
     current["nudge_count"] = 0
+
+
+def observe_media(
+    stage: dict[str, Any],
+    *,
+    identity: str,
+    fingerprint: str | None,
+    now: datetime,
+) -> dict[str, Any]:
+    """Track durable provider progress without creating a second media identity."""
+    now_utc = now.astimezone(timezone.utc)
+    current = stage.get("watchdog")
+    if not isinstance(current, dict) or current.get("identity") != identity:
+        current = {
+            "identity": identity,
+            "last_progress_at": _iso(now_utc),
+            "last_fingerprint": fingerprint,
+            "recovery_count": 0,
+            "last_recovery_at": None,
+        }
+        stage["watchdog"] = current
+        return current
+
+    current.setdefault("last_progress_at", _iso(now_utc))
+    current.setdefault("last_fingerprint", fingerprint)
+    current.setdefault("recovery_count", 0)
+    current.setdefault("last_recovery_at", None)
+    previous = str(current.get("last_fingerprint") or "")
+    incoming = str(fingerprint or "")
+    if incoming and previous and incoming != previous:
+        current["last_fingerprint"] = incoming
+        current["last_progress_at"] = _iso(now_utc)
+        current["recovery_count"] = 0
+        current["last_recovery_at"] = None
+    elif incoming and not previous:
+        current["last_fingerprint"] = incoming
+    return current
+
+
+def media_decision(stage: dict[str, Any], *, now: datetime) -> str:
+    current = stage.get("watchdog")
+    if not isinstance(current, dict):
+        return "wait"
+    progress_at = _parse(current.get("last_progress_at"))
+    recovery_at = _parse(current.get("last_recovery_at"))
+    baseline = max(
+        [value for value in (progress_at, recovery_at) if value is not None],
+        default=now.astimezone(timezone.utc),
+    )
+    idle = now.astimezone(timezone.utc) - baseline
+    if idle < MEDIA_STALL_AFTER:
+        return "wait"
+    if int(current.get("recovery_count") or 0) >= MAX_MEDIA_RECOVERIES:
+        return "blocked"
+    return "recover"
+
+
+def mark_media_recovery(stage: dict[str, Any], *, now: datetime) -> None:
+    current = stage["watchdog"]
+    current["recovery_count"] = int(current.get("recovery_count") or 0) + 1
+    current["last_recovery_at"] = _iso(now.astimezone(timezone.utc))

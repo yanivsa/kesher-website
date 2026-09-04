@@ -32,6 +32,8 @@ jobs:
             tests.test_short_retry_policy_v4 \
             tests.test_pipeline_v4 \
             tests.test_v4_runtime_activation \
+            tests.test_v5_shared_video_controller \
+            tests.test_v5_delivery_watchdog_contract \
             -v
 
       - name: Select CI profile
