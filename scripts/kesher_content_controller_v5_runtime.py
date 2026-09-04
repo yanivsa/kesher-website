@@ -19,18 +19,19 @@ else:
 
 ARTICLE_AUTO_MERGE_WORKFLOW = "auto-merge-article-prs.yml"
 MEDIA_WATCHDOG_STATUSES = {"source_selected", "source_added", "generating"}
-DEFAULT_SIGNATURE_ASSET = "public/shira-signature.mp4"
+DEFAULT_SIGNATURE_ASSET = "public/images/signature/signature-mask.svg"
 
 
 class RuntimeV5Controller(v5.V5Controller):
     """V5 plus bounded media recovery and a strict three-link delivery contract."""
 
     def _signature_asset_path(self) -> Path:
-        configured = os.environ.get("KESHER_SHORT_SIGNATURE_VIDEO", "").strip()
-        return Path(configured or DEFAULT_SIGNATURE_ASSET)
+        configured = os.environ.get("KESHER_SHORT_SIGNATURE_ASSET", "").strip()
+        legacy_configured = os.environ.get("KESHER_SHORT_SIGNATURE_VIDEO", "").strip()
+        return Path(configured or legacy_configured or DEFAULT_SIGNATURE_ASSET)
 
     def _signature_asset_blocker(self, state):
-        """Fail closed before Short dispatch when the approved signature clip is absent."""
+        """Fail closed before Short dispatch when the approved signature asset is absent."""
         path = self._signature_asset_path()
         if path.is_file() and path.stat().st_size > 0:
             return None
@@ -38,10 +39,10 @@ class RuntimeV5Controller(v5.V5Controller):
             state,
             "short",
             "SHORT_SIGNATURE_ASSET_MISSING",
-            f"approved Shira signature video asset/path is missing: {path}",
+            f"approved Shira signature asset/path is missing: {path}",
         )
         state["short"]["status"] = "blocked"
-        return v5.core.Action("blocked", "approved Shira signature video asset/path is missing")
+        return v5.core.Action("blocked", "approved Shira signature asset/path is missing")
 
     def _tick_short(self, state, source, long_item):
         blocker = self._signature_asset_blocker(state)
