@@ -1,8 +1,8 @@
 {
   "status": "failure",
-  "run_id": 33867890733,
-  "run_url": "https://github.com/yanivsa/kesher-website/actions/runs/33867890733",
-  "sha": "032144b854a7dab6ea24b4b66dc3be2a1074093b",
+  "run_id": 33867833549,
+  "run_url": "https://github.com/yanivsa/kesher-website/actions/runs/33867833549",
+  "sha": "e20b928b7eefe456deb548b3e71eabb00250f749",
   "strict_success": false,
   "markers": {
     "OPENCLAW_OFFLINE_REPAIR_COMPLETE": false,
@@ -14,5 +14,5 @@
   },
   "ready_url": null,
   "failure_hint": "job_status=failure; patch_outcome=skipped; finalize_outcome=skipped; cloudflare_outcome=skipped",
-  "updated_at": "2026-09-04T11:29:50Z"
+  "updated_at": "2026-09-04T11:31:46Z"
 }
