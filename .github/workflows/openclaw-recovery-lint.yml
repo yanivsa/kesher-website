@@ -1,0 +1,30 @@
+name: OpenClaw recovery lint
+
+on:
+  push:
+    paths:
+      - 'scripts/openclaw_*.sh'
+      - 'scripts/oci_openclaw_*.py'
+      - '.github/workflows/openclaw-recovery-lint.yml'
+  pull_request:
+    paths:
+      - 'scripts/openclaw_*.sh'
+      - 'scripts/oci_openclaw_*.py'
+      - '.github/workflows/openclaw-recovery-lint.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bash syntax
+        run: |
+          set -euo pipefail
+          find scripts -maxdepth 1 -type f -name 'openclaw_*.sh' -print0 | xargs -0 -n1 bash -n
+      - name: Python syntax
+        run: |
+          set -euo pipefail
+          python -m compileall -q scripts/oci_openclaw_*.py

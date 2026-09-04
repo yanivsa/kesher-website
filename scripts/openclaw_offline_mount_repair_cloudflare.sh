@@ -116,8 +116,8 @@ KillMode=control-group
 WantedBy=multi-user.target
 UNIT
 
-# Finalization now proves only the local gateway. Public availability is a
-# separate Cloudflare proof, so a Tailscale outage/login state cannot block boot.
+# Finalization proves only the local gateway. Public availability is a separate
+# Cloudflare proof, so a Tailscale outage/login state cannot block boot.
 cat >"$MNT/usr/local/sbin/openclaw-offline-finalize.sh" <<'TARGET'
 #!/usr/bin/env bash
 set -Eeuo pipefail
@@ -188,6 +188,20 @@ timeout 30 systemctl daemon-reload || {
   exit 22
 }
 
+# Do not rely on parallel multi-user.target ordering. The finalizer owns the
+# responsibility for starting the loopback-only gateway before probing RPC.
+timeout 30 systemctl enable openclaw-gateway.service >/dev/null 2>&1 || true
+if ! timeout 45 systemctl restart openclaw-gateway.service; then
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_SERVICE_START
+  systemctl status openclaw-gateway.service --no-pager -l 2>/dev/null || true
+  exit 22
+fi
+for i in $(seq 1 30); do
+  [ "$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)" = active ] && break
+  sleep 1
+done
+echo OPENCLAW_GATEWAY_UNIT_ACTIVE="$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)"
+
 rpc_ok=false
 rpc_source=""
 for i in $(seq 1 40); do
@@ -209,6 +223,7 @@ done
 if [ "$rpc_ok" != true ]; then
   echo OPENCLAW_FINALIZE_FAILED=GATEWAY_RPC
   echo OPENCLAW_GATEWAY_UNIT_ACTIVE="$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)"
+  systemctl status openclaw-gateway.service --no-pager -l 2>/dev/null || true
   tail -80 /tmp/openclaw-gateway-status.txt 2>/dev/null || true
   tail -80 /tmp/openclaw-gateway-health.json 2>/dev/null || true
   exit 22
@@ -232,8 +247,9 @@ chmod 0755 "$MNT/usr/local/sbin/openclaw-offline-finalize.sh"
 cat >"$MNT/etc/systemd/system/openclaw-offline-finalize.service" <<'UNIT'
 [Unit]
 Description=Finalize OpenClaw local gateway for Cloudflare Tunnel
+Requires=openclaw-gateway.service
 Wants=network-online.target swap.target
-After=local-fs.target swap.target network-online.target
+After=local-fs.target swap.target network-online.target openclaw-gateway.service
 StartLimitIntervalSec=0
 
 [Service]
