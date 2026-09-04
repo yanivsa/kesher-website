@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
     "published_date": "2026-09-04",
     "live": true,
-    "live_verified_at": "2026-09-04T12:37:22.149972+00:00",
+    "live_verified_at": "2026-09-04T13:07:17.218017+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -349,36 +349,9 @@
     "stage": "short",
     "code": "SHORT_SIGNATURE_ASSET_MISSING",
     "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4",
-    "at": "2026-09-04T12:37:26.154642+00:00"
+    "at": "2026-09-04T13:07:27.072772+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-03T07:10:16.891834+00:00",
-      "from": "article_image_running",
-      "to": "article_pr_open",
-      "reason": "article PR has trusted image and remains authoritative"
-    },
-    {
-      "at": "2026-09-03T08:11:21.945418+00:00",
-      "from": "article_pr_open",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 33726421611 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-03T08:16:21.945383+00:00",
-        "failure_streak": 1,
-        "run_id": 33726421611
-      }
-    },
-    {
-      "at": "2026-09-03T08:14:50.927648+00:00",
-      "from": "image_retry_wait",
-      "to": "image_retry_wait",
-      "reason": "trusted image retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-03T08:16:21.945383+00:00"
-      }
-    },
     {
       "at": "2026-09-03T08:21:44.587148+00:00",
       "from": "image_retry_wait",
@@ -1025,9 +998,30 @@
       "details": {
         "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
       }
+    },
+    {
+      "at": "2026-09-04T13:07:17.218072+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-04T13:07:21.753895+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-04T13:07:27.072787+00:00",
+      "from": "long_video_complete",
+      "to": "blocked",
+      "reason": "SHORT_SIGNATURE_ASSET_MISSING",
+      "details": {
+        "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
+      }
     }
   ],
-  "updated_at": "2026-09-04T12:37:26.154666+00:00",
+  "updated_at": "2026-09-04T13:07:27.072793+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
