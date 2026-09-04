@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -36,6 +37,8 @@ SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
 SHORT_FPS = 30
 VISUAL_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
+SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
+SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
 
 _base_new_item = core.new_item
 
@@ -96,6 +99,20 @@ def short_technical_failures(media: dict[str, Any]) -> list[str]:
     return failures
 
 
+def prepare_signature_asset() -> str:
+    source = core.PROJECT_DIR / SIGNATURE_SOURCE
+    if not source.is_file() or source.stat().st_size <= 0:
+        raise core.PipelineError(f"Approved Short signature asset is missing: {source}")
+    svg = source.read_text(encoding="utf-8")
+    if "<svg" not in svg or "</svg>" not in svg:
+        raise core.PipelineError(f"Approved Short signature asset is not a valid SVG: {source}")
+
+    core.STATE_DIR.mkdir(parents=True, exist_ok=True)
+    target = core.STATE_DIR / SIGNATURE_RUNTIME_NAME
+    shutil.copyfile(source, target)
+    return target.name
+
+
 def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     output_path = core.STATE_DIR / f"{item['id']}-short-final.mp4"
     if output_path.exists() and output_path.stat().st_size > 0:
@@ -113,6 +130,10 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     motion_plan_path = core.STATE_DIR / f"{item['id']}-short-motion-plan.json"
     core.atomic_json_write(motion_plan_path, motion_plan)
 
+    signature_image_src = prepare_signature_asset()
+    signature_path = core.STATE_DIR / signature_image_src
+    signature_sha256 = core.sha256_file(signature_path)
+
     props_path = core.STATE_DIR / f"{item['id']}-short-remotion-props.json"
     core.atomic_json_write(
         props_path,
@@ -123,6 +144,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
             "title": item["source"]["title"],
             "category": item["source"]["category"],
             "url": core.DISPLAY_URL,
+            "signatureImageSrc": signature_image_src,
             "motionPlan": motion_plan["targets"],
         },
     )
@@ -157,6 +179,8 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     item["short_duration_seconds"] = duration_seconds
     item["motion_plan_path"] = motion_plan_path.name
     item["motion_plan_sha256"] = core.sha256_file(motion_plan_path)
+    item["signature_asset"] = signature_image_src
+    item["signature_sha256"] = signature_sha256
     item["remotion_props_path"] = props_path.name
     item["remotion_props_sha256"] = core.sha256_file(props_path)
     return output_path
@@ -226,6 +250,8 @@ def validate_and_manifest(
         "short_duration_seconds": item.get("short_duration_seconds"),
         "motion_plan_path": item.get("motion_plan_path"),
         "motion_plan_sha256": item.get("motion_plan_sha256"),
+        "signature_asset": item.get("signature_asset"),
+        "signature_sha256": item.get("signature_sha256"),
         "remotion_props_path": item.get("remotion_props_path"),
         "remotion_props_sha256": item.get("remotion_props_sha256"),
         "media": media,
