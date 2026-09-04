@@ -2,6 +2,7 @@ import React from "react";
 import {Video} from "@remotion/media";
 import {
   AbsoluteFill,
+  Sequence,
   interpolate,
   staticFile,
   useCurrentFrame,
@@ -24,10 +25,12 @@ export interface ArticleShortProps {
   title: string;
   category: string;
   url: string;
+  signatureVideoSrc?: string;
   motionPlan?: MotionTarget[];
 }
 
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
+const SIGNATURE_SECONDS = 3;
 
 export const ArticleShort: React.FC<ArticleShortProps> = ({
   videoSrc,
@@ -36,6 +39,7 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
   title,
   category,
   url,
+  signatureVideoSrc = "shira-signature.mp4",
   motionPlan = [],
 }) => {
   const frame = useCurrentFrame();
@@ -44,11 +48,8 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const outroStart = Math.max(0, durationInFrames - Math.round(2.5 * fps));
-  const outro = interpolate(frame, [outroStart, durationInFrames - 1], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const signatureDurationFrames = Math.round(SIGNATURE_SECONDS * fps);
+  const signatureStart = Math.max(0, durationInFrames - signatureDurationFrames);
 
   const target = motionPlan.find(
     (entry) => frame >= entry.startFrame && frame <= entry.endFrame,
@@ -134,7 +135,6 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
           bottom: 76,
           direction: "rtl",
           textAlign: "center",
-          opacity: Math.max(0.78, outro),
           fontFamily: "Heebo, Rubik, Arial, sans-serif",
           color: "white",
           fontSize: 30,
@@ -144,6 +144,21 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
       >
         שירה סהרוני · {url}
       </div>
+
+      <Sequence from={signatureStart} durationInFrames={signatureDurationFrames}>
+        <AbsoluteFill style={{backgroundColor: "black"}}>
+          <Video
+            src={staticFile(signatureVideoSrc)}
+            durationInFrames={signatureDurationFrames}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center center",
+            }}
+          />
+        </AbsoluteFill>
+      </Sequence>
     </AbsoluteFill>
   );
 };
