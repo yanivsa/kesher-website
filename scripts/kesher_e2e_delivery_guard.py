@@ -22,11 +22,17 @@ def _signature_verified(item: dict[str, Any]) -> bool:
         duration = float(item.get("signature_duration_seconds") or 0)
     except (TypeError, ValueError):
         return False
+    signature_sha256 = str(
+        item.get("signature_sha256")
+        or item.get("signature_asset_sha256")
+        or item.get("signature_video_sha256")
+        or ""
+    ).strip()
     return bool(
         item.get("signature_verified") is True
         and item.get("signature_fullscreen") is True
         and abs(duration - SIGNATURE_DURATION_SECONDS) < 0.001
-        and str(item.get("signature_video_sha256") or "").strip()
+        and signature_sha256
     )
 
 
@@ -97,6 +103,8 @@ def media_fingerprint(item: dict[str, Any]) -> str:
         "signature_verified": item.get("signature_verified"),
         "signature_duration_seconds": item.get("signature_duration_seconds"),
         "signature_fullscreen": item.get("signature_fullscreen"),
+        "signature_sha256": item.get("signature_sha256"),
+        "signature_asset_sha256": item.get("signature_asset_sha256"),
         "signature_video_sha256": item.get("signature_video_sha256"),
     }
     return hashlib.sha256(
