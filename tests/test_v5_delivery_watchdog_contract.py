@@ -82,7 +82,7 @@ class HistoricalOverviewController(runtime.RuntimeV5Controller):
 
 class MissingSignatureController(runtime.RuntimeV5Controller):
     def _signature_asset_path(self):
-        return Path("/definitely/missing/shira-signature.mp4")
+        return Path("/definitely/missing/signature-mask.svg")
 
 
 class V5DeliveryWatchdogContractTests(unittest.TestCase):
@@ -99,6 +99,13 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
 
     def test_portrait_public_upload_with_signature_is_a_valid_short(self):
         item = public_item(youtube_id="portrait", width=1080, height=1920)
+        self.assertTrue(self.short_verified(item))
+
+    def test_portrait_public_upload_with_svg_signature_is_a_valid_short(self):
+        item = public_item(youtube_id="portrait-svg", width=1080, height=1920)
+        item.pop("signature_video_sha256")
+        item["signature_asset"] = "signature-mask.svg"
+        item["signature_sha256"] = "c" * 64
         self.assertTrue(self.short_verified(item))
 
     def test_portrait_public_upload_without_signature_is_not_a_valid_short(self):
