@@ -1459,7 +1459,7 @@
   }
 
   .heroWhatsapp {
-    margin-bottom: 0;
+    margin-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
   }
 
   .trustRow {
