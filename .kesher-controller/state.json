@@ -958,5 +958,12 @@
   },
   "migration": {
     "v4_short_controller_state": null
+  },
+  "deliverables": {
+    "article_url": null,
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "short_portrait_verified": false,
+    "short_signature_verified": false
   }
 }
