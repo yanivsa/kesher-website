@@ -111,7 +111,7 @@ class V5GitHubClient(v4.V4GitHubClient):
         previous = core.VIDEO_STATE_ARTIFACT
         core.VIDEO_STATE_ARTIFACT = artifact_name
         try:
-            return core.GitHubClient.newest_video_state(self)
+            return super().newest_video_state()
         finally:
             core.VIDEO_STATE_ARTIFACT = previous
 
@@ -166,7 +166,6 @@ class V5GitHubClient(v4.V4GitHubClient):
 
     def cancel_workflow_run(self, run_id: int | str) -> None:
         self.request("POST", f"{self.api}/actions/runs/{run_id}/cancel", {})
-
 
 class V5Controller(v4.V4Controller):
     def state(self) -> dict[str, Any]:
@@ -337,7 +336,6 @@ class V5Controller(v4.V4Controller):
         if len(unresolved) > 1:
             core.block(state, "short", "DUPLICATE_SHORT_ITEMS", f"{len(unresolved)} unresolved Shorts exist for {source['slug']}")
             return core.Action("blocked", "duplicate Short items")
-
         active = self.github.active_workflow_run(SHORT_WORKFLOW, production_only=True)
         if active:
             state["short"]["run_id"] = active.get("id")
