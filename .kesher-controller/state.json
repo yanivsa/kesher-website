@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
     "published_date": "2026-09-04",
     "live": true,
-    "live_verified_at": "2026-09-04T19:02:05.843930+00:00",
+    "live_verified_at": "2026-09-04T20:58:39.738679+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -349,27 +349,9 @@
     "stage": "short",
     "code": "SHORT_SIGNATURE_ASSET_MISSING",
     "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4",
-    "at": "2026-09-04T19:02:15.993137+00:00"
+    "at": "2026-09-04T20:58:46.752195+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-03T10:48:45.469422+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T10:52:28.936614+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T10:52:32.654927+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-09-03T11:38:18.007836+00:00",
       "from": "complete",
@@ -1037,9 +1019,30 @@
       "details": {
         "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
       }
+    },
+    {
+      "at": "2026-09-04T20:58:39.738699+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-04T20:58:43.488738+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-04T20:58:46.752212+00:00",
+      "from": "long_video_complete",
+      "to": "blocked",
+      "reason": "SHORT_SIGNATURE_ASSET_MISSING",
+      "details": {
+        "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
+      }
     }
   ],
-  "updated_at": "2026-09-04T19:02:15.993159+00:00",
+  "updated_at": "2026-09-04T20:58:46.752219+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
