@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-04",
-  "status": "short_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
     "published_date": "2026-09-04",
     "live": true,
-    "live_verified_at": "2026-09-04T12:16:10.341195+00:00",
+    "live_verified_at": "2026-09-04T12:33:41.359024+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -345,40 +345,13 @@
       "archived_at": "2026-09-03T21:23:31.323565+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "short",
+    "code": "SHORT_SIGNATURE_ASSET_MISSING",
+    "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4",
+    "at": "2026-09-04T12:33:49.315067+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-02T23:35:56.020210+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Verified exactly the expected files (posts.json, postSummaries.json, sitemap.... — Verified exactly the expected files (posts.json, postSummaries.json, sitemap.xml, llms-full.txt, and rss.xml) are changed, and the scratch file generate_post.py was deleted.",
-        "retry_at": "2026-09-02T23:40:56.020187+00:00",
-        "failure_streak": 1,
-        "run_id": 33686725078,
-        "session_id": "sessions/3761228665442180957"
-      }
-    },
-    {
-      "at": "2026-09-03T01:31:26.866010+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 2
-      }
-    },
-    {
-      "at": "2026-09-03T02:58:28.811032+00:00",
-      "from": "article_generating",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 647
-      }
-    },
     {
       "at": "2026-09-03T03:02:13.224610+00:00",
       "from": "article_image_running",
@@ -1038,9 +1011,30 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-09-04T12:33:41.359043+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-04T12:33:44.010526+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-04T12:33:49.315083+00:00",
+      "from": "long_video_complete",
+      "to": "blocked",
+      "reason": "SHORT_SIGNATURE_ASSET_MISSING",
+      "details": {
+        "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
+      }
     }
   ],
-  "updated_at": "2026-09-04T12:16:19.494478+00:00",
+  "updated_at": "2026-09-04T12:33:49.315088+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1083,7 +1077,7 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "blocked",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 33871621217,
