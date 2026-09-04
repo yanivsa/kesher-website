@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import copy
+import os
 import sys
+from pathlib import Path
 
 if __package__:
     from . import kesher_content_controller_v5 as v5
@@ -17,10 +19,35 @@ else:
 
 ARTICLE_AUTO_MERGE_WORKFLOW = "auto-merge-article-prs.yml"
 MEDIA_WATCHDOG_STATUSES = {"source_selected", "source_added", "generating"}
+DEFAULT_SIGNATURE_ASSET = "public/shira-signature.mp4"
 
 
 class RuntimeV5Controller(v5.V5Controller):
     """V5 plus bounded media recovery and a strict three-link delivery contract."""
+
+    def _signature_asset_path(self) -> Path:
+        configured = os.environ.get("KESHER_SHORT_SIGNATURE_VIDEO", "").strip()
+        return Path(configured or DEFAULT_SIGNATURE_ASSET)
+
+    def _signature_asset_blocker(self, state):
+        """Fail closed before Short dispatch when the approved signature clip is absent."""
+        path = self._signature_asset_path()
+        if path.is_file() and path.stat().st_size > 0:
+            return None
+        v5.core.block(
+            state,
+            "short",
+            "SHORT_SIGNATURE_ASSET_MISSING",
+            f"approved Shira signature video asset/path is missing: {path}",
+        )
+        state["short"]["status"] = "blocked"
+        return v5.core.Action("blocked", "approved Shira signature video asset/path is missing")
+
+    def _tick_short(self, state, source, long_item):
+        blocker = self._signature_asset_blocker(state)
+        if blocker is not None:
+            return blocker
+        return super()._tick_short(state, source, long_item)
 
     def _adopt_existing_short(self, state, source):
         short_state = self.github.newest_short_state()
@@ -44,6 +71,10 @@ class RuntimeV5Controller(v5.V5Controller):
             "youtube_url": item.get("youtube_url"),
             "verified": True,
             "portrait_verified": True,
+            "signature_verified": item.get("signature_verified") is True,
+            "signature_duration_seconds": item.get("signature_duration_seconds"),
+            "signature_fullscreen": item.get("signature_fullscreen") is True,
+            "signature_video_sha256": item.get("signature_video_sha256"),
             "width": media.get("width"),
             "height": media.get("height"),
             "provider_id": item.get("task_id"),
@@ -166,6 +197,9 @@ class RuntimeV5Controller(v5.V5Controller):
         return v5.core.Action("long_video_watchdog_recover", "resumed same long-form provider identity", inputs)
 
     def _recover_short(self, state, source, item, long_item):
+        blocker = self._signature_asset_blocker(state)
+        if blocker is not None:
+            return blocker
         count = int(state["short"].get("attempt_count") or 0)
         if count >= v5.MAX_SHORT_DISPATCH_ATTEMPTS:
             v5.core.block(
@@ -299,13 +333,13 @@ class RuntimeV5Controller(v5.V5Controller):
                     state,
                     "controller",
                     "DELIVERY_CONTRACT_INCOMPLETE",
-                    "cycle cannot complete without live article, public Overview, and public portrait Short links",
+                    "cycle cannot complete without live article, public Overview, public portrait Short and verified signature ending",
                 )
-                action = v5.core.Action("blocked", "three-link delivery contract incomplete")
+                action = v5.core.Action("blocked", "delivery contract incomplete")
             else:
                 action = v5.core.Action(
                     "complete",
-                    "article + public Overview + public portrait Short verified",
+                    "article + public Overview + public portrait Short + signature ending verified",
                     copy.deepcopy(deliverables),
                 )
         self.github.save_controller_state(state)
