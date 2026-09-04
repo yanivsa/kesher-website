@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-04",
-  "status": "long_video_running",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
     "published_date": "2026-09-04",
     "live": true,
-    "live_verified_at": "2026-09-04T11:41:59.269422+00:00",
+    "live_verified_at": "2026-09-04T12:12:24.548914+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -347,31 +347,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-01T21:24:57.393647+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-09-01T23:31:36.474050+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-02T01:19:52.249543+00:00",
-      "from": "article_generating",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 631
-      }
-    },
     {
       "at": "2026-09-02T01:45:10.187672+00:00",
       "from": "article_image_running",
@@ -1048,9 +1023,27 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-04T12:12:24.548929+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-04T12:12:27.725212+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-04T12:12:35.645424+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-04T11:42:01.540473+00:00",
+  "updated_at": "2026-09-04T12:12:35.645434+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1065,43 +1058,50 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 33867858252,
     "processed_run_id": null,
-    "provider_id": "b547c72b-4628-4f2e-99cd-45751ff147e7",
+    "provider_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-04T11:25:14.315015+00:00",
     "attempts": 1,
-    "item_id": "video-20260904-130652-65b5bb9c69",
+    "item_id": "video-20260904-092627-214ba5a25e",
     "resume_dispatches": 9,
-    "source_id": "aaca2ef2-ba99-4c88-952f-a95d9a3c5c20",
-    "artifact_id": "b547c72b-4628-4f2e-99cd-45751ff147e7",
+    "source_id": "4e708746-fdc1-454d-9741-2a4f4e2371fb",
+    "artifact_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d",
     "watchdog": {
       "identity": "long_video:newlyweds-domestic-duties-sharing:video-20260904-092627-214ba5a25e",
       "last_progress_at": "2026-09-04T07:39:11.796269+00:00",
       "last_fingerprint": "62d4942afdefce7c8a9b54e00f1673d94e6606088aad94ad83dbcdab9903a437",
       "recovery_count": 1,
       "last_recovery_at": "2026-09-04T09:00:38.207549+00:00"
-    }
+    },
+    "youtube_id": "mT7DuI3XJWc",
+    "youtube_url": "https://youtu.be/mT7DuI3XJWc",
+    "verified": true
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
     "resume_dispatches": 0,
-    "fifth_attempt_recovery_only_used": false
+    "fifth_attempt_recovery_only_used": false,
+    "last_dispatch_at": "2026-09-04T12:12:35.645371+00:00",
+    "artifact_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d",
+    "source_id": "4e708746-fdc1-454d-9741-2a4f4e2371fb",
+    "adopted_from_long_item_id": "video-20260904-092627-214ba5a25e"
   },
   "migration": {
     "v4_short_controller_state": {
