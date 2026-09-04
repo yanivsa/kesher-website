@@ -13,6 +13,6 @@
     "OPENCLAW_OFFLINE_FINALIZE_SUCCESS": false
   },
   "ready_url": null,
-  "failure_hint": "job_status=failure; patch_outcome=success; finalize_outcome=failure; cloudflare_outcome=skipped",
-  "updated_at": "2026-09-04T18:37:13Z"
+  "failure_hint": "conclusion=failure; missing=OPENCLAW_OFFLINE_REPAIR_COMPLETE,OPENCLAW_GATEWAY_RPC_OK,CLOUDFLARED_SERVICE_ACTIVE,CLOUDFLARE_ACCESS_PROTECTED,OPENCLAW_OFFLINE_FINALIZE_SUCCESS,OPENCLAW_READY_URL",
+  "updated_at": "2026-09-04T19:33:18Z"
 }
