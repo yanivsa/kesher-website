@@ -11,6 +11,11 @@ from urllib.parse import quote
 import oci_openclaw_helper_run_command as base
 
 
+CLOUDFLARE_REPAIR = "openclaw_offline_mount_repair_cloudflare.sh"
+EARLY_REPAIR = "openclaw_offline_mount_repair_early.sh"
+BASE_REPAIR = "openclaw_offline_mount_repair_base.sh"
+
+
 def pinned_wrapper(script_file: str) -> str:
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     sha = os.environ.get("GITHUB_SHA", "")
@@ -19,8 +24,23 @@ def pinned_wrapper(script_file: str) -> str:
 
     primary = Path(script_file)
     files = [primary]
-    if primary.name == "openclaw_offline_mount_repair_early.sh":
-        files.append(primary.with_name("openclaw_offline_mount_repair_base.sh"))
+    if primary.name == CLOUDFLARE_REPAIR:
+        files.extend([
+            primary.with_name(EARLY_REPAIR),
+            primary.with_name(BASE_REPAIR),
+        ])
+    elif primary.name == EARLY_REPAIR:
+        files.extend([primary.with_name(BASE_REPAIR)])
+
+    # Preserve deterministic order while avoiding duplicate downloads.
+    unique_files: list[Path] = []
+    seen: set[str] = set()
+    for local in files:
+        rel = local.as_posix().lstrip("./")
+        if rel not in seen:
+            unique_files.append(local)
+            seen.add(rel)
+    files = unique_files
 
     commands = [
         "#!/usr/bin/env bash",
