@@ -339,6 +339,7 @@ const CalendlyBookingEmbed: React.FC<CalendlyBookingEmbedProps> = ({
       <div
         ref={containerRef}
         className={styles.embedContainer}
+        role="region"
         aria-label={ariaLabel}
       />
       <p className={styles.status} role={loadFailed ? 'status' : undefined}>
