@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import unittest
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 from scripts import kesher_content_controller as core
 from scripts import kesher_content_controller_v5 as v5
@@ -30,6 +31,10 @@ def public_item(*, youtube_id: str, width: int, height: int) -> dict:
             "processing_status": "succeeded",
         },
         "media": {"width": width, "height": height},
+        "signature_verified": True,
+        "signature_duration_seconds": 3.0,
+        "signature_fullscreen": True,
+        "signature_video_sha256": "b" * 64,
     }
 
 
@@ -75,6 +80,11 @@ class HistoricalOverviewController(runtime.RuntimeV5Controller):
         return core.Action("dispatch_short", "historical Overview adopted; Short dispatched")
 
 
+class MissingSignatureController(runtime.RuntimeV5Controller):
+    def _signature_asset_path(self):
+        return Path("/definitely/missing/shira-signature.mp4")
+
+
 class V5DeliveryWatchdogContractTests(unittest.TestCase):
     def short_verified(self, item):
         return delivery_guard.short_public_portrait_verified(
@@ -87,9 +97,14 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         item = public_item(youtube_id="horizontal", width=1920, height=1080)
         self.assertFalse(self.short_verified(item))
 
-    def test_portrait_public_upload_is_a_valid_short(self):
+    def test_portrait_public_upload_with_signature_is_a_valid_short(self):
         item = public_item(youtube_id="portrait", width=1080, height=1920)
         self.assertTrue(self.short_verified(item))
+
+    def test_portrait_public_upload_without_signature_is_not_a_valid_short(self):
+        item = public_item(youtube_id="portrait", width=1080, height=1920)
+        item["signature_verified"] = False
+        self.assertFalse(self.short_verified(item))
 
     def test_runtime_controller_refuses_to_adopt_horizontal_short(self):
         item = public_item(youtube_id="horizontal", width=1920, height=1080)
@@ -99,7 +114,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         self.assertIsNone(controller._adopt_existing_short(state, source()))
         self.assertNotEqual(state["short"].get("status"), "complete")
 
-    def test_runtime_controller_adopts_only_verified_portrait_short(self):
+    def test_runtime_controller_adopts_only_verified_portrait_signature_short(self):
         item = public_item(youtube_id="portrait", width=1080, height=1920)
         controller = object.__new__(runtime.RuntimeV5Controller)
         controller.github = MiniGitHub(item)
@@ -107,8 +122,18 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         adopted = controller._adopt_existing_short(state, source())
         self.assertIsNotNone(adopted)
         self.assertTrue(state["short"]["portrait_verified"])
+        self.assertTrue(state["short"]["signature_verified"])
         self.assertEqual(state["short"]["width"], 1080)
         self.assertEqual(state["short"]["height"], 1920)
+
+    def test_missing_approved_signature_asset_blocks_new_short_dispatch(self):
+        controller = object.__new__(MissingSignatureController)
+        state = {"short": v5.v3._stage_template(), "history": [], "status": "long_video_complete"}
+        action = controller._signature_asset_blocker(state)
+        self.assertIsNotNone(action)
+        self.assertEqual(action.kind, "blocked")
+        self.assertEqual(state["short"]["status"], "blocked")
+        self.assertEqual((state.get("last_error") or {}).get("code"), "SHORT_SIGNATURE_ASSET_MISSING")
 
     def test_historical_public_overview_is_adopted_and_advances_short_same_tick(self):
         overview = public_item(youtube_id="overview", width=1920, height=1080)
@@ -135,7 +160,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         self.assertEqual(state["long_video"]["youtube_url"], "https://youtu.be/overview")
         self.assertEqual(state["short"]["attempt_count"], 1)
 
-    def test_delivery_contract_requires_article_overview_and_portrait_short_links(self):
+    def test_delivery_contract_requires_article_overview_portrait_and_signature_short(self):
         state = {
             "article": {"live": True, "url": "https://kesher.saharoni.com/blog/today-article"},
             "long_video": {"verified": True, "youtube_url": "https://youtu.be/overview"},
@@ -143,6 +168,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
                 "verified": True,
                 "youtube_url": "https://youtu.be/short",
                 "portrait_verified": True,
+                "signature_verified": True,
             },
         }
         ready, deliverables = delivery_guard.delivery_contract(state)
@@ -154,10 +180,11 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
                 "overview_youtube_url": "https://youtu.be/overview",
                 "short_youtube_url": "https://youtu.be/short",
                 "short_portrait_verified": True,
+                "short_signature_verified": True,
             },
         )
 
-        state["short"]["portrait_verified"] = False
+        state["short"]["signature_verified"] = False
         ready2, _ = delivery_guard.delivery_contract(state)
         self.assertFalse(ready2)
 
