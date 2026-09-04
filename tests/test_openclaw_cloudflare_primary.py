@@ -65,6 +65,17 @@ class OpenClawCloudflarePrimaryContractTest(unittest.TestCase):
         self.assertIn("CLOUDFLARE_ACCESS_PROTECTED=true", text)
         self.assertIn("OPENCLAW_READY_URL=https://openclaw.saharoni.com/", text)
 
+    def test_recovery_target_discovery_tries_both_known_openclaw_names(self):
+        text = read_repo("scripts/oci_openclaw_offline_repair_v2.py")
+        self.assertIn("for name in (TARGET_NAME, FALLBACK_NAME):", text)
+        self.assertIn("OPENCLAW_TARGET_SELECTED", text)
+        self.assertIn("OPENCLAW_TARGET_DISCOVERY_FAILED", text)
+
+    def test_target_discovery_changes_trigger_fresh_recovery(self):
+        workflow = read_repo(".github/workflows/openclaw-recovery-controller.yml")
+        self.assertIn("scripts/oci_openclaw_offline_repair_v2.py", workflow)
+        self.assertIn("scripts/oci_openclaw_offline_repair_v3.py", workflow)
+
 
 if __name__ == "__main__":
     unittest.main()
