@@ -59,8 +59,8 @@ jobs:
             exit 0
           fi
           if ! grep -q 'OCI_RESULT_STATUS=no_capacity' "$logs"; then
-            echo "Last OCI run did not end in the expected no-capacity state; refusing blind rerun." >&2
-            exit 1
+            echo "Last OCI run did not end in the expected no-capacity state; refusing blind rerun without failing the watcher."
+            exit 0
           fi
 
           gh run rerun "$PROVISION_RUN_ID" --repo "$GITHUB_REPOSITORY"
