@@ -63,6 +63,90 @@ class RuntimeV5Controller(v5.V5Controller):
         ]
         return v5._newest(rows)
 
+    def _verified_long_from_artifact_history(self, source):
+        """Recover exact public long-form evidence that a newer state artifact lost.
+
+        The normal fast path still reads only the newest state artifact. This
+        bounded fallback is used only when that newest state has no exact public
+        Overview for the authoritative slug + content hash.
+        """
+        injected = getattr(self.github, "verified_video_item_from_history", None)
+        if callable(injected):
+            item = injected(source)
+            if (
+                isinstance(item, dict)
+                and v5._source_identity(item) == (source["slug"], source["content_sha256"])
+                and v5.core.verified_youtube_item(item, source["slug"])
+            ):
+                return item
+            return None
+
+        payload = self.github.request(
+            "GET",
+            f"{self.github.api}/actions/artifacts?name={v5.LONG_VIDEO_STATE_ARTIFACT}&per_page=30",
+        )
+        artifacts = [
+            row
+            for row in ((payload or {}).get("artifacts") or [])
+            if isinstance(row, dict)
+            and not row.get("expired")
+            and row.get("archive_download_url")
+        ]
+        artifacts.sort(key=lambda row: str(row.get("created_at") or ""), reverse=True)
+
+        for artifact in artifacts:
+            try:
+                raw = self.github.download_artifact_archive(str(artifact["archive_download_url"]))
+                with v5.core.zipfile.ZipFile(v5.core.io.BytesIO(raw)) as archive:
+                    names = [name for name in archive.namelist() if name.endswith("state.json")]
+                    if not names:
+                        continue
+                    snapshot = v5.json.loads(archive.read(names[0]).decode("utf-8"))
+            except (
+                v5.core.ControllerError,
+                v5.core.zipfile.BadZipFile,
+                v5.json.JSONDecodeError,
+                UnicodeDecodeError,
+                KeyError,
+            ):
+                continue
+            if not isinstance(snapshot, dict) or not isinstance(snapshot.get("items"), list):
+                continue
+            item = v5._newest(v5._verified_exact(snapshot, source))
+            if item is not None:
+                return item
+        return None
+
+    def _reconcile_historical_long_and_advance_short(self, state, source):
+        """Adopt a lost-but-public Overview and advance its Short in this tick."""
+        newest = self.github.newest_video_state()
+        if v5._newest(v5._verified_exact(newest, source)) is not None:
+            return None
+
+        long_item = self._verified_long_from_artifact_history(source)
+        if long_item is None:
+            return None
+
+        state["long_video"].update({
+            "item_id": long_item.get("id"),
+            "status": "complete",
+            "youtube_id": long_item.get("youtube_id"),
+            "youtube_url": long_item.get("youtube_url"),
+            "verified": True,
+            "provider_id": long_item.get("task_id"),
+            "artifact_id": long_item.get("artifact_id"),
+            "source_id": long_item.get("source_id"),
+        })
+        v5.v3.clear_stage_failure(state["long_video"])
+        v5.core.transition(
+            state,
+            "long_video_complete",
+            "reconciled exact verified public Overview from historical durable state",
+            item_id=long_item.get("id"),
+            youtube_url=long_item.get("youtube_url"),
+        )
+        return self._tick_short(state, source, long_item)
+
     def _recover_long_video(self, state, source, item):
         inputs = {"operation": "full"}
         v5.core.GitHubClient.dispatch(self.github, v5.LONG_VIDEO_WORKFLOW, inputs)
@@ -192,6 +276,13 @@ class RuntimeV5Controller(v5.V5Controller):
         state = self.state()
         source = self._article_source()
         if source is not None:
+            historical_action = self._reconcile_historical_long_and_advance_short(state, source)
+            if historical_action is not None:
+                _, deliverables = delivery_guard.delivery_contract(state)
+                state["deliverables"] = deliverables
+                self.github.save_controller_state(state)
+                return state, historical_action
+
             watchdog_action = self._media_watchdog_preflight(state, source)
             if watchdog_action is not None:
                 _, deliverables = delivery_guard.delivery_contract(state)
