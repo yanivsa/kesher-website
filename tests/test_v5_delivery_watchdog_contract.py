@@ -102,6 +102,22 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         ready2, _ = delivery_guard.delivery_contract(state)
         self.assertFalse(ready2)
 
+    def test_poll_timestamp_changes_do_not_fake_provider_progress(self):
+        item = {
+            "id": "video-1",
+            "status": "generating",
+            "last_provider_status": "pending",
+            "task_id": "task-1",
+            "artifact_id": "task-1",
+            "updated_at": "2026-09-04T06:00:00+00:00",
+            "last_polled_at": "2026-09-04T06:00:00+00:00",
+        }
+        before = delivery_guard.media_fingerprint(item)
+        item["updated_at"] = "2026-09-04T06:05:00+00:00"
+        item["last_polled_at"] = "2026-09-04T06:05:00+00:00"
+        after = delivery_guard.media_fingerprint(item)
+        self.assertEqual(before, after)
+
     def test_media_watchdog_recovers_then_blocks_unchanged_stall(self):
         stage: dict = {}
         start = datetime(2026, 9, 4, 6, 0, tzinfo=timezone.utc)
