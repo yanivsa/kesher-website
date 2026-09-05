@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: main
+          ref: ${{ github.sha }}
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.12'
@@ -66,17 +66,26 @@ jobs:
           Path('/tmp/oci.cfg').write_text('[DEFAULT]\nuser='+d['user']+'\nfingerprint='+d['fingerprint']+'\ntenancy='+d['tenancy']+'\nregion='+d['region']+'\nkey_file=/tmp/oci.pem\n'); Path('/tmp/oci.cfg').chmod(0o600)
           PY
           echo OCI_BRIDGE_OK=true
-      - name: Build live tunnel repair script
+      - name: Build bounded live tunnel repair bootstrap
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          import os
-          from pathlib import Path
-          template=Path('scripts/openclaw_enable_cloudflare_tunnel.sh').read_text()
-          prefix="export PUBLIC_HOSTNAME='"+os.environ['PUBLIC_HOSTNAME']+"'\n"
-          Path('/tmp/openclaw-cloudflare.sh').write_text(prefix+template)
-          Path('/tmp/openclaw-cloudflare.sh').chmod(0o700)
-          PY
+          script_sha="$(sha256sum scripts/openclaw_enable_cloudflare_tunnel.sh | awk '{print $1}')"
+          cat >/tmp/openclaw-cloudflare-bootstrap.sh <<EOF
+          #!/bin/bash
+          set -Eeuo pipefail
+          url='https://raw.githubusercontent.com/yanivsa/kesher-website/${GITHUB_SHA}/scripts/openclaw_enable_cloudflare_tunnel.sh'
+          expected='${script_sha}'
+          tmp='/tmp/openclaw_enable_cloudflare_tunnel.sh'
+          curl -fsSL --proto '=https' --tlsv1.2 "\$url" -o "\$tmp"
+          printf '%s  %s\n' "\$expected" "\$tmp" | sha256sum -c -
+          chmod 0700 "\$tmp"
+          export PUBLIC_HOSTNAME='${PUBLIC_HOSTNAME}'
+          exec "\$tmp"
+          EOF
+          chmod 0700 /tmp/openclaw-cloudflare-bootstrap.sh
+          bytes="$(wc -c </tmp/openclaw-cloudflare-bootstrap.sh | tr -d '[:space:]')"
+          echo "OPENCLAW_OCI_BOOTSTRAP_BYTES=${bytes}"
+          [ "$bytes" -ge 1 ] && [ "$bytes" -le 4096 ] || { echo "OPENCLAW_CLOUDFLARE_FAILED=OCI_BOOTSTRAP_TOO_LARGE_${bytes}"; exit 1; }
           echo OPENCLAW_LIVE_TUNNEL_REUSE_READY=true
       - name: Deploy cloudflared through OCI Run Command
         run: |
@@ -84,7 +93,7 @@ jobs:
           python -u scripts/oci_openclaw_agent_command.py \
             --config /tmp/oci.cfg \
             --instance-name openclaw-e2-tailscale \
-            --script-file /tmp/openclaw-cloudflare.sh \
+            --script-file /tmp/openclaw-cloudflare-bootstrap.sh \
             --timeout 420
       - name: Verify Access protects public hostname
         run: |
@@ -101,4 +110,4 @@ jobs:
           echo "OPENCLAW_PUBLIC_URL=https://${PUBLIC_HOSTNAME}/"
       - name: Cleanup
         if: ${{ always() }}
-        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/openclaw-cloudflare.sh /tmp/public-body /tmp/public-headers
+        run: rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg /tmp/openclaw-cloudflare-bootstrap.sh /tmp/openclaw_enable_cloudflare_tunnel.sh /tmp/public-body /tmp/public-headers
