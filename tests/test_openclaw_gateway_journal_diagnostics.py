@@ -21,6 +21,14 @@ class OpenClawGatewayJournalDiagnosticsTest(unittest.TestCase):
         self.assertIn("journalctl -u openclaw-gateway.service -n 160 --no-pager", text)
         self.assertIn("OPENCLAW_GATEWAY_JOURNAL_END=true", text)
 
+    def test_gateway_failure_is_exported_as_safe_markers_for_ci(self):
+        text = (ROOT / "scripts/openclaw_offline_mount_repair_cloudflare.sh").read_text(encoding="utf-8")
+        self.assertIn("OPENCLAW_GATEWAY_RESULT=", text)
+        self.assertIn("OPENCLAW_GATEWAY_EXEC_MAIN_CODE=", text)
+        self.assertIn("OPENCLAW_GATEWAY_EXEC_MAIN_STATUS=", text)
+        self.assertIn("OPENCLAW_GATEWAY_JOURNAL_LINE=", text)
+        self.assertIn("systemctl show openclaw-gateway.service", text)
+
 
 if __name__ == "__main__":
     unittest.main()
