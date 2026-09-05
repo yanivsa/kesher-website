@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-05",
-  "status": "article_generating",
+  "status": "article_watchdog_nudge",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -16,7 +16,18 @@
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-09-05T17:05:57.420976+00:00"
+    "last_dispatch_at": "2026-09-05T17:05:57.420976+00:00",
+    "watchdog": {
+      "identity": "2026-09-05",
+      "session_id": "sessions/1738477936498620473",
+      "last_progress_at": "2026-09-05T17:05:57+00:00",
+      "last_fingerprint": "13a1dbd3ee6eb77346ec32f4dc46db3d9d5bd631db1d4679cd92f57130015cdd",
+      "last_nudge_at": "2026-09-05T17:40:26.158411+00:00",
+      "nudge_count": 1,
+      "worker_restart_count": 0,
+      "last_restart_at": null,
+      "last_restart_run_id": null
+    }
   },
   "backlog": [
     {
@@ -927,9 +938,18 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-05T17:41:53.700247+00:00",
+      "from": "article_generating",
+      "to": "article_watchdog_nudge",
+      "reason": "article stalled; nudged authoritative Jules session",
+      "details": {
+        "session_id": "sessions/1738477936498620473"
+      }
     }
   ],
-  "updated_at": "2026-09-05T17:05:57.420990+00:00",
+  "updated_at": "2026-09-05T17:41:53.700254+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
