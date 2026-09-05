@@ -12,6 +12,15 @@ class OpenClawGatewayJournalDiagnosticsTest(unittest.TestCase):
         self.assertIn('journalctl --directory="$MNT/var/log/journal" -u openclaw-gateway.service', text)
         self.assertIn("OPENCLAW_LOCAL_PROOF_GATEWAY_JOURNAL_END=true", text)
 
+    def test_finalizer_fails_fast_and_persists_live_gateway_failure(self):
+        text = (ROOT / "scripts/openclaw_offline_mount_repair_cloudflare.sh").read_text(encoding="utf-8")
+        self.assertIn('gateway_unit_state="$(systemctl is-active openclaw-gateway.service', text)
+        self.assertIn('if [ "$gateway_unit_state" != active ]; then', text)
+        self.assertIn("OPENCLAW_FINALIZE_FAILED=GATEWAY_UNIT_NOT_ACTIVE", text)
+        self.assertIn("OPENCLAW_GATEWAY_JOURNAL_BEGIN=true", text)
+        self.assertIn("journalctl -u openclaw-gateway.service -n 160 --no-pager", text)
+        self.assertIn("OPENCLAW_GATEWAY_JOURNAL_END=true", text)
+
 
 if __name__ == "__main__":
     unittest.main()
