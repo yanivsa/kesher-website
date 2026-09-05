@@ -80,6 +80,17 @@ class OpenClawCloudflarePrimaryContractTest(unittest.TestCase):
         self.assertIn("gateway.bind loopback", text)
         self.assertIn("PUBLIC_GATEWAY_LISTENER_DETECTED", text)
 
+    def test_live_cloudflare_deploy_reuses_existing_service_without_api_control_plane(self):
+        workflow = read_repo(".github/workflows/openclaw-cloudflare-tunnel.yml")
+        script = read_repo("scripts/openclaw_enable_cloudflare_tunnel.sh")
+        self.assertNotIn("/zones?name=", workflow)
+        self.assertNotIn("/access/apps/", workflow)
+        self.assertNotIn("/cfd_tunnel/$TUNNEL_ID/token", workflow)
+        self.assertIn("CLOUDFLARED_REUSED_EXISTING_SERVICE=true", script)
+        self.assertIn("systemctl restart cloudflared.service", script)
+        self.assertIn("Verify Access protects public hostname", workflow)
+        self.assertIn("CLOUDFLARE_ACCESS_PROTECTED=true", workflow)
+
     def test_recovery_workflow_uses_local_proof_then_cloudflare(self):
         text = read_repo(".github/workflows/openclaw-offline-boot-repair.yml")
         self.assertIn("actions: write", text)
