@@ -16,7 +16,18 @@
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-09-05T21:41:15.910613+00:00"
+    "last_dispatch_at": "2026-09-05T21:41:15.910613+00:00",
+    "watchdog": {
+      "identity": "2026-09-06",
+      "session_id": "sessions/2750507895984920114",
+      "last_progress_at": "2026-09-05T21:41:15+00:00",
+      "last_fingerprint": "650808ef0a1286a9ccbfa1fdfa3a936f894fafe360cddb8bcad25ba802a76392",
+      "last_nudge_at": null,
+      "nudge_count": 0,
+      "worker_restart_count": 0,
+      "last_restart_at": null,
+      "last_restart_run_id": null
+    }
   },
   "backlog": [
     {
@@ -992,9 +1003,18 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-05T21:44:41.536561+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": "sessions/2750507895984920114"
+      }
     }
   ],
-  "updated_at": "2026-09-05T21:41:15.910623+00:00",
+  "updated_at": "2026-09-05T21:44:41.536568+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
