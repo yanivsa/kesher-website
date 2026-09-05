@@ -43,6 +43,10 @@ jobs:
           mkdir -p "$KESHER_STATE_DIR"
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
             --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/artifacts.txt
+          if [ ! -s /tmp/artifacts.txt ]; then
+            printf '{"version":1,"items":[],"updated_at":null}\n' > "$KESHER_STATE_DIR/state.json"
+            exit 0
+          fi
           restored="false"
           while read -r artifact_id; do
             [ -n "$artifact_id" ] || continue
@@ -65,7 +69,8 @@ jobs:
             rm -rf "$temp_extract"
           done < /tmp/artifacts.txt
           if [ "$restored" != "true" ]; then
-            printf '{"version":1,"items":[],"updated_at":null}\n' > "$KESHER_STATE_DIR/state.json"
+            echo "Durable video-state artifacts exist but none is trustworthy; refusing a fresh state." >&2
+            exit 1
           fi
 
       - name: Seed or resume exact article identity
