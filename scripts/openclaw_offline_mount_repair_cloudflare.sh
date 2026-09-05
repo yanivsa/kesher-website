@@ -200,7 +200,16 @@ for i in $(seq 1 30); do
   [ "$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)" = active ] && break
   sleep 1
 done
-echo OPENCLAW_GATEWAY_UNIT_ACTIVE="$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)"
+gateway_unit_state="$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)"
+echo OPENCLAW_GATEWAY_UNIT_ACTIVE="$gateway_unit_state"
+if [ "$gateway_unit_state" != active ]; then
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_UNIT_NOT_ACTIVE
+  echo OPENCLAW_GATEWAY_JOURNAL_BEGIN=true
+  systemctl status openclaw-gateway.service --no-pager -l 2>/dev/null || true
+  journalctl -u openclaw-gateway.service -n 160 --no-pager 2>/dev/null || true
+  echo OPENCLAW_GATEWAY_JOURNAL_END=true
+  exit 22
+fi
 
 rpc_ok=false
 rpc_source=""
