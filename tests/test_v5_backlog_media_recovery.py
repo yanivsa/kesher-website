@@ -11,12 +11,14 @@ from zoneinfo import ZoneInfo
 
 from scripts import kesher_content_controller as core
 from scripts import kesher_content_controller_v5 as v5
+from scripts import kesher_content_controller_v5_runtime as runtime
 from scripts import kesher_daily_pipeline as pipeline
+from scripts import kesher_exact_video_target as exact_target
 from tests.test_v5_shared_video_controller import FakeGitHub, FakeSite, article
 
 TZ = ZoneInfo("Asia/Jerusalem")
 ROOT = Path(__file__).resolve().parents[1]
-WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
+RECOVERY_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-backlog-media-recovery.yml"
 
 
 def prior_article() -> dict:
@@ -53,7 +55,7 @@ def current_cycle_state() -> dict:
 
 
 class V5BacklogMediaRecoveryTests(unittest.TestCase):
-    def test_backlog_media_dispatches_exact_long_form_while_today_article_worker_active(self):
+    def test_backlog_media_dispatches_exact_seed_while_today_article_worker_active(self):
         gh = FakeGitHub()
         old_post = prior_article()
         gh.posts = [old_post]
@@ -69,7 +71,7 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
             "state": "IN_PROGRESS",
             "fingerprint": "today-fp",
         }
-        controller = v5.V5Controller(
+        controller = runtime.RuntimeV5Controller(
             gh,
             FakeSite(),
             now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
@@ -80,56 +82,65 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
 
         self.assertEqual(action.kind, "dispatch_backlog_long_video")
         self.assertEqual(gh.dispatches, [(
-            v5.LONG_VIDEO_WORKFLOW,
+            runtime.BACKLOG_MEDIA_RECOVERY_WORKFLOW,
             {
-                "operation": "full",
                 "target_slug": source["slug"],
                 "target_content_sha256": source["content_sha256"],
             },
         )])
         self.assertEqual(gh.cancelled_runs, [])
         self.assertEqual(gh.jules_nudges, [])
-        self.assertEqual(state["article"]["attempt_count"], 1)
         media = state["backlog"][0]["media"]
         self.assertEqual(media["source_slug"], source["slug"])
         self.assertEqual(media["source_content_sha256"], source["content_sha256"])
         self.assertEqual(media["long_status"], "running")
 
-    def test_pipeline_target_selection_is_exact_and_hash_bound(self):
+    def test_exact_seed_selection_is_slug_and_hash_bound(self):
         old_post = prior_article()
         newer = article("newer-article")
         newer["date"] = "2026-08-20"
-        state = {"version": 1, "items": []}
         expected = pipeline.source_metadata(old_post)
 
         with tempfile.TemporaryDirectory() as tmp:
             posts_path = Path(tmp) / "posts.json"
             posts_path.write_text(json.dumps([newer, old_post], ensure_ascii=False), encoding="utf-8")
-            with mock.patch.object(pipeline, "POSTS_FILE", posts_path), mock.patch.object(
-                pipeline,
-                "israel_now",
-                return_value=datetime(2026, 8, 20, 12, 0, tzinfo=TZ),
-            ):
-                selected = pipeline.select_article_for_generation(
-                    state,
-                    target_slug=expected["slug"],
-                    target_content_sha256=expected["content_sha256"],
+            with mock.patch.object(pipeline, "POSTS_FILE", posts_path):
+                selected = exact_target.exact_source(
+                    expected["slug"],
+                    expected["content_sha256"],
                 )
                 self.assertEqual(selected["slug"], expected["slug"])
                 self.assertEqual(selected["content_sha256"], expected["content_sha256"])
-                with self.assertRaisesRegex(pipeline.PipelineError, "hash"):
-                    pipeline.select_article_for_generation(
-                        state,
-                        target_slug=expected["slug"],
-                        target_content_sha256="0" * 64,
-                    )
+                with self.assertRaisesRegex(pipeline.PipelineError, "hash mismatch"):
+                    exact_target.exact_source(expected["slug"], "0" * 64)
 
-    def test_video_workflow_exposes_exact_target_inputs(self):
-        workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
+    def test_exact_seed_reuses_existing_identity_without_duplicate_generation(self):
+        old_post = prior_article()
+        expected = pipeline.source_metadata(old_post)
+        existing = pipeline.new_item(expected)
+        state = {"version": 1, "items": [existing], "updated_at": None}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            posts_path = Path(tmp) / "posts.json"
+            state_dir = Path(tmp) / "state"
+            posts_path.write_text(json.dumps([old_post], ensure_ascii=False), encoding="utf-8")
+            state_dir.mkdir()
+            (state_dir / "state.json").write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
+            with mock.patch.object(pipeline, "POSTS_FILE", posts_path), mock.patch.object(
+                pipeline, "STATE_DIR", state_dir
+            ), mock.patch.object(pipeline, "STATE_FILE", state_dir / "state.json"):
+                chosen = exact_target.seed_exact_target(expected["slug"], expected["content_sha256"])
+                saved = json.loads((state_dir / "state.json").read_text(encoding="utf-8"))
+                self.assertEqual(chosen["id"], existing["id"])
+                self.assertEqual(len(saved["items"]), 1)
+
+    def test_recovery_workflow_is_exact_handoff_into_canonical_pipeline(self):
+        workflow = RECOVERY_WORKFLOW_PATH.read_text(encoding="utf-8")
         self.assertIn("target_slug:", workflow)
         self.assertIn("target_content_sha256:", workflow)
-        self.assertIn("KESHER_TARGET_SLUG", workflow)
-        self.assertIn("KESHER_TARGET_CONTENT_SHA256", workflow)
+        self.assertIn("kesher_exact_video_target.py", workflow)
+        self.assertIn("kesher-daily-video.yml -f operation=full", workflow)
+        self.assertIn("name: kesher-video-state", workflow)
 
 
 if __name__ == "__main__":
