@@ -47,6 +47,8 @@ LOCAL_FALLBACK_CANDIDATES: dict[str, list[tuple[str, str]]] = {
         ("public/images/generated/blog/late-singleness-friends-moving-forward.jpg", "אדם בסיטואציה חברתית המתאימה לנושא רווקות וקשרים"),
         ("public/images/generated/blog/single-hood-family-dinners-pressure.jpg", "שיחה משפחתית רגועה המציגה התמודדות עם רווקות"),
         ("public/images/generated/blog/unspoken-expectations-in-relationships.jpg", "תמונה אווירתית על ציפיות, בחירות והרהור אישי סביב קשרים והחמצה"),
+        ("public/images/generated/blog/dating-fatigue-resilience.jpg", "אדם המתמודד עם שחיקה רגשית במסע למציאת זוגיות"),
+        ("public/images/generated/blog/dating-emotional-needs-vs-checklists.jpg", "סצנה זוגית שקטה על בחירות, צרכים וציפיות בקשר"),
     ],
     "relocation": [
         ("public/images/generated/blog/relocation-career-loss-and-dependence.jpg", "זוג בסיטואציה ביתית הקשורה לשינויי חיים ורילוקיישן"),
