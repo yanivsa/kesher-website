@@ -1024,9 +1024,18 @@
       "details": {
         "retry_at": "2026-09-05T19:48:37.614141+00:00"
       }
+    },
+    {
+      "at": "2026-09-05T19:35:56.029985+00:00",
+      "from": "image_retry_wait",
+      "to": "image_retry_wait",
+      "reason": "trusted image retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-05T19:48:37.614141+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-05T19:34:18.577249+00:00",
+  "updated_at": "2026-09-05T19:35:56.030002+00:00",
   "image": {
     "attempt_count": 3,
     "status": "retry_wait",
