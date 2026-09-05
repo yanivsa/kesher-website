@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Best-effort trusted article image worker with a deterministic local terminal fallback.
+"""Trusted article image worker with a deterministic local terminal fallback.
 
 External providers are optional enhancements. The terminal local provider reads
 only versioned assets from the trusted ``main`` checkout and validates the real
-bytes before use. Each semantic category has at least one repository-curated
-landscape candidate, and runtime falls through candidates if one is missing or
-invalid. Image failure never blocks publication of an otherwise valid article.
+bytes before use. Each semantic category keeps spare repository-curated
+landscape capacity so a previously published hero does not exhaust the stage.
+Image failure remains publication-blocking under the production contract.
 """
 
 from __future__ import annotations
@@ -46,6 +46,7 @@ LOCAL_FALLBACK_CANDIDATES: dict[str, list[tuple[str, str]]] = {
     "singles": [
         ("public/images/generated/blog/late-singleness-friends-moving-forward.jpg", "אדם בסיטואציה חברתית המתאימה לנושא רווקות וקשרים"),
         ("public/images/generated/blog/single-hood-family-dinners-pressure.jpg", "שיחה משפחתית רגועה המציגה התמודדות עם רווקות"),
+        ("public/images/generated/blog/unspoken-expectations.jpg", "תמונה אווירתית על ציפיות, בחירות והרהור אישי סביב קשרים והחמצה"),
     ],
     "relocation": [
         ("public/images/generated/blog/relocation-career-loss-and-dependence.jpg", "זוג בסיטואציה ביתית הקשורה לשינויי חיים ורילוקיישן"),
