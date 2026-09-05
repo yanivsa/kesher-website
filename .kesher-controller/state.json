@@ -1,35 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-05",
-  "status": "image_retry_wait",
+  "cycle": "2026-09-06",
+  "status": "waiting_for_article_window",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 33979885509,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-09-05T17:05:57.420976+00:00",
-    "watchdog": {
-      "identity": "2026-09-05",
-      "session_id": "sessions/1738477936498620473",
-      "last_progress_at": "2026-09-05T17:05:57+00:00",
-      "last_fingerprint": "13a1dbd3ee6eb77346ec32f4dc46db3d9d5bd631db1d4679cd92f57130015cdd",
-      "last_nudge_at": "2026-09-05T17:40:26.158411+00:00",
-      "nudge_count": 1,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "pr_number": 694,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/694"
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -339,123 +325,44 @@
         "normalization_status": "pending"
       },
       "archived_at": "2026-09-03T21:23:31.323565+00:00"
+    },
+    {
+      "cycle": "2026-09-05",
+      "status": "image_retry_wait",
+      "article": {
+        "attempt_count": 1,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 33979885509,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "deploy_attempts": 0,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-09-05T17:05:57.420976+00:00",
+        "watchdog": {
+          "identity": "2026-09-05",
+          "session_id": "sessions/1738477936498620473",
+          "last_progress_at": "2026-09-05T17:05:57+00:00",
+          "last_fingerprint": "13a1dbd3ee6eb77346ec32f4dc46db3d9d5bd631db1d4679cd92f57130015cdd",
+          "last_nudge_at": "2026-09-05T17:40:26.158411+00:00",
+          "nudge_count": 1,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "pr_number": 694,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/694"
+      },
+      "archived_at": "2026-09-05T21:21:39.844472+00:00"
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-03T20:41:33.706900+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T20:45:34.157080+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T20:45:36.222056+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-03T20:54:24.485776+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-03T20:54:29.013236+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 4
-      }
-    },
-    {
-      "at": "2026-09-03T21:23:31.323593+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-03T21:23:31.323597+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-03T21:23:31.323662+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-09-03T21:54:36.085236+00:00",
-      "from": "waiting_for_article_window",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 4 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-04T00:00:58.274840+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/4437648991138987114"
-      }
-    },
-    {
-      "at": "2026-09-04T00:11:57.173034+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/4437648991138987114"
-      }
-    },
-    {
-      "at": "2026-09-04T01:27:09.387107+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/1913142869326346610"
-      }
-    },
-    {
-      "at": "2026-09-04T01:30:17.756988+00:00",
-      "from": "article_generating",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-09-04T06:25:23.446638+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-04T06:25:28.333356+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "new video workflow dispatched",
-      "details": {
-        "operation": "full",
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-04T06:30:07.018178+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-04T06:30:20.984195+00:00",
       "from": "article_live",
@@ -1051,31 +958,44 @@
       "details": {
         "retry_at": "2026-09-05T19:48:37.614141+00:00"
       }
+    },
+    {
+      "at": "2026-09-05T21:21:39.844500+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-05T21:21:39.844504+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-05T21:21:39.845094+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-09-05T21:21:41.823141+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-09-05T19:41:46.719810+00:00",
+  "updated_at": "2026-09-05T21:21:41.823157+00:00",
   "image": {
-    "attempt_count": 3,
-    "status": "retry_wait",
-    "last_error": {
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 33985785381 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-09-05T19:48:37.614141+00:00",
-      "at": "2026-09-05T19:33:37.614169+00:00"
-    },
-    "next_retry_at": "2026-09-05T19:48:37.614141+00:00",
-    "run_id": 33985785381,
-    "processed_run_id": 33985785381,
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 3,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 3
-    },
-    "last_dispatch_at": "2026-09-05T19:00:29.594425+00:00",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 33985785381
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   },
   "long_video": {
     "attempt_count": 0,
@@ -1103,12 +1023,5 @@
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": null,
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "short_portrait_verified": false,
-    "short_signature_verified": false
   }
 }
