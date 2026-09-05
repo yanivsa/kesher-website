@@ -43,10 +43,13 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertEqual(contract["image"]["max_attempts"], 3)
         self.assertEqual(contract["image"]["worker_attempts_per_dispatch"], 1)
 
-    def test_provider_order_ends_in_local_curated_fallback(self):
+    def test_provider_order_ends_in_local_terminal_fallback(self):
         contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
         image = contract["image"]
-        self.assertEqual(image["provider_order"], ["gemini", "unsplash", "pexels", "local-curated"])
+        self.assertEqual(
+            image["provider_order"],
+            ["gemini", "unsplash", "pexels", "local-curated", "local-editorial"],
+        )
         self.assertTrue(image["fallback_must_be_local"])
         self.assertFalse(image["no_image_publication_allowed"])
         self.assertTrue(image["publication_blocking"])
@@ -219,11 +222,12 @@ class ArticleImageWorkerTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(fake_data)
 
-            # When existing_hashes contains the candidate hash, local_fallback must reject it
             candidate = worker.local_fallback(
                 "o/r", {"title": "שיחה", "id": "x"}, "sha", "t", [], existing_hashes=existing_hashes
             )
-            self.assertIsNone(candidate)
+            self.assertIsNotNone(candidate)
+            self.assertEqual(candidate.provider, "LocalEditorial")
+            self.assertNotEqual(hashlib.sha256(candidate.data).hexdigest(), fake_sha)
 
     def test_contextual_stock_queries_generated_from_post_content(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_queries_test")
@@ -239,4 +243,3 @@ class ArticleImageWorkerTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
