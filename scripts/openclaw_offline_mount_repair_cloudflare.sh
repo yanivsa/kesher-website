@@ -247,9 +247,8 @@ chmod 0755 "$MNT/usr/local/sbin/openclaw-offline-finalize.sh"
 cat >"$MNT/etc/systemd/system/openclaw-offline-finalize.service" <<'UNIT'
 [Unit]
 Description=Finalize OpenClaw local gateway for Cloudflare Tunnel
-Requires=openclaw-gateway.service
 Wants=network-online.target swap.target
-After=local-fs.target swap.target network-online.target openclaw-gateway.service
+After=local-fs.target swap.target network-online.target
 StartLimitIntervalSec=0
 
 [Service]

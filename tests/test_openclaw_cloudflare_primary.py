@@ -54,6 +54,15 @@ class OpenClawCloudflarePrimaryContractTest(unittest.TestCase):
         self.assertIn("After=network-online.target", text)
         self.assertNotIn("After=network-online.target tailscaled.service", text)
 
+    def test_finalizer_owns_gateway_restart_without_hard_dependency_cycle(self):
+        text = read_repo("scripts/openclaw_offline_mount_repair_cloudflare.sh")
+        self.assertIn("systemctl restart openclaw-gateway.service", text)
+        self.assertNotIn("Requires=openclaw-gateway.service", text)
+        self.assertNotIn(
+            "After=local-fs.target swap.target network-online.target openclaw-gateway.service",
+            text,
+        )
+
     def test_recovery_workflow_uses_local_proof_then_cloudflare(self):
         text = read_repo(".github/workflows/openclaw-offline-boot-repair.yml")
         self.assertIn("actions: write", text)
