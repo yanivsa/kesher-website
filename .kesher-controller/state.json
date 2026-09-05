@@ -294,7 +294,16 @@
         "merge_dispatch_count": 3,
         "merge_image_attempt_count": 3
       },
-      "archived_at": "2026-09-01T21:24:57.393578+00:00"
+      "archived_at": "2026-09-01T21:24:57.393578+00:00",
+      "media": {
+        "source_slug": "aliyah-homesickness-balance",
+        "source_content_sha256": "04b29d6e5453dbfb8659ffe0160f42a81c22b06b2bd05323a91f2829df862c90",
+        "article_url": "https://kesher.saharoni.com/blog/aliyah-homesickness-balance",
+        "article_live": true,
+        "long_status": "running",
+        "seed_dispatch_count": 1,
+        "long_last_dispatch_at": "2026-09-05T23:23:19.332790+00:00"
+      }
     },
     {
       "cycle": "2026-09-02",
@@ -429,14 +438,7 @@
       "archived_at": "2026-09-05T21:21:39.844472+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "COMPLETED_WITHOUT_PR",
-    "message": "Jules completed without creating a pull request; Jules diagnostic: I have already removed the scratch files.",
-    "retryable": true,
-    "retry_at": "2026-09-05T22:34:34.432577+00:00",
-    "at": "2026-09-05T22:29:34.432599+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-04T06:30:20.984195+00:00",
@@ -1172,9 +1174,19 @@
         "run_id": 33993759015,
         "session_id": "sessions/2750507895984920114"
       }
+    },
+    {
+      "at": "2026-09-05T23:23:19.332824+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "dispatched exact prior-cycle long-video state handoff before current-cycle watchdog",
+      "details": {
+        "backlog_cycle": "2026-09-01",
+        "source_slug": "aliyah-homesickness-balance"
+      }
     }
   ],
-  "updated_at": "2026-09-05T22:29:34.432610+00:00",
+  "updated_at": "2026-09-05T23:23:19.332832+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
