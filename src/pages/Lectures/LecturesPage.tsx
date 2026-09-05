@@ -18,6 +18,23 @@ const schemaData = {
       "name": `הרצאות וסדנאות | ${SITE_CONFIG.title}`,
       "description": "הרצאות וסדנאות מאת שירה סהרוני בנושאי זוגיות, הורות ונושאים נוספים מתוך תחומי התוכן באתר.",
       "inLanguage": "he-IL"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "עמוד הבית",
+          "item": SITE_CONFIG.url
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "הרצאות וסדנאות",
+          "item": `${SITE_CONFIG.url}/lectures`
+        }
+      ]
     }
   ]
 };
