@@ -23,7 +23,7 @@
     "worker_owner": "github-actions",
     "worker_attempts_per_dispatch": 1,
     "max_attempts": 3,
-    "provider_order": ["gemini", "unsplash", "pexels", "local-curated"],
+    "provider_order": ["gemini", "unsplash", "pexels", "local-curated", "local-editorial"],
     "gemini_model": "gemini-3.1-flash-image",
     "visual_verifier_model": "gemini-3.5-flash",
     "external_stock_requires_pixel_verification": true,
