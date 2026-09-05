@@ -12,6 +12,13 @@ EXPECTED_STATE_SCHEMA_VERSION = 3
 EXPECTED_MAX_ATTEMPTS = 3
 EXPECTED_BACKOFF = [5, 15]
 EXPECTED_HEARTBEAT_MINUTES = 5
+EXPECTED_IMAGE_PROVIDER_ORDER = [
+    "gemini",
+    "unsplash",
+    "pexels",
+    "local-curated",
+    "local-editorial",
+]
 
 
 class AutomationPolicyError(RuntimeError):
@@ -77,7 +84,7 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         or image.get("worker_owner") != "github-actions"
         or image.get("worker_attempts_per_dispatch") != 1
         or image.get("max_attempts") != EXPECTED_MAX_ATTEMPTS
-        or image.get("provider_order") != ["gemini", "unsplash", "pexels", "local-curated"]
+        or image.get("provider_order") != EXPECTED_IMAGE_PROVIDER_ORDER
         or image.get("gemini_model") != "gemini-3.1-flash-image"
         or image.get("visual_verifier_model") != "gemini-3.5-flash"
         or image.get("external_stock_requires_pixel_verification") is not True
