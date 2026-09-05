@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORKER_PATH = ROOT / ".github" / "scripts" / "article-image-worker-v4.py"
 WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-article-image.yml"
+BLOG_IMAGE_DIR = ROOT / "public" / "images" / "generated" / "blog"
 
 
 def load_worker():
@@ -18,6 +19,25 @@ def load_worker():
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module
+
+
+def unused_valid_landscape_pool(worker, published_hashes: set[str]) -> list[str]:
+    pool: list[str] = []
+    seen_hashes: set[str] = set()
+    for path in sorted(BLOG_IMAGE_DIR.iterdir()):
+        if not path.is_file():
+            continue
+        try:
+            data = path.read_bytes()
+            worker.core.validate_candidate(data)
+        except Exception:
+            continue
+        digest = hashlib.sha256(data).hexdigest()
+        if digest in published_hashes or digest in seen_hashes:
+            continue
+        seen_hashes.add(digest)
+        pool.append(path.name)
+    return pool
 
 
 class ArticleImageFallbackExhaustionTests(unittest.TestCase):
@@ -34,10 +54,12 @@ class ArticleImageFallbackExhaustionTests(unittest.TestCase):
             if digest not in published_hashes:
                 eligible_hashes.append(digest)
 
+        unused_pool = unused_valid_landscape_pool(worker, published_hashes)
         self.assertGreaterEqual(
             len(set(eligible_hashes)),
             2,
-            "singles must retain at least two valid unpublished fallback images",
+            "singles must retain at least two valid unpublished fallback images; "
+            f"unused valid landscape pool={unused_pool[:60]}",
         )
 
         candidate = worker.local_fallback(
