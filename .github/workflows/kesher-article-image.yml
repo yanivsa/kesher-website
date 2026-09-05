@@ -40,10 +40,18 @@ jobs:
           PR_NUMBER: ${{ inputs.pr_number }}
         run: |
           set -euo pipefail
-          python3 .github/scripts/article-image-worker-v4.py "${REPO}" "${PR_NUMBER}" | tee image-worker.log
+          python3 .github/scripts/article-image-worker-v4.py "${REPO}" "${PR_NUMBER}" 2>&1 | tee image-worker.log
 
-          if ! grep -q '^ARTICLE_IMAGE_COMMITTED ' image-worker.log; then
-            echo 'Trusted image already present or this is not an article publication PR.'
+          if grep -q '^ARTICLE_IMAGE_COMMITTED ' image-worker.log; then
+            : # Continue below and dispatch fresh CI for the mutated PR head.
+          elif grep -q '^ARTICLE_IMAGE_PRESENT ' image-worker.log; then
+            echo 'Trusted image is already present; no mutation required.'
+            exit 0
+          elif grep -q '^ARTICLE_IMAGE_SKIPPED ' image-worker.log; then
+            echo 'IMAGE_OUTPUT_MISSING: article image worker produced no unique trusted image.' >&2
+            exit 42
+          else
+            echo 'No image mutation was applicable to this PR.'
             exit 0
           fi
 
