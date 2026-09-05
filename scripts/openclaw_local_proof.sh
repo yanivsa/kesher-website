@@ -71,6 +71,13 @@ if [ ! -s "$READY" ]; then
   echo OPENCLAW_LOCAL_PROOF_GATEWAY_UNIT_BEGIN=true
   sed -n '1,120p' "$MNT/etc/systemd/system/openclaw-gateway.service" 2>/dev/null || true
   echo OPENCLAW_LOCAL_PROOF_GATEWAY_UNIT_END=true
+  echo OPENCLAW_LOCAL_PROOF_GATEWAY_JOURNAL_BEGIN=true
+  if [ -d "$MNT/var/log/journal" ]; then
+    journalctl --directory="$MNT/var/log/journal" -u openclaw-gateway.service -n 160 --no-pager 2>/dev/null || true
+  else
+    echo OPENCLAW_GATEWAY_JOURNAL_PERSISTENT_MISSING=true
+  fi
+  echo OPENCLAW_LOCAL_PROOF_GATEWAY_JOURNAL_END=true
   exit 63
 fi
 [ -s "$LOG" ] || { echo OPENCLAW_LOCAL_PROOF_FAILED=FINALIZER_LOG_MISSING; exit 64; }
