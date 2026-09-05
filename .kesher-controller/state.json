@@ -65,7 +65,8 @@
           "completed_at": "2026-08-29T18:50:02.418092+00:00"
         }
       },
-      "archived_at": "2026-08-29T21:19:11.245164+00:00"
+      "archived_at": "2026-08-29T21:19:11.245164+00:00",
+      "media": {}
     },
     {
       "cycle": "2026-08-30",
@@ -102,7 +103,8 @@
           "completed_at": "2026-08-30T06:09:19.667936+00:00"
         }
       },
-      "archived_at": "2026-08-30T22:48:37.691529+00:00"
+      "archived_at": "2026-08-30T22:48:37.691529+00:00",
+      "media": {}
     },
     {
       "cycle": "2026-08-31",
@@ -172,7 +174,22 @@
         "live_verified_at": "2026-08-31T19:53:47.816876+00:00",
         "next_deploy_retry_at": null
       },
-      "archived_at": "2026-08-31T21:01:56.978470+00:00"
+      "archived_at": "2026-08-31T21:01:56.978470+00:00",
+      "media": {
+        "source_slug": "aliyah-couples-cultural-gaps-identity",
+        "source_content_sha256": "2b94464a89e0e5fcc91deb233a40de9e087a236a5e22106e684215e98f5c0fef",
+        "article_url": "https://kesher.saharoni.com/blog/aliyah-couples-cultural-gaps-identity",
+        "article_live": true,
+        "long_status": "complete",
+        "long_item_id": "video-20260831-225502-2b94464a89",
+        "long_youtube_url": "https://youtu.be/BlRx0ICD6hE",
+        "long_youtube_id": "BlRx0ICD6hE",
+        "short_status": "running",
+        "short_dispatch_count": 1,
+        "short_last_dispatch_at": "2026-09-05T22:23:31.473904+00:00",
+        "long_provider_id": "3c54276b-2077-4177-a50b-e85dca187c6d",
+        "long_artifact_id": "3c54276b-2077-4177-a50b-e85dca187c6d"
+      }
     },
     {
       "cycle": "2026-09-01",
@@ -1075,9 +1092,20 @@
       "details": {
         "session_id": "sessions/2750507895984920114"
       }
+    },
+    {
+      "at": "2026-09-05T22:23:31.473928+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
+      "details": {
+        "backlog_cycle": "2026-08-31",
+        "source_slug": "aliyah-couples-cultural-gaps-identity",
+        "long_item_id": "video-20260831-225502-2b94464a89"
+      }
     }
   ],
-  "updated_at": "2026-09-05T22:13:19.297034+00:00",
+  "updated_at": "2026-09-05T22:23:31.473936+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
