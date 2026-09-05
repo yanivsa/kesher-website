@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
-"""Best-effort trusted article image worker with a deterministic local terminal fallback.
+"""Trusted article image worker with an inexhaustible local terminal fallback.
 
-External providers are optional enhancements. The terminal local provider reads
-only versioned assets from the trusted ``main`` checkout and validates the real
-bytes before use. Each semantic category has at least one repository-curated
-landscape candidate, and runtime falls through candidates if one is missing or
-invalid. Image failure never blocks publication of an otherwise valid article.
+External providers are optional enhancements. Repository-curated images are
+preferred when they are still unique. If that finite pool is exhausted, the
+worker deterministically renders a clean 1200x675 editorial PNG from the article
+identity using only the Python standard library. Image failure remains
+publication-blocking under the production contract.
 """
 
 from __future__ import annotations
 
+import binascii
+import hashlib
 import importlib.util
 import json
 import os
+import struct
 import sys
+import zlib
 from pathlib import Path
 from typing import Any
 
@@ -36,8 +40,8 @@ trusted_image_present = v3.trusted_image_present
 commit_files = v3.commit_files
 
 # All candidates are repository-versioned assets. Runtime still validates every
-# byte and can fall through to a second candidate where one exists.
-# Each category has distinct, non-overlapping curated fallback candidates.
+# byte and can fall through to another candidate before using the deterministic
+# local editorial renderer.
 LOCAL_FALLBACK_CANDIDATES: dict[str, list[tuple[str, str]]] = {
     "dating": [
         ("public/images/generated/blog/dating-communication-early-stages.jpg", "שני אנשים בשיחה רגועה בשלב היכרות זוגית"),
@@ -46,6 +50,9 @@ LOCAL_FALLBACK_CANDIDATES: dict[str, list[tuple[str, str]]] = {
     "singles": [
         ("public/images/generated/blog/late-singleness-friends-moving-forward.jpg", "אדם בסיטואציה חברתית המתאימה לנושא רווקות וקשרים"),
         ("public/images/generated/blog/single-hood-family-dinners-pressure.jpg", "שיחה משפחתית רגועה המציגה התמודדות עם רווקות"),
+        ("public/images/generated/blog/unspoken-expectations-in-relationships.jpg", "תמונה אווירתית על ציפיות, בחירות והרהור אישי סביב קשרים והחמצה"),
+        ("public/images/generated/blog/dating-fatigue-resilience.jpg", "אדם המתמודד עם שחיקה רגשית במסע למציאת זוגיות"),
+        ("public/images/generated/blog/dating-emotional-needs-vs-checklists.jpg", "סצנה זוגית שקטה על בחירות, צרכים וציפיות בקשר"),
     ],
     "relocation": [
         ("public/images/generated/blog/relocation-career-loss-and-dependence.jpg", "זוג בסיטואציה ביתית הקשורה לשינויי חיים ורילוקיישן"),
@@ -93,16 +100,8 @@ def provider_preflight() -> dict[str, bool]:
     return availability
 
 
-import hashlib
-
-
 def collect_existing_hashes(repo_root: Path) -> set[str]:
-    """Hash only hero bytes that are already assigned to published articles.
-
-    Curated-but-unused local fallback files must remain eligible. Hashing every
-    file in the blog directory makes each fallback collide with itself before
-    it can ever be selected.
-    """
+    """Hash only hero bytes that are already assigned to published articles."""
     hashes: set[str] = set()
     posts_path = repo_root / "src" / "data" / "posts.json"
     try:
@@ -133,6 +132,98 @@ def _trusted_candidate_path(source_path: str) -> Path:
     return candidate_path
 
 
+def _png_chunk(kind: bytes, payload: bytes) -> bytes:
+    checksum = binascii.crc32(kind + payload) & 0xFFFFFFFF
+    return struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", checksum)
+
+
+def _render_editorial_png(identity: str, *, variant: int = 0) -> bytes:
+    """Render a deterministic premium-style abstract 16:9 hero with stdlib only."""
+    width, height = 1200, 675
+    seed = hashlib.sha256(f"{identity}|{variant}".encode("utf-8")).digest()
+
+    top = (238 + seed[0] % 12, 225 + seed[1] % 14, 214 + seed[2] % 18)
+    bottom = (224 + seed[3] % 18, 207 + seed[4] % 20, 198 + seed[5] % 18)
+    accent_a = (128 + seed[6] % 70, 82 + seed[7] % 70, 98 + seed[8] % 65)
+    accent_b = (78 + seed[9] % 75, 112 + seed[10] % 70, 118 + seed[11] % 65)
+    accent_c = (174 + seed[12] % 55, 126 + seed[13] % 55, 92 + seed[14] % 50)
+
+    blobs = (
+        (210 + seed[15] * 2, 150 + seed[16], 230 + seed[17], accent_a, 86),
+        (760 + seed[18], 370 + seed[19] // 2, 250 + seed[20], accent_b, 72),
+        (1020 - seed[21], 110 + seed[22] // 2, 170 + seed[23] // 2, accent_c, 58),
+    )
+
+    raw = bytearray()
+    for y in range(height):
+        raw.append(0)
+        t = y * 255 // (height - 1)
+        base = [
+            (top[channel] * (255 - t) + bottom[channel] * t) // 255
+            for channel in range(3)
+        ]
+        for x in range(width):
+            horizontal = (x * 18 // (width - 1)) - 9
+            pixel = [max(0, min(255, channel + horizontal)) for channel in base]
+            for cx, cy, radius, color, strength in blobs:
+                dx = x - cx
+                dy = y - cy
+                radius_sq = radius * radius
+                distance_sq = dx * dx + dy * dy
+                if distance_sq >= radius_sq:
+                    continue
+                weight = ((radius_sq - distance_sq) * strength) // radius_sq
+                pixel = [
+                    (pixel[channel] * (255 - weight) + color[channel] * weight) // 255
+                    for channel in range(3)
+                ]
+            grain = ((x * 17 + y * 29 + seed[(x + y) % len(seed)]) % 7) - 3
+            raw.extend(max(0, min(255, channel + grain)) for channel in pixel)
+
+    header = struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + _png_chunk(b"IHDR", header)
+        + _png_chunk(b"IDAT", zlib.compress(bytes(raw), 9))
+        + _png_chunk(b"IEND", b"")
+    )
+
+
+def generate_editorial_fallback(
+    post: dict[str, Any],
+    attempts: list[str],
+    *,
+    existing_hashes: set[str] | None = None,
+) -> core.ImageCandidate:
+    """Create a unique deterministic local image when curated bytes are exhausted."""
+    attempts.append("local-editorial")
+    slug = str(post.get("slug") or post.get("id") or "article").strip()
+    title = str(post.get("title") or slug).strip()
+    identity = f"{slug}|{title}"
+    used = existing_hashes or set()
+
+    for variant in range(8):
+        data = _render_editorial_png(identity, variant=variant)
+        width, height, ext = core.validate_candidate(data)
+        digest = hashlib.sha256(data).hexdigest()
+        if digest in used:
+            continue
+        print(
+            f"IMAGE_LOCAL_EDITORIAL_READY slug={slug} variant={variant} dimensions={width}x{height}",
+            file=sys.stderr,
+            flush=True,
+        )
+        return core.ImageCandidate(
+            "LocalEditorial",
+            data,
+            ext,
+            f"local-editorial://{slug}/{variant}",
+            f"איור עריכתי מופשט בגוונים חמים עבור {title}",
+            attempts.copy(),
+        )
+    raise RuntimeError("Unable to create a unique deterministic editorial fallback after 8 variants")
+
+
 def local_fallback(
     repo: str,
     post: dict[str, Any],
@@ -143,7 +234,7 @@ def local_fallback(
     existing_hashes: set[str] | None = None,
     **kwargs: Any,
 ) -> core.ImageCandidate | None:
-    """Return the first valid curated landscape image from trusted main bytes."""
+    """Use curated trusted bytes first, then an inexhaustible local renderer."""
     attempts.append("local-curated")
     category = core.article_key(post)
     candidates = LOCAL_FALLBACK_CANDIDATES.get(category) or LOCAL_FALLBACK_CANDIDATES["couples"]
@@ -189,7 +280,7 @@ def local_fallback(
         file=sys.stderr,
         flush=True,
     )
-    return None
+    return generate_editorial_fallback(post, attempts, existing_hashes=existing_hashes)
 
 
 def choose_candidate(
