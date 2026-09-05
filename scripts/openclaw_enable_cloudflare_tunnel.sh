@@ -3,10 +3,7 @@ set -Eeuo pipefail
 export HOME=/root
 export OPENCLAW_NO_PROMPT=1
 
-: "${CLOUDFLARE_TUNNEL_TOKEN_B64:?missing tunnel token}"
 PUBLIC_HOSTNAME="${PUBLIC_HOSTNAME:-openclaw.saharoni.com}"
-TOKEN="$(printf '%s' "$CLOUDFLARE_TUNNEL_TOKEN_B64" | base64 -d)"
-unset CLOUDFLARE_TUNNEL_TOKEN_B64
 
 B="$(command -v openclaw || find /root -type f -name openclaw -perm -111 2>/dev/null | head -1)"
 test -n "$B"
@@ -17,9 +14,8 @@ test -n "$B"
 "$B" config validate >/dev/null
 
 # Repair the live systemd unit with the executable that actually exists on this
-# guest. Offline recovery previously persisted a hard-coded /usr/local/bin path;
-# live OCI Run Command is authoritative here because it can discover the real
-# binary before starting the loopback-only gateway.
+# guest. This avoids the brittle offline boot-finalizer path while keeping the
+# origin bound to loopback only.
 cat >/etc/systemd/system/openclaw-gateway.service <<UNIT
 [Unit]
 Description=OpenClaw Gateway
@@ -53,8 +49,8 @@ systemctl reset-failed openclaw-gateway.service >/dev/null 2>&1 || true
 systemctl enable openclaw-gateway.service >/dev/null 2>&1 || true
 if ! systemctl restart openclaw-gateway.service; then
   echo OPENCLAW_CLOUDFLARE_FAILED=GATEWAY_RESTART
-  systemctl status openclaw-gateway.service --no-pager -l 2>/dev/null || true
-  journalctl -u openclaw-gateway.service -n 120 --no-pager 2>/dev/null || true
+  echo "OPENCLAW_GATEWAY_RESULT=$(systemctl show openclaw-gateway.service -p Result --value 2>/dev/null || true)"
+  echo "OPENCLAW_GATEWAY_EXEC_MAIN_STATUS=$(systemctl show openclaw-gateway.service -p ExecMainStatus --value 2>/dev/null || true)"
   exit 44
 fi
 for i in $(seq 1 30); do
@@ -65,8 +61,6 @@ if ! systemctl is-active --quiet openclaw-gateway.service; then
   echo OPENCLAW_CLOUDFLARE_FAILED=GATEWAY_UNIT_NOT_ACTIVE
   echo "OPENCLAW_GATEWAY_RESULT=$(systemctl show openclaw-gateway.service -p Result --value 2>/dev/null || true)"
   echo "OPENCLAW_GATEWAY_EXEC_MAIN_STATUS=$(systemctl show openclaw-gateway.service -p ExecMainStatus --value 2>/dev/null || true)"
-  systemctl status openclaw-gateway.service --no-pager -l 2>/dev/null || true
-  journalctl -u openclaw-gateway.service -n 120 --no-pager 2>/dev/null || true
   exit 45
 fi
 echo OPENCLAW_LIVE_GATEWAY_REPAIR=true
@@ -79,13 +73,10 @@ for i in $(seq 1 30); do
 done
 if ! "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then
   echo OPENCLAW_CLOUDFLARE_FAILED=GATEWAY_RPC
-  tail -80 /tmp/openclaw-gateway-status.txt 2>/dev/null || true
-  systemctl status openclaw-gateway.service --no-pager -l 2>/dev/null || true
-  journalctl -u openclaw-gateway.service -n 120 --no-pager 2>/dev/null || true
+  tail -40 /tmp/openclaw-gateway-status.txt 2>/dev/null | sed -E 's#https?://[^[:space:]]+#<REDACTED_URL>#g' || true
   exit 46
 fi
 
-# OpenClaw's local gateway port used by this deployment.
 PORT="$("$B" config get gateway.port 2>/dev/null | tr -cd '0-9' || true)"
 [ -n "$PORT" ] || PORT=18789
 if [ "$PORT" != "18789" ]; then
@@ -93,42 +84,40 @@ if [ "$PORT" != "18789" ]; then
   exit 41
 fi
 
-# Fail closed if the gateway is ever exposed beyond loopback before starting the tunnel.
+# Fail closed if the gateway is ever exposed beyond loopback.
 non_loopback_listener="$(ss -ltnH 2>/dev/null | awk '$4 ~ /:18789$/ {print $4}' | grep -Ev '^(127\.0\.0\.1|\[::1\]|::1):18789$' || true)"
 if [ -n "$non_loopback_listener" ]; then
-  echo "OPENCLAW_CLOUDFLARE_FAILED=PUBLIC_GATEWAY_LISTENER_DETECTED"
+  echo OPENCLAW_CLOUDFLARE_FAILED=PUBLIC_GATEWAY_LISTENER_DETECTED
   exit 43
 fi
 
-arch="$(uname -m)"
-case "$arch" in
-  aarch64|arm64) asset=cloudflared-linux-arm64 ;;
-  x86_64|amd64) asset=cloudflared-linux-amd64 ;;
-  *) echo "OPENCLAW_CLOUDFLARE_FAILED=UNSUPPORTED_ARCH_${arch}"; exit 42 ;;
-esac
-
-curl -fsSL --proto '=https' --tlsv1.2 \
-  "https://github.com/cloudflare/cloudflared/releases/latest/download/${asset}" \
-  -o /usr/local/bin/cloudflared
-chmod 0755 /usr/local/bin/cloudflared
-/usr/local/bin/cloudflared --version
-
-# Replace any previous cloudflared service cleanly; token is never printed.
-systemctl disable --now cloudflared.service >/dev/null 2>&1 || true
-rm -f /etc/systemd/system/cloudflared.service
+# The Cloudflare API token available to CI does not have permission to mint a
+# tunnel token. Reuse the already-installed service and its on-host credentials
+# instead of weakening permissions or exposing the origin directly.
+if ! systemctl list-unit-files cloudflared.service --no-legend 2>/dev/null | grep -q '^cloudflared.service'; then
+  echo OPENCLAW_CLOUDFLARE_FAILED=CLOUDFLARED_SERVICE_MISSING
+  exit 47
+fi
 systemctl daemon-reload
-/usr/local/bin/cloudflared service install "$TOKEN" >/dev/null
-unset TOKEN
-systemctl enable --now cloudflared.service >/dev/null
-
+systemctl reset-failed cloudflared.service >/dev/null 2>&1 || true
+if ! systemctl restart cloudflared.service; then
+  echo OPENCLAW_CLOUDFLARE_FAILED=CLOUDFLARED_RESTART
+  echo "OPENCLAW_CLOUDFLARED_ACTIVE_STATE=$(systemctl show cloudflared.service -p ActiveState --value 2>/dev/null || true)"
+  echo "OPENCLAW_CLOUDFLARED_RESULT=$(systemctl show cloudflared.service -p Result --value 2>/dev/null || true)"
+  exit 48
+fi
 for i in $(seq 1 30); do
-  if systemctl is-active --quiet cloudflared.service; then
-    break
-  fi
+  systemctl is-active --quiet cloudflared.service && break
   sleep 2
 done
-systemctl is-active --quiet cloudflared.service
+if ! systemctl is-active --quiet cloudflared.service; then
+  echo OPENCLAW_CLOUDFLARE_FAILED=CLOUDFLARED_NOT_ACTIVE
+  echo "OPENCLAW_CLOUDFLARED_ACTIVE_STATE=$(systemctl show cloudflared.service -p ActiveState --value 2>/dev/null || true)"
+  echo "OPENCLAW_CLOUDFLARED_RESULT=$(systemctl show cloudflared.service -p Result --value 2>/dev/null || true)"
+  exit 49
+fi
 
+echo CLOUDFLARED_REUSED_EXISTING_SERVICE=true
 echo OPENCLAW_GATEWAY_RPC_OK=true
 echo OPENCLAW_GATEWAY_BIND=loopback
 echo OPENCLAW_GATEWAY_PORT="$PORT"
