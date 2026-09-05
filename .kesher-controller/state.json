@@ -184,11 +184,18 @@
         "long_item_id": "video-20260831-225502-2b94464a89",
         "long_youtube_url": "https://youtu.be/BlRx0ICD6hE",
         "long_youtube_id": "BlRx0ICD6hE",
-        "short_status": "running",
+        "short_status": "complete",
         "short_dispatch_count": 1,
         "short_last_dispatch_at": "2026-09-05T22:23:31.473904+00:00",
         "long_provider_id": "3c54276b-2077-4177-a50b-e85dca187c6d",
-        "long_artifact_id": "3c54276b-2077-4177-a50b-e85dca187c6d"
+        "long_artifact_id": "3c54276b-2077-4177-a50b-e85dca187c6d",
+        "short_item_id": "video-20260906-012420-2b94464a89",
+        "short_youtube_url": "https://youtu.be/OixQqjXZedM",
+        "short_youtube_id": "OixQqjXZedM",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-09-05T22:29:29.994131+00:00"
       }
     },
     {
@@ -1103,9 +1110,19 @@
         "source_slug": "aliyah-couples-cultural-gaps-identity",
         "long_item_id": "video-20260831-225502-2b94464a89"
       }
+    },
+    {
+      "at": "2026-09-05T22:29:29.994150+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-08-31",
+        "source_slug": "aliyah-couples-cultural-gaps-identity"
+      }
     }
   ],
-  "updated_at": "2026-09-05T22:23:31.473936+00:00",
+  "updated_at": "2026-09-05T22:29:29.994156+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
