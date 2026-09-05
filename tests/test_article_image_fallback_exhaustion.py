@@ -9,7 +9,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORKER_PATH = ROOT / ".github" / "scripts" / "article-image-worker-v4.py"
 WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-article-image.yml"
-BLOG_IMAGE_DIR = ROOT / "public" / "images" / "generated" / "blog"
 
 
 def load_worker():
@@ -21,59 +20,52 @@ def load_worker():
     return module
 
 
-def unused_valid_landscape_pool(worker, published_hashes: set[str]) -> list[str]:
-    pool: list[str] = []
-    seen_hashes: set[str] = set()
-    for path in sorted(BLOG_IMAGE_DIR.iterdir()):
-        if not path.is_file():
-            continue
-        try:
-            data = path.read_bytes()
-            worker.core.validate_candidate(data)
-        except Exception:
-            continue
-        digest = hashlib.sha256(data).hexdigest()
-        if digest in published_hashes or digest in seen_hashes:
-            continue
-        seen_hashes.add(digest)
-        pool.append(path.name)
-    return pool
-
-
 class ArticleImageFallbackExhaustionTests(unittest.TestCase):
-    def test_singles_keeps_two_valid_unpublished_spares(self):
+    def test_local_fallback_remains_available_after_all_curated_candidates_collide(self):
         worker = load_worker()
-        singles = worker.LOCAL_FALLBACK_CANDIDATES["singles"]
-        published_hashes = worker.collect_existing_hashes(ROOT)
-        eligible_hashes: list[str] = []
-
-        for source_path, _description in singles:
-            data = (ROOT / source_path).read_bytes()
-            worker.core.validate_candidate(data)
-            digest = hashlib.sha256(data).hexdigest()
-            if digest not in published_hashes:
-                eligible_hashes.append(digest)
-
-        unused_pool = unused_valid_landscape_pool(worker, published_hashes)
-        self.assertGreaterEqual(
-            len(set(eligible_hashes)),
-            2,
-            "singles must retain at least two valid unpublished fallback images; "
-            f"unused valid landscape pool={unused_pool[:60]}",
-        )
-
+        curated_hashes = {
+            hashlib.sha256((ROOT / source_path).read_bytes()).hexdigest()
+            for candidates in worker.LOCAL_FALLBACK_CANDIDATES.values()
+            for source_path, _description in candidates
+        }
+        post = {
+            "id": "unattached-adults-missed-chances-regrets",
+            "title": "התמודדות עם תחושת החמצה ברווקות מאוחרת",
+        }
         candidate = worker.local_fallback(
             "yanivsa/kesher-website",
-            {"id": "unattached-adults-missed-chances-regrets", "title": "התמודדות עם תחושת החמצה ברווקות מאוחרת"},
+            post,
             "sha",
             "token",
             [],
-            existing_hashes=published_hashes,
+            existing_hashes=curated_hashes,
         )
+
         self.assertIsNotNone(candidate)
         assert candidate is not None
-        self.assertNotIn(hashlib.sha256(candidate.data).hexdigest(), published_hashes)
-        self.assertEqual(candidate.provider, "Local")
+        width, height, ext = worker.core.validate_candidate(candidate.data)
+        self.assertEqual((width, height), (1200, 675))
+        self.assertEqual(ext, "png")
+        self.assertEqual(candidate.provider, "LocalEditorial")
+        self.assertNotIn(hashlib.sha256(candidate.data).hexdigest(), curated_hashes)
+
+    def test_editorial_fallback_is_deterministic_and_unique_per_article(self):
+        worker = load_worker()
+        first = worker.generate_editorial_fallback(
+            {"id": "article-one", "title": "כותרת אחת"}, []
+        )
+        repeated = worker.generate_editorial_fallback(
+            {"id": "article-one", "title": "כותרת אחת"}, []
+        )
+        second = worker.generate_editorial_fallback(
+            {"id": "article-two", "title": "כותרת אחרת"}, []
+        )
+        self.assertEqual(first.data, repeated.data)
+        self.assertNotEqual(
+            hashlib.sha256(first.data).hexdigest(),
+            hashlib.sha256(second.data).hexdigest(),
+        )
+        self.assertEqual(worker.core.validate_candidate(first.data)[:2], (1200, 675))
 
     def test_workflow_fails_closed_when_worker_skips_required_image(self):
         workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
