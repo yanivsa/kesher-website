@@ -35,6 +35,7 @@ jobs:
             tests.test_v5_shared_video_controller \
             tests.test_v5_delivery_watchdog_contract \
             tests.test_openclaw_cloudflare_primary \
+            tests.test_openclaw_oci_agent_self_heal \
             -v
 
       - name: Select CI profile
