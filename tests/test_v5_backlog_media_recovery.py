@@ -14,7 +14,7 @@ from scripts import kesher_content_controller_v5 as v5
 from scripts import kesher_content_controller_v5_runtime as runtime
 from scripts import kesher_daily_pipeline as pipeline
 from scripts import kesher_exact_video_target as exact_target
-from tests.test_v5_shared_video_controller import FakeGitHub, FakeSite, article
+from tests.test_v5_shared_video_controller import FakeGitHub, article
 
 TZ = ZoneInfo("Asia/Jerusalem")
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,6 +31,11 @@ def prior_article() -> dict:
         "content": "<p>תוכן מלא בעברית על רווקות מאוחרת, בחירה, קשרים והמשך תנועה קדימה.</p>",
     })
     return post
+
+
+class PriorArticleSite:
+    def get(self, url):
+        return 200, "<html><h1>התמודדות עם תחושת החמצה ברווקות מאוחרת</h1></html>"
 
 
 def current_cycle_state() -> dict:
@@ -73,7 +78,7 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         }
         controller = runtime.RuntimeV5Controller(
             gh,
-            FakeSite(),
+            PriorArticleSite(),
             now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
         )
         source = v5.article_source_identity(old_post)
