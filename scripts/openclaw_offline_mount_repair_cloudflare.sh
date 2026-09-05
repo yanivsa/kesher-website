@@ -200,7 +200,48 @@ for i in $(seq 1 30); do
   [ "$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)" = active ] && break
   sleep 1
 done
-echo OPENCLAW_GATEWAY_UNIT_ACTIVE="$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)"
+gateway_unit_state="$(systemctl is-active openclaw-gateway.service 2>/dev/null || true)"
+echo OPENCLAW_GATEWAY_UNIT_ACTIVE="$gateway_unit_state"
+if [ "$gateway_unit_state" != active ]; then
+  echo OPENCLAW_FINALIZE_FAILED=GATEWAY_UNIT_NOT_ACTIVE
+  echo "OPENCLAW_GATEWAY_RESULT=$(systemctl show openclaw-gateway.service -p Result --value 2>/dev/null || true)"
+  echo "OPENCLAW_GATEWAY_EXEC_MAIN_CODE=$(systemctl show openclaw-gateway.service -p ExecMainCode --value 2>/dev/null || true)"
+  echo "OPENCLAW_GATEWAY_EXEC_MAIN_STATUS=$(systemctl show openclaw-gateway.service -p ExecMainStatus --value 2>/dev/null || true)"
+  echo "OPENCLAW_GATEWAY_DISCOVERED_BINARY=$B"
+  if [ -x /usr/local/bin/openclaw ]; then
+    echo OPENCLAW_GATEWAY_UNIT_BINARY_PRESENT=true
+  else
+    echo OPENCLAW_GATEWAY_UNIT_BINARY_PRESENT=false
+  fi
+  echo OPENCLAW_GATEWAY_JOURNAL_BEGIN=true
+  systemctl status openclaw-gateway.service --no-pager -l 2>/dev/null || true
+  journalctl -u openclaw-gateway.service -n 160 --no-pager 2>/dev/null || true
+  journalctl -u openclaw-gateway.service -n 80 --no-pager -o cat > /tmp/openclaw-gateway-journal.txt 2>/dev/null || true
+  python3 - <<'PYDIAG'
+import re
+from pathlib import Path
+
+path = Path('/tmp/openclaw-gateway-journal.txt')
+if path.exists():
+    interesting = re.compile(
+        r"(?i)(error|failed|failure|invalid|cannot|can't|not found|no such|enoent|eacces|permission|exited|status=|config|unsupported|unknown|exception)"
+    )
+    url = re.compile(r"https?://\S+", re.I)
+    secret = re.compile(
+        r"(?i)\b(authorization|bearer|token|secret|password|api[_-]?key)\b\s*[:=]\s*(\"[^\"]*\"|'[^']*'|\S+)"
+    )
+    for raw in path.read_text(errors='replace').splitlines()[-80:]:
+        if not interesting.search(raw):
+            continue
+        line = url.sub('<REDACTED_URL>', raw)
+        line = secret.sub(lambda m: f"{m.group(1)}=<REDACTED>", line)
+        line = ' '.join(line.split())[:600]
+        if line:
+            print(f"OPENCLAW_GATEWAY_JOURNAL_LINE={line}")
+PYDIAG
+  echo OPENCLAW_GATEWAY_JOURNAL_END=true
+  exit 22
+fi
 
 rpc_ok=false
 rpc_source=""
