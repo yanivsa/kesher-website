@@ -108,7 +108,7 @@
     gap: 0.35rem 0.45rem;
     padding: 0.42rem 0.55rem max(0.42rem, env(safe-area-inset-bottom));
     font-size: 0.76rem;
-    margin-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+    margin-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
   }
 
   .banner p {
@@ -142,7 +142,7 @@
 
   .settingsButton {
     left: 0.45rem;
-    bottom: calc(64px + max(0.45rem, env(safe-area-inset-bottom)));
+    bottom: calc(90px + max(0.45rem, env(safe-area-inset-bottom)));
     min-height: 36px;
     padding: 0.28rem 0.52rem;
     font-size: 0.7rem;
