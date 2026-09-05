@@ -63,6 +63,14 @@ class OpenClawCloudflarePrimaryContractTest(unittest.TestCase):
             text,
         )
 
+    def test_gateway_failure_diagnostics_survive_ci_marker_filter(self):
+        text = read_repo("scripts/openclaw_offline_mount_repair_cloudflare.sh")
+        self.assertIn("OPENCLAW_GATEWAY_RESULT=", text)
+        self.assertIn("OPENCLAW_GATEWAY_EXEC_MAIN_CODE=", text)
+        self.assertIn("OPENCLAW_GATEWAY_EXEC_MAIN_STATUS=", text)
+        self.assertIn("OPENCLAW_GATEWAY_JOURNAL_LINE=", text)
+        self.assertIn("systemctl show openclaw-gateway.service", text)
+
     def test_recovery_workflow_uses_local_proof_then_cloudflare(self):
         text = read_repo(".github/workflows/openclaw-offline-boot-repair.yml")
         self.assertIn("actions: write", text)
