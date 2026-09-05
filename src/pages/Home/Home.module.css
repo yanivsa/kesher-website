@@ -1430,6 +1430,7 @@
   .hero {
     min-height: auto;
     padding-top: 1rem;
+    padding-bottom: 2rem;
     grid-template-columns: 1fr;
     gap: 3rem;
   }
@@ -1459,7 +1460,7 @@
   }
 
   .heroWhatsapp {
-    margin-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+    margin-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   }
 
   .trustRow {
