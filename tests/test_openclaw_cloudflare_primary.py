@@ -71,6 +71,15 @@ class OpenClawCloudflarePrimaryContractTest(unittest.TestCase):
         self.assertIn("OPENCLAW_GATEWAY_JOURNAL_LINE=", text)
         self.assertIn("systemctl show openclaw-gateway.service", text)
 
+    def test_live_cloudflare_deploy_repairs_gateway_unit_with_discovered_binary(self):
+        text = read_repo("scripts/openclaw_enable_cloudflare_tunnel.sh")
+        self.assertIn("OPENCLAW_LIVE_GATEWAY_REPAIR=true", text)
+        self.assertIn("ExecStart=$B gateway --port 18789", text)
+        self.assertIn("systemctl reset-failed openclaw-gateway.service", text)
+        self.assertIn("systemctl is-active --quiet openclaw-gateway.service", text)
+        self.assertIn("gateway.bind loopback", text)
+        self.assertIn("PUBLIC_GATEWAY_LISTENER_DETECTED", text)
+
     def test_recovery_workflow_uses_local_proof_then_cloudflare(self):
         text = read_repo(".github/workflows/openclaw-offline-boot-repair.yml")
         self.assertIn("actions: write", text)
