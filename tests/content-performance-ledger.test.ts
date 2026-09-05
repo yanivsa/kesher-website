@@ -100,4 +100,13 @@ describe('content performance ledger', () => {
     rec.decision = 'continue_topic';
     expect(run(rec, ledger).status).toBe(0);
   });
+
+  it('validates the seed ledger analytics/content-performance.jsonl', () => {
+    const seed = readFileSync('analytics/content-performance.jsonl', 'utf8').trim();
+    expect(seed).not.toBe('');
+    const parsed = JSON.parse(seed.split('\n')[0]);
+    expect(parsed.content_id).toMatch(/^article:[a-z0-9-]+$/);
+    expect(parsed.public_url).toMatch(/^https:\/\/kesher\.saharoni\.com\/blog\//);
+    expect(parsed.publish_date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
 });
