@@ -15,7 +15,61 @@ test -n "$B"
 "$B" config set gateway.mode local >/dev/null
 "$B" config set gateway.bind loopback >/dev/null
 "$B" config validate >/dev/null
-systemctl restart openclaw-gateway.service
+
+# Repair the live systemd unit with the executable that actually exists on this
+# guest. Offline recovery previously persisted a hard-coded /usr/local/bin path;
+# live OCI Run Command is authoritative here because it can discover the real
+# binary before starting the loopback-only gateway.
+cat >/etc/systemd/system/openclaw-gateway.service <<UNIT
+[Unit]
+Description=OpenClaw Gateway
+After=network-online.target
+Wants=network-online.target
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+[Service]
+Type=simple
+Environment=HOME=/root
+Environment=OPENCLAW_NO_PROMPT=1
+Environment=OPENCLAW_SERVICE_REPAIR_POLICY=external
+ExecStart=$B gateway --port 18789
+Restart=always
+RestartSec=5
+RestartPreventExitStatus=78
+TimeoutStopSec=30
+TimeoutStartSec=30
+SuccessExitStatus=0 143
+OOMPolicy=continue
+OOMScoreAdjust=500
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+systemctl daemon-reload
+systemctl reset-failed openclaw-gateway.service >/dev/null 2>&1 || true
+systemctl enable openclaw-gateway.service >/dev/null 2>&1 || true
+if ! systemctl restart openclaw-gateway.service; then
+  echo OPENCLAW_CLOUDFLARE_FAILED=GATEWAY_RESTART
+  systemctl status openclaw-gateway.service --no-pager -l 2>/dev/null || true
+  journalctl -u openclaw-gateway.service -n 120 --no-pager 2>/dev/null || true
+  exit 44
+fi
+for i in $(seq 1 30); do
+  systemctl is-active --quiet openclaw-gateway.service && break
+  sleep 2
+done
+if ! systemctl is-active --quiet openclaw-gateway.service; then
+  echo OPENCLAW_CLOUDFLARE_FAILED=GATEWAY_UNIT_NOT_ACTIVE
+  echo "OPENCLAW_GATEWAY_RESULT=$(systemctl show openclaw-gateway.service -p Result --value 2>/dev/null || true)"
+  echo "OPENCLAW_GATEWAY_EXEC_MAIN_STATUS=$(systemctl show openclaw-gateway.service -p ExecMainStatus --value 2>/dev/null || true)"
+  systemctl status openclaw-gateway.service --no-pager -l 2>/dev/null || true
+  journalctl -u openclaw-gateway.service -n 120 --no-pager 2>/dev/null || true
+  exit 45
+fi
+echo OPENCLAW_LIVE_GATEWAY_REPAIR=true
 
 for i in $(seq 1 30); do
   if "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then
@@ -23,7 +77,13 @@ for i in $(seq 1 30); do
   fi
   sleep 2
 done
-"$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1
+if ! "$B" gateway status --require-rpc --timeout 5 >/tmp/openclaw-gateway-status.txt 2>&1; then
+  echo OPENCLAW_CLOUDFLARE_FAILED=GATEWAY_RPC
+  tail -80 /tmp/openclaw-gateway-status.txt 2>/dev/null || true
+  systemctl status openclaw-gateway.service --no-pager -l 2>/dev/null || true
+  journalctl -u openclaw-gateway.service -n 120 --no-pager 2>/dev/null || true
+  exit 46
+fi
 
 # OpenClaw's local gateway port used by this deployment.
 PORT="$("$B" config get gateway.port 2>/dev/null | tr -cd '0-9' || true)"
