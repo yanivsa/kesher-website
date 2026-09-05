@@ -1,0 +1,7 @@
+SEO/GEO area reviewed: Schema.org structured data
+Issue found: The `BreadcrumbList` object was missing from the Schema.org definition for the Couples Before Separation and Couples Crisis landing pages.
+Changed files:
+- `src/pages/Landing/CouplesBeforeSeparation/CouplesBeforeSeparationPage.tsx`
+- `src/pages/Landing/CouplesCrisis/CouplesCrisisPage.tsx`
+Validation command: `npm run check` (All builds and tests passed)
+Remaining larger recommendations: Implement a systematic way to manage Schema across landing pages to prevent divergence.
