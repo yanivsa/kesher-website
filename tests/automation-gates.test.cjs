@@ -60,7 +60,7 @@ function testTrustedArticleImageV2() {
   assert.strictEqual(contract.image.failure_mode, 'blocking-retry');
   assert.strictEqual(contract.image.worker_attempts_per_dispatch, 1);
   assert.strictEqual(contract.image.max_attempts, 3);
-  assert.deepStrictEqual(contract.image.provider_order, ['gemini', 'unsplash', 'pexels', 'local-curated']);
+  assert.deepStrictEqual(contract.image.provider_order, ['gemini', 'unsplash', 'pexels', 'local-curated', 'local-editorial']);
   assert.strictEqual(contract.image.gemini_model, 'gemini-3.1-flash-image');
   assert.strictEqual(contract.image.visual_verifier_model, 'gemini-3.5-flash');
   assert.strictEqual(contract.image.external_stock_requires_pixel_verification, true);
@@ -93,6 +93,8 @@ function testTrustedArticleImageV2() {
   assert(workerV4.includes('"local": True'));
   assert(workerV4.includes('collect_existing_hashes'));
   assert(workerV4.includes('sha256_collision'));
+  assert(workerV4.includes('generate_editorial_fallback'));
+  assert(workerV4.includes('IMAGE_LOCAL_EDITORIAL_READY'));
   assert(workerV3.includes('stock_queries'));
   assert(!workerV4.includes('core.github_content(repo, source_path'));
 
