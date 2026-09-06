@@ -94,6 +94,15 @@ class PipelineTestCase(unittest.TestCase):
 
         self.assertEqual(pipeline.article_body_for_item({"source": source}), source["body"])
 
+    def test_article_body_ignores_unrelated_posts_with_invalid_metadata(self) -> None:
+        valid_post = hebrew_post("valid-slug")
+        invalid_post = hebrew_post("unrelated-invalid-slug")
+        invalid_post["title"] = "Title with Latin"
+        self.write_posts([invalid_post, valid_post])
+        source = pipeline.source_metadata(valid_post)
+
+        self.assertEqual(pipeline.article_body_for_item({"source": source}), source["body"])
+
     def test_generation_prompt_always_requests_female_hebrew_voice(self) -> None:
         prompt = pipeline.generation_prompt(pipeline.source_metadata(hebrew_post()))
         self.assertIn("קול של אישה ישראלית", prompt)

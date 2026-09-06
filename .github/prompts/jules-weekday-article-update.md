@@ -57,6 +57,7 @@ The active article image pipeline is a 4-tier provider chain: **Gemini → Unspl
 Every published article must have a valid, topic-relevant, and visually unique hero image enforced by byte SHA-256 uniqueness. Duplicate hero images across published articles are strictly forbidden. Publication requires a unique valid hero image; no article may publish with a missing or duplicate hero image.
 
 ## Article Constraints
+Hebrew only: Every word in the title, excerpt, content, category, subcategory, and image alt text must be written in proper Hebrew. English words, Latin letters, or English terms in parentheses (e.g. acronyms or technical terms) are strictly forbidden because the downstream video and short pipelines fail-closed on any Latin characters in the article metadata or body. Translate or transliterate any foreign terms into natural Hebrew.
 Invented names must be explicitly hypothetical or omitted. No guarantees that grief/relationship dynamics self-resolve. Do not use generic final H3 headings like "סיכום" or "צעדים הבאים" (ordinary prose is allowed).
 
 The final rendered article body must contain 700-1,100 whitespace-delimited words, excluding title, excerpt, metadata, and navigation. Count the final HTML after stripping tags and record the exact result in the PR body. A 500-word legacy publishability threshold is not permission to submit a shorter new article.
