@@ -1,0 +1,45 @@
+name: Kesher Content Controller V6 Shadow
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kesher-content-controller-v6
+  cancel-in-progress: false
+
+jobs:
+  shadow-controller:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout current branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Verify shared intervention policy and V6 isolation
+        run: |
+          set -euo pipefail
+          python3 -m unittest \
+            tests.test_kesher_intervention_policy \
+            tests.test_kesher_v6_intervention_isolation
+
+      - name: Run V6 shadow self-check
+        env:
+          KESHER_PIPELINE_ID: v6
+          KESHER_CONTROLLER_STATE_REF: automation-state-v6
+          KESHER_ARTIFACT_NAMESPACE: kesher-v6
+        run: |
+          set -euo pipefail
+          python3 -u scripts/kesher_content_controller_v6_runtime.py --report-json | tee /tmp/kesher-v6.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          payload = json.loads(Path('/tmp/kesher-v6.json').read_text(encoding='utf-8'))
+          assert payload['pipeline_id'] == 'v6'
+          assert payload['state_ref'] == 'automation-state-v6'
+          assert payload['artifact_namespace'] == 'kesher-v6'
+          assert payload['concurrency_group'] == 'kesher-content-controller-v6'
+          assert payload['production_dispatch_enabled'] is False
+          PY
