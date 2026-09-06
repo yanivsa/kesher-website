@@ -467,20 +467,20 @@
         "pr_number": 694,
         "pr_url": "https://github.com/yanivsa/kesher-website/pull/694"
       },
-      "archived_at": "2026-09-05T21:21:39.844472+00:00"
+      "archived_at": "2026-09-05T21:21:39.844472+00:00",
+      "media": {
+        "source_slug": "unattached-adults-missed-chances-regrets",
+        "source_content_sha256": "14edfb8a97ab97e4dda3aa6afea38fb39d0a32a008ff78e4ebcb693733988a92",
+        "article_url": "https://kesher.saharoni.com/blog/unattached-adults-missed-chances-regrets",
+        "article_live": true,
+        "long_status": "running",
+        "seed_dispatch_count": 1,
+        "long_last_dispatch_at": "2026-09-06T10:24:31.484353+00:00"
+      }
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T07:50:35.211734+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20260904-092627-214ba5a25e"
-      }
-    },
     {
       "at": "2026-09-04T09:00:42.340464+00:00",
       "from": "long_video_watchdog_wait",
@@ -1255,9 +1255,19 @@
         "source_slug": "singlehood-holiday-meals-inquiries",
         "long_item_id": "video-20260904-130652-65b5bb9c69"
       }
+    },
+    {
+      "at": "2026-09-06T10:24:31.484376+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "dispatched exact prior-cycle long-video state handoff before current-cycle watchdog",
+      "details": {
+        "backlog_cycle": "2026-09-05",
+        "source_slug": "unattached-adults-missed-chances-regrets"
+      }
     }
   ],
-  "updated_at": "2026-09-06T09:12:43.774380+00:00",
+  "updated_at": "2026-09-06T10:24:31.484384+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
