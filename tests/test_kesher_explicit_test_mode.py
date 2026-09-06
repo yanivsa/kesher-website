@@ -25,14 +25,22 @@ class KesherExplicitTestModeTests(unittest.TestCase):
     def test_test_prompt_explicitly_authorizes_duplicate_date_bypass(self):
         with mock.patch.dict(os.environ, {"KESHER_TEST_MODE": "true", "GITHUB_RUN_ID": "12345"}, clear=False):
             prompt = runner.build_prompt("2026-09-06", "POLICY")
+        normalized = " ".join(prompt.split())
         self.assertIn("AUTHORIZED TEST MODE", prompt)
-        self.assertIn("must not stop because an article or PR already exists for `2026-09-06`", prompt)
-        self.assertIn("Create exactly one NEW test article", prompt)
+        self.assertIn("must not stop because an article or PR already exists for `2026-09-06`", normalized)
+        self.assertIn("Create exactly one NEW test article", normalized)
 
     def test_test_session_identity_is_isolated_from_daily_slot(self):
-        with mock.patch.dict(os.environ, {"KESHER_TEST_MODE": "true", "GITHUB_RUN_ID": "12345"}, clear=False):
-            runner.configure_test_session_identity("2026-09-06")
-            self.assertEqual(runner.core.slot_session_title("2026-09-06"), "Kesher TEST article 2026-09-06 run-12345")
+        original = runner.core.slot_session_title
+        try:
+            with mock.patch.dict(os.environ, {"KESHER_TEST_MODE": "true", "GITHUB_RUN_ID": "12345"}, clear=False):
+                runner.configure_test_session_identity("2026-09-06")
+                self.assertEqual(
+                    runner.core.slot_session_title("2026-09-06"),
+                    "Kesher TEST article 2026-09-06 run-12345",
+                )
+        finally:
+            runner.core.slot_session_title = original
 
     def test_article_workflow_exposes_test_mode_and_push_trigger(self):
         workflow = Path(".github/workflows/kesher-article-generation.yml").read_text(encoding="utf-8")
