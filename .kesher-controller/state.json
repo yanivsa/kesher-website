@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-06",
-  "status": "long_video_running",
+  "status": "short_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -65,7 +65,7 @@
     "url": "https://kesher.saharoni.com/blog/navigating-new-relationships-dating-balance",
     "published_date": "2026-09-06",
     "live": true,
-    "live_verified_at": "2026-09-06T10:58:55.504899+00:00",
+    "live_verified_at": "2026-09-06T19:30:33.525043+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -516,24 +516,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T11:35:45.777606+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-04T11:35:52.593691+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-04T11:41:59.269442+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-04T11:42:01.540453+00:00",
       "from": "article_live",
@@ -1316,9 +1298,27 @@
         "source_slug": "smart-youth-focus-tasks-organization",
         "long_item_id": "video-20260903-115113-065fc982d0"
       }
+    },
+    {
+      "at": "2026-09-06T19:30:33.525065+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-06T19:30:36.354764+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-06T19:30:45.658471+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-06T19:21:32.673445+00:00",
+  "updated_at": "2026-09-06T19:30:45.658478+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1333,29 +1333,39 @@
   },
   "long_video": {
     "attempt_count": 1,
+    "status": "complete",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": "97275da9-16ee-4589-95c7-d9bc16396a06",
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-06T10:59:06.347460+00:00",
+    "attempts": 1,
+    "item_id": "video-20260906-140013-98d18a3af9",
+    "youtube_id": "dlA58ZK7Uoc",
+    "youtube_url": "https://youtu.be/dlA58ZK7Uoc",
+    "verified": true,
+    "artifact_id": "97275da9-16ee-4589-95c7-d9bc16396a06",
+    "source_id": "8a24baa7-2e0e-4e06-ac4a-db251f36f9bf"
+  },
+  "short": {
+    "attempt_count": 1,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "97275da9-16ee-4589-95c7-d9bc16396a06",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-06T10:59:06.347460+00:00",
-    "attempts": 1
-  },
-  "short": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "last_dispatch_at": "2026-09-06T19:30:45.658448+00:00",
+    "artifact_id": "97275da9-16ee-4589-95c7-d9bc16396a06",
+    "source_id": "8a24baa7-2e0e-4e06-ac4a-db251f36f9bf",
+    "adopted_from_long_item_id": "video-20260906-140013-98d18a3af9"
   },
   "migration": {
     "v4_short_controller_state": null
