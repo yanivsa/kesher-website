@@ -300,10 +300,18 @@
         "source_content_sha256": "04b29d6e5453dbfb8659ffe0160f42a81c22b06b2bd05323a91f2829df862c90",
         "article_url": "https://kesher.saharoni.com/blog/aliyah-homesickness-balance",
         "article_live": true,
-        "long_status": "running",
+        "long_status": "complete",
         "seed_dispatch_count": 1,
         "long_last_dispatch_at": "2026-09-06T01:14:03.520707+00:00",
-        "long_resume_count": 1
+        "long_resume_count": 1,
+        "long_item_id": "video-20260906-022345-04b29d6e54",
+        "long_youtube_url": "https://youtu.be/cjmOVgeAT7E",
+        "long_youtube_id": "cjmOVgeAT7E",
+        "short_status": "running",
+        "short_dispatch_count": 1,
+        "short_last_dispatch_at": "2026-09-06T06:03:02.356131+00:00",
+        "long_provider_id": "91a86395-1be8-4c43-8ff3-04125e3b1401",
+        "long_artifact_id": "91a86395-1be8-4c43-8ff3-04125e3b1401"
       }
     },
     {
@@ -1185,9 +1193,20 @@
         "backlog_cycle": "2026-09-01",
         "source_slug": "aliyah-homesickness-balance"
       }
+    },
+    {
+      "at": "2026-09-06T06:03:02.356155+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
+      "details": {
+        "backlog_cycle": "2026-09-01",
+        "source_slug": "aliyah-homesickness-balance",
+        "long_item_id": "video-20260906-022345-04b29d6e54"
+      }
     }
   ],
-  "updated_at": "2026-09-05T23:23:19.332832+00:00",
+  "updated_at": "2026-09-06T06:03:02.356163+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
