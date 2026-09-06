@@ -181,6 +181,26 @@ def observe_incident(
     )
 
 
+def mark_controller_action(
+    state: MutableMapping[str, Any],
+    *,
+    incident_key: str,
+    action_token: str,
+    now: datetime,
+) -> None:
+    """Record a targeted Controller recovery so one hourly check cannot duplicate it."""
+    interventions = state.get("interventions")
+    if not isinstance(interventions, dict):
+        return
+    current = interventions.get(incident_key)
+    if not isinstance(current, dict):
+        return
+    current["last_controller_action_token"] = action_token
+    current["last_controller_action_at"] = now.astimezone(timezone.utc).isoformat()
+    current["last_action"] = WAIT_AFTER_CONTROLLER_ACTION
+    current["direct_takeover_required"] = False
+
+
 def clear_incident(
     state: MutableMapping[str, Any],
     *,
