@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-06",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-09-05T22:34:34.432577+00:00",
+    "next_retry_at": null,
     "run_id": 33993759015,
     "processed_run_id": 33993759015,
     "provider_id": null,
@@ -15,10 +15,10 @@
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
-    "attempts": 1,
+    "attempts": 2,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-09-05T21:41:15.910613+00:00",
+    "last_dispatch_at": "2026-09-06T06:53:53.759399+00:00",
     "watchdog": {
       "identity": "2026-09-06",
       "session_id": "sessions/2750507895984920114",
@@ -1221,9 +1221,18 @@
         "backlog_cycle": "2026-09-01",
         "source_slug": "aliyah-homesickness-balance"
       }
+    },
+    {
+      "at": "2026-09-06T06:53:53.759405+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 2
+      }
     }
   ],
-  "updated_at": "2026-09-06T06:53:47.338395+00:00",
+  "updated_at": "2026-09-06T06:53:53.759412+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
