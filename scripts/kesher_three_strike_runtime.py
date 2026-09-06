@@ -57,6 +57,13 @@ class ThreeStrikeMediaInterventionMixin:
             return None
         return f"recovery:{count}:{at}"
 
+    @staticmethod
+    def _clear_takeover_if_recovered(state, stage, incident_key: str) -> None:
+        takeover = state.get("direct_takeover_required")
+        if isinstance(takeover, dict) and takeover.get("incident_key") == incident_key:
+            state.pop("direct_takeover_required", None)
+        stage.pop("controller_recovery_required", None)
+
     def _direct_takeover(self, state, stage_name, source, item, decision):
         details = {
             "pipeline_id": self.PIPELINE_ID,
@@ -69,13 +76,15 @@ class ThreeStrikeMediaInterventionMixin:
             "task_id": item.get("task_id"),
             "required": True,
         }
-        state["direct_takeover_required"] = details
-        v5.core.transition(
-            state,
-            state.get("status") or stage_name,
-            "same Kesher incident remained stalled for three hourly checks; direct supervisor takeover required",
-            **details,
-        )
+        existing = state.get("direct_takeover_required")
+        if not (isinstance(existing, dict) and existing.get("incident_key") == decision.incident_key and existing.get("required") is True):
+            state["direct_takeover_required"] = details
+            v5.core.transition(
+                state,
+                state.get("status") or stage_name,
+                "same Kesher incident remained stalled for three hourly checks; direct supervisor takeover required",
+                **details,
+            )
         self.github.save_controller_state(state)
         return v5.core.Action("direct_takeover_required", "three-strike threshold reached", details)
 
@@ -112,13 +121,40 @@ class ThreeStrikeMediaInterventionMixin:
                 fingerprint=delivery_guard.media_fingerprint(item),
                 now=self.now,
             )
+
+            progress = self._intervention_progress(stage_name, source, item)
+            hourly_token = intervention.jerusalem_hour_token(self.now)
+            incident_key = intervention.incident_key(
+                pipeline_id=self.PIPELINE_ID,
+                slug=source["slug"],
+                content_sha256=source["content_sha256"],
+                stage=stage_name,
+            )
+            existing_incident = (state.get("interventions") or {}).get(incident_key)
+            if isinstance(existing_incident, dict):
+                current_fingerprint = intervention.durable_progress_fingerprint(progress)
+                if current_fingerprint != str(existing_incident.get("last_fingerprint") or ""):
+                    reset = intervention.observe_incident(
+                        state=state,
+                        pipeline_id=self.PIPELINE_ID,
+                        slug=source["slug"],
+                        content_sha256=source["content_sha256"],
+                        stage=stage_name,
+                        progress=progress,
+                        check_token=hourly_token,
+                        controller_action_token=self._controller_action_token(stage),
+                        now=self.now,
+                    )
+                    if reset.progress_reset:
+                        self._clear_takeover_if_recovered(state, stage, incident_key)
+                        self.github.save_controller_state(state)
+                        return v5.core.Action("wait", f"{stage_name} made durable progress; intervention strikes reset")
+
             watchdog_decision = watchdog.media_decision(stage, now=self.now)
             if watchdog_decision == "wait":
                 self.github.save_controller_state(state)
                 return v5.core.Action("wait", f"{stage_name} provider pending under watchdog")
 
-            progress = self._intervention_progress(stage_name, source, item)
-            hourly_token = intervention.jerusalem_hour_token(self.now)
             decision = intervention.observe_incident(
                 state=state,
                 pipeline_id=self.PIPELINE_ID,
