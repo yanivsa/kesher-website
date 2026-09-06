@@ -60,7 +60,7 @@ def current_cycle_state() -> dict:
 
 
 class V5BacklogMediaRecoveryTests(unittest.TestCase):
-    def test_backlog_media_dispatches_exact_seed_while_today_article_worker_active(self):
+    def test_backlog_media_waits_while_today_article_worker_active(self):
         gh = FakeGitHub()
         old_post = prior_article()
         gh.posts = [old_post]
@@ -81,24 +81,14 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
             PriorArticleSite(),
             now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
         )
-        source = v5.article_source_identity(old_post)
 
         state, action = controller.tick()
 
-        self.assertEqual(action.kind, "dispatch_backlog_long_video")
-        self.assertEqual(gh.dispatches, [(
-            runtime.BACKLOG_MEDIA_RECOVERY_WORKFLOW,
-            {
-                "target_slug": source["slug"],
-                "target_content_sha256": source["content_sha256"],
-            },
-        )])
+        self.assertNotEqual(action.kind, "dispatch_backlog_long_video")
+        self.assertEqual(gh.dispatches, [])
         self.assertEqual(gh.cancelled_runs, [])
         self.assertEqual(gh.jules_nudges, [])
-        media = state["backlog"][0]["media"]
-        self.assertEqual(media["source_slug"], source["slug"])
-        self.assertEqual(media["source_content_sha256"], source["content_sha256"])
-        self.assertEqual(media["long_status"], "running")
+        self.assertNotIn("media", state["backlog"][0])
 
     def test_exact_seed_selection_is_slug_and_hash_bound(self):
         old_post = prior_article()
