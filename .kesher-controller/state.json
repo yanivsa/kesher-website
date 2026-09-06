@@ -473,25 +473,26 @@
         "source_content_sha256": "14edfb8a97ab97e4dda3aa6afea38fb39d0a32a008ff78e4ebcb693733988a92",
         "article_url": "https://kesher.saharoni.com/blog/unattached-adults-missed-chances-regrets",
         "article_live": true,
-        "long_status": "running",
+        "long_status": "complete",
         "seed_dispatch_count": 1,
         "long_last_dispatch_at": "2026-09-06T10:29:09.463168+00:00",
-        "long_resume_count": 1
+        "long_resume_count": 1,
+        "long_item_id": "video-20260906-132504-14edfb8a97",
+        "long_youtube_url": "https://youtu.be/MBUF_Iey2m0",
+        "long_youtube_id": "MBUF_Iey2m0",
+        "short_status": "complete",
+        "short_item_id": "video-20260906-095843-14edfb8a97",
+        "short_youtube_url": "https://youtu.be/iKDfQey_RzU",
+        "short_youtube_id": "iKDfQey_RzU",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-09-06T10:58:13.696988+00:00"
       }
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T09:00:42.340464+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_recovery",
-      "reason": "long-form provider stalled; resumed the same durable provider identity",
-      "details": {
-        "item_id": "video-20260904-092627-214ba5a25e",
-        "task_id": "08f73da2-78a8-406d-9f7f-e9b60815ce4d"
-      }
-    },
     {
       "at": "2026-09-04T10:15:42.334598+00:00",
       "from": "long_video_watchdog_recovery",
@@ -1266,9 +1267,19 @@
         "backlog_cycle": "2026-09-05",
         "source_slug": "unattached-adults-missed-chances-regrets"
       }
+    },
+    {
+      "at": "2026-09-06T10:58:13.697006+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-09-05",
+        "source_slug": "unattached-adults-missed-chances-regrets"
+      }
     }
   ],
-  "updated_at": "2026-09-06T10:24:31.484384+00:00",
+  "updated_at": "2026-09-06T10:58:13.697012+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
