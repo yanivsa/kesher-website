@@ -115,6 +115,7 @@ def observe_incident(
             "last_check_token": check_token,
             "last_fingerprint": fingerprint,
             "last_controller_action_token": controller_action_token,
+            "controller_action_observed": False,
             "last_observed_at": now_iso,
             "last_action": OBSERVE_CONTROLLER,
             "direct_takeover_required": False,
@@ -130,6 +131,7 @@ def observe_incident(
                 "last_check_token": check_token,
                 "last_fingerprint": fingerprint,
                 "last_controller_action_token": controller_action_token,
+                "controller_action_observed": False,
                 "last_observed_at": now_iso,
                 "last_action": PROGRESS_RESET,
                 "direct_takeover_required": False,
@@ -142,16 +144,18 @@ def observe_incident(
     if str(current.get("last_check_token") or "") == str(check_token):
         strike = int(current.get("strike_count") or 0)
         action = str(current.get("last_action") or OBSERVE_CONTROLLER)
+        controller_acted = bool(current.get("controller_action_observed"))
         return InterventionDecision(
             key,
             strike,
             action,
-            controller_action_observed=action == WAIT_AFTER_CONTROLLER_ACTION,
+            controller_action_observed=controller_acted,
         )
 
     strike = int(current.get("strike_count") or 0) + 1
     previous_controller_token = current.get("last_controller_action_token")
-    controller_acted = bool(controller_action_token) and controller_action_token != previous_controller_token
+    token_changed = bool(controller_action_token) and controller_action_token != previous_controller_token
+    controller_acted = bool(current.get("controller_action_observed")) or token_changed
 
     if strike >= 3:
         action = DIRECT_TAKEOVER
@@ -167,7 +171,8 @@ def observe_incident(
         {
             "strike_count": strike,
             "last_check_token": check_token,
-            "last_controller_action_token": controller_action_token,
+            "last_controller_action_token": controller_action_token or previous_controller_token,
+            "controller_action_observed": controller_acted,
             "last_observed_at": now_iso,
             "last_action": action,
             "direct_takeover_required": action == DIRECT_TAKEOVER,
@@ -188,7 +193,7 @@ def mark_controller_action(
     action_token: str,
     now: datetime,
 ) -> None:
-    """Record a targeted Controller recovery so one hourly check cannot duplicate it."""
+    """Record a targeted Controller recovery so later hourly checks do not duplicate it."""
     interventions = state.get("interventions")
     if not isinstance(interventions, dict):
         return
@@ -196,6 +201,7 @@ def mark_controller_action(
     if not isinstance(current, dict):
         return
     current["last_controller_action_token"] = action_token
+    current["controller_action_observed"] = True
     current["last_controller_action_at"] = now.astimezone(timezone.utc).isoformat()
     current["last_action"] = WAIT_AFTER_CONTROLLER_ACTION
     current["direct_takeover_required"] = False
