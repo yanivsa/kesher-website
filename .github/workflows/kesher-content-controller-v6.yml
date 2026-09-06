@@ -10,6 +10,7 @@ on:
       - "scripts/kesher_content_controller_v5_runtime.py"
       - "scripts/kesher_content_controller_v6_runtime.py"
       - "tests/test_kesher_intervention_policy.py"
+      - "tests/test_kesher_three_strike_runtime.py"
       - "tests/test_kesher_v6_intervention_isolation.py"
       - ".github/workflows/kesher-content-controller-v6.yml"
 
@@ -28,11 +29,12 @@ jobs:
       - name: Checkout current branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - name: Verify shared intervention policy and V6 isolation
+      - name: Verify shared intervention policy and V5/V6 isolation
         run: |
           set -euo pipefail
           python3 -m unittest \
             tests.test_kesher_intervention_policy \
+            tests.test_kesher_three_strike_runtime \
             tests.test_kesher_v6_intervention_isolation
 
       - name: Compile V5/V6 intervention runtimes

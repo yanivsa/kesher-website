@@ -46,6 +46,36 @@ class KesherV6InterventionIsolationTests(unittest.TestCase):
         self.assertIn("v6|v6-article|v6sha|long_video", state["interventions"])
         self.assertNotIn("v5|v6-article|v6sha|long_video", state["interventions"])
 
+    def test_v6_article_stage_uses_the_same_bounded_takeover_contract(self):
+        state = {}
+        reconciler = V6InterventionReconciler(state)
+        progress = {
+            "stage": "article",
+            "status": "article_session",
+            "slug": "article-slot-2026-09-06",
+            "content_sha256": "prepub-sha",
+            "task_id": "v6-jules-session",
+            "source_id": "jules-fingerprint-1",
+        }
+        now = datetime(2026, 9, 6, 9, 0, tzinfo=timezone.utc)
+
+        one = reconciler.observe(
+            slug=progress["slug"], content_sha256=progress["content_sha256"], stage="article",
+            progress=progress, check_token="h1", controller_action_token=None, now=now,
+        )
+        two = reconciler.observe(
+            slug=progress["slug"], content_sha256=progress["content_sha256"], stage="article",
+            progress=progress, check_token="h2", controller_action_token=None, now=now,
+        )
+        three = reconciler.observe(
+            slug=progress["slug"], content_sha256=progress["content_sha256"], stage="article",
+            progress=progress, check_token="h3", controller_action_token=None, now=now,
+        )
+        self.assertEqual((one.action, two.action, three.action), (
+            OBSERVE_CONTROLLER, FORCE_CONTROLLER_RECOVERY, DIRECT_TAKEOVER
+        ))
+        self.assertIn("v6|article-slot-2026-09-06|prepub-sha|article", state["interventions"])
+
 
 if __name__ == "__main__":
     unittest.main()
