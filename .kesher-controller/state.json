@@ -355,8 +355,8 @@
         "long_youtube_url": "https://youtu.be/nx1jPP_YWn4",
         "long_youtube_id": "nx1jPP_YWn4",
         "short_status": "running",
-        "short_dispatch_count": 1,
-        "short_last_dispatch_at": "2026-09-06T06:57:50.673975+00:00",
+        "short_dispatch_count": 2,
+        "short_last_dispatch_at": "2026-09-06T08:01:05.807817+00:00",
         "long_provider_id": "b547c72b-4628-4f2e-99cd-45751ff147e7",
         "long_artifact_id": "b547c72b-4628-4f2e-99cd-45751ff147e7"
       }
@@ -471,12 +471,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T06:40:40.900523+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-04T06:40:45.945211+00:00",
       "from": "article_live",
@@ -1246,9 +1240,20 @@
         "source_slug": "singlehood-holiday-meals-inquiries",
         "long_item_id": "video-20260904-130652-65b5bb9c69"
       }
+    },
+    {
+      "at": "2026-09-06T08:01:05.807839+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
+      "details": {
+        "backlog_cycle": "2026-09-02",
+        "source_slug": "singlehood-holiday-meals-inquiries",
+        "long_item_id": "video-20260904-130652-65b5bb9c69"
+      }
     }
   ],
-  "updated_at": "2026-09-06T06:57:50.674014+00:00",
+  "updated_at": "2026-09-06T08:01:05.807847+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
