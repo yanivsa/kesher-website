@@ -1,5 +1,5 @@
 name: Kesher Article Generation
-run-name: Kesher Article ${{ inputs.slot }}
+run-name: Kesher Article ${{ inputs.slot || 'explicit-test-trigger' }}
 
 on:
   workflow_dispatch:
@@ -8,6 +8,15 @@ on:
         description: Israel publication date (YYYY-MM-DD)
         required: true
         type: string
+      test_mode:
+        description: Authorized test — bypass same-date article/PR guard and isolate Jules session
+        required: false
+        default: false
+        type: boolean
+  push:
+    branches: [main]
+    paths:
+      - ".github/kesher-e2e-test-trigger.json"
 
 permissions:
   contents: read
@@ -15,7 +24,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: kesher-article-generation-${{ inputs.slot }}
+  group: kesher-article-generation-${{ github.event_name }}-${{ inputs.slot || github.sha }}
   cancel-in-progress: false
 
 jobs:
@@ -31,6 +40,35 @@ jobs:
           ref: main
           persist-credentials: false
 
+      - name: Resolve publication slot and explicit test mode
+        shell: bash
+        env:
+          DISPATCH_SLOT: ${{ inputs.slot }}
+          DISPATCH_TEST_MODE: ${{ inputs.test_mode }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            test -s .github/kesher-e2e-test-trigger.json
+            slot="$(python3 - <<'PY'
+          import json
+          from pathlib import Path
+          payload = json.loads(Path('.github/kesher-e2e-test-trigger.json').read_text(encoding='utf-8'))
+          print(str(payload.get('slot') or '').strip())
+          PY
+          )"
+            test_mode="true"
+          else
+            slot="$DISPATCH_SLOT"
+            test_mode="${DISPATCH_TEST_MODE:-false}"
+          fi
+          if ! [[ "$slot" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+            echo "Invalid Kesher article slot: $slot" >&2
+            exit 1
+          fi
+          echo "KESHER_ARTICLE_SLOT=$slot" >> "$GITHUB_ENV"
+          echo "KESHER_TEST_MODE=$test_mode" >> "$GITHUB_ENV"
+          echo "Resolved slot=$slot test_mode=$test_mode"
+
       - name: Run exactly one autonomous Jules article text attempt
         id: article_worker
         continue-on-error: true
@@ -40,7 +78,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$(dirname "$KESHER_ARTICLE_RESULT_PATH")"
-          python3 -u scripts/jules_article_runner_v3.py --slot "${{ inputs.slot }}"
+          python3 -u scripts/jules_article_runner_v3.py --slot "$KESHER_ARTICLE_SLOT"
 
       - name: Persist structured article attempt result
         if: ${{ always() && hashFiles('.kesher-article-result/result.json') != '' }}

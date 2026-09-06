@@ -30,7 +30,33 @@ else:
 
 _legacy_build_prompt = core.build_prompt
 _legacy_poll = core.poll
+_legacy_slot_session_title = core.slot_session_title
 TERMINAL_SETTLE_SECONDS = 15 * 60
+
+
+def test_mode_enabled() -> bool:
+    return os.environ.get("KESHER_TEST_MODE", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def configure_test_session_identity(slot: str) -> None:
+    """Keep requested tests isolated from the authoritative daily Jules session.
+
+    A test run intentionally bypasses the publication-slot duplicate guard, so
+    it must never adopt the normal ``Kesher article <slot>`` session. The GitHub
+    run ID is stable across retries of the same workflow run and unique across
+    separate requested tests.
+    """
+    if not test_mode_enabled():
+        core.slot_session_title = _legacy_slot_session_title
+        return
+    run_id = os.environ.get("GITHUB_RUN_ID", "").strip()
+    if not run_id:
+        raise core.ArticleRunnerError("TEST_MODE_IDENTITY_ERROR", "GITHUB_RUN_ID is required in test mode")
+
+    def _test_title(candidate_slot: str) -> str:
+        return f"Kesher TEST article {candidate_slot} run-{run_id}"
+
+    core.slot_session_title = _test_title
 
 
 def _load_local_posts() -> list[dict[str, Any]]:
@@ -125,6 +151,9 @@ def open_article_prs_for_slot(token: str, slot: str) -> list[dict[str, Any]]:
 
 def preflight(slot: str, token: str) -> str:
     posts = _load_local_posts()
+    if test_mode_enabled():
+        print(f"KESHER_TEST_MODE_BYPASS slot={slot} duplicate_guard=bypassed", flush=True)
+        return "READY"
     if core.article_exists_for_slot(posts, slot):
         return "ARTICLE_ALREADY_PUBLISHED"
     prs = open_article_prs_for_slot(token, slot)
@@ -144,7 +173,21 @@ def build_prompt(slot: str, policy: str) -> str:
         "or a currently open `Publish Kesher article:` PR already modifies `src/data/posts.json`",
         f"or a currently open `Publish Kesher article:` PR already contains an article with `date == {slot}`",
     )
-    return base + f"""
+    test_override = ""
+    if test_mode_enabled():
+        test_override = f"""
+
+--- AUTHORIZED TEST MODE OVERRIDE ---
+This is an AUTHORIZED TEST MODE run requested by the repository owner. This
+section supersedes every duplicate-date / already-published / already-in-progress
+stop condition above for publication slot `{slot}`. You must not stop because an
+article or PR already exists for `{slot}`. Create exactly one NEW test article
+for this run, with a new topic, title and slug, while still obeying all quality,
+security, image-stage and PR requirements below. Do not modify or delete the
+existing article for the same date.
+--- END AUTHORIZED TEST MODE OVERRIDE ---
+"""
+    return base + test_override + f"""
 
 --- PIPELINE V3 IMAGE-STAGE OVERRIDE ---
 This section supersedes every image-generation, image-provider, image-fallback,
@@ -156,9 +199,10 @@ inspect, add, copy, modify or delete image binaries. The new article MUST omit
 `image` and `imageAlt` when Jules submits the PR, and the PR body MUST NOT invent
 image provenance fields.
 
-Duplicate detection is slot-scoped: an older or future open article PR for a
-different publication date must not block this slot. Only a published article
-or open publication PR containing `date == {slot}` counts as already in progress.
+Duplicate detection is slot-scoped in normal production. An older or future open
+article PR for a different publication date must not block this slot. In explicit
+test mode, the authorized test override above is authoritative and the same-date
+duplicate check is intentionally bypassed for exactly this isolated test run.
 
 A trusted GitHub Actions stage running code from `main` will attach the required
 verified image to THE SAME PR after Jules finishes. That trusted stage owns
@@ -213,6 +257,7 @@ def poll(api_key: str, session: str, timeout_seconds: int = core.SESSION_SECONDS
 
 
 def main() -> int:
+    configure_test_session_identity(os.environ.get("KESHER_ARTICLE_SLOT", ""))
     core.preflight = preflight
     core.build_prompt = build_prompt
     core.poll = poll
