@@ -451,8 +451,8 @@
         "long_youtube_url": "https://youtu.be/cK5JxdtgGQY",
         "long_youtube_id": "cK5JxdtgGQY",
         "short_status": "running",
-        "short_dispatch_count": 3,
-        "short_last_dispatch_at": "2026-09-06T18:41:17.414676+00:00",
+        "short_dispatch_count": 4,
+        "short_last_dispatch_at": "2026-09-06T19:21:32.673407+00:00",
         "long_provider_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
         "long_artifact_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440"
       }
@@ -515,12 +515,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T11:25:45.603402+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
     {
       "at": "2026-09-04T11:35:45.777606+00:00",
       "from": "long_video_running",
@@ -1310,9 +1304,20 @@
         "source_slug": "smart-youth-focus-tasks-organization",
         "long_item_id": "video-20260903-115113-065fc982d0"
       }
+    },
+    {
+      "at": "2026-09-06T19:21:32.673435+00:00",
+      "from": "long_video_running",
+      "to": "long_video_running",
+      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
+      "details": {
+        "backlog_cycle": "2026-09-03",
+        "source_slug": "smart-youth-focus-tasks-organization",
+        "long_item_id": "video-20260903-115113-065fc982d0"
+      }
     }
   ],
-  "updated_at": "2026-09-06T18:41:17.414710+00:00",
+  "updated_at": "2026-09-06T19:21:32.673445+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
