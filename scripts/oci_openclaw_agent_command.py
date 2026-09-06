@@ -11,6 +11,7 @@ import oci
 DEFAULT_INSTANCE_NAME = "openclaw-e2-plan-b"
 RUN_COMMAND_PLUGIN = "Compute Instance Run Command"
 TERMINAL = {"SUCCEEDED", "FAILED", "TIMED_OUT", "CANCELED", "EXPIRED"}
+STUCK_ACCEPTED_SECONDS = 120
 
 
 def find_instance(compute, compartment_id: str, instance_name: str):
@@ -59,6 +60,19 @@ def enable_run_command(compute, inst):
     time.sleep(15)
 
 
+def print_run_command_plugin_status(plugin_client, compartment_id: str, instance_id: str):
+    try:
+        plugin = plugin_client.get_instance_agent_plugin(
+            instanceagent_id=instance_id,
+            compartment_id=compartment_id,
+            plugin_name=RUN_COMMAND_PLUGIN,
+        ).data
+        status = getattr(plugin, "status", None) or "UNKNOWN"
+        print(f"OCI_RUN_COMMAND_PLUGIN_STATUS={status}", flush=True)
+    except oci.exceptions.ServiceError as exc:
+        print(f"OCI_RUN_COMMAND_PLUGIN_STATUS=ERROR_{exc.status}", flush=True)
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", required=True)
@@ -72,10 +86,12 @@ def main() -> int:
     compartment_id = config["tenancy"]
     compute = oci.core.ComputeClient(config)
     agent = oci.compute_instance_agent.ComputeInstanceAgentClient(config)
+    plugin_client = oci.compute_instance_agent.PluginClient(config)
     inst = find_instance(compute, compartment_id, args.instance_name)
     print(f"OCI_INSTANCE_NAME={args.instance_name}", flush=True)
     print(f"OCI_INSTANCE_STATE={inst.lifecycle_state}", flush=True)
     enable_run_command(compute, inst)
+    print_run_command_plugin_status(plugin_client, compartment_id, inst.id)
     script = Path(args.script_file).read_text()
 
     details = oci.compute_instance_agent.models.CreateInstanceAgentCommandDetails(
@@ -98,6 +114,8 @@ def main() -> int:
 
     deadline = time.time() + args.timeout + 120
     last = None
+    accepted_since = None
+    reboot_attempted = False
     while time.time() < deadline:
         try:
             execution = agent.get_instance_agent_command_execution(
@@ -115,6 +133,20 @@ def main() -> int:
         if key != last:
             print(f"OCI_AGENT_STATE={state} delivery={delivery}", flush=True)
             last = key
+
+        if state == "ACCEPTED" and delivery == "VISIBLE":
+            if accepted_since is None:
+                accepted_since = time.time()
+            elif not reboot_attempted and time.time() - accepted_since >= STUCK_ACCEPTED_SECONDS:
+                print("OCI_AGENT_STUCK_ACCEPTED=true", flush=True)
+                print_run_command_plugin_status(plugin_client, compartment_id, inst.id)
+                compute.instance_action(inst.id, "SOFTRESET")
+                reboot_attempted = True
+                print("OCI_AGENT_SOFTRESET_REQUESTED=true", flush=True)
+                deadline = max(deadline, time.time() + args.timeout + 120)
+        else:
+            accepted_since = None
+
         content = getattr(execution, "content", None)
         exit_code = getattr(content, "exit_code", None) if content else None
         if state in TERMINAL or exit_code is not None:
