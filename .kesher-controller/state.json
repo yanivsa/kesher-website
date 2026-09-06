@@ -440,7 +440,22 @@
         "next_deploy_retry_at": null,
         "normalization_status": "pending"
       },
-      "archived_at": "2026-09-03T21:23:31.323565+00:00"
+      "archived_at": "2026-09-03T21:23:31.323565+00:00",
+      "media": {
+        "source_slug": "smart-youth-focus-tasks-organization",
+        "source_content_sha256": "065fc982d04000cf570128933fd7a23623d50a58e61370f2bd9e6e98cc8d3a0c",
+        "article_url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
+        "article_live": true,
+        "long_status": "complete",
+        "long_item_id": "video-20260903-115113-065fc982d0",
+        "long_youtube_url": "https://youtu.be/cK5JxdtgGQY",
+        "long_youtube_id": "cK5JxdtgGQY",
+        "short_status": "running",
+        "short_dispatch_count": 1,
+        "short_last_dispatch_at": "2026-09-06T13:54:48.445637+00:00",
+        "long_provider_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
+        "long_artifact_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440"
+      }
     },
     {
       "cycle": "2026-09-05",
@@ -500,12 +515,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T11:25:01.348289+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-04T11:25:14.315026+00:00",
       "from": "article_live",
@@ -1284,9 +1293,20 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-06T13:54:48.445659+00:00",
+      "from": "long_video_running",
+      "to": "long_video_running",
+      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
+      "details": {
+        "backlog_cycle": "2026-09-03",
+        "source_slug": "smart-youth-focus-tasks-organization",
+        "long_item_id": "video-20260903-115113-065fc982d0"
+      }
     }
   ],
-  "updated_at": "2026-09-06T10:59:06.347475+00:00",
+  "updated_at": "2026-09-06T13:54:48.445667+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
