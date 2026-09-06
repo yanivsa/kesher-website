@@ -23,6 +23,29 @@ DEFAULT_SIGNATURE_ASSET = "public/images/signature/signature-mask.svg"
 BACKLOG_MEDIA_RECOVERY_WORKFLOW = "kesher-backlog-media-recovery.yml"
 MAX_BACKLOG_SEED_DISPATCHES = 3
 MAX_BACKLOG_SHORT_DISPATCHES = 4
+TERMINAL_BACKLOG_MEDIA_ERRORS = frozenset({
+    "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED",
+    "BACKLOG_EXACT_SEED_ATTEMPTS_EXHAUSTED",
+})
+
+
+def ordered_recoverable_backlog(rows):
+    """Return newest-first backlog rows that may still make autonomous progress.
+
+    A terminally exhausted historical row remains in state for supervisor/direct
+    takeover, but it must never starve a fresher recoverable delivery.
+    """
+    recoverable = []
+    for row in rows or []:
+        if not isinstance(row, dict):
+            continue
+        media = row.get("media") or {}
+        if media.get("complete") is True:
+            continue
+        if str(media.get("last_error") or "") in TERMINAL_BACKLOG_MEDIA_ERRORS:
+            continue
+        recoverable.append(row)
+    return sorted(recoverable, key=lambda row: str(row.get("cycle") or ""), reverse=True)
 
 
 class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_runtime.RuntimeV5Controller):
@@ -35,14 +58,9 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
 
-        backlog = sorted(
-            [row for row in (state.get("backlog") or []) if isinstance(row, dict)],
-            key=lambda row: str(row.get("cycle") or ""),
-        )
+        backlog = ordered_recoverable_backlog(state.get("backlog") or [])
         for row in backlog:
             media = row.setdefault("media", {})
-            if media.get("complete") is True:
-                continue
             cycle = str(row.get("cycle") or "").strip()
             if not cycle:
                 continue
