@@ -2,13 +2,23 @@ name: Kesher Content Controller V6 Shadow
 
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/kesher_intervention_policy.py"
+      - "scripts/kesher_three_strike_runtime.py"
+      - "scripts/kesher_content_controller_v5_runtime.py"
+      - "scripts/kesher_content_controller_v6_runtime.py"
+      - "tests/test_kesher_intervention_policy.py"
+      - "tests/test_kesher_v6_intervention_isolation.py"
+      - ".github/workflows/kesher-content-controller-v6.yml"
 
 permissions:
   contents: read
 
 concurrency:
-  group: kesher-content-controller-v6
-  cancel-in-progress: false
+  group: kesher-content-controller-v6-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   shadow-controller:
@@ -24,6 +34,15 @@ jobs:
           python3 -m unittest \
             tests.test_kesher_intervention_policy \
             tests.test_kesher_v6_intervention_isolation
+
+      - name: Compile V5/V6 intervention runtimes
+        run: |
+          set -euo pipefail
+          python3 -m py_compile \
+            scripts/kesher_intervention_policy.py \
+            scripts/kesher_three_strike_runtime.py \
+            scripts/kesher_content_controller_v5_runtime.py \
+            scripts/kesher_content_controller_v6_runtime.py
 
       - name: Run V6 shadow self-check
         env:
