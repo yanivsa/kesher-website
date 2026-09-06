@@ -7,6 +7,7 @@ from scripts.kesher_intervention_policy import (
     OBSERVE_CONTROLLER,
     WAIT_AFTER_CONTROLLER_ACTION,
     durable_progress_fingerprint,
+    mark_controller_action,
     observe_incident,
 )
 
@@ -114,6 +115,24 @@ class KesherInterventionPolicyTests(unittest.TestCase):
         observe_incident(check_token="h1", controller_action_token="recovery-0", **base)
         second = observe_incident(check_token="h2", controller_action_token="recovery-1", **base)
         self.assertEqual((second.strike, second.action), (2, WAIT_AFTER_CONTROLLER_ACTION))
+
+    def test_forced_recovery_is_marked_so_same_check_cannot_dispatch_twice(self):
+        state = {}
+        base = dict(
+            state=state,
+            pipeline_id="v5",
+            slug="late-singlehood-regrets",
+            content_sha256="abc123",
+            stage="short",
+            progress=self._progress(status="rendering"),
+            now=NOW,
+        )
+        observe_incident(check_token="h1", controller_action_token=None, **base)
+        second = observe_incident(check_token="h2", controller_action_token=None, **base)
+        self.assertEqual(second.action, FORCE_CONTROLLER_RECOVERY)
+        mark_controller_action(state, incident_key=second.incident_key, action_token="dispatch-17", now=NOW)
+        same_check = observe_incident(check_token="h2", controller_action_token="dispatch-17", **base)
+        self.assertEqual((same_check.strike, same_check.action), (2, WAIT_AFTER_CONTROLLER_ACTION))
 
     def test_pipeline_sha_and_stage_are_isolated_incidents(self):
         state = {}
