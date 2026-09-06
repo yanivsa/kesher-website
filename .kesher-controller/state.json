@@ -475,7 +475,8 @@
         "article_live": true,
         "long_status": "running",
         "seed_dispatch_count": 1,
-        "long_last_dispatch_at": "2026-09-06T10:24:31.484353+00:00"
+        "long_last_dispatch_at": "2026-09-06T10:29:09.463168+00:00",
+        "long_resume_count": 1
       }
     }
   ],
