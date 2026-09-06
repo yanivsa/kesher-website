@@ -344,7 +344,22 @@
         "merge_dispatch_count": 3,
         "merge_image_attempt_count": 1
       },
-      "archived_at": "2026-09-02T21:43:50.058431+00:00"
+      "archived_at": "2026-09-02T21:43:50.058431+00:00",
+      "media": {
+        "source_slug": "singlehood-holiday-meals-inquiries",
+        "source_content_sha256": "65b5bb9c6903cfad5b38914bc46f2793e34226dbfc7d9634c05833ef9ccc1e1f",
+        "article_url": "https://kesher.saharoni.com/blog/singlehood-holiday-meals-inquiries",
+        "article_live": true,
+        "long_status": "complete",
+        "long_item_id": "video-20260904-130652-65b5bb9c69",
+        "long_youtube_url": "https://youtu.be/nx1jPP_YWn4",
+        "long_youtube_id": "nx1jPP_YWn4",
+        "short_status": "running",
+        "short_dispatch_count": 1,
+        "short_last_dispatch_at": "2026-09-06T06:57:50.673975+00:00",
+        "long_provider_id": "b547c72b-4628-4f2e-99cd-45751ff147e7",
+        "long_artifact_id": "b547c72b-4628-4f2e-99cd-45751ff147e7"
+      }
     },
     {
       "cycle": "2026-09-03",
@@ -456,16 +471,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T06:30:20.984195+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 2
-      }
-    },
     {
       "at": "2026-09-04T06:40:40.900523+00:00",
       "from": "long_video_running",
@@ -1230,9 +1235,20 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-09-06T06:57:50.674006+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
+      "details": {
+        "backlog_cycle": "2026-09-02",
+        "source_slug": "singlehood-holiday-meals-inquiries",
+        "long_item_id": "video-20260904-130652-65b5bb9c69"
+      }
     }
   ],
-  "updated_at": "2026-09-06T06:53:53.759412+00:00",
+  "updated_at": "2026-09-06T06:57:50.674014+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
