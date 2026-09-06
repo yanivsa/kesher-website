@@ -116,6 +116,30 @@ class KesherInterventionPolicyTests(unittest.TestCase):
         second = observe_incident(check_token="h2", controller_action_token="recovery-1", **base)
         self.assertEqual((second.strike, second.action), (2, WAIT_AFTER_CONTROLLER_ACTION))
 
+    def test_controller_action_after_strike_one_is_remembered_at_next_hour(self):
+        state = {}
+        base = dict(
+            state=state,
+            pipeline_id="v5",
+            slug="late-singlehood-regrets",
+            content_sha256="abc123",
+            stage="long_video",
+            progress=self._progress(),
+            now=NOW,
+        )
+        first = observe_incident(check_token="h1", controller_action_token=None, **base)
+        self.assertEqual((first.strike, first.action), (1, OBSERVE_CONTROLLER))
+
+        mark_controller_action(
+            state,
+            incident_key=first.incident_key,
+            action_token="recovery-1",
+            now=NOW,
+        )
+        second = observe_incident(check_token="h2", controller_action_token="recovery-1", **base)
+        self.assertEqual((second.strike, second.action), (2, WAIT_AFTER_CONTROLLER_ACTION))
+        self.assertTrue(second.controller_action_observed)
+
     def test_forced_recovery_is_marked_so_same_check_cannot_dispatch_twice(self):
         state = {}
         base = dict(
