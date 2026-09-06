@@ -307,11 +307,18 @@
         "long_item_id": "video-20260906-022345-04b29d6e54",
         "long_youtube_url": "https://youtu.be/cjmOVgeAT7E",
         "long_youtube_id": "cjmOVgeAT7E",
-        "short_status": "running",
+        "short_status": "complete",
         "short_dispatch_count": 1,
         "short_last_dispatch_at": "2026-09-06T06:03:02.356131+00:00",
         "long_provider_id": "91a86395-1be8-4c43-8ff3-04125e3b1401",
-        "long_artifact_id": "91a86395-1be8-4c43-8ff3-04125e3b1401"
+        "long_artifact_id": "91a86395-1be8-4c43-8ff3-04125e3b1401",
+        "short_item_id": "video-20260906-090352-04b29d6e54",
+        "short_youtube_url": "https://youtu.be/QTfV67bERBg",
+        "short_youtube_id": "QTfV67bERBg",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-09-06T06:53:47.338365+00:00"
       }
     },
     {
@@ -1204,9 +1211,19 @@
         "source_slug": "aliyah-homesickness-balance",
         "long_item_id": "video-20260906-022345-04b29d6e54"
       }
+    },
+    {
+      "at": "2026-09-06T06:53:47.338388+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-09-01",
+        "source_slug": "aliyah-homesickness-balance"
+      }
     }
   ],
-  "updated_at": "2026-09-06T06:03:02.356163+00:00",
+  "updated_at": "2026-09-06T06:53:47.338395+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
