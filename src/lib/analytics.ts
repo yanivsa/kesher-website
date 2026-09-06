@@ -62,9 +62,12 @@ const inferContentContext = (pathname: string): AnalyticsParams => {
   const articleMatch = pathname.match(/^\/blog\/([^/]+)/);
   if (!articleMatch?.[1]) return {};
 
+  const slug = decodeURIComponent(articleMatch[1]);
   return {
     content_type: 'article',
-    content_id: decodeURIComponent(articleMatch[1]),
+    content_id: slug,
+    article_id: slug,
+    item_id: slug,
   };
 };
 

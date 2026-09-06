@@ -137,7 +137,7 @@ const BlogPost: React.FC = () => {
           />
           <GooglePreferredSource />
           <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
-          <div className={styles.articleContactCta}>
+          <div className={styles.articleContactCta} data-analytics-location="article_bottom_cta">
             <h3>רוצה לדבר על מה שקורה אצלך?</h3>
             <div className={styles.contactActions}>
               <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
@@ -168,7 +168,7 @@ const BlogPost: React.FC = () => {
               </div>
             </div>
           )}
-          <div className={styles.ctaCard}>
+          <div className={styles.ctaCard} data-analytics-location="article_sidebar_cta">
             <h3>צריכים עזרה עם הנושא הזה?</h3>
             <p>אני כאן כדי ללוות אתכם בתהליך אישי ומותאם לכם.</p>
             {relatedService && (
