@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-06",
-  "status": "article_generating",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -10,8 +10,8 @@
     "run_id": 34017701647,
     "processed_run_id": 33993759015,
     "provider_id": null,
-    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
@@ -59,7 +59,14 @@
       }
     },
     "last_jules_session_id": "sessions/2750507895984920114",
-    "last_failed_run_id": 33993759015
+    "last_failed_run_id": 33993759015,
+    "slug": "navigating-new-relationships-dating-balance",
+    "title": "היכרות חדשה: דיוק צרכים, תקשורת וקצב בשלבים הראשונים",
+    "url": "https://kesher.saharoni.com/blog/navigating-new-relationships-dating-balance",
+    "published_date": "2026-09-06",
+    "live": true,
+    "live_verified_at": "2026-09-06T10:58:55.504899+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -493,22 +500,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T10:15:42.334598+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-04T10:15:47.109900+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 7
-      }
-    },
     {
       "at": "2026-09-04T11:25:01.348289+00:00",
       "from": "long_video_running",
@@ -1277,9 +1268,25 @@
         "backlog_cycle": "2026-09-05",
         "source_slug": "unattached-adults-missed-chances-regrets"
       }
+    },
+    {
+      "at": "2026-09-06T10:58:55.504914+00:00",
+      "from": "article_generating",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-06T10:59:06.347466+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-06T10:58:13.697012+00:00",
+  "updated_at": "2026-09-06T10:59:06.347475+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1293,8 +1300,8 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1302,7 +1309,9 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-06T10:59:06.347460+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
