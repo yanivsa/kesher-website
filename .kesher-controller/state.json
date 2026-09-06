@@ -1365,7 +1365,14 @@
     "last_dispatch_at": "2026-09-06T19:30:45.658448+00:00",
     "artifact_id": "97275da9-16ee-4589-95c7-d9bc16396a06",
     "source_id": "8a24baa7-2e0e-4e06-ac4a-db251f36f9bf",
-    "adopted_from_long_item_id": "video-20260906-140013-98d18a3af9"
+    "adopted_from_long_item_id": "video-20260906-140013-98d18a3af9",
+    "watchdog": {
+      "identity": "short:navigating-new-relationships-dating-balance:98d18a3af93b42ad8a060ed3e8e6e2a79f3544f789e6e050af28e96e010412fb:video-20260906-223148-98d18a3af9",
+      "last_progress_at": "2026-09-06T20:52:17.388065+00:00",
+      "last_fingerprint": "4482492910dde304b4f144ca9f2423dcd786203046fb6d234ac0cefd074a2dbd",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
