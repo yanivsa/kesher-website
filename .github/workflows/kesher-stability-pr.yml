@@ -39,4 +39,5 @@ jobs:
             tests.test_controller_artifact_download \
             tests.test_jules_article_runner \
             tests.test_single_scheduler_policy \
+            tests.test_kesher_v5_backlog_priority \
             -v
