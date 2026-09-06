@@ -10,10 +10,12 @@ if __package__:
     from . import kesher_content_controller_v5 as v5
     from . import kesher_content_controller_v5_runtime_base as base_runtime
     from . import kesher_e2e_delivery_guard as delivery_guard
+    from . import kesher_three_strike_runtime as three_strike
 else:
     import kesher_content_controller_v5 as v5
     import kesher_content_controller_v5_runtime_base as base_runtime
     import kesher_e2e_delivery_guard as delivery_guard
+    import kesher_three_strike_runtime as three_strike
 
 ARTICLE_AUTO_MERGE_WORKFLOW = base_runtime.ARTICLE_AUTO_MERGE_WORKFLOW
 MEDIA_WATCHDOG_STATUSES = base_runtime.MEDIA_WATCHDOG_STATUSES
@@ -23,8 +25,10 @@ MAX_BACKLOG_SEED_DISPATCHES = 3
 MAX_BACKLOG_SHORT_DISPATCHES = 4
 
 
-class RuntimeV5Controller(base_runtime.RuntimeV5Controller):
+class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_runtime.RuntimeV5Controller):
     """Existing V5 runtime with prior-cycle delivery reconciliation first."""
+
+    PIPELINE_ID = "v5"
 
     def _published_backlog_source(self, state):
         posts = self.github.contents_json("src/data/posts.json", "main")
