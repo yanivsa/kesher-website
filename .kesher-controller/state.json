@@ -450,11 +450,12 @@
         "long_item_id": "video-20260903-115113-065fc982d0",
         "long_youtube_url": "https://youtu.be/cK5JxdtgGQY",
         "long_youtube_id": "cK5JxdtgGQY",
-        "short_status": "running",
+        "short_status": "exhausted",
         "short_dispatch_count": 4,
         "short_last_dispatch_at": "2026-09-06T19:21:32.673407+00:00",
         "long_provider_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
-        "long_artifact_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440"
+        "long_artifact_id": "46cd6e6d-fa6d-4532-8d7a-6dedde274440",
+        "last_error": "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED"
       }
     },
     {
