@@ -64,7 +64,8 @@ def generation_prompt(source: dict[str, Any]) -> str:
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
     item = _base_new_item(source)
     item["type"] = "article_short"
-    item["source_mode"] = "overview-segment"
+    mode = os.environ.get("KESHER_SHORT_MODE", "").strip().lower()
+    item["source_mode"] = "direct-short" if mode == "direct" else "overview-segment"
     item["fresh_generation_attempt"] = int(item.get("technical_retry_count") or 0) + 1
     return item
 

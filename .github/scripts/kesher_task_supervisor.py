@@ -441,13 +441,26 @@ def scope_gate(issue: dict[str, Any], files: list[dict[str, Any]]) -> GateState:
     paths = [str(f.get("filename") or "") for f in files]
     if not paths:
         return GateState("failed", "PR has zero changed files")
-    if len(paths) > 60:
-        return GateState("failed", f"PR is too broad ({len(paths)} changed files)")
+    if len(paths) > 25:
+        return GateState("failed", f"PR is too broad ({len(paths)} changed files, max allowed is 25)")
+
+    deleted_files = [str(f.get("filename") or "") for f in files if str(f.get("status") or "") == "removed"]
+    if len(deleted_files) > 5:
+        return GateState("failed", f"PR deletes too many files ({len(deleted_files)} removed): " + ", ".join(deleted_files[:5]))
+
     issue_text = f"{issue.get('title', '')}\n{issue.get('body', '')}".lower()
     allows_workflows = any(term in issue_text for term in (".github", "workflow", "github action", "controller"))
     workflow_paths = [p for p in paths if p.startswith(".github/workflows/")]
     if workflow_paths and not allows_workflows:
         return GateState("failed", "unrelated workflow changes: " + ", ".join(workflow_paths[:8]))
+
+    allows_controller = any(term in issue_text for term in ("controller", "supervisor", "runtime", "engine"))
+    protected_paths = [p for p in paths if p.startswith(".github/scripts/") or p.startswith("scripts/kesher_")]
+    if protected_paths and not allows_controller and not allows_workflows:
+        protected_deleted = [p for p in protected_paths if p in deleted_files]
+        if protected_deleted:
+            return GateState("failed", "unauthorized deletion of core supervisor/pipeline scripts: " + ", ".join(protected_deleted[:5]))
+
     return GateState("green", f"scope accepted ({len(paths)} files)")
 
 
