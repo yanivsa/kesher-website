@@ -560,25 +560,23 @@
         "long_item_id": "video-20260906-140013-98d18a3af9",
         "long_youtube_url": "https://youtu.be/dlA58ZK7Uoc",
         "long_youtube_id": "dlA58ZK7Uoc",
-        "short_status": "running",
+        "short_status": "complete",
         "short_dispatch_count": 3,
         "short_last_dispatch_at": "2026-09-07T08:03:29.814393+00:00",
         "long_provider_id": "97275da9-16ee-4589-95c7-d9bc16396a06",
-        "long_artifact_id": "97275da9-16ee-4589-95c7-d9bc16396a06"
+        "long_artifact_id": "97275da9-16ee-4589-95c7-d9bc16396a06",
+        "short_item_id": "video-20260906-223148-98d18a3af9",
+        "short_youtube_url": "https://youtu.be/vIXCpdShJ5c",
+        "short_youtube_id": "vIXCpdShJ5c",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-09-07T10:13:19.260611+00:00"
       }
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T18:26:15.146628+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_SIGNATURE_ASSET_MISSING",
-      "details": {
-        "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
-      }
-    },
     {
       "at": "2026-09-04T19:02:05.843950+00:00",
       "from": "blocked",
@@ -1375,9 +1373,19 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-07T10:13:19.260628+00:00",
+      "from": "complete",
+      "to": "complete",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-09-06",
+        "source_slug": "navigating-new-relationships-dating-balance"
+      }
     }
   ],
-  "updated_at": "2026-09-07T10:13:04.813959+00:00",
+  "updated_at": "2026-09-07T10:13:19.260635+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
