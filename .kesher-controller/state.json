@@ -1421,7 +1421,14 @@
     "last_dispatch_at": "2026-09-07T06:19:32.039659+00:00",
     "artifact_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
     "source_id": "84f371ac-c51a-4ed6-8edc-79eb6eabad5a",
-    "adopted_from_long_item_id": "video-20260907-080620-6ee784a59b"
+    "adopted_from_long_item_id": "video-20260907-080620-6ee784a59b",
+    "watchdog": {
+      "identity": "short:first-year-boundaries-origin-families:6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3:video-20260907-092028-6ee784a59b",
+      "last_progress_at": "2026-09-07T06:23:16.380544+00:00",
+      "last_fingerprint": "57e99cda436975c630fd5905be2efdeba344dbe9d41fb08e5a7517adf141bade",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
