@@ -1345,7 +1345,14 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-07T05:05:26.256891+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "watchdog": {
+      "identity": "long_video:first-year-boundaries-origin-families:6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3:video-20260907-080620-6ee784a59b",
+      "last_progress_at": "2026-09-07T05:33:48.803814+00:00",
+      "last_fingerprint": "fa3bd40cececb9cfffcbfcf7295e3b67d63ec487cbb323939333c739d84356fb",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
