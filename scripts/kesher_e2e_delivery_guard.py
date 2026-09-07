@@ -82,7 +82,10 @@ def delivery_contract(state: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
         "overview_youtube_url": str(overview.get("youtube_url") or "").strip() or None,
         "short_youtube_url": str(short.get("youtube_url") or "").strip() or None,
         "short_portrait_verified": short.get("portrait_verified") is True,
-        "short_signature_verified": short.get("signature_verified") is True,
+        "short_signature_verified": bool(
+            short.get("signature_verified") is True
+            or _signature_verified(short)
+        ),
     }
     ready = bool(
         article.get("live") is True

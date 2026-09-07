@@ -254,6 +254,43 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
             "wait",
         )
 
+    def test_adopt_existing_short_adopts_svg_signature_remotion_proof(self):
+        controller = runtime.RuntimeV5Controller(None, None)
+        st = {
+            "article": {"url": "https://kesher.saharoni.com/blog/today-article", "live": True},
+            "long_video": {"youtube_url": "https://youtu.be/overview123", "verified": True},
+            "short": {},
+        }
+        svg_short_item = {
+            "id": "short-svg-1",
+            "status": "uploaded",
+            "uploaded": True,
+            "source": source(),
+            "youtube_id": "short123",
+            "youtube_url": "https://youtu.be/short123",
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+            "media": {"width": 1080, "height": 1920},
+            "technical_verified": True,
+            "visual_pipeline": delivery_guard.SVG_SIGNATURE_PIPELINE,
+            "signature_asset": delivery_guard.SVG_SIGNATURE_ASSET,
+            "signature_sha256": "c" * 64,
+        }
+        controller.github = MiniGitHub(svg_short_item)
+        adopted = controller._adopt_existing_short(st, source())
+        self.assertIsNotNone(adopted)
+        self.assertTrue(st["short"]["verified"])
+        self.assertTrue(st["short"]["portrait_verified"])
+        self.assertTrue(st["short"]["signature_verified"])
+        ready, deliverables = delivery_guard.delivery_contract(st)
+        self.assertTrue(ready)
+        self.assertTrue(deliverables["short_signature_verified"])
+        self.assertTrue(deliverables["short_portrait_verified"])
+
 
 if __name__ == "__main__":
     unittest.main()
+

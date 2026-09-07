@@ -65,6 +65,10 @@ class RuntimeV5Controller(v5.V5Controller):
         if not item:
             return None
         media = item.get("media") or {}
+        sig_verified = bool(
+            item.get("signature_verified") is True
+            or delivery_guard._signature_verified(item)
+        )
         state["short"].update({
             "item_id": item.get("id"),
             "status": "complete",
@@ -72,7 +76,11 @@ class RuntimeV5Controller(v5.V5Controller):
             "youtube_url": item.get("youtube_url"),
             "verified": True,
             "portrait_verified": True,
-            "signature_verified": item.get("signature_verified") is True,
+            "signature_verified": sig_verified,
+            "signature_asset": item.get("signature_asset"),
+            "signature_sha256": item.get("signature_sha256"),
+            "visual_pipeline": item.get("visual_pipeline"),
+            "technical_verified": item.get("technical_verified"),
             "signature_duration_seconds": item.get("signature_duration_seconds"),
             "signature_fullscreen": item.get("signature_fullscreen") is True,
             "signature_video_sha256": item.get("signature_video_sha256"),
