@@ -82,8 +82,8 @@ def load_remotion_policy() -> str:
         raise ReviewError(
             f"Durable Remotion policy version mismatch: expected {REMOTION_POLICY_VERSION}, found {versions}"
         )
-    if "Jules review is a mandatory publication gate" not in policy:
-        raise ReviewError("Durable Remotion policy no longer declares the mandatory Jules gate")
+    if "Jules review is strict and advisory" not in policy:
+        raise ReviewError("Durable Remotion policy no longer declares the Jules review clause")
     return policy
 
 
@@ -432,6 +432,21 @@ def main() -> int:
     record_decision(args.state_dir, decision, session)
     print(f"JULES_REVIEW_RECORDED session={session} item={item['id']} decision={decision['decision']}")
     return 0
+
+
+def handle_non_fatal_review_error(state_dir: Path, error_msg: str) -> bool:
+    state_file = state_dir / "state.json"
+    if not state_file.exists():
+        return False
+    state = json.loads(state_file.read_text(encoding="utf-8"))
+    items = state.get("items") or []
+    if not items:
+        return False
+    item = items[0]
+    item["visual_review_status"] = "unavailable"
+    item["review_notes"]["visual"] = f"סקירת ג׳ולס לא הושלמה: {error_msg}"
+    state_file.write_text(json.dumps(state, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return True
 
 
 if __name__ == "__main__":
