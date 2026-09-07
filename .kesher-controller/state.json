@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-07",
-  "status": "blocked",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T07:56:58.669458+00:00",
+    "live_verified_at": "2026-09-07T07:58:08.428237+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -568,34 +568,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "DELIVERY_CONTRACT_INCOMPLETE",
-    "message": "cycle cannot complete without live article, public Overview, public portrait Short and verified signature ending",
-    "at": "2026-09-07T07:57:26.534381+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T15:09:26.635834+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-04T15:09:28.286230+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-04T15:09:29.873593+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_SIGNATURE_ASSET_MISSING",
-      "details": {
-        "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
-      }
-    },
     {
       "at": "2026-09-04T17:04:05.109182+00:00",
       "from": "blocked",
@@ -1387,9 +1361,27 @@
       "details": {
         "message": "cycle cannot complete without live article, public Overview, public portrait Short and verified signature ending"
       }
+    },
+    {
+      "at": "2026-09-07T07:58:08.428249+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T07:58:10.957510+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T07:58:18.205452+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-07T07:57:26.534403+00:00",
+  "updated_at": "2026-09-07T07:58:18.205468+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
