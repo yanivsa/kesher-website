@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-07",
-  "status": "article_needed",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,9 +13,10 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
+    "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "normalization_status": "pending",
+    "last_dispatch_at": "2026-09-07T04:00:42.687105+00:00"
   },
   "backlog": [
     {
@@ -1259,9 +1260,18 @@
         "source_slug": "navigating-new-relationships-dating-balance",
         "long_item_id": "video-20260906-140013-98d18a3af9"
       }
+    },
+    {
+      "at": "2026-09-07T04:00:42.687111+00:00",
+      "from": "article_needed",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-07T00:22:42.629145+00:00",
+  "updated_at": "2026-09-07T04:00:42.687118+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
