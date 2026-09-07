@@ -348,7 +348,13 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def active_item(state: dict[str, Any]) -> dict[str, Any] | None:
+def active_item(
+    state: dict[str, Any],
+    slug: str | None = None,
+    item_id: str | None = None,
+) -> dict[str, Any] | None:
+    target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+    target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
     active_statuses = {"source_selected", "source_added", "generating", "downloaded", "pending_review", "approved", "uploading"}
     matches = [
         item for item in state["items"]
@@ -357,6 +363,17 @@ def active_item(state: dict[str, Any]) -> dict[str, Any] | None:
             or (item.get("status") == "rejected" and item.get("technical_verified") is True)
         )
     ]
+    if target_item_id:
+        scoped = [item for item in matches if item.get("id") == target_item_id]
+        if scoped:
+            return scoped[0]
+    if target_slug:
+        scoped = [
+            item for item in matches
+            if str((item.get("source") or {}).get("slug") or (item.get("source") or {}).get("id") or "").strip() == target_slug
+        ]
+        if scoped:
+            return scoped[0]
     if len(matches) > 1:
         raise PipelineError("More than one active video exists; refusing duplicate work")
     return matches[0] if matches else None
@@ -726,13 +743,15 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
 def run_generation(
     max_wait_seconds: int,
     require_israel_hour: int | None,
+    slug: str | None = None,
+    item_id: str | None = None,
 ) -> int:
     if require_israel_hour is not None and israel_now().hour != require_israel_hour:
         print(f"SCHEDULE_SKIPPED israel_hour={israel_now().hour}")
         return 0
     auth_preflight()
     state = load_state()
-    item = active_item(state)
+    item = active_item(state, slug=slug, item_id=item_id)
     if item and item["status"] in {"pending_review", "approved", "rejected", "uploading"}:
         print(f"NO_GENERATION active_item={item['id']} status={item['status']}")
         return 0
@@ -1067,8 +1086,10 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         time.sleep(20)
 
 
-def upload_only() -> int:
+def upload_only(slug: str | None = None, item_id: str | None = None) -> int:
     state = load_state()
+    target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+    target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
     candidates = [
         item for item in state["items"]
         if item.get("technical_verified") is True
@@ -1076,6 +1097,13 @@ def upload_only() -> int:
         and not item.get("uploaded")
         and not item.get("youtube_verification")
     ]
+    if target_item_id:
+        candidates = [item for item in candidates if item.get("id") == target_item_id]
+    elif target_slug:
+        candidates = [
+            item for item in candidates
+            if str((item.get("source") or {}).get("slug") or (item.get("source") or {}).get("id") or "").strip() == target_slug
+        ]
     if not candidates:
         print("NO_TECHNICALLY_VERIFIED_UPLOAD")
         return 0
@@ -1152,6 +1180,8 @@ def build_parser() -> argparse.ArgumentParser:
     mode.add_argument("--remotion-rebuild-item")
     mode.add_argument("--prune-uploaded-media", action="store_true")
     mode.add_argument("--report-json", action="store_true")
+    parser.add_argument("--slug")
+    parser.add_argument("--item-id")
     parser.add_argument("--max-wait-seconds", type=int, default=3600)
     parser.add_argument("--require-israel-hour", type=int, choices=range(24))
     parser.add_argument("--visual-status", choices=sorted(ALLOWED_REVIEW))
@@ -1170,7 +1200,7 @@ def main() -> int:
         print(json.dumps({"preflight": "passed", **auth_preflight()}, ensure_ascii=False))
         return 0
     if args.upload_only:
-        return upload_only()
+        return upload_only(slug=args.slug, item_id=args.item_id)
     if args.review_item:
         required = (
             args.visual_status, args.semantic_status, args.metadata_status,
@@ -1188,6 +1218,8 @@ def main() -> int:
     return run_generation(
         args.max_wait_seconds,
         args.require_israel_hour,
+        slug=args.slug,
+        item_id=args.item_id,
     )
 
 

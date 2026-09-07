@@ -99,12 +99,21 @@ def current_source_snapshot(slug: str) -> dict[str, Any]:
     return matches[0]
 
 
+def published_slugs() -> set[str]:
+    return {
+        str(post.get("slug") or post.get("id") or "").strip()
+        for post in posts()
+    }
+
+
 def unresolved_items(state: dict[str, Any]) -> list[dict[str, Any]]:
+    published = published_slugs()
     rows = [
         item for item in state.get("items") or []
         if isinstance(item, dict)
         and item.get("uploaded") is not True
         and item.get("status") in UNRESOLVED_STATUSES
+        and (not published or source_slug(item) in published)
     ]
     return sorted(
         rows,
@@ -265,9 +274,12 @@ def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) ->
     return True
 
 
-def prepare_upload() -> int:
+def prepare_upload(target_slug: str | None = None) -> int:
     state = pipeline.load_state()
     unresolved = unresolved_items(state)
+    target = (target_slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+    if target:
+        unresolved = [item for item in unresolved if source_slug(item) == target]
     if not unresolved:
         workflow_output("ready", "false")
         print("VIDEO_RECONCILED_UPLOAD candidate=none")
@@ -373,6 +385,13 @@ def adopt_long_form_provider(state_path: str, slug: str, content_sha256: str, lo
         raise pipeline.PipelineError("Long-form provider identity is incomplete")
 
     state = pipeline.load_state()
+    published = published_slugs()
+    if published:
+        for row in state.get("items") or []:
+            if isinstance(row, dict) and source_slug(row) not in published and row.get("status") in UNRESOLVED_STATUSES:
+                row["status"] = "superseded"
+                row["superseded_reason"] = "unpublished_article_draft"
+                row["updated_at"] = pipeline.utc_now()
     same_source = [
         item for item in state.get("items") or []
         if isinstance(item, dict)
@@ -443,7 +462,7 @@ def main() -> int:
     if args.prepare_generation:
         return prepare_generation()
     if args.prepare_upload:
-        return prepare_upload()
+        return prepare_upload(args.slug)
     if args.adopt_long_form_state:
         return adopt_long_form_provider(args.adopt_long_form_state, args.slug, args.content_sha256, args.long_item_id)
     return release_without_short(str(args.release_without_short))

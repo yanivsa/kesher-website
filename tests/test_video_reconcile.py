@@ -366,6 +366,57 @@ class VideoReconcileTests(unittest.TestCase):
         with self.assertRaisesRegex(pipeline.PipelineError, "hash changed"):
             reconcile.adopt_long_form_provider(str(long_path), "today", "0" * 64, "long-1")
 
+    def test_prepare_upload_targets_slug_when_specified(self) -> None:
+        today = post("today")
+        yesterday = post("yesterday", "2026-08-18")
+        self.write_posts([today, yesterday])
+        today_item = pipeline.new_item(pipeline.source_metadata(today))
+        technically_verified(today_item)
+        yesterday_item = pipeline.new_item(pipeline.source_metadata(yesterday))
+        yesterday_item["status"] = "generating"
+        pipeline.save_state({"version": 1, "items": [yesterday_item, today_item], "updated_at": pipeline.utc_now()})
+
+        self.assertEqual(reconcile.prepare_upload("today"), 0)
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(saved[1]["status"], "approved")
+
+    def test_adopt_long_form_provider_supersedes_unpublished_items(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        orphan_item = {
+            "id": "orphan-1",
+            "type": "article_short",
+            "status": "downloaded",
+            "source": {"slug": "ghost-article", "title": "Ghost", "content_sha256": "g" * 64},
+        }
+        pipeline.save_state({"version": 1, "items": [orphan_item], "updated_at": pipeline.utc_now()})
+
+        long_item = pipeline.new_item(source)
+        long_item.update({
+            "id": "long-1",
+            "status": "uploaded",
+            "uploaded": True,
+            "source_id": "source-1",
+            "task_id": "task-1",
+            "artifact_id": "task-1",
+            "youtube_id": "long123",
+            "youtube_verification": {
+                "channel_id": pipeline.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        })
+        long_path = self.root / "long-state.json"
+        long_path.write_text(json.dumps({"version": 1, "items": [long_item]}), encoding="utf-8")
+
+        self.assertEqual(reconcile.adopt_long_form_provider(str(long_path), "today", source["content_sha256"], "long-1"), 0)
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(saved[0]["status"], "superseded")
+        self.assertEqual(saved[0]["superseded_reason"], "unpublished_article_draft")
+        self.assertEqual(saved[1]["source"]["slug"], "today")
+
 
 if __name__ == "__main__":
     unittest.main()
+

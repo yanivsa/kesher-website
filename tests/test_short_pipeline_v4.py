@@ -1,5 +1,4 @@
-from __future__ import annotations
-
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -79,5 +78,37 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertNotIn("signatureVideoSrc", source)
 
 
+    def test_active_item_scopes_to_target_slug_when_multiple_active_exist(self):
+        state = {
+            "version": 1,
+            "items": [
+                {
+                    "id": "item-old",
+                    "status": "downloaded",
+                    "uploaded": False,
+                    "source": {"slug": "old-slug"},
+                },
+                {
+                    "id": "item-new",
+                    "status": "generating",
+                    "uploaded": False,
+                    "source": {"slug": "new-slug"},
+                },
+            ],
+        }
+        with self.assertRaises(short.core.PipelineError):
+            short.core.active_item(state)
+
+        target = short.core.active_item(state, slug="new-slug")
+        self.assertIsNotNone(target)
+        self.assertEqual(target["id"], "item-new")
+
+        with mock.patch.dict(os.environ, {"DERIVE_SLUG": "new-slug"}):
+            target_env = short.core.active_item(state)
+            self.assertIsNotNone(target_env)
+            self.assertEqual(target_env["id"], "item-new")
+
+
 if __name__ == "__main__":
     unittest.main()
+

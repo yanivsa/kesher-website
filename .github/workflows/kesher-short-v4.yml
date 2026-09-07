@@ -398,7 +398,9 @@ jobs:
 
       - name: Generate or resume exact NotebookLM-derived Short
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || (inputs.operation == 'derive' && steps.adopt_long.outputs.skip_generation != 'true') || (inputs.operation == 'historical' && steps.adopt_hist.outputs.skip_generation != 'true')) }}
-        run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150
+        env:
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
+        run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150 ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Rebuild exact rejected Short with Remotion
         if: ${{ github.event_name != 'pull_request' && inputs.operation == 'rebuild' }}
@@ -410,14 +412,16 @@ jobs:
       - name: Prepare exact technically verified Short upload
         if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || (inputs.operation == 'derive' && steps.adopt_long.outputs.skip_generation != 'true') || (inputs.operation == 'historical' && steps.adopt_hist.outputs.skip_generation != 'true')) }}
         env:
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: python -u scripts/kesher_video_reconcile.py --prepare-upload
+        run: python -u scripts/kesher_video_reconcile.py --prepare-upload ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Upload exact Short once and verify it public
         if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || (inputs.operation == 'derive' && steps.adopt_long.outputs.skip_generation != 'true') || (inputs.operation == 'historical' && steps.adopt_hist.outputs.skip_generation != 'true')) }}
         env:
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -426,7 +430,7 @@ jobs:
           test -n "${YOUTUBE_CLIENT_ID:-}"
           test -n "${YOUTUBE_CLIENT_SECRET:-}"
           test -n "${YOUTUBE_REFRESH_TOKEN:-}"
-          python -u scripts/kesher_short_pipeline_v4.py --upload-only
+          python -u scripts/kesher_short_pipeline_v4.py --upload-only ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Remove uploaded media after public verification
         if: ${{ github.event_name != 'pull_request' && success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
