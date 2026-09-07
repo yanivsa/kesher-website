@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T20:16:24.595937+00:00",
+    "live_verified_at": "2026-09-07T20:19:06.963531+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,18 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T13:07:22.785059+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-07T13:07:29.621112+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-09-07T13:10:20.426511+00:00",
       "from": "complete",
@@ -1282,9 +1270,25 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-07T20:19:06.963546+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T20:19:28.937412+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 31
+      }
     }
   ],
-  "updated_at": "2026-09-07T20:16:28.144965+00:00",
+  "updated_at": "2026-09-07T20:19:28.937420+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1299,18 +1303,18 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "rejected",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34158552574,
-    "processed_run_id": 34138926523,
-    "provider_id": "6fa605f7-7162-4294-9365-01412a531f84",
-    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
-    "same_failure_streak": 2,
+    "processed_run_id": 34158552574,
+    "provider_id": "6e59b638-17c5-48a1-be2c-0c05595c5006",
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "VIDEO_WORKFLOW_FAILED": 2
     },
-    "last_dispatch_at": "2026-09-07T20:13:07.599953+00:00",
+    "last_dispatch_at": "2026-09-07T20:19:28.937406+00:00",
     "attempts": 1,
     "watchdog": {
       "identity": "long_video:first-year-boundaries-origin-families:6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3:video-20260907-080620-6ee784a59b",
@@ -1319,14 +1323,14 @@
       "recovery_count": 1,
       "last_recovery_at": "2026-09-07T05:56:58.264696+00:00"
     },
-    "resume_dispatches": 29,
-    "item_id": "video-20260907-190114-65b5bb9c69",
+    "resume_dispatches": 31,
+    "item_id": "video-20260907-231401-65b5bb9c69",
     "youtube_id": "_7nkqLUyARQ",
     "youtube_url": "https://youtu.be/_7nkqLUyARQ",
     "verified": true,
-    "artifact_id": "6fa605f7-7162-4294-9365-01412a531f84",
-    "source_id": "f16f92de-4bb1-4143-a202-ea54f1aa5142",
-    "last_run_conclusion": "failure",
+    "artifact_id": "6e59b638-17c5-48a1-be2c-0c05595c5006",
+    "source_id": "10c3fb33-b319-4841-ba40-1dca6e1770c3",
+    "last_run_conclusion": "success",
     "last_failed_run_id": 34138926523
   },
   "short": {
