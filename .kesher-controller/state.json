@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-07",
-  "status": "article_deploying",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -31,7 +31,10 @@
     "slug": "first-year-boundaries-origin-families",
     "title": "הכנה לנישואים: איך מעצבים מחדש את הקשר עם משפחות המוצא בשנה הראשונה",
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
-    "published_date": "2026-09-07"
+    "published_date": "2026-09-07",
+    "live": true,
+    "live_verified_at": "2026-09-07T05:05:16.074277+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -1299,9 +1302,25 @@
       "from": "article_generating",
       "to": "article_deploying",
       "reason": "deployment already active"
+    },
+    {
+      "at": "2026-09-07T05:05:16.074289+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T05:05:26.256896+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-07T05:03:48.575156+00:00",
+  "updated_at": "2026-09-07T05:05:26.256901+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1315,8 +1334,8 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1324,7 +1343,9 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-07T05:05:26.256891+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
