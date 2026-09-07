@@ -592,7 +592,20 @@
         "live_verified_at": "2026-09-07T20:56:58.418376+00:00",
         "next_deploy_retry_at": null
       },
-      "archived_at": "2026-09-07T21:00:47.004371+00:00"
+      "archived_at": "2026-09-07T21:00:47.004371+00:00",
+      "media": {
+        "source_slug": "first-year-boundaries-origin-families",
+        "source_content_sha256": "6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3",
+        "article_url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
+        "article_live": true,
+        "long_status": "complete",
+        "long_item_id": "video-20260907-080620-6ee784a59b",
+        "long_youtube_url": "https://youtu.be/_7nkqLUyARQ",
+        "long_youtube_id": "_7nkqLUyARQ",
+        "short_status": "running",
+        "short_dispatch_count": 1,
+        "short_last_dispatch_at": "2026-09-07T21:01:09.490375+00:00"
+      }
     }
   ],
   "last_error": null,
@@ -1210,9 +1223,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-09-07T21:01:09.490400+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched independent prior-cycle Short generation",
+      "details": {
+        "backlog_cycle": "2026-09-07",
+        "source_slug": "first-year-boundaries-origin-families"
+      }
     }
   ],
-  "updated_at": "2026-09-07T21:00:48.794435+00:00",
+  "updated_at": "2026-09-07T21:01:09.490408+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
