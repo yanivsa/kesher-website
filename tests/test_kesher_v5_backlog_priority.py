@@ -40,6 +40,36 @@ class KesherV5BacklogPriorityTests(unittest.TestCase):
 
         self.assertEqual([row["cycle"] for row in ordered], ["2026-09-03"])
 
+    def test_incomplete_actionable_current_cycle_blocks_backlog(self):
+        self.assertFalse(
+            runtime.backlog_may_run(
+                {"status": "long_video_running"},
+                current_cycle_complete=False,
+            )
+        )
+        self.assertFalse(
+            runtime.backlog_may_run(
+                {"status": "short_running"},
+                current_cycle_complete=False,
+            )
+        )
+
+    def test_waiting_for_publication_window_can_use_idle_capacity_for_backlog(self):
+        self.assertTrue(
+            runtime.backlog_may_run(
+                {"status": "waiting_for_article_window"},
+                current_cycle_complete=False,
+            )
+        )
+
+    def test_completed_current_cycle_allows_backlog_cleanup(self):
+        self.assertTrue(
+            runtime.backlog_may_run(
+                {"status": "complete"},
+                current_cycle_complete=True,
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
