@@ -559,21 +559,30 @@ class GitHubClient:
     def save_controller_state(self, state: dict[str, Any]) -> None:
         self.ensure_state_ref()
         quoted = urllib.parse.quote(STATE_PATH, safe="/")
-        current = self.request(
-            "GET",
-            f"{self.api}/contents/{quoted}?ref={urllib.parse.quote(STATE_REF, safe='')}",
-            allow_404=True,
-        )
-        body: dict[str, Any] = {
-            "message": f"state: Kesher controller {state.get('cycle')} {state.get('status')}",
-            "content": base64.b64encode(
-                (json.dumps(state, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
-            ).decode("ascii"),
-            "branch": STATE_REF,
-        }
-        if isinstance(current, dict) and current.get("sha"):
-            body["sha"] = current["sha"]
-        self.request("PUT", f"{self.api}/contents/{quoted}", body)
+        max_attempts = 4
+        for attempt in range(max_attempts):
+            current = self.request(
+                "GET",
+                f"{self.api}/contents/{quoted}?ref={urllib.parse.quote(STATE_REF, safe='')}",
+                allow_404=True,
+            )
+            body: dict[str, Any] = {
+                "message": f"state: Kesher controller {state.get('cycle')} {state.get('status')}",
+                "content": base64.b64encode(
+                    (json.dumps(state, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+                ).decode("ascii"),
+                "branch": STATE_REF,
+            }
+            if isinstance(current, dict) and current.get("sha"):
+                body["sha"] = current["sha"]
+            try:
+                self.request("PUT", f"{self.api}/contents/{quoted}", body)
+                return
+            except ControllerError as exc:
+                if "GITHUB_HTTP_409" in str(exc) and attempt + 1 < max_attempts:
+                    time.sleep(1.0 + attempt * 1.5)
+                    continue
+                raise
 
     def newest_video_state(self) -> dict[str, Any]:
         payload = self.request(

@@ -85,6 +85,7 @@ jobs:
               short = state.get('short') or {}
               deliverables = state.get('deliverables') or {}
               last_error = state.get('last_error') or {}
+              takeover = state.get('direct_takeover_required') or {}
               delivery_complete = bool(
                   deliverables.get('article_url')
                   and deliverables.get('overview_youtube_url')
@@ -100,6 +101,9 @@ jobs:
                   f"Short: {deliverables.get('short_youtube_url') or short.get('item_id') or short.get('status') or 'pending'}\n\n"
                   f"Short portrait verified: {deliverables.get('short_portrait_verified') is True}\n\n"
                   f"Delivery contract complete: {delivery_complete}\n\n"
+                  f"Direct takeover required: {bool(takeover.get('required'))}"
+                  + (f" — {takeover.get('stage')} / {takeover.get('slug')} / strike {takeover.get('strike')}" if takeover.get('required') else '')
+                  + "\n\n"
                   f"Article attempts: {article.get('attempt_count', 0)}/3 | normalization: {article.get('normalization_status') or 'pending'}\n\n"
                   f"Image: {image.get('provider_id') or image.get('status') or 'pending'}\n\n"
                   f"Long attempts: {long_video.get('attempt_count', 0)} | Short derive attempts: {short.get('attempt_count', 0)}/4\n\n"

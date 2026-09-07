@@ -1,0 +1,88 @@
+name: Kesher E2E Test Continuation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/kesher-e2e-test-continuation.json"
+
+permissions:
+  actions: write
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: kesher-e2e-test-continuation
+  cancel-in-progress: false
+
+jobs:
+  continue-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Read authorized test target
+        id: target
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+          data = json.loads(Path('.github/kesher-e2e-test-continuation.json').read_text(encoding='utf-8'))
+          if data.get('authorized') is not True:
+              raise SystemExit('E2E continuation is not authorized')
+          pr = int(data['article_pr_number'])
+          print(f'pr_number={pr}')
+          PY
+
+      - name: Dispatch trusted image for the exact test PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.target.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-article-image.yml --ref main -f pr_number="${PR_NUMBER}"
+
+      - name: Wait for exact image run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.target.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+          run_id=""
+          for _ in $(seq 1 60); do
+            run_id="$(gh run list --workflow kesher-article-image.yml --event workflow_dispatch --limit 30 --json databaseId,displayTitle,createdAt --jq '.[] | select(.displayTitle == "Kesher Image PR '"${PR_NUMBER}"'") | .databaseId' | head -n1)"
+            if [ -n "${run_id}" ]; then break; fi
+            sleep 5
+          done
+          test -n "${run_id}"
+          gh run watch "${run_id}" --exit-status
+
+      - name: Dispatch trusted article auto-merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run auto-merge-article-prs.yml --ref main
+
+      - name: Require the exact test article to merge
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.target.outputs.pr_number }}
+        run: |
+          set -euo pipefail
+          for _ in $(seq 1 120); do
+            state="$(gh pr view "${PR_NUMBER}" --json state,mergedAt --jq 'if .mergedAt then "MERGED" else .state end')"
+            if [ "${state}" = "MERGED" ]; then
+              echo "E2E_TEST_ARTICLE_MERGED pr=${PR_NUMBER}"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Test article PR ${PR_NUMBER} did not merge inside the bounded wait." >&2
+          exit 1

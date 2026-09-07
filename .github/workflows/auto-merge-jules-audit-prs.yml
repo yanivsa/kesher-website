@@ -150,7 +150,7 @@ jobs:
 
                   allowed_prefixes = ("src/", "public/", "docs/")
                   if audit_kind == "seo geo review":
-                      allowed_prefixes += ("scripts/",)
+                      allowed_prefixes += ("scripts/", "tests/")
                   allowed = all(f == "README.md" or f.startswith(allowed_prefixes) for f in files)
 
                   forbidden_by_kind = {

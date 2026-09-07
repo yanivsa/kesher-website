@@ -364,12 +364,15 @@ def active_item(state: dict[str, Any]) -> dict[str, Any] | None:
 
 def article_body_for_item(item: dict[str, Any]) -> str:
     posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+    target_slug = str(item.get("source", {}).get("slug") or item.get("source", {}).get("id") or "").strip()
     for post in posts:
+        slug = str(post.get("slug") or post.get("id") or "").strip()
+        if slug != target_slug:
+            continue
         source = source_metadata(post)
-        if source["slug"] == item["source"]["slug"]:
-            if source["content_sha256"] != item["source"]["content_sha256"]:
-                raise PipelineError("Article content changed after selection")
-            return source["body"]
+        if source["content_sha256"] != item["source"]["content_sha256"]:
+            raise PipelineError("Article content changed after selection")
+        return source["body"]
     raise PipelineError("Selected article no longer exists")
 
 

@@ -290,6 +290,7 @@ jobs:
           test "$restored" = "true"
 
       - name: Adopt exact published long-form provider identity for Short
+        id: adopt_long
         if: ${{ github.event_name != 'pull_request' && inputs.operation == 'derive' }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
@@ -307,6 +308,7 @@ jobs:
             --long-item-id "$DERIVE_LONG_ITEM_ID"
 
       - name: Adopt exact historical provider identity from immutable evidence
+        id: adopt_hist
         if: ${{ github.event_name != 'pull_request' && inputs.operation == 'historical' }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -347,9 +349,16 @@ jobs:
 
           state = pipeline.load_state()
           same_source = [row for row in state.get('items', []) if isinstance(row, dict) and str((row.get('source') or {}).get('slug') or (row.get('source') or {}).get('id') or '').strip() == slug and str((row.get('source') or {}).get('content_sha256') or '') == content_sha]
+          out_path = os.environ.get('GITHUB_OUTPUT', '')
           if any(row.get('uploaded') is True and row.get('status') == 'uploaded' for row in same_source):
               print(f'SHORT_HISTORICAL_ALREADY_PUBLIC slug={slug}')
+              if out_path:
+                  with open(out_path, 'a', encoding='utf-8') as f:
+                      f.write('skip_generation=true\n')
               raise SystemExit(0)
+          if out_path:
+              with open(out_path, 'a', encoding='utf-8') as f:
+                  f.write('skip_generation=false\n')
           same_provider = [row for row in state.get('items', []) if isinstance(row, dict) and row.get('task_id') == old.get('task_id')]
           if len(same_provider) > 1:
               raise SystemExit('Historical provider identity is duplicated in Short state')
@@ -388,7 +397,7 @@ jobs:
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation
 
       - name: Generate or resume exact NotebookLM-derived Short
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || (inputs.operation == 'derive' && steps.adopt_long.outputs.skip_generation != 'true') || (inputs.operation == 'historical' && steps.adopt_hist.outputs.skip_generation != 'true')) }}
         run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150
 
       - name: Rebuild exact rejected Short with Remotion
@@ -399,7 +408,7 @@ jobs:
           python -u scripts/kesher_short_pipeline_v4.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
 
       - name: Prepare exact technically verified Short upload
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || (inputs.operation == 'derive' && steps.adopt_long.outputs.skip_generation != 'true') || (inputs.operation == 'historical' && steps.adopt_hist.outputs.skip_generation != 'true')) }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -407,7 +416,7 @@ jobs:
         run: python -u scripts/kesher_video_reconcile.py --prepare-upload
 
       - name: Upload exact Short once and verify it public
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || (inputs.operation == 'derive' && steps.adopt_long.outputs.skip_generation != 'true') || (inputs.operation == 'historical' && steps.adopt_hist.outputs.skip_generation != 'true')) }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}

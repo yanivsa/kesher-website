@@ -10,10 +10,12 @@ if __package__:
     from . import kesher_content_controller_v5 as v5
     from . import kesher_content_controller_v5_runtime_base as base_runtime
     from . import kesher_e2e_delivery_guard as delivery_guard
+    from . import kesher_three_strike_runtime as three_strike
 else:
     import kesher_content_controller_v5 as v5
     import kesher_content_controller_v5_runtime_base as base_runtime
     import kesher_e2e_delivery_guard as delivery_guard
+    import kesher_three_strike_runtime as three_strike
 
 ARTICLE_AUTO_MERGE_WORKFLOW = base_runtime.ARTICLE_AUTO_MERGE_WORKFLOW
 MEDIA_WATCHDOG_STATUSES = base_runtime.MEDIA_WATCHDOG_STATUSES
@@ -21,24 +23,57 @@ DEFAULT_SIGNATURE_ASSET = "public/images/signature/signature-mask.svg"
 BACKLOG_MEDIA_RECOVERY_WORKFLOW = "kesher-backlog-media-recovery.yml"
 MAX_BACKLOG_SEED_DISPATCHES = 3
 MAX_BACKLOG_SHORT_DISPATCHES = 4
+TERMINAL_BACKLOG_MEDIA_ERRORS = frozenset({
+    "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED",
+    "BACKLOG_EXACT_SEED_ATTEMPTS_EXHAUSTED",
+})
 
 
-class RuntimeV5Controller(base_runtime.RuntimeV5Controller):
-    """Existing V5 runtime with prior-cycle delivery reconciliation first."""
+def ordered_recoverable_backlog(rows):
+    """Return newest-first backlog rows that may still make autonomous progress.
+
+    A terminally exhausted historical row remains in state for supervisor/direct
+    takeover, but it must never starve a fresher recoverable delivery.
+    """
+    recoverable = []
+    for row in rows or []:
+        if not isinstance(row, dict):
+            continue
+        media = row.get("media") or {}
+        if media.get("complete") is True:
+            continue
+        if str(media.get("last_error") or "") in TERMINAL_BACKLOG_MEDIA_ERRORS:
+            continue
+        recoverable.append(row)
+    return sorted(recoverable, key=lambda row: str(row.get("cycle") or ""), reverse=True)
+
+
+def backlog_may_run(state, *, current_cycle_complete: bool) -> bool:
+    """Allow backlog work only when it cannot starve an actionable current cycle.
+
+    The only incomplete-current-cycle exception is the pre-publication waiting
+    window, where there is nothing useful to advance yet. Once today's article,
+    Overview or Short is actionable/in-flight/blocked, current-cycle ownership
+    wins until the strict A+B+C delivery contract is complete.
+    """
+    if current_cycle_complete:
+        return True
+    return str((state or {}).get("status") or "") == "waiting_for_article_window"
+
+
+class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_runtime.RuntimeV5Controller):
+    """Existing V5 runtime with current-cycle delivery ahead of backlog recovery."""
+
+    PIPELINE_ID = "v5"
 
     def _published_backlog_source(self, state):
         posts = self.github.contents_json("src/data/posts.json", "main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
 
-        backlog = sorted(
-            [row for row in (state.get("backlog") or []) if isinstance(row, dict)],
-            key=lambda row: str(row.get("cycle") or ""),
-        )
+        backlog = ordered_recoverable_backlog(state.get("backlog") or [])
         for row in backlog:
             media = row.setdefault("media", {})
-            if media.get("complete") is True:
-                continue
             cycle = str(row.get("cycle") or "").strip()
             if not cycle:
                 continue
@@ -206,7 +241,17 @@ class RuntimeV5Controller(base_runtime.RuntimeV5Controller):
         return v5.core.Action("dispatch_backlog_long_video", "seeded exact prior-cycle long-video recovery", inputs)
 
     def tick(self):
-        state = self.state()
+        # Always reconcile/advance today's authoritative identity first. This is
+        # the guard against backlog starvation: a historical row may never make
+        # us skip the current-cycle watchdog, recovery or direct-takeover logic.
+        state, current_action = super().tick()
+        current_cycle_complete, deliverables = delivery_guard.delivery_contract(state)
+        state["deliverables"] = deliverables
+
+        if not backlog_may_run(state, current_cycle_complete=current_cycle_complete):
+            self.github.save_controller_state(state)
+            return state, current_action
+
         backlog_action = self._backlog_media_preflight(state)
         self.github.save_controller_state(state)
         if backlog_action is not None:
@@ -214,7 +259,7 @@ class RuntimeV5Controller(base_runtime.RuntimeV5Controller):
             state["deliverables"] = deliverables
             self.github.save_controller_state(state)
             return state, backlog_action
-        return super().tick()
+        return state, current_action
 
 
 def install_runtime() -> None:

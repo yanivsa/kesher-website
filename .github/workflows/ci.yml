@@ -29,6 +29,7 @@ jobs:
             tests.test_ci_profile \
             tests.test_kesher_article_contract \
             tests.test_kesher_article_normalizer \
+            tests.test_kesher_explicit_test_mode \
             tests.test_short_retry_policy_v4 \
             tests.test_pipeline_v4 \
             tests.test_v4_runtime_activation \

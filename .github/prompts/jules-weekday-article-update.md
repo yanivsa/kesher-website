@@ -6,6 +6,13 @@
 
 האתר הוא האתר המקצועי של שירה סהרוני. היא יועצת זוגית ומנחת הורים. השירותים המרכזיים שלה הם ייעוץ זוגי והדרכת הורים. אין להוסיף, לשנות או להתייחס לגירושין, שירותים משפטיים (עריכת דין / עו"ד), או גישור משפחתי בשום מקום במאמר, במילות המפתח, במטא דאטה או בהנחיות.
 
+## כלל יסוד מחייב: מאמר יחיד בלבד בכל ריצה
+
+בכל ריצה, משימה או בקשת שינויים (PR), חובה לייצר, לכתוב ולהוסיף אך ורק **מאמר חדש אחד בלבד** (אובייקט JSON בודד במערך `src/data/posts.json`).
+- חל איסור מוחלט להוסיף שני מאמרים או יותר באותה ריצה.
+- גם כאשר ההנחיות למטה מפרטות מספר תתי-קטגוריות או דרישה לפנייה לשני המגדרים ("בשני התחומים יש לכתוב גם לרווקות וגם לרווקים"), הכוונה היא לגיוון לאורך זמן על פני סבבים שונים. בכל ריצה בודדת בוחרים נושא אחד ספציפי ומייצרים עבורו מאמר אחד בלבד!
+- ניסיון להוסיף יותר ממאמר אחד ייפסל מיידית בבדיקות ה-CI ויגרום לחסימת הריצה.
+
 ## מאגר הנושאים המאושר
 
 בכל ריצה יש לבחור נושא רענן אחד בלבד, לאחר בדיקת שלושים המאמרים האחרונים. לצד זוגיות, תקשורת והנחיית הורים, יש לתת קדימות מחזורית לתחומים החדשים:
@@ -57,6 +64,8 @@ The active article image pipeline is a 4-tier provider chain: **Gemini → Unspl
 Every published article must have a valid, topic-relevant, and visually unique hero image enforced by byte SHA-256 uniqueness. Duplicate hero images across published articles are strictly forbidden. Publication requires a unique valid hero image; no article may publish with a missing or duplicate hero image.
 
 ## Article Constraints
+Single article only: You must create and add EXACTLY ONE article object to `src/data/posts.json`. Adding multiple articles in one session or PR is strictly forbidden. If multiple ideas are explored, pick ONLY the single best one and discard the rest.
+Hebrew only: Every word in the title, excerpt, content, category, subcategory, and image alt text must be written in proper Hebrew. English words, Latin letters, or English terms in parentheses (e.g. acronyms or technical terms) are strictly forbidden because the downstream video and short pipelines fail-closed on any Latin characters in the article metadata or body. Translate or transliterate any foreign terms into natural Hebrew.
 Invented names must be explicitly hypothetical or omitted. No guarantees that grief/relationship dynamics self-resolve. Do not use generic final H3 headings like "סיכום" or "צעדים הבאים" (ordinary prose is allowed).
 
 The final rendered article body must contain 700-1,100 whitespace-delimited words, excluding title, excerpt, metadata, and navigation. Count the final HTML after stripping tags and record the exact result in the PR body. A 500-word legacy publishability threshold is not permission to submit a shorter new article.
