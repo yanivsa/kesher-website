@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-07",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1318,9 +1318,19 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-07T05:57:08.019555+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20260907-080620-6ee784a59b",
+        "task_id": "d68ccfbc-562c-45e2-8487-45e0323c6461"
+      }
     }
   ],
-  "updated_at": "2026-09-07T05:05:26.256901+00:00",
+  "updated_at": "2026-09-07T05:57:08.019562+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1344,15 +1354,16 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-07T05:05:26.256891+00:00",
+    "last_dispatch_at": "2026-09-07T05:57:08.019545+00:00",
     "attempts": 1,
     "watchdog": {
       "identity": "long_video:first-year-boundaries-origin-families:6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3:video-20260907-080620-6ee784a59b",
       "last_progress_at": "2026-09-07T05:33:48.803814+00:00",
       "last_fingerprint": "fa3bd40cececb9cfffcbfcf7295e3b67d63ec487cbb323939333c739d84356fb",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
+      "recovery_count": 1,
+      "last_recovery_at": "2026-09-07T05:56:58.264696+00:00"
+    },
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -1375,5 +1386,22 @@
     "short_youtube_url": null,
     "short_portrait_verified": false,
     "short_signature_verified": false
+  },
+  "interventions": {
+    "v5|first-year-boundaries-origin-families|6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3|long_video": {
+      "pipeline_id": "v5",
+      "slug": "first-year-boundaries-origin-families",
+      "content_sha256": "6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-09-07T08",
+      "last_fingerprint": "78cddd55459ffcc37470826ccc7f71f17151c531d5281c9d25ee77b55358ff8e",
+      "last_controller_action_token": "recovery:1:2026-09-07T05:56:58.264696+00:00",
+      "controller_action_observed": true,
+      "last_observed_at": "2026-09-07T05:56:58.264696+00:00",
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-09-07T05:56:58.264696+00:00"
+    }
   }
 }
