@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T08:04:05.330166+00:00",
+    "live_verified_at": "2026-09-07T08:05:58.229352+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -570,27 +570,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T18:01:04.901543+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_SIGNATURE_ASSET_MISSING",
-      "details": {
-        "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
-      }
-    },
-    {
-      "at": "2026-09-04T18:04:51.405307+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-04T18:04:53.239681+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-09-04T18:04:54.974785+00:00",
       "from": "long_video_complete",
@@ -1381,9 +1360,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-07T08:05:58.229367+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T08:05:59.855192+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T08:06:02.940915+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-07T08:04:10.667590+00:00",
+  "updated_at": "2026-09-07T08:06:02.940932+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
