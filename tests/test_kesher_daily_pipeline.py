@@ -538,7 +538,8 @@ class PipelineTestCase(unittest.TestCase):
             "source": {"title": "כותרת בעברית", "category": "זוגיות"},
         }
         remotion = pipeline.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
-        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda path: path == remotion), mock.patch.object(
+        signature_source = pipeline.PROJECT_DIR / pipeline.SIGNATURE_SOURCE
+        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda path: path in {remotion, signature_source}), mock.patch.object(
             pipeline, "ffprobe", return_value={"duration": 104.0}
         ), mock.patch.object(pipeline.subprocess, "run") as run:
             def finish(*_args: object, **_kwargs: object) -> SimpleNamespace:
@@ -613,7 +614,8 @@ class PipelineTestCase(unittest.TestCase):
         output = self.state_dir / f"{item['id']}-remotion-final.mp4"
 
         remotion = pipeline.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
-        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p == remotion), mock.patch.object(
+        signature_source = pipeline.PROJECT_DIR / pipeline.SIGNATURE_SOURCE
+        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p in {remotion, signature_source}), mock.patch.object(
             pipeline, "ffprobe", return_value={"duration": 90.0}
         ), mock.patch.object(pipeline.subprocess, "run") as run:
             def finish(*_args: object, **_kwargs: object) -> SimpleNamespace:
@@ -959,8 +961,8 @@ class PipelineTestCase(unittest.TestCase):
         self.assertIn("השתמש בקול של אישה ישראלית", text)
 
         # Mandatory review and policy gates
-        self.assertIn("Upload must require explicit approved technical, visual, semantic, and metadata gates.", text)
-        self.assertIn("Strict mandatory visual rejection language for slide/card-like", text)
+        self.assertIn("Technical publication authority", text)
+        self.assertIn("Strict visual review language for slide/card-like output", text)
 
     def test_reviewer_prompt_evaluates_source_video_first_and_no_invented_objects(self) -> None:
         hashes = {
