@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T08:02:53.390099+00:00",
+    "live_verified_at": "2026-09-07T08:04:05.330166+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -570,27 +570,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T17:07:43.153646+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_SIGNATURE_ASSET_MISSING",
-      "details": {
-        "message": "approved Shira signature video asset/path is missing: public/shira-signature.mp4"
-      }
-    },
-    {
-      "at": "2026-09-04T18:01:01.167306+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-04T18:01:02.781370+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-09-04T18:01:04.901543+00:00",
       "from": "long_video_complete",
@@ -1384,9 +1363,27 @@
         "source_slug": "navigating-new-relationships-dating-balance",
         "long_item_id": "video-20260906-140013-98d18a3af9"
       }
+    },
+    {
+      "at": "2026-09-07T08:04:05.330188+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T08:04:07.181703+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T08:04:10.667568+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-07T08:03:29.814422+00:00",
+  "updated_at": "2026-09-07T08:04:10.667590+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
