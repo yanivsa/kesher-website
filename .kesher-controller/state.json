@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T06:19:16.512992+00:00",
+    "live_verified_at": "2026-09-07T06:20:07.760539+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1346,9 +1346,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-07T06:20:07.760561+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T06:20:09.639084+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T06:20:14.873757+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-09-07T06:19:32.039691+00:00",
+  "updated_at": "2026-09-07T06:20:14.873778+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1394,7 +1412,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 34090318823,
     "processed_run_id": null,
     "provider_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
     "failure_fingerprint": null,
