@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-07",
-  "status": "long_video_running",
+  "status": "long_video_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T14:51:32.294829+00:00",
+    "live_verified_at": "2026-09-07T14:55:08.958673+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,34 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-06T22:41:33.010602+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-06T22:41:40.096825+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
-      "details": {
-        "backlog_cycle": "2026-09-06",
-        "source_slug": "navigating-new-relationships-dating-balance",
-        "long_item_id": "video-20260906-140013-98d18a3af9"
-      }
-    },
-    {
-      "at": "2026-09-07T00:22:42.629138+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
-      "details": {
-        "backlog_cycle": "2026-09-06",
-        "source_slug": "navigating-new-relationships-dating-balance",
-        "long_item_id": "video-20260906-140013-98d18a3af9"
-      }
-    },
     {
       "at": "2026-09-07T04:00:42.687111+00:00",
       "from": "article_needed",
@@ -1234,9 +1206,37 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-07T14:55:08.958693+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T14:55:13.004387+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "VIDEO_WORKFLOW_FAILED",
+      "details": {
+        "message": "video run 34135127616 completed with conclusion=failure",
+        "retry_at": "2026-09-07T15:00:13.004360+00:00",
+        "failure_streak": 1,
+        "run_id": 34135127616,
+        "session_id": null
+      }
+    },
+    {
+      "at": "2026-09-07T14:55:13.004416+00:00",
+      "from": "video_retry_wait",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-07T15:00:13.004360+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-07T14:51:37.736890+00:00",
+  "updated_at": "2026-09-07T14:55:13.004421+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1253,13 +1253,15 @@
     "attempt_count": 1,
     "status": "generating",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-09-07T15:00:13.004360+00:00",
     "run_id": 34135127616,
-    "processed_run_id": null,
+    "processed_run_id": 34135127616,
     "provider_id": "9f177581-3de6-4e77-9105-86d1d2353225",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "VIDEO_WORKFLOW_FAILED": 1
+    },
     "last_dispatch_at": "2026-09-07T14:50:20.347520+00:00",
     "attempts": 1,
     "watchdog": {
@@ -1275,7 +1277,9 @@
     "youtube_url": "https://youtu.be/_7nkqLUyARQ",
     "verified": true,
     "artifact_id": "9f177581-3de6-4e77-9105-86d1d2353225",
-    "source_id": "1cfb1b12-aacb-486e-867f-41376261eff6"
+    "source_id": "1cfb1b12-aacb-486e-867f-41376261eff6",
+    "last_run_conclusion": "failure",
+    "last_failed_run_id": 34135127616
   },
   "short": {
     "attempt_count": 4,
