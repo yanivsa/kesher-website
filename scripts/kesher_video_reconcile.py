@@ -210,6 +210,24 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
     return replacement
 
 
+def is_verified_public_short(item: dict[str, Any], source: dict[str, Any]) -> bool:
+    if str((item.get("source") or {}).get("content_sha256") or "") != str(source.get("content_sha256") or ""):
+        return False
+    if not (item.get("uploaded") is True and item.get("status") == "uploaded"):
+        return False
+    if not item.get("youtube_id"):
+        return False
+    media = item.get("media") or {}
+    try:
+        width = int(media.get("width") or 0)
+        height = int(media.get("height") or 0)
+    except (TypeError, ValueError):
+        return False
+    if width != 1080 or height != 1920 or height <= width:
+        return False
+    return delivery_guard._signature_verified(item)
+
+
 def prepare_generation(target_slug: str = "") -> int:
     state = pipeline.load_state()
     target_slug = (target_slug or os.environ.get("DERIVE_SLUG") or "").strip()
@@ -221,7 +239,7 @@ def prepare_generation(target_slug: str = "") -> int:
         ]
         uploaded = [
             item for item in same_source
-            if delivery_guard.short_public_portrait_verified(item)
+            if is_verified_public_short(item, source)
         ]
         if uploaded:
             workflow_output("skip_generation", "true")
@@ -230,7 +248,7 @@ def prepare_generation(target_slug: str = "") -> int:
 
         # Supersede unverified or legacy items for this slug so they do not block fresh recovery
         for item in same_source:
-            if item.get("uploaded") is True and not delivery_guard.short_public_portrait_verified(item):
+            if item.get("uploaded") is True and not is_verified_public_short(item, source):
                 item["status"] = "superseded"
                 item["superseded_reason"] = "unverified_or_legacy_short"
                 item["uploaded"] = False

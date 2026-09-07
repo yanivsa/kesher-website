@@ -39,6 +39,10 @@ on:
         description: Exact visually rejected item to rebuild with Remotion
         required: false
         type: string
+      target_slug:
+        description: Exact article slug to generate video for
+        required: false
+        type: string
 
 permissions:
   actions: write
@@ -271,12 +275,16 @@ jobs:
         if: ${{ inputs.operation == 'preflight' }}
         run: python -u scripts/kesher_daily_pipeline.py --preflight
 
-      - name: Reconcile exact authoritative article or oldest backlog item before generation
+      - name: Prepare exact daily Video Overview generation
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
+        env:
+          TARGET_SLUG: ${{ inputs.target_slug }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation
 
       - name: Generate or resume exact Video Overview
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
+        env:
+          TARGET_SLUG: ${{ inputs.target_slug }}
         run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150
 
       - name: Rebuild exact visually rejected item with Remotion
