@@ -394,7 +394,9 @@ jobs:
 
       - name: Reconcile exact article or existing provider identity before generation
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate') }}
-        run: python -u scripts/kesher_video_reconcile.py --prepare-generation
+        env:
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
+        run: python -u scripts/kesher_video_reconcile.py --prepare-generation ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Generate or resume exact NotebookLM-derived Short
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || (inputs.operation == 'derive' && steps.adopt_long.outputs.skip_generation != 'true') || (inputs.operation == 'historical' && steps.adopt_hist.outputs.skip_generation != 'true')) }}

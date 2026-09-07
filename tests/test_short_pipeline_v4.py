@@ -10,8 +10,15 @@ from scripts import kesher_short_pipeline_v4 as short
 class ShortPipelineV4Tests(unittest.TestCase):
     def source(self):
         return {
+            "slug": "how-to-talk",
             "title": "איך מדברים בלי להפוך כל שיחה לריב",
             "category": "זוגיות",
+            "content_sha256": "a" * 64,
+            "youtube_metadata": {
+                "title": "איך מדברים בלי להפוך כל שיחה לריב",
+                "description": "תיאור המאמר https://kesher.saharoni.com",
+                "tags": ["זוגיות", "תקשורת"],
+            },
         }
 
     def test_prompt_requests_one_complete_short_ready_hebrew_idea(self):
@@ -107,6 +114,45 @@ class ShortPipelineV4Tests(unittest.TestCase):
             target_env = short.core.active_item(state)
             self.assertIsNotNone(target_env)
             self.assertEqual(target_env["id"], "item-new")
+
+    def test_new_item_creates_direct_short_mode_by_default(self):
+        item = short.new_item(self.source())
+        self.assertEqual(item["type"], "article_short")
+        self.assertEqual(item["source_mode"], "direct-short")
+
+        with mock.patch.dict(os.environ, {"KESHER_SHORT_MODE": "derive"}):
+            derived_item = short.new_item(self.source())
+            self.assertEqual(derived_item["source_mode"], "overview-segment")
+
+    def test_short_technical_failures_validates_signature_video_properties(self):
+        media = {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 45.0}
+        valid_item = {
+            "signature_fullscreen": True,
+            "signature_duration_seconds": 3.0,
+            "signature_video_sha256": "f" * 64,
+            "signature_verified": True,
+        }
+        self.assertEqual(short.short_technical_failures(media, item=valid_item), [])
+
+        missing_sha = dict(valid_item, signature_video_sha256="")
+        self.assertTrue(any("signature_video_sha256" in err for err in short.short_technical_failures(media, item=missing_sha)))
+
+        wrong_duration = dict(valid_item, signature_duration_seconds=5.0)
+        self.assertTrue(any("משך סגיר החתימה" in err for err in short.short_technical_failures(media, item=wrong_duration)))
+
+        not_fullscreen = dict(valid_item, signature_fullscreen=False)
+        self.assertTrue(any("signature_fullscreen" in err for err in short.short_technical_failures(media, item=not_fullscreen)))
+
+    def test_extract_signature_video_segment_cached(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            state_dir = Path(temp_dir)
+            seg_file = state_dir / "test-item-signature-segment.mp4"
+            seg_file.write_bytes(b"dummy video segment data")
+
+            with mock.patch.object(short.core, "STATE_DIR", state_dir):
+                path, sha = short.extract_signature_video_segment(state_dir / "dummy.mp4", "test-item")
+                self.assertEqual(path, seg_file)
+                self.assertEqual(sha, short.core.sha256_file(seg_file))
 
 
 if __name__ == "__main__":

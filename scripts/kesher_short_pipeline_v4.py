@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -36,6 +37,7 @@ SHORT_MAX_SECONDS = 55.0
 SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
 SHORT_FPS = 30
+SIGNATURE_DURATION_SECONDS = 3.0
 VISUAL_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
 SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
@@ -65,7 +67,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
     item = _base_new_item(source)
     item["type"] = "article_short"
     mode = os.environ.get("KESHER_SHORT_MODE", "").strip().lower()
-    item["source_mode"] = "direct-short" if mode == "direct" else "overview-segment"
+    item["source_mode"] = "overview-segment" if mode == "derive" else "direct-short"
     item["fresh_generation_attempt"] = int(item.get("technical_retry_count") or 0) + 1
     return item
 
@@ -79,7 +81,11 @@ def short_window(raw_duration: float) -> tuple[float, float]:
     return 0.0, round(min(duration, SHORT_MAX_SECONDS), 3)
 
 
-def short_technical_failures(media: dict[str, Any], video_path: Path | None = None) -> list[str]:
+def short_technical_failures(
+    media: dict[str, Any],
+    video_path: Path | None = None,
+    item: dict[str, Any] | None = None,
+) -> list[str]:
     failures: list[str] = []
     if str(media.get("codec") or "") != "h264":
         failures.append(f"קודק הווידאו הוא {media.get('codec')} ולא H.264")
@@ -101,7 +107,50 @@ def short_technical_failures(media: dict[str, Any], video_path: Path | None = No
         female_ok, pitch_hz, pitch_msg = core.validate_female_voice(video_path)
         if not female_ok:
             failures.append(pitch_msg)
+
+    if item is not None:
+        if item.get("signature_fullscreen") is not True:
+            failures.append("סגיר החתימה אינו מוגדר כמסך מלא (signature_fullscreen)")
+        try:
+            sig_duration = float(item.get("signature_duration_seconds") or 0)
+        except (TypeError, ValueError):
+            sig_duration = 0.0
+        if abs(sig_duration - SIGNATURE_DURATION_SECONDS) >= 0.001:
+            failures.append(f"משך סגיר החתימה הוא {sig_duration} שניות במקום {SIGNATURE_DURATION_SECONDS}")
+        if not str(item.get("signature_video_sha256") or "").strip():
+            failures.append("חסר גיבוב וידאו תקין של מקטע החתימה (signature_video_sha256)")
+        if item.get("signature_verified") is not True:
+            failures.append("חתימת הווידאו לא אומתה (signature_verified)")
+
     return failures
+
+
+def extract_signature_video_segment(output_path: Path, item_id: str) -> tuple[Path, str]:
+    core.STATE_DIR.mkdir(parents=True, exist_ok=True)
+    signature_video_path = core.STATE_DIR / f"{item_id}-signature-segment.mp4"
+    if signature_video_path.exists() and signature_video_path.stat().st_size > 0:
+        return signature_video_path, core.sha256_file(signature_video_path)
+
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg:
+        raise core.PipelineError("ffmpeg is required to extract the signature video segment")
+
+    command = [
+        ffmpeg,
+        "-y",
+        "-sseof", f"-{SIGNATURE_DURATION_SECONDS}",
+        "-i", str(output_path),
+        "-t", f"{SIGNATURE_DURATION_SECONDS}",
+        "-c:v", "libx264",
+        "-c:a", "aac",
+        str(signature_video_path),
+    ]
+    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    if result.returncode != 0 or not signature_video_path.exists() or signature_video_path.stat().st_size <= 0:
+        detail = (result.stderr or result.stdout)[-500:]
+        raise core.PipelineError(f"Failed to extract signature video segment: {detail}")
+
+    return signature_video_path, core.sha256_file(signature_video_path)
 
 
 def prepare_signature_asset() -> str:
@@ -188,6 +237,13 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     item["signature_sha256"] = signature_sha256
     item["remotion_props_path"] = props_path.name
     item["remotion_props_sha256"] = core.sha256_file(props_path)
+
+    sig_video_path, sig_video_sha256 = extract_signature_video_segment(output_path, item["id"])
+    item["signature_video_path"] = sig_video_path.name
+    item["signature_video_sha256"] = sig_video_sha256
+    item["signature_duration_seconds"] = SIGNATURE_DURATION_SECONDS
+    item["signature_fullscreen"] = True
+    item["signature_verified"] = True
     return output_path
 
 
@@ -219,7 +275,7 @@ def validate_and_manifest(
         for relative in item["frame_paths"]
     }
 
-    technical_failures = short_technical_failures(media, final_path)
+    technical_failures = short_technical_failures(media, final_path, item)
     metadata = item["youtube_metadata"]
     metadata_failure = ""
     try:
@@ -257,6 +313,11 @@ def validate_and_manifest(
         "motion_plan_sha256": item.get("motion_plan_sha256"),
         "signature_asset": item.get("signature_asset"),
         "signature_sha256": item.get("signature_sha256"),
+        "signature_video_path": item.get("signature_video_path"),
+        "signature_video_sha256": item.get("signature_video_sha256"),
+        "signature_duration_seconds": item.get("signature_duration_seconds"),
+        "signature_fullscreen": item.get("signature_fullscreen"),
+        "signature_verified": item.get("signature_verified"),
         "remotion_props_path": item.get("remotion_props_path"),
         "remotion_props_sha256": item.get("remotion_props_sha256"),
         "media": media,

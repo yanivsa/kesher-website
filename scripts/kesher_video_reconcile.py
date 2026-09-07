@@ -208,8 +208,59 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
     return replacement
 
 
-def prepare_generation() -> int:
+def prepare_generation(target_slug: str = "") -> int:
     state = pipeline.load_state()
+    target_slug = (target_slug or os.environ.get("DERIVE_SLUG") or "").strip()
+    if target_slug:
+        source = current_source_snapshot(target_slug)
+        same_source = [
+            item for item in state.get("items") or []
+            if isinstance(item, dict) and source_slug(item) == target_slug
+        ]
+        uploaded = [
+            item for item in same_source
+            if item.get("uploaded") is True and item.get("status") == "uploaded"
+        ]
+        if uploaded:
+            workflow_output("skip_generation", "true")
+            print(f"SHORT_GENERATION_ALREADY_PUBLIC slug={target_slug} item={uploaded[-1].get('id')}")
+            return 0
+
+        unresolved = [
+            item for item in same_source
+            if item.get("uploaded") is not True and item.get("status") in UNRESOLVED_STATUSES
+        ]
+        if unresolved:
+            item = unresolved[0]
+            if item.get("status") == "rejected" and item.get("technical_verified") is not True:
+                replacement = retry_technical_rejection(state, item)
+                pipeline.save_state(state)
+                if replacement is None:
+                    print(
+                        "VIDEO_RECONCILED_GENERATION "
+                        f"slug={target_slug} released_without_short=yes fresh_attempts=4"
+                    )
+                    return 0
+                print(
+                    "VIDEO_RECONCILED_GENERATION "
+                    f"slug={target_slug} technical_retry=yes"
+                )
+                return 0
+            print(
+                "VIDEO_RECONCILED_GENERATION "
+                f"slug={target_slug} backlog_resume=yes status={item.get('status')}"
+            )
+            return 0
+
+        item = pipeline.new_item(source)
+        item["type"] = "article_short"
+        item["source_mode"] = "direct-short"
+        item["fresh_generation_attempt"] = 1
+        state.setdefault("items", []).append(item)
+        pipeline.save_state(state)
+        print(f"VIDEO_RECONCILED_GENERATION slug={target_slug} initialized=yes")
+        return 0
+
     existing = unresolved_items(state)
     if existing:
         item = existing[0]
@@ -460,7 +511,7 @@ def main() -> int:
     parser.add_argument("--long-item-id", default="")
     args = parser.parse_args()
     if args.prepare_generation:
-        return prepare_generation()
+        return prepare_generation(args.slug)
     if args.prepare_upload:
         return prepare_upload(args.slug)
     if args.adopt_long_form_state:

@@ -99,19 +99,19 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         item = public_item(youtube_id="portrait", width=1080, height=1920)
         self.assertTrue(self.short_verified(item))
 
-    def test_portrait_public_upload_with_svg_signature_is_a_valid_short(self):
+    def test_portrait_public_upload_with_svg_only_signature_is_not_a_valid_short(self):
         item = public_item(youtube_id="portrait-svg", width=1080, height=1920)
-        item.pop("signature_video_sha256")
-        item.pop("signature_verified")
-        item.pop("signature_duration_seconds")
-        item.pop("signature_fullscreen")
+        item.pop("signature_video_sha256", None)
+        item.pop("signature_verified", None)
+        item.pop("signature_duration_seconds", None)
+        item.pop("signature_fullscreen", None)
         item.update({
             "technical_verified": True,
             "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
             "signature_asset": "signature-mask.svg",
             "signature_sha256": "c" * 64,
         })
-        self.assertTrue(self.short_verified(item))
+        self.assertFalse(self.short_verified(item))
 
     def test_portrait_public_upload_without_signature_is_not_a_valid_short(self):
         item = public_item(youtube_id="portrait", width=1080, height=1920)
@@ -280,6 +280,12 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
             "signature_sha256": "c" * 64,
         }
         controller.github = MiniGitHub(svg_short_item)
+        adopted = controller._adopt_existing_short(st, source())
+        self.assertIsNone(adopted)
+        self.assertFalse(st["short"].get("verified", False))
+
+        video_short_item = public_item(youtube_id="short456", width=1080, height=1920)
+        controller.github = MiniGitHub(video_short_item)
         adopted = controller._adopt_existing_short(st, source())
         self.assertIsNotNone(adopted)
         self.assertTrue(st["short"]["verified"])
