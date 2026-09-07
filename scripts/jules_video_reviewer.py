@@ -380,11 +380,19 @@ def obtain_validated_decision(
     review_branch: str,
     timeout_seconds: int,
 ) -> tuple[dict[str, Any], str]:
-    session = create_session(api_key, prompt, item["id"], review_branch)
-    message = wait_for_message(api_key, session, timeout_seconds)
-    decision = parse_decision(message)
-    validate_decision(decision, item, hashes, strict_schema=True)
-    return decision, session
+    for attempt in range(2):
+        session = create_session(api_key, prompt, item["id"], review_branch)
+        try:
+            message = wait_for_message(api_key, session, timeout_seconds)
+            decision = parse_decision(message)
+            validate_decision(decision, item, hashes, strict_schema=True)
+            return decision, session
+        except ReviewError as exc:
+            if "timed out" in str(exc).lower() and attempt == 0:
+                print(f"JULES_REVIEW_TIMEOUT session={session}; attempting replacement session")
+                continue
+            raise
+    raise ReviewError("Exhausted Jules review attempts")
 
 
 def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> None:
@@ -443,6 +451,8 @@ def handle_non_fatal_review_error(state_dir: Path, error_msg: str) -> bool:
     if not items:
         return False
     item = items[0]
+    if item.get("technical_verified") is not True:
+        return False
     item["visual_review_status"] = "unavailable"
     item["review_notes"]["visual"] = f"סקירת ג׳ולס לא הושלמה: {error_msg}"
     state_file.write_text(json.dumps(state, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
