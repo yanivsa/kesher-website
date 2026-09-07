@@ -16,7 +16,11 @@ from typing import Any
 try:
     from . import jules_video_reviewer as legacy
 except ImportError:
-    import jules_video_reviewer as legacy
+    try:
+        from scripts import jules_video_reviewer as legacy
+    except ImportError:
+        import jules_video_reviewer as legacy
+
 
 
 FINAL_MARKER = legacy.FINAL_MARKER
