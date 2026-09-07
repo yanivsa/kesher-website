@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T15:38:47.280913+00:00",
+    "live_verified_at": "2026-09-07T15:39:33.089755+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,18 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T07:58:10.957510+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-07T07:58:18.205452+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-09-07T07:58:19.619417+00:00",
       "from": "complete",
@@ -1255,9 +1243,24 @@
       "details": {
         "retry_at": "2026-09-07T15:53:53.676871+00:00"
       }
+    },
+    {
+      "at": "2026-09-07T15:39:33.089778+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T15:39:35.604849+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-07T15:53:53.676871+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-07T15:38:53.676927+00:00",
+  "updated_at": "2026-09-07T15:39:35.604867+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
