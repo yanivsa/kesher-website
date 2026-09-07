@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-07",
-  "status": "long_video_watchdog_recovery",
+  "status": "short_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T05:05:16.074277+00:00",
+    "live_verified_at": "2026-09-07T06:19:16.512992+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1328,9 +1328,27 @@
         "item_id": "video-20260907-080620-6ee784a59b",
         "task_id": "d68ccfbc-562c-45e2-8487-45e0323c6461"
       }
+    },
+    {
+      "at": "2026-09-07T06:19:16.513016+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T06:19:21.324978+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T06:19:32.039683+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-07T05:57:08.019562+00:00",
+  "updated_at": "2026-09-07T06:19:32.039691+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1345,12 +1363,12 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
@@ -1363,19 +1381,29 @@
       "recovery_count": 1,
       "last_recovery_at": "2026-09-07T05:56:58.264696+00:00"
     },
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "item_id": "video-20260907-080620-6ee784a59b",
+    "youtube_id": "_7nkqLUyARQ",
+    "youtube_url": "https://youtu.be/_7nkqLUyARQ",
+    "verified": true,
+    "artifact_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
+    "source_id": "84f371ac-c51a-4ed6-8edc-79eb6eabad5a"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-07T06:19:32.039659+00:00",
+    "artifact_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
+    "source_id": "84f371ac-c51a-4ed6-8edc-79eb6eabad5a",
+    "adopted_from_long_item_id": "video-20260907-080620-6ee784a59b"
   },
   "migration": {
     "v4_short_controller_state": null
