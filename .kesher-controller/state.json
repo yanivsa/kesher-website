@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T16:04:41.426225+00:00",
+    "live_verified_at": "2026-09-07T16:12:05.442176+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,22 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T10:13:19.260628+00:00",
-      "from": "complete",
-      "to": "complete",
-      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
-      "details": {
-        "backlog_cycle": "2026-09-06",
-        "source_slug": "navigating-new-relationships-dating-balance"
-      }
-    },
-    {
-      "at": "2026-09-07T11:49:38.338455+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-07T11:49:40.134946+00:00",
       "from": "article_live",
@@ -1274,9 +1258,25 @@
         "operation": "full",
         "resume": 23
       }
+    },
+    {
+      "at": "2026-09-07T16:12:05.442197+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T16:12:13.343703+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 25
+      }
     }
   ],
-  "updated_at": "2026-09-07T16:05:22.974818+00:00",
+  "updated_at": "2026-09-07T16:12:13.343712+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1302,7 +1302,7 @@
     "failure_count_by_type": {
       "VIDEO_WORKFLOW_FAILED": 2
     },
-    "last_dispatch_at": "2026-09-07T16:05:22.974805+00:00",
+    "last_dispatch_at": "2026-09-07T16:12:13.343696+00:00",
     "attempts": 1,
     "watchdog": {
       "identity": "long_video:first-year-boundaries-origin-families:6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3:video-20260907-080620-6ee784a59b",
@@ -1311,7 +1311,7 @@
       "recovery_count": 1,
       "last_recovery_at": "2026-09-07T05:56:58.264696+00:00"
     },
-    "resume_dispatches": 23,
+    "resume_dispatches": 25,
     "item_id": "video-20260907-190114-65b5bb9c69",
     "youtube_id": "_7nkqLUyARQ",
     "youtube_url": "https://youtu.be/_7nkqLUyARQ",
