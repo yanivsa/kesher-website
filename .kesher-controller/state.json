@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-07",
-  "status": "article_generating",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -27,7 +27,11 @@
       "worker_restart_count": 0,
       "last_restart_at": null,
       "last_restart_run_id": null
-    }
+    },
+    "slug": "first-year-boundaries-origin-families",
+    "title": "הכנה לנישואים: איך מעצבים מחדש את הקשר עם משפחות המוצא בשנה הראשונה",
+    "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
+    "published_date": "2026-09-07"
   },
   "backlog": [
     {
@@ -1289,9 +1293,15 @@
       "details": {
         "session_id": "sessions/4598659527200167682"
       }
+    },
+    {
+      "at": "2026-09-07T05:00:13.489517+00:00",
+      "from": "article_generating",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-09-07T04:05:56.804317+00:00",
+  "updated_at": "2026-09-07T05:00:13.489539+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
