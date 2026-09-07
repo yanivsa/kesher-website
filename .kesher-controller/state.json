@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T13:10:20.426493+00:00",
+    "live_verified_at": "2026-09-07T13:45:26.887246+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,38 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-05T17:56:12.356628+00:00",
-      "from": "article_watchdog_nudge",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 694
-      }
-    },
-    {
-      "at": "2026-09-05T18:02:50.406295+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 33982488301 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-05T18:07:50.406254+00:00",
-        "failure_streak": 1,
-        "run_id": 33982488301
-      }
-    },
-    {
-      "at": "2026-09-05T18:19:02.081517+00:00",
-      "from": "image_retry_wait",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 2,
-        "pr_number": 694
-      }
-    },
     {
       "at": "2026-09-05T18:22:40.842361+00:00",
       "from": "article_image_running",
@@ -1371,9 +1339,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-07T13:45:26.887264+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T13:45:31.844521+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T13:45:39.851253+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-07T13:10:40.890472+00:00",
+  "updated_at": "2026-09-07T13:45:39.851271+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
