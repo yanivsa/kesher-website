@@ -561,8 +561,8 @@
         "long_youtube_url": "https://youtu.be/dlA58ZK7Uoc",
         "long_youtube_id": "dlA58ZK7Uoc",
         "short_status": "running",
-        "short_dispatch_count": 2,
-        "short_last_dispatch_at": "2026-09-07T00:22:42.629120+00:00",
+        "short_dispatch_count": 3,
+        "short_last_dispatch_at": "2026-09-07T08:03:29.814393+00:00",
         "long_provider_id": "97275da9-16ee-4589-95c7-d9bc16396a06",
         "long_artifact_id": "97275da9-16ee-4589-95c7-d9bc16396a06"
       }
@@ -570,12 +570,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-04T17:07:41.417298+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-09-04T17:07:43.153646+00:00",
       "from": "long_video_complete",
@@ -1379,9 +1373,20 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-07T08:03:29.814414+00:00",
+      "from": "complete",
+      "to": "complete",
+      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
+      "details": {
+        "backlog_cycle": "2026-09-06",
+        "source_slug": "navigating-new-relationships-dating-balance",
+        "long_item_id": "video-20260906-140013-98d18a3af9"
+      }
     }
   ],
-  "updated_at": "2026-09-07T08:03:13.005695+00:00",
+  "updated_at": "2026-09-07T08:03:29.814422+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
