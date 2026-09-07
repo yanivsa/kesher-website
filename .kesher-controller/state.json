@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T15:46:58.465189+00:00",
+    "live_verified_at": "2026-09-07T15:50:29.006401+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,23 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T08:03:29.814414+00:00",
-      "from": "complete",
-      "to": "complete",
-      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
-      "details": {
-        "backlog_cycle": "2026-09-06",
-        "source_slug": "navigating-new-relationships-dating-balance",
-        "long_item_id": "video-20260906-140013-98d18a3af9"
-      }
-    },
-    {
-      "at": "2026-09-07T08:04:05.330188+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-07T08:04:07.181703+00:00",
       "from": "article_live",
@@ -1261,9 +1244,24 @@
       "details": {
         "retry_at": "2026-09-07T15:53:53.676871+00:00"
       }
+    },
+    {
+      "at": "2026-09-07T15:50:29.006421+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T15:50:31.553512+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-07T15:53:53.676871+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-07T15:47:04.024175+00:00",
+  "updated_at": "2026-09-07T15:50:31.553530+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
