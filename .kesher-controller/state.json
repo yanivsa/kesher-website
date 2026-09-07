@@ -603,8 +603,8 @@
         "long_youtube_url": "https://youtu.be/_7nkqLUyARQ",
         "long_youtube_id": "_7nkqLUyARQ",
         "short_status": "running",
-        "short_dispatch_count": 1,
-        "short_last_dispatch_at": "2026-09-07T21:01:09.490375+00:00"
+        "short_dispatch_count": 2,
+        "short_last_dispatch_at": "2026-09-07T21:09:37.596300+00:00"
       }
     }
   ],
@@ -1233,9 +1233,19 @@
         "backlog_cycle": "2026-09-07",
         "source_slug": "first-year-boundaries-origin-families"
       }
+    },
+    {
+      "at": "2026-09-07T21:09:37.596322+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched independent prior-cycle Short generation",
+      "details": {
+        "backlog_cycle": "2026-09-07",
+        "source_slug": "first-year-boundaries-origin-families"
+      }
     }
   ],
-  "updated_at": "2026-09-07T21:09:25.752421+00:00",
+  "updated_at": "2026-09-07T21:09:37.596329+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
