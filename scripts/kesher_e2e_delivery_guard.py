@@ -19,11 +19,9 @@ def _source_identity(item: dict[str, Any]) -> tuple[str, str]:
 
 
 def _signature_verified(item: dict[str, Any]) -> bool:
-    """Require durable evidence for the approved full-screen three-second signature ending."""
-    signature_sha256 = str(
-        item.get("signature_sha256")
-        or item.get("signature_asset_sha256")
-        or item.get("signature_video_sha256")
+    """Require durable evidence for the approved full-screen three-second video signature ending."""
+    signature_video_sha256 = str(
+        item.get("signature_video_sha256")
         or ""
     ).strip()
 
@@ -31,20 +29,13 @@ def _signature_verified(item: dict[str, Any]) -> bool:
         duration = float(item.get("signature_duration_seconds") or 0)
     except (TypeError, ValueError):
         duration = 0.0
-    legacy_proof = bool(
+
+    return bool(
         item.get("signature_verified") is True
         and item.get("signature_fullscreen") is True
         and abs(duration - SIGNATURE_DURATION_SECONDS) < 0.001
-        and signature_sha256
+        and signature_video_sha256
     )
-
-    svg_proof = bool(
-        item.get("technical_verified") is True
-        and str(item.get("visual_pipeline") or "") == SVG_SIGNATURE_PIPELINE
-        and str(item.get("signature_asset") or "") == SVG_SIGNATURE_ASSET
-        and signature_sha256
-    )
-    return legacy_proof or svg_proof
 
 
 def short_public_portrait_verified(

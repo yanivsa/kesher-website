@@ -166,28 +166,24 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
                 return v5.core.Action("blocked", "prior-cycle Short recovery attempts exhausted")
 
             inputs = {
-                "operation": "derive",
+                "operation": "generate",
                 "derive_slug": source["slug"],
                 "derive_content_sha256": source["content_sha256"],
-                "derive_long_item_id": str(long_verified.get("id") or ""),
             }
             v5.core.GitHubClient.dispatch(self.github, v5.SHORT_WORKFLOW, inputs)
             media.update({
                 "short_status": "running",
                 "short_dispatch_count": count + 1,
                 "short_last_dispatch_at": v5.core.utc_now(),
-                "long_provider_id": long_verified.get("task_id"),
-                "long_artifact_id": long_verified.get("artifact_id"),
             })
             v5.core.transition(
                 state,
                 state.get("status") or "article_generating",
-                "dispatched exact prior-cycle Short from verified long-form identity",
+                "dispatched independent prior-cycle Short generation",
                 backlog_cycle=row.get("cycle"),
                 source_slug=source["slug"],
-                long_item_id=long_verified.get("id"),
             )
-            return v5.core.Action("dispatch_backlog_short", "dispatched exact prior-cycle Short", inputs)
+            return v5.core.Action("dispatch_backlog_short", "dispatched independent prior-cycle Short", inputs)
 
         active_long = self.github.active_workflow_run(v5.LONG_VIDEO_WORKFLOW, production_only=True)
         active_seed = self.github.active_workflow_run(BACKLOG_MEDIA_RECOVERY_WORKFLOW, production_only=True)
