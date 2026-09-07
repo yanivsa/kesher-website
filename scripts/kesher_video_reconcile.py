@@ -251,6 +251,26 @@ def export_target(item: dict[str, Any] | None) -> None:
             pass
 
 
+def _reconcile_item_technical_rejection(state: dict[str, Any], item: dict[str, Any]) -> None:
+    if item.get("status") == "downloaded" and item.get("technical_verified") is not True:
+        manifest_file = pipeline.STATE_DIR / f"{item.get('id')}-short-manifest.json"
+        if manifest_file.exists():
+            try:
+                mdata = json.loads(manifest_file.read_text(encoding="utf-8"))
+                if mdata.get("technical_verified") is False or mdata.get("rejection_reasons"):
+                    item["status"] = "rejected"
+                    item["rejected_at"] = pipeline.utc_now()
+                    pipeline.save_state(state)
+                    return
+            except Exception:
+                pass
+        tech_note = str((item.get("review_notes") or {}).get("technical", "") or "")
+        if tech_note.startswith("נפסל טכנית"):
+            item["status"] = "rejected"
+            item["rejected_at"] = pipeline.utc_now()
+            pipeline.save_state(state)
+
+
 def prepare_generation(target_slug: str = "") -> int:
     state = pipeline.load_state()
     target_slug = (target_slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
@@ -282,6 +302,7 @@ def prepare_generation(target_slug: str = "") -> int:
         ]
         if unresolved:
             item = unresolved[0]
+            _reconcile_item_technical_rejection(state, item)
             export_target(item)
             if item.get("status") == "rejected" and item.get("technical_verified") is not True:
                 replacement = retry_technical_rejection(state, item)
@@ -317,6 +338,7 @@ def prepare_generation(target_slug: str = "") -> int:
     existing = unresolved_items(state)
     if existing:
         item = existing[0]
+        _reconcile_item_technical_rejection(state, item)
         export_target(item)
         if item.get("status") == "rejected" and item.get("technical_verified") is not True:
             replacement = retry_technical_rejection(state, item)

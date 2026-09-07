@@ -170,74 +170,75 @@ def prepare_signature_asset() -> str:
 
 def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     output_path = core.STATE_DIR / f"{item['id']}-short-final.mp4"
-    if output_path.exists() and output_path.stat().st_size > 0:
-        return output_path
-    remotion = core.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
-    if not remotion.is_file():
-        raise core.PipelineError("Remotion dependencies are not installed")
+    motion_plan_path = core.STATE_DIR / f"{item['id']}-short-motion-plan.json"
+    props_path = core.STATE_DIR / f"{item['id']}-short-remotion-props.json"
+    signature_image_src = prepare_signature_asset()
+    signature_path = core.STATE_DIR / signature_image_src
+    signature_sha256 = core.sha256_file(signature_path)
 
     raw_media = core.ffprobe(raw_path)
     start_seconds, duration_seconds = short_window(float(raw_media["duration"]))
     duration_frames = max(1, round(duration_seconds * SHORT_FPS))
     start_frame = max(0, round(start_seconds * SHORT_FPS))
 
-    motion_plan = build_motion_plan(raw_path, duration_seconds, SHORT_FPS)
-    motion_plan_path = core.STATE_DIR / f"{item['id']}-short-motion-plan.json"
-    core.atomic_json_write(motion_plan_path, motion_plan)
+    if not (output_path.exists() and output_path.stat().st_size > 0):
+        remotion = core.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
+        if not remotion.is_file():
+            raise core.PipelineError("Remotion dependencies are not installed")
 
-    signature_image_src = prepare_signature_asset()
-    signature_path = core.STATE_DIR / signature_image_src
-    signature_sha256 = core.sha256_file(signature_path)
+        motion_plan = build_motion_plan(raw_path, duration_seconds, SHORT_FPS)
+        core.atomic_json_write(motion_plan_path, motion_plan)
 
-    props_path = core.STATE_DIR / f"{item['id']}-short-remotion-props.json"
-    core.atomic_json_write(
-        props_path,
-        {
-            "videoSrc": raw_path.name,
-            "sourceStartFrame": start_frame,
-            "durationInFrames": duration_frames,
-            "title": item["source"]["title"],
-            "category": item["source"]["category"],
-            "url": core.DISPLAY_URL,
-            "signatureImageSrc": signature_image_src,
-            "motionPlan": motion_plan["targets"],
-        },
-    )
-    command = [
-        str(remotion),
-        "render",
-        "src/remotion/index.ts",
-        "ArticleShort",
-        str(output_path),
-        f"--props={props_path}",
-        f"--public-dir={core.STATE_DIR}",
-        "--codec=h264",
-        "--audio-codec=aac",
-        "--concurrency=2",
-        "--timeout=120000",
-    ]
-    result = subprocess.run(
-        command,
-        cwd=core.PROJECT_DIR,
-        capture_output=True,
-        text=True,
-        timeout=3600,
-        check=False,
-    )
-    if result.returncode != 0 or not output_path.exists() or output_path.stat().st_size < 1024:
-        detail = (result.stderr or result.stdout)[-700:]
-        raise core.PipelineError(f"Remotion Short render failed: {detail}")
+        core.atomic_json_write(
+            props_path,
+            {
+                "videoSrc": raw_path.name,
+                "sourceStartFrame": start_frame,
+                "durationInFrames": duration_frames,
+                "title": item["source"]["title"],
+                "category": item["source"]["category"],
+                "url": core.DISPLAY_URL,
+                "signatureImageSrc": signature_image_src,
+                "motionPlan": motion_plan["targets"],
+            },
+        )
+        command = [
+            str(remotion),
+            "render",
+            "src/remotion/index.ts",
+            "ArticleShort",
+            str(output_path),
+            f"--props={props_path}",
+            f"--public-dir={core.STATE_DIR}",
+            "--codec=h264",
+            "--audio-codec=aac",
+            "--concurrency=2",
+            "--timeout=120000",
+        ]
+        result = subprocess.run(
+            command,
+            cwd=core.PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            timeout=3600,
+            check=False,
+        )
+        if result.returncode != 0 or not output_path.exists() or output_path.stat().st_size < 1024:
+            detail = (result.stderr or result.stdout)[-700:]
+            raise core.PipelineError(f"Remotion Short render failed: {detail}")
 
     item["visual_pipeline"] = VISUAL_PIPELINE
     item["source_mode"] = "overview-segment" if float(raw_media["duration"]) > SHORT_MAX_SECONDS else "direct-short"
     item["short_start_seconds"] = start_seconds
     item["short_duration_seconds"] = duration_seconds
-    item["motion_plan_path"] = motion_plan_path.name
-    item["motion_plan_sha256"] = core.sha256_file(motion_plan_path)
+    if motion_plan_path.exists():
+        item["motion_plan_path"] = motion_plan_path.name
+        item["motion_plan_sha256"] = core.sha256_file(motion_plan_path)
     item["signature_asset"] = signature_image_src
     item["signature_sha256"] = signature_sha256
-    item["remotion_props_path"] = props_path.name
-    item["remotion_props_sha256"] = core.sha256_file(props_path)
+    if props_path.exists():
+        item["remotion_props_path"] = props_path.name
+        item["remotion_props_sha256"] = core.sha256_file(props_path)
 
     sig_video_path, sig_video_sha256 = extract_signature_video_segment(output_path, item["id"])
     item["signature_video_path"] = sig_video_path.name
@@ -345,6 +346,7 @@ def validate_and_manifest(
         item["manifest_sha256"] = core.sha256_file(manifest_path)
         reasons_text = "; ".join(technical_failures)
         print(f"SHORT_TECHNICAL_REJECTED item={item['id']} count={len(technical_failures)} reasons={reasons_text}")
+        core.save_state(state)
         return
 
     item["technical_verified"] = True

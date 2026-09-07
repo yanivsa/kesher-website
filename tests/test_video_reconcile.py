@@ -481,6 +481,35 @@ class VideoReconcileTests(unittest.TestCase):
             self.assertIn(f"TARGET_ITEM_ID={item['id']}", content)
             self.assertIn("TARGET_SLUG=today", content)
 
+    def test_prepare_generation_reconciles_downloaded_item_with_rejection_manifest(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        item = pipeline.new_item(source)
+        item["status"] = "downloaded"
+        item["technical_verified"] = False
+        manifest_path = pipeline.STATE_DIR / f"{item['id']}-short-manifest.json"
+        manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest_path.write_text(
+            json.dumps({"technical_verified": False, "rejection_reasons": ["Detected male voice"]}),
+            encoding="utf-8",
+        )
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        env_file = self.root / "mock_github_env"
+        with mock.patch.dict(os.environ, {"GITHUB_ENV": str(env_file)}):
+            reconcile.prepare_generation("today")
+            state = pipeline.load_state()
+            # Old item should be superseded
+            self.assertEqual(state["items"][0]["status"], "superseded")
+            # Replacement item should be created
+            self.assertEqual(len(state["items"]), 2)
+            replacement = state["items"][1]
+            self.assertEqual(replacement["status"], "source_selected")
+            self.assertEqual(replacement["technical_retry_count"], 1)
+            content = env_file.read_text(encoding="utf-8")
+            self.assertIn(f"TARGET_ITEM_ID={replacement['id']}", content)
+
 
 if __name__ == "__main__":
     unittest.main()
