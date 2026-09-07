@@ -1,40 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-07",
-  "status": "long_video_running",
+  "cycle": "2026-09-08",
+  "status": "waiting_for_article_window",
   "article": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34081557236,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
-    "last_dispatch_at": "2026-09-07T04:00:42.687105+00:00",
-    "watchdog": {
-      "identity": "2026-09-07",
-      "session_id": "sessions/4598659527200167682",
-      "last_progress_at": "2026-09-07T04:00:42+00:00",
-      "last_fingerprint": "3f6f51a4bdac9439277a22fb4979d072cca156de4ed28e46a23f992aeac9313e",
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "slug": "first-year-boundaries-origin-families",
-    "title": "הכנה לנישואים: איך מעצבים מחדש את הקשר עם משפחות המוצא בשנה הראשונה",
-    "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
-    "published_date": "2026-09-07",
-    "live": true,
-    "live_verified_at": "2026-09-07T20:56:58.418376+00:00",
-    "next_deploy_retry_at": null
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -573,130 +554,49 @@
         "complete": true,
         "completed_at": "2026-09-07T10:13:19.260611+00:00"
       }
+    },
+    {
+      "cycle": "2026-09-07",
+      "status": "long_video_running",
+      "article": {
+        "attempt_count": 1,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 34081557236,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "deploy_attempts": 0,
+        "normalization_status": "pending",
+        "last_dispatch_at": "2026-09-07T04:00:42.687105+00:00",
+        "watchdog": {
+          "identity": "2026-09-07",
+          "session_id": "sessions/4598659527200167682",
+          "last_progress_at": "2026-09-07T04:00:42+00:00",
+          "last_fingerprint": "3f6f51a4bdac9439277a22fb4979d072cca156de4ed28e46a23f992aeac9313e",
+          "last_nudge_at": null,
+          "nudge_count": 0,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "slug": "first-year-boundaries-origin-families",
+        "title": "הכנה לנישואים: איך מעצבים מחדש את הקשר עם משפחות המוצא בשנה הראשונה",
+        "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
+        "published_date": "2026-09-07",
+        "live": true,
+        "live_verified_at": "2026-09-07T20:56:58.418376+00:00",
+        "next_deploy_retry_at": null
+      },
+      "archived_at": "2026-09-07T21:00:47.004371+00:00"
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T13:50:32.354023+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-07T13:56:04.259908+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T13:56:06.009591+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-07T13:56:09.026072+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-07T14:11:29.889613+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T14:11:31.674207+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-07T14:11:36.449429+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "Short derive workflow already active"
-    },
-    {
-      "at": "2026-09-07T14:15:03.477560+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T14:15:05.358656+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-07T14:15:12.574435+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-09-07T14:16:49.965609+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T14:16:55.776939+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-07T14:17:21.340408+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-09-07T14:21:29.416690+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T14:21:34.480668+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-07T14:21:47.168664+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-09-07T14:23:21.928434+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T14:23:31.149494+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-07T14:23:49.884757+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "Short derive workflow already active"
-    },
-    {
-      "at": "2026-09-07T14:27:32.255764+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-07T14:27:59.008213+00:00",
       "from": "article_live",
@@ -1286,12 +1186,36 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-07T21:00:47.004395+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-07T21:00:47.004399+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-07T21:00:47.004782+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-09-07T21:00:48.794416+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-09-07T20:57:05.026937+00:00",
+  "updated_at": "2026-09-07T21:00:48.794435+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1302,124 +1226,30 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "generating",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34158965990,
-    "processed_run_id": 34158552574,
-    "provider_id": "6e59b638-17c5-48a1-be2c-0c05595c5006",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "VIDEO_WORKFLOW_FAILED": 2
-    },
-    "last_dispatch_at": "2026-09-07T20:19:28.937406+00:00",
-    "attempts": 1,
-    "watchdog": {
-      "identity": "long_video:first-year-boundaries-origin-families:6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3:video-20260907-080620-6ee784a59b",
-      "last_progress_at": "2026-09-07T05:33:48.803814+00:00",
-      "last_fingerprint": "fa3bd40cececb9cfffcbfcf7295e3b67d63ec487cbb323939333c739d84356fb",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-09-07T05:56:58.264696+00:00"
-    },
-    "resume_dispatches": 31,
-    "item_id": "video-20260907-231401-65b5bb9c69",
-    "youtube_id": "_7nkqLUyARQ",
-    "youtube_url": "https://youtu.be/_7nkqLUyARQ",
-    "verified": true,
-    "artifact_id": "6e59b638-17c5-48a1-be2c-0c05595c5006",
-    "source_id": "10c3fb33-b319-4841-ba40-1dca6e1770c3",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 34138926523
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 4,
-    "status": "retry_wait",
-    "last_error": {
-      "code": "SHORT_WORKFLOW_FAILED",
-      "message": "Short derive run 34133326237 completed with conclusion=failure",
-      "retryable": true,
-      "retry_at": "2026-09-07T14:51:24.396120+00:00",
-      "at": "2026-09-07T14:46:24.396144+00:00"
-    },
-    "next_retry_at": "2026-09-07T14:51:24.396120+00:00",
-    "run_id": 34133326237,
-    "processed_run_id": 34133326237,
-    "provider_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
-    "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "SHORT_WORKFLOW_FAILED": 1
-    },
-    "last_dispatch_at": "2026-09-07T14:21:47.168640+00:00",
-    "artifact_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
-    "source_id": "84f371ac-c51a-4ed6-8edc-79eb6eabad5a",
-    "adopted_from_long_item_id": "video-20260907-080620-6ee784a59b",
-    "watchdog": {
-      "identity": "short:first-year-boundaries-origin-families:6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3:video-20260907-092028-6ee784a59b",
-      "last_progress_at": "2026-09-07T06:23:16.380544+00:00",
-      "last_fingerprint": "57e99cda436975c630fd5905be2efdeba344dbe9d41fb08e5a7517adf141bade",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "item_id": "video-20260907-092028-6ee784a59b",
-    "youtube_id": "6A1xxpYxxHI",
-    "youtube_url": "https://youtu.be/6A1xxpYxxHI",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_duration_seconds": null,
-    "signature_fullscreen": false,
-    "signature_video_sha256": null,
-    "width": 1080,
-    "height": 1920,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 34133326237
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
-    "overview_youtube_url": "https://youtu.be/_7nkqLUyARQ",
-    "short_youtube_url": "https://youtu.be/6A1xxpYxxHI",
-    "short_portrait_verified": true,
-    "short_signature_verified": false
-  },
-  "interventions": {
-    "v5|first-year-boundaries-origin-families|6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3|long_video": {
-      "pipeline_id": "v5",
-      "slug": "first-year-boundaries-origin-families",
-      "content_sha256": "6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-09-07T08",
-      "last_fingerprint": "78cddd55459ffcc37470826ccc7f71f17151c531d5281c9d25ee77b55358ff8e",
-      "last_controller_action_token": "recovery:1:2026-09-07T05:56:58.264696+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-09-07T05:56:58.264696+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-09-07T05:56:58.264696+00:00"
-    },
-    "v5|first-year-boundaries-origin-families|6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3|short": {
-      "pipeline_id": "v5",
-      "slug": "first-year-boundaries-origin-families",
-      "content_sha256": "6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3",
-      "stage": "short",
-      "strike_count": 1,
-      "last_check_token": "2026-09-07T10",
-      "last_fingerprint": "11107f35ec2689a4d38d5b11ef7805e7deccf8bcb1eaffce6ffbe1203a38e776",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
-      "last_observed_at": "2026-09-07T07:51:09.594711+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
-    }
   }
 }
