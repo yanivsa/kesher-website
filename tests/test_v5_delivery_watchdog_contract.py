@@ -181,6 +181,10 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
                 "youtube_url": "https://youtu.be/short",
                 "portrait_verified": True,
                 "signature_verified": True,
+                "signature_fullscreen": True,
+                "signature_duration_seconds": 3.0,
+                "signature_video_sha256": "s" * 64,
+                "source_mode": "direct-short",
             },
         }
         ready, deliverables = delivery_guard.delivery_contract(state)
@@ -296,7 +300,82 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         self.assertTrue(deliverables["short_signature_verified"])
         self.assertTrue(deliverables["short_portrait_verified"])
 
+    def test_delivery_contract_rejects_overview_derived_short(self) -> None:
+        st = {
+            "article": {"url": "https://kesher.saharoni.com/blog/today-article", "live": True},
+            "long_video": {"youtube_url": "https://youtu.be/overview123", "verified": True},
+            "short": {
+                "youtube_url": "https://youtu.be/short123",
+                "verified": True,
+                "portrait_verified": True,
+                "signature_verified": True,
+                "signature_fullscreen": True,
+                "signature_duration_seconds": 3.0,
+                "signature_video_sha256": "v" * 64,
+                "source_mode": "overview-segment",
+            },
+        }
+        ready, deliverables = delivery_guard.delivery_contract(st)
+        self.assertFalse(ready)
+
+    def test_delivery_contract_rejects_svg_only_short(self) -> None:
+        st = {
+            "article": {"url": "https://kesher.saharoni.com/blog/today-article", "live": True},
+            "long_video": {"youtube_url": "https://youtu.be/overview123", "verified": True},
+            "short": {
+                "youtube_url": "https://youtu.be/short123",
+                "verified": True,
+                "portrait_verified": True,
+                "signature_verified": True,
+                "signature_asset": "signature-mask.svg",
+                "signature_sha256": "c" * 64,
+                "source_mode": "direct-short",
+            },
+        }
+        ready, deliverables = delivery_guard.delivery_contract(st)
+        self.assertFalse(ready)
+        self.assertFalse(deliverables["short_signature_verified"])
+
+    def test_short_public_portrait_verified_rejects_overview_segment(self) -> None:
+        item = public_item(youtube_id="short789", width=1080, height=1920)
+        item["source_mode"] = "overview-segment"
+        self.assertFalse(
+            delivery_guard.short_public_portrait_verified(
+                item,
+                source(),
+                youtube_verified=lambda *_: True,
+            )
+        )
+
+    def test_short_public_portrait_verified_rejects_svg_only(self) -> None:
+        svg_item = {
+            "id": "short-svg-only",
+            "status": "uploaded",
+            "uploaded": True,
+            "source": source(),
+            "youtube_id": "short789",
+            "youtube_url": "https://youtu.be/short789",
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+            "media": {"width": 1080, "height": 1920},
+            "technical_verified": True,
+            "signature_verified": True,
+            "signature_asset": "signature-mask.svg",
+            "source_mode": "direct-short",
+        }
+        self.assertFalse(
+            delivery_guard.short_public_portrait_verified(
+                svg_item,
+                source(),
+                youtube_verified=lambda *_: True,
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
+
 

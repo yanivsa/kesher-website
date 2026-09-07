@@ -67,19 +67,20 @@ def generation_prompt(source: dict[str, Any]) -> str:
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
     item = _base_new_item(source)
     item["type"] = "article_short"
-    mode = os.environ.get("KESHER_SHORT_MODE", "").strip().lower()
-    item["source_mode"] = "overview-segment" if mode == "derive" else "direct-short"
+    item["source_mode"] = "direct-short"
     item["fresh_generation_attempt"] = int(item.get("technical_retry_count") or 0) + 1
     return item
 
 
 def short_window(raw_duration: float) -> tuple[float, float]:
     duration = float(raw_duration)
-    if duration < SHORT_MIN_SECONDS:
+    if duration < SHORT_MIN_SECONDS or duration > SHORT_MAX_SECONDS:
         raise core.PipelineError(
-            f"NotebookLM source is too short for a usable Short: {duration:.3f}s"
+            f"NotebookLM Short source duration {duration:.3f}s is out of range "
+            f"[{SHORT_MIN_SECONDS:.1f}, {SHORT_MAX_SECONDS:.1f}]s; "
+            "deriving from long Overview is forbidden"
         )
-    return 0.0, round(min(duration, SHORT_MAX_SECONDS), 3)
+    return 0.0, round(duration, 3)
 
 
 def short_technical_failures(
@@ -110,6 +111,8 @@ def short_technical_failures(
             failures.append(pitch_msg)
 
     if item is not None:
+        if item.get("source_mode") == "overview-segment":
+            failures.append("נפסל: גזירת Short מסגמנט של סרטון ארוך (overview-segment) אסורה תחת חוזה Short עצמאי")
         if item.get("signature_fullscreen") is not True:
             failures.append("סגיר החתימה אינו מוגדר כמסך מלא (signature_fullscreen)")
         try:
@@ -228,7 +231,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
             raise core.PipelineError(f"Remotion Short render failed: {detail}")
 
     item["visual_pipeline"] = VISUAL_PIPELINE
-    item["source_mode"] = "overview-segment" if float(raw_media["duration"]) > SHORT_MAX_SECONDS else "direct-short"
+    item["source_mode"] = "direct-short"
     item["short_start_seconds"] = start_seconds
     item["short_duration_seconds"] = duration_seconds
     if motion_plan_path.exists():

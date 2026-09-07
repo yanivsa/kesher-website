@@ -28,10 +28,10 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("הרעיון השלם", prompt)
         self.assertIn("בתחילת הווידאו", prompt)
 
-    def test_long_source_uses_bounded_contiguous_opening_window(self):
-        start, duration = short.short_window(132.0)
-        self.assertEqual(start, 0.0)
-        self.assertEqual(duration, 55.0)
+    def test_long_source_is_rejected_as_overview_derivation_forbidden(self):
+        with self.assertRaises(short.core.PipelineError) as ctx:
+            short.short_window(132.0)
+        self.assertIn("deriving from long Overview is forbidden", str(ctx.exception))
 
     def test_valid_short_source_keeps_its_natural_duration(self):
         start, duration = short.short_window(44.25)
@@ -115,14 +115,26 @@ class ShortPipelineV4Tests(unittest.TestCase):
             self.assertIsNotNone(target_env)
             self.assertEqual(target_env["id"], "item-new")
 
-    def test_new_item_creates_direct_short_mode_by_default(self):
+    def test_new_item_always_creates_direct_short_mode(self):
         item = short.new_item(self.source())
         self.assertEqual(item["type"], "article_short")
         self.assertEqual(item["source_mode"], "direct-short")
 
         with mock.patch.dict(os.environ, {"KESHER_SHORT_MODE": "derive"}):
             derived_item = short.new_item(self.source())
-            self.assertEqual(derived_item["source_mode"], "overview-segment")
+            self.assertEqual(derived_item["source_mode"], "direct-short")
+
+    def test_short_technical_failures_rejects_overview_segment(self):
+        media = {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 45.0}
+        item = {
+            "source_mode": "overview-segment",
+            "signature_fullscreen": True,
+            "signature_duration_seconds": 3.0,
+            "signature_video_sha256": "f" * 64,
+            "signature_verified": True,
+        }
+        failures = short.short_technical_failures(media, item=item)
+        self.assertTrue(any("overview-segment" in err for err in failures))
 
     def test_short_technical_failures_validates_signature_video_properties(self):
         media = {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 45.0}

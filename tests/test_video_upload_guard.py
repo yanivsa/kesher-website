@@ -70,5 +70,43 @@ class VideoUploadGuardTests(unittest.TestCase):
         self.assertEqual(selected["id"], "video-older")
 
 
+    def test_short_candidate_passes_with_verified_signature_video(self) -> None:
+        item = technical_item()
+        item.update({
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "signature_verified": True,
+            "signature_fullscreen": True,
+            "signature_duration_seconds": 3.0,
+            "signature_video_sha256": "v" * 64,
+        })
+        guard.validate_candidate(item)
+
+    def test_short_candidate_fails_closed_when_derived_from_overview_segment(self) -> None:
+        item = technical_item()
+        item.update({
+            "type": "article_short",
+            "source_mode": "overview-segment",
+            "signature_verified": True,
+            "signature_fullscreen": True,
+            "signature_duration_seconds": 3.0,
+            "signature_video_sha256": "v" * 64,
+        })
+        with self.assertRaisesRegex(guard.UploadGuardError, "derived from overview-segment"):
+            guard.validate_candidate(item)
+
+    def test_short_candidate_fails_closed_when_svg_only_or_missing_signature_video(self) -> None:
+        item = technical_item()
+        item.update({
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "signature_verified": True,
+            "signature_asset": "signature-mask.svg",
+            "signature_sha256": "s" * 64,
+        })
+        with self.assertRaisesRegex(guard.UploadGuardError, "lacks verified 3.0s full-screen video signature"):
+            guard.validate_candidate(item)
+
+
 if __name__ == "__main__":
     unittest.main()
