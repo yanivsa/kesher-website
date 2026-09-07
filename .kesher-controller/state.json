@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T20:19:06.963531+00:00",
+    "live_verified_at": "2026-09-07T20:28:13.411304+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,18 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T13:10:20.426511+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T13:10:28.084871+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-09-07T13:10:40.890454+00:00",
       "from": "long_video_complete",
@@ -1286,9 +1274,21 @@
         "operation": "full",
         "resume": 31
       }
+    },
+    {
+      "at": "2026-09-07T20:28:13.411320+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T20:28:24.167706+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-07T20:19:28.937420+00:00",
+  "updated_at": "2026-09-07T20:28:24.167724+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1303,10 +1303,10 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34158552574,
+    "run_id": 34158965990,
     "processed_run_id": 34158552574,
     "provider_id": "6e59b638-17c5-48a1-be2c-0c05595c5006",
     "failure_fingerprint": null,
