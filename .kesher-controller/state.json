@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-07",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34081557236,
@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T06:20:07.760539+00:00",
+    "live_verified_at": "2026-09-07T07:55:30.987704+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1364,12 +1364,30 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-09-07T07:55:30.987723+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T07:55:34.720518+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T07:55:40.589274+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-07T06:20:14.873778+00:00",
+  "updated_at": "2026-09-07T07:55:40.589291+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1409,7 +1427,7 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34090318823,
@@ -1428,7 +1446,18 @@
       "last_fingerprint": "57e99cda436975c630fd5905be2efdeba344dbe9d41fb08e5a7517adf141bade",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "item_id": "video-20260907-092028-6ee784a59b",
+    "youtube_id": "6A1xxpYxxHI",
+    "youtube_url": "https://youtu.be/6A1xxpYxxHI",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": false,
+    "signature_duration_seconds": null,
+    "signature_fullscreen": false,
+    "signature_video_sha256": null,
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
