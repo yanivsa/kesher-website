@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T15:25:12.294435+00:00",
+    "live_verified_at": "2026-09-07T15:29:17.396677+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,18 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T07:55:30.987723+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T07:55:34.720518+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-09-07T07:55:40.589274+00:00",
       "from": "long_video_complete",
@@ -1243,9 +1231,25 @@
         "operation": "full",
         "resume": 13
       }
+    },
+    {
+      "at": "2026-09-07T15:29:17.396695+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T15:29:33.621176+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 15
+      }
     }
   ],
-  "updated_at": "2026-09-07T15:25:24.627885+00:00",
+  "updated_at": "2026-09-07T15:29:33.621185+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1271,7 +1275,7 @@
     "failure_count_by_type": {
       "VIDEO_WORKFLOW_FAILED": 1
     },
-    "last_dispatch_at": "2026-09-07T15:25:24.627869+00:00",
+    "last_dispatch_at": "2026-09-07T15:29:33.621169+00:00",
     "attempts": 1,
     "watchdog": {
       "identity": "long_video:first-year-boundaries-origin-families:6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3:video-20260907-080620-6ee784a59b",
@@ -1280,7 +1284,7 @@
       "recovery_count": 1,
       "last_recovery_at": "2026-09-07T05:56:58.264696+00:00"
     },
-    "resume_dispatches": 13,
+    "resume_dispatches": 15,
     "item_id": "video-20260907-174619-65b5bb9c69",
     "youtube_id": "_7nkqLUyARQ",
     "youtube_url": "https://youtu.be/_7nkqLUyARQ",
