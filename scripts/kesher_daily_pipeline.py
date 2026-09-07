@@ -16,6 +16,8 @@ import importlib.metadata
 import json
 import os
 import re
+import shutil
+import struct
 import subprocess
 import sys
 import time
@@ -52,6 +54,9 @@ STATE_VERSION = 1
 POLL_INTERVAL_SECONDS = 30
 ALLOWED_REVIEW = {"approved", "rejected"}
 REVIEW_FRAME_COUNT = 8
+SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
+SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
+FEMALE_PITCH_MIN_HZ = 155.0
 
 
 class PipelineError(RuntimeError):
@@ -531,6 +536,75 @@ def transcribe_hebrew(video_path: Path, item: dict[str, Any]) -> Path:
     return transcript_path
 
 
+def prepare_signature_asset() -> str:
+    source = PROJECT_DIR / SIGNATURE_SOURCE
+    if not source.is_file() or source.stat().st_size <= 0:
+        raise PipelineError(f"Approved signature asset is missing: {source}")
+    svg = source.read_text(encoding="utf-8")
+    if "<svg" not in svg or "</svg>" not in svg:
+        raise PipelineError(f"Approved signature asset is not a valid SVG: {source}")
+
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    target = STATE_DIR / SIGNATURE_RUNTIME_NAME
+    shutil.copyfile(source, target)
+    return target.name
+
+
+def estimate_voice_pitch(media_path: Path) -> float | None:
+    """Estimate median fundamental frequency (pitch in Hz) from speech in audio stream."""
+    cmd = [
+        "ffmpeg", "-hide_banner", "-loglevel", "error", "-ss", "10", "-t", "30",
+        "-i", str(media_path), "-vn", "-ac", "1", "-ar", "16000", "-f", "s16le", "-"
+    ]
+    try:
+        proc = subprocess.run(cmd, capture_output=True, check=False, timeout=30)
+    except Exception:
+        return None
+    if proc.returncode != 0 or len(proc.stdout) < 3200:
+        return None
+
+    samples = struct.unpack(f"<{len(proc.stdout)//2}h", proc.stdout)
+    sr = 16000
+    frame_len = 1024
+    hop = 512
+    pitches: list[float] = []
+    min_lag = int(sr / 350)  # ~350 Hz max female pitch
+    max_lag = int(sr / 75)   # ~75 Hz min male pitch
+
+    for start in range(0, len(samples) - frame_len, hop):
+        frame = samples[start : start + frame_len]
+        energy = sum(s * s for s in frame) / frame_len
+        if energy < 100000:  # silence / low energy
+            continue
+        r0 = sum(frame[i] * frame[i] for i in range(frame_len - max_lag))
+        if r0 == 0:
+            continue
+        best_r = 0
+        best_lag = 0
+        for lag in range(min_lag, max_lag):
+            r = sum(frame[i] * frame[i + lag] for i in range(frame_len - lag))
+            if r > best_r:
+                best_r = r
+                best_lag = lag
+        if best_r / r0 > 0.45 and best_lag > 0:
+            pitch = sr / best_lag
+            pitches.append(pitch)
+
+    if not pitches:
+        return None
+    pitches.sort()
+    return pitches[len(pitches) // 2]
+
+
+def validate_female_voice(media_path: Path) -> tuple[bool, float | None, str]:
+    pitch = estimate_voice_pitch(media_path)
+    if pitch is None:
+        return True, None, "Voice pitch analysis inconclusive (insufficient voiced segments)"
+    if pitch < FEMALE_PITCH_MIN_HZ:
+        return False, pitch, f"Detected male voice pitch ({pitch:.1f} Hz < {FEMALE_PITCH_MIN_HZ:.0f} Hz threshold); Israeli female voice required"
+    return True, pitch, f"Female voice pitch verified ({pitch:.1f} Hz)"
+
+
 def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     output_path = STATE_DIR / f"{item['id']}-remotion-final.mp4"
     if output_path.exists() and output_path.stat().st_size > 0:
@@ -544,6 +618,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
         raise PipelineError("NotebookLM audio duration is invalid for Remotion")
     motion_plan_path = STATE_DIR / f"{item['id']}-motion-plan.json"
     motion_plan = generate_motion_plan(raw_path, motion_plan_path, duration=float(raw_media["duration"]))
+    signature_image_src = prepare_signature_asset()
     props_path = STATE_DIR / f"{item['id']}-remotion-props.json"
     atomic_json_write(
         props_path,
@@ -555,6 +630,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
             "title": item["source"]["title"],
             "category": item["source"]["category"],
             "url": DISPLAY_URL,
+            "signatureImageSrc": signature_image_src,
         },
     )
     command = [
@@ -651,6 +727,9 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         technical_failures.append(
             f"יחס התמונה {media['width']}x{media['height']} אינו יחס אופקי טבעי 16:9"
         )
+    female_ok, pitch_hz, pitch_msg = validate_female_voice(final_path)
+    if not female_ok:
+        technical_failures.append(pitch_msg)
     metadata = item["youtube_metadata"]
     metadata_failure = ""
     try:

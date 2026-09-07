@@ -11,6 +11,7 @@ import {
 } from "remotion";
 import {palette} from "./theme";
 import type {KesherOverviewProps, MotionSegment} from "./types";
+import {FullScreenSignatureOutro} from "../components/FullScreenSignatureOutro";
 
 export const KesherOverview: React.FC<KesherOverviewProps> = ({
   videoSrc,
@@ -196,6 +197,14 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
       >
         {url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
       </div>
+
+      {/* Animated signature outro — last 3 seconds */}
+      <FullScreenSignatureOutro
+        durationSeconds={3}
+        backgroundColor={`linear-gradient(135deg, ${palette.ink} 0%, #0d1712 100%)`}
+        signatureColor={palette.gold}
+        websiteUrl={url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+      />
     </AbsoluteFill>
   );
 };

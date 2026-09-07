@@ -78,7 +78,7 @@ def short_window(raw_duration: float) -> tuple[float, float]:
     return 0.0, round(min(duration, SHORT_MAX_SECONDS), 3)
 
 
-def short_technical_failures(media: dict[str, Any]) -> list[str]:
+def short_technical_failures(media: dict[str, Any], video_path: Path | None = None) -> list[str]:
     failures: list[str] = []
     if str(media.get("codec") or "") != "h264":
         failures.append(f"קודק הווידאו הוא {media.get('codec')} ולא H.264")
@@ -96,6 +96,10 @@ def short_technical_failures(media: dict[str, Any]) -> list[str]:
         failures.append(
             f"יחס התמונה {width}x{height} אינו Short אנכי 1080x1920"
         )
+    if video_path and video_path.exists():
+        female_ok, pitch_hz, pitch_msg = core.validate_female_voice(video_path)
+        if not female_ok:
+            failures.append(pitch_msg)
     return failures
 
 
@@ -214,7 +218,7 @@ def validate_and_manifest(
         for relative in item["frame_paths"]
     }
 
-    technical_failures = short_technical_failures(media)
+    technical_failures = short_technical_failures(media, final_path)
     metadata = item["youtube_metadata"]
     metadata_failure = ""
     try:

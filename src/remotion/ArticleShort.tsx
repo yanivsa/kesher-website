@@ -2,13 +2,12 @@ import React from "react";
 import {Video} from "@remotion/media";
 import {
   AbsoluteFill,
-  Img,
-  Sequence,
   interpolate,
   staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+import {FullScreenSignatureOutro} from "./components/FullScreenSignatureOutro";
 
 export interface MotionTarget {
   startFrame: number;
@@ -49,9 +48,6 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const signatureDurationFrames = Math.round(SIGNATURE_SECONDS * fps);
-  const signatureStart = Math.max(0, durationInFrames - signatureDurationFrames);
-
   const target = motionPlan.find(
     (entry) => frame >= entry.startFrame && frame <= entry.endFrame,
   );
@@ -144,27 +140,12 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
         }}
       >
         שירה סהרוני · {url}
-      </div>
-
-      <Sequence from={signatureStart} durationInFrames={signatureDurationFrames}>
-        <AbsoluteFill
-          style={{
-            backgroundColor: "white",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Img
-            src={staticFile(signatureImageSrc)}
-            style={{
-              width: "88%",
-              height: "88%",
-              objectFit: "contain",
-              objectPosition: "center center",
-            }}
-          />
-        </AbsoluteFill>
-      </Sequence>
+      {/* Animated signature outro — last 3 seconds */}
+      <FullScreenSignatureOutro
+        durationSeconds={SIGNATURE_SECONDS}
+        signatureImageSrc={signatureImageSrc}
+        websiteUrl={url}
+      />
     </AbsoluteFill>
   );
 };
