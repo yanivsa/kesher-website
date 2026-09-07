@@ -23,10 +23,12 @@ from typing import Any
 
 if __package__:
     from . import kesher_daily_pipeline as pipeline
+    from . import kesher_e2e_delivery_guard as delivery_guard
     from .kesher_automation_policy import load_policy
     from .kesher_video_upload_guard import validate_candidate as validate_upload_candidate
 else:
     import kesher_daily_pipeline as pipeline
+    import kesher_e2e_delivery_guard as delivery_guard
     from kesher_automation_policy import load_policy
     from kesher_video_upload_guard import validate_candidate as validate_upload_candidate
 
@@ -219,12 +221,19 @@ def prepare_generation(target_slug: str = "") -> int:
         ]
         uploaded = [
             item for item in same_source
-            if item.get("uploaded") is True and item.get("status") == "uploaded"
+            if delivery_guard.short_public_portrait_verified(item)
         ]
         if uploaded:
             workflow_output("skip_generation", "true")
             print(f"SHORT_GENERATION_ALREADY_PUBLIC slug={target_slug} item={uploaded[-1].get('id')}")
             return 0
+
+        # Supersede unverified or legacy items for this slug so they do not block fresh recovery
+        for item in same_source:
+            if item.get("uploaded") is True and not delivery_guard.short_public_portrait_verified(item):
+                item["status"] = "superseded"
+                item["superseded_reason"] = "unverified_or_legacy_short"
+                item["uploaded"] = False
 
         unresolved = [
             item for item in same_source

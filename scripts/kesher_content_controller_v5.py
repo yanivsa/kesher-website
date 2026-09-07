@@ -362,12 +362,16 @@ class V5Controller(v4.V4Controller):
             state["short"]["status"] = "exhausted"
             return core.Action("blocked", "Short attempts exhausted")
 
-        inputs = {
-            "operation": "derive",
-            "derive_slug": source["slug"],
-            "derive_content_sha256": source["content_sha256"],
-            "derive_long_item_id": str(long_item.get("id") or ""),
-        }
+        short_mode = os.environ.get("KESHER_SHORT_MODE", "").strip().lower()
+        if short_mode in {"direct", "standalone"}:
+            inputs = {"operation": "generate"}
+        else:
+            inputs = {
+                "operation": "derive",
+                "derive_slug": source["slug"],
+                "derive_content_sha256": source["content_sha256"],
+                "derive_long_item_id": str(long_item.get("id") or ""),
+            }
         core.GitHubClient.dispatch(self.github, SHORT_WORKFLOW, inputs)
         state["short"].update({
             "attempt_count": count + 1,

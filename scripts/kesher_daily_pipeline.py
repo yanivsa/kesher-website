@@ -215,6 +215,19 @@ def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
     return eligible[0][2]
 
 
+def article_by_slug(slug: str) -> dict[str, Any]:
+    if not POSTS_FILE.exists():
+        raise PipelineError(f"Article source does not exist: {POSTS_FILE}")
+    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+    if not isinstance(posts, list):
+        raise PipelineError("posts.json must contain a list")
+    for post in posts:
+        target = str(post.get("slug") or post.get("id") or "").strip()
+        if target == slug:
+            return source_metadata(post)
+    raise PipelineError(f"Article with slug {slug} not found")
+
+
 def notebooklm_env() -> dict[str, str]:
     auth_json = os.environ.get("NOTEBOOKLM_AUTH_JSON", "").strip()
     env = os.environ.copy()
@@ -370,15 +383,13 @@ def active_item(
     ]
     if target_item_id:
         scoped = [item for item in matches if item.get("id") == target_item_id]
-        if scoped:
-            return scoped[0]
+        return scoped[0] if scoped else None
     if target_slug:
         scoped = [
             item for item in matches
             if str((item.get("source") or {}).get("slug") or (item.get("source") or {}).get("id") or "").strip() == target_slug
         ]
-        if scoped:
-            return scoped[0]
+        return scoped[0] if scoped else None
     if len(matches) > 1:
         raise PipelineError("More than one active video exists; refusing duplicate work")
     return matches[0] if matches else None
@@ -835,7 +846,11 @@ def run_generation(
         print(f"NO_GENERATION active_item={item['id']} status={item['status']}")
         return 0
     if not item:
-        source = select_newest_unused_article(state)
+        target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+        if target_slug:
+            source = article_by_slug(target_slug)
+        else:
+            source = select_newest_unused_article(state)
         item = new_item(source)
         state["items"].append(item)
         save_state(state)

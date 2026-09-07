@@ -50,6 +50,7 @@ jobs:
           KESHER_CHILD_RUN_ID: ${{ github.event.workflow_run.id }}
           KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name }}
           KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          KESHER_SHORT_MODE: direct
         run: |
           set -euo pipefail
           python3 -u scripts/kesher_content_controller_v5_runtime.py --report-json | tee /tmp/kesher-controller.json
