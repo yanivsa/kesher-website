@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-07",
-  "status": "complete",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -568,14 +568,13 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "controller",
+    "code": "DELIVERY_CONTRACT_INCOMPLETE",
+    "message": "cycle cannot complete without live article, public Overview, public portrait Short and verified signature ending",
+    "at": "2026-09-07T07:55:42.120020+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-04T13:59:59.809096+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-09-04T14:00:02.491282+00:00",
       "from": "long_video_complete",
@@ -1382,9 +1381,18 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-07T07:55:42.120036+00:00",
+      "from": "complete",
+      "to": "blocked",
+      "reason": "DELIVERY_CONTRACT_INCOMPLETE",
+      "details": {
+        "message": "cycle cannot complete without live article, public Overview, public portrait Short and verified signature ending"
+      }
     }
   ],
-  "updated_at": "2026-09-07T07:55:40.589291+00:00",
+  "updated_at": "2026-09-07T07:55:42.120044+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1465,8 +1473,8 @@
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "overview_youtube_url": "https://youtu.be/_7nkqLUyARQ",
-    "short_youtube_url": null,
-    "short_portrait_verified": false,
+    "short_youtube_url": "https://youtu.be/6A1xxpYxxHI",
+    "short_portrait_verified": true,
     "short_signature_verified": false
   },
   "interventions": {
