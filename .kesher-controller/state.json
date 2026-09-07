@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T14:16:49.965591+00:00",
+    "live_verified_at": "2026-09-07T14:21:29.416669+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,39 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-05T22:29:29.994150+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
-      "details": {
-        "backlog_cycle": "2026-08-31",
-        "source_slug": "aliyah-couples-cultural-gaps-identity"
-      }
-    },
-    {
-      "at": "2026-09-05T22:29:34.432604+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "COMPLETED_WITHOUT_PR",
-      "details": {
-        "message": "Jules completed without creating a pull request; Jules diagnostic: I have already removed the scratch files.",
-        "retry_at": "2026-09-05T22:34:34.432577+00:00",
-        "failure_streak": 1,
-        "run_id": 33993759015,
-        "session_id": "sessions/2750507895984920114"
-      }
-    },
-    {
-      "at": "2026-09-05T23:23:19.332824+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "dispatched exact prior-cycle long-video state handoff before current-cycle watchdog",
-      "details": {
-        "backlog_cycle": "2026-09-01",
-        "source_slug": "aliyah-homesickness-balance"
-      }
-    },
     {
       "at": "2026-09-06T06:03:02.356155+00:00",
       "from": "article_retry_wait",
@@ -1297,9 +1264,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-07T14:21:29.416690+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T14:21:34.480668+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T14:21:47.168664+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-07T14:17:21.340417+00:00",
+  "updated_at": "2026-09-07T14:21:47.168674+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1341,7 +1326,7 @@
     "source_id": "84f371ac-c51a-4ed6-8edc-79eb6eabad5a"
   },
   "short": {
-    "attempt_count": 3,
+    "attempt_count": 4,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1351,7 +1336,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-07T14:17:21.340386+00:00",
+    "last_dispatch_at": "2026-09-07T14:21:47.168640+00:00",
     "artifact_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
     "source_id": "84f371ac-c51a-4ed6-8edc-79eb6eabad5a",
     "adopted_from_long_item_id": "video-20260907-080620-6ee784a59b",
