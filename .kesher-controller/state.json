@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T14:21:29.416669+00:00",
+    "live_verified_at": "2026-09-07T14:23:21.928411+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,36 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-06T06:03:02.356155+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
-      "details": {
-        "backlog_cycle": "2026-09-01",
-        "source_slug": "aliyah-homesickness-balance",
-        "long_item_id": "video-20260906-022345-04b29d6e54"
-      }
-    },
-    {
-      "at": "2026-09-06T06:53:47.338388+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
-      "details": {
-        "backlog_cycle": "2026-09-01",
-        "source_slug": "aliyah-homesickness-balance"
-      }
-    },
-    {
-      "at": "2026-09-06T06:53:53.759405+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 2
-      }
-    },
     {
       "at": "2026-09-06T06:57:50.674006+00:00",
       "from": "article_generating",
@@ -1282,9 +1252,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-07T14:23:21.928434+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T14:23:31.149494+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T14:23:49.884757+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-09-07T14:21:47.168674+00:00",
+  "updated_at": "2026-09-07T14:23:49.884778+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1330,7 +1318,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34131588555,
+    "run_id": 34132704016,
     "processed_run_id": 34131588555,
     "provider_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
     "failure_fingerprint": null,
