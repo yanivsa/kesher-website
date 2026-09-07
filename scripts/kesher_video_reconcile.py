@@ -381,9 +381,11 @@ def adopt_long_form_provider(state_path: str, slug: str, content_sha256: str, lo
     ]
     uploaded = [item for item in same_source if item.get("uploaded") is True and item.get("status") == "uploaded"]
     if uploaded:
+        workflow_output("skip_generation", "true")
         print(f"SHORT_DERIVE_ALREADY_PUBLIC slug={slug} item={uploaded[-1].get('id')}")
         return 0
 
+    workflow_output("skip_generation", "false")
     unresolved = [item for item in same_source if item.get("uploaded") is not True and item.get("status") in UNRESOLVED_STATUSES]
     if len(unresolved) > 1:
         raise pipeline.PipelineError("More than one unresolved Short exists for derived source")

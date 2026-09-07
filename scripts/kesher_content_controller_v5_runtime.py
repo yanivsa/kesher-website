@@ -48,8 +48,21 @@ def ordered_recoverable_backlog(rows):
     return sorted(recoverable, key=lambda row: str(row.get("cycle") or ""), reverse=True)
 
 
+def backlog_may_run(state, *, current_cycle_complete: bool) -> bool:
+    """Allow backlog work only when it cannot starve an actionable current cycle.
+
+    The only incomplete-current-cycle exception is the pre-publication waiting
+    window, where there is nothing useful to advance yet. Once today's article,
+    Overview or Short is actionable/in-flight/blocked, current-cycle ownership
+    wins until the strict A+B+C delivery contract is complete.
+    """
+    if current_cycle_complete:
+        return True
+    return str((state or {}).get("status") or "") == "waiting_for_article_window"
+
+
 class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_runtime.RuntimeV5Controller):
-    """Existing V5 runtime with prior-cycle delivery reconciliation first."""
+    """Existing V5 runtime with current-cycle delivery ahead of backlog recovery."""
 
     PIPELINE_ID = "v5"
 
@@ -228,7 +241,17 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
         return v5.core.Action("dispatch_backlog_long_video", "seeded exact prior-cycle long-video recovery", inputs)
 
     def tick(self):
-        state = self.state()
+        # Always reconcile/advance today's authoritative identity first. This is
+        # the guard against backlog starvation: a historical row may never make
+        # us skip the current-cycle watchdog, recovery or direct-takeover logic.
+        state, current_action = super().tick()
+        current_cycle_complete, deliverables = delivery_guard.delivery_contract(state)
+        state["deliverables"] = deliverables
+
+        if not backlog_may_run(state, current_cycle_complete=current_cycle_complete):
+            self.github.save_controller_state(state)
+            return state, current_action
+
         backlog_action = self._backlog_media_preflight(state)
         self.github.save_controller_state(state)
         if backlog_action is not None:
@@ -236,7 +259,7 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             state["deliverables"] = deliverables
             self.github.save_controller_state(state)
             return state, backlog_action
-        return super().tick()
+        return state, current_action
 
 
 def install_runtime() -> None:

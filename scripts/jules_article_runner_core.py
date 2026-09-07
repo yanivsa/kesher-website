@@ -171,7 +171,7 @@ Article policy version: `{ARTICLE_POLICY_VERSION}`.
 Execution contract:
 1. Read the durable policy below first and follow it exactly.
 2. Read current `src/data/posts.json`, especially the recent articles, before selecting the topic.
-3. Produce exactly one new Hebrew article for the publication slot and only the minimal generated indexes/image evidence allowed by policy.
+3. Produce EXACTLY ONE new Hebrew article for the publication slot and append EXACTLY ONE object into the `src/data/posts.json` array. Under NO circumstances generate, draft, or append multiple articles. If multiple concepts are considered, pick ONLY the single best one and discard all others.
 4. Article publication runs MUST NOT create a video. The NotebookLM/Remotion video is a later controller stage after the article is public.
 5. Run the required generation and full checks from the durable policy.
 6. Use Jules built-in PR submission. The non-draft PR title MUST start exactly with `Publish Kesher article:`.

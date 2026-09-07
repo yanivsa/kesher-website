@@ -437,7 +437,7 @@ test('couples before-separation landing page (/services/couples/before-separatio
   });
 
   // Verify non-legal disclaimer exists
-  await expect(page.getByText('אינו מהווה ייעוץ משפטי').first()).toBeVisible();
+  await expect(page.getByText('המפגש מיועד לבירור זוגי, רגשי ותקשורתי').first()).toBeVisible();
   // Ensure standalone layout: no global header navigation
   await expect(page.getByRole('navigation', { name: 'ניווט ראשי' })).toHaveCount(0);
 });
