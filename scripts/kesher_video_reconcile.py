@@ -232,9 +232,28 @@ def is_verified_public_short(item: dict[str, Any], source: dict[str, Any]) -> bo
     return delivery_guard._signature_verified(item)
 
 
+def export_target(item: dict[str, Any] | None) -> None:
+    if not isinstance(item, dict):
+        return
+    target_id = str(item.get("id") or "").strip()
+    slug = source_slug(item)
+    if not target_id and not slug:
+        return
+    env_path = os.environ.get("GITHUB_ENV")
+    if env_path:
+        try:
+            with open(env_path, "a", encoding="utf-8") as f:
+                if target_id:
+                    f.write(f"TARGET_ITEM_ID={target_id}\n")
+                if slug and not os.environ.get("TARGET_SLUG"):
+                    f.write(f"TARGET_SLUG={slug}\n")
+        except OSError:
+            pass
+
+
 def prepare_generation(target_slug: str = "") -> int:
     state = pipeline.load_state()
-    target_slug = (target_slug or os.environ.get("DERIVE_SLUG") or "").strip()
+    target_slug = (target_slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
     if target_slug:
         source = current_source_snapshot(target_slug)
         same_source = [
@@ -263,6 +282,7 @@ def prepare_generation(target_slug: str = "") -> int:
         ]
         if unresolved:
             item = unresolved[0]
+            export_target(item)
             if item.get("status") == "rejected" and item.get("technical_verified") is not True:
                 replacement = retry_technical_rejection(state, item)
                 pipeline.save_state(state)
@@ -272,6 +292,7 @@ def prepare_generation(target_slug: str = "") -> int:
                         f"slug={target_slug} released_without_short=yes fresh_attempts=4"
                     )
                     return 0
+                export_target(replacement)
                 print(
                     "VIDEO_RECONCILED_GENERATION "
                     f"slug={target_slug} technical_retry=yes"
@@ -289,12 +310,14 @@ def prepare_generation(target_slug: str = "") -> int:
         item["fresh_generation_attempt"] = 1
         state.setdefault("items", []).append(item)
         pipeline.save_state(state)
+        export_target(item)
         print(f"VIDEO_RECONCILED_GENERATION slug={target_slug} initialized=yes")
         return 0
 
     existing = unresolved_items(state)
     if existing:
         item = existing[0]
+        export_target(item)
         if item.get("status") == "rejected" and item.get("technical_verified") is not True:
             replacement = retry_technical_rejection(state, item)
             pipeline.save_state(state)
@@ -304,6 +327,7 @@ def prepare_generation(target_slug: str = "") -> int:
                     f"slug={source_slug(item)} released_without_short=yes fresh_attempts=4"
                 )
                 return 0
+            export_target(replacement)
             print(
                 "VIDEO_RECONCILED_GENERATION "
                 f"slug={source_slug(replacement)} technical_retry=yes backlog_size={len(existing)}"
@@ -368,6 +392,7 @@ def prepare_upload(target_slug: str | None = None) -> int:
         return 0
 
     item = unresolved[0]
+    export_target(item)
     if item.get("youtube_id") and item.get("uploaded") is not True:
         if recover_persisted_youtube_id(state, item):
             workflow_output("ready", "false")

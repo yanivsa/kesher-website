@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import unittest
 from datetime import datetime
@@ -465,6 +466,20 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(replacement["status"], "source_selected")
         self.assertEqual(replacement["technical_retry_count"], 1)
         self.assertEqual(replacement["fresh_generation_attempt"], 2)
+
+    def test_prepare_generation_exports_target_to_github_env(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        item = pipeline.new_item(source)
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        env_file = self.root / "mock_github_env"
+        with mock.patch.dict(os.environ, {"GITHUB_ENV": str(env_file)}):
+            reconcile.prepare_generation()
+            content = env_file.read_text(encoding="utf-8")
+            self.assertIn(f"TARGET_ITEM_ID={item['id']}", content)
+            self.assertIn("TARGET_SLUG=today", content)
 
 
 if __name__ == "__main__":
