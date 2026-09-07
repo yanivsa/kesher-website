@@ -17,6 +17,16 @@ from typing import Any
 SCHEMA_VERSION = 1
 ALLOWED_WINDOWS = {"24h", "7d"}
 ALLOWED_TYPES = {"article", "video", "short"}
+ALLOWED_DECISIONS = {
+    "continue_topic",
+    "change_headline",
+    "change_time",
+    "stop_type",
+    "double_down",
+    "iterate",
+    "retire",
+    "observe",
+}
 METRIC_FIELDS = {
     "users",
     "sessions",
@@ -31,6 +41,13 @@ METRIC_FIELDS = {
 }
 
 
+def canonical_content_id(content_type: str, slug_or_id: str) -> str:
+    clean = slug_or_id.strip()
+    if clean.startswith(f"{content_type}:"):
+        return clean
+    return f"{content_type}:{clean}"
+
+
 def observation_key(record: dict[str, Any]) -> tuple[str, str, str]:
     return (record["content_id"], record["window"], record["source"])
 
@@ -39,16 +56,39 @@ def validate_record(record: dict[str, Any]) -> dict[str, Any]:
     if record.get("schema_version") != SCHEMA_VERSION:
         raise ValueError(f"schema_version must be {SCHEMA_VERSION}")
 
-    for field in ("content_id", "content_type", "slug", "window", "source", "observed_at", "metrics"):
-        if field not in record:
+    content_type = record.get("content_type") or record.get("type")
+    if not content_type or content_type not in ALLOWED_TYPES:
+        raise ValueError(f"content_type/type must be one of {sorted(ALLOWED_TYPES)}")
+
+    for field in (
+        "content_id",
+        "slug",
+        "publish_date",
+        "topic",
+        "public_url",
+        "window",
+        "source",
+        "observed_at",
+        "metrics",
+    ):
+        if field not in record or record[field] is None:
             raise ValueError(f"missing required field: {field}")
 
     if not isinstance(record["content_id"], str) or not record["content_id"].strip():
         raise ValueError("content_id must be a non-empty string")
-    if record["content_type"] not in ALLOWED_TYPES:
-        raise ValueError(f"content_type must be one of {sorted(ALLOWED_TYPES)}")
     if not isinstance(record["slug"], str) or not record["slug"].strip():
         raise ValueError("slug must be a non-empty string")
+    if not isinstance(record["publish_date"], str) or not record["publish_date"].strip():
+        raise ValueError("publish_date must be a non-empty string")
+    try:
+        datetime.strptime(record["publish_date"], "%Y-%m-%d")
+    except ValueError as exc:
+        raise ValueError("publish_date must be a valid YYYY-MM-DD date string") from exc
+
+    if not isinstance(record["topic"], str) or not record["topic"].strip():
+        raise ValueError("topic must be a non-empty string")
+    if not isinstance(record["public_url"], str) or not record["public_url"].startswith("https://"):
+        raise ValueError("public_url must be a valid HTTPS URL")
     if record["window"] not in ALLOWED_WINDOWS:
         raise ValueError(f"window must be one of {sorted(ALLOWED_WINDOWS)}")
     if not isinstance(record["source"], str) or not record["source"].strip():
@@ -80,10 +120,12 @@ def validate_record(record: dict[str, Any]) -> dict[str, Any]:
             raise ValueError("search_ctr must be expressed as a ratio from 0 to 1")
 
     decision = record.get("decision")
-    if decision is not None and decision not in {"double_down", "iterate", "retire", "observe"}:
-        raise ValueError("decision must be double_down, iterate, retire, observe, or omitted")
+    if decision is not None and decision not in ALLOWED_DECISIONS:
+        raise ValueError(f"decision must be one of {sorted(ALLOWED_DECISIONS)} or omitted")
 
     normalized = dict(record)
+    normalized["content_type"] = content_type
+    normalized["type"] = content_type
     normalized["metrics"] = {name: metrics[name] for name in sorted(metrics)}
     return normalized
 
