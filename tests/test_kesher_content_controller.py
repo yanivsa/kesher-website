@@ -427,6 +427,31 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(state["video"]["youtube_url"], "https://youtu.be/abc123")
         self.assertEqual(gh.dispatches, [])
 
+    def test_github_client_save_controller_state_retries_on_409(self):
+        client = controller.GitHubClient("token", "owner/repo")
+        calls = []
+
+        def fake_request(method, url, body=None, allow_404=False, raw=False):
+            calls.append((method, url, body))
+            if method == "GET" and "/git/ref/heads/" in url:
+                return {"object": {"sha": "sha-ref"}}
+            if method == "GET" and "/contents/" in url:
+                count = sum(1 for m, u, _ in calls if m == "GET" and "/contents/" in u)
+                return {"sha": f"sha-{count}"}
+            if method == "PUT" and "/contents/" in url:
+                put_count = sum(1 for m, u, _ in calls if m == "PUT")
+                if put_count == 1:
+                    raise controller.ControllerError("GITHUB_HTTP_409: PUT failed: conflict")
+                return {"content": {"sha": "new-sha"}}
+            return {}
+
+        client.request = fake_request
+        client.save_controller_state({"cycle": "2026-09-07", "status": "testing"})
+        put_calls = [c for c in calls if c[0] == "PUT"]
+        self.assertEqual(len(put_calls), 2)
+        self.assertEqual(put_calls[0][2]["sha"], "sha-1")
+        self.assertEqual(put_calls[1][2]["sha"], "sha-2")
+
 
 if __name__ == "__main__":
     unittest.main()
