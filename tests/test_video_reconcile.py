@@ -416,7 +416,37 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(saved[0]["superseded_reason"], "unpublished_article_draft")
         self.assertEqual(saved[1]["source"]["slug"], "today")
 
+    def test_prepare_generation_supersedes_unverified_upload_and_initializes_fresh_item(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        # Stale item with uploaded=True but failing valid delivery guard (no video signature, no valid public verification)
+        legacy_item = pipeline.new_item(source)
+        legacy_item["uploaded"] = True
+        legacy_item["status"] = "uploaded"
+        pipeline.save_state({"version": 1, "items": [legacy_item], "updated_at": pipeline.utc_now()})
+
+        self.assertEqual(reconcile.prepare_generation("today"), 0)
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 2)
+        self.assertEqual(saved[0]["status"], "superseded")
+        self.assertEqual(saved[0]["superseded_reason"], "unverified_or_legacy_short")
+        self.assertFalse(saved[0]["uploaded"])
+        self.assertEqual(saved[1]["status"], "source_selected")
+        self.assertEqual(saved[1]["source_mode"], "direct-short")
+
+    def test_active_item_returns_none_when_target_slug_does_not_match(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        item = pipeline.new_item(source)
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+
+        found = pipeline.active_item(state, slug="different-slug")
+        self.assertIsNone(found)
+
 
 if __name__ == "__main__":
     unittest.main()
+
 
