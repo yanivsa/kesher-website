@@ -28,10 +28,10 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("הרעיון השלם", prompt)
         self.assertIn("בתחילת הווידאו", prompt)
 
-    def test_long_source_is_rejected_as_overview_derivation_forbidden(self):
-        with self.assertRaises(short.core.PipelineError) as ctx:
-            short.short_window(132.0)
-        self.assertIn("deriving from long Overview is forbidden", str(ctx.exception))
+    def test_long_source_uses_bounded_contiguous_opening_window(self):
+        start, duration = short.short_window(132.0)
+        self.assertEqual(start, 0.0)
+        self.assertEqual(duration, 55.0)
 
     def test_valid_short_source_keeps_its_natural_duration(self):
         start, duration = short.short_window(44.25)
