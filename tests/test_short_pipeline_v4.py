@@ -74,7 +74,7 @@ class ShortPipelineV4Tests(unittest.TestCase):
             encoding="utf-8"
         )
         self.assertIn("signatureImageSrc", source)
-        self.assertIn("<Img", source)
+        self.assertIn("FullScreenSignatureOutro", source)
         self.assertNotIn("signatureVideoSrc", source)
 
 

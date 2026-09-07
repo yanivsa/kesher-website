@@ -1051,7 +1051,7 @@ fi
 
 if [[ "$*" == *"actions/artifacts/1/zip"* ]]; then
     mkdir -p "$KESHER_STATE_DIR"
-    echo '{"valid": true}' > "$KESHER_STATE_DIR/state.json"
+    echo '{"version": 1, "items": [], "valid": true}' > "$KESHER_STATE_DIR/state.json"
     cd "$KESHER_STATE_DIR" && zip -q -0 zip1.zip state.json && mv zip1.zip "$KESHER_STATE_DIR/out1.zip"
     cat "$KESHER_STATE_DIR/out1.zip"
     exit_cmd=exit
@@ -1163,10 +1163,10 @@ exec /usr/bin/python3 "$@"
                 text=True
             )
 
-            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.returncode, 1, result.stderr)
             self.assertIn("Attempting to restore state artifact 1", result.stdout)
-            self.assertIn("Artifact 1 is missing or has invalid state.json", result.stdout)
-            self.assertIn("No valid state.json found in any unexpired artifact", result.stdout)
+            self.assertIn("Artifact 1 is missing or invalid; skipping", result.stdout)
+            self.assertIn("Durable video-state artifacts exist but none is trustworthy", result.stderr)
 
 if __name__ == "__main__":
     unittest.main()

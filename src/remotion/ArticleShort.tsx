@@ -140,6 +140,8 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
         }}
       >
         שירה סהרוני · {url}
+      </div>
+
       {/* Animated signature outro — last 3 seconds */}
       <FullScreenSignatureOutro
         durationSeconds={SIGNATURE_SECONDS}
