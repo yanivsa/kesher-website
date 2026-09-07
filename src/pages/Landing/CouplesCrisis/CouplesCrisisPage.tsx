@@ -43,7 +43,7 @@ const FAQS: FAQItem[] = [
   },
   {
     q: 'מה הרקע המקצועי של שירה סהרוני?',
-    a: 'שירה היא יועצת זוגית, מנחת הורים ומגשרת מוסמכת, עורכת דין בהכשרתה. הגישה משלבת הקשבה עמוקה, ראייה מערכתית וכלים מעשיים ותקשורתיים המותאמים למציאות היומיומית.',
+    a: 'שירה היא יועצת זוגית ומנחת הורים מוסמכת. הגישה משלבת הקשבה עמוקה, ראייה מערכתית וכלים מעשיים ותקשורתיים המותאמים למציאות היומיומית.',
   },
 ];
 
@@ -109,7 +109,7 @@ const CouplesCrisisPage: React.FC = () => {
         provider: {
           '@type': 'Person',
           name: 'שירה סהרוני',
-          jobTitle: 'יועצת זוגית, מנחת הורים ומגשרת מוסמכת',
+          jobTitle: 'יועצת זוגית ומנחת הורים מוסמכת',
           url: 'https://kesher.saharoni.com',
           telephone: '+972-50-2763802',
         },
@@ -171,7 +171,7 @@ const CouplesCrisisPage: React.FC = () => {
             <img src="/logo-kesher.svg" alt="קשר - שירה סהרוני" className={styles.brandLogo} width="40" height="40" />
             <div className={styles.brandText}>
               <span className={styles.brandTitle}>שירה סהרוני</span>
-              <span className={styles.brandSubtitle}>ייעוץ זוגי, הנחיית הורים וגישור</span>
+              <span className={styles.brandSubtitle}>ייעוץ זוגי והנחיית הורים</span>
             </div>
           </a>
 
@@ -337,7 +337,7 @@ const CouplesCrisisPage: React.FC = () => {
             <div className={styles.bioHeader}>
               <img
                 src="/images/shira-saharoni.webp"
-                alt="שירה סהרוני - יועצת זוגית ומגשרת מוסמכת"
+                alt="שירה סהרוני - יועצת זוגית ומנחת הורים"
                 className={styles.bioAvatar}
                 width="90"
                 height="90"
@@ -345,19 +345,17 @@ const CouplesCrisisPage: React.FC = () => {
               />
               <div>
                 <h2 className={styles.bioName}>שירה סהרוני</h2>
-                <p className={styles.bioRole}>יועצת זוגית, מנחת הורים ומגשרת מוסמכת</p>
+                <p className={styles.bioRole}>יועצת זוגית ומנחת הורים מוסמכת</p>
               </div>
             </div>
 
             <p className={styles.bioText}>
-              עורכת דין בהכשרתה שבחרה להקדיש את פעילותה המקצועית לליווי זוגות ומשפחות. הגישה שלי משלבת הקשבה אמפתית, ראייה מערכתית וכלים מובנים ליצירת שיח בונה. אני מאמינה שגם במשברים עמוקים, כשיש מרחב בטוח ומכוון, אפשר למצוא מחדש את הדרך אחד אל השני.
+              בחרתי להקדיש את פעילותה המקצועית לליווי זוגות ומשפחות. הגישה שלי משלבת הקשבה אמפתית, ראייה מערכתית וכלים מובנים ליצירת שיח בונה. אני מאמינה שגם במשברים עמוקים, כשיש מרחב בטוח ומכוון, אפשר למצוא מחדש את הדרך אחד אל השני.
             </p>
 
             <div className={styles.credentialsList}>
               <span className={styles.credentialPill}>✓ יועצת זוגית מוסמכת</span>
               <span className={styles.credentialPill}>✓ מנחת הורים מוסמכת</span>
-              <span className={styles.credentialPill}>✓ מגשרת מוסמכת</span>
-              <span className={styles.credentialPill}>✓ עורכת דין בהכשרתה</span>
               <span className={styles.credentialPill}>✓ קליניקה באשדוד ובזום</span>
             </div>
           </div>
@@ -431,7 +429,6 @@ const CouplesCrisisPage: React.FC = () => {
             <a href="/">דף הבית</a>
             <a href="/about">אודות</a>
             <a href="/services/couples">ייעוץ זוגי</a>
-            <a href="/services/mediation">גישור</a>
             <a href="/faq">שאלות נפוצות</a>
             <a href="/privacy">מדיניות פרטיות</a>
             <a href="/accessibility">הצהרת נגישות</a>

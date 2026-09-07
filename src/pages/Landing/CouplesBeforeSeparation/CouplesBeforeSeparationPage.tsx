@@ -109,7 +109,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
         provider: {
           '@type': 'Person',
           name: 'שירה סהרוני',
-          jobTitle: 'יועצת זוגית, מנחת הורים ומגשרת מוסמכת',
+          jobTitle: 'יועצת זוגית ומנחת הורים מוסמכת',
           url: 'https://kesher.saharoni.com',
           telephone: '+972-50-2763802',
         },
@@ -171,7 +171,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
             <img src="/logo-kesher.svg" alt="קשר - שירה סהרוני" className={styles.brandLogo} width="40" height="40" />
             <div className={styles.brandText}>
               <span className={styles.brandTitle}>שירה סהרוני</span>
-              <span className={styles.brandSubtitle}>ייעוץ זוגי, הנחיית הורים וגישור</span>
+              <span className={styles.brandSubtitle}>ייעוץ זוגי והנחיית הורים</span>
             </div>
           </a>
 
@@ -323,7 +323,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
               <div className={styles.stepNumber}>3</div>
               <h3 className={styles.stepTitle}>בחירת הנתיב הנכון</h3>
               <p className={styles.stepDesc}>
-                החלטה מודעת ומשותפת: יציאה לתהליך ייעוץ זוגי לשיקום הקשר, או מעבר לתהליך גישור מכבד ורגוע לבניית הסכמות.
+                החלטה מודעת ומשותפת: יציאה לתהליך ייעוץ זוגי לשיקום הקשר, או מעבר לתהליך פרידה בהסכמה מלאה.
               </p>
             </div>
           </div>
@@ -332,7 +332,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
           <div className={styles.disclaimerBox}>
             <FiInfo className={styles.disclaimerIcon} aria-hidden="true" />
             <p className={styles.disclaimerText}>
-              <strong>הבהרה מקצועית:</strong> המפגש מיועד לבירור זוגי, רגשי ותקשורתי ואינו מהווה ייעוץ משפטי או חוות דעת משפטית. שירה סהרוני היא יועצת זוגית ומגשרת מוסמכת (עורכת דין בהכשרתה). במידת הצורך בייצוג משפטי או עריכת הסכמים משפטיים פורמליים, מומלץ לפנות לעו״ד מייצג.
+              <strong>הבהרה מקצועית:</strong> המפגש מיועד לבירור זוגי, רגשי ותקשורתי.
             </p>
           </div>
         </div>
@@ -345,7 +345,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
             <div className={styles.bioHeader}>
               <img
                 src="/images/shira-saharoni.webp"
-                alt="שירה סהרוני - יועצת זוגית ומגשרת מוסמכת"
+                alt="שירה סהרוני - יועצת זוגית ומנחת הורים"
                 className={styles.bioAvatar}
                 width="90"
                 height="90"
@@ -353,19 +353,17 @@ const CouplesBeforeSeparationPage: React.FC = () => {
               />
               <div>
                 <h2 className={styles.bioName}>שירה סהרוני</h2>
-                <p className={styles.bioRole}>יועצת זוגית, מנחת הורים ומגשרת מוסמכת</p>
+                <p className={styles.bioRole}>יועצת זוגית ומנחת הורים מוסמכת</p>
               </div>
             </div>
 
             <p className={styles.bioText}>
-              בעלת רקע משפטי כעורכת דין בהכשרתי, בחרתי להתמקד בעולמות ההנחיה, הייעוץ הזוגי והגישור. אני פוגשת זוגות ברגעי ההכרעה הרגישים ביותר ומסייעת להם לייצר שקט ובהירות. הניסיון מלמד כי שיח רגוע ומובנה בצומת החלטה חוסך כאב רב, מאפשר הבנה עמוקה ומגן על עתיד המשפחה.
+              בחרתי להתמקד בעולמות ההנחיה והייעוץ הזוגי. אני פוגשת זוגות ברגעי ההכרעה הרגישים ביותר ומסייעת להם לייצר שקט ובהירות. הניסיון מלמד כי שיח רגוע ומובנה בצומת החלטה חוסך כאב רב, מאפשר הבנה עמוקה ומגן על עתיד המשפחה.
             </p>
 
             <div className={styles.credentialsList}>
               <span className={styles.credentialPill}>✓ יועצת זוגית מוסמכת</span>
-              <span className={styles.credentialPill}>✓ מגשרת מוסמכת</span>
               <span className={styles.credentialPill}>✓ מנחת הורים מוסמכת</span>
-              <span className={styles.credentialPill}>✓ עורכת דין בהכשרתה</span>
               <span className={styles.credentialPill}>✓ קליניקה באשדוד ובזום</span>
             </div>
           </div>
@@ -439,7 +437,6 @@ const CouplesBeforeSeparationPage: React.FC = () => {
             <a href="/">דף הבית</a>
             <a href="/about">אודות</a>
             <a href="/services/couples">ייעוץ זוגי</a>
-            <a href="/services/mediation">גישור</a>
             <a href="/faq">שאלות נפוצות</a>
             <a href="/privacy">מדיניות פרטיות</a>
             <a href="/accessibility">הצהרת נגישות</a>
