@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T13:48:06.950659+00:00",
+    "live_verified_at": "2026-09-07T13:50:13.250526+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,27 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-05T19:41:46.719796+00:00",
-      "from": "image_retry_wait",
-      "to": "image_retry_wait",
-      "reason": "trusted image retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-05T19:48:37.614141+00:00"
-      }
-    },
-    {
-      "at": "2026-09-05T21:21:39.844500+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-05T21:21:39.844504+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
     {
       "at": "2026-09-05T21:21:39.845094+00:00",
       "from": "article_needed",
@@ -1332,9 +1311,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-07T13:50:13.250540+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T13:50:20.620994+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T13:50:32.354023+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-07T13:48:12.109989+00:00",
+  "updated_at": "2026-09-07T13:50:32.354041+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
