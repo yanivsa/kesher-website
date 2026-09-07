@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-07",
-  "status": "complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T13:56:04.259886+00:00",
+    "live_verified_at": "2026-09-07T14:11:29.889595+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,33 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-05T21:44:41.536561+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/2750507895984920114"
-      }
-    },
-    {
-      "at": "2026-09-05T21:48:57.121807+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/2750507895984920114"
-      }
-    },
-    {
-      "at": "2026-09-05T21:50:46.180940+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/2750507895984920114"
-      }
-    },
     {
       "at": "2026-09-05T21:52:40.369815+00:00",
       "from": "article_generating",
@@ -1326,9 +1299,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-07T14:11:29.889613+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T14:11:31.674207+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T14:11:36.449429+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-09-07T13:56:09.026093+00:00",
+  "updated_at": "2026-09-07T14:11:36.449449+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1371,10 +1362,10 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34090318823,
+    "run_id": 34131588555,
     "processed_run_id": null,
     "provider_id": "d68ccfbc-562c-45e2-8487-45e0323c6461",
     "failure_fingerprint": null,
