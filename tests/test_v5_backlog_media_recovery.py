@@ -84,10 +84,11 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
 
         state, action = controller.tick()
 
+        self.assertEqual(action.kind, "article_watchdog_nudge")
         self.assertNotEqual(action.kind, "dispatch_backlog_long_video")
         self.assertEqual(gh.dispatches, [])
         self.assertEqual(gh.cancelled_runs, [])
-        self.assertEqual(gh.jules_nudges, [])
+        self.assertEqual(gh.jules_nudges, ["sessions/today"])
         self.assertNotIn("media", state["backlog"][0])
 
     def test_exact_seed_selection_is_slug_and_hash_bound(self):
