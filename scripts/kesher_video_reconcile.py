@@ -217,6 +217,8 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
 def is_verified_public_short(item: dict[str, Any], source: dict[str, Any]) -> bool:
     if str((item.get("source") or {}).get("content_sha256") or "") != str(source.get("content_sha256") or ""):
         return False
+    if item.get("source_mode") == "overview-segment":
+        return False
     if not (item.get("uploaded") is True and item.get("status") == "uploaded"):
         return False
     if not item.get("youtube_id"):
@@ -289,11 +291,15 @@ def prepare_generation(target_slug: str = "") -> int:
             print(f"SHORT_GENERATION_ALREADY_PUBLIC slug={target_slug} item={uploaded[-1].get('id')}")
             return 0
 
-        # Supersede unverified or legacy items for this slug so they do not block fresh recovery
+        # Supersede unverified, legacy, or forbidden overview-derived items for this slug so they do not block fresh recovery
         for item in same_source:
             if item.get("uploaded") is True and not is_verified_public_short(item, source):
                 item["status"] = "superseded"
                 item["superseded_reason"] = "unverified_or_legacy_short"
+                item["uploaded"] = False
+            elif item.get("source_mode") == "overview-segment":
+                item["status"] = "superseded"
+                item["superseded_reason"] = "forbidden_overview_segment"
                 item["uploaded"] = False
 
         unresolved = [
@@ -431,9 +437,26 @@ def prepare_upload(target_slug: str | None = None) -> int:
                 f"task_id={item.get('task_id') or 'none'}"
             )
             return 0
+        if item.get("status") == "rejected" and item.get("technical_verified") is not True:
+            workflow_output("ready", "false")
+            print(
+                "VIDEO_RECONCILED_UPLOAD candidate=rejected "
+                f"slug={source_slug(item)} status={item.get('status')} "
+                f"reasons={item.get('review_notes', {}).get('technical') or 'unknown'}"
+            )
+            return 0
         raise pipeline.PipelineError(
             "Oldest unresolved video is not technically verified for publication"
         )
+
+    if item.get("source_mode") == "overview-segment":
+        workflow_output("ready", "false")
+        print(
+            "VIDEO_RECONCILED_UPLOAD candidate=rejected "
+            f"slug={source_slug(item)} status={item.get('status')} "
+            "reasons=forbidden_overview_segment"
+        )
+        return 0
 
     slug = source_slug(item)
     source = current_source_snapshot(slug)

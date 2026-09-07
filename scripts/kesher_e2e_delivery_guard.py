@@ -47,6 +47,8 @@ def short_public_portrait_verified(
     """Require exact identity, public YouTube evidence, true 9:16 and signature proof."""
     if _source_identity(item) != (source["slug"], source["content_sha256"]):
         return False
+    if item.get("source_mode") == "overview-segment":
+        return False
     if not youtube_verified(item, source["slug"]):
         return False
     media = item.get("media") or {}
@@ -68,15 +70,14 @@ def delivery_contract(state: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
     article = state.get("article") or {}
     overview = state.get("long_video") or {}
     short = state.get("short") or {}
+    sig_verified = _signature_verified(short)
+    source_mode_ok = bool(short and short.get("source_mode") != "overview-segment")
     deliverables = {
         "article_url": str(article.get("url") or "").strip() or None,
         "overview_youtube_url": str(overview.get("youtube_url") or "").strip() or None,
         "short_youtube_url": str(short.get("youtube_url") or "").strip() or None,
         "short_portrait_verified": short.get("portrait_verified") is True,
-        "short_signature_verified": bool(
-            short.get("signature_verified") is True
-            or _signature_verified(short)
-        ),
+        "short_signature_verified": sig_verified,
     }
     ready = bool(
         article.get("live") is True
@@ -87,6 +88,7 @@ def delivery_contract(state: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
         and deliverables["short_youtube_url"]
         and deliverables["short_portrait_verified"]
         and deliverables["short_signature_verified"]
+        and source_mode_ok
     )
     return ready, deliverables
 
