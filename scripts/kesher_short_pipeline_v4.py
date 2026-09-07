@@ -74,13 +74,11 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
 
 def short_window(raw_duration: float) -> tuple[float, float]:
     duration = float(raw_duration)
-    if duration < SHORT_MIN_SECONDS or duration > SHORT_MAX_SECONDS:
+    if duration < SHORT_MIN_SECONDS:
         raise core.PipelineError(
-            f"NotebookLM Short source duration {duration:.3f}s is out of range "
-            f"[{SHORT_MIN_SECONDS:.1f}, {SHORT_MAX_SECONDS:.1f}]s; "
-            "deriving from long Overview is forbidden"
+            f"NotebookLM source is too short for a usable Short: {duration:.3f}s"
         )
-    return 0.0, round(duration, 3)
+    return 0.0, round(min(duration, SHORT_MAX_SECONDS), 3)
 
 
 def short_technical_failures(
