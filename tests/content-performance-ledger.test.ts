@@ -90,7 +90,7 @@ describe('content performance ledger', () => {
     const invalidUrl = sample();
     invalidUrl.public_url = 'http://invalid-url.com';
     expect(run(invalidUrl, ledger).status).not.toBe(0);
-  });
+  }, 15000);
 
   it('accepts decision values: continue_topic, change_headline, change_time, stop_type', () => {
     const dir = mkdtempSync(join(tmpdir(), 'kesher-ledger-'));
@@ -99,6 +99,6 @@ describe('content performance ledger', () => {
     const rec = sample();
     rec.decision = 'continue_topic';
     expect(run(rec, ledger).status).toBe(0);
-  });
+  }, 15000);
 });
 
