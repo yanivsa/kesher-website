@@ -203,6 +203,10 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
     old["updated_at"] = pipeline.utc_now()
 
     replacement = pipeline.new_item(source)
+    if old.get("type"):
+        replacement["type"] = old["type"]
+    if old.get("source_mode"):
+        replacement["source_mode"] = old["source_mode"]
     replacement["technical_retry_count"] = retries + 1
     replacement["fresh_generation_attempt"] = retries + 2
     replacement["retry_of"] = old.get("id")

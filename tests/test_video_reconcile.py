@@ -446,6 +446,27 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertIsNone(found)
 
 
+    def test_retry_technical_rejection_preserves_short_type_and_source_mode(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        old_item = pipeline.new_item(source)
+        old_item["type"] = "article_short"
+        old_item["source_mode"] = "direct-short"
+        old_item["status"] = "rejected"
+        old_item["technical_verified"] = False
+        state = {"version": 1, "items": [old_item], "updated_at": pipeline.utc_now()}
+
+        replacement = reconcile.retry_technical_rejection(state, old_item)
+        self.assertIsNotNone(replacement)
+        self.assertEqual(old_item["status"], "superseded")
+        self.assertEqual(replacement["type"], "article_short")
+        self.assertEqual(replacement["source_mode"], "direct-short")
+        self.assertEqual(replacement["status"], "source_selected")
+        self.assertEqual(replacement["technical_retry_count"], 1)
+        self.assertEqual(replacement["fresh_generation_attempt"], 2)
+
+
 if __name__ == "__main__":
     unittest.main()
 

@@ -48,7 +48,8 @@ _base_new_item = core.new_item
 def generation_prompt(source: dict[str, Any]) -> str:
     prompt = (
         "צור וידאו קצר מאוד בעברית טבעית בלבד, המבוסס אך ורק על המקור שנבחר. "
-        "אורך היעד הוא 45 עד 55 שניות. השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות. "
+        "אורך היעד הוא 45 עד 55 שניות. "
+        "חובה: השתמש אך ורק בקול של אישה ישראלית (קריינית נקבה), חם, טבעי, ברור ומקצועי לכל אורך הקריינות, ללא קול גברי כלל. "
         "הרעיון השלם חייב להופיע בתחילת הווידאו: פתח במשפט שמציג בעיה או שאלה ברורה, "
         "המשך בתובנה אחת בלבד ובדוגמה אחת קצרה, וסיים בפעולה מעשית אחת. "
         "גם אם המערכת מייצרת וידאו ארוך יותר, 55 השניות הראשונות חייבות לעמוד בפני עצמן "
@@ -342,8 +343,8 @@ def validate_and_manifest(
         core.atomic_json_write(manifest_path, manifest)
         item["manifest_path"] = manifest_path.name
         item["manifest_sha256"] = core.sha256_file(manifest_path)
-        core.save_state(state)
-        print(f"SHORT_TECHNICAL_REJECTED item={item['id']} reasons={len(technical_failures)}")
+        reasons_text = "; ".join(technical_failures)
+        print(f"SHORT_TECHNICAL_REJECTED item={item['id']} count={len(technical_failures)} reasons={reasons_text}")
         return
 
     item["technical_verified"] = True
