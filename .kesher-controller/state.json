@@ -33,7 +33,7 @@
     "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
     "published_date": "2026-09-07",
     "live": true,
-    "live_verified_at": "2026-09-07T14:23:21.928411+00:00",
+    "live_verified_at": "2026-09-07T14:27:32.255743+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -577,39 +577,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-06T06:57:50.674006+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
-      "details": {
-        "backlog_cycle": "2026-09-02",
-        "source_slug": "singlehood-holiday-meals-inquiries",
-        "long_item_id": "video-20260904-130652-65b5bb9c69"
-      }
-    },
-    {
-      "at": "2026-09-06T08:01:05.807839+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
-      "details": {
-        "backlog_cycle": "2026-09-02",
-        "source_slug": "singlehood-holiday-meals-inquiries",
-        "long_item_id": "video-20260904-130652-65b5bb9c69"
-      }
-    },
-    {
-      "at": "2026-09-06T08:58:50.453842+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "dispatched exact prior-cycle Short from verified long-form identity",
-      "details": {
-        "backlog_cycle": "2026-09-02",
-        "source_slug": "singlehood-holiday-meals-inquiries",
-        "long_item_id": "video-20260904-130652-65b5bb9c69"
-      }
-    },
     {
       "at": "2026-09-06T09:12:43.774371+00:00",
       "from": "article_generating",
@@ -1270,9 +1237,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-09-07T14:27:32.255764+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-07T14:27:59.008213+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-07T14:28:11.365390+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-09-07T14:23:49.884778+00:00",
+  "updated_at": "2026-09-07T14:28:11.365413+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
