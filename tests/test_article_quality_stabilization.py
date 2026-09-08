@@ -1,82 +1,76 @@
 from __future__ import annotations
 
-import copy
+import json
+import subprocess
+import tempfile
 import unittest
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from pathlib import Path
 
-from scripts import kesher_content_controller as controller
-
-TZ = ZoneInfo("Asia/Jerusalem")
-
-
-def risky_article() -> dict:
-    return {
-        "id": "gifted-intensity-claim",
-        "title": "כותרת מאמר",
-        "date": "2026-09-08",
-        "category": "הדרכת הורים",
-        "excerpt": "תקציר",
-        "content": (
-            "<p>אחד המאפיינים הבולטים של ילדים מחוננים הוא שהם חווים "
-            "את העולם בעוצמה רבה יותר.</p>"
-        ),
-    }
-
-
-class FakeGitHub:
-    def __init__(self) -> None:
-        self.saved_state = None
-        self.posts = [risky_article()]
-        self.dispatches = []
-
-    def load_controller_state(self):
-        return copy.deepcopy(self.saved_state)
-
-    def save_controller_state(self, state):
-        self.saved_state = copy.deepcopy(state)
-
-    def contents_json(self, path, ref="main"):
-        assert path == "src/data/posts.json"
-        assert ref == "main"
-        return copy.deepcopy(self.posts)
-
-    def open_article_prs(self, target_slot=None):
-        return []
-
-    def active_workflow_run(self, workflow, *, production_only=False):
-        return None
-
-    def workflow_run_by_id(self, run_id):
-        return None
-
-    def article_result_for_run(self, run_id):
-        return None
-
-    def dispatch(self, workflow, inputs=None):
-        self.dispatches.append((workflow, copy.deepcopy(inputs)))
-
-    def newest_video_state(self):
-        return {"version": 1, "items": []}
-
-
-class FakeSite:
-    def get(self, url):
-        return 200, "<html><h1>כותרת מאמר</h1></html>"
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class ArticleQualityStabilizationTests(unittest.TestCase):
-    def test_risky_live_article_is_blocked_before_video_dispatch(self):
-        gh = FakeGitHub()
-        now = datetime(2026, 9, 8, 16, 30, tzinfo=TZ)
-        state, action = controller.Controller(gh, FakeSite(), now=now).tick()
+    def test_risky_article_gate_fails_closed_with_stable_error_code(self):
+        payload = [
+            {
+                "id": "gifted-intensity-claim",
+                "title": "כותרת מאמר",
+                "date": "2026-09-08",
+                "category": "הדרכת הורים",
+                "excerpt": "תקציר",
+                "content": (
+                    "<p>אחד המאפיינים הבולטים של ילדים מחוננים הוא שהם חווים "
+                    "את העולם בעוצמה רבה יותר.</p>"
+                ),
+            }
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "posts.json"
+            path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            result = subprocess.run(
+                ["python3", "scripts/article_claim_quality.py", str(path)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("ARTICLE_CONTENT_QUALITY_FAILED", result.stderr)
 
-        self.assertEqual(action.kind, "blocked")
-        self.assertEqual(state["status"], "blocked")
-        self.assertEqual(state["last_error"]["code"], "ARTICLE_CONTENT_QUALITY_FAILED")
-        self.assertEqual(state["article"]["quality_status"], "failed")
-        self.assertTrue(state["article"]["quality_content_sha256"])
-        self.assertEqual(gh.dispatches, [])
+    def test_qualified_article_gate_passes(self):
+        payload = [
+            {
+                "id": "gifted-qualified",
+                "title": "כותרת מאמר",
+                "date": "2026-09-08",
+                "category": "הדרכת הורים",
+                "excerpt": "תקציר",
+                "content": "<p>אצל חלק מהילדים המחוננים יכולה להופיע רגישות בעוצמות שונות, בהתאם להקשר.</p>",
+            }
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "posts.json"
+            path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+            result = subprocess.run(
+                ["python3", "scripts/article_claim_quality.py", str(path)],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_production_controller_workflow_uses_stabilized_runtime(self):
+        workflow = (ROOT / ".github/workflows/kesher-content-controller.yml").read_text(encoding="utf-8")
+        self.assertIn(
+            "python3 -u scripts/kesher_content_controller_stabilized.py --report-json",
+            workflow,
+        )
+
+    def test_jules_policy_contains_pre_pr_evidence_contract(self):
+        policy = (ROOT / ".github/prompts/jules-weekday-article-update.md").read_text(encoding="utf-8")
+        self.assertIn("ARTICLE EVIDENCE CONTRACT", policy)
+        self.assertIn("Do not submit the PR until this self-check passes", policy)
 
 
 if __name__ == "__main__":
