@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Fail-closed deterministic quality gate for the newest Kesher article.
 
-This is deliberately narrow. It catches recurring unsupported/absolute claim
-patterns that must be qualified before publication. It does not attempt to
-replace human editorial judgment or fact checking.
+This gate intentionally catches a narrow set of recurring unsupported absolute
+or causal claim shapes. It does not replace editorial judgment or fact checking:
+claims must be naturally qualified or explicitly attributed before publication.
 """
 
 from __future__ import annotations
@@ -32,6 +32,10 @@ QUALIFIERS = (
     "עשויה",
     "עשויים",
     "עשויות",
+    "עלול",
+    "עלולה",
+    "עלולים",
+    "עלולות",
     "ייתכן",
     "יתכן",
     "במקרים מסוימים",
@@ -40,8 +44,20 @@ QUALIFIERS = (
     "בהתאם להקשר",
 )
 
-# Patterns here are intentionally focused on recurring absolute/clinical claims.
-# A matching sentence is allowed when it also contains an explicit qualifier.
+ATTRIBUTION_MARKERS = (
+    "לפי ",
+    "על פי ",
+    "בהתאם ל",
+    "משרד החינוך",
+    "מחקר ",
+    "מחקרים ",
+    "סקירה ",
+    "הנחיות ",
+)
+
+# A matching sentence is blocked unless the sentence itself contains an
+# explicit limitation or attribution. The causal patterns include the exact
+# incident class observed in PR #730, not only its first defining-trait phrase.
 STRONG_CLAIM_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     (
         "defining_trait",
@@ -57,6 +73,18 @@ STRONG_CLAIM_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("most_important_rule", re.compile(r"הכלל\s+החשוב\s+ביותר")),
     ("neurological_mechanism", re.compile(r"המנגנון\s+הנוירולוגי")),
     ("usually_stems_from", re.compile(r"נובע(?:ת|ים|ות)?\s+לרוב\s+מ")),
+    (
+        "causal_transformation",
+        re.compile(r"\bהופכ(?:ת|ים|ות)?\s+אות(?:ם|ן|ו|ה)\s+ל"),
+    ),
+    (
+        "causal_enablement",
+        re.compile(r"\bמאפשר(?:ת|ים|ות)?\s+להם\s+ל(?:למוד|פתח|ווסת|התמודד)"),
+    ),
+    (
+        "causal_parent_action",
+        re.compile(r"\bאנחנו\s+מורידים\b.+\bומעודדים\b"),
+    ),
 )
 
 
@@ -102,15 +130,17 @@ def _sentences(text: str) -> list[str]:
     ]
 
 
-def _qualified(sentence: str) -> bool:
-    return any(marker in sentence for marker in QUALIFIERS)
+def _supported(sentence: str) -> bool:
+    return any(marker in sentence for marker in QUALIFIERS) or any(
+        marker in sentence for marker in ATTRIBUTION_MARKERS
+    )
 
 
 def article_violations(article: dict[str, Any]) -> list[str]:
     violations: list[str] = []
     for sentence in _sentences(article_text(article)):
         for code, pattern in STRONG_CLAIM_PATTERNS:
-            if pattern.search(sentence) and not _qualified(sentence):
+            if pattern.search(sentence) and not _supported(sentence):
                 excerpt = sentence[:180]
                 violations.append(f"{code}: {excerpt}")
     return violations
@@ -146,7 +176,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     errors = validate_posts(payload)
     if errors:
-        print(f"{ERROR_CODE}: newest article contains unsupported absolute claim(s)", file=sys.stderr)
+        print(f"{ERROR_CODE}: newest article contains unsupported absolute/causal claim(s)", file=sys.stderr)
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1
