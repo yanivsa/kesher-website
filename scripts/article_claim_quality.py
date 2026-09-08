@@ -45,7 +45,10 @@ QUALIFIERS = (
 STRONG_CLAIM_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     (
         "defining_trait",
-        re.compile(r"(?:אחד|אחת)\s+מ(?:ה)?מאפיינים\s+הבולטים\s+של.+?\s+(?:הוא|היא|הם|הן)\b"),
+        re.compile(
+            r"(?:אחד|אחת)\s+(?:המאפיינים|המאפיינות|מהמאפיינים|מהמאפיינות)\s+"
+            r"הבולט(?:ים|ות)\s+של.+?\s+(?:הוא|היא|הם|הן)\b"
+        ),
     ),
     ("vast_majority", re.compile(r"ברוב\s+המכריע\s+של\s+המקרים")),
     ("most_common_mistake", re.compile(r"הטעות\s+הנפוצה\s+ביותר")),
