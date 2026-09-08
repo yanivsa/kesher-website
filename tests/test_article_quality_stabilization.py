@@ -67,10 +67,14 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
             workflow,
         )
 
-    def test_jules_policy_contains_pre_pr_evidence_contract(self):
-        policy = (ROOT / ".github/prompts/jules-weekday-article-update.md").read_text(encoding="utf-8")
-        self.assertIn("ARTICLE EVIDENCE CONTRACT", policy)
-        self.assertIn("Do not submit the PR until this self-check passes", policy)
+    def test_article_generation_uses_pre_pr_evidence_contract_runner(self):
+        workflow = (ROOT / ".github/workflows/kesher-article-generation.yml").read_text(encoding="utf-8")
+        self.assertIn("jules_article_runner_v4.py", workflow)
+        wrapper = ROOT / "scripts/jules_article_runner_v4.py"
+        self.assertTrue(wrapper.is_file())
+        text = wrapper.read_text(encoding="utf-8")
+        self.assertIn("ARTICLE EVIDENCE CONTRACT", text)
+        self.assertIn("Do not submit the PR until this self-check passes", text)
 
 
 if __name__ == "__main__":
