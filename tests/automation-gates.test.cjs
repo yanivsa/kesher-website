@@ -47,8 +47,10 @@ function testTrustedArticleImageV2() {
   const gate = read('.github/scripts/validate-article-pr.py');
   const articleController = read('.github/scripts/article-pr-controller-v3.py');
   const generation = read('.github/workflows/kesher-article-generation.yml');
-  const runner = read('scripts/jules_article_runner_v3.py');
+  const runnerV3 = read('scripts/jules_article_runner_v3.py');
+  const runnerV4 = read('scripts/jules_article_runner_v4.py');
   const controllerWorkflow = read('.github/workflows/kesher-content-controller.yml');
+  const stabilizedController = read('scripts/kesher_content_controller_stabilized.py');
   const contract = JSON.parse(read('config/kesher-production-contract.json'));
 
   assert.strictEqual(contract.controller_state_schema_version, 3);
@@ -77,7 +79,9 @@ function testTrustedArticleImageV2() {
   assert(workflow.includes('article-image-worker-v4.py'));
   assert(workflow.includes('actions/workflows/ci.yml/dispatches'));
   assert(controllerWorkflow.includes('Kesher Trusted Article Image'));
-  assert(controllerWorkflow.includes('kesher_content_controller_v5_runtime.py'));
+  assert(controllerWorkflow.includes('kesher_content_controller_stabilized.py'));
+  assert(stabilizedController.includes('kesher_content_controller_v5_runtime'));
+  assert(stabilizedController.includes('runtime.install_runtime()'));
   assert(!controllerWorkflow.includes('kesher_content_controller_v3_best_effort.py --report-json'));
 
   assert(workerV3.includes('GEMINI_MODEL = "gemini-3.1-flash-image"'));
@@ -108,10 +112,12 @@ function testTrustedArticleImageV2() {
   assert(gate.includes('Image dimensions mismatch'));
   assert(!gate.includes('No-image fallback must record'));
 
-  assert(generation.includes('scripts/jules_article_runner_v3.py'));
-  assert(runner.includes('Jules owns ARTICLE TEXT ONLY'));
-  assert(runner.includes('The new article MUST omit'));
-  assert(runner.includes('trusted GitHub Actions stage'));
+  assert(generation.includes('scripts/jules_article_runner_v4.py'));
+  assert(runnerV4.includes('jules_article_runner_v3'));
+  assert(runnerV4.includes('v3.main()'));
+  assert(runnerV3.includes('Jules owns ARTICLE TEXT ONLY'));
+  assert(runnerV3.includes('The new article MUST omit'));
+  assert(runnerV3.includes('trusted GitHub Actions stage'));
 }
 
 function testIndependentArticlePrGateRuntime() {
