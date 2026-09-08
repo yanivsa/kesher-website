@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-08",
-  "status": "image_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -613,7 +613,12 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "DUPLICATE_ARTICLE_PRS",
+    "message": "2 open article PRs modify posts.json",
+    "at": "2026-09-08T15:01:42.104583+00:00"
+  },
   "history": [
     {
       "at": "2026-09-07T14:27:59.008213+00:00",
@@ -1349,9 +1354,18 @@
       "details": {
         "retry_at": "2026-09-08T14:48:43.784390+00:00"
       }
+    },
+    {
+      "at": "2026-09-08T15:01:42.104601+00:00",
+      "from": "image_retry_wait",
+      "to": "blocked",
+      "reason": "DUPLICATE_ARTICLE_PRS",
+      "details": {
+        "message": "2 open article PRs modify posts.json"
+      }
     }
   ],
-  "updated_at": "2026-09-08T14:37:23.588795+00:00",
+  "updated_at": "2026-09-08T15:01:42.104607+00:00",
   "image": {
     "attempt_count": 2,
     "status": "retry_wait",
