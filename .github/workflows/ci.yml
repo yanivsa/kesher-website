@@ -83,6 +83,7 @@ jobs:
         if: ${{ steps.profile.outputs.profile == 'article' }}
         run: |
           set -euo pipefail
+          python3 scripts/article_claim_quality.py src/data/posts.json
           npm run generate
           npm run test:content
           npx vitest run tests/blog-preview.test.ts tests/app-routing.test.ts
