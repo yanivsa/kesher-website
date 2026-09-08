@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTROLLER = ROOT / ".github" / "workflows" / "kesher-content-controller.yml"
 PRODUCTION_CONTRACT = ROOT / "config" / "kesher-production-contract.json"
 ARTICLE = ROOT / ".github" / "workflows" / "kesher-article-generation.yml"
+ARTICLE_RUNNER_V4 = ROOT / "scripts" / "jules_article_runner_v4.py"
 SHORT = ROOT / ".github" / "workflows" / "kesher-short-v4.yml"
 LEGACY_VIDEO = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
 LEGACY_WEEKDAY = ROOT / ".github" / "workflows" / "jules-weekday-article.yml"
@@ -75,7 +76,10 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
     def test_article_worker_is_single_attempt_and_persists_result(self):
         text = ARTICLE.read_text(encoding="utf-8")
         self.assertIn("Run exactly one autonomous Jules article text attempt", text)
-        self.assertIn("python3 -u scripts/jules_article_runner_v3.py", text)
+        self.assertIn("python3 -u scripts/jules_article_runner_v4.py", text)
+        wrapper = ARTICLE_RUNNER_V4.read_text(encoding="utf-8")
+        self.assertIn("jules_article_runner_v3", wrapper)
+        self.assertIn("v3.main()", wrapper)
         self.assertIn("kesher-article-result-${{ github.run_id }}", text)
         self.assertIn("the controller owns retry/backoff", text)
 
