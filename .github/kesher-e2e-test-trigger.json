@@ -1,5 +1,7 @@
 {
-  "slot": "2026-09-06",
-  "request_id": "yaniv-e2e-20260906-1155",
-  "purpose": "Authorized full Kesher article + overview + short pipeline test"
+  "slot": "2026-09-08",
+  "request_id": "yaniv-e2e-20260908-1732-v5",
+  "purpose": "Authorized full Kesher article + overview + short pipeline test; bypass same-date guard",
+  "pipeline": "v5",
+  "requested_deliverables": ["article", "overview", "short"]
 }
