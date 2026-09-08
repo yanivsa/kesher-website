@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-08",
-  "status": "article_image_running",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -613,7 +613,14 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_OUTPUT_MISSING",
+    "message": "trusted image run 34272454722 completed with conclusion=success but no validated image is present",
+    "retryable": true,
+    "retry_at": "2026-09-08T20:21:32.915334+00:00",
+    "at": "2026-09-08T20:06:32.915366+00:00"
+  },
   "history": [
     {
       "at": "2026-09-07T14:27:59.008213+00:00",
@@ -1378,31 +1385,43 @@
         "attempt": 3,
         "pr_number": 730
       }
+    },
+    {
+      "at": "2026-09-08T20:06:32.915373+00:00",
+      "from": "article_image_running",
+      "to": "image_retry_wait",
+      "reason": "IMAGE_OUTPUT_MISSING",
+      "details": {
+        "message": "trusted image run 34272454722 completed with conclusion=success but no validated image is present",
+        "retry_at": "2026-09-08T20:21:32.915334+00:00",
+        "failure_streak": 3,
+        "run_id": 34272454722
+      }
     }
   ],
-  "updated_at": "2026-09-08T20:02:28.215641+00:00",
+  "updated_at": "2026-09-08T20:06:32.915379+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "retry_wait",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 34211773034 completed with conclusion=success but no validated image is present",
+      "message": "trusted image run 34272454722 completed with conclusion=success but no validated image is present",
       "retryable": true,
-      "retry_at": "2026-09-08T14:48:43.784390+00:00",
-      "at": "2026-09-08T14:33:43.784412+00:00"
+      "retry_at": "2026-09-08T20:21:32.915334+00:00",
+      "at": "2026-09-08T20:06:32.915366+00:00"
     },
-    "next_retry_at": null,
+    "next_retry_at": "2026-09-08T20:21:32.915334+00:00",
     "run_id": 34272454722,
-    "processed_run_id": 34211773034,
+    "processed_run_id": 34272454722,
     "provider_id": null,
     "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 2,
+    "same_failure_streak": 3,
     "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 2
+      "IMAGE_OUTPUT_MISSING": 3
     },
     "last_dispatch_at": "2026-09-08T20:02:28.215612+00:00",
     "last_run_conclusion": "success",
-    "last_failed_run_id": 34211773034
+    "last_failed_run_id": 34272454722
   },
   "long_video": {
     "attempt_count": 0,
