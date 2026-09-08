@@ -30,6 +30,30 @@ def risky_article() -> dict:
     }
 
 
+def run_gate(content: str):
+    payload = [
+        {
+            "id": "incident-730-claim",
+            "slug": "incident-730-claim",
+            "title": "כותרת מאמר",
+            "date": "2026-09-08",
+            "category": "הדרכת הורים",
+            "excerpt": "תקציר",
+            "content": f"<p>{content}</p>",
+        }
+    ]
+    with tempfile.TemporaryDirectory() as tmp:
+        path = Path(tmp) / "posts.json"
+        path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+        return subprocess.run(
+            ["python3", "scripts/article_claim_quality.py", str(path)],
+            cwd=ROOT,
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+
+
 class ArticleQualityStabilizationTests(unittest.TestCase):
     def test_risky_article_gate_fails_closed_with_stable_error_code(self):
         payload = [risky_article()]
@@ -45,6 +69,18 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
             )
         self.assertEqual(result.returncode, 1)
         self.assertIn("ARTICLE_CONTENT_QUALITY_FAILED", result.stderr)
+
+    def test_incident_730_additional_causal_claims_are_blocked(self):
+        claims = (
+            "הרגישות הזו הופכת אותם לפגיעים יותר.",
+            "מתן מקום בטוח להבעת הרגשות ללא שיפוט מאפשר להם ללמוד לווסת את העוצמות האלו בהדרגה.",
+            "כשאנחנו מדגישים את הערך של הדרך ושל ההתמודדות עם הקושי, אנחנו מורידים מהם את עול השלמות ומעודדים אותם לקחת סיכונים מחושבים.",
+        )
+        for claim in claims:
+            with self.subTest(claim=claim):
+                result = run_gate(claim)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("ARTICLE_CONTENT_QUALITY_FAILED", result.stderr)
 
     def test_qualified_article_gate_passes(self):
         payload = [
