@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-08",
-  "status": "image_retry_wait",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -15,10 +15,12 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-09-07T22:17:41.196902+00:00",
     "pr_number": 730,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/730"
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/730",
+    "normalization_slot": "2026-09-08",
+    "normalization_dispatched_at": "2026-09-08T05:10:42.300447+00:00"
   },
   "backlog": [
     {
@@ -1296,9 +1298,19 @@
       "details": {
         "retry_at": "2026-09-08T04:07:48.534627+00:00"
       }
+    },
+    {
+      "at": "2026-09-08T05:10:42.300467+00:00",
+      "from": "image_retry_wait",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 730,
+        "slot": "2026-09-08"
+      }
     }
   ],
-  "updated_at": "2026-09-08T04:06:43.372278+00:00",
+  "updated_at": "2026-09-08T05:10:42.300474+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
