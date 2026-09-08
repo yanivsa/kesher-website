@@ -15,6 +15,7 @@ from scripts import kesher_content_controller_v3_best_effort as best_effort
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config" / "kesher-production-contract.json"
 CONTROLLER_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-content-controller.yml"
+STABILIZED_CONTROLLER = ROOT / "scripts" / "kesher_content_controller_stabilized.py"
 IMAGE_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-article-image.yml"
 
 
@@ -191,8 +192,11 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
 
     def test_image_child_is_part_of_event_driven_controller_but_failures_still_defer(self):
         workflow = CONTROLLER_WORKFLOW.read_text(encoding="utf-8")
+        stabilized = STABILIZED_CONTROLLER.read_text(encoding="utf-8")
         self.assertIn("Kesher Trusted Article Image", workflow)
-        self.assertIn("scripts/kesher_content_controller_v5_runtime.py", workflow)
+        self.assertIn("scripts/kesher_content_controller_stabilized.py", workflow)
+        self.assertIn("kesher_content_controller_v5_runtime", stabilized)
+        self.assertIn("runtime.install_runtime()", stabilized)
         self.assertNotIn("scripts/kesher_content_controller_v3_best_effort.py", workflow)
         self.assertIn('cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"', workflow)
         env = {
