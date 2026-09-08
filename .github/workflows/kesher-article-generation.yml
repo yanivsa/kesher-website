@@ -20,7 +20,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: write
   actions: read
 
 concurrency:
@@ -89,6 +89,32 @@ jobs:
           if-no-files-found: error
           retention-days: 7
           compression-level: 0
+
+      - name: Close explicit-test article PR to prevent same-date collision
+        if: ${{ always() && env.KESHER_TEST_MODE == 'true' && hashFiles('.kesher-article-result/result.json') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          pr_url="$(python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          payload = json.loads(Path(os.environ['KESHER_ARTICLE_RESULT_PATH']).read_text(encoding='utf-8'))
+          print(str(payload.get('pr_url') or '').strip())
+          PY
+          )"
+          if [ -z "$pr_url" ]; then
+            echo "No test PR was created; nothing to close."
+            exit 0
+          fi
+          case "$pr_url" in
+            https://github.com/${{ github.repository }}/pull/*) ;;
+            *) echo "Refusing to close unexpected PR URL: $pr_url" >&2; exit 1 ;;
+          esac
+          pr_number="${pr_url##*/}"
+          gh api --method PATCH "repos/${{ github.repository }}/pulls/$pr_number" -f state=closed >/dev/null
+          echo "Closed explicit-test PR #$pr_number to keep production source identity unique."
 
       - name: Fail workflow when the article worker failed
         if: ${{ steps.article_worker.outcome == 'failure' }}
