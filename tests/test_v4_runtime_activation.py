@@ -14,6 +14,7 @@ SHORT_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-short-v4.yml"
 SHORT_COMPONENT = ROOT / "src" / "remotion" / "ArticleShort.tsx"
 SHORT_ROOT = ROOT / "src" / "remotion" / "Root.tsx"
 V4_RUNTIME = ROOT / "scripts" / "kesher_content_controller_v4_runtime.py"
+STABILIZED_RUNTIME = ROOT / "scripts" / "kesher_content_controller_stabilized.py"
 
 
 class V4RuntimeActivationTests(unittest.TestCase):
@@ -21,7 +22,10 @@ class V4RuntimeActivationTests(unittest.TestCase):
         workflow = CONTROLLER_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Kesher Daily Article Short V4", workflow)
         self.assertIn("Kesher Daily NotebookLM Video Overview", workflow)
-        self.assertIn("scripts/kesher_content_controller_v5_runtime.py --report-json", workflow)
+        self.assertIn("scripts/kesher_content_controller_stabilized.py --report-json", workflow)
+        stabilized = STABILIZED_RUNTIME.read_text(encoding="utf-8")
+        self.assertIn("kesher_content_controller_v5_runtime", stabilized)
+        self.assertIn("runtime.install_runtime()", stabilized)
         self.assertIn("Long video:", workflow)
         self.assertIn("Short:", workflow)
 
