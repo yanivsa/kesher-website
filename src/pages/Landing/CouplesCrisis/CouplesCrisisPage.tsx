@@ -106,6 +106,7 @@ const CouplesCrisisPage: React.FC = () => {
         '@type': 'Service',
         name: 'ייעוץ זוגי במצבי משבר',
         serviceType: 'Couples Crisis Counseling',
+        url: `${SITE_CONFIG.url}/services/couples/crisis`,
         provider: {
           '@type': 'Person',
           name: 'שירה סהרוני',

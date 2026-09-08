@@ -106,6 +106,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
         '@type': 'Service',
         name: 'ייעוץ ובירור זוגי בצומת החלטה ולפני פרידה',
         serviceType: 'Couples Discernment and Counseling',
+        url: `${SITE_CONFIG.url}/services/couples/before-separation`,
         provider: {
           '@type': 'Person',
           name: 'שירה סהרוני',
