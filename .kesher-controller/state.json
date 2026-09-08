@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-08",
-  "status": "image_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -615,19 +615,11 @@
   ],
   "last_error": {
     "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 34272454722 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-09-08T20:21:32.915334+00:00",
-    "at": "2026-09-08T20:06:32.915366+00:00"
+    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
+    "message": "image exhausted 3 total controller dispatch attempts",
+    "at": "2026-09-08T20:40:48.445934+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-07T14:27:59.008213+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-09-07T14:28:11.365390+00:00",
       "from": "long_video_complete",
@@ -1397,12 +1389,21 @@
         "failure_streak": 3,
         "run_id": 34272454722
       }
+    },
+    {
+      "at": "2026-09-08T20:40:48.445949+00:00",
+      "from": "image_retry_wait",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-08T20:06:32.915379+00:00",
+  "updated_at": "2026-09-08T20:40:48.445954+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "retry_wait",
+    "status": "exhausted",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 34272454722 completed with conclusion=success but no validated image is present",
