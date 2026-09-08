@@ -613,14 +613,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 34211773034 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-09-08T14:48:43.784390+00:00",
-    "at": "2026-09-08T14:33:43.784412+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-07T14:27:59.008213+00:00",
@@ -1347,9 +1340,18 @@
         "failure_streak": 2,
         "run_id": 34211773034
       }
+    },
+    {
+      "at": "2026-09-08T14:37:23.588778+00:00",
+      "from": "image_retry_wait",
+      "to": "image_retry_wait",
+      "reason": "trusted image retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-08T14:48:43.784390+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-08T14:33:43.784425+00:00",
+  "updated_at": "2026-09-08T14:37:23.588795+00:00",
   "image": {
     "attempt_count": 2,
     "status": "retry_wait",
