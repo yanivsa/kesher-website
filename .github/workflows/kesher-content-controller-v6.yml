@@ -64,3 +64,5 @@ jobs:
           assert payload['concurrency_group'] == 'kesher-content-controller-v6'
           assert payload['production_dispatch_enabled'] is False
           PY
+
+# Manual shadow validation trigger: 2026-09-08T17:34 Asia/Jerusalem
