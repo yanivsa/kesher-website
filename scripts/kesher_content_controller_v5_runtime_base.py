@@ -68,6 +68,7 @@ class RuntimeV5Controller(v5.V5Controller):
         sig_verified = delivery_guard._signature_verified(item)
         state["short"].update({
             "item_id": item.get("id"),
+            "type": item.get("type"),
             "status": "complete",
             "youtube_id": item.get("youtube_id"),
             "youtube_url": item.get("youtube_url"),
