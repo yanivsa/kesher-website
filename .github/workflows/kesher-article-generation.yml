@@ -69,7 +69,7 @@ jobs:
           echo "KESHER_TEST_MODE=$test_mode" >> "$GITHUB_ENV"
           echo "Resolved slot=$slot test_mode=$test_mode"
 
-      - name: Run exactly one autonomous Jules article text attempt
+      - name: Run exactly one autonomous Jules article text attempt with evidence contract
         id: article_worker
         continue-on-error: true
         env:
@@ -78,7 +78,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$(dirname "$KESHER_ARTICLE_RESULT_PATH")"
-          python3 -u scripts/jules_article_runner_v3.py --slot "$KESHER_ARTICLE_SLOT"
+          python3 -u scripts/jules_article_runner_v4.py --slot "$KESHER_ARTICLE_SLOT"
 
       - name: Persist structured article attempt result
         if: ${{ always() && hashFiles('.kesher-article-result/result.json') != '' }}
