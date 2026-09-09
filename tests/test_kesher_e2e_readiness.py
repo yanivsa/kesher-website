@@ -113,6 +113,8 @@ class KesherE2EReadinessTests(unittest.TestCase):
         self.assertIn("article_url", workflow)
         self.assertIn("overview_youtube_url", workflow)
         self.assertIn("short_youtube_url", workflow)
+        self.assertIn("Adopting active regular article run", workflow)
+        self.assertIn("youtube.com/oembed", workflow)
         self.assertNotIn("article_pr_number: 715", workflow)
 
 
