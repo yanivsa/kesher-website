@@ -128,6 +128,52 @@ def existing_closed_network(vnet, compartment_id: str):
     return vcn, subnets[0], sl
 
 
+def wait_boot_volume_detached(
+    compute,
+    availability_domain: str,
+    compartment_id: str,
+    boot_id: str,
+    timeout: int = 300,
+) -> None:
+    """Wait until OCI has fully drained stale boot attachments.
+
+    Instance termination and boot-volume availability are separate eventually
+    consistent control-plane transitions. A preserved boot volume can report
+    AVAILABLE while its old non-shareable BootVolumeAttachment still blocks a
+    new helper attachment with HTTP 409. Do not make the attachment shareable;
+    wait for the old attachment to disappear or reach DETACHED instead.
+    """
+    deadline = time.time() + timeout
+    last_states = None
+    while time.time() < deadline:
+        rows = compute.list_boot_volume_attachments(
+            availability_domain=availability_domain,
+            compartment_id=compartment_id,
+            boot_volume_id=boot_id,
+        ).data
+        blocking = [
+            row for row in rows
+            if str(getattr(row, "lifecycle_state", "")) != "DETACHED"
+        ]
+        states = tuple(sorted(str(getattr(row, "lifecycle_state", "UNKNOWN")) for row in blocking))
+        if not blocking:
+            log(
+                "OFFLINE_REPAIR_BOOT_DETACHED_AFTER_TARGET_TERMINATION",
+                boot_id=boot_id,
+            )
+            print("OFFLINE_REPAIR_BOOT_DETACHED_AFTER_TARGET_TERMINATION=true", flush=True)
+            return
+        if states != last_states:
+            log(
+                "OFFLINE_REPAIR_BOOT_ATTACHMENT_DRAIN_WAIT",
+                boot_id=boot_id,
+                states=json.dumps(states),
+            )
+            last_states = states
+        time.sleep(5)
+    raise TimeoutError("BOOT_VOLUME_ATTACHMENT_DRAIN_TIMEOUT")
+
+
 def prepare(args) -> int:
     cfg = load_config(args.config)
     compartment_id = cfg["tenancy"]
@@ -150,6 +196,12 @@ def prepare(args) -> int:
         wait_terminated(compute, target.id)
 
     boot = wait_boot_available(block, boot_id)
+    wait_boot_volume_detached(
+        compute,
+        boot.availability_domain,
+        compartment_id,
+        boot_id,
+    )
 
     live_e2 = [
         x for x in compute.list_instances(compartment_id=compartment_id).data
