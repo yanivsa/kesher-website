@@ -1,6 +1,7 @@
 {
-  "requested_at": "2026-09-09T09:24:00+03:00",
-  "retry": 2,
-  "scope": ["2026-09-02-short", "2026-09-03-short", "2026-09-07-short", "2026-09-08-article"],
+  "requested_at": "2026-09-09T09:27:00+03:00",
+  "retry": 3,
+  "scope": ["2026-09-03-short"],
+  "reason": "original pending run was cancelled by GitHub concurrency replacement",
   "exclude": ["2026-09-09"]
 }
