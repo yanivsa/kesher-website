@@ -12,6 +12,10 @@ const schemaData = {
   "@graph": [
     {
       "@type": "ProfilePage",
+      "@id": `${SITE_CONFIG.url}/about`,
+      "url": `${SITE_CONFIG.url}/about`,
+      "name": "אודות שירה סהרוני | יועצת זוגית, מנחת הורים ומגשרת",
+      "description": "הכירו את שירה סהרוני — עורכת דין בהכשרתה, מגשרת מוסמכת, יועצת זוגית ומנחת הורים באשדוד ובאונליין.",
       "dateCreated": "2024-01-01",
       "dateModified": "2026-07-23",
       "mainEntity": {
@@ -46,6 +50,7 @@ const schemaData = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/about#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",
