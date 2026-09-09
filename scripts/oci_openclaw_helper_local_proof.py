@@ -9,6 +9,7 @@ import re
 import subprocess
 import time
 from pathlib import Path
+from types import SimpleNamespace
 from urllib.parse import quote
 
 import oci
@@ -93,6 +94,17 @@ def wait_plugin(config, compartment_id: str, instance_id: str, timeout: int = 60
     raise TimeoutError("OCI_LOCAL_PROOF_PLUGIN_NOT_RUNNING")
 
 
+def replace_stuck_helper(args) -> dict:
+    """Replace only the disposable proof helper, preserving the tagged boot disk."""
+    from oci_openclaw_offline_repair_v3 import prepare
+
+    print("OPENCLAW_LOCAL_PROOF_PLUGIN_STALLED=true", flush=True)
+    prepare(SimpleNamespace(config=args.config, result_json=args.state_json))
+    state = json.loads(Path(args.state_json).read_text())
+    print("OPENCLAW_LOCAL_PROOF_HELPER_REPLACED=true", flush=True)
+    return state
+
+
 def checked_out_head_sha() -> str:
     try:
         sha = subprocess.check_output(
@@ -146,13 +158,28 @@ def main() -> int:
     compute = oci.core.ComputeClient(config)
     agent = oci.compute_instance_agent.ComputeInstanceAgentClient(config)
     state = json.loads(Path(args.state_json).read_text())
-    helper_id = state["helper_id"]
-    inst = compute.get_instance(helper_id).data
-    if inst.lifecycle_state != "RUNNING":
-        raise RuntimeError(f"LOCAL_PROOF_HELPER_NOT_RUNNING_{inst.lifecycle_state}")
 
-    enable_run_command(compute, inst)
-    wait_plugin(config, compartment_id, helper_id)
+    # OCI occasionally leaves the disposable helper's Run Command plugin in
+    # REGISTERING indefinitely. Replace that helper once, preserving the same
+    # tagged boot disk and without re-running the disk repair.
+    for helper_attempt in (1, 2):
+        helper_id = state["helper_id"]
+        inst = compute.get_instance(helper_id).data
+        if inst.lifecycle_state != "RUNNING":
+            raise RuntimeError(f"LOCAL_PROOF_HELPER_NOT_RUNNING_{inst.lifecycle_state}")
+
+        enable_run_command(compute, inst)
+        try:
+            wait_plugin(config, compartment_id, helper_id)
+            break
+        except TimeoutError as exc:
+            if str(exc) != "OCI_LOCAL_PROOF_PLUGIN_NOT_RUNNING" or helper_attempt != 1:
+                raise
+            state = replace_stuck_helper(args)
+    else:
+        raise RuntimeError("OCI_LOCAL_PROOF_HELPER_RETRY_EXHAUSTED")
+
+    helper_id = state["helper_id"]
     details = oci.compute_instance_agent.models.CreateInstanceAgentCommandDetails(
         compartment_id=compartment_id,
         execution_time_out_in_seconds=args.timeout,
