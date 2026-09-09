@@ -6,6 +6,7 @@ from typing import Any, Callable
 
 
 SIGNATURE_DURATION_SECONDS = 3.0
+CANONICAL_OVERVIEW_PIPELINE = "remotion-v1-notebooklm-audio"
 CANONICAL_SHORT_TYPE = "article_short"
 CANONICAL_SHORT_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
 CANONICAL_SHORT_SOURCE_MODE = "direct-short"
@@ -47,6 +48,32 @@ def _short_origin_verified(item: dict[str, Any]) -> bool:
     )
 
 
+def overview_edit_verified(stage: dict[str, Any]) -> bool:
+    """Require durable proof that the public Overview is the canonical Remotion edit."""
+    if stage.get("technical_verified") is not True:
+        return False
+    if str(stage.get("visual_pipeline") or "").strip() != CANONICAL_OVERVIEW_PIPELINE:
+        return False
+    if str(stage.get("codec") or "").strip().lower() != "h264":
+        return False
+    try:
+        width = int(stage.get("width") or 0)
+        height = int(stage.get("height") or 0)
+        content_duration = float(stage.get("content_duration_seconds") or 0)
+        final_duration = float(stage.get("duration") or 0)
+    except (TypeError, ValueError):
+        return False
+    ratio = (width / height) if height else 0.0
+    expected_final = content_duration + SIGNATURE_DURATION_SECONDS
+    return bool(
+        width == 1280
+        and height == 720
+        and 1.70 <= ratio <= 1.82
+        and 90.0 <= content_duration <= 180.0
+        and abs(final_duration - expected_final) <= 0.15
+    )
+
+
 def short_public_portrait_verified(
     item: dict[str, Any],
     source: dict[str, str],
@@ -77,20 +104,20 @@ def short_public_portrait_verified(
 def delivery_contract(state: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
     """The cycle is done only when all three requested public deliverables satisfy DoD.
 
-    Remotion enrichment such as B-roll, sourced assets, edit-plan effects or
-    motion graphics is intentionally advisory/optional. Missing or unavailable
-    enrichment must never hold the Controller open once the canonical A+B+C
-    publication requirements below have passed.
+    Optional enrichment such as B-roll or sourced assets does not block publication,
+    but the canonical Remotion edit for both video products is mandatory.
     """
     article = state.get("article") or {}
     overview = state.get("long_video") or {}
     short = state.get("short") or {}
     sig_verified = _signature_verified(short)
     origin_verified = _short_origin_verified(short)
+    overview_verified = overview_edit_verified(overview)
     deliverables = {
         "article_url": str(article.get("url") or "").strip() or None,
         "overview_youtube_url": str(overview.get("youtube_url") or "").strip() or None,
         "short_youtube_url": str(short.get("youtube_url") or "").strip() or None,
+        "overview_edit_verified": overview_verified,
         "short_portrait_verified": short.get("portrait_verified") is True,
         "short_signature_verified": sig_verified,
         "short_origin_verified": origin_verified,
@@ -100,6 +127,7 @@ def delivery_contract(state: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
         and deliverables["article_url"]
         and overview.get("verified") is True
         and deliverables["overview_youtube_url"]
+        and deliverables["overview_edit_verified"]
         and short.get("verified") is True
         and deliverables["short_youtube_url"]
         and deliverables["short_portrait_verified"]
@@ -126,6 +154,8 @@ def media_fingerprint(item: dict[str, Any]) -> str:
         "youtube_id": item.get("youtube_id"),
         "youtube_verification": item.get("youtube_verification"),
         "visual_pipeline": item.get("visual_pipeline"),
+        "content_duration_seconds": item.get("content_duration_seconds"),
+        "media": item.get("media"),
         "signature_asset": item.get("signature_asset"),
         "signature_verified": item.get("signature_verified"),
         "signature_duration_seconds": item.get("signature_duration_seconds"),
