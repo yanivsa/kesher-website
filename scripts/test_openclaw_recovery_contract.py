@@ -37,6 +37,13 @@ class OpenClawRecoveryContractTest(unittest.TestCase):
         self.assertLess(wait_call, launch_call)
         self.assertLess(wait_call, attach_call)
 
+    def test_recovery_workflow_serializes_runs_without_canceling_active_repair(self):
+        workflow = Path('.github/workflows/openclaw-offline-boot-repair.yml').read_text()
+
+        self.assertIn('concurrency:', workflow)
+        self.assertIn('group: openclaw-offline-recovery', workflow)
+        self.assertIn('cancel-in-progress: false', workflow)
+
 
 if __name__ == '__main__':
     unittest.main()
