@@ -14,8 +14,10 @@ from datetime import datetime, timezone
 from typing import Any, MutableMapping
 
 if __package__:
+    from . import kesher_e2e_delivery_guard as delivery_guard
     from . import kesher_intervention_policy as intervention
 else:
+    import kesher_e2e_delivery_guard as delivery_guard
     import kesher_intervention_policy as intervention
 
 PIPELINE_ID = "v6"
@@ -98,6 +100,68 @@ def shadow_canary_report(
     }
 
 
+def v5_v6_parity_report(
+    *,
+    v5_state: dict[str, Any],
+    slug: str,
+    content_sha256: str,
+    stage: str,
+) -> dict[str, Any]:
+    """Mirror one exact V5 identity and fail closed without public A+B+C.
+
+    The report is deliberately read-only.  It exposes the durable identities
+    and delivery evidence needed by the supervisor while every V6 mutation
+    path remains disabled.
+    """
+    identity = {
+        "slug": _required_identity(slug, "slug"),
+        "content_sha256": _required_identity(content_sha256, "content_sha256"),
+    }
+    stage_name = _required_identity(stage, "stage")
+    v5_source = v5_state.get("source") or {}
+    observed_identity = {
+        "slug": str(v5_source.get("slug") or v5_source.get("id") or "").strip(),
+        "content_sha256": str(v5_source.get("content_sha256") or "").strip(),
+    }
+    if observed_identity != identity:
+        raise ValueError("exact V5 source identity does not match V6 canary target")
+
+    stage_key = {
+        "article": "article",
+        "overview": "long_video",
+        "long_video": "long_video",
+        "short": "short",
+    }.get(stage_name, stage_name)
+    stage_state = v5_state.get(stage_key) or {}
+    delivery_complete, deliverables = delivery_guard.delivery_contract(v5_state)
+    green_without_delivery = bool(v5_state.get("workflow_success") is True and not delivery_complete)
+
+    return {
+        "pipeline_id": PIPELINE_ID,
+        "state_ref": STATE_REF,
+        "artifact_namespace": ARTIFACT_NAMESPACE,
+        "canary_mode": CANARY_MODE_SHADOW,
+        "stage": stage_name,
+        "status": "complete" if delivery_complete else "incomplete",
+        "parity": delivery_complete,
+        "source_identity": identity,
+        "task_identity": stage_state.get("task_id"),
+        "artifact_identity": stage_state.get("artifact_id"),
+        "provider_identity": stage_state.get("provider_id") or stage_state.get("provider_identity"),
+        "article_url": deliverables["article_url"],
+        "overview_url": deliverables["overview_youtube_url"],
+        "short_url": deliverables["short_youtube_url"],
+        "portrait_verification": deliverables["short_portrait_verified"],
+        "workflow_success_without_public_abc": green_without_delivery,
+        "direct_takeover_required": bool(
+            v5_state.get("direct_takeover_required") is True or green_without_delivery
+        ),
+        "duplicate_dispatch_blocked": True,
+        "production_dispatch_enabled": False,
+        "article_dispatch_enabled": False,
+        "provider_dispatch_enabled": False,
+        "upload_enabled": False,
+    }
 def _self_check() -> dict[str, Any]:
     """Return machine-readable isolation evidence without dispatching providers."""
     state: dict[str, Any] = {}
