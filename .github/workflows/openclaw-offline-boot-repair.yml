@@ -161,6 +161,7 @@ jobs:
           python -u scripts/oci_openclaw_offline_repair_v3.py \
             --config /tmp/oci.cfg \
             --result-json /tmp/proof.json
+
           proof_rc=0
           set +e
           python -u scripts/oci_openclaw_helper_local_proof.py \
@@ -171,6 +172,28 @@ jobs:
             --timeout 600
           proof_rc=$?
           set -e
+
+          # Retry local proof with fresh helper. This is intentionally bounded to
+          # one replacement. The proof is read-only; the already-patched boot
+          # volume is reused and the repair script is never dispatched again.
+          if [ "$proof_rc" -ne 0 ]; then
+            echo OPENCLAW_LOCAL_PROOF_HELPER_REPLACED=true
+            rm -f /tmp/openclaw-local-ready.json
+            python -u scripts/oci_openclaw_offline_repair_v3.py \
+              --config /tmp/oci.cfg \
+              --result-json /tmp/proof.json
+            proof_rc=0
+            set +e
+            python -u scripts/oci_openclaw_helper_local_proof.py \
+              --config /tmp/oci.cfg \
+              --state-json /tmp/proof.json \
+              --script-file scripts/openclaw_local_proof.sh \
+              --result-json /tmp/openclaw-local-ready.json \
+              --timeout 600
+            proof_rc=$?
+            set -e
+          fi
+
           if [ "$proof_rc" -eq 0 ]; then
             python -u scripts/oci_openclaw_offline_repair_v2.py finish \
               --config /tmp/oci.cfg \
