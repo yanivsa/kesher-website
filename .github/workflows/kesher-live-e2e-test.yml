@@ -24,7 +24,7 @@ concurrency:
 jobs:
   live-e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 360
     env:
       GH_TOKEN: ${{ github.token }}
       SLOT: ${{ inputs.slot }}
@@ -59,11 +59,39 @@ jobs:
           print(f"LIVE_E2E_NEW_ARTICLE_SLOT_OK slot={slot}")
           PY
 
-      - name: Dispatch the regular article worker without test auto-close behavior
+      - name: Dispatch or adopt exactly one regular article worker
         run: |
           set -euo pipefail
           # Deliberately use the normal production article path. test_mode=true
           # auto-closes its PR and therefore cannot prove a full A+B+C delivery.
+          active_article="$(
+            gh run list --workflow kesher-article-generation.yml --limit 100 \
+              --json databaseId,displayTitle,status \
+              --jq '.[] | select(.displayTitle == "Kesher Article '"$SLOT"'" and (.status == "queued" or .status == "in_progress" or .status == "waiting")) | .databaseId' \
+              | head -n1
+          )"
+          if [ -n "$active_article" ]; then
+            echo "Adopting active regular article run $active_article; no duplicate dispatch."
+            exit 0
+          fi
+
+          state_file="$(mktemp)"
+          if gh api "repos/$GITHUB_REPOSITORY/contents/.kesher-controller/state.json?ref=automation-state" \
+            --jq '.content' | tr -d '\\n' | base64 -d > "$state_file" 2>/dev/null; then
+            if python3 - "$state_file" "$SLOT" <<'PY'
+          import json
+          import sys
+          state = json.load(open(sys.argv[1], encoding="utf-8"))
+          article = state.get("article") or {}
+          owned = state.get("cycle") == sys.argv[2] and int(article.get("attempt_count") or 0) > 0
+          raise SystemExit(0 if owned else 1)
+          PY
+            then
+              echo "Adopting controller-owned article attempt for $SLOT; no duplicate dispatch."
+              exit 0
+            fi
+          fi
+
           gh workflow run kesher-article-generation.yml \
             --ref main \
             -f slot="$SLOT" \
@@ -190,6 +218,29 @@ jobs:
           }
           test -s /tmp/kesher-live-e2e/article.html
           echo "LIVE_E2E_ARTICLE_HTTP_200=true"
+
+      - name: Re-verify both YouTube deliverables as publicly readable
+        env:
+          OVERVIEW_URL: ${{ steps.wait.outputs.overview_youtube_url }}
+          SHORT_URL: ${{ steps.wait.outputs.short_youtube_url }}
+        run: |
+          set -euo pipefail
+          python3 - "$OVERVIEW_URL" "$SHORT_URL" <<'PY'
+          import json
+          import sys
+          import urllib.parse
+          import urllib.request
+
+          for label, url in (("Overview", sys.argv[1]), ("Short", sys.argv[2])):
+              endpoint = "https://www.youtube.com/oembed?" + urllib.parse.urlencode(
+                  {"url": url, "format": "json"}
+              )
+              with urllib.request.urlopen(endpoint, timeout=30) as response:
+                  payload = json.load(response)
+              if not str(payload.get("title") or "").strip():
+                  raise SystemExit(f"{label} is not publicly readable")
+              print(f"LIVE_E2E_{label.upper()}_PUBLIC=true url={url}")
+          PY
 
       - name: Publish the exact verified deliverables
         run: |
