@@ -19,6 +19,8 @@ EXPECTED_IMAGE_PROVIDER_ORDER = [
     "local-curated",
     "local-editorial",
 ]
+EXPECTED_MEDIA_VOICE_PRODUCTS = ["video_overview", "short"]
+EXPECTED_FEMALE_VOICE_ATTEMPTS = 3
 
 
 class AutomationPolicyError(RuntimeError):
@@ -106,6 +108,21 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
             "Video contract must use technical publication, advisory Jules, three attempts, FIFO, and 3 snapshots/14 days"
         )
 
+    voice_policy = video.get("voice_policy")
+    if (
+        not isinstance(voice_policy, dict)
+        or voice_policy.get("preferred_voice") != "female"
+        or voice_policy.get("female_attempts_before_fallback") != EXPECTED_FEMALE_VOICE_ATTEMPTS
+        or voice_policy.get("fallback_voice_after_failed_female_attempts") != "male"
+        or voice_policy.get("applies_to") != EXPECTED_MEDIA_VOICE_PRODUCTS
+        or voice_policy.get("retry_on_detected_male_before_fallback") is not True
+        or voice_policy.get("accept_male_on_final_female_attempt") is not True
+        or voice_policy.get("stop_voice_retries_after_fallback") is not True
+    ):
+        raise AutomationPolicyError(
+            "Media voice contract must prefer female voice for Video Overview and Short, retry male results on attempts 1-2, and accept male fallback on attempt 3"
+        )
+
     required_invariants = (
         "one_article_per_slot",
         "one_video_per_article",
@@ -137,3 +154,10 @@ def durable_video_state_artifacts_to_keep(policy: dict[str, Any] | None = None) 
     if value != 3:
         raise AutomationPolicyError("Exactly three durable video-state artifacts must be retained")
     return value
+
+
+def media_voice_policy(policy: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Return the validated shared voice policy used by Controller/Jules media logic."""
+    current = policy or load_policy()
+    voice = current["video"]["voice_policy"]
+    return dict(voice)
