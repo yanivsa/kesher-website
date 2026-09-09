@@ -75,7 +75,26 @@ def overview_edit_verified(stage: dict[str, Any]) -> bool:
     except (TypeError, ValueError):
         return False
     ratio = (width / height) if height else 0.0
-    return bool(width == 1280 and height == 720 and 1.70 <= ratio <= 1.82)
+    dimensions_verified = width == 1280 and height == 720 and 1.70 <= ratio <= 1.82
+    if not dimensions_verified:
+        return False
+
+    if stage.get("overview_evidence_required") is True:
+        try:
+            content_duration = float(stage.get("content_duration_seconds") or 0)
+            final_duration = float(stage.get("duration") or 0)
+            signature_duration = float(stage.get("signature_duration_seconds") or 0)
+        except (TypeError, ValueError):
+            return False
+        return bool(
+            90.0 <= content_duration <= 180.0
+            and abs(signature_duration - SIGNATURE_DURATION_SECONDS) < 0.001
+            and stage.get("signature_fullscreen") is True
+            and str(stage.get("signature_asset_sha256") or "").strip()
+            and abs(final_duration - (content_duration + SIGNATURE_DURATION_SECONDS)) <= 0.15
+        )
+
+    return True
 
 
 def short_public_portrait_verified(
