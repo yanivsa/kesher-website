@@ -5,10 +5,10 @@ The legacy module remains the provider/upload engine. V4 replaces only the
 creative contract, Remotion render, and technical validation:
 
 * NotebookLM remains the narration/source master;
-* the prompt places one complete 45-55 second idea at the start of the source;
-* long provider output is trimmed to one contiguous opening window;
+* the prompt requests one concise, complete idea with a natural ending;
+* provider output keeps its full natural duration instead of being hard-trimmed;
 * Remotion renders the exact source/audio into a 1080x1920 composition;
-* technical publication requires H.264 + audio + 30-55 seconds + 9:16.
+* technical publication requires H.264 + audio + a usable minimum duration + 9:16.
 
 No second TTS engine, generic captions, or second semantic video is introduced.
 """
@@ -33,7 +33,6 @@ else:
     from kesher_short_motion_plan import build_motion_plan
 
 SHORT_MIN_SECONDS = 30.0
-SHORT_MAX_SECONDS = 55.0
 SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
 SHORT_FPS = 30
@@ -47,13 +46,12 @@ _base_new_item = core.new_item
 
 def generation_prompt(source: dict[str, Any]) -> str:
     prompt = (
-        "צור וידאו קצר מאוד בעברית טבעית בלבד, המבוסס אך ורק על המקור שנבחר. "
-        "אורך היעד הוא 45 עד 55 שניות. "
+        "צור וידאו קצר ותמציתי בעברית טבעית בלבד, המבוסס אך ורק על המקור שנבחר. "
+        "אין מגבלת משך קשיחה: העדף קיצור, אך תן לרעיון להסתיים במלואו ובאופן טבעי. "
         "חובה: השתמש אך ורק בקול של אישה ישראלית (קריינית נקבה), חם, טבעי, ברור ומקצועי לכל אורך הקריינות, ללא קול גברי כלל. "
-        "הרעיון השלם חייב להופיע בתחילת הווידאו: פתח במשפט שמציג בעיה או שאלה ברורה, "
-        "המשך בתובנה אחת בלבד ובדוגמה אחת קצרה, וסיים בפעולה מעשית אחת. "
-        "גם אם המערכת מייצרת וידאו ארוך יותר, 55 השניות הראשונות חייבות לעמוד בפני עצמן "
-        "ולא להסתיים באמצע משפט או להיות תלויות בהמשך. "
+        "הרעיון השלם חייב לעמוד בפני עצמו: פתח במשפט שמציג בעיה או שאלה ברורה, "
+        "המשך בתובנה אחת בלבד ובדוגמה אחת קצרה, וסיים בפעולה מעשית אחת ובסיום טבעי ומלא. "
+        "לעולם אל תקטע משפט, מחשבה או מסקנה כדי לעמוד במשך מסוים. "
         "אין לערבב בין הורות לזוגיות כאשר המקור עוסק רק באחד מהם. "
         "אין להוסיף אבחנות, תארים מקצועיים או הבטחות שאינם במקור. "
         "כל קריינות או טקסט חזותי יהיו בעברית תקינה. אין להשתמש באנגלית, בג׳יבריש, "
@@ -78,7 +76,7 @@ def short_window(raw_duration: float) -> tuple[float, float]:
         raise core.PipelineError(
             f"NotebookLM source is too short for a usable Short: {duration:.3f}s"
         )
-    return 0.0, round(min(duration, SHORT_MAX_SECONDS), 3)
+    return 0.0, round(duration, 3)
 
 
 def short_technical_failures(
@@ -92,9 +90,9 @@ def short_technical_failures(
     if not str(media.get("audio_codec") or ""):
         failures.append("לקובץ אין ערוץ אודיו תקין")
     duration = float(media.get("duration") or 0)
-    if not SHORT_MIN_SECONDS <= duration <= SHORT_MAX_SECONDS:
+    if duration < SHORT_MIN_SECONDS:
         failures.append(
-            f"משך ה־Short הוא {duration} שניות ואינו בטווח {int(SHORT_MIN_SECONDS)}–{int(SHORT_MAX_SECONDS)} שניות"
+            f"משך ה־Short הוא {duration} שניות וקצר מהמינימום {int(SHORT_MIN_SECONDS)} שניות"
         )
     width = int(media.get("width") or 0)
     height = int(media.get("height") or 0)
