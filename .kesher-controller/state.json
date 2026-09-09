@@ -43,7 +43,11 @@
       "worker_restart_count": 0,
       "last_restart_at": null,
       "last_restart_run_id": null
-    }
+    },
+    "quality_status": "passed",
+    "quality_content_sha256": "824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661",
+    "quality_checked_at": "2026-09-09T02:58:15.367450+00:00",
+    "quality_violations": []
   },
   "backlog": [
     {
