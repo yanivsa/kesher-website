@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-09",
-  "status": "short_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T13:19:45.305446+00:00",
+    "live_verified_at": "2026-09-09T15:13:26.256852+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -672,34 +672,13 @@
       "archived_at": "2026-09-08T23:00:15.681638+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "short",
+    "code": "SHORT_ATTEMPTS_EXHAUSTED",
+    "message": "Short exhausted 4 derive/recovery dispatch attempts",
+    "at": "2026-09-09T15:15:14.393300+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-07T16:05:22.974811+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 23
-      }
-    },
-    {
-      "at": "2026-09-07T16:12:05.442197+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T16:12:13.343703+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 25
-      }
-    },
     {
       "at": "2026-09-07T19:43:34.751859+00:00",
       "from": "long_video_running",
@@ -1425,9 +1404,30 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-09T15:13:26.256865+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T15:13:42.321851+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T15:15:14.393313+00:00",
+      "from": "long_video_complete",
+      "to": "blocked",
+      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "Short exhausted 4 derive/recovery dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-09T13:21:11.180692+00:00",
+  "updated_at": "2026-09-09T15:15:14.393320+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1470,7 +1470,7 @@
   },
   "short": {
     "attempt_count": 4,
-    "status": "running",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
