@@ -1,0 +1,93 @@
+name: Kesher One-Time Hero Repair 20260909
+
+on:
+  push:
+    branches:
+      - fix/missing-hero-20260909
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repair branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/missing-hero-20260909
+          fetch-depth: 0
+
+      - name: Generate unique local hero and update article data
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from __future__ import annotations
+          import hashlib
+          import importlib.util
+          import json
+          from pathlib import Path
+
+          root = Path.cwd()
+          worker_path = root / '.github/scripts/article-image-worker-v4.py'
+          spec = importlib.util.spec_from_file_location('kesher_repair_image_worker_v4', worker_path)
+          if spec is None or spec.loader is None:
+              raise SystemExit('Unable to load image worker v4')
+          worker = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(worker)
+
+          posts_path = root / 'src/data/posts.json'
+          posts = json.loads(posts_path.read_text(encoding='utf-8'))
+          target_id = 'older-singles-friendship-changes-loneliness'
+          matches = [post for post in posts if isinstance(post, dict) and post.get('id') == target_id]
+          if len(matches) != 1:
+              raise SystemExit(f'Expected exactly one target article, got {len(matches)}')
+          post = matches[0]
+
+          existing = worker.collect_existing_hashes(root)
+          title = str(post.get('title') or target_id).strip()
+          identity = f'{target_id}|{title}'
+          image_dir = root / 'public/images/generated/blog'
+          image_dir.mkdir(parents=True, exist_ok=True)
+          image_path = image_dir / f'{target_id}.png'
+          public_path = f'/images/generated/blog/{target_id}.png'
+
+          chosen = None
+          for variant in range(8):
+              data = worker._render_editorial_png(identity, variant=variant)
+              worker.core.validate_candidate(data)
+              digest = hashlib.sha256(data).hexdigest()
+              if digest not in existing:
+                  chosen = data
+                  break
+          if chosen is None:
+              raise SystemExit('No unique deterministic image variant available')
+
+          image_path.write_bytes(chosen)
+          post['image'] = public_path
+          post['imageAlt'] = 'איור עריכתי בגוונים חמים על רווקות מאוחרת, חברות משתנה ותחושת שייכות חברתית'
+          posts_path.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          summaries = worker.summaries(posts)
+          (root / 'src/data/postSummaries.json').write_text(
+              json.dumps(summaries, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          print(f'REPAIRED_HERO {public_path} sha256={hashlib.sha256(chosen).hexdigest()}')
+          PY
+
+      - name: Validate repaired hero contract
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/validate-article-images.py
+
+      - name: Remove one-time workflow and commit durable repair
+        run: |
+          set -euo pipefail
+          rm .github/workflows/one-time-repair-missing-hero-20260909.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/data/posts.json src/data/postSummaries.json public/images/generated/blog/older-singles-friendship-changes-loneliness.png .github/workflows/one-time-repair-missing-hero-20260909.yml
+          git diff --cached --check
+          git commit -m 'fix: attach missing hero to September 9 article'
+          git push origin HEAD:fix/missing-hero-20260909
