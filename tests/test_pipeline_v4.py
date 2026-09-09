@@ -86,6 +86,23 @@ class PipelineV4Tests(unittest.TestCase):
             controller._handle_open_article_pr(state, pr)
         self.assertNotEqual(state["image"].get("status"), "deferred")
 
+    def test_missing_trusted_image_never_dispatches_article_merge(self):
+        github = DummyGithub()
+        github.image_ready = False
+        controller = self.make(github)
+        state = self.state()
+        pr = {"number": 89, "html_url": "https://example.test/pr/89"}
+        with mock.patch.object(controller, "_dispatch_auto_merge_v4") as merge_dispatch:
+            with mock.patch.object(
+                v3.V3Controller,
+                "_handle_open_article_pr",
+                return_value=core.Action("wait", "trusted image required"),
+            ) as strict_image_handler:
+                action = controller._handle_open_article_pr(state, pr)
+        self.assertEqual(action.kind, "wait")
+        merge_dispatch.assert_not_called()
+        strict_image_handler.assert_called_once()
+
     def test_four_failed_fresh_video_attempts_release_without_fifth_generation(self):
         github = DummyGithub()
         controller = self.make(github)
