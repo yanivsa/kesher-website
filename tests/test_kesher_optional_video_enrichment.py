@@ -43,8 +43,8 @@ class OptionalVideoEnrichmentContractTests(unittest.TestCase):
     def test_missing_broll_and_assets_never_block_complete_delivery(self) -> None:
         ready, deliverables = guard.delivery_contract(self._complete_state())
 
+        self.assertFalse(guard.ENHANCEMENT_REQUIRED_FOR_PUBLICATION)
         self.assertTrue(ready)
-        self.assertFalse(deliverables["enhancement_required_for_publication"])
         self.assertEqual(
             deliverables["overview_youtube_url"],
             "https://youtu.be/overview123",
