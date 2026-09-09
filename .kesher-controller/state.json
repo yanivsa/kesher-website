@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-09",
-  "status": "article_generating",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -10,8 +10,8 @@
     "run_id": 34301600966,
     "processed_run_id": 34288651191,
     "provider_id": null,
-    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
@@ -47,7 +47,11 @@
     "quality_status": "passed",
     "quality_content_sha256": "824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661",
     "quality_checked_at": "2026-09-09T02:58:15.367450+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "older-singles-friendship-changes-loneliness",
+    "title": "רווקות מאוחרת והחברים הנשואים: איך מתמודדים עם תחושת הבדידות החברתית",
+    "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
+    "published_date": "2026-09-09"
   },
   "backlog": [
     {
@@ -1354,9 +1358,15 @@
       "details": {
         "session_id": "sessions/133480034807917037"
       }
+    },
+    {
+      "at": "2026-09-09T02:58:35.779721+00:00",
+      "from": "article_generating",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-09-09T02:07:32.982546+00:00",
+  "updated_at": "2026-09-09T02:58:35.779733+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
