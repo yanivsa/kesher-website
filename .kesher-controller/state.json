@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-09",
-  "status": "article_live",
+  "status": "short_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T07:39:43.679217+00:00",
+    "live_verified_at": "2026-09-09T11:09:40.409994+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -674,21 +674,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T15:46:58.465202+00:00",
-      "from": "long_video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T15:47:04.024157+00:00",
-      "from": "article_live",
-      "to": "video_retry_wait",
-      "reason": "video retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-07T15:53:53.676871+00:00"
-      }
-    },
     {
       "at": "2026-09-07T15:50:29.006421+00:00",
       "from": "long_video_retry_wait",
@@ -1442,9 +1427,21 @@
         "action": "Reset long_video and short stages after misrouted September 7 run 34316496842 caused false VIDEO_ATTEMPTS_EXHAUSTED",
         "operator": "Supervisor Direct Takeover"
       }
+    },
+    {
+      "at": "2026-09-09T11:10:02.942988+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T11:10:36.451201+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-09T10:17:10.251880+00:00",
+  "updated_at": "2026-09-09T11:10:36.451209+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1459,20 +1456,20 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "item_id": null,
+    "item_id": "video-20260909-131952-824a8b4ff8",
     "resume_dispatches": 0,
     "last_dispatch_at": null,
-    "source_id": null,
-    "artifact_id": null,
+    "source_id": "34646087-0c27-4155-97f6-4d518acd42f5",
+    "artifact_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
     "last_run_conclusion": null,
     "watchdog": {
       "identity": "long_video:older-singles-friendship-changes-loneliness:824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661:video-20260909-131952-824a8b4ff8",
@@ -1480,25 +1477,29 @@
       "last_fingerprint": "edb70b3bcef7b626687a94cc3b68e705be0110fa83a05d6217501d673e139762",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "youtube_id": "hsc40vF65ts",
+    "youtube_url": "https://youtu.be/hsc40vF65ts",
+    "verified": true
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "item_id": null,
     "resume_dispatches": 0,
-    "last_dispatch_at": null,
-    "source_id": null,
-    "artifact_id": null,
-    "last_run_conclusion": null
+    "last_dispatch_at": "2026-09-09T11:10:36.451182+00:00",
+    "source_id": "34646087-0c27-4155-97f6-4d518acd42f5",
+    "artifact_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
+    "last_run_conclusion": null,
+    "adopted_from_long_item_id": "video-20260909-131952-824a8b4ff8"
   },
   "migration": {
     "v4_short_controller_state": null
