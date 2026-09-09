@@ -1,8 +1,8 @@
 {
-  "status": "in_progress",
-  "run_id": 34387822321,
-  "run_url": "https://github.com/yanivsa/kesher-website/actions/runs/34387822321",
-  "sha": "86b087b41173d000946e1c3210be1ebe7fd49407",
+  "status": "queued",
+  "run_id": null,
+  "run_url": null,
+  "sha": "3c06cf91b7bf0134ed4a7cff501591613c56f059",
   "strict_success": false,
   "markers": {
     "OPENCLAW_OFFLINE_REPAIR_COMPLETE": null,
@@ -13,6 +13,6 @@
     "OPENCLAW_OFFLINE_FINALIZE_SUCCESS": null
   },
   "ready_url": null,
-  "failure_hint": "workflow_started",
-  "updated_at": "2026-09-09T18:15:38Z"
+  "failure_hint": "controller_forced_dispatch",
+  "updated_at": "2026-09-09T18:19:46Z"
 }
