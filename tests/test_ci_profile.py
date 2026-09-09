@@ -43,6 +43,14 @@ class CiProfileTests(unittest.TestCase):
             "full",
         )
 
+    def test_article_and_full_profiles_both_run_hero_image_guard(self):
+        workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+        self.assertIn("- name: Validate article hero images", workflow)
+        self.assertIn(
+            "steps.profile.outputs.profile == 'article' || steps.profile.outputs.profile == 'full'",
+            workflow,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
