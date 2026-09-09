@@ -50,16 +50,14 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         return v5.core.Action("blocked", "article content quality failed before deploy/media")
 
     def _overview_evidence_preflight(self, state):
-        """Copy exact public Overview edit evidence into durable controller state.
-
-        The controller must never declare the three-link contract complete from a
-        YouTube URL alone. Evidence is read from the exact slug+content-hash video
-        state (or its bounded durable-history recovery path) and copied without
-        starting or duplicating any media work.
-        """
+        """Copy exact public Overview edit evidence into durable controller state."""
         source = self._article_source()
         if source is None:
             return
+
+        # Production is fail-closed: once an authoritative article exists, a
+        # public URL alone is never sufficient to complete the Overview stage.
+        state["long_video"]["overview_evidence_required"] = True
 
         snapshot = self.github.newest_video_state()
         item = v5._newest(v5._verified_exact(snapshot, source))
@@ -91,8 +89,6 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if blocker is not None:
             return state, blocker
 
-        # Persist article quality and any exact Overview edit evidence before V5
-        # reloads the durable state and evaluates the final A+B+C contract.
         self._overview_evidence_preflight(state)
         self.github.save_controller_state(state)
         return super().tick()
