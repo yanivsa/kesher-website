@@ -368,7 +368,7 @@ class V5Controller(v4.V4Controller):
             # authoritative article. Without derive_slug, the worker resumes
             # whichever stale Short item is newest in durable state.
             inputs = {
-                "operation": "generate",
+                "operation": "full",
                 "derive_slug": source["slug"],
             }
         else:
