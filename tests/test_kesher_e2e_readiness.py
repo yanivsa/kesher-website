@@ -70,6 +70,18 @@ class KesherE2EReadinessTests(unittest.TestCase):
         self.assertFalse(ready)
         self.assertFalse(deliverables["overview_edit_verified"])
 
+    def test_production_overview_signature_must_be_appended_after_full_content(self) -> None:
+        state = self.complete_state()
+        state["long_video"]["overview_evidence_required"] = True
+        ready, deliverables = guard.delivery_contract(state)
+        self.assertTrue(ready)
+        self.assertTrue(deliverables["overview_edit_verified"])
+
+        state["long_video"]["duration"] = state["long_video"]["content_duration_seconds"]
+        ready, deliverables = guard.delivery_contract(state)
+        self.assertFalse(ready)
+        self.assertFalse(deliverables["overview_edit_verified"])
+
     def test_production_marker_refuses_url_only_overview(self) -> None:
         state = self.complete_state()
         state["long_video"] = {
