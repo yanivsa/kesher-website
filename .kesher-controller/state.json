@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T18:43:07.049622+00:00",
+    "live_verified_at": "2026-09-09T19:25:17.310087+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -682,36 +682,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-08T05:10:42.300467+00:00",
-      "from": "image_retry_wait",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 730,
-        "slot": "2026-09-08"
-      }
-    },
-    {
-      "at": "2026-09-08T09:45:36.272849+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 2,
-        "pr_number": 730
-      }
-    },
-    {
-      "at": "2026-09-08T13:55:37.362346+00:00",
-      "from": "article_image_running",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 730,
-        "slot": "2026-09-08"
-      }
-    },
     {
       "at": "2026-09-08T14:33:43.784419+00:00",
       "from": "article_normalizing",
@@ -1419,9 +1389,27 @@
         "backlog_cycle": "2026-09-07",
         "source_slug": "first-year-boundaries-origin-families"
       }
+    },
+    {
+      "at": "2026-09-09T19:25:17.310103+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T19:25:35.886158+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T19:26:23.498066+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-09T18:45:45.311784+00:00",
+  "updated_at": "2026-09-09T19:26:23.498083+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
