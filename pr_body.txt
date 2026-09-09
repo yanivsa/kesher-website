@@ -1,7 +1,12 @@
-SEO/GEO area reviewed: Schema.org structured data
-Issue found: The `BreadcrumbList` object was missing from the Schema.org definition for the Couples Before Separation and Couples Crisis landing pages.
-Changed files:
-- `src/pages/Landing/CouplesBeforeSeparation/CouplesBeforeSeparationPage.tsx`
-- `src/pages/Landing/CouplesCrisis/CouplesCrisisPage.tsx`
-Validation command: `npm run check` (All builds and tests passed)
-Remaining larger recommendations: Implement a systematic way to manage Schema across landing pages to prevent divergence.
+This PR resolves Kesher Issue #739 by advancing V6 from manual/shadow-only to a bounded canary.
+
+## Implementation specifics
+- Adds `CANARY_MODE_SHADOW` and `shadow_canary_report` to `kesher_content_controller_v6_runtime.py` to allow execution of an explicitly identity-bound canary test.
+- Implements parity checking structure and prevents canary execution without exact matching V5 authoritative state constraints `slug + content_sha256`.
+- Ensures zero duplicate work is initiated by disabling production logic and provider dispatches.
+- Introduces robust regression tests in `test_kesher_v6_intervention_isolation.py` proving V5/V6 parity, failure behavior, and lack of unexpected side effects.
+
+## Safety and DoD
+- V5 remains unchanged and fully authoritative.
+- Explicit `--canary-shadow` opt-in is required to run.
+- Ensures cross-isolation boundary constraints between V5 and V6 remain strictly upheld.
