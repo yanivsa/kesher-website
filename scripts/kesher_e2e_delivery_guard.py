@@ -94,7 +94,6 @@ def delivery_contract(state: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
         "short_portrait_verified": short.get("portrait_verified") is True,
         "short_signature_verified": sig_verified,
         "short_origin_verified": origin_verified,
-        "enhancement_required_for_publication": ENHANCEMENT_REQUIRED_FOR_PUBLICATION,
     }
     ready = bool(
         article.get("live") is True
