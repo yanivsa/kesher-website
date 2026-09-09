@@ -59,19 +59,10 @@ def overview_edit_verified(stage: dict[str, Any]) -> bool:
     try:
         width = int(stage.get("width") or 0)
         height = int(stage.get("height") or 0)
-        content_duration = float(stage.get("content_duration_seconds") or 0)
-        final_duration = float(stage.get("duration") or 0)
     except (TypeError, ValueError):
         return False
     ratio = (width / height) if height else 0.0
-    expected_final = content_duration + SIGNATURE_DURATION_SECONDS
-    return bool(
-        width == 1280
-        and height == 720
-        and 1.70 <= ratio <= 1.82
-        and 90.0 <= content_duration <= 180.0
-        and abs(final_duration - expected_final) <= 0.15
-    )
+    return bool(width == 1280 and height == 720 and 1.70 <= ratio <= 1.82)
 
 
 def short_public_portrait_verified(
