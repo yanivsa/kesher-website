@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T19:29:13.499835+00:00",
+    "live_verified_at": "2026-09-09T19:39:07.499050+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -682,38 +682,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-08T17:51:57.814282+00:00",
-      "from": "blocked",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 730,
-        "slot": "2026-09-08"
-      }
-    },
-    {
-      "at": "2026-09-08T20:02:28.215633+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 3,
-        "pr_number": 730
-      }
-    },
-    {
-      "at": "2026-09-08T20:06:32.915373+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 34272454722 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-08T20:21:32.915334+00:00",
-        "failure_streak": 3,
-        "run_id": 34272454722
-      }
-    },
     {
       "at": "2026-09-08T20:40:48.445949+00:00",
       "from": "image_retry_wait",
@@ -1395,9 +1363,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-09T19:39:07.499066+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T19:39:10.563269+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T19:39:18.688487+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-09T19:30:15.603809+00:00",
+  "updated_at": "2026-09-09T19:39:18.688503+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
