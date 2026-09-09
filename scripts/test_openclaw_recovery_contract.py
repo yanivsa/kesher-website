@@ -33,9 +33,23 @@ class OpenClawRecoveryContractTest(unittest.TestCase):
         self.assertIn('OFFLINE_REPAIR_BOOT_DETACHED_AFTER_TARGET_TERMINATION=true', script)
         wait_call = prepare.index('wait_boot_volume_detached(')
         launch_call = prepare.index('compute.launch_instance(')
-        attach_call = prepare.index('compute.attach_volume(')
+        attach_call = prepare.index('_attach_preserved_boot(')
         self.assertLess(wait_call, launch_call)
         self.assertLess(wait_call, attach_call)
+
+    def test_prepare_drains_stale_data_volume_attachments_before_helper_attach(self):
+        script = Path('scripts/oci_openclaw_offline_repair_v3.py').read_text()
+        prepare = script.split('def prepare(args) -> int:', 1)[1]
+
+        self.assertIn('def drain_stale_data_volume_attachments(', script)
+        self.assertIn('OFFLINE_REPAIR_STALE_DATA_ATTACHMENT_DRAINED=true', script)
+        self.assertIn('OFFLINE_REPAIR_ATTACH_409_RETRY_AFTER_DRAIN=true', script)
+        self.assertIn('compute.attach_volume(details)', script)
+        drain_call = prepare.index('drain_stale_data_volume_attachments(')
+        launch_call = prepare.index('compute.launch_instance(')
+        attach_call = prepare.index('_attach_preserved_boot(')
+        self.assertLess(drain_call, launch_call)
+        self.assertLess(drain_call, attach_call)
 
     def test_recovery_workflow_serializes_runs_without_canceling_active_repair(self):
         workflow = Path('.github/workflows/openclaw-offline-boot-repair.yml').read_text()

@@ -35,9 +35,6 @@ RUN_COMMAND_PLUGIN = "Compute Instance Run Command"
 
 
 def choose_run_command_image(compute, compartment_id: str):
-    # OCI Run Command's documented supported Linux platform images include
-    # Oracle Linux. Use a current Oracle-provided Oracle Linux image rather than
-    # relying on Ubuntu plugin availability.
     rows = compute.list_images(
         compartment_id=compartment_id,
         shape=SHAPE,
@@ -52,10 +49,6 @@ def choose_run_command_image(compute, compartment_id: str):
 
 
 def helper_cloud_init() -> str:
-    # Run Command executes as `ocarun`. Oracle documents sudo as an explicit
-    # prerequisite for administrator operations, so grant only this maintenance
-    # account passwordless sudo on the disposable helper. Inbound SSH remains
-    # blocked; the public IP is for outbound OCI/GitHub HTTPS only.
     cloud_config = """#cloud-config
 write_files:
   - path: /etc/sudoers.d/101-oracle-cloud-agent-run-command
@@ -84,14 +77,6 @@ def _ssh_rule_allows_untrusted(rule) -> bool:
 
 
 def existing_closed_network(vnet, compartment_id: str):
-    """Reuse the durable recovery network without issuing an OCI update.
-
-    The repair/proof helper needs outbound HTTPS only. Re-writing an already
-    closed security list is unnecessary and can hit OCI control-plane rate or
-    capacity limits. If the named recovery network exists, require that it does
-    not expose SSH to any source other than the documentation-only NO_SSH_CIDR,
-    then reuse it as-is. Missing resources fall back to ensure_network().
-    """
     vcns = [
         x for x in vnet.list_vcns(compartment_id=compartment_id).data
         if x.lifecycle_state != "TERMINATED" and x.display_name == VCN_NAME
@@ -135,14 +120,6 @@ def wait_boot_volume_detached(
     boot_id: str,
     timeout: int = 300,
 ) -> None:
-    """Wait until OCI has fully drained stale boot attachments.
-
-    Instance termination and boot-volume availability are separate eventually
-    consistent control-plane transitions. A preserved boot volume can report
-    AVAILABLE while its old non-shareable BootVolumeAttachment still blocks a
-    new helper attachment with HTTP 409. Do not make the attachment shareable;
-    wait for the old attachment to disappear or reach DETACHED instead.
-    """
     deadline = time.time() + timeout
     last_states = None
     while time.time() < deadline:
@@ -174,6 +151,112 @@ def wait_boot_volume_detached(
     raise TimeoutError("BOOT_VOLUME_ATTACHMENT_DRAIN_TIMEOUT")
 
 
+def drain_stale_data_volume_attachments(
+    compute,
+    compartment_id: str,
+    boot_id: str,
+    timeout: int = 300,
+) -> None:
+    """Drain stale non-boot attachments for the preserved OpenClaw boot.
+
+    OCI exposes boot attachments and data-volume attachments through different
+    APIs. A terminated recovery helper can leave a non-shareable VolumeAttachment
+    visible after the BootVolumeAttachment has already drained, which makes the
+    next attach_volume call fail with HTTP 409. Only detach the exact preserved
+    boot volume and only when its attachment belongs to the disposable helper or
+    to an instance that is already terminating/terminated. Require two clean
+    observations to absorb control-plane eventual consistency.
+    """
+    deadline = time.time() + timeout
+    clean_observations = 0
+    detach_requested: set[str] = set()
+    last_states = None
+
+    while time.time() < deadline:
+        rows = compute.list_volume_attachments(
+            compartment_id=compartment_id,
+            volume_id=boot_id,
+        ).data
+        blocking = [
+            row for row in rows
+            if str(getattr(row, "lifecycle_state", "")) != "DETACHED"
+        ]
+        if not blocking:
+            clean_observations += 1
+            if clean_observations >= 2:
+                log("OFFLINE_REPAIR_STALE_DATA_ATTACHMENT_DRAINED", boot_id=boot_id)
+                print("OFFLINE_REPAIR_STALE_DATA_ATTACHMENT_DRAINED=true", flush=True)
+                return
+            time.sleep(5)
+            continue
+
+        clean_observations = 0
+        states = tuple(sorted(str(getattr(row, "lifecycle_state", "UNKNOWN")) for row in blocking))
+        if states != last_states:
+            log(
+                "OFFLINE_REPAIR_DATA_ATTACHMENT_DRAIN_WAIT",
+                boot_id=boot_id,
+                states=json.dumps(states),
+            )
+            last_states = states
+
+        for row in blocking:
+            state = str(getattr(row, "lifecycle_state", ""))
+            if state == "DETACHING":
+                continue
+            instance_id = str(getattr(row, "instance_id", "") or "")
+            try:
+                inst = compute.get_instance(instance_id).data if instance_id else None
+            except oci.exceptions.ServiceError as exc:
+                if exc.status == 404:
+                    inst = None
+                else:
+                    raise
+            display_name = str(getattr(inst, "display_name", "") or "") if inst else ""
+            lifecycle = str(getattr(inst, "lifecycle_state", "TERMINATED") or "TERMINATED") if inst else "TERMINATED"
+            safe_to_detach = (
+                display_name == HELPER_NAME
+                or lifecycle in {"TERMINATING", "TERMINATED"}
+            )
+            if not safe_to_detach:
+                raise RuntimeError(
+                    "OPENCLAW_RECOVERY_DATA_ATTACHMENT_ON_UNEXPECTED_LIVE_INSTANCE_"
+                    + display_name
+                )
+            if row.id not in detach_requested:
+                log(
+                    "OFFLINE_REPAIR_DETACHING_STALE_DATA_ATTACHMENT",
+                    attachment_id=row.id,
+                    instance_id=instance_id,
+                    instance_name=display_name,
+                    instance_state=lifecycle,
+                )
+                compute.detach_volume(row.id)
+                detach_requested.add(row.id)
+        time.sleep(5)
+
+    raise TimeoutError("DATA_VOLUME_ATTACHMENT_DRAIN_TIMEOUT")
+
+
+def _attach_preserved_boot(compute, helper_id: str, boot_id: str, compartment_id: str):
+    details = oci.core.models.AttachParavirtualizedVolumeDetails(
+        instance_id=helper_id,
+        volume_id=boot_id,
+        display_name=ATTACH_NAME,
+        is_read_only=False,
+    )
+    try:
+        return compute.attach_volume(details).data
+    except oci.exceptions.ServiceError as exc:
+        message = str(getattr(exc, "message", "") or exc)
+        if exc.status != 409 or "shareable" not in message.lower():
+            raise
+        log("OFFLINE_REPAIR_ATTACH_409_RETRY_AFTER_DRAIN", boot_id=boot_id)
+        print("OFFLINE_REPAIR_ATTACH_409_RETRY_AFTER_DRAIN=true", flush=True)
+        drain_stale_data_volume_attachments(compute, compartment_id, boot_id)
+        return compute.attach_volume(details).data
+
+
 def prepare(args) -> int:
     cfg = load_config(args.config)
     compartment_id = cfg["tenancy"]
@@ -202,6 +285,7 @@ def prepare(args) -> int:
         compartment_id,
         boot_id,
     )
+    drain_stale_data_volume_attachments(compute, compartment_id, boot_id)
 
     live_e2 = [
         x for x in compute.list_instances(compartment_id=compartment_id).data
@@ -229,8 +313,6 @@ def prepare(args) -> int:
             ),
             create_vnic_details=oci.core.models.CreateVnicDetails(
                 subnet_id=subnet.id,
-                # Public address provides outbound HTTPS in this public subnet.
-                # Inbound SSH remains blocked by the security list.
                 assign_public_ip=True,
                 display_name=f"{HELPER_NAME}-vnic",
             ),
@@ -263,14 +345,7 @@ def prepare(args) -> int:
         raise RuntimeError("HELPER_OUTBOUND_PUBLIC_IP_NOT_ASSIGNED")
     log("OFFLINE_REPAIR_HELPER_RUNNING", helper_id=helper.id, transport="oci-run-command")
 
-    attach = compute.attach_volume(
-        oci.core.models.AttachParavirtualizedVolumeDetails(
-            instance_id=helper.id,
-            volume_id=boot_id,
-            display_name=ATTACH_NAME,
-            is_read_only=False,
-        )
-    ).data
+    attach = _attach_preserved_boot(compute, helper.id, boot_id, compartment_id)
     attach = wait_volume_attachment(compute, attach.id, {"ATTACHED"})
     log("OFFLINE_REPAIR_BOOT_ATTACHED_AS_DATA", attachment_id=attach.id)
 
