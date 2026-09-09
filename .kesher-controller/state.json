@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T17:12:40.097461+00:00",
+    "live_verified_at": "2026-09-09T17:14:08.912809+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -676,31 +676,9 @@
     "stage": "short",
     "code": "SHORT_ATTEMPTS_EXHAUSTED",
     "message": "Short exhausted 4 derive/recovery dispatch attempts",
-    "at": "2026-09-09T17:12:56.729748+00:00"
+    "at": "2026-09-09T17:14:25.752553+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-07T20:13:07.599960+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 29
-      }
-    },
-    {
-      "at": "2026-09-07T20:16:24.595956+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T20:16:28.144943+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
     {
       "at": "2026-09-07T20:19:06.963546+00:00",
       "from": "long_video_running",
@@ -1424,9 +1402,30 @@
       "details": {
         "message": "Short exhausted 4 derive/recovery dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-09T17:14:08.912831+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T17:14:12.412213+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T17:14:25.752571+00:00",
+      "from": "long_video_complete",
+      "to": "blocked",
+      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "Short exhausted 4 derive/recovery dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-09T17:12:56.729770+00:00",
+  "updated_at": "2026-09-09T17:14:25.752578+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
