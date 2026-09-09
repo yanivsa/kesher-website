@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T04:00:43.640130+00:00",
+    "live_verified_at": "2026-09-09T04:04:27.959075+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1399,9 +1399,21 @@
         "operation": "full",
         "resume": 3
       }
+    },
+    {
+      "at": "2026-09-09T04:04:27.959099+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T04:04:38.383411+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-09T04:01:03.626009+00:00",
+  "updated_at": "2026-09-09T04:04:38.383433+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1416,10 +1428,10 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 34309322629,
     "processed_run_id": null,
     "provider_id": "6fa605f7-7162-4294-9365-01412a531f84",
     "failure_fingerprint": null,
