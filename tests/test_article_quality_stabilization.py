@@ -149,6 +149,18 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertIn("ARTICLE EVIDENCE CONTRACT", text)
         self.assertIn("Do not submit the PR until this self-check passes", text)
 
+    def test_article_generation_requires_search_intent_first_titles(self):
+        wrapper = ROOT / "scripts/jules_article_runner_v4.py"
+        text = wrapper.read_text(encoding="utf-8")
+        self.assertIn("SEARCH-INTENT-FIRST TITLE CONTRACT", text)
+        self.assertIn("Primary Search Query:", text)
+        self.assertIn("Search Variants:", text)
+        self.assertIn("Search Evidence:", text)
+        self.assertIn("live Hebrew search-language research", text)
+        self.assertIn("OBSERVED QUERY SIGNAL", text)
+        self.assertIn("are NOT sufficient by themselves to prove a query people", text)
+        self.assertIn("Do not\n   submit the article PR until at least one current observed query signal", text)
+
 
 if __name__ == "__main__":
     unittest.main()
