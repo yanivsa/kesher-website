@@ -1,0 +1,69 @@
+name: Kesher Historical Short Finalizer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/kesher-historical-short-finalizer-trigger.json"
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: kesher-historical-short-finalizer
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Wait for active September 3 direct-Short recovery
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh run watch 34319307693 --exit-status
+
+      - name: Upload and verify September 3 Short
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          before="$(gh run list --workflow kesher-short-v4.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
+          gh workflow run kesher-short-v4.yml -f operation=upload -f derive_slug=smart-youth-focus-tasks-organization
+          for _ in $(seq 1 30); do
+            run_id="$(gh run list --workflow kesher-short-v4.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
+            if [ -n "$run_id" ] && [ "$run_id" != "$before" ]; then
+              echo "September 3 upload run: $run_id"
+              gh run watch "$run_id" --exit-status
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Upload and verify September 7 Short
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          before="$(gh run list --workflow kesher-short-v4.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
+          gh workflow run kesher-short-v4.yml -f operation=upload -f derive_slug=first-year-boundaries-origin-families
+          for _ in $(seq 1 30); do
+            run_id="$(gh run list --workflow kesher-short-v4.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
+            if [ -n "$run_id" ] && [ "$run_id" != "$before" ]; then
+              echo "September 7 upload run: $run_id"
+              gh run watch "$run_id" --exit-status
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Record scope
+        run: echo "Finalized historical Shorts for 2026-09-03 and 2026-09-07 only. No 2026-09-09 recovery dispatched." >> "$GITHUB_STEP_SUMMARY"
