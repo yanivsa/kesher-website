@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T18:25:19.902963+00:00",
+    "live_verified_at": "2026-09-09T18:28:19.235904+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -676,27 +676,9 @@
     "stage": "short",
     "code": "SHORT_ATTEMPTS_EXHAUSTED",
     "message": "Short exhausted 4 derive/recovery dispatch attempts",
-    "at": "2026-09-09T18:26:20.664503+00:00"
+    "at": "2026-09-09T18:28:58.527352+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-07T20:52:07.419827+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-07T20:56:58.418397+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T20:57:05.026916+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
     {
       "at": "2026-09-07T21:00:47.004395+00:00",
       "from": null,
@@ -1428,9 +1410,30 @@
       "details": {
         "message": "Short exhausted 4 derive/recovery dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-09T18:28:19.235924+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T18:28:29.189793+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T18:28:58.527369+00:00",
+      "from": "long_video_complete",
+      "to": "blocked",
+      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "Short exhausted 4 derive/recovery dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-09T18:26:20.664529+00:00",
+  "updated_at": "2026-09-09T18:28:58.527378+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
