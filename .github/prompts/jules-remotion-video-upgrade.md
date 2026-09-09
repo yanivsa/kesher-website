@@ -27,9 +27,9 @@ Remotion upgrades the **existing authoritative NotebookLM MP4** for each product
    > `השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות.`
 
    The voice rule is bounded and identical for both products:
-   - Attempts 1 and 2: a detected male voice must not be published; regenerate the same authoritative source identity while preserving the female-voice request.
-   - Attempt 3: still request a female voice. If the third accepted candidate is nevertheless detected as male, male voice is an allowed fallback when all other gates pass.
-   - An accepted third-attempt male fallback MUST NOT trigger a fourth generation solely because of voice gender.
+   - On **attempts 1 and 2**, a detected male voice must not be published; regenerate the same authoritative source identity while preserving the female-voice request.
+   - On **attempt 3**, still request a female voice. If the third accepted candidate is nevertheless detected as male, male voice is an allowed fallback when all other gates pass.
+   - An accepted third-attempt male fallback **must not trigger a fourth generation solely because of voice gender**.
    - Voice fallback never relaxes source identity, duplicate prevention, aspect ratio, audio, duration, metadata, publication, or other technical gates.
 3. **Jules review is strict and advisory**: Jules SHOULD evaluate visual, semantic and metadata quality honestly. Rejection, timeout, reviewer unavailability, malformed review, insufficient B-roll, insufficient assets, or skipped enrichment MUST NOT by itself block upload when the canonical technical publication gate passes.
 4. **Technical publication authority**: Upload permission comes only from the canonical Kesher production contract and technical gate. Source identity, final MP4 SHA-256, manifest/evidence identity, metadata validity and duplicate-safe YouTube reconciliation remain fail-closed.
@@ -52,9 +52,7 @@ B-roll/assets/motion graphics are a quality layer, not a reliability gate.
 - An optional enrichment failure may be recorded as a quality/advisory signal for future improvement, but it MUST NOT keep an otherwise valid A+B+C cycle open.
 - Unlicensed, unverifiable, corrupted or semantically unsafe assets are skipped rather than used and rather than blocking delivery.
 
-The Controller's durable delivery report MUST make this explicit with:
-
-`enhancement_required_for_publication: false`
+The canonical Controller policy must keep `ENHANCEMENT_REQUIRED_FOR_PUBLICATION = False`, with regression coverage proving that a complete A+B+C delivery still completes when B-roll and assets are unavailable.
 
 ---
 
