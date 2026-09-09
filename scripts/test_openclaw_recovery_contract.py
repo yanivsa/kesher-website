@@ -17,6 +17,14 @@ class OpenClawRecoveryContractTest(unittest.TestCase):
         self.assertIn('scripts/oci_openclaw_offline_repair_v3.py', retry_block)
         self.assertNotIn('openclaw_offline_mount_repair_cloudflare.sh', retry_block)
 
+    def test_local_proof_script_self_heals_stuck_plugin_for_old_reruns(self):
+        script = Path('scripts/oci_openclaw_helper_local_proof.py').read_text()
+
+        self.assertIn('OPENCLAW_LOCAL_PROOF_PLUGIN_STALLED=true', script)
+        self.assertIn('OPENCLAW_LOCAL_PROOF_HELPER_REPLACED=true', script)
+        self.assertIn('oci_openclaw_offline_repair_v3', script)
+        self.assertIn('replace_stuck_helper', script)
+
 
 if __name__ == '__main__':
     unittest.main()
