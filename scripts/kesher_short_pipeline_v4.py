@@ -8,7 +8,7 @@ creative contract, Remotion render, and technical validation:
 * the prompt requests one concise, complete idea with a natural ending;
 * provider output keeps its full natural duration instead of being hard-trimmed;
 * Remotion renders the exact source/audio into a 1080x1920 composition;
-* technical publication requires H.264 + audio + a usable minimum duration + 9:16.
+* technical publication requires H.264 + audio + 9:16; duration is preserved unchanged.
 
 No second TTS engine, generic captions, or second semantic video is introduced.
 """
@@ -32,7 +32,6 @@ else:
     import kesher_daily_pipeline as core
     from kesher_short_motion_plan import build_motion_plan
 
-SHORT_MIN_SECONDS = 30.0
 SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
 SHORT_FPS = 30
@@ -47,7 +46,7 @@ _base_new_item = core.new_item
 def generation_prompt(source: dict[str, Any]) -> str:
     prompt = (
         "צור וידאו קצר ותמציתי בעברית טבעית בלבד, המבוסס אך ורק על המקור שנבחר. "
-        "אין מגבלת משך קשיחה: העדף קיצור, אך תן לרעיון להסתיים במלואו ובאופן טבעי. "
+        "אין מגבלת משך: העדף קיצור, אך תן לרעיון להסתיים במלואו ובאופן טבעי. "
         "חובה: השתמש אך ורק בקול של אישה ישראלית (קריינית נקבה), חם, טבעי, ברור ומקצועי לכל אורך הקריינות, ללא קול גברי כלל. "
         "הרעיון השלם חייב לעמוד בפני עצמו: פתח במשפט שמציג בעיה או שאלה ברורה, "
         "המשך בתובנה אחת בלבד ובדוגמה אחת קצרה, וסיים בפעולה מעשית אחת ובסיום טבעי ומלא. "
@@ -71,12 +70,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
 
 
 def short_window(raw_duration: float) -> tuple[float, float]:
-    duration = float(raw_duration)
-    if duration < SHORT_MIN_SECONDS:
-        raise core.PipelineError(
-            f"NotebookLM source is too short for a usable Short: {duration:.3f}s"
-        )
-    return 0.0, round(duration, 3)
+    return 0.0, round(float(raw_duration), 3)
 
 
 def short_technical_failures(
@@ -89,11 +83,6 @@ def short_technical_failures(
         failures.append(f"קודק הווידאו הוא {media.get('codec')} ולא H.264")
     if not str(media.get("audio_codec") or ""):
         failures.append("לקובץ אין ערוץ אודיו תקין")
-    duration = float(media.get("duration") or 0)
-    if duration < SHORT_MIN_SECONDS:
-        failures.append(
-            f"משך ה־Short הוא {duration} שניות וקצר מהמינימום {int(SHORT_MIN_SECONDS)} שניות"
-        )
     width = int(media.get("width") or 0)
     height = int(media.get("height") or 0)
     ratio = (width / height) if height else 0
