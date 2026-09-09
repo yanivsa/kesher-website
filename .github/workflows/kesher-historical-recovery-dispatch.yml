@@ -24,14 +24,14 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - name: Resume independent direct Short for 2026-09-03
+      - name: Resume independent direct Short for 2026-09-07
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           gh workflow run kesher-short-v4.yml \
             -f operation=generate \
-            -f derive_slug=smart-youth-focus-tasks-organization
+            -f derive_slug=first-year-boundaries-origin-families
 
       - name: Record scope
-        run: echo "Direct-short generation recovery dispatched only for 2026-09-03. 2026-09-09 untouched." >> "$GITHUB_STEP_SUMMARY"
+        run: echo "Direct-short generation recovery dispatched only for 2026-09-07. 2026-09-09 untouched." >> "$GITHUB_STEP_SUMMARY"
