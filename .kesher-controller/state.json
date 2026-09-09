@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T05:51:47.128328+00:00",
+    "live_verified_at": "2026-09-09T05:56:14.479510+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -674,22 +674,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T15:04:44.141316+00:00",
-      "from": "long_video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T15:05:02.356081+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 5
-      }
-    },
     {
       "at": "2026-09-07T15:09:04.543109+00:00",
       "from": "long_video_running",
@@ -1455,9 +1439,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-09T05:56:14.479528+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T05:56:26.154250+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-09T05:51:55.281362+00:00",
+  "updated_at": "2026-09-09T05:56:26.154273+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
