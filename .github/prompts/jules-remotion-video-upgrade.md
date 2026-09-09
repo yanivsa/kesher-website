@@ -4,7 +4,7 @@ Policy-Version: 1
 
 This durable repository policy governs Jules tasks, automated routines, and code changes that modify, render, or evaluate Remotion implementation for the Kesher video pipeline.
 
-**Pipeline identity is unchanged:** V5 remains the production controller and V6 remains the shadow/evolution path unless separately promoted. `Policy-Version: 1` is the existing machine-readable policy schema version; it is not a V1 pipeline or video-generation version.
+**Pipeline identity is unchanged:** V5 remains the production controller and V6 remains the shadow/evolution path unless separately promoted. The policy header above is the existing machine-readable schema version; it is not a V1 pipeline or video-generation version.
 
 ---
 
