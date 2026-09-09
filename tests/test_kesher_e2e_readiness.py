@@ -25,7 +25,8 @@ class KesherE2EReadinessTests(unittest.TestCase):
                 "codec": "h264",
                 "width": 1280,
                 "height": 720,
-                "duration": 120.0,
+                "content_duration_seconds": 120.0,
+                "duration": 123.0,
             },
             "short": {
                 "verified": True,
@@ -46,6 +47,14 @@ class KesherE2EReadinessTests(unittest.TestCase):
         self.assertIn("SHORT_SIGNATURE_OUTRO_FRAMES", root)
         self.assertIn(
             "durationInFrames: props.durationInFrames + SHORT_SIGNATURE_OUTRO_FRAMES",
+            root,
+        )
+
+    def test_overview_signature_is_appended_after_full_notebooklm_content(self) -> None:
+        root = SHORT_ROOT.read_text(encoding="utf-8")
+        self.assertIn("OVERVIEW_SIGNATURE_OUTRO_FRAMES", root)
+        self.assertIn(
+            "durationInFrames: props.durationInFrames + OVERVIEW_SIGNATURE_OUTRO_FRAMES",
             root,
         )
 
