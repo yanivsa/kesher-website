@@ -32,7 +32,18 @@
       "completed_at": "2026-09-08T23:29:35.527161+00:00"
     },
     "last_jules_session_id": "sessions/13041924962952987945",
-    "last_failed_run_id": 34288651191
+    "last_failed_run_id": 34288651191,
+    "watchdog": {
+      "identity": "2026-09-09",
+      "session_id": "sessions/133480034807917037",
+      "last_progress_at": "2026-09-09T02:02:23+00:00",
+      "last_fingerprint": "2b6e0b956a5bfb7b8bda7a8f65a2fff3e8ca78fd2719998ddb6e6e840a3ac151",
+      "last_nudge_at": null,
+      "nudge_count": 0,
+      "worker_restart_count": 0,
+      "last_restart_at": null,
+      "last_restart_run_id": null
+    }
   },
   "backlog": [
     {
@@ -1330,9 +1341,18 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-09-09T02:07:32.982507+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": "sessions/133480034807917037"
+      }
     }
   ],
-  "updated_at": "2026-09-09T02:02:23.700256+00:00",
+  "updated_at": "2026-09-09T02:07:32.982546+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
