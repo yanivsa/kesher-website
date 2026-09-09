@@ -25,6 +25,18 @@ class OpenClawRecoveryContractTest(unittest.TestCase):
         self.assertIn('oci_openclaw_offline_repair_v3', script)
         self.assertIn('replace_stuck_helper', script)
 
+    def test_prepare_waits_for_preserved_boot_to_fully_detach_before_helper_attach(self):
+        script = Path('scripts/oci_openclaw_offline_repair_v3.py').read_text()
+        prepare = script.split('def prepare(args) -> int:', 1)[1]
+
+        self.assertIn('def wait_boot_volume_detached(', script)
+        self.assertIn('OFFLINE_REPAIR_BOOT_DETACHED_AFTER_TARGET_TERMINATION=true', script)
+        wait_call = prepare.index('wait_boot_volume_detached(')
+        launch_call = prepare.index('compute.launch_instance(')
+        attach_call = prepare.index('compute.attach_volume(')
+        self.assertLess(wait_call, launch_call)
+        self.assertLess(wait_call, attach_call)
+
 
 if __name__ == '__main__':
     unittest.main()
