@@ -39,9 +39,10 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertEqual(start, 0.0)
         self.assertEqual(duration, 44.25)
 
-    def test_too_short_source_is_rejected_instead_of_looped_or_stretched(self):
-        with self.assertRaises(short.core.PipelineError):
-            short.short_window(22.0)
+    def test_short_source_keeps_its_full_duration_without_minimum(self):
+        start, duration = short.short_window(12.5)
+        self.assertEqual(start, 0.0)
+        self.assertEqual(duration, 12.5)
 
     def test_vertical_technical_contract_accepts_exact_short(self):
         failures = short.short_technical_failures(
@@ -52,6 +53,12 @@ class ShortPipelineV4Tests(unittest.TestCase):
     def test_vertical_technical_contract_accepts_long_vertical_media(self):
         failures = short.short_technical_failures(
             {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 132.0}
+        )
+        self.assertEqual(failures, [])
+
+    def test_vertical_technical_contract_accepts_short_vertical_media(self):
+        failures = short.short_technical_failures(
+            {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 12.5}
         )
         self.assertEqual(failures, [])
 
