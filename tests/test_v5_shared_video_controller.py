@@ -190,7 +190,7 @@ class V5SharedVideoControllerTests(unittest.TestCase):
         self.assertEqual(gh.dispatches, [(
             v5.SHORT_WORKFLOW,
             {
-                "operation": "generate",
+                "operation": "full",
                 "derive_slug": source["slug"],
             },
         )])
