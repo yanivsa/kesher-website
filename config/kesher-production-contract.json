@@ -37,7 +37,16 @@
     "queue_order": "fifo",
     "max_attempts_per_stage": 3,
     "durable_state_artifacts_to_keep": 3,
-    "durable_state_retention_days": 14
+    "durable_state_retention_days": 14,
+    "voice_policy": {
+      "preferred_voice": "female",
+      "female_attempts_before_fallback": 3,
+      "fallback_voice_after_failed_female_attempts": "male",
+      "applies_to": ["video_overview", "short"],
+      "retry_on_detected_male_before_fallback": true,
+      "accept_male_on_final_female_attempt": true,
+      "stop_voice_retries_after_fallback": true
+    }
   },
   "invariants": {
     "one_article_per_slot": true,
