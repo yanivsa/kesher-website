@@ -1,0 +1,63 @@
+name: Kesher Historical Recovery Dispatch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/kesher-historical-recovery-trigger.json"
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: kesher-historical-recovery-dispatch
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch missing 2026-09-08 article on current main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-article-generation.yml -f slot=2026-09-08 -f test_mode=false
+
+      - name: Dispatch exact independent Short recovery for 2026-09-02
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-short-v4.yml \
+            -f operation=derive \
+            -f derive_slug=singlehood-holiday-meals-inquiries \
+            -f derive_content_sha256=65b5bb9c6903cfad5b38914bc46f2793e34226dbfc7d9634c05833ef9ccc1e1f \
+            -f derive_long_item_id=video-20260904-130652-65b5bb9c69
+
+      - name: Dispatch exact independent Short recovery for 2026-09-03
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-short-v4.yml \
+            -f operation=derive \
+            -f derive_slug=smart-youth-focus-tasks-organization \
+            -f derive_content_sha256=065fc982d04000cf570128933fd7a23623d50a58e61370f2bd9e6e98cc8d3a0c \
+            -f derive_long_item_id=video-20260903-115113-065fc982d0
+
+      - name: Dispatch exact independent Short recovery for 2026-09-07
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-short-v4.yml \
+            -f operation=derive \
+            -f derive_slug=first-year-boundaries-origin-families \
+            -f derive_content_sha256=6ee784a59bd2768e7cac10ca69f97523e293b138ca489c1abe9552ba56add6e3 \
+            -f derive_long_item_id=video-20260907-080620-6ee784a59b
+
+      - name: Record scope
+        run: |
+          echo "Historical recovery dispatched for 2026-09-02, 2026-09-03, 2026-09-07 Shorts and 2026-09-08 article only. 2026-09-09 intentionally untouched." >> "$GITHUB_STEP_SUMMARY"
