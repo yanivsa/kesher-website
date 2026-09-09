@@ -1,0 +1,207 @@
+name: Kesher Live E2E Test
+run-name: Kesher Live E2E ${{ inputs.slot }} — ${{ inputs.request_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: Israel publication date for the genuinely new article (YYYY-MM-DD)
+        required: true
+        type: string
+      request_id:
+        description: Unique human-readable test request id
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: kesher-live-e2e-test
+  cancel-in-progress: false
+
+jobs:
+  live-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SLOT: ${{ inputs.slot }}
+      REQUEST_ID: ${{ inputs.request_id }}
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Fail closed unless this is a genuinely new production-day article
+        run: |
+          set -euo pipefail
+          israel_today="$(TZ=Asia/Jerusalem date +%F)"
+          test "$SLOT" = "$israel_today" || {
+            echo "Live E2E must use the current Israel production date: $israel_today" >&2
+            exit 1
+          }
+          test -n "$REQUEST_ID"
+          test -s public/images/signature/signature-mask.svg
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          slot = os.environ["SLOT"]
+          posts = json.loads(Path("src/data/posts.json").read_text(encoding="utf-8"))
+          existing = [post for post in posts if str(post.get("date") or "")[:10] == slot]
+          if existing:
+              raise SystemExit(f"Refusing duplicate live E2E: {len(existing)} article(s) already exist for {slot}")
+          print(f"LIVE_E2E_NEW_ARTICLE_SLOT_OK slot={slot}")
+          PY
+
+      - name: Dispatch the regular article worker without test auto-close behavior
+        run: |
+          set -euo pipefail
+          # Deliberately use the normal production article path. test_mode=true
+          # auto-closes its PR and therefore cannot prove a full A+B+C delivery.
+          gh workflow run kesher-article-generation.yml \
+            --ref main \
+            -f slot="$SLOT" \
+            -f test_mode=false
+          echo "LIVE_E2E_ARTICLE_DISPATCHED slot=$SLOT request_id=$REQUEST_ID"
+
+      - name: Nudge the production Controller and wait for exact three-link completion
+        id: wait
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/kesher-live-e2e
+
+          controller_active() {
+            local count
+            count="$(gh run list --workflow kesher-content-controller.yml --limit 30 \
+              --json status \
+              --jq '[.[] | select(.status == "in_progress" or .status == "queued")] | length')"
+            test "${count:-0}" -gt 0
+          }
+
+          nudge_controller() {
+            if controller_active; then
+              echo "Controller already active; no duplicate dispatch."
+            else
+              gh workflow run kesher-content-controller.yml --ref main
+              echo "LIVE_E2E_CONTROLLER_NUDGED"
+            fi
+          }
+
+          read_state() {
+            gh api "repos/${GITHUB_REPOSITORY}/contents/.kesher-controller/state.json?ref=automation-state" \
+              --jq '.content' 2>/dev/null \
+              | tr -d '\n' \
+              | base64 -d > /tmp/kesher-live-e2e/state.json
+          }
+
+          nudge_controller
+          for attempt in $(seq 1 240); do
+            if read_state; then
+              result="$(python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          state = json.loads(Path('/tmp/kesher-live-e2e/state.json').read_text(encoding='utf-8'))
+          slot = os.environ['SLOT']
+          d = state.get('deliverables') or {}
+          exact_cycle = state.get('cycle') == slot
+          ready = all([
+              exact_cycle,
+              state.get('status') == 'complete',
+              d.get('article_url'),
+              d.get('overview_youtube_url'),
+              d.get('short_youtube_url'),
+              d.get('overview_edit_verified') is True,
+              d.get('short_portrait_verified') is True,
+              d.get('short_signature_verified') is True,
+              d.get('short_origin_verified') is True,
+          ])
+          if ready:
+              print('READY')
+              print(d['article_url'])
+              print(d['overview_youtube_url'])
+              print(d['short_youtube_url'])
+          else:
+              print('WAIT')
+              print(state.get('status') or '')
+              print((state.get('last_error') or {}).get('code') or '')
+          PY
+          )"
+              first="$(printf '%s\n' "$result" | sed -n '1p')"
+              if [ "$first" = "READY" ]; then
+                article_url="$(printf '%s\n' "$result" | sed -n '2p')"
+                overview_url="$(printf '%s\n' "$result" | sed -n '3p')"
+                short_url="$(printf '%s\n' "$result" | sed -n '4p')"
+                {
+                  echo "article_url=$article_url"
+                  echo "overview_youtube_url=$overview_url"
+                  echo "short_youtube_url=$short_url"
+                } >> "$GITHUB_OUTPUT"
+                echo "LIVE_E2E_THREE_LINK_CONTRACT_OK"
+                exit 0
+              fi
+              echo "attempt=$attempt $(printf '%s\n' "$result" | tr '\n' ' ')"
+            else
+              echo "attempt=$attempt controller state not readable yet"
+            fi
+
+            # Extra-step contract: do not merely observe a stalled pipeline.
+            # Every five minutes, if no Controller is active, dispatch one safe
+            # idempotent recovery tick. The Controller itself owns duplicate guards.
+            if [ $((attempt % 10)) -eq 0 ]; then
+              nudge_controller
+            fi
+            sleep 30
+          done
+
+          echo "Live E2E timed out before the exact article + Overview + Short contract completed." >&2
+          if [ -s /tmp/kesher-live-e2e/state.json ]; then
+            python - <<'PY'
+          import json
+          from pathlib import Path
+          state = json.loads(Path('/tmp/kesher-live-e2e/state.json').read_text(encoding='utf-8'))
+          print(json.dumps({
+              'cycle': state.get('cycle'),
+              'status': state.get('status'),
+              'last_error': state.get('last_error'),
+              'deliverables': state.get('deliverables'),
+          }, ensure_ascii=False, indent=2))
+          PY
+          fi
+          exit 1
+
+      - name: Verify the public article responds successfully
+        run: |
+          set -euo pipefail
+          article_url="${{ steps.wait.outputs.article_url }}"
+          test -n "$article_url"
+          code="$(curl -L -sS -o /tmp/kesher-live-e2e/article.html -w '%{http_code}' \
+            --retry 4 --retry-delay 3 --max-time 30 "$article_url")"
+          test "$code" = "200" || {
+            echo "Public article HTTP verification failed: $code" >&2
+            exit 1
+          }
+          test -s /tmp/kesher-live-e2e/article.html
+          echo "LIVE_E2E_ARTICLE_HTTP_200=true"
+
+      - name: Publish the exact verified deliverables
+        run: |
+          set -euo pipefail
+          {
+            echo "### Kesher Live E2E — verified"
+            echo
+            echo "- article_url: ${{ steps.wait.outputs.article_url }}"
+            echo "- overview_youtube_url: ${{ steps.wait.outputs.overview_youtube_url }}"
+            echo "- short_youtube_url: ${{ steps.wait.outputs.short_youtube_url }}"
+            echo "- overview_edit_verified: true"
+            echo "- short_portrait_verified: true"
+            echo "- short_signature_verified: true"
+            echo "- short_origin_verified: true"
+          } >> "$GITHUB_STEP_SUMMARY"
