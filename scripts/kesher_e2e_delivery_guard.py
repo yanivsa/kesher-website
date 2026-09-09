@@ -9,6 +9,7 @@ SIGNATURE_DURATION_SECONDS = 3.0
 CANONICAL_SHORT_TYPE = "article_short"
 CANONICAL_SHORT_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
 CANONICAL_SHORT_SOURCE_MODE = "direct-short"
+ENHANCEMENT_REQUIRED_FOR_PUBLICATION = False
 
 
 def _source_identity(item: dict[str, Any]) -> tuple[str, str]:
@@ -74,7 +75,13 @@ def short_public_portrait_verified(
 
 
 def delivery_contract(state: dict[str, Any]) -> tuple[bool, dict[str, Any]]:
-    """The cycle is done only when all three requested public deliverables satisfy DoD."""
+    """The cycle is done only when all three requested public deliverables satisfy DoD.
+
+    Remotion enrichment such as B-roll, sourced assets, edit-plan effects or
+    motion graphics is intentionally advisory/optional. Missing or unavailable
+    enrichment must never hold the Controller open once the canonical A+B+C
+    publication requirements below have passed.
+    """
     article = state.get("article") or {}
     overview = state.get("long_video") or {}
     short = state.get("short") or {}
