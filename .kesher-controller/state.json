@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T17:16:07.773102+00:00",
+    "live_verified_at": "2026-09-09T17:17:13.142485+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -674,24 +674,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T20:31:08.382695+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T20:31:12.376248+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-07T20:31:50.736548+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-07T20:31:54.296849+00:00",
       "from": "article_live",
@@ -1417,9 +1399,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-09T17:17:13.142500+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T17:17:16.277253+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T17:17:29.751152+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-09-09T17:16:26.104394+00:00",
+  "updated_at": "2026-09-09T17:17:29.751172+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1465,7 +1465,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 34381889612,
     "processed_run_id": null,
     "provider_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
     "failure_fingerprint": null,
