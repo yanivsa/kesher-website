@@ -1,10 +1,10 @@
 # Durable Repo Policy: Kesher Remotion Video Upgrade & Review Policy
 
-Policy-Version: 2
+Policy-Version: 1
 
 This durable repository policy governs Jules tasks, automated routines, and code changes that modify, render, or evaluate Remotion implementation for the Kesher video pipeline.
 
-**Pipeline identity is unchanged:** V5 remains the production controller and V6 remains the shadow/evolution path unless separately promoted. This policy version is not a new pipeline version.
+**Pipeline identity is unchanged:** V5 remains the production controller and V6 remains the shadow/evolution path unless separately promoted. `Policy-Version: 1` is the existing machine-readable policy schema version; it is not a V1 pipeline or video-generation version.
 
 ---
 
@@ -31,10 +31,10 @@ Remotion upgrades the **existing authoritative NotebookLM MP4** for each product
    - On **attempt 3**, still request a female voice. If the third accepted candidate is nevertheless detected as male, male voice is an allowed fallback when all other gates pass.
    - An accepted third-attempt male fallback **must not trigger a fourth generation solely because of voice gender**.
    - Voice fallback never relaxes source identity, duplicate prevention, aspect ratio, audio, duration, metadata, publication, or other technical gates.
-3. **Jules review is strict and advisory**: Jules SHOULD evaluate visual, semantic and metadata quality honestly. Rejection, timeout, reviewer unavailability, malformed review, insufficient B-roll, insufficient assets, or skipped enrichment MUST NOT by itself block upload when the canonical technical publication gate passes.
+3. **Jules review is strict and advisory**: Jules SHOULD evaluate visual, semantic and metadata quality honestly. A rejection, timeout, unavailable reviewer, malformed reviewer output, insufficient B-roll, insufficient assets, or skipped enrichment **MUST NOT block upload** of an exact-source MP4 that has passed the independent technical publication gate.
 4. **Technical publication authority**: Upload permission comes only from the canonical Kesher production contract and technical gate. Source identity, final MP4 SHA-256, manifest/evidence identity, metadata validity and duplicate-safe YouTube reconciliation remain fail-closed.
 5. **Exact-evidence identity**: A structured Jules review must refer to the exact item/final MP4/manifest/transcript/source/frame evidence it inspected. A review identity mismatch invalidates the review record but does not change the independent technical publication decision.
-6. **Daily automation**: Preserve scheduled/controller-driven GitHub Actions and durable resume behavior. Do not turn the daily pipeline into a manual-only flow.
+6. **Daily automation**: Changes to review policy or Remotion implementation MUST preserve the scheduled controller-driven daily GitHub Actions pipeline and its durable resume behavior. Do not turn the daily flow into a manual-only process.
 7. **A+B+C remains the only completion contract**: Controller completion depends on the canonical public Article + verified public Video Overview + verified public portrait Short (including existing origin/signature/identity gates). **B-roll, external assets, edit-plan richness and motion-graphics richness are never required for Controller completion.**
 
 ---
@@ -120,14 +120,14 @@ Agents working on Remotion SHOULD use the official Remotion Agent Skills when av
 - `remotion-render`: render configuration and validation.
 - `remotion-multimedia`: media metadata/processing when useful.
 - `remotion-studio`: preview/inspection when practical.
-- `remotion-upgrade`: only for a deliberate isolated dependency upgrade; never auto-upgrade Remotion/Mediabunny/skills during the normal daily run.
+- `remotion-upgrade`: only for a deliberate isolated dependency upgrade. **Never auto-upgrade** Remotion, Mediabunny, or Agent Skills as part of the normal daily video run or an unrelated review PR.
 
 ### Captions restriction
 
-**Do not use `remotion-captions` for this Kesher pipeline.**
+**DO NOT use `remotion-captions` for this Kesher pipeline.**
 
 - Do not add transcript-driven burned-in subtitles, karaoke captions or Remotion-generated caption tracks.
-- Text already baked into NotebookLM pixels remains part of the source and is allowed.
+- Text that already exists inside the pixels of the NotebookLM source MP4 is part of the source and is allowed; Remotion must not treat it as newly generated captions.
 - Remotion may add restrained non-caption editorial text such as peripheral branding, a title badge, a concise lower-third or motion-graphic label when it supports the edit and does not become subtitle-like transcript repetition.
 
 ---
