@@ -21,17 +21,18 @@ class ShortPipelineV4Tests(unittest.TestCase):
             },
         }
 
-    def test_prompt_requests_one_complete_short_ready_hebrew_idea(self):
+    def test_prompt_requests_one_complete_short_ready_hebrew_idea_without_duration_cap(self):
         prompt = short.generation_prompt(self.source())
-        self.assertIn("45 עד 55 שניות", prompt)
         self.assertIn("קול של אישה ישראלית", prompt)
         self.assertIn("הרעיון השלם", prompt)
-        self.assertIn("בתחילת הווידאו", prompt)
+        self.assertIn("סיום טבעי", prompt)
+        self.assertNotIn("45 עד 55 שניות", prompt)
+        self.assertNotIn("55 השניות", prompt)
 
-    def test_long_source_uses_bounded_contiguous_opening_window(self):
+    def test_long_source_keeps_its_full_natural_duration(self):
         start, duration = short.short_window(132.0)
         self.assertEqual(start, 0.0)
-        self.assertEqual(duration, 55.0)
+        self.assertEqual(duration, 132.0)
 
     def test_valid_short_source_keeps_its_natural_duration(self):
         start, duration = short.short_window(44.25)
@@ -48,11 +49,18 @@ class ShortPipelineV4Tests(unittest.TestCase):
         )
         self.assertEqual(failures, [])
 
-    def test_vertical_technical_contract_rejects_horizontal_or_long_media(self):
+    def test_vertical_technical_contract_accepts_long_vertical_media(self):
+        failures = short.short_technical_failures(
+            {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 132.0}
+        )
+        self.assertEqual(failures, [])
+
+    def test_vertical_technical_contract_rejects_horizontal_media(self):
         failures = short.short_technical_failures(
             {"codec": "h264", "audio_codec": "aac", "width": 1280, "height": 720, "duration": 90.0}
         )
-        self.assertGreaterEqual(len(failures), 2)
+        self.assertTrue(any("1080x1920" in failure for failure in failures))
+        self.assertFalse(any("משך ה־Short" in failure for failure in failures))
 
     def test_signature_svg_is_staged_into_runtime_public_dir(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -169,4 +177,3 @@ class ShortPipelineV4Tests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
