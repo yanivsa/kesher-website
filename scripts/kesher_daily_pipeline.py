@@ -56,6 +56,7 @@ ALLOWED_REVIEW = {"approved", "rejected"}
 REVIEW_FRAME_COUNT = 8
 SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
+SIGNATURE_DURATION_SECONDS = 3.0
 FEMALE_PITCH_MIN_HZ = 155.0
 
 
@@ -624,7 +625,8 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     if not remotion.is_file():
         raise PipelineError("Remotion dependencies are not installed")
     raw_media = ffprobe(raw_path)
-    duration_frames = round(float(raw_media["duration"]) * 30)
+    content_duration_seconds = float(raw_media["duration"])
+    duration_frames = round(content_duration_seconds * 30)
     if duration_frames <= 0:
         raise PipelineError("NotebookLM audio duration is invalid for Remotion")
     motion_plan_path = STATE_DIR / f"{item['id']}-motion-plan.json"
@@ -661,6 +663,10 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
         detail = (result.stderr or result.stdout)[-500:]
         raise PipelineError(f"Remotion visual rebuild failed: {detail}")
     item["visual_pipeline"] = "remotion-v1-notebooklm-audio"
+    item["content_duration_seconds"] = round(content_duration_seconds, 3)
+    item["signature_duration_seconds"] = SIGNATURE_DURATION_SECONDS
+    item["signature_fullscreen"] = True
+    item["signature_asset_sha256"] = sha256_file(STATE_DIR / signature_image_src)
     item["remotion_props_path"] = props_path.name
     item["remotion_props_sha256"] = sha256_file(props_path)
     item["motion_plan_path"] = motion_plan_path.name
@@ -730,9 +736,18 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
     technical_failures: list[str] = []
     if media["codec"] != "h264":
         technical_failures.append(f"קודק הווידאו הוא {media['codec']} ולא H.264")
-    if not 90 <= media["duration"] <= 180:
+    content_duration = float(
+        item.get("content_duration_seconds")
+        or max(0.0, float(media["duration"]) - SIGNATURE_DURATION_SECONDS)
+    )
+    if not 90 <= content_duration <= 180:
         technical_failures.append(
-            f"משך הווידאו הוא {media['duration']} שניות ואינו בטווח 90–180 שניות"
+            f"משך תוכן הווידאו הוא {content_duration} שניות ואינו בטווח 90–180 שניות"
+        )
+    expected_final_duration = content_duration + SIGNATURE_DURATION_SECONDS
+    if abs(float(media["duration"]) - expected_final_duration) > 0.15:
+        technical_failures.append(
+            "סגיר החתימה בן 3 השניות לא נוסף אחרי מלוא תוכן ה-Overview"
         )
     if media["width"] <= media["height"] or not 1.70 <= media["width"] / media["height"] <= 1.82:
         technical_failures.append(
@@ -770,6 +785,10 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "final_mp4": item["final_mp4"],
         "final_sha256": item["final_sha256"],
         "visual_pipeline": item.get("visual_pipeline"),
+        "content_duration_seconds": item.get("content_duration_seconds"),
+        "signature_duration_seconds": item.get("signature_duration_seconds"),
+        "signature_fullscreen": item.get("signature_fullscreen"),
+        "signature_asset_sha256": item.get("signature_asset_sha256"),
         "remotion_props_path": item.get("remotion_props_path"),
         "remotion_props_sha256": item.get("remotion_props_sha256"),
         "motion_plan_path": item.get("motion_plan_path"),
