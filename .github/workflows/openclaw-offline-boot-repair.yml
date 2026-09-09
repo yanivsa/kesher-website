@@ -9,6 +9,10 @@ permissions:
   issues: write
   statuses: write
 
+concurrency:
+  group: openclaw-offline-recovery
+  cancel-in-progress: false
+
 jobs:
   repair:
     runs-on: ubuntu-latest
