@@ -1,60 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-09",
-  "status": "complete",
+  "cycle": "2026-09-10",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34301600966,
-    "processed_run_id": 34288651191,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "COMPLETED_WITHOUT_PR": 1
-    },
-    "attempts": 2,
+    "failure_count_by_type": {},
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
-    "last_dispatch_at": "2026-09-09T02:02:23.700242+00:00",
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-09-09",
-      "outcome": "COMPLETED_WITHOUT_PR",
-      "retryable": true,
-      "message": "Jules completed without creating a pull request",
-      "session_id": "sessions/13041924962952987945",
-      "pr_url": "",
-      "github_run_id": "34288651191",
-      "completed_at": "2026-09-08T23:29:35.527161+00:00"
-    },
-    "last_jules_session_id": "sessions/13041924962952987945",
-    "last_failed_run_id": 34288651191,
-    "watchdog": {
-      "identity": "2026-09-09",
-      "session_id": "sessions/133480034807917037",
-      "last_progress_at": "2026-09-09T02:02:23+00:00",
-      "last_fingerprint": "2b6e0b956a5bfb7b8bda7a8f65a2fff3e8ca78fd2719998ddb6e6e840a3ac151",
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "quality_status": "passed",
-    "quality_content_sha256": "824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661",
-    "quality_checked_at": "2026-09-09T20:25:38.834651+00:00",
-    "quality_violations": [],
-    "slug": "older-singles-friendship-changes-loneliness",
-    "title": "רווקות מאוחרת והחברים הנשואים: איך מתמודדים עם תחושת הבדידות החברתית",
-    "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
-    "published_date": "2026-09-09",
-    "live": true,
-    "live_verified_at": "2026-09-09T20:26:21.556615+00:00",
-    "next_deploy_retry_at": null
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -683,149 +644,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-09T05:44:02.437495+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T05:44:29.607333+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 4
-      }
-    },
-    {
-      "at": "2026-09-09T05:49:56.448596+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T05:50:16.646191+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 6
-      }
-    },
-    {
-      "at": "2026-09-09T05:51:47.128344+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T05:51:55.281342+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-09T05:56:14.479528+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T05:56:26.154250+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-09T06:05:16.440037+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T06:05:26.602000+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-09T06:21:23.314175+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T06:22:19.443512+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T06:25:04.254737+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T06:25:47.171221+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T06:28:45.074099+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T06:29:23.190970+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T06:31:29.111675+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T06:31:44.568381+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T06:33:26.617335+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T06:33:35.432149+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-09-09T06:39:18.136077+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -1354,12 +1172,30 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-09T21:06:15.397218+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-09T21:06:15.397222+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-09T21:06:15.397627+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-09T20:26:51.495095+00:00",
+  "updated_at": "2026-09-09T21:06:15.397194+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1371,83 +1207,29 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "item_id": "video-20260909-131952-824a8b4ff8",
-    "resume_dispatches": 0,
-    "last_dispatch_at": null,
-    "source_id": "34646087-0c27-4155-97f6-4d518acd42f5",
-    "artifact_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
-    "last_run_conclusion": null,
-    "watchdog": {
-      "identity": "long_video:older-singles-friendship-changes-loneliness:824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661:video-20260909-131952-824a8b4ff8",
-      "last_progress_at": "2026-09-09T10:29:01.471250+00:00",
-      "last_fingerprint": "edb70b3bcef7b626687a94cc3b68e705be0110fa83a05d6217501d673e139762",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "youtube_id": "hsc40vF65ts",
-    "youtube_url": "https://youtu.be/hsc40vF65ts",
-    "verified": true
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 4,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34381889612,
-    "processed_run_id": 34381889612,
-    "provider_id": "4f45735a-f35a-4f69-97f2-7ec0cd100426",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "item_id": "video-20260909-210659-824a8b4ff8",
-    "resume_dispatches": 0,
-    "last_dispatch_at": "2026-09-09T18:40:16.918109+00:00",
-    "source_id": "dec60106-b666-43b8-ad95-b58a96904b8d",
-    "artifact_id": "4f45735a-f35a-4f69-97f2-7ec0cd100426",
-    "last_run_conclusion": "success",
-    "adopted_from_long_item_id": "video-20260909-131952-824a8b4ff8",
-    "watchdog": {
-      "identity": "short:older-singles-friendship-changes-loneliness:824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661:video-20260909-210659-824a8b4ff8",
-      "last_progress_at": "2026-09-09T18:14:42.676047+00:00",
-      "last_fingerprint": "99f97f85473c73e6aaa822d13808584f04aee665cfc0fc2df37d72f1c4d39066",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "type": "article_short",
-    "youtube_id": "7o8L18pMGUs",
-    "youtube_url": "https://youtu.be/7o8L18pMGUs",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "f6d803cc4931f8bb2bc0099b8f2d4d20a139f30df08d734db6d7bd9df5a0956d",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
-    "overview_youtube_url": "https://youtu.be/hsc40vF65ts",
-    "short_youtube_url": "https://youtu.be/7o8L18pMGUs",
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
   }
 }
