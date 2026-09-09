@@ -8,6 +8,7 @@ from scripts import kesher_e2e_delivery_guard as guard
 ROOT = Path(__file__).resolve().parents[1]
 SHORT_ROOT = ROOT / "src" / "remotion" / "Root.tsx"
 LIVE_E2E_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-live-e2e-test.yml"
+STABILIZED_RUNTIME = ROOT / "scripts" / "kesher_content_controller_stabilized.py"
 
 
 class KesherE2EReadinessTests(unittest.TestCase):
@@ -68,6 +69,19 @@ class KesherE2EReadinessTests(unittest.TestCase):
         ready, deliverables = guard.delivery_contract(state)
         self.assertFalse(ready)
         self.assertFalse(deliverables["overview_edit_verified"])
+
+    def test_production_marker_refuses_url_only_overview(self) -> None:
+        state = self.complete_state()
+        state["long_video"] = {
+            "verified": True,
+            "youtube_url": "https://youtu.be/overview-e2e",
+            "overview_evidence_required": True,
+        }
+        ready, deliverables = guard.delivery_contract(state)
+        self.assertFalse(ready)
+        self.assertFalse(deliverables["overview_edit_verified"])
+        stabilized = STABILIZED_RUNTIME.read_text(encoding="utf-8")
+        self.assertIn('state["long_video"]["overview_evidence_required"] = True', stabilized)
 
     def test_live_e2e_test_entrypoint_drives_regular_article_and_waits_for_three_links(self) -> None:
         workflow = LIVE_E2E_WORKFLOW.read_text(encoding="utf-8")
