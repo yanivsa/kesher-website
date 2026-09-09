@@ -3,9 +3,11 @@ from datetime import datetime, timezone
 
 from scripts.kesher_content_controller_v6_runtime import (
     ARTIFACT_NAMESPACE,
+    CANARY_MODE_SHADOW,
     PIPELINE_ID,
     STATE_REF,
     V6InterventionReconciler,
+    shadow_canary_report,
 )
 from scripts.kesher_intervention_policy import DIRECT_TAKEOVER, FORCE_CONTROLLER_RECOVERY, OBSERVE_CONTROLLER
 
@@ -15,6 +17,35 @@ class KesherV6InterventionIsolationTests(unittest.TestCase):
         self.assertEqual(PIPELINE_ID, "v6")
         self.assertEqual(STATE_REF, "automation-state-v6")
         self.assertEqual(ARTIFACT_NAMESPACE, "kesher-v6")
+
+    def test_v6_shadow_canary_is_bound_to_exact_identity_and_cannot_dispatch(self):
+        report = shadow_canary_report(
+            slug="existing-article",
+            content_sha256="exact-content-sha",
+            stage="long_video",
+            progress={"status": "complete", "youtube_url": "https://youtu.be/example"},
+        )
+
+        self.assertEqual(report["canary_mode"], CANARY_MODE_SHADOW)
+        self.assertEqual(report["identity"], {
+            "slug": "existing-article",
+            "content_sha256": "exact-content-sha",
+            "stage": "long_video",
+        })
+        self.assertFalse(report["production_dispatch_enabled"])
+        self.assertFalse(report["article_dispatch_enabled"])
+        self.assertFalse(report["provider_dispatch_enabled"])
+        self.assertFalse(report["upload_enabled"])
+
+    def test_v6_shadow_canary_fails_closed_without_exact_identity(self):
+        for field, kwargs in (
+            ("slug", {"slug": "", "content_sha256": "sha", "stage": "short"}),
+            ("content_sha256", {"slug": "slug", "content_sha256": "", "stage": "short"}),
+            ("stage", {"slug": "slug", "content_sha256": "sha", "stage": ""}),
+        ):
+            with self.subTest(field=field):
+                with self.assertRaisesRegex(ValueError, field):
+                    shadow_canary_report(**kwargs)
 
     def test_v6_uses_same_three_check_contract_without_sharing_v5_incident(self):
         state = {}
