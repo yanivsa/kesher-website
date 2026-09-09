@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-09",
-  "status": "article_deploying",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -51,7 +51,10 @@
     "slug": "older-singles-friendship-changes-loneliness",
     "title": "רווקות מאוחרת והחברים הנשואים: איך מתמודדים עם תחושת הבדידות החברתית",
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
-    "published_date": "2026-09-09"
+    "published_date": "2026-09-09",
+    "live": true,
+    "live_verified_at": "2026-09-09T03:03:56.515529+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -1364,9 +1367,25 @@
       "from": "article_generating",
       "to": "article_deploying",
       "reason": "deployment already active"
+    },
+    {
+      "at": "2026-09-09T03:03:56.515550+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T03:05:02.605501+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-09-09T02:58:35.779733+00:00",
+  "updated_at": "2026-09-09T03:05:02.605508+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1380,16 +1399,21 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "6fa605f7-7162-4294-9365-01412a531f84",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "item_id": "video-20260907-172352-6ee784a59b",
+    "resume_dispatches": 2,
+    "last_dispatch_at": "2026-09-09T03:05:02.605496+00:00",
+    "source_id": "f16f92de-4bb1-4143-a202-ea54f1aa5142",
+    "artifact_id": "6fa605f7-7162-4294-9365-01412a531f84"
   },
   "short": {
     "attempt_count": 0,
