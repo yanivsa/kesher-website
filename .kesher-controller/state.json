@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T11:09:40.409994+00:00",
+    "live_verified_at": "2026-09-09T11:17:20.944385+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -674,27 +674,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T15:50:29.006421+00:00",
-      "from": "long_video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T15:50:31.553512+00:00",
-      "from": "article_live",
-      "to": "video_retry_wait",
-      "reason": "video retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-07T15:53:53.676871+00:00"
-      }
-    },
-    {
-      "at": "2026-09-07T15:53:18.871811+00:00",
-      "from": "long_video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-07T15:53:21.314023+00:00",
       "from": "article_live",
@@ -1439,9 +1418,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-09T11:17:20.944398+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T11:17:24.794477+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T11:17:39.472229+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-09T11:10:36.451209+00:00",
+  "updated_at": "2026-09-09T11:17:39.472238+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1483,7 +1480,7 @@
     "verified": true
   },
   "short": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1495,7 +1492,7 @@
     "failure_count_by_type": {},
     "item_id": null,
     "resume_dispatches": 0,
-    "last_dispatch_at": "2026-09-09T11:10:36.451182+00:00",
+    "last_dispatch_at": "2026-09-09T11:17:39.472207+00:00",
     "source_id": "34646087-0c27-4155-97f6-4d518acd42f5",
     "artifact_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
     "last_run_conclusion": null,
