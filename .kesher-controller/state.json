@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T06:44:39.642579+00:00",
+    "live_verified_at": "2026-09-09T07:33:14.816967+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -676,24 +676,9 @@
     "stage": "long_video",
     "code": "VIDEO_ATTEMPTS_EXHAUSTED",
     "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-09T06:44:48.320844+00:00"
+    "at": "2026-09-09T07:33:23.551525+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-07T15:38:53.676923+00:00",
-      "from": "video_retry_wait",
-      "to": "video_retry_wait",
-      "reason": "video retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-07T15:53:53.676871+00:00"
-      }
-    },
-    {
-      "at": "2026-09-07T15:39:33.089778+00:00",
-      "from": "long_video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-07T15:39:35.604849+00:00",
       "from": "article_live",
@@ -1446,9 +1431,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-09T07:33:14.816986+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T07:33:23.551546+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-09T06:44:48.320872+00:00",
+  "updated_at": "2026-09-09T07:33:23.551554+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
