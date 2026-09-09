@@ -20,6 +20,9 @@ def public_item(*, youtube_id: str, width: int, height: int) -> dict:
     src = source()
     return {
         "id": f"item-{youtube_id}",
+        "type": delivery_guard.CANONICAL_SHORT_TYPE,
+        "source_mode": delivery_guard.CANONICAL_SHORT_SOURCE_MODE,
+        "visual_pipeline": delivery_guard.CANONICAL_SHORT_PIPELINE,
         "status": "uploaded",
         "uploaded": True,
         "source": copy.deepcopy(src),
@@ -107,7 +110,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         item.pop("signature_fullscreen", None)
         item.update({
             "technical_verified": True,
-            "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+            "visual_pipeline": delivery_guard.CANONICAL_SHORT_PIPELINE,
             "signature_asset": "signature-mask.svg",
             "signature_sha256": "c" * 64,
         })
@@ -177,6 +180,9 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
             "article": {"live": True, "url": "https://kesher.saharoni.com/blog/today-article"},
             "long_video": {"verified": True, "youtube_url": "https://youtu.be/overview"},
             "short": {
+                "type": delivery_guard.CANONICAL_SHORT_TYPE,
+                "source_mode": delivery_guard.CANONICAL_SHORT_SOURCE_MODE,
+                "visual_pipeline": delivery_guard.CANONICAL_SHORT_PIPELINE,
                 "verified": True,
                 "youtube_url": "https://youtu.be/short",
                 "portrait_verified": True,
@@ -184,7 +190,6 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
                 "signature_fullscreen": True,
                 "signature_duration_seconds": 3.0,
                 "signature_video_sha256": "s" * 64,
-                "source_mode": "direct-short",
             },
         }
         ready, deliverables = delivery_guard.delivery_contract(state)
@@ -197,6 +202,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
                 "short_youtube_url": "https://youtu.be/short",
                 "short_portrait_verified": True,
                 "short_signature_verified": True,
+                "short_origin_verified": True,
             },
         )
 
@@ -279,8 +285,8 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
             },
             "media": {"width": 1080, "height": 1920},
             "technical_verified": True,
-            "visual_pipeline": delivery_guard.SVG_SIGNATURE_PIPELINE,
-            "signature_asset": delivery_guard.SVG_SIGNATURE_ASSET,
+            "visual_pipeline": delivery_guard.CANONICAL_SHORT_PIPELINE,
+            "signature_asset": "signature-mask.svg",
             "signature_sha256": "c" * 64,
         }
         controller.github = MiniGitHub(svg_short_item)
@@ -299,6 +305,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         self.assertTrue(ready)
         self.assertTrue(deliverables["short_signature_verified"])
         self.assertTrue(deliverables["short_portrait_verified"])
+        self.assertTrue(deliverables["short_origin_verified"])
 
     def test_delivery_contract_rejects_overview_derived_short(self) -> None:
         st = {
@@ -317,6 +324,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         }
         ready, deliverables = delivery_guard.delivery_contract(st)
         self.assertFalse(ready)
+        self.assertFalse(deliverables["short_origin_verified"])
 
     def test_delivery_contract_rejects_svg_only_short(self) -> None:
         st = {
@@ -377,5 +385,3 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-
