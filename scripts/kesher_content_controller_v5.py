@@ -364,7 +364,13 @@ class V5Controller(v4.V4Controller):
 
         short_mode = os.environ.get("KESHER_SHORT_MODE", "").strip().lower()
         if short_mode in {"direct", "standalone"}:
-            inputs = {"operation": "generate"}
+            # Direct generation must still bind the worker to the current
+            # authoritative article. Without derive_slug, the worker resumes
+            # whichever stale Short item is newest in durable state.
+            inputs = {
+                "operation": "generate",
+                "derive_slug": source["slug"],
+            }
         else:
             inputs = {
                 "operation": "derive",
