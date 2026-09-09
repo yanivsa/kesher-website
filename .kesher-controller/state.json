@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T19:40:05.482927+00:00",
+    "live_verified_at": "2026-09-09T19:58:47.146055+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -682,34 +682,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-08T23:00:15.682262+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-08T23:00:34.539252+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-09T01:12:43.102248+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "COMPLETED_WITHOUT_PR",
-      "details": {
-        "message": "Jules completed without creating a pull request",
-        "retry_at": "2026-09-09T01:17:43.102224+00:00",
-        "failure_streak": 1,
-        "run_id": 34288651191,
-        "session_id": "sessions/13041924962952987945"
-      }
-    },
     {
       "at": "2026-09-09T02:02:23.700249+00:00",
       "from": "article_retry_wait",
@@ -1378,9 +1350,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-09T19:58:47.146073+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T19:59:01.171532+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T19:59:38.347042+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-09T19:40:17.139234+00:00",
+  "updated_at": "2026-09-09T19:59:38.347061+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
