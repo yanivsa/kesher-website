@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import os
 import re
+import subprocess
 import time
 from pathlib import Path
 from urllib.parse import quote
@@ -16,11 +17,23 @@ EARLY_REPAIR = "openclaw_offline_mount_repair_early.sh"
 BASE_REPAIR = "openclaw_offline_mount_repair_base.sh"
 
 
+def checked_out_head_sha() -> str:
+    try:
+        sha = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], text=True, stderr=subprocess.DEVNULL
+        ).strip()
+    except (OSError, subprocess.CalledProcessError):
+        sha = ""
+    if not re.fullmatch(r"[0-9a-f]{40}", sha):
+        raise RuntimeError("CHECKED_OUT_HEAD_SHA_MISSING")
+    return sha
+
+
 def pinned_wrapper(script_file: str) -> str:
     repo = os.environ.get("GITHUB_REPOSITORY", "")
-    sha = os.environ.get("GITHUB_SHA", "")
-    if not repo or not re.fullmatch(r"[0-9a-f]{40}", sha):
-        raise RuntimeError("GITHUB_REPOSITORY_OR_SHA_MISSING")
+    sha = checked_out_head_sha()
+    if not repo:
+        raise RuntimeError("GITHUB_REPOSITORY_MISSING")
 
     primary = Path(script_file)
     files = [primary]
