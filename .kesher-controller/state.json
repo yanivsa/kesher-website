@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-09",
-  "status": "long_video_complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T18:30:13.160974+00:00",
+    "live_verified_at": "2026-09-09T18:39:03.695335+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -674,42 +674,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T21:00:48.794416+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-09-07T21:01:09.490400+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-09-07",
-        "source_slug": "first-year-boundaries-origin-families"
-      }
-    },
-    {
-      "at": "2026-09-07T21:09:37.596322+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-09-07",
-        "source_slug": "first-year-boundaries-origin-families"
-      }
-    },
-    {
-      "at": "2026-09-07T21:17:25.223239+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-09-07",
-        "source_slug": "first-year-boundaries-origin-families"
-      }
-    },
     {
       "at": "2026-09-07T22:17:41.196907+00:00",
       "from": "waiting_for_article_window",
@@ -1441,9 +1405,27 @@
         "item_id": "video-20260909-210659-824a8b4ff8",
         "operation": "full"
       }
+    },
+    {
+      "at": "2026-09-09T18:39:03.695354+00:00",
+      "from": "long_video_complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T18:39:18.460504+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T18:40:16.918131+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-09T18:36:56.376Z",
+  "updated_at": "2026-09-09T18:40:16.918140+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1485,8 +1467,8 @@
     "verified": true
   },
   "short": {
-    "attempt_count": 3,
-    "status": "pending",
+    "attempt_count": 4,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34381889612,
@@ -1497,7 +1479,7 @@
     "failure_count_by_type": {},
     "item_id": null,
     "resume_dispatches": 0,
-    "last_dispatch_at": "2026-09-09T17:16:26.104366+00:00",
+    "last_dispatch_at": "2026-09-09T18:40:16.918109+00:00",
     "source_id": "34646087-0c27-4155-97f6-4d518acd42f5",
     "artifact_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
     "last_run_conclusion": "success",
