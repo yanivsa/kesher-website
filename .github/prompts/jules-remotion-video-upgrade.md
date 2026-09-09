@@ -19,8 +19,14 @@ Remotion must take the **EXISTING NotebookLM MP4** and **UPGRADE** it.
 ## 2. Permanent Invariants (Must Preserve Permanently)
 
 1. **Exact NotebookLM Source Audio & Narration**: Always preserve the exact source MP4 audio without alteration or replacement.
-2. **Explicit Female Voice Generation Prompt Requirement**: Every NotebookLM generation prompt MUST explicitly include:
+2. **Female-first voice generation and bounded fallback — Video Overview and Short**: Every NotebookLM generation prompt for both **Video Overview and Short** MUST explicitly request a female Israeli voice:
    > `השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות.`
+
+   The voice rule is bounded and identical for both products:
+   - On **attempts 1 and 2**, if automated voice analysis detects a male voice, the current candidate must not be published and the same authoritative source identity must be regenerated with the female-voice request preserved.
+   - On **attempt 3**, the generation prompt still MUST request a female voice. If the resulting candidate is nevertheless detected as male, **male voice is an allowed fallback** and the candidate may proceed when all other technical, identity, semantic, metadata, visual and publication gates pass.
+   - An accepted third-attempt male fallback **must not trigger a fourth generation solely because of voice gender**. Once the fallback is recorded, Jules MUST treat voice gender as non-blocking for that exact candidate and must not recommend or initiate another regeneration for voice gender alone.
+   - Voice fallback never relaxes any other gate. Wrong source identity, duplicate upload, bad aspect ratio, missing audio, invalid duration, unsupported claims, metadata defects, or other technical failures remain blocking according to their normal contracts.
 3. **Strict visual review language for slide/card-like output**: The automated Jules visual review MUST report as rejected any video that is composed of slide/card-like, text-heavy, timeline/diagram, repeated-frame, or generic illustrative visuals.
 4. **Jules review is strict and advisory**: Jules MUST inspect the immutable evidence honestly and may return `approved` or `rejected` for visual, semantic and metadata quality. A rejection, timeout, unavailable reviewer or malformed reviewer output MUST NOT block upload of an exact-source MP4 that has passed the independent technical publication gate. Review findings remain durable quality signals for later repair or improvement; they are not publication permission.
 5. **Technical publication authority**: Upload permission comes only from the canonical Kesher production contract and the technical gate. Source identity, final MP4 SHA-256, manifest/evidence identity, metadata validity and duplicate-safe YouTube reconciliation remain fail-closed. Jules MUST NOT block upload and MUST NOT be treated as an authorization service.
