@@ -91,7 +91,7 @@ jobs:
           npm run verify:dist
 
       - name: Validate article hero images
-        if: ${{ steps.profile.outputs.profile == 'full' }}
+        if: ${{ steps.profile.outputs.profile == 'article' || steps.profile.outputs.profile == 'full' }}
         run: python3 .github/scripts/validate-article-images.py
 
       - name: Run full quality gate
