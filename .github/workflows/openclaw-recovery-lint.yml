@@ -5,12 +5,14 @@ on:
     paths:
       - 'scripts/openclaw_*.sh'
       - 'scripts/oci_openclaw_*.py'
-      - '.github/workflows/openclaw-recovery-lint.yml'
+      - 'scripts/test_openclaw_*.py'
+      - '.github/workflows/openclaw-*.yml'
   pull_request:
     paths:
       - 'scripts/openclaw_*.sh'
       - 'scripts/oci_openclaw_*.py'
-      - '.github/workflows/openclaw-recovery-lint.yml'
+      - 'scripts/test_openclaw_*.py'
+      - '.github/workflows/openclaw-*.yml'
 
 permissions:
   contents: read
@@ -27,4 +29,8 @@ jobs:
       - name: Python syntax
         run: |
           set -euo pipefail
-          python -m compileall -q scripts/oci_openclaw_*.py
+          python -m compileall -q scripts/oci_openclaw_*.py scripts/test_openclaw_*.py
+      - name: Recovery contract tests
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s scripts -p 'test_openclaw_*.py'
