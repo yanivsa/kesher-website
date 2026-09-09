@@ -1477,7 +1477,14 @@
     "source_id": "34646087-0c27-4155-97f6-4d518acd42f5",
     "artifact_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
     "last_run_conclusion": null,
-    "adopted_from_long_item_id": "video-20260909-131952-824a8b4ff8"
+    "adopted_from_long_item_id": "video-20260909-131952-824a8b4ff8",
+    "watchdog": {
+      "identity": "short:older-singles-friendship-changes-loneliness:824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661:video-20260909-210659-824a8b4ff8",
+      "last_progress_at": "2026-09-09T18:14:42.676047+00:00",
+      "last_fingerprint": "99f97f85473c73e6aaa822d13808584f04aee665cfc0fc2df37d72f1c4d39066",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
