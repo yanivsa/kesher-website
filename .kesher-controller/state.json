@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-09",
-  "status": "long_video_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T06:05:16.440020+00:00",
+    "live_verified_at": "2026-09-09T06:21:23.314157+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -672,24 +672,13 @@
       "archived_at": "2026-09-08T23:00:15.681638+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "long_video",
+    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
+    "message": "video exhausted 3 total controller dispatch attempts",
+    "at": "2026-09-09T06:22:19.443492+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-07T15:14:06.946015+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-07T15:14:27.641356+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 9
-      }
-    },
     {
       "at": "2026-09-07T15:19:02.393261+00:00",
       "from": "long_video_running",
@@ -1447,9 +1436,24 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-09T06:21:23.314175+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T06:22:19.443512+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-09T06:05:26.602020+00:00",
+  "updated_at": "2026-09-09T06:22:19.443520+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1464,11 +1468,11 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "generating",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34316496842,
-    "processed_run_id": 34309322629,
+    "processed_run_id": 34316496842,
     "provider_id": "7b68e301-192d-4368-8528-53b998648bae",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
