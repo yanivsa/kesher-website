@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Production Kesher V5 runtime with a fail-closed article quality preflight."""
+"""Production Kesher V5 runtime with fail-closed article and media-quality preflights."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ else:
 
 
 class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
-    """Prevent deploy/media advancement from an article that fails quality policy."""
+    """Prevent advancement/completion unless article and canonical media evidence are durable."""
 
     def _quality_preflight(self, state):
         posts = self.github.contents_json("src/data/posts.json", "main")
@@ -49,14 +49,51 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         self.github.save_controller_state(state)
         return v5.core.Action("blocked", "article content quality failed before deploy/media")
 
+    def _overview_evidence_preflight(self, state):
+        """Copy exact public Overview edit evidence into durable controller state.
+
+        The controller must never declare the three-link contract complete from a
+        YouTube URL alone. Evidence is read from the exact slug+content-hash video
+        state (or its bounded durable-history recovery path) and copied without
+        starting or duplicating any media work.
+        """
+        source = self._article_source()
+        if source is None:
+            return
+
+        snapshot = self.github.newest_video_state()
+        item = v5._newest(v5._verified_exact(snapshot, source))
+        if item is None:
+            item = self._verified_long_from_artifact_history(source)
+        if item is None:
+            return
+
+        media = item.get("media") or {}
+        state["long_video"].update({
+            "item_id": item.get("id"),
+            "youtube_id": item.get("youtube_id"),
+            "youtube_url": item.get("youtube_url"),
+            "verified": True,
+            "technical_verified": item.get("technical_verified") is True,
+            "visual_pipeline": item.get("visual_pipeline"),
+            "codec": media.get("codec"),
+            "width": media.get("width"),
+            "height": media.get("height"),
+            "duration": media.get("duration"),
+            "provider_id": item.get("task_id"),
+            "artifact_id": item.get("artifact_id"),
+            "source_id": item.get("source_id"),
+        })
+
     def tick(self):
         state = self.state()
         blocker = self._quality_preflight(state)
         if blocker is not None:
             return state, blocker
-        # Persist the pass bound to the exact authoritative content hash before
-        # V5 may dispatch a deploy, Overview or Short. super().tick() reloads
-        # this durable state through the same controller state ref.
+
+        # Persist article quality and any exact Overview edit evidence before V5
+        # reloads the durable state and evaluates the final A+B+C contract.
+        self._overview_evidence_preflight(state)
         self.github.save_controller_state(state)
         return super().tick()
 
