@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-09",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34301600966,
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T18:39:03.695335+00:00",
+    "live_verified_at": "2026-09-09T18:43:07.049622+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -674,37 +674,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T22:17:41.196907+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-08T00:31:47.073393+00:00",
-      "from": "article_generating",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 730
-      }
-    },
-    {
-      "at": "2026-09-08T04:02:48.534658+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 34173608507 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-08T04:07:48.534627+00:00",
-        "failure_streak": 1,
-        "run_id": 34173608507
-      }
-    },
     {
       "at": "2026-09-08T04:06:43.372260+00:00",
       "from": "image_retry_wait",
@@ -1423,12 +1392,30 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-09T18:43:07.049636+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T18:43:29.048743+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T18:44:56.008077+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-09T18:40:16.918140+00:00",
+  "updated_at": "2026-09-09T18:44:56.008095+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1468,20 +1455,20 @@
   },
   "short": {
     "attempt_count": 4,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34381889612,
     "processed_run_id": 34381889612,
-    "provider_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
+    "provider_id": "4f45735a-f35a-4f69-97f2-7ec0cd100426",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "item_id": null,
+    "item_id": "video-20260909-210659-824a8b4ff8",
     "resume_dispatches": 0,
     "last_dispatch_at": "2026-09-09T18:40:16.918109+00:00",
-    "source_id": "34646087-0c27-4155-97f6-4d518acd42f5",
-    "artifact_id": "c1073bf1-7544-4fe3-b133-f3bcd2fab0eb",
+    "source_id": "dec60106-b666-43b8-ad95-b58a96904b8d",
+    "artifact_id": "4f45735a-f35a-4f69-97f2-7ec0cd100426",
     "last_run_conclusion": "success",
     "adopted_from_long_item_id": "video-20260909-131952-824a8b4ff8",
     "watchdog": {
@@ -1490,7 +1477,23 @@
       "last_fingerprint": "99f97f85473c73e6aaa822d13808584f04aee665cfc0fc2df37d72f1c4d39066",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "type": "article_short",
+    "youtube_id": "7o8L18pMGUs",
+    "youtube_url": "https://youtu.be/7o8L18pMGUs",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "f6d803cc4931f8bb2bc0099b8f2d4d20a139f30df08d734db6d7bd9df5a0956d",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
