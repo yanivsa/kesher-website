@@ -68,6 +68,23 @@ if [ ! -s "$READY" ]; then
   echo OPENCLAW_LOCAL_PROOF_FINALIZER_LOG_BEGIN=true
   tail -160 "$LOG" 2>/dev/null || true
   echo OPENCLAW_LOCAL_PROOF_FINALIZER_LOG_END=true
+  echo OPENCLAW_LOCAL_PROOF_FINALIZER_UNIT_BEGIN=true
+  sed -n '1,160p' "$MNT/etc/systemd/system/openclaw-offline-finalize.service" 2>/dev/null || true
+  echo OPENCLAW_LOCAL_PROOF_FINALIZER_UNIT_END=true
+  finalizer_link="$MNT/etc/systemd/system/multi-user.target.wants/openclaw-offline-finalize.service"
+  if [ -L "$finalizer_link" ]; then
+    echo OPENCLAW_FINALIZER_ENABLE_SYMLINK_PRESENT=true
+    echo "OPENCLAW_FINALIZER_ENABLE_SYMLINK_TARGET=$(readlink "$finalizer_link" 2>/dev/null || true)"
+  else
+    echo OPENCLAW_FINALIZER_ENABLE_SYMLINK_PRESENT=false
+  fi
+  echo OPENCLAW_LOCAL_PROOF_FINALIZER_JOURNAL_BEGIN=true
+  if [ -d "$MNT/var/log/journal" ]; then
+    journalctl --directory="$MNT/var/log/journal" -u openclaw-offline-finalize.service -n 200 --no-pager 2>/dev/null || true
+  else
+    echo OPENCLAW_FINALIZER_JOURNAL_PERSISTENT_MISSING=true
+  fi
+  echo OPENCLAW_LOCAL_PROOF_FINALIZER_JOURNAL_END=true
   echo OPENCLAW_LOCAL_PROOF_GATEWAY_UNIT_BEGIN=true
   sed -n '1,120p' "$MNT/etc/systemd/system/openclaw-gateway.service" 2>/dev/null || true
   echo OPENCLAW_LOCAL_PROOF_GATEWAY_UNIT_END=true
@@ -78,6 +95,13 @@ if [ ! -s "$READY" ]; then
     echo OPENCLAW_GATEWAY_JOURNAL_PERSISTENT_MISSING=true
   fi
   echo OPENCLAW_LOCAL_PROOF_GATEWAY_JOURNAL_END=true
+  echo OPENCLAW_LOCAL_PROOF_FAILED_UNITS_BEGIN=true
+  if [ -d "$MNT/var/log/journal" ]; then
+    journalctl --directory="$MNT/var/log/journal" -b -p warning..alert -n 240 --no-pager 2>/dev/null || true
+  else
+    echo OPENCLAW_SYSTEM_JOURNAL_PERSISTENT_MISSING=true
+  fi
+  echo OPENCLAW_LOCAL_PROOF_FAILED_UNITS_END=true
   exit 63
 fi
 [ -s "$LOG" ] || { echo OPENCLAW_LOCAL_PROOF_FAILED=FINALIZER_LOG_MISSING; exit 64; }
