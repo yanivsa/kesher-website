@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-09",
-  "status": "blocked",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -672,12 +672,7 @@
       "archived_at": "2026-09-08T23:00:15.681638+00:00"
     }
   ],
-  "last_error": {
-    "stage": "short",
-    "code": "SHORT_ATTEMPTS_EXHAUSTED",
-    "message": "Short exhausted 4 derive/recovery dispatch attempts",
-    "at": "2026-09-09T18:31:13.340168+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-07T21:00:48.794416+00:00",
@@ -1434,9 +1429,21 @@
       "details": {
         "message": "Short exhausted 4 derive/recovery dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-09T18:36:56.376Z",
+      "from": "blocked",
+      "to": "short_targeted_recovery",
+      "reason": "PR #755 merged; restore exactly one same-identity dispatch to publish technically verified Short",
+      "details": {
+        "slug": "older-singles-friendship-changes-loneliness",
+        "content_sha256": "824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661",
+        "item_id": "video-20260909-210659-824a8b4ff8",
+        "operation": "full"
+      }
     }
   ],
-  "updated_at": "2026-09-09T18:31:13.340196+00:00",
+  "updated_at": "2026-09-09T18:36:56.376Z",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1478,8 +1485,8 @@
     "verified": true
   },
   "short": {
-    "attempt_count": 4,
-    "status": "exhausted",
+    "attempt_count": 3,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34381889612,
