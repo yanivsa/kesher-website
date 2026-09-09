@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
     "published_date": "2026-09-09",
     "live": true,
-    "live_verified_at": "2026-09-09T20:01:55.851119+00:00",
+    "live_verified_at": "2026-09-09T20:22:56.215970+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -682,28 +682,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T03:03:56.515550+00:00",
-      "from": "article_deploying",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T03:05:02.605501+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 2
-      }
-    },
-    {
-      "at": "2026-09-09T04:00:43.640147+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-09T04:01:03.626000+00:00",
       "from": "article_live",
@@ -1362,9 +1340,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-09T20:22:56.215985+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-09T20:23:26.263433+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-09T20:24:03.992376+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-09T20:02:07.328773+00:00",
+  "updated_at": "2026-09-09T20:24:03.992397+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
