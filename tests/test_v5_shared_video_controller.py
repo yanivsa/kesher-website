@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import copy
+import os
 import unittest
+from unittest import mock
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -177,6 +179,22 @@ class V5SharedVideoControllerTests(unittest.TestCase):
             },
         )])
         self.assertEqual(state["long_video"]["youtube_id"], "long123")
+
+    def test_direct_short_mode_keeps_exact_current_slug(self):
+        gh = FakeGitHub()
+        source = self.source()
+        gh.long_state["items"] = [verified_item(source, "long123", item_id="long-1")]
+        with mock.patch.dict(os.environ, {"KESHER_SHORT_MODE": "direct"}, clear=False):
+            state, action = self.make(gh).tick()
+        self.assertEqual(action.kind, "dispatch_short")
+        self.assertEqual(gh.dispatches, [(
+            v5.SHORT_WORKFLOW,
+            {
+                "operation": "generate",
+                "derive_slug": source["slug"],
+            },
+        )])
+        self.assertEqual(state["short"]["adopted_from_long_item_id"], "long-1")
 
     def test_both_public_outputs_complete_cycle(self):
         gh = FakeGitHub()
