@@ -560,6 +560,10 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(props["durationInFrames"], 3120)
         self.assertEqual(props["url"], "kesher.saharoni.com")
         self.assertEqual(item["visual_pipeline"], "remotion-v1-notebooklm-audio")
+        self.assertEqual(item["content_duration_seconds"], 104.0)
+        self.assertEqual(item["signature_duration_seconds"], 3.0)
+        self.assertTrue(item["signature_fullscreen"])
+        self.assertRegex(item["signature_asset_sha256"], r"^[0-9a-f]{64}$")
 
     def test_motion_plan_tracks_high_contrast_target_region(self) -> None:
         from motion_plan_generator import analyze_frame_saliency, ANALYSIS_W, ANALYSIS_H
