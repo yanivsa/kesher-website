@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-09",
-  "status": "blocked",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -672,19 +672,8 @@
       "archived_at": "2026-09-08T23:00:15.681638+00:00"
     }
   ],
-  "last_error": {
-    "stage": "short",
-    "code": "SHORT_ATTEMPTS_EXHAUSTED",
-    "message": "Short exhausted 4 derive/recovery dispatch attempts",
-    "at": "2026-09-09T17:14:25.752553+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-07T20:19:06.963546+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-07T20:19:28.937412+00:00",
       "from": "article_live",
@@ -1423,6 +1412,15 @@
       "details": {
         "message": "Short exhausted 4 derive/recovery dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-09T17:16:00+00:00",
+      "from": "blocked",
+      "to": "short_targeted_recovery",
+      "reason": "After PR #751 and after all concurrent controller writers finished, restored exactly one same-identity Short dispatch budget",
+      "slug": "older-singles-friendship-changes-loneliness",
+      "content_sha256": "824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661",
+      "long_item_id": "video-20260909-131952-824a8b4ff8"
     }
   ],
   "updated_at": "2026-09-09T17:14:25.752578+00:00",
@@ -1467,8 +1465,8 @@
     "verified": true
   },
   "short": {
-    "attempt_count": 4,
-    "status": "exhausted",
+    "attempt_count": 3,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
