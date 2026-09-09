@@ -40,4 +40,5 @@ jobs:
             tests.test_jules_article_runner \
             tests.test_single_scheduler_policy \
             tests.test_kesher_v5_backlog_priority \
+            tests.test_kesher_e2e_readiness \
             -v
