@@ -28,6 +28,9 @@ class KesherE2EReadinessTests(unittest.TestCase):
                 "height": 720,
                 "content_duration_seconds": 120.0,
                 "duration": 123.0,
+                "signature_duration_seconds": guard.SIGNATURE_DURATION_SECONDS,
+                "signature_fullscreen": True,
+                "signature_asset_sha256": "o" * 64,
             },
             "short": {
                 "verified": True,
