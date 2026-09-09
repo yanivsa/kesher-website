@@ -200,6 +200,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
                 "article_url": "https://kesher.saharoni.com/blog/today-article",
                 "overview_youtube_url": "https://youtu.be/overview",
                 "short_youtube_url": "https://youtu.be/short",
+                "overview_edit_verified": True,
                 "short_portrait_verified": True,
                 "short_signature_verified": True,
                 "short_origin_verified": True,
