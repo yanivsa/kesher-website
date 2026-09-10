@@ -1,21 +1,26 @@
 name: Kesher Live E2E Test
-run-name: Kesher Live E2E ${{ inputs.slot }} — ${{ inputs.request_id }}
+run-name: Kesher Isolated Live E2E ${{ inputs.slot }} — ${{ inputs.request_id }}
 
 on:
   workflow_dispatch:
     inputs:
       slot:
-        description: Israel publication date for the genuinely new article (YYYY-MM-DD)
+        description: Israel publication date for the isolated test article (YYYY-MM-DD)
         required: true
         type: string
       request_id:
-        description: Unique human-readable test request id
+        description: Unique lowercase test id (letters, digits and hyphens)
+        required: true
+        type: string
+      confirm:
+        description: Type RUN_LIVE_E2E to authorize public Preview and YouTube test publications
         required: true
         type: string
 
 permissions:
   actions: write
   contents: read
+  pull-requests: write
 
 concurrency:
   group: kesher-live-e2e-test
@@ -29,200 +34,456 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       SLOT: ${{ inputs.slot }}
       REQUEST_ID: ${{ inputs.request_id }}
+      CONFIRM: ${{ inputs.confirm }}
+      KESHER_E2E_LONG_STATE_DIR: ${{ github.workspace }}/.kesher-e2e-long-${{ github.run_id }}
+      KESHER_E2E_SHORT_STATE_DIR: ${{ github.workspace }}/.kesher-e2e-short-${{ github.run_id }}
+      NOTEBOOKLM_BIN: notebooklm
+      KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
+      KESHER_WHISPER_MODEL: small
+      HF_HOME: ${{ github.workspace }}/.cache/huggingface-e2e-${{ github.run_id }}
+      NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm-e2e-${{ github.run_id }}
+
     steps:
-      - name: Checkout current main
+      - name: Checkout trusted main orchestrator
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: main
+          fetch-depth: 0
           persist-credentials: false
 
-      - name: Fail closed unless this is a genuinely new production-day article
+      - name: Authorize isolated same-day live E2E
+        id: auth
+        shell: bash
         run: |
           set -euo pipefail
           israel_today="$(TZ=Asia/Jerusalem date +%F)"
-          test "$SLOT" = "$israel_today" || {
-            echo "Live E2E must use the current Israel production date: $israel_today" >&2
+          test "$CONFIRM" = "RUN_LIVE_E2E" || {
+            echo "Explicit RUN_LIVE_E2E confirmation is required." >&2
             exit 1
           }
-          test -n "$REQUEST_ID"
+          test "$SLOT" = "$israel_today" || {
+            echo "Live E2E must use current Israel date: $israel_today" >&2
+            exit 1
+          }
+          [[ "$REQUEST_ID" =~ ^[a-z0-9][a-z0-9-]{2,30}$ ]] || {
+            echo "request_id must be 3-31 lowercase letters/digits/hyphens." >&2
+            exit 1
+          }
           test -s public/images/signature/signature-mask.svg
-          python - <<'PY'
+          preview_branch="e2e-${REQUEST_ID}"
+          echo "preview_branch=$preview_branch" >> "$GITHUB_OUTPUT"
+          echo "LIVE_E2E_ISOLATION_AUTHORIZED slot=$SLOT request_id=$REQUEST_ID"
+
+      - name: Dispatch one isolated Jules article attempt
+        id: article_run
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          gh workflow run kesher-article-generation.yml --ref main \
+            -f slot="$SLOT" \
+            -f test_mode=true
+          run_id=""
+          for _ in $(seq 1 60); do
+            run_id="$(gh run list --workflow kesher-article-generation.yml --event workflow_dispatch --limit 50 \
+              --json databaseId,createdAt,displayTitle \
+              --jq '.[] | select(.createdAt >= "'"$marker"'" and .displayTitle == "Kesher Article '"$SLOT"'") | .databaseId' | head -n1)"
+            [ -n "$run_id" ] && break
+            sleep 3
+          done
+          test -n "$run_id"
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "LIVE_E2E_ARTICLE_RUN=$run_id"
+
+      - name: Wait for isolated article result and reopen its test PR
+        id: target
+        env:
+          ARTICLE_RUN_ID: ${{ steps.article_run.outputs.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run watch "$ARTICLE_RUN_ID" --exit-status
+          rm -rf /tmp/kesher-e2e-article
+          mkdir -p /tmp/kesher-e2e-article
+          gh run download "$ARTICLE_RUN_ID" \
+            -n "kesher-article-result-${ARTICLE_RUN_ID}" \
+            -D /tmp/kesher-e2e-article
+          pr_url="$(python3 - <<'PY'
+          import json
+          from pathlib import Path
+          paths = list(Path('/tmp/kesher-e2e-article').rglob('result.json'))
+          if len(paths) != 1:
+              raise SystemExit(f'Expected one article result.json, found {len(paths)}')
+          payload = json.loads(paths[0].read_text(encoding='utf-8'))
+          print(str(payload.get('pr_url') or '').strip())
+          PY
+          )"
+          case "$pr_url" in
+            https://github.com/${{ github.repository }}/pull/*) ;;
+            *) echo "Unexpected isolated test PR URL: $pr_url" >&2; exit 1 ;;
+          esac
+          pr_number="${pr_url##*/}"
+          gh pr reopen "$pr_number"
+          source_ref="$(gh pr view "$pr_number" --json headRefName,state --jq 'select(.state == "OPEN") | .headRefName')"
+          test -n "$source_ref"
+          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+          echo "source_ref=$source_ref" >> "$GITHUB_OUTPUT"
+          echo "LIVE_E2E_TEST_PR=$pr_number source_ref=$source_ref"
+
+      - name: Generate trusted article image on isolated PR
+        id: image_run
+        env:
+          PR_NUMBER: ${{ steps.target.outputs.pr_number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          gh workflow run kesher-article-image.yml --ref main -f pr_number="$PR_NUMBER"
+          run_id=""
+          for _ in $(seq 1 60); do
+            run_id="$(gh run list --workflow kesher-article-image.yml --event workflow_dispatch --limit 50 \
+              --json databaseId,createdAt,displayTitle \
+              --jq '.[] | select(.createdAt >= "'"$marker"'" and .displayTitle == "Kesher Image PR '"$PR_NUMBER"'") | .databaseId' | head -n1)"
+            [ -n "$run_id" ] && break
+            sleep 3
+          done
+          test -n "$run_id"
+          gh run watch "$run_id" --exit-status
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "LIVE_E2E_IMAGE_RUN=$run_id"
+
+      - name: Checkout final isolated article source after image worker
+        env:
+          SOURCE_REF: ${{ steps.target.outputs.source_ref }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin \
+            "refs/heads/main:refs/remotes/origin/main" \
+            "refs/heads/${SOURCE_REF}:refs/remotes/origin/${SOURCE_REF}"
+          git checkout --detach "refs/remotes/origin/${SOURCE_REF}"
+
+      - name: Resolve the one new article identity relative to main
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          import subprocess
+          from pathlib import Path
+          from scripts.kesher_daily_pipeline import source_metadata
+
+          current = json.loads(Path('src/data/posts.json').read_text(encoding='utf-8'))
+          base = json.loads(subprocess.check_output(
+              ['git', 'show', 'refs/remotes/origin/main:src/data/posts.json'], text=True
+          ))
+          base_slugs = {
+              str(row.get('slug') or row.get('id') or '').strip()
+              for row in base if isinstance(row, dict)
+          }
+          added = [
+              row for row in current
+              if isinstance(row, dict)
+              and str(row.get('slug') or row.get('id') or '').strip() not in base_slugs
+          ]
+          if len(added) != 1:
+              raise SystemExit(f'Expected exactly one isolated article addition, found {len(added)}')
+          row = added[0]
+          if str(row.get('date') or '')[:10] != '${{ inputs.slot }}':
+              raise SystemExit('Isolated article date does not match requested slot')
+          meta = source_metadata(row)
+          print(f"slug={meta['slug']}")
+          print(f"source_content_sha256={meta['content_sha256']}")
+          title = ' '.join(str(row.get('title') or '').split())
+          print(f"title={title}")
+          PY
+          echo "LIVE_E2E_SOURCE_IDENTITY_RESOLVED"
+
+      - name: Set up Node 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements-video-cloud.txt
+
+      - name: Install web, media and NotebookLM dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npx playwright install chromium
+          python -m pip install --upgrade pip
+          python -m pip install -r scripts/requirements-video-cloud.txt
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          echo "$ffmpeg_dir" >> "$GITHUB_PATH"
+          echo "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          command -v ffmpeg
+          command -v ffprobe
+          notebooklm --version
+          npx remotion versions
+
+      - name: Run full quality gate on isolated article branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/article_claim_quality.py src/data/posts.json
+          npm run check
+          test -d dist
+
+      - name: Finalize Preview measurement placeholder
+        env:
+          VITE_GTM_CONTAINER_ID: ${{ secrets.VITE_GTM_CONTAINER_ID || 'disabled' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          value = os.environ['VITE_GTM_CONTAINER_ID']
+          html_files = list(Path('dist').rglob('*.html'))
+          if not html_files:
+              raise SystemExit('No HTML files found in dist')
+          for file in html_files:
+              text = file.read_text(encoding='utf-8')
+              if '%VITE_GTM_CONTAINER_ID%' in text:
+                  file.write_text(text.replace('%VITE_GTM_CONTAINER_ID%', value), encoding='utf-8')
+          if any('%VITE_GTM_CONTAINER_ID%' in file.read_text(encoding='utf-8') for file in html_files):
+              raise SystemExit('Unresolved GTM placeholder remains in Preview build')
+          PY
+
+      - name: Deploy isolated Cloudflare Pages Preview
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: 4.100.0
+          command: pages deploy dist --project-name=kesher-website --branch=${{ steps.auth.outputs.preview_branch }}
+
+      - name: Verify public Preview article
+        id: preview
+        env:
+          PREVIEW_BRANCH: ${{ steps.auth.outputs.preview_branch }}
+          SOURCE_SLUG: ${{ steps.source.outputs.slug }}
+          SOURCE_TITLE: ${{ steps.source.outputs.title }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          preview_url="https://${PREVIEW_BRANCH}.kesher-website.pages.dev/blog/${SOURCE_SLUG}"
+          verified=false
+          for _ in $(seq 1 30); do
+            code="$(curl -L -sS -o /tmp/e2e-preview.html -w '%{http_code}' --max-time 30 "$preview_url" || true)"
+            if [ "$code" = "200" ] && grep -F "$SOURCE_TITLE" /tmp/e2e-preview.html >/dev/null; then
+              verified=true
+              break
+            fi
+            sleep 4
+          done
+          test "$verified" = true
+          echo "preview_url=$preview_url" >> "$GITHUB_OUTPUT"
+          echo "LIVE_E2E_PREVIEW_URL=$preview_url"
+
+      - name: Materialize isolated NotebookLM credentials
+        env:
+          NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
+          NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          profile="$NOTEBOOKLM_HOME/profiles/default"
+          mkdir -p "$profile" "$KESHER_E2E_LONG_STATE_DIR" "$KESHER_E2E_SHORT_STATE_DIR"
+          python3 - <<'PY'
           import json
           import os
           from pathlib import Path
-
-          slot = os.environ["SLOT"]
-          posts = json.loads(Path("src/data/posts.json").read_text(encoding="utf-8"))
-          existing = [post for post in posts if str(post.get("date") or "")[:10] == slot]
-          if existing:
-              raise SystemExit(f"Refusing duplicate live E2E: {len(existing)} article(s) already exist for {slot}")
-          print(f"LIVE_E2E_NEW_ARTICLE_SLOT_OK slot={slot}")
+          profile = Path(os.environ['NOTEBOOKLM_HOME']) / 'profiles' / 'default'
+          profile.mkdir(parents=True, exist_ok=True)
+          raw = os.environ.get('NOTEBOOKLM_STORAGE_STATE_SECRET', '').strip()
+          if not raw:
+              raise SystemExit('NotebookLM storage-state secret is missing')
+          state = json.loads(raw)
+          if not isinstance(state, dict) or not state.get('cookies'):
+              raise SystemExit('NotebookLM storage-state is invalid')
+          storage = profile / 'storage_state.json'
+          storage.write_text(json.dumps(state, separators=(',', ':')), encoding='utf-8')
+          storage.chmod(0o600)
+          master_raw = os.environ.get('NOTEBOOKLM_MASTER_TOKEN_SECRET', '').strip()
+          if master_raw:
+              master = json.loads(master_raw)
+              required = {'version', 'email', 'android_id', 'master_token'}
+              if not isinstance(master, dict) or not required.issubset(master) or not all(master[k] for k in required):
+                  raise SystemExit('NotebookLM master-token secret is invalid')
+              master_path = profile / 'master_token.json'
+              master_path.write_text(json.dumps(master, separators=(',', ':')), encoding='utf-8')
+              master_path.chmod(0o600)
           PY
 
-      - name: Dispatch or adopt exactly one regular article worker
+      - name: Generate and technically verify isolated Overview with production scripts
+        id: overview_generate
+        env:
+          TARGET_SLUG: ${{ steps.source.outputs.slug }}
+          SOURCE_SHA: ${{ steps.source.outputs.source_content_sha256 }}
+          KESHER_STATE_DIR: ${{ env.KESHER_E2E_LONG_STATE_DIR }}
+        shell: bash
         run: |
           set -euo pipefail
-          # Deliberately use the normal production article path. test_mode=true
-          # auto-closes its PR and therefore cannot prove a full A+B+C delivery.
-          active_article="$(
-            gh run list --workflow kesher-article-generation.yml --limit 100 \
-              --json databaseId,displayTitle,status \
-              --jq '.[] | select(.displayTitle == "Kesher Article '"$SLOT"'" and (.status == "queued" or .status == "in_progress" or .status == "waiting")) | .databaseId' \
-              | head -n1
-          )"
-          if [ -n "$active_article" ]; then
-            echo "Adopting active regular article run $active_article; no duplicate dispatch."
-            exit 0
-          fi
-
-          state_file="$(mktemp)"
-          if gh api "repos/$GITHUB_REPOSITORY/contents/.kesher-controller/state.json?ref=automation-state" \
-            --jq '.content' | tr -d '\\n' | base64 -d > "$state_file" 2>/dev/null; then
-            if python3 - "$state_file" "$SLOT" <<'PY'
-          import json
-          import sys
-          state = json.load(open(sys.argv[1], encoding="utf-8"))
-          article = state.get("article") or {}
-          owned = state.get("cycle") == sys.argv[2] and int(article.get("attempt_count") or 0) > 0
-          raise SystemExit(0 if owned else 1)
+          test ! -e "$KESHER_STATE_DIR/state.json"
+          python -u scripts/kesher_video_reconcile.py --prepare-generation
+          ready=false
+          for _ in $(seq 1 24); do
+            python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150
+            if python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          state = json.loads((Path(os.environ['KESHER_STATE_DIR']) / 'state.json').read_text(encoding='utf-8'))
+          slug = os.environ['TARGET_SLUG']
+          sha = os.environ['SOURCE_SHA']
+          rows = [r for r in state.get('items', []) if isinstance(r, dict) and str((r.get('source') or {}).get('slug') or (r.get('source') or {}).get('id') or '') == slug and str((r.get('source') or {}).get('content_sha256') or '') == sha]
+          if len(rows) != 1 or rows[0].get('technical_verified') is not True:
+              raise SystemExit(1)
           PY
             then
-              echo "Adopting controller-owned article attempt for $SLOT; no duplicate dispatch."
-              exit 0
+              ready=true
+              break
             fi
-          fi
-
-          gh workflow run kesher-article-generation.yml \
-            --ref main \
-            -f slot="$SLOT" \
-            -f test_mode=false
-          echo "LIVE_E2E_ARTICLE_DISPATCHED slot=$SLOT request_id=$REQUEST_ID"
-
-      - name: Nudge the production Controller and wait for exact three-link completion
-        id: wait
-        run: |
-          set -euo pipefail
-          mkdir -p /tmp/kesher-live-e2e
-
-          controller_active() {
-            local count
-            count="$(gh run list --workflow kesher-content-controller.yml --limit 30 \
-              --json status \
-              --jq '[.[] | select(.status == "in_progress" or .status == "queued")] | length')"
-            test "${count:-0}" -gt 0
-          }
-
-          nudge_controller() {
-            if controller_active; then
-              echo "Controller already active; no duplicate dispatch."
-            else
-              gh workflow run kesher-content-controller.yml --ref main
-              echo "LIVE_E2E_CONTROLLER_NUDGED"
-            fi
-          }
-
-          read_state() {
-            gh api "repos/${GITHUB_REPOSITORY}/contents/.kesher-controller/state.json?ref=automation-state" \
-              --jq '.content' 2>/dev/null \
-              | tr -d '\n' \
-              | base64 -d > /tmp/kesher-live-e2e/state.json
-          }
-
-          nudge_controller
-          for attempt in $(seq 1 240); do
-            if read_state; then
-              result="$(python - <<'PY'
-          import json
-          import os
-          from pathlib import Path
-
-          state = json.loads(Path('/tmp/kesher-live-e2e/state.json').read_text(encoding='utf-8'))
-          slot = os.environ['SLOT']
-          d = state.get('deliverables') or {}
-          exact_cycle = state.get('cycle') == slot
-          ready = all([
-              exact_cycle,
-              state.get('status') == 'complete',
-              d.get('article_url'),
-              d.get('overview_youtube_url'),
-              d.get('short_youtube_url'),
-              d.get('overview_edit_verified') is True,
-              d.get('short_portrait_verified') is True,
-              d.get('short_signature_verified') is True,
-              d.get('short_origin_verified') is True,
-          ])
-          if ready:
-              print('READY')
-              print(d['article_url'])
-              print(d['overview_youtube_url'])
-              print(d['short_youtube_url'])
-          else:
-              print('WAIT')
-              print(state.get('status') or '')
-              print((state.get('last_error') or {}).get('code') or '')
-          PY
-          )"
-              first="$(printf '%s\n' "$result" | sed -n '1p')"
-              if [ "$first" = "READY" ]; then
-                article_url="$(printf '%s\n' "$result" | sed -n '2p')"
-                overview_url="$(printf '%s\n' "$result" | sed -n '3p')"
-                short_url="$(printf '%s\n' "$result" | sed -n '4p')"
-                {
-                  echo "article_url=$article_url"
-                  echo "overview_youtube_url=$overview_url"
-                  echo "short_youtube_url=$short_url"
-                } >> "$GITHUB_OUTPUT"
-                echo "LIVE_E2E_THREE_LINK_CONTRACT_OK"
-                exit 0
-              fi
-              echo "attempt=$attempt $(printf '%s\n' "$result" | tr '\n' ' ')"
-            else
-              echo "attempt=$attempt controller state not readable yet"
-            fi
-
-            # Extra-step contract: do not merely observe a stalled pipeline.
-            # Every five minutes, if no Controller is active, dispatch one safe
-            # idempotent recovery tick. The Controller itself owns duplicate guards.
-            if [ $((attempt % 10)) -eq 0 ]; then
-              nudge_controller
-            fi
-            sleep 30
+            sleep 10
           done
+          test "$ready" = true
+          echo "LIVE_E2E_OVERVIEW_TECHNICAL_READY=true"
 
-          echo "Live E2E timed out before the exact article + Overview + Short contract completed." >&2
-          if [ -s /tmp/kesher-live-e2e/state.json ]; then
-            python - <<'PY'
-          import json
-          from pathlib import Path
-          state = json.loads(Path('/tmp/kesher-live-e2e/state.json').read_text(encoding='utf-8'))
-          print(json.dumps({
-              'cycle': state.get('cycle'),
-              'status': state.get('status'),
-              'last_error': state.get('last_error'),
-              'deliverables': state.get('deliverables'),
-          }, ensure_ascii=False, indent=2))
-          PY
-          fi
-          exit 1
-
-      - name: Verify the public article responds successfully
+      - name: Upload and require exact public isolated Overview
+        id: overview
+        env:
+          TARGET_SLUG: ${{ steps.source.outputs.slug }}
+          SOURCE_SHA: ${{ steps.source.outputs.source_content_sha256 }}
+          KESHER_STATE_DIR: ${{ env.KESHER_E2E_LONG_STATE_DIR }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        shell: bash
         run: |
           set -euo pipefail
-          article_url="${{ steps.wait.outputs.article_url }}"
-          test -n "$article_url"
-          code="$(curl -L -sS -o /tmp/kesher-live-e2e/article.html -w '%{http_code}' \
-            --retry 4 --retry-delay 3 --max-time 30 "$article_url")"
-          test "$code" = "200" || {
-            echo "Public article HTTP verification failed: $code" >&2
-            exit 1
-          }
-          test -s /tmp/kesher-live-e2e/article.html
-          echo "LIVE_E2E_ARTICLE_HTTP_200=true"
+          test -n "${YOUTUBE_CLIENT_ID:-}"
+          test -n "${YOUTUBE_CLIENT_SECRET:-}"
+          test -n "${YOUTUBE_REFRESH_TOKEN:-}"
+          python -u scripts/kesher_video_reconcile.py --prepare-upload
+          python -u scripts/kesher_daily_pipeline.py --upload-only
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          from pathlib import Path
+          from scripts import kesher_content_controller as core
+          from scripts import kesher_e2e_delivery_guard as guard
+          state = json.loads((Path(os.environ['KESHER_STATE_DIR']) / 'state.json').read_text(encoding='utf-8'))
+          slug = os.environ['TARGET_SLUG']
+          sha = os.environ['SOURCE_SHA']
+          rows = [r for r in state.get('items', []) if isinstance(r, dict) and str((r.get('source') or {}).get('slug') or (r.get('source') or {}).get('id') or '') == slug and str((r.get('source') or {}).get('content_sha256') or '') == sha and core.verified_youtube_item(r, slug)]
+          if len(rows) != 1:
+              raise SystemExit(f'Expected one exact public Overview, found {len(rows)}')
+          item = rows[0]
+          if item.get('technical_verified') is not True or not guard.overview_edit_verified(item):
+              raise SystemExit('Overview public evidence does not satisfy canonical technical/edit contract')
+          print(f"long_item_id={item['id']}")
+          print(f"youtube_url={item['youtube_url']}")
+          PY
+          echo "LIVE_E2E_OVERVIEW_PUBLIC=true"
 
-      - name: Re-verify both YouTube deliverables as publicly readable
+      - name: Adopt Overview identity into fresh isolated Short state
         env:
-          OVERVIEW_URL: ${{ steps.wait.outputs.overview_youtube_url }}
-          SHORT_URL: ${{ steps.wait.outputs.short_youtube_url }}
+          SOURCE_SLUG: ${{ steps.source.outputs.slug }}
+          SOURCE_SHA: ${{ steps.source.outputs.source_content_sha256 }}
+          LONG_ITEM_ID: ${{ steps.overview.outputs.long_item_id }}
+          KESHER_STATE_DIR: ${{ env.KESHER_E2E_SHORT_STATE_DIR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e "$KESHER_STATE_DIR/state.json"
+          python -u scripts/kesher_video_reconcile.py \
+            --adopt-long-form-state "$KESHER_E2E_LONG_STATE_DIR/state.json" \
+            --slug "$SOURCE_SLUG" \
+            --content-sha256 "$SOURCE_SHA" \
+            --long-item-id "$LONG_ITEM_ID"
+
+      - name: Generate and technically verify isolated dedicated Short with production scripts
+        env:
+          SOURCE_SLUG: ${{ steps.source.outputs.slug }}
+          SOURCE_SHA: ${{ steps.source.outputs.source_content_sha256 }}
+          KESHER_STATE_DIR: ${{ env.KESHER_E2E_SHORT_STATE_DIR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ready=false
+          for _ in $(seq 1 24); do
+            python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150 --slug "$SOURCE_SLUG"
+            if python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          state = json.loads((Path(os.environ['KESHER_STATE_DIR']) / 'state.json').read_text(encoding='utf-8'))
+          slug = os.environ['SOURCE_SLUG']
+          sha = os.environ['SOURCE_SHA']
+          rows = [r for r in state.get('items', []) if isinstance(r, dict) and str((r.get('source') or {}).get('slug') or (r.get('source') or {}).get('id') or '') == slug and str((r.get('source') or {}).get('content_sha256') or '') == sha]
+          if len(rows) != 1 or rows[0].get('technical_verified') is not True:
+              raise SystemExit(1)
+          media = rows[0].get('media') or {}
+          if int(media.get('width') or 0) != 1080 or int(media.get('height') or 0) != 1920:
+              raise SystemExit(1)
+          PY
+            then
+              ready=true
+              break
+            fi
+            sleep 10
+          done
+          test "$ready" = true
+          echo "LIVE_E2E_SHORT_TECHNICAL_READY=true"
+
+      - name: Upload and require exact public portrait Short with signature evidence
+        id: short
+        env:
+          SOURCE_SLUG: ${{ steps.source.outputs.slug }}
+          SOURCE_SHA: ${{ steps.source.outputs.source_content_sha256 }}
+          KESHER_STATE_DIR: ${{ env.KESHER_E2E_SHORT_STATE_DIR }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${YOUTUBE_CLIENT_ID:-}"
+          test -n "${YOUTUBE_CLIENT_SECRET:-}"
+          test -n "${YOUTUBE_REFRESH_TOKEN:-}"
+          python -u scripts/kesher_video_reconcile.py --prepare-upload --slug "$SOURCE_SLUG"
+          python -u scripts/kesher_short_pipeline_v4.py --upload-only --slug "$SOURCE_SLUG"
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          from pathlib import Path
+          from scripts import kesher_content_controller as core
+          from scripts import kesher_e2e_delivery_guard as guard
+          state = json.loads((Path(os.environ['KESHER_STATE_DIR']) / 'state.json').read_text(encoding='utf-8'))
+          source = {'slug': os.environ['SOURCE_SLUG'], 'content_sha256': os.environ['SOURCE_SHA']}
+          rows = [r for r in state.get('items', []) if isinstance(r, dict) and guard.short_public_portrait_verified(r, source, youtube_verified=core.verified_youtube_item)]
+          if len(rows) != 1:
+              raise SystemExit(f'Expected one exact verified 1080x1920 portrait Short, found {len(rows)}')
+          item = rows[0]
+          media = item.get('media') or {}
+          if int(media.get('width') or 0) != 1080 or int(media.get('height') or 0) != 1920:
+              raise SystemExit('Short dimensions are not exactly 1080x1920')
+          print(f"youtube_url={item['youtube_url']}")
+          PY
+          echo "LIVE_E2E_SHORT_PUBLIC_PORTRAIT=true"
+
+      - name: Re-verify both YouTube URLs publicly readable
+        env:
+          OVERVIEW_URL: ${{ steps.overview.outputs.youtube_url }}
+          SHORT_URL: ${{ steps.short.outputs.youtube_url }}
+        shell: bash
         run: |
           set -euo pipefail
           python3 - "$OVERVIEW_URL" "$SHORT_URL" <<'PY'
@@ -230,29 +491,35 @@ jobs:
           import sys
           import urllib.parse
           import urllib.request
-
-          for label, url in (("Overview", sys.argv[1]), ("Short", sys.argv[2])):
-              endpoint = "https://www.youtube.com/oembed?" + urllib.parse.urlencode(
-                  {"url": url, "format": "json"}
-              )
+          for label, url in (("OVERVIEW", sys.argv[1]), ("SHORT", sys.argv[2])):
+              endpoint = "https://www.youtube.com/oembed?" + urllib.parse.urlencode({'url': url, 'format': 'json'})
               with urllib.request.urlopen(endpoint, timeout=30) as response:
                   payload = json.load(response)
-              if not str(payload.get("title") or "").strip():
-                  raise SystemExit(f"{label} is not publicly readable")
-              print(f"LIVE_E2E_{label.upper()}_PUBLIC=true url={url}")
+              if not str(payload.get('title') or '').strip():
+                  raise SystemExit(f'{label} is not publicly readable')
+              print(f'LIVE_E2E_{label}_OEMBED_OK url={url}')
           PY
 
-      - name: Publish the exact verified deliverables
+      - name: Publish exact isolated E2E deliverables
+        if: ${{ success() }}
+        shell: bash
         run: |
-          set -euo pipefail
           {
-            echo "### Kesher Live E2E — verified"
+            echo "### Kesher isolated live E2E — verified"
             echo
-            echo "- article_url: ${{ steps.wait.outputs.article_url }}"
-            echo "- overview_youtube_url: ${{ steps.wait.outputs.overview_youtube_url }}"
-            echo "- short_youtube_url: ${{ steps.wait.outputs.short_youtube_url }}"
-            echo "- overview_edit_verified: true"
-            echo "- short_portrait_verified: true"
-            echo "- short_signature_verified: true"
-            echo "- short_origin_verified: true"
+            echo "- article_preview_url: ${{ steps.preview.outputs.preview_url }}"
+            echo "- overview_youtube_url: ${{ steps.overview.outputs.youtube_url }}"
+            echo "- short_youtube_url: ${{ steps.short.outputs.youtube_url }}"
+            echo "- source_slug: ${{ steps.source.outputs.slug }}"
+            echo "- source_content_sha256: ${{ steps.source.outputs.source_content_sha256 }}"
+            echo "- production_main_article_unchanged: true"
+            echo "- production_controller_state_untouched: true"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Close isolated test article PR
+        if: ${{ always() && steps.target.outputs.pr_number != '' }}
+        env:
+          PR_NUMBER: ${{ steps.target.outputs.pr_number }}
+        shell: bash
+        run: |
+          gh pr close "$PR_NUMBER" --comment "Isolated live E2E finished; this test article is intentionally not merged into production." || true
