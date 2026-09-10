@@ -5,7 +5,6 @@ export const CONTACT_SERVICE_OPTIONS = [
   { value: 'late-singleness', label: 'ייעוץ במצבי רווקות מאוחרת' },
   { value: 'finding-relationship', label: 'ליווי למציאת זוגיות' },
   { value: 'parenting', label: 'הדרכת הורים' },
-  { value: 'mediation', label: 'גישור' },
   { value: 'gifted-parenting', label: 'הנחיית הורים לילדים מחוננים' },
   { value: 'first-grade', label: 'הכנה לכיתה א׳ ותפקודים ניהוליים' },
   { value: 'gifted-framework', label: 'הכנה למסגרת מחוננים' },
