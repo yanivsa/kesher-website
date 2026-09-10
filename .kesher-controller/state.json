@@ -1485,11 +1485,11 @@
       "content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
       "stage": "short",
       "strike_count": 3,
-      "last_check_token": "2026-09-10T14",
+      "last_check_token": "2026-09-10T18",
       "last_fingerprint": "c1c60beb2e16d0d70a1ddf139d4490f5bb56a87133cc9cf340a37475f2d2434e",
       "last_controller_action_token": "recovery:1:2026-09-10T07:57:29.286955+00:00",
       "controller_action_observed": true,
-      "last_observed_at": "2026-09-10T11:16:17.946350+00:00",
+      "last_observed_at": "2026-09-10T15:03:21.056257+00:00",
       "last_action": "direct_takeover",
       "direct_takeover_required": true,
       "last_controller_action_at": "2026-09-10T07:57:29.286955+00:00"
