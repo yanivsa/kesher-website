@@ -1,0 +1,64 @@
+name: Temporary PR 763 patch
+
+on:
+  push:
+    branches:
+      - fix/remotion-enhancement-contract
+    paths:
+      - .github/workflows/tmp-fix-pr763.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/remotion-enhancement-contract
+      - name: Patch enhancement manifest guard
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/kesher_daily_pipeline.py')
+          text = p.read_text(encoding='utf-8')
+          old = '''    manifest["enhancement"] = build_enhancement_manifest(
+              source_path=raw_path,
+              final_path=final_path,
+              edit_plan_path=STATE_DIR / item["motion_plan_path"],
+              enhancement_status=item["enhancement_status"],
+              assets_used=item.get("enhancement_assets_used") or [],
+              assets_dropped=item.get("enhancement_assets_dropped") or [],
+              fallback_reason=item.get("enhancement_fallback_reason"),
+          )
+          '''
+          new = '''    if item.get("visual_pipeline") == "remotion-v1-notebooklm-audio":
+              motion_plan_name = str(item.get("motion_plan_path") or "").strip()
+              enhancement_status = str(item.get("enhancement_status") or "").strip()
+              if not motion_plan_name or not enhancement_status:
+                  raise PipelineError("Remotion enhancement evidence is incomplete")
+              manifest["enhancement"] = build_enhancement_manifest(
+                  source_path=raw_path,
+                  final_path=final_path,
+                  edit_plan_path=STATE_DIR / motion_plan_name,
+                  enhancement_status=enhancement_status,
+                  assets_used=item.get("enhancement_assets_used") or [],
+                  assets_dropped=item.get("enhancement_assets_dropped") or [],
+                  fallback_reason=item.get("enhancement_fallback_reason"),
+              )
+          '''
+          if old not in text:
+              raise SystemExit('target block not found exactly once')
+          if text.count(old) != 1:
+              raise SystemExit(f'target block count={text.count(old)}')
+          p.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/kesher_daily_pipeline.py
+          git diff --cached --check
+          git commit -m "fix: keep enhancement evidence fail-closed"
+          git push origin HEAD:fix/remotion-enhancement-contract
