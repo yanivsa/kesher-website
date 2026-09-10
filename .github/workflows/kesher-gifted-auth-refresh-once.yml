@@ -81,3 +81,5 @@ jobs:
           test "$active" -eq 0
           gh workflow run kesher-short-v4.yml --repo "$GITHUB_REPOSITORY" --ref main -f operation=full -f derive_slug=gifted-children-social-difficulties
           echo "SHORT_RESUME_DISPATCHED"
+
+# trigger: 2026-09-10-auth-refresh
