@@ -108,6 +108,21 @@ class PipelineTestCase(unittest.TestCase):
         self.assertIn("קול של אישה ישראלית", prompt)
         self.assertIn("בעברית טבעית בלבד", prompt)
 
+    def test_voice_runtime_rejects_early_male_audio_then_accepts_configured_fallback(self) -> None:
+        with mock.patch.object(pipeline, "estimate_voice_pitch", return_value=129.0):
+            early = pipeline.validate_female_voice(
+                Path("unused.mp4"),
+                {"fresh_generation_attempt": 2},
+            )
+            fallback = pipeline.validate_female_voice(
+                Path("unused.mp4"),
+                {"fresh_generation_attempt": 3},
+            )
+
+        self.assertFalse(early[0])
+        self.assertTrue(fallback[0])
+        self.assertIn("fallback accepted", fallback[2])
+
     def test_latin_visible_metadata_is_rejected(self) -> None:
         post = hebrew_post()
         post["title"] = "טיפ Parenting"

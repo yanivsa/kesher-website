@@ -58,6 +58,7 @@ SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
 SIGNATURE_DURATION_SECONDS = 3.0
 FEMALE_PITCH_MIN_HZ = 155.0
+PRODUCTION_CONTRACT_FILE = PROJECT_DIR / "config" / "kesher-production-contract.json"
 
 
 class PipelineError(RuntimeError):
@@ -608,11 +609,35 @@ def estimate_voice_pitch(media_path: Path) -> float | None:
     return pitches[len(pitches) // 2]
 
 
-def validate_female_voice(media_path: Path) -> tuple[bool, float | None, str]:
+def validate_female_voice(
+    media_path: Path,
+    item: dict[str, Any] | None = None,
+) -> tuple[bool, float | None, str]:
     pitch = estimate_voice_pitch(media_path)
     if pitch is None:
         return True, None, "Voice pitch analysis inconclusive (insufficient voiced segments)"
     if pitch < FEMALE_PITCH_MIN_HZ:
+        try:
+            contract = json.loads(PRODUCTION_CONTRACT_FILE.read_text(encoding="utf-8"))
+            policy = contract["video"]["voice_policy"]
+            attempt = max(1, int((item or {}).get("fresh_generation_attempt") or 1))
+            female_attempts = int(policy["female_attempts_before_fallback"])
+            allow_fallback = (
+                policy["fallback_voice_after_failed_female_attempts"] == "male"
+                and policy["accept_male_on_final_female_attempt"] is True
+                and attempt >= female_attempts
+            )
+        except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError) as exc:
+            raise PipelineError(
+                f"Voice fallback policy is unreadable: {type(exc).__name__}"
+            ) from exc
+        if allow_fallback:
+            return (
+                True,
+                pitch,
+                f"Male voice fallback accepted on attempt {attempt} after "
+                f"{female_attempts - 1} rejected female-voice attempts",
+            )
         return False, pitch, f"Detected male voice pitch ({pitch:.1f} Hz < {FEMALE_PITCH_MIN_HZ:.0f} Hz threshold); Israeli female voice required"
     return True, pitch, f"Female voice pitch verified ({pitch:.1f} Hz)"
 
@@ -753,7 +778,7 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         technical_failures.append(
             f"יחס התמונה {media['width']}x{media['height']} אינו יחס אופקי טבעי 16:9"
         )
-    female_ok, pitch_hz, pitch_msg = validate_female_voice(final_path)
+    female_ok, pitch_hz, pitch_msg = validate_female_voice(final_path, item)
     if not female_ok:
         technical_failures.append(pitch_msg)
     metadata = item["youtube_metadata"]
