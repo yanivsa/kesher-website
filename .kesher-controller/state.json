@@ -41,7 +41,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
     "published_date": "2026-09-10",
     "live": true,
-    "live_verified_at": "2026-09-10T04:08:47.682868+00:00",
+    "live_verified_at": "2026-09-10T04:28:56.236067+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1292,9 +1292,25 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-10T04:28:56.236087+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-10T04:29:20.376270+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-09-10T04:09:40.491273+00:00",
+  "updated_at": "2026-09-10T04:29:20.376278+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1309,7 +1325,7 @@
     "last_dispatch_at": "2026-09-10T00:01:23.923106+00:00"
   },
   "long_video": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1320,7 +1336,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-09-10T04:09:40.491259+00:00",
+    "last_dispatch_at": "2026-09-10T04:29:20.376263+00:00",
     "attempts": 1,
     "watchdog": {
       "identity": "long_video:gifted-children-social-difficulties:1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1:video-20260910-071037-1d272ac70c",
@@ -1328,7 +1344,9 @@
       "last_fingerprint": "7b3a4b456cfcc0540efbfc98886cf63e08b2bcfafe2b7da3227fad6a3b2a5157",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "item_id": "video-20260910-071037-1d272ac70c",
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
