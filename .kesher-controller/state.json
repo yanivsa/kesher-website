@@ -1427,7 +1427,14 @@
     "last_dispatch_at": "2026-09-10T07:29:33.304001+00:00",
     "artifact_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
     "source_id": "3846061b-e25b-4f02-b6ef-f31078e5f711",
-    "adopted_from_long_item_id": "video-20260910-074937-1d272ac70c"
+    "adopted_from_long_item_id": "video-20260910-074937-1d272ac70c",
+    "watchdog": {
+      "identity": "short:gifted-children-social-difficulties:1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1:video-20260910-103103-1d272ac70c",
+      "last_progress_at": "2026-09-10T07:36:39.139394+00:00",
+      "last_fingerprint": "e49d1105bc90ee12099dacb942771235501ecb36d2d0627970f50765971c5b24",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
