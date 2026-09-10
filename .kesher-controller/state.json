@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-10",
-  "status": "long_video_running",
+  "status": "short_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -41,7 +41,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
     "published_date": "2026-09-10",
     "live": true,
-    "live_verified_at": "2026-09-10T06:39:35.069754+00:00",
+    "live_verified_at": "2026-09-10T07:13:30.644283+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -670,30 +670,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T06:40:00.504026+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T06:44:39.642600+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T06:44:48.320864+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
     {
       "at": "2026-09-09T07:33:14.816986+00:00",
       "from": "blocked",
@@ -1352,9 +1328,27 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-10T07:13:30.644296+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-10T07:13:36.393570+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-10T07:13:51.685048+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-09-10T06:39:40.991595+00:00",
+  "updated_at": "2026-09-10T07:13:51.685065+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1370,7 +1364,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "generating",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34445791130,
@@ -1409,10 +1403,10 @@
   },
   "short": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 34448840819,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
