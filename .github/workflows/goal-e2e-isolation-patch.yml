@@ -33,14 +33,17 @@ jobs:
           python3 -m unittest \
             tests.test_kesher_explicit_test_mode \
             tests.test_kesher_isolated_live_e2e_contract \
+            tests.test_kesher_e2e_readiness \
             -v
 
-      - name: Assert production defaults and no test merge path
+      - name: Assert isolation and no production merge path
         run: |
           set -euo pipefail
-          grep -F 'default: main' .github/workflows/kesher-daily-video.yml >/dev/null
-          grep -F 'default: kesher-video-state' .github/workflows/kesher-daily-video.yml >/dev/null
-          grep -F 'default: kesher-short-v4-state' .github/workflows/kesher-short-v4.yml >/dev/null
+          grep -F 'KESHER_MEDIA_MODE: video_overview' .github/workflows/kesher-live-e2e-test.yml >/dev/null
+          grep -F '.kesher-e2e-long-${{ github.run_id }}' .github/workflows/kesher-live-e2e-test.yml >/dev/null
+          grep -F '.kesher-e2e-short-${{ github.run_id }}' .github/workflows/kesher-live-e2e-test.yml >/dev/null
+          grep -F 'production_main_article_unchanged: true' .github/workflows/kesher-live-e2e-test.yml >/dev/null
+          grep -F 'production_controller_state_untouched: true' .github/workflows/kesher-live-e2e-test.yml >/dev/null
           ! grep -F 'auto-merge-article-prs.yml' .github/workflows/kesher-live-e2e-test.yml
           ! grep -F 'gh pr merge' .github/workflows/kesher-live-e2e-test.yml
 
@@ -51,10 +54,9 @@ jobs:
           git config user.email 'actions@users.noreply.github.com'
           git rm scripts/apply_goal_e2e_isolation_patch.py .github/workflows/goal-e2e-isolation-patch.yml
           git add \
-            .github/workflows/kesher-article-generation.yml \
-            .github/workflows/kesher-daily-video.yml \
-            .github/workflows/kesher-short-v4.yml \
-            .github/workflows/kesher-live-e2e-test.yml
+            .github/workflows/kesher-live-e2e-test.yml \
+            tests/test_kesher_e2e_readiness.py \
+            tests/test_kesher_isolated_live_e2e_contract.py
           git diff --cached --check
-          git commit -m 'fix: isolate same-day Kesher live E2E'
+          git commit -m 'fix: finish isolated same-day Kesher live E2E'
           git push origin HEAD:goal-e2e-isolation
