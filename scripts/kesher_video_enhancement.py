@@ -82,6 +82,9 @@ def _normalise_timeline(entries: Iterable[dict[str, Any]] | None) -> list[dict[s
 
 
 def _asset_drop_reason(asset: dict[str, Any]) -> str | None:
+    validation_error = str(asset.get("validation_error") or "").strip()
+    if validation_error:
+        return validation_error
     asset_type = str(asset.get("type") or "").strip()
     if asset_type not in OPTIONAL_ASSET_TYPES:
         return "unsupported_asset_type"
@@ -240,7 +243,7 @@ def execute_enhancement(
                 "attempt_errors": errors,
                 "effective_plan": candidate,
             }
-        except Exception as exc:  # renderer failures are deliberately bounded here
+        except Exception as exc:
             errors.append(f"{mode}:{type(exc).__name__}:{exc}")
 
     if source_publishable and source_path.is_file() and source_path.stat().st_size > 0:
