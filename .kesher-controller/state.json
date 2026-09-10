@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-10",
-  "status": "article_deploying",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -39,7 +39,10 @@
     "slug": "gifted-children-social-difficulties",
     "title": "ילדים מחוננים וקשיים חברתיים: להבין את הפער בין השכל לרגש",
     "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
-    "published_date": "2026-09-10"
+    "published_date": "2026-09-10",
+    "live": true,
+    "live_verified_at": "2026-09-10T04:08:47.682868+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -1273,9 +1276,25 @@
       "from": "article_normalizing",
       "to": "article_deploying",
       "reason": "deployment already active"
+    },
+    {
+      "at": "2026-09-10T04:08:47.682879+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-10T04:09:40.491266+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-10T04:04:05.090270+00:00",
+  "updated_at": "2026-09-10T04:09:40.491273+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1290,8 +1309,8 @@
     "last_dispatch_at": "2026-09-10T00:01:23.923106+00:00"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1300,7 +1319,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-09-10T04:09:40.491259+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
