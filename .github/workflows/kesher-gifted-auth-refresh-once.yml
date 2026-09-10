@@ -1,10 +1,10 @@
-name: Kesher Gifted Short Exact Dispatch
+name: Kesher Gifted NotebookLM Auth Refresh Once
 
 on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/kesher-gifted-short-dispatch.yml'
+      - '.github/workflows/kesher-gifted-auth-refresh-once.yml'
 
 permissions:
   actions: write
@@ -19,13 +19,16 @@ jobs:
       NOTEBOOKLM_HOME: ${{ runner.temp }}/notebooklm
       NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
     steps:
-      - name: Refuse duplicate active Short run
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          active="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/349292838/runs?per_page=100" --jq '[.workflow_runs[] | select(.event == "workflow_dispatch" and (.status == "queued" or .status == "in_progress" or .status == "pending"))] | length')"
-          test "$active" -eq 0
+      - name: Checkout main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
 
       - name: Restore newest Short state
         env:
@@ -39,33 +42,27 @@ jobs:
           unzip -oq "$RUNNER_TEMP/short-state.zip" -d "$SHORT_STATE_DIR"
           test -s "$SHORT_STATE_DIR/state.json"
           test -s "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc"
-          echo "Restored ${artifact_id}."
+          echo "Restored artifact ${artifact_id}."
 
-      - name: Install NotebookLM auth client
+      - name: Install pinned NotebookLM client
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check "notebooklm-py[headless] @ git+https://github.com/teng-lin/notebooklm-py.git@8fb61cb125be9f59dfe163561e355922967c604a"
 
-      - name: Refresh existing Google authentication
+      - name: Refresh and verify Google NotebookLM authentication
         run: |
           set -euo pipefail
           test -n "$NOTEBOOKLM_STATE_KEY"
           profile="$NOTEBOOKLM_HOME/profiles/default"
           mkdir -p "$profile"
-          openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 \
-            -in "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc" \
-            -out "$profile/storage_state.json" \
-            -pass env:NOTEBOOKLM_STATE_KEY
+          openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 -in "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc" -out "$profile/storage_state.json" -pass env:NOTEBOOKLM_STATE_KEY
           chmod 600 "$profile/storage_state.json"
           notebooklm auth refresh --verify
-          openssl enc -aes-256-cbc -salt -pbkdf2 -md sha256 \
-            -in "$profile/storage_state.json" \
-            -out "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc.tmp" \
-            -pass env:NOTEBOOKLM_STATE_KEY
+          openssl enc -aes-256-cbc -salt -pbkdf2 -md sha256 -in "$profile/storage_state.json" -out "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc.tmp" -pass env:NOTEBOOKLM_STATE_KEY
           mv "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc.tmp" "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc"
           echo "AUTH_REFRESH_VERIFIED"
 
-      - name: Persist refreshed Short state
+      - name: Persist refreshed state
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: kesher-short-v4-state
@@ -75,16 +72,14 @@ jobs:
           compression-level: 0
           include-hidden-files: true
 
-      - name: Resume exact existing Short
+      - name: Resume existing gifted Short only
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           active="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/349292838/runs?per_page=100" --jq '[.workflow_runs[] | select(.event == "workflow_dispatch" and (.status == "queued" or .status == "in_progress" or .status == "pending"))] | length')"
           test "$active" -eq 0
-          gh workflow run kesher-short-v4.yml \
-            --repo "$GITHUB_REPOSITORY" \
-            --ref main \
-            -f operation=full \
-            -f derive_slug=gifted-children-social-difficulties
+          gh workflow run kesher-short-v4.yml --repo "$GITHUB_REPOSITORY" --ref main -f operation=full -f derive_slug=gifted-children-social-difficulties
           echo "SHORT_RESUME_DISPATCHED"
+
+# trigger: 2026-09-10-auth-refresh
