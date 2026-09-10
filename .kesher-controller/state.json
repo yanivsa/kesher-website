@@ -1,48 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-10",
-  "status": "short_watchdog_recovery",
+  "cycle": "2026-09-11",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34412126137,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "running",
-    "last_dispatch_at": "2026-09-09T22:25:20.173977+00:00",
-    "watchdog": {
-      "identity": "2026-09-10",
-      "session_id": "sessions/12802649080423845172",
-      "last_progress_at": "2026-09-09T23:21:40.392745+00:00",
-      "last_fingerprint": "b566518fffb3cd63b2c5da925ba77a3f01c0d51ad0c0ae87998e8167dce10115",
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "pr_number": 766,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/766",
-    "normalization_slot": "2026-09-10",
-    "normalization_dispatched_at": "2026-09-10T01:16:19.801232+00:00",
-    "quality_status": "passed",
-    "quality_content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
-    "quality_checked_at": "2026-09-10T18:23:54.918360+00:00",
-    "quality_violations": [],
-    "slug": "gifted-children-social-difficulties",
-    "title": "ילדים מחוננים וקשיים חברתיים: להבין את הפער בין השכל לרגש",
-    "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
-    "published_date": "2026-09-10",
-    "live": true,
-    "live_verified_at": "2026-09-10T07:31:55.373291+00:00",
-    "next_deploy_retry_at": null
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -666,145 +639,57 @@
       },
       "archived_at": "2026-09-08T23:00:15.681638+00:00",
       "media": {}
+    },
+    {
+      "cycle": "2026-09-10",
+      "status": "short_watchdog_recovery",
+      "article": {
+        "attempt_count": 1,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 34412126137,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "deploy_attempts": 0,
+        "normalization_status": "running",
+        "last_dispatch_at": "2026-09-09T22:25:20.173977+00:00",
+        "watchdog": {
+          "identity": "2026-09-10",
+          "session_id": "sessions/12802649080423845172",
+          "last_progress_at": "2026-09-09T23:21:40.392745+00:00",
+          "last_fingerprint": "b566518fffb3cd63b2c5da925ba77a3f01c0d51ad0c0ae87998e8167dce10115",
+          "last_nudge_at": null,
+          "nudge_count": 0,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "pr_number": 766,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/766",
+        "normalization_slot": "2026-09-10",
+        "normalization_dispatched_at": "2026-09-10T01:16:19.801232+00:00",
+        "quality_status": "passed",
+        "quality_content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
+        "quality_checked_at": "2026-09-10T18:23:54.918360+00:00",
+        "quality_violations": [],
+        "slug": "gifted-children-social-difficulties",
+        "title": "ילדים מחוננים וקשיים חברתיים: להבין את הפער בין השכל לרגש",
+        "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
+        "published_date": "2026-09-10",
+        "live": true,
+        "live_verified_at": "2026-09-10T07:31:55.373291+00:00",
+        "next_deploy_retry_at": null
+      },
+      "archived_at": "2026-09-10T21:05:39.248585+00:00"
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T13:21:11.180682+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-09-09T15:13:26.256865+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T15:13:42.321851+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T15:15:14.393313+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Short exhausted 4 derive/recovery dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T17:12:40.097473+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T17:12:43.350411+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T17:12:56.729764+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Short exhausted 4 derive/recovery dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T17:14:08.912831+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T17:14:12.412213+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T17:14:25.752571+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Short exhausted 4 derive/recovery dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T17:16:00+00:00",
-      "from": "blocked",
-      "to": "short_targeted_recovery",
-      "reason": "After PR #751 and after all concurrent controller writers finished, restored exactly one same-identity Short dispatch budget",
-      "slug": "older-singles-friendship-changes-loneliness",
-      "content_sha256": "824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661",
-      "long_item_id": "video-20260909-131952-824a8b4ff8"
-    },
-    {
-      "at": "2026-09-09T17:16:07.773119+00:00",
-      "from": "long_video_complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T17:16:10.919387+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T17:16:26.104387+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-09-09T17:17:13.142500+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T17:17:16.277253+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T17:17:29.751152+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "Short derive workflow already active"
-    },
-    {
-      "at": "2026-09-09T18:21:45.318359+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T18:22:00.578737+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T18:23:04.894676+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Short exhausted 4 derive/recovery dispatch attempts"
-      }
-    },
     {
       "at": "2026-09-09T18:25:19.902983+00:00",
       "from": "blocked",
@@ -1363,147 +1248,64 @@
         "task_id": "74732ba8-16a0-4ac9-9618-40e6672bf0df",
         "required": true
       }
+    },
+    {
+      "at": "2026-09-10T21:05:39.248614+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-10T21:05:39.248618+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-10T21:05:39.249136+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-10T11:16:42.038782+00:00",
+  "updated_at": "2026-09-10T21:05:39.248600+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34419448841,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-10T00:01:23.923106+00:00"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34445791130,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-09-10T06:34:13.939512+00:00",
-    "attempts": 1,
-    "watchdog": {
-      "identity": "long_video:gifted-children-social-difficulties:1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1:video-20260910-074937-1d272ac70c",
-      "last_progress_at": "2026-09-10T05:06:39.003079+00:00",
-      "last_fingerprint": "dc5516b5d61656492f044800cdcd058a724db4183408ae1face650083f393a53",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-09-10T05:30:19.037521+00:00"
-    },
-    "item_id": "video-20260910-074937-1d272ac70c",
-    "resume_dispatches": 4,
-    "youtube_id": "NwhSRQLzErc",
-    "youtube_url": "https://youtu.be/NwhSRQLzErc",
-    "verified": true,
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 111.667,
-    "content_duration_seconds": 108.667,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "artifact_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
-    "source_id": "3846061b-e25b-4f02-b6ef-f31078e5f711"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 2,
-    "status": "running",
-    "last_error": {
-      "code": "SHORT_WORKFLOW_FAILED",
-      "message": "Short derive run 34448840819 completed with conclusion=failure",
-      "retryable": true,
-      "retry_at": "2026-09-10T07:24:53.928204+00:00",
-      "at": "2026-09-10T07:19:53.928231+00:00"
-    },
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
     "next_retry_at": null,
-    "run_id": 34450216435,
-    "processed_run_id": 34448840819,
-    "provider_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
-    "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "SHORT_WORKFLOW_FAILED": 1
-    },
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 34448840819,
-    "last_dispatch_at": "2026-09-10T07:58:11.881154+00:00",
-    "artifact_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
-    "source_id": "3846061b-e25b-4f02-b6ef-f31078e5f711",
-    "adopted_from_long_item_id": "video-20260910-074937-1d272ac70c",
-    "watchdog": {
-      "identity": "short:gifted-children-social-difficulties:1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1:video-20260910-103103-1d272ac70c",
-      "last_progress_at": "2026-09-10T07:36:39.139394+00:00",
-      "last_fingerprint": "e49d1105bc90ee12099dacb942771235501ecb36d2d0627970f50765971c5b24",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-09-10T07:57:29.286955+00:00"
-    }
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
-    "overview_youtube_url": "https://youtu.be/NwhSRQLzErc",
-    "short_youtube_url": null,
-    "overview_edit_verified": true,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "interventions": {
-    "v5|gifted-children-social-difficulties|1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1|long_video": {
-      "pipeline_id": "v5",
-      "slug": "gifted-children-social-difficulties",
-      "content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
-      "stage": "long_video",
-      "strike_count": 2,
-      "last_check_token": "2026-09-10T09",
-      "last_fingerprint": "95bd4a2c843d02a9d460a3bb68cc0b1725389ad2d61b27767860aed031d1d731",
-      "last_controller_action_token": "recovery:1:2026-09-10T05:30:19.037521+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-09-10T06:05:51.046427+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-09-10T05:30:19.037521+00:00"
-    },
-    "v5|gifted-children-social-difficulties|1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1|short": {
-      "pipeline_id": "v5",
-      "slug": "gifted-children-social-difficulties",
-      "content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
-      "stage": "short",
-      "strike_count": 3,
-      "last_check_token": "2026-09-10T21",
-      "last_fingerprint": "c1c60beb2e16d0d70a1ddf139d4490f5bb56a87133cc9cf340a37475f2d2434e",
-      "last_controller_action_token": "recovery:1:2026-09-10T07:57:29.286955+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-09-10T18:23:53.698513+00:00",
-      "last_action": "direct_takeover",
-      "direct_takeover_required": true,
-      "last_controller_action_at": "2026-09-10T07:57:29.286955+00:00"
-    }
-  },
-  "direct_takeover_required": {
-    "pipeline_id": "v5",
-    "incident_key": "v5|gifted-children-social-difficulties|1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1|short",
-    "strike": 3,
-    "stage": "short",
-    "slug": "gifted-children-social-difficulties",
-    "content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
-    "item_id": "video-20260910-103103-1d272ac70c",
-    "task_id": "74732ba8-16a0-4ac9-9618-40e6672bf0df",
-    "required": true
   }
 }
