@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-11",
-  "status": "article_needed",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1266,9 +1266,15 @@
       "from": "article_needed",
       "to": "v5_migrated",
       "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-09-10T21:05:43.372422+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-09-10T21:05:39.248600+00:00",
+  "updated_at": "2026-09-10T21:05:43.372434+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
