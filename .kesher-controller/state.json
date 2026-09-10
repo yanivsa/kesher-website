@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-10",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1308,9 +1308,19 @@
         "operation": "full",
         "resume": 1
       }
+    },
+    {
+      "at": "2026-09-10T05:33:19.807681+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20260910-074937-1d272ac70c",
+        "task_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac"
+      }
     }
   ],
-  "updated_at": "2026-09-10T04:29:20.376278+00:00",
+  "updated_at": "2026-09-10T05:33:19.807686+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1336,17 +1346,17 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-09-10T04:29:20.376263+00:00",
+    "last_dispatch_at": "2026-09-10T05:33:19.807673+00:00",
     "attempts": 1,
     "watchdog": {
       "identity": "long_video:gifted-children-social-difficulties:1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1:video-20260910-074937-1d272ac70c",
       "last_progress_at": "2026-09-10T05:06:39.003079+00:00",
       "last_fingerprint": "dc5516b5d61656492f044800cdcd058a724db4183408ae1face650083f393a53",
-      "recovery_count": 0,
-      "last_recovery_at": null
+      "recovery_count": 1,
+      "last_recovery_at": "2026-09-10T05:30:19.037521+00:00"
     },
     "item_id": "video-20260910-071037-1d272ac70c",
-    "resume_dispatches": 1
+    "resume_dispatches": 2
   },
   "short": {
     "attempt_count": 0,
@@ -1371,5 +1381,22 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "interventions": {
+    "v5|gifted-children-social-difficulties|1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1|long_video": {
+      "pipeline_id": "v5",
+      "slug": "gifted-children-social-difficulties",
+      "content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-09-10T08",
+      "last_fingerprint": "95bd4a2c843d02a9d460a3bb68cc0b1725389ad2d61b27767860aed031d1d731",
+      "last_controller_action_token": "recovery:1:2026-09-10T05:30:19.037521+00:00",
+      "controller_action_observed": true,
+      "last_observed_at": "2026-09-10T05:30:19.037521+00:00",
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-09-10T05:30:19.037521+00:00"
+    }
   }
 }
