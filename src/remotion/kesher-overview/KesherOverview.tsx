@@ -10,8 +10,21 @@ import {
   useVideoConfig,
 } from "remotion";
 import {palette} from "./theme";
-import type {KesherOverviewProps, MotionSegment} from "./types";
+import type {EnhancementTimelineEntry, KesherOverviewProps, MotionSegment} from "./types";
 import {FullScreenSignatureOutro} from "../components/FullScreenSignatureOutro";
+import {
+  EnhancementAssetOverlay,
+  type EnhancementAssetType,
+} from "../components/EnhancementAssetOverlay";
+
+type PlannedAsset = EnhancementTimelineEntry & {
+  asset_ref: string;
+  type: EnhancementAssetType;
+};
+
+const isPlannedAsset = (entry: EnhancementTimelineEntry): entry is PlannedAsset =>
+  Boolean(entry.asset_ref) &&
+  (entry.type === "image" || entry.type === "broll" || entry.type === "motion_graphic");
 
 export const KesherOverview: React.FC<KesherOverviewProps> = ({
   videoSrc,
@@ -24,13 +37,11 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
   const frame = useCurrentFrame();
   const {fps, durationInFrames} = useVideoConfig();
 
-  // Primary source video path
   const mediaFile = videoSrc || audioSrc || "kesher-input.mp4";
-
-  // Calculate current active motion plan segment
   const segments = motionPlan?.segments || [];
+  const plannedAssets = (motionPlan?.timeline || []).filter(isPlannedAsset);
   const activeSegment: MotionSegment | undefined = segments.find(
-    (seg) => frame >= seg.startFrame && frame <= seg.endFrame
+    (seg) => frame >= seg.startFrame && frame <= seg.endFrame,
   ) || segments[0];
 
   let scale = 1.0;
@@ -43,7 +54,7 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
     const segDuration = Math.max(1, activeSegment.endFrame - activeSegment.startFrame);
     const segProgress = Math.min(
       1.0,
-      Math.max(0.0, (frame - activeSegment.startFrame) / segDuration)
+      Math.max(0.0, (frame - activeSegment.startFrame) / segDuration),
     );
 
     originX = activeSegment.originX ?? 50.0;
@@ -61,17 +72,17 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
       scale = interpolate(
         springVal,
         [0, 1],
-        [activeSegment.scaleStart, activeSegment.scaleEnd]
+        [activeSegment.scaleStart, activeSegment.scaleEnd],
       );
       panX = interpolate(
         springVal,
         [0, 1],
-        [activeSegment.panXStart, activeSegment.panXEnd]
+        [activeSegment.panXStart, activeSegment.panXEnd],
       );
       panY = interpolate(
         springVal,
         [0, 1],
-        [activeSegment.panYStart, activeSegment.panYEnd]
+        [activeSegment.panYStart, activeSegment.panYEnd],
       );
     } else {
       const easedProgress = interpolate(segProgress, [0, 1], [0, 1], {
@@ -83,25 +94,22 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
       scale = interpolate(
         easedProgress,
         [0, 1],
-        [activeSegment.scaleStart, activeSegment.scaleEnd]
+        [activeSegment.scaleStart, activeSegment.scaleEnd],
       );
       panX = interpolate(
         easedProgress,
         [0, 1],
-        [activeSegment.panXStart, activeSegment.panXEnd]
+        [activeSegment.panXStart, activeSegment.panXEnd],
       );
       panY = interpolate(
         easedProgress,
         [0, 1],
-        [activeSegment.panYStart, activeSegment.panYEnd]
+        [activeSegment.panYStart, activeSegment.panYEnd],
       );
     }
   }
 
-  // Progress bar ratio
   const progress = frame / Math.max(durationInFrames - 1, 1);
-
-  // Subtle intro animation for title card overlay
   const introOpacity = interpolate(frame, [0, 12, 120, 140], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -109,7 +117,6 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
 
   return (
     <AbsoluteFill style={{backgroundColor: palette.ink, overflow: "hidden"}}>
-      {/* Continuous full-screen base video with frame-driven motion transforms (no CSS transition) */}
       <Video
         src={staticFile(mediaFile)}
         style={{
@@ -121,7 +128,20 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
         }}
       />
 
-      {/* Subtle edge gradient overlays for safe readability without obscuring storytelling center */}
+      {plannedAssets.map((entry, index) => {
+        const startFrame = Math.max(0, Math.round(entry.start * fps));
+        const endFrame = Math.max(startFrame, Math.round(entry.end * fps));
+        return (
+          <EnhancementAssetOverlay
+            key={`${entry.asset_ref}-${index}`}
+            assetRef={entry.asset_ref}
+            assetType={entry.type}
+            startFrame={startFrame}
+            endFrame={endFrame}
+          />
+        );
+      })}
+
       <AbsoluteFill
         style={{
           background:
@@ -130,7 +150,6 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
         }}
       />
 
-      {/* Top progress bar */}
       <div
         style={{
           position: "absolute",
@@ -152,7 +171,6 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
         />
       </div>
 
-      {/* Optional intro title overlay badge */}
       {title && (
         <div
           dir="rtl"
@@ -177,7 +195,6 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
         </div>
       )}
 
-      {/* Bottom corner brand badge */}
       <div
         style={{
           position: "absolute",
@@ -198,7 +215,6 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
         {url.replace(/^https?:\/\//, "").replace(/\/$/, "")}
       </div>
 
-      {/* Animated signature outro — last 3 seconds */}
       <FullScreenSignatureOutro
         durationSeconds={3}
         backgroundColor={`linear-gradient(135deg, ${palette.ink} 0%, #0d1712 100%)`}

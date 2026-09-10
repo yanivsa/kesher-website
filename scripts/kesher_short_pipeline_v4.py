@@ -16,6 +16,7 @@ No second TTS engine, generic captions, or second semantic video is introduced.
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import re
@@ -28,9 +29,11 @@ from typing import Any
 if __package__:
     from . import kesher_daily_pipeline as core
     from .kesher_short_motion_plan import build_motion_plan
+    from .kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
 else:
     import kesher_daily_pipeline as core
     from kesher_short_motion_plan import build_motion_plan
+    from kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
 
 SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
@@ -39,6 +42,14 @@ SIGNATURE_DURATION_SECONDS = 3.0
 VISUAL_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
 SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
+OPTIONAL_TARGET_ASSET_FIELDS = (
+    "assetRef",
+    "assetType",
+    "assetStartFrame",
+    "assetEndFrame",
+    "assetIntent",
+    "assetProvenance",
+)
 
 _base_new_item = core.new_item
 
@@ -156,6 +167,16 @@ def prepare_signature_asset() -> str:
     return target.name
 
 
+def _short_targets_for_plan(edit_plan: dict[str, Any]) -> list[dict[str, Any]]:
+    targets = copy.deepcopy(edit_plan.get("targets") or [])
+    if edit_plan.get("render_mode") == "full" and edit_plan.get("assets_used"):
+        return targets
+    for target in targets:
+        for field in OPTIONAL_TARGET_ASSET_FIELDS:
+            target.pop(field, None)
+    return targets
+
+
 def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     output_path = core.STATE_DIR / f"{item['id']}-short-final.mp4"
     motion_plan_path = core.STATE_DIR / f"{item['id']}-short-motion-plan.json"
@@ -169,14 +190,16 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     duration_frames = max(1, round(duration_seconds * SHORT_FPS))
     start_frame = max(0, round(start_seconds * SHORT_FPS))
 
-    if not (output_path.exists() and output_path.stat().st_size > 0):
-        remotion = core.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
-        if not remotion.is_file():
-            raise core.PipelineError("Remotion dependencies are not installed")
+    if output_path.exists() and output_path.stat().st_size > 0 and item.get("enhancement_status"):
+        return output_path
 
-        motion_plan = build_motion_plan(raw_path, duration_seconds, SHORT_FPS)
-        core.atomic_json_write(motion_plan_path, motion_plan)
+    remotion = core.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
+    if not remotion.is_file():
+        raise core.PipelineError("Remotion dependencies are not installed")
 
+    motion_plan = build_motion_plan(raw_path, duration_seconds, SHORT_FPS)
+
+    def renderer(candidate_plan: dict[str, Any], candidate_output: Path) -> None:
         core.atomic_json_write(
             props_path,
             {
@@ -187,7 +210,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
                 "category": item["source"]["category"],
                 "url": core.DISPLAY_URL,
                 "signatureImageSrc": signature_image_src,
-                "motionPlan": motion_plan["targets"],
+                "motionPlan": _short_targets_for_plan(candidate_plan),
             },
         )
         command = [
@@ -195,7 +218,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
             "render",
             "src/remotion/index.ts",
             "ArticleShort",
-            str(output_path),
+            str(candidate_output),
             f"--props={props_path}",
             f"--public-dir={core.STATE_DIR}",
             "--codec=h264",
@@ -211,22 +234,35 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
             timeout=3600,
             check=False,
         )
-        if result.returncode != 0 or not output_path.exists() or output_path.stat().st_size < 1024:
+        if result.returncode != 0 or not candidate_output.exists() or candidate_output.stat().st_size < 1024:
             detail = (result.stderr or result.stdout)[-700:]
-            raise core.PipelineError(f"Remotion Short render failed: {detail}")
+            raise RuntimeError(f"Remotion Short render failed: {detail}")
+
+    enhancement = execute_enhancement(
+        source_path=raw_path,
+        output_path=output_path,
+        edit_plan=motion_plan,
+        renderer=renderer,
+        source_publishable=False,
+    )
+    effective_plan = enhancement["effective_plan"]
+    core.atomic_json_write(motion_plan_path, effective_plan)
 
     item["visual_pipeline"] = VISUAL_PIPELINE
     item["source_mode"] = "direct-short"
     item["short_start_seconds"] = start_seconds
     item["short_duration_seconds"] = duration_seconds
-    if motion_plan_path.exists():
-        item["motion_plan_path"] = motion_plan_path.name
-        item["motion_plan_sha256"] = core.sha256_file(motion_plan_path)
+    item["enhancement_status"] = enhancement["enhancement_status"]
+    item["enhancement_render_mode"] = enhancement["render_mode"]
+    item["enhancement_assets_used"] = enhancement["assets_used"]
+    item["enhancement_assets_dropped"] = enhancement["assets_dropped"]
+    item["enhancement_fallback_reason"] = enhancement["fallback_reason"]
+    item["motion_plan_path"] = motion_plan_path.name
+    item["motion_plan_sha256"] = core.sha256_file(motion_plan_path)
     item["signature_asset"] = signature_image_src
     item["signature_sha256"] = signature_sha256
-    if props_path.exists():
-        item["remotion_props_path"] = props_path.name
-        item["remotion_props_sha256"] = core.sha256_file(props_path)
+    item["remotion_props_path"] = props_path.name
+    item["remotion_props_sha256"] = core.sha256_file(props_path)
 
     sig_video_path, sig_video_sha256 = extract_signature_video_segment(output_path, item["id"])
     item["signature_video_path"] = sig_video_path.name
@@ -317,6 +353,15 @@ def validate_and_manifest(
         "visual_review_path": item["visual_review_path"],
         "visual_review_sha256": item["visual_review_sha256"],
     }
+    manifest["enhancement"] = build_enhancement_manifest(
+        source_path=raw_path,
+        final_path=final_path,
+        edit_plan_path=core.STATE_DIR / item["motion_plan_path"],
+        enhancement_status=item["enhancement_status"],
+        assets_used=item.get("enhancement_assets_used") or [],
+        assets_dropped=item.get("enhancement_assets_dropped") or [],
+        fallback_reason=item.get("enhancement_fallback_reason"),
+    )
 
     if technical_failures:
         item["technical_verified"] = False

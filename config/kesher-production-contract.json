@@ -51,6 +51,15 @@
       "last_usable_must_match_slug_and_content_sha256": true,
       "never_generate_after_final_attempt_fallback": true,
       "public_verify_after_fallback_upload": true
+    },
+    "enhancement": {
+      "required_for_publication": false,
+      "shared_engine": "remotion",
+      "profiles": ["overview_16_9", "short_9_16"],
+      "missing_assets": "source-only-fallback",
+      "asset_failure": "drop-and-continue",
+      "jules_review": "advisory",
+      "duplicate_generation_for_enrichment": false
     }
   },
   "invariants": {

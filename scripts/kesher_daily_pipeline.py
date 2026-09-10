@@ -38,8 +38,10 @@ if str(PROJECT_DIR) not in sys.path:
 
 try:
     from motion_plan_generator import generate_motion_plan
+    from kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
 except ImportError:
     from scripts.motion_plan_generator import generate_motion_plan
+    from scripts.kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
 
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
@@ -581,13 +583,13 @@ def estimate_voice_pitch(media_path: Path) -> float | None:
     frame_len = 1024
     hop = 512
     pitches: list[float] = []
-    min_lag = int(sr / 350)  # ~350 Hz max female pitch
-    max_lag = int(sr / 75)   # ~75 Hz min male pitch
+    min_lag = int(sr / 350)
+    max_lag = int(sr / 75)
 
     for start in range(0, len(samples) - frame_len, hop):
         frame = samples[start : start + frame_len]
         energy = sum(s * s for s in frame) / frame_len
-        if energy < 100000:  # silence / low energy
+        if energy < 100000:
             continue
         r0 = sum(frame[i] * frame[i] for i in range(frame_len - max_lag))
         if r0 == 0:
@@ -600,8 +602,7 @@ def estimate_voice_pitch(media_path: Path) -> float | None:
                 best_r = r
                 best_lag = lag
         if best_r / r0 > 0.45 and best_lag > 0:
-            pitch = sr / best_lag
-            pitches.append(pitch)
+            pitches.append(sr / best_lag)
 
     if not pitches:
         return None
@@ -644,7 +645,7 @@ def validate_female_voice(
 
 def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     output_path = STATE_DIR / f"{item['id']}-remotion-final.mp4"
-    if output_path.exists() and output_path.stat().st_size > 0:
+    if output_path.exists() and output_path.stat().st_size > 0 and item.get("enhancement_status"):
         return output_path
     remotion = PROJECT_DIR / "node_modules" / ".bin" / "remotion"
     if not remotion.is_file():
@@ -655,43 +656,61 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     if duration_frames <= 0:
         raise PipelineError("NotebookLM audio duration is invalid for Remotion")
     motion_plan_path = STATE_DIR / f"{item['id']}-motion-plan.json"
-    motion_plan = generate_motion_plan(raw_path, motion_plan_path, duration=float(raw_media["duration"]))
+    motion_plan = generate_motion_plan(raw_path, motion_plan_path, duration=content_duration_seconds)
     signature_image_src = prepare_signature_asset()
     props_path = STATE_DIR / f"{item['id']}-remotion-props.json"
-    atomic_json_write(
-        props_path,
-        {
-            "videoSrc": raw_path.name,
-            "audioSrc": raw_path.name,
-            "motionPlan": motion_plan,
-            "durationInFrames": duration_frames,
-            "title": item["source"]["title"],
-            "category": item["source"]["category"],
-            "url": DISPLAY_URL,
-            "signatureImageSrc": signature_image_src,
-        },
+
+    def renderer(candidate_plan: dict[str, Any], candidate_output: Path) -> None:
+        atomic_json_write(
+            props_path,
+            {
+                "videoSrc": raw_path.name,
+                "audioSrc": raw_path.name,
+                "motionPlan": candidate_plan,
+                "durationInFrames": duration_frames,
+                "title": item["source"]["title"],
+                "category": item["source"]["category"],
+                "url": DISPLAY_URL,
+                "signatureImageSrc": signature_image_src,
+            },
+        )
+        command = [
+            str(remotion), "render", "src/remotion/index.ts", "KesherOverview", str(candidate_output),
+            f"--props={props_path}", f"--public-dir={STATE_DIR}", "--codec=h264",
+            "--audio-codec=aac", "--concurrency=2", "--timeout=120000",
+        ]
+        result = subprocess.run(
+            command,
+            cwd=PROJECT_DIR,
+            capture_output=True,
+            text=True,
+            timeout=3600,
+            check=False,
+        )
+        if result.returncode != 0 or not candidate_output.exists() or candidate_output.stat().st_size < 1024:
+            detail = (result.stderr or result.stdout)[-500:]
+            raise RuntimeError(f"Remotion visual rebuild failed: {detail}")
+
+    enhancement = execute_enhancement(
+        source_path=raw_path,
+        output_path=output_path,
+        edit_plan=motion_plan,
+        renderer=renderer,
+        source_publishable=False,
     )
-    command = [
-        str(remotion), "render", "src/remotion/index.ts", "KesherOverview", str(output_path),
-        f"--props={props_path}", f"--public-dir={STATE_DIR}", "--codec=h264",
-        "--audio-codec=aac", "--concurrency=2", "--timeout=120000",
-    ]
-    result = subprocess.run(
-        command,
-        cwd=PROJECT_DIR,
-        capture_output=True,
-        text=True,
-        timeout=3600,
-        check=False,
-    )
-    if result.returncode != 0 or not output_path.exists() or output_path.stat().st_size < 1024:
-        detail = (result.stderr or result.stdout)[-500:]
-        raise PipelineError(f"Remotion visual rebuild failed: {detail}")
+    effective_plan = enhancement["effective_plan"]
+    atomic_json_write(motion_plan_path, effective_plan)
+
     item["visual_pipeline"] = "remotion-v1-notebooklm-audio"
     item["content_duration_seconds"] = round(content_duration_seconds, 3)
     item["signature_duration_seconds"] = SIGNATURE_DURATION_SECONDS
     item["signature_fullscreen"] = True
     item["signature_asset_sha256"] = sha256_file(STATE_DIR / signature_image_src)
+    item["enhancement_status"] = enhancement["enhancement_status"]
+    item["enhancement_render_mode"] = enhancement["render_mode"]
+    item["enhancement_assets_used"] = enhancement["assets_used"]
+    item["enhancement_assets_dropped"] = enhancement["assets_dropped"]
+    item["enhancement_fallback_reason"] = enhancement["fallback_reason"]
     item["remotion_props_path"] = props_path.name
     item["remotion_props_sha256"] = sha256_file(props_path)
     item["motion_plan_path"] = motion_plan_path.name
@@ -825,6 +844,20 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "visual_review_path": item["visual_review_path"],
         "visual_review_sha256": item["visual_review_sha256"],
     }
+    if item.get("visual_pipeline") == "remotion-v1-notebooklm-audio":
+        motion_plan_name = str(item.get("motion_plan_path") or "").strip()
+        enhancement_status = str(item.get("enhancement_status") or "").strip()
+        if not motion_plan_name or not enhancement_status:
+            raise PipelineError("Remotion enhancement evidence is incomplete")
+        manifest["enhancement"] = build_enhancement_manifest(
+            source_path=raw_path,
+            final_path=final_path,
+            edit_plan_path=STATE_DIR / motion_plan_name,
+            enhancement_status=enhancement_status,
+            assets_used=item.get("enhancement_assets_used") or [],
+            assets_dropped=item.get("enhancement_assets_dropped") or [],
+            fallback_reason=item.get("enhancement_fallback_reason"),
+        )
 
     if technical_failures:
         item["technical_verified"] = False
