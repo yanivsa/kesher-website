@@ -80,13 +80,13 @@ jobs:
           else: text=str(data)
           safe=[]
           for line in text.splitlines():
-              if re.search(r'(OPENCLAW_TAILNET_RECOVERY|OPENCLAW_TAILSCALE_FINALIZED|TAILSCALE_BACKEND_STATE|OPENCLAW_TAILSCALE_DNS|OPENCLAW_TAILSCALE_IP|OPENCLAW_READY_URL)',line):
+              if re.search(r'(OPENCLAW_TAILNET_RECOVERY|OPENCLAW_TAILSCALE_FINALIZED|TAILSCALE_BACKEND_STATE|OPENCLAW_TAILSCALE_DNS|OPENCLAW_TAILSCALE_IP|OPENCLAW_READY_URL|OPENCLAW_CLEAN_BOOTSTRAP|cloud-init|cloud-final|sshd|ssh\.service|error|failed|failure)', line, re.IGNORECASE):
                   safe.append(line[-500:])
           if not safe:
               print('SAFE_CONSOLE_MARKERS=none')
           else:
               print('SAFE_CONSOLE_MARKERS_BEGIN')
-              print('\n'.join(safe[-30:]))
+              print('\n'.join(safe[-80:]))
               print('SAFE_CONSOLE_MARKERS_END')
           PY
       - if: ${{ always() }}
