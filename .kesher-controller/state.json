@@ -671,12 +671,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-09T13:20:07.641828+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-09-09T13:21:11.180682+00:00",
       "from": "long_video_complete",
       "to": "short_running",
@@ -1352,9 +1346,26 @@
         "item_id": "video-20260910-103103-1d272ac70c",
         "long_item_id": "video-20260910-074937-1d272ac70c"
       }
+    },
+    {
+      "at": "2026-09-10T11:16:42.038774+00:00",
+      "from": "short_watchdog_recovery",
+      "to": "short_watchdog_recovery",
+      "reason": "same Kesher incident remained stalled for three hourly checks; direct supervisor takeover required",
+      "details": {
+        "pipeline_id": "v5",
+        "incident_key": "v5|gifted-children-social-difficulties|1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1|short",
+        "strike": 3,
+        "stage": "short",
+        "slug": "gifted-children-social-difficulties",
+        "content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
+        "item_id": "video-20260910-103103-1d272ac70c",
+        "task_id": "74732ba8-16a0-4ac9-9618-40e6672bf0df",
+        "required": true
+      }
     }
   ],
-  "updated_at": "2026-09-10T07:58:11.881173+00:00",
+  "updated_at": "2026-09-10T11:16:42.038782+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1473,15 +1484,26 @@
       "slug": "gifted-children-social-difficulties",
       "content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
       "stage": "short",
-      "strike_count": 2,
-      "last_check_token": "2026-09-10T12",
+      "strike_count": 3,
+      "last_check_token": "2026-09-10T14",
       "last_fingerprint": "c1c60beb2e16d0d70a1ddf139d4490f5bb56a87133cc9cf340a37475f2d2434e",
       "last_controller_action_token": "recovery:1:2026-09-10T07:57:29.286955+00:00",
       "controller_action_observed": true,
-      "last_observed_at": "2026-09-10T09:16:06.570949+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
+      "last_observed_at": "2026-09-10T11:16:17.946350+00:00",
+      "last_action": "direct_takeover",
+      "direct_takeover_required": true,
       "last_controller_action_at": "2026-09-10T07:57:29.286955+00:00"
     }
+  },
+  "direct_takeover_required": {
+    "pipeline_id": "v5",
+    "incident_key": "v5|gifted-children-social-difficulties|1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1|short",
+    "strike": 3,
+    "stage": "short",
+    "slug": "gifted-children-social-difficulties",
+    "content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
+    "item_id": "video-20260910-103103-1d272ac70c",
+    "task_id": "74732ba8-16a0-4ac9-9618-40e6672bf0df",
+    "required": true
   }
 }
