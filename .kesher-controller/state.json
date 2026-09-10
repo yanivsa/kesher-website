@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-10",
-  "status": "article_normalizing",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -35,7 +35,11 @@
     "quality_status": "passed",
     "quality_content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
     "quality_checked_at": "2026-09-10T04:02:19.008528+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "gifted-children-social-difficulties",
+    "title": "ילדים מחוננים וקשיים חברתיים: להבין את הפער בין השכל לרגש",
+    "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
+    "published_date": "2026-09-10"
   },
   "backlog": [
     {
@@ -1263,9 +1267,15 @@
         "pr_number": 766,
         "slot": "2026-09-10"
       }
+    },
+    {
+      "at": "2026-09-10T04:04:05.090251+00:00",
+      "from": "article_normalizing",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-09-10T01:16:19.801260+00:00",
+  "updated_at": "2026-09-10T04:04:05.090270+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
