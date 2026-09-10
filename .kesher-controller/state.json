@@ -41,7 +41,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
     "published_date": "2026-09-10",
     "live": true,
-    "live_verified_at": "2026-09-10T06:33:47.341374+00:00",
+    "live_verified_at": "2026-09-10T06:36:32.961616+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1334,9 +1334,21 @@
         "operation": "full",
         "resume": 4
       }
+    },
+    {
+      "at": "2026-09-10T06:36:32.961634+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-10T06:36:41.975048+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-10T06:34:13.939523+00:00",
+  "updated_at": "2026-09-10T06:36:41.975072+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1352,10 +1364,10 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 34445791130,
     "processed_run_id": null,
     "provider_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
     "failure_fingerprint": null,
@@ -1371,7 +1383,7 @@
       "recovery_count": 1,
       "last_recovery_at": "2026-09-10T05:30:19.037521+00:00"
     },
-    "item_id": "video-20260910-074937-1d272ac70c",
+    "item_id": "video-20260910-091421-4885dc1abd",
     "resume_dispatches": 4,
     "youtube_id": "NwhSRQLzErc",
     "youtube_url": "https://youtu.be/NwhSRQLzErc",
