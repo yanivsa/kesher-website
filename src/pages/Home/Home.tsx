@@ -20,6 +20,7 @@ import SchemaOrg from '../../components/SEO/SchemaOrg';
 import SignatureMark from '../../components/Signature/SignatureMark';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import ContactSection from './ContactSection';
+import BlogPreview from './BlogPreview';
 import styles from './Home.module.css';
 
 const schemaData = {
@@ -628,6 +629,8 @@ const Home: React.FC = () => {
             </article>
           </div>
         </section>
+
+        <BlogPreview />
 
         <ContactSection />
       </main>
