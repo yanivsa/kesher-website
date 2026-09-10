@@ -34,7 +34,7 @@
     "normalization_dispatched_at": "2026-09-10T01:16:19.801232+00:00",
     "quality_status": "passed",
     "quality_content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
-    "quality_checked_at": "2026-09-10T06:35:31.375310+00:00",
+    "quality_checked_at": "2026-09-10T06:39:01.795897+00:00",
     "quality_violations": [],
     "slug": "gifted-children-social-difficulties",
     "title": "ילדים מחוננים וקשיים חברתיים: להבין את הפער בין השכל לרגש",
@@ -1383,7 +1383,7 @@
       "recovery_count": 1,
       "last_recovery_at": "2026-09-10T05:30:19.037521+00:00"
     },
-    "item_id": "video-20260910-091421-4885dc1abd",
+    "item_id": "video-20260910-074937-1d272ac70c",
     "resume_dispatches": 4,
     "youtube_id": "NwhSRQLzErc",
     "youtube_url": "https://youtu.be/NwhSRQLzErc",
