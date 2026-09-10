@@ -1,0 +1,36 @@
+name: Kesher Gifted Short Exact Dispatch
+
+on:
+  push:
+    paths:
+      - '.github/workflows/kesher-gifted-short-dispatch.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refuse duplicate active production Short run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          active="$(gh api "repos/${REPO}/actions/workflows/349292838/runs?per_page=100" --jq '[.workflow_runs[] | select(.event == "workflow_dispatch" and (.status == "queued" or .status == "in_progress" or .status == "pending"))] | length')"
+          if [ "$active" -gt 0 ]; then
+            echo "An active production Short workflow already exists; refusing duplicate dispatch."
+            exit 0
+          fi
+
+          gh workflow run kesher-short-v4.yml \
+            --repo "$REPO" \
+            --ref main \
+            -f operation=derive \
+            -f derive_slug=gifted-children-social-difficulties \
+            -f derive_content_sha256=4053bcc33d2daba01ae926c170b816b3296d1c2924858722426d7f3e8beea848 \
+            -f derive_long_item_id=video-20260910-072837-bb1fbe79d8
+
+          echo "Exact Short derive dispatch accepted."
