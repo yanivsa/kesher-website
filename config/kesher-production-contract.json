@@ -45,7 +45,12 @@
       "applies_to": ["video_overview", "short"],
       "retry_on_detected_male_before_fallback": true,
       "accept_male_on_final_female_attempt": true,
-      "stop_voice_retries_after_fallback": true
+      "stop_voice_retries_after_fallback": true,
+      "final_attempt_failure_action": "upload_last_usable_same_source_artifact",
+      "final_attempt_number": 3,
+      "last_usable_must_match_slug_and_content_sha256": true,
+      "never_generate_after_final_attempt_fallback": true,
+      "public_verify_after_fallback_upload": true
     }
   },
   "invariants": {
