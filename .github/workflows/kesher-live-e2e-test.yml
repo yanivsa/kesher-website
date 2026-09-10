@@ -332,6 +332,7 @@ jobs:
           TARGET_SLUG: ${{ steps.source.outputs.slug }}
           SOURCE_SHA: ${{ steps.source.outputs.source_content_sha256 }}
           KESHER_STATE_DIR: ${{ env.KESHER_E2E_LONG_STATE_DIR }}
+          KESHER_MEDIA_MODE: video_overview
         shell: bash
         run: |
           set -euo pipefail
