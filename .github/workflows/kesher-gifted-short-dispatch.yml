@@ -2,6 +2,7 @@ name: Kesher Gifted Short Exact Dispatch
 
 on:
   push:
+    branches: [main]
     paths:
       - '.github/workflows/kesher-gifted-short-dispatch.yml'
 
@@ -10,116 +11,59 @@ permissions:
   contents: read
 
 jobs:
-  refresh-and-dispatch:
+  refresh:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       SHORT_STATE_DIR: ${{ runner.temp }}/kesher-short-v4-state
       NOTEBOOKLM_HOME: ${{ runner.temp }}/notebooklm
+      NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
     steps:
-      - name: Refuse duplicate active production Short run
+      - name: Refuse duplicate active Short run
         env:
           GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          active="$(gh api "repos/${REPO}/actions/workflows/349292838/runs?per_page=100" --jq '[.workflow_runs[] | select(.event == "workflow_dispatch" and (.status == "queued" or .status == "in_progress" or .status == "pending"))] | length')"
-          if [ "$active" -gt 0 ]; then
-            echo "An active production Short workflow already exists; refusing duplicate dispatch."
-            exit 0
-          fi
-
-      - name: Checkout current main
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          ref: main
-          persist-credentials: false
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
-        with:
-          python-version: '3.12'
-
-      - name: Install pinned NotebookLM headless auth client
-        run: |
-          set -euo pipefail
-          python -m pip install --disable-pip-version-check \
-            "notebooklm-py[headless] @ git+https://github.com/teng-lin/notebooklm-py.git@8fb61cb125be9f59dfe163561e355922967c604a"
+          active="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/349292838/runs?per_page=100" --jq '[.workflow_runs[] | select(.event == "workflow_dispatch" and (.status == "queued" or .status == "in_progress" or .status == "pending"))] | length')"
+          test "$active" -eq 0
 
       - name: Restore newest Short state
         env:
           GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           mkdir -p "$SHORT_STATE_DIR"
-          artifact_id="$(gh api "repos/${REPO}/actions/artifacts?name=kesher-short-v4-state&per_page=100" --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].id')"
+          artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-short-v4-state&per_page=100" --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].id')"
           test -n "$artifact_id"
-          archive="${RUNNER_TEMP}/short-state.zip"
-          gh api "repos/${REPO}/actions/artifacts/${artifact_id}/zip" > "$archive"
-          unzip -oq "$archive" -d "$SHORT_STATE_DIR"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$RUNNER_TEMP/short-state.zip"
+          unzip -oq "$RUNNER_TEMP/short-state.zip" -d "$SHORT_STATE_DIR"
           test -s "$SHORT_STATE_DIR/state.json"
-          echo "Restored Short state artifact ${artifact_id}."
+          test -s "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc"
+          echo "Restored ${artifact_id}."
 
-      - name: Attempt bounded Google NotebookLM auth refresh
-        env:
-          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
-          NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
-          NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
+      - name: Install NotebookLM auth client
         run: |
           set -euo pipefail
+          python -m pip install --disable-pip-version-check "notebooklm-py[headless] @ git+https://github.com/teng-lin/notebooklm-py.git@8fb61cb125be9f59dfe163561e355922967c604a"
+
+      - name: Refresh existing Google authentication
+        run: |
+          set -euo pipefail
+          test -n "$NOTEBOOKLM_STATE_KEY"
           profile="$NOTEBOOKLM_HOME/profiles/default"
-          storage_path="$profile/storage_state.json"
-          sealed_path="$SHORT_STATE_DIR/notebooklm-storage-state.json.enc"
           mkdir -p "$profile"
-
-          if [ -s "$sealed_path" ]; then
-            test -n "${NOTEBOOKLM_STATE_KEY:-}"
-            openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 \
-              -in "$sealed_path" -out "$storage_path" -pass env:NOTEBOOKLM_STATE_KEY
-            chmod 600 "$storage_path"
-          else
-            python - <<'PY'
-          import json, os
-          from pathlib import Path
-          raw=os.environ.get('NOTEBOOKLM_STORAGE_STATE_SECRET','').strip()
-          if not raw:
-              raise SystemExit('NotebookLM storage-state secret is missing')
-          state=json.loads(raw)
-          if not isinstance(state,dict) or not state.get('cookies'):
-              raise SystemExit('NotebookLM storage-state secret is invalid')
-          p=Path(os.environ['NOTEBOOKLM_HOME'])/'profiles'/'default'/'storage_state.json'
-          p.write_text(json.dumps(state,separators=(',',':')),encoding='utf-8')
-          p.chmod(0o600)
-          PY
-          fi
-
-          python - <<'PY'
-          import json, os
-          from pathlib import Path
-          raw=os.environ.get('NOTEBOOKLM_MASTER_TOKEN_SECRET','').strip()
-          if raw:
-              token=json.loads(raw)
-              required={'version','email','android_id','master_token'}
-              if not isinstance(token,dict) or not required.issubset(token) or not all(token[k] for k in required):
-                  raise SystemExit('NotebookLM master-token secret is invalid')
-              p=Path(os.environ['NOTEBOOKLM_HOME'])/'profiles'/'default'/'master_token.json'
-              p.write_text(json.dumps(token,separators=(',',':')),encoding='utf-8')
-              p.chmod(0o600)
-          PY
-
-          # One bounded refresh attempt. This can rotate still-valid Google
-          # cookies, and will use a durable master token automatically if one
-          # is configured. It must not create or regenerate content.
+          openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 \
+            -in "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc" \
+            -out "$profile/storage_state.json" \
+            -pass env:NOTEBOOKLM_STATE_KEY
+          chmod 600 "$profile/storage_state.json"
           notebooklm auth refresh --verify
-
-          test -s "$storage_path"
-          test -n "${NOTEBOOKLM_STATE_KEY:-}"
-          refreshed_tmp="${sealed_path}.tmp"
           openssl enc -aes-256-cbc -salt -pbkdf2 -md sha256 \
-            -in "$storage_path" -out "$refreshed_tmp" -pass env:NOTEBOOKLM_STATE_KEY
-          chmod 600 "$refreshed_tmp"
-          mv "$refreshed_tmp" "$sealed_path"
-          echo "NotebookLM authentication refreshed and verified."
+            -in "$profile/storage_state.json" \
+            -out "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc.tmp" \
+            -pass env:NOTEBOOKLM_STATE_KEY
+          mv "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc.tmp" "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc"
+          echo "AUTH_REFRESH_VERIFIED"
 
       - name: Persist refreshed Short state
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
@@ -131,20 +75,16 @@ jobs:
           compression-level: 0
           include-hidden-files: true
 
-      - name: Resume exact existing Short end-to-end
+      - name: Resume exact existing Short
         env:
           GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          active="$(gh api "repos/${REPO}/actions/workflows/349292838/runs?per_page=100" --jq '[.workflow_runs[] | select(.event == "workflow_dispatch" and (.status == "queued" or .status == "in_progress" or .status == "pending"))] | length')"
-          if [ "$active" -gt 0 ]; then
-            echo "A production Short workflow became active; refusing duplicate dispatch."
-            exit 0
-          fi
+          active="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/349292838/runs?per_page=100" --jq '[.workflow_runs[] | select(.event == "workflow_dispatch" and (.status == "queued" or .status == "in_progress" or .status == "pending"))] | length')"
+          test "$active" -eq 0
           gh workflow run kesher-short-v4.yml \
-            --repo "$REPO" \
+            --repo "$GITHUB_REPOSITORY" \
             --ref main \
             -f operation=full \
             -f derive_slug=gifted-children-social-difficulties
-          echo "Exact existing Short resume dispatch accepted after verified auth refresh."
+          echo "SHORT_RESUME_DISPATCHED"
