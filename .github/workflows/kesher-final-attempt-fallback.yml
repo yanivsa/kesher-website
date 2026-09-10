@@ -1,0 +1,99 @@
+name: Kesher Final Attempt Video Fallback
+
+on:
+  workflow_run:
+    workflows: ["Kesher Daily NotebookLM Video Overview"]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: kesher-final-attempt-fallback
+  cancel-in-progress: false
+
+jobs:
+  promote-last-usable:
+    if: ${{ github.event.workflow_run.head_branch == 'main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+
+      - name: Restore state artifact from completed video run
+        id: restore
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$KESHER_STATE_DIR"
+          artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}/artifacts" --jq '.artifacts[] | select(.name == "kesher-video-state" and .expired == false) | .id' | tail -1)"
+          if [ -z "$artifact_id" ]; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "No durable video-state artifact on source run."
+            exit 0
+          fi
+          archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive"
+          unzip -oq "$archive" -d "$KESHER_STATE_DIR"
+          test -s "$KESHER_STATE_DIR/state.json"
+          echo "found=true" >> "$GITHUB_OUTPUT"
+
+      - name: Run regression tests
+        if: steps.restore.outputs.found == 'true'
+        run: |
+          set -euo pipefail
+          python3 -m unittest tests.test_kesher_final_attempt_fallback
+
+      - name: Promote last usable same-source artifact after attempt three
+        if: steps.restore.outputs.found == 'true'
+        id: promote
+        run: |
+          set -euo pipefail
+          output="$(python3 -u scripts/kesher_final_attempt_fallback.py)"
+          echo "$output"
+          if grep -q '^FINAL_ATTEMPT_FALLBACK_PROMOTED ' <<<"$output"; then
+            echo "promoted=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "promoted=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install upload dependency
+        if: steps.promote.outputs.promoted == 'true'
+        run: python3 -m pip install --disable-pip-version-check requests==2.33.0
+
+      - name: Prepare exact promoted artifact for upload
+        if: steps.promote.outputs.promoted == 'true'
+        run: |
+          set -euo pipefail
+          python3 -u scripts/kesher_video_reconcile.py --prepare-upload
+
+      - name: Upload and publicly verify promoted artifact
+        if: steps.promote.outputs.promoted == 'true'
+        run: |
+          set -euo pipefail
+          test -n "$YOUTUBE_CLIENT_ID"
+          test -n "$YOUTUBE_CLIENT_SECRET"
+          test -n "$YOUTUBE_REFRESH_TOKEN"
+          python3 -u scripts/kesher_daily_pipeline.py --upload-only
+
+      - name: Persist resulting durable state
+        if: steps.restore.outputs.found == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-video-state
+          path: ${{ env.KESHER_STATE_DIR }}
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          include-hidden-files: true
