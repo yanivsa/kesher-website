@@ -12,57 +12,53 @@ def workflow(name: str) -> str:
 
 
 class KesherIsolatedLiveE2EContractTests(unittest.TestCase):
-    def test_article_worker_can_keep_only_authorized_test_pr_open(self):
-        text = workflow("kesher-article-generation.yml")
-        self.assertIn("keep_test_pr_open:", text)
-        self.assertIn("KESHER_KEEP_TEST_PR_OPEN", text)
-        self.assertIn("KEEP_TEST_PR_OPEN_REQUIRES_TEST_MODE", text)
-        self.assertIn("env.KESHER_KEEP_TEST_PR_OPEN != 'true'", text)
+    def test_live_e2e_uses_authorized_isolated_article_session(self):
+        text = workflow("kesher-live-e2e-test.yml")
+        self.assertIn("test_mode=true", text)
+        self.assertIn("gh pr reopen", text)
+        self.assertIn("Resolve the one new article identity relative to main", text)
+        self.assertIn("source_content_sha256", text)
 
-    def test_long_worker_supports_isolated_source_and_state_namespace(self):
-        text = workflow("kesher-daily-video.yml")
-        self.assertIn("source_ref:", text)
-        self.assertIn("state_artifact_name:", text)
-        self.assertIn("KESHER_SOURCE_REF", text)
-        self.assertIn("KESHER_STATE_ARTIFACT", text)
-        self.assertIn("ref: ${{ env.KESHER_SOURCE_REF }}", text)
-        self.assertNotIn("name: kesher-video-state\n          path: ${{ env.KESHER_STATE_DIR }}", text)
-
-    def test_short_worker_supports_isolated_source_and_both_state_namespaces(self):
-        text = workflow("kesher-short-v4.yml")
-        self.assertIn("source_ref:", text)
-        self.assertIn("state_artifact_name:", text)
-        self.assertIn("long_state_artifact_name:", text)
-        self.assertIn("KESHER_SOURCE_REF", text)
-        self.assertIn("KESHER_STATE_ARTIFACT", text)
-        self.assertIn("KESHER_LONG_STATE_ARTIFACT", text)
-        self.assertIn("ref: ${{ env.KESHER_SOURCE_REF }}", text)
+    def test_live_e2e_runs_same_production_media_scripts_in_fresh_state_dirs(self):
+        text = workflow("kesher-live-e2e-test.yml")
+        self.assertIn("KESHER_E2E_LONG_STATE_DIR", text)
+        self.assertIn("KESHER_E2E_SHORT_STATE_DIR", text)
+        self.assertIn("scripts/kesher_video_reconcile.py --prepare-generation", text)
+        self.assertIn("scripts/kesher_daily_pipeline.py --max-wait-seconds", text)
+        self.assertIn("scripts/kesher_daily_pipeline.py --upload-only", text)
+        self.assertIn("--adopt-long-form-state", text)
+        self.assertIn("scripts/kesher_short_pipeline_v4.py --max-wait-seconds", text)
+        self.assertIn("scripts/kesher_short_pipeline_v4.py --upload-only", text)
+        self.assertNotIn("Restore newest valid durable pipeline state", text)
+        self.assertNotIn("Restore newest valid Short V4 durable state", text)
 
     def test_live_e2e_is_preview_only_and_never_merges_test_article(self):
         text = workflow("kesher-live-e2e-test.yml")
-        self.assertIn("test_mode=true", text)
-        self.assertIn("keep_test_pr_open=true", text)
-        self.assertIn("kesher-e2e-video-", text)
-        self.assertIn("kesher-e2e-short-", text)
-        self.assertIn("source_ref=", text)
-        self.assertIn("state_artifact_name=", text)
-        self.assertIn("long_state_artifact_name=", text)
+        self.assertIn("RUN_LIVE_E2E", text)
         self.assertIn("pages deploy dist --project-name=kesher-website --branch=", text)
         self.assertIn("LIVE_E2E_PREVIEW_URL", text)
         self.assertIn("Close isolated test article PR", text)
         self.assertNotIn("auto-merge-article-prs.yml", text)
         self.assertNotIn("gh pr merge", text)
-        self.assertNotIn("Refusing duplicate live E2E", text)
         self.assertNotIn("Nudge the production Controller", text)
+        self.assertNotIn("kesher-content-controller.yml", text)
 
-    def test_production_defaults_remain_unchanged(self):
-        long_text = workflow("kesher-daily-video.yml")
-        short_text = workflow("kesher-short-v4.yml")
-        self.assertRegex(long_text, r"source_ref:\s*\n\s+description:.*\n\s+required: false\s*\n\s+default: main")
-        self.assertRegex(long_text, r"state_artifact_name:\s*\n\s+description:.*\n\s+required: false\s*\n\s+default: kesher-video-state")
-        self.assertRegex(short_text, r"source_ref:\s*\n\s+description:.*\n\s+required: false\s*\n\s+default: main")
-        self.assertRegex(short_text, r"state_artifact_name:\s*\n\s+description:.*\n\s+required: false\s*\n\s+default: kesher-short-v4-state")
-        self.assertRegex(short_text, r"long_state_artifact_name:\s*\n\s+description:.*\n\s+required: false\s*\n\s+default: kesher-video-state")
+    def test_live_e2e_requires_strict_public_media_evidence(self):
+        text = workflow("kesher-live-e2e-test.yml")
+        self.assertIn("verified_youtube_item", text)
+        self.assertIn("short_public_portrait_verified", text)
+        self.assertIn("technical_verified", text)
+        self.assertIn("1080", text)
+        self.assertIn("1920", text)
+        self.assertIn("youtube.com/oembed", text)
+        self.assertIn("LIVE_E2E_OVERVIEW_PUBLIC=true", text)
+        self.assertIn("LIVE_E2E_SHORT_PUBLIC_PORTRAIT=true", text)
+
+    def test_live_e2e_always_cleans_up_test_pr(self):
+        text = workflow("kesher-live-e2e-test.yml")
+        self.assertIn("if: ${{ always()", text)
+        self.assertIn("gh pr close", text)
+        self.assertIn("intentionally not merged into production", text)
 
 
 if __name__ == "__main__":
