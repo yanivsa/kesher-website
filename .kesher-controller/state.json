@@ -1321,7 +1321,14 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-09-10T04:09:40.491259+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "watchdog": {
+      "identity": "long_video:gifted-children-social-difficulties:1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1:video-20260910-071037-1d272ac70c",
+      "last_progress_at": "2026-09-10T04:17:06.498760+00:00",
+      "last_fingerprint": "7b3a4b456cfcc0540efbfc98886cf63e08b2bcfafe2b7da3227fad6a3b2a5157",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
