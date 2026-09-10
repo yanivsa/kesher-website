@@ -844,15 +844,20 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "visual_review_path": item["visual_review_path"],
         "visual_review_sha256": item["visual_review_sha256"],
     }
-    manifest["enhancement"] = build_enhancement_manifest(
-        source_path=raw_path,
-        final_path=final_path,
-        edit_plan_path=STATE_DIR / item["motion_plan_path"],
-        enhancement_status=item["enhancement_status"],
-        assets_used=item.get("enhancement_assets_used") or [],
-        assets_dropped=item.get("enhancement_assets_dropped") or [],
-        fallback_reason=item.get("enhancement_fallback_reason"),
-    )
+    if item.get("visual_pipeline") == "remotion-v1-notebooklm-audio":
+        motion_plan_name = str(item.get("motion_plan_path") or "").strip()
+        enhancement_status = str(item.get("enhancement_status") or "").strip()
+        if not motion_plan_name or not enhancement_status:
+            raise PipelineError("Remotion enhancement evidence is incomplete")
+        manifest["enhancement"] = build_enhancement_manifest(
+            source_path=raw_path,
+            final_path=final_path,
+            edit_plan_path=STATE_DIR / motion_plan_name,
+            enhancement_status=enhancement_status,
+            assets_used=item.get("enhancement_assets_used") or [],
+            assets_dropped=item.get("enhancement_assets_dropped") or [],
+            fallback_reason=item.get("enhancement_fallback_reason"),
+        )
 
     if technical_failures:
         item["technical_verified"] = False
