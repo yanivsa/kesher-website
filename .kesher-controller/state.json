@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-10",
-  "status": "short_running",
+  "status": "short_watchdog_recovery",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -670,12 +670,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T13:19:45.305459+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-09T13:20:07.641828+00:00",
       "from": "article_live",
@@ -1348,9 +1342,19 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-09-10T07:58:11.881166+00:00",
+      "from": "short_running",
+      "to": "short_watchdog_recovery",
+      "reason": "Short provider stalled; re-dispatched derivation from the same verified long-form identity",
+      "details": {
+        "item_id": "video-20260910-103103-1d272ac70c",
+        "long_item_id": "video-20260910-074937-1d272ac70c"
+      }
     }
   ],
-  "updated_at": "2026-09-10T07:33:29.453664+00:00",
+  "updated_at": "2026-09-10T07:58:11.881173+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1404,7 +1408,7 @@
     "source_id": "3846061b-e25b-4f02-b6ef-f31078e5f711"
   },
   "short": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": {
       "code": "SHORT_WORKFLOW_FAILED",
@@ -1424,7 +1428,7 @@
     },
     "last_run_conclusion": "failure",
     "last_failed_run_id": 34448840819,
-    "last_dispatch_at": "2026-09-10T07:29:33.304001+00:00",
+    "last_dispatch_at": "2026-09-10T07:58:11.881154+00:00",
     "artifact_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
     "source_id": "3846061b-e25b-4f02-b6ef-f31078e5f711",
     "adopted_from_long_item_id": "video-20260910-074937-1d272ac70c",
@@ -1432,8 +1436,8 @@
       "identity": "short:gifted-children-social-difficulties:1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1:video-20260910-103103-1d272ac70c",
       "last_progress_at": "2026-09-10T07:36:39.139394+00:00",
       "last_fingerprint": "e49d1105bc90ee12099dacb942771235501ecb36d2d0627970f50765971c5b24",
-      "recovery_count": 0,
-      "last_recovery_at": null
+      "recovery_count": 1,
+      "last_recovery_at": "2026-09-10T07:57:29.286955+00:00"
     }
   },
   "migration": {
@@ -1463,6 +1467,21 @@
       "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-09-10T05:30:19.037521+00:00"
+    },
+    "v5|gifted-children-social-difficulties|1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1|short": {
+      "pipeline_id": "v5",
+      "slug": "gifted-children-social-difficulties",
+      "content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-09-10T10",
+      "last_fingerprint": "c1c60beb2e16d0d70a1ddf139d4490f5bb56a87133cc9cf340a37475f2d2434e",
+      "last_controller_action_token": "recovery:1:2026-09-10T07:57:29.286955+00:00",
+      "controller_action_observed": true,
+      "last_observed_at": "2026-09-10T07:57:29.286955+00:00",
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-09-10T07:57:29.286955+00:00"
     }
   }
 }
