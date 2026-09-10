@@ -19,12 +19,16 @@ jobs:
           from pathlib import Path
           p = Path('.github/workflows/kesher-daily-video.yml')
           text = p.read_text(encoding='utf-8')
-          needle = '      KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state\n'
-          replacement = needle + '      KESHER_MEDIA_MODE: video_overview\n'
           if 'KESHER_MEDIA_MODE: video_overview' not in text:
-              if needle not in text:
-                  raise SystemExit('Expected Overview env anchor not found')
-              p.write_text(text.replace(needle, replacement, 1), encoding='utf-8')
+              lines = text.splitlines()
+              for index, line in enumerate(lines):
+                  if line.strip().startswith('KESHER_STATE_DIR:'):
+                      indent = line[:len(line) - len(line.lstrip())]
+                      lines.insert(index + 1, indent + 'KESHER_MEDIA_MODE: video_overview')
+                      break
+              else:
+                  raise SystemExit('Expected Overview state env anchor not found')
+              p.write_text('\n'.join(lines) + '\n', encoding='utf-8')
           PY
           git config user.name 'yanivsa'
           git config user.email '45253818+yanivsa@users.noreply.github.com'
