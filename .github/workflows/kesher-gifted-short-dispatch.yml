@@ -15,9 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      SHORT_STATE_DIR: ${{ runner.temp }}/kesher-short-v4-state
-      NOTEBOOKLM_HOME: ${{ runner.temp }}/notebooklm
-      NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
+      SHORT_STATE_DIR: /tmp/kesher-short-v4-state
+      NOTEBOOKLM_HOME: /tmp/notebooklm
     steps:
       - name: Refuse duplicate active Short run
         env:
@@ -35,8 +34,8 @@ jobs:
           mkdir -p "$SHORT_STATE_DIR"
           artifact_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-short-v4-state&per_page=100" --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[0].id')"
           test -n "$artifact_id"
-          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$RUNNER_TEMP/short-state.zip"
-          unzip -oq "$RUNNER_TEMP/short-state.zip" -d "$SHORT_STATE_DIR"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > /tmp/short-state.zip
+          unzip -oq /tmp/short-state.zip -d "$SHORT_STATE_DIR"
           test -s "$SHORT_STATE_DIR/state.json"
           test -s "$SHORT_STATE_DIR/notebooklm-storage-state.json.enc"
           echo "Restored ${artifact_id}."
@@ -47,6 +46,8 @@ jobs:
           python -m pip install --disable-pip-version-check "notebooklm-py[headless] @ git+https://github.com/teng-lin/notebooklm-py.git@8fb61cb125be9f59dfe163561e355922967c604a"
 
       - name: Refresh existing Google authentication
+        env:
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
         run: |
           set -euo pipefail
           test -n "$NOTEBOOKLM_STATE_KEY"
@@ -69,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: kesher-short-v4-state
-          path: ${{ env.SHORT_STATE_DIR }}
+          path: /tmp/kesher-short-v4-state
           if-no-files-found: error
           retention-days: 14
           compression-level: 0
