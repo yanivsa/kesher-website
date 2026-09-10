@@ -1,0 +1,60 @@
+name: Goal E2E Isolation Patch
+
+on:
+  push:
+    branches: [goal-e2e-isolation]
+    paths:
+      - .github/workflows/goal-e2e-isolation-patch.yml
+      - scripts/apply_goal_e2e_isolation_patch.py
+
+permissions:
+  contents: write
+
+concurrency:
+  group: goal-e2e-isolation-patch
+  cancel-in-progress: false
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout implementation branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: goal-e2e-isolation
+          fetch-depth: 0
+
+      - name: Apply fail-closed isolation patch
+        run: python3 scripts/apply_goal_e2e_isolation_patch.py
+
+      - name: Prove the previously-red isolation contract is green
+        run: |
+          set -euo pipefail
+          python3 -m unittest \
+            tests.test_kesher_explicit_test_mode \
+            tests.test_kesher_isolated_live_e2e_contract \
+            -v
+
+      - name: Assert production defaults and no test merge path
+        run: |
+          set -euo pipefail
+          grep -F 'default: main' .github/workflows/kesher-daily-video.yml >/dev/null
+          grep -F 'default: kesher-video-state' .github/workflows/kesher-daily-video.yml >/dev/null
+          grep -F 'default: kesher-short-v4-state' .github/workflows/kesher-short-v4.yml >/dev/null
+          ! grep -F 'auto-merge-article-prs.yml' .github/workflows/kesher-live-e2e-test.yml
+          ! grep -F 'gh pr merge' .github/workflows/kesher-live-e2e-test.yml
+
+      - name: Remove one-shot patch machinery and commit implementation
+        run: |
+          set -euo pipefail
+          git config user.name 'Kesher Goal Continuation'
+          git config user.email 'actions@users.noreply.github.com'
+          git rm scripts/apply_goal_e2e_isolation_patch.py .github/workflows/goal-e2e-isolation-patch.yml
+          git add \
+            .github/workflows/kesher-article-generation.yml \
+            .github/workflows/kesher-daily-video.yml \
+            .github/workflows/kesher-short-v4.yml \
+            .github/workflows/kesher-live-e2e-test.yml
+          git diff --cached --check
+          git commit -m 'fix: isolate same-day Kesher live E2E'
+          git push origin HEAD:goal-e2e-isolation
