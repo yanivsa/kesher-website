@@ -91,7 +91,7 @@ def short_technical_failures(
             f"יחס התמונה {width}x{height} אינו Short אנכי 1080x1920"
         )
     if video_path and video_path.exists():
-        female_ok, pitch_hz, pitch_msg = core.validate_female_voice(video_path)
+        female_ok, pitch_hz, pitch_msg = core.validate_female_voice(video_path, item)
         if not female_ok:
             failures.append(pitch_msg)
 
