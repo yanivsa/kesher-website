@@ -5,15 +5,22 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - "config/kesher-production-contract.json"
       - "scripts/kesher_intervention_policy.py"
       - "scripts/kesher_three_strike_runtime.py"
       - "scripts/kesher_e2e_delivery_guard.py"
       - "scripts/kesher_content_controller_v5_runtime.py"
       - "scripts/kesher_content_controller_v6_runtime.py"
+      - "scripts/kesher_video_asset_resolver.py"
+      - "scripts/kesher_video_enhancement.py"
+      - "scripts/motion_plan_generator.py"
+      - "scripts/kesher_short_motion_plan.py"
+      - "src/remotion/**"
       - "tests/test_kesher_intervention_policy.py"
       - "tests/test_kesher_three_strike_runtime.py"
       - "tests/test_kesher_v6_intervention_isolation.py"
       - "tests/test_kesher_optional_video_enrichment.py"
+      - "tests/test_video_enhancement_contract.py"
       - ".github/workflows/kesher-content-controller-v6.yml"
 
 permissions:
@@ -31,14 +38,15 @@ jobs:
       - name: Checkout current branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
-      - name: Verify shared intervention policy and V5/V6 isolation
+      - name: Verify shared intervention policy, enhancement contract and V5/V6 isolation
         run: |
           set -euo pipefail
           python3 -m unittest \
             tests.test_kesher_intervention_policy \
             tests.test_kesher_three_strike_runtime \
             tests.test_kesher_v6_intervention_isolation \
-            tests.test_kesher_optional_video_enrichment
+            tests.test_kesher_optional_video_enrichment \
+            tests.test_video_enhancement_contract
 
       - name: Compile V5/V6 intervention runtimes
         run: |
