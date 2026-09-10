@@ -12,11 +12,6 @@ const services = [
     description: 'הדרכה להורים, לרבות הורות לילדים מחוננים ולילדים עם ADHD.',
   },
   {
-    name: 'גישור',
-    path: '/services/mediation',
-    description: 'גישור לבני זוג ולמשפחות לצורך בניית הסכמות מעשיות.',
-  },
-  {
     name: 'הנחיית הורים לילדים מחוננים',
     path: '/services/gifted-parenting',
     description: 'הנחיית הורים סביב מחוננות, רגישות, שייכות ותפקודים ניהוליים.',
@@ -78,7 +73,6 @@ export const homeSchema = {
       knowsAbout: [
         'ייעוץ זוגי',
         'הנחיית הורים',
-        'גישור',
         'ילדים מחוננים',
         'ADHD',
         'הכנה לנישואים',
@@ -124,13 +118,12 @@ export const homeSchema = {
         SITE_CONFIG.links.instagram,
       ],
       image: `${SITE_CONFIG.url}/images/shira-saharoni.webp`,
-      jobTitle: ['יועצת זוגית', 'מנחת הורים', 'מגשרת מוסמכת'],
+      jobTitle: ['יועצת זוגית', 'מנחת הורים'],
       worksFor: { '@id': `${SITE_CONFIG.url}/#business` },
       knowsAbout: [
         'ייעוץ זוגי ומשפחתי',
         'הנחיית הורים קבוצתית ופרטנית',
         'הנחיית הורים עם התמחות ב־ADHD',
-        'גישור',
       ],
     },
   ],

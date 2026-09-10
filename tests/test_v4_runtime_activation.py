@@ -117,9 +117,13 @@ class V4RuntimeActivationTests(unittest.TestCase):
         self.assertIn("trimBefore={sourceStartFrame}", component)
         self.assertIn("durationInFrames={durationInFrames}", component)
 
-    def test_short_composition_duration_is_driven_by_v4_props(self):
+    def test_short_composition_preserves_source_and_appends_signature_outro(self):
         root = SHORT_ROOT.read_text(encoding="utf-8")
-        self.assertIn("calculateMetadata={({props}) => ({durationInFrames: props.durationInFrames})}", root)
+        self.assertIn("SHORT_SIGNATURE_OUTRO_FRAMES", root)
+        self.assertIn(
+            "durationInFrames: props.durationInFrames + SHORT_SIGNATURE_OUTRO_FRAMES",
+            root,
+        )
         self.assertIn('videoSrc: "kesher-input.mp4"', root)
         self.assertIn("sourceStartFrame: 0", root)
 

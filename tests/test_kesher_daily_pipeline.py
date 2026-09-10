@@ -108,6 +108,21 @@ class PipelineTestCase(unittest.TestCase):
         self.assertIn("קול של אישה ישראלית", prompt)
         self.assertIn("בעברית טבעית בלבד", prompt)
 
+    def test_voice_runtime_rejects_early_male_audio_then_accepts_configured_fallback(self) -> None:
+        with mock.patch.object(pipeline, "estimate_voice_pitch", return_value=129.0):
+            early = pipeline.validate_female_voice(
+                Path("unused.mp4"),
+                {"fresh_generation_attempt": 2},
+            )
+            fallback = pipeline.validate_female_voice(
+                Path("unused.mp4"),
+                {"fresh_generation_attempt": 3},
+            )
+
+        self.assertFalse(early[0])
+        self.assertTrue(fallback[0])
+        self.assertIn("fallback accepted", fallback[2])
+
     def test_latin_visible_metadata_is_rejected(self) -> None:
         post = hebrew_post()
         post["title"] = "טיפ Parenting"
@@ -560,6 +575,10 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(props["durationInFrames"], 3120)
         self.assertEqual(props["url"], "kesher.saharoni.com")
         self.assertEqual(item["visual_pipeline"], "remotion-v1-notebooklm-audio")
+        self.assertEqual(item["content_duration_seconds"], 104.0)
+        self.assertEqual(item["signature_duration_seconds"], 3.0)
+        self.assertTrue(item["signature_fullscreen"])
+        self.assertRegex(item["signature_asset_sha256"], r"^[0-9a-f]{64}$")
 
     def test_motion_plan_tracks_high_contrast_target_region(self) -> None:
         from motion_plan_generator import analyze_frame_saliency, ANALYSIS_W, ANALYSIS_H
