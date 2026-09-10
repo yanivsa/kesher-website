@@ -21,6 +21,17 @@ class VideoEnhancementContractTestCase(unittest.TestCase):
         self.assertEqual(PROFILE_CONFIG["short_9_16"]["width"], 1080)
         self.assertEqual(PROFILE_CONFIG["short_9_16"]["height"], 1920)
 
+    def test_both_remotion_products_mount_visual_only_enhancement_overlay(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        short_source = (root / "src/remotion/ArticleShort.tsx").read_text(encoding="utf-8")
+        overview_source = (root / "src/remotion/kesher-overview/KesherOverview.tsx").read_text(encoding="utf-8")
+        overlay_source = (root / "src/remotion/components/EnhancementAssetOverlay.tsx").read_text(encoding="utf-8")
+        for source in (short_source, overview_source):
+            self.assertIn("EnhancementAssetOverlay", source)
+            self.assertIn("<Video", source)
+        self.assertIn("muted", overlay_source)
+        self.assertIn("authoritative NotebookLM", overlay_source)
+
     def test_missing_assets_is_non_blocking(self) -> None:
         plan = build_edit_plan(
             source_identity="pipeline:slug:sha:overview",
