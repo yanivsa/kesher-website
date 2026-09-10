@@ -41,7 +41,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
     "published_date": "2026-09-10",
     "live": true,
-    "live_verified_at": "2026-09-10T07:28:56.246987+00:00",
+    "live_verified_at": "2026-09-10T07:31:55.373291+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -670,24 +670,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T13:15:41.042460+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T13:15:59.659341+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T13:17:30.758534+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
     {
       "at": "2026-09-09T13:19:45.305459+00:00",
       "from": "short_running",
@@ -1348,9 +1330,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-10T07:31:55.373308+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-10T07:32:24.931687+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-10T07:33:29.453645+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-09-10T07:29:33.304034+00:00",
+  "updated_at": "2026-09-10T07:33:29.453664+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1414,7 +1414,7 @@
       "at": "2026-09-10T07:19:53.928231+00:00"
     },
     "next_retry_at": null,
-    "run_id": 34448840819,
+    "run_id": 34450216435,
     "processed_run_id": 34448840819,
     "provider_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
     "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
