@@ -23,6 +23,7 @@ class KesherIsolatedLiveE2EContractTests(unittest.TestCase):
         text = workflow("kesher-live-e2e-test.yml")
         self.assertIn("KESHER_E2E_LONG_STATE_DIR", text)
         self.assertIn("KESHER_E2E_SHORT_STATE_DIR", text)
+        self.assertIn("KESHER_MEDIA_MODE: video_overview", text)
         self.assertIn("scripts/kesher_video_reconcile.py --prepare-generation", text)
         self.assertIn("scripts/kesher_daily_pipeline.py --max-wait-seconds", text)
         self.assertIn("scripts/kesher_daily_pipeline.py --upload-only", text)
