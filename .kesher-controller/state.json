@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-10",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -41,7 +41,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
     "published_date": "2026-09-10",
     "live": true,
-    "live_verified_at": "2026-09-10T04:28:56.236067+00:00",
+    "live_verified_at": "2026-09-10T06:33:47.341374+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1318,9 +1318,25 @@
         "item_id": "video-20260910-074937-1d272ac70c",
         "task_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac"
       }
+    },
+    {
+      "at": "2026-09-10T06:33:47.341390+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-10T06:34:13.939517+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 4
+      }
     }
   ],
-  "updated_at": "2026-09-10T05:33:19.807686+00:00",
+  "updated_at": "2026-09-10T06:34:13.939523+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1341,12 +1357,12 @@
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
+    "provider_id": "fc639c6e-73d8-4445-8452-44c55b44f387",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-09-10T05:33:19.807673+00:00",
+    "last_dispatch_at": "2026-09-10T06:34:13.939512+00:00",
     "attempts": 1,
     "watchdog": {
       "identity": "long_video:gifted-children-social-difficulties:1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1:video-20260910-074937-1d272ac70c",
@@ -1355,8 +1371,8 @@
       "recovery_count": 1,
       "last_recovery_at": "2026-09-10T05:30:19.037521+00:00"
     },
-    "item_id": "video-20260910-074937-1d272ac70c",
-    "resume_dispatches": 2,
+    "item_id": "video-20260910-091421-4885dc1abd",
+    "resume_dispatches": 4,
     "youtube_id": "NwhSRQLzErc",
     "youtube_url": "https://youtu.be/NwhSRQLzErc",
     "verified": true,
@@ -1370,8 +1386,8 @@
     "signature_duration_seconds": 3.0,
     "signature_fullscreen": true,
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "artifact_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
-    "source_id": "3846061b-e25b-4f02-b6ef-f31078e5f711"
+    "artifact_id": "fc639c6e-73d8-4445-8452-44c55b44f387",
+    "source_id": "3203abf9-c6da-4f0d-8487-3347907fb97b"
   },
   "short": {
     "attempt_count": 0,
