@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-10",
-  "status": "short_retry_wait",
+  "status": "short_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -41,7 +41,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
     "published_date": "2026-09-10",
     "live": true,
-    "live_verified_at": "2026-09-10T07:22:18.653679+00:00",
+    "live_verified_at": "2026-09-10T07:28:56.246987+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -670,24 +670,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T11:17:20.944398+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T11:17:24.794477+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T11:17:39.472229+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
     {
       "at": "2026-09-09T13:15:41.042460+00:00",
       "from": "short_running",
@@ -1348,9 +1330,27 @@
       "details": {
         "retry_at": "2026-09-10T07:24:53.928204+00:00"
       }
+    },
+    {
+      "at": "2026-09-10T07:28:56.247007+00:00",
+      "from": "short_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-10T07:29:06.009674+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-10T07:29:33.304025+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-10T07:23:35.823661+00:00",
+  "updated_at": "2026-09-10T07:29:33.304034+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1404,8 +1404,8 @@
     "source_id": "3846061b-e25b-4f02-b6ef-f31078e5f711"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "retry_wait",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": {
       "code": "SHORT_WORKFLOW_FAILED",
       "message": "Short derive run 34448840819 completed with conclusion=failure",
@@ -1413,17 +1413,21 @@
       "retry_at": "2026-09-10T07:24:53.928204+00:00",
       "at": "2026-09-10T07:19:53.928231+00:00"
     },
-    "next_retry_at": "2026-09-10T07:24:53.928204+00:00",
+    "next_retry_at": null,
     "run_id": 34448840819,
     "processed_run_id": 34448840819,
-    "provider_id": null,
+    "provider_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
     "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
     "same_failure_streak": 1,
     "failure_count_by_type": {
       "SHORT_WORKFLOW_FAILED": 1
     },
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 34448840819
+    "last_failed_run_id": 34448840819,
+    "last_dispatch_at": "2026-09-10T07:29:33.304001+00:00",
+    "artifact_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac",
+    "source_id": "3846061b-e25b-4f02-b6ef-f31078e5f711",
+    "adopted_from_long_item_id": "video-20260910-074937-1d272ac70c"
   },
   "migration": {
     "v4_short_controller_state": null
