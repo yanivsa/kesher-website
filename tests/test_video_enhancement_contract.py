@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
+from scripts.kesher_video_asset_resolver import CATALOG_NAME, _catalog_candidates
 from scripts.kesher_video_enhancement import (
     ALLOWED_ENHANCEMENT_STATUSES,
     PROFILE_CONFIG,
@@ -31,6 +33,55 @@ class VideoEnhancementContractTestCase(unittest.TestCase):
             self.assertIn("<Video", source)
         self.assertIn("muted", overlay_source)
         self.assertIn("authoritative NotebookLM", overlay_source)
+
+    def test_controller_contract_explicitly_keeps_enrichment_non_blocking(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        contract = json.loads((root / "config/kesher-production-contract.json").read_text(encoding="utf-8"))
+        enhancement = contract["video"]["enhancement"]
+        self.assertFalse(enhancement["required_for_publication"])
+        self.assertEqual(enhancement["shared_engine"], "remotion")
+        self.assertEqual(enhancement["profiles"], ["overview_16_9", "short_9_16"])
+        self.assertEqual(enhancement["missing_assets"], "source-only-fallback")
+        self.assertEqual(enhancement["asset_failure"], "drop-and-continue")
+        self.assertEqual(enhancement["jules_review"], "advisory")
+        self.assertFalse(enhancement["duplicate_generation_for_enrichment"])
+
+    def test_missing_catalog_asset_is_recorded_and_dropped_before_render(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            state_dir = Path(temp_dir)
+            identity = "item:slug:sha:article_short:task"
+            catalog = {
+                "assets": [
+                    {
+                        "source_identity": identity,
+                        "slug": "slug",
+                        "profile": "short_9_16",
+                        "asset_ref": "missing-image.jpg",
+                        "type": "image",
+                        "source": "controller-catalog",
+                        "provenance": "approved repository staging",
+                        "usage_status": "approved",
+                        "semantic_fit": 0.95,
+                        "start": 1.0,
+                        "end": 2.0,
+                    }
+                ]
+            }
+            (state_dir / CATALOG_NAME).write_text(json.dumps(catalog), encoding="utf-8")
+            candidates = _catalog_candidates(
+                state_dir,
+                identity=identity,
+                slug="slug",
+                profile="short_9_16",
+            )
+            plan = build_edit_plan(
+                source_identity=identity,
+                profile="short_9_16",
+                base_timeline=[],
+                asset_candidates=candidates,
+            )
+            self.assertEqual(plan["assets_used"], [])
+            self.assertEqual(plan["assets_dropped"][0]["reason"], "asset_missing")
 
     def test_missing_assets_is_non_blocking(self) -> None:
         plan = build_edit_plan(
