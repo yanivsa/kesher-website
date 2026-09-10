@@ -130,6 +130,29 @@ def _timing(duration_seconds: float, profile: str) -> tuple[float, float]:
     return round(start, 3), round(min(duration, start + length), 3)
 
 
+def _catalog_asset_validation_error(state_dir: Path, entry: dict[str, Any]) -> str | None:
+    asset_ref = str(entry.get("asset_ref") or "").strip()
+    if not asset_ref:
+        return None
+    ref_path = Path(asset_ref)
+    if ref_path.is_absolute():
+        return "asset_path_unsafe"
+    try:
+        root = state_dir.resolve()
+        candidate = (root / ref_path).resolve()
+        candidate.relative_to(root)
+    except (OSError, ValueError):
+        return "asset_path_unsafe"
+    if not candidate.is_file() or candidate.stat().st_size <= 0:
+        return "asset_missing"
+    actual_sha = _sha256(candidate)
+    expected_sha = str(entry.get("sha256") or "").strip().lower()
+    if expected_sha and expected_sha != actual_sha:
+        return "asset_hash_mismatch"
+    entry.setdefault("sha256", actual_sha)
+    return None
+
+
 def _catalog_candidates(
     state_dir: Path,
     *,
@@ -155,9 +178,11 @@ def _catalog_candidates(
             continue
         if entry.get("profile") not in {None, "", profile}:
             continue
-        # Catalog entries must already have explicit approval/provenance. The
-        # shared enhancement contract performs the final fail-closed filtering.
-        result.append(dict(entry))
+        candidate = dict(entry)
+        validation_error = _catalog_asset_validation_error(state_dir, candidate)
+        if validation_error:
+            candidate["validation_error"] = validation_error
+        result.append(candidate)
     return result
 
 
