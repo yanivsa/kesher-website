@@ -21,38 +21,33 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p = Path('scripts/kesher_daily_pipeline.py')
-          text = p.read_text(encoding='utf-8')
-          old = '''    manifest["enhancement"] = build_enhancement_manifest(
-              source_path=raw_path,
-              final_path=final_path,
-              edit_plan_path=STATE_DIR / item["motion_plan_path"],
-              enhancement_status=item["enhancement_status"],
-              assets_used=item.get("enhancement_assets_used") or [],
-              assets_dropped=item.get("enhancement_assets_dropped") or [],
-              fallback_reason=item.get("enhancement_fallback_reason"),
-          )
-          '''
-          new = '''    if item.get("visual_pipeline") == "remotion-v1-notebooklm-audio":
-              motion_plan_name = str(item.get("motion_plan_path") or "").strip()
-              enhancement_status = str(item.get("enhancement_status") or "").strip()
-              if not motion_plan_name or not enhancement_status:
-                  raise PipelineError("Remotion enhancement evidence is incomplete")
-              manifest["enhancement"] = build_enhancement_manifest(
-                  source_path=raw_path,
-                  final_path=final_path,
-                  edit_plan_path=STATE_DIR / motion_plan_name,
-                  enhancement_status=enhancement_status,
-                  assets_used=item.get("enhancement_assets_used") or [],
-                  assets_dropped=item.get("enhancement_assets_dropped") or [],
-                  fallback_reason=item.get("enhancement_fallback_reason"),
-              )
-          '''
-          if old not in text:
-              raise SystemExit('target block not found exactly once')
-          if text.count(old) != 1:
-              raise SystemExit(f'target block count={text.count(old)}')
-          p.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          p = Path("scripts/kesher_daily_pipeline.py")
+          text = p.read_text(encoding="utf-8")
+          start_marker = '    manifest["enhancement"] = build_enhancement_manifest(\n'
+          end_marker = '\n    if technical_failures:\n'
+          if text.count(start_marker) != 1:
+              raise SystemExit(f"enhancement start marker count={text.count(start_marker)}")
+          start = text.index(start_marker)
+          end = text.index(end_marker, start)
+          replacement = "\n".join([
+              '    if item.get("visual_pipeline") == "remotion-v1-notebooklm-audio":',
+              '        motion_plan_name = str(item.get("motion_plan_path") or "").strip()',
+              '        enhancement_status = str(item.get("enhancement_status") or "").strip()',
+              '        if not motion_plan_name or not enhancement_status:',
+              '            raise PipelineError("Remotion enhancement evidence is incomplete")',
+              '        manifest["enhancement"] = build_enhancement_manifest(',
+              '            source_path=raw_path,',
+              '            final_path=final_path,',
+              '            edit_plan_path=STATE_DIR / motion_plan_name,',
+              '            enhancement_status=enhancement_status,',
+              '            assets_used=item.get("enhancement_assets_used") or [],',
+              '            assets_dropped=item.get("enhancement_assets_dropped") or [],',
+              '            fallback_reason=item.get("enhancement_fallback_reason"),',
+              '        )',
+              '',
+          ])
+          p.write_text(text[:start] + replacement + text[end:], encoding="utf-8")
           PY
       - name: Commit patch
         run: |
