@@ -41,7 +41,7 @@
     "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
     "published_date": "2026-09-10",
     "live": true,
-    "live_verified_at": "2026-09-10T07:18:45.229623+00:00",
+    "live_verified_at": "2026-09-10T07:22:18.653679+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -670,28 +670,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T10:17:10.248319+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "manual_strike_3_direct_takeover",
-      "details": {
-        "action": "Reset long_video and short stages after misrouted September 7 run 34316496842 caused false VIDEO_ATTEMPTS_EXHAUSTED",
-        "operator": "Supervisor Direct Takeover"
-      }
-    },
-    {
-      "at": "2026-09-09T11:10:02.942988+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T11:10:36.451201+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
     {
       "at": "2026-09-09T11:17:20.944398+00:00",
       "from": "short_running",
@@ -1349,9 +1327,30 @@
       "details": {
         "retry_at": "2026-09-10T07:24:53.928204+00:00"
       }
+    },
+    {
+      "at": "2026-09-10T07:22:18.653694+00:00",
+      "from": "short_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-10T07:22:39.026537+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-10T07:23:35.823644+00:00",
+      "from": "long_video_complete",
+      "to": "short_retry_wait",
+      "reason": "Short retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-10T07:24:53.928204+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-10T07:19:53.928264+00:00",
+  "updated_at": "2026-09-10T07:23:35.823661+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
