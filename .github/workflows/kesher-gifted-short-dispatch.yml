@@ -25,12 +25,14 @@ jobs:
             exit 0
           fi
 
+          # Full mode is intentional: restore durable Short state, resume the
+          # already-existing exact-source provider task, validate, upload once,
+          # and publicly verify. Do not adopt the long-form Overview identity;
+          # Shorts are independent vertical artifacts from the same article.
           gh workflow run kesher-short-v4.yml \
             --repo "$REPO" \
             --ref main \
-            -f operation=derive \
-            -f derive_slug=gifted-children-social-difficulties \
-            -f derive_content_sha256=4053bcc33d2daba01ae926c170b816b3296d1c2924858722426d7f3e8beea848 \
-            -f derive_long_item_id=video-20260910-072837-bb1fbe79d8
+            -f operation=full \
+            -f derive_slug=gifted-children-social-difficulties
 
-          echo "Exact Short derive dispatch accepted."
+          echo "Exact existing Short resume dispatch accepted."
