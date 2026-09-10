@@ -1,0 +1,216 @@
+name: Kesher Current Gifted Completion
+
+on:
+  push:
+    paths:
+      - '.github/workflows/kesher-current-gifted-completion.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: kesher-current-gifted-completion
+  cancel-in-progress: false
+
+env:
+  KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state
+  NOTEBOOKLM_BIN: notebooklm
+  KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
+  KESHER_WHISPER_MODEL: small
+  HF_HOME: ${{ github.workspace }}/.cache/huggingface
+  NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
+  TARGET_SLUG: gifted-children-social-difficulties
+
+jobs:
+  overview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/requirements-video-cloud.txt
+
+      - name: Set up Node 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install pinned media and cloud dependencies
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          echo "$ffmpeg_dir" >> "$GITHUB_PATH"
+          echo "$ffprobe_dir" >> "$GITHUB_PATH"
+          python -m pip install -r scripts/requirements-video-cloud.txt
+
+      - name: Restore newest trustworthy long-form state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$KESHER_STATE_DIR"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/artifacts.txt
+          restored=false
+          while read -r id; do
+            [ -n "$id" ] || continue
+            zip="$(mktemp /tmp/kesher-state.XXXXXX.zip)"
+            dir="$(mktemp -d)"
+            if gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${id}/zip" > "$zip" 2>/dev/null \
+              && unzip -oq "$zip" -d "$dir" 2>/dev/null \
+              && [ -s "$dir/state.json" ] \
+              && python -c 'import json,sys; s=json.load(sys.stdin); assert s.get("version")==1 and isinstance(s.get("items"),list)' < "$dir/state.json"; then
+              cp -r "$dir/"* "$KESHER_STATE_DIR/" || true
+              restored=true
+              rm -rf "$zip" "$dir"
+              break
+            fi
+            rm -rf "$zip" "$dir"
+          done < /tmp/artifacts.txt
+          [ "$restored" = true ] || { echo 'No trustworthy durable state'; exit 1; }
+
+      - name: Materialize NotebookLM credentials
+        env:
+          NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
+          NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
+        run: |
+          set -euo pipefail
+          profile="$NOTEBOOKLM_HOME/profiles/default"
+          mkdir -p "$profile"
+          sealed="$KESHER_STATE_DIR/notebooklm-storage-state.json.enc"
+          if [ -s "$sealed" ]; then
+            test -n "${NOTEBOOKLM_STATE_KEY:-}"
+            openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 -in "$sealed" -out "$profile/storage_state.json" -pass env:NOTEBOOKLM_STATE_KEY
+          else
+            test -n "${NOTEBOOKLM_STORAGE_STATE_SECRET:-}"
+            printf '%s' "$NOTEBOOKLM_STORAGE_STATE_SECRET" > "$profile/storage_state.json"
+          fi
+          chmod 600 "$profile/storage_state.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path(os.environ['NOTEBOOKLM_HOME'])/'profiles'/'default'/'storage_state.json'
+          s=json.loads(p.read_text())
+          assert isinstance(s,dict) and s.get('cookies')
+          PY
+
+      - name: Assert current source and quarantine stale same-slug active items
+        run: |
+          python - <<'PY'
+          from scripts import kesher_daily_pipeline as p
+          source=p.article_by_slug('gifted-children-social-difficulties')
+          state=p.load_state()
+          for item in state['items']:
+              src=item.get('source') or {}
+              if src.get('slug') != source['slug'] or item.get('uploaded') is True:
+                  continue
+              if src.get('content_sha256') != source['content_sha256']:
+                  item['status']='superseded'
+                  item['superseded_reason']='published_source_hash_changed'
+                  item['updated_at']=p.utc_now()
+          p.save_state(state)
+          print('CURRENT_SOURCE_SHA='+source['content_sha256'])
+          PY
+
+      - name: Generate or resume exact current Overview with bounded retries
+        run: |
+          set -euo pipefail
+          for round in 1 2 3 4 5 6; do
+            python -u scripts/kesher_daily_pipeline.py --slug "$TARGET_SLUG" --max-wait-seconds 600
+            decision="$(python - <<'PY'
+          from scripts import kesher_daily_pipeline as p
+          from scripts import kesher_video_reconcile as r
+          source=p.article_by_slug('gifted-children-social-difficulties')
+          state=p.load_state()
+          exact=[i for i in state['items'] if (i.get('source') or {}).get('slug')==source['slug'] and (i.get('source') or {}).get('content_sha256')==source['content_sha256'] and i.get('uploaded') is not True]
+          if not exact:
+              print('none'); raise SystemExit
+          item=exact[-1]
+          if item.get('technical_verified') is True and item.get('status') in {'pending_review','approved','uploading'}:
+              print('ready'); raise SystemExit
+          if item.get('status')=='rejected' and item.get('technical_verified') is not True:
+              attempt=int(item.get('fresh_generation_attempt') or 1)
+              if attempt >= 3:
+                  print('final-rejected'); raise SystemExit
+              replacement=r.retry_technical_rejection(state,item)
+              p.save_state(state)
+              print('retry' if replacement else 'final-rejected'); raise SystemExit
+          if item.get('status') in {'source_selected','source_added','generating','downloaded'}:
+              print('pending'); raise SystemExit
+          print('blocked')
+          PY
+          )"
+            echo "ROUND_${round}_DECISION=$decision"
+            case "$decision" in
+              ready) break ;;
+              retry|pending) continue ;;
+              final-rejected|blocked|none) exit 2 ;;
+            esac
+          done
+
+      - name: Approve exact technical candidate without bypassing evidence guard
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python -u scripts/kesher_video_reconcile.py --prepare-upload --slug "$TARGET_SLUG"
+
+      - name: Upload exact current Overview and verify public
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python -u scripts/kesher_daily_pipeline.py --upload-only --slug "$TARGET_SLUG"
+
+      - name: Verify current Overview public and export identity
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          python - <<'PY'
+          from scripts import kesher_daily_pipeline as p
+          source=p.article_by_slug('gifted-children-social-difficulties')
+          matches=[i for i in p.load_state()['items'] if i.get('uploaded') is True and (i.get('source') or {}).get('content_sha256')==source['content_sha256']]
+          assert len(matches)==1, f'Expected one public current Overview, got {len(matches)}'
+          i=matches[0]
+          v=i.get('youtube_verification') or {}
+          assert v.get('privacyStatus')=='public' and v.get('processingStatus')=='succeeded'
+          print('CURRENT_OVERVIEW_ITEM='+i['id'])
+          print('CURRENT_SOURCE_SHA='+source['content_sha256'])
+          print('CURRENT_OVERVIEW_URL='+i['youtube_url'])
+          PY
+
+      - name: Persist refreshed long-form state
+        env:
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${NOTEBOOKLM_STATE_KEY:-}"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -md sha256 \
+            -in "$NOTEBOOKLM_HOME/profiles/default/storage_state.json" \
+            -out "$KESHER_STATE_DIR/notebooklm-storage-state.json.enc" \
+            -pass env:NOTEBOOKLM_STATE_KEY
+
+      - name: Upload durable long-form state
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-video-state
+          path: ${{ env.KESHER_STATE_DIR }}
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          include-hidden-files: true
