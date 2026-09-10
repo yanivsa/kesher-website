@@ -82,6 +82,18 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 1, result.stderr)
                 self.assertIn("ARTICLE_CONTENT_QUALITY_FAILED", result.stderr)
 
+    def test_incident_766_group_stereotypes_are_blocked(self):
+        claims = (
+            "ילדים מחוננים מאופיינים פעמים רבות ברגישות רגשית גבוהה.",
+            "היכולת הקוגניטיבית הגבוהה שלהם גורמת להם לזהות דקויות חברתיות שילדים אחרים מפספסים.",
+            "ילדים רבים עם מחוננות מעדיפים מצבים מובנים וברורים.",
+        )
+        for claim in claims:
+            with self.subTest(claim=claim):
+                result = run_gate(claim)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn("ARTICLE_CONTENT_QUALITY_FAILED", result.stderr)
+
     def test_qualified_article_gate_passes(self):
         payload = [
             {

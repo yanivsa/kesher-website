@@ -85,6 +85,18 @@ STRONG_CLAIM_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
         "causal_parent_action",
         re.compile(r"\bאנחנו\s+מורידים\b.+\bומעודדים\b"),
     ),
+    (
+        "gifted_group_defining_trait",
+        re.compile(r"\bילדים\s+מחוננים\s+מאופיינים\b"),
+    ),
+    (
+        "gifted_cognition_causes_behavior",
+        re.compile(r"היכולת\s+הקוגניטיבית\s+הגבוהה\s+שלהם\s+גורמת\s+להם"),
+    ),
+    (
+        "gifted_group_preference",
+        re.compile(r"\bילדים\s+רבים\s+עם\s+מחוננות\s+מעדיפים\b"),
+    ),
 )
 
 
@@ -131,8 +143,14 @@ def _sentences(text: str) -> list[str]:
 
 
 def _supported(sentence: str) -> bool:
-    return any(marker in sentence for marker in QUALIFIERS) or any(
-        marker in sentence for marker in ATTRIBUTION_MARKERS
+    def contains_marker(marker: str) -> bool:
+        return re.search(
+            rf"(?<![\u0590-\u05FF]){re.escape(marker)}(?![\u0590-\u05FF])",
+            sentence,
+        ) is not None
+
+    return any(contains_marker(marker) for marker in QUALIFIERS) or any(
+        contains_marker(marker) for marker in ATTRIBUTION_MARKERS
     )
 
 
