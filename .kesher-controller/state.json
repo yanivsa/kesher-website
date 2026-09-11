@@ -1,22 +1,38 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-11",
-  "status": "article_generating",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-09-11T10:22:54.319569+00:00",
     "run_id": 34568054264,
-    "processed_run_id": null,
+    "processed_run_id": 34568054264,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "JULES_TIMEOUT_SESSION_ACTIVE": 1
+    },
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-09-11T05:59:08.794196+00:00"
+    "last_dispatch_at": "2026-09-11T05:59:08.794196+00:00",
+    "last_run_conclusion": "failure",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-09-11",
+      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "retryable": true,
+      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+      "session_id": "sessions/10610899470630434369",
+      "pr_url": "",
+      "github_run_id": "34568054264",
+      "completed_at": "2026-09-11T09:43:42.494672+00:00"
+    },
+    "last_jules_session_id": "sessions/10610899470630434369",
+    "last_failed_run_id": 34568054264
   },
   "backlog": [
     {
@@ -702,7 +718,14 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
+    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+    "retryable": true,
+    "retry_at": "2026-09-11T10:22:54.319569+00:00",
+    "at": "2026-09-11T10:17:54.319585+00:00"
+  },
   "history": [
     {
       "at": "2026-09-09T18:25:19.902983+00:00",
@@ -1325,9 +1348,22 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-11T10:17:54.319589+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+        "retry_at": "2026-09-11T10:22:54.319569+00:00",
+        "failure_streak": 1,
+        "run_id": 34568054264,
+        "session_id": "sessions/10610899470630434369"
+      }
     }
   ],
-  "updated_at": "2026-09-11T05:59:08.794207+00:00",
+  "updated_at": "2026-09-11T10:17:54.319594+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
