@@ -205,6 +205,28 @@ def linked_pr_map_with_orphans(prs: list[dict[str, Any]]) -> dict[int, list[dict
     return mapping
 
 
+UNRESOLVED_CONTENT_COMPLETION_MARKERS = (
+    "remaining dod:",
+    "completion still requires",
+    "upload unverified",
+    "no externally verified public short url",
+)
+CONTENT_COMPLETION_MARKER = "content_chain_complete"
+
+
+def has_unresolved_content_completion(issue_number: int) -> bool:
+    """Keep an adopted content PR tracker open until A+B+C is explicitly verified."""
+    comments = base.get_issue_comments(issue_number)
+    bodies = [str(comment.get("body") or "").lower() for comment in comments]
+    if any(CONTENT_COMPLETION_MARKER in body for body in bodies):
+        return False
+    return any(
+        marker in body
+        for body in bodies
+        for marker in UNRESOLVED_CONTENT_COMPLETION_MARKERS
+    )
+
+
 def sync_closed_orphan_pr(issue: dict[str, Any]) -> bool:
     """Finish/close tracking issues when their adopted PR closed externally."""
     pr_number = orphan_pr_number(issue)
@@ -234,6 +256,12 @@ def sync_closed_orphan_pr(issue: dict[str, Any]) -> bool:
                 f"Kesher Supervisor closed this tracking item because PR #{pr_number} was closed without merge.",
             )
         base.meaningful_changes.append(f"Issue #{issue_number}: orphan PR #{pr_number} closed without merge")
+        return True
+
+    if has_unresolved_content_completion(issue_number):
+        base.meaningful_changes.append(
+            f"Issue #{issue_number}: kept open; adopted article PR merged but A+B+C completion remains unresolved"
+        )
         return True
 
     merged_at = base.parse_time(str(pr.get("merged_at") or pr.get("closed_at") or ""))
