@@ -45,3 +45,15 @@ def test_workflow_requires_local_and_public_proofs_and_always_closes_ssh():
     assert "OPENCLAW_PUBLIC_ROUTE_OK=true" in text
     assert "Close temporary SSH" in text
     assert "if: always()" in text
+
+
+def test_clean_rebuild_pins_standard_ubuntu_2404_lts():
+    text = (ROOT / "scripts/oci_openclaw_clean_rebuild.py").read_text()
+    assert 'UBUNTU_VERSION = "24.04"' in text
+    assert 'operating_system_version == UBUNTU_VERSION' in text
+    assert '"minimal" not in (x.display_name or "").lower()' in text
+
+def test_clean_cloud_init_is_base64_encoded_for_oci_metadata():
+    text = (ROOT / "scripts/oci_openclaw_clean_rebuild.py").read_text()
+    assert 'return base64.b64encode(cloud_cfg.encode()).decode()' in text
+    assert '"user_data": clean_cloud_init()' in text

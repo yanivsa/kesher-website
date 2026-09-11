@@ -20,6 +20,7 @@ from oci_openclaw_bootstrap import (
 
 TARGET_NAME = "openclaw-e2-tailscale"
 SHAPE = "VM.Standard.E2.1.Micro"
+UBUNTU_VERSION = "24.04"
 MIGRATION_ATTACHMENT_NAME = "openclaw-clean-cloudflared-source"
 RUN_COMMAND_PLUGIN = "Compute Instance Run Command"
 ROLLBACK_TAG = "clean-rebuild-rollback"
@@ -156,7 +157,14 @@ def choose_ubuntu_image(compute, compartment_id: str):
         sort_by="TIMECREATED",
         sort_order="DESC",
     ).data
-    rows = [x for x in rows if x.lifecycle_state == "AVAILABLE"]
+    rows = [
+        x
+        for x in rows
+        if x.lifecycle_state == "AVAILABLE"
+        and x.operating_system_version == UBUNTU_VERSION
+        and "minimal" not in (x.display_name or "").lower()
+        and (x.display_name or "").startswith("Canonical-Ubuntu-24.04-")
+    ]
     if not rows:
         raise RuntimeError("OPENCLAW_CLEAN_NO_UBUNTU_E2_IMAGE")
     image = rows[0]
