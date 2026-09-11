@@ -1,11 +1,37 @@
 import React from 'react';
 import MetaTags from '../../components/SEO/MetaTags';
+import SchemaOrg from '../../components/SEO/SchemaOrg';
+import { SITE_CONFIG } from '../../constants/siteConfig';
 import styles from './LegalPage.module.css';
+
+const schemaData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "עמוד הבית",
+          "item": SITE_CONFIG.url
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "הצהרת נגישות",
+          "item": `${SITE_CONFIG.url}/accessibility`
+        }
+      ]
+    }
+  ]
+};
 
 const AccessibilityPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags title="הצהרת נגישות" description="הצהרת נגישות לאתר שירה סהרוני. אנו פועלים להנגשת האתר לכלל האוכלוסייה." />
+      <SchemaOrg data={schemaData} />
       <header className={styles.header}>
         <div className="container">
           <h1>הצהרת נגישות</h1>
