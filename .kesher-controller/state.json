@@ -750,7 +750,16 @@
         "normalization_slot": "2026-09-11",
         "normalization_dispatched_at": "2026-09-11T12:02:11.504041+00:00"
       },
-      "archived_at": "2026-09-11T21:12:27.297122+00:00"
+      "archived_at": "2026-09-11T21:12:27.297122+00:00",
+      "media": {
+        "source_slug": "school-entry-readiness-emotional-regulation-skills",
+        "source_content_sha256": "ab5e30d8de28600a329d8f5c09032b39fcf8af079aab85868addfd0c51889f54",
+        "article_url": "https://kesher.saharoni.com/blog/school-entry-readiness-emotional-regulation-skills",
+        "article_live": true,
+        "long_status": "running",
+        "seed_dispatch_count": 1,
+        "long_last_dispatch_at": "2026-09-11T21:12:39.737125+00:00"
+      }
     }
   ],
   "last_error": null,
@@ -1369,9 +1378,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-09-11T21:12:39.737154+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched exact prior-cycle long-video state handoff before current-cycle watchdog",
+      "details": {
+        "backlog_cycle": "2026-09-11",
+        "source_slug": "school-entry-readiness-emotional-regulation-skills"
+      }
     }
   ],
-  "updated_at": "2026-09-11T21:12:31.115382+00:00",
+  "updated_at": "2026-09-11T21:12:39.737168+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
