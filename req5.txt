@@ -1,0 +1,1 @@
+Wait, let's run `npm run check` and verify diff. If tests pass, I submit.
