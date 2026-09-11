@@ -1,53 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-11",
-  "status": "image_retry_wait",
+  "cycle": "2026-09-12",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 2,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34589250142,
-    "processed_run_id": 34568054264,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
-    },
-    "attempts": 2,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-09-11T10:26:48.667767+00:00",
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-09-11",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-      "session_id": "sessions/10610899470630434369",
-      "pr_url": "",
-      "github_run_id": "34568054264",
-      "completed_at": "2026-09-11T09:43:42.494672+00:00"
-    },
-    "last_jules_session_id": "sessions/10610899470630434369",
-    "last_failed_run_id": 34568054264,
-    "watchdog": {
-      "identity": "2026-09-11",
-      "session_id": "sessions/1342417028034120252",
-      "last_progress_at": "2026-09-11T11:11:27.666013+00:00",
-      "last_fingerprint": "6892b396e97d37ed60a0c825a592962d487427ff54086975deebbb7c0adea725",
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "pr_number": 797,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/797",
-    "normalization_slot": "2026-09-11",
-    "normalization_dispatched_at": "2026-09-11T12:02:11.504041+00:00"
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -731,138 +699,62 @@
         "short_dispatch_count": 3,
         "short_last_dispatch_at": "2026-09-11T01:07:43.107962+00:00"
       }
+    },
+    {
+      "cycle": "2026-09-11",
+      "status": "image_retry_wait",
+      "article": {
+        "attempt_count": 2,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 34589250142,
+        "processed_run_id": 34568054264,
+        "provider_id": null,
+        "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
+        "same_failure_streak": 1,
+        "failure_count_by_type": {
+          "JULES_TIMEOUT_SESSION_ACTIVE": 1
+        },
+        "attempts": 2,
+        "deploy_attempts": 0,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-09-11T10:26:48.667767+00:00",
+        "last_run_conclusion": "failure",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-09-11",
+          "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+          "retryable": true,
+          "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+          "session_id": "sessions/10610899470630434369",
+          "pr_url": "",
+          "github_run_id": "34568054264",
+          "completed_at": "2026-09-11T09:43:42.494672+00:00"
+        },
+        "last_jules_session_id": "sessions/10610899470630434369",
+        "last_failed_run_id": 34568054264,
+        "watchdog": {
+          "identity": "2026-09-11",
+          "session_id": "sessions/1342417028034120252",
+          "last_progress_at": "2026-09-11T11:11:27.666013+00:00",
+          "last_fingerprint": "6892b396e97d37ed60a0c825a592962d487427ff54086975deebbb7c0adea725",
+          "last_nudge_at": null,
+          "nudge_count": 0,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "pr_number": 797,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/797",
+        "normalization_slot": "2026-09-11",
+        "normalization_dispatched_at": "2026-09-11T12:02:11.504041+00:00"
+      },
+      "archived_at": "2026-09-11T21:12:27.297122+00:00"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 34613792578 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-09-11T18:32:05.379835+00:00",
-    "at": "2026-09-11T18:27:05.379859+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T18:25:19.902983+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T18:25:30.367052+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T18:26:20.664522+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Short exhausted 4 derive/recovery dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T18:28:19.235924+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T18:28:29.189793+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T18:28:58.527369+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Short exhausted 4 derive/recovery dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T18:30:13.160994+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T18:30:25.149946+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T18:31:13.340187+00:00",
-      "from": "long_video_complete",
-      "to": "blocked",
-      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "Short exhausted 4 derive/recovery dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-09T18:36:56.376Z",
-      "from": "blocked",
-      "to": "short_targeted_recovery",
-      "reason": "PR #755 merged; restore exactly one same-identity dispatch to publish technically verified Short",
-      "details": {
-        "slug": "older-singles-friendship-changes-loneliness",
-        "content_sha256": "824a8b4ff855e791711e077fbc85e1f525e394c3051da3821dbdf1464f333661",
-        "item_id": "video-20260909-210659-824a8b4ff8",
-        "operation": "full"
-      }
-    },
-    {
-      "at": "2026-09-09T18:39:03.695354+00:00",
-      "from": "long_video_complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T18:39:18.460504+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T18:40:16.918131+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-09-09T18:43:07.049636+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T18:43:29.048743+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T18:44:56.008077+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-09T18:45:45.311778+00:00",
-      "from": "complete",
-      "to": "complete",
-      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
-      "details": {
-        "backlog_cycle": "2026-09-07",
-        "source_slug": "first-year-boundaries-origin-families"
-      }
-    },
     {
       "at": "2026-09-09T19:25:17.310103+00:00",
       "from": "complete",
@@ -1453,31 +1345,38 @@
         "failure_streak": 1,
         "run_id": 34613792578
       }
+    },
+    {
+      "at": "2026-09-11T21:12:27.297157+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-11T21:12:27.297163+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-11T21:12:27.298450+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-11T18:27:05.379870+00:00",
+  "updated_at": "2026-09-11T21:12:27.297141+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "retry_wait",
-    "last_error": {
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 34613792578 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-09-11T18:32:05.379835+00:00",
-      "at": "2026-09-11T18:27:05.379859+00:00"
-    },
-    "next_retry_at": "2026-09-11T18:32:05.379835+00:00",
-    "run_id": 34613792578,
-    "processed_run_id": 34613792578,
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 1
-    },
-    "last_dispatch_at": "2026-09-11T15:03:02.609092+00:00",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 34613792578
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   },
   "long_video": {
     "attempt_count": 0,
@@ -1505,14 +1404,5 @@
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": null,
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
   }
 }
