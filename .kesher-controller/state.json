@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-11",
-  "status": "article_normalizing",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -17,7 +17,7 @@
     },
     "attempts": 2,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-09-11T10:26:48.667767+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
@@ -1424,12 +1424,22 @@
         "pr_number": 797,
         "slot": "2026-09-11"
       }
+    },
+    {
+      "at": "2026-09-11T15:03:02.609116+00:00",
+      "from": "article_normalizing",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 1,
+        "pr_number": 797
+      }
     }
   ],
-  "updated_at": "2026-09-11T12:02:11.504070+00:00",
+  "updated_at": "2026-09-11T15:03:02.609124+00:00",
   "image": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1437,7 +1447,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-11T15:03:02.609092+00:00"
   },
   "long_video": {
     "attempt_count": 0,
