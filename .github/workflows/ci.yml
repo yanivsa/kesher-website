@@ -30,6 +30,8 @@ jobs:
             tests.test_kesher_article_contract \
             tests.test_kesher_article_normalizer \
             tests.test_kesher_explicit_test_mode \
+            tests.test_kesher_isolated_live_e2e_contract \
+            tests.test_kesher_e2e_readiness \
             tests.test_article_quality_stabilization \
             tests.test_short_retry_policy_v4 \
             tests.test_pipeline_v4 \

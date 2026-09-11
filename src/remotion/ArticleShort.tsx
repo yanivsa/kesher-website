@@ -8,6 +8,7 @@ import {
   useVideoConfig,
 } from "remotion";
 import {FullScreenSignatureOutro} from "./components/FullScreenSignatureOutro";
+import {EnhancementAssetOverlay} from "./components/EnhancementAssetOverlay";
 
 export interface MotionTarget {
   startFrame: number;
@@ -16,6 +17,12 @@ export interface MotionTarget {
   focusY: number;
   zoom: number;
   rotation: number;
+  assetRef?: string;
+  assetType?: "image" | "broll" | "motion_graphic";
+  assetStartFrame?: number;
+  assetEndFrame?: number;
+  assetIntent?: string;
+  assetProvenance?: string;
 }
 
 export interface ArticleShortProps {
@@ -61,6 +68,10 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
   const translateY = target ? (0.5 - focusY) * 170 * pulse : 0;
   const rotation = target ? target.rotation * pulse : 0;
 
+  const plannedAssets = motionPlan.filter(
+    (entry) => entry.assetRef && entry.assetType && entry.assetStartFrame !== undefined && entry.assetEndFrame !== undefined,
+  );
+
   return (
     <AbsoluteFill style={{backgroundColor: "#101714", overflow: "hidden"}}>
       <Video
@@ -76,6 +87,16 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
           transformOrigin: "center center",
         }}
       />
+
+      {plannedAssets.map((entry, index) => (
+        <EnhancementAssetOverlay
+          key={`${entry.assetRef}-${index}`}
+          assetRef={entry.assetRef}
+          assetType={entry.assetType}
+          startFrame={entry.assetStartFrame ?? 0}
+          endFrame={entry.assetEndFrame ?? 0}
+        />
+      ))}
 
       <AbsoluteFill
         style={{
@@ -142,7 +163,6 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
         שירה סהרוני · {url}
       </div>
 
-      {/* Animated signature outro — last 3 seconds */}
       <FullScreenSignatureOutro
         durationSeconds={SIGNATURE_SECONDS}
         signatureImageSrc={signatureImageSrc}

@@ -62,6 +62,28 @@ class ShortPipelineV4Tests(unittest.TestCase):
         )
         self.assertEqual(failures, [])
 
+    def test_short_v4_passes_generation_attempt_identity_to_voice_validator(self):
+        media = {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 45.0}
+        item = {
+            "fresh_generation_attempt": 3,
+            "source_mode": "direct-short",
+            "signature_fullscreen": True,
+            "signature_duration_seconds": 3.0,
+            "signature_video_sha256": "s" * 64,
+            "signature_verified": True,
+        }
+        with tempfile.NamedTemporaryFile(suffix=".mp4") as handle:
+            video_path = Path(handle.name)
+            with mock.patch.object(
+                short.core,
+                "validate_female_voice",
+                return_value=(True, 129.0, "fallback accepted"),
+            ) as validator:
+                failures = short.short_technical_failures(media, video_path, item)
+
+        validator.assert_called_once_with(video_path, item)
+        self.assertEqual(failures, [])
+
     def test_vertical_technical_contract_rejects_horizontal_media(self):
         failures = short.short_technical_failures(
             {"codec": "h264", "audio_codec": "aac", "width": 1280, "height": 720, "duration": 90.0}
@@ -98,7 +120,6 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("signatureImageSrc", source)
         self.assertIn("FullScreenSignatureOutro", source)
         self.assertNotIn("signatureVideoSrc", source)
-
 
     def test_active_item_scopes_to_target_slug_when_multiple_active_exist(self):
         state = {

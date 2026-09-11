@@ -1,0 +1,24 @@
+name: Kesher Current Article Public Check
+
+on:
+  push:
+    paths:
+      - '.github/workflows/kesher-current-article-public-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify public article HTTP and title
+        run: |
+          set -euo pipefail
+          url='https://kesher.saharoni.com/blog/gifted-children-social-difficulties'
+          title='ילדים מחוננים וקשיים חברתיים: להבין את הפער בין השכל לרגש'
+          body="$(mktemp)"
+          status="$(curl --fail-with-body --location --silent --show-error --output "$body" --write-out '%{http_code}' "$url")"
+          test "$status" = '200'
+          grep -Fq "$title" "$body"
+          echo "ARTICLE_PUBLIC_OK url=$url status=$status title=$title"

@@ -1,0 +1,235 @@
+name: OpenClaw Clean Rebuild
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: openclaw-recovery
+  cancel-in-progress: false
+
+env:
+  BRIDGE_NAME: yanivsa-oci-bootstrap
+  PUBLIC_HOSTNAME: openclaw.saharoni.com
+  TUNNEL_ID: 58988d44-b0c4-4ad0-ba9d-c25b9914e773
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22"
+
+      - name: Validate clean rebuild contracts
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/oci_openclaw_clean_rebuild.py
+          bash -n scripts/openclaw_clean_finalize.sh
+          python -m pip install 'pytest==8.4.2'
+          python -m pytest -q tests/test_openclaw_clean_rebuild_contract.py
+
+      - name: Install OCI SDK
+        run: python -m pip install 'oci==2.183.0'
+
+      - name: Decrypt OCI credentials through existing Cloudflare bridge
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          token="$(openssl rand -hex 32)"
+          printf '%s' "$token" | npx --yes wrangler@4.100.0 secret put CONTROL_TOKEN --name "$BRIDGE_NAME" >/dev/null
+          subdomain="$(curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/workers/subdomain" \
+            | python3 -c 'import json,sys; print(json.load(sys.stdin)["result"]["subdomain"])')"
+          url="https://${BRIDGE_NAME}.${subdomain}.workers.dev/decrypt"
+          code=000
+          for i in $(seq 1 12); do
+            code="$(curl -sS -o /tmp/oci.json -w '%{http_code}' \
+              -H "Authorization: Bearer $token" \
+              -H 'Content-Type: application/json' \
+              --data-binary @.github/oci-bootstrap/encrypted-oci-bundle.json "$url")"
+            [ "$code" = 200 ] && break
+            case "$code" in
+              400|403|429|500|502|503|504) sleep 5 ;;
+              *) echo "OCI bridge returned HTTP $code"; exit 1 ;;
+            esac
+          done
+          [ "$code" = 200 ] || { echo "OCI bridge unavailable (HTTP $code)"; exit 1; }
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.load(open('/tmp/oci.json'))
+          assert all(d.get(k) for k in ('user','fingerprint','tenancy','region','private_key_pem'))
+          Path('/tmp/oci.pem').write_text(d['private_key_pem'])
+          Path('/tmp/oci.pem').chmod(0o600)
+          Path('/tmp/oci.cfg').write_text(
+              '[DEFAULT]\n'
+              f'user={d["user"]}\n'
+              f'fingerprint={d["fingerprint"]}\n'
+              f'tenancy={d["tenancy"]}\n'
+              f'region={d["region"]}\n'
+              'key_file=/tmp/oci.pem\n'
+          )
+          Path('/tmp/oci.cfg').chmod(0o600)
+          PY
+          echo OCI_BRIDGE_OK=true
+
+      - name: Create one-time SSH key and runner CIDR
+        run: |
+          set -euo pipefail
+          ssh-keygen -q -t ed25519 -N '' -f /tmp/openclaw-clean-key
+          chmod 600 /tmp/openclaw-clean-key
+          runner_ip="$(curl -4fsS --retry 4 https://api.ipify.org)"
+          python3 - "$runner_ip" <<'PY'
+          import ipaddress,sys
+          ip=ipaddress.ip_address(sys.argv[1])
+          if ip.version != 4:
+              raise SystemExit("runner IPv4 required")
+          print(str(ip))
+          PY
+          printf '%s/32\n' "$runner_ip" >/tmp/runner-cidr.txt
+          echo OPENCLAW_CLEAN_EPHEMERAL_SSH_READY=true
+
+      - name: Preserve legacy disk and launch fresh OpenClaw VM
+        run: |
+          set -euo pipefail
+          python -u scripts/oci_openclaw_clean_rebuild.py prepare \
+            --config /tmp/oci.cfg \
+            --ssh-public-key-file /tmp/openclaw-clean-key.pub \
+            --bootstrap-cidr "$(cat /tmp/runner-cidr.txt)" \
+            --state-json /tmp/openclaw-clean-state.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/openclaw-clean-state.json'))
+          assert d['fresh_image'] is True
+          assert d['old_boot_attachment_read_only'] is True
+          assert d['new_public_ip']
+          assert d['new_instance_id']
+          print('OPENCLAW_CLEAN_PREPARE_PROOF=true')
+          print('OPENCLAW_CLEAN_NEW_IP='+d['new_public_ip'])
+          PY
+
+      - name: Wait for clean Ubuntu SSH
+        run: |
+          set -euo pipefail
+          ip="$(python3 -c 'import json; print(json.load(open("/tmp/openclaw-clean-state.json"))["new_public_ip"])')"
+          for i in $(seq 1 60); do
+            if ssh -i /tmp/openclaw-clean-key \
+              -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null \
+              -o ConnectTimeout=8 \
+              ubuntu@"$ip" true >/dev/null 2>&1; then
+              echo OPENCLAW_CLEAN_SSH_REACHABLE=true
+              exit 0
+            fi
+            sleep 5
+          done
+          echo OPENCLAW_CLEAN_FAILED=SSH_TIMEOUT
+          exit 1
+
+      - name: Finalize clean OpenClaw and migrate only tunnel credential
+        run: |
+          set -euo pipefail
+          ip="$(python3 -c 'import json; print(json.load(open("/tmp/openclaw-clean-state.json"))["new_public_ip"])')"
+          scp -i /tmp/openclaw-clean-key \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            scripts/openclaw_clean_finalize.sh ubuntu@"$ip":/tmp/openclaw-clean-finalize.sh
+          ssh -i /tmp/openclaw-clean-key \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            -o ServerAliveInterval=15 \
+            ubuntu@"$ip" \
+            "sudo PUBLIC_HOSTNAME='$PUBLIC_HOSTNAME' TUNNEL_ID='$TUNNEL_ID' bash /tmp/openclaw-clean-finalize.sh"
+
+      - name: Independent local runtime proof
+        run: |
+          set -euo pipefail
+          ip="$(python3 -c 'import json; print(json.load(open("/tmp/openclaw-clean-state.json"))["new_public_ip"])')"
+          ssh -i /tmp/openclaw-clean-key \
+            -o StrictHostKeyChecking=no \
+            -o UserKnownHostsFile=/dev/null \
+            ubuntu@"$ip" 'sudo bash -s' <<'REMOTE'
+          set -euo pipefail
+          test -f /var/lib/openclaw-clean-ready.txt
+          systemctl is-active --quiet openclaw-gateway.service
+          systemctl is-active --quiet cloudflared.service
+          curl -fsS --max-time 5 http://127.0.0.1:18789/healthz >/dev/null
+          bad="$(ss -ltnH | awk '$4 ~ /:18789$/ {print $4}' | grep -Ev '^(127\.0\.0\.1|\[::1\]|::1):18789$' || true)"
+          [ -z "$bad" ]
+          grep -q '^OPENCLAW_CLEAN_GATEWAY_HEALTH_OK=true$' /var/lib/openclaw-clean-ready.txt
+          grep -q '^CLOUDFLARED_SERVICE_ACTIVE=true$' /var/lib/openclaw-clean-ready.txt
+          echo OPENCLAW_CLEAN_LOCAL_RUNTIME_PROOF=true
+          REMOTE
+
+      - name: Detach rollback disk after credential migration
+        if: always()
+        run: |
+          set +e
+          if [ -s /tmp/oci.cfg ] && [ -s /tmp/openclaw-clean-state.json ]; then
+            python -u scripts/oci_openclaw_clean_rebuild.py finish \
+              --config /tmp/oci.cfg \
+              --state-json /tmp/openclaw-clean-state.json
+          fi
+
+      - name: Verify public Cloudflare Access route
+        run: |
+          set -euo pipefail
+          url="https://${PUBLIC_HOSTNAME}/"
+          for i in $(seq 1 30); do
+            rm -f /tmp/hdr /tmp/body
+            code="$(curl -sS -L --max-redirs 0 --connect-timeout 8 --max-time 15 \
+              -D /tmp/hdr -o /tmp/body -w '%{http_code}' "$url" || true)"
+            location="$(awk 'BEGIN{IGNORECASE=1} /^location:/ {sub(/\r$/,""); print substr($0,11); exit}' /tmp/hdr 2>/dev/null || true)"
+            if [[ "$code" =~ ^30[2378]$ ]] && [[ "$location" == *cloudflareaccess.com* ]]; then
+              echo CLOUDFLARE_ACCESS_PROTECTED=true
+              echo OPENCLAW_PUBLIC_ROUTE_OK=true
+              echo "OPENCLAW_READY_URL=$url"
+              exit 0
+            fi
+            if grep -Eqi 'cloudflare access|access denied|cf-access' /tmp/body /tmp/hdr 2>/dev/null; then
+              echo CLOUDFLARE_ACCESS_PROTECTED=true
+              echo OPENCLAW_PUBLIC_ROUTE_OK=true
+              echo "OPENCLAW_READY_URL=$url"
+              exit 0
+            fi
+            echo "PUBLIC_CHECK_ATTEMPT=$i HTTP=$code"
+            sleep 5
+          done
+          echo OPENCLAW_CLEAN_FAILED=PUBLIC_ACCESS_NOT_PROVEN
+          exit 1
+
+      - name: Close temporary SSH
+        if: always()
+        run: |
+          set +e
+          if [ -s /tmp/oci.cfg ] && [ -s /tmp/openclaw-clean-state.json ]; then
+            sl="$(python3 -c 'import json; print(json.load(open("/tmp/openclaw-clean-state.json")).get("security_list_id") or "")' 2>/dev/null)"
+            if [ -n "$sl" ]; then
+              python -u scripts/oci_openclaw_bootstrap.py \
+                --config /tmp/oci.cfg --close-ssh --security-list-id "$sl"
+            fi
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          rm -f /tmp/oci.json /tmp/oci.pem /tmp/oci.cfg \
+            /tmp/openclaw-clean-key /tmp/openclaw-clean-key.pub \
+            /tmp/openclaw-clean-state.json /tmp/runner-cidr.txt /tmp/hdr /tmp/body

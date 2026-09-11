@@ -36,14 +36,6 @@ const servicePages: SearchItem[] = [
     category: 'שירותים'
   },
   {
-    id: 'service-mediation',
-    type: 'service',
-    title: 'גישור',
-    body: 'גישור באשדוד ובאונליין לבני זוג, משפחות, הורים, שכנים, עובדים ושותפים. בירור צרכים, הפחתת מתחים ובניית הסכמות מעשיות.',
-    url: '/services/mediation',
-    category: 'שירותים'
-  },
-  {
     id: 'service-premarital-first-year',
     type: 'service',
     title: 'הכנה לנישואים וליווי בשנה הראשונה',
@@ -114,7 +106,7 @@ const staticPages: SearchItem[] = [
     id: 'page-appointment',
     type: 'page',
     title: 'קביעת פגישת ייעוץ עם שירה',
-    body: 'בחירת מועד לפגישת ייעוץ בת 50 דקות עם שירה סהרוני. ייעוץ זוגי, הנחיית הורים או גישור, באשדוד או אונליין.',
+    body: 'בחירת מועד לפגישת ייעוץ בת 50 דקות עם שירה סהרוני. ייעוץ זוגי והנחיית הורים, באשדוד או אונליין.',
     url: '/appointment',
     category: 'דפים'
   }

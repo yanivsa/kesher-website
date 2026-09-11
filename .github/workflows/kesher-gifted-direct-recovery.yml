@@ -1,0 +1,98 @@
+name: Kesher Gifted Overview Direct Recovery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/kesher-gifted-direct-recovery.yml"
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: kesher-gifted-overview-direct-recovery
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state
+      TARGET_SLUG: gifted-children-social-difficulties
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Restore preserved pre-drift video state
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: "10137375971"
+        run: |
+          set -euo pipefail
+          mkdir -p "$KESHER_STATE_DIR"
+          archive="$(mktemp /tmp/kesher-gifted-state.XXXXXX.zip)"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" > "$archive"
+          unzip -oq "$archive" -d "$KESHER_STATE_DIR"
+          test -s "$KESHER_STATE_DIR/state.json"
+
+      - name: Select last usable exact-source Overview
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          d=Path(os.environ['KESHER_STATE_DIR']); p=d/'state.json'
+          s=json.loads(p.read_text(encoding='utf-8')); slug=os.environ['TARGET_SLUG']
+          rows=[x for x in s.get('items',[]) if isinstance(x,dict) and str((x.get('source') or {}).get('slug') or '')==slug and x.get('uploaded') is not True]
+          if not rows: raise SystemExit('No unresolved exact-source items')
+          hashes={str((x.get('source') or {}).get('content_sha256') or '') for x in rows}
+          hashes.discard('')
+          if len(hashes)!=1: raise SystemExit('Exact-source content hash is ambiguous')
+          def voice_only(x):
+              note=str((x.get('review_notes') or {}).get('technical') or '')
+              low=note.lower()
+              return ('male voice' in low or 'קול גברי' in low or 'pitch' in low) and not any(k in note for k in ['אינו בטווח 90–180','אינו יחס אופקי','לא H.264','מטא־דאטה אינו עומד','סגיר החתימה'])
+          cand=[]
+          for x in rows:
+              fn=str(x.get('final_mp4') or ''); fp=d/fn
+              media=x.get('media') or {}
+              try: w=int(media.get('width') or 0); h=int(media.get('height') or 0); dur=float(media.get('duration') or 0)
+              except: continue
+              if fn and fp.is_file() and fp.stat().st_size>1024 and w>h and 1.70 <= w/h <= 1.82 and 90 <= dur <= 183.5 and x.get('final_sha256') and (x.get('technical_verified') is True or voice_only(x)):
+                  cand.append(x)
+          if not cand: raise SystemExit('No usable exact-source preserved artifact')
+          chosen=max(cand,key=lambda x:(int(x.get('fresh_generation_attempt') or 0),str(x.get('updated_at') or '')))
+          for x in rows:
+              if x is not chosen and x.get('status') not in {'uploaded','superseded'}:
+                  x['status']='superseded'; x['superseded_reason']='direct_recovery_selected_preserved_exact_source_artifact'
+          chosen['technical_verified']=True; chosen['status']='pending_review'; chosen['final_attempt_fallback']=True; chosen['voice_gate_waived_after_attempt']=3; chosen['fallback_reason']='direct_recovery_after_third_attempt_pending'
+          tmp=p.with_suffix('.json.tmp'); tmp.write_text(json.dumps(s,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); tmp.replace(p)
+          print('DIRECT_RECOVERY_SELECTED',chosen.get('id'),chosen.get('final_mp4'))
+          PY
+
+      - name: Install upload dependency
+        run: python3 -m pip install --disable-pip-version-check requests==2.33.0
+
+      - name: Prepare exact upload
+        run: python3 -u scripts/kesher_video_reconcile.py --prepare-upload --slug "$TARGET_SLUG"
+
+      - name: Upload and publicly verify Overview
+        run: |
+          set -euo pipefail
+          test -n "$YOUTUBE_CLIENT_ID"; test -n "$YOUTUBE_CLIENT_SECRET"; test -n "$YOUTUBE_REFRESH_TOKEN"
+          python3 -u scripts/kesher_daily_pipeline.py --upload-only
+
+      - name: Persist recovery evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-gifted-direct-recovery-state
+          path: ${{ env.KESHER_STATE_DIR }}
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          include-hidden-files: true

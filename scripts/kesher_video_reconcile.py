@@ -276,6 +276,14 @@ def _reconcile_item_technical_rejection(state: dict[str, Any], item: dict[str, A
 def prepare_generation(target_slug: str = "") -> int:
     state = pipeline.load_state()
     target_slug = (target_slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+    media_mode = (os.environ.get("KESHER_MEDIA_MODE") or "article_short").strip()
+    if target_slug and media_mode == "video_overview":
+        workflow_output("skip_generation", "false")
+        print(
+            "VIDEO_RECONCILED_GENERATION "
+            f"slug={target_slug} targeted_long_defer_to_pipeline=yes"
+        )
+        return 0
     if target_slug:
         source = current_source_snapshot(target_slug)
         same_source = [
