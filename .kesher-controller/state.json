@@ -36,8 +36,8 @@
     "watchdog": {
       "identity": "2026-09-11",
       "session_id": "sessions/1342417028034120252",
-      "last_progress_at": "2026-09-11T11:09:39.674564+00:00",
-      "last_fingerprint": "593270f23da4941ff358771adeca4d35d2ba5e51774c066f5e8dcb572f49b6a4",
+      "last_progress_at": "2026-09-11T11:11:27.666013+00:00",
+      "last_fingerprint": "6892b396e97d37ed60a0c825a592962d487427ff54086975deebbb7c0adea725",
       "last_nudge_at": null,
       "nudge_count": 0,
       "worker_restart_count": 0,
@@ -1401,9 +1401,18 @@
       "details": {
         "session_id": "sessions/1342417028034120252"
       }
+    },
+    {
+      "at": "2026-09-11T11:12:54.096994+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": "sessions/1342417028034120252"
+      }
     }
   ],
-  "updated_at": "2026-09-11T11:10:59.863668+00:00",
+  "updated_at": "2026-09-11T11:12:54.097003+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
