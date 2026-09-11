@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-11",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-09-11T10:22:54.319569+00:00",
+    "next_retry_at": null,
     "run_id": 34568054264,
     "processed_run_id": 34568054264,
     "provider_id": null,
@@ -15,10 +15,10 @@
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
-    "attempts": 1,
+    "attempts": 2,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-09-11T05:59:08.794196+00:00",
+    "last_dispatch_at": "2026-09-11T10:26:48.667767+00:00",
     "last_run_conclusion": "failure",
     "last_worker_result": {
       "schema_version": 1,
@@ -1363,9 +1363,18 @@
       "details": {
         "retry_at": "2026-09-11T10:22:54.319569+00:00"
       }
+    },
+    {
+      "at": "2026-09-11T10:26:48.667774+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 2
+      }
     }
   ],
-  "updated_at": "2026-09-11T10:22:18.618021+00:00",
+  "updated_at": "2026-09-11T10:26:48.667780+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
