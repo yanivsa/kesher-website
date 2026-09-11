@@ -36,6 +36,27 @@ class KesherTaskSupervisorRuntimeTests(unittest.TestCase):
         issue = {"body": "<!-- kesher-supervisor-orphan-pr:579 -->"}
         self.assertEqual(runtime.orphan_pr_number(issue), 579)
 
+    def test_unresolved_content_completion_blocks_auto_close(self):
+        original = runtime.base.get_issue_comments
+        runtime.base.get_issue_comments = lambda _number: [
+            {"body": "Remaining DoD: upload the exact Short once and verify it publicly."}
+        ]
+        try:
+            self.assertTrue(runtime.has_unresolved_content_completion(767))
+        finally:
+            runtime.base.get_issue_comments = original
+
+    def test_explicit_content_chain_complete_allows_auto_close(self):
+        original = runtime.base.get_issue_comments
+        runtime.base.get_issue_comments = lambda _number: [
+            {"body": "Remaining DoD: upload the exact Short once."},
+            {"body": "CONTENT_CHAIN_COMPLETE — A+B+C verified public."},
+        ]
+        try:
+            self.assertFalse(runtime.has_unresolved_content_completion(767))
+        finally:
+            runtime.base.get_issue_comments = original
+
     def test_detects_phone_video_verification_as_human_only(self):
         issue = {"title": "Google Business Profile", "body": "Complete continuous phone video verification"}
         self.assertTrue(runtime.is_human_only_issue(issue))
