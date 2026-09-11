@@ -696,8 +696,8 @@
         "long_youtube_url": "https://youtu.be/NwhSRQLzErc",
         "long_youtube_id": "NwhSRQLzErc",
         "short_status": "running",
-        "short_dispatch_count": 2,
-        "short_last_dispatch_at": "2026-09-10T23:09:49.695003+00:00"
+        "short_dispatch_count": 3,
+        "short_last_dispatch_at": "2026-09-11T01:07:43.107962+00:00"
       }
     }
   ],
@@ -1305,9 +1305,19 @@
         "backlog_cycle": "2026-09-10",
         "source_slug": "gifted-children-social-difficulties"
       }
+    },
+    {
+      "at": "2026-09-11T01:07:43.107986+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched independent prior-cycle Short generation",
+      "details": {
+        "backlog_cycle": "2026-09-10",
+        "source_slug": "gifted-children-social-difficulties"
+      }
     }
   ],
-  "updated_at": "2026-09-11T01:07:18.097361+00:00",
+  "updated_at": "2026-09-11T01:07:43.107992+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
