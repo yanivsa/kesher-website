@@ -32,7 +32,18 @@
       "completed_at": "2026-09-11T09:43:42.494672+00:00"
     },
     "last_jules_session_id": "sessions/10610899470630434369",
-    "last_failed_run_id": 34568054264
+    "last_failed_run_id": 34568054264,
+    "watchdog": {
+      "identity": "2026-09-11",
+      "session_id": "sessions/1342417028034120252",
+      "last_progress_at": "2026-09-11T11:05:05+00:00",
+      "last_fingerprint": "f4672274658f50c385c37ec45ce758df4cc8cc9d082597175df18431de82af29",
+      "last_nudge_at": null,
+      "nudge_count": 0,
+      "worker_restart_count": 0,
+      "last_restart_at": null,
+      "last_restart_run_id": null
+    }
   },
   "backlog": [
     {
@@ -1372,9 +1383,18 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-09-11T11:08:44.770348+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": "sessions/1342417028034120252"
+      }
     }
   ],
-  "updated_at": "2026-09-11T10:26:48.667780+00:00",
+  "updated_at": "2026-09-11T11:08:44.770358+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
