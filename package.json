@@ -69,6 +69,6 @@
     "remotion": "^4.0.506",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.11"
   }
 }
