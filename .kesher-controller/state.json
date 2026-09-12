@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-12",
-  "status": "waiting_for_article_window",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,9 +13,10 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
+    "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "normalization_status": "pending",
+    "last_dispatch_at": "2026-09-12T18:45:15.193154+00:00"
   },
   "backlog": [
     {
@@ -1389,9 +1390,18 @@
         "backlog_cycle": "2026-09-11",
         "source_slug": "school-entry-readiness-emotional-regulation-skills"
       }
+    },
+    {
+      "at": "2026-09-12T18:45:15.193160+00:00",
+      "from": "waiting_for_article_window",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-12T16:33:56.851844+00:00",
+  "updated_at": "2026-09-12T18:45:15.193195+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
