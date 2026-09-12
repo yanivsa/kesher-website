@@ -161,7 +161,7 @@ const CouplesCrisisPage: React.FC = () => {
       <MetaTags
         title="ייעוץ זוגי במשבר | שירה סהרוני – עצירת הסלמה וחידוש התקשורת"
         description="זוגיות במשבר? כשהשיחות חוזרות על עצמן ונגמרות בכעס או בריחוק, אפשר להתחיל משיחה אחת רגועה. ייעוץ זוגי ממוקד ומעשי באשדוד או אונליין. 500 ₪ לפגישה."
-        canonical="https://kesher.saharoni.com/services/couples/crisis"
+        canonical={`${SITE_CONFIG.url}/services/couples/crisis`}
       />
       <SchemaOrg data={schemaData} />
 
