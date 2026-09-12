@@ -758,8 +758,8 @@
         "article_live": true,
         "long_status": "running",
         "seed_dispatch_count": 1,
-        "long_last_dispatch_at": "2026-09-12T16:34:12.474449+00:00",
-        "long_resume_count": 6
+        "long_last_dispatch_at": "2026-09-12T21:02:25.298420+00:00",
+        "long_resume_count": 7
       }
     },
     {
@@ -781,7 +781,8 @@
         "normalization_status": "pending",
         "last_dispatch_at": "2026-09-12T18:45:15.193154+00:00"
       },
-      "archived_at": "2026-09-12T21:02:11.747798+00:00"
+      "archived_at": "2026-09-12T21:02:11.747798+00:00",
+      "media": {}
     }
   ],
   "last_error": null,
