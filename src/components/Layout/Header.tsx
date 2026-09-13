@@ -142,6 +142,7 @@ const Header: React.FC = () => {
               <button type="button" className={styles.navLink}>שירותים</button>
               <div className={styles.dropdownContent}>
                 <Link to="/services/couples" onClick={closeMenu}>ייעוץ זוגי</Link>
+                <Link to="/couples-counseling-ashdod" onClick={closeMenu}>ייעוץ זוגי באשדוד</Link>
                 <Link to="/services/premarital-first-year" onClick={closeMenu}>הכנה לנישואים והשנה הראשונה</Link>
                 <Link to="/services/couples-aliyah-relocation" onClick={closeMenu}>זוגיות בעלייה וברילוקיישן</Link>
                 <Link to="/services/late-singleness" onClick={closeMenu}>ייעוץ ברווקות מאוחרת</Link>

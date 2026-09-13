@@ -107,23 +107,41 @@ const schemaData = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'ProfessionalService',
+      '@type': ['LocalBusiness', 'ProfessionalService'],
       '@id': `${SITE_CONFIG.url}/couples-counseling-ashdod#service`,
       name: 'ייעוץ זוגי באשדוד | שירה סהרוני',
+      alternateName: 'קשר - ייעוץ זוגי באשדוד',
       url: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
       image: `${SITE_CONFIG.url}/images/shira-saharoni-sea.webp`,
-      telephone: SITE_CONFIG.contact.phone,
+      telephone: '+972-50-2763802',
       email: SITE_CONFIG.contact.email,
       priceRange: '₪500',
       description: 'ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. כשאותם ריבים ודפוסי שיחה חוזרים שוב ושוב, אפשר להבין מה קורה ולתרגל דרך אחרת לדבר. פגישה של 50 דקות, 500 ₪.',
       address: {
         '@type': 'PostalAddress',
+        streetAddress: 'אשדוד',
         addressLocality: 'אשדוד',
+        addressRegion: 'מחוז הדרום',
+        postalCode: '77100',
         addressCountry: 'IL',
       },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: 31.8014,
+        longitude: 34.6435,
+      },
+      openingHoursSpecification: [
+        {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+          opens: '09:00',
+          closes: '20:00',
+        },
+      ],
       provider: {
         '@type': 'LocalBusiness',
         '@id': `${SITE_CONFIG.url}/#business`,
+        name: 'שירה סהרוני — קשר',
       },
       areaServed: [
         {
@@ -131,9 +149,17 @@ const schemaData = {
           name: 'אשדוד',
         },
         {
+          '@type': 'AdministrativeArea',
+          name: 'אשדוד והסביבה',
+        },
+        {
           '@type': 'Country',
           name: 'ישראל (אונליין)',
         },
+      ],
+      sameAs: [
+        SITE_CONFIG.links.facebook,
+        SITE_CONFIG.links.instagram,
       ],
     },
     {
@@ -171,19 +197,19 @@ type VariantId = 'A' | 'B' | 'C';
 
 const copyVariants: Record<VariantId, { eyebrow: string; h1: string; subtitle: string }> = {
   A: {
-    eyebrow: 'ייעוץ זוגי מעשי וממוקד באשדוד ובאונליין',
-    h1: 'כשהשיחות חוזרות שוב ושוב לאותו ריב — אפשר ללמוד לדבר אחרת',
-    subtitle: 'אם כל ניסיון לדבר נגמר שוב בוויכוח, בהתגוננות או בשתיקה, אפשר לעצור ולבדוק מה קורה ביניכם. בייעוץ זוגי ממוקד נבין את הדפוס שחוזר בשיחות, ונתרגל דרך אחרת לדבר, להקשיב ולהתמודד עם מחלוקות — בלי לחפש מי אשם ומי צודק.',
+    eyebrow: 'קליניקה באשדוד ובאונליין | שירה סהרוני',
+    h1: 'ייעוץ זוגי באשדוד – ליווי וחיבור מחדש לזוגיות',
+    subtitle: 'ייעוץ זוגי באשדוד מסייע לבני זוג לגשר על פערים, לעצור את מעגל הוויכוחים והשתיקות, ולבנות תקשורת מקרבת. בליווי ממוקד ומעשי נבין את הדפוס שחוזר בשיחות, ונתרגל דרך אחרת להקשיב, לדבר ולהתמודד עם מחלוקות — בלי לחפש מי אשם ומי צודק.',
   },
   B: {
-    eyebrow: 'ייעוץ זוגי באשדוד | תהליך ממוקד ומעשי',
-    h1: 'לעצור את מעגל הריבים, להבין מה קורה ביניכם ולבנות דרך אחרת לדבר',
-    subtitle: 'ייעוץ זוגי מסודר שמתמקד במה שקורה בשיחות שלכם עכשיו: מזהים את הדפוס שחוזר, מבינים איפה השיחה מסתבכת ומתרגלים כלים מעשיים שאפשר לקחת הביתה.',
+    eyebrow: 'תהליך ממוקד ומעשי בקליניקה באשדוד ובאונליין',
+    h1: 'ייעוץ זוגי באשדוד – לעצור את מעגל הריבים ולבנות דרך אחרת לדבר',
+    subtitle: 'ייעוץ זוגי באשדוד מתמקד במה שקורה בשיחות שלכם עכשיו: מזהים את הדפוס שחוזר, מבינים איפה השיחה מסתבכת ומתרגלים כלים מעשיים שאפשר לקחת הביתה.',
   },
   C: {
-    eyebrow: 'ייעוץ זוגי באשדוד ובאונליין',
-    h1: 'גם כשכבר קשה לדבר בלי להיפגע — אפשר ליצור שיחה אחרת ביניכם',
-    subtitle: 'כשיש עדיין רצון להבין, להתקרב או פשוט להפסיק לחזור שוב לאותו ויכוח, ייעוץ זוגי ממוקד יכול לעזור לעשות סדר במה שקורה ולבחון דרך אחרת להתמודד עם הרגעים הקשים.',
+    eyebrow: 'ייעוץ זוגי ומשפחתי באשדוד ובאונליין',
+    h1: 'ייעוץ זוגי באשדוד – ליצור שיחה מקרבת גם כשקשה לדבר בלי להיפגע',
+    subtitle: 'ייעוץ זוגי באשדוד מסייע לעשות סדר במה שקורה כשקשה לדבר, להבין את הצרכים ההדדיים ולבחון דרך בטוחה ומכבדת לחיבור מחדש.',
   },
 };
 
@@ -700,14 +726,14 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       {/* 13. Mobile Sticky Bar */}
       {!isBookingInView && (
         <div className={styles.mobileStickyBar}>
-          <button
-            type="button"
-            className={styles.mobileStickyBtn}
-            onClick={() => scrollToBooking('mobile_sticky')}
+          <a
+            href={`tel:${SITE_CONFIG.contact.phone.replace(/-/g, '')}`}
+            className={styles.mobileStickyPhoneBtn}
+            onClick={trackPhoneClick}
+            aria-label="חיוג טלפוני לשירה סהרוני"
           >
-            <FiCheckCircle aria-hidden="true" />
-            קביעת פגישה
-          </button>
+            <FaPhone aria-hidden="true" />
+          </a>
           <a
             href={whatsappUrl}
             target="_blank"
@@ -721,6 +747,14 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           >
             <FaWhatsapp aria-hidden="true" />
           </a>
+          <button
+            type="button"
+            className={styles.mobileStickyBtn}
+            onClick={() => scrollToBooking('mobile_sticky')}
+          >
+            <FiCheckCircle aria-hidden="true" />
+            קביעת פגישה
+          </button>
         </div>
       )}
     </main>

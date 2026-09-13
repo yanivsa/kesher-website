@@ -214,7 +214,7 @@ const PremaritalFirstYearPage: React.FC = () => (
     <section className={styles.cta}>
       <div className="container">
         <h2>החתונה היא תאריך. הזוגיות היא מה שבונים אחריו</h2>
-        <p>אפשר לקיים את הפגישות באשדוד או אונליין.</p>
+        <p>אפשר לקיים את הפגישות באשדוד או אונליין. למידע נוסף על פגישות בקליניקה ראו <Link to="/couples-counseling-ashdod" style={{ color: 'inherit', textDecoration: 'underline' }}>ייעוץ זוגי באשדוד</Link>.</p>
         <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>בחירת מועד לפגישה</Link>
       </div>
     </section>

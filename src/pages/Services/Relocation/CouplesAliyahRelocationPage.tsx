@@ -188,7 +188,7 @@ const CouplesAliyahRelocationPage: React.FC = () => (
     <section className={styles.cta}>
       <div className="container">
         <h2>אפשר לעבור מדינה בלי להשאיר את הזוגיות מאחור</h2>
-        <p>הפגישות מתקיימות אונליין, וגם באשדוד למי שנמצאים בישראל.</p>
+        <p>הפגישות מתקיימות אונליין, וגם בקליניקה באשדוד למי שנמצאים בישראל. ראו עוד על <Link to="/couples-counseling-ashdod" style={{ color: 'inherit', textDecoration: 'underline' }}>ייעוץ זוגי באשדוד</Link>.</p>
         <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>בחירת מועד לפגישה</Link>
       </div>
     </section>

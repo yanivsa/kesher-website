@@ -58,8 +58,20 @@
   font-size: 1.4rem;
   color: var(--color-text-muted);
   max-width: 580px;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
   line-height: 1.6;
+}
+
+.inlineLink {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.inlineLink:hover {
+  color: var(--color-primary);
 }
 
 .actions {

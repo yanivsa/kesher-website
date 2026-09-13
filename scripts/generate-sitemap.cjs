@@ -37,7 +37,7 @@ const buildSitemap = (posts) => {
       route,
       lastmod: route === '/blog' ? newestPostDate : '',
       changefreq: route === '/' || route === '/blog' ? 'weekly' : legalRoutes.has(route) ? 'yearly' : 'monthly',
-      priority: route === '/' ? '1.0' : route === '/blog' ? '0.9' : serviceRoutes.has(route) ? '0.8' : '0.3',
+      priority: route === '/' ? '1.0' : route === '/couples-counseling-ashdod' ? '0.95' : route === '/blog' ? '0.9' : serviceRoutes.has(route) ? '0.8' : '0.3',
     }));
   const postEntries = published.map((post) => ({
     route: blogRoute(post),
