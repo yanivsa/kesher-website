@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-13",
-  "status": "image_retry_wait",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -788,14 +788,7 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 34752659590 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-09-13T14:58:26.586417+00:00",
-    "at": "2026-09-13T14:43:26.586441+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-09T19:39:07.499066+00:00",
@@ -1471,12 +1464,22 @@
         "failure_streak": 2,
         "run_id": 34752659590
       }
+    },
+    {
+      "at": "2026-09-13T17:44:21.180646+00:00",
+      "from": "image_retry_wait",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 3,
+        "pr_number": 804
+      }
     }
   ],
-  "updated_at": "2026-09-13T14:43:26.586454+00:00",
+  "updated_at": "2026-09-13T17:44:21.180653+00:00",
   "image": {
-    "attempt_count": 2,
-    "status": "retry_wait",
+    "attempt_count": 3,
+    "status": "running",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 34752659590 completed with conclusion=success but no validated image is present",
@@ -1484,7 +1487,7 @@
       "retry_at": "2026-09-13T14:58:26.586417+00:00",
       "at": "2026-09-13T14:43:26.586441+00:00"
     },
-    "next_retry_at": "2026-09-13T14:58:26.586417+00:00",
+    "next_retry_at": null,
     "run_id": 34752659590,
     "processed_run_id": 34752659590,
     "provider_id": null,
@@ -1493,7 +1496,7 @@
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 2
     },
-    "last_dispatch_at": "2026-09-13T10:45:03.727735+00:00",
+    "last_dispatch_at": "2026-09-13T17:44:21.180624+00:00",
     "last_run_conclusion": "success",
     "last_failed_run_id": 34752659590
   },
