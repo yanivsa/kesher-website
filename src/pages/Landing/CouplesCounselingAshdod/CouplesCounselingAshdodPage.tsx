@@ -344,7 +344,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               fetchPriority="high"
             />
             <div className={styles.heroImageBadge}>
-              שירה סהרוני | יועצת זוגית ומגשרת מוסמכת
+              שירה סהרוני | יועצת זוגית ומנחת הורים
             </div>
           </div>
         </div>
@@ -479,7 +479,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           <div className={styles.aboutContent}>
             <h2>כדי לדבר על הדברים הכי רגישים, צריך להרגיש שיש מקום לשני הצדדים</h2>
             <span className={styles.aboutRole}>
-              שירה סהרוני | יועצת זוגית, מנחת הורים ומגשרת מוסמכת, עורכת דין בהכשרתה
+              שירה סהרוני | יועצת זוגית ומנחת הורים
             </span>
             <p>
               הגישה שלי משלבת הקשבה לשתי נקודות המבט, הסתכלות מסודרת על מה שקורה בין בני הזוג וכלים מעשיים שאפשר לקחת גם לחיים בבית.
