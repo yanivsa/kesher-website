@@ -1,24 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-13",
-  "status": "image_retry_wait",
+  "cycle": "2026-09-14",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34724265199,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-09-12T23:00:45.700446+00:00",
-    "pr_number": 804,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/804"
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -786,83 +783,33 @@
       },
       "archived_at": "2026-09-12T21:02:11.747798+00:00",
       "media": {}
+    },
+    {
+      "cycle": "2026-09-13",
+      "status": "image_retry_wait",
+      "article": {
+        "attempt_count": 1,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 34724265199,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "deploy_attempts": 0,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-09-12T23:00:45.700446+00:00",
+        "pr_number": 804,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/804"
+      },
+      "archived_at": "2026-09-13T21:42:56.574301+00:00"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 34772490170 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-09-13T20:08:41.950079+00:00",
-    "at": "2026-09-13T19:53:41.950105+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T19:39:07.499066+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T19:39:10.563269+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T19:39:18.688487+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-09T19:40:05.482948+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T19:40:08.451412+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T19:40:17.139213+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-09T19:58:47.146073+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T19:59:01.171532+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-09T19:59:38.347042+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-09T20:01:55.851141+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-09T20:01:59.009238+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-09-09T20:02:07.328730+00:00",
       "from": "long_video_complete",
@@ -1493,31 +1440,38 @@
         "failure_streak": 3,
         "run_id": 34772490170
       }
+    },
+    {
+      "at": "2026-09-13T21:42:56.574333+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-13T21:42:56.574339+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-13T21:42:56.575104+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-13T19:53:41.950119+00:00",
+  "updated_at": "2026-09-13T21:42:56.574316+00:00",
   "image": {
-    "attempt_count": 3,
-    "status": "retry_wait",
-    "last_error": {
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 34772490170 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-09-13T20:08:41.950079+00:00",
-      "at": "2026-09-13T19:53:41.950105+00:00"
-    },
-    "next_retry_at": "2026-09-13T20:08:41.950079+00:00",
-    "run_id": 34772490170,
-    "processed_run_id": 34772490170,
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 3,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 3
-    },
-    "last_dispatch_at": "2026-09-13T17:44:21.180624+00:00",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 34772490170
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   },
   "long_video": {
     "attempt_count": 0,
@@ -1545,14 +1499,5 @@
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": null,
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
   }
 }
