@@ -247,6 +247,7 @@ test('couples counseling Ashdod landing page uses the trackable Calendly embed a
 test('PPC attribution survives home to appointment navigation without persisting raw click ids', async ({ page }) => {
   await page.goto('/?utm_source=google&utm_medium=cpc&utm_campaign=home_search&gclid=raw-click-id-should-not-be-stored');
   await page.waitForFunction(() => sessionStorage.getItem('kesher_attr_utm_campaign') === 'home_search');
+
   await page.goto('/appointment');
   const attribution = await page.evaluate(() => ({
     entry: sessionStorage.getItem('kesher_attr_entry_page_path'),
