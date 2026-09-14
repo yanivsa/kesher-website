@@ -65,7 +65,7 @@ jobs:
           python3 -m py_compile .github/scripts/kesher_task_supervisor_runtime_v2.py .github/scripts/kesher_task_supervisor_runtime_v3.py
 
   supervise:
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && github.event.head_commit.message != 'chore: dispatch Ahava Android UX fix via Jules'
     needs: validate
     runs-on: ubuntu-latest
     timeout-minutes: 55
@@ -93,3 +93,72 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: python3 .github/scripts/kesher_task_supervisor_runtime_v3.py
+
+  dispatch-ahava-android:
+    if: github.event_name == 'push' && github.event.head_commit.message == 'chore: dispatch Ahava Android UX fix via Jules'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+    steps:
+      - name: Resolve Ahava source and create Jules session
+        run: |
+          set -euo pipefail
+          test -n "${JULES_API_KEY:-}"
+          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            "https://jules.googleapis.com/v1alpha/sources?pageSize=100" > sources.json
+
+          python3 - <<'PY'
+          import json, os
+          data = json.load(open('sources.json', encoding='utf-8'))
+          target = 'yanivashdod-hub/Ahava'.lower()
+          source = None
+          for item in data.get('sources', []):
+              if target in json.dumps(item, ensure_ascii=False).lower():
+                  candidate = item.get('name')
+                  if isinstance(candidate, str) and candidate.startswith('sources/'):
+                      source = candidate
+                      break
+          if not source:
+              print('ERROR: Jules does not currently expose yanivashdod-hub/Ahava in listSources.')
+              print('Visible sources:', [x.get('name') for x in data.get('sources', []) if isinstance(x, dict)])
+              raise SystemExit(2)
+          print('Resolved Ahava Jules source:', source)
+          prompt = '''Work fully autonomously on the Android version of repository yanivashdod-hub/Ahava, starting from main. First inspect the actual repository and Android architecture; do not assume the cause before reading the code.
+
+Fix two focused Android usability problems when the Professor website/view is opened inside Ahava:
+
+1. Professor width / zoom / horizontal navigation. The user currently mainly sees the right side, cannot reach left-side topic selectors, and long questions/answers can be cut off. Enable native two-finger pinch zoom in/out and horizontal panning/scrolling in both directions when content is wider than the device, while preserving vertical scrolling, taps, inputs, cookies/session and Hebrew RTL. All topic selectors, complete question text and answer controls must be reachable. Do not add permanent +/- controls unless truly necessary. Inspect both Android WebView configuration and Professor HTML/CSS/viewport/touch handling. Check for user-scalable=no, restrictive maximum-scale, fixed-width containers, overflow-x:hidden, gesture prevention and RTL horizontal positioning. Use supportZoom/builtInZoomControls/displayZoomControls=false/useWideViewPort/loadWithOverviewMode only if appropriate to the actual implementation.
+
+2. Android system Back. Back currently appears to exit Ahava immediately. Implement this priority: WebView history first; otherwise return from Professor to previous Ahava screen; otherwise normal app navigation stack; exit/background only at the true root. Use the modern navigation mechanism already present (OnBackPressedDispatcher / Compose BackHandler as applicable). If Professor is an SPA, verify canGoBack/history.pushState behavior. Android gesture-back must coexist with webpage panning.
+
+Before editing, determine root cause(s), files to change and a short implementation plan based on actual code. Then implement the smallest focused fix only; no unrelated refactor.
+
+Validate: Ahava -> Professor -> topic -> long question; pan left/right; pinch zoom out/in; vertical scroll and taps still work; all text/selectors/answers reachable; RTL correct; repeated Back navigates question/topic/Professor state/Ahava rather than exiting on first Back; gesture navigation where applicable; relevant Android build/tests/CI-compatible checks pass; normal web version is not broken.
+
+Create one ready-for-review PR automatically if changes are required. PR body must state root cause, files changed, exact behavior changed, tests/builds run and results, and any remaining limitation. Keep the diff strictly limited to these two Android issues. Do not ask the user for confirmation or implementation choices.'''
+          payload = {
+              'title': 'Ahava Android Professor zoom, horizontal navigation and Back fix',
+              'prompt': prompt,
+              'sourceContext': {
+                  'source': source,
+                  'githubRepoContext': {'startingBranch': 'main'}
+              },
+              'requirePlanApproval': False,
+              'automationMode': 'AUTO_CREATE_PR'
+          }
+          json.dump(payload, open('payload.json','w',encoding='utf-8'), ensure_ascii=False)
+          PY
+
+          status="$(curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
+            -o response.json -w '%{http_code}' \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            https://jules.googleapis.com/v1alpha/sessions)"
+          cat response.json
+          echo
+          echo "HTTP status: ${status}"
+          test "${status}" = "200" -o "${status}" = "201"
