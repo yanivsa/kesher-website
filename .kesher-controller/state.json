@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-14",
-  "status": "article_normalizing",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -15,7 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-09-13T21:43:22.550487+00:00",
     "watchdog": {
       "identity": "2026-09-14",
@@ -827,12 +827,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T20:22:56.215985+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-09T20:23:26.263433+00:00",
       "from": "article_live",
@@ -1647,12 +1641,22 @@
         "pr_number": 808,
         "slot": "2026-09-14"
       }
+    },
+    {
+      "at": "2026-09-14T10:12:32.002335+00:00",
+      "from": "article_normalizing",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 1,
+        "pr_number": 808
+      }
     }
   ],
-  "updated_at": "2026-09-14T10:08:20.628364+00:00",
+  "updated_at": "2026-09-14T10:12:32.002342+00:00",
   "image": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1660,7 +1664,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-14T10:12:32.002311+00:00"
   },
   "long_video": {
     "attempt_count": 0,
