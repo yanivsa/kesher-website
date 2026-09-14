@@ -67,7 +67,7 @@ class KesherThreeStrikeRuntimeTests(unittest.TestCase):
             },
         }
 
-    def test_article_controller_acts_on_first_stall_then_direct_takeover_on_third_hour(self):
+    def test_article_s1_controller_then_s2_jules_hold_then_s3_direct(self):
         state = self._state()
         harness = _Harness(datetime(2026, 9, 6, 7, 0, tzinfo=timezone.utc))
 
@@ -76,14 +76,17 @@ class KesherThreeStrikeRuntimeTests(unittest.TestCase):
         self.assertEqual(harness.github.nudges, ["sessions/article-1"])
         incident = next(iter(state["interventions"].values()))
         self.assertEqual(incident["strike_count"], 1)
+        self.assertEqual(incident["owner"], "controller")
         self.assertTrue(incident["controller_action_observed"])
 
         harness.now = datetime(2026, 9, 6, 8, 0, tzinfo=timezone.utc)
         second = harness._article_watchdog(state)
-        self.assertEqual(second.kind, "article_watchdog_restart")
-        self.assertEqual(len(harness.github.cancels), 1)
+        self.assertEqual(second.kind, "wait")
+        self.assertEqual(len(harness.github.cancels), 0, "S2 must not run another Controller restart")
+        self.assertEqual(len(harness.github.dispatches), 0, "S2 must preserve the same worker identity for Jules")
         incident = next(iter(state["interventions"].values()))
         self.assertEqual(incident["strike_count"], 2)
+        self.assertEqual(incident["owner"], "jules")
 
         harness.now = datetime(2026, 9, 6, 9, 0, tzinfo=timezone.utc)
         third = harness._article_watchdog(state)
