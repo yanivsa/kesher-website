@@ -11,6 +11,22 @@
     "backoff_minutes": [5, 15],
     "attempts_include_initial_run": true
   },
+  "supervision": {
+    "contract_version": 1,
+    "incident_fingerprint_version": 2,
+    "strike_interval_minutes": 60,
+    "external_running_hard_timeout_minutes": 90,
+    "escalation": ["controller", "jules", "direct"],
+    "stage_sla_minutes": {
+      "article": 60,
+      "long_video": 90,
+      "short": 90
+    },
+    "prompt_versions": {
+      "controller_recovery": 1,
+      "jules_incident_repair": 1
+    }
+  },
   "article": {
     "generator": "jules",
     "worker_session_attempts": 1,
@@ -69,6 +85,9 @@
     "controller_owns_retries": true,
     "heartbeat_is_recovery_only": true,
     "provider_ids_are_persisted_before_followup": true,
-    "youtube_insert_is_idempotent": true
+    "youtube_insert_is_idempotent": true,
+    "incident_identity_includes_failure_signature": true,
+    "supervisor_escalation_is_controller_jules_direct": true,
+    "jules_repair_is_idempotent": true
   }
 }
