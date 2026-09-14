@@ -28,6 +28,22 @@ const servicePages: SearchItem[] = [
     category: 'שירותים'
   },
   {
+    id: 'service-parenting-ashdod',
+    type: 'service',
+    title: 'הדרכת הורים באשדוד',
+    body: 'הדרכת הורים מעשית וממוקדת באשדוד או אונליין. כלים ליצירת סמכות רגועה, הצבת גבולות בלי מאבקים וחיזוק שיתוף הפעולה בבית.',
+    url: '/parenting-guidance-ashdod',
+    category: 'שירותים'
+  },
+  {
+    id: 'service-mediation-ashdod',
+    type: 'service',
+    title: 'גישור זוגי באשדוד',
+    body: 'גישור זוגי מקצועי ומכבד באשדוד או אונליין. מרחב ניטרלי ליישוב מחלוקות, בניית הסכמות הדדיות וניהול שיח בטוח.',
+    url: '/couples-mediation-ashdod',
+    category: 'שירותים'
+  },
+  {
     id: 'service-parenting',
     type: 'service',
     title: 'הדרכת הורים',
