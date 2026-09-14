@@ -345,7 +345,7 @@ const ParentingGuidanceAshdodPage: React.FC = () => {
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2>כשכל משימה פשוטה הופכת למאבק כוחות מתיש</h2>
+            <h2>התמודדות עם קשיי התנהגות ומעברים – כשכל משימה הופכת למאבק</h2>
             <p>
               שגרת הבית לא אמורה להרגיש כמו שדה קרב. מנסים לבקש בנועם, לחזור שוב, להסביר בהיגיון — אבל לעיתים קרובות שום דבר לא זז עד שהטונים עולים. בסוף מוצאים את עצמכם מתעמתים סביב מסכים, מקלחות או התארגנות בוקר, והולכים לישון מותשים ועם מועקה בלב. אפשר לשנות את הדינמיקה הזו.
             </p>
@@ -365,7 +365,7 @@ const ParentingGuidanceAshdodPage: React.FC = () => {
       <section className={styles.section}>
         <div className="container">
           <div className={styles.hopeBox}>
-            <h2>לא צריך להיות הורים מושלמים – צריך כלים שעובדים</h2>
+            <h2>כלים להצבת גבולות ברורים ברוגע – לא צריך להיות הורים מושלמים</h2>
             <div className={styles.hopeContent}>
               <p>
                 הורות רגועה אינה דורשת שינוי קיצוני של כל הבית ביום אחד. אפשר להתחיל מהבנה מדויקת של מה שמפעיל את מעגל המאבקים, ולבחור תגובה הורית אחת שמחזירה את השליטה והרוגע.
@@ -468,7 +468,7 @@ const ParentingGuidanceAshdodPage: React.FC = () => {
             />
           </div>
           <div className={styles.aboutContent}>
-            <h2>ליווי מעשי שמחבר בין הבנת הילד לגבולות ברורים בבית</h2>
+            <h2>הנחיית הורים באשדוד – ליווי מעשי לחיבור בין הבנת הילד לסמכות רגועה</h2>
             <span className={styles.aboutRole}>
               שירה סהרוני | מנחת הורים, יועצת זוגית ומגשרת מוסמכת
             </span>
