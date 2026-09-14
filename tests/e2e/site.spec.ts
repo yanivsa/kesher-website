@@ -212,7 +212,7 @@ test('couples counseling Ashdod landing page uses the trackable Calendly embed a
   await page.goto('/couples-counseling-ashdod?gclid=test_gclid&utm_source=google&utm_campaign=ashdod_search');
 
   await expect(page.getByRole('heading', {
-    name: 'כשהשיחות חוזרות שוב ושוב לאותו ריב — אפשר ללמוד לדבר אחרת',
+    name: 'ייעוץ זוגי באשדוד – ליווי וחיבור מחדש לזוגיות',
     level: 1,
   })).toBeVisible();
   await expect(page.getByText('500 ₪').first()).toBeVisible();
@@ -287,19 +287,19 @@ test('privacy choice persists and updates the measurement state', async ({ page 
 test('copy variants A, B, and C render their respective H1 titles', async ({ page }) => {
   await page.goto('/couples-counseling-ashdod');
   await expect(page.getByRole('heading', {
-    name: 'כשהשיחות חוזרות שוב ושוב לאותו ריב — אפשר ללמוד לדבר אחרת',
+    name: 'ייעוץ זוגי באשדוד – ליווי וחיבור מחדש לזוגיות',
     level: 1,
   })).toBeVisible();
 
   await page.goto('/couples-counseling-ashdod?variant=B');
   await expect(page.getByRole('heading', {
-    name: 'לעצור את מעגל הריבים, להבין מה קורה ביניכם ולבנות דרך אחרת לדבר',
+    name: 'ייעוץ זוגי באשדוד – לעצור את מעגל הריבים ולבנות דרך אחרת לדבר',
     level: 1,
   })).toBeVisible();
 
   await page.goto('/couples-counseling-ashdod?variant=C');
   await expect(page.getByRole('heading', {
-    name: 'גם כשכבר קשה לדבר בלי להיפגע — אפשר ליצור שיחה אחרת ביניכם',
+    name: 'ייעוץ זוגי באשדוד – ליצור שיחה מקרבת גם כשקשה לדבר בלי להיפגע',
     level: 1,
   })).toBeVisible();
 });

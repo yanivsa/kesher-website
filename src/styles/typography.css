@@ -44,3 +44,7 @@ a:hover {
   h2 { font-size: 2rem; }
   .container { padding: 0 var(--spacing-sm); }
 }
+
+p a {
+  text-decoration: underline;
+}

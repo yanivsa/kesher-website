@@ -10,7 +10,7 @@ for (const width of mobileWidths) {
 
     const hero = page.locator('section[aria-labelledby="couples-ashdod-title"]');
     await expect(hero.getByRole('heading', {
-      name: 'כשהשיחות חוזרות שוב ושוב לאותו ריב — אפשר ללמוד לדבר אחרת',
+      name: 'ייעוץ זוגי באשדוד – ליווי וחיבור מחדש לזוגיות',
       level: 1,
     })).toBeVisible();
     await expect(hero.getByRole('button', { name: 'קביעת פגישה' })).toBeInViewport();
@@ -30,7 +30,7 @@ for (const width of desktopWidths) {
     await page.goto('/couples-counseling-ashdod');
 
     await expect(page.getByRole('heading', {
-      name: 'כשהשיחות חוזרות שוב ושוב לאותו ריב — אפשר ללמוד לדבר אחרת',
+      name: 'ייעוץ זוגי באשדוד – ליווי וחיבור מחדש לזוגיות',
       level: 1,
     })).toBeVisible();
 
