@@ -115,6 +115,12 @@ jobs:
           wranglerVersion: 4.100.0
           command: pages deploy dist --project-name=kesher-website --branch=main
 
+      - name: Verify newest article is public in production
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/verify-production-article.py --retries 12 --delay 5
+
       - name: Publish production deployment statuses
         if: ${{ always() }}
         env:
@@ -138,9 +144,9 @@ jobs:
           }
 
           if [ "$JOB_STATUS" = "success" ]; then
-            publish_status success "booking-tracking/production-deploy" "Cloudflare production deployment succeeded"
+            publish_status success "booking-tracking/production-deploy" "Cloudflare deploy and live article smoke verification succeeded"
           else
-            publish_status failure "booking-tracking/production-deploy" "Production deploy failed; inspect Deploy to Cloudflare Pages"
+            publish_status failure "booking-tracking/production-deploy" "Production deploy or live article verification failed"
           fi
 
           if [ "$MEASUREMENT_READY" = "true" ]; then
