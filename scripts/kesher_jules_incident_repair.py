@@ -97,17 +97,36 @@ def _list_sessions(api_key: str, title: str) -> list[dict[str, Any]]:
     return rows
 
 
+def list_exact_incident_sessions(api_key: str, title: str) -> list[dict[str, Any]]:
+    """Return every valid exact-title session, including terminal sessions.
+
+    Terminal sessions are deliberately retained for idempotency reconciliation:
+    an uncertain create may have succeeded and completed before the caller could
+    persist its identity. Seeing that session must prevent a second creation.
+    """
+    rows = [
+        session
+        for session in _list_sessions(api_key, title)
+        if core.normalize_session_name(session)
+    ]
+    rows.sort(key=lambda row: (str(row.get("createTime") or ""), core.normalize_session_name(row)))
+    return rows
+
+
 def list_active_incident_sessions(api_key: str, title: str) -> list[dict[str, Any]]:
+    """Backward-compatible active-only view used by older callers/tests."""
     rows = []
-    for session in _list_sessions(api_key, title):
+    for session in list_exact_incident_sessions(api_key, title):
         state = str(session.get("state") or "UNKNOWN").upper()
         if state == "COMPLETED" or state in core.TERMINAL_FAILURES:
             continue
-        if not core.normalize_session_name(session):
-            continue
         rows.append(session)
-    rows.sort(key=lambda row: (str(row.get("createTime") or ""), core.normalize_session_name(row)))
     return rows
+
+
+def _is_terminal(session: dict[str, Any]) -> bool:
+    state = str(session.get("state") or "UNKNOWN").upper()
+    return state == "COMPLETED" or state in core.TERMINAL_FAILURES
 
 
 def send_message(api_key: str, session: str, prompt: str) -> None:
@@ -147,25 +166,34 @@ def create_session(api_key: str, title: str, prompt: str) -> str:
     return name
 
 
+def _one_exact_or_fail(rows: list[dict[str, Any]], *, context: str) -> dict[str, Any] | None:
+    if len(rows) > 1:
+        identities = ",".join(core.normalize_session_name(row) for row in rows[:8])
+        raise IncidentRepairError(f"duplicate exact Jules incident sessions {context}: {identities}")
+    return rows[0] if rows else None
+
+
 def acquire_or_nudge_session(*, api_key: str, idempotency_key: str, prompt: str) -> str:
     """Reuse one exact repair session or create at most one new session.
 
-    The mutation POST is never blindly retried. If its response is uncertain,
-    lookup by the deterministic title reconciles whether Jules actually created
-    the session before allowing the caller to fail closed.
+    The mutation POST is never blindly retried. Exact-title lookup includes
+    completed/failed sessions so an uncertain creation can never result in a
+    later second session for the same incident. Active sessions receive one
+    continuation message; terminal sessions are only recovered and persisted.
     """
     title = incident_session_title(idempotency_key)
-    active = list_active_incident_sessions(api_key, title)
-    if len(active) > 1:
-        identities = ",".join(core.normalize_session_name(row) for row in active[:8])
-        raise IncidentRepairError(f"duplicate active Jules incident sessions detected: {identities}")
-    if len(active) == 1:
-        name = core.normalize_session_name(active[0])
-        send_message(
-            api_key,
-            name,
-            "Continue the exact existing incident repair. Re-read current evidence, keep the same identities, and finish the smallest safe repair.\n\n" + prompt,
-        )
+    existing = _one_exact_or_fail(
+        list_exact_incident_sessions(api_key, title),
+        context="detected",
+    )
+    if existing is not None:
+        name = core.normalize_session_name(existing)
+        if not _is_terminal(existing):
+            send_message(
+                api_key,
+                name,
+                "Continue the exact existing incident repair. Re-read current evidence, keep the same identities, and finish the smallest safe repair.\n\n" + prompt,
+            )
         return name
 
     try:
@@ -178,14 +206,15 @@ def acquire_or_nudge_session(*, api_key: str, idempotency_key: str, prompt: str)
         if attempt:
             time.sleep(LOOKUP_DELAY_SECONDS)
         try:
-            recovered = list_active_incident_sessions(api_key, title)
+            recovered = _one_exact_or_fail(
+                list_exact_incident_sessions(api_key, title),
+                context="after uncertain create",
+            )
         except (IncidentRepairError, core.ArticleRunnerError) as exc:
             last_error = exc
             continue
-        if len(recovered) > 1:
-            raise IncidentRepairError("duplicate active Jules incident sessions after uncertain create") from original
-        if len(recovered) == 1:
-            return core.normalize_session_name(recovered[0])
+        if recovered is not None:
+            return core.normalize_session_name(recovered)
 
     detail = f"Jules incident create response was uncertain: {original}"
     if last_error is not None:
