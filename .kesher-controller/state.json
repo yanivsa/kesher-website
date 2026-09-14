@@ -31,7 +31,8 @@
     "pr_number": 808,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/808",
     "normalization_slot": "2026-09-14",
-    "normalization_dispatched_at": "2026-09-14T05:39:45.368969+00:00"
+    "normalization_dispatched_at": "2026-09-14T05:39:45.368969+00:00",
+    "normalization_run_id": 34810440856
   },
   "backlog": [
     {
@@ -1524,7 +1525,7 @@
       }
     }
   ],
-  "updated_at": "2026-09-14T05:39:45.369044+00:00",
+  "updated_at": "2026-09-14T05:40:39.792056+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
