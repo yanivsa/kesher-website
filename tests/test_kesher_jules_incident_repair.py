@@ -43,14 +43,14 @@ class KesherJulesIncidentRepairTests(unittest.TestCase):
         self.assertIn("Do NOT upload a new YouTube video", prompt)
         self.assertIn("at most ONE repair PR", prompt)
 
-    def test_reuses_one_existing_exact_incident_session(self):
+    def test_reuses_one_existing_active_exact_incident_session(self):
         module = self._module()
         existing = {
             "name": "sessions/existing-1",
             "title": module.incident_session_title("d" * 64),
             "state": "IN_PROGRESS",
         }
-        with patch.object(module, "list_active_incident_sessions", return_value=[existing]), patch.object(
+        with patch.object(module, "list_exact_incident_sessions", return_value=[existing]), patch.object(
             module, "send_message"
         ) as send, patch.object(module, "create_session") as create:
             session = module.acquire_or_nudge_session(
@@ -62,14 +62,52 @@ class KesherJulesIncidentRepairTests(unittest.TestCase):
         send.assert_called_once()
         create.assert_not_called()
 
-    def test_duplicate_active_exact_incident_sessions_fail_closed(self):
+    def test_recovers_completed_exact_session_without_creating_or_nudging(self):
+        module = self._module()
+        existing = {
+            "name": "sessions/completed-1",
+            "title": module.incident_session_title("f" * 64),
+            "state": "COMPLETED",
+        }
+        with patch.object(module, "list_exact_incident_sessions", return_value=[existing]), patch.object(
+            module, "send_message"
+        ) as send, patch.object(module, "create_session") as create:
+            session = module.acquire_or_nudge_session(
+                api_key="key",
+                idempotency_key="f" * 64,
+                prompt="repair exact incident",
+            )
+        self.assertEqual(session, "sessions/completed-1")
+        send.assert_not_called()
+        create.assert_not_called()
+
+    def test_recovers_terminal_failure_exact_session_without_second_creation(self):
+        module = self._module()
+        existing = {
+            "name": "sessions/failed-1",
+            "title": module.incident_session_title("1" * 64),
+            "state": "FAILED",
+        }
+        with patch.object(module, "list_exact_incident_sessions", return_value=[existing]), patch.object(
+            module, "send_message"
+        ) as send, patch.object(module, "create_session") as create:
+            session = module.acquire_or_nudge_session(
+                api_key="key",
+                idempotency_key="1" * 64,
+                prompt="repair exact incident",
+            )
+        self.assertEqual(session, "sessions/failed-1")
+        send.assert_not_called()
+        create.assert_not_called()
+
+    def test_duplicate_exact_incident_sessions_fail_closed_even_if_one_is_terminal(self):
         module = self._module()
         title = module.incident_session_title("e" * 64)
         rows = [
-            {"name": "sessions/one", "title": title, "state": "IN_PROGRESS"},
+            {"name": "sessions/one", "title": title, "state": "COMPLETED"},
             {"name": "sessions/two", "title": title, "state": "IN_PROGRESS"},
         ]
-        with patch.object(module, "list_active_incident_sessions", return_value=rows):
+        with patch.object(module, "list_exact_incident_sessions", return_value=rows):
             with self.assertRaisesRegex(module.IncidentRepairError, "duplicate"):
                 module.acquire_or_nudge_session(
                     api_key="key",
