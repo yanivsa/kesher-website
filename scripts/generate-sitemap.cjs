@@ -12,6 +12,7 @@ const serviceRoutes = new Set([
   '/appointment',
   '/services/couples',
   '/services/parenting',
+  '/services/mediation',
   '/services/gifted-parenting',
   '/services/aliyah-families',
   '/services/couples-aliyah-relocation',
