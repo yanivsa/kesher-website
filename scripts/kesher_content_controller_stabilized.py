@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import sys
+import urllib.parse
 
 if __package__:
     from . import article_claim_quality as quality
@@ -14,6 +15,22 @@ else:
     import article_claim_quality as quality
     import kesher_content_controller_v5 as v5
     import kesher_content_controller_v5_runtime as runtime
+
+
+_ORIGINAL_PUBLIC_SITE_GET = v5.core.PublicSiteClient.get
+
+
+def _unicode_safe_public_site_get(self, url: str):
+    """Percent-encode non-ASCII URL components before urllib builds the request."""
+    parts = urllib.parse.urlsplit(url)
+    safe_url = urllib.parse.urlunsplit((
+        parts.scheme,
+        parts.netloc,
+        urllib.parse.quote(parts.path, safe="/%:@"),
+        urllib.parse.quote(parts.query, safe="=&%:@/?+"),
+        urllib.parse.quote(parts.fragment, safe="%:@/?+"),
+    ))
+    return _ORIGINAL_PUBLIC_SITE_GET(self, safe_url)
 
 
 class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
@@ -100,6 +117,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
 def install_runtime() -> None:
     runtime.install_runtime()
+    v5.core.PublicSiteClient.get = _unicode_safe_public_site_get
     v5.V5Controller = StabilizedRuntimeV5Controller
 
 
