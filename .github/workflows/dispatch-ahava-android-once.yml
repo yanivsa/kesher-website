@@ -1,0 +1,121 @@
+name: One-shot Jules Ahava Android dispatch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/dispatch-ahava-android-once.yml
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    if: github.event.head_commit.message == 'chore: dispatch Ahava Android UX fix via Jules'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve Ahava source in Jules
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${JULES_API_KEY:-}"
+          curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            "https://jules.googleapis.com/v1alpha/sources?pageSize=100" > sources.json
+          python3 - <<'PY'
+          import json, os
+          data = json.load(open('sources.json', encoding='utf-8'))
+          target = 'yanivashdod-hub/Ahava'.lower()
+          found = None
+          for item in data.get('sources', []):
+              text = json.dumps(item, ensure_ascii=False).lower()
+              if target in text:
+                  name = item.get('name')
+                  if isinstance(name, str) and name.startswith('sources/'):
+                      found = name
+                      break
+          if not found:
+              names = [x.get('name') for x in data.get('sources', []) if isinstance(x, dict)]
+              print('Ahava source not found. Jules sources:', names[:100])
+              raise SystemExit(2)
+          print('Resolved Jules source:', found)
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as fh:
+              fh.write(f'AHAVA_SOURCE={found}\n')
+          PY
+
+      - name: Create Jules Android repair session
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          set -euo pipefail
+          cat > prompt.txt <<'PROMPT'
+          Work fully autonomously on the Android version of repository yanivashdod-hub/Ahava, starting from main. Do not ask for confirmation or implementation choices. First inspect the actual repository and Android architecture; do not assume the cause before reading the code.
+
+          Goal: fix two Android usability problems specifically when the user opens the Professor website/view inside the Ahava Android app.
+
+          1) Professor page width / zoom / horizontal navigation
+          Current symptoms: the user mainly sees the right side of the page, cannot reach content on the left, cannot reach all topic selectors, and long questions/answers may be cut off. This currently makes the Professor flow difficult or impossible to use.
+
+          Required behavior:
+          - Native two-finger pinch-to-zoom in and out inside the Professor web content.
+          - Horizontal panning/scrolling in BOTH directions whenever content is wider than the device, while preserving normal vertical scrolling and taps.
+          - All topic/category controls, full question text and answer controls must be reachable.
+          - Hebrew/RTL must remain correct. Initial horizontal position should make sense for RTL but must never lock the user to one side.
+          - Preserve sessions, cookies, authentication, input fields, links and existing Professor functionality.
+          - Do not add permanent +/- zoom buttons unless genuinely required.
+
+          Inspect both Android and web causes. Find the Activity/Fragment/Compose screen/WebView wrapper used by Professor and inspect current WebView settings. Also inspect Professor HTML/CSS/viewport/touch handling for user-scalable=no, restrictive maximum-scale, fixed-width containers, overflow-x:hidden, JavaScript gesture prevention, or RTL positioning problems. If appropriate to the existing implementation, consider WebView settings such as supportZoom, builtInZoomControls, displayZoomControls=false, useWideViewPort and loadWithOverviewMode, but do not blindly add them.
+
+          2) Android system Back behavior
+          Current symptom: Back appears to close/leave Ahava immediately instead of navigating backward.
+
+          Required priority:
+          a. If Professor WebView has navigable browser history, go back inside the WebView.
+          b. Otherwise return from Professor to the previous Ahava screen.
+          c. Else use the application's normal navigation/back stack.
+          d. Only exit/background normally when already at the true app root with nothing left to navigate.
+
+          Use the Android architecture already present. Prefer modern OnBackPressedDispatcher / Compose BackHandler/navigation rather than deprecated handling. If Professor uses SPA history, verify whether WebView.canGoBack() reflects it; account for history.pushState/popstate only if actually required by the implementation. Android gesture-back must coexist with horizontal webpage panning.
+
+          Before editing, report internally/within the session: root cause(s), files that need modification and a short implementation plan based on actual code. Then implement the smallest focused fix; do not refactor unrelated Ahava code.
+
+          Validate at minimum:
+          - Open Ahava -> Professor -> topic/subject -> long question.
+          - Reach full page width; pan left and right; pinch zoom out/in; vertical scroll still works; taps/answers work.
+          - Full question text and all selectors/answers are reachable.
+          - Hebrew RTL remains correct.
+          - Back sequence behaves as question -> topic/previous Professor state -> Ahava screen, and app does not exit on first Back.
+          - Test gesture navigation as applicable.
+          - Run the repository's relevant Android tests/build and existing CI-compatible checks.
+          - Do not break the normal web version.
+
+          Deliver one focused ready-for-review PR automatically if a fix is required. The PR body must state: root cause, changed files, exact behavior changed, tests/builds run and results, and any remaining limitation. Keep the diff strictly limited to these two Android usability problems.
+          PROMPT
+
+          python3 - <<'PY'
+          import json, os
+          prompt = open('prompt.txt', encoding='utf-8').read()
+          payload = {
+              'title': 'Ahava Android Professor zoom, horizontal navigation and Back fix',
+              'prompt': prompt,
+              'sourceContext': {
+                  'source': os.environ['AHAVA_SOURCE'],
+                  'githubRepoContext': {'startingBranch': 'main'}
+              },
+              'requirePlanApproval': False,
+              'automationMode': 'AUTO_CREATE_PR'
+          }
+          json.dump(payload, open('payload.json','w',encoding='utf-8'), ensure_ascii=False)
+          PY
+
+          status="$(curl --fail-with-body -sS --retry 3 --retry-all-errors --retry-delay 2 \
+            -o response.json -w '%{http_code}' \
+            -H "x-goog-api-key: ${JULES_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d @payload.json \
+            https://jules.googleapis.com/v1alpha/sessions)"
+          cat response.json
+          echo
+          echo "HTTP status: ${status}"
+          test "${status}" = "200" -o "${status}" = "201"
