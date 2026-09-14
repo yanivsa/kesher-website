@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-14",
-  "status": "image_retry_wait",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -36,7 +36,11 @@
     "quality_status": "passed",
     "quality_content_sha256": "74040d54b52a8c0567f3ba329e23c872f082ec56bcae60d29330a0b58d0f5434",
     "quality_checked_at": "2026-09-14T18:28:18.737747+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "מוכנות-לכיתה-א-עצמאות-ושגרה",
+    "title": "מוכנות לכיתה א: איך בונים עצמאות ושגרה לפני הצלצול הראשון",
+    "url": "https://kesher.saharoni.com/blog/מוכנות-לכיתה-א-עצמאות-ושגרה",
+    "published_date": "2026-09-14"
   },
   "backlog": [
     {
@@ -829,21 +833,8 @@
       "archived_at": "2026-09-13T21:42:56.574301+00:00"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 34832008148 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-09-14T10:44:55.232353+00:00",
-    "at": "2026-09-14T10:39:55.232392+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T20:24:03.992376+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-09-09T20:26:21.556636+00:00",
       "from": "complete",
@@ -1668,9 +1659,15 @@
         "failure_streak": 1,
         "run_id": 34832008148
       }
+    },
+    {
+      "at": "2026-09-14T18:30:05.109637+00:00",
+      "from": "image_retry_wait",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-09-14T10:39:55.232406+00:00",
+  "updated_at": "2026-09-14T18:30:05.109661+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
