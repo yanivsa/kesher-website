@@ -31,7 +31,7 @@
     "pr_number": 808,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/808",
     "normalization_slot": "2026-09-14",
-    "normalization_dispatched_at": "2026-09-14T08:48:27.161213+00:00",
+    "normalization_dispatched_at": "2026-09-14T08:52:38.196940+00:00",
     "normalization_run_id": 34818285803
   },
   "backlog": [
@@ -1593,9 +1593,19 @@
         "pr_number": 808,
         "slot": "2026-09-14"
       }
+    },
+    {
+      "at": "2026-09-14T08:52:38.196958+00:00",
+      "from": "article_normalizing",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 808,
+        "slot": "2026-09-14"
+      }
     }
   ],
-  "updated_at": "2026-09-14T08:48:27.161239+00:00",
+  "updated_at": "2026-09-14T08:52:38.196966+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
