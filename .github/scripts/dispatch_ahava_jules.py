@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# one-shot trigger 2026-09-14
 import json
 import os
 import urllib.request
