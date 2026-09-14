@@ -44,7 +44,7 @@ for (const route of routes) {
       clientWidth: document.documentElement.clientWidth,
     }));
     expect(width.scrollWidth).toBe(width.clientWidth);
-    const results = await new AxeBuilder({ page }).disableRules('link-in-text-block').analyze();
+    const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact || ''))).toEqual([]);
     expect(errors).toEqual([]);
   });
@@ -164,7 +164,7 @@ test('appointment page uses the auto-resizing Calendly embed and keeps a direct 
     clientWidth: document.documentElement.clientWidth,
   }));
   expect(width.scrollWidth).toBe(width.clientWidth);
-  const results = await new AxeBuilder({ page }).disableRules('link-in-text-block').exclude('iframe').analyze();
+  const results = await new AxeBuilder({ page }).exclude('iframe').analyze();
   expect(results.violations.filter((violation) => ['critical', 'serious'].includes(violation.impact || ''))).toEqual([]);
   await expect(page.locator('[aria-label="לוח זמנים לקביעת פגישת ייעוץ עם שירה סהרוני"]'))
     .toBeVisible();
@@ -247,7 +247,6 @@ test('couples counseling Ashdod landing page uses the trackable Calendly embed a
 test('PPC attribution survives home to appointment navigation without persisting raw click ids', async ({ page }) => {
   await page.goto('/?utm_source=google&utm_medium=cpc&utm_campaign=home_search&gclid=raw-click-id-should-not-be-stored');
   await page.waitForFunction(() => sessionStorage.getItem('kesher_attr_utm_campaign') === 'home_search');
-
   await page.goto('/appointment');
   const attribution = await page.evaluate(() => ({
     entry: sessionStorage.getItem('kesher_attr_entry_page_path'),
