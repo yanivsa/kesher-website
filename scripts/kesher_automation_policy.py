@@ -21,6 +21,16 @@ EXPECTED_IMAGE_PROVIDER_ORDER = [
 ]
 EXPECTED_MEDIA_VOICE_PRODUCTS = ["video_overview", "short"]
 EXPECTED_FEMALE_VOICE_ATTEMPTS = 3
+EXPECTED_SUPERVISION_CONTRACT_VERSION = 1
+EXPECTED_INCIDENT_FINGERPRINT_VERSION = 2
+EXPECTED_STRIKE_INTERVAL_MINUTES = 60
+EXPECTED_EXTERNAL_RUNNING_HARD_TIMEOUT_MINUTES = 90
+EXPECTED_ESCALATION = ["controller", "jules", "direct"]
+EXPECTED_STAGE_SLA_MINUTES = {"article": 60, "long_video": 90, "short": 90}
+EXPECTED_SUPERVISION_PROMPT_VERSIONS = {
+    "controller_recovery": 1,
+    "jules_incident_repair": 1,
+}
 
 
 class AutomationPolicyError(RuntimeError):
@@ -45,13 +55,17 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
 
     scheduler = policy.get("scheduler")
     retry = policy.get("retry")
+    supervision = policy.get("supervision")
     article = policy.get("article")
     image = policy.get("image")
     video = policy.get("video")
     invariants = policy.get("invariants")
-    if not all(isinstance(section, dict) for section in (scheduler, retry, article, image, video, invariants)):
+    if not all(
+        isinstance(section, dict)
+        for section in (scheduler, retry, supervision, article, image, video, invariants)
+    ):
         raise AutomationPolicyError(
-            "Production contract is missing scheduler/retry/article/image/video/invariants sections"
+            "Production contract is missing scheduler/retry/supervision/article/image/video/invariants sections"
         )
 
     if (
@@ -67,6 +81,21 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         or retry.get("attempts_include_initial_run") is not True
     ):
         raise AutomationPolicyError("Global retry contract must be three total attempts with 5/15 minute backoff")
+
+    if (
+        supervision.get("contract_version") != EXPECTED_SUPERVISION_CONTRACT_VERSION
+        or supervision.get("incident_fingerprint_version") != EXPECTED_INCIDENT_FINGERPRINT_VERSION
+        or supervision.get("strike_interval_minutes") != EXPECTED_STRIKE_INTERVAL_MINUTES
+        or supervision.get("external_running_hard_timeout_minutes")
+        != EXPECTED_EXTERNAL_RUNNING_HARD_TIMEOUT_MINUTES
+        or supervision.get("escalation") != EXPECTED_ESCALATION
+        or supervision.get("stage_sla_minutes") != EXPECTED_STAGE_SLA_MINUTES
+        or supervision.get("prompt_versions") != EXPECTED_SUPERVISION_PROMPT_VERSIONS
+    ):
+        raise AutomationPolicyError(
+            "Supervision contract must use failure-signature incidents, 60-minute strikes, "
+            "90-minute external timeout and Controller/Jules/Direct escalation"
+        )
 
     backoff = article.get("retry_backoff_minutes")
     if (
@@ -131,6 +160,9 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         "heartbeat_is_recovery_only",
         "provider_ids_are_persisted_before_followup",
         "youtube_insert_is_idempotent",
+        "incident_identity_includes_failure_signature",
+        "supervisor_escalation_is_controller_jules_direct",
+        "jules_repair_is_idempotent",
     )
     if any(invariants.get(name) is not True for name in required_invariants):
         raise AutomationPolicyError("Required Kesher production invariants are not enabled")
@@ -161,3 +193,9 @@ def media_voice_policy(policy: dict[str, Any] | None = None) -> dict[str, Any]:
     current = policy or load_policy()
     voice = current["video"]["voice_policy"]
     return dict(voice)
+
+
+def supervision_policy(policy: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Return the validated hourly supervision/escalation contract."""
+    current = policy or load_policy()
+    return dict(current["supervision"])
