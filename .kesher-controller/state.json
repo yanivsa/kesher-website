@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 1,
-    "deploy_attempts": 1,
+    "deploy_attempts": 2,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-09-13T21:43:22.550487+00:00",
     "watchdog": {
@@ -41,8 +41,8 @@
     "title": "מוכנות לכיתה א: איך בונים עצמאות ושגרה לפני הצלצול הראשון",
     "url": "https://kesher.saharoni.com/blog/מוכנות-לכיתה-א-עצמאות-ושגרה",
     "published_date": "2026-09-14",
-    "last_deploy_dispatch_at": "2026-09-14T18:35:25.915822+00:00",
-    "next_deploy_retry_at": "2026-09-14T18:40:25.915844+00:00"
+    "last_deploy_dispatch_at": "2026-09-14T19:39:09.913642+00:00",
+    "next_deploy_retry_at": "2026-09-14T19:44:09.913663+00:00"
   },
   "backlog": [
     {
@@ -837,12 +837,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T20:26:31.616176+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
     {
       "at": "2026-09-09T20:26:51.495058+00:00",
       "from": "long_video_complete",
@@ -1671,9 +1665,19 @@
         "http_status": 404,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-14T19:39:09.913678+00:00",
+      "from": "article_deploying",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 2
+      }
     }
   ],
-  "updated_at": "2026-09-14T18:35:25.915862+00:00",
+  "updated_at": "2026-09-14T19:39:09.913687+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
