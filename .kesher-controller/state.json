@@ -1,48 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-14",
-  "status": "article_deploying",
+  "cycle": "2026-09-15",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34784666283,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
-    "deploy_attempts": 3,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-09-13T21:43:22.550487+00:00",
-    "watchdog": {
-      "identity": "2026-09-14",
-      "session_id": "sessions/5588490773158455576",
-      "last_progress_at": "2026-09-13T21:43:22+00:00",
-      "last_fingerprint": "b47484452dede9e8e8dd1fae1754d5aab2ad6e58f40c4300b08bd878f8e9489a",
-      "last_nudge_at": "2026-09-13T22:11:35.929723+00:00",
-      "nudge_count": 1,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "pr_number": 808,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/808",
-    "normalization_slot": "2026-09-14",
-    "normalization_dispatched_at": "2026-09-14T10:08:20.628334+00:00",
-    "normalization_run_id": 34818285803,
-    "quality_status": "passed",
-    "quality_content_sha256": "74040d54b52a8c0567f3ba329e23c872f082ec56bcae60d29330a0b58d0f5434",
-    "quality_checked_at": "2026-09-14T20:35:40.656020+00:00",
-    "quality_violations": [],
-    "slug": "מוכנות-לכיתה-א-עצמאות-ושגרה",
-    "title": "מוכנות לכיתה א: איך בונים עצמאות ושגרה לפני הצלצול הראשון",
-    "url": "https://kesher.saharoni.com/blog/מוכנות-לכיתה-א-עצמאות-ושגרה",
-    "published_date": "2026-09-14",
-    "last_deploy_dispatch_at": "2026-09-14T20:39:15.296201+00:00",
-    "next_deploy_retry_at": "2026-09-14T20:44:15.296216+00:00"
+    "attempts": 0,
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -833,163 +806,57 @@
         "pr_url": "https://github.com/yanivsa/kesher-website/pull/804"
       },
       "archived_at": "2026-09-13T21:42:56.574301+00:00"
+    },
+    {
+      "cycle": "2026-09-14",
+      "status": "article_deploying",
+      "article": {
+        "attempt_count": 1,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 34784666283,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "deploy_attempts": 3,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-09-13T21:43:22.550487+00:00",
+        "watchdog": {
+          "identity": "2026-09-14",
+          "session_id": "sessions/5588490773158455576",
+          "last_progress_at": "2026-09-13T21:43:22+00:00",
+          "last_fingerprint": "b47484452dede9e8e8dd1fae1754d5aab2ad6e58f40c4300b08bd878f8e9489a",
+          "last_nudge_at": "2026-09-13T22:11:35.929723+00:00",
+          "nudge_count": 1,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "pr_number": 808,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/808",
+        "normalization_slot": "2026-09-14",
+        "normalization_dispatched_at": "2026-09-14T10:08:20.628334+00:00",
+        "normalization_run_id": 34818285803,
+        "quality_status": "passed",
+        "quality_content_sha256": "74040d54b52a8c0567f3ba329e23c872f082ec56bcae60d29330a0b58d0f5434",
+        "quality_checked_at": "2026-09-14T20:35:40.656020+00:00",
+        "quality_violations": [],
+        "slug": "מוכנות-לכיתה-א-עצמאות-ושגרה",
+        "title": "מוכנות לכיתה א: איך בונים עצמאות ושגרה לפני הצלצול הראשון",
+        "url": "https://kesher.saharoni.com/blog/מוכנות-לכיתה-א-עצמאות-ושגרה",
+        "published_date": "2026-09-14",
+        "last_deploy_dispatch_at": "2026-09-14T20:39:15.296201+00:00",
+        "next_deploy_retry_at": "2026-09-14T20:44:15.296216+00:00"
+      },
+      "archived_at": "2026-09-14T21:30:17.751891+00:00"
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-09T21:06:15.397218+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-09T21:06:15.397222+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-09T21:06:15.397627+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-09T21:06:20.791071+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-09-09T22:25:20.173984+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-09T22:30:58.167636+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/12802649080423845172"
-      }
-    },
-    {
-      "at": "2026-09-09T23:22:56.178078+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/12802649080423845172"
-      }
-    },
-    {
-      "at": "2026-09-10T00:01:23.923120+00:00",
-      "from": "article_generating",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 766
-      }
-    },
-    {
-      "at": "2026-09-10T01:16:19.801252+00:00",
-      "from": "article_image_running",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 766,
-        "slot": "2026-09-10"
-      }
-    },
-    {
-      "at": "2026-09-10T04:04:05.090251+00:00",
-      "from": "article_normalizing",
-      "to": "article_deploying",
-      "reason": "deployment already active"
-    },
-    {
-      "at": "2026-09-10T04:08:47.682879+00:00",
-      "from": "article_deploying",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-10T04:09:40.491266+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "new video workflow dispatched",
-      "details": {
-        "operation": "full",
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-10T04:28:56.236087+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-10T04:29:20.376270+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 1
-      }
-    },
-    {
-      "at": "2026-09-10T05:33:19.807681+00:00",
-      "from": "long_video_running",
-      "to": "long_video_watchdog_recovery",
-      "reason": "long-form provider stalled; resumed the same durable provider identity",
-      "details": {
-        "item_id": "video-20260910-074937-1d272ac70c",
-        "task_id": "6052ee20-8b48-4ed9-96b2-23b1310a7eac"
-      }
-    },
-    {
-      "at": "2026-09-10T06:33:47.341390+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-10T06:34:13.939517+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 4
-      }
-    },
-    {
-      "at": "2026-09-10T06:36:32.961634+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-10T06:36:41.975048+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-10T06:39:35.069773+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-10T06:39:40.991576+00:00",
       "from": "article_live",
@@ -1679,31 +1546,38 @@
         "http_status": 404,
         "attempt": 3
       }
+    },
+    {
+      "at": "2026-09-14T21:30:17.751916+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-14T21:30:17.751920+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-14T21:30:17.752437+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-14T20:39:15.296233+00:00",
+  "updated_at": "2026-09-14T21:30:17.751907+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "retry_wait",
-    "last_error": {
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 34832008148 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-09-14T10:44:55.232353+00:00",
-      "at": "2026-09-14T10:39:55.232392+00:00"
-    },
-    "next_retry_at": "2026-09-14T10:44:55.232353+00:00",
-    "run_id": 34832008148,
-    "processed_run_id": 34832008148,
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 1
-    },
-    "last_dispatch_at": "2026-09-14T10:12:32.002311+00:00",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 34832008148
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   },
   "long_video": {
     "attempt_count": 0,
@@ -1715,8 +1589,7 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "failure_count_by_type": {}
   },
   "short": {
     "attempt_count": 0,
@@ -1732,31 +1605,5 @@
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/מוכנות-לכיתה-א-עצמאות-ושגרה",
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "interventions": {
-    "v5|article-slot-2026-09-14|4549c36fecf90f43f48e126ba0a8625dc9389464c240231d169612c5a7107de8|article": {
-      "pipeline_id": "v5",
-      "slug": "article-slot-2026-09-14",
-      "content_sha256": "4549c36fecf90f43f48e126ba0a8625dc9389464c240231d169612c5a7107de8",
-      "stage": "article",
-      "strike_count": 1,
-      "last_check_token": "2026-09-14T01",
-      "last_fingerprint": "c1ee60dbbccae9c188dc7bdec6c787d5e9aa5fa5a1e26100301b79e1c2953520",
-      "last_controller_action_token": "nudge:1:2026-09-13T22:11:35.929723+00:00|restart:0:",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-09-13T22:11:35.929723+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-09-13T22:11:35.929723+00:00"
-    }
   }
 }
