@@ -16,6 +16,7 @@ PROGRESS_RESET = "progress_reset"
 # hourly decisions never emit them. The production ladder is Controller → Jules → Direct.
 FORCE_CONTROLLER_RECOVERY = "force_controller_recovery"
 WAIT_AFTER_CONTROLLER_ACTION = "wait_after_controller_action"
+DEFAULT_FAILURE_SIGNATURE = "STALLED"
 
 # Only durable work/provider/deliverable fields count as progress. Poll timestamps,
 # workflow conclusions and log freshness are deliberately excluded.
@@ -65,9 +66,13 @@ def incident_key(
     slug: str,
     content_sha256: str,
     stage: str,
-    failure_signature: str,
+    failure_signature: str = DEFAULT_FAILURE_SIGNATURE,
 ) -> str:
-    """Return the stable identity of one exact stalled failure mode."""
+    """Return the stable identity of one exact stalled failure mode.
+
+    `failure_signature` defaults to STALLED only for legacy callers. New
+    supervisor callers should always pass the observed failure signature.
+    """
     values = (
         _required(pipeline_id, "pipeline_id"),
         _required(slug, "slug"),
@@ -84,7 +89,7 @@ def incident_idempotency_key(
     slug: str,
     content_sha256: str,
     stage: str,
-    failure_signature: str,
+    failure_signature: str = DEFAULT_FAILURE_SIGNATURE,
 ) -> str:
     """Deterministic key shared by supervisor and Jules repair handoff."""
     key = incident_key(
@@ -139,7 +144,7 @@ def observe_incident(
     slug: str,
     content_sha256: str,
     stage: str,
-    failure_signature: str,
+    failure_signature: str = DEFAULT_FAILURE_SIGNATURE,
     progress: Mapping[str, Any] | None,
     check_token: str,
     controller_action_token: str | None,
