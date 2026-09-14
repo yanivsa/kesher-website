@@ -2,8 +2,8 @@
 """Isolated Kesher V6 intervention/reconciliation foundation.
 
 V6 remains non-production-dispatching. It owns an independent pipeline/state
-namespace and can now emit an explicit identity-bound shadow canary report for
-parity work without creating article/media/provider children.
+namespace and emits identity-bound shadow reports for parity and incident
+learning without creating article/media/provider children.
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import json
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, MutableMapping
 
 if __package__:
@@ -46,6 +47,7 @@ class V6InterventionReconciler:
         check_token: str,
         controller_action_token: str | None,
         now: datetime,
+        failure_signature: str = intervention.DEFAULT_FAILURE_SIGNATURE,
     ) -> intervention.InterventionDecision:
         return intervention.observe_incident(
             state=self.state,
@@ -53,6 +55,7 @@ class V6InterventionReconciler:
             slug=slug,
             content_sha256=content_sha256,
             stage=stage,
+            failure_signature=failure_signature,
             progress=progress,
             check_token=check_token,
             controller_action_token=controller_action_token,
@@ -67,6 +70,15 @@ def _required_identity(value: str | None, field: str) -> str:
     return resolved
 
 
+def _mutation_disabled() -> dict[str, bool]:
+    return {
+        "production_dispatch_enabled": False,
+        "article_dispatch_enabled": False,
+        "provider_dispatch_enabled": False,
+        "upload_enabled": False,
+    }
+
+
 def shadow_canary_report(
     *,
     slug: str,
@@ -74,12 +86,7 @@ def shadow_canary_report(
     stage: str,
     progress: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Return a read-only canary envelope bound to one exact existing identity.
-
-    This first canary phase is deliberately reconciliation/report-only. The
-    booleans below are contractual evidence that it cannot dispatch or upload
-    any child work while parity with V5 is being established.
-    """
+    """Return a read-only canary envelope bound to one exact existing identity."""
     identity = {
         "slug": _required_identity(slug, "slug"),
         "content_sha256": _required_identity(content_sha256, "content_sha256"),
@@ -93,10 +100,7 @@ def shadow_canary_report(
         "canary_mode": CANARY_MODE_SHADOW,
         "identity": identity,
         "progress": dict(progress or {}),
-        "production_dispatch_enabled": False,
-        "article_dispatch_enabled": False,
-        "provider_dispatch_enabled": False,
-        "upload_enabled": False,
+        **_mutation_disabled(),
     }
 
 
@@ -107,12 +111,7 @@ def v5_v6_parity_report(
     content_sha256: str,
     stage: str,
 ) -> dict[str, Any]:
-    """Mirror one exact V5 identity and fail closed without public A+B+C.
-
-    The report is deliberately read-only.  It exposes the durable identities
-    and delivery evidence needed by the supervisor while every V6 mutation
-    path remains disabled.
-    """
+    """Mirror one exact V5 identity and fail closed without public A+B+C."""
     identity = {
         "slug": _required_identity(slug, "slug"),
         "content_sha256": _required_identity(content_sha256, "content_sha256"),
@@ -135,6 +134,7 @@ def v5_v6_parity_report(
     stage_state = v5_state.get(stage_key) or {}
     delivery_complete, deliverables = delivery_guard.delivery_contract(v5_state)
     green_without_delivery = bool(v5_state.get("workflow_success") is True and not delivery_complete)
+    takeover = v5_state.get("direct_takeover_required")
 
     return {
         "pipeline_id": PIPELINE_ID,
@@ -154,14 +154,82 @@ def v5_v6_parity_report(
         "portrait_verification": deliverables["short_portrait_verified"],
         "workflow_success_without_public_abc": green_without_delivery,
         "direct_takeover_required": bool(
-            v5_state.get("direct_takeover_required") is True or green_without_delivery
+            (isinstance(takeover, dict) and takeover.get("required") is True)
+            or takeover is True
+            or green_without_delivery
         ),
         "duplicate_dispatch_blocked": True,
-        "production_dispatch_enabled": False,
-        "article_dispatch_enabled": False,
-        "provider_dispatch_enabled": False,
-        "upload_enabled": False,
+        **_mutation_disabled(),
     }
+
+
+def _latest_current_v5_incident(v5_state: dict[str, Any]) -> dict[str, Any] | None:
+    source = v5_state.get("source") or {}
+    cycle = str(v5_state.get("cycle") or "")
+    matches = []
+    for current in (v5_state.get("interventions") or {}).values():
+        if not isinstance(current, dict) or str(current.get("pipeline_id") or "") != "v5":
+            continue
+        stage = str(current.get("stage") or "")
+        if stage == "article":
+            relevant = str(current.get("slug") or "") == f"article-slot-{cycle}"
+        else:
+            relevant = bool(
+                str(current.get("slug") or "") == str(source.get("slug") or "")
+                and str(current.get("content_sha256") or "")
+                == str(source.get("content_sha256") or "")
+            )
+        if relevant:
+            matches.append(current)
+    if not matches:
+        return None
+    return sorted(matches, key=lambda row: str(row.get("last_observed_at") or ""), reverse=True)[0]
+
+
+def v5_incident_shadow_report(v5_state: dict[str, Any]) -> dict[str, Any]:
+    """Explain what V6 would do for V5's latest incident, without doing it."""
+    if not isinstance(v5_state, dict):
+        raise ValueError("V5 state must be an object")
+    source = v5_state.get("source") or {}
+    delivery_complete, deliverables = delivery_guard.delivery_contract(v5_state)
+    incident = _latest_current_v5_incident(v5_state)
+    strike = int((incident or {}).get("strike_count") or 0)
+    owner = str((incident or {}).get("owner") or ("done" if delivery_complete else "controller"))
+    action = str(
+        (incident or {}).get("last_action")
+        or ("done" if delivery_complete else intervention.OBSERVE_CONTROLLER)
+    )
+    takeover = v5_state.get("direct_takeover_required")
+    return {
+        "pipeline_id": PIPELINE_ID,
+        "observed_pipeline_id": str(v5_state.get("pipeline_id") or "v5"),
+        "state_ref": STATE_REF,
+        "artifact_namespace": ARTIFACT_NAMESPACE,
+        "canary_mode": CANARY_MODE_SHADOW,
+        "status": "complete" if delivery_complete else "incomplete",
+        "source_identity": {
+            "slug": str(source.get("slug") or ""),
+            "content_sha256": str(source.get("content_sha256") or ""),
+        },
+        "stage": (incident or {}).get("stage"),
+        "failure_signature": (incident or {}).get("failure_signature"),
+        "idempotency_key": (incident or {}).get("idempotency_key"),
+        "strike": strike,
+        "recommended_owner": owner,
+        "recommended_action": action,
+        "article_url": deliverables["article_url"],
+        "overview_url": deliverables["overview_youtube_url"],
+        "short_url": deliverables["short_youtube_url"],
+        "direct_takeover_required": bool(
+            strike >= 3
+            or (isinstance(takeover, dict) and takeover.get("required") is True)
+            or takeover is True
+        ),
+        "duplicate_dispatch_blocked": True,
+        **_mutation_disabled(),
+    }
+
+
 def _self_check() -> dict[str, Any]:
     """Return machine-readable isolation evidence without dispatching providers."""
     state: dict[str, Any] = {}
@@ -175,6 +243,7 @@ def _self_check() -> dict[str, Any]:
         check_token=intervention.jerusalem_hour_token(now),
         controller_action_token=None,
         now=now,
+        failure_signature="SELF_CHECK_PENDING",
     )
     return {
         "pipeline_id": PIPELINE_ID,
@@ -192,10 +261,16 @@ def main() -> int:
     parser.add_argument("--self-check", action="store_true")
     parser.add_argument("--report-json", action="store_true")
     parser.add_argument("--canary-shadow", action="store_true")
+    parser.add_argument("--analyze-v5-state")
     parser.add_argument("--slug")
     parser.add_argument("--content-sha256")
     parser.add_argument("--stage")
     args = parser.parse_args()
+
+    if args.analyze_v5_state:
+        payload = json.loads(Path(args.analyze_v5_state).read_text(encoding="utf-8"))
+        print(json.dumps(v5_incident_shadow_report(payload), ensure_ascii=False, indent=2, sort_keys=True))
+        return 0
 
     if args.canary_shadow:
         try:
@@ -210,7 +285,9 @@ def main() -> int:
         return 0
 
     if not (args.self_check or args.report_json):
-        parser.error("V6 is shadow/manual only; use --self-check, --report-json or --canary-shadow")
+        parser.error(
+            "V6 is shadow/manual only; use --self-check, --report-json, --canary-shadow or --analyze-v5-state"
+        )
     print(json.dumps(_self_check(), ensure_ascii=False, indent=2, sort_keys=True))
     return 0
 
