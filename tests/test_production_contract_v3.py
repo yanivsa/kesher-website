@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 LEGACY_POLICY = ROOT / "config" / "kesher-automation-policy.json"
 VIDEO_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-daily-video.yml"
 VIDEO_REVIEW_POLICY = ROOT / ".github" / "prompts" / "jules-remotion-video-upgrade.md"
+ARTICLE_POLICY = ROOT / ".github" / "prompts" / "jules-weekday-article-update.md"
 ARTICLE_PR_CONTROLLER_V3 = ROOT / ".github" / "scripts" / "article-pr-controller-v3.py"
 BEST_EFFORT_CONTROLLER = ROOT / "scripts" / "kesher_content_controller_v3_best_effort.py"
 RUNTIME_V5_CONTROLLER = ROOT / "scripts" / "kesher_content_controller_v5_runtime.py"
@@ -53,6 +54,26 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertEqual(image["failure_mode"], "blocking-retry")
         self.assertEqual(image["worker_owner"], "github-actions")
         self.assertTrue(image["fallback_must_be_local"])
+
+    def test_article_image_handoff_is_machine_readable_and_same_pr_recoverable(self) -> None:
+        contract = load_policy()
+        article = contract["article"]
+        image = contract["image"]
+        invariants = contract["invariants"]
+        policy = ARTICLE_POLICY.read_text(encoding="utf-8")
+
+        self.assertTrue(article["publication_ready_requires_trusted_image"])
+        self.assertEqual(article["jules_pending_image_handoff_status"], "PENDING_TRUSTED_IMAGE_STAGE")
+        self.assertEqual(image["pending_handoff_marker"], "Hero Image Status: PENDING_TRUSTED_IMAGE_STAGE")
+        self.assertEqual(image["attached_handoff_marker"], "Hero Image Status: ATTACHED_TRUSTED_IMAGE_STAGE")
+        self.assertEqual(image["controller_action_on_pending_handoff"], "dispatch_trusted_image_same_pr")
+        self.assertEqual(image["controller_action_on_image_guard_failure"], "recover_trusted_image_same_pr")
+        self.assertTrue(invariants["article_image_handoff_is_machine_readable"])
+        self.assertTrue(invariants["image_guard_failure_repairs_same_pr"])
+        self.assertIn("Hero Image Status: PENDING_TRUSTED_IMAGE_STAGE", policy)
+        self.assertIn("Hero Image Status: ATTACHED_TRUSTED_IMAGE_STAGE", policy)
+        self.assertIn("content ready", policy)
+        self.assertIn("publication ready", policy)
 
     def test_article_auto_merge_cannot_race_ahead_of_image_best_effort(self) -> None:
         controller = ARTICLE_PR_CONTROLLER_V3.read_text(encoding="utf-8")
