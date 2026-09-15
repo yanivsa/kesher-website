@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-15",
-  "status": "long_video_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
     "published_date": "2026-09-15",
     "live": true,
-    "live_verified_at": "2026-09-15T09:48:18.048603+00:00",
+    "live_verified_at": "2026-09-15T12:42:19.866986+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -873,14 +873,13 @@
       "media": {}
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "long_video",
+    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
+    "message": "video exhausted 3 total controller dispatch attempts",
+    "at": "2026-09-15T12:42:33.735641+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-10T06:39:40.991576+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
     {
       "at": "2026-09-10T07:13:30.644296+00:00",
       "from": "long_video_running",
@@ -1711,9 +1710,24 @@
         "operation": "full",
         "resume": 5
       }
+    },
+    {
+      "at": "2026-09-15T12:42:19.867003+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-15T12:42:33.735657+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-15T09:48:31.146908+00:00",
+  "updated_at": "2026-09-15T12:42:33.735663+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
@@ -1739,7 +1753,7 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34933207034,
