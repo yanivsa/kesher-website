@@ -40,7 +40,6 @@ class FakePrApi:
         return ["scripts/fix.py", "tests/test_fix.py"]
 
     def combined_status(self, sha: str):
-        # GitHub Actions normally exposes PR CI as a check run, not a legacy status.
         return {"statuses": []}
 
     def check_runs(self, sha: str):
@@ -52,6 +51,15 @@ class FakePrApi:
 
     def dispatch_workflow(self, workflow: str, inputs: dict | None = None):
         self.dispatched.append((workflow, inputs))
+
+
+class FakeAdoptedRunApi:
+    def active_external_media_run(self):
+        return None
+
+    def workflow_run_by_id(self, run_id):
+        self.seen_run_id = run_id
+        return {"id": run_id, "status": "completed", "conclusion": "success"}
 
 
 class MasterSupervisorLiveQaTests(unittest.TestCase):
@@ -138,6 +146,33 @@ class MasterSupervisorLiveQaTests(unittest.TestCase):
         ):
             with self.assertRaises(live.SupervisorError):
                 client.acquire_or_continue({"fingerprint": "fp-1", "incident_id": "i", "failure_signature": "f", "exact": {}, "definition_of_done": "d", "constraints": {}})
+
+    def test_s1_adopted_preexisting_controller_run_reconciles_by_run_id(self) -> None:
+        report = incident_report()
+        state, s1 = live.prepare_escalation(
+            live.new_supervisor_state(),
+            report,
+            now="2026-09-16T00:00:00+00:00",
+            prior_action_terminal=False,
+        )
+        state = live.mark_command_acknowledged(
+            state,
+            s1["command_id"],
+            {"workflow": "kesher-content-controller.yml", "dispatch": "already_active", "run_id": 55},
+            at="2026-09-16T00:00:01+00:00",
+        )
+        api = FakeAdoptedRunApi()
+        updated, terminal, reason = live.reconcile_active_command(
+            state,
+            report,
+            api=api,
+            jules_client=None,
+            now="2026-09-16T00:05:00+00:00",
+        )
+        self.assertEqual(api.seen_run_id, 55)
+        self.assertTrue(terminal)
+        self.assertEqual(reason, "workflow_completed_incident_persisted")
+        self.assertEqual(updated["commands"][s1["command_id"]]["lifecycle"], "failed")
 
     def test_s3_recovery_pr_accepts_required_verify_check_run_not_only_legacy_status(self) -> None:
         api = FakePrApi()
