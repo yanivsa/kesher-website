@@ -1,14 +1,11 @@
 from __future__ import annotations
 
+import inspect
 import unittest
-from pathlib import Path
 
 from scripts import kesher_content_controller_v5 as v5
+from scripts import kesher_master_supervisor_shadow as shadow
 from scripts.kesher_master_supervisor_shadow import build_shadow_report
-
-
-ROOT = Path(__file__).resolve().parents[1]
-WORKFLOW = ROOT / ".github" / "workflows" / "kesher-master-supervisor.yml"
 
 
 def article() -> dict:
@@ -227,19 +224,20 @@ class MasterSupervisorShadowTests(unittest.TestCase):
         self.assertIsNone(report["proposed_action"])
         self.assertFalse(report["would_dispatch"])
 
-    def test_shadow_workflow_is_read_only_and_serialized(self) -> None:
-        text = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("name: Kesher Master Supervisor Shadow", text)
-        self.assertIn("group: kesher-master-supervisor", text)
-        self.assertIn("cancel-in-progress: false", text)
-        self.assertIn("contents: read", text)
-        self.assertIn("actions: read", text)
-        self.assertNotIn("contents: write", text)
-        self.assertNotIn("actions: write", text)
-        self.assertNotIn("pull-requests: write", text)
-        self.assertNotIn("JULES_API_KEY", text)
-        self.assertIn("--shadow", text)
-        self.assertIn('cron: "7,17,27,37,47,57 * * * *"', text)
+    def test_shadow_classifier_remains_side_effect_free_after_live_activation(self) -> None:
+        source_text = inspect.getsource(shadow)
+        self.assertNotIn("dispatch_workflow", source_text)
+        self.assertNotIn("JULES_API_KEY", source_text)
+        self.assertNotIn('method="POST"', source_text)
+        self.assertNotIn('method="PUT"', source_text)
+        report = build_shadow_report(
+            controller_state=controller_state(),
+            posts=[article()],
+            video_state={"items": [exact_long()]},
+            short_state={"items": []},
+        )
+        self.assertFalse(report["would_dispatch"])
+        self.assertEqual(report["mode"], "shadow")
 
 
 if __name__ == "__main__":

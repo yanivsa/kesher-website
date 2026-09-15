@@ -8,19 +8,37 @@
   },
   "supervisor": {
     "owner": "kesher-master-supervisor",
-    "mode": "shadow",
+    "mode": "live_s1_s2_s3",
     "production_state_writer": "kesher-content-controller-v5",
     "escalation_owner": "kesher-master-supervisor",
     "state_ref": "automation-supervisor-state",
+    "state_path": ".kesher-master-supervisor/state.json",
     "heartbeat_minutes": 10,
     "single_action_per_audit": true,
+    "escalation": {
+      "S1": "controller",
+      "S2": "jules",
+      "S3": "direct",
+      "after_S3_same_incident": "human_blocker"
+    },
+    "external_running_heartbeat_exception_minutes": 90,
     "recovery_commands": {
       "idempotent": true,
       "deterministic_command_id": true,
+      "persist_before_side_effect": true,
+      "cas_protected_state": true,
+      "uncertain_mutation_never_blind_retried": true,
       "stale_commands_noop": true,
       "exact_source_identity_required": true,
       "duplicate_active_command_noop": true,
       "duplicate_completed_command_noop": true
+    },
+    "jules_incident_packet": {
+      "required": true,
+      "reuse_existing_session_pr": true,
+      "includes_definition_of_done": true,
+      "includes_exact_artifact_ids": true,
+      "no_duplicate_generation_upload": true
     },
     "action_lifecycle": [
       "planned",
@@ -37,7 +55,9 @@
       "new_external_permission",
       "payment",
       "irreversible_external_action",
-      "production_identity_ambiguity"
+      "production_identity_ambiguity",
+      "same_incident_after_s3",
+      "no_safe_direct_adapter"
     ]
   },
   "retry": {
@@ -114,6 +134,9 @@
     "image_guard_failure_repairs_same_pr": true,
     "master_is_only_escalation_owner_when_live": true,
     "supervisor_never_writes_production_state": true,
-    "recovery_commands_are_idempotent": true
+    "recovery_commands_are_idempotent": true,
+    "legacy_task_supervisor_live_mutations_disabled": true,
+    "supervisor_state_is_cas_protected": true,
+    "same_incident_escalation_is_bounded": true
   }
 }

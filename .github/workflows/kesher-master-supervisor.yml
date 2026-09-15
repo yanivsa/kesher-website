@@ -1,4 +1,4 @@
-name: Kesher Master Supervisor Shadow
+name: Kesher Master Supervisor
 
 on:
   workflow_run:
@@ -16,18 +16,23 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  actions: read
+  contents: write
+  actions: write
+  pull-requests: write
+  checks: read
+  statuses: read
 
 concurrency:
   group: kesher-master-supervisor
   cancel-in-progress: false
 
 jobs:
-  shadow-audit:
+  supervise:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.event != 'pull_request' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    env:
+      JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
     steps:
       - name: Checkout current main
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -35,16 +40,16 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - name: Collect read-only Master Supervisor evidence
+      - name: Run crash-safe Master Supervisor live audit
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
           KESHER_TRIGGER_RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           set -euo pipefail
-          python3 -u scripts/kesher_master_supervisor_shadow.py --shadow | tee /tmp/kesher-master-shadow.json
+          python3 -u scripts/kesher_master_supervisor_live.py --live | tee /tmp/kesher-master-live.json
 
-      - name: Write shadow decision summary
+      - name: Write Master Supervisor decision summary
         if: always()
         run: |
           python3 - <<'PY'
@@ -52,9 +57,9 @@ jobs:
           import os
           from pathlib import Path
 
-          path = Path('/tmp/kesher-master-shadow.json')
+          path = Path('/tmp/kesher-master-live.json')
           if not path.exists():
-              text = 'Master Supervisor shadow failed before producing a structured report.'
+              text = 'Master Supervisor failed before producing a structured report.'
           else:
               try:
                   payload = json.loads(path.read_text(encoding='utf-8').strip().splitlines()[-1])
@@ -66,9 +71,11 @@ jobs:
                   f"Incident: {payload.get('incident_id') or 'none'}\n\n"
                   f"Failure: {payload.get('failure_signature') or 'none'}\n\n"
                   f"Proposed action: {payload.get('proposed_action') or 'none'}\n\n"
-                  f"Recovery command: {payload.get('recovery_command_id') or 'none'}\n\n"
-                  f"Would dispatch: {payload.get('would_dispatch') is True}"
+                  f"Master action: {payload.get('master_action') or 'none'}\n\n"
+                  f"Executor: {payload.get('executor') or 'none'}\n\n"
+                  f"Command: {payload.get('command_id') or 'none'}\n\n"
+                  f"Marker: {payload.get('marker') or 'none'}"
               )
           with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
-              out.write('### Kesher Master Supervisor Shadow\n\n' + text + '\n')
+              out.write('### Kesher Master Supervisor V2\n\n' + text + '\n')
           PY

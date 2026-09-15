@@ -45,6 +45,8 @@ jobs:
             tests.test_openclaw_oci_agent_self_heal \
             tests.test_master_supervisor_foundation \
             tests.test_master_supervisor_shadow \
+            tests.test_master_supervisor_live \
+            tests.test_master_supervisor_live_qa \
             -v
 
       - name: Select CI profile
