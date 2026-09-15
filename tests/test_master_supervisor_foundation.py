@@ -36,7 +36,7 @@ class MasterSupervisorFoundationTests(unittest.TestCase):
         self.assertEqual(first.key, second.key)
         self.assertEqual(first.key, "v5|returning-to-israel-after-relocation-relationship|abc123|long_video")
 
-    def test_semantic_evidence_hash_ignores_observation_time_but_tracks_real_state(self) -> None:
+    def test_semantic_evidence_hash_ignores_poll_and_workflow_rerun_metadata_but_tracks_real_state(self) -> None:
         base = EvidenceSnapshot(
             incident=IncidentIdentity("v5", "slug-a", "hash-a", "long_video"),
             failure_signature="OVERVIEW_SIGNATURE_FULLSCREEN_MISSING",
@@ -52,7 +52,7 @@ class MasterSupervisorFoundationTests(unittest.TestCase):
             item_id=base.item_id,
             task_id=base.task_id,
             artifact_id=base.artifact_id,
-            workflow_run_id=base.workflow_run_id,
+            workflow_run_id="101",
             observed_at="2026-09-16T00:10:00+00:00",
         )
         changed = EvidenceSnapshot(
