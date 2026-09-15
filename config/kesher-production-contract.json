@@ -6,6 +6,40 @@
     "heartbeat_minutes": 5,
     "failure_recovery": "heartbeat"
   },
+  "supervisor": {
+    "owner": "kesher-master-supervisor",
+    "mode": "shadow",
+    "production_state_writer": "kesher-content-controller-v5",
+    "escalation_owner": "kesher-master-supervisor",
+    "state_ref": "automation-supervisor-state",
+    "heartbeat_minutes": 10,
+    "single_action_per_audit": true,
+    "recovery_commands": {
+      "idempotent": true,
+      "deterministic_command_id": true,
+      "stale_commands_noop": true,
+      "exact_source_identity_required": true,
+      "duplicate_active_command_noop": true,
+      "duplicate_completed_command_noop": true
+    },
+    "action_lifecycle": [
+      "planned",
+      "issued",
+      "acknowledged",
+      "running",
+      "verified",
+      "failed",
+      "timed_out"
+    ],
+    "human_blockers": [
+      "2fa",
+      "new_secret",
+      "new_external_permission",
+      "payment",
+      "irreversible_external_action",
+      "production_identity_ambiguity"
+    ]
+  },
   "retry": {
     "max_attempts_per_stage": 3,
     "backoff_minutes": [5, 15],
@@ -77,6 +111,9 @@
     "provider_ids_are_persisted_before_followup": true,
     "youtube_insert_is_idempotent": true,
     "article_image_handoff_is_machine_readable": true,
-    "image_guard_failure_repairs_same_pr": true
+    "image_guard_failure_repairs_same_pr": true,
+    "master_is_only_escalation_owner_when_live": true,
+    "supervisor_never_writes_production_state": true,
+    "recovery_commands_are_idempotent": true
   }
 }
