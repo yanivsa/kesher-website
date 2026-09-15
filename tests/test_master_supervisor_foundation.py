@@ -129,7 +129,7 @@ class MasterSupervisorFoundationTests(unittest.TestCase):
             "already_active_noop",
         )
 
-    def test_action_lifecycle_rejects_skipping_verification(self) -> None:
+    def test_action_lifecycle_rejects_planned_to_verified_but_allows_late_reconciliation(self) -> None:
         self.assertEqual(
             transition_action(ActionLifecycle.PLANNED, ActionLifecycle.ISSUED),
             ActionLifecycle.ISSUED,
@@ -145,6 +145,18 @@ class MasterSupervisorFoundationTests(unittest.TestCase):
         self.assertEqual(
             transition_action(ActionLifecycle.RUNNING, ActionLifecycle.VERIFIED),
             ActionLifecycle.VERIFIED,
+        )
+        self.assertEqual(
+            transition_action(ActionLifecycle.ISSUED, ActionLifecycle.VERIFIED),
+            ActionLifecycle.VERIFIED,
+        )
+        self.assertEqual(
+            transition_action(ActionLifecycle.TIMED_OUT, ActionLifecycle.VERIFIED),
+            ActionLifecycle.VERIFIED,
+        )
+        self.assertEqual(
+            transition_action(ActionLifecycle.TIMED_OUT, ActionLifecycle.ISSUED),
+            ActionLifecycle.ISSUED,
         )
         with self.assertRaises(ValueError):
             transition_action(ActionLifecycle.PLANNED, ActionLifecycle.VERIFIED)
