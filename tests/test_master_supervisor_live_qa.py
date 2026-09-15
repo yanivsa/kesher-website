@@ -25,6 +25,7 @@ def incident_report() -> dict:
 class FakePrApi:
     def __init__(self) -> None:
         self.merged = False
+        self.dispatched: list[tuple[str, dict | None]] = []
 
     def get_pr(self, number: int):
         return {
@@ -48,6 +49,9 @@ class FakePrApi:
     def merge_pr(self, number: int, sha: str):
         self.merged = True
         return {"merged": True, "sha": "merge-123"}
+
+    def dispatch_workflow(self, workflow: str, inputs: dict | None = None):
+        self.dispatched.append((workflow, inputs))
 
 
 class MasterSupervisorLiveQaTests(unittest.TestCase):
@@ -82,6 +86,25 @@ class MasterSupervisorLiveQaTests(unittest.TestCase):
         self.assertEqual(updated["incidents"][fp]["status"], "resolved")
         self.assertEqual(updated["commands"][decision["command_id"]]["lifecycle"], "verified")
 
+    def test_waiting_for_authoritative_article_does_not_close_prior_incidents(self) -> None:
+        report = incident_report()
+        state, decision = live.prepare_escalation(
+            live.new_supervisor_state(),
+            report,
+            now="2026-09-16T00:00:00+00:00",
+            prior_action_terminal=False,
+        )
+        waiting = {
+            "mode": "live",
+            "status": "waiting_for_authoritative_article",
+            "incident_id": None,
+            "failure_signature": None,
+            "exact": {},
+        }
+        updated, changed = live.resolve_absent_incidents(state, waiting, at="2026-09-16T00:05:00+00:00")
+        self.assertFalse(changed)
+        self.assertEqual(updated["commands"][decision["command_id"]]["lifecycle"], "issued")
+
     def test_jules_exact_session_lookup_paginates_before_creating_anything(self) -> None:
         calls: list[str] = []
 
@@ -103,11 +126,46 @@ class MasterSupervisorLiveQaTests(unittest.TestCase):
         self.assertEqual(len(calls), 2)
         self.assertIn("pageToken=next-1", calls[1])
 
+    def test_multiple_exact_jules_sessions_fail_closed(self) -> None:
+        client = live.JulesRecoveryClient("test-key")
+        with mock.patch.object(
+            client,
+            "list_exact",
+            return_value=[
+                {"name": "sessions/one", "title": client.title("fp-1"), "state": "IN_PROGRESS"},
+                {"name": "sessions/two", "title": client.title("fp-1"), "state": "IN_PROGRESS"},
+            ],
+        ):
+            with self.assertRaises(live.SupervisorError):
+                client.acquire_or_continue({"fingerprint": "fp-1", "incident_id": "i", "failure_signature": "f", "exact": {}, "definition_of_done": "d", "constraints": {}})
+
     def test_s3_recovery_pr_accepts_required_verify_check_run_not_only_legacy_status(self) -> None:
         api = FakePrApi()
         result = live.try_finalize_recovery_pr(api, 900)
         self.assertEqual(result, {"recovery_pr_number": 900, "merge_sha": "merge-123"})
         self.assertTrue(api.merged)
+
+    def test_s3_recovery_pr_merge_explicitly_wakes_controller(self) -> None:
+        api = FakePrApi()
+        report = incident_report()
+        state, s1 = live.prepare_escalation(live.new_supervisor_state(), report, now="2026-09-16T00:00:00+00:00", prior_action_terminal=False)
+        state = live.mark_command_failed(state, s1["command_id"], "failed", at="2026-09-16T00:01:00+00:00")
+        state, s2 = live.prepare_escalation(state, report, now="2026-09-16T00:01:01+00:00", prior_action_terminal=True)
+        state["commands"][s2["command_id"]].setdefault("metadata", {})["recovery_pr_number"] = 900
+        state = live.mark_command_failed(state, s2["command_id"], "jules complete", at="2026-09-16T00:02:00+00:00")
+        state, s3 = live.prepare_escalation(state, report, now="2026-09-16T00:02:01+00:00", prior_action_terminal=True)
+        updated = live.execute_command(
+            state,
+            report,
+            s3,
+            api=api,
+            jules_client=None,
+            now="2026-09-16T00:02:02+00:00",
+        )
+        self.assertTrue(api.merged)
+        self.assertIn(("kesher-content-controller.yml", None), api.dispatched)
+        self.assertEqual(updated["commands"][s3["command_id"]]["metadata"]["workflow"], "recovery_pr_merge")
+        self.assertTrue(updated["commands"][s3["command_id"]]["metadata"]["controller_dispatched_after_merge"])
 
     def test_jules_incident_packet_never_tells_agent_to_regenerate_media(self) -> None:
         packet = live.build_incident_packet(incident_report(), strike=2, command_id="ksr-qa")
