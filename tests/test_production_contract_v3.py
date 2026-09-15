@@ -36,6 +36,18 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertTrue(contract["invariants"]["workers_are_single_attempt"])
         self.assertTrue(contract["invariants"]["heartbeat_is_recovery_only"])
 
+    def test_active_supervisor_must_act_before_reporting_when_safe_action_exists(self) -> None:
+        contract = load_policy()
+        supervision = contract["supervision"]
+        self.assertTrue(supervision["actionable_safe_work_must_execute"])
+        self.assertFalse(supervision["report_only_when_action_available"])
+        self.assertTrue(supervision["direct_takeover_requires_action_before_report"])
+        self.assertTrue(supervision["post_repair_recovery_required"])
+        image_failure = supervision["article_image_guard_failure"]
+        self.assertEqual(image_failure["action"], "repair_same_pr_or_dispatch_trusted_image")
+        self.assertFalse(image_failure["duplicate_article_or_pr_allowed"])
+        self.assertFalse(image_failure["waiting_without_action_allowed"])
+
     def test_video_publication_contract_is_technical_and_advisory(self) -> None:
         contract = load_policy()
         video = contract["video"]
