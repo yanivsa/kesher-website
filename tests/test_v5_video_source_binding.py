@@ -47,6 +47,11 @@ class V5VideoSourceBindingTests(unittest.TestCase):
             [(v5.LONG_VIDEO_WORKFLOW, {"operation": "full", "target_slug": "today-article"})],
         )
         self.assertEqual(state["article"]["slug"], "today-article")
+        self.assertEqual(state["long_video"]["attempt_count"], 1)
+        self.assertIsNone(state["long_video"].get("provider_id"))
+        self.assertIsNone(state["long_video"].get("artifact_id"))
+        self.assertIsNone(state["long_video"].get("source_id"))
+        self.assertNotEqual(state["long_video"].get("item_id"), "video-stale")
 
 
 if __name__ == "__main__":
