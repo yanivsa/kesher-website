@@ -33,7 +33,20 @@ jobs:
                   raise SystemExit(f'{path}: expected exactly one anchor, found {count}: {old!r}')
               path.write_text(text.replace(old, new, 1), encoding='utf-8')
 
-          # A fresh GitHub secret must win. The encrypted durable state is fallback only.
+          def replace_if_after_step(path: Path, step_name: str, expression_body: str) -> None:
+              lines = path.read_text(encoding='utf-8').splitlines()
+              step = f'      - name: {step_name}'
+              try:
+                  index = lines.index(step)
+              except ValueError as exc:
+                  raise SystemExit(f'{path}: step not found: {step_name}') from exc
+              if index + 1 >= len(lines) or not lines[index + 1].startswith('        if: '):
+                  raise SystemExit(f'{path}: expected if line immediately after {step_name}')
+              # Build the GitHub expression at runtime so this helper workflow does not evaluate it.
+              lines[index + 1] = '        if: ' + '$' + '{{ ' + expression_body + ' }}'
+              path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+
+          # Fresh GitHub secret wins. Encrypted durable state is fallback only.
           for path in (daily, short):
               replace_once(
                   path,
@@ -41,16 +54,16 @@ jobs:
                   '          if [ -z "${NOTEBOOKLM_STORAGE_STATE_SECRET:-}" ] && [ -s "$sealed_path" ]; then',
               )
 
-          # Preflight must run before any provider generation, not only in explicit preflight mode.
-          replace_once(
+          # Read-only auth preflight must run before any NotebookLM provider operation.
+          replace_if_after_step(
               daily,
-              "        if: ${{ inputs.operation == 'preflight' }}\n        run: python -u scripts/kesher_daily_pipeline.py --preflight",
-              "        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild') }}\n        run: python -u scripts/kesher_daily_pipeline.py --preflight",
+              'NotebookLM read-only preflight',
+              "github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild')",
           )
-          replace_once(
+          replace_if_after_step(
               short,
-              "        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'preflight' }}\n        run: python -u scripts/kesher_short_pipeline_v4.py --preflight",
-              "        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}\n        run: python -u scripts/kesher_short_pipeline_v4.py --preflight",
+              'NotebookLM read-only Short preflight',
+              "github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical')",
           )
 
           # Run the new regression guard in both workflow-specific PR suites.
