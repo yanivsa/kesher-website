@@ -19,6 +19,7 @@ else:
 
 _ORIGINAL_PUBLIC_SITE_GET = v5.core.PublicSiteClient.get
 _SOURCE_BINDING_EXHAUSTION_RECOVERY_MARKER = "source_binding_exhaustion_recovery_applied"
+_REMOTION_REBUILD_EXHAUSTION_RECOVERY_MARKER = "remotion_rebuild_exhaustion_recovery_applied"
 
 
 def _unicode_safe_public_site_get(self, url: str):
@@ -139,9 +140,89 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         state["updated_at"] = v5.core.utc_now()
         return state
 
+    def _recover_exact_rejected_exhaustion(self, state):
+        """Give one fresh budget to an exact rejected Overview that needs Remotion repair.
+
+        A rejected exact item is not a provider-generation failure. Re-dispatching the
+        normal full operation only reselects the same rejected artifact and burns the
+        controller budget. Recover once when the exact item lacks a verified full-screen
+        signature so the next dispatch can use the dedicated Remotion rebuild operation.
+        """
+        long_video = state.get("long_video") if isinstance(state.get("long_video"), dict) else {}
+        last_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
+        if (
+            state.get("status") != "blocked"
+            or long_video.get("status") != "exhausted"
+            or str(last_error.get("code") or "") != "VIDEO_ATTEMPTS_EXHAUSTED"
+            or long_video.get(_REMOTION_REBUILD_EXHAUSTION_RECOVERY_MARKER)
+        ):
+            return state
+
+        source = self._article_source()
+        if source is None:
+            return state
+        snapshot = self.github.newest_video_state()
+        exact_rejected = [
+            item for item in v5._exact_items(snapshot, source)
+            if item.get("uploaded") is not True
+            and str(item.get("status") or "") == "rejected"
+            and item.get("signature_fullscreen") is not True
+        ]
+        if len(exact_rejected) != 1:
+            return state
+
+        item = exact_rejected[0]
+        previous = {
+            "attempt_count": long_video.get("attempt_count"),
+            "item_id": long_video.get("item_id"),
+            "provider_id": long_video.get("provider_id"),
+            "artifact_id": long_video.get("artifact_id"),
+            "source_id": long_video.get("source_id"),
+            "last_error": long_video.get("last_error"),
+        }
+        long_video[_REMOTION_REBUILD_EXHAUSTION_RECOVERY_MARKER] = True
+        long_video["remotion_rebuild_recovery_previous"] = previous
+        long_video["attempt_count"] = 0
+        long_video["status"] = "pending"
+        long_video["last_error"] = None
+        long_video["next_retry_at"] = None
+        long_video["run_id"] = None
+        long_video["processed_run_id"] = None
+        long_video["last_dispatch_at"] = None
+        long_video["last_run_conclusion"] = None
+        long_video["failure_fingerprint"] = None
+        long_video["same_failure_streak"] = 0
+        long_video["failure_count_by_type"] = {}
+        long_video.pop("watchdog", None)
+        long_video.update({
+            "item_id": item.get("id"),
+            "provider_id": item.get("task_id"),
+            "artifact_id": item.get("artifact_id"),
+            "source_id": item.get("source_id"),
+        })
+
+        state["status"] = "article_live"
+        state["last_error"] = None
+        state.setdefault("history", []).append({
+            "at": v5.core.utc_now(),
+            "from": "blocked",
+            "to": "article_live",
+            "reason": "exact_rejected_overview_remotion_recovery",
+            "details": {
+                "slug": source["slug"],
+                "content_sha256": source["content_sha256"],
+                "item_id": item.get("id"),
+                "attempt_budget_reset": True,
+            },
+        })
+        state["history"] = state["history"][-100:]
+        state["updated_at"] = v5.core.utc_now()
+        return state
+
     def state(self):
         state = super().state()
-        return self._recover_stale_source_binding_exhaustion(state)
+        state = self._recover_stale_source_binding_exhaustion(state)
+        return self._recover_exact_rejected_exhaustion(state)
 
     def _quality_preflight(self, state):
         posts = self.github.contents_json("src/data/posts.json", "main")
@@ -173,8 +254,77 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         self.github.save_controller_state(state)
         return v5.core.Action("blocked", "article content quality failed before deploy/media")
 
+    def _dispatch_exact_rejected_rebuild(self, state):
+        """Preempt legacy V5 rejection handling and rebuild the exact item with Remotion."""
+        source = self._article_source()
+        if source is None:
+            return None
+        snapshot = self.github.newest_video_state()
+        exact_rejected = [
+            item for item in v5._exact_items(snapshot, source)
+            if item.get("uploaded") is not True
+            and str(item.get("status") or "") == "rejected"
+            and item.get("signature_fullscreen") is not True
+        ]
+        if len(exact_rejected) > 1:
+            v5.core.block(
+                state,
+                "long_video",
+                "DUPLICATE_REJECTED_LONG_VIDEO_ITEMS",
+                f"{len(exact_rejected)} rejected exact Overview items exist for {source['slug']}",
+            )
+            self.github.save_controller_state(state)
+            return state, v5.core.Action("blocked", "duplicate rejected long-video items")
+        if not exact_rejected:
+            return None
+
+        item = exact_rejected[0]
+        item_id = str(item.get("id") or "").strip()
+        if not item_id:
+            v5.core.block(state, "long_video", "REJECTED_LONG_VIDEO_ITEM_ID_MISSING", "rejected exact Overview has no item id")
+            self.github.save_controller_state(state)
+            return state, v5.core.Action("blocked", "rejected long-video item id missing")
+
+        active = self.github.active_workflow_run(v5.LONG_VIDEO_WORKFLOW, production_only=True)
+        if active:
+            current = state["long_video"]
+            current["run_id"] = active.get("id")
+            current["status"] = "running"
+            v5.core.transition(state, "long_video_running", "exact rejected Overview rebuild workflow already active", item_id=item_id)
+            self.github.save_controller_state(state)
+            return state, v5.core.Action("wait", "long-video rebuild workflow active")
+
+        current = state["long_video"]
+        count = int(current.get("attempt_count") or 0)
+        if count >= v5.v3.MAX_STAGE_ATTEMPTS:
+            return None
+
+        rebuild_inputs = {
+            "operation": "rebuild",
+            "rebuild_item_id": item_id,
+            "target_slug": source["slug"],
+        }
+        v5.core.GitHubClient.dispatch(self.github, v5.LONG_VIDEO_WORKFLOW, rebuild_inputs)
+        current["attempt_count"] = count + 1
+        current["remotion_rebuild_dispatches"] = int(current.get("remotion_rebuild_dispatches") or 0) + 1
+        current["last_dispatch_at"] = v5.core.utc_now()
+        current["status"] = "running"
+        current["next_retry_at"] = None
+        current["item_id"] = item.get("id")
+        current["source_id"] = item.get("source_id")
+        current["artifact_id"] = item.get("artifact_id")
+        current["provider_id"] = item.get("task_id")
+        v5.core.transition(
+            state,
+            "long_video_running",
+            "exact rejected Overview dispatched to Remotion rebuild",
+            item_id=item_id,
+        )
+        self.github.save_controller_state(state)
+        return state, v5.core.Action("dispatch_long_video", "rebuild exact rejected Overview", rebuild_inputs)
+
     def _dispatch_budgeted(self, state, stage, workflow, inputs):
-        """Bind long-video dispatch and provider resume to the authoritative source identity."""
+        """Bind every long-video action to the authoritative source identity and recovery mode."""
         bound_inputs = dict(inputs or {})
         if stage != "video" or workflow != v5.LONG_VIDEO_WORKFLOW:
             return super()._dispatch_budgeted(state, stage, workflow, bound_inputs)
@@ -189,6 +339,32 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             bound_inputs["target_slug"] = source["slug"]
 
         snapshot = self.github.newest_video_state()
+        exact_rejected = [
+            item for item in v5._exact_items(snapshot, source)
+            if item.get("uploaded") is not True
+            and str(item.get("status") or "") == "rejected"
+            and item.get("signature_fullscreen") is not True
+        ]
+        if len(exact_rejected) > 1:
+            raise v5.core.ControllerError("DUPLICATE_REJECTED_LONG_VIDEO_ITEMS")
+        if exact_rejected:
+            item = exact_rejected[0]
+            rebuild_inputs = {
+                "operation": "rebuild",
+                "rebuild_item_id": str(item.get("id") or ""),
+                "target_slug": source["slug"],
+            }
+            if not rebuild_inputs["rebuild_item_id"]:
+                raise v5.core.ControllerError("REJECTED_LONG_VIDEO_ITEM_ID_MISSING")
+            v5.v3.V3Controller._dispatch_budgeted(self, state, stage, workflow, rebuild_inputs)
+            current = state["video"]
+            current["remotion_rebuild_dispatches"] = int(current.get("remotion_rebuild_dispatches") or 0) + 1
+            current["item_id"] = item.get("id")
+            current["source_id"] = item.get("source_id")
+            current["artifact_id"] = item.get("artifact_id")
+            current["provider_id"] = item.get("task_id")
+            return
+
         exact_generating = [
             item for item in v5._exact_items(snapshot, source)
             if item.get("uploaded") is not True
@@ -265,6 +441,9 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return state, blocker
 
         self._overview_evidence_preflight(state)
+        direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
+        if direct_rebuild is not None:
+            return direct_rebuild
         self.github.save_controller_state(state)
         return super().tick()
 
