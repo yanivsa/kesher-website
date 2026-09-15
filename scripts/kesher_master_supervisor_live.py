@@ -156,8 +156,6 @@ def prepare_escalation(
                 "command_id": active_id,
                 "reason": "active_command_not_terminal",
             }
-        # Runtime reconciliation should normally mark the command terminal first.
-        # Fail closed if a caller says terminal but the persisted lifecycle disagrees.
         return result, {
             "stage": "WAIT",
             "executor": None,
@@ -192,7 +190,6 @@ def prepare_escalation(
     stage, executor = {1: ("S1", "controller"), 2: ("S2", "jules"), 3: ("S3", "direct")}[strike]
     command_id = _command_id(report, stage, strike)
     if command_id in commands:
-        # Deterministic outbox identity: never recreate or blindly reissue.
         incident["active_command_id"] = command_id
         return result, {
             "stage": "WAIT",
@@ -259,15 +256,21 @@ def mark_command_acknowledged(
     return result
 
 
-def mark_command_running(state: dict[str, Any], command_id: str, metadata: dict[str, Any], *, at: str) -> dict[str, Any]:
+def mark_command_running(
+    state: dict[str, Any], command_id: str, metadata: dict[str, Any], *, at: str
+) -> dict[str, Any]:
     result = mark_command_acknowledged(state, command_id, metadata, at=at)
     command = result["commands"][command_id]
     command["lifecycle"] = "running"
     command["running_at"] = command.get("running_at") or at
+    command["updated_at"] = at
+    result["updated_at"] = at
     return result
 
 
-def mark_command_failed(state: dict[str, Any], command_id: str, reason: str, *, at: str) -> dict[str, Any]:
+def mark_command_failed(
+    state: dict[str, Any], command_id: str, reason: str, *, at: str
+) -> dict[str, Any]:
     result = copy.deepcopy(state)
     command = result.setdefault("commands", {}).get(command_id)
     if not isinstance(command, dict):
@@ -282,13 +285,18 @@ def mark_command_failed(state: dict[str, Any], command_id: str, reason: str, *, 
     if isinstance(incident, dict):
         incident["status"] = "open"
         incident.setdefault("history", []).append({
-            "at": at, "event": "command_failed", "command_id": command_id, "reason": str(reason)
+            "at": at,
+            "event": "command_failed",
+            "command_id": command_id,
+            "reason": str(reason),
         })
     result["updated_at"] = at
     return result
 
 
-def record_resolution(state: dict[str, Any], report: dict[str, Any], *, at: str) -> dict[str, Any]:
+def record_resolution(
+    state: dict[str, Any], report: dict[str, Any], *, at: str
+) -> dict[str, Any]:
     result = copy.deepcopy(state)
     fp = incident_fingerprint(report)
     incident = result.setdefault("incidents", {}).get(fp)
@@ -308,6 +316,62 @@ def record_resolution(state: dict[str, Any], report: dict[str, Any], *, at: str)
     return result
 
 
+def resolve_absent_incidents(
+    state: dict[str, Any], report: dict[str, Any], *, at: str
+) -> tuple[dict[str, Any], bool]:
+    """Close prior incidents when fresh exact-source evidence no longer shows them.
+
+    Waiting for an authoritative article is intentionally not enough evidence to
+    close anything. When a current incident exists, only other fingerprints for
+    the same exact source are closed; the current fingerprint remains active.
+    """
+    exact = report.get("exact") if isinstance(report.get("exact"), dict) else {}
+    slug = str(exact.get("slug") or "").strip()
+    content_hash = str(exact.get("content_sha256") or "").strip()
+    if not slug or not content_hash:
+        return copy.deepcopy(state), False
+
+    result = copy.deepcopy(state)
+    incidents = result.setdefault("incidents", {})
+    commands = result.setdefault("commands", {})
+    prefix = f"v5|{slug}|{content_hash}|"
+    current_fp = (
+        incident_fingerprint(report)
+        if report.get("status") == "incident_detected" and report.get("incident_id")
+        else None
+    )
+    changed = False
+
+    for fp, incident in incidents.items():
+        if not isinstance(incident, dict):
+            continue
+        if fp == current_fp:
+            continue
+        if not str(incident.get("incident_id") or "").startswith(prefix):
+            continue
+        if str(incident.get("status") or "") == "resolved":
+            continue
+        active_id = str(incident.get("active_command_id") or "")
+        command = commands.get(active_id) if active_id else None
+        if isinstance(command, dict) and str(command.get("lifecycle") or "") != "failed":
+            command["lifecycle"] = "verified"
+            command["verified_at"] = at
+            command["updated_at"] = at
+        incident["status"] = "resolved"
+        incident["resolved_at"] = at
+        incident["active_command_id"] = None
+        incident.setdefault("history", []).append({
+            "at": at,
+            "event": "resolved",
+            "reason": "failure_absent_in_fresh_exact_evidence",
+        })
+        changed = True
+
+    if changed:
+        result["updated_at"] = at
+    return result, changed
+
+
 def should_hold_external_running(started_at: str, now: str) -> bool:
     started = _parse_timestamp(started_at)
     current = _parse_timestamp(now)
@@ -316,7 +380,9 @@ def should_hold_external_running(started_at: str, now: str) -> bool:
     return (current - started).total_seconds() < EXTERNAL_RUNNING_LIMIT_MINUTES * 60
 
 
-def build_incident_packet(report: dict[str, Any], *, strike: int, command_id: str) -> dict[str, Any]:
+def build_incident_packet(
+    report: dict[str, Any], *, strike: int, command_id: str
+) -> dict[str, Any]:
     exact = copy.deepcopy(report.get("exact") or {})
     action = str(report.get("proposed_action") or "")
     dod_by_action = {
@@ -364,7 +430,11 @@ def direct_dispatch_spec(report: dict[str, Any]) -> dict[str, Any]:
     if action == "rebuild_exact_overview" and item_id and slug:
         return {
             "workflow": "kesher-daily-video.yml",
-            "inputs": {"operation": "rebuild", "rebuild_item_id": item_id, "target_slug": slug},
+            "inputs": {
+                "operation": "rebuild",
+                "rebuild_item_id": item_id,
+                "target_slug": slug,
+            },
         }
     if action == "retry_exact_upload" and slug:
         return {
@@ -431,6 +501,7 @@ class GitHubApi:
         *,
         allow_404: bool = False,
         mutation: bool = False,
+        cas_conflict: bool = False,
     ) -> Any:
         raw = None if body is None else json.dumps(body, ensure_ascii=False).encode("utf-8")
         attempts = 1 if mutation else 4
@@ -455,15 +526,18 @@ class GitHubApi:
                 detail = exc.read().decode("utf-8", errors="replace")[:1500]
                 if allow_404 and exc.code == 404:
                     return None
-                if mutation and exc.code in {409, 422}:
+                if cas_conflict and exc.code in {409, 422}:
                     raise SupervisorCasConflict(f"HTTP {exc.code}: {detail}") from exc
                 if exc.code not in {429, 500, 502, 503, 504} or mutation:
-                    raise SupervisorError(f"GITHUB_HTTP_{exc.code}: {method} {url}: {detail}") from exc
+                    raise SupervisorError(
+                        f"GITHUB_HTTP_{exc.code}: {method} {url}: {detail}"
+                    ) from exc
                 last = exc
             except urllib.error.URLError as exc:
                 if mutation:
-                    # Mutation outcome is uncertain. Never blind-retry it.
-                    raise SupervisorError(f"GITHUB_MUTATION_OUTCOME_UNCERTAIN: {method} {url}: {exc}") from exc
+                    raise SupervisorError(
+                        f"GITHUB_MUTATION_OUTCOME_UNCERTAIN: {method} {url}: {exc}"
+                    ) from exc
                 last = exc
             if attempt + 1 < attempts:
                 time.sleep(2 ** attempt)
@@ -483,13 +557,17 @@ class GitHubApi:
                 f"{self.api}/git/refs",
                 {"ref": f"refs/heads/{ref}", "sha": sha},
                 mutation=True,
+                cas_conflict=True,
             )
         except SupervisorCasConflict:
-            # Concurrent initializer may have won. Verify before continuing.
-            if not self._request("GET", f"{self.api}/git/ref/heads/{encoded}", allow_404=True):
+            if not self._request(
+                "GET", f"{self.api}/git/ref/heads/{encoded}", allow_404=True
+            ):
                 raise
 
-    def load_state_blob(self, ref: str, path: str) -> tuple[dict[str, Any] | None, str | None]:
+    def load_state_blob(
+        self, ref: str, path: str
+    ) -> tuple[dict[str, Any] | None, str | None]:
         self._ensure_ref(ref)
         quoted_path = urllib.parse.quote(path, safe="/")
         payload = self._request(
@@ -502,10 +580,15 @@ class GitHubApi:
         if not isinstance(payload, dict) or payload.get("encoding") != "base64":
             raise SupervisorError("SUPERVISOR_STATE_INVALID")
         try:
-            state = json.loads(base64.b64decode(payload.get("content") or "").decode("utf-8"))
+            state = json.loads(
+                base64.b64decode(payload.get("content") or "").decode("utf-8")
+            )
         except (ValueError, UnicodeDecodeError) as exc:
             raise SupervisorError("SUPERVISOR_STATE_INVALID") from exc
-        return state if isinstance(state, dict) else None, str(payload.get("sha") or "") or None
+        return (
+            state if isinstance(state, dict) else None,
+            str(payload.get("sha") or "") or None,
+        )
 
     def save_state_blob(
         self,
@@ -519,19 +602,29 @@ class GitHubApi:
         body: dict[str, Any] = {
             "message": f"state: Kesher Master Supervisor {state.get('updated_at') or ''}",
             "content": base64.b64encode(
-                (json.dumps(state, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8")
+                (
+                    json.dumps(state, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+                ).encode("utf-8")
             ).decode("ascii"),
             "branch": ref,
         }
         if expected_sha:
             body["sha"] = expected_sha
-        payload = self._request("PUT", f"{self.api}/contents/{quoted_path}", body, mutation=True)
+        payload = self._request(
+            "PUT",
+            f"{self.api}/contents/{quoted_path}",
+            body,
+            mutation=True,
+            cas_conflict=True,
+        )
         sha = str(((payload or {}).get("content") or {}).get("sha") or "")
         if not sha:
             raise SupervisorError("SUPERVISOR_STATE_SAVE_INVALID_RESPONSE")
         return sha
 
-    def dispatch_workflow(self, workflow: str, inputs: dict[str, str] | None = None) -> None:
+    def dispatch_workflow(
+        self, workflow: str, inputs: dict[str, str] | None = None
+    ) -> None:
         body: dict[str, Any] = {"ref": "main"}
         if inputs:
             body["inputs"] = {str(k): str(v) for k, v in inputs.items()}
@@ -545,20 +638,36 @@ class GitHubApi:
 
     def workflow_runs(self, workflow: str, limit: int = 20) -> list[dict[str, Any]]:
         encoded = urllib.parse.quote(workflow, safe="")
-        payload = self._request("GET", f"{self.api}/actions/workflows/{encoded}/runs?per_page={limit}")
+        payload = self._request(
+            "GET", f"{self.api}/actions/workflows/{encoded}/runs?per_page={limit}"
+        )
         rows = payload.get("workflow_runs") if isinstance(payload, dict) else []
         return [row for row in (rows or []) if isinstance(row, dict)]
+
+    def workflow_run_by_id(self, run_id: int | str) -> dict[str, Any] | None:
+        payload = self._request(
+            "GET", f"{self.api}/actions/runs/{run_id}", allow_404=True
+        )
+        return payload if isinstance(payload, dict) else None
 
     def active_external_media_run(self) -> dict[str, Any] | None:
         for workflow in ("kesher-daily-video.yml", "kesher-short-v4.yml"):
             for row in self.workflow_runs(workflow, 10):
                 if str(row.get("event") or "") == "pull_request":
                     continue
-                if str(row.get("status") or "") in {"queued", "pending", "in_progress", "waiting", "requested"}:
+                if str(row.get("status") or "") in {
+                    "queued",
+                    "pending",
+                    "in_progress",
+                    "waiting",
+                    "requested",
+                }:
                     return row
         return None
 
-    def find_dispatched_run(self, workflow: str, issued_at: str) -> dict[str, Any] | None:
+    def find_dispatched_run(
+        self, workflow: str, issued_at: str
+    ) -> dict[str, Any] | None:
         issued = _parse_timestamp(issued_at)
         candidates: list[dict[str, Any]] = []
         for row in self.workflow_runs(workflow, 30):
@@ -571,24 +680,44 @@ class GitHubApi:
         return candidates[0] if candidates else None
 
     def get_pr(self, number: int) -> dict[str, Any] | None:
-        payload = self._request("GET", f"{self.api}/pulls/{number}", allow_404=True)
+        payload = self._request(
+            "GET", f"{self.api}/pulls/{number}", allow_404=True
+        )
         return payload if isinstance(payload, dict) else None
 
     def pr_files(self, number: int) -> list[str]:
-        payload = self._request("GET", f"{self.api}/pulls/{number}/files?per_page=100")
-        return [str(row.get("filename") or "") for row in payload if isinstance(row, dict)] if isinstance(payload, list) else []
+        payload = self._request(
+            "GET", f"{self.api}/pulls/{number}/files?per_page=100"
+        )
+        return (
+            [str(row.get("filename") or "") for row in payload if isinstance(row, dict)]
+            if isinstance(payload, list)
+            else []
+        )
 
     def combined_status(self, sha: str) -> dict[str, Any]:
         payload = self._request("GET", f"{self.api}/commits/{sha}/status")
         return payload if isinstance(payload, dict) else {}
 
+    def check_runs(self, sha: str) -> list[dict[str, Any]]:
+        payload = self._request(
+            "GET", f"{self.api}/commits/{sha}/check-runs?per_page=100"
+        )
+        rows = payload.get("check_runs") if isinstance(payload, dict) else []
+        return [row for row in (rows or []) if isinstance(row, dict)]
+
     def merge_pr(self, number: int, sha: str) -> dict[str, Any]:
-        return self._request(
+        payload = self._request(
             "PUT",
             f"{self.api}/pulls/{number}/merge",
-            {"sha": sha, "merge_method": "merge", "commit_title": f"Master recovery: merge PR #{number}"},
+            {
+                "sha": sha,
+                "merge_method": "merge",
+                "commit_title": f"Master recovery: merge PR #{number}",
+            },
             mutation=True,
         )
+        return payload if isinstance(payload, dict) else {}
 
 
 class JulesRecoveryClient:
@@ -603,13 +732,35 @@ class JulesRecoveryClient:
 
     def list_exact(self, fingerprint: str) -> list[dict[str, Any]]:
         title = self.title(fingerprint)
-        payload = jules.request_json(
-            "GET",
-            f"{jules.API_BASE}/sessions?pageSize=100",
-            jules.jules_headers(self.api_key),
-        )
-        rows = payload.get("sessions") if isinstance(payload, dict) else []
-        return [row for row in (rows or []) if isinstance(row, dict) and str(row.get("title") or "") == title]
+        matches: list[dict[str, Any]] = []
+        token = ""
+        seen_tokens: set[str] = set()
+        for _ in range(50):
+            params = {"pageSize": "100"}
+            if token:
+                params["pageToken"] = token
+            url = f"{jules.API_BASE}/sessions?{urllib.parse.urlencode(params)}"
+            payload = jules.request_json(
+                "GET",
+                url,
+                jules.jules_headers(self.api_key),
+            )
+            rows = payload.get("sessions") if isinstance(payload, dict) else []
+            matches.extend(
+                row
+                for row in (rows or [])
+                if isinstance(row, dict) and str(row.get("title") or "") == title
+            )
+            next_token = str(
+                (payload or {}).get("nextPageToken") if isinstance(payload, dict) else ""
+            ).strip()
+            if not next_token:
+                return matches
+            if next_token in seen_tokens:
+                raise SupervisorError("JULES_SESSION_PAGINATION_LOOP")
+            seen_tokens.add(next_token)
+            token = next_token
+        raise SupervisorError("JULES_SESSION_PAGINATION_LIMIT")
 
     def get(self, session_id: str) -> dict[str, Any]:
         sid = str(session_id).removeprefix("sessions/")
@@ -623,28 +774,25 @@ class JulesRecoveryClient:
     def acquire_or_continue(self, packet: dict[str, Any]) -> tuple[str, str]:
         fingerprint = str(packet["fingerprint"])
         exact = self.list_exact(fingerprint)
-        active = [row for row in exact if str(row.get("state") or "UNKNOWN").upper() not in self.TERMINAL]
-        if len(active) > 1:
+        if len(exact) > 1:
             raise SupervisorError("JULES_DUPLICATE_RECOVERY_SESSIONS")
-        prompt = (
-            "KESHER MASTER SUPERVISOR INCIDENT PACKET\n"
-            "Do not rediagnose from scratch. Treat this packet as the authoritative incident scope. "
-            "Continue the same PR/branch when supplied; do not create duplicate content, provider generation, video, upload, issue, or PR. "
-            "Make the narrowest code/config repair needed, run relevant tests, and create/update one recovery PR only.\n\n"
-            + json.dumps(packet, ensure_ascii=False, indent=2, sort_keys=True)
-        )
-        if len(active) == 1:
-            name = jules.normalize_session_name(active[0])
-            jules.send_message(self.api_key, name.removeprefix("sessions/"), prompt)
-            return name, "continued"
-        # If a prior exact session is already terminal, do not create another one.
-        if exact:
-            terminal = sorted(exact, key=lambda row: str(row.get("updateTime") or row.get("createTime") or ""))[-1]
-            return jules.normalize_session_name(terminal), "terminal_existing"
+        if len(exact) == 1:
+            row = exact[0]
+            name = jules.normalize_session_name(row)
+            state_name = str(row.get("state") or "UNKNOWN").upper()
+            if state_name not in self.TERMINAL:
+                prompt = self._prompt(packet)
+                jules.send_message(
+                    self.api_key,
+                    name.removeprefix("sessions/"),
+                    prompt,
+                )
+                return name, "continued"
+            return name, "terminal_existing"
 
         payload = {
             "title": self.title(fingerprint),
-            "prompt": prompt,
+            "prompt": self._prompt(packet),
             "sourceContext": {
                 "source": jules.SOURCE,
                 "githubRepoContext": {"startingBranch": "main"},
@@ -661,10 +809,14 @@ class JulesRecoveryClient:
                 max_attempts=1,
             )
         except Exception:
-            # Create outcome may be uncertain. Reconcile by exact deterministic title.
             reconciled = self.list_exact(fingerprint)
             if len(reconciled) == 1:
-                return jules.normalize_session_name(reconciled[0]), "reconciled_uncertain_create"
+                return (
+                    jules.normalize_session_name(reconciled[0]),
+                    "reconciled_uncertain_create",
+                )
+            if len(reconciled) > 1:
+                raise SupervisorError("JULES_DUPLICATE_RECOVERY_SESSIONS")
             raise
         if not isinstance(created, dict):
             raise SupervisorError("JULES_RECOVERY_CREATE_INVALID")
@@ -672,6 +824,16 @@ class JulesRecoveryClient:
         if not name:
             raise SupervisorError("JULES_RECOVERY_CREATE_MISSING_ID")
         return name, "created"
+
+    @staticmethod
+    def _prompt(packet: dict[str, Any]) -> str:
+        return (
+            "KESHER MASTER SUPERVISOR INCIDENT PACKET\n"
+            "Do not rediagnose from scratch. Treat this packet as the authoritative incident scope. "
+            "Continue the same PR/branch when supplied; do not create duplicate content, provider generation, video, upload, issue, or PR. "
+            "Make the narrowest code/config repair needed, run relevant tests, and create/update one recovery PR only.\n\n"
+            + json.dumps(packet, ensure_ascii=False, indent=2, sort_keys=True)
+        )
 
 
 def _pr_urls(session: dict[str, Any]) -> list[str]:
@@ -694,19 +856,46 @@ def _minutes_since(value: str, now: str) -> float | None:
     return max(0.0, (current - start).total_seconds() / 60.0)
 
 
+def _run_terminal_result(
+    state: dict[str, Any],
+    command_id: str,
+    run: dict[str, Any],
+    workflow: str,
+    now: str,
+) -> tuple[dict[str, Any], bool, str]:
+    status = str(run.get("status") or "")
+    if status != "completed":
+        return (
+            mark_command_running(
+                state,
+                command_id,
+                {"workflow": workflow, "run_id": run.get("id")},
+                at=now,
+            ),
+            False,
+            "workflow_running",
+        )
+    return (
+        mark_command_failed(
+            state,
+            command_id,
+            f"{workflow} run {run.get('id')} completed but exact incident persisted",
+            at=now,
+        ),
+        True,
+        "workflow_completed_incident_persisted",
+    )
+
+
 def reconcile_active_command(
     state: dict[str, Any],
     report: dict[str, Any],
     *,
-    api: GitHubApi,
+    api: Any,
     jules_client: JulesRecoveryClient | None,
     now: str,
 ) -> tuple[dict[str, Any], bool, str]:
-    """Reconcile the outbox command without repeating an uncertain side effect.
-
-    Returns (state, terminal, reason). ``terminal=True`` means a fresh same
-    incident may advance to the next strike in the same audit.
-    """
+    """Reconcile an issued command without blindly repeating an uncertain side effect."""
     result = copy.deepcopy(state)
     fp = incident_fingerprint(report)
     incident = result.get("incidents", {}).get(fp)
@@ -720,49 +909,100 @@ def reconcile_active_command(
     if lifecycle in TERMINAL_LIFECYCLES:
         return result, True, f"persisted_{lifecycle}"
 
-    external = api.active_external_media_run()
-    if isinstance(external, dict):
-        started = str(external.get("run_started_at") or external.get("created_at") or "")
-        if should_hold_external_running(started, now):
-            result = mark_command_running(
-                result,
-                command_id,
-                {"external_run_id": external.get("id"), "external_workflow": external.get("name")},
-                at=now,
+    stage = str(report.get("incident_id") or "").split("|")[-1]
+    if stage in {"long_video", "short"} and hasattr(api, "active_external_media_run"):
+        external = api.active_external_media_run()
+        if isinstance(external, dict):
+            started = str(
+                external.get("run_started_at") or external.get("created_at") or ""
             )
-            return result, False, "external_media_running_heartbeat_exception"
+            if should_hold_external_running(started, now):
+                return (
+                    mark_command_running(
+                        result,
+                        command_id,
+                        {
+                            "external_run_id": external.get("id"),
+                            "external_workflow": external.get("name"),
+                        },
+                        at=now,
+                    ),
+                    False,
+                    "external_media_running_heartbeat_exception",
+                )
 
     executor = str(command.get("executor") or "")
     metadata = command.get("metadata") if isinstance(command.get("metadata"), dict) else {}
+
     if executor in {"controller", "direct"}:
+        run_id = metadata.get("run_id")
         workflow = str(metadata.get("workflow") or "")
         if not workflow and executor == "controller":
             workflow = "kesher-content-controller.yml"
-        if workflow:
-            run = api.find_dispatched_run(workflow, str(command.get("issued_at") or ""))
+
+        if run_id and hasattr(api, "workflow_run_by_id"):
+            run = api.workflow_run_by_id(run_id)
+            if isinstance(run, dict):
+                return _run_terminal_result(result, command_id, run, workflow, now)
+
+        if workflow and workflow != "recovery_pr_merge" and hasattr(api, "find_dispatched_run"):
+            run = api.find_dispatched_run(
+                workflow, str(command.get("issued_at") or "")
+            )
             if run:
-                status = str(run.get("status") or "")
-                if status != "completed":
-                    result = mark_command_running(result, command_id, {"workflow": workflow, "run_id": run.get("id")}, at=now)
-                    return result, False, "workflow_running"
-                # The report still contains the exact same incident after completion.
-                result = mark_command_failed(
-                    result,
-                    command_id,
-                    f"{workflow} run {run.get('id')} completed but exact incident persisted",
-                    at=now,
-                )
-                return result, True, "workflow_completed_incident_persisted"
+                return _run_terminal_result(result, command_id, run, workflow, now)
+
+        if executor == "direct":
+            prior_pr = _find_prior_recovery_pr(result, fp)
+            if prior_pr and hasattr(api, "get_pr"):
+                pr = api.get_pr(prior_pr)
+                if isinstance(pr, dict) and pr.get("merged") is True:
+                    merged_at = str(pr.get("merged_at") or command.get("issued_at") or "")
+                    controller_run = (
+                        api.find_dispatched_run(
+                            "kesher-content-controller.yml", merged_at
+                        )
+                        if hasattr(api, "find_dispatched_run")
+                        else None
+                    )
+                    if controller_run:
+                        return _run_terminal_result(
+                            result,
+                            command_id,
+                            controller_run,
+                            "kesher-content-controller.yml",
+                            now,
+                        )
+                    age = _minutes_since(merged_at, now)
+                    if age is not None and age >= 1 and hasattr(api, "dispatch_workflow"):
+                        api.dispatch_workflow("kesher-content-controller.yml")
+                        return (
+                            mark_command_acknowledged(
+                                result,
+                                command_id,
+                                {
+                                    "workflow": "recovery_pr_merge",
+                                    "recovery_pr_number": prior_pr,
+                                    "controller_dispatched_after_merge": True,
+                                },
+                                at=now,
+                            ),
+                            False,
+                            "reconciled_merged_pr_and_woke_controller",
+                        )
 
         age = _minutes_since(str(command.get("issued_at") or ""), now)
         if age is not None and age >= UNCERTAIN_ISSUE_GRACE_MINUTES:
-            result = mark_command_failed(
-                result,
-                command_id,
-                "issued command had no discoverable workflow run after grace period; not blindly reissuing",
-                at=now,
+            return (
+                mark_command_failed(
+                    result,
+                    command_id,
+                    "issued command had no discoverable workflow run after grace period; not blindly reissuing",
+                    at=now,
+                ),
+                True,
+                "uncertain_dispatch_timed_out",
             )
-            return result, True, "uncertain_dispatch_timed_out"
         return result, False, "issued_waiting_for_discoverable_run"
 
     if executor == "jules":
@@ -771,16 +1011,31 @@ def reconcile_active_command(
             exact_sessions = jules_client.list_exact(fp)
             if len(exact_sessions) == 1:
                 session_id = jules.normalize_session_name(exact_sessions[0])
-                result = mark_command_acknowledged(result, command_id, {"session_id": session_id}, at=now)
+                result = mark_command_acknowledged(
+                    result, command_id, {"session_id": session_id}, at=now
+                )
             elif len(exact_sessions) > 1:
-                result = mark_command_failed(result, command_id, "duplicate exact recovery sessions", at=now)
-                return result, True, "duplicate_jules_sessions"
+                return (
+                    mark_command_failed(
+                        result,
+                        command_id,
+                        "duplicate exact recovery sessions",
+                        at=now,
+                    ),
+                    True,
+                    "duplicate_jules_sessions",
+                )
         if session_id and jules_client:
             session = jules_client.get(session_id)
             state_name = str(session.get("state") or "UNKNOWN").upper()
             if state_name not in JulesRecoveryClient.TERMINAL:
-                result = mark_command_running(result, command_id, {"session_id": session_id}, at=now)
-                return result, False, "jules_running"
+                return (
+                    mark_command_running(
+                        result, command_id, {"session_id": session_id}, at=now
+                    ),
+                    False,
+                    "jules_running",
+                )
             urls = _pr_urls(session)
             pr_number = _pr_number_from_url(urls[0]) if urls else None
             result = mark_command_failed(
@@ -790,19 +1045,24 @@ def reconcile_active_command(
                 at=now,
             )
             if pr_number:
-                result["commands"][command_id].setdefault("metadata", {})["recovery_pr_number"] = pr_number
+                result["commands"][command_id].setdefault("metadata", {})[
+                    "recovery_pr_number"
+                ] = pr_number
                 result["commands"][command_id]["metadata"]["recovery_pr_url"] = urls[0]
             return result, True, "jules_terminal_incident_persisted"
 
         age = _minutes_since(str(command.get("issued_at") or ""), now)
         if age is not None and age >= UNCERTAIN_ISSUE_GRACE_MINUTES:
-            result = mark_command_failed(
-                result,
-                command_id,
-                "issued Jules command had no exact session after grace period; not blindly creating another",
-                at=now,
+            return (
+                mark_command_failed(
+                    result,
+                    command_id,
+                    "issued Jules command had no exact session after grace period; not blindly creating another",
+                    at=now,
+                ),
+                True,
+                "uncertain_jules_create_timed_out",
             )
-            return result, True, "uncertain_jules_create_timed_out"
         return result, False, "jules_issued_waiting_reconcile"
 
     return result, False, "unknown_executor_wait"
@@ -810,7 +1070,8 @@ def reconcile_active_command(
 
 def _find_prior_recovery_pr(state: dict[str, Any], fp: str) -> int | None:
     candidates = [
-        row for row in state.get("commands", {}).values()
+        row
+        for row in state.get("commands", {}).values()
         if isinstance(row, dict)
         and row.get("fingerprint") == fp
         and row.get("executor") == "jules"
@@ -831,10 +1092,12 @@ def _safe_recovery_pr_scope(files: list[str]) -> bool:
         "public/images/generated/blog/",
         ".kesher-",
     )
-    return not any(any(path.startswith(prefix) for prefix in forbidden_prefixes) for path in files)
+    return not any(
+        any(path.startswith(prefix) for prefix in forbidden_prefixes) for path in files
+    )
 
 
-def try_finalize_recovery_pr(api: GitHubApi, number: int) -> dict[str, Any] | None:
+def try_finalize_recovery_pr(api: Any, number: int) -> dict[str, Any] | None:
     pr = api.get_pr(number)
     if not pr or str(pr.get("state") or "") != "open" or pr.get("draft") is True:
         return None
@@ -843,14 +1106,34 @@ def try_finalize_recovery_pr(api: GitHubApi, number: int) -> dict[str, Any] | No
         return None
     if pr.get("mergeable") is not True:
         return None
+
     status = api.combined_status(head)
-    contexts = {
+    legacy_contexts = {
         str(row.get("context") or ""): str(row.get("state") or "")
         for row in (status.get("statuses") or [])
         if isinstance(row, dict)
     }
-    if contexts.get("verify") != "success":
+    checks = api.check_runs(head) if hasattr(api, "check_runs") else []
+    verify_check_ok = any(
+        str(row.get("name") or "") == "verify"
+        and str(row.get("status") or "") == "completed"
+        and str(row.get("conclusion") or "") == "success"
+        for row in checks
+    )
+    verify_ok = legacy_contexts.get("verify") == "success" or verify_check_ok
+    if not verify_ok:
         return None
+
+    failed_checks = [
+        row
+        for row in checks
+        if str(row.get("status") or "") == "completed"
+        and str(row.get("conclusion") or "")
+        in {"failure", "timed_out", "cancelled", "action_required"}
+    ]
+    if failed_checks:
+        return None
+
     merged = api.merge_pr(number, head)
     if not isinstance(merged, dict) or merged.get("merged") is not True:
         raise SupervisorError(f"RECOVERY_PR_MERGE_FAILED: #{number}")
@@ -862,32 +1145,55 @@ def execute_command(
     report: dict[str, Any],
     decision: dict[str, Any],
     *,
-    api: GitHubApi,
+    api: Any,
     jules_client: JulesRecoveryClient | None,
     now: str,
 ) -> dict[str, Any]:
     command_id = str(decision.get("command_id") or "")
     executor = str(decision.get("executor") or "")
+
     if executor == "controller":
         workflow = "kesher-content-controller.yml"
-        active = [row for row in api.workflow_runs(workflow, 10) if str(row.get("status") or "") != "completed"]
+        active = [
+            row
+            for row in api.workflow_runs(workflow, 10)
+            if str(row.get("status") or "") != "completed"
+        ]
         if not active:
             api.dispatch_workflow(workflow)
-            metadata = {"workflow": workflow, "dispatch": "issued", "dispatched_at": now}
+            metadata = {
+                "workflow": workflow,
+                "dispatch": "issued",
+                "dispatched_at": now,
+            }
         else:
-            metadata = {"workflow": workflow, "dispatch": "already_active", "run_id": active[0].get("id")}
+            metadata = {
+                "workflow": workflow,
+                "dispatch": "already_active",
+                "run_id": active[0].get("id"),
+            }
         return mark_command_acknowledged(state, command_id, metadata, at=now)
 
     if executor == "jules":
         if not jules_client:
-            return mark_command_failed(state, command_id, "JULES_API_KEY missing", at=now)
+            return mark_command_failed(
+                state, command_id, "JULES_API_KEY missing", at=now
+            )
         command = state["commands"][command_id]
-        packet = build_incident_packet(report, strike=int(command.get("strike") or 2), command_id=command_id)
+        packet = build_incident_packet(
+            report,
+            strike=int(command.get("strike") or 2),
+            command_id=command_id,
+        )
         session_id, mode = jules_client.acquire_or_continue(packet)
         return mark_command_acknowledged(
             state,
             command_id,
-            {"session_id": session_id, "jules_mode": mode, "incident_packet": packet},
+            {
+                "session_id": session_id,
+                "jules_mode": mode,
+                "incident_packet": packet,
+            },
             at=now,
         )
 
@@ -897,10 +1203,15 @@ def execute_command(
         if prior_pr:
             finalized = try_finalize_recovery_pr(api, prior_pr)
             if finalized:
+                api.dispatch_workflow("kesher-content-controller.yml")
                 return mark_command_acknowledged(
                     state,
                     command_id,
-                    {**finalized, "workflow": "recovery_pr_merge"},
+                    {
+                        **finalized,
+                        "workflow": "recovery_pr_merge",
+                        "controller_dispatched_after_merge": True,
+                    },
                     at=now,
                 )
         try:
@@ -908,33 +1219,54 @@ def execute_command(
         except SupervisorError as exc:
             return mark_command_failed(state, command_id, str(exc), at=now)
         workflow = str(spec["workflow"])
-        active = [row for row in api.workflow_runs(workflow, 10) if str(row.get("status") or "") != "completed"]
+        active = [
+            row
+            for row in api.workflow_runs(workflow, 10)
+            if str(row.get("status") or "") != "completed"
+        ]
         if not active:
             api.dispatch_workflow(workflow, spec.get("inputs") or {})
-            metadata = {"workflow": workflow, "inputs": spec.get("inputs") or {}, "dispatch": "issued", "dispatched_at": now}
+            metadata = {
+                "workflow": workflow,
+                "inputs": spec.get("inputs") or {},
+                "dispatch": "issued",
+                "dispatched_at": now,
+            }
         else:
-            metadata = {"workflow": workflow, "inputs": spec.get("inputs") or {}, "dispatch": "already_active", "run_id": active[0].get("id")}
+            metadata = {
+                "workflow": workflow,
+                "inputs": spec.get("inputs") or {},
+                "dispatch": "already_active",
+                "run_id": active[0].get("id"),
+            }
         return mark_command_acknowledged(state, command_id, metadata, at=now)
 
-    return mark_command_failed(state, command_id, f"unsupported executor: {executor}", at=now)
+    return mark_command_failed(
+        state, command_id, f"unsupported executor: {executor}", at=now
+    )
 
 
-def _persist_after_side_effect(store: SupervisorStateStore, state: dict[str, Any]) -> None:
+def _persist_after_side_effect(
+    store: SupervisorStateStore, state: dict[str, Any]
+) -> None:
     """Best-effort acknowledgement CAS. Never repeat the side effect on conflict."""
     fresh, fresh_sha = store.load()
-    # Merge only the command/incident touched by this run if the branch advanced.
     for key, value in state.get("commands", {}).items():
-        if key not in fresh.get("commands", {}) or value.get("updated_at", "") >= fresh["commands"][key].get("updated_at", ""):
+        current = fresh.get("commands", {}).get(key)
+        if not isinstance(current, dict) or str(value.get("updated_at") or "") >= str(
+            current.get("updated_at") or ""
+        ):
             fresh.setdefault("commands", {})[key] = value
     for key, value in state.get("incidents", {}).items():
-        if key not in fresh.get("incidents", {}) or value.get("last_seen_at", "") >= fresh["incidents"][key].get("last_seen_at", ""):
+        current = fresh.get("incidents", {}).get(key)
+        if not isinstance(current, dict) or str(value.get("last_seen_at") or "") >= str(
+            current.get("last_seen_at") or ""
+        ):
             fresh.setdefault("incidents", {})[key] = value
     fresh["updated_at"] = state.get("updated_at")
     try:
         store.save(fresh, expected_sha=fresh_sha)
     except SupervisorCasConflict:
-        # Outcome has already been externally issued. A future audit reconciles
-        # by deterministic command/session/workflow evidence; no blind retry.
         print("MASTER_SUPERVISOR_ACK_CAS_CONFLICT no-retry", flush=True)
 
 
@@ -946,14 +1278,33 @@ def run_live(*, repo: str, token: str, jules_api_key: str) -> dict[str, Any]:
         workflow_run_id=str(os.environ.get("KESHER_TRIGGER_RUN_ID") or ""),
     )
     report = {**report, "mode": "live"}
-    if report.get("status") != "incident_detected":
-        return {**report, "master_action": "none"}
 
     api = GitHubApi(repo, token)
     store = SupervisorStateStore(api)
-    jules_client = JulesRecoveryClient(jules_api_key) if jules_api_key else None
     state, sha = store.load()
+    state, resolved_changed = resolve_absent_incidents(
+        state, report, at=observed_at
+    )
 
+    if report.get("status") != "incident_detected":
+        if resolved_changed:
+            try:
+                state_sha = store.save(state, expected_sha=sha)
+            except SupervisorCasConflict:
+                return {
+                    **report,
+                    "master_action": "cas_conflict_noop",
+                    "execute_now": False,
+                }
+            return {
+                **report,
+                "master_action": "resolved_absent_incident",
+                "execute_now": False,
+                "state_sha": state_sha,
+            }
+        return {**report, "master_action": "none", "execute_now": False}
+
+    jules_client = JulesRecoveryClient(jules_api_key) if jules_api_key else None
     reconciled, terminal, reconcile_reason = reconcile_active_command(
         state,
         report,
@@ -969,8 +1320,6 @@ def run_live(*, repo: str, token: str, jules_api_key: str) -> dict[str, Any]:
         prior_action_terminal=terminal,
     )
 
-    # Persist reconciliation and, critically, the issued outbox command before
-    # any external mutation.
     try:
         persisted_sha = store.save(state, expected_sha=sha)
     except SupervisorCasConflict:
@@ -1000,6 +1349,7 @@ def run_live(*, repo: str, token: str, jules_api_key: str) -> dict[str, Any]:
         now=_now(),
     )
     _persist_after_side_effect(store, after)
+    command = after["commands"][decision["command_id"]]
     return {
         **report,
         "master_action": decision.get("stage"),
@@ -1007,7 +1357,11 @@ def run_live(*, repo: str, token: str, jules_api_key: str) -> dict[str, Any]:
         "command_id": decision.get("command_id"),
         "execute_now": True,
         "reconcile_reason": reconcile_reason,
-        "marker": _marker(report, int(after["commands"][decision["command_id"]].get("strike") or 0), str(decision.get("stage"))),
+        "marker": _marker(
+            report,
+            int(command.get("strike") or 0),
+            str(decision.get("stage")),
+        ),
     }
 
 
@@ -1019,7 +1373,9 @@ def main() -> int:
         print("MASTER_SUPERVISOR_REFUSES_NON_LIVE_ENTRYPOINT", file=sys.stderr)
         return 2
     repo = str(os.environ.get("GITHUB_REPOSITORY") or REPO_DEFAULT).strip()
-    token = str(os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or "").strip()
+    token = str(
+        os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN") or ""
+    ).strip()
     if not token:
         print("MASTER_SUPERVISOR_GITHUB_TOKEN_MISSING", file=sys.stderr)
         return 2
@@ -1030,9 +1386,16 @@ def main() -> int:
             jules_api_key=str(os.environ.get("JULES_API_KEY") or "").strip(),
         )
     except SupervisorCasConflict as exc:
-        result = {"mode": "live", "master_action": "cas_conflict_noop", "error": str(exc)}
+        result = {
+            "mode": "live",
+            "master_action": "cas_conflict_noop",
+            "error": str(exc),
+        }
     except Exception as exc:
-        print(f"MASTER_SUPERVISOR_FAILED {type(exc).__name__}: {exc}", file=sys.stderr)
+        print(
+            f"MASTER_SUPERVISOR_FAILED {type(exc).__name__}: {exc}",
+            file=sys.stderr,
+        )
         return 1
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0
