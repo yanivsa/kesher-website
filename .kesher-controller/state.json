@@ -1,37 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-15",
-  "status": "blocked",
+  "cycle": "2026-09-16",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34904575492,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-09-14T22:32:02.875797+00:00",
-    "pr_number": 819,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/819",
-    "normalization_slot": "2026-09-15",
-    "normalization_dispatched_at": "2026-09-14T23:28:41.913214+00:00",
-    "quality_status": "passed",
-    "quality_content_sha256": "b9e6baa40222a67ad9b00fdff32d2c79c167d004bf4f7bdaeb2dfc064a144fcd",
-    "quality_checked_at": "2026-09-15T20:19:21.735425+00:00",
-    "quality_violations": [],
-    "slug": "returning-to-israel-after-relocation-relationship",
-    "title": "חזרה לארץ אחרי רילוקיישן: כשהבית משתנה והזוגיות מחפשת עוגן",
-    "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
-    "published_date": "2026-09-15",
-    "live": true,
-    "live_verified_at": "2026-09-15T20:24:03.161284+00:00",
-    "next_deploy_retry_at": null
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -871,181 +855,46 @@
       },
       "archived_at": "2026-09-14T21:30:17.751891+00:00",
       "media": {}
+    },
+    {
+      "cycle": "2026-09-15",
+      "status": "blocked",
+      "article": {
+        "attempt_count": 1,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 34904575492,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "deploy_attempts": 0,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-09-14T22:32:02.875797+00:00",
+        "pr_number": 819,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/819",
+        "normalization_slot": "2026-09-15",
+        "normalization_dispatched_at": "2026-09-14T23:28:41.913214+00:00",
+        "quality_status": "passed",
+        "quality_content_sha256": "b9e6baa40222a67ad9b00fdff32d2c79c167d004bf4f7bdaeb2dfc064a144fcd",
+        "quality_checked_at": "2026-09-15T20:19:21.735425+00:00",
+        "quality_violations": [],
+        "slug": "returning-to-israel-after-relocation-relationship",
+        "title": "חזרה לארץ אחרי רילוקיישן: כשהבית משתנה והזוגיות מחפשת עוגן",
+        "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
+        "published_date": "2026-09-15",
+        "live": true,
+        "live_verified_at": "2026-09-15T20:24:03.161284+00:00",
+        "next_deploy_retry_at": null
+      },
+      "archived_at": "2026-09-15T22:18:07.866804+00:00"
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-15T20:24:56.085058+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-11T10:17:54.319589+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-        "retry_at": "2026-09-11T10:22:54.319569+00:00",
-        "failure_streak": 1,
-        "run_id": 34568054264,
-        "session_id": "sessions/10610899470630434369"
-      }
-    },
-    {
-      "at": "2026-09-11T10:22:18.618007+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-11T10:22:54.319569+00:00"
-      }
-    },
-    {
-      "at": "2026-09-11T10:26:48.667774+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 2
-      }
-    },
-    {
-      "at": "2026-09-11T11:08:44.770348+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/1342417028034120252"
-      }
-    },
-    {
-      "at": "2026-09-11T11:10:59.863661+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/1342417028034120252"
-      }
-    },
-    {
-      "at": "2026-09-11T11:12:54.096994+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/1342417028034120252"
-      }
-    },
-    {
-      "at": "2026-09-11T12:02:11.504063+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 797,
-        "slot": "2026-09-11"
-      }
-    },
-    {
-      "at": "2026-09-11T15:03:02.609116+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 797
-      }
-    },
-    {
-      "at": "2026-09-11T18:27:05.379865+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 34613792578 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-11T18:32:05.379835+00:00",
-        "failure_streak": 1,
-        "run_id": 34613792578
-      }
-    },
-    {
-      "at": "2026-09-11T21:12:27.297157+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-11T21:12:27.297163+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-11T21:12:27.298450+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-11T21:12:31.115366+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-09-11T21:12:39.737154+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched exact prior-cycle long-video state handoff before current-cycle watchdog",
-      "details": {
-        "backlog_cycle": "2026-09-11",
-        "source_slug": "school-entry-readiness-emotional-regulation-skills"
-      }
-    },
-    {
-      "at": "2026-09-12T18:45:15.193160+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-12T21:02:11.747823+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-12T21:02:11.747828+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-12T21:02:11.748578+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-12T21:02:15.651850+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-09-12T23:00:45.700452+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
     {
       "at": "2026-09-13T00:55:04.099926+00:00",
       "from": "article_generating",
@@ -1737,35 +1586,30 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-15T22:18:07.866833+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-15T22:18:07.866837+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-15T22:18:07.867678+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-15T20:24:56.085079+00:00",
+  "updated_at": "2026-09-15T22:18:07.866821+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "retry_wait",
-    "last_error": {
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 34909466524 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-09-15T01:57:04.699258+00:00",
-      "at": "2026-09-15T01:52:04.699288+00:00"
-    },
-    "next_retry_at": "2026-09-15T01:57:04.699258+00:00",
-    "run_id": 34909466524,
-    "processed_run_id": 34909466524,
-    "provider_id": null,
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 1
-    },
-    "last_dispatch_at": "2026-09-14T23:34:22.171544+00:00",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 34909466524
-  },
-  "long_video": {
-    "attempt_count": 3,
-    "status": "exhausted",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1773,29 +1617,19 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "item_id": "video-20260912-001402-ab5e30d8de",
-    "last_dispatch_at": "2026-09-15T19:49:14.386424+00:00",
-    "resume_dispatches": 3,
-    "last_run_conclusion": null,
-    "source_id": null,
-    "artifact_id": null,
-    "source_binding_exhaustion_recovery_applied": true,
-    "source_binding_recovery_previous": {
-      "attempt_count": 3,
-      "item_id": "video-20260912-001402-ab5e30d8de",
-      "provider_id": "39563b3b-b156-4445-a950-962d4baaeb10",
-      "artifact_id": "39563b3b-b156-4445-a950-962d4baaeb10",
-      "source_id": "2f9fa976-f9d9-4c8c-9437-9a716cf28d24",
-      "watchdog": {
-        "identity": "long_video:returning-to-israel-after-relocation-relationship:b9e6baa40222a67ad9b00fdff32d2c79c167d004bf4f7bdaeb2dfc064a144fcd:video-20260915-125017-b9e6baa402",
-        "last_progress_at": "2026-09-15T09:51:29.269146+00:00",
-        "last_fingerprint": "09dc7aac61091a6b3c1cb234a91567b30e1638951450ef18997209c50152a1c7",
-        "recovery_count": 0,
-        "last_recovery_at": null
-      }
-    }
+    "failure_count_by_type": {}
+  },
+  "long_video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   },
   "short": {
     "attempt_count": 0,
@@ -1811,14 +1645,5 @@
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
   }
 }
