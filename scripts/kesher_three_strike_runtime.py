@@ -16,15 +16,22 @@ else:
 
 
 class ThreeStrikeMediaInterventionMixin:
-    """Overlay the Chief-of-Staff three-check contract on Kesher stalls.
+    """Overlay Controller → Jules → Direct supervision on Kesher stalls.
 
-    The production Controller keeps its fast, bounded recovery cadence. The
-    intervention layer runs at most once per Asia/Jerusalem hour and asks a
-    separate question: did the same work identity make durable progress? If
-    not, the third hourly check requires direct supervisor takeover.
+    The production Controller keeps its fast bounded watchdog cadence during S1.
+    The intervention layer advances at most once per Asia/Jerusalem hour. If the
+    same exact incident survives to S2, Controller recovery stops so the
+    stabilized runtime can hand the identity directly to Jules. S3 requires
+    direct supervisor takeover.
     """
 
     PIPELINE_ID = "v5"
+
+    @staticmethod
+    def _failure_signature(stage_name: str) -> str:
+        """Stable failure family for one stage until durable progress changes."""
+        normalized = str(stage_name or "unknown").strip().upper()
+        return f"{normalized}_NO_DURABLE_PROGRESS"
 
     @staticmethod
     def _intervention_progress(stage_name: str, source: dict[str, str], item: dict[str, Any]) -> dict[str, Any]:
@@ -107,11 +114,14 @@ class ThreeStrikeMediaInterventionMixin:
         if isinstance(takeover, dict) and takeover.get("incident_key") == incident_key:
             state.pop("direct_takeover_required", None)
         stage.pop("controller_recovery_required", None)
+        stage.pop("jules_repair_required", None)
 
     def _direct_takeover(self, state, stage_name, source, item, decision):
         details = {
             "pipeline_id": self.PIPELINE_ID,
             "incident_key": decision.incident_key,
+            "failure_signature": decision.failure_signature,
+            "idempotency_key": decision.idempotency_key,
             "strike": decision.strike,
             "stage": stage_name,
             "slug": source["slug"],
@@ -121,7 +131,11 @@ class ThreeStrikeMediaInterventionMixin:
             "required": True,
         }
         existing = state.get("direct_takeover_required")
-        if not (isinstance(existing, dict) and existing.get("incident_key") == decision.incident_key and existing.get("required") is True):
+        if not (
+            isinstance(existing, dict)
+            and existing.get("incident_key") == decision.incident_key
+            and existing.get("required") is True
+        ):
             state["direct_takeover_required"] = details
             v5.core.transition(
                 state,
@@ -132,8 +146,29 @@ class ThreeStrikeMediaInterventionMixin:
         self.github.save_controller_state(state)
         return v5.core.Action("direct_takeover_required", "three-strike threshold reached", details)
 
+    def _jules_hold(self, state, stage_name: str, stage: dict[str, Any], decision):
+        """Persist S2 ownership and stop Controller recovery before Jules handoff."""
+        stage.pop("controller_recovery_required", None)
+        stage["jules_repair_required"] = {
+            "incident_key": decision.incident_key,
+            "failure_signature": decision.failure_signature,
+            "idempotency_key": decision.idempotency_key,
+            "strike": decision.strike,
+            "requested_at": v5.core.utc_now(),
+        }
+        v5.core.transition(
+            state,
+            state.get("status") or stage_name,
+            "S2 reached; Controller recovery paused for exact-identity Jules repair handoff",
+            incident_key=decision.incident_key,
+            stage=stage_name,
+            strike=decision.strike,
+        )
+        self.github.save_controller_state(state)
+        return v5.core.Action("wait", f"{stage_name} S2 reserved for Jules repair")
+
     def _article_watchdog(self, state: dict[str, Any]):
-        """Keep V5's fast article recovery, with hourly direct-takeover ownership."""
+        """Keep V5's fast article recovery at S1, then Jules at S2 and Direct at S3."""
         posts = self.github.contents_json("src/data/posts.json", "main")
         if not isinstance(posts, list) or v5.core.today_articles(posts, self.now.date()):
             return None
@@ -162,12 +197,14 @@ class ThreeStrikeMediaInterventionMixin:
         )
 
         source = self._article_intervention_source(slot)
+        failure_signature = self._failure_signature("article")
         progress = self._article_intervention_progress(state, source)
         incident_key = intervention.incident_key(
             pipeline_id=self.PIPELINE_ID,
             slug=source["slug"],
             content_sha256=source["content_sha256"],
             stage="article",
+            failure_signature=failure_signature,
         )
         existing = (state.get("interventions") or {}).get(incident_key)
         current_watchdog = state["article"].get("watchdog") or {}
@@ -187,6 +224,7 @@ class ThreeStrikeMediaInterventionMixin:
                 slug=source["slug"],
                 content_sha256=source["content_sha256"],
                 stage="article",
+                failure_signature=failure_signature,
                 progress=progress,
                 check_token=intervention.jerusalem_hour_token(self.now),
                 controller_action_token=self._article_controller_action_token(state["article"]),
@@ -209,6 +247,8 @@ class ThreeStrikeMediaInterventionMixin:
                     {"id": active.get("id"), "task_id": session_id},
                     decision,
                 )
+            if decision.action == intervention.ESCALATE_JULES:
+                return self._jules_hold(state, "article", state["article"], decision)
 
         if watchdog_decision == "nudge":
             self.github.nudge_article_session(session_id)
@@ -255,9 +295,6 @@ class ThreeStrikeMediaInterventionMixin:
             )
 
         if watchdog_decision == "blocked":
-            # The Controller has exhausted its own bounded retries. Do not create
-            # more work identities. The hourly supervisor still owns the third
-            # check and will take over directly when its threshold is reached.
             state["article"]["controller_recovery_required"] = {
                 "incident_key": decision.incident_key if decision else incident_key,
                 "reason": "article watchdog recovery budget exhausted",
@@ -266,7 +303,7 @@ class ThreeStrikeMediaInterventionMixin:
             v5.core.transition(
                 state,
                 "article_watchdog_exhausted_wait",
-                "article Controller recovery budget exhausted; preserving same identity for three-strike supervisor",
+                "article Controller recovery budget exhausted; preserving same identity for supervisor",
                 session_id=session_id,
             )
             return v5.core.Action("wait", "article Controller recovery exhausted; supervisor tracking continues")
@@ -313,6 +350,7 @@ class ThreeStrikeMediaInterventionMixin:
                 now=self.now,
             )
 
+            failure_signature = self._failure_signature(stage_name)
             progress = self._intervention_progress(stage_name, source, item)
             hourly_token = intervention.jerusalem_hour_token(self.now)
             incident_key = intervention.incident_key(
@@ -320,6 +358,7 @@ class ThreeStrikeMediaInterventionMixin:
                 slug=source["slug"],
                 content_sha256=source["content_sha256"],
                 stage=stage_name,
+                failure_signature=failure_signature,
             )
             existing_incident = (state.get("interventions") or {}).get(incident_key)
             if isinstance(existing_incident, dict):
@@ -331,6 +370,7 @@ class ThreeStrikeMediaInterventionMixin:
                         slug=source["slug"],
                         content_sha256=source["content_sha256"],
                         stage=stage_name,
+                        failure_signature=failure_signature,
                         progress=progress,
                         check_token=hourly_token,
                         controller_action_token=self._controller_action_token(stage),
@@ -352,6 +392,7 @@ class ThreeStrikeMediaInterventionMixin:
                 slug=source["slug"],
                 content_sha256=source["content_sha256"],
                 stage=stage_name,
+                failure_signature=failure_signature,
                 progress=progress,
                 check_token=hourly_token,
                 controller_action_token=self._controller_action_token(stage),
@@ -360,6 +401,9 @@ class ThreeStrikeMediaInterventionMixin:
 
             if decision.action == intervention.DIRECT_TAKEOVER:
                 return self._direct_takeover(state, stage_name, source, item, decision)
+
+            if decision.action == intervention.ESCALATE_JULES:
+                return self._jules_hold(state, stage_name, stage, decision)
 
             if watchdog_decision == "blocked":
                 stage["controller_recovery_required"] = {

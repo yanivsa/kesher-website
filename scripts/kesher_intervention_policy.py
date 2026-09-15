@@ -8,10 +8,15 @@ from typing import Any, Mapping, MutableMapping
 from zoneinfo import ZoneInfo
 
 OBSERVE_CONTROLLER = "observe_controller"
-FORCE_CONTROLLER_RECOVERY = "force_controller_recovery"
-WAIT_AFTER_CONTROLLER_ACTION = "wait_after_controller_action"
+ESCALATE_JULES = "escalate_jules"
 DIRECT_TAKEOVER = "direct_takeover"
 PROGRESS_RESET = "progress_reset"
+
+# Legacy action names remain import-compatible for old state/readers, but new
+# hourly decisions never emit them. The production ladder is Controller → Jules → Direct.
+FORCE_CONTROLLER_RECOVERY = "force_controller_recovery"
+WAIT_AFTER_CONTROLLER_ACTION = "wait_after_controller_action"
+DEFAULT_FAILURE_SIGNATURE = "STALLED"
 
 # Only durable work/provider/deliverable fields count as progress. Poll timestamps,
 # workflow conclusions and log freshness are deliberately excluded.
@@ -43,14 +48,58 @@ class InterventionDecision:
     action: str
     progress_reset: bool = False
     controller_action_observed: bool = False
+    failure_signature: str = ""
+    idempotency_key: str = ""
+    owner: str = "controller"
 
 
-def incident_key(*, pipeline_id: str, slug: str, content_sha256: str, stage: str) -> str:
-    """Return the stable identity of one stalled unit of work."""
-    values = (pipeline_id, slug, content_sha256, stage)
-    if any(not str(value or "").strip() for value in values):
-        raise ValueError("pipeline_id, slug, content_sha256 and stage are required")
-    return "|".join(str(value).strip() for value in values)
+def _required(value: Any, field: str) -> str:
+    resolved = str(value or "").strip()
+    if not resolved:
+        raise ValueError(f"{field} is required")
+    return resolved
+
+
+def incident_key(
+    *,
+    pipeline_id: str,
+    slug: str,
+    content_sha256: str,
+    stage: str,
+    failure_signature: str = DEFAULT_FAILURE_SIGNATURE,
+) -> str:
+    """Return the stable identity of one exact stalled failure mode.
+
+    `failure_signature` defaults to STALLED only for legacy callers. New
+    supervisor callers should always pass the observed failure signature.
+    """
+    values = (
+        _required(pipeline_id, "pipeline_id"),
+        _required(slug, "slug"),
+        _required(content_sha256, "content_sha256"),
+        _required(stage, "stage"),
+        _required(failure_signature, "failure_signature"),
+    )
+    return "|".join(values)
+
+
+def incident_idempotency_key(
+    *,
+    pipeline_id: str,
+    slug: str,
+    content_sha256: str,
+    stage: str,
+    failure_signature: str = DEFAULT_FAILURE_SIGNATURE,
+) -> str:
+    """Deterministic key shared by supervisor and Jules repair handoff."""
+    key = incident_key(
+        pipeline_id=pipeline_id,
+        slug=slug,
+        content_sha256=content_sha256,
+        stage=stage,
+        failure_signature=failure_signature,
+    )
+    return hashlib.sha256(key.encode("utf-8")).hexdigest()
 
 
 def durable_progress_fingerprint(progress: Mapping[str, Any] | None) -> str:
@@ -75,6 +124,19 @@ def jerusalem_hour_token(now: datetime | None = None) -> str:
     return local.strftime("%Y-%m-%dT%H")
 
 
+def _decision(current: Mapping[str, Any], key: str, *, progress_reset: bool = False) -> InterventionDecision:
+    return InterventionDecision(
+        incident_key=key,
+        strike=int(current.get("strike_count") or 0),
+        action=str(current.get("last_action") or OBSERVE_CONTROLLER),
+        progress_reset=progress_reset,
+        controller_action_observed=bool(current.get("controller_action_observed")),
+        failure_signature=str(current.get("failure_signature") or ""),
+        idempotency_key=str(current.get("idempotency_key") or ""),
+        owner=str(current.get("owner") or "controller"),
+    )
+
+
 def observe_incident(
     *,
     state: MutableMapping[str, Any],
@@ -82,23 +144,32 @@ def observe_incident(
     slug: str,
     content_sha256: str,
     stage: str,
+    failure_signature: str = DEFAULT_FAILURE_SIGNATURE,
     progress: Mapping[str, Any] | None,
     check_token: str,
     controller_action_token: str | None,
     now: datetime,
 ) -> InterventionDecision:
-    """Apply the bounded three-check intervention contract.
+    """Apply the bounded Controller → Jules → Direct hourly contract.
 
-    Check 1 gives the Controller one window. Check 2 forces a same-identity
-    recovery only when the Controller has not already acted. Check 3 requires
+    Check 1 leaves ownership with the production Controller. Check 2 hands the
+    same exact incident to an idempotent Jules repair session. Check 3 requires
     direct supervisor takeover. Repeated polls with the same check token do not
-    advance strikes. Any durable progress resets the strike sequence.
+    manufacture strikes. Any durable progress resets the strike sequence.
     """
     key = incident_key(
         pipeline_id=pipeline_id,
         slug=slug,
         content_sha256=content_sha256,
         stage=stage,
+        failure_signature=failure_signature,
+    )
+    idempotency = incident_idempotency_key(
+        pipeline_id=pipeline_id,
+        slug=slug,
+        content_sha256=content_sha256,
+        stage=stage,
+        failure_signature=failure_signature,
     )
     fingerprint = durable_progress_fingerprint(progress)
     interventions = state.setdefault("interventions", {})
@@ -111,6 +182,9 @@ def observe_incident(
             "slug": slug,
             "content_sha256": content_sha256,
             "stage": stage,
+            "failure_signature": failure_signature,
+            "idempotency_key": idempotency,
+            "owner": "controller",
             "strike_count": 1,
             "last_check_token": check_token,
             "last_fingerprint": fingerprint,
@@ -121,7 +195,7 @@ def observe_incident(
             "direct_takeover_required": False,
         }
         interventions[key] = current
-        return InterventionDecision(key, 1, OBSERVE_CONTROLLER)
+        return _decision(current, key)
 
     previous_fingerprint = str(current.get("last_fingerprint") or "")
     if fingerprint != previous_fingerprint:
@@ -134,38 +208,31 @@ def observe_incident(
                 "controller_action_observed": False,
                 "last_observed_at": now_iso,
                 "last_action": PROGRESS_RESET,
+                "owner": "controller",
                 "direct_takeover_required": False,
+                "jules_repair": None,
             }
         )
-        return InterventionDecision(key, 0, PROGRESS_RESET, progress_reset=True)
+        return _decision(current, key, progress_reset=True)
 
-    # The Controller runs much more frequently than the Chief-of-Staff check.
-    # Multiple polls in one local-hour observation must not manufacture strikes.
+    # Multiple polls during the same local-hour observation cannot advance strikes.
     if str(current.get("last_check_token") or "") == str(check_token):
-        strike = int(current.get("strike_count") or 0)
-        action = str(current.get("last_action") or OBSERVE_CONTROLLER)
-        controller_acted = bool(current.get("controller_action_observed"))
-        return InterventionDecision(
-            key,
-            strike,
-            action,
-            controller_action_observed=controller_acted,
-        )
+        return _decision(current, key)
 
-    strike = int(current.get("strike_count") or 0) + 1
+    strike = min(3, int(current.get("strike_count") or 0) + 1)
     previous_controller_token = current.get("last_controller_action_token")
     token_changed = bool(controller_action_token) and controller_action_token != previous_controller_token
     controller_acted = bool(current.get("controller_action_observed")) or token_changed
 
     if strike >= 3:
         action = DIRECT_TAKEOVER
-        strike = 3
-    elif strike == 2 and controller_acted:
-        action = WAIT_AFTER_CONTROLLER_ACTION
+        owner = "direct"
     elif strike == 2:
-        action = FORCE_CONTROLLER_RECOVERY
+        action = ESCALATE_JULES
+        owner = "jules"
     else:
         action = OBSERVE_CONTROLLER
+        owner = "controller"
 
     current.update(
         {
@@ -175,15 +242,11 @@ def observe_incident(
             "controller_action_observed": controller_acted,
             "last_observed_at": now_iso,
             "last_action": action,
+            "owner": owner,
             "direct_takeover_required": action == DIRECT_TAKEOVER,
         }
     )
-    return InterventionDecision(
-        key,
-        strike,
-        action,
-        controller_action_observed=controller_acted,
-    )
+    return _decision(current, key)
 
 
 def mark_controller_action(
@@ -193,7 +256,7 @@ def mark_controller_action(
     action_token: str,
     now: datetime,
 ) -> None:
-    """Record a targeted Controller recovery so later hourly checks do not duplicate it."""
+    """Record Controller activity without delaying the next-hour Jules escalation."""
     interventions = state.get("interventions")
     if not isinstance(interventions, dict):
         return
@@ -203,7 +266,32 @@ def mark_controller_action(
     current["last_controller_action_token"] = action_token
     current["controller_action_observed"] = True
     current["last_controller_action_at"] = now.astimezone(timezone.utc).isoformat()
-    current["last_action"] = WAIT_AFTER_CONTROLLER_ACTION
+    # Keep the hourly decision itself unchanged. A Controller action during S1
+    # must not turn S2 into another waiting/recovery window.
+    current["direct_takeover_required"] = False
+
+
+def mark_jules_action(
+    state: MutableMapping[str, Any],
+    *,
+    incident_key: str,
+    session_id: str,
+    now: datetime,
+) -> None:
+    """Persist the exact S2 Jules repair handoff for idempotent later checks."""
+    interventions = state.get("interventions")
+    if not isinstance(interventions, dict):
+        return
+    current = interventions.get(incident_key)
+    if not isinstance(current, dict):
+        return
+    current["jules_repair"] = {
+        "session_id": str(session_id),
+        "idempotency_key": str(current.get("idempotency_key") or ""),
+        "sent_at": now.astimezone(timezone.utc).isoformat(),
+    }
+    current["owner"] = "jules"
+    current["last_action"] = ESCALATE_JULES
     current["direct_takeover_required"] = False
 
 
@@ -214,16 +302,25 @@ def clear_incident(
     slug: str,
     content_sha256: str,
     stage: str,
+    failure_signature: str | None = None,
 ) -> None:
     interventions = state.get("interventions")
     if not isinstance(interventions, dict):
         return
-    interventions.pop(
-        incident_key(
-            pipeline_id=pipeline_id,
-            slug=slug,
-            content_sha256=content_sha256,
-            stage=stage,
-        ),
-        None,
-    )
+    if failure_signature:
+        interventions.pop(
+            incident_key(
+                pipeline_id=pipeline_id,
+                slug=slug,
+                content_sha256=content_sha256,
+                stage=stage,
+                failure_signature=failure_signature,
+            ),
+            None,
+        )
+        return
+    # Backward-compatible cleanup for callers that predate failure signatures.
+    prefix = "|".join((str(pipeline_id), str(slug), str(content_sha256), str(stage))) + "|"
+    for key in list(interventions):
+        if str(key).startswith(prefix):
+            interventions.pop(key, None)
