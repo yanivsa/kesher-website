@@ -1,0 +1,480 @@
+name: Kesher Daily NotebookLM Video Overview
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/kesher-daily-video.yml
+      - .github/prompts/jules-remotion-video-upgrade.md
+      - config/kesher-production-contract.json
+      - scripts/kesher_automation_policy.py
+      - scripts/kesher_daily_pipeline.py
+      - scripts/kesher_video_reconcile.py
+      - scripts/jules_video_reviewer.py
+      - scripts/jules_video_reviewer_v3.py
+      - scripts/prepare_jules_video_evidence.py
+      - scripts/requirements-video-cloud.txt
+      - package.json
+      - package-lock.json
+      - src/remotion/**
+      - tests/test_kesher_daily_pipeline.py
+      - tests/kesher_daily_pipeline_suite.py
+      - tests/test_video_review_policy.py
+      - tests/test_video_review_schema.py
+      - tests/test_video_reconcile.py
+      - tests/test_production_contract_v3.py
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Pipeline operation
+        required: true
+        default: full
+        type: choice
+        options:
+          - full
+          - preflight
+          - generate
+          - upload
+          - rebuild
+      rebuild_item_id:
+        description: Exact visually rejected item to rebuild with Remotion
+        required: false
+        type: string
+      target_slug:
+        description: Exact article slug to generate video for
+        required: false
+        type: string
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: kesher-daily-notebooklm-video
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state
+      NOTEBOOKLM_BIN: notebooklm
+      KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
+      KESHER_WHISPER_MODEL: small
+      HF_HOME: ${{ github.workspace }}/.cache/huggingface
+      NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
+
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements-video-cloud.txt
+
+      - name: Set up Node 22 for Remotion
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install pinned Node and media dependencies
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          echo "$ffmpeg_dir" >> "$GITHUB_PATH"
+          echo "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          command -v ffmpeg
+          command -v ffprobe
+
+      - name: Install pinned cloud dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r scripts/requirements-video-cloud.txt
+          notebooklm --version
+          npx remotion versions
+          ffmpeg -version | head -1
+          ffprobe -version | head -1
+
+      - name: Validate canonical production contract
+        run: |
+          python - <<'PY'
+          from scripts.kesher_automation_policy import load_policy
+          policy = load_policy()
+          assert policy["video"]["publication_gate"] == "technical"
+          assert policy["video"]["jules_review"] == "advisory"
+          assert policy["video"]["queue_order"] == "fifo"
+          assert policy["video"]["durable_state_artifacts_to_keep"] == 3
+          assert policy["video"]["durable_state_retention_days"] == 14
+          print("KESHER_PRODUCTION_CONTRACT_V3_OK")
+          PY
+
+      - name: Restore newest valid durable pipeline state
+        if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$KESHER_STATE_DIR"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/artifacts.txt
+
+          if [ ! -s /tmp/artifacts.txt ]; then
+            echo "No previous state artifact exists; starting with an empty state."
+            exit 0
+          fi
+
+          restored="false"
+          while read -r artifact_id; do
+            [ -n "$artifact_id" ] || continue
+            echo "Attempting to restore state artifact ${artifact_id}..."
+            archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
+            if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
+              echo "Failed to download artifact ${artifact_id}; skipping."
+              rm -f "$archive"
+              continue
+            fi
+            temp_extract="$(mktemp -d)"
+            if ! unzip -oq "$archive" -d "$temp_extract" 2>/dev/null; then
+              echo "Failed to unzip artifact ${artifact_id}; skipping."
+              rm -f "$archive"
+              rm -rf "$temp_extract"
+              continue
+            fi
+            if [ -s "$temp_extract/state.json" ] && python -c 'import json, sys; state=json.load(sys.stdin); assert state.get("version") == 1 and isinstance(state.get("items"), list)' < "$temp_extract/state.json" 2>/dev/null; then
+              cp -r "$temp_extract/"* "$KESHER_STATE_DIR/" || true
+              rm -f "$archive"
+              rm -rf "$temp_extract"
+              python -u scripts/kesher_daily_pipeline.py --report-json > /tmp/kesher-state-report.json
+              echo "Restored valid state artifact ${artifact_id}."
+              restored="true"
+              break
+            fi
+            echo "Artifact ${artifact_id} is missing or invalid; skipping."
+            rm -f "$archive"
+            rm -rf "$temp_extract"
+          done < /tmp/artifacts.txt
+
+          if [ "$restored" != "true" ]; then
+            echo "Durable video-state artifacts exist but none is trustworthy; refusing a fresh state to prevent duplicate generation." >&2
+            exit 1
+          fi
+
+      - name: Seed an exact orphaned-task recovery state
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate') }}
+        env:
+          KESHER_RECOVERY_STATE_JSON: ${{ secrets.KESHER_RECOVERY_STATE_JSON }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          state_dir = Path(os.environ["KESHER_STATE_DIR"])
+          state_path = state_dir / "state.json"
+          if state_path.exists():
+              print("Durable state already restored; recovery seed ignored.")
+              raise SystemExit(0)
+          raw = os.environ.get("KESHER_RECOVERY_STATE_JSON", "").strip()
+          if not raw:
+              print("No recovery seed configured.")
+              raise SystemExit(0)
+          state = json.loads(raw)
+          items = state.get("items") if isinstance(state, dict) else None
+          if state.get("version") != 1 or not isinstance(items, list) or len(items) != 1:
+              raise SystemExit("Recovery seed must contain exactly one version-1 item")
+          item = items[0]
+          required = ("id", "source_id", "task_id", "artifact_id", "status", "source")
+          if not isinstance(item, dict) or any(not item.get(key) for key in required):
+              raise SystemExit("Recovery seed is missing exact provider identifiers")
+          if item["task_id"] != item["artifact_id"] or item["status"] != "generating":
+              raise SystemExit("Recovery seed must resume one exact generating artifact")
+          source = item["source"]
+          if not isinstance(source, dict) or not source.get("slug") or not source.get("content_sha256"):
+              raise SystemExit("Recovery seed source identity is incomplete")
+          state_dir.mkdir(parents=True, exist_ok=True)
+          temp_path = state_dir / "state.json.tmp"
+          temp_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          temp_path.replace(state_path)
+          print(f"Recovered exact item {item['id']} task {item['task_id']}.")
+          PY
+
+      - name: Materialize NotebookLM credentials without exposing them
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild') }}
+        env:
+          NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
+          NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
+        run: |
+          set -euo pipefail
+          profile="$NOTEBOOKLM_HOME/profiles/default"
+          storage_path="$profile/storage_state.json"
+          sealed_path="$KESHER_STATE_DIR/notebooklm-storage-state.json.enc"
+          mkdir -p "$profile"
+
+          if [ -z "${NOTEBOOKLM_STORAGE_STATE_SECRET:-}" ] && [ -s "$sealed_path" ]; then
+            if [ -z "${NOTEBOOKLM_STATE_KEY:-}" ]; then
+              echo "Encrypted NotebookLM state exists but NOTEBOOKLM_STATE_KEY is missing." >&2
+              exit 1
+            fi
+            decrypted_path="$(mktemp "$profile/storage_state.XXXXXX.json")"
+            trap 'rm -f "$decrypted_path"' EXIT
+            openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 \
+              -in "$sealed_path" -out "$decrypted_path" -pass env:NOTEBOOKLM_STATE_KEY
+            chmod 600 "$decrypted_path"
+            mv "$decrypted_path" "$storage_path"
+            trap - EXIT
+          fi
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          profile = Path(os.environ["NOTEBOOKLM_HOME"]) / "profiles" / "default"
+          profile.mkdir(parents=True, exist_ok=True)
+          storage_path = profile / "storage_state.json"
+          if storage_path.exists():
+              storage = json.loads(storage_path.read_text(encoding="utf-8"))
+          else:
+              raw = os.environ.get("NOTEBOOKLM_STORAGE_STATE_SECRET", "").strip()
+              if not raw:
+                  raise SystemExit("NotebookLM storage-state secret is missing")
+              storage = json.loads(raw)
+              storage_path.write_text(json.dumps(storage, separators=(",", ":")), encoding="utf-8")
+          if not isinstance(storage, dict) or not storage.get("cookies"):
+              raise SystemExit("NotebookLM storage-state is invalid")
+          storage_path.chmod(0o600)
+          master_raw = os.environ.get("NOTEBOOKLM_MASTER_TOKEN_SECRET", "").strip()
+          if master_raw:
+              master = json.loads(master_raw)
+              required = {"version", "email", "android_id", "master_token"}
+              if not isinstance(master, dict) or not required.issubset(master) or not all(master[key] for key in required):
+                  raise SystemExit("NotebookLM master-token secret is invalid")
+              master_path = profile / "master_token.json"
+              master_path.write_text(json.dumps(master, separators=(",", ":")), encoding="utf-8")
+              master_path.chmod(0o600)
+          PY
+
+      - name: Run hermetic cloud pipeline tests on pull requests
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
+        run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_review_schema tests.test_video_reconcile tests.test_production_contract_v3 tests.test_notebooklm_auth_precedence -v
+
+      - name: NotebookLM read-only preflight
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate') }}
+        run: python -u scripts/kesher_daily_pipeline.py --preflight
+
+      - name: Prepare exact daily Video Overview generation
+        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
+        env:
+          TARGET_SLUG: ${{ inputs.target_slug }}
+        run: python -u scripts/kesher_video_reconcile.py --prepare-generation
+
+      - name: Generate or resume exact Video Overview
+        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
+        env:
+          TARGET_SLUG: ${{ inputs.target_slug }}
+        run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150
+
+      - name: Rebuild exact visually rejected item with Remotion
+        if: ${{ inputs.operation == 'rebuild' }}
+        run: |
+          set -euo pipefail
+          test -n "${{ inputs.rebuild_item_id }}"
+          python -u scripts/kesher_daily_pipeline.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
+
+      - name: Detect pending advisory Jules review
+        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' }}
+        id: pending
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          state_path = Path(os.environ["KESHER_STATE_DIR"]) / "state.json"
+          pending = []
+          if state_path.exists():
+              state = json.loads(state_path.read_text(encoding="utf-8"))
+              pending = [item for item in state.get("items", []) if item.get("status") == "pending_review"]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"found={'true' if len(pending) == 1 else 'false'}\n")
+              output.write(f"item_id={pending[0]['id'] if len(pending) == 1 else ''}\n")
+          if len(pending) > 1:
+              raise SystemExit("More than one pending review item; advisory review skipped until controller reconciliation")
+          PY
+
+      - name: Publish immutable evidence bundle for advisory Jules review
+        if: ${{ steps.pending.outputs.found == 'true' }}
+        id: review_artifact
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-video-review-${{ github.run_id }}
+          path: ${{ env.KESHER_STATE_DIR }}
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+          include-hidden-files: true
+
+      - name: Publish minimal evidence branch for advisory Jules review
+        if: ${{ steps.pending.outputs.found == 'true' }}
+        id: review_branch
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          review_branch="kesher-video-review-${GITHUB_RUN_ID}"
+          evidence_root=".jules-video-review/${GITHUB_RUN_ID}"
+          review_worktree="$(mktemp -d /tmp/kesher-jules-evidence.XXXXXX)"
+          git worktree add --detach "$review_worktree" "$GITHUB_SHA"
+          git -C "$review_worktree" switch --orphan "$review_branch"
+          python -u scripts/prepare_jules_video_evidence.py \
+            --state-dir "$KESHER_STATE_DIR" \
+            --output-dir "$review_worktree/$evidence_root"
+          git -C "$review_worktree" config user.name "Kesher Video Automation"
+          git -C "$review_worktree" config user.email "actions@users.noreply.github.com"
+          git -C "$review_worktree" add "$evidence_root"
+          test -z "$(git -C "$review_worktree" diff --cached --name-only | grep -v "^${evidence_root}/" || true)"
+          git -C "$review_worktree" commit -m "Publish immutable Jules video evidence ${GITHUB_RUN_ID}"
+          git -C "$review_worktree" push \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            "HEAD:refs/heads/${review_branch}"
+          {
+            echo "branch=${review_branch}"
+            echo "evidence_root=${evidence_root}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Jules performs strict advisory review
+        if: ${{ steps.pending.outputs.found == 'true' && steps.review_branch.outputs.branch != '' }}
+        continue-on-error: true
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: |
+          set -euo pipefail
+          python -u scripts/jules_video_reviewer_v3.py \
+            --state-dir "$KESHER_STATE_DIR" \
+            --review-branch "${{ steps.review_branch.outputs.branch }}" \
+            --evidence-root "${{ steps.review_branch.outputs.evidence_root }}" \
+            --timeout-seconds 900
+
+      - name: Delete temporary Jules evidence branch
+        if: ${{ always() && steps.review_branch.outputs.branch != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEW_BRANCH: ${{ steps.review_branch.outputs.branch }}
+        run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/git/refs/heads/${REVIEW_BRANCH}" || true
+
+      - name: Delete completed Jules review artifact
+        if: ${{ always() && steps.review_artifact.outputs.artifact-id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEW_ARTIFACT_ID: ${{ steps.review_artifact.outputs.artifact-id }}
+        run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${REVIEW_ARTIFACT_ID}" || true
+
+      - name: Prepare technically verified upload
+        if: ${{ !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python -u scripts/kesher_video_reconcile.py --prepare-upload
+
+      - name: Upload exact technically verified MP4
+        if: ${{ !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${YOUTUBE_CLIENT_ID:-}" ] || [ -z "${YOUTUBE_CLIENT_SECRET:-}" ] || [ -z "${YOUTUBE_REFRESH_TOKEN:-}" ]; then
+            echo "YouTube OAuth secrets are incomplete; technical publication remains blocked." >&2
+            exit 1
+          fi
+          python -u scripts/kesher_daily_pipeline.py --upload-only
+
+      - name: Remove uploaded MP4 files after public verification
+        if: ${{ success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        run: python -u scripts/kesher_daily_pipeline.py --prune-uploaded-media
+
+      - name: Seal refreshed NotebookLM credentials into durable state
+        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.notebooklm/profiles/default/storage_state.json') != '' }}
+        env:
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${NOTEBOOKLM_STATE_KEY:-}" ]; then
+            echo "NOTEBOOKLM_STATE_KEY is missing; refusing to persist plaintext credentials." >&2
+            exit 1
+          fi
+          mkdir -p "$KESHER_STATE_DIR"
+          sealed_path="$KESHER_STATE_DIR/notebooklm-storage-state.json.enc"
+          sealed_tmp="${sealed_path}.tmp"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -md sha256 \
+            -in "$NOTEBOOKLM_HOME/profiles/default/storage_state.json" \
+            -out "$sealed_tmp" \
+            -pass env:NOTEBOOKLM_STATE_KEY
+          chmod 600 "$sealed_tmp"
+          mv "$sealed_tmp" "$sealed_path"
+
+      - name: Persist latest state and media evidence
+        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != '' }}
+        id: persist_state
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-video-state
+          path: ${{ env.KESHER_STATE_DIR }}
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          include-hidden-files: true
+
+      - name: Keep the newest three durable state artifacts
+        if: ${{ always() && steps.persist_state.outputs.artifact-id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ ! -s "$KESHER_STATE_DIR/state.json" ]; then
+            echo "Current artifact has no state.json; keeping all older durable state artifacts."
+            exit 0
+          fi
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[3:] | .[].id' \
+            | while read -r artifact_id; do
+                [ -n "$artifact_id" ] || continue
+                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}"
+              done
+
+      - name: Write concise Hebrew status
+        if: ${{ always() }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          path = Path(os.environ["KESHER_STATE_DIR"]) / "state.json"
+          items = json.loads(path.read_text(encoding="utf-8")).get("items", []) if path.exists() else []
+          uploaded = sum(item.get("status") == "uploaded" for item in items)
+          approved = sum(item.get("status") == "approved" for item in items)
+          rejected = sum(item.get("status") == "rejected" for item in items)
+          technical = sum(item.get("technical_verified") is True and item.get("status") != "uploaded" for item in items)
+          pending = sum(item.get("status") in {"source_selected", "source_added", "generating", "downloaded", "pending_review", "uploading"} for item in items)
+          summary = f"הועלה: {uploaded} | מוכן טכנית: {technical} | ביקורת Jules אושרה: {approved} | ביקורת Jules דחתה: {rejected} | ממתין/בתהליך: {pending}"
+          print(summary)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as output:
+              output.write(f"### צינור הווידאו של קשר\n\n{summary}\n")
+          PY
