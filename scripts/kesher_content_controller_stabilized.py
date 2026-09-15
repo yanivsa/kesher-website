@@ -67,19 +67,51 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         return v5.core.Action("blocked", "article content quality failed before deploy/media")
 
     def _dispatch_budgeted(self, state, stage, workflow, inputs):
-        """Bind production long-video generation to the authoritative article identity."""
+        """Bind long-video dispatch and provider resume to the authoritative source identity."""
         bound_inputs = dict(inputs or {})
-        if (
-            stage == "video"
-            and workflow == v5.LONG_VIDEO_WORKFLOW
-            and bound_inputs.get("operation") in {"full", "generate"}
-            and not str(bound_inputs.get("target_slug") or "").strip()
-        ):
-            source = self._article_source()
-            if source is None:
-                raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_UNAVAILABLE")
+        if stage != "video" or workflow != v5.LONG_VIDEO_WORKFLOW:
+            return super()._dispatch_budgeted(state, stage, workflow, bound_inputs)
+
+        source = self._article_source()
+        if source is None:
+            raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_UNAVAILABLE")
+        target_slug = str(bound_inputs.get("target_slug") or "").strip()
+        if bound_inputs.get("operation") in {"full", "generate"}:
+            if target_slug and target_slug != source["slug"]:
+                raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_MISMATCH")
             bound_inputs["target_slug"] = source["slug"]
-        return super()._dispatch_budgeted(state, stage, workflow, bound_inputs)
+
+        snapshot = self.github.newest_video_state()
+        exact_generating = [
+            item for item in v5._exact_items(snapshot, source)
+            if item.get("uploaded") is not True
+            and str(item.get("status") or "") == "generating"
+            and str(item.get("source_id") or "").strip()
+            and str(item.get("task_id") or "").strip()
+            and str(item.get("artifact_id") or "").strip()
+            and str(item.get("task_id") or "").strip() == str(item.get("artifact_id") or "").strip()
+        ]
+        if len(exact_generating) > 1:
+            raise v5.core.ControllerError("DUPLICATE_LONG_VIDEO_PROVIDER_TASKS")
+        if exact_generating:
+            item = exact_generating[0]
+            v5.core.GitHubClient.dispatch(self.github, workflow, bound_inputs)
+            current = state["video"]
+            current["attempt_count"] = max(1, int(current.get("attempt_count") or 0))
+            current["resume_dispatches"] = int(current.get("resume_dispatches") or 0) + 1
+            current["last_dispatch_at"] = v5.core.utc_now()
+            current["status"] = "running"
+            current["next_retry_at"] = None
+            current["item_id"] = item.get("id")
+            current["source_id"] = item.get("source_id")
+            current["artifact_id"] = item.get("artifact_id")
+            current["provider_id"] = item.get("task_id")
+            return
+
+        # No exact provider task is currently generating. Use the bounded V3
+        # dispatch budget rather than the legacy global FIFO provider-resume
+        # lookup, which can bind a different article's provider identity.
+        return v5.v3.V3Controller._dispatch_budgeted(self, state, stage, workflow, bound_inputs)
 
     def _overview_evidence_preflight(self, state):
         """Copy exact public Overview edit evidence into durable controller state."""
