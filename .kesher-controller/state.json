@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
     "published_date": "2026-09-15",
     "live": true,
-    "live_verified_at": "2026-09-15T17:32:47.509195+00:00",
+    "live_verified_at": "2026-09-15T18:34:19.388714+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -877,36 +877,9 @@
     "stage": "long_video",
     "code": "VIDEO_ATTEMPTS_EXHAUSTED",
     "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-15T17:33:01.019617+00:00"
+    "at": "2026-09-15T18:34:46.680796+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-10T07:58:11.881166+00:00",
-      "from": "short_running",
-      "to": "short_watchdog_recovery",
-      "reason": "Short provider stalled; re-dispatched derivation from the same verified long-form identity",
-      "details": {
-        "item_id": "video-20260910-103103-1d272ac70c",
-        "long_item_id": "video-20260910-074937-1d272ac70c"
-      }
-    },
-    {
-      "at": "2026-09-10T11:16:42.038774+00:00",
-      "from": "short_watchdog_recovery",
-      "to": "short_watchdog_recovery",
-      "reason": "same Kesher incident remained stalled for three hourly checks; direct supervisor takeover required",
-      "details": {
-        "pipeline_id": "v5",
-        "incident_key": "v5|gifted-children-social-difficulties|1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1|short",
-        "strike": 3,
-        "stage": "short",
-        "slug": "gifted-children-social-difficulties",
-        "content_sha256": "1d272ac70c3b8d3e7fe912ced4874eb7f0b142b56a9446bf98e869b7d72ea7a1",
-        "item_id": "video-20260910-103103-1d272ac70c",
-        "task_id": "74732ba8-16a0-4ac9-9618-40e6672bf0df",
-        "required": true
-      }
-    },
     {
       "at": "2026-09-10T21:05:39.248614+00:00",
       "from": null,
@@ -1737,9 +1710,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-15T18:34:19.388732+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-15T18:34:46.680816+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-15T17:33:01.019638+00:00",
+  "updated_at": "2026-09-15T18:34:46.680823+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
