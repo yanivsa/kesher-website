@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
     "published_date": "2026-09-15",
     "live": true,
-    "live_verified_at": "2026-09-15T02:32:51.667937+00:00",
+    "live_verified_at": "2026-09-15T05:33:04.653406+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1651,9 +1651,25 @@
         "operation": "full",
         "resume": 1
       }
+    },
+    {
+      "at": "2026-09-15T05:33:04.653424+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-15T05:33:16.270678+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-09-15T02:33:02.818275+00:00",
+  "updated_at": "2026-09-15T05:33:16.270710+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
@@ -1678,7 +1694,7 @@
     "last_failed_run_id": 34909466524
   },
   "long_video": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1690,8 +1706,8 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "item_id": "video-20260912-001402-ab5e30d8de",
-    "last_dispatch_at": "2026-09-15T02:33:02.818260+00:00",
-    "resume_dispatches": 1
+    "last_dispatch_at": "2026-09-15T05:33:16.270667+00:00",
+    "resume_dispatches": 2
   },
   "short": {
     "attempt_count": 0,
