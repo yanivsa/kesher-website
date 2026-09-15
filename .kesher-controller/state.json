@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-15",
-  "status": "article_deploying",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -28,7 +28,10 @@
     "slug": "returning-to-israel-after-relocation-relationship",
     "title": "חזרה לארץ אחרי רילוקיישן: כשהבית משתנה והזוגיות מחפשת עוגן",
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
-    "published_date": "2026-09-15"
+    "published_date": "2026-09-15",
+    "live": true,
+    "live_verified_at": "2026-09-15T02:32:51.667937+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -1632,9 +1635,25 @@
       "from": "image_retry_wait",
       "to": "article_deploying",
       "reason": "deployment already active"
+    },
+    {
+      "at": "2026-09-15T02:32:51.667957+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-15T02:33:02.818267+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-09-15T02:29:07.576703+00:00",
+  "updated_at": "2026-09-15T02:33:02.818275+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
@@ -1659,8 +1678,8 @@
     "last_failed_run_id": 34909466524
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1669,7 +1688,10 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "item_id": "video-20260912-001402-ab5e30d8de",
+    "last_dispatch_at": "2026-09-15T02:33:02.818260+00:00",
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
