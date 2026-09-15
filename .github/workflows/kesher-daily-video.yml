@@ -222,7 +222,7 @@ jobs:
           sealed_path="$KESHER_STATE_DIR/notebooklm-storage-state.json.enc"
           mkdir -p "$profile"
 
-          if [ -s "$sealed_path" ]; then
+          if [ -z "${NOTEBOOKLM_STORAGE_STATE_SECRET:-}" ] && [ -s "$sealed_path" ]; then
             if [ -z "${NOTEBOOKLM_STATE_KEY:-}" ]; then
               echo "Encrypted NotebookLM state exists but NOTEBOOKLM_STATE_KEY is missing." >&2
               exit 1
@@ -269,10 +269,10 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         env:
           NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
-        run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_review_schema tests.test_video_reconcile tests.test_production_contract_v3 -v
+        run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_review_schema tests.test_video_reconcile tests.test_production_contract_v3 tests.test_notebooklm_auth_precedence -v
 
       - name: NotebookLM read-only preflight
-        if: ${{ inputs.operation == 'preflight' }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate') }}
         run: python -u scripts/kesher_daily_pipeline.py --preflight
 
       - name: Prepare exact daily Video Overview generation
