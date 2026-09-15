@@ -34,7 +34,9 @@ class V5VideoSourceBindingTests(unittest.TestCase):
             now=datetime(2026, 8, 19, 19, 0, tzinfo=TZ),
         )
 
-        with mock.patch.object(stabilized.quality, "article_violations", return_value=[]):
+        with mock.patch.object(stabilized.quality, "article_violations", return_value=[]), mock.patch.object(
+            controller, "_overview_evidence_preflight", return_value=None
+        ):
             state, action = controller.tick()
 
         self.assertEqual(action.kind, "dispatch_long_video")
