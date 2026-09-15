@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-15",
-  "status": "long_video_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
     "published_date": "2026-09-15",
     "live": true,
-    "live_verified_at": "2026-09-15T19:48:20.955101+00:00",
+    "live_verified_at": "2026-09-15T20:24:03.161284+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -873,27 +873,13 @@
       "media": {}
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "long_video",
+    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
+    "message": "video exhausted 3 total controller dispatch attempts",
+    "at": "2026-09-15T20:24:56.085058+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-11T01:07:43.107986+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-09-10",
-        "source_slug": "gifted-children-social-difficulties"
-      }
-    },
-    {
-      "at": "2026-09-11T05:59:08.794202+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
     {
       "at": "2026-09-11T10:17:54.319589+00:00",
       "from": "article_generating",
@@ -1736,9 +1722,24 @@
         "operation": "full",
         "resume": 3
       }
+    },
+    {
+      "at": "2026-09-15T20:24:03.161302+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-15T20:24:56.085073+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-15T19:49:14.386440+00:00",
+  "updated_at": "2026-09-15T20:24:56.085079+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
@@ -1764,7 +1765,7 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
