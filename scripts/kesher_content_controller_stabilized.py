@@ -66,6 +66,21 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         self.github.save_controller_state(state)
         return v5.core.Action("blocked", "article content quality failed before deploy/media")
 
+    def _dispatch_budgeted(self, state, stage, workflow, inputs):
+        """Bind production long-video generation to the authoritative article identity."""
+        bound_inputs = dict(inputs or {})
+        if (
+            stage == "video"
+            and workflow == v5.LONG_VIDEO_WORKFLOW
+            and bound_inputs.get("operation") in {"full", "generate"}
+            and not str(bound_inputs.get("target_slug") or "").strip()
+        ):
+            source = self._article_source()
+            if source is None:
+                raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_UNAVAILABLE")
+            bound_inputs["target_slug"] = source["slug"]
+        return super()._dispatch_budgeted(state, stage, workflow, bound_inputs)
+
     def _overview_evidence_preflight(self, state):
         """Copy exact public Overview edit evidence into durable controller state."""
         source = self._article_source()
