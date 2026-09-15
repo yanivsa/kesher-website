@@ -14,6 +14,7 @@ const faqSchema = {
   "@graph": [
     {
       "@type": "FAQPage",
+      "@id": `${SITE_CONFIG.url}/faq`,
       "url": `${SITE_CONFIG.url}/faq`,
       "description": "תשובות על ייעוץ זוגי, הכנה לנישואים, השנה הראשונה, זוגיות בעלייה וברילוקיישן, רווקות מאוחרת והנחיית הורים.",
       "mainEntity": faqs.map(faq => ({
@@ -27,6 +28,7 @@ const faqSchema = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/faq#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -65,6 +67,7 @@ const FAQ: React.FC = () => {
       <MetaTags 
         title="שאלות נפוצות | ייעוץ זוגי והנחיית הורים"
         description="תשובות על ייעוץ זוגי, הכנה לנישואים, השנה הראשונה, זוגיות בעלייה וברילוקיישן, רווקות מאוחרת והנחיית הורים."
+        canonical={`${SITE_CONFIG.url}/faq`}
       />
       <SchemaOrg data={faqSchema} />
       <header className={styles.header}>
