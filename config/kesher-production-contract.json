@@ -15,7 +15,9 @@
     "generator": "jules",
     "worker_session_attempts": 1,
     "max_attempts": 3,
-    "retry_backoff_minutes": [5, 15]
+    "retry_backoff_minutes": [5, 15],
+    "publication_ready_requires_trusted_image": true,
+    "jules_pending_image_handoff_status": "PENDING_TRUSTED_IMAGE_STAGE"
   },
   "image": {
     "required_for_article": true,
@@ -29,7 +31,11 @@
     "external_stock_requires_pixel_verification": true,
     "fallback_must_be_local": true,
     "no_image_publication_allowed": false,
-    "failure_mode": "blocking-retry"
+    "failure_mode": "blocking-retry",
+    "pending_handoff_marker": "Hero Image Status: PENDING_TRUSTED_IMAGE_STAGE",
+    "attached_handoff_marker": "Hero Image Status: ATTACHED_TRUSTED_IMAGE_STAGE",
+    "controller_action_on_pending_handoff": "dispatch_trusted_image_same_pr",
+    "controller_action_on_image_guard_failure": "recover_trusted_image_same_pr"
   },
   "video": {
     "publication_gate": "technical",
@@ -69,6 +75,8 @@
     "controller_owns_retries": true,
     "heartbeat_is_recovery_only": true,
     "provider_ids_are_persisted_before_followup": true,
-    "youtube_insert_is_idempotent": true
+    "youtube_insert_is_idempotent": true,
+    "article_image_handoff_is_machine_readable": true,
+    "image_guard_failure_repairs_same_pr": true
   }
 }
