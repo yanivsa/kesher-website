@@ -1754,7 +1754,14 @@
     "resume_dispatches": 5,
     "last_run_conclusion": "success",
     "source_id": "2f9fa976-f9d9-4c8c-9437-9a716cf28d24",
-    "artifact_id": "39563b3b-b156-4445-a950-962d4baaeb10"
+    "artifact_id": "39563b3b-b156-4445-a950-962d4baaeb10",
+    "watchdog": {
+      "identity": "long_video:returning-to-israel-after-relocation-relationship:b9e6baa40222a67ad9b00fdff32d2c79c167d004bf4f7bdaeb2dfc064a144fcd:video-20260915-125017-b9e6baa402",
+      "last_progress_at": "2026-09-15T09:51:29.269146+00:00",
+      "last_fingerprint": "09dc7aac61091a6b3c1cb234a91567b30e1638951450ef18997209c50152a1c7",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
