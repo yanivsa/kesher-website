@@ -112,13 +112,22 @@
 
 ---
 
-## 7. פרטי ענפים ו-Pull Requests ב-GitHub
+## 7. פרטי ענפים ו-Pull Requests ב-GitHub (Verified Remote State)
 
 - **שושלת ענפים:** `origin/main` -> `aeo/technical-foundation` -> `aeo/controlled-pilot`.
-- **Commit SHA - תשתית טכנית (`aeo/technical-foundation`):** `4b1f7f00ac790c5575c5d4d7c8e114b8456a5508`
-- **Commit SHA - פיילוט מבוקר ודוחות (`aeo/controlled-pilot`):** יתועד להלן בעת הדחיפה ל-GitHub.
-- **PR 1 (תשתית טכנית):** כותרת: `AEO: technical foundation and entity normalization` (Base: `main`, Head: `aeo/technical-foundation`).
-- **PR 2 (פיילוט ומערך מדידה - Stacked):** כותרת: `AEO: controlled five-page pilot and measurement framework` (Base: `aeo/technical-foundation`, Head: `aeo/controlled-pilot`).
+- **Commit SHA - תשתית טכנית (`aeo/technical-foundation`):** `438b02484a5b1f4fc2d0847c7f14f4b3988ba1aa`
+- **Commit SHA - פיילוט מבוקר ודוחות (`aeo/controlled-pilot`):** `730de2c4aed9b82fd4b9cb4bbb035754e00d3b61`
+- **PR 1 (תשתית טכנית):** 
+  - **מספר PR:** [#834](https://github.com/yanivsa/kesher-website/pull/834)
+  - **כותרת:** `AEO: technical foundation and entity normalization`
+  - **Base:** `main` | **Head:** `aeo/technical-foundation`
+  - **דיף:** 18 קבצים, תשתית טכנית בלבד.
+- **PR 2 (פיילוט ומערך מדידה - Stacked PR):** 
+  - **מספר PR:** [#835](https://github.com/yanivsa/kesher-website/pull/835)
+  - **כותרת:** `AEO: controlled five-page pilot and measurement framework`
+  - **Base:** `aeo/technical-foundation` | **Head:** `aeo/controlled-pilot`
+  - **דיף:** 15 קבצים, פיילוט, מדידה ודוחות שחזור בלבד.
+- **סטטוס GitHub Actions CI:** בדיקות CI הופעלו אוטומטית ב-GitHub על שני ה-PRs (שלב `merge` עבר בהצלחה ב-4 שניות, שלבי `validate` ו-`verify` רצים).
 
 ---
 
