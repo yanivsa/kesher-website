@@ -419,8 +419,23 @@ def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) ->
 def prepare_upload(target_slug: str | None = None) -> int:
     state = pipeline.load_state()
     unresolved = unresolved_items(state)
+    target_item_id = (os.environ.get("TARGET_ITEM_ID") or "").strip()
     target = (target_slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
-    if target:
+    if target_item_id:
+        exact = [
+            item for item in unresolved
+            if str(item.get("id") or "").strip() == target_item_id
+        ]
+        if exact and target and source_slug(exact[0]) != target:
+            raise pipeline.PipelineError(
+  f"Exact target item {target_item_id} belongs to {source_slug(exact[0])}, not {target}"
+            )
+        if not exact:
+            workflow_output("ready", "false")
+            print(f"VIDEO_RECONCILED_UPLOAD candidate=none target_item={target_item_id}")
+            return 0
+        unresolved = exact
+    elif target:
         unresolved = [item for item in unresolved if source_slug(item) == target]
     if not unresolved:
         workflow_output("ready", "false")
