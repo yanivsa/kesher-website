@@ -18,6 +18,7 @@ else:
 
 
 _ORIGINAL_PUBLIC_SITE_GET = v5.core.PublicSiteClient.get
+_SOURCE_BINDING_EXHAUSTION_RECOVERY_MARKER = "source_binding_exhaustion_recovery_applied"
 
 
 def _unicode_safe_public_site_get(self, url: str):
@@ -35,6 +36,112 @@ def _unicode_safe_public_site_get(self, url: str):
 
 class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     """Prevent advancement/completion unless article and canonical media evidence are durable."""
+
+    def _recover_stale_source_binding_exhaustion(self, state):
+        """Reset one historical V5 attempt budget only when stale source binding is proven.
+
+        Before the source-binding repair, the inherited provider-resume lookup could
+        bind the current cycle to an unrelated FIFO NotebookLM item and consume the
+        three-attempt budget. After the repair is deployed, that persisted exhaustion
+        would otherwise remain terminal forever. Recover exactly once, and only when
+        durable video state contains an unresolved item for the authoritative source
+        while the controller's stored item/provider identifiers point elsewhere.
+        """
+        long_video = state.get("long_video") if isinstance(state.get("long_video"), dict) else {}
+        last_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
+        if (
+            state.get("status") != "blocked"
+            or long_video.get("status") != "exhausted"
+            or str(last_error.get("code") or "") != "VIDEO_ATTEMPTS_EXHAUSTED"
+            or long_video.get(_SOURCE_BINDING_EXHAUSTION_RECOVERY_MARKER)
+        ):
+            return state
+
+        source = self._article_source()
+        if source is None:
+            return state
+        snapshot = self.github.newest_video_state()
+        exact = [
+            item for item in v5._exact_items(snapshot, source)
+            if item.get("uploaded") is not True
+        ]
+        if len(exact) != 1:
+            return state
+
+        exact_item = exact[0]
+        exact_ids = {str(exact_item.get("id") or "").strip()}
+        exact_provider_ids = {str(exact_item.get("task_id") or "").strip()}
+        exact_artifact_ids = {str(exact_item.get("artifact_id") or "").strip()}
+        exact_source_ids = {str(exact_item.get("source_id") or "").strip()}
+        exact_ids.discard("")
+        exact_provider_ids.discard("")
+        exact_artifact_ids.discard("")
+        exact_source_ids.discard("")
+
+        bindings = (
+            ("item_id", exact_ids),
+            ("provider_id", exact_provider_ids),
+            ("artifact_id", exact_artifact_ids),
+            ("source_id", exact_source_ids),
+        )
+        stale_fields = [
+            field for field, valid in bindings
+            if str(long_video.get(field) or "").strip()
+            and str(long_video.get(field) or "").strip() not in valid
+        ]
+        if not stale_fields:
+            return state
+
+        previous = {
+            "attempt_count": long_video.get("attempt_count"),
+            "item_id": long_video.get("item_id"),
+            "provider_id": long_video.get("provider_id"),
+            "artifact_id": long_video.get("artifact_id"),
+            "source_id": long_video.get("source_id"),
+            "watchdog": long_video.get("watchdog"),
+        }
+        long_video[_SOURCE_BINDING_EXHAUSTION_RECOVERY_MARKER] = True
+        long_video["source_binding_recovery_previous"] = previous
+        long_video["attempt_count"] = 0
+        long_video["status"] = "pending"
+        long_video["last_error"] = None
+        long_video["next_retry_at"] = None
+        long_video["run_id"] = None
+        long_video["processed_run_id"] = None
+        long_video["provider_id"] = None
+        long_video["artifact_id"] = None
+        long_video["source_id"] = None
+        long_video["item_id"] = None
+        long_video["last_dispatch_at"] = None
+        long_video["last_run_conclusion"] = None
+        long_video["resume_dispatches"] = 0
+        long_video["failure_fingerprint"] = None
+        long_video["same_failure_streak"] = 0
+        long_video["failure_count_by_type"] = {}
+        long_video.pop("watchdog", None)
+
+        state["status"] = "article_live"
+        state["last_error"] = None
+        state.setdefault("history", []).append({
+            "at": v5.core.utc_now(),
+            "from": "blocked",
+            "to": "article_live",
+            "reason": "source_binding_exhaustion_recovery",
+            "details": {
+                "slug": source["slug"],
+                "content_sha256": source["content_sha256"],
+                "exact_item_id": exact_item.get("id"),
+                "stale_fields": stale_fields,
+                "attempt_budget_reset": True,
+            },
+        })
+        state["history"] = state["history"][-100:]
+        state["updated_at"] = v5.core.utc_now()
+        return state
+
+    def state(self):
+        state = super().state()
+        return self._recover_stale_source_binding_exhaustion(state)
 
     def _quality_preflight(self, state):
         posts = self.github.contents_json("src/data/posts.json", "main")
