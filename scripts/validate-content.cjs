@@ -48,6 +48,35 @@ if (JSON.stringify(postSummaries) !== JSON.stringify(expectedPostSummaries)) {
   errors.push('Post summaries are stale or incomplete; run npm run generate after the final posts.json edit.');
 }
 
+function getTodayIso(now = new Date()) {
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Jerusalem',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(now);
+}
+
+const UNSUPPORTED_ABSOLUTE_POST_CLAIMS = /(?:(?:מטפלת|פסיכולוגית|פסיכותרפיסטית|עובדת סוציאלית|מאמנת)\s+מוסמכת|הדרך היחידה|טראומות לא נשכחות|פתרון קסם|הבטחה להצלחה|100%\s*הצלחה)/;
+
+function validatePostAbsoluteClaims(content) {
+  return !UNSUPPORTED_ABSOLUTE_POST_CLAIMS.test(content);
+}
+
+function validatePostDates(post, todayIso = getTodayIso()) {
+  const dateErrors = [];
+  if (post.updatedAt) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(post.updatedAt)) {
+      dateErrors.push(`Invalid updatedAt format (must be YYYY-MM-DD): ${post.id}`);
+    } else if (post.updatedAt < post.date) {
+      dateErrors.push(`updatedAt (${post.updatedAt}) cannot be earlier than publish date (${post.date}) in post: ${post.id}`);
+    } else if (post.updatedAt > todayIso) {
+      dateErrors.push(`updatedAt (${post.updatedAt}) cannot be in the future relative to ${todayIso} in post: ${post.id}`);
+    }
+  }
+  return dateErrors;
+}
+
 for (let i = 0; i < published.length; i++) {
   const post = published[i];
   if (post.date > '2026-07-15' && /<h3[^>]*>\s*(סיכום|לסיכום|סיכום וצעדים הבאים|צעדים הבאים)\s*<\/h3>/.test(post.content)) errors.push('Generic final H3 found in post: ' + post.id);
@@ -59,17 +88,10 @@ for (let i = 0; i < published.length; i++) {
   }
   if (/<script|onerror=|onclick=|javascript:/i.test(post.content)) errors.push(`Unsafe HTML: ${post.id}`);
   if (wordCount(post.content) < 500 || headingCount(post.content) < 5) errors.push(`Thin content: ${post.id}`);
-  if (/מוסמכת|הדרך היחידה|טראומות לא נשכחות/.test(post.content)) errors.push(`Unsupported absolute claim: ${post.id}`);
+  if (!validatePostAbsoluteClaims(post.content)) errors.push(`Unsupported absolute claim: ${post.id}`);
 
-  if (post.updatedAt) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(post.updatedAt)) {
-      errors.push(`Invalid updatedAt format (must be YYYY-MM-DD): ${post.id}`);
-    } else if (post.updatedAt < post.date) {
-      errors.push(`updatedAt (${post.updatedAt}) cannot be earlier than publish date (${post.date}) in post: ${post.id}`);
-    } else if (post.updatedAt > '2030-01-01') {
-      errors.push(`updatedAt is unreasonably in the future: ${post.id}`);
-    }
-  }
+  const dateErrors = validatePostDates(post);
+  errors.push(...dateErrors);
 
   if (post.evidence) {
     if (!Array.isArray(post.evidence)) {
@@ -186,9 +208,18 @@ for (const relative of claimFiles) {
   }
 }
 
-if (errors.length) {
-  console.error(errors.join('\n'));
-  process.exit(1);
+if (require.main === module) {
+  if (errors.length) {
+    console.error(errors.join('\n'));
+    process.exit(1);
+  }
+
+  console.log(`Validated ${published.length} published posts; ${posts.length - published.length} thin legacy posts remain unindexed.`);
 }
 
-console.log(`Validated ${published.length} published posts; ${posts.length - published.length} thin legacy posts remain unindexed.`);
+module.exports = {
+  getTodayIso,
+  UNSUPPORTED_ABSOLUTE_POST_CLAIMS,
+  validatePostAbsoluteClaims,
+  validatePostDates,
+};
