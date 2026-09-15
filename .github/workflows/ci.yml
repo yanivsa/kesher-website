@@ -44,6 +44,7 @@ jobs:
             tests.test_openclaw_cloudflare_primary \
             tests.test_openclaw_oci_agent_self_heal \
             tests.test_master_supervisor_foundation \
+            tests.test_master_supervisor_shadow \
             -v
 
       - name: Select CI profile
