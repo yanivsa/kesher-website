@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
     "published_date": "2026-09-15",
     "live": true,
-    "live_verified_at": "2026-09-15T19:35:27.371181+00:00",
+    "live_verified_at": "2026-09-15T19:39:19.526363+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -875,18 +875,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-10T21:05:39.249136+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-10T21:05:43.372422+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
     {
       "at": "2026-09-10T21:05:58.264580+00:00",
       "from": "waiting_for_article_window",
@@ -1736,9 +1724,25 @@
         "operation": "full",
         "resume": 1
       }
+    },
+    {
+      "at": "2026-09-15T19:39:19.526375+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-15T19:39:33.026593+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 2
+      }
     }
   ],
-  "updated_at": "2026-09-15T19:35:41.977391+00:00",
+  "updated_at": "2026-09-15T19:39:33.026600+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
@@ -1763,7 +1767,7 @@
     "last_failed_run_id": 34909466524
   },
   "long_video": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1775,8 +1779,8 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "item_id": "video-20260912-001402-ab5e30d8de",
-    "last_dispatch_at": "2026-09-15T19:35:41.977377+00:00",
-    "resume_dispatches": 1,
+    "last_dispatch_at": "2026-09-15T19:39:33.026585+00:00",
+    "resume_dispatches": 2,
     "last_run_conclusion": null,
     "source_id": null,
     "artifact_id": null,
