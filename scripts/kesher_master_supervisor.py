@@ -48,8 +48,9 @@ class EvidenceSnapshot:
     def semantic_payload(self) -> dict[str, str]:
         """Return only evidence that represents durable state/progress.
 
-        Observation timestamps are deliberately excluded: a heartbeat/poll is
-        not progress and must not create a new recovery intent by itself.
+        Observation timestamps and workflow run identifiers are deliberately
+        excluded. A heartbeat or rerun of the same exact failure is not durable
+        progress and must not create a second recovery intent.
         """
         return {
             "incident": self.incident.key,
@@ -57,7 +58,6 @@ class EvidenceSnapshot:
             "item_id": str(self.item_id).strip(),
             "task_id": str(self.task_id).strip(),
             "artifact_id": str(self.artifact_id).strip(),
-            "workflow_run_id": str(self.workflow_run_id).strip(),
         }
 
 
