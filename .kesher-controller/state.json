@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
     "published_date": "2026-09-15",
     "live": true,
-    "live_verified_at": "2026-09-15T15:30:40.049346+00:00",
+    "live_verified_at": "2026-09-15T17:20:00.191218+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -877,21 +877,9 @@
     "stage": "long_video",
     "code": "VIDEO_ATTEMPTS_EXHAUSTED",
     "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-15T15:30:54.582357+00:00"
+    "at": "2026-09-15T17:20:14.354049+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-10T07:29:33.304025+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-09-10T07:31:55.373308+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-10T07:32:24.931687+00:00",
       "from": "article_live",
@@ -1731,9 +1719,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-15T17:20:00.191236+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-15T17:20:14.354065+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-15T15:30:54.582385+00:00",
+  "updated_at": "2026-09-15T17:20:14.354076+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
