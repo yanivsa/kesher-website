@@ -18,7 +18,7 @@ class KesherSupervisionContractTests(unittest.TestCase):
         )
         self.assertEqual(
             supervision.get("prompt_versions"),
-            {"controller_recovery": 1, "jules_incident_repair": 1, "active_supervisor": 2},
+            {"controller_recovery": 1, "jules_incident_repair": 1},
         )
         self.assertTrue(supervision.get("actionable_safe_work_must_execute"))
         self.assertFalse(supervision.get("report_only_when_action_available"))
