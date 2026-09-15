@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-15",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
     "published_date": "2026-09-15",
     "live": true,
-    "live_verified_at": "2026-09-15T18:34:19.388714+00:00",
+    "live_verified_at": "2026-09-15T19:35:27.371181+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -875,12 +875,6 @@
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-10T21:05:39.248618+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
     {
       "at": "2026-09-10T21:05:39.249136+00:00",
       "from": "article_needed",
@@ -1732,9 +1726,19 @@
         ],
         "attempt_budget_reset": true
       }
+    },
+    {
+      "at": "2026-09-15T19:35:41.977384+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-09-15T19:34:20.619124+00:00",
+  "updated_at": "2026-09-15T19:35:41.977391+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
@@ -1759,8 +1763,8 @@
     "last_failed_run_id": 34909466524
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1770,9 +1774,9 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": null,
-    "last_dispatch_at": null,
-    "resume_dispatches": 0,
+    "item_id": "video-20260912-001402-ab5e30d8de",
+    "last_dispatch_at": "2026-09-15T19:35:41.977377+00:00",
+    "resume_dispatches": 1,
     "last_run_conclusion": null,
     "source_id": null,
     "artifact_id": null,
