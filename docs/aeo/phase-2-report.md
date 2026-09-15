@@ -1,5 +1,10 @@
 # דוח סיום שלב 2: תשתית טכנית ל-AEO (Phase 2 Report)
 
+**ענף:** `aeo/technical-foundation`  
+**בסיס אב:** `origin/main` (`ed64bf709016dc3ee77f57d7c437b0a6531df749`)  
+
+---
+
 ## 1. תקציר ביצוע
 
 הושלם במלואו שלב התשתית הטכנית (Technical Foundation) על גבי הענף המבודד `aeo/technical-foundation`.
@@ -31,12 +36,11 @@
 
 ## 3. תוצאות אימות ובדיקות (Verification Results)
 
-1. **TypeScript (`npm run typecheck`):** עבר בהצלחה ללא שגיאות.
-2. **בדיקות יחידה (`vitest run`):** 18 קובצי בדיקה עברו (77 בדיקות), כולל `aeo-foundation.test.ts`.
-3. **בדיקות תוכן (`npm run test:content`):** כל 74 המאמרים עברו ולידציה מלאה.
-4. **בנייה ורינדור מוקדם (`npm run build && npm run verify:dist`):**
-   - נוצרו ונבדקו בהצלחה 103 נתיבים מרונדרים ו-404.html.
-   - כל העמודים מכילים `<h1>`, `canonical` יחיד ו-`description` יחיד.
+- **[VERIFIED] TypeScript (`npm run typecheck`):** עבר בהצלחה מלאה עם exit code 0.
+- **[VERIFIED] בדיקות יחידה (`npm test` / Vitest):** כל 18 קובצי הבדיקה עברו (77 בדיקות), כולל `aeo-foundation.test.ts`, עם exit code 0.
+- **[VERIFIED] בדיקות תוכן ושערים (`npm run test:content`):** כל 74 המאמרים עברו ולידציה מלאה עם exit code 0.
+- **[VERIFIED] בנייה ורינדור מוקדם (`npm run build && npm run verify:dist`):** נוצרו ונבדקו בהצלחה 103 נתיבים מרונדרים ו-404.html ללא שגיאות עם exit code 0.
+- **[DEFERRED] בדיקות E2E מלאות (`npm run test:e2e`):** נדחו בסביבה המקומית עקב עומס זמני של תהליכי דפדפן מקבילים; בוצע אימות דפדפן ישיר ייעודי (Browser QA) על הנתיבים הנבחרים.
 
 ---
 

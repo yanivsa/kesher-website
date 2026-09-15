@@ -107,6 +107,7 @@
   margin: var(--spacing-lg) 0;
 }
 
+.expertInsightHeader,
 .expertInsightTitle {
   display: block;
   font-weight: 700;
