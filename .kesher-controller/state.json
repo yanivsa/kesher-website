@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-15",
-  "status": "image_retry_wait",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -24,7 +24,11 @@
     "quality_status": "passed",
     "quality_content_sha256": "b9e6baa40222a67ad9b00fdff32d2c79c167d004bf4f7bdaeb2dfc064a144fcd",
     "quality_checked_at": "2026-09-15T02:28:15.017539+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "returning-to-israel-after-relocation-relationship",
+    "title": "חזרה לארץ אחרי רילוקיישן: כשהבית משתנה והזוגיות מחפשת עוגן",
+    "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
+    "published_date": "2026-09-15"
   },
   "backlog": [
     {
@@ -866,14 +870,7 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 34909466524 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-09-15T01:57:04.699258+00:00",
-    "at": "2026-09-15T01:52:04.699288+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-10T06:39:40.991576+00:00",
@@ -1629,9 +1626,15 @@
         "failure_streak": 1,
         "run_id": 34909466524
       }
+    },
+    {
+      "at": "2026-09-15T02:29:07.576685+00:00",
+      "from": "image_retry_wait",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-09-15T01:52:04.699302+00:00",
+  "updated_at": "2026-09-15T02:29:07.576703+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
