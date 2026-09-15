@@ -107,9 +107,10 @@ const schemaData = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': ['LocalBusiness', 'ProfessionalService'],
+      '@type': 'Service',
       '@id': `${SITE_CONFIG.url}/couples-counseling-ashdod#service`,
       name: 'ייעוץ זוגי באשדוד | שירה סהרוני',
+      serviceType: 'ייעוץ זוגי באשדוד',
       alternateName: 'קשר - ייעוץ זוגי באשדוד',
       url: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
       image: `${SITE_CONFIG.url}/images/shira-saharoni-sea.webp`,

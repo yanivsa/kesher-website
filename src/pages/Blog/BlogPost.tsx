@@ -37,24 +37,29 @@ const BlogPost: React.FC = () => {
     "@graph": [
       {
         "@type": "Article",
+        "@id": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}#article`,
         "headline": post?.title || "",
         ...(post?.image ? { "image": `${SITE_CONFIG.url}${post.image}` } : {}),
         "url": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`,
         "datePublished": post?.date || "",
-        "dateModified": post?.date || "",
+        "dateModified": (post && 'updatedAt' in post && typeof post.updatedAt === 'string' && post.updatedAt.trim())
+          ? post.updatedAt.trim()
+          : (post?.date || ""),
         "author": {
           "@type": "Person",
+          "@id": `${SITE_CONFIG.url}/#shira`,
           "name": SITE_CONFIG.author,
-          "url": SITE_CONFIG.url
+          "url": `${SITE_CONFIG.url}/about`
         },
         "publisher": {
-          "@type": "Organization",
-          "name": SITE_CONFIG.brand,
-          "logo": {
-            "@type": "ImageObject",
-            "url": `${SITE_CONFIG.url}/apple-touch-icon.png`
-          }
+          "@type": "LocalBusiness",
+          "@id": `${SITE_CONFIG.url}/#business`
         },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`
+        },
+        "inLanguage": "he",
         "description": post?.excerpt || "",
         "articleBody": post?.content?.replace(/<[^>]+>/g, ' ') || ""
       },
@@ -106,7 +111,18 @@ const BlogPost: React.FC = () => {
           <Link to="/blog" className={styles.backLink}>← חזרה לבלוג</Link>
           <span className={styles.category}>{post.category}</span>
           <h1 className={styles.title}>{post.title}</h1>
-          <span className={styles.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
+          <div className={styles.authorByline}>
+            <span>מאת: </span>
+            <Link to="/about" className={styles.authorLink}>{post.author || SITE_CONFIG.author}</Link>
+            <span className={styles.metaDivider}>•</span>
+            <span className={styles.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
+            {'updatedAt' in post && typeof post.updatedAt === 'string' && post.updatedAt && post.updatedAt !== post.date && (
+              <>
+                <span className={styles.metaDivider}>•</span>
+                <span className={styles.updatedDate}>עודכן: {new Date(post.updatedAt).toLocaleDateString('he-IL')}</span>
+              </>
+            )}
+          </div>
           <ShareButtons
             title={post.title}
             url={shareUrl}
@@ -128,7 +144,39 @@ const BlogPost: React.FC = () => {
               />
             </div>
           )}
+          {'directAnswer' in post && typeof post.directAnswer === 'string' && post.directAnswer.trim() && (
+            <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">
+              <div className={styles.directAnswerBadge}>תקציר מעשי</div>
+              <p className={styles.directAnswerText}>{post.directAnswer.trim()}</p>
+            </div>
+          )}
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
+          {'expertInsight' in post && typeof post.expertInsight === 'string' && post.expertInsight.trim() && (
+            <aside className={styles.expertInsight} aria-label="תובנת מומחה מאת שירה סהרוני">
+              <div className={styles.expertInsightHeader}>תובנת מומחה — שירה סהרוני</div>
+              <p className={styles.expertInsightText}>{post.expertInsight.trim()}</p>
+            </aside>
+          )}
+          {'evidence' in post && Array.isArray(post.evidence) && post.evidence.length > 0 && (
+            <section className={styles.evidenceSection} aria-label="מקורות ואסמכתאות מקצועיות">
+              <h3 className={styles.evidenceHeading}>מקורות ואסמכתאות מקצועיות</h3>
+              <ul className={styles.evidenceList}>
+                {(post.evidence as Array<{ title: string; url?: string; source?: string; note?: string }>).map((item, idx) => (
+                  <li key={idx} className={styles.evidenceItem}>
+                    {item.url ? (
+                      <a href={item.url} target="_blank" rel="noopener noreferrer" className={styles.evidenceLink}>
+                        {item.title}
+                      </a>
+                    ) : (
+                      <span className={styles.evidenceTitle}>{item.title}</span>
+                    )}
+                    {item.source && <span className={styles.evidenceSource}> — {item.source}</span>}
+                    {item.note && <p className={styles.evidenceNote}>{item.note}</p>}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           {articleVideo && (
             <ArticleVideoCard
               youtubeId={articleVideo.youtubeId}

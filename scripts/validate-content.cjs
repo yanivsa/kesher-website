@@ -61,6 +61,35 @@ for (let i = 0; i < published.length; i++) {
   if (wordCount(post.content) < 500 || headingCount(post.content) < 5) errors.push(`Thin content: ${post.id}`);
   if (/מוסמכת|הדרך היחידה|טראומות לא נשכחות/.test(post.content)) errors.push(`Unsupported absolute claim: ${post.id}`);
 
+  if (post.updatedAt) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(post.updatedAt)) {
+      errors.push(`Invalid updatedAt format (must be YYYY-MM-DD): ${post.id}`);
+    } else if (post.updatedAt < post.date) {
+      errors.push(`updatedAt (${post.updatedAt}) cannot be earlier than publish date (${post.date}) in post: ${post.id}`);
+    } else if (post.updatedAt > '2030-01-01') {
+      errors.push(`updatedAt is unreasonably in the future: ${post.id}`);
+    }
+  }
+
+  if (post.evidence) {
+    if (!Array.isArray(post.evidence)) {
+      errors.push(`post.evidence must be an array: ${post.id}`);
+    } else {
+      for (const item of post.evidence) {
+        if (!item.title || typeof item.title !== 'string' || item.title.trim().length === 0) {
+          errors.push(`Evidence item missing title in post: ${post.id}`);
+        }
+        if (item.url && !/^https?:\/\//.test(item.url)) {
+          errors.push(`Malformed evidence URL (must start with https://): ${item.url} in post: ${post.id}`);
+        }
+      }
+    }
+  }
+
+  if (post.directAnswer && (typeof post.directAnswer !== 'string' || post.directAnswer.trim().length < 20)) {
+    errors.push(`directAnswer must be at least 20 characters in post: ${post.id}`);
+  }
+
   if (post.date > '2026-07-15') {
     if (/[a-zA-Z]/.test(post.title) || /[a-zA-Z]/.test(post.excerpt) || /[a-zA-Z]/.test(stripHtml(post.content))) {
       errors.push(`Latin characters found in visible prose: ${post.id}`);

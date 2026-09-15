@@ -20,6 +20,7 @@ const schemaData = {
       "dateModified": "2026-07-23",
       "mainEntity": {
         "@type": "Person",
+        "@id": `${SITE_CONFIG.url}/#shira`,
         "name": SITE_CONFIG.author,
         "alternateName": "Shira Saharoni",
         "jobTitle": ["יועצת זוגית", "מנחת הורים", "מגשרת מוסמכת"],

@@ -35,7 +35,10 @@ const noindexRoutes = new Set(['/thank-you-booked', '/thank-you-contact']);
 const buildSitemap = (posts) => {
   const published = posts.filter(isPublishable);
   const newestPostDate = published.reduce(
-    (latest, post) => post.date > latest ? post.date : latest,
+    (latest, post) => {
+      const effectiveDate = (post.updatedAt && post.updatedAt > post.date) ? post.updatedAt : post.date;
+      return effectiveDate > latest ? effectiveDate : latest;
+    },
     '',
   );
   const staticEntries = STATIC_ROUTES
@@ -48,7 +51,7 @@ const buildSitemap = (posts) => {
     }));
   const postEntries = published.map((post) => ({
     route: blogRoute(post),
-    lastmod: post.date,
+    lastmod: (post.updatedAt && typeof post.updatedAt === 'string' && post.updatedAt.trim()) ? post.updatedAt.trim() : post.date,
     changefreq: 'monthly',
     priority: '0.7',
   }));
