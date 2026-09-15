@@ -46,6 +46,7 @@ jobs:
             tests.test_master_supervisor_foundation \
             tests.test_master_supervisor_shadow \
             tests.test_master_supervisor_live \
+            tests.test_master_supervisor_live_qa \
             -v
 
       - name: Select CI profile
