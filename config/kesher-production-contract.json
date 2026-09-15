@@ -24,8 +24,7 @@
     },
     "prompt_versions": {
       "controller_recovery": 1,
-      "jules_incident_repair": 1,
-      "active_supervisor": 2
+      "jules_incident_repair": 1
     },
     "actionable_safe_work_must_execute": true,
     "report_only_when_action_available": false,
