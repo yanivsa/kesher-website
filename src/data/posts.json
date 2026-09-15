@@ -15,10 +15,10 @@
     "directAnswer": "חזרה לישראל אחרי רילוקיישן יוצרת לעיתים קרובות הלם תרבות הפוך (Reverse Culture Shock): המרחב נתפס כמוכר, אך המשפחה, הקצב והסביבה השתנו. הקושי הזוגי מתעורר כשיש פער בציפיות ההסתגלות. בניית עוגנים זוגיים משותפים מאפשרת נחיתה רכה ומניעת משבר.",
     "evidence": [
       {
-        "title": "Reverse Culture Shock: Understanding the Return Home",
-        "source": "U.S. Department of State / Foreign Affairs",
-        "url": "https://www.state.gov/reverse-culture-shock/",
-        "note": "מחקר והנחיות על שלבי ההסתגלות הפסיכולוגית והזוגית בשיבה לארץ המוצא"
+        "title": "Testing the cultural identity model of the cultural transition cycle: Sojourners return home",
+        "source": "Nan M. Sussman, Ph.D. / International Journal of Intercultural Relations",
+        "url": "https://doi.org/10.1016/S0147-1767(02)00013-5",
+        "note": "מחקר אמפירי בכתב העת International Journal of Intercultural Relations הבוחן את מחזור המעבר התרבותי, תופעת הלם התרבות ההפוך (Reverse Culture Shock) וההסתגלות הפסיכולוגית בעת החזרה לארץ המוצא"
       }
     ]
   },
@@ -292,19 +292,19 @@
     "image": "/images/generated/blog/gifted-adhd-executive-functions-struggle.jpg",
     "imageAlt": "אב וילד בונים יחד לוח התארגנות שבועי לתמיכה בתפקודים ניהוליים",
     "updatedAt": "2026-09-15",
-    "directAnswer": "שילוב של מחוננות והפרעת קשב (כפל ייחודיות - 2e) מאופיין בפער בין הבנה אינטלקטואלית מהירה לבין קושי מוחשי בתפקודים ניהוליים כגון התארגנות, ניהול זמן וזיכרון עבודה. הילד אינו מתעצל; מערכת הניהול העצמי שלו זקוקה לתיווך הורי מותאם ולעוגנים חיצוניים ברורים במקום מאבקי כוח והאשמות.",
+    "directAnswer": "שילוב של מחוננות והפרעת קשב (כפל ייחודיות - 2e) עשוי להתאפיין בפער בין הבנה אינטלקטואלית מהירה לבין קושי מוחשי בתפקודים ניהוליים כגון התארגנות, ניהול זמן וזיכרון עבודה. הילד אינו מתעצל; מערכת הניהול העצמי שלו זקוקה לתיווך הורי מותאם ולעוגנים חיצוניים ברורים במקום מאבקי כוח והאשמות.",
     "evidence": [
       {
-        "title": "האגף לתלמידים מחוננים ומצטיינים — מאפיינים רגשיים וקוגניטיביים",
+        "title": "האגף לתלמידים מחוננים ומצטיינים — משרד החינוך (מרחב פדגוגי)",
         "source": "משרד החינוך, ישראל",
-        "url": "https://meyda.education.gov.il/files/shefi/gifted/gifted_characteristics.pdf",
-        "note": "סקירה מקיפה על פערים התפתחותיים ואסינכרוניות אצל תלמידים מחוננים"
+        "url": "https://pop.education.gov.il/pedagogical-infrastructure/special-populations/gifted-outstanding-students/",
+        "note": "הנחיות ומאפיינים פדגוגיים של האגף לתלמידים מחוננים ומצטיינים במשרד החינוך, המתייחסים לרגישות, מורכבות רגשית ופערים התפתחותיים"
       },
       {
-        "title": "Overexcitabilities and Asynchronous Development in Gifted Children",
-        "source": "Dabrowski Theory / SENG",
+        "title": "Overexcitability and the Gifted",
+        "source": "Sharon Lind, M.S. / SENG (Supporting Emotional Needs of the Gifted)",
         "url": "https://www.sengifted.org/post/overexcitability-and-the-gifted",
-        "note": "מחקר על רגישות יתר, פערים בין יכולת קוגניטיבית לבשלות רגשית והשפעתם על התנהגות"
+        "note": "מאמר מקצועי מאת שרון לינד (SENG) המנתח את חמש עוצמות היתר לפי תיאוריית דברובסקי, את הפער בין יכולת אינטלקטואלית לבשלות רגשית (אסינכרוניות) ודרכי תיווך הורי"
       }
     ]
   },
