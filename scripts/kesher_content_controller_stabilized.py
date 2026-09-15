@@ -254,6 +254,75 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         self.github.save_controller_state(state)
         return v5.core.Action("blocked", "article content quality failed before deploy/media")
 
+    def _dispatch_exact_rejected_rebuild(self, state):
+        """Preempt legacy V5 rejection handling and rebuild the exact item with Remotion."""
+        source = self._article_source()
+        if source is None:
+            return None
+        snapshot = self.github.newest_video_state()
+        exact_rejected = [
+            item for item in v5._exact_items(snapshot, source)
+            if item.get("uploaded") is not True
+            and str(item.get("status") or "") == "rejected"
+            and item.get("signature_fullscreen") is not True
+        ]
+        if len(exact_rejected) > 1:
+            v5.core.block(
+                state,
+                "long_video",
+                "DUPLICATE_REJECTED_LONG_VIDEO_ITEMS",
+                f"{len(exact_rejected)} rejected exact Overview items exist for {source['slug']}",
+            )
+            self.github.save_controller_state(state)
+            return state, v5.core.Action("blocked", "duplicate rejected long-video items")
+        if not exact_rejected:
+            return None
+
+        item = exact_rejected[0]
+        item_id = str(item.get("id") or "").strip()
+        if not item_id:
+            v5.core.block(state, "long_video", "REJECTED_LONG_VIDEO_ITEM_ID_MISSING", "rejected exact Overview has no item id")
+            self.github.save_controller_state(state)
+            return state, v5.core.Action("blocked", "rejected long-video item id missing")
+
+        active = self.github.active_workflow_run(v5.LONG_VIDEO_WORKFLOW, production_only=True)
+        if active:
+            current = state["long_video"]
+            current["run_id"] = active.get("id")
+            current["status"] = "running"
+            v5.core.transition(state, "long_video_running", "exact rejected Overview rebuild workflow already active", item_id=item_id)
+            self.github.save_controller_state(state)
+            return state, v5.core.Action("wait", "long-video rebuild workflow active")
+
+        current = state["long_video"]
+        count = int(current.get("attempt_count") or 0)
+        if count >= v5.v3.MAX_STAGE_ATTEMPTS:
+            return None
+
+        rebuild_inputs = {
+            "operation": "rebuild",
+            "rebuild_item_id": item_id,
+            "target_slug": source["slug"],
+        }
+        v5.core.GitHubClient.dispatch(self.github, v5.LONG_VIDEO_WORKFLOW, rebuild_inputs)
+        current["attempt_count"] = count + 1
+        current["remotion_rebuild_dispatches"] = int(current.get("remotion_rebuild_dispatches") or 0) + 1
+        current["last_dispatch_at"] = v5.core.utc_now()
+        current["status"] = "running"
+        current["next_retry_at"] = None
+        current["item_id"] = item.get("id")
+        current["source_id"] = item.get("source_id")
+        current["artifact_id"] = item.get("artifact_id")
+        current["provider_id"] = item.get("task_id")
+        v5.core.transition(
+            state,
+            "long_video_running",
+            "exact rejected Overview dispatched to Remotion rebuild",
+            item_id=item_id,
+        )
+        self.github.save_controller_state(state)
+        return state, v5.core.Action("dispatch_long_video", "rebuild exact rejected Overview", rebuild_inputs)
+
     def _dispatch_budgeted(self, state, stage, workflow, inputs):
         """Bind every long-video action to the authoritative source identity and recovery mode."""
         bound_inputs = dict(inputs or {})
@@ -372,6 +441,9 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return state, blocker
 
         self._overview_evidence_preflight(state)
+        direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
+        if direct_rebuild is not None:
+            return direct_rebuild
         self.github.save_controller_state(state)
         return super().tick()
 
