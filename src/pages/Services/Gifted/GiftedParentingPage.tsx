@@ -39,6 +39,35 @@ const schemaData = {
         },
       ],
     },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'מהי הנחיית הורים לילדים מחוננים ומתי כדאי לפנות?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'הנחיית הורים לילדים מחוננים מספקת כלים מעשיים להתמודדות עם הפער בין היכולת הקוגניטיבית הגבוהה לבין הבשלות הרגשית, הפרפקציוניזם, קשיי הוויסות והאתגרים החברתיים. מומלץ לפנות כאשר מזהים תסכול סביב משימות יומיום, התפרצויות זעם, שעמום בבית הספר או לקראת כניסה למסגרת מחוננים.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'איך מתמודדים עם שילוב של מחוננות והפרעת קשב וריכוז (ADHD)?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'במקרים של כפל ייחודיות (2e), היכולת הגבוהה עלולה להסוות את קשיי הקשב, או שקשיי ההתארגנות יוצרים תסכול עמוק. בהנחיית ההורים מפרידים בין מוטיבציה לתפקודים ניהוליים ובונים עוגנים פשוטים לניהול זמן, משימות ושגרה בלי מאבקי כוח.'
+          }
+        },
+        {
+          '@type': 'Question',
+          name: 'מה ההבדל בין הנחיית הורים לטיפול רגשי בילד?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'הנחיית הורים מתמקדת בסביבה הטבעית של הילד — הבית והמשפחה. ההורים מקבלים כלים לשנות את הדינמיקה היומיומית, להציב גבולות מותאמים ולתמוך בוויסות, מה שמייצר השפעה ישירה ומהירה על איכות החיים בלי להעמיס על הילד מפגש טיפולי נוסף.'
+          }
+        }
+      ]
+    }
   ],
 };
 
@@ -169,6 +198,70 @@ const GiftedParentingPage: React.FC = () => {
             <article className={styles.processStep}>
               <h3>מתרגלים ומדייקים</h3>
               <p>בודקים מה עוזר בפועל, מתאימים את הדרך ומחזקים בהדרגה עצמאות, ביטחון ושיתוף פעולה.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.section}>
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <h2>מאמרי עומק וכלים מעשיים להורים</h2>
+            <p>קריאה מקצועית נוספת בנושאי מחוננות, תפקודים ניהוליים וקשב:</p>
+          </div>
+          <div className={styles.cardGrid}>
+            <article className={styles.card}>
+              <span className={styles.cardIcon}><FiBookOpen aria-hidden="true" /></span>
+              <h3><Link to="/blog/gifted-adhd-executive-functions-struggle">מחוננות לצד הפרעת קשב וקשיי התארגנות</Link></h3>
+              <p>הילד מחונן אבל שוכח את התיק? להבין מה קורה כשיכולת גבוהה פוגשת קושי בתפקודים ניהוליים.</p>
+            </article>
+            <article className={styles.card}>
+              <span className={styles.cardIcon}><FiHeart aria-hidden="true" /></span>
+              <h3><Link to="/blog/gifted-children-perfectionism-tears">התמודדות עם פרפקציוניזם ופחד מכישלון</Link></h3>
+              <p>כשהעיפרון מחליק והדף נקרע: כלים לסיוע לילד שמתקשה לשאת טעויות או חוסר הצלחה מיידית.</p>
+            </article>
+            <article className={styles.card}>
+              <span className={styles.cardIcon}><FiLayers aria-hidden="true" /></span>
+              <h3><Link to="/blog/gifted-children-framework-preparation">הכנה רגשית לכניסה למסגרת מחוננים</Link></h3>
+              <p>התקבלתם למסגרת מחוננים? איך להפחית חרדה, לבנות ציפיות מאוזנות וללוות את המעבר ברגישות.</p>
+            </article>
+            <article className={styles.card}>
+              <span className={styles.cardIcon}><FiTarget aria-hidden="true" /></span>
+              <h3><Link to="/blog/smart-youth-focus-tasks-organization">ילד נבון מאוד שמתקשה במשימות שגרתיות</Link></h3>
+              <p>איך לגשר על הפער בין הבנה מהירה לבין קושי להתמיד במשימות יומיומיות שאינן מרתקות.</p>
+            </article>
+            <article className={styles.card}>
+              <span className={styles.cardIcon}><FiUsers aria-hidden="true" /></span>
+              <h3><Link to="/blog/gifted-children-social-difficulties">ילדים מחוננים וקשיים חברתיים</Link></h3>
+              <p>הפער בין השכל לרגש: איך לסייע לילד לפתח קשרים חברתיים מספקים בלי לוותר על מי שהוא.</p>
+            </article>
+            <article className={styles.card}>
+              <span className={styles.cardIcon}><FiCompass aria-hidden="true" /></span>
+              <h3><Link to="/blog/adhd-first-grade-preparation">הכנה לכיתה א לילדים עם ADHD</Link></h3>
+              <p>תוכנית ביתית מעשית לבניית שגרה, תפקודים ניהוליים ועצמאות לקראת המעבר לבית הספר.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.softSection}>
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <h2>שאלות נפוצות על הנחיית הורים למחוננים</h2>
+            <p>תשובות לשאלות מרכזיות המעסיקות הורים בתהליך:</p>
+          </div>
+          <div className={styles.cardGrid}>
+            <article className={styles.card}>
+              <h3>מהי הנחיית הורים למחוננים ומתי כדאי לפנות?</h3>
+              <p>הנחיית הורים לילדים מחוננים מספקת כלים מעשיים להתמודדות עם הפער בין היכולת הקוגניטיבית הגבוהה לבין הבשלות הרגשית, הפרפקציוניזם, קשיי הוויסות והאתגרים החברתיים. מומלץ לפנות כאשר מזהים תסכול סביב משימות יומיום, התפרצויות זעם או לקראת כניסה למסגרת מחוננים.</p>
+            </article>
+            <article className={styles.card}>
+              <h3>איך מתמודדים עם שילוב של מחוננות ו-ADHD?</h3>
+              <p>במקרים של כפל ייחודיות (2e), היכולת הגבוהה עלולה להסוות את קשיי הקשב, או שקשיי ההתארגנות יוצרים תסכול עמוק. בהנחיית ההורים מפרידים בין מוטיבציה לתפקודים ניהוליים ובונים עוגנים פשוטים לשגרה בלי מאבקי כוח.</p>
+            </article>
+            <article className={styles.card}>
+              <h3>מה ההבדל בין הנחיית הורים לטיפול רגשי בילד?</h3>
+              <p>הנחיית הורים מתמקדת בסביבה הטבעית של הילד — הבית והמשפחה. ההורים מקבלים כלים לשנות את הדינמיקה היומיומית, להציב גבולות מותאמים ולתמוך בוויסות, מה שמייצר השפעה ישירה ומהירה בלי להעמיס על הילד מפגש נוסף.</p>
             </article>
           </div>
         </div>
