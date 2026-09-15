@@ -36,6 +36,8 @@ class V5VideoSourceBindingTests(unittest.TestCase):
 
         with mock.patch.object(stabilized.quality, "article_violations", return_value=[]), mock.patch.object(
             controller, "_overview_evidence_preflight", return_value=None
+        ), mock.patch.object(
+            controller, "_verified_long_from_artifact_history", return_value=None
         ):
             state, action = controller.tick()
 
