@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
     "published_date": "2026-09-15",
     "live": true,
-    "live_verified_at": "2026-09-15T05:37:06.548288+00:00",
+    "live_verified_at": "2026-09-15T07:14:27.847302+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1679,9 +1679,25 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-15T07:14:27.847321+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-15T07:15:01.393925+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 4
+      }
     }
   ],
-  "updated_at": "2026-09-15T05:37:12.259390+00:00",
+  "updated_at": "2026-09-15T07:15:01.393934+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
@@ -1707,19 +1723,22 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "source_selected",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 34933207034,
-    "processed_run_id": null,
-    "provider_id": null,
+    "processed_run_id": 34933207034,
+    "provider_id": "39563b3b-b156-4445-a950-962d4baaeb10",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "item_id": "video-20260912-001402-ab5e30d8de",
-    "last_dispatch_at": "2026-09-15T05:33:16.270667+00:00",
-    "resume_dispatches": 2
+    "last_dispatch_at": "2026-09-15T07:15:01.393919+00:00",
+    "resume_dispatches": 4,
+    "last_run_conclusion": "success",
+    "source_id": "2f9fa976-f9d9-4c8c-9437-9a716cf28d24",
+    "artifact_id": "39563b3b-b156-4445-a950-962d4baaeb10"
   },
   "short": {
     "attempt_count": 0,
