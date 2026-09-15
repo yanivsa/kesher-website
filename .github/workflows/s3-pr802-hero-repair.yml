@@ -1,0 +1,40 @@
+name: S3 PR802 Trusted Hero Repair
+
+on:
+  push:
+    branches:
+      - jules-publish-article-finding-love-criteria-and-pace-2026-09-12-17573238712150926473
+    paths:
+      - .github/workflows/s3-pr802-hero-repair.yml
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  repair:
+    if: ${{ github.event.head_commit.message == 'chore: launch S3 PR802 trusted image repair' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout trusted production image code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          path: trusted-main
+          persist-credentials: false
+
+      - name: Repair exact PR 802 with trusted production worker
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: '802'
+        run: |
+          set -euo pipefail
+          python3 trusted-main/.github/scripts/article-image-worker-v4.py "${REPO}" "${PR_NUMBER}" 2>&1 | tee image-worker.log
+          grep -Eq '^ARTICLE_IMAGE_(COMMITTED|PRESENT) ' image-worker.log
