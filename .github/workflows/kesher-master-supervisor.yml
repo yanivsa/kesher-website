@@ -1,0 +1,74 @@
+name: Kesher Master Supervisor Shadow
+
+on:
+  workflow_run:
+    workflows:
+      - Kesher Content Controller
+      - Kesher Article Generation
+      - Kesher Normalize Article PR
+      - Kesher Trusted Article Image
+      - Kesher Daily NotebookLM Video Overview
+      - Kesher Daily Article Short V4
+      - Deploy to Cloudflare Pages
+    types: [completed]
+  schedule:
+    - cron: "7,17,27,37,47,57 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: kesher-master-supervisor
+  cancel-in-progress: false
+
+jobs:
+  shadow-audit:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.event != 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Collect read-only Master Supervisor evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          KESHER_TRIGGER_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          python3 -u scripts/kesher_master_supervisor_shadow.py --shadow | tee /tmp/kesher-master-shadow.json
+
+      - name: Write shadow decision summary
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path('/tmp/kesher-master-shadow.json')
+          if not path.exists():
+              text = 'Master Supervisor shadow failed before producing a structured report.'
+          else:
+              try:
+                  payload = json.loads(path.read_text(encoding='utf-8').strip().splitlines()[-1])
+              except (json.JSONDecodeError, IndexError):
+                  payload = {}
+              text = (
+                  f"Mode: {payload.get('mode') or 'unknown'}\n\n"
+                  f"Status: {payload.get('status') or 'unknown'}\n\n"
+                  f"Incident: {payload.get('incident_id') or 'none'}\n\n"
+                  f"Failure: {payload.get('failure_signature') or 'none'}\n\n"
+                  f"Proposed action: {payload.get('proposed_action') or 'none'}\n\n"
+                  f"Recovery command: {payload.get('recovery_command_id') or 'none'}\n\n"
+                  f"Would dispatch: {payload.get('would_dispatch') is True}"
+              )
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as out:
+              out.write('### Kesher Master Supervisor Shadow\n\n' + text + '\n')
+          PY
