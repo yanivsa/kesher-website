@@ -24,7 +24,17 @@
     },
     "prompt_versions": {
       "controller_recovery": 1,
-      "jules_incident_repair": 1
+      "jules_incident_repair": 1,
+      "active_supervisor": 2
+    },
+    "actionable_safe_work_must_execute": true,
+    "report_only_when_action_available": false,
+    "direct_takeover_requires_action_before_report": true,
+    "post_repair_recovery_required": true,
+    "article_image_guard_failure": {
+      "action": "repair_same_pr_or_dispatch_trusted_image",
+      "duplicate_article_or_pr_allowed": false,
+      "waiting_without_action_allowed": false
     }
   },
   "article": {
