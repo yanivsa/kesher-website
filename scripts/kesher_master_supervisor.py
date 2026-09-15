@@ -84,6 +84,8 @@ _ALLOWED_TRANSITIONS: dict[ActionLifecycle, frozenset[ActionLifecycle]] = {
     ActionLifecycle.PLANNED: frozenset({ActionLifecycle.ISSUED, ActionLifecycle.FAILED}),
     ActionLifecycle.ISSUED: frozenset({
         ActionLifecycle.ACKNOWLEDGED,
+        ActionLifecycle.RUNNING,
+        ActionLifecycle.VERIFIED,
         ActionLifecycle.FAILED,
         ActionLifecycle.TIMED_OUT,
     }),
@@ -100,7 +102,11 @@ _ALLOWED_TRANSITIONS: dict[ActionLifecycle, frozenset[ActionLifecycle]] = {
     }),
     ActionLifecycle.VERIFIED: frozenset(),
     ActionLifecycle.FAILED: frozenset(),
-    ActionLifecycle.TIMED_OUT: frozenset(),
+    ActionLifecycle.TIMED_OUT: frozenset({
+        ActionLifecycle.ISSUED,
+        ActionLifecycle.VERIFIED,
+        ActionLifecycle.FAILED,
+    }),
 }
 
 
