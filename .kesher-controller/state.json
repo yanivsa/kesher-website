@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-15",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -23,7 +23,7 @@
     "normalization_dispatched_at": "2026-09-14T23:28:41.913214+00:00",
     "quality_status": "passed",
     "quality_content_sha256": "b9e6baa40222a67ad9b00fdff32d2c79c167d004bf4f7bdaeb2dfc064a144fcd",
-    "quality_checked_at": "2026-09-15T18:30:08.379221+00:00",
+    "quality_checked_at": "2026-09-15T19:34:20.829326+00:00",
     "quality_violations": [],
     "slug": "returning-to-israel-after-relocation-relationship",
     "title": "חזרה לארץ אחרי רילוקיישן: כשהבית משתנה והזוגיות מחפשת עוגן",
@@ -873,19 +873,8 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-15T18:34:46.680796+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-10T21:05:39.248614+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
     {
       "at": "2026-09-10T21:05:39.248618+00:00",
       "from": "article_needed",
@@ -1725,9 +1714,27 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-15T19:34:20.619105+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "source_binding_exhaustion_recovery",
+      "details": {
+        "slug": "returning-to-israel-after-relocation-relationship",
+        "content_sha256": "b9e6baa40222a67ad9b00fdff32d2c79c167d004bf4f7bdaeb2dfc064a144fcd",
+        "exact_item_id": "video-20260915-125017-b9e6baa402",
+        "stale_fields": [
+          "item_id",
+          "provider_id",
+          "artifact_id",
+          "source_id"
+        ],
+        "attempt_budget_reset": true
+      }
     }
   ],
-  "updated_at": "2026-09-15T18:34:46.680823+00:00",
+  "updated_at": "2026-09-15T19:34:20.619124+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
@@ -1752,29 +1759,37 @@
     "last_failed_run_id": 34909466524
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "exhausted",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 34933207034,
-    "processed_run_id": 34933207034,
-    "provider_id": "39563b3b-b156-4445-a950-962d4baaeb10",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260912-001402-ab5e30d8de",
-    "last_dispatch_at": "2026-09-15T09:48:31.146893+00:00",
-    "resume_dispatches": 5,
-    "last_run_conclusion": "success",
-    "source_id": "2f9fa976-f9d9-4c8c-9437-9a716cf28d24",
-    "artifact_id": "39563b3b-b156-4445-a950-962d4baaeb10",
-    "watchdog": {
-      "identity": "long_video:returning-to-israel-after-relocation-relationship:b9e6baa40222a67ad9b00fdff32d2c79c167d004bf4f7bdaeb2dfc064a144fcd:video-20260915-125017-b9e6baa402",
-      "last_progress_at": "2026-09-15T09:51:29.269146+00:00",
-      "last_fingerprint": "09dc7aac61091a6b3c1cb234a91567b30e1638951450ef18997209c50152a1c7",
-      "recovery_count": 0,
-      "last_recovery_at": null
+    "item_id": null,
+    "last_dispatch_at": null,
+    "resume_dispatches": 0,
+    "last_run_conclusion": null,
+    "source_id": null,
+    "artifact_id": null,
+    "source_binding_exhaustion_recovery_applied": true,
+    "source_binding_recovery_previous": {
+      "attempt_count": 3,
+      "item_id": "video-20260912-001402-ab5e30d8de",
+      "provider_id": "39563b3b-b156-4445-a950-962d4baaeb10",
+      "artifact_id": "39563b3b-b156-4445-a950-962d4baaeb10",
+      "source_id": "2f9fa976-f9d9-4c8c-9437-9a716cf28d24",
+      "watchdog": {
+        "identity": "long_video:returning-to-israel-after-relocation-relationship:b9e6baa40222a67ad9b00fdff32d2c79c167d004bf4f7bdaeb2dfc064a144fcd:video-20260915-125017-b9e6baa402",
+        "last_progress_at": "2026-09-15T09:51:29.269146+00:00",
+        "last_fingerprint": "09dc7aac61091a6b3c1cb234a91567b30e1638951450ef18997209c50152a1c7",
+        "recovery_count": 0,
+        "last_recovery_at": null
+      }
     }
   },
   "short": {
