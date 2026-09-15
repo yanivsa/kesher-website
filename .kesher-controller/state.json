@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
     "published_date": "2026-09-15",
     "live": true,
-    "live_verified_at": "2026-09-15T12:52:54.818383+00:00",
+    "live_verified_at": "2026-09-15T15:21:34.182528+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -877,27 +877,9 @@
     "stage": "long_video",
     "code": "VIDEO_ATTEMPTS_EXHAUSTED",
     "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-15T12:53:08.853468+00:00"
+    "at": "2026-09-15T15:21:48.790493+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-10T07:19:05.232163+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-10T07:19:53.928236+00:00",
-      "from": "long_video_complete",
-      "to": "short_retry_wait",
-      "reason": "SHORT_WORKFLOW_FAILED",
-      "details": {
-        "message": "Short derive run 34448840819 completed with conclusion=failure",
-        "retry_at": "2026-09-10T07:24:53.928204+00:00",
-        "failure_streak": 1,
-        "run_id": 34448840819
-      }
-    },
     {
       "at": "2026-09-10T07:19:53.928260+00:00",
       "from": "short_retry_wait",
@@ -1731,9 +1713,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-15T15:21:34.182547+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-15T15:21:48.790510+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-15T12:53:08.853490+00:00",
+  "updated_at": "2026-09-15T15:21:48.790517+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
