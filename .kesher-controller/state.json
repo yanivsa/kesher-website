@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
     "published_date": "2026-09-15",
     "live": true,
-    "live_verified_at": "2026-09-15T05:33:04.653406+00:00",
+    "live_verified_at": "2026-09-15T05:37:06.548288+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1667,9 +1667,21 @@
         "operation": "full",
         "resume": 2
       }
+    },
+    {
+      "at": "2026-09-15T05:37:06.548302+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-15T05:37:12.259371+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-15T05:33:16.270710+00:00",
+  "updated_at": "2026-09-15T05:37:12.259390+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
@@ -1695,10 +1707,10 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "source_selected",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 34933207034,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
