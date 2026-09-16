@@ -43,7 +43,11 @@
       "completed_at": "2026-09-15T22:56:57.574287+00:00"
     },
     "last_jules_session_id": "sessions/1411980193888685833",
-    "last_failed_run_id": 35030279608
+    "last_failed_run_id": 35030279608,
+    "quality_status": "passed",
+    "quality_content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
+    "quality_checked_at": "2026-09-16T00:33:04.063310+00:00",
+    "quality_violations": []
   },
   "backlog": [
     {
@@ -1742,7 +1746,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
