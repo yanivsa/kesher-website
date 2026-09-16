@@ -99,7 +99,13 @@ const BlogPost: React.FC = () => {
 
   return (
     <article className={styles.post}>
-      <MetaTags title={post.title} description={post.excerpt} ogType="article" image={post.image} />
+      <MetaTags
+        title={post.title}
+        description={post.excerpt}
+        ogType="article"
+        image={post.image}
+        canonical={`${SITE_CONFIG.url}/blog/${canonicalRouteKey}`}
+      />
       <SchemaOrg data={schemaData} />
       <header className={styles.header}>
         <div className="container">
