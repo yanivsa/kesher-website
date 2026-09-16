@@ -27,7 +27,7 @@
 | URL | קובץ מקור | ענף שינוי | היפותזה שנבדקה | יישום בפועל שנבדק ואומת |
 |---|---|---|---|---|
 | `/couples-counseling-ashdod` | `src/pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage.tsx` | `aeo/technical-foundation` | חיזוק סכמת Service וסמכות מקומית באשדוד ישלול הזיות גיאוגרפיות | נורמל ל-`Service` עם `provider: #business`, שיוך שירה, ותגיות אזור מקומיות מדויקות. |
-| `/services/gifted-parenting` | `src/pages/Services/Gifted/GiftedParentingPage.tsx` | `aeo/controlled-pilot` | הפיכת עמוד שירות ל-Topic Pillar עם סכמת FAQPage וקישוריות אשכול מעלה הכללה ב-AI | סכמת `FAQPage` מובנית בהתאמה של 100% לטקסט הגלוי, הבחנה מאוזנת בין הנחיית הורים לטיפול רגשי ללא יומרת עדיפות, ובלוק קישורים ל-6 מאמרי מחוננות. |
+| `/services/gifted-parenting` | `src/pages/Services/Gifted/GiftedParentingPage.tsx` | `aeo/controlled-pilot` | הפיכת עמוד שירות ל-Topic Pillar עם תוכן FAQ גלוי ואיכותי וקישוריות אשכול מעלה הכללה ב-AI | מדור שאלות נפוצות גלוי בהבחנה מאוזנת ומשלימה בין הנחיית הורים לטיפול רגשי, הסרת סכמת `FAQPage` מגרף ה-JSON-LD (לאור ביטול FAQ rich results בגוגל במאי 2026 ומדיניות הימנעות מסכמות ספקולטיביות), ובלוק קישורים ל-6 מאמרי מחוננות. |
 | `/blog/gifted-adhd-executive-functions-struggle` | `src/data/posts.json` | `aeo/controlled-pilot` | Direct Answer תמציתי ומקורות סמכות מאומתים יזכו בציטוט AI מדויק ללא יומרה אבחונית | הוספת `directAnswer` בשפה מסויגת, `updatedAt: "2026-09-16"`, מאמר סקירה אקדמי בביקורת עמיתים (Foley-Nicpon et al., 2011 ב-Gifted Child Quarterly), משרד החינוך (מדיניות פדגוגית), ו-SENG. |
 | `/blog/newlywed-first-year-conflicts` | `src/data/posts.json` | `aeo/controlled-pilot` | פסקת תשובה תמציתית וטבלת החלטה מובנית במריבות השנה הראשונה מקפיצות ציטוט השוואתי | הוספת `directAnswer` תמציתי ("מוקדי מחלוקת נפוצים יכולים לכלול"), `updatedAt: "2026-09-16"`, מסגור ניהול כספי ככלי/אפשרות ולא כחוק גורף, וטבלת השוואה מובנית. |
 | `/blog/returning-to-israel-after-relocation-relationship` | `src/data/posts.json` | `aeo/controlled-pilot` | מענה ממוקד לשאלת "הלם תרבות הפוך" עם מקור מחקרי סמכותי יבסס מובילות בנישה | הוספת `directAnswer` מסויג ("עשויה לסייע להתארגן מחדש"), `updatedAt: "2026-09-16"`, מחקר אמפירי בביקורת עמיתים (Sussman, 2002) המובחן מההמלצות הזוגיות המעשיות. |
@@ -48,7 +48,7 @@
 - `docs/aeo/phase-3-report.md` (דוח זה)
 
 ### קוד ותוכן:
-- `src/pages/Services/Gifted/GiftedParentingPage.tsx` (הטמעת FAQPage ובלוק מאמרי מחוננות מקושרים)
+- `src/pages/Services/Gifted/GiftedParentingPage.tsx` (שימור שאלות נפוצות גלויות, הסרת סכמת FAQPage, והטמעת בלוק מאמרי מחוננות מקושרים)
 - `src/data/posts.json` (הטמעת `directAnswer`, `updatedAt: "2026-09-16"`, טבלה ומקורות מאומתים ב-3 מאמרי הפיילוט)
 - `src/data/postSummaries.json`, `public/sitemap.xml`, `public/llms-full.txt`, `public/rss.xml` (סנכרון מלא באמצעות `npm run generate`)
 

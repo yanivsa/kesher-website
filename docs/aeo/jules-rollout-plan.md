@@ -13,8 +13,9 @@
 ### משימות מותרות לג'ולס (Allowed Tasks - Mechanical Retrofits)
 1. **עיצוב והוספת טבלאות השוואה (Markdown Comparison Tables):**
    - הוספת טבלה בעלת 3-4 עמודות המציגה הבחנות קיימות מתוך תוכן המאמר (לדוגמה: תסמין, אתגר, דרך פעולה).
-2. **הטמעת סכמות JSON-LD מוגדרות מראש:**
-   - הוספת סכמת `FAQPage` לפי תבנית סגורה לעמודי שירות או מאמרים.
+2. **הוספת מדורי שאלות נפוצות גלויים (ללא סכמת `FAQPage` ספקולטיבית):**
+   - הוספת תוכן שאלות ותשובות גלוי בעמוד מתוך תוכן קיים, אך ורק כמענה מועיל לקוראים אנושיים.
+   - **כלל מחייב:** *"Visible FAQ content may be useful when it genuinely answers user questions. FAQPage structured data should not be added as an AEO tactic. Structured data should be maintained only when it has a clear supported SEO/semantic purpose."* אין להוסיף סכמת `FAQPage`.
 3. **הוספת שדות AEO אופציונליים למאמרי בלוג קיימים ב-`posts.json`:**
    - הוספת `directAnswer` תמציתי (עד 60 מילים) המבוסס אך ורק על טקסט שכבר כתוב במאמר.
    - עדכון שדה `updatedAt` לתאריך המדויק של השינוי.
