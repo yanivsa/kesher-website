@@ -36,6 +36,7 @@ Remotion upgrades the **existing authoritative NotebookLM MP4** for each product
 5. **Exact-evidence identity**: A structured Jules review must refer to the exact item/final MP4/manifest/transcript/source/frame evidence it inspected. A review identity mismatch invalidates the review record but does not change the independent technical publication decision.
 6. **Daily automation**: Changes to review policy or Remotion implementation MUST preserve the scheduled controller-driven daily GitHub Actions pipeline and its durable resume behavior. Do not turn the daily flow into a manual-only process.
 7. **A+B+C remains the only completion contract**: Controller completion depends on the canonical public Article + verified public Video Overview + verified public portrait Short (including existing origin/signature/identity gates). **B-roll, external assets, edit-plan richness and motion-graphics richness are never required for Controller completion.**
+8. **Signature is an in-content overlay, never an appended outro**: For both Video Overview and Short, Shira's approved signature treatment must appear during the final **2–3 seconds of the authoritative source timeline** while the accepted source video and exact accepted source audio continue underneath through the final source frame. The Remotion composition/final MP4 duration MUST remain equal to the source product duration; never add signature-only frames, freeze frames, black frames, silence, or a separate end-card segment. A restrained translucent scrim is allowed for legibility, but the underlying source must remain visibly active. This rule applies to Jules implementation/review and all Remotion render paths.
 
 ---
 
@@ -163,6 +164,7 @@ When editing `src/remotion/`:
 - Validate media compatibility/dimensions before using an optional asset; skip invalid optional assets rather than blocking the canonical delivery.
 - Check official docs/skills before relying on uncertain or newly changed Remotion APIs.
 - Do not blindly rewrite working Remotion code or auto-upgrade dependencies in unrelated changes.
+- Signature timing must be computed against the existing composition duration. Never increase `durationInFrames` to make room for the signature; render it as an overlay within the final 2–3 seconds while source video/audio continue.
 
 ---
 

@@ -21,8 +21,15 @@ def _source_identity(item: dict[str, Any]) -> tuple[str, str]:
     )
 
 
+def _signature_timing_evidence(item: dict[str, Any]) -> bool:
+    """Accept the new overlay marker or legacy full-frame-layer evidence during migration."""
+    if item.get("signature_overlay") is True:
+        return True
+    return item.get("signature_overlay") is None and item.get("signature_fullscreen") is True
+
+
 def _signature_verified(item: dict[str, Any]) -> bool:
-    """Require durable evidence for the approved full-screen three-second video signature ending."""
+    """Require durable evidence for the approved three-second in-content signature overlay."""
     signature_video_sha256 = str(item.get("signature_video_sha256") or "").strip()
 
     try:
@@ -32,7 +39,7 @@ def _signature_verified(item: dict[str, Any]) -> bool:
 
     return bool(
         item.get("signature_verified") is True
-        and item.get("signature_fullscreen") is True
+        and _signature_timing_evidence(item)
         and abs(duration - SIGNATURE_DURATION_SECONDS) < 0.001
         and signature_video_sha256
     )
@@ -89,9 +96,9 @@ def overview_edit_verified(stage: dict[str, Any]) -> bool:
         return bool(
             90.0 <= content_duration <= 180.0
             and abs(signature_duration - SIGNATURE_DURATION_SECONDS) < 0.001
-            and stage.get("signature_fullscreen") is True
+            and _signature_timing_evidence(stage)
             and str(stage.get("signature_asset_sha256") or "").strip()
-            and abs(final_duration - (content_duration + SIGNATURE_DURATION_SECONDS)) <= 0.15
+            and abs(final_duration - content_duration) <= 0.15
         )
 
     return True
@@ -178,6 +185,7 @@ def media_fingerprint(item: dict[str, Any]) -> str:
         "signature_verified": item.get("signature_verified"),
         "signature_duration_seconds": item.get("signature_duration_seconds"),
         "signature_fullscreen": item.get("signature_fullscreen"),
+        "signature_overlay": item.get("signature_overlay"),
         "signature_sha256": item.get("signature_sha256"),
         "signature_asset_sha256": item.get("signature_asset_sha256"),
         "signature_video_sha256": item.get("signature_video_sha256"),

@@ -21,7 +21,7 @@ export interface FullScreenSignatureOutroProps {
 
 export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> = ({
   durationSeconds = 2,
-  backgroundColor = "linear-gradient(135deg, #18281f 0%, #0d1712 100%)",
+  backgroundColor = "linear-gradient(180deg, rgba(13,23,18,0.05) 0%, rgba(13,23,18,0.22) 45%, rgba(13,23,18,0.55) 100%)",
   signatureColor = "#f4d068",
   signatureImageSrc = "signature-mask.svg",
   title = "שירה סהרוני",
@@ -32,18 +32,17 @@ export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> =
   const frame = useCurrentFrame();
   const { fps, durationInFrames, width } = useVideoConfig();
 
-  const outroLengthFrames = Math.round(durationSeconds * fps);
-  const startFrame = Math.max(0, durationInFrames - outroLengthFrames);
+  const overlayLengthFrames = Math.round(durationSeconds * fps);
+  const startFrame = Math.max(0, durationInFrames - overlayLengthFrames);
 
-  // If before outro start, do not render or keep opacity 0
+  // The signature lives inside the existing source timeline. It never appends frames.
   if (frame < startFrame) {
     return null;
   }
 
   const current = frame - startFrame;
 
-  // Rapid fade-in transition into the outro card
-  const backdropOpacity = interpolate(current, [0, Math.min(10, outroLengthFrames * 0.2)], [0, 1], {
+  const overlayOpacity = interpolate(current, [0, Math.min(10, overlayLengthFrames * 0.2)], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -54,7 +53,6 @@ export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> =
     config: { damping: 14, stiffness: 90 },
   });
 
-  // Calculate signature width based on composition orientation
   const isVertical = width < 1200;
   const signatureWidth = isVertical ? "75%" : "480px";
 
@@ -63,7 +61,7 @@ export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> =
       style={{
         zIndex,
         background: backgroundColor,
-        opacity: backdropOpacity,
+        opacity: overlayOpacity,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -72,9 +70,9 @@ export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> =
         padding: "60px 40px",
         direction: "rtl",
         fontFamily: "'Heebo', 'Rubik', Arial, sans-serif",
+        pointerEvents: "none",
       }}
     >
-      {/* Subtle brand glow circle */}
       <div
         style={{
           position: "absolute",
@@ -97,16 +95,14 @@ export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> =
           zIndex: 2,
         }}
       >
-        {/* Animated Signature - runs once in the first 35-40 frames of outro, then stays locked */}
         <RemotionSignature
           startFrame={startFrame + 5}
-          durationInFrames={Math.min(38, outroLengthFrames - 10)}
+          durationInFrames={Math.max(1, Math.min(38, overlayLengthFrames - 10))}
           color={signatureColor}
           width={signatureWidth}
           maskSrc={signatureImageSrc}
         />
 
-        {/* Title & Subtitle */}
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           <span
             style={{
@@ -124,17 +120,17 @@ export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> =
               fontSize: isVertical ? "32px" : "22px",
               fontWeight: 500,
               color: "#d1e2d8",
+              textShadow: "0 2px 12px rgba(0,0,0,0.65)",
             }}
           >
             {subtitle}
           </span>
         </div>
 
-        {/* Website pill badge */}
         <div
           style={{
             marginTop: isVertical ? "16px" : "8px",
-            background: "rgba(255, 255, 255, 0.12)",
+            background: "rgba(13, 23, 18, 0.50)",
             border: `1.5px solid ${signatureColor}`,
             padding: isVertical ? "16px 44px" : "10px 30px",
             borderRadius: "50px",

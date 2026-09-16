@@ -119,7 +119,9 @@
       "missing_assets": "source-only-fallback",
       "asset_failure": "drop-and-continue",
       "jules_review": "advisory",
-      "duplicate_generation_for_enrichment": false
+      "duplicate_generation_for_enrichment": false,
+      "signature_timing": "overlay_final_2_3_seconds_inside_source_timeline",
+      "signature_may_extend_final_duration": false
     }
   },
   "invariants": {
@@ -137,6 +139,8 @@
     "recovery_commands_are_idempotent": true,
     "legacy_task_supervisor_live_mutations_disabled": true,
     "supervisor_state_is_cas_protected": true,
-    "same_incident_escalation_is_bounded": true
+    "same_incident_escalation_is_bounded": true,
+    "signature_overlay_stays_inside_source_timeline": true,
+    "signature_never_extends_media_duration": true
   }
 }
