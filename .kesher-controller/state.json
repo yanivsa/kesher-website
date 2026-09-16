@@ -1754,9 +1754,26 @@
         "item_id": "video-20260916-033957-28471ea212",
         "task_id": "c6125d93-a18d-4a47-b74e-12be7f6aeb9f"
       }
+    },
+    {
+      "at": "2026-09-16T04:41:02.146543+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "long_video_watchdog_recovery",
+      "reason": "same Kesher incident remained stalled for three hourly checks; direct supervisor takeover required",
+      "details": {
+        "pipeline_id": "v5",
+        "incident_key": "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video",
+        "strike": 3,
+        "stage": "long_video",
+        "slug": "fights-before-wedding",
+        "content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
+        "item_id": "video-20260916-033957-28471ea212",
+        "task_id": "c6125d93-a18d-4a47-b74e-12be7f6aeb9f",
+        "required": true
+      }
     }
   ],
-  "updated_at": "2026-09-16T01:23:30.824168+00:00",
+  "updated_at": "2026-09-16T04:41:02.146550+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1822,15 +1839,26 @@
       "slug": "fights-before-wedding",
       "content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
       "stage": "long_video",
-      "strike_count": 2,
-      "last_check_token": "2026-09-16T05",
+      "strike_count": 3,
+      "last_check_token": "2026-09-16T07",
       "last_fingerprint": "849197fe83688c7f08199d00ae822cc51a4f857b439c6bd3cd4d21af2b4ea0a4",
       "last_controller_action_token": "recovery:1:2026-09-16T01:21:06.006518+00:00",
       "controller_action_observed": true,
-      "last_observed_at": "2026-09-16T02:31:58.098356+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
+      "last_observed_at": "2026-09-16T04:39:42.286271+00:00",
+      "last_action": "direct_takeover",
+      "direct_takeover_required": true,
       "last_controller_action_at": "2026-09-16T01:21:06.006518+00:00"
     }
+  },
+  "direct_takeover_required": {
+    "pipeline_id": "v5",
+    "incident_key": "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video",
+    "strike": 3,
+    "stage": "long_video",
+    "slug": "fights-before-wedding",
+    "content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
+    "item_id": "video-20260916-033957-28471ea212",
+    "task_id": "c6125d93-a18d-4a47-b74e-12be7f6aeb9f",
+    "required": true
   }
 }
