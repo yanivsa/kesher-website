@@ -212,6 +212,37 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
                 with self.assertRaisesRegex(pipeline.PipelineError, "unrelated unresolved video"):
                     exact_target.seed_exact_target(expected["slug"], expected["content_sha256"])
 
+    def test_exact_seed_does_not_let_newer_unrelated_item_block_older_fifo_target(self):
+        old_post = prior_article()
+        expected = pipeline.source_metadata(old_post)
+        newer_source = dict(expected)
+        newer_source.update({
+            "slug": "newer-different-article",
+            "id": "newer-different-article",
+            "date": "2026-08-20",
+            "content_sha256": "e" * 64,
+        })
+        newer = pipeline.new_item(newer_source)
+        newer.update({"id": "video-newer-active", "type": "video_overview", "status": "downloaded"})
+        state = {"version": 1, "items": [newer], "updated_at": None}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            posts_path = Path(tmp) / "posts.json"
+            state_dir = Path(tmp) / "state"
+            posts_path.write_text(json.dumps([old_post], ensure_ascii=False), encoding="utf-8")
+            state_dir.mkdir()
+            (state_dir / "state.json").write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
+            with mock.patch.object(pipeline, "POSTS_FILE", posts_path), mock.patch.object(
+                pipeline, "STATE_DIR", state_dir
+            ), mock.patch.object(pipeline, "STATE_FILE", state_dir / "state.json"):
+                chosen = exact_target.seed_exact_target(expected["slug"], expected["content_sha256"])
+                saved = json.loads((state_dir / "state.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(chosen["source"]["slug"], expected["slug"])
+        self.assertEqual(chosen["source"]["content_sha256"], expected["content_sha256"])
+        self.assertEqual(saved["items"][0]["status"], "downloaded")
+        self.assertEqual(len(saved["items"]), 2)
+
     def test_recovery_workflow_is_exact_handoff_into_canonical_pipeline(self):
         workflow = RECOVERY_WORKFLOW_PATH.read_text(encoding="utf-8")
         self.assertIn("target_slug:", workflow)
