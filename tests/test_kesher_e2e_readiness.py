@@ -27,9 +27,10 @@ class KesherE2EReadinessTests(unittest.TestCase):
                 "width": 1280,
                 "height": 720,
                 "content_duration_seconds": 120.0,
-                "duration": 123.0,
+                "duration": 120.0,
                 "signature_duration_seconds": guard.SIGNATURE_DURATION_SECONDS,
-                "signature_fullscreen": True,
+                "signature_fullscreen": False,
+                "signature_overlay": True,
                 "signature_asset_sha256": "o" * 64,
             },
             "short": {
@@ -40,27 +41,22 @@ class KesherE2EReadinessTests(unittest.TestCase):
                 "source_mode": guard.CANONICAL_SHORT_SOURCE_MODE,
                 "visual_pipeline": guard.CANONICAL_SHORT_PIPELINE,
                 "signature_verified": True,
-                "signature_fullscreen": True,
+                "signature_fullscreen": False,
+                "signature_overlay": True,
                 "signature_duration_seconds": guard.SIGNATURE_DURATION_SECONDS,
                 "signature_video_sha256": "s" * 64,
             },
         }
 
-    def test_short_signature_is_appended_after_full_notebooklm_content(self) -> None:
+    def test_short_signature_stays_inside_full_notebooklm_content(self) -> None:
         root = SHORT_ROOT.read_text(encoding="utf-8")
-        self.assertIn("SHORT_SIGNATURE_OUTRO_FRAMES", root)
-        self.assertIn(
-            "durationInFrames: props.durationInFrames + SHORT_SIGNATURE_OUTRO_FRAMES",
-            root,
-        )
+        self.assertNotIn("SHORT_SIGNATURE_OUTRO_FRAMES", root)
+        self.assertIn("durationInFrames: props.durationInFrames", root)
 
-    def test_overview_signature_is_appended_after_full_notebooklm_content(self) -> None:
+    def test_overview_signature_stays_inside_full_notebooklm_content(self) -> None:
         root = SHORT_ROOT.read_text(encoding="utf-8")
-        self.assertIn("OVERVIEW_SIGNATURE_OUTRO_FRAMES", root)
-        self.assertIn(
-            "durationInFrames: props.durationInFrames + OVERVIEW_SIGNATURE_OUTRO_FRAMES",
-            root,
-        )
+        self.assertNotIn("OVERVIEW_SIGNATURE_OUTRO_FRAMES", root)
+        self.assertIn("durationInFrames: props.durationInFrames", root)
 
     def test_delivery_contract_requires_canonical_overview_remotion_edit(self) -> None:
         state = self.complete_state()
@@ -73,14 +69,16 @@ class KesherE2EReadinessTests(unittest.TestCase):
         self.assertFalse(ready)
         self.assertFalse(deliverables["overview_edit_verified"])
 
-    def test_production_overview_signature_must_be_appended_after_full_content(self) -> None:
+    def test_production_overview_signature_must_overlay_final_source_seconds(self) -> None:
         state = self.complete_state()
         state["long_video"]["overview_evidence_required"] = True
         ready, deliverables = guard.delivery_contract(state)
         self.assertTrue(ready)
         self.assertTrue(deliverables["overview_edit_verified"])
 
-        state["long_video"]["duration"] = state["long_video"]["content_duration_seconds"]
+        state["long_video"]["duration"] = (
+            state["long_video"]["content_duration_seconds"] + guard.SIGNATURE_DURATION_SECONDS
+        )
         ready, deliverables = guard.delivery_contract(state)
         self.assertFalse(ready)
         self.assertFalse(deliverables["overview_edit_verified"])
