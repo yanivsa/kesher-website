@@ -89,7 +89,12 @@ def validate_candidate(item: dict) -> None:
     if not (source.get("slug") or source.get("id")) or not source.get("content_sha256"):
         raise UploadGuardError("Upload candidate source identity is incomplete")
 
-    if item.get("type") == "article_short" or item.get("visual_pipeline") == "remotion-v4-notebooklm-short-motion-plan-v1":
+    is_long_video = item.get("visual_pipeline") == "remotion-v1-notebooklm-audio"
+    is_short = (
+        item.get("visual_pipeline") == "remotion-v4-notebooklm-short-motion-plan-v1"
+        or (item.get("type") == "article_short" and not is_long_video)
+    )
+    if is_short:
         if item.get("source_mode") == "overview-segment":
             raise UploadGuardError("Upload candidate is derived from overview-segment; independent Short required")
         if not delivery_guard._signature_verified(item):
