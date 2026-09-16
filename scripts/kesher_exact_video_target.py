@@ -96,6 +96,7 @@ def seed_exact_target(slug: str, content_sha256: str) -> dict[str, Any]:
         stale["superseded_by_content_sha256"] = source["content_sha256"]
         stale["updated_at"] = pipeline.utc_now()
 
+    target_date = str(source.get("date") or "").strip()
     unrelated_unresolved = [
         item for item in items
         if isinstance(item, dict)
@@ -105,6 +106,11 @@ def seed_exact_target(slug: str, content_sha256: str) -> dict[str, Any]:
         )
         and item.get("uploaded") is not True
         and str(item.get("status") or "") in ACTIVE
+        and (
+            not target_date
+            or not str((item.get("source") or {}).get("date") or "").strip()
+            or str((item.get("source") or {}).get("date") or "").strip() <= target_date
+        )
     ]
     if unrelated_unresolved:
         first = unrelated_unresolved[0]
