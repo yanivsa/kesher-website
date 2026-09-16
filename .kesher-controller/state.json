@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-16",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T00:37:46.585948+00:00",
+    "live_verified_at": "2026-09-16T07:40:48.760565+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1771,9 +1771,25 @@
         "task_id": "c6125d93-a18d-4a47-b74e-12be7f6aeb9f",
         "required": true
       }
+    },
+    {
+      "at": "2026-09-16T07:40:48.760584+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T07:41:39.897758+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "upload",
+        "resume": 3
+      }
     }
   ],
-  "updated_at": "2026-09-16T04:41:02.146550+00:00",
+  "updated_at": "2026-09-16T07:41:39.897772+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1787,7 +1803,7 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1798,9 +1814,9 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260912-001402-ab5e30d8de",
-    "last_dispatch_at": "2026-09-16T01:23:30.824152+00:00",
-    "resume_dispatches": 2,
+    "item_id": "video-20260916-083249-74040d54b5",
+    "last_dispatch_at": "2026-09-16T07:41:39.897751+00:00",
+    "resume_dispatches": 3,
     "watchdog": {
       "identity": "long_video:fights-before-wedding:28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b:video-20260916-033957-28471ea212",
       "last_progress_at": "2026-09-16T00:39:00.214619+00:00",
