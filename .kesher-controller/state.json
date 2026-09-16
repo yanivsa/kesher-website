@@ -1773,7 +1773,14 @@
     "overview_evidence_required": true,
     "item_id": "video-20260912-001402-ab5e30d8de",
     "last_dispatch_at": "2026-09-16T00:38:26.840216+00:00",
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "watchdog": {
+      "identity": "long_video:fights-before-wedding:28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b:video-20260916-033957-28471ea212",
+      "last_progress_at": "2026-09-16T00:39:00.214619+00:00",
+      "last_fingerprint": "c6ff24e5456f8a5801a31314569b71bad58536b345a85eb4411acedecf4b4887",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
