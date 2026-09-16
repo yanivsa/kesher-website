@@ -1,7 +1,8 @@
 # דוח סיום שלב 3: פיילוט מבוקר AEO (Phase 3 Report)
 
 **ענף:** `aeo/controlled-pilot`  
-**בסיס אב:** `aeo/technical-foundation` (`4b1f7f00ac790c5575c5d4d7c8e114b8456a5508`)  
+**PR:** [#835](https://github.com/yanivsa/kesher-website/pull/835) (`aeo/controlled-pilot -> aeo/technical-foundation`)  
+**בסיס אב:** `aeo/technical-foundation` (`14c5c211`)  
 
 ---
 
@@ -26,10 +27,10 @@
 | URL | קובץ מקור | ענף שינוי | היפותזה שנבדקה | יישום בפועל שנבדק ואומת |
 |---|---|---|---|---|
 | `/couples-counseling-ashdod` | `src/pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage.tsx` | `aeo/technical-foundation` | חיזוק סכמת Service וסמכות מקומית באשדוד ישלול הזיות גיאוגרפיות | נורמל ל-`Service` עם `provider: #business`, שיוך שירה, ותגיות אזור מקומיות מדויקות. |
-| `/services/gifted-parenting` | `src/pages/Services/Gifted/GiftedParentingPage.tsx` | `aeo/controlled-pilot` | הפיכת עמוד שירות ל-Topic Pillar עם סכמת FAQPage וקישוריות אשכול מעלה הכללה ב-AI | סכמת `FAQPage` מובנית, בלוק שאלות ותשובות חזותי, ובלוק קישורים טבעיים ל-6 מאמרי מחוננות מובילים. |
-| `/blog/gifted-adhd-executive-functions-struggle` | `src/data/posts.json` | `aeo/controlled-pilot` | Direct Answer תמציתי ומקורות סמכות מאומתים יזכו בציטוט AI מדויק ללא יומרה אבחונית | הוספת `directAnswer` בשפה זהירה ומותאמת, `updatedAt: "2026-09-15"`, ושני מקורות סמכות פעילים ומאומתים (משרד החינוך ו-SENG). |
-| `/blog/newlywed-first-year-conflicts` | `src/data/posts.json` | `aeo/controlled-pilot` | פסקת תשובה תמציתית וטבלת החלטה מובנית במריבות השנה הראשונה מקפיצות ציטוט השוואתי | הוספת `directAnswer` תמציתי, `updatedAt: "2026-09-15"`, וטבלת השוואת תגובות מובנית (`<table>` נגישה ורספונסיבית). |
-| `/blog/returning-to-israel-after-relocation-relationship` | `src/data/posts.json` | `aeo/controlled-pilot` | מענה ממוקד לשאלת "הלם תרבות הפוך" עם מקור מחקרי סמכותי יבסס מובילות בנישה | הוספת `directAnswer` תמציתי, `updatedAt: "2026-09-15"`, קישור עוגן לשירות רילוקיישן, והפניה למחקר אמפירי בביקורת עמיתים (Sussman, 2002). |
+| `/services/gifted-parenting` | `src/pages/Services/Gifted/GiftedParentingPage.tsx` | `aeo/controlled-pilot` | הפיכת עמוד שירות ל-Topic Pillar עם סכמת FAQPage וקישוריות אשכול מעלה הכללה ב-AI | סכמת `FAQPage` מובנית בהתאמה של 100% לטקסט הגלוי, הבחנה מאוזנת בין הנחיית הורים לטיפול רגשי ללא יומרת עדיפות, ובלוק קישורים ל-6 מאמרי מחוננות. |
+| `/blog/gifted-adhd-executive-functions-struggle` | `src/data/posts.json` | `aeo/controlled-pilot` | Direct Answer תמציתי ומקורות סמכות מאומתים יזכו בציטוט AI מדויק ללא יומרה אבחונית | הוספת `directAnswer` בשפה מסויגת, `updatedAt: "2026-09-16"`, מאמר סקירה אקדמי בביקורת עמיתים (Foley-Nicpon et al., 2011 ב-Gifted Child Quarterly), משרד החינוך (מדיניות פדגוגית), ו-SENG. |
+| `/blog/newlywed-first-year-conflicts` | `src/data/posts.json` | `aeo/controlled-pilot` | פסקת תשובה תמציתית וטבלת החלטה מובנית במריבות השנה הראשונה מקפיצות ציטוט השוואתי | הוספת `directAnswer` תמציתי ("מוקדי מחלוקת נפוצים יכולים לכלול"), `updatedAt: "2026-09-16"`, מסגור ניהול כספי ככלי/אפשרות ולא כחוק גורף, וטבלת השוואה מובנית. |
+| `/blog/returning-to-israel-after-relocation-relationship` | `src/data/posts.json` | `aeo/controlled-pilot` | מענה ממוקד לשאלת "הלם תרבות הפוך" עם מקור מחקרי סמכותי יבסס מובילות בנישה | הוספת `directAnswer` מסויג ("עשויה לסייע להתארגן מחדש"), `updatedAt: "2026-09-16"`, מחקר אמפירי בביקורת עמיתים (Sussman, 2002) המובחן מההמלצות הזוגיות המעשיות. |
 
 ---
 
@@ -48,16 +49,16 @@
 
 ### קוד ותוכן:
 - `src/pages/Services/Gifted/GiftedParentingPage.tsx` (הטמעת FAQPage ובלוק מאמרי מחוננות מקושרים)
-- `src/data/posts.json` (הטמעת `directAnswer`, `updatedAt`, טבלה ומקורות מאומתים ב-3 מאמרי הפיילוט)
+- `src/data/posts.json` (הטמעת `directAnswer`, `updatedAt: "2026-09-16"`, טבלה ומקורות מאומתים ב-3 מאמרי הפיילוט)
 - `src/data/postSummaries.json`, `public/sitemap.xml`, `public/llms-full.txt`, `public/rss.xml` (סנכרון מלא באמצעות `npm run generate`)
 
 ---
 
 ## 4. תוצאות אימות טכני ובדיקות דפדפן (Technical Verification & Browser QA)
 
-- **[VERIFIED] שלמות מקורות וראיות (Source Integrity):** 100% מהמקורות ב-`evidence` נבדקו ונמצאו מחזירים HTTP 200 (קישורי 404 תוקנו, כולל קישור למרחב הפדגוגי של משרד החינוך ומחקר Sussman 2002 ב-Elsevier/IJIR).
-- **[VERIFIED] סכמות ונתוני תוכן:** `scripts/validate-content.cjs` עבר בהצלחה מלאה ללא שגיאות. תגיות `lastmod` ב-`public/sitemap.xml` עודכנו בדיוק עבור 3 המאמרים ל-`2026-09-15`.
-- **[VERIFIED] בדיקות יחידה וסמכות:** כל 18 קובצי בדיקות ה-Vitest (77 בדיקות) עברו בהצלחה.
+- **[VERIFIED] שלמות מקורות וראיות (Source Integrity):** 100% מהמקורות ב-`evidence` נבדקו ונמצאו מחזירים HTTP 200 (קישורי 404 תוקנו, כולל קישור למרחב הפדגוגי של משרד החינוך, מחקר סקירה אקדמי של Foley-Nicpon et al. 2011, ומחקר Sussman 2002 ב-Elsevier/IJIR).
+- **[VERIFIED] סכמות ונתוני תוכן:** `scripts/validate-content.cjs` עבר בהצלחה מלאה ללא שגיאות. תגיות `lastmod` ב-`public/sitemap.xml` עודכנו בדיוק עבור 3 המאמרים ל-`2026-09-16`.
+- **[VERIFIED] בדיקות יחידה וסמכות:** כל 18 קובצי בדיקות ה-Vitest (86 בדיקות) עברו בהצלחה מלאה.
 - **[VERIFIED] בדיקות מדיניות וידאו ובקרים:** 123 בדיקות פייתון עברו בהצלחה מלאה.
 - **[VERIFIED] בדיקות דפדפן חיות (Browser QA via Playwright):** נבדקו 8 עמודים מייצגים (דף הבית, אודות, מאמר רגיל, וכל 5 עמודי הפיילוט) הן בתצוגת Desktop (1280x800) והן בתצוגת Mobile (390x844). כל 16 הבדיקות אישרו:
   * סטטוס HTTP 200 בכל העמודים.
