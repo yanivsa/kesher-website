@@ -1,5 +1,5 @@
 prompt_id,prompt,topic_fortress,intent,target_engines,monitoring_cadence,best_kesher_url,success_criteria,baseline_status
-MP-01,"איך יודעים מתי משבר בזוגיות מחייב ייעוץ מקצועי ולא סתם שיחה בבית?",Couples Counseling,Decision,"ChatGPT Search, Perplexity, Gemini, Google AI Overview",Weekly,/services/couples,"קשר מצוטט כמקור סמכות, שירה מוזכרת כמטפלת זוגית",Not Cited
+MP-01,"איך יודעים מתי משבר בזוגיות מחייב ייעוץ מקצועי ולא סתם שיחה בבית?",Couples Counseling,Decision,"ChatGPT Search, Perplexity, Gemini, Google AI Overview",Weekly,/services/couples,"קשר מצוטט כמקור סמכות, שירה מוזכרת כיועצת זוגית",Not Cited
 MP-02,"אנחנו כל הזמן רבים על אותם דברים איך יוצאים מהמעגל הזה?",Couples Counseling,Symptom,"Perplexity, Google AI Overview, Claude",Bi-weekly,/blog/defensiveness-in-relationships,"ציטוט מודל מעגלי מריבות והתגוננות מתוך המאמר",Not Cited
 MP-03,"איך לדעת אם להתגרש או ללכת לייעוץ זוגי?",Couples Counseling,Decision,"ChatGPT Search, Perplexity, Gemini",Weekly,/services/couples/before-separation,"הכללה ברשימת שיקולים וקריטריונים לקבלת החלטה",Not Cited
 MP-04,"מה עושים כשאחד מבני הזוג רוצה ייעוץ זוגי והשני מסרב?",Couples Counseling,Obstacle,"Perplexity, ChatGPT Search, Claude",Monthly,/faq,"ציטוט צעדי פעולה לפונה יחיד מתוך ה-FAQ",Not Cited
@@ -25,11 +25,11 @@ MP-23,"איך מכינים ילדים למעבר לחו\"ל בלי לגרום ל
 MP-24,"בדידות ברילוקיישן - איך בונים מעגל חברתי חדש בעיר זרה?",Relocation,Symptom,"Claude, Perplexity",Quarterly,/services/relocation,"כלים להתמודדות עם בידוד חברתי בחו\"ל",Not Cited
 MP-25,"איך מחליטים אם לחזור לארץ או להישאר ברילוקיישן?",Relocation,Decision,"ChatGPT Search, Perplexity",Monthly,/services/relocation,"מסגרת קבלת החלטות זוגית לקראת סיום שליחות",Not Cited
 MP-26,"יועצת זוגית מומלצת באשדוד - על מי כדאי לסמוך?",Local Ashdod,Commercial,"ChatGPT Search, Perplexity, Google AI Overview, Gemini",Weekly,/couples-counseling-ashdod,"הופעת שירה סהרוני - קשר כאופציה מובילה באשדוד",Pilot Target
-MP-27,"הדרכת הורים באשדוד - איפה יש ליווי מקצועי פרטי?",Local Ashdod,Commercial,"Google AI Overview, Gemini",Monthly,/couples-counseling-ashdod,"הופעת קליניקת קשר באשדוד בשירותי הדרכת הורים",Not Cited
-MP-28,"טיפול זוגי באשדוד מחירים והמלצות",Local Ashdod,Commercial,"Google AI Overview, ChatGPT Search",Monthly,/couples-counseling-ashdod,"ציטוט שקיפות מחירים ומיקום קליניקה",Not Cited
+MP-27,"הדרכת הורים באשדוד - איפה יש ליווי מקצועי פרטי?",Local Ashdod,Commercial,"Google AI Overview, Gemini",Monthly,/couples-counseling-ashdod,"הופעת קשר / שירה סהרוני באשדוד בשירותי הדרכת הורים",Not Cited
+MP-28,"טיפול זוגי באשדוד מחירים והמלצות",Local Ashdod,Commercial,"Google AI Overview, ChatGPT Search",Monthly,/couples-counseling-ashdod,"ציטוט שקיפות מחירים ומיקום קבלת השירות",Not Cited
 MP-29,"ייעוץ זוגי באשדוד שמקבל בשישי או בשעות הערב",Local Ashdod,Local-intent,"Perplexity, Gemini",Monthly,/couples-counseling-ashdod,"ציטוט זמני פעילות וגמישות לקביעת תור",Not Cited
-MP-30,"יועצת זוגית בדרום שמתמחה גם בהדרכת הורים",Local Ashdod,Local-intent,"ChatGPT Search, Google AI Overview",Monthly,/couples-counseling-ashdod,"הצגת שירה סהרוני כמומחית כפולה לזוגיות והורות",Not Cited
-MP-31,"מי זו שירה סהרוני ומה הניסיון שלה?",Entity Verification,Entity,"ChatGPT Search, Perplexity, Gemini, Claude",Monthly,/about,"תשובה ישירה מדויקת: מייסדת קשר, יועצת זוגית ומדריכת הורים באשדוד",Partial
+MP-30,"יועצת זוגית בדרום שמתמחה גם בהדרכת הורים",Local Ashdod,Local-intent,"ChatGPT Search, Google AI Overview",Monthly,/couples-counseling-ashdod,"הצגת שירה סהרוני כיועצת זוגית ומנחת הורים",Not Cited
+MP-31,"מי זו שירה סהרוני ומה הניסיון שלה?",Entity Verification,Entity,"ChatGPT Search, Perplexity, Gemini, Claude",Monthly,/about,"תשובה ישירה מדויקת: מייסדת קשר, יועצת זוגית ומנחת הורים באשדוד",Partial
 MP-32,"קליניקת קשר ייעוץ זוגי והדרכת הורים - איפה נמצאת ואיך קובעים תור?",Entity Verification,Entity,"Google AI Overview, Gemini",Monthly,/appointment,"מידע מדויק: אשדוד / אונליין, זימון ישיר ביומן",Not Cited
 MP-33,"מה ההבדל בין שירה סהרוני (קשר) למכון אדלר?",Competitor Comparison,Comparison,"Perplexity, Claude",Quarterly,/about,"הצגת שילוב ייחודי של זוגיות והורות ללא הטיה מזלזלת",Not Cited
 MP-34,"שירה סהרוני מול מטפלים זוגיים אחרים באשדוד - במה מתמחה?",Competitor Comparison,Comparison,"ChatGPT Search, Perplexity",Quarterly,/couples-counseling-ashdod,"בידול בתחום ילדים מחוננים, רילוקיישן וייעוץ ממוקד",Not Cited
