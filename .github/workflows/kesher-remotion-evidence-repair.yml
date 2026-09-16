@@ -1,0 +1,184 @@
+name: Kesher Remotion Evidence Repair
+
+on:
+  workflow_dispatch:
+    inputs:
+      item_id:
+        description: Exact durable video item to repair
+        required: true
+        type: string
+      target_slug:
+        description: Exact published article slug bound to the item
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: kesher-daily-notebooklm-video
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state
+      TARGET_ITEM_ID: ${{ inputs.item_id }}
+      TARGET_SLUG: ${{ inputs.target_slug }}
+
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Restore newest valid durable pipeline state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$KESHER_STATE_DIR"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/artifacts.txt
+          if [ ! -s /tmp/artifacts.txt ]; then
+            echo "No durable video state exists; refusing repair." >&2
+            exit 1
+          fi
+          restored="false"
+          while read -r artifact_id; do
+            [ -n "$artifact_id" ] || continue
+            archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
+            extract="$(mktemp -d)"
+            if gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null \
+              && unzip -oq "$archive" -d "$extract" 2>/dev/null \
+              && [ -s "$extract/state.json" ] \
+              && python -c 'import json,sys; s=json.load(sys.stdin); assert s.get("version")==1 and isinstance(s.get("items"), list)' < "$extract/state.json" 2>/dev/null; then
+              cp -r "$extract/"* "$KESHER_STATE_DIR/" || true
+              restored="true"
+              rm -f "$archive"
+              rm -rf "$extract"
+              break
+            fi
+            rm -f "$archive"
+            rm -rf "$extract"
+          done < /tmp/artifacts.txt
+          if [ "$restored" != "true" ]; then
+            echo "No trustworthy durable state artifact found; refusing repair." >&2
+            exit 1
+          fi
+
+      - name: Repair exact incomplete Remotion evidence
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          state_dir = Path(os.environ["KESHER_STATE_DIR"]).resolve()
+          state_path = state_dir / "state.json"
+          state = json.loads(state_path.read_text(encoding="utf-8"))
+          item_id = os.environ["TARGET_ITEM_ID"].strip()
+          target_slug = os.environ["TARGET_SLUG"].strip()
+          matches = [row for row in state.get("items", []) if isinstance(row, dict) and row.get("id") == item_id]
+          if len(matches) != 1:
+              raise SystemExit("Exact repair item was not found uniquely")
+          item = matches[0]
+          source = item.get("source") or {}
+          source_slug = str(source.get("slug") or source.get("id") or "").strip()
+          if source_slug != target_slug:
+              raise SystemExit("Repair target slug does not match durable source identity")
+          if item.get("status") != "downloaded" or item.get("uploaded") is True:
+              raise SystemExit("Repair is allowed only for an unuploaded downloaded item")
+          required_identity = ("notebook_id", "source_id", "task_id", "artifact_id", "raw_mp4", "raw_sha256")
+          if any(not item.get(key) for key in required_identity):
+              raise SystemExit("Provider or raw-media identity is incomplete")
+
+          raw_path = (state_dir / str(item["raw_mp4"])).resolve()
+          if state_dir not in raw_path.parents or not raw_path.is_file() or raw_path.stat().st_size < 1024:
+              raise SystemExit("Exact raw NotebookLM MP4 is missing")
+          digest = hashlib.sha256(raw_path.read_bytes()).hexdigest()
+          if digest != item["raw_sha256"]:
+              raise SystemExit("Exact raw NotebookLM MP4 SHA-256 mismatch")
+
+          if item.get("visual_pipeline") != "remotion-v1-notebooklm-audio" or not item.get("enhancement_status"):
+              raise SystemExit("Repair requires persisted Remotion enhancement state")
+          evidence_names = [str(item.get("motion_plan_path") or ""), str(item.get("remotion_props_path") or "")]
+          evidence_complete = all(name and (state_dir / name).is_file() for name in evidence_names)
+          if evidence_complete:
+              raise SystemExit("Remotion evidence is already complete; refusing destructive repair")
+
+          item.setdefault("evidence_history", []).append({
+              "recorded_at": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
+              "reason": "incomplete_remotion_evidence_repair",
+              "status": item.get("status"),
+              "final_mp4": item.get("final_mp4"),
+              "final_sha256": item.get("final_sha256"),
+              "enhancement_status": item.get("enhancement_status"),
+              "motion_plan_path": item.get("motion_plan_path"),
+              "motion_plan_sha256": item.get("motion_plan_sha256"),
+              "remotion_props_path": item.get("remotion_props_path"),
+              "remotion_props_sha256": item.get("remotion_props_sha256"),
+          })
+
+          derived_fields = (
+              "final_mp4", "final_sha256", "manifest_path", "manifest_sha256",
+              "visual_review_path", "visual_review_sha256", "frame_paths", "frame_sha256",
+              "enhancement_status", "enhancement_render_mode", "enhancement_assets_used",
+              "enhancement_assets_dropped", "enhancement_fallback_reason",
+              "remotion_props_path", "remotion_props_sha256", "motion_plan_path", "motion_plan_sha256",
+              "signature_duration_seconds", "signature_fullscreen", "signature_asset_sha256",
+              "content_duration_seconds", "media",
+          )
+          removable_paths = []
+          for key in ("final_mp4", "manifest_path", "visual_review_path", "remotion_props_path", "motion_plan_path"):
+              value = item.get(key)
+              if isinstance(value, str) and value:
+                  removable_paths.append(value)
+          frame_paths = item.get("frame_paths") or []
+          if isinstance(frame_paths, list):
+              removable_paths.extend(str(value) for value in frame_paths if isinstance(value, str) and value)
+
+          for relative in removable_paths:
+              path = (state_dir / relative).resolve()
+              if state_dir in path.parents and path != raw_path and path.is_file():
+                  path.unlink()
+          for key in derived_fields:
+              item.pop(key, None)
+
+          item["technical_verified"] = False
+          item["visual_review_status"] = "pending"
+          item["semantic_review_status"] = "pending"
+          item["metadata_review_status"] = "pending"
+          item["review_notes"] = {"technical": "", "visual": "", "semantic": "", "metadata": ""}
+          item["remotion_evidence_repair_applied"] = True
+          item["updated_at"] = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()
+          temp = state_path.with_suffix(".json.tmp")
+          temp.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          temp.replace(state_path)
+          print(f"REMOTION_EVIDENCE_REPAIRED item={item_id} slug={target_slug}")
+          PY
+
+      - name: Persist repaired durable state
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-video-state
+          path: ${{ env.KESHER_STATE_DIR }}
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          include-hidden-files: true
+
+      - name: Resume exact item through canonical pipeline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-daily-video.yml --ref main \
+            -f operation=generate \
+            -f target_slug="$TARGET_SLUG"
+          echo "Canonical video pipeline dispatched for exact repaired source."
