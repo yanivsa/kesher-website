@@ -1,7 +1,7 @@
 {
   "commands": {
     "ksr-712e03f65f24aa41cbbaa229": {
-      "acknowledged_at": "2026-09-16T00:48:55.742724+00:00",
+      "acknowledged_at": "2026-09-16T01:24:05.083434+00:00",
       "command_id": "ksr-712e03f65f24aa41cbbaa229",
       "evidence_hash": "6a60b7be8e2b229099831ba39d520be377ea21fde45fdf82ad08dfb0f1d9a4c1",
       "exact": {
@@ -23,6 +23,8 @@
       "metadata": {
         "dispatch": "issued",
         "dispatched_at": "2026-09-16T00:44:30.625577+00:00",
+        "external_run_id": 35043895173,
+        "external_workflow": "Kesher Daily NotebookLM Video Overview",
         "run_id": 35041254709,
         "workflow": "kesher-content-controller.yml"
       },
@@ -30,7 +32,7 @@
       "running_at": "2026-09-16T00:48:55.742724+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-16T00:48:55.742724+00:00"
+      "updated_at": "2026-09-16T01:24:05.083434+00:00"
     }
   },
   "incidents": {
@@ -48,12 +50,12 @@
         }
       ],
       "incident_id": "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video",
-      "last_seen_at": "2026-09-16T00:48:55.742724+00:00",
+      "last_seen_at": "2026-09-16T01:24:05.083434+00:00",
       "marker": "MASTER_ESCALATION fingerprint=bb0e4ac04a5e8f96ad50a84b0ed62316 strike=1 stage=S1",
       "status": "recovering",
       "strike": 1
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-16T00:48:55.742724+00:00"
+  "updated_at": "2026-09-16T01:24:05.083434+00:00"
 }
