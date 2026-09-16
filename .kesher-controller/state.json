@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-16",
-  "status": "long_video_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T07:59:21.195823+00:00",
+    "live_verified_at": "2026-09-16T08:06:50.760735+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -932,30 +932,13 @@
       "archived_at": "2026-09-15T22:18:07.866804+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "long_video",
+    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
+    "message": "video exhausted 3 total controller dispatch attempts",
+    "at": "2026-09-16T08:08:58.981118+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-13T00:55:04.099926+00:00",
-      "from": "article_generating",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 804
-      }
-    },
-    {
-      "at": "2026-09-13T05:49:30.099687+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 34729194232 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-13T05:54:30.099647+00:00",
-        "failure_streak": 1,
-        "run_id": 34729194232
-      }
-    },
     {
       "at": "2026-09-13T10:45:03.727756+00:00",
       "from": "image_retry_wait",
@@ -1803,9 +1786,24 @@
         "operation": "upload",
         "resume": 4
       }
+    },
+    {
+      "at": "2026-09-16T08:06:50.760754+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T08:08:58.981141+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-16T08:00:27.051333+00:00",
+  "updated_at": "2026-09-16T08:08:58.981148+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1820,7 +1818,7 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
