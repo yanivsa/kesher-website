@@ -70,6 +70,15 @@ class VideoUploadGuardTests(unittest.TestCase):
         self.assertEqual(selected["id"], "video-older")
 
 
+    def test_mislabeled_long_video_is_not_forced_through_short_signature_gate(self) -> None:
+        item = technical_item()
+        item.update({
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "visual_pipeline": "remotion-v1-notebooklm-audio",
+        })
+        guard.validate_candidate(item)
+
     def test_short_candidate_passes_with_verified_signature_video(self) -> None:
         item = technical_item()
         item.update({
