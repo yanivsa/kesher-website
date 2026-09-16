@@ -1,60 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-16",
-  "status": "blocked",
+  "cycle": "2026-09-17",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 2,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35034357533,
-    "processed_run_id": 35030279608,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
-    },
-    "attempts": 2,
+    "failure_count_by_type": {},
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
-    "last_dispatch_at": "2026-09-15T23:09:13.086196+00:00",
-    "watchdog": {
-      "identity": "2026-09-16",
-      "session_id": "sessions/12419577459478167122",
-      "last_progress_at": "2026-09-15T23:13:01.954755+00:00",
-      "last_fingerprint": "8dd7173f2430ea9e5358e73388c8d3d8670832c88e2a9be740bd6a97b75a66e1",
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "last_run_conclusion": "failure",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-09-16",
-      "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "retryable": true,
-      "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-      "session_id": "sessions/1411980193888685833",
-      "pr_url": "",
-      "github_run_id": "35030279608",
-      "completed_at": "2026-09-15T22:56:57.574287+00:00"
-    },
-    "last_jules_session_id": "sessions/1411980193888685833",
-    "last_failed_run_id": 35030279608,
-    "quality_status": "passed",
-    "quality_content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
-    "quality_checked_at": "2026-09-16T19:42:04.488091+00:00",
-    "quality_violations": [],
-    "slug": "fights-before-wedding",
-    "title": "ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
-    "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
-    "published_date": "2026-09-16",
-    "live": true,
-    "live_verified_at": "2026-09-16T19:43:53.210523+00:00",
-    "next_deploy_retry_at": null
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -930,170 +891,69 @@
         "next_deploy_retry_at": null
       },
       "archived_at": "2026-09-15T22:18:07.866804+00:00"
+    },
+    {
+      "cycle": "2026-09-16",
+      "status": "blocked",
+      "article": {
+        "attempt_count": 2,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 35034357533,
+        "processed_run_id": 35030279608,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {
+          "JULES_TIMEOUT_SESSION_ACTIVE": 1
+        },
+        "attempts": 2,
+        "deploy_attempts": 0,
+        "normalization_status": "pending",
+        "last_dispatch_at": "2026-09-15T23:09:13.086196+00:00",
+        "watchdog": {
+          "identity": "2026-09-16",
+          "session_id": "sessions/12419577459478167122",
+          "last_progress_at": "2026-09-15T23:13:01.954755+00:00",
+          "last_fingerprint": "8dd7173f2430ea9e5358e73388c8d3d8670832c88e2a9be740bd6a97b75a66e1",
+          "last_nudge_at": null,
+          "nudge_count": 0,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "last_run_conclusion": "failure",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-09-16",
+          "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+          "retryable": true,
+          "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+          "session_id": "sessions/1411980193888685833",
+          "pr_url": "",
+          "github_run_id": "35030279608",
+          "completed_at": "2026-09-15T22:56:57.574287+00:00"
+        },
+        "last_jules_session_id": "sessions/1411980193888685833",
+        "last_failed_run_id": 35030279608,
+        "quality_status": "passed",
+        "quality_content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
+        "quality_checked_at": "2026-09-16T19:42:04.488091+00:00",
+        "quality_violations": [],
+        "slug": "fights-before-wedding",
+        "title": "ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
+        "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
+        "published_date": "2026-09-16",
+        "live": true,
+        "live_verified_at": "2026-09-16T19:43:53.210523+00:00",
+        "next_deploy_retry_at": null
+      },
+      "archived_at": "2026-09-16T22:22:54.518810+00:00"
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-16T19:44:06.769913+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-14T23:34:22.171565+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 819
-      }
-    },
-    {
-      "at": "2026-09-15T01:52:04.699296+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 34909466524 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-15T01:57:04.699258+00:00",
-        "failure_streak": 1,
-        "run_id": 34909466524
-      }
-    },
-    {
-      "at": "2026-09-15T02:29:07.576685+00:00",
-      "from": "image_retry_wait",
-      "to": "article_deploying",
-      "reason": "deployment already active"
-    },
-    {
-      "at": "2026-09-15T02:32:51.667957+00:00",
-      "from": "article_deploying",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T02:33:02.818267+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 1
-      }
-    },
-    {
-      "at": "2026-09-15T05:33:04.653424+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T05:33:16.270678+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 2
-      }
-    },
-    {
-      "at": "2026-09-15T05:37:06.548302+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T05:37:12.259371+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-15T07:14:27.847321+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T07:15:01.393925+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 4
-      }
-    },
-    {
-      "at": "2026-09-15T09:48:18.048617+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T09:48:31.146900+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 5
-      }
-    },
-    {
-      "at": "2026-09-15T12:42:19.867003+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T12:42:33.735657+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-15T12:49:54.520656+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T12:50:08.691122+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-15T12:52:54.818400+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T12:53:08.853483+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-15T15:21:34.182547+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-15T15:21:48.790510+00:00",
       "from": "article_live",
@@ -1746,9 +1606,27 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-16T22:22:54.518857+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-16T22:22:54.518862+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-16T22:22:54.519710+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-16T19:44:06.769938+00:00",
+  "updated_at": "2026-09-16T22:22:54.518844+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1762,41 +1640,16 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "exhausted",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35108365822,
-    "processed_run_id": 35108365822,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "VIDEO_WORKFLOW_FAILED": 1
-    },
-    "overview_evidence_required": true,
-    "item_id": "video-20260916-204013-3ca2ce643c",
-    "last_dispatch_at": "2026-09-16T09:21:05.050353+00:00",
-    "resume_dispatches": 3,
-    "source_binding_exhaustion_recovery_applied": true,
-    "source_binding_recovery_previous": {
-      "attempt_count": 3,
-      "item_id": "video-20260916-083249-74040d54b5",
-      "provider_id": null,
-      "artifact_id": null,
-      "source_id": null,
-      "watchdog": {
-        "identity": "long_video:fights-before-wedding:28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b:video-20260916-033957-28471ea212",
-        "last_progress_at": "2026-09-16T00:39:00.214619+00:00",
-        "last_fingerprint": "c6ff24e5456f8a5801a31314569b71bad58536b345a85eb4411acedecf4b4887",
-        "recovery_count": 1,
-        "last_recovery_at": "2026-09-16T01:21:06.006518+00:00"
-      }
-    },
-    "artifact_id": null,
-    "source_id": null,
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 35078910831
+    "failure_count_by_type": {}
   },
   "short": {
     "attempt_count": 0,
@@ -1812,42 +1665,5 @@
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/fights-before-wedding",
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "interventions": {
-    "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video": {
-      "pipeline_id": "v5",
-      "slug": "fights-before-wedding",
-      "content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
-      "stage": "long_video",
-      "strike_count": 3,
-      "last_check_token": "2026-09-16T09",
-      "last_fingerprint": "849197fe83688c7f08199d00ae822cc51a4f857b439c6bd3cd4d21af2b4ea0a4",
-      "last_controller_action_token": "recovery:1:2026-09-16T01:21:06.006518+00:00",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-09-16T06:12:24.770285+00:00",
-      "last_action": "direct_takeover",
-      "direct_takeover_required": true,
-      "last_controller_action_at": "2026-09-16T01:21:06.006518+00:00"
-    }
-  },
-  "direct_takeover_required": {
-    "pipeline_id": "v5",
-    "incident_key": "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video",
-    "strike": 3,
-    "stage": "long_video",
-    "slug": "fights-before-wedding",
-    "content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
-    "item_id": "video-20260916-033957-28471ea212",
-    "task_id": "c6125d93-a18d-4a47-b74e-12be7f6aeb9f",
-    "required": true
   }
 }
