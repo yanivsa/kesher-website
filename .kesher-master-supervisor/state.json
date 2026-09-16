@@ -1,6 +1,7 @@
 {
   "commands": {
     "ksr-712e03f65f24aa41cbbaa229": {
+      "acknowledged_at": "2026-09-16T00:44:30.625577+00:00",
       "command_id": "ksr-712e03f65f24aa41cbbaa229",
       "evidence_hash": "6a60b7be8e2b229099831ba39d520be377ea21fde45fdf82ad08dfb0f1d9a4c1",
       "exact": {
@@ -18,12 +19,16 @@
       "fingerprint": "bb0e4ac04a5e8f96ad50a84b0ed62316",
       "incident_id": "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video",
       "issued_at": "2026-09-16T00:44:07.470680+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "issued",
+        "dispatched_at": "2026-09-16T00:44:30.625577+00:00",
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-16T00:44:07.470680+00:00"
+      "updated_at": "2026-09-16T00:44:30.625577+00:00"
     }
   },
   "incidents": {
@@ -48,5 +53,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-16T00:44:07.470680+00:00"
+  "updated_at": "2026-09-16T00:44:30.625577+00:00"
 }
