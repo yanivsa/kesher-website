@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-16",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T08:06:50.760735+00:00",
+    "live_verified_at": "2026-09-16T08:16:00.989431+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -935,18 +935,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-13T14:43:26.586448+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 34752659590 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-13T14:58:26.586417+00:00",
-        "failure_streak": 2,
-        "run_id": 34752659590
-      }
-    },
-    {
       "at": "2026-09-13T17:44:21.180646+00:00",
       "from": "image_retry_wait",
       "to": "article_image_running",
@@ -1801,9 +1789,19 @@
         ],
         "attempt_budget_reset": true
       }
+    },
+    {
+      "at": "2026-09-16T08:16:48.329104+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "upload",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-09-16T08:10:24.472162+00:00",
+  "updated_at": "2026-09-16T08:16:48.329111+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1817,8 +1815,8 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1828,9 +1826,9 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": null,
-    "last_dispatch_at": null,
-    "resume_dispatches": 0,
+    "item_id": "video-20260916-083249-74040d54b5",
+    "last_dispatch_at": "2026-09-16T08:16:48.329097+00:00",
+    "resume_dispatches": 1,
     "source_binding_exhaustion_recovery_applied": true,
     "source_binding_recovery_previous": {
       "attempt_count": 3,
