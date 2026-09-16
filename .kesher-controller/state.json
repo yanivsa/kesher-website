@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T17:46:40.889245+00:00",
+    "live_verified_at": "2026-09-16T19:43:53.210523+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -936,28 +936,9 @@
     "stage": "long_video",
     "code": "VIDEO_ATTEMPTS_EXHAUSTED",
     "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-16T17:47:17.229676+00:00"
+    "at": "2026-09-16T19:44:06.769913+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-14T22:32:02.875803+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-14T23:28:41.913235+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 819,
-        "slot": "2026-09-15"
-      }
-    },
     {
       "at": "2026-09-14T23:34:22.171565+00:00",
       "from": "article_normalizing",
@@ -1750,9 +1731,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-16T19:43:53.210543+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T19:44:06.769931+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-16T17:47:17.229698+00:00",
+  "updated_at": "2026-09-16T19:44:06.769938+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
