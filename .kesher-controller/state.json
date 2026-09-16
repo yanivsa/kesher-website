@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T07:40:48.760565+00:00",
+    "live_verified_at": "2026-09-16T07:59:21.195823+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1787,9 +1787,25 @@
         "operation": "upload",
         "resume": 3
       }
+    },
+    {
+      "at": "2026-09-16T07:59:21.195838+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T08:00:27.051327+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "upload",
+        "resume": 4
+      }
     }
   ],
-  "updated_at": "2026-09-16T07:41:39.897772+00:00",
+  "updated_at": "2026-09-16T08:00:27.051333+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1803,7 +1819,7 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1815,8 +1831,8 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "item_id": "video-20260916-083249-74040d54b5",
-    "last_dispatch_at": "2026-09-16T07:41:39.897751+00:00",
-    "resume_dispatches": 3,
+    "last_dispatch_at": "2026-09-16T08:00:27.051320+00:00",
+    "resume_dispatches": 4,
     "watchdog": {
       "identity": "long_video:fights-before-wedding:28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b:video-20260916-033957-28471ea212",
       "last_progress_at": "2026-09-16T00:39:00.214619+00:00",
