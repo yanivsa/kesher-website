@@ -117,13 +117,10 @@ class V4RuntimeActivationTests(unittest.TestCase):
         self.assertIn("trimBefore={sourceStartFrame}", component)
         self.assertIn("durationInFrames={durationInFrames}", component)
 
-    def test_short_composition_preserves_source_and_appends_signature_outro(self):
+    def test_short_composition_preserves_source_duration_for_signature_overlay(self):
         root = SHORT_ROOT.read_text(encoding="utf-8")
-        self.assertIn("SHORT_SIGNATURE_OUTRO_FRAMES", root)
-        self.assertIn(
-            "durationInFrames: props.durationInFrames + SHORT_SIGNATURE_OUTRO_FRAMES",
-            root,
-        )
+        self.assertNotIn("SHORT_SIGNATURE_OUTRO_FRAMES", root)
+        self.assertIn("durationInFrames: props.durationInFrames", root)
         self.assertIn('videoSrc: "kesher-input.mp4"', root)
         self.assertIn("sourceStartFrame: 0", root)
 
