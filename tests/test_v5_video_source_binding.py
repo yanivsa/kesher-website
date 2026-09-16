@@ -87,6 +87,8 @@ class V5VideoSourceBindingTests(unittest.TestCase):
                 "operation": "rebuild",
                 "rebuild_item_id": "video-current",
                 "target_slug": "today-article",
+                "target_content_sha256": "cb7652284a7ccde8366884a377dc8991db1d7a66bbf5d647dc6814654aa0a705",
+                "target_item_id": "video-current",
             },
         )])
         self.assertEqual(state["long_video"]["attempt_count"], 1)

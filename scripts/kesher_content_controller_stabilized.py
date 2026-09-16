@@ -303,6 +303,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "operation": "rebuild",
             "rebuild_item_id": item_id,
             "target_slug": source["slug"],
+            "target_content_sha256": source["content_sha256"],
+            "target_item_id": item_id,
         }
         v5.core.GitHubClient.dispatch(self.github, v5.LONG_VIDEO_WORKFLOW, rebuild_inputs)
         current["attempt_count"] = count + 1
@@ -353,6 +355,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 "operation": "rebuild",
                 "rebuild_item_id": str(item.get("id") or ""),
                 "target_slug": source["slug"],
+                "target_content_sha256": source["content_sha256"],
+                "target_item_id": str(item.get("id") or ""),
             }
             if not rebuild_inputs["rebuild_item_id"]:
                 raise v5.core.ControllerError("REJECTED_LONG_VIDEO_ITEM_ID_MISSING")
