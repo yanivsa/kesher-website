@@ -29,7 +29,8 @@ class OptionalVideoEnrichmentContractTests(unittest.TestCase):
                 "source_mode": guard.CANONICAL_SHORT_SOURCE_MODE,
                 "visual_pipeline": guard.CANONICAL_SHORT_PIPELINE,
                 "signature_verified": True,
-                "signature_fullscreen": True,
+                "signature_fullscreen": False,
+                "signature_overlay": True,
                 "signature_duration_seconds": guard.SIGNATURE_DURATION_SECONDS,
                 "signature_video_sha256": "signature-video-sha256",
                 "enhancement": {
@@ -53,6 +54,30 @@ class OptionalVideoEnrichmentContractTests(unittest.TestCase):
             deliverables["short_youtube_url"],
             "https://youtu.be/short123",
         )
+
+    def test_signature_overlay_is_inside_source_timeline_not_appended(self) -> None:
+        stage = {
+            "verified": True,
+            "youtube_url": "https://youtu.be/overview123",
+            "overview_evidence_required": True,
+            "technical_verified": True,
+            "visual_pipeline": guard.CANONICAL_OVERVIEW_PIPELINE,
+            "codec": "h264",
+            "width": 1280,
+            "height": 720,
+            "content_duration_seconds": 120.0,
+            "duration": 120.0,
+            "signature_duration_seconds": guard.SIGNATURE_DURATION_SECONDS,
+            "signature_fullscreen": False,
+            "signature_overlay": True,
+            "signature_asset_sha256": "signature-asset-sha256",
+        }
+
+        self.assertTrue(guard.overview_edit_verified(stage))
+
+        appended = dict(stage)
+        appended["duration"] = 123.0
+        self.assertFalse(guard.overview_edit_verified(appended))
 
 
 if __name__ == "__main__":
