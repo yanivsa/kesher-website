@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T09:10:16.373770+00:00",
+    "live_verified_at": "2026-09-16T09:19:30.542729+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -935,18 +935,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-13T21:42:56.574333+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-13T21:42:56.574339+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
       "at": "2026-09-13T21:42:56.575104+00:00",
       "from": "article_needed",
       "to": "v5_migrated",
@@ -1793,9 +1781,25 @@
         "operation": "upload",
         "resume": 2
       }
+    },
+    {
+      "at": "2026-09-16T09:19:30.542751+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T09:21:05.050361+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "upload",
+        "resume": 3
+      }
     }
   ],
-  "updated_at": "2026-09-16T09:10:34.359574+00:00",
+  "updated_at": "2026-09-16T09:21:05.050368+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1809,7 +1813,7 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1821,8 +1825,8 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "item_id": "video-20260916-083249-74040d54b5",
-    "last_dispatch_at": "2026-09-16T09:10:34.359550+00:00",
-    "resume_dispatches": 2,
+    "last_dispatch_at": "2026-09-16T09:21:05.050353+00:00",
+    "resume_dispatches": 3,
     "source_binding_exhaustion_recovery_applied": true,
     "source_binding_recovery_previous": {
       "attempt_count": 3,
