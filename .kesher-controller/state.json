@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-16",
-  "status": "blocked",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T13:25:28.650346+00:00",
+    "live_verified_at": "2026-09-16T14:24:47.760262+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -932,33 +932,8 @@
       "archived_at": "2026-09-15T22:18:07.866804+00:00"
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-16T13:25:54.712779+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-14T09:35:26.265360+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 808,
-        "slot": "2026-09-14"
-      }
-    },
-    {
-      "at": "2026-09-14T09:55:39.677235+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 808,
-        "slot": "2026-09-14"
-      }
-    },
     {
       "at": "2026-09-14T09:59:40.594428+00:00",
       "from": "article_normalizing",
@@ -1770,9 +1745,21 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-16T14:24:47.760280+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T14:25:00.943468+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-16T13:25:54.712805+00:00",
+  "updated_at": "2026-09-16T14:25:00.943492+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1787,10 +1774,10 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "downloaded",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35100805967,
+    "run_id": 35108365822,
     "processed_run_id": 35100805967,
     "provider_id": null,
     "failure_fingerprint": null,
