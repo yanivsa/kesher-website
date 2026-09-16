@@ -239,7 +239,8 @@ def export_target(item: dict[str, Any] | None) -> None:
         return
     target_id = str(item.get("id") or "").strip()
     slug = source_slug(item)
-    if not target_id and not slug:
+    content_sha256 = str((item.get("source") or {}).get("content_sha256") or "").strip()
+    if not target_id and not slug and not content_sha256:
         return
     env_path = os.environ.get("GITHUB_ENV")
     if env_path:
@@ -247,6 +248,8 @@ def export_target(item: dict[str, Any] | None) -> None:
             with open(env_path, "a", encoding="utf-8") as f:
                 if target_id:
                     f.write(f"TARGET_ITEM_ID={target_id}\n")
+                if content_sha256:
+                    f.write(f"TARGET_CONTENT_SHA256={content_sha256}\n")
                 if slug and not os.environ.get("TARGET_SLUG"):
                     f.write(f"TARGET_SLUG={slug}\n")
         except OSError:
@@ -416,24 +419,49 @@ def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) ->
     return True
 
 
-def prepare_upload(target_slug: str | None = None) -> int:
+def prepare_upload(
+    target_slug: str | None = None,
+    content_sha256: str | None = None,
+    item_id: str | None = None,
+) -> int:
     state = pipeline.load_state()
     unresolved = unresolved_items(state)
-    target_item_id = (os.environ.get("TARGET_ITEM_ID") or "").strip()
-    target = (target_slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
-    if target_item_id:
+    target_item_id = (
+        item_id
+        or os.environ.get("KESHER_REQUESTED_TARGET_ITEM_ID")
+        or os.environ.get("TARGET_ITEM_ID")
+        or ""
+    ).strip()
+    target_content_sha256 = (
+        content_sha256
+        or os.environ.get("KESHER_REQUESTED_TARGET_CONTENT_SHA256")
+        or os.environ.get("TARGET_CONTENT_SHA256")
+        or ""
+    ).strip()
+    target = (
+        target_slug
+        or os.environ.get("KESHER_REQUESTED_TARGET_SLUG")
+        or os.environ.get("TARGET_SLUG")
+        or os.environ.get("DERIVE_SLUG")
+        or ""
+    ).strip()
+    exact_required = (os.environ.get("KESHER_EXACT_UPLOAD_REQUIRED") or "").strip().lower() == "true"
+    exact_requested = exact_required or bool(target_item_id or target_content_sha256)
+    if exact_requested:
+        if not all((target, target_content_sha256, target_item_id)):
+            raise pipeline.PipelineError(
+                "Exact identity lock requires target_slug, content_sha256, and target_item_id"
+            )
         exact = [
             item for item in unresolved
             if str(item.get("id") or "").strip() == target_item_id
+            and source_slug(item) == target
+            and str((item.get("source") or {}).get("content_sha256") or "").strip() == target_content_sha256
         ]
-        if exact and target and source_slug(exact[0]) != target:
+        if len(exact) != 1:
             raise pipeline.PipelineError(
-  f"Exact target item {target_item_id} belongs to {source_slug(exact[0])}, not {target}"
+                "Exact identity lock did not match exactly one unresolved video item"
             )
-        if not exact:
-            workflow_output("ready", "false")
-            print(f"VIDEO_RECONCILED_UPLOAD candidate=none target_item={target_item_id}")
-            return 0
         unresolved = exact
     elif target:
         unresolved = [item for item in unresolved if source_slug(item) == target]
@@ -632,12 +660,13 @@ def main() -> int:
     mode.add_argument("--adopt-long-form-state", metavar="STATE_PATH")
     parser.add_argument("--slug", default="")
     parser.add_argument("--content-sha256", default="")
+    parser.add_argument("--item-id", default="")
     parser.add_argument("--long-item-id", default="")
     args = parser.parse_args()
     if args.prepare_generation:
         return prepare_generation(args.slug)
     if args.prepare_upload:
-        return prepare_upload(args.slug)
+        return prepare_upload(args.slug, args.content_sha256, args.item_id)
     if args.adopt_long_form_state:
         return adopt_long_form_provider(args.adopt_long_form_state, args.slug, args.content_sha256, args.long_item_id)
     return release_without_short(str(args.release_without_short))

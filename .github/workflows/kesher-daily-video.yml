@@ -43,6 +43,14 @@ on:
         description: Exact article slug to generate video for
         required: false
         type: string
+      target_content_sha256:
+        description: Exact authoritative article content SHA-256 for upload identity lock
+        required: false
+        type: string
+      target_item_id:
+        description: Exact durable video item ID for upload identity lock
+        required: false
+        type: string
 
 permissions:
   actions: write
@@ -385,15 +393,20 @@ jobs:
         run: gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${REVIEW_ARTIFACT_ID}" || true
 
       - name: Prepare technically verified upload
+        id: prepare_upload
         if: ${{ !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
         env:
+          KESHER_REQUESTED_TARGET_SLUG: ${{ inputs.target_slug }}
+          KESHER_REQUESTED_TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
+          KESHER_REQUESTED_TARGET_ITEM_ID: ${{ inputs.target_item_id }}
+          KESHER_EXACT_UPLOAD_REQUIRED: ${{ inputs.operation == 'upload' }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-upload
 
       - name: Upload exact technically verified MP4
-        if: ${{ !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
+        if: ${{ !cancelled() && steps.prepare_upload.outputs.ready == 'true' && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
@@ -404,7 +417,32 @@ jobs:
             echo "YouTube OAuth secrets are incomplete; technical publication remains blocked." >&2
             exit 1
           fi
-          python -u scripts/kesher_daily_pipeline.py --upload-only
+          python - <<'PY'
+          import os
+          from scripts import kesher_daily_pipeline as pipeline
+          from scripts import kesher_video_reconcile as reconcile
+
+          target_slug = (os.environ.get("TARGET_SLUG") or "").strip()
+          target_sha = (os.environ.get("TARGET_CONTENT_SHA256") or "").strip()
+          target_item_id = (os.environ.get("TARGET_ITEM_ID") or "").strip()
+          if not all((target_slug, target_sha, target_item_id)):
+              raise SystemExit("EXACT_UPLOAD_IDENTITY_MISSING")
+          state = pipeline.load_state()
+          matches = [item for item in state.get("items", []) if str(item.get("id") or "").strip() == target_item_id]
+          if len(matches) != 1:
+              raise SystemExit("EXACT_UPLOAD_ITEM_NOT_UNIQUE")
+          item = matches[0]
+          item_sha = str((item.get("source") or {}).get("content_sha256") or "").strip()
+          if reconcile.source_slug(item) != target_slug or item_sha != target_sha:
+              raise SystemExit("EXACT_UPLOAD_IDENTITY_MISMATCH")
+          current = reconcile.current_source_snapshot(target_slug)
+          if current["content_sha256"] != target_sha:
+              raise SystemExit("EXACT_UPLOAD_SOURCE_CHANGED")
+          if item.get("technical_verified") is not True or item.get("status") not in {"approved", "uploading"}:
+              raise SystemExit("EXACT_UPLOAD_NOT_TECHNICALLY_READY")
+          print(f"EXACT_UPLOAD_IDENTITY_OK slug={target_slug} item={target_item_id} sha={target_sha[:12]}")
+          PY
+          python -u scripts/kesher_daily_pipeline.py --upload-only --slug "$TARGET_SLUG" --item-id "$TARGET_ITEM_ID"
 
       - name: Remove uploaded MP4 files after public verification
         if: ${{ success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild') }}
