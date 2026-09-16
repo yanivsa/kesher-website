@@ -78,6 +78,24 @@ def seed_exact_target(slug: str, content_sha256: str) -> dict[str, Any]:
         )
         return chosen
 
+    stale_same_slug = [
+        item for item in items
+        if isinstance(item, dict)
+        and (
+            item.get("type") == "video_overview"
+            or item.get("visual_pipeline") == "remotion-v1-notebooklm-audio"
+        )
+        and item.get("uploaded") is not True
+        and str(item.get("status") or "") in ACTIVE
+        and str((item.get("source") or {}).get("slug") or "") == source["slug"]
+        and str((item.get("source") or {}).get("content_sha256") or "") != source["content_sha256"]
+    ]
+    for stale in stale_same_slug:
+        stale["status"] = "superseded"
+        stale["superseded_reason"] = "stale_source_content_sha256"
+        stale["superseded_by_content_sha256"] = source["content_sha256"]
+        stale["updated_at"] = pipeline.utc_now()
+
     unrelated_unresolved = [
         item for item in items
         if isinstance(item, dict)

@@ -158,6 +158,60 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         self.assertEqual(chosen["type"], "video_overview")
         self.assertEqual(len(saved["items"]), 2)
 
+    def test_exact_seed_supersedes_stale_same_slug_hash_before_seeding_current_identity(self):
+        old_post = prior_article()
+        expected = pipeline.source_metadata(old_post)
+        stale = pipeline.new_item(expected)
+        stale.update({
+            "id": "video-stale-same-slug",
+            "type": "video_overview",
+            "status": "downloaded",
+        })
+        stale["source"] = dict(stale["source"])
+        stale["source"]["content_sha256"] = "f" * 64
+        state = {"version": 1, "items": [stale], "updated_at": None}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            posts_path = Path(tmp) / "posts.json"
+            state_dir = Path(tmp) / "state"
+            posts_path.write_text(json.dumps([old_post], ensure_ascii=False), encoding="utf-8")
+            state_dir.mkdir()
+            (state_dir / "state.json").write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
+            with mock.patch.object(pipeline, "POSTS_FILE", posts_path), mock.patch.object(
+                pipeline, "STATE_DIR", state_dir
+            ), mock.patch.object(pipeline, "STATE_FILE", state_dir / "state.json"):
+                chosen = exact_target.seed_exact_target(expected["slug"], expected["content_sha256"])
+                saved = json.loads((state_dir / "state.json").read_text(encoding="utf-8"))
+
+        self.assertNotEqual(chosen["id"], stale["id"])
+        self.assertEqual(chosen["source"]["content_sha256"], expected["content_sha256"])
+        self.assertEqual(saved["items"][0]["status"], "superseded")
+        self.assertEqual(saved["items"][0]["superseded_reason"], "stale_source_content_sha256")
+        self.assertEqual(saved["items"][0]["superseded_by_content_sha256"], expected["content_sha256"])
+        self.assertEqual(len(saved["items"]), 2)
+
+    def test_exact_seed_still_blocks_unrelated_active_long_video(self):
+        old_post = prior_article()
+        expected = pipeline.source_metadata(old_post)
+        other_source = dict(expected)
+        other_source["slug"] = "different-article"
+        other_source["id"] = "different-article"
+        other = pipeline.new_item(other_source)
+        other.update({"id": "video-other-active", "type": "video_overview", "status": "downloaded"})
+        state = {"version": 1, "items": [other], "updated_at": None}
+
+        with tempfile.TemporaryDirectory() as tmp:
+            posts_path = Path(tmp) / "posts.json"
+            state_dir = Path(tmp) / "state"
+            posts_path.write_text(json.dumps([old_post], ensure_ascii=False), encoding="utf-8")
+            state_dir.mkdir()
+            (state_dir / "state.json").write_text(json.dumps(state, ensure_ascii=False), encoding="utf-8")
+            with mock.patch.object(pipeline, "POSTS_FILE", posts_path), mock.patch.object(
+                pipeline, "STATE_DIR", state_dir
+            ), mock.patch.object(pipeline, "STATE_FILE", state_dir / "state.json"):
+                with self.assertRaisesRegex(pipeline.PipelineError, "unrelated unresolved video"):
+                    exact_target.seed_exact_target(expected["slug"], expected["content_sha256"])
+
     def test_recovery_workflow_is_exact_handoff_into_canonical_pipeline(self):
         workflow = RECOVERY_WORKFLOW_PATH.read_text(encoding="utf-8")
         self.assertIn("target_slug:", workflow)
