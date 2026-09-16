@@ -37,7 +37,7 @@
       "updated_at": "2026-09-16T02:34:36.238385+00:00"
     },
     "ksr-9fa0f6007d7f7efacbe455ab": {
-      "acknowledged_at": "2026-09-16T02:34:49.795547+00:00",
+      "acknowledged_at": "2026-09-16T03:32:04.427958+00:00",
       "command_id": "ksr-9fa0f6007d7f7efacbe455ab",
       "evidence_hash": "6a60b7be8e2b229099831ba39d520be377ea21fde45fdf82ad08dfb0f1d9a4c1",
       "exact": {
@@ -55,7 +55,7 @@
       "fingerprint": "bb0e4ac04a5e8f96ad50a84b0ed62316",
       "incident_id": "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video",
       "issued_at": "2026-09-16T02:34:36.238385+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "running",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-9fa0f6007d7f7efacbe455ab",
@@ -90,9 +90,10 @@
         "session_id": "sessions/18132703496351455343"
       },
       "proposed_action": "rebind_exact_source",
+      "running_at": "2026-09-16T03:32:04.427958+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-16T02:34:49.795547+00:00"
+      "updated_at": "2026-09-16T03:32:04.427958+00:00"
     }
   },
   "incidents": {
@@ -122,12 +123,12 @@
         }
       ],
       "incident_id": "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video",
-      "last_seen_at": "2026-09-16T02:34:36.238385+00:00",
+      "last_seen_at": "2026-09-16T03:32:04.427958+00:00",
       "marker": "MASTER_ESCALATION fingerprint=bb0e4ac04a5e8f96ad50a84b0ed62316 strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-16T02:34:49.795547+00:00"
+  "updated_at": "2026-09-16T03:32:04.427958+00:00"
 }
