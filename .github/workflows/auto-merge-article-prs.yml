@@ -44,7 +44,9 @@ jobs:
           import json
           with open("open-prs.json", encoding="utf-8") as fh:
               for pr in json.load(fh):
-                  print(pr["number"])
+                  title = pr.get("title") or ""
+                  if title.startswith("Publish Kesher article:"):
+                      print(pr["number"])
           PY
 
       - name: Sync, clean, repair, validate and publish article PRs
