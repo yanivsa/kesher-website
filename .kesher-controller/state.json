@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-16",
-  "status": "long_video_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T10:35:47.052749+00:00",
+    "live_verified_at": "2026-09-16T11:49:02.012492+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -932,28 +932,13 @@
       "archived_at": "2026-09-15T22:18:07.866804+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "long_video",
+    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
+    "message": "video exhausted 3 total controller dispatch attempts",
+    "at": "2026-09-16T11:50:09.303384+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-14T05:43:33.084403+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 808,
-        "slot": "2026-09-14"
-      }
-    },
-    {
-      "at": "2026-09-14T05:45:53.717225+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 808,
-        "slot": "2026-09-14"
-      }
-    },
     {
       "at": "2026-09-14T05:47:34.159105+00:00",
       "from": "article_normalizing",
@@ -1788,9 +1773,24 @@
       "details": {
         "retry_at": "2026-09-16T10:34:08.752156+00:00"
       }
+    },
+    {
+      "at": "2026-09-16T11:49:02.012510+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T11:50:09.303404+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-16T10:37:02.881275+00:00",
+  "updated_at": "2026-09-16T11:50:09.303410+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1805,7 +1805,7 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "rejected",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": "2026-09-16T10:34:08.752156+00:00",
     "run_id": 35078910831,
