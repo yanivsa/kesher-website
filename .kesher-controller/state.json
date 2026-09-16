@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-16",
-  "status": "article_generating",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -10,8 +10,8 @@
     "run_id": 35034357533,
     "processed_run_id": 35030279608,
     "provider_id": null,
-    "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
@@ -47,7 +47,14 @@
     "quality_status": "passed",
     "quality_content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
     "quality_checked_at": "2026-09-16T00:33:04.063310+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "fights-before-wedding",
+    "title": "ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
+    "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
+    "published_date": "2026-09-16",
+    "live": true,
+    "live_verified_at": "2026-09-16T00:37:46.585948+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -1721,9 +1728,25 @@
       "details": {
         "session_id": "sessions/12419577459478167122"
       }
+    },
+    {
+      "at": "2026-09-16T00:37:46.585966+00:00",
+      "from": "article_generating",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T00:38:26.840224+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-09-15T23:14:53.829843+00:00",
+  "updated_at": "2026-09-16T00:38:26.840232+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1737,8 +1760,8 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1747,7 +1770,10 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "item_id": "video-20260912-001402-ab5e30d8de",
+    "last_dispatch_at": "2026-09-16T00:38:26.840216+00:00",
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
