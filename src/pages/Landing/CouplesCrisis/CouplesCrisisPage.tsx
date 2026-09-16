@@ -299,7 +299,7 @@ const CouplesCrisisPage: React.FC = () => {
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>איך נראה התהליך בפועל?</h2>
             <p className={styles.sectionSubtitle}>
-              גישה מובנית, מכבדת ומעשית שנועדה לתת מענה מידי ולאפשר שינוי הדרגתי ויציב.
+              גישה מובנית, מכבדת ומעשית שנועדה לתת מענה ממוקד ולאפשר שינוי הדרגתי ויציב.
             </p>
           </div>
 
@@ -316,7 +316,7 @@ const CouplesCrisisPage: React.FC = () => {
               <div className={styles.stepNumber}>2</div>
               <h3 className={styles.stepTitle}>עצירת דפוסי הפגיעה</h3>
               <p className={styles.stepDesc}>
-                רכישת כלים מידיים לשיח אחר: איך לעצור ויכוח לפני שהוא מתפוצץ, איך להקשיב בלי להתגונן ואיך לבטא צורך בלי להאשים.
+                רכישת כלים מעשיים לשיח אחר: איך לעצור ויכוח לפני שהוא מתפוצץ, איך להקשיב בלי להתגונן ואיך לבטא צורך בלי להאשים.
               </p>
             </div>
 
@@ -430,6 +430,7 @@ const CouplesCrisisPage: React.FC = () => {
             <a href="/">דף הבית</a>
             <a href="/about">אודות</a>
             <a href="/services/couples">ייעוץ זוגי</a>
+            <a href="/couples-counseling-ashdod">ייעוץ זוגי באשדוד</a>
             <a href="/faq">שאלות נפוצות</a>
             <a href="/privacy">מדיניות פרטיות</a>
             <a href="/accessibility">הצהרת נגישות</a>

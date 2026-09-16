@@ -5,24 +5,40 @@ const { ROOT, STATIC_ROUTES, isPublishable, blogRoute } = require('./content-pol
 const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
 const routes = [...STATIC_ROUTES, ...posts.filter(isPublishable).map(blogRoute)];
 const errors = [];
+const hasNonAscii = (value) => /[^\x00-\x7F]/.test(value);
 
 for (const route of routes) {
+  const clean = route.replace(/^\//, '');
+  const isUnicodeBlogRoute = route.startsWith('/blog/') && hasNonAscii(route);
   const file = route === '/'
     ? path.join(ROOT, 'dist/index.html')
-    : path.join(ROOT, 'dist', `${route.replace(/^\//, '')}.html`);
+    : isUnicodeBlogRoute
+      ? path.join(ROOT, 'dist', clean, 'index.html')
+      : path.join(ROOT, 'dist', `${clean}.html`);
+
   if (!fs.existsSync(file)) {
     errors.push(`Missing prerendered route: ${route}`);
     continue;
   }
-  if (route !== '/' && fs.existsSync(path.join(ROOT, 'dist', route.replace(/^\//, ''), 'index.html'))) {
-    errors.push(`Route would force a trailing-slash redirect: ${route}`);
+
+  if (!isUnicodeBlogRoute && route !== '/' && fs.existsSync(path.join(ROOT, 'dist', clean, 'index.html'))) {
+    errors.push(`Unexpected directory-index route: ${route}`);
   }
+
   const html = fs.readFileSync(file, 'utf8');
   if (!/<h1[\s>]/.test(html)) errors.push(`Missing h1 in prerendered HTML: ${route}`);
   const descriptions = html.match(/<meta name="description"/g) || [];
   const canonicals = html.match(/<link rel="canonical"/g) || [];
   if (descriptions.length !== 1) errors.push(`Expected one description, found ${descriptions.length}: ${route}`);
   if (canonicals.length !== 1) errors.push(`Expected one canonical, found ${canonicals.length}: ${route}`);
+}
+
+const todaysUnicodeBlog = posts
+  .filter(isPublishable)
+  .map(blogRoute)
+  .filter((route) => route.startsWith('/blog/') && hasNonAscii(route));
+if (todaysUnicodeBlog.length === 0) {
+  console.warn('No Unicode blog routes were available to exercise the Cloudflare directory-index contract.');
 }
 
 const notFound = fs.readFileSync(path.join(ROOT, 'dist/404.html'), 'utf8');

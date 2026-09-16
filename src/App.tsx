@@ -62,6 +62,8 @@ const now = loadable(() => import('./pages/Now/NowPage'));
 const friends = loadable(() => import('./pages/Friends/FriendsPage'));
 const lectures = loadable(() => import('./pages/Lectures/LecturesPage'));
 const couplesCounselingAshdod = loadable(() => import('./pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage'));
+const parentingGuidanceAshdod = loadable(() => import('./pages/Landing/ParentingGuidanceAshdod/ParentingGuidanceAshdodPage'));
+const couplesMediationAshdod = loadable(() => import('./pages/Landing/CouplesMediationAshdod/CouplesMediationAshdodPage'));
 const couplesCrisis = loadable(() => import('./pages/Landing/CouplesCrisis/CouplesCrisisPage'));
 const couplesBeforeSeparation = loadable(() => import('./pages/Landing/CouplesBeforeSeparation/CouplesBeforeSeparationPage'));
 const thankYouBooked = loadable(() => import('./pages/ThankYou/ThankYouBookedPage'));
@@ -93,6 +95,8 @@ const { Page: AccessibilityPage } = accessibility;
 const { Page: PrivacyPolicy } = privacy;
 const { Page: TermsOfUse } = terms;
 const { Page: CouplesCounselingAshdodPage } = couplesCounselingAshdod;
+const { Page: ParentingGuidanceAshdodPage } = parentingGuidanceAshdod;
+const { Page: CouplesMediationAshdodPage } = couplesMediationAshdod;
 const { Page: CouplesCrisisPage } = couplesCrisis;
 const { Page: CouplesBeforeSeparationPage } = couplesBeforeSeparation;
 const { Page: ThankYouBookedPage } = thankYouBooked;
@@ -102,6 +106,8 @@ const { Page: NotFound } = notFound;
 const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/$/, home.preload],
   [/^\/couples-counseling-ashdod\/?$/, couplesCounselingAshdod.preload],
+  [/^\/parenting-guidance-ashdod\/?$/, parentingGuidanceAshdod.preload],
+  [/^\/couples-mediation-ashdod\/?$/, couplesMediationAshdod.preload],
   [/^\/services\/couples\/ashdod\/?$/, couplesCounselingAshdod.preload],
   [/^\/services\/couples\/crisis\/?$/, couplesCrisis.preload],
   [/^\/services\/couples\/before-separation\/?$/, couplesBeforeSeparation.preload],
@@ -145,6 +151,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/couples-counseling-ashdod" element={<CouplesCounselingAshdodPage />} />
+          <Route path="/parenting-guidance-ashdod" element={<ParentingGuidanceAshdodPage />} />
+          <Route path="/couples-mediation-ashdod" element={<CouplesMediationAshdodPage />} />
           <Route path="/services/couples/ashdod" element={<Navigate to="/couples-counseling-ashdod" replace />} />
           <Route path="/services/couples/crisis" element={<CouplesCrisisPage />} />
           <Route path="/services/couples/before-separation" element={<CouplesBeforeSeparationPage />} />

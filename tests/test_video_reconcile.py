@@ -511,6 +511,36 @@ class VideoReconcileTests(unittest.TestCase):
             self.assertIn(f"TARGET_ITEM_ID={replacement['id']}", content)
 
 
+    def test_prepare_upload_honors_exact_target_item_before_fifo_backlog(self) -> None:
+        current = post("current", "2026-08-19")
+        stale = post("stale", "2026-08-18")
+        self.write_posts([current, stale])
+
+        stale_item = pipeline.new_item(pipeline.source_metadata(stale))
+        stale_item.update({
+            "status": "rejected",
+            "technical_verified": False,
+            "review_notes": {"technical": "נפסל טכנית: stale failure"},
+        })
+        current_item = pipeline.new_item(pipeline.source_metadata(current))
+        technically_verified(current_item, status="rejected")
+        pipeline.save_state({
+            "version": 1,
+            "items": [stale_item, current_item],
+            "updated_at": pipeline.utc_now(),
+        })
+
+        with mock.patch.dict(os.environ, {"TARGET_ITEM_ID": current_item["id"]}, clear=False), mock.patch.object(
+            reconcile, "validate_upload_candidate"
+        ):
+            self.assertEqual(reconcile.prepare_upload(), 0)
+
+        saved = {item["id"]: item for item in pipeline.load_state()["items"]}
+        self.assertEqual(saved[current_item["id"]]["status"], "approved")
+        self.assertEqual(saved[current_item["id"]]["advisory_review_status_before_upload"], "rejected")
+        self.assertEqual(saved[stale_item["id"]]["status"], "rejected")
+
+
 if __name__ == "__main__":
     unittest.main()
 

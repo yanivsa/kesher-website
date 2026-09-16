@@ -37,6 +37,7 @@ jobs:
             tests.test_pipeline_v4 \
             tests.test_v4_runtime_activation \
             tests.test_v5_shared_video_controller \
+            tests.test_v5_video_source_binding \
             tests.test_v5_delivery_watchdog_contract \
             tests.test_kesher_optional_video_enrichment \
             tests.test_media_voice_policy_contract \

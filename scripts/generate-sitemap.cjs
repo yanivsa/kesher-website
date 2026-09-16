@@ -20,9 +20,16 @@ const serviceRoutes = new Set([
   '/services/late-singleness',
   '/services/finding-relationship',
   '/couples-counseling-ashdod',
+  '/parenting-guidance-ashdod',
+  '/couples-mediation-ashdod',
   '/services/couples/crisis',
   '/services/couples/before-separation',
   '/faq',
+]);
+const conversionLandingRoutes = new Set([
+  '/couples-counseling-ashdod',
+  '/parenting-guidance-ashdod',
+  '/couples-mediation-ashdod',
 ]);
 const noindexRoutes = new Set(['/thank-you-booked', '/thank-you-contact']);
 const buildSitemap = (posts) => {
@@ -37,7 +44,7 @@ const buildSitemap = (posts) => {
       route,
       lastmod: route === '/blog' ? newestPostDate : '',
       changefreq: route === '/' || route === '/blog' ? 'weekly' : legalRoutes.has(route) ? 'yearly' : 'monthly',
-      priority: route === '/' ? '1.0' : route === '/blog' ? '0.9' : serviceRoutes.has(route) ? '0.8' : '0.3',
+      priority: route === '/' ? '1.0' : conversionLandingRoutes.has(route) ? '0.95' : route === '/blog' ? '0.9' : serviceRoutes.has(route) ? '0.8' : '0.3',
     }));
   const postEntries = published.map((post) => ({
     route: blogRoute(post),

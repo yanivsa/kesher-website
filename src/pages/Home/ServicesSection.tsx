@@ -31,6 +31,12 @@ const services = [
 
 const specializations = [
   {
+    title: 'ייעוץ זוגי באשדוד והסביבה',
+    description: 'ליווי מעשי וממוקד בקליניקה באשדוד או אונליין לזוגות המתמודדים עם קשיי תקשורת ומריבות חוזרות.',
+    icon: <FiHeart aria-hidden="true" />,
+    link: '/couples-counseling-ashdod'
+  },
+  {
     title: 'הנחיית הורים לילדים מחוננים',
     description: 'ליווי סביב רגישות, פרפקציוניזם, שייכות, מוטיבציה ומחוננות לצד ADHD.',
     icon: <FiStar aria-hidden="true" />,

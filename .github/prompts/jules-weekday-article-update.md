@@ -63,6 +63,13 @@ The active article image pipeline is a 4-tier provider chain: **Gemini → Unspl
 
 Every published article must have a valid, topic-relevant, and visually unique hero image enforced by byte SHA-256 uniqueness. Duplicate hero images across published articles are strictly forbidden. Publication requires a unique valid hero image; no article may publish with a missing or duplicate hero image.
 
+### Mandatory trusted-image handoff
+Jules must distinguish **content ready** from **publication ready**. When Jules opens or repairs an article PR and the trusted image stage has not yet attached a verified hero image, the PR body MUST contain exactly `Hero Image Status: PENDING_TRUSTED_IMAGE_STAGE`. Missing `image`/`imageAlt` at that point is a handoff state, not successful publication readiness.
+
+Jules MUST NOT claim full completion, publication readiness, or a passing end-to-end self-check while that marker is pending. It must preserve the same article/PR identity and leave image generation/attachment to trusted automation. On any repair request caused by `ARTICLE_IMAGE_GUARD_FAILED`, Jules must continue the existing PR/session, never create a replacement article/PR, and verify the changed remote PR head after trusted image attachment. Once trusted automation has attached a valid unique local hero image and descriptive Hebrew `imageAlt`, the PR body should record `Hero Image Status: ATTACHED_TRUSTED_IMAGE_STAGE` together with the trusted image evidence supplied by automation.
+
+A completed Jules session may hand off an article PR to the Controller while the trusted image stage is pending; it may not describe that PR as publication-complete. The Controller/Supervisor owns the next image-stage action.
+
 ## Article Constraints
 Single article only: You must create and add EXACTLY ONE article object to `src/data/posts.json`. Adding multiple articles in one session or PR is strictly forbidden. If multiple ideas are explored, pick ONLY the single best one and discard the rest.
 Hebrew only: Every word in the title, excerpt, content, category, subcategory, and image alt text must be written in proper Hebrew. English words, Latin letters, or English terms in parentheses (e.g. acronyms or technical terms) are strictly forbidden because the downstream video and short pipelines fail-closed on any Latin characters in the article metadata or body. Translate or transliterate any foreign terms into natural Hebrew.

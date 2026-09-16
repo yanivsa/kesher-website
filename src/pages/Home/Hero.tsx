@@ -15,8 +15,8 @@ const Hero: React.FC = () => {
             <span>אפשר להתחיל לעשות סדר.</span>
           </h1>
           <p className={styles.description}>
-            ייעוץ זוגי והנחיית הורים עם שירה סהרוני.
-            פגישות באשדוד ובאונליין, בקצב שמתאים למה שקורה אצלכם עכשיו.
+            <Link to="/couples-counseling-ashdod" className={styles.inlineLink}>ייעוץ זוגי באשדוד</Link> והנחיית הורים עם שירה סהרוני.
+            פגישות בקליניקה באשדוד ובאונליין, בקצב שמתאים למה שקורה אצלכם עכשיו.
           </p>
           <div className={styles.actions}>
             <Link to={SITE_CONFIG.links.appointment} className={styles.primaryBtn}>

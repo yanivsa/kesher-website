@@ -174,6 +174,11 @@ const AboutPage: React.FC = () => {
             <p>אפשר להתחיל מהנושא שמעסיק אתכם עכשיו, ובהמשך לחבר בין החלקים השונים של התמונה המשפחתית.</p>
           </div>
           <div className={styles.focusGrid}>
+            <Link to="/couples-counseling-ashdod">
+              <FiHeart aria-hidden="true" />
+              <strong>ייעוץ זוגי באשדוד</strong>
+              <span>ליווי ממוקד בקליניקה באשדוד ואונליין לחידוש השיח והקרבה.</span>
+            </Link>
             <Link to="/services/couples">
               <FiHeart aria-hidden="true" />
               <strong>ייעוץ זוגי</strong>

@@ -22,6 +22,8 @@ const STATIC_ROUTES = [
   '/blog',
   '/faq',
   '/couples-counseling-ashdod',
+  '/parenting-guidance-ashdod',
+  '/couples-mediation-ashdod',
   '/services/couples/crisis',
   '/services/couples/before-separation',
   '/thank-you-booked',

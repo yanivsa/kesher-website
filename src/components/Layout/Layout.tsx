@@ -23,6 +23,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     || cleanPath === '/beta3'
     || cleanPath === '/b'
     || cleanPath === '/couples-counseling-ashdod'
+    || cleanPath === '/parenting-guidance-ashdod'
+    || cleanPath === '/couples-mediation-ashdod'
     || cleanPath === '/services/couples/ashdod'
     || cleanPath === '/services/couples/crisis'
     || cleanPath === '/services/couples/before-separation'

@@ -84,7 +84,7 @@ const CouplesCounseling: React.FC = () => {
       <header className={styles.hero}>
         <div className={`container ${styles.heroContainer}`}>
           <div className={styles.heroContent}>
-            <div className={styles.badge}>ייעוץ זוגי באשדוד ובאונליין</div>
+            <Link to="/couples-counseling-ashdod" className={styles.badge}>ייעוץ זוגי באשדוד ובאונליין ←</Link>
             <h1>לדבר על מה שקורה <br /><span>לפני ששוברים את הכלים</span></h1>
             <p className={styles.subtitle}>ייעוץ זוגי סביב מתחים וקשיי תקשורת בזוגיות. לצאת ממעגל הוויכוחים, להחזיר את הקרבה ולהתחיל לתקשר באמת. מרחב בטוח שבו מפסיקים להאשים ומתחילים להבין יחד איך לשפר את הקשר.</p>
             <div className={styles.heroActions}>
@@ -221,7 +221,7 @@ const CouplesCounseling: React.FC = () => {
           <LeadMagnet />
           <div className={styles.bottomCta}>
             <h2>אפשר לבדוק אם הייעוץ מתאים לכם</h2>
-            <p>הפגישה מתקיימת באשדוד או אונליין ונמשכת 50 דקות.</p>
+            <p>הפגישה מתקיימת באשדוד או אונליין ונמשכת 50 דקות. לפרטים על הגעה לקליניקה, שאלות נפוצות וקביעת תור, בקרו בעמוד <Link to="/couples-counseling-ashdod" style={{ color: 'inherit', textDecoration: 'underline' }}>ייעוץ זוגי באשדוד</Link>.</p>
             <Link to={SITE_CONFIG.links.appointment} className={styles.finalBtn}>בחירת מועד לפגישה</Link>
           </div>
         </div>

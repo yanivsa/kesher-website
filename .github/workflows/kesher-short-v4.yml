@@ -146,6 +146,7 @@ jobs:
             tests.test_video_reconcile \
             tests.test_pipeline_v4 \
             tests.test_v4_runtime_activation \
+            tests.test_notebooklm_auth_precedence \
             -v
 
       - name: Restore newest valid Short V4 durable state
@@ -203,7 +204,7 @@ jobs:
           sealed_path="$KESHER_STATE_DIR/notebooklm-storage-state.json.enc"
           mkdir -p "$profile"
 
-          if [ -s "$sealed_path" ]; then
+          if [ -z "${NOTEBOOKLM_STORAGE_STATE_SECRET:-}" ] && [ -s "$sealed_path" ]; then
             test -n "${NOTEBOOKLM_STATE_KEY:-}"
             decrypted_path="$(mktemp "$profile/storage_state.XXXXXX.json")"
             trap 'rm -f "$decrypted_path"' EXIT
@@ -242,7 +243,7 @@ jobs:
           PY
 
       - name: NotebookLM read-only Short preflight
-        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'preflight' }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
         run: python -u scripts/kesher_short_pipeline_v4.py --preflight
 
       - name: Persist terminal article release without a Short

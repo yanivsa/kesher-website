@@ -5,10 +5,19 @@
     <link>https://kesher.saharoni.com/blog</link>
     <description>מאמרים מקצועיים, תובנות וכלים מעשיים בנושאי ייעוץ זוגי, הדרכת הורים וגישור משפחתי מאת שירה סהרוני.</description>
     <language>he-IL</language>
-    <lastBuildDate>Sat, 12 Sep 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 15 Sep 2026 00:00:00 GMT</lastBuildDate>
     <managingEditor>shira@saharoni.com (Shira Saharoni)</managingEditor>
     <webMaster>shira@saharoni.com (Shira Saharoni)</webMaster>
     <atom:link href="https://kesher.saharoni.com/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>חזרה לארץ אחרי רילוקיישן: כשהבית משתנה והזוגיות מחפשת עוגן</title>
+      <link>https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship</link>
+      <guid isPermaLink="true">https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship</guid>
+      <pubDate>Tue, 15 Sep 2026 00:00:00 GMT</pubDate>
+      <description>חזרה לארץ אחרי רילוקיישן נתפסת לעיתים קרובות כחזרה למקום מוכר ובטוח, אך במציאות היא דורשת הסתגלות זוגית מחודשת. כיצד מתמודדים עם הפער בין הציפיות למציאות?</description>
+      <category>זוגיות</category>
+      <author>shira@saharoni.com (Shira Saharoni)</author>
+    </item>
     <item>
       <title>למה כל כך קשה למצוא זוגיות? בין רשימת מכולת לחיבור אמיתי</title>
       <link>https://kesher.saharoni.com/blog/finding-love-criteria-and-pace</link>
@@ -73,11 +82,11 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>השנה הראשונה לנישואים: כשהסכמות על חלוקת תפקידים פוגשות את המציאות</title>
+      <title>חלוקת תפקידים ומטלות הבית בזוגיות: איך להגיע להסכמות הוגנות בלי מריבות מתישות</title>
       <link>https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing</guid>
       <pubDate>Fri, 04 Sep 2026 00:00:00 GMT</pubDate>
-      <description>החלטתם מראש מי עושה מה בבית, אבל ביומיום דברים נראים אחרת? איך מדברים על הפערים בחלוקת התפקידים בשנה הראשונה למגורים משותפים בלי להיכנס לריבים מיותרים.</description>
+      <description>מי מוריד את הפח, מי שוטף כלים ולמה אחד מרגיש שהוא סוחב את כל הבית לבד? איך מדברים על עומס מטלות הבית, מייצרים הסכמות ברורות ומונעים תסכול והאשמות הדדיות.</description>
       <category>זוגיות</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
@@ -370,29 +379,29 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>השנה הראשונה לנישואים: 8 מריבות שמפתיעות זוגות טובים</title>
+      <title>משברים בשנה הראשונה לנישואים: שמונה מריבות נפוצות ואיך לפתור אותן ברוגע</title>
       <link>https://kesher.saharoni.com/blog/newlywed-first-year-conflicts</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/newlywed-first-year-conflicts</guid>
       <pubDate>Thu, 23 Jul 2026 00:00:00 GMT</pubDate>
-      <description>למה מתווכחים פתאום על כלים, שבת אצל ההורים וקנייה קטנה באשראי? שמונה ריבים נפוצים בשנה הראשונה — והמשפט שיעזור לפתוח כל אחד אחרת.</description>
+      <description>למה מתווכחים פתאום על מטלות הבית, ביקורים אצל המשפחה המורחבת וקניות? מריבות נפוצות בשנה הראשונה לנישואים וכלים מעשיים לתקשורת מקרבת ולבניית שותפות יציבה.</description>
       <category>זוגיות</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>מלאך בגן, שד בבית: למה הילד מתפרק דווקא איתכם</title>
+      <title>התפרצויות זעם אחרי הגן או בית הספר: למה הילד מתפרק דווקא בבית ואיך לעזור לו</title>
       <link>https://kesher.saharoni.com/blog/child-after-school-restraint-collapse</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/child-after-school-restraint-collapse</guid>
       <pubDate>Mon, 20 Jul 2026 00:00:00 GMT</pubDate>
-      <description>פתחתם את הדלת של הגן והצוות מספר על ילד מושלם. אבל שנייה אחרי שאתם יוצאים מהשער, הילד המלאך מתחלף ומתפרק. למה זה קורה דווקא איתכם, ואיך מתמודדים עם &apos;קריסת התאפקות&apos;?</description>
+      <description>במסגרת מספרים על ילד רגוע ומשתף פעולה, אבל ברגע שנכנסים הביתה מתחילות צעקות, בכי והתפרצויות? מהי קריסת התאפקות ואיך מעניקים לילד מרחב פריקה בטוח מבלי להישחק.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>״אני לבד!״ איך לשרוד את מאבקי העצמאות של הבוקר בלי לאחר לגן (ובלי לצעוק)</title>
+      <title>מאבקי בוקר עם פעוטות: איך להתמודד עם ״אני לבד!״ ולצאת מהבית בזמן בלי לצעוק</title>
       <link>https://kesher.saharoni.com/blog/toddler-independence-morning-struggles</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/toddler-independence-morning-struggles</guid>
       <pubDate>Sun, 19 Jul 2026 00:00:00 GMT</pubDate>
-      <description>השעה שמונה בבוקר, אתם חייבים לצאת לעבודה, אבל הילד מתעקש לנעול את הנעליים הפוך ״לבד!״ ולוקח לו נצח. איך הצורך הטבעי בעצמאות הופך את הבוקר לסיוט, ואיך אפשר לתת להם שליטה בלי לאבד את השפיות?</description>
+      <description>השעה שמונה בבוקר, חייבים לצאת, אבל הפעוט מתעקש לנעול נעליים לבד ולוקח נצח? איך רצון בעצמאות הופך למאבק מתיש, ואיך להציב גבול ברור ורגוע בלי לאחר לגן.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
@@ -451,11 +460,11 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>הוא בטיקטוק ואת באינסטגרם: איך המסכים גונבים לכם את הזמן הזוגי</title>
+      <title>המסכים הורסים את הזוגיות? איך לעצור את הבריחה לטלפון ולהחזיר את האינטימיות</title>
       <link>https://kesher.saharoni.com/blog/screens-relationship-intimacy</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/screens-relationship-intimacy</guid>
       <pubDate>Thu, 02 Jul 2026 00:00:00 GMT</pubDate>
-      <description>הילדים ישנים, התיישבתם על הספה, אבל במקום לדבר - כל אחד שוקע במסך שלו. למה אנחנו בורחים לטלפון ברגעים של שקט, ואיך אפשר להחזיר את הקרבה מבלי להרגיש שאתם &quot;חופרים&quot; אחד לשנייה?</description>
+      <description>יושבים יחד על הספה בסוף היום אבל כל אחד שקוע במסך שלו בתחושת בדידות? למה הטלפון הפך למפלט מאינטימיות, ואיך יוצרים זמנים זוגיים מוגנים שמחזירים את השיח והחום.</description>
       <category>ייעוץ זוגי</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
@@ -487,11 +496,11 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>מאבקי השכבה: איך להפוך את שעת השינה ממלחמה יומיומית לזמן של קרבה</title>
+      <title>מאבקי השכבה והרדמה: איך להפסיק את מלחמות הערב ולהרדים את הילדים ברוגע</title>
       <link>https://kesher.saharoni.com/blog/bedtime-battles-emotional-regulation</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/bedtime-battles-emotional-regulation</guid>
       <pubDate>Sun, 28 Jun 2026 00:00:00 GMT</pubDate>
-      <description>שעת ההשכבה הפכה למאבק מתיש של איומים, דמעות וויכוחים? במקום להיגרר למלחמה בכל ערב, גלו מה באמת מונע מהילדים שלכם להירדם, ואיך לבנות &quot;גשר לשינה&quot; שיחזיר את הרוגע לערבים שלכם ויהפוך את ההשכבה לזמן של קרבה.</description>
+      <description>שעת ההשכבה הפכה למאבק מתיש של דמעות, יציאות מהמיטה וויכוחים אין-סופיים? איך לזהות מה מעכב את ההירדמות וליצור שגרת ערב נינוחה שמחזירה את השקט לבית.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
@@ -505,11 +514,11 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>שתיקה רועמת: איך לשבור את מעגל השתיקה בזוגיות ולחזור לדבר</title>
+      <title>שתיקה מענישה בזוגיות: איך לשבור את חומת הנתק והשתיקה אחרי מריבה</title>
       <link>https://kesher.saharoni.com/blog/breaking-silent-treatment-relationship</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/breaking-silent-treatment-relationship</guid>
       <pubDate>Mon, 22 Jun 2026 00:00:00 GMT</pubDate>
-      <description>אתם יושבים באותו סלון, אבל קיר של קרח מפריד ביניכם. עברו כבר יומיים מאז המריבה, וכל ניסיון לדבר נתקל בחומה. למה בני זוג בוחרים בשתיקה ואיך עוצרים את כדור השלג?</description>
+      <description>ימים של התעלמות ושתיקה כבדה בבית אחרי כל ויכוח? למה בני זוג נסגרים ושותקים כדי להעניש או להתגונן, ואיך מפשירים את הקרח וחוזרים לתקשורת פתוחה ומכבדת.</description>
       <category>זוגיות</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
@@ -523,20 +532,20 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>אמא שלך תמיד יודעת יותר טוב: איך להציב גבולות למשפחה המורחבת בלי לפגוע בזוגיות</title>
+      <title>הצבת גבולות למשפחה המורחבת: איך להתמודד עם התערבות ההורים בלי לפגוע בזוגיות</title>
       <link>https://kesher.saharoni.com/blog/boundaries-extended-family</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/boundaries-extended-family</guid>
       <pubDate>Tue, 16 Jun 2026 00:00:00 GMT</pubDate>
-      <description>אתם מסיימים את הארוחה אצל ההורים, ופתאום הערה קטנה על האוכל או על חינוך הילדים הופכת למריבה ענקית כל הדרך הביתה. איך מונעים מהמשפחה המורחבת לחבל בחיבור שלכם ואיך בונים חזית אחידה?</description>
+      <description>הערות של ההורים או החמות על גידול הילדים, הכספים או סדרי החיים גורמות למריבות ביניכם? איך לבסס חזית זוגית אחידה, להציב גבולות מכבדים למשפחה המורחבת ולשמור על הקשר.</description>
       <category>זוגיות</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>למה אתה תמיד מתגונן? איך לעצור את מעגל ההאשמות ולחזור לדבר</title>
+      <title>התגוננות והאשמות הדדיות בזוגיות: איך להפסיק לתקוף ולהתגונן בכל שיחה</title>
       <link>https://kesher.saharoni.com/blog/defensiveness-in-relationships</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/defensiveness-in-relationships</guid>
       <pubDate>Mon, 15 Jun 2026 00:00:00 GMT</pubDate>
-      <description>הוא אומר משהו, את מעירה, והוא מיד קופץ להגן על עצמו. איך התגוננות אוטומטית הורסת את התקשורת ומה באמת אפשר לעשות כדי לשבור את המעגל?</description>
+      <description>כל שיחה פשוטה הופכת מיד למגננה, תירוצים והאשמות נגדיות? למה אנחנו מגיבים במתקפה כשאנחנו מרגישים מבוקרים, ואיך לנסח רגשות ובקשות באופן שלא מעורר מגננה.</description>
       <category>זוגיות</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
@@ -550,20 +559,20 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>השוטר הטוב והשוטר הרע: איך פערים בגישה ההורית הורסים לכם את הזוגיות</title>
+      <title>פערים בחינוך הילדים בין בני הזוג: איך לגשר על חילוקי דעות בלי לפגוע בזוגיות</title>
       <link>https://kesher.saharoni.com/blog/parenting-style-differences</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/parenting-style-differences</guid>
       <pubDate>Wed, 10 Jun 2026 00:00:00 GMT</pubDate>
-      <description>כשאחד מכם מקפיד על חוקים והשני משחרר ומעגל פינות, נוצרת דינמיקה שמרחיקה אתכם. איך יוצאים ממעגל &quot;השוטר הטוב והרע&quot; ומשדרים חזית אחידה.</description>
+      <description>אחד מוותר ומעגל פינות והשני דורש משמעת נוקשה? איך לצאת מתפקידי ״השוטר הטוב והשוטר הרע״, לבנות קו הורי משותף ולמנוע מחיכוכים סביב הילדים לחבל בקשר הזוגי.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>הוא הכין לך קפה, ואת רק נאנחת בכעס: איך מתחילים מחדש כשהלב כבר סגור ונוטר טינה</title>
+      <title>צבירת טינה ומשקעים בזוגיות: איך לשחרר כעסים ישנים ולפתוח את הלב מחדש</title>
       <link>https://kesher.saharoni.com/blog/repairing-relationship-after-resentment</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/repairing-relationship-after-resentment</guid>
       <pubDate>Tue, 09 Jun 2026 00:00:00 GMT</pubDate>
-      <description>שנים של פגיעות קטנות, אכזבות שלא דוברו וציפיות שלא התממשו הופכות לחומה אטומה. איך אפשר לפרק את המטען של טינה ולמצוא מחדש את הדרך ללב של בן הזוג?</description>
+      <description>שנים של אכזבות קטנות שלא נפתרו הפכו לכעס תת-קרקעי וחומה רגשית? איך לפרק את מעגל הטינה והמרמור בזוגיות, ולמצוא דרך בטוחה לשיקום האמון והקרבה ההדדית.</description>
       <category>זוגיות</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
@@ -613,29 +622,29 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>כשהשתיקה משתלטת על הסלון: מה עושים כשאין תקשורת בזוגיות?</title>
+      <title>חוסר תקשורת בזוגיות: איך להתגבר על ריחוק ושתיקה ולהחזיר את הקרבה</title>
       <link>https://kesher.saharoni.com/blog/communication-breakdown</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/communication-breakdown</guid>
       <pubDate>Thu, 04 Jun 2026 00:00:00 GMT</pubDate>
-      <description>אתם יושבים יחד בערב, אבל כל אחד שקוע במסך שלו. איך קורה ששני אנשים שאוהבים אחד את השנייה מפסיקים לדבר, ואיך אפשר לשבור את חומת השתיקה ולחזור להרגיש קרובים.</description>
+      <description>מרגישים שאתם חיים כמו שני שותפים לדירה שמדברים רק על לוגיסטיקה וסידורים? איך לזהות את מלכודות הריחוק בזוגיות, לפתוח שיחה כנה מחדש ולחזור להרגיש קרובים.</description>
       <category>זוגיות</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>הוא צורח בסופר ואתם רוצים להיעלם? הדרך האמיתית להתמודד עם התפרצויות זעם פומביות</title>
+      <title>התפרצויות זעם אצל ילדים במקומות ציבוריים: איך להגיב כשהילד משתטח וצורח בלי לאבד עשתונות</title>
       <link>https://kesher.saharoni.com/blog/public-tantrums-emotional-regulation</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/public-tantrums-emotional-regulation</guid>
       <pubDate>Wed, 03 Jun 2026 00:00:00 GMT</pubDate>
-      <description>כשילד משתטח על הרצפה בקניון באשדוד, הבושה והלחץ משתלטים. איך עוזרים לילד להירגע מבלי להיכנע לדרישותיו וללא איומים ועונשים, ומה באמת מסתתר מאחורי ההתקף.</description>
+      <description>הילד משתטח וצורח בקניון או ברחוב וכל המבטים מופנים אליכם? כלים מעשיים להרגעת התקף זעם פומבי בזמן אמת, בלי להיכנע, בלי עונשים ובלי תחושת חוסר אונים.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>בוקר של תסכול? איך להפוך את ההתארגנות עם ילד ADHD משדה קרב לשגרה רגועה</title>
+      <title>התארגנות בוקר עם ילד עם הפרעת קשב וריכוז (ADHD): צעדים מעשיים לשגרה רגועה ללא צעקות</title>
       <link>https://kesher.saharoni.com/blog/adhd-morning-routine</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/adhd-morning-routine</guid>
       <pubDate>Mon, 01 Jun 2026 00:00:00 GMT</pubDate>
-      <description>במקום להתחיל כל יום בצעקות, עונשים ואיחורים לעבודה – גלו את השיטות הפשוטות שיעזרו לילד שלכם לצאת מהבית בחיוך, בלי לפגוע בסמכות שלכם.</description>
+      <description>כל בוקר הופך למאבק מתיש סביב קימה, לבוש ואיחורים לבית הספר? מדריך מעשי להורים לילדים עם קשיי קשב: איך לבנות שגרת בוקר ברורה שעובדת בלי איומים ובלי מתח.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
@@ -649,20 +658,20 @@
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>גבולות לילדים ללא עונשים: איך להחזיר את הרוגע הביתה</title>
+      <title>הצבת גבולות לילדים ללא עונשים ואיומים: איך לבסס סמכות הורית רגועה ויציבה</title>
       <link>https://kesher.saharoni.com/blog/boundaries-without-punishments</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/boundaries-without-punishments</guid>
       <pubDate>Sun, 31 May 2026 00:00:00 GMT</pubDate>
-      <description>זה קורה כמעט בכל בית, רגעים של ויכוחים סביב מסכים וצעצועים. למה עונשים מפסיקים לעבוד ואיך מציבים גבולות נכונים במקום מאבקי כוח.</description>
+      <description>עונשים ואיומים מפסיקים לעבוד ויוצרים רק מאבקי כוח מתישים? כלים מעשיים להצבת גבולות ברורים ועקביים שמחזירים את השליטה והרוגע להורים, בלי לפגוע בקשר עם הילד.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>
     <item>
-      <title>הוא לא מקשיב לי עד שאני צועקת: איך לשבור את מעגל הצעקות בבית ולהתחיל לדבר</title>
+      <title>איך להפסיק לצעוק על הילדים: מה לעשות כשהילד לא מקשיב עד שמרימים את הקול</title>
       <link>https://kesher.saharoni.com/blog/breaking-the-yelling-cycle</link>
       <guid isPermaLink="true">https://kesher.saharoni.com/blog/breaking-the-yelling-cycle</guid>
       <pubDate>Wed, 20 Nov 2024 00:00:00 GMT</pubDate>
-      <description>אתם מבקשים יפה, מסבירים בסבלנות, סופרים עד שלוש – ושום דבר לא קורה. עד שאתם מאבדים שליטה וצועקים. למה ילדים &quot;מחכים&quot; לצעקה שלנו, ואיך אפשר לשנות את הדינמיקה השוחקת הזו ולהחזיר את הרוגע הביתה.</description>
+      <description>מבקשים בסבלנות, מסבירים שוב ושוב, אבל שום דבר לא קורה עד שצועקים? למה ילדים מפתחים אטימות לבקשות רגועות, ואיך שוברים את מעגל הצעקות ומחזירים את הסמכות ההורית השקטה.</description>
       <category>הדרכת הורים</category>
       <author>shira@saharoni.com (Shira Saharoni)</author>
     </item>

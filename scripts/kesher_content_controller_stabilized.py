@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import sys
+import urllib.parse
 
 if __package__:
     from . import article_claim_quality as quality
@@ -14,6 +15,22 @@ else:
     import article_claim_quality as quality
     import kesher_content_controller_v5 as v5
     import kesher_content_controller_v5_runtime as runtime
+
+
+_ORIGINAL_PUBLIC_SITE_GET = v5.core.PublicSiteClient.get
+
+
+def _unicode_safe_public_site_get(self, url: str):
+    """Percent-encode non-ASCII URL components before urllib builds the request."""
+    parts = urllib.parse.urlsplit(url)
+    safe_url = urllib.parse.urlunsplit((
+        parts.scheme,
+        parts.netloc,
+        urllib.parse.quote(parts.path, safe="/%:@"),
+        urllib.parse.quote(parts.query, safe="=&%:@/?+"),
+        urllib.parse.quote(parts.fragment, safe="%:@/?+"),
+    ))
+    return _ORIGINAL_PUBLIC_SITE_GET(self, safe_url)
 
 
 class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
@@ -48,6 +65,53 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         )
         self.github.save_controller_state(state)
         return v5.core.Action("blocked", "article content quality failed before deploy/media")
+
+    def _dispatch_budgeted(self, state, stage, workflow, inputs):
+        """Bind long-video dispatch and provider resume to the authoritative source identity."""
+        bound_inputs = dict(inputs or {})
+        if stage != "video" or workflow != v5.LONG_VIDEO_WORKFLOW:
+            return super()._dispatch_budgeted(state, stage, workflow, bound_inputs)
+
+        source = self._article_source()
+        if source is None:
+            raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_UNAVAILABLE")
+        target_slug = str(bound_inputs.get("target_slug") or "").strip()
+        if bound_inputs.get("operation") in {"full", "generate"}:
+            if target_slug and target_slug != source["slug"]:
+                raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_MISMATCH")
+            bound_inputs["target_slug"] = source["slug"]
+
+        snapshot = self.github.newest_video_state()
+        exact_generating = [
+            item for item in v5._exact_items(snapshot, source)
+            if item.get("uploaded") is not True
+            and str(item.get("status") or "") == "generating"
+            and str(item.get("source_id") or "").strip()
+            and str(item.get("task_id") or "").strip()
+            and str(item.get("artifact_id") or "").strip()
+            and str(item.get("task_id") or "").strip() == str(item.get("artifact_id") or "").strip()
+        ]
+        if len(exact_generating) > 1:
+            raise v5.core.ControllerError("DUPLICATE_LONG_VIDEO_PROVIDER_TASKS")
+        if exact_generating:
+            item = exact_generating[0]
+            v5.core.GitHubClient.dispatch(self.github, workflow, bound_inputs)
+            current = state["video"]
+            current["attempt_count"] = max(1, int(current.get("attempt_count") or 0))
+            current["resume_dispatches"] = int(current.get("resume_dispatches") or 0) + 1
+            current["last_dispatch_at"] = v5.core.utc_now()
+            current["status"] = "running"
+            current["next_retry_at"] = None
+            current["item_id"] = item.get("id")
+            current["source_id"] = item.get("source_id")
+            current["artifact_id"] = item.get("artifact_id")
+            current["provider_id"] = item.get("task_id")
+            return
+
+        # No exact provider task is currently generating. Use the bounded V3
+        # dispatch budget rather than the legacy global FIFO provider-resume
+        # lookup, which can bind a different article's provider identity.
+        return v5.v3.V3Controller._dispatch_budgeted(self, state, stage, workflow, bound_inputs)
 
     def _overview_evidence_preflight(self, state):
         """Copy exact public Overview edit evidence into durable controller state."""
@@ -100,6 +164,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
 def install_runtime() -> None:
     runtime.install_runtime()
+    v5.core.PublicSiteClient.get = _unicode_safe_public_site_get
     v5.V5Controller = StabilizedRuntimeV5Controller
 
 

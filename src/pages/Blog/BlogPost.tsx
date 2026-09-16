@@ -17,11 +17,19 @@ import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
 import styles from './BlogPost.module.css';
 
+const routeKeyForPost = (post: (typeof posts)[number]) => {
+  if ('slug' in post && typeof post.slug === 'string' && post.slug.trim()) {
+    return post.slug.trim();
+  }
+  return post.id;
+};
+
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const post = posts.find(p => p.id === id);
-  const articleVideo = id
-    ? (articleVideos as Record<string, { youtubeId: string; title?: string }>)[id]
+  const post = posts.find((candidate) => candidate.id === id || routeKeyForPost(candidate) === id);
+  const canonicalRouteKey = post ? routeKeyForPost(post) : '';
+  const articleVideo = post
+    ? (articleVideos as Record<string, { youtubeId: string; title?: string }>)[post.id]
     : undefined;
 
   const schemaData = useMemo(() => ({
@@ -31,7 +39,7 @@ const BlogPost: React.FC = () => {
         "@type": "Article",
         "headline": post?.title || "",
         ...(post?.image ? { "image": `${SITE_CONFIG.url}${post.image}` } : {}),
-        "url": `${SITE_CONFIG.url}/blog/${post?.id || ""}`,
+        "url": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`,
         "datePublished": post?.date || "",
         "dateModified": post?.date || "",
         "author": {
@@ -69,19 +77,19 @@ const BlogPost: React.FC = () => {
             "@type": "ListItem",
             "position": 3,
             "name": post?.title || "",
-            "item": `${SITE_CONFIG.url}/blog/${post?.id || ""}`
+            "item": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`
           }
         ]
       }
     ]
-  }), [post]);
+  }), [post, canonicalRouteKey]);
 
   if (!post) {
     return <NotFound />;
   }
 
   const safeContent = DOMPurify.sanitize(post.content);
-  const shareUrl = `${SITE_CONFIG.url}/blog/${post.id}`;
+  const shareUrl = `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`;
   const relatedService = 'serviceUrl' in post
     && 'serviceLabel' in post
     && typeof post.serviceUrl === 'string'

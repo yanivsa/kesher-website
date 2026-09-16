@@ -44,12 +44,27 @@ const stopVite = () => {
   if (!vite.killed && viteExitCode === null) vite.kill();
 };
 
+const hasNonAscii = (value) => /[^\x00-\x7F]/.test(value);
+
 const writeRoute = (route, html) => {
   if (route === '/') {
     fs.writeFileSync(path.join(dist, 'index.html'), html);
     return;
   }
-  const file = path.join(dist, `${route.replace(/^\//, '')}.html`);
+
+  const clean = route.replace(/^\//, '');
+  if (route.startsWith('/blog/') && hasNonAscii(route)) {
+    // Cloudflare Pages pretty-URL lookup can fail for extensionless Unicode
+    // paths backed only by <route>.html. Materialize a directory index so the
+    // public Hebrew route always resolves (the controller follows the redirect
+    // to the trailing-slash representation and verifies the expected title).
+    const file = path.join(dist, clean, 'index.html');
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, html);
+    return;
+  }
+
+  const file = path.join(dist, `${clean}.html`);
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, html);
 };

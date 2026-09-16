@@ -13,93 +13,85 @@ import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import { useLandingPageAnalytics } from '../../../hooks/useLandingPageAnalytics';
-import styles from './CouplesCounselingAshdodPage.module.css';
+import styles from './ParentingGuidanceAshdodPage.module.css';
 
 const recognitionItems = [
   {
-    title: 'שוב אותו ויכוח',
-    desc: 'הנושא משתנה, אבל השיחה כמעט תמיד מגיעה לאותו מקום.',
+    title: 'מאבקים יומיומיים סביב שגרה',
+    desc: 'התארגנות הבוקר, הכנת שיעורים, זמן מסכים והשכבה הופכים למוקד חיכוך קבוע.',
   },
   {
-    title: 'אחד מדבר, השני נסגר',
-    desc: 'ככל שאחד מנסה להסביר יותר, השני מתרחק או מתגונן.',
+    title: 'תחושה ששום דבר לא עובד בלי צעקות',
+    desc: 'מנסים להסביר בנועם ובסבלנות, אבל שיתוף הפעולה מתחיל רק כשהטונים עולים.',
   },
   {
-    title: 'דברים קטנים מתפוצצים מהר',
-    desc: 'שיחה שהתחילה בעניין יומיומי הופכת במהירות למאבק.',
+    title: 'חילוקי דעות בין ההורים',
+    desc: 'הורה אחד מחמיר והשני מוותר, מה שיוצר מתח ביניכם ומסרים סותרים לילדים.',
   },
   {
-    title: 'נוצר ריחוק',
-    desc: 'מדברים על הבית, הילדים והמשימות — אבל פחות על מה שקורה ביניכם.',
+    title: 'רגשות אשם ותסכול מתמשך',
+    desc: 'מסיימים את היום בתחושת מועקה על הדרך שבה הדברים התנהלו ומבטיחים שמחר יהיה אחרת.',
   },
   {
-    title: 'נמנעים משיחות',
-    desc: 'יש דברים שכבר לא מעלים, כי לא רוצים עוד ערב של מתח.',
+    title: 'קושי בהצבת גבולות עקביים',
+    desc: 'מציבים גבול ברור אך נסוגים כשהילד מגיב בהתקף זעם, מחאה חריפה או בכי ממושך.',
   },
   {
-    title: 'רוצים שינוי, אבל תקועים',
-    desc: 'שניכם אולי רוצים שיהיה אחרת, אבל לא יודעים איך לצאת מהדפוס שנוצר.',
+    title: 'רוצים שקט, אבל תקועים בדפוס',
+    desc: 'שניכם שואפים לאווירה נעימה ומכבדת, אך לא בטוחים איך לשבור את מעגל המאבקים.',
   },
 ];
 
 const timelineSteps = [
   {
     time: '00–15 דק׳',
-    title: 'מתחילים ממה שקורה עכשיו',
-    desc: 'נבין מה מביא אתכם לפגישה. כל אחד מקבל מקום לתאר איך הוא חווה את המצב ומה היה רוצה שייראה אחרת. המטרה בשלב הזה היא ליצור תמונה משותפת — לא להכריע בין שתי גרסאות.',
+    title: 'מיפוי האתגרים המרכזיים בבית',
+    desc: 'נבין מה הרגעים שבהם הקושי מתעורר במיוחד (בוקר, מסכים, מעברים או גבולות) ואיך כל אחד מההורים חווה את המצב. המטרה היא לקבל תמונה ברורה ומדויקת של היומיום שלכם.',
   },
   {
     time: '15–35 דק׳',
-    title: 'מזהים מה קורה כשהשיחה מסתבכת',
-    desc: 'נבדוק איך מתחילות השיחות שמסתיימות שוב באותו מקום. מה מפעיל כל אחד. איפה מתחילה ההתגוננות, ההתרחקות או ההסלמה. ואיזה דפוס חוזר ביניכם גם כששניכם התכוונתם בכלל למשהו אחר.',
+    title: 'זיהוי מעגל התגובות שמזין את המאבק',
+    desc: 'נבדוק מה קורה ברגעי התסכול, איפה הגבול נסדק ומדוע התגובות הנוכחיות לא משיגות את שיתוף הפעולה הרצוי. נבין את הצרכים שמאחורי ההתנהגות של הילד ואת מקור החיכוך.',
   },
   {
     time: '35–50 דק׳',
-    title: 'יוצאים עם כיוון מעשי ראשון',
-    desc: 'נבחר דרך אחת שאפשר להתחיל לתרגל. זו יכולה להיות דרך לפתוח שיחה אחרת, לעצור הסלמה או להקשיב לפני שמגיבים. המטרה היא לצאת מהפגישה עם כיוון ברור שאפשר לנסות גם בבית.',
+    title: 'יוצאים עם כלי מעשי ראשון ליישום בבית',
+    desc: 'נבחר דרך פעולה קונקרטית אחת שאפשר להתחיל לתרגל כבר מהיום בבית. המטרה היא לצאת מהפגישה עם צעד ברור, ישים וממוקד שיחזיר את הרוגע לשגרה.',
   },
 ];
 
 const faqItems = [
   {
-    question: 'מה קורה בפגישה הראשונה?',
-    answer: 'הפגישה הראשונה מיועדת להבין מה מעסיק אתכם, לשמוע את נקודת המבט של שני בני הזוג ולזהות את דפוסי השיחה שחוזרים ביניכם. המטרה היא להתחיל לעשות סדר ולבחון כיוון מעשי להמשך.',
+    question: 'מה קורה בפגישה הראשונה של הדרכת הורים?',
+    answer: 'בפגישה הראשונה ממפים את האתגרים העיקריים בשגרת הבית, מבינים את הדינמיקה בין ההורים לילדים, ומזהים את מוקדי החיכוך המרכזיים. כבר בפגישה זו מגבשים כיוון מעשי ראשון להתמודדות.',
   },
   {
-    question: 'האם חייבים להגיע יחד?',
-    answer: 'מומלץ להגיע יחד לפגישה הזוגית, משום שהייעוץ מתמקד בתקשורת ובדפוסים שבין בני הזוג. אם יש התלבטות או שאלה לפני הפגישה, אפשר להתייעץ מראש עם שירה.',
+    question: 'האם הילדים מגיעים לפגישות?',
+    answer: 'לא. פגישות הדרכת הורים נערכות עם ההורים בלבד. הדבר מאפשר שיחה פתוחה, כנה ומעמיקה על הקשיים והאתגרים ללא נוכחות הילד.',
   },
   {
-    question: 'מה אם בן או בת הזוג עדיין לא בטוחים לגבי ייעוץ?',
-    answer: 'לא חייבים להגיע מתוך הסכמה על מי צודק או אפילו מתוך אותה נקודת מבט על הבעיה. המטרה בפגישה היא לא לבחור צד, אלא להבין מה קורה ביניכם כשהשיחה מסתבכת ולבדוק דרך אחרת לנהל אותה. אם יש חשש מסוים לפני שקובעים, אפשר לכתוב לשירה ב-WhatsApp ולשאול.',
+    question: 'האם שני ההורים חייבים להגיע יחד?',
+    answer: 'מומלץ מאוד ששני ההורים יגיעו יחד כדי לגבש שפה אחידה ולחזק את החזית ההורית. עם זאת, אם יש קושי בתיאום או התלבטות של אחד הצדדים, ניתן בהחלט להתחיל בהורה אחד.',
   },
   {
-    question: 'כמה זמן נמשכת פגישה?',
-    answer: 'פגישת ייעוץ נמשכת 50 דקות מלאות.',
+    question: 'מה אם בן או בת הזוג פחות מאמינים בהדרכת הורים?',
+    answer: 'זהו מצב נפוץ. הפגישה אינה מקום לשיפוטיות או להטלת אשמה, אלא מרחב פרקטי למציאת פתרונות שמקלים על שני ההורים. אפשר להתייעץ עם שירה מראש ב-WhatsApp כדי לבחון כיצד לפתוח את הנושא.',
   },
   {
-    question: 'האם אפשר לקיים את הפגישה אונליין?',
-    answer: 'כן. לצד הפגישות בקליניקה באשדוד, קיימת אפשרות לקיים פגישה אונליין (Zoom).',
+    question: 'האם ההדרכה מתאימה גם לאתגרי קשב וריכוז (ADHD) או ילדים מחוננים?',
+    answer: 'כן. לשירה סהרוני ניסיון רב בליווי הורים לילדים עם קשיי קשב וריכוז (ADHD), תפקודים ניהוליים וילדים מחוננים, תוך התאמת כלים ספציפיים למאפיינים הייחודיים שלהם.',
+  },
+  {
+    question: 'כמה זמן נמשכת פגישה ומה עלותה?',
+    answer: 'פגישת הדרכת הורים נמשכת 50 דקות מלאות. עלות הפגישה היא 500 ₪ כולל מע״מ.',
   },
   {
     question: 'איפה מתקיימות הפגישות?',
-    answer: 'הפגישות הפרונטליות מתקיימות בקליניקה באשדוד.',
+    answer: 'הפגישות הפרונטליות מתקיימות בקליניקה באשדוד. כמו כן, ניתן לקיים פגישות מקוונות (Zoom) מכל מקום.',
   },
   {
-    question: 'מה מחיר הפגישה?',
-    answer: 'מחיר פגישת ייעוץ הוא 500 ₪ כולל מע״מ.',
-  },
-  {
-    question: 'איך קובעים פגישה?',
-    answer: 'לוחצים על "קביעת פגישה", בוחרים מועד פנוי ביומן ומשלימים את ההזמנה. אם לא מצאתם מועד מתאים או שיש לכם שאלה לפני ההזמנה, אפשר לפנות לשירה ב-WhatsApp.',
-  },
-  {
-    question: 'האם השיחה דיסקרטית?',
-    answer: 'הפגישות מתקיימות במרחב פרטי ומכבד, בהתאם לכללי האתיקה המקצועית. מידע נוסף על אופן הטיפול בפרטים שנמסרים באתר מופיע במדיניות הפרטיות.',
-  },
-  {
-    question: 'האם צריך להתחייב לתהליך ארוך?',
-    answer: 'לא. אין מספר קבוע של פגישות שמתאים לכל זוג. לאחר הפגישה הראשונה אפשר להעריך יחד את הצרכים ואת דרך ההמשך.',
+    question: 'האם צריך להתחייב לסדרת פגישות מראש?',
+    answer: 'לא. אין התחייבות למספר פגישות מראש. לעיתים מספר מועט וממוקד של פגישות מספיק כדי לחולל שינוי משמעותי בשגרת הבית.',
   },
 ];
 
@@ -108,15 +100,15 @@ const schemaData = {
   '@graph': [
     {
       '@type': ['LocalBusiness', 'ProfessionalService'],
-      '@id': `${SITE_CONFIG.url}/couples-counseling-ashdod#service`,
-      name: 'ייעוץ זוגי באשדוד | שירה סהרוני',
-      alternateName: 'קשר - ייעוץ זוגי באשדוד',
-      url: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
-      image: `${SITE_CONFIG.url}/images/shira-saharoni-sea.webp`,
+      '@id': `${SITE_CONFIG.url}/parenting-guidance-ashdod#service`,
+      name: 'הדרכת הורים באשדוד | שירה סהרוני',
+      alternateName: 'קשר - הדרכת הורים באשדוד',
+      url: `${SITE_CONFIG.url}/parenting-guidance-ashdod`,
+      image: `${SITE_CONFIG.url}/images/generated/services/parenting-room.jpg`,
       telephone: '+972-50-2763802',
       email: SITE_CONFIG.contact.email,
       priceRange: '₪500',
-      description: 'ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. כשאותם ריבים ודפוסי שיחה חוזרים שוב ושוב, אפשר להבין מה קורה ולתרגל דרך אחרת לדבר. פגישה של 50 דקות, 500 ₪.',
+      description: 'הדרכת הורים מעשית וממוקדת באשדוד או אונליין. כלים ליצירת סמכות רגועה, הצבת גבולות בלי מאבקים וחיזוק שיתוף הפעולה בבית. פגישה של 50 דקות, 500 ₪.',
       address: {
         '@type': 'PostalAddress',
         streetAddress: 'אשדוד',
@@ -174,8 +166,8 @@ const schemaData = {
         {
           '@type': 'ListItem',
           position: 2,
-          name: 'ייעוץ זוגי באשדוד',
-          item: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
+          name: 'הדרכת הורים באשדוד',
+          item: `${SITE_CONFIG.url}/parenting-guidance-ashdod`,
         },
       ],
     },
@@ -193,36 +185,9 @@ const schemaData = {
   ],
 };
 
-type VariantId = 'A' | 'B' | 'C';
-
-const copyVariants: Record<VariantId, { eyebrow: string; h1: string; subtitle: string }> = {
-  A: {
-    eyebrow: 'קליניקה באשדוד ובאונליין | שירה סהרוני',
-    h1: 'ייעוץ זוגי באשדוד – ליווי וחיבור מחדש לזוגיות',
-    subtitle: 'ייעוץ זוגי באשדוד מסייע לבני זוג לגשר על פערים, לעצור את מעגל הוויכוחים והשתיקות, ולבנות תקשורת מקרבת. בליווי ממוקד ומעשי נבין את הדפוס שחוזר בשיחות, ונתרגל דרך אחרת להקשיב, לדבר ולהתמודד עם מחלוקות — בלי לחפש מי אשם ומי צודק.',
-  },
-  B: {
-    eyebrow: 'תהליך ממוקד ומעשי בקליניקה באשדוד ובאונליין',
-    h1: 'ייעוץ זוגי באשדוד – לעצור את מעגל הריבים ולבנות דרך אחרת לדבר',
-    subtitle: 'ייעוץ זוגי באשדוד מתמקד במה שקורה בשיחות שלכם עכשיו: מזהים את הדפוס שחוזר, מבינים איפה השיחה מסתבכת ומתרגלים כלים מעשיים שאפשר לקחת הביתה.',
-  },
-  C: {
-    eyebrow: 'ייעוץ זוגי ומשפחתי באשדוד ובאונליין',
-    h1: 'ייעוץ זוגי באשדוד – ליצור שיחה מקרבת גם כשקשה לדבר בלי להיפגע',
-    subtitle: 'ייעוץ זוגי באשדוד מסייע לעשות סדר במה שקורה כשקשה לדבר, להבין את הצרכים ההדדיים ולבחון דרך בטוחה ומכבדת לחיבור מחדש.',
-  },
-};
-
-const CouplesCounselingAshdodPage: React.FC = () => {
+const ParentingGuidanceAshdodPage: React.FC = () => {
   const [isBookingInView, setIsBookingInView] = useState(false);
-  const [variantId] = useState<VariantId>(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const v = (params.get('variant') || '').toUpperCase() as VariantId;
-      if (v === 'B' || v === 'C') return v;
-    }
-    return 'A';
-  });
+  const variantId = 'A';
 
   const {
     trackCtaClick,
@@ -233,7 +198,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
   } = useLandingPageAnalytics(variantId);
 
   const whatsappMessage = encodeURIComponent(
-    'היי שירה, הגעתי לעמוד הייעוץ הזוגי באשדוד ויש לי שאלה לפני שקובעים פגישה.',
+    'היי שירה, הגעתי לעמוד הדרכת הורים באשדוד ויש לי שאלה לפני שקובעים פגישה.',
   );
   const whatsappUrl = `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${whatsappMessage}`;
 
@@ -268,10 +233,10 @@ const CouplesCounselingAshdodPage: React.FC = () => {
   return (
     <main id="main-content" className={styles.page}>
       <MetaTags
-        title="ייעוץ זוגי באשדוד | שירה סהרוני"
-        description="ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. כשאותם ריבים ודפוסי שיחה חוזרים שוב ושוב, אפשר להבין מה קורה ולתרגל דרך אחרת לדבר. פגישה של 50 דקות, 500 ₪."
-        canonical={`${SITE_CONFIG.url}/couples-counseling-ashdod`}
-        image="/images/shira-saharoni-sea.webp"
+        title="הדרכת הורים באשדוד | שירה סהרוני"
+        description="הדרכת הורים מעשית וממוקדת באשדוד או אונליין. כלים ליצירת סמכות רגועה, הצבת גבולות בלי מאבקים וחיזוק שיתוף הפעולה בבית. פגישה של 50 דקות, 500 ₪."
+        canonical={`${SITE_CONFIG.url}/parenting-guidance-ashdod`}
+        image="/images/generated/services/parenting-room.jpg"
       />
       <SchemaOrg data={schemaData} />
 
@@ -281,7 +246,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           <a href="/" className={styles.brand} aria-label="לדף הבית של שירה סהרוני">
             <div className={styles.brandText}>
               <span className={styles.brandTitle}>שירה סהרוני</span>
-              <span className={styles.brandSubtitle}>קשר | ייעוץ זוגי באשדוד</span>
+              <span className={styles.brandSubtitle}>קשר | הדרכת הורים באשדוד</span>
             </div>
           </a>
           <div className={styles.headerActions}>
@@ -305,18 +270,18 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       </header>
 
       {/* 2. אזור Hero */}
-      <section className={styles.heroSection} aria-labelledby="couples-ashdod-title">
+      <section className={styles.heroSection} aria-labelledby="parenting-ashdod-title">
         <div className={`container ${styles.heroGrid}`}>
           <div className={styles.heroContent}>
             <div className={styles.heroTag}>
               <FiHeart aria-hidden="true" />
-              <span>{copyVariants[variantId].eyebrow}</span>
+              <span>קליניקה באשדוד ובאונליין | שירה סהרוני</span>
             </div>
-            <h1 id="couples-ashdod-title" className={styles.heroTitle}>
-              {copyVariants[variantId].h1}
+            <h1 id="parenting-ashdod-title" className={styles.heroTitle}>
+              הדרכת הורים באשדוד – כלים מעשיים ושקט בבית
             </h1>
             <p className={styles.heroSubtitle}>
-              {copyVariants[variantId].subtitle}
+              הדרכת הורים באשדוד עם שירה סהרוני מעניקה להורים מרחב מקצועי ומעשי ליצירת סמכות רגועה, הצבת גבולות וחיזוק שיתוף הפעולה בבית. בליווי ממוקד נזהה את דפוסי התגובה שמובילים למאבקי כוח, ונרכוש כלים ברורים ליישום בשגרה היומיומית – בלי צעקות ובלי רגשות אשם.
             </p>
 
             <div className={styles.heroCtas}>
@@ -348,29 +313,29 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             <div className={styles.trustPoints} aria-label="נקודות אמון">
               <div className={styles.trustPoint}>
                 <FiUserCheck className={styles.trustIcon} aria-hidden="true" />
-                <span>מקום לשני בני הזוג</span>
+                <span>סמכות הורית רגועה</span>
               </div>
               <div className={styles.trustPoint}>
                 <FiClock className={styles.trustIcon} aria-hidden="true" />
-                <span>גישה ממוקדת ומעשית</span>
+                <span>כלים מעשיים לשגרה</span>
               </div>
               <div className={styles.trustPoint}>
                 <FiLock className={styles.trustIcon} aria-hidden="true" />
-                <span>מרחב פרטי ומכבד</span>
+                <span>מרחב מקצועי ומכבד</span>
               </div>
             </div>
           </div>
           <div className={styles.heroImageWrapper}>
             <img
-              src="/images/shira-saharoni-sea.webp"
-              alt="שירה סהרוני - ייעוץ זוגי באשדוד"
+              src="/images/generated/services/parenting-room.jpg"
+              alt="שירה סהרוני - הדרכת הורים באשדוד"
               className={styles.heroImage}
-              width="477"
-              height="1024"
+              width="1600"
+              height="900"
               fetchPriority="high"
             />
             <div className={styles.heroImageBadge}>
-              שירה סהרוני | יועצת זוגית ומנחת הורים
+              שירה סהרוני | מנחת הורים ויועצת זוגית
             </div>
           </div>
         </div>
@@ -380,9 +345,9 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2>איך לצאת ממעגל הוויכוחים והשתיקות בזוגיות</h2>
+            <h2>התמודדות עם קשיי התנהגות ומעברים – כשכל משימה הופכת למאבק</h2>
             <p>
-              לפעמים זה מתחיל ממשהו קטן. מנסים להסביר משהו חשוב — ותוך כמה דקות שוב נמצאים בדיוק באותו ויכוח. אחד מנסה לדבר והשני נסגר. אחד מרגיש שלא מקשיבים לו, והשני מרגיש שכל שיחה הופכת לביקורת. דברים קטנים מקבלים מהר מאוד עוצמה שלא התכוונתם אליה. ולפעמים כבר מעדיפים לא לפתוח נושאים מסוימים, רק כדי לא להיכנס שוב לאותו מעגל.
+              שגרת הבית לא אמורה להרגיש כמו שדה קרב. מנסים לבקש בנועם, לחזור שוב, להסביר בהיגיון — אבל לעיתים קרובות שום דבר לא זז עד שהטונים עולים. בסוף מוצאים את עצמכם מתעמתים סביב מסכים, מקלחות או התארגנות בוקר, והולכים לישון מותשים ועם מועקה בלב. אפשר לשנות את הדינמיקה הזו.
             </p>
           </div>
           <div className={styles.recognitionGrid}>
@@ -400,13 +365,13 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       <section className={styles.section}>
         <div className="container">
           <div className={styles.hopeBox}>
-            <h2>לא צריך לפתור את כל הזוגיות בשיחה אחת</h2>
+            <h2>כלים להצבת גבולות ברורים ברוגע – לא צריך להיות הורים מושלמים</h2>
             <div className={styles.hopeContent}>
               <p>
-                אפשר להתחיל ממשהו פשוט יותר: לעצור רגע את הדפוס שחוזר ביניכם. להבין מה קורה בשיחה לפני שהיא הופכת לעימות. לראות מה כל אחד מנסה לומר — ומה הצד השני שומע באותו רגע.
+                הורות רגועה אינה דורשת שינוי קיצוני של כל הבית ביום אחד. אפשר להתחיל מהבנה מדויקת של מה שמפעיל את מעגל המאבקים, ולבחור תגובה הורית אחת שמחזירה את השליטה והרוגע.
               </p>
               <p>
-                ומתוך ההבנה הזאת, לתרגל דרך אחרת להגיב, להקשיב ולדבר. המטרה אינה לייצר זוגיות בלי מחלוקות — המטרה היא ללמוד לנהל את המחלוקות בצורה שמאפשרת לשניכם להישאר בשיחה.
+                כשמציבים גבול ברור ללא כעס ומגבים אותו בנוכחות בטוחה, הילדים מרגישים מוגנים ופנויים יותר לשתף פעולה. המטרה אינה להכניע, אלא לבנות סמכות מכבדת ומקרבת.
               </p>
             </div>
             <button
@@ -424,9 +389,9 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       <section className={styles.timelineSection}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2>ליווי ממוקד למשברים בזוגיות – מה קורה בפגישה הראשונה?</h2>
+            <h2>מה קורה בפגישה הראשונה?</h2>
             <p>
-              50 דקות ממוקדות שנותנות מקום לשני בני הזוג ומאפשרות להתחיל לעשות סדר במה שקורה ביניכם. המטרה אינה להגיע כדי להוכיח מי צודק. מתחילים מהמצב כפי שכל אחד מכם חווה אותו, מזהים את הדפוס שחוזר בשיחות ובוחרים נקודה מעשית שאפשר להתחיל לעבוד עליה.
+              50 דקות ממוקדות שמעניקות סדר ובהירות במה שקורה בבית. נפגשים כהורים במרחב פתוח ולא שיפוטי, מזהים את מוקדי החיכוך המרכזיים ויוצאים עם כיוון מעשי וברור שאפשר להתחיל לתרגל מיד.
             </p>
           </div>
 
@@ -441,7 +406,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           </div>
 
           <div className={styles.sessionsNote}>
-            אין מספר קבוע של פגישות שמתאים לכל זוג. אחרי הפגישה הראשונה אפשר להבין יחד מה נכון עבורכם בהמשך.
+            אין מספר קבוע של פגישות שמתאים לכל משפחה. לעיתים מספר מפגשים קצר וממוקד מספיק כדי לייצר שינוי עמוק בשגרה.
           </div>
 
           <div className={styles.centerCta}>
@@ -456,20 +421,20 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. התמודדות עם התנגדות בן/בת הזוג (Partner Resistance) */}
+      {/* 6. התמודדות עם התלבטות בן/בת הזוג */}
       <section className={styles.resistanceSection}>
         <div className="container">
           <div className={styles.resistanceBox}>
-            <h2>ומה אם אחד מאיתנו פחות רוצה להגיע?</h2>
+            <h2>ומה אם אחד מאיתנו פחות מאמין בהדרכת הורים?</h2>
             <div className={styles.resistanceBody}>
               <p>
-                זה לא חריג שאחד מבני הזוג יוזם את הפנייה והשני פחות משוכנע. לפעמים עצם הרעיון של ייעוץ זוגי מעלה חשש: שיבואו להחליט מי צודק, שיצביעו על אחד מכם כ״הבעיה״, או שתיכנסו לתהליך ארוך בלי לדעת לאן הוא הולך.
+                זה טבעי לחלוטין שהורה אחד ייזום את הפנייה והשני ירגיש ספקנות או חשש מביקורת. לעיתים יש פחד שמישהו מבחוץ יחלק ״ציונים״ להורות שלכם או יציע תיאוריות שאינן תואמות את החיים האמיתיים.
               </p>
               <p>
-                זו לא מטרת הפגישה. אין צורך להגיע כדי להוכיח מי צודק ומי טועה. המטרה היא להבין מה קורה ביניכם כשהשיחה מסתבכת, לתת מקום לשתי נקודות המבט ולבדוק אם אפשר לנהל את אותם רגעים בצורה אחרת.
+                הדרכת הורים אינה עוסקת במציאת אשמים. המטרה היא להבין יחד את היומיום שלכם, להוריד את מפלס הלחץ בבית ולגבש כלים פרקטיים ששניכם תרגישו איתם בנוח ובטוח.
               </p>
               <p>
-                אם יש חשש או שאלה לפני שקובעים, אפשר לשאול את שירה ישירות ב-WhatsApp.
+                אם יש שאלה או התלבטות לפני שמתאמים, שירה זמינה להתייעצות ישירה ב-WhatsApp.
               </p>
             </div>
             <a
@@ -489,43 +454,43 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 7. למה שירה / נעים להכיר (Why Shira) */}
+      {/* 7. למה שירה / נעים להכיר */}
       <section className={styles.sectionAlt}>
         <div className={`container ${styles.aboutGrid}`}>
           <div className={styles.aboutImageWrapper}>
             <img
-              src="/images/generated/services/couples-room.jpg"
-              alt="מרחב שיחה וייעוץ זוגי - שירה סהרוני"
+              src="/images/shira-saharoni-about.webp"
+              alt="שירה סהרוני - מנחת הורים ויועצת זוגית"
               className={styles.aboutImage}
-              width="1600"
-              height="900"
+              width="477"
+              height="600"
               loading="lazy"
             />
           </div>
           <div className={styles.aboutContent}>
-            <h2>יועצת נישואין מוסמכת באשדוד – מרחב בטוח לשני הצדדים</h2>
+            <h2>הנחיית הורים באשדוד – ליווי מעשי לחיבור בין הבנת הילד לסמכות רגועה</h2>
             <span className={styles.aboutRole}>
-              שירה סהרוני | יועצת זוגית ומנחת הורים
+              שירה סהרוני | מנחת הורים, יועצת זוגית ומגשרת מוסמכת
             </span>
             <p>
-              הגישה שלי משלבת הקשבה לשתי נקודות המבט, הסתכלות מסודרת על מה שקורה בין בני הזוג וכלים מעשיים שאפשר לקחת גם לחיים בבית.
+              הגישה שלי משלבת ראייה מערכתית של התא המשפחתי, הבנה עמוקה של צורכי הילד, והתמקדות בכלים יישומיים שמתאימים למציאות העמוסה של הורים כיום.
             </p>
             <p>
-              המטרה אינה לקבוע מי צודק. המטרה היא לעזור לכם להבין את הדפוס שנוצר ביניכם, לפרק שיחות עמוסות למשהו שאפשר להבין ולעבוד איתו, ולבחון דרך תקשורת מכבדת ומועילה יותר.
+              לצד ליווי משפחות סביב שגרה וגבולות, צברתי ניסיון עשיר בהתמודדות עם אתגרי קשב וריכוז (ADHD), תפקודים ניהוליים, ילדים מחוננים ומעברים חינוכיים משמעותיים.
             </p>
 
             <ul className={styles.trustPointsList}>
               <li>
-                <strong>מקום לשני הצדדים:</strong>
-                <span>כל אחד מבני הזוג מקבל מקום להסביר איך הוא חווה את המצב.</span>
+                <strong>חזית הורית משותפת:</strong>
+                <span>עוזרים לשני ההורים לפעול בתיאום, גם כשיש ביניהם פערי גישות.</span>
               </li>
               <li>
-                <strong>בהירות וסדר:</strong>
-                <span>מנסים להבין מה קורה בשיחות שלכם, בלי להפוך את הדברים למסובכים יותר.</span>
+                <strong>ראייה מעשית וקונקרטית:</strong>
+                <span>פתרונות ברורים לבוקר, להשכבה, למסכים ולשעות שדורשות שיתוף פעולה.</span>
               </li>
               <li>
-                <strong>כלים מעשיים:</strong>
-                <span>הדגש הוא על דברים שאפשר לתרגל ולבדוק גם מחוץ לפגישה.</span>
+                <strong>מרחב בטוח ללא שיפוטיות:</strong>
+                <span>מקום שבו מותר לפרוק את הקושי ולקבל תמיכה אמיתית ומקצועית.</span>
               </li>
             </ul>
 
@@ -536,7 +501,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 8. מידע מעשי ומחיר (Practical Details / Price) */}
+      {/* 8. מידע מעשי ומחיר */}
       <section className={styles.section}>
         <div className="container">
           <div className={styles.sectionHeader}>
@@ -573,7 +538,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             </div>
 
             <div className={styles.detailsClosing}>
-              אין צורך להתחייב מראש למספר קבוע של פגישות. אחרי הפגישה הראשונה תוכלו להבין יחד עם שירה מה נכון להמשך.
+              אין צורך להתחייב מראש למספר קבוע של פגישות. אחרי הפגישה הראשונה תוכלו להבין יחד מה נכון להמשך.
             </div>
 
             <div className={styles.detailsCtas}>
@@ -606,7 +571,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2>שאלות שכדאי לדעת עליהן לפני הפגישה</h2>
+            <h2>שאלות נפוצות על הדרכת הורים</h2>
           </div>
           <div className={styles.faqAccordion}>
             {faqItems.map((item, index) => (
@@ -632,15 +597,15 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             <FiCalendar aria-hidden="true" style={{ fontSize: '2rem', color: 'var(--color-accent)' }} />
             <h2>אפשר להתחיל מפגישה אחת מסודרת</h2>
             <p>
-              אם אתם מרגישים שהשיחות חוזרות שוב לאותו מקום ורוצים לבדוק דרך אחרת להתמודד עם זה, אפשר לבחור מועד לפגישת ייעוץ. הפגישה מתקיימת בקליניקה באשדוד או אונליין.
+              אם אתם מרגישים ששגרת הבית שוחקת אתכם ורוצים להחזיר את הרוגע והסמכות, אפשר לבחור מועד נוח לפגישת הדרכת הורים. הפגישה מתקיימת בקליניקה באשדוד או אונליין.
             </p>
           </div>
 
           <div className={styles.calendlyWrapper}>
             <CalendlyBookingEmbed
-              ariaLabel="לוח זמנים לקביעת פגישת ייעוץ זוגי באשדוד עם שירה סהרוני"
-              serviceType="couples_counseling"
-              bookingPagePath="/couples-counseling-ashdod"
+              ariaLabel="לוח זמנים לקביעת פגישת הדרכת הורים באשדוד עם שירה סהרוני"
+              serviceType="parenting_guidance"
+              bookingPagePath="/parenting-guidance-ashdod"
               landingPageType="ashdod"
               variantId={variantId}
               value={500}
@@ -669,8 +634,8 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       {/* 11. CTA מסכם */}
       <section className={styles.closingCta}>
         <div className="container">
-          <h2>לא חייבים לדעת כבר עכשיו איך לפתור הכול</h2>
-          <p>מספיק להתחיל מלהבין מה קורה בשיחות שלכם — ולבדוק אם אפשר לעשות משהו אחרת.</p>
+          <h2>אפשר להחזיר את הרוגע והביטחון לבית</h2>
+          <p>מספיק להתחיל מצעד קטן וממוקד כדי לראות איך האווירה המשפחתית משתנה לטובה.</p>
           <div className={styles.closingCtas}>
             <button
               type="button"
@@ -761,4 +726,4 @@ const CouplesCounselingAshdodPage: React.FC = () => {
   );
 };
 
-export default CouplesCounselingAshdodPage;
+export default ParentingGuidanceAshdodPage;

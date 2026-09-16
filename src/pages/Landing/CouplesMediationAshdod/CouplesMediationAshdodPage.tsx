@@ -13,93 +13,85 @@ import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import { useLandingPageAnalytics } from '../../../hooks/useLandingPageAnalytics';
-import styles from './CouplesCounselingAshdodPage.module.css';
+import styles from './CouplesMediationAshdodPage.module.css';
 
 const recognitionItems = [
   {
-    title: 'שוב אותו ויכוח',
-    desc: 'הנושא משתנה, אבל השיחה כמעט תמיד מגיעה לאותו מקום.',
+    title: 'שיחות שחוזרות שוב למבוי סתום',
+    desc: 'מחלוקת עקרונית סביב כספים, חלוקת תפקידים או עתיד הקשר שתוקעת את ההתקדמות.',
   },
   {
-    title: 'אחד מדבר, השני נסגר',
-    desc: 'ככל שאחד מנסה להסביר יותר, השני מתרחק או מתגונן.',
+    title: 'פחד מהסלמה למאבק הרסני',
+    desc: 'רצון עמוק לפתור את הדברים בהסכמה ובכבוד הדדי, בלי להיגרר לעימותים ומלחמות מתישות.',
   },
   {
-    title: 'דברים קטנים מתפוצצים מהר',
-    desc: 'שיחה שהתחילה בעניין יומיומי הופכת במהירות למאבק.',
+    title: 'קושי לתקשר בלי להיפגע',
+    desc: 'כל ניסיון לנהל שיחה עניינית מידרדר במהירות להטחת האשמות הדדית ולתחושת תסכול.',
   },
   {
-    title: 'נוצר ריחוק',
-    desc: 'מדברים על הבית, הילדים והמשימות — אבל פחות על מה שקורה ביניכם.',
+    title: 'רצון לשמור על הילדים והמשפחה',
+    desc: 'הבנה ברורה שמחלוקות בין המבוגרים אינן צריכות לפגוע בביטחון וביציבות של הילדים.',
   },
   {
-    title: 'נמנעים משיחות',
-    desc: 'יש דברים שכבר לא מעלים, כי לא רוצים עוד ערב של מתח.',
+    title: 'פערים בציפיות ובצרכים',
+    desc: 'כל צד מרגיש שהצד השני אינו רואה את נקודת המבט שלו ולא מבין מה באמת חשוב לו.',
   },
   {
-    title: 'רוצים שינוי, אבל תקועים',
-    desc: 'שניכם אולי רוצים שיהיה אחרת, אבל לא יודעים איך לצאת מהדפוס שנוצר.',
+    title: 'צורך במסגרת מקצועית וניטרלית',
+    desc: 'הבנה שבכוחות עצמכם קשה לפרוץ את המחסום, ושדרוש גורם מוסמך שינהל את השיח.',
   },
 ];
 
 const timelineSteps = [
   {
     time: '00–15 דק׳',
-    title: 'מתחילים ממה שקורה עכשיו',
-    desc: 'נבין מה מביא אתכם לפגישה. כל אחד מקבל מקום לתאר איך הוא חווה את המצב ומה היה רוצה שייראה אחרת. המטרה בשלב הזה היא ליצור תמונה משותפת — לא להכריע בין שתי גרסאות.',
+    title: 'הגדרת גבולות השיח ומיפוי הנושאים',
+    desc: 'יוצרים מרחב מוגן, בטוח ומכבד. כל אחד מבני הזוג מציג את הסוגיות המרכזיות והדחופות ביותר עבורו, וממפים את נקודות ההסכמה ואת מוקדי המחלוקת.',
   },
   {
     time: '15–35 דק׳',
-    title: 'מזהים מה קורה כשהשיחה מסתבכת',
-    desc: 'נבדוק איך מתחילות השיחות שמסתיימות שוב באותו מקום. מה מפעיל כל אחד. איפה מתחילה ההתגוננות, ההתרחקות או ההסלמה. ואיזה דפוס חוזר ביניכם גם כששניכם התכוונתם בכלל למשהו אחר.',
+    title: 'זיהוי האינטרסים שמתחת לעמדות',
+    desc: 'עוברים מוויכוח על "מי צודק" לבירור הצרכים, החששות והאינטרסים האמיתיים של כל צד. בוחנים נקודות מפגש שמאפשרות לבנות פתרונות מותאמים.',
   },
   {
     time: '35–50 דק׳',
-    title: 'יוצאים עם כיוון מעשי ראשון',
-    desc: 'נבחר דרך אחת שאפשר להתחיל לתרגל. זו יכולה להיות דרך לפתוח שיחה אחרת, לעצור הסלמה או להקשיב לפני שמגיבים. המטרה היא לצאת מהפגישה עם כיוון ברור שאפשר לנסות גם בבית.',
+    title: 'גיבוש מתווה ראשוני להמשך והסכמות',
+    desc: 'מגדירים את סדר העבודה על הסוגיות שעל הפרק ויוצאים עם הבנות מעשיות ראשונות שאפשר ליישם כבר עכשיו, לקראת השלמת הסכמות יציבות.',
   },
 ];
 
 const faqItems = [
   {
-    question: 'מה קורה בפגישה הראשונה?',
-    answer: 'הפגישה הראשונה מיועדת להבין מה מעסיק אתכם, לשמוע את נקודת המבט של שני בני הזוג ולזהות את דפוסי השיחה שחוזרים ביניכם. המטרה היא להתחיל לעשות סדר ולבחון כיוון מעשי להמשך.',
+    question: 'מה ההבדל בין גישור זוגי לייעוץ זוגי?',
+    answer: 'ייעוץ זוגי מתמקד בהבנת דפוסי התקשורת וחיזוק החיבור הרגשי, בעוד גישור זוגי מתמקד בניהול משא ומתן מכבד, יישוב מחלוקות מוגדרות והגעה להסכמות יציבות וברורות בין בני הזוג.',
   },
   {
-    question: 'האם חייבים להגיע יחד?',
-    answer: 'מומלץ להגיע יחד לפגישה הזוגית, משום שהייעוץ מתמקד בתקשורת ובדפוסים שבין בני הזוג. אם יש התלבטות או שאלה לפני הפגישה, אפשר להתייעץ מראש עם שירה.',
+    question: 'מה קורה בפגישת הגישור הראשונה?',
+    answer: 'בפגישה הראשונה מגדירים את כללי השיח המכבד, ממפים את כל הנושאים הדורשים פתרון (הורות, כספים, שגרה, עתיד הקשר), ומתווים את הדרך להגעה להסכמות משותפות.',
   },
   {
-    question: 'מה אם בן או בת הזוג עדיין לא בטוחים לגבי ייעוץ?',
-    answer: 'לא חייבים להגיע מתוך הסכמה על מי צודק או אפילו מתוך אותה נקודת מבט על הבעיה. המטרה בפגישה היא לא לבחור צד, אלא להבין מה קורה ביניכם כשהשיחה מסתבכת ולבדוק דרך אחרת לנהל אותה. אם יש חשש מסוים לפני שקובעים, אפשר לכתוב לשירה ב-WhatsApp ולשאול.',
+    question: 'האם המגשרת מכריעה או קובעת מי צודק?',
+    answer: 'לא. המגשרת אינה שופטת ואינה מכריעה. תפקידה לסייע לשני הצדדים לנהל שיח הוגן ובטוח, לזהות פתרונות מוסכמים ולשמור על האינטרסים של שניהם.',
   },
   {
-    question: 'כמה זמן נמשכת פגישה?',
-    answer: 'פגישת ייעוץ נמשכת 50 דקות מלאות.',
+    question: 'מה אם בן או בת הזוג חוששים שיפעילו עליהם לחץ?',
+    answer: 'גישור מתקיים אך ורק מרצון חופשי. שירה סהרוני, כמגשרת מוסמכת ויועצת זוגית, מקפידה על שוויון מלא ועל כך שאף צד לא יחתום או יסכים למה שאינו שלם איתו.',
   },
   {
-    question: 'האם אפשר לקיים את הפגישה אונליין?',
-    answer: 'כן. לצד הפגישות בקליניקה באשדוד, קיימת אפשרות לקיים פגישה אונליין (Zoom).',
+    question: 'כמה פגישות נדרשות בדרך כלל לתהליך גישור?',
+    answer: 'מספר הפגישות תלוי בהיקף הנושאים ובקצב שבו בני הזוג מעוניינים להתקדם. אין התחייבות למספר פגישות מראש, וכל פגישה מקדמת את בניית ההסכמות.',
+  },
+  {
+    question: 'כמה זמן נמשכת פגישה ומה עלותה?',
+    answer: 'פגישת גישור נמשכת 50 דקות מלאות. עלות הפגישה היא 500 ₪ כולל מע״מ.',
   },
   {
     question: 'איפה מתקיימות הפגישות?',
-    answer: 'הפגישות הפרונטליות מתקיימות בקליניקה באשדוד.',
+    answer: 'הפגישות הפרונטליות מתקיימות בקליניקה באשדוד. כמו כן, ניתן לקיים פגישות מקוונות (Zoom) מכל מקום.',
   },
   {
-    question: 'מה מחיר הפגישה?',
-    answer: 'מחיר פגישת ייעוץ הוא 500 ₪ כולל מע״מ.',
-  },
-  {
-    question: 'איך קובעים פגישה?',
-    answer: 'לוחצים על "קביעת פגישה", בוחרים מועד פנוי ביומן ומשלימים את ההזמנה. אם לא מצאתם מועד מתאים או שיש לכם שאלה לפני ההזמנה, אפשר לפנות לשירה ב-WhatsApp.',
-  },
-  {
-    question: 'האם השיחה דיסקרטית?',
-    answer: 'הפגישות מתקיימות במרחב פרטי ומכבד, בהתאם לכללי האתיקה המקצועית. מידע נוסף על אופן הטיפול בפרטים שנמסרים באתר מופיע במדיניות הפרטיות.',
-  },
-  {
-    question: 'האם צריך להתחייב לתהליך ארוך?',
-    answer: 'לא. אין מספר קבוע של פגישות שמתאים לכל זוג. לאחר הפגישה הראשונה אפשר להעריך יחד את הצרכים ואת דרך ההמשך.',
+    question: 'האם השיחות בגישור חסויות?',
+    answer: 'כן. הליך הגישור הוא חסוי ודיסקרטי לחלוטין, מה שמאפשר שיחה כנה ופתוחה ללא חשש שדברים שנאמרו ישמשו בהמשך.',
   },
 ];
 
@@ -108,15 +100,15 @@ const schemaData = {
   '@graph': [
     {
       '@type': ['LocalBusiness', 'ProfessionalService'],
-      '@id': `${SITE_CONFIG.url}/couples-counseling-ashdod#service`,
-      name: 'ייעוץ זוגי באשדוד | שירה סהרוני',
-      alternateName: 'קשר - ייעוץ זוגי באשדוד',
-      url: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
-      image: `${SITE_CONFIG.url}/images/shira-saharoni-sea.webp`,
+      '@id': `${SITE_CONFIG.url}/couples-mediation-ashdod#service`,
+      name: 'גישור זוגי באשדוד | שירה סהרוני',
+      alternateName: 'קשר - גישור זוגי באשדוד',
+      url: `${SITE_CONFIG.url}/couples-mediation-ashdod`,
+      image: `${SITE_CONFIG.url}/images/generated/services/mediation-room.jpg`,
       telephone: '+972-50-2763802',
       email: SITE_CONFIG.contact.email,
       priceRange: '₪500',
-      description: 'ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. כשאותם ריבים ודפוסי שיחה חוזרים שוב ושוב, אפשר להבין מה קורה ולתרגל דרך אחרת לדבר. פגישה של 50 דקות, 500 ₪.',
+      description: 'גישור זוגי מקצועי ומכבד באשדוד או אונליין. מרחב ניטרלי ליישוב מחלוקות, בניית הסכמות הדדיות וניהול שיח בטוח. שירה סהרוני, מגשרת מוסמכת. פגישה של 50 דקות, 500 ₪.',
       address: {
         '@type': 'PostalAddress',
         streetAddress: 'אשדוד',
@@ -174,8 +166,8 @@ const schemaData = {
         {
           '@type': 'ListItem',
           position: 2,
-          name: 'ייעוץ זוגי באשדוד',
-          item: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
+          name: 'גישור זוגי באשדוד',
+          item: `${SITE_CONFIG.url}/couples-mediation-ashdod`,
         },
       ],
     },
@@ -193,36 +185,9 @@ const schemaData = {
   ],
 };
 
-type VariantId = 'A' | 'B' | 'C';
-
-const copyVariants: Record<VariantId, { eyebrow: string; h1: string; subtitle: string }> = {
-  A: {
-    eyebrow: 'קליניקה באשדוד ובאונליין | שירה סהרוני',
-    h1: 'ייעוץ זוגי באשדוד – ליווי וחיבור מחדש לזוגיות',
-    subtitle: 'ייעוץ זוגי באשדוד מסייע לבני זוג לגשר על פערים, לעצור את מעגל הוויכוחים והשתיקות, ולבנות תקשורת מקרבת. בליווי ממוקד ומעשי נבין את הדפוס שחוזר בשיחות, ונתרגל דרך אחרת להקשיב, לדבר ולהתמודד עם מחלוקות — בלי לחפש מי אשם ומי צודק.',
-  },
-  B: {
-    eyebrow: 'תהליך ממוקד ומעשי בקליניקה באשדוד ובאונליין',
-    h1: 'ייעוץ זוגי באשדוד – לעצור את מעגל הריבים ולבנות דרך אחרת לדבר',
-    subtitle: 'ייעוץ זוגי באשדוד מתמקד במה שקורה בשיחות שלכם עכשיו: מזהים את הדפוס שחוזר, מבינים איפה השיחה מסתבכת ומתרגלים כלים מעשיים שאפשר לקחת הביתה.',
-  },
-  C: {
-    eyebrow: 'ייעוץ זוגי ומשפחתי באשדוד ובאונליין',
-    h1: 'ייעוץ זוגי באשדוד – ליצור שיחה מקרבת גם כשקשה לדבר בלי להיפגע',
-    subtitle: 'ייעוץ זוגי באשדוד מסייע לעשות סדר במה שקורה כשקשה לדבר, להבין את הצרכים ההדדיים ולבחון דרך בטוחה ומכבדת לחיבור מחדש.',
-  },
-};
-
-const CouplesCounselingAshdodPage: React.FC = () => {
+const CouplesMediationAshdodPage: React.FC = () => {
   const [isBookingInView, setIsBookingInView] = useState(false);
-  const [variantId] = useState<VariantId>(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const v = (params.get('variant') || '').toUpperCase() as VariantId;
-      if (v === 'B' || v === 'C') return v;
-    }
-    return 'A';
-  });
+  const variantId = 'A';
 
   const {
     trackCtaClick,
@@ -233,7 +198,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
   } = useLandingPageAnalytics(variantId);
 
   const whatsappMessage = encodeURIComponent(
-    'היי שירה, הגעתי לעמוד הייעוץ הזוגי באשדוד ויש לי שאלה לפני שקובעים פגישה.',
+    'היי שירה, הגעתי לעמוד הגישור הזוגי באשדוד ויש לי שאלה לפני שקובעים פגישה.',
   );
   const whatsappUrl = `https://wa.me/${SITE_CONFIG.contact.whatsapp}?text=${whatsappMessage}`;
 
@@ -268,10 +233,10 @@ const CouplesCounselingAshdodPage: React.FC = () => {
   return (
     <main id="main-content" className={styles.page}>
       <MetaTags
-        title="ייעוץ זוגי באשדוד | שירה סהרוני"
-        description="ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. כשאותם ריבים ודפוסי שיחה חוזרים שוב ושוב, אפשר להבין מה קורה ולתרגל דרך אחרת לדבר. פגישה של 50 דקות, 500 ₪."
-        canonical={`${SITE_CONFIG.url}/couples-counseling-ashdod`}
-        image="/images/shira-saharoni-sea.webp"
+        title="גישור זוגי באשדוד | שירה סהרוני - מגשרת מוסמכת"
+        description="גישור זוגי מקצועי ומכבד באשדוד או אונליין. מרחב ניטרלי ליישוב מחלוקות, בניית הסכמות הדדיות וניהול שיח בטוח. שירה סהרוני, מגשרת מוסמכת. פגישה של 50 דקות, 500 ₪."
+        canonical={`${SITE_CONFIG.url}/couples-mediation-ashdod`}
+        image="/images/generated/services/mediation-room.jpg"
       />
       <SchemaOrg data={schemaData} />
 
@@ -281,7 +246,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           <a href="/" className={styles.brand} aria-label="לדף הבית של שירה סהרוני">
             <div className={styles.brandText}>
               <span className={styles.brandTitle}>שירה סהרוני</span>
-              <span className={styles.brandSubtitle}>קשר | ייעוץ זוגי באשדוד</span>
+              <span className={styles.brandSubtitle}>קשר | גישור זוגי באשדוד</span>
             </div>
           </a>
           <div className={styles.headerActions}>
@@ -305,18 +270,18 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       </header>
 
       {/* 2. אזור Hero */}
-      <section className={styles.heroSection} aria-labelledby="couples-ashdod-title">
+      <section className={styles.heroSection} aria-labelledby="mediation-ashdod-title">
         <div className={`container ${styles.heroGrid}`}>
           <div className={styles.heroContent}>
             <div className={styles.heroTag}>
               <FiHeart aria-hidden="true" />
-              <span>{copyVariants[variantId].eyebrow}</span>
+              <span>קליניקה באשדוד ובאונליין | שירה סהרוני</span>
             </div>
-            <h1 id="couples-ashdod-title" className={styles.heroTitle}>
-              {copyVariants[variantId].h1}
+            <h1 id="mediation-ashdod-title" className={styles.heroTitle}>
+              גישור זוגי באשדוד – בניית הסכמות ושיח מכבד
             </h1>
             <p className={styles.heroSubtitle}>
-              {copyVariants[variantId].subtitle}
+              גישור זוגי באשדוד עם שירה סהרוני מאפשר לבני זוג ליישב מחלוקות, להגיע להסכמות יציבות ולנהל שיח מכבד גם ברגעי משבר. בליווי מקצועי וניטרלי נפרוט את נקודות החיכוך, נבין את האינטרסים של שני הצדדים ונבנה הסכמות מעשיות שמחזיקות לאורך זמן – בלי להפוך מחלוקת למלחמה.
             </p>
 
             <div className={styles.heroCtas}>
@@ -348,29 +313,29 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             <div className={styles.trustPoints} aria-label="נקודות אמון">
               <div className={styles.trustPoint}>
                 <FiUserCheck className={styles.trustIcon} aria-hidden="true" />
-                <span>מקום לשני בני הזוג</span>
+                <span>מרחב ניטרלי והוגן</span>
               </div>
               <div className={styles.trustPoint}>
                 <FiClock className={styles.trustIcon} aria-hidden="true" />
-                <span>גישה ממוקדת ומעשית</span>
+                <span>הסכמות יציבות ומעשיות</span>
               </div>
               <div className={styles.trustPoint}>
                 <FiLock className={styles.trustIcon} aria-hidden="true" />
-                <span>מרחב פרטי ומכבד</span>
+                <span>חיסיון מלא ודיסקרטיות</span>
               </div>
             </div>
           </div>
           <div className={styles.heroImageWrapper}>
             <img
-              src="/images/shira-saharoni-sea.webp"
-              alt="שירה סהרוני - ייעוץ זוגי באשדוד"
+              src="/images/generated/services/mediation-room.jpg"
+              alt="שירה סהרוני - גישור זוגי באשדוד"
               className={styles.heroImage}
-              width="477"
-              height="1024"
+              width="1600"
+              height="900"
               fetchPriority="high"
             />
             <div className={styles.heroImageBadge}>
-              שירה סהרוני | יועצת זוגית ומנחת הורים
+              שירה סהרוני | מגשרת מוסמכת ויועצת זוגית
             </div>
           </div>
         </div>
@@ -380,9 +345,9 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2>איך לצאת ממעגל הוויכוחים והשתיקות בזוגיות</h2>
+            <h2>הסכם פרידה מכבד מחוץ לכותלי בית המשפט או חזרה לשיח בונה</h2>
             <p>
-              לפעמים זה מתחיל ממשהו קטן. מנסים להסביר משהו חשוב — ותוך כמה דקות שוב נמצאים בדיוק באותו ויכוח. אחד מנסה לדבר והשני נסגר. אחד מרגיש שלא מקשיבים לו, והשני מרגיש שכל שיחה הופכת לביקורת. דברים קטנים מקבלים מהר מאוד עוצמה שלא התכוונתם אליה. ולפעמים כבר מעדיפים לא לפתוח נושאים מסוימים, רק כדי לא להיכנס שוב לאותו מעגל.
+              כשלא מצליחים להסכים על נושאים מהותיים – כספים, התנהלות הבית, שגרת הילדים או עתיד הקשר – התסכול גובר במהירות. כל ניסיון לדבר מדרדר לוויכוחים מתישים, לתחושת חוסר אונים ולפחד מהסלמה. במקום להישאר תקועים או להיגרר לעימותים הרסניים, אפשר לבחור בדרך של שיח מובנה ומכבד.
             </p>
           </div>
           <div className={styles.recognitionGrid}>
@@ -400,13 +365,13 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       <section className={styles.section}>
         <div className="container">
           <div className={styles.hopeBox}>
-            <h2>לא צריך לפתור את כל הזוגיות בשיחה אחת</h2>
+            <h2>בניית הסכמות משותפות ושלום בית – מחלוקת אינה חייבת להפוך למאבק</h2>
             <div className={styles.hopeContent}>
               <p>
-                אפשר להתחיל ממשהו פשוט יותר: לעצור רגע את הדפוס שחוזר ביניכם. להבין מה קורה בשיחה לפני שהיא הופכת לעימות. לראות מה כל אחד מנסה לומר — ומה הצד השני שומע באותו רגע.
+                גישור זוגי מאפשר לעצור את ההסלמה, לפרק את המוקשים ולמצוא פתרונות מציאותיים ששני הצדדים יכולים לחיות איתם בשלום.
               </p>
               <p>
-                ומתוך ההבנה הזאת, לתרגל דרך אחרת להגיב, להקשיב ולדבר. המטרה אינה לייצר זוגיות בלי מחלוקות — המטרה היא ללמוד לנהל את המחלוקות בצורה שמאפשרת לשניכם להישאר בשיחה.
+                כשיש מסגרת מקצועית שמבטיחה ששני הקולות יישמעו בהגינות וללא איומים, אפשר להפוך מתח מתמשך להסכמות יציבות וברורות שמחזירות את השקט לחיים.
               </p>
             </div>
             <button
@@ -424,9 +389,9 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       <section className={styles.timelineSection}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2>ליווי ממוקד למשברים בזוגיות – מה קורה בפגישה הראשונה?</h2>
+            <h2>מה קורה בפגישה הראשונה?</h2>
             <p>
-              50 דקות ממוקדות שנותנות מקום לשני בני הזוג ומאפשרות להתחיל לעשות סדר במה שקורה ביניכם. המטרה אינה להגיע כדי להוכיח מי צודק. מתחילים מהמצב כפי שכל אחד מכם חווה אותו, מזהים את הדפוס שחוזר בשיחות ובוחרים נקודה מעשית שאפשר להתחיל לעבוד עליה.
+              50 דקות ממוקדות שמעניקות ודאות וסדר. מגדירים את הכללים לשיח מכבד, ממפים יחד את הסוגיות שדורשות מענה ובוחנים כיוונים להסכמות ראשוניות.
             </p>
           </div>
 
@@ -441,7 +406,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
           </div>
 
           <div className={styles.sessionsNote}>
-            אין מספר קבוע של פגישות שמתאים לכל זוג. אחרי הפגישה הראשונה אפשר להבין יחד מה נכון עבורכם בהמשך.
+            אין מספר קבוע של פגישות שמתאים לכל מקרה. התהליך מותאם לקצב שלכם ולנושאים שעל הפרק.
           </div>
 
           <div className={styles.centerCta}>
@@ -456,20 +421,20 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. התמודדות עם התנגדות בן/בת הזוג (Partner Resistance) */}
+      {/* 6. התמודדות עם חששות הצדדים */}
       <section className={styles.resistanceSection}>
         <div className="container">
           <div className={styles.resistanceBox}>
-            <h2>ומה אם אחד מאיתנו פחות רוצה להגיע?</h2>
+            <h2>ומה אם אחד מאיתנו חושש שיפעילו עליו לחץ לוותר?</h2>
             <div className={styles.resistanceBody}>
               <p>
-                זה לא חריג שאחד מבני הזוג יוזם את הפנייה והשני פחות משוכנע. לפעמים עצם הרעיון של ייעוץ זוגי מעלה חשש: שיבואו להחליט מי צודק, שיצביעו על אחד מכם כ״הבעיה״, או שתיכנסו לתהליך ארוך בלי לדעת לאן הוא הולך.
+                זהו חשש מובן לחלוטין. ברגעי מחלוקת קיים פחד שצד אחד יהיה משכנע יותר, או שהמגשרת תיקח צד ותלחץ על אחד מכם להסכים לדברים שאינם מתאימים לו.
               </p>
               <p>
-                זו לא מטרת הפגישה. אין צורך להגיע כדי להוכיח מי צודק ומי טועה. המטרה היא להבין מה קורה ביניכם כשהשיחה מסתבכת, לתת מקום לשתי נקודות המבט ולבדוק אם אפשר לנהל את אותם רגעים בצורה אחרת.
+                זה לא קורה בגישור. שירה סהרוני, כמגשרת מוסמכת ויועצת זוגית, מחויבת לניטרליות מוחלטת ולהגנה על זכותו של כל צד להשמיע את דעתו ולהסכים רק לפתרונות הוגנים ושלמים עבורו.
               </p>
               <p>
-                אם יש חשש או שאלה לפני שקובעים, אפשר לשאול את שירה ישירות ב-WhatsApp.
+                אם יש שאלה או התלבטות לפני שמתאמים, שירה זמינה להתייעצות ישירה ב-WhatsApp.
               </p>
             </div>
             <a
@@ -489,43 +454,43 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 7. למה שירה / נעים להכיר (Why Shira) */}
+      {/* 7. למה שירה / נעים להכיר */}
       <section className={styles.sectionAlt}>
         <div className={`container ${styles.aboutGrid}`}>
           <div className={styles.aboutImageWrapper}>
             <img
-              src="/images/generated/services/couples-room.jpg"
-              alt="מרחב שיחה וייעוץ זוגי - שירה סהרוני"
+              src="/images/shira-saharoni-consult.webp"
+              alt="שירה סהרוני - מגשרת מוסמכת ויועצת זוגית"
               className={styles.aboutImage}
-              width="1600"
-              height="900"
+              width="477"
+              height="600"
               loading="lazy"
             />
           </div>
           <div className={styles.aboutContent}>
-            <h2>יועצת נישואין מוסמכת באשדוד – מרחב בטוח לשני הצדדים</h2>
+            <h2>גישור זוגי מוסמך באשדוד – מרחב בטוח וניטרלי להסכמות</h2>
             <span className={styles.aboutRole}>
-              שירה סהרוני | יועצת זוגית ומנחת הורים
+              שירה סהרוני | מגשרת מוסמכת ויועצת זוגית
             </span>
             <p>
-              הגישה שלי משלבת הקשבה לשתי נקודות המבט, הסתכלות מסודרת על מה שקורה בין בני הזוג וכלים מעשיים שאפשר לקחת גם לחיים בבית.
+              כמגשרת מוסמכת ויועצת זוגית, אני מביאה לחדר הגישור שילוב של הקשבה עמוקה, יסודיות בהגדרת הסכמות, ורגישות אנושית רבה למורכבות הרגשית של בני הזוג.
             </p>
             <p>
-              המטרה אינה לקבוע מי צודק. המטרה היא לעזור לכם להבין את הדפוס שנוצר ביניכם, לפרק שיחות עמוסות למשהו שאפשר להבין ולעבוד איתו, ולבחון דרך תקשורת מכבדת ומועילה יותר.
+              המטרה אינה להילחם על "מי מנצח", אלא ליצור הסכמות ששני הצדדים שלמים איתן, ושמבטיחות יציבות וכבוד הדדי גם בעתיד.
             </p>
 
             <ul className={styles.trustPointsList}>
               <li>
-                <strong>מקום לשני הצדדים:</strong>
-                <span>כל אחד מבני הזוג מקבל מקום להסביר איך הוא חווה את המצב.</span>
+                <strong>ניטרליות ללא פשרות:</strong>
+                <span>שמירה מלאה על כבודם והאינטרסים של שני בני הזוג.</span>
               </li>
               <li>
-                <strong>בהירות וסדר:</strong>
-                <span>מנסים להבין מה קורה בשיחות שלכם, בלי להפוך את הדברים למסובכים יותר.</span>
+                <strong>הסכמות ברורות וסדורות:</strong>
+                <span>ניסוח פתרונות מעשיים וישימים שמונעים חיכוכים עתידיים.</span>
               </li>
               <li>
-                <strong>כלים מעשיים:</strong>
-                <span>הדגש הוא על דברים שאפשר לתרגל ולבדוק גם מחוץ לפגישה.</span>
+                <strong>מרחב בטוח וחסוי:</strong>
+                <span>דיאלוג ישיר ומכבד בסביבה דיסקרטית ומקצועית.</span>
               </li>
             </ul>
 
@@ -536,7 +501,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 8. מידע מעשי ומחיר (Practical Details / Price) */}
+      {/* 8. מידע מעשי ומחיר */}
       <section className={styles.section}>
         <div className="container">
           <div className={styles.sectionHeader}>
@@ -573,7 +538,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             </div>
 
             <div className={styles.detailsClosing}>
-              אין צורך להתחייב מראש למספר קבוע של פגישות. אחרי הפגישה הראשונה תוכלו להבין יחד עם שירה מה נכון להמשך.
+              אין צורך להתחייב מראש למספר קבוע של פגישות. אחרי הפגישה הראשונה תוכלו להבין יחד מה נכון להמשך.
             </div>
 
             <div className={styles.detailsCtas}>
@@ -606,7 +571,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
-            <h2>שאלות שכדאי לדעת עליהן לפני הפגישה</h2>
+            <h2>שאלות נפוצות על גישור זוגי</h2>
           </div>
           <div className={styles.faqAccordion}>
             {faqItems.map((item, index) => (
@@ -632,15 +597,15 @@ const CouplesCounselingAshdodPage: React.FC = () => {
             <FiCalendar aria-hidden="true" style={{ fontSize: '2rem', color: 'var(--color-accent)' }} />
             <h2>אפשר להתחיל מפגישה אחת מסודרת</h2>
             <p>
-              אם אתם מרגישים שהשיחות חוזרות שוב לאותו מקום ורוצים לבדוק דרך אחרת להתמודד עם זה, אפשר לבחור מועד לפגישת ייעוץ. הפגישה מתקיימת בקליניקה באשדוד או אונליין.
+              אם אתם עומדים מול מחלוקת משמעותית ורוצים להגיע להסכמות בדרך מכבדת ויציבה, אפשר לבחור מועד לפגישת גישור. הפגישה מתקיימת בקליניקה באשדוד או אונליין.
             </p>
           </div>
 
           <div className={styles.calendlyWrapper}>
             <CalendlyBookingEmbed
-              ariaLabel="לוח זמנים לקביעת פגישת ייעוץ זוגי באשדוד עם שירה סהרוני"
-              serviceType="couples_counseling"
-              bookingPagePath="/couples-counseling-ashdod"
+              ariaLabel="לוח זמנים לקביעת פגישת גישור זוגי באשדוד עם שירה סהרוני"
+              serviceType="couples_mediation"
+              bookingPagePath="/couples-mediation-ashdod"
               landingPageType="ashdod"
               variantId={variantId}
               value={500}
@@ -669,8 +634,8 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       {/* 11. CTA מסכם */}
       <section className={styles.closingCta}>
         <div className="container">
-          <h2>לא חייבים לדעת כבר עכשיו איך לפתור הכול</h2>
-          <p>מספיק להתחיל מלהבין מה קורה בשיחות שלכם — ולבדוק אם אפשר לעשות משהו אחרת.</p>
+          <h2>מחלוקת אפשר לפתור בהסכמה ובכבוד</h2>
+          <p>מספיק להתחיל משיחה אחת מובנית כדי למצוא את הדרך המשותפת קדימה.</p>
           <div className={styles.closingCtas}>
             <button
               type="button"
@@ -761,4 +726,4 @@ const CouplesCounselingAshdodPage: React.FC = () => {
   );
 };
 
-export default CouplesCounselingAshdodPage;
+export default CouplesMediationAshdodPage;
