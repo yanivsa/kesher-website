@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T09:19:30.542729+00:00",
+    "live_verified_at": "2026-09-16T09:23:22.173322+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -935,21 +935,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-13T21:42:56.575104+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-13T21:43:22.550493+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-09-13T22:13:58.017770+00:00",
       "from": "article_generating",
       "to": "article_watchdog_nudge",
@@ -1797,9 +1782,21 @@
         "operation": "upload",
         "resume": 3
       }
+    },
+    {
+      "at": "2026-09-16T09:23:22.173342+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T09:23:30.128957+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-16T09:21:05.050368+00:00",
+  "updated_at": "2026-09-16T09:23:30.128980+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1814,10 +1811,10 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 35078910831,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
