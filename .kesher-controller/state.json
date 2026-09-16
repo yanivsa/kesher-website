@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T14:34:53.090620+00:00",
+    "live_verified_at": "2026-09-16T14:40:59.565911+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -936,31 +936,9 @@
     "stage": "long_video",
     "code": "VIDEO_ATTEMPTS_EXHAUSTED",
     "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-16T14:35:18.433822+00:00"
+    "at": "2026-09-16T14:41:24.192577+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-14T10:12:32.002335+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 808
-      }
-    },
-    {
-      "at": "2026-09-14T10:39:55.232399+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 34832008148 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-14T10:44:55.232353+00:00",
-        "failure_streak": 1,
-        "run_id": 34832008148
-      }
-    },
     {
       "at": "2026-09-14T18:30:05.109637+00:00",
       "from": "image_retry_wait",
@@ -1757,9 +1735,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-16T14:40:59.565929+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T14:41:24.192596+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-16T14:35:18.433843+00:00",
+  "updated_at": "2026-09-16T14:41:24.192604+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
