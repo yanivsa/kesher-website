@@ -1840,11 +1840,11 @@
       "content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
       "stage": "long_video",
       "strike_count": 3,
-      "last_check_token": "2026-09-16T08",
+      "last_check_token": "2026-09-16T09",
       "last_fingerprint": "849197fe83688c7f08199d00ae822cc51a4f857b439c6bd3cd4d21af2b4ea0a4",
       "last_controller_action_token": "recovery:1:2026-09-16T01:21:06.006518+00:00",
       "controller_action_observed": true,
-      "last_observed_at": "2026-09-16T05:04:06.626338+00:00",
+      "last_observed_at": "2026-09-16T06:12:24.770285+00:00",
       "last_action": "direct_takeover",
       "direct_takeover_required": true,
       "last_controller_action_at": "2026-09-16T01:21:06.006518+00:00"
