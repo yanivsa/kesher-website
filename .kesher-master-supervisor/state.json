@@ -37,6 +37,7 @@
       "updated_at": "2026-09-16T02:34:36.238385+00:00"
     },
     "ksr-9fa0f6007d7f7efacbe455ab": {
+      "acknowledged_at": "2026-09-16T02:34:49.795547+00:00",
       "command_id": "ksr-9fa0f6007d7f7efacbe455ab",
       "evidence_hash": "6a60b7be8e2b229099831ba39d520be377ea21fde45fdf82ad08dfb0f1d9a4c1",
       "exact": {
@@ -54,12 +55,44 @@
       "fingerprint": "bb0e4ac04a5e8f96ad50a84b0ed62316",
       "incident_id": "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video",
       "issued_at": "2026-09-16T02:34:36.238385+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-9fa0f6007d7f7efacbe455ab",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "controller bindings match the authoritative slug/content hash and exact provider/item identities without fresh generation",
+          "evidence_hash": "6a60b7be8e2b229099831ba39d520be377ea21fde45fdf82ad08dfb0f1d9a4c1",
+          "exact": {
+            "artifact_id": "c6125d93-a18d-4a47-b74e-12be7f6aeb9f",
+            "content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
+            "item_id": "video-20260916-033957-28471ea212",
+            "pr_number": null,
+            "short_item_id": null,
+            "slug": "fights-before-wedding",
+            "source_id": "aa3bb870-0417-4265-bdd1-fe8c99eb30b1",
+            "task_id": "c6125d93-a18d-4a47-b74e-12be7f6aeb9f"
+          },
+          "failure_signature": "STALE_SOURCE_BINDING",
+          "fingerprint": "bb0e4ac04a5e8f96ad50a84b0ed62316",
+          "incident_id": "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video",
+          "proposed_action": "rebind_exact_source",
+          "schema_version": 1,
+          "stage": "long_video",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/18132703496351455343"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-16T02:34:36.238385+00:00"
+      "updated_at": "2026-09-16T02:34:49.795547+00:00"
     }
   },
   "incidents": {
@@ -96,5 +129,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-16T02:34:36.238385+00:00"
+  "updated_at": "2026-09-16T02:34:49.795547+00:00"
 }
