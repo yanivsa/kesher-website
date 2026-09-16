@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T10:28:53.197582+00:00",
+    "live_verified_at": "2026-09-16T10:35:47.052749+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -935,26 +935,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-14T05:39:45.369036+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 808,
-        "slot": "2026-09-14"
-      }
-    },
-    {
-      "at": "2026-09-14T05:42:02.373898+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 808,
-        "slot": "2026-09-14"
-      }
-    },
-    {
       "at": "2026-09-14T05:43:33.084403+00:00",
       "from": "article_normalizing",
       "to": "article_normalizing",
@@ -1793,9 +1773,24 @@
       "details": {
         "retry_at": "2026-09-16T10:34:08.752156+00:00"
       }
+    },
+    {
+      "at": "2026-09-16T10:35:47.052769+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T10:37:02.881254+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-16T10:34:08.752156+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-16T10:29:08.752202+00:00",
+  "updated_at": "2026-09-16T10:37:02.881275+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
