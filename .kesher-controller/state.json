@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-16",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -46,7 +46,7 @@
     "last_failed_run_id": 35030279608,
     "quality_status": "passed",
     "quality_content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
-    "quality_checked_at": "2026-09-16T08:00:57.207603+00:00",
+    "quality_checked_at": "2026-09-16T08:10:25.148057+00:00",
     "quality_violations": [],
     "slug": "fights-before-wedding",
     "title": "ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
@@ -932,23 +932,8 @@
       "archived_at": "2026-09-15T22:18:07.866804+00:00"
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-16T08:08:58.981118+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-13T10:45:03.727756+00:00",
-      "from": "image_retry_wait",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 2,
-        "pr_number": 804
-      }
-    },
     {
       "at": "2026-09-13T14:43:26.586448+00:00",
       "from": "article_image_running",
@@ -1801,9 +1786,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-16T08:10:24.472140+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "source_binding_exhaustion_recovery",
+      "details": {
+        "slug": "fights-before-wedding",
+        "content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
+        "exact_item_id": "video-20260916-033957-28471ea212",
+        "stale_fields": [
+          "item_id"
+        ],
+        "attempt_budget_reset": true
+      }
     }
   ],
-  "updated_at": "2026-09-16T08:08:58.981148+00:00",
+  "updated_at": "2026-09-16T08:10:24.472162+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1817,8 +1817,8 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "exhausted",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1828,16 +1828,27 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260916-083249-74040d54b5",
-    "last_dispatch_at": "2026-09-16T08:00:27.051320+00:00",
-    "resume_dispatches": 4,
-    "watchdog": {
-      "identity": "long_video:fights-before-wedding:28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b:video-20260916-033957-28471ea212",
-      "last_progress_at": "2026-09-16T00:39:00.214619+00:00",
-      "last_fingerprint": "c6ff24e5456f8a5801a31314569b71bad58536b345a85eb4411acedecf4b4887",
-      "recovery_count": 1,
-      "last_recovery_at": "2026-09-16T01:21:06.006518+00:00"
-    }
+    "item_id": null,
+    "last_dispatch_at": null,
+    "resume_dispatches": 0,
+    "source_binding_exhaustion_recovery_applied": true,
+    "source_binding_recovery_previous": {
+      "attempt_count": 3,
+      "item_id": "video-20260916-083249-74040d54b5",
+      "provider_id": null,
+      "artifact_id": null,
+      "source_id": null,
+      "watchdog": {
+        "identity": "long_video:fights-before-wedding:28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b:video-20260916-033957-28471ea212",
+        "last_progress_at": "2026-09-16T00:39:00.214619+00:00",
+        "last_fingerprint": "c6ff24e5456f8a5801a31314569b71bad58536b345a85eb4411acedecf4b4887",
+        "recovery_count": 1,
+        "last_recovery_at": "2026-09-16T01:21:06.006518+00:00"
+      }
+    },
+    "artifact_id": null,
+    "source_id": null,
+    "last_run_conclusion": null
   },
   "short": {
     "attempt_count": 0,
