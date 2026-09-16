@@ -530,7 +530,12 @@ class VideoReconcileTests(unittest.TestCase):
             "updated_at": pipeline.utc_now(),
         })
 
-        with mock.patch.dict(os.environ, {"TARGET_ITEM_ID": current_item["id"]}, clear=False), mock.patch.object(
+        with mock.patch.dict(os.environ, {
+            "TARGET_SLUG": "current",
+            "TARGET_CONTENT_SHA256": current_item["source"]["content_sha256"],
+            "TARGET_ITEM_ID": current_item["id"],
+            "KESHER_EXACT_UPLOAD_REQUIRED": "true",
+        }, clear=False), mock.patch.object(
             reconcile, "validate_upload_candidate"
         ):
             self.assertEqual(reconcile.prepare_upload(), 0)
@@ -539,6 +544,79 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(saved[current_item["id"]]["status"], "approved")
         self.assertEqual(saved[current_item["id"]]["advisory_review_status_before_upload"], "rejected")
         self.assertEqual(saved[stale_item["id"]]["status"], "rejected")
+
+    def test_prepare_upload_exact_identity_lock_selects_only_matching_triple(self) -> None:
+        current = post("current", "2026-08-19")
+        other = post("other", "2026-08-18")
+        self.write_posts([current, other])
+        other_item = pipeline.new_item(pipeline.source_metadata(other))
+        technically_verified(other_item)
+        current_item = pipeline.new_item(pipeline.source_metadata(current))
+        technically_verified(current_item, status="rejected")
+        pipeline.save_state({
+            "version": 1,
+            "items": [other_item, current_item],
+            "updated_at": pipeline.utc_now(),
+        })
+
+        exact_env = {
+            "TARGET_SLUG": "current",
+            "TARGET_CONTENT_SHA256": current_item["source"]["content_sha256"],
+            "TARGET_ITEM_ID": current_item["id"],
+            "KESHER_EXACT_UPLOAD_REQUIRED": "true",
+        }
+        with mock.patch.dict(os.environ, exact_env, clear=False), mock.patch.object(
+            reconcile, "validate_upload_candidate"
+        ):
+            self.assertEqual(reconcile.prepare_upload(), 0)
+
+        saved = {item["id"]: item for item in pipeline.load_state()["items"]}
+        self.assertIn("advisory_review_status_before_upload", saved[current_item["id"]])
+        self.assertNotIn("advisory_review_status_before_upload", saved[other_item["id"]])
+
+    def test_prepare_upload_exact_identity_lock_rejects_hash_mismatch_without_fallback(self) -> None:
+        current = post("current", "2026-08-19")
+        other = post("other", "2026-08-18")
+        self.write_posts([current, other])
+        other_item = pipeline.new_item(pipeline.source_metadata(other))
+        technically_verified(other_item)
+        current_item = pipeline.new_item(pipeline.source_metadata(current))
+        technically_verified(current_item)
+        pipeline.save_state({
+            "version": 1,
+            "items": [other_item, current_item],
+            "updated_at": pipeline.utc_now(),
+        })
+
+        exact_env = {
+            "TARGET_SLUG": "current",
+            "TARGET_CONTENT_SHA256": "0" * 64,
+            "TARGET_ITEM_ID": current_item["id"],
+            "KESHER_EXACT_UPLOAD_REQUIRED": "true",
+        }
+        with mock.patch.dict(os.environ, exact_env, clear=False):
+            with self.assertRaisesRegex(pipeline.PipelineError, "Exact identity lock"):
+                reconcile.prepare_upload()
+
+        saved = pipeline.load_state()["items"]
+        self.assertTrue(all("advisory_review_status_before_upload" not in item for item in saved))
+
+    def test_prepare_upload_exact_identity_lock_rejects_partial_identity(self) -> None:
+        current = post("current", "2026-08-19")
+        self.write_posts([current])
+        current_item = pipeline.new_item(pipeline.source_metadata(current))
+        technically_verified(current_item)
+        pipeline.save_state({"version": 1, "items": [current_item], "updated_at": pipeline.utc_now()})
+
+        partial_env = {
+            "TARGET_SLUG": "",
+            "TARGET_CONTENT_SHA256": "",
+            "TARGET_ITEM_ID": current_item["id"],
+            "KESHER_EXACT_UPLOAD_REQUIRED": "true",
+        }
+        with mock.patch.dict(os.environ, partial_env, clear=False):
+            with self.assertRaisesRegex(pipeline.PipelineError, "requires target_slug, content_sha256, and target_item_id"):
+                reconcile.prepare_upload()
 
 
 if __name__ == "__main__":

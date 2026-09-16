@@ -115,6 +115,20 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn("Upload exact technically verified MP4", workflow)
         self.assertIn("Jules performs strict advisory review", workflow)
 
+
+    def test_video_upload_workflow_enforces_exact_identity_lock(self) -> None:
+        workflow = VIDEO_WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("target_content_sha256:", workflow)
+        self.assertIn("target_item_id:", workflow)
+        self.assertIn("id: prepare_upload", workflow)
+        self.assertIn("TARGET_SLUG: ${{ inputs.target_slug }}", workflow)
+        self.assertIn("TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}", workflow)
+        self.assertIn("TARGET_ITEM_ID: ${{ inputs.target_item_id }}", workflow)
+        self.assertIn("KESHER_EXACT_UPLOAD_REQUIRED: ${{ inputs.operation == 'upload' }}", workflow)
+        self.assertIn("steps.prepare_upload.outputs.ready == 'true'", workflow)
+        self.assertIn("EXACT_UPLOAD_IDENTITY_OK", workflow)
+        self.assertIn('--slug "$TARGET_SLUG" --item-id "$TARGET_ITEM_ID"', workflow)
+
     def test_video_workflow_retention_matches_contract(self) -> None:
         workflow = VIDEO_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("Keep the newest three durable state artifacts", workflow)
