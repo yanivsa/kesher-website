@@ -135,6 +135,7 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         expected = pipeline.source_metadata(old_post)
         short_item = pipeline.new_item(expected)
         short_item.update({
+            "id": "short-existing-same-source",
             "type": "article_short",
             "source_mode": "direct-short",
             "status": "downloaded",
