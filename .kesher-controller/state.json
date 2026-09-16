@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-16",
-  "status": "long_video_running",
+  "status": "long_video_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -53,7 +53,7 @@
     "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
     "published_date": "2026-09-16",
     "live": true,
-    "live_verified_at": "2026-09-16T09:23:22.173322+00:00",
+    "live_verified_at": "2026-09-16T10:28:53.197582+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -935,35 +935,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-13T22:13:58.017770+00:00",
-      "from": "article_generating",
-      "to": "article_watchdog_nudge",
-      "reason": "article stalled; nudged authoritative Jules session",
-      "details": {
-        "session_id": "sessions/5588490773158455576"
-      }
-    },
-    {
-      "at": "2026-09-14T00:15:46.109485+00:00",
-      "from": "article_watchdog_nudge",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 808,
-        "slot": "2026-09-14"
-      }
-    },
-    {
-      "at": "2026-09-14T05:08:08.791397+00:00",
-      "from": "article_normalizing",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 808,
-        "slot": "2026-09-14"
-      }
-    },
-    {
       "at": "2026-09-14T05:39:45.369036+00:00",
       "from": "article_normalizing",
       "to": "article_normalizing",
@@ -1794,9 +1765,37 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-16T10:28:53.197596+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-16T10:29:08.752178+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "VIDEO_WORKFLOW_FAILED",
+      "details": {
+        "message": "video run 35078910831 completed with conclusion=failure",
+        "retry_at": "2026-09-16T10:34:08.752156+00:00",
+        "failure_streak": 1,
+        "run_id": 35078910831,
+        "session_id": null
+      }
+    },
+    {
+      "at": "2026-09-16T10:29:08.752198+00:00",
+      "from": "video_retry_wait",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-16T10:34:08.752156+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-16T09:23:30.128980+00:00",
+  "updated_at": "2026-09-16T10:29:08.752202+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1813,13 +1812,15 @@
     "attempt_count": 3,
     "status": "rejected",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-09-16T10:34:08.752156+00:00",
     "run_id": 35078910831,
-    "processed_run_id": null,
+    "processed_run_id": 35078910831,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "VIDEO_WORKFLOW_FAILED": 1
+    },
     "overview_evidence_required": true,
     "item_id": "video-20260916-083249-74040d54b5",
     "last_dispatch_at": "2026-09-16T09:21:05.050353+00:00",
@@ -1841,7 +1842,8 @@
     },
     "artifact_id": null,
     "source_id": null,
-    "last_run_conclusion": null
+    "last_run_conclusion": "failure",
+    "last_failed_run_id": 35078910831
   },
   "short": {
     "attempt_count": 0,
