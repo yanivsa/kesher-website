@@ -263,7 +263,15 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     duration_frames = max(1, round(duration_seconds * SHORT_FPS))
     start_frame = max(0, round(start_seconds * SHORT_FPS))
 
-    if output_path.exists() and output_path.stat().st_size > 0 and item.get("enhancement_status"):
+    if (
+        output_path.exists()
+        and output_path.stat().st_size > 0
+        and item.get("enhancement_status")
+        and item.get("motion_plan_path")
+        and motion_plan_path.is_file()
+        and item.get("remotion_props_path")
+        and props_path.is_file()
+    ):
         return output_path
 
     remotion = core.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
