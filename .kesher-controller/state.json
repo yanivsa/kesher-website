@@ -1695,9 +1695,26 @@
         "item_id": "video-20260917-063948-4d0ba0c737",
         "task_id": "b42db818-ee64-48a5-9765-f11138dc7d2e"
       }
+    },
+    {
+      "at": "2026-09-17T10:06:55.728142+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "long_video_watchdog_recovery",
+      "reason": "same Kesher incident remained stalled for three hourly checks; direct supervisor takeover required",
+      "details": {
+        "pipeline_id": "v5",
+        "incident_key": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
+        "strike": 3,
+        "stage": "long_video",
+        "slug": "early-habits-building-calm-mornings-children",
+        "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+        "item_id": "video-20260917-063948-4d0ba0c737",
+        "task_id": "b42db818-ee64-48a5-9765-f11138dc7d2e",
+        "required": true
+      }
     }
   ],
-  "updated_at": "2026-09-17T05:33:03.603338+00:00",
+  "updated_at": "2026-09-17T10:06:55.728150+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1764,15 +1781,26 @@
       "slug": "early-habits-building-calm-mornings-children",
       "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
       "stage": "long_video",
-      "strike_count": 2,
-      "last_check_token": "2026-09-17T10",
+      "strike_count": 3,
+      "last_check_token": "2026-09-17T13",
       "last_fingerprint": "244421d2fc47bab926c31360d9ff30a313a0921ec96c1bbd79523cc76f39bd78",
       "last_controller_action_token": "recovery:1:2026-09-17T05:31:54.846599+00:00",
       "controller_action_observed": true,
-      "last_observed_at": "2026-09-17T07:31:46.795210+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
+      "last_observed_at": "2026-09-17T10:05:25.711302+00:00",
+      "last_action": "direct_takeover",
+      "direct_takeover_required": true,
       "last_controller_action_at": "2026-09-17T05:31:54.846599+00:00"
     }
+  },
+  "direct_takeover_required": {
+    "pipeline_id": "v5",
+    "incident_key": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
+    "strike": 3,
+    "stage": "long_video",
+    "slug": "early-habits-building-calm-mornings-children",
+    "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+    "item_id": "video-20260917-063948-4d0ba0c737",
+    "task_id": "b42db818-ee64-48a5-9765-f11138dc7d2e",
+    "required": true
   }
 }
