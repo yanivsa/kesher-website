@@ -1715,7 +1715,14 @@
     "overview_evidence_required": true,
     "item_id": "video-20260916-204013-3ca2ce643c",
     "last_dispatch_at": "2026-09-17T03:38:42.571157+00:00",
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "watchdog": {
+      "identity": "long_video:early-habits-building-calm-mornings-children:4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94:video-20260917-063948-4d0ba0c737",
+      "last_progress_at": "2026-09-17T03:57:36.393587+00:00",
+      "last_fingerprint": "df79753e44c5242a21130147a7b14747b2bebf958e977872a5a1eac86bd03ec4",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
