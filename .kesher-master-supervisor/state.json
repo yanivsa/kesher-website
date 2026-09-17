@@ -575,13 +575,18 @@
           "at": "2026-09-17T16:18:37.441352+00:00",
           "event": "human_blocker",
           "failure_signature": "STALE_SOURCE_BINDING"
+        },
+        {
+          "at": "2026-09-17T16:29:08.387207+00:00",
+          "event": "human_blocker",
+          "failure_signature": "STALE_SOURCE_BINDING"
         }
       ],
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
-      "last_seen_at": "2026-09-17T16:18:37.441352+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=4c9cc55a9d85ac2e835cd0aa3c76306a strike=27 stage=HUMAN_BLOCKER",
+      "last_seen_at": "2026-09-17T16:29:08.387207+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=4c9cc55a9d85ac2e835cd0aa3c76306a strike=28 stage=HUMAN_BLOCKER",
       "status": "human_blocker",
-      "strike": 27
+      "strike": 28
     },
     "bb0e4ac04a5e8f96ad50a84b0ed62316": {
       "active_command_id": "ksr-9fa0f6007d7f7efacbe455ab",
@@ -653,5 +658,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-17T16:18:37.441352+00:00"
+  "updated_at": "2026-09-17T16:29:08.387207+00:00"
 }
