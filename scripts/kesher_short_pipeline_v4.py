@@ -74,15 +74,9 @@ def generation_prompt(source: dict[str, Any]) -> str:
     return prompt
 
 
-def new_item(source: dict[str, Any]) -> dict[str, Any]:
-    item = _base_new_item(source)
-    item["type"] = "article_short"
-    item["source_mode"] = "direct-short"
-    item["provider_video_format"] = "short"
-    item["provider_native_short"] = True
-    item["provider_short_fallback_used"] = False
-    item["fresh_generation_attempt"] = int(item.get("technical_retry_count") or 0) + 1
+def repair_youtube_metadata(item: dict[str, Any]) -> dict[str, Any]:
     metadata = copy.deepcopy(item.get("youtube_metadata") or {})
+    source = item.get("source") or {}
     canonical_url = str(source.get("canonical_url") or "").strip()
     excerpt = str(source.get("excerpt") or "").strip()
     if canonical_url:
@@ -91,6 +85,18 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
             f"\n\nלאתר קשר:\n{core.SITE_URL}"
         ).strip()
     item["youtube_metadata"] = metadata
+    return metadata
+
+
+def new_item(source: dict[str, Any]) -> dict[str, Any]:
+    item = _base_new_item(source)
+    item["type"] = "article_short"
+    item["source_mode"] = "direct-short"
+    item["provider_video_format"] = "short"
+    item["provider_native_short"] = True
+    item["provider_short_fallback_used"] = False
+    item["fresh_generation_attempt"] = int(item.get("technical_retry_count") or 0) + 1
+    repair_youtube_metadata(item)
     return item
 
 
@@ -383,7 +389,7 @@ def validate_and_manifest(
     }
 
     technical_failures = short_technical_failures(media, final_path, item)
-    metadata = item["youtube_metadata"]
+    metadata = repair_youtube_metadata(item)
     metadata_failure = ""
     try:
         core.require_hebrew(metadata["title"], "YouTube title")
