@@ -1,6 +1,7 @@
 {
   "commands": {
     "ksr-38808857bde8631cbed265fc": {
+      "acknowledged_at": "2026-09-17T11:05:24.608207+00:00",
       "command_id": "ksr-38808857bde8631cbed265fc",
       "evidence_hash": "ba9919c8fc250dcb47ea6ce6c7afccf66d8c15458c7d7ef5637285b7620cfaaa",
       "exact": {
@@ -18,12 +19,44 @@
       "fingerprint": "fabfa74a301f45d54e16ab63467427ab",
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|short",
       "issued_at": "2026-09-17T11:05:02.896561+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-38808857bde8631cbed265fc",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "same-source Short is public, processing succeeded, and dimensions are portrait 9:16",
+          "evidence_hash": "ba9919c8fc250dcb47ea6ce6c7afccf66d8c15458c7d7ef5637285b7620cfaaa",
+          "exact": {
+            "artifact_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
+            "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+            "item_id": "video-20260917-134451-4d0ba0c737",
+            "pr_number": 854,
+            "short_item_id": null,
+            "slug": "early-habits-building-calm-mornings-children",
+            "source_id": "d93dddcc-807f-442c-89f6-7b905a3e6f7b",
+            "task_id": "26cc06ff-7d06-46b9-9b26-d3daded48403"
+          },
+          "failure_signature": "SHORT_MISSING",
+          "fingerprint": "fabfa74a301f45d54e16ab63467427ab",
+          "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|short",
+          "proposed_action": "continue_exact_short",
+          "schema_version": 1,
+          "stage": "short",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/14315331190682667672"
+      },
       "proposed_action": "continue_exact_short",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-17T11:05:02.896561+00:00"
+      "updated_at": "2026-09-17T11:05:24.608207+00:00"
     },
     "ksr-712e03f65f24aa41cbbaa229": {
       "acknowledged_at": "2026-09-16T01:24:05.083434+00:00",
@@ -353,5 +386,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-17T11:05:02.896561+00:00"
+  "updated_at": "2026-09-17T11:05:24.608207+00:00"
 }
