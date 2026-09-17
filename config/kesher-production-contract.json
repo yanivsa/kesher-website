@@ -147,9 +147,13 @@
       "provider_format": "short",
       "provider_native_portrait_required": true,
       "overview_provider_identity_reuse_forbidden": true,
-      "landscape_to_short_conversion_forbidden": true,
+      "landscape_to_short_conversion_forbidden": false,
       "youtube_description_requires_exact_article_url": true,
-      "youtube_description_requires_standalone_site_url": true
+      "youtube_description_requires_standalone_site_url": true,
+      "native_short_attempts_before_fallback": 2,
+      "fallback_attempt": 3,
+      "independent_landscape_fallback_allowed": true,
+      "fallback_must_not_reuse_video_overview_identity": true
     }
   },
   "invariants": {
