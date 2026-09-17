@@ -135,6 +135,33 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(saved[0]["source"]["slug"], "oldest")
         self.assertEqual(len(saved), 2)
 
+    def test_targeted_generation_supersedes_stale_rejected_item_after_source_change(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        current_source = pipeline.source_metadata(today)
+        stale = pipeline.new_item(current_source)
+        stale.update({
+            "status": "rejected",
+            "technical_verified": False,
+            "type": "article_short",
+            "source_mode": "direct-short",
+        })
+        stale["source"]["content_sha256"] = "0" * 64
+        pipeline.save_state({"version": 1, "items": [stale], "updated_at": pipeline.utc_now()})
+
+        self.assertEqual(reconcile.prepare_generation("today"), 0)
+        saved = pipeline.load_state()["items"]
+        self.assertEqual(len(saved), 2)
+        self.assertEqual(saved[0]["status"], "superseded")
+        self.assertEqual(saved[0]["superseded_reason"], "published_source_changed")
+        replacement = saved[1]
+        self.assertEqual(replacement["status"], "source_selected")
+        self.assertEqual(replacement["source"]["content_sha256"], current_source["content_sha256"])
+        self.assertEqual(replacement["type"], "article_short")
+        self.assertEqual(replacement["source_mode"], "direct-short")
+        self.assertEqual(replacement["fresh_generation_attempt"], 1)
+        self.assertNotIn("retry_of", replacement)
+
     def test_prior_day_technical_rejection_retries_same_source_not_today(self) -> None:
         today = post("today")
         older = post("older", "2026-08-18")
