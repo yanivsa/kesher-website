@@ -323,6 +323,7 @@
       "updated_at": "2026-09-17T11:05:02.896561+00:00"
     },
     "ksr-ff7210a85817fc227ce24581": {
+      "acknowledged_at": "2026-09-17T11:15:11.540271+00:00",
       "command_id": "ksr-ff7210a85817fc227ce24581",
       "evidence_hash": "5d0c44e0fabb0eac45022d8bf26a7a8598d5ca035438812569b58b30f685ca06",
       "exact": {
@@ -340,12 +341,44 @@
       "fingerprint": "4c9cc55a9d85ac2e835cd0aa3c76306a",
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
       "issued_at": "2026-09-17T11:14:39.728419+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-ff7210a85817fc227ce24581",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "controller bindings match the authoritative slug/content hash and exact provider/item identities without fresh generation",
+          "evidence_hash": "5d0c44e0fabb0eac45022d8bf26a7a8598d5ca035438812569b58b30f685ca06",
+          "exact": {
+            "artifact_id": "a73c878c-2b7e-4175-8607-a5bceb8b6e4f",
+            "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+            "item_id": "video-20260917-140652-4d0ba0c737",
+            "pr_number": 854,
+            "short_item_id": "video-20260917-140805-4d0ba0c737",
+            "slug": "early-habits-building-calm-mornings-children",
+            "source_id": "94cbc665-5790-4c0a-9b86-a609b772d430",
+            "task_id": "a73c878c-2b7e-4175-8607-a5bceb8b6e4f"
+          },
+          "failure_signature": "STALE_SOURCE_BINDING",
+          "fingerprint": "4c9cc55a9d85ac2e835cd0aa3c76306a",
+          "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
+          "proposed_action": "rebind_exact_source",
+          "schema_version": 1,
+          "stage": "long_video",
+          "strike": 2
+        },
+        "jules_mode": "continued",
+        "session_id": "sessions/11216407074807324378"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-17T11:14:39.728419+00:00"
+      "updated_at": "2026-09-17T11:15:11.540271+00:00"
     }
   },
   "incidents": {
@@ -450,5 +483,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-17T11:14:39.728419+00:00"
+  "updated_at": "2026-09-17T11:15:11.540271+00:00"
 }
