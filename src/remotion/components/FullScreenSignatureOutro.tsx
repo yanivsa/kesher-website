@@ -21,7 +21,7 @@ export interface FullScreenSignatureOutroProps {
 
 export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> = ({
   durationSeconds = 2,
-  backgroundColor = "linear-gradient(180deg, #0d1712 0%, #15271e 100%)",
+  backgroundColor = "linear-gradient(135deg, #18281f 0%, #0d1712 100%)",
   signatureColor = "#f4d068",
   signatureImageSrc = "signature-mask.svg",
   title = "שירה סהרוני",
@@ -130,7 +130,7 @@ export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> =
         <div
           style={{
             marginTop: isVertical ? "16px" : "8px",
-            background: "rgba(13, 23, 18, 0.50)",
+            background: "rgba(255, 255, 255, 0.12)",
             border: `1.5px solid ${signatureColor}`,
             padding: isVertical ? "16px 44px" : "10px 30px",
             borderRadius: "50px",
