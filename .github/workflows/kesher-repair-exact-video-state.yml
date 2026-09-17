@@ -1,0 +1,126 @@
+name: Kesher Repair Exact Video State
+
+on:
+  workflow_dispatch:
+    inputs:
+      item_id:
+        description: Exact video item id to reconcile from its immutable manifest
+        required: true
+        type: string
+      target_slug:
+        description: Exact published article slug
+        required: true
+        type: string
+      target_content_sha256:
+        description: Exact published article content hash
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: kesher-repair-exact-video-state
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Restore newest valid durable video state
+        env:
+          GH_TOKEN: ${{ github.token }}
+          STATE_DIR: ${{ github.workspace }}/.kesher-video-state
+        run: |
+          set -euo pipefail
+          mkdir -p "$STATE_DIR"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/artifacts.txt
+          test -s /tmp/artifacts.txt
+          restored=false
+          while read -r artifact_id; do
+            [ -n "$artifact_id" ] || continue
+            archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
+            if gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
+              tmp="$(mktemp -d)"
+              if unzip -oq "$archive" -d "$tmp" 2>/dev/null && [ -s "$tmp/state.json" ]; then
+                cp -r "$tmp/"* "$STATE_DIR/" || true
+                restored=true
+                rm -rf "$tmp" "$archive"
+                break
+              fi
+              rm -rf "$tmp"
+            fi
+            rm -f "$archive"
+          done < /tmp/artifacts.txt
+          [ "$restored" = true ]
+
+      - name: Reconcile exact item from immutable manifest
+        env:
+          STATE_DIR: ${{ github.workspace }}/.kesher-video-state
+          ITEM_ID: ${{ inputs.item_id }}
+          TARGET_SLUG: ${{ inputs.target_slug }}
+          TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          state_dir = Path(os.environ['STATE_DIR'])
+          state_path = state_dir / 'state.json'
+          state = json.loads(state_path.read_text(encoding='utf-8'))
+          matches = [x for x in state.get('items', []) if x.get('id') == os.environ['ITEM_ID']]
+          if len(matches) != 1:
+              raise SystemExit('Exact repair item was not found uniquely')
+          item = matches[0]
+          source = item.get('source') or {}
+          if source.get('slug') != os.environ['TARGET_SLUG']:
+              raise SystemExit('Exact repair slug mismatch')
+          if source.get('content_sha256') != os.environ['TARGET_CONTENT_SHA256']:
+              raise SystemExit('Exact repair content hash mismatch')
+
+          manifest_name = str(item.get('manifest_path') or '')
+          expected_manifest_sha = str(item.get('manifest_sha256') or '')
+          if not manifest_name or not expected_manifest_sha:
+              raise SystemExit('Exact repair item has no immutable manifest identity')
+          manifest_path = state_dir / manifest_name
+          if not manifest_path.is_file():
+              raise SystemExit('Exact repair manifest is missing')
+          actual_manifest_sha = hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+          if actual_manifest_sha != expected_manifest_sha:
+              raise SystemExit('Exact repair manifest hash mismatch')
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          if manifest.get('item_id') != item.get('id'):
+              raise SystemExit('Exact repair manifest item mismatch')
+          if manifest.get('technical_verified') is not False:
+              raise SystemExit('Manifest does not prove a technical rejection')
+          reasons = [str(x).strip() for x in (manifest.get('rejection_reasons') or []) if str(x).strip()]
+          if not reasons:
+              raise SystemExit('Manifest technical rejection has no reasons')
+
+          now = datetime.now(timezone.utc).isoformat()
+          item['technical_verified'] = False
+          item['status'] = 'rejected'
+          item['rejected_at'] = now
+          item['updated_at'] = now
+          notes = item.setdefault('review_notes', {})
+          notes['technical'] = 'נפסל טכנית: ' + '; '.join(reasons)
+          item['manifest_state_reconciled_at'] = now
+          item['manifest_state_reconciled_sha256'] = actual_manifest_sha
+          state['updated_at'] = now
+          state_path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(f"EXACT_MANIFEST_RECONCILED item={item['id']} reason_count={len(reasons)}")
+          PY
+
+      - name: Persist repaired durable state
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-video-state
+          path: ${{ github.workspace }}/.kesher-video-state
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          include-hidden-files: true
