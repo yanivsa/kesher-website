@@ -39,6 +39,7 @@ SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
 SHORT_FPS = 30
 SIGNATURE_DURATION_SECONDS = 3.0
+NATIVE_SHORT_FALLBACK_ATTEMPT = 3
 VISUAL_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
 SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
@@ -79,6 +80,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
     item["source_mode"] = "direct-short"
     item["provider_video_format"] = "short"
     item["provider_native_short"] = True
+    item["provider_short_fallback_used"] = False
     item["fresh_generation_attempt"] = int(item.get("technical_retry_count") or 0) + 1
     metadata = copy.deepcopy(item.get("youtube_metadata") or {})
     canonical_url = str(source.get("canonical_url") or "").strip()
@@ -93,14 +95,16 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
 
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
-    """Generate a provider-native NotebookLM Short; never a long-form video to be cropped later."""
+    """Prefer a provider-native Short; use an independent landscape fallback only on the bounded final attempt."""
     prompt_path = core.STATE_DIR / f"{item['id']}-prompt-he.txt"
     prompt = generation_prompt(item["source"])
     prompt_path.write_text(prompt, encoding="utf-8")
+    attempt = int(item.get("fresh_generation_attempt") or 1)
+    provider_format = "short" if attempt < NATIVE_SHORT_FALLBACK_ATTEMPT else "explainer"
     payload = core.run_notebooklm(
         [
             "generate", "video", "--prompt-file", str(prompt_path), "--notebook", core.NOTEBOOK_ID,
-            "--source", item["source_id"], "--format", "short", "--language", "he", "--no-wait",
+            "--source", item["source_id"], "--format", provider_format, "--language", "he", "--no-wait",
         ],
         timeout=180,
     )
@@ -111,13 +115,14 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     item["artifact_id"] = task_id
     item["generation_prompt"] = prompt
     item["generation_prompt_sha256"] = core.sha256_text(prompt)
-    item["provider_video_format"] = "short"
-    item["provider_native_short"] = True
+    item["provider_video_format"] = provider_format
+    item["provider_native_short"] = provider_format == "short"
+    item["provider_short_fallback_used"] = provider_format != "short"
     item["status"] = "generating"
     item["generation_started_at"] = core.utc_now()
     item["updated_at"] = core.utc_now()
     core.save_state(state)
-    print(f"NATIVE_SHORT_GENERATION_STARTED item={item['id']} task_id={task_id} format=short")
+    print(f"SHORT_GENERATION_STARTED item={item['id']} task_id={task_id} format={provider_format} attempt={attempt}")
 
 
 def native_provider_short_failures(media: dict[str, Any], item: dict[str, Any]) -> list[str]:
@@ -125,12 +130,15 @@ def native_provider_short_failures(media: dict[str, Any], item: dict[str, Any]) 
     width = int(media.get("width") or 0)
     height = int(media.get("height") or 0)
     ratio = (width / height) if height else 0
-    if height <= width or not 0.53 <= ratio <= 0.60:
-        failures.append(f"NotebookLM source is not a native portrait Short ({width}x{height}); landscape-to-Short conversion is forbidden")
-    if item.get("provider_video_format") != "short" or item.get("provider_native_short") is not True:
-        failures.append("NotebookLM provider format is not the native Short format")
+    attempt = int(item.get("fresh_generation_attempt") or 1)
+    native_portrait = height > width and 0.53 <= ratio <= 0.60
+    fallback_allowed = attempt >= NATIVE_SHORT_FALLBACK_ATTEMPT
+    if not native_portrait and not fallback_allowed:
+        failures.append(f"NotebookLM source is not a native portrait Short ({width}x{height}); retry native Short before fallback")
+    if item.get("provider_video_format") != "short" and not fallback_allowed:
+        failures.append("NotebookLM provider format is not the native Short format before the fallback attempt")
     if item.get("shared_provider_identity") is True or item.get("adopted_from_long_item_id"):
-        failures.append("Short reuses long-form provider identity; a fresh native Short is required")
+        failures.append("Short reuses Video Overview provider identity; an independent Short generation is required")
     return failures
 
 
@@ -243,7 +251,13 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     native_failures = native_provider_short_failures(raw_media, item)
     if native_failures:
         raise core.PipelineError("; ".join(native_failures))
-    item["provider_native_short_verified"] = True
+    raw_width = int(raw_media.get("width") or 0)
+    raw_height = int(raw_media.get("height") or 0)
+    raw_ratio = (raw_width / raw_height) if raw_height else 0
+    item["provider_native_short_verified"] = raw_height > raw_width and 0.53 <= raw_ratio <= 0.60
+    if not item["provider_native_short_verified"]:
+        item["provider_short_fallback_used"] = True
+        item["provider_short_fallback_reason"] = "native_short_unavailable_after_bounded_attempts"
     item["provider_raw_media"] = {key: raw_media.get(key) for key in ("width", "height", "duration", "codec", "audio_codec")}
     start_seconds, duration_seconds = short_window(float(raw_media["duration"]))
     duration_frames = max(1, round(duration_seconds * SHORT_FPS))
