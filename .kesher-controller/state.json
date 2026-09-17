@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-17",
-  "status": "long_video_retry_wait",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -28,7 +28,7 @@
     "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "published_date": "2026-09-17",
     "live": true,
-    "live_verified_at": "2026-09-17T12:10:10.889741+00:00",
+    "live_verified_at": "2026-09-17T12:31:58.022652+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -978,24 +978,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-15T22:18:19.666199+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-15T22:24:43.126498+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/1411980193888685833"
-      }
-    },
-    {
       "at": "2026-09-15T22:36:32.004832+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -1776,9 +1758,21 @@
       "details": {
         "retry_at": "2026-09-17T12:09:57.712413+00:00"
       }
+    },
+    {
+      "at": "2026-09-17T12:31:58.022672+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-17T12:32:26.403130+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-17T12:10:22.548388+00:00",
+  "updated_at": "2026-09-17T12:32:26.403157+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1794,10 +1788,10 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "pending_review",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": "2026-09-17T12:09:57.712413+00:00",
-    "run_id": 35217971663,
+    "run_id": 35221091406,
     "processed_run_id": 35217971663,
     "provider_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
     "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
@@ -1806,7 +1800,7 @@
       "VIDEO_WORKFLOW_FAILED": 1
     },
     "overview_evidence_required": true,
-    "item_id": "video-20260916-033957-28471ea212",
+    "item_id": "video-20260917-152125-3ca2ce643c",
     "last_dispatch_at": "2026-09-17T11:52:14.229598+00:00",
     "resume_dispatches": 4,
     "watchdog": {
