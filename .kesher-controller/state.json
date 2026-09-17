@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-17",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35157408023,
@@ -969,21 +969,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-15T17:20:00.191236+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T17:20:14.354065+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-09-15T17:32:47.509213+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -1770,12 +1755,28 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-09-17T11:28:48.414950+00:00",
+      "from": "short_running",
+      "to": "long_video_complete",
+      "reason": "reconciled exact verified public Overview from historical durable state",
+      "details": {
+        "item_id": "video-20260917-134451-4d0ba0c737",
+        "youtube_url": "https://youtu.be/6NXdPWlBtW0"
+      }
+    },
+    {
+      "at": "2026-09-17T11:28:55.241132+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-17T11:22:10.715194+00:00",
+  "updated_at": "2026-09-17T11:28:55.241152+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35167951534,
@@ -1827,15 +1828,34 @@
   },
   "short": {
     "attempt_count": 0,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35214920775,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "91814810-e3d6-4704-9e61-2e4970f08588",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "item_id": "video-20260917-140805-4d0ba0c737",
+    "type": "article_short",
+    "youtube_id": "b-maTwXHbnI",
+    "youtube_url": "https://youtu.be/b-maTwXHbnI",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "15544de7f6d027c73a4df3af9a8bf227a4811bed33b001c5c4212a08c94edb4b",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920,
+    "artifact_id": "91814810-e3d6-4704-9e61-2e4970f08588",
+    "source_id": "fd272669-f6d8-4f9b-94c9-b43b6277c77c"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -1843,11 +1863,11 @@
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "overview_youtube_url": "https://youtu.be/6NXdPWlBtW0",
-    "short_youtube_url": null,
+    "short_youtube_url": "https://youtu.be/b-maTwXHbnI",
     "overview_edit_verified": true,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   },
   "interventions": {
     "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video": {
