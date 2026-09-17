@@ -273,6 +273,40 @@ class PipelineTestCase(unittest.TestCase):
         self.assertIn("90–180", saved["review_notes"]["technical"])
         self.assertTrue((self.state_dir / saved["manifest_path"]).is_file())
 
+    def test_technical_validation_accepts_signature_overlay_inside_source_duration(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        item = pipeline.new_item(source)
+        item.update({
+            "raw_mp4": "raw.mp4",
+            "raw_sha256": "0" * 64,
+            "content_duration_seconds": 104.0,
+            "signature_duration_seconds": 3.0,
+        })
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        raw = self.state_dir / "raw.mp4"
+        raw.parent.mkdir(parents=True)
+        raw.write_bytes(b"raw")
+        final = self.state_dir / "final.mp4"
+        final.write_bytes(b"final")
+        review = self.state_dir / "review.png"
+        review.write_bytes(b"review")
+        frame_dir = self.state_dir / f"{item['id']}-frames"
+        frame_dir.mkdir()
+        for index in range(1, 9):
+            (frame_dir / f"frame-{index}.png").write_bytes(f"frame-{index}".encode())
+        with mock.patch.object(pipeline, "render_remotion_video", return_value=final), mock.patch.object(
+            pipeline, "ffprobe", return_value={"codec": "h264", "width": 1280, "height": 720, "duration": 104.0, "format": "mp4"}
+        ), mock.patch.object(
+            pipeline, "create_contact_sheet", return_value=review
+        ), mock.patch.object(
+            pipeline, "validate_female_voice", return_value=(True, 180.0, "verified")
+        ):
+            pipeline.validate_and_manifest(state, item, raw)
+        saved = pipeline.load_state()["items"][0]
+        self.assertTrue(saved["technical_verified"])
+        self.assertEqual(saved["status"], "pending_review")
+        self.assertNotIn("סגיר החתימה", saved["review_notes"]["technical"])
+
     def make_pending_item(self) -> tuple[dict, dict]:
         source = pipeline.source_metadata(hebrew_post())
         item = pipeline.new_item(source)
@@ -370,6 +404,30 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(saved["visual_review_status"], "pending")
         self.assertEqual(len(saved["evidence_history"]), 1)
         self.assertEqual(saved["evidence_history"][0]["status"], "rejected")
+        validate.assert_called_once()
+
+    def test_remotion_rebuild_allows_legacy_signature_timing_rejection(self) -> None:
+        state, item = self.make_pending_item()
+        raw = self.state_dir / "raw-notebooklm.mp4"
+        raw.write_bytes(b"original-notebooklm")
+        item.update(
+            {
+                "status": "rejected",
+                "technical_verified": False,
+                "visual_review_status": "pending",
+                "review_notes": {"technical": "נפסל טכנית: סגיר החתימה בן 3 השניות לא נוסף אחרי מלוא תוכן ה-Overview"},
+                "raw_mp4": raw.name,
+                "raw_sha256": pipeline.sha256_file(raw),
+                "source_id": "source",
+                "task_id": "artifact",
+                "artifact_id": "artifact",
+            }
+        )
+        pipeline.save_state(state)
+        with mock.patch.object(pipeline, "validate_and_manifest") as validate:
+            pipeline.rebuild_rejected_with_remotion(item["id"])
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "downloaded")
         validate.assert_called_once()
 
     def test_remotion_rebuild_redownloads_raw_if_missing(self) -> None:
