@@ -21,7 +21,7 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/854",
     "quality_status": "passed",
     "quality_content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
-    "quality_checked_at": "2026-09-17T11:06:05.354937+00:00",
+    "quality_checked_at": "2026-09-17T11:11:29.094152+00:00",
     "quality_violations": [],
     "slug": "early-habits-building-calm-mornings-children",
     "title": "הכנה לכיתה א: איך בונים שגרת בוקר שעובדת?",
@@ -1795,7 +1795,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260917-103202-3ca2ce643c",
+    "item_id": "video-20260917-134451-4d0ba0c737",
     "last_dispatch_at": "2026-09-17T11:05:29.577241+00:00",
     "resume_dispatches": 3,
     "watchdog": {
