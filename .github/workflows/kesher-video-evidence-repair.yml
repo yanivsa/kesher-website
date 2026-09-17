@@ -1,0 +1,106 @@
+name: Kesher Video Evidence Repair
+
+on:
+  workflow_dispatch:
+    inputs:
+      item_id:
+        description: Exact durable Video Overview item ID
+        required: true
+        type: string
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: kesher-daily-notebooklm-video
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state
+      KESHER_WHISPER_MODEL: small
+      HF_HOME: ${{ github.workspace }}/.cache/huggingface
+    steps:
+      - name: Checkout current ref
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements-video-cloud.txt
+
+      - name: Set up Node 22 for Remotion
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install media and cloud dependencies
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          echo "$ffmpeg_dir" >> "$GITHUB_PATH"
+          echo "$ffprobe_dir" >> "$GITHUB_PATH"
+          python -m pip install --upgrade pip
+          python -m pip install -r scripts/requirements-video-cloud.txt
+
+      - name: Restore newest valid durable video state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$KESHER_STATE_DIR"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/artifacts.txt
+          restored=false
+          while read -r artifact_id; do
+            [ -n "$artifact_id" ] || continue
+            archive="$(mktemp /tmp/kesher-video-state.XXXXXX.zip)"
+            if gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
+              temp_extract="$(mktemp -d)"
+              if unzip -oq "$archive" -d "$temp_extract" 2>/dev/null \
+                && [ -s "$temp_extract/state.json" ] \
+                && python -c 'import json,sys; s=json.load(sys.stdin); assert s.get("version")==1 and isinstance(s.get("items"),list)' < "$temp_extract/state.json"; then
+                cp -r "$temp_extract/"* "$KESHER_STATE_DIR/" || true
+                restored=true
+                rm -rf "$temp_extract" "$archive"
+                break
+              fi
+              rm -rf "$temp_extract"
+            fi
+            rm -f "$archive"
+          done < /tmp/artifacts.txt
+          [ "$restored" = true ] || { echo "No trustworthy durable state" >&2; exit 1; }
+
+      - name: Repair immutable evidence on exact item
+        run: python -u scripts/kesher_video_evidence_repair.py --item-id "${{ inputs.item_id }}"
+
+      - name: Persist repaired durable state
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-video-state
+          path: ${{ env.KESHER_STATE_DIR }}
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          include-hidden-files: true
+
+      - name: Keep newest three durable state artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[3:] | .[].id' \
+            | while read -r artifact_id; do
+                [ -n "$artifact_id" ] || continue
+                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}"
+              done

@@ -1,16 +1,12 @@
 from __future__ import annotations
 
-import importlib.util
 import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
 
-MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "kesher_daily_pipeline.py"
-SPEC = importlib.util.spec_from_file_location("kesher_daily_pipeline_pending_evidence_test", MODULE_PATH)
-pipeline = importlib.util.module_from_spec(SPEC)
-assert SPEC and SPEC.loader
-SPEC.loader.exec_module(pipeline)
+from scripts import kesher_daily_pipeline as pipeline
+from scripts import kesher_video_evidence_repair as repair
 
 
 class PendingEvidenceRepairTest(unittest.TestCase):
@@ -55,13 +51,27 @@ class PendingEvidenceRepairTest(unittest.TestCase):
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
 
         with mock.patch.object(pipeline, "validate_and_manifest") as validate:
-            pipeline.rebuild_rejected_with_remotion(item["id"])
+            repair.repair_pending_evidence(item["id"])
 
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["status"], "downloaded")
         self.assertFalse(saved["technical_verified"])
         self.assertEqual(saved["evidence_history"][0]["status"], "pending_review")
+        self.assertEqual(saved["evidence_history"][0]["reason"], "immutable_evidence_repair")
         validate.assert_called_once()
+
+    def test_repair_refuses_complete_evidence(self) -> None:
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        item = {
+            "id": "complete",
+            "status": "pending_review",
+            "technical_verified": True,
+            "uploaded": False,
+            **{field: "present" for field in repair.IMMUTABLE_EVIDENCE_FIELDS},
+        }
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+        with self.assertRaisesRegex(pipeline.PipelineError, "already complete"):
+            repair.repair_pending_evidence("complete")
 
 
 if __name__ == "__main__":
