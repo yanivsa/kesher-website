@@ -963,7 +963,16 @@
         "live_verified_at": "2026-09-16T19:43:53.210523+00:00",
         "next_deploy_retry_at": null
       },
-      "archived_at": "2026-09-16T22:22:54.518810+00:00"
+      "archived_at": "2026-09-16T22:22:54.518810+00:00",
+      "media": {
+        "source_slug": "fights-before-wedding",
+        "source_content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
+        "article_url": "https://kesher.saharoni.com/blog/fights-before-wedding",
+        "article_live": true,
+        "long_status": "running",
+        "long_resume_count": 1,
+        "long_last_dispatch_at": "2026-09-17T11:29:07.936625+00:00"
+      }
     }
   ],
   "last_error": null,
