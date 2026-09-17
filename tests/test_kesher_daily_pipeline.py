@@ -387,6 +387,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(pipeline.load_state()["items"][0]["status"], "rejected")
 
     def test_remotion_cache_rejects_incomplete_legacy_enhancement_evidence(self) -> None:
+        self.state_dir.mkdir(parents=True, exist_ok=True)
         output = self.state_dir / "legacy-remotion-final.mp4"
         output.write_bytes(b"legacy-final")
         item = {"enhancement_status": "applied"}
