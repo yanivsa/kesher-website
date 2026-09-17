@@ -28,7 +28,7 @@
     "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "published_date": "2026-09-17",
     "live": true,
-    "live_verified_at": "2026-09-17T11:02:45.719224+00:00",
+    "live_verified_at": "2026-09-17T11:09:14.713790+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -969,15 +969,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-15T15:21:48.790510+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-09-15T15:25:05.732562+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -1764,9 +1755,21 @@
         "operation": "full",
         "resume": 3
       }
+    },
+    {
+      "at": "2026-09-17T11:09:14.713809+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-17T11:09:30.835786+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-17T11:05:29.577257+00:00",
+  "updated_at": "2026-09-17T11:09:30.835808+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1782,17 +1785,17 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "downloaded",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35211989146,
+    "run_id": 35213862461,
     "processed_run_id": 35211989146,
     "provider_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260917-134451-4d0ba0c737",
+    "item_id": "video-20260917-103202-3ca2ce643c",
     "last_dispatch_at": "2026-09-17T11:05:29.577241+00:00",
     "resume_dispatches": 3,
     "watchdog": {
