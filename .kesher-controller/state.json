@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-17",
-  "status": "long_video_running",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1685,9 +1685,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-17T05:33:03.603332+00:00",
+      "from": "long_video_running",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20260917-063948-4d0ba0c737",
+        "task_id": "b42db818-ee64-48a5-9765-f11138dc7d2e"
+      }
     }
   ],
-  "updated_at": "2026-09-17T03:40:46.822315+00:00",
+  "updated_at": "2026-09-17T05:33:03.603338+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1703,7 +1713,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35178934125,
@@ -1714,14 +1724,14 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "item_id": "video-20260916-204013-3ca2ce643c",
-    "last_dispatch_at": "2026-09-17T03:38:42.571157+00:00",
-    "resume_dispatches": 1,
+    "last_dispatch_at": "2026-09-17T05:33:03.603323+00:00",
+    "resume_dispatches": 2,
     "watchdog": {
       "identity": "long_video:early-habits-building-calm-mornings-children:4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94:video-20260917-063948-4d0ba0c737",
       "last_progress_at": "2026-09-17T03:57:36.393587+00:00",
       "last_fingerprint": "df79753e44c5242a21130147a7b14747b2bebf958e977872a5a1eac86bd03ec4",
-      "recovery_count": 0,
-      "last_recovery_at": null
+      "recovery_count": 1,
+      "last_recovery_at": "2026-09-17T05:31:54.846599+00:00"
     }
   },
   "short": {
@@ -1747,5 +1757,22 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "interventions": {
+    "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video": {
+      "pipeline_id": "v5",
+      "slug": "early-habits-building-calm-mornings-children",
+      "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-09-17T08",
+      "last_fingerprint": "244421d2fc47bab926c31360d9ff30a313a0921ec96c1bbd79523cc76f39bd78",
+      "last_controller_action_token": "recovery:1:2026-09-17T05:31:54.846599+00:00",
+      "controller_action_observed": true,
+      "last_observed_at": "2026-09-17T05:31:54.846599+00:00",
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-09-17T05:31:54.846599+00:00"
+    }
   }
 }
