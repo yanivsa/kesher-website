@@ -18,7 +18,11 @@
     "normalization_status": "complete",
     "last_dispatch_at": "2026-09-16T22:23:06.876999+00:00",
     "pr_number": 854,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/854"
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/854",
+    "quality_status": "passed",
+    "quality_content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+    "quality_checked_at": "2026-09-17T03:29:38.450880+00:00",
+    "quality_violations": []
   },
   "backlog": [
     {
@@ -1672,7 +1676,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
