@@ -782,16 +782,18 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         technical_failures.append(f"קודק הווידאו הוא {media['codec']} ולא H.264")
     content_duration = float(
         item.get("content_duration_seconds")
-        or max(0.0, float(media["duration"]) - SIGNATURE_DURATION_SECONDS)
+        or float(media["duration"])
     )
     if not 90 <= content_duration <= 180:
         technical_failures.append(
             f"משך תוכן הווידאו הוא {content_duration} שניות ואינו בטווח 90–180 שניות"
         )
-    expected_final_duration = content_duration + SIGNATURE_DURATION_SECONDS
+    # The signature is an in-content overlay during the final 2–3 seconds.
+    # It must never extend the authoritative NotebookLM source timeline.
+    expected_final_duration = content_duration
     if abs(float(media["duration"]) - expected_final_duration) > 0.15:
         technical_failures.append(
-            "סגיר החתימה בן 3 השניות לא נוסף אחרי מלוא תוכן ה-Overview"
+            "משך הווידאו הסופי שונה ממלוא תוכן ה-Overview; החתימה חייבת להיות overlay בתוך ציר הזמן"
         )
     if media["width"] <= media["height"] or not 1.70 <= media["width"] / media["height"] <= 1.82:
         technical_failures.append(
@@ -955,9 +957,18 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
         raise PipelineError("Remotion rebuild item was not found uniquely")
     item = matches[0]
     rejected = item.get("status") == "rejected" and item.get("visual_review_status") == "rejected"
+    technical_note = str((item.get("review_notes") or {}).get("technical") or "")
+    legacy_signature_recovery = (
+        item.get("status") == "rejected"
+        and item.get("technical_verified") is not True
+        and "סגיר החתימה" in technical_note
+    )
     uploaded_recovery = item.get("status") == "uploaded" and item.get("uploaded") is True and item.get("youtube_id")
-    if not (rejected or uploaded_recovery):
-        raise PipelineError("Remotion rebuild is allowed only for a visually rejected item or an exact uploaded-item recovery")
+    if not (rejected or legacy_signature_recovery or uploaded_recovery):
+        raise PipelineError(
+            "Remotion rebuild is allowed only for a visual rejection, a legacy signature-timing technical rejection, "
+            "or an exact uploaded-item recovery"
+        )
 
     youtube_id = item.pop("youtube_id", None)
     if youtube_id:
