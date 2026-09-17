@@ -643,9 +643,23 @@ def validate_female_voice(
     return True, pitch, f"Female voice pitch verified ({pitch:.1f} Hz)"
 
 
+def remotion_cache_is_reusable(item: dict[str, Any], output_path: Path) -> bool:
+    if not output_path.is_file() or output_path.stat().st_size <= 0 or not item.get("enhancement_status"):
+        return False
+    for path_key, hash_key in (("motion_plan_path", "motion_plan_sha256"), ("remotion_props_path", "remotion_props_sha256")):
+        name = str(item.get(path_key) or "").strip()
+        expected = str(item.get(hash_key) or "").strip()
+        if not name or not expected:
+            return False
+        evidence = STATE_DIR / name
+        if not evidence.is_file() or sha256_file(evidence) != expected:
+            return False
+    return True
+
+
 def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     output_path = STATE_DIR / f"{item['id']}-remotion-final.mp4"
-    if output_path.exists() and output_path.stat().st_size > 0 and item.get("enhancement_status"):
+    if remotion_cache_is_reusable(item, output_path):
         return output_path
     remotion = PROJECT_DIR / "node_modules" / ".bin" / "remotion"
     if not remotion.is_file():

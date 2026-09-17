@@ -386,6 +386,24 @@ class PipelineTestCase(unittest.TestCase):
         pipeline.update_review(args)
         self.assertEqual(pipeline.load_state()["items"][0]["status"], "rejected")
 
+    def test_remotion_cache_rejects_incomplete_legacy_enhancement_evidence(self) -> None:
+        output = self.state_dir / "legacy-remotion-final.mp4"
+        output.write_bytes(b"legacy-final")
+        item = {"enhancement_status": "applied"}
+        self.assertFalse(pipeline.remotion_cache_is_reusable(item, output))
+
+        plan = self.state_dir / "motion-plan.json"
+        props = self.state_dir / "remotion-props.json"
+        plan.write_text("{}", encoding="utf-8")
+        props.write_text("{}", encoding="utf-8")
+        item.update({
+            "motion_plan_path": plan.name,
+            "motion_plan_sha256": pipeline.sha256_file(plan),
+            "remotion_props_path": props.name,
+            "remotion_props_sha256": pipeline.sha256_file(props),
+        })
+        self.assertTrue(pipeline.remotion_cache_is_reusable(item, output))
+
     def test_remotion_rebuild_preserves_rejected_evidence_history(self) -> None:
         state, item = self.make_pending_item()
         raw = self.state_dir / "raw-notebooklm.mp4"
