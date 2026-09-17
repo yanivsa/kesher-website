@@ -44,14 +44,17 @@ class ShortPipelineV4Tests(unittest.TestCase):
 
     def test_native_provider_gate_rejects_landscape_or_long_form_identity(self):
         valid = {"provider_video_format": "short", "provider_native_short": True}
+        valid["fresh_generation_attempt"] = 1
         self.assertEqual(short.native_provider_short_failures({"width": 1080, "height": 1920}, valid), [])
         self.assertTrue(short.native_provider_short_failures({"width": 1920, "height": 1080}, valid))
-        reused = dict(valid, shared_provider_identity=True)
+        fallback = dict(valid, fresh_generation_attempt=3, provider_video_format="explainer", provider_native_short=False)
+        self.assertEqual(short.native_provider_short_failures({"width": 1920, "height": 1080}, fallback), [])
+        reused = dict(fallback, shared_provider_identity=True)
         self.assertTrue(any("long-form" in err for err in short.native_provider_short_failures({"width": 1080, "height": 1920}, reused)))
 
     def test_signature_component_keeps_branded_background_inside_timeline(self):
         source = (Path(short.core.PROJECT_DIR) / "src" / "remotion" / "components" / "FullScreenSignatureOutro.tsx").read_text(encoding="utf-8")
-        self.assertIn("#0d1712", source)
+        self.assertIn("linear-gradient(135deg, #18281f 0%, #0d1712 100%)", source)
         self.assertNotIn("rgba(13,23,18,0.05)", source)
 
     def test_long_source_keeps_its_full_natural_duration(self):
