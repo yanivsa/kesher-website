@@ -39,6 +39,7 @@ SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
 SHORT_FPS = 30
 SIGNATURE_DURATION_SECONDS = 3.0
+NATIVE_SHORT_FALLBACK_ATTEMPT = 3
 VISUAL_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
 SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
@@ -56,9 +57,10 @@ _base_new_item = core.new_item
 
 def generation_prompt(source: dict[str, Any]) -> str:
     prompt = (
-        "צור וידאו קצר ותמציתי בעברית טבעית בלבד, המבוסס אך ורק על המקור שנבחר. "
+        "צור סרטון קצר מקורי שנוצר מלכתחילה כסרטון אנכי ביחס 9:16 בעברית טבעית בלבד, המבוסס אך ורק על המקור שנבחר. "
+        "אין ליצור סקירת וידאו אופקית, אין ליצור יחס 16:9, ואין להסתמך על חיתוך, מסגור מחדש או המרה מאוחרת של וידאו ארוך לסרטון קצר. "
         "אין מגבלת משך: העדף קיצור, אך תן לרעיון להסתיים במלואו ובאופן טבעי. "
-        "חובה: השתמש אך ורק בקול של אישה ישראלית (קריינית נקבה), חם, טבעי, ברור ומקצועי לכל אורך הקריינות, ללא קול גברי כלל. "
+        "בקש קול של אישה ישראלית (קריינית נקבה), חם, טבעי, ברור ומקצועי לכל אורך הקריינות. "
         "הרעיון השלם חייב לעמוד בפני עצמו: פתח במשפט שמציג בעיה או שאלה ברורה, "
         "המשך בתובנה אחת בלבד ובדוגמה אחת קצרה, וסיים בפעולה מעשית אחת ובסיום טבעי ומלא. "
         "לעולם אל תקטע משפט, מחשבה או מסקנה כדי לעמוד במשך מסוים. "
@@ -76,8 +78,68 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
     item = _base_new_item(source)
     item["type"] = "article_short"
     item["source_mode"] = "direct-short"
+    item["provider_video_format"] = "short"
+    item["provider_native_short"] = True
+    item["provider_short_fallback_used"] = False
     item["fresh_generation_attempt"] = int(item.get("technical_retry_count") or 0) + 1
+    metadata = copy.deepcopy(item.get("youtube_metadata") or {})
+    canonical_url = str(source.get("canonical_url") or "").strip()
+    excerpt = str(source.get("excerpt") or "").strip()
+    if canonical_url:
+        metadata["description"] = (
+            f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"
+            f"\n\nלאתר קשר:\n{core.SITE_URL}"
+        ).strip()
+    item["youtube_metadata"] = metadata
     return item
+
+
+def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
+    """Prefer a provider-native Short; use an independent landscape fallback only on the bounded final attempt."""
+    prompt_path = core.STATE_DIR / f"{item['id']}-prompt-he.txt"
+    prompt = generation_prompt(item["source"])
+    prompt_path.write_text(prompt, encoding="utf-8")
+    attempt = int(item.get("fresh_generation_attempt") or 1)
+    provider_format = "short" if attempt < NATIVE_SHORT_FALLBACK_ATTEMPT else "explainer"
+    payload = core.run_notebooklm(
+        [
+            "generate", "video", "--prompt-file", str(prompt_path), "--notebook", core.NOTEBOOK_ID,
+            "--source", item["source_id"], "--format", provider_format, "--language", "he", "--no-wait",
+        ],
+        timeout=180,
+    )
+    task_id = core.nested_identifier(payload, ("task_id", "taskId", "artifact_id", "id"))
+    if not task_id:
+        raise core.PipelineError("NotebookLM native Short generation returned no task ID")
+    item["task_id"] = task_id
+    item["artifact_id"] = task_id
+    item["generation_prompt"] = prompt
+    item["generation_prompt_sha256"] = core.sha256_text(prompt)
+    item["provider_video_format"] = provider_format
+    item["provider_native_short"] = provider_format == "short"
+    item["provider_short_fallback_used"] = provider_format != "short"
+    item["status"] = "generating"
+    item["generation_started_at"] = core.utc_now()
+    item["updated_at"] = core.utc_now()
+    core.save_state(state)
+    print(f"SHORT_GENERATION_STARTED item={item['id']} task_id={task_id} format={provider_format} attempt={attempt}")
+
+
+def native_provider_short_failures(media: dict[str, Any], item: dict[str, Any]) -> list[str]:
+    failures: list[str] = []
+    width = int(media.get("width") or 0)
+    height = int(media.get("height") or 0)
+    ratio = (width / height) if height else 0
+    attempt = int(item.get("fresh_generation_attempt") or 1)
+    native_portrait = height > width and 0.53 <= ratio <= 0.60
+    fallback_allowed = attempt >= NATIVE_SHORT_FALLBACK_ATTEMPT
+    if not native_portrait and not fallback_allowed:
+        failures.append(f"NotebookLM source is not a native portrait Short ({width}x{height}); retry native Short before fallback")
+    if item.get("provider_video_format") != "short" and not fallback_allowed:
+        failures.append("NotebookLM provider format is not the native Short format before the fallback attempt")
+    if item.get("shared_provider_identity") is True or item.get("adopted_from_long_item_id"):
+        failures.append("Short reuses Video Overview provider identity; an independent Short generation is required")
+    return failures
 
 
 def short_window(raw_duration: float) -> tuple[float, float]:
@@ -186,6 +248,17 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     signature_sha256 = core.sha256_file(signature_path)
 
     raw_media = core.ffprobe(raw_path)
+    native_failures = native_provider_short_failures(raw_media, item)
+    if native_failures:
+        raise core.PipelineError("; ".join(native_failures))
+    raw_width = int(raw_media.get("width") or 0)
+    raw_height = int(raw_media.get("height") or 0)
+    raw_ratio = (raw_width / raw_height) if raw_height else 0
+    item["provider_native_short_verified"] = raw_height > raw_width and 0.53 <= raw_ratio <= 0.60
+    if not item["provider_native_short_verified"]:
+        item["provider_short_fallback_used"] = True
+        item["provider_short_fallback_reason"] = "native_short_unavailable_after_bounded_attempts"
+    item["provider_raw_media"] = {key: raw_media.get(key) for key in ("width", "height", "duration", "codec", "audio_codec")}
     start_seconds, duration_seconds = short_window(float(raw_media["duration"]))
     duration_frames = max(1, round(duration_seconds * SHORT_FPS))
     start_frame = max(0, round(start_seconds * SHORT_FPS))
@@ -309,8 +382,12 @@ def validate_and_manifest(
         core.require_hebrew(metadata["description"], "YouTube description", allow_url=True)
         for tag in metadata["tags"]:
             core.require_hebrew(tag, "YouTube tag")
-        if core.SITE_URL not in metadata["description"]:
-            raise core.PipelineError("YouTube description is missing the Kesher URL")
+        description_lines = [line.strip() for line in metadata["description"].splitlines() if line.strip()]
+        canonical_url = str((item.get("source") or {}).get("canonical_url") or "").strip()
+        if not canonical_url or canonical_url not in description_lines:
+            raise core.PipelineError("YouTube description is missing the exact article URL")
+        if core.SITE_URL not in description_lines:
+            raise core.PipelineError("YouTube description is missing the standalone Kesher site URL")
     except (KeyError, core.PipelineError) as exc:
         metadata_failure = f"המטא־דאטה אינו עומד בשער העברית והמקור: {exc}"
         technical_failures.append(metadata_failure)
@@ -322,6 +399,9 @@ def validate_and_manifest(
         "created_at": core.utc_now(),
         "source": item["source"],
         "source_mode": item.get("source_mode"),
+        "provider_video_format": item.get("provider_video_format"),
+        "provider_native_short": item.get("provider_native_short"),
+        "provider_native_short_verified": item.get("provider_native_short_verified"),
         "notebook_id": item["notebook_id"],
         "source_id": item["source_id"],
         "task_id": item["task_id"],
@@ -414,6 +494,7 @@ def validate_and_manifest(
 def install() -> None:
     core.generation_prompt = generation_prompt
     core.new_item = new_item
+    core.start_generation = start_generation
     core.render_remotion_video = render_remotion_video
     core.validate_and_manifest = validate_and_manifest
 

@@ -62,14 +62,20 @@
   },
   "retry": {
     "max_attempts_per_stage": 3,
-    "backoff_minutes": [5, 15],
+    "backoff_minutes": [
+      5,
+      15
+    ],
     "attempts_include_initial_run": true
   },
   "article": {
     "generator": "jules",
     "worker_session_attempts": 1,
     "max_attempts": 3,
-    "retry_backoff_minutes": [5, 15],
+    "retry_backoff_minutes": [
+      5,
+      15
+    ],
     "publication_ready_requires_trusted_image": true,
     "jules_pending_image_handoff_status": "PENDING_TRUSTED_IMAGE_STAGE"
   },
@@ -79,7 +85,13 @@
     "worker_owner": "github-actions",
     "worker_attempts_per_dispatch": 1,
     "max_attempts": 3,
-    "provider_order": ["gemini", "unsplash", "pexels", "local-curated", "local-editorial"],
+    "provider_order": [
+      "gemini",
+      "unsplash",
+      "pexels",
+      "local-curated",
+      "local-editorial"
+    ],
     "gemini_model": "gemini-3.1-flash-image",
     "visual_verifier_model": "gemini-3.5-flash",
     "external_stock_requires_pixel_verification": true,
@@ -102,7 +114,10 @@
       "preferred_voice": "female",
       "female_attempts_before_fallback": 3,
       "fallback_voice_after_failed_female_attempts": "male",
-      "applies_to": ["video_overview", "short"],
+      "applies_to": [
+        "video_overview",
+        "short"
+      ],
       "retry_on_detected_male_before_fallback": true,
       "accept_male_on_final_female_attempt": true,
       "stop_voice_retries_after_fallback": true,
@@ -115,13 +130,30 @@
     "enhancement": {
       "required_for_publication": false,
       "shared_engine": "remotion",
-      "profiles": ["overview_16_9", "short_9_16"],
+      "profiles": [
+        "overview_16_9",
+        "short_9_16"
+      ],
       "missing_assets": "source-only-fallback",
       "asset_failure": "drop-and-continue",
       "jules_review": "advisory",
       "duplicate_generation_for_enrichment": false,
       "signature_timing": "overlay_final_2_3_seconds_inside_source_timeline",
-      "signature_may_extend_final_duration": false
+      "signature_may_extend_final_duration": false,
+      "signature_background_required": true,
+      "signature_source_pixels_may_be_covered": true
+    },
+    "short_generation": {
+      "provider_format": "short",
+      "provider_native_portrait_required": true,
+      "overview_provider_identity_reuse_forbidden": true,
+      "landscape_to_short_conversion_forbidden": false,
+      "youtube_description_requires_exact_article_url": true,
+      "youtube_description_requires_standalone_site_url": true,
+      "native_short_attempts_before_fallback": 2,
+      "fallback_attempt": 3,
+      "independent_landscape_fallback_allowed": true,
+      "fallback_must_not_reuse_video_overview_identity": true
     }
   },
   "invariants": {
@@ -141,6 +173,9 @@
     "supervisor_state_is_cas_protected": true,
     "same_incident_escalation_is_bounded": true,
     "signature_overlay_stays_inside_source_timeline": true,
-    "signature_never_extends_media_duration": true
+    "signature_never_extends_media_duration": true,
+    "short_is_provider_native_not_overview_conversion": true,
+    "short_description_has_article_and_site_urls": true,
+    "signature_preserves_approved_background": true
   }
 }

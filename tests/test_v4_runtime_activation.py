@@ -100,9 +100,10 @@ class V4RuntimeActivationTests(unittest.TestCase):
         self.assertIn("- release", workflow)
         self.assertIn("- derive", workflow)
         self.assertIn("release_slug:", workflow)
-        self.assertIn("derive_long_item_id:", workflow)
+        self.assertIn("derive_content_sha256:", workflow)
         self.assertIn("--release-without-short", workflow)
-        self.assertIn("--adopt-long-form-state", workflow)
+        self.assertIn("NATIVE_SHORT_RECOVERY_SOURCE_VERIFIED", workflow)
+        self.assertNotIn("--adopt-long-form-state", workflow)
         self.assertNotIn("Generate or resume exact Video Overview", workflow)
 
     def test_article_short_embeds_the_notebooklm_video_and_audio(self):

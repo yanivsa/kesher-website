@@ -13,10 +13,12 @@ class ShortPipelineV4Tests(unittest.TestCase):
             "slug": "how-to-talk",
             "title": "איך מדברים בלי להפוך כל שיחה לריב",
             "category": "זוגיות",
+            "excerpt": "תיאור קצר",
+            "canonical_url": "https://kesher.saharoni.com/blog/how-to-talk",
             "content_sha256": "a" * 64,
             "youtube_metadata": {
                 "title": "איך מדברים בלי להפוך כל שיחה לריב",
-                "description": "תיאור המאמר https://kesher.saharoni.com",
+                "description": "תיאור המאמר\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/how-to-talk\n\nלאתר קשר:\nhttps://kesher.saharoni.com",
                 "tags": ["זוגיות", "תקשורת"],
             },
         }
@@ -24,10 +26,36 @@ class ShortPipelineV4Tests(unittest.TestCase):
     def test_prompt_requests_one_complete_short_ready_hebrew_idea_without_duration_cap(self):
         prompt = short.generation_prompt(self.source())
         self.assertIn("קול של אישה ישראלית", prompt)
+        self.assertIn("סרטון אנכי ביחס 9:16", prompt)
+        self.assertIn("אין ליצור סקירת וידאו אופקית", prompt)
         self.assertIn("הרעיון השלם", prompt)
         self.assertIn("סיום טבעי", prompt)
         self.assertNotIn("45 עד 55 שניות", prompt)
         self.assertNotIn("55 השניות", prompt)
+
+
+    def test_new_item_requires_native_provider_short_and_both_links(self):
+        item = short.new_item(self.source())
+        self.assertEqual(item["provider_video_format"], "short")
+        self.assertTrue(item["provider_native_short"])
+        lines = [line.strip() for line in item["youtube_metadata"]["description"].splitlines() if line.strip()]
+        self.assertIn("https://kesher.saharoni.com/blog/how-to-talk", lines)
+        self.assertIn("https://kesher.saharoni.com", lines)
+
+    def test_native_provider_gate_rejects_landscape_or_long_form_identity(self):
+        valid = {"provider_video_format": "short", "provider_native_short": True}
+        valid["fresh_generation_attempt"] = 1
+        self.assertEqual(short.native_provider_short_failures({"width": 1080, "height": 1920}, valid), [])
+        self.assertTrue(short.native_provider_short_failures({"width": 1920, "height": 1080}, valid))
+        fallback = dict(valid, fresh_generation_attempt=3, provider_video_format="explainer", provider_native_short=False)
+        self.assertEqual(short.native_provider_short_failures({"width": 1920, "height": 1080}, fallback), [])
+        reused = dict(fallback, shared_provider_identity=True)
+        self.assertTrue(any("Video Overview provider identity" in err for err in short.native_provider_short_failures({"width": 1080, "height": 1920}, reused)))
+
+    def test_signature_component_keeps_branded_background_inside_timeline(self):
+        source = (Path(short.core.PROJECT_DIR) / "src" / "remotion" / "components" / "FullScreenSignatureOutro.tsx").read_text(encoding="utf-8")
+        self.assertIn("linear-gradient(135deg, #18281f 0%, #0d1712 100%)", source)
+        self.assertNotIn("rgba(13,23,18,0.05)", source)
 
     def test_long_source_keeps_its_full_natural_duration(self):
         start, duration = short.short_window(132.0)
@@ -155,6 +183,8 @@ class ShortPipelineV4Tests(unittest.TestCase):
         item = short.new_item(self.source())
         self.assertEqual(item["type"], "article_short")
         self.assertEqual(item["source_mode"], "direct-short")
+        self.assertEqual(item["provider_video_format"], "short")
+        self.assertTrue(item["provider_native_short"])
 
         with mock.patch.dict(os.environ, {"KESHER_SHORT_MODE": "derive"}):
             derived_item = short.new_item(self.source())

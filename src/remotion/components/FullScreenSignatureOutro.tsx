@@ -21,7 +21,7 @@ export interface FullScreenSignatureOutroProps {
 
 export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> = ({
   durationSeconds = 2,
-  backgroundColor = "linear-gradient(180deg, rgba(13,23,18,0.05) 0%, rgba(13,23,18,0.22) 45%, rgba(13,23,18,0.55) 100%)",
+  backgroundColor = "linear-gradient(135deg, #18281f 0%, #0d1712 100%)",
   signatureColor = "#f4d068",
   signatureImageSrc = "signature-mask.svg",
   title = "שירה סהרוני",
@@ -35,7 +35,7 @@ export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> =
   const overlayLengthFrames = Math.round(durationSeconds * fps);
   const startFrame = Math.max(0, durationInFrames - overlayLengthFrames);
 
-  // The signature lives inside the existing source timeline. It never appends frames.
+  // The approved signature treatment, including its branded background, lives inside the existing source timeline. It never appends frames.
   if (frame < startFrame) {
     return null;
   }
@@ -130,7 +130,7 @@ export const FullScreenSignatureOutro: React.FC<FullScreenSignatureOutroProps> =
         <div
           style={{
             marginTop: isVertical ? "16px" : "8px",
-            background: "rgba(13, 23, 18, 0.50)",
+            background: "rgba(255, 255, 255, 0.12)",
             border: `1.5px solid ${signatureColor}`,
             padding: isVertical ? "16px 44px" : "10px 30px",
             borderRadius: "50px",
