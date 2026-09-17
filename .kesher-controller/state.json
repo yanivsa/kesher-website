@@ -904,7 +904,16 @@
         "live_verified_at": "2026-09-15T20:24:03.161284+00:00",
         "next_deploy_retry_at": null
       },
-      "archived_at": "2026-09-15T22:18:07.866804+00:00"
+      "archived_at": "2026-09-15T22:18:07.866804+00:00",
+      "media": {
+        "source_slug": "returning-to-israel-after-relocation-relationship",
+        "source_content_sha256": "3ca2ce643ca610e89465259704eeb106919bfa0f7b4eec3416d011ef9cb58758",
+        "article_url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
+        "article_live": true,
+        "long_status": "running",
+        "long_resume_count": 1,
+        "long_last_dispatch_at": "2026-09-17T19:12:04.508869+00:00"
+      }
     },
     {
       "cycle": "2026-09-16",
