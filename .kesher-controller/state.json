@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-17",
-  "status": "blocked",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -28,7 +28,7 @@
     "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "published_date": "2026-09-17",
     "live": true,
-    "live_verified_at": "2026-09-17T19:09:55.275340+00:00",
+    "live_verified_at": "2026-09-17T19:26:34.630387+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -995,28 +995,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-17T19:11:18.025065+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-16T08:06:50.760754+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-16T08:08:58.981141+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
     {
       "at": "2026-09-16T08:10:24.472140+00:00",
       "from": "blocked",
@@ -1762,9 +1742,21 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-17T19:26:34.630403+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-17T19:27:22.319576+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-17T19:11:18.025091+00:00",
+  "updated_at": "2026-09-17T19:27:22.319602+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1780,10 +1772,10 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35261351777,
+    "run_id": 35263447248,
     "processed_run_id": 35261351777,
     "provider_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
     "failure_fingerprint": null,
