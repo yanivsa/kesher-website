@@ -26,8 +26,8 @@ class ShortPipelineV4Tests(unittest.TestCase):
     def test_prompt_requests_one_complete_short_ready_hebrew_idea_without_duration_cap(self):
         prompt = short.generation_prompt(self.source())
         self.assertIn("קול של אישה ישראלית", prompt)
-        self.assertIn("Short אנכי 9:16", prompt)
-        self.assertIn("אין ליצור Video Overview אופקי", prompt)
+        self.assertIn("סרטון אנכי ביחס 9:16", prompt)
+        self.assertIn("אין ליצור סקירת וידאו אופקית", prompt)
         self.assertIn("הרעיון השלם", prompt)
         self.assertIn("סיום טבעי", prompt)
         self.assertNotIn("45 עד 55 שניות", prompt)
@@ -50,7 +50,7 @@ class ShortPipelineV4Tests(unittest.TestCase):
         fallback = dict(valid, fresh_generation_attempt=3, provider_video_format="explainer", provider_native_short=False)
         self.assertEqual(short.native_provider_short_failures({"width": 1920, "height": 1080}, fallback), [])
         reused = dict(fallback, shared_provider_identity=True)
-        self.assertTrue(any("long-form" in err for err in short.native_provider_short_failures({"width": 1080, "height": 1920}, reused)))
+        self.assertTrue(any("Video Overview provider identity" in err for err in short.native_provider_short_failures({"width": 1080, "height": 1920}, reused)))
 
     def test_signature_component_keeps_branded_background_inside_timeline(self):
         source = (Path(short.core.PROJECT_DIR) / "src" / "remotion" / "components" / "FullScreenSignatureOutro.tsx").read_text(encoding="utf-8")
