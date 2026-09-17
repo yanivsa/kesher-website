@@ -103,6 +103,9 @@ class V4RuntimeActivationTests(unittest.TestCase):
         self.assertIn("derive_content_sha256:", workflow)
         self.assertIn("--release-without-short", workflow)
         self.assertIn("NATIVE_SHORT_RECOVERY_SOURCE_VERIFIED", workflow)
+        self.assertIn('id: rebuild_exact', workflow)
+        self.assertIn('--prepare-upload --slug "$REBUILD_SLUG" --content-sha256 "$REBUILD_CONTENT_SHA256" --item-id "$REBUILD_ITEM_ID"', workflow)
+        self.assertIn('--upload-only --item-id "$REBUILD_ITEM_ID"', workflow)
         self.assertNotIn("--adopt-long-form-state", workflow)
         self.assertNotIn("Generate or resume exact Video Overview", workflow)
 

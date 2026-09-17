@@ -85,6 +85,32 @@ class VideoReconcileTests(unittest.TestCase):
         self.assertEqual(saved[0]["source"]["slug"], "yesterday")
         self.assertNotIn("superseded_reason", saved[0])
 
+    def test_metadata_only_rejection_is_eligible_for_exact_remotion_rebuild(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        item = pipeline.new_item(pipeline.source_metadata(today))
+        item.update({
+            "status": "rejected",
+            "technical_verified": False,
+            "metadata_review_status": "rejected",
+            "visual_review_status": "pending",
+            "review_notes": {"technical": "נפסל טכנית: מטא דאטה", "metadata": "חסר קישור אתר"},
+            "raw_mp4": "raw.mp4",
+            "raw_sha256": "a" * 64,
+            "source_id": "source-1",
+            "task_id": "task-1",
+            "artifact_id": "task-1",
+        })
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+        raw = self.state_dir / "raw.mp4"
+        raw.parent.mkdir(parents=True, exist_ok=True)
+        raw.write_bytes(b"provider-video")
+        item["raw_sha256"] = pipeline.sha256_file(raw)
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+        with mock.patch.object(pipeline, "validate_and_manifest") as validate:
+            self.assertEqual(pipeline.rebuild_rejected_with_remotion(item["id"]), 0)
+        validate.assert_called_once()
+
     def test_provider_pending_item_is_not_an_upload_failure(self) -> None:
         today = post("today")
         self.write_posts([today])
