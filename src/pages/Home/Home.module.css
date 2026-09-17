@@ -1431,7 +1431,7 @@
   .hero {
     min-height: auto;
     padding-top: 0;
-    padding-bottom: calc(4rem + 120px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(6rem + 140px + env(safe-area-inset-bottom, 0px));
     grid-template-columns: 1fr;
     gap: 3rem;
   }
@@ -1466,7 +1466,7 @@
 
   .trustRow {
     margin-top: 1rem;
-    padding-bottom: calc(13rem + 70px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(16rem + 70px + env(safe-area-inset-bottom, 0px));
     gap: 0.65rem 1rem;
   }
 
