@@ -292,6 +292,8 @@ class PipelineTestCase(unittest.TestCase):
         final.write_bytes(b"final")
         review = self.state_dir / "review.png"
         review.write_bytes(b"review")
+        transcript = self.state_dir / "transcript.txt"
+        transcript.write_text("תמלול בדיקה", encoding="utf-8")
         frame_dir = self.state_dir / f"{item['id']}-frames"
         frame_dir.mkdir()
         for index in range(1, 9):
