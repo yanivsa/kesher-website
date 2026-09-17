@@ -28,7 +28,7 @@
     "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "published_date": "2026-09-17",
     "live": true,
-    "live_verified_at": "2026-09-17T10:38:31.099633+00:00",
+    "live_verified_at": "2026-09-17T10:45:28.756323+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1736,9 +1736,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-17T10:45:28.756340+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-17T10:45:44.687518+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-17T10:38:39.455245+00:00",
+  "updated_at": "2026-09-17T10:45:44.687532+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1757,7 +1769,7 @@
     "status": "downloaded",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35210955351,
+    "run_id": 35211989146,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
