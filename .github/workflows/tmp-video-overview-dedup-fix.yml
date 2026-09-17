@@ -1,0 +1,238 @@
+name: Temporary Video Overview Dedup Repair
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Create repair branch
+        run: |
+          set -euo pipefail
+          git checkout -b fix/video-overview-public-dedup-20260917-v2
+
+      - name: Add regression tests first
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('tests/test_video_reconcile.py')
+          text = path.read_text(encoding='utf-8')
+          anchor = '    def test_prepare_generation_supersedes_unverified_upload_and_initializes_fresh_item(self) -> None:\n'
+          assert anchor in text
+          test_block = '''    def test_video_overview_mode_restores_verified_public_item_and_supersedes_duplicate(self) -> None:
+              today = post("today")
+              self.write_posts([today])
+              source = pipeline.source_metadata(today)
+              public_item = pipeline.new_item(source)
+              public_item.update({
+                  "id": "video-public",
+                  "status": "superseded",
+                  "uploaded": False,
+                  "technical_verified": True,
+                  "youtube_id": "public123",
+                  "youtube_url": "https://youtu.be/public123",
+                  "youtube_verification": {
+                      "channel_id": pipeline.YOUTUBE_CHANNEL_ID,
+                      "privacy_status": "public",
+                      "processing_status": "succeeded",
+                  },
+                  "media": {"width": 1280, "height": 720},
+              })
+              duplicate = pipeline.new_item(source)
+              duplicate.update({
+                  "id": "video-duplicate",
+                  "status": "generating",
+                  "source_id": "source-2",
+                  "task_id": "task-2",
+                  "artifact_id": "task-2",
+              })
+              pipeline.save_state({"version": 1, "items": [public_item, duplicate], "updated_at": pipeline.utc_now()})
+
+              output_file = self.root / "mock_github_output"
+              with mock.patch.dict(os.environ, {
+                  "KESHER_MEDIA_MODE": "video_overview",
+                  "GITHUB_OUTPUT": str(output_file),
+              }):
+                  self.assertEqual(reconcile.prepare_generation("today"), 0)
+
+              saved = pipeline.load_state()["items"]
+              self.assertEqual(saved[0]["status"], "uploaded")
+              self.assertTrue(saved[0]["uploaded"])
+              self.assertEqual(saved[0]["youtube_id"], "public123")
+              self.assertEqual(saved[1]["status"], "superseded")
+              self.assertEqual(saved[1]["superseded_reason"], "duplicate_after_verified_public_video")
+              self.assertIn("skip_generation=true", output_file.read_text(encoding="utf-8"))
+
+          def test_long_video_workflow_uses_video_overview_reconciliation_gate(self) -> None:
+              workflow = (Path(__file__).resolve().parents[1] / ".github" / "workflows" / "kesher-daily-video.yml").read_text(encoding="utf-8")
+              self.assertIn("KESHER_MEDIA_MODE: video_overview", workflow)
+              self.assertIn("id: prepare_generation", workflow)
+              self.assertIn("steps.prepare_generation.outputs.skip_generation != 'true'", workflow)
+
+'''
+          # De-indent only the method bodies to normal class indentation.
+          lines = test_block.splitlines()
+          fixed = []
+          for line in lines:
+              if line.startswith('              '):
+                  fixed.append('        ' + line[14:])
+              elif line.startswith('          def '):
+                  fixed.append('    def ' + line[14:])
+              elif line.startswith('          '):
+                  fixed.append('    ' + line[10:])
+              else:
+                  fixed.append(line)
+          test_block = '\n'.join(fixed) + '\n'
+          text = text.replace(anchor, test_block + anchor, 1)
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Verify regression tests fail before fix
+        run: |
+          set +e
+          python -m unittest \
+            tests.test_video_reconcile.VideoReconcileTests.test_video_overview_mode_restores_verified_public_item_and_supersedes_duplicate \
+            tests.test_video_reconcile.VideoReconcileTests.test_long_video_workflow_uses_video_overview_reconciliation_gate \
+            -v > /tmp/red.log 2>&1
+          rc=$?
+          set -e
+          cat /tmp/red.log
+          if [ "$rc" -eq 0 ]; then
+            echo "Regression tests unexpectedly passed before the fix"
+            exit 1
+          fi
+          grep -Eq 'FAIL|AssertionError' /tmp/red.log
+          echo "RED_CONFIRMED"
+
+      - name: Apply minimal production fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/kesher_video_reconcile.py')
+          text = path.read_text(encoding='utf-8')
+          anchor = '''def export_target(item: dict[str, Any] | None) -> None:\n'''
+          assert anchor in text
+          helper = '''def is_verified_public_video_overview(item: dict[str, Any], source: dict[str, Any]) -> bool:
+              if str((item.get("source") or {}).get("content_sha256") or "") != str(source.get("content_sha256") or ""):
+                  return False
+              if item.get("technical_verified") is not True:
+                  return False
+              if not item.get("youtube_id") or not item.get("youtube_url"):
+                  return False
+              verification = item.get("youtube_verification") or {}
+              if verification.get("privacy_status") != "public" or verification.get("processing_status") != "succeeded":
+                  return False
+              channel_id = str(verification.get("channel_id") or "").strip()
+              if channel_id and channel_id != pipeline.YOUTUBE_CHANNEL_ID:
+                  return False
+              media = item.get("media") or {}
+              try:
+                  width = int(media.get("width") or 0)
+                  height = int(media.get("height") or 0)
+              except (TypeError, ValueError):
+                  return False
+              return width > height > 0
+
+
+'''
+          helper = '\n'.join(line[10:] if line.startswith('          ') else line for line in helper.splitlines()) + '\n'
+          text = text.replace(anchor, helper + anchor, 1)
+
+          old = '''    if target_slug and media_mode == "video_overview":
+              workflow_output("skip_generation", "false")
+              print(
+                  "VIDEO_RECONCILED_GENERATION "
+                  f"slug={target_slug} targeted_long_defer_to_pipeline=yes"
+              )
+              return 0
+'''
+          old = '\n'.join(line[10:] if line.startswith('          ') else line for line in old.splitlines()) + '\n'
+          new = '''    if target_slug and media_mode == "video_overview":
+              source = current_source_snapshot(target_slug)
+              same_source = [
+                  item for item in state.get("items") or []
+                  if isinstance(item, dict) and source_slug(item) == target_slug
+              ]
+              verified = [
+                  item for item in same_source
+                  if is_verified_public_video_overview(item, source)
+              ]
+              if verified:
+                  canonical = verified[-1]
+                  canonical["status"] = "uploaded"
+                  canonical["uploaded"] = True
+                  canonical["updated_at"] = pipeline.utc_now()
+                  canonical.pop("superseded_reason", None)
+                  canonical.pop("superseded_at", None)
+                  for item in same_source:
+                      if item is canonical:
+                          continue
+                      if item.get("uploaded") is not True and item.get("status") in UNRESOLVED_STATUSES:
+                          item["status"] = "superseded"
+                          item["superseded_reason"] = "duplicate_after_verified_public_video"
+                          item["superseded_at"] = pipeline.utc_now()
+                          item["updated_at"] = pipeline.utc_now()
+                  pipeline.save_state(state)
+                  export_target(canonical)
+                  workflow_output("skip_generation", "true")
+                  print(
+                      "VIDEO_OVERVIEW_GENERATION_ALREADY_PUBLIC "
+                      f"slug={target_slug} item={canonical.get('id')} youtube_id={canonical.get('youtube_id')}"
+                  )
+                  return 0
+              workflow_output("skip_generation", "false")
+              print(
+                  "VIDEO_RECONCILED_GENERATION "
+                  f"slug={target_slug} targeted_long_defer_to_pipeline=yes"
+              )
+              return 0
+'''
+          new = '\n'.join(line[10:] if line.startswith('          ') else line for line in new.splitlines()) + '\n'
+          assert old in text
+          text = text.replace(old, new, 1)
+          path.write_text(text, encoding='utf-8')
+
+          wf_path = Path('.github/workflows/kesher-daily-video.yml')
+          wf = wf_path.read_text(encoding='utf-8')
+          env_anchor = '      KESHER_WHISPER_MODEL: small\n'
+          assert env_anchor in wf
+          wf = wf.replace(env_anchor, env_anchor + '      KESHER_MEDIA_MODE: video_overview\n', 1)
+          step_anchor = '      - name: Prepare exact daily Video Overview generation\n        if:'
+          assert step_anchor in wf
+          wf = wf.replace(step_anchor, '      - name: Prepare exact daily Video Overview generation\n        id: prepare_generation\n        if:', 1)
+          old_if = "        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}\n        env:\n          TARGET_SLUG: ${{ inputs.target_slug }}\n        run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150\n"
+          new_if = "        if: ${{ (inputs.operation == 'full' || inputs.operation == 'generate') && steps.prepare_generation.outputs.skip_generation != 'true' }}\n        env:\n          TARGET_SLUG: ${{ inputs.target_slug }}\n        run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150\n"
+          assert old_if in wf
+          wf = wf.replace(old_if, new_if, 1)
+          wf_path.write_text(wf, encoding='utf-8')
+          PY
+
+      - name: Verify fix green
+        run: |
+          set -euo pipefail
+          python -m unittest \
+            tests.test_video_reconcile.VideoReconcileTests.test_video_overview_mode_restores_verified_public_item_and_supersedes_duplicate \
+            tests.test_video_reconcile.VideoReconcileTests.test_long_video_workflow_uses_video_overview_reconciliation_gate \
+            -v
+          python -m unittest tests.test_video_reconcile tests.test_production_contract_v3 -v
+
+      - name: Commit and push repair branch
+        run: |
+          set -euo pipefail
+          git config user.name "yanivsa"
+          git config user.email "45253818+yanivsa@users.noreply.github.com"
+          git add scripts/kesher_video_reconcile.py .github/workflows/kesher-daily-video.yml tests/test_video_reconcile.py
+          git commit -m "fix(video): preserve verified public overview and dedupe retries"
+          git push origin fix/video-overview-public-dedup-20260917-v2
