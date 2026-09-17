@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-17",
-  "status": "long_video_watchdog_recovery",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -28,7 +28,7 @@
     "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "published_date": "2026-09-17",
     "live": true,
-    "live_verified_at": "2026-09-17T03:40:39.697786+00:00",
+    "live_verified_at": "2026-09-17T10:36:08.717807+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1712,9 +1712,21 @@
         "task_id": "b42db818-ee64-48a5-9765-f11138dc7d2e",
         "required": true
       }
+    },
+    {
+      "at": "2026-09-17T10:36:08.717837+00:00",
+      "from": "long_video_watchdog_recovery",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-17T10:36:17.298433+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-17T10:06:55.728150+00:00",
+  "updated_at": "2026-09-17T10:36:17.298453+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1730,17 +1742,17 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "downloaded",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35178934125,
+    "run_id": 35210955351,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260916-204013-3ca2ce643c",
+    "item_id": "video-20260917-103202-3ca2ce643c",
     "last_dispatch_at": "2026-09-17T05:33:03.603323+00:00",
     "resume_dispatches": 2,
     "watchdog": {
