@@ -42,7 +42,7 @@ on:
         required: false
         type: string
       derive_slug:
-        description: Exact article slug whose long-form provider identity should feed the Short
+        description: Exact article slug to recover as a fresh provider-native NotebookLM Short
         required: false
         type: string
       derive_content_sha256:
@@ -50,7 +50,7 @@ on:
         required: false
         type: string
       derive_long_item_id:
-        description: Exact published long-form durable item id to reuse
+        description: Deprecated compatibility input; long-form provider identity is never reused for a Short
         required: false
         type: string
       historical_commit:
@@ -256,151 +256,39 @@ jobs:
           python -u scripts/kesher_video_reconcile.py --release-without-short "$RELEASE_SLUG"
 
 
-      - name: Restore exact long-form durable state for Short derivation
-        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'derive' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          long_dir="${GITHUB_WORKSPACE}/.kesher-long-video-state"
-          mkdir -p "$long_dir"
-          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
-            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/long-video-artifacts.txt
-          test -s /tmp/long-video-artifacts.txt
-          restored="false"
-          while read -r artifact_id; do
-            [ -n "$artifact_id" ] || continue
-            archive="$(mktemp /tmp/kesher-long-video.XXXXXX.zip)"
-            if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
-              rm -f "$archive"
-              continue
-            fi
-            temp_extract="$(mktemp -d)"
-            if unzip -oq "$archive" -d "$temp_extract" 2>/dev/null \
-              && [ -s "$temp_extract/state.json" ] \
-              && python -c 'import json,sys; s=json.load(sys.stdin); assert s.get("version") == 1 and isinstance(s.get("items"), list)' < "$temp_extract/state.json" 2>/dev/null; then
-              cp "$temp_extract/state.json" "$long_dir/state.json"
-              restored="true"
-              rm -f "$archive"
-              rm -rf "$temp_extract"
-              break
-            fi
-            rm -f "$archive"
-            rm -rf "$temp_extract"
-          done < /tmp/long-video-artifacts.txt
-          test "$restored" = "true"
-
-      - name: Adopt exact published long-form provider identity for Short
-        id: adopt_long
+      - name: Validate native Short recovery source identity
         if: ${{ github.event_name != 'pull_request' && inputs.operation == 'derive' }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
           DERIVE_CONTENT_SHA256: ${{ inputs.derive_content_sha256 }}
-          DERIVE_LONG_ITEM_ID: ${{ inputs.derive_long_item_id }}
         run: |
           set -euo pipefail
           test -n "$DERIVE_SLUG"
           test -n "$DERIVE_CONTENT_SHA256"
-          test -n "$DERIVE_LONG_ITEM_ID"
-          python -u scripts/kesher_video_reconcile.py \
-            --adopt-long-form-state "${GITHUB_WORKSPACE}/.kesher-long-video-state/state.json" \
-            --slug "$DERIVE_SLUG" \
-            --content-sha256 "$DERIVE_CONTENT_SHA256" \
-            --long-item-id "$DERIVE_LONG_ITEM_ID"
-
-      - name: Adopt exact historical provider identity from immutable evidence
-        id: adopt_hist
-        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'historical' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-          HISTORICAL_COMMIT: ${{ inputs.historical_commit }}
-          HISTORICAL_PATH: ${{ inputs.historical_path }}
-          HISTORICAL_ITEM_ID: ${{ inputs.historical_item_id }}
-        run: |
-          set -euo pipefail
-          test -n "$HISTORICAL_COMMIT"
-          test -n "$HISTORICAL_PATH"
-          test -n "$HISTORICAL_ITEM_ID"
-          gh api "repos/${GITHUB_REPOSITORY}/contents/${HISTORICAL_PATH}?ref=${HISTORICAL_COMMIT}" --jq .content | tr -d '\n' | base64 -d > /tmp/historical-state.json
           python - <<'PY'
-          import copy
-          import json
           import os
-          from pathlib import Path
-          from scripts import kesher_daily_pipeline as pipeline
-
-          historical = json.loads(Path('/tmp/historical-state.json').read_text(encoding='utf-8'))
-          item_id = os.environ['HISTORICAL_ITEM_ID'].strip()
-          matches = [row for row in historical.get('items', []) if isinstance(row, dict) and row.get('id') == item_id]
-          if len(matches) != 1:
-              raise SystemExit('Historical evidence must contain exactly one requested item')
-          old = matches[0]
-          source = old.get('source') or {}
-          slug = str(source.get('slug') or source.get('id') or '').strip()
-          content_sha = str(source.get('content_sha256') or '').strip()
-          if not slug or not content_sha:
-              raise SystemExit('Historical source identity is incomplete')
-          if not old.get('source_id') or not old.get('task_id') or old.get('task_id') != old.get('artifact_id'):
-              raise SystemExit('Historical provider identity is incomplete')
-
-          posts = json.loads(pipeline.POSTS_FILE.read_text(encoding='utf-8'))
-          current = [pipeline.source_metadata(row) for row in posts if str(row.get('slug') or row.get('id') or '').strip() == slug]
-          if len(current) != 1 or current[0].get('content_sha256') != content_sha:
-              raise SystemExit('Published article identity no longer matches historical evidence')
-
-          state = pipeline.load_state()
-          same_source = [row for row in state.get('items', []) if isinstance(row, dict) and str((row.get('source') or {}).get('slug') or (row.get('source') or {}).get('id') or '').strip() == slug and str((row.get('source') or {}).get('content_sha256') or '') == content_sha]
-          out_path = os.environ.get('GITHUB_OUTPUT', '')
-          if any(row.get('uploaded') is True and row.get('status') == 'uploaded' for row in same_source):
-              print(f'SHORT_HISTORICAL_ALREADY_PUBLIC slug={slug}')
-              if out_path:
-                  with open(out_path, 'a', encoding='utf-8') as f:
-                      f.write('skip_generation=true\n')
-              raise SystemExit(0)
-          if out_path:
-              with open(out_path, 'a', encoding='utf-8') as f:
-                  f.write('skip_generation=false\n')
-          same_provider = [row for row in state.get('items', []) if isinstance(row, dict) and row.get('task_id') == old.get('task_id')]
-          if len(same_provider) > 1:
-              raise SystemExit('Historical provider identity is duplicated in Short state')
-          if same_provider:
-              row = same_provider[0]
-              if str((row.get('source') or {}).get('content_sha256') or '') != content_sha:
-                  raise SystemExit('Existing historical provider identity points at a different source')
-              print(f'SHORT_HISTORICAL_ALREADY_ADOPTED item={row.get("id")}')
-              raise SystemExit(0)
-
-          item = copy.deepcopy(old)
-          item['id'] = f"short-historical-{item_id}"
-          item['type'] = 'article_short'
-          item['source_mode'] = 'overview-segment'
-          item['status'] = 'generating'
-          item['uploaded'] = False
-          item['technical_verified'] = False
-          item['fresh_generation_attempt'] = 0
-          item['shared_provider_identity'] = True
-          item['adopted_from_historical_item_id'] = item_id
-          item['historical_evidence_commit'] = os.environ['HISTORICAL_COMMIT']
-          item['historical_evidence_path'] = os.environ['HISTORICAL_PATH']
-          for key in ('raw_mp4','raw_sha256','downloaded_at','final_mp4','final_sha256','media','visual_review_path','visual_review_sha256','manifest_path','manifest_sha256','motion_plan_path','motion_plan_sha256','remotion_props_path','remotion_props_sha256','frame_paths','frame_sha256','transcript_path','transcript_sha256','source_path','source_file_sha256','youtube_id','youtube_url','youtube_verification','uploaded_at','rejected_at'):
-              item.pop(key, None)
-          item['visual_review_status'] = 'pending'
-          item['semantic_review_status'] = 'pending'
-          item['metadata_review_status'] = 'pending'
-          item['updated_at'] = pipeline.utc_now()
-          state.setdefault('items', []).append(item)
-          pipeline.save_state(state)
-          print(f'SHORT_HISTORICAL_ADOPTED item={item["id"]} task={item["task_id"]}')
+          from scripts import kesher_video_reconcile as reconcile
+          source = reconcile.current_source_snapshot(os.environ['DERIVE_SLUG'])
+          if str(source.get('content_sha256') or '') != os.environ['DERIVE_CONTENT_SHA256']:
+              raise SystemExit('Published source hash changed before native Short recovery')
+          print('NATIVE_SHORT_RECOVERY_SOURCE_VERIFIED')
           PY
 
+      - name: Reject historical long-form provider reuse for Short
+        id: adopt_hist
+        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'historical' }}
+        run: |
+          echo "Historical/long-form provider reuse is forbidden for Shorts. Re-run with operation=derive and an exact article slug/hash to generate NotebookLM --format short." >&2
+          exit 1
+
       - name: Reconcile exact article or existing provider identity before generation
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate') }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Generate or resume exact NotebookLM-derived Short
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || (inputs.operation == 'derive' && steps.adopt_long.outputs.skip_generation != 'true') || (inputs.operation == 'historical' && steps.adopt_hist.outputs.skip_generation != 'true')) }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
         run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150 ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
@@ -413,7 +301,7 @@ jobs:
           python -u scripts/kesher_short_pipeline_v4.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
 
       - name: Prepare exact technically verified Short upload
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || (inputs.operation == 'derive' && steps.adopt_long.outputs.skip_generation != 'true') || (inputs.operation == 'historical' && steps.adopt_hist.outputs.skip_generation != 'true')) }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
@@ -422,7 +310,7 @@ jobs:
         run: python -u scripts/kesher_video_reconcile.py --prepare-upload ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Upload exact Short once and verify it public
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || (inputs.operation == 'derive' && steps.adopt_long.outputs.skip_generation != 'true') || (inputs.operation == 'historical' && steps.adopt_hist.outputs.skip_generation != 'true')) }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
