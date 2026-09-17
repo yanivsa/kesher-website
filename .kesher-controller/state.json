@@ -969,24 +969,25 @@
         "source_content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
         "article_url": "https://kesher.saharoni.com/blog/fights-before-wedding",
         "article_live": true,
-        "long_status": "running",
+        "long_status": "complete",
         "long_resume_count": 9,
-        "long_last_dispatch_at": "2026-09-17T17:04:52.102663+00:00"
+        "long_last_dispatch_at": "2026-09-17T17:04:52.102663+00:00",
+        "long_item_id": "video-20260917-195613-28471ea212",
+        "long_youtube_url": "https://youtu.be/6PgUZePAA4g",
+        "long_youtube_id": "6PgUZePAA4g",
+        "short_status": "complete",
+        "short_item_id": "video-20260917-141313-28471ea212",
+        "short_youtube_url": "https://youtu.be/PNUqREu1Vj4",
+        "short_youtube_id": "PNUqREu1Vj4",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-09-17T18:56:52.970484+00:00"
       }
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-16T07:41:39.897758+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "upload",
-        "resume": 3
-      }
-    },
     {
       "at": "2026-09-16T07:59:21.195838+00:00",
       "from": "long_video_running",
@@ -1738,9 +1739,19 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-17T18:56:52.970506+00:00",
+      "from": "long_video_running",
+      "to": "long_video_running",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-09-16",
+        "source_slug": "fights-before-wedding"
+      }
     }
   ],
-  "updated_at": "2026-09-17T18:56:26.210006+00:00",
+  "updated_at": "2026-09-17T18:56:52.970516+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
