@@ -969,21 +969,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-15T15:27:34.821849+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T15:27:53.450310+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-09-15T15:30:40.049366+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -1768,9 +1753,25 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-09-17T11:18:41.424432+00:00",
+      "from": "short_running",
+      "to": "long_video_complete",
+      "reason": "reconciled exact verified public Overview from historical durable state",
+      "details": {
+        "item_id": "video-20260917-134451-4d0ba0c737",
+        "youtube_url": "https://youtu.be/6NXdPWlBtW0"
+      }
+    },
+    {
+      "at": "2026-09-17T11:19:24.588417+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-09-17T11:13:42.893581+00:00",
+  "updated_at": "2026-09-17T11:19:24.588438+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1828,7 +1829,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35214391447,
+    "run_id": 35214920775,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
