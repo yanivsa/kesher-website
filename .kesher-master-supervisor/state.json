@@ -132,7 +132,7 @@
       "updated_at": "2026-09-17T04:43:01.122388+00:00"
     },
     "ksr-b70ad809eda4154c677eb169": {
-      "acknowledged_at": "2026-09-17T10:39:09.958706+00:00",
+      "acknowledged_at": "2026-09-17T10:41:06.969132+00:00",
       "command_id": "ksr-b70ad809eda4154c677eb169",
       "evidence_hash": "d120b6f7b0447b6f413555bedb9c5a5356f4ef033ef7c8a8fc0b343d1d876a30",
       "exact": {
@@ -190,7 +190,7 @@
       "running_at": "2026-09-17T04:45:06.330347+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-17T10:39:09.958706+00:00"
+      "updated_at": "2026-09-17T10:41:06.969132+00:00"
     }
   },
   "incidents": {
@@ -220,7 +220,7 @@
         }
       ],
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
-      "last_seen_at": "2026-09-17T10:39:09.958706+00:00",
+      "last_seen_at": "2026-09-17T10:41:06.969132+00:00",
       "marker": "MASTER_ESCALATION fingerprint=4c9cc55a9d85ac2e835cd0aa3c76306a strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
@@ -258,5 +258,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-17T10:39:09.958706+00:00"
+  "updated_at": "2026-09-17T10:41:06.969132+00:00"
 }
