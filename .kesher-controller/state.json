@@ -28,7 +28,7 @@
     "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "published_date": "2026-09-17",
     "live": true,
-    "live_verified_at": "2026-09-17T10:45:28.756323+00:00",
+    "live_verified_at": "2026-09-17T11:02:45.719224+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1748,9 +1748,25 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-17T11:02:45.719242+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-17T11:05:29.577250+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 3
+      }
     }
   ],
-  "updated_at": "2026-09-17T10:45:44.687532+00:00",
+  "updated_at": "2026-09-17T11:05:29.577257+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1765,20 +1781,20 @@
     "last_dispatch_at": "2026-09-17T00:47:05.025577+00:00"
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "downloaded",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35211989146,
-    "processed_run_id": null,
+    "processed_run_id": 35211989146,
     "provider_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260917-134451-4d0ba0c737",
-    "last_dispatch_at": "2026-09-17T05:33:03.603323+00:00",
-    "resume_dispatches": 2,
+    "item_id": "video-20260917-103202-3ca2ce643c",
+    "last_dispatch_at": "2026-09-17T11:05:29.577241+00:00",
+    "resume_dispatches": 3,
     "watchdog": {
       "identity": "long_video:early-habits-building-calm-mornings-children:4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94:video-20260917-134451-4d0ba0c737",
       "last_progress_at": "2026-09-17T10:48:08.905351+00:00",
@@ -1800,7 +1816,8 @@
     "signature_fullscreen": true,
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
     "artifact_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
-    "source_id": "d93dddcc-807f-442c-89f6-7b905a3e6f7b"
+    "source_id": "d93dddcc-807f-442c-89f6-7b905a3e6f7b",
+    "last_run_conclusion": "success"
   },
   "short": {
     "attempt_count": 0,
