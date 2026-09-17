@@ -112,11 +112,13 @@
         "task_id": "b42db818-ee64-48a5-9765-f11138dc7d2e"
       },
       "executor": "controller",
+      "failed_at": "2026-09-17T04:43:01.122388+00:00",
+      "failure_reason": "kesher-content-controller.yml run 35180093738 completed but exact incident persisted",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "4c9cc55a9d85ac2e835cd0aa3c76306a",
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
       "issued_at": "2026-09-17T03:56:52.862472+00:00",
-      "lifecycle": "running",
+      "lifecycle": "failed",
       "metadata": {
         "dispatch": "issued",
         "dispatched_at": "2026-09-17T03:57:14.016677+00:00",
@@ -127,12 +129,37 @@
       "running_at": "2026-09-17T03:57:37.490359+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-17T03:57:37.490359+00:00"
+      "updated_at": "2026-09-17T04:43:01.122388+00:00"
+    },
+    "ksr-b70ad809eda4154c677eb169": {
+      "command_id": "ksr-b70ad809eda4154c677eb169",
+      "evidence_hash": "d120b6f7b0447b6f413555bedb9c5a5356f4ef033ef7c8a8fc0b343d1d876a30",
+      "exact": {
+        "artifact_id": "b42db818-ee64-48a5-9765-f11138dc7d2e",
+        "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+        "item_id": "video-20260917-063948-4d0ba0c737",
+        "pr_number": 854,
+        "short_item_id": null,
+        "slug": "early-habits-building-calm-mornings-children",
+        "source_id": "34fd5dfd-21f2-4043-b870-fa9ba7f8b9a1",
+        "task_id": "b42db818-ee64-48a5-9765-f11138dc7d2e"
+      },
+      "executor": "jules",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "4c9cc55a9d85ac2e835cd0aa3c76306a",
+      "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
+      "issued_at": "2026-09-17T04:43:01.122388+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebind_exact_source",
+      "stage": "S2",
+      "strike": 2,
+      "updated_at": "2026-09-17T04:43:01.122388+00:00"
     }
   },
   "incidents": {
     "4c9cc55a9d85ac2e835cd0aa3c76306a": {
-      "active_command_id": "ksr-b6cb6f02ad974ad438f731f1",
+      "active_command_id": "ksr-b70ad809eda4154c677eb169",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "4c9cc55a9d85ac2e835cd0aa3c76306a",
       "first_seen_at": "2026-09-17T03:56:52.862472+00:00",
@@ -142,13 +169,25 @@
           "command_id": "ksr-b6cb6f02ad974ad438f731f1",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-17T04:43:01.122388+00:00",
+          "command_id": "ksr-b6cb6f02ad974ad438f731f1",
+          "event": "command_failed",
+          "reason": "kesher-content-controller.yml run 35180093738 completed but exact incident persisted"
+        },
+        {
+          "at": "2026-09-17T04:43:01.122388+00:00",
+          "command_id": "ksr-b70ad809eda4154c677eb169",
+          "event": "command_issued",
+          "stage": "S2"
         }
       ],
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
-      "last_seen_at": "2026-09-17T03:57:37.490359+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=4c9cc55a9d85ac2e835cd0aa3c76306a strike=1 stage=S1",
+      "last_seen_at": "2026-09-17T04:43:01.122388+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=4c9cc55a9d85ac2e835cd0aa3c76306a strike=2 stage=S2",
       "status": "recovering",
-      "strike": 1
+      "strike": 2
     },
     "bb0e4ac04a5e8f96ad50a84b0ed62316": {
       "active_command_id": "ksr-9fa0f6007d7f7efacbe455ab",
@@ -183,5 +222,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-17T03:57:37.490359+00:00"
+  "updated_at": "2026-09-17T04:43:01.122388+00:00"
 }
