@@ -306,6 +306,8 @@ class PipelineTestCase(unittest.TestCase):
             pipeline, "validate_female_voice", return_value=(True, 180.0, "verified")
         ), mock.patch.object(
             pipeline, "transcribe_hebrew", return_value=transcript
+        ), mock.patch.object(
+            pipeline, "article_body_for_item", return_value="טקסט בדיקה מלא"
         ):
             pipeline.validate_and_manifest(state, item, raw)
         saved = pipeline.load_state()["items"][0]
