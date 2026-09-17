@@ -70,7 +70,7 @@ Use one reusable Remotion enhancement architecture where practical, but build an
 
 ### Short — portrait 9:16
 
-- The Short MUST be generated natively by NotebookLM with `--format short` from the article source. Preserve that Short's own independently generated NotebookLM audio/source identity and canonical portrait/origin rules. A landscape/Overview provider artifact that is later cropped, reframed or converted to 9:16 is NOT a valid Short.
+- The Short MUST first be requested natively from NotebookLM with `--format short` from the article source. Attempts 1–2 remain native-Short attempts. If native Short is still unavailable, attempt 3 MAY use a separately generated landscape `explainer` as a bounded fallback and Remotion may reframe it to the Short delivery canvas. The fallback MUST still be a new Short-specific provider generation from the article source; NEVER reuse, crop, or share the provider identity/artifact of the Video Overview.
 - Target technical portrait output according to the production contract (currently 1080x1920 where required by the canonical gate).
 - Use a faster editorial rhythm: stronger opening visual hook, punch-ins, quick source-aware reframing, relevant short B-roll inserts/assets, kinetic compositing and concise motion-graphics emphasis.
 - Do not turn the Short into a crop of the Overview and do not substitute Overview provider identity for the Short.
@@ -186,3 +186,7 @@ Quality findings should feed a later non-duplicating improvement task rather tha
 ### Short publication links — mandatory
 
 Every Short YouTube description MUST contain two separate full URL lines: (1) the exact canonical article URL and (2) `https://kesher.saharoni.com`. Do not treat the article URL as satisfying the standalone site-link requirement merely because it contains the same domain.
+
+### Native Short bounded fallback
+
+Prefer a provider-native portrait Short. Use native `--format short` on attempts 1–2. On attempt 3, if native Short remains unavailable, a separately generated landscape provider artifact may be accepted and reframed for delivery. Never let native-format failure keep an otherwise deliverable A+B+C cycle open indefinitely, and never reuse the Video Overview artifact/provider identity as the fallback.
