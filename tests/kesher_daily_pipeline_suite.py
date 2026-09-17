@@ -12,6 +12,7 @@ from __future__ import annotations
 import unittest
 
 from tests import test_kesher_daily_pipeline as legacy
+from tests import test_video_pending_evidence_repair as pending_evidence
 
 
 OBSOLETE_TESTS = {
@@ -28,14 +29,15 @@ OBSOLETE_TESTS = {
 
 def load_tests(loader: unittest.TestLoader, _standard_tests, _pattern):
     suite = unittest.TestSuite()
-    for value in vars(legacy).values():
-        if not isinstance(value, type) or not issubclass(value, unittest.TestCase):
-            continue
-        for method in loader.getTestCaseNames(value):
-            identity = f"{value.__name__}.{method}"
-            if identity in OBSOLETE_TESTS:
+    for module in (legacy, pending_evidence):
+        for value in vars(module).values():
+            if not isinstance(value, type) or not issubclass(value, unittest.TestCase):
                 continue
-            suite.addTest(value(method))
+            for method in loader.getTestCaseNames(value):
+                identity = f"{value.__name__}.{method}"
+                if identity in OBSOLETE_TESTS:
+                    continue
+                suite.addTest(value(method))
     return suite
 
 
