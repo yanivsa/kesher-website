@@ -194,6 +194,7 @@
       "verified_at": "2026-09-17T11:00:40.229215+00:00"
     },
     "ksr-b840f9507fa424df3d2b8e96": {
+      "acknowledged_at": "2026-09-17T11:01:13.684142+00:00",
       "command_id": "ksr-b840f9507fa424df3d2b8e96",
       "evidence_hash": "ba9919c8fc250dcb47ea6ce6c7afccf66d8c15458c7d7ef5637285b7620cfaaa",
       "exact": {
@@ -211,12 +212,16 @@
       "fingerprint": "fabfa74a301f45d54e16ab63467427ab",
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|short",
       "issued_at": "2026-09-17T11:00:40.229215+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "already_active",
+        "run_id": 35213339320,
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "continue_exact_short",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-17T11:00:40.229215+00:00"
+      "updated_at": "2026-09-17T11:01:13.684142+00:00"
     }
   },
   "incidents": {
@@ -309,5 +314,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-17T11:00:40.229215+00:00"
+  "updated_at": "2026-09-17T11:01:13.684142+00:00"
 }
