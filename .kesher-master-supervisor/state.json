@@ -150,7 +150,7 @@
       "fingerprint": "4c9cc55a9d85ac2e835cd0aa3c76306a",
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
       "issued_at": "2026-09-17T04:43:01.122388+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "external_run_id": 35213272010,
         "external_workflow": "Kesher Daily Article Short V4",
@@ -190,12 +190,38 @@
       "running_at": "2026-09-17T04:45:06.330347+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-17T10:59:33.770639+00:00"
+      "updated_at": "2026-09-17T11:00:40.229215+00:00",
+      "verified_at": "2026-09-17T11:00:40.229215+00:00"
+    },
+    "ksr-b840f9507fa424df3d2b8e96": {
+      "command_id": "ksr-b840f9507fa424df3d2b8e96",
+      "evidence_hash": "ba9919c8fc250dcb47ea6ce6c7afccf66d8c15458c7d7ef5637285b7620cfaaa",
+      "exact": {
+        "artifact_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
+        "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+        "item_id": "video-20260917-134451-4d0ba0c737",
+        "pr_number": 854,
+        "short_item_id": null,
+        "slug": "early-habits-building-calm-mornings-children",
+        "source_id": "d93dddcc-807f-442c-89f6-7b905a3e6f7b",
+        "task_id": "26cc06ff-7d06-46b9-9b26-d3daded48403"
+      },
+      "executor": "controller",
+      "failure_signature": "SHORT_MISSING",
+      "fingerprint": "fabfa74a301f45d54e16ab63467427ab",
+      "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|short",
+      "issued_at": "2026-09-17T11:00:40.229215+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "continue_exact_short",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-17T11:00:40.229215+00:00"
     }
   },
   "incidents": {
     "4c9cc55a9d85ac2e835cd0aa3c76306a": {
-      "active_command_id": "ksr-b70ad809eda4154c677eb169",
+      "active_command_id": null,
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "4c9cc55a9d85ac2e835cd0aa3c76306a",
       "first_seen_at": "2026-09-17T03:56:52.862472+00:00",
@@ -217,12 +243,18 @@
           "command_id": "ksr-b70ad809eda4154c677eb169",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-17T11:00:40.229215+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
       "last_seen_at": "2026-09-17T10:59:33.770639+00:00",
       "marker": "MASTER_ESCALATION fingerprint=4c9cc55a9d85ac2e835cd0aa3c76306a strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-17T11:00:40.229215+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "bb0e4ac04a5e8f96ad50a84b0ed62316": {
@@ -255,8 +287,27 @@
       "marker": "MASTER_ESCALATION fingerprint=bb0e4ac04a5e8f96ad50a84b0ed62316 strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
+    },
+    "fabfa74a301f45d54e16ab63467427ab": {
+      "active_command_id": "ksr-b840f9507fa424df3d2b8e96",
+      "failure_signature": "SHORT_MISSING",
+      "fingerprint": "fabfa74a301f45d54e16ab63467427ab",
+      "first_seen_at": "2026-09-17T11:00:40.229215+00:00",
+      "history": [
+        {
+          "at": "2026-09-17T11:00:40.229215+00:00",
+          "command_id": "ksr-b840f9507fa424df3d2b8e96",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|short",
+      "last_seen_at": "2026-09-17T11:00:40.229215+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=fabfa74a301f45d54e16ab63467427ab strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-17T10:59:33.770639+00:00"
+  "updated_at": "2026-09-17T11:00:40.229215+00:00"
 }
