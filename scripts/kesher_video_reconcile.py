@@ -302,8 +302,22 @@ def prepare_generation(target_slug: str = "") -> int:
             print(f"SHORT_GENERATION_ALREADY_PUBLIC slug={target_slug} item={uploaded[-1].get('id')}")
             return 0
 
-        # Supersede unverified, legacy, or forbidden overview-derived items for this slug so they do not block fresh recovery
+        # A targeted recovery must follow the currently published article identity.
+        # Stale unresolved work for the same slug belongs to the previous content SHA and
+        # must not be retried against the new source.
         for item in same_source:
+            item_sha = str((item.get("source") or {}).get("content_sha256") or "")
+            if (
+                item_sha
+                and item_sha != source["content_sha256"]
+                and item.get("uploaded") is not True
+                and item.get("status") in UNRESOLVED_STATUSES
+            ):
+                item["status"] = "superseded"
+                item["superseded_reason"] = "published_source_changed"
+                item["superseded_at"] = pipeline.utc_now()
+                item["updated_at"] = pipeline.utc_now()
+                continue
             if item.get("uploaded") is True and not is_verified_public_short(item, source):
                 item["status"] = "superseded"
                 item["superseded_reason"] = "unverified_or_legacy_short"
