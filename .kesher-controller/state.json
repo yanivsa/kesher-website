@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-17",
-  "status": "blocked",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -28,7 +28,7 @@
     "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "published_date": "2026-09-17",
     "live": true,
-    "live_verified_at": "2026-09-17T17:03:22.455322+00:00",
+    "live_verified_at": "2026-09-17T18:56:09.148289+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -975,36 +975,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-17T17:04:22.582184+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-16T04:41:02.146543+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "long_video_watchdog_recovery",
-      "reason": "same Kesher incident remained stalled for three hourly checks; direct supervisor takeover required",
-      "details": {
-        "pipeline_id": "v5",
-        "incident_key": "v5|fights-before-wedding|28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b|long_video",
-        "strike": 3,
-        "stage": "long_video",
-        "slug": "fights-before-wedding",
-        "content_sha256": "28471ea212856f29dba962e80632d90d4cce6d7cf64185f77eb9aeda45432d6b",
-        "item_id": "video-20260916-033957-28471ea212",
-        "task_id": "c6125d93-a18d-4a47-b74e-12be7f6aeb9f",
-        "required": true
-      }
-    },
-    {
-      "at": "2026-09-16T07:40:48.760584+00:00",
-      "from": "long_video_watchdog_recovery",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-16T07:41:39.897758+00:00",
       "from": "article_live",
@@ -1754,9 +1726,21 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-17T18:56:09.148309+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-17T18:56:26.209981+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-17T17:04:22.582206+00:00",
+  "updated_at": "2026-09-17T18:56:26.210006+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1772,10 +1756,10 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35248642874,
+    "run_id": 35261351777,
     "processed_run_id": 35248642874,
     "provider_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
     "failure_fingerprint": null,
@@ -1784,7 +1768,7 @@
       "VIDEO_WORKFLOW_FAILED": 1
     },
     "overview_evidence_required": true,
-    "item_id": "video-20260917-195613-28471ea212",
+    "item_id": "video-20260917-214735-3ca2ce643c",
     "last_dispatch_at": "2026-09-17T11:52:14.229598+00:00",
     "resume_dispatches": 4,
     "watchdog": {
