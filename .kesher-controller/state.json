@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-17",
-  "status": "long_video_running",
+  "status": "short_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -969,21 +969,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-15T15:25:05.732562+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T15:25:20.143766+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-09-15T15:27:34.821849+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -1767,9 +1752,25 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-17T11:13:18.104678+00:00",
+      "from": "long_video_running",
+      "to": "long_video_complete",
+      "reason": "reconciled exact verified public Overview from historical durable state",
+      "details": {
+        "item_id": "video-20260917-134451-4d0ba0c737",
+        "youtube_url": "https://youtu.be/6NXdPWlBtW0"
+      }
+    },
+    {
+      "at": "2026-09-17T11:13:42.893561+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-09-17T11:09:30.835808+00:00",
+  "updated_at": "2026-09-17T11:13:42.893581+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
@@ -1785,7 +1786,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "downloaded",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35213862461,
@@ -1824,10 +1825,10 @@
   },
   "short": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 35214391447,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
