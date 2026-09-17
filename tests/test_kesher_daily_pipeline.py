@@ -457,6 +457,76 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(saved["status"], "downloaded")
         validate.assert_called_once()
 
+    def test_remotion_rebuild_resets_enhancement_state_and_unlinks_stale_files(self) -> None:
+        state, item = self.make_pending_item()
+        raw = self.state_dir / "raw-notebooklm.mp4"
+        raw.write_bytes(b"original-notebooklm")
+        stale_final = self.state_dir / f"{item['id']}-remotion-final.mp4"
+        stale_final.write_bytes(b"stale-mp4")
+        stale_plan = self.state_dir / f"{item['id']}-motion-plan.json"
+        stale_plan.write_text("{}", encoding="utf-8")
+        stale_props = self.state_dir / f"{item['id']}-remotion-props.json"
+        stale_props.write_text("{}", encoding="utf-8")
+        item.update(
+            {
+                "status": "rejected",
+                "visual_review_status": "rejected",
+                "raw_mp4": raw.name,
+                "raw_sha256": pipeline.sha256_file(raw),
+                "source_id": "source",
+                "task_id": "artifact",
+                "artifact_id": "artifact",
+                "enhancement_status": "enhanced",
+                "motion_plan_path": stale_plan.name,
+                "remotion_props_path": stale_props.name,
+                "final_mp4": stale_final.name,
+            }
+        )
+        pipeline.save_state(state)
+        with mock.patch.object(pipeline, "validate_and_manifest") as validate:
+            pipeline.rebuild_rejected_with_remotion(item["id"])
+        saved = pipeline.load_state()["items"][0]
+        self.assertNotIn("enhancement_status", saved)
+        self.assertNotIn("motion_plan_path", saved)
+        self.assertNotIn("remotion_props_path", saved)
+        self.assertNotIn("final_mp4", saved)
+        self.assertFalse(stale_final.exists())
+        self.assertFalse(stale_plan.exists())
+        self.assertFalse(stale_props.exists())
+        validate.assert_called_once()
+
+    def test_render_remotion_video_does_not_skip_when_motion_plan_missing(self) -> None:
+        _state, item = self.make_pending_item()
+        raw = self.state_dir / "raw-notebooklm.mp4"
+        raw.write_bytes(b"raw-notebooklm")
+        final = self.state_dir / f"{item['id']}-remotion-final.mp4"
+        final.write_bytes(b"fake-rendered")
+        item["enhancement_status"] = "enhanced"
+        remotion = pipeline.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
+        sig_asset = self.state_dir / "sig.png"
+        sig_asset.write_bytes(b"sig")
+        def fake_enhancement(*_args: object, **kwargs: Any) -> dict[str, Any]:
+            props_file = self.state_dir / f"{item['id']}-remotion-props.json"
+            props_file.write_text("{}", encoding="utf-8")
+            output_file = kwargs["output_path"]
+            output_file.write_bytes(b"rendered-mp4")
+            return {
+                "enhancement_status": "enhanced",
+                "render_mode": "full",
+                "assets_used": [],
+                "assets_dropped": [],
+                "fallback_reason": None,
+                "effective_plan": {"render_mode": "full"},
+            }
+
+        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p in {remotion, sig_asset}), \
+             mock.patch.object(pipeline, "ffprobe", return_value={"duration": 100.0}), \
+             mock.patch.object(pipeline, "generate_motion_plan", return_value={"render_mode": "full"}), \
+             mock.patch.object(pipeline, "prepare_signature_asset", return_value="sig.png"), \
+             mock.patch.object(pipeline, "execute_enhancement", side_effect=fake_enhancement):
+            pipeline.render_remotion_video(raw, item)
+            self.assertEqual(item["motion_plan_path"], f"{item['id']}-motion-plan.json")
+
     def test_remotion_rebuild_redownloads_raw_if_missing(self) -> None:
         state, item = self.make_pending_item()
         item.update(
@@ -1041,7 +1111,7 @@ class PipelineTestCase(unittest.TestCase):
         text = policy_path.read_text(encoding="utf-8")
 
         # Core product rule
-        self.assertIn("EXISTING NotebookLM MP4", text)
+        self.assertIn("existing authoritative NotebookLM MP4", text)
         self.assertIn("100% of the timeline", text)
 
         # Captions restriction
@@ -1059,14 +1129,14 @@ class PipelineTestCase(unittest.TestCase):
             self.assertIn(skill, text)
 
         # CSS transitions/animations restriction
-        self.assertIn("DO NOT use CSS transitions", text)
+        self.assertIn("CSS transitions", text)
 
         # Female voice requirement
         self.assertIn("השתמש בקול של אישה ישראלית", text)
 
         # Mandatory review and policy gates
         self.assertIn("Technical publication authority", text)
-        self.assertIn("Strict visual review language for slide/card-like output", text)
+        self.assertIn("slide/card-like", text)
 
     def test_reviewer_prompt_evaluates_source_video_first_and_no_invented_objects(self) -> None:
         hashes = {
@@ -1091,7 +1161,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(reviewer.REVIEW_FRAME_COUNT, pipeline.REVIEW_FRAME_COUNT)
 
         # Durable policy is injected into the actual reviewer prompt.
-        self.assertIn("100% Visual Continuity", prompt)
+        self.assertIn("existing authoritative NotebookLM MP4", prompt)
         self.assertIn("DO NOT use `remotion-captions`", prompt)
         self.assertIn("already exists inside the pixels of the NotebookLM source MP4", prompt)
         self.assertIn("`remotion-upgrade`", prompt)

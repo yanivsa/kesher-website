@@ -1032,10 +1032,15 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
         "final_mp4", "final_sha256", "manifest_path", "manifest_sha256",
         "visual_review_path", "visual_review_sha256", "frame_paths", "frame_sha256",
         "remotion_props_path", "remotion_props_sha256", "motion_plan_path", "motion_plan_sha256", "rejected_at",
+        "enhancement_status", "enhancement_render_mode", "enhancement_assets_used",
+        "enhancement_assets_dropped", "enhancement_fallback_reason",
         "youtube_url", "youtube_verification", "uploaded_at", "upload_response_at",
         "upload_session_uri", "upload_session_created_at",
     ):
         item.pop(field, None)
+    (STATE_DIR / f"{item['id']}-remotion-final.mp4").unlink(missing_ok=True)
+    (STATE_DIR / f"{item['id']}-motion-plan.json").unlink(missing_ok=True)
+    (STATE_DIR / f"{item['id']}-remotion-props.json").unlink(missing_ok=True)
     item["status"] = "downloaded"
     item["technical_verified"] = False
     item["visual_review_status"] = "pending"
