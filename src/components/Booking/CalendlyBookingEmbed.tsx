@@ -304,8 +304,13 @@ const CalendlyBookingEmbed: React.FC<CalendlyBookingEmbedProps> = ({
 
         container.setAttribute(AUTO_RESIZE_ACTIVE_ATTRIBUTE, 'true');
         container.replaceChildren();
+        const calendlyUrl = new URL(SITE_CONFIG.links.calendly);
+        calendlyUrl.searchParams.set('background_color', 'ffffff');
+        calendlyUrl.searchParams.set('text_color', '111111');
+        calendlyUrl.searchParams.set('primary_color', '0ca5c9');
+
         calendly.initInlineWidget({
-          url: SITE_CONFIG.links.calendly,
+          url: calendlyUrl.toString(),
           parentElement: container,
           resize: true,
           utm: getCalendlyUtm(),
