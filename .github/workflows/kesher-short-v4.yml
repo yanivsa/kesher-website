@@ -295,24 +295,57 @@ jobs:
 
       - name: Rebuild exact rejected Short with Remotion
         if: ${{ github.event_name != 'pull_request' && inputs.operation == 'rebuild' }}
+        id: rebuild_exact
+        env:
+          REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
         run: |
           set -euo pipefail
-          test -n "${{ inputs.rebuild_item_id }}"
-          python -u scripts/kesher_short_pipeline_v4.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
+          test -n "$REBUILD_ITEM_ID"
+          python -u scripts/kesher_short_pipeline_v4.py --remotion-rebuild-item "$REBUILD_ITEM_ID"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          state = json.loads((Path(os.environ["KESHER_STATE_DIR"]) / "state.json").read_text(encoding="utf-8"))
+          matches = [item for item in state.get("items", []) if item.get("id") == os.environ["REBUILD_ITEM_ID"]]
+          if len(matches) != 1:
+              raise SystemExit("Exact rebuilt Short item was not found uniquely")
+          item = matches[0]
+          source = item.get("source") or {}
+          slug = str(source.get("slug") or "").strip()
+          sha = str(source.get("content_sha256") or "").strip()
+          if not slug or not sha:
+              raise SystemExit("Exact rebuilt Short source identity is incomplete")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"slug={slug}\n")
+              out.write(f"content_sha256={sha}\n")
+          PY
 
       - name: Prepare exact technically verified Short upload
         if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
+          REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
+          REBUILD_SLUG: ${{ steps.rebuild_exact.outputs.slug }}
+          REBUILD_CONTENT_SHA256: ${{ steps.rebuild_exact.outputs.content_sha256 }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: python -u scripts/kesher_video_reconcile.py --prepare-upload ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+        run: |
+          set -euo pipefail
+          if [ -n "$REBUILD_ITEM_ID" ]; then
+            test -n "$REBUILD_SLUG"
+            test -n "$REBUILD_CONTENT_SHA256"
+            python -u scripts/kesher_video_reconcile.py --prepare-upload --slug "$REBUILD_SLUG" --content-sha256 "$REBUILD_CONTENT_SHA256" --item-id "$REBUILD_ITEM_ID"
+          else
+            python -u scripts/kesher_video_reconcile.py --prepare-upload ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+          fi
 
       - name: Upload exact Short once and verify it public
         if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
+          REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -321,7 +354,11 @@ jobs:
           test -n "${YOUTUBE_CLIENT_ID:-}"
           test -n "${YOUTUBE_CLIENT_SECRET:-}"
           test -n "${YOUTUBE_REFRESH_TOKEN:-}"
-          python -u scripts/kesher_short_pipeline_v4.py --upload-only ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+          if [ -n "$REBUILD_ITEM_ID" ]; then
+            python -u scripts/kesher_short_pipeline_v4.py --upload-only --item-id "$REBUILD_ITEM_ID"
+          else
+            python -u scripts/kesher_short_pipeline_v4.py --upload-only ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+          fi
 
       - name: Remove uploaded media after public verification
         if: ${{ github.event_name != 'pull_request' && success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}

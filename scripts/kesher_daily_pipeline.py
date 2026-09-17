@@ -977,10 +977,16 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
         and item.get("technical_verified") is not True
         and "סגיר החתימה" in technical_note
     )
+    metadata_recovery = (
+        item.get("status") == "rejected"
+        and item.get("technical_verified") is not True
+        and item.get("metadata_review_status") == "rejected"
+        and bool(str((item.get("review_notes") or {}).get("metadata") or "").strip())
+    )
     uploaded_recovery = item.get("status") == "uploaded" and item.get("uploaded") is True and item.get("youtube_id")
-    if not (rejected or legacy_signature_recovery or uploaded_recovery):
+    if not (rejected or legacy_signature_recovery or metadata_recovery or uploaded_recovery):
         raise PipelineError(
-            "Remotion rebuild is allowed only for a visual rejection, a legacy signature-timing technical rejection, "
+            "Remotion rebuild is allowed only for a visual rejection, a recoverable signature/metadata technical rejection, "
             "or an exact uploaded-item recovery"
         )
 
