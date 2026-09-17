@@ -1012,7 +1012,16 @@
         "live_verified_at": "2026-09-17T19:59:41.476997+00:00",
         "next_deploy_retry_at": null
       },
-      "archived_at": "2026-09-17T21:43:35.608688+00:00"
+      "archived_at": "2026-09-17T21:43:35.608688+00:00",
+      "media": {
+        "source_slug": "early-habits-building-calm-mornings-children",
+        "source_content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+        "article_url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
+        "article_live": true,
+        "long_status": "running",
+        "long_resume_count": 1,
+        "long_last_dispatch_at": "2026-09-17T21:43:57.162738+00:00"
+      }
     }
   ],
   "last_error": null,
