@@ -322,6 +322,31 @@
       "strike": 1,
       "updated_at": "2026-09-17T11:05:02.896561+00:00"
     },
+    "ksr-ce8919655441bb496f31bc3a": {
+      "command_id": "ksr-ce8919655441bb496f31bc3a",
+      "evidence_hash": "5d0c44e0fabb0eac45022d8bf26a7a8598d5ca035438812569b58b30f685ca06",
+      "exact": {
+        "artifact_id": "a73c878c-2b7e-4175-8607-a5bceb8b6e4f",
+        "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94",
+        "item_id": "video-20260917-140652-4d0ba0c737",
+        "pr_number": 854,
+        "short_item_id": "video-20260917-140805-4d0ba0c737",
+        "slug": "early-habits-building-calm-mornings-children",
+        "source_id": "94cbc665-5790-4c0a-9b86-a609b772d430",
+        "task_id": "a73c878c-2b7e-4175-8607-a5bceb8b6e4f"
+      },
+      "executor": "direct",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "4c9cc55a9d85ac2e835cd0aa3c76306a",
+      "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
+      "issued_at": "2026-09-17T11:35:49.885959+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebind_exact_source",
+      "stage": "S3",
+      "strike": 3,
+      "updated_at": "2026-09-17T11:35:49.885959+00:00"
+    },
     "ksr-ff7210a85817fc227ce24581": {
       "acknowledged_at": "2026-09-17T11:35:01.770451+00:00",
       "command_id": "ksr-ff7210a85817fc227ce24581",
@@ -337,11 +362,13 @@
         "task_id": "a73c878c-2b7e-4175-8607-a5bceb8b6e4f"
       },
       "executor": "jules",
+      "failed_at": "2026-09-17T11:35:49.885959+00:00",
+      "failure_reason": "Jules state=COMPLETED; exact incident persisted",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "4c9cc55a9d85ac2e835cd0aa3c76306a",
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
       "issued_at": "2026-09-17T11:14:39.728419+00:00",
-      "lifecycle": "running",
+      "lifecycle": "failed",
       "metadata": {
         "external_run_id": 35215922727,
         "external_workflow": "Kesher Daily NotebookLM Video Overview",
@@ -381,12 +408,12 @@
       "running_at": "2026-09-17T11:17:07.080785+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-17T11:35:01.770451+00:00"
+      "updated_at": "2026-09-17T11:35:49.885959+00:00"
     }
   },
   "incidents": {
     "4c9cc55a9d85ac2e835cd0aa3c76306a": {
-      "active_command_id": "ksr-ff7210a85817fc227ce24581",
+      "active_command_id": "ksr-ce8919655441bb496f31bc3a",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "4c9cc55a9d85ac2e835cd0aa3c76306a",
       "first_seen_at": "2026-09-17T11:10:04.203525+00:00",
@@ -408,13 +435,25 @@
           "command_id": "ksr-ff7210a85817fc227ce24581",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-17T11:35:49.885959+00:00",
+          "command_id": "ksr-ff7210a85817fc227ce24581",
+          "event": "command_failed",
+          "reason": "Jules state=COMPLETED; exact incident persisted"
+        },
+        {
+          "at": "2026-09-17T11:35:49.885959+00:00",
+          "command_id": "ksr-ce8919655441bb496f31bc3a",
+          "event": "command_issued",
+          "stage": "S3"
         }
       ],
       "incident_id": "v5|early-habits-building-calm-mornings-children|4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94|long_video",
-      "last_seen_at": "2026-09-17T11:35:01.770451+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=4c9cc55a9d85ac2e835cd0aa3c76306a strike=2 stage=S2",
+      "last_seen_at": "2026-09-17T11:35:49.885959+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=4c9cc55a9d85ac2e835cd0aa3c76306a strike=3 stage=S3",
       "status": "recovering",
-      "strike": 2
+      "strike": 3
     },
     "bb0e4ac04a5e8f96ad50a84b0ed62316": {
       "active_command_id": "ksr-9fa0f6007d7f7efacbe455ab",
@@ -486,5 +525,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-17T11:35:01.770451+00:00"
+  "updated_at": "2026-09-17T11:35:49.885959+00:00"
 }
