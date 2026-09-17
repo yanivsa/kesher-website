@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-17",
-  "status": "long_video_running",
+  "status": "long_video_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -28,7 +28,7 @@
     "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "published_date": "2026-09-17",
     "live": true,
-    "live_verified_at": "2026-09-17T11:54:53.747507+00:00",
+    "live_verified_at": "2026-09-17T12:04:19.098665+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -978,27 +978,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-15T20:24:03.161302+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-15T20:24:56.085073+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-15T22:18:07.866833+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
       "at": "2026-09-15T22:18:07.866837+00:00",
       "from": "article_needed",
       "to": "article_needed",
@@ -1766,9 +1745,37 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-17T12:04:19.098683+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-17T12:04:57.712437+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "VIDEO_WORKFLOW_FAILED",
+      "details": {
+        "message": "video run 35217971663 completed with conclusion=failure",
+        "retry_at": "2026-09-17T12:09:57.712413+00:00",
+        "failure_streak": 1,
+        "run_id": 35217971663,
+        "session_id": null
+      }
+    },
+    {
+      "at": "2026-09-17T12:04:57.712459+00:00",
+      "from": "video_retry_wait",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-17T12:09:57.712413+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-17T11:55:03.535504+00:00",
+  "updated_at": "2026-09-17T12:04:57.712463+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1786,13 +1793,15 @@
     "attempt_count": 3,
     "status": "pending_review",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-09-17T12:09:57.712413+00:00",
     "run_id": 35217971663,
-    "processed_run_id": 35213862461,
+    "processed_run_id": 35217971663,
     "provider_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "VIDEO_WORKFLOW_FAILED": 1
+    },
     "overview_evidence_required": true,
     "item_id": "video-20260916-033957-28471ea212",
     "last_dispatch_at": "2026-09-17T11:52:14.229598+00:00",
@@ -1819,7 +1828,8 @@
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
     "artifact_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
     "source_id": "d93dddcc-807f-442c-89f6-7b905a3e6f7b",
-    "last_run_conclusion": "success"
+    "last_run_conclusion": "failure",
+    "last_failed_run_id": 35217971663
   },
   "short": {
     "attempt_count": 0,
