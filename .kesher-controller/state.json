@@ -28,7 +28,7 @@
     "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "published_date": "2026-09-17",
     "live": true,
-    "live_verified_at": "2026-09-17T12:41:00.262191+00:00",
+    "live_verified_at": "2026-09-17T15:25:07.496146+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -979,27 +979,9 @@
     "stage": "long_video",
     "code": "VIDEO_ATTEMPTS_EXHAUSTED",
     "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-17T12:42:08.468203+00:00"
+    "at": "2026-09-17T15:26:29.640438+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-15T22:43:11.000445+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/1411980193888685833"
-      }
-    },
-    {
-      "at": "2026-09-15T22:46:48.369767+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/1411980193888685833"
-      }
-    },
     {
       "at": "2026-09-15T23:00:08.591243+00:00",
       "from": "article_generating",
@@ -1772,9 +1754,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-17T15:25:07.496155+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-17T15:26:29.640454+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-17T12:42:08.468232+00:00",
+  "updated_at": "2026-09-17T15:26:29.640459+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
