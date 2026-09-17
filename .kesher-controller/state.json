@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-17",
-  "status": "blocked",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -28,7 +28,7 @@
     "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
     "published_date": "2026-09-17",
     "live": true,
-    "live_verified_at": "2026-09-17T15:25:07.496146+00:00",
+    "live_verified_at": "2026-09-17T16:47:04.785821+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -975,35 +975,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-17T15:26:29.640438+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-15T23:00:08.591243+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-        "retry_at": "2026-09-15T23:05:08.591223+00:00",
-        "failure_streak": 1,
-        "run_id": 35030279608,
-        "session_id": "sessions/1411980193888685833"
-      }
-    },
-    {
-      "at": "2026-09-15T23:09:13.086201+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 2
-      }
-    },
     {
       "at": "2026-09-15T23:14:53.829835+00:00",
       "from": "article_generating",
@@ -1769,9 +1742,21 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-17T16:47:04.785839+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-17T16:47:32.974404+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-17T15:26:29.640459+00:00",
+  "updated_at": "2026-09-17T16:47:32.974426+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1787,10 +1772,10 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35221091406,
+    "run_id": 35248642874,
     "processed_run_id": 35221091406,
     "provider_id": "26cc06ff-7d06-46b9-9b26-d3daded48403",
     "failure_fingerprint": null,
@@ -1799,7 +1784,7 @@
       "VIDEO_WORKFLOW_FAILED": 1
     },
     "overview_evidence_required": true,
-    "item_id": "video-20260916-033957-28471ea212",
+    "item_id": "video-20260917-193737-28471ea212",
     "last_dispatch_at": "2026-09-17T11:52:14.229598+00:00",
     "resume_dispatches": 4,
     "watchdog": {
