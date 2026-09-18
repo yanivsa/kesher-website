@@ -54,17 +54,17 @@ Chat messages are not the canonical state. Git files on the working branch are t
 ## CURRENT STATE
 
 - project_status: IN_PROGRESS
-- current_phase: PHASE_1_DATA_AUDIT
+- current_phase: PHASE_2_GOOGLE_SEARCH_INTELLIGENCE
 - current_owner: SHARED
-- last_completed_phase: PHASE_1_DATA_AUDIT
-- next_phase: PHASE_2_GOOGLE_SEARCH_INTELLIGENCE
+- last_completed_phase: PHASE_2_GOOGLE_SEARCH_INTELLIGENCE
+- next_phase: PHASE_3_INTENT_CLUSTERING_STRATEGY
 - production_domain: https://kesher.saharoni.com
 - search_console_property: sc-domain:saharoni.com
 - ga4_property: properties/551923843
 - ga4_stream: G-6SM423N6EL
 - canonical_keyword_file: research/search-intelligence/keyword-master.csv
-- last_updated_utc: 2026-09-18T10:50:00Z
-- last_updated_by: ChatGPT
+- last_updated_utc: 2026-09-18T14:30:00Z
+- last_updated_by: Antigravity
 
 ## Verified baseline
 
@@ -113,7 +113,7 @@ Output expected:
 - SERP composition
 - normalized observations appended/merged into keyword-master.csv
 
-Status: NOT_STARTED
+Status: COMPLETED
 
 ### PHASE 3 — Intent Clustering & Strategy
 Owner: Antigravity
@@ -232,6 +232,42 @@ Append entries using this exact structure:
   - Review whether 11 draft stubs (especially money-fights and postpartum relationship) should be expanded in Wave 1 over creating net-new URLs.
 - recommended_next_action:
   - Await ChatGPT review of Phase 1 artifacts and confirmation to proceed with Phase 2 (Google Search Intelligence: PAA, Autocomplete, Related Searches, SERP analysis).
+
+### 2026-09-18 14:30 — PHASE 2 — Antigravity
+- commit: 4a117b7c
+- files_changed:
+  - research/search-intelligence/raw-google-signals.csv
+  - research/search-intelligence/serp-results.csv
+  - research/search-intelligence/serp-observations.csv
+  - research/search-intelligence/keyword-master.csv
+  - research/search-intelligence/phase2-search-intelligence.md
+  - research/search-intelligence/COLLABORATION.md
+- completed:
+  - Executed Phase 2 Google Search Intelligence across all 36 seed queries (100% coverage).
+  - Collected 340 raw signals from Google Autocomplete, Related Searches, and PAA into raw-google-signals.csv.
+  - Profiled live SERP ranking results across competing domains into serp-results.csv.
+  - Recorded detailed SERP observations (intent, format, local pack, PAA, competitor landscape) for all 36 seeds in serp-observations.csv.
+  - Merged 16 high-value validated search queries into canonical keyword-master.csv (now 25 rows total, strictly preserving all 9 baseline rows and leaving non-GSC metrics blank).
+  - Authored comprehensive synthesis report in phase2-search-intelligence.md.
+- important_findings:
+  - Discovered multi-intent ambiguity in GSC head query "פגישה ראשונה" (Ilana Avital song lyrics, Eli Amir book, Orthodox matchmaking, clinical intake). Kesher's impression at pos 82 was an exploratory test. High-intent long-tail queries ("שאלות לפגישה ראשונה", "נושאי שיחה לפגישה ראשונה") must be targeted instead of the head term.
+  - Validated GSC query "לא להראות התלהבות בתחילת קשר" as the primary autocomplete expansion in Israel for "התלהבות בתחילת קשר". Confirmed strong match for existing article /blog/dating-transition-to-relationship-boundaries (recommend UPDATE_EXISTING in Phase 3).
+  - Mapped Ashdod local commercial landscape: municipal services (התחנה לטיפול זוגי, המרכז להורות משמעותית) and aggregators (Betipulnet, Easy, Midrag) dominate organic ranks and Local 3-Pack. Kesher's landing pages must differentiate via private practice advantages (immediate availability, personal senior attention, discretion).
+  - Verified strong search demand for content gaps: "ייעוץ זוגי אונליין" (BOFU commercial), "מריבות על כסף בזוגיות" (problem-aware, validates draft stub), "זוגיות אחרי לידה" (high emotional demand, validates draft stub).
+  - Discovered that "חרדה חברתית אצל מתבגרים" SERP is dominated by HMOs (Clalit, Maccabi) and psychiatric CBT clinics. Crucial recommendation: Kesher must frame content strictly around parental guidance ("איך הורים יכולים לתמוך") rather than competing with medical/clinical diagnosis.
+  - Confirmed religious queries ("ייעוץ זוגי לדתיים") require deep Halachic/Torah positioning that does not exist on site; verified recommendation to keep OUT_OF_SCOPE for Wave 1.
+- uncertainties:
+  - GSC query filtering continues to conceal exact queries for 25 impression-generating pages on site.
+  - Timing of Local 3-Pack rank improvements depends on Google Business Profile verification and local review signals.
+- review_requests_for_ChatGPT:
+  - Confirm agreement on Phase 2 deliverables and coverage across all 36 seeds.
+  - Confirm agreement with the long-tail dating strategy for "פגישה ראשונה" (target "שאלות לפגישה ראשונה" and "נושאי שיחה לפגישה ראשונה").
+  - Confirm agreement with UPDATE_EXISTING for /blog/dating-transition-to-relationship-boundaries to address "לא להראות התלהבות בתחילת קשר".
+  - Confirm agreement with creating a dedicated online service page (/services/couples/online) in Phase 3.
+  - Confirm prioritization of draft stubs relationship-after-childbirth and money-fights-communication in Wave 1.
+  - Confirm agreement that religious queries remain OUT_OF_SCOPE for Wave 1.
+- recommended_next_action:
+  - Await ChatGPT review of Phase 2 artifacts and authorization to proceed with Phase 3 (Intent Clustering & Strategy).
 
 ## ChatGPT handoff log
 
