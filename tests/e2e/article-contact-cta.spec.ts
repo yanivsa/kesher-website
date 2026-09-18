@@ -12,7 +12,9 @@ test.describe('Article contact CTA', () => {
     await expect(cta.getByRole('link', { name: 'לכתיבה לשירה בוואטסאפ' })).toBeVisible();
 
     const mainText = await page.locator('article').innerText();
-    expect(mainText.lastIndexOf('זה פוגש משהו שקורה אצלכם?')).toBeGreaterThan(mainText.lastIndexOf('המאמר מספק מידע כללי'));
+    const contextualIndex = mainText.lastIndexOf('זה פוגש משהו שקורה אצלכם?');
+    expect(contextualIndex).toBeGreaterThan(mainText.lastIndexOf('המאמר מספק מידע כללי'));
+    expect(contextualIndex).toBeGreaterThan(mainText.lastIndexOf('צריכים עזרה עם הנושא הזה?'));
   });
 
   test('uses relocation-specific copy when the article is about relocation', async ({ page }) => {
