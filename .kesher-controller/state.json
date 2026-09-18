@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-18",
-  "status": "long_video_running",
+  "status": "short_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -32,7 +32,7 @@
     "last_deploy_dispatch_at": "2026-09-18T10:56:45.106089+00:00",
     "next_deploy_retry_at": null,
     "live": true,
-    "live_verified_at": "2026-09-18T11:14:42.631017+00:00"
+    "live_verified_at": "2026-09-18T11:52:23.317441+00:00"
   },
   "backlog": [
     {
@@ -1740,9 +1740,27 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-18T11:52:23.317460+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-18T11:52:33.598474+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-18T11:52:54.536250+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-18T11:15:12.195139+00:00",
+  "updated_at": "2026-09-18T11:52:54.536257+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
@@ -1768,7 +1786,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1805,16 +1823,20 @@
     "source_id": "c2b92a56-87c0-4b66-9ada-b81eef5dc9c3"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "7af8b74e-dea2-42ab-90ad-aa8ae98a7198",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-18T11:52:54.536229+00:00",
+    "artifact_id": "7af8b74e-dea2-42ab-90ad-aa8ae98a7198",
+    "source_id": "c2b92a56-87c0-4b66-9ada-b81eef5dc9c3",
+    "adopted_from_long_item_id": "video-20260918-141646-46c8d80a4f"
   },
   "migration": {
     "v4_short_controller_state": null
