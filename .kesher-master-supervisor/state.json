@@ -168,6 +168,7 @@
       "verified_at": "2026-09-18T12:04:45.559619+00:00"
     },
     "ksr-9d5100379eadfd29cfa7a95d": {
+      "acknowledged_at": "2026-09-18T12:05:43.261153+00:00",
       "command_id": "ksr-9d5100379eadfd29cfa7a95d",
       "evidence_hash": "4322d37e0418241537e578c38ec03d93ebaf0006614ba9a7ffe5f3f256702f34",
       "exact": {
@@ -185,12 +186,16 @@
       "fingerprint": "d00f35466c077d88bcb2d404cbee1c91",
       "incident_id": "v5|dating-apps-exhaustion|46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03|short",
       "issued_at": "2026-09-18T12:04:45.559619+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "already_active",
+        "run_id": 35342761128,
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "rebuild_exact_short",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-18T12:04:45.559619+00:00"
+      "updated_at": "2026-09-18T12:05:43.261153+00:00"
     },
     "ksr-9fa0f6007d7f7efacbe455ab": {
       "acknowledged_at": "2026-09-16T21:37:29.972941+00:00",
@@ -901,5 +906,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-18T12:04:45.559619+00:00"
+  "updated_at": "2026-09-18T12:05:43.261153+00:00"
 }
