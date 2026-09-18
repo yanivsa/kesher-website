@@ -8,6 +8,7 @@ import struct
 import sys
 import tempfile
 import unittest
+from datetime import date, timedelta
 from pathlib import Path
 from unittest import mock
 
@@ -60,6 +61,9 @@ class ArticleImageWorkerTests(unittest.TestCase):
         )
         self.assertEqual(image["owned_generation_variants"], 3)
         self.assertEqual(image["local_fallback_candidates_per_category"], 40)
+        self.assertEqual(image["local_fallback_reuse_cooldown_days"], 90)
+        self.assertEqual(image["local_fallback_max_lifetime_uses"], 3)
+        self.assertEqual(image["local_fallback_policy"], "prefer-unused-then-90-day-cooldown-max-3-uses")
         self.assertFalse(image["abstract_placeholder_allowed"])
         self.assertTrue(image["fallback_must_be_local"])
         self.assertFalse(image["no_image_publication_allowed"])
@@ -247,13 +251,13 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIn("actions/workflows/ci.yml/dispatches", workflow)
         self.assertNotIn("actions/checkout@v", workflow)
 
-    def test_published_local_image_is_never_reused(self):
-        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_no_reuse_test")
+    def test_recent_local_image_reuse_is_blocked_by_cooldown(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_recent_reuse_test")
         fake_data = fake_png()
         fake_sha = hashlib.sha256(fake_data).hexdigest()
         with tempfile.TemporaryDirectory() as tmp:
             worker.REPO_ROOT = Path(tmp)
-            source_path = "public/images/generated/blog/already-used.jpg"
+            source_path = "public/images/generated/blog/recent.jpg"
             worker.load_seed_manifest = lambda: fake_manifest([source_path])
             worker.load_bank_manifest = lambda: {"version": 1, "assets": []}
             target = worker.REPO_ROOT / source_path
@@ -266,6 +270,60 @@ class ArticleImageWorkerTests(unittest.TestCase):
                 "t",
                 [],
                 existing_hashes={fake_sha},
+                existing_usage={fake_sha: 1},
+                last_used={fake_sha: date.today()},
+                banned_paths=set(),
+            )
+        self.assertIsNone(candidate)
+
+    def test_local_image_can_be_reused_after_cooldown_below_use_cap(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_cooled_reuse_test")
+        fake_data = fake_png()
+        fake_sha = hashlib.sha256(fake_data).hexdigest()
+        with tempfile.TemporaryDirectory() as tmp:
+            worker.REPO_ROOT = Path(tmp)
+            source_path = "public/images/generated/blog/cooled.jpg"
+            worker.load_seed_manifest = lambda: fake_manifest([source_path])
+            worker.load_bank_manifest = lambda: {"version": 1, "assets": []}
+            target = worker.REPO_ROOT / source_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(fake_data)
+            candidate = worker.local_fallback(
+                "o/r",
+                {"title": "שיחה", "id": "x"},
+                "sha",
+                "t",
+                [],
+                existing_hashes={fake_sha},
+                existing_usage={fake_sha: 2},
+                last_used={fake_sha: date.today() - timedelta(days=91)},
+                banned_paths=set(),
+            )
+        self.assertIsNotNone(candidate)
+        assert candidate is not None
+        self.assertEqual(candidate.provider, "Local")
+
+    def test_local_image_reuse_is_blocked_at_three_lifetime_uses(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_use_cap_test")
+        fake_data = fake_png()
+        fake_sha = hashlib.sha256(fake_data).hexdigest()
+        with tempfile.TemporaryDirectory() as tmp:
+            worker.REPO_ROOT = Path(tmp)
+            source_path = "public/images/generated/blog/maxed.jpg"
+            worker.load_seed_manifest = lambda: fake_manifest([source_path])
+            worker.load_bank_manifest = lambda: {"version": 1, "assets": []}
+            target = worker.REPO_ROOT / source_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(fake_data)
+            candidate = worker.local_fallback(
+                "o/r",
+                {"title": "שיחה", "id": "x"},
+                "sha",
+                "t",
+                [],
+                existing_hashes={fake_sha},
+                existing_usage={fake_sha: 3},
+                last_used={fake_sha: date.today() - timedelta(days=365)},
                 banned_paths=set(),
             )
         self.assertIsNone(candidate)
