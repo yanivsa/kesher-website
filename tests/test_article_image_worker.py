@@ -37,7 +37,7 @@ def fake_png(width: int = 1200, height: int = 675, marker: bytes = b"fixture") -
 def fake_manifest(paths: list[str]) -> dict:
     return {
         "target_per_category": 40,
-        "policy": {"cooldown_days": 90},
+        "policy": {"reuse_published_hero": False},
         "categories": {"couples": {"primary": paths, "reserve": []}},
     }
 
@@ -94,7 +94,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
 
     def test_manifest_has_40_unique_real_jpg_candidates_per_category(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_manifest_test")
-        manifest = worker.load_manifest()
+        manifest = worker.load_seed_manifest()
         expected = {"dating", "singles", "relocation", "premarital", "parenting", "gifted", "adhd", "couples"}
         self.assertEqual(set(manifest["categories"]), expected)
 
