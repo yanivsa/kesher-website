@@ -402,6 +402,15 @@ def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
     public_path = f"{PUBLIC_PREFIX}{post['id']}.{ext}"
     post["image"] = public_path
     post["imageAlt"] = candidate.visual_match
+    post["imageProvider"] = candidate.provider
+    post["imageSourceUrl"] = candidate.source_url
+    post["imageIsFallback"] = candidate.provider == "Local"
+    if candidate.provider == "Pexels":
+        post["imageCredit"] = "צילום דרך Pexels"
+        post["imageCreditUrl"] = candidate.source_url
+    else:
+        post.pop("imageCredit", None)
+        post.pop("imageCreditUrl", None)
     digest = hashlib.sha256(candidate.data).hexdigest()
     evidence = {
         "Image Pipeline Version": "2",
