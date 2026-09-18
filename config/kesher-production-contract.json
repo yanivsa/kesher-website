@@ -88,7 +88,6 @@
     "provider_order": [
       "gemini",
       "pexels",
-      "unsplash",
       "pixabay",
       "local-curated"
     ],
@@ -102,10 +101,11 @@
     "attached_handoff_marker": "Hero Image Status: ATTACHED_TRUSTED_IMAGE_STAGE",
     "controller_action_on_pending_handoff": "dispatch_trusted_image_same_pr",
     "controller_action_on_image_guard_failure": "recover_trusted_image_same_pr",
-    "local_fallback_policy": "40-real-photo-reservoir-unused-first-90-day-cooldown",
+    "local_fallback_policy": "unused-real-photo-or-block",
     "abstract_placeholder_allowed": false,
     "owned_generation_variants": 3,
-    "local_fallback_candidates_per_category": 40
+    "local_fallback_candidates_per_category": 40,
+    "managed_fallback_library_target_per_category": 40
   },
   "video": {
     "publication_gate": "technical",
