@@ -24,6 +24,25 @@ const routeKeyForPost = (post: (typeof posts)[number]) => {
   return post.id;
 };
 
+const articleCtaCopy = (post: (typeof posts)[number]) => {
+  const subcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
+  const context = `${post.category} ${subcategory} ${post.title}`;
+
+  if (/רילוקיישן|עלייה|הגירה/.test(context)) {
+    return 'אם המעבר, החזרה לארץ או השינוי הגדול משפיעים גם על הקשר או על האווירה בבית, אפשר לפנות לשירה לייעוץ פרטני. יחד אפשר לעשות סדר במה שקורה ולבחון צעדים שמתאימים לכם.';
+  }
+
+  if (/הור|ילד|כיתה|קשב|מחונ/.test(context)) {
+    return 'אם הנושא במאמר דומה למה שקורה אצלכם בבית, אפשר לפנות לשירה לייעוץ פרטני. יחד אפשר להבין מה עומד מאחורי הקושי ולבחור צעדים שמתאימים לילד ולמשפחה.';
+  }
+
+  if (/רווק|דייט|היכרות|מציאת זוגיות/.test(context)) {
+    return 'אם השאלות במאמר פוגשות את מה שקורה אצלך עכשיו, אפשר לפנות לשירה לייעוץ פרטני וממוקד. יחד אפשר לברר את הדפוסים, הצרכים והצעדים הבאים שמתאימים לך.';
+  }
+
+  return 'אם מה שקראתם כאן דומה למה שקורה אצלכם בזוגיות, אפשר לפנות לשירה לייעוץ פרטני וממוקד. יחד אפשר לעשות סדר בקושי, בתקשורת ובצעדים הבאים שמתאימים לכם.';
+};
+
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const post = posts.find((candidate) => candidate.id === id || routeKeyForPost(candidate) === id);
@@ -101,6 +120,7 @@ const BlogPost: React.FC = () => {
     && typeof post.serviceLabel === 'string'
     ? { url: post.serviceUrl, label: post.serviceLabel }
     : null;
+  const ctaCopy = articleCtaCopy(post);
 
   return (
     <article className={styles.post}>
@@ -198,21 +218,22 @@ const BlogPost: React.FC = () => {
             placement="article_bottom"
           />
           <GooglePreferredSource />
+          <LeadMagnet />
           <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
-          <div className={styles.articleContactCta}>
-            <h3>רוצה לדבר על מה שקורה אצלך?</h3>
+          <section className={styles.articleContactCta} aria-label="פנייה לשירה סהרוני">
+            <h3>זה פוגש משהו שקורה אצלכם?</h3>
+            <p>{ctaCopy}</p>
             <div className={styles.contactActions}>
               <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
                 <FiCalendar aria-hidden="true" />
-                בחירת מועד לפגישה
+                לקביעת פגישה עם שירה
               </Link>
               <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
                 <FaWhatsapp aria-hidden="true" />
-                שליחת הודעה בוואטסאפ
+                לכתיבה לשירה בוואטסאפ
               </a>
             </div>
-          </div>
-          <LeadMagnet />
+          </section>
         </div>
         <aside className={styles.sidebar}>
           {'video' in post && post.video && (
