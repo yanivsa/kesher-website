@@ -48,7 +48,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         image = contract["image"]
         self.assertEqual(
             image["provider_order"],
-            ["gemini", "unsplash", "pexels", "local-curated", "local-editorial"],
+            ["gemini", "pexels", "pixabay", "local-curated"],
         )
         self.assertTrue(image["fallback_must_be_local"])
         self.assertFalse(image["no_image_publication_allowed"])
@@ -62,17 +62,17 @@ class ArticleImageWorkerTests(unittest.TestCase):
     def test_all_external_failures_fall_through_to_local(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_fallback_test")
         calls = []
-        worker.try_gemini = lambda post, attempts: (attempts.append("gemini"), calls.append("gemini"), None)[2]
-        worker.try_unsplash = lambda post, attempts: (attempts.append("unsplash"), calls.append("unsplash"), None)[2]
-        worker.try_pexels = lambda post, attempts: (attempts.append("pexels"), calls.append("pexels"), None)[2]
+        worker.try_gemini_variants = lambda post, attempts, **kwargs: (attempts.append("gemini-1"), calls.append("gemini"), None)[2]
+        worker.try_pexels = lambda post, attempts, **kwargs: (attempts.append("pexels"), calls.append("pexels"), None)[2]
+        worker.try_pixabay = lambda post, attempts, **kwargs: (attempts.append("pixabay"), calls.append("pixabay"), None)[2]
         worker.local_fallback = lambda repo, post, ref, token, attempts: worker.core.ImageCandidate(
             "Local", fake_png(), "png", "local://public/images/generated/blog/dating-communication-early-stages.jpg",
             "זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור", attempts + ["local-curated"]
         )
         candidate = worker.choose_candidate("o/r", {"title": "שיחה זוגית", "id": "x"}, "sha", "token")
-        self.assertEqual(calls, ["gemini", "unsplash", "pexels"])
+        self.assertEqual(calls, ["gemini", "pexels", "pixabay"])
         self.assertEqual(candidate.provider, "Local")
-        self.assertEqual(candidate.attempts, ["gemini", "unsplash", "pexels", "local-curated"])
+        self.assertEqual(candidate.attempts, ["gemini-1", "pexels", "pixabay", "local-curated"])
 
     def test_every_curated_fallback_candidate_is_real_and_publishable(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_real_fallback_test")
@@ -129,7 +129,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_preflight_test")
         with mock.patch.dict("os.environ", {}, clear=True):
             availability = worker.provider_preflight()
-        self.assertEqual(availability, {"gemini": False, "unsplash": False, "pexels": False, "local": True})
+        self.assertEqual(availability, {"gemini": False, "pexels": False, "pixabay": False, "local": True})
 
     def test_gemini_generation_uses_current_official_generate_content_shape(self):
         source = WORKER_PATH.read_text(encoding="utf-8")
@@ -202,8 +202,9 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIn("persist-credentials: false", workflow)
         self.assertIn("article-image-worker-v4.py", workflow)
         self.assertIn("GOOGLE_API_KEY", workflow)
-        self.assertIn("UNSPLASH_ACCESS_KEY", workflow)
+        self.assertNotIn("UNSPLASH_ACCESS_KEY", workflow)
         self.assertIn("PEXELS_API_KEY", workflow)
+        self.assertIn("PIXABAY_API_KEY", workflow)
         self.assertIn("actions/workflows/ci.yml/dispatches", workflow)
         self.assertNotIn("actions/checkout@v", workflow)
 
@@ -223,11 +224,24 @@ class ArticleImageWorkerTests(unittest.TestCase):
             target.write_bytes(fake_data)
 
             candidate = worker.local_fallback(
-                "o/r", {"title": "שיחה", "id": "x"}, "sha", "t", [], existing_hashes=existing_hashes
+                "o/r",
+                {"title": "שיחה", "id": "x"},
+                "sha",
+                "t",
+                [],
+                existing_hashes=existing_hashes,
+                existing_usage={fake_sha: 1},
+                banned_paths=set(),
             )
             self.assertIsNotNone(candidate)
-            self.assertEqual(candidate.provider, "LocalEditorial")
-            self.assertNotEqual(hashlib.sha256(candidate.data).hexdigest(), fake_sha)
+            self.assertEqual(candidate.provider, "Local")
+            self.assertEqual(hashlib.sha256(candidate.data).hexdigest(), fake_sha)
+
+    def test_production_worker_contains_no_abstract_placeholder_renderer(self):
+        source = PRODUCTION_WORKER_PATH.read_text(encoding="utf-8")
+        self.assertNotIn("LocalEditorial", source)
+        self.assertNotIn("_render_editorial_png", source)
+        self.assertIn("fails closed", source)
 
     def test_contextual_stock_queries_generated_from_post_content(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_queries_test")
