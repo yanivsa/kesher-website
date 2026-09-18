@@ -336,6 +336,7 @@ def local_fallback(
     policy = load_seed_manifest().get("policy") or {}
     cooldown_days = int(policy.get("reuse_cooldown_days") or 90)
     max_lifetime_uses = int(policy.get("max_lifetime_uses") or 3)
+    reserve_min_topic_score = int(policy.get("reserve_min_topic_score") or 1)
     today = date.today()
     unused: list[tuple[int, int, str, str, bytes, str]] = []
     reusable: list[tuple[int, int, int, str, str, bytes, str]] = []
@@ -350,8 +351,14 @@ def local_fallback(
             digest = hashlib.sha256(data).hexdigest()
             score = _topic_score(post, source_path)
 
+            # Seed reserves are inventory-only unless the article itself gives a
+            # concrete semantic reason to use them. This prevents a technically
+            # valid but off-topic couples image from becoming a parenting hero.
+            if tier == 2 and score < reserve_min_topic_score:
+                continue
+
             if digest not in existing_hashes:
-                unused.append((-score, tier, _stable_tiebreak(post, source_path), source_path, data, ext))
+                unused.append((tier, -score, _stable_tiebreak(post, source_path), source_path, data, ext))
                 continue
 
             prior_uses = existing_usage.get(digest, 0)
@@ -368,7 +375,7 @@ def local_fallback(
 
     if unused:
         unused.sort()
-        _neg_score, tier, _stable, source_path, data, ext = unused[0]
+        tier, _neg_score, _stable, source_path, data, ext = unused[0]
         print(
             f"IMAGE_LOCAL_FALLBACK_READY category={category} tier={tier} path={source_path} reuse=0",
             file=sys.stderr,
