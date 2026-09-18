@@ -72,7 +72,15 @@ jobs:
           git config user.name "Kesher Hero Repair"
           git config user.email "actions@users.noreply.github.com"
           git checkout -B "${branch}"
-          git add -f --             src/data/posts.json             src/data/postSummaries.json             public/images/generated/blog             public/sitemap.xml             public/rss.xml             public/llms.txt             public/llms-full.txt
+          git add -f -- \
+            src/data/posts.json \
+            src/data/postSummaries.json \
+            public/images/generated/blog \
+            public/images/fallback \
+            public/sitemap.xml \
+            public/rss.xml \
+            public/llms.txt \
+            public/llms-full.txt
           git commit -m "fix(blog): replace legacy abstract article heroes"
           git push --force-with-lease origin "HEAD:refs/heads/${branch}"
 
