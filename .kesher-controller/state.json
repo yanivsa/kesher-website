@@ -1836,7 +1836,14 @@
     "last_dispatch_at": "2026-09-18T11:52:54.536229+00:00",
     "artifact_id": "7af8b74e-dea2-42ab-90ad-aa8ae98a7198",
     "source_id": "c2b92a56-87c0-4b66-9ada-b81eef5dc9c3",
-    "adopted_from_long_item_id": "video-20260918-141646-46c8d80a4f"
+    "adopted_from_long_item_id": "video-20260918-141646-46c8d80a4f",
+    "watchdog": {
+      "identity": "short:dating-apps-exhaustion:46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03:video-20260918-145430-46c8d80a4f",
+      "last_progress_at": "2026-09-18T12:04:49.059675+00:00",
+      "last_fingerprint": "a69f2b86a013f1d1ded96592545fc3a883531f10f930cd0f487adc9ba063dc14",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
