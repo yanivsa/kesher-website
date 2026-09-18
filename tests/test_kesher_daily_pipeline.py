@@ -245,6 +245,19 @@ class PipelineTestCase(unittest.TestCase):
         run.assert_called_once_with(["artifact", "poll", "task-one", "--notebook", pipeline.NOTEBOOK_ID], timeout=120)
         self.assertEqual(item["status"], "generating")
 
+    def test_wait_for_generation_retries_transient_network_error(self) -> None:
+        item = {"id": "one", "task_id": "task-one", "status": "generating"}
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        side_effects = [
+            pipeline.PipelineError("NotebookLMCommandError: Network error: Request timed out calling LIST_ARTIFACTS"),
+            {"status": "completed"},
+        ]
+        with mock.patch.object(pipeline, "run_notebooklm", side_effect=side_effects) as run, \
+             mock.patch.object(pipeline.time, "sleep", return_value=None):
+            self.assertTrue(pipeline.wait_for_generation(state, item, 60))
+        self.assertEqual(run.call_count, 2)
+        self.assertEqual(item["last_provider_status"], "completed")
+
     def test_technical_validation_rejects_wrong_duration_or_aspect(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
         item = pipeline.new_item(source)
