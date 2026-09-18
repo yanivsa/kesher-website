@@ -21,51 +21,45 @@ def load_worker():
 
 
 class ArticleImageFallbackExhaustionTests(unittest.TestCase):
-    def test_local_fallback_remains_available_after_all_curated_candidates_collide(self):
+    def test_local_fallback_reuses_least_used_real_photo_when_unique_pool_is_exhausted(self):
         worker = load_worker()
-        curated_hashes = {
-            hashlib.sha256((ROOT / source_path).read_bytes()).hexdigest()
-            for candidates in worker.LOCAL_FALLBACK_CANDIDATES.values()
-            for source_path, _description in candidates
-        }
         post = {
             "id": "unattached-adults-missed-chances-regrets",
             "title": "התמודדות עם תחושת החמצה ברווקות מאוחרת",
         }
+        candidates = worker._candidate_pool(post, set())
+        hashes = {}
+        for source_path, _description in candidates:
+            path = ROOT / source_path
+            if path.is_file():
+                digest = hashlib.sha256(path.read_bytes()).hexdigest()
+                hashes[digest] = 3
+
         candidate = worker.local_fallback(
             "yanivsa/kesher-website",
             post,
             "sha",
             "token",
             [],
-            existing_hashes=curated_hashes,
+            existing_hashes=set(hashes),
+            existing_usage=hashes,
+            banned_paths=set(),
         )
 
         self.assertIsNotNone(candidate)
         assert candidate is not None
         width, height, ext = worker.core.validate_candidate(candidate.data)
-        self.assertEqual((width, height), (1200, 675))
-        self.assertEqual(ext, "png")
-        self.assertEqual(candidate.provider, "LocalEditorial")
-        self.assertNotIn(hashlib.sha256(candidate.data).hexdigest(), curated_hashes)
+        self.assertGreaterEqual(width, 640)
+        self.assertGreaterEqual(height, 360)
+        self.assertIn(ext, {"jpg", "png"})
+        self.assertEqual(candidate.provider, "Local")
+        self.assertTrue(candidate.source_url.startswith("local://"))
 
-    def test_editorial_fallback_is_deterministic_and_unique_per_article(self):
-        worker = load_worker()
-        first = worker.generate_editorial_fallback(
-            {"id": "article-one", "title": "כותרת אחת"}, []
-        )
-        repeated = worker.generate_editorial_fallback(
-            {"id": "article-one", "title": "כותרת אחת"}, []
-        )
-        second = worker.generate_editorial_fallback(
-            {"id": "article-two", "title": "כותרת אחרת"}, []
-        )
-        self.assertEqual(first.data, repeated.data)
-        self.assertNotEqual(
-            hashlib.sha256(first.data).hexdigest(),
-            hashlib.sha256(second.data).hexdigest(),
-        )
-        self.assertEqual(worker.core.validate_candidate(first.data)[:2], (1200, 675))
+    def test_production_worker_never_generates_abstract_terminal_placeholder(self):
+        source = WORKER_PATH.read_text(encoding="utf-8")
+        self.assertNotIn("LocalEditorial", source)
+        self.assertNotIn("_render_editorial_png", source)
+        self.assertNotIn("איור עריכתי מופשט", source)
 
     def test_workflow_fails_closed_when_worker_skips_required_image(self):
         workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
