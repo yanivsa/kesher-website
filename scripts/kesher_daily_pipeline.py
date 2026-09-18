@@ -463,7 +463,18 @@ def artifact_status(payload: dict[str, Any]) -> str:
 def wait_for_generation(state: dict[str, Any], item: dict[str, Any], max_wait_seconds: int) -> bool:
     deadline = time.monotonic() + max(0, max_wait_seconds)
     while True:
-        payload = run_notebooklm(["artifact", "poll", item["task_id"], "--notebook", NOTEBOOK_ID], timeout=120)
+        try:
+            payload = run_notebooklm(["artifact", "poll", item["task_id"], "--notebook", NOTEBOOK_ID], timeout=120)
+        except PipelineError as exc:
+            msg = str(exc).lower()
+            if any(term in msg for term in ("network error", "timed out", "connection reset", "502", "503", "504", "request timed out")):
+                print(f"POLL_TRANSIENT_NETWORK_RETRY item={item.get('id')} error={exc}")
+                if time.monotonic() >= deadline:
+                    print(f"GENERATION_PENDING item={item.get('id')} deadline_reached=True")
+                    return False
+                time.sleep(min(POLL_INTERVAL_SECONDS, max(2, int(deadline - time.monotonic()))))
+                continue
+            raise
         status = artifact_status(payload)
         item["last_provider_status"] = status
         item["last_polled_at"] = utc_now()
@@ -486,12 +497,23 @@ def download_artifact(state: dict[str, Any], item: dict[str, Any]) -> Path:
     raw_path = STATE_DIR / f"{item['id']}-notebooklm.mp4"
     if raw_path.exists() and raw_path.stat().st_size > 0:
         return raw_path
-    run_notebooklm(
-        ["download", "video", str(raw_path), "--notebook", NOTEBOOK_ID, "--artifact", item["artifact_id"], "--force"],
-        timeout=900,
-    )
+    last_err: Exception | None = None
+    for attempt in range(1, 4):
+        try:
+            run_notebooklm(
+                ["download", "video", str(raw_path), "--notebook", NOTEBOOK_ID, "--artifact", item["artifact_id"], "--force"],
+                timeout=900,
+            )
+            if raw_path.exists() and raw_path.stat().st_size >= 1024:
+                break
+        except PipelineError as exc:
+            last_err = exc
+            if attempt < 3:
+                time.sleep(5 * attempt)
+                continue
+            raise
     if not raw_path.exists() or raw_path.stat().st_size < 1024:
-        raise PipelineError("NotebookLM download did not produce a usable MP4")
+        raise PipelineError(f"NotebookLM download did not produce a usable MP4: {last_err or 'file missing or empty'}")
     item["raw_mp4"] = raw_path.name
     item["raw_sha256"] = sha256_file(raw_path)
     item["status"] = "downloaded"
