@@ -59,7 +59,7 @@ class ArticleImageFallbackExhaustionTests(unittest.TestCase):
         source = WORKER_PATH.read_text(encoding="utf-8")
         self.assertNotIn("LocalEditorial", source)
         self.assertNotIn("_render_editorial_png", source)
-        self.assertNotIn("איור עריכתי מופשט", source)
+        self.assertNotIn("generate_editorial_fallback", source)
 
     def test_workflow_fails_closed_when_worker_skips_required_image(self):
         workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
