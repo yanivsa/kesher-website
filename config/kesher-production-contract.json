@@ -103,7 +103,8 @@
     "controller_action_on_image_guard_failure": "recover_trusted_image_same_pr",
     "local_fallback_policy": "prefer-unused-then-least-used-real-photo",
     "abstract_placeholder_allowed": false,
-    "owned_generation_variants": 3
+    "owned_generation_variants": 3,
+    "max_local_reuse_existing_articles": 2
   },
   "video": {
     "publication_gate": "technical",
