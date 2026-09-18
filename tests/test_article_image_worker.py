@@ -8,7 +8,6 @@ import struct
 import sys
 import tempfile
 import unittest
-from datetime import date, timedelta
 from pathlib import Path
 from unittest import mock
 
@@ -57,7 +56,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         image = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))["image"]
         self.assertEqual(
             image["provider_order"],
-            ["gemini", "pexels", "unsplash", "pixabay", "local-curated"],
+            ["gemini", "pexels", "pixabay", "local-curated"],
         )
         self.assertEqual(image["owned_generation_variants"], 3)
         self.assertEqual(image["local_fallback_candidates_per_category"], 40)
@@ -76,7 +75,6 @@ class ArticleImageWorkerTests(unittest.TestCase):
         calls: list[str] = []
         worker.try_gemini_variants = lambda post, attempts, **kwargs: (attempts.append("gemini-1"), calls.append("gemini"), None)[2]
         worker.try_pexels = lambda post, attempts, **kwargs: (attempts.append("pexels"), calls.append("pexels"), None)[2]
-        worker.try_unsplash = lambda post, attempts, **kwargs: (attempts.append("unsplash"), calls.append("unsplash"), None)[2]
         worker.try_pixabay = lambda post, attempts, **kwargs: (attempts.append("pixabay"), calls.append("pixabay"), None)[2]
         worker.local_fallback = lambda repo, post, ref, token, attempts, **kwargs: worker.core.ImageCandidate(
             "Local",
@@ -87,11 +85,11 @@ class ArticleImageWorkerTests(unittest.TestCase):
             attempts + ["local-curated"],
         )
         candidate = worker.choose_candidate("o/r", {"title": "שיחה זוגית", "id": "x"}, "sha", "token")
-        self.assertEqual(calls, ["gemini", "pexels", "unsplash", "pixabay"])
+        self.assertEqual(calls, ["gemini", "pexels", "pixabay"])
         self.assertEqual(candidate.provider, "Local")
         self.assertEqual(
             candidate.attempts,
-            ["gemini-1", "pexels", "unsplash", "pixabay", "local-curated"],
+            ["gemini-1", "pexels", "pixabay", "local-curated"],
         )
 
     def test_manifest_has_40_unique_real_jpg_candidates_per_category(self):
@@ -117,7 +115,8 @@ class ArticleImageWorkerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             worker.REPO_ROOT = Path(tmp)
             source_path = "public/images/generated/blog/fallback.jpg"
-            worker.load_manifest = lambda: fake_manifest([source_path])
+            worker.load_seed_manifest = lambda: fake_manifest([source_path])
+            worker.load_bank_manifest = lambda: {"version": 1, "assets": []}
             target = worker.REPO_ROOT / source_path
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(fake_png())
@@ -137,7 +136,8 @@ class ArticleImageWorkerTests(unittest.TestCase):
             worker.REPO_ROOT = Path(tmp)
             bad = "public/images/generated/blog/bad.jpg"
             good = "public/images/generated/blog/good.jpg"
-            worker.load_manifest = lambda: fake_manifest([bad, good])
+            worker.load_seed_manifest = lambda: fake_manifest([bad, good])
+            worker.load_bank_manifest = lambda: {"version": 1, "assets": []}
             root = worker.REPO_ROOT / "public/images/generated/blog"
             root.mkdir(parents=True, exist_ok=True)
             (root / "bad.jpg").write_bytes(fake_png(200, 100))
@@ -153,7 +153,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
             availability = worker.provider_preflight()
         self.assertEqual(
             availability,
-            {"gemini": False, "pexels": False, "unsplash": False, "pixabay": False, "local": True},
+            {"gemini": False, "pexels": False, "pixabay": False, "local": True},
         )
 
     def test_gemini_generation_uses_current_official_generate_content_shape(self):
@@ -241,20 +241,21 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIn("persist-credentials: false", workflow)
         self.assertIn("article-image-worker-v4.py", workflow)
         self.assertIn("GOOGLE_API_KEY", workflow)
-        self.assertIn("UNSPLASH_ACCESS_KEY", workflow)
+        self.assertNotIn("UNSPLASH_ACCESS_KEY", workflow)
         self.assertIn("PEXELS_API_KEY", workflow)
         self.assertIn("PIXABAY_API_KEY", workflow)
         self.assertIn("actions/workflows/ci.yml/dispatches", workflow)
         self.assertNotIn("actions/checkout@v", workflow)
 
-    def test_recent_local_image_reuse_is_blocked_by_cooldown(self):
-        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_cooldown_block_test")
+    def test_published_local_image_is_never_reused(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_no_reuse_test")
         fake_data = fake_png()
         fake_sha = hashlib.sha256(fake_data).hexdigest()
         with tempfile.TemporaryDirectory() as tmp:
             worker.REPO_ROOT = Path(tmp)
-            source_path = "public/images/generated/blog/recent.jpg"
-            worker.load_manifest = lambda: fake_manifest([source_path])
+            source_path = "public/images/generated/blog/already-used.jpg"
+            worker.load_seed_manifest = lambda: fake_manifest([source_path])
+            worker.load_bank_manifest = lambda: {"version": 1, "assets": []}
             target = worker.REPO_ROOT / source_path
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(fake_data)
@@ -265,37 +266,37 @@ class ArticleImageWorkerTests(unittest.TestCase):
                 "t",
                 [],
                 existing_hashes={fake_sha},
-                existing_usage={fake_sha: 1},
-                last_used={fake_sha: date.today()},
                 banned_paths=set(),
             )
         self.assertIsNone(candidate)
 
-    def test_local_image_can_be_reused_after_cooldown(self):
-        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_cooldown_reuse_test")
-        fake_data = fake_png()
-        fake_sha = hashlib.sha256(fake_data).hexdigest()
+    def test_managed_bank_is_preferred_over_generic_seed_when_both_are_unused(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_bank_priority_test")
         with tempfile.TemporaryDirectory() as tmp:
             worker.REPO_ROOT = Path(tmp)
-            source_path = "public/images/generated/blog/cooled.jpg"
-            worker.load_manifest = lambda: fake_manifest([source_path])
-            target = worker.REPO_ROOT / source_path
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(fake_data)
+            bank = "public/images/fallback/couples/couples-001-bank.jpg"
+            seed = "public/images/generated/blog/generic-seed.jpg"
+            worker.load_seed_manifest = lambda: fake_manifest([seed])
+            worker.load_bank_manifest = lambda: {
+                "version": 1,
+                "assets": [{"category": "couples", "path": bank}],
+            }
+            for path_name, marker in ((bank, b"bank"), (seed, b"seed")):
+                target = worker.REPO_ROOT / path_name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(fake_png(marker=marker))
             candidate = worker.local_fallback(
                 "o/r",
-                {"title": "שיחה", "id": "x"},
+                {"title": "שיחה זוגית", "category": "זוגיות", "id": "x"},
                 "sha",
                 "t",
                 [],
-                existing_hashes={fake_sha},
-                existing_usage={fake_sha: 1},
-                last_used={fake_sha: date.today() - timedelta(days=91)},
+                existing_hashes=set(),
                 banned_paths=set(),
             )
         self.assertIsNotNone(candidate)
         assert candidate is not None
-        self.assertEqual(candidate.provider, "Local")
+        self.assertTrue(candidate.source_url.endswith("couples-001-bank.jpg"))
 
     def test_topic_matching_prefers_specific_local_asset(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_topic_test")
@@ -303,7 +304,8 @@ class ArticleImageWorkerTests(unittest.TestCase):
             worker.REPO_ROOT = Path(tmp)
             generic = "public/images/generated/blog/couples-communication-distance.jpg"
             specific = "public/images/generated/blog/first-grade-preparation-morning-routine.jpg"
-            worker.load_manifest = lambda: fake_manifest([generic, specific])
+            worker.load_seed_manifest = lambda: fake_manifest([generic, specific])
+            worker.load_bank_manifest = lambda: {"version": 1, "assets": []}
             root = worker.REPO_ROOT / "public/images/generated/blog"
             root.mkdir(parents=True, exist_ok=True)
             (root / "couples-communication-distance.jpg").write_bytes(fake_png(marker=b"generic"))
@@ -325,15 +327,14 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertNotIn("_render_editorial_png", source)
         self.assertIn("fails closed", source)
 
-    def test_current_posts_do_not_reference_known_abstract_or_temporary_heroes(self):
-        posts = json.loads(POSTS_PATH.read_text(encoding="utf-8"))
-        bad = [
-            post.get("id")
-            for post in posts
-            if "איור עריכתי מופשט" in str(post.get("imageAlt") or "")
-            or "תמונה זמנית" in str(post.get("imageAlt") or "")
-        ]
-        self.assertEqual(bad, [])
+    def test_legacy_placeholder_repair_is_owned_by_post_merge_migration(self):
+        repair_script = (ROOT / "scripts" / "repair-existing-article-heroes.py").read_text(encoding="utf-8")
+        repair_workflow = (ROOT / ".github" / "workflows" / "repair-existing-article-heroes.yml").read_text(encoding="utf-8")
+        self.assertIn("PLACEHOLDER_RE", repair_script)
+        self.assertIn("try_gemini_variants", repair_script)
+        self.assertIn("branches:", repair_workflow)
+        self.assertIn("- main", repair_workflow)
+        self.assertIn("build-article-fallback-library.py --category all --batch-size 8", repair_workflow)
 
     def test_contextual_stock_queries_generated_from_post_content(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_queries_test")
