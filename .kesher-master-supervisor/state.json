@@ -116,7 +116,7 @@
       "fingerprint": "d00f35466c077d88bcb2d404cbee1c91",
       "incident_id": "v5|dating-apps-exhaustion|46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03|short",
       "issued_at": "2026-09-18T12:07:21.629079+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "external_run_id": 35343619195,
         "external_workflow": "Kesher Daily Article Short V4",
@@ -156,7 +156,8 @@
       "running_at": "2026-09-18T12:12:20.671384+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-18T12:19:29.013698+00:00"
+      "updated_at": "2026-09-18T12:20:11.191203+00:00",
+      "verified_at": "2026-09-18T12:20:11.191203+00:00"
     },
     "ksr-712e03f65f24aa41cbbaa229": {
       "acknowledged_at": "2026-09-16T01:24:05.083434+00:00",
@@ -912,7 +913,7 @@
       "strike": 2
     },
     "d00f35466c077d88bcb2d404cbee1c91": {
-      "active_command_id": "ksr-5d488add1f19e13222658fa2",
+      "active_command_id": null,
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "d00f35466c077d88bcb2d404cbee1c91",
       "first_seen_at": "2026-09-18T12:04:45.559619+00:00",
@@ -934,12 +935,18 @@
           "command_id": "ksr-5d488add1f19e13222658fa2",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-18T12:20:11.191203+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|dating-apps-exhaustion|46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03|short",
       "last_seen_at": "2026-09-18T12:19:29.013698+00:00",
       "marker": "MASTER_ESCALATION fingerprint=d00f35466c077d88bcb2d404cbee1c91 strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-18T12:20:11.191203+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "fabfa74a301f45d54e16ab63467427ab": {
@@ -981,5 +988,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-18T12:19:29.013698+00:00"
+  "updated_at": "2026-09-18T12:20:11.191203+00:00"
 }
