@@ -14,10 +14,9 @@ EXPECTED_BACKOFF = [5, 15]
 EXPECTED_HEARTBEAT_MINUTES = 5
 EXPECTED_IMAGE_PROVIDER_ORDER = [
     "gemini",
-    "unsplash",
     "pexels",
+    "pixabay",
     "local-curated",
-    "local-editorial",
 ]
 EXPECTED_MEDIA_VOICE_PRODUCTS = ["video_overview", "short"]
 EXPECTED_FEMALE_VOICE_ATTEMPTS = 3
@@ -78,8 +77,8 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         raise AutomationPolicyError("Article automation contract is invalid")
 
     # Images are required and publication-blocking. A published article must
-    # have a valid unique hero image. Downstream validators enforce
-    # strict provenance, SHA-256 uniqueness, pixel validation and local fallback rules.
+    # have a concrete trusted hero image. Downstream validators enforce strict
+    # provenance, pixel validation, external-image uniqueness and bounded local reuse.
     if (
         image.get("required_for_article") is not True
         or image.get("publication_blocking") is not True
@@ -91,6 +90,10 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         or image.get("visual_verifier_model") != "gemini-3.5-flash"
         or image.get("external_stock_requires_pixel_verification") is not True
         or image.get("fallback_must_be_local") is not True
+        or image.get("abstract_placeholder_allowed") is not False
+        or image.get("owned_generation_variants") != 3
+        or image.get("local_fallback_policy") != "prefer-unused-then-least-used-real-photo"
+        or image.get("max_local_reuse_existing_articles") != 2
         or image.get("no_image_publication_allowed") is not False
         or image.get("failure_mode") != "blocking-retry"
     ):
