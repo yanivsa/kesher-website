@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-18",
-  "status": "image_retry_wait",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 1,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-09-18T07:31:30.912352+00:00",
     "pr_number": 868,
@@ -24,7 +24,13 @@
     "quality_status": "passed",
     "quality_content_sha256": "570cc2b6342ed59da21c4d8888c0e88672d31346cc3cb9209eff88d36f0badae",
     "quality_checked_at": "2026-09-18T10:48:35.828593+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "dating-apps-exhaustion",
+    "title": "אפליקציות הכרויות: למה אנחנו כל כך עייפים מהן ואיך יוצאים מהלופ?",
+    "url": "https://kesher.saharoni.com/blog/dating-apps-exhaustion",
+    "published_date": "2026-09-18",
+    "last_deploy_dispatch_at": "2026-09-18T10:56:45.106089+00:00",
+    "next_deploy_retry_at": "2026-09-18T11:01:45.106096+00:00"
   },
   "backlog": [
     {
@@ -1033,14 +1039,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 35335219321 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-09-18T10:44:12.640908+00:00",
-    "at": "2026-09-18T10:39:12.640934+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-16T14:25:00.943468+00:00",
@@ -1704,9 +1703,19 @@
         "failure_streak": 1,
         "run_id": 35335219321
       }
+    },
+    {
+      "at": "2026-09-18T10:56:45.106104+00:00",
+      "from": "image_retry_wait",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-18T10:39:12.640946+00:00",
+  "updated_at": "2026-09-18T10:56:45.106107+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
