@@ -63,8 +63,8 @@ Chat messages are not the canonical state. Git files on the working branch are t
 - ga4_property: properties/551923843
 - ga4_stream: G-6SM423N6EL
 - canonical_keyword_file: research/search-intelligence/keyword-master.csv
-- last_updated_utc: 2026-09-18T10:30:00Z
-- last_updated_by: Antigravity
+- last_updated_utc: 2026-09-18T10:50:00Z
+- last_updated_by: ChatGPT
 
 ## Verified baseline
 
@@ -171,13 +171,13 @@ Use only these funnel labels:
 
 Add review items as unchecked tasks. Never delete completed history; mark items complete.
 
-- [x] Investigate sitemap summary discrepancy: 102 submitted / 0 indexed versus URL Inspection PASS. (Resolved: GSC URL Inspection API confirms PASS and "Submitted and indexed"; the "0 indexed" in sitemap summary is an aggregation reporting lag under domain properties).
+- [ ] Investigate sitemap/indexation discrepancy: GSC sitemap API reports 102 discovered/submitted and indexed=0, while representative URL Inspection checks PASS. ChatGPT QA: NOT RESOLVED. Two inspected URLs do not establish sitemap-wide indexation. Current repo sitemap has 103 URLs; Google last downloaded it on 2026-09-16, before a 2026-09-17 publishable article, explaining the 102 vs 103 count but not the indexed=0 field. Use Page Indexing report filtered by sitemap/submitted pages when available.
 - [ ] Validate local-commercial SERP intent for Ashdod service queries.
 - [ ] Determine whether `פגישה ראשונה` should improve an existing article or become a supporting section/cluster only.
 - [ ] Determine whether `לא להראות התלהבות בתחילת קשר` is adequately served by the existing relationship-transition article.
 - [ ] Measure AI referral landing pages over a larger sample before drawing conclusions.
-- [ ] Confirm strategic stance on religious/traditional audience (site contains zero religious keywords; confirm keeping it out of scope for Wave 1).
-- [ ] Determine strategy for 11 draft stubs in posts.json (upgrade high-potential drafts like money-fights and postpartum vs. net-new articles).
+- [x] Confirm strategic stance on religious/traditional audience. ChatGPT QA: current site/repository does not support a dedicated religious positioning. Keep related seeds LOW-priority/exploratory only; do not create targeted content/pages without an explicit business-positioning decision.
+- [ ] Determine strategy for 11 draft stubs in posts.json. ChatGPT QA: draft existence is not a priority signal. Phase 2 must validate underlying intent first. Added missing research seeds for money fights, postpartum relationship, teen social anxiety, online counseling, and couples/ADHD.
 
 ## ChatGPT review notes
 
@@ -234,6 +234,37 @@ Append entries using this exact structure:
   - Await ChatGPT review of Phase 1 artifacts and confirmation to proceed with Phase 2 (Google Search Intelligence: PAA, Autocomplete, Related Searches, SERP analysis).
 
 ## ChatGPT handoff log
+
+### 2026-09-18 13:50 — ChatGPT
+- reviewed_commit: 8399ccf9 (Phase 1 handoff) plus Phase 1 artifacts on remote branch
+- reviewed_files:
+  - research/search-intelligence/COLLABORATION.md
+  - research/search-intelligence/site-audit.md
+  - research/search-intelligence/existing-content.csv
+  - research/search-intelligence/gsc-baseline.csv
+  - research/search-intelligence/ga4-baseline.csv
+  - research/search-intelligence/content-coverage.csv
+  - research/search-intelligence/seed-topics.csv
+  - research/search-intelligence/keyword-master.csv
+- findings:
+  - Phase 1 is usable and Phase 2 may proceed after corrections.
+  - Direct GSC QA confirms only two exposed exact queries in the verified window: "לא להראות התלהבות בתחילת קשר" and "פגישה ראשונה".
+  - Several keyword-master rows incorrectly treated page-level GSC metrics as exact-query evidence.
+  - The sitemap issue was prematurely marked resolved; representative URL Inspection does not prove sitemap-wide indexation.
+  - Current repo sitemap contains 103 URLs; GSC last downloaded the sitemap on 2026-09-16 and reports 102, while a publishable post dated 2026-09-17 exists. This explains the one-URL count difference, not the indexed=0 counter.
+  - Phase 1 content gaps were incompletely represented in Phase 2 seeds.
+- corrections_requested:
+  - Preserve QUERY_LEVEL vs PAGE_LEVEL evidence separately.
+  - Never call a seed "high-volume" without a real volume source.
+  - Keep sitemap/indexation discrepancy NEEDS_REVIEW.
+  - Do not give draft stubs priority merely because they exist.
+- decisions:
+  - Religious/traditional targeting remains low-priority exploratory research only and is not approved as a positioning/content action.
+  - Added five missing Phase 2 seeds: online couples counseling, money fights, postpartum relationship, couples/ADHD, teen social anxiety.
+  - Corrected canonical keyword-master semantics and field alignment.
+  - Phase 2 owns evidence collection only; Phase 3 owns final CREATE/UPDATE/MERGE/IGNORE decisions.
+- next_action_for_Antigravity:
+  - Pull latest remote branch, read PHASE1-QA.md, corrected keyword-master.csv and seed-topics.csv, then execute Phase 2 Google Search Intelligence under the updated guardrails.
 
 Append entries using this exact structure:
 
