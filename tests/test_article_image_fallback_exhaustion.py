@@ -21,7 +21,7 @@ def load_worker():
 
 
 class ArticleImageFallbackExhaustionTests(unittest.TestCase):
-    def test_local_fallback_reuses_least_used_real_photo_when_unique_pool_is_exhausted(self):
+    def test_local_fallback_blocks_when_unique_real_photo_pool_is_exhausted(self):
         worker = load_worker()
         post = {
             "id": "unattached-adults-missed-chances-regrets",
@@ -42,18 +42,10 @@ class ArticleImageFallbackExhaustionTests(unittest.TestCase):
             "token",
             [],
             existing_hashes=set(hashes),
-            existing_usage=hashes,
             banned_paths=set(),
         )
 
-        self.assertIsNotNone(candidate)
-        assert candidate is not None
-        width, height, ext = worker.core.validate_candidate(candidate.data)
-        self.assertGreaterEqual(width, 640)
-        self.assertGreaterEqual(height, 360)
-        self.assertIn(ext, {"jpg", "png"})
-        self.assertEqual(candidate.provider, "Local")
-        self.assertTrue(candidate.source_url.startswith("local://"))
+        self.assertIsNone(candidate)
 
     def test_production_worker_never_generates_abstract_terminal_placeholder(self):
         source = WORKER_PATH.read_text(encoding="utf-8")
