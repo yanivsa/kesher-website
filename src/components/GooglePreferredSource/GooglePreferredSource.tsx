@@ -8,6 +8,8 @@ type PreferredSourceApi = {
 
 type PreferredSourceWindow = Window & {
   PREFERRED_SOURCE?: Array<(preferredSource: PreferredSourceApi) => void>;
+  __KESHER_PREFERRED_SOURCE_API__?: PreferredSourceApi;
+  __KESHER_PREFERRED_SOURCE_CALLBACK_REGISTERED__?: boolean;
 };
 
 const SCRIPT_ID = 'google-preferred-source-script';
@@ -19,11 +21,17 @@ const GooglePreferredSource: React.FC = () => {
 
   useEffect(() => {
     const preferredWindow = window as PreferredSourceWindow;
-    preferredWindow.PREFERRED_SOURCE = preferredWindow.PREFERRED_SOURCE || [];
-    preferredWindow.PREFERRED_SOURCE.push((preferredSource) => {
-      preferredSource.init({ theme: 'light', lang: 'he' });
-      apiRef.current = preferredSource;
-    });
+    if (preferredWindow.__KESHER_PREFERRED_SOURCE_API__) {
+      apiRef.current = preferredWindow.__KESHER_PREFERRED_SOURCE_API__;
+    } else if (!preferredWindow.__KESHER_PREFERRED_SOURCE_CALLBACK_REGISTERED__) {
+      preferredWindow.PREFERRED_SOURCE = preferredWindow.PREFERRED_SOURCE || [];
+      preferredWindow.PREFERRED_SOURCE.push((preferredSource) => {
+        preferredSource.init({ theme: 'light', lang: 'he' });
+        preferredWindow.__KESHER_PREFERRED_SOURCE_API__ = preferredSource;
+        apiRef.current = preferredSource;
+      });
+      preferredWindow.__KESHER_PREFERRED_SOURCE_CALLBACK_REGISTERED__ = true;
+    }
 
     let script = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
     if (!script) {
