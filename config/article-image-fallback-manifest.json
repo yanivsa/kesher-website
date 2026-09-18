@@ -7,7 +7,8 @@
     "reuse_cooldown_days": 90,
     "max_lifetime_uses": 3,
     "no_abstract_placeholders": true,
-    "reserve_is_terminal_only": true
+    "reserve_is_terminal_only": true,
+    "reserve_min_topic_score": 1
   },
   "categories": {
     "dating": {
@@ -26,7 +27,6 @@
         "public/images/generated/blog/aliyah-couples-cultural-gaps.jpg",
         "public/images/generated/blog/communication-breakdown.jpg",
         "public/images/generated/blog/couples-adhd-partner.jpg",
-        "public/images/generated/blog/couples-adhd-premarital-planning.jpg",
         "public/images/generated/blog/couples-communication-distance.jpg",
         "public/images/generated/blog/couples-communication-distractions-presence.jpg",
         "public/images/generated/blog/couples-communication-life-transitions.jpg",
@@ -44,7 +44,6 @@
         "public/images/generated/blog/mental-load-couples.jpg",
         "public/images/generated/blog/mental-load-relationship-invisible-labor.jpg",
         "public/images/generated/blog/money-fights-communication.jpg",
-        "public/images/generated/blog/relationship-after-childbirth.jpg",
         "public/images/generated/blog/relocation-relationship-adjustments-2026.jpg",
         "public/images/generated/blog/repairing-relationship-after-resentment.jpg",
         "public/images/generated/blog/screens-relationship-intimacy.jpg",
@@ -53,7 +52,10 @@
         "public/images/generated/blog/newlyweds-domestic-duties-sharing.jpg",
         "public/images/generated/blog/premarital-questions-before-wedding.jpg"
       ],
-      "reserve": []
+      "reserve": [
+        "public/images/generated/blog/five-questions-marriage.jpg",
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg"
+      ]
     },
     "singles": {
       "primary": [
@@ -71,7 +73,6 @@
         "public/images/generated/blog/aliyah-couples-cultural-gaps.jpg",
         "public/images/generated/blog/communication-breakdown.jpg",
         "public/images/generated/blog/couples-adhd-partner.jpg",
-        "public/images/generated/blog/couples-adhd-premarital-planning.jpg",
         "public/images/generated/blog/couples-communication-distance.jpg",
         "public/images/generated/blog/couples-communication-distractions-presence.jpg",
         "public/images/generated/blog/couples-communication-life-transitions.jpg",
@@ -89,7 +90,6 @@
         "public/images/generated/blog/mental-load-couples.jpg",
         "public/images/generated/blog/mental-load-relationship-invisible-labor.jpg",
         "public/images/generated/blog/money-fights-communication.jpg",
-        "public/images/generated/blog/relationship-after-childbirth.jpg",
         "public/images/generated/blog/relocation-relationship-adjustments-2026.jpg",
         "public/images/generated/blog/repairing-relationship-after-resentment.jpg",
         "public/images/generated/blog/screens-relationship-intimacy.jpg",
@@ -98,7 +98,10 @@
         "public/images/generated/blog/newlyweds-domestic-duties-sharing.jpg",
         "public/images/generated/blog/premarital-questions-before-wedding.jpg"
       ],
-      "reserve": []
+      "reserve": [
+        "public/images/generated/blog/five-questions-marriage.jpg",
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg"
+      ]
     },
     "relocation": {
       "primary": [
@@ -112,7 +115,6 @@
         "public/images/generated/blog/relocation-relationship-adjustments-2026.jpg",
         "public/images/generated/blog/communication-breakdown.jpg",
         "public/images/generated/blog/couples-adhd-partner.jpg",
-        "public/images/generated/blog/couples-adhd-premarital-planning.jpg",
         "public/images/generated/blog/couples-communication-distance.jpg",
         "public/images/generated/blog/couples-communication-distractions-presence.jpg",
         "public/images/generated/blog/couples-communication-life-transitions.jpg",
@@ -133,7 +135,6 @@
         "public/images/generated/blog/mental-load-relationship-invisible-labor.jpg",
         "public/images/generated/blog/money-fights-communication.jpg",
         "public/images/generated/blog/new-relationship-initial-intentions.jpg",
-        "public/images/generated/blog/relationship-after-childbirth.jpg",
         "public/images/generated/blog/repairing-relationship-after-resentment.jpg",
         "public/images/generated/blog/screens-relationship-intimacy.jpg",
         "public/images/generated/blog/silent-treatment-relationship.jpg",
@@ -143,12 +144,13 @@
       ],
       "reserve": [
         "public/images/generated/blog/boundaries-extended-family.jpg",
-        "public/images/generated/blog/unspoken-expectations.jpg"
+        "public/images/generated/blog/unspoken-expectations.jpg",
+        "public/images/generated/blog/five-questions-marriage.jpg",
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg"
       ]
     },
     "premarital": {
       "primary": [
-        "public/images/generated/blog/couples-adhd-premarital-planning.jpg",
         "public/images/generated/blog/marriage-prep-financial-expectations-2026-08-24.jpg",
         "public/images/generated/blog/marriage-preparation-money-fights.jpg",
         "public/images/generated/blog/newlywed-first-year-conflicts.jpg",
@@ -175,7 +177,6 @@
         "public/images/generated/blog/mental-load-relationship-invisible-labor.jpg",
         "public/images/generated/blog/money-fights-communication.jpg",
         "public/images/generated/blog/new-relationship-initial-intentions.jpg",
-        "public/images/generated/blog/relationship-after-childbirth.jpg",
         "public/images/generated/blog/relocation-relationship-adjustments-2026.jpg",
         "public/images/generated/blog/repairing-relationship-after-resentment.jpg",
         "public/images/generated/blog/screens-relationship-intimacy.jpg",
@@ -189,11 +190,13 @@
         "public/images/generated/blog/aliyah-partners-different-adjustment-pace.jpg",
         "public/images/generated/blog/relocation-career-loss-and-dependence.jpg"
       ],
-      "reserve": []
+      "reserve": [
+        "public/images/generated/blog/five-questions-marriage.jpg",
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg"
+      ]
     },
     "parenting": {
       "primary": [
-        "public/images/generated/blog/adhd-first-grade-preparation.jpg",
         "public/images/generated/blog/adhd-morning-routine.jpg",
         "public/images/generated/blog/asking-for-help-without-yelling.jpg",
         "public/images/generated/blog/bedtime-battles-emotional-regulation.jpg",
@@ -220,12 +223,10 @@
         "public/images/generated/blog/when-children-say-i-hate-you.jpg",
         "public/images/generated/blog/adhd-and-screen-addiction-strategies.jpg",
         "public/images/generated/blog/couples-adhd-partner.jpg",
-        "public/images/generated/blog/couples-adhd-premarital-planning.jpg",
         "public/images/generated/blog/gifted-adhd-executive-functions-struggle.jpg"
       ],
       "reserve": [
         "public/images/generated/blog/boundaries-extended-family.jpg",
-        "public/images/generated/blog/relationship-after-childbirth.jpg",
         "public/images/generated/blog/communication-breakdown.jpg",
         "public/images/generated/blog/couples-communication-distance.jpg",
         "public/images/generated/blog/couples-communication-distractions-presence.jpg",
@@ -234,7 +235,10 @@
         "public/images/generated/blog/exhausted-couple-conversation.jpg",
         "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
-        "public/images/generated/blog/mental-load-couples.jpg"
+        "public/images/generated/blog/mental-load-couples.jpg",
+        "public/images/generated/blog/five-questions-marriage.jpg",
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
+        "public/images/generated/blog/quiet-resignation.jpg"
       ]
     },
     "gifted": {
@@ -244,7 +248,6 @@
         "public/images/generated/blog/gifted-children-first-days-adjustment.jpg",
         "public/images/generated/blog/gifted-children-framework-preparation.jpg",
         "public/images/generated/blog/gifted-children-perfectionism-tears.jpg",
-        "public/images/generated/blog/adhd-first-grade-preparation.jpg",
         "public/images/generated/blog/adhd-morning-routine.jpg",
         "public/images/generated/blog/asking-for-help-without-yelling.jpg",
         "public/images/generated/blog/bedtime-battles-emotional-regulation.jpg",
@@ -266,12 +269,10 @@
         "public/images/generated/blog/toddler-independence-morning-struggles.jpg",
         "public/images/generated/blog/when-children-say-i-hate-you.jpg",
         "public/images/generated/blog/adhd-and-screen-addiction-strategies.jpg",
-        "public/images/generated/blog/couples-adhd-partner.jpg",
-        "public/images/generated/blog/couples-adhd-premarital-planning.jpg"
+        "public/images/generated/blog/couples-adhd-partner.jpg"
       ],
       "reserve": [
         "public/images/generated/blog/boundaries-extended-family.jpg",
-        "public/images/generated/blog/relationship-after-childbirth.jpg",
         "public/images/generated/blog/communication-breakdown.jpg",
         "public/images/generated/blog/couples-communication-distance.jpg",
         "public/images/generated/blog/couples-communication-distractions-presence.jpg",
@@ -280,16 +281,17 @@
         "public/images/generated/blog/exhausted-couple-conversation.jpg",
         "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
-        "public/images/generated/blog/mental-load-couples.jpg"
+        "public/images/generated/blog/mental-load-couples.jpg",
+        "public/images/generated/blog/five-questions-marriage.jpg",
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
+        "public/images/generated/blog/quiet-resignation.jpg"
       ]
     },
     "adhd": {
       "primary": [
         "public/images/generated/blog/adhd-and-screen-addiction-strategies.jpg",
-        "public/images/generated/blog/adhd-first-grade-preparation.jpg",
         "public/images/generated/blog/adhd-morning-routine.jpg",
         "public/images/generated/blog/couples-adhd-partner.jpg",
-        "public/images/generated/blog/couples-adhd-premarital-planning.jpg",
         "public/images/generated/blog/gifted-adhd-executive-functions-struggle.jpg",
         "public/images/generated/blog/asking-for-help-without-yelling.jpg",
         "public/images/generated/blog/bedtime-battles-emotional-regulation.jpg",
@@ -317,7 +319,6 @@
       ],
       "reserve": [
         "public/images/generated/blog/boundaries-extended-family.jpg",
-        "public/images/generated/blog/relationship-after-childbirth.jpg",
         "public/images/generated/blog/communication-breakdown.jpg",
         "public/images/generated/blog/couples-communication-distance.jpg",
         "public/images/generated/blog/couples-communication-distractions-presence.jpg",
@@ -326,7 +327,10 @@
         "public/images/generated/blog/exhausted-couple-conversation.jpg",
         "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
-        "public/images/generated/blog/mental-load-couples.jpg"
+        "public/images/generated/blog/mental-load-couples.jpg",
+        "public/images/generated/blog/five-questions-marriage.jpg",
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
+        "public/images/generated/blog/quiet-resignation.jpg"
       ]
     },
     "couples": {
@@ -334,7 +338,6 @@
         "public/images/generated/blog/aliyah-couples-cultural-gaps.jpg",
         "public/images/generated/blog/communication-breakdown.jpg",
         "public/images/generated/blog/couples-adhd-partner.jpg",
-        "public/images/generated/blog/couples-adhd-premarital-planning.jpg",
         "public/images/generated/blog/couples-communication-distance.jpg",
         "public/images/generated/blog/couples-communication-distractions-presence.jpg",
         "public/images/generated/blog/couples-communication-life-transitions.jpg",
@@ -355,7 +358,6 @@
         "public/images/generated/blog/mental-load-relationship-invisible-labor.jpg",
         "public/images/generated/blog/money-fights-communication.jpg",
         "public/images/generated/blog/new-relationship-initial-intentions.jpg",
-        "public/images/generated/blog/relationship-after-childbirth.jpg",
         "public/images/generated/blog/relocation-relationship-adjustments-2026.jpg",
         "public/images/generated/blog/repairing-relationship-after-resentment.jpg",
         "public/images/generated/blog/screens-relationship-intimacy.jpg",
@@ -372,7 +374,10 @@
         "public/images/generated/blog/aliyah-partners-different-adjustment-pace.jpg",
         "public/images/generated/blog/relocation-career-loss-and-dependence.jpg"
       ],
-      "reserve": []
+      "reserve": [
+        "public/images/generated/blog/five-questions-marriage.jpg",
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg"
+      ]
     }
   }
 }
