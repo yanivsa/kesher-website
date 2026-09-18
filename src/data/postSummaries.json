@@ -15,7 +15,7 @@
     "category": "הנחיית הורים",
     "subcategory": "הכנה לכיתה א׳",
     "excerpt": "המעבר מהגן לבית הספר מלווה בלא מעט התרגשות, אבל גם בחששות לגבי ההתארגנות בבוקר. איך אפשר לנצל את חודשי הקיץ כדי לעזור לילדים (וגם לנו) להגיע ליום הלימודים הראשון רגועים יותר? כמה רעיונות לבניית שגרה משפחתית חדשה.",
-    "image": "/images/generated/blog/early-habits-building-calm-mornings-children.png"
+    "image": "/images/generated/blog/adhd-morning-routine.jpg"
   },
   {
     "id": "returning-to-israel-after-relocation-relationship",
@@ -24,7 +24,7 @@
     "category": "זוגיות",
     "subcategory": "זוגיות בעלייה ורילוקיישן",
     "excerpt": "חזרה לארץ אחרי רילוקיישן נתפסת לעיתים קרובות כחזרה למקום מוכר ובטוח, אך במציאות היא דורשת הסתגלות זוגית מחודשת. כיצד מתמודדים עם הפער בין הציפיות למציאות?",
-    "image": "/images/generated/blog/returning-to-israel-after-relocation-relationship.png"
+    "image": "/images/generated/blog/aliyah-partners-different-adjustment-pace.jpg"
   },
   {
     "id": "school-entry-readiness-emotional-regulation-skills",
@@ -33,7 +33,7 @@
     "category": "הדרכת הורים",
     "subcategory": "הכנה לכיתה א",
     "excerpt": "הכנה רגשית לכיתה א היא הרבה מעבר להכרת האותיות והמספרים. כאשר אנו משלבים בניית תפקודים ניהוליים, שגרת בוקר ויכולת ויסות, המעבר לבית הספר הופך להדרגתי וברור יותר עבור הילדים וההורים.",
-    "image": "/images/generated/blog/school-entry-readiness-emotional-regulation-skills.png"
+    "image": "/images/generated/blog/adhd-first-grade-preparation.jpg"
   },
   {
     "id": "gifted-children-social-difficulties",
@@ -42,7 +42,7 @@
     "category": "הנחיית הורים",
     "subcategory": "הנחיית הורים לילדים מחוננים",
     "excerpt": "ילדים מחוננים וקשיים חברתיים אינם הולכים תמיד יחד. כך מזהים את הקושי המסוים של הילד ועוזרים לו לבנות שייכות בלי לתייג אותו.",
-    "image": "/images/generated/blog/gifted-children-social-difficulties.png"
+    "image": "/images/generated/blog/gifted-children-first-days-adjustment.jpg"
   },
   {
     "id": "older-singles-friendship-changes-loneliness",
@@ -60,7 +60,7 @@
     "category": "זוגיות",
     "subcategory": "הכנה לנישואים והשנה הראשונה",
     "excerpt": "המעבר מזוג ל״משפחה גרעינית״ דורש כיוונון מחדש של הגבולות מול ההורים משני הצדדים. איך מקבלים החלטות על חגים וארוחות שישי בלי לפגוע באף אחד, וכיצד בונים יחד נאמנות זוגית שקודמת לנאמנות למשפחת המוצא.",
-    "image": "/images/generated/blog/first-year-boundaries-origin-families.png"
+    "image": "/images/generated/blog/newlyweds-domestic-duties-sharing.jpg"
   },
   {
     "id": "navigating-new-relationships-dating-balance",
@@ -69,7 +69,7 @@
     "category": "זוגיות",
     "subcategory": "מציאת זוגיות",
     "excerpt": "המעבר מאפליקציות היכרויות לפגישות בעולם האמיתי דורש ניהול אנרגיה ותיאום ציפיות. כיצד ניתן לנווט את התקשורת בשבועות הראשונים, לזהות מה אנחנו באמת מחפשים בקשר, ולמצוא את האיזון הנכון בין רצון בקרבה לשמירה על גבולות אישיים.",
-    "image": "/images/generated/blog/navigating-new-relationships-dating-balance.png"
+    "image": "/images/generated/blog/dating-communication-early-stages.jpg"
   },
   {
     "id": "unattached-adults-missed-chances-regrets",
@@ -78,7 +78,7 @@
     "category": "זוגיות",
     "subcategory": "רווקות מאוחרת",
     "excerpt": "תחושת החמצה עלולה להופיע סביב החלטות עבר, קשרים שהסתיימו או השוואה לאחרים. כיצד אפשר לזהות מתי ההשוואה מנהלת אותנו ואיך מעבדים את הפער בין מה שקיווינו שיקרה למציאות.",
-    "image": "/images/generated/blog/unattached-adults-missed-chances-regrets.png"
+    "image": "/images/generated/blog/late-singleness-friends-moving-forward.jpg"
   },
   {
     "id": "newlyweds-domestic-duties-sharing",
@@ -659,6 +659,6 @@
     "category": "זוגיות",
     "subcategory": "הכנה לנישואים והשנה הראשונה",
     "excerpt": "ההכנות לחתונה מביאות איתן לפעמים מתח רב, והרבה זוגות מוצאים את עצמם רבים בדיוק כשהם אמורים להיות הכי מאושרים. למה זה קורה, ואיך מתמודדים עם לחץ לפני החתונה?",
-    "image": "/images/generated/blog/fights-before-wedding.png"
+    "image": "/images/generated/blog/premarital-questions-before-wedding.jpg"
   }
 ]
