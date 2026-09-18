@@ -712,9 +712,10 @@
         "long_item_id": "video-20260910-074937-1d272ac70c",
         "long_youtube_url": "https://youtu.be/NwhSRQLzErc",
         "long_youtube_id": "NwhSRQLzErc",
-        "short_status": "running",
+        "short_status": "exhausted",
         "short_dispatch_count": 4,
-        "short_last_dispatch_at": "2026-09-18T19:55:11.206603+00:00"
+        "short_last_dispatch_at": "2026-09-18T19:55:11.206603+00:00",
+        "last_error": "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED"
       }
     },
     {
