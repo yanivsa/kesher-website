@@ -163,6 +163,18 @@ class MasterSupervisorLiveTests(unittest.TestCase):
         self.assertTrue(packet["constraints"]["reuse_existing_session_pr"])
         self.assertTrue(packet["constraints"]["no_duplicate_generation_upload"])
 
+    def test_image_incident_packet_keeps_article_and_image_mutation_out_of_jules_scope(self) -> None:
+        report = incident_report(
+            signature="ARTICLE_IMAGE_GUARD_FAILED",
+            action="repair_trusted_image_same_pr",
+            stage="image",
+        )
+        packet = build_incident_packet(report, strike=2, command_id="ksr-image")
+        self.assertEqual(packet["constraints"]["image_mutation_owner"], "trusted_github_actions")
+        self.assertTrue(packet["constraints"]["jules_must_not_modify_article_or_image_payloads"])
+        self.assertEqual(packet["constraints"]["jules_recovery_scope"], "automation code/config/tests only")
+        self.assertTrue(packet["constraints"]["same_article_pr_must_remain_authoritative"])
+
     def test_direct_dispatch_specs_are_exact_and_never_fresh_generation(self) -> None:
         report = incident_report()
         spec = direct_dispatch_spec(report)

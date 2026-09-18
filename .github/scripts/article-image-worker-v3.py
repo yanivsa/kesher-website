@@ -37,7 +37,7 @@ GEMINI_MODEL = "gemini-3.1-flash-image"
 VERIFY_MODEL = "gemini-3.5-flash"
 IMAGE_PREFIX = core.IMAGE_PREFIX
 PUBLIC_PREFIX = core.PUBLIC_PREFIX
-TRUSTED_PROVIDERS = {"Gemini", "Unsplash", "Pexels", "Local"}
+TRUSTED_PROVIDERS = {"Gemini", "Pexels", "Pixabay", "Local"}
 TRUSTED_RESULTS = {"generated", "stock", "local_fallback"}
 
 
@@ -402,6 +402,15 @@ def ensure_image(repo: str, pr: dict[str, Any], token: str) -> bool:
     public_path = f"{PUBLIC_PREFIX}{post['id']}.{ext}"
     post["image"] = public_path
     post["imageAlt"] = candidate.visual_match
+    post["imageProvider"] = candidate.provider
+    post["imageSourceUrl"] = candidate.source_url
+    post["imageIsFallback"] = candidate.provider == "Local"
+    if candidate.provider == "Pexels":
+        post["imageCredit"] = "צילום דרך Pexels"
+        post["imageCreditUrl"] = candidate.source_url
+    else:
+        post.pop("imageCredit", None)
+        post.pop("imageCreditUrl", None)
     digest = hashlib.sha256(candidate.data).hexdigest()
     evidence = {
         "Image Pipeline Version": "2",
