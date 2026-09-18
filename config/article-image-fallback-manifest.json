@@ -3,7 +3,7 @@
   "target_per_category": 40,
   "policy": {
     "primary_first": true,
-    "cooldown_days": 90,
+    "reuse_published_hero": false,
     "no_abstract_placeholders": true,
     "reserve_is_terminal_only": true
   },
