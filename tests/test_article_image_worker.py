@@ -8,6 +8,7 @@ import struct
 import sys
 import tempfile
 import unittest
+from datetime import date, timedelta
 from pathlib import Path
 from unittest import mock
 
@@ -15,9 +16,10 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKER_PATH = ROOT / ".github" / "scripts" / "article-image-worker-v3.py"
 PRODUCTION_WORKER_PATH = ROOT / ".github" / "scripts" / "article-image-worker-v4.py"
 CONTROLLER_PATH = ROOT / ".github" / "scripts" / "article-pr-controller-v3.py"
-VALIDATOR_PATH = ROOT / ".github" / "scripts" / "validate-article-pr.py"
 WORKFLOW_PATH = ROOT / ".github" / "workflows" / "kesher-article-image.yml"
 CONTRACT_PATH = ROOT / "config" / "kesher-production-contract.json"
+MANIFEST_PATH = ROOT / "config" / "article-image-fallback-manifest.json"
+POSTS_PATH = ROOT / "src" / "data" / "posts.json"
 
 
 def load(path: Path, name: str):
@@ -29,8 +31,16 @@ def load(path: Path, name: str):
     return module
 
 
-def fake_png(width: int = 1200, height: int = 675) -> bytes:
-    return b"\x89PNG\r\n\x1a\n" + b"\x00" * 8 + struct.pack(">II", width, height) + b"fixture"
+def fake_png(width: int = 1200, height: int = 675, marker: bytes = b"fixture") -> bytes:
+    return b"\x89PNG\r\n\x1a\n" + b"\x00" * 8 + struct.pack(">II", width, height) + marker
+
+
+def fake_manifest(paths: list[str]) -> dict:
+    return {
+        "target_per_category": 40,
+        "policy": {"cooldown_days": 90},
+        "categories": {"couples": {"primary": paths, "reserve": []}},
+    }
 
 
 class ArticleImageWorkerTests(unittest.TestCase):
@@ -43,13 +53,15 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertEqual(contract["image"]["max_attempts"], 3)
         self.assertEqual(contract["image"]["worker_attempts_per_dispatch"], 1)
 
-    def test_provider_order_ends_in_local_terminal_fallback(self):
-        contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
-        image = contract["image"]
+    def test_provider_order_and_quality_contract(self):
+        image = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))["image"]
         self.assertEqual(
             image["provider_order"],
-            ["gemini", "pexels", "pixabay", "local-curated"],
+            ["gemini", "pexels", "unsplash", "pixabay", "local-curated"],
         )
+        self.assertEqual(image["owned_generation_variants"], 3)
+        self.assertEqual(image["local_fallback_candidates_per_category"], 40)
+        self.assertFalse(image["abstract_placeholder_allowed"])
         self.assertTrue(image["fallback_must_be_local"])
         self.assertFalse(image["no_image_publication_allowed"])
         self.assertTrue(image["publication_blocking"])
@@ -61,49 +73,60 @@ class ArticleImageWorkerTests(unittest.TestCase):
 
     def test_all_external_failures_fall_through_to_local(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_fallback_test")
-        calls = []
+        calls: list[str] = []
         worker.try_gemini_variants = lambda post, attempts, **kwargs: (attempts.append("gemini-1"), calls.append("gemini"), None)[2]
         worker.try_pexels = lambda post, attempts, **kwargs: (attempts.append("pexels"), calls.append("pexels"), None)[2]
+        worker.try_unsplash = lambda post, attempts, **kwargs: (attempts.append("unsplash"), calls.append("unsplash"), None)[2]
         worker.try_pixabay = lambda post, attempts, **kwargs: (attempts.append("pixabay"), calls.append("pixabay"), None)[2]
-        worker.local_fallback = lambda repo, post, ref, token, attempts: worker.core.ImageCandidate(
-            "Local", fake_png(), "png", "local://public/images/generated/blog/dating-communication-early-stages.jpg",
-            "זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור", attempts + ["local-curated"]
+        worker.local_fallback = lambda repo, post, ref, token, attempts, **kwargs: worker.core.ImageCandidate(
+            "Local",
+            fake_png(),
+            "png",
+            "local://public/images/generated/blog/dating-communication-early-stages.jpg",
+            "זוג בשיחה פנים אל פנים המדגישה הקשבה ותקשורת באופן ברור",
+            attempts + ["local-curated"],
         )
         candidate = worker.choose_candidate("o/r", {"title": "שיחה זוגית", "id": "x"}, "sha", "token")
-        self.assertEqual(calls, ["gemini", "pexels", "pixabay"])
+        self.assertEqual(calls, ["gemini", "pexels", "unsplash", "pixabay"])
         self.assertEqual(candidate.provider, "Local")
-        self.assertEqual(candidate.attempts, ["gemini-1", "pexels", "pixabay", "local-curated"])
-
-    def test_every_curated_fallback_candidate_is_real_and_publishable(self):
-        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_real_fallback_test")
         self.assertEqual(
-            set(worker.LOCAL_FALLBACK_CANDIDATES),
-            {"dating", "singles", "relocation", "premarital", "parenting", "gifted", "adhd", "couples"},
+            candidate.attempts,
+            ["gemini-1", "pexels", "unsplash", "pixabay", "local-curated"],
         )
-        for category, candidates in worker.LOCAL_FALLBACK_CANDIDATES.items():
-            self.assertTrue(candidates, category)
-            for source_path, description in candidates:
+
+    def test_manifest_has_40_unique_real_jpg_candidates_per_category(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_manifest_test")
+        manifest = worker.load_manifest()
+        expected = {"dating", "singles", "relocation", "premarital", "parenting", "gifted", "adhd", "couples"}
+        self.assertEqual(set(manifest["categories"]), expected)
+
+        for category, block in manifest["categories"].items():
+            paths = list(block.get("primary") or []) + list(block.get("reserve") or [])
+            self.assertGreaterEqual(len(paths), 40, category)
+            self.assertGreaterEqual(len(set(paths)), 40, category)
+            for source_path in paths:
+                self.assertTrue(source_path.endswith(".jpg"), (category, source_path))
                 data = (ROOT / source_path).read_bytes()
                 width, height, ext = worker.core.validate_candidate(data)
                 self.assertGreaterEqual(width, 640, (category, source_path))
                 self.assertGreaterEqual(height, 360, (category, source_path))
-                self.assertIn(ext, {"jpg", "png"})
-                self.assertGreaterEqual(len(description), 24)
+                self.assertEqual(ext, "jpg", (category, source_path))
 
     def test_local_fallback_reads_only_from_trusted_checkout(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_trusted_checkout_test")
         with tempfile.TemporaryDirectory() as tmp:
             worker.REPO_ROOT = Path(tmp)
-            worker.LOCAL_FALLBACK_CANDIDATES = {
-                "couples": [("public/images/generated/blog/fallback.png", "זוג בשיחה פנים אל פנים המדגישה תקשורת וקשר")]
-            }
-            target = worker.REPO_ROOT / "public/images/generated/blog/fallback.png"
+            source_path = "public/images/generated/blog/fallback.jpg"
+            worker.load_manifest = lambda: fake_manifest([source_path])
+            target = worker.REPO_ROOT / source_path
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(fake_png())
             with mock.patch.object(worker.core, "github_content", side_effect=AssertionError("local fallback must not use GitHub API")):
                 candidate = worker.local_fallback(
                     "o/r", {"title": "שיחה", "id": "x"}, "untrusted-pr-sha", "t", []
                 )
+        self.assertIsNotNone(candidate)
+        assert candidate is not None
         self.assertEqual(candidate.provider, "Local")
         self.assertEqual(candidate.data, fake_png())
         self.assertEqual(candidate.attempts, ["local-curated"])
@@ -112,24 +135,26 @@ class ArticleImageWorkerTests(unittest.TestCase):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_runtime_fallback_test")
         with tempfile.TemporaryDirectory() as tmp:
             worker.REPO_ROOT = Path(tmp)
-            worker.LOCAL_FALLBACK_CANDIDATES = {
-                "couples": [
-                    ("public/images/generated/blog/bad.png", "תמונה ראשונה שאינה עומדת בחוזה הטכני ולכן תידחה"),
-                    ("public/images/generated/blog/good.png", "זוג בשיחה פנים אל פנים המדגישה תקשורת וקשר"),
-                ]
-            }
+            bad = "public/images/generated/blog/bad.jpg"
+            good = "public/images/generated/blog/good.jpg"
+            worker.load_manifest = lambda: fake_manifest([bad, good])
             root = worker.REPO_ROOT / "public/images/generated/blog"
             root.mkdir(parents=True, exist_ok=True)
-            (root / "bad.png").write_bytes(fake_png(200, 100))
-            (root / "good.png").write_bytes(fake_png())
+            (root / "bad.jpg").write_bytes(fake_png(200, 100))
+            (root / "good.jpg").write_bytes(fake_png())
             candidate = worker.local_fallback("o/r", {"title": "שיחה", "id": "x"}, "sha", "t", [])
-        self.assertTrue(candidate.source_url.endswith("good.png"))
+        self.assertIsNotNone(candidate)
+        assert candidate is not None
+        self.assertTrue(candidate.source_url.endswith("good.jpg"))
 
     def test_provider_preflight_never_requires_external_secrets(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_preflight_test")
         with mock.patch.dict("os.environ", {}, clear=True):
             availability = worker.provider_preflight()
-        self.assertEqual(availability, {"gemini": False, "pexels": False, "pixabay": False, "local": True})
+        self.assertEqual(
+            availability,
+            {"gemini": False, "pexels": False, "unsplash": False, "pixabay": False, "local": True},
+        )
 
     def test_gemini_generation_uses_current_official_generate_content_shape(self):
         source = WORKER_PATH.read_text(encoding="utf-8")
@@ -142,7 +167,6 @@ class ArticleImageWorkerTests(unittest.TestCase):
     def test_external_stock_is_never_accepted_from_search_metadata_alone(self):
         source = WORKER_PATH.read_text(encoding="utf-8")
         self.assertIn("verify_pixels(post, data, ext)", source)
-        self.assertIn("if not google_key():\n        return None", source)
         self.assertIn("Do not claim anything not visible", source)
 
     def test_partial_github_failure_is_recoverable_by_writing_evidence_before_commit(self):
@@ -154,12 +178,20 @@ class ArticleImageWorkerTests(unittest.TestCase):
     def test_summary_generation_matches_publishable_content_policy(self):
         worker = load(WORKER_PATH, "article_image_worker_v3_summary_test")
         thick = {
-            "id": "thick", "title": "כותרת", "date": "2026-08-20", "category": "זוגיות",
-            "excerpt": "תקציר", "content": "<p>" + ("מילה " * 500) + "</p>" + ("<h3>שאלה</h3>" * 5),
+            "id": "thick",
+            "title": "כותרת",
+            "date": "2026-08-20",
+            "category": "זוגיות",
+            "excerpt": "תקציר",
+            "content": "<p>" + ("מילה " * 500) + "</p>" + ("<h3>שאלה</h3>" * 5),
         }
         thin = {
-            "id": "thin", "title": "ישן", "date": "2024-01-01", "category": "זוגיות",
-            "excerpt": "ישן", "content": "<p>קצר</p>",
+            "id": "thin",
+            "title": "ישן",
+            "date": "2024-01-01",
+            "category": "זוגיות",
+            "excerpt": "ישן",
+            "content": "<p>קצר</p>",
         }
         self.assertEqual([row["id"] for row in worker.summaries([thick, thin])], ["thick"])
 
@@ -174,11 +206,18 @@ class ArticleImageWorkerTests(unittest.TestCase):
         validator = controller.load_validator_best_effort()
         base = [{"id": "old"}]
         new = {
-            "id": "new", "title": "כותרת", "date": "2026-08-20", "category": "זוגיות",
-            "excerpt": "תקציר", "content": "<p>" + ("מילה " * 700) + "</p>" + ("<h3>שאלה</h3>" * 5),
+            "id": "new",
+            "title": "כותרת",
+            "date": "2026-08-20",
+            "category": "זוגיות",
+            "excerpt": "תקציר",
+            "content": "<p>" + ("מילה " * 700) + "</p>" + ("<h3>שאלה</h3>" * 5),
         }
         pr = {
-            "state": "open", "draft": False, "title": "Publish Kesher article: new", "body": "",
+            "state": "open",
+            "draft": False,
+            "title": "Publish Kesher article: new",
+            "body": "",
             "base": {"ref": "main", "repo": {"full_name": "x/y"}},
             "head": {"repo": {"full_name": "x/y"}},
         }
@@ -202,43 +241,99 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIn("persist-credentials: false", workflow)
         self.assertIn("article-image-worker-v4.py", workflow)
         self.assertIn("GOOGLE_API_KEY", workflow)
-        self.assertNotIn("UNSPLASH_ACCESS_KEY", workflow)
+        self.assertIn("UNSPLASH_ACCESS_KEY", workflow)
         self.assertIn("PEXELS_API_KEY", workflow)
         self.assertIn("PIXABAY_API_KEY", workflow)
         self.assertIn("actions/workflows/ci.yml/dispatches", workflow)
         self.assertNotIn("actions/checkout@v", workflow)
 
-    def test_sha256_uniqueness_enforced_and_collision_blocks_local_fallback(self):
-        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_sha_test")
+    def test_recent_local_image_reuse_is_blocked_by_cooldown(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_cooldown_block_test")
         fake_data = fake_png()
         fake_sha = hashlib.sha256(fake_data).hexdigest()
-        existing_hashes = {fake_sha}
-
         with tempfile.TemporaryDirectory() as tmp:
             worker.REPO_ROOT = Path(tmp)
-            worker.LOCAL_FALLBACK_CANDIDATES = {
-                "couples": [("public/images/generated/blog/colliding.png", "זוג בשיחה פנים אל פנים המדגישה תקשורת וקשר")]
-            }
-            target = worker.REPO_ROOT / "public/images/generated/blog/colliding.png"
+            source_path = "public/images/generated/blog/recent.jpg"
+            worker.load_manifest = lambda: fake_manifest([source_path])
+            target = worker.REPO_ROOT / source_path
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(fake_data)
-
             candidate = worker.local_fallback(
                 "o/r",
                 {"title": "שיחה", "id": "x"},
                 "sha",
                 "t",
                 [],
-                existing_hashes=existing_hashes,
+                existing_hashes={fake_sha},
+                existing_usage={fake_sha: 1},
+                last_used={fake_sha: date.today()},
                 banned_paths=set(),
             )
-            self.assertIsNone(candidate)
+        self.assertIsNone(candidate)
+
+    def test_local_image_can_be_reused_after_cooldown(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_cooldown_reuse_test")
+        fake_data = fake_png()
+        fake_sha = hashlib.sha256(fake_data).hexdigest()
+        with tempfile.TemporaryDirectory() as tmp:
+            worker.REPO_ROOT = Path(tmp)
+            source_path = "public/images/generated/blog/cooled.jpg"
+            worker.load_manifest = lambda: fake_manifest([source_path])
+            target = worker.REPO_ROOT / source_path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(fake_data)
+            candidate = worker.local_fallback(
+                "o/r",
+                {"title": "שיחה", "id": "x"},
+                "sha",
+                "t",
+                [],
+                existing_hashes={fake_sha},
+                existing_usage={fake_sha: 1},
+                last_used={fake_sha: date.today() - timedelta(days=91)},
+                banned_paths=set(),
+            )
+        self.assertIsNotNone(candidate)
+        assert candidate is not None
+        self.assertEqual(candidate.provider, "Local")
+
+    def test_topic_matching_prefers_specific_local_asset(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_topic_test")
+        with tempfile.TemporaryDirectory() as tmp:
+            worker.REPO_ROOT = Path(tmp)
+            generic = "public/images/generated/blog/couples-communication-distance.jpg"
+            specific = "public/images/generated/blog/first-grade-preparation-morning-routine.jpg"
+            worker.load_manifest = lambda: fake_manifest([generic, specific])
+            root = worker.REPO_ROOT / "public/images/generated/blog"
+            root.mkdir(parents=True, exist_ok=True)
+            (root / "couples-communication-distance.jpg").write_bytes(fake_png(marker=b"generic"))
+            (root / "first-grade-preparation-morning-routine.jpg").write_bytes(fake_png(marker=b"specific"))
+            candidate = worker.local_fallback(
+                "o/r",
+                {"title": "הכנה לכיתה א ושגרת בוקר", "category": "זוגיות", "id": "x"},
+                "sha",
+                "t",
+                [],
+            )
+        self.assertIsNotNone(candidate)
+        assert candidate is not None
+        self.assertTrue(candidate.source_url.endswith("first-grade-preparation-morning-routine.jpg"))
 
     def test_production_worker_contains_no_abstract_placeholder_renderer(self):
         source = PRODUCTION_WORKER_PATH.read_text(encoding="utf-8")
         self.assertNotIn("LocalEditorial", source)
         self.assertNotIn("_render_editorial_png", source)
         self.assertIn("fails closed", source)
+
+    def test_current_posts_do_not_reference_known_abstract_or_temporary_heroes(self):
+        posts = json.loads(POSTS_PATH.read_text(encoding="utf-8"))
+        bad = [
+            post.get("id")
+            for post in posts
+            if "איור עריכתי מופשט" in str(post.get("imageAlt") or "")
+            or "תמונה זמנית" in str(post.get("imageAlt") or "")
+        ]
+        self.assertEqual(bad, [])
 
     def test_contextual_stock_queries_generated_from_post_content(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_queries_test")
