@@ -266,6 +266,10 @@
   font-size: 0.95rem;
 }
 
+.finalCtaContainer {
+  padding-top: var(--spacing-lg);
+}
+
 .articleContactCta {
   margin: 0 0 2rem;
   padding: clamp(1.25rem, 4vw, 2rem);
