@@ -393,6 +393,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIn("branches:", repair_workflow)
         self.assertIn("- main", repair_workflow)
         self.assertIn("build-article-fallback-library.py --category all --batch-size 8", repair_workflow)
+        self.assertIn("public/images/fallback", repair_workflow)
 
     def test_contextual_stock_queries_generated_from_post_content(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_queries_test")
