@@ -98,7 +98,7 @@
       "verified_at": "2026-09-17T11:10:04.203525+00:00"
     },
     "ksr-5d488add1f19e13222658fa2": {
-      "acknowledged_at": "2026-09-18T12:12:20.671384+00:00",
+      "acknowledged_at": "2026-09-18T12:19:29.013698+00:00",
       "command_id": "ksr-5d488add1f19e13222658fa2",
       "evidence_hash": "4322d37e0418241537e578c38ec03d93ebaf0006614ba9a7ffe5f3f256702f34",
       "exact": {
@@ -118,6 +118,8 @@
       "issued_at": "2026-09-18T12:07:21.629079+00:00",
       "lifecycle": "running",
       "metadata": {
+        "external_run_id": 35343619195,
+        "external_workflow": "Kesher Daily Article Short V4",
         "incident_packet": {
           "command_id": "ksr-5d488add1f19e13222658fa2",
           "constraints": {
@@ -154,7 +156,7 @@
       "running_at": "2026-09-18T12:12:20.671384+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-18T12:12:20.671384+00:00"
+      "updated_at": "2026-09-18T12:19:29.013698+00:00"
     },
     "ksr-712e03f65f24aa41cbbaa229": {
       "acknowledged_at": "2026-09-16T01:24:05.083434+00:00",
@@ -935,7 +937,7 @@
         }
       ],
       "incident_id": "v5|dating-apps-exhaustion|46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03|short",
-      "last_seen_at": "2026-09-18T12:12:20.671384+00:00",
+      "last_seen_at": "2026-09-18T12:19:29.013698+00:00",
       "marker": "MASTER_ESCALATION fingerprint=d00f35466c077d88bcb2d404cbee1c91 strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
@@ -979,5 +981,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-18T12:12:20.671384+00:00"
+  "updated_at": "2026-09-18T12:19:29.013698+00:00"
 }
