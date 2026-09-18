@@ -37,7 +37,7 @@ GEMINI_MODEL = "gemini-3.1-flash-image"
 VERIFY_MODEL = "gemini-3.5-flash"
 IMAGE_PREFIX = core.IMAGE_PREFIX
 PUBLIC_PREFIX = core.PUBLIC_PREFIX
-TRUSTED_PROVIDERS = {"Gemini", "Unsplash", "Pexels", "Pixabay", "Local"}
+TRUSTED_PROVIDERS = {"Gemini", "Pexels", "Pixabay", "Local"}
 TRUSTED_RESULTS = {"generated", "stock", "local_fallback"}
 
 
