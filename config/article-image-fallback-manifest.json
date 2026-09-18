@@ -3,7 +3,9 @@
   "target_per_category": 40,
   "policy": {
     "primary_first": true,
-    "reuse_published_hero": false,
+    "prefer_unused": true,
+    "reuse_cooldown_days": 90,
+    "max_lifetime_uses": 3,
     "no_abstract_placeholders": true,
     "reserve_is_terminal_only": true
   },
