@@ -333,8 +333,9 @@ def local_fallback(
     banned_paths = collect_banned_paths(REPO_ROOT) if banned_paths is None else banned_paths
 
     category = core.article_key(post)
-    cooldown_days = 90
-    max_lifetime_uses = 3
+    policy = load_seed_manifest().get("policy") or {}
+    cooldown_days = int(policy.get("reuse_cooldown_days") or 90)
+    max_lifetime_uses = int(policy.get("max_lifetime_uses") or 3)
     today = date.today()
     unused: list[tuple[int, int, str, str, bytes, str]] = []
     reusable: list[tuple[int, int, int, str, str, bytes, str]] = []
