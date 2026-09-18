@@ -151,6 +151,11 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
         errors.append("Stock provider image must record stock result")
     if provider == "Local" and generation_result != "local_fallback":
         errors.append("Local provider image must record local_fallback result")
+    if provider == "Pexels":
+        if post.get("imageCredit") != "צילום דרך Pexels":
+            errors.append("Pexels image requires visible Pexels credit metadata")
+        if post.get("imageCreditUrl") != source_url:
+            errors.append("Pexels image credit URL must match the recorded source URL")
     if provider == "Local":
         if not source_url or not re.fullmatch(r"local://public/images/(?:generated/blog|fallback/[^/]+)/[^\s]+", source_url):
             errors.append("Local fallback requires an exact local:// repository image source")
