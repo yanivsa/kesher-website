@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-18",
-  "status": "article_deploying",
+  "status": "article_deploy_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1713,9 +1713,18 @@
         "http_status": 404,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-18T11:01:48.931886+00:00",
+      "from": "article_deploying",
+      "to": "article_deploy_wait",
+      "reason": "deploy retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-18T11:01:45.106096+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-18T10:59:24.990207+00:00",
+  "updated_at": "2026-09-18T11:01:48.931895+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
