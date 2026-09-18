@@ -92,7 +92,7 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         or image.get("fallback_must_be_local") is not True
         or image.get("abstract_placeholder_allowed") is not False
         or image.get("owned_generation_variants") != 3
-        or image.get("local_fallback_policy") != "unused-real-photo-or-block"
+        or image.get("local_fallback_policy") != "prefer-unused-then-90-day-cooldown-max-3-uses"\n        or image.get("local_fallback_reuse_cooldown_days") != 90\n        or image.get("local_fallback_max_lifetime_uses") != 3
         or image.get("no_image_publication_allowed") is not False
         or image.get("failure_mode") != "blocking-retry"
     ):
