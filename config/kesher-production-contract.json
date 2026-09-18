@@ -101,11 +101,13 @@
     "attached_handoff_marker": "Hero Image Status: ATTACHED_TRUSTED_IMAGE_STAGE",
     "controller_action_on_pending_handoff": "dispatch_trusted_image_same_pr",
     "controller_action_on_image_guard_failure": "recover_trusted_image_same_pr",
-    "local_fallback_policy": "unused-real-photo-or-block",
+    "local_fallback_policy": "prefer-unused-then-90-day-cooldown-max-3-uses",
     "abstract_placeholder_allowed": false,
     "owned_generation_variants": 3,
     "local_fallback_candidates_per_category": 40,
-    "managed_fallback_library_target_per_category": 40
+    "managed_fallback_library_target_per_category": 40,
+    "local_fallback_reuse_cooldown_days": 90,
+    "local_fallback_max_lifetime_uses": 3
   },
   "video": {
     "publication_gate": "technical",
