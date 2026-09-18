@@ -333,7 +333,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             worker.REPO_ROOT = Path(tmp)
             bank = "public/images/fallback/couples/couples-001-bank.jpg"
-            seed = "public/images/generated/blog/generic-seed.jpg"
+            seed = "public/images/generated/blog/first-grade-preparation-morning-routine.jpg"
             worker.load_seed_manifest = lambda: fake_manifest([seed])
             worker.load_bank_manifest = lambda: {
                 "version": 1,
@@ -345,7 +345,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
                 target.write_bytes(fake_png(marker=marker))
             candidate = worker.local_fallback(
                 "o/r",
-                {"title": "שיחה זוגית", "category": "זוגיות", "id": "x"},
+                {"title": "הכנה לכיתה א ושגרת בוקר", "category": "זוגיות", "id": "x"},
                 "sha",
                 "t",
                 [],
@@ -355,6 +355,37 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIsNotNone(candidate)
         assert candidate is not None
         self.assertTrue(candidate.source_url.endswith("couples-001-bank.jpg"))
+
+    def test_semantically_unqualified_seed_reserve_is_not_publishable(self):
+        worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_reserve_guard_test")
+        with tempfile.TemporaryDirectory() as tmp:
+            worker.REPO_ROOT = Path(tmp)
+            reserve = "public/images/generated/blog/generic-couple-reserve.jpg"
+            worker.load_seed_manifest = lambda: {
+                "target_per_category": 40,
+                "policy": {
+                    "reuse_cooldown_days": 90,
+                    "max_lifetime_uses": 3,
+                    "reserve_min_topic_score": 1,
+                },
+                "categories": {
+                    "couples": {"primary": [], "reserve": [reserve]},
+                },
+            }
+            worker.load_bank_manifest = lambda: {"version": 1, "assets": []}
+            target = worker.REPO_ROOT / reserve
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(fake_png())
+            candidate = worker.local_fallback(
+                "o/r",
+                {"title": "נושא כללי", "category": "זוגיות", "id": "x"},
+                "sha",
+                "t",
+                [],
+                existing_hashes=set(),
+                banned_paths=set(),
+            )
+        self.assertIsNone(candidate)
 
     def test_topic_matching_prefers_specific_local_asset(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_topic_test")
