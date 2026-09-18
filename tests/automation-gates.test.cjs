@@ -128,6 +128,10 @@ function testTrustedArticleImageV2() {
   assert(runnerV3.includes('Jules owns ARTICLE TEXT ONLY'));
   assert(runnerV3.includes('The new article MUST omit'));
   assert(runnerV3.includes('trusted GitHub Actions stage'));
+  assert(runnerV3.includes('verified Pexels -> verified Pixabay'));
+  assert(!runnerV3.includes('Gemini -> Unsplash -> Pexels'));
+  assert(!articleController.includes('Article publication is allowed without an image'));
+  assert(!articleController.includes('if image_status == "deferred"'));
 }
 
 function testIndependentArticlePrGateRuntime() {
