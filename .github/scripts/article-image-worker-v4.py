@@ -3,13 +3,14 @@
 
 Production strategy:
 1. Try three materially different Gemini hero generations.
-2. Try verified Pexels, Unsplash, and Pixabay photography.
-3. Use a repository-curated reservoir with 40 real JPG candidates per category.
-4. Respect a 90-day reuse cooldown for local fallback assets.
-5. Never publish a generated abstract/gradient placeholder.
+2. Try verified Pexels and Pixabay photography.
+3. Try unused owned assets from the managed fallback bank.
+4. Try an unused repository-curated seed reservoir with 40 real JPG candidates
+   per article category.
+5. Never reuse a published hero and never fabricate an abstract placeholder.
 
-When no acceptable concrete image is available, the worker fails closed so the
-controller can retry or escalate rather than weakening the public article.
+If every concrete option is exhausted, the worker fails closed so publication
+waits for a retry or a newly generated/curated asset.
 """
 
 from __future__ import annotations
@@ -21,7 +22,6 @@ import os
 import re
 import sys
 import urllib.parse
-from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -35,10 +35,10 @@ spec.loader.exec_module(v3)
 
 core = v3.core
 REPO_ROOT = Path(__file__).resolve().parents[2]
-MANIFEST_PATH = REPO_ROOT / "config" / "article-image-fallback-manifest.json"
+SEED_MANIFEST_PATH = REPO_ROOT / "config" / "article-image-fallback-manifest.json"
+BANK_MANIFEST_PATH = REPO_ROOT / "public" / "images" / "fallback" / "manifest.json"
 
 try_gemini = v3.try_gemini
-try_unsplash = v3.try_unsplash
 try_pexels = v3.try_pexels
 verify_pixels = v3.verify_pixels
 summaries = v3.summaries
@@ -67,12 +67,13 @@ TOPIC_FILENAME_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
     (r"תקשורת|הקשבה|מריב|קונפליקט", ("communication", "listening", "relationship", "couples")),
 )
 
+REQUIRED_CATEGORIES = {"dating", "singles", "relocation", "premarital", "parenting", "gifted", "adhd", "couples"}
+
 
 def provider_preflight() -> dict[str, bool]:
     availability = {
         "gemini": bool((os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY") or "").strip()),
         "pexels": bool((os.environ.get("PEXELS_API_KEY") or "").strip()),
-        "unsplash": bool((os.environ.get("UNSPLASH_ACCESS_KEY") or "").strip()),
         "pixabay": bool((os.environ.get("PIXABAY_API_KEY") or "").strip()),
         "local": True,
     }
@@ -85,66 +86,71 @@ def provider_preflight() -> dict[str, bool]:
     return availability
 
 
-def load_manifest() -> dict[str, Any]:
-    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+def load_seed_manifest() -> dict[str, Any]:
+    manifest = json.loads(SEED_MANIFEST_PATH.read_text(encoding="utf-8"))
     if manifest.get("target_per_category") != 40:
-        raise RuntimeError("Article fallback manifest must target exactly 40 candidates per category")
+        raise RuntimeError("Article seed fallback manifest must target exactly 40 candidates per category")
     categories = manifest.get("categories") or {}
-    required = {"dating", "singles", "relocation", "premarital", "parenting", "gifted", "adhd", "couples"}
-    if set(categories) != required:
-        raise RuntimeError("Article fallback manifest category set is incomplete")
+    if set(categories) != REQUIRED_CATEGORIES:
+        raise RuntimeError("Article seed fallback manifest category set is incomplete")
     for category, block in categories.items():
         paths = list(block.get("primary") or []) + list(block.get("reserve") or [])
         if len(paths) < 40 or len(set(paths)) < 40:
-            raise RuntimeError(f"Article fallback manifest category {category} has fewer than 40 unique candidates")
+            raise RuntimeError(f"Article seed fallback category {category} has fewer than 40 unique candidates")
         if any(not str(path).lower().endswith(".jpg") for path in paths):
-            raise RuntimeError(f"Article fallback manifest category {category} contains a non-JPG asset")
+            raise RuntimeError(f"Article seed fallback category {category} contains a non-JPG asset")
     return manifest
 
 
-def collect_existing_image_usage(repo_root: Path) -> tuple[set[str], dict[str, int], dict[str, date], set[str]]:
-    """Collect assigned hero hashes, use counts, last-use dates and banned placeholder paths."""
+def load_bank_manifest() -> dict[str, Any]:
+    if not BANK_MANIFEST_PATH.is_file():
+        return {"version": 1, "assets": []}
+    try:
+        payload = json.loads(BANK_MANIFEST_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {"version": 1, "assets": []}
+    return payload if isinstance(payload, dict) else {"version": 1, "assets": []}
+
+
+def collect_existing_hashes(repo_root: Path) -> set[str]:
+    """Hash only hero bytes that are already assigned to published articles."""
     hashes: set[str] = set()
-    usage: dict[str, int] = {}
-    last_used: dict[str, date] = {}
-    banned_paths: set[str] = set()
     posts_path = repo_root / "src" / "data" / "posts.json"
     try:
         posts = json.loads(posts_path.read_text(encoding="utf-8"))
     except Exception:
-        return hashes, usage, last_used, banned_paths
-
+        return hashes
     for post in posts if isinstance(posts, list) else []:
         if not isinstance(post, dict):
             continue
         image = str(post.get("image") or "").strip()
-        alt = str(post.get("imageAlt") or "").strip()
         if not image.startswith("/images/"):
             continue
-        source_path = "public/" + image.lstrip("/")
-        if "איור עריכתי מופשט" in alt or "תמונה זמנית" in alt:
-            banned_paths.add(source_path)
-        path = repo_root / source_path
+        path = repo_root / "public" / image.lstrip("/")
         if not path.is_file():
             continue
         try:
-            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            hashes.add(hashlib.sha256(path.read_bytes()).hexdigest())
         except Exception:
-            continue
-        hashes.add(digest)
-        usage[digest] = usage.get(digest, 0) + 1
-        try:
-            used_on = date.fromisoformat(str(post.get("date") or "")[:10])
-        except Exception:
-            continue
-        previous = last_used.get(digest)
-        if previous is None or used_on > previous:
-            last_used[digest] = used_on
-    return hashes, usage, last_used, banned_paths
+            pass
+    return hashes
 
 
-def collect_existing_hashes(repo_root: Path) -> set[str]:
-    return collect_existing_image_usage(repo_root)[0]
+def collect_banned_paths(repo_root: Path) -> set[str]:
+    banned: set[str] = set()
+    posts_path = repo_root / "src" / "data" / "posts.json"
+    try:
+        posts = json.loads(posts_path.read_text(encoding="utf-8"))
+    except Exception:
+        return banned
+    for post in posts if isinstance(posts, list) else []:
+        if not isinstance(post, dict):
+            continue
+        alt = str(post.get("imageAlt") or "")
+        image = str(post.get("image") or "")
+        if image.startswith("/images/") and ("איור עריכתי מופשט" in alt or "תמונה זמנית" in alt or "ממלאת מקום" in alt):
+            banned.add("public/" + image.lstrip("/"))
+    return banned
 
 
 def _trusted_candidate_path(source_path: str) -> Path:
@@ -170,13 +176,28 @@ def _stable_tiebreak(post: dict[str, Any], source_path: str) -> str:
     return hashlib.sha256(f"{identity}|{source_path}".encode("utf-8")).hexdigest()
 
 
-def _candidate_pool(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[int, str]]:
-    manifest = load_manifest()
+def _bank_candidates(category: str, banned_paths: set[str]) -> list[tuple[int, str]]:
+    rows: list[tuple[int, str]] = []
+    payload = load_bank_manifest()
+    for entry in payload.get("assets") or []:
+        if not isinstance(entry, dict) or entry.get("category") != category:
+            continue
+        source_path = str(entry.get("path") or "").strip()
+        if not source_path or source_path in banned_paths:
+            continue
+        if not source_path.startswith(f"public/images/fallback/{category}/"):
+            continue
+        rows.append((0, source_path))
+    return rows
+
+
+def _seed_candidates(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[int, str]]:
+    manifest = load_seed_manifest()
     category = core.article_key(post)
     block = manifest["categories"][category]
     rows: list[tuple[int, str]] = []
     seen: set[str] = set()
-    for tier, field in ((0, "primary"), (1, "reserve")):
+    for tier, field in ((1, "primary"), (2, "reserve")):
         for source_path in block.get(field) or []:
             source_path = str(source_path)
             if source_path in seen or source_path in banned_paths:
@@ -184,6 +205,19 @@ def _candidate_pool(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[
             seen.add(source_path)
             rows.append((tier, source_path))
     return rows
+
+
+def _candidate_pool(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[int, str]]:
+    category = core.article_key(post)
+    rows = _bank_candidates(category, banned_paths) + _seed_candidates(post, banned_paths)
+    seen: set[str] = set()
+    result: list[tuple[int, str]] = []
+    for tier, source_path in rows:
+        if source_path in seen:
+            continue
+        seen.add(source_path)
+        result.append((tier, source_path))
+    return result
 
 
 def try_gemini_variants(
@@ -268,25 +302,15 @@ def local_fallback(
     attempts: list[str],
     *args: Any,
     existing_hashes: set[str] | None = None,
-    existing_usage: dict[str, int] | None = None,
-    last_used: dict[str, date] | None = None,
     banned_paths: set[str] | None = None,
     **kwargs: Any,
 ) -> core.ImageCandidate | None:
-    """Select a real local photo, preferring unused assets and enforcing cooldown on reuse."""
+    """Choose the best unused concrete local asset; never reuse published hero bytes."""
     attempts.append("local-curated")
-    if existing_hashes is None or existing_usage is None or last_used is None or banned_paths is None:
-        discovered_hashes, discovered_usage, discovered_last_used, discovered_banned = collect_existing_image_usage(REPO_ROOT)
-        existing_hashes = discovered_hashes if existing_hashes is None else existing_hashes
-        existing_usage = discovered_usage if existing_usage is None else existing_usage
-        last_used = discovered_last_used if last_used is None else last_used
-        banned_paths = discovered_banned if banned_paths is None else banned_paths
-
+    existing_hashes = collect_existing_hashes(REPO_ROOT) if existing_hashes is None else existing_hashes
+    banned_paths = collect_banned_paths(REPO_ROOT) if banned_paths is None else banned_paths
     category = core.article_key(post)
-    cooldown_days = int(load_manifest().get("policy", {}).get("cooldown_days", 90))
-    today = date.today()
-    unused: list[tuple[int, int, str, str, bytes, str]] = []
-    reusable: list[tuple[int, int, int, str, str, bytes, str]] = []
+    candidates: list[tuple[int, int, str, str, bytes, str]] = []
 
     for tier, source_path in _candidate_pool(post, banned_paths):
         try:
@@ -296,23 +320,10 @@ def local_fallback(
             data = candidate_path.read_bytes()
             _width, _height, ext = core.validate_candidate(data)
             digest = hashlib.sha256(data).hexdigest()
-            score = _topic_score(post, source_path)
-            if digest not in existing_hashes:
-                unused.append((-score, tier, _stable_tiebreak(post, source_path), source_path, data, ext))
+            if digest in existing_hashes:
                 continue
-
-            last = last_used.get(digest)
-            days_since = (today - last).days if last else cooldown_days
-            if days_since >= cooldown_days:
-                reusable.append((
-                    tier,
-                    existing_usage.get(digest, 0),
-                    -score,
-                    _stable_tiebreak(post, source_path),
-                    source_path,
-                    data,
-                    ext,
-                ))
+            score = _topic_score(post, source_path)
+            candidates.append((-score, tier, _stable_tiebreak(post, source_path), source_path, data, ext))
         except Exception as exc:
             print(
                 f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} error={type(exc).__name__}",
@@ -320,46 +331,25 @@ def local_fallback(
                 flush=True,
             )
 
-    if unused:
-        unused.sort()
-        _neg_score, tier, _stable, source_path, data, ext = unused[0]
-        print(
-            f"IMAGE_LOCAL_FALLBACK_READY category={category} tier={tier} path={source_path}",
-            file=sys.stderr,
-            flush=True,
-        )
-        return core.ImageCandidate(
-            "Local",
-            data,
-            ext,
-            f"local://{source_path}",
-            CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
-            attempts.copy(),
-        )
+    if not candidates:
+        print(f"IMAGE_LOCAL_FALLBACK_EXHAUSTED category={category} reason=no_unused_concrete_asset", file=sys.stderr, flush=True)
+        return None
 
-    if reusable:
-        reusable.sort()
-        tier, prior_uses, _neg_score, _stable, source_path, data, ext = reusable[0]
-        print(
-            f"IMAGE_LOCAL_FALLBACK_REUSE category={category} tier={tier} path={source_path} previous_uses={prior_uses}",
-            file=sys.stderr,
-            flush=True,
-        )
-        return core.ImageCandidate(
-            "Local",
-            data,
-            ext,
-            f"local://{source_path}",
-            CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
-            attempts.copy(),
-        )
-
+    candidates.sort()
+    _neg_score, tier, _stable, source_path, data, ext = candidates[0]
     print(
-        f"IMAGE_LOCAL_FALLBACK_EXHAUSTED category={category} cooldown_days={cooldown_days}",
+        f"IMAGE_LOCAL_FALLBACK_READY category={category} tier={tier} path={source_path}",
         file=sys.stderr,
         flush=True,
     )
-    return None
+    return core.ImageCandidate(
+        "Local",
+        data,
+        ext,
+        f"local://{source_path}",
+        CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
+        attempts.copy(),
+    )
 
 
 def choose_candidate(
@@ -371,12 +361,11 @@ def choose_candidate(
     existing_hashes: set[str] | None = None,
     **kwargs: Any,
 ) -> core.ImageCandidate | None:
-    discovered_hashes, existing_usage, last_used, banned_paths = collect_existing_image_usage(REPO_ROOT)
     if existing_hashes is None:
-        existing_hashes = discovered_hashes
+        existing_hashes = collect_existing_hashes(REPO_ROOT)
     attempts: list[str] = []
 
-    for provider in (try_gemini_variants, try_pexels, try_unsplash, try_pixabay):
+    for provider in (try_gemini_variants, try_pexels, try_pixabay):
         try:
             candidate = provider(post, attempts, existing_hashes=existing_hashes)
         except TypeError:
@@ -391,9 +380,7 @@ def choose_candidate(
         token,
         attempts,
         existing_hashes=existing_hashes,
-        existing_usage=existing_usage,
-        last_used=last_used,
-        banned_paths=banned_paths,
+        banned_paths=collect_banned_paths(REPO_ROOT),
     )
 
 
@@ -404,7 +391,7 @@ ensure_image = v3.ensure_image
 
 def main() -> int:
     provider_preflight()
-    load_manifest()
+    load_seed_manifest()
     return v3.main()
 
 
