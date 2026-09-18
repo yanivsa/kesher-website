@@ -121,6 +121,13 @@ const BlogPost: React.FC = () => {
     ? { url: post.serviceUrl, label: post.serviceLabel }
     : null;
   const ctaCopy = articleCtaCopy(post);
+  const imageMeta = post as typeof post & {
+    imageProvider?: string;
+    imageSourceUrl?: string;
+    imageCredit?: string;
+    imageCreditUrl?: string;
+    imageIsFallback?: boolean;
+  };
 
   return (
     <article className={styles.post}>
@@ -160,15 +167,24 @@ const BlogPost: React.FC = () => {
       <div className={`container ${styles.container}`}>
         <div className={styles.mainContent}>
           {post.image && (
-            <div className={styles.imageWrapper}>
-              <img
-                src={post.image}
-                alt={post.imageAlt || post.title}
-                className={styles.image}
-                fetchPriority="high"
-                {...getImageDimensions(post.image)}
-              />
-            </div>
+            <>
+              <div className={styles.imageWrapper}>
+                <img
+                  src={post.image}
+                  alt={post.imageAlt || post.title}
+                  className={styles.image}
+                  fetchPriority="high"
+                  {...getImageDimensions(post.image)}
+                />
+              </div>
+              {imageMeta.imageCredit && imageMeta.imageCreditUrl && (
+                <p className={styles.imageCredit}>
+                  <a href={imageMeta.imageCreditUrl} target="_blank" rel="noopener noreferrer">
+                    {imageMeta.imageCredit}
+                  </a>
+                </p>
+              )}
+            </>
           )}
           {'directAnswer' in post && typeof post.directAnswer === 'string' && post.directAnswer.trim() && (
             <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">
