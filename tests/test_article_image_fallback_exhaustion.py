@@ -4,6 +4,7 @@ import hashlib
 import importlib.util
 import sys
 import unittest
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,19 +22,24 @@ def load_worker():
 
 
 class ArticleImageFallbackExhaustionTests(unittest.TestCase):
-    def test_local_fallback_blocks_when_unique_real_photo_pool_is_exhausted(self):
+    def test_local_fallback_blocks_when_all_40_candidates_are_inside_cooldown(self):
         worker = load_worker()
         post = {
             "id": "unattached-adults-missed-chances-regrets",
             "title": "התמודדות עם תחושת החמצה ברווקות מאוחרת",
         }
-        candidates = worker._candidate_pool(post, set())
-        hashes = {}
-        for source_path, _description in candidates:
+        existing_hashes: set[str] = set()
+        usage: dict[str, int] = {}
+        last_used: dict[str, date] = {}
+
+        for _tier, source_path in worker._candidate_pool(post, set()):
             path = ROOT / source_path
-            if path.is_file():
-                digest = hashlib.sha256(path.read_bytes()).hexdigest()
-                hashes[digest] = 3
+            if not path.is_file():
+                continue
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            existing_hashes.add(digest)
+            usage[digest] = usage.get(digest, 0) + 1
+            last_used[digest] = date.today()
 
         candidate = worker.local_fallback(
             "yanivsa/kesher-website",
@@ -41,7 +47,9 @@ class ArticleImageFallbackExhaustionTests(unittest.TestCase):
             "sha",
             "token",
             [],
-            existing_hashes=set(hashes),
+            existing_hashes=existing_hashes,
+            existing_usage=usage,
+            last_used=last_used,
             banned_paths=set(),
         )
 
