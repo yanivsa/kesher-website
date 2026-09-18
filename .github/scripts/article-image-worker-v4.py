@@ -183,19 +183,32 @@ def _candidate_score(post: dict[str, Any], source_path: str) -> str:
 
 
 def _dynamic_candidates(category: str, banned_paths: set[str]) -> list[tuple[str, str]]:
-    root = REPO_ROOT / "public" / "images" / "generated" / "blog"
-    if not root.is_dir():
-        return []
     hints = CATEGORY_FILENAME_HINTS.get(category, CATEGORY_FILENAME_HINTS["couples"])
     description = CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"])
     candidates: list[tuple[str, str]] = []
-    for path in sorted(root.glob("*.jpg")):
-        relative = path.relative_to(REPO_ROOT).as_posix()
-        stem = path.stem.lower()
-        if relative in banned_paths:
-            continue
-        if any(hint in stem for hint in hints):
-            candidates.append((relative, description))
+
+    generated_root = REPO_ROOT / "public" / "images" / "generated" / "blog"
+    if generated_root.is_dir():
+        # Historical generated/blog PNGs include the abstract placeholders that
+        # caused the regression. Restrict automatic discovery here to JPGs.
+        for path in sorted(generated_root.glob("*.jpg")):
+            relative = path.relative_to(REPO_ROOT).as_posix()
+            stem = path.stem.lower()
+            if relative in banned_paths:
+                continue
+            if any(hint in stem for hint in hints):
+                candidates.append((relative, description))
+
+    bank_root = REPO_ROOT / "public" / "images" / "fallback" / category
+    if bank_root.is_dir():
+        # Assets in the managed fallback bank are generated and pixel-verified
+        # by the trusted library builder, so JPEG and PNG are both eligible.
+        for pattern in ("*.jpg", "*.jpeg", "*.png"):
+            for path in sorted(bank_root.glob(pattern)):
+                relative = path.relative_to(REPO_ROOT).as_posix()
+                if relative not in banned_paths:
+                    candidates.append((relative, description))
+
     return candidates
 
 
