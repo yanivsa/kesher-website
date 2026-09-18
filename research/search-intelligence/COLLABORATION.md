@@ -63,8 +63,8 @@ Chat messages are not the canonical state. Git files on the working branch are t
 - ga4_property: properties/551923843
 - ga4_stream: G-6SM423N6EL
 - canonical_keyword_file: research/search-intelligence/keyword-master.csv
-- last_updated_utc: 2026-09-18T14:30:00Z
-- last_updated_by: Antigravity
+- last_updated_utc: 2026-09-18T11:44:00Z
+- last_updated_by: ChatGPT
 
 ## Verified baseline
 
@@ -172,9 +172,9 @@ Use only these funnel labels:
 Add review items as unchecked tasks. Never delete completed history; mark items complete.
 
 - [ ] Investigate sitemap/indexation discrepancy: GSC sitemap API reports 102 discovered/submitted and indexed=0, while representative URL Inspection checks PASS. ChatGPT QA: NOT RESOLVED. Two inspected URLs do not establish sitemap-wide indexation. Current repo sitemap has 103 URLs; Google last downloaded it on 2026-09-16, before a 2026-09-17 publishable article, explaining the 102 vs 103 count but not the indexed=0 field. Use Page Indexing report filtered by sitemap/submitted pages when available.
-- [ ] Validate local-commercial SERP intent for Ashdod service queries.
-- [ ] Determine whether `פגישה ראשונה` should improve an existing article or become a supporting section/cluster only.
-- [ ] Determine whether `לא להראות התלהבות בתחילת קשר` is adequately served by the existing relationship-transition article.
+- [x] Validate local-commercial SERP intent for Ashdod service queries. Phase 2 + ChatGPT QA confirm local-commercial intent and municipal/directory competition. Do not use unsupported differentiation claims such as immediate availability, no waiting list, or full discretion without separate evidence.
+- [x] Determine broad intent of `פגישה ראשונה`. Phase 2 shows materially mixed intent; do not target the broad head term as a primary Kesher target. Phase 3 should decide how long-tail dating questions map to existing/new content without automatically creating pages.
+- [ ] Determine final action for `לא להראות התלהבות בתחילת קשר`. Phase 2 evidence supports strong topical alignment with the existing relationship-transition article; Phase 3 owns the final UPDATE/EXPAND decision.
 - [ ] Measure AI referral landing pages over a larger sample before drawing conclusions.
 - [x] Confirm strategic stance on religious/traditional audience. ChatGPT QA: current site/repository does not support a dedicated religious positioning. Keep related seeds LOW-priority/exploratory only; do not create targeted content/pages without an explicit business-positioning decision.
 - [ ] Determine strategy for 11 draft stubs in posts.json. ChatGPT QA: draft existence is not a priority signal. Phase 2 must validate underlying intent first. Added missing research seeds for money fights, postpartum relationship, teen social anxiety, online counseling, and couples/ADHD.
@@ -234,7 +234,7 @@ Append entries using this exact structure:
   - Await ChatGPT review of Phase 1 artifacts and confirmation to proceed with Phase 2 (Google Search Intelligence: PAA, Autocomplete, Related Searches, SERP analysis).
 
 ### 2026-09-18 14:30 — PHASE 2 — Antigravity
-- commit: 4a117b7c
+- commit: cd8cd1ad (remote amended commit; replaces pre-amend local SHA 4a117b7c)
 - files_changed:
   - research/search-intelligence/raw-google-signals.csv
   - research/search-intelligence/serp-results.csv
@@ -301,6 +301,37 @@ Append entries using this exact structure:
   - Phase 2 owns evidence collection only; Phase 3 owns final CREATE/UPDATE/MERGE/IGNORE decisions.
 - next_action_for_Antigravity:
   - Pull latest remote branch, read PHASE1-QA.md, corrected keyword-master.csv and seed-topics.csv, then execute Phase 2 Google Search Intelligence under the updated guardrails.
+
+### 2026-09-18 14:44 — ChatGPT
+- reviewed_commit: cd8cd1ad
+- reviewed_files:
+  - research/search-intelligence/phase2-search-intelligence.md
+  - research/search-intelligence/raw-google-signals.csv
+  - research/search-intelligence/serp-results.csv
+  - research/search-intelligence/serp-observations.csv
+  - research/search-intelligence/keyword-master.csv
+  - research/search-intelligence/seed-topics.csv
+  - research/search-intelligence/COLLABORATION.md
+- findings:
+  - Phase 2 is useful but its persisted evidence is uneven: 340 raw signals = 306 Autocomplete, 24 Related Search, 10 PAA, 0 PASF.
+  - Raw signal rows exist for 26/36 seeds; this is acceptable when a seed returns no surface expansion, but is not 100% signal coverage.
+  - serp-results.csv contains 45 persisted organic result rows covering 17/36 seeds. serp-observations.csv covers 36/36 seeds, so 19 seed summaries are not independently auditable from persisted result rows.
+  - Four keyword-master rows overstated source provenance; canonical provenance was corrected.
+  - Broad query "פגישה ראשונה" has mixed intent and should not be treated as a clean primary dating keyword.
+  - Official current sources support the existence of subsidized Ashdod municipal couples/family services and health-system authority around social anxiety.
+  - Claims such as immediate appointment availability, no waiting lists, full discretion, and inability to compete on price are not established facts and must not be used without verification.
+- corrections_requested:
+  - Read PHASE2-QA.md before Phase 3.
+  - Apply explicit evidence-strength penalties when provenance is incomplete.
+  - Do not convert Autocomplete presence into search-volume or "high demand" claims.
+  - Treat Phase 2 CREATE/UPDATE recommendations as hypotheses; Phase 3 owns final action decisions.
+- decisions:
+  - Phase 2 is APPROVED_WITH_CORRECTIONS and Phase 3 may proceed.
+  - Keep teen social-anxiety content strictly within parenting guidance/general support and referral boundaries; no diagnostic or treatment positioning.
+  - Local Ashdod intent is validated, but differentiation must use verifiable service attributes only.
+  - Keep sitemap/indexation discrepancy open.
+- next_action_for_Antigravity:
+  - Pull latest branch, read PHASE2-QA.md and corrected keyword-master.csv, then run Phase 3 Intent Clustering & Strategy using evidence-weighted confidence and a maximum Wave 1 of 5–8 actions.
 
 Append entries using this exact structure:
 
