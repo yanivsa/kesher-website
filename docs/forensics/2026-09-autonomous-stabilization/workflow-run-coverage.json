@@ -1,0 +1,2022 @@
+{
+  "cutoff": "2026-09-17T20:06:06Z",
+  "total_retained_runs": 21442,
+  "partitions": [
+    {
+      "start": "2026-05-15T14:39:25Z",
+      "end": "2026-06-15T22:01:05Z",
+      "expected": 958,
+      "captured": 958
+    },
+    {
+      "start": "2026-06-15T22:01:06Z",
+      "end": "2026-07-17T05:22:45Z",
+      "expected": 696,
+      "captured": 696
+    },
+    {
+      "start": "2026-07-17T05:22:46Z",
+      "end": "2026-07-25T01:13:11Z",
+      "expected": 753,
+      "captured": 753
+    },
+    {
+      "start": "2026-07-25T01:13:12Z",
+      "end": "2026-08-01T21:03:36Z",
+      "expected": 862,
+      "captured": 862
+    },
+    {
+      "start": "2026-08-01T21:03:37Z",
+      "end": "2026-08-05T18:58:49Z",
+      "expected": 486,
+      "captured": 486
+    },
+    {
+      "start": "2026-08-05T18:58:50Z",
+      "end": "2026-08-09T16:54:01Z",
+      "expected": 578,
+      "captured": 578
+    },
+    {
+      "start": "2026-08-09T16:54:02Z",
+      "end": "2026-08-13T14:49:14Z",
+      "expected": 866,
+      "captured": 866
+    },
+    {
+      "start": "2026-08-13T14:49:15Z",
+      "end": "2026-08-15T13:46:50Z",
+      "expected": 214,
+      "captured": 214
+    },
+    {
+      "start": "2026-08-15T13:46:51Z",
+      "end": "2026-08-17T12:44:26Z",
+      "expected": 932,
+      "captured": 932
+    },
+    {
+      "start": "2026-08-17T12:44:27Z",
+      "end": "2026-08-18T12:13:15Z",
+      "expected": 387,
+      "captured": 387
+    },
+    {
+      "start": "2026-08-18T12:13:16Z",
+      "end": "2026-08-19T11:42:03Z",
+      "expected": 693,
+      "captured": 693
+    },
+    {
+      "start": "2026-08-19T11:42:04Z",
+      "end": "2026-08-19T23:26:27Z",
+      "expected": 761,
+      "captured": 761
+    },
+    {
+      "start": "2026-08-19T23:26:28Z",
+      "end": "2026-08-20T11:10:51Z",
+      "expected": 968,
+      "captured": 968
+    },
+    {
+      "start": "2026-08-20T11:10:52Z",
+      "end": "2026-08-21T10:39:39Z",
+      "expected": 842,
+      "captured": 842
+    },
+    {
+      "start": "2026-08-21T10:39:40Z",
+      "end": "2026-08-23T09:37:15Z",
+      "expected": 987,
+      "captured": 987
+    },
+    {
+      "start": "2026-08-23T09:37:16Z",
+      "end": "2026-08-25T08:34:51Z",
+      "expected": 504,
+      "captured": 504
+    },
+    {
+      "start": "2026-08-25T08:34:52Z",
+      "end": "2026-08-29T06:30:04Z",
+      "expected": 952,
+      "captured": 952
+    },
+    {
+      "start": "2026-08-29T06:30:05Z",
+      "end": "2026-08-31T05:27:40Z",
+      "expected": 873,
+      "captured": 873
+    },
+    {
+      "start": "2026-08-31T05:27:41Z",
+      "end": "2026-09-02T04:25:16Z",
+      "expected": 959,
+      "captured": 959
+    },
+    {
+      "start": "2026-09-02T04:25:17Z",
+      "end": "2026-09-03T03:54:05Z",
+      "expected": 476,
+      "captured": 476
+    },
+    {
+      "start": "2026-09-03T03:54:06Z",
+      "end": "2026-09-04T03:22:53Z",
+      "expected": 787,
+      "captured": 787
+    },
+    {
+      "start": "2026-09-04T03:22:54Z",
+      "end": "2026-09-06T02:20:29Z",
+      "expected": 878,
+      "captured": 878
+    },
+    {
+      "start": "2026-09-06T02:20:30Z",
+      "end": "2026-09-08T01:18:05Z",
+      "expected": 660,
+      "captured": 660
+    },
+    {
+      "start": "2026-09-08T01:18:06Z",
+      "end": "2026-09-09T00:46:53Z",
+      "expected": 221,
+      "captured": 221
+    },
+    {
+      "start": "2026-09-09T00:46:54Z",
+      "end": "2026-09-10T00:15:41Z",
+      "expected": 826,
+      "captured": 826
+    },
+    {
+      "start": "2026-09-10T00:15:42Z",
+      "end": "2026-09-11T23:13:18Z",
+      "expected": 882,
+      "captured": 882
+    },
+    {
+      "start": "2026-09-11T23:13:19Z",
+      "end": "2026-09-13T22:10:54Z",
+      "expected": 147,
+      "captured": 147
+    },
+    {
+      "start": "2026-09-13T22:10:55Z",
+      "end": "2026-09-15T21:08:30Z",
+      "expected": 757,
+      "captured": 757
+    },
+    {
+      "start": "2026-09-15T21:08:31Z",
+      "end": "2026-09-16T20:37:18Z",
+      "expected": 880,
+      "captured": 880
+    },
+    {
+      "start": "2026-09-16T20:37:19Z",
+      "end": "2026-09-17T20:06:06Z",
+      "expected": 657,
+      "captured": 657
+    }
+  ],
+  "workflows": [
+    {
+      "path": ".github/workflows/aboutideasnow-submit-once.yml",
+      "present_on_capture_main": false,
+      "runs": 2,
+      "first": "2026-09-01T07:55:50Z",
+      "last": "2026-09-01T08:09:55Z",
+      "conclusions": {
+        "failure": 2
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 33485636612
+    },
+    {
+      "path": ".github/workflows/apply-controller-artifact-redirect.yml",
+      "present_on_capture_main": false,
+      "runs": 2,
+      "first": "2026-08-19T16:45:42Z",
+      "last": "2026-08-19T16:45:59Z",
+      "conclusions": {
+        "failure": 1,
+        "success": 1
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 32277782863
+    },
+    {
+      "path": ".github/workflows/apply-controller-production-run-filter.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-08-19T16:37:15Z",
+      "last": "2026-08-19T16:37:15Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 32276948411
+    },
+    {
+      "path": ".github/workflows/apply-keep-video-state-history.yml",
+      "present_on_capture_main": false,
+      "runs": 2,
+      "first": "2026-08-19T17:26:37Z",
+      "last": "2026-08-19T17:27:34Z",
+      "conclusions": {
+        "failure": 2
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 32281708584
+    },
+    {
+      "path": ".github/workflows/apply-single-scheduler-video-patch.yml",
+      "present_on_capture_main": false,
+      "runs": 2,
+      "first": "2026-08-19T17:02:10Z",
+      "last": "2026-08-19T17:06:23Z",
+      "conclusions": {
+        "failure": 2
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 32279706875
+    },
+    {
+      "path": ".github/workflows/apply-video-retry-test-patch.yml",
+      "present_on_capture_main": false,
+      "runs": 2,
+      "first": "2026-08-19T16:59:13Z",
+      "last": "2026-08-19T17:01:16Z",
+      "conclusions": {
+        "failure": 1,
+        "success": 1
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 32279228986
+    },
+    {
+      "path": ".github/workflows/apply-video-review-contract.yml",
+      "present_on_capture_main": false,
+      "runs": 8,
+      "first": "2026-08-19T16:39:16Z",
+      "last": "2026-08-19T16:52:35Z",
+      "conclusions": {
+        "failure": 7,
+        "success": 1
+      },
+      "events": {
+        "push": 8
+      },
+      "retried_runs": [],
+      "latest_run_id": 32278408391
+    },
+    {
+      "path": ".github/workflows/apply-video-state-fallback-patch.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-08-19T17:22:33Z",
+      "last": "2026-08-19T17:22:33Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 32281233702
+    },
+    {
+      "path": ".github/workflows/apply-weekend-video-schedule-fix.yml",
+      "present_on_capture_main": false,
+      "runs": 8,
+      "first": "2026-08-15T17:25:49Z",
+      "last": "2026-08-18T08:12:34Z",
+      "conclusions": {
+        "failure": 7,
+        "success": 1
+      },
+      "events": {
+        "push": 8
+      },
+      "retried_runs": [],
+      "latest_run_id": 32115203047
+    },
+    {
+      "path": ".github/workflows/article-video-preview.yml",
+      "present_on_capture_main": false,
+      "runs": 4,
+      "first": "2026-08-26T17:54:28Z",
+      "last": "2026-08-26T19:34:06Z",
+      "conclusions": {
+        "cancelled": 1,
+        "failure": 1,
+        "success": 2
+      },
+      "events": {
+        "push": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 33005839021
+    },
+    {
+      "path": ".github/workflows/auto-close-noop-prs.yml",
+      "present_on_capture_main": true,
+      "runs": 124,
+      "first": "2026-05-18T07:08:25Z",
+      "last": "2026-09-17T08:45:34Z",
+      "conclusions": {
+        "success": 124
+      },
+      "events": {
+        "schedule": 123,
+        "workflow_dispatch": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 35201414694
+    },
+    {
+      "path": ".github/workflows/auto-close-stale-article-prs.yml",
+      "present_on_capture_main": true,
+      "runs": 111,
+      "first": "2026-05-30T05:55:16Z",
+      "last": "2026-09-17T07:35:24Z",
+      "conclusions": {
+        "success": 111
+      },
+      "events": {
+        "schedule": 111
+      },
+      "retried_runs": [],
+      "latest_run_id": 35195286477
+    },
+    {
+      "path": ".github/workflows/auto-merge-article-prs.yml",
+      "present_on_capture_main": true,
+      "runs": 2481,
+      "first": "2026-05-29T12:20:15Z",
+      "last": "2026-09-16T07:58:29Z",
+      "conclusions": {
+        "success": 1991,
+        "failure": 68,
+        "cancelled": 422
+      },
+      "events": {
+        "pull_request_target": 1011,
+        "schedule": 125,
+        "workflow_run": 1312,
+        "workflow_dispatch": 33
+      },
+      "retried_runs": [],
+      "latest_run_id": 35071272467
+    },
+    {
+      "path": ".github/workflows/auto-merge-jules-audit-prs.yml",
+      "present_on_capture_main": true,
+      "runs": 5978,
+      "first": "2026-05-25T08:45:47Z",
+      "last": "2026-09-17T19:54:46Z",
+      "conclusions": {
+        "failure": 17,
+        "success": 5771,
+        "cancelled": 190
+      },
+      "events": {
+        "schedule": 978,
+        "pull_request_target": 2268,
+        "workflow_dispatch": 11,
+        "workflow_run": 2719,
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 35267668438
+    },
+    {
+      "path": ".github/workflows/booking-tracking-infrastructure.yml",
+      "present_on_capture_main": true,
+      "runs": 9,
+      "first": "2026-08-20T05:04:01Z",
+      "last": "2026-09-02T04:53:09Z",
+      "conclusions": {
+        "failure": 5,
+        "success": 4
+      },
+      "events": {
+        "push": 9
+      },
+      "retried_runs": [
+        32348941985
+      ],
+      "latest_run_id": 33592512066
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "present_on_capture_main": true,
+      "runs": 2934,
+      "first": "2026-06-11T20:50:52Z",
+      "last": "2026-09-17T19:50:50Z",
+      "conclusions": {
+        "success": 2017,
+        "cancelled": 508,
+        "failure": 396,
+        "action_required": 13
+      },
+      "events": {
+        "pull_request": 2009,
+        "push": 733,
+        "workflow_dispatch": 192
+      },
+      "retried_runs": [
+        29466073051,
+        29893403298,
+        30139088344,
+        30370507911,
+        31574802795,
+        32218985600,
+        32223793983,
+        32361152093,
+        33716243943,
+        33827558306,
+        34050806132,
+        34324019511,
+        35182974366
+      ],
+      "latest_run_id": 35267287587
+    },
+    {
+      "path": ".github/workflows/cleanup-jules-branches.yml",
+      "present_on_capture_main": true,
+      "runs": 685,
+      "first": "2026-05-18T04:47:11Z",
+      "last": "2026-09-17T19:50:49Z",
+      "conclusions": {
+        "success": 671,
+        "failure": 12,
+        "cancelled": 2
+      },
+      "events": {
+        "pull_request": 558,
+        "schedule": 122,
+        "workflow_dispatch": 5
+      },
+      "retried_runs": [],
+      "latest_run_id": 35267286612
+    },
+    {
+      "path": ".github/workflows/codex-seo-audit.yml",
+      "present_on_capture_main": true,
+      "runs": 31,
+      "first": "2026-09-02T17:10:56Z",
+      "last": "2026-09-17T11:30:46Z",
+      "conclusions": {
+        "success": 29,
+        "cancelled": 1,
+        "failure": 1
+      },
+      "events": {
+        "pull_request": 29,
+        "schedule": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 35216071237
+    },
+    {
+      "path": ".github/workflows/deploy-preferred-sources-preview.yml",
+      "present_on_capture_main": false,
+      "runs": 4,
+      "first": "2026-08-27T13:13:31Z",
+      "last": "2026-08-27T13:22:10Z",
+      "conclusions": {
+        "failure": 1,
+        "success": 3
+      },
+      "events": {
+        "push": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 33076460704
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "present_on_capture_main": true,
+      "runs": 870,
+      "first": "2026-05-31T17:44:53Z",
+      "last": "2026-09-17T19:50:50Z",
+      "conclusions": {
+        "success": 649,
+        "cancelled": 160,
+        "failure": 61
+      },
+      "events": {
+        "push": 789,
+        "workflow_dispatch": 81
+      },
+      "retried_runs": [
+        30383816538,
+        34784627580
+      ],
+      "latest_run_id": 35267287549
+    },
+    {
+      "path": ".github/workflows/dispatch-ahava-android-once.yml",
+      "present_on_capture_main": false,
+      "runs": 4,
+      "first": "2026-09-14T05:39:06Z",
+      "last": "2026-09-14T05:42:45Z",
+      "conclusions": {
+        "failure": 4
+      },
+      "events": {
+        "push": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 34810617431
+    },
+    {
+      "path": ".github/workflows/dispatch-ahava-jules.yml",
+      "present_on_capture_main": false,
+      "runs": 2,
+      "first": "2026-09-14T05:46:08Z",
+      "last": "2026-09-14T05:46:36Z",
+      "conclusions": {
+        "failure": 2
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 34810862314
+    },
+    {
+      "path": ".github/workflows/goal-e2e-isolation-patch.yml",
+      "present_on_capture_main": false,
+      "runs": 4,
+      "first": "2026-09-10T07:24:41Z",
+      "last": "2026-09-10T08:02:04Z",
+      "conclusions": {
+        "failure": 4
+      },
+      "events": {
+        "push": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 34452994461
+    },
+    {
+      "path": ".github/workflows/google-ads-api-audit.yml",
+      "present_on_capture_main": true,
+      "runs": 1,
+      "first": "2026-09-01T08:45:24Z",
+      "last": "2026-09-01T08:45:24Z",
+      "conclusions": {
+        "failure": 1
+      },
+      "events": {
+        "workflow_dispatch": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 33488670517
+    },
+    {
+      "path": ".github/workflows/jules-daily-industry-benchmarking.yml",
+      "present_on_capture_main": true,
+      "runs": 108,
+      "first": "2026-06-07T01:39:36Z",
+      "last": "2026-09-17T01:39:33Z",
+      "conclusions": {
+        "success": 95,
+        "failure": 13
+      },
+      "events": {
+        "schedule": 101,
+        "workflow_dispatch": 3,
+        "push": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 35171403163
+    },
+    {
+      "path": ".github/workflows/jules-daily-mobile-review.yml",
+      "present_on_capture_main": true,
+      "runs": 120,
+      "first": "2026-05-26T00:16:03Z",
+      "last": "2026-09-17T01:30:35Z",
+      "conclusions": {
+        "success": 101,
+        "failure": 19
+      },
+      "events": {
+        "schedule": 113,
+        "workflow_dispatch": 3,
+        "push": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 35170828594
+    },
+    {
+      "path": ".github/workflows/jules-daily-seo-geo-review.yml",
+      "present_on_capture_main": true,
+      "runs": 125,
+      "first": "2026-05-26T01:25:21Z",
+      "last": "2026-09-17T01:32:30Z",
+      "conclusions": {
+        "success": 110,
+        "failure": 14,
+        "cancelled": 1
+      },
+      "events": {
+        "schedule": 113,
+        "workflow_dispatch": 8,
+        "push": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 35170955207
+    },
+    {
+      "path": ".github/workflows/jules-nightly-site-fixes.yml",
+      "present_on_capture_main": true,
+      "runs": 132,
+      "first": "2026-05-16T19:01:58Z",
+      "last": "2026-09-17T00:34:00Z",
+      "conclusions": {
+        "success": 112,
+        "failure": 20
+      },
+      "events": {
+        "workflow_dispatch": 6,
+        "schedule": 124,
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 35167076312
+    },
+    {
+      "path": ".github/workflows/jules-preferred-sources-canary.yml",
+      "present_on_capture_main": false,
+      "runs": 2,
+      "first": "2026-08-26T19:22:48Z",
+      "last": "2026-08-26T22:33:43Z",
+      "conclusions": {
+        "success": 1,
+        "cancelled": 1
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [
+        33004832117
+      ],
+      "latest_run_id": 33020089325
+    },
+    {
+      "path": ".github/workflows/jules-weekday-article.yml",
+      "present_on_capture_main": false,
+      "runs": 89,
+      "first": "2026-05-16T19:01:58Z",
+      "last": "2026-08-18T21:50:59Z",
+      "conclusions": {
+        "success": 79,
+        "failure": 10
+      },
+      "events": {
+        "workflow_dispatch": 15,
+        "schedule": 69,
+        "push": 5
+      },
+      "retried_runs": [],
+      "latest_run_id": 32189841057
+    },
+    {
+      "path": ".github/workflows/jules-weekend-article.yml",
+      "present_on_capture_main": false,
+      "runs": 13,
+      "first": "2026-08-15T17:24:54Z",
+      "last": "2026-08-15T20:05:29Z",
+      "conclusions": {
+        "failure": 6,
+        "success": 7
+      },
+      "events": {
+        "push": 6,
+        "schedule": 6,
+        "workflow_dispatch": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 31905740727
+    },
+    {
+      "path": ".github/workflows/jules-weekly-content-review.yml",
+      "present_on_capture_main": true,
+      "runs": 21,
+      "first": "2026-05-31T00:12:15Z",
+      "last": "2026-09-13T00:57:16Z",
+      "conclusions": {
+        "success": 17,
+        "failure": 4
+      },
+      "events": {
+        "schedule": 16,
+        "push": 4,
+        "workflow_dispatch": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34729286135
+    },
+    {
+      "path": ".github/workflows/kesher-activate-media-mode-fix.yml",
+      "present_on_capture_main": true,
+      "runs": 10,
+      "first": "2026-09-10T07:29:35Z",
+      "last": "2026-09-15T15:24:57Z",
+      "conclusions": {
+        "failure": 10
+      },
+      "events": {
+        "push": 10
+      },
+      "retried_runs": [],
+      "latest_run_id": 34988286928
+    },
+    {
+      "path": ".github/workflows/kesher-article-generation.yml",
+      "present_on_capture_main": true,
+      "runs": 63,
+      "first": "2026-08-19T21:41:29Z",
+      "last": "2026-09-16T22:23:06Z",
+      "conclusions": {
+        "failure": 37,
+        "success": 26
+      },
+      "events": {
+        "workflow_dispatch": 61,
+        "push": 2
+      },
+      "retried_runs": [
+        32336909431,
+        33082929463,
+        33157413845,
+        33269290594,
+        33819114085,
+        34318854741,
+        34412126137,
+        34568054264,
+        34589250142
+      ],
+      "latest_run_id": 35157408023
+    },
+    {
+      "path": ".github/workflows/kesher-article-image.yml",
+      "present_on_capture_main": true,
+      "runs": 45,
+      "first": "2026-08-20T16:01:07Z",
+      "last": "2026-09-17T00:47:04Z",
+      "conclusions": {
+        "success": 40,
+        "cancelled": 2,
+        "failure": 3
+      },
+      "events": {
+        "pull_request_target": 11,
+        "workflow_dispatch": 34
+      },
+      "retried_runs": [
+        33504978751,
+        33726421611,
+        33985785381
+      ],
+      "latest_run_id": 35167951534
+    },
+    {
+      "path": ".github/workflows/kesher-auth-precedence-branch-patch.yml",
+      "present_on_capture_main": false,
+      "runs": 3,
+      "first": "2026-09-15T05:21:54Z",
+      "last": "2026-09-15T05:25:43Z",
+      "conclusions": {
+        "failure": 2,
+        "success": 1
+      },
+      "events": {
+        "push": 3
+      },
+      "retried_runs": [],
+      "latest_run_id": 34932693682
+    },
+    {
+      "path": ".github/workflows/kesher-backlog-media-recovery.yml",
+      "present_on_capture_main": true,
+      "runs": 11,
+      "first": "2026-09-05T23:23:19Z",
+      "last": "2026-09-16T17:33:10Z",
+      "conclusions": {
+        "success": 8,
+        "failure": 3
+      },
+      "events": {
+        "workflow_dispatch": 11
+      },
+      "retried_runs": [],
+      "latest_run_id": 35128893387
+    },
+    {
+      "path": ".github/workflows/kesher-canary-force-now.yml",
+      "present_on_capture_main": true,
+      "runs": 309,
+      "first": "2026-08-20T21:14:52Z",
+      "last": "2026-08-28T09:29:12Z",
+      "conclusions": {
+        "success": 238,
+        "cancelled": 30,
+        "failure": 13,
+        "skipped": 28
+      },
+      "events": {
+        "push": 3,
+        "workflow_run": 119,
+        "schedule": 187
+      },
+      "retried_runs": [],
+      "latest_run_id": 33159560700
+    },
+    {
+      "path": ".github/workflows/kesher-content-controller-v6.yml",
+      "present_on_capture_main": true,
+      "runs": 91,
+      "first": "2026-09-06T06:47:45Z",
+      "last": "2026-09-17T07:14:53Z",
+      "conclusions": {
+        "success": 57,
+        "failure": 13,
+        "cancelled": 21
+      },
+      "events": {
+        "pull_request": 91
+      },
+      "retried_runs": [],
+      "latest_run_id": 35193586459
+    },
+    {
+      "path": ".github/workflows/kesher-content-controller.yml",
+      "present_on_capture_main": true,
+      "runs": 1936,
+      "first": "2026-08-19T16:41:35Z",
+      "last": "2026-09-17T19:55:06Z",
+      "conclusions": {
+        "failure": 189,
+        "skipped": 532,
+        "cancelled": 198,
+        "success": 1015,
+        "startup_failure": 1,
+        "null": 1
+      },
+      "events": {
+        "push": 427,
+        "schedule": 374,
+        "workflow_run": 1127,
+        "workflow_dispatch": 8
+      },
+      "retried_runs": [
+        33370376206,
+        33396749287,
+        33850556558,
+        33905801777,
+        33918828569,
+        33975385469,
+        33981661056,
+        33983836722,
+        34024456148,
+        34099919037,
+        34368540114,
+        34381422033,
+        34416506385,
+        34435850148,
+        34592764623,
+        34881389044,
+        34899526703,
+        34908997784,
+        34988766808,
+        35000444163,
+        35040444361
+      ],
+      "latest_run_id": 35267701321
+    },
+    {
+      "path": ".github/workflows/kesher-current-article-public-check.yml",
+      "present_on_capture_main": true,
+      "runs": 9,
+      "first": "2026-09-10T07:32:00Z",
+      "last": "2026-09-15T15:24:57Z",
+      "conclusions": {
+        "success": 9
+      },
+      "events": {
+        "push": 9
+      },
+      "retried_runs": [],
+      "latest_run_id": 34988287326
+    },
+    {
+      "path": ".github/workflows/kesher-current-gifted-completion.yml",
+      "present_on_capture_main": true,
+      "runs": 9,
+      "first": "2026-09-10T07:18:29Z",
+      "last": "2026-09-15T15:24:57Z",
+      "conclusions": {
+        "failure": 8,
+        "cancelled": 1
+      },
+      "events": {
+        "push": 9
+      },
+      "retried_runs": [],
+      "latest_run_id": 34988287022
+    },
+    {
+      "path": ".github/workflows/kesher-daily-video.yml",
+      "present_on_capture_main": true,
+      "runs": 863,
+      "first": "2026-08-10T11:47:42Z",
+      "last": "2026-09-17T20:02:39Z",
+      "conclusions": {
+        "failure": 136,
+        "success": 553,
+        "cancelled": 173,
+        "null": 1
+      },
+      "events": {
+        "pull_request": 625,
+        "workflow_dispatch": 209,
+        "schedule": 29
+      },
+      "retried_runs": [
+        31392568585,
+        31401276408,
+        31405695228,
+        31625231892,
+        31907536975,
+        32052574331,
+        32184819351,
+        32198888908,
+        32239968585,
+        32257473714,
+        33856207852,
+        34028917741,
+        34309322629,
+        34436081709,
+        34437370962,
+        34921610546,
+        34954551532,
+        35043895173,
+        35057155405,
+        35078910831,
+        35197236389
+      ],
+      "latest_run_id": 35268437520
+    },
+    {
+      "path": ".github/workflows/kesher-e2e-test-continuation.yml",
+      "present_on_capture_main": true,
+      "runs": 1,
+      "first": "2026-09-06T10:28:30Z",
+      "last": "2026-09-06T10:28:30Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34027520026
+    },
+    {
+      "path": ".github/workflows/kesher-final-attempt-fallback.yml",
+      "present_on_capture_main": true,
+      "runs": 133,
+      "first": "2026-09-10T05:26:02Z",
+      "last": "2026-09-17T19:47:07Z",
+      "conclusions": {
+        "skipped": 86,
+        "success": 42,
+        "failure": 5
+      },
+      "events": {
+        "workflow_run": 133
+      },
+      "retried_runs": [],
+      "latest_run_id": 35266925269
+    },
+    {
+      "path": ".github/workflows/kesher-gifted-auth-refresh-once.yml",
+      "present_on_capture_main": false,
+      "runs": 9,
+      "first": "2026-09-10T09:28:00Z",
+      "last": "2026-09-10T09:33:40Z",
+      "conclusions": {
+        "failure": 9
+      },
+      "events": {
+        "push": 9
+      },
+      "retried_runs": [],
+      "latest_run_id": 34461304145
+    },
+    {
+      "path": ".github/workflows/kesher-gifted-direct-recovery.yml",
+      "present_on_capture_main": true,
+      "runs": 1,
+      "first": "2026-09-10T06:35:22Z",
+      "last": "2026-09-10T06:35:22Z",
+      "conclusions": {
+        "failure": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34445880689
+    },
+    {
+      "path": ".github/workflows/kesher-gifted-short-dispatch.yml",
+      "present_on_capture_main": true,
+      "runs": 19,
+      "first": "2026-09-10T07:12:42Z",
+      "last": "2026-09-10T09:33:40Z",
+      "conclusions": {
+        "success": 6,
+        "failure": 13
+      },
+      "events": {
+        "push": 19
+      },
+      "retried_runs": [],
+      "latest_run_id": 34461305456
+    },
+    {
+      "path": ".github/workflows/kesher-historical-media-scan.yml",
+      "present_on_capture_main": false,
+      "runs": 3,
+      "first": "2026-09-10T08:56:42Z",
+      "last": "2026-09-10T08:58:08Z",
+      "conclusions": {
+        "failure": 3
+      },
+      "events": {
+        "push": 3
+      },
+      "retried_runs": [],
+      "latest_run_id": 34458034721
+    },
+    {
+      "path": ".github/workflows/kesher-historical-recovery-dispatch.yml",
+      "present_on_capture_main": false,
+      "runs": 5,
+      "first": "2026-09-09T06:22:13Z",
+      "last": "2026-09-09T06:30:16Z",
+      "conclusions": {
+        "failure": 1,
+        "success": 4
+      },
+      "events": {
+        "push": 5
+      },
+      "retried_runs": [],
+      "latest_run_id": 34319354717
+    },
+    {
+      "path": ".github/workflows/kesher-historical-short-finalizer.yml",
+      "present_on_capture_main": true,
+      "runs": 1,
+      "first": "2026-09-09T06:39:32Z",
+      "last": "2026-09-09T06:39:32Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34320067921
+    },
+    {
+      "path": ".github/workflows/kesher-invidious-media-recovery.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-09-10T09:01:14Z",
+      "last": "2026-09-10T09:01:14Z",
+      "conclusions": {
+        "failure": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34458322180
+    },
+    {
+      "path": ".github/workflows/kesher-master-supervisor.yml",
+      "present_on_capture_main": true,
+      "runs": 375,
+      "first": "2026-09-15T22:43:21Z",
+      "last": "2026-09-17T20:02:50Z",
+      "conclusions": {
+        "success": 260,
+        "skipped": 30,
+        "cancelled": 85
+      },
+      "events": {
+        "workflow_run": 364,
+        "schedule": 11
+      },
+      "retried_runs": [
+        35034617705,
+        35048497774
+      ],
+      "latest_run_id": 35268455597
+    },
+    {
+      "path": ".github/workflows/kesher-notebooklm-auth-recover-short.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-09-10T07:52:18Z",
+      "last": "2026-09-10T07:52:18Z",
+      "conclusions": {
+        "failure": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34452151480
+    },
+    {
+      "path": ".github/workflows/kesher-piped-media-recovery.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-09-10T08:59:49Z",
+      "last": "2026-09-10T08:59:49Z",
+      "conclusions": {
+        "failure": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34458182218
+    },
+    {
+      "path": ".github/workflows/kesher-remotion-evidence-repair.yml",
+      "present_on_capture_main": true,
+      "runs": 4,
+      "first": "2026-09-16T05:40:00Z",
+      "last": "2026-09-16T12:54:35Z",
+      "conclusions": {
+        "success": 3,
+        "failure": 1
+      },
+      "events": {
+        "workflow_dispatch": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 35098592524
+    },
+    {
+      "path": ".github/workflows/kesher-repair-exact-video-state.yml",
+      "present_on_capture_main": true,
+      "runs": 1,
+      "first": "2026-09-17T16:35:45Z",
+      "last": "2026-09-17T16:35:45Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "workflow_dispatch": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 35247554674
+    },
+    {
+      "path": ".github/workflows/kesher-short-recovery-embedded.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-09-10T08:51:13Z",
+      "last": "2026-09-10T08:51:13Z",
+      "conclusions": {
+        "failure": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34457412193
+    },
+    {
+      "path": ".github/workflows/kesher-short-recovery-phase2.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-09-10T08:08:10Z",
+      "last": "2026-09-10T08:08:10Z",
+      "conclusions": {
+        "failure": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34453539960
+    },
+    {
+      "path": ".github/workflows/kesher-short-v4.yml",
+      "present_on_capture_main": true,
+      "runs": 269,
+      "first": "2026-09-03T11:48:36Z",
+      "last": "2026-09-17T18:54:19Z",
+      "conclusions": {
+        "failure": 55,
+        "cancelled": 30,
+        "success": 184
+      },
+      "events": {
+        "pull_request": 165,
+        "workflow_dispatch": 104
+      },
+      "retried_runs": [
+        34037531413,
+        34052511251,
+        34319307693,
+        34381889612,
+        34450216435,
+        35056191269,
+        35056191449
+      ],
+      "latest_run_id": 35261652443
+    },
+    {
+      "path": ".github/workflows/kesher-short-verified-overview-recovery.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-09-10T08:05:30Z",
+      "last": "2026-09-10T08:05:30Z",
+      "conclusions": {
+        "failure": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34453300229
+    },
+    {
+      "path": ".github/workflows/kesher-stability-pr.yml",
+      "present_on_capture_main": true,
+      "runs": 1277,
+      "first": "2026-08-19T18:47:16Z",
+      "last": "2026-09-17T19:46:06Z",
+      "conclusions": {
+        "failure": 77,
+        "success": 1052,
+        "cancelled": 135,
+        "action_required": 13
+      },
+      "events": {
+        "pull_request": 1277
+      },
+      "retried_runs": [],
+      "latest_run_id": 35266825108
+    },
+    {
+      "path": ".github/workflows/kesher-target-slug-regression-check.yml",
+      "present_on_capture_main": true,
+      "runs": 23,
+      "first": "2026-09-10T07:21:47Z",
+      "last": "2026-09-17T11:30:43Z",
+      "conclusions": {
+        "failure": 2,
+        "success": 21
+      },
+      "events": {
+        "push": 23
+      },
+      "retried_runs": [],
+      "latest_run_id": 35216066807
+    },
+    {
+      "path": ".github/workflows/kesher-task-supervisor-controller.yml",
+      "present_on_capture_main": true,
+      "runs": 141,
+      "first": "2026-08-29T18:08:04Z",
+      "last": "2026-09-15T23:08:34Z",
+      "conclusions": {
+        "success": 135,
+        "cancelled": 4,
+        "failure": 2
+      },
+      "events": {
+        "pull_request": 32,
+        "push": 10,
+        "schedule": 99
+      },
+      "retried_runs": [
+        33268248991,
+        33823819602,
+        33925035598
+      ],
+      "latest_run_id": 35034307702
+    },
+    {
+      "path": ".github/workflows/kesher-video-canary-dispatch.yml",
+      "present_on_capture_main": true,
+      "runs": 3,
+      "first": "2026-08-13T04:01:29Z",
+      "last": "2026-08-15T20:45:03Z",
+      "conclusions": {
+        "success": 3
+      },
+      "events": {
+        "push": 3
+      },
+      "retried_runs": [],
+      "latest_run_id": 31907531824
+    },
+    {
+      "path": ".github/workflows/kesher-video-canary-review-upload.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-08-13T04:27:45Z",
+      "last": "2026-08-13T04:27:45Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 31667089848
+    },
+    {
+      "path": ".github/workflows/kesher-weekend-video-scheduler.yml",
+      "present_on_capture_main": false,
+      "runs": 5,
+      "first": "2026-08-15T17:47:09Z",
+      "last": "2026-08-15T19:46:44Z",
+      "conclusions": {
+        "success": 5
+      },
+      "events": {
+        "schedule": 5
+      },
+      "retried_runs": [],
+      "latest_run_id": 31904874264
+    },
+    {
+      "path": ".github/workflows/kesher-youtube-advisory-upload.yml",
+      "present_on_capture_main": false,
+      "runs": 111,
+      "first": "2026-08-13T03:30:33Z",
+      "last": "2026-08-19T05:21:47Z",
+      "conclusions": {
+        "failure": 15,
+        "success": 23,
+        "skipped": 72,
+        "cancelled": 1
+      },
+      "events": {
+        "workflow_run": 107,
+        "push": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 32219135830
+    },
+    {
+      "path": ".github/workflows/kesher-youtube-embed-media-probe.yml",
+      "present_on_capture_main": false,
+      "runs": 2,
+      "first": "2026-09-10T08:55:49Z",
+      "last": "2026-09-10T09:02:40Z",
+      "conclusions": {
+        "cancelled": 1,
+        "failure": 1
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 34458453492
+    },
+    {
+      "path": ".github/workflows/normalize-article-pr.yml",
+      "present_on_capture_main": true,
+      "runs": 22,
+      "first": "2026-09-08T05:10:42Z",
+      "last": "2026-09-14T23:28:41Z",
+      "conclusions": {
+        "success": 7,
+        "failure": 15
+      },
+      "events": {
+        "workflow_dispatch": 22
+      },
+      "retried_runs": [],
+      "latest_run_id": 34909040824
+    },
+    {
+      "path": ".github/workflows/oci-a1-capacity-watch.yml",
+      "present_on_capture_main": true,
+      "runs": 633,
+      "first": "2026-08-13T04:28:26Z",
+      "last": "2026-09-17T19:02:04Z",
+      "conclusions": {
+        "success": 198,
+        "failure": 435
+      },
+      "events": {
+        "push": 4,
+        "schedule": 629
+      },
+      "retried_runs": [],
+      "latest_run_id": 35262438707
+    },
+    {
+      "path": ".github/workflows/oci-bridge-repair-beta-20260901.yml",
+      "present_on_capture_main": true,
+      "runs": 2,
+      "first": "2026-09-01T12:25:19Z",
+      "last": "2026-09-03T09:08:50Z",
+      "conclusions": {
+        "success": 1,
+        "failure": 1
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 33737223482
+    },
+    {
+      "path": ".github/workflows/oci-bridge-repair-inherit-20260901.yml",
+      "present_on_capture_main": true,
+      "runs": 2,
+      "first": "2026-09-01T12:19:40Z",
+      "last": "2026-09-03T09:08:50Z",
+      "conclusions": {
+        "failure": 2
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 33737223484
+    },
+    {
+      "path": ".github/workflows/oci-bridge-restore-20260901.yml",
+      "present_on_capture_main": true,
+      "runs": 9,
+      "first": "2026-09-01T11:25:11Z",
+      "last": "2026-09-03T09:50:57Z",
+      "conclusions": {
+        "failure": 7,
+        "success": 2
+      },
+      "events": {
+        "push": 9
+      },
+      "retried_runs": [],
+      "latest_run_id": 33741101290
+    },
+    {
+      "path": ".github/workflows/oci-openclaw-plan-b-e2.yml",
+      "present_on_capture_main": true,
+      "runs": 18,
+      "first": "2026-08-14T08:38:53Z",
+      "last": "2026-09-02T04:53:09Z",
+      "conclusions": {
+        "success": 9,
+        "failure": 9
+      },
+      "events": {
+        "push": 18
+      },
+      "retried_runs": [
+        31901576554
+      ],
+      "latest_run_id": 33592511998
+    },
+    {
+      "path": ".github/workflows/oci-openclaw-provision-v2.yml",
+      "present_on_capture_main": true,
+      "runs": 5,
+      "first": "2026-08-13T04:19:32Z",
+      "last": "2026-09-02T04:53:09Z",
+      "conclusions": {
+        "failure": 3,
+        "startup_failure": 1,
+        "success": 1
+      },
+      "events": {
+        "push": 5
+      },
+      "retried_runs": [
+        31666661477,
+        31666856848
+      ],
+      "latest_run_id": 33592511990
+    },
+    {
+      "path": ".github/workflows/oci-openclaw-provision.yml",
+      "present_on_capture_main": true,
+      "runs": 5,
+      "first": "2026-08-13T04:12:57Z",
+      "last": "2026-09-02T04:53:09Z",
+      "conclusions": {
+        "failure": 4,
+        "success": 1
+      },
+      "events": {
+        "push": 5
+      },
+      "retried_runs": [],
+      "latest_run_id": 33592511915
+    },
+    {
+      "path": ".github/workflows/oci-secure-bridge-bootstrap.yml",
+      "present_on_capture_main": true,
+      "runs": 2,
+      "first": "2026-08-13T04:04:45Z",
+      "last": "2026-09-01T09:01:11Z",
+      "conclusions": {
+        "success": 2
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 33490025360
+    },
+    {
+      "path": ".github/workflows/one-off-fix-article-policy-test.yml",
+      "present_on_capture_main": false,
+      "runs": 5,
+      "first": "2026-08-12T08:15:21Z",
+      "last": "2026-08-12T08:30:16Z",
+      "conclusions": {
+        "failure": 1,
+        "success": 4
+      },
+      "events": {
+        "push": 5
+      },
+      "retried_runs": [],
+      "latest_run_id": 31578616338
+    },
+    {
+      "path": ".github/workflows/one-time-dispatch-missing-article.yml",
+      "present_on_capture_main": false,
+      "runs": 13,
+      "first": "2026-08-18T14:34:25Z",
+      "last": "2026-08-19T13:19:48Z",
+      "conclusions": {
+        "success": 8,
+        "failure": 5
+      },
+      "events": {
+        "push": 13
+      },
+      "retried_runs": [],
+      "latest_run_id": 32257464880
+    },
+    {
+      "path": ".github/workflows/one-time-repair-missing-hero-20260909.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-09-09T05:38:30Z",
+      "last": "2026-09-09T05:38:30Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34315697184
+    },
+    {
+      "path": ".github/workflows/openclaw-agent-diagnostic.yml",
+      "present_on_capture_main": true,
+      "runs": 1,
+      "first": "2026-09-10T09:15:58Z",
+      "last": "2026-09-10T09:15:58Z",
+      "conclusions": {
+        "failure": 1
+      },
+      "events": {
+        "workflow_dispatch": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34459681122
+    },
+    {
+      "path": ".github/workflows/openclaw-clean-rebuild.yml",
+      "present_on_capture_main": true,
+      "runs": 3,
+      "first": "2026-09-10T07:17:12Z",
+      "last": "2026-09-10T07:28:37Z",
+      "conclusions": {
+        "failure": 3
+      },
+      "events": {
+        "push": 1,
+        "workflow_dispatch": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 34450139088
+    },
+    {
+      "path": ".github/workflows/openclaw-cloudflare-preflight-diagnostic.yml",
+      "present_on_capture_main": true,
+      "runs": 3,
+      "first": "2026-09-01T13:03:25Z",
+      "last": "2026-09-10T07:06:59Z",
+      "conclusions": {
+        "failure": 3
+      },
+      "events": {
+        "push": 1,
+        "workflow_dispatch": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 34448364237
+    },
+    {
+      "path": ".github/workflows/openclaw-cloudflare-setup.yml",
+      "present_on_capture_main": false,
+      "runs": 3,
+      "first": "2026-08-14T11:27:34Z",
+      "last": "2026-08-14T11:30:49Z",
+      "conclusions": {
+        "failure": 3
+      },
+      "events": {
+        "push": 3
+      },
+      "retried_runs": [],
+      "latest_run_id": 31796516450
+    },
+    {
+      "path": ".github/workflows/openclaw-cloudflare-tunnel.yml",
+      "present_on_capture_main": true,
+      "runs": 16,
+      "first": "2026-08-23T07:06:32Z",
+      "last": "2026-09-05T22:24:58Z",
+      "conclusions": {
+        "failure": 16
+      },
+      "events": {
+        "push": 14,
+        "workflow_dispatch": 2
+      },
+      "retried_runs": [
+        33501504152
+      ],
+      "latest_run_id": 33995842486
+    },
+    {
+      "path": ".github/workflows/openclaw-dashboard-preflight.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-08-14T11:24:53Z",
+      "last": "2026-08-14T11:24:53Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 31796112216
+    },
+    {
+      "path": ".github/workflows/openclaw-finalize-tailscale-serve.yml",
+      "present_on_capture_main": true,
+      "runs": 4,
+      "first": "2026-08-16T12:53:12Z",
+      "last": "2026-09-02T04:53:09Z",
+      "conclusions": {
+        "failure": 4
+      },
+      "events": {
+        "push": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 33592511987
+    },
+    {
+      "path": ".github/workflows/openclaw-inspect-tailnet-console.yml",
+      "present_on_capture_main": true,
+      "runs": 8,
+      "first": "2026-08-16T13:15:40Z",
+      "last": "2026-09-10T09:21:24Z",
+      "conclusions": {
+        "success": 4,
+        "failure": 4
+      },
+      "events": {
+        "push": 5,
+        "workflow_dispatch": 3
+      },
+      "retried_runs": [
+        31949312115
+      ],
+      "latest_run_id": 34460177902
+    },
+    {
+      "path": ".github/workflows/openclaw-offline-boot-repair.yml",
+      "present_on_capture_main": true,
+      "runs": 74,
+      "first": "2026-08-16T13:37:55Z",
+      "last": "2026-09-09T20:21:30Z",
+      "conclusions": {
+        "failure": 71,
+        "success": 3
+      },
+      "events": {
+        "push": 55,
+        "workflow_dispatch": 19
+      },
+      "retried_runs": [
+        32434504214,
+        33876258518,
+        33992820864,
+        34374387275
+      ],
+      "latest_run_id": 34400542347
+    },
+    {
+      "path": ".github/workflows/openclaw-preserve-tailnet-recovery.yml",
+      "present_on_capture_main": true,
+      "runs": 6,
+      "first": "2026-08-16T13:06:56Z",
+      "last": "2026-09-02T04:53:09Z",
+      "conclusions": {
+        "cancelled": 1,
+        "failure": 5
+      },
+      "events": {
+        "push": 5,
+        "workflow_dispatch": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 33592511919
+    },
+    {
+      "path": ".github/workflows/openclaw-recovery-controller.yml",
+      "present_on_capture_main": true,
+      "runs": 410,
+      "first": "2026-08-20T07:15:34Z",
+      "last": "2026-09-17T19:37:11Z",
+      "conclusions": {
+        "success": 399,
+        "cancelled": 10,
+        "failure": 1
+      },
+      "events": {
+        "schedule": 393,
+        "workflow_dispatch": 1,
+        "push": 16
+      },
+      "retried_runs": [
+        33992802139
+      ],
+      "latest_run_id": 35265952218
+    },
+    {
+      "path": ".github/workflows/openclaw-recovery-lint.yml",
+      "present_on_capture_main": true,
+      "runs": 142,
+      "first": "2026-09-04T13:58:40Z",
+      "last": "2026-09-17T11:30:42Z",
+      "conclusions": {
+        "success": 130,
+        "failure": 12
+      },
+      "events": {
+        "push": 85,
+        "pull_request": 57
+      },
+      "retried_runs": [],
+      "latest_run_id": 35216065781
+    },
+    {
+      "path": ".github/workflows/repair-article-images.yml",
+      "present_on_capture_main": true,
+      "runs": 2,
+      "first": "2026-08-28T09:26:03Z",
+      "last": "2026-09-07T05:35:16Z",
+      "conclusions": {
+        "failure": 2
+      },
+      "events": {
+        "workflow_dispatch": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 34087376408
+    },
+    {
+      "path": ".github/workflows/s3-pr802-hero-repair.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-09-15T15:13:00Z",
+      "last": "2026-09-15T15:13:00Z",
+      "conclusions": {
+        "failure": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34986927430
+    },
+    {
+      "path": ".github/workflows/s3-v5-provider-resume-repair.yml",
+      "present_on_capture_main": false,
+      "runs": 3,
+      "first": "2026-09-15T12:56:09Z",
+      "last": "2026-09-15T12:57:08Z",
+      "conclusions": {
+        "failure": 3
+      },
+      "events": {
+        "push": 3
+      },
+      "retried_runs": [],
+      "latest_run_id": 34971938316
+    },
+    {
+      "path": ".github/workflows/s3-v5-upload-target-repair.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-09-15T12:41:51Z",
+      "last": "2026-09-15T12:41:51Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 34970379209
+    },
+    {
+      "path": ".github/workflows/tmp-fix-pr763.yml",
+      "present_on_capture_main": false,
+      "runs": 2,
+      "first": "2026-09-10T06:18:00Z",
+      "last": "2026-09-10T06:20:07Z",
+      "conclusions": {
+        "failure": 1,
+        "success": 1
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 34444742508
+    },
+    {
+      "path": ".github/workflows/tmp-repair-pr-582.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-09-03T08:50:58Z",
+      "last": "2026-09-03T08:50:58Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 33735585277
+    },
+    {
+      "path": ".github/workflows/tmp-repair-pr-616.yml",
+      "present_on_capture_main": false,
+      "runs": 5,
+      "first": "2026-09-03T08:22:23Z",
+      "last": "2026-09-03T08:27:52Z",
+      "conclusions": {
+        "failure": 4,
+        "success": 1
+      },
+      "events": {
+        "push": 5
+      },
+      "retried_runs": [],
+      "latest_run_id": 33733482564
+    },
+    {
+      "path": ".github/workflows/tmp-video-overview-dedup-fix.yml",
+      "present_on_capture_main": false,
+      "runs": 2,
+      "first": "2026-09-17T11:58:06Z",
+      "last": "2026-09-17T12:13:53Z",
+      "conclusions": {
+        "failure": 2
+      },
+      "events": {
+        "push": 2
+      },
+      "retried_runs": [],
+      "latest_run_id": 35219942631
+    },
+    {
+      "path": ".github/workflows/trigger-jules-article-once.yml",
+      "present_on_capture_main": false,
+      "runs": 1,
+      "first": "2026-08-12T06:46:37Z",
+      "last": "2026-08-12T06:46:37Z",
+      "conclusions": {
+        "success": 1
+      },
+      "events": {
+        "push": 1
+      },
+      "retried_runs": [],
+      "latest_run_id": 31571292137
+    },
+    {
+      "path": ".github/workflows/youtube-oauth-diagnostic.yml",
+      "present_on_capture_main": true,
+      "runs": 4,
+      "first": "2026-08-18T14:21:02Z",
+      "last": "2026-08-18T20:07:42Z",
+      "conclusions": {
+        "failure": 3,
+        "success": 1
+      },
+      "events": {
+        "push": 2,
+        "pull_request": 1,
+        "workflow_dispatch": 1
+      },
+      "retried_runs": [
+        32147837754
+      ],
+      "latest_run_id": 32180510342
+    },
+    {
+      "path": "dynamic/dependabot/dependabot-updates",
+      "present_on_capture_main": false,
+      "runs": 409,
+      "first": "2026-06-11T20:56:39Z",
+      "last": "2026-09-17T11:29:38Z",
+      "conclusions": {
+        "success": 400,
+        "failure": 9
+      },
+      "events": {
+        "dynamic": 409
+      },
+      "retried_runs": [],
+      "latest_run_id": 35215966219
+    },
+    {
+      "path": "dynamic/dependabot/update-graph",
+      "present_on_capture_main": false,
+      "runs": 4,
+      "first": "2026-07-26T20:35:44Z",
+      "last": "2026-09-01T09:47:59Z",
+      "conclusions": {
+        "success": 4
+      },
+      "events": {
+        "dynamic": 4
+      },
+      "retried_runs": [],
+      "latest_run_id": 33494096659
+    }
+  ],
+  "limitations": [
+    "Only GitHub-retained runs can be enumerated. Deleted runs are unavailable.",
+    "Run attempts record the latest attempt; attempt job/log evidence is collected separately.",
+    "An API workflow marked active does not imply its file remains on main or its trigger can mutate."
+  ]
+}
