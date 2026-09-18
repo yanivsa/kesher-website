@@ -13,6 +13,7 @@ import struct
 import sys
 import urllib.parse
 import urllib.request
+from datetime import date
 
 ALLOWED_FILES = {
     "src/data/posts.json",
@@ -171,8 +172,10 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
         if declared_dimensions != f"{width}x{height}":
             errors.append(f"Image dimensions mismatch: expected {width}x{height}")
 
-        # Every published article hero remains globally unique, including
-        # trusted local fallbacks. Pool exhaustion must block instead of reusing.
+        # Generated/external heroes remain globally unique. A trusted Local
+        # fallback may be reused only after a 90-day cooldown and at most
+        # three total published uses, matching the production worker policy.
+        collisions = []
         for base_post in base_posts:
             if not isinstance(base_post, dict):
                 continue
@@ -183,10 +186,30 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
                 base_entry = {"raw_url": f"https://raw.githubusercontent.com/{pr.get('base',{}).get('repo',{}).get('full_name')}/{pr['base']['sha']}/public{base_img}"}
                 base_data = image_loader(base_entry)
                 if hashlib.sha256(base_data).hexdigest() == actual_sha:
-                    errors.append(f"Hero image SHA-256 collides with existing article {base_post.get('id')}")
-                    break
+                    collisions.append(base_post)
             except Exception:
                 pass
+
+        if collisions and provider != "Local":
+            errors.append(f"Hero image SHA-256 collides with existing article {collisions[0].get('id')}")
+        elif collisions:
+            if len(collisions) >= 3:
+                errors.append("Local fallback hero has already reached the maximum of three published uses")
+            try:
+                current_date = date.fromisoformat(str(post.get("date") or "")[:10])
+                prior_dates = [
+                    date.fromisoformat(str(item.get("date") or "")[:10])
+                    for item in collisions
+                    if str(item.get("date") or "")[:10]
+                ]
+                latest_prior = max(prior_dates)
+                if (current_date - latest_prior).days < 90:
+                    errors.append(
+                        f"Local fallback hero reuse requires a 90-day cooldown; "
+                        f"latest prior use was {latest_prior.isoformat()}"
+                    )
+            except Exception:
+                errors.append("Local fallback reuse requires valid publication dates for cooldown verification")
     except Exception as exc:
         errors.append(f"Image validation failed: {exc}")
 
