@@ -171,9 +171,8 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
         if declared_dimensions != f"{width}x{height}":
             errors.append(f"Image dimensions mismatch: expected {width}x{height}")
 
-        # External/generated heroes must remain unique. Trusted local fallbacks
-        # may be reused sparingly while the managed 40-per-category bank grows.
-        collisions: list[str] = []
+        # Every published article hero remains globally unique, including
+        # trusted local fallbacks. Pool exhaustion must block instead of reusing.
         for base_post in base_posts:
             if not isinstance(base_post, dict):
                 continue
@@ -184,18 +183,10 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
                 base_entry = {"raw_url": f"https://raw.githubusercontent.com/{pr.get('base',{}).get('repo',{}).get('full_name')}/{pr['base']['sha']}/public{base_img}"}
                 base_data = image_loader(base_entry)
                 if hashlib.sha256(base_data).hexdigest() == actual_sha:
-                    collisions.append(str(base_post.get("id") or "unknown"))
+                    errors.append(f"Hero image SHA-256 collides with existing article {base_post.get('id')}")
+                    break
             except Exception:
                 pass
-
-        if provider == "Local":
-            if len(collisions) > 2:
-                errors.append(
-                    "Local fallback image is already used by too many published articles: "
-                    + ", ".join(collisions[:4])
-                )
-        elif collisions:
-            errors.append(f"Hero image SHA-256 collides with existing article {collisions[0]}")
     except Exception as exc:
         errors.append(f"Image validation failed: {exc}")
 
