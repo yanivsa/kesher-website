@@ -208,7 +208,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertIn("actions/workflows/ci.yml/dispatches", workflow)
         self.assertNotIn("actions/checkout@v", workflow)
 
-    def test_sha256_uniqueness_enforced_and_collision_rejected(self):
+    def test_sha256_uniqueness_enforced_and_collision_blocks_local_fallback(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_sha_test")
         fake_data = fake_png()
         fake_sha = hashlib.sha256(fake_data).hexdigest()
@@ -230,12 +230,9 @@ class ArticleImageWorkerTests(unittest.TestCase):
                 "t",
                 [],
                 existing_hashes=existing_hashes,
-                existing_usage={fake_sha: 1},
                 banned_paths=set(),
             )
-            self.assertIsNotNone(candidate)
-            self.assertEqual(candidate.provider, "Local")
-            self.assertEqual(hashlib.sha256(candidate.data).hexdigest(), fake_sha)
+            self.assertIsNone(candidate)
 
     def test_production_worker_contains_no_abstract_placeholder_renderer(self):
         source = PRODUCTION_WORKER_PATH.read_text(encoding="utf-8")
