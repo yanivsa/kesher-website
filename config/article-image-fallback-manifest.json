@@ -32,11 +32,9 @@
         "public/images/generated/blog/couples-communication-life-transitions.jpg",
         "public/images/generated/blog/defensiveness-in-relationships.jpg",
         "public/images/generated/blog/exhausted-couple-communication.jpg",
-        "public/images/generated/blog/exhausted-couple-conversation.jpg",
         "public/images/generated/blog/healing-after-infidelity.jpg",
         "public/images/generated/blog/i-told-you-so-criticism-in-relationships.jpg",
         "public/images/generated/blog/invisible-mental-load-couples.jpg",
-        "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
         "public/images/generated/blog/marriage-after-trust-leak.jpg",
         "public/images/generated/blog/marriage-prep-financial-expectations-2026-08-24.jpg",
@@ -54,7 +52,9 @@
       ],
       "reserve": [
         "public/images/generated/blog/five-questions-marriage.jpg",
-        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg"
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
+        "public/images/generated/blog/quiet-resignation.jpg",
+        "public/images/generated/blog/surviving-the-after-work-transition.jpg"
       ]
     },
     "singles": {
@@ -78,11 +78,9 @@
         "public/images/generated/blog/couples-communication-life-transitions.jpg",
         "public/images/generated/blog/defensiveness-in-relationships.jpg",
         "public/images/generated/blog/exhausted-couple-communication.jpg",
-        "public/images/generated/blog/exhausted-couple-conversation.jpg",
         "public/images/generated/blog/healing-after-infidelity.jpg",
         "public/images/generated/blog/i-told-you-so-criticism-in-relationships.jpg",
         "public/images/generated/blog/invisible-mental-load-couples.jpg",
-        "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
         "public/images/generated/blog/marriage-after-trust-leak.jpg",
         "public/images/generated/blog/marriage-prep-financial-expectations-2026-08-24.jpg",
@@ -100,7 +98,9 @@
       ],
       "reserve": [
         "public/images/generated/blog/five-questions-marriage.jpg",
-        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg"
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
+        "public/images/generated/blog/quiet-resignation.jpg",
+        "public/images/generated/blog/surviving-the-after-work-transition.jpg"
       ]
     },
     "relocation": {
@@ -122,11 +122,9 @@
         "public/images/generated/blog/dating-transition-to-relationship-boundaries.jpg",
         "public/images/generated/blog/defensiveness-in-relationships.jpg",
         "public/images/generated/blog/exhausted-couple-communication.jpg",
-        "public/images/generated/blog/exhausted-couple-conversation.jpg",
         "public/images/generated/blog/healing-after-infidelity.jpg",
         "public/images/generated/blog/i-told-you-so-criticism-in-relationships.jpg",
         "public/images/generated/blog/invisible-mental-load-couples.jpg",
-        "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
         "public/images/generated/blog/marriage-after-trust-leak.jpg",
         "public/images/generated/blog/marriage-prep-financial-expectations-2026-08-24.jpg",
@@ -144,9 +142,11 @@
       ],
       "reserve": [
         "public/images/generated/blog/boundaries-extended-family.jpg",
-        "public/images/generated/blog/unspoken-expectations.jpg",
         "public/images/generated/blog/five-questions-marriage.jpg",
-        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg"
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
+        "public/images/generated/blog/quiet-resignation.jpg",
+        "public/images/generated/blog/surviving-the-after-work-transition.jpg",
+        "public/images/generated/blog/unspoken-expectations-in-relationships.jpg"
       ]
     },
     "premarital": {
@@ -166,11 +166,9 @@
         "public/images/generated/blog/dating-transition-to-relationship-boundaries.jpg",
         "public/images/generated/blog/defensiveness-in-relationships.jpg",
         "public/images/generated/blog/exhausted-couple-communication.jpg",
-        "public/images/generated/blog/exhausted-couple-conversation.jpg",
         "public/images/generated/blog/healing-after-infidelity.jpg",
         "public/images/generated/blog/i-told-you-so-criticism-in-relationships.jpg",
         "public/images/generated/blog/invisible-mental-load-couples.jpg",
-        "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
         "public/images/generated/blog/marriage-after-trust-leak.jpg",
         "public/images/generated/blog/mental-load-couples.jpg",
@@ -192,7 +190,9 @@
       ],
       "reserve": [
         "public/images/generated/blog/five-questions-marriage.jpg",
-        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg"
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
+        "public/images/generated/blog/quiet-resignation.jpg",
+        "public/images/generated/blog/surviving-the-after-work-transition.jpg"
       ]
     },
     "parenting": {
@@ -204,7 +204,6 @@
         "public/images/generated/blog/breaking-the-yelling-cycle.jpg",
         "public/images/generated/blog/child-after-school-restraint-collapse.jpg",
         "public/images/generated/blog/child-perfectionism-fear-of-failure.jpg",
-        "public/images/generated/blog/child-tantrum-regulation.jpg",
         "public/images/generated/blog/children-lying-fear-disappointment.jpg",
         "public/images/generated/blog/connecting-with-withdrawn-teenager.jpg",
         "public/images/generated/blog/first-grade-preparation-morning-routine.jpg",
@@ -232,13 +231,14 @@
         "public/images/generated/blog/couples-communication-distractions-presence.jpg",
         "public/images/generated/blog/couples-communication-life-transitions.jpg",
         "public/images/generated/blog/exhausted-couple-communication.jpg",
-        "public/images/generated/blog/exhausted-couple-conversation.jpg",
-        "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
         "public/images/generated/blog/mental-load-couples.jpg",
         "public/images/generated/blog/five-questions-marriage.jpg",
         "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
-        "public/images/generated/blog/quiet-resignation.jpg"
+        "public/images/generated/blog/quiet-resignation.jpg",
+        "public/images/generated/blog/surviving-the-after-work-transition.jpg",
+        "public/images/generated/blog/unspoken-expectations-in-relationships.jpg",
+        "public/images/generated/blog/mediation-for-family-business-disputes.jpg"
       ]
     },
     "gifted": {
@@ -254,7 +254,6 @@
         "public/images/generated/blog/boundaries-without-punishments.jpg",
         "public/images/generated/blog/breaking-the-yelling-cycle.jpg",
         "public/images/generated/blog/child-after-school-restraint-collapse.jpg",
-        "public/images/generated/blog/child-tantrum-regulation.jpg",
         "public/images/generated/blog/children-lying-fear-disappointment.jpg",
         "public/images/generated/blog/connecting-with-withdrawn-teenager.jpg",
         "public/images/generated/blog/first-grade-preparation-morning-routine.jpg",
@@ -278,13 +277,14 @@
         "public/images/generated/blog/couples-communication-distractions-presence.jpg",
         "public/images/generated/blog/couples-communication-life-transitions.jpg",
         "public/images/generated/blog/exhausted-couple-communication.jpg",
-        "public/images/generated/blog/exhausted-couple-conversation.jpg",
-        "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
         "public/images/generated/blog/mental-load-couples.jpg",
         "public/images/generated/blog/five-questions-marriage.jpg",
         "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
-        "public/images/generated/blog/quiet-resignation.jpg"
+        "public/images/generated/blog/quiet-resignation.jpg",
+        "public/images/generated/blog/surviving-the-after-work-transition.jpg",
+        "public/images/generated/blog/unspoken-expectations-in-relationships.jpg",
+        "public/images/generated/blog/mediation-for-family-business-disputes.jpg"
       ]
     },
     "adhd": {
@@ -299,7 +299,6 @@
         "public/images/generated/blog/breaking-the-yelling-cycle.jpg",
         "public/images/generated/blog/child-after-school-restraint-collapse.jpg",
         "public/images/generated/blog/child-perfectionism-fear-of-failure.jpg",
-        "public/images/generated/blog/child-tantrum-regulation.jpg",
         "public/images/generated/blog/children-lying-fear-disappointment.jpg",
         "public/images/generated/blog/connecting-with-withdrawn-teenager.jpg",
         "public/images/generated/blog/first-grade-preparation-morning-routine.jpg",
@@ -324,13 +323,14 @@
         "public/images/generated/blog/couples-communication-distractions-presence.jpg",
         "public/images/generated/blog/couples-communication-life-transitions.jpg",
         "public/images/generated/blog/exhausted-couple-communication.jpg",
-        "public/images/generated/blog/exhausted-couple-conversation.jpg",
-        "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
         "public/images/generated/blog/mental-load-couples.jpg",
         "public/images/generated/blog/five-questions-marriage.jpg",
         "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
-        "public/images/generated/blog/quiet-resignation.jpg"
+        "public/images/generated/blog/quiet-resignation.jpg",
+        "public/images/generated/blog/surviving-the-after-work-transition.jpg",
+        "public/images/generated/blog/unspoken-expectations-in-relationships.jpg",
+        "public/images/generated/blog/mediation-for-family-business-disputes.jpg"
       ]
     },
     "couples": {
@@ -345,11 +345,9 @@
         "public/images/generated/blog/dating-transition-to-relationship-boundaries.jpg",
         "public/images/generated/blog/defensiveness-in-relationships.jpg",
         "public/images/generated/blog/exhausted-couple-communication.jpg",
-        "public/images/generated/blog/exhausted-couple-conversation.jpg",
         "public/images/generated/blog/healing-after-infidelity.jpg",
         "public/images/generated/blog/i-told-you-so-criticism-in-relationships.jpg",
         "public/images/generated/blog/invisible-mental-load-couples.jpg",
-        "public/images/generated/blog/listening-in-relationships.jpg",
         "public/images/generated/blog/listening-vs-fixing-relationship-communication.jpg",
         "public/images/generated/blog/marriage-after-trust-leak.jpg",
         "public/images/generated/blog/marriage-prep-financial-expectations-2026-08-24.jpg",
@@ -376,7 +374,9 @@
       ],
       "reserve": [
         "public/images/generated/blog/five-questions-marriage.jpg",
-        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg"
+        "public/images/generated/blog/managing-personal-boundaries-marriage.jpg",
+        "public/images/generated/blog/quiet-resignation.jpg",
+        "public/images/generated/blog/surviving-the-after-work-transition.jpg"
       ]
     }
   }
