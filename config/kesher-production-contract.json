@@ -101,10 +101,9 @@
     "attached_handoff_marker": "Hero Image Status: ATTACHED_TRUSTED_IMAGE_STAGE",
     "controller_action_on_pending_handoff": "dispatch_trusted_image_same_pr",
     "controller_action_on_image_guard_failure": "recover_trusted_image_same_pr",
-    "local_fallback_policy": "prefer-unused-then-least-used-real-photo",
+    "local_fallback_policy": "unused-real-photo-or-block",
     "abstract_placeholder_allowed": false,
-    "owned_generation_variants": 3,
-    "max_local_reuse_existing_articles": 2
+    "owned_generation_variants": 3
   },
   "video": {
     "publication_gate": "technical",
