@@ -75,15 +75,11 @@ def generation_prompt(source: dict[str, Any]) -> str:
 
 
 def repair_youtube_metadata(item: dict[str, Any]) -> dict[str, Any]:
-    metadata = copy.deepcopy(item.get("youtube_metadata") or {})
     source = item.get("source") or {}
-    canonical_url = str(source.get("canonical_url") or "").strip()
-    excerpt = str(source.get("excerpt") or "").strip()
-    if canonical_url:
-        metadata["description"] = (
-            f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"
-            f"\n\nלאתר קשר:\n{core.SITE_URL}"
-        ).strip()
+    try:
+        metadata = core.publication_metadata(source, "short")
+    except core.VerificationError as exc:
+        raise core.PipelineError(str(exc)) from exc
     item["youtube_metadata"] = metadata
     return metadata
 

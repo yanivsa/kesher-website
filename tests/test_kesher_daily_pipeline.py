@@ -673,7 +673,7 @@ class PipelineTestCase(unittest.TestCase):
         response = SimpleNamespace(status_code=410, headers={})
         with mock.patch.object(pipeline.requests, "put", return_value=response):
             with self.assertRaisesRegex(pipeline.PipelineError, "refusing a second insert"):
-                pipeline.resume_offset("https://upload.invalid/session", "token", 100)
+                pipeline.resume_upload_status("https://upload.invalid/session", "token", 100)
 
     @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "ffmpeg tools unavailable")
     def test_real_ffmpeg_probe_and_eight_frame_evidence(self) -> None:

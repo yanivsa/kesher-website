@@ -39,9 +39,11 @@ if str(PROJECT_DIR) not in sys.path:
 try:
     from motion_plan_generator import generate_motion_plan
     from kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
+    from kesher_runtime.verification import VerificationError, match_youtube_metadata, publication_metadata
 except ImportError:
     from scripts.motion_plan_generator import generate_motion_plan
     from scripts.kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
+    from scripts.kesher_runtime.verification import VerificationError, match_youtube_metadata, publication_metadata
 
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
@@ -174,9 +176,7 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
         tags.append(subcategory)
     for tag in tags:
         require_hebrew(tag, "tag")
-    description = f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"
-    require_hebrew(description, "description", allow_url=True)
-    return {
+    source = {
         "id": str(post["id"]),
         "slug": slug,
         "title": title,
@@ -187,12 +187,13 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
         "canonical_url": canonical_url,
         "body": body,
         "content_sha256": content_hash,
-        "youtube_metadata": {
-            "title": title[:100],
-            "description": description,
-            "tags": tags,
-        },
     }
+    try:
+        source["youtube_metadata"] = publication_metadata(source, "overview")
+    except VerificationError as exc:
+        raise PipelineError(str(exc)) from exc
+    require_hebrew(source["youtube_metadata"]["description"], "description", allow_url=True)
+    return source
 
 
 def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
@@ -1208,7 +1209,13 @@ def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: s
     return location
 
 
-def resume_offset(session_uri: str, token: str, total: int) -> int:
+def resume_upload_status(session_uri: str, token: str, total: int) -> dict[str, Any]:
+    """A completed resumable session returns the original upload receipt/ID.
+
+    https://developers.google.com/youtube/v3/guides/using_resumable_upload_protocol
+    Ignoring that receipt loses the recovery path after an accepted byte upload
+    whose response or subsequent local state write was interrupted.
+    """
     response = requests.put(
         session_uri,
         headers={
@@ -1219,10 +1226,19 @@ def resume_offset(session_uri: str, token: str, total: int) -> int:
         timeout=60,
     )
     if response.status_code in {200, 201}:
-        return total
+        video_id = response.json().get("id")
+        if not isinstance(video_id, str) or not video_id:
+            raise PipelineError("Completed YouTube session has no video ID; reconcile before further upload")
+        return {"offset": total, "video_id": video_id}
     if response.status_code == 308:
-        match = re.search(r"bytes=0-(\d+)", response.headers.get("Range", ""))
-        return int(match.group(1)) + 1 if match else 0
+        value = response.headers.get("Range", "")
+        match = re.fullmatch(r"bytes=0-(\d+)", value)
+        if value and not match:
+            raise PipelineError("YouTube session returned an invalid byte range")
+        offset = int(match.group(1)) + 1 if match else 0
+        if offset >= total:
+            raise PipelineError("YouTube session byte range is complete without its final receipt")
+        return {"offset": offset, "video_id": None}
     if response.status_code in {404, 410}:
         raise PipelineError("Saved YouTube upload session expired; refusing a second insert automatically")
     raise PipelineError(f"YouTube upload status query failed with HTTP {response.status_code}")
@@ -1268,23 +1284,23 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         snippet = row.get("snippet") or {}
         status = row.get("status") or {}
         processing = row.get("processingDetails") or {}
-        if snippet.get("channelId") != YOUTUBE_CHANNEL_ID:
-            raise PipelineError("Uploaded video belongs to the wrong YouTube channel")
-        if snippet.get("title") != item["youtube_metadata"]["title"]:
-            raise PipelineError("Uploaded title differs from the approved metadata")
-        if SITE_URL not in str(snippet.get("description", "")):
-            raise PipelineError("Uploaded description is missing the Kesher URL")
+        try:
+            metadata_evidence = match_youtube_metadata(item, row)
+        except VerificationError as exc:
+            raise PipelineError(str(exc)) from exc
         require_hebrew(str(snippet.get("title", "")), "uploaded title")
         require_hebrew(str(snippet.get("description", "")), "uploaded description", allow_url=True)
         process_status = processing.get("processingStatus")
         if status.get("privacyStatus") == "public" and process_status == "succeeded":
             return {
+                **metadata_evidence,
                 "video_id": item["youtube_id"],
                 "channel_id": snippet.get("channelId"),
                 "privacy_status": status.get("privacyStatus"),
                 "processing_status": process_status,
                 "default_language": snippet.get("defaultLanguage"),
                 "default_audio_language": snippet.get("defaultAudioLanguage"),
+                "verified_at": utc_now(),
             }
         if process_status in {"failed", "terminated"}:
             raise PipelineError(f"YouTube processing ended with {process_status}")
@@ -1322,6 +1338,13 @@ def upload_only(slug: str | None = None, item_id: str | None = None) -> int:
         if len(candidates) != 1:
             raise PipelineError(f"More than one technically verified candidate exists: {len(candidates)}")
     item = candidates[0]
+    if item.get("youtube_id"):
+        # The external insertion already happened. Public/metadata recovery
+        # does not need retained MP4 bytes and may never insert another video.
+        token = youtube_access_token()
+        verify_authenticated_channel(token)
+        _verify_and_record_upload(state, item, token)
+        return 0
     if not item.get("final_mp4"):
         raise PipelineError("Upload candidate is missing final MP4 path")
     video_path = STATE_DIR / item["final_mp4"]
@@ -1351,22 +1374,31 @@ def upload_only(slug: str | None = None, item_id: str | None = None) -> int:
     if not session_uri:
         session_uri = start_resumable_upload(state, item, token, video_path)
         offset = 0
+        video_id = None
     else:
-        offset = resume_offset(session_uri, token, video_path.stat().st_size)
-    video_id = upload_bytes(session_uri, token, video_path, offset)
+        resumed = resume_upload_status(session_uri, token, video_path.stat().st_size)
+        offset = resumed["offset"]
+        video_id = resumed["video_id"]
+    if video_id is None:
+        video_id = upload_bytes(session_uri, token, video_path, offset)
     item["youtube_id"] = video_id
     item["youtube_url"] = f"https://youtu.be/{video_id}"
     item["upload_response_at"] = utc_now()
     save_state(state)
+    _verify_and_record_upload(state, item, token)
+    return 0
+
+
+def _verify_and_record_upload(state: dict[str, Any], item: dict[str, Any], token: str) -> None:
     verification = verify_public_upload(item, token)
     item["youtube_verification"] = verification
     item["uploaded"] = True
     item["status"] = "uploaded"
     item["uploaded_at"] = utc_now()
+    item["youtube_url"] = f"https://youtu.be/{item['youtube_id']}"
     item.pop("upload_session_uri", None)
     save_state(state)
     print(f"UPLOADED item={item['id']} url={item['youtube_url']}")
-    return 0
 
 
 def report() -> int:

@@ -30,6 +30,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m unittest \
+            tests.test_kesher_public_delivery \
             tests.test_kesher_state_write_safety \
             tests.test_kesher_canonical_state \
             tests.test_kesher_github_faults \

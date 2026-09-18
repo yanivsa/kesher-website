@@ -23,7 +23,9 @@ def public_evidence(value) -> None:
     """Capabilities live in encrypted storage referenced by hash, never here."""
     if isinstance(value, dict):
         for key, nested in value.items():
-            if not isinstance(key, str) or key.lower().replace('-', '_') in PRIVATE_KEYS:
+            normalized = key.lower().replace('-', '_') if isinstance(key, str) else ''
+            if (not isinstance(key, str) or normalized in PRIVATE_KEYS
+                    or normalized.endswith(('_token', '_secret', '_session_uri', '_session_url', '_api_key'))):
                 raise StateInvalid('Credential/capability fields are forbidden in canonical evidence')
             public_evidence(nested)
     elif isinstance(value, list):

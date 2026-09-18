@@ -136,6 +136,7 @@ class WorkerCommandTests(unittest.TestCase):
         worker = self.worker()
         worker.claim()
         for payload in [{'refresh_token': 'not-real'}, {'upload': {'session_uri': 'https://example.invalid/capability'}},
+                        {'upload_session_uri': 'https://example.invalid/capability'},
                         {'nested': [{'Authorization': 'not-real'}]}]:
             with self.subTest(payload=payload), self.assertRaises(StateInvalid):
                 worker.checkpoint('unsafe', payload, phase='STARTED')
