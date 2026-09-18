@@ -1779,7 +1779,14 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-09-18T11:15:12.195124+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "watchdog": {
+      "identity": "long_video:dating-apps-exhaustion:46c8d80a4f18f7ff52a1cc0c9739a8c9fddb19a57600272e845c8ee003bf5a03:video-20260918-141646-46c8d80a4f",
+      "last_progress_at": "2026-09-18T11:30:06.375889+00:00",
+      "last_fingerprint": "7285b022ffa20fc205473c9ec6a5a1fb1c1cbd1f301e6c16f22471b502c92dec",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
