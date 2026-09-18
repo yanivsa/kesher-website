@@ -17,6 +17,27 @@ The canonical keyword/query dataset is:
 
 Do not create a competing master keyword file elsewhere.
 
+## Persistent project-session rule
+
+This rule applies to every future conversation, session, or agent run in this project that touches SEO, Search Intelligence, content strategy, Google Search Console, GA4, SERP research, PAA, AEO/GEO, article planning, implementation, or related website optimization.
+
+Before doing substantive work, both Antigravity and ChatGPT must:
+
+1. Fetch the latest state of branch `seo/search-intelligence-20260918`.
+2. Read this file completely.
+3. Read `research/search-intelligence/keyword-master.csv`.
+4. Review the latest Antigravity and ChatGPT handoff entries.
+5. Continue from the recorded CURRENT STATE rather than reconstructing project state from chat memory alone.
+
+Before finishing substantive work, both must:
+
+1. Update this file if project state, conclusions, review requests, or next actions changed.
+2. Update `keyword-master.csv` when query-level evidence or classification changed.
+3. Add a handoff entry identifying what was reviewed or changed.
+4. Record the relevant commit SHA when files were committed.
+
+Chat messages are not the canonical state. Git files on the working branch are the persistent coordination layer.
+
 ## Collaboration protocol
 
 1. Always pull/fetch the latest state of this branch before work.
@@ -42,7 +63,7 @@ Do not create a competing master keyword file elsewhere.
 - ga4_property: properties/551923843
 - ga4_stream: G-6SM423N6EL
 - canonical_keyword_file: research/search-intelligence/keyword-master.csv
-- last_updated_utc: 2026-09-18T00:00:00Z
+- last_updated_utc: 2026-09-18T09:35:00Z
 - last_updated_by: ChatGPT
 
 ## Verified baseline
@@ -163,6 +184,11 @@ Add review items as unchecked tasks. Never delete completed history; mark items 
 - Use GSC as an evidence layer, then expand with live SERP/PAA/Autocomplete research.
 - Prioritize business/service relevance and search intent over raw query count.
 - Avoid mass production. Wave 1 should normally contain no more than 5–8 high-confidence actions.
+
+### 2026-09-18 — Persistent session protocol
+- Future project conversations must use the shared Git files as the coordination layer.
+- ChatGPT and Antigravity should not rely on conversation memory alone for project state.
+- Both sides should read latest handoffs before continuing related work.
 
 ## Antigravity handoff log
 
