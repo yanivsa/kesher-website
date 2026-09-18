@@ -39,7 +39,7 @@ IMAGE_WORKFLOW = "kesher-article-image.yml"
 IMAGE_WORKFLOW_NAME = "Kesher Trusted Article Image"
 MAX_STAGE_ATTEMPTS = 3
 BACKOFF_MINUTES = (5, 15)
-IMAGE_PROVIDERS = {"Gemini", "Unsplash", "Pexels", "Local"}
+IMAGE_PROVIDERS = {"Gemini", "Unsplash", "Pexels", "Local", "LocalEditorial"}
 IMAGE_RESULTS = {"generated", "stock", "local_fallback"}
 
 
