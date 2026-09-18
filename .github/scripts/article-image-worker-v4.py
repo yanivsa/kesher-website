@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Trusted article image worker for Kesher Pipeline V4.
 
-Runtime strategy:
-1. Try several owned Gemini image-generation variants.
-2. Try verified Pexels photography.
-3. Try verified Pixabay photography when configured.
-4. Fall back to a broad repository-curated pool of real photographs.
+Production strategy:
+1. Try three materially different Gemini hero generations.
+2. Try verified Pexels, Unsplash, and Pixabay photography.
+3. Use a repository-curated reservoir with 40 real JPG candidates per category.
+4. Respect a 90-day reuse cooldown for local fallback assets.
+5. Never publish a generated abstract/gradient placeholder.
 
-The worker never fabricates an abstract gradient/placeholder for production.
-If no concrete image is available, it fails closed and lets the controller retry
-or escalate instead of publishing a weak hero image.
+When no acceptable concrete image is available, the worker fails closed so the
+controller can retry or escalate rather than weakening the public article.
 """
 
 from __future__ import annotations
@@ -18,8 +18,10 @@ import hashlib
 import importlib.util
 import json
 import os
+import re
 import sys
 import urllib.parse
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -33,76 +35,15 @@ spec.loader.exec_module(v3)
 
 core = v3.core
 REPO_ROOT = Path(__file__).resolve().parents[2]
+MANIFEST_PATH = REPO_ROOT / "config" / "article-image-fallback-manifest.json"
 
 try_gemini = v3.try_gemini
+try_unsplash = v3.try_unsplash
 try_pexels = v3.try_pexels
 verify_pixels = v3.verify_pixels
 summaries = v3.summaries
 trusted_image_present = v3.trusted_image_present
 commit_files = v3.commit_files
-
-# Hand-curated anchors are preferred, while the runtime also discovers a much
-# larger pool of existing real JPG assets by semantic filename hints.
-LOCAL_FALLBACK_CANDIDATES: dict[str, list[tuple[str, str]]] = {
-    "dating": [
-        ("public/images/generated/blog/dating-communication-early-stages.jpg", "שני אנשים בשיחה רגועה בשלב היכרות זוגית"),
-        ("public/images/generated/blog/dating-second-chance-criteria.jpg", "מפגש היכרות נינוח בסביבה ביתית חמה"),
-        ("public/images/generated/blog/dating-emotional-needs-vs-checklists.jpg", "שיחה אישית על צרכים וציפיות בתחילת קשר"),
-        ("public/images/generated/blog/dating-fatigue-resilience.jpg", "אדם ברגע של מחשבה והתבוננות סביב מסע ההיכרויות"),
-    ],
-    "singles": [
-        ("public/images/generated/blog/late-singleness-friends-moving-forward.jpg", "אדם בסיטואציה חברתית המתאימה לנושא רווקות וקשרים"),
-        ("public/images/generated/blog/single-hood-family-dinners-pressure.jpg", "שיחה משפחתית רגועה המציגה התמודדות עם רווקות"),
-        ("public/images/generated/blog/unspoken-expectations-in-relationships.jpg", "תמונה אווירתית על ציפיות, בחירות והרהור אישי סביב קשרים והחמצה"),
-        ("public/images/generated/blog/dating-fatigue-resilience.jpg", "אדם המתמודד עם שחיקה רגשית במסע למציאת זוגיות"),
-    ],
-    "relocation": [
-        ("public/images/generated/blog/relocation-career-loss-and-dependence.jpg", "זוג בסיטואציה ביתית הקשורה לשינויי חיים ורילוקיישן"),
-        ("public/images/generated/blog/relocation-language-barrier-isolation.jpg", "זוג בסלון הבית בדיון על הסתגלות ומעבר"),
-        ("public/images/generated/blog/aliyah-couples-cultural-gaps.jpg", "זוג בשיחה על פערים תרבותיים, הסתגלות וגעגוע לאחר מעבר"),
-        ("public/images/generated/blog/relocation-couple-conversations-before-moving.jpg", "זוג משוחח בבית לקראת מעבר ושינוי משמעותי"),
-    ],
-    "premarital": [
-        ("public/images/generated/blog/premarital-questions-before-wedding.jpg", "זוג בשיחה פתוחה סביב ציפיות ותכנון קשר"),
-        ("public/images/generated/blog/marriage-preparation-money-fights.jpg", "זוג בדיון רגוע סביב תכנון תקציבי ונושאי חיים"),
-        ("public/images/generated/blog/newlyweds-domestic-duties-sharing.jpg", "זוג בשיחה פתוחה בסלון הבית על חלוקת תפקידים בשנה הראשונה לנישואים"),
-        ("public/images/generated/blog/newlywed-first-year-conflicts.jpg", "זוג צעיר בשיחה ביתית על הסתגלות לחיים משותפים"),
-    ],
-    "parenting": [
-        ("public/images/generated/blog/asking-for-help-without-yelling.jpg", "הורה וילד באינטראקציה ביתית תומכת"),
-        ("public/images/generated/blog/breaking-the-yelling-cycle.jpg", "הורה וילד בסביבה ביתית רגועה ותומכת"),
-        ("public/images/generated/blog/first-grade-preparation-morning-routine.jpg", "הורה וילד מתארגנים יחד לקראת בית הספר"),
-        ("public/images/generated/blog/separation-anxiety-morning-dropoff.jpg", "ילד והורה בסביבת מסגרת לימודית ברגע של תמיכה"),
-    ],
-    "gifted": [
-        ("public/images/generated/blog/child-perfectionism-fear-of-failure.jpg", "ילד בסביבה לימודית עם נוכחות תומכת של מבוגר"),
-        ("public/images/generated/blog/gifted-children-perfectionism-tears.jpg", "ילד ברגע לימודי רגשי הזקוק להכלה והדרכה"),
-        ("public/images/generated/blog/gifted-children-first-days-adjustment.jpg", "ילד בסביבת לימודים חדשה עם תמיכה רגועה"),
-    ],
-    "adhd": [
-        ("public/images/generated/blog/adhd-first-grade-preparation.jpg", "הורה וילד מתארגנים יחד לקראת מסגרת לימודית"),
-        ("public/images/generated/blog/adhd-and-screen-addiction-strategies.jpg", "ילד בסביבה ביתית המתאימה להדרכת הורים סביב קשב וויסות"),
-        ("public/images/generated/blog/separation-anxiety-morning-dropoff.jpg", "ילד והורה בסביבת מסגרת לימודית, מתאים לנושא קשב, הסתגלות והתארגנות"),
-        ("public/images/generated/blog/adhd-morning-routine.jpg", "הורה וילד במהלך שגרת בוקר ביתית לקראת יום לימודים"),
-    ],
-    "couples": [
-        ("public/images/generated/blog/defensiveness-in-relationships.jpg", "זוג בשיח כנה בסלון הבית סביב תקשורת זוגית"),
-        ("public/images/generated/blog/couples-communication-distance.jpg", "זוג בסלון הבית בדיון רגוע על הקשבה וקרבה"),
-        ("public/images/generated/blog/listening-in-relationships.jpg", "זוג בשיחה פנים אל פנים המדגישה הקשבה"),
-        ("public/images/generated/blog/repairing-relationship-after-resentment.jpg", "זוג בשיחה רגועה על תיקון וקרבה בקשר"),
-    ],
-}
-
-CATEGORY_FILENAME_HINTS: dict[str, tuple[str, ...]] = {
-    "dating": ("dating-", "new-relationship", "navigating-new-relationships"),
-    "singles": ("single-", "singleness", "late-singleness", "older-singles", "dating-fatigue"),
-    "relocation": ("relocation-", "aliyah-", "returning-to-israel"),
-    "premarital": ("premarital-", "before-wedding", "newlywed", "marriage-prep", "marriage-preparation"),
-    "parenting": ("parenting-", "child-", "children-", "toddler-", "sibling-", "first-grade-", "school-", "separation-anxiety", "morning-routine"),
-    "gifted": ("gifted-", "child-perfectionism"),
-    "adhd": ("adhd-", "attention-", "executive-function"),
-    "couples": ("couples-", "relationship-", "marriage-", "communication-", "intimacy-", "trust-", "mental-load", "money-fights", "silent-treatment", "defensiveness"),
-}
 
 CATEGORY_DESCRIPTIONS = {
     "dating": "צילום מציאותי של שיחה או מפגש אנושי המתאים להיכרות ולבניית קשר",
@@ -115,11 +56,23 @@ CATEGORY_DESCRIPTIONS = {
     "couples": "צילום מציאותי של זוג בשיחה טבעית המדגישה תקשורת, קרבה והקשבה",
 }
 
+TOPIC_FILENAME_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    (r"כיתה|בית ספר|ילקוט|בוקר|התארגנות", ("first-grade", "school", "morning", "adhd")),
+    (r"מחונ|פרפקציונ", ("gifted", "perfectionism")),
+    (r"קשב|adhd", ("adhd", "executive", "attention")),
+    (r"רילוקיישן|עלייה|חזרה לארץ|הגירה", ("relocation", "aliyah", "returning-to-israel")),
+    (r"דייט|היכרות|אפליקציות", ("dating", "new-relationship")),
+    (r"רווק", ("single", "singleness", "dating-fatigue")),
+    (r"חתונה|נישוא|מאורס", ("premarital", "wedding", "newlywed", "marriage-prep", "marriage-preparation")),
+    (r"תקשורת|הקשבה|מריב|קונפליקט", ("communication", "listening", "relationship", "couples")),
+)
+
 
 def provider_preflight() -> dict[str, bool]:
     availability = {
         "gemini": bool((os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY") or "").strip()),
         "pexels": bool((os.environ.get("PEXELS_API_KEY") or "").strip()),
+        "unsplash": bool((os.environ.get("UNSPLASH_ACCESS_KEY") or "").strip()),
         "pixabay": bool((os.environ.get("PIXABAY_API_KEY") or "").strip()),
         "local": True,
     }
@@ -132,16 +85,34 @@ def provider_preflight() -> dict[str, bool]:
     return availability
 
 
-def collect_existing_image_usage(repo_root: Path) -> tuple[set[str], dict[str, int], set[str]]:
-    """Return assigned hero hashes, usage counts, and paths known to be abstract placeholders."""
+def load_manifest() -> dict[str, Any]:
+    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    if manifest.get("target_per_category") != 40:
+        raise RuntimeError("Article fallback manifest must target exactly 40 candidates per category")
+    categories = manifest.get("categories") or {}
+    required = {"dating", "singles", "relocation", "premarital", "parenting", "gifted", "adhd", "couples"}
+    if set(categories) != required:
+        raise RuntimeError("Article fallback manifest category set is incomplete")
+    for category, block in categories.items():
+        paths = list(block.get("primary") or []) + list(block.get("reserve") or [])
+        if len(paths) < 40 or len(set(paths)) < 40:
+            raise RuntimeError(f"Article fallback manifest category {category} has fewer than 40 unique candidates")
+        if any(not str(path).lower().endswith(".jpg") for path in paths):
+            raise RuntimeError(f"Article fallback manifest category {category} contains a non-JPG asset")
+    return manifest
+
+
+def collect_existing_image_usage(repo_root: Path) -> tuple[set[str], dict[str, int], dict[str, date], set[str]]:
+    """Collect assigned hero hashes, use counts, last-use dates and banned placeholder paths."""
     hashes: set[str] = set()
     usage: dict[str, int] = {}
+    last_used: dict[str, date] = {}
     banned_paths: set[str] = set()
     posts_path = repo_root / "src" / "data" / "posts.json"
     try:
         posts = json.loads(posts_path.read_text(encoding="utf-8"))
     except Exception:
-        return hashes, usage, banned_paths
+        return hashes, usage, last_used, banned_paths
 
     for post in posts if isinstance(posts, list) else []:
         if not isinstance(post, dict):
@@ -162,7 +133,14 @@ def collect_existing_image_usage(repo_root: Path) -> tuple[set[str], dict[str, i
             continue
         hashes.add(digest)
         usage[digest] = usage.get(digest, 0) + 1
-    return hashes, usage, banned_paths
+        try:
+            used_on = date.fromisoformat(str(post.get("date") or "")[:10])
+        except Exception:
+            continue
+        previous = last_used.get(digest)
+        if previous is None or used_on > previous:
+            last_used[digest] = used_on
+    return hashes, usage, last_used, banned_paths
 
 
 def collect_existing_hashes(repo_root: Path) -> set[str]:
@@ -177,53 +155,35 @@ def _trusted_candidate_path(source_path: str) -> Path:
     return candidate_path
 
 
-def _candidate_score(post: dict[str, Any], source_path: str) -> str:
+def _topic_score(post: dict[str, Any], source_path: str) -> int:
+    text = " ".join(str(post.get(k) or "") for k in ("id", "title", "category", "subcategory", "excerpt")).lower()
+    filename = Path(source_path).stem.lower()
+    score = 0
+    for pattern, hints in TOPIC_FILENAME_RULES:
+        if re.search(pattern, text, re.I):
+            score += sum(20 for hint in hints if hint in filename)
+    return score
+
+
+def _stable_tiebreak(post: dict[str, Any], source_path: str) -> str:
     identity = str(post.get("slug") or post.get("id") or post.get("title") or "article")
     return hashlib.sha256(f"{identity}|{source_path}".encode("utf-8")).hexdigest()
 
 
-def _dynamic_candidates(category: str, banned_paths: set[str]) -> list[tuple[str, str]]:
-    hints = CATEGORY_FILENAME_HINTS.get(category, CATEGORY_FILENAME_HINTS["couples"])
-    description = CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"])
-    candidates: list[tuple[str, str]] = []
-
-    generated_root = REPO_ROOT / "public" / "images" / "generated" / "blog"
-    if generated_root.is_dir():
-        # Historical generated/blog PNGs include the abstract placeholders that
-        # caused the regression. Restrict automatic discovery here to JPGs.
-        for path in sorted(generated_root.glob("*.jpg")):
-            relative = path.relative_to(REPO_ROOT).as_posix()
-            stem = path.stem.lower()
-            if relative in banned_paths:
-                continue
-            if any(hint in stem for hint in hints):
-                candidates.append((relative, description))
-
-    bank_root = REPO_ROOT / "public" / "images" / "fallback" / category
-    if bank_root.is_dir():
-        # Assets in the managed fallback bank are generated and pixel-verified
-        # by the trusted library builder, so JPEG and PNG are both eligible.
-        for pattern in ("*.jpg", "*.jpeg", "*.png"):
-            for path in sorted(bank_root.glob(pattern)):
-                relative = path.relative_to(REPO_ROOT).as_posix()
-                if relative not in banned_paths:
-                    candidates.append((relative, description))
-
-    return candidates
-
-
-def _candidate_pool(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[str, str]]:
+def _candidate_pool(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[int, str]]:
+    manifest = load_manifest()
     category = core.article_key(post)
-    raw = list(LOCAL_FALLBACK_CANDIDATES.get(category) or LOCAL_FALLBACK_CANDIDATES["couples"])
-    raw.extend(_dynamic_candidates(category, banned_paths))
+    block = manifest["categories"][category]
+    rows: list[tuple[int, str]] = []
     seen: set[str] = set()
-    deduped: list[tuple[str, str]] = []
-    for source_path, description in raw:
-        if source_path in seen or source_path in banned_paths:
-            continue
-        seen.add(source_path)
-        deduped.append((source_path, description))
-    return sorted(deduped, key=lambda item: _candidate_score(post, item[0]))
+    for tier, field in ((0, "primary"), (1, "reserve")):
+        for source_path in block.get(field) or []:
+            source_path = str(source_path)
+            if source_path in seen or source_path in banned_paths:
+                continue
+            seen.add(source_path)
+            rows.append((tier, source_path))
+    return rows
 
 
 def try_gemini_variants(
@@ -231,11 +191,11 @@ def try_gemini_variants(
     attempts: list[str],
     existing_hashes: set[str] | None = None,
 ) -> core.ImageCandidate | None:
-    """Try three materially different editorial framings before leaving owned generation."""
+    """Use distinct compositions instead of repeating the same image request."""
     variants = (
         "Visual direction: candid medium shot, natural eye-level interaction, warm daylight.",
-        "Visual direction: wider environmental documentary frame with relevant home or cafe context.",
-        "Visual direction: intimate but natural emotional moment, restrained expressions, realistic composition.",
+        "Visual direction: wider environmental documentary frame with relevant home, school, street or cafe context.",
+        "Visual direction: intimate but natural emotional moment, restrained expressions, realistic editorial composition.",
     )
     for index, direction in enumerate(variants, start=1):
         variant_post = dict(post)
@@ -308,59 +268,95 @@ def local_fallback(
     attempts: list[str],
     *args: Any,
     existing_hashes: set[str] | None = None,
+    existing_usage: dict[str, int] | None = None,
+    last_used: dict[str, date] | None = None,
     banned_paths: set[str] | None = None,
     **kwargs: Any,
 ) -> core.ImageCandidate | None:
-    """Use only an unused concrete local image; otherwise fail closed."""
+    """Select a real local photo, preferring unused assets and enforcing cooldown on reuse."""
     attempts.append("local-curated")
-    if existing_hashes is None or banned_paths is None:
-        discovered_hashes, _discovered_usage, discovered_banned = collect_existing_image_usage(REPO_ROOT)
+    if existing_hashes is None or existing_usage is None or last_used is None or banned_paths is None:
+        discovered_hashes, discovered_usage, discovered_last_used, discovered_banned = collect_existing_image_usage(REPO_ROOT)
         existing_hashes = discovered_hashes if existing_hashes is None else existing_hashes
+        existing_usage = discovered_usage if existing_usage is None else existing_usage
+        last_used = discovered_last_used if last_used is None else last_used
         banned_paths = discovered_banned if banned_paths is None else banned_paths
 
     category = core.article_key(post)
-    candidates = _candidate_pool(post, banned_paths)
-    failures: list[str] = []
+    cooldown_days = int(load_manifest().get("policy", {}).get("cooldown_days", 90))
+    today = date.today()
+    unused: list[tuple[int, int, str, str, bytes, str]] = []
+    reusable: list[tuple[int, int, int, str, str, bytes, str]] = []
 
-    for source_path, description in candidates:
+    for tier, source_path in _candidate_pool(post, banned_paths):
         try:
             candidate_path = _trusted_candidate_path(source_path)
             if not candidate_path.is_file():
-                raise RuntimeError("missing")
-            data = candidate_path.read_bytes()
-            width, height, ext = core.validate_candidate(data)
-            digest = hashlib.sha256(data).hexdigest()
-            if digest in existing_hashes:
-                failures.append(f"{source_path}:sha256_collision")
-                print(
-                    f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} reason=sha256_collision",
-                    file=sys.stderr,
-                    flush=True,
-                )
                 continue
-            print(
-                f"IMAGE_LOCAL_FALLBACK_READY category={category} path={source_path} dimensions={width}x{height}",
-                file=sys.stderr,
-                flush=True,
-            )
-            return core.ImageCandidate(
-                "Local",
-                data,
-                ext,
-                f"local://{source_path}",
-                description,
-                attempts.copy(),
-            )
+            data = candidate_path.read_bytes()
+            _width, _height, ext = core.validate_candidate(data)
+            digest = hashlib.sha256(data).hexdigest()
+            score = _topic_score(post, source_path)
+            description = CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"])
+            if digest not in existing_hashes:
+                unused.append((-score, tier, _stable_tiebreak(post, source_path), source_path, data, ext))
+                continue
+
+            last = last_used.get(digest)
+            days_since = (today - last).days if last else cooldown_days
+            if days_since >= cooldown_days:
+                reusable.append((
+                    tier,
+                    existing_usage.get(digest, 0),
+                    -score,
+                    _stable_tiebreak(post, source_path),
+                    source_path,
+                    data,
+                    ext,
+                ))
         except Exception as exc:
-            failures.append(f"{source_path}:{type(exc).__name__}")
             print(
                 f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} error={type(exc).__name__}",
                 file=sys.stderr,
                 flush=True,
             )
 
+    if unused:
+        unused.sort()
+        _neg_score, tier, _stable, source_path, data, ext = unused[0]
+        print(
+            f"IMAGE_LOCAL_FALLBACK_READY category={category} tier={tier} path={source_path}",
+            file=sys.stderr,
+            flush=True,
+        )
+        return core.ImageCandidate(
+            "Local",
+            data,
+            ext,
+            f"local://{source_path}",
+            CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
+            attempts.copy(),
+        )
+
+    if reusable:
+        reusable.sort()
+        tier, prior_uses, _neg_score, _stable, source_path, data, ext = reusable[0]
+        print(
+            f"IMAGE_LOCAL_FALLBACK_REUSE category={category} tier={tier} path={source_path} previous_uses={prior_uses}",
+            file=sys.stderr,
+            flush=True,
+        )
+        return core.ImageCandidate(
+            "Local",
+            data,
+            ext,
+            f"local://{source_path}",
+            CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
+            attempts.copy(),
+        )
+
     print(
-        "IMAGE_LOCAL_FALLBACK_EXHAUSTED category=" + category + " errors=" + ", ".join(failures),
+        f"IMAGE_LOCAL_FALLBACK_EXHAUSTED category={category} cooldown_days={cooldown_days}",
         file=sys.stderr,
         flush=True,
     )
@@ -376,12 +372,12 @@ def choose_candidate(
     existing_hashes: set[str] | None = None,
     **kwargs: Any,
 ) -> core.ImageCandidate | None:
-    discovered_hashes, _existing_usage, banned_paths = collect_existing_image_usage(REPO_ROOT)
+    discovered_hashes, existing_usage, last_used, banned_paths = collect_existing_image_usage(REPO_ROOT)
     if existing_hashes is None:
         existing_hashes = discovered_hashes
     attempts: list[str] = []
 
-    for provider in (try_gemini_variants, try_pexels, try_pixabay):
+    for provider in (try_gemini_variants, try_pexels, try_unsplash, try_pixabay):
         try:
             candidate = provider(post, attempts, existing_hashes=existing_hashes)
         except TypeError:
@@ -396,6 +392,8 @@ def choose_candidate(
         token,
         attempts,
         existing_hashes=existing_hashes,
+        existing_usage=existing_usage,
+        last_used=last_used,
         banned_paths=banned_paths,
     )
 
@@ -407,6 +405,7 @@ ensure_image = v3.ensure_image
 
 def main() -> int:
     provider_preflight()
+    load_manifest()
     return v3.main()
 
 
