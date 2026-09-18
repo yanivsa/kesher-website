@@ -190,6 +190,19 @@
   object-fit: cover;
 }
 
+.imageCredit {
+  margin: -0.35rem 0 var(--spacing-md);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  text-align: end;
+}
+
+.imageCredit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .videoCard {
   display: flex;
   flex-direction: column;
