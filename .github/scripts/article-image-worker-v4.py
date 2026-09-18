@@ -7,10 +7,10 @@ Production strategy:
 3. Try unused owned assets from the managed fallback bank.
 4. Try an unused repository-curated seed reservoir with 40 real JPG candidates
    per article category.
-5. Never reuse a published hero and never fabricate an abstract placeholder.
+5. Prefer unused assets; bounded local reuse is allowed only after a 90-day cooldown and below three lifetime uses.
+6. Never fabricate an abstract placeholder.
 
-If every concrete option is exhausted, the worker fails closed so publication
-waits for a retry or a newly generated/curated asset.
+If every concrete option is exhausted under those limits, the worker fails closed so publication waits for a retry or a newly generated/curated asset.
 """
 
 from __future__ import annotations
@@ -22,6 +22,7 @@ import os
 import re
 import sys
 import urllib.parse
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -112,14 +113,17 @@ def load_bank_manifest() -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {"version": 1, "assets": []}
 
 
-def collect_existing_hashes(repo_root: Path) -> set[str]:
-    """Hash only hero bytes that are already assigned to published articles."""
+def collect_existing_image_usage(repo_root: Path) -> tuple[set[str], dict[str, int], dict[str, date]]:
+    """Collect published hero hashes, lifetime use counts, and latest publication dates."""
     hashes: set[str] = set()
+    usage: dict[str, int] = {}
+    last_used: dict[str, date] = {}
     posts_path = repo_root / "src" / "data" / "posts.json"
     try:
         posts = json.loads(posts_path.read_text(encoding="utf-8"))
     except Exception:
-        return hashes
+        return hashes, usage, last_used
+
     for post in posts if isinstance(posts, list) else []:
         if not isinstance(post, dict):
             continue
@@ -130,11 +134,23 @@ def collect_existing_hashes(repo_root: Path) -> set[str]:
         if not path.is_file():
             continue
         try:
-            hashes.add(hashlib.sha256(path.read_bytes()).hexdigest())
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
         except Exception:
-            pass
-    return hashes
+            continue
+        hashes.add(digest)
+        usage[digest] = usage.get(digest, 0) + 1
+        try:
+            used_on = date.fromisoformat(str(post.get("date") or "")[:10])
+        except Exception:
+            continue
+        previous = last_used.get(digest)
+        if previous is None or used_on > previous:
+            last_used[digest] = used_on
+    return hashes, usage, last_used
 
+
+def collect_existing_hashes(repo_root: Path) -> set[str]:
+    return collect_existing_image_usage(repo_root)[0]
 
 def collect_banned_paths(repo_root: Path) -> set[str]:
     banned: set[str] = set()
@@ -302,15 +318,26 @@ def local_fallback(
     attempts: list[str],
     *args: Any,
     existing_hashes: set[str] | None = None,
+    existing_usage: dict[str, int] | None = None,
+    last_used: dict[str, date] | None = None,
     banned_paths: set[str] | None = None,
     **kwargs: Any,
 ) -> core.ImageCandidate | None:
-    """Choose the best unused concrete local asset; never reuse published hero bytes."""
+    """Choose the best concrete local asset with bounded, auditable reuse."""
     attempts.append("local-curated")
-    existing_hashes = collect_existing_hashes(REPO_ROOT) if existing_hashes is None else existing_hashes
+    if existing_hashes is None or existing_usage is None or last_used is None:
+        discovered_hashes, discovered_usage, discovered_last_used = collect_existing_image_usage(REPO_ROOT)
+        existing_hashes = discovered_hashes if existing_hashes is None else existing_hashes
+        existing_usage = discovered_usage if existing_usage is None else existing_usage
+        last_used = discovered_last_used if last_used is None else last_used
     banned_paths = collect_banned_paths(REPO_ROOT) if banned_paths is None else banned_paths
+
     category = core.article_key(post)
-    candidates: list[tuple[int, int, str, str, bytes, str]] = []
+    cooldown_days = 90
+    max_lifetime_uses = 3
+    today = date.today()
+    unused: list[tuple[int, int, str, str, bytes, str]] = []
+    reusable: list[tuple[int, int, int, str, str, bytes, str]] = []
 
     for tier, source_path in _candidate_pool(post, banned_paths):
         try:
@@ -320,10 +347,17 @@ def local_fallback(
             data = candidate_path.read_bytes()
             _width, _height, ext = core.validate_candidate(data)
             digest = hashlib.sha256(data).hexdigest()
-            if digest in existing_hashes:
-                continue
             score = _topic_score(post, source_path)
-            candidates.append((-score, tier, _stable_tiebreak(post, source_path), source_path, data, ext))
+
+            if digest not in existing_hashes:
+                unused.append((-score, tier, _stable_tiebreak(post, source_path), source_path, data, ext))
+                continue
+
+            prior_uses = existing_usage.get(digest, 0)
+            last = last_used.get(digest)
+            days_since = (today - last).days if last else cooldown_days
+            if prior_uses < max_lifetime_uses and days_since >= cooldown_days:
+                reusable.append((tier, prior_uses, -score, _stable_tiebreak(post, source_path), source_path, data, ext))
         except Exception as exc:
             print(
                 f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} error={type(exc).__name__}",
@@ -331,26 +365,48 @@ def local_fallback(
                 flush=True,
             )
 
-    if not candidates:
-        print(f"IMAGE_LOCAL_FALLBACK_EXHAUSTED category={category} reason=no_unused_concrete_asset", file=sys.stderr, flush=True)
-        return None
+    if unused:
+        unused.sort()
+        _neg_score, tier, _stable, source_path, data, ext = unused[0]
+        print(
+            f"IMAGE_LOCAL_FALLBACK_READY category={category} tier={tier} path={source_path} reuse=0",
+            file=sys.stderr,
+            flush=True,
+        )
+        return core.ImageCandidate(
+            "Local",
+            data,
+            ext,
+            f"local://{source_path}",
+            CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
+            attempts.copy(),
+        )
 
-    candidates.sort()
-    _neg_score, tier, _stable, source_path, data, ext = candidates[0]
+    if reusable:
+        reusable.sort()
+        tier, prior_uses, _neg_score, _stable, source_path, data, ext = reusable[0]
+        print(
+            f"IMAGE_LOCAL_FALLBACK_READY category={category} tier={tier} path={source_path} "
+            f"reuse={prior_uses + 1} cooldown_days={cooldown_days}",
+            file=sys.stderr,
+            flush=True,
+        )
+        return core.ImageCandidate(
+            "Local",
+            data,
+            ext,
+            f"local://{source_path}",
+            CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
+            attempts.copy(),
+        )
+
     print(
-        f"IMAGE_LOCAL_FALLBACK_READY category={category} tier={tier} path={source_path}",
+        f"IMAGE_LOCAL_FALLBACK_EXHAUSTED category={category} "
+        f"cooldown_days={cooldown_days} max_lifetime_uses={max_lifetime_uses}",
         file=sys.stderr,
         flush=True,
     )
-    return core.ImageCandidate(
-        "Local",
-        data,
-        ext,
-        f"local://{source_path}",
-        CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
-        attempts.copy(),
-    )
-
+    return None
 
 def choose_candidate(
     repo: str,
@@ -361,8 +417,9 @@ def choose_candidate(
     existing_hashes: set[str] | None = None,
     **kwargs: Any,
 ) -> core.ImageCandidate | None:
+    discovered_hashes, existing_usage, last_used = collect_existing_image_usage(REPO_ROOT)
     if existing_hashes is None:
-        existing_hashes = collect_existing_hashes(REPO_ROOT)
+        existing_hashes = discovered_hashes
     attempts: list[str] = []
 
     for provider in (try_gemini_variants, try_pexels, try_pixabay):
@@ -380,6 +437,8 @@ def choose_candidate(
         token,
         attempts,
         existing_hashes=existing_hashes,
+        existing_usage=existing_usage,
+        last_used=last_used,
         banned_paths=collect_banned_paths(REPO_ROOT),
     )
 
