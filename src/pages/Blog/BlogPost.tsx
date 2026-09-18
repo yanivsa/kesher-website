@@ -236,20 +236,6 @@ const BlogPost: React.FC = () => {
           <GooglePreferredSource />
           <LeadMagnet />
           <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
-          <section className={styles.articleContactCta} aria-label="פנייה לשירה סהרוני">
-            <h3>זה פוגש משהו שקורה אצלכם?</h3>
-            <p>{ctaCopy}</p>
-            <div className={styles.contactActions}>
-              <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
-                <FiCalendar aria-hidden="true" />
-                לקביעת פגישה עם שירה
-              </Link>
-              <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
-                <FaWhatsapp aria-hidden="true" />
-                לכתיבה לשירה בוואטסאפ
-              </a>
-            </div>
-          </section>
         </div>
         <aside className={styles.sidebar}>
           {'video' in post && post.video && (
@@ -276,6 +262,22 @@ const BlogPost: React.FC = () => {
             <Link to={SITE_CONFIG.links.appointment} className={styles.ctaButton}>קביעת פגישת ייעוץ</Link>
           </div>
         </aside>
+      </div>
+      <div className={`container ${styles.finalCtaContainer}`}>
+        <section className={styles.articleContactCta} aria-label="פנייה לשירה סהרוני">
+          <h3>זה פוגש משהו שקורה אצלכם?</h3>
+          <p>{ctaCopy}</p>
+          <div className={styles.contactActions}>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
+              <FiCalendar aria-hidden="true" />
+              לקביעת פגישה עם שירה
+            </Link>
+            <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
+              <FaWhatsapp aria-hidden="true" />
+              לכתיבה לשירה בוואטסאפ
+            </a>
+          </div>
+        </section>
       </div>
     </article>
   );
