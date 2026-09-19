@@ -110,7 +110,7 @@ const schemaData = {
           "itemOffered": {
             "@type": "Service",
             "name": "ייעוץ זוגי",
-            "url": `${SITE_CONFIG.url}/services/couples`,
+            "url": `${SITE_CONFIG.url}/couples-counseling-ashdod`,
             "description": "ייעוץ זוגי לשיפור תקשורת, התמודדות עם משברים וחיזוק הקשר."
           }
         },
@@ -219,7 +219,7 @@ const services = [
   {
     title: 'ייעוץ זוגי',
     description: 'כשהשיחות מסתיימות שוב באותו מקום, נלמד לזהות את הדפוס וליצור דרך חדשה להיפגש.',
-    link: '/services/couples',
+    link: '/couples-counseling-ashdod',
     icon: FiHeart,
     accent: 'rose',
     tags: ['תקשורת', 'קרבה', 'אמון'],
