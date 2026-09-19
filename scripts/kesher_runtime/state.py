@@ -102,6 +102,14 @@ def validate_state(state: dict) -> None:
                 timestamp(owner['claimed_at'])
             if not isinstance(row['receipts'], dict) or not isinstance(row['effects'], dict):
                 raise StateInvalid('Command receipts/effects must be objects')
+            if not isinstance(row['dispatch']['attempts'], list):
+                raise StateInvalid('Dispatch attempts must be a list')
+            for attempt in row['dispatch']['attempts']:
+                timestamp(attempt['requested_at'])
+                if not isinstance(attempt['workflow'], str) or attempt['inputs'] != {'command_id': key}:
+                    raise StateInvalid('Dispatch attempt lost its exact command identity')
+                if attempt['receipt'] is not None and not isinstance(attempt['receipt'], dict):
+                    raise StateInvalid('Dispatch receipt must be an object')
             for receipt in row['receipts'].values():
                 if receipt['target'] != target.to_dict() or receipt['phase'] not in PHASES:
                     raise StateInvalid('Checkpoint belongs to another target or unknown phase')
@@ -143,6 +151,15 @@ def validate_transition(previous: dict, proposed: dict) -> None:
         if old['outcome'] != 'pending' and new['outcome'] != old['outcome']:
             raise StateInvalid('Cannot reopen a terminal command')
         _append_only(old['receipts'], new['receipts'], 'command receipts')
+        old_attempts = old['dispatch']['attempts']
+        new_attempts = new['dispatch']['attempts']
+        if len(new_attempts) < len(old_attempts):
+            raise StateInvalid('Cannot erase dispatch history')
+        for old_attempt, new_attempt in zip(old_attempts, new_attempts):
+            if any(old_attempt[field] != new_attempt[field] for field in ('requested_at', 'workflow', 'inputs')):
+                raise StateInvalid('Cannot rewrite dispatch intent')
+            if old_attempt['receipt'] is not None and old_attempt['receipt'] != new_attempt['receipt']:
+                raise StateInvalid('Cannot rewrite dispatch acknowledgement')
         for name, effect in old['effects'].items():
             updated = new['effects'].get(name)
             if updated is None or any(updated.get(field) != effect[field] for field in ('request', 'request_sha256', 'created_at', 'reconciles_commands')):
