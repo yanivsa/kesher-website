@@ -1086,14 +1086,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "COMPLETED_WITHOUT_PR",
-    "message": "Jules completed without creating a pull request",
-    "retryable": true,
-    "retry_at": "2026-09-19T23:58:47.279779+00:00",
-    "at": "2026-09-19T23:53:47.279794+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-17T11:22:10.715170+00:00",
@@ -1728,9 +1721,18 @@
         "run_id": 35475884229,
         "session_id": "sessions/472772088475916252"
       }
+    },
+    {
+      "at": "2026-09-19T23:57:20.711316+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-19T23:58:47.279779+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-19T23:53:47.279803+00:00",
+  "updated_at": "2026-09-19T23:57:20.711332+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
