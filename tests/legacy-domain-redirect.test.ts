@@ -5,24 +5,40 @@ import {
 } from '../functions/_middleware';
 
 describe('legacy domain migration', () => {
-  it('redirects the legacy homepage to the primary homepage', () => {
+  it('preserves the legacy homepage path', () => {
     expect(legacyRedirectTarget('https://shira.saharoni.com/')).toBe(
-      'https://kesher.saharoni.com',
+      'https://kesher.saharoni.com/',
     );
   });
 
-  it('redirects legacy Blogger posts to the new blog', () => {
+  it('preserves current site paths and query strings', () => {
+    expect(
+      legacyRedirectTarget('https://shira.saharoni.com/about'),
+    ).toBe('https://kesher.saharoni.com/about');
+
+    expect(
+      legacyRedirectTarget(
+        'https://shira.saharoni.com/services/couples?x=1',
+      ),
+    ).toBe('https://kesher.saharoni.com/services/couples?x=1');
+
+    expect(
+      legacyRedirectTarget('https://shira.saharoni.com/blog?src=legacy'),
+    ).toBe('https://kesher.saharoni.com/blog?src=legacy');
+  });
+
+  it('redirects legacy Blogger posts to the new blog and preserves query strings', () => {
     expect(
       legacyRedirectTarget(
         'https://shira.saharoni.com/2025/08/blog-post_75.html?m=1',
       ),
-    ).toBe('https://kesher.saharoni.com/blog');
+    ).toBe('https://kesher.saharoni.com/blog?m=1');
   });
 
-  it('maps legacy static pages to their new equivalents', () => {
+  it('maps legacy static pages to their new equivalents and preserves query strings', () => {
     expect(
       legacyRedirectTarget('https://shira.saharoni.com/p/contact.html?ref=old'),
-    ).toBe('https://kesher.saharoni.com/contact');
+    ).toBe('https://kesher.saharoni.com/contact?ref=old');
   });
 
   it('does not redirect the primary domain', () => {
