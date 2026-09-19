@@ -429,7 +429,6 @@ const CouplesCrisisPage: React.FC = () => {
           <div className={styles.footerLinks}>
             <a href="/">דף הבית</a>
             <a href="/about">אודות</a>
-            <a href="/services/couples">ייעוץ זוגי</a>
             <a href="/couples-counseling-ashdod">ייעוץ זוגי באשדוד</a>
             <a href="/faq">שאלות נפוצות</a>
             <a href="/privacy">מדיניות פרטיות</a>
