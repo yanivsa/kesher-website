@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import os
 import re
+import shlex
 import subprocess
 import time
 from pathlib import Path
@@ -31,9 +32,10 @@ def checked_out_head_sha() -> str:
 
 def pinned_wrapper(script_file: str) -> str:
     repo = os.environ.get("GITHUB_REPOSITORY", "")
+    token = os.environ.get("GITHUB_TOKEN", "")
     sha = checked_out_head_sha()
-    if not repo:
-        raise RuntimeError("GITHUB_REPOSITORY_MISSING")
+    if not repo or not token:
+        raise RuntimeError("GITHUB_REPOSITORY_OR_TOKEN_MISSING")
 
     primary = Path(script_file)
     files = [primary]
@@ -67,10 +69,12 @@ def pinned_wrapper(script_file: str) -> str:
         data = local.read_bytes()
         digest = hashlib.sha256(data).hexdigest()
         rel = local.as_posix().lstrip("./")
-        url = f"https://raw.githubusercontent.com/{repo}/{sha}/{quote(rel, safe='/')}"
+        url = f"https://api.github.com/repos/{repo}/contents/{quote(rel, safe='/')}?ref={sha}"
+        auth_header = shlex.quote(f"Authorization: Bearer {token}")
+        url_arg = shlex.quote(url)
         commands.extend([
             f"mkdir -p \"$root/{Path(rel).parent.as_posix()}\"",
-            f"curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 '{url}' -o \"$root/{rel}\"",
+            f"curl -fsSL --retry 5 --retry-all-errors --retry-delay 2 -H 'Accept: application/vnd.github.raw+json' -H {auth_header} {url_arg} -o \"$root/{rel}\"",
             f"printf '%s  %s\\n' '{digest}' \"$root/{rel}\" | sha256sum -c -",
             f"echo OFFLINE_REPAIR_WRAPPER_FETCHED_{local.name.upper().replace('.', '_').replace('-', '_')}=true",
         ])

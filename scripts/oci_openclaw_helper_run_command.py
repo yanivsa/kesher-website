@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import time
 from pathlib import Path
 from urllib.parse import quote
@@ -96,21 +97,25 @@ def wait_plugin(config, compartment_id: str, instance_id: str, timeout: int = 60
 
 def pinned_wrapper(script_file: str) -> str:
     repo = os.environ.get("GITHUB_REPOSITORY", "")
+    token = os.environ.get("GITHUB_TOKEN", "")
     sha = os.environ.get("GITHUB_SHA", "")
-    if not repo or not re.fullmatch(r"[0-9a-f]{40}", sha):
-        raise RuntimeError("GITHUB_REPOSITORY_OR_SHA_MISSING")
+    if not repo or not token or not re.fullmatch(r"[0-9a-f]{40}", sha):
+        raise RuntimeError("GITHUB_REPOSITORY_TOKEN_OR_SHA_MISSING")
     local = Path(script_file)
     data = local.read_bytes()
     digest = hashlib.sha256(data).hexdigest()
     rel = local.as_posix().lstrip("./")
     # Pin the download to the exact workflow commit and verify the bytes before
-    # executing anything as root. No credentials are carried in this script.
-    url = f"https://raw.githubusercontent.com/{repo}/{sha}/{quote(rel, safe='/')}"
+    # executing anything as root. The short-lived GitHub Actions token is used
+    # only to read this private repository and is never printed.
+    url = f"https://api.github.com/repos/{repo}/contents/{quote(rel, safe='/')}?ref={sha}"
+    auth_header = shlex.quote(f"Authorization: Bearer {token}")
+    url_arg = shlex.quote(url)
     wrapper = f"""#!/usr/bin/env bash
 set -Eeuo pipefail
 tmp=$(mktemp)
 trap 'rm -f "$tmp"' EXIT
-curl -fsSL --retry 5 --retry-delay 2 '{url}' -o "$tmp"
+curl -fsSL --retry 5 --retry-delay 2 -H 'Accept: application/vnd.github.raw+json' -H {auth_header} {url_arg} -o "$tmp"
 printf '%s  %s\n' '{digest}' "$tmp" | sha256sum -c -
 sudo -n env OPENCLAW_REPAIR_NO_POWEROFF=1 bash "$tmp"
 """
