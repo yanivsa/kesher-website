@@ -180,11 +180,6 @@ const AboutPage: React.FC = () => {
               <strong>ייעוץ זוגי באשדוד</strong>
               <span>ליווי ממוקד בקליניקה באשדוד ואונליין לחידוש השיח והקרבה.</span>
             </Link>
-            <Link to="/services/couples">
-              <FiHeart aria-hidden="true" />
-              <strong>ייעוץ זוגי</strong>
-              <span>תקשורת, קירבה, אמון והכנה לחיים משותפים.</span>
-            </Link>
             <Link to="/services/premarital-first-year">
               <FiHeart aria-hidden="true" />
               <strong>הכנה לנישואים והשנה הראשונה</strong>
