@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-20",
-  "status": "article_generating",
+  "status": "article_watchdog_nudge",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -16,7 +16,18 @@
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-09-19T23:21:09.957544+00:00"
+    "last_dispatch_at": "2026-09-19T23:21:09.957544+00:00",
+    "watchdog": {
+      "identity": "2026-09-20",
+      "session_id": "sessions/472772088475916252",
+      "last_progress_at": "2026-09-19T23:21:09+00:00",
+      "last_fingerprint": "6befc657ca16f08a57c26ea840c07509c039897bbf7d73ae3b3510d77c3f9d51",
+      "last_nudge_at": "2026-09-19T23:49:07.903681+00:00",
+      "nudge_count": 1,
+      "worker_restart_count": 0,
+      "last_restart_at": null,
+      "last_restart_run_id": null
+    }
   },
   "backlog": [
     {
@@ -1672,9 +1683,18 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-19T23:51:48.907779+00:00",
+      "from": "article_generating",
+      "to": "article_watchdog_nudge",
+      "reason": "article stalled; nudged authoritative Jules session",
+      "details": {
+        "session_id": "sessions/472772088475916252"
+      }
     }
   ],
-  "updated_at": "2026-09-19T23:21:09.957555+00:00",
+  "updated_at": "2026-09-19T23:51:48.907789+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1722,5 +1742,22 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "interventions": {
+    "v5|article-slot-2026-09-20|cf9a119073cd65177f1e1e222d2a8b460b8e6eba924be9296fc59e10058e1895|article": {
+      "pipeline_id": "v5",
+      "slug": "article-slot-2026-09-20",
+      "content_sha256": "cf9a119073cd65177f1e1e222d2a8b460b8e6eba924be9296fc59e10058e1895",
+      "stage": "article",
+      "strike_count": 1,
+      "last_check_token": "2026-09-20T02",
+      "last_fingerprint": "4e1d0cde46176b5e0abf5404927863a3d1b70c7040f3bb57be7dd7db31d8b037",
+      "last_controller_action_token": "nudge:1:2026-09-19T23:49:07.903681+00:00|restart:0:",
+      "controller_action_observed": true,
+      "last_observed_at": "2026-09-19T23:49:07.903681+00:00",
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-09-19T23:49:07.903681+00:00"
+    }
   }
 }
