@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-19",
-  "status": "waiting_for_article_window",
+  "cycle": "2026-09-20",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1061,38 +1061,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-17T11:13:42.893561+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "Short derive workflow already active"
-    },
-    {
-      "at": "2026-09-17T11:18:41.424432+00:00",
-      "from": "short_running",
-      "to": "long_video_complete",
-      "reason": "reconciled exact verified public Overview from historical durable state",
-      "details": {
-        "item_id": "video-20260917-134451-4d0ba0c737",
-        "youtube_url": "https://youtu.be/6NXdPWlBtW0"
-      }
-    },
-    {
-      "at": "2026-09-17T11:19:24.588417+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "Short derive workflow already active"
-    },
-    {
-      "at": "2026-09-17T11:21:32.599064+00:00",
-      "from": "short_running",
-      "to": "long_video_complete",
-      "reason": "reconciled exact verified public Overview from historical durable state",
-      "details": {
-        "item_id": "video-20260917-134451-4d0ba0c737",
-        "youtube_url": "https://youtu.be/6NXdPWlBtW0"
-      }
-    },
-    {
       "at": "2026-09-17T11:22:10.715170+00:00",
       "from": "long_video_complete",
       "to": "short_running",
@@ -1670,9 +1638,27 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-09-19T21:22:53.484970+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-19T21:22:53.484975+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-19T21:22:53.485897+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-19T16:36:25.084484+00:00",
+  "updated_at": "2026-09-19T21:22:53.484952+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1711,14 +1697,5 @@
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": null,
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
   }
 }
