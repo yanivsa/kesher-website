@@ -16,10 +16,8 @@ describe('searchIndex structure', () => {
   });
 
   it('has stable composition with expected service pages', () => {
-    const couplesService = searchIndex.find(item => item.id === 'service-couples');
-    expect(couplesService).toBeDefined();
-    expect(couplesService?.title).toContain('ייעוץ זוגי');
-    expect(couplesService?.category).toBe('שירותים');
+    const retiredCouplesService = searchIndex.find(item => item.url === '/services/couples');
+    expect(retiredCouplesService).toBeUndefined();
 
     const ashdodService = searchIndex.find(item => item.id === 'service-couples-ashdod');
     expect(ashdodService).toBeDefined();
@@ -27,5 +25,6 @@ describe('searchIndex structure', () => {
     expect(ashdodService?.type).toBe('service');
     expect(ashdodService?.title).toContain('ייעוץ זוגי באשדוד');
     expect(ashdodService?.category).toBe('שירותים');
+    expect(ashdodService?.body).toContain('משבר אמון');
   });
 });
