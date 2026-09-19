@@ -76,7 +76,7 @@ const PremaritalFirstYearPage: React.FC = () => (
           </p>
           <div className={styles.heroActions}>
             <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת הכנה</Link>
-            <Link to="/services/couples" className={styles.secondaryButton}>ייעוץ זוגי במצבי משבר</Link>
+            <Link to="/couples-counseling-ashdod" className={styles.secondaryButton}>ייעוץ זוגי במצבי משבר</Link>
           </div>
         </div>
         <aside className={styles.heroPanel} aria-label="נושאים בהכנה לנישואים">
