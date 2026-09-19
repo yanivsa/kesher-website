@@ -7,7 +7,7 @@ describe('preloadRoute', () => {
     const aboutPromise2 = preloadRoute('/about/');
     expect(aboutPromise).toBe(aboutPromise2);
 
-    const couplesPromise = preloadRoute('/services/couples');
+    const couplesPromise = preloadRoute('/couples-counseling-ashdod');
     expect(couplesPromise).not.toBe(aboutPromise);
 
     const nowPromise = preloadRoute('/now');
@@ -22,8 +22,10 @@ describe('preloadRoute', () => {
 
     const notFoundPromise1 = preloadRoute('/this-does-not-exist');
     const notFoundPromise2 = preloadRoute('/also-missing');
+    const retiredCouplesPromise = preloadRoute('/services/couples');
 
     expect(notFoundPromise1).toBe(notFoundPromise2);
+    expect(retiredCouplesPromise).toBe(notFoundPromise1);
     expect(notFoundPromise1).not.toBe(aboutPromise);
 
     await Promise.all([aboutPromise, couplesPromise, nowPromise, friendsPromise, notFoundPromise1]);
