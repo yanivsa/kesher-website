@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import subprocess
 import time
 from pathlib import Path
@@ -119,19 +120,22 @@ def checked_out_head_sha() -> str:
 
 def pinned_wrapper(script_file: str) -> str:
     repo = os.environ.get("GITHUB_REPOSITORY", "")
+    token = os.environ.get("GITHUB_TOKEN", "")
     sha = checked_out_head_sha()
-    if not repo:
-        raise RuntimeError("GITHUB_REPOSITORY_MISSING")
+    if not repo or not token:
+        raise RuntimeError("GITHUB_REPOSITORY_OR_TOKEN_MISSING")
     local = Path(script_file)
     data = local.read_bytes()
     digest = hashlib.sha256(data).hexdigest()
     rel = local.as_posix().lstrip("./")
-    url = f"https://raw.githubusercontent.com/{repo}/{sha}/{quote(rel, safe='/')}"
+    url = f"https://api.github.com/repos/{repo}/contents/{quote(rel, safe='/')}?ref={sha}"
+    auth_header = shlex.quote(f"Authorization: Bearer {token}")
+    url_arg = shlex.quote(url)
     return f"""#!/usr/bin/env bash
 set -Eeuo pipefail
 tmp=$(mktemp)
 trap 'rm -f "$tmp"' EXIT
-curl -fsSL --retry 5 --retry-delay 2 '{url}' -o "$tmp"
+curl -fsSL --retry 5 --retry-delay 2 -H 'Accept: application/vnd.github.raw+json' -H {auth_header} {url_arg} -o "$tmp"
 printf '%s  %s\n' '{digest}' "$tmp" | sha256sum -c -
 sudo -n bash "$tmp"
 """
