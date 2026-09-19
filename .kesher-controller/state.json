@@ -1,18 +1,20 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-20",
-  "status": "article_watchdog_nudge",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-09-19T23:58:47.279779+00:00",
     "run_id": 35475884229,
-    "processed_run_id": null,
+    "processed_run_id": 35475884229,
     "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "COMPLETED_WITHOUT_PR": 1
+    },
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
@@ -27,7 +29,21 @@
       "worker_restart_count": 0,
       "last_restart_at": null,
       "last_restart_run_id": null
-    }
+    },
+    "last_run_conclusion": "failure",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-09-20",
+      "outcome": "COMPLETED_WITHOUT_PR",
+      "retryable": true,
+      "message": "Jules completed without creating a pull request",
+      "session_id": "sessions/472772088475916252",
+      "pr_url": "",
+      "github_run_id": "35475884229",
+      "completed_at": "2026-09-19T23:50:02.242662+00:00"
+    },
+    "last_jules_session_id": "sessions/472772088475916252",
+    "last_failed_run_id": 35475884229
   },
   "backlog": [
     {
@@ -1070,7 +1086,14 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "COMPLETED_WITHOUT_PR",
+    "message": "Jules completed without creating a pull request",
+    "retryable": true,
+    "retry_at": "2026-09-19T23:58:47.279779+00:00",
+    "at": "2026-09-19T23:53:47.279794+00:00"
+  },
   "history": [
     {
       "at": "2026-09-17T11:22:10.715170+00:00",
@@ -1692,9 +1715,22 @@
       "details": {
         "session_id": "sessions/472772088475916252"
       }
+    },
+    {
+      "at": "2026-09-19T23:53:47.279799+00:00",
+      "from": "article_watchdog_nudge",
+      "to": "article_retry_wait",
+      "reason": "COMPLETED_WITHOUT_PR",
+      "details": {
+        "message": "Jules completed without creating a pull request",
+        "retry_at": "2026-09-19T23:58:47.279779+00:00",
+        "failure_streak": 1,
+        "run_id": 35475884229,
+        "session_id": "sessions/472772088475916252"
+      }
     }
   ],
-  "updated_at": "2026-09-19T23:51:48.907789+00:00",
+  "updated_at": "2026-09-19T23:53:47.279803+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
