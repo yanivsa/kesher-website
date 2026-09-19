@@ -516,6 +516,10 @@ const CouplesCounselingAshdodPage: React.FC = () => {
               <h3 className={styles.cardTitle}>ADHD משפיע על הזוגיות</h3>
               <p className={styles.cardDesc}>קשיי זמן, משימות, עומס ותקשורת עלולים ליצור תחושה שאחד מנהל והשני מנוהל. אפשר לבנות כללים שמתאימים לשניכם ומחזירים אחריות ושותפות.</p>
             </article>
+            <article className={styles.recognitionCard}>
+              <h3 className={styles.cardTitle}>סיפורי משפחות המוצא נכנסים לקשר</h3>
+              <p className={styles.cardDesc}>לפני חתונה ובתחילת החיים המשותפים, חוויות מהבית — כולל גירושי הורים — יכולות לעורר חששות ושאלות על יציבות, גבולות ונאמנויות משפחתיות. נותנים לסיפור מקום בלי להפוך אותו לנבואה עבור הזוג החדש.</p>
+            </article>
           </div>
           <div className={styles.sessionsNote}>
             לפני חתונה או בתחילת הנישואים אפשר להיעזר גם בעמוד <a href="/services/premarital-first-year">הכנה לנישואים וליווי בשנה הראשונה</a>. במצב של אלימות או סכנה בבית, ייעוץ זוגי אינו המענה הראשון ויש לפנות תחילה לגורם בטיחותי או מקצועי מתאים.
