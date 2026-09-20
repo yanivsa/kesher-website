@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-20",
-  "status": "long_video_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -1101,7 +1101,12 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "long_video",
+    "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
+    "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
+    "at": "2026-09-20T09:32:48.025793+00:00"
+  },
   "history": [
     {
       "at": "2026-09-17T11:22:10.715170+00:00",
@@ -1796,9 +1801,18 @@
         "operation": "full",
         "resume": 1
       }
+    },
+    {
+      "at": "2026-09-20T09:32:48.025799+00:00",
+      "from": "long_video_running",
+      "to": "blocked",
+      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
+      "details": {
+        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
+      }
     }
   ],
-  "updated_at": "2026-09-20T07:00:45.898893+00:00",
+  "updated_at": "2026-09-20T09:32:48.025802+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1813,7 +1827,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "blocked",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1830,10 +1844,16 @@
       "last_progress_at": "2026-09-20T08:38:57.463530+00:00",
       "last_fingerprint": "7bbeb0eba2e5a4f273680f69e92d78557c611868208bff453cf67b897b745126",
       "recovery_count": 0,
-      "last_recovery_at": null
+      "last_recovery_at": null,
+      "hard_started_at": "2026-09-20T07:02:53.476073+00:00"
     },
     "item_id": "video-20260920-093522-5619a729ac",
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "controller_recovery_required": {
+      "incident_key": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|long_video",
+      "reason": "media provider hard timeout",
+      "requested_at": "2026-09-20T09:32:48.025805+00:00"
+    }
   },
   "short": {
     "attempt_count": 0,
