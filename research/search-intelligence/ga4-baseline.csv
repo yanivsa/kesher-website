@@ -1,0 +1,12 @@
+landing_page,default_channel_group,source_medium,sessions,active_users,engaged_sessions,engagement_rate,notes
+/,Direct,(direct) / (none),23,10,8,0.3478,Homepage direct traffic; primary traffic segment.
+/blog/new-relationship-initial-intentions,Direct,(direct) / (none),5,3,3,0.6,High engagement direct visits to early relationship article.
+/friends,Direct,(direct) / (none),2,1,1,0.5,Direct referral / webring verification.
+/,Organic Social,l.instagram.com / referral,2,1,2,1.0,Instagram profile link in bio referral.
+(not set),AI Assistant,chatgpt.com / ai-assistant,1,1,0,0.0,Referral from ChatGPT session with unspecified landing page.
+/,AI Assistant,chatgpt.com / ai-assistant,1,1,1,1.0,Referral from ChatGPT session landing on homepage.
+/blog/smart-youth-focus-tasks-organization,AI Assistant,chatgpt.com / ai-assistant,1,0,0,0.0,Referral from ChatGPT recommendation to gifted/focus article.
+/appointment,Direct,(direct) / (none),1,1,1,1.0,Direct navigation to appointment booking page.
+/blog/returning-to-israel-after-relocation-relationship,Direct,(direct) / (none),1,0,0,0.0,Direct visit to relocation return article.
+/,Organic Search,google / organic,1,1,1,1.0,Organic Google search landing on homepage.
+/blog/dating-fatigue-resilience,Organic Search,google / organic,1,1,1,1.0,Organic Google search landing on dating fatigue article.

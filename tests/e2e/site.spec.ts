@@ -25,6 +25,20 @@ const routes = [
   '/terms',
 ];
 
+test.beforeEach(async ({ page }) => {
+  await page.route('https://news.google.com/**', (route) => route.fulfill({ status: 200, body: '' }));
+  await page.route('https://assets.calendly.com/**', (route) => {
+    if (route.request().url().includes('widget.js')) {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        body: 'window.Calendly={initInlineWidget:function(o){if(o&&o.parentElement){var f=document.createElement("iframe");f.title="Calendly Scheduling Page";f.src=o.url||"about:blank";o.parentElement.appendChild(f);}}};',
+      });
+    }
+    return route.fulfill({ status: 200, body: '' });
+  });
+});
+
 for (const route of routes) {
   test(`${route} renders route metadata and accessible content`, async ({ page }) => {
     await page.route('https://news.google.com/**', route => route.fulfill({ status: 200, body: '' }));

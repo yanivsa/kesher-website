@@ -151,6 +151,41 @@ const ParentingGuidance: React.FC = () => {
         </div>
       </section>
 
+      <section className={styles.specialization}>
+        <div className="container">
+          <div className={styles.specializationIntro}>
+            <span>הדרכת הורים למתבגרים</span>
+            <h2>לשמור על קשר כשהיחסים משתנים</h2>
+            <p>
+              גיל ההתבגרות מביא איתו יותר עצמאות, יותר פרטיות ויותר מקום לחברים ולעולם שמחוץ לבית. במקביל, ההורים עדיין נדרשים להציב גבולות, לשמור על קשר ולדעת מתי להתערב ומתי להעביר אחריות. לא מעט משפחות מגלות שבשלב הזה שיחות פשוטות על לימודים, מסכים, שעות חזרה או משימות בבית הופכות מהר מאוד לעימות.
+            </p>
+            <p>
+              <a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/kids-and-teens/supporting-teenagers/" target="_blank" rel="noopener noreferrer">משרד הבריאות</a> מדגיש שבגיל ההתבגרות עצמאות היא צורך התפתחותי משמעותי, לצד חשיבותה של נוכחות הורית, שיחה פתוחה וגבולות שמוסברים היטב. בהדרכת הורים המוקד הוא לא "להחזיר שליטה", אלא לדייק את הדרך שבה ההורים מגיבים ומתקשרים בתוך השלב החדש.
+            </p>
+          </div>
+          <div className={styles.specializationGrid}>
+            <article>
+              <h3>שיחה וגבולות מותאמים</h3>
+              <p>איך לשאול ולהתעניין בלי להישמע חוקרים, מה עדיין באחריות ההורים ואיפה נכון לתת מרחב ועצמאות.</p>
+            </article>
+            <article>
+              <h3>מסכים, שגרה ואחריות</h3>
+              <p>בניית כללים סביב שינה, לימודים ומסכים ללא מאבק יומיומי, לצד העברת אחריות הדרגתית למתבגר.</p>
+            </article>
+            <article>
+              <h3>קונפליקטים והתרחקות</h3>
+              <p>איך להגיב כשהמתבגר נסגר או מבקש מרחק, ואיך לחזור לשיחה מקרבת אחרי רגעי כעס או חיכוך.</p>
+            </article>
+          </div>
+          <p style={{ marginTop: '1.5rem', color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>
+            <strong>מתי צריך מענה נוסף?</strong> אם יש מצוקה מתמשכת, שינוי חד בתפקוד, הסתגרות חריגה, חשש לפגיעה עצמית או קושי רגשי משמעותי, הדרכת הורים אינה תחליף להערכה או טיפול ישיר במתבגר. במצב כזה כדאי לפנות לגורם מתאים בבריאות הנפש או ברפואה.
+          </p>
+          <Link to="/blog/connecting-with-withdrawn-teenager" className={styles.specializationLink}>
+            למאמר על התמודדות עם מתבגר שמסתגר בחדר ואיך לשמור על ערוץ תקשורת פתוח
+          </Link>
+        </div>
+      </section>
+
       <section className={styles.boundaries}>
         <div className="container">
           <div className={styles.boundariesContent}>

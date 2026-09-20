@@ -1,0 +1,8 @@
+wave_id,cluster_id,primary_keyword,action,target_url,priority,evidence_strength,confidence,notes
+W1-01,CLUST-SERVICE-ONLINE,ייעוץ זוגי אונליין,UPDATE_EXISTING,/services/couples,HIGH,HIGH,HIGH,"Add a substantive online/Zoom section and supporting FAQ; do not create a second SEO service URL."
+W1-02,CLUST-POSTPARTUM-RELATIONSHIP,משבר זוגיות אחרי לידה,EXPAND_EXISTING,/blog/relationship-after-childbirth,HIGH,HIGH,HIGH,"Rebuild the thin draft into one comprehensive transition-to-parenthood relationship article."
+W1-03,CLUST-DATING-EARLY-PHASE,לא להראות התלהבות בתחילת קשר,UPDATE_EXISTING,/blog/dating-transition-to-relationship-boundaries,HIGH,HIGH,HIGH,"Use the exact GSC query plus related pacing/enthusiasm questions; preserve the article's existing pacing/reciprocity intent."
+W1-04,CLUST-COUPLES-COMMUNICATION,תרגילים לשיפור תקשורת זוגית,UPDATE_EXISTING,/blog/communication-breakdown,HIGH,HIGH,HIGH,"Add practical exercises/direct answers to the existing strong communication page."
+W1-05,CLUST-PARENTING-BOUNDARIES,איך להציב גבולות בלי לצעוק,UPDATE_EXISTING,/blog/boundaries-without-punishments,HIGH,HIGH,HIGH,"Answer the persisted PAA directly while keeping the article centered on boundaries."
+W1-06,CLUST-PARENTING-TEENS,הדרכת הורים למתבגרים,UPDATE_EXISTING,/services/parenting,HIGH,HIGH,HIGH,"Add a teen-focused service section; keep clinical topics outside the service promise."
+W1-07,CLUST-MONEY-RELATIONSHIP,מריבות על כסף בזוגיות,EXPAND_EXISTING,/blog/money-fights-communication,MEDIUM,MEDIUM,MEDIUM,"Rewrite the draft as relationship-communication content around money; avoid financial-advice positioning and unsupported clinical generalizations."

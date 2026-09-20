@@ -72,7 +72,7 @@ services.forEach(service => {
 fullContent += '## מאמרים מלאים (Blog Posts)\n\n';
 const posts = JSON.parse(fs.readFileSync(postsPath, 'utf8'));
 
-posts.filter(isPublishable).forEach(post => {
+posts.filter(isPublishable).sort((a, b) => (b.date > a.date ? 1 : b.date < a.date ? -1 : 0)).forEach(post => {
   fullContent += `### [${post.title}](https://kesher.saharoni.com/blog/${post.id})\n`;
   fullContent += `תאריך: ${post.date} | קטגוריה: ${post.category}\n\n`;
 
