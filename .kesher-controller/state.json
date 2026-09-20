@@ -1105,7 +1105,7 @@
     "stage": "long_video",
     "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
     "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-09-20T09:32:48.025793+00:00"
+    "at": "2026-09-20T09:37:27.586037+00:00"
   },
   "history": [
     {
@@ -1810,9 +1810,18 @@
       "details": {
         "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-09-20T09:37:27.586043+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
+      "details": {
+        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
+      }
     }
   ],
-  "updated_at": "2026-09-20T09:32:48.025802+00:00",
+  "updated_at": "2026-09-20T09:37:27.586048+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1852,7 +1861,7 @@
     "controller_recovery_required": {
       "incident_key": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|long_video",
       "reason": "media provider hard timeout",
-      "requested_at": "2026-09-20T09:32:48.025805+00:00"
+      "requested_at": "2026-09-20T09:37:27.586050+00:00"
     }
   },
   "short": {
