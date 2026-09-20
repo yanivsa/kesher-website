@@ -57,7 +57,7 @@
     "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-love",
     "published_date": "2026-09-20",
     "live": true,
-    "live_verified_at": "2026-09-20T06:32:56.100070+00:00",
+    "live_verified_at": "2026-09-20T06:59:59.180090+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1780,9 +1780,25 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-20T06:59:59.180107+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-20T07:00:45.898881+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "full",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-09-20T06:33:34.681138+00:00",
+  "updated_at": "2026-09-20T07:00:45.898893+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1796,7 +1812,7 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1807,7 +1823,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-09-20T06:33:34.681122+00:00",
+    "last_dispatch_at": "2026-09-20T07:00:45.898872+00:00",
     "attempts": 1,
     "watchdog": {
       "identity": "long_video:why-is-it-so-hard-to-find-love:5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec:video-20260920-093522-5619a729ac",
@@ -1815,7 +1831,9 @@
       "last_fingerprint": "17c2bcb1d0d6794a48fbade24f30eaf5ea4874754023d9e720762bfeca60d8e3",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "item_id": "video-20260920-093522-5619a729ac",
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
