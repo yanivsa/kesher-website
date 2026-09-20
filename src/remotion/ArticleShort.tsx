@@ -25,6 +25,18 @@ export interface MotionTarget {
   assetProvenance?: string;
 }
 
+export const SHORT_GEOMETRY = {
+  width: 1080,
+  height: 1920,
+  baseScale: 1.11, // ~90% framing / ~10% crop
+  safeArea: {
+    top: 180, // Upper safe area
+    bottom: 600, // Reserved for captions
+    left: 40,
+    right: 120, // Right side controls
+  }
+};
+
 export interface ArticleShortProps {
   videoSrc: string;
   sourceStartFrame: number;
@@ -61,7 +73,7 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
   const targetSpan = target ? Math.max(1, target.endFrame - target.startFrame) : 1;
   const targetProgress = target ? clamp01((frame - target.startFrame) / targetSpan) : 0;
   const pulse = Math.sin(targetProgress * Math.PI);
-  const zoom = target ? 1 + (Math.max(1.08, target.zoom) - 1) * pulse : 1;
+  const zoom = target ? SHORT_GEOMETRY.baseScale + (Math.max(1.08, target.zoom) - 1) * pulse : SHORT_GEOMETRY.baseScale;
   const focusX = target ? clamp01(target.focusX) : 0.5;
   const focusY = target ? clamp01(target.focusY) : 0.5;
   const translateX = target ? (0.5 - focusX) * 110 * pulse : 0;
@@ -108,9 +120,9 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
       <div
         style={{
           position: "absolute",
-          top: 76,
-          left: 54,
-          right: 54,
+          top: SHORT_GEOMETRY.safeArea.top,
+          left: SHORT_GEOMETRY.safeArea.left,
+          right: SHORT_GEOMETRY.safeArea.right,
           direction: "rtl",
           textAlign: "right",
           opacity: intro,
@@ -120,6 +132,16 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
           textShadow: "0 3px 18px rgba(0,0,0,0.72)",
         }}
       >
+        <div
+          style={{
+            fontSize: 30,
+            fontWeight: 800,
+            marginBottom: 18,
+            textShadow: "0 2px 14px rgba(0,0,0,0.8)",
+          }}
+        >
+          שירה סהרוני · {url}
+        </div>
         <div
           style={{
             display: "inline-block",
@@ -143,24 +165,6 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
         >
           {title}
         </div>
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          left: 52,
-          right: 52,
-          bottom: 76,
-          direction: "rtl",
-          textAlign: "center",
-          fontFamily: "Heebo, Rubik, Arial, sans-serif",
-          color: "white",
-          fontSize: 30,
-          fontWeight: 800,
-          textShadow: "0 2px 14px rgba(0,0,0,0.8)",
-        }}
-      >
-        שירה סהרוני · {url}
       </div>
 
       <FullScreenSignatureOutro
