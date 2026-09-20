@@ -491,6 +491,11 @@
   margin: 0 auto 2rem;
 }
 
+.sessionsNote a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
 .centerCta {
   text-align: center;
 }
