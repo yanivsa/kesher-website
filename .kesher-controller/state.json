@@ -57,7 +57,7 @@
     "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-love",
     "published_date": "2026-09-20",
     "live": true,
-    "live_verified_at": "2026-09-20T17:39:27.350457+00:00",
+    "live_verified_at": "2026-09-20T18:15:22.191255+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1104,27 +1104,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-17T16:47:32.974404+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-17T16:54:04.734904+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-17T16:54:38.201431+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
       "at": "2026-09-17T17:03:22.455336+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -1805,9 +1784,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-20T18:15:22.191272+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-20T18:16:06.096980+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-20T18:17:19.313294+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-20T17:39:53.200353+00:00",
+  "updated_at": "2026-09-20T18:17:19.313311+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
