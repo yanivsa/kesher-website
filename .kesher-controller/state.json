@@ -1808,7 +1808,14 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-09-20T06:33:34.681122+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "watchdog": {
+      "identity": "long_video:why-is-it-so-hard-to-find-love:5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec:video-20260920-093522-5619a729ac",
+      "last_progress_at": "2026-09-20T06:34:19.921385+00:00",
+      "last_fingerprint": "17c2bcb1d0d6794a48fbade24f30eaf5ea4874754023d9e720762bfeca60d8e3",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
