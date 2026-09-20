@@ -53,17 +53,17 @@ Chat messages are not the canonical state. Git files on the working branch are t
 
 ## CURRENT STATE
 
-- project_status: MERGED_HOTFIX_PENDING
-- current_phase: POST_MERGE_CONTROLLER_HOTFIX
-- current_owner: SHARED
+- project_status: COMPLETED_MERGED_DEPLOYED
+- current_phase: COMPLETED
+- current_owner: SHARED_ARCHIVE
 - last_completed_phase: FINAL_STABILIZATION
-- next_phase: HOTFIX_VALIDATION_AND_MERGE
+- next_phase: MEASUREMENT_AND_ITERATION
 - production_domain: https://kesher.saharoni.com
 - search_console_property: sc-domain:saharoni.com
 - ga4_property: properties/551923843
 - ga4_stream: G-6SM423N6EL
 - canonical_keyword_file: research/search-intelligence/keyword-master.csv
-- last_updated_utc: 2026-09-20T13:40:00Z
+- last_updated_utc: 2026-09-20T14:35:00Z
 - last_updated_by: ChatGPT
 
 ## Verified baseline
@@ -614,3 +614,31 @@ Completion requires:
 - status:
   - Hotfix branch: fix/controller-manual-publications-20260920
   - Validation and hotfix merge pending.
+
+
+### 2026-09-20 — ChatGPT — FINAL MERGE & PRODUCTION COMPLETION
+- primary_merge:
+  - PR #891 merged to main.
+  - merge commit: 612acee46d42f61c86b7b0dcdf576db7f87910ea
+- post_merge_hotfix:
+  - PR #892 merged to main.
+  - hotfix merge commit: bc00ae5671d0654bd119515c4bf1fa9af9415e1f
+  - Fixed Content Controller handling of legitimate same-day editorial publications without weakening duplicate protection for controller-managed articles.
+- final_verification:
+  - Kesher Stability PR Validation: PASS
+  - CI: PASS
+  - Kesher Content Controller: PASS
+  - Kesher Master Supervisor: PASS
+  - Deploy to Cloudflare Pages: PASS
+  - Production verification ("Verify newest article is public in production"): PASS
+- final_status:
+  - MERGED
+  - DEPLOYED
+  - CONTROLLER HEALTHY
+  - SEARCH INTELLIGENCE WAVE 1 COMPLETE
+- archive_note:
+  - The original research branch was deleted automatically after merge.
+  - The canonical collaboration/research files now live on main.
+  - Future implementation work should branch from the then-current main and use these files as historical evidence/project memory.
+- next_recommended_action:
+  - Measure Search Console, GA4, indexing and user behavior before selecting Wave 2.
