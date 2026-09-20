@@ -35,7 +35,10 @@ for (const post of posts) {
   }
 }
 
-const expectedPostSummaries = published.map(({ id, title, date, category, subcategory, excerpt, image }) => ({
+const expectedPostSummaries = published
+  .slice()
+  .sort((a, b) => (b.date > a.date ? 1 : b.date < a.date ? -1 : 0))
+  .map(({ id, title, date, category, subcategory, excerpt, image }) => ({
   id,
   title,
   date,

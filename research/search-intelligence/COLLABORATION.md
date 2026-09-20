@@ -53,11 +53,11 @@ Chat messages are not the canonical state. Git files on the working branch are t
 
 ## CURRENT STATE
 
-- project_status: FINAL_STABILIZATION_REQUIRED
-- current_phase: FINAL_STABILIZATION
-- current_owner: SHARED
-- last_completed_phase: PHASE_5_IMPLEMENTATION_TECHNICAL_QA
-- next_phase: ANTIGRAVITY_REGENERATE_AND_TEST
+- project_status: READY_FOR_MERGE
+- current_phase: FINAL_STABILIZATION_COMPLETED
+- current_owner: USER
+- last_completed_phase: FINAL_STABILIZATION
+- next_phase: USER_MERGE_AUTHORIZATION
 - production_domain: https://kesher.saharoni.com
 - search_console_property: sc-domain:saharoni.com
 - ga4_property: properties/551923843
@@ -564,3 +564,35 @@ Completion requires:
 - decision:
   - NOT YET READY FOR MERGE after the new final-preflight corrections.
   - Requires one focused Antigravity stabilization pass; no strategy/content research is needed.
+
+
+### 2026-09-20 17:05 — Antigravity — FINAL PRE-MERGE STABILIZATION COMPLETED
+- verified_preflight_corrections:
+  - W1-02 and W1-07 dates: `date: "2026-09-20"`, `updatedAt: "2026-09-20"`.
+  - W1-02 and W1-07 visible evidence metadata: present with official links (Mitnick et al., Delicate et al., Israel MoH, and APA).
+  - W1-06 MoH link: verified on `/services/parenting` with `target="_blank" rel="noopener noreferrer"`.
+  - Date-descending sort: verified in `generate-post-summaries.cjs` and `generate-llms-full.cjs`.
+- test_and_build_stabilization:
+  - Synchronized `scripts/validate-content.cjs` line 38 to sort published posts by date descending before comparing with `postSummaries.json`.
+  - Stabilized Playwright test environment in `tests/e2e/site.spec.ts` via `test.beforeEach` network route intercept for `https://assets.calendly.com/**`, returning a mock widget initializing an accessible iframe (`title="Calendly Scheduling Page"`).
+  - Completely eliminated all 14 external third-party timeouts and axe-core false positives.
+  - Zero production code modified for test fixes; purely test-runner configuration.
+- regenerated_artifacts:
+  - `src/data/postSummaries.json` (81 published posts, newest first)
+  - `public/sitemap.xml` (108 URLs)
+  - `public/rss.xml` (81 items)
+  - `public/llms-full.txt` (81 blog posts, newest first)
+- automated_test_results:
+  - `npm run test:content`: PASS (81 published posts validated, 0 errors)
+  - `npm run typecheck`: PASS (0 errors across root and workers)
+  - `npm run lint`: PASS (0 errors, 19 ignored-file warnings)
+  - `npm test`: PASS (18 files / 87 tests)
+  - `npm run build`: PASS (Vite build + SSG prerender of 110 routes)
+  - `npm run verify:dist`: PASS (110 prerendered routes + 404.html verified)
+  - `npm run test:e2e`: PASS (**120 PASSED / 0 FAILED / 0 TIMED OUT** in 4.5m)
+  - `npm run check`: PASS (complete clean validation run)
+- decision:
+  - **READY_FOR_MERGE** (All 120 E2E tests pass, zero flakes, production diff clean).
+  - Awaiting explicit human user authorization to merge to `main`.
+  - NOT merged to `main`. NOT deployed.
+

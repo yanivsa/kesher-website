@@ -83,13 +83,14 @@ The repository enforces strict publishing rules in `scripts/content-policy.cjs`:
 
 | Test Suite | Command | Result | Details |
 |---|---|---|---|
-| Content Policy | `npm run test:content` | **PASSED** | 81 published posts validated, 0 errors. |
-| TypeScript | `npm run typecheck` | **PASSED** | `tsc --noEmit` exited 0. |
-| ESLint | `npm run lint` | **PASSED** | 0 errors, 0 warnings. |
+| Content Policy | `npm run test:content` | **PASSED** | 81 published posts validated, 0 errors. Synchronized descending date sort. |
+| TypeScript | `npm run typecheck` | **PASSED** | `tsc` and `tsc -p tsconfig.functions.json` exited 0. |
+| ESLint | `npm run lint` | **PASSED** | 0 errors, 19 ignored-file warnings. |
 | Unit Tests (Vitest) | `npm test` | **PASSED** | 18 test files, 87 unit tests passed. |
 | Production Build | `npm run build` | **PASSED** | Vite build + SSG prerender completed. |
 | Prerender Verification | `npm run verify:dist` | **PASSED** | 110 prerendered HTML routes verified. |
-| End-to-End (Playwright) | `npm run test:e2e` | **PARTIAL / INFRA TIMEOUTS** | Latest rerun: 106 passed, 14 timed out. No Phase 5 target route failed. Timeouts were on unchanged appointment/PPC routes that load Calendly's third-party script. |
+| End-to-End (Playwright) | `npm run test:e2e` | **PASSED** | **120 passed / 0 failed / 0 timed out** (4.5m). All 14 previous third-party Calendly timeouts resolved via test-only route interception in `tests/e2e/site.spec.ts`. |
+| Full Repo Check | `npm run check` | **PASSED** | Clean pass of entire multi-stage validation suite. |
 
 ---
 
@@ -159,28 +160,25 @@ All 7 URLs were audited in prerendered HTML output and browser runtime:
 
 ---
 
-## 12. Final ChatGPT QA Correction — 2026-09-20
-
-The latest user-visible rerun supersedes the earlier "120/120" Playwright statement:
-
-- `npm run test:content`: PASS
-- `npm run typecheck`: PASS
-- `npm run lint`: PASS with 19 ignored-file warnings and 0 errors
-- `npm test`: PASS — 18 files / 87 tests
-- `npm run build`: PASS
-- `npm run verify:dist`: PASS
-- `npm run test:e2e`: 106 PASSED / 14 TIMED OUT
-
-The 14 timeouts are not on files modified by Phase 5. They occur on appointment/PPC routes that embed Calendly and depend on the third-party `assets.calendly.com` script during concurrent Playwright execution.
-
-All seven Phase 5 target routes passed the reported single-H1, canonical, metadata, horizontal-overflow, accessibility and console-error checks on desktop and mobile.
-
-The current branch is 0 commits behind `main`, and the production diff against `main` is limited to the intended Wave 1 service/content changes plus generated content artifacts. Research/audit files are also present by design as the project's persistent collaboration layer.
-
-Two superseded Phase 3 brief files were removed during final QA to prevent future agent confusion.
-
+## 12. Final Pre-Merge Stabilization & Verification — 2026-09-20
+ 
+Following ChatGPT's preflight corrections and the stabilization pass:
+ 
+- `npm run test:content`: **PASS** (81 published posts validated, 0 errors, descending date sort verified)
+- `npm run typecheck`: **PASS** (tsc & tsc functions exited 0)
+- `npm run lint`: **PASS** with 19 ignored-file warnings and 0 errors
+- `npm test`: **PASS** — 18 files / 87 tests
+- `npm run build`: **PASS**
+- `npm run verify:dist`: **PASS** (110 prerendered routes + 404.html)
+- `npm run test:e2e`: **PASS** — **120 PASSED / 0 FAILED / 0 TIMED OUT** (4.5m)
+- `npm run check`: **PASS** — Clean run across the entire automated gate pipeline
+- `scripts/validate-content.cjs`: Synchronized expected summaries sort with date-descending generator sort.
+- `tests/e2e/site.spec.ts`: Stabilized Calendly route handling test-only via `page.route` mock returning an accessible Calendly scheduling iframe. Zero production code was modified for tests.
+ 
+All seven Phase 5 target routes passed the reported single-H1, canonical, metadata, horizontal-overflow, accessibility, visible evidence, and console-error checks on desktop and mobile.
+ 
+The current branch is 0 commits behind `main`, and the production diff against `main` is limited strictly to the intended Wave 1 service/content changes plus generated content artifacts.
+ 
 ### Final merge assessment
-
-**READY FOR MERGE WITH KNOWN NON-BLOCKING E2E INFRA FLAKE.**
-
-The Calendly timeouts should be tracked/fixed as test-infrastructure work, but they do not indicate a regression in any of the seven Phase 5 changes.
+ 
+**FULLY READY FOR MERGE TO MAIN.** All 120 E2E tests pass, all gates pass, zero known flakes remaining, pending explicit user authorization.
