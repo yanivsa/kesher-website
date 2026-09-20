@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-20",
-  "status": "article_normalizing",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -10,8 +10,8 @@
     "run_id": 35477948132,
     "processed_run_id": 35475884229,
     "provider_id": null,
-    "failure_fingerprint": "COMPLETED_WITHOUT_PR",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "COMPLETED_WITHOUT_PR": 1
     },
@@ -51,7 +51,14 @@
     "quality_status": "passed",
     "quality_content_sha256": "5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec",
     "quality_checked_at": "2026-09-20T06:27:54.409267+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "why-is-it-so-hard-to-find-love",
+    "title": "למה כל כך קשה למצוא זוגיות? כשהחיפוש נראה כמו מבוי סתום",
+    "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-love",
+    "published_date": "2026-09-20",
+    "live": true,
+    "live_verified_at": "2026-09-20T06:32:56.100070+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -1757,9 +1764,25 @@
         "pr_number": 881,
         "slot": "2026-09-20"
       }
+    },
+    {
+      "at": "2026-09-20T06:32:56.100086+00:00",
+      "from": "article_normalizing",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-20T06:33:34.681131+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-20T01:21:25.663688+00:00",
+  "updated_at": "2026-09-20T06:33:34.681138+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1773,8 +1796,8 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1783,7 +1806,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-09-20T06:33:34.681122+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
