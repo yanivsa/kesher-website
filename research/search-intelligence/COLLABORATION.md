@@ -53,11 +53,11 @@ Chat messages are not the canonical state. Git files on the working branch are t
 
 ## CURRENT STATE
 
-- project_status: READY_FOR_MERGE
-- current_phase: FINAL_STABILIZATION_COMPLETED
-- current_owner: USER
+- project_status: MERGED_HOTFIX_PENDING
+- current_phase: POST_MERGE_CONTROLLER_HOTFIX
+- current_owner: SHARED
 - last_completed_phase: FINAL_STABILIZATION
-- next_phase: USER_MERGE_AUTHORIZATION
+- next_phase: HOTFIX_VALIDATION_AND_MERGE
 - production_domain: https://kesher.saharoni.com
 - search_console_property: sc-domain:saharoni.com
 - ga4_property: properties/551923843
@@ -596,3 +596,21 @@ Completion requires:
   - Awaiting explicit human user authorization to merge to `main`.
   - NOT merged to `main`. NOT deployed.
 
+
+
+### 2026-09-20 — ChatGPT — POST-MERGE CONTROLLER HOTFIX
+- merge:
+  - PR #891 merged to main as 612acee46d42f61c86b7b0dcdf576db7f87910ea.
+- post_merge_finding:
+  - Kesher Content Controller failed with DUPLICATE_ARTICLE_DATE because three legitimate public articles share 2026-09-20.
+  - Two of those articles (relationship-after-childbirth and money-fights-communication) are editorial Wave 1 publications and are not the autonomous daily article.
+- root_cause:
+  - The controller's same-day uniqueness invariant was applied to every public post, rather than only to publications owned by the autonomous daily controller.
+- hotfix:
+  - Mark the two editorial Wave 1 posts with `controllerManaged: false`.
+  - Update `today_articles()` so explicitly unmanaged editorial posts do not occupy or duplicate the autonomous daily slot.
+  - Preserve fail-closed behavior when two controller-managed articles share a cycle date.
+  - Add regression tests for both mixed manual/managed same-day publishing and a manual-only same-day scenario.
+- status:
+  - Hotfix branch: fix/controller-manual-publications-20260920
+  - Validation and hotfix merge pending.
