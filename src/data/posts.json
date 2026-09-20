@@ -1013,7 +1013,8 @@
         "url": "https://www.apa.org/topics/money/conflict",
         "note": "סקירה מקצועית לציבור על כסף כמקור לקונפליקט זוגי ועל חשיבות שיחה, הבנת אמונות והסכמות משותפות. המאמר באתר אינו ייעוץ פיננסי."
       }
-    ]
+    ],
+    "controllerManaged": false
   },
   {
     "id": "adhd-morning-routine",
@@ -1081,7 +1082,8 @@
         "url": "https://me.health.gov.il/parenting/raising-children/after-childbirth/postpartum-depression-and-during-pregnancy/postpartum-depression/",
         "note": "מקור רשמי לתסמינים שמצדיקים פנייה לאבחון ולעזרה מקצועית לאחר לידה."
       }
-    ]
+    ],
+    "controllerManaged": false
   },
   {
     "id": "roman-empire",

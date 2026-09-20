@@ -246,6 +246,37 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(action.kind, "blocked")
         self.assertEqual(state["last_error"]["code"], "DUPLICATE_ARTICLE_DATE")
 
+    def test_manual_same_day_publications_do_not_block_managed_article(self):
+        gh = FakeGitHub()
+        managed = article("daily")
+        manual_a = article("manual-a")
+        manual_a["controllerManaged"] = False
+        manual_b = article("manual-b")
+        manual_b["controllerManaged"] = False
+        gh.posts = [manual_a, managed, manual_b]
+        site = FakeSite(status=200, body="<h1>כותרת מאמר</h1>")
+
+        state, action = self.make(gh, site).tick()
+
+        self.assertEqual(action.kind, "dispatch_video")
+        self.assertEqual(state["article"]["slug"], "daily")
+        self.assertIsNone(state.get("last_error"))
+
+    def test_only_manual_same_day_publications_leave_daily_slot_open(self):
+        gh = FakeGitHub()
+        manual_a = article("manual-a")
+        manual_a["controllerManaged"] = False
+        manual_b = article("manual-b")
+        manual_b["controllerManaged"] = False
+        gh.posts = [manual_a, manual_b]
+
+        state, action = self.make(gh).tick()
+
+        self.assertEqual(action.kind, "dispatch_article")
+        self.assertEqual(gh.dispatches, [
+            (controller.ARTICLE_WORKFLOW, {"slot": "2026-08-19"})
+        ])
+
     def test_article_in_main_but_not_live_dispatches_deploy(self):
         gh = FakeGitHub()
         gh.posts = [article()]

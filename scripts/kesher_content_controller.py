@@ -87,10 +87,18 @@ def canonical_slug(post: dict[str, Any]) -> str:
 
 
 def today_articles(posts: list[dict[str, Any]], day: date) -> list[dict[str, Any]]:
+    """Return same-day articles owned by the autonomous daily controller.
+
+    Editorial/manual publications may legitimately share the same public date as
+    the daily autonomous article. Such posts opt out explicitly with
+    `controllerManaged: false`, so the controller's one-article-per-cycle
+    invariant applies only to controller-managed publications.
+    """
     expected = day.isoformat()
     return [
         post for post in posts
         if isinstance(post, dict)
+        and post.get("controllerManaged") is not False
         and str(post.get("date") or "").strip() == expected
         and canonical_slug(post)
     ]
