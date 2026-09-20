@@ -125,11 +125,8 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
           right: SHORT_GEOMETRY.safeArea.right,
           direction: "rtl",
           textAlign: "right",
-          opacity: intro,
-          translate: `0 ${interpolate(intro, [0, 1], [-18, 0])}px`,
           fontFamily: "Heebo, Rubik, Arial, sans-serif",
           color: "white",
-          textShadow: "0 3px 18px rgba(0,0,0,0.72)",
         }}
       >
         <div
@@ -144,26 +141,34 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
         </div>
         <div
           style={{
-            display: "inline-block",
-            padding: "9px 20px",
-            borderRadius: 999,
-            backgroundColor: "rgba(29,72,52,0.88)",
-            fontSize: 30,
-            fontWeight: 700,
-            marginBottom: 18,
+            opacity: intro,
+            translate: `0 ${interpolate(intro, [0, 1], [-18, 0])}px`,
+            textShadow: "0 3px 18px rgba(0,0,0,0.72)",
           }}
         >
-          {category}
-        </div>
-        <div
-          style={{
-            fontSize: 54,
-            lineHeight: 1.12,
-            fontWeight: 900,
-            maxWidth: 930,
-          }}
-        >
-          {title}
+          <div
+            style={{
+              display: "inline-block",
+              padding: "9px 20px",
+              borderRadius: 999,
+              backgroundColor: "rgba(29,72,52,0.88)",
+              fontSize: 30,
+              fontWeight: 700,
+              marginBottom: 18,
+            }}
+          >
+            {category}
+          </div>
+          <div
+            style={{
+              fontSize: 54,
+              lineHeight: 1.12,
+              fontWeight: 900,
+              maxWidth: 930,
+            }}
+          >
+            {title}
+          </div>
         </div>
       </div>
 
