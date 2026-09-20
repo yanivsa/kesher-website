@@ -1,0 +1,14 @@
+cluster_id,primary_intent,primary_keyword,secondary_keywords,target_url_or_draft,recommended_action,priority
+CLUST-DATING-FIRST-DATE,Informational (TOFU),שאלות לפגישה ראשונה,נושאי שיחה לפגישה ראשונה,/blog/new-relationship-initial-intentions,UPDATE_EXISTING,HIGH
+CLUST-DATING-EARLY-PHASE,Informational (TOFU),תחילת קשר,טעויות של תחילת קשר,/blog/dating-transition-to-relationship-boundaries,UPDATE_EXISTING,HIGH
+CLUST-DATING-BOUNDARIES,Informational (MOFU),לא להראות התלהבות בתחילת קשר,איך להראות התלהבות במידה,/blog/dating-transition-to-relationship-boundaries,UPDATE_EXISTING,HIGH
+CLUST-LOCAL-COUPLES-ASHDOD,Commercial Local (BOFU),ייעוץ זוגי באשדוד,"ייעוץ זוגי באשדוד המלצות, יועצת זוגית באשדוד",/couples-counseling-ashdod,UPDATE_EXISTING,HIGH
+CLUST-SERVICE-ONLINE,Commercial (BOFU),ייעוץ זוגי אונליין,,NEW: /services/online-couples-counseling,CREATE_SERVICE_PAGE,HIGH
+CLUST-COUPLES-PRICING,Commercial Investigation (MOFU),כמה עולה ייעוץ זוגי,,/services/couples-counseling (FAQ),UPDATE_EXISTING,MEDIUM
+CLUST-POSTPARTUM-RELATIONSHIP,Informational (MOFU),משבר זוגיות אחרי לידה,ריבים בזוגיות אחרי לידה,draft: relationship-after-childbirth,EXPAND_EXISTING,HIGH
+CLUST-MONEY-RELATIONSHIP,Informational (MOFU),מריבות על כסף בזוגיות,,draft: money-fights-communication,EXPAND_EXISTING,HIGH
+CLUST-ADHD-COUPLES,Informational (MOFU),זוגיות עם בן זוג עם הפרעת קשב,,/blog/couples-adhd-partner,UPDATE_EXISTING,MEDIUM
+CLUST-TEEN-SOCIAL-ANXIETY,Informational Parental (MOFU),חרדה חברתית אצל מתבגרים הדרכת הורים,,draft: parenting-teen-social-anxiety,EXPAND_EXISTING,HIGH
+CLUST-COUPLES-COMMUNICATION,Informational (TOFU),תקשורת זוגית,תרגילים לשיפור תקשורת זוגית,/blog/communication-breakdown,UPDATE_EXISTING,LOW
+CLUST-PARENTING-BOUNDARIES,Informational (MOFU),הצבת גבולות לילדים,איך להציב גבולות בלי לצעוק,/blog/boundaries-without-punishments,UPDATE_EXISTING,LOW
+CLUST-PARENTING-TEENS,Informational (MOFU),הדרכת הורים למתבגרים,,draft: parenting-teen-social-anxiety,EXPAND_EXISTING,LOW

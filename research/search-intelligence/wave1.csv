@@ -1,0 +1,8 @@
+wave_id,cluster_id,primary_keyword,action,target_url,priority,notes
+W1-01,CLUST-SERVICE-ONLINE,ייעוץ זוגי אונליין,CREATE_SERVICE_PAGE,/services/online-couples-counseling,HIGH,BOFU content gap. Target Zoom counseling.
+W1-02,CLUST-POSTPARTUM-RELATIONSHIP,משבר זוגיות אחרי לידה,EXPAND_EXISTING,draft: relationship-after-childbirth,HIGH,Convert draft to comprehensive guide targeting postpartum fights.
+W1-03,CLUST-TEEN-SOCIAL-ANXIETY,חרדה חברתית אצל מתבגרים הדרכת הורים,EXPAND_EXISTING,draft: parenting-teen-social-anxiety,HIGH,Parental guidance framing. Must not compete medically.
+W1-04,CLUST-DATING-BOUNDARIES,לא להראות התלהבות בתחילת קשר,UPDATE_EXISTING,/blog/dating-transition-to-relationship-boundaries,HIGH,Include actionable advice on showing enthusiasm appropriately.
+W1-05,CLUST-DATING-FIRST-DATE,שאלות לפגישה ראשונה,UPDATE_EXISTING,/blog/new-relationship-initial-intentions,HIGH,Shift away from broad term to specific actionable questions.
+W1-06,CLUST-MONEY-RELATIONSHIP,מריבות על כסף בזוגיות,EXPAND_EXISTING,draft: money-fights-communication,MEDIUM,Upgrade draft to address financial disagreements.
+W1-07,CLUST-LOCAL-COUPLES-ASHDOD,ייעוץ זוגי באשדוד המלצות,UPDATE_EXISTING,/couples-counseling-ashdod,MEDIUM,Add local reviews/testimonials section.

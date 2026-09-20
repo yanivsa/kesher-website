@@ -1,0 +1,5 @@
+issue_id,competing_urls,competing_queries,diagnosis,resolution,status
+CANNIBAL-01,"/blog/couples-adhd-partner, /blog/couples-adhd-premarital-planning",זוגיות עם בן זוג עם הפרעת קשב,No cannibalization. Different stages of relationship (established vs premarital).,Maintain both. Link between them.,RESOLVED
+CANNIBAL-02,draft: money-fights-communication vs existing broad communication pages,"מריבות על כסף בזוגיות, ריבים בזוגיות",Potential overlap on generic fighting advice.,Focus draft strictly on financial psychology and differences in money values.,ACTION_REQUIRED
+CANNIBAL-03,/blog/dating-transition-to-relationship-boundaries vs /blog/new-relationship-initial-intentions,"תחילת קשר, פגישה ראשונה",Potential overlap if boundaries article covers first date.,Strict separation: initial-intentions for DATE 1-3. transition-to-boundaries for DATES 4+.,RESOLVED
+CANNIBAL-04,draft: parenting-teen-social-anxiety vs medical intent,חרדה חברתית אצל מתבגרים,Intent mismatch and authority clash with HMOs.,Frame strictly as Parental Guidance (הדרכת הורים). No medical/diagnostic advice.,RESOLVED
