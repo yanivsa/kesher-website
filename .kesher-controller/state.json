@@ -1908,7 +1908,15 @@
     "last_dispatch_at": "2026-09-20T10:23:40.163802+00:00",
     "artifact_id": "3f97a928-3110-47c2-a9ea-971218e32536",
     "source_id": "21e225a0-92ad-4dbf-b6ae-0c821a961b6b",
-    "adopted_from_long_item_id": "video-20260920-100242-5619a729ac"
+    "adopted_from_long_item_id": "video-20260920-100242-5619a729ac",
+    "watchdog": {
+      "identity": "short:why-is-it-so-hard-to-find-love:5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec:video-20260920-131834-5619a729ac",
+      "hard_started_at": "2026-09-20T10:18:41.373989+00:00",
+      "last_progress_at": "2026-09-20T10:24:59.544776+00:00",
+      "last_fingerprint": "36ef7c2f5319097550b2377326d05e66c31b1c597f2cab405d9c86ebbe0f41e3",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
