@@ -57,7 +57,7 @@
     "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-love",
     "published_date": "2026-09-20",
     "live": true,
-    "live_verified_at": "2026-09-20T14:39:12.361222+00:00",
+    "live_verified_at": "2026-09-20T15:04:43.907802+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1104,27 +1104,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-17T12:10:10.889761+00:00",
-      "from": "long_video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-17T12:10:22.548366+00:00",
-      "from": "article_live",
-      "to": "video_retry_wait",
-      "reason": "video retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-17T12:09:57.712413+00:00"
-      }
-    },
-    {
-      "at": "2026-09-17T12:31:58.022672+00:00",
-      "from": "long_video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-09-17T12:32:26.403130+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -1814,9 +1793,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-20T15:04:43.907821+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-20T15:05:31.952017+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-20T15:06:58.611088+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-20T14:41:07.841029+00:00",
+  "updated_at": "2026-09-20T15:06:58.611138+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
