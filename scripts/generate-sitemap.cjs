@@ -10,7 +10,6 @@ const serviceRoutes = new Set([
   '/lectures',
   '/contact',
   '/appointment',
-  '/services/couples',
   '/services/parenting',
   '/services/mediation',
   '/services/gifted-parenting',

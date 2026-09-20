@@ -490,7 +490,44 @@ const CouplesCounselingAshdodPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 7. למה שירה / נעים להכיר (Why Shira) */}
+      {/* 7. התאמה למצבים נוספים + גבולות בטיחות */}
+      <section className={styles.section}>
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <h2>מתי ייעוץ זוגי יכול להתאים במיוחד?</h2>
+            <p>
+              לא כל זוג מגיע בגלל מריבה אחת גדולה. לפעמים הקושי הוא ריחוק שנבנה לאורך זמן, שחיקה, משבר אמון או עומס שמקשה להישאר צוות. בפגישה בודקים יחד מה קורה ביניכם ובוחרים נקודת התחלה שאפשר לעבוד איתה.
+            </p>
+          </div>
+          <div className={styles.recognitionGrid}>
+            <article className={styles.recognitionCard}>
+              <h3 className={styles.cardTitle}>האינטימיות והקרבה נחלשו</h3>
+              <p className={styles.cardDesc}>מרגישים יותר כמו שותפים שמנהלים בית, משימות וילדים, ופחות כמו זוג. אפשר להתחיל מלזהות מה הרחיק ואיך מחזירים בהדרגה שיחה, זמן וקירבה.</p>
+            </article>
+            <article className={styles.recognitionCard}>
+              <h3 className={styles.cardTitle}>נוצר משבר אמון</h3>
+              <p className={styles.cardDesc}>בגידה, הסתרה או שחיקה מצטברת עלולות לערער את תחושת הביטחון בקשר. מתחילים מלהבין מה קרה, מה נדרש כדי שאפשר יהיה לדבר, והאם יש בסיס לבנייה מחודשת של אמון.</p>
+            </article>
+            <article className={styles.recognitionCard}>
+              <h3 className={styles.cardTitle}>הקשר נשחק בתוך העומס</h3>
+              <p className={styles.cardDesc}>עבודה, ילדים ולוגיסטיקה יכולים להשאיר את הזוגיות אחרונה ברשימה. המטרה היא למצוא שינוי קטן וישים שמחזיר תחושת שותפות גם בתוך שגרה עמוסה.</p>
+            </article>
+            <article className={styles.recognitionCard}>
+              <h3 className={styles.cardTitle}>ADHD משפיע על הזוגיות</h3>
+              <p className={styles.cardDesc}>קשיי זמן, משימות, עומס ותקשורת עלולים ליצור תחושה שאחד מנהל והשני מנוהל. אפשר לבנות כללים שמתאימים לשניכם ומחזירים אחריות ושותפות.</p>
+            </article>
+            <article className={styles.recognitionCard}>
+              <h3 className={styles.cardTitle}>סיפורי משפחות המוצא נכנסים לקשר</h3>
+              <p className={styles.cardDesc}>לפני חתונה ובתחילת החיים המשותפים, חוויות מהבית — כולל גירושי הורים — יכולות לעורר חששות ושאלות על יציבות, גבולות ונאמנויות משפחתיות. נותנים לסיפור מקום בלי להפוך אותו לנבואה עבור הזוג החדש.</p>
+            </article>
+          </div>
+          <div className={styles.sessionsNote}>
+            לפני חתונה או בתחילת הנישואים אפשר להיעזר גם בעמוד <a href="/services/premarital-first-year">הכנה לנישואים וליווי בשנה הראשונה</a>. במצב של אלימות או סכנה בבית, ייעוץ זוגי אינו המענה הראשון ויש לפנות תחילה לגורם בטיחותי או מקצועי מתאים.
+          </div>
+        </div>
+      </section>
+
+      {/* 8. למה שירה / נעים להכיר (Why Shira) */}
       <section className={styles.sectionAlt}>
         <div className={`container ${styles.aboutGrid}`}>
           <div className={styles.aboutImageWrapper}>

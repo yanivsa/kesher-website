@@ -40,7 +40,6 @@ const loadable = (loader: () => Promise<PageModule>) => {
 };
 
 const home = loadable(() => import('./pages/Home/Home'));
-const couples = loadable(() => import('./pages/Services/Couples/CouplesCounseling'));
 const premarital = loadable(() => import('./pages/Services/Premarital/PremaritalFirstYearPage'));
 const parenting = loadable(() => import('./pages/Services/Parenting/ParentingGuidance'));
 const mediation = loadable(() => import('./pages/Services/Mediation/MediationPage'));
@@ -73,7 +72,6 @@ const notFound = loadable(() => import('./pages/NotFound/NotFound'));
 const {
   Page: Home,
 } = home;
-const { Page: CouplesCounseling } = couples;
 const { Page: PremaritalPage } = premarital;
 const { Page: ParentingGuidance } = parenting;
 const { Page: MediationPage } = mediation;
@@ -118,7 +116,6 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/friends\/?$/, friends.preload],
   [/^\/links\/?$/, friends.preload],
   [/^\/lectures\/?$/, lectures.preload],
-  [/^\/services\/couples\/?$/, couples.preload],
   [/^\/services\/premarital-first-year\/?$/, premarital.preload],
   [/^\/services\/parenting\/?$/, parenting.preload],
   [/^\/services\/mediation\/?$/, mediation.preload],
@@ -163,7 +160,6 @@ function App() {
           <Route path="/friends" element={<FriendsPage />} />
           <Route path="/links" element={<FriendsPage />} />
           <Route path="/lectures" element={<LecturesPage />} />
-          <Route path="/services/couples" element={<CouplesCounseling />} />
           <Route path="/services/premarital-first-year" element={<PremaritalPage />} />
           <Route path="/services/parenting" element={<ParentingGuidance />} />
           <Route path="/services/mediation" element={<MediationPage />} />

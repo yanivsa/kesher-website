@@ -11,7 +11,7 @@ const services = [
     description: 'לזוגות שכל שיחה אצלם חוזרת לאותו ויכוח, או שהמרחק והשחיקה כבר מורגשים בחיי היום־יום.',
     icon: <FiMessageCircle aria-hidden="true" />,
     highlights: ['מיפוי דפוסי התקשורת', 'כלים לשיחות קשות בלי הסלמה', 'חיזוק אמון, קרבה ושיתוף פעולה'],
-    link: '/services/couples'
+    link: '/couples-counseling-ashdod'
   },
   {
     title: 'הדרכת הורים',
@@ -30,12 +30,6 @@ const services = [
 ];
 
 const specializations = [
-  {
-    title: 'ייעוץ זוגי באשדוד והסביבה',
-    description: 'ליווי מעשי וממוקד בקליניקה באשדוד או אונליין לזוגות המתמודדים עם קשיי תקשורת ומריבות חוזרות.',
-    icon: <FiHeart aria-hidden="true" />,
-    link: '/couples-counseling-ashdod'
-  },
   {
     title: 'הנחיית הורים לילדים מחוננים',
     description: 'ליווי סביב רגישות, פרפקציוניזם, שייכות, מוטיבציה ומחוננות לצד ADHD.',

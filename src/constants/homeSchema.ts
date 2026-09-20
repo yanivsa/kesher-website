@@ -3,7 +3,7 @@ import { SITE_CONFIG } from './siteConfig';
 const services = [
   {
     name: 'ייעוץ זוגי',
-    path: '/services/couples',
+    path: '/couples-counseling-ashdod',
     description: 'ייעוץ זוגי לשיפור התקשורת, התמודדות עם משברים וחיזוק הקשר.',
   },
   {
