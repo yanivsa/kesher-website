@@ -120,6 +120,10 @@ def load_state() -> dict[str, Any]:
 
 
 def save_state(state: dict[str, Any]) -> None:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    if isinstance(state, CanonicalMediaState):
+        state.persist()
+        return
     state["updated_at"] = utc_now()
     atomic_json_write(STATE_FILE, state)
 
@@ -415,14 +419,26 @@ def article_body_for_item(item: dict[str, Any]) -> str:
 
 
 def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
     body = article_body_for_item(item)
-    payload = run_notebooklm(
-        ["source", "add", body, "--type", "text", "--title", item["source"]["title"], "--notebook", NOTEBOOK_ID],
-        timeout=180,
-    )
-    source_id = nested_identifier(payload, ("source_id", "sourceId", "id"))
-    if not source_id:
-        raise PipelineError("NotebookLM source add returned no source ID")
+    title = item["source"]["title"]
+    if isinstance(state, CanonicalMediaState):
+        title = f"kesher:{state.context.target.key}:{item.get('fresh_generation_attempt', 1)}"
+
+    def create_source():
+        payload = run_notebooklm(
+            ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+            timeout=180,
+        )
+        source_id = nested_identifier(payload, ("source_id", "sourceId", "id"))
+        if not source_id:
+            raise PipelineError("NotebookLM source add returned no source ID")
+        return {"source_id": source_id}
+
+    request = {"notebook_id": NOTEBOOK_ID, "title": title, "body_sha256": sha256_text(body),
+               "body_normalized_sha256": sha256_text(' '.join(body.split()))}
+    receipt = state.external('provider_source', request, create_source) if isinstance(state, CanonicalMediaState) else create_source()
+    source_id = receipt["source_id"]
     item["source_id"] = source_id
     item["status"] = "source_added"
     item["updated_at"] = utc_now()
@@ -431,20 +447,29 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
 
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.provider import bind_generation_prompt
     prompt_path = STATE_DIR / f"{item['id']}-prompt-he.txt"
-    prompt = generation_prompt(item["source"])
+    prompt = bind_generation_prompt(state, item, generation_prompt(item["source"]), 'explainer')
     prompt_path.write_text(prompt, encoding="utf-8")
-    payload = run_notebooklm(
-        [
-            "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
-            "--source", item["source_id"], "--format", "explainer", "--style", "auto",
-            "--language", "he", "--no-wait",
-        ],
-        timeout=180,
-    )
-    task_id = nested_identifier(payload, ("task_id", "taskId", "artifact_id", "id"))
-    if not task_id:
-        raise PipelineError("NotebookLM generation returned no task ID")
+    def create_generation():
+        payload = run_notebooklm(
+            [
+                "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
+                "--source", item["source_id"], "--format", "explainer", "--style", "auto",
+                "--language", "he", "--no-wait",
+            ],
+            timeout=180,
+        )
+        task_id = nested_identifier(payload, ("task_id", "taskId", "artifact_id", "id"))
+        if not task_id:
+            raise PipelineError("NotebookLM generation returned no task ID")
+        return {"task_id": task_id, "artifact_id": task_id}
+
+    request = {"notebook_id": NOTEBOOK_ID, "source_id": item["source_id"], "format": "explainer",
+               "style": "auto", "language": "he", "prompt_sha256": sha256_text(prompt), "prompt": prompt}
+    receipt = state.external('provider_generation', request, create_generation) if isinstance(state, CanonicalMediaState) else create_generation()
+    task_id = receipt["task_id"]
     item["task_id"] = task_id
     item["artifact_id"] = task_id
     item["generation_prompt"] = prompt
@@ -1171,6 +1196,7 @@ def verify_authenticated_channel(token: str) -> None:
 
 
 def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: str, video_path: Path) -> str:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
     metadata = item["youtube_metadata"]
     body = {
         "snippet": {
@@ -1187,21 +1213,26 @@ def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: s
             "containsSyntheticMedia": True,
         },
     }
-    response = requests.post(
-        "https://www.googleapis.com/upload/youtube/v3/videos",
-        params={"uploadType": "resumable", "part": "snippet,status"},
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json; charset=UTF-8",
-            "X-Upload-Content-Length": str(video_path.stat().st_size),
-            "X-Upload-Content-Type": "video/mp4",
-        },
-        json=body,
-        timeout=60,
-    )
-    location = response.headers.get("Location")
-    if response.status_code not in {200, 201} or not location:
-        raise PipelineError(f"YouTube resumable session creation failed with HTTP {response.status_code}")
+    def create_session():
+        response = requests.post(
+            "https://www.googleapis.com/upload/youtube/v3/videos",
+            params={"uploadType": "resumable", "part": "snippet,status"},
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json; charset=UTF-8",
+                "X-Upload-Content-Length": str(video_path.stat().st_size),
+                "X-Upload-Content-Type": "video/mp4",
+            },
+            json=body,
+            timeout=60,
+        )
+        location = response.headers.get("Location")
+        if response.status_code not in {200, 201} or not location:
+            raise PipelineError(f"YouTube resumable session creation failed with HTTP {response.status_code}")
+        return location
+
+    request = {"metadata": body, "final_sha256": sha256_file(video_path), "size_bytes": video_path.stat().st_size}
+    location = state.external_capability('youtube_session', request, create_session) if isinstance(state, CanonicalMediaState) else create_session()
     item["upload_session_uri"] = location
     item["upload_session_created_at"] = utc_now()
     item["status"] = "uploading"
@@ -1309,8 +1340,8 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         time.sleep(20)
 
 
-def upload_only(slug: str | None = None, item_id: str | None = None) -> int:
-    state = load_state()
+def upload_only(slug: str | None = None, item_id: str | None = None, *, state: dict | None = None) -> int:
+    state = load_state() if state is None else state
     target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
     target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
     candidates = [

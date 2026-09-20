@@ -24,13 +24,18 @@ jobs:
           python-version: "3.12"
 
       - name: Install stability test dependencies
-        run: python -m pip install requests
+        run: python -m pip install requests==2.33.0 cryptography==50.0.1
 
       - name: Run controller and video stability regression suite
         run: |
           set -euo pipefail
           python -m unittest \
             tests.test_kesher_public_delivery \
+            tests.test_kesher_metadata_repair \
+            tests.test_kesher_media_state \
+            tests.test_kesher_media_worker \
+            tests.test_kesher_provider_recovery \
+            tests.test_media_provenance_contract \
             tests.test_kesher_state_write_safety \
             tests.test_kesher_canonical_state \
             tests.test_kesher_github_faults \

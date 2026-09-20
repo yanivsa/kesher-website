@@ -85,6 +85,7 @@ def validate_state(state: dict) -> None:
             target = identity_from_dict(row['identity'])
             if not isinstance(target, MediaIdentity) or target.key != key or target.source.key not in state['sources']:
                 raise StateInvalid('Media key/source does not match immutable identity')
+        media_sequences = {}
         for key, row in state['commands'].items():
             target = identity_from_dict(row['target'])
             _validate_command_arguments(row['operation'], row['ordinal'], row['inputs'], row['code_sha'])
@@ -110,18 +111,31 @@ def validate_state(state: dict) -> None:
                     raise StateInvalid('Dispatch attempt lost its exact command identity')
                 if attempt['receipt'] is not None and not isinstance(attempt['receipt'], dict):
                     raise StateInvalid('Dispatch receipt must be an object')
-            for receipt in row['receipts'].values():
+            for name, receipt in row['receipts'].items():
                 if receipt['target'] != target.to_dict() or receipt['phase'] not in PHASES:
                     raise StateInvalid('Checkpoint belongs to another target or unknown phase')
                 timestamp(receipt['recorded_at'])
                 if not isinstance(receipt['evidence'], dict) or not receipt['evidence']:
                     raise StateInvalid('Checkpoint lacks evidence')
+                if name.startswith('media_state_'):
+                    evidence = receipt['evidence']
+                    sequence = evidence.get('sequence')
+                    if (not isinstance(target, MediaIdentity) or type(sequence) is not int or sequence < 1
+                            or name != 'media_state_' + digest(evidence)[:40]):
+                        raise StateInvalid('Invalid canonical media snapshot sequence or digest')
+                    sequences = media_sequences.setdefault(target.key, {})
+                    if sequence in sequences and sequences[sequence] != evidence:
+                        raise StateInvalid('Media recovery sequence cannot fork under concurrent workers')
+                    sequences[sequence] = evidence
             for effect in row['effects'].values():
                 timestamp(effect['created_at'])
                 if not isinstance(effect['request'], dict) or effect['request_sha256'] != digest(effect['request']):
                     raise StateInvalid('External request digest mismatch')
                 if effect['receipt'] is not None and not isinstance(effect['receipt'], dict):
                     raise StateInvalid('External receipt must be an object')
+        for sequences in media_sequences.values():
+            if len(sequences) != max(sequences):
+                raise StateInvalid('Media recovery sequence has missing checkpoints')
     except (KeyError, TypeError, ValueError, AttributeError) as exc:
         if isinstance(exc, StateInvalid):
             raise

@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import math
 import os
 import re
 import shutil
@@ -28,10 +29,12 @@ from typing import Any
 
 if __package__:
     from . import kesher_daily_pipeline as core
+    from . import kesher_e2e_delivery_guard as delivery_guard
     from .kesher_short_motion_plan import build_motion_plan
     from .kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
 else:
     import kesher_daily_pipeline as core
+    import kesher_e2e_delivery_guard as delivery_guard
     from kesher_short_motion_plan import build_motion_plan
     from kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
 
@@ -98,21 +101,34 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     """Prefer a provider-native Short; use an independent landscape fallback only on the bounded final attempt."""
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.provider import bind_generation_prompt
     prompt_path = core.STATE_DIR / f"{item['id']}-prompt-he.txt"
     prompt = generation_prompt(item["source"])
-    prompt_path.write_text(prompt, encoding="utf-8")
     attempt = int(item.get("fresh_generation_attempt") or 1)
     provider_format = "short" if attempt < NATIVE_SHORT_FALLBACK_ATTEMPT else "explainer"
-    payload = core.run_notebooklm(
-        [
-            "generate", "video", "--prompt-file", str(prompt_path), "--notebook", core.NOTEBOOK_ID,
-            "--source", item["source_id"], "--format", provider_format, "--language", "he", "--no-wait",
-        ],
-        timeout=180,
-    )
-    task_id = core.nested_identifier(payload, ("task_id", "taskId", "artifact_id", "id"))
-    if not task_id:
-        raise core.PipelineError("NotebookLM native Short generation returned no task ID")
+    if not 1 <= attempt <= NATIVE_SHORT_FALLBACK_ATTEMPT:
+        raise core.PipelineError("Short generation attempt is outside its bounded contract")
+    prompt = bind_generation_prompt(state, item, prompt, provider_format)
+    prompt_path.write_text(prompt, encoding="utf-8")
+
+    def create_generation():
+        payload = core.run_notebooklm(
+            [
+                "generate", "video", "--prompt-file", str(prompt_path), "--notebook", core.NOTEBOOK_ID,
+                "--source", item["source_id"], "--format", provider_format, "--language", "he", "--no-wait",
+            ],
+            timeout=180,
+        )
+        task_id = core.nested_identifier(payload, ("task_id", "taskId", "artifact_id", "id"))
+        if not task_id:
+            raise core.PipelineError("NotebookLM native Short generation returned no task ID")
+        return {"task_id": task_id, "artifact_id": task_id}
+
+    request = {"notebook_id": core.NOTEBOOK_ID, "source_id": item["source_id"], "format": provider_format,
+               "language": "he", "prompt_sha256": core.sha256_text(prompt), "prompt": prompt}
+    receipt = state.external('provider_generation', request, create_generation) if isinstance(state, CanonicalMediaState) else create_generation()
+    task_id = receipt["task_id"]
     item["task_id"] = task_id
     item["artifact_id"] = task_id
     item["generation_prompt"] = prompt
@@ -134,7 +150,11 @@ def native_provider_short_failures(media: dict[str, Any], item: dict[str, Any]) 
     ratio = (width / height) if height else 0
     attempt = int(item.get("fresh_generation_attempt") or 1)
     native_portrait = height > width and 0.53 <= ratio <= 0.60
-    fallback_allowed = attempt >= NATIVE_SHORT_FALLBACK_ATTEMPT
+    fallback_allowed = attempt == NATIVE_SHORT_FALLBACK_ATTEMPT
+    if attempt < 1 or attempt > NATIVE_SHORT_FALLBACK_ATTEMPT:
+        failures.append("Short generation attempt is outside the bounded native-first policy")
+    if item.get("provider_video_format") not in {"short", "explainer"}:
+        failures.append("Unknown NotebookLM provider format for Short")
     if not native_portrait and not fallback_allowed:
         failures.append(f"NotebookLM source is not a native portrait Short ({width}x{height}); retry native Short before fallback")
     if item.get("provider_video_format") != "short" and not fallback_allowed:
@@ -173,8 +193,8 @@ def short_technical_failures(
     if item is not None:
         if item.get("source_mode") == "overview-segment":
             failures.append("נפסל: גזירת Short מסגמנט של סרטון ארוך (overview-segment) אסורה תחת חוזה Short עצמאי")
-        if item.get("signature_fullscreen") is not True:
-            failures.append("סגיר החתימה אינו מוגדר כמסך מלא (signature_fullscreen)")
+        if not delivery_guard._signature_verified(dict(item, media=media)):
+            failures.append("ראיית החתימה אינה קשורה לקובץ הנוכחי ולציר הזמן המקורי (signature_provenance)")
         try:
             sig_duration = float(item.get("signature_duration_seconds") or 0)
         except (TypeError, ValueError):
@@ -191,9 +211,21 @@ def short_technical_failures(
 
 def extract_signature_video_segment(output_path: Path, item_id: str) -> tuple[Path, str]:
     core.STATE_DIR.mkdir(parents=True, exist_ok=True)
+    if not output_path.is_file() or output_path.stat().st_size <= 0:
+        raise core.PipelineError("Current final MP4 is missing; signature evidence cannot be reused")
+    final_sha256 = core.sha256_file(output_path)
     signature_video_path = core.STATE_DIR / f"{item_id}-signature-segment.mp4"
-    if signature_video_path.exists() and signature_video_path.stat().st_size > 0:
-        return signature_video_path, core.sha256_file(signature_video_path)
+    receipt_path = signature_video_path.with_suffix(".json")
+    if signature_video_path.is_file() and signature_video_path.stat().st_size > 0:
+        try:
+            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+            segment_sha256 = core.sha256_file(signature_video_path)
+            if receipt == {"schema_version": 1, "final_sha256": final_sha256,
+                           "segment_sha256": segment_sha256,
+                           "duration_seconds": SIGNATURE_DURATION_SECONDS}:
+                return signature_video_path, segment_sha256
+        except (OSError, ValueError, TypeError):
+            pass
 
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg:
@@ -214,7 +246,14 @@ def extract_signature_video_segment(output_path: Path, item_id: str) -> tuple[Pa
         detail = (result.stderr or result.stdout)[-500:]
         raise core.PipelineError(f"Failed to extract signature video segment: {detail}")
 
-    return signature_video_path, core.sha256_file(signature_video_path)
+    if core.sha256_file(output_path) != final_sha256:
+        raise core.PipelineError("Final MP4 changed during signature extraction")
+    segment_sha256 = core.sha256_file(signature_video_path)
+    core.atomic_json_write(receipt_path, {
+        "schema_version": 1, "final_sha256": final_sha256,
+        "segment_sha256": segment_sha256, "duration_seconds": SIGNATURE_DURATION_SECONDS,
+    })
+    return signature_video_path, segment_sha256
 
 
 def prepare_signature_asset() -> str:
@@ -241,6 +280,58 @@ def _short_targets_for_plan(edit_plan: dict[str, Any]) -> list[dict[str, Any]]:
     return targets
 
 
+def _render_input_sha256(raw_path: Path, item: dict[str, Any], signature_sha256: str) -> str:
+    """Invalidate the render when bytes, article/provider identity or renderer change."""
+    renderer_paths = sorted((core.PROJECT_DIR / "src" / "remotion").rglob("*.tsx"))
+    renderer_paths += sorted((core.PROJECT_DIR / "src" / "remotion").rglob("*.ts"))
+    renderer_paths += [core.PROJECT_DIR / "package-lock.json", Path(__file__).resolve()]
+    renderer_hashes = {str(path): core.sha256_file(path) for path in renderer_paths if path.is_file()}
+    payload = {
+        "schema_version": 1, "raw_sha256": core.sha256_file(raw_path),
+        "source": item.get("source"), "signature_sha256": signature_sha256,
+        "provider": {key: item.get(key) for key in (
+            "notebook_id", "source_id", "task_id", "artifact_id", "provider_video_format",
+            "fresh_generation_attempt", "overview_provider_identity")},
+        "renderer": renderer_hashes, "fps": SHORT_FPS, "pipeline": VISUAL_PIPELINE,
+    }
+    return core.sha256_text(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+
+
+def _short_render_cache_reusable(raw_path: Path, output_path: Path, item: dict[str, Any],
+                                 signature_sha256: str) -> bool:
+    """Require actual current bytes for every persisted render and signature receipt."""
+    try:
+        if item.get("render_input_sha256") != _render_input_sha256(raw_path, item, signature_sha256):
+            return False
+        if item.get("enhancement_status") not in {"enhancement_complete", "enhancement_partial", "enhancement_skipped"}:
+            return False
+        if item.get("raw_sha256") != core.sha256_file(raw_path) or item.get("signature_sha256") != signature_sha256:
+            return False
+        files = [(output_path, item.get("final_sha256"))]
+        for path_key, hash_key in (("motion_plan_path", "motion_plan_sha256"),
+                                   ("remotion_props_path", "remotion_props_sha256"),
+                                   ("signature_video_path", "signature_video_sha256")):
+            relative = item.get(path_key)
+            if not isinstance(relative, str) or not relative:
+                return False
+            files.append((core.STATE_DIR / relative, item.get(hash_key)))
+        if any(not path.is_file() or path.stat().st_size <= 0 or
+               core.sha256_file(path) != expected for path, expected in files):
+            return False
+        media = core.ffprobe(output_path)
+        if not delivery_guard._signature_verified(dict(item, media=media)):
+            return False
+        props = json.loads((core.STATE_DIR / item["remotion_props_path"]).read_text(encoding="utf-8"))
+        plan = json.loads((core.STATE_DIR / item["motion_plan_path"]).read_text(encoding="utf-8"))
+        return bool(props.get("videoSrc") == raw_path.name
+                    and props.get("sourceStartFrame") == 0
+                    and props.get("durationInFrames") == round(float(item["short_duration_seconds"]) * SHORT_FPS)
+                    and props.get("signatureImageSrc") == item.get("signature_asset")
+                    and props.get("motionPlan") == _short_targets_for_plan(plan))
+    except (OSError, ValueError, TypeError, KeyError, core.PipelineError):
+        return False
+
+
 def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     output_path = core.STATE_DIR / f"{item['id']}-short-final.mp4"
     motion_plan_path = core.STATE_DIR / f"{item['id']}-short-motion-plan.json"
@@ -262,19 +353,17 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
         item["provider_short_fallback_reason"] = "native_short_unavailable_after_bounded_attempts"
     item["provider_raw_media"] = {key: raw_media.get(key) for key in ("width", "height", "duration", "codec", "audio_codec")}
     start_seconds, duration_seconds = short_window(float(raw_media["duration"]))
+    if not math.isfinite(duration_seconds) or duration_seconds <= 0:
+        raise core.PipelineError("Short source duration must be positive and finite")
     duration_frames = max(1, round(duration_seconds * SHORT_FPS))
     start_frame = max(0, round(start_seconds * SHORT_FPS))
 
-    if (
-        output_path.exists()
-        and output_path.stat().st_size > 0
-        and item.get("enhancement_status")
-        and item.get("motion_plan_path")
-        and motion_plan_path.is_file()
-        and item.get("remotion_props_path")
-        and props_path.is_file()
-    ):
+    if _short_render_cache_reusable(raw_path, output_path, item, signature_sha256):
         return output_path
+    # A failed rebuild must never leave the old completion receipt usable.
+    for field in ("render_input_sha256", "signature_provenance", "signature_verified", "technical_verified"):
+        item.pop(field, None)
+    render_input_sha256 = _render_input_sha256(raw_path, item, signature_sha256)
 
     remotion = core.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
     if not remotion.is_file():
@@ -350,9 +439,30 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     sig_video_path, sig_video_sha256 = extract_signature_video_segment(output_path, item["id"])
     item["signature_video_path"] = sig_video_path.name
     item["signature_video_sha256"] = sig_video_sha256
-    item["signature_duration_seconds"] = SIGNATURE_DURATION_SECONDS
+    media = core.ffprobe(output_path)
+    final_duration = float(media["duration"])
+    if not math.isfinite(final_duration) or abs(final_duration - duration_seconds) > 0.15:
+        raise core.PipelineError("Short render changed the natural source duration")
+    if not media.get("audio_codec") or not raw_media.get("audio_codec"):
+        raise core.PipelineError("Short source/final audio evidence is missing")
+    if render_input_sha256 != _render_input_sha256(raw_path, item, signature_sha256):
+        raise core.PipelineError("Short render inputs changed during rendering")
+    item["raw_sha256"] = core.sha256_file(raw_path)
+    item["final_sha256"] = core.sha256_file(output_path)
+    item["media"] = media
+    item["signature_duration_seconds"] = min(SIGNATURE_DURATION_SECONDS, duration_seconds)
     item["signature_fullscreen"] = True
+    item["signature_overlay"] = True
+    item["signature_provenance"] = {
+        "schema_version": 1, "final_sha256": item["final_sha256"],
+        "raw_sha256": item["raw_sha256"], "asset_sha256": signature_sha256,
+        "segment_sha256": sig_video_sha256, "source_duration_seconds": duration_seconds,
+        "final_duration_seconds": final_duration,
+        "start_seconds": max(0.0, final_duration - item["signature_duration_seconds"]),
+        "end_seconds": final_duration, "audio_source_sha256": item["raw_sha256"],
+    }
     item["signature_verified"] = True
+    item["render_input_sha256"] = render_input_sha256
     return output_path
 
 
@@ -434,6 +544,13 @@ def validate_and_manifest(
         "signature_duration_seconds": item.get("signature_duration_seconds"),
         "signature_fullscreen": item.get("signature_fullscreen"),
         "signature_verified": item.get("signature_verified"),
+        "signature_overlay": item.get("signature_overlay"),
+        "signature_provenance": item.get("signature_provenance"),
+        "render_input_sha256": item.get("render_input_sha256"),
+        "overview_provider_identity": item.get("overview_provider_identity"),
+        "provider_raw_media": item.get("provider_raw_media"),
+        "provider_short_fallback_used": item.get("provider_short_fallback_used"),
+        "fresh_generation_attempt": item.get("fresh_generation_attempt"),
         "remotion_props_path": item.get("remotion_props_path"),
         "remotion_props_sha256": item.get("remotion_props_sha256"),
         "media": media,

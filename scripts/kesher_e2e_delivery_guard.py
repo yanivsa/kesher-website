@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
+import re
 from typing import Any, Callable
 
 
@@ -21,38 +23,109 @@ def _source_identity(item: dict[str, Any]) -> tuple[str, str]:
     )
 
 
+def _sha256(value: Any) -> bool:
+    return isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None
+
+
 def _signature_timing_evidence(item: dict[str, Any]) -> bool:
-    """Accept the new overlay marker or legacy full-frame-layer evidence during migration."""
-    if item.get("signature_overlay") is True:
-        return True
-    return item.get("signature_overlay") is None and item.get("signature_fullscreen") is True
+    """A full background describes pixels, never proof of an in-content overlay."""
+    return item.get("signature_overlay") is True
 
 
 def _signature_verified(item: dict[str, Any]) -> bool:
-    """Require durable evidence for the approved three-second in-content signature overlay."""
-    signature_video_sha256 = str(item.get("signature_video_sha256") or "").strip()
-
+    """Bind the end overlay to the exact current source, final and extracted segment."""
+    proof = item.get("signature_provenance")
+    if not isinstance(proof, dict) or proof.get("schema_version") != 1:
+        return False
+    hashes = {
+        "final_sha256": item.get("final_sha256"),
+        "raw_sha256": item.get("raw_sha256"),
+        "asset_sha256": item.get("signature_sha256") or item.get("signature_asset_sha256"),
+        "segment_sha256": item.get("signature_video_sha256"),
+        "audio_source_sha256": item.get("raw_sha256"),
+    }
+    if any(not _sha256(value) or proof.get(key) != value for key, value in hashes.items()):
+        return False
     try:
-        duration = float(item.get("signature_duration_seconds") or 0)
-    except (TypeError, ValueError):
-        duration = 0.0
-
+        source_duration = float(proof["source_duration_seconds"])
+        final_duration = float(proof["final_duration_seconds"])
+        start = float(proof["start_seconds"])
+        end = float(proof["end_seconds"])
+        duration = float(item["signature_duration_seconds"])
+        raw_duration = float((item.get("provider_raw_media") or {})["duration"])
+        media_duration = float((item.get("media") or {})["duration"])
+        content_duration = float(item["short_duration_seconds"])
+        source_start = float(item["short_start_seconds"])
+    except (KeyError, TypeError, ValueError, OverflowError):
+        return False
+    values = (source_duration, final_duration, start, end, duration, raw_duration,
+              media_duration, content_duration, source_start)
     return bool(
-        item.get("signature_verified") is True
+        all(math.isfinite(value) for value in values)
+        and item.get("signature_verified") is True
         and _signature_timing_evidence(item)
-        and abs(duration - SIGNATURE_DURATION_SECONDS) < 0.001
-        and signature_video_sha256
+        and source_duration > 0
+        and source_start == 0
+        and abs(duration - min(SIGNATURE_DURATION_SECONDS, source_duration)) <= 0.001
+        and abs(source_duration - raw_duration) <= 0.001
+        and abs(source_duration - content_duration) <= 0.001
+        and abs(final_duration - media_duration) <= 0.001
+        and abs(final_duration - source_duration) <= 0.15
+        and abs(end - final_duration) <= 0.001
+        and abs(start - max(0.0, end - duration)) <= 0.001
+        and (item.get("media") or {}).get("audio_codec")
+        and (item.get("provider_raw_media") or {}).get("audio_codec")
     )
 
 
 def _short_origin_verified(item: dict[str, Any]) -> bool:
-    """Fail closed when a Short candidate was routed through the long-form/Overview path."""
-    return bool(
+    """Require source/provider/raw independence as well as the native-first policy.
+
+    overview_provider_identity must be copied from the authoritative Overview
+    artifact by the controller. Missing historical evidence is not independence.
+    """
+    if not (
         item
-        and str(item.get("type") or "").strip() == CANONICAL_SHORT_TYPE
-        and str(item.get("source_mode") or "").strip() == CANONICAL_SHORT_SOURCE_MODE
-        and str(item.get("visual_pipeline") or "").strip() == CANONICAL_SHORT_PIPELINE
-    )
+        and item.get("type") == CANONICAL_SHORT_TYPE
+        and item.get("source_mode") == CANONICAL_SHORT_SOURCE_MODE
+        and item.get("visual_pipeline") == CANONICAL_SHORT_PIPELINE
+        and not item.get("shared_provider_identity")
+        and not item.get("adopted_from_long_item_id")
+    ):
+        return False
+    overview = item.get("overview_provider_identity")
+    identity_fields = ("notebook_id", "source_id", "task_id", "artifact_id", "raw_sha256")
+    if not isinstance(overview, dict) or any(
+        not isinstance(record.get(field), str) or not record[field].strip()
+        for record in (item, overview) for field in identity_fields
+    ):
+        return False
+    if not _sha256(item["raw_sha256"]) or not _sha256(overview["raw_sha256"]):
+        return False
+    if item["raw_sha256"] == overview["raw_sha256"]:
+        return False
+    if item["notebook_id"] == overview["notebook_id"]:
+        if item["source_id"] == overview["source_id"]:
+            return False
+        if {item["task_id"], item["artifact_id"]} & {overview["task_id"], overview["artifact_id"]}:
+            return False
+    try:
+        attempt = int(item["fresh_generation_attempt"])
+        raw = item["provider_raw_media"]
+        width, height = int(raw["width"]), int(raw["height"])
+    except (KeyError, TypeError, ValueError, OverflowError):
+        return False
+    if width <= 0 or height <= 0 or attempt < 1 or attempt > 3:
+        return False
+    native = height > width and 0.53 <= width / height <= 0.60
+    if item.get("provider_video_format") == "short" and native:
+        return bool(item.get("provider_native_short") is True
+                    and item.get("provider_native_short_verified") is True
+                    and item.get("provider_short_fallback_used") is False)
+    return bool(attempt == 3
+                and item.get("provider_video_format") in {"short", "explainer"}
+                and item.get("provider_short_fallback_used") is True
+                and item.get("provider_native_short_verified") is native)
 
 
 def overview_edit_verified(stage: dict[str, Any]) -> bool:
@@ -189,6 +262,12 @@ def media_fingerprint(item: dict[str, Any]) -> str:
         "signature_sha256": item.get("signature_sha256"),
         "signature_asset_sha256": item.get("signature_asset_sha256"),
         "signature_video_sha256": item.get("signature_video_sha256"),
+        "signature_provenance": item.get("signature_provenance"),
+        "render_input_sha256": item.get("render_input_sha256"),
+        "overview_provider_identity": item.get("overview_provider_identity"),
+        "provider_raw_media": item.get("provider_raw_media"),
+        "provider_video_format": item.get("provider_video_format"),
+        "fresh_generation_attempt": item.get("fresh_generation_attempt"),
     }
     return hashlib.sha256(
         json.dumps(payload, sort_keys=True, ensure_ascii=False, default=str).encode("utf-8")
