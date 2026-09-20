@@ -260,7 +260,7 @@ class ControllerTests(unittest.TestCase):
 
         self.assertEqual(action.kind, "dispatch_video")
         self.assertEqual(state["article"]["slug"], "daily")
-        self.assertNotEqual(state.get("last_error", {}).get("code"), "DUPLICATE_ARTICLE_DATE")
+        self.assertIsNone(state.get("last_error"))
 
     def test_only_manual_same_day_publications_leave_daily_slot_open(self):
         gh = FakeGitHub()
