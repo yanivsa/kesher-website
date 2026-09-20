@@ -57,7 +57,7 @@
     "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-love",
     "published_date": "2026-09-20",
     "live": true,
-    "live_verified_at": "2026-09-20T18:32:20.238858+00:00",
+    "live_verified_at": "2026-09-20T20:55:08.526388+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1104,28 +1104,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-17T18:56:26.209981+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-17T18:56:52.970506+00:00",
-      "from": "long_video_running",
-      "to": "long_video_running",
-      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
-      "details": {
-        "backlog_cycle": "2026-09-16",
-        "source_slug": "fights-before-wedding"
-      }
-    },
-    {
-      "at": "2026-09-17T19:09:55.275359+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-09-17T19:11:18.025083+00:00",
       "from": "article_live",
       "to": "blocked",
@@ -1799,9 +1777,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-20T20:55:08.526409+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-20T20:55:23.711402+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-20T20:55:49.885701+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-20T18:33:24.748103+00:00",
+  "updated_at": "2026-09-20T20:55:49.885723+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
