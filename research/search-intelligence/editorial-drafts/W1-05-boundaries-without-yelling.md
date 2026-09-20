@@ -10,27 +10,32 @@
 - Confidence: HIGH
 
 ## Current-page diagnosis
-The existing article is about boundaries without punishments, using natural consequences. We need to explicitly answer the PAA query "איך להציב גבולות בלי לצעוק" with practical steps.
+The existing article is about boundaries without punishments. Add a direct, practical answer to the PAA query without duplicating the separate article about the parent's yelling cycle.
 
 ## Final proposed copy
-[To be added as an H2 section, likely before or after "איך מכינים את הקרקע מראש לפני רגע המשבר?"]
+[Recommended placement: inside the existing article before the closing section.]
 
 ## איך להציב גבולות בלי לצעוק?
 
-כהורים, אנחנו פעמים רבות מוצאים את עצמנו מרימים את הקול פשוט כי אנחנו מרגישים שרק ככה הילדים סוף סוף מקשיבים לנו. אבל האמת היא שצעקות אינן משקפות סמכות אלא אובדן שליטה. הצבת גבול בשקט היא פעולה עוצמתית בהרבה. הנה איך עושים את זה בפועל:
+כשהילד מתנגד שוב ושוב, קל להרגיש שרק אם נעלה את הקול משהו יזוז. אבל אפשר להציב גבול גם בלי לנהל ויכוח ארוך ובלי להפוך כל בקשה למאבק.
 
-**1. צמצמו את המלל וההסברים:**
-ככל שאנחנו מדברים יותר, אנחנו מסתבכים יותר. במקום לתת הרצאה ארוכה על למה צריך להיכנס למקלחת (\"כבר אמרתי לך עשר פעמים ואתה לא מקשיב לי, מחר אתה תהיה עייף...\"), השתמשו במשפט אחד קצר, ברור וענייני: \"הגיע הזמן למקלחת, אתה הולך לבד או שאני מלווה אותך?\". 
+**1. אמרו את הגבול בקצרה**
 
-**2. תנו תוקף לרגש (אך שמרו על הגבול):**
-הרבה מהצעקות נובעות מכך שהילד מתנגד ואנחנו מנסים לשכנע אותו שאנחנו צודקים. שחררו את הצורך לשכנע. מותר לו לכעוס. אמרו בשקט: \"אני רואה שאתה מאוד כועס שצריך להפסיק לשחק. זה באמת מבאס. ובכל זאת, זמן מסך נגמר כעת\". 
+במקום הרצאה ארוכה, נסו משפט אחד שמבהיר מה קורה עכשיו: "זמן המסך נגמר. אתה מכבה לבד או שתרצה שאעזור לך?" ככל שהמסר קצר וברור יותר, יש פחות מקום להיגרר לוויכוח על כל פרט.
 
-**3. הפסיקו לאיים והתחילו לפעול:**
-הצעקות מתחילות בדרך כלל בפעם החמישית שאנחנו מבקשים את אותו הדבר. הכלל הוא פשוט: בקשו פעם אחת ברוגע. בפעם השנייה, גשו לילד (אל תצעקו מהחדר השני), צרו קשר עין, והבהירו את התוצאה. בפעם השלישית – בצעו אותה בשקט. אם סוכם שהמשחק נגמר והוא לא מפסיק, קחו בעדינות את המשחק. הפעולה השקטה שלכם מעבירה מסר חזק מכל צעקה.
+**2. תנו מקום לרגש בלי לשנות מיד את הגבול**
 
-**ומה קורה כשבכל זאת צעקנו?**
-כולנו אנושיים וכולנו מאבדים סבלנות לפעמים. הורות רגועה אינה אומרת שלעולם לא נכעס. אם מצאתם את עצמכם צועקים, הדבר החשוב ביותר הוא לקחת אחריות לאחר שהרוחות נרגעות. גשו לילד ואמרו: \"כעסתי מאוד קודם, אבל לא הייתי צריכה לצעוק עליך. אני מצטערת שצעקתי. ובקשר לצעצועים, הכלל נשאר שצריך לסדר אותם\". כך הילד לומד מודלינג ללקיחת אחריות ולתיקון היחסים לאחר שבר. (לקריאה נוספת על יציאה ממעגל הצעקות, קראו את המאמר המלא שלנו על [מעגל הצעקות בבית](/blog/breaking-the-yelling-cycle)).
+אפשר לומר: "אני רואה שאתה כועס כי רצית להמשיך לשחק. זה באמת מאכזב. ובכל זאת, זמן המסך נגמר." הכרה ברגש אינה מבטלת את הגבול; היא רק מראה לילד ששומעים אותו גם כשהתשובה נשארת לא.
 
+**3. עברו מדיבורים לפעולה רגועה**
+
+אם ביקשתם והילד עדיין לא משתף פעולה, נסו להתקרב, ליצור קשר ולפעול בהתאם למה שסוכם מראש במקום לחזור על אותה בקשה שוב ושוב בקול הולך ועולה. הפעולה צריכה להיות מותאמת לגיל, למצב ולגבול שנקבע — בלי השפלה, איומים או מאבק פיזי.
+
+**ומה אם כבר צעקנו?**
+
+הורות רגועה לא אומרת שהורים אף פעם לא כועסים. אם הרמתם את הקול ואתם מצטערים על הדרך שבה דיברתם, אפשר לחזור לשיחה אחרי שנרגעים: "כעסתי מאוד קודם, ולא היה נכון שאצעק. אני מצטער/ת על הצעקה. הגבול עצמו עדיין נשאר." כך אפשר לתקן את הקשר בלי לבטל את ההחלטה ההורית.
+
+אם אתם מרגישים שהבית נכנס שוב ושוב למעגל של צעקות והסלמה, אפשר לקרוא גם על [איך לצאת ממעגל הצעקות בבית](/blog/breaking-the-yelling-cycle).
 
 ## Suggested SEO title
 KEEP_CURRENT_TITLE
@@ -39,13 +44,14 @@ KEEP_CURRENT_TITLE
 KEEP_CURRENT_META
 
 ## Internal links
-- "מעגל הצעקות בבית" → /blog/breaking-the-yelling-cycle
+- "איך לצאת ממעגל הצעקות בבית" → /blog/breaking-the-yelling-cycle
+- /services/parenting where contextually appropriate
 
 ## Sources used
-N/A (General parenting frameworks).
+No external factual source required; the section is framed as practical parenting guidance rather than empirical or clinical claims.
 
 ## Claims requiring business verification
 None.
 
 ## Implementation notes for Phase 5
-Insert this section into `boundaries-without-punishments` content in `posts.json`. Ensure the anchor link explicitly links to `/blog/breaking-the-yelling-cycle`.
+Insert this section into `boundaries-without-punishments`, preserving the article's current focus on boundaries and natural/logical consequences. Do not merge it with the yelling-cycle article.
