@@ -47,7 +47,11 @@
     "pr_number": 881,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/881",
     "normalization_slot": "2026-09-20",
-    "normalization_dispatched_at": "2026-09-20T01:21:25.663656+00:00"
+    "normalization_dispatched_at": "2026-09-20T01:21:25.663656+00:00",
+    "quality_status": "passed",
+    "quality_content_sha256": "5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec",
+    "quality_checked_at": "2026-09-20T06:27:54.409267+00:00",
+    "quality_violations": []
   },
   "backlog": [
     {
@@ -1778,7 +1782,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
