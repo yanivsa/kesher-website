@@ -53,17 +53,17 @@ Chat messages are not the canonical state. Git files on the working branch are t
 
 ## CURRENT STATE
 
-- project_status: READY_FOR_MERGE
-- current_phase: FINAL_CHATGPT_REVIEW
+- project_status: FINAL_STABILIZATION_REQUIRED
+- current_phase: FINAL_STABILIZATION
 - current_owner: SHARED
 - last_completed_phase: PHASE_5_IMPLEMENTATION_TECHNICAL_QA
-- next_phase: USER_MERGE_AUTHORIZATION
+- next_phase: ANTIGRAVITY_REGENERATE_AND_TEST
 - production_domain: https://kesher.saharoni.com
 - search_console_property: sc-domain:saharoni.com
 - ga4_property: properties/551923843
 - ga4_stream: G-6SM423N6EL
 - canonical_keyword_file: research/search-intelligence/keyword-master.csv
-- last_updated_utc: 2026-09-20T13:26:00Z
+- last_updated_utc: 2026-09-20T13:40:00Z
 - last_updated_by: ChatGPT
 
 ## Verified baseline
@@ -538,3 +538,29 @@ Completion requires:
   - Deployment was not performed.
 - recommended_followup:
   - After merge, separately harden Playwright tests against the external Calendly dependency so E2E reliability does not depend on third-party network timing.
+
+
+### 2026-09-20 16:40 — ChatGPT — FINAL SELF-CHECK CORRECTIONS
+- findings:
+  - W1-02 and W1-07 were never public before Phase 5 because they failed the publishability gate; their old May/June draft dates should not be used as first-publication dates.
+  - Google Article guidance defines datePublished as the first publication date. Both newly promoted articles are therefore corrected to 2026-09-20.
+  - BlogList consumes postSummaries in file order and does not sort at runtime. posts.json is not guaranteed chronological, so new articles could be buried despite a recent date.
+  - Published post summaries now need deterministic date-descending generation.
+  - Phase 4 QA cited evidence for postpartum and money-conflict claims, but production records did not include the repository-supported visible evidence metadata.
+  - W1-06 attributed adolescent guidance to the Ministry of Health without a visible source link.
+  - llms-full tracked output must be regenerated after these source corrections.
+- corrections_already_applied:
+  - W1-02 and W1-07 date/dateModified corrected to 2026-09-20.
+  - Added visible evidence metadata to W1-02 (two research sources + Israel Ministry of Health) and W1-07 (APA).
+  - generate-post-summaries.cjs now sorts publishable posts by date descending.
+  - generate-llms-full.cjs now sorts publishable blog posts by date descending.
+  - /services/parenting now links the Ministry of Health adolescent-guidance attribution to the official source.
+  - postSummaries.json and rss.xml were regenerated during the self-check.
+- pending_before_merge:
+  - Run npm run generate from the latest branch HEAD to regenerate all tracked generated artifacts, especially public/llms-full.txt.
+  - Run full validation/build after the latest source corrections.
+  - Harden Playwright's test-only handling of the external Calendly script if this can eliminate the known 14 third-party timeouts without touching production behavior.
+  - Re-run E2E and update the Phase 5 report with the final truth.
+- decision:
+  - NOT YET READY FOR MERGE after the new final-preflight corrections.
+  - Requires one focused Antigravity stabilization pass; no strategy/content research is needed.
