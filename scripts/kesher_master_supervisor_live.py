@@ -292,6 +292,21 @@ def build_incident_packet(report: dict[str, Any], *, strike: int, command_id: st
         "repair_trusted_image_same_pr": "the same article PR contains a trusted local hero image, image guard passes, CI passes, and no duplicate article PR is created",
         "rebind_exact_source": "controller bindings match the authoritative slug/content hash and exact provider/item identities without fresh generation",
     }
+    constraints = {
+        "reuse_existing_session_pr": True,
+        "no_duplicate_generation_upload": True,
+        "no_duplicate_article_pr": True,
+        "never_bypass_ci_or_safeguards": True,
+        "production_state_writer_remains_v5": True,
+    }
+    if action == "repair_trusted_image_same_pr":
+        constraints.update({
+            "image_mutation_owner": "trusted_github_actions",
+            "jules_must_not_modify_article_or_image_payloads": True,
+            "jules_recovery_scope": "automation code/config/tests only",
+            "same_article_pr_must_remain_authoritative": True,
+        })
+
     return {
         "schema_version": 1,
         "command_id": command_id,
@@ -304,13 +319,7 @@ def build_incident_packet(report: dict[str, Any], *, strike: int, command_id: st
         "proposed_action": action,
         "exact": exact,
         "definition_of_done": dod_by_action.get(action, "the exact incident is absent in fresh authoritative production evidence and all relevant CI/public verification gates pass"),
-        "constraints": {
-            "reuse_existing_session_pr": True,
-            "no_duplicate_generation_upload": True,
-            "no_duplicate_article_pr": True,
-            "never_bypass_ci_or_safeguards": True,
-            "production_state_writer_remains_v5": True,
-        },
+        "constraints": constraints,
     }
 
 

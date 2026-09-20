@@ -206,8 +206,7 @@ duplicate check is intentionally bypassed for exactly this isolated test run.
 
 A trusted GitHub Actions stage running code from `main` will attach the required
 verified image to THE SAME PR after Jules finishes. That trusted stage owns
-provider credentials and the Gemini -> Unsplash -> Pexels -> local-curated
-fallback chain. An article cannot be published until that stage succeeds.
+provider credentials and the three-Gemini-framing -> verified Pexels -> verified Pixabay -> managed-local-bank -> 40-candidate category seed-reservoir chain. Abstract placeholders are forbidden. An article cannot be published until that trusted stage attaches an acceptable hero.
 --- END PIPELINE V3 IMAGE-STAGE OVERRIDE ---
 """
 

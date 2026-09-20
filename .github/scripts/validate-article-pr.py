@@ -13,6 +13,7 @@ import struct
 import sys
 import urllib.parse
 import urllib.request
+from datetime import date
 
 ALLOWED_FILES = {
     "src/data/posts.json",
@@ -22,7 +23,7 @@ ALLOWED_FILES = {
     "public/llms-full.txt",
 }
 IMAGE_PREFIX = "public/images/generated/blog/"
-IMAGE_PROVIDERS = {"Gemini", "Unsplash", "Pexels", "Local"}
+IMAGE_PROVIDERS = {"Gemini", "Pexels", "Pixabay", "Local"}
 IMAGE_RESULTS = {"generated", "stock", "local_fallback"}
 
 
@@ -135,19 +136,29 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
         errors.append("Committed image requires Image Pipeline Version: 2")
     if provider not in IMAGE_PROVIDERS:
         errors.append("Committed image requires a trusted Image Provider")
-    if not attempt_chain or attempt_chain.split("/")[0] != "gemini" or attempt_chain.split("/")[-1] not in {"gemini", "unsplash", "pexels", "local-curated"}:
-        errors.append("Image Attempt Chain must truthfully begin with gemini and record provider fallthrough")
+    attempt_parts = attempt_chain.split("/") if attempt_chain else []
+    if (
+        not attempt_parts
+        or not attempt_parts[0].startswith("gemini")
+        or attempt_parts[-1] not in {"gemini", "gemini-1", "gemini-2", "gemini-3", "pexels", "pixabay", "local-curated"}
+    ):
+        errors.append("Image Attempt Chain must truthfully begin with Gemini generation and record provider fallthrough")
     if generation_result not in IMAGE_RESULTS:
         errors.append("Committed image requires Image Generation Result generated|stock|local_fallback")
     if provider == "Gemini" and generation_result != "generated":
         errors.append("Gemini image must record generated result")
-    if provider in {"Unsplash", "Pexels"} and generation_result != "stock":
+    if provider in {"Pexels", "Pixabay"} and generation_result != "stock":
         errors.append("Stock provider image must record stock result")
     if provider == "Local" and generation_result != "local_fallback":
         errors.append("Local provider image must record local_fallback result")
+    if provider == "Pexels":
+        if post.get("imageCredit") != "צילום דרך Pexels":
+            errors.append("Pexels image requires visible Pexels credit metadata")
+        if post.get("imageCreditUrl") != source_url:
+            errors.append("Pexels image credit URL must match the recorded source URL")
     if provider == "Local":
-        if not source_url or not source_url.startswith("local://public/images/generated/blog/"):
-            errors.append("Local fallback requires exact local:// repository source")
+        if not source_url or not re.fullmatch(r"local://public/images/(?:generated/blog|fallback/[^/]+)/[^\s]+", source_url):
+            errors.append("Local fallback requires an exact local:// repository image source")
     elif not source_url or not re.fullmatch(r"https://\S+", source_url):
         errors.append("External provider image requires an exact HTTPS source URL")
     if not expected_sha or not re.fullmatch(r"[a-f0-9]{64}", expected_sha):
@@ -166,7 +177,10 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
         if declared_dimensions != f"{width}x{height}":
             errors.append(f"Image dimensions mismatch: expected {width}x{height}")
 
-        # Enforce SHA-256 uniqueness against all existing base posts
+        # Generated/external heroes remain globally unique. A trusted Local
+        # fallback may be reused only after a 90-day cooldown and at most
+        # three total published uses, matching the production worker policy.
+        collisions = []
         for base_post in base_posts:
             if not isinstance(base_post, dict):
                 continue
@@ -177,10 +191,30 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
                 base_entry = {"raw_url": f"https://raw.githubusercontent.com/{pr.get('base',{}).get('repo',{}).get('full_name')}/{pr['base']['sha']}/public{base_img}"}
                 base_data = image_loader(base_entry)
                 if hashlib.sha256(base_data).hexdigest() == actual_sha:
-                    errors.append(f"Hero image SHA-256 collides with existing article {base_post.get('id')}")
-                    break
+                    collisions.append(base_post)
             except Exception:
                 pass
+
+        if collisions and provider != "Local":
+            errors.append(f"Hero image SHA-256 collides with existing article {collisions[0].get('id')}")
+        elif collisions:
+            if len(collisions) >= 3:
+                errors.append("Local fallback hero has already reached the maximum of three published uses")
+            try:
+                current_date = date.fromisoformat(str(post.get("date") or "")[:10])
+                prior_dates = [
+                    date.fromisoformat(str(item.get("date") or "")[:10])
+                    for item in collisions
+                    if str(item.get("date") or "")[:10]
+                ]
+                latest_prior = max(prior_dates)
+                if (current_date - latest_prior).days < 90:
+                    errors.append(
+                        f"Local fallback hero reuse requires a 90-day cooldown; "
+                        f"latest prior use was {latest_prior.isoformat()}"
+                    )
+            except Exception:
+                errors.append("Local fallback reuse requires valid publication dates for cooldown verification")
     except Exception as exc:
         errors.append(f"Image validation failed: {exc}")
 

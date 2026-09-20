@@ -1,0 +1,63 @@
+name: Build Article Fallback Library
+
+on:
+  workflow_dispatch:
+    inputs:
+      category:
+        description: Category key or all
+        required: true
+        default: all
+        type: string
+      batch_size:
+        description: Total assets to generate in this run (1-8)
+        required: true
+        default: "4"
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: build-article-fallback-library
+  cancel-in-progress: false
+
+jobs:
+  build-library:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Generate bounded verified asset batch
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 scripts/build-article-fallback-library.py             --category "${{ inputs.category }}"             --batch-size "${{ inputs.batch_size }}"
+
+      - name: Open reviewable asset-bank PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- public/images/fallback; then
+            echo "Fallback bank is already at target or no new verified assets were produced."
+            exit 0
+          fi
+
+          branch="automation/article-fallback-library-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git config user.name "Kesher Image Library"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout -b "${branch}"
+          git add public/images/fallback
+          git commit -m "chore(images): expand verified article fallback library"
+          git push origin "HEAD:refs/heads/${branch}"
+
+          gh pr create             --repo "${REPO}"             --base main             --head "${branch}"             --title "chore(images): expand verified article fallback library"             --body "Automated, bounded fallback-library batch. Assets were generated with the trusted Gemini image worker and pixel-verified before being committed. Target: 40 verified owned assets per category."

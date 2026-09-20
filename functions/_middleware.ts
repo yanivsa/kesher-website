@@ -14,9 +14,9 @@ export const legacyRedirectTarget = (requestUrl: string) => {
   const destinationPath =
     LEGACY_POST_PATH.test(url.pathname) || url.pathname.startsWith('/search')
       ? '/blog'
-      : LEGACY_PAGE_TARGETS[url.pathname] || '';
+      : LEGACY_PAGE_TARGETS[url.pathname] || url.pathname;
 
-  return `${PRIMARY_ORIGIN}${destinationPath}`;
+  return `${PRIMARY_ORIGIN}${destinationPath}${url.search}`;
 };
 
 export const canonicalRedirectTarget = (requestUrl: string) => {

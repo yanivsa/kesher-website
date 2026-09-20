@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
+      GITHUB_TOKEN: ${{ github.token }}
       BRIDGE_NAME: yanivsa-oci-bootstrap
       OPENCLAW_SECURITY_LIST_ID: ocid1.securitylist.oc1.iad.aaaaaaaapfyvmzc532rruphk3k4ldjb66aglj2npofc5q2aof6xuoudpa4aq
       OPENCLAW_PUBLIC_URL: https://openclaw.saharoni.com/

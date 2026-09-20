@@ -452,6 +452,10 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(put_calls[0][2]["sha"], "sha-1")
         self.assertEqual(put_calls[1][2]["sha"], "sha-2")
 
+    def test_image_providers_includes_local_editorial(self):
+        import scripts.kesher_content_controller_v3_entry as v3
+        self.assertIn("LocalEditorial", v3.IMAGE_PROVIDERS)
+
 
 if __name__ == "__main__":
     unittest.main()
