@@ -382,7 +382,7 @@
       "updated_at": "2026-09-16T21:37:29.972941+00:00"
     },
     "ksr-b2af7d699e3ced7638fde8c4": {
-      "acknowledged_at": "2026-09-20T10:18:06.184533+00:00",
+      "acknowledged_at": "2026-09-20T10:18:35.445234+00:00",
       "command_id": "ksr-b2af7d699e3ced7638fde8c4",
       "evidence_hash": "4337498688e5a7e19a2c5b3306c0d569aa41121dbec1c4a57f6844b9dbc8e8f1",
       "exact": {
@@ -400,16 +400,19 @@
       "fingerprint": "37112045f18e85fe45bd9b9db45075bf",
       "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|short",
       "issued_at": "2026-09-20T10:17:11.951690+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "running",
       "metadata": {
         "dispatch": "issued",
         "dispatched_at": "2026-09-20T10:18:06.184533+00:00",
+        "external_run_id": 35504631129,
+        "external_workflow": "Kesher Daily Article Short V4",
         "workflow": "kesher-content-controller.yml"
       },
       "proposed_action": "continue_exact_short",
+      "running_at": "2026-09-20T10:18:35.445234+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-20T10:18:06.184533+00:00"
+      "updated_at": "2026-09-20T10:18:35.445234+00:00"
     },
     "ksr-b6cb6f02ad974ad438f731f1": {
       "acknowledged_at": "2026-09-17T03:57:37.490359+00:00",
@@ -680,7 +683,7 @@
         }
       ],
       "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|short",
-      "last_seen_at": "2026-09-20T10:17:11.951690+00:00",
+      "last_seen_at": "2026-09-20T10:18:35.445234+00:00",
       "marker": "MASTER_ESCALATION fingerprint=37112045f18e85fe45bd9b9db45075bf strike=1 stage=S1",
       "status": "recovering",
       "strike": 1
@@ -1168,5 +1171,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-20T10:18:06.184533+00:00"
+  "updated_at": "2026-09-20T10:18:35.445234+00:00"
 }
