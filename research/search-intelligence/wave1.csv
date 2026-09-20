@@ -1,8 +1,8 @@
-wave_id,cluster_id,primary_keyword,action,target_url,priority,notes
-W1-01,CLUST-SERVICE-ONLINE,ייעוץ זוגי אונליין,CREATE_SERVICE_PAGE,/services/online-couples-counseling,HIGH,BOFU content gap. Target Zoom counseling.
-W1-02,CLUST-POSTPARTUM-RELATIONSHIP,משבר זוגיות אחרי לידה,EXPAND_EXISTING,draft: relationship-after-childbirth,HIGH,Convert draft to comprehensive guide targeting postpartum fights.
-W1-03,CLUST-TEEN-SOCIAL-ANXIETY,חרדה חברתית אצל מתבגרים הדרכת הורים,EXPAND_EXISTING,draft: parenting-teen-social-anxiety,HIGH,Parental guidance framing. Must not compete medically.
-W1-04,CLUST-DATING-BOUNDARIES,לא להראות התלהבות בתחילת קשר,UPDATE_EXISTING,/blog/dating-transition-to-relationship-boundaries,HIGH,Include actionable advice on showing enthusiasm appropriately.
-W1-05,CLUST-DATING-FIRST-DATE,שאלות לפגישה ראשונה,UPDATE_EXISTING,/blog/new-relationship-initial-intentions,HIGH,Shift away from broad term to specific actionable questions.
-W1-06,CLUST-MONEY-RELATIONSHIP,מריבות על כסף בזוגיות,EXPAND_EXISTING,draft: money-fights-communication,MEDIUM,Upgrade draft to address financial disagreements.
-W1-07,CLUST-LOCAL-COUPLES-ASHDOD,ייעוץ זוגי באשדוד המלצות,UPDATE_EXISTING,/couples-counseling-ashdod,MEDIUM,Add local reviews/testimonials section.
+wave_id,cluster_id,primary_keyword,action,target_url,priority,evidence_strength,confidence,notes
+W1-01,CLUST-SERVICE-ONLINE,ייעוץ זוגי אונליין,UPDATE_EXISTING,/services/couples,HIGH,HIGH,HIGH,"Add a substantive online/Zoom section and supporting FAQ; do not create a second SEO service URL."
+W1-02,CLUST-POSTPARTUM-RELATIONSHIP,משבר זוגיות אחרי לידה,EXPAND_EXISTING,/blog/relationship-after-childbirth,HIGH,HIGH,HIGH,"Rebuild the thin draft into one comprehensive transition-to-parenthood relationship article."
+W1-03,CLUST-DATING-EARLY-PHASE,לא להראות התלהבות בתחילת קשר,UPDATE_EXISTING,/blog/dating-transition-to-relationship-boundaries,HIGH,HIGH,HIGH,"Use the exact GSC query plus related pacing/enthusiasm questions; preserve the article's existing pacing/reciprocity intent."
+W1-04,CLUST-COUPLES-COMMUNICATION,תרגילים לשיפור תקשורת זוגית,UPDATE_EXISTING,/blog/communication-breakdown,HIGH,HIGH,HIGH,"Add practical exercises/direct answers to the existing strong communication page."
+W1-05,CLUST-PARENTING-BOUNDARIES,איך להציב גבולות בלי לצעוק,UPDATE_EXISTING,/blog/boundaries-without-punishments,HIGH,HIGH,HIGH,"Answer the persisted PAA directly while keeping the article centered on boundaries."
+W1-06,CLUST-PARENTING-TEENS,הדרכת הורים למתבגרים,UPDATE_EXISTING,/services/parenting,HIGH,HIGH,HIGH,"Add a teen-focused service section; keep clinical topics outside the service promise."
+W1-07,CLUST-MONEY-RELATIONSHIP,מריבות על כסף בזוגיות,EXPAND_EXISTING,/blog/money-fights-communication,MEDIUM,MEDIUM,MEDIUM,"Rewrite the draft as relationship-communication content around money; avoid financial-advice positioning and unsupported clinical generalizations."
