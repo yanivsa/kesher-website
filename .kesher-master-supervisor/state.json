@@ -196,6 +196,7 @@
       "updated_at": "2026-09-16T02:34:36.238385+00:00"
     },
     "ksr-726ed9cba655ec1a8dfd8cf2": {
+      "acknowledged_at": "2026-09-20T10:13:03.365921+00:00",
       "command_id": "ksr-726ed9cba655ec1a8dfd8cf2",
       "evidence_hash": "f8fa5b700506b52004d57806d57769fa0b0c30189f4b4f5a546068b69417095d",
       "exact": {
@@ -213,12 +214,44 @@
       "fingerprint": "761c2ce2fd2e5167b3f52aa4eecc7adc",
       "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|long_video",
       "issued_at": "2026-09-20T10:12:20.027547+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-726ed9cba655ec1a8dfd8cf2",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "controller bindings match the authoritative slug/content hash and exact provider/item identities without fresh generation",
+          "evidence_hash": "f8fa5b700506b52004d57806d57769fa0b0c30189f4b4f5a546068b69417095d",
+          "exact": {
+            "artifact_id": "3f97a928-3110-47c2-a9ea-971218e32536",
+            "content_sha256": "5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec",
+            "item_id": "video-20260920-100242-5619a729ac",
+            "pr_number": 881,
+            "short_item_id": null,
+            "slug": "why-is-it-so-hard-to-find-love",
+            "source_id": "21e225a0-92ad-4dbf-b6ae-0c821a961b6b",
+            "task_id": "3f97a928-3110-47c2-a9ea-971218e32536"
+          },
+          "failure_signature": "STALE_SOURCE_BINDING",
+          "fingerprint": "761c2ce2fd2e5167b3f52aa4eecc7adc",
+          "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|long_video",
+          "proposed_action": "rebind_exact_source",
+          "schema_version": 1,
+          "stage": "long_video",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/8482489181212860877"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-20T10:12:20.027547+00:00"
+      "updated_at": "2026-09-20T10:13:03.365921+00:00"
     },
     "ksr-7eff5fb987cf6c4157bfd7c6": {
       "acknowledged_at": "2026-09-18T11:53:22.682906+00:00",
@@ -1079,5 +1112,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-20T10:12:20.027547+00:00"
+  "updated_at": "2026-09-20T10:13:03.365921+00:00"
 }
