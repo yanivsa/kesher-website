@@ -594,7 +594,7 @@
       "fingerprint": "565a01d37287046a8795cad81691c4a2",
       "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|short",
       "issued_at": "2026-09-20T10:23:57.244940+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "external_run_id": 35505370037,
         "external_workflow": "Kesher Daily Article Short V4",
@@ -634,7 +634,8 @@
       "running_at": "2026-09-20T10:27:25.703315+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-20T10:42:48.474308+00:00"
+      "updated_at": "2026-09-20T10:46:06.758483+00:00",
+      "verified_at": "2026-09-20T10:46:06.758483+00:00"
     },
     "ksr-ce8919655441bb496f31bc3a": {
       "command_id": "ksr-ce8919655441bb496f31bc3a",
@@ -1103,7 +1104,7 @@
       "strike": 56
     },
     "565a01d37287046a8795cad81691c4a2": {
-      "active_command_id": "ksr-c6461c9c81c42f0130ccfebc",
+      "active_command_id": null,
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "565a01d37287046a8795cad81691c4a2",
       "first_seen_at": "2026-09-20T10:22:32.880266+00:00",
@@ -1125,12 +1126,18 @@
           "command_id": "ksr-c6461c9c81c42f0130ccfebc",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-20T10:46:06.758483+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|short",
       "last_seen_at": "2026-09-20T10:42:48.474308+00:00",
       "marker": "MASTER_ESCALATION fingerprint=565a01d37287046a8795cad81691c4a2 strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-20T10:46:06.758483+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "761c2ce2fd2e5167b3f52aa4eecc7adc": {
@@ -1302,5 +1309,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-20T10:42:48.474308+00:00"
+  "updated_at": "2026-09-20T10:46:06.758483+00:00"
 }
