@@ -50,7 +50,7 @@
     "normalization_dispatched_at": "2026-09-20T01:21:25.663656+00:00",
     "quality_status": "passed",
     "quality_content_sha256": "5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec",
-    "quality_checked_at": "2026-09-20T09:35:45.088225+00:00",
+    "quality_checked_at": "2026-09-20T10:12:17.527871+00:00",
     "quality_violations": [],
     "slug": "why-is-it-so-hard-to-find-love",
     "title": "למה כל כך קשה למצוא זוגיות? כשהחיפוש נראה כמו מבוי סתום",
@@ -1841,7 +1841,7 @@
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "3f97a928-3110-47c2-a9ea-971218e32536",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
@@ -1856,13 +1856,28 @@
       "last_recovery_at": null,
       "hard_started_at": "2026-09-20T07:02:53.476073+00:00"
     },
-    "item_id": "video-20260920-093522-5619a729ac",
+    "item_id": "video-20260920-100242-5619a729ac",
     "resume_dispatches": 1,
     "controller_recovery_required": {
       "incident_key": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|long_video",
       "reason": "media provider hard timeout",
       "requested_at": "2026-09-20T09:37:27.586050+00:00"
-    }
+    },
+    "youtube_id": "Zrjta99vVhw",
+    "youtube_url": "https://youtu.be/Zrjta99vVhw",
+    "verified": true,
+    "technical_verified": true,
+    "visual_pipeline": "remotion-v1-notebooklm-audio",
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "duration": 129.133,
+    "content_duration_seconds": 129.125,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "artifact_id": "3f97a928-3110-47c2-a9ea-971218e32536",
+    "source_id": "21e225a0-92ad-4dbf-b6ae-0c821a961b6b"
   },
   "short": {
     "attempt_count": 0,
