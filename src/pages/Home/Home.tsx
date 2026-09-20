@@ -268,6 +268,25 @@ const process = [
   },
 ];
 
+const situations = [
+  {
+    title: 'קשיים בתקשורת',
+    text: 'כשהשיחות הופכות לוויכוחים שחוזרים על עצמם, או כשיש תחושה ש"אין עם מי לדבר" והמרחק רק גדל.',
+  },
+  {
+    title: 'משברים ושינויים',
+    text: 'התמודדות עם מעברי חיים כמו הורות טרייה, שינוי קריירה, מעבר דירה, או פגיעה באמון.',
+  },
+  {
+    title: 'שחיקה והתרחקות',
+    text: 'תחושה של בדידות בתוך הזוגיות, ירידה באינטימיות, ושגרה שמרגישה עמוסה ומרוחקת.',
+  },
+  {
+    title: 'אתגרי הורות',
+    text: 'פערים בגישות החינוך, מתחים סביב סמכות הורית, והתמודדות עם קשיים של הילדים שמשפיעים על הבית כולו.',
+  },
+];
+
 const testimonials = [
   {
     text: 'הגענו לשירה בשיא המשבר. היא עזרה לנו להוריד את גובה הלהבות ולדבר בפעם הראשונה מזה שנים.',
@@ -498,6 +517,27 @@ const Home: React.FC = () => {
                   <FiArrowLeft aria-hidden="true" />
                 </span>
               </Link>
+            ))}
+          </div>
+        </section>
+
+        <section id="situations" className={`${styles.section} ${styles.processSection} ${styles.revealSection}`}>
+          <div className={styles.sectionHeading}>
+            <span className={styles.kicker}>מצבים בהם ייעוץ יכול לעזור</span>
+            <h2>מתי כדאי לפנות לייעוץ?</h2>
+            <p>הפנייה לייעוץ קורית פעמים רבות כשהמנגנונים המוכרים מפסיקים לעבוד, והתחושה בבית הופכת למתוחה.</p>
+          </div>
+          <div className={styles.processGrid}>
+            {situations.map((item, idx) => (
+              <article
+                className={styles.processCard}
+                key={item.title}
+                style={{ '--process-delay': `${idx * 65}ms` } as React.CSSProperties}
+              >
+                <span className={styles.processNumber}>{(idx + 1).toString().padStart(2, '0')}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
             ))}
           </div>
         </section>
