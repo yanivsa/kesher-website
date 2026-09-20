@@ -1,8 +1,8 @@
 wave_id,target_url,intent_preserved,primary_query_answered,unsupported_claims_removed,professional_scope_ok,medical_boundary_ok,testimonial_fabrication_check,sources_checked,internal_links_valid,cta_consistent,hebrew_quality,ready_for_implementation,notes
-W1-01,/services/couples,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,PARTIAL,"Requires business verification on 50m online duration and Zoom recording text."
-W1-02,/blog/relationship-after-childbirth,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,
-W1-03,/blog/dating-transition-to-relationship-boundaries,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,
-W1-04,/blog/communication-breakdown,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,
-W1-05,/blog/boundaries-without-punishments,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,
-W1-06,/services/parenting,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,PARTIAL,"Requires business verification on whether teens are officially included in scope."
-W1-07,/blog/money-fights-communication,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,
+W1-01,/services/couples,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,"50-minute online duration verified from existing page; unverified Zoom security/recording claims removed."
+W1-02,/blog/relationship-after-childbirth,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,"Postpartum claims corrected and checked against research + Israeli Ministry of Health guidance."
+W1-03,/blog/dating-transition-to-relationship-boundaries,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,"Categorical dating claims softened; pacing/reciprocity intent preserved."
+W1-04,/blog/communication-breakdown,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,"Exercises framed as practical options, not proven clinical protocols; safety stop rule added."
+W1-05,/blog/boundaries-without-punishments,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,"Rigid/universal parenting claims removed; yelling-cycle cannibalization boundary preserved."
+W1-06,/services/parenting,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,"Teen scope verified from existing FAQ; Israeli Ministry of Health context added."
+W1-07,/blog/money-fights-communication,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,YES,"Money-conflict claims softened; financial-advice boundary preserved; APA source added."
