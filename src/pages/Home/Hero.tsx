@@ -29,6 +29,7 @@ const Hero: React.FC = () => {
             </Link>
           </div>
           <div className={styles.trustBar} aria-label="תחומי התמחות">
+            <span>עורכת דין בהכשרתה</span>
             <span>יועצת זוגית</span>
             <span>מנחת הורים</span>
           </div>

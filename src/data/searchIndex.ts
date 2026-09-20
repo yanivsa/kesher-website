@@ -36,6 +36,14 @@ const servicePages: SearchItem[] = [
     category: 'שירותים'
   },
   {
+    id: 'service-mediation-ashdod',
+    type: 'service',
+    title: 'גישור זוגי באשדוד',
+    body: 'גישור זוגי מקצועי ומכבד באשדוד או אונליין. מרחב ניטרלי ליישוב מחלוקות, בניית הסכמות הדדיות וניהול שיח בטוח.',
+    url: '/couples-mediation-ashdod',
+    category: 'שירותים'
+  },
+  {
     id: 'service-parenting',
     type: 'service',
     title: 'הדרכת הורים',
