@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-20",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35477948132,
@@ -57,7 +57,7 @@
     "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-love",
     "published_date": "2026-09-20",
     "live": true,
-    "live_verified_at": "2026-09-20T10:21:42.686585+00:00",
+    "live_verified_at": "2026-09-20T11:07:16.213413+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1104,28 +1104,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-17T11:28:55.241132+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-17T11:31:11.304945+00:00",
-      "from": "complete",
-      "to": "long_video_complete",
-      "reason": "reconciled exact verified public Overview from historical durable state",
-      "details": {
-        "item_id": "video-20260917-134451-4d0ba0c737",
-        "youtube_url": "https://youtu.be/6NXdPWlBtW0"
-      }
-    },
-    {
-      "at": "2026-09-17T11:31:20.557835+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-09-17T11:33:52.628914+00:00",
       "from": "complete",
       "to": "long_video_complete",
@@ -1834,12 +1812,30 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-20T11:07:16.213430+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-20T11:07:56.729788+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-20T11:09:17.779045+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-20T10:23:40.163833+00:00",
+  "updated_at": "2026-09-20T11:09:17.779062+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1896,18 +1892,18 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "3f97a928-3110-47c2-a9ea-971218e32536",
+    "provider_id": "068578a0-2590-4aec-a295-9ae2d0a5cd60",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-20T10:23:40.163802+00:00",
-    "artifact_id": "3f97a928-3110-47c2-a9ea-971218e32536",
-    "source_id": "21e225a0-92ad-4dbf-b6ae-0c821a961b6b",
+    "artifact_id": "068578a0-2590-4aec-a295-9ae2d0a5cd60",
+    "source_id": "85e91d47-376d-4392-835e-f5dd89414a19",
     "adopted_from_long_item_id": "video-20260920-100242-5619a729ac",
     "watchdog": {
       "identity": "short:why-is-it-so-hard-to-find-love:5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec:video-20260920-131834-5619a729ac",
@@ -1916,7 +1912,24 @@
       "last_fingerprint": "36ef7c2f5319097550b2377326d05e66c31b1c597f2cab405d9c86ebbe0f41e3",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "item_id": "video-20260920-131834-5619a729ac",
+    "type": "article_short",
+    "youtube_id": "RFUJ3a076sM",
+    "youtube_url": "https://youtu.be/RFUJ3a076sM",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "8f9449898280118fb6e4d81092c53f1964c4d67d4aed482517e47003216a89cd",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
