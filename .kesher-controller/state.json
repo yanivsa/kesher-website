@@ -57,7 +57,7 @@
     "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-love",
     "published_date": "2026-09-20",
     "live": true,
-    "live_verified_at": "2026-09-20T14:29:06.147614+00:00",
+    "live_verified_at": "2026-09-20T14:39:12.361222+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1104,34 +1104,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-17T12:04:19.098683+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-17T12:04:57.712437+00:00",
-      "from": "article_live",
-      "to": "video_retry_wait",
-      "reason": "VIDEO_WORKFLOW_FAILED",
-      "details": {
-        "message": "video run 35217971663 completed with conclusion=failure",
-        "retry_at": "2026-09-17T12:09:57.712413+00:00",
-        "failure_streak": 1,
-        "run_id": 35217971663,
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-09-17T12:04:57.712459+00:00",
-      "from": "video_retry_wait",
-      "to": "video_retry_wait",
-      "reason": "video retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-17T12:09:57.712413+00:00"
-      }
-    },
-    {
       "at": "2026-09-17T12:10:10.889761+00:00",
       "from": "long_video_retry_wait",
       "to": "article_live",
@@ -1824,9 +1796,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-20T14:39:12.361240+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-20T14:39:39.678968+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-20T14:41:07.841006+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-20T14:29:32.632187+00:00",
+  "updated_at": "2026-09-20T14:41:07.841029+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
