@@ -303,11 +303,13 @@
         "task_id": "3f97a928-3110-47c2-a9ea-971218e32536"
       },
       "executor": "controller",
+      "failed_at": "2026-09-20T10:23:57.244940+00:00",
+      "failure_reason": "kesher-content-controller.yml run 35504901529 completed but exact incident persisted",
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "565a01d37287046a8795cad81691c4a2",
       "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|short",
       "issued_at": "2026-09-20T10:22:32.880266+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "failed",
       "metadata": {
         "dispatch": "already_active",
         "run_id": 35504901529,
@@ -316,7 +318,7 @@
       "proposed_action": "rebuild_exact_short",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-20T10:23:26.672356+00:00"
+      "updated_at": "2026-09-20T10:23:57.244940+00:00"
     },
     "ksr-9d5100379eadfd29cfa7a95d": {
       "acknowledged_at": "2026-09-18T12:05:43.261153+00:00",
@@ -572,6 +574,31 @@
       "stage": "S1",
       "strike": 1,
       "updated_at": "2026-09-17T11:05:02.896561+00:00"
+    },
+    "ksr-c6461c9c81c42f0130ccfebc": {
+      "command_id": "ksr-c6461c9c81c42f0130ccfebc",
+      "evidence_hash": "7b98d54160ba78460b5c6ffc0983574202cb8a55c0cef96c638f7db210335052",
+      "exact": {
+        "artifact_id": "3f97a928-3110-47c2-a9ea-971218e32536",
+        "content_sha256": "5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec",
+        "item_id": "video-20260920-100242-5619a729ac",
+        "pr_number": 881,
+        "short_item_id": "video-20260920-131834-5619a729ac",
+        "slug": "why-is-it-so-hard-to-find-love",
+        "source_id": "21e225a0-92ad-4dbf-b6ae-0c821a961b6b",
+        "task_id": "3f97a928-3110-47c2-a9ea-971218e32536"
+      },
+      "executor": "jules",
+      "failure_signature": "SHORT_NOT_PORTRAIT",
+      "fingerprint": "565a01d37287046a8795cad81691c4a2",
+      "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|short",
+      "issued_at": "2026-09-20T10:23:57.244940+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebuild_exact_short",
+      "stage": "S2",
+      "strike": 2,
+      "updated_at": "2026-09-20T10:23:57.244940+00:00"
     },
     "ksr-ce8919655441bb496f31bc3a": {
       "command_id": "ksr-ce8919655441bb496f31bc3a",
@@ -1040,7 +1067,7 @@
       "strike": 56
     },
     "565a01d37287046a8795cad81691c4a2": {
-      "active_command_id": "ksr-9675cc07ac24974093c62aff",
+      "active_command_id": "ksr-c6461c9c81c42f0130ccfebc",
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "565a01d37287046a8795cad81691c4a2",
       "first_seen_at": "2026-09-20T10:22:32.880266+00:00",
@@ -1050,13 +1077,25 @@
           "command_id": "ksr-9675cc07ac24974093c62aff",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-20T10:23:57.244940+00:00",
+          "command_id": "ksr-9675cc07ac24974093c62aff",
+          "event": "command_failed",
+          "reason": "kesher-content-controller.yml run 35504901529 completed but exact incident persisted"
+        },
+        {
+          "at": "2026-09-20T10:23:57.244940+00:00",
+          "command_id": "ksr-c6461c9c81c42f0130ccfebc",
+          "event": "command_issued",
+          "stage": "S2"
         }
       ],
       "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|short",
-      "last_seen_at": "2026-09-20T10:22:32.880266+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=565a01d37287046a8795cad81691c4a2 strike=1 stage=S1",
+      "last_seen_at": "2026-09-20T10:23:57.244940+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=565a01d37287046a8795cad81691c4a2 strike=2 stage=S2",
       "status": "recovering",
-      "strike": 1
+      "strike": 2
     },
     "761c2ce2fd2e5167b3f52aa4eecc7adc": {
       "active_command_id": null,
@@ -1227,5 +1266,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-20T10:23:26.672356+00:00"
+  "updated_at": "2026-09-20T10:23:57.244940+00:00"
 }
