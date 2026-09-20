@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-20",
-  "status": "complete",
+  "status": "blocked",
   "article": {
     "attempt_count": 2,
     "status": "complete",
@@ -1101,14 +1101,13 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "DUPLICATE_ARTICLE_DATE",
+    "message": "3 articles share Israel date 2026-09-20",
+    "at": "2026-09-20T14:16:02.513732+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-17T11:39:01.666031+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-09-17T11:51:18.856147+00:00",
       "from": "complete",
@@ -1822,9 +1821,18 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-20T14:16:02.513745+00:00",
+      "from": "complete",
+      "to": "blocked",
+      "reason": "DUPLICATE_ARTICLE_DATE",
+      "details": {
+        "message": "3 articles share Israel date 2026-09-20"
+      }
     }
   ],
-  "updated_at": "2026-09-20T11:52:18.605916+00:00",
+  "updated_at": "2026-09-20T14:16:02.513751+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
