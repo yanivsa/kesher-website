@@ -1,41 +1,68 @@
-# Phase 4 Editorial Report
+# Phase 4 Editorial Report — QA Corrected
 
-## Completed Drafts
-- W1-01: `/services/couples` (Section Update)
-- W1-02: `/blog/relationship-after-childbirth` (Full Expand)
-- W1-03: `/blog/dating-transition-to-relationship-boundaries` (Section Update)
-- W1-04: `/blog/communication-breakdown` (Section Update)
-- W1-05: `/blog/boundaries-without-punishments` (Section Update)
-- W1-06: `/services/parenting` (Section Update)
-- W1-07: `/blog/money-fights-communication` (Full Expand)
+## Status
 
-## Existing Pages Updated Editorially vs. Draft Articles Completed
-- **Section Updates (Existing Pages):** W1-01, W1-03, W1-04, W1-05, W1-06.
-- **Draft Articles Completed/Expanded:** W1-02, W1-07.
+**COMPLETED — APPROVED AFTER CHATGPT QA**
 
-## External Sources Used
-None directly needed. Factual accuracy relied on standard therapeutic/counseling domain knowledge and avoiding making unsourced clinical claims.
+All seven Wave 1 editorial artifacts are ready for Phase 5 implementation.
 
-## Claims Removed or Softened
-- Removed any implication of diagnosing Postpartum Depression (W1-02) and clearly pointed to medical professionals.
-- Removed language suggesting communication exercises are a clinical panacea (W1-04).
-- Added explicit disclaimers in W1-07 that the article is not financial, investment, or tax advice, and softened generalizations.
-- Ensured no "game-playing" dating strategies were endorsed in W1-03.
-- Clearly bounded teenager parenting guidance (W1-06) as not being a replacement for psychiatric/psychological therapy for the teen.
+## Completed drafts
 
-## Professional-Scope Safeguards Applied
-- Strictly maintained Shira's role as a couples counselor and parenting guidance practitioner.
-- Did not use terms like "psychologist" or "psychotherapist".
-- Added standard medical/professional disclaimers to informational articles.
-- No fabricated testimonials or statistics were included.
+- W1-01: `/services/couples` — section update
+- W1-02: `/blog/relationship-after-childbirth` — full article rewrite
+- W1-03: `/blog/dating-transition-to-relationship-boundaries` — section update
+- W1-04: `/blog/communication-breakdown` — section update
+- W1-05: `/blog/boundaries-without-punishments` — section update
+- W1-06: `/services/parenting` — section update
+- W1-07: `/blog/money-fights-communication` — full article rewrite
 
-## Items Requiring Business Verification
-1. **W1-01 (`/services/couples`)**: Verification needed on whether online sessions are exactly 50 minutes and if explicit mention of "Zoom sessions are secure and not recorded" is approved.
-2. **W1-06 (`/services/parenting`)**: Verification needed if Shira explicitly offers and wants to highlight guidance for parents of *teenagers* on her main parenting service page.
+## External factual sources used after QA
 
-## Items Requiring ChatGPT QA
-- W1-01
-- W1-06
+### English
+- Mitnick DM, Heyman RE, Slep AMS. Changes in Relationship Satisfaction Across the Transition to Parenthood: A Meta-Analysis. Journal of Family Psychology (2009).
+- Delicate A, Ayers S, McMullen S. A systematic review and meta-synthesis of the impact of becoming parents on the couple relationship. Midwifery (2018).
+- American Psychological Association. Happy couples: How to avoid money arguments.
 
-## Phase 5 Readiness
-Phase 5 (Implementation Technical QA) is ready to begin, pending the business verifications above.
+### Hebrew / Israel
+- משרד הבריאות — דיכאון אחרי לידה, תסמינים וטיפול (2026).
+- משרד הבריאות — מדריך להורים: להבין ולתמוך במתבגרים (2026).
+- משרד הבריאות — חשיפה למסכים בגיל ההתבגרות (2026).
+
+## Business facts resolved
+
+### W1-01
+The existing `/services/couples` source already states that sessions take place in Ashdod or online and last 50 minutes. No additional confirmation is required.
+
+The prior draft's statement that Zoom links are secure and sessions are never recorded was not supported by repository evidence and has been removed.
+
+### W1-06
+The existing FAQ explicitly states that parenting guidance is relevant from infancy through adolescence. Teen parenting guidance is therefore already within the declared service scope.
+
+No additional business confirmation is required.
+
+## Main editorial corrections
+
+- Removed unsupported universal/generalized claims.
+- Reduced AI-like rhetorical exaggeration.
+- Added source-based boundaries around postpartum mental health.
+- Added Israeli authoritative context for adolescence.
+- Removed unsupported Zoom privacy/security claims.
+- Removed categorical claims about dating enthusiasm.
+- Reframed communication exercises as optional practical tools.
+- Reframed parenting-boundary advice to avoid rigid universal rules.
+- Rewrote money-conflict claims to separate relationship communication from financial advice.
+
+## Professional-scope safeguards
+
+- No psychology/psychiatry credential inflation.
+- No diagnosis or treatment claims outside Shira's role.
+- No fabricated client experiences or testimonials.
+- No invented statistics.
+- No financial advice.
+- Safety/referral boundaries retained where relevant.
+
+## Phase 5 readiness
+
+**READY: 7/7**
+
+Phase 5 should implement the QA-corrected files currently present on the shared branch, not the original commit text where it conflicts with later ChatGPT QA commits.
