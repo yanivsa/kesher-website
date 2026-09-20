@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-20",
-  "status": "blocked",
+  "status": "complete",
   "article": {
     "attempt_count": 2,
     "status": "complete",
@@ -57,7 +57,7 @@
     "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-love",
     "published_date": "2026-09-20",
     "live": true,
-    "live_verified_at": "2026-09-20T11:50:55.848890+00:00",
+    "live_verified_at": "2026-09-20T14:29:06.147614+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1101,35 +1101,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "DUPLICATE_ARTICLE_DATE",
-    "message": "3 articles share Israel date 2026-09-20",
-    "at": "2026-09-20T14:21:41.294811+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-17T11:52:14.229605+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "upload",
-        "resume": 4
-      }
-    },
-    {
-      "at": "2026-09-17T11:54:53.747522+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-17T11:55:03.535483+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
     {
       "at": "2026-09-17T12:04:19.098683+00:00",
       "from": "long_video_running",
@@ -1833,9 +1806,27 @@
       "details": {
         "message": "3 articles share Israel date 2026-09-20"
       }
+    },
+    {
+      "at": "2026-09-20T14:29:06.147631+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-20T14:29:16.322151+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-20T14:29:32.632170+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-20T14:21:41.294829+00:00",
+  "updated_at": "2026-09-20T14:29:32.632187+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
