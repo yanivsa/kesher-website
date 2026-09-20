@@ -57,7 +57,7 @@
     "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-love",
     "published_date": "2026-09-20",
     "live": true,
-    "live_verified_at": "2026-09-20T10:15:29.806209+00:00",
+    "live_verified_at": "2026-09-20T10:21:42.686585+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1104,22 +1104,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-17T11:22:10.715170+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "Short derive workflow already active"
-    },
-    {
-      "at": "2026-09-17T11:28:48.414950+00:00",
-      "from": "short_running",
-      "to": "long_video_complete",
-      "reason": "reconciled exact verified public Overview from historical durable state",
-      "details": {
-        "item_id": "video-20260917-134451-4d0ba0c737",
-        "youtube_url": "https://youtu.be/6NXdPWlBtW0"
-      }
-    },
-    {
       "at": "2026-09-17T11:28:55.241132+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -1832,9 +1816,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-20T10:21:42.686605+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-20T10:22:17.178743+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-20T10:23:40.163826+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-20T10:17:10.314755+00:00",
+  "updated_at": "2026-09-20T10:23:40.163833+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1893,7 +1895,7 @@
     "source_id": "21e225a0-92ad-4dbf-b6ae-0c821a961b6b"
   },
   "short": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1903,7 +1905,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-20T10:17:10.314728+00:00",
+    "last_dispatch_at": "2026-09-20T10:23:40.163802+00:00",
     "artifact_id": "3f97a928-3110-47c2-a9ea-971218e32536",
     "source_id": "21e225a0-92ad-4dbf-b6ae-0c821a961b6b",
     "adopted_from_long_item_id": "video-20260920-100242-5619a729ac"
