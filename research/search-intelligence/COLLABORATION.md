@@ -54,16 +54,16 @@ Chat messages are not the canonical state. Git files on the working branch are t
 ## CURRENT STATE
 
 - project_status: IN_PROGRESS
-- current_phase: PHASE_3_INTENT_CLUSTERING_STRATEGY
+- current_phase: PHASE_4_EDITORIAL_PRODUCTION
 - current_owner: SHARED
-- last_completed_phase: PHASE_3_INTENT_CLUSTERING_STRATEGY
-- next_phase: PHASE_4_EDITORIAL_PRODUCTION
+- last_completed_phase: PHASE_4_EDITORIAL_PRODUCTION
+- next_phase: PHASE_5_IMPLEMENTATION_TECHNICAL_QA
 - production_domain: https://kesher.saharoni.com
 - search_console_property: sc-domain:saharoni.com
 - ga4_property: properties/551923843
 - ga4_stream: G-6SM423N6EL
 - canonical_keyword_file: research/search-intelligence/keyword-master.csv
-- last_updated_utc: 2026-09-20T09:53:00Z
+- last_updated_utc: 2026-09-20T11:45:00Z
 - last_updated_by: ChatGPT
 
 ## Verified baseline
@@ -127,12 +127,12 @@ Output expected:
 Status: COMPLETED
 
 ### PHASE 4 — Editorial Production
-Owner: Antigravity
+Owner: Antigravity + ChatGPT QA
 Output expected:
 - final Wave 1 article/page drafts
 - no publication yet unless explicitly authorized
 
-Status: NOT_STARTED
+Status: COMPLETED
 
 ### PHASE 5 — Implementation & Technical QA
 Owner: Antigravity
@@ -435,3 +435,36 @@ Completion requires:
   - W1-06: Explicit scope confirmation for parenting guidance of teenagers.
 - **ChatGPT QA items:** W1-01, W1-06 (business verification).
 - **Phase 5 recommendation:** Ready to begin, pending business confirmation on the unresolved facts.
+
+
+### 2026-09-20 14:45 — ChatGPT — PHASE 4 QA
+- reviewed_commit: 604d40229bd5fb537ed2e09bb4dc98548f88cf65
+- reviewed_files:
+  - all seven Phase 4 editorial drafts
+  - editorial-qa.csv
+  - phase4-editorial-report.md
+  - /services/couples production source
+  - /services/parenting production source
+  - shared FAQ data
+- findings:
+  - The commit contains all seven drafts; the handoff initially reported filenames differently from their actual paths.
+  - W1-01's 50-minute online duration is already verified by the existing couples service page.
+  - W1-01's "secure Zoom link / never recorded" claim was not verified and was removed.
+  - W1-06 teen-parenting scope is already verified by the existing FAQ: parenting guidance is relevant from infancy through adolescence.
+  - Several drafts contained overgeneralized or overly categorical editorial claims despite the original QA matrix marking them ready.
+- corrections:
+  - Refined all seven editorial drafts.
+  - Added authoritative postpartum and adolescent sources where factual/health claims warranted support.
+  - Softened unsupported dating, parenting and money-conflict generalizations.
+  - Added clearer safety/referral boundaries.
+  - Created PHASE4-QA.md.
+  - Updated editorial-qa.csv to 7/7 ready.
+  - Replaced phase4-editorial-report.md with the QA-corrected report.
+- decisions:
+  - Phase 4 is APPROVED_AFTER_CORRECTIONS.
+  - No additional business confirmation is required for W1-01 or W1-06.
+  - Phase 5 may implement all seven QA-corrected drafts.
+  - Phase 5 must not reintroduce the removed Zoom security/recording claim or earlier superseded copy.
+  - No new SEO URL should be created.
+- next_action_for_Antigravity:
+  - Pull the latest shared branch, read PHASE4-QA.md and the current seven editorial-drafts files, then execute Phase 5 implementation and technical/browser QA only.
