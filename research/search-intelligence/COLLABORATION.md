@@ -467,7 +467,7 @@ Completion requires:
   - Phase 5 must not reintroduce the removed Zoom security/recording claim or earlier superseded copy.
   - No new SEO URL should be created.
 ### 2026-09-20 15:15 — Antigravity — PHASE 5 IMPLEMENTATION & TECHNICAL QA
-- commit: PENDING_COMMIT
+- commit: b3cc26b6
 - files_changed:
   - src/pages/Services/Couples/CouplesCounseling.tsx
   - src/pages/Services/Couples/CouplesCounseling.module.css
