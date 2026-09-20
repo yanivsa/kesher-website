@@ -576,7 +576,7 @@
       "updated_at": "2026-09-17T11:05:02.896561+00:00"
     },
     "ksr-c6461c9c81c42f0130ccfebc": {
-      "acknowledged_at": "2026-09-20T10:34:15.968555+00:00",
+      "acknowledged_at": "2026-09-20T10:36:36.573421+00:00",
       "command_id": "ksr-c6461c9c81c42f0130ccfebc",
       "evidence_hash": "7b98d54160ba78460b5c6ffc0983574202cb8a55c0cef96c638f7db210335052",
       "exact": {
@@ -634,7 +634,7 @@
       "running_at": "2026-09-20T10:27:25.703315+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-20T10:34:15.968555+00:00"
+      "updated_at": "2026-09-20T10:36:36.573421+00:00"
     },
     "ksr-ce8919655441bb496f31bc3a": {
       "command_id": "ksr-ce8919655441bb496f31bc3a",
@@ -1128,7 +1128,7 @@
         }
       ],
       "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|short",
-      "last_seen_at": "2026-09-20T10:34:15.968555+00:00",
+      "last_seen_at": "2026-09-20T10:36:36.573421+00:00",
       "marker": "MASTER_ESCALATION fingerprint=565a01d37287046a8795cad81691c4a2 strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
@@ -1302,5 +1302,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-20T10:34:15.968555+00:00"
+  "updated_at": "2026-09-20T10:36:36.573421+00:00"
 }
