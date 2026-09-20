@@ -10,21 +10,27 @@
 - Confidence: HIGH
 
 ## Current-page diagnosis
-The parenting service page highlights young children, readiness for 1st grade, gifted children, and ADHD. It lacks a specific service offering addressing parents of teenagers. We will add a section to address this life stage.
+The main parenting service page currently emphasizes younger children, ADHD, gifted children and educational transitions, but the site's existing FAQ explicitly states that parenting guidance is relevant from infancy through adolescence. Add a dedicated teen section so the visible service page reflects the existing scope.
 
 ## Final proposed copy
-[To be added as an `<article>` or subsection within the service page, logically aligned with other specializations like gifted children/school readiness]
+[Recommended placement: as a dedicated section before the general professional-boundaries section.]
 
-## הדרכת הורים למתבגרים: לשמור על קשר גם כשמסובך
+## הדרכת הורים למתבגרים: לשמור על קשר כשהיחסים משתנים
 
-גיל ההתבגרות מביא איתו שינויים מהירים שטורפים את הקלפים בבית. מתבגרים זקוקים למרחב, לאוטונומיה ולעצמאות, אך בו-זמנית הם זקוקים לנוכחות יציבה, אוהבת ומכוונת של הוריהם. לעיתים קרובות, התקשורת בבית הופכת לחילופי דברים קצרים של 'כן' ו'לא', הסתגרות בחדרים, מסכים לאורך כל שעות היום, וויכוחים על שעות חזרה, גבולות ואחריות אישית.
+גיל ההתבגרות מביא איתו יותר עצמאות, יותר פרטיות ויותר מקום לחברים ולעולם שמחוץ לבית. במקביל, ההורים עדיין נדרשים להציב גבולות, לשמור על קשר ולדעת מתי להתערב ומתי להעביר אחריות. לא מעט משפחות מגלות שבשלב הזה שיחות פשוטות על לימודים, מסכים, שעות חזרה או משימות בבית הופכות מהר מאוד לעימות.
 
-במסגרת הדרכת הורים למתבגרים, המטרה אינה "לאלף" או לחזור לשליטה שהייתה לכם בגילאים הצעירים, אלא לשנות את אופן הדיאלוג. אנחנו נלמד יחד:
-- **איך לדבר בלי לתחקר:** לעבור מתקשורת של חקירות ולוגיסטיקה לתקשורת שמאפשרת שיתוף מרצון.
-- **הגדרת גבולות מותאמים:** להבחין בין נושאים שבהם ההורה חייב להציב גבול אדום וברור (סכנות, בטיחות, כבוד הדדי), לבין נושאים שבהם נכון לשחרר ולהעביר אחריות למתבגר (למשל, ניהול זמן לימודים).
-- **התמודדות עם קונפליקטים:** מה עושים כשמתפתח עימות חריף, ואיך מייצרים "תיקון" (Repair) וחיבור מחדש אחרי ריב.
+בהדרכת הורים למתבגרים אפשר לעבוד, בין היתר, על:
 
-**חשוב לדעת:** הדרכת הורים נועדה לסייע לכם, ההורים, למצוא את העמדה הנכונה מול המתבגר. עם זאת, אם המתבגר שלכם חווה הסתגרות קיצונית, שינויים דרסטיים במצב הרוח, חרדה, דיכאון, או פגיעה בתפקוד הבסיסי בבית הספר ובחברה – הדרכת הורים אינה תחליף לאבחון וטיפול פסיכולוגי או פסיכיאטרי עבור המתבגר עצמו. במקרים אלו, אמליץ לכם במקביל על פנייה לגורמים המתאימים.
+- **שיחה בלי חקירה:** איך לשאול ולהתעניין בלי שכל שיחה תישמע כמו סדרת שאלות.
+- **גבולות שמתאימים לגיל:** מה עדיין באחריות ההורים, ואיפה נכון לתת יותר מרחב ועצמאות.
+- **מסכים ושגרה:** איך לבנות כללים סביב שינה, לימודים, שימוש במסכים ואחריות בבית בלי לנהל מאבק יומיומי על כל פרט.
+- **קונפליקטים והתרחקות:** איך להגיב כשהמתבגר נסגר, כועס או מבקש יותר מרחק, ואיך לחזור לשיחה אחרי ריב.
+- **העברת אחריות בהדרגה:** לעזור למתבגר להתנסות בהחלטות וללמוד מהן, בלי להשאיר אותו לבד עם מצבים שאינם מתאימים לגילו.
+
+משרד הבריאות מדגיש שבגיל ההתבגרות עצמאות היא צורך התפתחותי משמעותי, לצד חשיבותה של נוכחות הורית, שיחה פתוחה וגבולות שמוסברים היטב. בהדרכת הורים המוקד הוא לא "להחזיר שליטה", אלא לדייק את הדרך שבה ההורים מגיבים ומתקשרים בתוך השלב החדש.
+
+**מתי צריך מענה נוסף?**  
+אם יש מצוקה מתמשכת, שינוי חד בתפקוד, הסתגרות חריגה, חשש לפגיעה עצמית או קושי רגשי משמעותי, הדרכת הורים אינה תחליף להערכה או טיפול ישיר במתבגר. במצב כזה כדאי לפנות לגורם מתאים בבריאות הנפש או ברפואה, לצד הדרכה להורים אם היא מועילה למשפחה.
 
 ## Suggested SEO title
 KEEP_CURRENT_TITLE
@@ -33,13 +39,16 @@ KEEP_CURRENT_TITLE
 KEEP_CURRENT_META
 
 ## Internal links
-None explicit needed here unless linking to a relevant blog post about teens (which isn't in W1 scope).
+- relevant teen/parenting articles where they genuinely match the section
+- /appointment through the existing page CTA
 
 ## Sources used
-N/A
+- Repository FAQ: "הדרכת הורים רלוונטית מגיל ינקות ועד גיל ההתבגרות."
+- משרד הבריאות, "מדריך להורים: להבין ולתמוך במתבגרים" (2026).
+- משרד הבריאות, "חשיפה למסכים בגיל ההתבגרות" (2026).
 
 ## Claims requiring business verification
-- Does Shira actually provide parenting guidance specifically tailored to parents of teenagers? (Assuming YES based on brief, but requires business verification).
+None. Teen parenting guidance is already explicitly included in the site's existing FAQ scope.
 
 ## Implementation notes for Phase 5
-Add this as an `<article>` card or a dedicated section within `ParentingGuidance.tsx`, matching the existing component design (e.g., using `specialization` styles).
+Add this section to `ParentingGuidance.tsx`, preserving the page's broad parenting-guidance intent. Do not market direct treatment of teenagers and do not turn the page into a teen mental-health service page.
