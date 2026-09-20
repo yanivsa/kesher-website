@@ -576,6 +576,7 @@
       "updated_at": "2026-09-17T11:05:02.896561+00:00"
     },
     "ksr-c6461c9c81c42f0130ccfebc": {
+      "acknowledged_at": "2026-09-20T10:25:23.212638+00:00",
       "command_id": "ksr-c6461c9c81c42f0130ccfebc",
       "evidence_hash": "7b98d54160ba78460b5c6ffc0983574202cb8a55c0cef96c638f7db210335052",
       "exact": {
@@ -593,12 +594,44 @@
       "fingerprint": "565a01d37287046a8795cad81691c4a2",
       "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|short",
       "issued_at": "2026-09-20T10:23:57.244940+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-c6461c9c81c42f0130ccfebc",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "same-source exact Short is rebuilt without fresh provider generation, public, succeeded, and portrait 9:16",
+          "evidence_hash": "7b98d54160ba78460b5c6ffc0983574202cb8a55c0cef96c638f7db210335052",
+          "exact": {
+            "artifact_id": "3f97a928-3110-47c2-a9ea-971218e32536",
+            "content_sha256": "5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec",
+            "item_id": "video-20260920-100242-5619a729ac",
+            "pr_number": 881,
+            "short_item_id": "video-20260920-131834-5619a729ac",
+            "slug": "why-is-it-so-hard-to-find-love",
+            "source_id": "21e225a0-92ad-4dbf-b6ae-0c821a961b6b",
+            "task_id": "3f97a928-3110-47c2-a9ea-971218e32536"
+          },
+          "failure_signature": "SHORT_NOT_PORTRAIT",
+          "fingerprint": "565a01d37287046a8795cad81691c4a2",
+          "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|short",
+          "proposed_action": "rebuild_exact_short",
+          "schema_version": 1,
+          "stage": "short",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/1068701886417265233"
+      },
       "proposed_action": "rebuild_exact_short",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-20T10:23:57.244940+00:00"
+      "updated_at": "2026-09-20T10:25:23.212638+00:00"
     },
     "ksr-ce8919655441bb496f31bc3a": {
       "command_id": "ksr-ce8919655441bb496f31bc3a",
@@ -1266,5 +1299,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-20T10:23:57.244940+00:00"
+  "updated_at": "2026-09-20T10:25:23.212638+00:00"
 }
