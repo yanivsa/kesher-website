@@ -478,6 +478,7 @@
       "updated_at": "2026-09-17T11:36:23.440895+00:00"
     },
     "ksr-f530fa67511de5f458aac87e": {
+      "acknowledged_at": "2026-09-20T08:42:27.239998+00:00",
       "command_id": "ksr-f530fa67511de5f458aac87e",
       "evidence_hash": "f8fa5b700506b52004d57806d57769fa0b0c30189f4b4f5a546068b69417095d",
       "exact": {
@@ -495,12 +496,16 @@
       "fingerprint": "761c2ce2fd2e5167b3f52aa4eecc7adc",
       "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|long_video",
       "issued_at": "2026-09-20T08:41:18.495742+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "issued",
+        "dispatched_at": "2026-09-20T08:42:27.239998+00:00",
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-20T08:41:18.495742+00:00"
+      "updated_at": "2026-09-20T08:42:27.239998+00:00"
     },
     "ksr-ff7210a85817fc227ce24581": {
       "acknowledged_at": "2026-09-17T11:35:01.770451+00:00",
@@ -1032,5 +1037,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-20T08:41:18.495742+00:00"
+  "updated_at": "2026-09-20T08:42:27.239998+00:00"
 }
