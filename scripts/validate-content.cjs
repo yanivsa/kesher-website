@@ -189,7 +189,7 @@ const claimFiles = [
   'src/constants/siteConfig.ts',
   'src/pages/Home/Home.tsx',
   'src/pages/About/AboutPage.tsx',
-  'src/pages/Services/Couples/CouplesCounseling.tsx',
+  'src/pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage.tsx',
   'src/pages/Services/Parenting/ParentingGuidance.tsx',
   'src/pages/Services/Mediation/MediationPage.tsx',
   'src/pages/Services/Gifted/GiftedParentingPage.tsx',
