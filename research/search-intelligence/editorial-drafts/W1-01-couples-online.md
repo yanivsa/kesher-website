@@ -10,27 +10,25 @@
 - Confidence: HIGH
 
 ## Current-page diagnosis
-The current couples counseling service page details the in-person offering in Ashdod but lacks information regarding the online consultation process. We are adding a section to explicitly explain how online sessions work, preserving all existing sections.
+The current couples service page already states that counseling is available in Ashdod and online (Zoom), and already states that sessions last 50 minutes. What is missing is a dedicated section that answers the online-intent questions clearly without creating a competing URL.
 
 ## Final proposed copy
-[To be added under a new H2 section, perhaps just before "מתי צריך מענה אחר או נוסף?"]
+[Recommended placement: before the existing section "מתי צריך מענה אחר או נוסף?"]
 
 ## איך עובד ייעוץ זוגי אונליין?
 
-זוגות רבים מגלים שדווקא המרחב המוכר של הבית מאפשר להם להיפתח בצורה שונה. ייעוץ זוגי אונליין דרך זום מספק מענה נוח וזמין לזוגות שמתקשים להגיע לקליניקה באשדוד בשל אילוצי זמנים, מרחק גיאוגרפי, משמרות בעבודה, או שהות בחו"ל ([רילוקיישן](/services/couples-aliyah-relocation)). 
+אם קשה לכם להגיע לקליניקה באשדוד בגלל מרחק, שעות עבודה, מגורים בחו״ל או תקופה של רילוקיישן, אפשר לקיים את פגישת הייעוץ הזוגי גם אונליין בזום. הפגישה נמשכת 50 דקות, ובמהלכה עובדים על אותם נושאים שמביאים זוגות לייעוץ: דפוסי שיחה שחוזרים על עצמם, קונפליקטים, ריחוק, תיאום ציפיות וקבלת החלטות משותפת.
 
-**איך מתנהלת הפגישה?**
-פגישת אונליין נמשכת 50 דקות, בדיוק כמו פגישה בקליניקה. המטרה, הכלים והגישה נותרים זהים – יצירת שיח בטוח, הבנת מעגלי המריבה ומתן כלים מעשיים לתקשורת קרובה יותר.
+**איך מתכוננים לפגישה אונליין?**
+- בחרו מקום שבו שניכם יכולים לדבר בפרטיות וללא הפרעות.
+- נסו להתחבר כמה דקות מראש ולבדוק שהמצלמה, הקול והחיבור לאינטרנט עובדים.
+- אם אפשר, שבו מול מחשב או מסך שמאפשר לשניכם להשתתף בנוחות.
+- כדאי לפנות את זמן הפגישה ולא לנסות לקיים אותה במקביל לטיפול בילדים, נהיגה או משימות אחרות.
 
-**איך מתכוננים לפגישת אונליין?**
-- בחרו חדר שקט בבית שבו תוכלו לשבת יחד, ללא הסחות דעת וללא ילדים שמתרוצצים ברקע.
-- ודאו שיש לכם חיבור אינטרנט יציב.
-- מומלץ להתחבר ממחשב נייד או מסך גדול (ולא מהנייד), כדי שתוכלו לשבת בנוחות אחד ליד השנייה.
+**מתי הפורמט יכול להיות שימושי?**
+אונליין יכול להיות פתרון מעשי לזוגות שאינם גרים באשדוד, לזוגות שנמצאים בתקופת מעבר או רילוקיישן, או כששגרת החיים מקשה על הגעה קבועה לקליניקה. אם יש נסיבות שמקשות לקיים שיחה זוגית בטוחה ופרטית מהבית, אפשר לברר מראש מהו הפורמט המתאים יותר.
 
-**למי זה מתאים?**
-ייעוץ זוגי אונליין מתאים מאוד כשאתם מחפשים לשפר את התקשורת, לפתור קונפליקטים או לעשות הכנה משמעותית לקראת נישואים. עם זאת, במצבי משבר חריפים מאוד, או כשנדרש טיפול זוגי מקיף הנוגע לפגיעות עמוקות, לעיתים אמליץ להתחיל במפגשים פרונטליים, שם ניתן להחזיק את המרחב הרגשי מקרוב.
-
-הפרטיות שלכם חשובה. השיחות מתקיימות דרך קישור מאובטח ואינן מוקלטות בשום שלב.
+לזוגות שנמצאים בתהליך עלייה, רילוקיישן או חזרה לישראל יש גם מידע ממוקד בעמוד [ייעוץ זוגי לעולים ולזוגות ברילוקיישן](/services/couples-aliyah-relocation).
 
 ## Suggested SEO title
 KEEP_CURRENT_TITLE
@@ -39,14 +37,16 @@ KEEP_CURRENT_TITLE
 KEEP_CURRENT_META
 
 ## Internal links
-- "רילוקיישן" → /services/couples-aliyah-relocation
+- "ייעוץ זוגי לעולים ולזוגות ברילוקיישן" → /services/couples-aliyah-relocation
+- local/in-person option → /couples-counseling-ashdod
+- booking → /appointment
 
 ## Sources used
-None required (factual service offering).
+- Repository service facts: `/services/couples` already states that sessions are in Ashdod or online and last 50 minutes.
+- Repository FAQ: online counseling is an existing service offering.
 
 ## Claims requiring business verification
-- Is the duration exactly 50 minutes for online sessions?
-- Is it OK to explicitly state that Zoom links are secure and not recorded?
+None.
 
 ## Implementation notes for Phase 5
-Add this section to `CouplesCounseling.tsx` as a new `<section>` before or after the "מתי צריך מענה אחר או נוסף?" section. Use appropriate icons/styling consistent with the page.
+Add this as a dedicated section in `CouplesCounseling.tsx`, preserving the existing page title, metadata, schema and overall service intent. Do not add claims that Zoom is "secure", encrypted, or unrecorded unless separately verified as a business/platform practice.
