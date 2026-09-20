@@ -50,15 +50,16 @@ class MiniGitHub:
 
 
 class MiniGitHubPendingOverview:
-    def __init__(self, item):
+    def __init__(self, item, active=False):
         self.item = copy.deepcopy(item)
+        self.active = active
         self.saved_state = None
 
     def newest_video_state(self):
         return {"version": 1, "items": [copy.deepcopy(self.item)]}
 
     def active_workflow_run(self, workflow, production_only=True):
-        return None
+        return {"id": 123} if self.active else None
 
     def save_controller_state(self, state):
         self.saved_state = copy.deepcopy(state)
@@ -260,6 +261,39 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         }
         controller = object.__new__(runtime.RuntimeV5Controller)
         controller.github = MiniGitHubPendingOverview(item)
+        controller.now = launch + timedelta(minutes=91)
+        state = {
+            "long_video": v5.v3._stage_template(),
+            "short": v5.v3._stage_template(),
+            "history": [],
+            "status": "long_video_running",
+        }
+
+        action = controller._media_watchdog_preflight(state, source())
+
+        self.assertIsNotNone(action)
+        self.assertEqual(action.kind, "blocked")
+        self.assertEqual(
+            (state.get("last_error") or {}).get("code"),
+            "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
+        )
+
+    def test_media_watchdog_hard_timeout_is_not_bypassed_by_active_workflow(self):
+        launch = datetime(2026, 9, 20, 6, 0, tzinfo=timezone.utc)
+        item = {
+            "id": "video-active-hard-timeout",
+            "type": "video_overview",
+            "status": "generating",
+            "uploaded": False,
+            "source": source(),
+            "task_id": "task-active-hard-timeout",
+            "artifact_id": "task-active-hard-timeout",
+            "generation_started_at": launch.isoformat(),
+            "created_at": launch.isoformat(),
+            "last_provider_status": "pending",
+        }
+        controller = object.__new__(runtime.RuntimeV5Controller)
+        controller.github = MiniGitHubPendingOverview(item, active=True)
         controller.now = launch + timedelta(minutes=91)
         state = {
             "long_video": v5.v3._stage_template(),
