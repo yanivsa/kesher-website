@@ -578,7 +578,6 @@ const Home: React.FC = () => {
                 <FiArrowLeft aria-hidden="true" />
               </Link>
             </div>
-            <p className={styles.legalBackground}>רקע נוסף: עורכת דין בהכשרתי.</p>
           </div>
         </section>
 
