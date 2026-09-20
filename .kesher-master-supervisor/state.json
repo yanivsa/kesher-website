@@ -477,6 +477,31 @@
       "strike": 3,
       "updated_at": "2026-09-17T11:36:23.440895+00:00"
     },
+    "ksr-f530fa67511de5f458aac87e": {
+      "command_id": "ksr-f530fa67511de5f458aac87e",
+      "evidence_hash": "f8fa5b700506b52004d57806d57769fa0b0c30189f4b4f5a546068b69417095d",
+      "exact": {
+        "artifact_id": "3f97a928-3110-47c2-a9ea-971218e32536",
+        "content_sha256": "5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec",
+        "item_id": "video-20260920-100242-5619a729ac",
+        "pr_number": 881,
+        "short_item_id": null,
+        "slug": "why-is-it-so-hard-to-find-love",
+        "source_id": "21e225a0-92ad-4dbf-b6ae-0c821a961b6b",
+        "task_id": "3f97a928-3110-47c2-a9ea-971218e32536"
+      },
+      "executor": "controller",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "761c2ce2fd2e5167b3f52aa4eecc7adc",
+      "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|long_video",
+      "issued_at": "2026-09-20T08:41:18.495742+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebind_exact_source",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-20T08:41:18.495742+00:00"
+    },
     "ksr-ff7210a85817fc227ce24581": {
       "acknowledged_at": "2026-09-17T11:35:01.770451+00:00",
       "command_id": "ksr-ff7210a85817fc227ce24581",
@@ -856,6 +881,25 @@
       "status": "human_blocker",
       "strike": 56
     },
+    "761c2ce2fd2e5167b3f52aa4eecc7adc": {
+      "active_command_id": "ksr-f530fa67511de5f458aac87e",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "761c2ce2fd2e5167b3f52aa4eecc7adc",
+      "first_seen_at": "2026-09-20T08:41:18.495742+00:00",
+      "history": [
+        {
+          "at": "2026-09-20T08:41:18.495742+00:00",
+          "command_id": "ksr-f530fa67511de5f458aac87e",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|why-is-it-so-hard-to-find-love|5619a729acfe0f60616ca3719a574ec9c6c8cc85e80661041221a5bfbbe1e7ec|long_video",
+      "last_seen_at": "2026-09-20T08:41:18.495742+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=761c2ce2fd2e5167b3f52aa4eecc7adc strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "999880ccbbd6e8e3106de751ef953746": {
       "active_command_id": null,
       "failure_signature": "SHORT_MISSING",
@@ -988,5 +1032,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-18T12:20:11.191203+00:00"
+  "updated_at": "2026-09-20T08:41:18.495742+00:00"
 }
