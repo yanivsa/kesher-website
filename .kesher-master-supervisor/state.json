@@ -1,6 +1,7 @@
 {
   "commands": {
     "ksr-05d22fbd6ca9d7f1c6db4175": {
+      "acknowledged_at": "2026-09-21T20:54:19.503794+00:00",
       "command_id": "ksr-05d22fbd6ca9d7f1c6db4175",
       "evidence_hash": "a8343b810864d2edda9b6919a52b267190f9c5e4826056e00ee18044b51cf708",
       "exact": {
@@ -18,12 +19,16 @@
       "fingerprint": "86e159dcef3982af35e4526c7f985f9c",
       "incident_id": "v5|how-to-identify-a-gifted-child-parents-guide|f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40|short",
       "issued_at": "2026-09-21T20:53:59.628354+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "already_active",
+        "run_id": 35653892219,
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "rebuild_exact_short",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-21T20:53:59.628354+00:00"
+      "updated_at": "2026-09-21T20:54:19.503794+00:00"
     },
     "ksr-1e153689fb28ae497a36a735": {
       "acknowledged_at": "2026-09-17T11:13:24.173018+00:00",
@@ -1353,5 +1358,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-21T20:53:59.628354+00:00"
+  "updated_at": "2026-09-21T20:54:19.503794+00:00"
 }
