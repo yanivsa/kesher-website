@@ -1,0 +1,16 @@
+{
+  "incident": "G10",
+  "article_id": "fights-before-wedding",
+  "historical_commit": "6a28a1e196b4db3bb2dfaf97e78b5b01ed35720e",
+  "historical_pr": 836,
+  "old_sha256": "cf1cb9674d4a33d2c735553d24c035858fa6f0a097319ff344e50c0473e13fa6",
+  "copied_from": "public/images/generated/blog/first-year-boundaries-origin-families.png",
+  "copied_sha256": "a3693328b4e676bd67bc57d9a1f5ffca2b7690a229e7ed494cd8529bb633bbd9",
+  "repair": "trusted deterministic LocalEditorial renderer, variant 0; no external provider call",
+  "provider": "LocalEditorial",
+  "source_url": "local-editorial://fights-before-wedding/0",
+  "new_sha256": "e9675aff8f8506812c4739237bfa3df2249780a7e9b4265415578451a476c470",
+  "new_pixel_sha256": "9980bb898d1e6aec541e84513f255079136786483c427cf4e8c6733e62990c49",
+  "image_alt": "איור עריכתי מופשט בגוונים חמים עבור ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
+  "verification": "Full PNG decoding and byte/pixel uniqueness; production deploy not yet verified"
+}

@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Callable
 
 from .github import GitHubError, GitHubStateStore
-from .identity import MediaIdentity, SlotIdentity, identity_from_dict
+from .identity import MediaIdentity, SlotIdentity, SourceIdentity, identity_from_dict
 from .state import StateConflict, StateInvalid, target_is_current, timestamp
 
 MAX_DISPATCH_ATTEMPTS = 3
@@ -38,12 +38,13 @@ def workflow_for(command: dict) -> str:
     operation = command['operation']
     if isinstance(target, MediaIdentity) and operation in {'publish', 'reconcile', 'rebuild', 'repair_metadata'}:
         return 'kesher-short-v4.yml' if target.kind == 'short' else 'kesher-daily-video.yml'
-    if isinstance(target, SlotIdentity) and operation == 'create_article':
+    if isinstance(target, SlotIdentity) and operation in {'create_article', 'merge_article'}:
         return 'kesher-article-generation.yml'
-    routes = {'normalize_article': 'normalize-article-pr.yml', 'attach_image': 'kesher-article-image.yml',
-              'deploy_article': 'deploy.yml'}
-    if command['target']['type'] == 'source' and operation in routes:
+    routes = {'normalize_article': 'normalize-article-pr.yml', 'attach_image': 'kesher-article-image.yml'}
+    if isinstance(target, SlotIdentity) and operation in routes:
         return routes[operation]
+    if isinstance(target, SourceIdentity) and operation == 'deploy_article':
+        return 'deploy.yml'
     raise StateInvalid('No authorized worker route for this target/operation')
 
 
@@ -96,6 +97,8 @@ def deliver_command(store: GitHubStateStore, command_id: str, observed: Observed
         return DispatchResult('terminal', 'Command has a terminal worker result; reconcile the product separately')
     if command['owner'] is not None:
         return DispatchResult('claimed', 'Exact worker claim already exists')
+    if command['dispatch'].get('blocked_reason'):
+        return DispatchResult('repair_required', command['dispatch']['blocked_reason'])
     if command['code_sha'] != trusted_main_sha:
         return DispatchResult('code_changed', 'Replan under current trusted code without changing source identity')
     if not target_is_current(state, identity_from_dict(command['target'])):

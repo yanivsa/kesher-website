@@ -4,7 +4,7 @@ import hashlib
 import importlib.util
 import inspect
 import json
-import struct
+import io
 import sys
 import tempfile
 import unittest
@@ -30,7 +30,10 @@ def load(path: Path, name: str):
 
 
 def fake_png(width: int = 1200, height: int = 675) -> bytes:
-    return b"\x89PNG\r\n\x1a\n" + b"\x00" * 8 + struct.pack(">II", width, height) + b"fixture"
+    from PIL import Image
+    output = io.BytesIO()
+    Image.new("RGB", (width, height), (96, 127, 150)).save(output, format="PNG")
+    return output.getvalue()
 
 
 class ArticleImageWorkerTests(unittest.TestCase):

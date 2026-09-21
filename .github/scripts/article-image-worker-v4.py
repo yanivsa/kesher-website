@@ -118,7 +118,9 @@ def collect_existing_hashes(repo_root: Path) -> set[str]:
         if not path.is_file():
             continue
         try:
-            hashes.add(hashlib.sha256(path.read_bytes()).hexdigest())
+            data = path.read_bytes()
+            hashes.add(hashlib.sha256(data).hexdigest())
+            hashes.add("pixels:" + core.image_pixel_sha256(data))
         except Exception:
             pass
     return hashes
@@ -206,7 +208,7 @@ def generate_editorial_fallback(
         data = _render_editorial_png(identity, variant=variant)
         width, height, ext = core.validate_candidate(data)
         digest = hashlib.sha256(data).hexdigest()
-        if digest in used:
+        if core.candidate_is_duplicate(data, used):
             continue
         print(
             f"IMAGE_LOCAL_EDITORIAL_READY slug={slug} variant={variant} dimensions={width}x{height}",
@@ -247,7 +249,7 @@ def local_fallback(
             data = candidate_path.read_bytes()
             width, height, ext = core.validate_candidate(data)
             digest = hashlib.sha256(data).hexdigest()
-            if existing_hashes and digest in existing_hashes:
+            if core.candidate_is_duplicate(data, existing_hashes):
                 print(
                     f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} reason=sha256_collision",
                     file=sys.stderr,

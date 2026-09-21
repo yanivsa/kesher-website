@@ -3,12 +3,29 @@ import copy
 import unittest
 
 from scripts.kesher_runtime.github import GitHubError, GitHubStateStore
-from scripts.kesher_runtime.outbox import ObservedRuns, deliver_command
+from scripts.kesher_runtime.outbox import ObservedRuns, deliver_command, workflow_for
+from scripts.kesher_runtime.identity import SlotIdentity
+from scripts.kesher_runtime.state import new_state, plan_command
 from scripts.kesher_runtime.state import StateConflict, StateInvalid, claim_command
 from tests.test_kesher_canonical_state import CODE, NOW, OVERVIEW, ContentsServer, requested
 
 
 class CommandDispatchTests(unittest.TestCase):
+    def test_deployment_requires_a_merged_source_not_an_unresolved_slot(self):
+        state, command_id = plan_command(new_state(), SlotIdentity('2026-09-17'), 'deploy_article', 1,
+                                         {'deploy_sha': CODE}, code_sha=CODE, now=NOW)
+        with self.assertRaises(StateInvalid):
+            workflow_for(state['commands'][command_id])
+
+    def test_premerge_article_stages_bind_the_slot_and_exact_pr_head(self):
+        for operation, workflow in [('normalize_article', 'normalize-article-pr.yml'),
+                                    ('attach_image', 'kesher-article-image.yml'),
+                                    ('merge_article', 'kesher-article-generation.yml')]:
+            with self.subTest(operation=operation):
+                state, command_id = plan_command(new_state(), SlotIdentity('2026-09-17'), operation, 1,
+                                                 {'pr_number': '854', 'pr_head_sha': CODE}, code_sha=CODE, now=NOW)
+                self.assertEqual(workflow_for(state['commands'][command_id]), workflow)
+
     def setUp(self):
         state, self.command_id = requested()
         self.server = ContentsServer(state)

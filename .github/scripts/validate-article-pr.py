@@ -9,58 +9,24 @@ import html
 import json
 import os
 import re
-import struct
 import sys
+from pathlib import Path
 import urllib.parse
 import urllib.request
 
-ALLOWED_FILES = {
-    "src/data/posts.json",
-    "src/data/postSummaries.json",
-    "public/sitemap.xml",
-    "public/llms.txt",
-    "public/llms-full.txt",
-}
-IMAGE_PREFIX = "public/images/generated/blog/"
-IMAGE_PROVIDERS = {"Gemini", "Unsplash", "Pexels", "Local"}
-IMAGE_RESULTS = {"generated", "stock", "local_fallback"}
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from scripts.kesher_article_contract import (
+    ARTICLE_PUBLICATION_PATHS, ARTICLE_IMAGE_PREFIX, forbidden_article_paths,
+    exact_field, image_dimensions, image_proof_errors, image_pixel_sha256,
+)
+
+ALLOWED_FILES = ARTICLE_PUBLICATION_PATHS
+IMAGE_PREFIX = ARTICLE_IMAGE_PREFIX
 
 
 def word_count(content: str) -> int:
     visible = html.unescape(re.sub(r"<[^>]+>", " ", content or ""))
     return len([word for word in re.split(r"\s+", visible.strip()) if word])
-
-
-def image_dimensions(data: bytes) -> tuple[int, int]:
-    if data.startswith(b"\x89PNG\r\n\x1a\n") and len(data) >= 24:
-        return struct.unpack(">II", data[16:24])
-    if data.startswith(b"\xff\xd8"):
-        index = 2
-        while index + 9 < len(data):
-            if data[index] != 0xFF:
-                index += 1
-                continue
-            marker = data[index + 1]
-            index += 2
-            if marker in {0xD8, 0xD9}:
-                continue
-            if index + 2 > len(data):
-                break
-            segment_length = struct.unpack(">H", data[index:index + 2])[0]
-            if marker in {0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF}:
-                if index + 7 > len(data):
-                    break
-                height, width = struct.unpack(">HH", data[index + 3:index + 7])
-                return width, height
-            if segment_length < 2:
-                break
-            index += segment_length
-    raise ValueError("unsupported or malformed image")
-
-
-def exact_field(body: str, label: str) -> str | None:
-    match = re.search(rf"(?im)^{re.escape(label)}:\s*([^\r\n]+?)\s*$", body or "")
-    return match.group(1).strip() if match else None
 
 
 def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
@@ -79,11 +45,13 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
         errors.append("PR title must start with 'Publish Kesher article:'")
     if "src/data/posts.json" not in files:
         errors.append("Article PR must modify src/data/posts.json")
-    if not all(path in ALLOWED_FILES or path.startswith(IMAGE_PREFIX) for path in files):
+    if forbidden_article_paths(files):
         errors.append("Article PR contains a forbidden file")
     if any(path.startswith("public/videos/") for path in files):
         errors.append("Article PRs may not contain video files")
-    if not any(check.get("name") == "verify" and check.get("conclusion") == "success" for check in checks):
+    if not any(check.get("name") == "verify" and check.get("conclusion") == "success"
+               and check.get("head_sha") == (pr.get("head") or {}).get("sha")
+               and bool((pr.get("head") or {}).get("sha")) for check in checks):
         errors.append("Fresh successful verify check is required on the current head")
 
     base_ids = {post.get("id") for post in base_posts}
@@ -118,53 +86,15 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
     expected_path = "public/" + image_path.lstrip("/")
     image_files = [entry for entry in files_data if entry["filename"].startswith(IMAGE_PREFIX)]
     matching = [entry for entry in image_files if entry["filename"] == expected_path]
-    if len(matching) != 1:
+    if len(matching) != 1 or len(image_files) != 1:
         errors.append("Image-bearing article must add exactly its referenced local image")
         return errors
 
-    pipeline_version = exact_field(body, "Image Pipeline Version")
-    provider = exact_field(body, "Image Provider")
-    attempt_chain = exact_field(body, "Image Attempt Chain")
-    generation_result = exact_field(body, "Image Generation Result")
-    source_url = exact_field(body, "Image Source URL")
-    expected_sha = exact_field(body, "Image SHA-256")
-    declared_dimensions = exact_field(body, "Image Dimensions")
-    visual_match = exact_field(body, "Image Visual Match")
-
-    if pipeline_version != "2":
-        errors.append("Committed image requires Image Pipeline Version: 2")
-    if provider not in IMAGE_PROVIDERS:
-        errors.append("Committed image requires a trusted Image Provider")
-    if not attempt_chain or attempt_chain.split("/")[0] != "gemini" or attempt_chain.split("/")[-1] not in {"gemini", "unsplash", "pexels", "local-curated"}:
-        errors.append("Image Attempt Chain must truthfully begin with gemini and record provider fallthrough")
-    if generation_result not in IMAGE_RESULTS:
-        errors.append("Committed image requires Image Generation Result generated|stock|local_fallback")
-    if provider == "Gemini" and generation_result != "generated":
-        errors.append("Gemini image must record generated result")
-    if provider in {"Unsplash", "Pexels"} and generation_result != "stock":
-        errors.append("Stock provider image must record stock result")
-    if provider == "Local" and generation_result != "local_fallback":
-        errors.append("Local provider image must record local_fallback result")
-    if provider == "Local":
-        if not source_url or not source_url.startswith("local://public/images/generated/blog/"):
-            errors.append("Local fallback requires exact local:// repository source")
-    elif not source_url or not re.fullmatch(r"https://\S+", source_url):
-        errors.append("External provider image requires an exact HTTPS source URL")
-    if not expected_sha or not re.fullmatch(r"[a-f0-9]{64}", expected_sha):
-        errors.append("Committed image requires a lowercase SHA-256")
-    if not visual_match or len(visual_match) < 24:
-        errors.append("Committed image requires a concrete Image Visual Match sentence")
-
     try:
         image_data = image_loader(matching[0])
+        errors.extend(image_proof_errors(post, body, str((pr.get("head") or {}).get("sha") or ""), image_data))
         actual_sha = hashlib.sha256(image_data).hexdigest()
-        if expected_sha and actual_sha != expected_sha:
-            errors.append(f"Image SHA-256 mismatch: expected {expected_sha}, got {actual_sha}")
-        width, height = image_dimensions(image_data)
-        if width < 640 or height < 360:
-            errors.append(f"Image dimensions too small: {width}x{height}")
-        if declared_dimensions != f"{width}x{height}":
-            errors.append(f"Image dimensions mismatch: expected {width}x{height}")
+        actual_pixels = image_pixel_sha256(image_data)
 
         # Enforce SHA-256 uniqueness against all existing base posts
         for base_post in base_posts:
@@ -179,8 +109,11 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
                 if hashlib.sha256(base_data).hexdigest() == actual_sha:
                     errors.append(f"Hero image SHA-256 collides with existing article {base_post.get('id')}")
                     break
-            except Exception:
-                pass
+                if image_pixel_sha256(base_data) == actual_pixels:
+                    errors.append(f"Hero image pixels collide with existing article {base_post.get('id')}")
+                    break
+            except Exception as exc:
+                errors.append(f"Image uniqueness could not be verified against article {base_post.get('id')}: {exc}")
     except Exception as exc:
         errors.append(f"Image validation failed: {exc}")
 

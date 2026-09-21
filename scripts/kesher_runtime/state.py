@@ -52,6 +52,8 @@ def command_key(target: Identity, operation: str, ordinal: int) -> str:
 
 
 def target_is_current(state: dict, target: Identity) -> bool:
+    if state['slots'].get(target.slot, {}).get('blocked'):
+        return False
     active = state['slots'].get(target.slot, {}).get('source_key')
     if isinstance(target, SlotIdentity):
         return active is None

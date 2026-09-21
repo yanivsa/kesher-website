@@ -44365,9 +44365,9 @@
         "control_recovery"
       ],
       "symptom": {
-        "claim": "Publish Kesher article: ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה",
-        "confidence": "UNKNOWN",
-        "basis": "title; awaits incident review"
+        "claim": "Hero image reused another article image with one appended NUL to change SHA-256",
+        "confidence": "PROVEN",
+        "basis": "Exact git blob equality at 6a28a1e; executable guard_adjudication_probe.py"
       },
       "root_cause_claim": {
         "excerpts": [],
@@ -44394,8 +44394,10 @@
         "auth",
         "article_image"
       ],
-      "related_incident_ids": [],
-      "current_relevance": "UNKNOWN: pending contract and runtime reconciliation",
+      "related_incident_ids": [
+        "G10"
+      ],
+      "current_relevance": "Strict decode and pixel uniqueness added; local trusted fallback replacement recorded; production deployment unverified",
       "commits": [
         {
           "sha": "8d321882ec839e4cb6f5ec3e4c155ad959ec5c4b",
@@ -44413,7 +44415,7 @@
         "article",
         "hero"
       ],
-      "review_status": "indexed_not_adjudicated",
+      "review_status": "adjudicated_G10",
       "later_same_file_candidates": []
     },
     {

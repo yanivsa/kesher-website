@@ -29,6 +29,9 @@ jobs:
           ref: main
           persist-credentials: false
 
+      - name: Install strict article image decoder
+        run: python3 -m pip install -r scripts/requirements-article.txt
+
       - name: Attach trusted image best effort exactly once
         env:
           GITHUB_TOKEN: ${{ github.token }}

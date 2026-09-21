@@ -17,6 +17,7 @@ queue-aware entrypoint.
 
 from __future__ import annotations
 
+import base64
 import copy
 import json
 import os
@@ -27,9 +28,11 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 if __package__:
+    from . import kesher_article_contract as article_contract
     from . import kesher_content_controller as core
     from . import kesher_content_controller_entry as entry
 else:
+    import kesher_article_contract as article_contract
     import kesher_content_controller as core
     import kesher_content_controller_entry as entry
 
@@ -39,7 +42,7 @@ IMAGE_WORKFLOW = "kesher-article-image.yml"
 IMAGE_WORKFLOW_NAME = "Kesher Trusted Article Image"
 MAX_STAGE_ATTEMPTS = 3
 BACKOFF_MINUTES = (5, 15)
-IMAGE_PROVIDERS = {"Gemini", "Unsplash", "Pexels", "Local"}
+IMAGE_PROVIDERS = set(article_contract.IMAGE_PROVIDER_RULES)
 IMAGE_RESULTS = {"generated", "stock", "local_fallback"}
 
 
@@ -116,15 +119,7 @@ def normalize_state(existing: dict[str, Any] | None, day) -> dict[str, Any]:
     return state
 
 
-def exact_field(body: str, label: str) -> str | None:
-    values: list[str] = []
-    pattern = re.compile(rf"^\s*(?:[-*]\s*)?{re.escape(label)}\s*:\s*(.*?)\s*$")
-    for line in (body or "").splitlines():
-        match = pattern.match(line)
-        if match:
-            values.append(match.group(1).strip())
-    return values[0] if len(values) == 1 else None
-
+exact_field = article_contract.exact_field
 
 class V3GitHubClient(core.GitHubClient):
     def article_pr_image_ready(self, pr: dict[str, Any]) -> tuple[bool, dict[str, str]]:
@@ -140,40 +135,35 @@ class V3GitHubClient(core.GitHubClient):
         if len(new_posts) != 1:
             return False, {}
         post = new_posts[0]
-        image = str(post.get("image") or "")
-        image_alt = str(post.get("imageAlt") or "")
+        head_sha = str((pr.get("head") or {}).get("sha") or "")
         body = str(pr.get("body") or "")
-        provider = exact_field(body, "Image Provider") or ""
-        result = exact_field(body, "Image Generation Result") or ""
-        sha256 = exact_field(body, "Image SHA-256") or ""
-        dimensions = exact_field(body, "Image Dimensions") or ""
-        visual = exact_field(body, "Image Visual Match") or ""
-        source = exact_field(body, "Image Source URL") or ""
-        if not (
-            image.startswith("/images/generated/blog/")
-            and len(image_alt) >= 20
-            and exact_field(body, "Image Pipeline Version") == "2"
-            and provider in IMAGE_PROVIDERS
-            and result in IMAGE_RESULTS
-            and re.fullmatch(r"[a-f0-9]{64}", sha256)
-            and re.fullmatch(r"\d+x\d+", dimensions)
-            and len(visual) >= 24
-            and source
-        ):
+        if article_contract.image_proof_errors(post, body, head_sha):
             return False, {}
-        quoted = urllib_quote("public/" + image.lstrip("/"))
-        payload = self.request(
-            "GET",
-            f"{self.api}/contents/{quoted}?ref={urllib_quote(str((pr.get('head') or {}).get('sha') or ''))}",
-            allow_404=True,
-        )
-        if not isinstance(payload, dict) or not payload.get("sha"):
+        quoted = urllib_quote("public" + post["image"])
+        try:
+            payload = self.request(
+                "GET", f"{self.api}/contents/{quoted}?ref={urllib_quote(head_sha)}", allow_404=True,
+            )
+            if not isinstance(payload, dict):
+                return False, {}
+            # Contents API omits inline bytes above 1 MiB. Fetch the exact blob
+            # returned for this head, never a mutable download URL.
+            if payload.get("encoding") != "base64" and re.fullmatch(r"[a-f0-9]{40}", str(payload.get("sha") or "")):
+                payload = self.request("GET", f"{self.api}/git/blobs/{payload['sha']}", allow_404=True)
+            if not isinstance(payload, dict) or payload.get("encoding") != "base64" or not payload.get("content"):
+                return False, {}
+            data = base64.b64decode(payload["content"])
+        except (core.ControllerError, ValueError, TypeError):
+            return False, {}
+        if article_contract.image_proof_errors(post, body, head_sha, data):
             return False, {}
         return True, {
-            "provider": provider,
-            "sha256": sha256,
-            "source": source,
-            "article_id": str(post.get("id") or ""),
+            "provider": article_contract.exact_field(body, "Image Provider"),
+            "sha256": article_contract.exact_field(body, "Image SHA-256"),
+            "source": article_contract.exact_field(body, "Image Source URL"),
+            "article_id": str(post["id"]),
+            "article_sha256": article_contract.article_sha256(post),
+            "head_sha": head_sha,
         }
 
     def active_image_run(self, pr_number: int) -> dict[str, Any] | None:

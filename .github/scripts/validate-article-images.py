@@ -19,12 +19,14 @@ if spec is None or spec.loader is None:
 core = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = core
 spec.loader.exec_module(core)
+from scripts.kesher_article_contract import image_pixel_sha256
 
 def main() -> int:
     posts = json.loads(POSTS_PATH.read_text(encoding="utf-8"))
     errors: list[str] = []
     seen_hashes: dict[str, str] = {}
     seen_paths: dict[str, str] = {}
+    seen_pixels: dict[str, str] = {}
 
     for post in posts if isinstance(posts, list) else []:
         if not isinstance(post, dict):
@@ -53,6 +55,11 @@ def main() -> int:
             seen_hashes[digest] = pid
         try:
             core.validate_candidate(data)
+            pixels = image_pixel_sha256(data)
+            if pixels in seen_pixels:
+                errors.append(f"{pid}: duplicate hero pixels with {seen_pixels[pixels]}")
+            else:
+                seen_pixels[pixels] = pid
         except Exception as exc:
             errors.append(f"{pid}: invalid hero image: {exc}")
         if len(alt) < 20 or not re.search(r"[\u0590-\u05FF]", alt):

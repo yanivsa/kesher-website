@@ -8,7 +8,7 @@ const dist = path.join(ROOT, 'dist');
 const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
 const routes = [
   ...STATIC_ROUTES.filter(r => r !== '/'),
-  ...posts.filter(isPublishable).map(blogRoute),
+  ...new Set(posts.filter(isPublishable).flatMap(post => [blogRoute(post), `/blog/${post.slug || post.id}`])),
   '/'
 ];
 const port = 4179;

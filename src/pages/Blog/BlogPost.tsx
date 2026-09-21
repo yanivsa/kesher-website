@@ -121,7 +121,7 @@ const BlogPost: React.FC = () => {
             <span>מאת: </span>
             <Link to="/about" className={styles.authorLink}>{post.author || SITE_CONFIG.author}</Link>
             <span className={styles.metaDivider}>•</span>
-            <span className={styles.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
+            <span className={styles.date} data-kesher-article-date={post.date}>{new Date(post.date).toLocaleDateString('he-IL')}</span>
             {'updatedAt' in post && typeof post.updatedAt === 'string' && post.updatedAt && post.updatedAt !== post.date && (
               <>
                 <span className={styles.metaDivider}>•</span>
@@ -142,6 +142,7 @@ const BlogPost: React.FC = () => {
           {post.image && (
             <div className={styles.imageWrapper}>
               <img
+                data-kesher-article-hero
                 src={post.image}
                 alt={post.imageAlt || post.title}
                 className={styles.image}
@@ -156,7 +157,7 @@ const BlogPost: React.FC = () => {
               <p className={styles.directAnswerText}>{post.directAnswer.trim()}</p>
             </div>
           )}
-          <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
+          <div className={styles.content} data-kesher-article-body dangerouslySetInnerHTML={{ __html: safeContent }} />
           {'expertInsight' in post && typeof post.expertInsight === 'string' && post.expertInsight.trim() && (
             <aside className={styles.expertInsight} aria-label="תובנת מומחה מאת שירה סהרוני">
               <div className={styles.expertInsightHeader}>תובנת מומחה — שירה סהרוני</div>

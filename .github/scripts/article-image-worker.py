@@ -14,13 +14,17 @@ import hashlib
 import json
 import os
 import re
-import struct
 import sys
 import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from scripts.kesher_article_contract import image_dimensions as decoded_image_dimensions
+from scripts.kesher_article_contract import image_pixel_sha256
 
 GEMINI_MODEL = "gemini-3.1-flash-image"
 IMAGE_PREFIX = "public/images/generated/blog/"
@@ -95,29 +99,12 @@ def posts_at(repo: str, ref: str, token: str) -> list[dict[str, Any]]:
 
 
 def image_dimensions(data: bytes) -> tuple[int, int, str]:
-    if data.startswith(b"\x89PNG\r\n\x1a\n") and len(data) >= 24:
-        width, height = struct.unpack(">II", data[16:24])
-        return width, height, "png"
-    if data.startswith(b"\xff\xd8"):
-        index = 2
-        while index + 9 < len(data):
-            if data[index] != 0xFF:
-                index += 1
-                continue
-            marker = data[index + 1]
-            index += 2
-            if marker in {0xD8, 0xD9}:
-                continue
-            if index + 2 > len(data):
-                break
-            length = struct.unpack(">H", data[index:index + 2])[0]
-            if marker in {0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF}:
-                height, width = struct.unpack(">HH", data[index + 3:index + 7])
-                return width, height, "jpg"
-            if length < 2:
-                break
-            index += length
-    raise RuntimeError("Only valid PNG/JPEG images are accepted")
+    try:
+        width, height = decoded_image_dimensions(data)
+    except ValueError as exc:
+        raise RuntimeError(f"Only valid PNG/JPEG images are accepted: {exc}") from exc
+    # The shared decoder has already rejected every format except PNG/JPEG.
+    return width, height, "png" if data.startswith(b"\x89PNG\r\n\x1a\n") else "jpg"
 
 
 def validate_candidate(data: bytes) -> tuple[int, int, str]:
@@ -128,6 +115,11 @@ def validate_candidate(data: bytes) -> tuple[int, int, str]:
     if ratio < 1.2 or ratio > 2.2:
         raise RuntimeError(f"image aspect ratio unsuitable for article hero: {ratio:.2f}")
     return width, height, ext
+
+
+def candidate_is_duplicate(data: bytes, existing_hashes: set[str] | None) -> bool:
+    return bool(existing_hashes and (hashlib.sha256(data).hexdigest() in existing_hashes
+                or 'pixels:' + image_pixel_sha256(data) in existing_hashes))
 
 
 def article_key(post: dict[str, Any]) -> str:
