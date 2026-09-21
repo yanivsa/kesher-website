@@ -1730,5 +1730,21 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "interventions": {
+    "v5|how-to-identify-a-gifted-child-parents-guide|f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40|long_video": {
+      "pipeline_id": "v5",
+      "slug": "how-to-identify-a-gifted-child-parents-guide",
+      "content_sha256": "f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-09-21T23",
+      "last_fingerprint": "c2ce614fd4294e5e794240484ce7fd5a69edc8d4832f8c240d5586ffe7fdfc1a",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-09-21T20:47:20.188746+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
   }
 }
