@@ -1717,7 +1717,15 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "watchdog": {
+      "identity": "short:how-to-identify-a-gifted-child-parents-guide:f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40:video-20260921-234335-f0947af980",
+      "hard_started_at": "2026-09-21T20:43:46.170950+00:00",
+      "last_progress_at": "2026-09-21T20:52:41.892316+00:00",
+      "last_fingerprint": "1c37fbaf054307c5e4278291ca4899ffc43f4d314e326718088296fb0d1aa694",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
