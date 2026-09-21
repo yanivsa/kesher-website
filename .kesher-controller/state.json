@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-21",
-  "status": "article_image_running",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 1,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-09-20T23:02:29.156018+00:00",
     "pr_number": 894,
@@ -24,7 +24,13 @@
     "quality_status": "passed",
     "quality_content_sha256": "f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40",
     "quality_checked_at": "2026-09-21T18:38:17.551394+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "how-to-identify-a-gifted-child-parents-guide",
+    "title": "איך מזהים ילד מחונן? המדריך להורים",
+    "url": "https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide",
+    "published_date": "2026-09-21",
+    "last_deploy_dispatch_at": "2026-09-21T18:42:40.119799+00:00",
+    "next_deploy_retry_at": "2026-09-21T18:47:40.119814+00:00"
   },
   "backlog": [
     {
@@ -1654,9 +1660,19 @@
         "attempt": 1,
         "pr_number": 894
       }
+    },
+    {
+      "at": "2026-09-21T18:42:40.119826+00:00",
+      "from": "article_image_running",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-21T06:16:13.562866+00:00",
+  "updated_at": "2026-09-21T18:42:40.119833+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
