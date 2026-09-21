@@ -1,36 +1,21 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-21",
-  "status": "article_deploying",
+  "cycle": "2026-09-22",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35543442102,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
-    "deploy_attempts": 1,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-09-20T23:02:29.156018+00:00",
-    "pr_number": 894,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/894",
-    "normalization_slot": "2026-09-21",
-    "normalization_dispatched_at": "2026-09-21T01:02:38.870619+00:00",
-    "quality_status": "passed",
-    "quality_content_sha256": "f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40",
-    "quality_checked_at": "2026-09-21T20:58:14.434275+00:00",
-    "quality_violations": [],
-    "slug": "how-to-identify-a-gifted-child-parents-guide",
-    "title": "איך מזהים ילד מחונן? המדריך להורים",
-    "url": "https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide",
-    "published_date": "2026-09-21",
-    "last_deploy_dispatch_at": "2026-09-21T18:42:40.119799+00:00",
-    "next_deploy_retry_at": "2026-09-21T18:47:40.119814+00:00"
+    "attempts": 0,
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1071,56 +1056,45 @@
         "complete": true,
         "completed_at": "2026-09-18T12:32:39.090072+00:00"
       }
+    },
+    {
+      "cycle": "2026-09-21",
+      "status": "article_deploying",
+      "article": {
+        "attempt_count": 1,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 35543442102,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 1,
+        "deploy_attempts": 1,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-09-20T23:02:29.156018+00:00",
+        "pr_number": 894,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/894",
+        "normalization_slot": "2026-09-21",
+        "normalization_dispatched_at": "2026-09-21T01:02:38.870619+00:00",
+        "quality_status": "passed",
+        "quality_content_sha256": "f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40",
+        "quality_checked_at": "2026-09-21T20:58:14.434275+00:00",
+        "quality_violations": [],
+        "slug": "how-to-identify-a-gifted-child-parents-guide",
+        "title": "איך מזהים ילד מחונן? המדריך להורים",
+        "url": "https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide",
+        "published_date": "2026-09-21",
+        "last_deploy_dispatch_at": "2026-09-21T18:42:40.119799+00:00",
+        "next_deploy_retry_at": "2026-09-21T18:47:40.119814+00:00"
+      },
+      "archived_at": "2026-09-21T21:02:19.999735+00:00"
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-18T12:31:50.609586+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-18T12:32:00.880230+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-18T12:32:17.644446+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-18T12:32:39.090090+00:00",
-      "from": "complete",
-      "to": "complete",
-      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
-      "details": {
-        "backlog_cycle": "2026-09-17",
-        "source_slug": "early-habits-building-calm-mornings-children"
-      }
-    },
-    {
-      "at": "2026-09-18T13:52:11.574883+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-18T13:52:32.251191+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-18T13:52:57.828268+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-09-18T13:53:27.189134+00:00",
       "from": "complete",
@@ -1670,21 +1644,38 @@
         "http_status": 404,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-21T21:02:19.999762+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-21T21:02:19.999765+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-21T21:02:20.000447+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-21T18:42:40.119833+00:00",
+  "updated_at": "2026-09-21T21:02:19.999751+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35567731442,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-21T06:16:13.562837+00:00"
+    "failure_count_by_type": {}
   },
   "long_video": {
     "attempt_count": 0,
@@ -1693,35 +1684,10 @@
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "a9d58ef3-26de-44d5-9c56-d4053cec9105",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "watchdog": {
-      "identity": "long_video:how-to-identify-a-gifted-child-parents-guide:f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40:video-20260921-223822-f0947af980",
-      "hard_started_at": "2026-09-21T19:38:33.827878+00:00",
-      "last_progress_at": "2026-09-21T19:42:01.344708+00:00",
-      "last_fingerprint": "4a8ab4e9fdc797b6ab8e47e74c0bc9854a5adfad1ac61d452e2eda645edaf3ee",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "item_id": "video-20260921-223822-f0947af980",
-    "youtube_id": "IU213USwun8",
-    "youtube_url": "https://youtu.be/IU213USwun8",
-    "verified": true,
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 126.133,
-    "content_duration_seconds": 126.125,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "artifact_id": "a9d58ef3-26de-44d5-9c56-d4053cec9105",
-    "source_id": "3e82cbfa-0198-49de-9ee7-29f159e91040"
+    "failure_count_by_type": {}
   },
   "short": {
     "attempt_count": 0,
@@ -1733,42 +1699,9 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "watchdog": {
-      "identity": "short:how-to-identify-a-gifted-child-parents-guide:f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40:video-20260921-234335-f0947af980",
-      "hard_started_at": "2026-09-21T20:43:46.170950+00:00",
-      "last_progress_at": "2026-09-21T20:52:41.892316+00:00",
-      "last_fingerprint": "1c37fbaf054307c5e4278291ca4899ffc43f4d314e326718088296fb0d1aa694",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    }
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide",
-    "overview_youtube_url": "https://youtu.be/IU213USwun8",
-    "short_youtube_url": null,
-    "overview_edit_verified": true,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "interventions": {
-    "v5|how-to-identify-a-gifted-child-parents-guide|f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40|long_video": {
-      "pipeline_id": "v5",
-      "slug": "how-to-identify-a-gifted-child-parents-guide",
-      "content_sha256": "f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40",
-      "stage": "long_video",
-      "strike_count": 1,
-      "last_check_token": "2026-09-21T23",
-      "last_fingerprint": "c2ce614fd4294e5e794240484ce7fd5a69edc8d4832f8c240d5586ffe7fdfc1a",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
-      "last_observed_at": "2026-09-21T20:47:20.188746+00:00",
-      "last_action": "observe_controller",
-      "direct_takeover_required": false
-    }
   }
 }
