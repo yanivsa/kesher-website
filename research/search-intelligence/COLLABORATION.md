@@ -63,7 +63,7 @@ Chat messages are not the canonical state. Git files on the working branch are t
 - ga4_property: properties/551923843
 - ga4_stream: G-6SM423N6EL
 - canonical_keyword_file: research/search-intelligence/keyword-master.csv
-- last_updated_utc: 2026-09-20T14:35:00Z
+- last_updated_utc: 2026-09-21T18:30:00Z
 - last_updated_by: ChatGPT
 
 ## Verified baseline
@@ -642,3 +642,40 @@ Completion requires:
   - Future implementation work should branch from the then-current main and use these files as historical evidence/project memory.
 - next_recommended_action:
   - Measure Search Console, GA4, indexing and user behavior before selecting Wave 2.
+
+
+### 2026-09-21 — ChatGPT — DAY 1 POST-LAUNCH / PPC AUDIT
+- artifact:
+  - research/search-intelligence/day1-postlaunch-audit-20260921.md
+- gsc:
+  - All seven Wave 1 URLs return PASS / Submitted and indexed / INDEXING_ALLOWED.
+  - Both newly publishable Wave 1 articles were crawled on 2026-09-21 and are indexed.
+  - Sitemap resubmitted successfully; Search Console now shows 108 submitted URLs, 0 errors, 0 warnings and a fresh 2026-09-21 download.
+  - Sitemap-level indexed=0 remains inconsistent with direct URL Inspection and must not be treated as site-wide non-indexation.
+- ga4:
+  - Pre-change source/medium baseline totals 41 sessions for 2026-08-24 through 2026-09-19.
+  - 2026-09-20 through 2026-09-21 standard reports currently contain no rows; realtime sample also had no active rows at audit time.
+  - Production measurement deployment status is SUCCESS.
+  - Desired Kesher events are implemented in code, but GA4 Admin currently lists only purchase, close_convert_lead and qualify_lead as Key Events.
+  - GA4 Key Event configuration for whatsapp_click, phone_click, booking_start, booking_complete and lead_submit remains an admin/UI task.
+- google_ads:
+  - Active accessible customer audited: 3920602983.
+  - Kesher Ashdod Search campaign remains PAUSED; no spend enabled.
+  - Geo targeting verified as Ashdod city with PRESENCE/PRESENCE.
+  - Daily budget 50 ILS; bidding MANUAL_CPC; ad-group CPC bid is only 0.01 ILS.
+  - Four Google Ads conversion actions match the site's direct conversion labels exactly.
+  - Lead Form and Booking Complete are primary; Phone Click and WhatsApp Click are secondary.
+  - Search-term and landing-page reports are empty because the campaign did not deliver during the audit window.
+- ppc_fix:
+  - Ad 823025452795 paused because it contained the unsupported absolute claim "שמירה מלאה על הפרטיות".
+  - Replacement RSA 825513173446 created with cautious privacy wording.
+  - Campaign remains PAUSED and replacement ad is pending initial Google review.
+- blockers_before_paid_launch:
+  - configure GA4 Key Events in GA4 Admin;
+  - replace 0.01 ILS launch bid / choose bidding approach;
+  - decide Search Partners policy;
+  - review workshop-intent keyword;
+  - wait for replacement RSA policy review.
+- next_measurement:
+  - 7–14 day early GSC/GA4 review;
+  - 4–6 week Wave 2 decision.
