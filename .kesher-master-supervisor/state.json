@@ -1,5 +1,30 @@
 {
   "commands": {
+    "ksr-05d22fbd6ca9d7f1c6db4175": {
+      "command_id": "ksr-05d22fbd6ca9d7f1c6db4175",
+      "evidence_hash": "a8343b810864d2edda9b6919a52b267190f9c5e4826056e00ee18044b51cf708",
+      "exact": {
+        "artifact_id": "a9d58ef3-26de-44d5-9c56-d4053cec9105",
+        "content_sha256": "f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40",
+        "item_id": "video-20260921-223822-f0947af980",
+        "pr_number": 894,
+        "short_item_id": "video-20260921-234335-f0947af980",
+        "slug": "how-to-identify-a-gifted-child-parents-guide",
+        "source_id": "3e82cbfa-0198-49de-9ee7-29f159e91040",
+        "task_id": "a9d58ef3-26de-44d5-9c56-d4053cec9105"
+      },
+      "executor": "controller",
+      "failure_signature": "SHORT_NOT_PORTRAIT",
+      "fingerprint": "86e159dcef3982af35e4526c7f985f9c",
+      "incident_id": "v5|how-to-identify-a-gifted-child-parents-guide|f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40|short",
+      "issued_at": "2026-09-21T20:53:59.628354+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebuild_exact_short",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-21T20:53:59.628354+00:00"
+    },
     "ksr-1e153689fb28ae497a36a735": {
       "acknowledged_at": "2026-09-17T11:13:24.173018+00:00",
       "command_id": "ksr-1e153689fb28ae497a36a735",
@@ -1177,6 +1202,25 @@
       "status": "resolved",
       "strike": 2
     },
+    "86e159dcef3982af35e4526c7f985f9c": {
+      "active_command_id": "ksr-05d22fbd6ca9d7f1c6db4175",
+      "failure_signature": "SHORT_NOT_PORTRAIT",
+      "fingerprint": "86e159dcef3982af35e4526c7f985f9c",
+      "first_seen_at": "2026-09-21T20:53:59.628354+00:00",
+      "history": [
+        {
+          "at": "2026-09-21T20:53:59.628354+00:00",
+          "command_id": "ksr-05d22fbd6ca9d7f1c6db4175",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|how-to-identify-a-gifted-child-parents-guide|f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40|short",
+      "last_seen_at": "2026-09-21T20:53:59.628354+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=86e159dcef3982af35e4526c7f985f9c strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "999880ccbbd6e8e3106de751ef953746": {
       "active_command_id": null,
       "failure_signature": "SHORT_MISSING",
@@ -1309,5 +1353,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-20T10:46:06.758483+00:00"
+  "updated_at": "2026-09-21T20:53:59.628354+00:00"
 }
