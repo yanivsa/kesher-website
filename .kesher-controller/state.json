@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
     "published_date": "2026-09-22",
     "live": true,
-    "live_verified_at": "2026-09-22T15:40:34.683796+00:00",
+    "live_verified_at": "2026-09-22T15:51:22.083702+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1132,37 +1132,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-19T23:53:47.279799+00:00",
-      "from": "article_watchdog_nudge",
-      "to": "article_retry_wait",
-      "reason": "COMPLETED_WITHOUT_PR",
-      "details": {
-        "message": "Jules completed without creating a pull request",
-        "retry_at": "2026-09-19T23:58:47.279779+00:00",
-        "failure_streak": 1,
-        "run_id": 35475884229,
-        "session_id": "sessions/472772088475916252"
-      }
-    },
-    {
-      "at": "2026-09-19T23:57:20.711316+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-19T23:58:47.279779+00:00"
-      }
-    },
-    {
-      "at": "2026-09-20T00:07:50.414109+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 2
-      }
-    },
-    {
       "at": "2026-09-20T01:21:25.663680+00:00",
       "from": "article_generating",
       "to": "article_normalizing",
@@ -1803,9 +1772,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-22T15:51:22.083722+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T15:51:37.539213+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-22T15:52:20.449860+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-22T15:41:35.271745+00:00",
+  "updated_at": "2026-09-22T15:52:20.449883+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
