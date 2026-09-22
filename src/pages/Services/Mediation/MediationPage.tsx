@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiBriefcase, FiHome, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
+import TherapistBio from '../../../components/TherapistBio/TherapistBio';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from '../shared/SpecialtyServicePage.module.css';
 
@@ -12,13 +13,14 @@ const schemaData = {
     {
       '@type': 'Service',
       name: 'גישור',
-      serviceType: 'גישור והגעה להסכמות',
+      alternateName: 'גישור משפחתי וגישור גירושין',
+      serviceType: 'גישור משפחתי, זוגי וגישור גירושין',
       url: `${SITE_CONFIG.url}/services/mediation`,
       provider: {
         '@type': 'LocalBusiness',
         '@id': `${SITE_CONFIG.url}/#business`,
       },
-      description: 'גישור באשדוד ובאונליין לבני זוג, משפחות, הורים, שכנים ושותפים המבקשים לבנות הסכמות מעשיות בשיח מכבד.',
+      description: 'גישור באשדוד ובאונליין לבני זוג, משפחות והורים, כולל גישור גירושין והגעה להסכמות בנושאי הורות, אחריות, כסף והתנהלות משותפת.',
       image: `${SITE_CONFIG.url}/images/generated/services/mediation-room.jpg`,
       areaServed: 'ישראל',
     },
@@ -47,8 +49,8 @@ const MediationPage: React.FC = () => {
     <div className={styles.page}>
       <MetaTags
         canonical={`${SITE_CONFIG.url}/services/mediation`}
-        title="גישור באשדוד ובאונליין | מגשרת מוסמכת"
-        description="גישור מכבד ומעשי לבני זוג, משפחות, הורים, שכנים ושותפים. מסגרת ברורה להקשבה, הפחתת מתחים ובניית הסכמות."
+        title="גישור גירושין ומשפחתי באשדוד | מגשרת מוסמכת"
+        description="גישור גירושין וגישור משפחתי באשדוד ובאונליין: שיחה מסודרת עם מגשרת ניטרלית לבניית הסכמות מעשיות סביב הורות, כסף, אחריות והמשך הדרך."
         image="/images/generated/services/mediation-room.jpg"
       />
       <SchemaOrg data={schemaData} />
@@ -57,9 +59,9 @@ const MediationPage: React.FC = () => {
         <div className={`container ${styles.heroGrid}`}>
           <div>
             <span className={styles.eyebrow}><FiMessageCircle aria-hidden="true" /> גישור בגובה העיניים</span>
-            <h1>להפוך שיחה תקועה להסכמות שאפשר לקיים</h1>
+            <h1>גישור משפחתי וגירושין באשדוד ובאונליין</h1>
             <p className={styles.lead}>
-              כשכל שיחה חוזרת לאותו ויכוח, גישור יוצר מסגרת אחרת: מאטים, מקשיבים, מזהים את הצרכים של כל צד ובונים יחד פתרונות מעשיים שמתאימים לאנשים שנמצאים בחדר.
+              גישור הוא תהליך שבו צדדים שמתקשים להגיע להסכמה מנהלים שיחה מסודרת בנוכחות מגשרת ניטרלית. המגשרת מסייעת למפות את הנושאים, לשמוע את הצרכים של כל צד ולבנות הסכמות מעשיות — בלי להכריע במקומם.
             </p>
             <div className={styles.heroActions}>
               <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת ייעוץ</Link>
@@ -77,6 +79,39 @@ const MediationPage: React.FC = () => {
           </aside>
         </div>
       </header>
+
+      <section className={styles.softSection}>
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <h2>מה זה גישור גירושין?</h2>
+            <p>
+              גישור גירושין הוא תהליך שבו בני זוג שנפרדים מנסים להגיע בהסכמה להחלטות שיאפשרו להם להמשיך הלאה בצורה ברורה ומעשית. הנושאים יכולים לכלול הורות משותפת, חלוקת אחריות, התנהלות כלכלית, רכוש והדרך שבה מתקשרים מול הילדים וביניהם.
+            </p>
+          </div>
+          <div className={styles.cardGrid}>
+            <article className={styles.card}>
+              <span className={styles.cardIcon}><FiUsers aria-hidden="true" /></span>
+              <h3>על אילו נושאים אפשר להגיע להסכמות?</h3>
+              <p>ממפים את הנושאים שדורשים החלטה ובונים הסכמות שמתאימות למשפחה: הורות, שגרה וזמני שהות, אחריות, כסף ורכוש, וכן דרך תקשורת שתאפשר ליישם את ההסכמות ביום־יום.</p>
+            </article>
+            <article className={styles.card}>
+              <span className={styles.cardIcon}><FiMessageCircle aria-hidden="true" /></span>
+              <h3>מה תפקיד המגשרת?</h3>
+              <p>המגשרת מנהלת את השיחה באופן ניטרלי, עוזרת להפריד בין עמדות לצרכים ושומרת על תהליך מסודר. ההחלטות עצמן נשארות בידי בני הזוג, וההשתתפות וההסכמות מתקבלות מרצון.</p>
+            </article>
+            <article className={styles.card}>
+              <span className={styles.cardIcon}><FiHome aria-hidden="true" /></span>
+              <h3>מה קורה כשמגיעים להסכם?</h3>
+              <p>
+                אם ההסכמות מתגבשות להסכם גירושין, יש להביא אותו לאישור ערכאה שיפוטית מוסמכת כדי שיקבל תוקף של פסק דין. המידע כאן כללי ואינו מחליף ייעוץ משפטי. למידע רשמי ראו{' '}
+                <a href="https://www.gov.il/he/service/couple-family-agreement" target="_blank" rel="noopener noreferrer">
+                  אישור הסכם גירושין באתר gov.il
+                </a>.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
 
       <section className={styles.section}>
         <div className="container">
@@ -144,6 +179,8 @@ const MediationPage: React.FC = () => {
           </p>
         </div>
       </section>
+
+      <TherapistBio />
 
       <section className={styles.cta}>
         <div className="container">
