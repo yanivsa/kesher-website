@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
     "published_date": "2026-09-22",
     "live": true,
-    "live_verified_at": "2026-09-22T06:12:46.568250+00:00",
+    "live_verified_at": "2026-09-22T06:16:35.163808+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1728,9 +1728,21 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-22T06:16:35.163822+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T06:16:48.514800+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-22T06:13:44.100317+00:00",
+  "updated_at": "2026-09-22T06:16:48.514818+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1750,7 +1762,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 35693899829,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
