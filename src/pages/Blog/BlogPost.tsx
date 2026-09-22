@@ -148,6 +148,12 @@ const BlogPost: React.FC = () => {
           <Link to="/blog" className={styles.backLink}>← חזרה לבלוג</Link>
           <span className={styles.category}>{post.category}</span>
           <h1 className={styles.title}>{post.title}</h1>
+          {articleSummary && (
+            <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">
+              <div className={styles.directAnswerBadge}>תקציר מעשי</div>
+              <p className={styles.directAnswerText}>{articleSummary}</p>
+            </div>
+          )}
           <div className={styles.authorByline}>
             <span>מאת: </span>
             <Link to="/about" className={styles.authorLink}>{post.author || SITE_CONFIG.author}</Link>
@@ -170,12 +176,6 @@ const BlogPost: React.FC = () => {
       </header>
       <div className={`container ${styles.container}`}>
         <div className={styles.mainContent}>
-          {articleSummary && (
-            <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">
-              <div className={styles.directAnswerBadge}>תקציר מעשי</div>
-              <p className={styles.directAnswerText}>{articleSummary}</p>
-            </div>
-          )}
           {post.image && (
             <>
               <div className={styles.imageWrapper}>
