@@ -52,7 +52,11 @@ const getEventId = (eventUri: string) => {
 
 const isSameOriginRequest = (request: Request) => {
   const origin = request.headers.get("Origin");
-  if (!origin) return true;
+  if (!origin) return false;
+
+  const fetchSite = request.headers.get("Sec-Fetch-Site");
+  if (fetchSite && fetchSite !== "same-origin") return false;
+
   try {
     return origin === new URL(request.url).origin;
   } catch {
