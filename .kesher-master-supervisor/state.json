@@ -801,7 +801,7 @@
       "updated_at": "2026-09-17T11:36:23.440895+00:00"
     },
     "ksr-e4ef72391a6a4288f0cc6b6c": {
-      "acknowledged_at": "2026-09-22T06:50:53.782944+00:00",
+      "acknowledged_at": "2026-09-22T06:52:59.252865+00:00",
       "command_id": "ksr-e4ef72391a6a4288f0cc6b6c",
       "evidence_hash": "21aeef2a53a3acac96f25f6e96f47a8c2b5d1a425ce9819c5904973cc8fd4af8",
       "exact": {
@@ -819,7 +819,7 @@
       "fingerprint": "ce228b414e01a717d655e6806dc2f683",
       "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|short",
       "issued_at": "2026-09-22T06:49:25.895113+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "running",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-e4ef72391a6a4288f0cc6b6c",
@@ -854,9 +854,10 @@
         "session_id": "sessions/16193135949389691403"
       },
       "proposed_action": "rebuild_exact_short",
+      "running_at": "2026-09-22T06:52:59.252865+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-22T06:50:53.782944+00:00"
+      "updated_at": "2026-09-22T06:52:59.252865+00:00"
     },
     "ksr-f530fa67511de5f458aac87e": {
       "acknowledged_at": "2026-09-20T09:37:57.761353+00:00",
@@ -1522,7 +1523,7 @@
         }
       ],
       "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|short",
-      "last_seen_at": "2026-09-22T06:49:25.895113+00:00",
+      "last_seen_at": "2026-09-22T06:52:59.252865+00:00",
       "marker": "MASTER_ESCALATION fingerprint=ce228b414e01a717d655e6806dc2f683 strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
@@ -1603,5 +1604,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-22T06:50:53.782944+00:00"
+  "updated_at": "2026-09-22T06:52:59.252865+00:00"
 }
