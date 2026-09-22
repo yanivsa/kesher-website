@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
     "published_date": "2026-09-22",
     "live": true,
-    "live_verified_at": "2026-09-22T13:06:34.911661+00:00",
+    "live_verified_at": "2026-09-22T13:16:21.535819+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1132,18 +1132,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-18T22:21:45.099045+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-18T22:21:59.570598+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
       "at": "2026-09-19T21:22:53.484970+00:00",
       "from": null,
       "to": "article_needed",
@@ -1809,9 +1797,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-22T13:16:21.535841+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T13:17:28.594575+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-22T13:07:33.347717+00:00",
+  "updated_at": "2026-09-22T13:17:28.594596+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1840,7 +1840,7 @@
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-09-22T06:13:44.100301+00:00",
     "attempts": 1,
-    "item_id": "video-20260922-091513-100e336cb0",
+    "item_id": "video-20260922-155813-7490391bf6",
     "youtube_id": "GH5NXngXOfs",
     "youtube_url": "https://youtu.be/GH5NXngXOfs",
     "verified": true,
