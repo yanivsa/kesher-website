@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-22",
-  "status": "short_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1112,7 +1112,12 @@
       "media": {}
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "short",
+    "code": "SHORT_PROVIDER_HARD_TIMEOUT",
+    "message": "short provider exceeded 90 minute hard timeout from launch/recovery",
+    "at": "2026-09-22T08:37:33.709936+00:00"
+  },
   "history": [
     {
       "at": "2026-09-18T13:53:27.189134+00:00",
@@ -1758,9 +1763,18 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-22T08:37:33.709941+00:00",
+      "from": "short_running",
+      "to": "blocked",
+      "reason": "SHORT_PROVIDER_HARD_TIMEOUT",
+      "details": {
+        "message": "short provider exceeded 90 minute hard timeout from launch/recovery"
+      }
     }
   ],
-  "updated_at": "2026-09-22T06:38:35.780573+00:00",
+  "updated_at": "2026-09-22T08:37:33.709945+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1808,7 +1822,7 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "blocked",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1828,6 +1842,11 @@
       "last_fingerprint": "d003b1ff5360c09b5a1cd325d8b5a92e8e42d509c90dbff0d1ef2347b6ab65e6",
       "recovery_count": 0,
       "last_recovery_at": null
+    },
+    "controller_recovery_required": {
+      "incident_key": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|short",
+      "reason": "media provider hard timeout",
+      "requested_at": "2026-09-22T08:37:33.709947+00:00"
     }
   },
   "migration": {
