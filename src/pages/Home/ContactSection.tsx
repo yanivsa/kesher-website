@@ -6,6 +6,7 @@ import { SITE_CONFIG } from '../../constants/siteConfig';
 import { submitContact } from '../../lib/contactApi';
 import { pushAnalyticsEvent } from '../../lib/analytics';
 import { CONTACT_SERVICE_OPTIONS, resolveContactService } from '../../lib/contactServices';
+import TurnstileWidget from '../../components/TurnstileWidget';
 import styles from './ContactSection.module.css';
 
 const ContactSection: React.FC = () => {
@@ -24,6 +25,8 @@ const ContactSection: React.FC = () => {
   });
   const [company, setCompany] = useState('');
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const startedAt = useRef(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -34,6 +37,11 @@ const ContactSection: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitStatus('idle');
+
+    if (!turnstileToken) {
+      setSubmitStatus('error');
+      return;
+    }
     
     try {
       setSubmitStatus('submitting');
@@ -42,6 +50,7 @@ const ContactSection: React.FC = () => {
         ...formData,
         company,
         startedAt: startedAt.current,
+        turnstileToken,
       });
       const leadContext = {
         service_type: formData.service,
@@ -53,8 +62,11 @@ const ContactSection: React.FC = () => {
       setSubmitStatus('success');
       setFormData({ name: '', email: '', phone: '', service: initialService, message: '' });
       setCompany('');
+      setTurnstileToken('');
       startedAt.current = 0;
     } catch {
+      setTurnstileToken('');
+      setTurnstileResetKey((value) => value + 1);
       setSubmitStatus('error');
     }
   };
@@ -215,7 +227,16 @@ const ContactSection: React.FC = () => {
                   placeholder={isLectureInquiry ? 'למשל: סוג הקהל, נושא מועדף, מועד משוער ומיקום...' : 'ספרו לי קצת על הפנייה שלכם...'}
                 ></textarea>
               </div>
-              <button type="submit" className={styles.submitBtn} disabled={submitStatus === 'submitting'}>
+              <TurnstileWidget
+                action="contact"
+                onTokenChange={setTurnstileToken}
+                resetKey={turnstileResetKey}
+              />
+              <button
+                type="submit"
+                className={styles.submitBtn}
+                disabled={submitStatus === 'submitting' || !turnstileToken}
+              >
                 {submitStatus === 'submitting' ? 'שולחת...' : 'שליחת פנייה'}
               </button>
               <div className={styles.privacyNote}>
