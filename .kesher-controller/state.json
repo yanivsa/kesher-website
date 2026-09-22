@@ -1712,9 +1712,18 @@
       "details": {
         "session_id": "sessions/9204528314430794292"
       }
+    },
+    {
+      "at": "2026-09-22T22:35:23.565148+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": "sessions/9204528314430794292"
+      }
     }
   ],
-  "updated_at": "2026-09-22T22:31:14.496141+00:00",
+  "updated_at": "2026-09-22T22:35:23.565157+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
