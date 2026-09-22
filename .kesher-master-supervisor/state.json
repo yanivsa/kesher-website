@@ -730,7 +730,7 @@
       "fingerprint": "b5e3f832d20a8b794b331b6595cb7d48",
       "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|long_video",
       "issued_at": "2026-09-22T13:21:56.502251+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "verified",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-b97b13469bb82831f7cd6a1c",
@@ -767,7 +767,8 @@
       "proposed_action": "rebind_exact_source",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-22T13:23:25.000506+00:00"
+      "updated_at": "2026-09-22T13:28:14.470651+00:00",
+      "verified_at": "2026-09-22T13:28:14.470651+00:00"
     },
     "ksr-c6461c9c81c42f0130ccfebc": {
       "acknowledged_at": "2026-09-20T10:42:48.474308+00:00",
@@ -1592,7 +1593,7 @@
       "strike": 1
     },
     "b5e3f832d20a8b794b331b6595cb7d48": {
-      "active_command_id": "ksr-b97b13469bb82831f7cd6a1c",
+      "active_command_id": null,
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "b5e3f832d20a8b794b331b6595cb7d48",
       "first_seen_at": "2026-09-22T13:08:22.441925+00:00",
@@ -1614,12 +1615,18 @@
           "command_id": "ksr-b97b13469bb82831f7cd6a1c",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-22T13:28:14.470651+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|long_video",
       "last_seen_at": "2026-09-22T13:21:56.502251+00:00",
       "marker": "MASTER_ESCALATION fingerprint=b5e3f832d20a8b794b331b6595cb7d48 strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-22T13:28:14.470651+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "bb0e4ac04a5e8f96ad50a84b0ed62316": {
@@ -1791,5 +1798,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-22T13:23:25.000506+00:00"
+  "updated_at": "2026-09-22T13:28:14.470651+00:00"
 }
