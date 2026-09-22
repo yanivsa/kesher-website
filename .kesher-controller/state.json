@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
     "published_date": "2026-09-22",
     "live": true,
-    "live_verified_at": "2026-09-22T13:26:14.899997+00:00",
+    "live_verified_at": "2026-09-22T15:40:34.683796+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1132,30 +1132,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-19T21:22:59.168193+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-09-19T23:21:09.957549+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-19T23:51:48.907779+00:00",
-      "from": "article_generating",
-      "to": "article_watchdog_nudge",
-      "reason": "article stalled; nudged authoritative Jules session",
-      "details": {
-        "session_id": "sessions/472772088475916252"
-      }
-    },
-    {
       "at": "2026-09-19T23:53:47.279799+00:00",
       "from": "article_watchdog_nudge",
       "to": "article_retry_wait",
@@ -1809,9 +1785,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-22T15:40:34.683815+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T15:40:56.122270+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-22T15:41:35.271721+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-22T13:27:38.691026+00:00",
+  "updated_at": "2026-09-22T15:41:35.271745+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
