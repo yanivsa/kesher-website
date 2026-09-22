@@ -215,7 +215,7 @@ test('relocation and premarital service pages expose their practical article hub
     .toHaveAttribute('href', '/services/couples-aliyah-relocation');
 
   await page.goto('/services/premarital-first-year');
-  await expect(page.getByRole('heading', { name: 'הכנה לנישואים וליווי בשנה הראשונה' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי לפני חתונה והכנה לנישואים' })).toBeVisible();
   await page.getByRole('link', { name: /12 שאלות שחייבים לשאול לפני החתונה/ }).click();
   await expect(page).toHaveURL(/\/blog\/premarital-questions-before-wedding$/);
   await expect(page.getByRole('link', { name: 'פגישות הכנה לנישואים' }))
