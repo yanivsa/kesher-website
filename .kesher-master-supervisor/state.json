@@ -712,6 +712,7 @@
       "updated_at": "2026-09-17T11:05:02.896561+00:00"
     },
     "ksr-b97b13469bb82831f7cd6a1c": {
+      "acknowledged_at": "2026-09-22T13:23:25.000506+00:00",
       "command_id": "ksr-b97b13469bb82831f7cd6a1c",
       "evidence_hash": "b0dfff6ff1a61e8d61bd4a6876c504c5cc6ffec8203f26ad5ad0485f0f8592ee",
       "exact": {
@@ -729,12 +730,44 @@
       "fingerprint": "b5e3f832d20a8b794b331b6595cb7d48",
       "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|long_video",
       "issued_at": "2026-09-22T13:21:56.502251+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-b97b13469bb82831f7cd6a1c",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "controller bindings match the authoritative slug/content hash and exact provider/item identities without fresh generation",
+          "evidence_hash": "b0dfff6ff1a61e8d61bd4a6876c504c5cc6ffec8203f26ad5ad0485f0f8592ee",
+          "exact": {
+            "artifact_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
+            "content_sha256": "100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5",
+            "item_id": "video-20260922-091513-100e336cb0",
+            "pr_number": 896,
+            "short_item_id": "video-20260922-094033-100e336cb0",
+            "slug": "how-to-find-good-relationship",
+            "source_id": "cde97252-f221-4414-9b7b-754e3bc105b4",
+            "task_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca"
+          },
+          "failure_signature": "STALE_SOURCE_BINDING",
+          "fingerprint": "b5e3f832d20a8b794b331b6595cb7d48",
+          "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|long_video",
+          "proposed_action": "rebind_exact_source",
+          "schema_version": 1,
+          "stage": "long_video",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/15403615717519066035"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-22T13:21:56.502251+00:00"
+      "updated_at": "2026-09-22T13:23:25.000506+00:00"
     },
     "ksr-c6461c9c81c42f0130ccfebc": {
       "acknowledged_at": "2026-09-20T10:42:48.474308+00:00",
@@ -1758,5 +1791,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-22T13:21:56.502251+00:00"
+  "updated_at": "2026-09-22T13:23:25.000506+00:00"
 }
