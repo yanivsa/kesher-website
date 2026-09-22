@@ -22,7 +22,11 @@
     "normalization_slot": "2026-09-22",
     "normalization_dispatched_at": "2026-09-22T00:55:08.505605+00:00",
     "merge_dispatch_at": "2026-09-22T05:58:35.306361+00:00",
-    "merge_dispatch_count": 2
+    "merge_dispatch_count": 2,
+    "quality_status": "passed",
+    "quality_content_sha256": "100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5",
+    "quality_checked_at": "2026-09-22T06:05:54.077348+00:00",
+    "quality_violations": []
   },
   "backlog": [
     {
@@ -1728,7 +1732,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
