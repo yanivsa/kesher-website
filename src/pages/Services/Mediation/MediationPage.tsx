@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FiBriefcase, FiHome, FiMessageCircle, FiUsers } from 'react-icons/fi';
 import MetaTags from '../../../components/SEO/MetaTags';
 import SchemaOrg from '../../../components/SEO/SchemaOrg';
+import TherapistBio from '../../../components/TherapistBio/TherapistBio';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from '../shared/SpecialtyServicePage.module.css';
 
@@ -178,6 +179,8 @@ const MediationPage: React.FC = () => {
           </p>
         </div>
       </section>
+
+      <TherapistBio />
 
       <section className={styles.cta}>
         <div className="container">
