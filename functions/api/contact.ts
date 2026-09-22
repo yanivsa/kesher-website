@@ -42,6 +42,8 @@ const verifyTurnstile = async (
   secret: string,
   token: string,
   remoteIp: string | null,
+  expectedHostname: string,
+  expectedAction: "contact" | "lead_magnet",
 ) => {
   const body = new FormData();
   body.set("secret", secret);
@@ -52,8 +54,18 @@ const verifyTurnstile = async (
     "https://challenges.cloudflare.com/turnstile/v0/siteverify",
     { method: "POST", body },
   );
-  const result = (await response.json()) as { success?: boolean };
-  return result.success === true;
+  if (!response.ok) return false;
+
+  const result = (await response.json()) as {
+    success?: boolean;
+    hostname?: string;
+    action?: string;
+  };
+  return (
+    result.success === true
+    && result.hostname === expectedHostname
+    && result.action === expectedAction
+  );
 };
 
 export async function handleContactRequest(
@@ -117,26 +129,40 @@ export async function handleContactRequest(
     return json({ success: false, message: "Invalid contact details" }, 400);
   }
 
-  if (env.TURNSTILE_SECRET_KEY) {
-    if (!raw.turnstileToken) {
-      return json({ success: false, message: "Verification is required" }, 400);
-    }
-    let verified: boolean;
-    try {
-      verified = await verifyTurnstile(
-        env.TURNSTILE_SECRET_KEY,
-        raw.turnstileToken,
-        request.headers.get("CF-Connecting-IP"),
-      );
-    } catch {
-      return json(
-        { success: false, message: "Verification service is unavailable" },
-        503,
-      );
-    }
-    if (!verified) {
-      return json({ success: false, message: "Verification failed" }, 403);
-    }
+  if (!env.TURNSTILE_SECRET_KEY) {
+    return json(
+      { success: false, message: "Security verification is not configured" },
+      503,
+    );
+  }
+  if (!raw.turnstileToken) {
+    return json({ success: false, message: "Verification is required" }, 400);
+  }
+
+  let expectedHostname: string;
+  try {
+    expectedHostname = new URL(request.url).hostname;
+  } catch {
+    return json({ success: false, message: "Invalid request URL" }, 400);
+  }
+
+  let verified: boolean;
+  try {
+    verified = await verifyTurnstile(
+      env.TURNSTILE_SECRET_KEY,
+      raw.turnstileToken,
+      request.headers.get("CF-Connecting-IP"),
+      expectedHostname,
+      payload.kind,
+    );
+  } catch {
+    return json(
+      { success: false, message: "Verification service is unavailable" },
+      503,
+    );
+  }
+  if (!verified) {
+    return json({ success: false, message: "Verification failed" }, 403);
   }
 
   let providerResponse: Response;
