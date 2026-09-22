@@ -81,7 +81,9 @@ const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({
     let disposed = false;
     let widgetId: string | null = null;
     onTokenChange('');
-    setStatus('loading');
+    queueMicrotask(() => {
+      if (!disposed) setStatus('loading');
+    });
 
     const initialize = async () => {
       try {
