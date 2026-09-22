@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-22",
-  "status": "long_video_running",
+  "status": "short_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
     "published_date": "2026-09-22",
     "live": true,
-    "live_verified_at": "2026-09-22T06:16:35.163808+00:00",
+    "live_verified_at": "2026-09-22T06:38:00.412581+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1740,9 +1740,27 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-22T06:38:00.412599+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T06:38:11.526017+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-22T06:38:35.780565+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-22T06:16:48.514818+00:00",
+  "updated_at": "2026-09-22T06:38:35.780573+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1759,30 +1777,40 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35693899829,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-09-22T06:13:44.100301+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "item_id": "video-20260922-091513-100e336cb0",
+    "youtube_id": "GH5NXngXOfs",
+    "youtube_url": "https://youtu.be/GH5NXngXOfs",
+    "verified": true,
+    "artifact_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
+    "source_id": "cde97252-f221-4414-9b7b-754e3bc105b4"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-22T06:38:35.780544+00:00",
+    "artifact_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
+    "source_id": "cde97252-f221-4414-9b7b-754e3bc105b4",
+    "adopted_from_long_item_id": "video-20260922-091513-100e336cb0"
   },
   "migration": {
     "v4_short_controller_state": null
