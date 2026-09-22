@@ -26,8 +26,8 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
-      name: 'פגישות הכנה לנישואים וליווי בשנה הראשונה',
-      alternateName: 'ייעוץ זוגי לפני חתונה',
+      name: 'ייעוץ זוגי לפני חתונה והכנה לנישואים',
+      alternateName: 'הכנה לנישואים וליווי בשנה הראשונה',
       serviceType: 'הכנה זוגית מעשית לפני החתונה וליווי לזוגות בתחילת הנישואים',
       url: `${SITE_CONFIG.url}/services/premarital-first-year`,
       provider: { '@type': 'LocalBusiness', '@id': `${SITE_CONFIG.url}/#business` },
@@ -42,7 +42,7 @@ const schemaData = {
         {
           '@type': 'ListItem',
           position: 2,
-          name: 'הכנה לנישואים וליווי בשנה הראשונה',
+          name: 'ייעוץ זוגי לפני חתונה והכנה לנישואים',
           item: `${SITE_CONFIG.url}/services/premarital-first-year`,
         },
       ],
