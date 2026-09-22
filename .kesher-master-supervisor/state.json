@@ -321,6 +321,31 @@
       "updated_at": "2026-09-18T12:04:45.559619+00:00",
       "verified_at": "2026-09-18T12:04:45.559619+00:00"
     },
+    "ksr-946f71e89a4dccefbc1f65f1": {
+      "command_id": "ksr-946f71e89a4dccefbc1f65f1",
+      "evidence_hash": "19885f6eae271324cf0e46209b51df2cefddf002a2b3df73892383627e4f72fc",
+      "exact": {
+        "artifact_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
+        "content_sha256": "100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5",
+        "item_id": "video-20260922-091513-100e336cb0",
+        "pr_number": 896,
+        "short_item_id": null,
+        "slug": "how-to-find-good-relationship",
+        "source_id": "cde97252-f221-4414-9b7b-754e3bc105b4",
+        "task_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca"
+      },
+      "executor": "controller",
+      "failure_signature": "YOUTUBE_UPLOAD_MISSING",
+      "fingerprint": "067c3833cd4ddf78cd0682ecb9b865f6",
+      "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|long_video",
+      "issued_at": "2026-09-22T06:35:27.965115+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "retry_exact_upload",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-22T06:35:27.965115+00:00"
+    },
     "ksr-9675cc07ac24974093c62aff": {
       "acknowledged_at": "2026-09-20T10:23:26.672356+00:00",
       "command_id": "ksr-9675cc07ac24974093c62aff",
@@ -797,6 +822,25 @@
     }
   },
   "incidents": {
+    "067c3833cd4ddf78cd0682ecb9b865f6": {
+      "active_command_id": "ksr-946f71e89a4dccefbc1f65f1",
+      "failure_signature": "YOUTUBE_UPLOAD_MISSING",
+      "fingerprint": "067c3833cd4ddf78cd0682ecb9b865f6",
+      "first_seen_at": "2026-09-22T06:35:27.965115+00:00",
+      "history": [
+        {
+          "at": "2026-09-22T06:35:27.965115+00:00",
+          "command_id": "ksr-946f71e89a4dccefbc1f65f1",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|long_video",
+      "last_seen_at": "2026-09-22T06:35:27.965115+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=067c3833cd4ddf78cd0682ecb9b865f6 strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "37112045f18e85fe45bd9b9db45075bf": {
       "active_command_id": null,
       "failure_signature": "SHORT_MISSING",
@@ -1361,5 +1405,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-21T21:00:21.603758+00:00"
+  "updated_at": "2026-09-22T06:35:27.965115+00:00"
 }
