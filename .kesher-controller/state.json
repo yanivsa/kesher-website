@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
     "published_date": "2026-09-22",
     "live": true,
-    "live_verified_at": "2026-09-22T11:29:03.836065+00:00",
+    "live_verified_at": "2026-09-22T12:47:39.683616+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1132,28 +1132,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-18T19:54:32.714439+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-18T19:54:48.663470+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-18T19:55:11.206629+00:00",
-      "from": "complete",
-      "to": "complete",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-09-10",
-        "source_slug": "gifted-children-social-difficulties"
-      }
-    },
-    {
       "at": "2026-09-18T20:35:51.593956+00:00",
       "from": "complete",
       "to": "article_live",
@@ -1813,9 +1791,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-22T12:47:39.683634+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T12:49:34.071111+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-22T12:51:09.533479+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-22T11:30:20.066360+00:00",
+  "updated_at": "2026-09-22T12:51:09.533498+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
