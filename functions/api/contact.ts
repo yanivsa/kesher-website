@@ -110,8 +110,11 @@ export async function handleContactRequest(
     return json({ success: false, message: "Please try again" }, 429);
   }
 
+  const kind: "contact" | "lead_magnet" =
+    raw.kind === "lead_magnet" ? "lead_magnet" : "contact";
+
   const payload = {
-    kind: raw.kind === "lead_magnet" ? "lead_magnet" : "contact",
+    kind,
     name: clean(raw.name, 100),
     email: clean(raw.email, 254).toLowerCase(),
     phone: clean(raw.phone, 30),
