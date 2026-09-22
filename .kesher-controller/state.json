@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-22",
-  "status": "article_pr_open",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -26,7 +26,14 @@
     "quality_status": "passed",
     "quality_content_sha256": "100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5",
     "quality_checked_at": "2026-09-22T06:05:54.077348+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "how-to-find-good-relationship",
+    "title": "איך למצוא זוגיות טובה: לחפש חברות לפני שניצוצות",
+    "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
+    "published_date": "2026-09-22",
+    "live": true,
+    "live_verified_at": "2026-09-22T06:12:46.568250+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -1705,9 +1712,25 @@
       "from": "article_normalizing",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-09-22T06:12:46.568269+00:00",
+      "from": "article_pr_open",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T06:13:44.100308+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-22T05:58:32.829151+00:00",
+  "updated_at": "2026-09-22T06:13:44.100317+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1723,8 +1746,8 @@
     "source_id": "local://public/images/generated/blog/defensiveness-in-relationships.jpg"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1733,7 +1756,9 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-09-22T06:13:44.100301+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
