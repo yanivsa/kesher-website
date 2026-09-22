@@ -87,7 +87,12 @@
         "note": "ראיון בעברית עם ג'ון וג'ולי גוטמן שבו מוסבר ממצא ה-69% והחשיבות של דיאלוג רגוע סביב בעיות שחוזרות לאורך השנים."
       }
     ],
-    "controllerManaged": false
+    "controllerManaged": false,
+    "image": "/images/generated/blog/gottman-perpetual-problems-69-percent.jpg",
+    "imageAlt": "צילום מציאותי של זוג בשיחה טבעית המדגישה תקשורת, קרבה והקשבה",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/generated/blog/exhausted-couple-communication.jpg",
+    "imageIsFallback": true
   },
   {
     "id": "dating-apps-exhaustion",
