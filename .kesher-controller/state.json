@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-22",
-  "status": "blocked",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35661730175,
@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
     "published_date": "2026-09-22",
     "live": true,
-    "live_verified_at": "2026-09-22T06:38:00.412581+00:00",
+    "live_verified_at": "2026-09-22T10:49:15.069348+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1112,12 +1112,7 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "short",
-    "code": "SHORT_PROVIDER_HARD_TIMEOUT",
-    "message": "short provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-09-22T08:42:51.902668+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-18T13:53:27.189134+00:00",
@@ -1781,9 +1776,27 @@
       "details": {
         "message": "short provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-09-22T10:49:15.069361+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T10:49:25.032726+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-22T10:49:42.014071+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-22T08:42:51.902677+00:00",
+  "updated_at": "2026-09-22T10:49:42.014104+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1831,18 +1844,18 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "blocked",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
+    "provider_id": "a269e9cb-74dd-4573-9edb-df897d486ae7",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-22T06:38:35.780544+00:00",
-    "artifact_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
-    "source_id": "cde97252-f221-4414-9b7b-754e3bc105b4",
+    "artifact_id": "a269e9cb-74dd-4573-9edb-df897d486ae7",
+    "source_id": "0f3608cf-e84e-4f82-8b8f-011066ac4bad",
     "adopted_from_long_item_id": "video-20260922-091513-100e336cb0",
     "watchdog": {
       "identity": "short:how-to-find-good-relationship:100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5:video-20260922-094033-100e336cb0",
@@ -1856,7 +1869,24 @@
       "incident_key": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|short",
       "reason": "media provider hard timeout",
       "requested_at": "2026-09-22T08:42:51.902680+00:00"
-    }
+    },
+    "item_id": "video-20260922-094033-100e336cb0",
+    "type": "article_short",
+    "youtube_id": "KBOGqsiJ1KY",
+    "youtube_url": "https://youtu.be/KBOGqsiJ1KY",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "4957296299bba1cbe0b8182f9bca2c94bdebb1028445649391b40156a07220ef",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
