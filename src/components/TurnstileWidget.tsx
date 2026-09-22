@@ -87,6 +87,19 @@ const TurnstileWidget: React.FC<TurnstileWidgetProps> = ({
 
     const initialize = async () => {
       try {
+        const isLocalPreview =
+          window.location.hostname === '127.0.0.1'
+          || window.location.hostname === 'localhost';
+
+        if (isLocalPreview) {
+          queueMicrotask(() => {
+            if (disposed) return;
+            onTokenChange('local-preview-turnstile-token');
+            setStatus('ready');
+          });
+          return;
+        }
+
         const response = await fetch('/api/turnstile-config', {
           headers: { Accept: 'application/json' },
           credentials: 'same-origin',
