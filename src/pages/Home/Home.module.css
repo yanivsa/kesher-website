@@ -1466,7 +1466,7 @@
 
   .trustRow {
     margin-top: 1rem;
-    padding-bottom: calc(16rem + 350px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(16rem + 450px + env(safe-area-inset-bottom, 0px));
     gap: 0.65rem 1rem;
   }
 
