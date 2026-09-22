@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-22",
-  "status": "complete",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 1,
     "status": "complete",
@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
     "published_date": "2026-09-22",
     "live": true,
-    "live_verified_at": "2026-09-22T12:58:30.852882+00:00",
+    "live_verified_at": "2026-09-22T13:06:34.911661+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1132,18 +1132,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-18T22:21:45.098327+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-18T22:21:45.098332+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
       "at": "2026-09-18T22:21:45.099045+00:00",
       "from": "article_needed",
       "to": "v5_migrated",
@@ -1809,9 +1797,21 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-22T13:06:34.911679+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T13:07:33.347697+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-22T13:00:02.593192+00:00",
+  "updated_at": "2026-09-22T13:07:33.347717+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1828,10 +1828,10 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "complete",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 35693899829,
+    "run_id": 35730904907,
     "processed_run_id": null,
     "provider_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
     "failure_fingerprint": null,
@@ -1840,7 +1840,7 @@
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-09-22T06:13:44.100301+00:00",
     "attempts": 1,
-    "item_id": "video-20260922-091513-100e336cb0",
+    "item_id": "video-20260922-155813-7490391bf6",
     "youtube_id": "GH5NXngXOfs",
     "youtube_url": "https://youtu.be/GH5NXngXOfs",
     "verified": true,
