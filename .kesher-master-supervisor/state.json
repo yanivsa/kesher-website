@@ -402,11 +402,13 @@
         "task_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca"
       },
       "executor": "controller",
+      "failed_at": "2026-09-22T06:49:25.895113+00:00",
+      "failure_reason": "kesher-content-controller.yml run 35696294983 completed but exact incident persisted",
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "ce228b414e01a717d655e6806dc2f683",
       "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|short",
       "issued_at": "2026-09-22T06:44:02.510802+00:00",
-      "lifecycle": "running",
+      "lifecycle": "failed",
       "metadata": {
         "dispatch": "issued",
         "dispatched_at": "2026-09-22T06:45:31.120592+00:00",
@@ -418,7 +420,7 @@
       "running_at": "2026-09-22T06:45:57.442656+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-22T06:45:57.442656+00:00"
+      "updated_at": "2026-09-22T06:49:25.895113+00:00"
     },
     "ksr-9c9b66ccf2f6425d1db6bfea": {
       "acknowledged_at": "2026-09-22T06:41:41.798712+00:00",
@@ -797,6 +799,31 @@
       "stage": "S3",
       "strike": 3,
       "updated_at": "2026-09-17T11:36:23.440895+00:00"
+    },
+    "ksr-e4ef72391a6a4288f0cc6b6c": {
+      "command_id": "ksr-e4ef72391a6a4288f0cc6b6c",
+      "evidence_hash": "21aeef2a53a3acac96f25f6e96f47a8c2b5d1a425ce9819c5904973cc8fd4af8",
+      "exact": {
+        "artifact_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
+        "content_sha256": "100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5",
+        "item_id": "video-20260922-091513-100e336cb0",
+        "pr_number": 896,
+        "short_item_id": "video-20260922-094033-100e336cb0",
+        "slug": "how-to-find-good-relationship",
+        "source_id": "cde97252-f221-4414-9b7b-754e3bc105b4",
+        "task_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca"
+      },
+      "executor": "jules",
+      "failure_signature": "SHORT_NOT_PORTRAIT",
+      "fingerprint": "ce228b414e01a717d655e6806dc2f683",
+      "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|short",
+      "issued_at": "2026-09-22T06:49:25.895113+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebuild_exact_short",
+      "stage": "S2",
+      "strike": 2,
+      "updated_at": "2026-09-22T06:49:25.895113+00:00"
     },
     "ksr-f530fa67511de5f458aac87e": {
       "acknowledged_at": "2026-09-20T09:37:57.761353+00:00",
@@ -1437,7 +1464,7 @@
       "strike": 2
     },
     "ce228b414e01a717d655e6806dc2f683": {
-      "active_command_id": "ksr-993df7a9e81888b92d8d6687",
+      "active_command_id": "ksr-e4ef72391a6a4288f0cc6b6c",
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "ce228b414e01a717d655e6806dc2f683",
       "first_seen_at": "2026-09-22T06:44:02.510802+00:00",
@@ -1447,13 +1474,25 @@
           "command_id": "ksr-993df7a9e81888b92d8d6687",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-22T06:49:25.895113+00:00",
+          "command_id": "ksr-993df7a9e81888b92d8d6687",
+          "event": "command_failed",
+          "reason": "kesher-content-controller.yml run 35696294983 completed but exact incident persisted"
+        },
+        {
+          "at": "2026-09-22T06:49:25.895113+00:00",
+          "command_id": "ksr-e4ef72391a6a4288f0cc6b6c",
+          "event": "command_issued",
+          "stage": "S2"
         }
       ],
       "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|short",
-      "last_seen_at": "2026-09-22T06:45:57.442656+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=ce228b414e01a717d655e6806dc2f683 strike=1 stage=S1",
+      "last_seen_at": "2026-09-22T06:49:25.895113+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=ce228b414e01a717d655e6806dc2f683 strike=2 stage=S2",
       "status": "recovering",
-      "strike": 1
+      "strike": 2
     },
     "d00f35466c077d88bcb2d404cbee1c91": {
       "active_command_id": null,
@@ -1531,5 +1570,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-22T06:45:57.442656+00:00"
+  "updated_at": "2026-09-22T06:49:25.895113+00:00"
 }
