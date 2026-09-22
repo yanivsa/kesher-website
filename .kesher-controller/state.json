@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
     "published_date": "2026-09-22",
     "live": true,
-    "live_verified_at": "2026-09-22T12:52:51.474096+00:00",
+    "live_verified_at": "2026-09-22T12:58:30.852882+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1132,24 +1132,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-18T20:40:28.484496+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-18T20:40:44.475349+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-18T20:41:15.906544+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
       "at": "2026-09-18T22:21:45.098327+00:00",
       "from": null,
       "to": "article_needed",
@@ -1809,9 +1791,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-22T12:58:30.852902+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T12:59:12.079276+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-22T13:00:02.593171+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-22T12:53:23.343106+00:00",
+  "updated_at": "2026-09-22T13:00:02.593192+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
