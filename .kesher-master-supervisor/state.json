@@ -340,7 +340,7 @@
       "fingerprint": "067c3833cd4ddf78cd0682ecb9b865f6",
       "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|long_video",
       "issued_at": "2026-09-22T06:35:27.965115+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "dispatch": "issued",
         "dispatched_at": "2026-09-22T06:35:46.583812+00:00",
@@ -352,7 +352,8 @@
       "running_at": "2026-09-22T06:36:10.281169+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-22T06:36:10.281169+00:00"
+      "updated_at": "2026-09-22T06:38:00.360796+00:00",
+      "verified_at": "2026-09-22T06:38:00.360796+00:00"
     },
     "ksr-9675cc07ac24974093c62aff": {
       "acknowledged_at": "2026-09-20T10:23:26.672356+00:00",
@@ -385,6 +386,31 @@
       "stage": "S1",
       "strike": 1,
       "updated_at": "2026-09-20T10:23:57.244940+00:00"
+    },
+    "ksr-9c9b66ccf2f6425d1db6bfea": {
+      "command_id": "ksr-9c9b66ccf2f6425d1db6bfea",
+      "evidence_hash": "6967c4bb8f77501ae421ff0e9c546929102f1f59c87b71d4cd28ad5d5e3829d8",
+      "exact": {
+        "artifact_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca",
+        "content_sha256": "100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5",
+        "item_id": "video-20260922-091513-100e336cb0",
+        "pr_number": 896,
+        "short_item_id": null,
+        "slug": "how-to-find-good-relationship",
+        "source_id": "cde97252-f221-4414-9b7b-754e3bc105b4",
+        "task_id": "a6a7d997-eab2-436c-866f-e3a7e1257dca"
+      },
+      "executor": "controller",
+      "failure_signature": "SHORT_MISSING",
+      "fingerprint": "2b43ad87b6c441898fe8b125783623b3",
+      "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|short",
+      "issued_at": "2026-09-22T06:38:00.360796+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "continue_exact_short",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-22T06:38:00.360796+00:00"
     },
     "ksr-9d5100379eadfd29cfa7a95d": {
       "acknowledged_at": "2026-09-18T12:05:43.261153+00:00",
@@ -831,7 +857,7 @@
   },
   "incidents": {
     "067c3833cd4ddf78cd0682ecb9b865f6": {
-      "active_command_id": "ksr-946f71e89a4dccefbc1f65f1",
+      "active_command_id": null,
       "failure_signature": "YOUTUBE_UPLOAD_MISSING",
       "fingerprint": "067c3833cd4ddf78cd0682ecb9b865f6",
       "first_seen_at": "2026-09-22T06:35:27.965115+00:00",
@@ -841,11 +867,36 @@
           "command_id": "ksr-946f71e89a4dccefbc1f65f1",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-22T06:38:00.360796+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|long_video",
       "last_seen_at": "2026-09-22T06:36:10.281169+00:00",
       "marker": "MASTER_ESCALATION fingerprint=067c3833cd4ddf78cd0682ecb9b865f6 strike=1 stage=S1",
+      "resolved_at": "2026-09-22T06:38:00.360796+00:00",
+      "status": "resolved",
+      "strike": 1
+    },
+    "2b43ad87b6c441898fe8b125783623b3": {
+      "active_command_id": "ksr-9c9b66ccf2f6425d1db6bfea",
+      "failure_signature": "SHORT_MISSING",
+      "fingerprint": "2b43ad87b6c441898fe8b125783623b3",
+      "first_seen_at": "2026-09-22T06:38:00.360796+00:00",
+      "history": [
+        {
+          "at": "2026-09-22T06:38:00.360796+00:00",
+          "command_id": "ksr-9c9b66ccf2f6425d1db6bfea",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|short",
+      "last_seen_at": "2026-09-22T06:38:00.360796+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=2b43ad87b6c441898fe8b125783623b3 strike=1 stage=S1",
       "status": "recovering",
       "strike": 1
     },
@@ -1413,5 +1464,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-22T06:36:10.281169+00:00"
+  "updated_at": "2026-09-22T06:38:00.360796+00:00"
 }
