@@ -32,7 +32,7 @@
     "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
     "published_date": "2026-09-22",
     "live": true,
-    "live_verified_at": "2026-09-22T10:49:15.069348+00:00",
+    "live_verified_at": "2026-09-22T10:55:25.479725+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1132,28 +1132,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-18T13:53:27.189134+00:00",
-      "from": "complete",
-      "to": "complete",
-      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
-      "details": {
-        "backlog_cycle": "2026-09-15",
-        "source_slug": "returning-to-israel-after-relocation-relationship"
-      }
-    },
-    {
-      "at": "2026-09-18T17:27:42.017283+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-18T17:27:57.082111+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-09-18T17:29:06.935368+00:00",
       "from": "long_video_complete",
       "to": "complete",
@@ -1821,9 +1799,27 @@
         "backlog_cycle": "2026-09-21",
         "source_slug": "how-to-identify-a-gifted-child-parents-guide"
       }
+    },
+    {
+      "at": "2026-09-22T10:55:25.479742+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-22T10:56:21.573868+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-22T10:57:29.409680+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-22T10:50:03.072750+00:00",
+  "updated_at": "2026-09-22T10:57:29.409701+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
