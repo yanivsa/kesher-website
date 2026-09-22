@@ -73,7 +73,7 @@ const schemaData = {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "הכנה לנישואים וליווי בשנה הראשונה",
+            "name": "ייעוץ זוגי לפני חתונה והכנה לנישואים",
             "url": `${SITE_CONFIG.url}/services/premarital-first-year`,
             "description": "פגישות הכנה זוגיות סביב כסף, בית, משפחות, אינטימיות, חלוקת אחריות ותקשורת."
           }
