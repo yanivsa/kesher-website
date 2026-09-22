@@ -85,7 +85,7 @@ const ParentingGuidance: React.FC = () => {
           <div className={styles.heroContent}>
             <div className={styles.badge}>מחוננים • ADHD • מעברים חינוכיים</div>
             <h1>הדרכת הורים באשדוד ובאונליין <br /><span>להבין מה מקשה ולבחור תגובה שעוזרת</span></h1>
-            <p className={styles.subtitle}>הדרכת הורים היא תהליך שממקד את העבודה בהורים: מזהים מה מפעיל את החיכוך, בונים גבולות ושגרה ובוחרים תגובות מעשיות שמתאימות לגיל הילד ולבית. בדרך כלל הילד אינו צריך להיות נוכח בפגישה.</p>
+            <p className={styles.subtitle}>הדרכת הורים באשדוד ובאונליין היא תהליך שממקד את העבודה בהורים: מזהים מה מפעיל את החיכוך, בונים גבולות ושגרה ובוחרים תגובות מעשיות שמתאימות לגיל הילד ולבית. בדרך כלל הילד אינו צריך להיות נוכח בפגישה.</p>
             <Link to={SITE_CONFIG.links.appointment} className={styles.ctaBtn}>קביעת פגישת ייעוץ</Link>
           </div>
           <div className={styles.heroImageWrapper}>
