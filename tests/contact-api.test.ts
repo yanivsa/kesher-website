@@ -103,7 +103,7 @@ describe('contact API', () => {
   it('requires a Turnstile token when verification is configured', async () => {
     const provider = vi.fn();
     vi.stubGlobal('fetch', provider);
-    const { turnstileToken: _token, ...withoutToken } = validPayload;
+    const withoutToken = { ...validPayload, turnstileToken: undefined };
     const response = await handleContactRequest(request(withoutToken), turnstileEnv);
     expect(response.status).toBe(400);
     expect(provider).not.toHaveBeenCalled();
