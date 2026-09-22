@@ -17,7 +17,7 @@ class WorkerEntryTests(unittest.TestCase):
         self.store = GitHubStateStore(self.server, 'owner/repo')
         self.env = {'GITHUB_REPOSITORY': 'owner/repo', 'GITHUB_EVENT_NAME': 'workflow_dispatch',
                     'GITHUB_REF': 'refs/heads/main', 'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '1',
-                    'GITHUB_WORKFLOW_REF': 'owner/repo/.github/workflows/kesher-daily-video.yml@refs/heads/main',
+                    'GITHUB_WORKFLOW_REF': 'owner/repo/.github/workflows/kesher-media-worker.yml@refs/heads/main',
                     'GITHUB_WORKFLOW_SHA': CODE}
 
     def admit(self, *, env=None, checkout=CODE, main=CODE, attach=False):

@@ -40,17 +40,17 @@ class CommandDispatchTests(unittest.TestCase):
 
     def run_row(self, *, name=None, status='in_progress', conclusion=None):
         return {'id': 123, 'display_title': name or f'kesher-command:{self.command_id}',
-                'path': '.github/workflows/kesher-daily-video.yml', 'head_branch': 'main',
+                'path': '.github/workflows/kesher-media-worker.yml', 'head_branch': 'main',
                 'event': 'workflow_dispatch', 'status': status, 'conclusion': conclusion}
 
     def deliver(self, rows=None, *, now=NOW, send=None, main_sha=CODE):
-        observed = ObservedRuns('kesher-daily-video.yml', tuple(rows or []), now)
+        observed = ObservedRuns('kesher-media-worker.yml', tuple(rows or []), now)
         return deliver_command(self.store, self.command_id, observed, send or self.send, now=now, trusted_main_sha=main_sha)
 
     def test_dispatch_happens_after_durable_intent_and_second_scheduler_does_not_repeat(self):
         first = self.deliver()
         self.assertEqual(first.status, 'dispatched')
-        self.assertEqual(self.calls, [('kesher-daily-video.yml', {'command_id': self.command_id})])
+        self.assertEqual(self.calls, [('kesher-media-worker.yml', {'command_id': self.command_id})])
         self.assertEqual(self.deliver().status, 'waiting')
         self.assertEqual(len(self.calls), 1)
 

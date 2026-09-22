@@ -70,7 +70,7 @@ class MediaWorkerTests(unittest.TestCase):
         self.assertEqual(repair.call_args.args[0].item['youtube_id'], 'existing-video')
         self.assertIsNone(self.server.document['items'][self.worker.target.key]['phase'])
 
-    def test_publish_continues_from_render_to_exact_upload_in_one_command(self):
+    def test_render_must_be_durably_archived_before_upload_can_start(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
             def download(state, item):
@@ -103,8 +103,8 @@ class MediaWorkerTests(unittest.TestCase):
                     patch.object(core, 'validate_and_manifest', side_effect=validate), \
                     patch.object(core, 'upload_only', side_effect=upload) as uploaded:
                 result = run_media(self.worker, encryption_key='test-only-encryption-key-for-fixtures')
-        self.assertEqual(uploaded.call_count, 1)
-        self.assertEqual(result.status, 'uploaded')
+        self.assertEqual(uploaded.call_count, 0)
+        self.assertEqual(result.status, 'output_ready')
         self.assertIsNone(self.server.document['items'][self.worker.target.key]['phase'])
 
 

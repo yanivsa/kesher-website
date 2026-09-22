@@ -14,6 +14,7 @@ from pathlib import Path
 
 from .identity import MediaIdentity, SourceIdentity, digest
 from .media_state import CanonicalMediaState, snapshots
+from .output_artifacts import require_bundle
 from .provider import observe_provider, reconcile_provider
 from .state import StateInvalid
 from .worker import WorkerContext
@@ -36,12 +37,14 @@ def _file(root: Path, name: str | None) -> Path | None:
     return root / path
 
 
-def run_media(context: WorkerContext, *, encryption_key: str = '') -> MediaRunResult:
+def run_media(context: WorkerContext, *, encryption_key: str = '', phase: str = 'prepare') -> MediaRunResult:
     from scripts import kesher_daily_pipeline as core
     from scripts import kesher_short_pipeline_v4 as short
     from scripts import kesher_e2e_delivery_guard as guard
 
     target = context.target
+    if phase not in {'prepare', 'publish'}:
+        raise StateInvalid('Media execution requires an explicit prepare or publish boundary')
     if not isinstance(target, MediaIdentity):
         raise StateInvalid('Media worker requires an exact media identity')
     command = context.store.load().state['commands'][context.command_id]
@@ -75,6 +78,11 @@ def run_media(context: WorkerContext, *, encryption_key: str = '') -> MediaRunRe
         raise StateInvalid('Metadata-only command has no existing video ID')
     if not isinstance(encryption_key, str) or len(encryption_key) < 24:
         raise StateInvalid('CAPABILITY_KEY_UNAVAILABLE: validate upload storage before generation')
+    if phase == 'publish':
+        # This process must not fall back into provider/render work. Exact bytes
+        # and the immutable archive receipt must exist before any upload effect.
+        require_bundle(context, item, core.STATE_DIR)
+        return _publish(state, core, guard)
     # Auth readiness is checked before consuming any provider generation intent.
     token = core.youtube_access_token()
     core.verify_authenticated_channel(token)
@@ -92,6 +100,16 @@ def run_media(context: WorkerContext, *, encryption_key: str = '') -> MediaRunRe
     if item.get('status') == 'generating':
         if not core.wait_for_generation(state, item, max_wait_seconds=0):
             return MediaRunResult('waiting', 'Exact provider task is pending; no new generation or upload')
+
+    if target.kind == 'short':
+        overview = MediaIdentity(target.source, 'overview')
+        history = snapshots(context.store.load().state, overview)
+        if not history or any(not history[-1]['item'].get(field) for field in
+                              ('notebook_id', 'source_id', 'task_id', 'artifact_id', 'raw_sha256')):
+            return MediaRunResult('waiting', 'Exact Short provider output retained; await Overview provenance before rendering')
+        item['overview_provider_identity'] = {field: history[-1]['item'][field] for field in
+                                              ('notebook_id', 'source_id', 'task_id', 'artifact_id', 'raw_sha256')}
+        state.persist()
 
     final = _file(core.STATE_DIR, item.get('final_mp4'))
     manifest = _file(core.STATE_DIR, item.get('manifest_path'))
@@ -111,16 +129,17 @@ def run_media(context: WorkerContext, *, encryption_key: str = '') -> MediaRunRe
         raise StateInvalid('TECHNICAL_REJECTION: output did not satisfy the publication gate')
 
     if target.kind == 'short':
-        overview = MediaIdentity(target.source, 'overview')
-        history = snapshots(context.store.load().state, overview)
-        if not history or any(not history[-1]['item'].get(field) for field in
-                              ('notebook_id', 'source_id', 'task_id', 'artifact_id', 'raw_sha256')):
-            return MediaRunResult('waiting', 'Short output retained; await exact Overview provenance for independence check')
-        item['overview_provider_identity'] = {field: history[-1]['item'][field] for field in
-                                              ('notebook_id', 'source_id', 'task_id', 'artifact_id', 'raw_sha256')}
-        state.persist()
         if not guard._short_origin_verified(item) or not guard._signature_verified(item):
             raise StateInvalid('SHORT_PROVENANCE_INVALID: independent origin and current signature evidence required')
+    return MediaRunResult('output_ready', 'Exact output validated; archive and read back its bytes before publication')
+
+
+def _publish(state, core, guard) -> MediaRunResult:
+    item, target = state.item, state.context.target
+    if item.get('technical_verified') is not True or item.get('status') == 'rejected':
+        raise StateInvalid('TECHNICAL_REJECTION: output did not satisfy the publication gate')
+    if target.kind == 'short' and (not guard._short_origin_verified(item) or not guard._signature_verified(item)):
+        raise StateInvalid('SHORT_PROVENANCE_INVALID: restored output requires independent origin and signature proof')
     item['status'] = 'uploading' if item.get('upload_session_uri') else 'approved'
     state.persist()
     core.upload_only(slug=target.source.slug, item_id=item['id'], state=state)
@@ -132,11 +151,16 @@ def run_media(context: WorkerContext, *, encryption_key: str = '') -> MediaRunRe
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command_id')
+    parser.add_argument('--phase', choices=('prepare', 'publish'), default='prepare')
     args = parser.parse_args(argv)
     try:
         admission = actions_admission(args.command_id, attach=True)
-        result = run_media(admission.context, encryption_key=os.environ.get('NOTEBOOKLM_STATE_KEY', ''))
-        admission.context.checkpoint('execution_result', {'status': result.status, 'reason': result.reason}, phase='STARTED')
+        result = run_media(admission.context, encryption_key=os.environ.get('NOTEBOOKLM_STATE_KEY', ''), phase=args.phase)
+        receipt = 'preparation_result' if result.status == 'output_ready' else 'execution_result'
+        admission.context.checkpoint(receipt, {'status': result.status, 'reason': result.reason}, phase='STARTED')
+        if os.environ.get('GITHUB_OUTPUT'):
+            with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as stream:
+                stream.write('status=' + result.status + '\n')
         print(f'MEDIA_WORKER_{result.status.upper()}')
         # The workflow records immutable output-artifact references and calls
         # worker_entry finish afterward. A green process is not public completion.

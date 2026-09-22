@@ -46,6 +46,7 @@ jobs:
             tests.test_kesher_worker_commands \
             tests.test_kesher_command_dispatch \
             tests.test_kesher_worker_entry \
+            tests.test_kesher_output_artifacts \
             tests.kesher_daily_pipeline_suite \
             tests.test_video_review_policy \
             tests.test_video_review_schema \
