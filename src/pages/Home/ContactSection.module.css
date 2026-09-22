@@ -273,3 +273,24 @@
   from { transform: scale(0); }
   to { transform: scale(1); }
 }
+
+.whatHappensNext {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.whatHappensNext strong {
+  display: block;
+  font-size: 1.05rem;
+  margin-bottom: 0.25rem;
+  color: var(--color-primary-dark);
+}
+
+.whatHappensNext p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}

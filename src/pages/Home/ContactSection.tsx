@@ -71,6 +71,12 @@ const ContactSection: React.FC = () => {
               ? 'ספרו בקצרה מי הקהל, מה הנושא שמעניין אתכם וכל פרט רלוונטי על האירוע. אפשר להשאיר פרטים בטופס או לפנות ישירות בוואטסאפ.'
               : 'פנייה לליווי זוגי או הורי מלווה לעיתים בהתלבטות, וזה טבעי לגמרי. אפשר לבחור מועד לפגישת ייעוץ ישירות ביומן, או לפנות אליי בדרך שנוחה לכם.'}
           </p>
+          {!isLectureInquiry && (
+            <div className={styles.whatHappensNext}>
+              <strong>מה קורה אחרי שפונים?</strong>
+              <p>שיחת היכרות קצרה, בדיסקרטיות מלאה, כדי להבין יחד את הצורך ולראות אם זה הליווי הנכון עבורכם.</p>
+            </div>
+          )}
           <div className={styles.contactActions}>
             {!isLectureInquiry && (
               <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
