@@ -114,6 +114,10 @@ const BlogPost: React.FC = () => {
 
   const safeContent = DOMPurify.sanitize(post.content);
   const shareUrl = `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`;
+  const directAnswer = 'directAnswer' in post && typeof post.directAnswer === 'string'
+    ? post.directAnswer.trim()
+    : '';
+  const articleSummary = directAnswer || post.excerpt.trim();
   const relatedService = 'serviceUrl' in post
     && 'serviceLabel' in post
     && typeof post.serviceUrl === 'string'
@@ -166,6 +170,12 @@ const BlogPost: React.FC = () => {
       </header>
       <div className={`container ${styles.container}`}>
         <div className={styles.mainContent}>
+          {articleSummary && (
+            <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">
+              <div className={styles.directAnswerBadge}>תקציר מעשי</div>
+              <p className={styles.directAnswerText}>{articleSummary}</p>
+            </div>
+          )}
           {post.image && (
             <>
               <div className={styles.imageWrapper}>
@@ -185,12 +195,6 @@ const BlogPost: React.FC = () => {
                 </p>
               )}
             </>
-          )}
-          {'directAnswer' in post && typeof post.directAnswer === 'string' && post.directAnswer.trim() && (
-            <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">
-              <div className={styles.directAnswerBadge}>תקציר מעשי</div>
-              <p className={styles.directAnswerText}>{post.directAnswer.trim()}</p>
-            </div>
           )}
           <div className={styles.content} dangerouslySetInnerHTML={{ __html: safeContent }} />
           {'expertInsight' in post && typeof post.expertInsight === 'string' && post.expertInsight.trim() && (
