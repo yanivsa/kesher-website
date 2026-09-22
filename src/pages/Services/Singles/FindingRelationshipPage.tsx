@@ -34,6 +34,7 @@ const schemaData = {
 const FindingRelationshipPage: React.FC = () => (
   <div className={styles.page}>
     <MetaTags
+        canonical={`${SITE_CONFIG.url}/services/finding-relationship`}
       title="ליווי למציאת זוגיות"
       description="ליווי אישי סביב היכרויות, דייטים, בחירת קשר, תקשורת, גבולות והמעבר מהיכרות לזוגיות — באשדוד ובאונליין."
       image="/images/generated/services/couples-room.jpg"

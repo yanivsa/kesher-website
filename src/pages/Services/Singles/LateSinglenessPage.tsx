@@ -34,6 +34,7 @@ const schemaData = {
 const LateSinglenessPage: React.FC = () => (
   <div className={styles.page}>
     <MetaTags
+        canonical={`${SITE_CONFIG.url}/services/late-singleness`}
       title="ייעוץ במצבי רווקות מאוחרת"
       description="ייעוץ אישי לרווקות ולרווקים סביב שחיקה, לחץ מהסביבה, בדידות ודפוסים חוזרים — באשדוד ובאונליין."
       image="/images/generated/services/couples-room.jpg"

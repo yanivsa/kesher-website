@@ -42,7 +42,8 @@ const schemaData = {
 const LecturesPage: React.FC = () => {
   return (
     <div className={styles.page}>
-      <MetaTags 
+      <MetaTags
+        canonical={`${SITE_CONFIG.url}/lectures`}
         title="הרצאות וסדנאות" 
         description="הרצאות וסדנאות מאת שירה סהרוני בנושאי זוגיות, הורות ונושאים נוספים מתוך תחומי התוכן באתר. ניתן לפנות להזמנת הרצאה לארגון, קהילה או קבוצה." 
       />

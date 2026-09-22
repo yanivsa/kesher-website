@@ -377,7 +377,8 @@ const Home: React.FC = () => {
 
   return (
     <div className={styles.page} dir="rtl">
-      <MetaTags 
+      <MetaTags
+        canonical={SITE_CONFIG.url}
         title={SITE_CONFIG.title}
         description={SITE_CONFIG.description}
       />

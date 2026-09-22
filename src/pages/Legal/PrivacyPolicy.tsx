@@ -1,11 +1,14 @@
 import React from 'react';
 import MetaTags from '../../components/SEO/MetaTags';
 import styles from './LegalPage.module.css';
+import { SITE_CONFIG } from '../../constants/siteConfig';
+
 
 const PrivacyPolicy: React.FC = () => {
   return (
     <div className={styles.page}>
-      <MetaTags title="מדיניות פרטיות" description="מדיניות הפרטיות של אתר שירה סהרוני. אנו מחויבים להגנה על פרטיות המשתמשים." />
+      <MetaTags
+        canonical={`${SITE_CONFIG.url}/privacy`} title="מדיניות פרטיות" description="מדיניות הפרטיות של אתר שירה סהרוני. אנו מחויבים להגנה על פרטיות המשתמשים." />
       <header className={styles.header}>
         <div className="container">
           <h1>מדיניות פרטיות</h1>

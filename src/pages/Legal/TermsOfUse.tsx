@@ -1,11 +1,14 @@
 import React from 'react';
 import MetaTags from '../../components/SEO/MetaTags';
 import styles from './LegalPage.module.css';
+import { SITE_CONFIG } from '../../constants/siteConfig';
+
 
 const TermsOfUse: React.FC = () => {
   return (
     <div className={styles.page}>
-      <MetaTags title="תנאי שימוש" description="תנאי השימוש באתר שירה סהרוני. אנא קראו את התנאים בקפידה לפני הגלישה באתר." />
+      <MetaTags
+        canonical={`${SITE_CONFIG.url}/terms`} title="תנאי שימוש" description="תנאי השימוש באתר שירה סהרוני. אנא קראו את התנאים בקפידה לפני הגלישה באתר." />
       <header className={styles.header}>
         <div className="container">
           <h1>תנאי שימוש</h1>

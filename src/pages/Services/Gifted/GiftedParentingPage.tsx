@@ -46,6 +46,7 @@ const GiftedParentingPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
+        canonical={`${SITE_CONFIG.url}/services/gifted-parenting`}
         title="הנחיית הורים לילדים מחוננים"
         description="ליווי הורים לילדים מחוננים: רגישות, פרפקציוניזם, שייכות, מחוננות לצד ADHD והכנה רגשית וניהולית למסגרת מחוננים."
         image="/images/generated/services/parenting-room.jpg"
