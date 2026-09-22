@@ -8,6 +8,18 @@ vi.mock('../src/lib/contactApi', () => ({
   submitContact: vi.fn(),
 }));
 
+vi.mock('../src/components/TurnstileWidget', async () => {
+  const ReactModule = await import('react');
+  return {
+    default: ({ onTokenChange }: { onTokenChange: (token: string) => void }) => {
+      ReactModule.useEffect(() => {
+        onTokenChange('test-turnstile-token');
+      }, [onTokenChange]);
+      return ReactModule.createElement('div', { 'data-testid': 'turnstile-mock' });
+    },
+  };
+});
+
 afterEach(() => {
   vi.clearAllMocks();
 });
