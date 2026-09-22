@@ -39,13 +39,13 @@
     "@remotion/media": "4.0.506",
     "@remotion/transitions": "4.0.506",
     "@vitejs/plugin-react-swc": "^4.3.1",
-    "dompurify": "^3.4.12",
+    "dompurify": "^3.4.13",
     "framer-motion": "^12.40.0",
     "fuse.js": "^7.5.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-icons": "^5.6.0",
-    "react-router-dom": "^7.18.0",
+    "react-router-dom": "^7.18.2",
     "vite": "^8.0.16"
   },
   "devDependencies": {
@@ -70,5 +70,8 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1",
     "vitest": "^4.1.11"
+  },
+  "overrides": {
+    "js-yaml": "^4.3.2"
   }
 }
