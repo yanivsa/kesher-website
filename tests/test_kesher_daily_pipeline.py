@@ -10,6 +10,7 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
+from tests.test_media_provenance_contract import audio_fixture
 
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "kesher_daily_pipeline.py"
@@ -403,7 +404,9 @@ class PipelineTestCase(unittest.TestCase):
             "remotion_props_path": props.name,
             "remotion_props_sha256": pipeline.sha256_file(props),
         })
-        self.assertTrue(pipeline.remotion_cache_is_reusable(item, output))
+        # #865 requires the exact source/final/signature/renderer provenance;
+        # matching plan and props alone cannot certify a cached MP4.
+        self.assertFalse(pipeline.remotion_cache_is_reusable(item, output))
 
     def test_remotion_rebuild_preserves_rejected_evidence_history(self) -> None:
         state, item = self.make_pending_item()
@@ -519,8 +522,16 @@ class PipelineTestCase(unittest.TestCase):
                 "effective_plan": {"render_mode": "full"},
             }
 
-        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p in {remotion, sig_asset}), \
-             mock.patch.object(pipeline, "ffprobe", return_value={"duration": 100.0}), \
+        def signature_fixture(_core, _final, _item_id, **_kwargs):
+            segment = self.state_dir / "signature-segment.mp4"
+            segment.write_bytes(b"encoded-signature-fixture")
+            return segment, pipeline.sha256_file(segment)
+
+        def audio_copy_fixture(_core, raw_path, final_path):
+            return audio_fixture(pipeline.sha256_file(raw_path), pipeline.sha256_file(final_path), item["content_duration_seconds"])
+
+        with mock.patch("scripts.kesher_runtime.render_provenance.preserve_source_audio", side_effect=audio_copy_fixture), mock.patch("scripts.kesher_runtime.render_provenance.extract_signature_segment", side_effect=signature_fixture), mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p in {remotion, sig_asset}), \
+             mock.patch.object(pipeline, "ffprobe", return_value={"duration": 100.0, "audio_codec": "aac"}), \
              mock.patch.object(pipeline, "generate_motion_plan", return_value={"render_mode": "full"}), \
              mock.patch.object(pipeline, "prepare_signature_asset", return_value="sig.png"), \
              mock.patch.object(pipeline, "execute_enhancement", side_effect=fake_enhancement):
@@ -709,8 +720,16 @@ class PipelineTestCase(unittest.TestCase):
         }
         remotion = pipeline.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
         signature_source = pipeline.PROJECT_DIR / pipeline.SIGNATURE_SOURCE
-        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda path: path in {remotion, signature_source}), mock.patch.object(
-            pipeline, "ffprobe", return_value={"duration": 104.0}
+        def signature_fixture(_core, _final, _item_id, **_kwargs):
+            segment = self.state_dir / "signature-segment.mp4"
+            segment.write_bytes(b"encoded-signature-fixture")
+            return segment, pipeline.sha256_file(segment)
+
+        def audio_copy_fixture(_core, raw_path, final_path):
+            return audio_fixture(pipeline.sha256_file(raw_path), pipeline.sha256_file(final_path), item["content_duration_seconds"])
+
+        with mock.patch("scripts.kesher_runtime.render_provenance.preserve_source_audio", side_effect=audio_copy_fixture), mock.patch("scripts.kesher_runtime.render_provenance.extract_signature_segment", side_effect=signature_fixture), mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda path: path in {remotion, signature_source}), mock.patch.object(
+            pipeline, "ffprobe", return_value={"duration": 104.0, "audio_codec": "aac"}
         ), mock.patch.object(pipeline.subprocess, "run") as run:
             def finish(*_args: object, **_kwargs: object) -> SimpleNamespace:
                 output.write_bytes(b"rendered-video" * 100)
@@ -789,8 +808,16 @@ class PipelineTestCase(unittest.TestCase):
 
         remotion = pipeline.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
         signature_source = pipeline.PROJECT_DIR / pipeline.SIGNATURE_SOURCE
-        with mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p in {remotion, signature_source}), mock.patch.object(
-            pipeline, "ffprobe", return_value={"duration": 90.0}
+        def signature_fixture(_core, _final, _item_id, **_kwargs):
+            segment = self.state_dir / "signature-segment.mp4"
+            segment.write_bytes(b"encoded-signature-fixture")
+            return segment, pipeline.sha256_file(segment)
+
+        def audio_copy_fixture(_core, raw_path, final_path):
+            return audio_fixture(pipeline.sha256_file(raw_path), pipeline.sha256_file(final_path), item["content_duration_seconds"])
+
+        with mock.patch("scripts.kesher_runtime.render_provenance.preserve_source_audio", side_effect=audio_copy_fixture), mock.patch("scripts.kesher_runtime.render_provenance.extract_signature_segment", side_effect=signature_fixture), mock.patch.object(Path, "is_file", autospec=True, side_effect=lambda p: p in {remotion, signature_source}), mock.patch.object(
+            pipeline, "ffprobe", return_value={"duration": 90.0, "audio_codec": "aac"}
         ), mock.patch.object(pipeline.subprocess, "run") as run:
             def finish(*_args: object, **_kwargs: object) -> SimpleNamespace:
                 output.write_bytes(b"rendered-mp4" * 100)

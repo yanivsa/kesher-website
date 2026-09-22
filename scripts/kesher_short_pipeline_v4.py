@@ -199,7 +199,8 @@ def short_technical_failures(
             sig_duration = float(item.get("signature_duration_seconds") or 0)
         except (TypeError, ValueError):
             sig_duration = 0.0
-        if abs(sig_duration - SIGNATURE_DURATION_SECONDS) >= 0.001:
+        expected_signature = min(SIGNATURE_DURATION_SECONDS, float(media.get("duration") or 0))
+        if abs(sig_duration - expected_signature) >= 0.001:
             failures.append(f"משך סגיר החתימה הוא {sig_duration} שניות במקום {SIGNATURE_DURATION_SECONDS}")
         if not str(item.get("signature_video_sha256") or "").strip():
             failures.append("חסר גיבוב וידאו תקין של מקטע החתימה (signature_video_sha256)")
@@ -209,51 +210,9 @@ def short_technical_failures(
     return failures
 
 
-def extract_signature_video_segment(output_path: Path, item_id: str) -> tuple[Path, str]:
-    core.STATE_DIR.mkdir(parents=True, exist_ok=True)
-    if not output_path.is_file() or output_path.stat().st_size <= 0:
-        raise core.PipelineError("Current final MP4 is missing; signature evidence cannot be reused")
-    final_sha256 = core.sha256_file(output_path)
-    signature_video_path = core.STATE_DIR / f"{item_id}-signature-segment.mp4"
-    receipt_path = signature_video_path.with_suffix(".json")
-    if signature_video_path.is_file() and signature_video_path.stat().st_size > 0:
-        try:
-            receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-            segment_sha256 = core.sha256_file(signature_video_path)
-            if receipt == {"schema_version": 1, "final_sha256": final_sha256,
-                           "segment_sha256": segment_sha256,
-                           "duration_seconds": SIGNATURE_DURATION_SECONDS}:
-                return signature_video_path, segment_sha256
-        except (OSError, ValueError, TypeError):
-            pass
-
-    ffmpeg = shutil.which("ffmpeg")
-    if not ffmpeg:
-        raise core.PipelineError("ffmpeg is required to extract the signature video segment")
-
-    command = [
-        ffmpeg,
-        "-y",
-        "-sseof", f"-{SIGNATURE_DURATION_SECONDS}",
-        "-i", str(output_path),
-        "-t", f"{SIGNATURE_DURATION_SECONDS}",
-        "-c:v", "libx264",
-        "-c:a", "aac",
-        str(signature_video_path),
-    ]
-    result = subprocess.run(command, capture_output=True, text=True, check=False)
-    if result.returncode != 0 or not signature_video_path.exists() or signature_video_path.stat().st_size <= 0:
-        detail = (result.stderr or result.stdout)[-500:]
-        raise core.PipelineError(f"Failed to extract signature video segment: {detail}")
-
-    if core.sha256_file(output_path) != final_sha256:
-        raise core.PipelineError("Final MP4 changed during signature extraction")
-    segment_sha256 = core.sha256_file(signature_video_path)
-    core.atomic_json_write(receipt_path, {
-        "schema_version": 1, "final_sha256": final_sha256,
-        "segment_sha256": segment_sha256, "duration_seconds": SIGNATURE_DURATION_SECONDS,
-    })
-    return signature_video_path, segment_sha256
+def extract_signature_video_segment(output_path: Path, item_id: str, *, duration_seconds: float = 3.0) -> tuple[Path, str]:
+    from scripts.kesher_runtime.render_provenance import extract_signature_segment
+    return extract_signature_segment(core, output_path, item_id, duration_seconds=duration_seconds)
 
 
 def prepare_signature_asset() -> str:
@@ -281,20 +240,8 @@ def _short_targets_for_plan(edit_plan: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _render_input_sha256(raw_path: Path, item: dict[str, Any], signature_sha256: str) -> str:
-    """Invalidate the render when bytes, article/provider identity or renderer change."""
-    renderer_paths = sorted((core.PROJECT_DIR / "src" / "remotion").rglob("*.tsx"))
-    renderer_paths += sorted((core.PROJECT_DIR / "src" / "remotion").rglob("*.ts"))
-    renderer_paths += [core.PROJECT_DIR / "package-lock.json", Path(__file__).resolve()]
-    renderer_hashes = {str(path): core.sha256_file(path) for path in renderer_paths if path.is_file()}
-    payload = {
-        "schema_version": 1, "raw_sha256": core.sha256_file(raw_path),
-        "source": item.get("source"), "signature_sha256": signature_sha256,
-        "provider": {key: item.get(key) for key in (
-            "notebook_id", "source_id", "task_id", "artifact_id", "provider_video_format",
-            "fresh_generation_attempt", "overview_provider_identity")},
-        "renderer": renderer_hashes, "fps": SHORT_FPS, "pipeline": VISUAL_PIPELINE,
-    }
-    return core.sha256_text(json.dumps(payload, ensure_ascii=False, sort_keys=True))
+    from scripts.kesher_runtime.render_provenance import render_input_digest
+    return render_input_digest(core, raw_path, item, signature_sha256, 'short')
 
 
 def _short_render_cache_reusable(raw_path: Path, output_path: Path, item: dict[str, Any],
@@ -436,32 +383,11 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     item["remotion_props_path"] = props_path.name
     item["remotion_props_sha256"] = core.sha256_file(props_path)
 
-    sig_video_path, sig_video_sha256 = extract_signature_video_segment(output_path, item["id"])
-    item["signature_video_path"] = sig_video_path.name
-    item["signature_video_sha256"] = sig_video_sha256
+    from scripts.kesher_runtime.render_provenance import record_signature
     media = core.ffprobe(output_path)
-    final_duration = float(media["duration"])
-    if not math.isfinite(final_duration) or abs(final_duration - duration_seconds) > 0.15:
-        raise core.PipelineError("Short render changed the natural source duration")
-    if not media.get("audio_codec") or not raw_media.get("audio_codec"):
-        raise core.PipelineError("Short source/final audio evidence is missing")
+    record_signature(core, raw_path, output_path, item, signature_path, raw_media, media)
     if render_input_sha256 != _render_input_sha256(raw_path, item, signature_sha256):
         raise core.PipelineError("Short render inputs changed during rendering")
-    item["raw_sha256"] = core.sha256_file(raw_path)
-    item["final_sha256"] = core.sha256_file(output_path)
-    item["media"] = media
-    item["signature_duration_seconds"] = min(SIGNATURE_DURATION_SECONDS, duration_seconds)
-    item["signature_fullscreen"] = True
-    item["signature_overlay"] = True
-    item["signature_provenance"] = {
-        "schema_version": 1, "final_sha256": item["final_sha256"],
-        "raw_sha256": item["raw_sha256"], "asset_sha256": signature_sha256,
-        "segment_sha256": sig_video_sha256, "source_duration_seconds": duration_seconds,
-        "final_duration_seconds": final_duration,
-        "start_seconds": max(0.0, final_duration - item["signature_duration_seconds"]),
-        "end_seconds": final_duration, "audio_source_sha256": item["raw_sha256"],
-    }
-    item["signature_verified"] = True
     item["render_input_sha256"] = render_input_sha256
     return output_path
 
@@ -546,6 +472,7 @@ def validate_and_manifest(
         "signature_verified": item.get("signature_verified"),
         "signature_overlay": item.get("signature_overlay"),
         "signature_provenance": item.get("signature_provenance"),
+        "audio_provenance": item.get("audio_provenance"),
         "render_input_sha256": item.get("render_input_sha256"),
         "overview_provider_identity": item.get("overview_provider_identity"),
         "provider_raw_media": item.get("provider_raw_media"),

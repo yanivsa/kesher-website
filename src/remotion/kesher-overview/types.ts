@@ -66,4 +66,5 @@ export type KesherOverviewProps = {
   category: string;
   url: string;
   motionPlan?: MotionPlan;
+  signatureImageSrc?: string;
 };

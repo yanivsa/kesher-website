@@ -33,6 +33,7 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
   _category,
   url = "kesher.saharoni.com",
   motionPlan,
+  signatureImageSrc = "signature-mask.svg",
 }: KesherOverviewProps & {_category?: string}) => {
   const frame = useCurrentFrame();
   const {fps, durationInFrames} = useVideoConfig();
@@ -217,6 +218,7 @@ export const KesherOverview: React.FC<KesherOverviewProps> = ({
 
       <FullScreenSignatureOutro
         durationSeconds={3}
+        signatureImageSrc={signatureImageSrc}
         backgroundColor="linear-gradient(180deg, rgba(13,23,18,0.05) 0%, rgba(13,23,18,0.22) 45%, rgba(13,23,18,0.55) 100%)"
         signatureColor={palette.gold}
         websiteUrl={url.replace(/^https?:\/\//, "").replace(/\/$/, "")}

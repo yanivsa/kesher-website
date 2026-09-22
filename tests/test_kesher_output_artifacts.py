@@ -96,6 +96,8 @@ class OutputArtifactTests(unittest.TestCase):
             state.persist()
         with patch.object(core, 'STATE_DIR', self.root), patch.object(core, 'article_by_slug', return_value=self.source), \
                 patch.object(core, 'auth_preflight', side_effect=AssertionError('publish cannot enter provider')), \
+                patch.object(core, 'ffprobe', return_value={'duration': 100}), \
+                patch('scripts.kesher_e2e_delivery_guard._signature_verified', return_value=True), \
                 patch.object(core, 'upload_only', side_effect=upload) as uploader:
             result = run_media(self.worker, phase='publish', encryption_key='test-only-encryption-key-for-fixtures')
         self.assertEqual(result.status, 'uploaded')

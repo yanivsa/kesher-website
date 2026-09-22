@@ -34,6 +34,9 @@ def _signature_timing_evidence(item: dict[str, Any]) -> bool:
 
 def _signature_verified(item: dict[str, Any]) -> bool:
     """Bind the end overlay to the exact current source, final and extracted segment."""
+    from scripts.kesher_runtime.render_provenance import audio_evidence_valid
+    if not audio_evidence_valid(item):
+        return False
     proof = item.get("signature_provenance")
     if not isinstance(proof, dict) or proof.get("schema_version") != 1:
         return False
@@ -54,8 +57,14 @@ def _signature_verified(item: dict[str, Any]) -> bool:
         duration = float(item["signature_duration_seconds"])
         raw_duration = float((item.get("provider_raw_media") or {})["duration"])
         media_duration = float((item.get("media") or {})["duration"])
-        content_duration = float(item["short_duration_seconds"])
-        source_start = float(item["short_start_seconds"])
+        if item.get("type") == "video_overview":
+            content_duration = float(item["content_duration_seconds"])
+            source_start = 0.0
+        elif item.get("type") == "article_short":
+            content_duration = float(item["short_duration_seconds"])
+            source_start = float(item["short_start_seconds"])
+        else:
+            return False
     except (KeyError, TypeError, ValueError, OverflowError):
         return False
     values = (source_duration, final_duration, start, end, duration, raw_duration,

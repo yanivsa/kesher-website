@@ -138,7 +138,10 @@ def _publish(state, core, guard) -> MediaRunResult:
     item, target = state.item, state.context.target
     if item.get('technical_verified') is not True or item.get('status') == 'rejected':
         raise StateInvalid('TECHNICAL_REJECTION: output did not satisfy the publication gate')
-    if target.kind == 'short' and (not guard._short_origin_verified(item) or not guard._signature_verified(item)):
+    media = core.ffprobe(_file(core.STATE_DIR, item.get('final_mp4')))
+    if not guard._signature_verified(dict(item, media=media)):
+        raise StateInvalid('SIGNATURE_PROVENANCE_INVALID: current bytes must preserve source duration and audio')
+    if target.kind == 'short' and not guard._short_origin_verified(item):
         raise StateInvalid('SHORT_PROVENANCE_INVALID: restored output requires independent origin and signature proof')
     item['status'] = 'uploading' if item.get('upload_session_uri') else 'approved'
     state.persist()

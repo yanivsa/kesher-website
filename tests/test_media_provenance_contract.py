@@ -12,7 +12,15 @@ from unittest.mock import patch
 
 from scripts import kesher_e2e_delivery_guard as guard
 from scripts import kesher_short_pipeline_v4 as short
+from scripts import kesher_daily_pipeline as overview
 
+
+
+def audio_fixture(raw_sha256: str, final_sha256: str, duration: float) -> dict:
+    timing = {'codec': 'aac', 'sample_rate': 48000, 'channels': 1, 'start_seconds': 0.0, 'duration_seconds': duration}
+    return {'schema_version': 1, 'mode': 'stream_copy', 'raw_sha256': raw_sha256, 'final_sha256': final_sha256,
+            'raw_audio_sha256': '9' * 64, 'final_audio_sha256': '9' * 64,
+            'raw_timing': dict(timing), 'final_timing': dict(timing)}
 
 def bound_short(duration: float = 132.0) -> dict:
     return {
@@ -28,6 +36,7 @@ def bound_short(duration: float = 132.0) -> dict:
                                       'task_id': 'overview-task', 'artifact_id': 'overview-artifact',
                                       'raw_sha256': 'e' * 64},
         'raw_sha256': 'b' * 64, 'final_sha256': 'c' * 64,
+        'audio_provenance': audio_fixture('b' * 64, 'c' * 64, duration),
         'provider_raw_media': {'width': 1080, 'height': 1920, 'duration': duration, 'audio_codec': 'aac'},
         'media': {'width': 1080, 'height': 1920, 'duration': duration, 'codec': 'h264', 'audio_codec': 'aac'},
         'short_start_seconds': 0.0, 'short_duration_seconds': duration,
@@ -44,6 +53,23 @@ def bound_short(duration: float = 132.0) -> dict:
 
 
 class SignatureProvenanceTests(unittest.TestCase):
+    def test_signature_does_not_certify_missing_changed_or_shifted_audio(self):
+        for field, value in [('final_audio_sha256', '0' * 64), ('raw_sha256', '1' * 64),
+                             ('final_sha256', '2' * 64), ('mode', 'unverified')]:
+            with self.subTest(field=field):
+                item = bound_short()
+                item['audio_provenance'][field] = value
+                self.assertFalse(guard._signature_verified(item))
+        item = bound_short()
+        item['audio_provenance']['final_timing']['start_seconds'] = .043
+        self.assertFalse(guard._signature_verified(item))
+        item.pop('audio_provenance')
+        self.assertFalse(guard._signature_verified(item))
+
+    def test_shorter_natural_source_keeps_signature_inside_its_entire_timeline(self):
+        item = bound_short(2.0)
+        self.assertEqual(short.short_technical_failures(item['media'], item=item), [])
+
     def test_full_background_is_allowed_with_exact_in_content_timing(self):
         self.assertTrue(guard._signature_verified(bound_short()))
 
@@ -143,6 +169,50 @@ class ShortRenderCacheTests(unittest.TestCase):
             with patch.object(short.core, 'STATE_DIR', root), patch.object(short, 'prepare_signature_asset', return_value='sig.svg'), patch.object(short.core, 'ffprobe', return_value={'width': 1080, 'height': 1920, 'duration': 132.0}), patch.object(short, 'build_motion_plan', side_effect=short.core.PipelineError('rebuild required')):
                 with self.assertRaises(short.core.PipelineError):
                     short.render_remotion_video(root / 'raw.mp4', item)
+
+
+class OverviewRenderCacheTests(unittest.TestCase):
+    def test_complete_cache_binds_actual_bytes_source_and_current_renderer(self):
+        from scripts.kesher_runtime.render_provenance import record_signature, render_input_digest
+        with tempfile.TemporaryDirectory() as temp, patch.object(overview, 'STATE_DIR', Path(temp)):
+            root = Path(temp)
+            raw, final, asset, segment = [root / name for name in ('raw.mp4', 'final.mp4', 'signature-mask.svg', 'segment.mp4')]
+            raw.write_bytes(b'raw overview'); final.write_bytes(b'final overview'); segment.write_bytes(b'extracted segment')
+            asset.write_bytes((overview.PROJECT_DIR / overview.SIGNATURE_SOURCE).read_bytes())
+            media = {'duration': 104.0, 'codec': 'h264', 'audio_codec': 'aac', 'width': 1280, 'height': 720}
+            item = {'id': 'overview-1', 'type': 'video_overview', 'source': {'slug': 'article', 'content_sha256': 'a' * 64},
+                    'raw_mp4': raw.name, 'content_duration_seconds': 104.0, 'enhancement_status': 'enhancement_complete'}
+            with patch('scripts.kesher_runtime.render_provenance.extract_signature_segment',
+                       return_value=(segment, overview.sha256_file(segment))), patch(
+                       'scripts.kesher_runtime.render_provenance.preserve_source_audio',
+                       return_value=audio_fixture(overview.sha256_file(raw), overview.sha256_file(final), 104.0)):
+                record_signature(overview, raw, final, item, asset, media, media)
+            plan = {'segments': [], 'render_mode': 'basic'}
+            props = {'videoSrc': raw.name, 'audioSrc': raw.name, 'signatureImageSrc': asset.name,
+                     'durationInFrames': 3120, 'motionPlan': plan}
+            for field, value, name in [('motion_plan', plan, 'plan.json'), ('remotion_props', props, 'props.json')]:
+                (root / name).write_text(json.dumps(value))
+                item[field + '_path'], item[field + '_sha256'] = name, overview.sha256_file(root / name)
+            item['render_input_sha256'] = render_input_digest(overview, raw, item, overview.sha256_file(asset), 'overview')
+            with patch.object(overview, 'ffprobe', return_value=media):
+                self.assertTrue(guard._signature_verified(item))
+                self.assertTrue(overview.remotion_cache_is_reusable(item, final))
+                changed = copy.deepcopy(item); changed['source']['content_sha256'] = 'b' * 64
+                self.assertFalse(overview.remotion_cache_is_reusable(changed, final))
+                final.write_bytes(b'replaced final')
+                self.assertFalse(overview.remotion_cache_is_reusable(item, final))
+
+    def test_plan_and_props_hashes_cannot_certify_an_unbound_final_or_source(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(overview, 'STATE_DIR', Path(temp)):
+            root = Path(temp)
+            final = root / 'final.mp4'
+            final.write_bytes(b'old final from another source')
+            for name in ('plan.json', 'props.json'):
+                (root / name).write_text('{}')
+            item = {'enhancement_status': 'enhancement_complete',
+                    'motion_plan_path': 'plan.json', 'motion_plan_sha256': overview.sha256_file(root / 'plan.json'),
+                    'remotion_props_path': 'props.json', 'remotion_props_sha256': overview.sha256_file(root / 'props.json')}
+            self.assertFalse(overview.remotion_cache_is_reusable(item, final))
 
 
 if __name__ == '__main__':

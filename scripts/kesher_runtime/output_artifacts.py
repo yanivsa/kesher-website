@@ -27,6 +27,7 @@ FILE_FIELDS = (
     ('manifest_path', 'manifest_sha256'), ('motion_plan_path', 'motion_plan_sha256'),
     ('remotion_props_path', 'remotion_props_sha256'), ('signature_asset', 'signature_sha256'),
     ('signature_video_path', 'signature_video_sha256'), ('visual_review_path', 'visual_review_sha256'),
+    ('transcript_path', 'transcript_sha256'), ('source_path', 'source_file_sha256'),
 )
 BINDINGS = ('id', 'type', 'notebook_id', 'source_id', 'task_id', 'artifact_id',
             'fresh_generation_attempt', 'render_input_sha256')

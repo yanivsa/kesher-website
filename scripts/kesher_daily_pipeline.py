@@ -669,22 +669,51 @@ def validate_female_voice(
     return True, pitch, f"Female voice pitch verified ({pitch:.1f} Hz)"
 
 
+def _render_context():
+    from types import SimpleNamespace
+    return SimpleNamespace(PROJECT_DIR=PROJECT_DIR, STATE_DIR=STATE_DIR,
+        sha256_file=sha256_file, atomic_json_write=atomic_json_write, PipelineError=PipelineError)
+
+
 def remotion_cache_is_reusable(item: dict[str, Any], output_path: Path) -> bool:
-    if not output_path.is_file() or output_path.stat().st_size <= 0 or not item.get("enhancement_status"):
+    from scripts.kesher_runtime.render_provenance import render_input_digest
+    from scripts.kesher_runtime.output_artifacts import local_file
+    from scripts.kesher_e2e_delivery_guard import _signature_verified
+    try:
+        if item.get("enhancement_status") not in {"enhancement_complete", "enhancement_partial", "enhancement_skipped"}:
+            return False
+        files = [(output_path, item.get("final_sha256"))]
+        for path_key, hash_key in (("raw_mp4", "raw_sha256"), ("motion_plan_path", "motion_plan_sha256"),
+                                  ("remotion_props_path", "remotion_props_sha256"),
+                                  ("signature_asset", "signature_sha256"),
+                                  ("signature_video_path", "signature_video_sha256")):
+            files.append((local_file(STATE_DIR, item.get(path_key)), item.get(hash_key)))
+        if any(not path.is_file() or path.stat().st_size <= 0 or sha256_file(path) != expected
+               for path, expected in files):
+            return False
+        raw = local_file(STATE_DIR, item["raw_mp4"])
+        asset_sha = sha256_file(PROJECT_DIR / SIGNATURE_SOURCE)
+        if asset_sha != item.get("signature_sha256") or item.get("render_input_sha256") != render_input_digest(
+                _render_context(), raw, item, asset_sha, 'overview'):
+            return False
+        media = ffprobe(output_path)
+        if not _signature_verified(dict(item, media=media)):
+            return False
+        props = json.loads((STATE_DIR / item["remotion_props_path"]).read_text(encoding="utf-8"))
+        plan = json.loads((STATE_DIR / item["motion_plan_path"]).read_text(encoding="utf-8"))
+        return bool(props.get("videoSrc") == raw.name and props.get("audioSrc") == raw.name
+                    and props.get("durationInFrames") == round(float(item["content_duration_seconds"]) * 30)
+                    and props.get("signatureImageSrc") == item["signature_asset"] and props.get("motionPlan") == plan)
+    except (OSError, ValueError, TypeError, KeyError, PipelineError):
         return False
-    for path_key, hash_key in (("motion_plan_path", "motion_plan_sha256"), ("remotion_props_path", "remotion_props_sha256")):
-        name = str(item.get(path_key) or "").strip()
-        expected = str(item.get(hash_key) or "").strip()
-        if not name or not expected:
-            return False
-        evidence = STATE_DIR / name
-        if not evidence.is_file() or sha256_file(evidence) != expected:
-            return False
-    return True
 
 
 def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
+    from scripts.kesher_runtime.render_provenance import record_signature, render_input_digest
     output_path = STATE_DIR / f"{item['id']}-remotion-final.mp4"
+    signature_image_src = prepare_signature_asset()
+    signature_path = STATE_DIR / signature_image_src
+    render_input_sha256 = render_input_digest(_render_context(), raw_path, item, sha256_file(signature_path), 'overview')
     if remotion_cache_is_reusable(item, output_path):
         return output_path
     remotion = PROJECT_DIR / "node_modules" / ".bin" / "remotion"
@@ -697,7 +726,6 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
         raise PipelineError("NotebookLM audio duration is invalid for Remotion")
     motion_plan_path = STATE_DIR / f"{item['id']}-motion-plan.json"
     motion_plan = generate_motion_plan(raw_path, motion_plan_path, duration=content_duration_seconds)
-    signature_image_src = prepare_signature_asset()
     props_path = STATE_DIR / f"{item['id']}-remotion-props.json"
 
     def renderer(candidate_plan: dict[str, Any], candidate_output: Path) -> None:
@@ -743,9 +771,11 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
 
     item["visual_pipeline"] = "remotion-v1-notebooklm-audio"
     item["content_duration_seconds"] = round(content_duration_seconds, 3)
-    item["signature_duration_seconds"] = SIGNATURE_DURATION_SECONDS
-    item["signature_fullscreen"] = True
-    item["signature_asset_sha256"] = sha256_file(STATE_DIR / signature_image_src)
+    final_media = ffprobe(output_path)
+    record_signature(_render_context(), raw_path, output_path, item, signature_path, raw_media, final_media)
+    if render_input_sha256 != render_input_digest(_render_context(), raw_path, item, sha256_file(signature_path), 'overview'):
+        raise PipelineError("Overview render inputs changed during rendering")
+    item["render_input_sha256"] = render_input_sha256
     item["enhancement_status"] = enhancement["enhancement_status"]
     item["enhancement_render_mode"] = enhancement["render_mode"]
     item["enhancement_assets_used"] = enhancement["assets_used"]
@@ -875,6 +905,16 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "signature_duration_seconds": item.get("signature_duration_seconds"),
         "signature_fullscreen": item.get("signature_fullscreen"),
         "signature_asset_sha256": item.get("signature_asset_sha256"),
+        "signature_asset": item.get("signature_asset"),
+        "signature_sha256": item.get("signature_sha256"),
+        "signature_video_path": item.get("signature_video_path"),
+        "signature_video_sha256": item.get("signature_video_sha256"),
+        "signature_overlay": item.get("signature_overlay"),
+        "signature_verified": item.get("signature_verified"),
+        "signature_provenance": item.get("signature_provenance"),
+        "audio_provenance": item.get("audio_provenance"),
+        "provider_raw_media": item.get("provider_raw_media"),
+        "render_input_sha256": item.get("render_input_sha256"),
         "remotion_props_path": item.get("remotion_props_path"),
         "remotion_props_sha256": item.get("remotion_props_sha256"),
         "motion_plan_path": item.get("motion_plan_path"),
