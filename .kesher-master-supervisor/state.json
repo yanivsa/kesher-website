@@ -896,6 +896,7 @@
       "updated_at": "2026-09-20T10:12:20.027547+00:00"
     },
     "ksr-ff48fdefa56312b36f0734b1": {
+      "acknowledged_at": "2026-09-22T10:49:24.777286+00:00",
       "command_id": "ksr-ff48fdefa56312b36f0734b1",
       "evidence_hash": "53a8d362748cc580aefec1c0df6bcf9dbc4d7d00d941fd5d979ec03d6ef18b36",
       "exact": {
@@ -913,12 +914,16 @@
       "fingerprint": "cdb3d1c697c39a69388b65fc7bca4273",
       "incident_id": "v5|how-to-find-good-relationship|100e336cb023c1b9a792d62f90217bd82d16bde2a9471ad4e4725c359723dec5|short",
       "issued_at": "2026-09-22T10:48:15.758119+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "already_active",
+        "run_id": 35718060448,
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "escalate_unknown_failure",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-22T10:48:15.758119+00:00"
+      "updated_at": "2026-09-22T10:49:24.777286+00:00"
     },
     "ksr-ff7210a85817fc227ce24581": {
       "acknowledged_at": "2026-09-17T11:35:01.770451+00:00",
@@ -1655,5 +1660,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-22T10:48:15.758119+00:00"
+  "updated_at": "2026-09-22T10:49:24.777286+00:00"
 }
