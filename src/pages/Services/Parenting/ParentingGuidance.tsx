@@ -74,8 +74,8 @@ const ParentingGuidance: React.FC = () => {
     <div className={styles.page}>
       <MetaTags
         canonical={`${SITE_CONFIG.url}/services/parenting`}
-        title="הדרכת הורים | מחוננים, ADHD והכנה לכיתה א'"
-        description="הדרכת הורים באשדוד ובאונליין לילדים מחוננים, לילדים עם ADHD ולהכנה לכיתה א' דרך תפקודים ניהוליים, ויסות ועצמאות."
+        title="הדרכת הורים באשדוד ואונליין | ADHD, מחוננים וכיתה א׳"
+        description="הדרכת הורים באשדוד ובאונליין לילדים ומתבגרים, עם התמחות ב-ADHD, מחוננים, גבולות, ויסות והכנה לכיתה א׳. כלים מעשיים להורים שאפשר ליישם בבית."
         image="/images/generated/services/parenting-room.jpg"
       />
       <SchemaOrg data={schemaData} />
@@ -84,8 +84,8 @@ const ParentingGuidance: React.FC = () => {
         <div className={`container ${styles.heroContainer}`}>
           <div className={styles.heroContent}>
             <div className={styles.badge}>מחוננים • ADHD • מעברים חינוכיים</div>
-            <h1>להבין מה מקשה בבית <br /><span>ולבחור תגובה שעוזרת</span></h1>
-            <p className={styles.subtitle}>הדרכת הורים שמחברת בין הצרכים של הילד, הגבולות בבית ומה שאפשר ליישם בשגרה שלכם.</p>
+            <h1>הדרכת הורים באשדוד ובאונליין <br /><span>להבין מה מקשה ולבחור תגובה שעוזרת</span></h1>
+            <p className={styles.subtitle}>הדרכת הורים היא תהליך שממקד את העבודה בהורים: מזהים מה מפעיל את החיכוך, בונים גבולות ושגרה ובוחרים תגובות מעשיות שמתאימות לגיל הילד ולבית. בדרך כלל הילד אינו צריך להיות נוכח בפגישה.</p>
             <Link to={SITE_CONFIG.links.appointment} className={styles.ctaBtn}>קביעת פגישת ייעוץ</Link>
           </div>
           <div className={styles.heroImageWrapper}>
@@ -156,12 +156,12 @@ const ParentingGuidance: React.FC = () => {
         <div className="container">
           <div className={styles.specializationIntro}>
             <span>הדרכת הורים למתבגרים</span>
-            <h2>לשמור על קשר כשהיחסים משתנים</h2>
+            <h2>איך שומרים על קשר עם מתבגר שנסגר?</h2>
             <p>
-              גיל ההתבגרות מביא איתו יותר עצמאות, יותר פרטיות ויותר מקום לחברים ולעולם שמחוץ לבית. במקביל, ההורים עדיין נדרשים להציב גבולות, לשמור על קשר ולדעת מתי להתערב ומתי להעביר אחריות. לא מעט משפחות מגלות שבשלב הזה שיחות פשוטות על לימודים, מסכים, שעות חזרה או משימות בבית הופכות מהר מאוד לעימות.
+              כשהמתבגר נסגר או מבקש יותר מרחק, המטרה אינה "להחזיר שליטה" אלא לשמור על ערוץ תקשורת, להציב גבולות ברורים ולהעביר אחריות בהדרגה. גיל ההתבגרות מביא יותר עצמאות ופרטיות, ובמקביל ההורים עדיין צריכים לדעת מתי להתערב ואיך לחזור לשיחה אחרי עימות.
             </p>
             <p>
-              <a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/kids-and-teens/supporting-teenagers/" target="_blank" rel="noopener noreferrer">משרד הבריאות</a> מדגיש שבגיל ההתבגרות עצמאות היא צורך התפתחותי משמעותי, לצד חשיבותה של נוכחות הורית, שיחה פתוחה וגבולות שמוסברים היטב. בהדרכת הורים המוקד הוא לא "להחזיר שליטה", אלא לדייק את הדרך שבה ההורים מגיבים ומתקשרים בתוך השלב החדש.
+              <a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/kids-and-teens/supporting-teenagers/" target="_blank" rel="noopener noreferrer">משרד הבריאות</a> מדגיש שבגיל ההתבגרות עצמאות היא צורך התפתחותי משמעותי, לצד חשיבותה של נוכחות הורית, שיחה פתוחה וגבולות שמוסברים היטב. בהדרכת הורים מתרגמים את העקרונות האלה לכללים ותגובות שמתאימים למשפחה ולמצבים שחוזרים בבית.
             </p>
           </div>
           <div className={styles.specializationGrid}>
