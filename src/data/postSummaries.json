@@ -1,5 +1,13 @@
 [
   {
+    "id": "how-to-find-good-relationship",
+    "title": "איך למצוא זוגיות טובה: לחפש חברות לפני שניצוצות",
+    "date": "2026-09-22",
+    "category": "זוגיות",
+    "subcategory": "מציאת זוגיות",
+    "excerpt": "אנחנו מחפשים ניצוצות, פרפרים בבטן וחיבור מיידי, אבל איך מוצאים זוגיות טובה ובריאה באמת? בואו נדבר על הציפיות, על מה שחשוב באמת בבחירת בן או בת זוג, ועל הדרך לעבור מהיכרות שטחית לקשר משמעותי."
+  },
+  {
     "id": "how-to-identify-a-gifted-child-parents-guide",
     "title": "איך מזהים ילד מחונן? המדריך להורים",
     "date": "2026-09-21",
@@ -15,6 +23,22 @@
     "subcategory": "רווקות מאוחרת",
     "excerpt": "השאלה למה כל כך קשה למצוא זוגיות מעסיקה רבים ורבות שנמצאים בשלבי רווקות מאוחרת. בין לחץ מהמשפחה, ציפיות אישיות והתלבטויות אחרי דייטים, הנה כמה דרכים להתבונן על הקושי בלי להאשים את עצמכם.",
     "image": "/images/generated/blog/five-questions-marriage.jpg"
+  },
+  {
+    "id": "money-fights-communication",
+    "title": "מריבות על כסף בזוגיות: איך מדברים על הוצאות בלי להיכנס לאותו ריב",
+    "date": "2026-09-20",
+    "category": "זוגיות",
+    "excerpt": "מריבות על כסף בזוגיות נוגעות לעיתים גם בביטחון, חופש ואמון. כך אפשר לעבור מהאשמות לשיחה ברורה יותר על הוצאות, גבולות והחלטות משותפות.",
+    "image": "/images/generated/blog/money-fights-communication.jpg"
+  },
+  {
+    "id": "relationship-after-childbirth",
+    "title": "משבר זוגיות אחרי לידה: איך מתמודדים עם ריחוק, עומס וריבים",
+    "date": "2026-09-20",
+    "category": "זוגיות",
+    "excerpt": "זוגיות אחרי לידה יכולה להשתנות בגלל עייפות, עומס וחלוקת אחריות חדשה. איך לדבר על הקושי, לצמצם פנקסנות ולשמור מקום לקשר.",
+    "image": "/images/generated/blog/relationship-after-childbirth.jpg"
   },
   {
     "id": "dating-apps-exhaustion",
@@ -33,6 +57,15 @@
     "subcategory": "הכנה לכיתה א׳",
     "excerpt": "המעבר מהגן לבית הספר מלווה בלא מעט התרגשות, אבל גם בחששות לגבי ההתארגנות בבוקר. איך אפשר לנצל את חודשי הקיץ כדי לעזור לילדים (וגם לנו) להגיע ליום הלימודים הראשון רגועים יותר? כמה רעיונות לבניית שגרה משפחתית חדשה.",
     "image": "/images/generated/blog/early-habits-building-calm-mornings-children.png"
+  },
+  {
+    "id": "fights-before-wedding",
+    "title": "ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
+    "date": "2026-09-16",
+    "category": "זוגיות",
+    "subcategory": "הכנה לנישואים והשנה הראשונה",
+    "excerpt": "ההכנות לחתונה מביאות איתן לפעמים מתח רב, והרבה זוגות מוצאים את עצמם רבים בדיוק כשהם אמורים להיות הכי מאושרים. למה זה קורה, ואיך מתמודדים עם לחץ לפני החתונה?",
+    "image": "/images/generated/blog/fights-before-wedding.png"
   },
   {
     "id": "returning-to-israel-after-relocation-relationship",
@@ -116,23 +149,6 @@
     "image": "/images/generated/blog/newlyweds-domestic-duties-sharing.jpg"
   },
   {
-    "id": "parenting-back-to-school-screen-limits",
-    "title": "חזרה לשגרת מסכים בריאה לקראת שנת הלימודים: גבולות ברוגע בלי מלחמות",
-    "date": "2026-08-27",
-    "category": "הדרכת הורים",
-    "excerpt": "סוף החופש הגדול מביא איתו אתגר מוכר: שעות מסך מרובות והרגלי שינה משובשים. גלו איך להחזיר את הגבולות בצורה הדרגתית, מעצימה וללא ויכוחים יומיומיים.",
-    "image": "/images/generated/blog/parenting-back-to-school-screen-limits.jpg"
-  },
-  {
-    "id": "aliyah-homesickness-balance",
-    "title": "זוגיות בעלייה ורילוקיישן: כשהגעגוע לארץ מפר את האיזון",
-    "date": "2026-09-01",
-    "category": "זוגיות",
-    "subcategory": "זוגיות בעלייה ורילוקיישן",
-    "excerpt": "רילוקיישן או עלייה לישראל הם צעדים משמעותיים. לעיתים אחד מבני הזוג מתאקלם מהר, בעוד השני חווה געגועים עזים לחיים שהושארו מאחור. איך מתמודדים עם הפער הזה בחוויות?",
-    "image": "/images/generated/blog/aliyah-homesickness-balance.jpg"
-  },
-  {
     "id": "smart-youth-focus-tasks-organization",
     "title": "הילד נבון מאוד אבל מתקשה להתארגן: מה קורה כשהמחוננות פוגשת קשיי קשב",
     "date": "2026-09-03",
@@ -151,6 +167,15 @@
     "image": "/images/generated/blog/mediation-for-will-conflicts.jpg"
   },
   {
+    "id": "aliyah-homesickness-balance",
+    "title": "זוגיות בעלייה ורילוקיישן: כשהגעגוע לארץ מפר את האיזון",
+    "date": "2026-09-01",
+    "category": "זוגיות",
+    "subcategory": "זוגיות בעלייה ורילוקיישן",
+    "excerpt": "רילוקיישן או עלייה לישראל הם צעדים משמעותיים. לעיתים אחד מבני הזוג מתאקלם מהר, בעוד השני חווה געגועים עזים לחיים שהושארו מאחור. איך מתמודדים עם הפער הזה בחוויות?",
+    "image": "/images/generated/blog/aliyah-homesickness-balance.jpg"
+  },
+  {
     "id": "aliyah-couples-cultural-gaps-identity",
     "title": "מדברים בשתי שפות: כיצד להתמודד עם פערי תרבות ושפה בזוגיות בעלייה",
     "date": "2026-08-31",
@@ -158,6 +183,14 @@
     "subcategory": "זוגיות בעלייה ורילוקיישן",
     "excerpt": "המעבר למדינה חדשה מביא איתו אתגרי שפה ותרבות שעשויים להציף מתחים בזוגיות. מה קורה כשבן זוג אחד משתלב מהר יותר, ואיך בונים גשרים של תקשורת בתוך השינוי?",
     "image": "/images/generated/blog/aliyah-couples-cultural-gaps.jpg"
+  },
+  {
+    "id": "parenting-back-to-school-screen-limits",
+    "title": "חזרה לשגרת מסכים בריאה לקראת שנת הלימודים: גבולות ברוגע בלי מלחמות",
+    "date": "2026-08-27",
+    "category": "הדרכת הורים",
+    "excerpt": "סוף החופש הגדול מביא איתו אתגר מוכר: שעות מסך מרובות והרגלי שינה משובשים. גלו איך להחזיר את הגבולות בצורה הדרגתית, מעצימה וללא ויכוחים יומיומיים.",
+    "image": "/images/generated/blog/parenting-back-to-school-screen-limits.jpg"
   },
   {
     "id": "new-relationship-initial-intentions",
@@ -639,14 +672,6 @@
     "image": "/images/generated/blog/public-tantrums-emotional-regulation.jpg"
   },
   {
-    "id": "money-fights-communication",
-    "title": "מריבות על כסף בזוגיות: איך מדברים על הוצאות בלי להיכנס לאותו ריב",
-    "date": "2026-09-20",
-    "category": "זוגיות",
-    "excerpt": "מריבות על כסף בזוגיות נוגעות לעיתים גם בביטחון, חופש ואמון. כך אפשר לעבור מהאשמות לשיחה ברורה יותר על הוצאות, גבולות והחלטות משותפות.",
-    "image": "/images/generated/blog/money-fights-communication.jpg"
-  },
-  {
     "id": "adhd-morning-routine",
     "title": "התארגנות בוקר עם ילד עם הפרעת קשב וריכוז (ADHD): צעדים מעשיים לשגרה רגועה ללא צעקות",
     "date": "2026-06-01",
@@ -671,14 +696,6 @@
     "image": "/images/generated/blog/healing-after-infidelity.jpg"
   },
   {
-    "id": "relationship-after-childbirth",
-    "title": "משבר זוגיות אחרי לידה: איך מתמודדים עם ריחוק, עומס וריבים",
-    "date": "2026-09-20",
-    "category": "זוגיות",
-    "excerpt": "זוגיות אחרי לידה יכולה להשתנות בגלל עייפות, עומס וחלוקת אחריות חדשה. איך לדבר על הקושי, לצמצם פנקסנות ולשמור מקום לקשר.",
-    "image": "/images/generated/blog/relationship-after-childbirth.jpg"
-  },
-  {
     "id": "breaking-the-yelling-cycle",
     "title": "איך להפסיק לצעוק על הילדים: מה לעשות כשהילד לא מקשיב עד שמרימים את הקול",
     "date": "2024-11-20",
@@ -693,14 +710,5 @@
     "category": "הדרכת הורים",
     "excerpt": "שעת ההשכבה שוב מסתיימת בצרחות, והילד שלכם יורה לעברכם את המילים הכי כואבות שיש: \"אני שונא אותך!\". במקום להיעלב ולהיכנס למאבקי כוח, בואו נבין מה באמת מסתתר מאחורי הזעם הזה ואיך מגיבים נכון כדי ללמד אותו תקשורת בריאה יותר.",
     "image": "/images/generated/blog/when-children-say-i-hate-you.jpg"
-  },
-  {
-    "id": "fights-before-wedding",
-    "title": "ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
-    "date": "2026-09-16",
-    "category": "זוגיות",
-    "subcategory": "הכנה לנישואים והשנה הראשונה",
-    "excerpt": "ההכנות לחתונה מביאות איתן לפעמים מתח רב, והרבה זוגות מוצאים את עצמם רבים בדיוק כשהם אמורים להיות הכי מאושרים. למה זה קורה, ואיך מתמודדים עם לחץ לפני החתונה?",
-    "image": "/images/generated/blog/fights-before-wedding.png"
   }
 ]
