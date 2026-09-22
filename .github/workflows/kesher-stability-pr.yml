@@ -41,6 +41,11 @@ jobs:
             tests.test_kesher_provider_recovery \
             tests.test_media_provenance_contract \
             tests.test_kesher_audio_preservation \
+            tests.test_kesher_media_publication \
+            tests.test_kesher_media_audit \
+            tests.test_kesher_media_observer \
+            tests.test_kesher_observe \
+            tests.test_kesher_controller_entry \
             tests.test_kesher_state_write_safety \
             tests.test_kesher_canonical_state \
             tests.test_kesher_github_faults \

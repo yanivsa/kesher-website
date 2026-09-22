@@ -38,6 +38,38 @@ def observed(*publications, now=NOW, current_slot=SOURCE.slot, runs=(), prs=()):
 
 
 class AutonomousControllerTests(unittest.TestCase):
+    def test_observation_of_an_older_canonical_revision_cannot_drive_new_state(self):
+        obs = observed(publication()).value
+        obs['state_revision'] = 0
+        state = new_state(); state['revision'] = 1
+        with self.assertRaises(StateConflict):
+            reconcile(state, Observation(obs), now=NOW)
+
+    def test_creation_respects_publication_window_without_stopping_reconciliation(self):
+        obs = observed().value; obs['article_creation_allowed'] = False
+        result = reconcile(new_state(), Observation(obs), now=NOW)
+        self.assertIsNone(result.command_id)
+
+    def test_observed_slot_rotates_backlog_and_missing_adopted_source_is_incident(self):
+        old = SourceIdentity('2026-09-16', 'old', 'b'*64)
+        state = bind_source(new_state(), old, now=NOW)
+        obs = observed(publication()).value; obs['missing_slots'] = [old.slot]
+        result = reconcile(state, Observation(obs), now=NOW)
+        self.assertEqual(result.state['slots'][SOURCE.slot]['observed_at'], NOW)
+        self.assertEqual(result.state['slots'][old.slot]['observed_at'], NOW)
+        self.assertTrue(any(row['failure_class'] == 'SOURCE_MISSING' for row in result.state['incidents'].values()))
+
+    def test_independent_technical_receipt_is_saved_separately_from_worker_claims(self):
+        from tests.test_kesher_media_publication import fixture
+        from scripts.kesher_runtime.identity import digest
+        args = fixture(); source = args['identity'].source
+        pub = publication(source, overview='verified', short='PUBLIC_METADATA_INVALID')
+        pub['media']['short']['technical_evidence'] = args['technical']
+        result = reconcile(new_state(), observed(pub, current_slot=source.slot), now=NOW)
+        saved = result.state['items'][args['identity'].key]['receipts']
+        self.assertEqual(saved['technical:' + digest(args['technical'])], args['technical'])
+        self.assertFalse(result.state['slots'][source.slot]['complete'])
+
     def test_transient_article_recovery_counts_actual_deploy_commands(self):
         state = new_state()
         for index in range(6):

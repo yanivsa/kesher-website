@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from .identity import Identity, MediaIdentity, SlotIdentity, SourceIdentity, canonical_json, digest, identity_from_dict, require_sha
 from .media_state import snapshots
 from .policy import RULES, Rule, due_after, record_incident, seconds
-from .state import StateInvalid, bind_source, plan_command, target_is_current, timestamp, validate_state, validate_transition
+from .state import StateConflict, StateInvalid, bind_source, plan_command, target_is_current, timestamp, validate_state, validate_transition
 
 OBSERVATION_MAX_AGE = 300
 VERIFICATION_MAX_AGE = 600
@@ -186,6 +186,8 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
     validate_state(state)
     timestamp(now)
     data = observed.value
+    if 'state_revision' in data and data['state_revision'] != state['revision']:
+        raise StateConflict('Canonical state changed during observation; discard this plan')
     require_sha(data.get('main_sha'), 40)
     SlotIdentity(data.get('current_slot'))
     if not 0 <= seconds(now, data.get('observed_at')) <= OBSERVATION_MAX_AGE:
@@ -213,6 +215,7 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
         # Replacement is explicit and preserves every old media identity/receipt.
         proposed = bind_source(proposed, source, now=now, previous_source_key=previous)
         proposed['slots'][slot].pop('blocked', None)
+        proposed['slots'][slot]['observed_at'] = data['observed_at']
     _settle_commands(proposed, data, now=now)
     eligible = []
     for slot in sorted(candidates, reverse=True):
@@ -232,6 +235,15 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
             target = MediaIdentity(source, kind)
             row = proposed['items'][target.key]
             result = entry['media'][kind]
+            technical = result.get('technical_evidence')
+            if technical is not None:
+                if technical.get('schema_version') != 1 or technical.get('identity') != target.to_dict():
+                    raise StateInvalid('Independent technical receipt belongs to another target')
+                for field in ('output_sha256', 'verifier_sha256', 'raw_sha256', 'final_sha256', 'audio_sha256'):
+                    require_sha(technical.get(field))
+                if type(technical.get('final_size_bytes')) is not int or technical['final_size_bytes'] <= 0:
+                    raise StateInvalid('Independent technical receipt has invalid file size')
+                row['receipts'].setdefault('technical:' + digest(technical), technical)
             verified.append(_record_verification(row, result, target, now=now, main_sha=data['main_sha']))
             if article_verified:
                 action = _eligible(proposed, target, result, row.setdefault('recovery', {}), now=now, default_operation='publish')
@@ -255,7 +267,12 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
         if type(pr.get('number')) is not int or pr['number'] < 1:
             raise StateInvalid('Article PR must have exact repository number/head')
         prs.setdefault(slot, []).append(pr)
-    for slot in sorted({data['current_slot'], *prs.keys()}):
+    missing_slots = data.get('missing_slots', [])
+    for slot in missing_slots:
+        SlotIdentity(slot)
+        if slot > data['current_slot']:
+            raise StateInvalid('Missing historical source has a future slot')
+    for slot in sorted({data['current_slot'], *prs.keys(), *missing_slots}):
         if slot in candidates or slot in blocked:
             continue
         target = SlotIdentity(slot)
@@ -266,6 +283,7 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
             proposed['slots'].setdefault(slot, {}).update(blocked='DUPLICATE_PR', complete=False)
             continue
         row = proposed['slots'].setdefault(slot, {})
+        row['observed_at'] = data['observed_at']
         row.pop('blocked', None)
         if row.get('source_key'):
             # An adopted article disappearing from main is an incident, never
@@ -292,6 +310,8 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
                 record_incident(proposed, target, 'article', 'CI_FAILED', now=now, evidence=row['article_pr'])
             elif seconds(now, row['article_last_progress_at']) >= 43200:
                 record_incident(proposed, target, 'article', 'ARTICLE_PR_STALLED', now=now, evidence=row['article_pr'])
+            continue
+        if slot == data['current_slot'] and data.get('article_creation_allowed') is False:
             continue
         action = _eligible(proposed, target, {'status': 'absent'}, row.setdefault('recovery', {}),
                            now=now, default_operation='create_article')
