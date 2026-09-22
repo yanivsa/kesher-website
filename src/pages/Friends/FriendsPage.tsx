@@ -146,6 +146,7 @@ const FriendsPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
+        canonical={`${SITE_CONFIG.url}/friends`}
         title="Friends & Sites I Like (/friends) | שירה סהרוני"
         description="My /friends page: personal websites, creators, authors, and inspiring people I follow and recommend. Part of the Slash Friends movement."
       />

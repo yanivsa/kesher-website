@@ -51,7 +51,8 @@ const ContactPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <SchemaOrg data={schemaData} />
-      <MetaTags 
+      <MetaTags
+        canonical={`${SITE_CONFIG.url}/contact`}
         title="צור קשר"
         description="צרו קשר עם שירה סהרוני לתיאום ייעוץ זוגי, הנחיית הורים, גישור או הזמנת הרצאה וסדנה. זמינה באשדוד ובאונליין."
       />

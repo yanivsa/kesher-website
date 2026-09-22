@@ -46,6 +46,7 @@ const MediationPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
+        canonical={`${SITE_CONFIG.url}/services/mediation`}
         title="גישור באשדוד ובאונליין | מגשרת מוסמכת"
         description="גישור מכבד ומעשי לבני זוג, משפחות, הורים, שכנים ושותפים. מסגרת ברורה להקשבה, הפחתת מתחים ובניית הסכמות."
         image="/images/generated/services/mediation-room.jpg"

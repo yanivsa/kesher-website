@@ -75,7 +75,8 @@ const AboutPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <SchemaOrg data={schemaData} />
-      <MetaTags 
+      <MetaTags
+        canonical={`${SITE_CONFIG.url}/about`}
         title="אודות שירה סהרוני | יועצת זוגית, מנחת הורים ומגשרת"
         description="הכירו את שירה סהרוני — עורכת דין בהכשרתה, מגשרת מוסמכת, יועצת זוגית ומנחת הורים באשדוד ובאונליין."
         image="/images/shira-saharoni.webp"
