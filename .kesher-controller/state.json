@@ -1109,7 +1109,24 @@
         "next_deploy_retry_at": "2026-09-21T18:47:40.119814+00:00"
       },
       "archived_at": "2026-09-21T21:02:19.999735+00:00",
-      "media": {}
+      "media": {
+        "source_slug": "how-to-identify-a-gifted-child-parents-guide",
+        "source_content_sha256": "f0947af980ea7388123580d6d128b70a330ce5dd014391a5d9b23a762bddbc40",
+        "article_url": "https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide",
+        "article_live": true,
+        "long_status": "complete",
+        "long_item_id": "video-20260921-223822-f0947af980",
+        "long_youtube_url": "https://youtu.be/IU213USwun8",
+        "long_youtube_id": "IU213USwun8",
+        "short_status": "complete",
+        "short_item_id": "video-20260921-234335-f0947af980",
+        "short_youtube_url": "https://youtu.be/aBqNZqcP3mM",
+        "short_youtube_id": "aBqNZqcP3mM",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-09-22T10:50:03.072724+00:00"
+      }
     }
   ],
   "last_error": null,
@@ -1794,9 +1811,19 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-22T10:50:03.072743+00:00",
+      "from": "complete",
+      "to": "complete",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-09-21",
+        "source_slug": "how-to-identify-a-gifted-child-parents-guide"
+      }
     }
   ],
-  "updated_at": "2026-09-22T10:49:42.014104+00:00",
+  "updated_at": "2026-09-22T10:50:03.072750+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
