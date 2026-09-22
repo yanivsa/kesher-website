@@ -42,6 +42,47 @@ jobs:
             echo "::notice::VITE_GTM_CONTAINER_ID is not configured. Booking UX and Calendly event capture will deploy, while Google Ads cookie attribution remains inactive until a GTM container is configured."
           fi
 
+      - name: Verify production Turnstile bindings
+        shell: bash
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          account_id = os.environ["CLOUDFLARE_ACCOUNT_ID"]
+          token = os.environ["CLOUDFLARE_API_TOKEN"]
+          request = urllib.request.Request(
+              f"https://api.cloudflare.com/client/v4/accounts/{account_id}/pages/projects/kesher-website",
+              headers={
+                  "Authorization": f"Bearer {token}",
+                  "Accept": "application/json",
+                  "User-Agent": "kesher-turnstile-preflight/1",
+              },
+          )
+          with urllib.request.urlopen(request, timeout=30) as response:
+              payload = json.load(response)
+
+          if payload.get("success") is not True:
+              raise SystemExit("Cloudflare Pages configuration lookup failed")
+
+          project = payload.get("result") or {}
+          production = ((project.get("deployment_configs") or {}).get("production") or {})
+          env_vars = production.get("env_vars") or {}
+          required = {"TURNSTILE_SITE_KEY", "TURNSTILE_SECRET_KEY"}
+          missing = sorted(required.difference(env_vars.keys()))
+          if missing:
+              raise SystemExit(
+                  "Production Turnstile bindings are missing: " + ", ".join(missing)
+              )
+
+          print("Production Turnstile bindings are configured.")
+          PY
+
       - name: Install dependencies
         run: npm ci
 
