@@ -52,6 +52,17 @@ def canonical_state(args):
 
 
 class MediaObserverTests(unittest.TestCase):
+    def test_unresolved_legacy_upload_or_pending_capability_cannot_become_absence(self):
+        args = fixture(); state = bind_source(new_state(), args['identity'].source, now=NOW)
+        inventory = {**args['inventory'], 'videos': []}
+        state['migration']['observed_youtube_ids'] = {'known-history': [{'target': args['identity'].to_dict()}]}
+        result = observe_media(state, args['identity'], args['source'], inventory=inventory, now=NOW, audit=Mock())
+        self.assertEqual(result['failure_class'], 'LEGACY_EVIDENCE_UNRESOLVED')
+        state['migration'] = {}
+        state['quarantine'] = [{'target': args['identity'].to_dict(), 'failure_class': 'LEGACY_UPLOAD_CAPABILITY_REQUIRES_SEALING'}]
+        result = observe_media(state, args['identity'], args['source'], inventory=inventory, now=NOW, audit=Mock())
+        self.assertEqual(result['failure_class'], 'LEGACY_EVIDENCE_UNRESOLVED')
+
     def test_absence_requires_fresh_complete_inventory_before_authorizing_creation(self):
         args = fixture(); state = bind_source(new_state(), args['identity'].source, now=NOW)
         audit = Mock(side_effect=AssertionError('No output exists'))

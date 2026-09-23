@@ -38,7 +38,9 @@ def workflow_for(command: dict) -> str:
     operation = command['operation']
     if isinstance(target, MediaIdentity) and operation in {'publish', 'reconcile', 'rebuild', 'repair_metadata'}:
         return 'kesher-media-worker.yml'
-    if isinstance(target, SlotIdentity) and operation in {'create_article', 'merge_article'}:
+    if isinstance(target, SlotIdentity) and operation in {'create_article', 'settle_article'}:
+        return 'kesher-article-worker.yml'
+    if isinstance(target, SlotIdentity) and operation == 'merge_article':
         return 'kesher-article-generation.yml'
     routes = {'normalize_article': 'normalize-article-pr.yml', 'attach_image': 'kesher-article-image.yml'}
     if isinstance(target, SlotIdentity) and operation in routes:

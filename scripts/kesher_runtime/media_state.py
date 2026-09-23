@@ -29,7 +29,8 @@ def _validate_item(item: dict, target: MediaIdentity) -> None:
 
 
 def snapshots(state: dict, target: MediaIdentity) -> list[dict]:
-    found = {}
+    baseline = legacy_baseline(state['items'].get(target.key, {}), target)
+    found = {1: baseline} if baseline else {}
     for command in state['commands'].values():
         if command['target'] != target.to_dict():
             continue
@@ -45,6 +46,28 @@ def snapshots(state: dict, target: MediaIdentity) -> list[dict]:
                 raise StateInvalid('Conflicting media snapshots; quarantine instead of selecting newest')
             found[sequence] = evidence
     return [found[key] for key in sorted(found)]
+
+
+def legacy_baseline(row: dict, target: MediaIdentity) -> dict | None:
+    """A migration baseline is observed history, never a forged worker command."""
+    imports = [(name, evidence) for name, evidence in row.get('receipts', {}).items() if name.startswith('legacy:')]
+    if not imports:
+        return None
+    if len(imports) != 1:
+        raise StateInvalid('Multiple migration baselines cannot own one media identity')
+    name, evidence = imports[0]
+    try:
+        _validate_item(evidence['item'], target)
+        origin = evidence['legacy_import']
+        if (name != 'legacy:' + digest(evidence) or evidence['sequence'] != 1
+                or origin['item_sha256'] != digest(evidence['item'])
+                or origin['verified_source_sha256'] != target.source.content_sha256
+                or not origin['origins']):
+            raise ValueError('Corrupted import proof')
+        public_evidence(evidence)
+    except (KeyError, TypeError, ValueError) as exc:
+        raise StateInvalid('Migration baseline lost its immutable identity or digest') from exc
+    return evidence
 
 
 def _phase(item: dict) -> str:

@@ -38,6 +38,32 @@ def observed(*publications, now=NOW, current_slot=SOURCE.slot, runs=(), prs=()):
 
 
 class AutonomousControllerTests(unittest.TestCase):
+    def test_article_mutation_requires_exact_head_jules_quiescence(self):
+        for status in ('normalize_required', 'image_required', 'ready_to_merge', 'ci_failed'):
+            with self.subTest(status=status):
+                pr = {'slot': SOURCE.slot, 'number': 854, 'head_sha': CODE, 'status': status}
+                result = reconcile(new_state(), observed(prs=[pr]), now=NOW)
+                self.assertEqual(result.state['commands'][result.command_id]['operation'], 'settle_article')
+
+    def test_settled_article_moves_to_next_stage_without_previous_poll_backoff(self):
+        from scripts.kesher_runtime.worker import WorkerContext
+        pr = {'slot': SOURCE.slot, 'number': 854, 'head_sha': CODE, 'status': 'image_required'}
+        first = reconcile(new_state(), observed(prs=[pr]), now=NOW)
+        server = ContentsServer(first.state); store = GitHubStateStore(server, 'owner/repo')
+        worker = WorkerContext(store, first.command_id, '1/1', SlotIdentity(SOURCE.slot), code_sha=CODE, now=lambda: NOW)
+        worker.claim()
+        worker.checkpoint('article_pr_settled', {'number': 854, 'head_sha': CODE, 'slot': SOURCE.slot, 'sessions': []}, phase='OUTPUT_CREATED')
+        worker.checkpoint('execution_result', {'status': 'pr_ready'}, phase='OUTPUT_CREATED')
+        worker.finish()
+        result = reconcile(server.document, observed(prs=[pr]), now=NOW)
+        self.assertEqual(result.state['commands'][result.command_id]['operation'], 'attach_image')
+        changed = {**pr, 'head_sha': 'e'*40}
+        server.document['commands'][result.command_id] = result.state['commands'][result.command_id]
+        server.document['commands'][result.command_id]['outcome'] = 'succeeded'
+        result = reconcile(server.document, observed(prs=[changed]), now=NOW)
+        self.assertEqual(result.state['commands'][result.command_id]['operation'], 'settle_article')
+        self.assertEqual(result.state['commands'][result.command_id]['inputs']['pr_head_sha'], changed['head_sha'])
+
     def test_observation_of_an_older_canonical_revision_cannot_drive_new_state(self):
         obs = observed(publication()).value
         obs['state_revision'] = 0

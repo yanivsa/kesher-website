@@ -84,6 +84,11 @@ def observe_media(state: dict, target: MediaIdentity, source: dict, *, inventory
         assignments = upload_assignments(state)
         history = snapshots(state, target)
         item = history[-1]['item'] if history else None
+        legacy_ids = {video_id for video_id, claims in state.get('migration', {}).get('observed_youtube_ids', {}).items()
+                      if any(claim.get('target') == target.to_dict() for claim in claims)}
+        if (any(row.get('target') == target.to_dict() for row in state.get('quarantine', []))
+                or legacy_ids - ({item['youtube_id']} if item and item.get('youtube_id') else set())):
+            reject('LEGACY_EVIDENCE_UNRESOLVED')
         candidates = possible_uploads(target, source, inventory, assignments, now=now)
         if not item or not item.get('youtube_id'):
             if candidates:

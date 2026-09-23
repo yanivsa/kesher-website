@@ -1,0 +1,52 @@
+name: Kesher canonical article worker
+run-name: kesher-command:${{ inputs.command_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      command_id:
+        description: Persisted canonical command ID
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: read
+  actions: read
+
+concurrency:
+  group: kesher-article-command-${{ inputs.command_id }}
+  cancel-in-progress: false
+
+jobs:
+  article:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMMAND_ID: ${{ inputs.command_id }}
+      GH_TOKEN: ${{ secrets.KESHER_CONTROLLER_TOKEN || github.token }}
+    steps:
+      - name: Checkout immutable workflow revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Claim exact command before loading Jules credentials
+        id: claim
+        run: python -m scripts.kesher_runtime.worker_entry claim "$COMMAND_ID"
+      - name: Install article validation dependencies
+        if: steps.claim.outputs.execute == 'true'
+        run: python -m pip install requests==2.33.0 -r scripts/requirements-article.txt
+      - name: Create or observe one exact article session
+        if: steps.claim.outputs.execute == 'true'
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: python -m scripts.kesher_runtime.article_worker "$COMMAND_ID"
+      - name: Preserve an interrupted worker failure
+        if: ${{ failure() && steps.claim.outputs.execute == 'true' }}
+        run: python -m scripts.kesher_runtime.worker_entry finish "$COMMAND_ID" --failure-class WORKER_FAILED

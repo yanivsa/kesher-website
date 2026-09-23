@@ -46,6 +46,9 @@ jobs:
             tests.test_kesher_media_observer \
             tests.test_kesher_observe \
             tests.test_kesher_controller_entry \
+            tests.test_kesher_jules_sessions \
+            tests.test_kesher_article_worker \
+            tests.test_kesher_runtime_migration \
             tests.test_kesher_state_write_safety \
             tests.test_kesher_canonical_state \
             tests.test_kesher_github_faults \

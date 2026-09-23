@@ -122,8 +122,10 @@ def _progress(state: dict, target: Identity, tracker: dict, *, now: str) -> None
     item = history[-1]['item'] if history else None
     effects = {name + ':' + effect['request_sha256']: effect['receipt'] for command in _commands(state, target)
                for name, effect in command['effects'].items() if effect['receipt'] is not None}
+    article_heads = sorted({canonical_json(row['receipts']['article_progress']['evidence'])
+                            for row in _commands(state, target) if 'article_progress' in row['receipts']})
     # Execution bookkeeping and repeated waiting receipts cannot reset stall time.
-    fingerprint = digest({'item': item, 'external_receipts': effects})
+    fingerprint = digest({'item': item, 'external_receipts': effects, 'article_heads': article_heads})
     if tracker.get('progress_sha256') != fingerprint:
         tracker['progress_sha256'] = fingerprint
         tracker['last_meaningful_progress_at'] = now
@@ -144,6 +146,11 @@ def _eligible(state: dict, target: Identity, observation: dict, tracker: dict, *
         return None
     commands = _commands(state, target)
     _progress(state, target, tracker, now=now)
+    if isinstance(target, SlotIdentity):
+        # Article stages and successive exact PR heads do not share a retry
+        # budget. A completed Jules poll must not delay trusted image attachment.
+        commands = [row for row in commands if row['operation'] == default_operation
+                    and row['inputs'] == (inputs or {})]
     failure_class = observation.get('failure_class')
     last = commands[-1] if commands else None
     if not failure_class and last:
@@ -151,7 +158,7 @@ def _eligible(state: dict, target: Identity, observation: dict, tracker: dict, *
         if last['outcome'] == 'failed':
             failure_class = (last['failure'] or {}).get('class') or 'WORKER_FAILED'
         elif result.get('status') == 'waiting':
-            failure_class = 'PROVIDER_PENDING'
+            failure_class = result.get('failure_class') or 'PROVIDER_PENDING'
         elif last['outcome'] == 'succeeded':
             failure_class = 'PUBLIC_PROCESSING_PENDING'
     if observation['status'] == 'pending' and not failure_class:
@@ -300,6 +307,14 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
                 row['article_last_progress_at'] = now
             operation = {'normalize_required': 'normalize_article', 'image_required': 'attach_image',
                          'ready_to_merge': 'merge_article'}.get(pr['status'])
+            if operation or pr['status'] == 'ci_failed':
+                settled = any(command['outcome'] == 'succeeded'
+                              and command['operation'] in {'create_article', 'settle_article'}
+                              and (receipt := command['receipts'].get('article_pr_settled', {}).get('evidence'))
+                              and receipt.get('number') == pr['number'] and receipt.get('head_sha') == pr['head_sha']
+                              for command in _commands(proposed, target))
+                if not settled:
+                    operation = 'settle_article'
             if operation:
                 action = _eligible(proposed, target, {'status': 'absent'}, row.setdefault('recovery', {}),
                                    now=now, default_operation=operation,

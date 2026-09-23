@@ -74,6 +74,7 @@ def validate_state(state: dict) -> None:
         if not isinstance(state.get(name), list):
             raise StateInvalid(f'Invalid state field {name}')
     try:
+        media_sequences = {}
         for key, row in state['sources'].items():
             source = identity_from_dict(row['identity'])
             if not isinstance(source, SourceIdentity) or source.key != key:
@@ -87,7 +88,10 @@ def validate_state(state: dict) -> None:
             target = identity_from_dict(row['identity'])
             if not isinstance(target, MediaIdentity) or target.key != key or target.source.key not in state['sources']:
                 raise StateInvalid('Media key/source does not match immutable identity')
-        media_sequences = {}
+            from .media_state import legacy_baseline
+            baseline = legacy_baseline(row, target)
+            if baseline:
+                media_sequences[key] = {1: baseline}
         for key, row in state['commands'].items():
             target = identity_from_dict(row['target'])
             _validate_command_arguments(row['operation'], row['ordinal'], row['inputs'], row['code_sha'])
