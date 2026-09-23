@@ -280,7 +280,7 @@
       "fingerprint": "c2ac82ab26ac43778b03f076d18b8e1a",
       "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|article",
       "issued_at": "2026-09-23T16:22:03.838157+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-67b3738723253ac703e0b228",
@@ -318,7 +318,8 @@
       "running_at": "2026-09-23T16:25:41.155331+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-23T16:25:41.155331+00:00"
+      "updated_at": "2026-09-23T16:28:01.209942+00:00",
+      "verified_at": "2026-09-23T16:28:01.209942+00:00"
     },
     "ksr-7001b3eb8e1b8d84c23c0586": {
       "acknowledged_at": "2026-09-23T16:15:38.162196+00:00",
@@ -1933,7 +1934,7 @@
       "strike": 2
     },
     "c2ac82ab26ac43778b03f076d18b8e1a": {
-      "active_command_id": "ksr-67b3738723253ac703e0b228",
+      "active_command_id": null,
       "failure_signature": "DUPLICATE_ARTICLE_DATE",
       "fingerprint": "c2ac82ab26ac43778b03f076d18b8e1a",
       "first_seen_at": "2026-09-23T16:20:10.016997+00:00",
@@ -1955,12 +1956,18 @@
           "command_id": "ksr-67b3738723253ac703e0b228",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-23T16:28:01.209942+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|article",
       "last_seen_at": "2026-09-23T16:25:41.155331+00:00",
       "marker": "MASTER_ESCALATION fingerprint=c2ac82ab26ac43778b03f076d18b8e1a strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-23T16:28:01.209942+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "c5a09e1bf03ce45f81c7acb033f40eb1": {
@@ -2163,5 +2170,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T16:25:41.155331+00:00"
+  "updated_at": "2026-09-23T16:28:01.209942+00:00"
 }
