@@ -34,6 +34,7 @@
       "updated_at": "2026-09-21T21:00:21.603758+00:00"
     },
     "ksr-09f9463b5ec66c52a6f3c0e3": {
+      "acknowledged_at": "2026-09-23T16:38:42.465167+00:00",
       "command_id": "ksr-09f9463b5ec66c52a6f3c0e3",
       "evidence_hash": "613f2806a55d64cbfbde1862b9ed31d136f9b38340d9630da19e8f298a31b8a2",
       "exact": {
@@ -51,12 +52,16 @@
       "fingerprint": "31cda6e909f536963b7e712c1b3504ec",
       "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|long_video",
       "issued_at": "2026-09-23T16:38:04.482925+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "already_active",
+        "run_id": 35890068832,
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-23T16:38:04.482925+00:00"
+      "updated_at": "2026-09-23T16:38:42.465167+00:00"
     },
     "ksr-0baab7cba3d7e7fef7fae9c3": {
       "acknowledged_at": "2026-09-23T11:44:31.702586+00:00",
@@ -2214,5 +2219,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T16:38:04.482925+00:00"
+  "updated_at": "2026-09-23T16:38:42.465167+00:00"
 }
