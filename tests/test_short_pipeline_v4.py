@@ -41,6 +41,7 @@ class ShortPipelineV4Tests(unittest.TestCase):
         lines = [line.strip() for line in item["youtube_metadata"]["description"].splitlines() if line.strip()]
         self.assertIn("https://kesher.saharoni.com/blog/how-to-talk", lines)
         self.assertIn("https://kesher.saharoni.com", lines)
+        self.assertIn("https://kesher.saharoni.com/appointment", lines)
 
     def test_repair_youtube_metadata_updates_stale_recovered_item_links(self):
         item = short.new_item(self.source())
@@ -49,6 +50,7 @@ class ShortPipelineV4Tests(unittest.TestCase):
         lines = [line.strip() for line in metadata["description"].splitlines() if line.strip()]
         self.assertIn("https://kesher.saharoni.com/blog/how-to-talk", lines)
         self.assertIn("https://kesher.saharoni.com", lines)
+        self.assertIn("https://kesher.saharoni.com/appointment", lines)
 
 
     def test_native_provider_gate_rejects_landscape_or_long_form_identity(self):
