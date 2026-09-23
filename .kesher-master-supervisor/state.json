@@ -261,6 +261,31 @@
       "updated_at": "2026-09-18T12:20:11.191203+00:00",
       "verified_at": "2026-09-18T12:20:11.191203+00:00"
     },
+    "ksr-7001b3eb8e1b8d84c23c0586": {
+      "command_id": "ksr-7001b3eb8e1b8d84c23c0586",
+      "evidence_hash": "a77a1c029f6a79aeb027d17955ac2bdd3f4d7231969611c60fe3281ff8a85c52",
+      "exact": {
+        "artifact_id": null,
+        "content_sha256": "2ef7aa22560f55256d06d8e547681e321d125ddf464c9d5e9951d5e0aec7a09f",
+        "item_id": null,
+        "pr_number": 909,
+        "short_item_id": null,
+        "slug": "stop-keeping-score-relationship",
+        "source_id": null,
+        "task_id": null
+      },
+      "executor": "controller",
+      "failure_signature": "DUPLICATE_ARTICLE_DATE",
+      "fingerprint": "7299bbf912529cfda70312ea7aec0efd",
+      "incident_id": "v5|stop-keeping-score-relationship|2ef7aa22560f55256d06d8e547681e321d125ddf464c9d5e9951d5e0aec7a09f|article",
+      "issued_at": "2026-09-23T16:14:06.079992+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "escalate_unknown_failure",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-23T16:14:06.079992+00:00"
+    },
     "ksr-712e03f65f24aa41cbbaa229": {
       "acknowledged_at": "2026-09-16T01:24:05.083434+00:00",
       "command_id": "ksr-712e03f65f24aa41cbbaa229",
@@ -1642,6 +1667,25 @@
       "status": "resolved",
       "strike": 2
     },
+    "7299bbf912529cfda70312ea7aec0efd": {
+      "active_command_id": "ksr-7001b3eb8e1b8d84c23c0586",
+      "failure_signature": "DUPLICATE_ARTICLE_DATE",
+      "fingerprint": "7299bbf912529cfda70312ea7aec0efd",
+      "first_seen_at": "2026-09-23T16:14:06.079992+00:00",
+      "history": [
+        {
+          "at": "2026-09-23T16:14:06.079992+00:00",
+          "command_id": "ksr-7001b3eb8e1b8d84c23c0586",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|stop-keeping-score-relationship|2ef7aa22560f55256d06d8e547681e321d125ddf464c9d5e9951d5e0aec7a09f|article",
+      "last_seen_at": "2026-09-23T16:14:06.079992+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=7299bbf912529cfda70312ea7aec0efd strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "761c2ce2fd2e5167b3f52aa4eecc7adc": {
       "active_command_id": null,
       "failure_signature": "STALE_SOURCE_BINDING",
@@ -1991,5 +2035,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T11:56:18.854806+00:00"
+  "updated_at": "2026-09-23T16:14:06.079992+00:00"
 }
