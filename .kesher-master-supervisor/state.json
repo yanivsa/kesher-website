@@ -173,6 +173,7 @@
       "updated_at": "2026-09-17T11:14:39.728419+00:00"
     },
     "ksr-290a1097c8841bbd65b718c2": {
+      "acknowledged_at": "2026-09-23T17:27:36.874311+00:00",
       "command_id": "ksr-290a1097c8841bbd65b718c2",
       "evidence_hash": "613f2806a55d64cbfbde1862b9ed31d136f9b38340d9630da19e8f298a31b8a2",
       "exact": {
@@ -190,12 +191,44 @@
       "fingerprint": "31cda6e909f536963b7e712c1b3504ec",
       "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|long_video",
       "issued_at": "2026-09-23T17:25:49.006703+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-290a1097c8841bbd65b718c2",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "controller bindings match the authoritative slug/content hash and exact provider/item identities without fresh generation",
+          "evidence_hash": "613f2806a55d64cbfbde1862b9ed31d136f9b38340d9630da19e8f298a31b8a2",
+          "exact": {
+            "artifact_id": "c4b091c0-306d-4255-b74d-fcdb6ac99b37",
+            "content_sha256": "5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0",
+            "item_id": "video-20260923-193450-5b06a2fb2f",
+            "pr_number": 909,
+            "short_item_id": "video-20260923-194326-5b06a2fb2f",
+            "slug": "stop-keeping-score-relationship",
+            "source_id": "a523b059-f409-4363-9368-ecc61d1a92a9",
+            "task_id": "c4b091c0-306d-4255-b74d-fcdb6ac99b37"
+          },
+          "failure_signature": "STALE_SOURCE_BINDING",
+          "fingerprint": "31cda6e909f536963b7e712c1b3504ec",
+          "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|long_video",
+          "proposed_action": "rebind_exact_source",
+          "schema_version": 1,
+          "stage": "long_video",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/10336285613111218745"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-23T17:25:49.006703+00:00"
+      "updated_at": "2026-09-23T17:27:36.874311+00:00"
     },
     "ksr-38808857bde8631cbed265fc": {
       "acknowledged_at": "2026-09-17T11:07:18.960439+00:00",
@@ -2261,5 +2294,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T17:25:49.006703+00:00"
+  "updated_at": "2026-09-23T17:27:36.874311+00:00"
 }
