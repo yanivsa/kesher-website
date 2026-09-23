@@ -49,8 +49,8 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/909",
     "normalization_slot": "2026-09-23",
     "normalization_dispatched_at": "2026-09-23T08:04:04.516309+00:00",
-    "merge_dispatch_at": "2026-09-23T09:57:35.062294+00:00",
-    "merge_dispatch_count": 1
+    "merge_dispatch_at": "2026-09-23T10:07:11.420433+00:00",
+    "merge_dispatch_count": 2
   },
   "backlog": [
     {
@@ -1826,7 +1826,7 @@
       "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-09-23T09:57:32.397596+00:00",
+  "updated_at": "2026-09-23T10:07:09.522371+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
