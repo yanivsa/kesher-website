@@ -1077,7 +1077,7 @@
       "fingerprint": "c5a09e1bf03ce45f81c7acb033f40eb1",
       "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
       "issued_at": "2026-09-23T11:47:01.316936+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "external_run_id": 35856699677,
         "external_workflow": "Kesher Daily Article Short V4",
@@ -1117,7 +1117,8 @@
       "running_at": "2026-09-23T11:49:44.887428+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-23T11:49:44.887428+00:00"
+      "updated_at": "2026-09-23T11:56:18.854806+00:00",
+      "verified_at": "2026-09-23T11:56:18.854806+00:00"
     },
     "ksr-ff48fdefa56312b36f0734b1": {
       "acknowledged_at": "2026-09-22T10:49:24.777286+00:00",
@@ -1791,7 +1792,7 @@
       "strike": 2
     },
     "c5a09e1bf03ce45f81c7acb033f40eb1": {
-      "active_command_id": "ksr-f6663b5e84649c5f683d0558",
+      "active_command_id": null,
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "c5a09e1bf03ce45f81c7acb033f40eb1",
       "first_seen_at": "2026-09-23T11:38:42.897477+00:00",
@@ -1813,12 +1814,18 @@
           "command_id": "ksr-f6663b5e84649c5f683d0558",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-23T11:56:18.854806+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
       "last_seen_at": "2026-09-23T11:49:44.887428+00:00",
       "marker": "MASTER_ESCALATION fingerprint=c5a09e1bf03ce45f81c7acb033f40eb1 strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-23T11:56:18.854806+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "cbd1eeeb6c273d4f257fdf9ba22846fc": {
@@ -1984,5 +1991,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T11:49:44.887428+00:00"
+  "updated_at": "2026-09-23T11:56:18.854806+00:00"
 }
