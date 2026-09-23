@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">פנקסנות בזוגיות</title>
+<desc id="desc">שני בני זוג ליד בית משותף, מניחים בצד פנקס ניקוד ובוחרים בשותפות</desc>
+<rect width="1200" height="630" rx="36" fill="#f4eee7"/>
+<circle cx="420" cy="245" r="78" fill="#c88972"/>
+<circle cx="780" cy="245" r="78" fill="#9b7466"/>
+<path d="M310 505c16-112 62-174 110-174s94 62 110 174" fill="#d8aa92"/>
+<path d="M670 505c16-112 62-174 110-174s94 62 110 174" fill="#b88c7c"/>
+<path d="M500 390h200v150H500z" fill="#fffaf4" stroke="#75584e" stroke-width="12"/>
+<path d="M475 400l125-105 125 105" fill="none" stroke="#75584e" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M565 540v-85h70v85" fill="#ead5c4" stroke="#75584e" stroke-width="10"/>
+<g transform="translate(90 110) rotate(-8)">
+  <rect width="205" height="265" rx="18" fill="#fff" stroke="#8f6f60" stroke-width="9"/>
+  <line x1="45" y1="62" x2="160" y2="62" stroke="#c7a99a" stroke-width="9" stroke-linecap="round"/>
+  <line x1="45" y1="105" x2="160" y2="105" stroke="#c7a99a" stroke-width="9" stroke-linecap="round"/>
+  <line x1="45" y1="148" x2="160" y2="148" stroke="#c7a99a" stroke-width="9" stroke-linecap="round"/>
+  <line x1="45" y1="191" x2="160" y2="191" stroke="#c7a99a" stroke-width="9" stroke-linecap="round"/>
+  <path d="M35 225L170 35" stroke="#b45f54" stroke-width="18" stroke-linecap="round"/>
+</g>
+<path d="M525 205c36-44 114-44 150 0 36 44 7 99-75 160-82-61-111-116-75-160z" fill="#c96f65"/>
+<path d="M422 375c48 22 91 32 128 30M778 375c-48 22-91 32-128 30" fill="none" stroke="#75584e" stroke-width="15" stroke-linecap="round"/>
+</svg>
