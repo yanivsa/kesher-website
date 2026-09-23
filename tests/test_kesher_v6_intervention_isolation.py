@@ -1,4 +1,5 @@
 import unittest
+from pathlib import Path
 from datetime import datetime, timezone
 
 from scripts.kesher_content_controller_v6_runtime import (
@@ -109,6 +110,22 @@ class KesherV6InterventionIsolationTests(unittest.TestCase):
         self.assertEqual(PIPELINE_ID, "v6")
         self.assertEqual(STATE_REF, "automation-state-v6")
         self.assertEqual(ARTIFACT_NAMESPACE, "kesher-v6")
+
+    def test_v6_shadow_workflow_tracks_shared_publication_contract_files(self):
+        workflow = (
+            Path(__file__).resolve().parents[1]
+            / ".github"
+            / "workflows"
+            / "kesher-content-controller-v6.yml"
+        ).read_text(encoding="utf-8")
+        for path in (
+            "scripts/kesher_daily_pipeline.py",
+            "scripts/kesher_short_pipeline_v4.py",
+            "scripts/kesher_video_reconcile.py",
+            "scripts/kesher_video_upload_guard.py",
+        ):
+            with self.subTest(path=path):
+                self.assertIn(f'- "{path}"', workflow)
 
     def test_v6_shadow_canary_is_bound_to_exact_identity_and_cannot_dispatch(self):
         report = shadow_canary_report(
