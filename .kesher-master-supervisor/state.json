@@ -261,6 +261,31 @@
       "updated_at": "2026-09-18T12:20:11.191203+00:00",
       "verified_at": "2026-09-18T12:20:11.191203+00:00"
     },
+    "ksr-67b3738723253ac703e0b228": {
+      "command_id": "ksr-67b3738723253ac703e0b228",
+      "evidence_hash": "401b00732402a138941a60ddf0e8295a0518b6e3df6b71cc00edd038d8a14f5b",
+      "exact": {
+        "artifact_id": null,
+        "content_sha256": "5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0",
+        "item_id": null,
+        "pr_number": 909,
+        "short_item_id": null,
+        "slug": "stop-keeping-score-relationship",
+        "source_id": null,
+        "task_id": null
+      },
+      "executor": "jules",
+      "failure_signature": "DUPLICATE_ARTICLE_DATE",
+      "fingerprint": "c2ac82ab26ac43778b03f076d18b8e1a",
+      "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|article",
+      "issued_at": "2026-09-23T16:22:03.838157+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "escalate_unknown_failure",
+      "stage": "S2",
+      "strike": 2,
+      "updated_at": "2026-09-23T16:22:03.838157+00:00"
+    },
     "ksr-7001b3eb8e1b8d84c23c0586": {
       "acknowledged_at": "2026-09-23T16:15:38.162196+00:00",
       "command_id": "ksr-7001b3eb8e1b8d84c23c0586",
@@ -1069,11 +1094,13 @@
         "task_id": null
       },
       "executor": "controller",
+      "failed_at": "2026-09-23T16:22:03.838157+00:00",
+      "failure_reason": "kesher-content-controller.yml run 35887892316 completed but exact incident persisted",
       "failure_signature": "DUPLICATE_ARTICLE_DATE",
       "fingerprint": "c2ac82ab26ac43778b03f076d18b8e1a",
       "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|article",
       "issued_at": "2026-09-23T16:20:10.016997+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "failed",
       "metadata": {
         "dispatch": "already_active",
         "run_id": 35887892316,
@@ -1082,7 +1109,7 @@
       "proposed_action": "escalate_unknown_failure",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-23T16:21:35.017860+00:00"
+      "updated_at": "2026-09-23T16:22:03.838157+00:00"
     },
     "ksr-f530fa67511de5f458aac87e": {
       "acknowledged_at": "2026-09-20T09:37:57.761353+00:00",
@@ -1872,7 +1899,7 @@
       "strike": 2
     },
     "c2ac82ab26ac43778b03f076d18b8e1a": {
-      "active_command_id": "ksr-e8651851e3bfd50e9a9d03b3",
+      "active_command_id": "ksr-67b3738723253ac703e0b228",
       "failure_signature": "DUPLICATE_ARTICLE_DATE",
       "fingerprint": "c2ac82ab26ac43778b03f076d18b8e1a",
       "first_seen_at": "2026-09-23T16:20:10.016997+00:00",
@@ -1882,13 +1909,25 @@
           "command_id": "ksr-e8651851e3bfd50e9a9d03b3",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-23T16:22:03.838157+00:00",
+          "command_id": "ksr-e8651851e3bfd50e9a9d03b3",
+          "event": "command_failed",
+          "reason": "kesher-content-controller.yml run 35887892316 completed but exact incident persisted"
+        },
+        {
+          "at": "2026-09-23T16:22:03.838157+00:00",
+          "command_id": "ksr-67b3738723253ac703e0b228",
+          "event": "command_issued",
+          "stage": "S2"
         }
       ],
       "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|article",
-      "last_seen_at": "2026-09-23T16:20:10.016997+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=c2ac82ab26ac43778b03f076d18b8e1a strike=1 stage=S1",
+      "last_seen_at": "2026-09-23T16:22:03.838157+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=c2ac82ab26ac43778b03f076d18b8e1a strike=2 stage=S2",
       "status": "recovering",
-      "strike": 1
+      "strike": 2
     },
     "c5a09e1bf03ce45f81c7acb033f40eb1": {
       "active_command_id": null,
@@ -2090,5 +2129,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T16:21:35.017860+00:00"
+  "updated_at": "2026-09-23T16:22:03.838157+00:00"
 }
