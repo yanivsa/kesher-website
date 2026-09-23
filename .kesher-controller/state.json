@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-23",
-  "status": "blocked",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 3,
     "status": "complete",
@@ -55,9 +55,9 @@
     "quality_content_sha256": "2ef7aa22560f55256d06d8e547681e321d125ddf464c9d5e9951d5e0aec7a09f",
     "quality_checked_at": "2026-09-23T16:14:30.513253+00:00",
     "quality_violations": [],
-    "slug": "expectations-reality-search",
-    "title": "שחיקה מדייטים והפער בין הציפיות למציאות בחיפוש זוגיות",
-    "url": "https://kesher.saharoni.com/blog/expectations-reality-search",
+    "slug": "stop-keeping-score-relationship",
+    "title": "פנקסנות בזוגיות: מי מקריב יותר למען הבית – ולמה הספירה שוחקת את הקשר?",
+    "url": "https://kesher.saharoni.com/blog/stop-keeping-score-relationship",
     "published_date": "2026-09-23",
     "last_deploy_dispatch_at": "2026-09-23T10:17:00.609649+00:00",
     "next_deploy_retry_at": null,
@@ -1158,19 +1158,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "DUPLICATE_ARTICLE_DATE",
-    "message": "2 articles share Israel date 2026-09-23",
-    "at": "2026-09-23T16:11:58.491634+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-20T18:33:24.748064+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-09-20T20:55:08.526409+00:00",
       "from": "complete",
@@ -1864,9 +1853,15 @@
       "details": {
         "message": "2 articles share Israel date 2026-09-23"
       }
+    },
+    {
+      "at": "2026-09-23T16:26:44.683846+00:00",
+      "from": "blocked",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-09-23T16:11:58.491670+00:00",
+  "updated_at": "2026-09-23T16:26:44.683866+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
