@@ -3,22 +3,22 @@
   "cycle": "2026-09-23",
   "status": "article_generating",
   "article": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35821725957,
-    "processed_run_id": 35789509926,
+    "processed_run_id": 35821725957,
     "provider_id": null,
     "failure_fingerprint": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "same_failure_streak": 1,
+    "same_failure_streak": 2,
     "failure_count_by_type": {
-      "JULES_TIMEOUT_SESSION_ACTIVE": 1
+      "JULES_TIMEOUT_SESSION_ACTIVE": 2
     },
     "attempts": 2,
     "deploy_attempts": 0,
     "normalization_status": "pending",
-    "last_dispatch_at": "2026-09-23T05:16:20.277971+00:00",
+    "last_dispatch_at": "2026-09-23T06:08:15.830244+00:00",
     "watchdog": {
       "identity": "2026-09-23",
       "session_id": "sessions/9204528314430794292",
@@ -39,11 +39,12 @@
       "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
       "session_id": "sessions/9204528314430794292",
       "pr_url": "",
-      "github_run_id": "35789509926",
-      "completed_at": "2026-09-22T22:34:33.744757+00:00"
+      "github_run_id": "35821725957",
+      "completed_at": "2026-09-23T05:54:35.308350+00:00"
     },
     "last_jules_session_id": "sessions/9204528314430794292",
-    "last_failed_run_id": 35789509926
+    "last_failed_run_id": 35821725957,
+    "resume_dispatches": 1
   },
   "backlog": [
     {
@@ -1759,9 +1760,32 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-09-23T06:08:14.474598+00:00",
+      "from": "article_generating",
+      "to": "article_retry_wait",
+      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
+      "details": {
+        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
+        "retry_at": "2026-09-23T06:23:14.474576+00:00",
+        "failure_streak": 2,
+        "run_id": 35821725957,
+        "session_id": "sessions/9204528314430794292"
+      }
+    },
+    {
+      "at": "2026-09-23T06:08:15.830250+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "timed-out Jules session preserved; same-session recovery dispatched immediately",
+      "details": {
+        "run_id": 35821725957,
+        "session_id": "sessions/9204528314430794292"
+      }
     }
   ],
-  "updated_at": "2026-09-23T05:16:20.277996+00:00",
+  "updated_at": "2026-09-23T06:08:15.830259+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
