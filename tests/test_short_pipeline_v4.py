@@ -18,7 +18,7 @@ class ShortPipelineV4Tests(unittest.TestCase):
             "content_sha256": "a" * 64,
             "youtube_metadata": {
                 "title": "איך מדברים בלי להפוך כל שיחה לריב",
-                "description": "תיאור המאמר\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/how-to-talk\n\nלאתר קשר:\nhttps://kesher.saharoni.com",
+                "description": "תיאור המאמר\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/how-to-talk\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
                 "tags": ["זוגיות", "תקשורת"],
             },
         }
@@ -34,7 +34,7 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertNotIn("55 השניות", prompt)
 
 
-    def test_new_item_requires_native_provider_short_and_both_links(self):
+    def test_new_item_requires_native_provider_short_and_three_links(self):
         item = short.new_item(self.source())
         self.assertEqual(item["provider_video_format"], "short")
         self.assertTrue(item["provider_native_short"])
