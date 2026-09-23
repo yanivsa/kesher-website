@@ -33,6 +33,31 @@
       "strike": 1,
       "updated_at": "2026-09-21T21:00:21.603758+00:00"
     },
+    "ksr-14d6e3811b3b5e871c05cea0": {
+      "command_id": "ksr-14d6e3811b3b5e871c05cea0",
+      "evidence_hash": "56987bffbaa81a2199234ab47de906795d6571e28f85712448d73b404877fa6a",
+      "exact": {
+        "artifact_id": "f9e91f51-c4bb-4460-917d-df6181dfaa86",
+        "content_sha256": "c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3",
+        "item_id": "video-20260923-132438-c6ebd0c2d4",
+        "pr_number": 909,
+        "short_item_id": null,
+        "slug": "expectations-reality-search",
+        "source_id": "fed93146-36c0-48e8-97d4-5f7716924535",
+        "task_id": "f9e91f51-c4bb-4460-917d-df6181dfaa86"
+      },
+      "executor": "controller",
+      "failure_signature": "SHORT_MISSING",
+      "fingerprint": "cbd1eeeb6c273d4f257fdf9ba22846fc",
+      "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
+      "issued_at": "2026-09-23T11:21:43.990010+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "continue_exact_short",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-23T11:21:43.990010+00:00"
+    },
     "ksr-1e153689fb28ae497a36a735": {
       "acknowledged_at": "2026-09-17T11:13:24.173018+00:00",
       "command_id": "ksr-1e153689fb28ae497a36a735",
@@ -1660,6 +1685,25 @@
       "status": "recovering",
       "strike": 2
     },
+    "cbd1eeeb6c273d4f257fdf9ba22846fc": {
+      "active_command_id": "ksr-14d6e3811b3b5e871c05cea0",
+      "failure_signature": "SHORT_MISSING",
+      "fingerprint": "cbd1eeeb6c273d4f257fdf9ba22846fc",
+      "first_seen_at": "2026-09-23T11:21:43.990010+00:00",
+      "history": [
+        {
+          "at": "2026-09-23T11:21:43.990010+00:00",
+          "command_id": "ksr-14d6e3811b3b5e871c05cea0",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
+      "last_seen_at": "2026-09-23T11:21:43.990010+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=cbd1eeeb6c273d4f257fdf9ba22846fc strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "cdb3d1c697c39a69388b65fc7bca4273": {
       "active_command_id": null,
       "failure_signature": "SHORT_PROVIDER_HARD_TIMEOUT",
@@ -1798,5 +1842,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-22T13:28:14.470651+00:00"
+  "updated_at": "2026-09-23T11:21:43.990010+00:00"
 }
