@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 
 if __package__:
@@ -108,6 +109,26 @@ def main() -> int:
     return v3.main()
 
 
+def attach_failure_diagnostic() -> None:
+    """Persist Jules session diagnostics for V4 failures/timeouts.
+
+    V4 calls V3 as an imported module, so V3's __main__ failure hook does not run.
+    Without this hook, the structured result loses the activity/progress evidence
+    needed by the Controller/Supervisor to distinguish a stalled session from a
+    provider/API failure.
+    """
+    api_key = os.environ.get("JULES_API_KEY", "").strip()
+    path = v3.core.result_path()
+    if not api_key or not path.is_file():
+        return
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    session = str((payload or {}).get("session_id") or "").strip()
+    if not session:
+        return
+    diagnostic = v3.diagnostics.diagnose(api_key, session)
+    v3.diagnostics.attach_to_result(path, diagnostic)
+
+
 if __name__ == "__main__":
     exit_code = 1
     try:
@@ -115,4 +136,15 @@ if __name__ == "__main__":
     except (v3.core.ArticleRunnerError, json.JSONDecodeError, ValueError, KeyError) as exc:
         print(f"JULES_ARTICLE_V4_BLOCKED {exc}", file=sys.stderr, flush=True)
         exit_code = 1
+
+    if exit_code != 0:
+        try:
+            attach_failure_diagnostic()
+        except Exception as exc:
+            print(
+                f"JULES_ARTICLE_V4_DIAGNOSTIC_FAILED {type(exc).__name__}: {exc}",
+                file=sys.stderr,
+                flush=True,
+            )
+
     raise SystemExit(exit_code)
