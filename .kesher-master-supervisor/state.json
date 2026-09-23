@@ -1059,6 +1059,7 @@
       "updated_at": "2026-09-20T10:12:20.027547+00:00"
     },
     "ksr-f6663b5e84649c5f683d0558": {
+      "acknowledged_at": "2026-09-23T11:47:24.083419+00:00",
       "command_id": "ksr-f6663b5e84649c5f683d0558",
       "evidence_hash": "2e632e0c74aa3d4861bd082c8af6234c90423ec71e6f13ae3468beb150f6df6d",
       "exact": {
@@ -1076,12 +1077,44 @@
       "fingerprint": "c5a09e1bf03ce45f81c7acb033f40eb1",
       "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
       "issued_at": "2026-09-23T11:47:01.316936+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-f6663b5e84649c5f683d0558",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "same-source exact Short is rebuilt without fresh provider generation, public, succeeded, and portrait 9:16",
+          "evidence_hash": "2e632e0c74aa3d4861bd082c8af6234c90423ec71e6f13ae3468beb150f6df6d",
+          "exact": {
+            "artifact_id": "f9e91f51-c4bb-4460-917d-df6181dfaa86",
+            "content_sha256": "c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3",
+            "item_id": "video-20260923-132438-c6ebd0c2d4",
+            "pr_number": 909,
+            "short_item_id": "video-20260923-143045-c6ebd0c2d4",
+            "slug": "expectations-reality-search",
+            "source_id": "fed93146-36c0-48e8-97d4-5f7716924535",
+            "task_id": "f9e91f51-c4bb-4460-917d-df6181dfaa86"
+          },
+          "failure_signature": "SHORT_NOT_PORTRAIT",
+          "fingerprint": "c5a09e1bf03ce45f81c7acb033f40eb1",
+          "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
+          "proposed_action": "rebuild_exact_short",
+          "schema_version": 1,
+          "stage": "short",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/12146041119326494473"
+      },
       "proposed_action": "rebuild_exact_short",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-23T11:47:01.316936+00:00"
+      "updated_at": "2026-09-23T11:47:24.083419+00:00"
     },
     "ksr-ff48fdefa56312b36f0734b1": {
       "acknowledged_at": "2026-09-22T10:49:24.777286+00:00",
@@ -1948,5 +1981,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T11:47:01.316936+00:00"
+  "updated_at": "2026-09-23T11:47:24.083419+00:00"
 }
