@@ -626,7 +626,7 @@
       "fingerprint": "6e57772fbbd109112776581c443668b0",
       "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|short",
       "issued_at": "2026-09-23T18:27:29.333316+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "verified",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-8d83ce763cbad388f8a572f2",
@@ -663,7 +663,8 @@
       "proposed_action": "rebuild_exact_short",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-23T18:28:56.140035+00:00"
+      "updated_at": "2026-09-23T18:42:06.680519+00:00",
+      "verified_at": "2026-09-23T18:42:06.680519+00:00"
     },
     "ksr-946f71e89a4dccefbc1f65f1": {
       "acknowledged_at": "2026-09-22T06:36:10.281169+00:00",
@@ -1987,7 +1988,7 @@
       "strike": 2
     },
     "6e57772fbbd109112776581c443668b0": {
-      "active_command_id": "ksr-8d83ce763cbad388f8a572f2",
+      "active_command_id": null,
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "6e57772fbbd109112776581c443668b0",
       "first_seen_at": "2026-09-23T17:29:45.556390+00:00",
@@ -2009,12 +2010,18 @@
           "command_id": "ksr-8d83ce763cbad388f8a572f2",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-23T18:42:06.680519+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|short",
       "last_seen_at": "2026-09-23T18:27:29.333316+00:00",
       "marker": "MASTER_ESCALATION fingerprint=6e57772fbbd109112776581c443668b0 strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-23T18:42:06.680519+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "7299bbf912529cfda70312ea7aec0efd": {
@@ -2422,5 +2429,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T18:28:56.140035+00:00"
+  "updated_at": "2026-09-23T18:42:06.680519+00:00"
 }
