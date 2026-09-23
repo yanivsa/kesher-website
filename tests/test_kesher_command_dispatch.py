@@ -18,7 +18,7 @@ class CommandDispatchTests(unittest.TestCase):
             workflow_for(state['commands'][command_id])
 
     def test_premerge_article_stages_bind_the_slot_and_exact_pr_head(self):
-        for operation, workflow in [('normalize_article', 'normalize-article-pr.yml'),
+        for operation, workflow in [('normalize_article', 'kesher-article-worker.yml'),
                                     ('attach_image', 'kesher-article-image.yml'),
                                     ('merge_article', 'kesher-article-generation.yml')]:
             with self.subTest(operation=operation):

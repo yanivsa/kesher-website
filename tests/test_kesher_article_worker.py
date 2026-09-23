@@ -4,7 +4,7 @@ import os
 import unittest
 from unittest.mock import patch
 
-from scripts.kesher_runtime.article_worker import article_request, run_article
+from scripts.kesher_runtime.article_worker import article_request, run_article, assert_article_quiescent
 from scripts.kesher_runtime.jules import JulesError
 from scripts.kesher_runtime.github import GitHubStateStore
 from scripts.kesher_runtime.identity import SlotIdentity
@@ -26,6 +26,18 @@ class Repository:
 
 
 class ArticleWorkerTests(unittest.TestCase):
+    def test_mutating_worker_rechecks_live_session_even_after_a_settled_receipt(self):
+        self.run_once()
+        self.repo.data['prs'] = [PR]
+        self.api.rows[0].update(state='COMPLETED', outputs=[{'pullRequest': {'url': 'https://github.com/yanivsa/kesher-website/pull/42'}}])
+        self.run_once(self.command('settle_article'))
+        worker = self.command('normalize_article')
+        pr = {'number': PR['number'], 'head': {'sha': PR['head_sha']}}
+        self.assertEqual(assert_article_quiescent(worker, self.api, pr), ['sessions/created'])
+        self.api.rows[0]['state'] = 'IN_PROGRESS'
+        with self.assertRaisesRegex(JulesError, 'JULES_PENDING'):
+            assert_article_quiescent(worker, self.api, pr)
+
     def setUp(self):
         self.target = SlotIdentity(DAY)
         self.server = ContentsServer()

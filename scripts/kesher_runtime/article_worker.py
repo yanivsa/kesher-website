@@ -11,6 +11,7 @@ import json
 import os
 import re
 import sys
+from pathlib import Path
 
 from scripts.jules_article_runner_core import build_prompt, load_policy
 from scripts.jules_article_runner_v4 import SEARCH_FIRST_CONTRACT, EVIDENCE_CONTRACT
@@ -121,6 +122,50 @@ def _outputs(row: dict) -> list[int]:
     return sorted(set(numbers))
 
 
+def assert_article_quiescent(context, api, pr: dict) -> list[str]:
+    """A cached settling receipt never replaces the pre-mutation live read."""
+    state = context.store.load().state
+    proofs = [receipt['evidence'] for command in state['commands'].values()
+              if command['target'] == context.target.to_dict() and command['outcome'] == 'succeeded'
+              for name, receipt in command['receipts'].items() if name == 'article_pr_settled'
+              and receipt['evidence'].get('number') == pr['number']
+              and receipt['evidence'].get('head_sha') == pr['head']['sha']]
+    if not proofs:
+        raise JulesError('JULES_PENDING')
+    names = {name for proof in proofs for name in proof['sessions']}
+    names.update(session_name(row) for row in api.sessions()
+                 if row.get('title') == 'Kesher article ' + context.target.slot)
+    for name in sorted(names):
+        row = api.get(name)
+        if (session_name(row) != name or row.get('sourceContext') != SOURCE_CONTEXT
+                or row.get('title') != 'Kesher article ' + context.target.slot):
+            raise JulesError('JULES_IDENTITY_MISMATCH')
+        if row.get('state') not in {'COMPLETED', 'FAILED'}:
+            raise JulesError('JULES_PENDING')
+    context.checkpoint('article_quiescence', {'number': pr['number'], 'head_sha': pr['head']['sha'],
+                                            'sessions': sorted(names)}, phase='STARTED')
+    return sorted(names)
+
+
+def run_normalization(context, api, repository) -> dict:
+    from .article_normalize_worker import GitNormalization, normalize_article
+    command = context._owned(context.store.load().state)
+    number = command['inputs'].get('pr_number', '')
+    if not re.fullmatch(r'[1-9][0-9]*', number):
+        raise StateInvalid('Normalization needs an exact PR number')
+    github = repository.github
+    main = github.request('GET', f'/repos/{repository.repo}/git/ref/heads/main')['object']['sha']
+    if main != context.code_sha:
+        raise JulesError('CODE_CHANGED')
+    pr = github.request('GET', f'/repos/{repository.repo}/pulls/{number}')
+    branch = GitNormalization(Path.cwd())
+    if branch._git('remote', 'get-url', 'origin').removesuffix('.git') != 'https://github.com/' + REPOSITORY:
+        raise StateInvalid('Unexpected production article remote')
+    result = normalize_article(context, pr, branch,
+        prove_quiescent=lambda current: assert_article_quiescent(context, api, current))
+    return _result(context, {'status': 'normalized', **result})
+
+
 def run_article(context, api, repository, *, policy: str) -> dict:
     state = context.store.load().state
     command = context._owned(state)
@@ -189,8 +234,12 @@ def main(argv=None) -> int:
     try:
         admission = actions_admission(args.command_id, attach=True)
         context = admission.context
-        result = run_article(context, Jules(os.environ.get('JULES_API_KEY', '')),
-                             ArticleRepository(context.store.github), policy=load_policy())
+        api = Jules(os.environ.get('JULES_API_KEY', ''))
+        repository = ArticleRepository(context.store.github)
+        if admission.command['operation'] == 'normalize_article':
+            result = run_normalization(context, api, repository)
+        else:
+            result = run_article(context, api, repository, policy=load_policy())
         context.finish()
         print('ARTICLE_COMMAND_RESULT:' + result['status'])
         return 0
