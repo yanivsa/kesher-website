@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-23",
-  "status": "article_generating",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -17,7 +17,7 @@
     },
     "attempts": 2,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-09-23T06:08:15.830244+00:00",
     "watchdog": {
       "identity": "2026-09-23",
@@ -44,7 +44,11 @@
     },
     "last_jules_session_id": "sessions/9204528314430794292",
     "last_failed_run_id": 35821725957,
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "pr_number": 909,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/909",
+    "normalization_slot": "2026-09-23",
+    "normalization_dispatched_at": "2026-09-23T08:04:04.516309+00:00"
   },
   "backlog": [
     {
@@ -1792,9 +1796,19 @@
       "details": {
         "session_id": "sessions/11411864879408514874"
       }
+    },
+    {
+      "at": "2026-09-23T08:04:04.516333+00:00",
+      "from": "article_generating",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 909,
+        "slot": "2026-09-23"
+      }
     }
   ],
-  "updated_at": "2026-09-23T06:13:34.343016+00:00",
+  "updated_at": "2026-09-23T08:04:04.516340+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
