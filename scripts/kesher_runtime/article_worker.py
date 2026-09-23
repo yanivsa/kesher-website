@@ -122,14 +122,15 @@ def _outputs(row: dict) -> list[int]:
     return sorted(set(numbers))
 
 
-def assert_article_quiescent(context, api, pr: dict) -> list[str]:
+def assert_article_quiescent(context, api, pr: dict, *, settled_head_sha=None) -> list[str]:
     """A cached settling receipt never replaces the pre-mutation live read."""
     state = context.store.load().state
+    settled_head_sha = settled_head_sha or pr['head']['sha']
     proofs = [receipt['evidence'] for command in state['commands'].values()
               if command['target'] == context.target.to_dict() and command['outcome'] == 'succeeded'
               for name, receipt in command['receipts'].items() if name == 'article_pr_settled'
               and receipt['evidence'].get('number') == pr['number']
-              and receipt['evidence'].get('head_sha') == pr['head']['sha']]
+              and receipt['evidence'].get('head_sha') == settled_head_sha]
     if not proofs:
         raise JulesError('JULES_PENDING')
     names = {name for proof in proofs for name in proof['sessions']}
@@ -142,8 +143,9 @@ def assert_article_quiescent(context, api, pr: dict) -> list[str]:
             raise JulesError('JULES_IDENTITY_MISMATCH')
         if row.get('state') not in {'COMPLETED', 'FAILED'}:
             raise JulesError('JULES_PENDING')
-    context.checkpoint('article_quiescence', {'number': pr['number'], 'head_sha': pr['head']['sha'],
-                                            'sessions': sorted(names)}, phase='STARTED')
+    evidence = {'number': pr['number'], 'head_sha': pr['head']['sha'],
+                'settled_head_sha': settled_head_sha, 'sessions': sorted(names)}
+    context.checkpoint('article_quiescence_' + digest(evidence)[:24], evidence, phase='STARTED')
     return sorted(names)
 
 
@@ -164,6 +166,29 @@ def run_normalization(context, api, repository) -> dict:
     result = normalize_article(context, pr, branch,
         prove_quiescent=lambda current: assert_article_quiescent(context, api, current))
     return _result(context, {'status': 'normalized', **result})
+
+
+def run_image(context, api, repository) -> dict:
+    from .article_image_worker import GitImageBranch, GitHubImageBlobs, GitHubImagePull, attach_image, select_image
+    from .article_images import provider_functions
+    command = context._owned(context.store.load().state)
+    number = command['inputs'].get('pr_number', '')
+    if not re.fullmatch(r'[1-9][0-9]*', number):
+        raise StateInvalid('Image attachment needs an exact PR number')
+    github = repository.github
+    if github.request('GET', f'/repos/{repository.repo}/git/ref/heads/main')['object']['sha'] != context.code_sha:
+        raise JulesError('CODE_CHANGED')
+    branch = GitImageBranch(Path.cwd())
+    if branch.git._git('remote', 'get-url', 'origin').removesuffix('.git') != 'https://github.com/' + REPOSITORY:
+        raise StateInvalid('Unexpected production article remote')
+    pull = GitHubImagePull(github, repository.repo, int(number))
+    providers, blobs = provider_functions(Path.cwd()), GitHubImageBlobs(github, repository.repo)
+    used = branch.used_hashes()
+    result = attach_image(context, pull.get(), branch, pull,
+        lambda post: select_image(context, post, int(number), providers, blobs, used),
+        prove_quiescent=lambda current: assert_article_quiescent(context, api, current,
+            settled_head_sha=command['inputs']['pr_head_sha']))
+    return _result(context, {'status': 'image_attached', **result})
 
 
 def run_article(context, api, repository, *, policy: str) -> dict:
@@ -238,6 +263,8 @@ def main(argv=None) -> int:
         repository = ArticleRepository(context.store.github)
         if admission.command['operation'] == 'normalize_article':
             result = run_normalization(context, api, repository)
+        elif admission.command['operation'] == 'attach_image':
+            result = run_image(context, api, repository)
         else:
             result = run_article(context, api, repository, policy=load_policy())
         context.finish()

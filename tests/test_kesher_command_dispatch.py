@@ -19,7 +19,7 @@ class CommandDispatchTests(unittest.TestCase):
 
     def test_premerge_article_stages_bind_the_slot_and_exact_pr_head(self):
         for operation, workflow in [('normalize_article', 'kesher-article-worker.yml'),
-                                    ('attach_image', 'kesher-article-image.yml'),
+                                    ('attach_image', 'kesher-article-worker.yml'),
                                     ('merge_article', 'kesher-article-generation.yml')]:
             with self.subTest(operation=operation):
                 state, command_id = plan_command(new_state(), SlotIdentity('2026-09-17'), operation, 1,

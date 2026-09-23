@@ -70,6 +70,7 @@ def normalize_article(context, pr: dict, branch, *, prove_quiescent) -> dict:
         return decision.receipt
     actual = branch.head(ref)
     if actual != prepared['new_head_sha']:
+        prove_quiescent(pr)
         if actual != old:
             raise JulesError('ARTICLE_PR_CHANGED')
         try:

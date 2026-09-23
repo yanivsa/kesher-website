@@ -71,7 +71,7 @@ class NormalizeWorkerTests(unittest.TestCase):
         self.branch.push = push; self.branch.lost = True
         result = self.run_worker()
         self.assertEqual(result['new_head_sha'], NEW)
-        self.assertEqual(self.settled, [OLD])
+        self.assertEqual(self.settled, [OLD, OLD])
         self.assertEqual(len(self.branch.pushes), 1)
         self.assertEqual(self.run_worker(), result)
         self.assertEqual(len(self.branch.pushes), 1)
@@ -117,6 +117,20 @@ class NormalizeWorkerTests(unittest.TestCase):
         self.pr['head']['sha'] = 'f'*40
         with self.assertRaisesRegex(JulesError, 'ARTICLE_PR_CHANGED'): self.run_worker()
         self.assertEqual(self.branch.prepares, [])
+        self.assertEqual(self.branch.pushes, [])
+
+    def test_session_restarting_during_generation_blocks_the_later_push(self):
+        active = False
+        original = self.branch.prepare
+        def prepare(**kwargs):
+            nonlocal active
+            active = True
+            return original(**kwargs)
+        def settled(pr):
+            if active: raise JulesError('JULES_PENDING')
+        self.branch.prepare = prepare
+        with self.assertRaisesRegex(JulesError, 'JULES_PENDING'):
+            normalize_article(self.context, self.pr, self.branch, prove_quiescent=settled)
         self.assertEqual(self.branch.pushes, [])
 
     def test_rebuilt_bytes_must_equal_the_saved_commit_before_retry(self):

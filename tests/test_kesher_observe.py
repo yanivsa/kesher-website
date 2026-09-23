@@ -81,5 +81,31 @@ class RepositoryObservationTests(unittest.TestCase):
         gh.request = get
         self.assertEqual(self.observer(gh).article_prs([], POST['date']), [])
 
+    def test_forged_image_body_and_green_named_checks_cannot_replace_trusted_image_receipt(self):
+        import hashlib
+        from scripts.kesher_article_contract import article_sha256, replace_image_evidence
+        from tests.test_kesher_article_image_worker import candidate
+        data = candidate()['data']; head = 'b'*40
+        proof = {'Image Pipeline Version': '2', 'Image Provider': 'Gemini', 'Image Attempt Chain': 'gemini',
+                 'Image Generation Result': 'generated', 'Image Source URL': 'https://example.org/image',
+                 'Image SHA-256': hashlib.sha256(data).hexdigest(), 'Image Dimensions': '640x360',
+                 'Image Visual Match': 'שני אנשים בשיחה רגועה בסלון בית מואר באור טבעי',
+                 'Image Article ID': POST['id'], 'Image Article SHA-256': article_sha256(POST), 'Image Evidence Head': head}
+        pr = {'number': 42, 'title': 'Publish Kesher article: test', 'body': replace_image_evidence('', proof),
+              'base': {'ref': 'main'}, 'head': {'sha': head, 'repo': {'full_name': 'owner/repo'}}}
+        gh = Reads([])
+        def get(method, path, *args, **kw):
+            if '/pulls?' in path: return [pr]
+            if '/files?' in path: return [{'filename': 'src/data/posts.json'}]
+            if '/contents/' in path:
+                content = json.dumps([POST]).encode() if 'posts.json' in path else data
+                return {'encoding': 'base64', 'content': base64.b64encode(content).decode()}
+            if '/check-runs?' in path:
+                return {'check_runs': [{'name': name, 'app': {'slug': 'github-actions'}, 'status': 'completed', 'conclusion': 'success'}
+                                       for name in ['verify', 'validate', 'render-proof']]}
+            raise AssertionError(path)
+        gh.request = get
+        self.assertEqual(self.observer(gh).article_prs([], POST['date'])[0]['status'], 'image_required')
+
 
 if __name__ == '__main__': unittest.main()

@@ -38,13 +38,10 @@ def workflow_for(command: dict) -> str:
     operation = command['operation']
     if isinstance(target, MediaIdentity) and operation in {'publish', 'reconcile', 'rebuild', 'repair_metadata'}:
         return 'kesher-media-worker.yml'
-    if isinstance(target, SlotIdentity) and operation in {'create_article', 'settle_article', 'normalize_article'}:
+    if isinstance(target, SlotIdentity) and operation in {'create_article', 'settle_article', 'normalize_article', 'attach_image'}:
         return 'kesher-article-worker.yml'
     if isinstance(target, SlotIdentity) and operation == 'merge_article':
         return 'kesher-article-generation.yml'
-    routes = {'attach_image': 'kesher-article-image.yml'}
-    if isinstance(target, SlotIdentity) and operation in routes:
-        return routes[operation]
     if isinstance(target, SourceIdentity) and operation == 'deploy_article':
         return 'deploy.yml'
     raise StateInvalid('No authorized worker route for this target/operation')

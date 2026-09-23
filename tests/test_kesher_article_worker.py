@@ -38,6 +38,18 @@ class ArticleWorkerTests(unittest.TestCase):
         with self.assertRaisesRegex(JulesError, 'JULES_PENDING'):
             assert_article_quiescent(worker, self.api, pr)
 
+    def test_image_evidence_recovery_rechecks_sessions_using_its_settled_input_head(self):
+        self.run_once()
+        self.repo.data['prs'] = [PR]
+        self.api.rows[0].update(state='COMPLETED', outputs=[{'pullRequest': {'url': 'https://github.com/yanivsa/kesher-website/pull/42'}}])
+        self.run_once(self.command('settle_article'))
+        worker = self.command('attach_image')
+        current = {'number': 42, 'head': {'sha': 'b'*40}}
+        self.assertEqual(assert_article_quiescent(worker, self.api, current, settled_head_sha=PR['head_sha']), ['sessions/created'])
+        self.api.rows[0]['state'] = 'IN_PROGRESS'
+        with self.assertRaisesRegex(JulesError, 'JULES_PENDING'):
+            assert_article_quiescent(worker, self.api, current, settled_head_sha=PR['head_sha'])
+
     def setUp(self):
         self.target = SlotIdentity(DAY)
         self.server = ContentsServer()

@@ -78,7 +78,8 @@ class RepositoryObserver:
         except (GitHubError, OSError):
             return {'status': 'unknown', 'failure_class': 'TRANSIENT_API'}
 
-    def article_prs(self, posts: list[dict], current_slot: str) -> list[dict]:
+    def article_prs(self, posts: list[dict], current_slot: str, state: dict | None = None) -> list[dict]:
+        from .article_image_worker import image_receipt_matches
         result = []
         base_ids = {post['id'] for post in posts}
         for pr in self.pages('pulls?state=open'):
@@ -112,6 +113,8 @@ class RepositoryObserver:
                         if exc.status != 404:
                             raise
                 if data is None or image_proof_errors(post, pr.get('body') or '', head, data):
+                    row['status'] = 'image_required'; continue
+                if not image_receipt_matches(state, slot, pr['number'], head, post, data, pr.get('body') or ''):
                     row['status'] = 'image_required'; continue
                 checks = self.pages(f'commits/{head}/check-runs?filter=latest', 'check_runs')
                 required = {'verify', 'validate', 'render-proof'}
@@ -147,7 +150,7 @@ class RepositoryObserver:
         current_slot = datetime.fromisoformat(now).astimezone(ZoneInfo('Asia/Jerusalem')).date().isoformat()
         main = self.github.request('GET', f'/repos/{self.repo}/git/ref/heads/main')['object']['sha']; require_sha(main, 40)
         posts = json.loads(self.content(main, 'src/data/posts.json'))
-        prs = self.article_prs(posts, current_slot)
+        prs = self.article_prs(posts, current_slot, state)
         runs = self.runs(state)
         self._deployment = self.reader.deployment(main)
         try:
