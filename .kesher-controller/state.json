@@ -16,7 +16,7 @@
       "JULES_TIMEOUT_SESSION_ACTIVE": 2
     },
     "attempts": 2,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-09-23T06:08:15.830244+00:00",
     "watchdog": {
@@ -58,7 +58,9 @@
     "slug": "dating-exhaustion-expectation-gap",
     "title": "שחיקה מדייטים והפער בין הציפיות למציאות בחיפוש זוגיות",
     "url": "https://kesher.saharoni.com/blog/dating-exhaustion-expectation-gap",
-    "published_date": "2026-09-23"
+    "published_date": "2026-09-23",
+    "last_deploy_dispatch_at": "2026-09-23T10:17:00.609649+00:00",
+    "next_deploy_retry_at": "2026-09-23T10:22:00.609663+00:00"
   },
   "backlog": [
     {
@@ -1838,9 +1840,19 @@
       "from": "article_pr_open",
       "to": "article_deploying",
       "reason": "deployment already active"
+    },
+    {
+      "at": "2026-09-23T10:17:00.609702+00:00",
+      "from": "article_deploying",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-09-23T10:10:08.449850+00:00",
+  "updated_at": "2026-09-23T10:17:00.609708+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
