@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-23",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -48,7 +48,9 @@
     "pr_number": 909,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/909",
     "normalization_slot": "2026-09-23",
-    "normalization_dispatched_at": "2026-09-23T08:04:04.516309+00:00"
+    "normalization_dispatched_at": "2026-09-23T08:04:04.516309+00:00",
+    "merge_dispatch_at": "2026-09-23T09:57:35.062294+00:00",
+    "merge_dispatch_count": 1
   },
   "backlog": [
     {
@@ -1816,21 +1818,29 @@
         "attempt": 1,
         "pr_number": 909
       }
+    },
+    {
+      "at": "2026-09-23T09:57:32.397576+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-09-23T09:56:19.761469+00:00",
+  "updated_at": "2026-09-23T09:57:32.397596+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35843687613,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "Local",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-23T09:33:58.524431+00:00"
+    "last_dispatch_at": "2026-09-23T09:33:58.524431+00:00",
+    "artifact_sha256": "8e857b2ecac30456eb3ea73e1e7aaa4a0ccd4f65464e8b5a7c192166969db225",
+    "source_id": "local://public/images/generated/blog/mental-load-couples.jpg"
   },
   "long_video": {
     "attempt_count": 0,
