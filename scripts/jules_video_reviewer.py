@@ -380,7 +380,7 @@ def obtain_validated_decision(
     review_branch: str,
     timeout_seconds: int,
 ) -> tuple[dict[str, Any], str]:
-    for attempt in range(2):
+    for attempt in range(MAX_REVIEW_SESSION_ATTEMPTS):
         session = create_session(api_key, prompt, item["id"], review_branch)
         try:
             message = wait_for_message(api_key, session, timeout_seconds)
@@ -388,8 +388,14 @@ def obtain_validated_decision(
             validate_decision(decision, item, hashes, strict_schema=True)
             return decision, session
         except ReviewError as exc:
-            if "timed out" in str(exc).lower() and attempt == 0:
-                print(f"JULES_REVIEW_TIMEOUT session={session}; attempting replacement session")
+            if (
+                "timed out" in str(exc).lower()
+                and attempt + 1 < MAX_REVIEW_SESSION_ATTEMPTS
+            ):
+                print(
+                    f"JULES_REVIEW_TIMEOUT session={session}; "
+                    "attempting replacement session"
+                )
                 continue
             raise
     raise ReviewError("Exhausted Jules review attempts")
