@@ -175,6 +175,32 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(state["article"]["last_jules_session_id"], "sessions/41")
         self.assertEqual(gh.dispatches, [])
 
+    def test_preserved_jules_timeout_immediately_redispatches_same_slot_recovery(self):
+        gh = FakeGitHub()
+        gh.saved_state = controller.new_cycle_state(self.now().date())
+        gh.saved_state["article"].update({"attempts": 1, "run_id": 43})
+        gh.runs[43] = {"id": 43, "status": "completed", "conclusion": "failure"}
+        gh.article_results[43] = {
+            "schema_version": 1,
+            "slot": "2026-08-19",
+            "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+            "retryable": True,
+            "message": "session preserved",
+            "session_id": "sessions/43",
+        }
+
+        state, action = self.make(gh).tick()
+
+        self.assertEqual(action.kind, "dispatch_article_recovery")
+        self.assertEqual(state["status"], "article_generating")
+        self.assertEqual(state["article"]["resume_dispatches"], 1)
+        self.assertIsNone(state["article"]["next_retry_at"])
+        self.assertEqual(
+            gh.dispatches,
+            [(controller.ARTICLE_WORKFLOW, {"slot": "2026-08-19"})],
+        )
+
+
     def test_completed_article_worker_progress_waits_for_reality_before_retry(self):
         gh = FakeGitHub()
         gh.saved_state = controller.new_cycle_state(self.now().date())

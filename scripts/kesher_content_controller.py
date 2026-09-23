@@ -758,6 +758,33 @@ class Controller:
                     run_id=run_id,
                     session_id=session_id,
                 )
+                # A Jules timeout with a preserved authoritative session is not a
+                # reason to wait for another scheduler heartbeat. Relaunch the
+                # bounded worker immediately; acquire_session() will adopt the
+                # exact same slot/session and therefore cannot create a duplicate
+                # article identity. This closes the gap where a completed worker
+                # could sit in article_retry_wait for hours if scheduled ticks
+                # were delayed or queued.
+                if outcome == "JULES_TIMEOUT_SESSION_ACTIVE" and session_id:
+                    inputs = {"slot": self.now.date().isoformat()}
+                    self.github.dispatch(ARTICLE_WORKFLOW, inputs)
+                    article_state["resume_dispatches"] = int(
+                        article_state.get("resume_dispatches") or 0
+                    ) + 1
+                    article_state["last_dispatch_at"] = utc_now()
+                    article_state["next_retry_at"] = None
+                    transition(
+                        state,
+                        "article_generating",
+                        "timed-out Jules session preserved; same-session recovery dispatched immediately",
+                        run_id=run_id,
+                        session_id=session_id,
+                    )
+                    return Action(
+                        "dispatch_article_recovery",
+                        "preserved Jules session recovered immediately after worker timeout",
+                        inputs,
+                    )
                 return Action("wait", f"retryable article failure {outcome}")
             block(state, "article", outcome, str(result.get("message") or outcome))
             return Action("blocked", f"non-retryable article failure {outcome}")
