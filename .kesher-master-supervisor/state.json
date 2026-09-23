@@ -34,7 +34,7 @@
       "updated_at": "2026-09-21T21:00:21.603758+00:00"
     },
     "ksr-14d6e3811b3b5e871c05cea0": {
-      "acknowledged_at": "2026-09-23T11:29:51.632795+00:00",
+      "acknowledged_at": "2026-09-23T11:30:40.453802+00:00",
       "command_id": "ksr-14d6e3811b3b5e871c05cea0",
       "evidence_hash": "56987bffbaa81a2199234ab47de906795d6571e28f85712448d73b404877fa6a",
       "exact": {
@@ -64,7 +64,7 @@
       "running_at": "2026-09-23T11:29:51.632795+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-23T11:29:51.632795+00:00"
+      "updated_at": "2026-09-23T11:30:40.453802+00:00"
     },
     "ksr-1e153689fb28ae497a36a735": {
       "acknowledged_at": "2026-09-17T11:13:24.173018+00:00",
@@ -1707,7 +1707,7 @@
         }
       ],
       "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
-      "last_seen_at": "2026-09-23T11:29:51.632795+00:00",
+      "last_seen_at": "2026-09-23T11:30:40.453802+00:00",
       "marker": "MASTER_ESCALATION fingerprint=cbd1eeeb6c273d4f257fdf9ba22846fc strike=1 stage=S1",
       "status": "recovering",
       "strike": 1
@@ -1850,5 +1850,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T11:29:51.632795+00:00"
+  "updated_at": "2026-09-23T11:30:40.453802+00:00"
 }
