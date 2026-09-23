@@ -608,6 +608,7 @@
       "verified_at": "2026-09-18T12:04:45.559619+00:00"
     },
     "ksr-8d83ce763cbad388f8a572f2": {
+      "acknowledged_at": "2026-09-23T18:28:56.140035+00:00",
       "command_id": "ksr-8d83ce763cbad388f8a572f2",
       "evidence_hash": "ec9814fa0cfd978977749c0f321a0f9cde305a9f96999c4235df41c1fca2f484",
       "exact": {
@@ -625,12 +626,44 @@
       "fingerprint": "6e57772fbbd109112776581c443668b0",
       "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|short",
       "issued_at": "2026-09-23T18:27:29.333316+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-8d83ce763cbad388f8a572f2",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "same-source exact Short is rebuilt without fresh provider generation, public, succeeded, and portrait 9:16",
+          "evidence_hash": "ec9814fa0cfd978977749c0f321a0f9cde305a9f96999c4235df41c1fca2f484",
+          "exact": {
+            "artifact_id": "c4b091c0-306d-4255-b74d-fcdb6ac99b37",
+            "content_sha256": "5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0",
+            "item_id": "video-20260923-193450-5b06a2fb2f",
+            "pr_number": 909,
+            "short_item_id": "video-20260923-194326-5b06a2fb2f",
+            "slug": "stop-keeping-score-relationship",
+            "source_id": "a523b059-f409-4363-9368-ecc61d1a92a9",
+            "task_id": "c4b091c0-306d-4255-b74d-fcdb6ac99b37"
+          },
+          "failure_signature": "SHORT_NOT_PORTRAIT",
+          "fingerprint": "6e57772fbbd109112776581c443668b0",
+          "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|short",
+          "proposed_action": "rebuild_exact_short",
+          "schema_version": 1,
+          "stage": "short",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/2710475522211631551"
+      },
       "proposed_action": "rebuild_exact_short",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-23T18:27:29.333316+00:00"
+      "updated_at": "2026-09-23T18:28:56.140035+00:00"
     },
     "ksr-946f71e89a4dccefbc1f65f1": {
       "acknowledged_at": "2026-09-22T06:36:10.281169+00:00",
@@ -2389,5 +2422,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T18:27:29.333316+00:00"
+  "updated_at": "2026-09-23T18:28:56.140035+00:00"
 }
