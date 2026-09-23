@@ -83,6 +83,7 @@ def repair_youtube_metadata(item: dict[str, Any]) -> dict[str, Any]:
         metadata["description"] = (
             f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"
             f"\n\nלאתר קשר:\n{core.SITE_URL}"
+            f"\n\nלתיאום פגישה:\n{core.APPOINTMENT_URL}"
         ).strip()
     item["youtube_metadata"] = metadata
     return metadata
@@ -402,6 +403,8 @@ def validate_and_manifest(
             raise core.PipelineError("YouTube description is missing the exact article URL")
         if core.SITE_URL not in description_lines:
             raise core.PipelineError("YouTube description is missing the standalone Kesher site URL")
+        if core.APPOINTMENT_URL not in description_lines:
+            raise core.PipelineError("YouTube description is missing the appointment URL")
     except (KeyError, core.PipelineError) as exc:
         metadata_failure = f"המטא־דאטה אינו עומד בשער העברית והמקור: {exc}"
         technical_failures.append(metadata_failure)
