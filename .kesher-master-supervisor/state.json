@@ -33,6 +33,31 @@
       "strike": 1,
       "updated_at": "2026-09-21T21:00:21.603758+00:00"
     },
+    "ksr-0baab7cba3d7e7fef7fae9c3": {
+      "command_id": "ksr-0baab7cba3d7e7fef7fae9c3",
+      "evidence_hash": "2e632e0c74aa3d4861bd082c8af6234c90423ec71e6f13ae3468beb150f6df6d",
+      "exact": {
+        "artifact_id": "f9e91f51-c4bb-4460-917d-df6181dfaa86",
+        "content_sha256": "c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3",
+        "item_id": "video-20260923-132438-c6ebd0c2d4",
+        "pr_number": 909,
+        "short_item_id": "video-20260923-143045-c6ebd0c2d4",
+        "slug": "expectations-reality-search",
+        "source_id": "fed93146-36c0-48e8-97d4-5f7716924535",
+        "task_id": "f9e91f51-c4bb-4460-917d-df6181dfaa86"
+      },
+      "executor": "controller",
+      "failure_signature": "SHORT_NOT_PORTRAIT",
+      "fingerprint": "c5a09e1bf03ce45f81c7acb033f40eb1",
+      "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
+      "issued_at": "2026-09-23T11:38:42.897477+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebuild_exact_short",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-23T11:38:42.897477+00:00"
+    },
     "ksr-14d6e3811b3b5e871c05cea0": {
       "acknowledged_at": "2026-09-23T11:30:40.453802+00:00",
       "command_id": "ksr-14d6e3811b3b5e871c05cea0",
@@ -52,7 +77,7 @@
       "fingerprint": "cbd1eeeb6c273d4f257fdf9ba22846fc",
       "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
       "issued_at": "2026-09-23T11:21:43.990010+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "dispatch": "already_active",
         "external_run_id": 35854814226,
@@ -64,7 +89,8 @@
       "running_at": "2026-09-23T11:29:51.632795+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-23T11:30:40.453802+00:00"
+      "updated_at": "2026-09-23T11:38:42.897477+00:00",
+      "verified_at": "2026-09-23T11:38:42.897477+00:00"
     },
     "ksr-1e153689fb28ae497a36a735": {
       "acknowledged_at": "2026-09-17T11:13:24.173018+00:00",
@@ -1693,8 +1719,27 @@
       "status": "recovering",
       "strike": 2
     },
+    "c5a09e1bf03ce45f81c7acb033f40eb1": {
+      "active_command_id": "ksr-0baab7cba3d7e7fef7fae9c3",
+      "failure_signature": "SHORT_NOT_PORTRAIT",
+      "fingerprint": "c5a09e1bf03ce45f81c7acb033f40eb1",
+      "first_seen_at": "2026-09-23T11:38:42.897477+00:00",
+      "history": [
+        {
+          "at": "2026-09-23T11:38:42.897477+00:00",
+          "command_id": "ksr-0baab7cba3d7e7fef7fae9c3",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
+      "last_seen_at": "2026-09-23T11:38:42.897477+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=c5a09e1bf03ce45f81c7acb033f40eb1 strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "cbd1eeeb6c273d4f257fdf9ba22846fc": {
-      "active_command_id": "ksr-14d6e3811b3b5e871c05cea0",
+      "active_command_id": null,
       "failure_signature": "SHORT_MISSING",
       "fingerprint": "cbd1eeeb6c273d4f257fdf9ba22846fc",
       "first_seen_at": "2026-09-23T11:21:43.990010+00:00",
@@ -1704,12 +1749,18 @@
           "command_id": "ksr-14d6e3811b3b5e871c05cea0",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-23T11:38:42.897477+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|expectations-reality-search|c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3|short",
       "last_seen_at": "2026-09-23T11:30:40.453802+00:00",
       "marker": "MASTER_ESCALATION fingerprint=cbd1eeeb6c273d4f257fdf9ba22846fc strike=1 stage=S1",
-      "status": "recovering",
+      "resolved_at": "2026-09-23T11:38:42.897477+00:00",
+      "status": "resolved",
       "strike": 1
     },
     "cdb3d1c697c39a69388b65fc7bca4273": {
@@ -1850,5 +1901,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T11:30:40.453802+00:00"
+  "updated_at": "2026-09-23T11:38:42.897477+00:00"
 }
