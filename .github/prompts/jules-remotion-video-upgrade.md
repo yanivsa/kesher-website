@@ -183,9 +183,9 @@ However, the review remains advisory relative to publication. A technically vali
 
 Quality findings should feed a later non-duplicating improvement task rather than hold the daily A+B+C delivery hostage.
 
-### Short publication links — mandatory
+### YouTube publication links — mandatory
 
-Every Short YouTube description MUST contain two separate full URL lines: (1) the exact canonical article URL and (2) `https://kesher.saharoni.com`. Do not treat the article URL as satisfying the standalone site-link requirement merely because it contains the same domain.
+Every Video Overview and Short YouTube description MUST contain three separate full URL lines: (1) the exact canonical article URL, (2) `https://kesher.saharoni.com`, and (3) `https://kesher.saharoni.com/appointment`. Do not treat the article URL as satisfying the standalone site-link requirement merely because it contains the same domain. All three links are part of the technical publication contract and must be verified again after upload.
 
 ### Native Short bounded fallback
 

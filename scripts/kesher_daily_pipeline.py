@@ -51,6 +51,7 @@ NOTEBOOKLM_BIN = os.environ.get("NOTEBOOKLM_BIN", "notebooklm")
 NOTEBOOKLM_REQUIRED_VERSION = "0.8.0"
 YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
 SITE_URL = "https://kesher.saharoni.com"
+APPOINTMENT_URL = f"{SITE_URL}/appointment"
 DISPLAY_URL = "kesher.saharoni.com"
 STATE_VERSION = 1
 POLL_INTERVAL_SECONDS = 30
@@ -142,6 +143,16 @@ def require_hebrew(value: str, field: str, allow_url: bool = False) -> None:
         raise PipelineError(f"{field} contains no Hebrew")
 
 
+def validate_youtube_description_links(description: str, canonical_url: str) -> None:
+    lines = [line.strip() for line in str(description).splitlines() if line.strip()]
+    if not canonical_url or canonical_url not in lines:
+        raise PipelineError("YouTube description is missing the exact article URL")
+    if SITE_URL not in lines:
+        raise PipelineError("YouTube description is missing the standalone Kesher site URL")
+    if APPOINTMENT_URL not in lines:
+        raise PipelineError("YouTube description is missing the appointment URL")
+
+
 def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
     required = ("id", "title", "date", "category", "excerpt", "content")
     missing = [field for field in required if not str(post.get(field, "")).strip()]
@@ -174,8 +185,13 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
         tags.append(subcategory)
     for tag in tags:
         require_hebrew(tag, "tag")
-    description = f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"
+    description = (
+        f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"
+        f"\n\nלאתר קשר:\n{SITE_URL}"
+        f"\n\nלתיאום פגישה:\n{APPOINTMENT_URL}"
+    )
     require_hebrew(description, "description", allow_url=True)
+    validate_youtube_description_links(description, canonical_url)
     return {
         "id": str(post["id"]),
         "slug": slug,
@@ -845,8 +861,10 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         require_hebrew(metadata["description"], "YouTube description", allow_url=True)
         for tag in metadata["tags"]:
             require_hebrew(tag, "YouTube tag")
-        if SITE_URL not in metadata["description"]:
-            raise PipelineError("YouTube description is missing the Kesher URL")
+        validate_youtube_description_links(
+            metadata["description"],
+            str((item.get("source") or {}).get("canonical_url") or ""),
+        )
     except (KeyError, PipelineError) as exc:
         metadata_failure = f"המטא־דאטה אינו עומד בשער העברית והמקור: {exc}"
         technical_failures.append(metadata_failure)
@@ -1294,10 +1312,13 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
             raise PipelineError("Uploaded video belongs to the wrong YouTube channel")
         if snippet.get("title") != item["youtube_metadata"]["title"]:
             raise PipelineError("Uploaded title differs from the approved metadata")
-        if SITE_URL not in str(snippet.get("description", "")):
-            raise PipelineError("Uploaded description is missing the Kesher URL")
+        uploaded_description = str(snippet.get("description", ""))
+        validate_youtube_description_links(
+            uploaded_description,
+            str((item.get("source") or {}).get("canonical_url") or ""),
+        )
         require_hebrew(str(snippet.get("title", "")), "uploaded title")
-        require_hebrew(str(snippet.get("description", "")), "uploaded description", allow_url=True)
+        require_hebrew(uploaded_description, "uploaded description", allow_url=True)
         process_status = processing.get("processingStatus")
         if status.get("privacyStatus") == "public" and process_status == "succeeded":
             return {
@@ -1363,8 +1384,10 @@ def upload_only(slug: str | None = None, item_id: str | None = None) -> int:
         raise PipelineError("YouTube metadata is incomplete")
     require_hebrew(title, "YouTube title")
     require_hebrew(description, "YouTube description", allow_url=True)
-    if SITE_URL not in description:
-        raise PipelineError("YouTube description is missing the Kesher URL")
+    validate_youtube_description_links(
+        description,
+        str((item.get("source") or {}).get("canonical_url") or ""),
+    )
     for tag in metadata.get("tags") or []:
         require_hebrew(str(tag), "YouTube tag")
     token = youtube_access_token()

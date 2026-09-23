@@ -82,9 +82,24 @@ class PipelineTestCase(unittest.TestCase):
         source = pipeline.source_metadata(hebrew_post())
         metadata = source["youtube_metadata"]
         self.assertEqual(metadata["title"], "איך עוזרים לילד להסתגל לשינוי?")
-        self.assertIn(pipeline.SITE_URL, metadata["description"])
+        lines = [line.strip() for line in metadata["description"].splitlines() if line.strip()]
+        self.assertIn(source["canonical_url"], lines)
+        self.assertIn(pipeline.SITE_URL, lines)
+        self.assertIn(pipeline.APPOINTMENT_URL, lines)
         self.assertEqual(metadata["tags"], ["הדרכת הורים", "ילדים מחוננים"])
         pipeline.require_hebrew(metadata["description"], "description", allow_url=True)
+
+    def test_youtube_description_requires_three_separate_links(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        article_only = f"תיאור בעברית\n{source['canonical_url']}"
+        with self.assertRaisesRegex(pipeline.PipelineError, "standalone Kesher site URL"):
+            pipeline.validate_youtube_description_links(article_only, source["canonical_url"])
+
+        without_appointment = (
+            f"תיאור בעברית\n{source['canonical_url']}\n{pipeline.SITE_URL}"
+        )
+        with self.assertRaisesRegex(pipeline.PipelineError, "appointment URL"):
+            pipeline.validate_youtube_description_links(without_appointment, source["canonical_url"])
 
     def test_article_body_uses_id_when_published_post_has_no_slug(self) -> None:
         post = hebrew_post("id-only-article")
