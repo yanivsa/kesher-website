@@ -262,6 +262,7 @@
       "verified_at": "2026-09-18T12:20:11.191203+00:00"
     },
     "ksr-67b3738723253ac703e0b228": {
+      "acknowledged_at": "2026-09-23T16:23:38.936000+00:00",
       "command_id": "ksr-67b3738723253ac703e0b228",
       "evidence_hash": "401b00732402a138941a60ddf0e8295a0518b6e3df6b71cc00edd038d8a14f5b",
       "exact": {
@@ -279,12 +280,44 @@
       "fingerprint": "c2ac82ab26ac43778b03f076d18b8e1a",
       "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|article",
       "issued_at": "2026-09-23T16:22:03.838157+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-67b3738723253ac703e0b228",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "the exact incident is absent in fresh authoritative production evidence and all relevant CI/public verification gates pass",
+          "evidence_hash": "401b00732402a138941a60ddf0e8295a0518b6e3df6b71cc00edd038d8a14f5b",
+          "exact": {
+            "artifact_id": null,
+            "content_sha256": "5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0",
+            "item_id": null,
+            "pr_number": 909,
+            "short_item_id": null,
+            "slug": "stop-keeping-score-relationship",
+            "source_id": null,
+            "task_id": null
+          },
+          "failure_signature": "DUPLICATE_ARTICLE_DATE",
+          "fingerprint": "c2ac82ab26ac43778b03f076d18b8e1a",
+          "incident_id": "v5|stop-keeping-score-relationship|5b06a2fb2fa4cf575366d906ca2e920621b0f72da04b6131b6d12494d92ebcf0|article",
+          "proposed_action": "escalate_unknown_failure",
+          "schema_version": 1,
+          "stage": "article",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/17388593043250711383"
+      },
       "proposed_action": "escalate_unknown_failure",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-23T16:22:03.838157+00:00"
+      "updated_at": "2026-09-23T16:23:38.936000+00:00"
     },
     "ksr-7001b3eb8e1b8d84c23c0586": {
       "acknowledged_at": "2026-09-23T16:15:38.162196+00:00",
@@ -2129,5 +2162,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T16:22:03.838157+00:00"
+  "updated_at": "2026-09-23T16:23:38.936000+00:00"
 }
