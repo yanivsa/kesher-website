@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-23",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35825383333,
@@ -62,7 +62,7 @@
     "last_deploy_dispatch_at": "2026-09-23T10:17:00.609649+00:00",
     "next_deploy_retry_at": null,
     "live": true,
-    "live_verified_at": "2026-09-23T11:26:08.787919+00:00"
+    "live_verified_at": "2026-09-23T11:57:19.781797+00:00"
   },
   "backlog": [
     {
@@ -1161,24 +1161,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-20T17:39:36.988043+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-20T17:39:53.200330+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-20T18:15:22.191272+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-09-20T18:16:06.096980+00:00",
       "from": "article_live",
       "to": "complete",
@@ -1856,9 +1838,27 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-23T11:57:19.781819+00:00",
+      "from": "short_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-23T11:57:30.273429+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-23T11:57:48.278680+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-23T11:29:20.877210+00:00",
+  "updated_at": "2026-09-23T11:57:48.278701+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1915,18 +1915,18 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "f9e91f51-c4bb-4460-917d-df6181dfaa86",
+    "provider_id": "cf1b885b-ca26-4840-9b3c-2301e4a63bce",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-23T11:29:20.877187+00:00",
-    "artifact_id": "f9e91f51-c4bb-4460-917d-df6181dfaa86",
-    "source_id": "fed93146-36c0-48e8-97d4-5f7716924535",
+    "artifact_id": "cf1b885b-ca26-4840-9b3c-2301e4a63bce",
+    "source_id": "78c61935-dcf5-4ceb-a5de-da11eeeae5e8",
     "adopted_from_long_item_id": "video-20260923-132438-c6ebd0c2d4",
     "watchdog": {
       "identity": "short:expectations-reality-search:c6ebd0c2d42a2822b74ef8f480b3d75455e1d8047c49b3ac3dd024d955e80fa3:video-20260923-143045-c6ebd0c2d4",
@@ -1935,7 +1935,24 @@
       "last_fingerprint": "296987d5ad8ec81d866be1e5fcd5292bcb031d7ceca22ffa70c22f2b28fd6b59",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "item_id": "video-20260923-143045-c6ebd0c2d4",
+    "type": "article_short",
+    "youtube_id": "Qe24HgVxwFw",
+    "youtube_url": "https://youtu.be/Qe24HgVxwFw",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "56b6336a6340162f83e778446edc395f5bf0d5886df1272aff4f927c6798c39a",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
