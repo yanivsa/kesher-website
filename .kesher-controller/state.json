@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-24",
-  "status": "blocked",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35927220224,
@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/pre-wedding-stress-and-anxiety",
     "published_date": "2026-09-24",
     "live": true,
-    "live_verified_at": "2026-09-24T12:47:43.538633+00:00",
+    "live_verified_at": "2026-09-24T16:50:21.141226+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1127,12 +1127,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "short",
-    "code": "SHORT_PROVIDER_HARD_TIMEOUT",
-    "message": "short provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-09-24T15:27:32.622471+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-22T08:42:51.902673+00:00",
@@ -1791,9 +1786,27 @@
       "details": {
         "message": "short provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-09-24T16:50:21.141239+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-24T16:51:41.338101+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-24T16:53:50.685196+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-24T15:27:32.622483+00:00",
+  "updated_at": "2026-09-24T16:53:50.685222+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1850,18 +1863,18 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "blocked",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03",
+    "provider_id": "9e5b35fa-72bc-4223-bc84-5fbf40fc4e52",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-24T12:48:24.403331+00:00",
-    "artifact_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03",
-    "source_id": "063e5380-c00a-45fc-a79a-1e80a562374d",
+    "artifact_id": "9e5b35fa-72bc-4223-bc84-5fbf40fc4e52",
+    "source_id": "9033cc03-51f3-4705-913a-e6a43875aaa0",
     "adopted_from_long_item_id": "video-20260924-145957-ebad62daad",
     "watchdog": {
       "identity": "short:pre-wedding-stress-and-anxiety:ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8:video-20260924-154958-ebad62daad",
@@ -1875,7 +1888,24 @@
       "incident_key": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
       "reason": "media provider hard timeout",
       "requested_at": "2026-09-24T15:27:32.622485+00:00"
-    }
+    },
+    "item_id": "video-20260924-154958-ebad62daad",
+    "type": "article_short",
+    "youtube_id": "3tfnaRGdfkM",
+    "youtube_url": "https://youtu.be/3tfnaRGdfkM",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "5e0f7d2e1cb30b2f1ff302e3e6970a253a4bbba8f182f82a64d261dce952a442",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
