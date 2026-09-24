@@ -1286,7 +1286,7 @@
       "fingerprint": "29493361ff24b17db157181b68c8b27e",
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|long_video",
       "issued_at": "2026-09-24T18:22:49.722911+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "verified",
       "metadata": {
         "dispatch": "issued",
         "dispatched_at": "2026-09-24T18:24:38.315095+00:00",
@@ -1295,7 +1295,8 @@
       "proposed_action": "rebind_exact_source",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-24T18:24:38.315095+00:00"
+      "updated_at": "2026-09-24T18:28:16.683914+00:00",
+      "verified_at": "2026-09-24T18:28:16.683914+00:00"
     },
     "ksr-e040aa069f0f8dd49bae4046": {
       "acknowledged_at": "2026-09-22T13:18:06.857491+00:00",
@@ -1799,7 +1800,7 @@
       "strike": 1
     },
     "29493361ff24b17db157181b68c8b27e": {
-      "active_command_id": "ksr-d857552cb34ef3f86cf48cd1",
+      "active_command_id": null,
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "29493361ff24b17db157181b68c8b27e",
       "first_seen_at": "2026-09-24T18:22:49.722911+00:00",
@@ -1809,12 +1810,18 @@
           "command_id": "ksr-d857552cb34ef3f86cf48cd1",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-24T18:28:16.683914+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|long_video",
       "last_seen_at": "2026-09-24T18:22:49.722911+00:00",
       "marker": "MASTER_ESCALATION fingerprint=29493361ff24b17db157181b68c8b27e strike=1 stage=S1",
-      "status": "recovering",
+      "resolved_at": "2026-09-24T18:28:16.683914+00:00",
+      "status": "resolved",
       "strike": 1
     },
     "2b43ad87b6c441898fe8b125783623b3": {
@@ -2722,5 +2729,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-24T18:24:38.315095+00:00"
+  "updated_at": "2026-09-24T18:28:16.683914+00:00"
 }
