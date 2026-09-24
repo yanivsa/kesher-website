@@ -17,13 +17,6 @@ import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
 import styles from './BlogPost.module.css';
 
-const routeKeyForPost = (post: (typeof posts)[number]) => {
-  if ('slug' in post && typeof post.slug === 'string' && post.slug.trim()) {
-    return post.slug.trim();
-  }
-  return post.id;
-};
-
 const articleCtaCopy = (post: (typeof posts)[number]) => {
   const subcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
   const context = `${post.category} ${subcategory} ${post.title}`;
@@ -45,8 +38,8 @@ const articleCtaCopy = (post: (typeof posts)[number]) => {
 
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const post = posts.find((candidate) => candidate.id === id || routeKeyForPost(candidate) === id);
-  const canonicalRouteKey = post ? routeKeyForPost(post) : '';
+  const post = posts.find((candidate) => candidate.id === id);
+  const canonicalRouteKey = post?.id || '';
   const articleVideo = post
     ? (articleVideos as Record<string, { youtubeId: string; title?: string }>)[post.id]
     : undefined;
