@@ -11,6 +11,7 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/aliyah-families#service`,
       name: 'ייעוץ זוגי והנחיית הורים למשפחות עולים ותושבים חוזרים',
       serviceType: 'ליווי משפחתי בתקופת עלייה או חזרה לישראל',
       url: `${SITE_CONFIG.url}/services/aliyah-families`,
@@ -24,6 +25,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/aliyah-families#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',

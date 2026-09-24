@@ -156,6 +156,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/couples-mediation-ashdod#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',

@@ -28,6 +28,7 @@ const schemaData = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/contact#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",
