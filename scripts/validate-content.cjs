@@ -19,6 +19,8 @@ ensureUnique('post id', published.map((post) => post.id));
 ensureUnique('post title', published.map((post) => post.title));
 ensureUnique('post image', published.map((post) => post.image).filter(Boolean));
 
+const REUSE_COOLDOWN_DAYS = 90;
+const MAX_LIFETIME_USES = 3;
 const seenImageShas = new Map();
 for (const post of posts) {
   if (post.image) {
@@ -26,10 +28,33 @@ for (const post of posts) {
     if (fs.existsSync(imagePath)) {
       const fileBytes = fs.readFileSync(imagePath);
       const hash = crypto.createHash('sha256').update(fileBytes).digest('hex');
-      if (seenImageShas.has(hash)) {
-        errors.push(`Duplicate image content (SHA-256 hash collision ${hash.slice(0, 12)}...) between '${post.id}' and '${seenImageShas.get(hash)}'`);
+      if (!seenImageShas.has(hash)) {
+        seenImageShas.set(hash, []);
+      }
+      seenImageShas.get(hash).push({ id: post.id, date: post.date });
+    }
+  }
+}
+
+for (const [hash, usages] of seenImageShas.entries()) {
+  if (usages.length > 1) {
+    if (usages.length > MAX_LIFETIME_USES) {
+      errors.push(`Duplicate image content (SHA-256 hash collision ${hash.slice(0, 12)}...) exceeds max ${MAX_LIFETIME_USES} lifetime uses (${usages.length} uses: ${usages.map(u => u.id).join(', ')})`);
+      continue;
+    }
+    const sorted = usages.slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    for (let i = 1; i < sorted.length; i++) {
+      const prev = sorted[i - 1];
+      const curr = sorted[i];
+      if (prev.date && curr.date) {
+        const dPrev = new Date(prev.date);
+        const dCurr = new Date(curr.date);
+        const diffDays = Math.round(Math.abs(dCurr - dPrev) / (1000 * 60 * 60 * 24));
+        if (diffDays < REUSE_COOLDOWN_DAYS) {
+          errors.push(`Duplicate image content (SHA-256 hash collision ${hash.slice(0, 12)}...) between '${curr.id}' and '${prev.id}' violates ${REUSE_COOLDOWN_DAYS}-day reuse cooldown (${diffDays} days)`);
+        }
       } else {
-        seenImageShas.set(hash, post.id);
+        errors.push(`Duplicate image content (SHA-256 hash collision ${hash.slice(0, 12)}...) between '${curr.id}' and '${prev.id}' missing publication date`);
       }
     }
   }
