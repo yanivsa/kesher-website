@@ -19,11 +19,31 @@ export const legacyRedirectTarget = (requestUrl: string) => {
   return `${PRIMARY_ORIGIN}${destinationPath}${url.search}`;
 };
 
+const CANONICAL_PATH_TARGETS: Record<string, string> = {
+  '/b': '',
+  '/b/': '',
+  '/beta': '',
+  '/beta/': '',
+  '/beta2': '',
+  '/beta2/': '',
+  '/beta3': '',
+  '/beta3/': '',
+  '/services/singles-guidance': '/services/late-singleness',
+  '/services/singles-guidance/': '/services/late-singleness',
+  '/services/couples/ashdod': '/couples-counseling-ashdod',
+  '/services/couples/ashdod/': '/couples-counseling-ashdod',
+  '/blog/child-starting-school-high': '/blog/child-starting-school-high-cognition',
+  '/blog/child-starting-school-high/': '/blog/child-starting-school-high-cognition',
+};
+
 export const canonicalRedirectTarget = (requestUrl: string) => {
   const url = new URL(requestUrl);
   if (url.hostname !== 'kesher.saharoni.com') return null;
-  if (url.pathname !== '/b' && url.pathname !== '/b/' && url.pathname !== '/beta' && url.pathname !== '/beta/' && url.pathname !== '/beta2' && url.pathname !== '/beta2/' && url.pathname !== '/beta3' && url.pathname !== '/beta3/') return null;
-  return PRIMARY_ORIGIN;
+
+  const destinationPath = CANONICAL_PATH_TARGETS[url.pathname];
+  if (destinationPath === undefined) return null;
+
+  return `${PRIMARY_ORIGIN}${destinationPath}${url.search}`;
 };
 
 export const onRequest: PagesFunction = async (context) => {
