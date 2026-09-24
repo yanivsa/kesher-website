@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-25",
-  "status": "article_needed",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1788,9 +1788,15 @@
       "from": "article_needed",
       "to": "v5_migrated",
       "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-09-24T21:32:52.515024+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-09-24T21:29:03.318956+00:00",
+  "updated_at": "2026-09-24T21:32:52.515043+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1834,15 +1840,34 @@
   },
   "short": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "7e566889-b497-4d4f-8bee-6b8e7fb31970",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "item_id": "video-20260924-234218-c41b6ec41c",
+    "type": "article_short",
+    "youtube_id": "eCGn_z6hnzQ",
+    "youtube_url": "https://youtu.be/eCGn_z6hnzQ",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "aa4d5059a2ff916887e60fcff5226deaf257f0aab39a36f1cbe85311c6c66957",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920,
+    "artifact_id": "7e566889-b497-4d4f-8bee-6b8e7fb31970",
+    "source_id": "109ca6a1-00c9-452c-a12d-1f70ca163b07"
   },
   "migration": {
     "v4_short_controller_state": null
