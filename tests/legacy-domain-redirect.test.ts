@@ -65,6 +65,24 @@ describe('canonical route redirects', () => {
     );
   });
 
+  it('redirects legacy article and service aliases to their canonical routes', () => {
+    expect(
+      canonicalRedirectTarget(
+        'https://kesher.saharoni.com/blog/child-starting-school-high?utm_source=old',
+      ),
+    ).toBe(
+      'https://kesher.saharoni.com/blog/child-starting-school-high-cognition?utm_source=old',
+    );
+
+    expect(
+      canonicalRedirectTarget('https://kesher.saharoni.com/services/couples/ashdod'),
+    ).toBe('https://kesher.saharoni.com/couples-counseling-ashdod');
+
+    expect(
+      canonicalRedirectTarget('https://kesher.saharoni.com/services/singles-guidance/'),
+    ).toBe('https://kesher.saharoni.com/services/late-singleness');
+  });
+
   it('leaves other primary routes unchanged', () => {
     expect(canonicalRedirectTarget('https://kesher.saharoni.com/about')).toBeNull();
   });
