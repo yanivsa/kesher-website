@@ -11,7 +11,7 @@ from scripts.kesher_daily_pipeline import source_metadata
 from .article_verification import ArticlePublicVerifier, ArticleVerificationError, GitHubArticleReader, SourceSnapshot
 from .controller import Observation
 from .github import GitHubError
-from .identity import MediaIdentity, SlotIdentity, SourceIdentity, require_sha
+from .identity import MediaIdentity, SlotIdentity, SourceIdentity, digest, require_sha
 from .media_observer import observe_media
 from .media_publication import MediaVerificationError
 from .outbox import workflow_for
@@ -78,8 +78,10 @@ class RepositoryObserver:
         except (GitHubError, OSError):
             return {'status': 'unknown', 'failure_class': 'TRANSIENT_API'}
 
-    def article_prs(self, posts: list[dict], current_slot: str, state: dict | None = None) -> list[dict]:
+    def article_prs(self, posts: list[dict], current_slot: str, state: dict | None = None,
+                    main_sha: str | None = None) -> list[dict]:
         from .article_image_worker import image_receipt_matches
+        from .article_validation import validation_for_pr
         result = []
         base_ids = {post['id'] for post in posts}
         for pr in self.pages('pulls?state=open'):
@@ -97,7 +99,8 @@ class RepositoryObserver:
                 slot = SlotIdentity(post['date']).slot
                 if slot > current_slot:
                     continue
-                row = {'number': pr['number'], 'head_sha': head, 'slot': slot, 'status': 'ci_pending'}
+                row = {'number': pr['number'], 'head_sha': head, 'body_sha256': digest(pr.get('body') or ''),
+                       'slot': slot, 'status': 'ci_pending'}
                 result.append(row)
                 if (pr.get('base', {}).get('ref') != 'main' or (pr.get('head', {}).get('repo') or {}).get('full_name') != self.repo
                         or sum(candidate.get('date') == slot for candidate in candidates) != 1):
@@ -116,15 +119,17 @@ class RepositoryObserver:
                     row['status'] = 'image_required'; continue
                 if not image_receipt_matches(state, slot, pr['number'], head, post, data, pr.get('body') or ''):
                     row['status'] = 'image_required'; continue
-                checks = self.pages(f'commits/{head}/check-runs?filter=latest', 'check_runs')
-                required = {'verify', 'validate', 'render-proof'}
-                names = {check.get('name') for check in checks if (check.get('app') or {}).get('slug') == 'github-actions'}
-                if any(check.get('conclusion') in {'failure', 'cancelled', 'timed_out', 'action_required', 'startup_failure'} for check in checks):
-                    row['status'] = 'ci_failed'
-                elif (not pr.get('draft') and required <= names and checks
-                      and all(check.get('status') == 'completed' and check.get('conclusion') in {'success', 'skipped', 'neutral'} for check in checks)
-                      and all(check.get('conclusion') == 'success' for check in checks if check.get('name') in required)):
-                    row['status'] = 'ready_to_merge'
+                if not image_receipt_matches(state, slot, pr['number'], head, post, data, pr.get('body') or '', base_sha=main_sha):
+                    row['status'] = 'normalize_required'; continue
+                if pr.get('draft'):
+                    row['status'] = 'ci_failed'; continue
+                validation = validation_for_pr(state, self.github, self.repo, slot, pr, main_sha)
+                row['status'] = {'verified': 'ready_to_merge', 'absent': 'ci_required',
+                                 'pending': 'ci_pending', 'failed': 'ci_failed', 'unknown': 'ci_unknown'}[validation['status']]
+                if validation['status'] == 'failed' and validation.get('failure_class') == 'TRANSIENT_API':
+                    row['status'] = 'ci_required'
+                if validation.get('evidence'):
+                    row['validation'] = validation['evidence']
         return result
 
     def runs(self, state: dict) -> list[dict]:
@@ -150,7 +155,7 @@ class RepositoryObserver:
         current_slot = datetime.fromisoformat(now).astimezone(ZoneInfo('Asia/Jerusalem')).date().isoformat()
         main = self.github.request('GET', f'/repos/{self.repo}/git/ref/heads/main')['object']['sha']; require_sha(main, 40)
         posts = json.loads(self.content(main, 'src/data/posts.json'))
-        prs = self.article_prs(posts, current_slot, state)
+        prs = self.article_prs(posts, current_slot, state, main_sha=main)
         runs = self.runs(state)
         self._deployment = self.reader.deployment(main)
         try:

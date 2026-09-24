@@ -30,6 +30,16 @@ def word_count(content: str) -> int:
 
 
 def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
+    errors = evaluate_content(pr, files_data, base_posts, head_posts, image_loader)
+    if not any(check.get("name") == "verify" and check.get("conclusion") == "success"
+               and check.get("head_sha") == (pr.get("head") or {}).get("sha")
+               and bool((pr.get("head") or {}).get("sha")) for check in checks):
+        errors.append("Fresh successful verify check is required on the current head")
+    return errors
+
+
+def evaluate_content(pr, files_data, base_posts, head_posts, image_loader):
+    """Pure content policy, also run inside canonical CI before CI can finish."""
     errors: list[str] = []
     files = [entry["filename"] for entry in files_data]
     body = pr.get("body") or ""
@@ -49,11 +59,6 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
         errors.append("Article PR contains a forbidden file")
     if any(path.startswith("public/videos/") for path in files):
         errors.append("Article PRs may not contain video files")
-    if not any(check.get("name") == "verify" and check.get("conclusion") == "success"
-               and check.get("head_sha") == (pr.get("head") or {}).get("sha")
-               and bool((pr.get("head") or {}).get("sha")) for check in checks):
-        errors.append("Fresh successful verify check is required on the current head")
-
     base_ids = {post.get("id") for post in base_posts}
     base_by_id = {post.get("id"): post for post in base_posts}
     head_by_id = {post.get("id"): post for post in head_posts}

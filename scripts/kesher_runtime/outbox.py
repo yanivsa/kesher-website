@@ -40,6 +40,8 @@ def workflow_for(command: dict) -> str:
         return 'kesher-media-worker.yml'
     if isinstance(target, SlotIdentity) and operation in {'create_article', 'settle_article', 'normalize_article', 'attach_image'}:
         return 'kesher-article-worker.yml'
+    if isinstance(target, SlotIdentity) and operation == 'validate_article':
+        return 'kesher-article-validation.yml'
     if isinstance(target, SlotIdentity) and operation == 'merge_article':
         return 'kesher-article-generation.yml'
     if isinstance(target, SourceIdentity) and operation == 'deploy_article':

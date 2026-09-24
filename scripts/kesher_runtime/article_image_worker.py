@@ -37,7 +37,7 @@ def _prior(context, name):
     return copy.deepcopy(next(iter(requests.values()), None))
 
 
-def image_receipt_matches(state, slot, number, head, post, data, body):
+def image_receipt_matches(state, slot, number, head, post, data, body, *, base_sha=None):
     """Mutable PR prose cannot assert a trusted provider execution by itself."""
     if not state or image_proof_errors(post, body, head, data):
         return False
@@ -50,6 +50,7 @@ def image_receipt_matches(state, slot, number, head, post, data, body):
                 continue
             proof = receipt.get('image_evidence') or {}
             if (receipt.get('pr_number') == number and receipt.get('new_head_sha') == head
+                    and (base_sha is None or effect['request'].get('main_sha') == base_sha)
                     and proof == effect['request'].get('image_evidence')
                     and proof.get('Image Article SHA-256') == article_sha256(post)
                     and proof.get('Image SHA-256') == hashlib.sha256(data).hexdigest()

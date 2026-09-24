@@ -39,7 +39,7 @@ def observed(*publications, now=NOW, current_slot=SOURCE.slot, runs=(), prs=()):
 
 class AutonomousControllerTests(unittest.TestCase):
     def test_article_mutation_requires_exact_head_jules_quiescence(self):
-        for status in ('normalize_required', 'image_required', 'ready_to_merge', 'ci_failed'):
+        for status in ('normalize_required', 'image_required', 'ci_required', 'ready_to_merge', 'ci_failed'):
             with self.subTest(status=status):
                 pr = {'slot': SOURCE.slot, 'number': 854, 'head_sha': CODE, 'status': status}
                 result = reconcile(new_state(), observed(prs=[pr]), now=NOW)
@@ -70,6 +70,31 @@ class AutonomousControllerTests(unittest.TestCase):
         state = new_state(); state['revision'] = 1
         with self.assertRaises(StateConflict):
             reconcile(state, Observation(obs), now=NOW)
+
+    def test_article_validation_budget_is_bound_to_body_and_trusted_code_revision(self):
+        from scripts.kesher_runtime.worker import WorkerContext
+        pr = {'slot': SOURCE.slot, 'number': 854, 'head_sha': CODE, 'status': 'ci_required', 'body_sha256': '0'*64}
+        first = reconcile(new_state(), observed(prs=[pr]), now=NOW)
+        server = ContentsServer(first.state); store = GitHubStateStore(server, 'owner/repo')
+        worker = WorkerContext(store, first.command_id, '1/1', SlotIdentity(SOURCE.slot), code_sha=CODE, now=lambda: NOW)
+        worker.claim()
+        worker.checkpoint('article_pr_settled', {'number': 854, 'head_sha': CODE, 'slot': SOURCE.slot, 'sessions': []}, phase='OUTPUT_CREATED')
+        worker.finish()
+        first = reconcile(store.load().state, observed(prs=[pr]), now=NOW)
+        server.document = first.state
+        worker = WorkerContext(store, first.command_id, '2/1', SlotIdentity(SOURCE.slot), code_sha=CODE, now=lambda: NOW)
+        worker.claim(); worker.finish(failure={'class': 'CI_INPUT_CHANGED'})
+        for changed in ('body', 'main'):
+            with self.subTest(changed=changed):
+                obs = observed(prs=[pr]).value
+                if changed == 'body': obs['article_prs'][0]['body_sha256'] = '1'*64
+                else: obs['main_sha'] = 'f'*40
+                result = reconcile(store.load().state, Observation(obs), now=NOW)
+                self.assertIsNotNone(result.command_id, 'A new immutable validation input needs its own budget')
+                command = result.state['commands'][result.command_id]
+                self.assertEqual(command['operation'], 'validate_article')
+                self.assertEqual(command['inputs']['pr_body_sha256'], obs['article_prs'][0]['body_sha256'])
+                self.assertEqual(command['code_sha'], obs['main_sha'])
 
     def test_creation_respects_publication_window_without_stopping_reconciliation(self):
         obs = observed().value; obs['article_creation_allowed'] = False

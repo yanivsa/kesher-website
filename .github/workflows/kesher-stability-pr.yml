@@ -50,6 +50,7 @@ jobs:
             tests.test_kesher_article_worker \
             tests.test_kesher_article_normalize_worker \
             tests.test_kesher_article_image_worker \
+            tests.test_kesher_article_validation \
             tests.test_kesher_runtime_migration \
             tests.test_kesher_state_write_safety \
             tests.test_kesher_canonical_state \

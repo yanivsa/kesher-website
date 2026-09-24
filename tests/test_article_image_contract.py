@@ -125,6 +125,17 @@ class ArticleImageContractTests(unittest.TestCase):
                 self.assertTrue(self.controller_ready()[0])
                 self.assertEqual(self.validate(), [])
 
+    def test_content_gate_runs_before_ci_but_legacy_merge_gate_still_requires_ci(self):
+        self.assertTrue(hasattr(self.validator, 'evaluate_content'), 'Missing independently callable content gate')
+        check = self.validator.evaluate_content
+        self.assertEqual(check(self.pr, self.files, self.base, self.base + [self.post], lambda _: self.image), [])
+        self.assertIn('Fresh successful verify check is required on the current head', self.validate(checks=[]))
+        self.post['content'] = '<p>קצר מדי</p>'
+        self.pr['body'] = self.proof()
+        errors = check(self.pr, self.files, self.base, self.base + [self.post], lambda _: self.image)
+        self.assertTrue(any('700-1100' in error for error in errors))
+        self.assertTrue(any('five H3' in error for error in errors))
+
     def test_rss_is_not_deleted_as_forbidden_by_cleanup(self):
         self.assertEqual(self.cleanup.forbidden_paths(self.files), [])
         self.assertEqual(self.cleanup.forbidden_paths([{'filename': '.github/workflows/evil.yml'}]),

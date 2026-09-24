@@ -301,11 +301,12 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
         if matches:
             pr = matches[0]
             row['article_pr'] = {'number': pr['number'], 'head_sha': pr['head_sha']}
-            semantic = digest({**row['article_pr'], 'status': pr['status']})
+            semantic = digest({**row['article_pr'], 'status': pr['status'], 'body_sha256': pr.get('body_sha256'),
+                               'validation_base_sha': data['main_sha'] if pr['status'].startswith('ci_') else None})
             if row.get('article_progress_sha256') != semantic:
                 row['article_progress_sha256'] = semantic
                 row['article_last_progress_at'] = now
-            operation = {'normalize_required': 'normalize_article', 'image_required': 'attach_image',
+            operation = {'normalize_required': 'normalize_article', 'image_required': 'attach_image', 'ci_required': 'validate_article',
                          'ready_to_merge': 'merge_article'}.get(pr['status'])
             if operation or pr['status'] == 'ci_failed':
                 settled = any(command['outcome'] == 'succeeded'
@@ -316,9 +317,12 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
                 if not settled:
                     operation = 'settle_article'
             if operation:
+                inputs = {'pr_number': str(pr['number']), 'pr_head_sha': pr['head_sha']}
+                if operation == 'validate_article':
+                    inputs.update(pr_body_sha256=pr.get('body_sha256', digest('')), validation_base_sha=data['main_sha'])
                 action = _eligible(proposed, target, {'status': 'absent'}, row.setdefault('recovery', {}),
                                    now=now, default_operation=operation,
-                                   inputs={'pr_number': str(pr['number']), 'pr_head_sha': pr['head_sha']})
+                                   inputs=inputs)
                 if action:
                     eligible.append(action)
             elif pr['status'] == 'ci_failed':
