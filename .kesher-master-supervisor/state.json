@@ -730,6 +730,31 @@
       "updated_at": "2026-09-23T18:42:06.680519+00:00",
       "verified_at": "2026-09-23T18:42:06.680519+00:00"
     },
+    "ksr-8ffbbdb8d0b986ea75e8185b": {
+      "command_id": "ksr-8ffbbdb8d0b986ea75e8185b",
+      "evidence_hash": "0b7515b098965d6ae998f4df32bbfceb4c884cf02f7469ced60e81ef9d7b7636",
+      "exact": {
+        "artifact_id": "ede4147b-d182-4978-b87b-5245d1e224a2",
+        "content_sha256": "ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8",
+        "item_id": "video-20260924-213534-ebad62daad",
+        "pr_number": 920,
+        "short_item_id": "video-20260924-154958-ebad62daad",
+        "slug": "pre-wedding-stress-and-anxiety",
+        "source_id": "697aadfd-2da5-4697-81b2-1b6a6b6f0bc4",
+        "task_id": "ede4147b-d182-4978-b87b-5245d1e224a2"
+      },
+      "executor": "direct",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "29493361ff24b17db157181b68c8b27e",
+      "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|long_video",
+      "issued_at": "2026-09-24T21:22:15.774084+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebind_exact_source",
+      "stage": "S3",
+      "strike": 3,
+      "updated_at": "2026-09-24T21:22:15.774084+00:00"
+    },
     "ksr-946f71e89a4dccefbc1f65f1": {
       "acknowledged_at": "2026-09-22T06:36:10.281169+00:00",
       "command_id": "ksr-946f71e89a4dccefbc1f65f1",
@@ -1194,11 +1219,13 @@
         "task_id": "ede4147b-d182-4978-b87b-5245d1e224a2"
       },
       "executor": "jules",
+      "failed_at": "2026-09-24T21:22:15.774084+00:00",
+      "failure_reason": "Jules state=COMPLETED; exact incident persisted",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "29493361ff24b17db157181b68c8b27e",
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|long_video",
       "issued_at": "2026-09-24T20:37:09.326948+00:00",
-      "lifecycle": "running",
+      "lifecycle": "failed",
       "metadata": {
         "external_run_id": 36057554028,
         "external_workflow": "Kesher Daily NotebookLM Video Overview",
@@ -1238,7 +1265,7 @@
       "running_at": "2026-09-24T20:45:19.331447+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-24T20:53:57.629348+00:00"
+      "updated_at": "2026-09-24T21:22:15.774084+00:00"
     },
     "ksr-c6461c9c81c42f0130ccfebc": {
       "acknowledged_at": "2026-09-20T10:42:48.474308+00:00",
@@ -1893,7 +1920,7 @@
       "strike": 1
     },
     "29493361ff24b17db157181b68c8b27e": {
-      "active_command_id": "ksr-c4b446c4eb918329932743a2",
+      "active_command_id": "ksr-8ffbbdb8d0b986ea75e8185b",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "29493361ff24b17db157181b68c8b27e",
       "first_seen_at": "2026-09-24T19:34:09.420820+00:00",
@@ -1915,13 +1942,25 @@
           "command_id": "ksr-c4b446c4eb918329932743a2",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-24T21:22:15.774084+00:00",
+          "command_id": "ksr-c4b446c4eb918329932743a2",
+          "event": "command_failed",
+          "reason": "Jules state=COMPLETED; exact incident persisted"
+        },
+        {
+          "at": "2026-09-24T21:22:15.774084+00:00",
+          "command_id": "ksr-8ffbbdb8d0b986ea75e8185b",
+          "event": "command_issued",
+          "stage": "S3"
         }
       ],
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|long_video",
-      "last_seen_at": "2026-09-24T20:53:57.629348+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=29493361ff24b17db157181b68c8b27e strike=2 stage=S2",
+      "last_seen_at": "2026-09-24T21:22:15.774084+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=29493361ff24b17db157181b68c8b27e strike=3 stage=S3",
       "status": "recovering",
-      "strike": 2
+      "strike": 3
     },
     "2b43ad87b6c441898fe8b125783623b3": {
       "active_command_id": null,
@@ -2828,5 +2867,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-24T20:53:57.629348+00:00"
+  "updated_at": "2026-09-24T21:22:15.774084+00:00"
 }
