@@ -20,7 +20,11 @@
     "pr_number": 920,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/920",
     "merge_dispatch_at": "2026-09-24T11:37:09.470589+00:00",
-    "merge_dispatch_count": 6
+    "merge_dispatch_count": 6,
+    "quality_status": "passed",
+    "quality_content_sha256": "ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8",
+    "quality_checked_at": "2026-09-24T11:43:03.942602+00:00",
+    "quality_violations": []
   },
   "backlog": [
     {
@@ -1745,7 +1749,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
