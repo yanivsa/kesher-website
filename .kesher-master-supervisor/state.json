@@ -1268,6 +1268,7 @@
       "verified_at": "2026-09-24T16:54:28.789690+00:00"
     },
     "ksr-d857552cb34ef3f86cf48cd1": {
+      "acknowledged_at": "2026-09-24T18:24:38.315095+00:00",
       "command_id": "ksr-d857552cb34ef3f86cf48cd1",
       "evidence_hash": "c094d2ac4befb9c7bbaa8ce7d20923c0e851210ea1f8232ebabc9bf32e1296e8",
       "exact": {
@@ -1285,12 +1286,16 @@
       "fingerprint": "29493361ff24b17db157181b68c8b27e",
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|long_video",
       "issued_at": "2026-09-24T18:22:49.722911+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "issued",
+        "dispatched_at": "2026-09-24T18:24:38.315095+00:00",
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-24T18:22:49.722911+00:00"
+      "updated_at": "2026-09-24T18:24:38.315095+00:00"
     },
     "ksr-e040aa069f0f8dd49bae4046": {
       "acknowledged_at": "2026-09-22T13:18:06.857491+00:00",
@@ -2717,5 +2722,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-24T18:22:49.722911+00:00"
+  "updated_at": "2026-09-24T18:24:38.315095+00:00"
 }
