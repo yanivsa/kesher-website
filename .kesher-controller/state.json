@@ -1781,7 +1781,15 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-09-24T11:58:08.426444+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "watchdog": {
+      "identity": "long_video:pre-wedding-stress-and-anxiety:ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8:video-20260924-145957-ebad62daad",
+      "hard_started_at": "2026-09-24T12:00:08.206243+00:00",
+      "last_progress_at": "2026-09-24T11:58:42.063208+00:00",
+      "last_fingerprint": "d0c2309920954c6b89be189c052aa6a0c9805e99429db09a70ed6913fda483fb",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
