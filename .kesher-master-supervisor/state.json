@@ -1495,7 +1495,7 @@
       "verified_at": "2026-09-23T11:56:18.854806+00:00"
     },
     "ksr-fd7186e4f79ae69876ca0399": {
-      "acknowledged_at": "2026-09-24T15:29:23.278263+00:00",
+      "acknowledged_at": "2026-09-24T16:09:05.164729+00:00",
       "command_id": "ksr-fd7186e4f79ae69876ca0399",
       "evidence_hash": "75780bb5279078b5efad25245b008a8a3abc61f80077c3a500d7329cf7099d2e",
       "exact": {
@@ -1513,7 +1513,7 @@
       "fingerprint": "05fd24f164b82ed5d8fcc4ff4dbe296d",
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
       "issued_at": "2026-09-24T15:28:06.904169+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "running",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-fd7186e4f79ae69876ca0399",
@@ -1548,9 +1548,10 @@
         "session_id": "sessions/14144807119243996861"
       },
       "proposed_action": "rebuild_exact_short",
+      "running_at": "2026-09-24T16:09:05.164729+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-24T15:29:23.278263+00:00"
+      "updated_at": "2026-09-24T16:09:05.164729+00:00"
     },
     "ksr-ff48fdefa56312b36f0734b1": {
       "acknowledged_at": "2026-09-22T10:49:24.777286+00:00",
@@ -1674,7 +1675,7 @@
         }
       ],
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
-      "last_seen_at": "2026-09-24T15:28:06.904169+00:00",
+      "last_seen_at": "2026-09-24T16:09:05.164729+00:00",
       "marker": "MASTER_ESCALATION fingerprint=05fd24f164b82ed5d8fcc4ff4dbe296d strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
@@ -2609,5 +2610,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-24T15:29:23.278263+00:00"
+  "updated_at": "2026-09-24T16:09:05.164729+00:00"
 }
