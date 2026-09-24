@@ -26,6 +26,7 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/premarital-first-year#service`,
       name: 'ייעוץ זוגי לפני חתונה והכנה לנישואים',
       alternateName: 'הכנה לנישואים וליווי בשנה הראשונה',
       serviceType: 'הכנה זוגית מעשית לפני החתונה וליווי לזוגות בתחילת הנישואים',
@@ -37,6 +38,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/premarital-first-year#breadcrumb`,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'עמוד הבית', item: SITE_CONFIG.url },
         {

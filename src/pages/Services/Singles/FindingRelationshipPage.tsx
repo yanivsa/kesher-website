@@ -13,6 +13,7 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/finding-relationship#service`,
       name: 'ליווי למציאת זוגיות',
       serviceType: 'ליווי אישי בתהליך היכרות ובניית קשר זוגי',
       url: `${SITE_CONFIG.url}/services/finding-relationship`,
@@ -23,6 +24,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/finding-relationship#breadcrumb`,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'עמוד הבית', item: SITE_CONFIG.url },
         { '@type': 'ListItem', position: 2, name: 'ליווי למציאת זוגיות', item: `${SITE_CONFIG.url}/services/finding-relationship` },

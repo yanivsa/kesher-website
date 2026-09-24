@@ -17,6 +17,7 @@ const schemaData = {
   "@graph": [
     {
       "@type": "Service",
+      "@id": `${SITE_CONFIG.url}/services/parenting#service`,
       "name": "הדרכת הורים",
       "serviceType": "הדרכת הורים",
       "url": `${SITE_CONFIG.url}/services/parenting`,
@@ -39,6 +40,7 @@ const schemaData = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/services/parenting#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",

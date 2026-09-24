@@ -104,6 +104,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
     '@graph': [
       {
         '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/couples/before-separation#service`,
         name: 'ייעוץ ובירור זוגי בצומת החלטה ולפני פרידה',
         serviceType: 'Couples Discernment and Counseling',
         url: `${SITE_CONFIG.url}/services/couples/before-separation`,
@@ -138,6 +139,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
       },
       {
         '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/couples/before-separation#breadcrumb`,
         itemListElement: [
           {
             '@type': 'ListItem',

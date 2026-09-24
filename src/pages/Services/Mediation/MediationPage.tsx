@@ -12,6 +12,7 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/mediation#service`,
       name: 'גישור',
       alternateName: 'גישור משפחתי וגישור גירושין',
       serviceType: 'גישור משפחתי, זוגי וגישור גירושין',
@@ -26,6 +27,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/mediation#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',

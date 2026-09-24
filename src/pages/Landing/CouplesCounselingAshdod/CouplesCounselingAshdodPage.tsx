@@ -165,6 +165,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/couples-counseling-ashdod#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',

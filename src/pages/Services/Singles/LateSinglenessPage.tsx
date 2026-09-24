@@ -13,6 +13,7 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/late-singleness#service`,
       name: 'ייעוץ במצבי רווקות מאוחרת',
       serviceType: 'ייעוץ אישי במצבי רווקות מאוחרת',
       url: `${SITE_CONFIG.url}/services/late-singleness`,
@@ -23,6 +24,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/late-singleness#breadcrumb`,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'עמוד הבית', item: SITE_CONFIG.url },
         { '@type': 'ListItem', position: 2, name: 'ייעוץ במצבי רווקות מאוחרת', item: `${SITE_CONFIG.url}/services/late-singleness` },

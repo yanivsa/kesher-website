@@ -84,6 +84,7 @@ const BlogPost: React.FC = () => {
       },
       {
         "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}#breadcrumb`,
         "itemListElement": [
           {
             "@type": "ListItem",
