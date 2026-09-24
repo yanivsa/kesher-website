@@ -1239,6 +1239,31 @@
       "strike": 1,
       "updated_at": "2026-09-22T13:21:56.502251+00:00"
     },
+    "ksr-e09af0d960bc330e0de6fbef": {
+      "command_id": "ksr-e09af0d960bc330e0de6fbef",
+      "evidence_hash": "3da346246fd40dd2a9c657cb519ac66fd7bcd79bf72d02612681c317f8761707",
+      "exact": {
+        "artifact_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03",
+        "content_sha256": "ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8",
+        "item_id": "video-20260924-145957-ebad62daad",
+        "pr_number": 920,
+        "short_item_id": null,
+        "slug": "pre-wedding-stress-and-anxiety",
+        "source_id": "063e5380-c00a-45fc-a79a-1e80a562374d",
+        "task_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03"
+      },
+      "executor": "controller",
+      "failure_signature": "SHORT_MISSING",
+      "fingerprint": "847cdecc8185cd50aa0fbdba9a895e2c",
+      "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
+      "issued_at": "2026-09-24T12:46:40.146769+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "continue_exact_short",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-24T12:46:40.146769+00:00"
+    },
     "ksr-e4ef72391a6a4288f0cc6b6c": {
       "acknowledged_at": "2026-09-22T08:43:25.974152+00:00",
       "command_id": "ksr-e4ef72391a6a4288f0cc6b6c",
@@ -2080,6 +2105,25 @@
       "status": "resolved",
       "strike": 2
     },
+    "847cdecc8185cd50aa0fbdba9a895e2c": {
+      "active_command_id": "ksr-e09af0d960bc330e0de6fbef",
+      "failure_signature": "SHORT_MISSING",
+      "fingerprint": "847cdecc8185cd50aa0fbdba9a895e2c",
+      "first_seen_at": "2026-09-24T12:46:40.146769+00:00",
+      "history": [
+        {
+          "at": "2026-09-24T12:46:40.146769+00:00",
+          "command_id": "ksr-e09af0d960bc330e0de6fbef",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
+      "last_seen_at": "2026-09-24T12:46:40.146769+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=847cdecc8185cd50aa0fbdba9a895e2c strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "86e159dcef3982af35e4526c7f985f9c": {
       "active_command_id": "ksr-05d22fbd6ca9d7f1c6db4175",
       "failure_signature": "SHORT_NOT_PORTRAIT",
@@ -2429,5 +2473,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-23T18:42:06.680519+00:00"
+  "updated_at": "2026-09-24T12:46:40.146769+00:00"
 }
