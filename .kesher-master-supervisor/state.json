@@ -293,6 +293,31 @@
       "updated_at": "2026-09-17T11:10:04.203525+00:00",
       "verified_at": "2026-09-17T11:10:04.203525+00:00"
     },
+    "ksr-4e2643368aad5788ceb0c9c3": {
+      "command_id": "ksr-4e2643368aad5788ceb0c9c3",
+      "evidence_hash": "75780bb5279078b5efad25245b008a8a3abc61f80077c3a500d7329cf7099d2e",
+      "exact": {
+        "artifact_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03",
+        "content_sha256": "ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8",
+        "item_id": "video-20260924-145957-ebad62daad",
+        "pr_number": 920,
+        "short_item_id": "video-20260924-154958-ebad62daad",
+        "slug": "pre-wedding-stress-and-anxiety",
+        "source_id": "063e5380-c00a-45fc-a79a-1e80a562374d",
+        "task_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03"
+      },
+      "executor": "controller",
+      "failure_signature": "SHORT_NOT_PORTRAIT",
+      "fingerprint": "05fd24f164b82ed5d8fcc4ff4dbe296d",
+      "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
+      "issued_at": "2026-09-24T14:22:06.688751+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebuild_exact_short",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-24T14:22:06.688751+00:00"
+    },
     "ksr-5d488add1f19e13222658fa2": {
       "acknowledged_at": "2026-09-18T12:19:29.013698+00:00",
       "command_id": "ksr-5d488add1f19e13222658fa2",
@@ -1258,7 +1283,7 @@
       "fingerprint": "847cdecc8185cd50aa0fbdba9a895e2c",
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
       "issued_at": "2026-09-24T12:46:40.146769+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "dispatch": "already_active",
         "external_run_id": 36001406724,
@@ -1270,7 +1295,8 @@
       "running_at": "2026-09-24T12:48:52.894260+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-24T12:48:52.894260+00:00"
+      "updated_at": "2026-09-24T14:22:06.688751+00:00",
+      "verified_at": "2026-09-24T14:22:06.688751+00:00"
     },
     "ksr-e4ef72391a6a4288f0cc6b6c": {
       "acknowledged_at": "2026-09-22T08:43:25.974152+00:00",
@@ -1557,6 +1583,25 @@
     }
   },
   "incidents": {
+    "05fd24f164b82ed5d8fcc4ff4dbe296d": {
+      "active_command_id": "ksr-4e2643368aad5788ceb0c9c3",
+      "failure_signature": "SHORT_NOT_PORTRAIT",
+      "fingerprint": "05fd24f164b82ed5d8fcc4ff4dbe296d",
+      "first_seen_at": "2026-09-24T14:22:06.688751+00:00",
+      "history": [
+        {
+          "at": "2026-09-24T14:22:06.688751+00:00",
+          "command_id": "ksr-4e2643368aad5788ceb0c9c3",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
+      "last_seen_at": "2026-09-24T14:22:06.688751+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=05fd24f164b82ed5d8fcc4ff4dbe296d strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "067c3833cd4ddf78cd0682ecb9b865f6": {
       "active_command_id": null,
       "failure_signature": "YOUTUBE_UPLOAD_MISSING",
@@ -2114,7 +2159,7 @@
       "strike": 2
     },
     "847cdecc8185cd50aa0fbdba9a895e2c": {
-      "active_command_id": "ksr-e09af0d960bc330e0de6fbef",
+      "active_command_id": null,
       "failure_signature": "SHORT_MISSING",
       "fingerprint": "847cdecc8185cd50aa0fbdba9a895e2c",
       "first_seen_at": "2026-09-24T12:46:40.146769+00:00",
@@ -2124,12 +2169,18 @@
           "command_id": "ksr-e09af0d960bc330e0de6fbef",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-24T14:22:06.688751+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
       "last_seen_at": "2026-09-24T12:48:52.894260+00:00",
       "marker": "MASTER_ESCALATION fingerprint=847cdecc8185cd50aa0fbdba9a895e2c strike=1 stage=S1",
-      "status": "recovering",
+      "resolved_at": "2026-09-24T14:22:06.688751+00:00",
+      "status": "resolved",
       "strike": 1
     },
     "86e159dcef3982af35e4526c7f985f9c": {
@@ -2481,5 +2532,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-24T12:48:52.894260+00:00"
+  "updated_at": "2026-09-24T14:22:06.688751+00:00"
 }
