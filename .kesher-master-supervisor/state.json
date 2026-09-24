@@ -1495,6 +1495,7 @@
       "verified_at": "2026-09-23T11:56:18.854806+00:00"
     },
     "ksr-fd7186e4f79ae69876ca0399": {
+      "acknowledged_at": "2026-09-24T15:29:23.278263+00:00",
       "command_id": "ksr-fd7186e4f79ae69876ca0399",
       "evidence_hash": "75780bb5279078b5efad25245b008a8a3abc61f80077c3a500d7329cf7099d2e",
       "exact": {
@@ -1512,12 +1513,44 @@
       "fingerprint": "05fd24f164b82ed5d8fcc4ff4dbe296d",
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
       "issued_at": "2026-09-24T15:28:06.904169+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-fd7186e4f79ae69876ca0399",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "same-source exact Short is rebuilt without fresh provider generation, public, succeeded, and portrait 9:16",
+          "evidence_hash": "75780bb5279078b5efad25245b008a8a3abc61f80077c3a500d7329cf7099d2e",
+          "exact": {
+            "artifact_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03",
+            "content_sha256": "ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8",
+            "item_id": "video-20260924-145957-ebad62daad",
+            "pr_number": 920,
+            "short_item_id": "video-20260924-154958-ebad62daad",
+            "slug": "pre-wedding-stress-and-anxiety",
+            "source_id": "063e5380-c00a-45fc-a79a-1e80a562374d",
+            "task_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03"
+          },
+          "failure_signature": "SHORT_NOT_PORTRAIT",
+          "fingerprint": "05fd24f164b82ed5d8fcc4ff4dbe296d",
+          "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
+          "proposed_action": "rebuild_exact_short",
+          "schema_version": 1,
+          "stage": "short",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/14144807119243996861"
+      },
       "proposed_action": "rebuild_exact_short",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-24T15:28:06.904169+00:00"
+      "updated_at": "2026-09-24T15:29:23.278263+00:00"
     },
     "ksr-ff48fdefa56312b36f0734b1": {
       "acknowledged_at": "2026-09-22T10:49:24.777286+00:00",
@@ -2576,5 +2609,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-24T15:28:06.904169+00:00"
+  "updated_at": "2026-09-24T15:29:23.278263+00:00"
 }
