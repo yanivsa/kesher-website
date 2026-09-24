@@ -10,6 +10,7 @@ from scripts import kesher_content_controller_v5 as v5
 from scripts import kesher_content_controller_v5_runtime as runtime
 from scripts import kesher_content_watchdog as watchdog
 from scripts import kesher_e2e_delivery_guard as delivery_guard
+from tests.test_media_provenance_contract import bound_short
 
 
 def source() -> dict:
@@ -19,6 +20,7 @@ def source() -> dict:
 def public_item(*, youtube_id: str, width: int, height: int) -> dict:
     src = source()
     return {
+        **bound_short(120.0),
         "id": f"item-{youtube_id}",
         "type": delivery_guard.CANONICAL_SHORT_TYPE,
         "source_mode": delivery_guard.CANONICAL_SHORT_SOURCE_MODE,
@@ -33,11 +35,10 @@ def public_item(*, youtube_id: str, width: int, height: int) -> dict:
             "privacy_status": "public",
             "processing_status": "succeeded",
         },
-        "media": {"width": width, "height": height},
+        "media": {**bound_short(120.0)['media'], "width": width, "height": height},
         "signature_verified": True,
         "signature_duration_seconds": 3.0,
         "signature_fullscreen": True,
-        "signature_video_sha256": "b" * 64,
     }
 
 
@@ -141,6 +142,21 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
         self.assertEqual(state["short"]["width"], 1080)
         self.assertEqual(state["short"]["height"], 1920)
 
+    def test_adoption_preserves_complete_proof_without_sharing_mutable_receipts(self):
+        item = public_item(youtube_id="portrait", width=1080, height=1920)
+        controller = object.__new__(runtime.RuntimeV5Controller)
+        controller.github = MiniGitHub(item)
+        state = {"short": {"shared_provider_identity": True, "adopted_from_long_item_id": "obsolete"}}
+        adopted = controller._adopt_existing_short(state, source())
+        self.assertIsNotNone(adopted)
+        self.assertTrue(delivery_guard._signature_verified(state['short']))
+        self.assertTrue(delivery_guard._short_origin_verified(state['short']))
+        adopted['signature_provenance']['final_sha256'] = '0'*64
+        adopted['audio_provenance']['final_audio_sha256'] = '1'*64
+        self.assertTrue(delivery_guard._signature_verified(state['short']))
+        state['short']['audio_provenance']['final_audio_sha256'] = '2'*64
+        self.assertFalse(delivery_guard._signature_verified(state['short']))
+
     def test_missing_approved_signature_asset_blocks_new_short_dispatch(self):
         controller = object.__new__(MissingSignatureController)
         state = {"short": v5.v3._stage_template(), "history": [], "status": "long_video_complete"}
@@ -180,6 +196,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
             "article": {"live": True, "url": "https://kesher.saharoni.com/blog/today-article"},
             "long_video": {"verified": True, "youtube_url": "https://youtu.be/overview"},
             "short": {
+                **bound_short(120.0),
                 "type": delivery_guard.CANONICAL_SHORT_TYPE,
                 "source_mode": delivery_guard.CANONICAL_SHORT_SOURCE_MODE,
                 "visual_pipeline": delivery_guard.CANONICAL_SHORT_PIPELINE,
@@ -189,7 +206,6 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
                 "signature_verified": True,
                 "signature_fullscreen": True,
                 "signature_duration_seconds": 3.0,
-                "signature_video_sha256": "s" * 64,
             },
         }
         ready, deliverables = delivery_guard.delivery_contract(state)
@@ -265,7 +281,7 @@ class V5DeliveryWatchdogContractTests(unittest.TestCase):
             "wait",
         )
 
-    def test_adopt_existing_short_adopts_svg_signature_remotion_proof(self):
+    def test_adoption_rejects_svg_only_then_preserves_complete_source_bound_proof(self):
         controller = runtime.RuntimeV5Controller(None, None)
         st = {
             "article": {"url": "https://kesher.saharoni.com/blog/today-article", "live": True},

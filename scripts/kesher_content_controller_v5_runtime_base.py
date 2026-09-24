@@ -66,6 +66,19 @@ class RuntimeV5Controller(v5.V5Controller):
             return None
         media = item.get("media") or {}
         sig_verified = delivery_guard._signature_verified(item)
+        # Preserve the strict source/audio/signature proof during historical
+        # state projection. Boolean summaries cannot replace these receipts.
+        # Missing negative flags clear the previous item's stale flags; nested
+        # evidence must not share mutable objects with the adopted artifact.
+        for field in (
+            "source", "notebook_id", "task_id", "raw_sha256", "final_sha256",
+            "provider_raw_media", "media", "provider_video_format", "provider_native_short",
+            "provider_native_short_verified", "provider_short_fallback_used", "fresh_generation_attempt",
+            "overview_provider_identity", "shared_provider_identity", "adopted_from_long_item_id",
+            "short_start_seconds", "short_duration_seconds", "audio_provenance",
+            "signature_overlay", "signature_provenance", "signature_asset_sha256",
+        ):
+            state["short"][field] = copy.deepcopy(item.get(field))
         state["short"].update({
             "item_id": item.get("id"),
             "type": item.get("type"),

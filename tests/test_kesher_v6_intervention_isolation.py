@@ -11,6 +11,7 @@ from scripts.kesher_content_controller_v6_runtime import (
     v5_v6_parity_report,
 )
 from scripts.kesher_intervention_policy import DIRECT_TAKEOVER, FORCE_CONTROLLER_RECOVERY, OBSERVE_CONTROLLER
+from tests.test_media_provenance_contract import bound_short
 
 
 class KesherV6InterventionIsolationTests(unittest.TestCase):
@@ -35,6 +36,8 @@ class KesherV6InterventionIsolationTests(unittest.TestCase):
                 "provider_id": "notebooklm-provider-1",
             },
             "short": {
+                **bound_short(120.0),
+                "source": source,
                 "status": "complete",
                 "type": "article_short",
                 "source_mode": "direct-short",
@@ -45,7 +48,6 @@ class KesherV6InterventionIsolationTests(unittest.TestCase):
                 "signature_verified": True,
                 "signature_fullscreen": True,
                 "signature_duration_seconds": 3.0,
-                "signature_video_sha256": "s" * 64,
                 "task_id": "short-task-1",
                 "artifact_id": "short-artifact-1",
                 "provider_id": "remotion-provider-1",
