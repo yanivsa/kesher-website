@@ -1169,9 +1169,20 @@
         "source_content_sha256": "ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8",
         "article_url": "https://kesher.saharoni.com/blog/pre-wedding-stress-and-anxiety",
         "article_live": true,
-        "long_status": "running",
+        "long_status": "complete",
         "long_resume_count": 1,
-        "long_last_dispatch_at": "2026-09-24T21:33:46.750234+00:00"
+        "long_last_dispatch_at": "2026-09-24T21:33:46.750234+00:00",
+        "long_item_id": "video-20260924-213534-ebad62daad",
+        "long_youtube_url": "https://youtu.be/XO0L4Xo36iI",
+        "long_youtube_id": "XO0L4Xo36iI",
+        "short_status": "complete",
+        "short_item_id": "video-20260924-154958-ebad62daad",
+        "short_youtube_url": "https://youtu.be/3tfnaRGdfkM",
+        "short_youtube_id": "3tfnaRGdfkM",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-09-24T22:47:23.063094+00:00"
       }
     }
   ],
@@ -1803,9 +1814,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-09-24T22:47:23.063113+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-09-24",
+        "source_slug": "pre-wedding-stress-and-anxiety"
+      }
     }
   ],
-  "updated_at": "2026-09-24T22:46:04.817229+00:00",
+  "updated_at": "2026-09-24T22:47:23.063120+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
