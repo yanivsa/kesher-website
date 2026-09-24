@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-24",
-  "status": "long_video_running",
+  "status": "short_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -30,7 +30,7 @@
     "url": "https://kesher.saharoni.com/blog/pre-wedding-stress-and-anxiety",
     "published_date": "2026-09-24",
     "live": true,
-    "live_verified_at": "2026-09-24T11:57:17.166776+00:00",
+    "live_verified_at": "2026-09-24T12:47:43.538633+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1750,9 +1750,27 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-09-24T12:47:43.538653+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-24T12:47:54.838569+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-24T12:48:24.403355+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-24T11:58:08.426460+00:00",
+  "updated_at": "2026-09-24T12:48:24.403362+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1770,7 +1788,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1808,16 +1826,20 @@
     "source_id": "063e5380-c00a-45fc-a79a-1e80a562374d"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-24T12:48:24.403331+00:00",
+    "artifact_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03",
+    "source_id": "063e5380-c00a-45fc-a79a-1e80a562374d",
+    "adopted_from_long_item_id": "video-20260924-145957-ebad62daad"
   },
   "migration": {
     "v4_short_controller_state": null
