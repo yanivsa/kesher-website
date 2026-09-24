@@ -15,9 +15,16 @@ const ensureUnique = (label, values) => {
   }
 };
 
-ensureUnique('post id', published.map((post) => post.id));
+ensureUnique('post id', posts.map((post) => post.id));
 ensureUnique('post title', published.map((post) => post.title));
 ensureUnique('post image', published.map((post) => post.image).filter(Boolean));
+
+for (const post of posts) {
+  const slug = typeof post.slug === 'string' ? post.slug.trim() : '';
+  if (slug && slug !== post.id) {
+    errors.push(`Divergent blog slug is not allowed; post id is the canonical route key: ${post.id} -> ${slug}`);
+  }
+}
 
 const REUSE_COOLDOWN_DAYS = 90;
 const MAX_LIFETIME_USES = 3;
