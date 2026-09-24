@@ -250,7 +250,8 @@ def validation_for_pr(state, github, repo, slot, pr, main_sha):
         if (command['target'] != SlotIdentity(slot).to_dict() or command['operation'] != 'validate_article'
                 or command['code_sha'] != main_sha
                 or command['inputs'].get('pr_number') != str(pr['number'])
-                or command['inputs'].get('pr_head_sha') != pr['head']['sha']):
+                or command['inputs'].get('pr_head_sha') != pr['head']['sha']
+                or command['inputs'].get('pr_body_sha256', digest(pr.get('body') or '')) != digest(pr.get('body') or '')):
             continue
         candidate = command['receipts'].get('article_candidate', {}).get('evidence')
         if candidate and candidate.get('body_sha256') != digest(pr.get('body') or ''):

@@ -140,6 +140,14 @@ class ValidationAdditionalEvidenceTests(unittest.TestCase):
                               (dict(pr, head={'sha': 'f'*40}), CODE), (pr, 'f'*40)]:
             self.assertEqual(validation_for_pr(state, api, 'owner/repo', DAY, changed, main)['status'], 'absent')
 
+    def test_body_changed_before_candidate_checkpoint_does_not_inherit_old_failure(self):
+        state, command, run, jobs = fixture()
+        command['inputs']['pr_body_sha256'] = digest('original body')
+        command['receipts'].clear()
+        command.update(outcome='failed', failure={'class': 'CI_INPUT_CHANGED'})
+        pr = {'number': 42, 'head': {'sha': HEAD}, 'body': 'changed before prepare'}
+        self.assertEqual(validation_for_pr(state, API(run, jobs), 'owner/repo', DAY, pr, CODE)['status'], 'absent')
+
     def test_job_from_other_run_cannot_satisfy_current_validation(self):
         _, command, run, jobs = fixture(); jobs[1]['run_id'] = 999
         self.assertEqual(inspect_validation(API(run, jobs), 'owner/repo', command)['status'], 'failed')
