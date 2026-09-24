@@ -60,6 +60,7 @@ const privacy = loadable(() => import('./pages/Legal/PrivacyPolicy'));
 const terms = loadable(() => import('./pages/Legal/TermsOfUse'));
 const now = loadable(() => import('./pages/Now/NowPage'));
 const friends = loadable(() => import('./pages/Friends/FriendsPage'));
+const links = loadable(() => import('./pages/Links/LinksPage'));
 const lectures = loadable(() => import('./pages/Lectures/LecturesPage'));
 const couplesCounselingAshdod = loadable(() => import('./pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage'));
 const parentingGuidanceAshdod = loadable(() => import('./pages/Landing/ParentingGuidanceAshdod/ParentingGuidanceAshdodPage'));
@@ -88,6 +89,7 @@ const { Page: FAQ } = faq;
 const { Page: AboutPage } = about;
 const { Page: NowPage } = now;
 const { Page: FriendsPage } = friends;
+const { Page: LinksPage } = links;
 const { Page: LecturesPage } = lectures;
 const { Page: ContactPage } = contact;
 const { Page: AppointmentPage } = appointment;
@@ -116,7 +118,7 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/about\/?$/, about.preload],
   [/^\/now\/?$/, now.preload],
   [/^\/friends\/?$/, friends.preload],
-  [/^\/links\/?$/, friends.preload],
+  [/^\/links\/?$/, links.preload],
   [/^\/lectures\/?$/, lectures.preload],
   [/^\/services\/couples\/?$/, couples.preload],
   [/^\/services\/premarital-first-year\/?$/, premarital.preload],
@@ -161,7 +163,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/now" element={<NowPage />} />
           <Route path="/friends" element={<FriendsPage />} />
-          <Route path="/links" element={<FriendsPage />} />
+          <Route path="/links" element={<LinksPage />} />
           <Route path="/lectures" element={<LecturesPage />} />
           <Route path="/services/couples" element={<CouplesCounseling />} />
           <Route path="/services/premarital-first-year" element={<PremaritalPage />} />
