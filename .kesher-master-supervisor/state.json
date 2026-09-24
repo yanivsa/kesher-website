@@ -744,16 +744,18 @@
         "task_id": "ede4147b-d182-4978-b87b-5245d1e224a2"
       },
       "executor": "direct",
+      "failed_at": "2026-09-24T21:23:59.939237+00:00",
+      "failure_reason": "NO_SAFE_DIRECT_ADAPTER: rebind_exact_source",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "29493361ff24b17db157181b68c8b27e",
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|long_video",
       "issued_at": "2026-09-24T21:22:15.774084+00:00",
-      "lifecycle": "issued",
+      "lifecycle": "failed",
       "metadata": {},
       "proposed_action": "rebind_exact_source",
       "stage": "S3",
       "strike": 3,
-      "updated_at": "2026-09-24T21:22:15.774084+00:00"
+      "updated_at": "2026-09-24T21:23:59.939237+00:00"
     },
     "ksr-946f71e89a4dccefbc1f65f1": {
       "acknowledged_at": "2026-09-22T06:36:10.281169+00:00",
@@ -1954,12 +1956,18 @@
           "command_id": "ksr-8ffbbdb8d0b986ea75e8185b",
           "event": "command_issued",
           "stage": "S3"
+        },
+        {
+          "at": "2026-09-24T21:23:59.939237+00:00",
+          "command_id": "ksr-8ffbbdb8d0b986ea75e8185b",
+          "event": "command_failed",
+          "reason": "NO_SAFE_DIRECT_ADAPTER: rebind_exact_source"
         }
       ],
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|long_video",
       "last_seen_at": "2026-09-24T21:22:15.774084+00:00",
       "marker": "MASTER_ESCALATION fingerprint=29493361ff24b17db157181b68c8b27e strike=3 stage=S3",
-      "status": "recovering",
+      "status": "open",
       "strike": 3
     },
     "2b43ad87b6c441898fe8b125783623b3": {
@@ -2867,5 +2875,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-24T21:22:15.774084+00:00"
+  "updated_at": "2026-09-24T21:23:59.939237+00:00"
 }
