@@ -1236,6 +1236,31 @@
       "strike": 3,
       "updated_at": "2026-09-17T11:36:23.440895+00:00"
     },
+    "ksr-d13d5bf10f3fe13059ed460c": {
+      "command_id": "ksr-d13d5bf10f3fe13059ed460c",
+      "evidence_hash": "cd96e52d662c40eab8b167a19feca9385a29862f4721a17d7031f9e9688f9eea",
+      "exact": {
+        "artifact_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03",
+        "content_sha256": "ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8",
+        "item_id": "video-20260924-145957-ebad62daad",
+        "pr_number": 920,
+        "short_item_id": "video-20260924-154958-ebad62daad",
+        "slug": "pre-wedding-stress-and-anxiety",
+        "source_id": "063e5380-c00a-45fc-a79a-1e80a562374d",
+        "task_id": "2186fb6e-3d9d-470d-abf7-f19e73260f03"
+      },
+      "executor": "controller",
+      "failure_signature": "SHORT_PROVIDER_HARD_TIMEOUT",
+      "fingerprint": "1d8246e65542347f5ddafb0a6f053521",
+      "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
+      "issued_at": "2026-09-24T16:41:47.838248+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "escalate_unknown_failure",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-24T16:41:47.838248+00:00"
+    },
     "ksr-e040aa069f0f8dd49bae4046": {
       "acknowledged_at": "2026-09-22T13:18:06.857491+00:00",
       "command_id": "ksr-e040aa069f0f8dd49bae4046",
@@ -1513,7 +1538,7 @@
       "fingerprint": "05fd24f164b82ed5d8fcc4ff4dbe296d",
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
       "issued_at": "2026-09-24T15:28:06.904169+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-fd7186e4f79ae69876ca0399",
@@ -1551,7 +1576,8 @@
       "running_at": "2026-09-24T16:09:05.164729+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-24T16:11:54.988386+00:00"
+      "updated_at": "2026-09-24T16:41:47.838248+00:00",
+      "verified_at": "2026-09-24T16:41:47.838248+00:00"
     },
     "ksr-ff48fdefa56312b36f0734b1": {
       "acknowledged_at": "2026-09-22T10:49:24.777286+00:00",
@@ -1650,7 +1676,7 @@
   },
   "incidents": {
     "05fd24f164b82ed5d8fcc4ff4dbe296d": {
-      "active_command_id": "ksr-fd7186e4f79ae69876ca0399",
+      "active_command_id": null,
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "05fd24f164b82ed5d8fcc4ff4dbe296d",
       "first_seen_at": "2026-09-24T14:22:06.688751+00:00",
@@ -1672,12 +1698,18 @@
           "command_id": "ksr-fd7186e4f79ae69876ca0399",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-24T16:41:47.838248+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
       "last_seen_at": "2026-09-24T16:11:54.988386+00:00",
       "marker": "MASTER_ESCALATION fingerprint=05fd24f164b82ed5d8fcc4ff4dbe296d strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-24T16:41:47.838248+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "067c3833cd4ddf78cd0682ecb9b865f6": {
@@ -1703,6 +1735,25 @@
       "marker": "MASTER_ESCALATION fingerprint=067c3833cd4ddf78cd0682ecb9b865f6 strike=1 stage=S1",
       "resolved_at": "2026-09-22T06:38:00.360796+00:00",
       "status": "resolved",
+      "strike": 1
+    },
+    "1d8246e65542347f5ddafb0a6f053521": {
+      "active_command_id": "ksr-d13d5bf10f3fe13059ed460c",
+      "failure_signature": "SHORT_PROVIDER_HARD_TIMEOUT",
+      "fingerprint": "1d8246e65542347f5ddafb0a6f053521",
+      "first_seen_at": "2026-09-24T16:41:47.838248+00:00",
+      "history": [
+        {
+          "at": "2026-09-24T16:41:47.838248+00:00",
+          "command_id": "ksr-d13d5bf10f3fe13059ed460c",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
+      "last_seen_at": "2026-09-24T16:41:47.838248+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=1d8246e65542347f5ddafb0a6f053521 strike=1 stage=S1",
+      "status": "recovering",
       "strike": 1
     },
     "2b43ad87b6c441898fe8b125783623b3": {
@@ -2610,5 +2661,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-24T16:11:54.988386+00:00"
+  "updated_at": "2026-09-24T16:41:47.838248+00:00"
 }
