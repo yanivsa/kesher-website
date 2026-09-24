@@ -1131,7 +1131,7 @@
     "stage": "short",
     "code": "SHORT_PROVIDER_HARD_TIMEOUT",
     "message": "short provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-09-24T14:27:14.253825+00:00"
+    "at": "2026-09-24T15:27:32.622471+00:00"
   },
   "history": [
     {
@@ -1782,9 +1782,18 @@
       "details": {
         "message": "short provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-09-24T15:27:32.622477+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "SHORT_PROVIDER_HARD_TIMEOUT",
+      "details": {
+        "message": "short provider exceeded 90 minute hard timeout from launch/recovery"
+      }
     }
   ],
-  "updated_at": "2026-09-24T14:27:14.253836+00:00",
+  "updated_at": "2026-09-24T15:27:32.622483+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1865,7 +1874,7 @@
     "controller_recovery_required": {
       "incident_key": "v5|pre-wedding-stress-and-anxiety|ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8|short",
       "reason": "media provider hard timeout",
-      "requested_at": "2026-09-24T14:27:14.253838+00:00"
+      "requested_at": "2026-09-24T15:27:32.622485+00:00"
     }
   },
   "migration": {
