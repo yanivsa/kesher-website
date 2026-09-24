@@ -6,7 +6,7 @@ import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
 import ServiceFAQ from '../../../components/FAQ/ServiceFAQ';
 import TherapistBio from '../../../components/TherapistBio/TherapistBio';
 import faqs from '../../../data/faqs';
-import { FiMessageCircle, FiShield, FiStar } from 'react-icons/fi';
+import { FiMessageCircle, FiShield, FiStar, FiCheckCircle } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './CouplesCounseling.module.css';
@@ -126,6 +126,32 @@ const CouplesCounseling: React.FC = () => {
               <FiShield className={styles.icon} />
               <h3>משבר אמון</h3>
               <p>התמודדות עם בגידה, הסתרות או שחיקה מצטברת שגרמה לכם להפסיק להאמין שאפשר אחרת.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.outcomes}>
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <h2>מה משתנה בייעוץ?</h2>
+            <p>התהליך מאפשר לכם לראות תוצאות מורגשות בחיי היומיום וליצור יחד זוגיות יציבה ובטוחה יותר.</p>
+          </div>
+          <div className={styles.outcomesGrid}>
+            <div className={styles.outcomeCard}>
+              <FiCheckCircle className={styles.outcomeIcon} />
+              <h3>התקרבות וחיבור רגשי</h3>
+              <p>מפסיקים להרגיש שותפים לדירה ומתחילים לחוות שוב קרבה אינטימית ורגשית.</p>
+            </div>
+            <div className={styles.outcomeCard}>
+              <FiCheckCircle className={styles.outcomeIcon} />
+              <h3>תקשורת בטוחה וברורה</h3>
+              <p>לומדים להביע צרכים וקשיים בלי להאשים, ולנהל חילוקי דעות מתוך הקשבה.</p>
+            </div>
+            <div className={styles.outcomeCard}>
+              <FiCheckCircle className={styles.outcomeIcon} />
+              <h3>יצירת הסכמות חדשות</h3>
+              <p>מגבשים דרכי פעולה משותפות שמתאימות לשניכם בניהול השגרה, המשפחה והקשר.</p>
             </div>
           </div>
         </div>
