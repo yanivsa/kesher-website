@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-24",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -18,7 +18,9 @@
     "normalization_status": "complete",
     "last_dispatch_at": "2026-09-23T22:14:32.492025+00:00",
     "pr_number": 920,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/920"
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/920",
+    "merge_dispatch_at": "2026-09-24T01:59:57.159377+00:00",
+    "merge_dispatch_count": 1
   },
   "backlog": [
     {
@@ -1709,21 +1711,29 @@
         "attempt": 1,
         "pr_number": 920
       }
+    },
+    {
+      "at": "2026-09-24T01:59:55.453619+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-09-24T00:34:58.330113+00:00",
+  "updated_at": "2026-09-24T01:59:55.453640+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 35939060997,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "Local",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-24T00:34:58.330084+00:00"
+    "last_dispatch_at": "2026-09-24T00:34:58.330084+00:00",
+    "artifact_sha256": "bb059b09bb561cd6a05e39073af42c668133ea80dcb255b21244f63201255a00",
+    "source_id": "local://public/images/generated/blog/silent-treatment-relationship.jpg"
   },
   "long_video": {
     "attempt_count": 0,
