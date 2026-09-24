@@ -1163,7 +1163,16 @@
         "live_verified_at": "2026-09-24T18:32:41.861966+00:00",
         "next_deploy_retry_at": null
       },
-      "archived_at": "2026-09-24T21:29:03.318918+00:00"
+      "archived_at": "2026-09-24T21:29:03.318918+00:00",
+      "media": {
+        "source_slug": "pre-wedding-stress-and-anxiety",
+        "source_content_sha256": "ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8",
+        "article_url": "https://kesher.saharoni.com/blog/pre-wedding-stress-and-anxiety",
+        "article_live": true,
+        "long_status": "running",
+        "long_resume_count": 1,
+        "long_last_dispatch_at": "2026-09-24T21:33:46.750234+00:00"
+      }
     }
   ],
   "last_error": null,
