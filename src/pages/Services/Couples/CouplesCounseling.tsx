@@ -18,6 +18,7 @@ const schemaData = {
   "@graph": [
     {
       "@type": "Service",
+      "@id": `${SITE_CONFIG.url}/services/couples#service`,
       "name": "ייעוץ זוגי",
       "serviceType": "ייעוץ זוגי",
       "url": `${SITE_CONFIG.url}/services/couples`,
@@ -40,6 +41,7 @@ const schemaData = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/services/couples#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",

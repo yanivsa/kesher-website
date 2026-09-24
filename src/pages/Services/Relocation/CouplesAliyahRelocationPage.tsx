@@ -26,6 +26,7 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/couples-aliyah-relocation#service`,
       name: 'ייעוץ זוגי לעולים ולזוגות ברילוקיישן',
       serviceType: 'ייעוץ זוגי לפני עלייה או רילוקיישן, בתקופת ההסתגלות ולאחר החזרה',
       url: `${SITE_CONFIG.url}/services/couples-aliyah-relocation`,
@@ -36,6 +37,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/couples-aliyah-relocation#breadcrumb`,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'עמוד הבית', item: SITE_CONFIG.url },
         {

@@ -156,6 +156,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/parenting-guidance-ashdod#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',

@@ -104,6 +104,7 @@ const CouplesCrisisPage: React.FC = () => {
     '@graph': [
       {
         '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/couples/crisis#service`,
         name: 'ייעוץ זוגי במצבי משבר',
         serviceType: 'Couples Crisis Counseling',
         url: `${SITE_CONFIG.url}/services/couples/crisis`,
@@ -138,6 +139,7 @@ const CouplesCrisisPage: React.FC = () => {
       },
       {
         '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/couples/crisis#breadcrumb`,
         itemListElement: [
           {
             '@type': 'ListItem',

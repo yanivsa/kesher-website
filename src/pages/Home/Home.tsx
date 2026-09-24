@@ -73,6 +73,7 @@ const schemaData = {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
+      "@id": `${SITE_CONFIG.url}#service`,
             "name": "ייעוץ זוגי לפני חתונה והכנה לנישואים",
             "url": `${SITE_CONFIG.url}/services/premarital-first-year`,
             "description": "פגישות הכנה זוגיות סביב כסף, בית, משפחות, אינטימיות, חלוקת אחריות ותקשורת."
@@ -203,6 +204,7 @@ const schemaData = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",

@@ -9,6 +9,7 @@ const schemaData = {
   "@graph": [
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/accessibility#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",

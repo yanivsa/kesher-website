@@ -124,6 +124,7 @@ const schemaData = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/friends#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",
