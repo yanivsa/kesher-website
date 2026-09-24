@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-24",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -24,7 +24,11 @@
     "quality_status": "passed",
     "quality_content_sha256": "ebad62daad07875f16bde821321c85d0aefac085e248e1cb5ad97659413f28a8",
     "quality_checked_at": "2026-09-24T11:43:03.942602+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "pre-wedding-stress-and-anxiety",
+    "title": "לחץ לפני החתונה: כשההתרגשות מתחלפת במועקה ואיך מתמודדים",
+    "url": "https://kesher.saharoni.com/blog/pre-wedding-stress-and-anxiety",
+    "published_date": "2026-09-24"
   },
   "backlog": [
     {
@@ -1721,9 +1725,15 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-09-24T11:45:26.246267+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-09-24T11:37:07.320034+00:00",
+  "updated_at": "2026-09-24T11:45:26.246284+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
