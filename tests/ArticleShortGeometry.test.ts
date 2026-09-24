@@ -17,7 +17,7 @@ vi.mock('remotion', async () => {
 });
 
 vi.mock('@remotion/media', () => ({
-  Video: (props: { [key: string]: unknown }) => React.createElement('video', { 'data-testid': 'remotion-video', ...props })
+  Video: ({ trimBefore: _trimBefore, durationInFrames: _durationInFrames, ...props }: { [key: string]: unknown }) => React.createElement('video', { 'data-testid': 'remotion-video', ...props })
 }));
 
 describe('ArticleShortGeometry', () => {
