@@ -74,8 +74,6 @@ jobs:
       KESHER_WHISPER_MODEL: small
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
-      PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-      PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
       KESHER_BROLL_ENABLED: "true"
       KESHER_BROLL_BUDGET_SECONDS: "12"
 
@@ -303,10 +301,15 @@ jobs:
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
         env:
           TARGET_SLUG: ${{ inputs.target_slug }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150
 
       - name: Rebuild exact visually rejected item with Remotion
         if: ${{ inputs.operation == 'rebuild' }}
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: |
           set -euo pipefail
           test -n "${{ inputs.rebuild_item_id }}"
