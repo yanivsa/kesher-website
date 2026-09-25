@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-25",
-  "status": "waiting_for_article_window",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -19,7 +19,14 @@
     "quality_status": "passed",
     "quality_content_sha256": "c41b6ec41cfd17ad4031e94f6393afac19438b5bf1825be49e144982f37504d7",
     "quality_checked_at": "2026-09-25T05:59:13.255001+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "adhd-morning-conflict-dopamine-myth",
+    "title": "הפרעת קשב בבוקר: למה הילד מתחיל את היום בריב — ומה באמת ידוע על \"ציד דופמין\"",
+    "url": "https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth",
+    "published_date": "2026-09-25",
+    "live": true,
+    "live_verified_at": "2026-09-25T06:03:31.480152+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -1834,12 +1841,30 @@
         "backlog_cycle": "2026-09-13",
         "source_slug": "child-starting-school-high-cognition"
       }
+    },
+    {
+      "at": "2026-09-25T06:03:31.480169+00:00",
+      "from": "waiting_for_article_window",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-25T06:04:14.904421+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-25T06:05:13.491925+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-25T00:58:01.531642+00:00",
+  "updated_at": "2026-09-25T06:05:13.491943+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1851,7 +1876,7 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
