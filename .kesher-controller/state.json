@@ -835,8 +835,8 @@
         "long_youtube_url": "https://youtu.be/4BRlQBhv3dM",
         "long_youtube_id": "4BRlQBhv3dM",
         "short_status": "running",
-        "short_dispatch_count": 3,
-        "short_last_dispatch_at": "2026-09-24T20:50:02.550771+00:00"
+        "short_dispatch_count": 4,
+        "short_last_dispatch_at": "2026-09-25T00:58:01.531612+00:00"
       }
     },
     {
@@ -1824,9 +1824,19 @@
         "backlog_cycle": "2026-09-24",
         "source_slug": "pre-wedding-stress-and-anxiety"
       }
+    },
+    {
+      "at": "2026-09-25T00:58:01.531635+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched independent prior-cycle Short generation",
+      "details": {
+        "backlog_cycle": "2026-09-13",
+        "source_slug": "child-starting-school-high-cognition"
+      }
     }
   ],
-  "updated_at": "2026-09-25T00:57:07.494066+00:00",
+  "updated_at": "2026-09-25T00:58:01.531642+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
