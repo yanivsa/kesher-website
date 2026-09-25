@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth",
     "published_date": "2026-09-25",
     "live": true,
-    "live_verified_at": "2026-09-25T09:19:12.342480+00:00",
+    "live_verified_at": "2026-09-25T09:21:43.598412+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1197,28 +1197,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-23T00:43:59.033435+00:00",
-      "from": "article_generating",
-      "to": "article_retry_wait",
-      "reason": "JULES_TIMEOUT_SESSION_ACTIVE",
-      "details": {
-        "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery",
-        "retry_at": "2026-09-23T00:48:59.033415+00:00",
-        "failure_streak": 1,
-        "run_id": 35789509926,
-        "session_id": "sessions/9204528314430794292"
-      }
-    },
-    {
-      "at": "2026-09-23T05:16:20.277977+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 2
-      }
-    },
-    {
       "at": "2026-09-23T06:08:14.474598+00:00",
       "from": "article_generating",
       "to": "article_retry_wait",
@@ -1905,9 +1883,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-25T09:21:43.598427+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-25T09:21:59.260198+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-25T09:20:02.196089+00:00",
+  "updated_at": "2026-09-25T09:21:59.260217+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1932,7 +1922,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260924-234129-c41b6ec41c",
+    "item_id": "video-20260925-120027-e21ec5d48b",
     "youtube_id": "5A2lyFJFJ58",
     "youtube_url": "https://youtu.be/5A2lyFJFJ58",
     "verified": true,
