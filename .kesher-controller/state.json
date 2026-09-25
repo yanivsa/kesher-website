@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth",
     "published_date": "2026-09-25",
     "live": true,
-    "live_verified_at": "2026-09-25T09:04:43.248032+00:00",
+    "live_verified_at": "2026-09-25T09:06:54.901291+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1197,24 +1197,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-22T22:18:57.831892+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/9204528314430794292"
-      }
-    },
-    {
-      "at": "2026-09-22T22:21:57.395222+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/9204528314430794292"
-      }
-    },
-    {
       "at": "2026-09-22T22:31:14.496132+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -1917,9 +1899,21 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-09-25T09:06:54.901308+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-25T09:07:07.379975+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-25T09:05:16.006141+00:00",
+  "updated_at": "2026-09-25T09:07:07.379993+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1944,7 +1938,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260924-234129-c41b6ec41c",
+    "item_id": "video-20260925-120027-e21ec5d48b",
     "youtube_id": "5A2lyFJFJ58",
     "youtube_url": "https://youtu.be/5A2lyFJFJ58",
     "verified": true,
