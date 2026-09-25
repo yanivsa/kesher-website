@@ -31,6 +31,23 @@ MAX_DOWNLOAD_BYTES = 30 * 1024 * 1024
 DEFAULT_BUDGET_SECONDS = 12.0
 PEXELS_LICENSE_URL = "https://www.pexels.com/license/"
 PIXABAY_LICENSE_URL = "https://pixabay.com/service/license-summary/"
+PROVIDER_CREDIT_LINES = {
+    "pexels": "קטעי וידאו משלימים מפקסלס: https://www.pexels.com/",
+    "pixabay": "קטעי וידאו משלימים מפיקסאביי: https://pixabay.com/",
+}
+
+
+def provider_credit_lines(assets: list[dict[str, Any]] | None) -> list[str]:
+    """Return deterministic public attribution lines only for providers actually used."""
+    providers: list[str] = []
+    for asset in assets or []:
+        if not isinstance(asset, dict):
+            continue
+        provider = str(asset.get("provider") or "").strip().lower()
+        if provider in PROVIDER_CREDIT_LINES and provider not in providers:
+            providers.append(provider)
+    return [PROVIDER_CREDIT_LINES[provider] for provider in providers]
+
 
 
 def _sha256(path: Path) -> str:
