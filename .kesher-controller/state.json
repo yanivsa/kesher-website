@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth",
     "published_date": "2026-09-25",
     "live": true,
-    "live_verified_at": "2026-09-25T11:52:02.489838+00:00",
+    "live_verified_at": "2026-09-25T13:31:40.159768+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1197,24 +1197,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-23T11:26:53.390984+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-23T11:29:20.877200+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-09-23T11:57:19.781819+00:00",
-      "from": "short_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-09-23T11:57:30.273429+00:00",
       "from": "article_live",
       "to": "complete",
@@ -1865,9 +1847,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-25T13:31:40.159786+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-25T13:31:52.572922+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-25T13:32:13.441767+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-25T11:53:46.506456+00:00",
+  "updated_at": "2026-09-25T13:32:13.441789+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
