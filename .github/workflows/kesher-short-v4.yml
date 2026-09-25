@@ -89,8 +89,6 @@ jobs:
       KESHER_WHISPER_MODEL: small
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
-      PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-      PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
       KESHER_BROLL_ENABLED: "true"
       KESHER_BROLL_BUDGET_SECONDS: "12"
 
@@ -302,6 +300,8 @@ jobs:
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150 ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Rebuild exact rejected Short with Remotion
@@ -309,6 +309,8 @@ jobs:
         id: rebuild_exact
         env:
           REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: |
           set -euo pipefail
           test -n "$REBUILD_ITEM_ID"
