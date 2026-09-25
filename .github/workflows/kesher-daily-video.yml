@@ -13,6 +13,9 @@ on:
       - scripts/jules_video_reviewer_v3.py
       - scripts/prepare_jules_video_evidence.py
       - scripts/requirements-video-cloud.txt
+      - scripts/kesher_video_asset_resolver.py
+      - scripts/kesher_free_stock_broll.py
+      - tests/test_kesher_free_stock_broll.py
       - package.json
       - package-lock.json
       - src/remotion/**
@@ -71,6 +74,10 @@ jobs:
       KESHER_WHISPER_MODEL: small
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
+      PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+      PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+      KESHER_BROLL_ENABLED: "true"
+      KESHER_BROLL_BUDGET_SECONDS: "12"
 
     steps:
       - name: Checkout current main
@@ -277,7 +284,10 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         env:
           NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
-        run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_review_schema tests.test_video_reconcile tests.test_production_contract_v3 tests.test_notebooklm_auth_precedence -v
+          PEXELS_API_KEY: ""
+          PIXABAY_API_KEY: ""
+          KESHER_BROLL_ENABLED: "false"
+        run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_review_schema tests.test_video_reconcile tests.test_production_contract_v3 tests.test_notebooklm_auth_precedence tests.test_kesher_free_stock_broll -v
 
       - name: NotebookLM read-only preflight
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate') }}
