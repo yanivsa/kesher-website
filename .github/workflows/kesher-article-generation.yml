@@ -1,5 +1,5 @@
 name: Kesher Article Generation
-run-name: Kesher Article ${{ inputs.slot || 'explicit-test-trigger' }}
+run-name: Kesher Article ${{ inputs.slot || 'repo-trigger' }}
 
 on:
   workflow_dispatch:
@@ -7,6 +7,11 @@ on:
       slot:
         description: Israel publication date (YYYY-MM-DD)
         required: true
+        type: string
+      topic_brief:
+        description: Optional authoritative topic brief supplied by the repository owner
+        required: false
+        default: ""
         type: string
       test_mode:
         description: Authorized test — bypass same-date article/PR guard and isolate Jules session
@@ -17,6 +22,7 @@ on:
     branches: [main]
     paths:
       - ".github/kesher-e2e-test-trigger.json"
+      - ".github/kesher-topic-request.json"
 
 permissions:
   contents: read
@@ -44,22 +50,51 @@ jobs:
         shell: bash
         env:
           DISPATCH_SLOT: ${{ inputs.slot }}
+          DISPATCH_TOPIC_BRIEF: ${{ inputs.topic_brief }}
           DISPATCH_TEST_MODE: ${{ inputs.test_mode }}
         run: |
           set -euo pipefail
+          brief_file="$GITHUB_WORKSPACE/.kesher-topic-brief.txt"
+          : > "$brief_file"
           if [ "$GITHUB_EVENT_NAME" = "push" ]; then
-            test -s .github/kesher-e2e-test-trigger.json
-            slot="$(python3 - <<'PY'
+            python3 - <<'PY' > /tmp/kesher-trigger.env
           import json
+          import os
           from pathlib import Path
-          payload = json.loads(Path('.github/kesher-e2e-test-trigger.json').read_text(encoding='utf-8'))
-          print(str(payload.get('slot') or '').strip())
+
+          event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
+          head = event.get("head_commit") or {}
+          changed = set(head.get("added") or []) | set(head.get("modified") or [])
+          topic_path = Path(".github/kesher-topic-request.json")
+          test_path = Path(".github/kesher-e2e-test-trigger.json")
+
+          if str(topic_path) in changed:
+              payload = json.loads(topic_path.read_text(encoding="utf-8"))
+              slot = str(payload.get("slot") or "").strip()
+              topic = str(payload.get("topic_brief") or "").strip()
+              if not topic:
+                  raise SystemExit("kesher-topic-request.json requires non-empty topic_brief")
+              Path(".kesher-topic-brief.txt").write_text(topic + "\n", encoding="utf-8")
+              print(f"slot={slot}")
+              print("test_mode=false")
+              print("trigger=custom-topic")
+          elif str(test_path) in changed:
+              payload = json.loads(test_path.read_text(encoding="utf-8"))
+              slot = str(payload.get("slot") or "").strip()
+              print(f"slot={slot}")
+              print("test_mode=true")
+              print("trigger=e2e-test")
+          else:
+              raise SystemExit("push did not modify a recognized Kesher article trigger")
           PY
-          )"
-            test_mode="true"
+            slot="$(sed -n 's/^slot=//p' /tmp/kesher-trigger.env)"
+            test_mode="$(sed -n 's/^test_mode=//p' /tmp/kesher-trigger.env)"
+            trigger="$(sed -n 's/^trigger=//p' /tmp/kesher-trigger.env)"
           else
             slot="$DISPATCH_SLOT"
             test_mode="${DISPATCH_TEST_MODE:-false}"
+            trigger="workflow-dispatch"
+            printf '%s' "${DISPATCH_TOPIC_BRIEF:-}" > "$brief_file"
           fi
           if ! [[ "$slot" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
             echo "Invalid Kesher article slot: $slot" >&2
@@ -67,7 +102,8 @@ jobs:
           fi
           echo "KESHER_ARTICLE_SLOT=$slot" >> "$GITHUB_ENV"
           echo "KESHER_TEST_MODE=$test_mode" >> "$GITHUB_ENV"
-          echo "Resolved slot=$slot test_mode=$test_mode"
+          echo "KESHER_ARTICLE_TOPIC_BRIEF_FILE=$brief_file" >> "$GITHUB_ENV"
+          echo "Resolved slot=$slot test_mode=$test_mode trigger=$trigger topic_brief_bytes=$(wc -c < "$brief_file")"
 
       - name: Run exactly one autonomous Jules article text attempt with evidence contract
         id: article_worker
