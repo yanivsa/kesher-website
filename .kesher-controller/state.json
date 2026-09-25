@@ -1811,5 +1811,14 @@
   },
   "migration": {
     "v4_short_controller_state": null
+  },
+  "deliverables": {
+    "article_url": null,
+    "overview_youtube_url": "https://youtu.be/zzLmUdLTywc",
+    "short_youtube_url": "https://youtu.be/DQYle6-FYoo",
+    "overview_edit_verified": true,
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   }
 }
