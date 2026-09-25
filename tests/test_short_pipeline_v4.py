@@ -53,6 +53,14 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("https://kesher.saharoni.com/appointment", lines)
 
 
+    def test_repair_youtube_metadata_adds_credit_only_for_used_stock(self):
+        item = short.new_item(self.source())
+        item["enhancement_assets_used"] = [{"provider": "pexels", "type": "broll"}]
+        metadata = short.repair_youtube_metadata(item)
+        lines = [line.strip() for line in metadata["description"].splitlines() if line.strip()]
+        self.assertIn("קטעי וידאו משלימים מפקסלס: https://www.pexels.com/", lines)
+        short.core.require_hebrew(metadata["description"], "YouTube description", allow_url=True)
+
     def test_native_provider_gate_rejects_landscape_or_long_form_identity(self):
         valid = {"provider_video_format": "short", "provider_native_short": True}
         valid["fresh_generation_attempt"] = 1
