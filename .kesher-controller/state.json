@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-25",
-  "status": "complete",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "complete",
@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth",
     "published_date": "2026-09-25",
     "live": true,
-    "live_verified_at": "2026-09-25T08:58:54.767746+00:00",
+    "live_verified_at": "2026-09-25T09:04:43.248032+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1197,24 +1197,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-22T22:01:33.303302+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/9204528314430794292"
-      }
-    },
-    {
-      "at": "2026-09-22T22:15:47.158807+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/9204528314430794292"
-      }
-    },
-    {
       "at": "2026-09-22T22:18:57.831892+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -1923,9 +1905,21 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-25T09:04:43.248054+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-25T09:05:16.006118+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-09-25T09:00:41.098572+00:00",
+  "updated_at": "2026-09-25T09:05:16.006141+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1940,17 +1934,17 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "generating",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 36116399007,
     "processed_run_id": null,
     "provider_id": "baac58e5-9c72-44bb-ac43-24d6a113d355",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260924-234129-c41b6ec41c",
+    "item_id": "video-20260925-120027-e21ec5d48b",
     "youtube_id": "5A2lyFJFJ58",
     "youtube_url": "https://youtu.be/5A2lyFJFJ58",
     "verified": true,
