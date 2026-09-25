@@ -1432,6 +1432,11 @@
       "גבולות",
       "טכנולוגיה"
     ],
-    "author": "שירה סהרוני"
+    "author": "שירה סהרוני",
+    "image": "/images/generated/blog/teens-and-artificial-intelligence.jpg",
+    "imageAlt": "צילום מציאותי של הורה וילד באינטראקציה ביתית או לימודית תומכת",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/generated/blog/couples-adhd-partner.jpg",
+    "imageIsFallback": true
   }
 ]
