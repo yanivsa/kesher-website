@@ -2605,29 +2605,15 @@
       "strike": 1
     },
     "9f68a2d33099afb5f2a347f0e90ed75d": {
-      "active_command_id": null,
+      "active_command_id": "ksr-a74434c3c48b04dc478e29f1",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "9f68a2d33099afb5f2a347f0e90ed75d",
-      "first_seen_at": "2026-09-25T09:05:52.317678+00:00",
-      "history": [
-        {
-          "at": "2026-09-25T09:05:52.317678+00:00",
-          "command_id": "ksr-a74434c3c48b04dc478e29f1",
-          "event": "command_issued",
-          "stage": "S1"
-        },
-        {
-          "at": "2026-09-25T09:14:39.657619+00:00",
-          "event": "resolved",
-          "reason": "failure_absent_in_fresh_exact_evidence"
-        }
-      ],
+      "first_seen_at": "2026-09-25T09:22:30.801618+00:00",
+      "history": [],
       "incident_id": "v5|adhd-morning-conflict-dopamine-myth|c41b6ec41cfd17ad4031e94f6393afac19438b5bf1825be49e144982f37504d7|long_video",
-      "last_seen_at": "2026-09-25T09:08:57.929122+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=9f68a2d33099afb5f2a347f0e90ed75d strike=1 stage=S1",
-      "resolved_at": "2026-09-25T09:14:39.657619+00:00",
-      "status": "resolved",
-      "strike": 1
+      "last_seen_at": "2026-09-25T09:22:30.801618+00:00",
+      "status": "open",
+      "strike": 0
     },
     "b5e3f832d20a8b794b331b6595cb7d48": {
       "active_command_id": null,
