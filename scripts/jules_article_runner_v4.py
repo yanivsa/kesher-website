@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+from pathlib import Path
 
 if __package__:
     from . import jules_article_runner_v3 as v3
@@ -66,6 +67,53 @@ search for, not from abstract editorial labels or professional jargon.
 --- END SEARCH-INTENT-FIRST TITLE CONTRACT ---
 """
 
+CUSTOM_TOPIC_CONTRACT = r"""
+
+--- OWNER-SUPPLIED TOPIC BRIEF CONTRACT ---
+A repository-owner topic brief is present for this run. It is an authoritative
+subject constraint, not merely a suggestion.
+
+1. Keep the article on the supplied subject and professional perspective. Do not
+   replace it with a different topic merely because another query appears more
+   popular.
+2. Search-intent research still controls the final Hebrew query/title wording
+   inside this subject. If the exact supplied wording has no observed query signal,
+   choose the closest natural supported query that preserves the same subject.
+3. Treat claims from linked journalism, social posts or marketing material as leads
+   to verify, not as automatically established facts. Prefer primary/authoritative
+   sources for material statistics and safety claims, and attribute survey findings
+   precisely.
+4. Do not broaden a narrow finding into a general claim. In particular, distinguish
+   shopping/product-recommendation trust from trust in parents generally unless
+   evidence directly supports the broader statement.
+5. Write original Kesher copy. Do not reproduce substantial source wording.
+6. In the PR body include: Owner topic brief: applied.
+
+Owner topic brief:
+{topic_brief}
+--- END OWNER-SUPPLIED TOPIC BRIEF CONTRACT ---
+"""
+
+
+def load_owner_topic_brief() -> str:
+    path = os.environ.get("KESHER_ARTICLE_TOPIC_BRIEF_FILE", "").strip()
+    if path:
+        try:
+            brief = Path(path).read_text(encoding="utf-8").strip()
+        except OSError as exc:
+            raise v3.core.ArticleRunnerError(
+                "ARTICLE_TOPIC_BRIEF_ERROR",
+                f"cannot read owner topic brief file: {exc}",
+            ) from exc
+    else:
+        brief = os.environ.get("KESHER_ARTICLE_TOPIC_BRIEF", "").strip()
+    if len(brief) > 16000:
+        raise v3.core.ArticleRunnerError(
+            "ARTICLE_TOPIC_BRIEF_ERROR",
+            "owner topic brief exceeds 16000 characters",
+        )
+    return brief
+
 EVIDENCE_CONTRACT = r"""
 
 --- ARTICLE EVIDENCE CONTRACT ---
@@ -98,7 +146,11 @@ This requirement is mandatory even when every other content/style check passes.
 
 
 def build_prompt(slot: str, policy: str) -> str:
-    return _v3_build_prompt(slot, policy) + SEARCH_FIRST_CONTRACT + EVIDENCE_CONTRACT
+    prompt = _v3_build_prompt(slot, policy) + SEARCH_FIRST_CONTRACT + EVIDENCE_CONTRACT
+    topic_brief = load_owner_topic_brief()
+    if topic_brief:
+        prompt += CUSTOM_TOPIC_CONTRACT.format(topic_brief=topic_brief)
+    return prompt
 
 
 def main() -> int:
