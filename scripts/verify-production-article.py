@@ -14,6 +14,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from html.parser import HTMLParser
 from pathlib import Path
 
 SITE_URL = "https://kesher.saharoni.com"
@@ -38,11 +39,31 @@ def _latest_post() -> dict:
 
 
 def _public_url(post: dict) -> str:
-    slug = str(post.get("slug") or post.get("id") or "").strip()
-    if not slug:
-        raise RuntimeError("latest article has no id/slug")
-    quoted = urllib.parse.quote(slug, safe="-._~")
+    post_id = str(post.get("id") or "").strip()
+    if not post_id:
+        raise RuntimeError("latest article has no id")
+    quoted = urllib.parse.quote(post_id, safe="-._~")
     return f"{SITE_URL}/blog/{quoted}"
+
+
+class _CanonicalParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.hrefs: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() != "link":
+            return
+        attributes = {key.lower(): (value or "") for key, value in attrs}
+        rel_tokens = {token.lower() for token in attributes.get("rel", "").split()}
+        if "canonical" in rel_tokens and attributes.get("href"):
+            self.hrefs.append(attributes["href"])
+
+
+def _canonical_hrefs(html: str) -> list[str]:
+    parser = _CanonicalParser()
+    parser.feed(html)
+    return parser.hrefs
 
 
 def _fetch(url: str) -> tuple[int, str, str]:
@@ -71,21 +92,25 @@ def main() -> int:
         status, final_url, body = _fetch(url)
         normalized = re.sub(r"\s+", " ", body)
         title_ok = title in normalized
-        last = (status, final_url, title_ok)
+        canonical_hrefs = _canonical_hrefs(body)
+        canonical_ok = canonical_hrefs == [url]
+        last = (status, final_url, title_ok, canonical_hrefs)
         print(
             f"production article smoke attempt={attempt}/{args.retries} "
-            f"status={status} title_ok={title_ok} final_url={final_url}"
+            f"status={status} title_ok={title_ok} canonical_ok={canonical_ok} "
+            f"final_url={final_url}"
         )
-        if status == 200 and title_ok:
-            print(f"production article verified: {final_url}")
+        if status == 200 and final_url == url and title_ok and canonical_ok:
+            print(f"production article verified with self-canonical: {final_url}")
             return 0
         if attempt < args.retries:
             time.sleep(max(0.0, args.delay))
 
-    status, final_url, title_ok = last or (0, url, False)
+    status, final_url, title_ok, canonical_hrefs = last or (0, url, False, [])
     raise SystemExit(
         f"production article verification failed after {args.retries} attempts: "
-        f"status={status} title_ok={title_ok} final_url={final_url}"
+        f"status={status} title_ok={title_ok} final_url={final_url} "
+        f"canonicals={canonical_hrefs!r} expected_canonical={url}"
     )
 
 
