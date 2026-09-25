@@ -71,7 +71,7 @@ def build_stock_query(source: dict[str, Any]) -> str:
     ).lower()
 
     rules = [
-        (r"כסף|תקציב|כלכל|הוצאות|פנקס|score|budget|money|financial", "hands household budget notebook calculator table close up"),
+        (r"כסף|תקציב|כלכל|הוצאות|פנקס|score|budget|money|financial", "household budget notebook calculator table close up"),
         (r"טלפון|מסך|וואטסאפ|הסח|phone|screen|smartphone|distraction", "smartphone on table home close up"),
         (r"אמון|בגיד|שקר|קנאה|trust|infidelity|jealous", "two coffee cups table quiet home close up"),
         (r"מחוננ|פרפקציונ|שיעורי בית|homework|gifted|perfection", "pencil eraser homework desk close up"),
@@ -79,8 +79,8 @@ def build_stock_query(source: dict[str, Any]) -> str:
         (r"גבול|מחנק|מרחב|boundar|space", "open doorway quiet living room home"),
         (r"רילוקיישן|מעבר|עלייה|relocation|moving", "moving boxes home interior close up"),
         (r"דייט|היכרות|dating", "two coffee cups cafe table close up"),
-        (r"הור|ילד|משפחה|parent|child|family", "child drawing hands table home close up"),
-        (r"זוג|נישוא|קשר|תקשורת|מריבה|couple|marriage|relationship", "couple hands table conversation close up"),
+        (r"הור|ילד|משפחה|parent|child|family", "crayons drawing paper family home table close up"),
+        (r"זוג|נישוא|קשר|תקשורת|מריבה|couple|marriage|relationship", "two mugs living room table close up"),
     ]
     for pattern, query in rules:
         if re.search(pattern, text):
