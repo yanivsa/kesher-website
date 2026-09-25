@@ -22,6 +22,23 @@ class FreeStockBrollTests(unittest.TestCase):
             "school backpack shoes morning home close up",
         )
 
+    def test_provider_credit_lines_only_include_used_free_sources(self):
+        lines = broll.provider_credit_lines(
+            [
+                {"provider": "pexels"},
+                {"provider": "pexels"},
+                {"provider": "pixabay"},
+                {"provider": "unknown"},
+            ]
+        )
+        self.assertEqual(
+            lines,
+            [
+                "קטעי וידאו משלימים מפקסלס: https://www.pexels.com/",
+                "קטעי וידאו משלימים מפיקסאביי: https://pixabay.com/",
+            ],
+        )
+
     def test_missing_keys_is_clean_noop(self):
         with tempfile.TemporaryDirectory() as tmp, patch.dict(
             os.environ,
