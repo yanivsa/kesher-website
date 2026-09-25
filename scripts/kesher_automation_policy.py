@@ -114,6 +114,26 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
             "Video contract must use technical publication, advisory Jules, three attempts, FIFO, and 3 snapshots/14 days"
         )
 
+    broll = video.get("free_stock_broll")
+    if (
+        not isinstance(broll, dict)
+        or broll.get("enabled") is not True
+        or broll.get("cost_policy") != "free-only"
+        or broll.get("provider_order") != ["pexels", "pixabay"]
+        or broll.get("automatic_paid_fallback") is not False
+        or broll.get("publication_blocking") is not False
+        or broll.get("missing_credentials") != "skip-and-continue"
+        or broll.get("provider_failure") != "skip-and-continue"
+        or broll.get("download_failure") != "skip-and-continue"
+        or broll.get("render_failure") != "drop-assets-and-continue"
+        or broll.get("time_budget_seconds") != 12
+        or broll.get("max_short_assets") != 1
+        or broll.get("max_overview_assets") != 2
+        or broll.get("attribution_on_use") is not True
+        or broll.get("coverr_enabled") is not False
+    ):
+        raise AutomationPolicyError("Free B-roll contract must remain free-only, attributed, bounded and non-blocking")
+
     voice_policy = video.get("voice_policy")
     if (
         not isinstance(voice_policy, dict)
@@ -137,6 +157,9 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         "heartbeat_is_recovery_only",
         "provider_ids_are_persisted_before_followup",
         "youtube_insert_is_idempotent",
+        "free_broll_never_blocks_publication",
+        "free_broll_never_triggers_paid_fallback",
+        "external_broll_attributed_when_used",
     )
     if any(invariants.get(name) is not True for name in required_invariants):
         raise AutomationPolicyError("Required Kesher production invariants are not enabled")
