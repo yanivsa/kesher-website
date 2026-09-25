@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth",
     "published_date": "2026-09-25",
     "live": true,
-    "live_verified_at": "2026-09-25T08:46:56.254962+00:00",
+    "live_verified_at": "2026-09-25T08:58:54.767746+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1197,27 +1197,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-22T21:55:39.294897+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-22T21:55:39.295831+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-22T21:55:49.335840+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-09-22T22:01:33.303302+00:00",
       "from": "article_generating",
       "to": "article_generating",
@@ -1926,9 +1905,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-25T08:58:54.767765+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-25T08:59:30.721101+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-25T09:00:41.098548+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-25T08:47:51.722881+00:00",
+  "updated_at": "2026-09-25T09:00:41.098572+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
