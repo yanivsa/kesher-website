@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-26",
-  "status": "article_needed",
+  "status": "waiting_for_article_window",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1728,9 +1728,15 @@
       "from": "article_needed",
       "to": "v5_migrated",
       "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-09-25T23:18:07.051827+00:00",
+      "from": "article_needed",
+      "to": "waiting_for_article_window",
+      "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-09-25T23:15:09.498937+00:00",
+  "updated_at": "2026-09-25T23:18:07.051842+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1774,15 +1780,34 @@
   },
   "short": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "a0daf235-07fa-44e6-850b-7c96632e5ad3",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "item_id": "video-20260925-120527-e21ec5d48b",
+    "type": "article_short",
+    "youtube_id": "DQYle6-FYoo",
+    "youtube_url": "https://youtu.be/DQYle6-FYoo",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "9841c0e029cd82d9d1fab1ba828bf42c26efe3d04fe7197c45fde26fff081e58",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920,
+    "artifact_id": "a0daf235-07fa-44e6-850b-7c96632e5ad3",
+    "source_id": "bcc7d278-a42e-46e5-94ce-42cb1a2ab37f"
   },
   "migration": {
     "v4_short_controller_state": null
