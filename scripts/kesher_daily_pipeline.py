@@ -39,9 +39,11 @@ if str(PROJECT_DIR) not in sys.path:
 try:
     from motion_plan_generator import generate_motion_plan
     from kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
+    from kesher_free_stock_broll import provider_credit_lines
 except ImportError:
     from scripts.motion_plan_generator import generate_motion_plan
     from scripts.kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
+    from scripts.kesher_free_stock_broll import provider_credit_lines
 
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
@@ -132,11 +134,7 @@ def clean_article_html(value: str) -> str:
 def require_hebrew(value: str, field: str, allow_url: bool = False) -> None:
     checked = value
     if allow_url:
-        checked = re.sub(
-            rf"{re.escape(SITE_URL)}(?:/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*)?",
-            "",
-            checked,
-        )
+        checked = re.sub(r"https?://\S+", "", checked)
     if re.search(r"[A-Za-z]", checked):
         raise PipelineError(f"{field} contains unsupported Latin text")
     if not re.search(r"[\u0590-\u05ff]", checked):
@@ -151,6 +149,20 @@ def validate_youtube_description_links(description: str, canonical_url: str) -> 
         raise PipelineError("YouTube description is missing the standalone Kesher site URL")
     if APPOINTMENT_URL not in lines:
         raise PipelineError("YouTube description is missing the appointment URL")
+
+
+def apply_enhancement_media_credits(item: dict[str, Any]) -> dict[str, Any]:
+    """Append provider attribution only when an external stock asset was actually used."""
+    metadata = item.get("youtube_metadata")
+    if not isinstance(metadata, dict):
+        raise PipelineError("YouTube metadata is missing")
+    description = str(metadata.get("description") or "").strip()
+    for line in provider_credit_lines(item.get("enhancement_assets_used") or []):
+        if line not in description:
+            description = f"{description}\n\n{line}".strip()
+    metadata["description"] = description
+    item["youtube_metadata"] = metadata
+    return metadata
 
 
 def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
@@ -854,7 +866,7 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
     female_ok, pitch_hz, pitch_msg = validate_female_voice(final_path, item)
     if not female_ok:
         technical_failures.append(pitch_msg)
-    metadata = item["youtube_metadata"]
+    metadata = apply_enhancement_media_credits(item)
     metadata_failure = ""
     try:
         require_hebrew(metadata["title"], "YouTube title")

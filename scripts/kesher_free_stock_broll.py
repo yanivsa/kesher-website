@@ -31,6 +31,23 @@ MAX_DOWNLOAD_BYTES = 30 * 1024 * 1024
 DEFAULT_BUDGET_SECONDS = 12.0
 PEXELS_LICENSE_URL = "https://www.pexels.com/license/"
 PIXABAY_LICENSE_URL = "https://pixabay.com/service/license-summary/"
+PROVIDER_CREDIT_LINES = {
+    "pexels": "קטעי וידאו משלימים מפקסלס: https://www.pexels.com/",
+    "pixabay": "קטעי וידאו משלימים מפיקסאביי: https://pixabay.com/",
+}
+
+
+def provider_credit_lines(assets: list[dict[str, Any]] | None) -> list[str]:
+    """Return deterministic public attribution lines only for providers actually used."""
+    providers: list[str] = []
+    for asset in assets or []:
+        if not isinstance(asset, dict):
+            continue
+        provider = str(asset.get("provider") or "").strip().lower()
+        if provider in PROVIDER_CREDIT_LINES and provider not in providers:
+            providers.append(provider)
+    return [PROVIDER_CREDIT_LINES[provider] for provider in providers]
+
 
 
 def _sha256(path: Path) -> str:
@@ -54,7 +71,7 @@ def build_stock_query(source: dict[str, Any]) -> str:
     ).lower()
 
     rules = [
-        (r"כסף|תקציב|כלכל|הוצאות|פנקס|score|budget|money|financial", "hands household budget notebook calculator table close up"),
+        (r"כסף|תקציב|כלכל|הוצאות|פנקס|score|budget|money|financial", "household budget notebook calculator table close up"),
         (r"טלפון|מסך|וואטסאפ|הסח|phone|screen|smartphone|distraction", "smartphone on table home close up"),
         (r"אמון|בגיד|שקר|קנאה|trust|infidelity|jealous", "two coffee cups table quiet home close up"),
         (r"מחוננ|פרפקציונ|שיעורי בית|homework|gifted|perfection", "pencil eraser homework desk close up"),
@@ -62,8 +79,8 @@ def build_stock_query(source: dict[str, Any]) -> str:
         (r"גבול|מחנק|מרחב|boundar|space", "open doorway quiet living room home"),
         (r"רילוקיישן|מעבר|עלייה|relocation|moving", "moving boxes home interior close up"),
         (r"דייט|היכרות|dating", "two coffee cups cafe table close up"),
-        (r"הור|ילד|משפחה|parent|child|family", "child drawing hands table home close up"),
-        (r"זוג|נישוא|קשר|תקשורת|מריבה|couple|marriage|relationship", "couple hands table conversation close up"),
+        (r"הור|ילד|משפחה|parent|child|family", "crayons drawing paper family home table close up"),
+        (r"זוג|נישוא|קשר|תקשורת|מריבה|couple|marriage|relationship", "two mugs living room table close up"),
     ]
     for pattern, query in rules:
         if re.search(pattern, text):
