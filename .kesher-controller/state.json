@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth",
     "published_date": "2026-09-25",
     "live": true,
-    "live_verified_at": "2026-09-25T09:30:09.403199+00:00",
+    "live_verified_at": "2026-09-25T11:45:24.367155+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1197,28 +1197,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-23T09:57:32.397576+00:00",
-      "from": "article_image_running",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
-      "at": "2026-09-23T10:10:08.449830+00:00",
-      "from": "article_pr_open",
-      "to": "article_deploying",
-      "reason": "deployment already active"
-    },
-    {
-      "at": "2026-09-23T10:17:00.609702+00:00",
-      "from": "article_deploying",
-      "to": "article_deploying",
-      "reason": "public article check failed; recovery deploy dispatched",
-      "details": {
-        "http_status": 404,
-        "attempt": 1
-      }
-    },
-    {
       "at": "2026-09-23T10:22:46.480572+00:00",
       "from": "article_deploying",
       "to": "article_live",
@@ -1873,9 +1851,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-25T11:45:24.367170+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-25T11:46:18.998316+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-25T11:47:42.602153+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-25T09:31:56.406781+00:00",
+  "updated_at": "2026-09-25T11:47:42.602175+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
