@@ -23,7 +23,7 @@ from .state import ClaimRejected, StateConflict, StateInvalid
 from .worker_entry import actions_admission
 
 REPOSITORY = 'yanivsa/kesher-website'
-SOURCE_CONTEXT = {'source': 'sources/github/' + REPOSITORY, 'githubRepoContext': {'startingBranch': 'main'}}
+from .article_quiescence import SOURCE_CONTEXT, assert_article_quiescent
 IMAGE_CONTRACT = '''
 --- TRUSTED IMAGE OWNERSHIP ---
 Jules owns ARTICLE TEXT ONLY. Do not call image providers or download, generate,
@@ -120,33 +120,6 @@ def _outputs(row: dict) -> list[int]:
     if len(set(numbers)) > 1:
         raise JulesError('DUPLICATE_PR')
     return sorted(set(numbers))
-
-
-def assert_article_quiescent(context, api, pr: dict, *, settled_head_sha=None) -> list[str]:
-    """A cached settling receipt never replaces the pre-mutation live read."""
-    state = context.store.load().state
-    settled_head_sha = settled_head_sha or pr['head']['sha']
-    proofs = [receipt['evidence'] for command in state['commands'].values()
-              if command['target'] == context.target.to_dict() and command['outcome'] == 'succeeded'
-              for name, receipt in command['receipts'].items() if name == 'article_pr_settled'
-              and receipt['evidence'].get('number') == pr['number']
-              and receipt['evidence'].get('head_sha') == settled_head_sha]
-    if not proofs:
-        raise JulesError('JULES_PENDING')
-    names = {name for proof in proofs for name in proof['sessions']}
-    names.update(session_name(row) for row in api.sessions()
-                 if row.get('title') == 'Kesher article ' + context.target.slot)
-    for name in sorted(names):
-        row = api.get(name)
-        if (session_name(row) != name or row.get('sourceContext') != SOURCE_CONTEXT
-                or row.get('title') != 'Kesher article ' + context.target.slot):
-            raise JulesError('JULES_IDENTITY_MISMATCH')
-        if row.get('state') not in {'COMPLETED', 'FAILED'}:
-            raise JulesError('JULES_PENDING')
-    evidence = {'number': pr['number'], 'head_sha': pr['head']['sha'],
-                'settled_head_sha': settled_head_sha, 'sessions': sorted(names)}
-    context.checkpoint('article_quiescence_' + digest(evidence)[:24], evidence, phase='STARTED')
-    return sorted(names)
 
 
 def run_normalization(context, api, repository) -> dict:

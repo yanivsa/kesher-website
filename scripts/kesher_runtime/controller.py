@@ -223,6 +223,8 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
         proposed = bind_source(proposed, source, now=now, previous_source_key=previous)
         proposed['slots'][slot].pop('blocked', None)
         proposed['slots'][slot]['observed_at'] = data['observed_at']
+    from .article_merge_observer import reconcile_merge_effects
+    reconcile_merge_effects(proposed, data.get('merge_effects', []), main_sha=data['main_sha'], now=now)
     _settle_commands(proposed, data, now=now)
     eligible = []
     for slot in sorted(candidates, reverse=True):
@@ -318,7 +320,7 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
                     operation = 'settle_article'
             if operation:
                 inputs = {'pr_number': str(pr['number']), 'pr_head_sha': pr['head_sha']}
-                if operation == 'validate_article':
+                if operation in {'validate_article', 'merge_article'}:
                     inputs.update(pr_body_sha256=pr.get('body_sha256', digest('')), validation_base_sha=data['main_sha'])
                 action = _eligible(proposed, target, {'status': 'absent'}, row.setdefault('recovery', {}),
                                    now=now, default_operation=operation,

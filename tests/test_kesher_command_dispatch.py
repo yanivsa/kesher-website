@@ -21,7 +21,7 @@ class CommandDispatchTests(unittest.TestCase):
         for operation, workflow in [('normalize_article', 'kesher-article-worker.yml'),
                                     ('attach_image', 'kesher-article-worker.yml'),
                                     ('validate_article', 'kesher-article-validation.yml'),
-                                    ('merge_article', 'kesher-article-generation.yml')]:
+                                    ('merge_article', 'kesher-article-merge.yml')]:
             with self.subTest(operation=operation):
                 state, command_id = plan_command(new_state(), SlotIdentity('2026-09-17'), operation, 1,
                                                  {'pr_number': '854', 'pr_head_sha': CODE}, code_sha=CODE, now=NOW)

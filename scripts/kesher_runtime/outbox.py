@@ -43,7 +43,7 @@ def workflow_for(command: dict) -> str:
     if isinstance(target, SlotIdentity) and operation == 'validate_article':
         return 'kesher-article-validation.yml'
     if isinstance(target, SlotIdentity) and operation == 'merge_article':
-        return 'kesher-article-generation.yml'
+        return 'kesher-article-merge.yml'
     if isinstance(target, SourceIdentity) and operation == 'deploy_article':
         return 'deploy.yml'
     raise StateInvalid('No authorized worker route for this target/operation')

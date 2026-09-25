@@ -38,6 +38,21 @@ def observed(*publications, now=NOW, current_slot=SOURCE.slot, runs=(), prs=()):
 
 
 class AutonomousControllerTests(unittest.TestCase):
+    def test_merge_binds_body_and_validation_base_for_recovery(self):
+        from scripts.kesher_runtime.worker import WorkerContext
+        pr = {'slot': SOURCE.slot, 'number': 854, 'head_sha': CODE, 'status': 'ready_to_merge', 'body_sha256': '1'*64}
+        first = reconcile(new_state(), observed(prs=[pr]), now=NOW)
+        store = GitHubStateStore(ContentsServer(first.state), 'owner/repo')
+        worker = WorkerContext(store, first.command_id, '1/1', SlotIdentity(SOURCE.slot), code_sha=CODE, now=lambda: NOW)
+        worker.claim()
+        worker.checkpoint('article_pr_settled', {'number': 854, 'head_sha': CODE, 'slot': SOURCE.slot, 'sessions': []}, phase='OUTPUT_CREATED')
+        worker.finish()
+        result = reconcile(store.load().state, observed(prs=[pr]), now=NOW)
+        command = result.state['commands'][result.command_id]
+        self.assertEqual(command['operation'], 'merge_article')
+        self.assertEqual(command['inputs'].get('pr_body_sha256'), '1'*64)
+        self.assertEqual(command['inputs'].get('validation_base_sha'), CODE)
+
     def test_article_mutation_requires_exact_head_jules_quiescence(self):
         for status in ('normalize_required', 'image_required', 'ci_required', 'ready_to_merge', 'ci_failed'):
             with self.subTest(status=status):

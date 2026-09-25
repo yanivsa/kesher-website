@@ -1,0 +1,50 @@
+name: Kesher canonical article merge
+run-name: kesher-command:${{ inputs.command_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      command_id:
+        description: Persisted canonical article merge command
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: read
+  actions: read
+
+concurrency:
+  group: kesher-article-merge
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      COMMAND_ID: ${{ inputs.command_id }}
+      # Deliberately no administrator/controller PAT fallback on this route.
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout immutable trusted revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Claim exact merge command
+        id: claim
+        run: python -m scripts.kesher_runtime.worker_entry claim "$COMMAND_ID"
+      - name: Revalidate and publish exact tested tree
+        if: steps.claim.outputs.execute == 'true'
+        env:
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+        run: python -m scripts.kesher_runtime.article_merge "$COMMAND_ID"
+      - name: Record interrupted merge worker
+        if: ${{ failure() && steps.claim.outputs.execute == 'true' }}
+        run: python -m scripts.kesher_runtime.worker_entry finish "$COMMAND_ID" --failure-class WORKER_FAILED

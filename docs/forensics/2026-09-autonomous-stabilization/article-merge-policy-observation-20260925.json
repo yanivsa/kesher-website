@@ -1,0 +1,22 @@
+{
+  "repository": "yanivsa/kesher-website",
+  "observed_date": "2026-09-25",
+  "mode": "read-only",
+  "main_sha": "a1fc391f95556ad64719435796cf432691185a4e",
+  "main_protected": false,
+  "applicable_main_rules": [],
+  "compare_probe": {
+    "base_sha": "33d1ceb8c6f706df293efdec4f1bf96e6974411e",
+    "head_sha": "a1fc391f95556ad64719435796cf432691185a4e",
+    "status": "ahead",
+    "ahead_by": 18,
+    "behind_by": 0,
+    "merge_base_sha": "33d1ceb8c6f706df293efdec4f1bf96e6974411e",
+    "last_commit_sha": "a1fc391f95556ad64719435796cf432691185a4e"
+  },
+  "limitations": [
+    "No updateRefs mutation was executed on GitHub.",
+    "No GitHub Actions installation-token write permission or bypass configuration was tested.",
+    "Local atomic Git tests do not attest to GitHub's deployed no-op ref behavior."
+  ]
+}

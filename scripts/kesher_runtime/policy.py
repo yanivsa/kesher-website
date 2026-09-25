@@ -27,6 +27,7 @@ RULES = {
     'JULES_CREATE_UNCERTAIN': Rule('reconcile', 48, (300, 900, 1800)),
     'ARTICLE_PR_CHANGED': Rule('reconcile', 3),
     'CODE_CHANGED': Rule('reconcile', 3),
+    'MERGE_RECORD_PENDING': Rule('reconcile', 3),
     'PUBLIC_METADATA_INVALID': Rule('repair_metadata', 3),
     'MEDIA_INVALID': Rule('rebuild', 2),
     'STALE_CACHE': Rule('rebuild', 2),

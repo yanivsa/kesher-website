@@ -157,6 +157,8 @@ class RepositoryObserver:
         posts = json.loads(self.content(main, 'src/data/posts.json'))
         prs = self.article_prs(posts, current_slot, state, main_sha=main)
         runs = self.runs(state)
+        from .article_merge_observer import observe_merge_effects
+        merge_effects = observe_merge_effects(state, self.github, self.repo, main)
         self._deployment = self.reader.deployment(main)
         try:
             inventory = self.inventory_reader(now=now)
@@ -190,5 +192,5 @@ class RepositoryObserver:
         present = {row['source']['slot'] for row in publications}
         return Observation({'state_revision': state['revision'], 'main_sha': main, 'observed_at': now,
             'current_slot': current_slot, 'article_creation_allowed': self.window(now),
-            'publications': publications, 'runs': runs, 'article_prs': prs,
+            'publications': publications, 'runs': runs, 'article_prs': prs, 'merge_effects': merge_effects,
             'missing_slots': sorted(slots - present - {current_slot})})
