@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth",
     "published_date": "2026-09-25",
     "live": true,
-    "live_verified_at": "2026-09-25T13:39:42.847802+00:00",
+    "live_verified_at": "2026-09-25T14:58:04.248555+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1197,27 +1197,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-23T15:02:39.923420+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-23T15:03:04.704374+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-23T16:11:58.491663+00:00",
-      "from": "complete",
-      "to": "blocked",
-      "reason": "DUPLICATE_ARTICLE_DATE",
-      "details": {
-        "message": "2 articles share Israel date 2026-09-23"
-      }
-    },
-    {
       "at": "2026-09-23T16:26:44.683846+00:00",
       "from": "blocked",
       "to": "article_deploying",
@@ -1865,9 +1844,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-25T14:58:04.248572+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-25T14:58:14.886869+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-25T14:58:33.265191+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-25T13:42:00.941063+00:00",
+  "updated_at": "2026-09-25T14:58:33.265211+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
