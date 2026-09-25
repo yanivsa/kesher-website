@@ -10,6 +10,9 @@ on:
       - scripts/kesher_video_reconcile.py
       - scripts/kesher_content_controller_v4_runtime.py
       - scripts/requirements-video-cloud.txt
+      - scripts/kesher_video_asset_resolver.py
+      - scripts/kesher_free_stock_broll.py
+      - tests/test_kesher_free_stock_broll.py
       - src/remotion/**
       - package.json
       - package-lock.json
@@ -86,6 +89,10 @@ jobs:
       KESHER_WHISPER_MODEL: small
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
+      PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+      PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+      KESHER_BROLL_ENABLED: "true"
+      KESHER_BROLL_BUDGET_SECONDS: "12"
 
     steps:
       - name: Checkout workflow revision for validation
@@ -139,6 +146,9 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         env:
           NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
+          PEXELS_API_KEY: ""
+          PIXABAY_API_KEY: ""
+          KESHER_BROLL_ENABLED: "false"
         run: |
           python -m unittest \
             tests.test_short_pipeline_v4 \
@@ -147,6 +157,7 @@ jobs:
             tests.test_pipeline_v4 \
             tests.test_v4_runtime_activation \
             tests.test_notebooklm_auth_precedence \
+            tests.test_kesher_free_stock_broll \
             -v
 
       - name: Restore newest valid Short V4 durable state
