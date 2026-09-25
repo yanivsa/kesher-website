@@ -160,6 +160,25 @@
       "fallback_attempt": 3,
       "independent_landscape_fallback_allowed": true,
       "fallback_must_not_reuse_video_overview_identity": true
+    },
+    "free_stock_broll": {
+      "enabled": true,
+      "cost_policy": "free-only",
+      "provider_order": [
+        "pexels",
+        "pixabay"
+      ],
+      "automatic_paid_fallback": false,
+      "publication_blocking": false,
+      "missing_credentials": "skip-and-continue",
+      "provider_failure": "skip-and-continue",
+      "download_failure": "skip-and-continue",
+      "render_failure": "drop-assets-and-continue",
+      "time_budget_seconds": 12,
+      "max_short_assets": 1,
+      "max_overview_assets": 2,
+      "attribution_on_use": true,
+      "coverr_enabled": false
     }
   },
   "invariants": {
@@ -182,6 +201,9 @@
     "signature_never_extends_media_duration": true,
     "short_is_provider_native_not_overview_conversion": true,
     "short_description_has_article_and_site_urls": true,
-    "signature_preserves_approved_background": true
+    "signature_preserves_approved_background": true,
+    "free_broll_never_blocks_publication": true,
+    "free_broll_never_triggers_paid_fallback": true,
+    "external_broll_attributed_when_used": true
   }
 }
