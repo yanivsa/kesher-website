@@ -985,6 +985,31 @@
       "strike": 2,
       "updated_at": "2026-09-16T21:37:29.972941+00:00"
     },
+    "ksr-a74434c3c48b04dc478e29f1": {
+      "command_id": "ksr-a74434c3c48b04dc478e29f1",
+      "evidence_hash": "cd0c83c30424a654df71a011950d04a3cc80138ded98eafdbe6efd86fa7ed1d0",
+      "exact": {
+        "artifact_id": "baac58e5-9c72-44bb-ac43-24d6a113d355",
+        "content_sha256": "c41b6ec41cfd17ad4031e94f6393afac19438b5bf1825be49e144982f37504d7",
+        "item_id": "video-20260924-234129-c41b6ec41c",
+        "pr_number": null,
+        "short_item_id": "video-20260924-234218-c41b6ec41c",
+        "slug": "adhd-morning-conflict-dopamine-myth",
+        "source_id": "dd059968-6e54-4fd7-b36d-f504a480f01d",
+        "task_id": "baac58e5-9c72-44bb-ac43-24d6a113d355"
+      },
+      "executor": "controller",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "9f68a2d33099afb5f2a347f0e90ed75d",
+      "incident_id": "v5|adhd-morning-conflict-dopamine-myth|c41b6ec41cfd17ad4031e94f6393afac19438b5bf1825be49e144982f37504d7|long_video",
+      "issued_at": "2026-09-25T09:05:52.317678+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebind_exact_source",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-25T09:05:52.317678+00:00"
+    },
     "ksr-b2af7d699e3ced7638fde8c4": {
       "acknowledged_at": "2026-09-20T10:19:37.231881+00:00",
       "command_id": "ksr-b2af7d699e3ced7638fde8c4",
@@ -2570,6 +2595,25 @@
       "status": "resolved",
       "strike": 1
     },
+    "9f68a2d33099afb5f2a347f0e90ed75d": {
+      "active_command_id": "ksr-a74434c3c48b04dc478e29f1",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "9f68a2d33099afb5f2a347f0e90ed75d",
+      "first_seen_at": "2026-09-25T09:05:52.317678+00:00",
+      "history": [
+        {
+          "at": "2026-09-25T09:05:52.317678+00:00",
+          "command_id": "ksr-a74434c3c48b04dc478e29f1",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|adhd-morning-conflict-dopamine-myth|c41b6ec41cfd17ad4031e94f6393afac19438b5bf1825be49e144982f37504d7|long_video",
+      "last_seen_at": "2026-09-25T09:05:52.317678+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=9f68a2d33099afb5f2a347f0e90ed75d strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "b5e3f832d20a8b794b331b6595cb7d48": {
       "active_command_id": null,
       "failure_signature": "STALE_SOURCE_BINDING",
@@ -2875,5 +2919,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-24T21:23:59.939237+00:00"
+  "updated_at": "2026-09-25T09:05:52.317678+00:00"
 }
