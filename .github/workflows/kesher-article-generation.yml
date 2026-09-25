@@ -57,14 +57,12 @@ jobs:
           brief_file="$GITHUB_WORKSPACE/.kesher-topic-brief.txt"
           : > "$brief_file"
           if [ "$GITHUB_EVENT_NAME" = "push" ]; then
+            git diff-tree --no-commit-id --name-only -r HEAD > /tmp/kesher-changed-files.txt
             python3 - <<'PY' > /tmp/kesher-trigger.env
           import json
-          import os
           from pathlib import Path
 
-          event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
-          head = event.get("head_commit") or {}
-          changed = set(head.get("added") or []) | set(head.get("modified") or [])
+          changed = set(Path("/tmp/kesher-changed-files.txt").read_text(encoding="utf-8").splitlines())
           topic_path = Path(".github/kesher-topic-request.json")
           test_path = Path(".github/kesher-e2e-test-trigger.json")
 
@@ -85,7 +83,7 @@ jobs:
               print("test_mode=true")
               print("trigger=e2e-test")
           else:
-              raise SystemExit("push did not modify a recognized Kesher article trigger")
+              raise SystemExit(f"push did not modify a recognized Kesher article trigger: {sorted(changed)}")
           PY
             slot="$(sed -n 's/^slot=//p' /tmp/kesher-trigger.env)"
             test_mode="$(sed -n 's/^test_mode=//p' /tmp/kesher-trigger.env)"
