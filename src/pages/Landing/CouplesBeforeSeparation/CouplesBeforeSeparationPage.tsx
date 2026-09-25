@@ -112,7 +112,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
           '@type': 'Person',
           name: 'שירה סהרוני',
           jobTitle: 'יועצת זוגית ומנחת הורים מוסמכת',
-          url: 'https://kesher.saharoni.com',
+          url: SITE_CONFIG.url,
           telephone: '+972-50-2763802',
         },
         areaServed: [
@@ -139,19 +139,25 @@ const CouplesBeforeSeparationPage: React.FC = () => {
       },
       {
         '@type': 'BreadcrumbList',
-      '@id': `${SITE_CONFIG.url}/services/couples/before-separation#breadcrumb`,
+        '@id': `${SITE_CONFIG.url}/services/couples/before-separation#breadcrumb`,
         itemListElement: [
           {
             '@type': 'ListItem',
             position: 1,
             name: 'עמוד הבית',
-            item: 'https://kesher.saharoni.com',
+            item: SITE_CONFIG.url,
           },
           {
             '@type': 'ListItem',
             position: 2,
+            name: 'ייעוץ זוגי',
+            item: `${SITE_CONFIG.url}/services/couples`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
             name: 'בירור זוגי בצומת החלטה ולפני פרידה',
-            item: 'https://kesher.saharoni.com/services/couples/before-separation',
+            item: `${SITE_CONFIG.url}/services/couples/before-separation`,
           },
         ],
       },
