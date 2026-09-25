@@ -86,7 +86,7 @@ def repair_youtube_metadata(item: dict[str, Any]) -> dict[str, Any]:
             f"\n\nלתיאום פגישה:\n{core.APPOINTMENT_URL}"
         ).strip()
     item["youtube_metadata"] = metadata
-    return metadata
+    return core.apply_enhancement_media_credits(item)
 
 
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
