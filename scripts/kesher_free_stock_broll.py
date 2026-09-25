@@ -54,21 +54,21 @@ def build_stock_query(source: dict[str, Any]) -> str:
     ).lower()
 
     rules = [
-        (r"כסף|תקציב|כלכל|הוצאות|פנקס|score|budget|money|financial", "couple budgeting together at home"),
-        (r"טלפון|מסך|וואטסאפ|הסח|phone|screen|smartphone|distraction", "couple smartphone conversation at home"),
-        (r"אמון|בגיד|שקר|קנאה|trust|infidelity|jealous", "couple serious calm conversation at home"),
-        (r"מחוננ|פרפקציונ|שיעורי בית|homework|gifted|perfection", "parent supporting child studying at desk"),
-        (r"קשב|adhd|בוקר|ילקוט|בית ספר|morning|school|routine", "parent child morning school routine at home"),
-        (r"גבול|מחנק|מרחב|boundar|space", "couple respectful conversation living room"),
-        (r"רילוקיישן|מעבר|עלייה|relocation|moving", "couple moving boxes conversation at home"),
-        (r"דייט|היכרות|dating", "two adults talking over coffee"),
-        (r"הור|ילד|משפחה|parent|child|family", "parent child supportive conversation at home"),
-        (r"זוג|נישוא|קשר|תקשורת|מריבה|couple|marriage|relationship", "couple calm conversation at home"),
+        (r"כסף|תקציב|כלכל|הוצאות|פנקס|score|budget|money|financial", "hands household budget notebook calculator table close up"),
+        (r"טלפון|מסך|וואטסאפ|הסח|phone|screen|smartphone|distraction", "smartphone on table home close up"),
+        (r"אמון|בגיד|שקר|קנאה|trust|infidelity|jealous", "two coffee cups table quiet home close up"),
+        (r"מחוננ|פרפקציונ|שיעורי בית|homework|gifted|perfection", "pencil eraser homework desk close up"),
+        (r"קשב|adhd|בוקר|ילקוט|בית ספר|morning|school|routine", "school backpack shoes morning home close up"),
+        (r"גבול|מחנק|מרחב|boundar|space", "open doorway quiet living room home"),
+        (r"רילוקיישן|מעבר|עלייה|relocation|moving", "moving boxes home interior close up"),
+        (r"דייט|היכרות|dating", "two coffee cups cafe table close up"),
+        (r"הור|ילד|משפחה|parent|child|family", "child drawing hands table home close up"),
+        (r"זוג|נישוא|קשר|תקשורת|מריבה|couple|marriage|relationship", "couple hands table conversation close up"),
     ]
     for pattern, query in rules:
         if re.search(pattern, text):
             return query
-    return "warm family home conversation"
+    return "warm home interior family lifestyle close up"
 
 
 def _load_cache(state_dir: Path) -> dict[str, Any]:
