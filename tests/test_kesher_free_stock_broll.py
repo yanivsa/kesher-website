@@ -19,7 +19,7 @@ class FreeStockBrollTests(unittest.TestCase):
     def test_query_uses_article_context(self):
         self.assertEqual(
             broll.build_stock_query(self.source),
-            "parent child morning school routine at home",
+            "school backpack shoes morning home close up",
         )
 
     def test_missing_keys_is_clean_noop(self):
