@@ -39,6 +39,118 @@ class FreeStockBrollTests(unittest.TestCase):
             ],
         )
 
+    def test_pexels_parser_matches_documented_video_shape(self):
+        with patch.object(broll.requests, "get") as request:
+            response = request.return_value
+            response.json.return_value = {
+                "videos": [
+                    {
+                        "id": 123,
+                        "url": "https://www.pexels.com/video/123/",
+                        "user": {"name": "Creator"},
+                        "video_files": [
+                            {
+                                "link": "https://cdn.example/landscape.mp4",
+                                "file_type": "video/mp4",
+                                "width": 1280,
+                                "height": 720,
+                            },
+                            {
+                                "link": "https://cdn.example/portrait.mp4",
+                                "file_type": "video/mp4",
+                                "width": 720,
+                                "height": 1280,
+                            },
+                        ],
+                    }
+                ]
+            }
+            rows = broll._search_pexels(
+                "free-key",
+                "school backpack",
+                "short_9_16",
+                broll.time.monotonic() + 10,
+            )
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["provider"], "pexels")
+        self.assertEqual(rows[0]["download_url"], "https://cdn.example/portrait.mp4")
+        self.assertEqual(rows[0]["creator"], "Creator")
+
+    def test_pixabay_parser_matches_documented_video_shape(self):
+        with patch.object(broll.requests, "get") as request:
+            response = request.return_value
+            response.json.return_value = {
+                "hits": [
+                    {
+                        "id": 456,
+                        "pageURL": "https://pixabay.com/videos/id-456/",
+                        "user": "Creator",
+                        "videos": {
+                            "medium": {
+                                "url": "https://cdn.example/landscape.mp4",
+                                "width": 1280,
+                                "height": 720,
+                            },
+                            "small": {
+                                "url": "https://cdn.example/portrait.mp4",
+                                "width": 720,
+                                "height": 1280,
+                            },
+                        },
+                    }
+                ]
+            }
+            rows = broll._search_pixabay(
+                "free-key",
+                "school backpack",
+                "overview_16_9",
+                broll.time.monotonic() + 10,
+            )
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["provider"], "pixabay")
+        self.assertEqual(rows[0]["download_url"], "https://cdn.example/landscape.mp4")
+
+    def test_pixabay_is_used_when_pexels_fails(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state_dir = Path(tmp)
+            clip = state_dir / "clip.mp4"
+            clip.write_bytes(b"x" * 4096)
+
+            def provider_results(provider, *_args, **_kwargs):
+                if provider == "pexels":
+                    raise RuntimeError("rate limit")
+                return [
+                    {
+                        "provider": "pixabay",
+                        "id": "456",
+                        "download_url": "https://cdn.example/clip.mp4",
+                        "page_url": "https://pixabay.com/videos/id-456/",
+                        "license_url": broll.PIXABAY_LICENSE_URL,
+                        "creator": "Creator",
+                    }
+                ]
+
+            with patch.dict(
+                os.environ,
+                {
+                    "PEXELS_API_KEY": "free-key",
+                    "PIXABAY_API_KEY": "backup-key",
+                    "KESHER_BROLL_ENABLED": "true",
+                },
+                clear=False,
+            ), patch.object(broll, "_provider_results", side_effect=provider_results), patch.object(
+                broll, "_download_result", return_value=clip
+            ):
+                assets = broll.resolve_free_stock_broll(
+                    state_dir=state_dir,
+                    source=self.source,
+                    source_identity="source-1",
+                    duration_seconds=30,
+                    profile="short_9_16",
+                )
+        self.assertEqual(len(assets), 1)
+        self.assertEqual(assets[0]["provider"], "pixabay")
+
     def test_missing_keys_is_clean_noop(self):
         with tempfile.TemporaryDirectory() as tmp, patch.dict(
             os.environ,
