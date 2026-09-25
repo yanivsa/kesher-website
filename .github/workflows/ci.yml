@@ -48,6 +48,7 @@ jobs:
             tests.test_master_supervisor_shadow \
             tests.test_master_supervisor_live \
             tests.test_master_supervisor_live_qa \
+            tests.test_verify_production_article \
             -v
 
       - name: Select CI profile
