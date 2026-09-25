@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth",
     "published_date": "2026-09-25",
     "live": true,
-    "live_verified_at": "2026-09-25T06:03:31.480152+00:00",
+    "live_verified_at": "2026-09-25T08:13:34.084254+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1860,9 +1860,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-25T08:13:34.084274+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-25T08:14:09.902264+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-09-25T08:15:11.972737+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-25T06:05:13.491943+00:00",
+  "updated_at": "2026-09-25T08:15:11.972761+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
