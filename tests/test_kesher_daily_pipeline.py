@@ -89,6 +89,24 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(metadata["tags"], ["הדרכת הורים", "ילדים מחוננים"])
         pipeline.require_hebrew(metadata["description"], "description", allow_url=True)
 
+    def test_enhancement_media_credits_are_added_only_when_stock_is_used(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        item = {
+            "youtube_metadata": source["youtube_metadata"],
+            "enhancement_assets_used": [{"provider": "pexels", "type": "broll"}],
+        }
+        metadata = pipeline.apply_enhancement_media_credits(item)
+        lines = [line.strip() for line in metadata["description"].splitlines() if line.strip()]
+        self.assertIn("קטעי וידאו משלימים מפקסלס: https://www.pexels.com/", lines)
+        pipeline.require_hebrew(metadata["description"], "description", allow_url=True)
+
+        item["enhancement_assets_used"] = []
+        metadata_without_new_credit = pipeline.apply_enhancement_media_credits(item)
+        self.assertEqual(
+            metadata_without_new_credit["description"].count("https://www.pexels.com/"),
+            1,
+        )
+
     def test_youtube_description_requires_three_separate_links(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
         article_only = f"תיאור בעברית\n{source['canonical_url']}"
