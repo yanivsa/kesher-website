@@ -1461,7 +1461,9 @@
   }
 
   .heroWhatsapp {
-    margin-bottom: 0;
+    margin-bottom: 5.5rem;
+    position: relative;
+    z-index: 91;
   }
 
   .trustRow {
