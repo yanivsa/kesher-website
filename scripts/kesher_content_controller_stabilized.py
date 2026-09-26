@@ -20,6 +20,7 @@ else:
 _ORIGINAL_PUBLIC_SITE_GET = v5.core.PublicSiteClient.get
 _SOURCE_BINDING_EXHAUSTION_RECOVERY_MARKER = "source_binding_exhaustion_recovery_applied"
 _REMOTION_REBUILD_EXHAUSTION_RECOVERY_MARKER = "remotion_rebuild_exhaustion_recovery_applied"
+_TARGETED_MEDIA_REQUEST_PATH = ".github/kesher-media-recovery-request.json"
 
 
 def _unicode_safe_public_site_get(self, url: str):
@@ -37,6 +38,41 @@ def _unicode_safe_public_site_get(self, url: str):
 
 class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     """Prevent advancement/completion unless article and canonical media evidence are durable."""
+
+
+    def _selected_article(self, posts):
+        """Prefer an explicit bounded media-recovery slug over today's article."""
+        try:
+            request = self.github.contents_json(_TARGETED_MEDIA_REQUEST_PATH, "main")
+        except v5.core.ControllerError as exc:
+            if "GITHUB_HTTP_404" not in str(exc):
+                raise
+            request = None
+
+        if isinstance(request, dict) and request.get("enabled") is True:
+            slug = str(request.get("target_slug") or "").strip()
+            if not slug:
+                raise v5.core.ControllerError("TARGET_MEDIA_SLUG_MISSING")
+            matches = [
+                post for post in posts
+                if isinstance(post, dict)
+                and str(post.get("slug") or post.get("id") or "").strip() == slug
+            ]
+            if len(matches) != 1:
+                raise v5.core.ControllerError(
+                    f"TARGET_MEDIA_SOURCE_AMBIGUOUS: {slug} matched {len(matches)} articles"
+                )
+            return matches[0]
+
+        todays = v5.core.today_articles(posts, self.now.date())
+        return todays[0] if len(todays) == 1 else None
+
+    def _article_source(self):
+        posts = self.github.contents_json("src/data/posts.json", "main")
+        if not isinstance(posts, list):
+            raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
+        article = self._selected_article(posts)
+        return v5.article_source_identity(article) if article is not None else None
 
     def _recover_stale_source_binding_exhaustion(self, state):
         """Reset one historical V5 attempt budget only when stale source binding is proven.
@@ -228,11 +264,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         posts = self.github.contents_json("src/data/posts.json", "main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
-        todays = v5.core.today_articles(posts, self.now.date())
-        if len(todays) != 1:
+        article = self._selected_article(posts)
+        if article is None:
             return None
 
-        article = todays[0]
         source = v5.article_source_identity(article)
         violations = quality.article_violations(article)
         state["article"].update({
