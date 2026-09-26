@@ -1,5 +1,6 @@
 {
   "slot": "2026-09-27",
   "topic_brief": "עדכון לנכס קיים — אין ליצור מאמר כפול. יש לשדרג את המאמר הקיים slug gifted-children-perfectionism-tears בהתאם ל-Issue #938, להוסיף את כלי 'טיוטה ראשונה מבולגנת' / Ugly First Draft ואת כוונת החיפוש המפורטת שם. יש לאמת מקור ראשוני של Dr. Matt Zakreski לפני ייחוס ציטוט. לאחר עדכון/פרסום, המשך באותה source identity ל-Video Overview ול-Short אנכי 9:16. אם worker זה תומך רק ביצירת מאמר חדש, עליו לעצור באופן בטוח ולא ליצור duplicate; Controller צריך להעביר למסלול update/recovery.",
-  "request_id": "gifted-perfectionism-upgrade-20260925-v2"
+  "request_id": "gifted-perfectionism-upgrade-20260925-v2",
+  "target_slug": "gifted-children-perfectionism-tears"
 }
