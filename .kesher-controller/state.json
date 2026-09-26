@@ -19,7 +19,7 @@
     "last_dispatch_at": "2026-09-26T21:37:12.214092+00:00",
     "quality_status": "passed",
     "quality_content_sha256": "27fc420058c548aa10a586479e7c79d7d646e4a4b057b10d438ad8cc33175d70",
-    "quality_checked_at": "2026-09-26T22:52:12.236563+00:00",
+    "quality_checked_at": "2026-09-26T23:54:42.780333+00:00",
     "quality_violations": [],
     "pr_number": 944,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/944",
@@ -1769,12 +1769,16 @@
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "e324d7a8-3fba-4324-b378-db3e054bca52",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-09-26T23:02:15.988917+00:00"
+    "last_dispatch_at": "2026-09-26T23:58:17.911401+00:00",
+    "resume_dispatches": 1,
+    "item_id": "video-20260927-020414-27fc420058",
+    "source_id": "d8348e9d-d874-4789-a03d-ee72e6222da5",
+    "artifact_id": "e324d7a8-3fba-4324-b378-db3e054bca52"
   },
   "short": {
     "attempt_count": 0,
@@ -1805,8 +1809,8 @@
     "content_sha256": "27fc420058c548aa10a586479e7c79d7d646e4a4b057b10d438ad8cc33175d70",
     "article_url": "https://kesher.saharoni.com/blog/gifted-children-perfectionism-tears",
     "article_verified": true,
-    "updated_at": "2026-09-26T22:57:24.807632+00:00",
+    "updated_at": "2026-09-26T23:56:10.575201+00:00",
     "long_status": "running",
-    "long_last_dispatch_at": "2026-09-26T23:02:15.989222+00:00"
+    "long_last_dispatch_at": "2026-09-26T23:58:17.911750+00:00"
   }
 }
