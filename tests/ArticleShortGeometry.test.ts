@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import React from 'react';
-import { ArticleShort, SHORT_GEOMETRY } from '../src/remotion/ArticleShort';
+import { ArticleShort } from '../src/remotion/ArticleShort';
+import { SHORT_GEOMETRY } from '../src/remotion/ArticleShort.types';
 
 // Mock remotion hooks to allow testing the component outside the player
 vi.mock('remotion', async () => {
