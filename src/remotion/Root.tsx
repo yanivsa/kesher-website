@@ -1,7 +1,7 @@
 import React from "react";
 import { Composition } from "remotion";
 import { ArticleShort } from "./ArticleShort";
-import type { ArticleShortProps } from "./ArticleShort";
+import type { ArticleShortProps } from "./ArticleShort.types";
 import { KesherOverview } from "./kesher-overview/KesherOverview";
 import type { KesherOverviewProps } from "./kesher-overview/types";
 
