@@ -40,6 +40,27 @@ jobs:
           ref: main
           persist-credentials: false
 
+      - name: Resolve optional targeted media recovery
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path(".github/kesher-media-recovery-request.json")
+          slug = ""
+          if path.is_file():
+              payload = json.loads(path.read_text(encoding="utf-8"))
+              if isinstance(payload, dict) and payload.get("enabled") is True:
+                  slug = str(payload.get("target_slug") or "").strip()
+                  if not slug:
+                      raise SystemExit("enabled media recovery request requires target_slug")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as out:
+              out.write(f"KESHER_TARGET_MEDIA_SLUG={slug}\n")
+          print(f"Targeted media recovery: {slug or 'disabled'}")
+          PY
+
       - name: Run autonomous stabilized V5 reconciliation and watchdog tick
         env:
           GH_TOKEN: ${{ github.token }}
