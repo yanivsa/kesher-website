@@ -267,6 +267,32 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertEqual(state["long_video"]["status"], "running")
         self.assertIsNotNone(controller.github.saved)
 
+    def test_targeted_tick_skips_duplicate_overview_history_preflight(self):
+        controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
+        state = {"article": {}, "long_video": {}, "short": {}, "history": []}
+        expected = (
+            state,
+            stabilized.v5.core.Action("wait", "targeted recovery"),
+        )
+        controller.state = mock.Mock(return_value=state)
+        controller._quality_preflight = mock.Mock(return_value=None)
+        controller._dispatch_exact_rejected_rebuild = mock.Mock(return_value=None)
+        controller._tick_targeted_media_recovery = mock.Mock(return_value=expected)
+        controller._overview_evidence_preflight = mock.Mock(
+            side_effect=AssertionError("duplicate overview preflight should not run")
+        )
+
+        with mock.patch.dict(
+            os.environ,
+            {"KESHER_TARGET_MEDIA_SLUG": "gifted-children-perfectionism-tears"},
+            clear=False,
+        ):
+            actual = controller.tick()
+
+        self.assertEqual(actual, expected)
+        controller._overview_evidence_preflight.assert_not_called()
+        controller._tick_targeted_media_recovery.assert_called_once_with(state)
+
     def test_production_controller_workflow_uses_stabilized_runtime(self):
         workflow = (ROOT / ".github/workflows/kesher-content-controller.yml").read_text(encoding="utf-8")
         self.assertIn(
