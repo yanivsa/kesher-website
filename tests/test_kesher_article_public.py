@@ -67,6 +67,9 @@ class ArticlePublicTests(unittest.TestCase):
                'post_sha256': av.digest(self.post), 'html_sha256': hashlib.sha256(self.html).hexdigest(),
                'hero': {'path': self.post['image'], 'sha256': hashlib.sha256(HERO).hexdigest()}}
         self.manifest = {'schema_version': 1, 'deploy_sha': SHA, 'articles': {self.identity.slug: row}, 'exclusions': []}
+        self.deployment.update(provider='cloudflare_pages', project_id='41773648-4870-407a-b868-5f05f2a2da57',
+            deployment_id='12345678-1234-4234-8234-123456789abc', build_sha256='e'*64, artifact_id=71,
+            publication_manifest_sha256=hashlib.sha256(json.dumps(self.manifest).encode()).hexdigest())
         self.responses = {
             SITE + '/.well-known/kesher-publication.json': av.FetchResult(200, SITE + '/.well-known/kesher-publication.json', json.dumps(self.manifest).encode()),
             self.url: av.FetchResult(200, self.url + '/', self.html, (self.url, self.url + '/')),
@@ -92,11 +95,15 @@ class ArticlePublicTests(unittest.TestCase):
         self.assertEqual(receipt['deploy_sha'], SHA)
         self.assertEqual(receipt['public_url'], self.source['canonical_url'])
         self.assertEqual(receipt['verified_at'], '2026-09-20T10:00:00+00:00')
-        self.assertEqual(receipt['verifier_version'], 1)
+        self.assertEqual(receipt['verifier_version'], 2)
         self.assertEqual(receipt['hero_sha256'], hashlib.sha256(HERO).hexdigest())
 
     def test_green_deploy_with_404_cannot_complete(self):
         self.assert_rejected('ARTICLE_PUBLIC_HTTP', article=self.av.FetchResult(404, self.url, b'not found'))
+
+    def test_green_workflow_alone_is_not_exact_cloudflare_deployment_evidence(self):
+        self.assert_rejected('ARTICLE_DEPLOY_UNVERIFIED', deployment={'head_sha': SHA, 'head_branch': 'main',
+                             'status': 'completed', 'conclusion': 'success'})
 
     def test_success_for_other_sha_branch_or_pending_deployment_cannot_complete(self):
         for field, value in [('head_sha', 'b' * 40), ('head_branch', 'repair'), ('status', 'in_progress'), ('conclusion', 'failure')]:
@@ -134,6 +141,7 @@ class ArticlePublicTests(unittest.TestCase):
                 manifest = copy.deepcopy(self.manifest)
                 manifest['articles'][self.identity.slug]['html_sha256'] = hashlib.sha256(changed).hexdigest()
                 self.assert_rejected('ARTICLE_CONTENT_MISMATCH',
+                    deployment={**self.deployment, 'publication_manifest_sha256': hashlib.sha256(json.dumps(manifest).encode()).hexdigest()},
                     article=replace(self.responses[self.url], body=changed),
                     manifest=replace(self.responses[SITE + '/.well-known/kesher-publication.json'], body=json.dumps(manifest).encode()))
 

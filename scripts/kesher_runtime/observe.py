@@ -33,13 +33,15 @@ def article_window(now: str) -> bool:
 
 class RepositoryObserver:
     def __init__(self, github, repo: str, *, inventory_reader, auditor, article_observer=None,
-                 clock=utc_now, window=article_window):
+                 clock=utc_now, window=article_window, deployment_observer=None):
         self.github, self.repo = github, repo
         self.reader = GitHubArticleReader(github, repo)
         self.inventory_reader, self.auditor = inventory_reader, auditor
         self.article_observer = article_observer or self._article
         self.clock, self.window = clock, window
         self._content = {}
+        self.deployment_observer = deployment_observer or (lambda state, main:
+            {'status': 'unknown', 'failure_class': 'DEPLOY_OBSERVATION_UNAVAILABLE'})
 
     def content(self, sha: str, path: str) -> bytes:
         key = (sha, path)
@@ -61,8 +63,10 @@ class RepositoryObserver:
 
     def _article(self, source: SourceIdentity, post: dict, main: str, now: str) -> dict:
         try:
+            if self._deployment.get('status') != 'verified':
+                return self._deployment
             snapshot = SourceSnapshot(main, main, post, self.content(main, 'public' + post['image']))
-            verifier = ArticlePublicVerifier(lambda sha, slug: snapshot, lambda sha: self._deployment)
+            verifier = ArticlePublicVerifier(lambda sha, slug: snapshot, lambda sha: self._deployment['evidence'])
             evidence = verifier.verify(source, main, verified_at=now)
             return {'status': 'verified', 'evidence': evidence}
         except ArticleVerificationError as exc:
@@ -159,7 +163,7 @@ class RepositoryObserver:
         runs = self.runs(state)
         from .article_merge_observer import observe_merge_effects
         merge_effects = observe_merge_effects(state, self.github, self.repo, main)
-        self._deployment = self.reader.deployment(main)
+        self._deployment = self.deployment_observer(state, main)
         try:
             inventory = self.inventory_reader(now=now)
         except (OSError, RuntimeError, MediaVerificationError):

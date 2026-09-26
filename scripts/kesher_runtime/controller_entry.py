@@ -87,6 +87,11 @@ def main(argv=None) -> int:
         observer = RepositoryObserver(github, REPOSITORY, inventory_reader=youtube_inventory,
             auditor=ArchivedMediaAuditor(github, REPOSITORY,
                 lambda artifact_id, destination: download_actions_artifact(REPOSITORY, token, artifact_id, destination)))
+        if os.environ.get('CLOUDFLARE_ACCOUNT_ID') and os.environ.get('CLOUDFLARE_API_TOKEN'):
+            from .cloudflare_pages import PagesClient
+            from .deployment_observer import read_deployment
+            pages = PagesClient(os.environ['CLOUDFLARE_ACCOUNT_ID'], os.environ['CLOUDFLARE_API_TOKEN'])
+            observer.deployment_observer = lambda state, sha: read_deployment(state, pages, github, REPOSITORY, sha)
         report = execute_tick(store, observer, mode=args.mode, dispatch=lambda command: deliver(store, observer, command))
         encoded = json.dumps(report, ensure_ascii=False, indent=2) + '\n'
         if args.output:

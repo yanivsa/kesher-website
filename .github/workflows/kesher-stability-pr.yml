@@ -52,6 +52,9 @@ jobs:
             tests.test_kesher_article_image_worker \
             tests.test_kesher_article_validation \
             tests.test_kesher_article_merge \
+            tests.test_kesher_deployment_artifact \
+            tests.test_kesher_article_deploy \
+            tests.test_kesher_deployment_observer \
             tests.test_kesher_runtime_migration \
             tests.test_kesher_state_write_safety \
             tests.test_kesher_canonical_state \

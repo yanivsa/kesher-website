@@ -1,0 +1,100 @@
+name: Kesher canonical exact deployment
+run-name: kesher-command:${{ inputs.command_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      command_id:
+        description: Persisted exact deployment command
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: deploy-kesher-website
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      COMMAND_ID: ${{ inputs.command_id }}
+      GH_TOKEN: ${{ github.token }}
+      BUILD_ROOT: ${{ github.workspace }}/.kesher-deployment
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - name: Checkout immutable trusted main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Claim exact deployment command
+        id: claim
+        run: python -m scripts.kesher_runtime.worker_entry claim "$COMMAND_ID"
+      - name: Install verification dependencies
+        if: steps.claim.outputs.execute == 'true'
+        run: python -m pip install requests==2.33.0 cryptography==50.0.1 -r scripts/requirements-article.txt
+      - name: Recover exact prior deployment or archive
+        id: init
+        if: steps.claim.outputs.execute == 'true'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: python -m scripts.kesher_runtime.article_deploy init "$COMMAND_ID" --root "$BUILD_ROOT"
+      - name: Set up Node
+        if: steps.init.outputs.status == 'build' || steps.init.outputs.status == 'archived'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pinned Pages tool without publication credentials
+        if: steps.init.outputs.status == 'build' || steps.init.outputs.status == 'archived'
+        run: npx --yes wrangler@4.100.0 --version
+      - name: Install site dependencies and browser
+        if: steps.init.outputs.status == 'build'
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Run complete production quality gate
+        if: steps.init.outputs.status == 'build'
+        run: npm run check
+      - name: Build Functions and bind exact publication bytes
+        id: bundle
+        if: steps.init.outputs.status == 'build'
+        env:
+          VITE_GTM_CONTAINER_ID: ${{ secrets.VITE_GTM_CONTAINER_ID || 'disabled' }}
+        run: python -m scripts.kesher_runtime.article_deploy prepare "$COMMAND_ID" --root "$BUILD_ROOT"
+      - name: Archive all exact deployment bytes
+        id: archive
+        if: steps.bundle.outputs.status == 'upload'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ${{ steps.bundle.outputs.name }}
+          path: ${{ env.BUILD_ROOT }}/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: false
+      - name: Independently read back archived bytes
+        if: steps.bundle.outputs.status == 'upload'
+        env:
+          ARTIFACT_ID: ${{ steps.archive.outputs.artifact-id }}
+        run: python -m scripts.kesher_runtime.article_deploy complete "$COMMAND_ID" --root "$BUILD_ROOT" --artifact-id "$ARTIFACT_ID"
+      - name: Create once or observe exact Pages deployment
+        if: steps.init.outputs.status == 'observe' || steps.init.outputs.status == 'archived' || steps.bundle.outputs.status == 'upload'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: python -m scripts.kesher_runtime.article_deploy publish "$COMMAND_ID" --root "$BUILD_ROOT"
+      - name: Record worker outcome for independent public verification
+        if: success() && steps.claim.outputs.execute == 'true'
+        run: python -m scripts.kesher_runtime.worker_entry finish "$COMMAND_ID"

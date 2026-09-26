@@ -202,7 +202,16 @@ def verify_article_publication(identity: SourceIdentity, expected_sha: str, *, s
         reject('ARTICLE_SOURCE_MISMATCH', 'Authoritative article is not this exact source at observed main')
     if any(deployment.get(k) != v for k, v in {'head_sha': expected_sha, 'head_branch': 'main', 'status': 'completed', 'conclusion': 'success'}.items()):
         reject('ARTICLE_DEPLOY_UNVERIFIED', 'Exact main deployment has not succeeded')
+    from .cloudflare_pages import PROJECT_ID, UUID
+    if (deployment.get('provider') != 'cloudflare_pages' or deployment.get('project_id') != PROJECT_ID
+            or not re.fullmatch(UUID, str(deployment.get('deployment_id', '')))
+            or not re.fullmatch(r'[a-f0-9]{64}', str(deployment.get('build_sha256', '')))
+            or not re.fullmatch(r'[a-f0-9]{64}', str(deployment.get('publication_manifest_sha256', '')))
+            or type(deployment.get('artifact_id')) is not int or deployment['artifact_id'] <= 0):
+        reject('ARTICLE_DEPLOY_UNVERIFIED', 'Exact canonical Cloudflare deployment and archived build are required')
     _response(manifest, MANIFEST_URL, code='ARTICLE_MANIFEST_MISMATCH')
+    if hashlib.sha256(manifest.body).hexdigest() != deployment['publication_manifest_sha256']:
+        reject('ARTICLE_MANIFEST_MISMATCH', 'Public manifest differs from the exact immutable build')
     _response(article, metadata['canonical_url'], code='ARTICLE_PUBLIC_ROUTE', trailing_slash=True)
     validate_source_hero(source.post, source.hero_bytes)
     image_sha = hashlib.sha256(source.hero_bytes).hexdigest()
@@ -226,9 +235,11 @@ def verify_article_publication(identity: SourceIdentity, expected_sha: str, *, s
     _response(hero, SITE_URL + source.post['image'], code='ARTICLE_HERO_MISMATCH')
     if hashlib.sha256(hero.body).hexdigest() != image_sha:
         reject('ARTICLE_HERO_MISMATCH', 'Public hero bytes differ from approved source')
-    return {'identity': identity.to_dict(), 'verifier_version': 1, 'verified_at': verified_at,
+    return {'identity': identity.to_dict(), 'verifier_version': 2, 'verified_at': verified_at,
             'deploy_sha': expected_sha, 'public_url': metadata['canonical_url'], 'hero_sha256': image_sha,
-            'post_sha256': digest(source.post), 'html_sha256': html_sha, 'deployment_run': deployment.get('html_url')}
+            'post_sha256': digest(source.post), 'html_sha256': html_sha, 'deployment_url': deployment['html_url'],
+            'deployment_id': deployment['deployment_id'], 'build_sha256': deployment['build_sha256'],
+            'artifact_id': deployment['artifact_id']}
 
 
 def fetch_public(url: str, *, timeout: int, max_bytes: int) -> FetchResult:
@@ -295,10 +306,3 @@ class GitHubArticleReader:
         if not image.startswith('/images/generated/blog/') or '..' in image.split('/'):
             reject('ARTICLE_HERO_MISMATCH', 'Unexpected source image path')
         return SourceSnapshot(expected_sha, main, post, self.content(expected_sha, 'public' + image))
-
-    def deployment(self, expected_sha: str) -> dict:
-        rows = self.github.request('GET', f'/repos/{self.repo}/actions/workflows/deploy.yml/runs?head_sha={expected_sha}&branch=main&per_page=100')['workflow_runs']
-        matches = [row for row in rows if row.get('head_sha') == expected_sha and row.get('head_branch') == 'main'
-                   and row.get('path', '').split('@')[0] == '.github/workflows/deploy.yml'
-                   and row.get('status') == 'completed' and row.get('conclusion') == 'success']
-        return matches[0] if matches else {}

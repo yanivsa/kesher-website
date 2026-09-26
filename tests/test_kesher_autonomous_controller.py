@@ -17,7 +17,7 @@ def later(seconds):
 def publication(source=SOURCE, *, article='verified', overview='absent', short='absent'):
     def verdict(status, identity):
         if status == 'verified':
-            return {'status': status, 'evidence': {'identity': identity.to_dict(), 'verifier_version': 1,
+            return {'status': status, 'evidence': {'identity': identity.to_dict(), 'verifier_version': 2 if isinstance(identity, SourceIdentity) else 1,
                     'verified_at': NOW, 'public_url': 'https://example.test/exact', 'deploy_sha': CODE}}
         if status == 'absent':
             return {'status': status}
@@ -38,6 +38,25 @@ def observed(*publications, now=NOW, current_slot=SOURCE.slot, runs=(), prs=()):
 
 
 class AutonomousControllerTests(unittest.TestCase):
+    def test_new_main_deployment_does_not_inherit_old_revision_budget_or_stall_clock(self):
+        state = bind_source(new_state(), SOURCE, now=NOW)
+        for ordinal in (1, 2):
+            state, key = plan_command(state, SOURCE, 'deploy_article', ordinal, {'deploy_sha': CODE}, code_sha=CODE, now=NOW)
+            state['commands'][key]['outcome'] = 'failed'
+            state['commands'][key]['failure'] = {'class': 'DEPLOY_FAILED'}
+        state['sources'][SOURCE.key]['recovery'] = {'last_meaningful_progress_at': NOW}
+        current = 'e'*40
+        when = later(50000)
+        entry = publication(article='ARTICLE_NOT_PUBLIC', overview='verified', short='verified')
+        entry['main_sha'] = current
+        observation = observed(entry, now=when).value
+        observation['main_sha'] = current
+        result = reconcile(state, Observation(observation), now=when)
+        self.assertIsNotNone(result.command_id)
+        command = result.state['commands'][result.command_id]
+        self.assertEqual(command['operation'], 'deploy_article')
+        self.assertEqual(command['inputs']['deploy_sha'], current)
+
     def test_merge_binds_body_and_validation_base_for_recovery(self):
         from scripts.kesher_runtime.worker import WorkerContext
         pr = {'slot': SOURCE.slot, 'number': 854, 'head_sha': CODE, 'status': 'ready_to_merge', 'body_sha256': '1'*64}

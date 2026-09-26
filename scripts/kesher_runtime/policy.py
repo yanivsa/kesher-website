@@ -33,6 +33,11 @@ RULES = {
     'STALE_CACHE': Rule('rebuild', 2),
     'ARTICLE_NOT_PUBLIC': Rule('deploy_article', 2),
     'DEPLOY_FAILED': Rule('deploy_article', 2),
+    'DEPLOY_PENDING': Rule('deploy_article', 48, (300, 900, 1800)),
+    'DEPLOY_CREATE_UNCERTAIN': Rule('deploy_article', 48, (300, 900, 1800)),
+    'DEPLOY_PREDECESSOR_UNCERTAIN': Rule('deploy_article', 48, (300, 900, 1800)),
+    'DEPLOY_ARCHIVE_PENDING': Rule('deploy_article', 48, (300, 900, 1800)),
+    'DEPLOY_ARCHIVE_REBUILD': Rule('deploy_article', 3),
     'AUTH_EXPIRED': Rule(None, 0),
     'AUTH_SCOPE_INVALID': Rule(None, 0),
 }

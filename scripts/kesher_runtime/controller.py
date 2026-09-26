@@ -57,7 +57,8 @@ def _verification(row: dict, target: Identity, *, now: str, main_sha: str) -> di
     if status != 'verified':
         return None
     evidence = row.get('evidence') or {}
-    if (evidence.get('identity') != target.to_dict() or evidence.get('verifier_version') != 1
+    version = 2 if isinstance(target, SourceIdentity) else 1
+    if (evidence.get('identity') != target.to_dict() or evidence.get('verifier_version') != version
             or not isinstance(evidence.get('public_url'), str) or not evidence['public_url'].startswith('https://')
             or not 0 <= seconds(now, evidence.get('verified_at')) <= VERIFICATION_MAX_AGE):
         raise StateInvalid('Public receipt must be fresh and bind the complete source/kind identity')
@@ -146,11 +147,16 @@ def _eligible(state: dict, target: Identity, observation: dict, tracker: dict, *
         return None
     commands = _commands(state, target)
     _progress(state, target, tracker, now=now)
-    if isinstance(target, SlotIdentity):
+    if isinstance(target, (SlotIdentity, SourceIdentity)):
         # Article stages and successive exact PR heads do not share a retry
         # budget. A completed Jules poll must not delay trusted image attachment.
         commands = [row for row in commands if row['operation'] == default_operation
                     and row['inputs'] == (inputs or {})]
+    if isinstance(target, SourceIdentity):
+        current_input = digest({'operation': default_operation, 'inputs': inputs or {}})
+        if tracker.get('deployment_input_sha256') != current_input:
+            tracker['deployment_input_sha256'] = current_input
+            tracker['last_meaningful_progress_at'] = now
     failure_class = observation.get('failure_class')
     last = commands[-1] if commands else None
     if not failure_class and last:
