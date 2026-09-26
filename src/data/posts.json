@@ -32,7 +32,12 @@
         "note": "מחקר על דפוסי היכרות במאה ה-21 המדגיש את החשיבות של תקשורת מוקדמת, גמישות ויכולת ניהול ציפיות במציאת בני זוג מתאימים."
       }
     ],
-    "controllerManaged": true
+    "controllerManaged": true,
+    "image": "/images/generated/blog/how-to-find-good-relationship-dating.jpg",
+    "imageAlt": "צילום מציאותי של שיחה או מפגש אנושי המתאים להיכרות ולבניית קשר",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/generated/blog/repairing-relationship-after-resentment.jpg",
+    "imageIsFallback": true
   },
   {
     "id": "adhd-morning-conflict-dopamine-myth",
