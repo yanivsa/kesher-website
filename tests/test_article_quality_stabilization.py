@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import tempfile
 import unittest
@@ -144,6 +145,46 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertTrue(state["article"]["quality_content_sha256"])
         self.assertEqual(gh.assertion, ("src/data/posts.json", "main"))
         self.assertIsNotNone(gh.saved)
+
+    def test_targeted_media_recovery_selects_existing_old_article(self):
+        old_article = {
+            "id": "gifted-children-perfectionism-tears",
+            "slug": "gifted-children-perfectionism-tears",
+            "title": "פרפקציוניזם אצל ילדים מחוננים",
+            "date": "2026-08-18",
+            "category": "הדרכת הורים",
+            "excerpt": "תקציר",
+            "content": "<p>תוכן בדיקה בטוח.</p>",
+        }
+        today_article = {
+            "id": "today-other-topic",
+            "slug": "today-other-topic",
+            "title": "מאמר אחר",
+            "date": "2026-09-27",
+            "category": "זוגיות",
+            "excerpt": "תקציר",
+            "content": "<p>תוכן אחר.</p>",
+        }
+
+        class FakeGitHub:
+            def contents_json(self, path, ref="main"):
+                if path == "src/data/posts.json":
+                    return [today_article, old_article]
+                raise AssertionError(path)
+
+        controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
+        controller.github = FakeGitHub()
+        controller.now = datetime(2026, 9, 27, 1, 0, tzinfo=TZ)
+
+        with mock.patch.dict(
+            os.environ,
+            {"KESHER_TARGET_MEDIA_SLUG": "gifted-children-perfectionism-tears"},
+            clear=False,
+        ):
+            source = controller._article_source()
+
+        self.assertEqual(source["slug"], "gifted-children-perfectionism-tears")
+        self.assertTrue(source["content_sha256"])
 
     def test_production_controller_workflow_uses_stabilized_runtime(self):
         workflow = (ROOT / ".github/workflows/kesher-content-controller.yml").read_text(encoding="utf-8")
