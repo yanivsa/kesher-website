@@ -186,6 +186,87 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertEqual(source["slug"], "gifted-children-perfectionism-tears")
         self.assertTrue(source["content_sha256"])
 
+    def test_targeted_media_recovery_bypasses_current_article_cycle_for_exact_old_slug(self):
+        old_article = {
+            "id": "gifted-children-perfectionism-tears",
+            "slug": "gifted-children-perfectionism-tears",
+            "title": "פרפקציוניזם אצל ילדים מחוננים",
+            "date": "2026-08-18",
+            "category": "הדרכת הורים",
+            "excerpt": "תקציר",
+            "content": "<p>תוכן בדיקה בטוח.</p>",
+        }
+        today_article = {
+            "id": "today-other-topic",
+            "slug": "today-other-topic",
+            "title": "מאמר אחר",
+            "date": "2026-09-27",
+            "category": "זוגיות",
+            "excerpt": "תקציר",
+            "content": "<p>תוכן אחר.</p>",
+        }
+
+        class FakeGitHub:
+            def __init__(self):
+                self.saved = None
+
+            def contents_json(self, path, ref="main"):
+                self.assertion = (path, ref)
+                return [today_article, old_article]
+
+            def newest_video_state(self):
+                return {"version": 1, "items": []}
+
+            def active_workflow_run(self, workflow, production_only=False):
+                return None
+
+            def save_controller_state(self, state):
+                self.saved = json.loads(json.dumps(state))
+
+        class FakeSite:
+            def get(self, url):
+                return 200, "<h1>פרפקציוניזם אצל ילדים מחוננים</h1>"
+
+        controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
+        controller.github = FakeGitHub()
+        controller.site = FakeSite()
+        controller.now = datetime(2026, 9, 27, 1, 0, tzinfo=TZ)
+        controller._verified_long_from_artifact_history = mock.Mock(return_value=None)
+        controller._dispatch_budgeted = mock.Mock()
+
+        state = {
+            "status": "article_pr_open",
+            "article": {"status": "running"},
+            "long_video": {"attempt_count": 0, "status": "pending"},
+            "short": {"attempt_count": 0, "status": "pending"},
+            "history": [],
+        }
+
+        with mock.patch.dict(
+            os.environ,
+            {"KESHER_TARGET_MEDIA_SLUG": "gifted-children-perfectionism-tears"},
+            clear=False,
+        ):
+            returned, action = controller._tick_targeted_media_recovery(state)
+
+        self.assertIs(returned, state)
+        self.assertEqual(action.kind, "dispatch_long_video")
+        controller._dispatch_budgeted.assert_called_once_with(
+            state,
+            "video",
+            stabilized.v5.LONG_VIDEO_WORKFLOW,
+            {
+                "operation": "full",
+                "target_slug": "gifted-children-perfectionism-tears",
+            },
+        )
+        self.assertEqual(
+            state["targeted_media_recovery"]["slug"],
+            "gifted-children-perfectionism-tears",
+        )
+        self.assertEqual(state["long_video"]["status"], "running")
+        self.assertIsNotNone(controller.github.saved)
+
     def test_production_controller_workflow_uses_stabilized_runtime(self):
         workflow = (ROOT / ".github/workflows/kesher-content-controller.yml").read_text(encoding="utf-8")
         self.assertIn(
