@@ -426,6 +426,100 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         # lookup, which can bind a different article's provider identity.
         return v5.v3.V3Controller._dispatch_budgeted(self, state, stage, workflow, bound_inputs)
 
+    def _tick_targeted_media_recovery(self, state):
+        """Advance only the explicitly requested existing article media chain."""
+        posts = self.github.contents_json("src/data/posts.json", "main")
+        if not isinstance(posts, list):
+            raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
+        article = self._selected_article(posts)
+        if article is None:
+            raise v5.core.ControllerError("TARGET_MEDIA_SOURCE_UNAVAILABLE")
+
+        source = v5.article_source_identity(article)
+        title = str(article.get("title") or "").strip()
+        url = f"{v5.core.SITE_URL}/blog/{source['slug']}"
+        status, body = self.site.get(url)
+        if status != 200 or not v5.core.article_is_public(body, title):
+            v5.core.block(
+                state,
+                "article",
+                "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+                f"targeted media article is not publicly verified: {source['slug']}",
+            )
+            self.github.save_controller_state(state)
+            return state, v5.core.Action("blocked", "targeted media article is not public")
+
+        target = state.setdefault("targeted_media_recovery", {})
+        target.update({
+            "slug": source["slug"],
+            "content_sha256": source["content_sha256"],
+            "article_url": url,
+            "article_verified": True,
+            "updated_at": v5.core.utc_now(),
+        })
+
+        snapshot = self.github.newest_video_state()
+        long_item = v5._newest(v5._verified_exact(snapshot, source))
+        if long_item is None:
+            long_item = self._verified_long_from_artifact_history(source)
+
+        if long_item is None:
+            active = self.github.active_workflow_run(v5.LONG_VIDEO_WORKFLOW, production_only=True)
+            if active:
+                state["long_video"]["run_id"] = active.get("id")
+                state["long_video"]["status"] = "running"
+                target["long_status"] = "running"
+                self.github.save_controller_state(state)
+                return state, v5.core.Action("wait", "targeted long-video workflow active")
+
+            state["video"] = state["long_video"]
+            try:
+                self._dispatch_budgeted(
+                    state,
+                    "video",
+                    v5.LONG_VIDEO_WORKFLOW,
+                    {"operation": "full", "target_slug": source["slug"]},
+                )
+                state["long_video"] = state["video"]
+            finally:
+                state.pop("video", None)
+            state["long_video"]["status"] = "running"
+            target["long_status"] = "running"
+            target["long_last_dispatch_at"] = v5.core.utc_now()
+            self.github.save_controller_state(state)
+            return state, v5.core.Action(
+                "dispatch_long_video",
+                "targeted media recovery dispatched exact Video Overview",
+                {"operation": "full", "target_slug": source["slug"]},
+            )
+
+        state["long_video"].update({
+            "item_id": long_item.get("id"),
+            "status": "complete",
+            "youtube_id": long_item.get("youtube_id"),
+            "youtube_url": long_item.get("youtube_url"),
+            "verified": True,
+            "provider_id": long_item.get("task_id"),
+            "artifact_id": long_item.get("artifact_id"),
+            "source_id": long_item.get("source_id"),
+        })
+        target.update({
+            "long_status": "complete",
+            "long_youtube_url": long_item.get("youtube_url"),
+            "long_item_id": long_item.get("id"),
+        })
+
+        action = self._tick_short(state, source, long_item)
+        if action.kind == "complete":
+            target["short_status"] = "complete"
+            target["short_youtube_url"] = state["short"].get("youtube_url")
+            target["complete"] = True
+            target["completed_at"] = v5.core.utc_now()
+        elif state["short"].get("status"):
+            target["short_status"] = state["short"].get("status")
+        self.github.save_controller_state(state)
+        return state, action
+
     def _overview_evidence_preflight(self, state):
         """Copy exact public Overview edit evidence into durable controller state."""
         source = self._article_source()
@@ -474,6 +568,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
         if direct_rebuild is not None:
             return direct_rebuild
+
+        if os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip():
+            return self._tick_targeted_media_recovery(state)
+
         self.github.save_controller_state(state)
         return super().tick()
 

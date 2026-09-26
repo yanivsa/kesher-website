@@ -137,12 +137,6 @@
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://kesher.saharoni.com/blog/how-to-find-good-relationship-dating</loc>
-    <lastmod>2026-09-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth</loc>
     <lastmod>2026-09-25</lastmod>
     <changefreq>monthly</changefreq>
@@ -673,6 +667,12 @@
   <url>
     <loc>https://kesher.saharoni.com/blog/teens-and-artificial-intelligence</loc>
     <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/late-singleness-challenges-and-growth</loc>
+    <lastmod>2026-09-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
