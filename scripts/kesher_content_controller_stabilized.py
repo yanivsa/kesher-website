@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import urllib.parse
 
@@ -20,7 +21,6 @@ else:
 _ORIGINAL_PUBLIC_SITE_GET = v5.core.PublicSiteClient.get
 _SOURCE_BINDING_EXHAUSTION_RECOVERY_MARKER = "source_binding_exhaustion_recovery_applied"
 _REMOTION_REBUILD_EXHAUSTION_RECOVERY_MARKER = "remotion_rebuild_exhaustion_recovery_applied"
-_TARGETED_MEDIA_REQUEST_PATH = ".github/kesher-media-recovery-request.json"
 
 
 def _unicode_safe_public_site_get(self, url: str):
@@ -42,25 +42,16 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def _selected_article(self, posts):
         """Prefer an explicit bounded media-recovery slug over today's article."""
-        try:
-            request = self.github.contents_json(_TARGETED_MEDIA_REQUEST_PATH, "main")
-        except v5.core.ControllerError as exc:
-            if "GITHUB_HTTP_404" not in str(exc):
-                raise
-            request = None
-
-        if isinstance(request, dict) and request.get("enabled") is True:
-            slug = str(request.get("target_slug") or "").strip()
-            if not slug:
-                raise v5.core.ControllerError("TARGET_MEDIA_SLUG_MISSING")
+        target_slug = os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip()
+        if target_slug:
             matches = [
                 post for post in posts
                 if isinstance(post, dict)
-                and str(post.get("slug") or post.get("id") or "").strip() == slug
+                and str(post.get("slug") or post.get("id") or "").strip() == target_slug
             ]
             if len(matches) != 1:
                 raise v5.core.ControllerError(
-                    f"TARGET_MEDIA_SOURCE_AMBIGUOUS: {slug} matched {len(matches)} articles"
+                    f"TARGET_MEDIA_SOURCE_AMBIGUOUS: {target_slug} matched {len(matches)} articles"
                 )
             return matches[0]
 
