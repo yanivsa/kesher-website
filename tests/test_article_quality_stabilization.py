@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import tempfile
 import unittest
@@ -123,8 +124,6 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
                 self.saved = None
 
             def contents_json(self, path, ref="main"):
-                if path == stabilized._TARGETED_MEDIA_REQUEST_PATH:
-                    return None
                 self.assertion = (path, ref)
                 return [risky_article()]
 
@@ -169,11 +168,6 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
 
         class FakeGitHub:
             def contents_json(self, path, ref="main"):
-                if path == stabilized._TARGETED_MEDIA_REQUEST_PATH:
-                    return {
-                        "enabled": True,
-                        "target_slug": "gifted-children-perfectionism-tears",
-                    }
                 if path == "src/data/posts.json":
                     return [today_article, old_article]
                 raise AssertionError(path)
@@ -182,7 +176,12 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         controller.github = FakeGitHub()
         controller.now = datetime(2026, 9, 27, 1, 0, tzinfo=TZ)
 
-        source = controller._article_source()
+        with mock.patch.dict(
+            os.environ,
+            {"KESHER_TARGET_MEDIA_SLUG": "gifted-children-perfectionism-tears"},
+            clear=False,
+        ):
+            source = controller._article_source()
 
         self.assertEqual(source["slug"], "gifted-children-perfectionism-tears")
         self.assertTrue(source["content_sha256"])
