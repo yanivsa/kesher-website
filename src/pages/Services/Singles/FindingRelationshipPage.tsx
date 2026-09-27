@@ -49,7 +49,7 @@ const FindingRelationshipPage: React.FC = () => (
           <span className={styles.eyebrow}><FiCompass aria-hidden="true" /> ליווי מעשי בתהליך ההיכרות</span>
           <h1>ליווי למציאת זוגיות</h1>
           <p className={styles.lead}>
-            כשלא ברור למי לתת הזדמנות, איך לנהל את הקצב או מה לומר כשמתחיל להיות חשוב, אפשר לעצור ולחשוב יחד. הליווי מתמקד בהחלטות ובשיחות שנמצאות בידיים שלכם — לא בשידוך ולא בנוסחה שמבטיחה זוגיות.
+            כשלא ברור למי לתת הזדמנות, איך לנהל את הקצב או מה לומר כשמתחיל להיות חשוב, אפשר לעצור ולחשוב יחד. הליווי מתמקד בהחלטות ובשיחות שנמצאות בידיים שלכם — לא בשידוך ולא בנוסחת קסם.
           </p>
           <div className={styles.heroActions}>
             <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת ייעוץ</Link>
