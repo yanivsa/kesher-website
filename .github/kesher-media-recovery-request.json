@@ -1,6 +1,11 @@
 {
-  "enabled": true,
+  "enabled": false,
   "target_slug": "siblings-fairness-vs-equality",
   "issue": 951,
-  "purpose": "complete existing same-source Video Overview and 9:16 Short without regenerating the published article"
+  "purpose": "complete existing same-source Video Overview and 9:16 Short without regenerating the published article",
+  "completed": true,
+  "completed_at": "2026-09-27T19:18:13Z",
+  "article_url": "https://kesher.saharoni.com/blog/siblings-fairness-vs-equality",
+  "overview_youtube_url": "https://youtu.be/OPwpR3ReV0k",
+  "short_youtube_url": "https://youtu.be/TKAwQMzvP6U"
 }
