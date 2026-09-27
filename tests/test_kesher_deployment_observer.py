@@ -25,6 +25,42 @@ class DeploymentObservationTests(unittest.TestCase):
         self.metadata['digest'] = 'sha256:'+'e'*64
         self.assertNotEqual(self.observe()['status'], 'verified')
 
+    def test_contradictory_canonical_skip_or_url_cannot_verify_deployment(self):
+        self.publish()
+        for change in ({'is_skipped': True}, {'url': 'https://other.kesher-website.pages.dev'}):
+            self.pages.canonical = {**self.pages.rows[0], **change}
+            with self.subTest(change=change):
+                self.assertNotEqual(self.observe()['status'], 'verified')
+
+    def test_pending_observation_commands_do_not_consume_second_creation(self):
+        from scripts.kesher_runtime.controller import reconcile
+        from scripts.kesher_runtime.worker import WorkerContext
+        from tests.test_kesher_autonomous_controller import observed, publication, later
+        create = self.pages.create
+        def active(*args):
+            create(*args)
+            self.pages.rows[-1]['status'] = 'active'
+        self.pages.create = active
+        self.assertEqual(self.publish()['failure_class'], 'DEPLOY_PENDING')
+        for index in (1, 2):
+            self.context.checkpoint('execution_result', {'status': 'waiting', 'failure_class': 'DEPLOY_PENDING'}, phase='STARTED')
+            self.context.finish()
+            when = later(index*4000)
+            if index == 2:
+                self.pages.rows[0]['status'] = 'failure'
+            entry = publication(overview='verified', short='verified')
+            entry['article'] = self.observe()
+            loaded = self.context.store.load()
+            result = reconcile(loaded.state, observed(entry, now=when), now=when)
+            self.assertIsNotNone(result.command_id, 'Pending observation is not a Pages creation attempt')
+            self.context.store.save(loaded, result.state)
+            self.context = WorkerContext(self.context.store, result.command_id, f'{123+index}/1', self.context.target,
+                                         code_sha=CODE, now=lambda when=when: when)
+            self.context.claim()
+            self.pages.context = self.context
+            self.publish()
+        self.assertEqual(self.pages.calls.count('create'), 2)
+
     def test_worker_failure_after_accepted_create_does_not_hide_actual_deployment(self):
         self.publish()
         state = self.server.document

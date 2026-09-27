@@ -16,6 +16,21 @@ from .worker import public_evidence
 VOLATILE = {'updated_at', 'last_polled_at', 'large_media_pruned_at'}
 BUDGET_FIELDS = ('attempt_count', 'same_failure_streak', 'failure_count_by_type', 'attempts',
                  'deploy_attempts', 'resume_dispatches', 'watchdog')
+STAGE_IDS = ('item_id', 'source_id', 'task_id', 'artifact_id', 'youtube_id', 'provider_id',
+             'run_id', 'processed_run_id', 'adopted_from_long_item_id')
+
+
+def _stage_claim(stage: dict) -> dict:
+    return {key: copy.deepcopy(stage[key]) for key in (*STAGE_IDS, *BUDGET_FIELDS, 'status') if key in stage}
+
+
+def _unresolved_record(record: dict) -> dict:
+    article = record.get('article') or {}
+    return {'legacy_record_sha256': digest(record), 'slot': article.get('published_date') or record.get('cycle'),
+            'article': {key: copy.deepcopy(article[key]) for key in
+                        ('slug', 'published_date', 'quality_content_sha256', 'pr_number', 'run_id', 'provider_id', 'status')
+                        if key in article},
+            'stages': {name: _stage_claim(record.get(name) or {}) for name in ('long_video', 'short')}}
 
 
 def _identity(source: dict) -> SourceIdentity:
@@ -31,7 +46,8 @@ def prepare_migration(*, controller: dict, controller_sha: str, main_sha: str,
     state = new_state()
     migration = state['migration']
     migration.update(status='prepared', controller_sha256=digest(controller), controller_blob_sha=controller_sha,
-        main_sha=main_sha, prepared_at=now, observed_youtube_ids={}, legacy_stage_budgets={}, artifacts=[])
+        main_sha=main_sha, prepared_at=now, observed_youtube_ids={}, legacy_stage_budgets={}, artifacts=[],
+        legacy_stage_claims={}, unresolved_controller_records=[])
     authoritative, source_origins = {}, {}
     for source in sources:
         identity = _identity(source)
@@ -57,34 +73,70 @@ def prepare_migration(*, controller: dict, controller_sha: str, main_sha: str,
         source_origins[identity.key]['path'] = 'src/data/posts.json'
     migration['source_git_origins'] = copy.deepcopy(source_origins)
     expected_items = {}
-    records = [controller, *(controller.get('backlog') or [])]
-    for record in records:
+    records = [(controller, None), *((record, None) for record in (controller.get('backlog') or []))]
+    targeted = controller.get('targeted_media_recovery')
+    if targeted is not None:
+        if not isinstance(targeted, dict):
+            raise StateInvalid('Malformed targeted media recovery claim')
+        # Targeted recovery bypasses the daily article cycle. Its root media
+        # belongs only to the independently matched full source, never the
+        # unrelated in-progress daily article PR or the current cycle date.
+        daily = copy.deepcopy(controller)
+        for name in ('long_video', 'short', 'media'):
+            daily.pop(name, None)
+        records[0] = (daily, None)
+        source_claim = {name: targeted.get(name) for name in ('slug', 'content_sha256')}
+        matches = [source for source in authoritative.values()
+                   if source['slug'] == source_claim['slug'] and source['content_sha256'] == source_claim['content_sha256']]
+        if len(matches) != 1:
+            unresolved = _unresolved_record(controller)
+            unresolved.update(failure_class='LEGACY_TARGETED_SOURCE_UNRESOLVED', source_claim=source_claim)
+            state['quarantine'].append(unresolved)
+            for kind, name in [('overview', 'long_video'), ('short', 'short')]:
+                stage = controller.get(name) or {}
+                if stage.get('youtube_id'):
+                    migration['observed_youtube_ids'].setdefault(stage['youtube_id'], []).append({
+                        'origin': 'controller', 'source_claim': source_claim, 'kind': kind, 'item_id': stage.get('item_id')})
+        else:
+            source = matches[0]
+            media_record = {name: copy.deepcopy(controller.get(name) or {}) for name in ('long_video', 'short')}
+            media_record['article'] = {'slug': source['slug'], 'published_date': source['date'],
+                                       'quality_content_sha256': source['content_sha256']}
+            records.append((media_record, source))
+    for record, exact_source in records:
         article = record.get('article') or {}
         slot = article.get('published_date') or record.get('cycle')
         slug = article.get('slug')
         matches = [(key, source) for key, source in current_sources.items() if source['date'] == slot and source['slug'] == slug]
-        if not matches:
-            if slug:
+        if not matches and exact_source is None:
+            unresolved = _unresolved_record(record)
+            if article or any(unresolved['stages'].values()):
+                migration['unresolved_controller_records'].append(unresolved)
+            if slug or any(any(stage.get(field) for field in STAGE_IDS) for stage in unresolved['stages'].values()):
                 state['quarantine'].append({'failure_class': 'LEGACY_SOURCE_UNRESOLVED', 'slot': slot, 'slug': slug,
-                                            'legacy_record_sha256': digest(record)})
+                                            **unresolved})
             continue
-        if len(matches) != 1:
+        if len(matches) > 1:
             raise StateInvalid('Ambiguous authoritative migration slot/source')
-        key, source = matches[0]; identity = _identity(source)
-        active = state['slots'].get(identity.slot, {}).get('source_key')
-        if active and active != identity.key:
-            raise StateInvalid('Legacy records disagree about the adopted daily article')
-        state = bind_source(state, identity, now=now, previous_source_key=active)
-        migration = state['migration']
-        state['slots'][identity.slot]['complete'] = False
+        source = matches[0][1] if matches else exact_source
+        identity = _identity(source)
+        if matches:
+            active = state['slots'].get(identity.slot, {}).get('source_key')
+            if active and active != identity.key:
+                raise StateInvalid('Legacy records disagree about the adopted daily article')
+            state = bind_source(state, identity, now=now, previous_source_key=active)
+            migration = state['migration']
+            state['slots'][identity.slot]['complete'] = False
         quality_hash = article.get('quality_content_sha256') or identity.content_sha256
         require_sha(quality_hash)
         claimed_source = SourceIdentity(identity.slot, identity.slug, quality_hash)
         media = record.get('media') or {}
         for kind, legacy_name in [('overview', 'long_video'), ('short', 'short')]:
             stage = record.get(legacy_name) or media.get(legacy_name) or media.get(kind) or {}
-            target = MediaIdentity(identity, kind)
+            target = MediaIdentity(claimed_source, kind)
             migration['legacy_stage_budgets'][target.key] = {name: copy.deepcopy(stage[name]) for name in BUDGET_FIELDS if name in stage}
+            if any(stage.get(name) for name in STAGE_IDS):
+                migration['legacy_stage_claims'].setdefault(target.key, []).append({'target': target.to_dict(), **_stage_claim(stage)})
             if stage.get('item_id'):
                 expected = MediaIdentity(claimed_source, kind).to_dict()
                 if stage['item_id'] in expected_items and expected_items[stage['item_id']] != expected:
@@ -176,6 +228,17 @@ def prepare_migration(*, controller: dict, controller_sha: str, main_sha: str,
             'controller_blob_sha': controller_sha, 'verified_source_sha256': identity.content_sha256}}
         evidence['legacy_import']['source_git_origin'] = source_origins[identity.key]
         state['items'][key]['receipts']['legacy:' + digest(evidence)] = evidence
+    # A controller-only provider/upload claim is not permission to start anew.
+    # Even an otherwise valid archive cannot hide a conflicting remote identity.
+    for key, claims in migration['legacy_stage_claims'].items():
+        receipts = state['items'].get(key, {}).get('receipts', {}).values()
+        baselines = [row['item'] for row in receipts if row.get('legacy_import')]
+        for claim in claims:
+            ids = {('id' if name == 'item_id' else name): claim[name]
+                   for name in ('item_id', 'source_id', 'task_id', 'artifact_id', 'youtube_id') if claim.get(name)}
+            if not baselines or not any(all(item.get(name) == value for name, value in ids.items()) for item in baselines):
+                state['quarantine'].append({'failure_class': 'LEGACY_STAGE_EVIDENCE_UNRESOLVED',
+                                            'target': claim['target'], 'claim_sha256': digest(claim)})
     state['audit'].append({'at': now, 'event': 'legacy_migration_prepared', 'controller_blob_sha': controller_sha,
                            'public_completion_inferred': False})
     validate_state(state)

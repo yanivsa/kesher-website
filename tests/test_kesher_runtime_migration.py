@@ -20,6 +20,68 @@ def inputs():
 
 
 class RuntimeMigrationTests(unittest.TestCase):
+    def test_targeted_recovery_uses_exact_git_publication_date_and_preserves_unbound_daily_pr(self):
+        args, params = inputs()
+        params['controller'].update(cycle='2026-09-27', article={'status': 'running', 'pr_number': 944},
+            targeted_media_recovery={'slug': args['source']['slug'],
+                                     'content_sha256': args['source']['content_sha256']})
+        state = prepare_migration(**params)
+        self.assertEqual(state['slots'][args['source']['date']]['source_key'], args['identity'].source.key)
+        self.assertNotIn('2026-09-27', state['slots'])
+        claims = state['migration']['observed_youtube_ids'][args['item']['youtube_id']]
+        self.assertTrue(any(row.get('origin') == 'controller' and row['target'] == args['identity'].to_dict()
+                            for row in claims))
+        self.assertEqual(state['migration']['unresolved_controller_records'][0]['article']['pr_number'], 944)
+        self.assertEqual(snapshots(state, args['identity'])[0]['item']['youtube_id'], args['item']['youtube_id'])
+
+    def test_targeted_missing_git_identity_keeps_identifiers_quarantined_without_inventing_date(self):
+        args, params = inputs()
+        params['controller'].update(article={}, targeted_media_recovery={
+            'slug': args['source']['slug'], 'content_sha256': 'd' * 64})
+        state = prepare_migration(**params)
+        self.assertEqual(state['slots'], {})
+        unresolved = [row for row in state['quarantine'] if row['failure_class'] == 'LEGACY_TARGETED_SOURCE_UNRESOLVED']
+        self.assertEqual(len(unresolved), 1)
+        self.assertEqual(unresolved[0]['source_claim']['content_sha256'], 'd' * 64)
+        self.assertEqual(unresolved[0]['stages']['short']['youtube_id'], args['item']['youtube_id'])
+        self.assertTrue(any(row.get('source_claim') for row in
+                            state['migration']['observed_youtube_ids'][args['item']['youtube_id']]))
+
+    def test_missing_archive_for_controller_provider_claim_blocks_new_generation(self):
+        args, params = inputs()
+        params['controller']['long_video'] = {'source_id': 'existing-provider-source',
+                                              'artifact_id': 'existing-provider-artifact', 'status': 'running'}
+        state = prepare_migration(**params)
+        target = MediaIdentity(args['identity'].source, 'overview')
+        claim = state['migration']['legacy_stage_claims'][target.key][0]
+        self.assertEqual(claim['artifact_id'], 'existing-provider-artifact')
+        self.assertTrue(any(row['failure_class'] == 'LEGACY_STAGE_EVIDENCE_UNRESOLVED' and
+                            row.get('target') == target.to_dict() for row in state['quarantine']))
+
+    def test_controller_provider_disagreement_cannot_be_hidden_by_valid_archive(self):
+        args, params = inputs()
+        params['controller']['short']['artifact_id'] = 'different-existing-artifact'
+        state = prepare_migration(**params)
+        self.assertTrue(any(row['failure_class'] == 'LEGACY_STAGE_EVIDENCE_UNRESOLVED' and
+                            row.get('target') == args['identity'].to_dict() for row in state['quarantine']))
+
+    def test_unresolved_record_preserves_declared_publication_date_over_cycle_for_quarantine(self):
+        from unittest.mock import Mock
+        from scripts.kesher_runtime.media_observer import observe_media
+        from scripts.kesher_runtime.state import bind_source
+        for cycle in ('2026-09-27', None):
+            with self.subTest(cycle=cycle):
+                args, params = inputs()
+                params['controller']['cycle'] = cycle
+                params.update(sources=[], artifacts=[])
+                state = prepare_migration(**params)
+                quarantine = next(row for row in state['quarantine'] if row['failure_class'] == 'LEGACY_SOURCE_UNRESOLVED')
+                self.assertEqual(quarantine['slot'], args['source']['date'])
+                state = bind_source(state, args['identity'].source, now=NOW)
+                result = observe_media(state, args['identity'], args['source'],
+                    inventory={**args['inventory'], 'videos': []}, now=NOW, audit=Mock())
+                self.assertEqual(result.get('failure_class'), 'LEGACY_EVIDENCE_UNRESOLVED')
+
     def test_exact_historical_git_source_preserves_old_upload_without_replacing_current_binding(self):
         from scripts.kesher_runtime.provider import text_hash
         from scripts.kesher_runtime.identity import SourceIdentity

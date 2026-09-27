@@ -119,7 +119,7 @@ def observe_request(pages, request, inventory=None):
     canonical = pages.project()['canonical_deployment']
     if not canonical or canonical['id'] != row['id']:
         return {**identity, 'status': 'superseded', 'failure_class': 'DEPLOY_SUPERSEDED'}
-    if any(canonical.get(key) != row[key] for key in ('commit_sha', 'marker', 'environment', 'branch', 'stage', 'status')):
+    if canonical != row:
         raise StateInvalid('DEPLOY_OBSERVATION_INVALID')
     return {**identity, 'status': 'deployed'}
 

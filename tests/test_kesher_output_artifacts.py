@@ -11,7 +11,7 @@ from scripts import kesher_daily_pipeline as core
 from scripts.kesher_runtime.identity import canonical_json
 from scripts.kesher_runtime.media_state import CanonicalMediaState
 from scripts.kesher_runtime.output_artifacts import (artifact_name, complete_bundle, prepare_bundle,
-    recover_bundle, require_bundle, restore_bundle, sha256_file, download_actions_artifact)
+    recover_bundle, require_bundle, restore_bundle, sha256_file, download_actions_artifact, initialize_bundle)
 from scripts.kesher_runtime.state import StateInvalid, plan_command
 from scripts.kesher_runtime.media_worker import run_media
 from scripts.kesher_runtime.worker import WorkerContext
@@ -37,18 +37,35 @@ class OutputArtifactTests(unittest.TestCase):
         self.bundle = Path(self.temp.name) / 'bundle'
         self.archive = Path(self.temp.name) / 'archive.zip'
         self.metadata = {}
-        self.run = {'id': 123, 'event': 'workflow_dispatch', 'display_title': 'kesher-command:' + self.command_id,
+        self.run = {'id': 123, 'run_attempt': 1, 'event': 'workflow_dispatch',
+                    'path': '.github/workflows/kesher-media-worker.yml',
+                    'status': 'in_progress', 'conclusion': None,
+                    'display_title': 'kesher-command:' + self.command_id,
                     'head_sha': self.worker.code_sha, 'head_branch': 'main'}
         original = self.server.request
         def api(method, path, body=None, **kwargs):
             if method == 'GET' and path.endswith('/artifacts/71'):
                 return copy.deepcopy(self.metadata)
-            if method == 'GET' and path.endswith('/runs/123'):
+            if method == 'GET' and (path.endswith('/runs/123') or path.endswith('/runs/123/attempts/1')):
                 return copy.deepcopy(self.run)
             if method == 'GET' and '/runs/123/artifacts?' in path:
-                return {'artifacts': [copy.deepcopy(self.metadata)]}
+                rows = [copy.deepcopy(self.metadata)] if self.metadata else []
+                return {'artifacts': rows, 'total_count': len(rows)}
             return original(method, path, body, **kwargs)
         self.server.request = api
+
+    def replacement(self, run='456/1'):
+        self.worker.finish(failure={'class': 'WORKER_FAILED'})
+        loaded = self.worker.store.load()
+        ordinal = 1 + max((row['ordinal'] for row in loaded.state['commands'].values()
+                           if row['operation'] == 'reconcile'), default=0)
+        proposed, command_id = plan_command(loaded.state, self.worker.target, 'reconcile', ordinal,
+            {'generation_attempt': '1'}, code_sha=self.worker.code_sha, now=self.worker.now())
+        self.worker.store.save(loaded, proposed)
+        self.worker = WorkerContext(self.worker.store, command_id, run, self.worker.target,
+                                   code_sha=self.worker.code_sha, now=self.worker.now)
+        self.worker.claim()
+        return self.worker
 
     def upload(self):
         result = prepare_bundle(self.worker, self.item, self.root, self.bundle)
@@ -121,6 +138,108 @@ class OutputArtifactTests(unittest.TestCase):
         receipt = recover_bundle(self.worker, download=self.download)
         self.assertEqual(receipt['artifact_id'], 71)
         self.assertEqual(len(self.server.document['commands'][self.command_id]['effects']), 1)
+
+    def test_stopped_producer_without_archive_allows_only_bounded_nonpublic_repackaging(self):
+        first = prepare_bundle(self.worker, self.item, self.root, self.bundle)
+        self.run.update(status='completed', conclusion='cancelled')
+        self.replacement()
+        uncertain = prepare_bundle(self.worker, self.item, self.root, self.bundle)
+        self.assertEqual(uncertain['status'], 'uncertain')
+        self.assertIsNone(recover_bundle(self.worker, download=self.download))
+        retired = self.worker.store.load().state['commands'][self.worker.command_id]['effects']['output_artifact']['receipt']
+        self.assertIsNotNone(retired, 'Stopped producer with complete empty inventory must release archive recovery')
+        self.assertEqual(retired['status'], 'unavailable')
+        with self.assertRaisesRegex(StateInvalid, 'OUTPUT_NOT_DURABLE'):
+            require_bundle(self.worker, self.item, self.root)
+        self.replacement('457/1')
+        second = prepare_bundle(self.worker, self.item, self.root, Path(self.temp.name)/'replacement-bundle')
+        self.assertEqual(second['status'], 'upload')
+        self.assertNotEqual(second['name'], first['name'])
+        self.assertEqual((Path(self.temp.name)/'replacement-bundle/files/final.mp4').read_bytes(), b'rendered-output')
+
+    def test_archive_producer_attempt_and_workflow_are_not_interchangeable(self):
+        self.upload()
+        original = copy.deepcopy(self.run)
+        for changed in ({'run_attempt': 2}, {'path': '.github/workflows/untrusted.yml'}):
+            self.run = {**original, **changed}
+            with self.subTest(changed=changed), self.assertRaises(StateInvalid):
+                complete_bundle(self.worker, 71, download=self.download)
+
+    def test_live_producer_absence_does_not_release_or_rebuild_its_archive(self):
+        prepare_bundle(self.worker, self.item, self.root, self.bundle)
+        self.replacement()
+        shutil.rmtree(self.root)
+        result = initialize_bundle(self.worker, self.item, self.root, download=self.download)
+        self.assertEqual(result['status'], 'waiting')
+        command = self.worker.store.load().state['commands'][self.worker.command_id]
+        self.assertIsNone(command['effects']['output_artifact']['receipt'])
+        self.assertEqual(command['receipts']['execution_result']['evidence']['failure_class'], 'OUTPUT_ARCHIVE_PENDING')
+        self.assertFalse(self.root.exists())
+
+    def test_new_runner_recovers_lost_archive_receipt_before_any_rebuild(self):
+        self.upload()
+        self.run.update(status='completed', conclusion='failure')
+        self.replacement()
+        shutil.rmtree(self.root)
+        result = initialize_bundle(self.worker, self.item, self.root, download=self.download)
+        self.assertEqual(result['status'], 'restored')
+        self.assertEqual(require_bundle(self.worker, self.item, self.root)['artifact_id'], 71)
+        self.assertEqual((self.root/'final.mp4').read_bytes(), b'rendered-output')
+        self.assertEqual(len({effect['request_sha256'] for row in self.worker.store.load().state['commands'].values()
+                              if (effect := row['effects'].get('output_artifact'))}), 1)
+
+    def test_incomplete_inventory_never_authorizes_archive_replacement(self):
+        prepare_bundle(self.worker, self.item, self.root, self.bundle)
+        self.run.update(status='completed', conclusion='failure')
+        self.replacement()
+        original = self.server.request
+        def incomplete(method, path, *args, **kwargs):
+            if '/artifacts?' in path:
+                return {'artifacts': [], 'total_count': 1}
+            return original(method, path, *args, **kwargs)
+        self.server.request = incomplete
+        with self.assertRaisesRegex(StateInvalid, 'inventory'):
+            initialize_bundle(self.worker, self.item, self.root, download=self.download)
+        self.assertIsNone(self.worker.store.load().state['commands'][self.worker.command_id]['effects']['output_artifact']['receipt'])
+
+    def test_archive_replacement_budget_survives_commands_and_changed_render_bytes(self):
+        original = self.server.request
+        producers = {}
+        def api(method, path, *args, **kwargs):
+            if '/artifacts?' in path:
+                return {'artifacts': [], 'total_count': 0}
+            if path in producers:
+                return copy.deepcopy(producers[path])
+            return original(method, path, *args, **kwargs)
+        self.server.request = api
+        for index in range(3):
+            result = prepare_bundle(self.worker, self.item, self.root, Path(self.temp.name)/f'bundle-{index}')
+            self.assertEqual(result['status'], 'upload')
+            run_id, attempt = self.worker.run_id.split('/')
+            producers[f'/repos/owner/repo/actions/runs/{run_id}/attempts/{attempt}'] = {
+                **self.run, 'id': int(run_id), 'run_attempt': int(attempt),
+                'display_title': 'kesher-command:' + self.worker.command_id,
+                'status': 'completed', 'conclusion': 'failure'}
+            self.replacement(f'{500+index*2}/1')
+            self.assertEqual(initialize_bundle(self.worker, self.item, self.root, download=self.download)['status'], 'waiting')
+            self.replacement(f'{501+index*2}/1')
+            # Non-deterministic rerenders cannot reset a non-public archive budget.
+            (self.root/'final.mp4').write_bytes(f'render-{index}'.encode())
+            self.item['final_sha256'] = sha256_file(self.root/'final.mp4')
+        with self.assertRaisesRegex(StateInvalid, 'OUTPUT_ARCHIVE_ATTEMPTS_EXHAUSTED'):
+            prepare_bundle(self.worker, self.item, self.root, Path(self.temp.name)/'fourth')
+        self.assertFalse((Path(self.temp.name)/'fourth').exists())
+        with self.assertRaisesRegex(StateInvalid, 'OUTPUT_ARCHIVE_ATTEMPTS_EXHAUSTED'):
+            initialize_bundle(self.worker, self.item, self.root, download=self.download)
+
+    def test_restore_rechecks_complete_service_identity_after_receipt(self):
+        self.upload()
+        complete_bundle(self.worker, 71, download=self.download)
+        self.metadata['name'] = 'wrong-artifact'
+        shutil.rmtree(self.root)
+        with self.assertRaises(StateInvalid):
+            restore_bundle(self.worker, self.item, self.root, download=self.download)
+        self.assertFalse(self.root.exists())
 
     def test_next_recovery_command_restores_prior_producer_without_a_new_archive(self):
         self.upload()

@@ -52,6 +52,36 @@ def canonical_state(args):
 
 
 class MediaObserverTests(unittest.TestCase):
+    def test_archive_wait_and_retirement_are_observed_separately_from_provider_generation(self):
+        from scripts.kesher_runtime.output_artifacts import descriptor
+        args = fixture()
+        args['item'].pop('youtube_id')
+        state = canonical_state(args)
+        request = {'run_id': '123/1', 'output': descriptor(args['identity'], args['item'])}
+        effect = {'request': request, 'request_sha256': digest(request), 'receipt': None}
+        state['commands']['short']['effects']['output_artifact'] = effect
+        inventory = {**args['inventory'], 'videos': []}
+        result = observe_media(state, args['identity'], args['source'], inventory=inventory, now=NOW, audit=Mock())
+        self.assertEqual(result['failure_class'], 'OUTPUT_ARCHIVE_PENDING')
+        effect['receipt'] = {'status': 'unavailable', 'producer_run': '123/1', 'request_sha256': digest(request)}
+        result = observe_media(state, args['identity'], args['source'], inventory=inventory, now=NOW, audit=Mock())
+        self.assertEqual(result['failure_class'], 'OUTPUT_ARCHIVE_REBUILD')
+
+    def test_changed_render_cannot_hide_exhausted_archive_attempts(self):
+        from scripts.kesher_runtime.output_artifacts import descriptor
+        args = fixture()
+        args['item'].pop('youtube_id')
+        state = canonical_state(args)
+        for index in range(3):
+            output = descriptor(args['identity'], args['item'])
+            output['files']['final.mp4'] = str(index)*64
+            request = {'run_id': f'{123+index}/1', 'output': output}
+            state['commands'][f'archive{index}'] = {'target': args['identity'].to_dict(), 'receipts': {},
+                'effects': {'output_artifact': {'request': request, 'request_sha256': digest(request),
+                    'receipt': {'status': 'unavailable', 'producer_run': request['run_id'], 'request_sha256': digest(request)}}}}
+        result = observe_media(state, args['identity'], args['source'], inventory={**args['inventory'], 'videos': []}, now=NOW, audit=Mock())
+        self.assertEqual(result['failure_class'], 'OUTPUT_ARCHIVE_ATTEMPTS_EXHAUSTED')
+
     def test_unresolved_legacy_upload_or_pending_capability_cannot_become_absence(self):
         args = fixture(); state = bind_source(new_state(), args['identity'].source, now=NOW)
         inventory = {**args['inventory'], 'videos': []}
@@ -62,6 +92,28 @@ class MediaObserverTests(unittest.TestCase):
         state['quarantine'] = [{'target': args['identity'].to_dict(), 'failure_class': 'LEGACY_UPLOAD_CAPABILITY_REQUIRES_SEALING'}]
         result = observe_media(state, args['identity'], args['source'], inventory=inventory, now=NOW, audit=Mock())
         self.assertEqual(result['failure_class'], 'LEGACY_EVIDENCE_UNRESOLVED')
+
+    def test_unresolved_targeted_source_claim_blocks_its_source_without_guessing_a_date(self):
+        args = fixture(); state = bind_source(new_state(), args['identity'].source, now=NOW)
+        inventory = {**args['inventory'], 'videos': []}
+        state['quarantine'] = [{'failure_class': 'LEGACY_TARGETED_SOURCE_UNRESOLVED',
+            'source_claim': {'slug': args['source']['slug'], 'content_sha256': args['source']['content_sha256']}}]
+        result = observe_media(state, args['identity'], args['source'], inventory=inventory, now=NOW, audit=Mock())
+        self.assertEqual(result.get('failure_class'), 'LEGACY_EVIDENCE_UNRESOLVED')
+        state['quarantine'][0]['source_claim']['content_sha256'] = 'f' * 64
+        result = observe_media(state, args['identity'], args['source'], inventory=inventory, now=NOW, audit=Mock())
+        self.assertEqual(result['status'], 'absent')
+
+    def test_unbound_legacy_stage_claim_blocks_only_its_known_slot_and_slug(self):
+        args = fixture(); state = bind_source(new_state(), args['identity'].source, now=NOW)
+        inventory = {**args['inventory'], 'videos': []}
+        state['quarantine'] = [{'failure_class': 'LEGACY_SOURCE_UNRESOLVED',
+            'slot': args['source']['date'], 'slug': None, 'stages': {'short': {'artifact_id': 'existing'}}}]
+        result = observe_media(state, args['identity'], args['source'], inventory=inventory, now=NOW, audit=Mock())
+        self.assertEqual(result.get('failure_class'), 'LEGACY_EVIDENCE_UNRESOLVED')
+        state['quarantine'][0]['slot'] = '2026-01-01'
+        result = observe_media(state, args['identity'], args['source'], inventory=inventory, now=NOW, audit=Mock())
+        self.assertEqual(result['status'], 'absent')
 
     def test_absence_requires_fresh_complete_inventory_before_authorizing_creation(self):
         args = fixture(); state = bind_source(new_state(), args['identity'].source, now=NOW)

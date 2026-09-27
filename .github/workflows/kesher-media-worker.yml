@@ -63,11 +63,12 @@ jobs:
           node -e 'for (const name of ["@ffmpeg-installer/ffmpeg", "@ffprobe-installer/ffprobe"]) require("fs").appendFileSync(process.env.GITHUB_PATH, require("path").dirname(require(name).path) + "\n")'
 
       - name: Restore only the exact persisted output artifact
+        id: restore
         if: steps.claim.outputs.execute == 'true'
         run: python -m scripts.kesher_runtime.output_artifacts restore "$COMMAND_ID"
 
       - name: Prepare or reconcile exact provider output
-        if: steps.claim.outputs.execute == 'true'
+        if: steps.claim.outputs.execute == 'true' && steps.restore.outputs.status != 'waiting'
         id: prepare
         env:
           NOTEBOOKLM_AUTH_JSON: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}

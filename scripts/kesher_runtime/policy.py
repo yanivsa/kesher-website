@@ -22,6 +22,8 @@ RULES = {
     'WORKER_RECEIPT_MISSING': Rule('reconcile', 2),
     'PROVIDER_PENDING': Rule('reconcile', 48, (300, 900, 1800)),
     'PUBLIC_PROCESSING_PENDING': Rule('reconcile', 48, (300, 900, 1800)),
+    'OUTPUT_ARCHIVE_PENDING': Rule('reconcile', 48, (300, 900, 1800)),
+    'OUTPUT_ARCHIVE_REBUILD': Rule('reconcile', 3),
     'JULES_PENDING': Rule('reconcile', 48, (300, 900, 1800)),
     'JULES_OUTPUT_PENDING': Rule('reconcile', 3),
     'JULES_CREATE_UNCERTAIN': Rule('reconcile', 48, (300, 900, 1800)),

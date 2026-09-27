@@ -172,7 +172,16 @@ def _eligible(state: dict, target: Identity, observation: dict, tracker: dict, *
     if failure_class:
         rule = RULES.get(failure_class, Rule(None, 0))
         operation = default_operation if rule.operation == 'reconcile' and not isinstance(target, MediaIdentity) else rule.operation
-        attempts = sum(1 for row in commands if row['operation'] == operation and row['outcome'] != 'cancelled')
+        archive_recovery = isinstance(target, MediaIdentity) and failure_class in {'OUTPUT_ARCHIVE_PENDING', 'OUTPUT_ARCHIVE_REBUILD'}
+        attempts = sum(1 for row in commands if row['operation'] == operation and row['outcome'] != 'cancelled'
+                       and (not archive_recovery or row['inputs'].get('recovery_class') == failure_class))
+        if isinstance(target, SourceIdentity) and failure_class == 'DEPLOY_FAILED':
+            from .article_deploy import deployment_intents
+            attempts = sum(row['code_sha'] == inputs['deploy_sha'] for row in deployment_intents(state))
+        elif isinstance(target, SourceIdentity) and failure_class == 'DEPLOY_ARCHIVE_REBUILD':
+            from .deployment_artifact import effect_key
+            attempts = len({effect['request_sha256'] for row in commands
+                            if (effect := row['effects'].get(effect_key(inputs['deploy_sha'])))})
         if (rule.operation is None or attempts >= rule.attempts
                 or seconds(now, tracker['last_meaningful_progress_at']) >= rule.deadline_seconds):
             record_incident(state, target, default_operation, failure_class, now=now,
@@ -192,6 +201,8 @@ def _eligible(state: dict, target: Identity, observation: dict, tracker: dict, *
     if isinstance(target, MediaIdentity):
         history = snapshots(state, target)
         payload['generation_attempt'] = str(history[-1]['item'].get('fresh_generation_attempt', 1) if history else 1)
+        if failure_class in {'OUTPUT_ARCHIVE_PENDING', 'OUTPUT_ARCHIVE_REBUILD'}:
+            payload['recovery_class'] = failure_class
     return target, operation, payload
 
 

@@ -11,7 +11,7 @@ from scripts.kesher_article_contract import image_dimensions
 from .identity import MediaIdentity, digest, require_sha
 from .media_publication import MediaVerificationError, reject
 from .output_artifacts import (FILE_FIELDS, _check_archive, _validate_metadata, _verify_local,
-                               descriptor, local_file, sha256_file)
+                               _producer_run, artifact_effects, descriptor, local_file, sha256_file)
 from .provider import text_hash
 from .render_provenance import _audio_timing, _stream_hash
 
@@ -27,7 +27,7 @@ def verifier_fingerprint() -> str:
 
 
 def _unique_effect(state: dict, target: MediaIdentity, name: str) -> dict:
-    effects = [command['effects'][name] for command in state['commands'].values()
+    effects = artifact_effects(state, target) if name == 'output_artifact' else [command['effects'][name] for command in state['commands'].values()
                if command['target'] == target.to_dict() and name in command['effects']]
     requests = {digest(effect['request']) for effect in effects}
     receipts = {digest(effect['receipt']) for effect in effects if effect.get('receipt') is not None}
@@ -156,7 +156,7 @@ class ArchivedMediaAuditor:
         request, receipt = effect['request'], effect['receipt']
         api = f'/repos/{self.repo}/actions'
         metadata = self.github.request('GET', f"{api}/artifacts/{receipt['artifact_id']}")
-        run = self.github.request('GET', f"{api}/runs/{request['run_id'].split('/')[0]}")
+        run = _producer_run(self.github, self.repo, request)
         if _validate_metadata(request, metadata, run, receipt['artifact_id']) != receipt:
             reject('MEDIA_EVIDENCE_INVALID')
         with tempfile.TemporaryDirectory(prefix='kesher-independent-media-') as folder:

@@ -31,6 +31,8 @@ FILE_FIELDS = (
 )
 BINDINGS = ('id', 'type', 'notebook_id', 'source_id', 'task_id', 'artifact_id',
             'fresh_generation_attempt', 'render_input_sha256')
+WORKFLOW = '.github/workflows/kesher-media-worker.yml'
+TERMINAL_CONCLUSIONS = {'success', 'failure', 'cancelled', 'timed_out', 'action_required', 'skipped', 'neutral', 'stale'}
 
 
 def sha256_file(path: Path) -> str:
@@ -100,12 +102,29 @@ def _verify_local(root: Path, output: dict) -> dict:
     return sizes
 
 
+def artifact_effects(state: dict, target: MediaIdentity, *, include_retired=False) -> list[dict]:
+    effects = [effect for command in state['commands'].values()
+               if command['target'] == target.to_dict() and (effect := command['effects'].get('output_artifact'))]
+    groups = {}
+    for effect in effects:
+        groups.setdefault(effect['request_sha256'], []).append(effect)
+    retired = set()
+    for key, rows in groups.items():
+        receipts = {canonical_json(row['receipt']) for row in rows if row['receipt'] is not None}
+        if len(receipts) > 1:
+            raise StateInvalid('Conflicting immutable output artifact receipts')
+        for row in rows:
+            receipt = row['receipt'] or {}
+            if receipt.get('status') == 'unavailable':
+                if (receipt.get('request_sha256') != key or receipt.get('producer_run') != row['request']['run_id']):
+                    raise StateInvalid('OUTPUT_ARTIFACT_INVALID: retirement identity differs')
+                retired.add(key)
+    return effects if include_retired else [row for row in effects if row['request_sha256'] not in retired]
+
+
 def _effects(context: WorkerContext, output: dict) -> list[dict]:
-    matches = []
-    for command in context.store.load().state['commands'].values():
-        effect = command['effects'].get('output_artifact')
-        if command['target'] == context.target.to_dict() and effect and effect['request'].get('output') == output:
-            matches.append(effect)
+    matches = [effect for effect in artifact_effects(context.store.load().state, context.target)
+               if effect['request'].get('output') == output]
     # Reconciled commands may retain the same exact intent, never competing ones.
     unique = {effect['request_sha256']: effect for effect in matches}
     if len(unique) > 1:
@@ -114,6 +133,26 @@ def _effects(context: WorkerContext, output: dict) -> list[dict]:
     if len(receipts) > 1:
         raise StateInvalid('Conflicting immutable output artifact receipts')
     return matches
+
+
+def generation_archives(state: dict, target: MediaIdentity, item: dict, *, include_retired=False) -> list[dict]:
+    attempt = item.get('fresh_generation_attempt') or 1
+    return [row for row in artifact_effects(state, target, include_retired=include_retired)
+            if (row['request']['output']['bindings']['fresh_generation_attempt'] or 1) == attempt]
+
+
+def archive_recovery_failure(state: dict, target: MediaIdentity, item: dict) -> str | None:
+    """Generation-wide recovery state survives nondeterministic render hashes."""
+    output = descriptor(target, item)
+    active = generation_archives(state, target, item)
+    if active:
+        if any(row['request']['output'] != output for row in active):
+            return 'OUTPUT_ARCHIVE_INPUT_CHANGED'
+        return None if any(row['receipt'] for row in active) else 'OUTPUT_ARCHIVE_PENDING'
+    history = generation_archives(state, target, item, include_retired=True)
+    if len({row['request_sha256'] for row in history}) >= 3:
+        return 'OUTPUT_ARCHIVE_ATTEMPTS_EXHAUSTED'
+    return 'OUTPUT_ARCHIVE_REBUILD' if history else None
 
 
 def artifact_name(request: dict) -> str:
@@ -125,6 +164,14 @@ def prepare_bundle(context: WorkerContext, item: dict, root: Path, destination: 
     output = descriptor(context.target, item)
     sizes = _verify_local(root, output)
     prior = _effects(context, output)
+    current = context._owned(context.store.load().state)['effects'].get('output_artifact')
+    if current and (current['receipt'] or {}).get('status') == 'unavailable':
+        raise StateInvalid('OUTPUT_ARCHIVE_REBUILD: next command must own the replacement archive')
+    if not prior:
+        history = generation_archives(context.store.load().state, context.target, item, include_retired=True)
+        requests = {row['request_sha256'] for row in history}
+        if len(requests) >= 3:
+            raise StateInvalid('OUTPUT_ARCHIVE_ATTEMPTS_EXHAUSTED')
     request = prior[0]['request'] if prior else {
         'schema_version': 1, 'repository': context.store.repo, 'command_id': context.command_id,
         'run_id': context.run_id, 'code_sha': context.code_sha, 'output': output, 'sizes': sizes,
@@ -147,7 +194,25 @@ def prepare_bundle(context: WorkerContext, item: dict, root: Path, destination: 
     return {'status': 'upload', 'name': artifact_name(request)}
 
 
+def _validate_producer(request: dict, run: dict) -> None:
+    run_id, attempt = request['run_id'].split('/')
+    if (run.get('id') != int(run_id) or run.get('run_attempt') != int(attempt)
+            or run.get('head_sha') != request['code_sha'] or run.get('head_branch') != 'main'
+            or run.get('event') != 'workflow_dispatch'
+            or run.get('display_title') != 'kesher-command:' + request['command_id']
+            or run.get('path', '').split('@')[0] != WORKFLOW):
+        raise StateInvalid('OUTPUT_ARTIFACT_INVALID: original producer identity differs')
+
+
+def _producer_run(github, repo: str, request: dict) -> dict:
+    run_id, attempt = request['run_id'].split('/')
+    run = github.request('GET', f'/repos/{repo}/actions/runs/{run_id}/attempts/{attempt}')
+    _validate_producer(request, run)
+    return run
+
+
 def _validate_metadata(request: dict, metadata: dict, run: dict, artifact_id: int) -> dict:
+    _validate_producer(request, run)
     run_id, attempt = request['run_id'].split('/')
     owner = metadata.get('workflow_run') or {}
     checksum = metadata.get('digest', '')
@@ -209,7 +274,7 @@ def complete_bundle(context: WorkerContext, artifact_id: int, *, download) -> di
     github = context.store.github
     api = f'/repos/{context.store.repo}/actions'
     metadata = github.request('GET', f'{api}/artifacts/{artifact_id}')
-    run = github.request('GET', f"{api}/runs/{request['run_id'].split('/')[0]}")
+    run = _producer_run(github, context.store.repo, request)
     receipt = _validate_metadata(request, metadata, run, artifact_id)
     with tempfile.TemporaryDirectory(prefix='kesher-archive-check-') as folder:
         root = Path(folder)
@@ -228,21 +293,65 @@ def recover_bundle(context: WorkerContext, *, download) -> dict | None:
     if not effect:
         return None
     if effect['receipt']:
-        return effect['receipt']
+        return effect['receipt'] if effect['receipt'].get('status') != 'unavailable' else None
     request = effect['request']
     run = request['run_id'].split('/')[0]
-    matches = []
+    matches, seen, expected = [], set(), None
     for page in range(1, 101):
         data = context.store.github.request('GET', f'/repos/{context.store.repo}/actions/runs/{run}/artifacts?per_page=100&page={page}')
-        rows = data['artifacts']
-        matches.extend(row for row in rows if row.get('name') == artifact_name(request))
+        rows, total = data.get('artifacts'), data.get('total_count')
+        if (not isinstance(rows, list) or len(rows) > 100 or type(total) is not int or total < 0
+                or expected is not None and total != expected):
+            raise StateInvalid('OUTPUT_ARTIFACT_INVALID: inventory is incomplete')
+        expected = total
+        for row in rows:
+            key = row.get('id')
+            if type(key) is not int or key <= 0 or key in seen:
+                raise StateInvalid('OUTPUT_ARTIFACT_INVALID: duplicate or invalid inventory identity')
+            seen.add(key)
+            if row.get('name') == artifact_name(request):
+                matches.append(row)
         if len(rows) < 100:
+            if len(seen) != total:
+                raise StateInvalid('OUTPUT_ARTIFACT_INVALID: inventory count differs')
             break
     else:
         raise StateInvalid('Artifact inventory incomplete; do not guess')
     if len(matches) > 1:
         raise StateInvalid('Duplicate exact output artifacts')
-    return complete_bundle(context, matches[0]['id'], download=download) if matches else None
+    if matches:
+        return complete_bundle(context, matches[0]['id'], download=download)
+    producer = _producer_run(context.store.github, context.store.repo, request)
+    if (request['run_id'] != context.run_id and producer.get('status') == 'completed'
+            and producer.get('conclusion') in TERMINAL_CONCLUSIONS):
+        # Only retire non-public archival, never provider generation or a YouTube
+        # session. A delayed service archive cannot independently publish.
+        context.complete_effect('output_artifact', {'status': 'unavailable',
+            'producer_run': request['run_id'], 'request_sha256': digest(request)})
+    return None
+
+
+def initialize_bundle(context: WorkerContext, item: dict, root: Path, *, download) -> dict:
+    """Resolve archival before a fresh runner may regenerate derived local bytes."""
+    output = descriptor(context.target, item)
+    failure = archive_recovery_failure(context.store.load().state, context.target, item)
+    if failure in {'OUTPUT_ARCHIVE_ATTEMPTS_EXHAUSTED', 'OUTPUT_ARCHIVE_INPUT_CHANGED'}:
+        raise StateInvalid(failure)
+    current = context._owned(context.store.load().state)['effects'].get('output_artifact')
+    prior = _effects(context, output)
+    if not current and not prior:
+        return {'status': 'absent'}
+    if not current:
+        context.begin_effect('output_artifact', prior[0]['request'])
+    receipt = recover_bundle(context, download=download)
+    if receipt:
+        if not restore_bundle(context, item, root, download=download):
+            raise StateInvalid('OUTPUT_ARTIFACT_INVALID: recovered archive disappeared')
+        return {'status': 'restored'}
+    current = context._owned(context.store.load().state)['effects']['output_artifact']
+    failure = 'OUTPUT_ARCHIVE_REBUILD' if current['receipt'] else 'OUTPUT_ARCHIVE_PENDING'
+    context.checkpoint('execution_result', {'status': 'waiting', 'failure_class': failure}, phase='STARTED')
+    return {'status': 'waiting'}
 
 
 def require_bundle(context: WorkerContext, item: dict, root: Path) -> dict:
@@ -266,8 +375,8 @@ def restore_bundle(context: WorkerContext, item: dict, root: Path, *, download) 
     # Read the exact artifact again to detect expiry/replacement; never select latest.
     receipt = effect['receipt']
     metadata = context.store.github.request('GET', f"/repos/{context.store.repo}/actions/artifacts/{receipt['artifact_id']}")
-    if (metadata.get('expired') is not False or metadata.get('id') != receipt['artifact_id']
-            or metadata.get('digest') != 'sha256:' + receipt['archive_sha256']):
+    producer = _producer_run(context.store.github, context.store.repo, effect['request'])
+    if _validate_metadata(effect['request'], metadata, producer, receipt['artifact_id']) != receipt:
         raise StateInvalid('OUTPUT_ARTIFACT_UNAVAILABLE: preserve pending upload and reconcile')
     with tempfile.TemporaryDirectory(prefix='kesher-output-restore-') as folder:
         temp = Path(folder)
@@ -371,11 +480,7 @@ def main(argv=None) -> int:
         elif item and item.get('technical_verified') and not item.get('youtube_id'):
             # An upload can succeed while its subsequent canonical receipt write
             # is interrupted. Recover that exact producer before restoring files.
-            prior = _effects(context, descriptor(context.target, item))
-            if prior:
-                context.begin_effect('output_artifact', prior[0]['request'])
-                recover_bundle(context, download=download)
-                result['status'] = 'restored' if restore_bundle(context, item, root, download=download) else 'absent'
+            result = initialize_bundle(context, item, root, download=download)
             if result['status'] == 'absent' and item.get('upload_capability_sha256'):
                 raise StateInvalid('UPLOAD_BYTES_UNAVAILABLE: pending upload requires its exact archived bytes')
         if os.environ.get('GITHUB_OUTPUT'):

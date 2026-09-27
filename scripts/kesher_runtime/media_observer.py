@@ -5,6 +5,7 @@ from .identity import MediaIdentity, identity_from_dict
 from .media_publication import (MediaVerificationError, check_inventory, possible_uploads,
                                 reject, verify_media_publication)
 from .media_state import snapshots
+from .output_artifacts import archive_recovery_failure
 from .verification import YOUTUBE_CHANNEL_ID
 
 
@@ -74,6 +75,17 @@ INVALID_PUBLISHED = {'MEDIA_EVIDENCE_INVALID', 'MEDIA_LINEAGE_INVALID', 'REMOTE_
                      'PROVIDER_IDENTITY_MISMATCH', 'SOURCE_IDENTITY_MISMATCH'}
 
 
+def _quarantined_claim(row: dict, target: MediaIdentity) -> bool:
+    if row.get('target') == target.to_dict():
+        return True
+    if row.get('failure_class') == 'LEGACY_TARGETED_SOURCE_UNRESOLVED':
+        claim = row.get('source_claim') or {}
+        return claim.get('slug') == target.source.slug and claim.get('content_sha256') == target.source.content_sha256
+    if row.get('failure_class') == 'LEGACY_SOURCE_UNRESOLVED':
+        return row.get('slot') == target.slot and row.get('slug') in {None, target.source.slug}
+    return False
+
+
 def observe_media(state: dict, target: MediaIdentity, source: dict, *, inventory: dict | None,
                   now: str, audit) -> dict:
     item, technical = None, None
@@ -86,7 +98,7 @@ def observe_media(state: dict, target: MediaIdentity, source: dict, *, inventory
         item = history[-1]['item'] if history else None
         legacy_ids = {video_id for video_id, claims in state.get('migration', {}).get('observed_youtube_ids', {}).items()
                       if any(claim.get('target') == target.to_dict() for claim in claims)}
-        if (any(row.get('target') == target.to_dict() for row in state.get('quarantine', []))
+        if (any(_quarantined_claim(row, target) for row in state.get('quarantine', []))
                 or legacy_ids - ({item['youtube_id']} if item and item.get('youtube_id') else set())):
             reject('LEGACY_EVIDENCE_UNRESOLVED')
         candidates = possible_uploads(target, source, inventory, assignments, now=now)
@@ -95,6 +107,11 @@ def observe_media(state: dict, target: MediaIdentity, source: dict, *, inventory
                 reject('DUPLICATE_UPLOAD')  # Missing local binding never authorizes another insert.
             if item and item.get('status') == 'rejected':
                 return {'status': 'failed', 'failure_class': 'MEDIA_INVALID'}
+            if item and item.get('technical_verified'):
+                failure = archive_recovery_failure(state, target, item)
+                if failure:
+                    pending = failure in {'OUTPUT_ARCHIVE_PENDING', 'OUTPUT_ARCHIVE_REBUILD'}
+                    return {'status': 'pending' if pending else 'failed', 'failure_class': failure}
             return {'status': 'pending' if history else 'absent',
                     **({'failure_class': 'PROVIDER_PENDING'} if history else {})}
         remote = next((row for row in rows if row['id'] == item['youtube_id']), None)

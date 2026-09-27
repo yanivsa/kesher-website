@@ -38,6 +38,33 @@ def observed(*publications, now=NOW, current_slot=SOURCE.slot, runs=(), prs=()):
 
 
 class AutonomousControllerTests(unittest.TestCase):
+    def test_archive_recovery_does_not_spend_the_prior_provider_poll_budget(self):
+        state = bind_source(new_state(), SOURCE, now=NOW)
+        target = MediaIdentity(SOURCE, 'overview')
+        for ordinal in range(1, 6):
+            state, key = plan_command(state, target, 'reconcile', ordinal, {'generation_attempt': '1'}, code_sha=CODE, now=NOW)
+            state['commands'][key]['outcome'] = 'failed'
+            state['commands'][key]['failure'] = {'class': 'PROVIDER_PENDING'}
+        when = later(4000)
+        result = reconcile(state, observed(publication(overview='OUTPUT_ARCHIVE_REBUILD', short='verified'), now=when), now=when)
+        self.assertIsNotNone(result.command_id)
+        self.assertEqual(result.state['commands'][result.command_id]['inputs']['recovery_class'], 'OUTPUT_ARCHIVE_REBUILD')
+
+    def test_repeated_archive_rebuilds_end_in_one_persistent_incident(self):
+        state = new_state()
+        for index in range(7):
+            when = later(index*4000)
+            result = reconcile(state, observed(publication(overview='OUTPUT_ARCHIVE_REBUILD', short='verified'), now=when), now=when)
+            state = result.state
+            if result.command_id:
+                command = state['commands'][result.command_id]
+                command['outcome'] = 'failed'
+                command['failure'] = {'class': 'OUTPUT_ARCHIVE_REBUILD'}
+        self.assertEqual(len(state['commands']), 3)
+        self.assertEqual(len(state['incidents']), 1)
+        self.assertEqual(next(iter(state['incidents'].values()))['status'], 'repair_required')
+        self.assertFalse(state['slots'][SOURCE.slot]['complete'])
+
     def test_new_main_deployment_does_not_inherit_old_revision_budget_or_stall_clock(self):
         state = bind_source(new_state(), SOURCE, now=NOW)
         for ordinal in (1, 2):
