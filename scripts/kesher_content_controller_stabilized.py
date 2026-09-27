@@ -564,13 +564,16 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if blocker is not None:
             return state, blocker
 
+        if os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip():
+            direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
+            if direct_rebuild is not None:
+                return direct_rebuild
+            return self._tick_targeted_media_recovery(state)
+
         self._overview_evidence_preflight(state)
         direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
         if direct_rebuild is not None:
             return direct_rebuild
-
-        if os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip():
-            return self._tick_targeted_media_recovery(state)
 
         self.github.save_controller_state(state)
         return super().tick()
