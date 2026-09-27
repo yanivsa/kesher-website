@@ -12,6 +12,7 @@ from scripts.kesher_master_supervisor_live import (
     SupervisorStateStore,
     build_incident_packet,
     direct_dispatch_spec,
+    _dispatch_or_rerun_existing,
     incident_fingerprint,
     mark_command_acknowledged,
     mark_command_failed,
@@ -191,6 +192,52 @@ class MasterSupervisorLiveTests(unittest.TestCase):
         self.assertEqual(short_spec["workflow"], "kesher-short-v4.yml")
         self.assertEqual(short_spec["inputs"]["operation"], "derive")
         self.assertEqual(short_spec["inputs"]["derive_long_item_id"], "video-1")
+
+    def test_dispatch_capability_fallback_reruns_existing_failed_run_without_calling_it_permission_blocker(self) -> None:
+        class Api:
+            def __init__(self):
+                self.rerun_ids = []
+
+            def dispatch_workflow(self, workflow, inputs=None):
+                raise RuntimeError("unexpected non-SupervisorError")
+
+        # Guard the public helper with the exact SupervisorError shape emitted by GitHubApi.
+        class CapabilityApi:
+            def __init__(self):
+                self.rerun_ids = []
+
+            def dispatch_workflow(self, workflow, inputs=None):
+                from scripts.kesher_master_supervisor_live import SupervisorError
+                raise SupervisorError("GITHUB_HTTP_403: workflow dispatch endpoint unavailable to this execution surface")
+
+            def workflow_runs(self, workflow, limit=20):
+                return [{"id": 321, "status": "completed", "conclusion": "failure"}]
+
+            def rerun_workflow_run(self, run_id):
+                self.rerun_ids.append(run_id)
+
+        api = CapabilityApi()
+        result = _dispatch_or_rerun_existing(api, "kesher-content-controller.yml")
+        self.assertEqual(result["dispatch"], "rerun_existing")
+        self.assertEqual(result["fallback"], "workflow_dispatch_capability_unavailable")
+        self.assertEqual(api.rerun_ids, [321])
+
+    def test_dispatch_capability_fallback_never_reruns_inputful_media_with_stale_inputs(self) -> None:
+        class CapabilityApi:
+            def dispatch_workflow(self, workflow, inputs=None):
+                from scripts.kesher_master_supervisor_live import SupervisorError
+                raise SupervisorError("GITHUB_HTTP_404: workflow dispatch endpoint unavailable")
+
+            def workflow_runs(self, workflow, limit=20):
+                raise AssertionError("inputful fallback must not inspect or reuse stale runs")
+
+        result = _dispatch_or_rerun_existing(
+            CapabilityApi(),
+            "kesher-daily-video.yml",
+            {"operation": "rebuild", "rebuild_item_id": "video-1", "target_slug": "slug-a"},
+        )
+        self.assertEqual(result["dispatch"], "capability_unavailable")
+        self.assertEqual(result["fallback"], "direct_patch_required")
 
     def test_cas_store_uses_expected_blob_sha_and_propagates_conflict(self) -> None:
         api = FakeStoreApi()
