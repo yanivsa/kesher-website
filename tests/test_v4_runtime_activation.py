@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTROLLER_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-content-controller.yml"
 SHORT_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-short-v4.yml"
 SHORT_COMPONENT = ROOT / "src" / "remotion" / "ArticleShort.tsx"
+SHORT_TYPES = ROOT / "src" / "remotion" / "ArticleShort.types.ts"
 SHORT_ROOT = ROOT / "src" / "remotion" / "Root.tsx"
 V4_RUNTIME = ROOT / "scripts" / "kesher_content_controller_v4_runtime.py"
 STABILIZED_RUNTIME = ROOT / "scripts" / "kesher_content_controller_stabilized.py"
@@ -111,11 +112,12 @@ class V4RuntimeActivationTests(unittest.TestCase):
 
     def test_article_short_embeds_the_notebooklm_video_and_audio(self):
         component = SHORT_COMPONENT.read_text(encoding="utf-8")
+        types = SHORT_TYPES.read_text(encoding="utf-8")
         self.assertIn('from "@remotion/media"', component)
         self.assertIn("Video", component)
-        self.assertIn("videoSrc: string", component)
-        self.assertIn("sourceStartFrame: number", component)
-        self.assertIn("durationInFrames: number", component)
+        self.assertIn("videoSrc: string", types)
+        self.assertIn("sourceStartFrame: number", types)
+        self.assertIn("durationInFrames: number", types)
         self.assertIn("<Video", component)
         self.assertIn("staticFile(videoSrc)", component)
         self.assertIn("trimBefore={sourceStartFrame}", component)
