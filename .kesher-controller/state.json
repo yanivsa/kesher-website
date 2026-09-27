@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-27",
-  "status": "article_normalizing",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -15,7 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 3,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-09-27T13:13:39.294482+00:00",
     "quality_status": "passed",
     "quality_content_sha256": "27fc420058c548aa10a586479e7c79d7d646e4a4b057b10d438ad8cc33175d70",
@@ -48,7 +48,9 @@
       "worker_restart_count": 0,
       "last_restart_at": null,
       "last_restart_run_id": null
-    }
+    },
+    "merge_dispatch_at": "2026-09-27T15:09:49.502262+00:00",
+    "merge_dispatch_count": 1
   },
   "backlog": [
     {
@@ -1872,31 +1874,33 @@
         "pr_number": 953,
         "slot": "2026-09-27"
       }
+    },
+    {
+      "at": "2026-09-27T15:09:46.488623+00:00",
+      "from": "article_normalizing",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-09-27T15:05:53.557106+00:00",
+  "updated_at": "2026-09-27T15:09:46.488646+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "retry_wait",
-    "last_error": {
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 36277622555 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-09-27T13:12:53.359263+00:00",
-      "at": "2026-09-27T13:07:53.359285+00:00"
-    },
-    "next_retry_at": "2026-09-27T13:12:53.359263+00:00",
+    "status": "complete",
+    "last_error": null,
+    "next_retry_at": null,
     "run_id": 36277622555,
     "processed_run_id": 36277622555,
-    "provider_id": null,
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
+    "provider_id": "Local",
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "IMAGE_OUTPUT_MISSING": 1
     },
     "last_dispatch_at": "2026-09-26T22:51:34.540902+00:00",
     "last_run_conclusion": "success",
-    "last_failed_run_id": 36277622555
+    "last_failed_run_id": 36277622555,
+    "artifact_sha256": "e6bc6280b519d3de7fd47d5aa9fa041ba0935db31916ff676ce99d0f706beeb5",
+    "source_id": "local://public/images/generated/blog/bedtime-battles-emotional-regulation.jpg"
   },
   "long_video": {
     "attempt_count": 1,
