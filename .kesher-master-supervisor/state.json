@@ -231,6 +231,31 @@
       "updated_at": "2026-09-23T17:29:45.556390+00:00",
       "verified_at": "2026-09-23T17:29:45.556390+00:00"
     },
+    "ksr-293fc4bee0659fc3b80e98b9": {
+      "command_id": "ksr-293fc4bee0659fc3b80e98b9",
+      "evidence_hash": "999da3635c41eafa199023fdb91d7cdd2de280c31395248be134767b302060c8",
+      "exact": {
+        "artifact_id": "263e4194-c1f0-4a3f-9f65-cc6c8c735eec",
+        "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+        "item_id": "video-20260927-182326-1db6d9749e",
+        "pr_number": 953,
+        "short_item_id": null,
+        "slug": "siblings-fairness-vs-equality",
+        "source_id": "d4e921e9-5508-4134-bcdf-8aaae6c7a786",
+        "task_id": "263e4194-c1f0-4a3f-9f65-cc6c8c735eec"
+      },
+      "executor": "controller",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "05fa58f55682fee213a350cb792d9a42",
+      "incident_id": "v5|siblings-fairness-vs-equality|1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef|long_video",
+      "issued_at": "2026-09-27T16:10:16.286905+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebind_exact_source",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-27T16:10:16.286905+00:00"
+    },
     "ksr-38808857bde8631cbed265fc": {
       "acknowledged_at": "2026-09-17T11:07:18.960439+00:00",
       "command_id": "ksr-38808857bde8631cbed265fc",
@@ -1868,6 +1893,25 @@
     }
   },
   "incidents": {
+    "05fa58f55682fee213a350cb792d9a42": {
+      "active_command_id": "ksr-293fc4bee0659fc3b80e98b9",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "05fa58f55682fee213a350cb792d9a42",
+      "first_seen_at": "2026-09-27T16:10:16.286905+00:00",
+      "history": [
+        {
+          "at": "2026-09-27T16:10:16.286905+00:00",
+          "command_id": "ksr-293fc4bee0659fc3b80e98b9",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|siblings-fairness-vs-equality|1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef|long_video",
+      "last_seen_at": "2026-09-27T16:10:16.286905+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=05fa58f55682fee213a350cb792d9a42 strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "05fd24f164b82ed5d8fcc4ff4dbe296d": {
       "active_command_id": null,
       "failure_signature": "SHORT_NOT_PORTRAIT",
@@ -2927,5 +2971,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-25T09:32:30.254322+00:00"
+  "updated_at": "2026-09-27T16:10:16.286905+00:00"
 }
