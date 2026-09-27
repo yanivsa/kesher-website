@@ -357,6 +357,7 @@
       "verified_at": "2026-09-17T11:10:04.203525+00:00"
     },
     "ksr-3b5c6b28e4df3b7578bbba31": {
+      "acknowledged_at": "2026-09-27T22:02:30.856176+00:00",
       "command_id": "ksr-3b5c6b28e4df3b7578bbba31",
       "evidence_hash": "87deebbc0a165e9cc64974f02115ed8891570fcb1cd386a9500a0f1f32fb5b94",
       "exact": {
@@ -374,12 +375,44 @@
       "fingerprint": "6f459a3d425de99004e92f4e2052c052",
       "incident_id": "v5|siblings-fairness-vs-equality|1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef|long_video",
       "issued_at": "2026-09-27T22:01:25.667828+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-3b5c6b28e4df3b7578bbba31",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "the exact incident is absent in fresh authoritative production evidence and all relevant CI/public verification gates pass",
+          "evidence_hash": "87deebbc0a165e9cc64974f02115ed8891570fcb1cd386a9500a0f1f32fb5b94",
+          "exact": {
+            "artifact_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537",
+            "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+            "item_id": "video-20260927-201145-1db6d9749e",
+            "pr_number": 953,
+            "short_item_id": null,
+            "slug": "siblings-fairness-vs-equality",
+            "source_id": "12a22ab7-ee7a-40d8-b298-90ba85a70577",
+            "task_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537"
+          },
+          "failure_signature": "VIDEO_ATTEMPTS_EXHAUSTED",
+          "fingerprint": "6f459a3d425de99004e92f4e2052c052",
+          "incident_id": "v5|siblings-fairness-vs-equality|1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef|long_video",
+          "proposed_action": "escalate_unknown_failure",
+          "schema_version": 1,
+          "stage": "long_video",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/4260206842076788706"
+      },
       "proposed_action": "escalate_unknown_failure",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-27T22:01:25.667828+00:00"
+      "updated_at": "2026-09-27T22:02:30.856176+00:00"
     },
     "ksr-4e2643368aad5788ceb0c9c3": {
       "acknowledged_at": "2026-09-24T14:22:29.943896+00:00",
@@ -3071,5 +3104,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-27T22:01:25.667828+00:00"
+  "updated_at": "2026-09-27T22:02:30.856176+00:00"
 }
