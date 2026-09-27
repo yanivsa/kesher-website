@@ -1,14 +1,14 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-27",
-  "status": "image_retry_wait",
+  "status": "article_result_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-09-27T13:11:43.794297+00:00",
     "run_id": 36312996133,
-    "processed_run_id": 36273556552,
+    "processed_run_id": 36312996133,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -32,12 +32,12 @@
       "outcome": "PR_CREATED",
       "retryable": false,
       "message": "",
-      "session_id": "sessions/11469650423572471705",
-      "pr_url": "https://github.com/yanivsa/kesher-website/pull/944",
-      "github_run_id": "36273556552",
-      "completed_at": "2026-09-26T22:08:30.090648+00:00"
+      "session_id": "sessions/11998653828802116650",
+      "pr_url": "https://github.com/yanivsa/kesher-website/pull/952",
+      "github_run_id": "36312996133",
+      "completed_at": "2026-09-27T11:03:20.641862+00:00"
     },
-    "last_jules_session_id": "sessions/11469650423572471705",
+    "last_jules_session_id": "sessions/11998653828802116650",
     "watchdog": {
       "identity": "2026-09-27",
       "session_id": null,
@@ -1216,14 +1216,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 36277622555 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-09-27T13:12:53.359263+00:00",
-    "at": "2026-09-27T13:07:53.359285+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-24T20:30:13.191992+00:00",
@@ -1840,9 +1833,20 @@
         "failure_streak": 1,
         "run_id": 36277622555
       }
+    },
+    {
+      "at": "2026-09-27T13:09:43.794315+00:00",
+      "from": "image_retry_wait",
+      "to": "article_result_wait",
+      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
+      "details": {
+        "run_id": 36312996133,
+        "outcome": "PR_CREATED",
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/952"
+      }
     }
   ],
-  "updated_at": "2026-09-27T13:07:53.359298+00:00",
+  "updated_at": "2026-09-27T13:09:43.794320+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
