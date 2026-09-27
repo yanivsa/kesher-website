@@ -56,7 +56,7 @@
     "url": "https://kesher.saharoni.com/blog/siblings-fairness-vs-equality",
     "published_date": "2026-09-27",
     "live": true,
-    "live_verified_at": "2026-09-27T19:35:21.863314+00:00",
+    "live_verified_at": "2026-09-27T19:47:44.654470+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1229,24 +1229,9 @@
     "stage": "long_video",
     "code": "VIDEO_ATTEMPTS_EXHAUSTED",
     "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-27T19:37:36.234869+00:00"
+    "at": "2026-09-27T19:48:52.248509+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-24T20:53:04.396463+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-09-24T21:29:03.318971+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
     {
       "at": "2026-09-24T21:29:03.318976+00:00",
       "from": "article_needed",
@@ -1896,9 +1881,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-27T19:47:44.654487+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-09-27T19:48:52.248525+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-09-27T19:37:36.234891+00:00",
+  "updated_at": "2026-09-27T19:48:52.248531+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
