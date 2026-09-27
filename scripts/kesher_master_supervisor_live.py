@@ -446,6 +446,9 @@ class GitHubApi:
         encoded = urllib.parse.quote(workflow, safe="")
         self._request("POST", f"{self.api}/actions/workflows/{encoded}/dispatches", body, mutation=True)
 
+    def rerun_workflow_run(self, run_id: int | str) -> None:
+        self._request("POST", f"{self.api}/actions/runs/{run_id}/rerun", mutation=True)
+
     def workflow_runs(self, workflow: str, limit: int = 20) -> list[dict[str, Any]]:
         encoded = urllib.parse.quote(workflow, safe="")
         payload = self._request("GET", f"{self.api}/actions/workflows/{encoded}/runs?per_page={limit}")
@@ -724,6 +727,62 @@ def try_finalize_recovery_pr(api: Any, number: int) -> dict[str, Any] | None:
     return {"recovery_pr_number": number, "merge_sha": merged.get("sha")}
 
 
+def _dispatch_or_rerun_existing(api: Any, workflow: str, inputs: dict[str, str] | None = None) -> dict[str, Any]:
+    """Dispatch a workflow, but do not mistake a missing dispatch capability for a permission blocker.
+
+    A rerun fallback is intentionally allowed only when there are no new inputs to carry.
+    Reusing a prior inputful run could target the wrong source identity and violate dedup.
+    """
+    try:
+        api.dispatch_workflow(workflow, inputs or {})
+        return {"workflow": workflow, "inputs": inputs or {}, "dispatch": "issued"}
+    except SupervisorError as exc:
+        message = str(exc)
+        capability_unavailable = any(marker in message for marker in ("GITHUB_HTTP_403", "GITHUB_HTTP_404", "GITHUB_HTTP_422"))
+        if not capability_unavailable:
+            raise
+        if inputs:
+            return {
+                "workflow": workflow,
+                "inputs": inputs,
+                "dispatch": "capability_unavailable",
+                "fallback": "direct_patch_required",
+                "dispatch_error": message[:500],
+            }
+        if not hasattr(api, "rerun_workflow_run"):
+            return {
+                "workflow": workflow,
+                "inputs": {},
+                "dispatch": "capability_unavailable",
+                "fallback": "no_safe_rerun_adapter",
+                "dispatch_error": message[:500],
+            }
+        runs = api.workflow_runs(workflow, 20)
+        candidates = [
+            row for row in runs
+            if str(row.get("status") or "") == "completed"
+            and str(row.get("conclusion") or "") in {"failure", "cancelled", "timed_out", "action_required"}
+            and row.get("id")
+        ]
+        if not candidates:
+            return {
+                "workflow": workflow,
+                "inputs": {},
+                "dispatch": "capability_unavailable",
+                "fallback": "no_compatible_failed_run",
+                "dispatch_error": message[:500],
+            }
+        run = candidates[0]
+        api.rerun_workflow_run(run["id"])
+        return {
+            "workflow": workflow,
+            "inputs": {},
+            "dispatch": "rerun_existing",
+            "run_id": run["id"],
+            "fallback": "workflow_dispatch_capability_unavailable",
+        }
+
+
 def execute_command(state: dict[str, Any], report: dict[str, Any], decision: dict[str, Any], *, api: Any, jules_client: JulesRecoveryClient | None, now: str) -> dict[str, Any]:
     command_id = str(decision.get("command_id") or "")
     executor = str(decision.get("executor") or "")
@@ -731,8 +790,15 @@ def execute_command(state: dict[str, Any], report: dict[str, Any], decision: dic
         workflow = "kesher-content-controller.yml"
         active = [row for row in api.workflow_runs(workflow, 10) if str(row.get("status") or "") != "completed"]
         if not active:
-            api.dispatch_workflow(workflow)
-            metadata = {"workflow": workflow, "dispatch": "issued", "dispatched_at": now}
+            metadata = _dispatch_or_rerun_existing(api, workflow)
+            metadata["dispatched_at"] = now
+            if metadata.get("dispatch") == "capability_unavailable":
+                return mark_command_failed(
+                    state,
+                    command_id,
+                    f"WORKFLOW_DISPATCH_CAPABILITY_UNAVAILABLE: {metadata.get('fallback')}",
+                    at=now,
+                )
         else:
             metadata = {"workflow": workflow, "dispatch": "already_active", "run_id": active[0].get("id")}
         return mark_command_acknowledged(state, command_id, metadata, at=now)
@@ -758,8 +824,15 @@ def execute_command(state: dict[str, Any], report: dict[str, Any], decision: dic
         workflow = str(spec["workflow"])
         active = [row for row in api.workflow_runs(workflow, 10) if str(row.get("status") or "") != "completed"]
         if not active:
-            api.dispatch_workflow(workflow, spec.get("inputs") or {})
-            metadata = {"workflow": workflow, "inputs": spec.get("inputs") or {}, "dispatch": "issued", "dispatched_at": now}
+            metadata = _dispatch_or_rerun_existing(api, workflow, spec.get("inputs") or {})
+            metadata["dispatched_at"] = now
+            if metadata.get("dispatch") == "capability_unavailable":
+                return mark_command_failed(
+                    state,
+                    command_id,
+                    f"WORKFLOW_DISPATCH_CAPABILITY_UNAVAILABLE_USE_DIRECT_PATCH: {metadata.get('fallback')}",
+                    at=now,
+                )
         else:
             metadata = {"workflow": workflow, "inputs": spec.get("inputs") or {}, "dispatch": "already_active", "run_id": active[0].get("id")}
         return mark_command_acknowledged(state, command_id, metadata, at=now)
