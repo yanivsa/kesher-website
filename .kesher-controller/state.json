@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-27",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36273556552,
@@ -19,7 +19,7 @@
     "last_dispatch_at": "2026-09-26T21:37:12.214092+00:00",
     "quality_status": "passed",
     "quality_content_sha256": "27fc420058c548aa10a586479e7c79d7d646e4a4b057b10d438ad8cc33175d70",
-    "quality_checked_at": "2026-09-27T04:40:20.020296+00:00",
+    "quality_checked_at": "2026-09-27T09:04:08.701823+00:00",
     "quality_violations": [],
     "pr_number": 944,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/944",
@@ -1752,12 +1752,18 @@
       "from": "article_image_running",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-27T09:05:13.601564+00:00",
+      "from": "short_running",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-27T04:41:28.356207+00:00",
+  "updated_at": "2026-09-27T09:05:13.601585+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36277622555,
@@ -1801,19 +1807,36 @@
   },
   "short": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "e324d7a8-3fba-4324-b378-db3e054bca52",
+    "provider_id": "70c3c424-4671-424a-b200-efa7631507ff",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-27T04:41:28.356184+00:00",
-    "artifact_id": "e324d7a8-3fba-4324-b378-db3e054bca52",
-    "source_id": "d8348e9d-d874-4789-a03d-ee72e6222da5",
-    "adopted_from_long_item_id": "video-20260927-020414-27fc420058"
+    "artifact_id": "70c3c424-4671-424a-b200-efa7631507ff",
+    "source_id": "dba8e151-2167-4741-82a2-78be482e0933",
+    "adopted_from_long_item_id": "video-20260927-020414-27fc420058",
+    "item_id": "video-20260927-060128-27fc420058",
+    "type": "article_short",
+    "youtube_id": "TKAwQMzvP6U",
+    "youtube_url": "https://youtu.be/TKAwQMzvP6U",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "8b24ce4f8cdd09eb88d9866e4a576c005d036130a92b61c2227360d1512e763c",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
@@ -1832,11 +1855,14 @@
     "content_sha256": "27fc420058c548aa10a586479e7c79d7d646e4a4b057b10d438ad8cc33175d70",
     "article_url": "https://kesher.saharoni.com/blog/gifted-children-perfectionism-tears",
     "article_verified": true,
-    "updated_at": "2026-09-27T04:40:45.152259+00:00",
+    "updated_at": "2026-09-27T09:04:30.671778+00:00",
     "long_status": "complete",
     "long_last_dispatch_at": "2026-09-26T23:58:17.911750+00:00",
     "long_youtube_url": "https://youtu.be/OPwpR3ReV0k",
     "long_item_id": "video-20260927-020414-27fc420058",
-    "short_status": "running"
+    "short_status": "complete",
+    "short_youtube_url": "https://youtu.be/TKAwQMzvP6U",
+    "complete": true,
+    "completed_at": "2026-09-27T09:05:13.601608+00:00"
   }
 }
