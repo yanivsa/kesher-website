@@ -107,12 +107,26 @@ and evidence workflow. This is a topic-selection stage, not a trend-report stage
 8. Deduplicate before drafting against current Kesher posts and open article PRs.
    If the leading candidate is already substantially covered, choose the next best
    candidate rather than creating a duplicate.
-9. After selecting the one topic, run the existing SEARCH-INTENT-FIRST TITLE
-   CONTRACT for that topic and create exactly one article.
-10. In the PR body include this compact audit block:
+9. FALLBACK — if, after a bounded reasonable search, no candidate has enough
+   observable engagement, Kesher relevance, verifiable support, or dedup safety to
+   justify selection, DO NOT block the article run and DO NOT force a weak "viral"
+   topic. Fall back to the pre-existing V3/base article topic-selection mechanism
+   already present in the underlying prompt. That legacy mechanism remains the
+   authoritative fallback. After it selects one topic, continue with the existing
+   SEARCH-INTENT-FIRST TITLE CONTRACT and ARTICLE EVIDENCE CONTRACT.
+10. Whether the topic came from viral discovery or the legacy fallback, create
+    EXACTLY ONE article and one PR for the slot.
+11. When viral discovery succeeds, include this compact audit block in the PR body:
     `Topic Discovery Source: ...`
     `Why Selected: ...`
     `Viral/Discussion Evidence: ...`
+    `Primary Supporting Source: ...`
+    `Duplicate Check: passed`
+12. When the legacy fallback is used instead, do not fabricate viral evidence.
+    Include:
+    `Topic Discovery Source: fallback-to-legacy-selection`
+    `Why Selected: no sufficiently strong current viral candidate`
+    `Viral/Discussion Evidence: insufficient for selection`
     `Primary Supporting Source: ...`
     `Duplicate Check: passed`
 --- END VIRAL TOPIC DISCOVERY CONTRACT ---
