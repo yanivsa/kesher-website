@@ -60,6 +60,24 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
             prompt.index("SEARCH-INTENT-FIRST TITLE CONTRACT"),
         )
 
+    def test_viral_discovery_preserves_legacy_fallback(self):
+        with mock.patch.dict(
+            "os.environ",
+            {
+                "KESHER_ARTICLE_TOPIC_BRIEF": "",
+                "KESHER_ARTICLE_TOPIC_BRIEF_FILE": "",
+            },
+            clear=False,
+        ), mock.patch.object(
+            runner, "_v3_build_prompt", return_value="LEGACY_BASE_PROMPT"
+        ):
+            prompt = runner.build_prompt("2026-09-29", "POLICY")
+
+        self.assertTrue(prompt.startswith("LEGACY_BASE_PROMPT"))
+        self.assertIn("pre-existing V3/base article topic-selection mechanism", prompt)
+        self.assertIn("fallback-to-legacy-selection", prompt)
+        self.assertIn("EXACTLY ONE article and one PR", prompt)
+
     def test_owner_topic_bypasses_viral_discovery(self):
         with mock.patch.dict(
             "os.environ",
