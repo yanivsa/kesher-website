@@ -41,5 +41,42 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
         attach.assert_called_once_with(path, diagnostic)
 
 
+    def test_viral_discovery_runs_only_without_owner_topic(self):
+        with mock.patch.dict(
+            "os.environ",
+            {
+                "KESHER_ARTICLE_TOPIC_BRIEF": "",
+                "KESHER_ARTICLE_TOPIC_BRIEF_FILE": "",
+            },
+            clear=False,
+        ), mock.patch.object(runner, "_v3_build_prompt", return_value="BASE"):
+            prompt = runner.build_prompt("2026-09-28", "POLICY")
+
+        self.assertIn("VIRAL TOPIC DISCOVERY CONTRACT", prompt)
+        self.assertIn("SEARCH-INTENT-FIRST TITLE CONTRACT", prompt)
+        self.assertNotIn("OWNER-SUPPLIED TOPIC BRIEF CONTRACT", prompt)
+        self.assertLess(
+            prompt.index("VIRAL TOPIC DISCOVERY CONTRACT"),
+            prompt.index("SEARCH-INTENT-FIRST TITLE CONTRACT"),
+        )
+
+    def test_owner_topic_bypasses_viral_discovery(self):
+        with mock.patch.dict(
+            "os.environ",
+            {
+                "KESHER_ARTICLE_TOPIC_BRIEF": "נושא מפורש מהבעלים",
+                "KESHER_ARTICLE_TOPIC_BRIEF_FILE": "",
+            },
+            clear=False,
+        ), mock.patch.object(runner, "_v3_build_prompt", return_value="BASE"):
+            prompt = runner.build_prompt("2026-09-28", "POLICY")
+
+        self.assertNotIn("VIRAL TOPIC DISCOVERY CONTRACT", prompt)
+        self.assertIn("SEARCH-INTENT-FIRST TITLE CONTRACT", prompt)
+        self.assertIn("OWNER-SUPPLIED TOPIC BRIEF CONTRACT", prompt)
+        self.assertIn("נושא מפורש מהבעלים", prompt)
+
+
+
 if __name__ == "__main__":
     unittest.main()

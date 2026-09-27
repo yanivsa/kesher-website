@@ -67,6 +67,57 @@ search for, not from abstract editorial labels or professional jargon.
 --- END SEARCH-INTENT-FIRST TITLE CONTRACT ---
 """
 
+VIRAL_TOPIC_DISCOVERY_CONTRACT = r"""
+
+--- VIRAL TOPIC DISCOVERY CONTRACT ---
+Run this stage ONLY when no repository-owner topic brief was supplied.
+
+Goal: discover one timely, high-value Kesher article topic from recent public
+conversation, then hand that single topic into the existing Hebrew search-intent
+and evidence workflow. This is a topic-selection stage, not a trend-report stage.
+
+1. Search recent public sources, prioritizing the last 7 days and expanding only
+   when needed, across sources available to the Jules run such as YouTube, Reddit,
+   X, public forums, practitioner discussions and reputable web sources.
+2. Search in Hebrew and English. Use additional major languages when they produce
+   useful leads that can be responsibly adapted for an Israeli audience.
+3. Focus only on Kesher's editorial scope:
+   - Couples: conflict cycles, stuck conversations, emotion-language instead of
+     blame/silence, roommate-style relationships, intimacy, trust repair after
+     crisis/infidelity, and premarital preparation.
+   - Parenting: calm authority, boundaries with less friction/guilt, cooperation,
+     family/sibling conflict, ADHD and emotional regulation, and gifted children
+     including asynchronous development, perfectionism and sensitivity.
+4. Internally generate 5-10 candidate topics, but select EXACTLY ONE final topic.
+   Do not create a trend report, listicle of candidates, multiple articles, or
+   multiple PRs.
+5. Reject candidates that are already substantially covered in existing Kesher
+   articles, are generic marketing advice, rely on unverifiable sensational claims,
+   or fall outside Shira Saharoni's professional scope.
+6. Prefer candidates that combine:
+   - recent observable engagement/discussion;
+   - one clear practical insight couples or parents can use;
+   - a strong Israeli adaptation angle;
+   - authoritative evidence available for material factual claims;
+   - useful Hebrew search intent.
+7. Treat viral content as DISCOVERY EVIDENCE, not automatic factual evidence.
+   Preserve the original viral source URL/creator and observable engagement signals
+   when available, but verify material claims separately with primary/authoritative
+   sources. Never invent views, likes, shares, trend scores or engagement counts.
+8. Deduplicate before drafting against current Kesher posts and open article PRs.
+   If the leading candidate is already substantially covered, choose the next best
+   candidate rather than creating a duplicate.
+9. After selecting the one topic, run the existing SEARCH-INTENT-FIRST TITLE
+   CONTRACT for that topic and create exactly one article.
+10. In the PR body include this compact audit block:
+    `Topic Discovery Source: ...`
+    `Why Selected: ...`
+    `Viral/Discussion Evidence: ...`
+    `Primary Supporting Source: ...`
+    `Duplicate Check: passed`
+--- END VIRAL TOPIC DISCOVERY CONTRACT ---
+"""
+
 CUSTOM_TOPIC_CONTRACT = r"""
 
 --- OWNER-SUPPLIED TOPIC BRIEF CONTRACT ---
@@ -146,8 +197,11 @@ This requirement is mandatory even when every other content/style check passes.
 
 
 def build_prompt(slot: str, policy: str) -> str:
-    prompt = _v3_build_prompt(slot, policy) + SEARCH_FIRST_CONTRACT + EVIDENCE_CONTRACT
     topic_brief = load_owner_topic_brief()
+    prompt = _v3_build_prompt(slot, policy)
+    if not topic_brief:
+        prompt += VIRAL_TOPIC_DISCOVERY_CONTRACT
+    prompt += SEARCH_FIRST_CONTRACT + EVIDENCE_CONTRACT
     if topic_brief:
         prompt += CUSTOM_TOPIC_CONTRACT.format(topic_brief=topic_brief)
     return prompt
