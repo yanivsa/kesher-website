@@ -86,3 +86,30 @@
   line-height: 1.6;
   margin: 0;
 }
+
+.cta {
+  margin-top: 5rem;
+  text-align: center;
+  background: var(--color-primary-light);
+  padding: 3rem;
+  border-radius: 16px;
+  color: var(--color-primary-dark);
+}
+
+.cta h3 { color: var(--color-primary-dark); margin-bottom: 0.5rem; }
+.cta p { margin-bottom: 1.5rem; }
+
+.ctaBtn {
+  display: inline-block;
+  background: white;
+  color: var(--color-primary-dark) !important;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.ctaBtn:hover {
+  transform: translateY(-2px);
+}
