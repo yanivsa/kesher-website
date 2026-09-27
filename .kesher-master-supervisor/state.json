@@ -277,11 +277,13 @@
         "task_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537"
       },
       "executor": "controller",
+      "failed_at": "2026-09-27T22:01:25.667828+00:00",
+      "failure_reason": "kesher-content-controller.yml run 36345286195 completed but exact incident persisted",
       "failure_signature": "VIDEO_ATTEMPTS_EXHAUSTED",
       "fingerprint": "6f459a3d425de99004e92f4e2052c052",
       "incident_id": "v5|siblings-fairness-vs-equality|1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef|long_video",
       "issued_at": "2026-09-27T19:38:40.461160+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "failed",
       "metadata": {
         "dispatch": "issued",
         "dispatched_at": "2026-09-27T19:41:35.088288+00:00",
@@ -290,7 +292,7 @@
       "proposed_action": "escalate_unknown_failure",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-27T19:41:35.088288+00:00"
+      "updated_at": "2026-09-27T22:01:25.667828+00:00"
     },
     "ksr-38808857bde8631cbed265fc": {
       "acknowledged_at": "2026-09-17T11:07:18.960439+00:00",
@@ -353,6 +355,31 @@
       "strike": 2,
       "updated_at": "2026-09-17T11:10:04.203525+00:00",
       "verified_at": "2026-09-17T11:10:04.203525+00:00"
+    },
+    "ksr-3b5c6b28e4df3b7578bbba31": {
+      "command_id": "ksr-3b5c6b28e4df3b7578bbba31",
+      "evidence_hash": "87deebbc0a165e9cc64974f02115ed8891570fcb1cd386a9500a0f1f32fb5b94",
+      "exact": {
+        "artifact_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537",
+        "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+        "item_id": "video-20260927-201145-1db6d9749e",
+        "pr_number": 953,
+        "short_item_id": null,
+        "slug": "siblings-fairness-vs-equality",
+        "source_id": "12a22ab7-ee7a-40d8-b298-90ba85a70577",
+        "task_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537"
+      },
+      "executor": "jules",
+      "failure_signature": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "fingerprint": "6f459a3d425de99004e92f4e2052c052",
+      "incident_id": "v5|siblings-fairness-vs-equality|1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef|long_video",
+      "issued_at": "2026-09-27T22:01:25.667828+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "escalate_unknown_failure",
+      "stage": "S2",
+      "strike": 2,
+      "updated_at": "2026-09-27T22:01:25.667828+00:00"
     },
     "ksr-4e2643368aad5788ceb0c9c3": {
       "acknowledged_at": "2026-09-24T14:22:29.943896+00:00",
@@ -2566,7 +2593,7 @@
       "strike": 2
     },
     "6f459a3d425de99004e92f4e2052c052": {
-      "active_command_id": "ksr-2c889928931fd7489062b4c9",
+      "active_command_id": "ksr-3b5c6b28e4df3b7578bbba31",
       "failure_signature": "VIDEO_ATTEMPTS_EXHAUSTED",
       "fingerprint": "6f459a3d425de99004e92f4e2052c052",
       "first_seen_at": "2026-09-27T19:38:40.461160+00:00",
@@ -2576,13 +2603,25 @@
           "command_id": "ksr-2c889928931fd7489062b4c9",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-27T22:01:25.667828+00:00",
+          "command_id": "ksr-2c889928931fd7489062b4c9",
+          "event": "command_failed",
+          "reason": "kesher-content-controller.yml run 36345286195 completed but exact incident persisted"
+        },
+        {
+          "at": "2026-09-27T22:01:25.667828+00:00",
+          "command_id": "ksr-3b5c6b28e4df3b7578bbba31",
+          "event": "command_issued",
+          "stage": "S2"
         }
       ],
       "incident_id": "v5|siblings-fairness-vs-equality|1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef|long_video",
-      "last_seen_at": "2026-09-27T19:38:40.461160+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=6f459a3d425de99004e92f4e2052c052 strike=1 stage=S1",
+      "last_seen_at": "2026-09-27T22:01:25.667828+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=6f459a3d425de99004e92f4e2052c052 strike=2 stage=S2",
       "status": "recovering",
-      "strike": 1
+      "strike": 2
     },
     "7299bbf912529cfda70312ea7aec0efd": {
       "active_command_id": "ksr-7001b3eb8e1b8d84c23c0586",
@@ -3032,5 +3071,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-27T19:41:35.088288+00:00"
+  "updated_at": "2026-09-27T22:01:25.667828+00:00"
 }
