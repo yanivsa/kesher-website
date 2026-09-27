@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-27",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 3,
     "status": "running",
@@ -50,7 +50,11 @@
       "last_restart_run_id": null
     },
     "merge_dispatch_at": "2026-09-27T15:09:49.502262+00:00",
-    "merge_dispatch_count": 1
+    "merge_dispatch_count": 1,
+    "slug": "siblings-fairness-vs-equality",
+    "title": "מריבות אחים: למה הוא קיבל יותר? (ולמה שווה בשווה זה לא תמיד הוגן)",
+    "url": "https://kesher.saharoni.com/blog/siblings-fairness-vs-equality",
+    "published_date": "2026-09-27"
   },
   "backlog": [
     {
@@ -1880,9 +1884,15 @@
       "from": "article_normalizing",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-09-27T15:15:04.187790+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "deployment already active"
     }
   ],
-  "updated_at": "2026-09-27T15:09:46.488646+00:00",
+  "updated_at": "2026-09-27T15:15:04.187809+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
