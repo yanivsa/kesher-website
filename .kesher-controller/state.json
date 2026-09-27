@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-27",
-  "status": "article_result_wait",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -1844,9 +1844,18 @@
         "outcome": "PR_CREATED",
         "pr_url": "https://github.com/yanivsa/kesher-website/pull/952"
       }
+    },
+    {
+      "at": "2026-09-27T13:10:19.368377+00:00",
+      "from": "article_result_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-09-27T13:11:43.794297+00:00"
+      }
     }
   ],
-  "updated_at": "2026-09-27T13:09:43.794320+00:00",
+  "updated_at": "2026-09-27T13:10:19.368392+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
