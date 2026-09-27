@@ -3,6 +3,13 @@ name: Kesher Content Controller
 on:
   push:
     branches: [main]
+    paths:
+      - '.github/kesher-media-recovery-request.json'
+      - '.github/kesher-topic-request.json'
+      - 'src/data/posts.json'
+      - 'src/data/postSummaries.json'
+      - 'scripts/**'
+      - '.github/workflows/kesher-content-controller.yml'
   workflow_run:
     workflows:
       - Kesher Article Generation
