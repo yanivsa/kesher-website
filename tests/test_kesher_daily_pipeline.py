@@ -980,6 +980,7 @@ class PipelineTestCase(unittest.TestCase):
             mock.ANY,
         )
 
+    @mock.patch.object(reviewer, "MAX_REVIEW_SESSION_ATTEMPTS", 2)
     @mock.patch.object(reviewer, "validate_decision")
     @mock.patch.object(reviewer, "wait_for_message")
     @mock.patch.object(reviewer, "create_session")

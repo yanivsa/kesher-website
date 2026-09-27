@@ -1,5 +1,6 @@
 {
   "slot": "2026-09-27",
-  "topic_brief": "עדכון לנכס קיים — אין ליצור מאמר כפול. יש לשדרג את המאמר הקיים slug gifted-children-perfectionism-tears בהתאם ל-Issue #938, להוסיף את כלי 'טיוטה ראשונה מבולגנת' / Ugly First Draft ואת כוונת החיפוש המפורטת שם. יש לאמת מקור ראשוני של Dr. Matt Zakreski לפני ייחוס ציטוט. לאחר עדכון/פרסום, המשך באותה source identity ל-Video Overview ול-Short אנכי 9:16. אם worker זה תומך רק ביצירת מאמר חדש, עליו לעצור באופן בטוח ולא ליצור duplicate; Controller צריך להעביר למסלול update/recovery.",
-  "request_id": "gifted-perfectionism-upgrade-20260925-v2"
+  "topic_brief": "נושא: הנחיית הורים ומריבות אחים — 'הוגן זה לא שווה בשווה'. מקור שסופק לבדיקה: Fair Does Not Mean Equal: Supporting Siblings, מיוחס לד\"ר מארק באוורס. חוזה ביצוע: 1. לפני פרסום יש לאמת מקור ראשוני, זהות הדובר והייחוס. אין לפרסם ציטוט כ'מדויק' אם לא אומת; במקרה כזה יש לפרפרז ולציין מקור מתאים. 2. ליצור source identity אחת בלבד לנושא ולבצע deduplication לפני יצירת מאמר/PR/Jules/media. 3. מאמר: להסביר ששוויון טכני אינו תמיד הוגנות; דוגמת המשקפיים; תשובה מעשית להורה מול 'למה הוא קיבל יותר'; להימנע מהכללות מחקריות לא מבוססות. 4. Hook למדיה: 'הילדים שלכם רבים על למה הוא קיבל יותר ממני? הנה למה שווה בשווה לא תמיד הוגן.' 5. לאחר מאמר ציבורי ומאומת, להמשיך מאותה source identity ל-Video Overview ול-Short 9:16. 6. Completion רק לאחר Article URL HTTP 200 + Video public/processed + Short public/processed/9:16. 7. Controller V5 הוא production; V6 shadow בלבד. 8. אין ליצור duplicate provider generation/upload אם קיים artifact/task/source מתאים.",
+  "request_id": "fair-does-not-mean-equal-siblings-20260927-v1",
+  "issue": 951
 }
