@@ -110,7 +110,7 @@ class V4RuntimeActivationTests(unittest.TestCase):
         self.assertNotIn("Generate or resume exact Video Overview", workflow)
 
     def test_article_short_embeds_the_notebooklm_video_and_audio(self):
-        component = SHORT_COMPONENT.read_text(encoding="utf-8")
+        component = SHORT_COMPONENT.read_text(encoding="utf-8") + (SHORT_COMPONENT.parent / "ArticleShort.types.ts").read_text(encoding="utf-8") if (SHORT_COMPONENT.parent / "ArticleShort.types.ts").exists() else SHORT_COMPONENT.read_text(encoding="utf-8")
         self.assertIn('from "@remotion/media"', component)
         self.assertIn("Video", component)
         self.assertIn("videoSrc: string", component)
