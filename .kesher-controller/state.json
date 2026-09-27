@@ -1,103 +1,23 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-27",
-  "status": "blocked",
+  "cycle": "2026-09-28",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 3,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 36321659947,
-    "processed_run_id": 36312996133,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 3,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-09-27T13:13:39.294482+00:00",
-    "quality_status": "passed",
-    "quality_content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
-    "quality_checked_at": "2026-09-27T19:42:34.064589+00:00",
-    "quality_violations": [],
-    "pr_number": 953,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/953",
-    "normalization_slot": "2026-09-27",
-    "normalization_dispatched_at": "2026-09-27T15:05:53.557080+00:00",
-    "last_run_conclusion": "success",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-09-27",
-      "outcome": "PR_CREATED",
-      "retryable": false,
-      "message": "",
-      "session_id": "sessions/11998653828802116650",
-      "pr_url": "https://github.com/yanivsa/kesher-website/pull/952",
-      "github_run_id": "36312996133",
-      "completed_at": "2026-09-27T11:03:20.641862+00:00"
-    },
-    "last_jules_session_id": "sessions/11998653828802116650",
-    "watchdog": {
-      "identity": "2026-09-27",
-      "session_id": null,
-      "last_progress_at": "2026-09-27T10:35:02+00:00",
-      "last_fingerprint": null,
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "merge_dispatch_at": "2026-09-27T15:09:49.502262+00:00",
-    "merge_dispatch_count": 1,
-    "slug": "siblings-fairness-vs-equality",
-    "title": "מריבות אחים: למה הוא קיבל יותר? (ולמה שווה בשווה זה לא תמיד הוגן)",
-    "url": "https://kesher.saharoni.com/blog/siblings-fairness-vs-equality",
-    "published_date": "2026-09-27",
-    "live": true,
-    "live_verified_at": "2026-09-27T19:47:44.654470+00:00",
-    "next_deploy_retry_at": null
+    "normalization_status": "pending"
   },
   "backlog": [
-    {
-      "cycle": "2026-08-29",
-      "status": "blocked",
-      "article": {
-        "attempt_count": 1,
-        "status": "running",
-        "last_error": {
-          "stage": "article",
-          "code": "DUPLICATE_ARTICLE_PRS",
-          "message": "duplicate open article PRs detected: 2",
-          "at": "2026-08-29T18:53:25.348548+00:00"
-        },
-        "next_retry_at": null,
-        "run_id": 33269290594,
-        "processed_run_id": 33269290594,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 1,
-        "deploy_attempts": 0,
-        "last_dispatch_at": "2026-08-29T18:49:30.803825+00:00",
-        "last_run_conclusion": "failure",
-        "last_worker_result": {
-          "schema_version": 1,
-          "slot": "2026-08-29",
-          "outcome": "DUPLICATE_ARTICLE_PRS",
-          "retryable": false,
-          "message": "duplicate open article PRs detected: 2",
-          "session_id": "",
-          "pr_url": "",
-          "github_run_id": "33269290594",
-          "completed_at": "2026-08-29T18:50:02.418092+00:00"
-        }
-      },
-      "archived_at": "2026-08-29T21:19:11.245164+00:00",
-      "media": {}
-    },
     {
       "cycle": "2026-08-30",
       "status": "blocked",
@@ -1223,143 +1143,72 @@
         "complete": true,
         "completed_at": "2026-09-24T22:47:23.063094+00:00"
       }
+    },
+    {
+      "cycle": "2026-09-27",
+      "status": "blocked",
+      "article": {
+        "attempt_count": 3,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 36321659947,
+        "processed_run_id": 36312996133,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 3,
+        "deploy_attempts": 0,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-09-27T13:13:39.294482+00:00",
+        "quality_status": "passed",
+        "quality_content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+        "quality_checked_at": "2026-09-27T19:42:34.064589+00:00",
+        "quality_violations": [],
+        "pr_number": 953,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/953",
+        "normalization_slot": "2026-09-27",
+        "normalization_dispatched_at": "2026-09-27T15:05:53.557080+00:00",
+        "last_run_conclusion": "success",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-09-27",
+          "outcome": "PR_CREATED",
+          "retryable": false,
+          "message": "",
+          "session_id": "sessions/11998653828802116650",
+          "pr_url": "https://github.com/yanivsa/kesher-website/pull/952",
+          "github_run_id": "36312996133",
+          "completed_at": "2026-09-27T11:03:20.641862+00:00"
+        },
+        "last_jules_session_id": "sessions/11998653828802116650",
+        "watchdog": {
+          "identity": "2026-09-27",
+          "session_id": null,
+          "last_progress_at": "2026-09-27T10:35:02+00:00",
+          "last_fingerprint": null,
+          "last_nudge_at": null,
+          "nudge_count": 0,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "merge_dispatch_at": "2026-09-27T15:09:49.502262+00:00",
+        "merge_dispatch_count": 1,
+        "slug": "siblings-fairness-vs-equality",
+        "title": "מריבות אחים: למה הוא קיבל יותר? (ולמה שווה בשווה זה לא תמיד הוגן)",
+        "url": "https://kesher.saharoni.com/blog/siblings-fairness-vs-equality",
+        "published_date": "2026-09-27",
+        "live": true,
+        "live_verified_at": "2026-09-27T19:47:44.654470+00:00",
+        "next_deploy_retry_at": null
+      },
+      "archived_at": "2026-09-27T22:03:26.232163+00:00"
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-09-27T19:48:52.248509+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-24T21:29:03.318976+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-24T21:29:03.319638+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-24T21:32:52.515024+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-09-24T22:47:23.063113+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
-      "details": {
-        "backlog_cycle": "2026-09-24",
-        "source_slug": "pre-wedding-stress-and-anxiety"
-      }
-    },
-    {
-      "at": "2026-09-25T00:58:01.531635+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-09-13",
-        "source_slug": "child-starting-school-high-cognition"
-      }
-    },
-    {
-      "at": "2026-09-25T06:03:31.480169+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T06:04:14.904421+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-25T06:05:13.491925+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-25T08:13:34.084274+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T08:14:09.902264+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-25T08:15:11.972737+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-25T08:16:58.427077+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T08:17:06.445246+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-25T08:17:21.970372+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-25T08:23:54.650469+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T08:25:14.873176+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-25T08:26:22.787194+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-25T08:46:56.254981+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T08:47:18.738571+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-25T08:47:51.722856+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
     {
       "at": "2026-09-25T08:58:54.767765+00:00",
       "from": "complete",
@@ -1896,119 +1745,64 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-09-27T22:03:26.232213+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-27T22:03:26.232216+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-27T22:03:26.232851+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-27T19:48:52.248531+00:00",
+  "updated_at": "2026-09-27T22:03:26.232201+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 36277622555,
-    "processed_run_id": 36277622555,
-    "provider_id": "Local",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 1
-    },
-    "last_dispatch_at": "2026-09-26T22:51:34.540902+00:00",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 36277622555,
-    "artifact_sha256": "e6bc6280b519d3de7fd47d5aa9fa041ba0935db31916ff676ce99d0f706beeb5",
-    "source_id": "local://public/images/generated/blog/bedtime-battles-emotional-regulation.jpg"
-  },
-  "long_video": {
-    "attempt_count": 3,
-    "status": "exhausted",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 36332344258,
-    "processed_run_id": 36332344258,
-    "provider_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-09-27T17:16:26.775052+00:00",
-    "resume_dispatches": 3,
-    "item_id": "video-20260927-201145-1db6d9749e",
-    "source_id": "12a22ab7-ee7a-40d8-b298-90ba85a70577",
-    "artifact_id": "e04b50da-8a66-4565-b0db-6aaf7dc3c537",
-    "youtube_id": "OPwpR3ReV0k",
-    "youtube_url": "https://youtu.be/OPwpR3ReV0k",
-    "verified": true,
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 154.133,
-    "content_duration_seconds": 154.125,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "attempts": 1,
-    "last_run_conclusion": "success"
-  },
-  "short": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "70c3c424-4671-424a-b200-efa7631507ff",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-27T04:41:28.356184+00:00",
-    "artifact_id": "70c3c424-4671-424a-b200-efa7631507ff",
-    "source_id": "dba8e151-2167-4741-82a2-78be482e0933",
-    "adopted_from_long_item_id": "video-20260927-020414-27fc420058",
-    "item_id": "video-20260927-060128-27fc420058",
-    "type": "article_short",
-    "youtube_id": "TKAwQMzvP6U",
-    "youtube_url": "https://youtu.be/TKAwQMzvP6U",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "8b24ce4f8cdd09eb88d9866e4a576c005d036130a92b61c2227360d1512e763c",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
+  },
+  "long_video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  },
+  "short": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/siblings-fairness-vs-equality",
-    "overview_youtube_url": "https://youtu.be/OPwpR3ReV0k",
-    "short_youtube_url": "https://youtu.be/TKAwQMzvP6U",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "targeted_media_recovery": {
-    "slug": "siblings-fairness-vs-equality",
-    "content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
-    "article_url": "https://kesher.saharoni.com/blog/siblings-fairness-vs-equality",
-    "article_verified": true,
-    "updated_at": "2026-09-27T17:13:51.978741+00:00",
-    "long_status": "running",
-    "long_last_dispatch_at": "2026-09-27T17:16:26.775328+00:00",
-    "long_youtube_url": "https://youtu.be/OPwpR3ReV0k",
-    "long_item_id": "video-20260927-020414-27fc420058",
-    "short_status": "complete",
-    "short_youtube_url": "https://youtu.be/TKAwQMzvP6U",
-    "complete": true,
-    "completed_at": "2026-09-27T10:30:03.494787+00:00"
   }
 }
