@@ -250,7 +250,7 @@
       "fingerprint": "05fa58f55682fee213a350cb792d9a42",
       "incident_id": "v5|siblings-fairness-vs-equality|1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef|long_video",
       "issued_at": "2026-09-27T16:10:16.286905+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "verified",
       "metadata": {
         "dispatch": "already_active",
         "run_id": 36332212952,
@@ -259,7 +259,8 @@
       "proposed_action": "rebind_exact_source",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-27T16:11:57.059532+00:00"
+      "updated_at": "2026-09-27T16:12:32.766879+00:00",
+      "verified_at": "2026-09-27T16:12:32.766879+00:00"
     },
     "ksr-38808857bde8631cbed265fc": {
       "acknowledged_at": "2026-09-17T11:07:18.960439+00:00",
@@ -1899,7 +1900,7 @@
   },
   "incidents": {
     "05fa58f55682fee213a350cb792d9a42": {
-      "active_command_id": "ksr-293fc4bee0659fc3b80e98b9",
+      "active_command_id": null,
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "05fa58f55682fee213a350cb792d9a42",
       "first_seen_at": "2026-09-27T16:10:16.286905+00:00",
@@ -1909,12 +1910,18 @@
           "command_id": "ksr-293fc4bee0659fc3b80e98b9",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-27T16:12:32.766879+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|siblings-fairness-vs-equality|1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef|long_video",
       "last_seen_at": "2026-09-27T16:10:16.286905+00:00",
       "marker": "MASTER_ESCALATION fingerprint=05fa58f55682fee213a350cb792d9a42 strike=1 stage=S1",
-      "status": "recovering",
+      "resolved_at": "2026-09-27T16:12:32.766879+00:00",
+      "status": "resolved",
       "strike": 1
     },
     "05fd24f164b82ed5d8fcc4ff4dbe296d": {
@@ -2976,5 +2983,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-27T16:11:57.059532+00:00"
+  "updated_at": "2026-09-27T16:12:32.766879+00:00"
 }
