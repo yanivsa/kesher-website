@@ -13,7 +13,12 @@
       "פער ציפיות",
       "תקשורת זוגית"
     ],
-    "author": "שירה סהרוני"
+    "author": "שירה סהרוני",
+    "image": "/images/generated/blog/new-couples-navigating-disappointments.jpg",
+    "imageAlt": "צילום מציאותי של זוג צעיר בשיחה ותכנון לקראת חיים משותפים",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/generated/blog/communication-breakdown.jpg",
+    "imageIsFallback": true
   },
   {
     "id": "siblings-fairness-vs-equality",
