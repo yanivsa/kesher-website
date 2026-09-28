@@ -2085,7 +2085,7 @@
       "verified_at": "2026-09-24T16:41:47.838248+00:00"
     },
     "ksr-fe81274e554a19d22a23ef8b": {
-      "acknowledged_at": "2026-09-28T11:18:34.365365+00:00",
+      "acknowledged_at": "2026-09-28T11:20:45.391480+00:00",
       "command_id": "ksr-fe81274e554a19d22a23ef8b",
       "evidence_hash": "3d78af7cba518920b8b4e1fa16b938149b9da9b703dc9a2b96c1c6c502dcb1a9",
       "exact": {
@@ -2103,8 +2103,10 @@
       "fingerprint": "034c5c9c90ecab8765f41656b8f45b5d",
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|short",
       "issued_at": "2026-09-28T11:16:00.654902+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "running",
       "metadata": {
+        "external_run_id": 36414777724,
+        "external_workflow": "Kesher Daily Article Short V4",
         "incident_packet": {
           "command_id": "ksr-fe81274e554a19d22a23ef8b",
           "constraints": {
@@ -2138,9 +2140,10 @@
         "session_id": "sessions/12794728840674631800"
       },
       "proposed_action": "rebuild_exact_short",
+      "running_at": "2026-09-28T11:20:45.391480+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-28T11:18:34.365365+00:00"
+      "updated_at": "2026-09-28T11:20:45.391480+00:00"
     },
     "ksr-ff48fdefa56312b36f0734b1": {
       "acknowledged_at": "2026-09-22T10:49:24.777286+00:00",
@@ -2264,7 +2267,7 @@
         }
       ],
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|short",
-      "last_seen_at": "2026-09-28T11:16:00.654902+00:00",
+      "last_seen_at": "2026-09-28T11:20:45.391480+00:00",
       "marker": "MASTER_ESCALATION fingerprint=034c5c9c90ecab8765f41656b8f45b5d strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
@@ -3434,5 +3437,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-28T11:18:34.365365+00:00"
+  "updated_at": "2026-09-28T11:20:45.391480+00:00"
 }
