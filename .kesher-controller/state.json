@@ -33,7 +33,11 @@
     "normalization_slot": "2026-09-28",
     "normalization_dispatched_at": "2026-09-27T22:38:58.745370+00:00",
     "merge_dispatch_at": "2026-09-28T05:55:53.977702+00:00",
-    "merge_dispatch_count": 1
+    "merge_dispatch_count": 1,
+    "quality_status": "passed",
+    "quality_content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
+    "quality_checked_at": "2026-09-28T07:49:58.673107+00:00",
+    "quality_violations": []
   },
   "backlog": [
     {
@@ -1853,7 +1857,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
