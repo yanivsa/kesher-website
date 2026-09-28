@@ -1083,11 +1083,13 @@
         "task_id": "952a9ff6-b539-49da-b655-7569c79439f1"
       },
       "executor": "controller",
+      "failed_at": "2026-09-28T11:16:00.654902+00:00",
+      "failure_reason": "kesher-content-controller.yml run 36414298170 completed but exact incident persisted",
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "034c5c9c90ecab8765f41656b8f45b5d",
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|short",
       "issued_at": "2026-09-28T11:11:48.196674+00:00",
-      "lifecycle": "running",
+      "lifecycle": "failed",
       "metadata": {
         "dispatch": "already_active",
         "external_run_id": 36414148290,
@@ -1099,7 +1101,7 @@
       "running_at": "2026-09-28T11:13:38.272347+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-28T11:13:38.272347+00:00"
+      "updated_at": "2026-09-28T11:16:00.654902+00:00"
     },
     "ksr-9675cc07ac24974093c62aff": {
       "acknowledged_at": "2026-09-20T10:23:26.672356+00:00",
@@ -2082,6 +2084,31 @@
       "updated_at": "2026-09-24T16:41:47.838248+00:00",
       "verified_at": "2026-09-24T16:41:47.838248+00:00"
     },
+    "ksr-fe81274e554a19d22a23ef8b": {
+      "command_id": "ksr-fe81274e554a19d22a23ef8b",
+      "evidence_hash": "3d78af7cba518920b8b4e1fa16b938149b9da9b703dc9a2b96c1c6c502dcb1a9",
+      "exact": {
+        "artifact_id": "952a9ff6-b539-49da-b655-7569c79439f1",
+        "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
+        "item_id": "video-20260928-122014-18afc8a70c",
+        "pr_number": 958,
+        "short_item_id": "video-20260928-140446-18afc8a70c",
+        "slug": "new-couples-navigating-disappointments",
+        "source_id": "84958290-bc69-4e6c-b301-af995e4e072a",
+        "task_id": "952a9ff6-b539-49da-b655-7569c79439f1"
+      },
+      "executor": "jules",
+      "failure_signature": "SHORT_NOT_PORTRAIT",
+      "fingerprint": "034c5c9c90ecab8765f41656b8f45b5d",
+      "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|short",
+      "issued_at": "2026-09-28T11:16:00.654902+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebuild_exact_short",
+      "stage": "S2",
+      "strike": 2,
+      "updated_at": "2026-09-28T11:16:00.654902+00:00"
+    },
     "ksr-ff48fdefa56312b36f0734b1": {
       "acknowledged_at": "2026-09-22T10:49:24.777286+00:00",
       "command_id": "ksr-ff48fdefa56312b36f0734b1",
@@ -2179,7 +2206,7 @@
   },
   "incidents": {
     "034c5c9c90ecab8765f41656b8f45b5d": {
-      "active_command_id": "ksr-952376f179494721c2ba3564",
+      "active_command_id": "ksr-fe81274e554a19d22a23ef8b",
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "034c5c9c90ecab8765f41656b8f45b5d",
       "first_seen_at": "2026-09-28T11:11:48.196674+00:00",
@@ -2189,13 +2216,25 @@
           "command_id": "ksr-952376f179494721c2ba3564",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-28T11:16:00.654902+00:00",
+          "command_id": "ksr-952376f179494721c2ba3564",
+          "event": "command_failed",
+          "reason": "kesher-content-controller.yml run 36414298170 completed but exact incident persisted"
+        },
+        {
+          "at": "2026-09-28T11:16:00.654902+00:00",
+          "command_id": "ksr-fe81274e554a19d22a23ef8b",
+          "event": "command_issued",
+          "stage": "S2"
         }
       ],
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|short",
-      "last_seen_at": "2026-09-28T11:13:38.272347+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=034c5c9c90ecab8765f41656b8f45b5d strike=1 stage=S1",
+      "last_seen_at": "2026-09-28T11:16:00.654902+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=034c5c9c90ecab8765f41656b8f45b5d strike=2 stage=S2",
       "status": "recovering",
-      "strike": 1
+      "strike": 2
     },
     "05fa58f55682fee213a350cb792d9a42": {
       "active_command_id": null,
@@ -3362,5 +3401,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-28T11:13:38.272347+00:00"
+  "updated_at": "2026-09-28T11:16:00.654902+00:00"
 }
