@@ -53,11 +53,11 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
             prompt = runner.build_prompt("2026-09-28", "POLICY")
 
         self.assertIn("VIRAL TOPIC DISCOVERY CONTRACT", prompt)
-        self.assertIn("SEARCH-INTENT-FIRST TITLE CONTRACT", prompt)
+        self.assertIn("CLICKABLE SEARCH-INTENT TITLE CONTRACT", prompt)
         self.assertNotIn("OWNER-SUPPLIED TOPIC BRIEF CONTRACT", prompt)
         self.assertLess(
             prompt.index("VIRAL TOPIC DISCOVERY CONTRACT"),
-            prompt.index("SEARCH-INTENT-FIRST TITLE CONTRACT"),
+            prompt.index("CLICKABLE SEARCH-INTENT TITLE CONTRACT"),
         )
 
     def test_viral_discovery_preserves_legacy_fallback(self):
@@ -90,10 +90,17 @@ class JulesArticleRunnerV4Tests(unittest.TestCase):
             prompt = runner.build_prompt("2026-09-28", "POLICY")
 
         self.assertNotIn("VIRAL TOPIC DISCOVERY CONTRACT", prompt)
-        self.assertIn("SEARCH-INTENT-FIRST TITLE CONTRACT", prompt)
+        self.assertIn("CLICKABLE SEARCH-INTENT TITLE CONTRACT", prompt)
         self.assertIn("OWNER-SUPPLIED TOPIC BRIEF CONTRACT", prompt)
         self.assertIn("נושא מפורש מהבעלים", prompt)
 
+    def test_clickable_title_contract_prioritizes_reader_payoff_without_losing_search_intent(self):
+        contract = runner.SEARCH_FIRST_CONTRACT
+        self.assertIn("generate at least FIVE materially different", contract)
+        self.assertIn("Search intent is a constraint, not permission to publish a boring title", contract)
+        self.assertIn("איך [להשיג תוצאה רצויה] בלי", contract)
+        self.assertIn("Headline Frame: ...", contract)
+        self.assertIn("may not be misleading", contract)
 
 
 if __name__ == "__main__":
