@@ -36,7 +36,7 @@
     "merge_dispatch_count": 1,
     "quality_status": "passed",
     "quality_content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
-    "quality_checked_at": "2026-09-28T09:08:46.020519+00:00",
+    "quality_checked_at": "2026-09-28T09:13:29.993284+00:00",
     "quality_violations": [],
     "slug": "new-couples-navigating-disappointments",
     "title": "שנה ראשונה לנישואין: איך מתמודדים עם פער הציפיות במעבר לחיים משותפים?",
@@ -1871,7 +1871,7 @@
     "source_id": "local://public/images/generated/blog/communication-breakdown.jpg"
   },
   "long_video": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1883,7 +1883,7 @@
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "item_id": "video-20260928-115126-18afc8a70c",
-    "last_dispatch_at": "2026-09-28T09:11:58.958890+00:00",
+    "last_dispatch_at": "2026-09-28T09:18:25.266383+00:00",
     "resume_dispatches": 3,
     "source_id": "5953ffcf-2acb-4d1a-9e45-751e0f8b76cd",
     "artifact_id": "5a281401-7001-47bf-b470-f2895e09c4f4"
@@ -1934,8 +1934,8 @@
     "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
     "article_url": "https://kesher.saharoni.com/blog/new-couples-navigating-disappointments",
     "article_verified": true,
-    "updated_at": "2026-09-28T09:09:23.678581+00:00",
+    "updated_at": "2026-09-28T09:14:38.481100+00:00",
     "long_status": "running",
-    "long_last_dispatch_at": "2026-09-28T09:11:58.959287+00:00"
+    "long_last_dispatch_at": "2026-09-28T09:18:25.266748+00:00"
   }
 }
