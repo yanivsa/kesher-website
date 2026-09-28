@@ -777,7 +777,7 @@
       "fingerprint": "656985f9a2082753e2310e2e27b28695",
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|long_video",
       "issued_at": "2026-09-28T09:11:28.525007+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "verified",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-77057c1f4a740cc857792700",
@@ -814,7 +814,8 @@
       "proposed_action": "rebind_exact_source",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-28T09:12:59.216504+00:00"
+      "updated_at": "2026-09-28T09:15:21.005822+00:00",
+      "verified_at": "2026-09-28T09:15:21.005822+00:00"
     },
     "ksr-7eff5fb987cf6c4157bfd7c6": {
       "acknowledged_at": "2026-09-18T11:53:22.682906+00:00",
@@ -2679,7 +2680,7 @@
       "strike": 2
     },
     "656985f9a2082753e2310e2e27b28695": {
-      "active_command_id": "ksr-77057c1f4a740cc857792700",
+      "active_command_id": null,
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "656985f9a2082753e2310e2e27b28695",
       "first_seen_at": "2026-09-28T09:08:40.838985+00:00",
@@ -2701,12 +2702,18 @@
           "command_id": "ksr-77057c1f4a740cc857792700",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-28T09:15:21.005822+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|long_video",
       "last_seen_at": "2026-09-28T09:11:28.525007+00:00",
       "marker": "MASTER_ESCALATION fingerprint=656985f9a2082753e2310e2e27b28695 strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-28T09:15:21.005822+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "6e57772fbbd109112776581c443668b0": {
@@ -3225,5 +3232,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-28T09:12:59.216504+00:00"
+  "updated_at": "2026-09-28T09:15:21.005822+00:00"
 }
