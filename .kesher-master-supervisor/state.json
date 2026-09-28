@@ -758,6 +758,31 @@
       "updated_at": "2026-09-20T10:17:11.951690+00:00",
       "verified_at": "2026-09-20T10:17:11.951690+00:00"
     },
+    "ksr-77057c1f4a740cc857792700": {
+      "command_id": "ksr-77057c1f4a740cc857792700",
+      "evidence_hash": "3449d728ea03402f8741f8fec42a2413ca247faa89a03c06542c18b60fc984aa",
+      "exact": {
+        "artifact_id": "5a281401-7001-47bf-b470-f2895e09c4f4",
+        "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
+        "item_id": "video-20260928-115126-18afc8a70c",
+        "pr_number": 958,
+        "short_item_id": null,
+        "slug": "new-couples-navigating-disappointments",
+        "source_id": "5953ffcf-2acb-4d1a-9e45-751e0f8b76cd",
+        "task_id": "5a281401-7001-47bf-b470-f2895e09c4f4"
+      },
+      "executor": "jules",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "656985f9a2082753e2310e2e27b28695",
+      "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|long_video",
+      "issued_at": "2026-09-28T09:11:28.525007+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebind_exact_source",
+      "stage": "S2",
+      "strike": 2,
+      "updated_at": "2026-09-28T09:11:28.525007+00:00"
+    },
     "ksr-7eff5fb987cf6c4157bfd7c6": {
       "acknowledged_at": "2026-09-18T11:53:22.682906+00:00",
       "command_id": "ksr-7eff5fb987cf6c4157bfd7c6",
@@ -807,11 +832,13 @@
         "task_id": "5a281401-7001-47bf-b470-f2895e09c4f4"
       },
       "executor": "controller",
+      "failed_at": "2026-09-28T09:11:28.525007+00:00",
+      "failure_reason": "kesher-content-controller.yml run 36401644977 completed but exact incident persisted",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "656985f9a2082753e2310e2e27b28695",
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|long_video",
       "issued_at": "2026-09-28T09:08:40.838985+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "failed",
       "metadata": {
         "dispatch": "already_active",
         "run_id": 36401644977,
@@ -820,7 +847,7 @@
       "proposed_action": "rebind_exact_source",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-28T09:09:09.278194+00:00"
+      "updated_at": "2026-09-28T09:11:28.525007+00:00"
     },
     "ksr-8d83ce763cbad388f8a572f2": {
       "acknowledged_at": "2026-09-23T18:28:56.140035+00:00",
@@ -2619,7 +2646,7 @@
       "strike": 2
     },
     "656985f9a2082753e2310e2e27b28695": {
-      "active_command_id": "ksr-81fd787d14822f6a3aab9f3e",
+      "active_command_id": "ksr-77057c1f4a740cc857792700",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "656985f9a2082753e2310e2e27b28695",
       "first_seen_at": "2026-09-28T09:08:40.838985+00:00",
@@ -2629,13 +2656,25 @@
           "command_id": "ksr-81fd787d14822f6a3aab9f3e",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-28T09:11:28.525007+00:00",
+          "command_id": "ksr-81fd787d14822f6a3aab9f3e",
+          "event": "command_failed",
+          "reason": "kesher-content-controller.yml run 36401644977 completed but exact incident persisted"
+        },
+        {
+          "at": "2026-09-28T09:11:28.525007+00:00",
+          "command_id": "ksr-77057c1f4a740cc857792700",
+          "event": "command_issued",
+          "stage": "S2"
         }
       ],
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|long_video",
-      "last_seen_at": "2026-09-28T09:08:40.838985+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=656985f9a2082753e2310e2e27b28695 strike=1 stage=S1",
+      "last_seen_at": "2026-09-28T09:11:28.525007+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=656985f9a2082753e2310e2e27b28695 strike=2 stage=S2",
       "status": "recovering",
-      "strike": 1
+      "strike": 2
     },
     "6e57772fbbd109112776581c443668b0": {
       "active_command_id": null,
@@ -3153,5 +3192,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-28T09:09:09.278194+00:00"
+  "updated_at": "2026-09-28T09:11:28.525007+00:00"
 }
