@@ -1,0 +1,18 @@
+{
+  "project": "kesher-website",
+  "project_id": "41773648-4870-407a-b868-5f05f2a2da57",
+  "production_branch": "main",
+  "canonical": {
+    "id": "168312a1-ab25-4acd-b6f0-33096d5a9cb9",
+    "environment": "production",
+    "url": "https://168312a1.kesher-website.pages.dev",
+    "is_skipped": false,
+    "created_on": "2026-09-28T03:01:18.76308Z",
+    "commit_hash": "d3c2304a50b4ede77c9a101fa260ed18e7b32f6b",
+    "branch": "main",
+    "stage": "deploy",
+    "status": "success"
+  },
+  "scope": "Safe authenticated project GET; service deployment metadata only, not full public A+B+C proof",
+  "mutations_performed": false
+}
