@@ -36,7 +36,7 @@
     "merge_dispatch_count": 1,
     "quality_status": "passed",
     "quality_content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
-    "quality_checked_at": "2026-09-28T07:49:58.673107+00:00",
+    "quality_checked_at": "2026-09-28T08:01:37.743371+00:00",
     "quality_violations": [],
     "slug": "new-couples-navigating-disappointments",
     "title": "שנה ראשונה לנישואין: איך מתמודדים עם פער הציפיות במעבר לחיים משותפים?",
@@ -1875,7 +1875,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 36394866031,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -1926,5 +1926,13 @@
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-09-27T22:34:53.085894+00:00"
     }
+  },
+  "targeted_media_recovery": {
+    "slug": "new-couples-navigating-disappointments",
+    "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
+    "article_url": "https://kesher.saharoni.com/blog/new-couples-navigating-disappointments",
+    "article_verified": true,
+    "updated_at": "2026-09-28T08:02:29.634268+00:00",
+    "long_status": "running"
   }
 }
