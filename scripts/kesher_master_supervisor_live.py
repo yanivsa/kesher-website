@@ -42,6 +42,7 @@ REPO_DEFAULT = "yanivsa/kesher-website"
 ACTIVE_LIFECYCLES = {"issued", "acknowledged", "running"}
 TERMINAL_LIFECYCLES = {"verified", "failed", "timed_out"}
 EXTERNAL_RUNNING_LIMIT_MINUTES = 90
+CONTROLLER_RUNNING_LIMIT_MINUTES = 20
 UNCERTAIN_ISSUE_GRACE_MINUTES = 15
 
 
@@ -341,6 +342,8 @@ def direct_dispatch_spec(report: dict[str, Any]) -> dict[str, Any]:
         return {"workflow": "kesher-short-v4.yml", "inputs": {"operation": "rebuild", "rebuild_item_id": short_item_id}}
     if action == "repair_trusted_image_same_pr" and pr_number:
         return {"workflow": "kesher-article-image.yml", "inputs": {"pr_number": str(pr_number)}}
+    if action == "wake_controller_after_article_merge" and slug and content_hash:
+        return {"workflow": "kesher-content-controller.yml", "inputs": {}}
     raise SupervisorError(f"NO_SAFE_DIRECT_ADAPTER: {action or 'missing_action'}")
 
 
@@ -607,6 +610,25 @@ def _minutes_since(value: str, now: str) -> float | None:
 
 def _run_terminal_result(state: dict[str, Any], command_id: str, run: dict[str, Any], workflow: str, now: str) -> tuple[dict[str, Any], bool, str]:
     if str(run.get("status") or "") != "completed":
+        if workflow == "kesher-content-controller.yml":
+            started_at = str(
+                run.get("run_started_at")
+                or run.get("created_at")
+                or ((state.get("commands") or {}).get(command_id) or {}).get("issued_at")
+                or ""
+            )
+            age = _minutes_since(started_at, now)
+            if age is not None and age >= CONTROLLER_RUNNING_LIMIT_MINUTES:
+                return (
+                    mark_command_failed(
+                        state,
+                        command_id,
+                        f"CONTROLLER_RUN_STALLED: run {run.get('id')} active for {age:.1f} minutes",
+                        at=now,
+                    ),
+                    True,
+                    "controller_run_stalled",
+                )
         return mark_command_running(state, command_id, {"workflow": workflow, "run_id": run.get("id")}, at=now), False, "workflow_running"
     return mark_command_failed(state, command_id, f"{workflow} run {run.get('id')} completed but exact incident persisted", at=now), True, "workflow_completed_incident_persisted"
 

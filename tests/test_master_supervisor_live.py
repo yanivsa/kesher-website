@@ -13,6 +13,7 @@ from scripts.kesher_master_supervisor_live import (
     build_incident_packet,
     direct_dispatch_spec,
     _dispatch_or_rerun_existing,
+    _run_terminal_result,
     incident_fingerprint,
     mark_command_acknowledged,
     mark_command_failed,
@@ -192,6 +193,49 @@ class MasterSupervisorLiveTests(unittest.TestCase):
         self.assertEqual(short_spec["workflow"], "kesher-short-v4.yml")
         self.assertEqual(short_spec["inputs"]["operation"], "derive")
         self.assertEqual(short_spec["inputs"]["derive_long_item_id"], "video-1")
+
+        stale_article = incident_report(
+            signature="STALE_ARTICLE_STATE_AFTER_MERGE",
+            action="wake_controller_after_article_merge",
+            stage="article",
+        )
+        stale_spec = direct_dispatch_spec(stale_article)
+        self.assertEqual(stale_spec["workflow"], "kesher-content-controller.yml")
+        self.assertEqual(stale_spec["inputs"], {})
+
+    def test_stalled_controller_run_becomes_terminal_for_escalation(self) -> None:
+        report = incident_report(
+            signature="STALE_ARTICLE_STATE_AFTER_MERGE",
+            action="wake_controller_after_article_merge",
+            stage="article",
+        )
+        state, decision = prepare_escalation(
+            new_supervisor_state(),
+            report,
+            now="2026-09-28T07:00:00+00:00",
+            prior_action_terminal=False,
+        )
+        state = mark_command_acknowledged(
+            state,
+            decision["command_id"],
+            {"workflow": "kesher-content-controller.yml", "run_id": 999},
+            at="2026-09-28T07:00:01+00:00",
+        )
+        run = {
+            "id": 999,
+            "status": "in_progress",
+            "run_started_at": "2026-09-28T07:00:00+00:00",
+        }
+        updated, terminal, reason = _run_terminal_result(
+            state,
+            decision["command_id"],
+            run,
+            "kesher-content-controller.yml",
+            "2026-09-28T07:21:00+00:00",
+        )
+        self.assertTrue(terminal)
+        self.assertEqual(reason, "controller_run_stalled")
+        self.assertEqual(updated["commands"][decision["command_id"]]["lifecycle"], "failed")
 
     def test_dispatch_capability_fallback_reruns_existing_failed_run_without_calling_it_permission_blocker(self) -> None:
         class Api:

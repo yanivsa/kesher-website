@@ -202,6 +202,28 @@ class MasterSupervisorShadowTests(unittest.TestCase):
         self.assertEqual(report["proposed_action"], "rebind_exact_source")
         self.assertNotEqual(report["proposed_action"], "generate_new_overview")
 
+    def test_merged_article_overrides_stale_article_pr_open_state(self) -> None:
+        state = controller_state(status="article_pr_open", stage="article", code="")
+        state["last_error"] = None
+        state["article"]["live"] = False
+        report = build_shadow_report(
+            controller_state=state,
+            posts=[article()],
+            video_state={"items": []},
+            short_state={"items": []},
+            fresh_article_evidence={
+                "article_in_main": True,
+                "pr_merged": True,
+                "article_public": True,
+                "article_http_status": 200,
+            },
+        )
+        self.assertEqual(report["status"], "incident_detected")
+        self.assertEqual(report["failure_signature"], "STALE_ARTICLE_STATE_AFTER_MERGE")
+        self.assertEqual(report["proposed_action"], "wake_controller_after_article_merge")
+        self.assertTrue(report["incident_id"].endswith("|article"))
+        self.assertTrue(report["fresh_article_evidence"]["pr_merged"])
+
     def test_article_generation_without_authoritative_article_is_wait_only(self) -> None:
         state = {
             "schema_version": 5,
