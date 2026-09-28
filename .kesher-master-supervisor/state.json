@@ -2085,6 +2085,7 @@
       "verified_at": "2026-09-24T16:41:47.838248+00:00"
     },
     "ksr-fe81274e554a19d22a23ef8b": {
+      "acknowledged_at": "2026-09-28T11:18:34.365365+00:00",
       "command_id": "ksr-fe81274e554a19d22a23ef8b",
       "evidence_hash": "3d78af7cba518920b8b4e1fa16b938149b9da9b703dc9a2b96c1c6c502dcb1a9",
       "exact": {
@@ -2102,12 +2103,44 @@
       "fingerprint": "034c5c9c90ecab8765f41656b8f45b5d",
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|short",
       "issued_at": "2026-09-28T11:16:00.654902+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-fe81274e554a19d22a23ef8b",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "same-source exact Short is rebuilt without fresh provider generation, public, succeeded, and portrait 9:16",
+          "evidence_hash": "3d78af7cba518920b8b4e1fa16b938149b9da9b703dc9a2b96c1c6c502dcb1a9",
+          "exact": {
+            "artifact_id": "952a9ff6-b539-49da-b655-7569c79439f1",
+            "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
+            "item_id": "video-20260928-122014-18afc8a70c",
+            "pr_number": 958,
+            "short_item_id": "video-20260928-140446-18afc8a70c",
+            "slug": "new-couples-navigating-disappointments",
+            "source_id": "84958290-bc69-4e6c-b301-af995e4e072a",
+            "task_id": "952a9ff6-b539-49da-b655-7569c79439f1"
+          },
+          "failure_signature": "SHORT_NOT_PORTRAIT",
+          "fingerprint": "034c5c9c90ecab8765f41656b8f45b5d",
+          "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|short",
+          "proposed_action": "rebuild_exact_short",
+          "schema_version": 1,
+          "stage": "short",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/12794728840674631800"
+      },
       "proposed_action": "rebuild_exact_short",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-28T11:16:00.654902+00:00"
+      "updated_at": "2026-09-28T11:18:34.365365+00:00"
     },
     "ksr-ff48fdefa56312b36f0734b1": {
       "acknowledged_at": "2026-09-22T10:49:24.777286+00:00",
@@ -3401,5 +3434,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-28T11:16:00.654902+00:00"
+  "updated_at": "2026-09-28T11:18:34.365365+00:00"
 }
