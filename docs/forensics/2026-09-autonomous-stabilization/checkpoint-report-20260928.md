@@ -1,3 +1,5 @@
+> **2026-09-28 blocker-5.2 closure update:** The evidence-only slice is CLOSED with three retained quarantines, zero new import bindings and no production mutation. Exact final identities and validation are in [legacy-media-evidence-report-20260928.md](legacy-media-evidence-report-20260928.md). Historical checkpoint validation below is preserved; no browser or full project gate was rerun. Blocker 5.1 and safe production cutover remain incomplete.
+
 # 1. CHECKPOINT STATUS
 
 - Worktree: `/Users/ninja/Documents/Kesher-worktrees/autonomous-stabilization-20260917`.
@@ -58,15 +60,15 @@ Evidence: `checkpoint-production-observation-20260928.json` and `checkpoint-clou
 - **F — Scope:** **LARGE**.
 - **G — Extra High:** **YES** — cross-service authority, CAS and crash boundaries must agree; a partial transition is unsafe.
 
-## 5.2 Exact legacy media evidence and capability sealing
+## 5.2 Exact legacy media evidence and capability sealing — CLOSED for the bounded slice
 
-- **A:** The retained replay cannot explain two newer controller-stage identities through matching archives; one historical upload capability still needs the existing runtime key.
-- **B:** Exact source/history replay, 32 accepted baselines, 64 observed video IDs, preserved original service identifiers and explicit quarantine; runtime key name verified present.
-- **C:** Exact producer-run/archive/byte lineage for the known unresolved claims, then fresh input after quiescence and trusted sealing. Later production changes must not be silently substituted for this dated evidence.
-- **D:** Duplicate generation/upload, wrong source/kind or unsafe lost-upload recovery if a missing record is interpreted as absence.
-- **E:** Reconcile only those retained exact run/artifact identifiers using existing readers and verify their bytes/identity; retain quarantine if missing or conflicting. Seal only through trusted runtime access before use.
-- **F:** **MEDIUM**.
-- **G:** **NO** — High is sufficient for deterministic retrieval, identity comparison and replay using existing primitives; ambiguity must be reported, not reasoned away.
+- **A:** Exact adjudication is complete. Both newer controller-stage claims and the historical capability remain **RETAINED_QUARANTINE**; no new import binding was proven. Quarantine is the successful safe disposition authorized for this slice.
+- **B:** The full exact Overview-run archive was retrieved and its service digest/all bytes/ZIP CRC verified. It contradicts the claimed source/kind/provider identity. The Short has no proven exact producer lineage. The historical capability archive remains locally digest-verified, although its current service endpoint returns 404.
+- **C:** The dated safe replay preserves all 32 baselines, 64 YouTube IDs, 14 duplicate-upload groups, one ambiguous group, two unresolved stages and one unsealed capability. Existing dates, receipts, source/archive origins, claims and budgets are unchanged. No missing evidence is treated as absence or creation permission.
+- **D:** Secret name/metadata and the identity-bound sealing path are verified. Synthetic offline encryption round-trip and six wrong-binding rejection cases passed. Actual trusted-runtime sealing, refreshed quiesced inputs and coordinated import remain prerequisites under **5.1**, not work performed in 5.2.
+- **E:** Evidence: [legacy-media-evidence-report-20260928.md](legacy-media-evidence-report-20260928.md), [legacy-media-adjudication-20260928.json](legacy-media-adjudication-20260928.json), and [migration-legacy-evidence-replay-20260928.json](migration-legacy-evidence-replay-20260928.json). **production_state_written=false; public_completion_inferred=false.**
+- **F:** 118 focused tests passed; actual replay preservation/state validation and all three observer quarantine probes passed. No runtime/replay logic, frontend or browser code changed.
+- **G:** **High** was sufficient for this bounded slice. Closure does not certify public delivery or close 5.1 / safe production cutover. No further producer search, implementation or external mutation is authorized by this report.
 
 ## 5.3 Incident-bound Jules code repair
 
@@ -108,7 +110,7 @@ Evidence: `checkpoint-production-observation-20260928.json` and `checkpoint-clou
 - **F:** **MEDIUM**.
 - **G:** **NO** — High is sufficient to execute and interpret the existing verifiers; missing evidence must remain unknown.
 
-The already-reviewed deployment/media/migration defects are no longer open findings. None of the six boundaries above is disproved by current evidence. No genuine external-human blocker has been established. The isolated browser timeout is retained as a validation issue under 5.5, not expanded into an unproven new software project.
+The already-reviewed deployment/media/migration defects are no longer open findings. The bounded 5.2 evidence/preparation slice is closed with all three claims quarantined; the other five cutover boundaries remain open. No genuine external-human blocker has been established. The isolated browser timeout is retained as a validation issue under 5.5, not expanded into an unproven new software project.
 
 # 6. PHASE 2 / DEFERRED
 
@@ -127,11 +129,11 @@ Mandatory authority transfer, retirement, repair, attempt transitions, trusted C
 
 # 8. RECOMMENDED NEXT STEP
 
-Authorize, in a future implementation window, only the exact-media-evidence slice in 5.2 first: retrieve the retained unresolved claims' exact producer archives, verify full source/kind/provider/video identity, and update the safe replay result without activation or new provider work. Output either a proven import binding or a precise retained quarantine reason. This is the smallest known action that reduces an actual migration uncertainty; do not begin it in this checkpoint continuation.
+The sole recommended next implementation slice is **5.1: the offline coordinated handover/topology boundary**, including exact trusted capability import, interrupted-import recovery and competing-legacy-writer refusal. Prepare and test the boundary before any live activation. Do not start it in this evidence-closing continuation.
 
 # 9. MODEL RECOMMENDATION
 
-**High** for that next evidence-reconciliation slice. Extra High is justified later for the cross-service authority handover, untrusted Jules repair boundary and overlapping current-main integration. It is not justified merely for downloading exact artifacts and applying established validators.
+**Extra High** for that 5.1 slice: the existing cross-service authority, state-CAS, capability and crash boundaries must agree. The completed deterministic 5.2 evidence slice required only High.
 
 # 10. ESTIMATED REMAINING IMPLEMENTATION WINDOWS
 
