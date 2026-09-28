@@ -36,7 +36,7 @@
     "merge_dispatch_count": 1,
     "quality_status": "passed",
     "quality_content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
-    "quality_checked_at": "2026-09-28T13:36:04.005596+00:00",
+    "quality_checked_at": "2026-09-28T20:21:47.621688+00:00",
     "quality_violations": [],
     "slug": "new-couples-navigating-disappointments",
     "title": "שנה ראשונה לנישואין: איך מתמודדים עם פער הציפיות במעבר לחיים משותפים?",
@@ -1866,7 +1866,7 @@
       "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-28T13:39:11.000647+00:00",
+  "updated_at": "2026-09-28T20:23:34.580102+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1971,7 +1971,7 @@
     "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
     "article_url": "https://kesher.saharoni.com/blog/new-couples-navigating-disappointments",
     "article_verified": true,
-    "updated_at": "2026-09-28T13:37:43.693293+00:00",
+    "updated_at": "2026-09-28T20:22:29.314073+00:00",
     "long_status": "complete",
     "long_last_dispatch_at": "2026-09-28T09:40:56.560912+00:00",
     "long_youtube_url": "https://youtu.be/2N-KqIPQ4gY",
@@ -1979,6 +1979,6 @@
     "short_status": "complete",
     "short_youtube_url": "https://youtu.be/HIsvyeJOaZs",
     "complete": true,
-    "completed_at": "2026-09-28T13:39:11.000680+00:00"
+    "completed_at": "2026-09-28T20:23:34.580135+00:00"
   }
 }
