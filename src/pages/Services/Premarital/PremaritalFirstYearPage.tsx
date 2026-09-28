@@ -51,6 +51,7 @@ const schemaData = {
     },
     {
       '@type': 'FAQPage',
+      '@id': `${SITE_CONFIG.url}/services/premarital-first-year#faq`,
       mainEntity: pageFaqs.map((faq) => ({
         '@type': 'Question',
         name: faq.question,

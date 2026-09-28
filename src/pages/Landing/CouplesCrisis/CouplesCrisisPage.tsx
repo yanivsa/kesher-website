@@ -128,6 +128,7 @@ const CouplesCrisisPage: React.FC = () => {
       },
       {
         '@type': 'FAQPage',
+      '@id': `${SITE_CONFIG.url}/services/couples/crisis#faq`,
         mainEntity: FAQS.map((faq) => ({
           '@type': 'Question',
           name: faq.q,
