@@ -1,6 +1,9 @@
 {
-  "slot": "2026-09-28",
+  "slot": "2026-09-29",
   "topic_brief": "נושא חדש: הנחיית הורים — מלכודת האיומים הריקים. Issue #954 הוא authoritative request. צור בדיוק מאמר אחד חדש, לאחר dedup. אין לייחס את הציטוט שסופק לאדם/סרטון מסוים ואין להציגו כציטוט מדויק אלא אם נמצא primary source שמאמת אותו. מקור תמיכה מאומת: C.S. Mott Children’s Hospital National Poll on Children’s Health / University of Michigan, Dec. 16 2024: https://mottpoll.org/reports/naughty-or-nice-parent-views-disciplining-young-children ; PDF: https://mottpoll.org/sites/default/files/documents/121624_Discipline.pdf . העיקרון הבטוח: איומים לא-ישימים שלא מקוימים עלולים ללמד ילדים להתעלם מאזהרות; העדף גבולות קטנים, רגועים, מיידיים, קשורים להתנהגות ובר-ביצוע, עם follow-through עקבי. Hook: 'זורקים על הילד איומים מפוצצים שברור לשניכם שלא תבצעו? הנה הסיבה שהוא מפסיק להקשיב לכם.' כלול 3–5 דוגמאות איום ריק → גבול בר-ביצוע, כולל פארק: 'הזמן בפארק הסתיים. אם אתה לא הולך, אני נותן לך יד ומלווה אותך לאוטו'. לאחר Article public/HTTP200/title verified המשך מאותה source identity ל-Video Overview ול-Short 9:16. Completion רק A+B+C. Controller V5 production; V6 shadow. אין duplicate article/PR/Jules/provider generation/upload.",
   "request_id": "empty-threats-follow-through-20260928-v1",
-  "issue": 954
+  "issue": 954,
+  "rescheduled_from": "2026-09-28",
+  "failure_signature": "COMPLETED_WITHOUT_PR",
+  "recovery": "preserve_issue_954_authoritative_topic_no_duplicate_article_or_session"
 }
