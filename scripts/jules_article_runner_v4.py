@@ -17,13 +17,14 @@ _v3_build_prompt = v3.build_prompt
 
 SEARCH_FIRST_CONTRACT = r"""
 
---- SEARCH-INTENT-FIRST TITLE CONTRACT ---
+--- CLICKABLE SEARCH-INTENT TITLE CONTRACT ---
 This contract is mandatory and must be completed BEFORE choosing the final topic,
-title, slug, excerpt or article angle. It supersedes any editorial-first title
-preference elsewhere in the article policy.
+title, slug, excerpt or article angle. It supersedes dry editorial naming and
+keyword-first title preferences elsewhere in the article policy.
 
-Goal: choose article names from the language real Hebrew-speaking users actually
-search for, not from abstract editorial labels or professional jargon.
+Goal: produce a Hebrew title that a real person would WANT to click because it
+names a felt problem, promises a useful outcome, and creates honest curiosity —
+while still matching language people actually search for.
 
 1. Before drafting, perform live Hebrew search-language research using the search/
    web capabilities available in the Jules run. The Primary Search Query must be
@@ -37,34 +38,56 @@ search for, not from abstract editorial labels or professional jargon.
 2. Select exactly ONE `Primary Search Query`: a natural Hebrew phrase/question a
    person could realistically type when looking for help with the chosen problem.
    Also record 2-3 close `Search Variants` that express the same intent.
-3. The final H1/article `title` must naturally contain the Primary Search Query or
-   a very close grammatical Hebrew variant. Prefer the actual search language at
-   the beginning of the title when it remains readable and human. An abstract,
-   literary or category-style title that hides the query is not acceptable.
-4. The `id`/slug, excerpt/opening answer and any SEO/meta title fields used by the
-   repository must all align with the SAME primary intent. Do not target a different
-   keyword in each field.
-5. Search intent comes before editorial cleverness, but natural Hebrew comes before
-   exact-match stuffing. Never repeat keywords unnaturally, manufacture awkward
-   Hebrew, or add irrelevant high-volume terms merely for SEO.
-6. Prefer problem/question phrasing users use (for example "למה...", "איך...",
-   "מה עושים כש...", or a direct service/problem phrase) over internal labels such
-   as "דינמיקה", "תהליכים" or category names when the latter are not the actual
-   query language.
-7. If no observed query signal can be found for a candidate topic, do NOT claim it
+3. BEFORE selecting the final title, generate at least FIVE materially different
+   headline candidates internally. At least three must use a high-click editorial
+   frame such as:
+   - "איך [להשיג תוצאה רצויה] בלי [המחיר/הטעות/ההתנהגות הלא רצויה]"
+   - "[בעיה יומיומית שמרגישים]? כך/מה עושים כדי [תוצאה מעשית]"
+   - "למה [בעיה] קורה דווקא כש... ומה עושים במקום"
+   - "[טעות/הרגל] שמחמיר את [הבעיה] — ומה אפשר לעשות אחרת"
+   - "לפני שאתם [תגובה אינטואיטיבית]: נסו את הדבר הזה"
+   - a concrete numbered promise ONLY when the article truly contains that exact
+     number of steps/examples.
+   Do not mechanically reuse one formula across consecutive articles.
+4. Choose the strongest candidate by this order:
+   A) instant relevance to a felt problem;
+   B) clear practical payoff;
+   C) honest curiosity / tension;
+   D) natural spoken Hebrew;
+   E) search-intent alignment.
+   Search intent is a constraint, not permission to publish a boring title.
+5. The final H1/article `title` must naturally contain the Primary Search Query or
+   a close grammatical Hebrew variant, but it does NOT have to begin with the exact
+   query. Put the human hook first when that materially improves click appeal.
+   Abstract, academic, category-style or therapist-jargon titles are unacceptable
+   when a concrete reader-facing formulation is possible.
+6. Prefer language that sounds like the reader's inner monologue: "למה הוא...",
+   "איך מפסיקים...", "מה עושים כש...", "רבים על...", "הילד לא...", "מרגישים ש...".
+   Avoid labels such as "דינמיקה", "תהליכים", "ויסות", "פערי ציפיות", "סמכות
+   הורית" or other professional abstractions in the visible title unless ordinary
+   users genuinely use them and they improve clarity.
+7. Use curiosity ethically. Never promise certainty, guaranteed outcomes, secret
+   tricks, shocking discoveries, universal mistakes, or research claims the article
+   cannot substantiate. A title may be punchy; it may not be misleading.
+8. The `id`/slug, excerpt/opening answer and any SEO/meta title fields used by the
+   repository must align with the SAME primary intent. The visible H1 may be more
+   emotionally compelling than the SEO phrasing as long as both describe the same
+   article accurately.
+9. If no observed query signal can be found for a candidate topic, do NOT claim it
    is a searched term. Change the candidate/query and keep researching. Do not
    submit the article PR until at least one current observed query signal supports
    the Primary Search Query or a close variant.
-8. In the PR body, include a compact audit block with these exact labels:
+10. In the PR body, include a compact audit block with these exact labels:
    `Primary Search Query: ...`
    `Search Variants: ...`
    `Search Evidence: ...`
+   `Headline Frame: ...`
    The evidence line must name the observed query signal/source and must not claim
    numeric volume unless a real numeric source was available in the run.
-9. Re-read the proposed title as a user query. If someone seeing only the title
-   cannot immediately tell which real search question/problem the article answers,
-   rewrite it before submission.
---- END SEARCH-INTENT-FIRST TITLE CONTRACT ---
+11. Final click test: imagine the title alone in Google, WhatsApp or Facebook.
+   If it reads like a lecture heading rather than something a stressed parent or
+   couple would click now, rewrite it before submission.
+--- END CLICKABLE SEARCH-INTENT TITLE CONTRACT ---
 """
 
 VIRAL_TOPIC_DISCOVERY_CONTRACT = r"""
