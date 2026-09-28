@@ -540,6 +540,31 @@
       "updated_at": "2026-09-18T12:20:11.191203+00:00",
       "verified_at": "2026-09-18T12:20:11.191203+00:00"
     },
+    "ksr-5e2e554304b26cf9df81d7a9": {
+      "command_id": "ksr-5e2e554304b26cf9df81d7a9",
+      "evidence_hash": "ee106a7566b2243d44f8c22ea4174aa067502d8920c6f11f27ad573cbf477a59",
+      "exact": {
+        "artifact_id": "952a9ff6-b539-49da-b655-7569c79439f1",
+        "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
+        "item_id": "video-20260928-122014-18afc8a70c",
+        "pr_number": 958,
+        "short_item_id": null,
+        "slug": "new-couples-navigating-disappointments",
+        "source_id": "84958290-bc69-4e6c-b301-af995e4e072a",
+        "task_id": "952a9ff6-b539-49da-b655-7569c79439f1"
+      },
+      "executor": "controller",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "656985f9a2082753e2310e2e27b28695",
+      "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|long_video",
+      "issued_at": "2026-09-28T09:37:51.122341+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebind_exact_source",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-28T09:37:51.122341+00:00"
+    },
     "ksr-5f5e392b29891dd4d0c5ba51": {
       "acknowledged_at": "2026-09-23T17:30:10.629394+00:00",
       "command_id": "ksr-5f5e392b29891dd4d0c5ba51",
@@ -2680,41 +2705,23 @@
       "strike": 2
     },
     "656985f9a2082753e2310e2e27b28695": {
-      "active_command_id": null,
+      "active_command_id": "ksr-5e2e554304b26cf9df81d7a9",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "656985f9a2082753e2310e2e27b28695",
-      "first_seen_at": "2026-09-28T09:08:40.838985+00:00",
+      "first_seen_at": "2026-09-28T09:37:51.122341+00:00",
       "history": [
         {
-          "at": "2026-09-28T09:08:40.838985+00:00",
-          "command_id": "ksr-81fd787d14822f6a3aab9f3e",
+          "at": "2026-09-28T09:37:51.122341+00:00",
+          "command_id": "ksr-5e2e554304b26cf9df81d7a9",
           "event": "command_issued",
           "stage": "S1"
-        },
-        {
-          "at": "2026-09-28T09:11:28.525007+00:00",
-          "command_id": "ksr-81fd787d14822f6a3aab9f3e",
-          "event": "command_failed",
-          "reason": "kesher-content-controller.yml run 36401644977 completed but exact incident persisted"
-        },
-        {
-          "at": "2026-09-28T09:11:28.525007+00:00",
-          "command_id": "ksr-77057c1f4a740cc857792700",
-          "event": "command_issued",
-          "stage": "S2"
-        },
-        {
-          "at": "2026-09-28T09:15:21.005822+00:00",
-          "event": "resolved",
-          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|long_video",
-      "last_seen_at": "2026-09-28T09:11:28.525007+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=656985f9a2082753e2310e2e27b28695 strike=2 stage=S2",
-      "resolved_at": "2026-09-28T09:15:21.005822+00:00",
-      "status": "resolved",
-      "strike": 2
+      "last_seen_at": "2026-09-28T09:37:51.122341+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=656985f9a2082753e2310e2e27b28695 strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
     },
     "6e57772fbbd109112776581c443668b0": {
       "active_command_id": null,
@@ -3232,5 +3239,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-28T09:15:21.005822+00:00"
+  "updated_at": "2026-09-28T09:37:51.122341+00:00"
 }
