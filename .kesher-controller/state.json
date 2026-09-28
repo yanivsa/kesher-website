@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-28",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36353943938,
@@ -36,7 +36,7 @@
     "merge_dispatch_count": 1,
     "quality_status": "passed",
     "quality_content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
-    "quality_checked_at": "2026-09-28T11:19:03.962537+00:00",
+    "quality_checked_at": "2026-09-28T11:28:35.804463+00:00",
     "quality_violations": [],
     "slug": "new-couples-navigating-disappointments",
     "title": "שנה ראשונה לנישואין: איך מתמודדים עם פער הציפיות במעבר לחיים משותפים?",
@@ -1858,9 +1858,15 @@
       "from": "long_video_running",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-09-28T11:29:14.227522+00:00",
+      "from": "short_running",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-28T11:19:51.050018+00:00",
+  "updated_at": "2026-09-28T11:29:14.227542+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -1899,20 +1905,37 @@
   },
   "short": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36414777724,
     "processed_run_id": 36414148290,
-    "provider_id": "952a9ff6-b539-49da-b655-7569c79439f1",
+    "provider_id": "5f628347-13e7-4480-a9f5-3bb0b38f5f5a",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-28T11:17:30.867751+00:00",
-    "artifact_id": "952a9ff6-b539-49da-b655-7569c79439f1",
-    "source_id": "84958290-bc69-4e6c-b301-af995e4e072a",
+    "artifact_id": "5f628347-13e7-4480-a9f5-3bb0b38f5f5a",
+    "source_id": "3dc1a4c3-cb54-4842-85a3-bdcfa60e111f",
     "adopted_from_long_item_id": "video-20260928-122014-18afc8a70c",
-    "last_run_conclusion": "success"
+    "last_run_conclusion": "success",
+    "item_id": "video-20260928-140446-18afc8a70c",
+    "type": "article_short",
+    "youtube_id": "HIsvyeJOaZs",
+    "youtube_url": "https://youtu.be/HIsvyeJOaZs",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "809b437d91d76f1a97bf3dbe9f5dd7975930f49e85c9fd8e6cba6f4a3a9258ef",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
@@ -1948,11 +1971,14 @@
     "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
     "article_url": "https://kesher.saharoni.com/blog/new-couples-navigating-disappointments",
     "article_verified": true,
-    "updated_at": "2026-09-28T11:19:18.032494+00:00",
+    "updated_at": "2026-09-28T11:28:50.090912+00:00",
     "long_status": "complete",
     "long_last_dispatch_at": "2026-09-28T09:40:56.560912+00:00",
     "long_youtube_url": "https://youtu.be/2N-KqIPQ4gY",
     "long_item_id": "video-20260928-122014-18afc8a70c",
-    "short_status": "running"
+    "short_status": "complete",
+    "short_youtube_url": "https://youtu.be/HIsvyeJOaZs",
+    "complete": true,
+    "completed_at": "2026-09-28T11:29:14.227593+00:00"
   }
 }
