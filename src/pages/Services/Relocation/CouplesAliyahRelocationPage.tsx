@@ -50,6 +50,7 @@ const schemaData = {
     },
     {
       '@type': 'FAQPage',
+      '@id': `${SITE_CONFIG.url}/services/couples-aliyah-relocation#faq`,
       mainEntity: pageFaqs.map((faq) => ({
         '@type': 'Question',
         name: faq.question,

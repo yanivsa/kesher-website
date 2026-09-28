@@ -128,6 +128,7 @@ const CouplesBeforeSeparationPage: React.FC = () => {
       },
       {
         '@type': 'FAQPage',
+      '@id': `${SITE_CONFIG.url}/services/couples/before-separation#faq`,
         mainEntity: FAQS.map((faq) => ({
           '@type': 'Question',
           name: faq.q,
