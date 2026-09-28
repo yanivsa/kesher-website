@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "target_slug": "new-couples-navigating-disappointments",
   "issue": 958,
   "purpose": "complete the existing 2026-09-28 source identity through public Video Overview and verified 9:16 Short without regenerating the published article",
   "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
-  "completed": false,
+  "completed": true,
   "requested_at": "2026-09-28T07:56:30Z"
 }
