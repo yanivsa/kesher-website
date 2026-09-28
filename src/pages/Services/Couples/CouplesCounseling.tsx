@@ -59,6 +59,7 @@ const schemaData = {
     },
     {
       "@type": "FAQPage",
+      "@id": `${SITE_CONFIG.url}/services/couples#faq`,
       "mainEntity": couplesFaqs.map(faq => ({
         "@type": "Question",
         "name": faq.question,

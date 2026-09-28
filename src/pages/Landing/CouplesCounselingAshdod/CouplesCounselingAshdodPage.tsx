@@ -183,6 +183,7 @@ const schemaData = {
     },
     {
       '@type': 'FAQPage',
+      '@id': `${SITE_CONFIG.url}/couples-counseling-ashdod#faq`,
       mainEntity: faqItems.map((item) => ({
         '@type': 'Question',
         name: item.question,
