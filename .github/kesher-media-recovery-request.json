@@ -1,11 +1,9 @@
 {
-  "enabled": false,
-  "target_slug": "siblings-fairness-vs-equality",
-  "issue": 951,
-  "purpose": "complete existing same-source Video Overview and 9:16 Short without regenerating the published article",
-  "completed": true,
-  "completed_at": "2026-09-27T19:18:13Z",
-  "article_url": "https://kesher.saharoni.com/blog/siblings-fairness-vs-equality",
-  "overview_youtube_url": "https://youtu.be/OPwpR3ReV0k",
-  "short_youtube_url": "https://youtu.be/TKAwQMzvP6U"
+  "enabled": true,
+  "target_slug": "new-couples-navigating-disappointments",
+  "issue": 958,
+  "purpose": "complete the existing 2026-09-28 source identity through public Video Overview and verified 9:16 Short without regenerating the published article",
+  "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
+  "completed": false,
+  "requested_at": "2026-09-28T07:56:30Z"
 }
