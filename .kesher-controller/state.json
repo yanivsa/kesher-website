@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-28",
-  "status": "article_image_running",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -31,7 +31,9 @@
     "pr_number": 958,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/958",
     "normalization_slot": "2026-09-28",
-    "normalization_dispatched_at": "2026-09-27T22:38:58.745370+00:00"
+    "normalization_dispatched_at": "2026-09-27T22:38:58.745370+00:00",
+    "merge_dispatch_at": "2026-09-28T05:55:53.977702+00:00",
+    "merge_dispatch_count": 1
   },
   "backlog": [
     {
@@ -1817,21 +1819,29 @@
         "attempt": 1,
         "pr_number": 958
       }
+    },
+    {
+      "at": "2026-09-28T05:55:51.967287+00:00",
+      "from": "article_image_running",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-09-28T00:40:36.706682+00:00",
+  "updated_at": "2026-09-28T05:55:51.967319+00:00",
   "image": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36363081794,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "Local",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-28T00:40:36.706650+00:00"
+    "last_dispatch_at": "2026-09-28T00:40:36.706650+00:00",
+    "artifact_sha256": "ac6cde28a40e2bfbee79854ed604c26e39d546759ba1c5b10b71818c91444b34",
+    "source_id": "local://public/images/generated/blog/communication-breakdown.jpg"
   },
   "long_video": {
     "attempt_count": 0,
