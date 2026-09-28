@@ -793,6 +793,7 @@
       "verified_at": "2026-09-18T12:04:45.559619+00:00"
     },
     "ksr-81fd787d14822f6a3aab9f3e": {
+      "acknowledged_at": "2026-09-28T09:09:09.278194+00:00",
       "command_id": "ksr-81fd787d14822f6a3aab9f3e",
       "evidence_hash": "3449d728ea03402f8741f8fec42a2413ca247faa89a03c06542c18b60fc984aa",
       "exact": {
@@ -810,12 +811,16 @@
       "fingerprint": "656985f9a2082753e2310e2e27b28695",
       "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|long_video",
       "issued_at": "2026-09-28T09:08:40.838985+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "already_active",
+        "run_id": 36401644977,
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-28T09:08:40.838985+00:00"
+      "updated_at": "2026-09-28T09:09:09.278194+00:00"
     },
     "ksr-8d83ce763cbad388f8a572f2": {
       "acknowledged_at": "2026-09-23T18:28:56.140035+00:00",
@@ -3148,5 +3153,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-28T09:08:40.838985+00:00"
+  "updated_at": "2026-09-28T09:09:09.278194+00:00"
 }
