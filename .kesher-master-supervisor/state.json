@@ -914,6 +914,31 @@
       "strike": 1,
       "updated_at": "2026-09-28T09:11:28.525007+00:00"
     },
+    "ksr-83f09e6c421d75af7181d198": {
+      "command_id": "ksr-83f09e6c421d75af7181d198",
+      "evidence_hash": "86421ab5e2f09ec4858453631a1045aef5ee9089b5657a82c92a8386c1f0dc35",
+      "exact": {
+        "artifact_id": "952a9ff6-b539-49da-b655-7569c79439f1",
+        "content_sha256": "18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292",
+        "item_id": "video-20260928-122014-18afc8a70c",
+        "pr_number": 958,
+        "short_item_id": null,
+        "slug": "new-couples-navigating-disappointments",
+        "source_id": "84958290-bc69-4e6c-b301-af995e4e072a",
+        "task_id": "952a9ff6-b539-49da-b655-7569c79439f1"
+      },
+      "executor": "controller",
+      "failure_signature": "SHORT_MISSING",
+      "fingerprint": "3360b2f269763f45167259fdc998f40d",
+      "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|short",
+      "issued_at": "2026-09-28T11:04:00.240602+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "continue_exact_short",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-28T11:04:00.240602+00:00"
+    },
     "ksr-8d83ce763cbad388f8a572f2": {
       "acknowledged_at": "2026-09-23T18:28:56.140035+00:00",
       "command_id": "ksr-8d83ce763cbad388f8a572f2",
@@ -2334,6 +2359,25 @@
       "status": "resolved",
       "strike": 2
     },
+    "3360b2f269763f45167259fdc998f40d": {
+      "active_command_id": "ksr-83f09e6c421d75af7181d198",
+      "failure_signature": "SHORT_MISSING",
+      "fingerprint": "3360b2f269763f45167259fdc998f40d",
+      "first_seen_at": "2026-09-28T11:04:00.240602+00:00",
+      "history": [
+        {
+          "at": "2026-09-28T11:04:00.240602+00:00",
+          "command_id": "ksr-83f09e6c421d75af7181d198",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|new-couples-navigating-disappointments|18afc8a70c212a2e6ae70376d6df2ad871cfa25cb5ce875316a7611c49110292|short",
+      "last_seen_at": "2026-09-28T11:04:00.240602+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=3360b2f269763f45167259fdc998f40d strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "37112045f18e85fe45bd9b9db45075bf": {
       "active_command_id": null,
       "failure_signature": "SHORT_MISSING",
@@ -3251,5 +3295,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-28T09:41:29.550485+00:00"
+  "updated_at": "2026-09-28T11:04:00.240602+00:00"
 }
