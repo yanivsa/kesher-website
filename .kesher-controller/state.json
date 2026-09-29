@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
-    "quality_checked_at": "2026-09-29T00:10:53.474452+00:00",
+    "quality_checked_at": "2026-09-29T00:25:26.468515+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1807,11 +1807,15 @@
     "next_retry_at": null,
     "run_id": 36501761665,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "52a1ab13-621a-464c-924f-335fc34a9bf8",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-29T00:10:26.283134+00:00"
+    "last_dispatch_at": "2026-09-29T00:30:11.472907+00:00",
+    "resume_dispatches": 1,
+    "item_id": "video-20260929-031240-7a6b5302a1",
+    "source_id": "1aba2203-d426-48be-b1f6-a502a1880960",
+    "artifact_id": "52a1ab13-621a-464c-924f-335fc34a9bf8"
   },
   "short": {
     "attempt_count": 0,
@@ -1833,8 +1837,8 @@
     "content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
     "article_url": "https://kesher.saharoni.com/blog/empty-threats-parenting",
     "article_verified": true,
-    "updated_at": "2026-09-29T00:11:22.649627+00:00",
+    "updated_at": "2026-09-29T00:25:54.919067+00:00",
     "long_status": "running",
-    "long_last_dispatch_at": "2026-09-29T00:10:26.283471+00:00"
+    "long_last_dispatch_at": "2026-09-29T00:30:11.473316+00:00"
   }
 }
