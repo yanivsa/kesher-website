@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-29",
-  "status": "article_live",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "complete",
@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
-    "quality_checked_at": "2026-09-29T20:23:12.387170+00:00",
+    "quality_checked_at": "2026-09-29T20:34:50.293711+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1849,9 +1849,15 @@
         "preserved_provider_id": "ed71e39d-b671-4c2d-9884-2cb745143096",
         "stale_short_identity_cleared": true
       }
+    },
+    {
+      "at": "2026-09-29T20:37:16.310131+00:00",
+      "from": "article_live",
+      "to": "short_running",
+      "reason": "Short derive workflow already active"
     }
   ],
-  "updated_at": "2026-09-29T20:17:55.353Z",
+  "updated_at": "2026-09-29T20:37:16.310145+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1866,7 +1872,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36625886622,
@@ -1880,17 +1886,17 @@
     "item_id": "video-20260929-210846-fb0c4c9c03",
     "source_id": "282d3b15-566f-4bb4-8389-4d5c3b8bd483",
     "artifact_id": "ed71e39d-b671-4c2d-9884-2cb745143096",
-    "youtube_id": "fasTEUq4bBA",
-    "youtube_url": "https://youtu.be/fasTEUq4bBA",
+    "youtube_id": "HFk-vZP5yl8",
+    "youtube_url": "https://youtu.be/HFk-vZP5yl8",
     "verified": true,
     "last_run_conclusion": null
   },
   "short": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 36626858424,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -1928,11 +1934,12 @@
     "content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
     "article_url": "https://kesher.saharoni.com/blog/breaking-the-yelling-cycle",
     "article_verified": true,
-    "updated_at": "2026-09-29T20:23:42.905422+00:00",
-    "long_status": "running",
+    "updated_at": "2026-09-29T20:35:47.726210+00:00",
+    "long_status": "complete",
     "long_last_dispatch_at": "2026-09-29T20:22:27.550609+00:00",
-    "long_youtube_url": "https://youtu.be/fasTEUq4bBA",
-    "short_status": "pending",
-    "complete": false
+    "long_youtube_url": "https://youtu.be/HFk-vZP5yl8",
+    "short_status": "running",
+    "complete": false,
+    "long_item_id": "video-20260929-210846-fb0c4c9c03"
   }
 }
