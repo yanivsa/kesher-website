@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
-    "quality_checked_at": "2026-09-29T00:06:52.844837+00:00",
+    "quality_checked_at": "2026-09-29T00:10:53.474452+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1805,7 +1805,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 36501761665,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -1833,7 +1833,7 @@
     "content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
     "article_url": "https://kesher.saharoni.com/blog/empty-threats-parenting",
     "article_verified": true,
-    "updated_at": "2026-09-29T00:08:00.948072+00:00",
+    "updated_at": "2026-09-29T00:11:22.649627+00:00",
     "long_status": "running",
     "long_last_dispatch_at": "2026-09-29T00:10:26.283471+00:00"
   }
