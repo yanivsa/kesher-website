@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-29",
-  "status": "short_retry_wait",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
-    "quality_checked_at": "2026-09-29T10:25:09.420718+00:00",
+    "quality_checked_at": "2026-09-29T12:45:12.793753+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1821,12 +1821,18 @@
       "details": {
         "retry_at": "2026-09-29T10:29:14.429698+00:00"
       }
+    },
+    {
+      "at": "2026-09-29T12:49:34.280972+00:00",
+      "from": "short_retry_wait",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-29T10:27:47.124921+00:00",
+  "updated_at": "2026-09-29T12:49:34.280993+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1858,29 +1864,40 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "retry_wait",
-    "last_error": {
-      "code": "SHORT_WORKFLOW_FAILED",
-      "message": "Short derive run 36554571971 completed with conclusion=failure",
-      "retryable": true,
-      "retry_at": "2026-09-29T10:29:14.429698+00:00",
-      "at": "2026-09-29T10:24:14.429722+00:00"
-    },
-    "next_retry_at": "2026-09-29T10:29:14.429698+00:00",
+    "status": "complete",
+    "last_error": null,
+    "next_retry_at": null,
     "run_id": 36554571971,
     "processed_run_id": 36554571971,
-    "provider_id": "74acb03d-a460-49e1-88db-e503188e319a",
-    "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "provider_id": "de00eaeb-7dc2-4d6d-b64d-547f5d808662",
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "SHORT_WORKFLOW_FAILED": 1
     },
     "last_dispatch_at": "2026-09-29T10:16:47.718128+00:00",
-    "artifact_id": "74acb03d-a460-49e1-88db-e503188e319a",
-    "source_id": "78924679-ac8f-49c3-8a2f-86e61b742174",
+    "artifact_id": "de00eaeb-7dc2-4d6d-b64d-547f5d808662",
+    "source_id": "34358342-32b6-4026-89b3-6ca961d076f9",
     "adopted_from_long_item_id": "video-20260929-090651-7a6b5302a1",
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 36554571971
+    "last_failed_run_id": 36554571971,
+    "item_id": "video-20260929-150258-7a6b5302a1",
+    "type": "article_short",
+    "youtube_id": "7CQ4ZzalH9o",
+    "youtube_url": "https://youtu.be/7CQ4ZzalH9o",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "f1391800833689fb86b6711346a83877dbabd54dd5482ebe68a6f9d374b785ff",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
@@ -1890,11 +1907,14 @@
     "content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
     "article_url": "https://kesher.saharoni.com/blog/empty-threats-parenting",
     "article_verified": true,
-    "updated_at": "2026-09-29T10:26:33.702771+00:00",
+    "updated_at": "2026-09-29T12:48:27.105401+00:00",
     "long_status": "complete",
     "long_last_dispatch_at": "2026-09-29T09:19:52.998672+00:00",
     "long_youtube_url": "https://youtu.be/fasTEUq4bBA",
     "long_item_id": "video-20260929-090651-7a6b5302a1",
-    "short_status": "retry_wait"
+    "short_status": "complete",
+    "short_youtube_url": "https://youtu.be/7CQ4ZzalH9o",
+    "complete": true,
+    "completed_at": "2026-09-29T12:49:34.281009+00:00"
   }
 }
