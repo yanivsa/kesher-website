@@ -138,6 +138,7 @@
       "verified_at": "2026-09-23T11:38:42.897477+00:00"
     },
     "ksr-1d0a8fb9a61f6e0e11664f10": {
+      "acknowledged_at": "2026-09-29T10:24:33.179151+00:00",
       "command_id": "ksr-1d0a8fb9a61f6e0e11664f10",
       "evidence_hash": "e993ba9f1e4db640e3e4be1f74d57ca699d48f0fe651b3067f6b41ab42099d3f",
       "exact": {
@@ -155,12 +156,17 @@
       "fingerprint": "3417213b5eeb990eedc5e4a9e2cc379f",
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|short",
       "issued_at": "2026-09-29T10:23:39.146340+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "issued",
+        "dispatched_at": "2026-09-29T10:24:33.179151+00:00",
+        "inputs": {},
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "rebuild_exact_short",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-29T10:23:39.146340+00:00"
+      "updated_at": "2026-09-29T10:24:33.179151+00:00"
     },
     "ksr-1e153689fb28ae497a36a735": {
       "acknowledged_at": "2026-09-17T11:13:24.173018+00:00",
@@ -3602,5 +3608,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-29T10:23:39.146340+00:00"
+  "updated_at": "2026-09-29T10:24:33.179151+00:00"
 }
