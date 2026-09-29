@@ -218,7 +218,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(item["task_id"], "task-exact")
         self.assertEqual(item["artifact_id"], "task-exact")
         self.assertEqual(item["status"], "generating")
-        self.assertIn("קול של אישה ישראלית", item["generation_prompt"])
+        self.assertIn("כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד", item["generation_prompt"])
         self.assertEqual(item["generation_prompt_sha256"], pipeline.sha256_text(item["generation_prompt"]))
         arguments = run.call_args.args[0]
         self.assertEqual(arguments[arguments.index("--style") + 1], "auto")
