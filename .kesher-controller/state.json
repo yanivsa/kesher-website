@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
-    "quality_checked_at": "2026-09-29T22:28:07.206302+00:00",
+    "quality_checked_at": "2026-09-29T23:24:27.056324+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1815,7 +1815,7 @@
       "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-29T22:29:14.819031+00:00",
+  "updated_at": "2026-09-29T23:25:09.873439+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1885,13 +1885,13 @@
     "content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
     "article_url": "https://kesher.saharoni.com/blog/breaking-the-yelling-cycle",
     "article_verified": true,
-    "updated_at": "2026-09-29T22:28:34.639639+00:00",
+    "updated_at": "2026-09-29T23:24:42.530489+00:00",
     "long_status": "complete",
     "long_youtube_url": "https://youtu.be/HFk-vZP5yl8",
     "long_item_id": "video-20260929-210846-fb0c4c9c03",
     "short_status": "complete",
     "short_youtube_url": "https://youtu.be/lEX9dUlWvZI",
     "complete": true,
-    "completed_at": "2026-09-29T22:29:14.819046+00:00"
+    "completed_at": "2026-09-29T23:25:09.873489+00:00"
   }
 }
