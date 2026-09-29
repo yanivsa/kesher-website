@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-29",
-  "status": "short_running",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
     "status": "complete",
@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
-    "quality_checked_at": "2026-09-29T20:34:50.293711+00:00",
+    "quality_checked_at": "2026-09-29T20:50:59.305316+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1855,9 +1855,15 @@
       "from": "article_live",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-09-29T20:53:09.875109+00:00",
+      "from": "short_running",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-29T20:37:16.310145+00:00",
+  "updated_at": "2026-09-29T20:53:09.875130+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1893,38 +1899,38 @@
   },
   "short": {
     "attempt_count": 0,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36626858424,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "ccdced5d-b099-4db4-95b7-829345b98469",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-29T10:16:47.718128+00:00",
-    "artifact_id": null,
-    "source_id": null,
+    "artifact_id": "ccdced5d-b099-4db4-95b7-829345b98469",
+    "source_id": "d2001c7c-6fa9-40fd-9aa6-05af19795bdb",
     "adopted_from_long_item_id": null,
     "last_run_conclusion": null,
     "last_failed_run_id": null,
-    "item_id": null,
-    "type": null,
-    "youtube_id": null,
-    "youtube_url": null,
-    "verified": false,
-    "portrait_verified": false,
-    "signature_verified": false,
-    "signature_asset": null,
-    "signature_sha256": null,
-    "visual_pipeline": null,
-    "technical_verified": false,
-    "signature_duration_seconds": 3,
-    "signature_fullscreen": false,
-    "signature_video_sha256": null,
-    "source_mode": null,
-    "width": null,
-    "height": null
+    "item_id": "video-20260929-233232-fb0c4c9c03",
+    "type": "article_short",
+    "youtube_id": "lEX9dUlWvZI",
+    "youtube_url": "https://youtu.be/lEX9dUlWvZI",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "c0c22d6fd4402d5ad95129ca1125b380778aa7f9e3b3db13ad3ea5f21cfae330",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920
   },
   "migration": {
     "v4_short_controller_state": null
@@ -1934,12 +1940,14 @@
     "content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
     "article_url": "https://kesher.saharoni.com/blog/breaking-the-yelling-cycle",
     "article_verified": true,
-    "updated_at": "2026-09-29T20:35:47.726210+00:00",
+    "updated_at": "2026-09-29T20:51:47.393884+00:00",
     "long_status": "complete",
     "long_last_dispatch_at": "2026-09-29T20:22:27.550609+00:00",
     "long_youtube_url": "https://youtu.be/HFk-vZP5yl8",
-    "short_status": "running",
-    "complete": false,
-    "long_item_id": "video-20260929-210846-fb0c4c9c03"
+    "short_status": "complete",
+    "complete": true,
+    "long_item_id": "video-20260929-210846-fb0c4c9c03",
+    "short_youtube_url": "https://youtu.be/lEX9dUlWvZI",
+    "completed_at": "2026-09-29T20:53:09.875153+00:00"
   }
 }
