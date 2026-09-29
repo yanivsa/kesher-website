@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-29",
-  "status": "article_needed",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
-    "quality_checked_at": "2026-09-29T09:10:58.953356+00:00",
+    "quality_checked_at": "2026-09-29T10:15:34.775825+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1785,9 +1785,15 @@
       "from": "article_needed",
       "to": "v5_migrated",
       "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-09-29T10:16:47.718148+00:00",
+      "from": "article_needed",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-09-29T00:06:52.395078+00:00",
+  "updated_at": "2026-09-29T10:16:47.718154+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1802,7 +1808,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36501761665,
@@ -1815,19 +1821,26 @@
     "resume_dispatches": 2,
     "item_id": "video-20260929-090651-7a6b5302a1",
     "source_id": "78924679-ac8f-49c3-8a2f-86e61b742174",
-    "artifact_id": "74acb03d-a460-49e1-88db-e503188e319a"
+    "artifact_id": "74acb03d-a460-49e1-88db-e503188e319a",
+    "youtube_id": "fasTEUq4bBA",
+    "youtube_url": "https://youtu.be/fasTEUq4bBA",
+    "verified": true
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "74acb03d-a460-49e1-88db-e503188e319a",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-09-29T10:16:47.718128+00:00",
+    "artifact_id": "74acb03d-a460-49e1-88db-e503188e319a",
+    "source_id": "78924679-ac8f-49c3-8a2f-86e61b742174",
+    "adopted_from_long_item_id": "video-20260929-090651-7a6b5302a1"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -1837,8 +1850,11 @@
     "content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
     "article_url": "https://kesher.saharoni.com/blog/empty-threats-parenting",
     "article_verified": true,
-    "updated_at": "2026-09-29T09:12:23.115209+00:00",
-    "long_status": "running",
-    "long_last_dispatch_at": "2026-09-29T09:19:52.998672+00:00"
+    "updated_at": "2026-09-29T10:15:54.327575+00:00",
+    "long_status": "complete",
+    "long_last_dispatch_at": "2026-09-29T09:19:52.998672+00:00",
+    "long_youtube_url": "https://youtu.be/fasTEUq4bBA",
+    "long_item_id": "video-20260929-090651-7a6b5302a1",
+    "short_status": "running"
   }
 }
