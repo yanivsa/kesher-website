@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-29",
-  "status": "complete",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "complete",
@@ -17,8 +17,8 @@
     "deploy_attempts": 0,
     "normalization_status": "pending",
     "quality_status": "passed",
-    "quality_content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
-    "quality_checked_at": "2026-09-29T15:09:18.066966+00:00",
+    "quality_content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
+    "quality_checked_at": "2026-09-29T18:01:39.358005+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1211,7 +1211,12 @@
       "archived_at": "2026-09-27T22:03:26.232163+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+    "message": "targeted media article is not publicly verified: breaking-the-yelling-cycle",
+    "at": "2026-09-29T18:01:51.074728+00:00"
+  },
   "history": [
     {
       "at": "2026-09-25T09:25:56.357025+00:00",
@@ -1827,9 +1832,18 @@
       "from": "short_retry_wait",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-29T18:01:51.074742+00:00",
+      "from": "complete",
+      "to": "blocked",
+      "reason": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+      "details": {
+        "message": "targeted media article is not publicly verified: breaking-the-yelling-cycle"
+      }
     }
   ],
-  "updated_at": "2026-09-29T15:11:18.061800+00:00",
+  "updated_at": "2026-09-29T18:01:51.074747+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
