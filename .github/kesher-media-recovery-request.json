@@ -4,5 +4,7 @@
   "issue": 954,
   "purpose": "complete the existing published empty-threats-parenting source identity through public Video Overview and verified 9:16 Short without regenerating the article",
   "completed": false,
-  "requested_at": "2026-09-28T19:00:00Z"
+  "requested_at": "2026-09-29T00:08:00Z",
+  "failure_signature": "REJECTED_LONG_VIDEO_MALE_VOICE_PITCH",
+  "recovery": "reuse_exact_item_then_remotion_rebuild_no_duplicate_provider_generation"
 }
