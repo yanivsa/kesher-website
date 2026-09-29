@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-29",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "complete",
@@ -1211,12 +1211,7 @@
       "archived_at": "2026-09-27T22:03:26.232163+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
-    "message": "targeted media article is not publicly verified: breaking-the-yelling-cycle",
-    "at": "2026-09-29T18:01:51.074728+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-25T09:25:56.357025+00:00",
@@ -1841,9 +1836,22 @@
       "details": {
         "message": "targeted media article is not publicly verified: breaking-the-yelling-cycle"
       }
+    },
+    {
+      "at": "2026-09-29T20:17:55.353Z",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "owner_recovery_reset_after_pyav_fix",
+      "details": {
+        "slug": "breaking-the-yelling-cycle",
+        "content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
+        "preserved_long_item_id": "video-20260929-210846-fb0c4c9c03",
+        "preserved_provider_id": "ed71e39d-b671-4c2d-9884-2cb745143096",
+        "stale_short_identity_cleared": true
+      }
     }
   ],
-  "updated_at": "2026-09-29T18:01:51.074747+00:00",
+  "updated_at": "2026-09-29T20:17:55.353Z",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1857,61 +1865,60 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 36609811857,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": "ed71e39d-b671-4c2d-9884-2cb745143096",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-29T18:23:28.170199+00:00",
-    "resume_dispatches": 3,
+    "resume_dispatches": 0,
     "item_id": "video-20260929-210846-fb0c4c9c03",
     "source_id": "282d3b15-566f-4bb4-8389-4d5c3b8bd483",
     "artifact_id": "ed71e39d-b671-4c2d-9884-2cb745143096",
     "youtube_id": "fasTEUq4bBA",
     "youtube_url": "https://youtu.be/fasTEUq4bBA",
-    "verified": true
+    "verified": true,
+    "last_run_conclusion": null
   },
   "short": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 36554571971,
-    "processed_run_id": 36554571971,
-    "provider_id": "de00eaeb-7dc2-4d6d-b64d-547f5d808662",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "SHORT_WORKFLOW_FAILED": 1
-    },
+    "failure_count_by_type": {},
     "last_dispatch_at": "2026-09-29T10:16:47.718128+00:00",
-    "artifact_id": "de00eaeb-7dc2-4d6d-b64d-547f5d808662",
-    "source_id": "34358342-32b6-4026-89b3-6ca961d076f9",
-    "adopted_from_long_item_id": "video-20260929-090651-7a6b5302a1",
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 36554571971,
-    "item_id": "video-20260929-150258-7a6b5302a1",
-    "type": "article_short",
-    "youtube_id": "7CQ4ZzalH9o",
-    "youtube_url": "https://youtu.be/7CQ4ZzalH9o",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "f1391800833689fb86b6711346a83877dbabd54dd5482ebe68a6f9d374b785ff",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "artifact_id": null,
+    "source_id": null,
+    "adopted_from_long_item_id": null,
+    "last_run_conclusion": null,
+    "last_failed_run_id": null,
+    "item_id": null,
+    "type": null,
+    "youtube_id": null,
+    "youtube_url": null,
+    "verified": false,
+    "portrait_verified": false,
+    "signature_verified": false,
+    "signature_asset": null,
+    "signature_sha256": null,
+    "visual_pipeline": null,
+    "technical_verified": false,
+    "signature_duration_seconds": 3,
+    "signature_fullscreen": false,
+    "signature_video_sha256": null,
+    "source_mode": null,
+    "width": null,
+    "height": null
   },
   "migration": {
     "v4_short_controller_state": null
@@ -1922,13 +1929,10 @@
     "article_url": "https://kesher.saharoni.com/blog/breaking-the-yelling-cycle",
     "article_verified": true,
     "updated_at": "2026-09-29T18:21:37.614768+00:00",
-    "long_status": "running",
+    "long_status": "pending",
     "long_last_dispatch_at": "2026-09-29T18:23:28.170531+00:00",
     "long_youtube_url": "https://youtu.be/fasTEUq4bBA",
-    "long_item_id": "video-20260929-090651-7a6b5302a1",
-    "short_status": "complete",
-    "short_youtube_url": "https://youtu.be/7CQ4ZzalH9o",
-    "complete": true,
-    "completed_at": "2026-09-29T15:11:18.061838+00:00"
+    "short_status": "pending",
+    "complete": false
   }
 }
