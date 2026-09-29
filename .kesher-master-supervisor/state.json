@@ -657,7 +657,7 @@
       "fingerprint": "3417213b5eeb990eedc5e4a9e2cc379f",
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|short",
       "issued_at": "2026-09-29T12:12:50.925325+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "external_run_id": 36554571971,
         "external_workflow": "Kesher Daily Article Short V4",
@@ -697,7 +697,8 @@
       "running_at": "2026-09-29T12:17:13.518218+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-29T12:17:13.518218+00:00"
+      "updated_at": "2026-09-29T12:50:07.662417+00:00",
+      "verified_at": "2026-09-29T12:50:07.662417+00:00"
     },
     "ksr-67b3738723253ac703e0b228": {
       "acknowledged_at": "2026-09-23T16:25:41.155331+00:00",
@@ -2688,7 +2689,7 @@
       "strike": 1
     },
     "3417213b5eeb990eedc5e4a9e2cc379f": {
-      "active_command_id": "ksr-63b7ab96b2df5f31151ac179",
+      "active_command_id": null,
       "failure_signature": "SHORT_NOT_PORTRAIT",
       "fingerprint": "3417213b5eeb990eedc5e4a9e2cc379f",
       "first_seen_at": "2026-09-29T10:23:39.146340+00:00",
@@ -2710,12 +2711,18 @@
           "command_id": "ksr-63b7ab96b2df5f31151ac179",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-29T12:50:07.662417+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|short",
       "last_seen_at": "2026-09-29T12:17:13.518218+00:00",
       "marker": "MASTER_ESCALATION fingerprint=3417213b5eeb990eedc5e4a9e2cc379f strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-29T12:50:07.662417+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "37112045f18e85fe45bd9b9db45075bf": {
@@ -3685,5 +3692,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-29T12:17:13.518218+00:00"
+  "updated_at": "2026-09-29T12:50:07.662417+00:00"
 }
