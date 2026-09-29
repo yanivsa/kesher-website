@@ -1,9 +1,8 @@
 {
-  "slot": "2026-09-29",
-  "topic_brief": "נושא חדש: הנחיית הורים — מלכודת האיומים הריקים. Issue #954 הוא authoritative request. צור בדיוק מאמר אחד חדש, לאחר dedup. אין לייחס את הציטוט שסופק לאדם/סרטון מסוים ואין להציגו כציטוט מדויק אלא אם נמצא primary source שמאמת אותו. מקור תמיכה מאומת: C.S. Mott Children’s Hospital National Poll on Children’s Health / University of Michigan, Dec. 16 2024: https://mottpoll.org/reports/naughty-or-nice-parent-views-disciplining-young-children ; PDF: https://mottpoll.org/sites/default/files/documents/121624_Discipline.pdf . העיקרון הבטוח: איומים לא-ישימים שלא מקוימים עלולים ללמד ילדים להתעלם מאזהרות; העדף גבולות קטנים, רגועים, מיידיים, קשורים להתנהגות ובר-ביצוע, עם follow-through עקבי. Hook: 'זורקים על הילד איומים מפוצצים שברור לשניכם שלא תבצעו? הנה הסיבה שהוא מפסיק להקשיב לכם.' כלול 3–5 דוגמאות איום ריק → גבול בר-ביצוע, כולל פארק: 'הזמן בפארק הסתיים. אם אתה לא הולך, אני נותן לך יד ומלווה אותך לאוטו'. לאחר Article public/HTTP200/title verified המשך מאותה source identity ל-Video Overview ול-Short 9:16. Completion רק A+B+C. Controller V5 production; V6 shadow. אין duplicate article/PR/Jules/provider generation/upload.",
-  "request_id": "empty-threats-follow-through-20260928-v1",
-  "issue": 954,
-  "rescheduled_from": "2026-09-28",
-  "failure_signature": "COMPLETED_WITHOUT_PR",
-  "recovery": "preserve_issue_954_authoritative_topic_no_duplicate_article_or_session"
+  "slot": "2026-09-30",
+  "topic_brief": "Authoritative topic request: Issue #975 — הנחיית הורים: \"כלל הקרבה הפיזית\" — להפסיק לצעוק הוראות מהמטבח. צור בדיוק מאמר אחד חדש לאחר dedup. Hook שיווקי: \"צועקים לילד מהמטבח 5 פעמים 'בוא לאכול' והוא מתעלם? הנה כלל הקרבה שיכול לשנות את הדינמיקה.\" אין לייחס את הציטוט שסופק ליוצר/סרטון מסוים ואין להציגו כציטוט מדויק ללא primary source מאומת. אין לטעון ל-90% פחות מאבקים או כל אפקט מספרי ללא מקור. מקור תמיכה ראשי מאומת: CDC Essentials for Parenting — https://www.cdc.gov/parenting-toddlers/directions/good-directions.html וגם https://www.cdc.gov/parenting-toddlers/communication/giving-directions.html . העיקרון הנתמך: להתקרב לילד ולהשיג קשב/קשר עין, לתת הוראה אחת ספציפית ובטון רגוע, לא לצעוק או לחזור שוב ושוב, ולעשות follow-through עקבי. ה-CDC מציין שחזרה והרמת קול עלולות ללמד ילד שאינו צריך לפעול עד שההורה צועק. דוגמאות חובה: 'בוא לאכול', 'תכבה את הטלוויזיה', 'תנעל נעליים'. רצף מעשי: גישה לילד → קשב/גובה עיניים כשמתאים → הוראה אחת קצרה וספציפית → המתנה קצרה בשקט → follow-through רגוע ובר-ביצוע. אין להציג '3 שניות' ככלל קליני אוניברסלי; אפשר כדוגמה מעשית בלבד. אין להציג ליווי פיזי ככוח; רק ליווי עדין, מותאם גיל ובטיחות. ציין שחוסר יכולת, הסחת דעת, מגבלות התפתחות, שמיעה/שפה או נוירודיברסיות אינם פשוט 'אי-ציות'. סגנון KESHER: חם, פרקטי, לא מאשים. לאחר Article public/HTTP200/title verified המשך מאותה source identity ל-Video Overview ציבורי ול-Short ציבורי 9:16. Completion רק A+B+C. אין duplicate article/PR/Jules/provider generation/upload.",
+  "request_id": "physical-proximity-parenting-20260929-v1",
+  "issue": 975,
+  "requested_at": "2026-09-29T15:05:00Z",
+  "completion": "article_video_short_same_identity"
 }
