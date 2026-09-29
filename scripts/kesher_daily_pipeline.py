@@ -63,6 +63,7 @@ SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
 SIGNATURE_DURATION_SECONDS = 3.0
 FEMALE_PITCH_MIN_HZ = 155.0
+VOICE_CONSTRAINT_VERSION = "female-he-v2"
 PRODUCTION_CONTRACT_FILE = PROJECT_DIR / "config" / "kesher-production-contract.json"
 
 
@@ -349,9 +350,13 @@ def auth_preflight() -> dict[str, Any]:
 
 def generation_prompt(source: dict[str, Any]) -> str:
     prompt = (
+        "חובה: כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד. אין להשתמש בקול גברי, "
+        "אין להחליף בין דוברים, ואין להשתמש בקול ניטרלי או דו-קולי. "
+        "הקול צריך להישמע כאישה ישראלית בוגרת, טבעית, חמה, ברורה ומקצועית. "
+        "אם אין אפשרות להבטיח קול נשי — אל תפיק תוצר. "
         "צור סקירת וידאו מסוג הסבר, בעברית טבעית בלבד, המבוססת אך ורק על המקור שנבחר. "
         "אורך היעד הוא בין תשעים למאה ושמונים שניות, ביחס אופקי טבעי של שש עשרה לתשע. "
-        "השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות. "
+        "תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד. "
         "הקריינות כולה תהיה תמציתית ותכיל לכל היותר מאתיים ושישים מילים. "
         "הצג רעיון מרכזי אחד, דוגמה ביתית מוחשית ופעולה אחת שאפשר לנסות. "
         "אל תערבב בין הורות לזוגיות אם המקור עוסק רק באחד מהם. "
@@ -370,6 +375,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": f"video-{stamp}-{source['content_sha256'][:10]}",
         "type": "video_overview",
+        "voice_constraint_version": VOICE_CONSTRAINT_VERSION,
         "israel_date": israel_now().date().isoformat(),
         "status": "source_selected",
         "source": {key: value for key, value in source.items() if key not in {"body", "youtube_metadata"}},
@@ -476,6 +482,7 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     item["artifact_id"] = task_id
     item["generation_prompt"] = prompt
     item["generation_prompt_sha256"] = sha256_text(prompt)
+    item["voice_constraint_version"] = VOICE_CONSTRAINT_VERSION
     item["status"] = "generating"
     item["generation_started_at"] = utc_now()
     item["updated_at"] = utc_now()
@@ -658,6 +665,12 @@ def estimate_voice_pitch(media_path: Path) -> float | None:
         return None
     pitches.sort()
     return pitches[len(pitches) // 2]
+
+
+def voice_failure_fingerprint(item: dict[str, Any]) -> str:
+    prompt_sha = str(item.get("generation_prompt_sha256") or "missing-prompt-sha")
+    source_sha = str((item.get("source") or {}).get("content_sha256") or "missing-source-sha")
+    return f"wrong_narrator_gender:{prompt_sha}:{source_sha}"
 
 
 def validate_female_voice(
@@ -865,7 +878,12 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         )
     female_ok, pitch_hz, pitch_msg = validate_female_voice(final_path, item)
     if not female_ok:
+        item["failure_signature"] = "wrong_narrator_gender"
+        item["failure_fingerprint"] = voice_failure_fingerprint(item)
         technical_failures.append(pitch_msg)
+    else:
+        item.pop("failure_signature", None)
+        item.pop("failure_fingerprint", None)
     metadata = apply_enhancement_media_credits(item)
     metadata_failure = ""
     try:
@@ -892,6 +910,9 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "artifact_id": item["artifact_id"],
         "generation_prompt": item.get("generation_prompt"),
         "generation_prompt_sha256": item.get("generation_prompt_sha256"),
+        "voice_constraint_version": item.get("voice_constraint_version"),
+        "failure_signature": item.get("failure_signature"),
+        "failure_fingerprint": item.get("failure_fingerprint"),
         "raw_mp4": item["raw_mp4"],
         "raw_sha256": item["raw_sha256"],
         "final_mp4": item["final_mp4"],

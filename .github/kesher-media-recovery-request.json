@@ -1,10 +1,10 @@
 {
   "enabled": true,
-  "target_slug": "empty-threats-parenting",
-  "issue": 954,
-  "purpose": "complete the existing published empty-threats-parenting source identity through public Video Overview and verified 9:16 Short without regenerating the article",
+  "target_slug": "breaking-the-yelling-cycle",
+  "issue": 975,
+  "purpose": "after the evidence-grounded in-place update of the existing breaking-the-yelling-cycle article is merged, continue that exact source identity through a public Video Overview and verified 9:16 Short without creating a duplicate article",
   "completed": false,
-  "requested_at": "2026-09-29T00:08:00Z",
-  "failure_signature": "REJECTED_LONG_VIDEO_MALE_VOICE_PITCH",
-  "recovery": "reuse_exact_item_then_remotion_rebuild_no_duplicate_provider_generation"
+  "requested_at": "2026-09-29T15:40:00Z",
+  "failure_signature": "DEDUP_ADOPT_EXISTING_ARTICLE_MEDIA_MISSING",
+  "recovery": "reuse_existing_article_slug_after_update_then_exact_video_then_exact_short_no_duplicate_article_or_provider_generation"
 }

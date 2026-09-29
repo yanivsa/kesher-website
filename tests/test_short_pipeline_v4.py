@@ -25,7 +25,9 @@ class ShortPipelineV4Tests(unittest.TestCase):
 
     def test_prompt_requests_one_complete_short_ready_hebrew_idea_without_duration_cap(self):
         prompt = short.generation_prompt(self.source())
-        self.assertIn("קול של אישה ישראלית", prompt)
+        self.assertIn("כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד", prompt)
+        self.assertIn("אין להשתמש בקול גברי", prompt)
+        self.assertIn("תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד", prompt)
         self.assertIn("סרטון אנכי ביחס 9:16", prompt)
         self.assertIn("אין ליצור סקירת וידאו אופקית", prompt)
         self.assertIn("הרעיון השלם", prompt)
