@@ -138,8 +138,21 @@ class PipelineTestCase(unittest.TestCase):
 
     def test_generation_prompt_always_requests_female_hebrew_voice(self) -> None:
         prompt = pipeline.generation_prompt(pipeline.source_metadata(hebrew_post()))
-        self.assertIn("קול של אישה ישראלית", prompt)
+        self.assertIn("כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד", prompt)
+        self.assertIn("אין להשתמש בקול גברי", prompt)
+        self.assertIn("אם אין אפשרות להבטיח קול נשי — אל תפיק תוצר", prompt)
+        self.assertIn("תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד", prompt)
         self.assertIn("בעברית טבעית בלבד", prompt)
+
+    def test_voice_constraint_version_and_failure_fingerprint_are_durable(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        item = pipeline.new_item(source)
+        item["generation_prompt_sha256"] = "prompt-sha"
+        self.assertEqual(item["voice_constraint_version"], "female-he-v2")
+        self.assertEqual(
+            pipeline.voice_failure_fingerprint(item),
+            f"wrong_narrator_gender:prompt-sha:{source['content_sha256']}",
+        )
 
     def test_voice_runtime_rejects_early_male_audio_then_accepts_configured_fallback(self) -> None:
         with mock.patch.object(pipeline, "estimate_voice_pitch", return_value=129.0):
@@ -205,7 +218,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(item["task_id"], "task-exact")
         self.assertEqual(item["artifact_id"], "task-exact")
         self.assertEqual(item["status"], "generating")
-        self.assertIn("קול של אישה ישראלית", item["generation_prompt"])
+        self.assertIn("כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד", item["generation_prompt"])
         self.assertEqual(item["generation_prompt_sha256"], pipeline.sha256_text(item["generation_prompt"]))
         arguments = run.call_args.args[0]
         self.assertEqual(arguments[arguments.index("--style") + 1], "auto")
