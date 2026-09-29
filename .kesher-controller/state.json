@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
-    "quality_checked_at": "2026-09-29T18:01:39.358005+00:00",
+    "quality_checked_at": "2026-09-29T18:06:10.747904+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1857,8 +1857,8 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 3,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36501761665,
@@ -1867,7 +1867,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-29T09:19:52.998317+00:00",
+    "last_dispatch_at": "2026-09-29T18:07:30.776372+00:00",
     "resume_dispatches": 2,
     "item_id": "video-20260929-090651-7a6b5302a1",
     "source_id": "78924679-ac8f-49c3-8a2f-86e61b742174",
@@ -1917,13 +1917,13 @@
     "v4_short_controller_state": null
   },
   "targeted_media_recovery": {
-    "slug": "empty-threats-parenting",
-    "content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
-    "article_url": "https://kesher.saharoni.com/blog/empty-threats-parenting",
+    "slug": "breaking-the-yelling-cycle",
+    "content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
+    "article_url": "https://kesher.saharoni.com/blog/breaking-the-yelling-cycle",
     "article_verified": true,
-    "updated_at": "2026-09-29T15:10:42.603750+00:00",
-    "long_status": "complete",
-    "long_last_dispatch_at": "2026-09-29T09:19:52.998672+00:00",
+    "updated_at": "2026-09-29T18:06:23.557346+00:00",
+    "long_status": "running",
+    "long_last_dispatch_at": "2026-09-29T18:07:30.776808+00:00",
     "long_youtube_url": "https://youtu.be/fasTEUq4bBA",
     "long_item_id": "video-20260929-090651-7a6b5302a1",
     "short_status": "complete",
