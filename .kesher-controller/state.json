@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
-    "quality_checked_at": "2026-09-29T12:45:12.793753+00:00",
+    "quality_checked_at": "2026-09-29T15:05:11.204268+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1829,7 +1829,7 @@
       "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-29T12:49:34.280993+00:00",
+  "updated_at": "2026-09-29T15:07:30.094389+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1907,7 +1907,7 @@
     "content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
     "article_url": "https://kesher.saharoni.com/blog/empty-threats-parenting",
     "article_verified": true,
-    "updated_at": "2026-09-29T12:48:27.105401+00:00",
+    "updated_at": "2026-09-29T15:05:36.466829+00:00",
     "long_status": "complete",
     "long_last_dispatch_at": "2026-09-29T09:19:52.998672+00:00",
     "long_youtube_url": "https://youtu.be/fasTEUq4bBA",
@@ -1915,6 +1915,6 @@
     "short_status": "complete",
     "short_youtube_url": "https://youtu.be/7CQ4ZzalH9o",
     "complete": true,
-    "completed_at": "2026-09-29T12:49:34.281009+00:00"
+    "completed_at": "2026-09-29T15:07:30.094426+00:00"
   }
 }
