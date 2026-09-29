@@ -19,7 +19,7 @@
       "fingerprint": "8c954c165ffd2e69357e5ab0783ca1ba",
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|article",
       "issued_at": "2026-09-29T18:10:27.496061+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "verified",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-043b42bffd056dfe6f5cea26",
@@ -56,7 +56,8 @@
       "proposed_action": "escalate_unknown_failure",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-29T18:10:49.706072+00:00"
+      "updated_at": "2026-09-29T18:23:55.598061+00:00",
+      "verified_at": "2026-09-29T18:23:55.598061+00:00"
     },
     "ksr-05d22fbd6ca9d7f1c6db4175": {
       "acknowledged_at": "2026-09-21T21:00:21.603758+00:00",
@@ -3344,29 +3345,15 @@
       "strike": 2
     },
     "7ea20e8e89ce9d7261e1786ac78f7e98": {
-      "active_command_id": null,
+      "active_command_id": "ksr-e40433e2d48a2b7211f892d9",
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "7ea20e8e89ce9d7261e1786ac78f7e98",
-      "first_seen_at": "2026-09-29T09:07:55.234519+00:00",
-      "history": [
-        {
-          "at": "2026-09-29T09:07:55.234519+00:00",
-          "command_id": "ksr-e40433e2d48a2b7211f892d9",
-          "event": "command_issued",
-          "stage": "S1"
-        },
-        {
-          "at": "2026-09-29T10:17:21.885921+00:00",
-          "event": "resolved",
-          "reason": "failure_absent_in_fresh_exact_evidence"
-        }
-      ],
+      "first_seen_at": "2026-09-29T18:23:55.598061+00:00",
+      "history": [],
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|long_video",
-      "last_seen_at": "2026-09-29T09:07:55.234519+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=7ea20e8e89ce9d7261e1786ac78f7e98 strike=1 stage=S1",
-      "resolved_at": "2026-09-29T10:17:21.885921+00:00",
-      "status": "resolved",
-      "strike": 1
+      "last_seen_at": "2026-09-29T18:23:55.598061+00:00",
+      "status": "open",
+      "strike": 0
     },
     "847cdecc8185cd50aa0fbdba9a895e2c": {
       "active_command_id": null,
@@ -3413,7 +3400,7 @@
       "strike": 1
     },
     "8c954c165ffd2e69357e5ab0783ca1ba": {
-      "active_command_id": "ksr-043b42bffd056dfe6f5cea26",
+      "active_command_id": null,
       "failure_signature": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
       "fingerprint": "8c954c165ffd2e69357e5ab0783ca1ba",
       "first_seen_at": "2026-09-29T18:02:41.219454+00:00",
@@ -3435,12 +3422,18 @@
           "command_id": "ksr-043b42bffd056dfe6f5cea26",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-29T18:23:55.598061+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|article",
       "last_seen_at": "2026-09-29T18:10:27.496061+00:00",
       "marker": "MASTER_ESCALATION fingerprint=8c954c165ffd2e69357e5ab0783ca1ba strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-29T18:23:55.598061+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "95963eacf20dbaaebc8772de4b61edfd": {
@@ -3816,5 +3809,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-29T18:10:49.706072+00:00"
+  "updated_at": "2026-09-29T18:23:55.598061+00:00"
 }
