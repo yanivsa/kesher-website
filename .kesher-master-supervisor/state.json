@@ -639,7 +639,7 @@
       "updated_at": "2026-09-23T18:27:29.333316+00:00"
     },
     "ksr-63b7ab96b2df5f31151ac179": {
-      "acknowledged_at": "2026-09-29T12:14:58.382840+00:00",
+      "acknowledged_at": "2026-09-29T12:17:13.518218+00:00",
       "command_id": "ksr-63b7ab96b2df5f31151ac179",
       "evidence_hash": "71eb5eebbd51fd47b07d489d8f86dd27e20add1214abcde4fb61bf91def2695d",
       "exact": {
@@ -657,8 +657,10 @@
       "fingerprint": "3417213b5eeb990eedc5e4a9e2cc379f",
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|short",
       "issued_at": "2026-09-29T12:12:50.925325+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "running",
       "metadata": {
+        "external_run_id": 36554571971,
+        "external_workflow": "Kesher Daily Article Short V4",
         "incident_packet": {
           "command_id": "ksr-63b7ab96b2df5f31151ac179",
           "constraints": {
@@ -692,9 +694,10 @@
         "session_id": "sessions/2080742078790306615"
       },
       "proposed_action": "rebuild_exact_short",
+      "running_at": "2026-09-29T12:17:13.518218+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-29T12:14:58.382840+00:00"
+      "updated_at": "2026-09-29T12:17:13.518218+00:00"
     },
     "ksr-67b3738723253ac703e0b228": {
       "acknowledged_at": "2026-09-23T16:25:41.155331+00:00",
@@ -2710,7 +2713,7 @@
         }
       ],
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|short",
-      "last_seen_at": "2026-09-29T12:12:50.925325+00:00",
+      "last_seen_at": "2026-09-29T12:17:13.518218+00:00",
       "marker": "MASTER_ESCALATION fingerprint=3417213b5eeb990eedc5e4a9e2cc379f strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
@@ -3682,5 +3685,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-29T12:14:58.382840+00:00"
+  "updated_at": "2026-09-29T12:17:13.518218+00:00"
 }
