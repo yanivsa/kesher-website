@@ -1,6 +1,7 @@
 {
   "commands": {
     "ksr-043b42bffd056dfe6f5cea26": {
+      "acknowledged_at": "2026-09-29T18:10:49.706072+00:00",
       "command_id": "ksr-043b42bffd056dfe6f5cea26",
       "evidence_hash": "2e07f653e738c45afe14069674f77fa8dd2812c5292cc32c76cd745b60651390",
       "exact": {
@@ -18,12 +19,44 @@
       "fingerprint": "8c954c165ffd2e69357e5ab0783ca1ba",
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|article",
       "issued_at": "2026-09-29T18:10:27.496061+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-043b42bffd056dfe6f5cea26",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "the exact incident is absent in fresh authoritative production evidence and all relevant CI/public verification gates pass",
+          "evidence_hash": "2e07f653e738c45afe14069674f77fa8dd2812c5292cc32c76cd745b60651390",
+          "exact": {
+            "artifact_id": "74acb03d-a460-49e1-88db-e503188e319a",
+            "content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
+            "item_id": "video-20260929-090651-7a6b5302a1",
+            "pr_number": null,
+            "short_item_id": "video-20260929-150258-7a6b5302a1",
+            "slug": "empty-threats-parenting",
+            "source_id": "78924679-ac8f-49c3-8a2f-86e61b742174",
+            "task_id": "74acb03d-a460-49e1-88db-e503188e319a"
+          },
+          "failure_signature": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+          "fingerprint": "8c954c165ffd2e69357e5ab0783ca1ba",
+          "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|article",
+          "proposed_action": "escalate_unknown_failure",
+          "schema_version": 1,
+          "stage": "article",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/15421741052657037561"
+      },
       "proposed_action": "escalate_unknown_failure",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-29T18:10:27.496061+00:00"
+      "updated_at": "2026-09-29T18:10:49.706072+00:00"
     },
     "ksr-05d22fbd6ca9d7f1c6db4175": {
       "acknowledged_at": "2026-09-21T21:00:21.603758+00:00",
@@ -3783,5 +3816,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-29T18:10:27.496061+00:00"
+  "updated_at": "2026-09-29T18:10:49.706072+00:00"
 }
