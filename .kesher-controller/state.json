@@ -1,50 +1,25 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-28",
-  "status": "complete",
+  "cycle": "2026-09-29",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 36353943938,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 1,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-09-27T22:03:36.163161+00:00",
-    "watchdog": {
-      "identity": "2026-09-28",
-      "session_id": "sessions/11417652437148076246",
-      "last_progress_at": "2026-09-27T22:03:36+00:00",
-      "last_fingerprint": "7f514a5a39c42c7b36c7b3a746c9a01f19469322f0583a638e189cdeb5d57cd2",
-      "last_nudge_at": "2026-09-27T22:34:53.085894+00:00",
-      "nudge_count": 1,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "pr_number": 958,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/958",
-    "normalization_slot": "2026-09-28",
-    "normalization_dispatched_at": "2026-09-27T22:38:58.745370+00:00",
-    "merge_dispatch_at": "2026-09-28T05:55:53.977702+00:00",
-    "merge_dispatch_count": 1,
+    "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
-    "quality_checked_at": "2026-09-28T20:38:29.866019+00:00",
-    "quality_violations": [],
-    "slug": "new-couples-navigating-disappointments",
-    "title": "שנה ראשונה לנישואין: איך מתמודדים עם פער הציפיות במעבר לחיים משותפים?",
-    "url": "https://kesher.saharoni.com/blog/new-couples-navigating-disappointments",
-    "published_date": "2026-09-28",
-    "live": true,
-    "live_verified_at": "2026-09-28T07:58:09.932269+00:00",
-    "next_deploy_retry_at": null
+    "quality_checked_at": "2026-09-29T00:06:52.844837+00:00",
+    "quality_violations": []
   },
   "backlog": [
     {
@@ -1239,78 +1214,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-25T08:58:54.767765+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T08:59:30.721101+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-25T09:00:41.098548+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-25T09:04:43.248054+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T09:05:16.006118+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-25T09:06:54.901308+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T09:07:07.379975+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-25T09:19:12.342501+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T09:20:02.196066+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-25T09:21:43.598427+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T09:21:59.260198+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
-    {
-      "at": "2026-09-25T09:25:44.185275+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-09-25T09:25:56.357025+00:00",
       "from": "article_live",
       "to": "video_running",
@@ -1864,121 +1767,74 @@
       "from": "short_running",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-29T00:06:52.395095+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-29T00:06:52.395100+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-29T00:06:52.396037+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-09-28T20:23:34.580102+00:00",
+  "updated_at": "2026-09-29T00:06:52.395078+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 36363081794,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "Local",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-28T00:40:36.706650+00:00",
-    "artifact_sha256": "ac6cde28a40e2bfbee79854ed604c26e39d546759ba1c5b10b71818c91444b34",
-    "source_id": "local://public/images/generated/blog/communication-breakdown.jpg"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 3,
+    "attempt_count": 1,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 36480585168,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "952a9ff6-b539-49da-b655-7569c79439f1",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "item_id": "video-20260928-122014-18afc8a70c",
-    "last_dispatch_at": "2026-09-28T20:38:03.745731+00:00",
-    "resume_dispatches": 4,
-    "source_id": "84958290-bc69-4e6c-b301-af995e4e072a",
-    "artifact_id": "952a9ff6-b539-49da-b655-7569c79439f1",
-    "youtube_id": "2N-KqIPQ4gY",
-    "youtube_url": "https://youtu.be/2N-KqIPQ4gY",
-    "verified": true
+    "last_dispatch_at": "2026-09-29T00:10:26.283134+00:00"
   },
   "short": {
-    "attempt_count": 3,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 36414777724,
-    "processed_run_id": 36414148290,
-    "provider_id": "5f628347-13e7-4480-a9f5-3bb0b38f5f5a",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-28T11:17:30.867751+00:00",
-    "artifact_id": "5f628347-13e7-4480-a9f5-3bb0b38f5f5a",
-    "source_id": "3dc1a4c3-cb54-4842-85a3-bdcfa60e111f",
-    "adopted_from_long_item_id": "video-20260928-122014-18afc8a70c",
-    "last_run_conclusion": "success",
-    "item_id": "video-20260928-140446-18afc8a70c",
-    "type": "article_short",
-    "youtube_id": "HIsvyeJOaZs",
-    "youtube_url": "https://youtu.be/HIsvyeJOaZs",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "809b437d91d76f1a97bf3dbe9f5dd7975930f49e85c9fd8e6cba6f4a3a9258ef",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/new-couples-navigating-disappointments",
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "interventions": {
-    "v5|article-slot-2026-09-28|28a1ac89c66ac8b7ed911f0e585cc4ed068abb578966b9ffb0c5f066c2b82740|article": {
-      "pipeline_id": "v5",
-      "slug": "article-slot-2026-09-28",
-      "content_sha256": "28a1ac89c66ac8b7ed911f0e585cc4ed068abb578966b9ffb0c5f066c2b82740",
-      "stage": "article",
-      "strike_count": 1,
-      "last_check_token": "2026-09-28T01",
-      "last_fingerprint": "b0976d466fedd013a6d295fc753ff7eb86f3f7863811f682103cda6ba50baf44",
-      "last_controller_action_token": "nudge:1:2026-09-27T22:34:53.085894+00:00|restart:0:",
-      "controller_action_observed": true,
-      "last_observed_at": "2026-09-27T22:34:53.085894+00:00",
-      "last_action": "wait_after_controller_action",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-09-27T22:34:53.085894+00:00"
-    }
   },
   "targeted_media_recovery": {
     "slug": "empty-threats-parenting",
     "content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
     "article_url": "https://kesher.saharoni.com/blog/empty-threats-parenting",
     "article_verified": true,
-    "updated_at": "2026-09-28T20:38:44.204015+00:00",
+    "updated_at": "2026-09-29T00:08:00.948072+00:00",
     "long_status": "running",
-    "long_last_dispatch_at": "2026-09-28T20:38:03.746094+00:00",
-    "long_youtube_url": "https://youtu.be/2N-KqIPQ4gY",
-    "long_item_id": "video-20260928-122014-18afc8a70c",
-    "short_status": "complete",
-    "short_youtube_url": "https://youtu.be/HIsvyeJOaZs",
-    "complete": true,
-    "completed_at": "2026-09-28T20:23:34.580135+00:00"
+    "long_last_dispatch_at": "2026-09-29T00:10:26.283471+00:00"
   }
 }
