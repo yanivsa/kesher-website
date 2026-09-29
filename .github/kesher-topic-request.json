@@ -1,9 +1,8 @@
 {
-  "slot": "2026-09-29",
-  "topic_brief": "נושא חדש: הנחיית הורים — מלכודת האיומים הריקים. Issue #954 הוא authoritative request. צור בדיוק מאמר אחד חדש, לאחר dedup. אין לייחס את הציטוט שסופק לאדם/סרטון מסוים ואין להציגו כציטוט מדויק אלא אם נמצא primary source שמאמת אותו. מקור תמיכה מאומת: C.S. Mott Children’s Hospital National Poll on Children’s Health / University of Michigan, Dec. 16 2024: https://mottpoll.org/reports/naughty-or-nice-parent-views-disciplining-young-children ; PDF: https://mottpoll.org/sites/default/files/documents/121624_Discipline.pdf . העיקרון הבטוח: איומים לא-ישימים שלא מקוימים עלולים ללמד ילדים להתעלם מאזהרות; העדף גבולות קטנים, רגועים, מיידיים, קשורים להתנהגות ובר-ביצוע, עם follow-through עקבי. Hook: 'זורקים על הילד איומים מפוצצים שברור לשניכם שלא תבצעו? הנה הסיבה שהוא מפסיק להקשיב לכם.' כלול 3–5 דוגמאות איום ריק → גבול בר-ביצוע, כולל פארק: 'הזמן בפארק הסתיים. אם אתה לא הולך, אני נותן לך יד ומלווה אותך לאוטו'. לאחר Article public/HTTP200/title verified המשך מאותה source identity ל-Video Overview ול-Short 9:16. Completion רק A+B+C. Controller V5 production; V6 shadow. אין duplicate article/PR/Jules/provider generation/upload.",
-  "request_id": "empty-threats-follow-through-20260928-v1",
-  "issue": 954,
-  "rescheduled_from": "2026-09-28",
-  "failure_signature": "COMPLETED_WITHOUT_PR",
-  "recovery": "preserve_issue_954_authoritative_topic_no_duplicate_article_or_session"
+  "slot": "2026-09-30",
+  "topic_brief": "נושא חדש: הנחיית הורים ו-ADHD — 'שיתוק הציפייה' (Waiting Mode): למה חוג ב-16:00 יכול לשתק את כל היום? Issue #967 הוא authoritative request. צור בדיוק מאמר אחד חדש, לאחר dedup. אל תציג 'Waiting Mode' כאבחנה רשמית או כמנגנון קליני מוכח בפני עצמו; הצג אותו כמונח קהילתי לתבנית חווייתית אפשרית. קשר את ההסבר בזהירות לממצאים מבוססים יותר על תפיסת זמן, prospective memory ותפקודים ניהוליים ב-ADHD. מקורות קליניים/מחקריים מאומתים: PubMed PMID 32757699 (meta-analysis בילדים על תפיסת זמן ב-ADHD): https://pubmed.ncbi.nlm.nih.gov/32757699/ ; PubMed PMID 33302769 (meta-analysis בילדים ובמתבגרים): https://pubmed.ncbi.nlm.nih.gov/33302769/ ; PubMed PMID 29065807 (review על prospective memory בילדים עם ADHD): https://pubmed.ncbi.nlm.nih.gov/29065807/ ; PubMed PMID 38145491 (systematic review/meta-analysis על time perception לאורך החיים): https://pubmed.ncbi.nlm.nih.gov/38145491/ . Hook: 'יש לילד חוג בארבע אחה"צ וכל הבוקר שלו משותק והולך לפח? הנה מה שבאמת יכול להקשות עליו להתחיל.' אל תכתוב 'מה שקורה לו במוח' כקביעה דטרמיניסטית. כלול כלי פרקטי: עוגן זמן/התראה ברורה למעבר + משימה אחת קטנה שמסתיימת הרבה לפני היציאה, עם דוגמה קונקרטית. שמור על שפה לא-סטיגמטית ולא רפואית מדי, והבהר שהחוויה משתנה מילד לילד. לאחר Article public/HTTP200/title verified המשך מאותה source identity ל-Video Overview ול-Short 9:16. Completion רק A+B+C. Controller V5 production; V6 shadow. אין duplicate article/PR/Jules/provider generation/upload.",
+  "request_id": "adhd-waiting-mode-20260929-v1",
+  "issue": 967,
+  "queued_after_issue": 954,
+  "recovery": "preserve_issue_967_authoritative_topic_no_duplicate_article_or_session"
 }
