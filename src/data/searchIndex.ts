@@ -12,6 +12,23 @@ export interface SearchItem {
 
 const servicePages: SearchItem[] = [
   {
+    id: 'service-couples-crisis',
+    type: 'service',
+    title: 'ייעוץ זוגי במצבי משבר',
+    body: 'ייעוץ וליווי ממוקד לזוגות הנמצאים במשבר מתמשך או אקוטי. עצירת דפוסי הסלמה, חידוש התקשורת ובניית הסכמות במרחב בטוח.',
+    url: '/services/couples/crisis',
+    category: 'שירותים'
+  },
+  {
+    id: 'service-couples-before-separation',
+    type: 'service',
+    title: 'ייעוץ ובירור זוגי בצומת החלטה ולפני פרידה',
+    body: 'מרחב בטוח לשקול ולבחון את המשך הקשר רגע לפני החלטה על פרידה. בירור רגשי, בניית הסכמות או בחינת אפשרות לשיקום הקשר.',
+    url: '/services/couples/before-separation',
+    category: 'שירותים'
+  },
+
+  {
     id: 'service-couples',
     type: 'service',
     title: 'ייעוץ זוגי',

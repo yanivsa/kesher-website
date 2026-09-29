@@ -113,22 +113,22 @@ const CouplesCounseling: React.FC = () => {
 
       <section className={styles.painPoints}>
         <div className="container">
-          <h2 className={styles.sectionTitle}>מתי זוגות פונים לייעוץ?</h2>
+          <h2 className={styles.sectionTitle}>מתי כדאי לפנות לייעוץ זוגי?</h2>
           <div className={styles.grid}>
             <div className={styles.card}>
               <FiMessageCircle className={styles.icon} />
               <h3>התקשורת תקועה</h3>
-              <p>כל ניסיון לדבר הופך למריבה או לשתיקה כואבת. אתם כבר לא יודעים איך להביע צורך בלי להאשים.</p>
+              <p>כשהשיחות הופכות לוויכוחים שחוזרים על עצמם, או כשיש תחושה שאין עם מי לדבר והמרחק רק גדל.</p>
             </div>
             <div className={styles.card}>
               <FiStar className={styles.icon} />
               <h3>האינטימיות נעלמה</h3>
-              <p>מרגישים כמו 'שותפים לדירה' שמנהלים לוגיסטיקה וילדים, אבל שכחתם איך להיות פשוט זוג.</p>
+              <p>כשיש בדידות בתוך הזוגיות, ירידה בקרבה או שגרה עמוסה שמרחיקה במקום לחבר.</p>
             </div>
             <div className={styles.card}>
               <FiShield className={styles.icon} />
               <h3>משבר אמון</h3>
-              <p>התמודדות עם בגידה, הסתרות או שחיקה מצטברת שגרמה לכם להפסיק להאמין שאפשר אחרת.</p>
+              <p>כשאירוע משמעותי, פגיעה באמון או תקופה מתוחה מטלטלים את הקשר וקשה למצוא דרך קדימה.</p>
             </div>
           </div>
         </div>
