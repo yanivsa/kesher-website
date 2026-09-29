@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
-    "quality_checked_at": "2026-09-29T06:03:00.558486+00:00",
+    "quality_checked_at": "2026-09-29T09:10:58.953356+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1807,15 +1807,15 @@
     "next_retry_at": null,
     "run_id": 36501761665,
     "processed_run_id": null,
-    "provider_id": "52a1ab13-621a-464c-924f-335fc34a9bf8",
+    "provider_id": "74acb03d-a460-49e1-88db-e503188e319a",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-09-29T06:05:31.644617+00:00",
-    "resume_dispatches": 1,
-    "item_id": "video-20260929-031240-7a6b5302a1",
-    "source_id": "1aba2203-d426-48be-b1f6-a502a1880960",
-    "artifact_id": "52a1ab13-621a-464c-924f-335fc34a9bf8"
+    "last_dispatch_at": "2026-09-29T09:19:52.998317+00:00",
+    "resume_dispatches": 2,
+    "item_id": "video-20260929-090651-7a6b5302a1",
+    "source_id": "78924679-ac8f-49c3-8a2f-86e61b742174",
+    "artifact_id": "74acb03d-a460-49e1-88db-e503188e319a"
   },
   "short": {
     "attempt_count": 0,
@@ -1837,8 +1837,8 @@
     "content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
     "article_url": "https://kesher.saharoni.com/blog/empty-threats-parenting",
     "article_verified": true,
-    "updated_at": "2026-09-29T06:03:24.920517+00:00",
+    "updated_at": "2026-09-29T09:12:23.115209+00:00",
     "long_status": "running",
-    "long_last_dispatch_at": "2026-09-29T06:05:31.644966+00:00"
+    "long_last_dispatch_at": "2026-09-29T09:19:52.998672+00:00"
   }
 }
