@@ -1,5 +1,30 @@
 {
   "commands": {
+    "ksr-043b42bffd056dfe6f5cea26": {
+      "command_id": "ksr-043b42bffd056dfe6f5cea26",
+      "evidence_hash": "2e07f653e738c45afe14069674f77fa8dd2812c5292cc32c76cd745b60651390",
+      "exact": {
+        "artifact_id": "74acb03d-a460-49e1-88db-e503188e319a",
+        "content_sha256": "7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373",
+        "item_id": "video-20260929-090651-7a6b5302a1",
+        "pr_number": null,
+        "short_item_id": "video-20260929-150258-7a6b5302a1",
+        "slug": "empty-threats-parenting",
+        "source_id": "78924679-ac8f-49c3-8a2f-86e61b742174",
+        "task_id": "74acb03d-a460-49e1-88db-e503188e319a"
+      },
+      "executor": "jules",
+      "failure_signature": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+      "fingerprint": "8c954c165ffd2e69357e5ab0783ca1ba",
+      "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|article",
+      "issued_at": "2026-09-29T18:10:27.496061+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "escalate_unknown_failure",
+      "stage": "S2",
+      "strike": 2,
+      "updated_at": "2026-09-29T18:10:27.496061+00:00"
+    },
     "ksr-05d22fbd6ca9d7f1c6db4175": {
       "acknowledged_at": "2026-09-21T21:00:21.603758+00:00",
       "command_id": "ksr-05d22fbd6ca9d7f1c6db4175",
@@ -1696,11 +1721,13 @@
         "task_id": "74acb03d-a460-49e1-88db-e503188e319a"
       },
       "executor": "controller",
+      "failed_at": "2026-09-29T18:10:27.496061+00:00",
+      "failure_reason": "kesher-content-controller.yml run 36609398321 completed but exact incident persisted",
       "failure_signature": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
       "fingerprint": "8c954c165ffd2e69357e5ab0783ca1ba",
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|article",
       "issued_at": "2026-09-29T18:02:41.219454+00:00",
-      "lifecycle": "running",
+      "lifecycle": "failed",
       "metadata": {
         "dispatch": "issued",
         "dispatched_at": "2026-09-29T18:04:05.528688+00:00",
@@ -1712,7 +1739,7 @@
       "running_at": "2026-09-29T18:05:10.962366+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-29T18:05:10.962366+00:00"
+      "updated_at": "2026-09-29T18:10:27.496061+00:00"
     },
     "ksr-c4b446c4eb918329932743a2": {
       "acknowledged_at": "2026-09-24T20:53:57.629348+00:00",
@@ -3353,7 +3380,7 @@
       "strike": 1
     },
     "8c954c165ffd2e69357e5ab0783ca1ba": {
-      "active_command_id": "ksr-c17a527e0b2490bc630f0371",
+      "active_command_id": "ksr-043b42bffd056dfe6f5cea26",
       "failure_signature": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
       "fingerprint": "8c954c165ffd2e69357e5ab0783ca1ba",
       "first_seen_at": "2026-09-29T18:02:41.219454+00:00",
@@ -3363,13 +3390,25 @@
           "command_id": "ksr-c17a527e0b2490bc630f0371",
           "event": "command_issued",
           "stage": "S1"
+        },
+        {
+          "at": "2026-09-29T18:10:27.496061+00:00",
+          "command_id": "ksr-c17a527e0b2490bc630f0371",
+          "event": "command_failed",
+          "reason": "kesher-content-controller.yml run 36609398321 completed but exact incident persisted"
+        },
+        {
+          "at": "2026-09-29T18:10:27.496061+00:00",
+          "command_id": "ksr-043b42bffd056dfe6f5cea26",
+          "event": "command_issued",
+          "stage": "S2"
         }
       ],
       "incident_id": "v5|empty-threats-parenting|7a6b5302a13a1f97a97429db06b5ba909ecaae475444faa44c9e7918d7cde373|article",
-      "last_seen_at": "2026-09-29T18:05:10.962366+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=8c954c165ffd2e69357e5ab0783ca1ba strike=1 stage=S1",
+      "last_seen_at": "2026-09-29T18:10:27.496061+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=8c954c165ffd2e69357e5ab0783ca1ba strike=2 stage=S2",
       "status": "recovering",
-      "strike": 1
+      "strike": 2
     },
     "95963eacf20dbaaebc8772de4b61edfd": {
       "active_command_id": null,
@@ -3744,5 +3783,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-29T18:05:10.962366+00:00"
+  "updated_at": "2026-09-29T18:10:27.496061+00:00"
 }
