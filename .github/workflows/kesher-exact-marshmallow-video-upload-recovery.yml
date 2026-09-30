@@ -19,7 +19,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh workflow run kesher-daily-video.yml --ref main \
+          gh workflow run kesher-daily-video.yml --repo "$GITHUB_REPOSITORY" --ref main \
             -f operation=upload \
             -f target_slug=marshmallow-test-environmental-reliability \
             -f target_content_sha256=33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf \
