@@ -79,9 +79,17 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--retries", type=int, default=12)
     parser.add_argument("--delay", type=float, default=5.0)
+    parser.add_argument("--slug", default="", help="Exact article id/slug to verify instead of newest publishable article")
     args = parser.parse_args()
 
-    post = _latest_post()
+    if args.slug.strip():
+        posts = json.loads(Path("src/data/posts.json").read_text(encoding="utf-8"))
+        matches = [p for p in posts if isinstance(p, dict) and str(p.get("id") or "").strip() == args.slug.strip() and _publishable(p)]
+        if len(matches) != 1:
+            raise RuntimeError(f"exact publishable article not found uniquely: {args.slug}")
+        post = matches[0]
+    else:
+        post = _latest_post()
     title = re.sub(r"\s+", " ", str(post.get("title") or "").strip())
     url = _public_url(post)
     if not title:
