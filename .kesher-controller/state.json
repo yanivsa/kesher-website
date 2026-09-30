@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
-    "quality_checked_at": "2026-09-30T23:03:28.441309+00:00",
+    "quality_checked_at": "2026-09-30T23:26:49.192044+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1818,7 +1818,7 @@
       "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-30T23:06:55.444207+00:00",
+  "updated_at": "2026-09-30T23:27:28.130006+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1888,13 +1888,13 @@
     "content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
     "article_url": "https://kesher.saharoni.com/blog/relationship-crisis-flydubai-lessons",
     "article_verified": true,
-    "updated_at": "2026-09-30T23:05:00.243671+00:00",
+    "updated_at": "2026-09-30T23:27:02.642041+00:00",
     "long_status": "complete",
     "long_youtube_url": "https://youtu.be/_3xByOwiXog",
     "long_item_id": "video-20260930-233335-880b3ebea7",
     "short_status": "complete",
     "short_youtube_url": "https://youtu.be/EvDGuIbpo0o",
     "complete": true,
-    "completed_at": "2026-09-30T23:06:55.444236+00:00"
+    "completed_at": "2026-09-30T23:27:28.130040+00:00"
   }
 }
