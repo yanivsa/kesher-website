@@ -4,6 +4,8 @@
 
 > **Historical 2026-09-28 blocker-5.2 closure:** The evidence-only slice is CLOSED with three retained quarantines, zero new import bindings and no production mutation. Exact final identities and validation are in [legacy-media-evidence-report-20260928.md](legacy-media-evidence-report-20260928.md). The September 28 production/validation observations below are historical. Blocker 5.2 stays closed; safe production cutover and the original goal remain incomplete.
 
+> **Later September 30 GitHub adapter continuation:** Current adapter implementation, review, validation and live prerequisites are recorded in [github-resource-exclusion-adapter-20260930.md](github-resource-exclusion-adapter-20260930.md). Its complete read-only adjudication at 16:29 UTC found 33 retained missing-YAML registrations still active/refused, zero relevant active runs and one unknown registration (370535154, `kesher-owner-exact-975.yml`); main was `7152264b5713fbc42b36a809f7b5df2d6ae99eea`. Offline Git CAS/drain/V5 protection does not establish live credential enforcement. Earlier counts/observations remain dated historical evidence. Nine phases and all three closed quarantines are preserved. **production_state_written=false; public_completion_inferred=false; production_activated=false.**
+
 # 1. CHECKPOINT STATUS
 
 - Worktree: `/Users/ninja/Documents/Kesher-worktrees/autonomous-stabilization-20260917`.

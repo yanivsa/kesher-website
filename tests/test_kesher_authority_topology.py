@@ -42,6 +42,81 @@ if __name__=='__main__':unittest.main()
 
 
 class AuthorityObservationTests(unittest.TestCase):
+    def missing_registration(self):
+        from scripts.kesher_runtime.authority_topology import policy
+        rules = policy(ROOT)
+        path, known = next(iter(rules['registrations'].items()))
+        return rules, {'id': known['id'], 'path': path, 'state': 'disabled_manually'}
+
+    def test_all_33_missing_yaml_identities_require_fresh_complete_drain(self):
+        from scripts.kesher_runtime.authority_topology import classify_registered, policy
+        rules = policy(ROOT)
+        rows = [{'id': entry['id'], 'path': path, 'state': 'disabled_manually'}
+                for path, entry in rules['registrations'].items()]
+        self.assertEqual(len(rows), 33)
+        result = classify_registered(rows, rules, active_runs=[], runs_complete=True)
+        self.assertEqual(len(result), 33)
+        self.assertTrue(all(row['classification'] == 'retired_missing_yaml' for row in result))
+        self.assertTrue(all(row['role'] == 'retired' and not row['definition_present'] for row in result))
+
+    def test_missing_yaml_active_registration_is_never_safe(self):
+        from scripts.kesher_runtime.authority_topology import classify_registered
+        rules, row = self.missing_registration(); row['state'] = 'active'
+        with self.assertRaises(StateInvalid):
+            classify_registered([row], rules, active_runs=[], runs_complete=True)
+
+    def test_disabled_missing_yaml_cannot_hide_any_of_five_active_statuses(self):
+        from scripts.kesher_runtime.authority_topology import classify_registered
+        rules, row = self.missing_registration()
+        for status in ('queued', 'in_progress', 'waiting', 'pending', 'requested'):
+            with self.subTest(status=status), self.assertRaises(StateInvalid):
+                classify_registered([row], rules, active_runs=[{'id': 42, 'run_attempt': 1,
+                    'workflow_id': row['id'], 'path': row['path'], 'status': status}], runs_complete=True)
+
+    def test_missing_yaml_wrong_id_wrong_path_and_incomplete_inventory_refuse(self):
+        from scripts.kesher_runtime.authority_topology import classify_registered
+        rules, row = self.missing_registration()
+        for changes, complete, runs in (({'id': row['id']+1}, True, []),
+                ({'path': '.github/workflows/unknown.yml'}, True, []), ({}, False, []), ({}, True, None)):
+            with self.subTest(changes=changes, complete=complete, runs=runs), self.assertRaises(StateInvalid):
+                classify_registered([dict(row, **changes)], rules, active_runs=runs, runs_complete=complete)
+
+    def test_missing_yaml_unknown_or_contradictory_runs_refuse(self):
+        from scripts.kesher_runtime.authority_topology import classify_registered
+        rules, row = self.missing_registration()
+        for run in ({'id':42, 'run_attempt':1, 'workflow_id':123, 'path':row['path'], 'status':'queued'},
+                    {'id':42, 'run_attempt':1, 'workflow_id':row['id'], 'path':'.github/workflows/other.yml', 'status':'queued'},
+                    {'id':42, 'run_attempt':1, 'workflow_id':row['id'], 'path':row['path'], 'status':'unexpected'}):
+            with self.subTest(run=run), self.assertRaises(StateInvalid):
+                classify_registered([row], rules, active_runs=[run], runs_complete=True)
+
+    def test_observer_validates_runs_before_adjudication_and_rereads_races(self):
+        from scripts.kesher_runtime.authority_topology import GitHubAuthorityObserver, classify_registered
+        from tests.test_kesher_github_drain import Actions, Journal, PATH
+        rules = {'workflows': {}, 'registrations': {PATH: {'id':9, 'definition_present':False}}}
+        github = Actions(Journal()); github.workflows[0]['state'] = 'disabled_manually'
+        observer = GitHubAuthorityObserver(github, 'owner/repo', ROOT, fence=None)
+        rows, runs = observer.current_inventory(rules)
+        self.assertEqual(classify_registered(rows, rules, active_runs=runs, runs_complete=True)[0]['classification'],
+                         'retired_missing_yaml')
+        self.assertEqual(sum(path.endswith('workflows?per_page=100&page=1') for _, path in github.calls), 3)
+        for race in ('reenable', 'unknown', 'queued'):
+            with self.subTest(race=race):
+                github = Actions(Journal()); github.workflows[0]['state'] = 'disabled_manually'
+                passes = 0
+                def mutate(method, path):
+                    nonlocal passes
+                    if 'status=pending&' in path:
+                        passes += 1
+                        if passes != 1: return
+                        if race == 'reenable': github.workflows[0]['state'] = 'active'
+                        elif race == 'unknown': github.workflows.append({'id':10,
+                            'path':'.github/workflows/unknown.yml','state':'active'})
+                        elif race == 'queued': github.run(identity=50)
+                github.hook = mutate
+                observer = GitHubAuthorityObserver(github, 'owner/repo', ROOT, fence=None)
+                with self.assertRaises(StateInvalid): observer.current_inventory(rules)
+
     def test_hidden_mutator_under_known_diagnostic_name_is_not_blessed(self):
         from scripts.kesher_runtime.authority_topology import check_definitions, policy
         definitions={str(p.relative_to(ROOT)):p.read_text() for p in (ROOT/'.github/workflows').glob('*.yml')}

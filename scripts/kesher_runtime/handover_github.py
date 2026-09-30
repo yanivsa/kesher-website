@@ -22,6 +22,8 @@ UPDATE_REFS = '''mutation($input: UpdateRefsInput!) {
 def validate_handover_write(previous, proposed):
     """Shared exact journal/body guard for resource adapters and Git CAS."""
     validate_journal(proposed['handover'])
+    if previous.get('github_exclusion') != proposed.get('github_exclusion'):
+        raise StateInvalid('HANDOVER_EXCLUSION_EVIDENCE_CHANGED')
     old, new = previous.get('handover'), proposed['handover']
     if old:
         if (old['basis'] != new['basis'] or new['journal'][:len(old['journal'])] != old['journal']
@@ -98,6 +100,10 @@ class GitHubHandover:
 
     def load(self):
         self._fenced()
+        return self.read_snapshot()
+
+    def read_snapshot(self):
+        """Read immutable bytes only; this does not grant write authority."""
         commit_sha = self.github.request('GET', self.api+'/git/ref/heads/'+self.ref)['object']['sha']
         require_sha(commit_sha, 40)
         commit = self.github.request('GET', self.api+'/git/commits/'+commit_sha)

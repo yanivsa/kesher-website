@@ -184,7 +184,9 @@ def require_authority(state: dict, observation: dict):
 
 
 def require_legacy_writable(state: dict):
-    if not isinstance(state, dict) or state.get('schema_version') != 5 or state.get('handover'):
+    from .legacy_retirement import validate_legacy_read
+    validate_legacy_read(state)
+    if not isinstance(state, dict) or state.get('schema_version') != 5:
         _fail('LEGACY_AUTHORITY_FENCED')
 
 
@@ -203,6 +205,8 @@ class Coordinator:
         if retained is None or closure.get('retained_evidence') != digest(retained):
             _fail('CLOSED_EVIDENCE_FLOOR_REQUIRED')
         self.baseline = prepare_migration(**self.inputs)
+        if 'github_exclusion' in self.inputs['controller']:
+            self.baseline['github_exclusion'] = copy.deepcopy(self.inputs['controller']['github_exclusion'])
 
     def _check(self, loaded, observation):
         state = loaded.state
@@ -243,6 +247,8 @@ class Coordinator:
 
     def tick(self):
         loaded = self.backend.load(); state = loaded.state
+        from .git_exclusion import no_legacy_incident
+        no_legacy_incident(state)
         observation = self.backend.observe()
         environment = observation_basis(observation, self.backend.repo)
         if environment['closed_evidence_sha256'] != self.closure['retained_evidence']:

@@ -21,6 +21,10 @@ CAPABILITIES = {'read', 'artifact_write', 'branch_write', 'pr_write', 'merge', '
                 'provider_create', 'provider_continue', 'capability_write', 'youtube_upload',
                 'youtube_metadata', 'cloudflare_write', 'image_provider_create', 'image_write', 'oci_write'}
 ROLES = {'controller', 'worker', 'retired', 'diagnostic', 'separate_infrastructure'}
+ACTIVE_RUN_STATUSES = ('queued', 'in_progress', 'waiting', 'pending', 'requested')
+WORKFLOW_STATES = {'active', 'disabled_manually', 'disabled_inactivity', 'disabled_fork'}
+TERMINAL_RUN_CONCLUSIONS = {'action_required', 'cancelled', 'failure', 'neutral',
+                            'skipped', 'stale', 'success', 'timed_out', 'startup_failure'}
 # Exact historical storage identities, reviewed unreachable from every workflow,
 # package script, script, frontend and test entrypoint. Never dereference these.
 INERT_GIT_LINK_TARGETS = {
@@ -146,15 +150,97 @@ def _review(entry):
         raise StateInvalid('AUTHORITY_CAPABILITY_REVIEW_REQUIRED')
 
 
-def classify_registered(rows, rules, *, separation=None, binding=None, protected_resources=None):
+def validate_registered_inventory(rows, rules, *, complete=False):
+    """Validate candidates without claiming that absent YAML retires an actor.
+
+    A provisional inventory can authorize only exact retirement targets under
+    a separately acquired Git epoch. Its active retained rows are not authority
+    proofs. Complete mode requires every reviewed definition AND retained ID.
+    """
+    if not isinstance(rows, list):
+        raise StateInvalid('AUTHORITY_REGISTERED_INVENTORY_INVALID')
+    known = rules.get('registrations', {})
+    reserved_ids = {entry['id']: path for path, entry in known.items()}
+    if len(reserved_ids) != len(known):
+        raise StateInvalid('AUTHORITY_REGISTERED_POLICY_INVALID')
+    ids, paths = set(), set()
+    for row in rows:
+        if (not isinstance(row, dict) or type(row.get('id')) is not int or row['id'] < 1
+                or not isinstance(row.get('path'), str) or row.get('state') not in WORKFLOW_STATES
+                or row['id'] in ids or row['path'] in paths):
+            raise StateInvalid('AUTHORITY_REGISTERED_INVENTORY_INVALID')
+        path = row['path']; ids.add(row['id']); paths.add(path)
+        if path in known:
+            if known[path].get('definition_present') is not False or known[path]['id'] != row['id']:
+                raise StateInvalid('AUTHORITY_REGISTERED_IDENTITY_MISMATCH')
+        elif path not in rules['workflows']:
+            raise StateInvalid('AUTHORITY_UNCLASSIFIED_REGISTERED_WORKFLOW')
+        if row['id'] in reserved_ids and reserved_ids[row['id']] != path:
+            raise StateInvalid('AUTHORITY_REGISTERED_IDENTITY_MISMATCH')
+    if complete and paths != set(rules['workflows']) | set(known):
+        raise StateInvalid('AUTHORITY_REGISTERED_DEFINITION_MISMATCH')
+    return rows
+
+
+def run_identity(run):
+    """Exact immutable attempt binding, including returned code when present."""
+    try:
+        if any(type(run[key]) is not int or run[key] < 1 for key in ('id', 'run_attempt', 'workflow_id')):
+            raise ValueError('invalid run identity')
+        path = run['path']
+        if not isinstance(path, str) or not path.startswith('.github/workflows/'):
+            raise ValueError('invalid run path')
+        # GitHub returns workflow paths either bare or suffixed by @ref.
+        workflow_path = path.split('@', 1)[0]
+        authority_path(workflow_path)
+        result = {key: run[key] for key in ('id', 'run_attempt', 'workflow_id')}
+        result['path'] = workflow_path
+        if 'head_sha' in run:
+            if not isinstance(run['head_sha'], str) or not re.fullmatch('[a-f0-9]{40}', run['head_sha']):
+                raise ValueError('invalid head identity')
+            result['head_sha'] = run['head_sha']
+        if run['status'] not in (*ACTIVE_RUN_STATUSES, 'completed'):
+            raise ValueError('unknown run status')
+        if run['status'] == 'completed' and run.get('conclusion') not in TERMINAL_RUN_CONCLUSIONS:
+            raise ValueError('terminal conclusion missing')
+        if run['status'] != 'completed' and run.get('conclusion') is not None:
+            raise ValueError('contradictory active conclusion')
+        return result
+    except (KeyError, TypeError, ValueError) as exc:
+        raise StateInvalid('AUTHORITY_RUN_IDENTITY_INVALID') from exc
+
+
+def validate_run_inventory(runs, rows):
+    if not isinstance(runs, list):
+        raise StateInvalid('AUTHORITY_INCOMPLETE_RUN_INVENTORY')
+    identities = {row['id']: row['path'] for row in rows}
+    seen = set()
+    for run in runs:
+        exact = run_identity(run); key = (exact['id'], exact['run_attempt'])
+        if identities.get(exact['workflow_id']) != exact['path'] or key in seen:
+            raise StateInvalid('AUTHORITY_RUN_INVENTORY_CONTRADICTORY')
+        seen.add(key)
+    return runs
+
+
+def classify_registered(rows, rules, *, separation=None, binding=None, protected_resources=None,
+                        active_runs=None, runs_complete=False):
+    validate_registered_inventory(rows, rules)
+    if active_runs is not None:
+        validate_run_inventory(active_runs, rows)
     result = []
     for row in rows:
         if row.get('path') not in rules['workflows']:
-            if row.get('path') in rules.get('registrations', {}):
-                # A retained identity is recorded for adjudication, not approved.
-                # Disabled registration does not revoke old executions/tokens.
+            if (runs_complete is not True or active_runs is None
+                    or row['state'] != 'disabled_manually'
+                    or any(run['workflow_id'] == row['id'] and run['status'] in ACTIVE_RUN_STATUSES
+                           for run in active_runs)):
                 raise StateInvalid('AUTHORITY_REGISTERED_DEFINITION_MISSING')
-            raise StateInvalid('AUTHORITY_UNCLASSIFIED_REGISTERED_WORKFLOW')
+            result.append({k: row[k] for k in ('id', 'path', 'state')} | {
+                'role': 'retired', 'configured_role': 'retired_missing_yaml',
+                'classification': 'retired_missing_yaml', 'definition_present': False,
+                'capabilities': [], 'resources': [], 'separation_required': False})
+            continue
         entry = rules['workflows'][row['path']]
         _review(entry)
         role = entry['role']
@@ -373,25 +459,54 @@ class GitHubAuthorityObserver:
         if separation:
             resources = fence['external']['resource_bindings']
             binding['resource_bindings_sha256'] = digest(resources)
-        rows = classify_registered(self.pages('actions/workflows','workflows'),rules,
+        registered, runs = self.current_inventory(rules)
+        rows = classify_registered(registered, rules, active_runs=runs, runs_complete=True,
                                    separation=separation, binding=binding, protected_resources=resources)
-        if {w['path'] for w in rows} != set(rules['workflows']):
-            raise StateInvalid('AUTHORITY_REGISTERED_DEFINITION_MISMATCH')
-        runs = {}
-        for status in ('queued','in_progress','waiting','pending','requested'):
-            for run in self.pages('actions/runs?status='+status,'workflow_runs'):
-                if run.get('status') == 'completed': continue
-                key = (run['id'],run['run_attempt'])
-                if key in runs and runs[key] != run:
-                    raise StateInvalid('AUTHORITY_RUN_INVENTORY_CHANGED')
-                runs[key] = run
+        if self.github.request('GET', f'/repos/{self.repo}/git/ref/heads/main')['object']['sha'] != main:
+            raise StateInvalid('AUTHORITY_MAIN_CHANGED_DURING_INVENTORY')
         if validate_external(self.fence.assert_exclusive(self.repo), self.repo) != protection:
             raise StateInvalid('AUTHORITY_RESOURCE_PROTECTION_CHANGED')
         return {'main_sha':main,'policy_sha256':digest({'policy':rules,'definitions':definitions}),
                 'code_sha256':digest(expected),'definitions_valid':True,'inventory_complete':True,
-                'runs_complete':True,'workflows':rows,'active_runs':list(runs.values()),
+                'runs_complete':True,'workflows':rows,'active_runs':runs,
                 'external':fence['external'],'key_binding':fence['key_binding'],
                 'approved_revision':fence['approved_revision']}
+
+    def current_inventory(self, rules):
+        """Validate before classifying, then reread for registrations/run races.
+
+        These reads are not an API lock. The caller's separately proven resource
+        fence remains required for the whole authority operation.
+        """
+        registered = self.pages('actions/workflows', 'workflows')
+        validate_registered_inventory(registered, rules, complete=True)
+        runs = self.active_inventory(registered)
+        fresh = self.pages('actions/workflows', 'workflows')
+        validate_registered_inventory(fresh, rules, complete=True)
+        if workflow_snapshot(registered) != workflow_snapshot(fresh):
+            raise StateInvalid('AUTHORITY_REGISTERED_INVENTORY_CHANGED')
+        fresh_runs = self.active_inventory(fresh)
+        if run_snapshot(runs) != run_snapshot(fresh_runs):
+            raise StateInvalid('AUTHORITY_RUN_INVENTORY_CHANGED')
+        # A re-enable/new registration during the second status pass is unsafe.
+        final = self.pages('actions/workflows', 'workflows')
+        validate_registered_inventory(final, rules, complete=True)
+        if workflow_snapshot(final) != workflow_snapshot(fresh):
+            raise StateInvalid('AUTHORITY_REGISTERED_INVENTORY_CHANGED')
+        return fresh, fresh_runs
+
+    def active_inventory(self, registered):
+        runs = {}
+        for status in ACTIVE_RUN_STATUSES:
+            for run in self.pages('actions/runs?status='+status, 'workflow_runs'):
+                exact = run_identity(run)
+                if run['status'] != status:
+                    raise StateInvalid('AUTHORITY_RUN_INVENTORY_CHANGED')
+                key = (exact['id'], exact['run_attempt'])
+                if key in runs:
+                    raise StateInvalid('AUTHORITY_RUN_INVENTORY_CONTRADICTORY')
+                runs[key] = run
+        return validate_run_inventory(list(runs.values()), registered)
 
     def review_tree(self, tree, publication, rules):
         """Validate omitted output bytes against immutable service identities."""
@@ -437,7 +552,10 @@ class GitHubAuthorityObserver:
         for page in range(1,101):
             response = self.github.request('GET',f'/repos/{self.repo}/{path}{separator}per_page=100&page={page}')
             count, batch = response.get('total_count'), response.get(field)
-            if type(count) is not int or count < 0 or not isinstance(batch,list) or (total is not None and total != count):
+            if (type(count) is not int or count < 0 or not isinstance(batch,list) or len(batch) > 100
+                    or (total is not None and total != count)
+                    or field == 'workflow_runs' and count > 1000
+                    or any(not isinstance(r, dict) or type(r.get('id')) is not int for r in batch)):
                 raise StateInvalid('AUTHORITY_INCOMPLETE_PAGINATION')
             total = count; rows.extend(batch)
             if len({r['id'] for r in rows}) != len(rows):
@@ -446,3 +564,13 @@ class GitHubAuthorityObserver:
                 if len(rows) != total: raise StateInvalid('AUTHORITY_INCOMPLETE_INVENTORY')
                 return rows
         raise StateInvalid('AUTHORITY_INVENTORY_LIMIT')
+
+
+def workflow_snapshot(rows):
+    return sorted(({key: row[key] for key in ('id', 'path', 'state')} for row in rows), key=lambda row: row['id'])
+
+
+def run_snapshot(runs):
+    return sorted((run_identity(run) | {'status': run['status'], 'conclusion': run.get('conclusion'),
+                                       'event': run.get('event'), 'head_branch': run.get('head_branch')}
+                   for run in runs), key=lambda row: (row['id'], row['run_attempt']))

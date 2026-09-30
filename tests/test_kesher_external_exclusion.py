@@ -54,9 +54,49 @@ class ProtectedService:
 def protection_fixture():
     from scripts.kesher_runtime.exclusion import REQUIRED_RESOURCES, ExclusionFence
     services = {name: ProtectedService(name) for name in REQUIRED_RESOURCES}
+    services['github'] = ProtectedGitAuthority()
     binding = {name: service.resource_id for name, service in services.items()}
     fence = ExclusionFence('owner/repo', 'exclusive-epoch', 'coordinator-one', services, binding)
     return fence, services
+
+
+class ProtectedGitAuthority(ProtectedService):
+    """Resource gateway pins its ACL to the actual Git CAS winning commit.
+
+    Non-GitHub services retain their own resource CAS fixture. An Actions
+    counter never serves as the GitHub epoch authority in these tests.
+    """
+    def __init__(self):
+        super().__init__('github')
+        self.resource_id = 'repository-id'
+        from tests.test_kesher_git_exclusion import EpochGit
+        self.git = EpochGit()
+        self.epoch = None
+        self.pending_policy = None
+
+    def inspect(self, repo):
+        anchor = self.epoch.observe()['anchor'] if self.epoch else None
+        if anchor is not None and self.protection is None:
+            # This disposable endpoint's deny gate derives from its real ref.
+            self.protection = copy.deepcopy(self.pending_policy)
+        row = super().inspect(repo)
+        row.update(revision_kind='git_ref_cas',epoch_anchor=anchor,
+            revision=anchor['commit_sha'] if anchor else self.git.refs['automation-state'])
+        self.requests = sum(c[1]=='/graphql' for c in self.git.calls)
+        return row
+
+    def exclude(self, repo, expected_revision, protection):
+        from scripts.kesher_runtime.git_exclusion import GitExclusionEpoch
+        if self.fail_before:
+            self.fail_before = False
+            raise GitHubError(None,'crash before Git exclusion',uncertain=True)
+        self.pending_policy = copy.deepcopy(protection)
+        self.epoch = GitExclusionEpoch(self.git,repo,epoch=protection['epoch'],owner=protection['owner'],
+            resource_id=self.resource_id,main_sha=self.git.refs['main'],policy_sha256=digest(protection))
+        if self.drop: self.git.drop = True; self.drop = False
+        self.epoch.acquire(expected_revision)
+        self.protection = copy.deepcopy(protection)
+        self.requests = sum(c[1]=='/graphql' for c in self.git.calls)
 
 
 class ExternalExclusionTests(unittest.TestCase):

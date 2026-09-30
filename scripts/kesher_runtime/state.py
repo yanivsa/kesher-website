@@ -160,6 +160,10 @@ def validate_state(state: dict) -> None:
 def validate_transition(previous: dict, proposed: dict) -> None:
     validate_state(previous)
     validate_state(proposed)
+    from .git_exclusion import no_legacy_incident
+    no_legacy_incident(previous)
+    if previous.get('github_exclusion') != proposed.get('github_exclusion'):
+        raise StateInvalid('Canonical workers cannot change exclusion epoch/drain evidence')
     if previous.get('handover') != proposed.get('handover'):
         raise StateInvalid('Only the dedicated handover store may change authority evidence')
     if 'handover' in previous:

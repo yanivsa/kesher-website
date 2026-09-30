@@ -1,5 +1,7 @@
 # Blocker 5.1: bounded offline authority-handover hardening
 
+> **Later September 30 continuation:** The four-target GitHub resource-exclusion adapter implementation, exact 33-row current adjudication, real Git epoch/CAS, Actions drain and V5 rollback fence are recorded in [github-resource-exclusion-adapter-20260930.md](github-resource-exclusion-adapter-20260930.md). That report supersedes this historical report's next-slice recommendation and registration/exclusion implementation status. The original nine phases, evidence floor and all three quarantines remain preserved. This report's earlier validation and 09:06 UTC production observations remain historical; no live handover is claimed.
+
 Date: 2026-09-30. Worktree: `/Users/ninja/Documents/Kesher-worktrees/autonomous-stabilization-20260917`. Branch: `codex/kesher-autonomous-stabilization-20260917`. Base: `693bb4c8ad38e6351bff5aa76b4424ae1b7f2665`. The September 30 user attachment authorizes this one implementation/verification/checkpoint slice. The existing candidate, nine phases, state store and CAS/restart design are preserved. The original stabilization goal is not complete.
 
 ## 1. Hardening status

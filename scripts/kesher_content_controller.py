@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import copy
 import io
 import json
 import os
@@ -332,6 +333,7 @@ class GitHubClient:
         self.api = f"https://api.github.com/repos/{repo}"
         self._controller_state_loaded = False
         self._controller_state_sha: str | None = None
+        self._controller_state_document: dict[str, Any] | None = None
 
     def request(
         self,
@@ -556,6 +558,7 @@ class GitHubClient:
 
     def load_controller_state(self) -> dict[str, Any] | None:
         self._controller_state_loaded = False
+        self._controller_state_document = None
         self.ensure_state_ref()
         quoted = urllib.parse.quote(STATE_PATH, safe="/")
         payload = self.request(
@@ -572,15 +575,21 @@ class GitHubClient:
         state = json.loads(base64.b64decode(payload.get("content") or "").decode("utf-8"))
         if not isinstance(state, dict):
             raise ControllerError("CONTROLLER_STATE_INVALID")
+        from scripts.kesher_runtime.legacy_retirement import validate_legacy_read
+        validate_legacy_read(state)
         if not payload.get("sha"):
             raise ControllerError("CONTROLLER_STATE_REVISION_MISSING")
         self._controller_state_sha = str(payload["sha"])
+        self._controller_state_document = copy.deepcopy(state)
         self._controller_state_loaded = True
         return state
 
     def save_controller_state(self, state: dict[str, Any]) -> None:
         if not self._controller_state_loaded:
             raise ControllerError("CONTROLLER_STATE_NOT_LOADED")
+        from scripts.kesher_runtime.legacy_retirement import validate_legacy_read
+        validate_legacy_read(self._controller_state_document)
+        validate_legacy_read(state)
         quoted = urllib.parse.quote(STATE_PATH, safe="/")
         body: dict[str, Any] = {
             "message": f"state: Kesher controller {state.get('cycle')} {state.get('status')}",
@@ -599,6 +608,7 @@ class GitHubClient:
         if not written_sha:
             raise ControllerError("CONTROLLER_STATE_WRITE_RECEIPT_MISSING")
         self._controller_state_sha = str(written_sha)
+        self._controller_state_document = copy.deepcopy(state)
         self._controller_state_loaded = True
 
     def newest_video_state(self) -> dict[str, Any]:

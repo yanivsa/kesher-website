@@ -51,6 +51,8 @@ def require_control_operation(protection, operation, *, principal, epoch, code_s
     from .identity import canonical_json, identity_from_dict, require_sha
     from .handover import OWNER, validate_journal
     from .state import claim_command, validate_transition
+    from .git_exclusion import no_legacy_incident
+    no_legacy_incident(previous)
     try:
         require_sha(previous_sha,40); require_sha(main_sha,40); require_sha(code_sha256)
         if (protection['resource'] != 'github' or protection['control_gate'] != CONTROL_GATE
@@ -118,6 +120,8 @@ def require_resource_command(state, epoch, command_id, run_id, code_sha):
     from .state import validate_state, target_is_current
     from .identity import identity_from_dict
     validate_state(state)
+    from .git_exclusion import no_legacy_incident
+    no_legacy_incident(state)
     h = state.get('handover', {})
     c = state['commands'].get(command_id)
     if (h.get('phase') != 'VERIFIED' or
@@ -131,6 +135,28 @@ def require_resource_command(state, epoch, command_id, run_id, code_sha):
 
 def _refuse():
     raise StateInvalid('RESOURCE_ENFORCED_EXCLUSION_REQUIRED')
+
+
+def _revision(resource, row, *, protected=False):
+    """GitHub has a Git-ref CAS receipt, never an Actions revision counter."""
+    from .identity import require_sha
+    if resource != 'github':
+        if type(row.get('revision')) is not int or row['revision'] < 1: _refuse()
+        return
+    try:
+        require_sha(row['revision'],40)
+        if row['revision_kind'] != 'git_ref_cas': _refuse()
+        if protected:
+            anchor = row['epoch_anchor']
+            for name in ('commit_sha','before_oid','tree_sha','main_sha'): require_sha(anchor[name],40)
+            require_sha(anchor['policy_sha256'])
+            policy = {k:v for k,v in row.items() if k not in
+                      {'revision','revision_kind','epoch_anchor','receipt_sha256'}}
+            if (anchor['ref'] != 'refs/heads/automation-state' or anchor['commit_sha'] != row['revision']
+                    or anchor['policy_sha256'] != digest(policy)
+                    or any(anchor[k] != row[k] for k in ('repo','epoch','owner','resource_id'))):
+                _refuse()
+    except (KeyError,TypeError,ValueError): _refuse()
 
 
 def validate_external(external, repo):
@@ -147,10 +173,11 @@ def validate_external(external, repo):
             _refuse()
         for resource, classes in REQUIRED_RESOURCES.items():
             proof = proofs[resource]
+            _revision(resource,proof,protected=True)
             if (not isinstance(bindings[resource], str) or not bindings[resource] or
                     proof['resource'] != resource or proof['resource_id'] != bindings[resource] or
                     proof['repo'] != repo or proof['epoch'] != external['epoch'] or
-                    proof['owner'] != external['owner'] or type(proof['revision']) is not int or proof['revision'] < 1 or
+                    proof['owner'] != external['owner'] or
                     proof['default_authority'] != 'deny' or proof['credential_revocation_complete'] is not True or
                     set(proof['revoked_credential_classes']) != set(classes) or
                     proof['canonical_gate'] != CANONICAL_GATE or
@@ -193,9 +220,9 @@ class ExclusionFence:
 
     def _inspect(self, resource):
         row = self.ports[resource].inspect(self.repo)
+        _revision(resource,row)
         if (row.get('repo') != self.repo or row.get('resource') != resource or
                 row.get('resource_id') != self.bindings[resource] or
-                type(row.get('revision')) is not int or row['revision'] < 1 or
                 row.get('inventory_complete') is not True or not isinstance(row.get('actors'), list)):
             _refuse()
         return row
@@ -221,6 +248,8 @@ class ExclusionFence:
             if row.get('protection') != self._policy(resource):
                 _refuse()
             proof = {**copy.deepcopy(row['protection']), 'revision':row['revision']}
+            if resource == 'github':
+                proof.update(revision_kind=row['revision_kind'],epoch_anchor=copy.deepcopy(row['epoch_anchor']))
             proof['receipt_sha256'] = digest(proof)
             proofs[resource] = proof
             writers.extend({'resource':resource, **copy.deepcopy(actor)} for actor in row['actors'])

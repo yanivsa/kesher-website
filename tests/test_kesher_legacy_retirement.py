@@ -2,6 +2,7 @@ import copy
 import unittest
 from unittest.mock import patch
 from scripts.kesher_runtime.handover import require_legacy_writable
+from scripts.kesher_runtime.legacy_retirement import validate_legacy_write
 from scripts.kesher_runtime.state import StateInvalid, validate_transition
 from tests import test_kesher_handover as fixtures
 
@@ -34,6 +35,9 @@ class LegacyRetirementTests(unittest.TestCase):
         for _ in range(50):
             phase=c.tick()
             with self.assertRaises(StateInvalid):require_legacy_writable(case.backend.document)
+            with self.assertRaises(StateInvalid):
+                validate_legacy_write(case.backend.document, {'schema_version':5},
+                                      before_sha=case.backend.sha, current_sha=case.backend.sha)
             if phase=='VERIFIED':break
         else:self.fail('Incomplete handover')
 
