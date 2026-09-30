@@ -36,6 +36,22 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertNotIn("55 השניות", prompt)
 
 
+    def test_short_uses_distinct_title_tags_and_hook(self):
+        source = self.source()
+        source["short_youtube_metadata"] = {
+            "title": "מריבות בזוגיות: שלושה סימנים שהוויכוח יצא משליטה",
+            "description": source["youtube_metadata"]["description"],
+            "tags": ["זוגיות", "מריבות בזוגיות", "איך לריב נכון"],
+        }
+        source["short_title"] = source["short_youtube_metadata"]["title"]
+        source["short_hook"] = "כששני אנשים נלחמים על ההגה — אף אחד כבר לא מנווט את הקשר."
+        item = short.new_item(source)
+        self.assertEqual(item["youtube_metadata"]["title"], source["short_youtube_metadata"]["title"])
+        self.assertIn("מריבות בזוגיות", item["youtube_metadata"]["tags"])
+        prompt = short.generation_prompt(item["source"])
+        self.assertIn(source["short_hook"], prompt)
+        self.assertIn(source["short_title"], prompt)
+
     def test_new_item_requires_native_provider_short_and_three_links(self):
         item = short.new_item(self.source())
         self.assertEqual(item["provider_video_format"], "short")
