@@ -6,5 +6,6 @@
   "completed": false,
   "requested_at": "2026-09-30T15:07:00Z",
   "failure_signature": "STALE_TARGETED_MEDIA_RECOVERY_AFTER_COMPLETE",
-  "recovery": "adopt_live_article_identity_then_exact_video_overview_then_exact_short_no_duplicate_article_or_provider_generation"
+  "recovery": "adopt_live_article_identity_then_exact_video_overview_then_exact_short_no_duplicate_article_or_provider_generation",
+  "fresh_evidence_override": "PR #987 merged; article independently verified public HTTP 200 with the expected title. Ignore the completed previous targeted-media identity and continue Issue #986 media only."
 }
