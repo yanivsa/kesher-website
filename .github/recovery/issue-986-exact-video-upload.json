@@ -1,0 +1,9 @@
+{
+  "issue": 986,
+  "slug": "marshmallow-test-environmental-reliability",
+  "content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
+  "video_item_id": "video-20260930-202054-33253e4463",
+  "operation": "exact_upload_only",
+  "no_regeneration": true,
+  "created_for": "one-shot recovery dispatch after full-mode skipped exact upload"
+}
