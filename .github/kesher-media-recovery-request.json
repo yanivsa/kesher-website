@@ -1,10 +1,10 @@
 {
   "enabled": true,
-  "target_slug": "breaking-the-yelling-cycle",
-  "issue": 975,
-  "purpose": "after the evidence-grounded in-place update of the existing breaking-the-yelling-cycle article is merged, continue that exact source identity through a public Video Overview and verified 9:16 Short without creating a duplicate article",
+  "target_slug": "marshmallow-test-environmental-reliability",
+  "issue": 986,
+  "purpose": "Continue the already-public authoritative Issue #986 marshmallow article through the exact same source identity to one public Video Overview and one verified 9:16 Short. Do not create or modify a duplicate article.",
   "completed": false,
-  "requested_at": "2026-09-29T15:40:00Z",
-  "failure_signature": "DEDUP_ADOPT_EXISTING_ARTICLE_MEDIA_MISSING",
-  "recovery": "reuse_existing_article_slug_after_update_then_exact_video_then_exact_short_no_duplicate_article_or_provider_generation"
+  "requested_at": "2026-09-30T15:07:00Z",
+  "failure_signature": "STALE_TARGETED_MEDIA_RECOVERY_AFTER_COMPLETE",
+  "recovery": "adopt_live_article_identity_then_exact_video_overview_then_exact_short_no_duplicate_article_or_provider_generation"
 }
