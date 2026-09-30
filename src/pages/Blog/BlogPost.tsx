@@ -119,6 +119,7 @@ const BlogPost: React.FC = () => {
     ? { url: post.serviceUrl, label: post.serviceLabel }
     : null;
   const ctaCopy = articleCtaCopy(post);
+  const displayCategory = post.category === 'הנחיית הורים' ? 'הדרכת הורים' : post.category;
   const imageMeta = post as typeof post & {
     imageProvider?: string;
     imageSourceUrl?: string;
@@ -140,7 +141,7 @@ const BlogPost: React.FC = () => {
       <header className={styles.header}>
         <div className="container">
           <Link to="/blog" className={styles.backLink}>← חזרה לבלוג</Link>
-          <span className={styles.category}>{post.category}</span>
+          <span className={styles.category}>{displayCategory}</span>
           <h1 className={styles.title}>{post.title}</h1>
           {articleSummary && (
             <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">
