@@ -388,6 +388,31 @@
       "strike": 1,
       "updated_at": "2026-09-27T22:01:25.667828+00:00"
     },
+    "ksr-3774c5376c3b594773463300": {
+      "command_id": "ksr-3774c5376c3b594773463300",
+      "evidence_hash": "e7c639e68bbf5c38252036b1415c3650a4b7c45520819fdbbdc70ad996d94102",
+      "exact": {
+        "artifact_id": null,
+        "content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
+        "item_id": null,
+        "pr_number": null,
+        "short_item_id": null,
+        "slug": "relationship-crisis-flydubai-lessons",
+        "source_id": null,
+        "task_id": null
+      },
+      "executor": "controller",
+      "failure_signature": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+      "fingerprint": "10454f02e4ad482be63e6643f308f1b2",
+      "incident_id": "v5|relationship-crisis-flydubai-lessons|880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b|article",
+      "issued_at": "2026-09-30T20:20:08.350206+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "escalate_unknown_failure",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-30T20:20:08.350206+00:00"
+    },
     "ksr-38808857bde8631cbed265fc": {
       "acknowledged_at": "2026-09-17T11:07:18.960439+00:00",
       "command_id": "ksr-38808857bde8631cbed265fc",
@@ -2621,6 +2646,25 @@
       "status": "resolved",
       "strike": 1
     },
+    "10454f02e4ad482be63e6643f308f1b2": {
+      "active_command_id": "ksr-3774c5376c3b594773463300",
+      "failure_signature": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+      "fingerprint": "10454f02e4ad482be63e6643f308f1b2",
+      "first_seen_at": "2026-09-30T20:20:08.350206+00:00",
+      "history": [
+        {
+          "at": "2026-09-30T20:20:08.350206+00:00",
+          "command_id": "ksr-3774c5376c3b594773463300",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|relationship-crisis-flydubai-lessons|880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b|article",
+      "last_seen_at": "2026-09-30T20:20:08.350206+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=10454f02e4ad482be63e6643f308f1b2 strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "1d8246e65542347f5ddafb0a6f053521": {
       "active_command_id": null,
       "failure_signature": "SHORT_PROVIDER_HARD_TIMEOUT",
@@ -3809,5 +3853,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-29T18:23:55.598061+00:00"
+  "updated_at": "2026-09-30T20:20:08.350206+00:00"
 }
