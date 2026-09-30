@@ -7,5 +7,6 @@
   "requested_at": "2026-09-30T20:09:00Z",
   "failure_signature": "URGENT_TARGETED_MEDIA_RECOVERY_ISSUE_993",
   "recovery": "adopt_live_article_identity_then_exact_video_overview_then_exact_short_no_duplicate_article_or_provider_generation",
-  "preserve_prior_state": "Do not delete Issue #986 durable media state; simply stop targeting it while Issue #993 is the active urgent recovery."
+  "preserve_prior_state": "Do not delete Issue #986 durable media state; simply stop targeting it while Issue #993 is the active urgent recovery.",
+  "retrigger": "2026-09-30T20:20:00Z — post-merge #995 exact-media continuation; article identity is authoritative and must not be regenerated"
 }
