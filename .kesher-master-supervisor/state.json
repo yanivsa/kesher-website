@@ -853,7 +853,7 @@
       "verified_at": "2026-09-23T16:28:01.209942+00:00"
     },
     "ksr-6f41aefe47e63eb578fb75d9": {
-      "acknowledged_at": "2026-09-30T20:31:03.396594+00:00",
+      "acknowledged_at": "2026-09-30T20:34:11.987516+00:00",
       "command_id": "ksr-6f41aefe47e63eb578fb75d9",
       "evidence_hash": "e7c639e68bbf5c38252036b1415c3650a4b7c45520819fdbbdc70ad996d94102",
       "exact": {
@@ -871,7 +871,7 @@
       "fingerprint": "10454f02e4ad482be63e6643f308f1b2",
       "incident_id": "v5|relationship-crisis-flydubai-lessons|880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b|article",
       "issued_at": "2026-09-30T20:30:36.743839+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "running",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-6f41aefe47e63eb578fb75d9",
@@ -906,9 +906,10 @@
         "session_id": "sessions/18434879371046301018"
       },
       "proposed_action": "escalate_unknown_failure",
+      "running_at": "2026-09-30T20:34:11.987516+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-30T20:31:03.396594+00:00"
+      "updated_at": "2026-09-30T20:34:11.987516+00:00"
     },
     "ksr-7001b3eb8e1b8d84c23c0586": {
       "acknowledged_at": "2026-09-23T16:15:38.162196+00:00",
@@ -2738,7 +2739,7 @@
         }
       ],
       "incident_id": "v5|relationship-crisis-flydubai-lessons|880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b|article",
-      "last_seen_at": "2026-09-30T20:30:36.743839+00:00",
+      "last_seen_at": "2026-09-30T20:34:11.987516+00:00",
       "marker": "MASTER_ESCALATION fingerprint=10454f02e4ad482be63e6643f308f1b2 strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
@@ -3931,5 +3932,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-30T20:31:03.396594+00:00"
+  "updated_at": "2026-09-30T20:34:11.987516+00:00"
 }
