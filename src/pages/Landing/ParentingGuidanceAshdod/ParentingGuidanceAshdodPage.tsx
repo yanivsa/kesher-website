@@ -315,7 +315,7 @@ const ParentingGuidanceAshdodPage: React.FC = () => {
             <div className={styles.trustPoints} aria-label="נקודות אמון">
               <div className={styles.trustPoint}>
                 <FiUserCheck className={styles.trustIcon} aria-hidden="true" />
-                <span>הדרכת הורים</span>
+                <span>סמכות הורית רגועה</span>
               </div>
               <div className={styles.trustPoint}>
                 <FiClock className={styles.trustIcon} aria-hidden="true" />
