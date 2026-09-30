@@ -420,6 +420,8 @@ def article_body_for_item(item: dict[str, Any]) -> str:
 
 def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
     from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
     body = article_body_for_item(item)
     title = item["source"]["title"]
     if isinstance(state, CanonicalMediaState):
@@ -448,6 +450,8 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
     from scripts.kesher_runtime.provider import bind_generation_prompt
     prompt_path = STATE_DIR / f"{item['id']}-prompt-he.txt"
     prompt = bind_generation_prompt(state, item, generation_prompt(item["source"]), 'explainer')
@@ -1237,6 +1241,8 @@ def verify_authenticated_channel(token: str) -> None:
 
 def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: str, video_path: Path) -> str:
     from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
     metadata = item["youtube_metadata"]
     body = {
         "snippet": {
@@ -1315,7 +1321,9 @@ def resume_upload_status(session_uri: str, token: str, total: int) -> dict[str, 
     raise PipelineError(f"YouTube upload status query failed with HTTP {response.status_code}")
 
 
-def upload_bytes(session_uri: str, token: str, video_path: Path, offset: int) -> str:
+def upload_bytes(session_uri: str, token: str, video_path: Path, offset: int, *, state=None) -> str:
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
     total = video_path.stat().st_size
     if offset >= total:
         raise PipelineError("Upload session reports complete but no video ID is persisted")
@@ -1451,7 +1459,7 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
         offset = resumed["offset"]
         video_id = resumed["video_id"]
     if video_id is None:
-        video_id = upload_bytes(session_uri, token, video_path, offset)
+        video_id = upload_bytes(session_uri, token, video_path, offset, state=state)
     item["youtube_id"] = video_id
     item["youtube_url"] = f"https://youtu.be/{video_id}"
     item["upload_response_at"] = utc_now()
@@ -1505,6 +1513,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     args = build_parser().parse_args()
     if args.preflight:
         print(json.dumps({"preflight": "passed", **auth_preflight()}, ensure_ascii=False))

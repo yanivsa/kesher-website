@@ -360,6 +360,8 @@ class GitHubApi:
         self.api = f"https://api.github.com/repos/{repo}"
 
     def _request(self, method: str, url: str, body: dict[str, Any] | None = None, *, allow_404: bool = False, mutation: bool = False, cas_conflict: bool = False) -> Any:
+        from scripts.kesher_runtime.legacy_retirement import github_mutation
+        github_mutation(self.repo, method, url)
         raw = None if body is None else json.dumps(body, ensure_ascii=False).encode("utf-8")
         attempts = 1 if mutation else 4
         last: Exception | None = None
@@ -814,6 +816,8 @@ def run_live(*, repo: str, token: str, jules_api_key: str) -> dict[str, Any]:
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     parser = argparse.ArgumentParser()
     parser.add_argument("--live", action="store_true")
     args = parser.parse_args()

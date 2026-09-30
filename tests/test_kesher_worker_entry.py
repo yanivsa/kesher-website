@@ -15,6 +15,8 @@ class WorkerEntryTests(unittest.TestCase):
         state, self.command_id = requested()
         self.server = ContentsServer(state)
         self.store = GitHubStateStore(self.server, 'owner/repo')
+        from tests.test_kesher_handover import install_verified_authority
+        self.authority = install_verified_authority(self.store, self.server.document)
         self.env = {'GITHUB_REPOSITORY': 'owner/repo', 'GITHUB_EVENT_NAME': 'workflow_dispatch',
                     'GITHUB_REF': 'refs/heads/main', 'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '1',
                     'GITHUB_WORKFLOW_REF': 'owner/repo/.github/workflows/kesher-media-worker.yml@refs/heads/main',

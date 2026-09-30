@@ -39,7 +39,7 @@ def _identity(source: dict) -> SourceIdentity:
 
 def prepare_migration(*, controller: dict, controller_sha: str, main_sha: str,
                       sources: list[dict], artifacts: list[dict], now: str, capability_sealer=None,
-                      historical_sources: list[dict] | None = None) -> dict:
+                      historical_sources: list[dict] | None = None, retained_evidence: dict | None = None) -> dict:
     timestamp(now); require_sha(controller_sha, 40); require_sha(main_sha, 40)
     if controller.get('schema_version') != 5:
         raise StateInvalid('Migration input must be the explicitly inspected legacy schema')
@@ -242,4 +242,77 @@ def prepare_migration(*, controller: dict, controller_sha: str, main_sha: str,
     state['audit'].append({'at': now, 'event': 'legacy_migration_prepared', 'controller_blob_sha': controller_sha,
                            'public_completion_inferred': False})
     validate_state(state)
-    return state
+    return preserve_closed_evidence(state, retained_evidence) if retained_evidence is not None else state
+
+
+def _union(old, fresh):
+    result = copy.deepcopy(old)
+    seen = {digest(row) for row in result}
+    for row in fresh:
+        if digest(row) not in seen:
+            result.append(copy.deepcopy(row)); seen.add(digest(row))
+    return result
+
+
+def _budget_floor(old, fresh):
+    result = copy.deepcopy(old)
+    for name, value in fresh.items():
+        prior = result.get(name)
+        if name not in result:
+            result[name] = copy.deepcopy(value)
+        elif type(prior) is int and type(value) is int:
+            result[name] = max(prior, value)
+        elif isinstance(prior, dict) and isinstance(value, dict):
+            result[name] = _budget_floor(prior, value)
+    return result
+
+
+def preserve_closed_evidence(fresh: dict, closed: dict) -> dict:
+    """Carry reviewed history forward without importing old scheduling authority.
+
+    Receipt bytes and adjudications are immutable. A fresh conflicting baseline
+    is retained as evidence and quarantined, never selected over the closed one.
+    The caller must independently bind this exact closed-state digest to review.
+    """
+    validate_state(closed); public_evidence(closed)
+    if (closed['migration'].get('status') != 'prepared' or closed['commands'] or
+            closed['incidents'] or 'handover' in closed or
+            any(row.get('phase') is not None for row in closed['items'].values())):
+        raise StateInvalid('RETAINED_EVIDENCE_MUST_NOT_IMPORT_ACTIVE_AUTHORITY')
+    result = copy.deepcopy(fresh)
+    migration = result['migration']
+    migration['retained_evidence'] = {'state_sha256': digest(closed),
+        'migration': copy.deepcopy(closed['migration']), 'audit': copy.deepcopy(closed['audit']),
+        'slots': copy.deepcopy(closed['slots'])}
+    migration['refreshed_receipts'] = {}
+    migration['refreshed_source_git_origins'] = copy.deepcopy(migration.get('source_git_origins', {}))
+    for key, source in closed['sources'].items():
+        result['sources'].setdefault(key, copy.deepcopy(source))
+    result['quarantine'] = _union(closed['quarantine'], result['quarantine'])
+    for key, row in closed['items'].items():
+        newer = result['items'].get(key)
+        if newer is not None and newer != row:
+            migration['refreshed_receipts'][key] = copy.deepcopy(newer)
+            old_items = {digest(r['item']) for r in row['receipts'].values() if r.get('legacy_import')}
+            new_items = {digest(r['item']) for r in newer['receipts'].values() if r.get('legacy_import')}
+            if new_items != old_items:
+                result['quarantine'].append({'failure_class': 'LEGACY_REFRESH_CONFLICT',
+                    'target': row['identity'], 'retained_sha256': digest(row), 'fresh_sha256': digest(newer)})
+        result['items'][key] = copy.deepcopy(row)
+    for field in ('observed_youtube_ids', 'legacy_stage_claims'):
+        for key, rows in closed['migration'].get(field, {}).items():
+            if field == 'observed_youtube_ids':
+                old_targets = {digest(row['target']) for row in rows if row.get('target')}
+                for row in migration[field].get(key, []):
+                    if row.get('target') and old_targets and digest(row['target']) not in old_targets:
+                        result['quarantine'].append({'failure_class':'LEGACY_REFRESH_IDENTITY_CONFLICT',
+                            'target':copy.deepcopy(row['target']), 'youtube_id':key,
+                            'retained_claims_sha256':digest(rows), 'fresh_claim_sha256':digest(row)})
+            migration[field][key] = _union(rows, migration[field].get(key, []))
+    for key, budget in closed['migration'].get('legacy_stage_budgets', {}).items():
+        migration['legacy_stage_budgets'][key] = _budget_floor(budget, migration['legacy_stage_budgets'].get(key, {}))
+    for field in ('artifacts', 'unresolved_controller_records'):
+        migration[field] = _union(closed['migration'].get(field, []), migration.get(field, []))
+    migration['source_git_origins'] = {**migration['source_git_origins'], **copy.deepcopy(closed['migration'].get('source_git_origins', {}))}
+    validate_state(result); public_evidence(result)
+    return result

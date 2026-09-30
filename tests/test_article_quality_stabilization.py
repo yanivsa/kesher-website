@@ -10,6 +10,7 @@ from unittest import mock
 from zoneinfo import ZoneInfo
 
 from scripts import kesher_content_controller_stabilized as stabilized
+from scripts.kesher_runtime.state import StateInvalid
 
 ROOT = Path(__file__).resolve().parents[1]
 TZ = ZoneInfo("Asia/Jerusalem")
@@ -145,12 +146,17 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertEqual(gh.assertion, ("src/data/posts.json", "main"))
         self.assertIsNotNone(gh.saved)
 
-    def test_production_controller_workflow_uses_stabilized_runtime(self):
+    def test_production_controller_uses_canonical_runtime_and_retires_stabilized_entry(self):
         workflow = (ROOT / ".github/workflows/kesher-content-controller.yml").read_text(encoding="utf-8")
         self.assertIn(
-            "python3 -u scripts/kesher_content_controller_stabilized.py --report-json",
+            "python -m scripts.kesher_runtime.controller_entry --mode live",
             workflow,
         )
+        self.assertNotIn("scripts/kesher_content_controller_stabilized.py", workflow)
+        with mock.patch.object(stabilized, "install_runtime") as install:
+            with self.assertRaisesRegex(StateInvalid, "LEGACY_ENTRYPOINT_RETIRED"):
+                stabilized.main()
+        install.assert_not_called()
 
     def test_article_generation_uses_pre_pr_evidence_contract_runner(self):
         workflow = (ROOT / ".github/workflows/kesher-article-generation.yml").read_text(encoding="utf-8")

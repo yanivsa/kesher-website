@@ -1,4 +1,8 @@
-> **2026-09-28 blocker-5.2 closure update:** The evidence-only slice is CLOSED with three retained quarantines, zero new import bindings and no production mutation. Exact final identities and validation are in [legacy-media-evidence-report-20260928.md](legacy-media-evidence-report-20260928.md). Historical checkpoint validation below is preserved; no browser or full project gate was rerun. Blocker 5.1 and safe production cutover remain incomplete.
+> **Final September 30 result:** **5.1 hardening COMPLETE; CLOSED FOR OFFLINE IMPLEMENTATION** for the bounded four-target slice. Post-review full Python: **971 passed in 314.067s**; independent review: zero remaining Critical/Important findings; actionlint and diff integrity passed. All intended changes are committed on the same stabilization branch; containing commit SHA and post-commit clean verification are in the closing report. Live adapters/authority transfer and blockers 5.3–5.6 remain incomplete.
+
+> **2026-09-30 bounded blocker-5.1 hardening update:** The same branch/worktree now preserves the closed evidence floor through rollover, classifies 68 local definitions, denies 33 unresolved retained registrations, requires persistent six-resource exclusion evidence, and separates validated publication output from executable authority. The actual closed-floor replay retains 32 baselines/64 IDs and all three quarantines; it refuses missing capability evidence at IMPORT_READY with zero imports. Current validation/review/commit results and live prerequisites are in [handover-hardening-report-20260930.md](handover-hardening-report-20260930.md). Production was only observed read-only: main `97f54345aab83b430dc86839695d46a9ca2ff938`, schema 5, controller blob `45c210c64f1d2987233965a68d6401bab5de52c0` at 09:06:14 UTC. Divergence before the checkpoint commit: 21 local / 196 incoming. No current-main integration, activation, live capability sealing, provider mutation, push, PR or merge occurred. **production_state_written=false; public_completion_inferred=false.**
+
+> **Historical 2026-09-28 blocker-5.2 closure:** The evidence-only slice is CLOSED with three retained quarantines, zero new import bindings and no production mutation. Exact final identities and validation are in [legacy-media-evidence-report-20260928.md](legacy-media-evidence-report-20260928.md). The September 28 production/validation observations below are historical. Blocker 5.2 stays closed; safe production cutover and the original goal remain incomplete.
 
 # 1. CHECKPOINT STATUS
 
@@ -52,11 +56,11 @@ Evidence: `checkpoint-production-observation-20260928.json` and `checkpoint-clou
 
 ## 5.1 Coordinated authority transfer and legacy retirement
 
-- **A — Exact blocker:** There is no completed coordinator that converts the exact legacy state and transfers scheduling/writing authority while preventing old producers from competing.
-- **B — Existing implementation:** Schema-6 identities, CAS store, command ledger/admission, pure migration preparation, controller/worker tests and the dated live topology inventory.
-- **C — Missing:** An executable, crash-resumable handover tied to exact main/state; quiesced legacy dispatches/runs/external writers; sealing with the existing runtime key; exact CAS import; repository definitions and registered workflow states that leave one controller and command-only workers.
+- **A — Current boundary:** The nine-phase offline coordinator and bounded hardening exist; no live authority transfer has run. Concrete service exclusion adapters, exact registered-authority adjudication and production acceptance remain prerequisites.
+- **B — Existing implementation:** Crash-resumable state journal, exact atomic main/state-ref CAS, retained independently approved 5.2 evidence floor, identity-bound synthetic sealing, controller/worker admission, legacy refusal/retirement, 68-definition reviewed topology, 33 unresolved registrations, resource-exclusion contract and validated publication-output digest boundary. See the September 30 report for final validation and review.
+- **C — Missing live evidence:** Exact service-enforced revocation/expiry and canonical resource gates; complete fresh runs/external-writer/registered inventory and infrastructure separation; independently approved integrated revision; refreshed quiesced inputs; real trusted sealing with the existing runtime key; exact CAS import and registered legacy disable/drain/retirement; VERIFIED sole-authority readback. The real closed floor currently stops before import when its capability artifact is omitted.
 - **D — Risk:** Competing writers, canonical-state corruption, lost state and duplicate external effects.
-- **E — Minimum next action:** Implement and test the coordinated handover/topology boundary offline, including interrupted import and competing legacy writer refusal, before any activation.
+- **E — One next implementation slice:** Implement and test the GitHub resource-exclusion adapter offline, binding exact workflow/registration and old credential authority to inspect/CAS-enforce/readback fixtures. No live activation in that slice.
 - **F — Scope:** **LARGE**.
 - **G — Extra High:** **YES** — cross-service authority, CAS and crash boundaries must agree; a partial transition is unsafe.
 
@@ -129,11 +133,11 @@ Mandatory authority transfer, retirement, repair, attempt transitions, trusted C
 
 # 8. RECOMMENDED NEXT STEP
 
-The sole recommended next implementation slice is **5.1: the offline coordinated handover/topology boundary**, including exact trusted capability import, interrupted-import recovery and competing-legacy-writer refusal. Prepare and test the boundary before any live activation. Do not start it in this evidence-closing continuation.
+The sole recommended next implementation slice is **the offline GitHub resource-exclusion adapter**, including exact registered authority and old token/app/PAT/deploy-key exclusion/readback fixtures. It follows the completed bounded hardening; no live activation or next-slice implementation is started by this checkpoint.
 
 # 9. MODEL RECOMMENDATION
 
-**Extra High** for that 5.1 slice: the existing cross-service authority, state-CAS, capability and crash boundaries must agree. The completed deterministic 5.2 evidence slice required only High.
+**GPT-6.1 Sol, xhigh / Extra High** for that adapter slice: physical credential revocation, exact registration identity and CAS/readback must agree. The completed deterministic 5.2 evidence slice required only High.
 
 # 10. ESTIMATED REMAINING IMPLEMENTATION WINDOWS
 

@@ -342,6 +342,8 @@ class GitHubClient:
         raw: bool = False,
         allow_404: bool = False,
     ) -> Any:
+        from scripts.kesher_runtime.legacy_retirement import github_mutation
+        github_mutation(self.repo, method, url)
         data = None if body is None else json.dumps(body, ensure_ascii=False).encode("utf-8")
         last: Exception | None = None
         # A lost response to a mutation does not prove the server rejected it.
@@ -1003,6 +1005,8 @@ class Controller:
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website"))
     parser.add_argument("--report-json", action="store_true")

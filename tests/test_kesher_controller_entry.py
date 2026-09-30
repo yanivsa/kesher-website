@@ -30,8 +30,15 @@ class ControllerEntryTests(unittest.TestCase):
             execute_tick(self.store, self.observer, mode='live', dispatch=Mock(), clock=lambda: NOW)
         self.observer.read.assert_not_called()
 
+    def test_two_migration_flags_never_substitute_for_verified_authority(self):
+        self.server.document['migration'] = {'status':'complete','runtime_owner':'kesher-canonical-controller'}
+        with self.assertRaises(StateInvalid):
+            execute_tick(self.store, self.observer, mode='live', dispatch=Mock(), clock=lambda: NOW)
+        self.observer.read.assert_not_called()
+
     def test_conflict_during_live_observation_cannot_dispatch_or_rebind(self):
-        self.server.document['migration'] = {'status': 'complete', 'runtime_owner': 'kesher-canonical-controller'}
+        from tests.test_kesher_handover import install_verified_authority
+        install_verified_authority(self.store, self.server.document)
         def read(state):
             self.server.sha = 'f'*40
             return self.observer.read.return_value

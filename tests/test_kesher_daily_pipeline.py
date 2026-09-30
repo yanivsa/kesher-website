@@ -11,6 +11,12 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest import mock
 from tests.test_media_provenance_contract import audio_fixture
+from scripts.kesher_runtime.github import GitHubStateStore
+from scripts.kesher_runtime.identity import MediaIdentity, SourceIdentity
+from scripts.kesher_runtime.media_state import CanonicalMediaState
+from scripts.kesher_runtime.state import bind_source, new_state, plan_command
+from scripts.kesher_runtime.worker import WorkerContext
+from tests.test_kesher_canonical_state import CODE, NOW, ContentsServer
 
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "kesher_daily_pipeline.py"
@@ -66,6 +72,19 @@ class PipelineTestCase(unittest.TestCase):
 
     def write_posts(self, posts: list[dict]) -> None:
         self.posts_file.write_text(json.dumps(posts, ensure_ascii=False), encoding="utf-8")
+
+    def claimed_media_state(self, item: dict) -> CanonicalMediaState:
+        """Media effects require a claimed command, not a legacy artifact dictionary."""
+        source = item["source"]
+        identity = SourceIdentity(source["date"], source["slug"], source["content_sha256"])
+        target = MediaIdentity(identity, "overview")
+        canonical = bind_source(new_state(), identity, now=NOW)
+        canonical, command_id = plan_command(canonical, target, "publish", 1, {}, code_sha=CODE, now=NOW)
+        store = GitHubStateStore(ContentsServer(canonical), "owner/repo")
+        context = WorkerContext(store, command_id, "123/1", target, code_sha=CODE, now=lambda: NOW)
+        context.claim()
+        self.state_dir.mkdir(parents=True, exist_ok=True)
+        return CanonicalMediaState(context, item, encryption_key="test-only-upload-capability-key")
 
     def test_selects_newest_unused_published_hebrew_article(self) -> None:
         older = hebrew_post("older", "2026-08-01")
@@ -162,8 +181,8 @@ class PipelineTestCase(unittest.TestCase):
     def test_generation_persists_exact_task_and_source_ids(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
         self.write_posts([hebrew_post()])
-        item = pipeline.new_item(source)
-        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        state = self.claimed_media_state(pipeline.new_item(source))
+        item = state.item
         pipeline.save_state(state)
         with mock.patch.object(pipeline, "run_notebooklm", return_value={"source": {"id": "source-exact"}}):
             pipeline.add_source(state, item)
@@ -178,6 +197,14 @@ class PipelineTestCase(unittest.TestCase):
         arguments = run.call_args.args[0]
         self.assertEqual(arguments[arguments.index("--style") + 1], "auto")
         self.assertNotIn("--style-prompt", arguments)
+        restored = CanonicalMediaState(state.context, item)
+        self.assertEqual(restored.item["source_id"], "source-exact")
+        self.assertEqual(restored.item["task_id"], "task-exact")
+        self.assertEqual(restored.item["artifact_id"], "task-exact")
+        effects = state.context.store.load().state["commands"][state.context.command_id]["effects"]
+        self.assertEqual(effects["provider_source"]["receipt"], {"source_id": "source-exact"})
+        self.assertEqual(effects["provider_generation"]["receipt"], {"task_id": "task-exact", "artifact_id": "task-exact"})
+        self.assertFalse((self.state_dir / "state.json").exists())
 
     def test_rejected_same_day_item_allows_different_unused_source(self) -> None:
         prior_post = hebrew_post(slug="prior")
@@ -664,21 +691,29 @@ class PipelineTestCase(unittest.TestCase):
         video = self.state_dir / "final.mp4"
         video.parent.mkdir(parents=True, exist_ok=True)
         video.write_bytes(b"video")
-        item = {
-            "id": "item",
-            "status": "approved",
-            "youtube_metadata": {
+        item = pipeline.new_item(pipeline.source_metadata(hebrew_post()))
+        item.update(
+            id="item",
+            status="approved",
+            youtube_metadata={
                 "title": "כותרת בעברית",
                 "description": "תיאור בעברית",
                 "tags": ["זוגיות"],
             },
-        }
-        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        )
+        state = self.claimed_media_state(item)
+        item = state.item
         response = SimpleNamespace(status_code=200, headers={"Location": "https://upload.invalid/session"})
         with mock.patch.object(pipeline.requests, "post", return_value=response) as post:
             pipeline.start_resumable_upload(state, item, "token", video)
 
         self.assertIs(post.call_args.kwargs["json"]["status"]["containsSyntheticMedia"], True)
+        durable = state.context.store.load().state
+        effect = durable["commands"][state.context.command_id]["effects"]["youtube_session"]
+        self.assertIs(effect["request"]["metadata"]["status"]["containsSyntheticMedia"], True)
+        self.assertNotIn("https://upload.invalid/session", json.dumps(durable))
+        restored = CanonicalMediaState(state.context, item, encryption_key=state.encryption_key)
+        self.assertEqual(restored.item["upload_session_uri"], "https://upload.invalid/session")
 
     def test_expired_resumable_session_fails_closed(self) -> None:
         response = SimpleNamespace(status_code=410, headers={})

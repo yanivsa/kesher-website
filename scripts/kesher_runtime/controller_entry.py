@@ -21,7 +21,7 @@ from .state import StateConflict, StateInvalid
 from .worker_entry import REPOSITORY
 
 
-def execute_tick(store, observer, *, mode: str, dispatch, clock=utc_now) -> dict:
+def execute_tick(store, observer, *, mode: str, dispatch, clock=utc_now, authority=None) -> dict:
     if mode not in {'shadow', 'live'}:
         raise StateInvalid('Controller mode must be explicit')
     loaded = store.load()
@@ -30,6 +30,9 @@ def execute_tick(store, observer, *, mode: str, dispatch, clock=utc_now) -> dict
                 and state['migration'].get('runtime_owner') == 'kesher-canonical-controller')
     if mode == 'live' and not migrated:
         raise StateInvalid('CANONICAL_MIGRATION_REQUIRED: retire competing writers before activation')
+    if mode == 'live':
+        from .authority import require_live
+        require_live(store, observe=authority)
     observation = observer.read(state)
     if observation.value.get('state_revision') != state['revision']:
         raise StateConflict('Observation must bind the exact loaded canonical revision')
@@ -42,6 +45,7 @@ def execute_tick(store, observer, *, mode: str, dispatch, clock=utc_now) -> dict
         'incidents': [{key: row[key] for key in ('id', 'target', 'stage', 'failure_class', 'status')}
                       for row in decision.state['incidents'].values() if row['status'] != 'resolved']}
     if mode == 'live':
+        require_live(store, observe=authority)
         saved = store.save(loaded, decision.state)
         report['written_revision'] = saved.state['revision']
         if decision.command_id:
@@ -50,7 +54,8 @@ def execute_tick(store, observer, *, mode: str, dispatch, clock=utc_now) -> dict
 
 
 def deliver(store, observer, command_id: str) -> dict:
-    command = store.load().state['commands'][command_id]
+    from .authority import require_live
+    command = require_live(store)['commands'][command_id]
     workflow = workflow_for(command)
     since = quote('>=' + command['created_at'], safe='')
     rows = observer.pages(f'actions/workflows/{workflow}/runs?event=workflow_dispatch&branch=main&created={since}', 'workflow_runs')

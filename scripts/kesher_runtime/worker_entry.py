@@ -35,8 +35,9 @@ class Admission:
 
 def admit_worker(store: GitHubStateStore, command_id: str, env: Mapping[str, str], *,
                  checkout_sha: str, trusted_main_sha: str, attach: bool = False,
-                 now: Callable[[], str] | None = None) -> Admission:
-    command = store.load().state['commands'].get(command_id)
+                 now: Callable[[], str] | None = None, authority=None) -> Admission:
+    from .authority import require_live
+    command = require_live(store, observe=authority)['commands'].get(command_id)
     if command is None:
         raise ClaimRejected('Worker requires an existing canonical command')
     try:

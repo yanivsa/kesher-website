@@ -65,6 +65,15 @@ def validate_state(state: dict) -> None:
     """Reject legacy/ambiguous state; only the explicit migration can import it."""
     if not isinstance(state, dict) or state.get('schema_version') != SCHEMA_VERSION:
         raise StateInvalid('STATE_SCHEMA_MIGRATION_REQUIRED')
+    if 'handover' in state:
+        from .handover import PHASES as HANDOVER_PHASES, OWNER, validate_journal
+        validate_journal(state['handover'])
+        if state['handover']['phase'] not in HANDOVER_PHASES[5:]:
+            raise StateInvalid('HANDOVER_PREMATURE_SCHEMA6')
+        verified = state['handover']['phase'] == 'VERIFIED'
+        authority = state.get('migration', {})
+        if verified != (authority.get('status') == 'complete' and authority.get('runtime_owner') == OWNER):
+            raise StateInvalid('HANDOVER_AUTHORITY_PHASE_MISMATCH')
     if type(state.get('revision')) is not int or state['revision'] < 0:
         raise StateInvalid('Invalid state revision')
     for name in ('slots', 'sources', 'items', 'commands', 'incidents', 'migration'):
@@ -151,6 +160,15 @@ def validate_state(state: dict) -> None:
 def validate_transition(previous: dict, proposed: dict) -> None:
     validate_state(previous)
     validate_state(proposed)
+    if previous.get('handover') != proposed.get('handover'):
+        raise StateInvalid('Only the dedicated handover store may change authority evidence')
+    if 'handover' in previous:
+        if previous['handover']['phase'] != 'VERIFIED':
+            raise StateInvalid('Canonical mutation before handover verification')
+        if proposed['migration'] != previous['migration']:
+            raise StateInvalid('Cannot rewrite migration history or authority')
+        if proposed['quarantine'][:len(previous['quarantine'])] != previous['quarantine']:
+            raise StateInvalid('Cannot erase retained migration quarantine')
     if proposed['revision'] != previous['revision']:
         raise StateInvalid('Only the CAS store increments revision')
     for key, row in previous['sources'].items():

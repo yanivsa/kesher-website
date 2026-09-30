@@ -7,6 +7,11 @@ from unittest import mock
 from pathlib import Path
 
 from scripts import kesher_content_controller_v4 as v4
+from scripts import kesher_content_controller_stabilized as stabilized
+from scripts.kesher_runtime.identity import MediaIdentity
+from scripts.kesher_runtime.outbox import workflow_for
+from scripts.kesher_runtime.state import StateInvalid
+from tests.test_kesher_canonical_state import SOURCE, requested
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTROLLER_WORKFLOW = ROOT / ".github" / "workflows" / "kesher-content-controller.yml"
@@ -18,16 +23,23 @@ STABILIZED_RUNTIME = ROOT / "scripts" / "kesher_content_controller_stabilized.py
 
 
 class V4RuntimeActivationTests(unittest.TestCase):
-    def test_content_controller_runs_v5_and_listens_to_both_video_products(self):
+    def test_content_controller_owns_both_canonical_media_products_and_retires_v5_entry(self):
         workflow = CONTROLLER_WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("Kesher Daily Article Short V4", workflow)
-        self.assertIn("Kesher Daily NotebookLM Video Overview", workflow)
-        self.assertIn("scripts/kesher_content_controller_stabilized.py --report-json", workflow)
-        stabilized = STABILIZED_RUNTIME.read_text(encoding="utf-8")
-        self.assertIn("kesher_content_controller_v5_runtime", stabilized)
-        self.assertIn("runtime.install_runtime()", stabilized)
-        self.assertIn("Long video:", workflow)
-        self.assertIn("Short:", workflow)
+        self.assertIn("python -m scripts.kesher_runtime.controller_entry --mode live", workflow)
+        self.assertNotIn("scripts/kesher_content_controller_stabilized.py", workflow)
+        for kind in ("overview", "short"):
+            with self.subTest(kind=kind):
+                state, command_id = requested(target=MediaIdentity(SOURCE, kind))
+                command = state["commands"][command_id]
+                self.assertEqual(command["target"]["kind"], kind)
+                self.assertEqual(workflow_for(command), "kesher-media-worker.yml")
+        legacy_source = STABILIZED_RUNTIME.read_text(encoding="utf-8")
+        self.assertIn("kesher_content_controller_v5_runtime", legacy_source)
+        self.assertIn("runtime.install_runtime()", legacy_source)
+        with mock.patch.object(stabilized, "install_runtime") as install:
+            with self.assertRaisesRegex(StateInvalid, "LEGACY_ENTRYPOINT_RETIRED"):
+                stabilized.main()
+        install.assert_not_called()
 
     def test_v4_runtime_dispatches_only_the_dedicated_short_workflow(self):
         source = V4_RUNTIME.read_text(encoding="utf-8")

@@ -11,6 +11,14 @@ from zoneinfo import ZoneInfo
 from scripts import kesher_content_controller as core
 from scripts import kesher_content_controller_v3_entry as v3
 from scripts import kesher_content_controller_v3_best_effort as best_effort
+from scripts.kesher_runtime.controller import reconcile
+from scripts.kesher_runtime.github import GitHubStateStore
+from scripts.kesher_runtime.identity import SlotIdentity
+from scripts.kesher_runtime.outbox import workflow_for
+from scripts.kesher_runtime.state import StateInvalid, new_state
+from scripts.kesher_runtime.worker import WorkerContext
+from tests.test_kesher_autonomous_controller import later, observed
+from tests.test_kesher_canonical_state import CODE, NOW, SOURCE, ContentsServer
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "config" / "kesher-production-contract.json"
@@ -190,15 +198,36 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
         self.assertGreater((second - datetime.now(second.tzinfo)).total_seconds(), 13 * 60)
         self.assertLess((first - datetime.now(first.tzinfo)).total_seconds(), 6 * 60)
 
-    def test_image_child_is_part_of_event_driven_controller_but_failures_still_defer(self):
+    def test_canonical_image_child_remains_controller_owned_and_failures_still_defer(self):
         workflow = CONTROLLER_WORKFLOW.read_text(encoding="utf-8")
         stabilized = STABILIZED_CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn("Kesher Trusted Article Image", workflow)
-        self.assertIn("scripts/kesher_content_controller_stabilized.py", workflow)
+        self.assertIn("python -m scripts.kesher_runtime.controller_entry --mode live", workflow)
+        self.assertNotIn("scripts/kesher_content_controller_stabilized.py", workflow)
         self.assertIn("kesher_content_controller_v5_runtime", stabilized)
         self.assertIn("runtime.install_runtime()", stabilized)
         self.assertNotIn("scripts/kesher_content_controller_v3_best_effort.py", workflow)
-        self.assertIn('cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"', workflow)
+        self.assertIn("cron: '*/5 * * * *'", workflow)
+        with self.assertRaisesRegex(StateInvalid, "LEGACY_ENTRYPOINT_RETIRED"):
+            v3.main()
+        pr = {"slot": SOURCE.slot, "number": 854, "head_sha": CODE, "status": "image_required"}
+        settle = reconcile(new_state(), observed(prs=[pr]), now=NOW)
+        store = GitHubStateStore(ContentsServer(settle.state), "owner/repo")
+        worker = WorkerContext(store, settle.command_id, "123/1", SlotIdentity(SOURCE.slot), code_sha=CODE, now=lambda: NOW)
+        worker.claim()
+        worker.checkpoint("article_pr_settled", {"number": 854, "head_sha": CODE, "slot": SOURCE.slot, "sessions": []}, phase="OUTPUT_CREATED")
+        worker.finish()
+        image = reconcile(store.load().state, observed(prs=[pr]), now=NOW)
+        self.assertEqual(image.state["commands"][image.command_id]["operation"], "attach_image")
+        self.assertEqual(workflow_for(image.state["commands"][image.command_id]), "kesher-article-worker.yml")
+        store.save(store.load(), image.state)
+        worker = WorkerContext(store, image.command_id, "124/1", SlotIdentity(SOURCE.slot), code_sha=CODE, now=lambda: NOW)
+        worker.claim()
+        worker.finish(failure={"class": "WORKER_FAILED"})
+        deferred = reconcile(store.load().state, observed(prs=[pr], now=later(299)), now=later(299))
+        self.assertIsNone(deferred.command_id)
+        retry = reconcile(deferred.state, observed(prs=[pr], now=later(300)), now=later(300))
+        self.assertEqual(retry.state["commands"][retry.command_id]["operation"], "attach_image")
+        self.assertEqual(retry.state["commands"][retry.command_id]["inputs"], {"pr_number": "854", "pr_head_sha": CODE})
         env = {
             "KESHER_TRIGGER_EVENT": "workflow_run",
             "KESHER_CHILD_WORKFLOW": "Kesher Trusted Article Image",

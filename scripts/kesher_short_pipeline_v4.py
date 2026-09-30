@@ -102,6 +102,8 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     """Prefer a provider-native Short; use an independent landscape fallback only on the bounded final attempt."""
     from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
     from scripts.kesher_runtime.provider import bind_generation_prompt
     prompt_path = core.STATE_DIR / f"{item['id']}-prompt-he.txt"
     prompt = generation_prompt(item["source"])
@@ -554,6 +556,8 @@ def install() -> None:
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     install()
     return core.main()
 

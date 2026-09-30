@@ -473,6 +473,8 @@ class V5Controller(v4.V4Controller):
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     core.STATE_SCHEMA_VERSION = STATE_SCHEMA_VERSION
     core.GitHubClient = V5GitHubClient
     core.Controller = V5Controller

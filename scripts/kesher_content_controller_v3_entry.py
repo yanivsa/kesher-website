@@ -473,6 +473,8 @@ def v3_adopt_latest(github: Any, state: dict[str, Any] | None, cycle: str) -> bo
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     core.STATE_SCHEMA_VERSION = STATE_SCHEMA_VERSION
     core.GitHubClient = V3GitHubClient
     core.Controller = V3Controller
