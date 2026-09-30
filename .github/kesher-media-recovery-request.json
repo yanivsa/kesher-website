@@ -1,11 +1,11 @@
 {
   "enabled": true,
-  "target_slug": "marshmallow-test-environmental-reliability",
-  "issue": 986,
-  "purpose": "Continue the already-public authoritative Issue #986 marshmallow article through the exact same source identity to one public Video Overview and one verified 9:16 Short. Do not create or modify a duplicate article.",
+  "target_slug": "relationship-crisis-flydubai-lessons",
+  "issue": 993,
+  "purpose": "Finish the authoritative Issue #993 Flydubai relationship-crisis article through the exact same source identity to one public Video Overview and one verified 9:16 Short, using the explicit distinct media SEO fields on the post. Do not create or modify a duplicate article.",
   "completed": false,
-  "requested_at": "2026-09-30T15:07:00Z",
-  "failure_signature": "STALE_TARGETED_MEDIA_RECOVERY_AFTER_COMPLETE",
+  "requested_at": "2026-09-30T20:09:00Z",
+  "failure_signature": "URGENT_TARGETED_MEDIA_RECOVERY_ISSUE_993",
   "recovery": "adopt_live_article_identity_then_exact_video_overview_then_exact_short_no_duplicate_article_or_provider_generation",
-  "fresh_evidence_override": "PR #987 merged; article independently verified public HTTP 200 with the expected title. Ignore the completed previous targeted-media identity and continue Issue #986 media only."
+  "preserve_prior_state": "Do not delete Issue #986 durable media state; simply stop targeting it while Issue #993 is the active urgent recovery."
 }
