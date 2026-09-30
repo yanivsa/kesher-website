@@ -541,6 +541,31 @@
       "strike": 2,
       "updated_at": "2026-09-27T22:02:30.856176+00:00"
     },
+    "ksr-3fc9be048326957cb92bfe32": {
+      "command_id": "ksr-3fc9be048326957cb92bfe32",
+      "evidence_hash": "a0b6cfcf3d1c9a4b024ab90ee2eeb6b66e78454e93fc3eadab44c85f19a8d31e",
+      "exact": {
+        "artifact_id": "c4baa4ae-52de-4cdf-93db-17db7664bf18",
+        "content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
+        "item_id": "video-20260930-233335-880b3ebea7",
+        "pr_number": null,
+        "short_item_id": "video-20260930-233218-880b3ebea7",
+        "slug": "relationship-crisis-flydubai-lessons",
+        "source_id": "a89f0428-ef95-43e9-a274-bbed5c93b945",
+        "task_id": "c4baa4ae-52de-4cdf-93db-17db7664bf18"
+      },
+      "executor": "controller",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "4043dddcd505d7460c0cd8ba618171b4",
+      "incident_id": "v5|relationship-crisis-flydubai-lessons|880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b|long_video",
+      "issued_at": "2026-09-30T21:04:10.034698+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "rebind_exact_source",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-09-30T21:04:10.034698+00:00"
+    },
     "ksr-4e2643368aad5788ceb0c9c3": {
       "acknowledged_at": "2026-09-24T14:22:29.943896+00:00",
       "command_id": "ksr-4e2643368aad5788ceb0c9c3",
@@ -871,7 +896,7 @@
       "fingerprint": "10454f02e4ad482be63e6643f308f1b2",
       "incident_id": "v5|relationship-crisis-flydubai-lessons|880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b|article",
       "issued_at": "2026-09-30T20:30:36.743839+00:00",
-      "lifecycle": "running",
+      "lifecycle": "verified",
       "metadata": {
         "incident_packet": {
           "command_id": "ksr-6f41aefe47e63eb578fb75d9",
@@ -909,7 +934,8 @@
       "running_at": "2026-09-30T20:34:11.987516+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-09-30T20:49:12.986364+00:00"
+      "updated_at": "2026-09-30T21:04:10.034698+00:00",
+      "verified_at": "2026-09-30T21:04:10.034698+00:00"
     },
     "ksr-7001b3eb8e1b8d84c23c0586": {
       "acknowledged_at": "2026-09-23T16:15:38.162196+00:00",
@@ -2714,7 +2740,7 @@
       "strike": 1
     },
     "10454f02e4ad482be63e6643f308f1b2": {
-      "active_command_id": "ksr-6f41aefe47e63eb578fb75d9",
+      "active_command_id": null,
       "failure_signature": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
       "fingerprint": "10454f02e4ad482be63e6643f308f1b2",
       "first_seen_at": "2026-09-30T20:20:08.350206+00:00",
@@ -2736,12 +2762,18 @@
           "command_id": "ksr-6f41aefe47e63eb578fb75d9",
           "event": "command_issued",
           "stage": "S2"
+        },
+        {
+          "at": "2026-09-30T21:04:10.034698+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|relationship-crisis-flydubai-lessons|880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b|article",
       "last_seen_at": "2026-09-30T20:49:12.986364+00:00",
       "marker": "MASTER_ESCALATION fingerprint=10454f02e4ad482be63e6643f308f1b2 strike=2 stage=S2",
-      "status": "recovering",
+      "resolved_at": "2026-09-30T21:04:10.034698+00:00",
+      "status": "resolved",
       "strike": 2
     },
     "1d8246e65542347f5ddafb0a6f053521": {
@@ -2965,6 +2997,25 @@
       "marker": "MASTER_ESCALATION fingerprint=37112045f18e85fe45bd9b9db45075bf strike=1 stage=S1",
       "resolved_at": "2026-09-20T10:22:32.880266+00:00",
       "status": "resolved",
+      "strike": 1
+    },
+    "4043dddcd505d7460c0cd8ba618171b4": {
+      "active_command_id": "ksr-3fc9be048326957cb92bfe32",
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "4043dddcd505d7460c0cd8ba618171b4",
+      "first_seen_at": "2026-09-30T21:04:10.034698+00:00",
+      "history": [
+        {
+          "at": "2026-09-30T21:04:10.034698+00:00",
+          "command_id": "ksr-3fc9be048326957cb92bfe32",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|relationship-crisis-flydubai-lessons|880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b|long_video",
+      "last_seen_at": "2026-09-30T21:04:10.034698+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=4043dddcd505d7460c0cd8ba618171b4 strike=1 stage=S1",
+      "status": "recovering",
       "strike": 1
     },
     "4c9cc55a9d85ac2e835cd0aa3c76306a": {
@@ -3932,5 +3983,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-30T20:49:12.986364+00:00"
+  "updated_at": "2026-09-30T21:04:10.034698+00:00"
 }
