@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
-    "quality_checked_at": "2026-09-30T18:43:53.636448+00:00",
+    "quality_checked_at": "2026-09-30T18:59:36.262949+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1829,7 +1829,7 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -1845,7 +1845,7 @@
     "verified": true,
     "artifact_id": "ed71e39d-b671-4c2d-9884-2cb745143096",
     "source_id": "282d3b15-566f-4bb4-8389-4d5c3b8bd483",
-    "last_dispatch_at": "2026-09-30T17:18:36.948092+00:00"
+    "last_dispatch_at": "2026-09-30T19:03:35.570554+00:00"
   },
   "short": {
     "attempt_count": 0,
@@ -1886,7 +1886,7 @@
     "content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
     "article_url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
     "article_verified": true,
-    "updated_at": "2026-09-30T18:44:08.801803+00:00",
+    "updated_at": "2026-09-30T19:00:13.337203+00:00",
     "long_status": "running",
     "long_youtube_url": "https://youtu.be/HFk-vZP5yl8",
     "long_item_id": "video-20260929-210846-fb0c4c9c03",
@@ -1894,6 +1894,6 @@
     "short_youtube_url": "https://youtu.be/lEX9dUlWvZI",
     "complete": true,
     "completed_at": "2026-09-30T15:17:05.961844+00:00",
-    "long_last_dispatch_at": "2026-09-30T17:18:36.948439+00:00"
+    "long_last_dispatch_at": "2026-09-30T19:03:35.570907+00:00"
   }
 }
