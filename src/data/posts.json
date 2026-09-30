@@ -39,7 +39,12 @@
         "note": "Watts, Duncan & Quan (2018): קשרים לתוצאות מאוחרות נחלשו משמעותית לאחר בקרה על רקע משפחתי, יכולת מוקדמת וסביבת הבית."
       }
     ],
-    "faq": []
+    "faq": [],
+    "image": "/images/generated/blog/bedtime-battles-emotional-regulation.jpg",
+    "imageAlt": "הורה וילד ברגע ביתי רגוע המדגיש אמון, עקביות והמתנה",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/generated/blog/bedtime-battles-emotional-regulation.jpg",
+    "imageIsFallback": true
   },
   {
     "id": "new-couples-navigating-disappointments",
