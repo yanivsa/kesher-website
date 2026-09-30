@@ -389,6 +389,7 @@
       "updated_at": "2026-09-27T22:01:25.667828+00:00"
     },
     "ksr-3774c5376c3b594773463300": {
+      "acknowledged_at": "2026-09-30T20:20:34.682638+00:00",
       "command_id": "ksr-3774c5376c3b594773463300",
       "evidence_hash": "e7c639e68bbf5c38252036b1415c3650a4b7c45520819fdbbdc70ad996d94102",
       "exact": {
@@ -406,12 +407,16 @@
       "fingerprint": "10454f02e4ad482be63e6643f308f1b2",
       "incident_id": "v5|relationship-crisis-flydubai-lessons|880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b|article",
       "issued_at": "2026-09-30T20:20:08.350206+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "already_active",
+        "run_id": 36771842502,
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "escalate_unknown_failure",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-09-30T20:20:08.350206+00:00"
+      "updated_at": "2026-09-30T20:20:34.682638+00:00"
     },
     "ksr-38808857bde8631cbed265fc": {
       "acknowledged_at": "2026-09-17T11:07:18.960439+00:00",
@@ -3853,5 +3858,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-09-30T20:20:08.350206+00:00"
+  "updated_at": "2026-09-30T20:20:34.682638+00:00"
 }
