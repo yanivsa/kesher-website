@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
-  "cycle": "2026-09-30",
-  "status": "blocked",
+  "cycle": "2026-10-01",
+  "status": "complete",
   "article": {
     "attempt_count": 0,
     "status": "complete",
@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
-    "quality_checked_at": "2026-09-30T20:39:42.554204+00:00",
+    "quality_checked_at": "2026-09-30T21:05:03.139000+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1211,43 +1211,8 @@
       "archived_at": "2026-09-27T22:03:26.232163+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
-    "message": "targeted media article is not publicly verified: relationship-crisis-flydubai-lessons",
-    "at": "2026-09-30T20:17:56.450765+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-25T13:32:13.441767+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-25T13:39:42.847821+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-25T13:40:42.529480+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-09-25T13:42:00.941043+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-25T14:58:04.248572+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-09-25T14:58:14.886869+00:00",
       "from": "article_live",
@@ -1827,9 +1792,33 @@
       "details": {
         "message": "targeted media article is not publicly verified: relationship-crisis-flydubai-lessons"
       }
+    },
+    {
+      "at": "2026-09-30T21:05:02.899494+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-09-30T21:05:02.899500+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-09-30T21:05:02.900549+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-09-30T21:05:48.132438+00:00",
+      "from": "article_needed",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-09-30T20:17:56.450788+00:00",
+  "updated_at": "2026-09-30T21:05:48.132463+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1843,24 +1832,22 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 36773171277,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
+    "provider_id": "c4baa4ae-52de-4cdf-93db-17db7664bf18",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "item_id": "video-20260930-225106-33253e4463",
-    "youtube_id": "HFk-vZP5yl8",
-    "youtube_url": "https://youtu.be/HFk-vZP5yl8",
+    "item_id": "video-20260930-233335-880b3ebea7",
+    "youtube_id": "_3xByOwiXog",
+    "youtube_url": "https://youtu.be/_3xByOwiXog",
     "verified": true,
-    "artifact_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
-    "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f",
-    "last_dispatch_at": "2026-09-30T19:57:08.247097+00:00",
-    "resume_dispatches": 2
+    "artifact_id": "c4baa4ae-52de-4cdf-93db-17db7664bf18",
+    "source_id": "a89f0428-ef95-43e9-a274-bbed5c93b945"
   },
   "short": {
     "attempt_count": 0,
@@ -1869,14 +1856,14 @@
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "ccdced5d-b099-4db4-95b7-829345b98469",
+    "provider_id": "a7685b72-2d0a-4271-bdcd-d432832e3473",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "item_id": "video-20260929-233232-fb0c4c9c03",
+    "item_id": "video-20260930-233218-880b3ebea7",
     "type": "article_short",
-    "youtube_id": "lEX9dUlWvZI",
-    "youtube_url": "https://youtu.be/lEX9dUlWvZI",
+    "youtube_id": "EvDGuIbpo0o",
+    "youtube_url": "https://youtu.be/EvDGuIbpo0o",
     "verified": true,
     "portrait_verified": true,
     "signature_verified": true,
@@ -1886,12 +1873,12 @@
     "technical_verified": true,
     "signature_duration_seconds": 3.0,
     "signature_fullscreen": true,
-    "signature_video_sha256": "c0c22d6fd4402d5ad95129ca1125b380778aa7f9e3b3db13ad3ea5f21cfae330",
+    "signature_video_sha256": "ad90bebce43b480b2335fdd4f22646b7e249c5dd76570798ba3b6c221e3ed61d",
     "source_mode": "direct-short",
     "width": 1080,
     "height": 1920,
-    "artifact_id": "ccdced5d-b099-4db4-95b7-829345b98469",
-    "source_id": "d2001c7c-6fa9-40fd-9aa6-05af19795bdb"
+    "artifact_id": "a7685b72-2d0a-4271-bdcd-d432832e3473",
+    "source_id": "1809d962-e090-4569-9f03-c6b258cbf518"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -1901,14 +1888,13 @@
     "content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
     "article_url": "https://kesher.saharoni.com/blog/relationship-crisis-flydubai-lessons",
     "article_verified": true,
-    "updated_at": "2026-09-30T20:40:39.948119+00:00",
-    "long_status": "running",
-    "long_youtube_url": "https://youtu.be/HFk-vZP5yl8",
-    "long_item_id": "video-20260929-210846-fb0c4c9c03",
+    "updated_at": "2026-09-30T21:05:18.267497+00:00",
+    "long_status": "complete",
+    "long_youtube_url": "https://youtu.be/_3xByOwiXog",
+    "long_item_id": "video-20260930-233335-880b3ebea7",
     "short_status": "complete",
-    "short_youtube_url": "https://youtu.be/lEX9dUlWvZI",
+    "short_youtube_url": "https://youtu.be/EvDGuIbpo0o",
     "complete": true,
-    "completed_at": "2026-09-30T15:17:05.961844+00:00",
-    "long_last_dispatch_at": "2026-09-30T19:57:08.247467+00:00"
+    "completed_at": "2026-09-30T21:05:48.132484+00:00"
   }
 }
