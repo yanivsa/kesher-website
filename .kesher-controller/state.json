@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
-    "quality_checked_at": "2026-09-30T20:17:14.180632+00:00",
+    "quality_checked_at": "2026-09-30T20:39:42.554204+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1847,7 +1847,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 36769212973,
+    "run_id": 36773171277,
     "processed_run_id": null,
     "provider_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
     "failure_fingerprint": null,
@@ -1897,11 +1897,11 @@
     "v4_short_controller_state": null
   },
   "targeted_media_recovery": {
-    "slug": "marshmallow-test-environmental-reliability",
-    "content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
-    "article_url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
+    "slug": "relationship-crisis-flydubai-lessons",
+    "content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
+    "article_url": "https://kesher.saharoni.com/blog/relationship-crisis-flydubai-lessons",
     "article_verified": true,
-    "updated_at": "2026-09-30T20:07:27.205331+00:00",
+    "updated_at": "2026-09-30T20:40:39.948119+00:00",
     "long_status": "running",
     "long_youtube_url": "https://youtu.be/HFk-vZP5yl8",
     "long_item_id": "video-20260929-210846-fb0c4c9c03",
