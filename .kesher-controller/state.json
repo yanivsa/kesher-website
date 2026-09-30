@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-09-30",
-  "status": "complete",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "complete",
@@ -17,8 +17,8 @@
     "deploy_attempts": 0,
     "normalization_status": "pending",
     "quality_status": "passed",
-    "quality_content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
-    "quality_checked_at": "2026-09-30T20:05:55.150190+00:00",
+    "quality_content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
+    "quality_checked_at": "2026-09-30T20:17:14.180632+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1211,7 +1211,12 @@
       "archived_at": "2026-09-27T22:03:26.232163+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+    "message": "targeted media article is not publicly verified: relationship-crisis-flydubai-lessons",
+    "at": "2026-09-30T20:17:56.450765+00:00"
+  },
   "history": [
     {
       "at": "2026-09-25T13:32:13.441767+00:00",
@@ -1813,9 +1818,18 @@
       "from": "article_needed",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-09-30T20:17:56.450783+00:00",
+      "from": "complete",
+      "to": "blocked",
+      "reason": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+      "details": {
+        "message": "targeted media article is not publicly verified: relationship-crisis-flydubai-lessons"
+      }
     }
   ],
-  "updated_at": "2026-09-30T15:17:05.961812+00:00",
+  "updated_at": "2026-09-30T20:17:56.450788+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
