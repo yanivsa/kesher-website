@@ -1,0 +1,438 @@
+name: Kesher Daily Article Short V4
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/kesher-short-v4.yml
+      - scripts/kesher_short_pipeline_v4.py
+      - scripts/kesher_short_policy.py
+      - scripts/kesher_daily_pipeline.py
+      - scripts/kesher_video_reconcile.py
+      - scripts/kesher_content_controller_v4_runtime.py
+      - scripts/requirements-video-cloud.txt
+      - scripts/kesher_video_asset_resolver.py
+      - scripts/kesher_free_stock_broll.py
+      - tests/test_kesher_free_stock_broll.py
+      - src/remotion/**
+      - package.json
+      - package-lock.json
+      - tests/test_short_pipeline_v4.py
+      - tests/test_short_retry_policy_v4.py
+      - tests/test_video_reconcile.py
+      - tests/test_v4_runtime_activation.py
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Short V4 operation
+        required: true
+        default: full
+        type: choice
+        options:
+          - full
+          - preflight
+          - generate
+          - upload
+          - rebuild
+          - release
+          - derive
+          - historical
+      rebuild_item_id:
+        description: Exact technically rejected item to rebuild with Remotion
+        required: false
+        type: string
+      release_slug:
+        description: Exact article slug to release without a Short
+        required: false
+        type: string
+      derive_slug:
+        description: Exact article slug to recover as a fresh provider-native NotebookLM Short
+        required: false
+        type: string
+      derive_content_sha256:
+        description: Exact authoritative article content hash
+        required: false
+        type: string
+      derive_long_item_id:
+        description: Deprecated compatibility input; long-form provider identity is never reused for a Short
+        required: false
+        type: string
+      historical_commit:
+        description: Immutable evidence commit containing the historical state snapshot
+        required: false
+        type: string
+      historical_path:
+        description: Repository path to the historical evidence state.json
+        required: false
+        type: string
+      historical_item_id:
+        description: Exact historical provider item id to adopt without regeneration
+        required: false
+        type: string
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: kesher-daily-article-short-v4
+  cancel-in-progress: false
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-short-v4-state
+      KESHER_STATE_ARTIFACT: kesher-short-v4-state
+      NOTEBOOKLM_BIN: notebooklm
+      KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
+      KESHER_WHISPER_MODEL: small
+      HF_HOME: ${{ github.workspace }}/.cache/huggingface
+      NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
+      KESHER_BROLL_ENABLED: "true"
+      KESHER_BROLL_BUDGET_SECONDS: "12"
+
+    steps:
+      - name: Checkout workflow revision for validation
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Checkout current main for production
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: scripts/requirements-video-cloud.txt
+
+      - name: Set up Node 22 for Remotion
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install pinned Node and media dependencies
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
+          ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
+          echo "$ffmpeg_dir" >> "$GITHUB_PATH"
+          echo "$ffprobe_dir" >> "$GITHUB_PATH"
+          export PATH="$ffmpeg_dir:$ffprobe_dir:$PATH"
+          command -v ffmpeg
+          command -v ffprobe
+
+      - name: Install pinned cloud dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install -r scripts/requirements-video-cloud.txt
+          npx remotion versions
+          ffmpeg -version | head -1
+          ffprobe -version | head -1
+
+      - name: Run hermetic Short V4 regression suite
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
+          PEXELS_API_KEY: ""
+          PIXABAY_API_KEY: ""
+          KESHER_BROLL_ENABLED: "false"
+        run: |
+          python -m unittest \
+            tests.test_short_pipeline_v4 \
+            tests.test_short_retry_policy_v4 \
+            tests.test_video_reconcile \
+            tests.test_pipeline_v4 \
+            tests.test_v4_runtime_activation \
+            tests.test_notebooklm_auth_precedence \
+            tests.test_kesher_free_stock_broll \
+            -v
+
+      - name: Restore newest valid Short V4 durable state
+        if: ${{ github.event_name != 'pull_request' && inputs.operation != 'preflight' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$KESHER_STATE_DIR"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=${KESHER_STATE_ARTIFACT}&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[].id' > /tmp/short-artifacts.txt
+
+          if [ ! -s /tmp/short-artifacts.txt ]; then
+            echo "No previous Short V4 state exists; starting with an empty state."
+            exit 0
+          fi
+
+          restored="false"
+          while read -r artifact_id; do
+            [ -n "$artifact_id" ] || continue
+            archive="$(mktemp /tmp/kesher-short-v4.XXXXXX.zip)"
+            if ! gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > "$archive" 2>/dev/null; then
+              rm -f "$archive"
+              continue
+            fi
+            temp_extract="$(mktemp -d)"
+            if unzip -oq "$archive" -d "$temp_extract" 2>/dev/null \
+              && [ -s "$temp_extract/state.json" ] \
+              && python -c 'import json,sys; s=json.load(sys.stdin); assert s.get("version") == 1 and isinstance(s.get("items"), list)' < "$temp_extract/state.json" 2>/dev/null; then
+              cp -r "$temp_extract/"* "$KESHER_STATE_DIR/" || true
+              restored="true"
+              rm -f "$archive"
+              rm -rf "$temp_extract"
+              break
+            fi
+            rm -f "$archive"
+            rm -rf "$temp_extract"
+          done < /tmp/short-artifacts.txt
+
+          if [ "$restored" != "true" ]; then
+            echo "Short V4 state artifacts exist but none is trustworthy; refusing fresh generation." >&2
+            exit 1
+          fi
+
+      - name: Materialize NotebookLM credentials without exposing them
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
+        env:
+          NOTEBOOKLM_STORAGE_STATE_SECRET: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
+          NOTEBOOKLM_MASTER_TOKEN_SECRET: ${{ secrets.NOTEBOOKLM_MASTER_TOKEN_JSON }}
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
+        run: |
+          set -euo pipefail
+          profile="$NOTEBOOKLM_HOME/profiles/default"
+          storage_path="$profile/storage_state.json"
+          sealed_path="$KESHER_STATE_DIR/notebooklm-storage-state.json.enc"
+          mkdir -p "$profile"
+
+          if [ -z "${NOTEBOOKLM_STORAGE_STATE_SECRET:-}" ] && [ -s "$sealed_path" ]; then
+            test -n "${NOTEBOOKLM_STATE_KEY:-}"
+            decrypted_path="$(mktemp "$profile/storage_state.XXXXXX.json")"
+            trap 'rm -f "$decrypted_path"' EXIT
+            openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 \
+              -in "$sealed_path" -out "$decrypted_path" -pass env:NOTEBOOKLM_STATE_KEY
+            chmod 600 "$decrypted_path"
+            mv "$decrypted_path" "$storage_path"
+            trap - EXIT
+          fi
+
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          profile = Path(os.environ["NOTEBOOKLM_HOME"]) / "profiles" / "default"
+          profile.mkdir(parents=True, exist_ok=True)
+          storage_path = profile / "storage_state.json"
+          if not storage_path.exists():
+              raw = os.environ.get("NOTEBOOKLM_STORAGE_STATE_SECRET", "").strip()
+              if not raw:
+                  raise SystemExit("NotebookLM storage-state secret is missing")
+              state = json.loads(raw)
+              if not isinstance(state, dict) or not state.get("cookies"):
+                  raise SystemExit("NotebookLM storage-state is invalid")
+              storage_path.write_text(json.dumps(state, separators=(",", ":")), encoding="utf-8")
+          storage_path.chmod(0o600)
+          master_raw = os.environ.get("NOTEBOOKLM_MASTER_TOKEN_SECRET", "").strip()
+          if master_raw:
+              master = json.loads(master_raw)
+              required = {"version", "email", "android_id", "master_token"}
+              if not isinstance(master, dict) or not required.issubset(master) or not all(master[key] for key in required):
+                  raise SystemExit("NotebookLM master-token secret is invalid")
+              master_path = profile / "master_token.json"
+              master_path.write_text(json.dumps(master, separators=(",", ":")), encoding="utf-8")
+              master_path.chmod(0o600)
+          PY
+
+      - name: NotebookLM read-only Short preflight
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
+        run: python -u scripts/kesher_short_pipeline_v4.py --preflight
+
+      - name: Persist terminal article release without a Short
+        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'release' }}
+        env:
+          RELEASE_SLUG: ${{ inputs.release_slug }}
+        run: |
+          set -euo pipefail
+          test -n "$RELEASE_SLUG"
+          python -u scripts/kesher_video_reconcile.py --release-without-short "$RELEASE_SLUG"
+
+
+      - name: Validate native Short recovery source identity
+        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'derive' }}
+        env:
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
+          DERIVE_CONTENT_SHA256: ${{ inputs.derive_content_sha256 }}
+        run: |
+          set -euo pipefail
+          test -n "$DERIVE_SLUG"
+          test -n "$DERIVE_CONTENT_SHA256"
+          python - <<'PY'
+          import os
+          from scripts import kesher_video_reconcile as reconcile
+          source = reconcile.current_source_snapshot(os.environ['DERIVE_SLUG'])
+          if str(source.get('content_sha256') or '') != os.environ['DERIVE_CONTENT_SHA256']:
+              raise SystemExit('Published source hash changed before native Short recovery')
+          print('NATIVE_SHORT_RECOVERY_SOURCE_VERIFIED')
+          PY
+
+      - name: Reject historical long-form provider reuse for Short
+        id: adopt_hist
+        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'historical' }}
+        run: |
+          echo "Historical/long-form provider reuse is forbidden for Shorts. Re-run with operation=derive and an exact article slug/hash to generate NotebookLM --format short." >&2
+          exit 1
+
+      - name: Reconcile exact article or existing provider identity before generation
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
+        env:
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
+        run: python -u scripts/kesher_video_reconcile.py --prepare-generation ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+
+      - name: Generate or resume exact NotebookLM-derived Short
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
+        env:
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150 ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+
+      - name: Rebuild exact rejected Short with Remotion
+        if: ${{ github.event_name != 'pull_request' && inputs.operation == 'rebuild' }}
+        id: rebuild_exact
+        env:
+          REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$REBUILD_ITEM_ID"
+          python -u scripts/kesher_short_pipeline_v4.py --remotion-rebuild-item "$REBUILD_ITEM_ID"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          state = json.loads((Path(os.environ["KESHER_STATE_DIR"]) / "state.json").read_text(encoding="utf-8"))
+          matches = [item for item in state.get("items", []) if item.get("id") == os.environ["REBUILD_ITEM_ID"]]
+          if len(matches) != 1:
+              raise SystemExit("Exact rebuilt Short item was not found uniquely")
+          item = matches[0]
+          source = item.get("source") or {}
+          slug = str(source.get("slug") or "").strip()
+          sha = str(source.get("content_sha256") or "").strip()
+          if not slug or not sha:
+              raise SystemExit("Exact rebuilt Short source identity is incomplete")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"slug={slug}\n")
+              out.write(f"content_sha256={sha}\n")
+          PY
+
+      - name: Prepare exact technically verified Short upload
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
+        env:
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
+          REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
+          REBUILD_SLUG: ${{ steps.rebuild_exact.outputs.slug }}
+          REBUILD_CONTENT_SHA256: ${{ steps.rebuild_exact.outputs.content_sha256 }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -n "$REBUILD_ITEM_ID" ]; then
+            test -n "$REBUILD_SLUG"
+            test -n "$REBUILD_CONTENT_SHA256"
+            python -u scripts/kesher_video_reconcile.py --prepare-upload --slug "$REBUILD_SLUG" --content-sha256 "$REBUILD_CONTENT_SHA256" --item-id "$REBUILD_ITEM_ID"
+          else
+            python -u scripts/kesher_video_reconcile.py --prepare-upload ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+          fi
+
+      - name: Upload exact Short once and verify it public
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
+        env:
+          DERIVE_SLUG: ${{ inputs.derive_slug }}
+          REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "${YOUTUBE_CLIENT_ID:-}"
+          test -n "${YOUTUBE_CLIENT_SECRET:-}"
+          test -n "${YOUTUBE_REFRESH_TOKEN:-}"
+          if [ -n "$REBUILD_ITEM_ID" ]; then
+            python -u scripts/kesher_short_pipeline_v4.py --upload-only --item-id "$REBUILD_ITEM_ID"
+          else
+            python -u scripts/kesher_short_pipeline_v4.py --upload-only ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
+          fi
+
+      - name: Remove uploaded media after public verification
+        if: ${{ github.event_name != 'pull_request' && success() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive' || inputs.operation == 'historical') }}
+        run: python -u scripts/kesher_short_pipeline_v4.py --prune-uploaded-media
+
+      - name: Seal refreshed NotebookLM credentials into durable state
+        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.notebooklm/profiles/default/storage_state.json') != '' }}
+        env:
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "${NOTEBOOKLM_STATE_KEY:-}"
+          mkdir -p "$KESHER_STATE_DIR"
+          sealed_path="$KESHER_STATE_DIR/notebooklm-storage-state.json.enc"
+          sealed_tmp="${sealed_path}.tmp"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -md sha256 \
+            -in "$NOTEBOOKLM_HOME/profiles/default/storage_state.json" \
+            -out "$sealed_tmp" \
+            -pass env:NOTEBOOKLM_STATE_KEY
+          chmod 600 "$sealed_tmp"
+          mv "$sealed_tmp" "$sealed_path"
+
+      - name: Persist latest Short V4 state and exact recovery evidence
+        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
+        id: persist_state
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-short-v4-state
+          path: ${{ env.KESHER_STATE_DIR }}
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+          include-hidden-files: true
+
+      - name: Keep only the newest three Short V4 state artifacts
+        if: ${{ always() && steps.persist_state.outputs.artifact-id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=${KESHER_STATE_ARTIFACT}&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[3:] | .[].id' \
+            | while read -r artifact_id; do
+                [ -n "$artifact_id" ] || continue
+                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}"
+              done
+
+      - name: Write concise Short V4 status
+        if: ${{ always() }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          path = Path(os.environ["KESHER_STATE_DIR"]) / "state.json"
+          items = json.loads(path.read_text(encoding="utf-8")).get("items", []) if path.exists() else []
+          uploaded = sum(item.get("status") == "uploaded" for item in items)
+          released = sum(item.get("status") == "released_without_short" for item in items)
+          active = sum(item.get("status") in {"source_selected", "source_added", "generating", "downloaded", "pending_review", "approved", "uploading"} for item in items)
+          text = f"Shorts public: {uploaded} | released without Short: {released} | active/recoverable: {active}"
+          print(text)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
+              out.write("### Kesher Short V4\n\n" + text + "\n")
+          PY

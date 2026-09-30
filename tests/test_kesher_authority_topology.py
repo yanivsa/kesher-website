@@ -41,6 +41,90 @@ class AuthorityTopologyTests(unittest.TestCase):
 if __name__=='__main__':unittest.main()
 
 
+class OwnerExactAuthorityTests(unittest.TestCase):
+    PATH = '.github/workflows/kesher-owner-exact-975.yml'
+    ID = 370535154
+    CHILDREN = ('.github/workflows/kesher-daily-video.yml',
+                '.github/workflows/kesher-short-v4.yml')
+
+    def test_defined_registration_pin_rejects_id_change_and_rebinding_to_known_path(self):
+        from scripts.kesher_runtime.authority_topology import validate_registered_inventory
+        _, rules = AuthorityCapabilityTests().rules()
+        path = '.github/workflows/observed.yml'
+        entry = rules['workflows'][path]
+        entry['registration_id'] = self.ID
+        rules['workflows']['.github/workflows/other.yml'] = copy.deepcopy(entry)
+        del rules['workflows']['.github/workflows/other.yml']['registration_id']
+        validate_registered_inventory([{'id':self.ID,'path':path,'state':'active'}], rules)
+        for changes in ({'id':self.ID+1}, {'path':'.github/workflows/other.yml'}):
+            with self.subTest(changes=changes), self.assertRaisesRegex(StateInvalid, 'IDENTITY_MISMATCH'):
+                validate_registered_inventory([dict(id=self.ID,path=path,state='active') | changes], rules)
+
+    def test_invalid_or_duplicate_defined_registration_pins_refuse(self):
+        from scripts.kesher_runtime.authority_topology import validate_registered_inventory
+        for value in (True, 0, -1, '370535154'):
+            _, rules = AuthorityCapabilityTests().rules()
+            rules['workflows']['.github/workflows/observed.yml']['registration_id'] = value
+            with self.subTest(value=value), self.assertRaisesRegex(StateInvalid, 'POLICY_INVALID'):
+                validate_registered_inventory([], rules)
+        _, rules = AuthorityCapabilityTests().rules()
+        entry = rules['workflows']['.github/workflows/observed.yml']
+        entry['registration_id'] = self.ID
+        rules['registrations']['.github/workflows/removed.yml'] = {'id':self.ID,'definition_present':False}
+        with self.assertRaisesRegex(StateInvalid, 'POLICY_INVALID'):
+            validate_registered_inventory([], rules)
+
+    def test_exact_parent_and_both_children_are_protected_mutators(self):
+        from scripts.kesher_runtime.authority_topology import classify_registered, policy
+        from scripts.kesher_runtime.exclusion import ExclusionFence, REQUIRED_RESOURCES
+        from scripts.kesher_runtime.git_exclusion import GitHubResourceExclusion
+        from tests.test_kesher_git_exclusion import EpochGit
+        from tests.test_kesher_external_exclusion import ProtectedService
+        rules = policy(ROOT)
+        rows = [{'id':entry.get('registration_id',i),'path':path,'state':'active'}
+                for i,(path,entry) in enumerate(rules['workflows'].items(), 1)]
+        rows += [{'id':entry['id'],'path':path,'state':'active'}
+                 for path,entry in rules['registrations'].items()]
+        actors = classify_registered([row for row in rows if row['path'] in (self.PATH,*self.CHILDREN)], rules)
+        parent = next(row for row in actors if row['id']==self.ID)
+        self.assertEqual(parent['role'], 'retired')
+        self.assertEqual(parent['state'], 'active')
+        self.assertEqual(set(parent['capabilities']), {'read','workflow_dispatch','branch_write','pr_write',
+            'capability_write','jules_create','jules_continue','provider_create','provider_continue',
+            'youtube_upload','youtube_metadata'})
+        self.assertEqual(set(parent['resources']), {'github.dispatch','github.pull_requests','github.refs',
+            'github.state','jules.sessions','notebooklm.jobs','youtube.metadata','youtube.objects'})
+        self.assertEqual(set(rules['workflows'][self.PATH]['review']['dispatches']), set(self.CHILDREN))
+        bindings = {key:'resource-id:'+key for key in REQUIRED_RESOURCES}
+        fence = ExclusionFence('owner/repo','one','coordinator',dict.fromkeys(bindings),bindings)
+        adapter = GitHubResourceExclusion(EpochGit(),'owner/repo',main_sha='b'*40,
+            policy=fence._policy('github'),rules=rules,registered=lambda:rows,guard=ProtectedService('github'))
+        targets = {row['path'] for row in adapter.targets()}
+        self.assertTrue({self.PATH,*self.CHILDREN} <= targets)
+
+    def test_exact_parent_identity_changes_and_future_unknown_refuse(self):
+        from scripts.kesher_runtime.authority_topology import classify_registered, policy
+        rules = policy(ROOT)
+        for changes in ({'id':self.ID+1}, {'path':self.CHILDREN[0]},
+                        {'id':self.ID+1,'path':'.github/workflows/future-unreviewed.yml'}):
+            with self.subTest(changes=changes), self.assertRaises(StateInvalid):
+                classify_registered([dict(id=self.ID,path=self.PATH,state='active') | changes],rules,
+                                    active_runs=[],runs_complete=True)
+
+    def test_changed_dispatch_source_or_unknown_reviewed_target_refuses(self):
+        from scripts.kesher_runtime.authority_topology import check_definitions, policy
+        definitions = {str(p.relative_to(ROOT)):p.read_text()
+                       for p in (ROOT/'.github/workflows').glob('*.yml')}
+        rules = policy(ROOT)
+        changed = dict(definitions)
+        changed[self.PATH] += '\n  changed_dispatch:\n    runs-on: ubuntu-latest\n    steps:\n      - run: gh workflow run deploy.yml\n'
+        with self.assertRaisesRegex(StateInvalid, 'UNREVIEWED_DEFINITION_CHANGE'):
+            check_definitions(changed,rules)
+        rules['workflows'][self.PATH]['review']['dispatches'].append('.github/workflows/future-unreviewed.yml')
+        with self.assertRaisesRegex(StateInvalid, 'UNCLASSIFIED_INDIRECT_DISPATCH'):
+            check_definitions(definitions,rules)
+
+
 class AuthorityObservationTests(unittest.TestCase):
     def missing_registration(self):
         from scripts.kesher_runtime.authority_topology import policy

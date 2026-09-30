@@ -320,6 +320,41 @@ class HandoverTests(unittest.TestCase):
         state['handover']['sealed_capabilities'].append({'unexpected':'entry'})
         with self.assertRaises(StateInvalid): require_authority(state,self.backend.observe())
 
+    def test_owner_exact_active_without_runs_cannot_finish_retirement(self):
+        from pathlib import Path
+        from scripts.kesher_runtime.authority_topology import classify_registered, policy
+        row = {'id':370535154,'path':'.github/workflows/kesher-owner-exact-975.yml','state':'active'}
+        actor = classify_registered([row],policy(Path(__file__).resolve().parents[1]),
+                                    active_runs=[],runs_complete=True)[0]
+        self.backend.observation['workflows'][2] = actor
+        self.backend.disable = lambda workflow_id: self.backend.disables.append(workflow_id)
+        c = self.coordinator()
+        self.advance_to('LEGACY_QUIESCING', c)
+        for _ in range(3): self.assertEqual(c.tick(),'LEGACY_QUIESCING')
+        self.assertEqual(self.backend.document['schema_version'],5)
+        # First tick journals intent; later ticks retry the still-active actor.
+        self.assertEqual(self.backend.disables,[370535154,370535154])
+        self.backend.observation['workflows'][2]['state'] = 'disabled_manually'
+        self.assertEqual(c.tick(),'LEGACY_QUIESCING')  # Journal the disabled readback first.
+        self.assertEqual(c.tick(),'LEGACY_QUIESCED')
+
+    def test_owner_exact_disabled_requires_every_active_status_to_drain(self):
+        from pathlib import Path
+        from scripts.kesher_runtime.authority_topology import classify_registered, policy
+        actor = classify_registered([{'id':370535154,
+            'path':'.github/workflows/kesher-owner-exact-975.yml','state':'disabled_manually'}],
+            policy(Path(__file__).resolve().parents[1]),active_runs=[],runs_complete=True)[0]
+        self.backend.observation['workflows'][2] = actor
+        c = self.coordinator()
+        for status in ('queued','in_progress','waiting','pending','requested'):
+            self.backend.observation['active_runs'] = [{'id':42,'run_attempt':1,'workflow_id':370535154,
+                'path':actor['path'],'head_sha':self.params['main_sha'],'status':status}]
+            with self.subTest(status=status):
+                self.assertEqual(c.tick(),'WAITING_FOR_LEGACY_DRAIN')
+                self.assertNotIn('handover',self.backend.document)
+        self.backend.observation['active_runs'] = []
+        self.advance_to('LEGACY_QUIESCED',c)
+
 
 if __name__ == '__main__': unittest.main()
 

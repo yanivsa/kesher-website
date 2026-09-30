@@ -160,9 +160,17 @@ def validate_registered_inventory(rows, rules, *, complete=False):
     if not isinstance(rows, list):
         raise StateInvalid('AUTHORITY_REGISTERED_INVENTORY_INVALID')
     known = rules.get('registrations', {})
-    reserved_ids = {entry['id']: path for path, entry in known.items()}
-    if len(reserved_ids) != len(known):
-        raise StateInvalid('AUTHORITY_REGISTERED_POLICY_INVALID')
+    # A present definition can also have an exact reviewed registration binding.
+    # Reserve its ID globally: moving it to another known path is not admission.
+    pinned = {path: entry['registration_id'] for path, entry in rules['workflows'].items()
+              if 'registration_id' in entry}
+    identities = [(path, entry.get('id')) for path, entry in known.items()] + list(pinned.items())
+    reserved_ids = {}
+    for path, identity in identities:
+        if (type(identity) is not int or identity < 1 or identity in reserved_ids
+                or path in known and path in pinned):
+            raise StateInvalid('AUTHORITY_REGISTERED_POLICY_INVALID')
+        reserved_ids[identity] = path
     ids, paths = set(), set()
     for row in rows:
         if (not isinstance(row, dict) or type(row.get('id')) is not int or row['id'] < 1
@@ -175,6 +183,8 @@ def validate_registered_inventory(rows, rules, *, complete=False):
                 raise StateInvalid('AUTHORITY_REGISTERED_IDENTITY_MISMATCH')
         elif path not in rules['workflows']:
             raise StateInvalid('AUTHORITY_UNCLASSIFIED_REGISTERED_WORKFLOW')
+        elif path in pinned and row['id'] != pinned[path]:
+            raise StateInvalid('AUTHORITY_REGISTERED_IDENTITY_MISMATCH')
         if row['id'] in reserved_ids and reserved_ids[row['id']] != path:
             raise StateInvalid('AUTHORITY_REGISTERED_IDENTITY_MISMATCH')
     if complete and paths != set(rules['workflows']) | set(known):
