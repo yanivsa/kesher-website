@@ -166,6 +166,23 @@ def apply_enhancement_media_credits(item: dict[str, Any]) -> dict[str, Any]:
     return metadata
 
 
+def media_tags(post: dict[str, Any], field: str, defaults: list[str]) -> list[str]:
+    raw = post.get(field)
+    if raw is None:
+        return list(defaults)
+    if not isinstance(raw, list):
+        raise PipelineError(f"{field} must be a list")
+    tags = list(defaults)
+    for value in raw:
+        tag = str(value or "").strip()
+        if not tag:
+            continue
+        require_hebrew(tag, field)
+        if tag not in tags:
+            tags.append(tag)
+    return tags
+
+
 def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
     required = ("id", "title", "date", "category", "excerpt", "content")
     missing = [field for field in required if not str(post.get(field, "")).strip()]
@@ -177,11 +194,23 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
     article_text = clean_article_html(str(post["content"]))
     category = str(post["category"]).strip()
     subcategory = str(post.get("subcategory", "")).strip()
+    video_title = str(post.get("videoTitle") or title).strip()
+    short_title = str(post.get("shortTitle") or title).strip()
+    short_hook = str(post.get("shortHook") or "").strip()
     canonical_url = f"{SITE_URL}/blog/{slug}"
-    for field, value in (("title", title), ("excerpt", excerpt), ("article", article_text), ("category", category)):
+    for field, value in (
+        ("title", title),
+        ("excerpt", excerpt),
+        ("article", article_text),
+        ("category", category),
+        ("videoTitle", video_title),
+        ("shortTitle", short_title),
+    ):
         require_hebrew(value, field)
     if subcategory:
         require_hebrew(subcategory, "subcategory")
+    if short_hook:
+        require_hebrew(short_hook, "shortHook")
     body = "\n\n".join(
         part
         for part in (
@@ -198,6 +227,8 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
         tags.append(subcategory)
     for tag in tags:
         require_hebrew(tag, "tag")
+    video_tags = media_tags(post, "videoTags", tags)
+    short_tags = media_tags(post, "shortTags", tags)
     description = (
         f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"
         f"\n\nלאתר קשר:\n{SITE_URL}"
@@ -216,10 +247,18 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
         "canonical_url": canonical_url,
         "body": body,
         "content_sha256": content_hash,
+        "video_title": video_title,
+        "short_title": short_title,
+        "short_hook": short_hook,
         "youtube_metadata": {
-            "title": title[:100],
+            "title": video_title[:100],
             "description": description,
-            "tags": tags,
+            "tags": video_tags,
+        },
+        "short_youtube_metadata": {
+            "title": short_title[:100],
+            "description": description,
+            "tags": short_tags,
         },
     }
 
@@ -349,6 +388,7 @@ def auth_preflight() -> dict[str, Any]:
 
 
 def generation_prompt(source: dict[str, Any]) -> str:
+    video_topic = str(source.get("video_title") or source["title"]).strip()
     prompt = (
         "חובה: כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד. אין להשתמש בקול גברי, "
         "אין להחליף בין דוברים, ואין להשתמש בקול ניטרלי או דו-קולי. "
@@ -364,7 +404,7 @@ def generation_prompt(source: dict[str, Any]) -> str:
         "כל קריינות או טקסט חזותי יהיו בעברית תקינה. אין להשתמש באנגלית, בג׳יבריש, "
         "בשקופיות, בכרטיסיות מידע, בטבלאות או בתרשימים. העדף סיפור חזותי רציף וברור. "
         "אין ליצור כותרת ליוטיוב, תיאור ליוטיוב או תגיות בתוך הסרטון. "
-        f"הנושא המדויק הוא: {source['title']}"
+        f"הנושא המדויק הוא: {video_topic}"
     )
     require_hebrew(prompt, "generation prompt")
     return prompt
