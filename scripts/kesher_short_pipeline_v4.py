@@ -56,6 +56,10 @@ _base_new_item = core.new_item
 
 
 def generation_prompt(source: dict[str, Any]) -> str:
+    short_metadata = source.get("short_youtube_metadata") or {}
+    short_topic = str(short_metadata.get("title") or source.get("short_title") or source["title"]).strip()
+    short_hook = str(source.get("short_hook") or "").strip()
+    hook_instruction = f'פתח במשפט הבא: "{short_hook}" ' if short_hook else ""
     prompt = (
         "חובה: כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד. אין להשתמש בקול גברי, "
         "אין להחליף בין דוברים, ואין להשתמש בקול ניטרלי או דו-קולי. "
@@ -72,7 +76,8 @@ def generation_prompt(source: dict[str, Any]) -> str:
         "אין להוסיף אבחנות, תארים מקצועיים או הבטחות שאינם במקור. "
         "כל קריינות או טקסט חזותי יהיו בעברית תקינה. אין להשתמש באנגלית, בג׳יבריש, "
         "בטבלאות או בתרשימים. אין ליצור מטא־דאטה ליוטיוב בתוך הווידאו. "
-        f"הנושא המדויק הוא: {source['title']}"
+        f"{hook_instruction}"
+        f"הנושא המדויק הוא: {short_topic}"
     )
     core.require_hebrew(prompt, "Short generation prompt")
     return prompt
@@ -83,6 +88,14 @@ def repair_youtube_metadata(item: dict[str, Any]) -> dict[str, Any]:
     source = item.get("source") or {}
     canonical_url = str(source.get("canonical_url") or "").strip()
     excerpt = str(source.get("excerpt") or "").strip()
+    short_metadata = source.get("short_youtube_metadata")
+    if isinstance(short_metadata, dict):
+        title = str(short_metadata.get("title") or "").strip()
+        tags = short_metadata.get("tags")
+        if title:
+            metadata["title"] = title[:100]
+        if isinstance(tags, list):
+            metadata["tags"] = copy.deepcopy(tags)
     if canonical_url:
         metadata["description"] = (
             f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"

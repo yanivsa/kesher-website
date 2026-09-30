@@ -89,6 +89,23 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(metadata["tags"], ["הדרכת הורים", "ילדים מחוננים"])
         pipeline.require_hebrew(metadata["description"], "description", allow_url=True)
 
+    def test_source_metadata_supports_distinct_media_seo(self) -> None:
+        post = hebrew_post()
+        post.update({
+            "videoTitle": "איך מחזירים אמון בזוגיות אחרי משבר?",
+            "videoTags": ["אמון בזוגיות", "תקשורת זוגית"],
+            "shortTitle": "מריבות בזוגיות: שלושה סימנים שהוויכוח יצא משליטה",
+            "shortTags": ["מריבות בזוגיות", "איך לריב נכון"],
+            "shortHook": "כששני אנשים נלחמים על ההגה — אף אחד כבר לא מנווט את הקשר.",
+        })
+        source = pipeline.source_metadata(post)
+        self.assertEqual(source["youtube_metadata"]["title"], post["videoTitle"])
+        self.assertIn("אמון בזוגיות", source["youtube_metadata"]["tags"])
+        self.assertEqual(source["short_youtube_metadata"]["title"], post["shortTitle"])
+        self.assertIn("מריבות בזוגיות", source["short_youtube_metadata"]["tags"])
+        self.assertEqual(source["short_hook"], post["shortHook"])
+        self.assertIn(post["videoTitle"], pipeline.generation_prompt(source))
+
     def test_enhancement_media_credits_are_added_only_when_stock_is_used(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
         item = {
