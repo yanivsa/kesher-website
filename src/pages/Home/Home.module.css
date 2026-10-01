@@ -1264,6 +1264,7 @@
   margin: 0 auto;
   padding: 2rem 0 2.5rem;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
@@ -1286,6 +1287,28 @@
 
 .footerLinks a:hover {
   color: var(--beta-sage-dark);
+}
+
+.footerSecondary {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -1rem;
+}
+
+.footerSecondary a {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--beta-muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.footerSecondary a:hover {
+  color: var(--beta-sage-dark);
+  text-decoration: underline;
 }
 
 @keyframes heroEnter {
@@ -1568,6 +1591,12 @@
     align-items: flex-start;
     flex-direction: column;
     padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .footerSecondary {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: -1rem;
   }
 
   .quickDock {
