@@ -20,7 +20,7 @@
     "normalization_status": "running",
     "quality_status": "passed",
     "quality_content_sha256": "4b0df04d8931ff8ab08c172a6b3590686e4c3f598ef0194a27b2c0dde59104b6",
-    "quality_checked_at": "2026-10-01T11:09:57.487217+00:00",
+    "quality_checked_at": "2026-10-01T11:23:14.430047+00:00",
     "quality_violations": [],
     "last_dispatch_at": "2026-10-01T10:34:59.583327+00:00",
     "watchdog": {
@@ -1972,47 +1972,22 @@
     "next_retry_at": null,
     "run_id": 36853228390,
     "processed_run_id": null,
-    "provider_id": "c4baa4ae-52de-4cdf-93db-17db7664bf18",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "item_id": "video-20260930-233335-880b3ebea7",
-    "youtube_id": "_3xByOwiXog",
-    "youtube_url": "https://youtu.be/_3xByOwiXog",
-    "verified": true,
-    "artifact_id": "c4baa4ae-52de-4cdf-93db-17db7664bf18",
-    "source_id": "a89f0428-ef95-43e9-a274-bbed5c93b945"
+    "failure_count_by_type": {}
   },
   "short": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "a7685b72-2d0a-4271-bdcd-d432832e3473",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "item_id": "video-20260930-233218-880b3ebea7",
-    "type": "article_short",
-    "youtube_id": "EvDGuIbpo0o",
-    "youtube_url": "https://youtu.be/EvDGuIbpo0o",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "ad90bebce43b480b2335fdd4f22646b7e249c5dd76570798ba3b6c221e3ed61d",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920,
-    "artifact_id": "a7685b72-2d0a-4271-bdcd-d432832e3473",
-    "source_id": "1809d962-e090-4569-9f03-c6b258cbf518"
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
@@ -2022,22 +1997,18 @@
     "content_sha256": "4b0df04d8931ff8ab08c172a6b3590686e4c3f598ef0194a27b2c0dde59104b6",
     "article_url": "https://kesher.saharoni.com/blog/adhd-waiting-mode",
     "article_verified": true,
-    "updated_at": "2026-10-01T11:10:12.058229+00:00",
+    "updated_at": "2026-10-01T11:23:29.904504+00:00",
     "long_status": "running",
-    "long_youtube_url": "https://youtu.be/_3xByOwiXog",
-    "long_item_id": "video-20260930-233335-880b3ebea7",
-    "short_status": "complete",
-    "short_youtube_url": "https://youtu.be/EvDGuIbpo0o",
-    "complete": true,
-    "completed_at": "2026-10-01T10:21:03.608308+00:00"
+    "short_status": "pending",
+    "complete": false
   },
   "deliverables": {
     "article_url": null,
-    "overview_youtube_url": "https://youtu.be/_3xByOwiXog",
-    "short_youtube_url": "https://youtu.be/EvDGuIbpo0o",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "overview_edit_verified": false,
+    "short_portrait_verified": false,
+    "short_signature_verified": false,
+    "short_origin_verified": false
   }
 }
