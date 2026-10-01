@@ -504,6 +504,49 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             long_item = self._verified_long_from_artifact_history(source)
 
         if long_item is None:
+            # Fresh exact evidence wins over inherited controller fields. If no
+            # exact Overview exists for this source, old public identifiers
+            # must not survive merely because the target dictionary was already
+            # switched on an earlier tick.
+            stale_long_evidence = any(
+                state["long_video"].get(key)
+                for key in ("youtube_id", "youtube_url", "item_id", "provider_id", "artifact_id", "source_id")
+            )
+            if stale_long_evidence:
+                preserved_run_id = state["long_video"].get("run_id")
+                state["long_video"] = copy.deepcopy(v5.v3._stage_template())
+                state["long_video"]["run_id"] = preserved_run_id
+
+            exact_short = v5._newest(v5._verified_exact(self.github.newest_short_state(), source))
+            if exact_short is not None:
+                self._adopt_existing_short(state, source)
+                target["short_status"] = "complete"
+                target["short_youtube_url"] = state["short"].get("youtube_url")
+            else:
+                stale_short_evidence = any(
+                    state["short"].get(key)
+                    for key in ("youtube_id", "youtube_url", "item_id", "provider_id", "artifact_id", "source_id")
+                )
+                if stale_short_evidence:
+                    state["short"] = copy.deepcopy(v5.v3._stage_template())
+                target["short_status"] = state["short"].get("status") or "pending"
+                target.pop("short_youtube_url", None)
+
+            target["complete"] = False
+            target.pop("completed_at", None)
+            target.pop("long_youtube_url", None)
+            target.pop("long_item_id", None)
+
+            deliverables = state.get("deliverables")
+            if isinstance(deliverables, dict):
+                deliverables["overview_youtube_url"] = None
+                deliverables["overview_edit_verified"] = False
+                if exact_short is None:
+                    deliverables["short_youtube_url"] = None
+                    deliverables["short_portrait_verified"] = False
+                    deliverables["short_signature_verified"] = False
+                    deliverables["short_origin_verified"] = False
+
             active = self.github.active_workflow_run(v5.LONG_VIDEO_WORKFLOW, production_only=True)
             if active:
                 state["long_video"]["run_id"] = active.get("id")
