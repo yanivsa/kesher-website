@@ -1961,7 +1961,15 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "watchdog": {
+      "identity": "short:marshmallow-test-environmental-reliability:33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf:video-20261002-020743-33253e4463",
+      "hard_started_at": "2026-10-01T23:07:54.376075+00:00",
+      "last_progress_at": "2026-10-01T23:11:09.686898+00:00",
+      "last_fingerprint": "ff1c46cc211c7ef39df88a72dacd1191b2562b5dbfd4232d5ff7cdbaa28629af",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
