@@ -123,13 +123,6 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
           name: 'קשר - שירה סהרוני',
           url: SITE_CONFIG.url,
           telephone: SITE_CONFIG.contact.phone,
-          founder: {
-            '@type': 'Person',
-            '@id': `${SITE_CONFIG.url}/#shira`,
-            name: SITE_CONFIG.author,
-            jobTitle: config.bio.role,
-            url: `${SITE_CONFIG.url}/about`,
-          },
         },
         areaServed: config.schema.areaServed.map((area) => {
           let type = 'City';
@@ -147,7 +140,6 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
           '@type': 'Offer',
           price: String(config.pricing.amount),
           priceCurrency: config.pricing.currency,
-          availability: 'https://schema.org/InStock',
           url: config.meta.canonicalUrl,
         },
       },
