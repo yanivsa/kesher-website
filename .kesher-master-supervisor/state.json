@@ -1,6 +1,7 @@
 {
   "commands": {
     "ksr-03eb2d65213366c0b34369c2": {
+      "acknowledged_at": "2026-10-01T23:21:26.145588+00:00",
       "command_id": "ksr-03eb2d65213366c0b34369c2",
       "evidence_hash": "5d848f598681da6a933e38fd9143852908f1fbc634418deacdc873e079f6bd60",
       "exact": {
@@ -18,12 +19,44 @@
       "fingerprint": "0141bbbb8176ffa0881d544dce9cfa50",
       "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|short",
       "issued_at": "2026-10-01T23:19:04.717631+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-03eb2d65213366c0b34369c2",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "same-source exact Short is rebuilt without fresh provider generation, public, succeeded, and portrait 9:16",
+          "evidence_hash": "5d848f598681da6a933e38fd9143852908f1fbc634418deacdc873e079f6bd60",
+          "exact": {
+            "artifact_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
+            "content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
+            "item_id": "video-20260930-225106-33253e4463",
+            "pr_number": null,
+            "short_item_id": "video-20261002-020743-33253e4463",
+            "slug": "marshmallow-test-environmental-reliability",
+            "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f",
+            "task_id": "404ad664-37fd-4cba-a605-500e9a64b3bf"
+          },
+          "failure_signature": "SHORT_NOT_PORTRAIT",
+          "fingerprint": "0141bbbb8176ffa0881d544dce9cfa50",
+          "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|short",
+          "proposed_action": "rebuild_exact_short",
+          "schema_version": 1,
+          "stage": "short",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/1655137147874372288"
+      },
       "proposed_action": "rebuild_exact_short",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-10-01T23:19:04.717631+00:00"
+      "updated_at": "2026-10-01T23:21:26.145588+00:00"
     },
     "ksr-043b42bffd056dfe6f5cea26": {
       "acknowledged_at": "2026-09-29T18:10:49.706072+00:00",
@@ -4270,5 +4303,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-01T23:19:04.717631+00:00"
+  "updated_at": "2026-10-01T23:21:26.145588+00:00"
 }
