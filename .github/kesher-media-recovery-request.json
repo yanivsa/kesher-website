@@ -1,12 +1,18 @@
 {
-  "enabled": true,
+  "enabled": false,
   "target_slug": "relationship-crisis-flydubai-lessons",
   "issue": 993,
   "purpose": "Finish the authoritative Issue #993 Flydubai relationship-crisis article through the exact same source identity to one public Video Overview and one verified 9:16 Short, using the explicit distinct media SEO fields on the post. Do not create or modify a duplicate article.",
-  "completed": false,
+  "completed": true,
   "requested_at": "2026-09-30T20:09:00Z",
+  "completed_at": "2026-09-30T23:36:06Z",
   "failure_signature": "URGENT_TARGETED_MEDIA_RECOVERY_ISSUE_993",
   "recovery": "adopt_live_article_identity_then_exact_video_overview_then_exact_short_no_duplicate_article_or_provider_generation",
   "preserve_prior_state": "Do not delete Issue #986 durable media state; simply stop targeting it while Issue #993 is the active urgent recovery.",
-  "retrigger": "2026-09-30T20:20:00Z — post-merge #995 exact-media continuation; article identity is authoritative and must not be regenerated"
+  "deliverables": {
+    "article_url": "https://kesher.saharoni.com/blog/relationship-crisis-flydubai-lessons",
+    "overview_youtube_url": "https://youtu.be/_3xByOwiXog",
+    "short_youtube_url": "https://youtu.be/EvDGuIbpo0o",
+    "short_portrait_verified": true
+  }
 }
