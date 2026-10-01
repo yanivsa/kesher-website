@@ -3,23 +3,16 @@ import { LandingTarget } from '../components/LandingCalloutBanner/LandingCallout
 export const ADHD_LANDING_POST_SLUGS = new Set([
   'adhd-morning-conflict-dopamine-myth',
   'adhd-morning-routine',
-  'adhd-and-screen-addiction-strategies',
   'adhd-first-grade-preparation',
   'smart-youth-focus-tasks-organization',
-  'couples-adhd-partner',
+  'adhd-waiting-mode',
 ]);
 
 export const CRISIS_LANDING_POST_SLUGS = new Set([
   'relationship-crisis-flydubai-lessons',
   'breaking-silent-treatment-relationship',
-  'marriage-after-trust-leak',
   'communication-breakdown',
-  'repairing-relationship-after-resentment',
   'relationship-after-childbirth',
-  'stop-keeping-score-relationship',
-  'gottman-perpetual-problems-69-percent',
-  'couples-communication-distance',
-  'newlywed-first-year-conflicts',
 ]);
 
 export interface PostLike {
@@ -32,8 +25,9 @@ export interface PostLike {
 }
 
 /**
- * Opt-in mapping of blog posts to high-intent conversion landing banners.
- * Returns null by default so general informational posts do NOT receive an irrelevant banner.
+ * Editorial opt-in mapping of blog posts to high-intent service callouts.
+ * Returns null by default. A post is mapped only when its reader intent
+ * strongly matches the destination service.
  */
 export const getLandingTargetForPost = (post: PostLike | null | undefined): LandingTarget | null => {
   if (!post || !post.id) {
