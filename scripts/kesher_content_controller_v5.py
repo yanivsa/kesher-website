@@ -35,9 +35,11 @@ STATE_SCHEMA_VERSION = 5
 LONG_VIDEO_WORKFLOW = "kesher-daily-video.yml"
 LONG_VIDEO_WORKFLOW_NAME = "Kesher Daily NotebookLM Video Overview"
 LONG_VIDEO_STATE_ARTIFACT = "kesher-video-state"
+LONG_VIDEO_CONTROLLER_STATE_ARTIFACT = "kesher-video-controller-state"
 SHORT_WORKFLOW = "kesher-short-v4.yml"
 SHORT_WORKFLOW_NAME = "Kesher Daily Article Short V4"
 SHORT_STATE_ARTIFACT = "kesher-short-v4-state"
+SHORT_CONTROLLER_STATE_ARTIFACT = "kesher-short-v4-controller-state"
 MAX_SHORT_DISPATCH_ATTEMPTS = 4
 
 
@@ -115,11 +117,48 @@ class V5GitHubClient(v4.V4GitHubClient):
         finally:
             core.VIDEO_STATE_ARTIFACT = previous
 
+    def _artifact_available(self, artifact_name: str) -> bool:
+        payload = self.request(
+            "GET",
+            f"{self.api}/actions/artifacts?name={artifact_name}&per_page=3",
+        )
+        artifacts = payload.get("artifacts") if isinstance(payload, dict) else None
+        return any(
+            isinstance(row, dict) and row.get("expired") is not True
+            for row in (artifacts or [])
+        )
+
+    def _preferred_controller_state(
+        self,
+        lightweight_artifact: str,
+        durable_artifact: str,
+    ) -> dict[str, Any]:
+        # The lightweight companion is an optimization only. Listing or reading
+        # it must never make production less reliable than the durable fallback.
+        try:
+            lightweight_available = self._artifact_available(lightweight_artifact)
+        except core.ControllerError:
+            lightweight_available = False
+        if lightweight_available:
+            try:
+                return self.newest_state_for_artifact(lightweight_artifact)
+            except core.ControllerError:
+                pass
+        return self.newest_state_for_artifact(durable_artifact)
+
     def newest_video_state(self) -> dict[str, Any]:
-        return self.newest_state_for_artifact(LONG_VIDEO_STATE_ARTIFACT)
+        # The full durable artifact may contain large MP4/evidence files needed
+        # by the video worker for resume. Controller V5 only needs state.json.
+        return self._preferred_controller_state(
+            LONG_VIDEO_CONTROLLER_STATE_ARTIFACT,
+            LONG_VIDEO_STATE_ARTIFACT,
+        )
 
     def newest_short_state(self) -> dict[str, Any]:
-        return self.newest_state_for_artifact(SHORT_STATE_ARTIFACT)
+        return self._preferred_controller_state(
+            SHORT_CONTROLLER_STATE_ARTIFACT,
+            SHORT_STATE_ARTIFACT,
+        )
 
     def article_session_snapshot(self, slot: str) -> dict[str, Any] | None:
         api_key = os.environ.get("JULES_API_KEY", "").strip()
