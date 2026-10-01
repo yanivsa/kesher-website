@@ -35,6 +35,7 @@ STATE_SCHEMA_VERSION = 5
 LONG_VIDEO_WORKFLOW = "kesher-daily-video.yml"
 LONG_VIDEO_WORKFLOW_NAME = "Kesher Daily NotebookLM Video Overview"
 LONG_VIDEO_STATE_ARTIFACT = "kesher-video-state"
+LONG_VIDEO_CONTROLLER_STATE_ARTIFACT = "kesher-video-controller-state"
 SHORT_WORKFLOW = "kesher-short-v4.yml"
 SHORT_WORKFLOW_NAME = "Kesher Daily Article Short V4"
 SHORT_STATE_ARTIFACT = "kesher-short-v4-state"
@@ -115,7 +116,27 @@ class V5GitHubClient(v4.V4GitHubClient):
         finally:
             core.VIDEO_STATE_ARTIFACT = previous
 
+    def _artifact_available(self, artifact_name: str) -> bool:
+        payload = self.request(
+            "GET",
+            f"{self.api}/actions/artifacts?name={artifact_name}&per_page=3",
+        )
+        artifacts = payload.get("artifacts") if isinstance(payload, dict) else None
+        return any(
+            isinstance(row, dict) and row.get("expired") is not True
+            for row in (artifacts or [])
+        )
+
     def newest_video_state(self) -> dict[str, Any]:
+        # The full durable artifact may contain large MP4/evidence files needed
+        # by the video worker for resume. Controller V5 only needs state.json,
+        # so prefer the companion lightweight artifact and fall back to the full
+        # durable archive during rollout or if the small artifact is damaged.
+        if self._artifact_available(LONG_VIDEO_CONTROLLER_STATE_ARTIFACT):
+            try:
+                return self.newest_state_for_artifact(LONG_VIDEO_CONTROLLER_STATE_ARTIFACT)
+            except core.ControllerError:
+                pass
         return self.newest_state_for_artifact(LONG_VIDEO_STATE_ARTIFACT)
 
     def newest_short_state(self) -> dict[str, Any]:
