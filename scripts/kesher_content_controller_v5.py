@@ -39,6 +39,7 @@ LONG_VIDEO_CONTROLLER_STATE_ARTIFACT = "kesher-video-controller-state"
 SHORT_WORKFLOW = "kesher-short-v4.yml"
 SHORT_WORKFLOW_NAME = "Kesher Daily Article Short V4"
 SHORT_STATE_ARTIFACT = "kesher-short-v4-state"
+SHORT_CONTROLLER_STATE_ARTIFACT = "kesher-short-v4-controller-state"
 MAX_SHORT_DISPATCH_ATTEMPTS = 4
 
 
@@ -140,6 +141,11 @@ class V5GitHubClient(v4.V4GitHubClient):
         return self.newest_state_for_artifact(LONG_VIDEO_STATE_ARTIFACT)
 
     def newest_short_state(self) -> dict[str, Any]:
+        if self._artifact_available(SHORT_CONTROLLER_STATE_ARTIFACT):
+            try:
+                return self.newest_state_for_artifact(SHORT_CONTROLLER_STATE_ARTIFACT)
+            except core.ControllerError:
+                pass
         return self.newest_state_for_artifact(SHORT_STATE_ARTIFACT)
 
     def article_session_snapshot(self, slot: str) -> dict[str, Any] | None:
