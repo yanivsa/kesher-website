@@ -74,16 +74,60 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
         backlog = ordered_recoverable_backlog(state.get("backlog") or [])
         for row in backlog:
             media = row.setdefault("media", {})
+            article_state = row.get("article") if isinstance(row.get("article"), dict) else {}
             cycle = str(row.get("cycle") or "").strip()
             if not cycle:
                 continue
-            matches = [post for post in posts if isinstance(post, dict) and str(post.get("date") or "") == cycle]
-            if not matches:
-                continue
-            if len(matches) != 1:
-                raise v5.core.ControllerError(f"BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: {cycle}")
+
+            # Backlog rows are durable identities, not just dates. Prefer the
+            # exact slug already persisted by the article/media stages so a
+            # second same-day publication can never steal or invalidate the
+            # historical chain.
+            article_slug = str(article_state.get("slug") or "").strip()
+            media_slug = str(media.get("source_slug") or "").strip()
+            if article_slug and media_slug and article_slug != media_slug:
+                raise v5.core.ControllerError(
+                    f"BACKLOG_ARTICLE_IDENTITY_CONFLICT: {cycle} "
+                    f"article={article_slug} media={media_slug}"
+                )
+            stored_slug = article_slug or media_slug
+
+            if stored_slug:
+                matches = [
+                    post for post in posts
+                    if isinstance(post, dict)
+                    and str(post.get("slug") or post.get("id") or "").strip() == stored_slug
+                ]
+                if len(matches) != 1:
+                    raise v5.core.ControllerError(
+                        f"BACKLOG_ARTICLE_SLUG_AMBIGUOUS: {stored_slug} matched {len(matches)} articles"
+                    )
+            else:
+                dated = [
+                    post for post in posts
+                    if isinstance(post, dict)
+                    and str(post.get("date") or "") == cycle
+                ]
+                if not dated:
+                    continue
+                managed = [post for post in dated if post.get("controllerManaged") is not False]
+                if len(managed) == 1:
+                    matches = managed
+                elif len(dated) == 1:
+                    matches = dated
+                else:
+                    raise v5.core.ControllerError(
+                        f"BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: {cycle}"
+                    )
+
             post = matches[0]
             source = v5.article_source_identity(post)
+            stored_sha = str(media.get("source_content_sha256") or "").strip()
+            if stored_sha and stored_sha != source["content_sha256"]:
+                raise v5.core.ControllerError(
+                    f"BACKLOG_ARTICLE_CONTENT_CHANGED: {source['slug']}"
+                )
+
             url = f"{v5.core.SITE_URL}/blog/{source['slug']}"
             status, body = self.site.get(url)
             if status != 200 or not v5.core.article_is_public(body, str(post.get("title") or "")):
