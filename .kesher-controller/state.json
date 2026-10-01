@@ -20,7 +20,7 @@
     "normalization_status": "running",
     "quality_status": "passed",
     "quality_content_sha256": "bc7af54b55d268c5bf801470c842566c1e1a6948fac5ba0551849ffa6d41f967",
-    "quality_checked_at": "2026-10-01T14:53:40.605446+00:00",
+    "quality_checked_at": "2026-10-01T15:22:50.642571+00:00",
     "quality_violations": [],
     "last_dispatch_at": "2026-10-01T10:34:59.583327+00:00",
     "watchdog": {
@@ -1969,7 +1969,7 @@
       }
     }
   ],
-  "updated_at": "2026-10-01T14:50:02.756369+00:00",
+  "updated_at": "2026-10-01T15:27:59.458236+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1984,27 +1984,52 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36879367784,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "15c54650-45ed-48ee-b932-e5a25dba02a8",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "item_id": "video-20261001-175455-bc7af54b55",
+    "youtube_id": "WrA6UidMQv8",
+    "youtube_url": "https://youtu.be/WrA6UidMQv8",
+    "verified": true,
+    "artifact_id": "15c54650-45ed-48ee-b932-e5a25dba02a8",
+    "source_id": "1a29db4d-0b64-4166-a432-09d4beca1afe"
   },
   "short": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "489f63c8-97d3-4594-80e6-9366f65f7aaa",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "item_id": "video-20261001-175515-bc7af54b55",
+    "type": "article_short",
+    "youtube_id": "LaAipWikrHI",
+    "youtube_url": "https://youtu.be/LaAipWikrHI",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "7befcfd5a180d1ed27953744f0af38f88201ffda46fbf4fef5c5e0bd41f361b1",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920,
+    "artifact_id": "489f63c8-97d3-4594-80e6-9366f65f7aaa",
+    "source_id": "27c6e8d7-038f-46c3-9f19-60a57ad2f99d"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -2014,10 +2039,14 @@
     "content_sha256": "bc7af54b55d268c5bf801470c842566c1e1a6948fac5ba0551849ffa6d41f967",
     "article_url": "https://kesher.saharoni.com/blog/marriage-hack-7-minutes",
     "article_verified": true,
-    "updated_at": "2026-10-01T14:54:36.516478+00:00",
-    "short_status": "pending",
-    "complete": false,
-    "long_status": "running"
+    "updated_at": "2026-10-01T15:24:19.549268+00:00",
+    "short_status": "complete",
+    "complete": true,
+    "long_status": "complete",
+    "long_youtube_url": "https://youtu.be/WrA6UidMQv8",
+    "long_item_id": "video-20261001-175455-bc7af54b55",
+    "short_youtube_url": "https://youtu.be/LaAipWikrHI",
+    "completed_at": "2026-10-01T15:27:59.458277+00:00"
   },
   "deliverables": {
     "article_url": null,
