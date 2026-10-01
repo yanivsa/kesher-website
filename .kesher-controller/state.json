@@ -20,7 +20,7 @@
     "normalization_status": "running",
     "quality_status": "passed",
     "quality_content_sha256": "4b0df04d8931ff8ab08c172a6b3590686e4c3f598ef0194a27b2c0dde59104b6",
-    "quality_checked_at": "2026-10-01T11:03:11.875857+00:00",
+    "quality_checked_at": "2026-10-01T11:09:57.487217+00:00",
     "quality_violations": [],
     "last_dispatch_at": "2026-10-01T10:34:59.583327+00:00",
     "watchdog": {
@@ -2022,7 +2022,7 @@
     "content_sha256": "4b0df04d8931ff8ab08c172a6b3590686e4c3f598ef0194a27b2c0dde59104b6",
     "article_url": "https://kesher.saharoni.com/blog/adhd-waiting-mode",
     "article_verified": true,
-    "updated_at": "2026-10-01T11:04:50.740406+00:00",
+    "updated_at": "2026-10-01T11:10:12.058229+00:00",
     "long_status": "running",
     "long_youtube_url": "https://youtu.be/_3xByOwiXog",
     "long_item_id": "video-20260930-233335-880b3ebea7",
