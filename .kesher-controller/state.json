@@ -20,7 +20,7 @@
     "normalization_status": "running",
     "quality_status": "passed",
     "quality_content_sha256": "bc7af54b55d268c5bf801470c842566c1e1a6948fac5ba0551849ffa6d41f967",
-    "quality_checked_at": "2026-10-01T15:28:28.642098+00:00",
+    "quality_checked_at": "2026-10-01T16:00:31.437562+00:00",
     "quality_violations": [],
     "last_dispatch_at": "2026-10-01T10:34:59.583327+00:00",
     "watchdog": {
@@ -1969,7 +1969,7 @@
       }
     }
   ],
-  "updated_at": "2026-10-01T15:31:14.125535+00:00",
+  "updated_at": "2026-10-01T16:05:40.817775+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -2039,14 +2039,14 @@
     "content_sha256": "bc7af54b55d268c5bf801470c842566c1e1a6948fac5ba0551849ffa6d41f967",
     "article_url": "https://kesher.saharoni.com/blog/marriage-hack-7-minutes",
     "article_verified": true,
-    "updated_at": "2026-10-01T15:29:15.295305+00:00",
+    "updated_at": "2026-10-01T16:01:40.221615+00:00",
     "short_status": "complete",
     "complete": true,
     "long_status": "complete",
     "long_youtube_url": "https://youtu.be/WrA6UidMQv8",
     "long_item_id": "video-20261001-175455-bc7af54b55",
     "short_youtube_url": "https://youtu.be/LaAipWikrHI",
-    "completed_at": "2026-10-01T15:31:14.125569+00:00"
+    "completed_at": "2026-10-01T16:05:40.817812+00:00"
   },
   "deliverables": {
     "article_url": null,
