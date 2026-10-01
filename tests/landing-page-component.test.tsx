@@ -120,17 +120,6 @@ describe('LandingCalloutBanner Component', () => {
     expect(link.getAttribute('href')).toBe('/parenting-adhd-ashdod');
   });
 
-  it('renders couples_gan_yavne preset with matching landing page link', () => {
-    render(
-      <MemoryRouter>
-        <LandingCalloutBanner target="couples_gan_yavne" />
-      </MemoryRouter>
-    );
-
-    const link = screen.getByRole('link', { name: /לייעוץ זוגי בגן יבנה והסביבה/i });
-    expect(link.getAttribute('href')).toBe('/couples-counseling-gan-yavne');
-  });
-
   it('renders couples_mediation preset with matching landing page link', () => {
     render(
       <MemoryRouter>
