@@ -3,5 +3,7 @@
   "target_slug": "adhd-waiting-mode",
   "issue": 967,
   "goal": "article_http_200_plus_public_youtube_video_plus_public_verified_9_16_short",
-  "requested_at": "2026-10-01T11:01:00Z"
+  "requested_at": "2026-10-01T11:06:00Z",
+  "retry_seq": 2,
+  "retry_reason": "Media metadata corrected after VIDEO_RECONCILE_BLOCKED shortTags contains unsupported Latin text; prior exact runs generated no new media."
 }
