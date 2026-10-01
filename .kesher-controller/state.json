@@ -1932,9 +1932,18 @@
       "details": {
         "retry_at": "2026-10-01T11:01:16.732474+00:00"
       }
+    },
+    {
+      "at": "2026-10-01T11:00:24.883230+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-01T11:01:16.732474+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-01T10:57:56.417231+00:00",
+  "updated_at": "2026-10-01T11:00:24.883246+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
