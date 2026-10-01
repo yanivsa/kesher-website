@@ -1751,6 +1751,11 @@
       "שחיקה זוגית",
       "זוגיות"
     ],
-    "shortHook": "אל תפתרו את הריב. צאו ממנו לשבע דקות."
+    "shortHook": "אל תפתרו את הריב. צאו ממנו לשבע דקות.",
+    "image": "/images/generated/blog/marriage-hack-7-minutes.jpg",
+    "imageAlt": "צילום מציאותי של זוג בשיחה רגועה לאחר קונפליקט, המדגיש הקשבה ופרספקטיבה חדשה",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/generated/blog/communication-breakdown.jpg",
+    "imageIsFallback": true
   }
 ]
