@@ -22,6 +22,9 @@ const serviceRoutes = new Set([
   '/couples-counseling-ashdod',
   '/parenting-guidance-ashdod',
   '/couples-mediation-ashdod',
+  '/couples-crisis-ashdod',
+  '/parenting-adhd-ashdod',
+  '/couples-counseling-gan-yavne',
   '/services/couples/crisis',
   '/services/couples/before-separation',
   '/faq',
@@ -30,6 +33,9 @@ const conversionLandingRoutes = new Set([
   '/couples-counseling-ashdod',
   '/parenting-guidance-ashdod',
   '/couples-mediation-ashdod',
+  '/couples-crisis-ashdod',
+  '/parenting-adhd-ashdod',
+  '/couples-counseling-gan-yavne',
 ]);
 const noindexRoutes = new Set(['/thank-you-booked', '/thank-you-contact']);
 const buildSitemap = (posts) => {

@@ -112,6 +112,21 @@
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://kesher.saharoni.com/couples-crisis-ashdod</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/parenting-adhd-ashdod</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/couples-counseling-gan-yavne</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://kesher.saharoni.com/services/couples/crisis</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -135,6 +150,12 @@
     <loc>https://kesher.saharoni.com/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/relationship-crisis-flydubai-lessons</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability</loc>
@@ -666,7 +687,7 @@
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/breaking-the-yelling-cycle</loc>
-    <lastmod>2024-11-20</lastmod>
+    <lastmod>2026-09-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

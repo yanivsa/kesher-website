@@ -66,6 +66,6 @@ scripts/test_*.py
 scripts/inspect_*.mjs
 public/videos/*_broll.mp4
 videos_raw/
-data/
-reports/
+/data/
+/reports/
 

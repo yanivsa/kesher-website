@@ -12,10 +12,28 @@ import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
 import ShareButtons from '../../components/ShareButtons/ShareButtons';
 import GooglePreferredSource from '../../components/GooglePreferredSource/GooglePreferredSource';
 import SignatureMark from '../../components/Signature/SignatureMark';
+import LandingCalloutBanner, { LandingTarget } from '../../components/LandingCalloutBanner/LandingCalloutBanner';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
 import styles from './BlogPost.module.css';
+
+const getLandingTargetForPost = (post: (typeof posts)[number]): LandingTarget => {
+  const subcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
+  const tags = Array.isArray(post.tags) ? (post.tags as string[]).join(' ') : '';
+  const text = `${post.title} ${post.category} ${subcategory} ${tags} ${post.excerpt}`;
+
+  if (/גישור|גירושין|פרידה|שלום בית|הסכם/.test(text)) {
+    return 'couples_mediation';
+  }
+  if (/קשב|ADHD|הפרעת קשב|הור|ילד|זעם|סמכות|השכבה|בוקר|כיתה|מחונ/.test(text)) {
+    return 'parenting_adhd';
+  }
+  if (/משבר|ריב|הסלמה|מריב|ויכוח|פנקסנות|אמון|בגידה|שתיקה|ריחוק|זוג/.test(text)) {
+    return 'couples_crisis';
+  }
+  return 'couples_crisis';
+};
 
 const articleCtaCopy = (post: (typeof posts)[number]) => {
   const subcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
@@ -119,6 +137,7 @@ const BlogPost: React.FC = () => {
     ? { url: post.serviceUrl, label: post.serviceLabel }
     : null;
   const ctaCopy = articleCtaCopy(post);
+  const landingTarget = getLandingTargetForPost(post);
   const displayCategory = post.category === 'הנחיית הורים' ? 'הדרכת הורים' : post.category;
   const imageMeta = post as typeof post & {
     imageProvider?: string;
@@ -225,6 +244,7 @@ const BlogPost: React.FC = () => {
               poster={post.image || undefined}
             />
           )}
+          <LandingCalloutBanner target={landingTarget} />
           <SignatureMark tone="article" label="שלכם," className={styles.articleSignature} />
           <ShareButtons
             title={post.title}

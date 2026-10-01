@@ -65,6 +65,9 @@ const lectures = loadable(() => import('./pages/Lectures/LecturesPage'));
 const couplesCounselingAshdod = loadable(() => import('./pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage'));
 const parentingGuidanceAshdod = loadable(() => import('./pages/Landing/ParentingGuidanceAshdod/ParentingGuidanceAshdodPage'));
 const couplesMediationAshdod = loadable(() => import('./pages/Landing/CouplesMediationAshdod/CouplesMediationAshdodPage'));
+const couplesCrisisAshdod = loadable(() => import('./pages/Landing/CouplesCrisisAshdod/CouplesCrisisAshdodPage'));
+const parentingAdhdAshdod = loadable(() => import('./pages/Landing/ParentingAdhdAshdod/ParentingAdhdAshdodPage'));
+const couplesCounselingGanYavne = loadable(() => import('./pages/Landing/CouplesCounselingGanYavne/CouplesCounselingGanYavnePage'));
 const couplesCrisis = loadable(() => import('./pages/Landing/CouplesCrisis/CouplesCrisisPage'));
 const couplesBeforeSeparation = loadable(() => import('./pages/Landing/CouplesBeforeSeparation/CouplesBeforeSeparationPage'));
 const thankYouBooked = loadable(() => import('./pages/ThankYou/ThankYouBookedPage'));
@@ -99,6 +102,9 @@ const { Page: TermsOfUse } = terms;
 const { Page: CouplesCounselingAshdodPage } = couplesCounselingAshdod;
 const { Page: ParentingGuidanceAshdodPage } = parentingGuidanceAshdod;
 const { Page: CouplesMediationAshdodPage } = couplesMediationAshdod;
+const { Page: CouplesCrisisAshdodPage } = couplesCrisisAshdod;
+const { Page: ParentingAdhdAshdodPage } = parentingAdhdAshdod;
+const { Page: CouplesCounselingGanYavnePage } = couplesCounselingGanYavne;
 const { Page: CouplesCrisisPage } = couplesCrisis;
 const { Page: CouplesBeforeSeparationPage } = couplesBeforeSeparation;
 const { Page: ThankYouBookedPage } = thankYouBooked;
@@ -110,6 +116,9 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/couples-counseling-ashdod\/?$/, couplesCounselingAshdod.preload],
   [/^\/parenting-guidance-ashdod\/?$/, parentingGuidanceAshdod.preload],
   [/^\/couples-mediation-ashdod\/?$/, couplesMediationAshdod.preload],
+  [/^\/couples-crisis-ashdod\/?$/, couplesCrisisAshdod.preload],
+  [/^\/parenting-adhd-ashdod\/?$/, parentingAdhdAshdod.preload],
+  [/^\/couples-counseling-gan-yavne\/?$/, couplesCounselingGanYavne.preload],
   [/^\/services\/couples\/ashdod\/?$/, couplesCounselingAshdod.preload],
   [/^\/services\/couples\/crisis\/?$/, couplesCrisis.preload],
   [/^\/services\/couples\/before-separation\/?$/, couplesBeforeSeparation.preload],
@@ -155,6 +164,9 @@ function App() {
           <Route path="/couples-counseling-ashdod" element={<CouplesCounselingAshdodPage />} />
           <Route path="/parenting-guidance-ashdod" element={<ParentingGuidanceAshdodPage />} />
           <Route path="/couples-mediation-ashdod" element={<CouplesMediationAshdodPage />} />
+          <Route path="/couples-crisis-ashdod" element={<CouplesCrisisAshdodPage />} />
+          <Route path="/parenting-adhd-ashdod" element={<ParentingAdhdAshdodPage />} />
+          <Route path="/couples-counseling-gan-yavne" element={<CouplesCounselingGanYavnePage />} />
           <Route path="/services/couples/ashdod" element={<Navigate to="/couples-counseling-ashdod" replace />} />
           <Route path="/services/couples/crisis" element={<CouplesCrisisPage />} />
           <Route path="/services/couples/before-separation" element={<CouplesBeforeSeparationPage />} />
