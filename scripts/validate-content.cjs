@@ -249,6 +249,28 @@ for (const relative of claimFiles) {
   }
 }
 
+const compactLandingContent = fs.readFileSync(path.join(ROOT, 'src/data/landingPagesConfig.ts'), 'utf8');
+const forbiddenCompactLandingPhrases = [
+  'גישה נוחה וחניה',
+  'באותה רמת עומק ותשומת לב',
+  'עשויים לסייע לכל משפחה',
+  'מרחק נסיעה קצר',
+  'דקות נסיעה ספורות',
+  'שומר על עתיד המשפחה',
+];
+for (const phrase of forbiddenCompactLandingPhrases) {
+  if (compactLandingContent.includes(phrase)) {
+    errors.push(`Unsupported or unverified Compact Keywords claim: "${phrase}"`);
+  }
+}
+
+for (const route of noindexRoutes) {
+  const url = `https://kesher.saharoni.com${route}`;
+  if (sitemap.includes(`<loc>${url}</loc>`)) {
+    errors.push(`Noindex route must not appear in sitemap: ${route}`);
+  }
+}
+
 if (require.main === module) {
   if (errors.length) {
     console.error(errors.join('\n'));
