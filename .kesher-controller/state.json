@@ -1909,7 +1909,7 @@
       "reason": "publication slot has not opened"
     }
   ],
-  "updated_at": "2026-10-01T23:09:29.843842+00:00",
+  "updated_at": "2026-10-01T23:34:52.918106+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1953,12 +1953,12 @@
   },
   "short": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "fc28c109-a357-40d2-af6f-ad5e3c1c6469",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
@@ -1969,7 +1969,26 @@
       "last_fingerprint": "ff1c46cc211c7ef39df88a72dacd1191b2562b5dbfd4232d5ff7cdbaa28629af",
       "recovery_count": 0,
       "last_recovery_at": null
-    }
+    },
+    "item_id": "video-20261002-020743-33253e4463",
+    "type": "article_short",
+    "youtube_id": "RcCgNHDi6mo",
+    "youtube_url": "https://youtu.be/RcCgNHDi6mo",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "046d8695b2bdb1c15c3c964501fe27028065cbf2acd2418782999d2b3e864fca",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920,
+    "artifact_id": "fc28c109-a357-40d2-af6f-ad5e3c1c6469",
+    "source_id": "2095f9c6-3b55-45e6-b79d-6f060b41cc47"
   },
   "migration": {
     "v4_short_controller_state": null
