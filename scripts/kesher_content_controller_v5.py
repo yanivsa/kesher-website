@@ -128,25 +128,37 @@ class V5GitHubClient(v4.V4GitHubClient):
             for row in (artifacts or [])
         )
 
+    def _preferred_controller_state(
+        self,
+        lightweight_artifact: str,
+        durable_artifact: str,
+    ) -> dict[str, Any]:
+        # The lightweight companion is an optimization only. Listing or reading
+        # it must never make production less reliable than the durable fallback.
+        try:
+            lightweight_available = self._artifact_available(lightweight_artifact)
+        except core.ControllerError:
+            lightweight_available = False
+        if lightweight_available:
+            try:
+                return self.newest_state_for_artifact(lightweight_artifact)
+            except core.ControllerError:
+                pass
+        return self.newest_state_for_artifact(durable_artifact)
+
     def newest_video_state(self) -> dict[str, Any]:
         # The full durable artifact may contain large MP4/evidence files needed
-        # by the video worker for resume. Controller V5 only needs state.json,
-        # so prefer the companion lightweight artifact and fall back to the full
-        # durable archive during rollout or if the small artifact is damaged.
-        if self._artifact_available(LONG_VIDEO_CONTROLLER_STATE_ARTIFACT):
-            try:
-                return self.newest_state_for_artifact(LONG_VIDEO_CONTROLLER_STATE_ARTIFACT)
-            except core.ControllerError:
-                pass
-        return self.newest_state_for_artifact(LONG_VIDEO_STATE_ARTIFACT)
+        # by the video worker for resume. Controller V5 only needs state.json.
+        return self._preferred_controller_state(
+            LONG_VIDEO_CONTROLLER_STATE_ARTIFACT,
+            LONG_VIDEO_STATE_ARTIFACT,
+        )
 
     def newest_short_state(self) -> dict[str, Any]:
-        if self._artifact_available(SHORT_CONTROLLER_STATE_ARTIFACT):
-            try:
-                return self.newest_state_for_artifact(SHORT_CONTROLLER_STATE_ARTIFACT)
-            except core.ControllerError:
-                pass
-        return self.newest_state_for_artifact(SHORT_STATE_ARTIFACT)
+        return self._preferred_controller_state(
+            SHORT_CONTROLLER_STATE_ARTIFACT,
+            SHORT_STATE_ARTIFACT,
+        )
 
     def article_session_snapshot(self, slot: str) -> dict[str, Any] | None:
         api_key = os.environ.get("JULES_API_KEY", "").strip()
