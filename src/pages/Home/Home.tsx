@@ -703,6 +703,8 @@ const Home: React.FC = () => {
           <Link to="/blog">מאמרים</Link>
           <Link to="/privacy">פרטיות</Link>
           <Link to="/accessibility">נגישות</Link>
+        </div>
+        <div className={styles.footerSecondary}>
           <a href="http://www.kartiv.co.il">אינדקס אתרים</a>
         </div>
       </footer>
