@@ -1,7 +1,7 @@
 {
   "commands": {
     "ksr-03eb2d65213366c0b34369c2": {
-      "acknowledged_at": "2026-10-01T23:21:26.145588+00:00",
+      "acknowledged_at": "2026-10-01T23:24:23.470232+00:00",
       "command_id": "ksr-03eb2d65213366c0b34369c2",
       "evidence_hash": "5d848f598681da6a933e38fd9143852908f1fbc634418deacdc873e079f6bd60",
       "exact": {
@@ -19,8 +19,10 @@
       "fingerprint": "0141bbbb8176ffa0881d544dce9cfa50",
       "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|short",
       "issued_at": "2026-10-01T23:19:04.717631+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "running",
       "metadata": {
+        "external_run_id": 36940229089,
+        "external_workflow": "Kesher Daily Article Short V4",
         "incident_packet": {
           "command_id": "ksr-03eb2d65213366c0b34369c2",
           "constraints": {
@@ -54,9 +56,10 @@
         "session_id": "sessions/1655137147874372288"
       },
       "proposed_action": "rebuild_exact_short",
+      "running_at": "2026-10-01T23:24:23.470232+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-10-01T23:21:26.145588+00:00"
+      "updated_at": "2026-10-01T23:24:23.470232+00:00"
     },
     "ksr-043b42bffd056dfe6f5cea26": {
       "acknowledged_at": "2026-09-29T18:10:49.706072+00:00",
@@ -2868,7 +2871,7 @@
         }
       ],
       "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|short",
-      "last_seen_at": "2026-10-01T23:19:04.717631+00:00",
+      "last_seen_at": "2026-10-01T23:24:23.470232+00:00",
       "marker": "MASTER_ESCALATION fingerprint=0141bbbb8176ffa0881d544dce9cfa50 strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
@@ -4303,5 +4306,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-01T23:21:26.145588+00:00"
+  "updated_at": "2026-10-01T23:24:23.470232+00:00"
 }
