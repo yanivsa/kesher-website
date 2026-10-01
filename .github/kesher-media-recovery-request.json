@@ -1,18 +1,18 @@
 {
-  "enabled": false,
-  "target_slug": "relationship-crisis-flydubai-lessons",
-  "issue": 993,
-  "purpose": "Finish the authoritative Issue #993 Flydubai relationship-crisis article through the exact same source identity to one public Video Overview and one verified 9:16 Short, using the explicit distinct media SEO fields on the post. Do not create or modify a duplicate article.",
-  "completed": true,
-  "requested_at": "2026-09-30T20:09:00Z",
-  "completed_at": "2026-09-30T23:36:06Z",
-  "failure_signature": "URGENT_TARGETED_MEDIA_RECOVERY_ISSUE_993",
-  "recovery": "adopt_live_article_identity_then_exact_video_overview_then_exact_short_no_duplicate_article_or_provider_generation",
-  "preserve_prior_state": "Do not delete Issue #986 durable media state; simply stop targeting it while Issue #993 is the active urgent recovery.",
+  "enabled": true,
+  "target_slug": "adhd-waiting-mode",
+  "issue": 967,
+  "purpose": "Finish authoritative Issue #967 ADHD Waiting Mode from the already merged live-article identity to exactly one public Video Overview and one verified 9:16 Short. Do not create or modify a duplicate article, Jules session, provider generation, or upload.",
+  "completed": false,
+  "requested_at": "2026-10-01T11:05:00Z",
+  "completed_at": null,
+  "failure_signature": "STALE_ARTICLE_STATE_AFTER_MERGE_ISSUE_967",
+  "recovery": "adopt_merged_article_identity_then_verify_public_article_then_exact_video_overview_then_exact_short_no_duplicate_article_or_provider_generation",
+  "preserve_prior_state": "Preserve completed Flydubai media evidence but do not reuse its video/short identity for Issue #967.",
   "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/relationship-crisis-flydubai-lessons",
-    "overview_youtube_url": "https://youtu.be/_3xByOwiXog",
-    "short_youtube_url": "https://youtu.be/EvDGuIbpo0o",
-    "short_portrait_verified": true
+    "article_url": "https://kesher.saharoni.com/blog/adhd-waiting-mode",
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "short_portrait_verified": false
   }
 }
