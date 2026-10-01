@@ -112,6 +112,11 @@
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://kesher.saharoni.com/parenting-adhd-ashdod</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://kesher.saharoni.com/services/couples/crisis</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -702,6 +707,12 @@
   </url>
   <url>
     <loc>https://kesher.saharoni.com/blog/adhd-waiting-mode</loc>
+    <lastmod>2026-10-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kesher.saharoni.com/blog/marriage-hack-7-minutes</loc>
     <lastmod>2026-10-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
