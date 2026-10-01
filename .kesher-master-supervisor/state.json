@@ -2498,6 +2498,7 @@
       "verified_at": "2026-09-23T11:56:18.854806+00:00"
     },
     "ksr-fa04f54b1464c0c464a47bb5": {
+      "acknowledged_at": "2026-10-01T23:05:23.500829+00:00",
       "command_id": "ksr-fa04f54b1464c0c464a47bb5",
       "evidence_hash": "ee35b3c0dc98ae79c52bf94ee8780fec77d3bf70b8603978532fdc15542f03e2",
       "exact": {
@@ -2515,12 +2516,16 @@
       "fingerprint": "08f5951356d876f4d08aee221b30661f",
       "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|short",
       "issued_at": "2026-10-01T23:03:55.080995+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "dispatch": "already_active",
+        "run_id": 36938793023,
+        "workflow": "kesher-content-controller.yml"
+      },
       "proposed_action": "continue_exact_short",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-10-01T23:03:55.080995+00:00"
+      "updated_at": "2026-10-01T23:05:23.500829+00:00"
     },
     "ksr-fd7186e4f79ae69876ca0399": {
       "acknowledged_at": "2026-09-24T16:11:54.988386+00:00",
@@ -4164,5 +4169,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-01T23:03:55.080995+00:00"
+  "updated_at": "2026-10-01T23:05:23.500829+00:00"
 }
