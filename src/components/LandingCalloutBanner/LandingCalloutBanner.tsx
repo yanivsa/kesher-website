@@ -9,7 +9,6 @@ import styles from './LandingCalloutBanner.module.css';
 export type LandingTarget =
   | 'couples_crisis'
   | 'parenting_adhd'
-  | 'couples_gan_yavne'
   | 'couples_mediation';
 
 export interface LandingCalloutBannerProps {
@@ -46,14 +45,6 @@ const DEFAULTS: Record<LandingTarget, {
     linkUrl: '/parenting-adhd-ashdod',
     ctaText: 'לפרטים על הדרכת הורים ל-ADHD באשדוד',
     whatsappMessage: 'היי שירה, קראתי מאמר באתר ואשמח להתייעץ לגבי הדרכת הורים לקשב וריכוז.',
-  },
-  couples_gan_yavne: {
-    badge: 'ייעוץ זוגי בגן יבנה והסביבה | אשדוד ובזום',
-    title: 'תושבי גן יבנה, ביצרון או הסביבה ורוצים להחזיר את הקרבה?',
-    subtitle: 'הפגישות מתקיימות בקליניקה באשדוד או אונליין בזום, גם עבור תושבי גן יבנה והסביבה.',
-    linkUrl: '/couples-counseling-gan-yavne',
-    ctaText: 'לייעוץ זוגי בגן יבנה והסביבה',
-    whatsappMessage: 'היי שירה, אנחנו מגן יבנה / הסביבה ונשמח לבדוק התאמה לפגישת ייעוץ זוגי.',
   },
   couples_mediation: {
     badge: 'גישור זוגי ושלום בית | אשדוד ובזום',
