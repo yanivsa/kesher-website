@@ -12,6 +12,8 @@ import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
 import ShareButtons from '../../components/ShareButtons/ShareButtons';
 import GooglePreferredSource from '../../components/GooglePreferredSource/GooglePreferredSource';
 import SignatureMark from '../../components/Signature/SignatureMark';
+import LandingCalloutBanner from '../../components/LandingCalloutBanner/LandingCalloutBanner';
+import { getLandingTargetForPost } from '../../utils/landingCalloutHelper';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
@@ -119,6 +121,7 @@ const BlogPost: React.FC = () => {
     ? { url: post.serviceUrl, label: post.serviceLabel }
     : null;
   const ctaCopy = articleCtaCopy(post);
+  const landingTarget = getLandingTargetForPost(post);
   const displayCategory = post.category === 'הנחיית הורים' ? 'הדרכת הורים' : post.category;
   const imageMeta = post as typeof post & {
     imageProvider?: string;
@@ -225,6 +228,7 @@ const BlogPost: React.FC = () => {
               poster={post.image || undefined}
             />
           )}
+          {landingTarget && <LandingCalloutBanner target={landingTarget} />}
           <SignatureMark tone="article" label="שלכם," className={styles.articleSignature} />
           <ShareButtons
             title={post.title}

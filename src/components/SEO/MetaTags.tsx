@@ -9,6 +9,7 @@ interface MetaTagsProps {
   ogType?: string;
   image?: string;
   noIndex?: boolean;
+  robots?: string;
 }
 
 const MetaTags = ({
@@ -18,6 +19,7 @@ const MetaTags = ({
   ogType = 'website',
   image,
   noIndex = false,
+  robots,
 }: MetaTagsProps) => {
   const location = useLocation();
   const cleanPath = location.pathname.length > 1 && location.pathname.endsWith('/')
@@ -43,7 +45,7 @@ const MetaTags = ({
         const metaEl = el as HTMLMetaElement;
         const name = metaEl.getAttribute('name');
         const property = metaEl.getAttribute('property');
-        if (name === 'robots' && !noIndex) {
+        if (name === 'robots' && !noIndex && !robots) {
           metaEl.remove();
           continue;
         }
@@ -90,7 +92,9 @@ const MetaTags = ({
     upsert('name:twitter:title', { name: 'twitter:title', content: fullTitle });
     upsert('name:twitter:description', { name: 'twitter:description', content: description });
     upsert('name:twitter:image', { name: 'twitter:image', content: imageUrl });
-    if (noIndex) {
+    if (robots) {
+      upsert('name:robots', { name: 'robots', content: robots });
+    } else if (noIndex) {
       upsert('name:robots', { name: 'robots', content: 'noindex, nofollow' });
     }
 
@@ -101,7 +105,7 @@ const MetaTags = ({
     }
     if (existingCanonical.href !== currentUrl) existingCanonical.href = currentUrl;
     existingCanonical.dataset.kesherSeo = 'true';
-  }, [currentUrl, description, imageUrl, noIndex, ogType, title]);
+  }, [currentUrl, description, imageUrl, noIndex, ogType, robots, title]);
 
   return null;
 };

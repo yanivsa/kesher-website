@@ -200,7 +200,12 @@ for (let i = 0; i < published.length; i++) {
 }
 
 const sitemap = fs.readFileSync(path.join(ROOT, 'public/sitemap.xml'), 'utf8');
-const noindexRoutes = new Set(['/thank-you-booked', '/thank-you-contact']);
+const noindexRoutes = new Set([
+  '/thank-you-booked',
+  '/thank-you-contact',
+  '/couples-crisis-ashdod',
+  '/couples-counseling-gan-yavne',
+]);
 const indexableStaticRoutes = STATIC_ROUTES.filter((route) => !noindexRoutes.has(route));
 for (const route of [...indexableStaticRoutes, ...published.map(blogRoute)]) {
   const url = `https://kesher.saharoni.com${route === '/' ? '' : route}`;
@@ -233,6 +238,7 @@ const claimFiles = [
   'src/pages/Services/Premarital/PremaritalFirstYearPage.tsx',
   'src/pages/Services/Singles/LateSinglenessPage.tsx',
   'src/pages/Services/Singles/FindingRelationshipPage.tsx',
+  'src/data/landingPagesConfig.ts',
   'src/data/faqs.ts',
   'public/llms.txt',
 ];
