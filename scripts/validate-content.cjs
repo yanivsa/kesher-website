@@ -257,6 +257,8 @@ const forbiddenCompactLandingPhrases = [
   'מרחק נסיעה קצר',
   'דקות נסיעה ספורות',
   'שומר על עתיד המשפחה',
+  'קליניקה סמוכה',
+  'סמוך לגן יבנה',
 ];
 for (const phrase of forbiddenCompactLandingPhrases) {
   if (compactLandingContent.includes(phrase)) {
