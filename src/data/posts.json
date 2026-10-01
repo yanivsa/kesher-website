@@ -1672,7 +1672,7 @@
         "note": "סקירה שיטתית ומטא-אנליזה של מחקרי תפיסת זמן ב-ADHD לאורך טווחי גיל שונים."
       }
     ],
-    "controllerManaged": false,
+    "controllerManaged": true,
     "videoTitle": "למה חוג בארבע יכול לתקוע לילד עם הפרעת קשב את כל היום?",
     "videoTags": [
       "הפרעת קשב",
