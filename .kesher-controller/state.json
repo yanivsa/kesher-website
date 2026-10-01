@@ -2086,12 +2086,12 @@
     "completed_at": "2026-10-01T16:05:40.817812+00:00"
   },
   "deliverables": {
-    "article_url": null,
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
+    "article_url": "https://kesher.saharoni.com/blog/adhd-waiting-mode",
+    "overview_youtube_url": "https://youtu.be/uQWOKXWm4tM",
+    "short_youtube_url": "https://youtu.be/JnqvRx1ss24",
+    "overview_edit_verified": true,
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   }
 }
