@@ -33,7 +33,7 @@ class AuthorityTopologyTests(unittest.TestCase):
 
     def test_reactivated_registered_legacy_is_not_retired_by_yaml_only(self):
         from scripts.kesher_runtime.authority_topology import classify_registered, policy
-        rows=classify_registered([{'id':12,'path':'.github/workflows/kesher-daily-video.yml','state':'active'}],policy(ROOT))
+        rows=classify_registered([{'id':331086666,'path':'.github/workflows/kesher-daily-video.yml','state':'active'}],policy(ROOT))
         self.assertEqual(rows[0]['state'],'active')
         self.assertEqual(rows[0]['role'],'retired')
 

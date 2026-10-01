@@ -63,17 +63,7 @@ def check_definitions(definitions, rules):
         if not isinstance(data, dict):
             raise StateInvalid('AUTHORITY_INVALID_DEFINITION')
         role = entry['role']
-        targets = entry['review']['dispatches']
-        if any(target not in rules['workflows'] for target in targets):
-            raise StateInvalid('AUTHORITY_UNCLASSIFIED_INDIRECT_DISPATCH')
-        if targets and 'workflow_dispatch' not in entry['capabilities']:
-            raise StateInvalid('AUTHORITY_FALSE_READONLY_DISPATCH')
-        for target in targets:
-            child = rules['workflows'][target]
-            _review(child)
-            if (not set(child['resources']) <= set(entry['resources'])
-                    or not set(child['capabilities']) - {'read', 'artifact_write'} <= set(entry['capabilities'])):
-                raise StateInvalid('AUTHORITY_INDIRECT_MUTATION_SCOPE_MISSING')
+        _dispatch_review(entry, rules)
         if role == 'diagnostic' and (set(entry['capabilities']) - {'read', 'artifact_write'} or entry['resources']):
             raise StateInvalid('AUTHORITY_FALSE_READONLY_CLASSIFICATION')
         jobs = data.get('jobs', {})
@@ -192,6 +182,50 @@ def validate_registered_inventory(rows, rules, *, complete=False):
     return rows
 
 
+def _dispatch_review(entry, rules):
+    """Bind an optional exact operation review to its child identity and bytes.
+
+    Unconstrained historical dispatch reviews still inherit the whole child.
+    A narrower scope is a reviewed trust-root assertion, not a code inference;
+    its operation inputs and source files remain pinned by the policy digest.
+    """
+    targets = entry['review']['dispatches']
+    if any(target not in rules['workflows'] for target in targets):
+        raise StateInvalid('AUTHORITY_UNCLASSIFIED_INDIRECT_DISPATCH')
+    if targets and 'workflow_dispatch' not in entry['capabilities']:
+        raise StateInvalid('AUTHORITY_FALSE_READONLY_DISPATCH')
+    bindings = entry['review'].get('dispatch_bindings')
+    if bindings is not None and (not isinstance(bindings, dict) or set(bindings) != set(targets)):
+        raise StateInvalid('AUTHORITY_DISPATCH_BINDING_INVALID')
+    for target in targets:
+        child = rules['workflows'][target]
+        _review(child)
+        scope = child
+        if bindings is not None:
+            scope = bindings[target]
+            try:
+                if (set(scope) != {'registration_id', 'definition_sha256', 'capabilities', 'resources', 'inputs'}
+                        or type(scope['registration_id']) is not int or scope['registration_id'] < 1
+                        or scope['registration_id'] != child.get('registration_id')
+                        or scope['definition_sha256'] != child['definition_sha256']
+                        or not _identities(scope['capabilities'])
+                        or not _identities(scope['resources'])
+                        or not set(scope['capabilities']) <= set(child['capabilities'])
+                        or not set(scope['resources']) <= set(child['resources'])
+                        or not isinstance(scope['inputs'], dict) or not scope['inputs']
+                        or not all(isinstance(k, str) and k and isinstance(v, str) and v
+                                   for k, v in scope['inputs'].items())
+                        or any(CAPABILITY_RESOURCE[cap] not in
+                               {r.split('.')[0] for r in scope['resources']}
+                               for cap in set(scope['capabilities']) - {'read', 'artifact_write'})):
+                    raise ValueError('changed or incomplete exact child review')
+            except (KeyError, TypeError, ValueError):
+                raise StateInvalid('AUTHORITY_DISPATCH_BINDING_INVALID')
+        if (not set(scope['resources']) <= set(entry['resources'])
+                or not set(scope['capabilities']) - {'read', 'artifact_write'} <= set(entry['capabilities'])):
+            raise StateInvalid('AUTHORITY_INDIRECT_MUTATION_SCOPE_MISSING')
+
+
 def run_identity(run):
     """Exact immutable attempt binding, including returned code when present."""
     try:
@@ -253,6 +287,7 @@ def classify_registered(rows, rules, *, separation=None, binding=None, protected
             continue
         entry = rules['workflows'][row['path']]
         _review(entry)
+        _dispatch_review(entry, rules)
         role = entry['role']
         needs_separation = role == 'separate_infrastructure'
         if needs_separation and not _separated(row, entry, separation, binding, protected_resources):

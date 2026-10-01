@@ -1,0 +1,14 @@
+name: Kesher Exact Marshmallow Video Task Resume (retired candidate)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  retired:
+    if: ${{ github.repository == '__KESHER_RETIRED__' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'Legacy indirect dispatcher retired; use the canonical controller.'
