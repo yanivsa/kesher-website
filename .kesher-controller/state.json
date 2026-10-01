@@ -1259,14 +1259,7 @@
       "archived_at": "2026-09-27T22:03:26.232163+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TERMINAL_FAILURE",
-    "message": "Jules ended with terminal state FAILED; Jules diagnostic: I have fixed the issue where the article fell short of the 700-word constraint (the new article body is now about 890 words), and I removed the English words that were originally present. I also realized that my script to correct existing content unintentionally touched other posts (like `breaking-the-yelling-cycle`), which caused the generated artifacts to be out of sync. I have now correctly formatted `src/data/posts.json` and generated `public/llms-full.txt`, `public/rss.xml`, and `public/sitemap.xml` properly based on just the *new* article without corrupting other files. `npm run check` confirms that all content policies, pipeline tests, and E2E verifications pass perfectly. Can I proceed to create the PR?",
-    "retryable": true,
-    "retry_at": "2026-10-01T11:01:16.732474+00:00",
-    "at": "2026-10-01T10:56:16.732494+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-25T14:58:14.886869+00:00",
@@ -1930,9 +1923,18 @@
         "run_id": 36850034947,
         "session_id": "sessions/5954041139737224232"
       }
+    },
+    {
+      "at": "2026-10-01T10:57:56.417213+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-01T11:01:16.732474+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-01T10:56:16.732502+00:00",
+  "updated_at": "2026-10-01T10:57:56.417231+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
