@@ -91,6 +91,53 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         self.assertEqual(gh.jules_nudges, ["sessions/today"])
         self.assertNotIn("media", state["backlog"][0])
 
+    def test_published_backlog_source_disambiguates_same_date_posts(self):
+        gh = FakeGitHub()
+        post_a = prior_article()
+        post_a["slug"] = "post-a"
+        post_a["controllerManaged"] = True
+
+        post_b = copy.deepcopy(post_a)
+        post_b["slug"] = "post-b"
+        post_b["controllerManaged"] = False
+        post_b["title"] = "פוסט נוסף באותו תאריך"
+
+        gh.posts = [post_a, post_b]
+
+        class Site:
+            def get(self, url):
+                if "post-b" in url:
+                    return 200, "<html><h1>פוסט נוסף באותו תאריך</h1></html>"
+                return 200, "<html><h1>התמודדות עם תחושת החמצה ברווקות מאוחרת</h1></html>"
+
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            Site(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+
+        # 1. Matches post-b by explicit row slug
+        state_b = {
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "article": {"slug": "post-b"},
+            }]
+        }
+        row, source = controller._published_backlog_source(state_b)
+        self.assertIsNotNone(row)
+        self.assertEqual(source["slug"], "post-b")
+
+        # 2. Matches post-a by controllerManaged when no slug specified
+        state_no_slug = {
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "article": {},
+            }]
+        }
+        row, source = controller._published_backlog_source(state_no_slug)
+        self.assertIsNotNone(row)
+        self.assertEqual(source["slug"], "post-a")
+
     def test_exact_seed_selection_is_slug_and_hash_bound(self):
         old_post = prior_article()
         newer = article("newer-article")
