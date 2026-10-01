@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import os
 import sys
@@ -450,6 +451,45 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return state, v5.core.Action("blocked", "targeted media article is not public")
 
         target = state.setdefault("targeted_media_recovery", {})
+        previous_identity = (
+            str(target.get("slug") or "").strip(),
+            str(target.get("content_sha256") or "").strip(),
+        )
+        current_identity = (source["slug"], source["content_sha256"])
+        if any(previous_identity) and previous_identity != current_identity:
+            # A targeted-recovery switch starts a new source identity. Never
+            # carry public URLs/provider IDs from the prior target into the
+            # new target, because that can create a false A+B+C completion.
+            state["long_video"] = copy.deepcopy(v5.v3._stage_template())
+            state["short"] = copy.deepcopy(v5.v3._stage_template())
+            deliverables = state.get("deliverables")
+            if isinstance(deliverables, dict):
+                for key in (
+                    "overview_youtube_url",
+                    "short_youtube_url",
+                    "overview_edit_verified",
+                    "short_portrait_verified",
+                    "short_signature_verified",
+                    "short_origin_verified",
+                ):
+                    if key.endswith("_verified"):
+                        deliverables[key] = False
+                    else:
+                        deliverables[key] = None
+            target.clear()
+            state.setdefault("history", []).append({
+                "at": v5.core.utc_now(),
+                "from": previous_identity[0] or None,
+                "to": source["slug"],
+                "reason": "targeted_media_source_identity_reset",
+                "details": {
+                    "previous_slug": previous_identity[0] or None,
+                    "previous_content_sha256": previous_identity[1] or None,
+                    "content_sha256": source["content_sha256"],
+                },
+            })
+            state["history"] = state["history"][-100:]
+
         target.update({
             "slug": source["slug"],
             "content_sha256": source["content_sha256"],
@@ -464,6 +504,51 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             long_item = self._verified_long_from_artifact_history(source)
 
         if long_item is None:
+            # Fresh exact evidence wins over inherited controller fields. If no
+            # exact Overview exists for this source, old public identifiers
+            # must not survive merely because the target dictionary was already
+            # switched on an earlier tick.
+            stale_long_evidence = any(
+                state["long_video"].get(key)
+                for key in ("youtube_id", "youtube_url", "item_id", "provider_id", "artifact_id", "source_id")
+            )
+            if stale_long_evidence:
+                preserved_run_id = state["long_video"].get("run_id")
+                state["long_video"] = copy.deepcopy(v5.v3._stage_template())
+                state["long_video"]["run_id"] = preserved_run_id
+
+            newest_short_state = getattr(self.github, "newest_short_state", None)
+            short_snapshot = newest_short_state() if callable(newest_short_state) else {"items": []}
+            exact_short = v5._newest(v5._verified_exact(short_snapshot, source))
+            if exact_short is not None:
+                self._adopt_existing_short(state, source)
+                target["short_status"] = "complete"
+                target["short_youtube_url"] = state["short"].get("youtube_url")
+            else:
+                stale_short_evidence = any(
+                    state["short"].get(key)
+                    for key in ("youtube_id", "youtube_url", "item_id", "provider_id", "artifact_id", "source_id")
+                )
+                if stale_short_evidence:
+                    state["short"] = copy.deepcopy(v5.v3._stage_template())
+                target["short_status"] = state["short"].get("status") or "pending"
+                target.pop("short_youtube_url", None)
+
+            target["complete"] = False
+            target.pop("completed_at", None)
+            target.pop("long_youtube_url", None)
+            target.pop("long_item_id", None)
+
+            deliverables = state.get("deliverables")
+            if isinstance(deliverables, dict):
+                deliverables["overview_youtube_url"] = None
+                deliverables["overview_edit_verified"] = False
+                if exact_short is None:
+                    deliverables["short_youtube_url"] = None
+                    deliverables["short_portrait_verified"] = False
+                    deliverables["short_signature_verified"] = False
+                    deliverables["short_origin_verified"] = False
+
             active = self.github.active_workflow_run(v5.LONG_VIDEO_WORKFLOW, production_only=True)
             if active:
                 state["long_video"]["run_id"] = active.get("id")
