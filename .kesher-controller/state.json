@@ -1906,5 +1906,14 @@
     "short_youtube_url": "https://youtu.be/EvDGuIbpo0o",
     "complete": true,
     "completed_at": "2026-10-01T10:21:03.608308+00:00"
+  },
+  "deliverables": {
+    "article_url": null,
+    "overview_youtube_url": "https://youtu.be/_3xByOwiXog",
+    "short_youtube_url": "https://youtu.be/EvDGuIbpo0o",
+    "overview_edit_verified": true,
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   }
 }
