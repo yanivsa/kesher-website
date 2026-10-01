@@ -20,7 +20,18 @@
     "quality_content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
     "quality_checked_at": "2026-10-01T10:18:25.508867+00:00",
     "quality_violations": [],
-    "last_dispatch_at": "2026-10-01T10:34:59.583327+00:00"
+    "last_dispatch_at": "2026-10-01T10:34:59.583327+00:00",
+    "watchdog": {
+      "identity": "2026-10-01",
+      "session_id": "sessions/5954041139737224232",
+      "last_progress_at": "2026-10-01T10:34:59+00:00",
+      "last_fingerprint": "2029faa4c58d991455245efa1f002aa7cfb937e5625dfa55a52e0a84e046745f",
+      "last_nudge_at": null,
+      "nudge_count": 0,
+      "worker_restart_count": 0,
+      "last_restart_at": null,
+      "last_restart_run_id": null
+    }
   },
   "backlog": [
     {
@@ -1826,9 +1837,18 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-01T10:41:21.209812+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": "sessions/5954041139737224232"
+      }
     }
   ],
-  "updated_at": "2026-10-01T10:34:59.583340+00:00",
+  "updated_at": "2026-10-01T10:41:21.209821+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
