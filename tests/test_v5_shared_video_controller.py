@@ -258,6 +258,22 @@ class V5SharedVideoControllerTests(unittest.TestCase):
             [v5.LONG_VIDEO_CONTROLLER_STATE_ARTIFACT, v5.LONG_VIDEO_STATE_ARTIFACT],
         )
 
+    def test_controller_falls_back_if_lightweight_artifact_listing_fails(self):
+        client = v5.V5GitHubClient("yanivsa/kesher-website", "token")
+        expected = {"version": 1, "items": [{"id": "listing-fallback"}]}
+
+        with mock.patch.object(
+            client,
+            "_artifact_available",
+            side_effect=core.ControllerError("artifact list unavailable"),
+        ), mock.patch.object(
+            client, "newest_state_for_artifact", return_value=expected
+        ) as read_state:
+            actual = client.newest_video_state()
+
+        self.assertEqual(actual, expected)
+        read_state.assert_called_once_with(v5.LONG_VIDEO_STATE_ARTIFACT)
+
     def test_controller_uses_full_state_during_lightweight_rollout(self):
         client = v5.V5GitHubClient("yanivsa/kesher-website", "token")
         expected = {"version": 1, "items": [{"id": "legacy-full"}]}
