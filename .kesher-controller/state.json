@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-01",
-  "status": "article_retry_wait",
+  "status": "complete",
   "article": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": "2026-10-01T11:01:16.732474+00:00",
     "run_id": 36850034947,
@@ -20,7 +20,7 @@
     "normalization_status": "running",
     "quality_status": "passed",
     "quality_content_sha256": "4b0df04d8931ff8ab08c172a6b3590686e4c3f598ef0194a27b2c0dde59104b6",
-    "quality_checked_at": "2026-10-01T11:31:02.031994+00:00",
+    "quality_checked_at": "2026-10-01T14:48:09.871204+00:00",
     "quality_violations": [],
     "last_dispatch_at": "2026-10-01T10:34:59.583327+00:00",
     "watchdog": {
@@ -1950,9 +1950,15 @@
       "details": {
         "retry_at": "2026-10-01T11:01:16.732474+00:00"
       }
+    },
+    {
+      "at": "2026-10-01T14:50:02.756348+00:00",
+      "from": "article_retry_wait",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-01T11:01:06.676228+00:00",
+  "updated_at": "2026-10-01T14:50:02.756369+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
@@ -1967,27 +1973,52 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 36853228390,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "a7514817-4665-416b-8607-ac7ec13d0784",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "item_id": "video-20261001-162317-4b0df04d89",
+    "youtube_id": "uQWOKXWm4tM",
+    "youtube_url": "https://youtu.be/uQWOKXWm4tM",
+    "verified": true,
+    "artifact_id": "a7514817-4665-416b-8607-ac7ec13d0784",
+    "source_id": "983f2a8c-26a1-4fcb-9b64-4a3b42631227"
   },
   "short": {
     "attempt_count": 0,
-    "status": "pending",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "8e4e4ec2-05ce-48f3-bd75-0acbd1b2c328",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "item_id": "video-20261001-140746-4b0df04d89",
+    "type": "article_short",
+    "youtube_id": "JnqvRx1ss24",
+    "youtube_url": "https://youtu.be/JnqvRx1ss24",
+    "verified": true,
+    "portrait_verified": true,
+    "signature_verified": true,
+    "signature_asset": "signature-mask.svg",
+    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
+    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
+    "technical_verified": true,
+    "signature_duration_seconds": 3.0,
+    "signature_fullscreen": true,
+    "signature_video_sha256": "07877e4039e6a6e5e3fdf66f8c1d3343a770c42a51093b2dd00ec66b4974ef02",
+    "source_mode": "direct-short",
+    "width": 1080,
+    "height": 1920,
+    "artifact_id": "8e4e4ec2-05ce-48f3-bd75-0acbd1b2c328",
+    "source_id": "afccb9ad-2112-4fed-9ffe-d0b7db8b86ce"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -1997,10 +2028,14 @@
     "content_sha256": "4b0df04d8931ff8ab08c172a6b3590686e4c3f598ef0194a27b2c0dde59104b6",
     "article_url": "https://kesher.saharoni.com/blog/adhd-waiting-mode",
     "article_verified": true,
-    "updated_at": "2026-10-01T11:31:22.923579+00:00",
-    "long_status": "running",
-    "short_status": "pending",
-    "complete": false
+    "updated_at": "2026-10-01T14:48:43.057131+00:00",
+    "long_status": "complete",
+    "short_status": "complete",
+    "complete": true,
+    "long_youtube_url": "https://youtu.be/uQWOKXWm4tM",
+    "long_item_id": "video-20261001-162317-4b0df04d89",
+    "short_youtube_url": "https://youtu.be/JnqvRx1ss24",
+    "completed_at": "2026-10-01T14:50:02.756394+00:00"
   },
   "deliverables": {
     "article_url": null,
