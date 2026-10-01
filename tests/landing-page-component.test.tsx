@@ -3,6 +3,7 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, cleanup } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { LANDING_PAGES_CONFIG } from '../src/data/landingPagesConfig';
+import publishedPosts from '../src/data/publishedPosts';
 import { LandingPageTemplate } from '../src/pages/Landing/LandingPageTemplate';
 import { LandingCalloutBanner } from '../src/components/LandingCalloutBanner/LandingCalloutBanner';
 
@@ -100,8 +101,8 @@ describe('LandingCalloutBanner Component', () => {
       </MemoryRouter>
     );
 
-    const link = screen.getByRole('link', { name: /לפרטים על ייעוץ זוגי במשבר באשדוד/i });
-    expect(link.getAttribute('href')).toBe('/couples-crisis-ashdod');
+    const link = screen.getByRole('link', { name: /למידע על ייעוץ זוגי במשבר/i });
+    expect(link.getAttribute('href')).toBe('/services/couples/crisis');
 
     const whatsapp = container.querySelector('a[href*="wa.me"]') as HTMLAnchorElement;
     expect(whatsapp).toBeDefined();
@@ -147,8 +148,8 @@ describe('getLandingTargetForPost Blog Routing Policy', () => {
     const { getLandingTargetForPost } = await import('../src/utils/landingCalloutHelper');
     expect(getLandingTargetForPost({ id: 'adhd-morning-conflict-dopamine-myth' })).toBe('parenting_adhd');
     expect(getLandingTargetForPost({ id: 'adhd-morning-routine' })).toBe('parenting_adhd');
-    expect(getLandingTargetForPost({ id: 'adhd-and-screen-addiction-strategies' })).toBe('parenting_adhd');
     expect(getLandingTargetForPost({ id: 'smart-youth-focus-tasks-organization' })).toBe('parenting_adhd');
+    expect(getLandingTargetForPost({ id: 'adhd-waiting-mode' })).toBe('parenting_adhd');
   });
 
   it('maps specific high-conflict couple crisis posts to couples_crisis', async () => {
@@ -156,6 +157,7 @@ describe('getLandingTargetForPost Blog Routing Policy', () => {
     expect(getLandingTargetForPost({ id: 'relationship-crisis-flydubai-lessons' })).toBe('couples_crisis');
     expect(getLandingTargetForPost({ id: 'communication-breakdown' })).toBe('couples_crisis');
     expect(getLandingTargetForPost({ id: 'breaking-silent-treatment-relationship' })).toBe('couples_crisis');
+    expect(getLandingTargetForPost({ id: 'relationship-after-childbirth' })).toBe('couples_crisis');
   });
 
   it('returns null for non-ADHD parenting and kindergarten separation posts', async () => {
@@ -177,8 +179,35 @@ describe('getLandingTargetForPost Blog Routing Policy', () => {
   it('returns null for dating or general posts without explicit landing mapping', async () => {
     const { getLandingTargetForPost } = await import('../src/utils/landingCalloutHelper');
     expect(getLandingTargetForPost({ id: 'why-is-it-so-hard-to-find-love' })).toBeNull();
+    expect(getLandingTargetForPost({ id: 'couples-adhd-partner' })).toBeNull();
     expect(getLandingTargetForPost(null)).toBeNull();
     expect(getLandingTargetForPost(undefined)).toBeNull();
+  });
+});
+
+describe('Compact callout distribution', () => {
+  it('keeps mappings explicit, publishable, and conservative', async () => {
+    const { getLandingTargetForPost, ADHD_LANDING_POST_SLUGS, CRISIS_LANDING_POST_SLUGS } = await import('../src/utils/landingCalloutHelper');
+    const publishedIds = new Set(publishedPosts.map((post) => post.id));
+
+    [...ADHD_LANDING_POST_SLUGS, ...CRISIS_LANDING_POST_SLUGS].forEach((id) => {
+      expect(publishedIds.has(id)).toBe(true);
+    });
+
+    const counts = publishedPosts.reduce(
+      (acc, post) => {
+        const target = getLandingTargetForPost(post);
+        if (target === 'parenting_adhd') acc.parenting_adhd += 1;
+        else if (target === 'couples_crisis') acc.couples_crisis += 1;
+        else acc.none += 1;
+        return acc;
+      },
+      { parenting_adhd: 0, couples_crisis: 0, none: 0 },
+    );
+
+    expect(counts.parenting_adhd).toBe(5);
+    expect(counts.couples_crisis).toBe(4);
+    expect(counts.none).toBe(publishedPosts.length - 9);
   });
 });
 
