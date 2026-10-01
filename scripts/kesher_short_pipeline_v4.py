@@ -298,7 +298,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     ):
         return output_path
 
-    remotion = core.PROJECT_DIR / "node_modules" / ".bin" / "remotion"
+    remotion = core.PROJECT_DIR / "remotion-kesher" / "node_modules" / ".bin" / "remotion"
     if not remotion.is_file():
         raise core.PipelineError("Remotion dependencies are not installed")
 
@@ -321,8 +321,8 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
         command = [
             str(remotion),
             "render",
-            "src/remotion/index.ts",
-            "ArticleShort",
+            "src/index.ts",
+            "KesherShort",
             str(candidate_output),
             f"--props={props_path}",
             f"--public-dir={core.STATE_DIR}",
@@ -333,7 +333,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
         ]
         result = subprocess.run(
             command,
-            cwd=core.PROJECT_DIR,
+            cwd=core.PROJECT_DIR / "remotion-kesher",
             capture_output=True,
             text=True,
             timeout=3600,
