@@ -1249,7 +1249,16 @@
         "live_verified_at": "2026-10-01T18:14:35.885866+00:00",
         "next_deploy_retry_at": null
       },
-      "archived_at": "2026-10-01T21:01:57.235394+00:00"
+      "archived_at": "2026-10-01T21:01:57.235394+00:00",
+      "media": {
+        "source_slug": "adhd-waiting-mode",
+        "source_content_sha256": "4b0df04d8931ff8ab08c172a6b3590686e4c3f598ef0194a27b2c0dde59104b6",
+        "article_url": "https://kesher.saharoni.com/blog/adhd-waiting-mode",
+        "article_live": true,
+        "long_status": "running",
+        "long_resume_count": 1,
+        "long_last_dispatch_at": "2026-10-01T23:10:40.500490+00:00"
+      }
     }
   ],
   "last_error": null,
