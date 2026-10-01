@@ -228,6 +228,48 @@ class V5SharedVideoControllerTests(unittest.TestCase):
         self.assertEqual((state.get("last_error") or {}).get("code"), "LONG_VIDEO_IDENTITY_MISMATCH")
         self.assertEqual(gh.dispatches, [])
 
+    def test_controller_prefers_lightweight_long_video_state_artifact(self):
+        client = v5.V5GitHubClient("yanivsa/kesher-website", "token")
+        expected = {"version": 1, "items": [{"id": "lightweight"}]}
+
+        with mock.patch.object(client, "_artifact_available", return_value=True) as available, mock.patch.object(
+            client, "newest_state_for_artifact", return_value=expected
+        ) as read_state:
+            actual = client.newest_video_state()
+
+        self.assertEqual(actual, expected)
+        available.assert_called_once_with(v5.LONG_VIDEO_CONTROLLER_STATE_ARTIFACT)
+        read_state.assert_called_once_with(v5.LONG_VIDEO_CONTROLLER_STATE_ARTIFACT)
+
+    def test_controller_falls_back_to_full_state_if_lightweight_artifact_is_broken(self):
+        client = v5.V5GitHubClient("yanivsa/kesher-website", "token")
+        expected = {"version": 1, "items": [{"id": "full-fallback"}]}
+
+        with mock.patch.object(client, "_artifact_available", return_value=True), mock.patch.object(
+            client,
+            "newest_state_for_artifact",
+            side_effect=[core.ControllerError("small artifact invalid"), expected],
+        ) as read_state:
+            actual = client.newest_video_state()
+
+        self.assertEqual(actual, expected)
+        self.assertEqual(
+            [call.args[0] for call in read_state.call_args_list],
+            [v5.LONG_VIDEO_CONTROLLER_STATE_ARTIFACT, v5.LONG_VIDEO_STATE_ARTIFACT],
+        )
+
+    def test_controller_uses_full_state_during_lightweight_rollout(self):
+        client = v5.V5GitHubClient("yanivsa/kesher-website", "token")
+        expected = {"version": 1, "items": [{"id": "legacy-full"}]}
+
+        with mock.patch.object(client, "_artifact_available", return_value=False), mock.patch.object(
+            client, "newest_state_for_artifact", return_value=expected
+        ) as read_state:
+            actual = client.newest_video_state()
+
+        self.assertEqual(actual, expected)
+        read_state.assert_called_once_with(v5.LONG_VIDEO_STATE_ARTIFACT)
+
     def test_stalled_article_run_after_fifteen_minutes_nudges_same_jules_session_once(self):
         gh = FakeGitHub()
         gh.posts = []
