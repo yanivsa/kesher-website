@@ -517,7 +517,9 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 state["long_video"] = copy.deepcopy(v5.v3._stage_template())
                 state["long_video"]["run_id"] = preserved_run_id
 
-            exact_short = v5._newest(v5._verified_exact(self.github.newest_short_state(), source))
+            newest_short_state = getattr(self.github, "newest_short_state", None)
+            short_snapshot = newest_short_state() if callable(newest_short_state) else {"items": []}
+            exact_short = v5._newest(v5._verified_exact(short_snapshot, source))
             if exact_short is not None:
                 self._adopt_existing_short(state, source)
                 target["short_status"] = "complete"
