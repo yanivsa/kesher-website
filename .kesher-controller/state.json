@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-01",
-  "status": "complete",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "complete",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,13 +13,14 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
+    "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "880b3ebea785ccae4b055669ee4da4c6d78cb70855fd619d4c909141efb6967b",
     "quality_checked_at": "2026-10-01T10:18:25.508867+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "last_dispatch_at": "2026-10-01T10:34:59.583327+00:00"
   },
   "backlog": [
     {
@@ -1816,9 +1817,18 @@
       "from": "article_needed",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-01T10:34:59.583334+00:00",
+      "from": "complete",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-01T10:21:03.608276+00:00",
+  "updated_at": "2026-10-01T10:34:59.583340+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
