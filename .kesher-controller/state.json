@@ -1941,9 +1941,18 @@
       "details": {
         "retry_at": "2026-10-01T11:01:16.732474+00:00"
       }
+    },
+    {
+      "at": "2026-10-01T11:01:06.676210+00:00",
+      "from": "article_retry_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-01T11:01:16.732474+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-01T11:00:24.883246+00:00",
+  "updated_at": "2026-10-01T11:01:06.676228+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
