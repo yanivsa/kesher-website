@@ -1,0 +1,44 @@
+name: Kesher MCP Lockfile
+
+on:
+  push:
+    branches:
+      - feature/kesher-chatgpt-plugin
+    paths:
+      - "plugin/package.json"
+      - ".github/workflows/kesher-mcp-lockfile.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feature/kesher-chatgpt-plugin
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+
+      - name: Generate package lock
+        run: npm install --prefix plugin --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Commit lockfile if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git status --porcelain -- plugin/package-lock.json | grep -q .; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add plugin/package-lock.json
+            git commit -m "chore: lock Kesher MCP dependencies"
+            git push origin HEAD:feature/kesher-chatgpt-plugin
+          else
+            echo "plugin/package-lock.json is already current."
+          fi
