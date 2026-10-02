@@ -21,8 +21,8 @@
     },
     {
       "id": "privacy_policy",
-      "status": "not_found",
-      "requirement": "Publish a clear Privacy Policy covering collected data categories, purposes, recipients, retention, and user controls before public submission."
+      "status": "implemented_pending_deploy",
+      "requirement": "Privacy Policy exists at /privacy and the feature branch adds explicit Kesher ChatGPT/MCP disclosures. Confirm the updated page is live before public submission."
     },
     {
       "id": "production_mcp_endpoint",
