@@ -14,6 +14,10 @@ const routes = [
   '/services/late-singleness',
   '/services/finding-relationship',
   '/couples-counseling-ashdod',
+  '/couples-mediation-ashdod',
+  '/couples-crisis-ashdod',
+  '/parenting-adhd-ashdod',
+  '/couples-counseling-gan-yavne',
   '/blog',
   '/blog/child-after-school-restraint-collapse',
   '/blog/relocation-couple-conversations-before-moving',
@@ -63,6 +67,41 @@ for (const route of routes) {
     expect(errors).toEqual([]);
   });
 }
+
+test('Compact Keywords index policy matches the intended portfolio', async ({ page }) => {
+  const cases = [
+    {
+      route: '/parenting-adhd-ashdod',
+      canonical: 'https://kesher.saharoni.com/parenting-adhd-ashdod',
+      robots: null,
+    },
+    {
+      route: '/couples-mediation-ashdod',
+      canonical: 'https://kesher.saharoni.com/couples-mediation-ashdod',
+      robots: null,
+    },
+    {
+      route: '/couples-crisis-ashdod',
+      canonical: 'https://kesher.saharoni.com/couples-crisis-ashdod',
+      robots: 'noindex, follow',
+    },
+    {
+      route: '/couples-counseling-gan-yavne',
+      canonical: 'https://kesher.saharoni.com/couples-counseling-gan-yavne',
+      robots: 'noindex, follow',
+    },
+  ];
+
+  for (const item of cases) {
+    await page.goto(item.route, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', item.canonical);
+    if (item.robots) {
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', item.robots);
+    } else {
+      await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
+    }
+  }
+});
 
 test('unknown routes render the noindex 404 page', async ({ page }) => {
   await page.route('https://news.google.com/**', route => route.fulfill({ status: 200, body: '' }));
