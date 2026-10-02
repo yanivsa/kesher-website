@@ -225,7 +225,7 @@
       "updated_at": "2026-09-23T11:47:01.316936+00:00"
     },
     "ksr-0e4a62713cb4d48035528220": {
-      "acknowledged_at": "2026-10-02T08:14:10.063822+00:00",
+      "acknowledged_at": "2026-10-02T08:38:15.201620+00:00",
       "command_id": "ksr-0e4a62713cb4d48035528220",
       "evidence_hash": "ab1ab9ed175ce2e92704d70dabb8b30f893643f55c3093eb072493467416cbe0",
       "exact": {
@@ -245,6 +245,8 @@
       "issued_at": "2026-10-02T08:10:03.007505+00:00",
       "lifecycle": "running",
       "metadata": {
+        "external_run_id": 36985124987,
+        "external_workflow": "Kesher Daily NotebookLM Video Overview",
         "incident_packet": {
           "command_id": "ksr-0e4a62713cb4d48035528220",
           "constraints": {
@@ -281,7 +283,7 @@
       "running_at": "2026-10-02T08:14:10.063822+00:00",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-10-02T08:14:10.063822+00:00"
+      "updated_at": "2026-10-02T08:38:15.201620+00:00"
     },
     "ksr-14d6e3811b3b5e871c05cea0": {
       "acknowledged_at": "2026-09-23T11:30:40.453802+00:00",
@@ -4395,7 +4397,7 @@
         }
       ],
       "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|long_video",
-      "last_seen_at": "2026-10-02T08:14:10.063822+00:00",
+      "last_seen_at": "2026-10-02T08:38:15.201620+00:00",
       "marker": "MASTER_ESCALATION fingerprint=f052d0c3dc51a7f7ec0da3fcba8275e6 strike=2 stage=S2",
       "status": "recovering",
       "strike": 2
@@ -4439,5 +4441,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-02T08:14:10.063822+00:00"
+  "updated_at": "2026-10-02T08:38:15.201620+00:00"
 }
