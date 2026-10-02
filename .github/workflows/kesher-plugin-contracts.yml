@@ -40,6 +40,9 @@ jobs:
       - name: Validate portable plugin package and marketplace
         run: node plugin/tests/validate-plugin-package.mjs
 
+      - name: Validate Kesher skill and multi-turn eval cases
+        run: node plugin/tests/validate-skill-evals.mjs
+
       - name: Self-test Developer Mode evaluation scorer
         run: node plugin/tests/score-golden-results.mjs --self-test
 
