@@ -29,11 +29,24 @@ function assertEnum(value, allowed, field) {
   if (!allowed.has(value)) throw new TypeError(`Invalid ${field}: ${value}`);
 }
 
+function assertExactKeys(input, allowedKeys) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) {
+    throw new TypeError("Tool input must be an object");
+  }
+  for (const key of Object.keys(input)) {
+    if (!allowedKeys.has(key)) {
+      throw new TypeError(`Unexpected field: ${key}`);
+    }
+  }
+}
+
 function unique(items) {
   return [...new Set(items)];
 }
 
-export function getConflictPattern({ topic, interaction_signals, goal }) {
+export function getConflictPattern(input) {
+  assertExactKeys(input, new Set(["topic", "interaction_signals", "goal"]));
+  const { topic, interaction_signals, goal } = input;
   assertEnum(topic, ALLOWED_TOPICS, "topic");
   assertEnum(goal, ALLOWED_PATTERN_GOALS, "goal");
   if (!Array.isArray(interaction_signals) || interaction_signals.length < 1 || interaction_signals.length > 4) {
@@ -96,7 +109,9 @@ const GOAL_INTENT = {
   repair_after_conflict: "לתקן אחרי ריב לפני שחוזרים לפתור את הנושא עצמו"
 };
 
-export function getConversationPlan({ topic, goal, emotional_intensity, interaction_risk, tone }) {
+export function getConversationPlan(input) {
+  assertExactKeys(input, new Set(["topic", "goal", "emotional_intensity", "interaction_risk", "tone"]));
+  const { topic, goal, emotional_intensity, interaction_risk, tone } = input;
   assertEnum(topic, ALLOWED_TOPICS, "topic");
   assertEnum(goal, PLAN_GOALS, "goal");
   assertEnum(emotional_intensity, INTENSITY, "emotional_intensity");
