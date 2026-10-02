@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
     "published_date": "2026-10-02",
     "live": true,
-    "live_verified_at": "2026-10-02T10:18:24.630138+00:00",
+    "live_verified_at": "2026-10-02T10:39:15.849330+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1272,21 +1272,9 @@
     "stage": "long_video",
     "code": "VIDEO_ATTEMPTS_EXHAUSTED",
     "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-02T10:18:29.033071+00:00"
+    "at": "2026-10-02T10:39:17.886467+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-25T23:15:09.498965+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-25T23:15:09.499707+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
     {
       "at": "2026-09-25T23:18:07.051827+00:00",
       "from": "article_needed",
@@ -2046,9 +2034,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-02T10:39:15.849348+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-02T10:39:17.886483+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-02T10:18:29.033089+00:00",
+  "updated_at": "2026-10-02T10:39:17.886489+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2075,7 +2078,7 @@
       "VIDEO_WORKFLOW_FAILED": 1
     },
     "overview_evidence_required": true,
-    "item_id": "video-20260930-225106-33253e4463",
+    "item_id": "video-20261001-154922-4b0df04d89",
     "youtube_id": "3wkQ8tKGZxI",
     "youtube_url": "https://youtu.be/3wkQ8tKGZxI",
     "verified": true,
