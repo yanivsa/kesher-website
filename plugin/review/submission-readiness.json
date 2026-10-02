@@ -8,18 +8,40 @@
     "Five bounded read-only MCP contracts",
     "Three Skills",
     "Automatic Kesher content resource index",
-    "Privacy-minimized closed input schemas"
+    "Privacy-minimized closed input schemas",
+    "Five-tool V2 staging deployment",
+    "Remote MCP initialize and tools/list for five tools",
+    "Remote tools/call smoke tests for couples, parenting, ADHD and resources",
+    "Strict extra-field rejection in staging",
+    "105-resource canonical Kesher content index",
+    "ChatGPT landing page and attribution implementation"
   ],
   "gates": [
     {
       "id": "runtime_and_staging",
-      "status": "in_progress",
-      "requirement": "All five tools must pass package tests and remote staging smoke tests."
+      "status": "completed",
+      "requirement": "All five tools must pass package tests and remote staging smoke tests.",
+      "evidence": {
+        "workflow": "Kesher MCP Staging Deploy",
+        "run_id": 37003552826,
+        "head_sha": "fbd38c8ed9ea0ac8481c9ea86604a0a5ff337923",
+        "checks": [
+          "five strict tools",
+          "all five representative tools/call",
+          "105 canonical resources",
+          "diagnosis/private extra-field rejection"
+        ]
+      }
     },
     {
       "id": "developer_mode_evaluation",
       "status": "pending",
       "requirement": "Run real ChatGPT Work/Developer Mode canary then all 220 prompts and 30 conversation cases."
+    },
+    {
+      "id": "site_landing",
+      "status": "implemented_pending_deploy",
+      "requirement": "Deploy /tools/chatgpt with UTM attribution and analytics before public submission."
     },
     {
       "id": "privacy_policy",
