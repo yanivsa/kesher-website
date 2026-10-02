@@ -160,6 +160,7 @@ test('Ashdod landing hubs preserve exact conversion attribution context', async 
 
     expect(event).toMatchObject({
       event: 'whatsapp_click',
+      landing_page_path: item.route,
       service_type: item.serviceType,
       landing_page_type: item.landingPageType,
       variant_id: 'A',
