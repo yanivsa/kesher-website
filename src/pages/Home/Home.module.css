@@ -1160,7 +1160,7 @@
   position: fixed;
   inset-inline-start: 50%;
   inset-block-end: max(1.1rem, env(safe-area-inset-bottom, 0px));
-  z-index: 90;
+  z-index: 80;
   min-height: 58px;
   padding: 0.45rem 0.55rem 0.45rem 1rem;
   display: flex;

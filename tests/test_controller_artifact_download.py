@@ -98,6 +98,53 @@ class ControllerArtifactDownloadTests(unittest.TestCase):
         self.assertIn("kesher-content-controller", captured["user_agent"].lower())
         self.assertEqual(opener.requests[0].get_header("Authorization"), "Bearer github-secret")
 
+    def test_signed_blob_read_timeout_is_retried(self):
+        client = controller.GitHubClient("yanivsa/kesher-website", "github-secret")
+        signed = "https://blob.example.invalid/state.zip?sig=retry"
+        opener = _RedirectingOpener(signed)
+        calls = []
+
+        def signed_open(request, timeout=60):
+            calls.append(timeout)
+            if len(calls) == 1:
+                raise TimeoutError("timed out while reading signed blob")
+            return _FakeResponse(b"PK-recovered")
+
+        with mock.patch.object(controller.urllib.request, "build_opener", return_value=opener), mock.patch.object(
+            controller.urllib.request, "urlopen", side_effect=signed_open
+        ), mock.patch.object(controller.time, "sleep", return_value=None):
+            payload = client.download_artifact_archive(
+                "https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/123/zip"
+            )
+
+        self.assertEqual(payload, b"PK-recovered")
+        self.assertEqual(calls, [120, 120])
+        self.assertEqual(len(opener.requests), 2)
+
+    def test_direct_artifact_read_timeout_is_retried(self):
+        client = controller.GitHubClient("yanivsa/kesher-website", "github-secret")
+
+        class TimeoutThenSuccessOpener:
+            def __init__(self):
+                self.calls = 0
+
+            def open(self, request, timeout=45):
+                self.calls += 1
+                if self.calls == 1:
+                    raise TimeoutError("direct artifact read timeout")
+                return _FakeResponse(b"PK-direct-recovered")
+
+        opener = TimeoutThenSuccessOpener()
+        with mock.patch.object(controller.urllib.request, "build_opener", return_value=opener), mock.patch.object(
+            controller.time, "sleep", return_value=None
+        ):
+            payload = client.download_artifact_archive(
+                "https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/123/zip"
+            )
+
+        self.assertEqual(payload, b"PK-direct-recovered")
+        self.assertEqual(opener.calls, 2)
+
     def test_newest_broken_artifact_falls_back_to_older_valid_state(self):
         expected = {"version": 1, "items": [{"id": "older-valid"}]}
         client = ArtifactFallbackClient(

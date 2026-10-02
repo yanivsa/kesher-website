@@ -81,6 +81,19 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             if not matches:
                 continue
             if len(matches) != 1:
+                row_slug = str((row.get("article") or {}).get("slug") or media.get("source_slug") or "").strip()
+                if row_slug:
+                    slug_matches = [
+                        p for p in matches
+                        if str(p.get("slug") or p.get("id") or "").strip() == row_slug
+                    ]
+                    if len(slug_matches) == 1:
+                        matches = slug_matches
+                if len(matches) != 1:
+                    cm_matches = [p for p in matches if p.get("controllerManaged") is not False]
+                    if len(cm_matches) == 1:
+                        matches = cm_matches
+            if len(matches) != 1:
                 raise v5.core.ControllerError(f"BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: {cycle}")
             post = matches[0]
             source = v5.article_source_identity(post)

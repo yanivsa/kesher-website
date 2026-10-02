@@ -481,6 +481,17 @@ jobs:
           chmod 600 "$sealed_tmp"
           mv "$sealed_tmp" "$sealed_path"
 
+      - name: Persist lightweight controller state
+        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != '' }}
+        id: persist_controller_state
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-video-controller-state
+          path: ${{ env.KESHER_STATE_DIR }}/state.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 9
+
       - name: Persist latest state and media evidence
         if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != '' }}
         id: persist_state
@@ -504,6 +515,19 @@ jobs:
             exit 0
           fi
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[3:] | .[].id' \
+            | while read -r artifact_id; do
+                [ -n "$artifact_id" ] || continue
+                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}"
+              done
+
+      - name: Keep the newest three lightweight controller state artifacts
+        if: ${{ always() && steps.persist_controller_state.outputs.artifact-id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-controller-state&per_page=100" \
             --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[3:] | .[].id' \
             | while read -r artifact_id; do
                 [ -n "$artifact_id" ] || continue

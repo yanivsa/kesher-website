@@ -410,9 +410,17 @@ class GitHubClient:
                         headers={"User-Agent": "kesher-content-controller"},
                     )
                     try:
-                        with urllib.request.urlopen(signed_request, timeout=60) as response:
+                        # Video-state artifacts can temporarily be very large. A
+                        # socket read timeout is transient evidence, not a broken
+                        # state artifact, so give the signed blob enough time and
+                        # retry the same immutable archive before falling back.
+                        with urllib.request.urlopen(signed_request, timeout=120) as response:
                             return response.read()
-                    except (urllib.error.HTTPError, urllib.error.URLError) as signed_exc:
+                    except (
+                        urllib.error.HTTPError,
+                        urllib.error.URLError,
+                        TimeoutError,
+                    ) as signed_exc:
                         last = signed_exc
                 elif exc.code in {429, 500, 502, 503, 504}:
                     last = exc
@@ -421,7 +429,10 @@ class GitHubClient:
                     raise ControllerError(
                         f"GITHUB_ARTIFACT_HTTP_{exc.code}: artifact download failed: {detail}"
                     ) from exc
-            except urllib.error.URLError as exc:
+            except (urllib.error.URLError, TimeoutError) as exc:
+                # response.read() may raise the built-in TimeoutError directly
+                # rather than wrapping it in URLError. Keep it inside the
+                # bounded retry/fallback path instead of crashing Controller V5.
                 last = exc
             time.sleep(2 ** attempt)
         raise ControllerError(f"GITHUB_ARTIFACT_DOWNLOAD_FAILED: {last}")
