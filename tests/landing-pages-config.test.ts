@@ -50,6 +50,14 @@ describe('Landing Pages Configuration (Compact Keywords / Conversion SEO)', () =
         });
       });
 
+      it('has a contextual related-service link that is not self-referential', () => {
+        expect(config.relatedService.title.length).toBeGreaterThan(10);
+        expect(config.relatedService.description.length).toBeGreaterThan(20);
+        expect(config.relatedService.linkText.length).toBeGreaterThan(5);
+        expect(config.relatedService.href.startsWith('/')).toBe(true);
+        expect(config.relatedService.href).not.toBe(config.slug);
+      });
+
       it('has 4–6 objection-handling FAQ items', () => {
         expect(config.faq.items.length).toBeGreaterThanOrEqual(4);
         expect(config.faq.items.length).toBeLessThanOrEqual(6);
