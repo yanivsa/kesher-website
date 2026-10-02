@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-02",
-  "status": "waiting_for_article_window",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -19,7 +19,14 @@
     "quality_status": "passed",
     "quality_content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
     "quality_checked_at": "2026-10-02T06:17:21.831690+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "marshmallow-test-environmental-reliability",
+    "title": "חושבים שלילד אין כוח רצון? מה מבחן המרשמלו באמת גילה על אמון",
+    "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
+    "published_date": "2026-10-02",
+    "live": true,
+    "live_verified_at": "2026-10-02T06:18:26.435276+00:00",
+    "next_deploy_retry_at": null
   },
   "backlog": [
     {
@@ -1907,9 +1914,25 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-10-02T06:18:26.435296+00:00",
+      "from": "waiting_for_article_window",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-02T06:18:30.377588+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "upload",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-10-02T00:46:31.095213+00:00",
+  "updated_at": "2026-10-02T06:18:30.377596+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1923,8 +1946,8 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1934,7 +1957,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260930-225106-33253e4463",
+    "item_id": "video-20261001-154922-4b0df04d89",
     "youtube_id": "3wkQ8tKGZxI",
     "youtube_url": "https://youtu.be/3wkQ8tKGZxI",
     "verified": true,
@@ -1949,7 +1972,9 @@
     "signature_fullscreen": true,
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
     "artifact_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
-    "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f"
+    "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f",
+    "last_dispatch_at": "2026-10-02T06:18:30.377579+00:00",
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
