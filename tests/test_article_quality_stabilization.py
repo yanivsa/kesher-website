@@ -146,6 +146,71 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertEqual(gh.assertion, ("src/data/posts.json", "main"))
         self.assertIsNotNone(gh.saved)
 
+    def test_multiple_same_day_articles_preserve_durable_controller_identity(self):
+        chosen = {
+            "id": "chosen-article",
+            "slug": "chosen-article",
+            "title": "כותרת נבחרת",
+            "date": "2026-10-01",
+            "category": "זוגיות",
+            "excerpt": "תקציר",
+            "content": "<p>תוכן נבחר.</p>",
+        }
+        other = {
+            "id": "other-article",
+            "slug": "other-article",
+            "title": "כותרת אחרת",
+            "date": "2026-10-01",
+            "category": "זוגיות",
+            "excerpt": "תקציר",
+            "content": "<p>תוכן אחר.</p>",
+        }
+        chosen_source = stabilized.v5.article_source_identity(chosen)
+
+        class FakeGitHub:
+            def load_controller_state(self):
+                return {
+                    "cycle": "2026-10-01",
+                    "article": {
+                        "slug": chosen["slug"],
+                        "quality_content_sha256": chosen_source["content_sha256"],
+                    },
+                }
+
+        controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
+        controller.github = FakeGitHub()
+        controller.now = datetime(2026, 10, 1, 20, 0, tzinfo=TZ)
+
+        selected = controller._selected_article([other, chosen])
+
+        self.assertEqual(selected["slug"], chosen["slug"])
+
+    def test_multiple_same_day_articles_fail_closed_without_durable_identity(self):
+        first = {
+            "id": "first",
+            "slug": "first",
+            "title": "ראשון",
+            "date": "2026-10-01",
+            "category": "זוגיות",
+            "excerpt": "תקציר",
+            "content": "<p>תוכן.</p>",
+        }
+        second = dict(first, id="second", slug="second", title="שני")
+
+        class FakeGitHub:
+            def load_controller_state(self):
+                return {"cycle": "2026-10-01", "article": {}}
+
+        controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
+        controller.github = FakeGitHub()
+        controller.now = datetime(2026, 10, 1, 20, 0, tzinfo=TZ)
+
+        with self.assertRaisesRegex(
+            stabilized.v5.core.ControllerError,
+            "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS",
+        ):
+            controller._selected_article([first, second])
+
     def test_targeted_media_recovery_selects_existing_old_article(self):
         old_article = {
             "id": "gifted-children-perfectionism-tears",
