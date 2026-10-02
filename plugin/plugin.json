@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "kesher-hebrew-relationship-tools",
-  "version": "0.1.0",
-  "description": "Structured Hebrew tools for understanding recurring couple-communication conflicts and planning calmer conversations.",
+  "name": "kesher-hebrew-relationship-parenting-tools",
+  "version": "0.2.0",
+  "description": "Structured Hebrew tools for couple communication, practical parenting, and attention/executive-function parenting support.",
   "author": {
     "name": "קשר — שירה סהרוני",
     "url": "https://kesher.saharoni.com"
@@ -13,15 +13,18 @@
   "keywords": [
     "hebrew",
     "relationships",
-    "communication",
-    "couples"
+    "couples",
+    "parenting",
+    "ADHD",
+    "executive function",
+    "communication"
   ],
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "Kesher — זוגיות בעברית",
-        "shortDescription": "כלים לשיחה זוגית בעברית",
-        "longDescription": "כלים מובנים בעברית להבנת דפוסים חוזרים בקונפליקט זוגי ולתכנון שיחה רגועה יותר. מיועד למבוגרים המבקשים עזרה בתקשורת זוגית. אינו מיועד לאבחון, ייעוץ משפטי או רפואי, מצבי אלימות או סכנה, פגיעה עצמית, מעקב או מניפולציה.",
+        "displayName": "Kesher — זוגיות והורות",
+        "shortDescription": "זוגיות, הורות וקשב בעברית",
+        "longDescription": "כלים מעשיים בעברית להבנת דפוסי קונפליקט זוגי, תכנון שיחות קשות, הדרכת הורים ואתגרי קשב ותפקודים ניהוליים בחיי היום־יום. כולל גבולות, התפרצויות, אחים, מסכים, שגרות, מעברים, התארגנות והתחלת משימות. הכלים אינם מאבחנים ADHD או מצב רפואי/נפשי, אינם נותנים ייעוץ תרופתי, משפטי או חירום ואינם מחליפים טיפול מקצועי.",
         "developerName": "קשר — שירה סהרוני",
         "category": "Other",
         "capabilities": [
@@ -30,7 +33,8 @@
         "websiteURL": "https://kesher.saharoni.com",
         "defaultPrompt": [
           "תעזור לי להבין למה אנחנו חוזרים לאותו ריב שוב ושוב.",
-          "תבנה לי דרך לפתוח שיחה רגועה על נושא רגיש."
+          "איך להציב גבול לילד בלי להיכנס למאבק כוח?",
+          "הילד יודע מה צריך לעשות בבוקר אבל לא מצליח להתחיל. איך לעזור?"
         ],
         "privacyPolicyURL": "https://kesher.saharoni.com/privacy"
       }

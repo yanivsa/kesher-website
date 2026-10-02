@@ -1,0 +1,546 @@
+{
+  "schema_version": "2.0",
+  "tools": [
+    {
+      "name": "get_conflict_pattern",
+      "title": "מיפוי דפוס קונפליקט זוגי",
+      "description": "Use when a Hebrew-speaking adult wants a structured explanation of a recurring couple-communication conflict and the situation can be reduced to a topic and observable interaction signals. Returns a non-diagnostic shared-cycle explanation and one practical next step. Do not use for parenting problems centered on a child, legal/divorce questions, medical or sexual-health advice, diagnosis, domestic violence or immediate danger, self-harm, surveillance, coercion/manipulation, generic information, or romantic writing.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false,
+        "idempotentHint": true
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "topic",
+          "interaction_signals",
+          "goal"
+        ],
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "money",
+              "household",
+              "parenting",
+              "extended_family",
+              "attention_connection",
+              "trust",
+              "intimacy",
+              "recurring_other"
+            ]
+          },
+          "interaction_signals": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "criticism",
+                "defensiveness",
+                "withdrawal",
+                "pursuit",
+                "escalation",
+                "repetition",
+                "failed_repair",
+                "mistrust",
+                "overload"
+              ]
+            }
+          },
+          "goal": {
+            "type": "string",
+            "enum": [
+              "understand_pattern",
+              "deescalate",
+              "restart_conversation"
+            ]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pattern_label_he",
+          "summary_he",
+          "cycle_steps_he",
+          "next_step_he",
+          "avoid_he"
+        ],
+        "properties": {
+          "pattern_label_he": {
+            "type": "string"
+          },
+          "summary_he": {
+            "type": "string"
+          },
+          "cycle_steps_he": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_step_he": {
+            "type": "string"
+          },
+          "avoid_he": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_conversation_plan",
+      "title": "תכנון שיחה זוגית רגועה",
+      "description": "Use when a Hebrew-speaking adult wants a short plan for opening, repairing or de-escalating a difficult conversation with a partner after the topic and interaction risk are known. Do not use for child-focused parenting problems, legal/divorce negotiation, threats or violence, self-harm, medical or sexual-health advice, diagnosis, surveillance, coercion/manipulation, or pressure tactics.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false,
+        "idempotentHint": true
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "topic",
+          "goal",
+          "emotional_intensity",
+          "interaction_risk",
+          "tone"
+        ],
+        "properties": {
+          "topic": {
+            "type": "string",
+            "enum": [
+              "money",
+              "household",
+              "parenting",
+              "extended_family",
+              "attention_connection",
+              "trust",
+              "intimacy",
+              "recurring_other"
+            ]
+          },
+          "goal": {
+            "type": "string",
+            "enum": [
+              "express_hurt",
+              "request_change",
+              "discuss_money",
+              "discuss_household",
+              "discuss_parenting",
+              "set_family_boundary",
+              "ask_for_connection",
+              "discuss_intimacy",
+              "repair_after_conflict"
+            ]
+          },
+          "emotional_intensity": {
+            "type": "string",
+            "enum": [
+              "low",
+              "moderate",
+              "high"
+            ]
+          },
+          "interaction_risk": {
+            "type": "string",
+            "enum": [
+              "none",
+              "defensiveness",
+              "withdrawal",
+              "escalation"
+            ]
+          },
+          "tone": {
+            "type": "string",
+            "enum": [
+              "gentle",
+              "direct",
+              "neutral"
+            ]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "opening_he",
+          "steps_he",
+          "pause_phrase_he",
+          "repair_phrase_he",
+          "avoid_phrases_he"
+        ],
+        "properties": {
+          "opening_he": {
+            "type": "string"
+          },
+          "steps_he": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            }
+          },
+          "pause_phrase_he": {
+            "type": "string"
+          },
+          "repair_phrase_he": {
+            "type": "string"
+          },
+          "avoid_phrases_he": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_parenting_response_plan",
+      "title": "תוכנית תגובה הורית מעשית",
+      "description": "Use when a Hebrew-speaking parent wants practical, non-diagnostic guidance for a common parenting challenge such as boundaries, tantrums, sibling conflict, screens, bedtime, morning routines, cooperation, transitions, parent disagreement, emotional regulation, or connection with a teen. Do not use for diagnosing a child, medication or medical advice, self-harm, violence or immediate danger, legal/school-rights questions, covert surveillance, manipulation, or situations requiring emergency support.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false,
+        "idempotentHint": true
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "age_band",
+          "challenge",
+          "goal",
+          "response_style"
+        ],
+        "properties": {
+          "age_band": {
+            "type": "string",
+            "enum": [
+              "preschool",
+              "elementary",
+              "preteen",
+              "teen"
+            ]
+          },
+          "challenge": {
+            "type": "string",
+            "enum": [
+              "tantrum",
+              "boundaries",
+              "sibling_conflict",
+              "screens",
+              "bedtime",
+              "morning_routine",
+              "cooperation",
+              "transition",
+              "parent_disagreement",
+              "emotional_regulation",
+              "teen_connection"
+            ]
+          },
+          "goal": {
+            "type": "string",
+            "enum": [
+              "deescalate",
+              "set_boundary",
+              "increase_cooperation",
+              "prepare_conversation",
+              "build_routine",
+              "repair_connection"
+            ]
+          },
+          "response_style": {
+            "type": "string",
+            "enum": [
+              "calm_brief",
+              "collaborative",
+              "firm_kind"
+            ]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "framing_he",
+          "steps_he",
+          "phrase_to_use_he",
+          "phrase_to_avoid_he",
+          "follow_up_he"
+        ],
+        "properties": {
+          "framing_he": {
+            "type": "string"
+          },
+          "steps_he": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            }
+          },
+          "phrase_to_use_he": {
+            "type": "string"
+          },
+          "phrase_to_avoid_he": {
+            "type": "string"
+          },
+          "follow_up_he": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_adhd_parenting_plan",
+      "title": "תוכנית הורות לקשב ותפקודים ניהוליים",
+      "description": "Use when a Hebrew-speaking parent wants practical support for daily functioning commonly associated with attention or executive-function difficulties: morning routines, task initiation, working memory, transitions, organization, frustration, impulsivity, screen transitions, or giftedness with attention difficulties. The tool does not require or verify an ADHD diagnosis. Do not use to diagnose ADHD, score symptoms, recommend or change medication, give medical advice, handle self-harm or violence, answer legal/school-rights questions, or monitor a child covertly.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false,
+        "idempotentHint": true
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "age_band",
+          "challenge",
+          "goal",
+          "support_level"
+        ],
+        "properties": {
+          "age_band": {
+            "type": "string",
+            "enum": [
+              "preschool",
+              "elementary",
+              "preteen",
+              "teen"
+            ]
+          },
+          "challenge": {
+            "type": "string",
+            "enum": [
+              "morning_routine",
+              "task_initiation",
+              "working_memory",
+              "transitions",
+              "organization",
+              "frustration",
+              "executive_function",
+              "impulsivity",
+              "screen_transition",
+              "gifted_adhd"
+            ]
+          },
+          "goal": {
+            "type": "string",
+            "enum": [
+              "reduce_friction",
+              "build_external_support",
+              "start_task",
+              "complete_transition",
+              "increase_independence",
+              "recover_after_escalation"
+            ]
+          },
+          "support_level": {
+            "type": "string",
+            "enum": [
+              "light",
+              "structured",
+              "high_structure"
+            ]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "executive_function_frame_he",
+          "environment_adjustments_he",
+          "parent_steps_he",
+          "phrase_he",
+          "avoid_he",
+          "professional_support_note_he"
+        ],
+        "properties": {
+          "executive_function_frame_he": {
+            "type": "string"
+          },
+          "environment_adjustments_he": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 4,
+            "items": {
+              "type": "string"
+            }
+          },
+          "parent_steps_he": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            }
+          },
+          "phrase_he": {
+            "type": "string"
+          },
+          "avoid_he": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            }
+          },
+          "professional_support_note_he": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "find_kesher_resource",
+      "title": "מציאת תוכן רלוונטי באתר קשר",
+      "description": "Use only when the user explicitly asks for a Kesher article, guide, website resource, or further reading related to couples, parenting, or parenting around attention/executive-function challenges. Searches a bounded local Kesher content index and returns up to three relevant resources. Do not use as a general web search, provider search, medical/legal lookup, or as a promotional redirect when the user did not ask for a resource.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false,
+        "idempotentHint": true
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "domain",
+          "topic",
+          "content_type"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "enum": [
+              "couples",
+              "parenting",
+              "parenting_adhd"
+            ]
+          },
+          "topic": {
+            "type": "string",
+            "enum": [
+              "communication",
+              "recurring_conflict",
+              "money",
+              "household",
+              "parenting_alignment",
+              "trust",
+              "intimacy",
+              "extended_family",
+              "boundaries",
+              "tantrum",
+              "siblings",
+              "screens",
+              "bedtime",
+              "morning_routine",
+              "teen",
+              "emotional_regulation",
+              "adhd_morning",
+              "executive_function",
+              "organization",
+              "task_initiation",
+              "transitions",
+              "working_memory",
+              "impulsivity",
+              "frustration",
+              "gifted_adhd",
+              "other"
+            ]
+          },
+          "content_type": {
+            "type": "string",
+            "enum": [
+              "any",
+              "article"
+            ]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "resources"
+        ],
+        "properties": {
+          "resources": {
+            "type": "array",
+            "minItems": 0,
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "slug",
+                "title",
+                "url",
+                "domain",
+                "topics"
+              ],
+              "properties": {
+                "slug": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "domain": {
+                  "type": "string"
+                },
+                "topics": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

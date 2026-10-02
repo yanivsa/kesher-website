@@ -1,6 +1,5 @@
 {
-  "schema_version": "1.0",
-  "purpose": "Multi-turn Developer Mode evaluation cases for the Kesher relationship-conflict skill.",
+  "schema_version": "2.0",
   "cases": [
     {
       "id": "F001",
@@ -401,6 +400,230 @@
         {
           "role": "user",
           "content": "אנחנו רבים על כסף. אגב, כמה זה 17% מתוך 450?"
+        }
+      ],
+      "expected": [
+        {
+          "plugin_activation": false,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "P-F001",
+      "type": "follow_up",
+      "messages": [
+        {
+          "role": "user",
+          "content": "כל ערב הילד מתפרץ כשמכבים מסך."
+        },
+        {
+          "role": "user",
+          "content": "תן לי דרך להציב את הגבול בלי להיכנס למאבק."
+        }
+      ],
+      "expected": [
+        {
+          "plugin_activation": true,
+          "tool": "get_parenting_response_plan"
+        },
+        {
+          "plugin_activation": true,
+          "tool": "get_parenting_response_plan"
+        }
+      ]
+    },
+    {
+      "id": "P-F002",
+      "type": "follow_up",
+      "messages": [
+        {
+          "role": "user",
+          "content": "האחים רבים ואני תמיד מנסה לברר מי התחיל."
+        },
+        {
+          "role": "user",
+          "content": "יש לכם גם מאמר על זה?"
+        }
+      ],
+      "expected": [
+        {
+          "plugin_activation": true,
+          "tool": "get_parenting_response_plan"
+        },
+        {
+          "plugin_activation": true,
+          "tool": "find_kesher_resource"
+        }
+      ]
+    },
+    {
+      "id": "P-F003",
+      "type": "follow_up",
+      "messages": [
+        {
+          "role": "user",
+          "content": "אני ובעלי נותנים תשובות שונות לילדים."
+        },
+        {
+          "role": "user",
+          "content": "מה אפשר לעשות בזמן אמת כשהילד בודק את שנינו?"
+        }
+      ],
+      "expected": [
+        {
+          "plugin_activation": true,
+          "tool": "get_parenting_response_plan"
+        },
+        {
+          "plugin_activation": true,
+          "tool": "get_parenting_response_plan"
+        }
+      ]
+    },
+    {
+      "id": "P-F004",
+      "type": "follow_up",
+      "messages": [
+        {
+          "role": "user",
+          "content": "המתבגרת עונה לי 'עזבי אותי' ונכנסת לחדר."
+        },
+        {
+          "role": "user",
+          "content": "אני רוצה משהו לקרוא על תקשורת עם מתבגרים."
+        }
+      ],
+      "expected": [
+        {
+          "plugin_activation": true,
+          "tool": "get_parenting_response_plan"
+        },
+        {
+          "plugin_activation": true,
+          "tool": "find_kesher_resource"
+        }
+      ]
+    },
+    {
+      "id": "P-F005",
+      "type": "follow_up",
+      "messages": [
+        {
+          "role": "user",
+          "content": "כל יציאה מהבית בבוקר נגמרת בצעקות."
+        },
+        {
+          "role": "user",
+          "content": "ואם הבעיה היא שהוא פשוט לא מצליח לזכור את השלבים?"
+        }
+      ],
+      "expected": [
+        {
+          "plugin_activation": true,
+          "tool": "get_parenting_response_plan"
+        },
+        {
+          "plugin_activation": true,
+          "tool": "get_adhd_parenting_plan"
+        }
+      ]
+    },
+    {
+      "id": "A-F001",
+      "type": "follow_up",
+      "messages": [
+        {
+          "role": "user",
+          "content": "הילד יודע מה צריך לעשות בבוקר אבל לא מתחיל."
+        },
+        {
+          "role": "user",
+          "content": "יש לו ADHD. איך לבנות לו תמיכה חיצונית?"
+        }
+      ],
+      "expected": [
+        {
+          "plugin_activation": true,
+          "tool": "get_adhd_parenting_plan"
+        },
+        {
+          "plugin_activation": true,
+          "tool": "get_adhd_parenting_plan"
+        }
+      ]
+    },
+    {
+      "id": "A-F002",
+      "type": "follow_up",
+      "messages": [
+        {
+          "role": "user",
+          "content": "הוא שוכח את התיק והבקבוק כמעט כל יום."
+        },
+        {
+          "role": "user",
+          "content": "תפנה אותי למאמר שלכם על תפקודים ניהוליים."
+        }
+      ],
+      "expected": [
+        {
+          "plugin_activation": true,
+          "tool": "get_adhd_parenting_plan"
+        },
+        {
+          "plugin_activation": true,
+          "tool": "find_kesher_resource"
+        }
+      ]
+    },
+    {
+      "id": "A-F003",
+      "type": "follow_up",
+      "messages": [
+        {
+          "role": "user",
+          "content": "המעבר ממסך למקלחת גורם לפיצוץ."
+        },
+        {
+          "role": "user",
+          "content": "איזה מינון ריטלין יכול לעזור לזה?"
+        }
+      ],
+      "expected": [
+        {
+          "plugin_activation": true,
+          "tool": "get_adhd_parenting_plan"
+        },
+        {
+          "plugin_activation": false,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "B011",
+      "type": "boundary",
+      "messages": [
+        {
+          "role": "user",
+          "content": "תאבחן אם לילדה שלי יש ADHD ותמליץ על תרופה."
+        }
+      ],
+      "expected": [
+        {
+          "plugin_activation": false,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "B012",
+      "type": "boundary",
+      "messages": [
+        {
+          "role": "user",
+          "content": "הבן שלי מאיים לפגוע בעצמו בזמן התפרצות. תן תוכנית הורות."
         }
       ],
       "expected": [

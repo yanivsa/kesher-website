@@ -1,55 +1,70 @@
 {
-  "schema_version": "1.0",
-  "v1_scope": "Structured Hebrew support for recurring couple-communication patterns and difficult-conversation planning.",
+  "schema_version": "2.0",
+  "v2_scope": "Structured Hebrew support for couple communication, practical parenting, daily attention/executive-function parenting challenges, and bounded Kesher resource discovery.",
   "excluded_intents": [
     {
       "category": "crisis_violence",
-      "behavior": "do_not_call_v1_tools",
+      "behavior": "do_not_call_kesher_tools",
       "handoff": "host_safety_response"
     },
     {
       "category": "crisis_self_harm",
-      "behavior": "do_not_call_v1_tools",
+      "behavior": "do_not_call_kesher_tools",
       "handoff": "host_safety_response"
     },
     {
       "category": "legal_divorce",
-      "behavior": "do_not_call_v1_tools",
+      "behavior": "do_not_call_kesher_tools",
+      "handoff": "general_or_specialized_legal_response"
+    },
+    {
+      "category": "legal_education",
+      "behavior": "do_not_call_kesher_tools",
+      "handoff": "general_or_specialized_legal_response"
+    },
+    {
+      "category": "legal_benefits",
+      "behavior": "do_not_call_kesher_tools",
       "handoff": "general_or_specialized_legal_response"
     },
     {
       "category": "medical",
-      "behavior": "do_not_call_v1_tools",
+      "behavior": "do_not_call_kesher_tools",
       "handoff": "general_or_specialized_medical_response"
     },
     {
       "category": "sexual_health",
-      "behavior": "do_not_call_v1_tools",
+      "behavior": "do_not_call_kesher_tools",
+      "handoff": "general_or_specialized_medical_response"
+    },
+    {
+      "category": "generic_medical_info",
+      "behavior": "do_not_call_kesher_tools",
       "handoff": "general_or_specialized_medical_response"
     },
     {
       "category": "diagnosis",
-      "behavior": "do_not_call_v1_tools",
+      "behavior": "do_not_call_kesher_tools",
       "handoff": "non_diagnostic_general_response"
     },
     {
       "category": "surveillance",
-      "behavior": "do_not_call_v1_tools",
+      "behavior": "do_not_call_kesher_tools",
       "handoff": "host_policy_response"
     },
     {
       "category": "infidelity_surveillance",
-      "behavior": "do_not_call_v1_tools",
+      "behavior": "do_not_call_kesher_tools",
       "handoff": "host_policy_response"
     },
     {
       "category": "manipulation",
-      "behavior": "do_not_call_v1_tools",
+      "behavior": "do_not_call_kesher_tools",
       "handoff": "host_policy_response"
     }
   ],
   "data_minimization": {
-    "policy": "The V1 MCP contract accepts only bounded structured fields. Raw relationship narratives and direct identifiers must not be transmitted.",
+    "policy": "Kesher V2 accepts only bounded structured fields. Raw relationship/parenting narratives, identifiers, diagnosis records, medication data and exact locations must not be transmitted.",
     "forbidden_input_fields": [
       "raw_text",
       "message",
@@ -58,25 +73,35 @@
       "partner_name",
       "user_name",
       "child_name",
+      "child_exact_age",
+      "school",
       "phone",
       "email",
       "address",
-      "exact_location"
+      "exact_location",
+      "diagnosis",
+      "medication",
+      "medical_history"
     ],
     "forbidden_logging": [
       "raw_prompt",
       "raw_chat_history",
       "names",
+      "child_names",
       "phone_numbers",
       "email_addresses",
-      "exact_addresses"
+      "exact_addresses",
+      "diagnosis",
+      "medication"
     ]
   },
   "output_boundaries": [
-    "Describe interaction patterns, not personality traits.",
-    "Do not diagnose a user, partner, child, or family member.",
+    "Describe interaction or functioning challenges without diagnosing a person.",
     "Do not decide whether a user should stay in or leave a relationship.",
-    "Do not provide legal, medical, or crisis guidance through these V1 tools.",
-    "Do not encourage coercion, guilt, jealousy, monitoring, or secret surveillance."
+    "Do not diagnose ADHD or any psychiatric/developmental condition.",
+    "Do not recommend medication, dosage changes, or treatment plans.",
+    "Do not provide legal, medical, or crisis guidance through Kesher tools.",
+    "Do not encourage coercion, guilt, jealousy, monitoring, secret surveillance, or fear-based compliance.",
+    "Parenting guidance should focus on caregiver responses, routines, environment and communication rather than blaming the child."
   ]
 }
