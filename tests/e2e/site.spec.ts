@@ -74,27 +74,43 @@ test('Compact Keywords index policy matches the intended portfolio', async ({ pa
       route: '/parenting-adhd-ashdod',
       canonical: 'https://kesher.saharoni.com/parenting-adhd-ashdod',
       robots: null,
+      serviceType: 'parenting_adhd',
+      landingPageType: 'adhd_ashdod',
     },
     {
       route: '/couples-mediation-ashdod',
       canonical: 'https://kesher.saharoni.com/couples-mediation-ashdod',
       robots: null,
+      serviceType: 'couples_mediation',
+      landingPageType: 'mediation_ashdod',
     },
     {
       route: '/couples-crisis-ashdod',
       canonical: 'https://kesher.saharoni.com/couples-crisis-ashdod',
       robots: 'noindex, follow',
+      serviceType: 'couples_crisis',
+      landingPageType: 'crisis_ashdod',
     },
     {
       route: '/couples-counseling-gan-yavne',
       canonical: 'https://kesher.saharoni.com/couples-counseling-gan-yavne',
       robots: 'noindex, follow',
+      serviceType: 'couples_counseling',
+      landingPageType: 'counseling_gan_yavne',
     },
   ];
 
   for (const item of cases) {
     await page.goto(item.route, { waitUntil: 'domcontentloaded' });
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', item.canonical);
+    await expect(page.locator('main[data-analytics-service-type]')).toHaveAttribute(
+      'data-analytics-service-type',
+      item.serviceType,
+    );
+    await expect(page.locator('main[data-analytics-landing-page-type]')).toHaveAttribute(
+      'data-analytics-landing-page-type',
+      item.landingPageType,
+    );
     if (item.robots) {
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', item.robots);
     } else {
