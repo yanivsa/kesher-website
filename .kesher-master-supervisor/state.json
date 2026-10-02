@@ -259,7 +259,7 @@
       "verified_at": "2026-09-23T11:38:42.897477+00:00"
     },
     "ksr-1ae25ef89310ce3d175d0dc4": {
-      "acknowledged_at": "2026-10-02T06:19:30.129308+00:00",
+      "acknowledged_at": "2026-10-02T06:20:10.197185+00:00",
       "command_id": "ksr-1ae25ef89310ce3d175d0dc4",
       "evidence_hash": "ab1ab9ed175ce2e92704d70dabb8b30f893643f55c3093eb072493467416cbe0",
       "exact": {
@@ -277,17 +277,20 @@
       "fingerprint": "f052d0c3dc51a7f7ec0da3fcba8275e6",
       "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|long_video",
       "issued_at": "2026-10-02T06:19:02.343531+00:00",
-      "lifecycle": "acknowledged",
+      "lifecycle": "running",
       "metadata": {
         "dispatch": "issued",
         "dispatched_at": "2026-10-02T06:19:30.129308+00:00",
+        "external_run_id": 36972922881,
+        "external_workflow": "Kesher Daily NotebookLM Video Overview",
         "inputs": {},
         "workflow": "kesher-content-controller.yml"
       },
       "proposed_action": "rebind_exact_source",
+      "running_at": "2026-10-02T06:20:10.197185+00:00",
       "stage": "S1",
       "strike": 1,
-      "updated_at": "2026-10-02T06:19:30.129308+00:00"
+      "updated_at": "2026-10-02T06:20:10.197185+00:00"
     },
     "ksr-1d0a8fb9a61f6e0e11664f10": {
       "acknowledged_at": "2026-09-29T10:24:58.465141+00:00",
@@ -4319,7 +4322,7 @@
         }
       ],
       "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|long_video",
-      "last_seen_at": "2026-10-02T06:19:02.343531+00:00",
+      "last_seen_at": "2026-10-02T06:20:10.197185+00:00",
       "marker": "MASTER_ESCALATION fingerprint=f052d0c3dc51a7f7ec0da3fcba8275e6 strike=1 stage=S1",
       "status": "recovering",
       "strike": 1
@@ -4363,5 +4366,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-02T06:19:30.129308+00:00"
+  "updated_at": "2026-10-02T06:20:10.197185+00:00"
 }
