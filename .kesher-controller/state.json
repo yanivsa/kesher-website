@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-02",
-  "status": "long_video_running",
+  "status": "long_video_retry_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
     "published_date": "2026-10-02",
     "live": true,
-    "live_verified_at": "2026-10-02T08:40:28.919469+00:00",
+    "live_verified_at": "2026-10-02T10:08:11.442645+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -2004,9 +2004,37 @@
       "from": "article_live",
       "to": "video_running",
       "reason": "video workflow already active"
+    },
+    {
+      "at": "2026-10-02T10:08:11.442672+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-02T10:08:13.693281+00:00",
+      "from": "article_live",
+      "to": "video_retry_wait",
+      "reason": "VIDEO_WORKFLOW_FAILED",
+      "details": {
+        "message": "video run 36985124987 completed with conclusion=failure",
+        "retry_at": "2026-10-02T10:13:13.693258+00:00",
+        "failure_streak": 1,
+        "run_id": 36985124987,
+        "session_id": null
+      }
+    },
+    {
+      "at": "2026-10-02T10:08:13.693305+00:00",
+      "from": "video_retry_wait",
+      "to": "video_retry_wait",
+      "reason": "video retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-02T10:13:13.693258+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-02T08:40:29.892761+00:00",
+  "updated_at": "2026-10-02T10:08:13.693308+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2023,13 +2051,15 @@
     "attempt_count": 3,
     "status": "pending_review",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-02T10:13:13.693258+00:00",
     "run_id": 36985124987,
-    "processed_run_id": null,
+    "processed_run_id": 36985124987,
     "provider_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
+    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
+    "same_failure_streak": 1,
+    "failure_count_by_type": {
+      "VIDEO_WORKFLOW_FAILED": 1
+    },
     "overview_evidence_required": true,
     "item_id": "video-20260930-225106-33253e4463",
     "youtube_id": "3wkQ8tKGZxI",
@@ -2048,7 +2078,9 @@
     "artifact_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
     "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f",
     "last_dispatch_at": "2026-10-02T08:07:55.596331+00:00",
-    "resume_dispatches": 3
+    "resume_dispatches": 3,
+    "last_run_conclusion": "failure",
+    "last_failed_run_id": 36985124987
   },
   "short": {
     "attempt_count": 0,
