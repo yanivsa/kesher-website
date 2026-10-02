@@ -170,3 +170,26 @@ GSC: NOT AVAILABLE
 | /couples-counseling-gan-yavne | NOINDEX, FOLLOW | Held experimental local page |
 
 This matrix deliberately does not claim verified demand, CPC, difficulty or conversion performance where those data are unavailable.
+
+
+---
+
+## Final implementation QA — 2026-10-02
+
+Final production state after owner QA:
+
+- `/parenting-adhd-ashdod`: indexable specialist page under `/parenting-guidance-ashdod`.
+- `/couples-mediation-ashdod`: indexable specialist page under `/services/mediation`.
+- `/couples-crisis-ashdod`: held `noindex, follow`; contextual path points users to `/services/couples/crisis`.
+- `/couples-counseling-gan-yavne`: held `noindex, follow`; contextual path points users to `/couples-counseling-ashdod`.
+
+QA hardening completed:
+
+- Index/noindex policy is covered by E2E tests.
+- Noindex Compact routes are excluded from the sitemap and from `llms.txt`.
+- Hub → specialist and specialist → parent/canonical contextual links are guarded by automated tests/content validation.
+- Phone/WhatsApp conversion events preserve `landing_page_path`, `service_type`, `landing_page_type`, `variant_id`, and CTA location before deduplication.
+- Ashdod service-page structured data no longer publishes unverified city-center coordinates, postal code, or opening hours; the pages use `Service` + `Offer` semantics and reference the primary business as provider.
+- No automatic blog → mediation mapping was added because the existing article set did not provide sufficiently explicit mediation intent for a conservative editorial allowlist.
+
+The next decision should be evidence-led: use Search Console/query data and conversion data before promoting held pages or creating additional Compact Keyword routes.
