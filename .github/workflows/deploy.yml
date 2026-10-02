@@ -95,74 +95,6 @@ jobs:
         # can prevent the prerender browser from reaching the app heading.
         run: npm run check
 
-      - name: Install Kesher MCP dependencies
-        run: npm ci --prefix plugin --no-audit --no-fund
-
-      - name: Validate Kesher MCP package
-        run: npm --prefix plugin run check
-
-      - name: Deploy internal Kesher MCP origin
-        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: 4.100.0
-          workingDirectory: plugin
-          command: deploy --config wrangler.origin.jsonc
-
-      - name: Ensure production Kesher MCP service binding
-        shell: bash
-        env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import json
-          import os
-          import urllib.request
-
-          account = os.environ["CLOUDFLARE_ACCOUNT_ID"]
-          token = os.environ["CLOUDFLARE_API_TOKEN"]
-          url = f"https://api.cloudflare.com/client/v4/accounts/{account}/pages/projects/kesher-website"
-          headers = {
-              "Authorization": f"Bearer {token}",
-              "Accept": "application/json",
-              "Content-Type": "application/json",
-              "User-Agent": "kesher-mcp-production/1",
-          }
-
-          body = json.dumps({
-              "deployment_configs": {
-                  "production": {
-                      "services": {
-                          "KESHER_MCP": {"service": "kesher-mcp-origin"}
-                      }
-                  }
-              }
-          }).encode()
-          patch = urllib.request.Request(url, headers=headers, data=body, method="PATCH")
-          with urllib.request.urlopen(patch, timeout=30) as response:
-              updated = json.load(response)
-          if updated.get("success") is not True:
-              raise SystemExit("Production MCP service-binding update failed")
-
-          get = urllib.request.Request(url, headers=headers)
-          with urllib.request.urlopen(get, timeout=30) as response:
-              current = json.load(response)
-          production = (((current.get("result") or {}).get("deployment_configs") or {}).get("production") or {})
-          binding = (production.get("services") or {}).get("KESHER_MCP") or {}
-          if binding.get("service") != "kesher-mcp-origin":
-              raise SystemExit("Production KESHER_MCP service binding is not active")
-          if "BOOKING_KV" not in (production.get("kv_namespaces") or {}):
-              raise SystemExit("Production BOOKING_KV binding was not preserved")
-          env_vars = production.get("env_vars") or {}
-          for required in ("TURNSTILE_SITE_KEY", "TURNSTILE_SECRET_KEY"):
-              if required not in env_vars:
-                  raise SystemExit(f"Production {required} binding was not preserved")
-          print("Production KESHER_MCP binding active; existing booking and Turnstile bindings preserved.")
-          PY
-
       - name: Finalize production measurement configuration
         shell: bash
         env:
@@ -230,35 +162,6 @@ jobs:
           set -euo pipefail
           python3 scripts/verify-production-article.py --retries 12 --delay 5
           python3 scripts/verify-production-article.py --slug relationship-crisis-flydubai-lessons --retries 12 --delay 5
-
-      - name: Verify production Kesher MCP
-        shell: bash
-        run: |
-          set -euo pipefail
-          endpoint="https://kesher.saharoni.com/mcp"
-
-          ok=false
-          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
-            if curl --fail-with-body --silent --show-error               -X POST               -H 'Content-Type: application/json'               -H 'Accept: application/json, text/event-stream'               --data '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"kesher-production-smoke","version":"1.0.0"}}}'               "$endpoint"               -o /tmp/kesher-production-init.txt; then
-              if grep -F 'kesher-hebrew-relationship-tools' /tmp/kesher-production-init.txt >/dev/null; then
-                ok=true
-                break
-              fi
-            fi
-            echo "Production MCP propagation attempt $attempt failed; retrying."
-            sleep 5
-          done
-          test "$ok" = true
-          cat /tmp/kesher-production-init.txt
-
-          curl --fail-with-body --silent --show-error             -X POST             -H 'Content-Type: application/json'             -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'             "$endpoint"             -o /tmp/kesher-production-tools.txt
-          grep -F 'get_conflict_pattern' /tmp/kesher-production-tools.txt >/dev/null
-          grep -F 'get_conversation_plan' /tmp/kesher-production-tools.txt >/dev/null
-
-          curl --fail-with-body --silent --show-error             -X POST             -H 'Content-Type: application/json'             -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_conversation_plan","arguments":{"topic":"household","goal":"discuss_household","emotional_intensity":"moderate","interaction_risk":"defensiveness","tone":"gentle"}}}'             "$endpoint"             -o /tmp/kesher-production-call.txt
-          grep -F 'opening_he' /tmp/kesher-production-call.txt >/dev/null
-          grep -F 'pause_phrase_he' /tmp/kesher-production-call.txt >/dev/null
-          cat /tmp/kesher-production-call.txt
 
       - name: Publish production deployment statuses
         if: ${{ always() }}
