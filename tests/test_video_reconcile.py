@@ -111,6 +111,35 @@ class VideoReconcileTests(unittest.TestCase):
             self.assertEqual(pipeline.rebuild_rejected_with_remotion(item["id"]), 0)
         validate.assert_called_once()
 
+    def test_legacy_technically_verified_item_can_rebuild_missing_immutable_evidence(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        item = pipeline.new_item(pipeline.source_metadata(today))
+        item.update({
+            "status": "pending_review",
+            "technical_verified": True,
+            "raw_mp4": "raw.mp4",
+            "source_id": "source-1",
+            "task_id": "task-1",
+            "artifact_id": "task-1",
+            "final_sha256": "f" * 64,
+            # Legacy item deliberately lacks transcript/manifest/source/frame evidence hashes.
+        })
+        raw = self.state_dir / "raw.mp4"
+        raw.parent.mkdir(parents=True, exist_ok=True)
+        raw.write_bytes(b"provider-video")
+        item["raw_sha256"] = pipeline.sha256_file(raw)
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        with mock.patch.object(pipeline, "validate_and_manifest") as validate:
+            self.assertEqual(pipeline.rebuild_rejected_with_remotion(item["id"]), 0)
+
+        validate.assert_called_once()
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "downloaded")
+        self.assertFalse(saved["technical_verified"])
+        self.assertIn("evidence_history", saved)
+
     def test_provider_pending_item_is_not_an_upload_failure(self) -> None:
         today = post("today")
         self.write_posts([today])
