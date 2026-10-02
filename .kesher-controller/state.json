@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-02",
-  "status": "blocked",
+  "cycle": "2026-10-03",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -15,18 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
-    "quality_status": "passed",
-    "quality_content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
-    "quality_checked_at": "2026-10-02T18:17:02.458567+00:00",
-    "quality_violations": [],
-    "slug": "marshmallow-test-environmental-reliability",
-    "title": "חושבים שלילד אין כוח רצון? מה מבחן המרשמלו באמת גילה על אמון",
-    "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
-    "published_date": "2026-10-02",
-    "live": true,
-    "live_verified_at": "2026-10-02T12:53:08.243187+00:00",
-    "next_deploy_retry_at": null
+    "normalization_status": "pending"
   },
   "backlog": [
     {
@@ -1270,157 +1259,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "STALE_OR_DUPLICATE_ARTICLE_PR",
-    "message": "published article exists while 1 article PR(s) remain open",
-    "at": "2026-10-02T18:17:22.170595+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-27T19:35:21.863330+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-27T19:37:36.234884+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-27T19:47:44.654487+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-27T19:48:52.248525+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-09-27T22:03:26.232213+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-27T22:03:26.232216+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-27T22:03:26.232851+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-27T22:03:36.163166+00:00",
-      "from": "article_needed",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-09-27T22:37:32.940126+00:00",
-      "from": "article_generating",
-      "to": "article_watchdog_nudge",
-      "reason": "article stalled; nudged authoritative Jules session",
-      "details": {
-        "session_id": "sessions/11417652437148076246"
-      }
-    },
-    {
-      "at": "2026-09-27T22:38:58.745389+00:00",
-      "from": "article_watchdog_nudge",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 958,
-        "slot": "2026-09-28"
-      }
-    },
-    {
-      "at": "2026-09-28T00:40:36.706675+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 958
-      }
-    },
-    {
-      "at": "2026-09-28T05:55:51.967287+00:00",
-      "from": "article_image_running",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
-      "at": "2026-09-28T07:58:09.932288+00:00",
-      "from": "article_pr_open",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-09-28T08:01:01.790656+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 1
-      }
-    },
-    {
-      "at": "2026-09-28T11:03:31.278630+00:00",
-      "from": "long_video_running",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-09-28T11:29:14.227522+00:00",
-      "from": "short_running",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-29T00:06:52.395095+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-29T00:06:52.395100+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-29T00:06:52.396037+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-29T10:16:47.718148+00:00",
-      "from": "article_needed",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
     {
       "at": "2026-09-29T10:24:14.429728+00:00",
       "from": "short_running",
@@ -2017,12 +1857,30 @@
       "details": {
         "message": "published article exists while 1 article PR(s) remain open"
       }
+    },
+    {
+      "at": "2026-10-02T22:20:46.700712+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-02T22:20:46.700719+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-02T22:20:46.701850+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-02T18:17:22.170619+00:00",
+  "updated_at": "2026-10-02T22:20:46.700686+00:00",
   "image": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2034,95 +1892,29 @@
   },
   "long_video": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "item_id": "video-20260930-225106-33253e4463",
-    "youtube_id": "3wkQ8tKGZxI",
-    "youtube_url": "https://youtu.be/3wkQ8tKGZxI",
-    "verified": true,
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 118.2,
-    "content_duration_seconds": 118.208,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "artifact_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
-    "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f",
-    "last_dispatch_at": null,
-    "resume_dispatches": 0,
-    "last_run_conclusion": null,
-    "last_failed_run_id": 36985124987,
-    "source_binding_exhaustion_recovery_applied": true,
-    "source_binding_recovery_previous": {
-      "attempt_count": 3,
-      "item_id": "video-20261001-154922-4b0df04d89",
-      "provider_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
-      "artifact_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
-      "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f",
-      "watchdog": null
-    }
+    "failure_count_by_type": {}
   },
   "short": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": "fc28c109-a357-40d2-af6f-ad5e3c1c6469",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "watchdog": {
-      "identity": "short:marshmallow-test-environmental-reliability:33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf:video-20261002-020743-33253e4463",
-      "hard_started_at": "2026-10-01T23:07:54.376075+00:00",
-      "last_progress_at": "2026-10-01T23:11:09.686898+00:00",
-      "last_fingerprint": "ff1c46cc211c7ef39df88a72dacd1191b2562b5dbfd4232d5ff7cdbaa28629af",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "item_id": "video-20261002-020743-33253e4463",
-    "type": "article_short",
-    "youtube_id": "RcCgNHDi6mo",
-    "youtube_url": "https://youtu.be/RcCgNHDi6mo",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "046d8695b2bdb1c15c3c964501fe27028065cbf2acd2418782999d2b3e864fca",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920,
-    "artifact_id": "fc28c109-a357-40d2-af6f-ad5e3c1c6469",
-    "source_id": "2095f9c6-3b55-45e6-b79d-6f060b41cc47"
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
-    "overview_youtube_url": "https://youtu.be/3wkQ8tKGZxI",
-    "short_youtube_url": "https://youtu.be/RcCgNHDi6mo",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
   }
 }
