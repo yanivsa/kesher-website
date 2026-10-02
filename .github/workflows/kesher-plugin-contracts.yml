@@ -5,12 +5,14 @@ on:
     paths:
       - "plugin/**"
       - "docs/chatgpt-plugin/**"
+      - ".agents/plugins/marketplace.json"
       - ".github/workflows/kesher-plugin-contracts.yml"
   push:
     branches: [main]
     paths:
       - "plugin/**"
       - "docs/chatgpt-plugin/**"
+      - ".agents/plugins/marketplace.json"
       - ".github/workflows/kesher-plugin-contracts.yml"
   workflow_dispatch:
 
@@ -35,8 +37,14 @@ jobs:
       - name: Test Kesher domain logic
         run: node plugin/tests/domain.test.mjs
 
+      - name: Validate portable plugin package and marketplace
+        run: node plugin/tests/validate-plugin-package.mjs
+
+      - name: Self-test Developer Mode evaluation scorer
+        run: node plugin/tests/score-golden-results.mjs --self-test
+
       - name: Install MCP Worker dependencies
-        run: npm install --prefix plugin --no-audit --no-fund
+        run: npm ci --prefix plugin --no-audit --no-fund
 
       - name: Validate MCP Worker package
         run: npm --prefix plugin run check
