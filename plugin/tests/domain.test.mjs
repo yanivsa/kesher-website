@@ -39,4 +39,25 @@ assert.throws(
   /Invalid goal/
 );
 
+assert.throws(
+  () => getConflictPattern({
+    topic:"money",
+    interaction_signals:["criticism"],
+    goal:"understand_pattern",
+    raw_text:"private relationship narrative"
+  }),
+  /Unexpected field/
+);
+assert.throws(
+  () => getConversationPlan({
+    topic:"household",
+    goal:"discuss_household",
+    emotional_intensity:"moderate",
+    interaction_risk:"none",
+    tone:"gentle",
+    email:"private@example.com"
+  }),
+  /Unexpected field/
+);
+
 console.log("PASS: Kesher domain logic tests.");
