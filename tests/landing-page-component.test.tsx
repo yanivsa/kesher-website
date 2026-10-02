@@ -87,10 +87,10 @@ describe('LandingPageTemplate Component', () => {
       </MemoryRouter>
     );
 
-    const relatedLink = screen.getByRole('link', { name: new RegExp(config.relatedService.linkText) });
+    const relatedLink = screen.getByRole('link', { name: config.relatedService.linkText });
     expect(relatedLink.getAttribute('href')).toBe(config.relatedService.href);
     expect(relatedLink.getAttribute('data-analytics-location')).toBe('related_service');
-    expect(container.querySelector('.relatedServiceCard')).not.toBeNull();
+    expect(container.querySelector('section[aria-label="שירות קשור"]')).not.toBeNull();
   });
 
   it('renders objection-handling FAQ items', () => {
