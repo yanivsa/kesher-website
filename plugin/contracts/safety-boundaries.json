@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "v1_scope": "Structured Hebrew support for recurring couple-communication patterns and difficult-conversation planning.",
+  "excluded_intents": [
+    {
+      "category": "crisis_violence",
+      "behavior": "do_not_call_v1_tools",
+      "handoff": "host_safety_response"
+    },
+    {
+      "category": "crisis_self_harm",
+      "behavior": "do_not_call_v1_tools",
+      "handoff": "host_safety_response"
+    },
+    {
+      "category": "legal_divorce",
+      "behavior": "do_not_call_v1_tools",
+      "handoff": "general_or_specialized_legal_response"
+    },
+    {
+      "category": "medical",
+      "behavior": "do_not_call_v1_tools",
+      "handoff": "general_or_specialized_medical_response"
+    },
+    {
+      "category": "sexual_health",
+      "behavior": "do_not_call_v1_tools",
+      "handoff": "general_or_specialized_medical_response"
+    },
+    {
+      "category": "diagnosis",
+      "behavior": "do_not_call_v1_tools",
+      "handoff": "non_diagnostic_general_response"
+    },
+    {
+      "category": "surveillance",
+      "behavior": "do_not_call_v1_tools",
+      "handoff": "host_policy_response"
+    },
+    {
+      "category": "infidelity_surveillance",
+      "behavior": "do_not_call_v1_tools",
+      "handoff": "host_policy_response"
+    },
+    {
+      "category": "manipulation",
+      "behavior": "do_not_call_v1_tools",
+      "handoff": "host_policy_response"
+    }
+  ],
+  "data_minimization": {
+    "policy": "The V1 MCP contract accepts only bounded structured fields. Raw relationship narratives and direct identifiers must not be transmitted.",
+    "forbidden_input_fields": [
+      "raw_text",
+      "message",
+      "transcript",
+      "conversation",
+      "partner_name",
+      "user_name",
+      "child_name",
+      "phone",
+      "email",
+      "address",
+      "exact_location"
+    ],
+    "forbidden_logging": [
+      "raw_prompt",
+      "raw_chat_history",
+      "names",
+      "phone_numbers",
+      "email_addresses",
+      "exact_addresses"
+    ]
+  },
+  "output_boundaries": [
+    "Describe interaction patterns, not personality traits.",
+    "Do not diagnose a user, partner, child, or family member.",
+    "Do not decide whether a user should stay in or leave a relationship.",
+    "Do not provide legal, medical, or crisis guidance through these V1 tools.",
+    "Do not encourage coercion, guilt, jealousy, monitoring, or secret surveillance."
+  ]
+}
