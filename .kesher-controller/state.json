@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-02",
-  "status": "blocked",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
     "published_date": "2026-10-02",
     "live": true,
-    "live_verified_at": "2026-10-02T08:37:40.482272+00:00",
+    "live_verified_at": "2026-10-02T08:40:28.919469+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1268,12 +1268,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-02T08:37:42.517714+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-25T23:15:09.498960+00:00",
@@ -1997,9 +1992,21 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-02T08:40:28.919486+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-02T08:40:29.892742+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-02T08:37:42.517732+00:00",
+  "updated_at": "2026-10-02T08:40:29.892761+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2014,17 +2021,17 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "pending_review",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 36985124987,
     "processed_run_id": null,
     "provider_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260930-225106-33253e4463",
+    "item_id": "video-20261001-154922-4b0df04d89",
     "youtube_id": "3wkQ8tKGZxI",
     "youtube_url": "https://youtu.be/3wkQ8tKGZxI",
     "verified": true,
