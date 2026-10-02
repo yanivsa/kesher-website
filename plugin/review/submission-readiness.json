@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "checked_at": "2026-10-02",
+  "public_submission_ready": false,
+  "completed": [
+    "Known-green repository baseline",
+    "100-prompt Hebrew golden evaluation set",
+    "Two bounded read-only MCP tools",
+    "Contract and domain tests",
+    "Cloudflare staging deployment",
+    "Remote health check",
+    "Remote MCP initialize",
+    "Remote MCP tools/list discovery",
+    "Portable plugin.json and mcp.json package"
+  ],
+  "gates": [
+    {
+      "id": "developer_mode_evaluation",
+      "status": "pending",
+      "requirement": "Install/connect in ChatGPT Developer Mode and record real model tool-selection results for the golden set."
+    },
+    {
+      "id": "privacy_policy",
+      "status": "not_found",
+      "requirement": "Publish a clear Privacy Policy covering collected data categories, purposes, recipients, retention, and user controls before public submission."
+    },
+    {
+      "id": "production_mcp_endpoint",
+      "status": "blocked",
+      "requirement": "Move from the workers.dev staging endpoint to a stable production HTTPS domain/route before public review."
+    },
+    {
+      "id": "publisher_verification",
+      "status": "unknown",
+      "requirement": "Confirm OpenAI individual or business verification for the publisher identity selected at submission."
+    },
+    {
+      "id": "submission_permissions",
+      "status": "unknown",
+      "requirement": "Confirm api.apps.read and api.apps.write permissions in the OpenAI Platform organization."
+    }
+  ]
+}
