@@ -31,7 +31,8 @@
         "defaultPrompt": [
           "תעזור לי להבין למה אנחנו חוזרים לאותו ריב שוב ושוב.",
           "תבנה לי דרך לפתוח שיחה רגועה על נושא רגיש."
-        ]
+        ],
+        "privacyPolicyURL": "https://kesher.saharoni.com/privacy"
       }
     }
   }
