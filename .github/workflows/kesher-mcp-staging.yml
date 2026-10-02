@@ -93,6 +93,28 @@ jobs:
           grep -F 'get_conflict_pattern' /tmp/kesher-tools.txt >/dev/null
           grep -F 'get_conversation_plan' /tmp/kesher-tools.txt >/dev/null
 
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          payloads = []
+          for line in Path('/tmp/kesher-tools.txt').read_text(encoding='utf-8').splitlines():
+              if line.startswith('data: '):
+                  payloads.append(json.loads(line[6:]))
+          if not payloads:
+              raise SystemExit('No MCP tools/list data payload found')
+          tools = payloads[-1]['result']['tools']
+          expected = {'get_conflict_pattern', 'get_conversation_plan'}
+          by_name = {tool['name']: tool for tool in tools}
+          if set(by_name) != expected:
+              raise SystemExit(f'Unexpected tool set: {set(by_name)}')
+          for name in expected:
+              schema = by_name[name].get('inputSchema') or {}
+              if schema.get('additionalProperties') is not False:
+                  raise SystemExit(f'{name} inputSchema is not closed: {schema}')
+          print('PASS: advertised MCP input schemas reject additional properties.')
+          PY
+
           curl --fail-with-body --silent --show-error \
             -X POST \
             -H 'Content-Type: application/json' \
@@ -114,3 +136,30 @@ jobs:
           cat /tmp/kesher-plan-call.txt
           grep -F 'opening_he' /tmp/kesher-plan-call.txt >/dev/null
           grep -F 'pause_phrase_he' /tmp/kesher-plan-call.txt >/dev/null
+
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H 'Content-Type: application/json' \
+            -H 'Accept: application/json, text/event-stream' \
+            --data '{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"get_conflict_pattern","arguments":{"topic":"money","interaction_signals":["criticism"],"goal":"understand_pattern","raw_text":"private relationship narrative"}}}' \
+            "$DEPLOYMENT_URL/mcp" \
+            -o /tmp/kesher-reject-extra.txt
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          payloads = []
+          for line in Path('/tmp/kesher-reject-extra.txt').read_text(encoding='utf-8').splitlines():
+              if line.startswith('data: '):
+                  payloads.append(json.loads(line[6:]))
+          if not payloads:
+              raise SystemExit('No MCP rejection payload found')
+          payload = payloads[-1]
+          result = payload.get('result') or {}
+          if payload.get('error') is None and result.get('isError') is not True:
+              raise SystemExit(f'Extra private field was not rejected: {payload}')
+          if 'pattern_label_he' in json.dumps(payload, ensure_ascii=False):
+              raise SystemExit('Rejected call unexpectedly returned a successful domain result')
+          print('PASS: MCP rejects unexpected private input fields.')
+          PY
