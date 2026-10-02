@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-02",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
-    "quality_checked_at": "2026-10-02T10:56:21.241166+00:00",
+    "quality_checked_at": "2026-10-02T11:00:57.418859+00:00",
     "quality_violations": [],
     "slug": "marshmallow-test-environmental-reliability",
     "title": "חושבים שלילד אין כוח רצון? מה מבחן המרשמלו באמת גילה על אמון",
@@ -1268,12 +1268,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-02T10:58:33.387981+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-26T21:37:01.950090+00:00",
@@ -2055,6 +2050,17 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-02T11:00:56.999916+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "verified_overview_exhaustion_recovery",
+      "details": {
+        "slug": "marshmallow-test-environmental-reliability",
+        "item_id": "video-20260930-225106-33253e4463",
+        "youtube_url": "https://youtu.be/3wkQ8tKGZxI"
+      }
     }
   ],
   "updated_at": "2026-10-02T10:58:33.388004+00:00",
@@ -2071,20 +2077,18 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "exhausted",
+    "attempt_count": 0,
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-10-02T10:13:13.693258+00:00",
-    "run_id": 36985124987,
-    "processed_run_id": 36985124987,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
-    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "VIDEO_WORKFLOW_FAILED": 1
-    },
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20261001-154922-4b0df04d89",
+    "item_id": "video-20260930-225106-33253e4463",
     "youtube_id": "3wkQ8tKGZxI",
     "youtube_url": "https://youtu.be/3wkQ8tKGZxI",
     "verified": true,
@@ -2100,10 +2104,19 @@
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
     "artifact_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
     "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f",
-    "last_dispatch_at": "2026-10-02T08:07:55.596331+00:00",
-    "resume_dispatches": 3,
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 36985124987
+    "last_dispatch_at": null,
+    "resume_dispatches": 0,
+    "last_run_conclusion": null,
+    "last_failed_run_id": 36985124987,
+    "source_binding_exhaustion_recovery_applied": true,
+    "source_binding_recovery_previous": {
+      "attempt_count": 3,
+      "item_id": "video-20261001-154922-4b0df04d89",
+      "provider_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
+      "artifact_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
+      "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f",
+      "watchdog": null
+    }
   },
   "short": {
     "attempt_count": 0,
