@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-02",
-  "status": "long_video_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
     "published_date": "2026-10-02",
     "live": true,
-    "live_verified_at": "2026-10-02T10:08:11.442645+00:00",
+    "live_verified_at": "2026-10-02T10:18:24.630138+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1268,14 +1268,13 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "long_video",
+    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
+    "message": "video exhausted 3 total controller dispatch attempts",
+    "at": "2026-10-02T10:18:29.033071+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-25T23:15:09.498960+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
     {
       "at": "2026-09-25T23:15:09.498965+00:00",
       "from": "article_needed",
@@ -2032,9 +2031,24 @@
       "details": {
         "retry_at": "2026-10-02T10:13:13.693258+00:00"
       }
+    },
+    {
+      "at": "2026-10-02T10:18:24.630153+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-02T10:18:29.033083+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-02T10:08:13.693308+00:00",
+  "updated_at": "2026-10-02T10:18:29.033089+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2049,7 +2063,7 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "pending_review",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": "2026-10-02T10:13:13.693258+00:00",
     "run_id": 36985124987,
@@ -2061,7 +2075,7 @@
       "VIDEO_WORKFLOW_FAILED": 1
     },
     "overview_evidence_required": true,
-    "item_id": "video-20260930-225106-33253e4463",
+    "item_id": "video-20261001-154922-4b0df04d89",
     "youtube_id": "3wkQ8tKGZxI",
     "youtube_url": "https://youtu.be/3wkQ8tKGZxI",
     "verified": true,
