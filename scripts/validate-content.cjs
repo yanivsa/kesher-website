@@ -238,6 +238,8 @@ const claimFiles = [
   'src/pages/Services/Premarital/PremaritalFirstYearPage.tsx',
   'src/pages/Services/Singles/LateSinglenessPage.tsx',
   'src/pages/Services/Singles/FindingRelationshipPage.tsx',
+  'src/pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage.tsx',
+  'src/pages/Landing/ParentingGuidanceAshdod/ParentingGuidanceAshdodPage.tsx',
   'src/data/landingPagesConfig.ts',
   'src/data/faqs.ts',
   'public/llms.txt',
@@ -270,6 +272,47 @@ for (const route of noindexRoutes) {
   const url = `https://kesher.saharoni.com${route}`;
   if (sitemap.includes(`<loc>${url}</loc>`)) {
     errors.push(`Noindex route must not appear in sitemap: ${route}`);
+  }
+}
+
+const llms = fs.readFileSync(path.join(ROOT, 'public/llms.txt'), 'utf8');
+const compactIndexableRoutes = [
+  '/parenting-adhd-ashdod',
+  '/couples-mediation-ashdod',
+];
+const compactHeldRoutes = [
+  '/couples-crisis-ashdod',
+  '/couples-counseling-gan-yavne',
+];
+for (const route of compactIndexableRoutes) {
+  const url = `https://kesher.saharoni.com${route}`;
+  if (!llms.includes(url)) {
+    errors.push(`Indexable Compact Keywords route missing from llms.txt: ${route}`);
+  }
+}
+for (const route of compactHeldRoutes) {
+  const url = `https://kesher.saharoni.com${route}`;
+  if (llms.includes(url)) {
+    errors.push(`Held noindex Compact Keywords route must not be promoted in llms.txt: ${route}`);
+  }
+}
+
+const compactHierarchyChecks = [
+  {
+    file: 'src/pages/Landing/ParentingGuidanceAshdod/ParentingGuidanceAshdodPage.tsx',
+    link: 'href="/parenting-adhd-ashdod"',
+    label: 'parenting hub -> ADHD specialist',
+  },
+  {
+    file: 'src/pages/Services/Mediation/MediationPage.tsx',
+    link: 'to="/couples-mediation-ashdod"',
+    label: 'mediation hub -> couples mediation specialist',
+  },
+];
+for (const check of compactHierarchyChecks) {
+  const source = fs.readFileSync(path.join(ROOT, check.file), 'utf8');
+  if (!source.includes(check.link)) {
+    errors.push(`Missing Compact Keywords hierarchy link (${check.label}) in ${check.file}`);
   }
 }
 
