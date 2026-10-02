@@ -51,6 +51,14 @@ class RuntimeV5Controller(v5.V5Controller):
         return super()._tick_short(state, source, long_item)
 
     def _adopt_existing_short(self, state, source):
+        current_short = state.get("short") or {}
+        if (
+            current_short.get("status") == "complete"
+            and current_short.get("verified") is True
+            and current_short.get("youtube_id")
+            and current_short.get("youtube_url")
+        ):
+            return current_short
         short_state = self.github.newest_short_state()
         verified = [
             row
@@ -253,6 +261,11 @@ class RuntimeV5Controller(v5.V5Controller):
         if long_candidate is not None:
             stages.append(("long_video", v5.LONG_VIDEO_WORKFLOW, long_candidate, None))
         elif long_verified is not None:
+            if (
+                state.get("short", {}).get("status") == "complete"
+                and state.get("short", {}).get("verified") is True
+            ):
+                return None
             short_state = self.github.newest_short_state()
             valid_short = [
                 row

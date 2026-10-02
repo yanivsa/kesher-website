@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 
 from scripts import kesher_content_controller_stabilized as stabilized
 from scripts import kesher_content_controller_v5 as v5
-from tests.test_v5_shared_video_controller import FakeGitHub, FakeSite, article
+from tests.test_v5_shared_video_controller import FakeGitHub, FakeSite, article, verified_item
 
 
 TZ = ZoneInfo("Asia/Jerusalem")
@@ -254,6 +254,45 @@ class V5VideoSourceBindingTests(unittest.TestCase):
         ]
         self.assertEqual(len(recovery_events_again), 1)
         self.assertEqual(recovered_again["long_video"]["attempt_count"], 0)
+
+    def test_verified_overview_exhaustion_recovery_recovers_to_complete(self):
+        gh = FakeGitHub()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            gh,
+            FakeSite(),
+            now=datetime(2026, 8, 19, 19, 0, tzinfo=TZ),
+        )
+        source = v5.article_source_identity(article())
+        verified = verified_item(source, "exact-yt-id", item_id="video-verified")
+        gh.long_state["items"] = [verified]
+
+        initial = controller.state()
+        initial["status"] = "blocked"
+        initial["last_error"] = {
+            "stage": "long_video",
+            "code": "VIDEO_ATTEMPTS_EXHAUSTED",
+            "message": "video exhausted 3 total controller dispatch attempts",
+        }
+        initial["long_video"].update({
+            "attempt_count": 3,
+            "status": "exhausted",
+            "item_id": "video-stale",
+            "provider_id": "task-stale",
+            "artifact_id": "task-stale",
+            "source_id": "source-stale",
+        })
+        gh.saved_state = copy.deepcopy(initial)
+
+        recovered = controller.state()
+        long_video = recovered["long_video"]
+        self.assertEqual(recovered["status"], "article_live")
+        self.assertIsNone(recovered["last_error"])
+        self.assertTrue(long_video["source_binding_exhaustion_recovery_applied"])
+        self.assertEqual(long_video["status"], "complete")
+        self.assertEqual(long_video["item_id"], "video-verified")
+        self.assertEqual(long_video["youtube_id"], "exact-yt-id")
+        self.assertTrue(long_video["verified"])
+
 
     def test_exact_rejected_exhaustion_gets_one_remotion_rebuild_budget_recovery(self):
         gh = FakeGitHub()

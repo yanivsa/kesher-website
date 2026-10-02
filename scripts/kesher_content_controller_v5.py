@@ -315,6 +315,14 @@ class V5Controller(v4.V4Controller):
         return article_source_identity(todays[0])
 
     def _adopt_existing_short(self, state: dict[str, Any], source: dict[str, str]) -> dict[str, Any] | None:
+        current_short = state.get("short") or {}
+        if (
+            current_short.get("status") == "complete"
+            and current_short.get("verified") is True
+            and current_short.get("youtube_id")
+            and current_short.get("youtube_url")
+        ):
+            return current_short
         short_state = self.github.newest_short_state()
         verified = _verified_exact(short_state, source)
         item = _newest(verified)

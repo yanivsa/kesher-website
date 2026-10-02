@@ -86,6 +86,22 @@ class ControllerQueueTests(unittest.TestCase):
         selected = entry.queue_aware_matching(state, "today")
         self.assertEqual(selected, [current])
 
+    def test_verified_current_day_upload_is_not_preempted_by_backlog(self) -> None:
+        backlog_item = item("yesterday", "generating", technical=False, day="2026-08-18")
+        current = item("today", "uploaded", uploaded=True, day="2026-08-19")
+        current.update({
+            "youtube_id": "today-id",
+            "youtube_url": "https://www.youtube.com/watch?v=today-id",
+            "youtube_verification": {
+                "channel_id": controller.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        })
+        state = {"items": [backlog_item, current]}
+        selected = entry.queue_aware_matching(state, "today")
+        self.assertEqual(selected, [current])
+
     def test_unverified_prior_day_upload_is_recovery_backlog(self) -> None:
         old = item("yesterday", "uploaded", uploaded=True, day="2026-08-18")
         old.update({"youtube_id": "old-id"})

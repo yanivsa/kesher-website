@@ -90,6 +90,56 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if source is None:
             return state
         snapshot = self.github.newest_video_state()
+        exact_verified = v5._verified_exact(snapshot, source)
+        if exact_verified:
+            verified_item = v5._newest(exact_verified)
+            previous = {
+                "attempt_count": long_video.get("attempt_count"),
+                "item_id": long_video.get("item_id"),
+                "provider_id": long_video.get("provider_id"),
+                "artifact_id": long_video.get("artifact_id"),
+                "source_id": long_video.get("source_id"),
+                "watchdog": long_video.get("watchdog"),
+            }
+            long_video[_SOURCE_BINDING_EXHAUSTION_RECOVERY_MARKER] = True
+            long_video["source_binding_recovery_previous"] = previous
+            long_video["attempt_count"] = 0
+            long_video["status"] = "complete"
+            long_video["last_error"] = None
+            long_video["next_retry_at"] = None
+            long_video["run_id"] = None
+            long_video["processed_run_id"] = None
+            long_video["provider_id"] = verified_item.get("task_id")
+            long_video["artifact_id"] = verified_item.get("artifact_id")
+            long_video["source_id"] = verified_item.get("source_id")
+            long_video["item_id"] = verified_item.get("id")
+            long_video["youtube_id"] = verified_item.get("youtube_id")
+            long_video["youtube_url"] = verified_item.get("youtube_url")
+            long_video["verified"] = True
+            long_video["last_dispatch_at"] = None
+            long_video["last_run_conclusion"] = None
+            long_video["resume_dispatches"] = 0
+            long_video["failure_fingerprint"] = None
+            long_video["same_failure_streak"] = 0
+            long_video["failure_count_by_type"] = {}
+            long_video.pop("watchdog", None)
+            v5.v3.clear_stage_failure(long_video)
+
+            state["status"] = "article_live"
+            state["last_error"] = None
+            state.setdefault("history", []).append({
+                "at": v5.core.utc_now(),
+                "from": "blocked",
+                "to": "article_live",
+                "reason": "verified_overview_exhaustion_recovery",
+                "details": {
+                    "slug": source["slug"],
+                    "item_id": verified_item.get("id"),
+                    "youtube_url": verified_item.get("youtube_url"),
+                },
+            })
+            return state
+
         exact = [
             item for item in v5._exact_items(snapshot, source)
             if item.get("uploaded") is not True
