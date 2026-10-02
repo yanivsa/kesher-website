@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
     "published_date": "2026-10-02",
     "live": true,
-    "live_verified_at": "2026-10-02T11:18:21.925925+00:00",
+    "live_verified_at": "2026-10-02T11:25:41.017299+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1271,38 +1271,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-27T13:07:53.359291+00:00",
-      "from": "article_normalizing",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 36277622555 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-09-27T13:12:53.359263+00:00",
-        "failure_streak": 1,
-        "run_id": 36277622555
-      }
-    },
-    {
-      "at": "2026-09-27T13:09:43.794315+00:00",
-      "from": "image_retry_wait",
-      "to": "article_result_wait",
-      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
-      "details": {
-        "run_id": 36312996133,
-        "outcome": "PR_CREATED",
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/952"
-      }
-    },
-    {
-      "at": "2026-09-27T13:10:19.368377+00:00",
-      "from": "article_result_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-27T13:11:43.794297+00:00"
-      }
-    },
-    {
       "at": "2026-09-27T13:13:39.294488+00:00",
       "from": "article_retry_wait",
       "to": "article_generating",
@@ -2029,9 +1997,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-02T11:25:41.017319+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-02T11:25:41.477905+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-02T11:25:41.959868+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-02T11:18:23.718547+00:00",
+  "updated_at": "2026-10-02T11:25:41.959884+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
