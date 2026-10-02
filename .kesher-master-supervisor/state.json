@@ -2251,6 +2251,31 @@
       "strike": 2,
       "updated_at": "2026-09-24T21:22:15.774084+00:00"
     },
+    "ksr-c5038114ffecd6f733e1a35c": {
+      "command_id": "ksr-c5038114ffecd6f733e1a35c",
+      "evidence_hash": "415ff22ded8a5097f9b99e470f72d1beb08c523dd61300eb93e5a6c887644074",
+      "exact": {
+        "artifact_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
+        "content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
+        "item_id": "video-20260930-225106-33253e4463",
+        "pr_number": null,
+        "short_item_id": "video-20261002-020743-33253e4463",
+        "slug": "marshmallow-test-environmental-reliability",
+        "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f",
+        "task_id": "404ad664-37fd-4cba-a605-500e9a64b3bf"
+      },
+      "executor": "controller",
+      "failure_signature": "STALE_OR_DUPLICATE_ARTICLE_PR",
+      "fingerprint": "b86db82303ce4135b19337f528b174f7",
+      "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|article",
+      "issued_at": "2026-10-02T18:15:38.338992+00:00",
+      "lifecycle": "issued",
+      "metadata": {},
+      "proposed_action": "escalate_unknown_failure",
+      "stage": "S1",
+      "strike": 1,
+      "updated_at": "2026-10-02T18:15:38.338992+00:00"
+    },
     "ksr-c6461c9c81c42f0130ccfebc": {
       "acknowledged_at": "2026-09-20T10:42:48.474308+00:00",
       "command_id": "ksr-c6461c9c81c42f0130ccfebc",
@@ -4174,6 +4199,25 @@
       "status": "resolved",
       "strike": 2
     },
+    "b86db82303ce4135b19337f528b174f7": {
+      "active_command_id": "ksr-c5038114ffecd6f733e1a35c",
+      "failure_signature": "STALE_OR_DUPLICATE_ARTICLE_PR",
+      "fingerprint": "b86db82303ce4135b19337f528b174f7",
+      "first_seen_at": "2026-10-02T18:15:38.338992+00:00",
+      "history": [
+        {
+          "at": "2026-10-02T18:15:38.338992+00:00",
+          "command_id": "ksr-c5038114ffecd6f733e1a35c",
+          "event": "command_issued",
+          "stage": "S1"
+        }
+      ],
+      "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|article",
+      "last_seen_at": "2026-10-02T18:15:38.338992+00:00",
+      "marker": "MASTER_ESCALATION fingerprint=b86db82303ce4135b19337f528b174f7 strike=1 stage=S1",
+      "status": "recovering",
+      "strike": 1
+    },
     "bb0e4ac04a5e8f96ad50a84b0ed62316": {
       "active_command_id": "ksr-9fa0f6007d7f7efacbe455ab",
       "failure_signature": "STALE_SOURCE_BINDING",
@@ -4478,5 +4522,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-02T11:02:39.509423+00:00"
+  "updated_at": "2026-10-02T18:15:38.338992+00:00"
 }
