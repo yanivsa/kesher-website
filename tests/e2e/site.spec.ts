@@ -174,6 +174,8 @@ test('Ashdod landing schema omits unverified city-center placeholders', async ({
     await page.goto(route, { waitUntil: 'domcontentloaded' });
     const schemaText = (await page.locator('script[type="application/ld+json"]').allTextContents()).join('\n');
 
+    expect(schemaText).toContain('"@type":"Service"');
+    expect(schemaText).toContain('"@type":"Offer"');
     expect(schemaText).not.toContain('31.8014');
     expect(schemaText).not.toContain('34.6435');
     expect(schemaText).not.toContain('77100');
