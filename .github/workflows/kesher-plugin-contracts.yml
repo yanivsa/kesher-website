@@ -1,0 +1,53 @@
+name: Kesher Plugin Contract Validation
+
+on:
+  pull_request:
+    paths:
+      - "plugin/**"
+      - "docs/chatgpt-plugin/**"
+      - ".agents/plugins/marketplace.json"
+      - ".github/workflows/kesher-plugin-contracts.yml"
+  push:
+    branches: [main]
+    paths:
+      - "plugin/**"
+      - "docs/chatgpt-plugin/**"
+      - ".agents/plugins/marketplace.json"
+      - ".github/workflows/kesher-plugin-contracts.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+
+      - name: Validate MCP contracts and golden prompt routing
+        run: node plugin/tests/validate-phase2-contracts.mjs
+
+      - name: Test Kesher domain logic
+        run: node plugin/tests/domain.test.mjs
+
+      - name: Validate portable plugin package and marketplace
+        run: node plugin/tests/validate-plugin-package.mjs
+
+      - name: Validate Kesher skill and multi-turn eval cases
+        run: node plugin/tests/validate-skill-evals.mjs
+
+      - name: Self-test Developer Mode evaluation scorer
+        run: node plugin/tests/score-golden-results.mjs --self-test
+
+      - name: Install MCP Worker dependencies
+        run: npm ci --prefix plugin --no-audit --no-fund
+
+      - name: Validate MCP Worker package
+        run: npm --prefix plugin run check

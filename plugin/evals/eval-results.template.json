@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0",
+  "source": "plugin/evals/golden-prompts.json",
+  "instructions": "Populate exactly one result per golden prompt after real ChatGPT Developer Mode evaluation. Do not infer or synthesize results.",
+  "results": []
+}
