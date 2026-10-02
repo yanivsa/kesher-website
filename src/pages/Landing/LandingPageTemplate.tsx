@@ -165,7 +165,13 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
   };
 
   return (
-    <main id="main-content" className={styles.page}>
+    <main
+      id="main-content"
+      className={styles.page}
+      data-analytics-service-type={config.serviceType}
+      data-analytics-landing-page-type={config.landingPageType}
+      data-analytics-variant-id="A"
+    >
       <MetaTags
         title={config.meta.title}
         description={config.meta.description}
@@ -214,7 +220,7 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
       </header>
 
       {/* 2. Above-The-Fold Hero Section */}
-      <section className={styles.hero} aria-labelledby="hero-title">
+      <section className={styles.hero} aria-labelledby="hero-title" data-analytics-location="hero">
         <div className={`container ${styles.heroGrid}`}>
           <div className={styles.heroContent}>
             <div className={styles.heroBadge}>
@@ -372,7 +378,12 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
             <p className={styles.priceNote}>{config.pricing.description}</p>
           </div>
 
-          <div ref={bookingRef} id="booking" className={styles.bookingContainer}>
+          <div
+            ref={bookingRef}
+            id="booking"
+            className={styles.bookingContainer}
+            data-analytics-location="booking_help"
+          >
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>{config.booking.title}</h2>
               <p className={styles.sectionSubtitle}>{config.booking.subtitle}</p>
@@ -440,7 +451,7 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
       </section>
 
       {/* 8. Closing Reassurance CTA */}
-      <section className={styles.closingCta}>
+      <section className={styles.closingCta} data-analytics-location="closing_cta">
         <div className="container">
           <h2 className={styles.closingTitle}>{config.closingCta.title}</h2>
           <p className={styles.closingSubtitle}>{config.closingCta.subtitle}</p>
@@ -488,7 +499,12 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
 
       {/* 10. Mobile Sticky Bottom Bar */}
       {!isBookingInView && (
-        <div className={styles.mobileStickyBar} role="region" aria-label="סרגל יצירת קשר מהיר">
+        <div
+          className={styles.mobileStickyBar}
+          role="region"
+          aria-label="סרגל יצירת קשר מהיר"
+          data-analytics-location="mobile_sticky"
+        >
           <a
             href={`tel:${cleanPhone}`}
             className={styles.stickyPhoneBtn}
