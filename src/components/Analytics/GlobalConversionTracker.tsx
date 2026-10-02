@@ -17,19 +17,23 @@ const getCtaName = (link: HTMLAnchorElement): string | undefined => {
 };
 
 const getLandingContext = (link: HTMLAnchorElement): Record<string, string> => {
+  const normalizedPath =
+    window.location.pathname.length > 1 && window.location.pathname.endsWith('/')
+      ? window.location.pathname.slice(0, -1)
+      : window.location.pathname;
   const owner = link.closest<HTMLElement>(
     '[data-analytics-service-type], [data-analytics-landing-page-type], [data-analytics-variant-id]',
   );
-  if (!owner) return {};
 
   return {
-    ...(owner.dataset.analyticsServiceType
+    landing_page_path: normalizedPath || '/',
+    ...(owner?.dataset.analyticsServiceType
       ? { service_type: owner.dataset.analyticsServiceType }
       : {}),
-    ...(owner.dataset.analyticsLandingPageType
+    ...(owner?.dataset.analyticsLandingPageType
       ? { landing_page_type: owner.dataset.analyticsLandingPageType }
       : {}),
-    ...(owner.dataset.analyticsVariantId
+    ...(owner?.dataset.analyticsVariantId
       ? { variant_id: owner.dataset.analyticsVariantId }
       : {}),
   };

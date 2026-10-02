@@ -14,6 +14,8 @@ const routes = [
   '/services/late-singleness',
   '/services/finding-relationship',
   '/couples-counseling-ashdod',
+  '/parenting-guidance-ashdod',
+  '/services/couples/crisis',
   '/couples-mediation-ashdod',
   '/couples-crisis-ashdod',
   '/parenting-adhd-ashdod',
@@ -116,6 +118,69 @@ test('Compact Keywords index policy matches the intended portfolio', async ({ pa
     } else {
       await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
     }
+  }
+});
+
+test('Ashdod landing hubs preserve exact conversion attribution context', async ({ page }) => {
+  const cases = [
+    {
+      route: '/couples-counseling-ashdod',
+      serviceType: 'couples_counseling',
+      landingPageType: 'ashdod',
+    },
+    {
+      route: '/parenting-guidance-ashdod',
+      serviceType: 'parenting_guidance',
+      landingPageType: 'ashdod',
+    },
+  ];
+
+  for (const item of cases) {
+    await page.goto(item.route, { waitUntil: 'domcontentloaded' });
+
+    const main = page.locator('main[data-analytics-service-type]');
+    await expect(main).toHaveAttribute('data-analytics-service-type', item.serviceType);
+    await expect(main).toHaveAttribute('data-analytics-landing-page-type', item.landingPageType);
+    await expect(main).toHaveAttribute('data-analytics-variant-id', 'A');
+
+    await page.evaluate(() => {
+      window.dataLayer = [];
+    });
+
+    const heroWhatsapp = page.locator('[data-analytics-location="hero"] a[href*="wa.me"]').first();
+    await expect(heroWhatsapp).toBeVisible();
+    await heroWhatsapp.evaluate((element) => {
+      element.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      (element as HTMLAnchorElement).click();
+    });
+
+    const event = await page.evaluate(() => {
+      return window.dataLayer.find((entry) => entry.event === 'whatsapp_click') || null;
+    });
+
+    expect(event).toMatchObject({
+      event: 'whatsapp_click',
+      landing_page_path: item.route,
+      service_type: item.serviceType,
+      landing_page_type: item.landingPageType,
+      variant_id: 'A',
+      cta_location: 'hero',
+    });
+  }
+});
+
+test('Ashdod landing schema omits unverified city-center placeholders', async ({ page }) => {
+  for (const route of ['/couples-counseling-ashdod', '/parenting-guidance-ashdod']) {
+    await page.goto(route, { waitUntil: 'domcontentloaded' });
+    const schemaText = (await page.locator('script[type="application/ld+json"]').allTextContents()).join('\n');
+
+    expect(schemaText).toContain('"@type":"Service"');
+    expect(schemaText).toContain('"@type":"Offer"');
+    expect(schemaText).not.toContain('31.8014');
+    expect(schemaText).not.toContain('34.6435');
+    expect(schemaText).not.toContain('77100');
+    expect(schemaText).not.toContain('"streetAddress":"אשדוד"');
+    expect(schemaText).not.toContain('openingHoursSpecification');
   }
 });
 
