@@ -4404,39 +4404,32 @@
       "strike": 2
     },
     "e9f1ba7af6d349a81e590eb8021fc99a": {
-      "active_command_id": null,
+      "active_command_id": "ksr-d90f0c6a161c55e802198596",
       "failure_signature": "VIDEO_ATTEMPTS_EXHAUSTED",
       "fingerprint": "e9f1ba7af6d349a81e590eb8021fc99a",
-      "first_seen_at": "2026-10-02T10:43:07.493097+00:00",
+      "first_seen_at": "2026-10-02T10:57:13.198514+00:00",
+      "history": [],
+      "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|long_video",
+      "last_seen_at": "2026-10-02T10:57:13.198514+00:00",
+      "status": "open",
+      "strike": 0
+    },
+    "f052d0c3dc51a7f7ec0da3fcba8275e6": {
+      "active_command_id": null,
+      "failure_signature": "STALE_SOURCE_BINDING",
+      "fingerprint": "f052d0c3dc51a7f7ec0da3fcba8275e6",
+      "first_seen_at": "2026-10-02T10:46:26.989536+00:00",
       "history": [
         {
-          "at": "2026-10-02T10:43:07.493097+00:00",
-          "command_id": "ksr-d90f0c6a161c55e802198596",
-          "event": "command_issued",
-          "stage": "S1"
-        },
-        {
-          "at": "2026-10-02T10:46:26.989536+00:00",
+          "at": "2026-10-02T10:57:13.198514+00:00",
           "event": "resolved",
           "reason": "failure_absent_in_fresh_exact_evidence"
         }
       ],
       "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|long_video",
-      "last_seen_at": "2026-10-02T10:43:07.493097+00:00",
-      "marker": "MASTER_ESCALATION fingerprint=e9f1ba7af6d349a81e590eb8021fc99a strike=1 stage=S1",
-      "resolved_at": "2026-10-02T10:46:26.989536+00:00",
-      "status": "resolved",
-      "strike": 1
-    },
-    "f052d0c3dc51a7f7ec0da3fcba8275e6": {
-      "active_command_id": "ksr-1ae25ef89310ce3d175d0dc4",
-      "failure_signature": "STALE_SOURCE_BINDING",
-      "fingerprint": "f052d0c3dc51a7f7ec0da3fcba8275e6",
-      "first_seen_at": "2026-10-02T10:46:26.989536+00:00",
-      "history": [],
-      "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|long_video",
       "last_seen_at": "2026-10-02T10:46:26.989536+00:00",
-      "status": "open",
+      "resolved_at": "2026-10-02T10:57:13.198514+00:00",
+      "status": "resolved",
       "strike": 0
     },
     "fabfa74a301f45d54e16ab63467427ab": {
@@ -4478,5 +4471,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-02T10:46:26.989536+00:00"
+  "updated_at": "2026-10-02T10:57:13.198514+00:00"
 }
