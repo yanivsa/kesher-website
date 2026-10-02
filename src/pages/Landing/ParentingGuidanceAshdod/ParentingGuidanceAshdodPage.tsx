@@ -99,25 +99,27 @@ const schemaData = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': ['LocalBusiness', 'ProfessionalService'],
+      '@type': 'Service',
       '@id': `${SITE_CONFIG.url}/parenting-guidance-ashdod#service`,
       name: 'הדרכת הורים באשדוד | שירה סהרוני',
       alternateName: 'קשר - הדרכת הורים באשדוד',
       url: `${SITE_CONFIG.url}/parenting-guidance-ashdod`,
       image: `${SITE_CONFIG.url}/images/generated/services/parenting-room.jpg`,
-      telephone: '+972-50-2763802',
-      email: SITE_CONFIG.contact.email,
-      priceRange: '₪500',
+      serviceType: 'הדרכת הורים באשדוד',
       description: 'הדרכת הורים מעשית וממוקדת באשדוד או אונליין. כלים ליצירת סמכות רגועה, הצבת גבולות בלי מאבקים וחיזוק שיתוף הפעולה בבית. פגישה של 50 דקות, 500 ₪.',
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'אשדוד',
-        addressCountry: 'IL',
-      },
       provider: {
         '@type': 'LocalBusiness',
         '@id': `${SITE_CONFIG.url}/#business`,
         name: 'שירה סהרוני — קשר',
+        url: SITE_CONFIG.url,
+        telephone: '+972-50-2763802',
+        email: SITE_CONFIG.contact.email,
+      },
+      offers: {
+        '@type': 'Offer',
+        price: '500',
+        priceCurrency: 'ILS',
+        url: `${SITE_CONFIG.url}/parenting-guidance-ashdod`,
       },
       areaServed: [
         {
