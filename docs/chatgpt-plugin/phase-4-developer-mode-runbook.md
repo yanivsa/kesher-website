@@ -4,28 +4,56 @@ Date: 2026-10-02
 
 ## Goal
 
-Validate real ChatGPT plugin selection and workflow behavior before any public submission.
+Validate **real ChatGPT tool selection and workflow behavior** before any production rollout or public submission.
 
-This phase must use real ChatGPT Developer Mode. Do not replace it with synthetic model results.
+This phase must use a real ChatGPT Developer Mode connection. Synthetic scoring, direct MCP calls, and server-level smoke tests remain necessary but do not replace this gate.
 
 ## Staging MCP endpoint
 
 `https://kesher-mcp-staging.yanivsa.workers.dev/mcp`
 
-The endpoint is for development evaluation only. It is not the final public-review endpoint.
+This is a development endpoint only. It is not the final production/review endpoint.
 
-## Prerequisites
+## Current prerequisites already satisfied
 
-1. In ChatGPT, open Settings.
-2. Open Security and login.
-3. Enable Developer mode.
-4. Open Plugins and add an MCP server connection.
-5. Use the staging MCP endpoint above.
-6. Confirm ChatGPT discovers exactly:
-   - `get_conflict_pattern`
-   - `get_conversation_plan`
+- MCP staging Worker is live.
+- `initialize` passes.
+- `tools/list` exposes exactly:
+  - `get_conflict_pattern`
+  - `get_conversation_plan`
+- representative `tools/call` requests pass remotely.
+- contract validation, repository CI, and stability validation are green.
+
+## Connect in ChatGPT Developer Mode
+
+According to the current OpenAI Plugin quickstart:
+
+1. Open ChatGPT.
+2. Open **Settings → Security and login**.
+3. Enable **Developer mode**.
+4. Open **Plugins**.
+5. Select the **+** button to add an MCP server.
+6. Create a personal plugin using:
+   - Name: `Kesher — זוגיות בעברית (Staging)`
+   - Description: `כלים מובנים בעברית להבנת דפוסי קונפליקט זוגי חוזרים ולתכנון שיחה רגועה יותר.`
+   - MCP URL: `https://kesher-mcp-staging.yanivsa.workers.dev/mcp`
+7. Confirm that ChatGPT discovers exactly the two V1 tools.
+8. Open the created personal plugin and install it.
+9. Return to the ChatGPT homepage.
+10. Switch from **Chat** to **Work**.
+11. Start a new Work conversation and select the Kesher personal plugin when testing.
 
 If tool discovery differs, stop and fix the MCP contract before running evaluations.
+
+## Capture the technical plugin ID
+
+After ChatGPT creates the personal plugin, copy the technical ID from the browser URL.
+
+It should start with:
+
+`plugin_asdk_app_`
+
+Record it in the PR or evaluation notes. This ID can later be used with plugin-creator workflows when packaging or iterating the plugin.
 
 ## Evaluation files
 
@@ -36,29 +64,34 @@ If tool discovery differs, stop and fix the MCP contract before running evaluati
 
 ## Pass 1 — Canary
 
-Run a small canary before the full set.
+Run a small canary first in fresh Work conversations.
 
 Use:
 - 5 direct prompts;
 - 3 indirect prompts;
 - 2 negative prompts.
 
-Record for every prompt:
+Record for each prompt:
 - whether Kesher activated;
 - the tool selected, if any;
-- whether the final answer was useful and stayed inside scope;
-- any unexpected request for identifying information.
+- whether the final answer was useful;
+- whether it stayed inside scope;
+- whether identifying information was requested;
+- whether raw user narrative appeared in the MCP tool payload.
 
-Stop the run immediately if:
-- a violence, self-harm, legal, medical, diagnosis, surveillance, or manipulation prompt activates Kesher;
-- the plugin asks for a name, phone, email, address, child name, or raw chat transcript;
-- the output labels or diagnoses a person.
+Stop immediately if:
+- violence, self-harm, legal, medical, diagnosis, surveillance, or manipulation activates Kesher;
+- Kesher asks for name, phone, email, address, child name, or raw transcript;
+- the answer labels or diagnoses a person;
+- the model sends free-form relationship narrative to the MCP server.
 
 ## Pass 2 — 100-prompt single-turn set
 
-Run all entries from `golden-prompts.json` in clean/new conversations where practical.
+Run all entries from `golden-prompts.json`, preferably in fresh conversations so prior context does not change selection.
 
-Create `plugin/evals/eval-results.json` from the template and add one object per golden prompt:
+Create `plugin/evals/eval-results.json` from the template.
+
+Activation example:
 
 ```json
 {
@@ -68,7 +101,7 @@ Create `plugin/evals/eval-results.json` from the template and add one object per
 }
 ```
 
-For no activation:
+No-activation example:
 
 ```json
 {
@@ -99,7 +132,7 @@ Precision is the first optimization target.
 
 Run the 20 cases in `conversation-cases.json`.
 
-For follow-up cases, keep each case in one conversation so the second/third message has the intended context.
+For follow-up cases, keep each case in one conversation so the later message has the intended context.
 
 For boundary cases, Kesher must not activate.
 
@@ -109,37 +142,48 @@ Check especially:
 - not re-sending raw conversation text to the MCP tool;
 - not turning answers into sales or booking prompts.
 
-## Iteration rule
+## Metadata iteration rule
 
 Change one selection variable at a time:
+
 1. tool description;
 2. input-field descriptions;
 3. skill description/instructions.
 
-Do not broaden descriptions with phrases such as "use for any relationship question."
+Do not broaden metadata with phrases such as `use for any relationship question`.
 
-After every metadata change:
-1. rerun negative canaries;
-2. rerun the prompts that failed;
-3. rerun enough positive prompts to ensure recall was not damaged.
+After each metadata change:
 
-## Complete-package test
+1. deploy staging;
+2. in ChatGPT Plugins open the personal connection and select **Refresh**;
+3. verify the advertised metadata changed;
+4. rerun negative canaries;
+5. rerun failed prompts;
+6. rerun enough positive prompts to ensure recall did not regress.
 
-After direct MCP behavior is acceptable, test the packaged plugin from the repo marketplace:
+## Optional raw protocol inspection
+
+For raw request/response inspection, the OpenAI API Playground can also add the same MCP server under **Tools → Add → MCP Server**.
+
+This is useful for inspecting transport and argument payloads, but it does not replace ChatGPT Work selection testing.
+
+## Complete package test
+
+After direct MCP selection is acceptable, test the packaged plugin:
+
 - marketplace: `.agents/plugins/marketplace.json`
 - plugin root: `./plugin`
-
-The package includes:
 - `plugin.json`
 - `mcp.json`
 - `skills/relationship-conflict/SKILL.md`
 
-Confirm the skill and tools work together in a new conversation.
+Confirm that the skill and tools work together in a fresh Work conversation.
 
-## Public submission is still blocked until
+## Public submission remains blocked until
 
-- the updated `/privacy` page is deployed;
-- a production MCP endpoint replaces the staging endpoint;
+- real Developer Mode results meet the gates above;
+- the updated `/privacy` page is live;
+- a stable production MCP endpoint replaces staging;
 - publisher identity verification is confirmed;
-- `api.apps.read` and `api.apps.write` permissions are confirmed;
-- Developer Mode results meet the gates above.
+- required Apps Management permissions are confirmed;
+- the submission package is reviewed again after the final MCP URL is set.
