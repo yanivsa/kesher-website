@@ -225,6 +225,7 @@
       "updated_at": "2026-09-23T11:47:01.316936+00:00"
     },
     "ksr-0e4a62713cb4d48035528220": {
+      "acknowledged_at": "2026-10-02T08:10:46.414979+00:00",
       "command_id": "ksr-0e4a62713cb4d48035528220",
       "evidence_hash": "ab1ab9ed175ce2e92704d70dabb8b30f893643f55c3093eb072493467416cbe0",
       "exact": {
@@ -242,12 +243,44 @@
       "fingerprint": "f052d0c3dc51a7f7ec0da3fcba8275e6",
       "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|long_video",
       "issued_at": "2026-10-02T08:10:03.007505+00:00",
-      "lifecycle": "issued",
-      "metadata": {},
+      "lifecycle": "acknowledged",
+      "metadata": {
+        "incident_packet": {
+          "command_id": "ksr-0e4a62713cb4d48035528220",
+          "constraints": {
+            "never_bypass_ci_or_safeguards": true,
+            "no_duplicate_article_pr": true,
+            "no_duplicate_generation_upload": true,
+            "production_state_writer_remains_v5": true,
+            "reuse_existing_session_pr": true
+          },
+          "definition_of_done": "controller bindings match the authoritative slug/content hash and exact provider/item identities without fresh generation",
+          "evidence_hash": "ab1ab9ed175ce2e92704d70dabb8b30f893643f55c3093eb072493467416cbe0",
+          "exact": {
+            "artifact_id": "404ad664-37fd-4cba-a605-500e9a64b3bf",
+            "content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
+            "item_id": "video-20260930-225106-33253e4463",
+            "pr_number": null,
+            "short_item_id": "video-20261002-020743-33253e4463",
+            "slug": "marshmallow-test-environmental-reliability",
+            "source_id": "da6a1b89-c6c4-49f6-bb2a-87080847088f",
+            "task_id": "404ad664-37fd-4cba-a605-500e9a64b3bf"
+          },
+          "failure_signature": "STALE_SOURCE_BINDING",
+          "fingerprint": "f052d0c3dc51a7f7ec0da3fcba8275e6",
+          "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|long_video",
+          "proposed_action": "rebind_exact_source",
+          "schema_version": 1,
+          "stage": "long_video",
+          "strike": 2
+        },
+        "jules_mode": "created",
+        "session_id": "sessions/1405790111988113169"
+      },
       "proposed_action": "rebind_exact_source",
       "stage": "S2",
       "strike": 2,
-      "updated_at": "2026-10-02T08:10:03.007505+00:00"
+      "updated_at": "2026-10-02T08:10:46.414979+00:00"
     },
     "ksr-14d6e3811b3b5e871c05cea0": {
       "acknowledged_at": "2026-09-23T11:30:40.453802+00:00",
@@ -4405,5 +4438,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-02T08:10:03.007505+00:00"
+  "updated_at": "2026-10-02T08:10:46.414979+00:00"
 }
