@@ -65,6 +65,7 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
 
   const {
     trackCtaClick,
+    trackSecondaryCtaClick,
     trackPhoneClick,
     trackWhatsappClick,
     trackFaqInteraction,
@@ -340,7 +341,30 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
         </div>
       </section>
 
-      {/* 5. Bio Section (Grounding & Human Connection) */}
+      {/* 5. Contextual parent / canonical service link */}
+      <section className={styles.relatedServiceSection} aria-label="שירות קשור">
+        <div className="container">
+          <div className={styles.relatedServiceCard}>
+            <div>
+              <h2 className={styles.relatedServiceTitle}>{config.relatedService.title}</h2>
+              <p className={styles.relatedServiceText}>{config.relatedService.description}</p>
+            </div>
+            <a
+              href={config.relatedService.href}
+              className={styles.relatedServiceLink}
+              data-analytics-location="related_service"
+              onClick={() =>
+                trackSecondaryCtaClick(config.relatedService.linkText, 'related_service')
+              }
+            >
+              {config.relatedService.linkText}
+              <span aria-hidden="true">←</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Bio Section (Grounding & Human Connection) */}
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.bioCard}>
@@ -368,7 +392,7 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
         </div>
       </section>
 
-      {/* 6. Pricing Card & Interactive Booking Embed */}
+      {/* 7. Pricing Card & Interactive Booking Embed */}
       <section className={styles.section}>
         <div className="container">
           <div className={styles.priceCard}>
@@ -415,7 +439,7 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
         </div>
       </section>
 
-      {/* 7. Objection-Handling FAQ Accordion */}
+      {/* 8. Objection-Handling FAQ Accordion */}
       <section className={styles.sectionAlt}>
         <div className="container">
           <div className={styles.sectionHeader}>
@@ -450,7 +474,7 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
         </div>
       </section>
 
-      {/* 8. Closing Reassurance CTA */}
+      {/* 9. Closing Reassurance CTA */}
       <section className={styles.closingCta} data-analytics-location="closing_cta">
         <div className="container">
           <h2 className={styles.closingTitle}>{config.closingCta.title}</h2>
@@ -478,7 +502,7 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
         </div>
       </section>
 
-      {/* 9. Minimalist Footer */}
+      {/* 10. Minimalist Footer */}
       <footer className={styles.footer}>
         <div className={`container ${styles.footerInner}`}>
           <div className={styles.footerLinks}>
@@ -497,7 +521,7 @@ export const LandingPageTemplate: React.FC<LandingPageTemplateProps> = ({ config
         </div>
       </footer>
 
-      {/* 10. Mobile Sticky Bottom Bar */}
+      {/* 11. Mobile Sticky Bottom Bar */}
       {!isBookingInView && (
         <div
           className={styles.mobileStickyBar}
