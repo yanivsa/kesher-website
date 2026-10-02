@@ -40,6 +40,11 @@ describe('preloadRoute', () => {
     expect(ganYavnePromise).toBe(ganYavnePromise2);
     expect(ganYavnePromise).not.toBe(adhdPromise);
 
+    const toolsPromise = preloadRoute('/tools/chatgpt');
+    const toolsPromise2 = preloadRoute('/tools/chatgpt/');
+    expect(toolsPromise).toBe(toolsPromise2);
+    expect(toolsPromise).not.toBe(adhdPromise);
+
     const mediationPromise = preloadRoute('/couples-mediation-ashdod');
     const mediationPromise2 = preloadRoute('/couples-mediation-ashdod/');
     expect(mediationPromise).toBe(mediationPromise2);
@@ -61,6 +66,7 @@ describe('preloadRoute', () => {
       adhdPromise,
       ganYavnePromise,
       mediationPromise,
+      toolsPromise,
       notFoundPromise1,
     ]);
   });

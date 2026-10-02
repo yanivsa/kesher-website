@@ -34,6 +34,7 @@ const STATIC_ROUTES = [
   '/accessibility',
   '/privacy',
   '/terms',
+  '/tools/chatgpt',
 ];
 
 const stripHtml = (html) => html.replace(/<[^>]+>/g, ' ');
