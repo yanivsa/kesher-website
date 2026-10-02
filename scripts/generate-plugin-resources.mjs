@@ -19,6 +19,7 @@ function topicsFor(p,domain){
     if(has(/מטלות|עומס|mental load|חלוקת/))t.add("household");
     if(has(/אמון|בגידה|trust/))t.add("trust");
     if(has(/אינטימ|קרבה/))t.add("intimacy");
+    if(has(/מסך|מסכ|טלפון|טאבלט/))t.add("screens");
     if(has(/משפחה המורחבת|משפחות המוצא|גבולות למשפחה/))t.add("extended_family");
     if(has(/הורות|ילדים|הורים/))t.add("parenting_alignment");
   }else{
