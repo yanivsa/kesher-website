@@ -7,6 +7,10 @@ on:
       - "docs/chatgpt-plugin/**"
       - ".agents/plugins/marketplace.json"
       - ".github/workflows/kesher-plugin-contracts.yml"
+      - "scripts/generate-plugin-resources.mjs"
+      - "src/data/posts.json"
+      - "tests/kesher-plugin-contracts.test.ts"
+      - "package.json"
   push:
     branches: [main]
     paths:
@@ -14,6 +18,10 @@ on:
       - "docs/chatgpt-plugin/**"
       - ".agents/plugins/marketplace.json"
       - ".github/workflows/kesher-plugin-contracts.yml"
+      - "scripts/generate-plugin-resources.mjs"
+      - "src/data/posts.json"
+      - "tests/kesher-plugin-contracts.test.ts"
+      - "package.json"
   workflow_dispatch:
 
 permissions:

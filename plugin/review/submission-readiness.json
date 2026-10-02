@@ -23,7 +23,7 @@
     },
     {
       "id": "privacy_policy",
-      "status": "pending",
+      "status": "implemented_pending_deploy",
       "requirement": "Deploy explicit V2 disclosures at /privacy before public submission."
     },
     {
