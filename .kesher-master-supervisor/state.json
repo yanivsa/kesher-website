@@ -4422,14 +4422,21 @@
       "strike": 0
     },
     "f052d0c3dc51a7f7ec0da3fcba8275e6": {
-      "active_command_id": "ksr-1ae25ef89310ce3d175d0dc4",
+      "active_command_id": null,
       "failure_signature": "STALE_SOURCE_BINDING",
       "fingerprint": "f052d0c3dc51a7f7ec0da3fcba8275e6",
       "first_seen_at": "2026-10-02T10:58:47.832562+00:00",
-      "history": [],
+      "history": [
+        {
+          "at": "2026-10-02T11:02:39.509423+00:00",
+          "event": "resolved",
+          "reason": "failure_absent_in_fresh_exact_evidence"
+        }
+      ],
       "incident_id": "v5|marshmallow-test-environmental-reliability|33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf|long_video",
       "last_seen_at": "2026-10-02T10:59:58.838116+00:00",
-      "status": "open",
+      "resolved_at": "2026-10-02T11:02:39.509423+00:00",
+      "status": "resolved",
       "strike": 0
     },
     "fabfa74a301f45d54e16ab63467427ab": {
@@ -4471,5 +4478,5 @@
     }
   },
   "schema_version": 1,
-  "updated_at": "2026-10-02T10:58:47.832562+00:00"
+  "updated_at": "2026-10-02T11:02:39.509423+00:00"
 }
