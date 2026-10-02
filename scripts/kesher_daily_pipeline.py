@@ -1097,10 +1097,32 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
         and bool(str((item.get("review_notes") or {}).get("metadata") or "").strip())
     )
     uploaded_recovery = item.get("status") == "uploaded" and item.get("uploaded") is True and item.get("youtube_id")
-    if not (rejected or legacy_signature_recovery or metadata_recovery or uploaded_recovery):
+    immutable_evidence_fields = (
+        "manifest_sha256",
+        "transcript_sha256",
+        "source_file_sha256",
+        "visual_review_sha256",
+    )
+    legacy_evidence_recovery = (
+        item.get("uploaded") is not True
+        and item.get("technical_verified") is True
+        and item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
+        and (
+            any(not item.get(field) for field in immutable_evidence_fields)
+            or not isinstance(item.get("frame_sha256"), dict)
+            or not item.get("frame_sha256")
+        )
+    )
+    if not (
+        rejected
+        or legacy_signature_recovery
+        or metadata_recovery
+        or uploaded_recovery
+        or legacy_evidence_recovery
+    ):
         raise PipelineError(
             "Remotion rebuild is allowed only for a visual rejection, a recoverable signature/metadata technical rejection, "
-            "or an exact uploaded-item recovery"
+            "an exact legacy immutable-evidence recovery, or an exact uploaded-item recovery"
         )
 
     youtube_id = item.pop("youtube_id", None)
@@ -1149,6 +1171,7 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
     )
     for field in (
         "final_mp4", "final_sha256", "manifest_path", "manifest_sha256",
+        "transcript_path", "transcript_sha256", "source_path", "source_file_sha256",
         "visual_review_path", "visual_review_sha256", "frame_paths", "frame_sha256",
         "remotion_props_path", "remotion_props_sha256", "motion_plan_path", "motion_plan_sha256", "rejected_at",
         "enhancement_status", "enhancement_render_mode", "enhancement_assets_used",
