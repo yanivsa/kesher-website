@@ -80,3 +80,15 @@ jobs:
           done
           test "$ok" = true
           cat /tmp/kesher-mcp-init.txt
+
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H 'Content-Type: application/json' \
+            -H 'Accept: application/json, text/event-stream' \
+            --data '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+            "$DEPLOYMENT_URL/mcp" \
+            -o /tmp/kesher-tools.txt
+
+          cat /tmp/kesher-tools.txt
+          grep -F 'get_conflict_pattern' /tmp/kesher-tools.txt >/dev/null
+          grep -F 'get_conversation_plan' /tmp/kesher-tools.txt >/dev/null
