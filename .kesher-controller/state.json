@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
     "published_date": "2026-10-02",
     "live": true,
-    "live_verified_at": "2026-10-02T08:11:13.796085+00:00",
+    "live_verified_at": "2026-10-02T08:37:40.482272+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1272,7 +1272,7 @@
     "stage": "long_video",
     "code": "VIDEO_ATTEMPTS_EXHAUSTED",
     "message": "video exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-02T08:11:17.017500+00:00"
+    "at": "2026-10-02T08:37:42.517714+00:00"
   },
   "history": [
     {
@@ -1982,9 +1982,24 @@
       "details": {
         "message": "video exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-02T08:37:40.482288+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-02T08:37:42.517726+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "video exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-02T08:11:17.017521+00:00",
+  "updated_at": "2026-10-02T08:37:42.517732+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2009,7 +2024,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "item_id": "video-20260930-225106-33253e4463",
+    "item_id": "video-20261001-154922-4b0df04d89",
     "youtube_id": "3wkQ8tKGZxI",
     "youtube_url": "https://youtu.be/3wkQ8tKGZxI",
     "verified": true,
