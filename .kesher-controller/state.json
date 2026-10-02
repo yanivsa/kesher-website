@@ -1264,7 +1264,9 @@
         "article_live": true,
         "long_status": "running",
         "long_resume_count": 15,
-        "long_last_dispatch_at": "2026-10-02T11:18:31.815073+00:00"
+        "long_last_dispatch_at": "2026-10-02T11:25:48.180364+00:00",
+        "long_evidence_rebuild_count": 1,
+        "last_error": null
       }
     }
   ],
