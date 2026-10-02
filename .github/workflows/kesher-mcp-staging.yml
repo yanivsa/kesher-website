@@ -92,3 +92,25 @@ jobs:
           cat /tmp/kesher-tools.txt
           grep -F 'get_conflict_pattern' /tmp/kesher-tools.txt >/dev/null
           grep -F 'get_conversation_plan' /tmp/kesher-tools.txt >/dev/null
+
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H 'Content-Type: application/json' \
+            -H 'Accept: application/json, text/event-stream' \
+            --data '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_conflict_pattern","arguments":{"topic":"money","interaction_signals":["criticism","defensiveness","repetition"],"goal":"understand_pattern"}}}' \
+            "$DEPLOYMENT_URL/mcp" \
+            -o /tmp/kesher-pattern-call.txt
+          cat /tmp/kesher-pattern-call.txt
+          grep -F 'pattern_label_he' /tmp/kesher-pattern-call.txt >/dev/null
+          grep -F 'ביקורת–התגוננות' /tmp/kesher-pattern-call.txt >/dev/null
+
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H 'Content-Type: application/json' \
+            -H 'Accept: application/json, text/event-stream' \
+            --data '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"get_conversation_plan","arguments":{"topic":"household","goal":"discuss_household","emotional_intensity":"high","interaction_risk":"escalation","tone":"gentle"}}}' \
+            "$DEPLOYMENT_URL/mcp" \
+            -o /tmp/kesher-plan-call.txt
+          cat /tmp/kesher-plan-call.txt
+          grep -F 'opening_he' /tmp/kesher-plan-call.txt >/dev/null
+          grep -F 'pause_phrase_he' /tmp/kesher-plan-call.txt >/dev/null
