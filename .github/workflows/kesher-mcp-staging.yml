@@ -1,0 +1,61 @@
+name: Kesher MCP Staging Deploy
+
+on:
+  push:
+    branches:
+      - feature/kesher-chatgpt-plugin
+    paths:
+      - "plugin/**"
+      - ".github/workflows/kesher-mcp-staging.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: kesher-mcp-staging
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+
+      - name: Install MCP Worker dependencies
+        run: npm install --prefix plugin --no-audit --no-fund
+
+      - name: Run MCP Worker validation
+        run: npm --prefix plugin run check
+
+      - name: Deploy Kesher MCP staging Worker
+        id: deploy
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: 4.100.0
+          workingDirectory: plugin
+          command: deploy --config wrangler.jsonc
+
+      - name: Smoke test staging health and MCP initialize
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOYMENT_URL"
+          echo "Staging URL: $DEPLOYMENT_URL"
+
+          curl --fail-with-body --silent --show-error             "$DEPLOYMENT_URL/health"             | tee /tmp/kesher-health.json
+          grep -F '"ok":true' /tmp/kesher-health.json >/dev/null
+
+          curl --fail-with-body --silent --show-error             -X POST             -H 'Content-Type: application/json'             -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"kesher-ci","version":"1.0.0"}}}'             "$DEPLOYMENT_URL/mcp"             | tee /tmp/kesher-mcp-init.txt
+
+          grep -E '"jsonrpc"|serverInfo|protocolVersion|event:' /tmp/kesher-mcp-init.txt >/dev/null
