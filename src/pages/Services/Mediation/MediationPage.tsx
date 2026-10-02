@@ -126,6 +126,7 @@ const MediationPage: React.FC = () => {
               <span className={styles.cardIcon}><FiMessageCircle aria-hidden="true" /></span>
               <h3>גישור בין בני זוג</h3>
               <p>שיח סביב החלטות משותפות, תקשורת, חלוקת אחריות, כסף, משפחות מוצא ונושאים שחוזרים שוב ושוב ללא פתרון.</p>
+              <p><Link to="/couples-mediation-ashdod">למידע ממוקד על גישור זוגי, שלום בית ופרידה בהסכמה באשדוד</Link></p>
             </article>
             <article className={styles.card}>
               <span className={styles.cardIcon}><FiUsers aria-hidden="true" /></span>

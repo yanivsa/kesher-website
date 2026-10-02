@@ -11,16 +11,16 @@ export interface LandingPageAnalyticsOptions {
 export function useLandingPageAnalytics(variantId?: string): {
   trackCtaClick: (ctaName: string, ctaLocation: string) => void;
   trackSecondaryCtaClick: (ctaName: string, ctaLocation: string) => void;
-  trackPhoneClick: () => void;
-  trackWhatsappClick: () => void;
+  trackPhoneClick: (locationOrEvent?: string | unknown) => void;
+  trackWhatsappClick: (locationOrEvent?: string | unknown) => void;
   trackCalendlyOpen: () => void;
   trackFaqInteraction: (faqIndex?: number) => void;
 };
 export function useLandingPageAnalytics(options: LandingPageAnalyticsOptions): {
   trackCtaClick: (ctaName: string, ctaLocation: string) => void;
   trackSecondaryCtaClick: (ctaName: string, ctaLocation: string) => void;
-  trackPhoneClick: () => void;
-  trackWhatsappClick: () => void;
+  trackPhoneClick: (locationOrEvent?: string | unknown) => void;
+  trackWhatsappClick: (locationOrEvent?: string | unknown) => void;
   trackCalendlyOpen: () => void;
   trackFaqInteraction: (faqIndex?: number) => void;
 };
@@ -120,12 +120,14 @@ export function useLandingPageAnalytics(
     service_type: serviceType,
   };
 
-  const trackPhoneClick = () => {
-    pushAnalyticsEvent('phone_click', { ...conversionContext, cta_location: 'landing_page' });
+  const trackPhoneClick = (locationOrEvent?: string | unknown) => {
+    const location = typeof locationOrEvent === 'string' ? locationOrEvent : 'landing_page';
+    pushAnalyticsEvent('phone_click', { ...conversionContext, cta_location: location });
   };
 
-  const trackWhatsappClick = () => {
-    pushAnalyticsEvent('whatsapp_click', { ...conversionContext, cta_location: 'landing_page' });
+  const trackWhatsappClick = (locationOrEvent?: string | unknown) => {
+    const location = typeof locationOrEvent === 'string' ? locationOrEvent : 'landing_page';
+    pushAnalyticsEvent('whatsapp_click', { ...conversionContext, cta_location: location });
   };
 
   const trackCalendlyOpen = () => {

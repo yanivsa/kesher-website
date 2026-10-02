@@ -200,7 +200,12 @@ for (let i = 0; i < published.length; i++) {
 }
 
 const sitemap = fs.readFileSync(path.join(ROOT, 'public/sitemap.xml'), 'utf8');
-const noindexRoutes = new Set(['/thank-you-booked', '/thank-you-contact']);
+const noindexRoutes = new Set([
+  '/thank-you-booked',
+  '/thank-you-contact',
+  '/couples-crisis-ashdod',
+  '/couples-counseling-gan-yavne',
+]);
 const indexableStaticRoutes = STATIC_ROUTES.filter((route) => !noindexRoutes.has(route));
 for (const route of [...indexableStaticRoutes, ...published.map(blogRoute)]) {
   const url = `https://kesher.saharoni.com${route === '/' ? '' : route}`;
@@ -233,6 +238,7 @@ const claimFiles = [
   'src/pages/Services/Premarital/PremaritalFirstYearPage.tsx',
   'src/pages/Services/Singles/LateSinglenessPage.tsx',
   'src/pages/Services/Singles/FindingRelationshipPage.tsx',
+  'src/data/landingPagesConfig.ts',
   'src/data/faqs.ts',
   'public/llms.txt',
 ];
@@ -240,6 +246,30 @@ for (const relative of claimFiles) {
   const content = fs.readFileSync(path.join(ROOT, relative), 'utf8');
   for (const pattern of unsupportedClaims) {
     if (pattern.test(content)) errors.push(`Unsupported claim in ${relative}: ${pattern}`);
+  }
+}
+
+const compactLandingContent = fs.readFileSync(path.join(ROOT, 'src/data/landingPagesConfig.ts'), 'utf8');
+const forbiddenCompactLandingPhrases = [
+  'גישה נוחה וחניה',
+  'באותה רמת עומק ותשומת לב',
+  'עשויים לסייע לכל משפחה',
+  'מרחק נסיעה קצר',
+  'דקות נסיעה ספורות',
+  'שומר על עתיד המשפחה',
+  'קליניקה סמוכה',
+  'סמוך לגן יבנה',
+];
+for (const phrase of forbiddenCompactLandingPhrases) {
+  if (compactLandingContent.includes(phrase)) {
+    errors.push(`Unsupported or unverified Compact Keywords claim: "${phrase}"`);
+  }
+}
+
+for (const route of noindexRoutes) {
+  const url = `https://kesher.saharoni.com${route}`;
+  if (sitemap.includes(`<loc>${url}</loc>`)) {
+    errors.push(`Noindex route must not appear in sitemap: ${route}`);
   }
 }
 
