@@ -1,0 +1,169 @@
+name: Kesher MCP Pages Preview
+
+on:
+  push:
+    branches:
+      - feature/kesher-chatgpt-plugin
+    paths:
+      - "plugin/**"
+      - "functions/mcp.ts"
+      - ".github/workflows/kesher-mcp-pages-preview.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: kesher-mcp-pages-preview
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install site and MCP dependencies
+        run: |
+          npm ci
+          npm ci --prefix plugin --no-audit --no-fund
+
+      - name: Validate MCP package
+        run: npm --prefix plugin run check
+
+      - name: Deploy internal MCP origin
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: 4.100.0
+          workingDirectory: plugin
+          command: deploy --config wrangler.origin.jsonc
+
+      - name: Ensure Pages preview service binding
+        shell: bash
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          import urllib.request
+
+          account = os.environ["CLOUDFLARE_ACCOUNT_ID"]
+          token = os.environ["CLOUDFLARE_API_TOKEN"]
+          url = f"https://api.cloudflare.com/client/v4/accounts/{account}/pages/projects/kesher-website"
+          headers = {
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/json",
+              "Content-Type": "application/json",
+              "User-Agent": "kesher-mcp-preview/1",
+          }
+
+          req = urllib.request.Request(url, headers=headers)
+          with urllib.request.urlopen(req, timeout=30) as response:
+              payload = json.load(response)
+          if payload.get("success") is not True:
+              raise SystemExit("Could not read Pages project")
+
+          preview = dict((((payload.get("result") or {}).get("deployment_configs") or {}).get("preview") or {}))
+          allowed = {
+              "env_vars",
+              "kv_namespaces",
+              "fail_open",
+              "always_use_latest_compatibility_date",
+              "compatibility_date",
+              "compatibility_flags",
+              "build_image_major_version",
+              "usage_model",
+              "services",
+          }
+          preview = {k: v for k, v in preview.items() if k in allowed}
+          services = dict(preview.get("services") or {})
+          services["KESHER_MCP"] = {"service": "kesher-mcp-origin"}
+          preview["services"] = services
+
+          body = json.dumps({"deployment_configs": {"preview": preview}}).encode()
+          patch = urllib.request.Request(url, headers=headers, data=body, method="PATCH")
+          with urllib.request.urlopen(patch, timeout=30) as response:
+              updated = json.load(response)
+          if updated.get("success") is not True:
+              raise SystemExit("Pages service-binding update failed")
+
+          result = updated.get("result") or {}
+          after = ((result.get("deployment_configs") or {}).get("preview") or {})
+          binding = (after.get("services") or {}).get("KESHER_MCP") or {}
+          if binding.get("service") != "kesher-mcp-origin":
+              raise SystemExit("KESHER_MCP preview service binding is not active")
+          if "BOOKING_KV" not in (after.get("kv_namespaces") or {}):
+              raise SystemExit("Existing BOOKING_KV preview binding was not preserved")
+          print("Pages preview KESHER_MCP service binding is active and BOOKING_KV is preserved.")
+          PY
+
+      - name: Install Chromium
+        run: npx playwright install chromium
+
+      - name: Build preview site
+        run: npm run build
+
+      - name: Finalize preview measurement placeholder
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          placeholder = '%VITE_GTM_CONTAINER_ID%'
+          for file in Path('dist').rglob('*.html'):
+              text = file.read_text(encoding='utf-8')
+              if placeholder in text:
+                  file.write_text(text.replace(placeholder, 'disabled'), encoding='utf-8')
+          PY
+
+      - name: Deploy Pages preview
+        id: pages
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: 4.100.0
+          command: pages deploy dist --project-name=kesher-website --branch=feature-kesher-chatgpt-plugin
+
+      - name: Smoke MCP through Pages preview
+        env:
+          PREVIEW_URL: ${{ steps.pages.outputs.deployment-url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$PREVIEW_URL"
+          echo "Pages preview URL: $PREVIEW_URL"
+
+          ok=false
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --fail-with-body --silent --show-error               -X POST               -H 'Content-Type: application/json'               -H 'Accept: application/json, text/event-stream'               --data '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"kesher-pages-preview","version":"1.0.0"}}}'               "$PREVIEW_URL/mcp"               -o /tmp/pages-mcp-init.txt; then
+              if grep -F 'kesher-hebrew-relationship-tools' /tmp/pages-mcp-init.txt >/dev/null; then
+                ok=true
+                break
+              fi
+            fi
+            echo "Pages MCP propagation attempt $attempt failed; retrying."
+            sleep 3
+          done
+          test "$ok" = true
+          cat /tmp/pages-mcp-init.txt
+
+          curl --fail-with-body --silent --show-error             -X POST             -H 'Content-Type: application/json'             -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'             "$PREVIEW_URL/mcp"             -o /tmp/pages-mcp-tools.txt
+          grep -F 'get_conflict_pattern' /tmp/pages-mcp-tools.txt >/dev/null
+          grep -F 'get_conversation_plan' /tmp/pages-mcp-tools.txt >/dev/null
+
+          curl --fail-with-body --silent --show-error             -X POST             -H 'Content-Type: application/json'             -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_conflict_pattern","arguments":{"topic":"money","interaction_signals":["criticism","defensiveness"],"goal":"understand_pattern"}}}'             "$PREVIEW_URL/mcp"             -o /tmp/pages-mcp-call.txt
+          grep -F 'ביקורת–התגוננות' /tmp/pages-mcp-call.txt >/dev/null
+          cat /tmp/pages-mcp-call.txt
