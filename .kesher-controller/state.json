@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
     "published_date": "2026-10-02",
     "live": true,
-    "live_verified_at": "2026-10-02T11:25:41.017299+00:00",
+    "live_verified_at": "2026-10-02T11:30:11.107775+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1273,31 +1273,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-27T13:13:39.294488+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 3
-      }
-    },
-    {
-      "at": "2026-09-27T15:05:53.557100+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 953,
-        "slot": "2026-09-27"
-      }
-    },
-    {
-      "at": "2026-09-27T15:09:46.488623+00:00",
-      "from": "article_normalizing",
-      "to": "article_pr_open",
-      "reason": "normalized article PR has required trusted image"
-    },
-    {
       "at": "2026-09-27T15:15:04.187790+00:00",
       "from": "article_pr_open",
       "to": "article_deploying",
@@ -2017,9 +1992,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-02T11:30:11.107793+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-02T11:30:12.249074+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-02T11:30:13.201388+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-02T11:25:41.959884+00:00",
+  "updated_at": "2026-10-02T11:30:13.201407+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
