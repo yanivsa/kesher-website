@@ -80,6 +80,19 @@ describe('LandingPageTemplate Component', () => {
     expect(screen.getByText(config.pricing.title)).toBeDefined();
   });
 
+  it('renders the contextual related-service link with analytics location', () => {
+    const { container } = render(
+      <MemoryRouter initialEntries={['/couples-crisis-ashdod']}>
+        <LandingPageTemplate config={config} />
+      </MemoryRouter>
+    );
+
+    const relatedLink = screen.getByRole('link', { name: config.relatedService.linkText });
+    expect(relatedLink.getAttribute('href')).toBe(config.relatedService.href);
+    expect(relatedLink.getAttribute('data-analytics-location')).toBe('related_service');
+    expect(container.querySelector('section[aria-label="שירות קשור"]')).not.toBeNull();
+  });
+
   it('renders objection-handling FAQ items', () => {
     render(
       <MemoryRouter initialEntries={['/couples-crisis-ashdod']}>

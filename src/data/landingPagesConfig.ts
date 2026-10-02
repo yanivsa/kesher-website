@@ -21,6 +21,13 @@ export interface LandingPageFaqItem {
   answer: string;
 }
 
+export interface LandingPageRelatedService {
+  title: string;
+  description: string;
+  linkText: string;
+  href: string;
+}
+
 export interface LandingPageConfig {
   slug: string;
   serviceType: string;
@@ -53,6 +60,7 @@ export interface LandingPageConfig {
     sectionSubtitle: string;
     steps: LandingPageApproachStep[];
   };
+  relatedService: LandingPageRelatedService;
   bio: {
     name: string;
     role: string;
@@ -176,6 +184,12 @@ export const LANDING_PAGES_CONFIG: Record<string, LandingPageConfig> = {
           desc: 'קביעת הסכמות יומיומיות ברורות סביב תקשורת, שגרה והורות, שמאפשרות להחזיר את האמון, הביטחון והקרבה לקשר.'
         }
       ]
+    },
+    relatedService: {
+      title: 'מחפשים מידע רחב יותר על ליווי זוגי בזמן משבר?',
+      description: 'עמוד השירות הראשי מרכז את אפשרויות הליווי לזוגות במצבי משבר ואת דרך העבודה מעבר לעמוד הממוקד הזה.',
+      linkText: 'לייעוץ זוגי במצבי משבר',
+      href: '/services/couples/crisis'
     },
     bio: {
       name: 'שירה סהרוני',
@@ -323,6 +337,12 @@ export const LANDING_PAGES_CONFIG: Record<string, LandingPageConfig> = {
           desc: 'יציאה עם תוכנית פעולה ברורה ועקבית לשני ההורים: איך להציב גבול ללא כעס, איך לעצור מאבק כוח ואיך לחזק את שיתוף הפעולה.'
         }
       ]
+    },
+    relatedService: {
+      title: 'הקושי רחב יותר מ-ADHD וקשיי קשב?',
+      description: 'אם האתגר כולל גם גבולות, שגרה או פערים בין ההורים, עמוד הדרכת ההורים באשדוד מציג את המענה הרחב יותר.',
+      linkText: 'להדרכת הורים באשדוד',
+      href: '/parenting-guidance-ashdod'
     },
     bio: {
       name: 'שירה סהרוני',
@@ -477,6 +497,12 @@ export const LANDING_PAGES_CONFIG: Record<string, LandingPageConfig> = {
         }
       ]
     },
+    relatedService: {
+      title: 'רוצים לקרוא על שירות הייעוץ הזוגי המרכזי?',
+      description: 'הפגישות מתקיימות באשדוד או בזום. עמוד הייעוץ הזוגי באשדוד מרכז את אופן העבודה, המחיר וקביעת הפגישה.',
+      linkText: 'לייעוץ זוגי באשדוד',
+      href: '/couples-counseling-ashdod'
+    },
     bio: {
       name: 'שירה סהרוני',
       role: 'יועצת זוגית ומנחת הורים מוסמכת',
@@ -623,6 +649,12 @@ export const LANDING_PAGES_CONFIG: Record<string, LandingPageConfig> = {
           desc: 'ניסוח הבנות מעשיות וברורות לשלום בית או לפרידה, במטרה ליצור מסגרת שניתן להבין, לבחון וליישם.'
         }
       ]
+    },
+    relatedService: {
+      title: 'מחפשים גישור שאינו דווקא זוגי?',
+      description: 'עמוד הגישור הראשי מרכז גם גישור במשפחה, בין הורים, שכנים ושותפים לצד גישור בין בני זוג.',
+      linkText: 'לכל שירותי הגישור',
+      href: '/services/mediation'
     },
     bio: {
       name: 'שירה סהרוני',

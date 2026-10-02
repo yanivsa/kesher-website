@@ -316,6 +316,18 @@ for (const check of compactHierarchyChecks) {
   }
 }
 
+const compactReverseHierarchyChecks = [
+  { href: "href: '/parenting-guidance-ashdod'", label: 'ADHD specialist -> parenting hub' },
+  { href: "href: '/services/mediation'", label: 'couples mediation specialist -> mediation hub' },
+  { href: "href: '/services/couples/crisis'", label: 'held crisis page -> canonical crisis service' },
+  { href: "href: '/couples-counseling-ashdod'", label: 'held Gan Yavne page -> Ashdod couples service' },
+];
+for (const check of compactReverseHierarchyChecks) {
+  if (!compactLandingContent.includes(check.href)) {
+    errors.push(`Missing Compact Keywords reverse hierarchy link (${check.label})`);
+  }
+}
+
 if (require.main === module) {
   if (errors.length) {
     console.error(errors.join('\n'));

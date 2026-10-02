@@ -78,6 +78,7 @@ test('Compact Keywords index policy matches the intended portfolio', async ({ pa
       robots: null,
       serviceType: 'parenting_adhd',
       landingPageType: 'adhd_ashdod',
+      relatedHref: '/parenting-guidance-ashdod',
     },
     {
       route: '/couples-mediation-ashdod',
@@ -85,6 +86,7 @@ test('Compact Keywords index policy matches the intended portfolio', async ({ pa
       robots: null,
       serviceType: 'couples_mediation',
       landingPageType: 'mediation_ashdod',
+      relatedHref: '/services/mediation',
     },
     {
       route: '/couples-crisis-ashdod',
@@ -92,6 +94,7 @@ test('Compact Keywords index policy matches the intended portfolio', async ({ pa
       robots: 'noindex, follow',
       serviceType: 'couples_crisis',
       landingPageType: 'crisis_ashdod',
+      relatedHref: '/services/couples/crisis',
     },
     {
       route: '/couples-counseling-gan-yavne',
@@ -99,6 +102,7 @@ test('Compact Keywords index policy matches the intended portfolio', async ({ pa
       robots: 'noindex, follow',
       serviceType: 'couples_counseling',
       landingPageType: 'counseling_gan_yavne',
+      relatedHref: '/couples-counseling-ashdod',
     },
   ];
 
@@ -112,6 +116,10 @@ test('Compact Keywords index policy matches the intended portfolio', async ({ pa
     await expect(page.locator('main[data-analytics-landing-page-type]')).toHaveAttribute(
       'data-analytics-landing-page-type',
       item.landingPageType,
+    );
+    await expect(page.locator('a[data-analytics-location="related_service"]')).toHaveAttribute(
+      'href',
+      item.relatedHref,
     );
     if (item.robots) {
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', item.robots);
