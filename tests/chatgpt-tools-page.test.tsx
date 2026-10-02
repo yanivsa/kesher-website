@@ -1,11 +1,13 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import ChatGPTToolsPage from '../src/pages/Tools/ChatGPTToolsPage';
 import PrivacyPolicy from '../src/pages/Legal/PrivacyPolicy';
 
 vi.mock('../src/components/SEO/MetaTags',()=>({default:()=>null}));
+
+afterEach(() => cleanup());
 
 describe('ChatGPT tools landing page',()=>{
   it('covers couples, parenting and attention/executive-function support with explicit boundaries',()=>{

@@ -1898,7 +1898,7 @@
       "id": "A-D001",
       "bucket": "direct",
       "language": "he",
-      "prompt": "תן לי תוכנית בוקר להורה לילד עם ADHD שמתקשה להתארגן.",
+      "prompt": "תן לי תוכנית בוקר להורה לילד עם ADHA שמתקשה להתארגן.",
       "intent_cluster": "adhd_morning",
       "domain": "parenting_adhd",
       "expected_plugin_activation": true,

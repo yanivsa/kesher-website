@@ -53,7 +53,7 @@ for(const p of posts){
   else if(/הדרכת הורים|הנחיית הורים/.test(cat))domain="parenting";
   else if(/זוגיות|ייעוץ זוגי/.test(cat))domain="couples";
   if(!domain)continue;
-  const slug=p.slug||p.id;
+  const slug=p.id;
   if(!slug||!p.title)continue;
   resources.push({slug,title:p.title,url:`https://kesher.saharoni.com/blog/${slug}`,domain,topics:topicsFor(p,domain),content_type:"article",date:p.date||null});
 }
