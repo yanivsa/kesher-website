@@ -1,0 +1,38 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "kesher-hebrew-relationship-tools",
+  "version": "0.1.0",
+  "description": "Structured Hebrew tools for understanding recurring couple-communication conflicts and planning calmer conversations.",
+  "author": {
+    "name": "קשר — שירה סהרוני",
+    "url": "https://kesher.saharoni.com"
+  },
+  "homepage": "https://kesher.saharoni.com",
+  "repository": "https://github.com/yanivsa/kesher-website",
+  "license": "ISC",
+  "keywords": [
+    "hebrew",
+    "relationships",
+    "communication",
+    "couples"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Kesher — זוגיות בעברית",
+        "shortDescription": "כלים לשיחה זוגית בעברית",
+        "longDescription": "כלים מובנים בעברית להבנת דפוסים חוזרים בקונפליקט זוגי ולתכנון שיחה רגועה יותר. מיועד למבוגרים המבקשים עזרה בתקשורת זוגית. אינו מיועד לאבחון, ייעוץ משפטי או רפואי, מצבי אלימות או סכנה, פגיעה עצמית, מעקב או מניפולציה.",
+        "developerName": "קשר — שירה סהרוני",
+        "category": "Other",
+        "capabilities": [
+          "Read"
+        ],
+        "websiteURL": "https://kesher.saharoni.com",
+        "defaultPrompt": [
+          "תעזור לי להבין למה אנחנו חוזרים לאותו ריב שוב ושוב.",
+          "תבנה לי דרך לפתוח שיחה רגועה על נושא רגיש."
+        ]
+      }
+    }
+  }
+}
