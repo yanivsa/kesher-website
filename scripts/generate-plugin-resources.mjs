@@ -25,7 +25,7 @@ function topicsFor(p,domain){
     if(has(/גבול|סמכות|עונש/))t.add("boundaries");
     if(has(/התפרצ|זעם|צעק|טנטרום/))t.add("tantrum");
     if(has(/אחים|אחיות|מריבות אחים/))t.add("siblings");
-    if(has(/מסך|טלפון|טאבלט/))t.add("screens");
+    if(has(/מסך|מסכ|טלפון|טאבלט/))t.add("screens");
     if(has(/שינה|השכבה|הרדמה|bedtime/))t.add("bedtime");
     if(has(/בוקר|morning/))t.add(domain==="parenting_adhd"?"adhd_morning":"morning_routine");
     if(has(/מתבגר|teen/))t.add("teen");
