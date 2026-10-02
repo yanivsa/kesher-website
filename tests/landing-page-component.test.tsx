@@ -107,10 +107,10 @@ describe('Compact landing analytics context', () => {
     expect(main?.getAttribute('data-analytics-service-type')).toBe('parenting_adhd');
     expect(main?.getAttribute('data-analytics-landing-page-type')).toBe('adhd_ashdod');
     expect(main?.getAttribute('data-analytics-variant-id')).toBe('A');
-    expect(container.querySelector('[data-analytics-location="hero"]')).toBeDefined();
-    expect(container.querySelector('[data-analytics-location="booking_help"]')).toBeDefined();
-    expect(container.querySelector('[data-analytics-location="closing_cta"]')).toBeDefined();
-    expect(container.querySelector('[data-analytics-location="mobile_sticky"]')).toBeDefined();
+    expect(container.querySelector('[data-analytics-location="hero"]')).not.toBeNull();
+    expect(container.querySelector('[data-analytics-location="booking_help"]')).not.toBeNull();
+    expect(container.querySelector('[data-analytics-location="closing_cta"]')).not.toBeNull();
+    expect(container.querySelector('[data-analytics-location="mobile_sticky"]')).not.toBeNull();
   });
 
   it('infers exact service types for Compact Keywords and nested specialist routes', () => {
