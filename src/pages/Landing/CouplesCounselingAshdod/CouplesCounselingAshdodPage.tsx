@@ -114,15 +114,20 @@ const schemaData = {
       alternateName: 'קשר - ייעוץ זוגי באשדוד',
       url: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
       image: `${SITE_CONFIG.url}/images/shira-saharoni-sea.webp`,
-      telephone: '+972-50-2763802',
-      email: SITE_CONFIG.contact.email,
-      priceRange: '₪500',
       description: 'ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. כשאותם ריבים ודפוסי שיחה חוזרים שוב ושוב, אפשר להבין מה קורה ולתרגל דרך אחרת לדבר. פגישה של 50 דקות, 500 ₪.',
-
       provider: {
         '@type': 'LocalBusiness',
         '@id': `${SITE_CONFIG.url}/#business`,
         name: 'שירה סהרוני — קשר',
+        url: SITE_CONFIG.url,
+        telephone: '+972-50-2763802',
+        email: SITE_CONFIG.contact.email,
+      },
+      offers: {
+        '@type': 'Offer',
+        price: '500',
+        priceCurrency: 'ILS',
+        url: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
       },
       areaServed: [
         {
