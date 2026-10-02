@@ -144,6 +144,19 @@ export default {
       });
     }
 
+    if (url.pathname === "/mcp" && env?.MCP_RATE_LIMITER) {
+      const { success } = await env.MCP_RATE_LIMITER.limit({ key: "mcp" });
+      if (!success) {
+        return new Response("Too many MCP requests", {
+          status: 429,
+          headers: {
+            "Content-Type": "text/plain; charset=utf-8",
+            "Retry-After": "60"
+          }
+        });
+      }
+    }
+
     return mcpHandler(request, env, ctx);
   }
 };
