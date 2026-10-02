@@ -29,7 +29,7 @@ jobs:
           node-version: 22
 
       - name: Install MCP Worker dependencies
-        run: npm install --prefix plugin --no-audit --no-fund
+        run: npm ci --prefix plugin --no-audit --no-fund
 
       - name: Run MCP Worker validation
         run: npm --prefix plugin run check
@@ -53,9 +53,30 @@ jobs:
           test -n "$DEPLOYMENT_URL"
           echo "Staging URL: $DEPLOYMENT_URL"
 
-          curl --fail-with-body --silent --show-error             "$DEPLOYMENT_URL/health"             | tee /tmp/kesher-health.json
-          grep -F '"ok":true' /tmp/kesher-health.json >/dev/null
+          ok=false
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --fail-with-body --silent --show-error               "$DEPLOYMENT_URL/health"               -o /tmp/kesher-health.json; then
+              if grep -F '"ok":true' /tmp/kesher-health.json >/dev/null; then
+                ok=true
+                break
+              fi
+            fi
+            echo "Health propagation attempt $attempt failed; retrying."
+            sleep 3
+          done
+          test "$ok" = true
+          cat /tmp/kesher-health.json
 
-          curl --fail-with-body --silent --show-error             -X POST             -H 'Content-Type: application/json'             -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"kesher-ci","version":"1.0.0"}}}'             "$DEPLOYMENT_URL/mcp"             | tee /tmp/kesher-mcp-init.txt
-
-          grep -E '"jsonrpc"|serverInfo|protocolVersion|event:' /tmp/kesher-mcp-init.txt >/dev/null
+          ok=false
+          for attempt in 1 2 3 4 5; do
+            if curl --fail-with-body --silent --show-error               -X POST               -H 'Content-Type: application/json'               -H 'Accept: application/json, text/event-stream'               --data '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"kesher-ci","version":"1.0.0"}}}'               "$DEPLOYMENT_URL/mcp"               -o /tmp/kesher-mcp-init.txt; then
+              if grep -E '"jsonrpc"|serverInfo|protocolVersion|event:' /tmp/kesher-mcp-init.txt >/dev/null; then
+                ok=true
+                break
+              fi
+            fi
+            echo "MCP initialize attempt $attempt failed; retrying."
+            sleep 3
+          done
+          test "$ok" = true
+          cat /tmp/kesher-mcp-init.txt
