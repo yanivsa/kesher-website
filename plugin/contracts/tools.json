@@ -1,0 +1,274 @@
+{
+  "schema_version": "1.0",
+  "server": {
+    "name": "kesher-relationship-tools",
+    "version": "0.1.0",
+    "instructions": "Use these read-only tools only for structured Hebrew couple-communication support. Never use them for crisis or violence, self-harm, legal or divorce advice, medical or sexual-health advice, diagnosis, surveillance, coercion, manipulation, or generic relationship information. Do not send raw chat transcripts or personal identifiers."
+  },
+  "tools": [
+    {
+      "name": "get_conflict_pattern",
+      "title": "Understand a recurring couple-conflict pattern",
+      "description": "Use this when a Hebrew-speaking user wants a structured, non-diagnostic explanation of a recurring couple-communication pattern after the situation has been reduced to structured interaction signals. Do not use for crisis or violence, self-harm, legal or divorce advice, medical or sexual-health advice, diagnosis, surveillance, coercion or manipulation, generic relationship information, or romantic writing.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "locale",
+          "topic",
+          "signals",
+          "goal"
+        ],
+        "properties": {
+          "locale": {
+            "type": "string",
+            "enum": [
+              "he-IL"
+            ],
+            "description": "Fixed locale for the V1 Hebrew experience."
+          },
+          "topic": {
+            "type": "string",
+            "enum": [
+              "money",
+              "household",
+              "parenting",
+              "extended_family",
+              "attention_connection",
+              "trust",
+              "intimacy",
+              "other"
+            ],
+            "description": "The broad subject of the recurring disagreement, without names or identifying details."
+          },
+          "signals": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 6,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "criticism",
+                "defensiveness",
+                "withdrawal",
+                "pursuit",
+                "escalation",
+                "repetition",
+                "failed_repair",
+                "invalidation",
+                "scorekeeping",
+                "unclear"
+              ]
+            },
+            "description": "Observed interaction signals only; do not infer diagnoses, motives, or personality traits."
+          },
+          "goal": {
+            "type": "string",
+            "enum": [
+              "understand",
+              "deescalate",
+              "prepare_next_conversation"
+            ],
+            "description": "What the user wants from the structured pattern explanation."
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pattern_key",
+          "explanation",
+          "observations",
+          "next_step",
+          "resource_tags"
+        ],
+        "properties": {
+          "pattern_key": {
+            "type": "string",
+            "enum": [
+              "criticism_defensiveness",
+              "pursue_withdraw",
+              "escalation_loop",
+              "repair_breakdown",
+              "recurring_topic_without_resolution",
+              "mixed_or_unclear"
+            ]
+          },
+          "explanation": {
+            "type": "string",
+            "description": "A concise, non-diagnostic explanation of the interaction pattern."
+          },
+          "observations": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "type": "string"
+            },
+            "description": "Neutral observations about the interaction, not labels applied to a person."
+          },
+          "next_step": {
+            "type": "string",
+            "description": "One concrete, low-risk next step for a calmer conversation."
+          },
+          "resource_tags": {
+            "type": "array",
+            "maxItems": 5,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            },
+            "description": "Bounded tags for later matching against Kesher-owned resources."
+          }
+        }
+      }
+    },
+    {
+      "name": "get_conversation_plan",
+      "title": "Plan a difficult couple conversation",
+      "description": "Use this when a Hebrew-speaking user wants a short, structured plan for starting or repairing a difficult couple conversation using a known topic, goal, emotional level, and communication style. Do not use for crisis or violence, self-harm, legal or divorce advice, medical or sexual-health advice, diagnosis, surveillance, coercion or manipulation, generic relationship information, or romantic writing.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "locale",
+          "topic",
+          "goal",
+          "emotional_level",
+          "style"
+        ],
+        "properties": {
+          "locale": {
+            "type": "string",
+            "enum": [
+              "he-IL"
+            ],
+            "description": "Fixed locale for the V1 Hebrew experience."
+          },
+          "topic": {
+            "type": "string",
+            "enum": [
+              "money",
+              "household",
+              "parenting",
+              "extended_family",
+              "attention_connection",
+              "trust",
+              "intimacy",
+              "other"
+            ],
+            "description": "The broad conversation topic, without names or identifying details."
+          },
+          "goal": {
+            "type": "string",
+            "enum": [
+              "raise_concern",
+              "make_request",
+              "repair_after_conflict",
+              "set_boundary",
+              "discuss_difference"
+            ],
+            "description": "The practical conversational outcome the user wants."
+          },
+          "emotional_level": {
+            "type": "string",
+            "enum": [
+              "low",
+              "moderate",
+              "high"
+            ],
+            "description": "Current emotional intensity as reported or inferred only from the present request; not a clinical assessment."
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "gentle",
+              "direct",
+              "brief"
+            ],
+            "description": "Preferred communication style for the suggested wording."
+          },
+          "constraints": {
+            "type": "array",
+            "maxItems": 4,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "avoid_accusations",
+                "include_pause_option",
+                "keep_under_10_minutes",
+                "focus_on_one_topic"
+              ]
+            },
+            "description": "Optional bounded preferences; never include free-form private details."
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "opening",
+          "steps",
+          "phrases_to_avoid",
+          "repair_phrase",
+          "pause_plan",
+          "resource_tags"
+        ],
+        "properties": {
+          "opening": {
+            "type": "string",
+            "description": "A concise Hebrew opening phrase that avoids diagnosis, threats, or blame."
+          },
+          "steps": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            },
+            "description": "A short sequence for the conversation."
+          },
+          "phrases_to_avoid": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            },
+            "description": "Examples of escalation-prone wording to avoid."
+          },
+          "repair_phrase": {
+            "type": "string",
+            "description": "A neutral phrase for repairing the conversation if tension rises."
+          },
+          "pause_plan": {
+            "type": "string",
+            "description": "A non-abandoning way to pause and return to the conversation if needed."
+          },
+          "resource_tags": {
+            "type": "array",
+            "maxItems": 5,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            },
+            "description": "Bounded tags for later matching against Kesher-owned resources."
+          }
+        }
+      }
+    }
+  ]
+}
