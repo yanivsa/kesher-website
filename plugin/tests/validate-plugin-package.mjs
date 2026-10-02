@@ -34,8 +34,8 @@ if (!["Productivity","Creativity","Developer Tools","Business & Operations","Dat
 if (!Array.isArray(iface?.capabilities) || !iface.capabilities.includes("Read")) {
   fail("interface capabilities must declare Read");
 }
-if (iface?.privacyPolicyURL) {
-  fail("Do not publish a placeholder privacyPolicyURL; add it only after a real policy is live");
+if (iface?.privacyPolicyURL !== "https://kesher.saharoni.com/privacy") {
+  fail("privacyPolicyURL must point to the published Kesher privacy page");
 }
 
 if (mcp.$schema !== "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json") {
