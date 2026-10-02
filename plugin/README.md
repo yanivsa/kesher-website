@@ -1,39 +1,34 @@
-# Kesher Hebrew Relationship Tools
+# Kesher — Hebrew Relationship & Parenting Tools
 
-Development package for the KESHER ChatGPT/Codex plugin.
+Development package for the KESHER ChatGPT Plugin V2.
 
-## Current status
+## V2 surface
 
-- Portable Agent Plugin manifest: `plugin.json`
-- Remote MCP config: `mcp.json`
-- Workflow skill: `skills/relationship-conflict/SKILL.md`
-- MCP Worker source: `src/index.mjs`
-- Deterministic domain logic: `src/domain.mjs`
-- 100 single-turn Hebrew eval prompts
-- 20 multi-turn/boundary eval cases
-- Cloudflare staging endpoint:
-  `https://kesher-mcp-staging.yanivsa.workers.dev/mcp`
+Five read-only MCP tools:
+- `get_conflict_pattern`
+- `get_conversation_plan`
+- `get_parenting_response_plan`
+- `get_adhd_parenting_plan`
+- `find_kesher_resource`
 
-## Local validation
+Three workflow Skills:
+- relationship conflict
+- parenting guidance
+- attention / executive-function parenting
 
-From the repository root:
+Evaluation assets:
+- 220 single-turn Hebrew prompts
+- 30 multi-turn/boundary cases
+- domain-specific precision/recall gates
 
-```bash
-node plugin/tests/validate-phase2-contracts.mjs
-node plugin/tests/domain.test.mjs
-node plugin/tests/validate-plugin-package.mjs
-node plugin/tests/validate-skill-evals.mjs
-node plugin/tests/score-golden-results.mjs --self-test
-npm ci --prefix plugin
-npm --prefix plugin run check
-```
+The ADHD/executive-function workflow is parenting support only. It does not diagnose ADHD and does not provide medication advice.
 
-## Real ChatGPT evaluation
+## Content intelligence
 
-Follow `docs/chatgpt-plugin/phase-4-developer-mode-runbook.md`.
+`scripts/generate-plugin-resources.mjs` builds `plugin/data/kesher-resources.json` from the site's current posts. The MCP resource tool searches only this bounded Kesher index.
 
-Synthetic scorer self-tests prove only that the evaluator works. They are not evidence of real ChatGPT tool selection.
+## Staging
 
-## Public-review note
+`https://kesher-mcp-staging.yanivsa.workers.dev/mcp`
 
-The current `workers.dev` server is staging. Do not submit it as the final production MCP endpoint.
+Staging only. Do not submit it as the final public production endpoint.

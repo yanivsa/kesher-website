@@ -5,7 +5,7 @@
   },
   "plugins": [
     {
-      "name": "kesher-hebrew-relationship-tools",
+      "name": "kesher-hebrew-relationship-parenting-tools",
       "source": {
         "source": "local",
         "path": "./plugin"

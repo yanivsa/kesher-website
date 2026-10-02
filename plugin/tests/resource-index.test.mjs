@@ -1,0 +1,10 @@
+import assert from "node:assert/strict";
+import data from "../data/kesher-resources.json" with { type: "json" };
+assert.ok(data.count>=90,`Expected broad Kesher resource coverage; got ${data.count}`);
+assert.equal(data.count,data.resources.length);
+const domains=new Set(data.resources.map(r=>r.domain));
+for(const d of ["couples","parenting","parenting_adhd"])assert.ok(domains.has(d),`Missing domain ${d}`);
+assert.ok(data.resources.some(r=>r.domain==="parenting_adhd"&&r.topics.includes("adhd_morning")),"Missing ADHD morning resource");
+assert.ok(data.resources.some(r=>r.domain==="parenting"&&r.topics.includes("screens")),"Missing parenting screens resource");
+assert.ok(data.resources.every(r=>r.url.startsWith("https://kesher.saharoni.com/blog/")));
+console.log(`PASS: Kesher resource index covers ${data.count} resources across all V2 domains.`);

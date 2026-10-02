@@ -1,43 +1,45 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "checked_at": "2026-10-02",
   "public_submission_ready": false,
   "completed": [
-    "Known-green repository baseline",
-    "100-prompt Hebrew golden evaluation set",
-    "Two bounded read-only MCP tools",
-    "Contract and domain tests",
-    "Cloudflare staging deployment",
-    "Remote health check",
-    "Remote MCP initialize",
-    "Remote MCP tools/list discovery",
-    "Portable plugin.json and mcp.json package"
+    "Clean V2 branch from current main",
+    "220-prompt Hebrew golden set",
+    "Five bounded read-only MCP contracts",
+    "Three Skills",
+    "Automatic Kesher content resource index",
+    "Privacy-minimized closed input schemas"
   ],
   "gates": [
     {
+      "id": "runtime_and_staging",
+      "status": "in_progress",
+      "requirement": "All five tools must pass package tests and remote staging smoke tests."
+    },
+    {
       "id": "developer_mode_evaluation",
       "status": "pending",
-      "requirement": "Install/connect in ChatGPT Developer Mode and record real model tool-selection results for the golden set."
+      "requirement": "Run real ChatGPT Work/Developer Mode canary then all 220 prompts and 30 conversation cases."
     },
     {
       "id": "privacy_policy",
-      "status": "implemented_pending_deploy",
-      "requirement": "Privacy Policy exists at /privacy and the feature branch adds explicit Kesher ChatGPT/MCP disclosures. Confirm the updated page is live before public submission."
+      "status": "pending",
+      "requirement": "Deploy explicit V2 disclosures at /privacy before public submission."
     },
     {
       "id": "production_mcp_endpoint",
       "status": "blocked",
-      "requirement": "Move from the workers.dev staging endpoint to a stable production HTTPS domain/route before public review."
+      "requirement": "Replace workers.dev staging with stable production HTTPS endpoint."
     },
     {
       "id": "publisher_verification",
       "status": "unknown",
-      "requirement": "Confirm OpenAI individual or business verification for the publisher identity selected at submission."
+      "requirement": "Confirm publisher identity verification."
     },
     {
       "id": "submission_permissions",
       "status": "unknown",
-      "requirement": "Confirm api.apps.read and api.apps.write permissions in the OpenAI Platform organization."
+      "requirement": "Confirm required OpenAI Apps Management permissions."
     }
   ]
 }
