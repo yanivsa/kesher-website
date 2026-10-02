@@ -18,13 +18,14 @@ type ToolContract = {
     readOnlyHint: boolean;
     destructiveHint: boolean;
     openWorldHint: boolean;
+    idempotentHint: boolean;
   };
   inputSchema: JsonSchema;
   outputSchema: JsonSchema;
 };
 
 const here = dirname(fileURLToPath(import.meta.url));
-const toolsPath = resolve(here, '../plugin/contracts/tools.json');
+const toolsPath = resolve(here, '../plugin/contracts/mcp-tools.v1.json');
 const safetyPath = resolve(here, '../plugin/contracts/safety-boundaries.json');
 const promptsPath = resolve(here, '../plugin/evals/golden-prompts.json');
 
@@ -56,6 +57,7 @@ describe('Kesher plugin V1 contracts', () => {
         readOnlyHint: true,
         destructiveHint: false,
         openWorldHint: false,
+        idempotentHint: true,
       });
     }
   });
@@ -63,7 +65,7 @@ describe('Kesher plugin V1 contracts', () => {
   it('uses precise metadata with explicit negative boundaries', () => {
     for (const tool of toolsContract.tools) {
       expect(tool.title.length).toBeGreaterThan(10);
-      expect(tool.description.startsWith('Use this when')).toBe(true);
+      expect(tool.description.startsWith('Use when')).toBe(true);
       expect(tool.description).toContain('Do not use for');
       for (const boundary of [
         'violence',
