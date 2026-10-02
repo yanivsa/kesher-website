@@ -1274,15 +1274,9 @@
     "stage": "article",
     "code": "STALE_OR_DUPLICATE_ARTICLE_PR",
     "message": "published article exists while 1 article PR(s) remain open",
-    "at": "2026-10-02T18:14:55.840660+00:00"
+    "at": "2026-10-02T18:17:22.170595+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-27T15:24:38.560705+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
     {
       "at": "2026-09-27T19:35:21.863330+00:00",
       "from": "long_video_running",
@@ -2014,9 +2008,18 @@
       "details": {
         "message": "published article exists while 1 article PR(s) remain open"
       }
+    },
+    {
+      "at": "2026-10-02T18:17:22.170613+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "STALE_OR_DUPLICATE_ARTICLE_PR",
+      "details": {
+        "message": "published article exists while 1 article PR(s) remain open"
+      }
     }
   ],
-  "updated_at": "2026-10-02T18:14:55.840682+00:00",
+  "updated_at": "2026-10-02T18:17:22.170619+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
