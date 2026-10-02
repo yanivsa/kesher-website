@@ -25,7 +25,7 @@
     "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
     "published_date": "2026-10-02",
     "live": true,
-    "live_verified_at": "2026-10-02T11:07:42.598320+00:00",
+    "live_verified_at": "2026-10-02T11:13:59.192372+00:00",
     "next_deploy_retry_at": null
   },
   "backlog": [
@@ -1271,29 +1271,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-09-27T03:00:04.391446+00:00",
-      "from": "article_image_running",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
-      "at": "2026-09-27T09:05:13.601564+00:00",
-      "from": "short_running",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-27T10:31:25.796924+00:00",
-      "from": "complete",
-      "to": "article_result_wait",
-      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
-      "details": {
-        "run_id": 36273556552,
-        "outcome": "PR_CREATED",
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/944"
-      }
-    },
-    {
       "at": "2026-09-27T10:35:02.190118+00:00",
       "from": "article_result_wait",
       "to": "article_generating",
@@ -2044,9 +2021,27 @@
       "from": "long_video_complete",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-02T11:13:59.192390+00:00",
+      "from": "complete",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-02T11:13:59.670599+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-02T11:14:00.145841+00:00",
+      "from": "long_video_complete",
+      "to": "complete",
+      "reason": "article, long-form video and derivative Short verified public"
     }
   ],
-  "updated_at": "2026-10-02T11:07:44.822826+00:00",
+  "updated_at": "2026-10-02T11:14:00.145855+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
