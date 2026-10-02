@@ -6,6 +6,7 @@ import { LANDING_PAGES_CONFIG } from '../src/data/landingPagesConfig';
 import publishedPosts from '../src/data/publishedPosts';
 import { LandingPageTemplate } from '../src/pages/Landing/LandingPageTemplate';
 import { LandingCalloutBanner } from '../src/components/LandingCalloutBanner/LandingCalloutBanner';
+import { inferServiceType } from '../src/lib/analytics';
 
 vi.mock('../src/components/Booking/CalendlyBookingEmbed', () => ({
   default: () => <div data-testid="calendly-embed-mock">Calendly Embed</div>,
@@ -90,6 +91,35 @@ describe('LandingPageTemplate Component', () => {
     config.faq.items.forEach((item) => {
       expect(screen.getByText(item.question)).toBeDefined();
     });
+  });
+});
+
+describe('Compact landing analytics context', () => {
+  it('exposes the page context used by the global conversion tracker', () => {
+    const config = LANDING_PAGES_CONFIG['parenting-adhd-ashdod'];
+    const { container } = render(
+      <MemoryRouter initialEntries={['/parenting-adhd-ashdod']}>
+        <LandingPageTemplate config={config} />
+      </MemoryRouter>
+    );
+
+    const main = container.querySelector('main');
+    expect(main?.getAttribute('data-analytics-service-type')).toBe('parenting_adhd');
+    expect(main?.getAttribute('data-analytics-landing-page-type')).toBe('adhd_ashdod');
+    expect(main?.getAttribute('data-analytics-variant-id')).toBe('A');
+    expect(container.querySelector('[data-analytics-location="hero"]')).toBeDefined();
+    expect(container.querySelector('[data-analytics-location="booking_help"]')).toBeDefined();
+    expect(container.querySelector('[data-analytics-location="closing_cta"]')).toBeDefined();
+    expect(container.querySelector('[data-analytics-location="mobile_sticky"]')).toBeDefined();
+  });
+
+  it('infers exact service types for Compact Keywords and nested specialist routes', () => {
+    expect(inferServiceType('/parenting-adhd-ashdod')).toBe('parenting_adhd');
+    expect(inferServiceType('/couples-mediation-ashdod')).toBe('couples_mediation');
+    expect(inferServiceType('/couples-crisis-ashdod')).toBe('couples_crisis');
+    expect(inferServiceType('/couples-counseling-gan-yavne')).toBe('couples_counseling');
+    expect(inferServiceType('/services/couples/crisis')).toBe('couples_crisis');
+    expect(inferServiceType('/services/couples/before-separation/')).toBe('couples_before_separation');
   });
 });
 
