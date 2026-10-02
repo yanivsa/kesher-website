@@ -42,7 +42,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
 
     def _selected_article(self, posts):
-        """Prefer an explicit bounded media-recovery slug over today's article."""
+        """Resolve one authoritative article without regressing to date-only selection."""
         target_slug = os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip()
         if target_slug:
             matches = [
@@ -57,7 +57,34 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return matches[0]
 
         todays = v5.core.today_articles(posts, self.now.date())
-        return todays[0] if len(todays) == 1 else None
+        if len(todays) <= 1:
+            return todays[0] if todays else None
+
+        # Multiple articles can legitimately share a publication date. In that
+        # case the durable controller state is stronger evidence than date order.
+        # Preserve the exact previously-adopted article identity when possible
+        # and fail closed if the state cannot disambiguate the candidates.
+        existing = self.github.load_controller_state()
+        article_state = existing.get("article") if isinstance(existing, dict) else {}
+        if not isinstance(article_state, dict):
+            article_state = {}
+
+        stored_slug = str(article_state.get("slug") or "").strip()
+        stored_sha = str(article_state.get("quality_content_sha256") or "").strip()
+        if stored_slug:
+            slug_matches = [
+                post for post in todays
+                if str(post.get("slug") or post.get("id") or "").strip() == stored_slug
+            ]
+            if len(slug_matches) == 1:
+                candidate = slug_matches[0]
+                candidate_source = v5.article_source_identity(candidate)
+                if not stored_sha or candidate_source["content_sha256"] == stored_sha:
+                    return candidate
+
+        raise v5.core.ControllerError(
+            f"BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: {self.now.date().isoformat()}"
+        )
 
     def _article_source(self):
         posts = self.github.contents_json("src/data/posts.json", "main")
