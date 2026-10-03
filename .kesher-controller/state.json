@@ -1295,18 +1295,9 @@
     "stage": "controller",
     "code": "GITHUB_CONTENT_INVALID",
     "message": "GITHUB_CONTENT_INVALID: src/data/posts.json@fa480f926078a96d0ba6ccab471492b70fb262b7",
-    "at": "2026-10-03T19:48:53.370924+00:00"
+    "at": "2026-10-03T19:52:58.312984+00:00"
   },
   "history": [
-    {
-      "at": "2026-09-29T10:27:47.124903+00:00",
-      "from": "short_retry_wait",
-      "to": "short_retry_wait",
-      "reason": "Short retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-29T10:29:14.429698+00:00"
-      }
-    },
     {
       "at": "2026-09-29T12:49:34.280972+00:00",
       "from": "short_retry_wait",
@@ -2051,9 +2042,18 @@
       "details": {
         "message": "GITHUB_CONTENT_INVALID: src/data/posts.json@fa480f926078a96d0ba6ccab471492b70fb262b7"
       }
+    },
+    {
+      "at": "2026-10-03T19:52:58.313004+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "GITHUB_CONTENT_INVALID",
+      "details": {
+        "message": "GITHUB_CONTENT_INVALID: src/data/posts.json@fa480f926078a96d0ba6ccab471492b70fb262b7"
+      }
     }
   ],
-  "updated_at": "2026-10-03T19:48:53.370949+00:00",
+  "updated_at": "2026-10-03T19:52:58.313009+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
