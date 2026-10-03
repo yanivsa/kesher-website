@@ -20,7 +20,8 @@
     "Portable Agent Plugin package with logo, support, privacy and terms metadata",
     "Five positive and three negative OpenAI review test cases",
     "ChatGPT landing page and attribution implementation",
-    "V2 privacy and terms disclosures implemented"
+    "V2 privacy and terms disclosures implemented",
+    "V2 branch synchronized with main SHA 715fcc7cf5c37847591b0e01ded0fdedfb314f0f before final QA"
   ],
   "staging": {
     "endpoint": "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp",
@@ -89,6 +90,6 @@
       "requirement": "Confirm the OpenAI Apps Management permissions required to submit and publish the plugin."
     }
   ],
-  "baseline_main_sha": "054dcfc4d12031bef5b609d83a5d0a7897211f70",
-  "qa_state": "technical_validation_running_on_isolated_v2_staging"
+  "baseline_main_sha": "715fcc7cf5c37847591b0e01ded0fdedfb314f0f",
+  "qa_state": "technical_validation_running_on_current_main_and_isolated_v2_staging"
 }
