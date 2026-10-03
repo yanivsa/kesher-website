@@ -17,8 +17,8 @@
     "deploy_attempts": 0,
     "normalization_status": "pending",
     "quality_status": "passed",
-    "quality_content_sha256": "4e02575378f8acab21bbbd79da607599aeffca50b47732011d883403a5e8a3d2",
-    "quality_checked_at": "2026-10-03T21:56:43.027487+00:00",
+    "quality_content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22",
+    "quality_checked_at": "2026-10-03T21:58:19.961082+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1869,6 +1869,17 @@
         "backlog_cycle": "2026-09-27",
         "source_slug": "siblings-fairness-vs-equality"
       }
+    },
+    {
+      "at": "2026-10-03T21:58:22.567646+00:00",
+      "from": "sleep-needs-10-year-old",
+      "to": "sleep-needs-10-year-old",
+      "reason": "targeted_media_source_identity_reset",
+      "details": {
+        "previous_slug": "sleep-needs-10-year-old",
+        "previous_content_sha256": "4e02575378f8acab21bbbd79da607599aeffca50b47732011d883403a5e8a3d2",
+        "content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22"
+      }
     }
   ],
   "updated_at": "2026-10-03T21:27:40.835143+00:00",
@@ -1922,13 +1933,12 @@
   },
   "targeted_media_recovery": {
     "slug": "sleep-needs-10-year-old",
-    "content_sha256": "4e02575378f8acab21bbbd79da607599aeffca50b47732011d883403a5e8a3d2",
+    "content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22",
     "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
     "article_verified": true,
-    "updated_at": "2026-10-03T21:56:44.057610+00:00",
+    "updated_at": "2026-10-03T21:58:22.567665+00:00",
     "short_status": "pending",
     "complete": false,
-    "long_status": "running",
-    "long_last_dispatch_at": "2026-10-03T21:36:18.431448+00:00"
+    "long_status": "running"
   }
 }
