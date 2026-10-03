@@ -3,7 +3,7 @@
   "mcpServers": {
     "kesher": {
       "type": "streamable-http",
-      "url": "https://kesher-mcp-staging.yanivsa.workers.dev/mcp"
+      "url": "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp"
     }
   }
 }
