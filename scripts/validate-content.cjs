@@ -301,7 +301,12 @@ const compactHierarchyChecks = [
   {
     file: 'src/pages/Landing/ParentingGuidanceAshdod/ParentingGuidanceAshdodPage.tsx',
     link: 'href="/parenting-adhd-ashdod"',
-    label: 'parenting hub -> ADHD specialist',
+    label: 'parenting Ashdod hub -> ADHD specialist',
+  },
+  {
+    file: 'src/pages/Services/Parenting/ParentingGuidance.tsx',
+    link: 'to="/parenting-adhd-ashdod"',
+    label: 'parenting service -> ADHD specialist',
   },
   {
     file: 'src/pages/Services/Mediation/MediationPage.tsx',
