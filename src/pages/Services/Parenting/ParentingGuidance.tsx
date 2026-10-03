@@ -103,7 +103,9 @@ const ParentingGuidance: React.FC = () => {
             <div className={styles.segment}>
               <FiZap className={styles.icon} />
               <h3>ADHD ואתגרי קשב</h3>
-              <p>נבין מה מקשה על הילד להתארגן, לווסת ולהתמיד, ונבנה תמיכה שמחזקת עצמאות ושומרת על הדימוי העצמי.</p>
+              <p>
+                נבין מה מקשה על הילד להתארגן, לווסת ולהתמיד, ונבנה תמיכה שמחזקת עצמאות ושומרת על הדימוי העצמי. להורים שמחפשים מענה מקומי וממוקד יותר, אפשר לקרוא על <Link to="/parenting-adhd-ashdod">הדרכת הורים ל-ADHD באשדוד</Link>.
+              </p>
             </div>
             <div className={styles.segment}>
               <FiTarget className={styles.icon} />
