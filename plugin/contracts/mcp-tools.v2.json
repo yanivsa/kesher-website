@@ -247,12 +247,13 @@
           "age_band": {
             "type": "string",
             "enum": [
+              "unknown",
               "preschool",
               "elementary",
               "preteen",
               "teen"
             ],
-            "description": "Broad developmental age band only; never send the child's exact age, birth date, school, or identity."
+            "description": "Broad developmental age band when known; use unknown if the user did not provide enough information. Never ask for or send the child's exact age, birth date, school, or identity."
           },
           "challenge": {
             "type": "string",
@@ -351,12 +352,13 @@
           "age_band": {
             "type": "string",
             "enum": [
+              "unknown",
               "preschool",
               "elementary",
               "preteen",
               "teen"
             ],
-            "description": "Broad developmental age band only; never send exact age, school, diagnosis records, or identity."
+            "description": "Broad developmental age band when known; use unknown if it is not provided. Never ask for or send exact age, school, diagnosis records, or identity."
           },
           "challenge": {
             "type": "string",
