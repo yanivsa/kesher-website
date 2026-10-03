@@ -1,9 +1,10 @@
 {
-  "enabled": true,
-  "target_slug": "marriage-hack-7-minutes",
-  "issue": 1003,
+  "enabled": false,
+  "target_slug": "sleep-needs-10-year-old",
+  "issue": 1021,
   "goal": "article_http_200_plus_public_youtube_video_plus_public_verified_9_16_short",
-  "requested_at": "2026-10-01T14:48:05Z",
-  "retry_seq": 1,
-  "retry_reason": "Initial exact media goal for authoritative Issue #1003 after article merge."
+  "completed": true,
+  "content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
+  "completed_at": "2026-10-03T19:43:18.741945+00:00",
+  "completion_reason": "Article verified public; Video Overview public/verified; Short public/verified at 1080x1920."
 }
