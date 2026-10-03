@@ -45,7 +45,37 @@ function topicsFor(p,domain){
   if(t.size===0)t.add("other");
   return [...t];
 }
-const resources=[];
+const STATIC_RESOURCES=[
+  {
+    slug:"service-couples",
+    title:"ייעוץ זוגי באשדוד ואונליין",
+    url:"https://kesher.saharoni.com/services/couples",
+    domain:"couples",
+    topics:["communication","recurring_conflict","money","household","parenting_alignment","trust","intimacy","extended_family"],
+    content_type:"service",
+    date:null
+  },
+  {
+    slug:"service-parenting",
+    title:"הדרכת הורים באשדוד ואונליין",
+    url:"https://kesher.saharoni.com/services/parenting",
+    domain:"parenting",
+    topics:["boundaries","tantrum","siblings","screens","bedtime","morning_routine","teen","emotional_regulation","parenting_alignment"],
+    content_type:"service",
+    date:null
+  },
+  {
+    slug:"service-parenting-adhd",
+    title:"הדרכת הורים לילדים עם ADHD באשדוד",
+    url:"https://kesher.saharoni.com/parenting-adhd-ashdod",
+    domain:"parenting_adhd",
+    topics:["adhd_morning","executive_function","organization","task_initiation","transitions","working_memory","impulsivity","frustration","gifted_adhd"],
+    content_type:"service",
+    date:null
+  }
+];
+
+const resources=[...STATIC_RESOURCES];
 for(const p of posts){
   const s=postText(p),cat=p.category??"";
   let domain=null;
