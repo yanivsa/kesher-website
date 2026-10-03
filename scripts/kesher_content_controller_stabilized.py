@@ -504,6 +504,78 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         # lookup, which can bind a different article's provider identity.
         return v5.v3.V3Controller._dispatch_budgeted(self, state, stage, workflow, bound_inputs)
 
+    def _dispatch_targeted_short_rebuild_from_full_state(self, state, source, long_item):
+        """Recover one exact resolution-rejected Short from full durable state."""
+        reader = getattr(self.github, "newest_state_for_artifact", None)
+        if not callable(reader):
+            return None
+        try:
+            snapshot = reader(v5.SHORT_STATE_ARTIFACT)
+        except v5.core.ControllerError:
+            return None
+        exact_rejected = [
+            item for item in v5._exact_items(snapshot, source)
+            if item.get("uploaded") is not True
+            and str(item.get("status") or "") == "rejected"
+            and "1080x1920" in str(((item.get("review_notes") or {}).get("technical") or ""))
+        ]
+        if len(exact_rejected) > 1:
+            v5.core.block(
+                state,
+                "short",
+                "DUPLICATE_RESOLUTION_REJECTED_SHORTS",
+                f"{len(exact_rejected)} exact resolution-rejected Shorts exist for {source['slug']}",
+            )
+            self.github.save_controller_state(state)
+            return v5.core.Action("blocked", "duplicate resolution-rejected Shorts")
+        if not exact_rejected:
+            return None
+
+        item = exact_rejected[0]
+        item_id = str(item.get("id") or "").strip()
+        if not item_id:
+            return None
+        active = self.github.active_workflow_run(v5.SHORT_WORKFLOW, production_only=True)
+        if active:
+            state["short"]["status"] = "running"
+            state["short"]["run_id"] = active.get("id")
+            return v5.core.Action("wait", "exact Short rebuild workflow already active")
+
+        count = int(state["short"].get("remotion_rebuild_count") or 0)
+        if count >= v5.MAX_SHORT_REMOTION_REBUILDS:
+            v5.core.block(
+                state,
+                "short",
+                "SHORT_REMOTION_REBUILDS_EXHAUSTED",
+                "exact Short Remotion rebuild attempts exhausted",
+            )
+            state["short"]["status"] = "exhausted"
+            return v5.core.Action("blocked", "Short Remotion rebuild attempts exhausted")
+
+        inputs = {"operation": "rebuild", "rebuild_item_id": item_id}
+        v5.core.GitHubClient.dispatch(self.github, v5.SHORT_WORKFLOW, inputs)
+        state["short"].update({
+            "status": "running",
+            "remotion_rebuild_count": count + 1,
+            "last_dispatch_at": v5.core.utc_now(),
+            "provider_id": item.get("task_id") or long_item.get("task_id"),
+            "artifact_id": item.get("artifact_id") or long_item.get("artifact_id"),
+            "source_id": item.get("source_id") or long_item.get("source_id"),
+            "adopted_from_long_item_id": long_item.get("id"),
+        })
+        v5.core.transition(
+            state,
+            "short_running",
+            "targeted recovery dispatched exact resolution-rejected Short to current Remotion contract",
+            item_id=item_id,
+        )
+        self.github.save_controller_state(state)
+        return v5.core.Action(
+            "dispatch_short_rebuild",
+            "rebuild exact resolution-rejected Short without new provider generation",
+            inputs,
+        )
+
     def _tick_targeted_media_recovery(self, state):
         """Advance only the explicitly requested existing article media chain."""
         posts = self.github.contents_json("src/data/posts.json", "main")
@@ -670,6 +742,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "long_youtube_url": long_item.get("youtube_url"),
             "long_item_id": long_item.get("id"),
         })
+
+        rebuild_action = self._dispatch_targeted_short_rebuild_from_full_state(
+            state, source, long_item
+        )
+        if rebuild_action is not None:
+            target["short_status"] = state["short"].get("status") or "running"
+            return state, rebuild_action
 
         action = self._tick_short(state, source, long_item)
         if action.kind == "complete":

@@ -332,6 +332,79 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertEqual(state["long_video"]["status"], "running")
         self.assertIsNotNone(controller.github.saved)
 
+    def test_targeted_recovery_uses_full_short_state_for_resolution_rebuild(self):
+        article = {
+            "id": "sleep-needs-10-year-old",
+            "slug": "sleep-needs-10-year-old",
+            "title": "שינה",
+            "date": "2026-10-02",
+            "category": "הדרכת הורים",
+            "excerpt": "תקציר",
+            "content": "<p>תוכן.</p>",
+        }
+        source = stabilized.v5.article_source_identity(article)
+        rejected = {
+            "id": "short-sleep-1",
+            "status": "rejected",
+            "uploaded": False,
+            "source": dict(source),
+            "task_id": "task-short",
+            "artifact_id": "task-short",
+            "source_id": "source-short",
+            "review_notes": {
+                "technical": "נפסל טכנית: יחס התמונה 720x1280 אינו Short אנכי 1080x1920",
+            },
+        }
+        long_item = {
+            "id": "long-sleep-1",
+            "task_id": "task-long",
+            "artifact_id": "task-long",
+            "source_id": "source-long",
+        }
+
+        class FakeGitHub:
+            api = "https://api.github.test/repos/yanivsa/kesher-website"
+
+            def __init__(self):
+                self.saved = None
+                self.requests = []
+
+            def newest_state_for_artifact(self, name):
+                self.artifact_name = name
+                return {"version": 1, "items": [rejected]}
+
+            def active_workflow_run(self, workflow, production_only=False):
+                return None
+
+            def request(self, method, path, body=None, **kwargs):
+                self.requests.append((method, path, body))
+                return {}
+
+            def save_controller_state(self, state):
+                self.saved = json.loads(json.dumps(state))
+
+        controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
+        controller.github = FakeGitHub()
+        state = {
+            "status": "blocked",
+            "short": {"attempt_count": 4, "status": "exhausted"},
+            "history": [],
+        }
+
+        action = controller._dispatch_targeted_short_rebuild_from_full_state(
+            state, source, long_item
+        )
+
+        self.assertEqual(action.kind, "dispatch_short_rebuild")
+        self.assertEqual(
+            action.inputs,
+            {"operation": "rebuild", "rebuild_item_id": "short-sleep-1"},
+        )
+        self.assertEqual(state["short"]["attempt_count"], 4)
+        self.assertEqual(state["short"]["remotion_rebuild_count"], 1)
+        self.assertEqual(state["short"]["status"], "running")
+        self.assertIsNotNone(controller.github.saved)
+
     def test_targeted_tick_skips_duplicate_overview_history_preflight(self):
         controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
         state = {"article": {}, "long_video": {}, "short": {}, "history": []}
