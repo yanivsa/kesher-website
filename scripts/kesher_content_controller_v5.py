@@ -374,8 +374,6 @@ class V5Controller(v4.V4Controller):
         return (
             "1080x1920" in note
             and bool(item.get("id"))
-            and bool(item.get("raw_mp4"))
-            and bool(item.get("raw_sha256"))
         )
 
     def _tick_short(self, state: dict[str, Any], source: dict[str, str], long_item: dict[str, Any]) -> core.Action:
