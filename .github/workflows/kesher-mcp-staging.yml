@@ -60,8 +60,12 @@ jobs:
           by={t['name']:t for t in tools}
           assert set(by)==expected,(set(by),expected)
           for name in expected:
-              assert by[name]['inputSchema'].get('additionalProperties') is False,name
-          print('PASS: five strict V2 tools advertised.')
+              schema=by[name]['inputSchema']
+              assert schema.get('additionalProperties') is False,name
+              for field,field_schema in (schema.get('properties') or {}).items():
+                  description=(field_schema.get('description') or '').strip()
+                  assert len(description)>=8,(name,field,description)
+          print('PASS: five strict V2 tools with parameter metadata advertised.')
           PY
 
           curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_conflict_pattern","arguments":{"topic":"money","interaction_signals":["criticism","defensiveness"],"goal":"understand_pattern"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-3.txt
