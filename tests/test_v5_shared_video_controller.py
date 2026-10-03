@@ -196,6 +196,45 @@ class V5SharedVideoControllerTests(unittest.TestCase):
         )])
         self.assertEqual(state["short"]["adopted_from_long_item_id"], "long-1")
 
+    def test_resolution_rejection_rebuilds_exact_short_even_after_derive_budget_exhausted(self):
+        gh = FakeGitHub()
+        source = self.source()
+        long_item = verified_item(source, "long123", item_id="long-1")
+        gh.long_state["items"] = [long_item]
+        gh.short_state["items"] = [{
+            "id": "short-rejected-1",
+            "status": "rejected",
+            "uploaded": False,
+            "technical_verified": False,
+            "source": copy.deepcopy(source),
+            "task_id": "short-task-1",
+            "artifact_id": "short-task-1",
+            "source_id": "short-source-1",
+            "raw_mp4": "short-rejected-1-notebooklm.mp4",
+            "raw_sha256": "a" * 64,
+            "review_notes": {
+                "technical": "נפסל טכנית: יחס התמונה 720x1280 אינו Short אנכי 1080x1920",
+            },
+        }]
+        state = self.make(gh).state()
+        state["short"]["attempt_count"] = v5.MAX_SHORT_DISPATCH_ATTEMPTS
+        state["short"]["status"] = "exhausted"
+        gh.saved_state = copy.deepcopy(state)
+
+        state2, action = self.make(gh).tick()
+
+        self.assertEqual(action.kind, "dispatch_short_rebuild")
+        self.assertEqual(
+            gh.dispatches,
+            [(v5.SHORT_WORKFLOW, {
+                "operation": "rebuild",
+                "rebuild_item_id": "short-rejected-1",
+            })],
+        )
+        self.assertEqual(state2["short"]["attempt_count"], v5.MAX_SHORT_DISPATCH_ATTEMPTS)
+        self.assertEqual(state2["short"]["remotion_rebuild_count"], 1)
+        self.assertEqual(state2["short"]["status"], "running")
+
     def test_both_public_outputs_complete_cycle(self):
         gh = FakeGitHub()
         source = self.source()
