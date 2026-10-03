@@ -1,8 +1,11 @@
 {
   "enabled": true,
   "target_slug": "sleep-needs-10-year-old",
-  "purpose": "Complete the already merged 2026-10-02 article identity with exactly one public Video Overview and one verified 9:16 Short. Reuse any existing exact source/task/artifact IDs; do not create a duplicate article, provider generation, or upload.",
+  "issue": 1021,
+  "purpose": "Complete the already merged sleep-needs-10-year-old article identity for Issue #1021 with the already verified public Video Overview and exactly one verified 9:16 Short. Reuse the exact source/content identity and do not create a duplicate article, Video Overview, provider generation, or upload.",
   "failure_signature": "TARGETED_MEDIA_RECOVERY_SLEEP_NEEDS_2026_10_02",
-  "recovery": "verify merged public article then exact video overview then exact short; deduplicate by authoritative slug and content_sha256",
-  "requested_by": "master-active-supervisor"
+  "recovery": "adopt verified public article and verified public Video Overview https://youtu.be/cRztRJys4DQ, then dispatch/reconcile exactly one independent Short for the same content_sha256",
+  "requested_by": "master-active-supervisor",
+  "reconcile_seq": 2,
+  "reconcile_reason": "Fresh evidence: article_verified=true and exact Video Overview uploaded/public as video-20261003-200717-297757f9fa (https://youtu.be/cRztRJys4DQ). Advance only the missing Short deliverable."
 }
