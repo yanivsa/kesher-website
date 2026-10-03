@@ -29,6 +29,8 @@ The ADHD/executive-function workflow is parenting support only. It does not diag
 
 ## Staging
 
-`https://kesher-mcp-staging.yanivsa.workers.dev/mcp`
+`https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp`
+
+V2 uses an isolated staging Worker so the older V1 branch cannot overwrite the environment used for Developer Mode evaluation.
 
 Staging only. Do not submit it as the final public production endpoint.
