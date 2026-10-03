@@ -506,6 +506,18 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def _dispatch_targeted_short_rebuild_from_full_state(self, state, source, long_item):
         """Recover one exact resolution-rejected Short from full durable state."""
+        # Fresh public evidence must win over an older rejected durable snapshot.
+        # Otherwise a controller tick that races a successful Short upload can
+        # dispatch a redundant rebuild from stale heavyweight state.
+        newest_short_state = getattr(self.github, "newest_short_state", None)
+        if callable(newest_short_state):
+            try:
+                fresh_short_snapshot = newest_short_state()
+            except v5.core.ControllerError:
+                fresh_short_snapshot = {"items": []}
+            if v5._newest(v5._verified_exact(fresh_short_snapshot, source)) is not None:
+                return None
+
         reader = getattr(self.github, "newest_state_for_artifact", None)
         if not callable(reader):
             return None
