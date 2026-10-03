@@ -1,12 +1,20 @@
 {
-  "enabled": true,
+  "enabled": false,
   "target_slug": "sleep-needs-10-year-old",
-  "purpose": "Complete the already merged 2026-10-02 article identity with exactly one public Video Overview and one verified 9:16 Short. Reuse any existing exact source/task/artifact IDs; do not create a duplicate article, provider generation, or upload.",
+  "issue": 1021,
+  "purpose": "Completed authoritative sleep chain with exactly one public article, one public Video Overview and one verified 9:16 Short. Do not create duplicate article, provider generation, video or upload.",
+  "completed": true,
+  "content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
   "failure_signature": "TARGETED_MEDIA_RECOVERY_SLEEP_NEEDS_2026_10_02",
-  "recovery": "resume exact existing Short task_id 4f0f0a77-cbbf-405d-9619-94353041407f for content_sha256 297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021; long video already public at https://youtu.be/cRztRJys4DQ",
-  "requested_by": "master-active-supervisor",
-  "reconcile_seq": 6,
-  "reconcile_reason": "Short 1080x1920 render fix merged to main at 5afe093beb0dc99a3de3cfed2ebefe5eb986754f. Recover exact Short exhaustion for task_id 4f0f0a77-cbbf-405d-9619-94353041407f under new renderer contract; no new provider generation.",
-  "retry_after": "2026-10-03T18:35:00.000000+00:00",
-  "runtime_fix_commit": "5afe093beb0dc99a3de3cfed2ebefe5eb986754f"
+  "deliverables": {
+    "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
+    "overview_youtube_url": "https://youtu.be/cRztRJys4DQ",
+    "short_youtube_url": "https://youtu.be/k84Q8VxN_yo",
+    "short_portrait_verified": true,
+    "short_width": 1080,
+    "short_height": 1920
+  },
+  "completed_at": "2026-10-03T19:43:18.741945+00:00",
+  "reconcile_seq": 7,
+  "reconcile_reason": "Controller V5 verified exact sleep article identity + public Video Overview + public verified 1080x1920 Short; recovery disabled after completion."
 }
