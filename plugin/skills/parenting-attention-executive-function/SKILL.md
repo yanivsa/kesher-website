@@ -13,7 +13,7 @@ Do not use for ADHD diagnosis, symptom scoring, medication choice/dose/change, m
 
 ## Privacy
 
-Do not send diagnosis status, medication, medical history, child name, exact age, school, raw story or transcript. Translate the request into age band, functional challenge, goal and support level only.
+Do not send diagnosis status, medication, medical history, child name, exact age, school, raw story or transcript. Translate the request into age band, functional challenge, goal and support level only. If the age band is not clear, use `unknown` rather than guessing or asking for exact age.
 
 ## Tool choice
 
