@@ -405,6 +405,53 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertEqual(state["short"]["status"], "running")
         self.assertIsNotNone(controller.github.saved)
 
+    def test_targeted_rebuild_skips_stale_rejected_snapshot_when_public_short_exists(self):
+        source = {
+            "slug": "sleep-needs-10-year-old",
+            "content_sha256": "a" * 64,
+        }
+        verified_short = {
+            "id": "short-public",
+            "status": "uploaded",
+            "uploaded": True,
+            "source": dict(source),
+            "youtube_id": "short123",
+            "youtube_url": "https://youtu.be/short123",
+            "youtube_verification": {
+                "channel_id": stabilized.v5.core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+
+        class FakeGitHub:
+            def newest_short_state(self):
+                return {"version": 1, "items": [verified_short]}
+
+            def newest_state_for_artifact(self, name):
+                raise AssertionError("stale full Short state must not be consulted after public evidence")
+
+        controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
+        controller.github = FakeGitHub()
+        state = {
+            "status": "short_running",
+            "short": {"attempt_count": 4, "status": "running"},
+            "history": [],
+        }
+
+        action = controller._dispatch_targeted_short_rebuild_from_full_state(
+            state,
+            source,
+            {
+                "id": "long-sleep-1",
+                "task_id": "task-long",
+                "artifact_id": "task-long",
+                "source_id": "source-long",
+            },
+        )
+
+        self.assertIsNone(action)
+
     def test_targeted_tick_skips_duplicate_overview_history_preflight(self):
         controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
         state = {"article": {}, "long_video": {}, "short": {}, "history": []}
