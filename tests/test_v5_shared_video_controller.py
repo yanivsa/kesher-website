@@ -210,8 +210,8 @@ class V5SharedVideoControllerTests(unittest.TestCase):
             "task_id": "short-task-1",
             "artifact_id": "short-task-1",
             "source_id": "short-source-1",
-            "raw_mp4": "short-rejected-1-notebooklm.mp4",
-            "raw_sha256": "a" * 64,
+            # Lightweight controller state intentionally omits raw media evidence;
+            # the rebuild worker restores and validates the full durable state.
             "review_notes": {
                 "technical": "נפסל טכנית: יחס התמונה 720x1280 אינו Short אנכי 1080x1920",
             },
