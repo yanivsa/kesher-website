@@ -76,6 +76,7 @@ jobs:
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
       KESHER_BROLL_ENABLED: "true"
       KESHER_BROLL_BUDGET_SECONDS: "12"
+      KESHER_MEDIA_MODE: video_overview
 
     steps:
       - name: Checkout current main
