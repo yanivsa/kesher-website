@@ -25,7 +25,7 @@ The ADHD/executive-function workflow is parenting support only. It does not diag
 
 ## Content intelligence
 
-`scripts/generate-plugin-resources.mjs` builds `plugin/data/kesher-resources.json` from the site's current posts. The MCP resource tool searches only this bounded Kesher index.
+`scripts/generate-plugin-resources.mjs` builds `plugin/data/kesher-resources.json` from the site's current canonical posts plus three explicit Kesher service pages (couples, parenting, and parenting ADHD). The MCP resource tool searches only this bounded Kesher index.
 
 ## Staging
 
