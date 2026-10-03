@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-03",
-  "status": "waiting_for_article_window",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -15,7 +15,11 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "normalization_status": "running",
+    "pr_number": 997,
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/997",
+    "normalization_slot": "2026-10-03",
+    "normalization_dispatched_at": "2026-10-03T17:00:04.481213+00:00"
   },
   "backlog": [
     {
@@ -1935,9 +1939,19 @@
         "backlog_cycle": "2026-09-27",
         "source_slug": "siblings-fairness-vs-equality"
       }
+    },
+    {
+      "at": "2026-10-03T17:00:04.481236+00:00",
+      "from": "waiting_for_article_window",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 997,
+        "slot": "2026-10-03"
+      }
     }
   ],
-  "updated_at": "2026-10-03T16:13:16.099363+00:00",
+  "updated_at": "2026-10-03T17:00:04.481244+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
