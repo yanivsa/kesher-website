@@ -18,7 +18,7 @@
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22",
-    "quality_checked_at": "2026-10-03T22:03:48.090795+00:00",
+    "quality_checked_at": "2026-10-03T22:14:38.714666+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1902,11 +1902,15 @@
     "next_retry_at": null,
     "run_id": 37155684445,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "142cfbad-8a2e-43f8-9a59-ce9c2f604713",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-03T22:05:01.236201+00:00"
+    "last_dispatch_at": "2026-10-03T22:15:43.210695+00:00",
+    "resume_dispatches": 1,
+    "item_id": "video-20261004-010652-199f8fed91",
+    "source_id": "3a8df7c3-9038-4be1-a952-44774108c696",
+    "artifact_id": "142cfbad-8a2e-43f8-9a59-ce9c2f604713"
   },
   "short": {
     "attempt_count": 0,
@@ -1937,10 +1941,10 @@
     "content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22",
     "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
     "article_verified": true,
-    "updated_at": "2026-10-03T22:03:49.426970+00:00",
+    "updated_at": "2026-10-03T22:14:39.961163+00:00",
     "short_status": "pending",
     "complete": false,
     "long_status": "running",
-    "long_last_dispatch_at": "2026-10-03T22:05:01.236632+00:00"
+    "long_last_dispatch_at": "2026-10-03T22:15:43.211148+00:00"
   }
 }
