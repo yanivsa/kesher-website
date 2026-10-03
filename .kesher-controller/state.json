@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-03",
-  "status": "short_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -22,7 +22,7 @@
     "normalization_dispatched_at": "2026-10-03T17:00:04.481213+00:00",
     "quality_status": "passed",
     "quality_content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
-    "quality_checked_at": "2026-10-03T18:19:12.014503+00:00",
+    "quality_checked_at": "2026-10-03T18:32:00.974805+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1291,7 +1291,12 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "short",
+    "code": "SHORT_ATTEMPTS_EXHAUSTED",
+    "message": "Short exhausted 4 derive/recovery dispatch attempts",
+    "at": "2026-10-03T18:32:04.715938+00:00"
+  },
   "history": [
     {
       "at": "2026-09-29T10:24:14.429728+00:00",
@@ -2004,9 +2009,18 @@
       "from": "short_retry_wait",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-10-03T18:32:04.715954+00:00",
+      "from": "short_running",
+      "to": "blocked",
+      "reason": "SHORT_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "Short exhausted 4 derive/recovery dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-03T18:19:15.434779+00:00",
+  "updated_at": "2026-10-03T18:32:04.715959+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2041,20 +2055,14 @@
   },
   "short": {
     "attempt_count": 4,
-    "status": "running",
-    "last_error": {
-      "code": "SHORT_WORKFLOW_FAILED",
-      "message": "Short derive run 37142028011 completed with conclusion=cancelled",
-      "retryable": true,
-      "retry_at": "2026-10-03T18:05:01.558322+00:00",
-      "at": "2026-10-03T18:00:01.558349+00:00"
-    },
+    "status": "exhausted",
+    "last_error": null,
     "next_retry_at": null,
     "run_id": 37143556869,
-    "processed_run_id": 37142028011,
+    "processed_run_id": 37143556869,
     "provider_id": "fcfbb9d5-15a3-434c-8c7b-8b12d0a7211c",
-    "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "SHORT_WORKFLOW_FAILED": 1
     },
@@ -2062,7 +2070,7 @@
     "artifact_id": "fcfbb9d5-15a3-434c-8c7b-8b12d0a7211c",
     "source_id": "a7f06cbc-82b9-4974-a2ce-6d4ebce00ab6",
     "adopted_from_long_item_id": "video-20261003-200717-297757f9fa",
-    "last_run_conclusion": "cancelled",
+    "last_run_conclusion": "success",
     "last_failed_run_id": 37142028011
   },
   "migration": {
@@ -2082,8 +2090,8 @@
     "content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
     "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
     "article_verified": true,
-    "updated_at": "2026-10-03T18:19:13.079549+00:00",
-    "short_status": "running",
+    "updated_at": "2026-10-03T18:32:02.447089+00:00",
+    "short_status": "exhausted",
     "complete": false,
     "long_status": "complete",
     "long_last_dispatch_at": "2026-10-03T17:15:02.201543+00:00",
