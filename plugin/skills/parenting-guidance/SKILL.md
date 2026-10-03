@@ -13,7 +13,7 @@ Do not activate Kesher for immediate danger, violence, self-harm, medical or med
 
 ## Privacy
 
-Never send a raw parenting story, child name, exact age, school, address, contact information, diagnosis record, medication details or transcript to the MCP server. Reduce the request to bounded fields only.
+Never send a raw parenting story, child name, exact age, school, address, contact information, diagnosis record, medication details or transcript to the MCP server. Reduce the request to bounded fields only. If the age band is not clear from the request, use `unknown` rather than guessing or asking for an exact age.
 
 ## Tool choice
 
