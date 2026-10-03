@@ -2,7 +2,7 @@ name: Kesher MCP Staging Deploy
 on:
   push:
     branches:
-      - feature/kesher-plugin-v2
+      - feature/kesher-plugin-v2-clean
     paths:
       - "plugin/**"
       - "scripts/generate-plugin-resources.mjs"
@@ -74,10 +74,10 @@ jobs:
           curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"get_conversation_plan","arguments":{"topic":"household","goal":"discuss_household","emotional_intensity":"high","interaction_risk":"escalation","tone":"gentle"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-4.txt
           grep -F 'opening_he' /tmp/call-4.txt >/dev/null
 
-          curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"get_parenting_response_plan","arguments":{"age_band":"elementary","challenge":"screens","goal":"set_boundary","response_style":"firm_kind"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-5.txt
+          curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"get_parenting_response_plan","arguments":{"age_band":"unknown","challenge":"screens","goal":"set_boundary","response_style":"firm_kind"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-5.txt
           grep -F 'phrase_to_use_he' /tmp/call-5.txt >/dev/null
 
-          curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"get_adhd_parenting_plan","arguments":{"age_band":"elementary","challenge":"task_initiation","goal":"start_task","support_level":"structured"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-6.txt
+          curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"get_adhd_parenting_plan","arguments":{"age_band":"unknown","challenge":"task_initiation","goal":"start_task","support_level":"structured"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-6.txt
           grep -F 'executive_function_frame_he' /tmp/call-6.txt >/dev/null
 
           curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"find_kesher_resource","arguments":{"domain":"parenting_adhd","topic":"adhd_morning","content_type":"article"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-7.txt
