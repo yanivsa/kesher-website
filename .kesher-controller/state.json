@@ -22,7 +22,7 @@
     "normalization_dispatched_at": "2026-10-03T17:00:04.481213+00:00",
     "quality_status": "passed",
     "quality_content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
-    "quality_checked_at": "2026-10-03T18:07:47.397239+00:00",
+    "quality_checked_at": "2026-10-03T18:11:51.329128+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -2006,7 +2006,7 @@
       "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-10-03T18:07:56.866668+00:00",
+  "updated_at": "2026-10-03T18:11:55.927312+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2040,7 +2040,7 @@
     "verified": true
   },
   "short": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": {
       "code": "SHORT_WORKFLOW_FAILED",
@@ -2058,7 +2058,7 @@
     "failure_count_by_type": {
       "SHORT_WORKFLOW_FAILED": 1
     },
-    "last_dispatch_at": "2026-10-03T18:07:56.866635+00:00",
+    "last_dispatch_at": "2026-10-03T18:11:55.927291+00:00",
     "artifact_id": "fcfbb9d5-15a3-434c-8c7b-8b12d0a7211c",
     "source_id": "a7f06cbc-82b9-4974-a2ce-6d4ebce00ab6",
     "adopted_from_long_item_id": "video-20261003-200717-297757f9fa",
@@ -2082,7 +2082,7 @@
     "content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
     "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
     "article_verified": true,
-    "updated_at": "2026-10-03T18:07:50.667885+00:00",
+    "updated_at": "2026-10-03T18:11:52.572610+00:00",
     "short_status": "running",
     "complete": false,
     "long_status": "complete",
