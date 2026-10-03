@@ -31,8 +31,10 @@
     ],
     "shortHook": "כשעוברים מ\"מה קרה\" ל\"מי אתה\" — הריב כבר מתחיל לפגוע בקשר עצמו.",
     "imageProvider": "Local",
-    "imageSourceUrl": "local://public/images/generated/blog/listening-in-relationships.jpg",
-    "imageIsFallback": true
+    "imageSourceUrl": "local://public/images/generated/blog/repairing-relationship-after-resentment.jpg",
+    "imageIsFallback": true,
+    "image": "/images/generated/blog/relationship-code-7500.jpg",
+    "imageAlt": "צילום מציאותי של זוג בשיחה טבעית המדגישה תקשורת, קרבה והקשבה"
   },
   {
     "id": "relationship-crisis-flydubai-lessons",
