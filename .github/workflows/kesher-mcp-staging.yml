@@ -10,7 +10,7 @@ on:
       - ".github/workflows/kesher-mcp-staging.yml"
   workflow_dispatch:
 concurrency:
-  group: kesher-mcp-staging-v2
+  group: kesher-mcp-staging-v2-clean
   cancel-in-progress: true
 permissions:
   contents: read
