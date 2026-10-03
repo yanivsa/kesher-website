@@ -14,7 +14,7 @@
     "Server-side rejection of unexpected/private fields",
     "Unknown age-band support to avoid guessing or collecting exact child age",
     "No custom per-tool logging, preserving readOnlyHint=true",
-    "Cloudflare infrastructure observability and staging rate limiter configured",
+    "Cloudflare infrastructure observability, staging rate limiter, and isolated V2 Worker configured",
     "Remote staging smoke coverage for all five tools, strict schemas, private-field rejection, article lookup and service-page lookup",
     "Hebrew discovery metadata for couples, parenting and attention/executive-function support",
     "Portable Agent Plugin package with logo, support, privacy and terms metadata",
@@ -23,7 +23,7 @@
     "V2 privacy and terms disclosures implemented"
   ],
   "staging": {
-    "endpoint": "https://kesher-mcp-staging.yanivsa.workers.dev/mcp",
+    "endpoint": "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp",
     "status": "must_remain_green_on_current_pr_head",
     "evidence": "Use the Kesher MCP Staging Deploy check attached to the current PR head; run IDs are intentionally not frozen in this file."
   },
@@ -90,5 +90,5 @@
     }
   ],
   "baseline_main_sha": "054dcfc4d12031bef5b609d83a5d0a7897211f70",
-  "qa_state": "technical_validation_running_before_developer_mode"
+  "qa_state": "technical_validation_running_on_isolated_v2_staging"
 }
