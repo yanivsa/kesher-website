@@ -193,3 +193,62 @@ QA hardening completed:
 - No automatic blog → mediation mapping was added because the existing article set did not provide sufficiently explicit mediation intent for a conservative editorial allowlist.
 
 The next decision should be evidence-led: use Search Console/query data and conversion data before promoting held pages or creating additional Compact Keyword routes.
+
+
+---
+
+## Evidence refresh — 2026-10-03
+
+This refresh uses live Google Search Console and GA4 data for KESHER only.
+
+### Search Console
+
+Property:
+- `sc-domain:saharoni.com`
+- Scope filtered to `https://kesher.saharoni.com/`
+
+Index inspection:
+- `/couples-counseling-ashdod`: indexed, crawl successful, Google canonical matches the page URL. Last recorded crawl: 2026-09-26.
+- `/parenting-guidance-ashdod`: indexed, crawl successful, Google canonical matches the page URL. Last recorded crawl: 2026-09-27.
+- `/couples-mediation-ashdod`: indexed, crawl successful, Google canonical matches the page URL. Last recorded crawl: 2026-09-21.
+- `/parenting-adhd-ashdod`: URL not yet known to Google at inspection time.
+- `/couples-crisis-ashdod`: URL not known to Google, consistent with the held noindex policy.
+- `/couples-counseling-gan-yavne`: URL not known to Google, consistent with the held noindex policy.
+
+Performance window through 2026-09-30:
+- KESHER has organic impressions and clicks overall, but the Compact Keywords routes did not yet return page/query performance rows in Search Console.
+- This is not evidence of failure: the implementation and QA changes landed around 2026-10-01 to 2026-10-02, while Search Console data lags and several pages had not been recrawled after the final implementation.
+
+Discovery action taken:
+- `https://kesher.saharoni.com/sitemap.xml` was resubmitted successfully on 2026-10-03.
+- A second contextual internal link to `/parenting-adhd-ashdod` was added from the main `/services/parenting` page, in addition to the existing link from `/parenting-guidance-ashdod`.
+- Content validation now guards both parenting discovery links.
+
+### GA4
+
+Property:
+- `551923843`
+- Time zone: Asia/Jerusalem
+
+Window checked:
+- 2026-09-20 through 2026-10-02.
+
+Observed:
+- GA4 is receiving KESHER traffic and `page_view` events.
+- No page/session rows were returned yet for the Compact Keywords routes in this window.
+- No `lead_submit` or `booking_complete` events were returned for those routes in this window.
+
+Interpretation:
+- There is not enough post-launch evidence yet to promote held pages, consolidate routes, or create additional Compact Keyword pages.
+- Keep the portfolio policy unchanged until post-launch impressions, clicks, and conversion events exist.
+
+### Current decision after live evidence
+
+| Route | Status after 2026-10-03 evidence | Action |
+|---|---|---|
+| /parenting-adhd-ashdod | INDEX | Keep indexable; strengthen discovery and wait for fresh crawl/performance data |
+| /couples-mediation-ashdod | INDEX | Keep indexable; already indexed correctly |
+| /couples-crisis-ashdod | NOINDEX, FOLLOW | Keep held; no evidence supports promotion |
+| /couples-counseling-gan-yavne | NOINDEX, FOLLOW | Keep held; no evidence supports promotion |
+
+Do not create additional Compact Keyword routes until the indexable specialist pages have accumulated enough post-launch Search Console and conversion data to evaluate.
