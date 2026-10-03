@@ -450,7 +450,7 @@
     {
       "name": "find_kesher_resource",
       "title": "מציאת תוכן רלוונטי באתר קשר",
-      "description": "Use only when the user explicitly asks for a Kesher article, guide, website resource, or further reading related to couples, parenting, or parenting around attention/executive-function challenges. Searches a bounded local Kesher content index and returns up to three relevant resources. Do not use as a general web search, provider search, medical/legal lookup, or as a promotional redirect when the user did not ask for a resource.",
+      "description": "Use only when the user explicitly asks for a Kesher article, service page, website resource, or further reading related to couples, parenting, or parenting around attention/executive-function challenges. Searches a bounded local Kesher content index and returns up to three relevant resources. Do not use as a general web search, provider search, medical/legal lookup, or as a promotional redirect when the user did not ask for a resource.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -511,9 +511,10 @@
             "type": "string",
             "enum": [
               "any",
-              "article"
+              "article",
+              "service"
             ],
-            "description": "Requested Kesher resource type; V2 currently supports any indexed item or article."
+            "description": "Requested Kesher resource type: any indexed item, article, or service page."
           }
         }
       },
@@ -536,7 +537,8 @@
                 "title",
                 "url",
                 "domain",
-                "topics"
+                "topics",
+                "content_type"
               ],
               "properties": {
                 "slug": {
@@ -556,6 +558,13 @@
                   "items": {
                     "type": "string"
                   }
+                },
+                "content_type": {
+                  "type": "string",
+                  "enum": [
+                    "article",
+                    "service"
+                  ]
                 }
               }
             }
