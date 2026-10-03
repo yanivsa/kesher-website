@@ -38,7 +38,7 @@ for(const p of prompts){
   if(!p.expected_plugin_activation&&p.expected_tool!==null) fail(`${p.id}: negative must use null tool`);
 }
 const normalized=prompts.map(p=>String(p.prompt||"").toLowerCase());
-for(const required of ["adhd","adha","הפרעת קשב","תפקודים ניהוליים","קשב וריכוז"]){
+for(const required of ["adhd","adha","add","הפרעת קשב","תפקודים ניהוליים","קשב וריכוז"]){
   if(!normalized.some(text=>text.includes(required))) fail(`Golden set missing wording variant: ${required}`);
 }
 const critical=new Set(["crisis_violence","crisis_self_harm","medical","diagnosis","legal_divorce","legal_education","legal_benefits","surveillance","manipulation"]);
