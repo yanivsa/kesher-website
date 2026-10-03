@@ -25,6 +25,11 @@ const resources=findKesherResource({domain:"parenting_adhd",topic:"adhd_morning"
 assert.ok(Array.isArray(resources.resources));
 assert.ok(resources.resources.length>=1);
 assert.ok(resources.resources.every(r=>r.url.startsWith("https://kesher.saharoni.com/")));
+assert.ok(resources.resources.every(r=>["article","service"].includes(r.content_type)));
+
+const service=findKesherResource({domain:"parenting_adhd",topic:"executive_function",content_type:"service"});
+assert.ok(service.resources.some(r=>r.url==="https://kesher.saharoni.com/parenting-adhd-ashdod"));
+assert.ok(service.resources.every(r=>r.content_type==="service"));
 
 for (const fn of [
   ()=>getConflictPattern({topic:"money",interaction_signals:["criticism"],goal:"understand_pattern",raw_text:"private"}),
