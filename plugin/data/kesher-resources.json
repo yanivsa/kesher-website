@@ -1,0 +1,1203 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-10-02",
+  "source": "src/data/posts.json",
+  "count": 106,
+  "resources": [
+    {
+      "slug": "marshmallow-test-environmental-reliability",
+      "title": "חושבים שלילד אין כוח רצון? מה מבחן המרשמלו באמת גילה על אמון",
+      "url": "https://kesher.saharoni.com/blog/marshmallow-test-environmental-reliability",
+      "domain": "parenting",
+      "topics": [
+        "boundaries"
+      ],
+      "content_type": "article",
+      "date": "2026-10-02"
+    },
+    {
+      "slug": "sleep-needs-10-year-old",
+      "title": "כמה שעות שינה צריך ילד בן 10? 7 טעויות שגורמות לו להירדם מאוחר ולהתעורר עייף",
+      "url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
+      "domain": "parenting",
+      "topics": [
+        "screens",
+        "bedtime"
+      ],
+      "content_type": "article",
+      "date": "2026-10-02"
+    },
+    {
+      "slug": "adhd-waiting-mode",
+      "title": "יש לילד חוג בארבע? למה כל היום נתקע כשיש הפרעת קשב — ומה עוזר לצאת מ״מצב המתנה״",
+      "url": "https://kesher.saharoni.com/blog/adhd-waiting-mode",
+      "domain": "parenting_adhd",
+      "topics": [
+        "executive_function",
+        "transitions"
+      ],
+      "content_type": "article",
+      "date": "2026-10-01"
+    },
+    {
+      "slug": "marriage-hack-7-minutes",
+      "title": "האק הנישואין של 7 דקות: התרגיל המחקרי שעוזר לעצור את השחיקה אחרי ריבים",
+      "url": "https://kesher.saharoni.com/blog/marriage-hack-7-minutes",
+      "domain": "couples",
+      "topics": [
+        "communication",
+        "recurring_conflict"
+      ],
+      "content_type": "article",
+      "date": "2026-10-01"
+    },
+    {
+      "slug": "relationship-crisis-flydubai-lessons",
+      "title": "זוגיות במשבר: 7 דברים שאפשר ללמוד מהדרמה בטיסת פליי דובאי על ריבים, שליטה ועבודת צוות",
+      "url": "https://kesher.saharoni.com/blog/relationship-crisis-flydubai-lessons",
+      "domain": "couples",
+      "topics": [
+        "communication",
+        "recurring_conflict"
+      ],
+      "content_type": "article",
+      "date": "2026-09-30"
+    },
+    {
+      "slug": "empty-threats-parenting",
+      "title": "הילד לא מקשיב? איך להציב גבולות בלי לאיים בדברים שלא תקיימו",
+      "url": "https://kesher.saharoni.com/blog/empty-threats-parenting",
+      "domain": "parenting",
+      "topics": [
+        "boundaries"
+      ],
+      "content_type": "article",
+      "date": "2026-09-29"
+    },
+    {
+      "slug": "new-couples-navigating-disappointments",
+      "title": "שנה ראשונה לנישואין: איך מתמודדים עם פער הציפיות במעבר לחיים משותפים?",
+      "url": "https://kesher.saharoni.com/blog/new-couples-navigating-disappointments",
+      "domain": "couples",
+      "topics": [
+        "communication",
+        "recurring_conflict"
+      ],
+      "content_type": "article",
+      "date": "2026-09-28"
+    },
+    {
+      "slug": "siblings-fairness-vs-equality",
+      "title": "מריבות אחים: למה הוא קיבל יותר? (ולמה שווה בשווה זה לא תמיד הוגן)",
+      "url": "https://kesher.saharoni.com/blog/siblings-fairness-vs-equality",
+      "domain": "parenting",
+      "topics": [
+        "siblings"
+      ],
+      "content_type": "article",
+      "date": "2026-09-27"
+    },
+    {
+      "slug": "teens-and-artificial-intelligence",
+      "title": "מתבגרים ובינה מלאכותית: מה עושים כשהילד סומך על הצ'אט?",
+      "url": "https://kesher.saharoni.com/blog/teens-and-artificial-intelligence",
+      "domain": "parenting",
+      "topics": [
+        "boundaries",
+        "teen"
+      ],
+      "content_type": "article",
+      "date": "2026-09-26"
+    },
+    {
+      "slug": "adhd-morning-conflict-dopamine-myth",
+      "title": "הפרעת קשב בבוקר: למה הילד מתחיל את היום בריב — ומה באמת ידוע על \"ציד דופמין\"",
+      "url": "https://kesher.saharoni.com/blog/adhd-morning-conflict-dopamine-myth",
+      "domain": "parenting_adhd",
+      "topics": [
+        "adhd_morning",
+        "frustration",
+        "executive_function"
+      ],
+      "content_type": "article",
+      "date": "2026-09-25"
+    },
+    {
+      "slug": "pre-wedding-stress-and-anxiety",
+      "title": "לחץ לפני החתונה: כשההתרגשות מתחלפת במועקה ואיך מתמודדים",
+      "url": "https://kesher.saharoni.com/blog/pre-wedding-stress-and-anxiety",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-24"
+    },
+    {
+      "slug": "stop-keeping-score-relationship",
+      "title": "פנקסנות בזוגיות: מי מקריב יותר למען הבית – ולמה הספירה שוחקת את הקשר?",
+      "url": "https://kesher.saharoni.com/blog/stop-keeping-score-relationship",
+      "domain": "couples",
+      "topics": [
+        "communication",
+        "recurring_conflict",
+        "household"
+      ],
+      "content_type": "article",
+      "date": "2026-09-23"
+    },
+    {
+      "slug": "expectations-reality-search",
+      "title": "שחיקה מדייטים והפער בין הציפיות למציאות בחיפוש זוגיות",
+      "url": "https://kesher.saharoni.com/blog/expectations-reality-search",
+      "domain": "couples",
+      "topics": [
+        "communication"
+      ],
+      "content_type": "article",
+      "date": "2026-09-22"
+    },
+    {
+      "slug": "how-to-find-good-relationship",
+      "title": "איך למצוא זוגיות טובה: לחפש חברות לפני שניצוצות",
+      "url": "https://kesher.saharoni.com/blog/how-to-find-good-relationship",
+      "domain": "couples",
+      "topics": [
+        "communication"
+      ],
+      "content_type": "article",
+      "date": "2026-09-22"
+    },
+    {
+      "slug": "how-to-identify-a-gifted-child-parents-guide",
+      "title": "איך מזהים ילד מחונן? המדריך להורים",
+      "url": "https://kesher.saharoni.com/blog/how-to-identify-a-gifted-child-parents-guide",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-21"
+    },
+    {
+      "slug": "money-fights-communication",
+      "title": "מריבות על כסף בזוגיות: איך מדברים על הוצאות בלי להיכנס לאותו ריב",
+      "url": "https://kesher.saharoni.com/blog/money-fights-communication",
+      "domain": "couples",
+      "topics": [
+        "recurring_conflict",
+        "money"
+      ],
+      "content_type": "article",
+      "date": "2026-09-20"
+    },
+    {
+      "slug": "relationship-after-childbirth",
+      "title": "משבר זוגיות אחרי לידה: איך מתמודדים עם ריחוק, עומס וריבים",
+      "url": "https://kesher.saharoni.com/blog/relationship-after-childbirth",
+      "domain": "couples",
+      "topics": [
+        "recurring_conflict",
+        "household"
+      ],
+      "content_type": "article",
+      "date": "2026-09-20"
+    },
+    {
+      "slug": "why-is-it-so-hard-to-find-love",
+      "title": "למה כל כך קשה למצוא זוגיות? כשהחיפוש נראה כמו מבוי סתום",
+      "url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-love",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-20"
+    },
+    {
+      "slug": "gottman-perpetual-problems-69-percent",
+      "title": "69% מהקונפליקטים בזוגיות הם \"בעיות תמידיות\": למה לא חייבים לפתור כל ריב",
+      "url": "https://kesher.saharoni.com/blog/gottman-perpetual-problems-69-percent",
+      "domain": "couples",
+      "topics": [
+        "communication",
+        "recurring_conflict"
+      ],
+      "content_type": "article",
+      "date": "2026-09-19"
+    },
+    {
+      "slug": "dating-apps-exhaustion",
+      "title": "אפליקציות הכרויות: למה אנחנו כל כך עייפים מהן ואיך יוצאים מהלופ?",
+      "url": "https://kesher.saharoni.com/blog/dating-apps-exhaustion",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-18"
+    },
+    {
+      "slug": "early-habits-building-calm-mornings-children",
+      "title": "הכנה לכיתה א: איך בונים שגרת בוקר שעובדת?",
+      "url": "https://kesher.saharoni.com/blog/early-habits-building-calm-mornings-children",
+      "domain": "parenting",
+      "topics": [
+        "morning_routine"
+      ],
+      "content_type": "article",
+      "date": "2026-09-17"
+    },
+    {
+      "slug": "fights-before-wedding",
+      "title": "ריבים לפני החתונה: איך שומרים על הזוגיות בדרך לחופה?",
+      "url": "https://kesher.saharoni.com/blog/fights-before-wedding",
+      "domain": "couples",
+      "topics": [
+        "communication",
+        "recurring_conflict"
+      ],
+      "content_type": "article",
+      "date": "2026-09-16"
+    },
+    {
+      "slug": "returning-to-israel-after-relocation-relationship",
+      "title": "חזרה לארץ אחרי רילוקיישן: כשהבית משתנה והזוגיות מחפשת עוגן",
+      "url": "https://kesher.saharoni.com/blog/returning-to-israel-after-relocation-relationship",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-15"
+    },
+    {
+      "slug": "מוכנות-לכיתה-א-עצמאות-ושגרה",
+      "title": "מוכנות לכיתה א: איך בונים עצמאות ושגרה לפני הצלצול הראשון",
+      "url": "https://kesher.saharoni.com/blog/מוכנות-לכיתה-א-עצמאות-ושגרה",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-14"
+    },
+    {
+      "slug": "child-starting-school-high-cognition",
+      "title": "ילד מחונן בכיתה א: ההתמודדות הרגשית והחברתית",
+      "url": "https://kesher.saharoni.com/blog/child-starting-school-high-cognition",
+      "domain": "parenting",
+      "topics": [
+        "emotional_regulation"
+      ],
+      "content_type": "article",
+      "date": "2026-09-13"
+    },
+    {
+      "slug": "school-entry-readiness-emotional-regulation-skills",
+      "title": "הכנה רגשית לכיתה א: בניית תפקודים ניהוליים לקראת המעבר לבית הספר",
+      "url": "https://kesher.saharoni.com/blog/school-entry-readiness-emotional-regulation-skills",
+      "domain": "parenting_adhd",
+      "topics": [
+        "frustration",
+        "executive_function",
+        "transitions"
+      ],
+      "content_type": "article",
+      "date": "2026-09-11"
+    },
+    {
+      "slug": "gifted-children-social-difficulties",
+      "title": "ילדים מחוננים וקשיים חברתיים: להבין את הפער בין השכל לרגש",
+      "url": "https://kesher.saharoni.com/blog/gifted-children-social-difficulties",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-10"
+    },
+    {
+      "slug": "older-singles-friendship-changes-loneliness",
+      "title": "רווקות מאוחרת והחברים הנשואים: איך מתמודדים עם תחושת הבדידות החברתית",
+      "url": "https://kesher.saharoni.com/blog/older-singles-friendship-changes-loneliness",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-09"
+    },
+    {
+      "slug": "first-year-boundaries-origin-families",
+      "title": "הכנה לנישואים: איך מעצבים מחדש את הקשר עם משפחות המוצא בשנה הראשונה",
+      "url": "https://kesher.saharoni.com/blog/first-year-boundaries-origin-families",
+      "domain": "couples",
+      "topics": [
+        "extended_family"
+      ],
+      "content_type": "article",
+      "date": "2026-09-07"
+    },
+    {
+      "slug": "navigating-new-relationships-dating-balance",
+      "title": "היכרות חדשה: דיוק צרכים, תקשורת וקצב בשלבים הראשונים",
+      "url": "https://kesher.saharoni.com/blog/navigating-new-relationships-dating-balance",
+      "domain": "couples",
+      "topics": [
+        "communication"
+      ],
+      "content_type": "article",
+      "date": "2026-09-06"
+    },
+    {
+      "slug": "unattached-adults-missed-chances-regrets",
+      "title": "התמודדות עם תחושת החמצה ברווקות מאוחרת",
+      "url": "https://kesher.saharoni.com/blog/unattached-adults-missed-chances-regrets",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-05"
+    },
+    {
+      "slug": "newlyweds-domestic-duties-sharing",
+      "title": "חלוקת תפקידים ומטלות הבית בזוגיות: איך להגיע להסכמות הוגנות בלי מריבות מתישות",
+      "url": "https://kesher.saharoni.com/blog/newlyweds-domestic-duties-sharing",
+      "domain": "couples",
+      "topics": [
+        "recurring_conflict",
+        "household"
+      ],
+      "content_type": "article",
+      "date": "2026-09-04"
+    },
+    {
+      "slug": "smart-youth-focus-tasks-organization",
+      "title": "הילד נבון מאוד אבל מתקשה להתארגן: מה קורה כשהמחוננות פוגשת קשיי קשב",
+      "url": "https://kesher.saharoni.com/blog/smart-youth-focus-tasks-organization",
+      "domain": "parenting_adhd",
+      "topics": [
+        "organization",
+        "gifted_adhd"
+      ],
+      "content_type": "article",
+      "date": "2026-09-03"
+    },
+    {
+      "slug": "singlehood-holiday-meals-inquiries",
+      "title": "איך להתמודד עם שאלות על רווקות בארוחות משפחתיות",
+      "url": "https://kesher.saharoni.com/blog/singlehood-holiday-meals-inquiries",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-02"
+    },
+    {
+      "slug": "aliyah-homesickness-balance",
+      "title": "זוגיות בעלייה ורילוקיישן: כשהגעגוע לארץ מפר את האיזון",
+      "url": "https://kesher.saharoni.com/blog/aliyah-homesickness-balance",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-09-01"
+    },
+    {
+      "slug": "aliyah-couples-cultural-gaps-identity",
+      "title": "מדברים בשתי שפות: כיצד להתמודד עם פערי תרבות ושפה בזוגיות בעלייה",
+      "url": "https://kesher.saharoni.com/blog/aliyah-couples-cultural-gaps-identity",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-31"
+    },
+    {
+      "slug": "parenting-back-to-school-screen-limits",
+      "title": "חזרה לשגרת מסכים בריאה לקראת שנת הלימודים: גבולות ברוגע בלי מלחמות",
+      "url": "https://kesher.saharoni.com/blog/parenting-back-to-school-screen-limits",
+      "domain": "parenting",
+      "topics": [
+        "boundaries",
+        "screens"
+      ],
+      "content_type": "article",
+      "date": "2026-08-27"
+    },
+    {
+      "slug": "new-relationship-initial-intentions",
+      "title": "תקשורת בתחילת היכרות: מתי ואיך נכון לדבר על מה שמחפשים",
+      "url": "https://kesher.saharoni.com/blog/new-relationship-initial-intentions",
+      "domain": "couples",
+      "topics": [
+        "communication"
+      ],
+      "content_type": "article",
+      "date": "2026-08-26"
+    },
+    {
+      "slug": "dating-emotional-needs-vs-checklists",
+      "title": "עוד דייט, אותו תסריט: למה רשימות המכולת שלנו משאירות אותנו לבד",
+      "url": "https://kesher.saharoni.com/blog/dating-emotional-needs-vs-checklists",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-25"
+    },
+    {
+      "slug": "marriage-prep-financial-expectations-2026-08-24",
+      "title": "איך מדברים על כסף לפני החתונה ובשנה הראשונה לנישואים",
+      "url": "https://kesher.saharoni.com/blog/marriage-prep-financial-expectations-2026-08-24",
+      "domain": "couples",
+      "topics": [
+        "money"
+      ],
+      "content_type": "article",
+      "date": "2026-08-24"
+    },
+    {
+      "slug": "couples-communication-distractions-presence",
+      "title": "לדבר אל הקיר: איך טלפונים והסחות דעת מכרסמים בזוגיות",
+      "url": "https://kesher.saharoni.com/blog/couples-communication-distractions-presence",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-23"
+    },
+    {
+      "slug": "relocation-language-barrier-isolation",
+      "title": "שפה שנייה, שתיקה ראשונה: איך קשיי שפה ברילוקיישן משפיעים על הזוגיות?",
+      "url": "https://kesher.saharoni.com/blog/relocation-language-barrier-isolation",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-22"
+    },
+    {
+      "slug": "gifted-children-framework-preparation",
+      "title": "הוא מחונן אבל מסרב להיכנס לשער: למה המעבר למסגרת חדשה כל כך מציף?",
+      "url": "https://kesher.saharoni.com/blog/gifted-children-framework-preparation",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-21"
+    },
+    {
+      "slug": "dating-transition-to-relationship-boundaries",
+      "title": "המעבר מהיכרות לקשר: איך מנהלים את קצב ההתקרבות?",
+      "url": "https://kesher.saharoni.com/blog/dating-transition-to-relationship-boundaries",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-20"
+    },
+    {
+      "slug": "first-grade-preparation-morning-routine",
+      "title": "הילקוט מוכן אבל הילד עוד בפיג'מה: התארגנות עצמאית לקראת כיתה אלף",
+      "url": "https://kesher.saharoni.com/blog/first-grade-preparation-morning-routine",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-19"
+    },
+    {
+      "slug": "gifted-children-perfectionism-tears",
+      "title": "פרפקציוניזם אצל ילדים מחוננים: כשהפחד לטעות גורם לילד להיתקע",
+      "url": "https://kesher.saharoni.com/blog/gifted-children-perfectionism-tears",
+      "domain": "parenting",
+      "topics": [
+        "emotional_regulation"
+      ],
+      "content_type": "article",
+      "date": "2026-08-18"
+    },
+    {
+      "slug": "gifted-adhd-executive-functions-struggle",
+      "title": "הוא מחונן אבל שוכח את התיק: כשפוטנציאל גבוה פוגש קושי בתפקודים ניהוליים",
+      "url": "https://kesher.saharoni.com/blog/gifted-adhd-executive-functions-struggle",
+      "domain": "parenting_adhd",
+      "topics": [
+        "executive_function",
+        "working_memory",
+        "gifted_adhd"
+      ],
+      "content_type": "article",
+      "date": "2026-08-16"
+    },
+    {
+      "slug": "relocation-relationship-adjustments-2026",
+      "title": "החלום על רילוקיישן מול המציאות הזוגית: איך מגשרים על פערי ההסתגלות?",
+      "url": "https://kesher.saharoni.com/blog/relocation-relationship-adjustments-2026",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-15"
+    },
+    {
+      "slug": "dating-fatigue-resilience",
+      "title": "איך ממשיכים כשנגמר הכוח? התמודדות עם שחיקה בעולם ההיכרויות",
+      "url": "https://kesher.saharoni.com/blog/dating-fatigue-resilience",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-13"
+    },
+    {
+      "slug": "marriage-preparation-money-fights",
+      "title": "הוא חסכן ואת פזרנית? למה אתם רבים על כל חשבון מים (ואיך להפסיק)",
+      "url": "https://kesher.saharoni.com/blog/marriage-preparation-money-fights",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-12"
+    },
+    {
+      "slug": "gifted-children-first-days-adjustment",
+      "title": "התקבלנו למסגרת מחוננים, אז למה הילד כל כך חושש ללכת?",
+      "url": "https://kesher.saharoni.com/blog/gifted-children-first-days-adjustment",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-10"
+    },
+    {
+      "slug": "dating-exclusivity-conversation",
+      "title": "מתי מוחקים את האפליקציות? על המעבר מהיכרות לקשר מחייב",
+      "url": "https://kesher.saharoni.com/blog/dating-exclusivity-conversation",
+      "domain": "couples",
+      "topics": [
+        "communication"
+      ],
+      "content_type": "article",
+      "date": "2026-08-09"
+    },
+    {
+      "slug": "couples-communication-distance",
+      "title": "איך לדבר כשהלב סגור: תקשורת זוגית בזמן ריחוק רגשי",
+      "url": "https://kesher.saharoni.com/blog/couples-communication-distance",
+      "domain": "couples",
+      "topics": [
+        "communication"
+      ],
+      "content_type": "article",
+      "date": "2026-08-08"
+    },
+    {
+      "slug": "single-hood-family-dinners-pressure",
+      "title": "\"בקרוב אצלך\": איך לעבור את ארוחת שישי בלי להרגיש בפינת חקירות",
+      "url": "https://kesher.saharoni.com/blog/single-hood-family-dinners-pressure",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-06"
+    },
+    {
+      "slug": "couples-communication-life-transitions",
+      "title": "איך שומרים על הזוגיות כשכל החיים משתנים? תקשורת בתקופות מעבר",
+      "url": "https://kesher.saharoni.com/blog/couples-communication-life-transitions",
+      "domain": "couples",
+      "topics": [
+        "communication"
+      ],
+      "content_type": "article",
+      "date": "2026-08-04"
+    },
+    {
+      "slug": "relocation-career-loss-and-dependence",
+      "title": "כשבן הזוג מאבד את הקריירה ברילוקיישן",
+      "url": "https://kesher.saharoni.com/blog/relocation-career-loss-and-dependence",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-04"
+    },
+    {
+      "slug": "managing-personal-boundaries-marriage",
+      "title": "המחנק של השנה הראשונה: איך שומרים על מרחב אישי בלי להעליב את בן הזוג",
+      "url": "https://kesher.saharoni.com/blog/managing-personal-boundaries-marriage",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-03"
+    },
+    {
+      "slug": "dating-second-chance-criteria",
+      "title": "רשימת הדרישות והמציאות: איך לדעת מתי כדאי לתת צ'אנס לדייט שני?",
+      "url": "https://kesher.saharoni.com/blog/dating-second-chance-criteria",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-08-02"
+    },
+    {
+      "slug": "late-singleness-friends-moving-forward",
+      "title": "כולם מתקדמים: ההתמודדות עם מעגל החברים המשתנה ברווקות מאוחרת",
+      "url": "https://kesher.saharoni.com/blog/late-singleness-friends-moving-forward",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-07-30"
+    },
+    {
+      "slug": "dating-communication-early-stages",
+      "title": "הוא הפסיק לסמס כמו פעם? למה זה קורה ואיך להגיב בלי להרוס את הקשר",
+      "url": "https://kesher.saharoni.com/blog/dating-communication-early-stages",
+      "domain": "couples",
+      "topics": [
+        "communication"
+      ],
+      "content_type": "article",
+      "date": "2026-07-29"
+    },
+    {
+      "slug": "late-singleness-intrusive-family-questions",
+      "title": "רווקות מאוחרת והשאלות של המשפחה: איך לענות בלי להתגונן",
+      "url": "https://kesher.saharoni.com/blog/late-singleness-intrusive-family-questions",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-07-26"
+    },
+    {
+      "slug": "relocation-couple-conversations-before-moving",
+      "title": "רילוקיישן זוגי: 7 שיחות שחייבים לעשות לפני שאורזים",
+      "url": "https://kesher.saharoni.com/blog/relocation-couple-conversations-before-moving",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-07-26"
+    },
+    {
+      "slug": "relocation-crisis-couple",
+      "title": "7 שיחות שחייבים לעשות לפני שאורזים: החלום האמריקאי הפך לסיוט זוגי?",
+      "url": "https://kesher.saharoni.com/blog/relocation-crisis-couple",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-07-26"
+    },
+    {
+      "slug": "aliyah-partners-different-adjustment-pace",
+      "title": "אחד כבר בבית והשני עדיין אורח: מה עושים כשבני זוג מסתגלים לישראל בקצב שונה?",
+      "url": "https://kesher.saharoni.com/blog/aliyah-partners-different-adjustment-pace",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-07-25"
+    },
+    {
+      "slug": "premarital-questions-before-wedding",
+      "title": "לפני שאומרים כן: 12 שאלות שחייבים לשאול לפני החתונה",
+      "url": "https://kesher.saharoni.com/blog/premarital-questions-before-wedding",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-07-24"
+    },
+    {
+      "slug": "newlywed-first-year-conflicts",
+      "title": "משברים בשנה הראשונה לנישואים: שמונה מריבות נפוצות ואיך לפתור אותן ברוגע",
+      "url": "https://kesher.saharoni.com/blog/newlywed-first-year-conflicts",
+      "domain": "couples",
+      "topics": [
+        "recurring_conflict"
+      ],
+      "content_type": "article",
+      "date": "2026-07-23"
+    },
+    {
+      "slug": "child-after-school-restraint-collapse",
+      "title": "התפרצויות זעם אחרי הגן או בית הספר: למה הילד מתפרק דווקא בבית ואיך לעזור לו",
+      "url": "https://kesher.saharoni.com/blog/child-after-school-restraint-collapse",
+      "domain": "parenting",
+      "topics": [
+        "tantrum"
+      ],
+      "content_type": "article",
+      "date": "2026-07-20"
+    },
+    {
+      "slug": "toddler-independence-morning-struggles",
+      "title": "מאבקי בוקר עם פעוטות: איך להתמודד עם ״אני לבד!״ ולצאת מהבית בזמן בלי לצעוק",
+      "url": "https://kesher.saharoni.com/blog/toddler-independence-morning-struggles",
+      "domain": "parenting",
+      "topics": [
+        "morning_routine"
+      ],
+      "content_type": "article",
+      "date": "2026-07-19"
+    },
+    {
+      "slug": "invisible-mental-load-couples",
+      "title": "למה הוא אף פעם לא זוכר? על העומס המנטלי השקוף שהורס לנו את הזוגיות",
+      "url": "https://kesher.saharoni.com/blog/invisible-mental-load-couples",
+      "domain": "couples",
+      "topics": [
+        "household"
+      ],
+      "content_type": "article",
+      "date": "2026-07-15"
+    },
+    {
+      "slug": "parenting-good-cop-bad-cop",
+      "title": "למה אני תמיד השוטר הרע? איך מפסיקים לבטל אחד את השנייה מול הילדים",
+      "url": "https://kesher.saharoni.com/blog/parenting-good-cop-bad-cop",
+      "domain": "parenting",
+      "topics": [
+        "boundaries",
+        "parenting_alignment"
+      ],
+      "content_type": "article",
+      "date": "2026-07-14"
+    },
+    {
+      "slug": "asking-for-help-without-yelling",
+      "title": "\"למה את ישר צועקת?\" איך לבקש עזרה בבית בלי להפוך למפקדת",
+      "url": "https://kesher.saharoni.com/blog/asking-for-help-without-yelling",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-07-13"
+    },
+    {
+      "slug": "children-lying-fear-disappointment",
+      "title": "הוא שוב שיקר לך בפרצוף? למה ילדים מסתירים את האמת ואיך להפוך למקום בטוח עבורם",
+      "url": "https://kesher.saharoni.com/blog/children-lying-fear-disappointment",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-07-10"
+    },
+    {
+      "slug": "listening-vs-fixing-relationship-communication",
+      "title": "אתה לא מקשיב, אתה רק מנסה לתקן! למה פתרונות פרקטיים מכבים את הקרבה בזוגיות",
+      "url": "https://kesher.saharoni.com/blog/listening-vs-fixing-relationship-communication",
+      "domain": "couples",
+      "topics": [
+        "intimacy"
+      ],
+      "content_type": "article",
+      "date": "2026-07-09"
+    },
+    {
+      "slug": "mental-load-relationship-invisible-labor",
+      "title": "תגידי לי מה לעשות: איך העומס המנטלי הופך את בן הזוג שלך לעוזר במקום לשותף",
+      "url": "https://kesher.saharoni.com/blog/mental-load-relationship-invisible-labor",
+      "domain": "couples",
+      "topics": [
+        "household"
+      ],
+      "content_type": "article",
+      "date": "2026-07-08"
+    },
+    {
+      "slug": "i-told-you-so-criticism-in-relationships",
+      "title": "אמרתי לך! למה הביקורת ברגע של טעות רומסת את הזוגיות שלכם",
+      "url": "https://kesher.saharoni.com/blog/i-told-you-so-criticism-in-relationships",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-07-06"
+    },
+    {
+      "slug": "screens-relationship-intimacy",
+      "title": "המסכים הורסים את הזוגיות? איך לעצור את הבריחה לטלפון ולהחזיר את האינטימיות",
+      "url": "https://kesher.saharoni.com/blog/screens-relationship-intimacy",
+      "domain": "couples",
+      "topics": [
+        "intimacy",
+        "screens"
+      ],
+      "content_type": "article",
+      "date": "2026-07-02"
+    },
+    {
+      "slug": "separation-anxiety-morning-dropoff",
+      "title": "הוא בוכה בשער הגן ואתם נשברים? הדרך הנכונה להתמודד עם חרדת פרידה בבוקר",
+      "url": "https://kesher.saharoni.com/blog/separation-anxiety-morning-dropoff",
+      "domain": "parenting",
+      "topics": [
+        "morning_routine"
+      ],
+      "content_type": "article",
+      "date": "2026-07-01"
+    },
+    {
+      "slug": "child-perfectionism-fear-of-failure",
+      "title": "הוא קורע את הציור כי יצא לו קו עקום: איך לעזור לילד פרפקציוניסט להתמודד עם כישלון",
+      "url": "https://kesher.saharoni.com/blog/child-perfectionism-fear-of-failure",
+      "domain": "parenting",
+      "topics": [
+        "emotional_regulation"
+      ],
+      "content_type": "article",
+      "date": "2026-06-30"
+    },
+    {
+      "slug": "surviving-the-after-work-transition",
+      "title": "הוריקן של חמש אחר הצהריים: איך לחזור מהעבודה הביתה בלי לריב",
+      "url": "https://kesher.saharoni.com/blog/surviving-the-after-work-transition",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-06-29"
+    },
+    {
+      "slug": "bedtime-battles-emotional-regulation",
+      "title": "מאבקי השכבה והרדמה: איך להפסיק את מלחמות הערב ולהרדים את הילדים ברוגע",
+      "url": "https://kesher.saharoni.com/blog/bedtime-battles-emotional-regulation",
+      "domain": "parenting",
+      "topics": [
+        "bedtime"
+      ],
+      "content_type": "article",
+      "date": "2026-06-28"
+    },
+    {
+      "slug": "unspoken-expectations-in-relationships",
+      "title": "הוא לא קורא מחשבות: למה הציפייה שבן הזוג 'יבין לבד' הורסת לכם את הזוגיות",
+      "url": "https://kesher.saharoni.com/blog/unspoken-expectations-in-relationships",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-06-24"
+    },
+    {
+      "slug": "breaking-silent-treatment-relationship",
+      "title": "שתיקה מענישה בזוגיות: איך לשבור את חומת הנתק והשתיקה אחרי מריבה",
+      "url": "https://kesher.saharoni.com/blog/breaking-silent-treatment-relationship",
+      "domain": "couples",
+      "topics": [
+        "recurring_conflict"
+      ],
+      "content_type": "article",
+      "date": "2026-06-22"
+    },
+    {
+      "slug": "connecting-with-withdrawn-teenager",
+      "title": "המתבגר מסתגר בחדר? איך לדובב אותו מבלי לחפור",
+      "url": "https://kesher.saharoni.com/blog/connecting-with-withdrawn-teenager",
+      "domain": "parenting",
+      "topics": [
+        "teen"
+      ],
+      "content_type": "article",
+      "date": "2026-06-21"
+    },
+    {
+      "slug": "boundaries-extended-family",
+      "title": "הצבת גבולות למשפחה המורחבת: איך להתמודד עם התערבות ההורים בלי לפגוע בזוגיות",
+      "url": "https://kesher.saharoni.com/blog/boundaries-extended-family",
+      "domain": "couples",
+      "topics": [
+        "extended_family",
+        "parenting_alignment"
+      ],
+      "content_type": "article",
+      "date": "2026-06-16"
+    },
+    {
+      "slug": "defensiveness-in-relationships",
+      "title": "התגוננות והאשמות הדדיות בזוגיות: איך להפסיק לתקוף ולהתגונן בכל שיחה",
+      "url": "https://kesher.saharoni.com/blog/defensiveness-in-relationships",
+      "domain": "couples",
+      "topics": [
+        "communication"
+      ],
+      "content_type": "article",
+      "date": "2026-06-15"
+    },
+    {
+      "slug": "mental-load-couples",
+      "title": "למה אני צריכה לבקש עזרה בבית שלי? איך לצאת ממלכודת העומס המנטלי",
+      "url": "https://kesher.saharoni.com/blog/mental-load-couples",
+      "domain": "couples",
+      "topics": [
+        "household"
+      ],
+      "content_type": "article",
+      "date": "2026-06-14"
+    },
+    {
+      "slug": "parenting-style-differences",
+      "title": "פערים בחינוך הילדים בין בני הזוג: איך לגשר על חילוקי דעות בלי לפגוע בזוגיות",
+      "url": "https://kesher.saharoni.com/blog/parenting-style-differences",
+      "domain": "parenting",
+      "topics": [
+        "parenting_alignment"
+      ],
+      "content_type": "article",
+      "date": "2026-06-10"
+    },
+    {
+      "slug": "repairing-relationship-after-resentment",
+      "title": "צבירת טינה ומשקעים בזוגיות: איך לשחרר כעסים ישנים ולפתוח את הלב מחדש",
+      "url": "https://kesher.saharoni.com/blog/repairing-relationship-after-resentment",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-06-09"
+    },
+    {
+      "slug": "sibling-rivalry-parent-intervention",
+      "title": "הוא התחיל! למה הניסיון שלנו לעשות צדק במריבות אחים רק מחמיר את המצב",
+      "url": "https://kesher.saharoni.com/blog/sibling-rivalry-parent-intervention",
+      "domain": "parenting",
+      "topics": [
+        "siblings"
+      ],
+      "content_type": "article",
+      "date": "2026-06-09"
+    },
+    {
+      "slug": "adhd-first-grade-preparation",
+      "title": "כיתה א' מתחילה בבית: תוכנית הכנה לילדים עם ADHD",
+      "url": "https://kesher.saharoni.com/blog/adhd-first-grade-preparation",
+      "domain": "parenting_adhd",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-06-07"
+    },
+    {
+      "slug": "couples-adhd-partner",
+      "title": "מתחתנים עם ADHD: איך מתחילים את החיים המשותפים כשותפים",
+      "url": "https://kesher.saharoni.com/blog/couples-adhd-partner",
+      "domain": "parenting_adhd",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-06-07"
+    },
+    {
+      "slug": "exhausted-couple-communication",
+      "title": "אנחנו לא רבים, אנחנו פשוט עייפים מדי לדבר: איך מחזירים את הקרבה מול שחיקת היומיום",
+      "url": "https://kesher.saharoni.com/blog/exhausted-couple-communication",
+      "domain": "couples",
+      "topics": [
+        "intimacy"
+      ],
+      "content_type": "article",
+      "date": "2026-06-07"
+    },
+    {
+      "slug": "premarital-counseling-divorced-parents",
+      "title": "מתחתנים כשההורים נפרדו: איך בונים זוגיות בלי לפחד לחזור על הסיפור שלהם",
+      "url": "https://kesher.saharoni.com/blog/premarital-counseling-divorced-parents",
+      "domain": "couples",
+      "topics": [
+        "parenting_alignment"
+      ],
+      "content_type": "article",
+      "date": "2026-06-07"
+    },
+    {
+      "slug": "communication-breakdown",
+      "title": "חוסר תקשורת בזוגיות: איך להתגבר על ריחוק ושתיקה ולהחזיר את הקרבה",
+      "url": "https://kesher.saharoni.com/blog/communication-breakdown",
+      "domain": "couples",
+      "topics": [
+        "communication",
+        "intimacy"
+      ],
+      "content_type": "article",
+      "date": "2026-06-04"
+    },
+    {
+      "slug": "public-tantrums-emotional-regulation",
+      "title": "התפרצויות זעם אצל ילדים במקומות ציבוריים: איך להגיב כשהילד משתטח וצורח בלי לאבד עשתונות",
+      "url": "https://kesher.saharoni.com/blog/public-tantrums-emotional-regulation",
+      "domain": "parenting",
+      "topics": [
+        "tantrum"
+      ],
+      "content_type": "article",
+      "date": "2026-06-03"
+    },
+    {
+      "slug": "adhd-morning-routine",
+      "title": "התארגנות בוקר עם ילד עם הפרעת קשב וריכוז (ADHD): צעדים מעשיים לשגרה רגועה ללא צעקות",
+      "url": "https://kesher.saharoni.com/blog/adhd-morning-routine",
+      "domain": "parenting_adhd",
+      "topics": [
+        "tantrum",
+        "adhd_morning",
+        "organization"
+      ],
+      "content_type": "article",
+      "date": "2026-06-01"
+    },
+    {
+      "slug": "boundaries-without-punishments",
+      "title": "הצבת גבולות לילדים ללא עונשים ואיומים: איך לבסס סמכות הורית רגועה ויציבה",
+      "url": "https://kesher.saharoni.com/blog/boundaries-without-punishments",
+      "domain": "parenting",
+      "topics": [
+        "boundaries"
+      ],
+      "content_type": "article",
+      "date": "2026-05-31"
+    },
+    {
+      "slug": "healing-after-infidelity",
+      "title": "היום שאחרי הגילוי: האם אפשר באמת לחזור לאהוב אחרי בגידה?",
+      "url": "https://kesher.saharoni.com/blog/healing-after-infidelity",
+      "domain": "couples",
+      "topics": [
+        "trust"
+      ],
+      "content_type": "article",
+      "date": "2026-05-31"
+    },
+    {
+      "slug": "roman-empire",
+      "title": "מה הסוד שבן הזוג שלך מסתיר? (וזה לא מה שאת חושבת)",
+      "url": "https://kesher.saharoni.com/blog/roman-empire",
+      "domain": "couples",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2025-12-05"
+    },
+    {
+      "slug": "quiet-resignation",
+      "title": "ייאוש שקט בזוגיות: למה הפסקתם לריב והתחלתם להתרחק, ואיך מצילים את הקשר",
+      "url": "https://kesher.saharoni.com/blog/quiet-resignation",
+      "domain": "couples",
+      "topics": [
+        "recurring_conflict"
+      ],
+      "content_type": "article",
+      "date": "2025-12-03"
+    },
+    {
+      "slug": "breaking-the-yelling-cycle",
+      "title": "צועקים לילד מהמטבח והוא לא מקשיב? כלל הקרבה שעוזר בלי לצעוק",
+      "url": "https://kesher.saharoni.com/blog/breaking-the-yelling-cycle",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2024-11-20"
+    },
+    {
+      "slug": "when-children-say-i-hate-you",
+      "title": "\"אני שונא אותך!\" - למה ילדים אומרים מילים קשות ואיך להגיב בלי לאבד שליטה",
+      "url": "https://kesher.saharoni.com/blog/when-children-say-i-hate-you",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2024-06-18"
+    },
+    {
+      "slug": "adhd-and-screen-addiction-strategies",
+      "title": "התמכרות למסכים אצל ילדים עם הפרעת קשב (ADHD): איך להגביל זמן מסך בלי התפרצויות זעם",
+      "url": "https://kesher.saharoni.com/blog/adhd-and-screen-addiction-strategies",
+      "domain": "parenting_adhd",
+      "topics": [
+        "tantrum",
+        "screens"
+      ],
+      "content_type": "article",
+      "date": "2024-03-10"
+    },
+    {
+      "slug": "parenting-the-stubborn-child",
+      "title": "התמודדות עם ילד עקשן ודעתן: איך לעצור מאבקי כוח יומיומיים בלי להישבר",
+      "url": "https://kesher.saharoni.com/blog/parenting-the-stubborn-child",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2024-01-25"
+    },
+    {
+      "slug": "marriage-after-trust-leak",
+      "title": "שקרים קטנים, נזק גדול: האם אמון שנסדק יכול לחזור להיות שלם?",
+      "url": "https://kesher.saharoni.com/blog/marriage-after-trust-leak",
+      "domain": "couples",
+      "topics": [
+        "trust"
+      ],
+      "content_type": "article",
+      "date": "2023-12-25"
+    },
+    {
+      "slug": "parenting-teen-social-anxiety",
+      "title": "הוא לא רוצה לצאת למסיבה? התמודדות עם חרדה חברתית של מתבגרים",
+      "url": "https://kesher.saharoni.com/blog/parenting-teen-social-anxiety",
+      "domain": "parenting",
+      "topics": [
+        "teen",
+        "emotional_regulation"
+      ],
+      "content_type": "article",
+      "date": "2023-12-10"
+    }
+  ]
+}

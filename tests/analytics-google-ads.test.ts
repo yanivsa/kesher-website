@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { pushAnalyticsEvent } from '../src/lib/analytics';
+import { captureSiteAttribution } from '../src/lib/attribution';
 
 const ADS_DESTINATIONS = {
   lead_submit: 'AW-985068949/V3vgCPCR_-scEJXr29UD',
@@ -43,6 +44,29 @@ describe('Google Ads conversion forwarding', () => {
       ([command, name]) => command === 'event' && name === 'conversion',
     );
     expect(conversionCalls).toHaveLength(0);
+  });
+
+  it('carries ChatGPT plugin attribution into downstream conversion events', () => {
+    captureSiteAttribution(
+      '/tools/chatgpt',
+      '?utm_source=chatgpt&utm_medium=plugin&utm_campaign=kesher_plugin&utm_content=parenting_adhd',
+    );
+    window.history.replaceState({}, '', '/parenting-adhd-ashdod');
+
+    pushAnalyticsEvent('whatsapp_click');
+
+    const event = window.dataLayer.at(-1);
+    expect(event).toEqual(
+      expect.objectContaining({
+        event: 'whatsapp_click',
+        entry_page_path: '/tools/chatgpt',
+        utm_source: 'chatgpt',
+        utm_medium: 'plugin',
+        utm_campaign: 'kesher_plugin',
+        utm_content: 'parenting_adhd',
+        service_type: 'parenting_adhd',
+      }),
+    );
   });
 
   it('leaves direct Google Ads conversion reporting to GTM in GTM mode', () => {
