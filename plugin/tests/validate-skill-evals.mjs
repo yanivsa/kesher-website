@@ -13,6 +13,10 @@ for(const [name,tool] of skills){
   if(!s.startsWith(`---\nname: ${name}\n`)) fail(`${name}: invalid frontmatter`);
   if(!s.includes(tool)) fail(`${name}: expected tool not referenced`);
   if(!/privacy|פרטיות/i.test(s)) fail(`${name}: missing privacy guidance`);
+  if(!/do not|never|לא /i.test(s)) fail(`${name}: missing explicit negative activation guidance`);
+  if(name==="parenting-attention-executive-function"){
+    if(!/ADHD/i.test(s)||!/medication|תרופ/i.test(s)||!/diagnos|אבח/i.test(s)) fail(`${name}: missing ADHD medical boundary`);
+  }
 }
 const data=JSON.parse(fs.readFileSync(path.join(root,"evals/conversation-cases.json"),"utf8"));
 const cases=data.cases??[];
