@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-03",
-  "status": "article_normalizing",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -19,7 +19,11 @@
     "pr_number": 997,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/997",
     "normalization_slot": "2026-10-03",
-    "normalization_dispatched_at": "2026-10-03T17:00:04.481213+00:00"
+    "normalization_dispatched_at": "2026-10-03T17:00:04.481213+00:00",
+    "quality_status": "passed",
+    "quality_content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
+    "quality_checked_at": "2026-10-03T17:00:54.861370+00:00",
+    "quality_violations": []
   },
   "backlog": [
     {
@@ -1287,7 +1291,12 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+    "message": "targeted media article is not publicly verified: sleep-needs-10-year-old",
+    "at": "2026-10-03T17:00:56.162904+00:00"
+  },
   "history": [
     {
       "at": "2026-09-29T10:24:14.429728+00:00",
@@ -1949,9 +1958,18 @@
         "pr_number": 997,
         "slot": "2026-10-03"
       }
+    },
+    {
+      "at": "2026-10-03T17:00:56.162919+00:00",
+      "from": "article_normalizing",
+      "to": "blocked",
+      "reason": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+      "details": {
+        "message": "targeted media article is not publicly verified: sleep-needs-10-year-old"
+      }
     }
   ],
-  "updated_at": "2026-10-03T17:00:04.481244+00:00",
+  "updated_at": "2026-10-03T17:00:56.162924+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
