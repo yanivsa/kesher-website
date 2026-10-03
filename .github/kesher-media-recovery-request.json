@@ -6,6 +6,7 @@
   "failure_signature": "TARGETED_MEDIA_RECOVERY_SLEEP_NEEDS_2026_10_02",
   "recovery": "resume exact existing Short task_id 4f0f0a77-cbbf-405d-9619-94353041407f for content_sha256 297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021; long video already public at https://youtu.be/cRztRJys4DQ",
   "requested_by": "master-active-supervisor",
-  "reconcile_seq": 3,
-  "reconcile_reason": "The first Short production run persisted the exact task but provider status remained pending. A direct job rerun was cancelled by Actions concurrency, so trigger Controller to resume the same durable Short identity."
+  "reconcile_seq": 4,
+  "reconcile_reason": "Retry backoff elapsed after the first concurrency cancellation. Resume the exact durable Short task_id 4f0f0a77-cbbf-405d-9619-94353041407f for sleep-needs-10-year-old; do not create a new Short provider generation.",
+  "retry_after": "2026-10-03T18:05:01.558322+00:00"
 }
