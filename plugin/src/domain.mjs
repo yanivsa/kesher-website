@@ -7,7 +7,7 @@ const ALLOWED_TOPICS=new Set(Object.keys(TOPICS));
 const ALLOWED_SIGNALS=new Set(Object.keys(SIGNALS));
 const PLAN_GOALS=new Set(["express_hurt","request_change","discuss_money","discuss_household","discuss_parenting","set_family_boundary","ask_for_connection","discuss_intimacy","repair_after_conflict"]);
 const INTENSITY=new Set(["low","moderate","high"]),RISKS=new Set(["none","defensiveness","withdrawal","escalation"]),TONES=new Set(["gentle","direct","neutral"]);
-const AGE=new Set(["preschool","elementary","preteen","teen"]);
+const AGE=new Set(["unknown","preschool","elementary","preteen","teen"]);
 const PARENTING_CHALLENGES=new Set(["tantrum","boundaries","sibling_conflict","screens","bedtime","morning_routine","cooperation","transition","parent_disagreement","emotional_regulation","teen_connection"]);
 const PARENTING_GOALS=new Set(["deescalate","set_boundary","increase_cooperation","prepare_conversation","build_routine","repair_connection"]);
 const RESPONSE_STYLE=new Set(["calm_brief","collaborative","firm_kind"]);
