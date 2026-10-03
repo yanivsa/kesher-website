@@ -20,7 +20,7 @@ for(const assetField of ["logo","composerIcon"]){
 if(!/הורות/.test(iface.longDescription??"")||!/ADHD|קשב/.test(iface.longDescription??""))fail("V2 metadata must cover parenting and attention");
 for(const keyword of ["זוגיות","הדרכת הורים","קשב","ADHD"]) if(!(manifest.keywords??[]).includes(keyword)) fail(`missing discovery keyword: ${keyword}`);
 const servers=mcp.mcpServers??{};if(Object.keys(servers).length!==1||servers.kesher?.type!=="streamable-http")fail("MCP config");
-if(servers.kesher?.url!=="https://kesher-mcp-staging.yanivsa.workers.dev/mcp")fail("staging MCP URL");
+if(servers.kesher?.url!=="https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp")fail("isolated V2 staging MCP URL");
 const review=manifest.extensions?.["com.openai"]?.review;
 if(review?.test_cases?.positive?.length!==5)fail("review requires exactly 5 positive test cases");
 if(review?.test_cases?.negative?.length!==3)fail("review requires exactly 3 negative test cases");
