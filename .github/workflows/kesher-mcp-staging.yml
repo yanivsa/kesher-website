@@ -43,11 +43,33 @@ jobs:
           set -euo pipefail
           test -n "$DEPLOYMENT_URL"
 
-          curl --fail-with-body --silent --show-error "$DEPLOYMENT_URL/health" -o /tmp/health.json
-          grep -F '"ok":true' /tmp/health.json >/dev/null
-          grep -F '"tools":5' /tmp/health.json >/dev/null
+          health_ok=false
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --fail-with-body --silent --show-error "$DEPLOYMENT_URL/health" -o /tmp/health.json; then
+              if grep -F '"ok":true' /tmp/health.json >/dev/null && grep -F '"tools":5' /tmp/health.json >/dev/null; then
+                health_ok=true
+                break
+              fi
+            fi
+            echo "V2 staging health propagation attempt $attempt failed; retrying."
+            sleep 3
+          done
+          test "$health_ok" = true
+          cat /tmp/health.json
 
-          curl --fail-with-body --silent --show-error             -X POST             -H 'Content-Type: application/json'             -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"kesher-ci","version":"2.0.0"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/init.txt
+          init_ok=false
+          for attempt in 1 2 3 4 5; do
+            if curl --fail-with-body --silent --show-error               -X POST               -H 'Content-Type: application/json'               -H 'Accept: application/json, text/event-stream'               --data '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"kesher-ci","version":"2.0.0"}}}'               "$DEPLOYMENT_URL/mcp" -o /tmp/init.txt; then
+              if grep -E '"jsonrpc"|serverInfo|protocolVersion|event:' /tmp/init.txt >/dev/null; then
+                init_ok=true
+                break
+              fi
+            fi
+            echo "V2 MCP initialize attempt $attempt failed; retrying."
+            sleep 3
+          done
+          test "$init_ok" = true
+          cat /tmp/init.txt
 
           curl --fail-with-body --silent --show-error             -X POST             -H 'Content-Type: application/json'             -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/tools.txt
 
