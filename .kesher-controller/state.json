@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-03",
-  "status": "article_image_running",
+  "cycle": "2026-10-04",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
-    "status": "complete",
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -15,109 +15,9 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
-    "pr_number": 997,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/997",
-    "normalization_slot": "2026-10-03",
-    "normalization_dispatched_at": "2026-10-03T17:00:04.481213+00:00",
-    "quality_status": "passed",
-    "quality_content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
-    "quality_checked_at": "2026-10-03T19:43:16.309262+00:00",
-    "quality_violations": []
+    "normalization_status": "pending"
   },
   "backlog": [
-    {
-      "cycle": "2026-08-31",
-      "status": "video_running",
-      "article": {
-        "attempt_count": 1,
-        "status": "running",
-        "last_error": {
-          "stage": "article",
-          "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-          "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new article for the Kesher website for the `2026-08-31` slot, following strict topic, formatting, length, and image pipeline constraints, without altering any existing content. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article answering to the chosen valid subcategory (\"זוגיות בעלייה ורילוקיישן\"). The date is correctly set to `2026-08-31`. Word count is ~830 words, which sits comfortably within the required 700-1,100 range. The agent p…",
-          "retryable": true,
-          "retry_at": "2026-08-31T13:19:11.985090+00:00",
-          "at": "2026-08-31T13:14:11.985127+00:00"
-        },
-        "next_retry_at": null,
-        "run_id": 33396422143,
-        "processed_run_id": 33370138242,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {
-          "JULES_TIMEOUT_SESSION_ACTIVE": 1
-        },
-        "attempts": 2,
-        "deploy_attempts": 0,
-        "last_dispatch_at": "2026-08-31T13:20:24.458862+00:00",
-        "last_run_conclusion": "failure",
-        "last_worker_result": {
-          "schema_version": 1,
-          "slot": "2026-08-31",
-          "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-          "retryable": true,
-          "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new article for the Kesher website for the `2026-08-31` slot, following strict topic, formatting, length, and image pipeline constraints, without altering any existing content. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article answering to the chosen valid subcategory (\"זוגיות בעלייה ורילוקיישן\"). The date is correctly set to `2026-08-31`. Word count is ~830 words, which sits comfortably within the required 700-1,100 range. The agent p…",
-          "session_id": "sessions/9157959808032322046",
-          "pr_url": "",
-          "github_run_id": "33370138242",
-          "completed_at": "2026-08-31T08:32:43.647398+00:00",
-          "diagnostic": {
-            "source": {
-              "name": "sources/github/yanivsa/kesher-website",
-              "owner": "yanivsa",
-              "repo": "kesher-website",
-              "default_branch": "main",
-              "main_available": true
-            },
-            "activity_count": 53,
-            "change_set_count": 49,
-            "change_set_fingerprints": [],
-            "last_agent_message": "",
-            "last_progress": "Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish a new article for the Kesher website for the `2026-08-31` slot, following strict topic, formatting, length, and image pipeline constraints, without altering any existing content. 2. **Evaluation of the Solution:** * **Core Functionality:** The patch successfully generates a new article answering to the chosen valid subcategory (\"זוגיות בעלייה ורילוקיישן\"). The date is correctly set to `2026-08-31`. Word count is ~830 words, which sits comfortably within the required 700-1,100 range. The agent p…",
-            "last_description": "",
-            "session_failed_reason": ""
-          }
-        },
-        "slot_scoped_duplicate_recovery_applied": true,
-        "last_jules_session_id": "sessions/9157959808032322046",
-        "last_failed_run_id": 33370138242,
-        "resume_dispatches": 1,
-        "pr_number": 604,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/604",
-        "slug": "aliyah-couples-cultural-gaps-identity",
-        "title": "מדברים בשתי שפות: כיצד להתמודד עם פערי תרבות ושפה בזוגיות בעלייה",
-        "url": "https://kesher.saharoni.com/blog/aliyah-couples-cultural-gaps-identity",
-        "published_date": "2026-08-31",
-        "live": true,
-        "live_verified_at": "2026-08-31T19:53:47.816876+00:00",
-        "next_deploy_retry_at": null
-      },
-      "archived_at": "2026-08-31T21:01:56.978470+00:00",
-      "media": {
-        "source_slug": "aliyah-couples-cultural-gaps-identity",
-        "source_content_sha256": "2b94464a89e0e5fcc91deb233a40de9e087a236a5e22106e684215e98f5c0fef",
-        "article_url": "https://kesher.saharoni.com/blog/aliyah-couples-cultural-gaps-identity",
-        "article_live": true,
-        "long_status": "complete",
-        "long_item_id": "video-20260831-225502-2b94464a89",
-        "long_youtube_url": "https://youtu.be/BlRx0ICD6hE",
-        "long_youtube_id": "BlRx0ICD6hE",
-        "short_status": "complete",
-        "short_dispatch_count": 1,
-        "short_last_dispatch_at": "2026-09-05T22:23:31.473904+00:00",
-        "long_provider_id": "3c54276b-2077-4177-a50b-e85dca187c6d",
-        "long_artifact_id": "3c54276b-2077-4177-a50b-e85dca187c6d",
-        "short_item_id": "video-20260906-012420-2b94464a89",
-        "short_youtube_url": "https://youtu.be/OixQqjXZedM",
-        "short_youtube_id": "OixQqjXZedM",
-        "short_width": 1080,
-        "short_height": 1920,
-        "complete": true,
-        "completed_at": "2026-09-05T22:29:29.994131+00:00"
-      }
-    },
     {
       "cycle": "2026-09-01",
       "status": "article_pr_open",
@@ -1289,169 +1189,38 @@
         "complete": true,
         "completed_at": "2026-10-03T06:39:21.023649+00:00"
       }
+    },
+    {
+      "cycle": "2026-10-03",
+      "status": "article_image_running",
+      "article": {
+        "attempt_count": 0,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": null,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 0,
+        "deploy_attempts": 0,
+        "normalization_status": "complete",
+        "pr_number": 997,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/997",
+        "normalization_slot": "2026-10-03",
+        "normalization_dispatched_at": "2026-10-03T17:00:04.481213+00:00",
+        "quality_status": "passed",
+        "quality_content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
+        "quality_checked_at": "2026-10-03T19:43:16.309262+00:00",
+        "quality_violations": []
+      },
+      "archived_at": "2026-10-03T21:00:42.100951+00:00"
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-09-29T20:17:55.353Z",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "owner_recovery_reset_after_pyav_fix",
-      "details": {
-        "slug": "breaking-the-yelling-cycle",
-        "content_sha256": "fb0c4c9c030c6cd6a3a9b831ec1003588103a4a37d9ba4d36991e259eab2cf8c",
-        "preserved_long_item_id": "video-20260929-210846-fb0c4c9c03",
-        "preserved_provider_id": "ed71e39d-b671-4c2d-9884-2cb745143096",
-        "stale_short_identity_cleared": true
-      }
-    },
-    {
-      "at": "2026-09-29T20:37:16.310131+00:00",
-      "from": "article_live",
-      "to": "short_running",
-      "reason": "Short derive workflow already active"
-    },
-    {
-      "at": "2026-09-29T20:53:09.875109+00:00",
-      "from": "short_running",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-29T22:28:06.598541+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-29T22:28:06.598545+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-29T22:28:06.599074+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-29T22:29:14.819011+00:00",
-      "from": "article_needed",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-09-30T20:17:56.450783+00:00",
-      "from": "complete",
-      "to": "blocked",
-      "reason": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
-      "details": {
-        "message": "targeted media article is not publicly verified: relationship-crisis-flydubai-lessons"
-      }
-    },
-    {
-      "at": "2026-09-30T21:05:02.899494+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-09-30T21:05:02.899500+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-09-30T21:05:02.900549+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-09-30T21:05:48.132438+00:00",
-      "from": "article_needed",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-01T10:34:59.583334+00:00",
-      "from": "complete",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-10-01T10:41:21.209812+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/5954041139737224232"
-      }
-    },
-    {
-      "at": "2026-10-01T10:43:38.791708+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/5954041139737224232"
-      }
-    },
-    {
-      "at": "2026-10-01T10:46:57.270459+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/5954041139737224232"
-      }
-    },
-    {
-      "at": "2026-10-01T10:50:34.861155+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1001,
-        "slot": "2026-10-01"
-      }
-    },
-    {
-      "at": "2026-10-01T10:56:16.732498+00:00",
-      "from": "article_normalizing",
-      "to": "article_retry_wait",
-      "reason": "JULES_TERMINAL_FAILURE",
-      "details": {
-        "message": "Jules ended with terminal state FAILED; Jules diagnostic: I have fixed the issue where the article fell short of the 700-word constraint (the new article body is now about 890 words), and I removed the English words that were originally present. I also realized that my script to correct existing content unintentionally touched other posts (like `breaking-the-yelling-cycle`), which caused the generated artifacts to be out of sync. I have now correctly formatted `src/data/posts.json` and generated `public/llms-full.txt`, `public/rss.xml`, and `public/sitemap.xml` properly based on just the *new* article without corrupting other files. `npm run check` confirms that all content policies, pipeline tests, and E2E verifications pass perfectly. Can I proceed to create the PR?",
-        "retry_at": "2026-10-01T11:01:16.732474+00:00",
-        "failure_streak": 1,
-        "run_id": 36850034947,
-        "session_id": "sessions/5954041139737224232"
-      }
-    },
-    {
-      "at": "2026-10-01T10:57:56.417213+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-01T11:01:16.732474+00:00"
-      }
-    },
-    {
-      "at": "2026-10-01T11:00:24.883230+00:00",
-      "from": "article_retry_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-01T11:01:16.732474+00:00"
-      }
-    },
     {
       "at": "2026-10-01T11:01:06.676210+00:00",
       "from": "article_retry_wait",
@@ -2050,12 +1819,30 @@
         "attempt": 1,
         "pr_number": 997
       }
+    },
+    {
+      "at": "2026-10-03T21:00:42.100975+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-03T21:00:42.100979+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-03T21:00:42.101968+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-03T20:56:40.874988+00:00",
+  "updated_at": "2026-10-03T21:00:42.100964+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2063,91 +1850,33 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-03T20:56:40.874960+00:00"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 37139266664,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "fcfbb9d5-15a3-434c-8c7b-8b12d0a7211c",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-03T17:15:02.201116+00:00",
-    "resume_dispatches": 1,
-    "item_id": "video-20261003-200717-297757f9fa",
-    "source_id": "a7f06cbc-82b9-4974-a2ce-6d4ebce00ab6",
-    "artifact_id": "fcfbb9d5-15a3-434c-8c7b-8b12d0a7211c",
-    "youtube_id": "cRztRJys4DQ",
-    "youtube_url": "https://youtu.be/cRztRJys4DQ",
-    "verified": true
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 4,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 37143556869,
-    "processed_run_id": 37143556869,
-    "provider_id": "423eaef4-35b7-4b75-b21a-8fc6f282b296",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "SHORT_WORKFLOW_FAILED": 1
-    },
-    "last_dispatch_at": "2026-10-03T18:16:16.325123+00:00",
-    "artifact_id": "423eaef4-35b7-4b75-b21a-8fc6f282b296",
-    "source_id": "112ae529-0e48-41c7-a13a-b1d30ab136d7",
-    "adopted_from_long_item_id": "video-20261003-200717-297757f9fa",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 37142028011,
-    "item_id": "video-20261003-221146-297757f9fa",
-    "type": "article_short",
-    "youtube_id": "k84Q8VxN_yo",
-    "youtube_url": "https://youtu.be/k84Q8VxN_yo",
-    "verified": true,
-    "portrait_verified": true,
-    "signature_verified": true,
-    "signature_asset": "signature-mask.svg",
-    "signature_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642",
-    "visual_pipeline": "remotion-v4-notebooklm-short-motion-plan-v1",
-    "technical_verified": true,
-    "signature_duration_seconds": 3.0,
-    "signature_fullscreen": true,
-    "signature_video_sha256": "9de3e0baaf3be67a56e8c2ca45e6ede90855a49486c1b36e2818d97b057eddf3",
-    "source_mode": "direct-short",
-    "width": 1080,
-    "height": 1920
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": null,
-    "overview_youtube_url": "https://youtu.be/cRztRJys4DQ",
-    "short_youtube_url": "https://youtu.be/k84Q8VxN_yo",
-    "overview_edit_verified": true,
-    "short_portrait_verified": true,
-    "short_signature_verified": true,
-    "short_origin_verified": true
-  },
-  "targeted_media_recovery": {
-    "slug": "sleep-needs-10-year-old",
-    "content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
-    "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
-    "article_verified": true,
-    "updated_at": "2026-10-03T19:43:17.653341+00:00",
-    "short_status": "complete",
-    "complete": true,
-    "long_status": "complete",
-    "long_last_dispatch_at": "2026-10-03T17:15:02.201543+00:00",
-    "long_youtube_url": "https://youtu.be/cRztRJys4DQ",
-    "long_item_id": "video-20261003-200717-297757f9fa",
-    "short_youtube_url": "https://youtu.be/k84Q8VxN_yo",
-    "completed_at": "2026-10-03T19:43:18.741945+00:00"
   }
 }
