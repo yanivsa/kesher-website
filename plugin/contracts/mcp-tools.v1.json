@@ -1,0 +1,228 @@
+{
+  "schema_version": "1.0",
+  "tools": [
+    {
+      "name": "get_conflict_pattern",
+      "title": "מיפוי דפוס קונפליקט זוגי",
+      "description": "Use when a Hebrew-speaking adult wants a structured explanation of a recurring couple-communication conflict and the interaction has already been reduced to a topic and observable conversation signals. Returns a non-diagnostic description of the interaction cycle and one practical next step. Do not use for legal/divorce questions, medical or sexual-health advice, diagnosis of a partner, domestic violence or immediate danger, self-harm, surveillance, coercion/manipulation, generic relationship information, or romantic writing.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false,
+        "idempotentHint": true
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "topic",
+          "interaction_signals",
+          "goal"
+        ],
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Primary conflict topic already inferred from the user's request.",
+            "enum": [
+              "money",
+              "household",
+              "parenting",
+              "extended_family",
+              "attention_connection",
+              "trust",
+              "intimacy",
+              "recurring_other"
+            ]
+          },
+          "interaction_signals": {
+            "type": "array",
+            "description": "Observable conversation signals only; do not encode diagnoses or identities.",
+            "minItems": 1,
+            "maxItems": 4,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "criticism",
+                "defensiveness",
+                "withdrawal",
+                "pursuit",
+                "escalation",
+                "repetition",
+                "failed_repair",
+                "mistrust",
+                "overload"
+              ]
+            }
+          },
+          "goal": {
+            "type": "string",
+            "description": "What the user wants from the pattern explanation.",
+            "enum": [
+              "understand_pattern",
+              "deescalate",
+              "restart_conversation"
+            ]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pattern_label_he",
+          "summary_he",
+          "cycle_steps_he",
+          "next_step_he",
+          "avoid_he"
+        ],
+        "properties": {
+          "pattern_label_he": {
+            "type": "string"
+          },
+          "summary_he": {
+            "type": "string"
+          },
+          "cycle_steps_he": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_step_he": {
+            "type": "string"
+          },
+          "avoid_he": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "get_conversation_plan",
+      "title": "תכנון שיחה זוגית רגועה",
+      "description": "Use when a Hebrew-speaking adult wants a short, structured plan for opening or restarting a difficult conversation with a partner after the topic, goal, emotional intensity, and likely interaction risk are already known. Returns a suggested opening, ordered steps, a pause phrase, a repair phrase, and phrases to avoid. Do not use for legal/divorce negotiation, threats or violence, self-harm, medical or sexual-health advice, diagnosis, surveillance, coercion/manipulation, or requests to pressure a partner into compliance.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false,
+        "idempotentHint": true
+      },
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "topic",
+          "goal",
+          "emotional_intensity",
+          "interaction_risk",
+          "tone"
+        ],
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "Primary discussion topic already inferred from the user's request.",
+            "enum": [
+              "money",
+              "household",
+              "parenting",
+              "extended_family",
+              "attention_connection",
+              "trust",
+              "intimacy",
+              "recurring_other"
+            ]
+          },
+          "goal": {
+            "type": "string",
+            "description": "The constructive conversation goal.",
+            "enum": [
+              "express_hurt",
+              "request_change",
+              "discuss_money",
+              "discuss_household",
+              "discuss_parenting",
+              "set_family_boundary",
+              "ask_for_connection",
+              "discuss_intimacy",
+              "repair_after_conflict"
+            ]
+          },
+          "emotional_intensity": {
+            "type": "string",
+            "description": "Current expected emotional intensity of the conversation.",
+            "enum": [
+              "low",
+              "moderate",
+              "high"
+            ]
+          },
+          "interaction_risk": {
+            "type": "string",
+            "description": "Most likely interaction obstacle, not a diagnosis.",
+            "enum": [
+              "none",
+              "defensiveness",
+              "withdrawal",
+              "escalation"
+            ]
+          },
+          "tone": {
+            "type": "string",
+            "description": "Preferred wording style.",
+            "enum": [
+              "gentle",
+              "direct",
+              "neutral"
+            ]
+          }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "opening_he",
+          "steps_he",
+          "pause_phrase_he",
+          "repair_phrase_he",
+          "avoid_phrases_he"
+        ],
+        "properties": {
+          "opening_he": {
+            "type": "string"
+          },
+          "steps_he": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 5,
+            "items": {
+              "type": "string"
+            }
+          },
+          "pause_phrase_he": {
+            "type": "string"
+          },
+          "repair_phrase_he": {
+            "type": "string"
+          },
+          "avoid_phrases_he": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

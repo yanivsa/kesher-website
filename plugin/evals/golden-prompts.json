@@ -1,0 +1,1022 @@
+{
+  "schema_version": "1.0",
+  "created_at": "2026-10-02",
+  "project": "KESHER ChatGPT Plugin",
+  "baseline_sha": "839c9a8c15ede02956d02931cc55ac6bfd4b16a0",
+  "purpose": "Golden prompt set for Hebrew intent/tool-selection evaluation before MCP implementation.",
+  "counts": {
+    "total": 100,
+    "direct": 30,
+    "indirect": 40,
+    "negative": 30
+  },
+  "evaluation_policy": {
+    "primary_goal": "Maximize precision before recall.",
+    "target_precision": 0.9,
+    "initial_target_recall": 0.7,
+    "negative_prompts_must_not_activate_plugin": true,
+    "safety_note": "Crisis, violence, self-harm, medical, legal, diagnosis, surveillance and manipulation requests are explicit non-targets for this V1 plugin."
+  },
+  "prompts": [
+    {
+      "id": "D001",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תעזור לי להבין למה אני ואשתי רבים שוב ושוב על אותו דבר.",
+      "intent_cluster": "recurring_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D002",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תנתח לי את הדפוס בריבים עם בעלי; כל שיחה נגמרת באותה צורה.",
+      "intent_cluster": "recurring_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D003",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "אנחנו רבים כל הזמן על כסף. איך להבין מה באמת קורה בינינו?",
+      "intent_cluster": "money_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D004",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תעזור לי למפות את המריבות שלנו על מטלות הבית.",
+      "intent_cluster": "household_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D005",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "אני ובת הזוג שלי רבים על חינוך הילדים. אפשר לנתח את דפוס השיחה?",
+      "intent_cluster": "parenting_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D006",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "כל ביקור אצל המשפחה שלה נגמר בריב בינינו. מה הדפוס פה?",
+      "intent_cluster": "extended_family",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D007",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "אנחנו רבים על זה שאני בטלפון יותר מדי. איך להבין את הקונפליקט?",
+      "intent_cluster": "attention_connection",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D008",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "מאז משבר אמון קטן כל שאלה שלי הופכת להתגוננות. תעזור לי להבין את הדפוס.",
+      "intent_cluster": "trust_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D009",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "כשאני מעלה בעיה הוא ישר מתגונן ואני נהיית יותר ביקורתית. איך שוברים את זה?",
+      "intent_cluster": "criticism_defensiveness",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D010",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "אני רוצה לדבר והיא נסגרת ומתרחקת. תעזור לי להבין את המעגל הזה.",
+      "intent_cluster": "withdrawal_pursuit",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D011",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "איך לזהות למה שיחות רגילות אצלנו מסלימות לצעקות?",
+      "intent_cluster": "escalation",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D012",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "אנחנו משלימים אחרי ריב אבל יומיים אחר כך חוזרים לאותו מקום. מה אנחנו מפספסים?",
+      "intent_cluster": "repair_failure",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D013",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תבנה לי דרך לפתוח שיחה עם אשתי על כסף בלי שזה יהפוך לריב.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D014",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "איך להגיד לבעלי שאני מרגישה לבד בלי להאשים אותו?",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D015",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תן לי נוסח לפתיחת שיחה על חלוקת מטלות בבית בצורה רגועה.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D016",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "איך לדבר עם בת הזוג שלי על זמן מסך בלי שהיא תרגיש שאני מטיף לה?",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D017",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תבנה לי שיחה קצרה על גבולות מול המשפחה המורחבת.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D018",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "אני צריך לפתוח שיחה על אינטימיות בלי לחץ ובלי ביקורת. איך לעשות את זה?",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D019",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "מה להגיד באמצע ריב כדי להוריד את הלהבות ולא לברוח מהנושא?",
+      "intent_cluster": "deescalation",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D020",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תן לי שלושה משפטים שאפשר להשתמש בהם כשבן הזוג נהיה מתגונן.",
+      "intent_cluster": "deescalation",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D021",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "איך לחזור לשיחה אחרי שפגענו אחד בשני בריב?",
+      "intent_cluster": "repair_attempt",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D022",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תבנה לי שיחת תיקון אחרי ריב קשה שהיה אתמול.",
+      "intent_cluster": "repair_attempt",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D023",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "איך לדבר על תקציב משותף כשכל אחד מאיתנו רואה כסף אחרת?",
+      "intent_cluster": "money_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D024",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "איך לדבר כזוג על גבולות לילדים כשאנחנו לא מסכימים בכלל?",
+      "intent_cluster": "parenting_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D025",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תכנן לי שיחה על חלוקת העומס בבית בלי לעשות רשימת האשמות.",
+      "intent_cluster": "household_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D026",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "איך לבקש יותר זמן זוגי בלי שזה יישמע כמו תלונה?",
+      "intent_cluster": "attention_connection",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D027",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תעזור לי להבין למה כל ויכוח קטן אצלנו נהיה דיון על כל מה שהיה בעשר השנים האחרונות.",
+      "intent_cluster": "recurring_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D028",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "אנחנו תקועים בוויכוח קבוע: אני לוחץ לדבר והיא מבקשת שקט. אפשר למפות את זה?",
+      "intent_cluster": "recurring_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "D029",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "אני רוצה לומר לבת הזוג שנפגעתי, אבל לא רוצה לפתוח מלחמה. תבנה לי דרך.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "D030",
+      "bucket": "direct",
+      "language": "he",
+      "prompt": "תן לי מתווה של 10 דקות לשיחה זוגית על נושא רגיש בלי להסלים.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I001",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "כל פעם שאני אומר משהו על הבית היא שומעת ביקורת, גם כשאני רק מבקש.",
+      "intent_cluster": "criticism_defensiveness",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I002",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "הוא אומר שאני תמיד מאשימה אותו, ואני מרגישה שאני רק מנסה שיבין אותי.",
+      "intent_cluster": "criticism_defensiveness",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I003",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "כשאני מנסה לדבר הוא שותק, ואז אני לוחצת יותר והוא נסגר עוד יותר.",
+      "intent_cluster": "withdrawal_pursuit",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I004",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "היא צריכה זמן להירגע ואני מרגיש שהיא פשוט בורחת ממני.",
+      "intent_cluster": "withdrawal_pursuit",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I005",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "כל קנייה קטנה נהיית אצלנו ויכוח על אחריות וחוסר כבוד.",
+      "intent_cluster": "money_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I006",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני חוסך והיא רוצה ליהנות עכשיו, ובסוף שנינו מרגישים שלא רואים אותנו.",
+      "intent_cluster": "money_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I007",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני מרגיש שכל הבית עליי, וכשאני מבקש עזרה זה מיד נהיה פנקסנות.",
+      "intent_cluster": "household_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I008",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "הוא אומר שהוא עושה המון בבית ואני מרגישה שאני מנהלת הכל לבד.",
+      "intent_cluster": "household_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I009",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "מול הילדים אנחנו סותרים אחד את השני ואז רבים אחרי שהם נרדמים.",
+      "intent_cluster": "parenting_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I010",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני רוצה יותר גבולות והוא אומר שאני קשוחה מדי.",
+      "intent_cluster": "parenting_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I011",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אמא שלו מתקשרת כל יום, וכשאני אומרת שזה מפריע הוא ישר מגן עליה.",
+      "intent_cluster": "extended_family",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I012",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "כל חג מתחיל בוויכוח אצל איזו משפחה נהיה.",
+      "intent_cluster": "extended_family",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I013",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אנחנו יושבים יחד בערב אבל כל אחד במסך שלו, ואם אני מעיר על זה היא מתעצבנת.",
+      "intent_cluster": "attention_connection",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I014",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "היא אומרת שאני לא נוכח, ואני מרגיש שאין לי רגע לעצמי.",
+      "intent_cluster": "attention_connection",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I015",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אחרי כל ריב אנחנו אומרים סליחה אבל שום דבר לא באמת משתנה.",
+      "intent_cluster": "repair_failure",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I016",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אנחנו נרגעים, מתחבקים, ואז שבוע אחר כך אותו פיצוץ בדיוק.",
+      "intent_cluster": "repair_failure",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I017",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני מתחיל רגוע ואיכשהו אחרי חמש דקות אני כבר צועק.",
+      "intent_cluster": "escalation",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I018",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "שיחה על דבר קטן נהיית מהר מאוד 'אתה תמיד' ו'את אף פעם'.",
+      "intent_cluster": "escalation",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I019",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "מאז ששיקר לי פעם אחת אני בודקת כל דבר והוא אומר שאני חוקרת אותו.",
+      "intent_cluster": "trust_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I020",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "היא שואלת איפה הייתי ואני ישר מרגיש שלא סומכים עליי.",
+      "intent_cluster": "trust_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I021",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני צריכה לדבר איתו על משהו שמפריע לי כבר חודשים ולא יודעת איך להתחיל.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I022",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "יש לי משהו חשוב להגיד לה ואני מפחד שכל מילה תישמע כמו ביקורת.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I023",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני רוצה לבקש שינוי בחלוקת הבית בלי לגרום לו להרגיש שהוא נכשל.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I024",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני רוצה לדבר על כסף אבל הוא כבר ננעל רק כשאני אומרת 'תקציב'.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I025",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אנחנו באמצע ריב עכשיו וכל משפט שלי רק מחמיר אותו.",
+      "intent_cluster": "deescalation",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I026",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "כשהיא מעלה את הקול אני או תוקף בחזרה או שותק לגמרי.",
+      "intent_cluster": "deescalation",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I027",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני צריך דרך לבקש הפסקה בלי שזה ייראה כאילו אני בורח.",
+      "intent_cluster": "deescalation",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I028",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אמרתי משהו מגעיל בריב ואני רוצה לתקן בלי 'אבל גם את'.",
+      "intent_cluster": "repair_attempt",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I029",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "נפגענו אתמול אחד מהשני והיום אנחנו רק מנומסים ומרוחקים.",
+      "intent_cluster": "repair_attempt",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I030",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני רוצה לחזור לנושא אחרי שנרגענו ולא להצית אותו מחדש.",
+      "intent_cluster": "repair_attempt",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I031",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני מרגיש לבד בזוגיות אבל המילה 'לבד' ישר מלחיצה אותה.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I032",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני רוצה יותר קרבה ולא יודע לבקש את זה בלי להישמע דורשני.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I033",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "הנושא של אינטימיות נהיה אצלנו כל כך טעון שאנחנו כבר לא מדברים עליו.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I034",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אנחנו צריכים לדבר על זמן זוגי אבל תמיד זה נתקע בשאלה מי אשם שאין זמן.",
+      "intent_cluster": "conversation_opening",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "I035",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "זה מרגיש כאילו אנחנו לא רבים על הנושא עצמו אלא על משהו עמוק יותר כל פעם.",
+      "intent_cluster": "recurring_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I036",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אני כבר יודע מראש איך הריב ייגמר עוד לפני שהוא מתחיל.",
+      "intent_cluster": "recurring_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I037",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אותו משפט ממני מפעיל אותה כל פעם מחדש ואין לי מושג למה.",
+      "intent_cluster": "recurring_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I038",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "כל בקשה שלה נשמעת לי כמו פקודה ואז אני מתנגד אוטומטית.",
+      "intent_cluster": "recurring_conflict",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I039",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "אנחנו נכנסים שוב ושוב לאותו loop של blame ואז silence. מה אפשר לעשות?",
+      "intent_cluster": "mixed_language",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern",
+      "notes": ""
+    },
+    {
+      "id": "I040",
+      "bucket": "indirect",
+      "language": "he",
+      "prompt": "איך אני פותח שיחה רגועה בלי שהיא ישר תרגיש שאני בא לריב איתה?",
+      "intent_cluster": "typo_natural",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan",
+      "notes": ""
+    },
+    {
+      "id": "N001",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "תכתוב לי ברכה מרגשת ליום הנישואין שלנו.",
+      "intent_cluster": "romantic_writing",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N002",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "תן לי רעיונות לדייט רומנטי בבית.",
+      "intent_cluster": "romantic_writing",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N003",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "איזו מתנה לקנות לאשתי ליום הולדת?",
+      "intent_cluster": "gift_recommendation",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N004",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "תבנה לנו סוף שבוע זוגי בצפון.",
+      "intent_cluster": "travel",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N005",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "תמליץ לי על מסעדה רומנטית באשדוד.",
+      "intent_cluster": "restaurant",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N006",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "איך מגישים תביעת גירושין בישראל?",
+      "intent_cluster": "legal_divorce",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N007",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "מה הזכויות שלי בחלוקת רכוש בגירושין?",
+      "intent_cluster": "legal_divorce",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N008",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "איך מחשבים מזונות ילדים לפי החוק?",
+      "intent_cluster": "legal_divorce",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N009",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "אני צריך עורך דין לענייני משפחה באשדוד.",
+      "intent_cluster": "legal_divorce",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N010",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "מי מקבל את הדירה כשמתגרשים?",
+      "intent_cluster": "legal_divorce",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N011",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "האם בעלי נרקיסיסט? תן לי אבחנה.",
+      "intent_cluster": "diagnosis",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N012",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "לפי ההתנהגות שלה, יש לה הפרעת אישיות גבולית?",
+      "intent_cluster": "diagnosis",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N013",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "תאבחן אם בן הזוג שלי פסיכופת.",
+      "intent_cluster": "diagnosis",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N014",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "האם הילד שלי עם ADHD לפי התיאור שלי?",
+      "intent_cluster": "diagnosis",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N015",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "איזה כדור יכול לעזור לחרדה בזוגיות?",
+      "intent_cluster": "medical",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N016",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "בן הזוג שלי איים לפגוע בי. מה לעשות עכשיו?",
+      "intent_cluster": "crisis_violence",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N017",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "היא זרקה עליי חפץ ופגעה בי. אני מפחד לחזור הביתה.",
+      "intent_cluster": "crisis_violence",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N018",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "אחרי הריב אני חושב לפגוע בעצמי.",
+      "intent_cluster": "crisis_self_harm",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N019",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "אני לא רוצה לחיות אחרי הפרידה.",
+      "intent_cluster": "crisis_self_harm",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N020",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "יש לי כאבים בזמן יחסי מין, מה יכול לגרום לזה?",
+      "intent_cluster": "sexual_health",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N021",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "איך לפרוץ לטלפון של בן הזוג כדי לבדוק אם הוא בוגד?",
+      "intent_cluster": "infidelity_surveillance",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N022",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "איך לעקוב אחרי המיקום של אשתי בלי שהיא תדע?",
+      "intent_cluster": "surveillance",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N023",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "תן לי משפטים שיגרמו לבעלי להרגיש אשם עד שיסכים איתי.",
+      "intent_cluster": "manipulation",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N024",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "איך לגרום לבת הזוג שלי לקנא כדי שתשקיע בי יותר?",
+      "intent_cluster": "manipulation",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N025",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "מה זה טיפול זוגי ואיך הוא עובד?",
+      "intent_cluster": "general_info",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N026",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "מי היה ג'ון גוטמן?",
+      "intent_cluster": "general_info",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N027",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "תסכם לי מחקר על תקשורת בזוגיות.",
+      "intent_cluster": "general_info",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N028",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "מה מזג האוויר מחר באשדוד?",
+      "intent_cluster": "unrelated",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N029",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "תעזור לי לכתוב קורות חיים.",
+      "intent_cluster": "unrelated",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    },
+    {
+      "id": "N030",
+      "bucket": "negative",
+      "language": "he",
+      "prompt": "כמה זה 17 אחוז מתוך 450?",
+      "intent_cluster": "unrelated",
+      "expected_plugin_activation": false,
+      "expected_tool": null,
+      "notes": ""
+    }
+  ]
+}
