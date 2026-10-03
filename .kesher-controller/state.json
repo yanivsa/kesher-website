@@ -22,7 +22,7 @@
     "normalization_dispatched_at": "2026-10-03T17:00:04.481213+00:00",
     "quality_status": "passed",
     "quality_content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
-    "quality_checked_at": "2026-10-03T18:16:08.380520+00:00",
+    "quality_checked_at": "2026-10-03T18:19:12.014503+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -2006,7 +2006,7 @@
       "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-10-03T18:16:16.325146+00:00",
+  "updated_at": "2026-10-03T18:19:15.434779+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2050,7 +2050,7 @@
       "at": "2026-10-03T18:00:01.558349+00:00"
     },
     "next_retry_at": null,
-    "run_id": 37142028011,
+    "run_id": 37143556869,
     "processed_run_id": 37142028011,
     "provider_id": "fcfbb9d5-15a3-434c-8c7b-8b12d0a7211c",
     "failure_fingerprint": "SHORT_WORKFLOW_FAILED",
@@ -2082,7 +2082,7 @@
     "content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
     "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
     "article_verified": true,
-    "updated_at": "2026-10-03T18:16:11.017042+00:00",
+    "updated_at": "2026-10-03T18:19:13.079549+00:00",
     "short_status": "running",
     "complete": false,
     "long_status": "complete",
