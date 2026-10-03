@@ -1,13 +1,12 @@
 {
   "enabled": true,
   "target_slug": "sleep-needs-10-year-old",
-  "issue": 1021,
-  "purpose": "Complete Issue #1021 from the already merged article identity. The article and Video Overview are public and verified; resume the one existing Short task only. Do not create a duplicate article, long video, Short provider generation, or upload.",
+  "purpose": "Complete the already merged 2026-10-02 article identity with exactly one public Video Overview and one verified 9:16 Short. Reuse any existing exact source/task/artifact IDs; do not create a duplicate article, provider generation, or upload.",
   "failure_signature": "TARGETED_MEDIA_RECOVERY_SLEEP_NEEDS_2026_10_02",
   "recovery": "resume exact existing Short task_id 4f0f0a77-cbbf-405d-9619-94353041407f for content_sha256 297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021; long video already public at https://youtu.be/cRztRJys4DQ",
   "requested_by": "master-active-supervisor",
-  "reconcile_seq": 5,
-  "reconcile_reason": "Short V4 Remotion workspace install fix merged to main at 99e71615afd67782f608de848c48dff7c1ccf4ea. Resume exact downloaded Short item video-20261003-205308-297757f9fa / task_id 4f0f0a77-cbbf-405d-9619-94353041407f; no new provider generation.",
-  "retry_after": "2026-10-03T18:05:01.558322+00:00",
-  "runtime_fix_commit": "99e71615afd67782f608de848c48dff7c1ccf4ea"
+  "reconcile_seq": 6,
+  "reconcile_reason": "Short 1080x1920 render fix merged to main at 5afe093beb0dc99a3de3cfed2ebefe5eb986754f. Recover exact Short exhaustion for task_id 4f0f0a77-cbbf-405d-9619-94353041407f under new renderer contract; no new provider generation.",
+  "retry_after": "2026-10-03T18:35:00.000000+00:00",
+  "runtime_fix_commit": "5afe093beb0dc99a3de3cfed2ebefe5eb986754f"
 }
