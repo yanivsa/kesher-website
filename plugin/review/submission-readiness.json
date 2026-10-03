@@ -88,5 +88,7 @@
       "status": "unknown",
       "requirement": "Confirm the OpenAI Apps Management permissions required to submit and publish the plugin."
     }
-  ]
+  ],
+  "baseline_main_sha": "054dcfc4d12031bef5b609d83a5d0a7897211f70",
+  "qa_state": "technical_validation_running_before_developer_mode"
 }
