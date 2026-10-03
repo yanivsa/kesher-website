@@ -2128,12 +2128,12 @@
   },
   "deliverables": {
     "article_url": null,
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
+    "overview_youtube_url": "https://youtu.be/cRztRJys4DQ",
+    "short_youtube_url": "https://youtu.be/k84Q8VxN_yo",
+    "overview_edit_verified": true,
+    "short_portrait_verified": true,
+    "short_signature_verified": true,
+    "short_origin_verified": true
   },
   "targeted_media_recovery": {
     "slug": "sleep-needs-10-year-old",
