@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "generated_at": "2026-10-02",
   "source": "src/data/posts.json",
-  "count": 105,
+  "count": 106,
   "resources": [
     {
       "slug": "marshmallow-test-environmental-reliability",
@@ -11,6 +11,18 @@
       "domain": "parenting",
       "topics": [
         "boundaries"
+      ],
+      "content_type": "article",
+      "date": "2026-10-02"
+    },
+    {
+      "slug": "sleep-needs-10-year-old",
+      "title": "כמה שעות שינה צריך ילד בן 10? 7 טעויות שגורמות לו להירדם מאוחר ולהתעורר עייף",
+      "url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
+      "domain": "parenting",
+      "topics": [
+        "screens",
+        "bedtime"
       ],
       "content_type": "article",
       "date": "2026-10-02"
