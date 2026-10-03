@@ -13,11 +13,11 @@ assert.equal(pattern.pattern_label_he,"ביקורת–התגוננות");
 const plan=getConversationPlan({topic:"household",goal:"discuss_household",emotional_intensity:"high",interaction_risk:"escalation",tone:"gentle"});
 assert.match(plan.opening_he,/חלוקת עומס/);
 
-const parenting=getParentingResponsePlan({age_band:"elementary",challenge:"screens",goal:"set_boundary",response_style:"firm_kind"});
+const parenting=getParentingResponsePlan({age_band:"unknown",challenge:"screens",goal:"set_boundary",response_style:"firm_kind"});
 assert.match(parenting.framing_he,/מסכ/);
 assert.ok(parenting.steps_he.length>=3);
 
-const adhd=getAdhdParentingPlan({age_band:"elementary",challenge:"task_initiation",goal:"start_task",support_level:"structured"});
+const adhd=getAdhdParentingPlan({age_band:"unknown",challenge:"task_initiation",goal:"start_task",support_level:"structured"});
 assert.match(adhd.executive_function_frame_he,/התחל|משימה|תפקוד/);
 assert.ok(adhd.environment_adjustments_he.length>=2);
 
