@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-03",
-  "status": "blocked",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 0,
     "status": "complete",
@@ -15,7 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "pr_number": 997,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/997",
     "normalization_slot": "2026-10-03",
@@ -1291,22 +1291,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "GITHUB_CONTENT_INVALID",
-    "message": "GITHUB_CONTENT_INVALID: src/data/posts.json@fa480f926078a96d0ba6ccab471492b70fb262b7",
-    "at": "2026-10-03T20:51:14.069652+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-09-29T18:01:51.074742+00:00",
-      "from": "complete",
-      "to": "blocked",
-      "reason": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
-      "details": {
-        "message": "targeted media article is not publicly verified: breaking-the-yelling-cycle"
-      }
-    },
     {
       "at": "2026-09-29T20:17:55.353Z",
       "from": "blocked",
@@ -2054,12 +2040,22 @@
       "details": {
         "message": "GITHUB_CONTENT_INVALID: src/data/posts.json@fa480f926078a96d0ba6ccab471492b70fb262b7"
       }
+    },
+    {
+      "at": "2026-10-03T20:56:40.874981+00:00",
+      "from": "blocked",
+      "to": "article_image_running",
+      "reason": "controller dispatched one trusted image worker attempt",
+      "details": {
+        "attempt": 1,
+        "pr_number": 997
+      }
     }
   ],
-  "updated_at": "2026-10-03T20:51:14.069681+00:00",
+  "updated_at": "2026-10-03T20:56:40.874988+00:00",
   "image": {
-    "attempt_count": 0,
-    "status": "complete",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2067,7 +2063,8 @@
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-10-03T20:56:40.874960+00:00"
   },
   "long_video": {
     "attempt_count": 1,
