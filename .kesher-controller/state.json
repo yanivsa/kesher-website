@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-03",
-  "status": "blocked",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -22,7 +22,7 @@
     "normalization_dispatched_at": "2026-10-03T17:00:04.481213+00:00",
     "quality_status": "passed",
     "quality_content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
-    "quality_checked_at": "2026-10-03T17:12:30.690310+00:00",
+    "quality_checked_at": "2026-10-03T17:51:00.071914+00:00",
     "quality_violations": []
   },
   "backlog": [
@@ -1291,12 +1291,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
-    "message": "targeted media article is not publicly verified: sleep-needs-10-year-old",
-    "at": "2026-10-03T17:00:56.162904+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-09-29T10:24:14.429728+00:00",
@@ -1967,9 +1962,15 @@
       "details": {
         "message": "targeted media article is not publicly verified: sleep-needs-10-year-old"
       }
+    },
+    {
+      "at": "2026-10-03T17:51:09.418412+00:00",
+      "from": "blocked",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-10-03T17:00:56.162924+00:00",
+  "updated_at": "2026-10-03T17:51:09.418419+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1984,7 +1985,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 37139266664,
@@ -1997,19 +1998,26 @@
     "resume_dispatches": 1,
     "item_id": "video-20261003-200717-297757f9fa",
     "source_id": "a7f06cbc-82b9-4974-a2ce-6d4ebce00ab6",
-    "artifact_id": "fcfbb9d5-15a3-434c-8c7b-8b12d0a7211c"
+    "artifact_id": "fcfbb9d5-15a3-434c-8c7b-8b12d0a7211c",
+    "youtube_id": "cRztRJys4DQ",
+    "youtube_url": "https://youtu.be/cRztRJys4DQ",
+    "verified": true
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "fcfbb9d5-15a3-434c-8c7b-8b12d0a7211c",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-10-03T17:51:09.418387+00:00",
+    "artifact_id": "fcfbb9d5-15a3-434c-8c7b-8b12d0a7211c",
+    "source_id": "a7f06cbc-82b9-4974-a2ce-6d4ebce00ab6",
+    "adopted_from_long_item_id": "video-20261003-200717-297757f9fa"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -2028,10 +2036,12 @@
     "content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
     "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
     "article_verified": true,
-    "updated_at": "2026-10-03T17:12:32.928748+00:00",
-    "short_status": "pending",
+    "updated_at": "2026-10-03T17:51:03.145063+00:00",
+    "short_status": "running",
     "complete": false,
-    "long_status": "running",
-    "long_last_dispatch_at": "2026-10-03T17:15:02.201543+00:00"
+    "long_status": "complete",
+    "long_last_dispatch_at": "2026-10-03T17:15:02.201543+00:00",
+    "long_youtube_url": "https://youtu.be/cRztRJys4DQ",
+    "long_item_id": "video-20261003-200717-297757f9fa"
   }
 }
