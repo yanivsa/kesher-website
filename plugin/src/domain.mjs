@@ -75,7 +75,7 @@ export function getAdhdParentingPlan(input){
 
 export function findKesherResource(input){
   assertExactKeys(input,new Set(["domain","topic","content_type"]));
-  const {domain,topic,content_type}=input;assertEnum(domain,RESOURCE_DOMAINS,"domain");assertEnum(topic,RESOURCE_TOPICS,"topic");assertEnum(content_type,new Set(["any","article"]),"content_type");
+  const {domain,topic,content_type}=input;assertEnum(domain,RESOURCE_DOMAINS,"domain");assertEnum(topic,RESOURCE_TOPICS,"topic");assertEnum(content_type,new Set(["any","article","service"]),"content_type");
   const scored=(resourceIndex.resources??[]).filter(r=>r.domain===domain&&(content_type==="any"||r.content_type===content_type)).map(r=>({r,score:(r.topics??[]).includes(topic)?3:topic==="other"?1:0})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score||String(b.r.date||"").localeCompare(String(a.r.date||"")));
-  return{resources:scored.slice(0,3).map(({r})=>({slug:r.slug,title:r.title,url:r.url,domain:r.domain,topics:r.topics}))};
+  return{resources:scored.slice(0,3).map(({r})=>({slug:r.slug,title:r.title,url:r.url,domain:r.domain,topics:r.topics,content_type:r.content_type}))};
 }
