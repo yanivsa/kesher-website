@@ -10,9 +10,27 @@ if(!iface)fail("OpenAI interface required");
 if((iface.displayName??"").length>30)fail("displayName too long");
 if((iface.shortDescription??"").length>30)fail("shortDescription too long");
 if(iface.privacyPolicyURL!=="https://kesher.saharoni.com/privacy")fail("privacy URL");
+if(iface.supportURL!=="https://kesher.saharoni.com/contact")fail("support URL");
+if(iface.termsOfServiceURL!=="https://kesher.saharoni.com/terms")fail("terms URL");
+for(const assetField of ["logo","composerIcon"]){
+  const rel=iface[assetField];
+  if(typeof rel!=="string"||!rel.startsWith("./assets/"))fail(`${assetField} path`);
+  else if(!fs.existsSync(path.join(root,rel.slice(2))))fail(`${assetField} file missing`);
+}
 if(!/הורות/.test(iface.longDescription??"")||!/ADHD|קשב/.test(iface.longDescription??""))fail("V2 metadata must cover parenting and attention");
 const servers=mcp.mcpServers??{};if(Object.keys(servers).length!==1||servers.kesher?.type!=="streamable-http")fail("MCP config");
 if(servers.kesher?.url!=="https://kesher-mcp-staging.yanivsa.workers.dev/mcp")fail("staging MCP URL");
+const review=manifest.extensions?.["com.openai"]?.review;
+if(review?.test_cases?.positive?.length!==5)fail("review requires exactly 5 positive test cases");
+if(review?.test_cases?.negative?.length!==3)fail("review requires exactly 3 negative test cases");
+for(const testCase of review?.test_cases?.positive??[]){
+  if(!testCase.description||!testCase.prompt||!testCase.tools_triggered||!testCase.expected_behavior)fail("incomplete positive review case");
+}
+for(const testCase of review?.test_cases?.negative??[]){
+  if(!testCase.description||!testCase.prompt)fail("incomplete negative review case");
+}
+if(review?.commerce!==false)fail("commerce must be false");
+if(!(manifest.extensions?.["com.openai"]?.publication?.release_notes??"").trim())fail("release notes required");
 const entry=(marketplace.plugins??[]).find(p=>p.name===manifest.name);if(!entry)fail("marketplace missing V2 plugin");
 if(entry?.source?.path!=="./plugin"||entry?.policy?.installation!=="AVAILABLE")fail("marketplace policy");
 if(!process.exitCode)console.log("PASS: Kesher V2 portable plugin package is internally consistent.");
