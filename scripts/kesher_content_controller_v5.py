@@ -41,6 +41,7 @@ SHORT_WORKFLOW_NAME = "Kesher Daily Article Short V4"
 SHORT_STATE_ARTIFACT = "kesher-short-v4-state"
 SHORT_CONTROLLER_STATE_ARTIFACT = "kesher-short-v4-controller-state"
 MAX_SHORT_DISPATCH_ATTEMPTS = 4
+MAX_SHORT_REMOTION_REBUILDS = 2
 
 
 class _TextExtractor(HTMLParser):
@@ -363,6 +364,20 @@ class V5Controller(v4.V4Controller):
             run_id=run_id,
         )
 
+    @staticmethod
+    def _short_resolution_rebuild_candidate(item: dict[str, Any]) -> bool:
+        if not isinstance(item, dict) or item.get("uploaded") is True:
+            return False
+        if str(item.get("status") or "") != "rejected":
+            return False
+        note = str(((item.get("review_notes") or {}).get("technical") or ""))
+        return (
+            "1080x1920" in note
+            and bool(item.get("id"))
+            and bool(item.get("raw_mp4"))
+            and bool(item.get("raw_sha256"))
+        )
+
     def _tick_short(self, state: dict[str, Any], source: dict[str, str], long_item: dict[str, Any]) -> core.Action:
         existing = self._adopt_existing_short(state, source)
         if existing:
@@ -402,6 +417,35 @@ class V5Controller(v4.V4Controller):
             if adopted and adopted != str(long_item.get("id") or ""):
                 core.block(state, "short", "SHORT_PROVIDER_IDENTITY_MISMATCH", "existing Short derives from a different long-form provider item")
                 return core.Action("blocked", "Short provider identity mismatch")
+
+            if self._short_resolution_rebuild_candidate(current_item):
+                rebuild_count = int(state["short"].get("remotion_rebuild_count") or 0)
+                if rebuild_count < MAX_SHORT_REMOTION_REBUILDS:
+                    inputs = {
+                        "operation": "rebuild",
+                        "rebuild_item_id": str(current_item.get("id") or ""),
+                    }
+                    core.GitHubClient.dispatch(self.github, SHORT_WORKFLOW, inputs)
+                    state["short"].update({
+                        "status": "running",
+                        "remotion_rebuild_count": rebuild_count + 1,
+                        "last_dispatch_at": core.utc_now(),
+                        "provider_id": current_item.get("task_id") or long_item.get("task_id"),
+                        "artifact_id": current_item.get("artifact_id") or long_item.get("artifact_id"),
+                        "source_id": current_item.get("source_id") or long_item.get("source_id"),
+                        "adopted_from_long_item_id": long_item.get("id"),
+                    })
+                    core.transition(
+                        state,
+                        "short_running",
+                        "rebuilding exact rejected Short after deterministic resolution-contract failure",
+                        item_id=current_item.get("id"),
+                    )
+                    return core.Action(
+                        "dispatch_short_rebuild",
+                        "rebuild exact rejected Short on current Remotion contract without new provider generation",
+                        inputs,
+                    )
 
         count = int(state["short"].get("attempt_count") or 0)
         if count >= MAX_SHORT_DISPATCH_ATTEMPTS:
