@@ -168,6 +168,11 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertNotIn("| .[7:]", workflow)
         self.assertIn("retention-days: 14", workflow)
 
+    def test_short_workflow_installs_the_renderer_workspace_dependencies(self) -> None:
+        workflow = SHORT_WORKFLOW_V4.read_text(encoding="utf-8")
+        self.assertIn("npm ci --prefix remotion-kesher --no-audit --no-fund", workflow)
+        self.assertIn("test -x remotion-kesher/node_modules/.bin/remotion", workflow)
+
     def test_short_controller_uses_same_approved_svg_signature_as_renderer(self) -> None:
         runtime = RUNTIME_V5_CONTROLLER.read_text(encoding="utf-8")
         pipeline = SHORT_PIPELINE_V4.read_text(encoding="utf-8")

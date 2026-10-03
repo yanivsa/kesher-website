@@ -123,6 +123,8 @@ jobs:
         run: |
           set -euo pipefail
           npm ci --no-audit --no-fund
+          npm ci --prefix remotion-kesher --no-audit --no-fund
+          test -x remotion-kesher/node_modules/.bin/remotion
           ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
           ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
           echo "$ffmpeg_dir" >> "$GITHUB_PATH"
