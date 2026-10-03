@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "kesher-mcp-staging",
+  "name": "kesher-mcp-v2-staging",
   "main": "src/index.mjs",
   "compatibility_date": "2026-10-02",
   "workers_dev": true,
@@ -13,7 +13,7 @@
   "ratelimits": [
     {
       "name": "MCP_RATE_LIMITER",
-      "namespace_id": "20261002",
+      "namespace_id": "20261003",
       "simple": {
         "limit": 300,
         "period": 60
