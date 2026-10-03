@@ -238,6 +238,31 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(new_state["backlog"][0]["cycle"], "2026-08-27")
         self.assertEqual(new_state["backlog"][0]["article"]["pr_number"], 550)
 
+    def test_contents_json_falls_back_to_git_blob_for_large_file(self):
+        client = controller.GitHubClient("yanivsa/kesher-website", "fake-token")
+        calls = []
+
+        def fake_request(method, url, body=None, **kwargs):
+            calls.append((method, url))
+            if "/contents/src/data/posts.json" in url:
+                return {
+                    "sha": "blob123",
+                    "encoding": "none",
+                    "content": "",
+                }
+            if url.endswith("/git/blobs/blob123"):
+                import base64
+                payload = base64.b64encode(b'[{"id":"large-post"}]').decode("ascii")
+                return {"encoding": "base64", "content": payload}
+            raise AssertionError(url)
+
+        client.request = fake_request
+        self.assertEqual(
+            client.contents_json("src/data/posts.json", "deadbeef"),
+            [{"id": "large-post"}],
+        )
+        self.assertTrue(any(url.endswith("/git/blobs/blob123") for _, url in calls))
+
     def test_unrelated_pr_563_is_not_adopted_as_article_pr(self):
         gh = FakeGitHub()
         # PR #563 is titled differently and does not add a post for 2026-08-19
