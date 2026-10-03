@@ -14,6 +14,7 @@ on:
       - scripts/kesher_free_stock_broll.py
       - tests/test_kesher_free_stock_broll.py
       - src/remotion/**
+      - remotion-kesher/**
       - package.json
       - package-lock.json
       - tests/test_short_pipeline_v4.py

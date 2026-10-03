@@ -31,8 +31,8 @@ export const RemotionRoot = () => {
         component={KesherVideo}
         durationInFrames={864}
         fps={24}
-        width={720}
-        height={1280}
+        width={1080}
+        height={1920}
         calculateMetadata={durationFromSource}
         defaultProps={{
           videoSrc: 'kesher-input.mp4',
