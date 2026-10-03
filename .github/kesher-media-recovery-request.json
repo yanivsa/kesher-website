@@ -2,10 +2,10 @@
   "enabled": true,
   "target_slug": "sleep-needs-10-year-old",
   "issue": 1021,
-  "purpose": "Complete the already merged sleep-needs-10-year-old article identity for Issue #1021 with the already verified public Video Overview and exactly one verified 9:16 Short. Reuse the exact source/content identity and do not create a duplicate article, Video Overview, provider generation, or upload.",
+  "purpose": "Complete Issue #1021 from the already merged article identity. The article and Video Overview are public and verified; resume the one existing Short task only. Do not create a duplicate article, long video, Short provider generation, or upload.",
   "failure_signature": "TARGETED_MEDIA_RECOVERY_SLEEP_NEEDS_2026_10_02",
-  "recovery": "adopt verified public article and verified public Video Overview https://youtu.be/cRztRJys4DQ, then dispatch/reconcile exactly one independent Short for the same content_sha256",
+  "recovery": "resume exact existing Short task_id 4f0f0a77-cbbf-405d-9619-94353041407f for content_sha256 297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021; long video already public at https://youtu.be/cRztRJys4DQ",
   "requested_by": "master-active-supervisor",
-  "reconcile_seq": 2,
-  "reconcile_reason": "Fresh evidence: article_verified=true and exact Video Overview uploaded/public as video-20261003-200717-297757f9fa (https://youtu.be/cRztRJys4DQ). Advance only the missing Short deliverable."
+  "reconcile_seq": 3,
+  "reconcile_reason": "The first Short production run persisted the exact task but provider status remained pending. A direct job rerun was cancelled by Actions concurrency, so trigger Controller to resume the same durable Short identity."
 }
