@@ -18,6 +18,7 @@ for(const assetField of ["logo","composerIcon"]){
   else if(!fs.existsSync(path.join(root,rel.slice(2))))fail(`${assetField} file missing`);
 }
 if(!/הורות/.test(iface.longDescription??"")||!/ADHD|קשב/.test(iface.longDescription??""))fail("V2 metadata must cover parenting and attention");
+for(const keyword of ["זוגיות","הדרכת הורים","קשב","ADHD"]) if(!(manifest.keywords??[]).includes(keyword)) fail(`missing discovery keyword: ${keyword}`);
 const servers=mcp.mcpServers??{};if(Object.keys(servers).length!==1||servers.kesher?.type!=="streamable-http")fail("MCP config");
 if(servers.kesher?.url!=="https://kesher-mcp-staging.yanivsa.workers.dev/mcp")fail("staging MCP URL");
 const review=manifest.extensions?.["com.openai"]?.review;
