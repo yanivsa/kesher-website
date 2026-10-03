@@ -1808,10 +1808,10 @@
       "שגרת ערב לילדים"
     ],
     "shortHook": "אם הילד במיטה בזמן אבל המוח שלו עדיין במסך — שעת השינה עוד לא באמת התחילה.",
-    "image": "/images/generated/blog/bedtime-battles-emotional-regulation.jpg",
+    "image": "/images/generated/blog/sleep-needs-10-year-old.svg",
     "imageAlt": "הורה וילד בשגרת ערב רגועה לקראת השינה",
     "imageProvider": "Local",
-    "imageSourceUrl": "local://public/images/generated/blog/bedtime-battles-emotional-regulation.jpg",
-    "imageIsFallback": true
+    "imageSourceUrl": "local://public/images/generated/blog/sleep-needs-10-year-old.svg",
+    "imageIsFallback": false
   }
 ]
