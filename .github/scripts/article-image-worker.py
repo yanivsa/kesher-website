@@ -87,6 +87,18 @@ def github_content(repo: str, path: str, ref: str, token: str) -> dict[str, Any]
     result = request_json("GET", f"https://api.github.com/repos/{repo}/contents/{quoted}?ref={encoded_ref}", token)
     if not isinstance(result, dict):
         raise RuntimeError(f"Unexpected GitHub content response for {path}")
+
+    # GitHub's Contents API stops embedding base64 file content once the file
+    # is larger than 1 MiB and returns encoding=none with a git_url instead.
+    # KESHER posts.json can legitimately cross that threshold because Hebrew
+    # text uses multiple UTF-8 bytes per character. Follow the exact blob URL
+    # rather than treating the empty content field as an empty JSON document.
+    if (result.get("encoding") == "none" or not result.get("content")) and result.get("git_url"):
+        blob = request_json("GET", str(result["git_url"]), token)
+        if not isinstance(blob, dict) or not blob.get("content"):
+            raise RuntimeError(f"GitHub blob response missing content for {path}")
+        return blob
+
     return result
 
 
