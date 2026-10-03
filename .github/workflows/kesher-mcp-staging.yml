@@ -1,0 +1,96 @@
+name: Kesher MCP Staging Deploy
+on:
+  push:
+    branches:
+      - feature/kesher-plugin-v2
+    paths:
+      - "plugin/**"
+      - "scripts/generate-plugin-resources.mjs"
+      - "src/data/posts.json"
+      - ".github/workflows/kesher-mcp-staging.yml"
+  workflow_dispatch:
+concurrency:
+  group: kesher-mcp-staging-v2
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+      - name: Install MCP Worker dependencies
+        run: npm ci --prefix plugin --no-audit --no-fund
+      - name: Run MCP Worker validation
+        run: npm --prefix plugin run check
+      - name: Deploy Kesher MCP staging Worker
+        id: deploy
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: 4.100.0
+          workingDirectory: plugin
+          command: deploy --config wrangler.jsonc
+      - name: Smoke test five-tool V2 staging
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOYMENT_URL"
+
+          curl --fail-with-body --silent --show-error "$DEPLOYMENT_URL/health" -o /tmp/health.json
+          grep -F '"ok":true' /tmp/health.json >/dev/null
+          grep -F '"tools":5' /tmp/health.json >/dev/null
+
+          curl --fail-with-body --silent --show-error             -X POST             -H 'Content-Type: application/json'             -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"kesher-ci","version":"2.0.0"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/init.txt
+
+          curl --fail-with-body --silent --show-error             -X POST             -H 'Content-Type: application/json'             -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/tools.txt
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          payloads=[json.loads(line[6:]) for line in Path('/tmp/tools.txt').read_text(encoding='utf-8').splitlines() if line.startswith('data: ')]
+          tools=payloads[-1]['result']['tools']
+          expected={'get_conflict_pattern','get_conversation_plan','get_parenting_response_plan','get_adhd_parenting_plan','find_kesher_resource'}
+          by={t['name']:t for t in tools}
+          assert set(by)==expected,(set(by),expected)
+          for name in expected:
+              schema=by[name]['inputSchema']
+              assert schema.get('additionalProperties') is False,name
+              for field,field_schema in (schema.get('properties') or {}).items():
+                  description=(field_schema.get('description') or '').strip()
+                  assert len(description)>=8,(name,field,description)
+          print('PASS: five strict V2 tools with parameter metadata advertised.')
+          PY
+
+          curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"get_conflict_pattern","arguments":{"topic":"money","interaction_signals":["criticism","defensiveness"],"goal":"understand_pattern"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-3.txt
+          grep -F 'pattern_label_he' /tmp/call-3.txt >/dev/null
+
+          curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"get_conversation_plan","arguments":{"topic":"household","goal":"discuss_household","emotional_intensity":"high","interaction_risk":"escalation","tone":"gentle"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-4.txt
+          grep -F 'opening_he' /tmp/call-4.txt >/dev/null
+
+          curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"get_parenting_response_plan","arguments":{"age_band":"elementary","challenge":"screens","goal":"set_boundary","response_style":"firm_kind"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-5.txt
+          grep -F 'phrase_to_use_he' /tmp/call-5.txt >/dev/null
+
+          curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"get_adhd_parenting_plan","arguments":{"age_band":"elementary","challenge":"task_initiation","goal":"start_task","support_level":"structured"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-6.txt
+          grep -F 'executive_function_frame_he' /tmp/call-6.txt >/dev/null
+
+          curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"find_kesher_resource","arguments":{"domain":"parenting_adhd","topic":"adhd_morning","content_type":"article"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/call-7.txt
+          grep -F 'kesher.saharoni.com' /tmp/call-7.txt >/dev/null
+
+          curl --fail-with-body --silent --show-error -X POST -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream'             --data '{"jsonrpc":"2.0","id":8,"method":"tools/call","params":{"name":"get_adhd_parenting_plan","arguments":{"age_band":"elementary","challenge":"organization","goal":"increase_independence","support_level":"structured","diagnosis":"ADHD"}}}'             "$DEPLOYMENT_URL/mcp" -o /tmp/reject.txt
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          payloads=[json.loads(line[6:]) for line in Path('/tmp/reject.txt').read_text(encoding='utf-8').splitlines() if line.startswith('data: ')]
+          p=payloads[-1]
+          r=p.get('result') or {}
+          assert p.get('error') is not None or r.get('isError') is True,p
+          print('PASS: private/diagnosis extra fields rejected.')
+          PY
