@@ -7,6 +7,7 @@ const routes = [...STATIC_ROUTES, ...posts.filter(isPublishable).map(blogRoute)]
 const errors = [];
 const canonicalTargets = new Map();
 const SITE_ORIGIN = 'https://kesher.saharoni.com';
+// eslint-disable-next-line no-control-regex
 const hasNonAscii = (value) => /[^\x00-\x7F]/.test(value);
 
 for (const route of routes) {
