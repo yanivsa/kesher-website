@@ -1,20 +1,11 @@
 {
-  "enabled": false,
-  "target_slug": "marriage-hack-7-minutes",
-  "issue": 1003,
-  "purpose": "Completed authoritative Issue #1003 from the already merged article identity with exactly one public Video Overview and one verified 9:16 Short. Do not create or modify a duplicate article, provider generation, or upload.",
-  "completed": true,
-  "requested_at": "2026-10-01T14:48:00Z",
-  "completed_at": "2026-10-01T16:05:40.817812Z",
-  "failure_signature": "TARGETED_MEDIA_RECOVERY_ISSUE_1003",
-  "recovery": "adopt_merged_article_identity_then_verify_public_article_then_exact_video_overview_then_exact_short_no_duplicates",
-  "preserve_prior_state": "Preserve completed ADHD Waiting Mode media evidence but never reuse its public IDs for Issue #1003.",
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/marriage-hack-7-minutes",
-    "overview_youtube_url": "https://youtu.be/WrA6UidMQv8",
-    "short_youtube_url": "https://youtu.be/LaAipWikrHI",
-    "short_portrait_verified": true
-  },
+  "enabled": true,
+  "target_slug": "sleep-needs-10-year-old",
+  "issue": 1021,
+  "purpose": "Complete the already merged sleep-needs-10-year-old article identity for Issue #1021 with the already verified public Video Overview and exactly one verified 9:16 Short. Reuse the exact source/content identity and do not create a duplicate article, Video Overview, provider generation, or upload.",
+  "failure_signature": "TARGETED_MEDIA_RECOVERY_SLEEP_NEEDS_2026_10_02",
+  "recovery": "adopt verified public article and verified public Video Overview https://youtu.be/cRztRJys4DQ, then dispatch/reconcile exactly one independent Short for the same content_sha256",
+  "requested_by": "master-active-supervisor",
   "reconcile_seq": 2,
-  "reconcile_reason": "Controller V5 verified article + public Video Overview + public 1080x1920 Short for exact content identity bc7af54b55d268c5bf801470c842566c1e1a6948fac5ba0551849ffa6d41f967; targeted recovery disabled after completion."
+  "reconcile_reason": "Fresh evidence: article_verified=true and exact Video Overview uploaded/public as video-20261003-200717-297757f9fa (https://youtu.be/cRztRJys4DQ). Advance only the missing Short deliverable."
 }
