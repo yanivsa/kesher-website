@@ -58,7 +58,8 @@ for(const p of posts){
   resources.push({slug,title:p.title,url:`https://kesher.saharoni.com/blog/${slug}`,domain,topics:topicsFor(p,domain),content_type:"article",date:p.date||null});
 }
 resources.sort((a,b)=>(b.date||"").localeCompare(a.date||"")||a.slug.localeCompare(b.slug));
-const payload={schema_version:"1.0",generated_at:"2026-10-02",source:"src/data/posts.json",count:resources.length,resources};
+const generatedAt=resources.reduce((max,r)=>r.date&&r.date>max?r.date:max,"")||"unknown";
+const payload={schema_version:"1.0",generated_at:generatedAt,source:"src/data/posts.json",count:resources.length,resources};
 const rendered=JSON.stringify(payload,null,2)+"\n";
 if(process.argv.includes("--check")){
   const existing=fs.existsSync(outPath)?fs.readFileSync(outPath,"utf8"):"";
@@ -66,9 +67,9 @@ if(process.argv.includes("--check")){
     console.error("plugin/data/kesher-resources.json is stale. Run node scripts/generate-plugin-resources.mjs");
     process.exit(1);
   }
-  console.log(`PASS: Kesher resource index is current (${resources.length} resources).`);
+  console.log(`PASS: Kesher resource index is current (${resources.length} resources; snapshot ${generatedAt}).`);
 }else{
   fs.mkdirSync(path.dirname(outPath),{recursive:true});
   fs.writeFileSync(outPath,rendered);
-  console.log(`Generated ${resources.length} Kesher plugin resources.`);
+  console.log(`Generated ${resources.length} Kesher plugin resources (snapshot ${generatedAt}).`);
 }
