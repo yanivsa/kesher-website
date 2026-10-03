@@ -1,20 +1,19 @@
 {
-  "enabled": false,
+  "enabled": true,
   "target_slug": "sleep-needs-10-year-old",
   "issue": 1021,
-  "purpose": "Completed authoritative sleep chain with exactly one public article, one public Video Overview and one verified 9:16 Short. Do not create duplicate article, provider generation, video or upload.",
-  "completed": true,
-  "content_sha256": "297757f9fa58a9bcf1770f30e1081a87d6d5b379358c09cf74417d70f2891021",
+  "purpose": "Refresh authoritative sleep article media after natural-Israeli-Hebrew rewrite. Reuse exact article slug, but generate/verify media against the new content hash without duplicating the article.",
+  "completed": false,
+  "content_sha256": "bc7af54b55d268c5bf801470c842566c1e1a6948fac5ba0551849ffa6d41f967",
   "failure_signature": "TARGETED_MEDIA_RECOVERY_SLEEP_NEEDS_2026_10_02",
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
-    "overview_youtube_url": "https://youtu.be/cRztRJys4DQ",
-    "short_youtube_url": "https://youtu.be/k84Q8VxN_yo",
-    "short_portrait_verified": true,
-    "short_width": 1080,
-    "short_height": 1920
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "short_portrait_verified": false,
+    "short_width": null,
+    "short_height": null
   },
-  "completed_at": "2026-10-03T19:43:18.741945+00:00",
-  "reconcile_seq": 7,
-  "reconcile_reason": "Controller V5 verified exact sleep article identity + public Video Overview + public verified 1080x1920 Short; recovery disabled after completion."
+  "reconcile_seq": 8,
+  "reconcile_reason": "Article copy was materially rewritten on 2026-10-04; prior media belongs to content_sha256 297757f9... and must not satisfy the new authoritative identity."
 }
