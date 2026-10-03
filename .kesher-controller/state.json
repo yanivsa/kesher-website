@@ -1166,7 +1166,20 @@
         "live_verified_at": "2026-09-27T19:47:44.654470+00:00",
         "next_deploy_retry_at": null
       },
-      "archived_at": "2026-09-27T22:03:26.232163+00:00"
+      "archived_at": "2026-09-27T22:03:26.232163+00:00",
+      "media": {
+        "source_slug": "siblings-fairness-vs-equality",
+        "source_content_sha256": "1db6d9749e5d56f6b1e2b7ec88665e4c0823ed496b2dc2b8e3ff8c395c9b3fef",
+        "article_url": "https://kesher.saharoni.com/blog/siblings-fairness-vs-equality",
+        "article_live": true,
+        "long_status": "complete",
+        "long_item_id": "video-20261002-021537-1db6d9749e",
+        "long_youtube_url": "https://youtu.be/IU8_1QIa4fw",
+        "long_youtube_id": "IU8_1QIa4fw",
+        "short_status": "running",
+        "short_dispatch_count": 1,
+        "short_last_dispatch_at": "2026-10-03T12:03:57.632779+00:00"
+      }
     },
     {
       "cycle": "2026-10-01",
@@ -1902,9 +1915,19 @@
         "backlog_cycle": "2026-10-01",
         "source_slug": "adhd-waiting-mode"
       }
+    },
+    {
+      "at": "2026-10-03T12:03:57.632801+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched independent prior-cycle Short generation",
+      "details": {
+        "backlog_cycle": "2026-09-27",
+        "source_slug": "siblings-fairness-vs-equality"
+      }
     }
   ],
-  "updated_at": "2026-10-03T12:03:42.734973+00:00",
+  "updated_at": "2026-10-03T12:03:57.632808+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
