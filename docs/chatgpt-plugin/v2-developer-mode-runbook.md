@@ -1,10 +1,10 @@
 # Kesher V2 — Developer Mode Evaluation Runbook
 
-Date: 2026-10-02
+Date: 2026-10-03
 
 ## Staging endpoint
 
-`https://kesher-mcp-staging.yanivsa.workers.dev/mcp`
+`https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp`
 
 Expected tools:
 - `get_conflict_pattern`
