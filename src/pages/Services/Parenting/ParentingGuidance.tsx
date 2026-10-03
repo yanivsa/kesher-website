@@ -190,6 +190,21 @@ const ParentingGuidance: React.FC = () => {
         </div>
       </section>
 
+      <section className={styles.onlineSection}>
+        <div className="container">
+          <div className={styles.specializationIntro}>
+            <h2>איך עובדת הדרכת הורים אונליין?</h2>
+            <p>הדרכת הורים יכולה להתקיים בקליניקה באשדוד או באופן מקוון. הפורמט הדיגיטלי מאפשר לשמור על רצף המפגשים מתוך הבית, פתרון שמתאים במיוחד להורים המתמודדים עם עומס בשגרת העבודה, קושי במציאת סידור לילדים, או מגורים מרוחקים (כולל זוגות ברילוקיישן).</p>
+
+            <h3>איך כדאי להתכונן לפגישה?</h3>
+            <ul className={styles.boundariesList}>
+              <li>בחרו מראש חדר סגור ופרטי, ללא נוכחות של הילדים בזמן השיחה.</li>
+              <li>מומלץ להתחבר דרך מחשב כדי לאפשר צפייה משותפת ונוחה של שני בני הזוג.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <section className={styles.boundaries}>
         <div className="container">
           <div className={styles.boundariesContent}>
