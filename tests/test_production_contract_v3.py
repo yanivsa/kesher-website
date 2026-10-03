@@ -173,6 +173,14 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn("npm ci --prefix remotion-kesher --no-audit --no-fund", workflow)
         self.assertIn("test -x remotion-kesher/node_modules/.bin/remotion", workflow)
 
+    def test_short_remotion_composition_is_full_hd_portrait(self) -> None:
+        root = (ROOT / "remotion-kesher" / "src" / "Root.tsx").read_text(encoding="utf-8")
+        short = root.split('id="KesherShort"', 1)[1]
+        self.assertIn("width={1080}", short)
+        self.assertIn("height={1920}", short)
+        self.assertNotIn("width={720}", short)
+        self.assertNotIn("height={1280}", short)
+
     def test_short_controller_uses_same_approved_svg_signature_as_renderer(self) -> None:
         runtime = RUNTIME_V5_CONTROLLER.read_text(encoding="utf-8")
         pipeline = SHORT_PIPELINE_V4.read_text(encoding="utf-8")
