@@ -1085,8 +1085,8 @@
         "long_youtube_url": "https://youtu.be/IU8_1QIa4fw",
         "long_youtube_id": "IU8_1QIa4fw",
         "short_status": "running",
-        "short_dispatch_count": 2,
-        "short_last_dispatch_at": "2026-10-03T16:13:16.099332+00:00"
+        "short_dispatch_count": 3,
+        "short_last_dispatch_at": "2026-10-03T21:00:53.525735+00:00"
       }
     },
     {
@@ -1216,7 +1216,8 @@
         "quality_checked_at": "2026-10-03T19:43:16.309262+00:00",
         "quality_violations": []
       },
-      "archived_at": "2026-10-03T21:00:42.100951+00:00"
+      "archived_at": "2026-10-03T21:00:42.100951+00:00",
+      "media": {}
     }
   ],
   "last_error": null,
@@ -1843,9 +1844,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-10-03T21:00:53.525752+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched independent prior-cycle Short generation",
+      "details": {
+        "backlog_cycle": "2026-09-27",
+        "source_slug": "siblings-fairness-vs-equality"
+      }
     }
   ],
-  "updated_at": "2026-10-03T21:00:47.503731+00:00",
+  "updated_at": "2026-10-03T21:00:53.525769+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
