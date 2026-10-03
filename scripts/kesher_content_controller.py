@@ -442,9 +442,28 @@ class GitHubClient:
         payload = self.request(
             "GET", f"{self.api}/contents/{quoted}?ref={urllib.parse.quote(ref, safe='')}"
         )
-        if not isinstance(payload, dict) or payload.get("encoding") != "base64":
+        if not isinstance(payload, dict):
             raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}")
-        return json.loads(base64.b64decode(payload.get("content") or "").decode("utf-8"))
+
+        encoding = payload.get("encoding")
+        content = payload.get("content") or ""
+        if encoding == "base64" and content:
+            raw = base64.b64decode(content)
+        else:
+            # GitHub Contents API may omit inline content for large files.
+            # Fall back to the immutable blob referenced by the same payload.
+            blob_sha = str(payload.get("sha") or "").strip()
+            if not blob_sha:
+                raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}")
+            blob = self.request("GET", f"{self.api}/git/blobs/{blob_sha}")
+            if not isinstance(blob, dict) or blob.get("encoding") != "base64" or not blob.get("content"):
+                raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}")
+            raw = base64.b64decode(blob["content"])
+
+        try:
+            return json.loads(raw.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}") from exc
 
     def open_article_prs(self, target_slot: str | None = None) -> list[dict[str, Any]]:
         prs = self.request("GET", f"{self.api}/pulls?state=open&per_page=100")
