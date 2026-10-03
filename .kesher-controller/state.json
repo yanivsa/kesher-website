@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-03",
-  "status": "complete",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "complete",
@@ -1291,17 +1291,13 @@
       }
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "controller",
+    "code": "GITHUB_CONTENT_INVALID",
+    "message": "GITHUB_CONTENT_INVALID: src/data/posts.json@fa480f926078a96d0ba6ccab471492b70fb262b7",
+    "at": "2026-10-03T19:48:53.370924+00:00"
+  },
   "history": [
-    {
-      "at": "2026-09-29T10:24:14.429754+00:00",
-      "from": "short_retry_wait",
-      "to": "short_retry_wait",
-      "reason": "Short retry backoff is active",
-      "details": {
-        "retry_at": "2026-09-29T10:29:14.429698+00:00"
-      }
-    },
     {
       "at": "2026-09-29T10:27:47.124903+00:00",
       "from": "short_retry_wait",
@@ -2046,9 +2042,18 @@
       "from": "short_running",
       "to": "complete",
       "reason": "article, long-form video and derivative Short verified public"
+    },
+    {
+      "at": "2026-10-03T19:48:53.370942+00:00",
+      "from": "complete",
+      "to": "blocked",
+      "reason": "GITHUB_CONTENT_INVALID",
+      "details": {
+        "message": "GITHUB_CONTENT_INVALID: src/data/posts.json@fa480f926078a96d0ba6ccab471492b70fb262b7"
+      }
     }
   ],
-  "updated_at": "2026-10-03T19:43:18.741926+00:00",
+  "updated_at": "2026-10-03T19:48:53.370949+00:00",
   "image": {
     "attempt_count": 0,
     "status": "complete",
