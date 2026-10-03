@@ -1251,11 +1251,22 @@
         "source_content_sha256": "4b0df04d8931ff8ab08c172a6b3590686e4c3f598ef0194a27b2c0dde59104b6",
         "article_url": "https://kesher.saharoni.com/blog/adhd-waiting-mode",
         "article_live": true,
-        "long_status": "running",
+        "long_status": "complete",
         "long_resume_count": 19,
         "long_last_dispatch_at": "2026-10-03T01:17:19.432908+00:00",
         "long_evidence_rebuild_count": 1,
-        "last_error": null
+        "last_error": null,
+        "long_item_id": "video-20261003-012501-4b0df04d89",
+        "long_youtube_url": "https://youtu.be/_ODqRBH-suk",
+        "long_youtube_id": "_ODqRBH-suk",
+        "short_status": "complete",
+        "short_item_id": "video-20261001-140746-4b0df04d89",
+        "short_youtube_url": "https://youtu.be/JnqvRx1ss24",
+        "short_youtube_id": "JnqvRx1ss24",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-10-03T06:39:21.023649+00:00"
       }
     }
   ],
@@ -1881,9 +1892,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-10-03T06:39:21.023676+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-10-01",
+        "source_slug": "adhd-waiting-mode"
+      }
     }
   ],
-  "updated_at": "2026-10-03T06:38:47.001876+00:00",
+  "updated_at": "2026-10-03T06:39:21.023682+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
