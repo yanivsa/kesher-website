@@ -36,6 +36,7 @@ const services = [
   { name: 'ליווי למציאת זוגיות', url: '/services/finding-relationship', path: path.join(__dirname, '../src/pages/Services/Singles/FindingRelationshipPage.tsx') },
   { name: 'ייעוץ זוגי באשדוד', url: '/couples-counseling-ashdod', path: path.join(__dirname, '../src/pages/Landing/CouplesCounselingAshdod/CouplesCounselingAshdodPage.tsx') },
   { name: 'הדרכת הורים באשדוד', url: '/parenting-guidance-ashdod', path: path.join(__dirname, '../src/pages/Landing/ParentingGuidanceAshdod/ParentingGuidanceAshdodPage.tsx') },
+  { name: 'הדרכת הורים ל-ADHD באשדוד', url: '/parenting-adhd-ashdod', path: path.join(__dirname, '../src/pages/Landing/ParentingAdhdAshdod/ParentingAdhdAshdodPage.tsx') },
   { name: 'ייעוץ זוגי במשבר', url: '/services/couples/crisis', path: path.join(__dirname, '../src/pages/Landing/CouplesCrisis/CouplesCrisisPage.tsx') },
   { name: 'ייעוץ זוגי רגע לפני פרידה', url: '/services/couples/before-separation', path: path.join(__dirname, '../src/pages/Landing/CouplesBeforeSeparation/CouplesBeforeSeparationPage.tsx') }
 ];
