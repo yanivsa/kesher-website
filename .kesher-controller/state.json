@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-04",
-  "status": "blocked",
+  "status": "article_generating",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -32,6 +32,17 @@
       "pr_url": "",
       "github_run_id": "37175772325",
       "completed_at": "2026-10-04T04:01:54.630553+00:00"
+    },
+    "watchdog": {
+      "identity": "2026-10-04",
+      "session_id": null,
+      "last_progress_at": "2026-10-04T04:15:07+00:00",
+      "last_fingerprint": null,
+      "last_nudge_at": null,
+      "nudge_count": 0,
+      "worker_restart_count": 0,
+      "last_restart_at": null,
+      "last_restart_run_id": null
     }
   },
   "backlog": [
@@ -1238,12 +1249,7 @@
       "media": {}
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_PR_INSPECTION_ERROR",
-    "message": "cannot inspect src/data/posts.json for open article PR 997",
-    "at": "2026-10-04T04:05:35.415227+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-01T11:01:06.676210+00:00",
@@ -1916,9 +1922,18 @@
       "details": {
         "message": "cannot inspect src/data/posts.json for open article PR 997"
       }
+    },
+    {
+      "at": "2026-10-04T04:18:22.260043+00:00",
+      "from": "blocked",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-04T04:05:35.415246+00:00",
+  "updated_at": "2026-10-04T04:18:22.260051+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
