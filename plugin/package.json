@@ -4,10 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/validate-phase2-contracts.mjs && node tests/domain.test.mjs && node tests/resource-index.test.mjs && node tests/observability-policy.test.mjs && node tests/validate-plugin-package.mjs && node tests/validate-skill-evals.mjs",
+    "test": "node ../scripts/generate-plugin-resources.mjs && node tests/validate-phase2-contracts.mjs && node tests/domain.test.mjs && node tests/resource-index.test.mjs && node tests/observability-policy.test.mjs && node tests/validate-plugin-package.mjs && node tests/validate-skill-evals.mjs",
     "check:syntax": "node --check src/index.mjs && node --check src/domain.mjs",
     "build:dry": "wrangler deploy --dry-run --outdir .wrangler-dry-run",
-    "check": "node ../scripts/generate-plugin-resources.mjs && npm run test && npm run check:resources && npm run check:syntax && npm run build:dry",
+    "check": "npm run test && npm run check:resources && npm run check:syntax && npm run build:dry",
     "check:resources": "node ../scripts/generate-plugin-resources.mjs --check"
   },
   "dependencies": {
