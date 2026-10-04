@@ -31,6 +31,8 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד", prompt)
         self.assertIn("סרטון אנכי ביחס 9:16", prompt)
         self.assertIn("אין ליצור סקירת וידאו אופקית", prompt)
+        self.assertIn("אסור להשתמש ברקע מטושטש", prompt)
+        self.assertIn("קומפוזיציה אנכית חדה", prompt)
         self.assertIn("הרעיון השלם", prompt)
         self.assertIn("סיום טבעי", prompt)
         self.assertNotIn("45 עד 55 שניות", prompt)
@@ -80,13 +82,19 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("קטעי וידאו משלימים מפקסלס: https://www.pexels.com/", lines)
         short.core.require_hebrew(metadata["description"], "YouTube description", allow_url=True)
 
+    def test_short_generation_has_no_landscape_explainer_fallback(self):
+        source = (Path(short.core.PROJECT_DIR) / "scripts" / "kesher_short_pipeline_v4.py").read_text(encoding="utf-8")
+        self.assertIn('provider_format = "short"', source)
+        self.assertNotIn('provider_format = "short" if', source)
+
     def test_native_provider_gate_rejects_landscape_or_long_form_identity(self):
         valid = {"provider_video_format": "short", "provider_native_short": True}
         valid["fresh_generation_attempt"] = 1
         self.assertEqual(short.native_provider_short_failures({"width": 1080, "height": 1920}, valid), [])
         self.assertTrue(short.native_provider_short_failures({"width": 1920, "height": 1080}, valid))
         fallback = dict(valid, fresh_generation_attempt=3, provider_video_format="explainer", provider_native_short=False)
-        self.assertEqual(short.native_provider_short_failures({"width": 1920, "height": 1080}, fallback), [])
+        fallback_failures = short.native_provider_short_failures({"width": 1920, "height": 1080}, fallback)
+        self.assertTrue(any("landscape fallback is forbidden" in err for err in fallback_failures))
         reused = dict(fallback, shared_provider_identity=True)
         self.assertTrue(any("Video Overview provider identity" in err for err in short.native_provider_short_failures({"width": 1080, "height": 1920}, reused)))
 
