@@ -42,6 +42,7 @@ SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
 SHORT_FPS = 30
 SIGNATURE_DURATION_SECONDS = 3.0
+NATIVE_SHORT_MAX_ATTEMPTS = 3
 VISUAL_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
 SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
@@ -119,7 +120,7 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     prompt = generation_prompt(item["source"])
     attempt = int(item.get("fresh_generation_attempt") or 1)
     provider_format = "short"
-    if not 1 <= attempt <= NATIVE_SHORT_FALLBACK_ATTEMPT:
+    if not 1 <= attempt <= NATIVE_SHORT_MAX_ATTEMPTS:
         raise core.PipelineError("Short generation attempt is outside its bounded contract")
     prompt = bind_generation_prompt(state, item, prompt, provider_format)
     prompt_path.write_text(prompt, encoding="utf-8")
@@ -162,15 +163,12 @@ def native_provider_short_failures(media: dict[str, Any], item: dict[str, Any]) 
     ratio = (width / height) if height else 0
     attempt = int(item.get("fresh_generation_attempt") or 1)
     native_portrait = height > width and 0.53 <= ratio <= 0.60
-    fallback_allowed = attempt == NATIVE_SHORT_FALLBACK_ATTEMPT
-    if attempt < 1 or attempt > NATIVE_SHORT_FALLBACK_ATTEMPT:
+    if attempt < 1 or attempt > NATIVE_SHORT_MAX_ATTEMPTS:
         failures.append("Short generation attempt is outside the bounded native-first policy")
-    if item.get("provider_video_format") not in {"short", "explainer"}:
-        failures.append("Unknown NotebookLM provider format for Short")
-    if not native_portrait and not fallback_allowed:
-        failures.append(f"NotebookLM source is not a native portrait Short ({width}x{height}); retry native Short before fallback")
-    if item.get("provider_video_format") != "short" and not fallback_allowed:
-        failures.append("NotebookLM provider format is not the native Short format before the fallback attempt")
+    if item.get("provider_video_format") != "short":
+        failures.append("NotebookLM provider format is not the native Short format; landscape fallback is forbidden")
+    if not native_portrait:
+        failures.append(f"NotebookLM source is not a native portrait Short ({width}x{height}); landscape fallback is forbidden")
     if item.get("shared_provider_identity") is True or item.get("adopted_from_long_item_id"):
         failures.append("Short reuses Video Overview provider identity; an independent Short generation is required")
     return failures
