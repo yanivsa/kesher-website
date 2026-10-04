@@ -26,6 +26,7 @@ const serviceRoutes = new Set([
   '/services/couples/crisis',
   '/services/couples/before-separation',
   '/faq',
+  '/tools/chatgpt',
 ]);
 const conversionLandingRoutes = new Set([
   '/couples-counseling-ashdod',
