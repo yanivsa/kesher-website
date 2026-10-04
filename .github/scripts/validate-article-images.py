@@ -114,9 +114,14 @@ def main() -> int:
             continue
         data = path.read_bytes()
         digest = hashlib.sha256(data).hexdigest()
+        try:
+            pixels = core.image_pixel_sha256(data)
+        except Exception as exc:
+            errors.append(f"{pid}: invalid hero pixels: {exc}")
+            continue
         if digest in BANNED_SHA256:
             errors.append(f"{pid}: banned blue placeholder SHA-256")
-        hash_uses.setdefault(digest, []).append(
+        hash_uses.setdefault(pixels, []).append(
             {
                 "id": pid,
                 "date": post.get("date"),

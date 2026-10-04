@@ -1585,8 +1585,11 @@
       "הכנה לנישואים"
     ],
     "author": "שירה סהרוני",
-    "image": "/images/generated/blog/fights-before-wedding.png",
-    "imageAlt": "תמונה זמנית המשמשת כממלאת מקום עבור מאמר בנושא ריבים לפני חתונה"
+    "image": "/images/generated/blog/fights-before-wedding-local.png",
+    "imageAlt": "בני זוג יושבים ליד שולחן עם מחברת ולוח תכנון ומשוחחים על תוכניות משותפות",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/generated/services/premarital-first-year.webp",
+    "imageIsFallback": true
   },
   {
     "id": "teens-and-artificial-intelligence",

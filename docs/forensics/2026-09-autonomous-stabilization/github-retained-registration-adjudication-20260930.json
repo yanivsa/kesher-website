@@ -1,0 +1,583 @@
+{
+  "active_statuses": [
+    "queued",
+    "in_progress",
+    "waiting",
+    "pending",
+    "requested"
+  ],
+  "all_five_status_inventories_complete": true,
+  "classification_counts": {
+    "refused_active_registration": 33
+  },
+  "completed_at": "2026-09-30T16:29:41.068996+00:00",
+  "current_main_workflow_yaml_count": 64,
+  "final_main_sha": "7152264b5713fbc42b36a809f7b5df2d6ae99eea",
+  "global_active_runs": [],
+  "kind": "bounded_readonly_retained_registration_adjudication",
+  "live_handover_authorized": false,
+  "main_sha": "7152264b5713fbc42b36a809f7b5df2d6ae99eea",
+  "main_tree_sha": "724f90beb09ff4365cc0854f9f156272fc98cd6f",
+  "policy_sha256": "fd3c359e2396af0996ebe61aa97005e22c7143ab530712bac9b1b90a33003e6e",
+  "production_activated": false,
+  "production_state_written": false,
+  "provider_or_credential_contents_read": false,
+  "registered_workflow_count": 97,
+  "repository": "yanivsa/kesher-website",
+  "retained_policy_count": 33,
+  "retained_registrations": [
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 347298475,
+      "workflow_path": ".github/workflows/aboutideasnow-submit-once.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 337968737,
+      "workflow_path": ".github/workflows/apply-controller-artifact-redirect.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 337962986,
+      "workflow_path": ".github/workflows/apply-controller-production-run-filter.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 337995946,
+      "workflow_path": ".github/workflows/apply-keep-video-state-history.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 337979596,
+      "workflow_path": ".github/workflows/apply-single-scheduler-video-patch.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 337977787,
+      "workflow_path": ".github/workflows/apply-video-retry-test-patch.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 337964365,
+      "workflow_path": ".github/workflows/apply-video-review-contract.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 337993366,
+      "workflow_path": ".github/workflows/apply-video-state-fallback-patch.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 343136777,
+      "workflow_path": ".github/workflows/article-video-preview.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 343792124,
+      "workflow_path": ".github/workflows/deploy-preferred-sources-preview.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 354688713,
+      "workflow_path": ".github/workflows/goal-e2e-isolation-patch.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 343193640,
+      "workflow_path": ".github/workflows/jules-preferred-sources-canary.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 358429827,
+      "workflow_path": ".github/workflows/kesher-auth-precedence-branch-patch.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 354750537,
+      "workflow_path": ".github/workflows/kesher-historical-media-scan.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 354753868,
+      "workflow_path": ".github/workflows/kesher-invidious-media-recovery.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 354707036,
+      "workflow_path": ".github/workflows/kesher-notebooklm-auth-recover-short.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 354752850,
+      "workflow_path": ".github/workflows/kesher-piped-media-recovery.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 354746618,
+      "workflow_path": ".github/workflows/kesher-short-recovery-embedded.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 354718134,
+      "workflow_path": ".github/workflows/kesher-short-recovery-phase2.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 354716406,
+      "workflow_path": ".github/workflows/kesher-short-verified-overview-recovery.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 354749898,
+      "workflow_path": ".github/workflows/kesher-youtube-embed-media-probe.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 337067176,
+      "workflow_path": ".github/workflows/one-time-dispatch-missing-article.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 353733583,
+      "workflow_path": ".github/workflows/one-time-repair-missing-hero-20260909.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 334261375,
+      "workflow_path": ".github/workflows/openclaw-cloudflare-setup.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 334259959,
+      "workflow_path": ".github/workflows/openclaw-dashboard-preflight.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 358851595,
+      "workflow_path": ".github/workflows/s3-pr802-hero-repair.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 358739183,
+      "workflow_path": ".github/workflows/s3-v5-provider-resume-repair.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 358727842,
+      "workflow_path": ".github/workflows/s3-v5-upload-target-repair.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 354647414,
+      "workflow_path": ".github/workflows/tmp-fix-pr763.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 349169036,
+      "workflow_path": ".github/workflows/tmp-repair-pr-582.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 349148607,
+      "workflow_path": ".github/workflows/tmp-repair-pr-616.yml"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 294204178,
+      "workflow_path": "dynamic/dependabot/dependabot-updates"
+    },
+    {
+      "active_counts": {
+        "in_progress": 0,
+        "pending": 0,
+        "queued": 0,
+        "requested": 0,
+        "waiting": 0
+      },
+      "active_runs": [],
+      "classification": "refused_active_registration",
+      "definition_present_on_current_main": false,
+      "exact_registered_identity": true,
+      "observed_state": "active",
+      "workflow_id": 320961763,
+      "workflow_path": "dynamic/dependabot/update-graph"
+    }
+  ],
+  "reviewed_definition_paths_not_registered": [
+    ".github/workflows/kesher-article-deploy.yml",
+    ".github/workflows/kesher-article-merge.yml",
+    ".github/workflows/kesher-article-validation.yml",
+    ".github/workflows/kesher-article-worker.yml",
+    ".github/workflows/kesher-media-worker.yml"
+  ],
+  "run_snapshot_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "scope_note": "Current-main metadata only. Missing YAML is not a retirement proof; external credential/session authority is not adjudicated by this read-only inventory.",
+  "source_stable": true,
+  "started_at": "2026-09-30T16:29:28.792669+00:00",
+  "tree_identity_note": "The initial recursive tree API lookup used the immutable commit SHA and returned that lookup SHA in its sha field. main_tree_sha is independently verified from GET git/commits/{main_sha}.tree.sha; tree_response_sha preserves the original response value rather than treating it as the Git tree object identity.",
+  "tree_lookup_sha": "7152264b5713fbc42b36a809f7b5df2d6ae99eea",
+  "tree_response_sha": "7152264b5713fbc42b36a809f7b5df2d6ae99eea",
+  "unknown_registration_count": 1,
+  "unknown_registrations": [
+    {
+      "id": 370535154,
+      "path": ".github/workflows/kesher-owner-exact-975.yml",
+      "state": "active"
+    }
+  ],
+  "workflow_mutations_performed": false,
+  "workflow_snapshot_sha256": "e208b5c56bff5ea1a23e1c3678878fd0b701f39edc39d2da104ef715f49e1707",
+  "workflows_complete": true
+}

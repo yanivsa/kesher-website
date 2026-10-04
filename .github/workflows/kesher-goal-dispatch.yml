@@ -1,89 +1,14 @@
-name: KESHER Goal Dispatcher
-
-run-name: KESHER goal dispatch ${{ github.sha }}
+name: KESHER Goal Dispatcher (retired candidate)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/kesher-goal-request.json'
   workflow_dispatch:
 
 permissions:
-  actions: write
   contents: read
-  statuses: write
 
 jobs:
-  dispatch:
+  retired:
+    if: ${{ github.repository == '__KESHER_RETIRED__' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout current main
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        with:
-          ref: main
-          persist-credentials: false
-
-      - name: Resolve exact goal target
-        id: target
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import json, os
-          from pathlib import Path
-          p = Path('.github/kesher-goal-request.json')
-          data = json.loads(p.read_text(encoding='utf-8'))
-          if data.get('enabled') is not True:
-              raise SystemExit('KESHER goal request is disabled')
-          slug = str(data.get('target_slug') or '').strip()
-          if not slug:
-              raise SystemExit('target_slug is required')
-          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
-              f.write(f"slug={slug}\n")
-          print(f'KESHER_GOAL_TARGET={slug}')
-          PY
-
-      - name: Dispatch exact long Video Overview
-        env:
-          GH_TOKEN: ${{ github.token }}
-          SLUG: ${{ steps.target.outputs.slug }}
-        run: |
-          set -euo pipefail
-          gh workflow run kesher-daily-video.yml --ref main \
-            -f operation=full \
-            -f target_slug="$SLUG"
-          echo "VIDEO_DISPATCHED slug=$SLUG"
-
-      - name: Dispatch exact portrait Short
-        env:
-          GH_TOKEN: ${{ github.token }}
-          SLUG: ${{ steps.target.outputs.slug }}
-        run: |
-          set -euo pipefail
-          gh workflow run kesher-short-v4.yml --ref main \
-            -f operation=full \
-            -f derive_slug="$SLUG"
-          echo "SHORT_DISPATCHED slug=$SLUG"
-
-      - name: Capture dispatched run ids
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          sleep 8
-          video_id="$(gh run list --workflow kesher-daily-video.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
-          short_id="$(gh run list --workflow kesher-short-v4.yml --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')"
-          test -n "$video_id"
-          test -n "$short_id"
-          echo "VIDEO_RUN_ID=$video_id"
-          echo "SHORT_RUN_ID=$short_id"
-          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
-            -f state=pending \
-            -f context="kesher-goal/video" \
-            -f description="Exact Video Overview dispatched" \
-            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$video_id" >/dev/null
-          gh api --method POST "repos/$GITHUB_REPOSITORY/statuses/$GITHUB_SHA" \
-            -f state=pending \
-            -f context="kesher-goal/short" \
-            -f description="Exact 9:16 Short dispatched" \
-            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$short_id" >/dev/null
+      - run: echo 'Legacy indirect dispatcher retired; use the canonical controller.'

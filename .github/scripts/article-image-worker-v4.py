@@ -134,18 +134,22 @@ def collect_existing_image_usage(repo_root: Path) -> tuple[set[str], dict[str, i
         if not path.is_file():
             continue
         try:
-            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            data = path.read_bytes()
+            digest = hashlib.sha256(data).hexdigest()
+            pixels = "pixels:" + core.image_pixel_sha256(data)
         except Exception:
             continue
-        hashes.add(digest)
+        hashes.update((digest, pixels))
         usage[digest] = usage.get(digest, 0) + 1
+        usage[pixels] = usage.get(pixels, 0) + 1
         try:
             used_on = date.fromisoformat(str(post.get("date") or "")[:10])
         except Exception:
             continue
-        previous = last_used.get(digest)
-        if previous is None or used_on > previous:
-            last_used[digest] = used_on
+        for key in (digest, pixels):
+            previous = last_used.get(key)
+            if previous is None or used_on > previous:
+                last_used[key] = used_on
     return hashes, usage, last_used
 
 
@@ -292,7 +296,7 @@ def try_pixabay(
                 data = core.download(str(url))
                 _w, _h, ext = core.validate_candidate(data)
                 digest = hashlib.sha256(data).hexdigest()
-                if existing_hashes and digest in existing_hashes:
+                if core.candidate_is_duplicate(data, existing_hashes):
                     print("IMAGE_STOCK_REJECTED provider=pixabay reason=sha256_collision", file=sys.stderr)
                     continue
                 matched, description = verify_pixels(post, data, ext)
@@ -357,13 +361,14 @@ def local_fallback(
             if tier == 2 and score < reserve_min_topic_score:
                 continue
 
-            if digest not in existing_hashes:
+            pixels = "pixels:" + core.image_pixel_sha256(data)
+            if not core.candidate_is_duplicate(data, existing_hashes):
                 unused.append((tier, -score, _stable_tiebreak(post, source_path), source_path, data, ext))
                 continue
 
-            prior_uses = existing_usage.get(digest, 0)
-            last = last_used.get(digest)
-            days_since = (today - last).days if last else cooldown_days
+            prior_uses = max(existing_usage.get(digest, 0), existing_usage.get(pixels, 0))
+            last = max((d for d in (last_used.get(digest), last_used.get(pixels)) if d), default=None)
+            days_since = (today - last).days if last else -1
             if prior_uses < max_lifetime_uses and days_since >= cooldown_days:
                 reusable.append((tier, prior_uses, -score, _stable_tiebreak(post, source_path), source_path, data, ext))
         except Exception as exc:

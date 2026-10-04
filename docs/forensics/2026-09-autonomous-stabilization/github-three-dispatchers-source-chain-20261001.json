@@ -1,0 +1,294 @@
+{
+  "files": {
+    ".github/kesher-goal-request.json": {
+      "blob_sha1": "0d7bfee5eceb3fdd8ab4aa9bb390e6fe1d33ab70",
+      "local_sha256": null,
+      "source_sha256": "138a9faadef4e60f3b9a5f229571e3ca3f7cec53ebbfdca456ece5bbb44787a1"
+    },
+    ".github/prompts/jules-remotion-video-upgrade.md": {
+      "blob_sha1": "0011fdc77ffc837f856bdbaf16bf18c438a12e68",
+      "local_sha256": "0786f6ab6d9d1f0ecec7eeb4fcf81494bce708c8b7f9e21449acb73db0b55359",
+      "source_sha256": "b77ed706da6ca440bebb8fd4102b2ded5f0b96628039c372e50fe3fab3e13d6a"
+    },
+    "config/kesher-production-contract.json": {
+      "blob_sha1": "26d041bc6e8395065683fd66bf7e6eea543d2f26",
+      "local_sha256": "1f7971c0d4261b9caf7408a920571efe3b25f3761c09809b781a596e5eafa098",
+      "source_sha256": "459365f2ad2a0c9a5ef8de7120d704bf3423bbb8a08debd68adb058a61e62595"
+    },
+    "package-lock.json": {
+      "blob_sha1": "54ed7717a0bf34262dc24e5b32f49fb75f0278fe",
+      "local_sha256": "6085d327ea01322752c7a48c5d93e55bfb488ecddb59d3385ab6bdb9b336492d",
+      "source_sha256": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e"
+    },
+    "package.json": {
+      "blob_sha1": "a3925b8dc4bff492758e0d99e77019d6d9b4bc9e",
+      "local_sha256": "6f482a9eb8576c0d959d33d6e8b9c4ebfc018bc75ea695b625bb97c27a82692e",
+      "source_sha256": "c567bcdebd9058b464a554263c8eda8fb59aa29dfa99e27916b3d304b61a2b21"
+    },
+    "scripts/article_claim_quality.py": {
+      "blob_sha1": "7f3963996e7ca4caed75ac857ee079d5de8f8e67",
+      "local_sha256": "e38bbc97733816c8162cca9489475e8b9159e0fa4ecd29c388d0a93aec78c87d",
+      "source_sha256": "e38bbc97733816c8162cca9489475e8b9159e0fa4ecd29c388d0a93aec78c87d"
+    },
+    "scripts/generate-article-image.js": {
+      "blob_sha1": "2bfb22377bc80b4fd068ebca22d2a8c7c04d83cd",
+      "local_sha256": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
+      "source_sha256": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97"
+    },
+    "scripts/jules_article_runner_core.py": {
+      "blob_sha1": "50acedac6e351adc7da57964485818335357f4f4",
+      "local_sha256": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
+      "source_sha256": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0"
+    },
+    "scripts/jules_video_reviewer.py": {
+      "blob_sha1": "63a1c66f71b7f494760c8e29dad0a05ad38e1e7d",
+      "local_sha256": "b9af92db8fa8f05fb1960e6fe3fafe4b0e20c1b54920b2b1fbd52d42f66aa4ab",
+      "source_sha256": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07"
+    },
+    "scripts/jules_video_reviewer_v3.py": {
+      "blob_sha1": "5f5864fc37e33f3c06698f066ec0eb9f16391d41",
+      "local_sha256": "3115c164b10e456953c1c91b8cd08d1d0fa579578f54066dc63d070e7d4294d7",
+      "source_sha256": "973eb21e712420b83cf636308f876f51a57f5b6a668def83dae65d5d0be7aedd"
+    },
+    "scripts/kesher_article_contract.py": {
+      "blob_sha1": "5ec9dc32119d889968f5ab220b93b8dc2f5f86b5",
+      "local_sha256": "1f8b54dd8673a127d8ba635aed2752a04df34bbcdb0bf2febaba815ecfcc5e86",
+      "source_sha256": "d31c0b9191a5bbe49273bd2956eb2ad1cf24385fcf7af50b744ab17332ef28f8"
+    },
+    "scripts/kesher_article_normalizer.py": {
+      "blob_sha1": "10c507fd31952f498dfbf91f1b747bd2a28122bf",
+      "local_sha256": "91c3e3cfec1d36beffc8a17eab1d2e78efd3a7f8d41658acb51867719342f32e",
+      "source_sha256": "91c3e3cfec1d36beffc8a17eab1d2e78efd3a7f8d41658acb51867719342f32e"
+    },
+    "scripts/kesher_automation_policy.py": {
+      "blob_sha1": "b985ec1b1ce2cf2d496b22e5e53a0c52b77b6975",
+      "local_sha256": "b50b64717ee1a9961a804d6cb5b34bc1865a5f546cce829ba5e30fbb20ebd54f",
+      "source_sha256": "2e3b5fec11817d8274f7ba628d8023ba41dd26a5621a94ab68700061d273db5b"
+    },
+    "scripts/kesher_content_controller.py": {
+      "blob_sha1": "c82d7f5ac03b636d19eb6bbc41d81b5bc665f737",
+      "local_sha256": "e361c6560d9b40ed019f9760c9a1156789d75a84937578cc84ce43b538dbd265",
+      "source_sha256": "93350f64e58a1f417077d6a773b1c597a3ffe7db80832db800038ddbb80c3640"
+    },
+    "scripts/kesher_content_controller_entry.py": {
+      "blob_sha1": "542caaa1c14482036f0488bb11b3f65c9f0cbc9c",
+      "local_sha256": "5654e3ec279b41a478eedc42f95f259faf94d5043d31c9336b1e6801768c8274",
+      "source_sha256": "048725d54954248852c129f5e901a68906c6051e56e09a45a51b0abcf29eba3d"
+    },
+    "scripts/kesher_content_controller_stabilized.py": {
+      "blob_sha1": "0eade9ba18e7c6c33a095b3b3826d9ddc5d447f9",
+      "local_sha256": "a6b552c54cc1c09edfff5c4bfb143de3c50d5168d67e30693e95b715f51c659f",
+      "source_sha256": "a75ed9d354608449f205ce453bbe390d6772e221a14c7d9e68a5c563695d9829"
+    },
+    "scripts/kesher_content_controller_v3_best_effort.py": {
+      "blob_sha1": "d2ff3f9ae81104121c46ca00ac349c83f7ebf2c7",
+      "local_sha256": "e3e9265e8ccd7b6f5f8ed26c7cbd589e513e43a79db5733144950d07f6dcefcf",
+      "source_sha256": "93f513fbd3bf270874463d2ac6dbbcdb3dbf72f4c31d20248b997fc03e4ffec9"
+    },
+    "scripts/kesher_content_controller_v3_entry.py": {
+      "blob_sha1": "81bf12240f3477e35985fd5cf23365824c8330c0",
+      "local_sha256": "0892a712a1fee6d3b61d80601537f7b4a0506f528e2b8ce856298c3d3f92cfdf",
+      "source_sha256": "e857e1b0a6ef8e41679f8f8eabf31cb462d5c37d23f48c5fc6103667cab3e388"
+    },
+    "scripts/kesher_content_controller_v4.py": {
+      "blob_sha1": "129d3a330e7e58b17d82f4052149152c8863fb45",
+      "local_sha256": "e45a0da4e4021b5959f9c99b6fd6e161622568bf0e8d2ebeceee0024390fc1ea",
+      "source_sha256": "157c9e11c877d7a49a8397b489e1beb52a8a7ef34a10a6851ee142233dc5007b"
+    },
+    "scripts/kesher_content_controller_v4_runtime.py": {
+      "blob_sha1": "f8984467dda4f0aa646de8a652ff1390d9cba518",
+      "local_sha256": "c448e3a2c03143bf6f7ad0cc0c2c4bea885a4201e3735640b7ddacc8756989cd",
+      "source_sha256": "b3a78b2fa48c12b80e0b7cc9040515b189d6712560196bea32dfb221cdb45038"
+    },
+    "scripts/kesher_content_controller_v5.py": {
+      "blob_sha1": "1960b3bff70b5a9d9a6fce0834596ea9785c70c7",
+      "local_sha256": "8b501d6ba4b4b83c9c378a5ed767e12e55ea54b04a358a3fe322c250799b76ef",
+      "source_sha256": "933960263addbd53663b52b18f9d17767d7b5bbac9b7a6d341644db9af9b8477"
+    },
+    "scripts/kesher_content_controller_v5_runtime.py": {
+      "blob_sha1": "3dae070aa63cf72eccaa0f0ae9525e6252bca08b",
+      "local_sha256": "fa002547de3a382db23b104ffbfd57f5604040ddd6c6c2b777f05359c9947f8b",
+      "source_sha256": "c6d65d4a42ee7c43ba93a46b42521e5e227b16d4611452792e082d2f61ce7642"
+    },
+    "scripts/kesher_content_controller_v5_runtime_base.py": {
+      "blob_sha1": "1e6b04c88a98f83478b1476c8cb610bc938aebe5",
+      "local_sha256": "3d6c8fea18c381402512579d40faafeb9969868c82b1c4d85a3b9d45f2a72667",
+      "source_sha256": "4c635e737f6eeee10a630ec437d7baec6b7882bce2bb8bb92b347515aac172a9"
+    },
+    "scripts/kesher_content_watchdog.py": {
+      "blob_sha1": "4b71cd6a225cdd25645d0c9bd16fa1bb847a34be",
+      "local_sha256": "954a029e685b4aa36a65d61c5ca49febe6ec225fef0be9cce02d502b8403c5fe",
+      "source_sha256": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc"
+    },
+    "scripts/kesher_daily_pipeline.py": {
+      "blob_sha1": "d3682ac23fc47331ef15f1a61bf6678b6f99fad4",
+      "local_sha256": "3c9fbe9d8d0feb4b180f2bb399b38d85d5d1d6120ee7257ba8f2f38ab1a3c025",
+      "source_sha256": "62075cb5c77dc56546629c92a5dfdee9b5fc1b1b8c9e354d1f3e4f0416ecab9b"
+    },
+    "scripts/kesher_e2e_delivery_guard.py": {
+      "blob_sha1": "784cecd20d1be4f4219e9a0a88bf5a75ad3139a0",
+      "local_sha256": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
+      "source_sha256": "2a81619b7660f23f5c3c9e6d16d6731860e291c6e765755135e89ce84b955646"
+    },
+    "scripts/kesher_free_stock_broll.py": {
+      "blob_sha1": "ef7c553eaf4356c0f9a517da9d34e5d18b630c51",
+      "local_sha256": null,
+      "source_sha256": "a60b2592a5e3b845b81735047fddcd140da9e0c1954a4d1257f1c88a10570d2f"
+    },
+    "scripts/kesher_intervention_policy.py": {
+      "blob_sha1": "f6a843e40aea78f27598df936d090165ef5ea815",
+      "local_sha256": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d",
+      "source_sha256": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d"
+    },
+    "scripts/kesher_short_motion_plan.py": {
+      "blob_sha1": "1f67ba688aa57fad2dc295686f712e88abccd704",
+      "local_sha256": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
+      "source_sha256": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029"
+    },
+    "scripts/kesher_short_pipeline_v4.py": {
+      "blob_sha1": "319da7347c397ca37190219ddc52ee6b6bb3acca",
+      "local_sha256": "7338bb9efa4dcdd3650c68093e037cbd1d141b9ffc2e0408c438fa946090ac03",
+      "source_sha256": "6f1d02a93f6900c6c1e8bb4c56a3b1424a9f81c4274afa6ab07abdad5f150f0e"
+    },
+    "scripts/kesher_short_policy.py": {
+      "blob_sha1": "a3a82d42f8c5f9a5c472afc3bf6199f773b2d491",
+      "local_sha256": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
+      "source_sha256": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9"
+    },
+    "scripts/kesher_three_strike_runtime.py": {
+      "blob_sha1": "9dc83eca410b3405805e47c6370bfd018d7bf5ba",
+      "local_sha256": "e947ffa431d8d16ec8dff64fac2f4bde9ed7a0c66e573d58eaf9c7f71030c045",
+      "source_sha256": "71bf1cd01ecc6ccb24b8d59740fbebcab9ed694c8eba65ce96295cb981ae5659"
+    },
+    "scripts/kesher_video_asset_resolver.py": {
+      "blob_sha1": "f3501b00a6c56c988b09beab3cc602dfeda27c26",
+      "local_sha256": "9087376239f19f13d80eb010dd73407f41a4854a6bb3616675d4e717a0089d42",
+      "source_sha256": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b"
+    },
+    "scripts/kesher_video_enhancement.py": {
+      "blob_sha1": "4d4a6118efc967b9c9d2a606befe498f88e2a35b",
+      "local_sha256": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
+      "source_sha256": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec"
+    },
+    "scripts/kesher_video_evidence_repair.py": {
+      "blob_sha1": "4312fba16280bbc340e6a0c24b80ebbadeaf20c7",
+      "local_sha256": "f7a53588468798a415ac176ee24cac4610f00215c9e1131c0226e6bd855dd531",
+      "source_sha256": "f7a53588468798a415ac176ee24cac4610f00215c9e1131c0226e6bd855dd531"
+    },
+    "scripts/kesher_video_reconcile.py": {
+      "blob_sha1": "9fc63a890498534158716d4f736fe9bf15f7cd76",
+      "local_sha256": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa",
+      "source_sha256": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa"
+    },
+    "scripts/kesher_video_upload_guard.py": {
+      "blob_sha1": "ea4352a02d574b4bbf2c1c7db24c827857ca45e0",
+      "local_sha256": "7dd34e2d18862467cc1c9b77e5eed7d9da09ce74d2e5592584656513a0d4c359",
+      "source_sha256": "6bcd5fedeaa339d2d213cb4a957497b202c095ef77e9fa57a09a614df12b6ce7"
+    },
+    "scripts/motion_plan_generator.py": {
+      "blob_sha1": "a3bec2290e1a9c5d259ddb1ad9f4eda4cc76c153",
+      "local_sha256": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
+      "source_sha256": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211"
+    },
+    "scripts/prepare-shira-images.mjs": {
+      "blob_sha1": "46cc0212b2ae02064b091a2a0ea208cec010d246",
+      "local_sha256": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
+      "source_sha256": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d"
+    },
+    "scripts/prepare_jules_video_evidence.py": {
+      "blob_sha1": "57cd28244c7a0fb62c2db3beae061bf342b088b1",
+      "local_sha256": "308d81a56be35e126847881e316da4381c7c184f5fc4febfc641a99d0ddd5e22",
+      "source_sha256": "308d81a56be35e126847881e316da4381c7c184f5fc4febfc641a99d0ddd5e22"
+    },
+    "scripts/requirements-video-cloud.txt": {
+      "blob_sha1": "b00957000c1ceaec6ad3b8317597f7f551e5ab8f",
+      "local_sha256": "cc69a561b4b4dcab8b8bc12856e2db2d4dcca60765279a7f08059b89cfe769e6",
+      "source_sha256": "91fe874b85b4d27a446f773623e936a95ee2cf34fd6336797065853821d417b6"
+    },
+    "tests/kesher_daily_pipeline_suite.py": {
+      "blob_sha1": "b2da4c127dff86d716515ea7452e45514a660268",
+      "local_sha256": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3",
+      "source_sha256": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3"
+    },
+    "tests/test_kesher_daily_pipeline.py": {
+      "blob_sha1": "096dbeb1b59071a7c88d2e129590a2d20aa77bee",
+      "local_sha256": "7c45e91f7e50cfac483434158c2f5f2996d6d55e282d6d426dc9b5cb0c4d3654",
+      "source_sha256": "01a43fe16c824aefc9bd92d31ecbe6fd34a8f7e167d715374e7ceeee9d07c8ad"
+    },
+    "tests/test_notebooklm_auth_precedence.py": {
+      "blob_sha1": "f8b29cb2b05ad6644454df7c3b272acd0fae7ba6",
+      "local_sha256": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
+      "source_sha256": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc"
+    },
+    "tests/test_pipeline_v4.py": {
+      "blob_sha1": "37d1a3bb5aed278100cce2459285dc0c8d5582cf",
+      "local_sha256": "072a579f582dba0751b203b8c67d8c74f799482f88f8e51e50283d0ab67bb1e7",
+      "source_sha256": "072a579f582dba0751b203b8c67d8c74f799482f88f8e51e50283d0ab67bb1e7"
+    },
+    "tests/test_production_contract_v3.py": {
+      "blob_sha1": "6581697aeb8828f7c32583c86497079c1e716485",
+      "local_sha256": "c41359865977503fbda35497b884b8b8e2d84b925169a1b1ab6fe5897aeb2179",
+      "source_sha256": "1c5bd9e9a1fc1edeff75638b3f3392e9d7ccab085f317153c5cb59da893bb7f4"
+    },
+    "tests/test_short_pipeline_v4.py": {
+      "blob_sha1": "76478cca4b091183ec932d71e8f466d4436b5519",
+      "local_sha256": "abf75512597b60c21c7f9617750795d74907e0692d2ab9bba6ec0cae433571fc",
+      "source_sha256": "18b46f56c6318833196f8b3901e6406e08f8d47e3c1a7836b563994e58b0bc5e"
+    },
+    "tests/test_short_retry_policy_v4.py": {
+      "blob_sha1": "4dac75d3b87be1b19705b747c39d970410090417",
+      "local_sha256": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
+      "source_sha256": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971"
+    },
+    "tests/test_v4_runtime_activation.py": {
+      "blob_sha1": "b34a4a801a345645a4239638680fc3def22391eb",
+      "local_sha256": "4a56ad00bd0b8f881788f270397a4542d124ad0a80be2845df5221527f0827f5",
+      "source_sha256": "e8c2a24698ef2df557ea9412e8fdcf275410df94bdbf87cc03511f65fc0d13e1"
+    },
+    "tests/test_video_pending_evidence_repair.py": {
+      "blob_sha1": "0e9592a1fee2f928d1e91d630c672ec098eee861",
+      "local_sha256": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
+      "source_sha256": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564"
+    },
+    "tests/test_video_reconcile.py": {
+      "blob_sha1": "df8166488d84940a48ba884ab1b00f83b1e1c9b9",
+      "local_sha256": "b7701658b583bb28579fe2f5692b8b58d6c185d35fb2c5571ad2229d293b871d",
+      "source_sha256": "b7701658b583bb28579fe2f5692b8b58d6c185d35fb2c5571ad2229d293b871d"
+    },
+    "tests/test_video_review_policy.py": {
+      "blob_sha1": "1866f6daa461e9dcf4282269e3188b8277fea054",
+      "local_sha256": "dcc8e4dfb86843617f9dc59773a7eb2ad721bc1ef83f6ae86ceff2e92e7fc638",
+      "source_sha256": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0"
+    },
+    "tests/test_video_review_schema.py": {
+      "blob_sha1": "8c4a7dbdbe9eb09764fb449212fde812884849f7",
+      "local_sha256": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
+      "source_sha256": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
+    }
+  },
+  "local_review_inputs_absent_on_main": [
+    "scripts/kesher_runtime/authority.py",
+    "scripts/kesher_runtime/exclusion.py",
+    "scripts/kesher_runtime/git_exclusion.py",
+    "scripts/kesher_runtime/github.py",
+    "scripts/kesher_runtime/github_drain.py",
+    "scripts/kesher_runtime/handover.py",
+    "scripts/kesher_runtime/handover_github.py",
+    "scripts/kesher_runtime/identity.py",
+    "scripts/kesher_runtime/legacy_retirement.py",
+    "scripts/kesher_runtime/media_state.py",
+    "scripts/kesher_runtime/migration.py",
+    "scripts/kesher_runtime/outbox.py",
+    "scripts/kesher_runtime/output_artifacts.py",
+    "scripts/kesher_runtime/provider.py",
+    "scripts/kesher_runtime/render_provenance.py",
+    "scripts/kesher_runtime/sealed.py",
+    "scripts/kesher_runtime/state.py",
+    "scripts/kesher_runtime/verification.py",
+    "scripts/kesher_runtime/worker.py",
+    "scripts/kesher_runtime/worker_entry.py",
+    "tests/test_kesher_canonical_state.py",
+    "tests/test_media_provenance_contract.py"
+  ],
+  "main_sha": "0bf9271edace85627a3d38541cd88480784261d5"
+}
