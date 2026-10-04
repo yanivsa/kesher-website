@@ -161,6 +161,11 @@ class ShortRenderCacheTests(unittest.TestCase):
         captured = {}
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
+            project = root / 'project'
+            remotion = project / 'node_modules' / '.bin' / 'remotion'
+            remotion.parent.mkdir(parents=True)
+            remotion.write_text('#!/bin/sh\n# Test fixture: rendering is intercepted below.\n')
+            remotion.chmod(0o755)
             raw = root / 'native.mp4'; raw.write_bytes(b'native portrait fixture')
             (root / 'signature.svg').write_bytes(b'<svg/>')
             item = {'id': 'exact-short', 'source': {'title': 'כותרת', 'category': 'זוגיות'},
@@ -172,6 +177,7 @@ class ShortRenderCacheTests(unittest.TestCase):
                     props=json.loads((root / 'exact-short-short-remotion-props.json').read_text()))
                 raise CapturedRender()
             with patch.object(short.core, 'STATE_DIR', root), \
+                    patch.object(short.core, 'PROJECT_DIR', project), \
                     patch.object(short, 'prepare_signature_asset', return_value='signature.svg'), \
                     patch.object(short.core, 'ffprobe', return_value={'width': 360, 'height': 640, 'duration': 2}), \
                     patch.object(short, 'build_motion_plan', return_value={'targets': []}), \
@@ -180,7 +186,8 @@ class ShortRenderCacheTests(unittest.TestCase):
                 with self.assertRaises(CapturedRender):
                     short.render_remotion_video(raw, item)
         self.assertEqual(captured['command'][2:4], ['src/remotion/index.ts', 'ArticleShort'])
-        self.assertEqual(captured['cwd'], short.core.PROJECT_DIR)
+        self.assertEqual(captured['command'][0], str(remotion))
+        self.assertEqual(captured['cwd'], project)
         self.assertEqual(captured['props']['durationInFrames'], 60)
         self.assertEqual(captured['props']['sourceStartFrame'], 0)
         self.assertEqual(captured['props']['signatureImageSrc'], 'signature.svg')
