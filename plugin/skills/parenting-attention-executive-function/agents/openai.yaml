@@ -1,0 +1,8 @@
+interface:
+  display_name: "הורות, קשב ותפקודים ניהוליים"
+  short_description: "בקרים, משימות, מעברים, התארגנות וויסות"
+  default_prompt: "הילד יודע מה צריך לעשות בבוקר אבל לא מצליח להתחיל. איך לעזור?"
+policy:
+  products:
+    - CHAT
+  allow_implicit_invocation: true
