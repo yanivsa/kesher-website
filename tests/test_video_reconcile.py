@@ -426,6 +426,41 @@ class VideoReconcileTests(unittest.TestCase):
         insert.assert_not_called()
 
 
+    def test_persisted_youtube_id_repairs_legacy_overview_kind_before_verification(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        item = pipeline.new_item(source)
+        item.update({
+            "type": "article_short",
+            "status": "uploading",
+            "technical_verified": True,
+            "youtube_id": "already-inserted",
+            "uploaded": False,
+            "visual_pipeline": "remotion-v1-notebooklm-audio",
+            "media": {"width": 1280, "height": 720},
+        })
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        verification = {
+            "channel_id": pipeline.YOUTUBE_CHANNEL_ID,
+            "privacy_status": "public",
+            "processing_status": "succeeded",
+        }
+        with mock.patch.object(pipeline, "youtube_access_token", return_value="token"), mock.patch.object(
+            pipeline, "verify_authenticated_channel"
+        ), mock.patch.object(
+            pipeline, "verify_public_upload", return_value=verification
+        ) as verify:
+            self.assertEqual(reconcile.prepare_upload(), 0)
+
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["type"], "video_overview")
+        self.assertEqual(saved["legacy_media_type_repaired_from"], "article_short")
+        self.assertTrue(saved["uploaded"])
+        self.assertEqual(saved["youtube_id"], "already-inserted")
+        verify.assert_called_once()
+
     def test_adopt_long_form_provider_seeds_short_without_new_generation_identity(self) -> None:
         today = post("today")
         self.write_posts([today])
