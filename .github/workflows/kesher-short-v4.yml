@@ -86,6 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
+      KESHER_MANUAL_EMERGENCY_BRIDGE: "true"
       KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-short-v4-state
       KESHER_STATE_ARTIFACT: kesher-short-v4-state
       NOTEBOOKLM_BIN: notebooklm

@@ -71,6 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
+      KESHER_MANUAL_EMERGENCY_BRIDGE: "true"
       KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state
       NOTEBOOKLM_BIN: notebooklm
       KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63

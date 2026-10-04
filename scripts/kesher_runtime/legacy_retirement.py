@@ -5,6 +5,7 @@ new code cannot retroactively protect them. Pure legacy reducers/readers remain
 available for tests and forensic replay, never for production execution.
 """
 import copy
+import os
 
 from .identity import digest, require_sha
 from .state import StateConflict, StateInvalid, timestamp, validate_state
@@ -119,6 +120,26 @@ def record_legacy_rejection(current, *, actor, epoch, proposed, before_sha,
 
 
 def retired_entrypoint():
+    """Fail closed except for the explicitly bounded manual recovery bridge.
+
+    The bridge exists only while the schema-6 handover is incomplete. It can
+    never authorize schedules, pull requests, another repository/ref, or an
+    arbitrary workflow. Provider/upload guards still enforce exact media
+    identity and duplicate prevention.
+    """
+    workflow_ref = os.environ.get('GITHUB_WORKFLOW_REF', '').split('@', 1)[0]
+    allowed_workflows = {
+        REPOSITORY + '/.github/workflows/kesher-daily-video.yml',
+        REPOSITORY + '/.github/workflows/kesher-short-v4.yml',
+    }
+    if (
+        os.environ.get('KESHER_MANUAL_EMERGENCY_BRIDGE') == 'true'
+        and os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch'
+        and os.environ.get('GITHUB_REPOSITORY') == REPOSITORY
+        and os.environ.get('GITHUB_REF') == 'refs/heads/main'
+        and workflow_ref in allowed_workflows
+    ):
+        return
     raise StateInvalid('LEGACY_ENTRYPOINT_RETIRED: use the admitted canonical command runtime')
 
 
