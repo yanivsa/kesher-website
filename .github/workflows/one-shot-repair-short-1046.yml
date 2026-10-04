@@ -25,4 +25,4 @@ jobs:
             --ref main \
             -f operation=rebuild \
             -f rebuild_item_id=video-20261003-221146-297757f9fa
-          echo "Dispatched exact rebuild for issue #1046"
+          echo "Dispatched exact rebuild for issue #1046 — frozen-source retry 2"
