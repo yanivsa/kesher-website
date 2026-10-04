@@ -1,0 +1,8 @@
+interface:
+  display_name: "הבנת דפוסי ריב בזוגיות"
+  short_description: "מיפוי דפוס חוזר ותכנון שיחה רגועה"
+  default_prompt: "תעזור לי להבין למה אנחנו חוזרים לאותו ריב שוב ושוב."
+policy:
+  products:
+    - CHAT
+  allow_implicit_invocation: true
