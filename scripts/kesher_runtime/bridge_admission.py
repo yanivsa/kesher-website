@@ -1,6 +1,7 @@
 """Read-only fail-closed admission before any emergency media credentials."""
 import os
 import sys
+import argparse
 
 from .github import GitHub
 from .handover_github import GitHubHandover
@@ -15,12 +16,22 @@ def require_bridge(state):
     require_legacy_writable(state)
 
 
-def main():
+def require_invocation(environ, *, dispatcher=False):
+    paths={'.github/workflows/kesher-targeted-media-recovery-dispatch.yml'} if dispatcher else {
+        '.github/workflows/kesher-daily-video.yml','.github/workflows/kesher-short-v4.yml','.github/workflows/deploy.yml'}
+    event='push' if dispatcher else 'workflow_dispatch'
+    if (environ.get('GITHUB_REPOSITORY')!=REPOSITORY or environ.get('GITHUB_REF')!='refs/heads/main'
+            or environ.get('GITHUB_EVENT_NAME')!=event or environ.get('GITHUB_WORKFLOW_REF') not in
+            {REPOSITORY+'/'+path+'@refs/heads/main' for path in paths}):
+        raise StateInvalid('LEGACY_BRIDGE_EXACT_INVOCATION_REQUIRED')
+
+
+def main(argv=None):
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--dispatcher',action='store_true')
+    args=parser.parse_args(argv)
     try:
-        if (os.environ.get('GITHUB_REPOSITORY') != REPOSITORY or
-                os.environ.get('GITHUB_REF') != 'refs/heads/main' or
-                os.environ.get('GITHUB_EVENT_NAME') != 'workflow_dispatch'):
-            raise StateInvalid('MANUAL_BRIDGE_MAIN_DISPATCH_REQUIRED')
+        require_invocation(os.environ,dispatcher=args.dispatcher)
         github = GitHub(os.environ.get('GH_TOKEN', ''))
         require_bridge(GitHubHandover(github, REPOSITORY, observer=None, fence=None).read_snapshot().state)
         print('MANUAL_BRIDGE_LEGACY_STATE_OBSERVED')

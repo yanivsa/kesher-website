@@ -21,7 +21,8 @@ CAPABILITIES = {'read', 'artifact_write', 'branch_write', 'pr_write', 'merge', '
                 'provider_create', 'provider_continue', 'capability_write', 'youtube_upload',
                 'youtube_metadata', 'cloudflare_write', 'image_provider_create', 'image_write', 'oci_write',
                 'exclusion_write'}
-ROLES = {'controller', 'worker', 'retired', 'diagnostic', 'separate_infrastructure', 'handover', 'emergency_bridge'}
+ROLES = {'controller', 'worker', 'retired', 'diagnostic', 'separate_infrastructure', 'handover', 'emergency_bridge',
+         'retiring_dispatcher'}
 ACTIVE_RUN_STATUSES = ('queued', 'in_progress', 'waiting', 'pending', 'requested')
 WORKFLOW_STATES = {'active', 'disabled_manually', 'disabled_inactivity', 'disabled_fork'}
 REGISTERED_SYSTEM_PATHS = {'dynamic/dependabot/dependabot-updates',
@@ -91,6 +92,14 @@ def check_definitions(definitions, rules):
             raise StateInvalid('AUTHORITY_CONTROLLER_NOT_CANONICAL')
         # PyYAML's YAML 1.1 loader reads the GitHub `on` key as True.
         events = data.get('on', data.get(True))
+        if role=='retiring_dispatcher':
+            expected={'push':{'branches':['main'],'paths':['.github/kesher-media-recovery-request.json',path]}}
+            if (path!='.github/workflows/kesher-targeted-media-recovery-dispatch.yml' or events!=expected
+                    or any(j.get('if')!="${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}" for j in jobs.values())
+                    or 'scripts.kesher_runtime.bridge_admission --dispatcher' not in text
+                    or set(entry['review']['dispatches'])!={'.github/workflows/kesher-daily-video.yml',
+                                                          '.github/workflows/kesher-short-v4.yml'}):
+                raise StateInvalid('AUTHORITY_RETIRING_DISPATCHER_NOT_EXACT')
         if role in {'handover','emergency_bridge'}:
             bound="${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}"
             if (not isinstance(events,dict) or set(events) != {'workflow_dispatch'}
@@ -309,7 +318,7 @@ def classify_registered(rows, rules, *, separation=None, binding=None, protected
         _review(entry)
         _dispatch_review(entry, rules)
         role = entry['role']
-        if role == 'emergency_bridge': role = 'retired'
+        if role in {'emergency_bridge','retiring_dispatcher'}: role = 'retired'
         needs_separation = role == 'separate_infrastructure'
         if needs_separation and not _separated(row, entry, separation, binding, protected_resources):
             role = 'retired'

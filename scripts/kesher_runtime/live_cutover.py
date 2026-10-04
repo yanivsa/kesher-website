@@ -82,7 +82,7 @@ def build_runtime(*, github, repo, root, epoch, owner, bindings, boundary,
     temporary=ExclusionFence(repo,epoch,owner,dict.fromkeys(bindings),bindings)
     targets={identity:path for path,identity in registered_bindings.items()
              if path in pinned.get('registrations',{}) or
-             pinned['workflows'][path]['role'] in {'retired','emergency_bridge'}}
+             pinned['workflows'][path]['role'] in {'retired','emergency_bridge','retiring_dispatcher'}}
     guarded=GuardedGitHub(github,repo=repo,policy=temporary._policy('github'),approval=review,boundary=boundary,
                          retirement_targets=targets)
     reader=GitHubAuthorityObserver(guarded,repo,root,fence=None)

@@ -121,6 +121,18 @@ class ProductionCutoverTests(unittest.TestCase):
         for state in ({'schema_version':6}, {'schema_version':5, 'github_exclusion':{'epoch':'one'}}):
             with self.assertRaises(StateInvalid): require_bridge(state)
 
+    def test_dispatcher_admission_mode_cannot_widen_manual_bridge_admission(self):
+        from scripts.kesher_runtime.bridge_admission import require_invocation
+        from scripts.kesher_runtime.worker_entry import REPOSITORY
+        path='.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
+        env={'GITHUB_REPOSITORY':REPOSITORY,'GITHUB_REF':'refs/heads/main','GITHUB_EVENT_NAME':'push',
+             'GITHUB_WORKFLOW_REF':REPOSITORY+'/'+path+'@refs/heads/main'}
+        require_invocation(env,dispatcher=True)
+        with self.assertRaises(StateInvalid):require_invocation(env)
+        for change in ({'GITHUB_EVENT_NAME':'workflow_dispatch'},{'GITHUB_REF':'refs/heads/other'},
+                       {'GITHUB_WORKFLOW_REF':REPOSITORY+'/.github/workflows/kesher-short-v4.yml@refs/heads/main'}):
+            with self.subTest(change=change),self.assertRaises(StateInvalid):require_invocation(env|change,dispatcher=True)
+
     def test_current_111_registration_inventory_is_complete_and_exact(self):
         from scripts.kesher_runtime.production_cutover import reconcile_registrations
         from scripts.kesher_runtime.authority_topology import policy
@@ -129,6 +141,7 @@ class ProductionCutoverTests(unittest.TestCase):
         # The new cutover workflow is registered only after merge. Its independent
         # registration binding is a prerequisite, never a guessed service ID.
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
+        del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         rows = reconcile_registrations(evidence['workflows'], rules)
         self.assertEqual(len(rows), 111)
         self.assertEqual(len(rules['registrations']), 39)
@@ -148,6 +161,26 @@ class ProductionCutoverTests(unittest.TestCase):
             import hashlib
             changed_rules['workflows'][path]['definition_sha256'] = hashlib.sha256(changed[path].encode()).hexdigest()
             with self.subTest(path=path), self.assertRaises(StateInvalid): check_definitions(changed, changed_rules)
+
+    def test_late_main_dispatcher_is_pinned_guarded_retired_and_registration_complete(self):
+        from scripts.kesher_runtime.production_cutover import reconcile_registrations
+        from scripts.kesher_runtime.authority_topology import policy,check_definitions,classify_registered
+        import hashlib
+        rules=policy(ROOT);del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
+        rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-final-20261004.json').read_text())['workflows']
+        self.assertEqual(len(reconcile_registrations(rows,rules)),112)
+        path='.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
+        row=next(r for r in rows if r['path']==path)
+        self.assertEqual(row['id'],374765037)
+        self.assertEqual(classify_registered([row],rules)[0]['role'],'retired')
+        text=(ROOT/path).read_text()
+        self.assertLess(text.index('bridge_admission --dispatcher'),text.index('Resolve exact enabled recovery target'))
+        definitions={p:(ROOT/p).read_text() for p in rules['workflows']}
+        for changed in [text.replace('  push:','  workflow_dispatch:',1),text.replace("branches: [main]","branches: ['other']",1),
+                        text.replace('bridge_admission --dispatcher','bridge_admission')]:
+            changed_rules=copy.deepcopy(rules)
+            changed_rules['workflows'][path]['definition_sha256']=hashlib.sha256(changed.encode()).hexdigest()
+            with self.assertRaises(StateInvalid):check_definitions(definitions|{path:changed},changed_rules)
 
 
 class CredentialGatewayTests(unittest.TestCase):
@@ -515,6 +548,7 @@ class CredentialGatewayTests(unittest.TestCase):
         from tests.test_kesher_external_exclusion import ProtectedService
         rules=policy(ROOT)
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
+        del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         evidence=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
         fence,_=protection_fixture(); raw=EpochGit(); guard=ProtectedService('github')
         adapter=GitHubResourceExclusion(raw,'owner/repo',main_sha='b'*40,policy=fence._policy('github'),

@@ -4,7 +4,8 @@
 credential revocation, automation-state write, handover, generation, upload,
 deployment or production dispatch was performed in this implementation task.
 
-Base main: `5fc62bce0df27a3ff02ab81d8ce156a23da355ab`. Branch:
+Initial exact base: `5fc62bce0df27a3ff02ab81d8ce156a23da355ab`. Final reconciled
+main: `9947d0c67a86caa047d3c91d6bf33d9b1b68f0f2`. Branch:
 `codex/schema6-production-cutover`. The implementation is reviewable in a Draft
 PR; live cutover remains **BLOCKED** until the prerequisites below are actually
 implemented and independently proven at the protected services. Supplying a
@@ -52,9 +53,10 @@ the service; a native direct-write-denial boundary is a separate prerequisite.
 
 One invocation performs one resource bootstrap step, one Actions effect with
 durable surrounding journal writes, or one Coordinator transition. It first
-inspects all six resources and infrastructure separation. Partial exclusion,
-unknown sessions, competing ownership or missing observers stops before any
-effect. It never generates an article/image/video, uploads or deploys content,
+inspects all six resources and infrastructure separation. Missing/unobservable
+resources, competing ownership or invalid separation stop bootstrap effects.
+Partial exclusion remains RESOURCE_PENDING and denies Coordinator/handover and
+canonical effects; surviving sessions prevent quiescence. It never generates an article/image/video, uploads or deploys content,
 infers public completion or activates the controller.
 
 ## Service feasibility and exact remaining prerequisites
@@ -64,7 +66,7 @@ infers public completion or activates the controller.
 | github | AUTOMATED exact registration inventory, native Git CAS, Actions intent/drain, endpoint authorization and restart readback; HUMAN_PREREQUISITE native grant boundary | For `yanivsa/kesher-website`, repository ID `1239881973`, node ID `R_kgDOSecY9Q`: owner-admin complete PAT/OAuth/App/SSH/deploy-key and old workflow-token inventory/retirement, independently enforced denial of direct state/Actions mutation, and isolated gateway App admission. Repository is personal-owned; organization-only PAT administration cannot prove its complete personal grant inventory. |
 | jules | HUMAN_PREREQUISITE; unavailable production port refuses | Administrator retires predecessor API keys and repository grants; independently settles every existing session and proves none retains write authority. Install a canonical command gateway and native inventory/epoch/default-deny/readback observer. Deleting a session is not evidence that an already-running operation stopped. |
 | notebooklm | HUMAN_PREREQUISITE; unavailable production port refuses | Exact consumer notebook is `e101e7d7-5305-45b3-a611-21a5475ceb63`. Account administrator invalidates predecessor cookies, master tokens and sessions, settles running work and proves the canonical gateway boundary. Enterprise IAM APIs cannot certify this consumer notebook. Missing consumer readback remains BLOCKED. |
-| youtube | HUMAN_PREREQUISITE; unavailable production port refuses | Independently bind the exact channel, inventory all predecessor OAuth grants and already-issued resumable capabilities, retire/settle them with native readback. Place distinct canonical credentials from a separate OAuth project behind the command gate; legacy definitions must not inherit them. A refresh-token revoke alone cannot certify outstanding upload capabilities or complete all grants. |
+| youtube | HUMAN_PREREQUISITE; unavailable production port refuses | Independently verify exact channel `UCx5fEFvdVf28HLAR2dFW64Q`, inventory all predecessor OAuth grants and already-issued resumable capabilities, retire/settle them with native readback. Place distinct canonical credentials from a separate OAuth project behind the command gate; legacy definitions must not inherit them. A refresh-token revoke alone cannot certify outstanding upload capabilities or complete all grants. |
 | cloudflare | HUMAN_PREREQUISITE; unavailable production port refuses | Independently bind exact account and Pages project. Account owner inventories members/global keys/user and account API tokens/Pages integrations, revokes predecessor authority, settles deployments and proves isolated canonical scopes/native denial readback. User-token list/delete/verify alone cannot enumerate every other member/integration/global key. |
 | image_provider | HUMAN_PREREQUISITE; unavailable production port refuses | Identify every actual provider/project, retire predecessor keys, sessions and issued bearer capabilities, settle generation operations and establish native scoped canonical admission/readback. Deleting a Google service-account key does not invalidate already-issued short-lived tokens. Unknown provider or actor is BLOCKED. |
 
@@ -91,15 +93,17 @@ Primary API references supporting these limits:
 
 ## GitHub registrations, infrastructure and the manual bridges
 
-The sanitized baseline contains all **111** exact service registrations: 72
-current definitions and 39 retained registrations without current YAML. All 72
-existing IDs are pinned. Unknown, missing, duplicate or rebound registrations
-refuse. The new cutover workflow brings the expected post-merge inventory to
-112; its actual newly assigned ID MUST be independently read and approved,
+The original sanitized baseline contains all **111** exact service registrations:
+72 definitions and 39 retained registrations without current YAML. Late main
+added targeted recovery dispatcher ID **374765037**; the final read-only baseline
+now has **112**, with all 73 existing definition IDs pinned. Unknown, missing,
+duplicate or rebound registrations refuse. The new cutover workflow brings the
+expected post-merge inventory to **113**; its newly assigned ID MUST be independently read and approved,
 never guessed. This cannot be completed before the workflow exists on main.
 
 Retirement targets are 36 retired definitions, three bounded manual bridges and
-all 39 retained registrations: **78** exact IDs. Two retained system paths are
+all 39 retained registrations, plus the one late-main retiring dispatcher:
+**79** exact IDs. Two retained system paths are
 `dynamic/dependabot/dependabot-updates` (294204178) and
 `dynamic/dependabot/update-graph` (320961763); both support active/terminal exact
 attempt handling. Arbitrary dynamic paths remain refused. The five canonical
@@ -112,13 +116,14 @@ run/attempt receipts and requires terminal conclusion readback. Lost cancel
 intent is never replayed. Disable reconciliation remains narrowly bounded and
 requires fresh desired-state observation. Re-enable, new registration and new
 attempt races refuse. Two fresh complete inventories recertify all 78 proved
-targets as a batch: 18 global GETs in the two-page 111-registration fixture,
+targets as a batch: 18 global GETs in the 78-target/two-page 111-registration regression fixture,
 instead of 18 per target. Every known terminal attempt is still reread, every
 GET retains fresh epoch checks, and no read is cached across invocations.
 Real rate limits, pages and terminal history can add requests; exhaustion or
 timeout stops safely and must be read back before a new invocation.
 
-All 19 separate infrastructure definitions remain unchanged. Their actual
+All 19 infrastructure roles and service behavior remain preserved; CI adds the
+affected cutover safety suites. Their actual
 resource, credential class and service scope must be independently separated
 from ALL six protected resource IDs, exact repo/policy/code/definition/review.
 Callbacks cannot select their own trust roots. CI writes statuses in the same
@@ -139,6 +144,17 @@ exclusion starts, it is unavailable; all three are disabled and drained before
 VERIFIED. A legacy checkout that omits this check still requires native service
 credential exclusion; the YAML guard is not a fence.
 
+The three late-main commits through 9947d0c6 were independently reviewed and
+reconciled once: exact Video Overview mode/test, Hebrew `he`/`iw` alias/test,
+exact enabled jealousy recovery request, and its new dispatcher. That dispatcher
+retains its original push/main trigger on exactly the two reviewed recovery
+request/workflow paths, current-day/exact-one-article check and two unchanged
+child dispatch operations. A distinct `--dispatcher` admission mode is bound
+to its exact workflow ref and push event; it cannot widen the manual bridge
+mode. Its `retiring_dispatcher` role maps to retired authority and the same
+gateway ID/path retirement allowlist, so it cannot survive VERIFIED. There is
+still only one canonical controller, and it remains inert.
+
 ## Post-merge sequence — conditional, separately authorized, NOT executed
 
 1. Merge only after human code review. Read current main again. If it differs
@@ -147,7 +163,7 @@ credential exclusion; the YAML guard is not a fence.
    as a future deployment SHA or rely on the Draft PR branch as production code.
 
 2. Collect complete read-only registration evidence and independently bind the
-   newly registered cutover ID. Review the exact 112 expected ID/path bindings:
+   newly registered cutover ID. Review the exact 113 expected ID/path bindings:
 
    ```sh
    git fetch origin main

@@ -351,7 +351,7 @@ class GitHubResourceExclusion:
                         or context.get('binding')!=binding or context.get('protected_resources')!=resources
                         or not _separated(row,entry,context.get('proofs'),binding,resources)):
                     raise StateInvalid('CUTOVER_INFRASTRUCTURE_BOUNDARY_MISSING:'+row['path'])
-            elif entry['role'] in {'retired','emergency_bridge'}: targets.append(row)
+            elif entry['role'] in {'retired','emergency_bridge','retiring_dispatcher'}: targets.append(row)
         return targets
 
     def _guard(self):

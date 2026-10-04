@@ -26,6 +26,11 @@ jobs:
           ref: main
           persist-credentials: false
 
+      - name: Refuse dispatcher after cutover exclusion begins
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission --dispatcher
+
       - name: Resolve exact enabled recovery target
         id: target
         run: |
