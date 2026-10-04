@@ -1,6 +1,6 @@
 ---
 name: calm-conversation-plan
-description: Use when a user wants to prepare a difficult but non-emergency conversation with a partner or co-parent, especially for recurring arguments, shutdown, defensiveness, money, chores, family boundaries, intimacy, or parenting disagreements. Trigger on Hebrew or English requests for a script, opening sentence, conversation plan, or way to talk without escalating. Do not use when there is immediate danger, coercion, or a request for manipulation.
+description: Use when a user wants to prepare a difficult but non-emergency conversation with a partner or co-parent, especially for recurring arguments, shutdown, defensiveness, money, chores, family boundaries, or parenting disagreements. Trigger on Hebrew or English requests for a script, opening sentence, conversation plan, or way to talk without escalating. Do not use when there is immediate danger, coercion, or a request for manipulation.
 ---
 
 # Build a calmer conversation plan
