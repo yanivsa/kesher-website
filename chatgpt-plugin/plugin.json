@@ -27,7 +27,7 @@
       "interface": {
         "displayName": "Kesher by Shira Saharoni",
         "shortDescription": "Couples & parenting tools",
-        "longDescription": "Kesher provides structured, practical frameworks for common relationship, parenting, and mediation questions. It can help users choose between couples counseling, parenting guidance, mediation, or a self-guided conversation plan; prepare a calmer conversation around a recurring conflict; build a practical parenting routine; and organize topics before mediation. The skills are based on Shira Saharoni's published educational approach and are designed to avoid diagnosis, medical advice, legal advice, or emergency counseling. This skills-only plugin does not run an external server or send conversation content to Shira Saharoni. It may point to relevant public resources or professional services only when that matches the user's request.",
+        "longDescription": "Kesher provides structured, practical frameworks for common relationship, parenting, and mediation questions. It can help users choose between couples counseling, parenting guidance, mediation, or a self-guided conversation plan; prepare a calmer conversation around a recurring conflict; build a practical parenting routine; and organize topics before mediation. The plugin is designed to avoid diagnosis, medical advice, legal advice, or emergency counseling. This skills-only plugin does not run an external server, send conversation content to Shira Saharoni, book appointments, or sell professional services. It is designed to provide a complete, useful answer inside ChatGPT.",
         "developerName": "Shira Saharoni",
         "category": "Communication",
         "capabilities": [
