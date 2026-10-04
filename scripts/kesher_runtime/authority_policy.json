@@ -203,6 +203,30 @@
       "observed_state": "active",
       "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
     },
+    ".github/workflows/kesher-mcp-lockfile.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "09855e66b602b6aca8a9057989c5ba2b67e97615",
+      "id": 372990558,
+      "observed_state": "active",
+      "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
+    },
+    ".github/workflows/kesher-mcp-pages-preview.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "09855e66b602b6aca8a9057989c5ba2b67e97615",
+      "id": 373002721,
+      "observed_state": "active",
+      "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
+    },
+    ".github/workflows/kesher-mcp-staging.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "09855e66b602b6aca8a9057989c5ba2b67e97615",
+      "id": 372989693,
+      "observed_state": "active",
+      "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
+    },
     ".github/workflows/kesher-notebooklm-auth-recover-short.yml": {
       "definition_present": false,
       "disposition": "unresolved",
@@ -216,6 +240,14 @@
       "disposition": "unresolved",
       "evidence_main_sha": "89b4c190626fd204ed7d61c4c5e0db8ed039ff04",
       "id": 354752850,
+      "observed_state": "active",
+      "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
+    },
+    ".github/workflows/kesher-plugin-contracts.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "09855e66b602b6aca8a9057989c5ba2b67e97615",
+      "id": 372985940,
       "observed_state": "active",
       "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
     },
@@ -304,6 +336,22 @@
       "disposition": "unresolved",
       "evidence_main_sha": "89b4c190626fd204ed7d61c4c5e0db8ed039ff04",
       "id": 358727842,
+      "observed_state": "active",
+      "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
+    },
+    ".github/workflows/temp-hebrew-sleep-rewrite-retry.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "09855e66b602b6aca8a9057989c5ba2b67e97615",
+      "id": 374196758,
+      "observed_state": "active",
+      "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
+    },
+    ".github/workflows/temp-hebrew-sleep-rewrite.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "09855e66b602b6aca8a9057989c5ba2b67e97615",
+      "id": 374196299,
       "observed_state": "active",
       "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
     },
