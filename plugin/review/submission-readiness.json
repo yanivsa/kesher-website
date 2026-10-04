@@ -1,0 +1,95 @@
+{
+  "schema_version": "2.2",
+  "checked_at": "2026-10-03",
+  "public_submission_ready": false,
+  "completed": [
+    "V2 clean branch synchronized with current main before final QA",
+    "Five bounded read-only MCP tools implemented",
+    "Three scoped Hebrew Skills implemented",
+    "220-prompt Hebrew golden evaluation set",
+    "15-prompt Developer Mode canary set",
+    "30 multi-turn and boundary evaluation cases",
+    "109-resource bounded Kesher index: 106 canonical articles plus 3 explicit service pages",
+    "Strict additionalProperties=false runtime schemas with parameter descriptions",
+    "Server-side rejection of unexpected/private fields",
+    "Unknown age-band support to avoid guessing or collecting exact child age",
+    "No custom per-tool logging, preserving readOnlyHint=true",
+    "Cloudflare infrastructure observability, staging rate limiter, and isolated V2 Worker configured",
+    "Remote staging smoke coverage for all five tools, strict schemas, private-field rejection, article lookup and service-page lookup",
+    "Hebrew discovery metadata for couples, parenting and attention/executive-function support",
+    "Portable Agent Plugin package with logo, support, privacy and terms metadata",
+    "Five positive and three negative OpenAI review test cases",
+    "ChatGPT landing page and attribution implementation",
+    "V2 privacy and terms disclosures implemented",
+    "V2 branch synchronized with main SHA 715fcc7cf5c37847591b0e01ded0fdedfb314f0f before final QA"
+  ],
+  "staging": {
+    "endpoint": "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp",
+    "status": "must_remain_green_on_current_pr_head",
+    "evidence": "Use the Kesher MCP Staging Deploy check attached to the current PR head; run IDs are intentionally not frozen in this file."
+  },
+  "release_gates": {
+    "technical_pr_checks": [
+      "CI",
+      "Kesher Stability PR Validation",
+      "Kesher Plugin Contract Validation",
+      "Kesher MCP Staging Deploy"
+    ],
+    "developer_mode": {
+      "status": "pending",
+      "requirement": "Connect staging as a Personal Plugin, run the 15-prompt canary, then 220 single-turn prompts and 30 multi-turn/boundary cases."
+    },
+    "evaluation_thresholds": {
+      "precision_min": 0.92,
+      "negative_false_positives": 0,
+      "couples_recall_min": 0.8,
+      "parenting_recall_min": 0.8,
+      "parenting_adhd_recall_min": 0.75,
+      "wrong_tool_rate_max": 0.05
+    }
+  },
+  "gates": [
+    {
+      "id": "developer_mode_evaluation",
+      "status": "pending",
+      "requirement": "Real ChatGPT Developer Mode / Work tool-selection results must meet the V2 evaluation thresholds."
+    },
+    {
+      "id": "site_landing",
+      "status": "implemented_pending_deploy",
+      "requirement": "Deploy /tools/chatgpt with safe UTM attribution and analytics before public submission."
+    },
+    {
+      "id": "privacy_and_terms",
+      "status": "implemented_pending_deploy",
+      "requirement": "Deploy V2 /privacy and /terms disclosures before public submission."
+    },
+    {
+      "id": "production_mcp_endpoint",
+      "status": "blocked",
+      "requirement": "Replace workers.dev staging with a stable production HTTPS MCP endpoint before public review."
+    },
+    {
+      "id": "demo_recording",
+      "status": "pending",
+      "requirement": "Create the review/demo recording after production endpoint and Developer Mode behavior are final."
+    },
+    {
+      "id": "domain_verification",
+      "status": "pending",
+      "requirement": "Complete the OpenAI domain-verification challenge for the production MCP domain during submission."
+    },
+    {
+      "id": "publisher_verification",
+      "status": "unknown",
+      "requirement": "Confirm publisher identity / business verification for the OpenAI organization used for submission."
+    },
+    {
+      "id": "submission_permissions",
+      "status": "unknown",
+      "requirement": "Confirm the OpenAI Apps Management permissions required to submit and publish the plugin."
+    }
+  ],
+  "baseline_main_sha": "715fcc7cf5c37847591b0e01ded0fdedfb314f0f",
+  "qa_state": "technical_validation_running_on_current_main_and_isolated_v2_staging"
+}
