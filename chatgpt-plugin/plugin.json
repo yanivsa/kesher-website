@@ -51,8 +51,14 @@
         "logo": "./assets/icon.svg"
       },
       "publication": {
-        "countries": ["IL"],
+        "countries": [
+          "IL"
+        ],
         "release_notes": "Initial skills-only release for relationship communication, parenting routines, mediation preparation, and support-path guidance."
+      },
+      "review": {
+        "commerce": false,
+        "commerce_description": "This skills-only plugin does not sell, book, advertise, or process payment for goods or professional services."
       }
     }
   }
