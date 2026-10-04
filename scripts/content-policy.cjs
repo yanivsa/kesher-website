@@ -21,6 +21,7 @@ const STATIC_ROUTES = [
   '/services/finding-relationship',
   '/blog',
   '/faq',
+  '/tools/chatgpt',
   '/couples-counseling-ashdod',
   '/parenting-guidance-ashdod',
   '/couples-mediation-ashdod',
