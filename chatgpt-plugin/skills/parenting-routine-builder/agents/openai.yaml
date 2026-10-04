@@ -1,8 +1,0 @@
-interface:
-  display_name: "Build a parenting routine"
-  short_description: "Turn repeated friction into a simple routine"
-  default_prompt: "Help me build a calmer routine for a recurring parenting challenge."
-policy:
-  products:
-    - CHAT
-  allow_implicit_invocation: true
