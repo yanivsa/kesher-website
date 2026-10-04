@@ -75,7 +75,7 @@ describe('ArticleShortGeometry', () => {
   });
 
   it('preserves native portrait source sharpness without upscale or rotation', () => {
-    const { getByTestId } = render(
+    const { container } = render(
       React.createElement(ArticleShort, {
         videoSrc: "test.mp4",
         sourceStartFrame: 0,
@@ -95,9 +95,10 @@ describe('ArticleShortGeometry', () => {
       })
     );
 
-    const video = getByTestId('remotion-video') as HTMLVideoElement;
-    expect(video.style.transform).toContain('scale(1)');
-    expect(video.style.transform).toContain('rotate(0deg)');
+    const video = container.querySelector('[data-testid="remotion-video"]') as HTMLVideoElement | null;
+    expect(video).not.toBeNull();
+    expect(video?.style.transform).toContain('scale(1)');
+    expect(video?.style.transform).toContain('rotate(0deg)');
   });
 
   it('bounds effective zoom so it does not compound incorrectly', () => {
