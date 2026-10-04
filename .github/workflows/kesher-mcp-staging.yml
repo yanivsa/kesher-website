@@ -24,6 +24,9 @@ jobs:
           node-version: 22
       - name: Install MCP Worker dependencies
         run: npm ci --prefix plugin --no-audit --no-fund
+      - name: Generate current Kesher resource index
+        run: node scripts/generate-plugin-resources.mjs
+
       - name: Run MCP Worker validation
         run: npm --prefix plugin run check
       - name: Deploy Kesher MCP staging Worker
