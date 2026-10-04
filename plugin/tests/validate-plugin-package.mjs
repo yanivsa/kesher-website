@@ -2,6 +2,7 @@ import fs from "node:fs";import path from "node:path";
 const root=path.resolve(new URL("..",import.meta.url).pathname),repoRoot=path.resolve(root,"..");
 const readJson=p=>JSON.parse(fs.readFileSync(p,"utf8"));const fail=m=>{console.error("FAIL:",m);process.exitCode=1;};
 const manifest=readJson(path.join(root,"plugin.json")),mcp=readJson(path.join(root,"mcp.json")),marketplace=readJson(path.join(repoRoot,".agents/plugins/marketplace.json"));
+if(fs.existsSync(path.join(repoRoot,"chatgpt-plugin")))fail("legacy chatgpt-plugin package must not coexist with canonical V2 plugin");
 if(manifest.$schema!=="https://agent-plugins.org/schemas/1.0.0/plugin.schema.json")fail("plugin schema");
 if(manifest.version!=="0.2.0")fail("expected V2 manifest version 0.2.0");
 if(manifest.name!=="kesher-hebrew-relationship-parenting-tools")fail("unexpected V2 plugin name");
