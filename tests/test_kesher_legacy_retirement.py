@@ -50,6 +50,19 @@ class LegacyRetirementTests(unittest.TestCase):
                 with self.assertRaises(StateInvalid):
                     retired_entrypoint()
 
+
+    def test_manual_bridge_legacy_media_mutation_returns_without_canonical_context(self):
+        from scripts.kesher_runtime.legacy_retirement import media_mutation
+        env = {
+            'KESHER_MANUAL_EMERGENCY_BRIDGE': 'true',
+            'GITHUB_EVENT_NAME': 'workflow_dispatch',
+            'GITHUB_REPOSITORY': 'yanivsa/kesher-website',
+            'GITHUB_REF': 'refs/heads/main',
+            'GITHUB_WORKFLOW_REF': 'yanivsa/kesher-website/.github/workflows/kesher-daily-video.yml@refs/heads/main',
+        }
+        with patch.dict('os.environ', env, clear=True):
+            self.assertIsNone(media_mutation({'version': 1, 'items': []}))
+
     def test_every_durable_phase_fences_legacy_state_writes(self):
         case=fixtures.HandoverTests();case.setUp()
         require_legacy_writable(case.backend.document)
