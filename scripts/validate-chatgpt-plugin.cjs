@@ -2,183 +2,92 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const PLUGIN_ROOT = path.join(ROOT, 'chatgpt-plugin');
-const MANIFEST_PATH = path.join(PLUGIN_ROOT, 'plugin.json');
+const PLUGIN_ROOT = path.join(ROOT, 'plugin');
+const LEGACY_ROOT = path.join(ROOT, 'chatgpt-plugin');
 const errors = [];
-
 const fail = (message) => errors.push(message);
 const read = (file) => fs.readFileSync(file, 'utf8');
+const readJson = (file) => JSON.parse(read(file));
 
-if (!fs.existsSync(MANIFEST_PATH)) {
-  fail('Missing chatgpt-plugin/plugin.json');
-} else {
-  let manifest;
-  try {
-    manifest = JSON.parse(read(MANIFEST_PATH));
-  } catch (error) {
-    fail(`Invalid plugin.json: ${error.message}`);
-  }
+if (fs.existsSync(LEGACY_ROOT)) fail('Legacy chatgpt-plugin/ package must be removed; plugin/ is the only canonical package.');
 
-  if (manifest) {
-    if (manifest.$schema !== 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json') {
-      fail('Unexpected Agent Plugins schema URL');
+const manifestPath = path.join(PLUGIN_ROOT, 'plugin.json');
+const mcpPath = path.join(PLUGIN_ROOT, 'mcp.json');
+const contractPath = path.join(PLUGIN_ROOT, 'contracts', 'mcp-tools.v2.json');
+for (const file of [manifestPath, mcpPath, contractPath]) {
+  if (!fs.existsSync(file)) fail(`Missing canonical V2 file: ${path.relative(ROOT, file)}`);
+}
+
+let manifest, mcp, contracts;
+try { manifest = readJson(manifestPath); } catch (error) { fail(`Invalid plugin.json: ${error.message}`); }
+try { mcp = readJson(mcpPath); } catch (error) { fail(`Invalid mcp.json: ${error.message}`); }
+try { contracts = readJson(contractPath); } catch (error) { fail(`Invalid V2 contract: ${error.message}`); }
+
+if (manifest) {
+  if (manifest.$schema !== 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json') fail('Unexpected Agent Plugins schema URL');
+  if (manifest.name !== 'kesher-hebrew-relationship-parenting-tools') fail('Unexpected V2 plugin name');
+  if (manifest.version !== '0.2.0') fail('Expected V2 plugin version 0.2.0');
+  const ui = manifest.extensions?.['com.openai']?.interface;
+  if (!ui) fail('Missing extensions.com.openai.interface');
+  if (ui) {
+    if (!/זוגיות/.test(ui.displayName || '') || !/הורים|הורות/.test(ui.displayName || '')) fail('Display name must cover couples and parenting');
+    if (!/ADHD|קשב/.test(ui.longDescription || '')) fail('Long description must cover attention/ADHD parenting scope');
+    for (const field of ['websiteURL', 'supportURL', 'privacyPolicyURL', 'termsOfServiceURL']) {
+      try {
+        const url = new URL(ui[field]);
+        if (url.protocol !== 'https:') fail(`${field} must use HTTPS`);
+      } catch { fail(`${field} must be a valid URL`); }
     }
-    if (!/^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$/.test(manifest.name || '')) {
-      fail('Plugin name must match public submission naming rules');
-    }
-    if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(manifest.version || '')) {
-      fail('Plugin version must be semantic versioning');
-    }
-    if (manifest.skills !== './skills/') fail('Plugin must declare ./skills/');
-    if (manifest.mcpServers || manifest.apps) fail('Skills-only package must not declare MCP/apps');
-
-    const openai = manifest.extensions?.['com.openai'];
-    const ui = openai?.interface;
-    if (!ui) fail('Missing extensions.com.openai.interface');
-
-    if (ui) {
-      const max = (label, value, limit) => {
-        if (typeof value !== 'string' || !value.trim()) fail(`${label} is required`);
-        else if (value.length > limit) fail(`${label} exceeds ${limit} characters`);
-        if (typeof value === 'string' && /[\r\n]/.test(value) && label !== 'longDescription') {
-          fail(`${label} must be one line`);
-        }
-      };
-
-      max('displayName', ui.displayName, 30);
-      max('shortDescription', ui.shortDescription, 30);
-      max('longDescription', ui.longDescription, 4000);
-      max('developerName', ui.developerName, 80);
-
-      const categories = new Set([
-        'Productivity', 'Creativity', 'Developer Tools', 'Business & Operations',
-        'Data & Analytics', 'Communication', 'Education & Research', 'Security',
-        'Finance', 'Healthcare', 'Travel', 'Entertainment', 'Other',
-      ]);
-      if (!categories.has(ui.category)) fail(`Unsupported category: ${ui.category}`);
-
-      if (!Array.isArray(ui.capabilities) || ui.capabilities.length > 20) {
-        fail('capabilities must be an array with at most 20 entries');
-      } else {
-        ui.capabilities.forEach((item, index) => {
-          if (typeof item !== 'string' || !item.trim() || item.length > 120 || /[\r\n]/.test(item)) {
-            fail(`Invalid capability at index ${index}`);
-          }
-        });
-      }
-
-      if (!Array.isArray(ui.defaultPrompt) || ui.defaultPrompt.length < 1 || ui.defaultPrompt.length > 3) {
-        fail('defaultPrompt must contain 1-3 prompts');
-      } else {
-        const normalized = new Set();
-        ui.defaultPrompt.forEach((prompt, index) => {
-          if (typeof prompt !== 'string' || !prompt.trim() || prompt.length > 128 || /[\r\n]/.test(prompt)) {
-            fail(`Invalid starter prompt at index ${index}`);
-          }
-          if (prompt.includes('@')) fail(`Starter prompt ${index} must not contain @mentions`);
-          const key = prompt.normalize('NFKC').replace(/\s+/g, ' ').trim();
-          if (normalized.has(key)) fail(`Duplicate starter prompt at index ${index}`);
-          normalized.add(key);
-        });
-      }
-
-      for (const field of ['websiteURL', 'supportURL', 'privacyPolicyURL', 'termsOfServiceURL']) {
-        const value = ui[field];
-        try {
-          const url = new URL(value);
-          if (url.protocol !== 'https:' || !url.hostname) fail(`${field} must be an HTTPS URL`);
-          if (value.length > 1024) fail(`${field} exceeds 1024 characters`);
-        } catch {
-          fail(`${field} must be a valid URL`);
-        }
-      }
-
-      for (const field of ['logo', 'composerIcon']) {
-        const rel = ui[field];
-        if (typeof rel !== 'string' || !rel.startsWith('./')) {
-          fail(`${field} must use a ./-prefixed package path`);
-          continue;
-        }
-        const abs = path.resolve(PLUGIN_ROOT, rel);
-        if (!abs.startsWith(PLUGIN_ROOT + path.sep) || !fs.existsSync(abs)) {
-          fail(`${field} does not resolve to an included asset`);
-          continue;
-        }
-        if (path.extname(abs).toLowerCase() === '.svg') {
-          const svg = read(abs);
-          const match = svg.match(/viewBox=["']\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*["']/i);
-          if (!match) fail(`${field} SVG needs a numeric viewBox`);
-          else {
-            const width = Number(match[3]);
-            const height = Number(match[4]);
-            if (width !== height || width < 48) fail(`${field} SVG must be square and at least 48x48`);
-          }
-        }
-      }
-    }
-
-    if (openai?.review?.commerce !== false) {
-      fail('Public skills-only plugin must explicitly declare commerce=false');
-    }
-    if (!Array.isArray(openai?.publication?.countries) || !openai.publication.countries.includes('IL')) {
-      fail('Publication countries must include IL');
+    for (const field of ['logo', 'composerIcon']) {
+      const rel = ui[field];
+      if (typeof rel !== 'string' || !rel.startsWith('./')) fail(`${field} must use a package-relative path`);
+      else if (!fs.existsSync(path.resolve(PLUGIN_ROOT, rel))) fail(`${field} asset missing`);
     }
   }
 }
 
-for (const forbidden of ['mcp.json', '.mcp.json', '.app.json']) {
-  if (fs.existsSync(path.join(PLUGIN_ROOT, forbidden))) fail(`Skills-only package must not include ${forbidden}`);
+if (mcp) {
+  const servers = mcp.mcpServers || {};
+  if (Object.keys(servers).length !== 1 || !servers.kesher) fail('Exactly one kesher MCP server is required');
+  if (servers.kesher?.type !== 'streamable-http') fail('Kesher MCP must use streamable-http');
+  if (servers.kesher?.url !== 'https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp') fail('Unexpected V2 staging MCP URL');
+}
+
+if (contracts) {
+  const expected = new Set(['get_conflict_pattern','get_conversation_plan','get_parenting_response_plan','get_adhd_parenting_plan','find_kesher_resource']);
+  const tools = contracts.tools || [];
+  if (tools.length !== 5 || tools.some((tool) => !expected.has(tool.name))) fail('V2 contract must expose exactly the five approved tools');
+  for (const tool of tools) {
+    if (tool.annotations?.readOnlyHint !== true || tool.annotations?.destructiveHint !== false) fail(`${tool.name}: invalid read-only annotations`);
+    if (tool.inputSchema?.additionalProperties !== false) fail(`${tool.name}: input schema must reject extra fields`);
+  }
 }
 
 const skillsRoot = path.join(PLUGIN_ROOT, 'skills');
-if (!fs.existsSync(skillsRoot)) {
-  fail('Missing skills directory');
-} else {
-  const dirs = fs.readdirSync(skillsRoot, { withFileTypes: true }).filter((entry) => entry.isDirectory());
-  if (dirs.length < 1) fail('Skills-only package must contain at least one skill');
-
-  const pluginName = fs.existsSync(MANIFEST_PATH) ? JSON.parse(read(MANIFEST_PATH)).name : '';
-  for (const dir of dirs) {
-    if (dir.name.startsWith('.')) fail(`Hidden skill directory is not allowed: ${dir.name}`);
-    const skillPath = path.join(skillsRoot, dir.name, 'SKILL.md');
-    const agentPath = path.join(skillsRoot, dir.name, 'agents', 'openai.yaml');
-    if (!fs.existsSync(skillPath)) {
-      fail(`Missing SKILL.md for ${dir.name}`);
-      continue;
-    }
-    const skill = read(skillPath);
-    const fm = skill.match(/^---\n([\s\S]*?)\n---\n/);
-    if (!fm) {
-      fail(`Missing YAML front matter in ${dir.name}/SKILL.md`);
-      continue;
-    }
-    const name = fm[1].match(/^name:\s*(.+)$/m)?.[1]?.trim();
-    const description = fm[1].match(/^description:\s*(.+)$/m)?.[1]?.trim();
-    if (!name || !description) fail(`Skill ${dir.name} needs name and description`);
-    if (description && description.length > 1024) fail(`Skill ${dir.name} description exceeds 1024 characters`);
-    if (name && `${pluginName}:${name}`.length > 64) fail(`Combined plugin:skill identity exceeds 64 characters for ${dir.name}`);
-    if (!skill.slice(fm[0].length).trim()) fail(`Skill ${dir.name} body is empty`);
-    if (/https:\/\/kesher\.saharoni\.com\/(?:contact|services|couples-|parenting-)/i.test(skill)) {
-      fail(`Skill ${dir.name} must remain standalone and must not embed service/booking links`);
-    }
-
-    if (!fs.existsSync(agentPath)) {
-      fail(`Missing agents/openai.yaml for ${dir.name}`);
-    } else {
-      const agent = read(agentPath);
-      if (!/products:\s*\n\s*- CHAT/.test(agent)) fail(`${dir.name} must target CHAT`);
-      if (!/allow_implicit_invocation:\s*true/.test(agent)) fail(`${dir.name} must allow implicit invocation`);
-    }
+const skillDirs = fs.existsSync(skillsRoot)
+  ? fs.readdirSync(skillsRoot, { withFileTypes: true }).filter((entry) => entry.isDirectory()).map((entry) => entry.name)
+  : [];
+const expectedSkills = new Set(['relationship-conflict','parenting-guidance','parenting-attention']);
+if (skillDirs.length !== 3 || skillDirs.some((name) => !expectedSkills.has(name))) fail('Canonical V2 package must contain exactly the three approved skills');
+for (const name of expectedSkills) {
+  const skillPath = path.join(skillsRoot, name, 'SKILL.md');
+  const agentPath = path.join(skillsRoot, name, 'agents', 'openai.yaml');
+  if (!fs.existsSync(skillPath)) fail(`Missing ${name}/SKILL.md`);
+  if (!fs.existsSync(agentPath)) fail(`Missing ${name}/agents/openai.yaml`);
+  if (fs.existsSync(agentPath)) {
+    const agent = read(agentPath);
+    if (!/allow_implicit_invocation:\s*true/.test(agent)) fail(`${name}: implicit invocation must be enabled`);
+    if (!/value:\s*"kesher"/.test(agent)) fail(`${name}: MCP dependency must be kesher`);
   }
 }
 
 const privacy = read(path.join(ROOT, 'src/pages/Legal/PrivacyPolicy.tsx'));
-const terms = read(path.join(ROOT, 'src/pages/Legal/TermsOfUse.tsx'));
-if (!privacy.includes('פלאגין ChatGPT') || !privacy.includes('אינו מפעיל שרת MCP')) {
-  fail('Privacy policy must explicitly describe the skills-only ChatGPT plugin');
+if (!privacy.includes('כלי Kesher ב-ChatGPT וב-MCP') || !privacy.includes('Cloudflare Workers')) {
+  fail('Privacy policy must accurately describe the V2 MCP service');
 }
+const terms = read(path.join(ROOT, 'src/pages/Legal/TermsOfUse.tsx'));
 if (!terms.includes('שימוש בפלאגין ChatGPT') || !terms.includes('אינו יוצר יחסי')) {
-  fail('Terms must explicitly cover ChatGPT plugin use and professional boundaries');
+  fail('Terms must cover ChatGPT plugin use and professional boundaries');
 }
 
 if (errors.length) {
@@ -186,5 +95,4 @@ if (errors.length) {
   errors.forEach((error) => console.error(`- ${error}`));
   process.exit(1);
 }
-
-console.log('ChatGPT plugin package validation passed.');
+console.log('Kesher V2 ChatGPT plugin validation passed.');
