@@ -40,6 +40,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Generate current Kesher resource index
+        run: node scripts/generate-plugin-resources.mjs
+
       - name: Validate MCP contracts and golden prompt routing
         run: node plugin/tests/validate-phase2-contracts.mjs
 
