@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest import mock
 
 from scripts import kesher_short_pipeline_v4 as short
+from tests.test_media_provenance_contract import bound_short
 
 
 class ShortPipelineV4Tests(unittest.TestCase):
@@ -30,6 +31,8 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד", prompt)
         self.assertIn("סרטון אנכי ביחס 9:16", prompt)
         self.assertIn("אין ליצור סקירת וידאו אופקית", prompt)
+        self.assertIn("אסור להשתמש ברקע מטושטש", prompt)
+        self.assertIn("קומפוזיציה אנכית חדה", prompt)
         self.assertIn("הרעיון השלם", prompt)
         self.assertIn("סיום טבעי", prompt)
         self.assertNotIn("45 עד 55 שניות", prompt)
@@ -79,13 +82,19 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("קטעי וידאו משלימים מפקסלס: https://www.pexels.com/", lines)
         short.core.require_hebrew(metadata["description"], "YouTube description", allow_url=True)
 
+    def test_short_generation_has_no_landscape_explainer_fallback(self):
+        source = (Path(short.core.PROJECT_DIR) / "scripts" / "kesher_short_pipeline_v4.py").read_text(encoding="utf-8")
+        self.assertIn('provider_format = "short"', source)
+        self.assertNotIn('provider_format = "short" if', source)
+
     def test_native_provider_gate_rejects_landscape_or_long_form_identity(self):
         valid = {"provider_video_format": "short", "provider_native_short": True}
         valid["fresh_generation_attempt"] = 1
         self.assertEqual(short.native_provider_short_failures({"width": 1080, "height": 1920}, valid), [])
         self.assertTrue(short.native_provider_short_failures({"width": 1920, "height": 1080}, valid))
         fallback = dict(valid, fresh_generation_attempt=3, provider_video_format="explainer", provider_native_short=False)
-        self.assertEqual(short.native_provider_short_failures({"width": 1920, "height": 1080}, fallback), [])
+        fallback_failures = short.native_provider_short_failures({"width": 1920, "height": 1080}, fallback)
+        self.assertTrue(any("landscape fallback is forbidden" in err for err in fallback_failures))
         reused = dict(fallback, shared_provider_identity=True)
         self.assertTrue(any("Video Overview provider identity" in err for err in short.native_provider_short_failures({"width": 1080, "height": 1920}, reused)))
 
@@ -129,14 +138,8 @@ class ShortPipelineV4Tests(unittest.TestCase):
 
     def test_short_v4_passes_generation_attempt_identity_to_voice_validator(self):
         media = {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 45.0}
-        item = {
-            "fresh_generation_attempt": 3,
-            "source_mode": "direct-short",
-            "signature_fullscreen": True,
-            "signature_duration_seconds": 3.0,
-            "signature_video_sha256": "s" * 64,
-            "signature_verified": True,
-        }
+        item = bound_short(45.0)
+        item["fresh_generation_attempt"] = 3
         with tempfile.NamedTemporaryFile(suffix=".mp4") as handle:
             video_path = Path(handle.name)
             with mock.patch.object(
@@ -241,12 +244,7 @@ class ShortPipelineV4Tests(unittest.TestCase):
 
     def test_short_technical_failures_validates_signature_video_properties(self):
         media = {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 45.0}
-        valid_item = {
-            "signature_fullscreen": True,
-            "signature_duration_seconds": 3.0,
-            "signature_video_sha256": "f" * 64,
-            "signature_verified": True,
-        }
+        valid_item = bound_short(45.0)
         self.assertEqual(short.short_technical_failures(media, item=valid_item), [])
 
         missing_sha = dict(valid_item, signature_video_sha256="")
@@ -256,18 +254,19 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertTrue(any("משך סגיר החתימה" in err for err in short.short_technical_failures(media, item=wrong_duration)))
 
         not_fullscreen = dict(valid_item, signature_fullscreen=False)
-        self.assertTrue(any("signature_fullscreen" in err for err in short.short_technical_failures(media, item=not_fullscreen)))
+        self.assertEqual(short.short_technical_failures(media, item=not_fullscreen), [])
+        appended_outro = dict(valid_item, signature_overlay=False)
+        self.assertTrue(any("signature_provenance" in err for err in short.short_technical_failures(media, item=appended_outro)))
 
-    def test_extract_signature_video_segment_cached(self):
+    def test_cached_signature_cannot_replace_missing_current_final(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             state_dir = Path(temp_dir)
             seg_file = state_dir / "test-item-signature-segment.mp4"
             seg_file.write_bytes(b"dummy video segment data")
 
             with mock.patch.object(short.core, "STATE_DIR", state_dir):
-                path, sha = short.extract_signature_video_segment(state_dir / "dummy.mp4", "test-item")
-                self.assertEqual(path, seg_file)
-                self.assertEqual(sha, short.core.sha256_file(seg_file))
+                with self.assertRaises(short.core.PipelineError):
+                    short.extract_signature_video_segment(state_dir / "dummy.mp4", "test-item")
 
 
 if __name__ == "__main__":

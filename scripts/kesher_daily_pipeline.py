@@ -40,10 +40,12 @@ try:
     from motion_plan_generator import generate_motion_plan
     from kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
     from kesher_free_stock_broll import provider_credit_lines
+    from kesher_runtime.verification import VerificationError, match_youtube_metadata, publication_metadata
 except ImportError:
     from scripts.motion_plan_generator import generate_motion_plan
     from scripts.kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
     from scripts.kesher_free_stock_broll import provider_credit_lines
+    from scripts.kesher_runtime.verification import VerificationError, match_youtube_metadata, publication_metadata
 
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
@@ -122,6 +124,10 @@ def load_state() -> dict[str, Any]:
 
 
 def save_state(state: dict[str, Any]) -> None:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    if isinstance(state, CanonicalMediaState):
+        state.persist()
+        return
     state["updated_at"] = utc_now()
     atomic_json_write(STATE_FILE, state)
 
@@ -236,7 +242,7 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
     )
     require_hebrew(description, "description", allow_url=True)
     validate_youtube_description_links(description, canonical_url)
-    return {
+    source = {
         "id": str(post["id"]),
         "slug": slug,
         "title": title,
@@ -261,6 +267,13 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
             "tags": short_tags,
         },
     }
+    try:
+        source["youtube_metadata"] = publication_metadata(source, "overview")
+        source["short_youtube_metadata"] = publication_metadata(source, "short")
+    except VerificationError as exc:
+        raise PipelineError(str(exc)) from exc
+    require_hebrew(source["youtube_metadata"]["description"], "description", allow_url=True)
+    return source
 
 
 def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
@@ -488,14 +501,28 @@ def article_body_for_item(item: dict[str, Any]) -> str:
 
 
 def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
     body = article_body_for_item(item)
-    payload = run_notebooklm(
-        ["source", "add", body, "--type", "text", "--title", item["source"]["title"], "--notebook", NOTEBOOK_ID],
-        timeout=180,
-    )
-    source_id = nested_identifier(payload, ("source_id", "sourceId", "id"))
-    if not source_id:
-        raise PipelineError("NotebookLM source add returned no source ID")
+    title = item["source"]["title"]
+    if isinstance(state, CanonicalMediaState):
+        title = f"kesher:{state.context.target.key}:{item.get('fresh_generation_attempt', 1)}"
+
+    def create_source():
+        payload = run_notebooklm(
+            ["source", "add", body, "--type", "text", "--title", title, "--notebook", NOTEBOOK_ID],
+            timeout=180,
+        )
+        source_id = nested_identifier(payload, ("source_id", "sourceId", "id"))
+        if not source_id:
+            raise PipelineError("NotebookLM source add returned no source ID")
+        return {"source_id": source_id}
+
+    request = {"notebook_id": NOTEBOOK_ID, "title": title, "body_sha256": sha256_text(body),
+               "body_normalized_sha256": sha256_text(' '.join(body.split()))}
+    receipt = state.external('provider_source', request, create_source) if isinstance(state, CanonicalMediaState) else create_source()
+    source_id = receipt["source_id"]
     item["source_id"] = source_id
     item["status"] = "source_added"
     item["updated_at"] = utc_now()
@@ -504,20 +531,31 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
 
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
+    from scripts.kesher_runtime.provider import bind_generation_prompt
     prompt_path = STATE_DIR / f"{item['id']}-prompt-he.txt"
-    prompt = generation_prompt(item["source"])
+    prompt = bind_generation_prompt(state, item, generation_prompt(item["source"]), 'explainer')
     prompt_path.write_text(prompt, encoding="utf-8")
-    payload = run_notebooklm(
-        [
-            "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
-            "--source", item["source_id"], "--format", "explainer", "--style", "auto",
-            "--language", "he", "--no-wait",
-        ],
-        timeout=180,
-    )
-    task_id = nested_identifier(payload, ("task_id", "taskId", "artifact_id", "id"))
-    if not task_id:
-        raise PipelineError("NotebookLM generation returned no task ID")
+    def create_generation():
+        payload = run_notebooklm(
+            [
+                "generate", "video", "--prompt-file", str(prompt_path), "--notebook", NOTEBOOK_ID,
+                "--source", item["source_id"], "--format", "explainer", "--style", "auto",
+                "--language", "he", "--no-wait",
+            ],
+            timeout=180,
+        )
+        task_id = nested_identifier(payload, ("task_id", "taskId", "artifact_id", "id"))
+        if not task_id:
+            raise PipelineError("NotebookLM generation returned no task ID")
+        return {"task_id": task_id, "artifact_id": task_id}
+
+    request = {"notebook_id": NOTEBOOK_ID, "source_id": item["source_id"], "format": "explainer",
+               "style": "auto", "language": "he", "prompt_sha256": sha256_text(prompt), "prompt": prompt}
+    receipt = state.external('provider_generation', request, create_generation) if isinstance(state, CanonicalMediaState) else create_generation()
+    task_id = receipt["task_id"]
     item["task_id"] = task_id
     item["artifact_id"] = task_id
     item["generation_prompt"] = prompt
@@ -746,22 +784,51 @@ def validate_female_voice(
     return True, pitch, f"Female voice pitch verified ({pitch:.1f} Hz)"
 
 
+def _render_context():
+    from types import SimpleNamespace
+    return SimpleNamespace(PROJECT_DIR=PROJECT_DIR, STATE_DIR=STATE_DIR,
+        sha256_file=sha256_file, atomic_json_write=atomic_json_write, PipelineError=PipelineError)
+
+
 def remotion_cache_is_reusable(item: dict[str, Any], output_path: Path) -> bool:
-    if not output_path.is_file() or output_path.stat().st_size <= 0 or not item.get("enhancement_status"):
+    from scripts.kesher_runtime.render_provenance import render_input_digest
+    from scripts.kesher_runtime.output_artifacts import local_file
+    from scripts.kesher_e2e_delivery_guard import _signature_verified
+    try:
+        if item.get("enhancement_status") not in {"enhancement_complete", "enhancement_partial", "enhancement_skipped"}:
+            return False
+        files = [(output_path, item.get("final_sha256"))]
+        for path_key, hash_key in (("raw_mp4", "raw_sha256"), ("motion_plan_path", "motion_plan_sha256"),
+                                  ("remotion_props_path", "remotion_props_sha256"),
+                                  ("signature_asset", "signature_sha256"),
+                                  ("signature_video_path", "signature_video_sha256")):
+            files.append((local_file(STATE_DIR, item.get(path_key)), item.get(hash_key)))
+        if any(not path.is_file() or path.stat().st_size <= 0 or sha256_file(path) != expected
+               for path, expected in files):
+            return False
+        raw = local_file(STATE_DIR, item["raw_mp4"])
+        asset_sha = sha256_file(PROJECT_DIR / SIGNATURE_SOURCE)
+        if asset_sha != item.get("signature_sha256") or item.get("render_input_sha256") != render_input_digest(
+                _render_context(), raw, item, asset_sha, 'overview'):
+            return False
+        media = ffprobe(output_path)
+        if not _signature_verified(dict(item, media=media)):
+            return False
+        props = json.loads((STATE_DIR / item["remotion_props_path"]).read_text(encoding="utf-8"))
+        plan = json.loads((STATE_DIR / item["motion_plan_path"]).read_text(encoding="utf-8"))
+        return bool(props.get("videoSrc") == raw.name and props.get("audioSrc") == raw.name
+                    and props.get("durationInFrames") == round(float(item["content_duration_seconds"]) * 30)
+                    and props.get("signatureImageSrc") == item["signature_asset"] and props.get("motionPlan") == plan)
+    except (OSError, ValueError, TypeError, KeyError, PipelineError):
         return False
-    for path_key, hash_key in (("motion_plan_path", "motion_plan_sha256"), ("remotion_props_path", "remotion_props_sha256")):
-        name = str(item.get(path_key) or "").strip()
-        expected = str(item.get(hash_key) or "").strip()
-        if not name or not expected:
-            return False
-        evidence = STATE_DIR / name
-        if not evidence.is_file() or sha256_file(evidence) != expected:
-            return False
-    return True
 
 
 def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
+    from scripts.kesher_runtime.render_provenance import record_signature, render_input_digest
     output_path = STATE_DIR / f"{item['id']}-remotion-final.mp4"
+    signature_image_src = prepare_signature_asset()
+    signature_path = STATE_DIR / signature_image_src
+    render_input_sha256 = render_input_digest(_render_context(), raw_path, item, sha256_file(signature_path), 'overview')
     if remotion_cache_is_reusable(item, output_path):
         return output_path
     remotion = PROJECT_DIR / "node_modules" / ".bin" / "remotion"
@@ -774,7 +841,6 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
         raise PipelineError("NotebookLM audio duration is invalid for Remotion")
     motion_plan_path = STATE_DIR / f"{item['id']}-motion-plan.json"
     motion_plan = generate_motion_plan(raw_path, motion_plan_path, duration=content_duration_seconds)
-    signature_image_src = prepare_signature_asset()
     props_path = STATE_DIR / f"{item['id']}-remotion-props.json"
 
     def renderer(candidate_plan: dict[str, Any], candidate_output: Path) -> None:
@@ -820,9 +886,11 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
 
     item["visual_pipeline"] = "remotion-v1-notebooklm-audio"
     item["content_duration_seconds"] = round(content_duration_seconds, 3)
-    item["signature_duration_seconds"] = SIGNATURE_DURATION_SECONDS
-    item["signature_fullscreen"] = True
-    item["signature_asset_sha256"] = sha256_file(STATE_DIR / signature_image_src)
+    final_media = ffprobe(output_path)
+    record_signature(_render_context(), raw_path, output_path, item, signature_path, raw_media, final_media)
+    if render_input_sha256 != render_input_digest(_render_context(), raw_path, item, sha256_file(signature_path), 'overview'):
+        raise PipelineError("Overview render inputs changed during rendering")
+    item["render_input_sha256"] = render_input_sha256
     item["enhancement_status"] = enhancement["enhancement_status"]
     item["enhancement_render_mode"] = enhancement["render_mode"]
     item["enhancement_assets_used"] = enhancement["assets_used"]
@@ -962,6 +1030,16 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "signature_duration_seconds": item.get("signature_duration_seconds"),
         "signature_fullscreen": item.get("signature_fullscreen"),
         "signature_asset_sha256": item.get("signature_asset_sha256"),
+        "signature_asset": item.get("signature_asset"),
+        "signature_sha256": item.get("signature_sha256"),
+        "signature_video_path": item.get("signature_video_path"),
+        "signature_video_sha256": item.get("signature_video_sha256"),
+        "signature_overlay": item.get("signature_overlay"),
+        "signature_verified": item.get("signature_verified"),
+        "signature_provenance": item.get("signature_provenance"),
+        "audio_provenance": item.get("audio_provenance"),
+        "provider_raw_media": item.get("provider_raw_media"),
+        "render_input_sha256": item.get("render_input_sha256"),
         "remotion_props_path": item.get("remotion_props_path"),
         "remotion_props_sha256": item.get("remotion_props_sha256"),
         "motion_plan_path": item.get("motion_plan_path"),
@@ -1316,6 +1394,9 @@ def verify_authenticated_channel(token: str) -> None:
 
 
 def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: str, video_path: Path) -> str:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
     metadata = item["youtube_metadata"]
     body = {
         "snippet": {
@@ -1332,21 +1413,26 @@ def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: s
             "containsSyntheticMedia": True,
         },
     }
-    response = requests.post(
-        "https://www.googleapis.com/upload/youtube/v3/videos",
-        params={"uploadType": "resumable", "part": "snippet,status"},
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json; charset=UTF-8",
-            "X-Upload-Content-Length": str(video_path.stat().st_size),
-            "X-Upload-Content-Type": "video/mp4",
-        },
-        json=body,
-        timeout=60,
-    )
-    location = response.headers.get("Location")
-    if response.status_code not in {200, 201} or not location:
-        raise PipelineError(f"YouTube resumable session creation failed with HTTP {response.status_code}")
+    def create_session():
+        response = requests.post(
+            "https://www.googleapis.com/upload/youtube/v3/videos",
+            params={"uploadType": "resumable", "part": "snippet,status"},
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json; charset=UTF-8",
+                "X-Upload-Content-Length": str(video_path.stat().st_size),
+                "X-Upload-Content-Type": "video/mp4",
+            },
+            json=body,
+            timeout=60,
+        )
+        location = response.headers.get("Location")
+        if response.status_code not in {200, 201} or not location:
+            raise PipelineError(f"YouTube resumable session creation failed with HTTP {response.status_code}")
+        return location
+
+    request = {"metadata": body, "final_sha256": sha256_file(video_path), "size_bytes": video_path.stat().st_size}
+    location = state.external_capability('youtube_session', request, create_session) if isinstance(state, CanonicalMediaState) else create_session()
     item["upload_session_uri"] = location
     item["upload_session_created_at"] = utc_now()
     item["status"] = "uploading"
@@ -1354,7 +1440,13 @@ def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: s
     return location
 
 
-def resume_offset(session_uri: str, token: str, total: int) -> int:
+def resume_upload_status(session_uri: str, token: str, total: int) -> dict[str, Any]:
+    """A completed resumable session returns the original upload receipt/ID.
+
+    https://developers.google.com/youtube/v3/guides/using_resumable_upload_protocol
+    Ignoring that receipt loses the recovery path after an accepted byte upload
+    whose response or subsequent local state write was interrupted.
+    """
     response = requests.put(
         session_uri,
         headers={
@@ -1365,16 +1457,27 @@ def resume_offset(session_uri: str, token: str, total: int) -> int:
         timeout=60,
     )
     if response.status_code in {200, 201}:
-        return total
+        video_id = response.json().get("id")
+        if not isinstance(video_id, str) or not video_id:
+            raise PipelineError("Completed YouTube session has no video ID; reconcile before further upload")
+        return {"offset": total, "video_id": video_id}
     if response.status_code == 308:
-        match = re.search(r"bytes=0-(\d+)", response.headers.get("Range", ""))
-        return int(match.group(1)) + 1 if match else 0
+        value = response.headers.get("Range", "")
+        match = re.fullmatch(r"bytes=0-(\d+)", value)
+        if value and not match:
+            raise PipelineError("YouTube session returned an invalid byte range")
+        offset = int(match.group(1)) + 1 if match else 0
+        if offset >= total:
+            raise PipelineError("YouTube session byte range is complete without its final receipt")
+        return {"offset": offset, "video_id": None}
     if response.status_code in {404, 410}:
         raise PipelineError("Saved YouTube upload session expired; refusing a second insert automatically")
     raise PipelineError(f"YouTube upload status query failed with HTTP {response.status_code}")
 
 
-def upload_bytes(session_uri: str, token: str, video_path: Path, offset: int) -> str:
+def upload_bytes(session_uri: str, token: str, video_path: Path, offset: int, *, state=None) -> str:
+    from scripts.kesher_runtime.legacy_retirement import media_mutation
+    media_mutation(state)
     total = video_path.stat().st_size
     if offset >= total:
         raise PipelineError("Upload session reports complete but no video ID is persisted")
@@ -1414,26 +1517,25 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         snippet = row.get("snippet") or {}
         status = row.get("status") or {}
         processing = row.get("processingDetails") or {}
-        if snippet.get("channelId") != YOUTUBE_CHANNEL_ID:
-            raise PipelineError("Uploaded video belongs to the wrong YouTube channel")
-        if snippet.get("title") != item["youtube_metadata"]["title"]:
-            raise PipelineError("Uploaded title differs from the approved metadata")
+        try:
+            metadata_evidence = match_youtube_metadata(item, row)
+        except VerificationError as exc:
+            raise PipelineError(str(exc)) from exc
         uploaded_description = str(snippet.get("description", ""))
-        validate_youtube_description_links(
-            uploaded_description,
-            str((item.get("source") or {}).get("canonical_url") or ""),
-        )
+        validate_youtube_description_links(uploaded_description, str((item.get("source") or {}).get("canonical_url") or ""))
         require_hebrew(str(snippet.get("title", "")), "uploaded title")
         require_hebrew(uploaded_description, "uploaded description", allow_url=True)
         process_status = processing.get("processingStatus")
         if status.get("privacyStatus") == "public" and process_status == "succeeded":
             return {
+                **metadata_evidence,
                 "video_id": item["youtube_id"],
                 "channel_id": snippet.get("channelId"),
                 "privacy_status": status.get("privacyStatus"),
                 "processing_status": process_status,
                 "default_language": snippet.get("defaultLanguage"),
                 "default_audio_language": snippet.get("defaultAudioLanguage"),
+                "verified_at": utc_now(),
             }
         if process_status in {"failed", "terminated"}:
             raise PipelineError(f"YouTube processing ended with {process_status}")
@@ -1442,8 +1544,8 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         time.sleep(20)
 
 
-def upload_only(slug: str | None = None, item_id: str | None = None) -> int:
-    state = load_state()
+def upload_only(slug: str | None = None, item_id: str | None = None, *, state: dict | None = None) -> int:
+    state = load_state() if state is None else state
     target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
     target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
     candidates = [
@@ -1471,6 +1573,13 @@ def upload_only(slug: str | None = None, item_id: str | None = None) -> int:
         if len(candidates) != 1:
             raise PipelineError(f"More than one technically verified candidate exists: {len(candidates)}")
     item = candidates[0]
+    if item.get("youtube_id"):
+        # The external insertion already happened. Public/metadata recovery
+        # does not need retained MP4 bytes and may never insert another video.
+        token = youtube_access_token()
+        verify_authenticated_channel(token)
+        _verify_and_record_upload(state, item, token)
+        return 0
     if not item.get("final_mp4"):
         raise PipelineError("Upload candidate is missing final MP4 path")
     video_path = STATE_DIR / item["final_mp4"]
@@ -1502,22 +1611,31 @@ def upload_only(slug: str | None = None, item_id: str | None = None) -> int:
     if not session_uri:
         session_uri = start_resumable_upload(state, item, token, video_path)
         offset = 0
+        video_id = None
     else:
-        offset = resume_offset(session_uri, token, video_path.stat().st_size)
-    video_id = upload_bytes(session_uri, token, video_path, offset)
+        resumed = resume_upload_status(session_uri, token, video_path.stat().st_size)
+        offset = resumed["offset"]
+        video_id = resumed["video_id"]
+    if video_id is None:
+        video_id = upload_bytes(session_uri, token, video_path, offset, state=state)
     item["youtube_id"] = video_id
     item["youtube_url"] = f"https://youtu.be/{video_id}"
     item["upload_response_at"] = utc_now()
     save_state(state)
+    _verify_and_record_upload(state, item, token)
+    return 0
+
+
+def _verify_and_record_upload(state: dict[str, Any], item: dict[str, Any], token: str) -> None:
     verification = verify_public_upload(item, token)
     item["youtube_verification"] = verification
     item["uploaded"] = True
     item["status"] = "uploaded"
     item["uploaded_at"] = utc_now()
+    item["youtube_url"] = f"https://youtu.be/{item['youtube_id']}"
     item.pop("upload_session_uri", None)
     save_state(state)
     print(f"UPLOADED item={item['id']} url={item['youtube_url']}")
-    return 0
 
 
 def report() -> int:
@@ -1553,6 +1671,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     args = build_parser().parse_args()
     if args.preflight:
         print(json.dumps({"preflight": "passed", **auth_preflight()}, ensure_ascii=False))

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import copy
+import base64
+import json
 import unittest
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -237,6 +239,31 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(len(new_state["backlog"]), 1)
         self.assertEqual(new_state["backlog"][0]["cycle"], "2026-08-27")
         self.assertEqual(new_state["backlog"][0]["article"]["pr_number"], 550)
+
+    def test_contents_json_falls_back_to_git_blob_for_large_file(self):
+        client = controller.GitHubClient("yanivsa/kesher-website", "fake-token")
+        calls = []
+
+        def fake_request(method, url, body=None, **kwargs):
+            calls.append((method, url))
+            if "/contents/src/data/posts.json" in url:
+                return {
+                    "sha": "blob123",
+                    "encoding": "none",
+                    "content": "",
+                }
+            if url.endswith("/git/blobs/blob123"):
+                import base64
+                payload = base64.b64encode(b'[{"id":"large-post"}]').decode("ascii")
+                return {"encoding": "base64", "content": payload}
+            raise AssertionError(url)
+
+        client.request = fake_request
+        self.assertEqual(
+            client.contents_json("src/data/posts.json", "deadbeef"),
+            [{"id": "large-post"}],
+        )
+        self.assertTrue(any(url.endswith("/git/blobs/blob123") for _, url in calls))
 
     def test_unrelated_pr_563_is_not_adopted_as_article_pr(self):
         gh = FakeGitHub()
@@ -484,8 +511,11 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(state["video"]["youtube_url"], "https://youtu.be/abc123")
         self.assertEqual(gh.dispatches, [])
 
-    def test_github_client_save_controller_state_retries_on_409(self):
-        client = controller.GitHubClient("token", "owner/repo")
+    def test_github_client_conflict_requires_fresh_reconciliation(self):
+        # 58130048 added retries against a newly read SHA. The stale-state
+        # regression proves that expectation permitted lost updates. A new
+        # tick may retry only after observing and reconciling the new state.
+        client = controller.GitHubClient("owner/repo", "test-only-token")
         calls = []
 
         def fake_request(method, url, body=None, allow_404=False, raw=False):
@@ -494,7 +524,8 @@ class ControllerTests(unittest.TestCase):
                 return {"object": {"sha": "sha-ref"}}
             if method == "GET" and "/contents/" in url:
                 count = sum(1 for m, u, _ in calls if m == "GET" and "/contents/" in u)
-                return {"sha": f"sha-{count}"}
+                return {"sha": f"sha-{count}", "encoding": "base64",
+                        "content": base64.b64encode(json.dumps({"cycle": "2026-09-07", "status": "testing"}).encode()).decode()}
             if method == "PUT" and "/contents/" in url:
                 put_count = sum(1 for m, u, _ in calls if m == "PUT")
                 if put_count == 1:
@@ -503,11 +534,13 @@ class ControllerTests(unittest.TestCase):
             return {}
 
         client.request = fake_request
-        client.save_controller_state({"cycle": "2026-09-07", "status": "testing"})
+        state = client.load_controller_state()
+        with self.assertRaisesRegex(controller.ControllerError, "409"):
+            client.save_controller_state(state)
         put_calls = [c for c in calls if c[0] == "PUT"]
-        self.assertEqual(len(put_calls), 2)
+        self.assertEqual(len(put_calls), 1)
         self.assertEqual(put_calls[0][2]["sha"], "sha-1")
-        self.assertEqual(put_calls[1][2]["sha"], "sha-2")
+        self.assertEqual(sum(m == "GET" and "/contents/" in u for m, u, _ in calls), 1)
 
     def test_image_providers_includes_local_editorial(self):
         import scripts.kesher_content_controller_v3_entry as v3

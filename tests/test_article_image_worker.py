@@ -4,7 +4,7 @@ import hashlib
 import importlib.util
 import inspect
 import json
-import struct
+import io
 import sys
 import tempfile
 import unittest
@@ -32,7 +32,11 @@ def load(path: Path, name: str):
 
 
 def fake_png(width: int = 1200, height: int = 675, marker: bytes = b"fixture") -> bytes:
-    return b"\x89PNG\r\n\x1a\n" + b"\x00" * 8 + struct.pack(">II", width, height) + marker
+    from PIL import Image
+    output = io.BytesIO()
+    color = tuple(hashlib.sha256(marker).digest()[:3])
+    Image.new("RGB", (width, height), color).save(output, format="PNG")
+    return output.getvalue()
 
 
 def fake_manifest(paths: list[str]) -> dict:
@@ -198,6 +202,33 @@ class ArticleImageWorkerTests(unittest.TestCase):
             "content": "<p>קצר</p>",
         }
         self.assertEqual([row["id"] for row in worker.summaries([thick, thin])], ["thick"])
+
+    def test_large_contents_response_falls_back_to_git_blob(self):
+        worker = load(WORKER_PATH, "article_image_worker_v3_large_contents_test")
+        expected = b'[{"id":"large"}]'
+        contents_response = {
+            "encoding": "none",
+            "content": "",
+            "git_url": "https://api.github.test/repos/o/r/git/blobs/abc",
+        }
+        blob_response = {
+            "encoding": "base64",
+            "content": __import__("base64").b64encode(expected).decode("ascii"),
+        }
+
+        with mock.patch.object(
+            worker.core,
+            "request_json",
+            side_effect=[contents_response, blob_response],
+        ) as request_json:
+            payload = worker.core.github_content("o/r", "src/data/posts.json", "sha", "token")
+
+        self.assertEqual(worker.core.decode_content(payload), expected)
+        self.assertEqual(request_json.call_count, 2)
+        self.assertEqual(
+            request_json.call_args_list[1].args[1],
+            contents_response["git_url"],
+        )
 
     def test_worker_accepts_only_article_sized_png_or_jpeg(self):
         worker = load(WORKER_PATH, "article_image_worker_v3_dimensions_test")

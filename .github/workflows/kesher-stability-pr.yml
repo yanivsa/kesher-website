@@ -24,12 +24,45 @@ jobs:
           python-version: "3.12"
 
       - name: Install stability test dependencies
-        run: python -m pip install requests
+        run: python -m pip install requests==2.33.0 cryptography==50.0.1 -r scripts/requirements-article.txt
 
       - name: Run controller and video stability regression suite
         run: |
           set -euo pipefail
           python -m unittest \
+            tests.test_article_image_contract \
+            tests.test_kesher_article_public \
+            tests.test_kesher_publication_manifest \
+            tests.test_kesher_autonomous_controller \
+            tests.test_kesher_public_delivery \
+            tests.test_kesher_metadata_repair \
+            tests.test_kesher_media_state \
+            tests.test_kesher_media_worker \
+            tests.test_kesher_provider_recovery \
+            tests.test_media_provenance_contract \
+            tests.test_kesher_audio_preservation \
+            tests.test_kesher_media_publication \
+            tests.test_kesher_media_audit \
+            tests.test_kesher_media_observer \
+            tests.test_kesher_observe \
+            tests.test_kesher_controller_entry \
+            tests.test_kesher_jules_sessions \
+            tests.test_kesher_article_worker \
+            tests.test_kesher_article_normalize_worker \
+            tests.test_kesher_article_image_worker \
+            tests.test_kesher_article_validation \
+            tests.test_kesher_article_merge \
+            tests.test_kesher_deployment_artifact \
+            tests.test_kesher_article_deploy \
+            tests.test_kesher_deployment_observer \
+            tests.test_kesher_runtime_migration \
+            tests.test_kesher_state_write_safety \
+            tests.test_kesher_canonical_state \
+            tests.test_kesher_github_faults \
+            tests.test_kesher_worker_commands \
+            tests.test_kesher_command_dispatch \
+            tests.test_kesher_worker_entry \
+            tests.test_kesher_output_artifacts \
             tests.kesher_daily_pipeline_suite \
             tests.test_video_review_policy \
             tests.test_video_review_schema \
@@ -42,3 +75,37 @@ jobs:
             tests.test_kesher_v5_backlog_priority \
             tests.test_kesher_e2e_readiness \
             -v
+
+  render-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact pull-request merge candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install deterministic render dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install requests==2.33.0
+          npm ci --no-audit --no-fund
+          node -e 'for (const name of ["@ffmpeg-installer/ffmpeg", "@ffprobe-installer/ffprobe"]) require("fs").appendFileSync(process.env.GITHUB_PATH, require("path").dirname(require(name).path) + "\n")'
+      - name: Prove real rendering preserves source audio and in-content signature
+        run: python tests/real_media_render.py --output "$RUNNER_TEMP/kesher-render-proof"
+      - name: Retain synthetic render evidence
+        if: success()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: synthetic-render-proof-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/kesher-render-proof/
+          if-no-files-found: error
+          retention-days: 14

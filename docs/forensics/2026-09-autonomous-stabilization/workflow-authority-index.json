@@ -1,0 +1,2923 @@
+{
+  "schema_version": 1,
+  "workflows": [
+    {
+      "path": ".github/workflows/auto-close-noop-prs.yml",
+      "name": "Auto-close no-op PRs",
+      "triggers": {
+        "schedule": [
+          {
+            "cron": "25 3 * * *"
+          }
+        ],
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "issues": "write",
+        "pull-requests": "write"
+      },
+      "concurrency": {
+        "group": "auto-close-noop-prs",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "close_noops",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/auto-close-stale-article-prs.yml",
+      "name": "Auto-close stale Kesher article PRs",
+      "triggers": {
+        "schedule": [
+          {
+            "cron": "15 2 * * *"
+          }
+        ],
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "pull-requests": "write",
+        "issues": "write"
+      },
+      "concurrency": {
+        "group": "auto-close-stale-kesher-article-prs",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "close-stale",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/auto-merge-article-prs.yml",
+      "name": "Auto-merge Kesher article PRs",
+      "triggers": {
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "write",
+        "pull-requests": "write",
+        "issues": "write",
+        "checks": "read",
+        "actions": "write"
+      },
+      "concurrency": {
+        "group": "auto-merge-kesher-article-prs",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "merge",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            ".github/scripts/article-pr-controller-v3.py"
+          ],
+          "dispatch_targets": [
+            "ci.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch",
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/auto-merge-jules-audit-prs.yml",
+      "name": "Auto-merge Jules audit PRs",
+      "triggers": {
+        "schedule": [
+          {
+            "cron": "17,47 * * * *"
+          }
+        ],
+        "pull_request_target": {
+          "types": [
+            "opened",
+            "synchronize",
+            "reopened",
+            "ready_for_review"
+          ]
+        },
+        "workflow_run": {
+          "workflows": [
+            "CI"
+          ],
+          "types": [
+            "completed"
+          ]
+        },
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "write",
+        "pull-requests": "write",
+        "checks": "read",
+        "actions": "write"
+      },
+      "concurrency": {
+        "group": "auto-merge-jules-audit-prs",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "merge",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [
+            "ci.yml",
+            "deploy.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch",
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/booking-tracking-infrastructure.yml",
+      "name": "Provision booking tracking infrastructure",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/booking-tracking-infrastructure.yml",
+            "scripts/provision_booking_tracking.py",
+            "migrations/0001_booking_attribution.sql",
+            "functions/api/booking/**",
+            "functions/api/calendly/**"
+          ]
+        },
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read",
+        "actions": "write",
+        "statuses": "write"
+      },
+      "concurrency": {
+        "group": "booking-tracking-infrastructure",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "provision",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            "scripts/provision_booking_tracking.py"
+          ],
+          "dispatch_targets": [
+            "deploy.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch",
+            "api_write",
+            "deployment"
+          ],
+          "env_names": [
+            "CALENDLY_API_TOKEN",
+            "CLOUDFLARE_ACCOUNT_ID",
+            "CLOUDFLARE_API_TOKEN"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "name": "CI",
+      "triggers": {
+        "pull_request": null,
+        "push": {
+          "branches": [
+            "main"
+          ]
+        },
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read",
+        "statuses": "write"
+      },
+      "concurrency": {
+        "group": "ci-${{ github.ref }}",
+        "cancel-in-progress": true
+      },
+      "jobs": [
+        {
+          "id": "verify",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            ".github/scripts/select-ci-profile.py",
+            ".github/scripts/validate-article-images.py",
+            "scripts/article_claim_quality.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/cleanup-jules-branches.yml",
+      "name": "Cleanup Jules branches",
+      "triggers": {
+        "pull_request": {
+          "types": [
+            "closed"
+          ]
+        },
+        "schedule": [
+          {
+            "cron": "55 3 * * *"
+          }
+        ],
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "write",
+        "pull-requests": "read"
+      },
+      "concurrency": {
+        "group": "cleanup-jules-branches",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "cleanup",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/codex-seo-audit.yml",
+      "name": "Codex SEO Audit",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "target_url": {
+              "description": "Live URL to audit",
+              "required": false,
+              "default": "https://kesher.saharoni.com",
+              "type": "string"
+            }
+          }
+        },
+        "schedule": [
+          {
+            "cron": "15 1 * * 0"
+          }
+        ],
+        "pull_request": {
+          "paths": [
+            ".github/workflows/codex-seo-audit.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "codex-seo-audit-${{ github.ref }}",
+        "cancel-in-progress": true
+      },
+      "jobs": [
+        {
+          "id": "audit",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [
+            "scripts/analyze_geo.py",
+            "scripts/analyze_sitemap.py",
+            "scripts/run_headless_audit.py",
+            "scripts/verify_environment.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write",
+            "artifact_write"
+          ],
+          "env_names": [
+            "CODEX_SEO_COMMIT",
+            "OUTPUT_ROOT",
+            "TARGET_URL"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/deploy.yml",
+      "name": "Deploy to Cloudflare Pages",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ]
+        },
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read",
+        "statuses": "write"
+      },
+      "concurrency": {
+        "group": "deploy-kesher-website",
+        "cancel-in-progress": true
+      },
+      "jobs": [
+        {
+          "id": "deploy",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            "scripts/verify-production-article.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write",
+            "deployment"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/google-ads-api-audit.yml",
+      "name": "Google Ads API Audit",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "customer_id": {
+              "description": "Google Ads customer ID (digits only)",
+              "required": true,
+              "default": "3920602983",
+              "type": "string"
+            },
+            "login_customer_id": {
+              "description": "Optional manager account ID (digits only)",
+              "required": false,
+              "default": "",
+              "type": "string"
+            }
+          }
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "audit",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            "scripts/google_ads_api_audit.mjs"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "artifact_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/jules-daily-industry-benchmarking.yml",
+      "name": "Jules Daily Kesher Industry Benchmarking",
+      "triggers": {
+        "schedule": [
+          {
+            "cron": "40 23 * * *"
+          }
+        ],
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read",
+        "pull-requests": "read"
+      },
+      "concurrency": {
+        "group": "jules-daily-kesher-industry-benchmarking",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "start-jules",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            ".github/scripts/watch-jules-session.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/jules-daily-mobile-review.yml",
+      "name": "Jules Daily Kesher Mobile Review",
+      "triggers": {
+        "schedule": [
+          {
+            "cron": "20 23 * * *"
+          }
+        ],
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read",
+        "pull-requests": "read"
+      },
+      "concurrency": {
+        "group": "jules-daily-kesher-mobile-review",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "start-jules",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            ".github/scripts/watch-jules-session.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/jules-daily-seo-geo-review.yml",
+      "name": "Jules Daily Kesher SEO GEO Review",
+      "triggers": {
+        "schedule": [
+          {
+            "cron": "30 23 * * *"
+          }
+        ],
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read",
+        "pull-requests": "read"
+      },
+      "concurrency": {
+        "group": "jules-daily-kesher-seo-geo-review",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "start-jules",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            ".github/scripts/watch-jules-session.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/jules-nightly-site-fixes.yml",
+      "name": "Jules Nightly Kesher Site Fixes",
+      "triggers": {
+        "schedule": [
+          {
+            "cron": "20 22 * * *"
+          }
+        ],
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read",
+        "pull-requests": "read"
+      },
+      "concurrency": {
+        "group": "jules-nightly-kesher-site-fixes",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "start-jules",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            ".github/scripts/watch-jules-session.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/jules-weekly-content-review.yml",
+      "name": "Jules Weekly Kesher Content Review",
+      "triggers": {
+        "schedule": [
+          {
+            "cron": "10 23 * * 6"
+          }
+        ],
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read",
+        "pull-requests": "read"
+      },
+      "concurrency": {
+        "group": "jules-weekly-kesher-content-review",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "start-jules",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-activate-media-mode-fix.yml",
+      "name": "Kesher Activate Overview Media Mode Fix",
+      "triggers": {
+        "push": {
+          "paths": [
+            ".github/workflows/kesher-activate-media-mode-fix.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "write"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "patch",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [
+            "kesher-daily-video.yml"
+          ],
+          "side_effect_candidates": [
+            "git_push"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-article-generation.yml",
+      "name": "Kesher Article Generation",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "slot": {
+              "description": "Israel publication date (YYYY-MM-DD)",
+              "required": true,
+              "type": "string"
+            },
+            "test_mode": {
+              "description": "Authorized test — bypass same-date article/PR guard and isolate Jules session",
+              "required": false,
+              "default": false,
+              "type": "boolean"
+            }
+          }
+        },
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/kesher-e2e-test-trigger.json"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read",
+        "pull-requests": "write",
+        "actions": "read"
+      },
+      "concurrency": {
+        "group": "kesher-article-generation-${{ github.event_name }}-${{ inputs.slot || github.sha }}",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "generate",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/jules_article_runner_v4.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write",
+            "artifact_write"
+          ],
+          "env_names": [
+            "KESHER_ARTICLE_RESULT_PATH"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-article-image.yml",
+      "name": "Kesher Trusted Article Image",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "pr_number": {
+              "description": "Article PR number",
+              "required": true,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "permissions": {
+        "contents": "write",
+        "pull-requests": "write",
+        "actions": "write"
+      },
+      "concurrency": {
+        "group": "kesher-article-image-${{ inputs.pr_number }}",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "attach-image",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            ".github/scripts/article-image-worker-v4.py"
+          ],
+          "dispatch_targets": [
+            "ci.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch",
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-backlog-media-recovery.yml",
+      "name": "Kesher Exact Backlog Media Recovery",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "target_slug": {
+              "description": "Exact published article slug to recover",
+              "required": true,
+              "type": "string"
+            },
+            "target_content_sha256": {
+              "description": "Exact authoritative article content SHA-256",
+              "required": true,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-exact-backlog-media-${{ inputs.target_slug }}",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "seed-and-dispatch",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/kesher_exact_video_target.py"
+          ],
+          "dispatch_targets": [
+            "kesher-daily-video.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch",
+            "artifact_write"
+          ],
+          "env_names": [
+            "GH_TOKEN",
+            "KESHER_STATE_DIR"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-canary-force-now.yml",
+      "name": "Kesher Canary Force-Now Controller",
+      "triggers": {
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "write",
+        "pull-requests": "read"
+      },
+      "concurrency": {
+        "group": "kesher-expired-force-now-canary",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "canary",
+          "if": "${{ github.event_name != 'workflow_run' || github.event.workflow_run.event != 'pull_request' }}",
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-content-controller-v6.yml",
+      "name": "Kesher Content Controller V6 Shadow",
+      "triggers": {
+        "workflow_dispatch": null,
+        "pull_request": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            "config/kesher-production-contract.json",
+            "scripts/kesher_intervention_policy.py",
+            "scripts/kesher_three_strike_runtime.py",
+            "scripts/kesher_e2e_delivery_guard.py",
+            "scripts/kesher_content_controller_v5_runtime.py",
+            "scripts/kesher_content_controller_v6_runtime.py",
+            "scripts/kesher_video_asset_resolver.py",
+            "scripts/kesher_video_enhancement.py",
+            "scripts/motion_plan_generator.py",
+            "scripts/kesher_short_motion_plan.py",
+            "src/remotion/**",
+            "tests/test_kesher_intervention_policy.py",
+            "tests/test_kesher_three_strike_runtime.py",
+            "tests/test_kesher_v6_intervention_isolation.py",
+            "tests/test_kesher_optional_video_enrichment.py",
+            "tests/test_video_enhancement_contract.py",
+            ".github/workflows/kesher-content-controller-v6.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-content-controller-v6-${{ github.event.pull_request.number || github.ref }}",
+        "cancel-in-progress": true
+      },
+      "jobs": [
+        {
+          "id": "shadow-controller",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            "scripts/kesher_content_controller_v5_runtime.py",
+            "scripts/kesher_content_controller_v6_runtime.py",
+            "scripts/kesher_intervention_policy.py",
+            "scripts/kesher_three_strike_runtime.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-content-controller.yml",
+      "name": "Kesher Content Controller",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ]
+        },
+        "workflow_run": {
+          "workflows": [
+            "Kesher Article Generation",
+            "Kesher Normalize Article PR",
+            "Kesher Trusted Article Image",
+            "Kesher Daily NotebookLM Video Overview",
+            "Kesher Daily Article Short V4",
+            "Deploy to Cloudflare Pages"
+          ],
+          "types": [
+            "completed"
+          ]
+        },
+        "schedule": [
+          {
+            "cron": "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"
+          }
+        ],
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "write",
+        "pull-requests": "read"
+      },
+      "concurrency": {
+        "group": "kesher-content-controller",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "controller",
+          "if": "${{ github.event_name != 'workflow_run' || github.event.workflow_run.event != 'pull_request' }}",
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/kesher_content_controller_stabilized.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-current-article-public-check.yml",
+      "name": "Kesher Current Article Public Check",
+      "triggers": {
+        "push": {
+          "paths": [
+            ".github/workflows/kesher-current-article-public-check.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "verify",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-current-gifted-completion.yml",
+      "name": "Kesher Current Gifted Completion",
+      "triggers": {
+        "push": {
+          "paths": [
+            ".github/workflows/kesher-current-gifted-completion.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-current-gifted-completion",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "overview",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            "scripts/kesher_daily_pipeline.py",
+            "scripts/kesher_video_reconcile.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "artifact_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-daily-video.yml",
+      "name": "Kesher Daily NotebookLM Video Overview",
+      "triggers": {
+        "pull_request": {
+          "paths": [
+            ".github/workflows/kesher-daily-video.yml",
+            ".github/prompts/jules-remotion-video-upgrade.md",
+            "config/kesher-production-contract.json",
+            "scripts/kesher_automation_policy.py",
+            "scripts/kesher_daily_pipeline.py",
+            "scripts/kesher_video_reconcile.py",
+            "scripts/jules_video_reviewer.py",
+            "scripts/jules_video_reviewer_v3.py",
+            "scripts/prepare_jules_video_evidence.py",
+            "scripts/requirements-video-cloud.txt",
+            "package.json",
+            "package-lock.json",
+            "src/remotion/**",
+            "tests/test_kesher_daily_pipeline.py",
+            "tests/kesher_daily_pipeline_suite.py",
+            "tests/test_video_review_policy.py",
+            "tests/test_video_review_schema.py",
+            "tests/test_video_reconcile.py",
+            "tests/test_production_contract_v3.py"
+          ]
+        },
+        "workflow_dispatch": {
+          "inputs": {
+            "operation": {
+              "description": "Pipeline operation",
+              "required": true,
+              "default": "full",
+              "type": "choice",
+              "options": [
+                "full",
+                "preflight",
+                "generate",
+                "upload",
+                "rebuild"
+              ]
+            },
+            "rebuild_item_id": {
+              "description": "Exact visually rejected item to rebuild with Remotion",
+              "required": false,
+              "type": "string"
+            },
+            "target_slug": {
+              "description": "Exact article slug to generate video for",
+              "required": false,
+              "type": "string"
+            },
+            "target_content_sha256": {
+              "description": "Exact authoritative article content SHA-256 for upload identity lock",
+              "required": false,
+              "type": "string"
+            },
+            "target_item_id": {
+              "description": "Exact durable video item ID for upload identity lock",
+              "required": false,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "write"
+      },
+      "concurrency": {
+        "group": "kesher-daily-notebooklm-video",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "pipeline",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            "scripts/jules_video_reviewer_v3.py",
+            "scripts/kesher_daily_pipeline.py",
+            "scripts/kesher_video_reconcile.py",
+            "scripts/prepare_jules_video_evidence.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write",
+            "artifact_write"
+          ],
+          "env_names": [
+            "HF_HOME",
+            "KESHER_NOTEBOOK_ID",
+            "KESHER_STATE_DIR",
+            "KESHER_WHISPER_MODEL",
+            "NOTEBOOKLM_BIN",
+            "NOTEBOOKLM_HOME"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-e2e-test-continuation.yml",
+      "name": "Kesher E2E Test Continuation",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/kesher-e2e-test-continuation.json"
+          ]
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read",
+        "pull-requests": "read"
+      },
+      "concurrency": {
+        "group": "kesher-e2e-test-continuation",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "continue-test",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [
+            "auto-merge-article-prs.yml",
+            "kesher-article-image.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch",
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-final-attempt-fallback.yml",
+      "name": "Kesher Final Attempt Video Fallback",
+      "triggers": {
+        "workflow_run": {
+          "workflows": [
+            "Kesher Daily NotebookLM Video Overview"
+          ],
+          "types": [
+            "completed"
+          ]
+        }
+      },
+      "permissions": {
+        "actions": "read",
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-final-attempt-fallback",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "promote-last-usable",
+          "if": "${{ github.event.workflow_run.head_branch == 'main' }}",
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/kesher_daily_pipeline.py",
+            "scripts/kesher_final_attempt_fallback.py",
+            "scripts/kesher_video_reconcile.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write",
+            "artifact_write"
+          ],
+          "env_names": [
+            "KESHER_STATE_DIR",
+            "YOUTUBE_CLIENT_ID",
+            "YOUTUBE_CLIENT_SECRET",
+            "YOUTUBE_REFRESH_TOKEN"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-gifted-direct-recovery.yml",
+      "name": "Kesher Gifted Overview Direct Recovery",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/kesher-gifted-direct-recovery.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "actions": "read",
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-gifted-overview-direct-recovery",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "recover",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            "scripts/kesher_daily_pipeline.py",
+            "scripts/kesher_video_reconcile.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "artifact_write"
+          ],
+          "env_names": [
+            "KESHER_STATE_DIR",
+            "TARGET_SLUG",
+            "YOUTUBE_CLIENT_ID",
+            "YOUTUBE_CLIENT_SECRET",
+            "YOUTUBE_REFRESH_TOKEN"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-gifted-short-dispatch.yml",
+      "name": "Kesher Gifted Short Exact Dispatch",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/kesher-gifted-short-dispatch.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "refresh",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [
+            "kesher-short-v4.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch",
+            "api_write",
+            "artifact_write"
+          ],
+          "env_names": [
+            "NOTEBOOKLM_HOME",
+            "SHORT_STATE_DIR"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-historical-short-finalizer.yml",
+      "name": "Kesher Historical Short Finalizer",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/kesher-historical-short-finalizer-trigger.json"
+          ]
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-historical-short-finalizer",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "finalize",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [
+            "kesher-short-v4.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-live-e2e-test.yml",
+      "name": "Kesher Live E2E Test",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "slot": {
+              "description": "Israel publication date for the isolated test article (YYYY-MM-DD)",
+              "required": true,
+              "type": "string"
+            },
+            "request_id": {
+              "description": "Unique lowercase test id (letters, digits and hyphens)",
+              "required": true,
+              "type": "string"
+            },
+            "confirm": {
+              "description": "Type RUN_LIVE_E2E to authorize public Preview and YouTube test publications",
+              "required": true,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read",
+        "pull-requests": "write"
+      },
+      "concurrency": {
+        "group": "kesher-live-e2e-test",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "live-e2e",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/article_claim_quality.py",
+            "scripts/kesher_daily_pipeline.py",
+            "scripts/kesher_short_pipeline_v4.py",
+            "scripts/kesher_video_reconcile.py"
+          ],
+          "dispatch_targets": [
+            "kesher-article-generation.yml",
+            "kesher-article-image.yml"
+          ],
+          "side_effect_candidates": [
+            "pr_write",
+            "workflow_dispatch",
+            "api_write",
+            "deployment"
+          ],
+          "env_names": [
+            "CONFIRM",
+            "GH_TOKEN",
+            "HF_HOME",
+            "KESHER_E2E_LONG_STATE_DIR",
+            "KESHER_E2E_SHORT_STATE_DIR",
+            "KESHER_NOTEBOOK_ID",
+            "KESHER_WHISPER_MODEL",
+            "NOTEBOOKLM_BIN",
+            "NOTEBOOKLM_HOME",
+            "REQUEST_ID",
+            "SLOT"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-master-supervisor.yml",
+      "name": "Kesher Master Supervisor",
+      "triggers": {
+        "workflow_run": {
+          "workflows": [
+            "Kesher Content Controller",
+            "Kesher Article Generation",
+            "Kesher Normalize Article PR",
+            "Kesher Trusted Article Image",
+            "Kesher Daily NotebookLM Video Overview",
+            "Kesher Daily Article Short V4",
+            "Deploy to Cloudflare Pages"
+          ],
+          "types": [
+            "completed"
+          ]
+        },
+        "schedule": [
+          {
+            "cron": "7,17,27,37,47,57 * * * *"
+          }
+        ],
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "write",
+        "actions": "write",
+        "pull-requests": "write",
+        "checks": "read",
+        "statuses": "read"
+      },
+      "concurrency": {
+        "group": "kesher-master-supervisor",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "supervise",
+          "if": "${{ github.event_name != 'workflow_run' || github.event.workflow_run.event != 'pull_request' }}",
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/kesher_master_supervisor_live.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [],
+          "env_names": [
+            "JULES_API_KEY"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-remotion-evidence-repair.yml",
+      "name": "Kesher Remotion Evidence Repair",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "item_id": {
+              "description": "Exact durable video item to repair",
+              "required": true,
+              "type": "string"
+            },
+            "target_slug": {
+              "description": "Exact published article slug bound to the item",
+              "required": true,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-daily-notebooklm-video",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "repair",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [
+            "kesher-daily-video.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch",
+            "artifact_write"
+          ],
+          "env_names": [
+            "KESHER_STATE_DIR",
+            "TARGET_ITEM_ID",
+            "TARGET_SLUG"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-repair-exact-video-state.yml",
+      "name": "Kesher Repair Exact Video State",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "item_id": {
+              "description": "Exact video item id to reconcile from its immutable manifest",
+              "required": true,
+              "type": "string"
+            },
+            "target_slug": {
+              "description": "Exact published article slug",
+              "required": true,
+              "type": "string"
+            },
+            "target_content_sha256": {
+              "description": "Exact published article content hash",
+              "required": true,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-repair-exact-video-state",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "repair",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "artifact_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-short-v4.yml",
+      "name": "Kesher Daily Article Short V4",
+      "triggers": {
+        "pull_request": {
+          "paths": [
+            ".github/workflows/kesher-short-v4.yml",
+            "scripts/kesher_short_pipeline_v4.py",
+            "scripts/kesher_short_policy.py",
+            "scripts/kesher_daily_pipeline.py",
+            "scripts/kesher_video_reconcile.py",
+            "scripts/kesher_content_controller_v4_runtime.py",
+            "scripts/requirements-video-cloud.txt",
+            "src/remotion/**",
+            "package.json",
+            "package-lock.json",
+            "tests/test_short_pipeline_v4.py",
+            "tests/test_short_retry_policy_v4.py",
+            "tests/test_video_reconcile.py",
+            "tests/test_v4_runtime_activation.py"
+          ]
+        },
+        "workflow_dispatch": {
+          "inputs": {
+            "operation": {
+              "description": "Short V4 operation",
+              "required": true,
+              "default": "full",
+              "type": "choice",
+              "options": [
+                "full",
+                "preflight",
+                "generate",
+                "upload",
+                "rebuild",
+                "release",
+                "derive",
+                "historical"
+              ]
+            },
+            "rebuild_item_id": {
+              "description": "Exact technically rejected item to rebuild with Remotion",
+              "required": false,
+              "type": "string"
+            },
+            "release_slug": {
+              "description": "Exact article slug to release without a Short",
+              "required": false,
+              "type": "string"
+            },
+            "derive_slug": {
+              "description": "Exact article slug to recover as a fresh provider-native NotebookLM Short",
+              "required": false,
+              "type": "string"
+            },
+            "derive_content_sha256": {
+              "description": "Exact authoritative article content hash",
+              "required": false,
+              "type": "string"
+            },
+            "derive_long_item_id": {
+              "description": "Deprecated compatibility input; long-form provider identity is never reused for a Short",
+              "required": false,
+              "type": "string"
+            },
+            "historical_commit": {
+              "description": "Immutable evidence commit containing the historical state snapshot",
+              "required": false,
+              "type": "string"
+            },
+            "historical_path": {
+              "description": "Repository path to the historical evidence state.json",
+              "required": false,
+              "type": "string"
+            },
+            "historical_item_id": {
+              "description": "Exact historical provider item id to adopt without regeneration",
+              "required": false,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "write"
+      },
+      "concurrency": {
+        "group": "kesher-daily-article-short-v4",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "pipeline",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>",
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/kesher_short_pipeline_v4.py",
+            "scripts/kesher_video_reconcile.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write",
+            "artifact_write"
+          ],
+          "env_names": [
+            "HF_HOME",
+            "KESHER_NOTEBOOK_ID",
+            "KESHER_STATE_ARTIFACT",
+            "KESHER_STATE_DIR",
+            "KESHER_WHISPER_MODEL",
+            "NOTEBOOKLM_BIN",
+            "NOTEBOOKLM_HOME"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-stability-pr.yml",
+      "name": "Kesher Stability PR Validation",
+      "triggers": {
+        "pull_request": null
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-stability-${{ github.ref }}",
+        "cancel-in-progress": true
+      },
+      "jobs": [
+        {
+          "id": "validate",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-target-slug-regression-check.yml",
+      "name": "Kesher Target Slug Regression Check",
+      "triggers": {
+        "push": {
+          "paths": [
+            ".github/workflows/kesher-target-slug-regression-check.yml",
+            "tests/test_target_slug_mode_contract.py",
+            "scripts/kesher_video_reconcile.py"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "test",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-task-supervisor-controller.yml",
+      "name": "Kesher Task Supervisor Controller (Legacy Validation Only)",
+      "triggers": {
+        "pull_request": {
+          "paths": [
+            ".github/workflows/kesher-task-supervisor-controller.yml",
+            ".github/scripts/kesher_task_supervisor.py",
+            ".github/scripts/kesher_task_supervisor_runtime.py",
+            ".github/scripts/kesher_task_supervisor_runtime_v2.py",
+            ".github/scripts/kesher_task_supervisor_runtime_v3.py",
+            ".github/jules-templates/recovery-playbook.md",
+            "tests/test_kesher_task_supervisor.py",
+            "tests/test_kesher_task_supervisor_runtime.py",
+            "tests/test_kesher_task_supervisor_runtime_v2.py",
+            "tests/test_kesher_task_supervisor_runtime_v3.py"
+          ]
+        },
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/kesher-task-supervisor-controller.yml",
+            ".github/scripts/kesher_task_supervisor.py",
+            ".github/scripts/kesher_task_supervisor_runtime.py",
+            ".github/scripts/kesher_task_supervisor_runtime_v2.py",
+            ".github/scripts/kesher_task_supervisor_runtime_v3.py",
+            ".github/jules-templates/recovery-playbook.md",
+            "tests/test_kesher_task_supervisor.py",
+            "tests/test_kesher_task_supervisor_runtime.py",
+            "tests/test_kesher_task_supervisor_runtime_v2.py",
+            "tests/test_kesher_task_supervisor_runtime_v3.py"
+          ]
+        },
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-task-supervisor-legacy-validation-${{ github.ref }}",
+        "cancel-in-progress": true
+      },
+      "jobs": [
+        {
+          "id": "validate",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            ".github/scripts/kesher_task_supervisor_runtime_v2.py",
+            ".github/scripts/kesher_task_supervisor_runtime_v3.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-video-canary-dispatch.yml",
+      "name": "One-off Kesher Video Canary Dispatch",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/kesher-video-canary-dispatch.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "dispatch",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [
+            "kesher-daily-video.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/kesher-video-evidence-repair.yml",
+      "name": "Kesher Video Evidence Repair",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "item_id": {
+              "description": "Exact durable Video Overview item ID",
+              "required": true,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "kesher-daily-notebooklm-video",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "repair",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            "scripts/kesher_video_evidence_repair.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write",
+            "artifact_write"
+          ],
+          "env_names": [
+            "HF_HOME",
+            "KESHER_STATE_DIR",
+            "KESHER_WHISPER_MODEL"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/normalize-article-pr.yml",
+      "name": "Kesher Normalize Article PR",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "pr_number": {
+              "description": "Article PR number",
+              "required": true,
+              "type": "string"
+            },
+            "slot": {
+              "description": "Authoritative Israel publication slot (YYYY-MM-DD)",
+              "required": true,
+              "type": "string"
+            }
+          }
+        }
+      },
+      "permissions": {
+        "contents": "write",
+        "pull-requests": "read",
+        "actions": "write"
+      },
+      "concurrency": {
+        "group": "kesher-normalize-article-pr-${{ inputs.pr_number }}",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "normalize",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "git_push"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/oci-a1-capacity-watch.yml",
+      "name": "OCI A1 Capacity Watch",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/oci-a1-capacity-watch.yml"
+          ]
+        },
+        "schedule": [
+          {
+            "cron": "2,17,32,47 * * * *"
+          }
+        ]
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "oci-a1-capacity-watch",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "retry-if-needed",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [
+            "oci-openclaw-plan-b-e2.yml"
+          ],
+          "side_effect_candidates": [],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/oci-bridge-repair-beta-20260901.yml",
+      "name": "Repair OCI Bridge via Workers Beta Version API",
+      "triggers": {
+        "workflow_dispatch": null,
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/oci-bridge-repair-beta-20260901.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "repair",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": [
+            "ACCIDENTAL_ROTATION_AT",
+            "BRIDGE_NAME",
+            "KNOWN_GOOD_START"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/oci-bridge-repair-inherit-20260901.yml",
+      "name": "Repair OCI Bridge by Inheriting Known-Good Key",
+      "triggers": {
+        "workflow_dispatch": null,
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/oci-bridge-repair-inherit-20260901.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "repair",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": [
+            "ACCIDENTAL_ROTATION_AT",
+            "BRIDGE_NAME",
+            "KNOWN_GOOD_START"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/oci-bridge-restore-20260901.yml",
+      "name": "Restore OCI Bridge Known-Good Version",
+      "triggers": {
+        "workflow_dispatch": null,
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/oci-bridge-restore-20260901.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "restore",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": [
+            "ACCIDENTAL_ROTATION_AT",
+            "BRIDGE_NAME",
+            "KNOWN_GOOD_START"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/oci-openclaw-plan-b-e2.yml",
+      "name": "OCI Always Free OpenClaw Plan B E2",
+      "triggers": {
+        "workflow_dispatch": null,
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/oci-openclaw-plan-b-e2.yml",
+            "scripts/oci_openclaw_rebuild_ssh.py",
+            "scripts/oci_openclaw_plan_b_e2.py"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "provision",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/oci_openclaw_bootstrap.py",
+            "scripts/oci_openclaw_rebuild_ssh.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "deployment"
+          ],
+          "env_names": [
+            "BRIDGE_NAME"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/oci-openclaw-provision-v2.yml",
+      "name": "OCI Always Free OpenClaw Provision V2",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/oci-openclaw-provision-v2.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "provision",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/oci_openclaw_bootstrap.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "deployment"
+          ],
+          "env_names": [
+            "BRIDGE_NAME"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/oci-openclaw-provision.yml",
+      "name": "OCI Always Free OpenClaw Provision",
+      "triggers": {
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/oci-openclaw-provision.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "provision",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [
+            "scripts/oci_openclaw_bootstrap.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "deployment"
+          ],
+          "env_names": [
+            "BRIDGE_NAME"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/oci-secure-bridge-bootstrap.yml",
+      "name": "OCI Secure Bridge Bootstrap",
+      "triggers": {
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "bootstrap",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write",
+            "deployment"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/openclaw-agent-diagnostic.yml",
+      "name": "Diagnose OpenClaw Fresh VM Agent",
+      "triggers": {
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "diagnose",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/oci_openclaw_agent_diagnostic.py",
+            "scripts/openclaw_readonly_diagnostic.sh"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "deployment"
+          ],
+          "env_names": [
+            "BRIDGE_NAME"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/openclaw-clean-rebuild.yml",
+      "name": "OpenClaw Clean Rebuild",
+      "triggers": {
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": {
+        "group": "openclaw-recovery",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "rebuild",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/oci_openclaw_bootstrap.py",
+            "scripts/oci_openclaw_clean_rebuild.py",
+            "scripts/openclaw_clean_finalize.sh"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "deployment"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/openclaw-cloudflare-preflight-diagnostic.yml",
+      "name": "Diagnose OpenClaw Cloudflare Preflight",
+      "triggers": {
+        "workflow_dispatch": null,
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/openclaw-cloudflare-preflight-diagnostic.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "diagnose",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [],
+          "env_names": [
+            "ACCESS_APP_ID",
+            "PUBLIC_ZONE",
+            "TUNNEL_ID"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/openclaw-cloudflare-tunnel.yml",
+      "name": "Deploy OpenClaw Cloudflare Tunnel",
+      "triggers": {
+        "workflow_dispatch": null,
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/openclaw-cloudflare-tunnel.yml",
+            "scripts/openclaw_enable_cloudflare_tunnel.sh"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "deploy",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "${{ github.sha }}"
+          ],
+          "executed_scripts": [
+            "scripts/oci_openclaw_agent_command.py",
+            "scripts/openclaw_enable_cloudflare_tunnel.sh"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "deployment"
+          ],
+          "env_names": [
+            "BRIDGE_NAME",
+            "PUBLIC_HOSTNAME"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/openclaw-finalize-tailscale-serve.yml",
+      "name": "Finalize OpenClaw Tailscale Serve",
+      "triggers": {
+        "workflow_dispatch": null,
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/openclaw-finalize-tailscale-serve.yml",
+            "scripts/openclaw_finalize_tailscale_serve.sh"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "finalize",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/oci_openclaw_agent_command.py",
+            "scripts/openclaw_finalize_tailscale_serve.sh"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "deployment"
+          ],
+          "env_names": [
+            "BRIDGE_NAME"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/openclaw-inspect-tailnet-console.yml",
+      "name": "Inspect OpenClaw Tailnet Console",
+      "triggers": {
+        "workflow_dispatch": null,
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/openclaw-inspect-tailnet-console.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "inspect",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "deployment"
+          ],
+          "env_names": [
+            "BRIDGE_NAME"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/openclaw-offline-boot-repair.yml",
+      "name": "Repair OpenClaw Offline and Verify Cloudflare Access",
+      "triggers": {
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "write",
+        "issues": "write",
+        "statuses": "write"
+      },
+      "concurrency": {
+        "group": "openclaw-offline-recovery",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "repair",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/oci_openclaw_bootstrap.py",
+            "scripts/oci_openclaw_cleanup_unverified.py",
+            "scripts/oci_openclaw_helper_local_proof.py",
+            "scripts/oci_openclaw_helper_run_command_v2.py",
+            "scripts/oci_openclaw_offline_repair_v2.py",
+            "scripts/oci_openclaw_offline_repair_v3.py",
+            "scripts/oci_openclaw_run_command_iam.py",
+            "scripts/openclaw_local_proof.sh",
+            "scripts/openclaw_offline_mount_repair_cloudflare.sh",
+            "scripts/openclaw_publish_status.sh"
+          ],
+          "dispatch_targets": [
+            "openclaw-cloudflare-tunnel.yml"
+          ],
+          "side_effect_candidates": [
+            "workflow_dispatch",
+            "api_write",
+            "deployment"
+          ],
+          "env_names": [
+            "BRIDGE_NAME",
+            "OPENCLAW_PUBLIC_URL",
+            "OPENCLAW_SECURITY_LIST_ID"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/openclaw-preserve-tailnet-recovery.yml",
+      "name": "Recover OpenClaw Preserving Tailnet",
+      "triggers": {
+        "workflow_dispatch": null,
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/openclaw-preserve-tailnet-recovery.yml",
+            "scripts/oci_openclaw_preserve_tailnet_rebuild.py",
+            "scripts/openclaw_finalize_tailscale_serve_ssh.sh"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "recover",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/oci_openclaw_bootstrap.py",
+            "scripts/oci_openclaw_preserve_tailnet_rebuild.py",
+            "scripts/openclaw_finalize_tailscale_serve_ssh.sh"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "deployment"
+          ],
+          "env_names": [
+            "BRIDGE_NAME"
+          ]
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/openclaw-recovery-controller.yml",
+      "name": "OpenClaw Recovery Controller",
+      "triggers": {
+        "schedule": [
+          {
+            "cron": "*/15 * * * *"
+          }
+        ],
+        "workflow_dispatch": null,
+        "push": {
+          "branches": [
+            "main"
+          ],
+          "paths": [
+            ".github/workflows/openclaw-offline-boot-repair.yml",
+            ".github/workflows/openclaw-recovery-controller.yml",
+            "scripts/openclaw_recovery_controller.sh",
+            "scripts/openclaw_publish_status.sh",
+            "scripts/openclaw_offline_mount_repair_cloudflare.sh",
+            "scripts/openclaw_local_proof.sh",
+            "scripts/oci_openclaw_helper_local_proof.py",
+            "scripts/oci_openclaw_offline_repair_v2.py",
+            "scripts/oci_openclaw_offline_repair_v3.py",
+            "scripts/oci_openclaw_helper_run_command_v2.py"
+          ]
+        }
+      },
+      "permissions": {
+        "actions": "write",
+        "contents": "write",
+        "issues": "write",
+        "statuses": "write"
+      },
+      "concurrency": {
+        "group": "openclaw-recovery-controller",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "controller",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            "scripts/openclaw_publish_status.sh",
+            "scripts/openclaw_recovery_controller.sh"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/openclaw-recovery-lint.yml",
+      "name": "OpenClaw recovery lint",
+      "triggers": {
+        "push": {
+          "paths": [
+            "scripts/openclaw_*.sh",
+            "scripts/oci_openclaw_*.py",
+            "scripts/test_openclaw_*.py",
+            ".github/workflows/openclaw-*.yml"
+          ]
+        },
+        "pull_request": {
+          "paths": [
+            "scripts/openclaw_*.sh",
+            "scripts/oci_openclaw_*.py",
+            "scripts/test_openclaw_*.py",
+            ".github/workflows/openclaw-*.yml"
+          ]
+        }
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "syntax",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "<event-default>"
+          ],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/repair-article-images.yml",
+      "name": "Repair Article Hero Images",
+      "triggers": {
+        "workflow_dispatch": {
+          "inputs": {
+            "scope": {
+              "description": "Repair scope",
+              "required": true,
+              "default": "all",
+              "type": "choice",
+              "options": [
+                "critical",
+                "all"
+              ]
+            }
+          }
+        }
+      },
+      "permissions": {
+        "contents": "write",
+        "pull-requests": "write"
+      },
+      "concurrency": {
+        "group": "repair-article-hero-images",
+        "cancel-in-progress": false
+      },
+      "jobs": [
+        {
+          "id": "repair",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [
+            "main"
+          ],
+          "executed_scripts": [
+            ".github/scripts/repair-article-images.py"
+          ],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "git_push",
+            "pr_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    },
+    {
+      "path": ".github/workflows/youtube-oauth-diagnostic.yml",
+      "name": "YouTube OAuth diagnostic",
+      "triggers": {
+        "push": {
+          "branches": [
+            "fix/youtube-oauth-diagnostic"
+          ],
+          "paths": [
+            ".github/workflows/youtube-oauth-diagnostic.yml"
+          ]
+        },
+        "pull_request": {
+          "paths": [
+            ".github/workflows/youtube-oauth-diagnostic.yml"
+          ]
+        },
+        "workflow_dispatch": null
+      },
+      "permissions": {
+        "contents": "read"
+      },
+      "concurrency": null,
+      "jobs": [
+        {
+          "id": "diagnose",
+          "if": null,
+          "needs": null,
+          "permissions": null,
+          "concurrency": null,
+          "checkout_refs": [],
+          "executed_scripts": [],
+          "dispatch_targets": [],
+          "side_effect_candidates": [
+            "api_write"
+          ],
+          "env_names": []
+        }
+      ],
+      "authority_verdict": "UNKNOWN: static discovery requires transitive script and live-mode review"
+    }
+  ]
+}

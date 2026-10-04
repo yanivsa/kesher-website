@@ -74,6 +74,33 @@ describe('ArticleShortGeometry', () => {
     }
   });
 
+  it('preserves native portrait source sharpness without upscale or rotation', () => {
+    const { container } = render(
+      React.createElement(ArticleShort, {
+        videoSrc: "test.mp4",
+        sourceStartFrame: 0,
+        durationInFrames: 1350,
+        title: "Test Title",
+        category: "Test Category",
+        url: "test.com",
+        preserveSourceSharpness: true,
+        motionPlan: [{
+          startFrame: 0,
+          endFrame: 300,
+          focusX: 0.2,
+          focusY: 0.8,
+          zoom: 1.25,
+          rotation: 0.5,
+        }],
+      })
+    );
+
+    const video = container.querySelector('[data-testid="remotion-video"]') as HTMLVideoElement | null;
+    expect(video).not.toBeNull();
+    expect(video?.style.transform).toContain('scale(1)');
+    expect(video?.style.transform).toContain('rotate(0deg)');
+  });
+
   it('bounds effective zoom so it does not compound incorrectly', () => {
     // Even if target.zoom provides 1.0 (no motion target), we start at baseScale
     const minEffectiveZoom = SHORT_GEOMETRY.baseScale;

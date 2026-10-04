@@ -1,0 +1,23 @@
+{
+  "scope": "Disposable local article/data staging with real Git, all source images, shared content/provenance gate and npm generators; no GitHub CI, provider or public delivery proof",
+  "trusted_base_sha": "4f5d4675a829809c906254ac5a4338a1f3858025",
+  "candidate": {
+    "base_sha": "4f5d4675a829809c906254ac5a4338a1f3858025",
+    "head_sha": "abe6a1d96844525d71edfe3dd883b16f93f4d995",
+    "tree_sha": "70d3b8f0b934103634757e8080030ebbbbfdc034",
+    "pr_number": 42,
+    "body_sha256": "8edfcde62e87bae1058d6b8263d5d385184a29c32afaa9454bd7ac28cc9d2cf2",
+    "article_sha256": "591e6e901b1fcd04d73fc9f586062de7e282852b689c8a98708b46f3f6469555",
+    "image_sha256": "7a1de96ae68d855990169a22969a7d1c35e16822d703ad1df16c7d6cce7acb10"
+  },
+  "existing_posts_preserved": 87,
+  "image_provider": "LocalEditorial",
+  "source_checkout_head_preserved": true,
+  "trusted_code_files_preserved": true,
+  "readonly_test_jobs_state_writes": 0,
+  "generated_publication_data_unchanged": true,
+  "module_sha256": {
+    "scripts/kesher_runtime/article_validation.py": "5525aca6260c73281b434ad834c33dd4fd9da8687aeecb51258aa8819039bbd2",
+    ".github/scripts/validate-article-pr.py": "1b28b78fc6e5ef460c0cecd1374975427d0b4bb234428f0d319d9c589ede2683"
+  }
+}

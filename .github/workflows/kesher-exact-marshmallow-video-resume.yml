@@ -1,24 +1,14 @@
-name: Kesher Exact Marshmallow Video Task Resume
+name: Kesher Exact Marshmallow Video Task Resume (retired candidate)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/kesher-exact-marshmallow-video-resume.yml'
+  workflow_dispatch:
 
 permissions:
-  actions: write
   contents: read
 
 jobs:
-  resume-exact-task:
+  retired:
+    if: ${{ github.repository == '__KESHER_RETIRED__' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Resume existing marshmallow Video Overview task
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          gh workflow run kesher-daily-video.yml --repo "$GITHUB_REPOSITORY" --ref main \
-            -f operation=generate \
-            -f target_slug=marshmallow-test-environmental-reliability
+      - run: echo 'Legacy indirect dispatcher retired; use the canonical controller.'

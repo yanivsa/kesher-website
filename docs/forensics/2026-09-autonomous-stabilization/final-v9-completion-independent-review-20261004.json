@@ -1,0 +1,51 @@
+{
+  "reviewer": "/root/final_v8_independent_review",
+  "model": "GPT-6.1 Sol",
+  "effort": "xhigh",
+  "reviewed_implementation_sha": "204456cd27d3adb16ebe76fe7335d8b065547634",
+  "base_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+  "critical": 0,
+  "important": 0,
+  "minor": 0,
+  "findings": [],
+  "call_chain_pin_count": 1371,
+  "only_changed_pins": {
+    "package.json": 23,
+    "scripts/jules_article_runner_v3.py": 4,
+    "tests/test_jules_article_runner.py": 1
+  },
+  "verified": [
+    "exact merge-base and transplant tree equality",
+    "17late-main paths exact; semantic package preserves plugin, expanded suites and real evaluator",
+    "five meaningful incident regressions; no old test weakened",
+    "exact attempt identity; duplicate/lost-ack/adoption/no-output session handling",
+    "CAS/admission guards unchanged",
+    "no roles/resources/capabilities/credential/dispatch scope changes"
+  ],
+  "declined": [
+    "current provider/scheduler state",
+    "live workflow registration or activation certification",
+    "plugin external submission approval",
+    "legal sufficiency"
+  ],
+  "tests_executed_by_reviewer": false,
+  "providers_contacted_by_reviewer": false,
+  "final_document_boundary_review": {
+    "completed": true,
+    "critical": 0,
+    "important": 0,
+    "minor": 0,
+    "verified": [
+      "all16archive members and gate log hashes",
+      "263top-level Python vs387XML counter including subtests;0failure/error/skip",
+      "499controller/151website/140browser terminal counts",
+      "all155retained input hashes and prior224comparison",
+      "22main hashes and fiveclosed5.2 protected hashes; canonical floor unchanged",
+      "runbook/report paths and main-preservation commands",
+      "implementation/evidence/final-delivery SHA resolver and pending publication boundaries"
+    ],
+    "runtime_revalidation_required_for_docs_only": false
+  },
+  "production_state_written": false,
+  "public_completion_inferred": false
+}

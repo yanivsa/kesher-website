@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import copy
 import io
 import json
 import os
@@ -338,6 +339,9 @@ class GitHubClient:
         self.repo = repo
         self.token = token
         self.api = f"https://api.github.com/repos/{repo}"
+        self._controller_state_loaded = False
+        self._controller_state_sha: str | None = None
+        self._controller_state_document: dict[str, Any] | None = None
 
     def request(
         self,
@@ -348,9 +352,14 @@ class GitHubClient:
         raw: bool = False,
         allow_404: bool = False,
     ) -> Any:
+        from scripts.kesher_runtime.legacy_retirement import github_mutation
+        github_mutation(self.repo, method, url)
         data = None if body is None else json.dumps(body, ensure_ascii=False).encode("utf-8")
         last: Exception | None = None
-        for attempt in range(4):
+        # A lost response to a mutation does not prove the server rejected it.
+        # The command owner must reconcile before retrying a dispatch/write.
+        read_only = method.upper() in {"GET", "HEAD"}
+        for attempt in range(4 if read_only else 1):
             request = urllib.request.Request(
                 url, data=data, method=method,
                 headers={
@@ -374,8 +383,16 @@ class GitHubClient:
                     raise ControllerError(
                         f"GITHUB_HTTP_{exc.code}: {method} {url} failed: {detail}"
                     ) from exc
+                if not read_only:
+                    raise ControllerError(
+                        f"GITHUB_MUTATION_UNCERTAIN: {method} {url} HTTP {exc.code}; reconcile before retry"
+                    ) from exc
                 last = exc
-            except urllib.error.URLError as exc:
+            except (urllib.error.URLError, TimeoutError, ConnectionError) as exc:
+                if not read_only:
+                    raise ControllerError(
+                        f"GITHUB_MUTATION_UNCERTAIN: {method} {url}; reconcile before retry"
+                    ) from exc
                 last = exc
             time.sleep(2 ** attempt)
         raise ControllerError(f"GITHUB_TRANSIENT_FAILURE: {method} {url}: {last}")
@@ -442,9 +459,28 @@ class GitHubClient:
         payload = self.request(
             "GET", f"{self.api}/contents/{quoted}?ref={urllib.parse.quote(ref, safe='')}"
         )
-        if not isinstance(payload, dict) or payload.get("encoding") != "base64":
+        if not isinstance(payload, dict):
             raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}")
-        return json.loads(base64.b64decode(payload.get("content") or "").decode("utf-8"))
+
+        encoding = payload.get("encoding")
+        content = payload.get("content") or ""
+        if encoding == "base64" and content:
+            raw = base64.b64decode(content)
+        else:
+            # GitHub Contents API may omit inline content for large files.
+            # Fall back to the immutable blob referenced by the same payload.
+            blob_sha = str(payload.get("sha") or "").strip()
+            if not blob_sha:
+                raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}")
+            blob = self.request("GET", f"{self.api}/git/blobs/{blob_sha}")
+            if not isinstance(blob, dict) or blob.get("encoding") != "base64" or not blob.get("content"):
+                raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}")
+            raw = base64.b64decode(blob["content"])
+
+        try:
+            return json.loads(raw.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}") from exc
 
     def open_article_prs(self, target_slot: str | None = None) -> list[dict[str, Any]]:
         prs = self.request("GET", f"{self.api}/pulls?state=open&per_page=100")
@@ -559,6 +595,8 @@ class GitHubClient:
         })
 
     def load_controller_state(self) -> dict[str, Any] | None:
+        self._controller_state_loaded = False
+        self._controller_state_document = None
         self.ensure_state_ref()
         quoted = urllib.parse.quote(STATE_PATH, safe="/")
         payload = self.request(
@@ -567,41 +605,49 @@ class GitHubClient:
             allow_404=True,
         )
         if payload is None:
+            self._controller_state_sha = None
+            self._controller_state_loaded = True
             return None
         if not isinstance(payload, dict) or payload.get("encoding") != "base64":
             raise ControllerError("CONTROLLER_STATE_INVALID")
         state = json.loads(base64.b64decode(payload.get("content") or "").decode("utf-8"))
         if not isinstance(state, dict):
             raise ControllerError("CONTROLLER_STATE_INVALID")
+        from scripts.kesher_runtime.legacy_retirement import validate_legacy_read
+        validate_legacy_read(state)
+        if not payload.get("sha"):
+            raise ControllerError("CONTROLLER_STATE_REVISION_MISSING")
+        self._controller_state_sha = str(payload["sha"])
+        self._controller_state_document = copy.deepcopy(state)
+        self._controller_state_loaded = True
         return state
 
     def save_controller_state(self, state: dict[str, Any]) -> None:
-        self.ensure_state_ref()
+        if not self._controller_state_loaded:
+            raise ControllerError("CONTROLLER_STATE_NOT_LOADED")
+        from scripts.kesher_runtime.legacy_retirement import validate_legacy_read
+        validate_legacy_read(self._controller_state_document)
+        validate_legacy_read(state)
         quoted = urllib.parse.quote(STATE_PATH, safe="/")
-        max_attempts = 4
-        for attempt in range(max_attempts):
-            current = self.request(
-                "GET",
-                f"{self.api}/contents/{quoted}?ref={urllib.parse.quote(STATE_REF, safe='')}",
-                allow_404=True,
-            )
-            body: dict[str, Any] = {
-                "message": f"state: Kesher controller {state.get('cycle')} {state.get('status')}",
-                "content": base64.b64encode(
-                    (json.dumps(state, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
-                ).decode("ascii"),
-                "branch": STATE_REF,
-            }
-            if isinstance(current, dict) and current.get("sha"):
-                body["sha"] = current["sha"]
-            try:
-                self.request("PUT", f"{self.api}/contents/{quoted}", body)
-                return
-            except ControllerError as exc:
-                if "GITHUB_HTTP_409" in str(exc) and attempt + 1 < max_attempts:
-                    time.sleep(1.0 + attempt * 1.5)
-                    continue
-                raise
+        body: dict[str, Any] = {
+            "message": f"state: Kesher controller {state.get('cycle')} {state.get('status')}",
+            "content": base64.b64encode(
+                (json.dumps(state, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+            ).decode("ascii"),
+            "branch": STATE_REF,
+        }
+        if self._controller_state_sha is not None:
+            body["sha"] = self._controller_state_sha
+        # Use the revision on which this tick was based. On conflict, discard
+        # its plan; rebinding this payload to a fresh SHA would lose updates.
+        self._controller_state_loaded = False
+        receipt = self.request("PUT", f"{self.api}/contents/{quoted}", body)
+        written_sha = (receipt.get("content") or {}).get("sha") if isinstance(receipt, dict) else None
+        if not written_sha:
+            raise ControllerError("CONTROLLER_STATE_WRITE_RECEIPT_MISSING")
+        self._controller_state_sha = str(written_sha)
+        self._controller_state_document = copy.deepcopy(state)
+        self._controller_state_loaded = True
 
     def newest_video_state(self) -> dict[str, Any]:
         payload = self.request(
@@ -1034,6 +1080,8 @@ class Controller:
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website"))
     parser.add_argument("--report-json", action="store_true")
