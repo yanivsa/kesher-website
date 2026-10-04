@@ -8,6 +8,7 @@ on:
       - ".agents/plugins/marketplace.json"
       - ".github/workflows/kesher-plugin-contracts.yml"
       - "scripts/generate-plugin-resources.mjs"
+      - "scripts/build_chatgpt_plugin_zip.py"
       - "src/data/posts.json"
       - "tests/kesher-plugin-contracts.test.ts"
       - "package.json"
@@ -47,6 +48,9 @@ jobs:
 
       - name: Validate portable plugin package and marketplace
         run: node plugin/tests/validate-plugin-package.mjs
+
+      - name: Build canonical public plugin archive
+        run: npm run plugin:package
 
       - name: Validate Kesher skill and multi-turn eval cases
         run: node plugin/tests/validate-skill-evals.mjs
