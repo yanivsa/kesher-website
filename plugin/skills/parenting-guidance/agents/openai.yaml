@@ -1,0 +1,15 @@
+interface:
+  display_name: "הדרכת הורים מעשית"
+  short_description: "גבולות, שגרות, מסכים, התפרצויות ושיתוף פעולה"
+  default_prompt: "איך להציב גבול לילד בלי להיכנס למאבק כוח?"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "kesher"
+      description: "Kesher read-only practical parenting tools"
+      transport: "streamable_http"
+      url: "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp"
+policy:
+  products:
+    - CHAT
+  allow_implicit_invocation: true
