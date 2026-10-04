@@ -1,26 +1,26 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-04",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-04T10:34:58.503628+00:00",
+    "next_retry_at": null,
     "run_id": 37182821167,
     "processed_run_id": 37182821167,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 2,
+    "attempts": 3,
     "deploy_attempts": 0,
     "normalization_status": "running",
     "quality_status": "passed",
     "quality_content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22",
     "quality_checked_at": "2026-10-04T00:45:00.091137+00:00",
     "quality_violations": [],
-    "last_dispatch_at": "2026-10-04T06:26:44.838232+00:00",
+    "last_dispatch_at": "2026-10-04T10:37:29.816007+00:00",
     "last_run_conclusion": "success",
     "last_worker_result": {
       "schema_version": 1,
@@ -2001,9 +2001,18 @@
       "details": {
         "retry_at": "2026-10-04T10:34:58.503628+00:00"
       }
+    },
+    {
+      "at": "2026-10-04T10:37:29.816013+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 3
+      }
     }
   ],
-  "updated_at": "2026-10-04T10:33:52.985945+00:00",
+  "updated_at": "2026-10-04T10:37:29.816019+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
