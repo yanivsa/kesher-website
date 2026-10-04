@@ -1106,6 +1106,14 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
         and "1080x1920" in technical_note
     )
     uploaded_recovery = item.get("status") == "uploaded" and item.get("uploaded") is True and item.get("youtube_id")
+    interrupted_uploaded_rebuild = (
+        item.get("status") == "downloaded"
+        and item.get("uploaded") is not True
+        and any(
+            isinstance(entry, dict) and entry.get("reason") == "superseded_by_rebuild"
+            for entry in (item.get("superseded_history") or [])
+        )
+    )
     immutable_evidence_fields = (
         "manifest_sha256",
         "transcript_sha256",
@@ -1128,11 +1136,13 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
         or metadata_recovery
         or resolution_recovery
         or uploaded_recovery
+        or interrupted_uploaded_rebuild
         or legacy_evidence_recovery
     ):
         raise PipelineError(
             "Remotion rebuild is allowed only for a visual rejection, a recoverable signature/metadata/resolution technical rejection, "
-            "an exact legacy immutable-evidence recovery, or an exact uploaded-item recovery"
+            "an exact legacy immutable-evidence recovery, an interrupted exact uploaded-item rebuild, "
+            "or an exact uploaded-item recovery"
         )
 
     youtube_id = item.pop("youtube_id", None)
