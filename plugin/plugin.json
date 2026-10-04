@@ -32,9 +32,13 @@
         "shortDescription": "זוגיות, הדרכת הורים וקשב",
         "longDescription": "כלים מעשיים בעברית לזוגיות, הורות והדרכת הורים: הבנת דפוסי קונפליקט זוגי, תכנון שיחות קשות, גבולות, התפרצויות, אחים, מסכים, שגרות, מעברים, התארגנות, קשב ותפקודים ניהוליים בחיי היום־יום. הכלים אינם מאבחנים ADHD או מצב רפואי/נפשי, אינם נותנים ייעוץ תרופתי, משפטי או חירום ואינם מחליפים טיפול מקצועי.",
         "developerName": "קשר — שירה סהרוני",
-        "category": "Other",
+        "category": "Communication",
         "capabilities": [
-          "Read"
+          "Understand recurring couple-conflict patterns",
+          "Plan calmer difficult conversations with a partner",
+          "Build practical parenting response plans",
+          "Support parenting around attention and executive-function challenges",
+          "Find relevant Kesher articles and service resources when explicitly requested"
         ],
         "websiteURL": "https://kesher.saharoni.com",
         "defaultPrompt": [
