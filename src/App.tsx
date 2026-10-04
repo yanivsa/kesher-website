@@ -58,6 +58,7 @@ const appointment = loadable(() => import('./pages/Appointment/AppointmentPage')
 const accessibility = loadable(() => import('./pages/Legal/AccessibilityPage'));
 const privacy = loadable(() => import('./pages/Legal/PrivacyPolicy'));
 const terms = loadable(() => import('./pages/Legal/TermsOfUse'));
+const chatgptTools = loadable(() => import('./pages/Tools/ChatGPTToolsPage'));
 const now = loadable(() => import('./pages/Now/NowPage'));
 const friends = loadable(() => import('./pages/Friends/FriendsPage'));
 const links = loadable(() => import('./pages/Links/LinksPage'));
@@ -99,6 +100,7 @@ const { Page: AppointmentPage } = appointment;
 const { Page: AccessibilityPage } = accessibility;
 const { Page: PrivacyPolicy } = privacy;
 const { Page: TermsOfUse } = terms;
+const { Page: ChatGPTToolsPage } = chatgptTools;
 const { Page: CouplesCounselingAshdodPage } = couplesCounselingAshdod;
 const { Page: ParentingGuidanceAshdodPage } = parentingGuidanceAshdod;
 const { Page: CouplesMediationAshdodPage } = couplesMediationAshdod;
@@ -146,6 +148,7 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/accessibility\/?$/, accessibility.preload],
   [/^\/privacy\/?$/, privacy.preload],
   [/^\/terms\/?$/, terms.preload],
+  [/^\/tools\/chatgpt\/?$/, chatgptTools.preload],
 ];
 
 // The preloader intentionally shares the same module cache as the route
@@ -195,6 +198,7 @@ function App() {
           <Route path="/accessibility" element={<AccessibilityPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfUse />} />
+          <Route path="/tools/chatgpt" element={<ChatGPTToolsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
