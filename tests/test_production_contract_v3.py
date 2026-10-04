@@ -172,7 +172,10 @@ class ProductionContractV3Tests(unittest.TestCase):
         workflow = SHORT_WORKFLOW_V4.read_text(encoding="utf-8")
         self.assertIn("npm ci --prefix remotion-kesher --no-audit --no-fund", workflow)
         self.assertIn("test -x remotion-kesher/node_modules/.bin/remotion", workflow)
-        self.assertIn("- remotion-kesher/**", workflow)
+        import yaml
+        triggers=yaml.safe_load(workflow)['on'] if 'on' in yaml.safe_load(workflow) else yaml.safe_load(workflow)[True]
+        self.assertEqual(set(triggers),{'workflow_dispatch'})
+        self.assertIn('scripts.kesher_runtime.bridge_admission',workflow)
 
     def test_short_remotion_composition_is_full_hd_portrait(self) -> None:
         root = (ROOT / "remotion-kesher" / "src" / "Root.tsx").read_text(encoding="utf-8")

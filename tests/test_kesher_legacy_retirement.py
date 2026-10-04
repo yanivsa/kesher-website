@@ -2,7 +2,7 @@ import copy
 import unittest
 from unittest.mock import patch
 from scripts.kesher_runtime.handover import require_legacy_writable
-from scripts.kesher_runtime.legacy_retirement import validate_legacy_write
+from scripts.kesher_runtime.legacy_retirement import media_mutation, retired_entrypoint, validate_legacy_write
 from scripts.kesher_runtime.state import StateInvalid, validate_transition
 from tests import test_kesher_handover as fixtures
 
@@ -27,6 +27,39 @@ class LegacyRetirementTests(unittest.TestCase):
         with patch.object(core,'run_notebooklm',side_effect=AssertionError('provider')), patch.object(core.requests,'post',side_effect=AssertionError('network')):
             for operation in operations:
                 with self.assertRaises(StateInvalid):operation()
+
+    def test_retired_entrypoint_allows_only_exact_manual_media_bridge(self):
+        base = {
+            'KESHER_MANUAL_EMERGENCY_BRIDGE': 'true',
+            'GITHUB_EVENT_NAME': 'workflow_dispatch',
+            'GITHUB_REPOSITORY': 'yanivsa/kesher-website',
+            'GITHUB_REF': 'refs/heads/main',
+            'GITHUB_WORKFLOW_REF': 'yanivsa/kesher-website/.github/workflows/kesher-daily-video.yml@refs/heads/main',
+        }
+        with patch.dict('os.environ', base, clear=True):
+            self.assertIsNone(retired_entrypoint())
+        for key, value in (
+            ('GITHUB_EVENT_NAME', 'schedule'),
+            ('GITHUB_REF', 'refs/heads/other'),
+            ('GITHUB_REPOSITORY', 'other/repo'),
+            ('GITHUB_WORKFLOW_REF', 'yanivsa/kesher-website/.github/workflows/ci.yml@refs/heads/main'),
+        ):
+            env = dict(base)
+            env[key] = value
+            with patch.dict('os.environ', env, clear=True):
+                with self.assertRaises(StateInvalid):
+                    retired_entrypoint()
+
+    def test_manual_media_bridge_accepts_legacy_dict_without_canonical_context(self):
+        env = {
+            'KESHER_MANUAL_EMERGENCY_BRIDGE': 'true',
+            'GITHUB_EVENT_NAME': 'workflow_dispatch',
+            'GITHUB_REPOSITORY': 'yanivsa/kesher-website',
+            'GITHUB_REF': 'refs/heads/main',
+            'GITHUB_WORKFLOW_REF': 'yanivsa/kesher-website/.github/workflows/kesher-short-v4.yml@refs/heads/main',
+        }
+        with patch.dict('os.environ', env, clear=True):
+            self.assertIsNone(media_mutation({}))
 
     def test_every_durable_phase_fences_legacy_state_writes(self):
         case=fixtures.HandoverTests();case.setUp()

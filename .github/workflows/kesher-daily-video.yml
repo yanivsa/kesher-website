@@ -1,30 +1,6 @@
 name: Kesher Daily NotebookLM Video Overview
 
 on:
-  pull_request:
-    paths:
-      - .github/workflows/kesher-daily-video.yml
-      - .github/prompts/jules-remotion-video-upgrade.md
-      - config/kesher-production-contract.json
-      - scripts/kesher_automation_policy.py
-      - scripts/kesher_daily_pipeline.py
-      - scripts/kesher_video_reconcile.py
-      - scripts/jules_video_reviewer.py
-      - scripts/jules_video_reviewer_v3.py
-      - scripts/prepare_jules_video_evidence.py
-      - scripts/requirements-video-cloud.txt
-      - scripts/kesher_video_asset_resolver.py
-      - scripts/kesher_free_stock_broll.py
-      - tests/test_kesher_free_stock_broll.py
-      - package.json
-      - package-lock.json
-      - src/remotion/**
-      - tests/test_kesher_daily_pipeline.py
-      - tests/kesher_daily_pipeline_suite.py
-      - tests/test_video_review_policy.py
-      - tests/test_video_review_schema.py
-      - tests/test_video_reconcile.py
-      - tests/test_production_contract_v3.py
   workflow_dispatch:
     inputs:
       operation:
@@ -65,12 +41,12 @@ concurrency:
 
 jobs:
   pipeline:
-    # Retired by the coordinated schema-6 authority handover.
-    # A repository is always owner/name; this sentinel can never match.
-    if: ${{ github.repository == '__KESHER_RETIRED__' }}
+    # Bounded manual emergency bridge; explicitly retired by coordinated cutover.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
+      KESHER_MANUAL_EMERGENCY_BRIDGE: "true"
       KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state
       NOTEBOOKLM_BIN: notebooklm
       KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
@@ -79,12 +55,18 @@ jobs:
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
       KESHER_BROLL_ENABLED: "true"
       KESHER_BROLL_BUDGET_SECONDS: "12"
+      KESHER_MEDIA_MODE: video_overview
 
     steps:
       - name: Checkout current main
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+
+      - name: Refuse emergency bridge after cutover exclusion begins
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission
 
       - name: Set up Python 3.12
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97

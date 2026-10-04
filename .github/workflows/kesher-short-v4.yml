@@ -1,26 +1,6 @@
 name: Kesher Daily Article Short V4
 
 on:
-  pull_request:
-    paths:
-      - .github/workflows/kesher-short-v4.yml
-      - scripts/kesher_short_pipeline_v4.py
-      - scripts/kesher_short_policy.py
-      - scripts/kesher_daily_pipeline.py
-      - scripts/kesher_video_reconcile.py
-      - scripts/kesher_content_controller_v4_runtime.py
-      - scripts/requirements-video-cloud.txt
-      - scripts/kesher_video_asset_resolver.py
-      - scripts/kesher_free_stock_broll.py
-      - tests/test_kesher_free_stock_broll.py
-      - src/remotion/**
-      - remotion-kesher/**
-      - package.json
-      - package-lock.json
-      - tests/test_short_pipeline_v4.py
-      - tests/test_short_retry_policy_v4.py
-      - tests/test_video_reconcile.py
-      - tests/test_v4_runtime_activation.py
   workflow_dispatch:
     inputs:
       operation:
@@ -80,12 +60,12 @@ concurrency:
 
 jobs:
   pipeline:
-    # Retired by the coordinated schema-6 authority handover.
-    # A repository is always owner/name; this sentinel can never match.
-    if: ${{ github.repository == '__KESHER_RETIRED__' }}
+    # Bounded manual emergency bridge; explicitly retired by coordinated cutover.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
+      KESHER_MANUAL_EMERGENCY_BRIDGE: "true"
       KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-short-v4-state
       KESHER_STATE_ARTIFACT: kesher-short-v4-state
       NOTEBOOKLM_BIN: notebooklm
@@ -109,6 +89,11 @@ jobs:
         with:
           ref: main
           persist-credentials: false
+
+      - name: Refuse emergency bridge after cutover exclusion begins
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission
 
       - name: Set up Python 3.12
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97

@@ -47,6 +47,10 @@ def technically_verified(item: dict, status: str = "approved") -> None:
 
 
 class VideoReconcileTests(unittest.TestCase):
+    def test_video_workflow_declares_video_overview_media_mode(self) -> None:
+        workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-daily-video.yml").read_text(encoding="utf-8")
+        self.assertIn("KESHER_MEDIA_MODE: video_overview", workflow)
+
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)

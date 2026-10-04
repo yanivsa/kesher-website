@@ -201,7 +201,7 @@ class ResourceAdapterTests(unittest.TestCase):
         from scripts.kesher_runtime.git_exclusion import GitHubResourceExclusion
         run = self.actions.run(status='waiting')
         self.actions.disable_drop = self.actions.cancel_drop = True
-        for _ in range(5): self.progress()
+        for _ in range(9): self.progress()
         self.assertIsNone(self.adapter.inspect('owner/repo')['protection'])
         self.adapter = GitHubResourceExclusion(self.service,'owner/repo',**self.kwargs)
         run.update(status='completed',conclusion='cancelled')
@@ -232,7 +232,8 @@ class ResourceAdapterTests(unittest.TestCase):
 
     def test_endpoint_denies_stale_principal_and_exact_attempt_replaced_after_intent(self):
         from scripts.kesher_runtime.git_exclusion import require_exclusion_actions
-        run=self.actions.run(); self.progress(); self.progress(); self.progress(); self.progress()
+        run=self.actions.run()
+        for _ in range(8): self.progress()
         state=self.adapter.journal.load().state; anchor=self.adapter.epoch.authority()
         kwargs=dict(principal='stale-v5',epoch='one',authenticated_code_sha256='e'*64,
             approval={'repo':'owner/repo','main_sha':'b'*40,'code_sha256':'e'*64,'resource_policy_sha256':digest(self.policy)},

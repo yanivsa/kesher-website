@@ -11,6 +11,7 @@ from .identity import MediaIdentity, SourceIdentity, digest
 SITE_URL = 'https://kesher.saharoni.com'
 YOUTUBE_CHANNEL_ID = 'UCx5fEFvdVf28HLAR2dFW64Q'
 VERIFIER_VERSION = 1
+HEBREW_LANGUAGE_CODES = {'he', 'iw'}
 SHORT_TITLE_PREFIX = 'בקצרה: '
 APPOINTMENT_URL = SITE_URL + '/appointment'
 
@@ -78,7 +79,8 @@ def match_youtube_metadata(item: dict, row: dict) -> dict:
     for field in ('title', 'description'):
         if snippet.get(field) != expected[field]:
             raise VerificationError(f'PUBLIC_METADATA_INVALID: remote {field} differs from authoritative metadata')
-    if snippet.get('defaultLanguage') != 'he' or snippet.get('defaultAudioLanguage') != 'he':
+    if (snippet.get('defaultLanguage') not in HEBREW_LANGUAGE_CODES
+            or snippet.get('defaultAudioLanguage') not in HEBREW_LANGUAGE_CODES):
         raise VerificationError('PUBLIC_METADATA_INVALID: remote metadata/audio language is not Hebrew')
     if sorted(snippet.get('tags') or []) != sorted(expected['tags']):
         raise VerificationError('PUBLIC_METADATA_INVALID: remote tags differ from source-derived tags')
