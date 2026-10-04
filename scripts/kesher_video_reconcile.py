@@ -412,6 +412,37 @@ def technical_publication_ready(item: dict[str, Any]) -> bool:
     )
 
 
+def _repair_legacy_overview_kind(state: dict[str, Any], item: dict[str, Any]) -> bool:
+    """Repair a stale Short type only when immutable evidence proves a long Overview.
+
+    Older targeted recovery state could retain article_short even after the
+    long-form Remotion render and YouTube insert completed. That makes public
+    metadata verification compare the upload against Short metadata. Repair the
+    kind in place only when the render pipeline, landscape dimensions and local
+    title all independently agree that this is the exact long-form Overview.
+    """
+    if item.get("type") != "article_short":
+        return False
+    if item.get("visual_pipeline") != "remotion-v1-notebooklm-audio":
+        return False
+    media = item.get("media") or {}
+    try:
+        width = int(media.get("width") or 0)
+        height = int(media.get("height") or 0)
+    except (TypeError, ValueError):
+        return False
+    source = item.get("source") or {}
+    expected_title = str(source.get("video_title") or "").strip()
+    local_title = str((item.get("youtube_metadata") or {}).get("title") or "").strip()
+    if width != 1280 or height != 720 or width <= height or not expected_title or local_title != expected_title:
+        return False
+    item["type"] = "video_overview"
+    item["legacy_media_type_repaired_from"] = "article_short"
+    item["legacy_media_type_repaired_at"] = pipeline.utc_now()
+    pipeline.save_state(state)
+    print(f"VIDEO_OVERVIEW_TYPE_REPAIRED item={item.get('id')} slug={source_slug(item)}")
+    return True
+
 def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) -> bool:
     """Finish public verification after an earlier upload already returned its ID."""
     if not item.get("youtube_id") or item.get("uploaded") is True:
@@ -486,6 +517,7 @@ def prepare_upload(
 
     item = unresolved[0]
     export_target(item)
+    _repair_legacy_overview_kind(state, item)
     if item.get("youtube_id") and item.get("uploaded") is not True:
         if recover_persisted_youtube_id(state, item):
             workflow_output("ready", "false")
