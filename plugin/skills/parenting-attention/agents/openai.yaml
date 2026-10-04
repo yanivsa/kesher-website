@@ -1,0 +1,15 @@
+interface:
+  display_name: "הורות, קשב ותפקודים ניהוליים"
+  short_description: "בקרים, משימות, מעברים, התארגנות וויסות"
+  default_prompt: "הילד יודע מה צריך לעשות בבוקר אבל לא מצליח להתחיל. איך לעזור?"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "kesher"
+      description: "Kesher read-only attention and executive-function parenting tools"
+      transport: "streamable_http"
+      url: "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp"
+policy:
+  products:
+    - CHAT
+  allow_implicit_invocation: true
