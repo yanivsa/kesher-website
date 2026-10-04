@@ -421,7 +421,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 278381551
     },
     ".github/workflows/auto-close-stale-article-prs.yml": {
       "capabilities": [
@@ -445,7 +446,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 285528275
     },
     ".github/workflows/auto-merge-article-prs.yml": {
       "capabilities": [
@@ -480,7 +482,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 285527775
     },
     ".github/workflows/auto-merge-jules-audit-prs.yml": {
       "capabilities": [
@@ -507,7 +510,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 282663817
     },
     ".github/workflows/booking-tracking-infrastructure.yml": {
       "capabilities": [
@@ -541,7 +545,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 338335093
     },
     ".github/workflows/build-article-fallback-library.yml": {
       "capabilities": [
@@ -580,14 +585,15 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 362583521
     },
     ".github/workflows/ci.yml": {
       "capabilities": [
         "read",
         "status_write"
       ],
-      "definition_sha256": "3bc325952133ddb59939716718523c82409de5341107cfc346c7ebd641b8ff91",
+      "definition_sha256": "b54eb897801e371a6b4ba801e28cdbf36b51bcd559e55e7c2bf7d755147de0f9",
       "resources": [
         "github.statuses"
       ],
@@ -625,13 +631,13 @@
           "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -640,11 +646,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
           "scripts/kesher_three_strike_runtime.py": "71bf1cd01ecc6ccb24b8d59740fbebcab9ed694c8eba65ce96295cb981ae5659",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
@@ -693,7 +699,18 @@
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "291440842cc8c930bc618dc980a78faebc298f8c4c5056e3643adf9937f1aabc",
-          "tests/test_v5_video_source_binding.py": "6876f78b1f8515254c1a95bce9b697ad97c73a27ad0ce85ffa54272efc740b13"
+          "tests/test_v5_video_source_binding.py": "6876f78b1f8515254c1a95bce9b697ad97c73a27ad0ce85ffa54272efc740b13",
+          "tests/test_kesher_production_cutover.py": "b668c3d7d7d8d92bbb4525c4df35f5ccd4ccbfce83fb6cbbea66dc832d1e8f28",
+          "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
+          "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
+          "tests/test_kesher_git_exclusion.py": "60ad776c6da6b084512be14730e73a0ff83676a4ed0cdb8c5cdf03044fb575d4",
+          "tests/test_kesher_handover.py": "791fb6de96325644762840b71f02ef44c585a15bbc8e004c271935bf1ff44eb7",
+          "tests/test_kesher_handover_github.py": "20d6875341d64f16bb2b8b393ac9936dbe3dbc59d5384254fd1014a6116cc948",
+          "tests/test_kesher_authority_digest.py": "718053e650692cb59be8b59c76f2a318c81dd844c16aad582e895066f9f2357a",
+          "tests/test_kesher_authority_topology.py": "b0fc7fd09942f4c5bff07b066d0d2b6efbabb9b52b072792fb5de8c34d8b365d",
+          "tests/test_kesher_runtime_migration.py": "909db0229950e4fe3f7ebcb7d82c4eb433a8cfb9079c223f57330a2ba6a9287d",
+          "tests/test_kesher_worker_entry.py": "f48055276b51e264ef35b5d0bb7d3952918fbc39aa1ff09a93e1a09b73365fde",
+          "tests/test_kesher_content_controller.py": "5f51efabb2d5f736084bcdca14220c301b4c7e10439471130dcbf22b2be39cf2"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -704,7 +721,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven. Final Codex review: pinned parser/decoder and gate setup reviewed; trusted admission dependencies precede worker claim; triggers, credentials, permissions and mutation capabilities unchanged."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 294200685
     },
     ".github/workflows/cleanup-jules-branches.yml": {
       "capabilities": [
@@ -726,7 +744,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 278383716
     },
     ".github/workflows/codex-seo-audit.yml": {
       "capabilities": [
@@ -741,7 +760,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
       },
-      "role": "diagnostic"
+      "role": "diagnostic",
+      "registration_id": 348622894
     },
     ".github/workflows/deploy.yml": {
       "capabilities": [
@@ -749,7 +769,7 @@
         "read",
         "status_write"
       ],
-      "definition_sha256": "2cf607bf29d597dbced25678d32f27e618ab9b4861a528dda3bd1553b3e899f9",
+      "definition_sha256": "f43fed852b8d01214ad05438284c99ae43fad4e364eccf95bf26d4bbd55c1f31",
       "resources": [
         "cloudflare.account",
         "github.statuses"
@@ -769,13 +789,13 @@
           "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -784,11 +804,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
@@ -796,7 +816,8 @@
           "scripts/requirements-article.txt": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac",
           "scripts/verify-production-article.py": "c192049c04a384d3a3fec7d498702e00d06c5fe82e7be4e8f2623e8a661b537c",
           "tests/automation-gates.test.cjs": "d35eb1b58dfff4ff536d13625bdd1ffe8ff2a90949d7e70bda359e22bdf503f0",
-          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
+          "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
@@ -811,9 +832,10 @@
           "VITE_GTM_CONTAINER_ID"
         ],
         "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion. Final Codex review: pinned parser/decoder and gate setup reviewed; trusted admission dependencies precede worker claim; triggers, credentials, permissions and mutation capabilities unchanged."
+        "note": "Preserve current-main reviewed manual deployment (PR1054). Manual main only, read-only protected-state admission before Cloudflare credentials, existing Turnstile/content/render/publication checks retained. Explicitly retired and drained with legacy authority."
       },
-      "role": "retired"
+      "role": "emergency_bridge",
+      "registration_id": 286470682
     },
     ".github/workflows/google-ads-api-audit.yml": {
       "capabilities": [
@@ -840,7 +862,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
       },
-      "role": "diagnostic"
+      "role": "diagnostic",
+      "registration_id": 347331297
     },
     ".github/workflows/jules-daily-industry-benchmarking.yml": {
       "capabilities": [
@@ -876,7 +899,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 290490772
     },
     ".github/workflows/jules-daily-mobile-review.yml": {
       "capabilities": [
@@ -912,7 +936,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 282663818
     },
     ".github/workflows/jules-daily-seo-geo-review.yml": {
       "capabilities": [
@@ -948,7 +973,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 282663819
     },
     ".github/workflows/jules-nightly-site-fixes.yml": {
       "capabilities": [
@@ -982,7 +1008,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 277986076
     },
     ".github/workflows/jules-weekly-content-review.yml": {
       "capabilities": [
@@ -1017,7 +1044,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 282663821
     },
     ".github/workflows/kesher-activate-media-mode-fix.yml": {
       "capabilities": [
@@ -1035,7 +1063,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 354691923
     },
     ".github/workflows/kesher-article-deploy.yml": {
       "capabilities": [
@@ -1067,13 +1096,13 @@
           "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -1082,11 +1111,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
@@ -1110,7 +1139,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Command-only runtime claim and canonical state admission bind mutations. Final Codex review: pinned parser/decoder and gate setup reviewed; trusted admission dependencies precede worker claim; triggers, credentials, permissions and mutation capabilities unchanged."
       },
-      "role": "worker"
+      "role": "worker",
+      "registration_id": 374561051
     },
     ".github/workflows/kesher-article-generation.yml": {
       "capabilities": [
@@ -1144,7 +1174,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 337961220
     },
     ".github/workflows/kesher-article-image.yml": {
       "capabilities": [
@@ -1184,7 +1215,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 338738704
     },
     ".github/workflows/kesher-article-merge.yml": {
       "capabilities": [
@@ -1214,10 +1246,10 @@
           "scripts/kesher_runtime/article_validation.py": "1c00890ee729dfff02ff93ff82e92147603cd63136f3d1fa8a4106974e7d4ade",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
           "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
@@ -1242,7 +1274,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Command-only runtime claim and canonical state admission bind mutations. Final Codex review: pinned parser/decoder and gate setup reviewed; trusted admission dependencies precede worker claim; triggers, credentials, permissions and mutation capabilities unchanged."
       },
-      "role": "worker"
+      "role": "worker",
+      "registration_id": 374561052
     },
     ".github/workflows/kesher-article-validation.yml": {
       "capabilities": [
@@ -1278,14 +1311,14 @@
           "scripts/kesher_runtime/article_validation.py": "1c00890ee729dfff02ff93ff82e92147603cd63136f3d1fa8a4106974e7d4ade",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
           "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -1294,19 +1327,19 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_evidence_repair.py": "f7a53588468798a415ac176ee24cac4610f00215c9e1131c0226e6bd855dd531",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac",
-          "src/remotion/ArticleShort.tsx": "5051ebef5ebabcb2bef064a1cc46900c7d120501466b51e7896505dc9fde7975",
-          "src/remotion/ArticleShort.types.ts": "2d00a9949a1189c34641186325828585cab830aee4d8b35ffd4194d59e256963",
+          "src/remotion/ArticleShort.tsx": "c0233f9237ed616bddd8dd7467398f414023ddd4cd72d13a2fa2877d91f2ea26",
+          "src/remotion/ArticleShort.types.ts": "a4322d7fb291a637e6c129490a58001b89ecd13063dd5ab3f9bd12e0d3720dc8",
           "src/remotion/Root.tsx": "d1ae7b05f5e330837e037aecab11757f814940e95dde5525922114905fe6c101",
           "src/remotion/components/EnhancementAssetOverlay.tsx": "1c66580f563a53c11818d8e084820909d334bafff2a6056a1206b63183cbc5f8",
           "src/remotion/components/FullScreenSignatureOutro.tsx": "089b6d24b3ca274304cdb174329d9b60798209dbbfab6070caf74a38fea5c609",
@@ -1338,7 +1371,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Command-only runtime claim and canonical state admission bind mutations. Final Codex review: pinned parser/decoder and gate setup reviewed; trusted admission dependencies precede worker claim; triggers, credentials, permissions and mutation capabilities unchanged."
       },
-      "role": "worker"
+      "role": "worker",
+      "registration_id": 374561053
     },
     ".github/workflows/kesher-article-worker.yml": {
       "capabilities": [
@@ -1382,14 +1416,14 @@
           "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
           "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -1398,11 +1432,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
@@ -1431,7 +1465,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Command-only runtime claim and canonical state admission bind mutations. Final Codex review: pinned parser/decoder and gate setup reviewed; trusted admission dependencies precede worker claim; triggers, credentials, permissions and mutation capabilities unchanged."
       },
-      "role": "worker"
+      "role": "worker",
+      "registration_id": 374561054
     },
     ".github/workflows/kesher-backlog-media-recovery.yml": {
       "capabilities": [
@@ -1449,13 +1484,13 @@
           "scripts/kesher_exact_video_target.py": "2413036a3e239d48cd42bd4be607c64bea55a86f1afcbf0245d182e3413c7c15",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -1464,11 +1499,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211"
@@ -1482,7 +1517,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 351196832
     },
     ".github/workflows/kesher-canary-force-now.yml": {
       "capabilities": [
@@ -1506,7 +1542,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 338927254
     },
     ".github/workflows/kesher-content-controller-v6.yml": {
       "capabilities": [
@@ -1535,13 +1572,13 @@
           "scripts/kesher_intervention_policy.py": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -1550,11 +1587,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
           "scripts/kesher_three_strike_runtime.py": "71bf1cd01ecc6ccb24b8d59740fbebcab9ed694c8eba65ce96295cb981ae5659",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
@@ -1572,7 +1609,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
       },
-      "role": "diagnostic"
+      "role": "diagnostic",
+      "registration_id": 351384285
     },
     ".github/workflows/kesher-content-controller.yml": {
       "capabilities": [
@@ -1631,14 +1669,14 @@
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
           "scripts/kesher_runtime/deployment_observer.py": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
           "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_audit.py": "4d2affee1981ef26f098c209087ac8bcab00cc837883e0fe03e4bab789a1be67",
           "scripts/kesher_runtime/media_observer.py": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26",
           "scripts/kesher_runtime/media_publication.py": "85004c226175d94264219892dc8806ab9b4fad01b91ef42728c3862421084c6b",
@@ -1652,11 +1690,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
@@ -1689,7 +1727,8 @@
         ],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Single canonical controller; dispatch and CAS state writes are protected. Final Codex review: pinned parser/decoder and gate setup reviewed; trusted admission dependencies precede worker claim; triggers, credentials, permissions and mutation capabilities unchanged."
       },
-      "role": "controller"
+      "role": "controller",
+      "registration_id": 337960554
     },
     ".github/workflows/kesher-current-article-public-check.yml": {
       "capabilities": [
@@ -1704,7 +1743,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
       },
-      "role": "diagnostic"
+      "role": "diagnostic",
+      "registration_id": 354693375
     },
     ".github/workflows/kesher-current-gifted-completion.yml": {
       "capabilities": [
@@ -1734,13 +1774,13 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -1749,11 +1789,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_reconcile.py": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa",
@@ -1786,7 +1826,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 354684497
     },
     ".github/workflows/kesher-daily-video.yml": {
       "capabilities": [
@@ -1802,7 +1843,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "82ec125fef99ecc724630c206709b6ec8e0e8ac155a387be0503d19509b419af",
+      "definition_sha256": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
       "registration_id": 331086666,
       "resources": [
         "github.dispatch",
@@ -1826,13 +1867,13 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -1841,11 +1882,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_evidence_repair.py": "f7a53588468798a415ac176ee24cac4610f00215c9e1131c0226e6bd855dd531",
@@ -1861,11 +1902,12 @@
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
-          "tests/test_production_contract_v3.py": "7fd4fb8e58bf0de0cb44d2e221d420208cce46e75fb9bf35346e228c8624161b",
+          "tests/test_production_contract_v3.py": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "2a9f569215afdfbed6b3897f801e6e672c6dc0e727052b75423b9db6378241c0",
+          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
-          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
+          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
+          "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -1892,9 +1934,9 @@
           "YOUTUBE_REFRESH_TOKEN"
         ],
         "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
+        "note": "Reviewed current-main manual media recovery bridge. Exact main/repository dispatch; read-only protected-state admission before provider credentials; retains existing exact media/source protections; retired and drained before VERIFIED."
       },
-      "role": "retired"
+      "role": "emergency_bridge"
     },
     ".github/workflows/kesher-e2e-test-continuation.yml": {
       "capabilities": [
@@ -1916,7 +1958,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 351484777
     },
     ".github/workflows/kesher-exact-marshmallow-video-resume.yml": {
       "capabilities": [
@@ -1978,7 +2021,7 @@
       "review": {
         "call_chain": {
           ".github/prompts/jules-remotion-video-upgrade.md": "b77ed706da6ca440bebb8fd4102b2ded5f0b96628039c372e50fe3fab3e13d6a",
-          ".github/workflows/kesher-daily-video.yml": "82ec125fef99ecc724630c206709b6ec8e0e8ac155a387be0503d19509b419af",
+          ".github/workflows/kesher-daily-video.yml": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
           "config/kesher-production-contract.json": "459365f2ad2a0c9a5ef8de7120d704bf3423bbb8a08debd68adb058a61e62595",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-free-stock-source-20261001.py.txt": "a60b2592a5e3b845b81735047fddcd140da9e0c1954a4d1257f1c88a10570d2f",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-chain-20261001.json": "347c7d8b1c9e6af8379e154b664138e39cf9dd7eb271191ed307920ff576ae4f",
@@ -1994,13 +2037,13 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -2009,11 +2052,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_evidence_repair.py": "f7a53588468798a415ac176ee24cac4610f00215c9e1131c0226e6bd855dd531",
@@ -2029,9 +2072,9 @@
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
-          "tests/test_production_contract_v3.py": "7fd4fb8e58bf0de0cb44d2e221d420208cce46e75fb9bf35346e228c8624161b",
+          "tests/test_production_contract_v3.py": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "2a9f569215afdfbed6b3897f801e6e672c6dc0e727052b75423b9db6378241c0",
+          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
         },
@@ -2053,7 +2096,7 @@
               "read",
               "workflow_dispatch"
             ],
-            "definition_sha256": "82ec125fef99ecc724630c206709b6ec8e0e8ac155a387be0503d19509b419af",
+            "definition_sha256": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
             "inputs": {
               "operation": "generate",
               "target_slug": "marshmallow-test-environmental-reliability"
@@ -2133,7 +2176,7 @@
       "review": {
         "call_chain": {
           ".github/prompts/jules-remotion-video-upgrade.md": "b77ed706da6ca440bebb8fd4102b2ded5f0b96628039c372e50fe3fab3e13d6a",
-          ".github/workflows/kesher-daily-video.yml": "82ec125fef99ecc724630c206709b6ec8e0e8ac155a387be0503d19509b419af",
+          ".github/workflows/kesher-daily-video.yml": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
           "config/kesher-production-contract.json": "459365f2ad2a0c9a5ef8de7120d704bf3423bbb8a08debd68adb058a61e62595",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-free-stock-source-20261001.py.txt": "a60b2592a5e3b845b81735047fddcd140da9e0c1954a4d1257f1c88a10570d2f",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-chain-20261001.json": "347c7d8b1c9e6af8379e154b664138e39cf9dd7eb271191ed307920ff576ae4f",
@@ -2149,13 +2192,13 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -2164,11 +2207,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_evidence_repair.py": "f7a53588468798a415ac176ee24cac4610f00215c9e1131c0226e6bd855dd531",
@@ -2184,9 +2227,9 @@
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
-          "tests/test_production_contract_v3.py": "7fd4fb8e58bf0de0cb44d2e221d420208cce46e75fb9bf35346e228c8624161b",
+          "tests/test_production_contract_v3.py": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "2a9f569215afdfbed6b3897f801e6e672c6dc0e727052b75423b9db6378241c0",
+          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
         },
@@ -2206,7 +2249,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "82ec125fef99ecc724630c206709b6ec8e0e8ac155a387be0503d19509b419af",
+            "definition_sha256": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
             "inputs": {
               "operation": "upload",
               "target_content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
@@ -2249,13 +2292,13 @@
           "scripts/kesher_final_attempt_fallback.py": "b0781df3b4cbc88357c8c980e7d84adc9530182be391755b28d159b28369d5c7",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -2264,11 +2307,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_reconcile.py": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa",
@@ -2291,7 +2334,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 354619058
     },
     ".github/workflows/kesher-gifted-direct-recovery.yml": {
       "capabilities": [
@@ -2311,13 +2355,13 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -2326,11 +2370,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_reconcile.py": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa",
@@ -2352,7 +2396,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 354657214
     },
     ".github/workflows/kesher-gifted-short-dispatch.yml": {
       "capabilities": [
@@ -2381,7 +2426,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 354680518
     },
     ".github/workflows/kesher-goal-dispatch.yml": {
       "capabilities": [
@@ -2466,8 +2512,8 @@
       "review": {
         "call_chain": {
           ".github/prompts/jules-remotion-video-upgrade.md": "b77ed706da6ca440bebb8fd4102b2ded5f0b96628039c372e50fe3fab3e13d6a",
-          ".github/workflows/kesher-daily-video.yml": "82ec125fef99ecc724630c206709b6ec8e0e8ac155a387be0503d19509b419af",
-          ".github/workflows/kesher-short-v4.yml": "6f78716e7bd2014774120043e5f4a5fb3e077984cc88d635778bd3f30fbf12cd",
+          ".github/workflows/kesher-daily-video.yml": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+          ".github/workflows/kesher-short-v4.yml": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
           "config/kesher-production-contract.json": "459365f2ad2a0c9a5ef8de7120d704bf3423bbb8a08debd68adb058a61e62595",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-free-stock-source-20261001.py.txt": "a60b2592a5e3b845b81735047fddcd140da9e0c1954a4d1257f1c88a10570d2f",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-goal-request-20261001.json.txt": "138a9faadef4e60f3b9a5f229571e3ca3f7cec53ebbfdca456ece5bbb44787a1",
@@ -2501,13 +2547,13 @@
           "scripts/kesher_intervention_policy.py": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -2516,11 +2562,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
           "scripts/kesher_three_strike_runtime.py": "71bf1cd01ecc6ccb24b8d59740fbebcab9ed694c8eba65ce96295cb981ae5659",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
@@ -2539,12 +2585,12 @@
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
           "tests/test_pipeline_v4.py": "072a579f582dba0751b203b8c67d8c74f799482f88f8e51e50283d0ab67bb1e7",
-          "tests/test_production_contract_v3.py": "7fd4fb8e58bf0de0cb44d2e221d420208cce46e75fb9bf35346e228c8624161b",
-          "tests/test_short_pipeline_v4.py": "80a7782c1f57597bf3060019f81ac74283cbf7b25465d0eb39b8e0190ce7b5ef",
+          "tests/test_production_contract_v3.py": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
+          "tests/test_short_pipeline_v4.py": "1d1efbb0ca90ecb5b4b46165aae05bcce57bc30927281350e2d34ef405bb07c4",
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "2a9f569215afdfbed6b3897f801e6e672c6dc0e727052b75423b9db6378241c0",
+          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
         },
@@ -2568,7 +2614,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "82ec125fef99ecc724630c206709b6ec8e0e8ac155a387be0503d19509b419af",
+            "definition_sha256": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
             "inputs": {
               "operation": "full",
               "target_slug": "$.github/kesher-goal-request.json.target_slug"
@@ -2595,7 +2641,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "6f78716e7bd2014774120043e5f4a5fb3e077984cc88d635778bd3f30fbf12cd",
+            "definition_sha256": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
             "inputs": {
               "derive_slug": "$.github/kesher-goal-request.json.target_slug",
               "operation": "full"
@@ -2639,7 +2685,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 353766724
     },
     ".github/workflows/kesher-live-e2e-test.yml": {
       "capabilities": [
@@ -2674,13 +2721,13 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -2689,11 +2736,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_reconcile.py": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa",
@@ -2730,7 +2777,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 354432081
     },
     ".github/workflows/kesher-master-supervisor.yml": {
       "capabilities": [
@@ -2766,13 +2814,13 @@
           "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -2793,7 +2841,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 359150275
     },
     ".github/workflows/kesher-media-worker.yml": {
       "capabilities": [
@@ -2828,13 +2877,13 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/media_worker.py": "425a2affb2675c0bbcf5c0a050783090f7e01b72c89a182cea7c5548d6aa5958",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
@@ -2844,20 +2893,20 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_runtime/youtube.py": "8bed655fd9124ad3852dcb9bc894911d7a7e81812fcd703626379dfc3d19539f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac",
           "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
-          "src/remotion/ArticleShort.tsx": "5051ebef5ebabcb2bef064a1cc46900c7d120501466b51e7896505dc9fde7975",
-          "src/remotion/ArticleShort.types.ts": "2d00a9949a1189c34641186325828585cab830aee4d8b35ffd4194d59e256963",
+          "src/remotion/ArticleShort.tsx": "c0233f9237ed616bddd8dd7467398f414023ddd4cd72d13a2fa2877d91f2ea26",
+          "src/remotion/ArticleShort.types.ts": "a4322d7fb291a637e6c129490a58001b89ecd13063dd5ab3f9bd12e0d3720dc8",
           "src/remotion/Root.tsx": "d1ae7b05f5e330837e037aecab11757f814940e95dde5525922114905fe6c101",
           "src/remotion/components/EnhancementAssetOverlay.tsx": "1c66580f563a53c11818d8e084820909d334bafff2a6056a1206b63183cbc5f8",
           "src/remotion/components/FullScreenSignatureOutro.tsx": "089b6d24b3ca274304cdb174329d9b60798209dbbfab6070caf74a38fea5c609",
@@ -2897,7 +2946,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Command-only runtime claim and canonical state admission bind mutations. Final Codex review: pinned parser/decoder and gate setup reviewed; trusted admission dependencies precede worker claim; triggers, credentials, permissions and mutation capabilities unchanged."
       },
-      "role": "worker"
+      "role": "worker",
+      "registration_id": 374561059
     },
     ".github/workflows/kesher-owner-exact-975.yml": {
       "capabilities": [
@@ -2971,8 +3021,8 @@
       ],
       "review": {
         "call_chain": {
-          ".github/workflows/kesher-daily-video.yml": "82ec125fef99ecc724630c206709b6ec8e0e8ac155a387be0503d19509b419af",
-          ".github/workflows/kesher-short-v4.yml": "6f78716e7bd2014774120043e5f4a5fb3e077984cc88d635778bd3f30fbf12cd",
+          ".github/workflows/kesher-daily-video.yml": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+          ".github/workflows/kesher-short-v4.yml": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
           "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
           "scripts/article_claim_quality.py": "e38bbc97733816c8162cca9489475e8b9159e0fa4ecd29c388d0a93aec78c87d",
@@ -2999,13 +3049,13 @@
           "scripts/kesher_intervention_policy.py": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -3014,11 +3064,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
           "scripts/kesher_three_strike_runtime.py": "71bf1cd01ecc6ccb24b8d59740fbebcab9ed694c8eba65ce96295cb981ae5659",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
@@ -3037,12 +3087,12 @@
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
           "tests/test_pipeline_v4.py": "072a579f582dba0751b203b8c67d8c74f799482f88f8e51e50283d0ab67bb1e7",
-          "tests/test_production_contract_v3.py": "7fd4fb8e58bf0de0cb44d2e221d420208cce46e75fb9bf35346e228c8624161b",
-          "tests/test_short_pipeline_v4.py": "80a7782c1f57597bf3060019f81ac74283cbf7b25465d0eb39b8e0190ce7b5ef",
+          "tests/test_production_contract_v3.py": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
+          "tests/test_short_pipeline_v4.py": "1d1efbb0ca90ecb5b4b46165aae05bcce57bc30927281350e2d34ef405bb07c4",
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "2a9f569215afdfbed6b3897f801e6e672c6dc0e727052b75423b9db6378241c0",
+          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
         },
@@ -3080,7 +3130,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 359341814
     },
     ".github/workflows/kesher-repair-exact-video-state.yml": {
       "capabilities": [
@@ -3102,7 +3153,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 360696002
     },
     ".github/workflows/kesher-short-v4.yml": {
       "capabilities": [
@@ -3115,7 +3167,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "6f78716e7bd2014774120043e5f4a5fb3e077984cc88d635778bd3f30fbf12cd",
+      "definition_sha256": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
       "registration_id": 349292838,
       "resources": [
         "github.dispatch",
@@ -3151,13 +3203,13 @@
           "scripts/kesher_intervention_policy.py": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -3166,11 +3218,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
           "scripts/kesher_three_strike_runtime.py": "71bf1cd01ecc6ccb24b8d59740fbebcab9ed694c8eba65ce96295cb981ae5659",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
@@ -3185,10 +3237,11 @@
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
           "tests/test_pipeline_v4.py": "072a579f582dba0751b203b8c67d8c74f799482f88f8e51e50283d0ab67bb1e7",
-          "tests/test_short_pipeline_v4.py": "80a7782c1f57597bf3060019f81ac74283cbf7b25465d0eb39b8e0190ce7b5ef",
+          "tests/test_short_pipeline_v4.py": "1d1efbb0ca90ecb5b4b46165aae05bcce57bc30927281350e2d34ef405bb07c4",
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
-          "tests/test_video_reconcile.py": "2a9f569215afdfbed6b3897f801e6e672c6dc0e727052b75423b9db6378241c0"
+          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+          "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -3211,9 +3264,9 @@
           "YOUTUBE_REFRESH_TOKEN"
         ],
         "dispatches": [],
-        "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
+        "note": "Reviewed current-main manual media recovery bridge. Exact main/repository dispatch; read-only protected-state admission before provider credentials; retains existing exact media/source protections; retired and drained before VERIFIED."
       },
-      "role": "retired"
+      "role": "emergency_bridge"
     },
     ".github/workflows/kesher-stability-pr.yml": {
       "capabilities": [
@@ -3268,14 +3321,14 @@
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
           "scripts/kesher_runtime/deployment_observer.py": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
           "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_audit.py": "4d2affee1981ef26f098c209087ac8bcab00cc837883e0fe03e4bab789a1be67",
           "scripts/kesher_runtime/media_observer.py": "3d4b1e761b3c77296f1fcb2b3ed1a57d04bd590ed68b5e963f22277b2a8d6b26",
           "scripts/kesher_runtime/media_publication.py": "85004c226175d94264219892dc8806ab9b4fad01b91ef42728c3862421084c6b",
@@ -3290,12 +3343,12 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_runtime/youtube.py": "8bed655fd9124ad3852dcb9bc894911d7a7e81812fcd703626379dfc3d19539f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
           "scripts/kesher_three_strike_runtime.py": "71bf1cd01ecc6ccb24b8d59740fbebcab9ed694c8eba65ce96295cb981ae5659",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
@@ -3330,7 +3383,7 @@
           "tests/test_kesher_e2e_readiness.py": "5c7999e11b3cf092325f697551f6ffa38b29941f7e9483702acfebdce5bf7fd2",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
-          "tests/test_kesher_git_exclusion.py": "fc7c5a669c2a067d98a989469cd2822579384817f9cdf76975a99be396b3d307",
+          "tests/test_kesher_git_exclusion.py": "60ad776c6da6b084512be14730e73a0ff83676a4ed0cdb8c5cdf03044fb575d4",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
           "tests/test_kesher_github_faults.py": "bd874253ce00db7e9e430a72cc66b8d6ddc50bc8340ab23af9812ec10a68bfff",
           "tests/test_kesher_handover.py": "791fb6de96325644762840b71f02ef44c585a15bbc8e004c271935bf1ff44eb7",
@@ -3345,7 +3398,7 @@
           "tests/test_kesher_observe.py": "8c52159f86988837b42bd5b7cb98bc65fff8f9005ecdb4243be62d0e159d6f43",
           "tests/test_kesher_output_artifacts.py": "89cd90e4d483a94e4b08e10ddbc9c2eea6080d4c870d5dbfc79312706e80408e",
           "tests/test_kesher_provider_recovery.py": "98d4b49f4815b56b5ab4d6880543463ddc69a4dbcc347bb3a9d7b72102b301f3",
-          "tests/test_kesher_public_delivery.py": "1d9f88c5ef4d2988830ab7c497d0bb80499250b14ec4e3d9e7167c17200fdf24",
+          "tests/test_kesher_public_delivery.py": "865b95eb166069d4b0a701f371f31ab78c2bf688bd6d23cc38402cdef56e5cc3",
           "tests/test_kesher_publication_manifest.py": "61cb682017f5e41183110642202a10c5719667cdeaf3fcd90733a1dca8304d94",
           "tests/test_kesher_runtime_migration.py": "909db0229950e4fe3f7ebcb7d82c4eb433a8cfb9079c223f57330a2ba6a9287d",
           "tests/test_kesher_state_write_safety.py": "1f23f3915cf1f1851ad77b84765efd2825bc5bd9862dba22a9f20046c72aac33",
@@ -3355,7 +3408,7 @@
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_single_scheduler_policy.py": "ba2e718b2ae11a79c0aa775883bb2a4ea7bfb0e29e7a673396bf151b1ecca6b8",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "2a9f569215afdfbed6b3897f801e6e672c6dc0e727052b75423b9db6378241c0",
+          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
         },
@@ -3364,7 +3417,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
       },
-      "role": "diagnostic"
+      "role": "diagnostic",
+      "registration_id": 338050996
     },
     ".github/workflows/kesher-target-slug-regression-check.yml": {
       "capabilities": [
@@ -3379,13 +3433,13 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -3394,11 +3448,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_reconcile.py": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa",
@@ -3411,7 +3465,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
       },
-      "role": "diagnostic"
+      "role": "diagnostic",
+      "registration_id": 354686604
     },
     ".github/workflows/kesher-task-supervisor-controller.yml": {
       "capabilities": [
@@ -3435,7 +3490,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
       },
-      "role": "diagnostic"
+      "role": "diagnostic",
+      "registration_id": 345470959
     },
     ".github/workflows/kesher-video-canary-dispatch.yml": {
       "capabilities": [
@@ -3457,7 +3513,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 333267598
     },
     ".github/workflows/kesher-video-evidence-repair.yml": {
       "capabilities": [
@@ -3477,13 +3534,13 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
-          "scripts/kesher_runtime/git_exclusion.py": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
-          "scripts/kesher_runtime/github_drain.py": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737",
-          "scripts/kesher_runtime/handover.py": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
-          "scripts/kesher_runtime/legacy_retirement.py": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
           "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
@@ -3492,11 +3549,11 @@
           "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
-          "scripts/kesher_runtime/verification.py": "5d580221c35733ee27d1477ce32c7e4ee52df4691f71d7ef80c1d2bbf5ad543b",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
           "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
-          "scripts/kesher_short_pipeline_v4.py": "e2b8d460229743a19692de37b4d3729b7b7ed9172b6126411bfa36f7f27fddf4",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_evidence_repair.py": "f7a53588468798a415ac176ee24cac4610f00215c9e1131c0226e6bd855dd531",
@@ -3514,7 +3571,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 360831498
     },
     ".github/workflows/normalize-article-pr.yml": {
       "capabilities": [
@@ -3546,7 +3604,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 349250484
     },
     ".github/workflows/oci-a1-capacity-watch.yml": {
       "capabilities": [
@@ -3574,7 +3633,8 @@
         ],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 333278814
     },
     ".github/workflows/oci-bridge-repair-beta-20260901.yml": {
       "capabilities": [
@@ -3600,7 +3660,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 347487895
     },
     ".github/workflows/oci-bridge-repair-inherit-20260901.yml": {
       "capabilities": [
@@ -3626,7 +3687,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 347483139
     },
     ".github/workflows/oci-bridge-restore-20260901.yml": {
       "capabilities": [
@@ -3652,7 +3714,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 347443805
     },
     ".github/workflows/oci-openclaw-plan-b-e2.yml": {
       "capabilities": [
@@ -3682,7 +3745,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 334165848
     },
     ".github/workflows/oci-openclaw-provision-v2.yml": {
       "capabilities": [
@@ -3710,7 +3774,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 333275018
     },
     ".github/workflows/oci-openclaw-provision.yml": {
       "capabilities": [
@@ -3738,7 +3803,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 333272481
     },
     ".github/workflows/oci-secure-bridge-bootstrap.yml": {
       "capabilities": [
@@ -3764,7 +3830,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 333268727
     },
     ".github/workflows/openclaw-agent-diagnostic.yml": {
       "capabilities": [
@@ -3793,7 +3860,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 354763985
     },
     ".github/workflows/openclaw-clean-rebuild.yml": {
       "capabilities": [
@@ -3823,7 +3891,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 354683396
     },
     ".github/workflows/openclaw-cloudflare-preflight-diagnostic.yml": {
       "capabilities": [
@@ -3847,7 +3916,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 347517048
     },
     ".github/workflows/openclaw-cloudflare-tunnel.yml": {
       "capabilities": [
@@ -3876,7 +3946,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 340424915
     },
     ".github/workflows/openclaw-finalize-tailscale-serve.yml": {
       "capabilities": [
@@ -3905,7 +3976,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 335556453
     },
     ".github/workflows/openclaw-inspect-tailnet-console.yml": {
       "capabilities": [
@@ -3931,7 +4003,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 335566780
     },
     ".github/workflows/openclaw-offline-boot-repair.yml": {
       "capabilities": [
@@ -3983,7 +4056,8 @@
         ],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 335576768
     },
     ".github/workflows/openclaw-preserve-tailnet-recovery.yml": {
       "capabilities": [
@@ -4013,7 +4087,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 335562900
     },
     ".github/workflows/openclaw-recovery-controller.yml": {
       "capabilities": [
@@ -4061,7 +4136,8 @@
         ],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 338370770
     },
     ".github/workflows/openclaw-recovery-lint.yml": {
       "capabilities": [
@@ -4076,7 +4152,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Pinned diagnostic/test execution receives no protected mutation credential or GitHub write permission."
       },
-      "role": "diagnostic"
+      "role": "diagnostic",
+      "registration_id": 350236025
     },
     ".github/workflows/repair-article-images.yml": {
       "capabilities": [
@@ -4113,7 +4190,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 344478161
     },
     ".github/workflows/repair-existing-article-heroes.yml": {
       "capabilities": [
@@ -4162,7 +4240,8 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. All jobs are inert; old registered activation, old-head execution and surviving external callers still require exclusion."
       },
-      "role": "retired"
+      "role": "retired",
+      "registration_id": 362583522
     },
     ".github/workflows/youtube-oauth-diagnostic.yml": {
       "capabilities": [
@@ -4190,7 +4269,230 @@
         "dispatches": [],
         "note": "Exact workflow permissions, inline API/git/provider operations, credentials and local transitive call chain reviewed. Mutation-capable shared credentials/dispatch/status/cloud resources; effective role is retired until exact service resource separation is proven."
       },
-      "role": "separate_infrastructure"
+      "role": "separate_infrastructure",
+      "registration_id": 337057199
+    },
+    ".github/workflows/kesher-production-cutover.yml": {
+      "role": "handover",
+      "definition_sha256": "5295fb6326144ec4df95bb1644050c2850da3cf6581764fbb31bd5217c8724af",
+      "capabilities": [
+        "read",
+        "state_write",
+        "workflow_dispatch",
+        "capability_write",
+        "exclusion_write"
+      ],
+      "resources": [
+        "github.state",
+        "github.dispatch",
+        "jules.exclusion",
+        "notebooklm.exclusion",
+        "youtube.exclusion",
+        "cloudflare.exclusion",
+        "image_provider.exclusion"
+      ],
+      "review": {
+        "call_chain": {
+          "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
+          "scripts/kesher_runtime/cutover_auth.py": "517cea3a2f991a3989a3e6d5e1550b68c3081672e254eea64d87ecffc78eb276",
+          "scripts/kesher_runtime/cutover_service.py": "aa0254b4b29e4c8049472dc2992139bc27ba5209e57ab9be1849ace514c03f10",
+          "scripts/kesher_runtime/cutover_gateway.py": "e8812d0d40bea7a8bae6bf23e3b7ea191dab5f05300d5b8ee8b33e6825b34e06",
+          "scripts/kesher_runtime/production_cutover.py": "1f6fdc9cc383f42ec9acb94c0d4baf2615b643ca89d7d0b5a3e13b31fa601a13",
+          "scripts/kesher_runtime/production_ports.py": "fcc4a12a2ed5572ae6930aac03616de9cda3f39a274921d2ecc04fdcba86c23b",
+          "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
+          "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/authority_topology.py": "f806e72dff1c4a62dd81ac2a4dd018cf33339c0a839cf7eee8280a9631b2a986",
+          "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
+          "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
+          "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
+          "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
+          "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
+          "scripts/kesher_runtime/live_cutover.py": "f664174f6a861a9965e5e9dae2165ea3151ca6a120f0cae96126d9a9d706f4cb"
+        },
+        "dispatches": [],
+        "credentials": [],
+        "credential_services": {},
+        "note": "Only manual exact-main epoch/revision-bound OIDC request to independently administered credential-owning cutover gateway. No provider credentials on runner, no generation/publication/activation. New registration ID requires independent post-merge binding before live admission."
+      }
+    },
+    ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": {
+      "capabilities": [
+        "branch_write",
+        "capability_write",
+        "jules_continue",
+        "jules_create",
+        "provider_continue",
+        "provider_create",
+        "read",
+        "workflow_dispatch",
+        "youtube_metadata",
+        "youtube_upload"
+      ],
+      "definition_sha256": "bf19d683592240dcab3f67546b36ccd0f1c30ef32950985f0b8d38d6c9765cfb",
+      "registration_id": 374765037,
+      "resources": [
+        "github.dispatch",
+        "github.refs",
+        "github.state",
+        "jules.sessions",
+        "notebooklm.jobs",
+        "youtube.metadata",
+        "youtube.objects"
+      ],
+      "review": {
+        "call_chain": {
+          "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
+          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
+          "scripts/jules_video_reviewer.py": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
+          "scripts/jules_video_reviewer_v3.py": "973eb21e712420b83cf636308f876f51a57f5b6a668def83dae65d5d0be7aedd",
+          "scripts/kesher_automation_policy.py": "2e3b5fec11817d8274f7ba628d8023ba41dd26a5621a94ab68700061d273db5b",
+          "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
+          "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
+          "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
+          "scripts/kesher_runtime/exclusion.py": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404",
+          "scripts/kesher_runtime/git_exclusion.py": "a7d5037bc0d6848c8c250a7ccddb22db4cb9a17b3ef552de2f615bcd8295ee26",
+          "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
+          "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
+          "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
+          "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
+          "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
+          "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
+          "scripts/kesher_runtime/media_state.py": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+          "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
+          "scripts/kesher_runtime/outbox.py": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd",
+          "scripts/kesher_runtime/output_artifacts.py": "5bd90501e017d00d78f25195800542e7c9f9acf49b2a06b8751ff2f67c7ac5e0",
+          "scripts/kesher_runtime/provider.py": "78cebe44bebae377a8826e25e7734cfc344ad321b86de79532f888a50c22f80f",
+          "scripts/kesher_runtime/render_provenance.py": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd",
+          "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
+          "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
+          "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
+          "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
+          "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
+          "scripts/kesher_short_motion_plan.py": "a685efe46083ce32c4caa810719dd5cf0e8366cd17f26870b9931029fa5c1029",
+          "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
+          "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
+          "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
+          "scripts/kesher_video_evidence_repair.py": "f7a53588468798a415ac176ee24cac4610f00215c9e1131c0226e6bd855dd531",
+          "scripts/kesher_video_reconcile.py": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa",
+          "scripts/kesher_video_upload_guard.py": "6bcd5fedeaa339d2d213cb4a957497b202c095ef77e9fa57a09a614df12b6ce7",
+          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
+          "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
+          "scripts/prepare_jules_video_evidence.py": "308d81a56be35e126847881e316da4381c7c184f5fc4febfc641a99d0ddd5e22",
+          "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
+          "tests/kesher_daily_pipeline_suite.py": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3",
+          "tests/test_kesher_canonical_state.py": "1b2df228a1bec270e2124babfb977762430da6b1600ed0de9d6f886dac536f0a",
+          "tests/test_kesher_daily_pipeline.py": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424",
+          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
+          "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
+          "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
+          "tests/test_production_contract_v3.py": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
+          "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
+          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+          "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
+          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
+          "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160",
+          ".github/workflows/kesher-daily-video.yml": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+          "scripts/article_claim_quality.py": "e38bbc97733816c8162cca9489475e8b9159e0fa4ecd29c388d0a93aec78c87d",
+          "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
+          "scripts/kesher_article_contract.py": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f",
+          "scripts/kesher_article_normalizer.py": "91c3e3cfec1d36beffc8a17eab1d2e78efd3a7f8d41658acb51867719342f32e",
+          "scripts/kesher_content_controller.py": "5471b3d7ca5e2bc276d21c77fcddc1d8949f581991e3a34fef520a9428cbfe78",
+          "scripts/kesher_content_controller_entry.py": "f07c7de3cdde23e0ac5888db3b1cb0c6886128a5b512ada9f842e5ed88154098",
+          "scripts/kesher_content_controller_stabilized.py": "5df59f57f560887ecd97639ed9e50645d97a40cbd6c8f42528c08f6a3faddcf8",
+          "scripts/kesher_content_controller_v3_best_effort.py": "e3e9265e8ccd7b6f5f8ed26c7cbd589e513e43a79db5733144950d07f6dcefcf",
+          "scripts/kesher_content_controller_v3_entry.py": "0892a712a1fee6d3b61d80601537f7b4a0506f528e2b8ce856298c3d3f92cfdf",
+          "scripts/kesher_content_controller_v4.py": "e45a0da4e4021b5959f9c99b6fd6e161622568bf0e8d2ebeceee0024390fc1ea",
+          "scripts/kesher_content_controller_v4_runtime.py": "c448e3a2c03143bf6f7ad0cc0c2c4bea885a4201e3735640b7ddacc8756989cd",
+          "scripts/kesher_content_controller_v5.py": "d5909d5931ed8d15cb8f193299c044238c287950e2aa67252eca768a26cfeb1c",
+          "scripts/kesher_content_controller_v5_runtime.py": "95d4d4a1ef398b8d46c78a32389061439081a7fbf15f6fdfbfa35136d858fa67",
+          "scripts/kesher_content_controller_v5_runtime_base.py": "a53f33395a139f319472c550a906838bf4c38ffb3f69c6a60b3b286ea183f8c7",
+          "scripts/kesher_content_watchdog.py": "94964decde96d244685645186133898d9de7a431d43f228d2e784c09f7b5c2fc",
+          "scripts/kesher_intervention_policy.py": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d",
+          "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
+          "scripts/kesher_three_strike_runtime.py": "71bf1cd01ecc6ccb24b8d59740fbebcab9ed694c8eba65ce96295cb981ae5659",
+          "tests/test_pipeline_v4.py": "072a579f582dba0751b203b8c67d8c74f799482f88f8e51e50283d0ab67bb1e7",
+          "tests/test_short_pipeline_v4.py": "1d1efbb0ca90ecb5b4b46165aae05bcce57bc30927281350e2d34ef405bb07c4",
+          "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
+          "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
+          ".github/workflows/kesher-short-v4.yml": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+          ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": "bf19d683592240dcab3f67546b36ccd0f1c30ef32950985f0b8d38d6c9765cfb",
+          ".github/kesher-media-recovery-request.json": "2ec88abecc647af1de376c29c9eb80b7564a3e54374818b0a38ab76d2ed573ab"
+        },
+        "credential_services": {
+          "GITHUB_TOKEN": "github"
+        },
+        "credentials": [
+          "GITHUB_TOKEN"
+        ],
+        "dispatch_bindings": {
+          ".github/workflows/kesher-daily-video.yml": {
+            "capabilities": [
+              "branch_write",
+              "capability_write",
+              "jules_continue",
+              "jules_create",
+              "provider_continue",
+              "provider_create",
+              "read",
+              "workflow_dispatch",
+              "youtube_metadata",
+              "youtube_upload"
+            ],
+            "definition_sha256": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+            "inputs": {
+              "operation": "full",
+              "target_slug": "$.github/kesher-media-recovery-request.json.target_slug"
+            },
+            "registration_id": 331086666,
+            "resources": [
+              "github.dispatch",
+              "github.refs",
+              "github.state",
+              "jules.sessions",
+              "notebooklm.jobs",
+              "youtube.metadata",
+              "youtube.objects"
+            ]
+          },
+          ".github/workflows/kesher-short-v4.yml": {
+            "capabilities": [
+              "branch_write",
+              "capability_write",
+              "provider_continue",
+              "provider_create",
+              "read",
+              "workflow_dispatch",
+              "youtube_metadata",
+              "youtube_upload"
+            ],
+            "definition_sha256": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+            "inputs": {
+              "derive_slug": "$.github/kesher-media-recovery-request.json.target_slug",
+              "operation": "full"
+            },
+            "registration_id": 349292838,
+            "resources": [
+              "github.dispatch",
+              "github.refs",
+              "github.state",
+              "notebooklm.jobs",
+              "youtube.metadata",
+              "youtube.objects"
+            ]
+          }
+        },
+        "dispatches": [
+          ".github/workflows/kesher-daily-video.yml",
+          ".github/workflows/kesher-short-v4.yml"
+        ],
+        "note": "Preserves exact9947d0c6 push/main recovery request, current-day exact-one-article selection and both operation=full child dispatches. Read-only exact-workflow/event state admission occurs before dispatch credentials. Only this reviewed dispatcher role may retain these exact two push paths before exclusion; it is an exact retirement target before VERIFIED. Child provider credentials and all indirect scopes remain fenced; no status/PR mutation scope invented."
+      },
+      "role": "retiring_dispatcher"
     }
   }
 }

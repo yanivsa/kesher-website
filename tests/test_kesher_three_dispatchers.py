@@ -84,6 +84,11 @@ class ThreeDispatcherAuthorityTests(unittest.TestCase):
         from tests.test_kesher_external_exclusion import ProtectedService
         bindings = {key:'resource-id:'+key for key in REQUIRED_RESOURCES}
         fence = ExclusionFence('owner/repo','one','coordinator',dict.fromkeys(bindings),bindings)
+        # This test checks exact retirement membership. Independent production
+        # infrastructure boundaries are exercised by the cutover preflight suite.
+        rules=copy.deepcopy(rules)
+        rules['workflows']={p:e for p,e in rules['workflows'].items() if e['role']!='separate_infrastructure'}
+        rows=[r for r in rows if r['path'] in rules['workflows'] or r['path'] in rules['registrations']]
         adapter = GitHubResourceExclusion(EpochGit(),'owner/repo',main_sha='b'*40,
             policy=fence._policy('github'),rules=rules,registered=lambda:rows,guard=ProtectedService('github'))
         self.assertTrue(set(PARENTS)|set(CHILDREN) <= {row['path'] for row in adapter.targets()})

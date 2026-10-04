@@ -19,10 +19,14 @@ from .state import StateInvalid
 CAPABILITIES = {'read', 'artifact_write', 'branch_write', 'pr_write', 'merge', 'issue_write',
                 'status_write', 'workflow_dispatch', 'state_write', 'jules_create', 'jules_continue',
                 'provider_create', 'provider_continue', 'capability_write', 'youtube_upload',
-                'youtube_metadata', 'cloudflare_write', 'image_provider_create', 'image_write', 'oci_write'}
-ROLES = {'controller', 'worker', 'retired', 'diagnostic', 'separate_infrastructure'}
+                'youtube_metadata', 'cloudflare_write', 'image_provider_create', 'image_write', 'oci_write',
+                'exclusion_write'}
+ROLES = {'controller', 'worker', 'retired', 'diagnostic', 'separate_infrastructure', 'handover', 'emergency_bridge',
+         'retiring_dispatcher'}
 ACTIVE_RUN_STATUSES = ('queued', 'in_progress', 'waiting', 'pending', 'requested')
 WORKFLOW_STATES = {'active', 'disabled_manually', 'disabled_inactivity', 'disabled_fork'}
+REGISTERED_SYSTEM_PATHS = {'dynamic/dependabot/dependabot-updates',
+                           'dynamic/dependabot/update-graph'}
 TERMINAL_RUN_CONCLUSIONS = {'action_required', 'cancelled', 'failure', 'neutral',
                             'skipped', 'stale', 'success', 'timed_out', 'startup_failure'}
 # Exact historical storage identities, reviewed unreachable from every workflow,
@@ -39,7 +43,7 @@ CAPABILITY_RESOURCE = {
     'capability_write':'github', 'jules_create':'jules', 'jules_continue':'jules',
     'provider_create':'notebooklm', 'provider_continue':'notebooklm',
     'youtube_upload':'youtube', 'youtube_metadata':'youtube', 'cloudflare_write':'cloudflare',
-    'image_provider_create':'image_provider', 'image_write':'github', 'oci_write':'oci',
+    'image_provider_create':'image_provider', 'image_write':'github', 'oci_write':'oci', 'exclusion_write':'github',
 }
 
 
@@ -76,6 +80,7 @@ def check_definitions(definitions, rules):
                 raise StateInvalid('AUTHORITY_UNREVIEWED_PERMISSIONS')
             for scope, level in permissions.items():
                 if level != 'write': continue
+                if scope == 'id-token' and role == 'handover': continue
                 required = {'contents':'branch_write','pull-requests':'pr_write','actions':'workflow_dispatch',
                             'statuses':'status_write','issues':'issue_write'}.get(scope)
                 if role == 'diagnostic' or required not in entry['capabilities']:
@@ -87,6 +92,30 @@ def check_definitions(definitions, rules):
             raise StateInvalid('AUTHORITY_CONTROLLER_NOT_CANONICAL')
         # PyYAML's YAML 1.1 loader reads the GitHub `on` key as True.
         events = data.get('on', data.get(True))
+        if role=='retiring_dispatcher':
+            expected={'push':{'branches':['main'],'paths':['.github/kesher-media-recovery-request.json',path]}}
+            if (path!='.github/workflows/kesher-targeted-media-recovery-dispatch.yml' or events!=expected
+                    or any(j.get('if')!="${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}" for j in jobs.values())
+                    or 'scripts.kesher_runtime.bridge_admission --dispatcher' not in text
+                    or set(entry['review']['dispatches'])!={'.github/workflows/kesher-daily-video.yml',
+                                                          '.github/workflows/kesher-short-v4.yml'}):
+                raise StateInvalid('AUTHORITY_RETIRING_DISPATCHER_NOT_EXACT')
+        if role in {'handover','emergency_bridge'}:
+            bound="${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}"
+            if (not isinstance(events,dict) or set(events) != {'workflow_dispatch'}
+                    or any(j.get('if') != bound for j in jobs.values())):
+                raise StateInvalid('AUTHORITY_MANUAL_MAIN_CONTROL_REQUIRED')
+            if role == 'handover':
+                if (path != '.github/workflows/kesher-production-cutover.yml'
+                        or set(events['workflow_dispatch'].get('inputs',{})) != {'epoch','reviewed_revision'}
+                        or 'scripts.kesher_runtime.cutover_entry' not in text
+                        or entry['review']['credentials']
+                        or 'exclusion_write' not in entry['capabilities']):
+                    raise StateInvalid('AUTHORITY_HANDOVER_NOT_EXACT_CONTROL')
+            elif (path not in {'.github/workflows/kesher-daily-video.yml','.github/workflows/kesher-short-v4.yml',
+                              '.github/workflows/deploy.yml'}
+                    or 'scripts.kesher_runtime.bridge_admission' not in text):
+                raise StateInvalid('AUTHORITY_EMERGENCY_BRIDGE_NOT_GUARDED')
         if role == 'worker':
             if (not isinstance(events, dict) or set(events) != {'workflow_dispatch'}
                     or set(events['workflow_dispatch'].get('inputs', {})) != {'command_id'}
@@ -232,7 +261,7 @@ def run_identity(run):
         if any(type(run[key]) is not int or run[key] < 1 for key in ('id', 'run_attempt', 'workflow_id')):
             raise ValueError('invalid run identity')
         path = run['path']
-        if not isinstance(path, str) or not path.startswith('.github/workflows/'):
+        if not isinstance(path, str) or not (path.startswith('.github/workflows/') or path in REGISTERED_SYSTEM_PATHS):
             raise ValueError('invalid run path')
         # GitHub returns workflow paths either bare or suffixed by @ref.
         workflow_path = path.split('@', 1)[0]
@@ -289,6 +318,7 @@ def classify_registered(rows, rules, *, separation=None, binding=None, protected
         _review(entry)
         _dispatch_review(entry, rules)
         role = entry['role']
+        if role in {'emergency_bridge','retiring_dispatcher'}: role = 'retired'
         needs_separation = role == 'separate_infrastructure'
         if needs_separation and not _separated(row, entry, separation, binding, protected_resources):
             role = 'retired'

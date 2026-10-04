@@ -97,6 +97,10 @@ class OwnerExactAuthorityTests(unittest.TestCase):
         self.assertEqual(set(rules['workflows'][self.PATH]['review']['dispatches']), set(self.CHILDREN))
         bindings = {key:'resource-id:'+key for key in REQUIRED_RESOURCES}
         fence = ExclusionFence('owner/repo','one','coordinator',dict.fromkeys(bindings),bindings)
+        # These three exact mutators are retirement targets; the production
+        # infrastructure set now requires real separation instead of disabling it.
+        rules['workflows']={k:v for k,v in rules['workflows'].items() if v['role']!='separate_infrastructure'}
+        rows=[r for r in rows if r['path'] in rules['workflows'] or r['path'] in rules['registrations']]
         adapter = GitHubResourceExclusion(EpochGit(),'owner/repo',main_sha='b'*40,
             policy=fence._policy('github'),rules=rules,registered=lambda:rows,guard=ProtectedService('github'))
         targets = {row['path'] for row in adapter.targets()}
@@ -132,14 +136,14 @@ class AuthorityObservationTests(unittest.TestCase):
         path, known = next(iter(rules['registrations'].items()))
         return rules, {'id': known['id'], 'path': path, 'state': 'disabled_manually'}
 
-    def test_all_33_missing_yaml_identities_require_fresh_complete_drain(self):
+    def test_all_39_missing_yaml_identities_require_fresh_complete_drain(self):
         from scripts.kesher_runtime.authority_topology import classify_registered, policy
         rules = policy(ROOT)
         rows = [{'id': entry['id'], 'path': path, 'state': 'disabled_manually'}
                 for path, entry in rules['registrations'].items()]
-        self.assertEqual(len(rows), 33)
+        self.assertEqual(len(rows), 39)
         result = classify_registered(rows, rules, active_runs=[], runs_complete=True)
-        self.assertEqual(len(result), 33)
+        self.assertEqual(len(result), 39)
         self.assertTrue(all(row['classification'] == 'retired_missing_yaml' for row in result))
         self.assertTrue(all(row['role'] == 'retired' and not row['definition_present'] for row in result))
 

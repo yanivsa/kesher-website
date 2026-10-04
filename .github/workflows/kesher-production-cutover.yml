@@ -1,0 +1,42 @@
+name: Kesher explicit production cutover
+on:
+  workflow_dispatch:
+    inputs:
+      epoch:
+        description: Independently approved cutover epoch
+        required: true
+        type: string
+      reviewed_revision:
+        description: Independently reviewed exact current main SHA
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+  id-token: write
+concurrency:
+  group: kesher-production-cutover
+  cancel-in-progress: false
+jobs:
+  transition:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    environment: kesher-cutover
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact invocation revision without credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Request one independently fenced cutover step
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KESHER_CUTOVER_GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
+          CUTOVER_EPOCH: ${{ inputs.epoch }}
+          CUTOVER_REVIEWED_REVISION: ${{ inputs.reviewed_revision }}
+        run: python -m scripts.kesher_runtime.cutover_entry --epoch "$CUTOVER_EPOCH" --reviewed-revision "$CUTOVER_REVIEWED_REVISION"

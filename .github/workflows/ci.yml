@@ -59,6 +59,23 @@ jobs:
             tests.test_verify_production_article \
             -v
 
+      - name: Test Schema-6 production cutover safety
+        run: |
+          python3 -m unittest \
+            tests.test_kesher_production_cutover \
+            tests.test_kesher_external_exclusion \
+            tests.test_kesher_github_drain \
+            tests.test_kesher_git_exclusion \
+            tests.test_kesher_handover \
+            tests.test_kesher_handover_github \
+            tests.test_kesher_authority_digest \
+            tests.test_kesher_authority_topology \
+            tests.test_kesher_runtime_migration \
+            tests.test_kesher_canonical_state \
+            tests.test_kesher_worker_entry \
+            tests.test_kesher_content_controller \
+            -v
+
       - name: Select CI profile
         id: profile
         env:

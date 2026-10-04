@@ -1,9 +1,6 @@
 name: Deploy to Cloudflare Pages
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 concurrency:
@@ -16,13 +13,18 @@ permissions:
 
 jobs:
   deploy:
-    # Retired by the coordinated schema-6 authority handover.
-    # A repository is always owner/name; this sentinel can never match.
+    # Preserve current-main manual deployment until coordinated cutover retirement.
     if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Refuse manual deployment after cutover exclusion begins
+        id: bridge_admission
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission
 
       - name: Set up Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -180,7 +182,7 @@ jobs:
           python3 scripts/verify-production-article.py --slug relationship-crisis-flydubai-lessons --retries 12 --delay 5
 
       - name: Publish production deployment statuses
-        if: ${{ always() }}
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
           JOB_STATUS: ${{ job.status }}
