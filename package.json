@@ -18,7 +18,9 @@
     "test:controller": "python3 -m unittest tests.test_kesher_content_controller tests.test_kesher_controller_queue tests.test_controller_artifact_download tests.test_jules_article_runner tests.test_jules_article_diagnostics tests.test_single_scheduler_policy tests.test_production_contract_v3 tests.test_article_image_worker tests.test_article_image_fallback_exhaustion tests.test_v5_backlog_media_recovery tests.test_v5_video_source_binding tests.test_pipeline_v3_self_audit tests.test_ci_profile -v",
     "test:e2e": "playwright test",
     "verify:dist": "node scripts/verify-dist.cjs",
-    "check": "npm run generate && npm run lint && npm run test:content && npm run test:video-policy && npm run test:controller && npm run test && npm run build && npm run verify:dist && npm run test:e2e"
+    "check": "npm run generate && npm run lint && npm run test:content && npm run test:video-policy && npm run test:controller && npm run test && npm run build && npm run verify:dist && npm run test:e2e",
+    "plugin:validate": "node plugin/tests/validate-phase2-contracts.mjs && node plugin/tests/validate-plugin-package.mjs && node plugin/tests/validate-skill-evals.mjs && node plugin/tests/resource-index.test.mjs && node plugin/tests/domain.test.mjs && node plugin/tests/observability-policy.test.mjs",
+    "plugin:package": "npm run plugin:validate && python3 scripts/build_chatgpt_plugin_zip.py"
   },
   "repository": {
     "type": "git",
