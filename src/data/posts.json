@@ -49,10 +49,10 @@
       "גבולות בזוגיות"
     ],
     "shortHook": "אם אתם צריכים לבדוק את הטלפון כדי להירגע — הבעיה כבר לא נמצאת רק בטלפון.",
-    "image": "/images/generated/site/home-hero.jpg",
-    "imageAlt": "חדר ייעוץ זוגי רגוע לשיחה על אמון וקנאה בזוגיות",
+    "image": "/images/generated/blog/jealousy-in-relationships.jpg",
+    "imageAlt": "צילום מציאותי של זוג בשיחה טבעית המדגישה תקשורת, קרבה והקשבה",
     "imageProvider": "Local",
-    "imageSourceUrl": "local://public/images/generated/site/home-hero.jpg",
+    "imageSourceUrl": "local://public/images/generated/blog/marriage-after-trust-leak.jpg",
     "imageIsFallback": true
   },
   {
