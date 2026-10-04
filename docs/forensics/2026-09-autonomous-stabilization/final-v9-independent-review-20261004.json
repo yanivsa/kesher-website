@@ -1,0 +1,33 @@
+{
+  "reviewer": "same independent /root/final_v8_independent_review; GPT-6.1 Sol/xhigh",
+  "scope": "Only six-path7ae main reconciliation, three derived outputs, five article snapshot/bootstrap/test paths and blocked-publication boundary; earlier integrated architecture review retained",
+  "unresolved": {
+    "Critical": 0,
+    "Important": 0,
+    "Minor": 0
+  },
+  "new_confirmed_important_finding": {
+    "problem": "React418 on actual rewritten article browser; captured browser effects were incorrectly hydrated as initial server markup",
+    "resolution": "Explicit browser-snapshot marker and existing preloaded fresh-mount path; genuine server markup still hydrates",
+    "status": "FIXED",
+    "validation": "exact full body/title/excerpt and no pageerrors2desktop/mobile tests; full140E2E; targeted4; website151; dist129"
+  },
+  "test_weakening": false,
+  "security_widget_policy_changed": false,
+  "content_preservation": "Exact three required main paths retained through both7ae ande79",
+  "hash_refresh": "No definition/callchain/policy bytes changed; eight new/reconciled execution inputs remain in whole-code manifest",
+  "late_main_boundary": {
+    "classification": "BLOCKED, not an unresolved implementation finding in tested7ae candidate",
+    "commits": 2,
+    "paths": 18,
+    "package_callchain_bindings": 23,
+    "jules_runner_callchain_bindings": 4,
+    "jules_runner_test_callchain_bindings": 1,
+    "package_semantic_handoff": "Preserve new plugin validator/scripts without reintroducing inherited controller fs shim"
+  },
+  "limits": [
+    "No implementation/plugin/legal review or acceptance of new late18paths",
+    "No exact latest-main-rooted final-v9 certificate",
+    "No live service exclusion, state import, capability sealing or public-outcome certification"
+  ]
+}

@@ -1,0 +1,508 @@
+{
+  "verdict": "BLOCKED",
+  "reason": "Main moved again after the one permitted bounded reconciliation; no second reconciliation or publication performed.",
+  "start_main_sha": "715fcc7cf5c37847591b0e01ded0fdedfb314f0f",
+  "final_observed_main_sha": "013494dbc031d093be8a3afaa721d40be3dd2246",
+  "reconciled_main_sha": "1651fffd4bddba30b383b4c6f58636318699f2c9",
+  "old_candidate_sha": "1b3bf50ced84e34ddd4452a12a72233e1d917a81",
+  "old_candidate_parent": "054dcfc4d12031bef5b609d83a5d0a7897211f70",
+  "validated_implementation_sha": "333cda353fbdc91be187664306d3e71cfb5e7b48",
+  "final_candidate_sha": "resolve containing checkpoint commit with git rev-parse candidate/stabilization-final-v8",
+  "branch": "candidate/stabilization-final-v8",
+  "merge_base_with_final_observed_main": "1651fffd4bddba30b383b4c6f58636318699f2c9",
+  "merge_base_equals_final_observed_main": false,
+  "post_antigravity_main_commits": [
+    "013494dbc031d093be8a3afaa721d40be3dd2246 content: rewrite sleep article in natural Israeli Hebrew (#1037)",
+    "1651fffd4bddba30b383b4c6f58636318699f2c9 Fix KESHER large posts JSON controller read",
+    "715fcc7cf5c37847591b0e01ded0fdedfb314f0f Close completed KESHER sleep goal for issue #1021",
+    "00c416c1bba75b225c4928b9ecee80a80b2d3cd2 Close completed sleep media recovery for issue #1021"
+  ],
+  "bounded_reconciliation_count": 1,
+  "unreconciled_delta": {
+    "commit": "013494dbc031d093be8a3afaa721d40be3dd2246",
+    "parent": "1651fffd4bddba30b383b4c6f58636318699f2c9",
+    "paths": [
+      "src/data/posts.json"
+    ],
+    "shortstat": "1 file changed,8 insertions,8 deletions",
+    "article_changes": [
+      {
+        "slug": "sleep-needs-10-year-old",
+        "changed_fields": [
+          "excerpt",
+          "shortHook",
+          "shortTitle",
+          "updatedAt",
+          "videoTitle",
+          "content",
+          "title",
+          "directAnswer"
+        ]
+      }
+    ],
+    "patch": "final-v8-unreconciled-main-20261004.patch",
+    "patch_sha256": "5877fba76de8e42c67b31bd57501a0df390893f181cc6f91e23f0f32f61235d7",
+    "affected_remaining_gates": [
+      "test:content",
+      "test:controller shared source expectations",
+      "npm test",
+      "build + verify:dist",
+      "lint",
+      "test:e2e on fresh candidate-owned build",
+      "authority digest/topology and full pytest if executable/pinned changes occur"
+    ],
+    "current_main_content_preserved": false
+  },
+  "authority": {
+    "workflow_count": 72,
+    "policy_count": 72,
+    "roles": {
+      "retired": 39,
+      "separate_infrastructure": 19,
+      "diagnostic": 8,
+      "worker": 5,
+      "controller": 1
+    },
+    "stale_definitions": 0,
+    "stale_call_chains": 0,
+    "unknown_definitions": 0,
+    "dispatch_bindings": "PASS through inventory/check_definitions/_dispatch_review",
+    "policy_digest": "2d988d12ef16809e95788bfba2f414b1e96f48f8bfae50ad78bff00a41a97518",
+    "policy_raw_sha256": "3260c9cb05201d7007e902ac7c67e07b260cf66f47eec7e83c8ad63b0bce71fb",
+    "workers": [
+      {
+        "path": ".github/workflows/kesher-article-deploy.yml",
+        "role": "worker",
+        "sha256": "260c753ad9548b7e6be71182bae21069b4c24de95721434dcc5bd9721cd5f774",
+        "capabilities": [
+          "branch_write",
+          "cloudflare_write",
+          "read",
+          "state_write"
+        ],
+        "resources": [
+          "cloudflare.account",
+          "github.refs",
+          "github.state"
+        ],
+        "definition_retired": false,
+        "triggers": [
+          "workflow_dispatch"
+        ]
+      },
+      {
+        "path": ".github/workflows/kesher-article-merge.yml",
+        "role": "worker",
+        "sha256": "aea529e3780995b99035392af45e5d0a230274127bf65823382ad7240fa1727e",
+        "capabilities": [
+          "branch_write",
+          "jules_continue",
+          "jules_create",
+          "pr_write",
+          "read",
+          "state_write"
+        ],
+        "resources": [
+          "github.pull_requests",
+          "github.refs",
+          "github.state",
+          "jules.sessions"
+        ],
+        "definition_retired": false,
+        "triggers": [
+          "workflow_dispatch"
+        ]
+      },
+      {
+        "path": ".github/workflows/kesher-article-validation.yml",
+        "role": "worker",
+        "sha256": "0f24b13f929cb711df39710e5adb96794dbbed5f945641a6c4777f3fb3539342",
+        "capabilities": [
+          "branch_write",
+          "read",
+          "state_write"
+        ],
+        "resources": [
+          "github.refs",
+          "github.state"
+        ],
+        "definition_retired": false,
+        "triggers": [
+          "workflow_dispatch"
+        ]
+      },
+      {
+        "path": ".github/workflows/kesher-article-worker.yml",
+        "role": "worker",
+        "sha256": "9237dedebd94325b2088998918cf1c170186e89c3483b7451ef9a620b728ed11",
+        "capabilities": [
+          "branch_write",
+          "image_provider_create",
+          "image_write",
+          "jules_continue",
+          "jules_create",
+          "pr_write",
+          "read",
+          "state_write"
+        ],
+        "resources": [
+          "github.pull_requests",
+          "github.refs",
+          "github.state",
+          "image_provider.jobs",
+          "jules.sessions"
+        ],
+        "definition_retired": false,
+        "triggers": [
+          "workflow_dispatch"
+        ]
+      },
+      {
+        "path": ".github/workflows/kesher-media-worker.yml",
+        "role": "worker",
+        "sha256": "ba4a58ce87592ef2e20233bd75c94b74ff5ad9e71bc39115609c7ca00aa27053",
+        "capabilities": [
+          "branch_write",
+          "capability_write",
+          "provider_continue",
+          "provider_create",
+          "read",
+          "state_write",
+          "youtube_metadata",
+          "youtube_upload"
+        ],
+        "resources": [
+          "github.refs",
+          "github.state",
+          "notebooklm.jobs",
+          "youtube.metadata",
+          "youtube.objects"
+        ],
+        "definition_retired": false,
+        "triggers": [
+          "workflow_dispatch"
+        ]
+      }
+    ],
+    "historical_byte_proof": [
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/closed-media-evidence-floor-20260930.json",
+        "sha256": "99ee2e33c76e24fb9d5d2a8e27cae80ab8566b557585eb8f060ab32b6a3c55d9",
+        "v7_byte_identical": true
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/legacy-media-adjudication-20260928.json",
+        "sha256": "a16c3801e845ee09bc61803a79301b445dfd3e40d28bf05caad1952a4aa96c33",
+        "v7_byte_identical": true
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/legacy-media-evidence-report-20260928.md",
+        "sha256": "e58f2d24765f67792c41dbe157a2c51a4dc663faade9dc098e7a135926f637a2",
+        "v7_byte_identical": true
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/migration-legacy-evidence-replay-20260928.json",
+        "sha256": "634cbe24513e5b0ac32b0df270a5dce188fb7dd5bd8a317112be823e176b4afd",
+        "v7_byte_identical": true
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/handover-hardening-replay-20260930.json",
+        "sha256": "9292a5473d48fe0f79e54f83c47e92173a0266347423f22469f9f292fd667175",
+        "v7_byte_identical": true
+      }
+    ],
+    "production_state_written": false,
+    "production_activated": false,
+    "public_completion_inferred": false
+  },
+  "five_worker_proof": [
+    {
+      "path": ".github/workflows/kesher-article-deploy.yml",
+      "workflow_dispatch_only": true,
+      "required_command_id": true,
+      "jobs_with_initial_claim": [
+        {
+          "job": "deploy",
+          "claim_before_effects": true,
+          "invalid_or_missing_command": "refused by worker_entry/actions_admission canonical state checks",
+          "claim_step_index_zero_based": 4
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/kesher-article-merge.yml",
+      "workflow_dispatch_only": true,
+      "required_command_id": true,
+      "jobs_with_initial_claim": [
+        {
+          "job": "merge",
+          "claim_before_effects": true,
+          "invalid_or_missing_command": "refused by worker_entry/actions_admission canonical state checks",
+          "claim_step_index_zero_based": 3
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/kesher-article-validation.yml",
+      "workflow_dispatch_only": true,
+      "required_command_id": true,
+      "jobs_with_initial_claim": [
+        {
+          "job": "admit",
+          "claim_before_effects": true,
+          "invalid_or_missing_command": "refused by worker_entry/actions_admission canonical state checks",
+          "claim_step_index_zero_based": 3
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/kesher-article-worker.yml",
+      "workflow_dispatch_only": true,
+      "required_command_id": true,
+      "jobs_with_initial_claim": [
+        {
+          "job": "article",
+          "claim_before_effects": true,
+          "invalid_or_missing_command": "refused by worker_entry/actions_admission canonical state checks",
+          "claim_step_index_zero_based": 3
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/kesher-media-worker.yml",
+      "workflow_dispatch_only": true,
+      "required_command_id": true,
+      "jobs_with_initial_claim": [
+        {
+          "job": "media",
+          "claim_before_effects": true,
+          "invalid_or_missing_command": "refused by worker_entry/actions_admission canonical state checks",
+          "claim_step_index_zero_based": 4
+        }
+      ]
+    }
+  ],
+  "seven_legacy_inert_proof": [
+    {
+      "workflow": ".github/workflows/deploy.yml",
+      "triggers": [
+        "push",
+        "workflow_dispatch"
+      ],
+      "job_conditions": {
+        "deploy": "${{ github.repository == '__KESHER_RETIRED__' }}"
+      },
+      "inert": true
+    },
+    {
+      "workflow": ".github/workflows/kesher-content-controller.yml",
+      "triggers": [
+        "workflow_dispatch"
+      ],
+      "job_conditions": {
+        "reconcile": "${{ github.repository == '__KESHER_RETIRED__' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}"
+      },
+      "inert": true
+    },
+    {
+      "workflow": ".github/workflows/kesher-master-supervisor.yml",
+      "triggers": [
+        "workflow_run",
+        "schedule",
+        "workflow_dispatch"
+      ],
+      "job_conditions": {
+        "supervise": "${{ github.repository == '__KESHER_RETIRED__' }}"
+      },
+      "inert": true
+    },
+    {
+      "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+      "triggers": [
+        "workflow_dispatch"
+      ],
+      "job_conditions": {
+        "retired": "${{ github.repository == '__KESHER_RETIRED__' }}"
+      },
+      "inert": true
+    },
+    {
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "triggers": [
+        "workflow_dispatch"
+      ],
+      "job_conditions": {
+        "retired": "${{ github.repository == '__KESHER_RETIRED__' }}"
+      },
+      "inert": true
+    },
+    {
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "triggers": [
+        "workflow_dispatch"
+      ],
+      "job_conditions": {
+        "retired": "${{ github.repository == '__KESHER_RETIRED__' }}"
+      },
+      "inert": true
+    },
+    {
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "triggers": [
+        "workflow_dispatch"
+      ],
+      "job_conditions": {
+        "retired": "${{ github.repository == '__KESHER_RETIRED__' }}"
+      },
+      "inert": true
+    }
+  ],
+  "review": {
+    "reviewer": "one independent GPT-6.1 Sol/xhigh agent reused for bounded follow-ups",
+    "reviewed_implementation_head": "333cda353fbdc91be187664306d3e71cfb5e7b48",
+    "reviewed_reconciled_base": "1651fffd4bddba30b383b4c6f58636318699f2c9",
+    "confirmed": {
+      "Critical": 0,
+      "Important": 9,
+      "Minor": 3
+    },
+    "unresolved": {
+      "Critical": 0,
+      "Important": 0,
+      "Minor": 0
+    },
+    "findings": [
+      {
+        "severity": "Important",
+        "problem": "Fresh-runner admission lacked PyYAML/Pillow before claims.",
+        "resolution": "Install pinned PyYAML and shared image decoder requirements before claim in canonical workers/controller.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Important",
+        "problem": "Runtime/media/auth/model/deployment scratch entered checkout code authority manifest.",
+        "resolution": "Initialize scratch paths under RUNNER_TEMP before claim; no in-checkout output authority drift.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Important",
+        "problem": "Media new_item omitted source body/youtube_metadata required by independent equality audit.",
+        "resolution": "Preserve a deep copy of the complete initial source; behavioral verification retains full source equality.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Important",
+        "problem": "Fresh workflows lacked nested Remotion dependencies for producer/render proof.",
+        "resolution": "Install both reviewed workspaces; actual Short now uses existing root production renderer.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Important",
+        "problem": "Known native/voice rejection reused generation attempt1 instead of bounded fresh attempt3 fallback.",
+        "resolution": "Immutable attempts1..3, exact predecessor snapshot/settled scoped receipts, append-only reconciliation and no duplicate POST/upload; unknown/conflicting or any upload/archive state refuses.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Important",
+        "problem": "Content evaluator shim synthesized historical workflow success.",
+        "resolution": "Remove fs.readFileSync shim; invoke real validator and automation evaluator.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Important",
+        "problem": "Strict PNG tail refusal rejected existing valid current-main image with one NUL padding byte.",
+        "resolution": "Allow only NUL padding after strict IEND; retain CRC/decoder verification and reject other trailers; image bytes unchanged.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Important",
+        "problem": "Playwright could reuse a stale unrelated checkout server.",
+        "resolution": "Set reuseExistingServer=false; 138 tests exercised candidate-owned built preview.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Important",
+        "problem": "Short producer invoked prototype KesherShort instead of existing production ArticleShort.",
+        "resolution": "Use root entrypoint/ArticleShort,30fps/dynamic duration/signature; real 1080x1920 render/audio/signature/cache contract passes.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Minor",
+        "problem": "One extra EOF blank line failed net PR whitespace check.",
+        "resolution": "Remove only EOF blank line; AST identical and four known pins repinned.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Minor",
+        "problem": "Saved deployment/media worker claim indices were stale after temporary-directory initializer.",
+        "resolution": "Recompute indices from actual YAML; explicitly label zero-based4 for deployment/media and3 for merge/validation/article. No workflow behavior changed.",
+        "status": "FIXED"
+      },
+      {
+        "severity": "Minor",
+        "problem": "Draft report conflated a direct latest-main tree difference with GitHub three-way PR merge behavior.",
+        "resolution": "State candidate checkout lacks latest content certification and exact-base condition; distinguish direct main comparison from three-dot PR scope. No claim that a three-way merge necessarily reverts untouched main content.",
+        "status": "FIXED"
+      }
+    ],
+    "limits": [
+      "No live credential gateway/service enforcement acceptance",
+      "No actual provider/public outcome/production activation certification",
+      "Publication BLOCKED by second main movement; content013494 not reconciled"
+    ],
+    "main_reconciliation": "Independent AST equality accepts contents_json exact1651 main, added immutable blob regression exact; all other controller AST including mutator/CAS/downgrade guards unchanged from reviewed candidate.",
+    "checkpoint_boundary_review": "Same reviewer verified BLOCKED boundary, exact unapplied content patch/log archive/policy hashes; stale indices corrected before final commit."
+  },
+  "validation": {
+    "file": "final-v8-validation-20261004.json",
+    "all_required_gates_through_reconciled_base_passed": true,
+    "latest_main_candidate_validated": false
+  },
+  "closed_5_2": {
+    "status": "CLOSED evidence adjudication only",
+    "raw_sha256": "99ee2e33c76e24fb9d5d2a8e27cae80ab8566b557585eb8f060ab32b6a3c55d9",
+    "canonical_state_digest": "5f2bb8d19b6ca3e9004d1e34997c9a55b05dea944f7ea901c1c33ff62a71df1c",
+    "counts": {
+      "baselines": 32,
+      "ids": 64,
+      "duplicate_groups": 14,
+      "ambiguous_groups": 1,
+      "unresolved_stages": 2,
+      "unsealed_capabilities": 1,
+      "new_bindings": 0,
+      "quarantine_rows": 18
+    },
+    "quarantines": {
+      "OPwpR3ReV0k": "RETAINED_QUARANTINE; exact archive contradicts Overview source/kind identity",
+      "TKAwQMzvP6U": "RETAINED_QUARANTINE; no exact producer lineage",
+      "5QW2YCqMG6Q": "RETAINED_QUARANTINE; unsealed until trusted coordinated5.1 handover"
+    },
+    "nearest_or_newer_artifact_substitution": false,
+    "five_protected_files_v7_byte_identical": true
+  },
+  "current_main_preservation": {
+    "through1651": true,
+    "later013494_sleep_rewrite_in_candidate": false,
+    "operational_requests_exact1651_and013494": true,
+    "contents_json_ast_exact1651_and013494": true,
+    "nested_Remotion_workspace_exact_main": true,
+    "root_Overview_signature_prop_forwarding": "intentional pre-existing candidate change",
+    "generated_llms": "regenerated from exact1651 posts; must regenerate after remaining sleep rewrite"
+  },
+  "publication": {
+    "push_performed": false,
+    "draft_pr_created": false,
+    "pr_url": null,
+    "reason": "exact current-main base/content condition false"
+  },
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false,
+  "worktree_status": "clean after containing checkpoint commit; verify in final delivery",
+  "next_slice": {
+    "exactly_one": "Bounded latest-main content reconciliation and affected final gates in a stable coordinated main window",
+    "model": "GPT-6.1 Sol",
+    "effort": "xhigh"
+  },
+  "saved_at_utc": "2026-10-03T21:35:18.589457+00:00"
+}

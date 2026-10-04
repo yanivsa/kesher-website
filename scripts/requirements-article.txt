@@ -1,0 +1,2 @@
+# Full pixel decoding for every trusted article image proof consumer.
+Pillow==12.3.0

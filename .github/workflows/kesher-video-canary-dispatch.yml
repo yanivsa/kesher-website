@@ -13,6 +13,9 @@ permissions:
 
 jobs:
   dispatch:
+    # Retired by the coordinated schema-6 authority handover.
+    # A repository is always owner/name; this sentinel can never match.
+    if: ${{ github.repository == '__KESHER_RETIRED__' }}
     runs-on: ubuntu-latest
     steps:
       - name: Resume current Kesher video canary

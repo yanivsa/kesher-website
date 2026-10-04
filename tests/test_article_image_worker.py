@@ -4,7 +4,7 @@ import hashlib
 import importlib.util
 import inspect
 import json
-import struct
+import io
 import sys
 import tempfile
 import unittest
@@ -32,7 +32,11 @@ def load(path: Path, name: str):
 
 
 def fake_png(width: int = 1200, height: int = 675, marker: bytes = b"fixture") -> bytes:
-    return b"\x89PNG\r\n\x1a\n" + b"\x00" * 8 + struct.pack(">II", width, height) + marker
+    from PIL import Image
+    output = io.BytesIO()
+    color = tuple(hashlib.sha256(marker).digest()[:3])
+    Image.new("RGB", (width, height), color).save(output, format="PNG")
+    return output.getvalue()
 
 
 def fake_manifest(paths: list[str]) -> dict:

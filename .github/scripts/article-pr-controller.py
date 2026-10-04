@@ -20,14 +20,13 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-ALLOWED_FILES = {
-    "src/data/posts.json",
-    "src/data/postSummaries.json",
-    "public/sitemap.xml",
-    "public/llms.txt",
-    "public/llms-full.txt",
-}
-IMAGE_PREFIX = "public/images/generated/blog/"
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from scripts.kesher_article_contract import (
+    ARTICLE_PUBLICATION_PATHS, ARTICLE_IMAGE_PREFIX, forbidden_article_paths,
+)
+
+ALLOWED_FILES = ARTICLE_PUBLICATION_PATHS
+IMAGE_PREFIX = ARTICLE_IMAGE_PREFIX
 IMAGE_FIELDS = (
     "Image Generation Attempt",
     "Image Generation Result",
@@ -147,14 +146,7 @@ def normalize_pr_body(repo: str, pr: dict, token: str) -> bool:
 
 
 def forbidden_paths(files: list[dict]) -> list[str]:
-    return [
-        item.get("filename") or ""
-        for item in files
-        if not (
-            (item.get("filename") or "") in ALLOWED_FILES
-            or (item.get("filename") or "").startswith(IMAGE_PREFIX)
-        )
-    ]
+    return forbidden_article_paths(item.get("filename") or "" for item in files)
 
 
 def clean_forbidden_files(repo: str, pr: dict, paths: list[str], token: str) -> bool:
@@ -303,7 +295,7 @@ Gate errors:
 
 If CI verify failed, inspect the current PR checks/logs and fix the actual content/test failure. If the article is too short, structurally invalid, repetitive, too similar to recent posts, or otherwise fails content policy, rewrite only the new article as needed and rerun all required generation/check commands. If the topic itself is too similar, replace the new article within this same PR with one fresh topic while still publishing exactly one new article.
 
-Final diff must contain only the allowed article publication files: src/data/posts.json, src/data/postSummaries.json, public/sitemap.xml, public/llms.txt, public/llms-full.txt, and at most one independently verified image under public/images/generated/blog/. Do not modify tests, workflows, prompts, scripts, packages, or public/videos/.
+Final diff must contain only the allowed article publication files: src/data/posts.json, src/data/postSummaries.json, public/sitemap.xml, public/rss.xml, public/llms.txt, public/llms-full.txt, and at most one independently verified image under public/images/generated/blog/. Do not modify tests, workflows, prompts, scripts, packages, or public/videos/.
 
 Update the existing PR body with exact plain structured image evidence lines (no bullets/backticks around the field names), run npm run generate after the final article edit, run npm run check, push the repaired commits to the existing branch, and leave PR #{number} open for the independent gate to re-check automatically."""
 

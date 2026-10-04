@@ -1,0 +1,127 @@
+name: Kesher canonical media worker
+run-name: kesher-command:${{ inputs.command_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      command_id:
+        description: Persisted canonical command ID
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: kesher-media-command-${{ inputs.command_id }}
+  cancel-in-progress: false
+
+jobs:
+  media:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      COMMAND_ID: ${{ inputs.command_id }}
+      GH_TOKEN: ${{ secrets.KESHER_CONTROLLER_TOKEN || github.token }}
+      KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
+      KESHER_WHISPER_MODEL: small
+      NOTEBOOKLM_BIN: notebooklm
+    steps:
+      - name: Checkout immutable workflow revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Initialize isolated media scratch
+        run: |
+          printf '%s\n' "KESHER_STATE_DIR=$RUNNER_TEMP/kesher-media-output" \
+            "NOTEBOOKLM_HOME=$RUNNER_TEMP/kesher-notebooklm" \
+            "HF_HOME=$RUNNER_TEMP/kesher-huggingface" >> "$GITHUB_ENV"
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+
+      - name: Install trusted authority admission dependencies
+        run: python -m pip install PyYAML==6.0.2 -r scripts/requirements-article.txt
+
+      - name: Claim exact canonical command before loading provider credentials
+        id: claim
+        run: python -m scripts.kesher_runtime.worker_entry claim "$COMMAND_ID"
+
+      - name: Set up Node
+        if: steps.claim.outputs.execute == 'true'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install pinned media dependencies
+        if: steps.claim.outputs.execute == 'true'
+        run: |
+          set -euo pipefail
+          python -m pip install -r scripts/requirements-video-cloud.txt
+          npm ci --no-audit --no-fund
+          npm ci --prefix remotion-kesher --no-audit --no-fund
+          test -x remotion-kesher/node_modules/.bin/remotion
+          node -e 'for (const name of ["@ffmpeg-installer/ffmpeg", "@ffprobe-installer/ffprobe"]) require("fs").appendFileSync(process.env.GITHUB_PATH, require("path").dirname(require(name).path) + "\n")'
+
+      - name: Restore only the exact persisted output artifact
+        id: restore
+        if: steps.claim.outputs.execute == 'true'
+        run: python -m scripts.kesher_runtime.output_artifacts restore "$COMMAND_ID"
+
+      - name: Prepare or reconcile exact provider output
+        if: steps.claim.outputs.execute == 'true' && steps.restore.outputs.status != 'waiting'
+        id: prepare
+        env:
+          NOTEBOOKLM_AUTH_JSON: ${{ secrets.NOTEBOOKLM_AUTH_JSON || secrets.NOTEBOOKLM_STORAGE_STATE_JSON }}
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python -m scripts.kesher_runtime.media_worker "$COMMAND_ID" --phase prepare
+
+      - name: Persist immutable output artifact intent
+        if: steps.prepare.outputs.status == 'output_ready'
+        id: bundle
+        run: python -m scripts.kesher_runtime.output_artifacts prepare "$COMMAND_ID" --bundle-dir "$RUNNER_TEMP/kesher-media-bundle"
+
+      - name: Archive exact output bytes before any YouTube upload
+        if: steps.bundle.outputs.status == 'upload'
+        id: archive
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ${{ steps.bundle.outputs.name }}
+          path: ${{ runner.temp }}/kesher-media-bundle/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 90
+          overwrite: false
+
+      - name: Read back and validate immutable archive before publication
+        if: steps.bundle.outputs.status == 'upload'
+        env:
+          ARTIFACT_ID: ${{ steps.archive.outputs.artifact-id }}
+        run: python -m scripts.kesher_runtime.output_artifacts complete "$COMMAND_ID" --artifact-id "$ARTIFACT_ID"
+
+      - name: Publish or resume the exact archived bytes
+        if: steps.prepare.outputs.status == 'output_ready' && (steps.bundle.outputs.status == 'upload' || steps.bundle.outputs.status == 'archived')
+        env:
+          NOTEBOOKLM_STATE_KEY: ${{ secrets.NOTEBOOKLM_STATE_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python -m scripts.kesher_runtime.media_worker "$COMMAND_ID" --phase publish
+
+      - name: Record execution result without asserting public completion
+        if: success() && steps.claim.outputs.execute == 'true'
+        run: python -m scripts.kesher_runtime.worker_entry finish "$COMMAND_ID"
+
+      - name: Preserve failed command for classified controller recovery
+        if: failure() && steps.claim.outputs.execute == 'true'
+        run: python -m scripts.kesher_runtime.worker_entry finish "$COMMAND_ID" --failure-class WORKER_FAILED

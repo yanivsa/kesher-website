@@ -1,0 +1,26 @@
+name: Kesher Exact Marshmallow Video Upload Recovery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch-exact-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch exact existing Video Overview upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-daily-video.yml --repo "$GITHUB_REPOSITORY" --ref main \
+            -f operation=upload \
+            -f target_slug=marshmallow-test-environmental-reliability \
+            -f target_content_sha256=33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf \
+            -f target_item_id=video-20260930-202054-33253e4463
