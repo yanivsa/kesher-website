@@ -82,6 +82,11 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("קטעי וידאו משלימים מפקסלס: https://www.pexels.com/", lines)
         short.core.require_hebrew(metadata["description"], "YouTube description", allow_url=True)
 
+    def test_short_generation_has_no_landscape_explainer_fallback(self):
+        source = (Path(short.core.PROJECT_DIR) / "scripts" / "kesher_short_pipeline_v4.py").read_text(encoding="utf-8")
+        self.assertIn('provider_format = "short"', source)
+        self.assertNotIn('provider_format = "short" if', source)
+
     def test_native_provider_gate_rejects_landscape_or_long_form_identity(self):
         valid = {"provider_video_format": "short", "provider_native_short": True}
         valid["fresh_generation_attempt"] = 1
