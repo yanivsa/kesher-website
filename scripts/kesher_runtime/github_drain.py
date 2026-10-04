@@ -16,7 +16,7 @@ import re
 
 from .authority_topology import (ACTIVE_RUN_STATUSES, GitHubAuthorityObserver,
                                  WORKFLOW_STATES, authority_path, run_identity,
-                                 run_snapshot, workflow_snapshot)
+                                 run_snapshot, workflow_snapshot, REGISTERED_SYSTEM_PATHS)
 from .github import GitHubError
 from .identity import digest
 from .state import StateInvalid
@@ -37,7 +37,8 @@ def _validate_drains(drains):
                 'observed_disabled', 'disable', 'runs', 'proof'}
                 or type(entry['workflow_id']) is not int or entry['workflow_id'] < 1
                 or key != str(entry['workflow_id']) or not isinstance(entry['workflow_path'], str)
-                or not entry['workflow_path'].startswith('.github/workflows/')
+                or not (entry['workflow_path'].startswith('.github/workflows/') or
+                        entry['workflow_path'] in REGISTERED_SYSTEM_PATHS)
                 or not isinstance(entry['epoch'], str) or not entry['epoch']
                 or type(entry['observed_disabled']) is not bool or not isinstance(entry['runs'], dict)
                 or not isinstance(entry['disable'], dict) or set(entry['disable']) != {'attempts'}
@@ -330,17 +331,34 @@ class GithubDrain:
 
     def observe(self, workflow_id, workflow_path):
         """Read-only recertification after PREPARED freezes the drain ledger."""
-        loaded = self._load(); entry = self._entry(loaded, workflow_id, workflow_path)
-        if not entry or not entry['proof'] or not entry['observed_disabled']:
-            raise StateInvalid('GITHUB_DRAIN_PROOF_REQUIRED')
+        return self.observe_many([(workflow_id,workflow_path)])[0]
+
+    def observe_many(self, targets):
+        """Two fresh complete inventories certify all targets in one read batch.
+
+        Each journal entry and recorded exact run attempt is still revalidated;
+        no inventory or proof is cached across invocations. A new registration,
+        re-enable or active attempt on ANY target rejects the entire batch.
+        """
+        loaded=self._load();entries=[]
+        if len({wid for wid,_ in targets})!=len(targets):
+            raise StateInvalid('GITHUB_DRAIN_TARGET_INVALID')
+        for workflow_id,workflow_path in targets:
+            entry=self._entry(loaded,workflow_id,workflow_path)
+            if not entry or not entry['proof'] or not entry['observed_disabled']:
+                raise StateInvalid('GITHUB_DRAIN_PROOF_REQUIRED')
+            entries.append(entry)
         for _ in range(2):
-            inventory = self._inventory(); self._target(inventory, workflow_id, workflow_path, entry)
-            if any(run['workflow_id'] == workflow_id for run in inventory['active_runs']):
-                raise StateInvalid('GITHUB_DRAIN_RUN_AFTER_PROOF')
-            for row in entry['runs'].values():
-                if row['status'] != 'completed' or self._attempt(row)['status'] != 'completed':
-                    raise StateInvalid('GITHUB_DRAIN_TERMINAL_PROOF_REQUIRED')
+            inventory = self._inventory()
+            for entry in entries:
+                workflow_id,workflow_path=entry['workflow_id'],entry['workflow_path']
+                self._target(inventory,workflow_id,workflow_path,entry)
+                if any(run['workflow_id']==workflow_id for run in inventory['active_runs']):
+                    raise StateInvalid('GITHUB_DRAIN_RUN_AFTER_PROOF')
+                for row in entry['runs'].values():
+                    if row['status']!='completed' or self._attempt(row)['status']!='completed':
+                        raise StateInvalid('GITHUB_DRAIN_TERMINAL_PROOF_REQUIRED')
         self._owned()
-        return copy.deepcopy(entry['proof'])
+        return [copy.deepcopy(entry['proof']) for entry in entries]
 
     observe_drained = observe
