@@ -42,7 +42,6 @@ SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
 SHORT_FPS = 30
 SIGNATURE_DURATION_SECONDS = 3.0
-NATIVE_SHORT_FALLBACK_ATTEMPT = 3
 VISUAL_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
 SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
@@ -70,6 +69,8 @@ def generation_prompt(source: dict[str, Any]) -> str:
         "אם אין אפשרות להבטיח קול נשי — אל תפיק תוצר. "
         "צור סרטון קצר מקורי שנוצר מלכתחילה כסרטון אנכי ביחס 9:16 בעברית טבעית בלבד, המבוסס אך ורק על המקור שנבחר. "
         "אין ליצור סקירת וידאו אופקית, אין ליצור יחס 16:9, ואין להסתמך על חיתוך, מסגור מחדש או המרה מאוחרת של וידאו ארוך לסרטון קצר. "
+        "אסור להשתמש ברקע מטושטש, בהעתק מוגדל או מרוח של הווידאו כרקע, בפסי מילוי או בשוליים מלאכותיים כדי להשלים מסגרת אנכית. "
+        "כל הפריים חייב להיות קומפוזיציה אנכית חדה שנוצרה מלכתחילה ביחס תשע על שש עשרה. "
         "אין מגבלת משך: העדף קיצור, אך תן לרעיון להסתיים במלואו ובאופן טבעי. "
         "תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד. "
         "הרעיון השלם חייב לעמוד בפני עצמו: פתח במשפט שמציג בעיה או שאלה ברורה, "
@@ -109,7 +110,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
 
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
-    """Prefer a provider-native Short; use an independent landscape fallback only on the bounded final attempt."""
+    """Require a provider-native portrait Short on every attempt."""
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
     media_mutation(state)
@@ -117,7 +118,7 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     prompt_path = core.STATE_DIR / f"{item['id']}-prompt-he.txt"
     prompt = generation_prompt(item["source"])
     attempt = int(item.get("fresh_generation_attempt") or 1)
-    provider_format = "short" if attempt < NATIVE_SHORT_FALLBACK_ATTEMPT else "explainer"
+    provider_format = "short"
     if not 1 <= attempt <= NATIVE_SHORT_FALLBACK_ATTEMPT:
         raise core.PipelineError("Short generation attempt is outside its bounded contract")
     prompt = bind_generation_prompt(state, item, prompt, provider_format)
