@@ -1904,7 +1904,7 @@
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
           "tests/test_production_contract_v3.py": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+          "tests/test_video_reconcile.py": "610038d31923dae028cdb95313a9670993ab5840b6e93b21796b08301baf0057",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160"
@@ -2074,7 +2074,7 @@
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
           "tests/test_production_contract_v3.py": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+          "tests/test_video_reconcile.py": "610038d31923dae028cdb95313a9670993ab5840b6e93b21796b08301baf0057",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
         },
@@ -2229,7 +2229,7 @@
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
           "tests/test_production_contract_v3.py": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+          "tests/test_video_reconcile.py": "610038d31923dae028cdb95313a9670993ab5840b6e93b21796b08301baf0057",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
         },
@@ -2590,7 +2590,7 @@
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+          "tests/test_video_reconcile.py": "610038d31923dae028cdb95313a9670993ab5840b6e93b21796b08301baf0057",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
         },
@@ -3092,7 +3092,7 @@
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+          "tests/test_video_reconcile.py": "610038d31923dae028cdb95313a9670993ab5840b6e93b21796b08301baf0057",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
         },
@@ -3240,7 +3240,7 @@
           "tests/test_short_pipeline_v4.py": "1d1efbb0ca90ecb5b4b46165aae05bcce57bc30927281350e2d34ef405bb07c4",
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
-          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+          "tests/test_video_reconcile.py": "610038d31923dae028cdb95313a9670993ab5840b6e93b21796b08301baf0057",
           "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160"
         },
         "credential_services": {
@@ -3408,7 +3408,7 @@
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
           "tests/test_single_scheduler_policy.py": "ba2e718b2ae11a79c0aa775883bb2a4ea7bfb0e29e7a673396bf151b1ecca6b8",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+          "tests/test_video_reconcile.py": "610038d31923dae028cdb95313a9670993ab5840b6e93b21796b08301baf0057",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
         },
@@ -4392,7 +4392,7 @@
           "tests/test_notebooklm_auth_precedence.py": "22302db89ffd6064385d4ae143aa04b022d0223b4db4fbeb23bdc5275d4131fc",
           "tests/test_production_contract_v3.py": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
-          "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+          "tests/test_video_reconcile.py": "610038d31923dae028cdb95313a9670993ab5840b6e93b21796b08301baf0057",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
           "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160",
