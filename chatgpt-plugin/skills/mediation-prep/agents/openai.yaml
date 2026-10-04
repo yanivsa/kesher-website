@@ -1,0 +1,8 @@
+interface:
+  display_name: "Prepare for mediation"
+  short_description: "Organize issues, interests, and options"
+  default_prompt: "Help me organize the issues and questions I should bring to mediation."
+policy:
+  products:
+    - CHAT
+  allow_implicit_invocation: true
