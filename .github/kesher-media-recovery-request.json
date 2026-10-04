@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "target_slug": "sleep-needs-10-year-old",
   "issue": 1021,
   "purpose": "Refresh authoritative sleep article media after natural-Israeli-Hebrew rewrite. Reuse exact article slug, but generate/verify media against the new content hash without duplicating the article.",
@@ -14,6 +14,8 @@
     "short_width": null,
     "short_height": null
   },
-  "reconcile_seq": 8,
-  "reconcile_reason": "Article copy was materially rewritten on 2026-10-04; prior media belongs to content_sha256 297757f9... and must not satisfy the new authoritative identity."
+  "reconcile_seq": 9,
+  "reconcile_reason": "Article copy was materially rewritten on 2026-10-04; prior media belongs to content_sha256 297757f9... and must not satisfy the new authoritative identity.",
+  "paused_at": "2026-10-04T04:00:00Z",
+  "paused_reason": "Current-cycle 2026-10-04 article and media take precedence; prevent prior sleep-media recovery from starving today's publication."
 }
