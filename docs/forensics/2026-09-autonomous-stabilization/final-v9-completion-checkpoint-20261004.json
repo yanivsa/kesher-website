@@ -1,0 +1,87 @@
+{
+  "verdict": "PR_READY",
+  "main_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+  "implementation_sha": "204456cd27d3adb16ebe76fe7335d8b065547634",
+  "transplant": {
+    "base_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+    "source_preparation_sha": "95d9096f32241928cbcbe9505c4fa63dd352bc73",
+    "source_tree": "05c6f0872619cd2e6bcdf534ac7021dce522fc93",
+    "candidate_implementation_sha": "204456cd27d3adb16ebe76fe7335d8b065547634",
+    "candidate_tree": "05c6f0872619cd2e6bcdf534ac7021dce522fc93",
+    "net_patch_sha256": "1e9c75c1abaf9bc06dc8d9dc16c734c39f9822390473b855fd361a29d75016e0",
+    "merge_base": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+    "worktree_clean": true,
+    "tree_equal_source": true
+  },
+  "final_candidate_sha": "Resolve containing final-v9-completion-report-20261004.md commit using git log -1 --format=%H -- that path; exact final SHA returned in delivery and PR body.",
+  "merge_base": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+  "authority": {
+    "definitions": 72,
+    "policy_paths": 72,
+    "role_counts": {
+      "retired": 39,
+      "separate_infrastructure": 19,
+      "diagnostic": 8,
+      "worker": 5,
+      "controller": 1
+    },
+    "stale_definitions": 0,
+    "stale_callchains": 0,
+    "unknown_definitions": 0,
+    "dispatch_bindings_valid": true
+  },
+  "policy_digest": "a37490d980c4c5bbf3e8449b8e75ca31f7d6aa3e19222dbd8ca907a56704170a",
+  "policy_raw_sha256": "82d08e0fd7d40cf43f4db09928d8c082d9929178ad265c02af367e9f1471c690",
+  "validation_counts": {
+    "affected_pytest_top_level": 263,
+    "controller": 499,
+    "website": 151,
+    "owned_browser": 140,
+    "build_routes": 129,
+    "published_posts": 97,
+    "thin_legacy_unindexed": 9,
+    "lint_errors": 0,
+    "lint_configured_ignore_warnings": 17,
+    "pytest_xml_cases_including_subtests": 387
+  },
+  "review_counts": {
+    "critical": 0,
+    "important": 0,
+    "minor": 0
+  },
+  "closed_5_2": {
+    "byte_identical_v7": true,
+    "protected_files_sha256": {
+      "closed-media-evidence-floor-20260930.json": "99ee2e33c76e24fb9d5d2a8e27cae80ab8566b557585eb8f060ab32b6a3c55d9",
+      "legacy-media-adjudication-20260928.json": "a16c3801e845ee09bc61803a79301b445dfd3e40d28bf05caad1952a4aa96c33",
+      "legacy-media-evidence-report-20260928.md": "e58f2d24765f67792c41dbe157a2c51a4dc663faade9dc098e7a135926f637a2",
+      "migration-legacy-evidence-replay-20260928.json": "634cbe24513e5b0ac32b0df270a5dce188fb7dd5bd8a317112be823e176b4afd",
+      "handover-hardening-replay-20260930.json": "9292a5473d48fe0f79e54f83c47e92173a0266347423f22469f9f292fd667175"
+    },
+    "new_bindings": 0,
+    "seal_performed": false
+  },
+  "quarantined_claims": [
+    "OPwpR3ReV0k",
+    "TKAwQMzvP6U",
+    "5QW2YCqMG6Q"
+  ],
+  "historical_counts": {
+    "baselines": 32,
+    "IDs": 64,
+    "duplicate_groups": 14,
+    "ambiguous_groups": 1,
+    "unresolved_stages": 2,
+    "unsealed_capabilities": 1,
+    "new_bindings": 0,
+    "quarantine_rows": 18
+  },
+  "exact_main_preservation_manifest": "final-v9-preservation-20261004.json",
+  "remote_branch": "candidate/stabilization-final-v9; publication pending final documentation verification",
+  "draft_pr_url": "pending conditional publication; returned in final delivery and subsequent publication receipt",
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false,
+  "worktree_status": "clean after containing evidence commit; verify in final delivery",
+  "diff_check_passed": true
+}
