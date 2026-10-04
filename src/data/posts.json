@@ -50,8 +50,10 @@
     ],
     "shortHook": "שפע של אפשרויות באפליקציה לא עוזר לנו. הוא רק מתיש לנו את המוח.",
     "imageProvider": "Local",
-    "imageSourceUrl": "local://public/images/generated/blog/exhausted-couple-conversation.jpg",
-    "imageIsFallback": true
+    "imageSourceUrl": "local://public/images/generated/blog/aliyah-partners-adjustment-pace.webp",
+    "imageIsFallback": true,
+    "image": "/images/generated/blog/aliyah-partners-adjustment-pace.webp",
+    "imageAlt": "שני אנשים יושבים לשיחה על קפה ומנסים להכיר זה את זה בנחת"
   },
   {
     "id": "relationship-crisis-flydubai-lessons",
