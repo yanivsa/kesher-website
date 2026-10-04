@@ -25,7 +25,9 @@
     "V2 branch reconciled with current main via two-parent merge commit",
     "Duplicate skills-only chatgpt-plugin package retired so V2 is the canonical public package",
     "Canonical ZIP packaging builds only plugin.json, mcp.json, skills and assets",
-    "CI prevents a legacy chatgpt-plugin package from coexisting with V2"
+    "CI prevents a legacy chatgpt-plugin package from coexisting with V2",
+    "V2 implementation isolated into PR #1060 with only plugin/site-integration files",
+    "Legacy chatgpt-plugin package retired in isolated V2 branch"
   ],
   "staging": {
     "endpoint": "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp",
@@ -94,6 +96,6 @@
       "requirement": "Confirm the OpenAI Apps Management permissions required to submit and publish the plugin."
     }
   ],
-  "baseline_main_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
-  "qa_state": "technical_validation_running_after 2026-10-04 main reconciliation; Developer Mode remains the next external gate"
+  "baseline_main_sha": "9296f240fa94e0dfc20bb828254b60935755154c",
+  "qa_state": "isolated PR #1060 technical validation rerunning after legacy package retirement; Developer Mode remains the next external gate"
 }
