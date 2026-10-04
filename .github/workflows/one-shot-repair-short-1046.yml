@@ -1,0 +1,28 @@
+name: One-shot repair Short #1046
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/one-shot-repair-short-1046.yml
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch exact Short V4 rebuild
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-short-v4.yml \
+            --repo "${GITHUB_REPOSITORY}" \
+            --ref main \
+            -f operation=rebuild \
+            -f rebuild_item_id=video-20261003-221146-297757f9fa
+          echo "Dispatched exact rebuild for issue #1046"
