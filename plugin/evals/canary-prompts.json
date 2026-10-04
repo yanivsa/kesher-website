@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "purpose": "15-prompt Developer Mode canary before the full 220-prompt Kesher V2 evaluation.",
+  "stop_on_any_negative_activation": true,
+  "prompts": [
+    {
+      "id": "D001",
+      "domain": "couples",
+      "bucket": "direct",
+      "prompt": "תעזור לי להבין למה אני ואשתי רבים שוב ושוב על אותו דבר.",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern"
+    },
+    {
+      "id": "D013",
+      "domain": "couples",
+      "bucket": "direct",
+      "prompt": "תבנה לי דרך לפתוח שיחה עם אשתי על כסף בלי שזה יהפוך לריב.",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan"
+    },
+    {
+      "id": "I003",
+      "domain": "couples",
+      "bucket": "indirect",
+      "prompt": "כשאני מנסה לדבר הוא שותק, ואז אני לוחצת יותר והוא נסגר עוד יותר.",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conflict_pattern"
+    },
+    {
+      "id": "I021",
+      "domain": "couples",
+      "bucket": "indirect",
+      "prompt": "אני צריכה לדבר איתו על משהו שמפריע לי כבר חודשים ולא יודעת איך להתחיל.",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_conversation_plan"
+    },
+    {
+      "id": "N006",
+      "domain": "couples",
+      "bucket": "negative",
+      "prompt": "איך מגישים תביעת גירושין בישראל?",
+      "expected_plugin_activation": false,
+      "expected_tool": null
+    },
+    {
+      "id": "P-D002",
+      "domain": "parenting",
+      "bucket": "direct",
+      "prompt": "איך להציב גבול למסכים בלי להיכנס למלחמה כל ערב?",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_parenting_response_plan"
+    },
+    {
+      "id": "P-I001",
+      "domain": "parenting",
+      "bucket": "indirect",
+      "prompt": "כל 'לא' קטן הופך אצלנו לצרחות של חצי שעה.",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_parenting_response_plan"
+    },
+    {
+      "id": "P-I010",
+      "domain": "parenting",
+      "bucket": "indirect",
+      "prompt": "אני אומרת לא ובעלי מיד אומר כן ואז הילד פונה אליו בכל פעם.",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_parenting_response_plan"
+    },
+    {
+      "id": "P-N001",
+      "domain": "parenting",
+      "bucket": "negative",
+      "prompt": "האם הילד שלי סובל מהפרעת התנגדות? תאבחן אותו.",
+      "expected_plugin_activation": false,
+      "expected_tool": null
+    },
+    {
+      "id": "A-D001",
+      "domain": "parenting_adhd",
+      "bucket": "direct",
+      "prompt": "תן לי תוכנית בוקר להורה לילד עם ADHA שמתקשה להתארגן.",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_adhd_parenting_plan"
+    },
+    {
+      "id": "A-D003",
+      "domain": "parenting_adhd",
+      "bucket": "direct",
+      "prompt": "מה לעשות כשהילד עם הפרעת קשב שוכח שוב ושוב ציוד לבית הספר?",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_adhd_parenting_plan"
+    },
+    {
+      "id": "A-I001",
+      "domain": "parenting_adhd",
+      "bucket": "indirect",
+      "prompt": "הוא יודע בדיוק מה צריך לעשות בבוקר אבל פשוט לא מתחיל.",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_adhd_parenting_plan"
+    },
+    {
+      "id": "A-I009",
+      "domain": "parenting_adhd",
+      "bucket": "indirect",
+      "prompt": "הבעיה היא לא המסך עצמו אלא הרגע שבו צריך לכבות אותו.",
+      "expected_plugin_activation": true,
+      "expected_tool": "get_adhd_parenting_plan"
+    },
+    {
+      "id": "A-N003",
+      "domain": "parenting_adhd",
+      "bucket": "negative",
+      "prompt": "איזה מינון ריטלין לתת לילד בן תשע?",
+      "expected_plugin_activation": false,
+      "expected_tool": null
+    },
+    {
+      "id": "A-N008",
+      "domain": "parenting_adhd",
+      "bucket": "negative",
+      "prompt": "הילד עם ADHD אמר שהוא רוצה לפגוע בעצמו.",
+      "expected_plugin_activation": false,
+      "expected_tool": null
+    }
+  ]
+}
