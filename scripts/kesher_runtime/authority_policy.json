@@ -219,14 +219,6 @@
       "observed_state": "active",
       "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
     },
-    ".github/workflows/kesher-mcp-staging.yml": {
-      "definition_present": false,
-      "disposition": "unresolved",
-      "evidence_main_sha": "09855e66b602b6aca8a9057989c5ba2b67e97615",
-      "id": 372989693,
-      "observed_state": "active",
-      "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
-    },
     ".github/workflows/kesher-notebooklm-auth-recover-short.yml": {
       "definition_present": false,
       "disposition": "unresolved",
@@ -240,14 +232,6 @@
       "disposition": "unresolved",
       "evidence_main_sha": "89b4c190626fd204ed7d61c4c5e0db8ed039ff04",
       "id": 354752850,
-      "observed_state": "active",
-      "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
-    },
-    ".github/workflows/kesher-plugin-contracts.yml": {
-      "definition_present": false,
-      "disposition": "unresolved",
-      "evidence_main_sha": "09855e66b602b6aca8a9057989c5ba2b67e97615",
-      "id": 372985940,
       "observed_state": "active",
       "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
     },
@@ -602,7 +586,7 @@
           ".github/scripts/select-ci-profile.py": "6e9c8676df8cf50b32645887019eb86e0ed8cc82b57d7244da18347723a4537f",
           ".github/scripts/validate-article-images.py": "952c11759e25df559aae20135865a2458a4ea6ae71bce87918190c2c8c18f7e4",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "scripts/article_claim_quality.py": "e38bbc97733816c8162cca9489475e8b9159e0fa4ecd29c388d0a93aec78c87d",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
@@ -700,14 +684,14 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "291440842cc8c930bc618dc980a78faebc298f8c4c5056e3643adf9937f1aabc",
           "tests/test_v5_video_source_binding.py": "6876f78b1f8515254c1a95bce9b697ad97c73a27ad0ce85ffa54272efc740b13",
-          "tests/test_kesher_production_cutover.py": "b668c3d7d7d8d92bbb4525c4df35f5ccd4ccbfce83fb6cbbea66dc832d1e8f28",
+          "tests/test_kesher_production_cutover.py": "dd905f261302d95a6f2998969c67a5a289899f47dd7802675ec69a774a99ffdb",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
           "tests/test_kesher_git_exclusion.py": "60ad776c6da6b084512be14730e73a0ff83676a4ed0cdb8c5cdf03044fb575d4",
           "tests/test_kesher_handover.py": "791fb6de96325644762840b71f02ef44c585a15bbc8e004c271935bf1ff44eb7",
           "tests/test_kesher_handover_github.py": "20d6875341d64f16bb2b8b393ac9936dbe3dbc59d5384254fd1014a6116cc948",
           "tests/test_kesher_authority_digest.py": "718053e650692cb59be8b59c76f2a318c81dd844c16aad582e895066f9f2357a",
-          "tests/test_kesher_authority_topology.py": "b0fc7fd09942f4c5bff07b066d0d2b6efbabb9b52b072792fb5de8c34d8b365d",
+          "tests/test_kesher_authority_topology.py": "16bef8e62bdd4caa81432e333ee9edb049e87ef643c58181f9e4fd6b548f5c50",
           "tests/test_kesher_runtime_migration.py": "909db0229950e4fe3f7ebcb7d82c4eb433a8cfb9079c223f57330a2ba6a9287d",
           "tests/test_kesher_worker_entry.py": "f48055276b51e264ef35b5d0bb7d3952918fbc39aa1ff09a93e1a09b73365fde",
           "tests/test_kesher_content_controller.py": "5f51efabb2d5f736084bcdca14220c301b4c7e10439471130dcbf22b2be39cf2"
@@ -777,7 +761,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f",
@@ -883,7 +867,7 @@
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -920,7 +904,7 @@
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -957,7 +941,7 @@
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -994,7 +978,7 @@
         "call_chain": {
           ".github/scripts/watch-jules-session.py": "6b631f0779fc658934ca00d55d278fcbaee67d4d547b8e503b5adadaa6c6c6d8",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1028,7 +1012,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
@@ -1082,7 +1066,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f",
@@ -1293,7 +1277,7 @@
           ".github/scripts/validate-article-images.py": "952c11759e25df559aae20135865a2458a4ea6ae71bce87918190c2c8c18f7e4",
           ".github/scripts/validate-article-pr.py": "1b28b78fc6e5ef460c0cecd1374975427d0b4bb234428f0d319d9c589ede2683",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "playwright.config.ts": "c72b70280f52b232ea2ae2f93bd2c4d257291bcd05ebd147301d2b708b7b845c",
           "remotion-kesher/package-lock.json": "055b1708e3255442c84bdf5f27553059e5652a412a2d5d9f6966a95467d2de2c",
           "remotion-kesher/package.json": "3d5f0bb968dd34bb46f6abb03fa83dd91939fd768f0fd46d66be4558c7d61c4d",
@@ -1396,7 +1380,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_diagnostics.py": "af9e1479a94410c028bae0404e8596852e01cf12634c513b33b27dd29f998854",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -1767,7 +1751,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_automation_policy.py": "2e3b5fec11817d8274f7ba628d8023ba41dd26a5621a94ab68700061d273db5b",
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
@@ -1858,7 +1842,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_video_reviewer.py": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
           "scripts/jules_video_reviewer_v3.py": "973eb21e712420b83cf636308f876f51a57f5b6a668def83dae65d5d0be7aedd",
@@ -2028,7 +2012,7 @@
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-daily-video-20261001.yml.txt": "afb887dafb213c249a31c6c08bb62b6207f37f8585cae3a9a7cd5c7a691c01e4",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-exact-marshmallow-video-resume-20261001.yml.txt": "f5b925d8b07e2a0a19fbc7cd799182fdbce46e9beb2938145adc99dfbfe219b1",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_video_reviewer.py": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
           "scripts/jules_video_reviewer_v3.py": "973eb21e712420b83cf636308f876f51a57f5b6a668def83dae65d5d0be7aedd",
@@ -2183,7 +2167,7 @@
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-daily-video-20261001.yml.txt": "afb887dafb213c249a31c6c08bb62b6207f37f8585cae3a9a7cd5c7a691c01e4",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-exact-marshmallow-video-upload-recovery-20261001.yml.txt": "ca780094c39a6e879efb7f0912c9afbd294304c5f78f72bcb046fa477abb4ffa",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_video_reviewer.py": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
           "scripts/jules_video_reviewer_v3.py": "973eb21e712420b83cf636308f876f51a57f5b6a668def83dae65d5d0be7aedd",
@@ -2522,7 +2506,7 @@
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-goal-dispatch-20261001.yml.txt": "c0cae4082dad55da1fbe9587069fffe5e380b99946ff0812febda43ceac6bf07",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-short-v4-20261001.yml.txt": "3700c60bcf1c1470998492afdc035e9641903b6f1e122bd7a23a7e28ab5a2e9b",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/article_claim_quality.py": "e38bbc97733816c8162cca9489475e8b9159e0fa4ecd29c388d0a93aec78c87d",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -2713,7 +2697,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/article_claim_quality.py": "e38bbc97733816c8162cca9489475e8b9159e0fa4ecd29c388d0a93aec78c87d",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_automation_policy.py": "2e3b5fec11817d8274f7ba628d8023ba41dd26a5621a94ab68700061d273db5b",
@@ -2866,7 +2850,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "remotion-kesher/package-lock.json": "055b1708e3255442c84bdf5f27553059e5652a412a2d5d9f6966a95467d2de2c",
           "remotion-kesher/package.json": "3d5f0bb968dd34bb46f6abb03fa83dd91939fd768f0fd46d66be4558c7d61c4d",
           "remotion-kesher/src/KesherVideo.tsx": "f00672be16e10ba890f24adb282c9d8bc4843a18a2a7ed267aa6fe3912ed13f9",
@@ -3024,7 +3008,7 @@
           ".github/workflows/kesher-daily-video.yml": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
           ".github/workflows/kesher-short-v4.yml": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/article_claim_quality.py": "e38bbc97733816c8162cca9489475e8b9159e0fa4ecd29c388d0a93aec78c87d",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -3180,7 +3164,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/article_claim_quality.py": "e38bbc97733816c8162cca9489475e8b9159e0fa4ecd29c388d0a93aec78c87d",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_runner_core.py": "d7adc85eaf9efdca846b8b122888a1ea6ea4d187b1a3434126b5532dde3e03b0",
@@ -3278,7 +3262,7 @@
         "call_chain": {
           ".github/scripts/validate-article-pr.py": "1b28b78fc6e5ef460c0cecd1374975427d0b4bb234428f0d319d9c589ede2683",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_article_diagnostics.py": "af9e1479a94410c028bae0404e8596852e01cf12634c513b33b27dd29f998854",
           "scripts/jules_article_runner.py": "e9ac2e1d3125184965a05f531751b3108aba0df3720feed5ea3abef4d7caaeae",
@@ -3528,7 +3512,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
@@ -3588,7 +3572,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f",
           "scripts/kesher_article_normalizer.py": "91c3e3cfec1d36beffc8a17eab1d2e78efd3a7f8d41658acb51867719342f32e",
@@ -4221,7 +4205,7 @@
           ".github/scripts/article-image-worker-v4.py": "550ee59ee6d8f3efb0494410a7cebd0f818fd83010627f972f7ce831e1a9de16",
           ".github/scripts/validate-article-images.py": "952c11759e25df559aae20135865a2458a4ea6ae71bce87918190c2c8c18f7e4",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/kesher_article_contract.py": "25efb026a9bf46a9e59501c709ae8aa1ec43f1e41045e3107fe43a29703e5d7f",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
@@ -4346,7 +4330,7 @@
       "review": {
         "call_chain": {
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
-          "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
+          "package.json": "a7271abd90e81299d96f1e2952746a814ce53f8b7c5706addacbae780f7c9d03",
           "scripts/generate-article-image.js": "94001a81fd7b734b09059a47b0151539fd446b75dee181232ff60bf957cd0a97",
           "scripts/jules_video_reviewer.py": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
           "scripts/jules_video_reviewer_v3.py": "973eb21e712420b83cf636308f876f51a57f5b6a668def83dae65d5d0be7aedd",
