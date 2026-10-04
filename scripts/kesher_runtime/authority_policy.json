@@ -1451,6 +1451,7 @@
           "JULES_API_KEY": "jules",
           "KESHER_CONTROLLER_TOKEN": "github",
           "PEXELS_API_KEY": "image_provider",
+          "PIXABAY_API_KEY": "image_provider",
           "UNSPLASH_ACCESS_KEY": "image_provider"
         },
         "credentials": [
@@ -1460,6 +1461,7 @@
           "JULES_API_KEY",
           "KESHER_CONTROLLER_TOKEN",
           "PEXELS_API_KEY",
+          "PIXABAY_API_KEY",
           "UNSPLASH_ACCESS_KEY"
         ],
         "dispatches": [],
