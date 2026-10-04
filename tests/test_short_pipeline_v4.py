@@ -1,3 +1,4 @@
+import json
 import os
 import tempfile
 import unittest
@@ -177,6 +178,37 @@ class ShortPipelineV4Tests(unittest.TestCase):
                 (state_dir / runtime_name).read_text(encoding="utf-8"),
                 "<svg>approved-signature</svg>",
             )
+
+    def test_frozen_uploaded_source_evidence_reuses_historical_manifest(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            state_dir = Path(temp_dir)
+            item_id = "video-old"
+            source_path = state_dir / f"{item_id}-source-he.txt"
+            source_path.write_text("מקור היסטורי מאומת\n", encoding="utf-8")
+            source_sha = short.core.sha256_file(source_path)
+            source_identity = "a" * 64
+            manifest_path = state_dir / f"{item_id}-short-manifest.json"
+            manifest_path.write_text(
+                json.dumps({
+                    "source": {"content_sha256": source_identity},
+                    "source_path": source_path.name,
+                    "source_file_sha256": source_sha,
+                }),
+                encoding="utf-8",
+            )
+            item = {
+                "id": item_id,
+                "source": {"content_sha256": source_identity},
+                "superseded_history": [{"reason": "superseded_by_rebuild"}],
+            }
+
+            with mock.patch.object(short.core, "STATE_DIR", state_dir):
+                recovered = short.frozen_uploaded_source_evidence(item)
+
+            self.assertIsNotNone(recovered)
+            recovered_path, recovered_sha = recovered
+            self.assertEqual(recovered_path, source_path)
+            self.assertEqual(recovered_sha, source_sha)
 
     def test_remotion_signature_end_card_uses_svg_image_not_video(self):
         source = (Path(short.core.PROJECT_DIR) / "src" / "remotion" / "ArticleShort.tsx").read_text(
