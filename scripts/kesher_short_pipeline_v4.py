@@ -379,6 +379,53 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
     return output_path
 
 
+def frozen_uploaded_source_evidence(item: dict[str, Any]) -> tuple[Path, str] | None:
+    """Recover immutable source evidence for an exact visual repair of a published Short.
+
+    A published Short may be visually re-rendered after the article later changes.
+    In that bounded case, reuse the original source text + hash from the item's
+    historical manifest instead of binding the repair to newer article bytes.
+    """
+    history = item.get("superseded_history") or []
+    if not any(
+        isinstance(entry, dict) and entry.get("reason") == "superseded_by_rebuild"
+        for entry in history
+    ):
+        return None
+
+    manifest_path = core.STATE_DIR / f"{item['id']}-short-manifest.json"
+    if not manifest_path.is_file():
+        return None
+    try:
+        historical = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(historical, dict):
+        return None
+
+    historical_source = historical.get("source") or {}
+    expected_identity = str((item.get("source") or {}).get("content_sha256") or "")
+    if str(historical_source.get("content_sha256") or "") != expected_identity:
+        return None
+
+    source_name = str(
+        historical.get("source_path")
+        or item.get("source_path")
+        or f"{item['id']}-source-he.txt"
+    ).strip()
+    expected_sha = str(
+        historical.get("source_file_sha256")
+        or item.get("source_file_sha256")
+        or ""
+    ).strip()
+    if not source_name or not expected_sha:
+        return None
+    source_path = core.STATE_DIR / source_name
+    if not source_path.is_file() or core.sha256_file(source_path) != expected_sha:
+        return None
+    return source_path, expected_sha
+
+
 def validate_and_manifest(
     state: dict[str, Any],
     item: dict[str, Any],
@@ -505,10 +552,18 @@ def validate_and_manifest(
     transcript_path = core.transcribe_hebrew(final_path, item)
     item["transcript_path"] = transcript_path.name
     item["transcript_sha256"] = core.sha256_file(transcript_path)
-    source_path = core.STATE_DIR / f"{item['id']}-source-he.txt"
-    source_path.write_text(core.article_body_for_item(item) + "\n", encoding="utf-8")
-    item["source_path"] = source_path.name
-    item["source_file_sha256"] = core.sha256_file(source_path)
+    frozen_source = frozen_uploaded_source_evidence(item)
+    if frozen_source is not None:
+        source_path, source_sha256 = frozen_source
+        item["source_evidence_mode"] = "frozen_uploaded_visual_rebuild"
+        item["source_path"] = source_path.name
+        item["source_file_sha256"] = source_sha256
+    else:
+        source_path = core.STATE_DIR / f"{item['id']}-source-he.txt"
+        source_path.write_text(core.article_body_for_item(item) + "\n", encoding="utf-8")
+        item["source_evidence_mode"] = "current_article"
+        item["source_path"] = source_path.name
+        item["source_file_sha256"] = core.sha256_file(source_path)
     manifest.update({
         "technical_verified": True,
         "transcript_path": item["transcript_path"],
