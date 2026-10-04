@@ -2,7 +2,7 @@ name: Kesher MCP Staging Deploy
 on:
   push:
     branches:
-      - feature/kesher-plugin-v2-final
+      - feature/kesher-plugin-v2-release
     paths:
       - "plugin/**"
       - "scripts/generate-plugin-resources.mjs"
@@ -10,7 +10,7 @@ on:
       - ".github/workflows/kesher-mcp-staging.yml"
   workflow_dispatch:
 concurrency:
-  group: kesher-mcp-staging-v2-final
+  group: kesher-mcp-staging-v2-release
   cancel-in-progress: true
 permissions:
   contents: read
