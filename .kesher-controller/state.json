@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-04",
-  "status": "article_result_wait",
+  "status": "article_retry_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -1992,9 +1992,18 @@
         "outcome": "ARTICLE_ALREADY_IN_PROGRESS",
         "pr_url": ""
       }
+    },
+    {
+      "at": "2026-10-04T10:33:52.985929+00:00",
+      "from": "article_result_wait",
+      "to": "article_retry_wait",
+      "reason": "article retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-04T10:34:58.503628+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-04T10:32:58.503654+00:00",
+  "updated_at": "2026-10-04T10:33:52.985945+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
