@@ -117,6 +117,9 @@ if (!fs.existsSync(MANIFEST_PATH)) {
       }
     }
 
+    if (openai?.review?.commerce !== false) {
+      fail('Public skills-only plugin must explicitly declare commerce=false');
+    }
     if (!Array.isArray(openai?.publication?.countries) || !openai.publication.countries.includes('IL')) {
       fail('Publication countries must include IL');
     }
