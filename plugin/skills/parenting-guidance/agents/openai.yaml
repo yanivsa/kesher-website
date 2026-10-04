@@ -1,0 +1,8 @@
+interface:
+  display_name: "הדרכת הורים מעשית"
+  short_description: "גבולות, שגרות, מסכים, התפרצויות ושיתוף פעולה"
+  default_prompt: "איך להציב גבול לילד בלי להיכנס למאבק כוח?"
+policy:
+  products:
+    - CHAT
+  allow_implicit_invocation: true
