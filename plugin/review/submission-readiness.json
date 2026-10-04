@@ -3,13 +3,13 @@
   "checked_at": "2026-10-04",
   "public_submission_ready": false,
   "completed": [
-    "V2 clean branch synchronized with current main before final QA",
+    "V2 clean branch synchronized to main checkpoint 277f130645ddc1f5c4fc0e019333df1002b8fc8d before technical QA",
     "Five bounded read-only MCP tools implemented",
     "Three scoped Hebrew Skills implemented",
     "220-prompt Hebrew golden evaluation set",
     "15-prompt Developer Mode canary set",
     "30 multi-turn and boundary evaluation cases",
-    "109-resource bounded Kesher index: 106 canonical articles plus 3 explicit service pages",
+    "110-resource bounded Kesher index: 107 canonical articles plus 3 explicit service pages",
     "Strict additionalProperties=false runtime schemas with parameter descriptions",
     "Server-side rejection of unexpected/private fields",
     "Unknown age-band support to avoid guessing or collecting exact child age",
@@ -21,11 +21,11 @@
     "Five positive and three negative OpenAI review test cases",
     "ChatGPT landing page and attribution implementation",
     "V2 privacy and terms disclosures implemented",
-    "V2 branch synchronized with main SHA 715fcc7cf5c37847591b0e01ded0fdedfb314f0f before final QA",
     "V2 branch reconciled with current main via two-parent merge commit",
     "Duplicate skills-only chatgpt-plugin package retired so V2 is the canonical public package",
     "Canonical ZIP packaging builds only plugin.json, mcp.json, skills and assets",
-    "CI prevents a legacy chatgpt-plugin package from coexisting with V2"
+    "CI prevents a legacy chatgpt-plugin package from coexisting with V2",
+    "Schema-6 authority policy classifies both V2 workflows without granting production authority"
   ],
   "staging": {
     "endpoint": "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp",
@@ -94,6 +94,6 @@
       "requirement": "Confirm the OpenAI Apps Management permissions required to submit and publish the plugin."
     }
   ],
-  "baseline_main_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
-  "qa_state": "technical_validation_running_after 2026-10-04 main reconciliation; Developer Mode remains the next external gate"
+  "baseline_main_sha": "277f130645ddc1f5c4fc0e019333df1002b8fc8d",
+  "qa_state": "technical_validation_requires_green_checks_on_current_pr_head; Developer Mode remains the next external gate"
 }
