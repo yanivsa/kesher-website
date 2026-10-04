@@ -1,6 +1,6 @@
 {
   "schema_version": "2.2",
-  "checked_at": "2026-10-03",
+  "checked_at": "2026-10-04",
   "public_submission_ready": false,
   "completed": [
     "V2 clean branch synchronized with current main before final QA",
@@ -21,7 +21,11 @@
     "Five positive and three negative OpenAI review test cases",
     "ChatGPT landing page and attribution implementation",
     "V2 privacy and terms disclosures implemented",
-    "V2 branch synchronized with main SHA 715fcc7cf5c37847591b0e01ded0fdedfb314f0f before final QA"
+    "V2 branch synchronized with main SHA 715fcc7cf5c37847591b0e01ded0fdedfb314f0f before final QA",
+    "V2 branch reconciled with current main via two-parent merge commit",
+    "Duplicate skills-only chatgpt-plugin package retired so V2 is the canonical public package",
+    "Canonical ZIP packaging builds only plugin.json, mcp.json, skills and assets",
+    "CI prevents a legacy chatgpt-plugin package from coexisting with V2"
   ],
   "staging": {
     "endpoint": "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp",
@@ -90,6 +94,6 @@
       "requirement": "Confirm the OpenAI Apps Management permissions required to submit and publish the plugin."
     }
   ],
-  "baseline_main_sha": "715fcc7cf5c37847591b0e01ded0fdedfb314f0f",
-  "qa_state": "technical_validation_running_on_current_main_and_isolated_v2_staging"
+  "baseline_main_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+  "qa_state": "technical_validation_running_after 2026-10-04 main reconciliation; Developer Mode remains the next external gate"
 }
