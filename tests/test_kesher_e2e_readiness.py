@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 from scripts import kesher_e2e_delivery_guard as guard
+from tests.test_media_provenance_contract import bound_short
 
 ROOT = Path(__file__).resolve().parents[1]
 SHORT_ROOT = ROOT / "src" / "remotion" / "Root.tsx"
@@ -34,6 +35,7 @@ class KesherE2EReadinessTests(unittest.TestCase):
                 "signature_asset_sha256": "o" * 64,
             },
             "short": {
+                **bound_short(120.0),
                 "verified": True,
                 "youtube_url": "https://youtu.be/short-e2e",
                 "portrait_verified": True,
@@ -44,7 +46,6 @@ class KesherE2EReadinessTests(unittest.TestCase):
                 "signature_fullscreen": False,
                 "signature_overlay": True,
                 "signature_duration_seconds": guard.SIGNATURE_DURATION_SECONDS,
-                "signature_video_sha256": "s" * 64,
             },
         }
 

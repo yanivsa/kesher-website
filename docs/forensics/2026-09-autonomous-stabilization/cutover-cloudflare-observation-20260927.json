@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-09-27 20:36:30 UTC",
+  "project": "kesher-website",
+  "project_id": "41773648-4870-407a-b868-5f05f2a2da57",
+  "production_branch": "main",
+  "canonical": {
+    "id": "ff9f08ae-0c49-4e54-8321-ebdf5a4a04ec",
+    "environment": "production",
+    "url": "https://ff9f08ae.kesher-website.pages.dev",
+    "is_skipped": false,
+    "created_on": "2026-09-27T19:28:33.787707Z",
+    "commit_hash": "89b4c190626fd204ed7d61c4c5e0db8ed039ff04",
+    "branch": "main",
+    "stage": "deploy",
+    "status": "success"
+  },
+  "observation_method": "Authenticated Cloudflare project GET, safe fields projected before returning",
+  "scope": "Canonical deployment service metadata only; no archived-build/public Article/Overview/Short proof",
+  "mutations_performed": false
+}

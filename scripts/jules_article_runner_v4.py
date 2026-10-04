@@ -18,7 +18,7 @@ _v3_build_prompt = v3.build_prompt
 SEARCH_FIRST_CONTRACT = r"""
 
 --- CLICKABLE SEARCH-INTENT TITLE CONTRACT ---
-This contract is mandatory and must be completed BEFORE choosing the final topic,
+This contract is mandatory (SEARCH-INTENT-FIRST) and must be completed BEFORE choosing the final topic,
 title, slug, excerpt or article angle. It supersedes dry editorial naming and
 keyword-first title preferences elsewhere in the article policy.
 

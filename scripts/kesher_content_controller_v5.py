@@ -210,6 +210,8 @@ class V5GitHubClient(v4.V4GitHubClient):
 class V5Controller(v4.V4Controller):
     def state(self) -> dict[str, Any]:
         existing = self.github.load_controller_state()
+        from scripts.kesher_runtime.legacy_retirement import validate_legacy_read
+        validate_legacy_read(existing)
         today = self.now.date()
         if (
             isinstance(existing, dict)
@@ -562,6 +564,8 @@ class V5Controller(v4.V4Controller):
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     core.STATE_SCHEMA_VERSION = STATE_SCHEMA_VERSION
     core.GitHubClient = V5GitHubClient
     core.Controller = V5Controller

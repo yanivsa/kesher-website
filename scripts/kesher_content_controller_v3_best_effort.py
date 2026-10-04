@@ -273,6 +273,8 @@ class BestEffortController(v3.V3Controller):
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     v3.core.STATE_SCHEMA_VERSION = v3.STATE_SCHEMA_VERSION
     v3.core.GitHubClient = v3.V3GitHubClient
     v3.core.Controller = BestEffortController

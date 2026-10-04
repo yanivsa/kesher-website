@@ -1,0 +1,181 @@
+name: Kesher canonical article validation
+run-name: kesher-command:${{ inputs.command_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      command_id:
+        description: Persisted canonical validation command ID
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: kesher-article-validation-${{ inputs.command_id }}
+  cancel-in-progress: false
+
+env:
+  COMMAND_ID: ${{ inputs.command_id }}
+
+jobs:
+  admit:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      execute: ${{ steps.claim.outputs.execute }}
+    steps:
+      - name: Checkout immutable trusted workflow revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install trusted authority admission dependencies
+        run: python -m pip install PyYAML==6.0.2 -r scripts/requirements-article.txt
+      - name: Claim exact validation command
+        id: claim
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m scripts.kesher_runtime.worker_entry claim "$COMMAND_ID"
+      - name: Install image proof decoder
+        if: steps.claim.outputs.execute == 'true'
+        run: python -m pip install -r scripts/requirements-article.txt
+      - name: Persist exact article candidate before testing
+        if: steps.claim.outputs.execute == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m scripts.kesher_runtime.article_validation prepare "$COMMAND_ID"
+      - name: Preserve admission failure
+        if: ${{ failure() && steps.claim.outputs.execute == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m scripts.kesher_runtime.worker_entry finish "$COMMAND_ID" --failure-class CI_FAILED
+
+  article-checks:
+    needs: admit
+    if: needs.admit.outputs.execute == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout immutable trusted workflow revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install trusted test dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install requests==2.33.0 cryptography==50.0.1 PyYAML==6.0.2 -r scripts/requirements-article.txt
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Stage exact article data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m scripts.kesher_runtime.article_validation stage "$COMMAND_ID"
+      - name: Validate complete article and provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m scripts.kesher_runtime.article_validation content "$COMMAND_ID"
+      - name: Run full repository quality gate
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          python -m unittest tests.kesher_daily_pipeline_suite -v
+          python scripts/article_claim_quality.py src/data/posts.json
+          python .github/scripts/validate-article-images.py
+          npm run generate
+          npm run lint
+          npm run test:content
+          npm run test
+          npm run build
+          npm run verify:dist
+          npm run test:e2e
+          git diff --exit-code -- src/data/posts.json src/data/postSummaries.json public/sitemap.xml public/rss.xml public/llms.txt public/llms-full.txt public/images/generated/blog/
+
+  render-proof:
+    needs: admit
+    if: needs.admit.outputs.execute == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout immutable trusted workflow revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install trusted render dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install requests==2.33.0 PyYAML==6.0.2 -r scripts/requirements-article.txt
+          npm ci --no-audit --no-fund
+          npm ci --prefix remotion-kesher --no-audit --no-fund
+          test -x remotion-kesher/node_modules/.bin/remotion
+          node -e 'for (const name of ["@ffmpeg-installer/ffmpeg", "@ffprobe-installer/ffprobe"]) require("fs").appendFileSync(process.env.GITHUB_PATH, require("path").dirname(require(name).path) + "\n")'
+      - name: Stage exact article data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m scripts.kesher_runtime.article_validation stage "$COMMAND_ID"
+      - name: Prove real rendering preserves source audio and signature
+        run: python tests/real_media_render.py --output "$RUNNER_TEMP/kesher-render-proof"
+      - name: Retain synthetic render evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: article-render-proof-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/kesher-render-proof/
+          if-no-files-found: error
+          retention-days: 14
+
+  record-result:
+    needs: [admit, article-checks, render-proof]
+    if: ${{ always() && needs.admit.result == 'success' && needs.admit.outputs.execute == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - name: Checkout immutable trusted workflow revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Install trusted authority admission dependencies
+        run: python -m pip install PyYAML==6.0.2 -r scripts/requirements-article.txt
+      - name: Independently read required jobs and record exact result
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -m scripts.kesher_runtime.article_validation record "$COMMAND_ID"

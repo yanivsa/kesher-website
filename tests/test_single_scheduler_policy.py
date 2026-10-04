@@ -3,6 +3,17 @@ from __future__ import annotations
 import json
 import unittest
 from pathlib import Path
+from unittest import mock
+
+from scripts.kesher_runtime.controller import reconcile
+from scripts.kesher_runtime.github import GitHubStateStore
+from scripts.kesher_runtime.identity import MediaIdentity, SlotIdentity
+from scripts.kesher_runtime.observe import RepositoryObserver
+from scripts.kesher_runtime.outbox import workflow_for
+from scripts.kesher_runtime.state import StateInvalid, bind_source, new_state, plan_command
+from scripts.kesher_runtime.worker import WorkerContext
+from tests.test_kesher_autonomous_controller import later, observed, publication
+from tests.test_kesher_canonical_state import CODE, NOW, SOURCE, ContentsServer
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,12 +33,13 @@ def trigger_block(path: Path) -> str:
 
 
 class SingleSchedulerPolicyTests(unittest.TestCase):
-    def test_controller_is_the_only_scheduler_in_unified_content_pipeline(self):
+    def test_candidate_has_no_activated_content_scheduler(self):
         controller = trigger_block(CONTROLLER)
         article = trigger_block(ARTICLE)
         short = trigger_block(SHORT)
         legacy_video = trigger_block(LEGACY_VIDEO)
-        self.assertIn("  schedule:", controller)
+        self.assertNotIn("  schedule:", controller)
+        self.assertIn("github.repository == '__KESHER_RETIRED__'", CONTROLLER.read_text())
         self.assertNotIn("  schedule:", article)
         self.assertNotIn("  schedule:", short)
         self.assertNotIn("  schedule:", legacy_video)
@@ -38,30 +50,84 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         self.assertFalse(LEGACY_WEEKDAY.exists())
         self.assertFalse(LEGACY_WEEKEND.exists())
 
-    def test_controller_wakes_on_every_production_child_completion(self):
+    def claimed_command(self, target, operation):
+        state = new_state()
+        if not isinstance(target, SlotIdentity):
+            state = bind_source(state, SOURCE, now=NOW)
+        state, command_id = plan_command(state, target, operation, 1, {}, code_sha=CODE, now=NOW)
+        store = GitHubStateStore(ContentsServer(state), "owner/repo")
+        worker = WorkerContext(store, command_id, "123/1", target, code_sha=CODE, now=lambda: NOW)
+        worker.claim()
+        return store.load().state, command_id
+
+    def test_controller_observes_every_canonical_child_completion_including_failures(self):
         text = CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn("workflow_run:", text)
-        for name in (
-            "Kesher Article Generation",
-            "Kesher Normalize Article PR",
-            "Kesher Trusted Article Image",
-            "Kesher Daily NotebookLM Video Overview",
-            "Kesher Daily Article Short V4",
-            "Deploy to Cloudflare Pages",
+        self.assertIn("python -m scripts.kesher_runtime.controller_entry --mode live", text)
+        # Retired child callbacks are replaced by exact durable run observations.
+        self.assertNotIn("workflow_run:", trigger_block(CONTROLLER))
+        for target, operation in (
+            (SlotIdentity(SOURCE.slot), "settle_article"),
+            (SlotIdentity(SOURCE.slot), "normalize_article"),
+            (SlotIdentity(SOURCE.slot), "attach_image"),
+            (MediaIdentity(SOURCE, "overview"), "publish"),
+            (MediaIdentity(SOURCE, "short"), "publish"),
+            (SOURCE, "deploy_article"),
         ):
-            self.assertIn(name, text)
-        self.assertIn("types: [completed]", text)
-        self.assertNotIn("github.event.workflow_run.conclusion == 'success'", text)
-        self.assertNotIn('github.event.workflow_run.conclusion == "success"', text)
+            for conclusion in ("success", "failure", "cancelled", "timed_out"):
+                with self.subTest(target=target, operation=operation, conclusion=conclusion):
+                    state, command_id = self.claimed_command(target, operation)
+                    command = state["commands"][command_id]
+                    api = mock.Mock()
+                    api.request.return_value = {
+                        "id": 123, "run_attempt": 1, "head_sha": CODE, "head_branch": "main",
+                        "event": "workflow_dispatch", "display_title": "kesher-command:" + command_id,
+                        "path": ".github/workflows/" + workflow_for(command),
+                        "status": "completed", "conclusion": conclusion,
+                    }
+                    observer = RepositoryObserver(api, "owner/repo", inventory_reader=mock.Mock(), auditor=mock.Mock())
+                    self.assertEqual(observer.runs(state), [{
+                        "command_id": command_id, "run_id": "123/1", "code_sha": CODE,
+                        "status": "completed", "conclusion": conclusion,
+                    }])
+                    api.request.assert_called_once_with("GET", "/repos/owner/repo/actions/runs/123/attempts/1")
 
-    def test_controller_ignores_only_pull_request_validation_completion(self):
+    def test_controller_refuses_pull_request_completion_as_canonical_worker_evidence(self):
         text = CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn("github.event.workflow_run.event != 'pull_request'", text)
+        self.assertIn("github.repository == 'yanivsa/kesher-website'", text)
+        self.assertIn("github.ref == 'refs/heads/main'", text)
+        self.assertIn("ref: ${{ github.sha }}", text)
+        self.assertNotIn("workflow_run:", trigger_block(CONTROLLER))
+        state, command_id = self.claimed_command(MediaIdentity(SOURCE, "overview"), "publish")
+        api = mock.Mock()
+        api.request.return_value = {
+            "id": 123, "run_attempt": 1, "head_sha": CODE, "head_branch": "main",
+            "event": "pull_request", "display_title": "kesher-command:" + command_id,
+            "path": ".github/workflows/kesher-media-worker.yml", "status": "completed", "conclusion": "success",
+        }
+        observer = RepositoryObserver(api, "owner/repo", inventory_reader=mock.Mock(), auditor=mock.Mock())
+        with self.assertRaisesRegex(StateInvalid, "wrong run/attempt/workflow/code identity"):
+            observer.runs(state)
 
-    def test_heartbeat_is_recovery_only_and_runs_every_five_minutes(self):
+    def test_parked_controller_respects_durable_five_minute_retry_backoff(self):
         text = CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn('cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"', text)
-        self.assertIn("Recovery heartbeat only", text)
+        self.assertNotIn("cron:", text)
+        self.assertIn("group: kesher-canonical-controller", text)
+        self.assertIn("cancel-in-progress: false", text)
+        first = reconcile(new_state(), observed(publication(short="verified")), now=NOW)
+        store = GitHubStateStore(ContentsServer(first.state), "owner/repo")
+        worker = WorkerContext(store, first.command_id, "123/1", MediaIdentity(SOURCE, "overview"),
+                               code_sha=CODE, now=lambda: NOW)
+        worker.claim()
+        worker.finish(failure={"class": "WORKER_FAILED"})
+        before_due = reconcile(store.load().state, observed(publication(short="verified"), now=later(299)), now=later(299))
+        self.assertIsNone(before_due.command_id)
+        due = reconcile(before_due.state, observed(publication(short="verified"), now=later(300)), now=later(300))
+        retry = due.state["commands"][due.command_id]
+        self.assertEqual(retry["operation"], "reconcile")
+        self.assertEqual(retry["target"], MediaIdentity(SOURCE, "overview").to_dict())
+        repeated = reconcile(due.state, observed(publication(short="verified"), now=later(300)), now=later(300))
+        self.assertEqual(repeated.command_id, due.command_id)
+        self.assertEqual(len(repeated.state["commands"]), 2)
 
     def test_production_contract_declares_five_minute_recovery_heartbeat(self):
         contract = json.loads(PRODUCTION_CONTRACT.read_text(encoding="utf-8"))

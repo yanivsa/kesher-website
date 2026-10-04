@@ -345,6 +345,8 @@ def emit_heartbeat_wait_report(state: dict[str, Any] | None, cycle: str) -> None
 
 
 def main() -> int:
+    from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
+    retired_entrypoint()
     controller.matching_video_items = queue_aware_matching
     controller.mandatory_video_review_approved = advisory_video_publication_ready
 

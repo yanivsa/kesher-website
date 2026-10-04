@@ -24,6 +24,7 @@ concurrency:
 
 jobs:
   build-library:
+    if: ${{ github.repository == '__KESHER_RETIRED__' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

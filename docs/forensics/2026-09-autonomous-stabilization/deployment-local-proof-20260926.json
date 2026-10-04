@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "scope": "real local site and Functions build, ZIP byte readback and atomic restore; synthetic Actions metadata only",
+  "code_sha": "07c137c51abc516c7ce1f596651a2728bd0473df",
+  "runtime_module_sha256": {
+    "deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
+    "article_deploy.py": "879042c5e52a025f0cc59c7a4c00e3ddcb6e36c76d888a6b6c46b985b76b6fa2",
+    "cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
+    "deployment_observer.py": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4"
+  },
+  "source": {
+    "type": "source",
+    "slot": "2026-09-17",
+    "slug": "early-habits-building-calm-mornings-children",
+    "content_sha256": "4d0ba0c73758703e16d3e0c0ac2983cbaa7c5e2281d284e1f807d4fa4e942d94"
+  },
+  "files": 342,
+  "total_bytes": 95309535,
+  "archive_bytes": 87009416,
+  "archive_sha256": "03f12f3514da2a2290da82aa096dc4cb3108472401032d3db7766ebad54bb8c6",
+  "build_sha256": "2183fa4393780cb62faf2eae0b7d45db4b00a38a0cb758304c2bc3fda01eba33",
+  "publication_manifest_sha256": "7aa38708f5d918bf9524526176b74988b0f01ed4823c090782f897a1d6947162",
+  "functions_bundle_sha256": "3b02752e461e0673e35947d9a39903a62e8abc509bfeaf13e1d190d3e2967e0e",
+  "cloudflare_mutations": 0,
+  "github_mutations": 0,
+  "public_deployment_verified": false
+}
