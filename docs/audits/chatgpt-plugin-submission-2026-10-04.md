@@ -16,7 +16,7 @@ Why:
 - No external MCP server is needed for the initial utility.
 - Conversation content is not sent to a Shira-controlled server.
 - The plugin can provide standalone value before a user ever asks for a professional service.
-- Service links are deliberately conditional, not automatic advertising.
+- The skills contain no booking, pricing, contact, or professional-service links. Developer website details live only in the plugin listing metadata.
 
 ## Skills
 
@@ -60,7 +60,7 @@ Category: `Communication`
 
 Country allowlist: `IL`
 
-The listing avoids pricing, discounts, superiority claims, or automatic promotion. Professional-service links are included only in skill instructions and only for explicit professional/local/Shira/resource intent.
+The listing avoids pricing, discounts, superiority claims, or automatic promotion. The skills themselves contain no professional-service or booking links; they are designed to deliver complete standalone value inside ChatGPT.
 
 ## Privacy and terms
 
