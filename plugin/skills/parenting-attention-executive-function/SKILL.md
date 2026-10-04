@@ -1,5 +1,5 @@
 ---
-name: parenting-attention-executive-function
+name: parenting-attention
 description: Help Hebrew-speaking parents with everyday attention and executive-function challenges, including morning routines, task initiation, working memory, organization, transitions, frustration, impulsivity, screen transitions and giftedness with attention difficulties. This workflow never diagnoses ADHD or gives medication advice.
 ---
 
