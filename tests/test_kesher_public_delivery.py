@@ -66,6 +66,13 @@ class PublicMetadataTests(unittest.TestCase):
         self.assertEqual(receipt['verifier_version'], 1)
         self.assertTrue(receipt['verified_at'])
 
+    def test_youtube_legacy_iw_alias_is_accepted_as_hebrew(self):
+        row = copy.deepcopy(self.row)
+        row['snippet']['defaultLanguage'] = 'iw'
+        row['snippet']['defaultAudioLanguage'] = 'iw'
+        receipt = self.verify(row)
+        self.assertEqual(receipt['kind'], 'overview')
+
     def test_private_pending_wrong_channel_or_language_are_not_public_completion(self):
         cases = [('status', 'privacyStatus', 'unlisted'), ('processingDetails', 'processingStatus', 'processing'),
                  ('snippet', 'channelId', 'different-channel'), ('snippet', 'defaultAudioLanguage', 'en')]
