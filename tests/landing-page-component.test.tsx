@@ -133,6 +133,7 @@ describe('Compact landing analytics context', () => {
     expect(inferServiceType('/couples-counseling-gan-yavne')).toBe('couples_counseling');
     expect(inferServiceType('/services/couples/crisis')).toBe('couples_crisis');
     expect(inferServiceType('/services/couples/before-separation/')).toBe('couples_before_separation');
+    expect(inferServiceType('/tools/chatgpt')).toBe('chatgpt_plugin');
   });
 });
 

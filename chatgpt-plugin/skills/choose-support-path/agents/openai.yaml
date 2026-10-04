@@ -1,8 +1,0 @@
-interface:
-  display_name: "Choose the right support"
-  short_description: "Match the situation to a practical path"
-  default_prompt: "Help me decide what kind of support fits this relationship or parenting situation."
-policy:
-  products:
-    - CHAT
-  allow_implicit_invocation: true
