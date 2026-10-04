@@ -1,0 +1,91 @@
+name: Kesher Targeted Media Recovery Dispatcher
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/kesher-media-recovery-request.json'
+      - '.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: kesher-targeted-media-recovery-dispatch
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: main
+          persist-credentials: false
+
+      - name: Resolve exact enabled recovery target
+        id: target
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+
+          request = json.loads(Path('.github/kesher-media-recovery-request.json').read_text(encoding='utf-8'))
+          if request.get('enabled') is not True:
+              print('Targeted media recovery is disabled; nothing to dispatch.')
+              with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+                  out.write('enabled=false\n')
+              raise SystemExit(0)
+
+          slug = str(request.get('target_slug') or '').strip()
+          if not slug:
+              raise SystemExit('Enabled targeted media recovery requires target_slug')
+
+          posts = json.loads(Path('src/data/posts.json').read_text(encoding='utf-8'))
+          matches = [p for p in posts if isinstance(p, dict) and str(p.get('slug') or p.get('id') or '').strip() == slug]
+          if len(matches) != 1:
+              raise SystemExit(f'Target slug {slug!r} matched {len(matches)} articles')
+
+          article = matches[0]
+          today = datetime.now(ZoneInfo('Asia/Jerusalem')).date().isoformat()
+          if str(article.get('date') or '') != today:
+              raise SystemExit(f'Recovery target {slug!r} is not today\'s article ({today})')
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+              out.write('enabled=true\n')
+              out.write(f'slug={slug}\n')
+          print(f'RECOVERY_TARGET_VERIFIED slug={slug} date={today}')
+          PY
+
+      - name: Dispatch exact Video Overview worker
+        if: ${{ steps.target.outputs.enabled == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SLUG: ${{ steps.target.outputs.slug }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-daily-video.yml \
+            --ref main \
+            -f operation=full \
+            -f target_slug="$TARGET_SLUG"
+          echo "VIDEO_OVERVIEW_DISPATCHED slug=$TARGET_SLUG"
+
+      - name: Dispatch exact Short worker
+        if: ${{ steps.target.outputs.enabled == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SLUG: ${{ steps.target.outputs.slug }}
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-short-v4.yml \
+            --ref main \
+            -f operation=full \
+            -f derive_slug="$TARGET_SLUG"
+          echo "SHORT_DISPATCHED slug=$TARGET_SLUG"
