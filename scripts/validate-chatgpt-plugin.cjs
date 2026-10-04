@@ -155,6 +155,9 @@ if (!fs.existsSync(skillsRoot)) {
     if (description && description.length > 1024) fail(`Skill ${dir.name} description exceeds 1024 characters`);
     if (name && `${pluginName}:${name}`.length > 64) fail(`Combined plugin:skill identity exceeds 64 characters for ${dir.name}`);
     if (!skill.slice(fm[0].length).trim()) fail(`Skill ${dir.name} body is empty`);
+    if (/https:\/\/kesher\.saharoni\.com\/(?:contact|services|couples-|parenting-)/i.test(skill)) {
+      fail(`Skill ${dir.name} must remain standalone and must not embed service/booking links`);
+    }
 
     if (!fs.existsSync(agentPath)) {
       fail(`Missing agents/openai.yaml for ${dir.name}`);
