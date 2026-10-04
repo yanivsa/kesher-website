@@ -1,14 +1,14 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-04",
-  "status": "article_generating",
+  "status": "article_result_wait",
   "article": {
     "attempt_count": 3,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-04T10:44:32.335079+00:00",
     "run_id": 37195963244,
-    "processed_run_id": 37182821167,
+    "processed_run_id": 37195963244,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -25,13 +25,13 @@
     "last_worker_result": {
       "schema_version": 1,
       "slot": "2026-10-04",
-      "outcome": "ARTICLE_ALREADY_IN_PROGRESS",
+      "outcome": "PR_CREATED",
       "retryable": false,
-      "message": "ARTICLE_ALREADY_IN_PROGRESS pr=1045",
-      "session_id": "",
-      "pr_url": "",
-      "github_run_id": "37182821167",
-      "completed_at": "2026-10-04T10:21:24.335361+00:00"
+      "message": "",
+      "session_id": "sessions/2556970304191877836",
+      "pr_url": "https://github.com/yanivsa/kesher-website/pull/1045",
+      "github_run_id": "37195963244",
+      "completed_at": "2026-10-04T10:41:40.948815+00:00"
     },
     "watchdog": {
       "identity": "2026-10-04",
@@ -47,7 +47,8 @@
     "pr_number": 1045,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1045",
     "normalization_slot": "2026-10-04",
-    "normalization_dispatched_at": "2026-10-04T10:28:40.189297+00:00"
+    "normalization_dispatched_at": "2026-10-04T10:28:40.189297+00:00",
+    "last_jules_session_id": "sessions/2556970304191877836"
   },
   "backlog": [
     {
@@ -2010,9 +2011,20 @@
       "details": {
         "attempt": 3
       }
+    },
+    {
+      "at": "2026-10-04T10:42:32.335098+00:00",
+      "from": "article_generating",
+      "to": "article_result_wait",
+      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
+      "details": {
+        "run_id": 37195963244,
+        "outcome": "PR_CREATED",
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1045"
+      }
     }
   ],
-  "updated_at": "2026-10-04T10:37:29.816019+00:00",
+  "updated_at": "2026-10-04T10:42:32.335106+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
