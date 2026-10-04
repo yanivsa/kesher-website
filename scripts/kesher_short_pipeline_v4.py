@@ -316,6 +316,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
                 "url": core.DISPLAY_URL,
                 "signatureImageSrc": signature_image_src,
                 "motionPlan": _short_targets_for_plan(candidate_plan),
+                "preserveSourceSharpness": bool(item.get("provider_native_short_verified")),
             },
         )
         command = [
