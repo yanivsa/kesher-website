@@ -49,8 +49,8 @@
         "privacyPolicyURL": "https://kesher.saharoni.com/privacy",
         "supportURL": "https://kesher.saharoni.com/contact",
         "termsOfServiceURL": "https://kesher.saharoni.com/terms",
-        "logo": "./assets/logo.png",
-        "composerIcon": "./assets/logo.png"
+        "logo": "./assets/logo.svg",
+        "composerIcon": "./assets/logo.svg"
       },
       "review": {
         "test_cases": {
