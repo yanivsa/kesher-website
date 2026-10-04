@@ -22,7 +22,7 @@ const skills = [
     tool: "get_parenting_response_plan",
   },
   {
-    folder: "parenting-attention-executive-function",
+    folder: "parenting-attention",
     skillName: "parenting-attention",
     tool: "get_adhd_parenting_plan",
     requireAdhdBoundary: true,
@@ -54,6 +54,14 @@ for (const skill of skills) {
     if (!/^\s+display_name:\s*".+"/m.test(agent)) fail(`${skill.folder}: missing display_name`);
     if (!/^\s+short_description:\s*".+"/m.test(agent)) fail(`${skill.folder}: missing short_description`);
     if (!/^\s+default_prompt:\s*".+"/m.test(agent)) fail(`${skill.folder}: missing default_prompt`);
+    if (!/^dependencies:\s*$/m.test(agent)) fail(`${skill.folder}: missing MCP dependencies`);
+    if (!/^\s+tools:\s*$/m.test(agent)) fail(`${skill.folder}: missing MCP tool dependencies`);
+    if (!/^\s+- type:\s*"mcp"\s*$/m.test(agent)) fail(`${skill.folder}: MCP dependency type missing`);
+    if (!/^\s+value:\s*"kesher"\s*$/m.test(agent)) fail(`${skill.folder}: MCP dependency name must be kesher`);
+    if (!/^\s+transport:\s*"streamable_http"\s*$/m.test(agent)) fail(`${skill.folder}: MCP dependency transport must be streamable_http`);
+    if (!/^\s+url:\s*"https:\/\/kesher-mcp-v2-staging\.yanivsa\.workers\.dev\/mcp"\s*$/m.test(agent)) {
+      fail(`${skill.folder}: MCP dependency URL must match V2 staging`);
+    }
     if (!/^policy:\s*$/m.test(agent)) fail(`${skill.folder}: missing agent policy`);
     if (!/^\s+- CHAT\s*$/m.test(agent)) fail(`${skill.folder}: must target CHAT`);
     if (!/^\s+allow_implicit_invocation:\s*true\s*$/m.test(agent)) {
