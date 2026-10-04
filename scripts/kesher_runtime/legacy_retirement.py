@@ -152,6 +152,7 @@ def media_mutation(state):
     from .media_state import CanonicalMediaState
     if not isinstance(state, CanonicalMediaState):
         retired_entrypoint()
+        return
     state.context._owned(state.context.store.load().state, require_current=True)
     if state.context.store.repo == REPOSITORY:
         from .authority import require_live
