@@ -4493,6 +4493,47 @@
         "note": "Preserves exact9947d0c6 push/main recovery request, current-day exact-one-article selection and both operation=full child dispatches. Read-only exact-workflow/event state admission occurs before dispatch credentials. Only this reviewed dispatcher role may retain these exact two push paths before exclusion; it is an exact retirement target before VERIFIED. Child provider credentials and all indirect scopes remain fenced; no status/PR mutation scope invented."
       },
       "role": "retiring_dispatcher"
+    },
+    ".github/workflows/kesher-plugin-contracts.yml": {
+      "capabilities": [
+        "read"
+      ],
+      "definition_sha256": "d57626f4799e5070b7950f1c0c7695260e8e7e45b1cb0c78d25c416f321880f0",
+      "resources": [],
+      "review": {
+        "call_chain": {},
+        "credential_services": {},
+        "credentials": [],
+        "dispatches": [],
+        "note": "Reviewed V2 Plugin contract/package/evaluation validation workflow. It has repository contents read permission only, no protected mutation credentials, no GitHub write scopes, and no indirect dispatches; classify as diagnostic."
+      },
+      "role": "diagnostic",
+      "registration_id": 372985940
+    },
+    ".github/workflows/kesher-mcp-staging.yml": {
+      "capabilities": [
+        "cloudflare_write",
+        "read"
+      ],
+      "definition_sha256": "d487578b10b368cd6e8c732d9936ce9d5bbd8d7dd8fe2f81199436deca36ee3b",
+      "resources": [
+        "cloudflare.account"
+      ],
+      "review": {
+        "call_chain": {},
+        "credential_services": {
+          "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
+          "CLOUDFLARE_API_TOKEN": "cloudflare"
+        },
+        "credentials": [
+          "CLOUDFLARE_ACCOUNT_ID",
+          "CLOUDFLARE_API_TOKEN"
+        ],
+        "dispatches": [],
+        "note": "Reviewed V2 MCP staging workflow. Cloudflare mutation is limited by workflow configuration to the isolated kesher-mcp-v2-staging Worker; repository permission is contents:read, there are no GitHub mutation capabilities or indirect dispatches, and this workflow is never canonical production authority."
+      },
+      "role": "separate_infrastructure",
+      "registration_id": 372989693
     }
   }
 }
