@@ -684,7 +684,7 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "291440842cc8c930bc618dc980a78faebc298f8c4c5056e3643adf9937f1aabc",
           "tests/test_v5_video_source_binding.py": "6876f78b1f8515254c1a95bce9b697ad97c73a27ad0ce85ffa54272efc740b13",
-          "tests/test_kesher_production_cutover.py": "dd905f261302d95a6f2998969c67a5a289899f47dd7802675ec69a774a99ffdb",
+          "tests/test_kesher_production_cutover.py": "360c2c6623bea8205a813a1323e8bcba8ddd674817e5e5d0207290e0954399dc",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
           "tests/test_kesher_git_exclusion.py": "60ad776c6da6b084512be14730e73a0ff83676a4ed0cdb8c5cdf03044fb575d4",
