@@ -1,21 +1,18 @@
 {
-  "enabled": false,
-  "target_slug": "sleep-needs-10-year-old",
-  "issue": 1021,
-  "purpose": "Refresh authoritative sleep article media after natural-Israeli-Hebrew rewrite. Reuse exact article slug, but generate/verify media against the new content hash without duplicating the article.",
+  "enabled": true,
+  "target_slug": "jealousy-in-relationships",
+  "issue": null,
+  "purpose": "Complete today's 2026-10-04 KESHER digital assets for the authoritative jealousy article using the bounded manual emergency media workers.",
   "completed": false,
-  "content_sha256": "bc7af54b55d268c5bf801470c842566c1e1a6948fac5ba0551849ffa6d41f967",
-  "failure_signature": "TARGETED_MEDIA_RECOVERY_SLEEP_NEEDS_2026_10_02",
+  "failure_signature": "TODAY_MEDIA_RECOVERY_2026_10_04_JEALOUSY",
   "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
+    "article_url": "https://kesher.saharoni.com/blog/jealousy-in-relationships",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "short_portrait_verified": false,
     "short_width": null,
     "short_height": null
   },
-  "reconcile_seq": 9,
-  "reconcile_reason": "Article copy was materially rewritten on 2026-10-04; prior media belongs to content_sha256 297757f9... and must not satisfy the new authoritative identity.",
-  "paused_at": "2026-10-04T04:00:00Z",
-  "paused_reason": "Current-cycle 2026-10-04 article and media take precedence; prevent prior sleep-media recovery from starving today's publication."
+  "reconcile_seq": 10,
+  "reconcile_reason": "Today's article is present on main but no verified public Video Overview/Short chain exists; dispatch exact media workers for this slug."
 }
