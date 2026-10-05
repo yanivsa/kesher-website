@@ -1,18 +1,18 @@
 {
-  "enabled": false,
-  "target_slug": "jealousy-in-relationships",
+  "enabled": true,
+  "target_slug": "20-second-hug-relationship-stress",
   "issue": null,
-  "purpose": "Complete today's 2026-10-04 KESHER digital assets for the authoritative jealousy article using the bounded manual emergency media workers.",
-  "completed": true,
-  "failure_signature": "TODAY_MEDIA_RECOVERY_2026_10_04_JEALOUSY",
+  "purpose": "Complete today's 2026-10-05 KESHER digital assets for the authoritative 20-second hug relationship article using the bounded manual emergency media workers.",
+  "completed": false,
+  "failure_signature": "TODAY_MEDIA_RECOVERY_2026_10_05_20_SECOND_HUG",
   "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/jealousy-in-relationships",
-    "overview_youtube_url": "https://www.youtube.com/watch?v=9EkMz-dWxgo",
-    "short_youtube_url": "https://www.youtube.com/watch?v=jJMDG-EepRs",
-    "short_portrait_verified": true,
-    "short_width": 1080,
-    "short_height": 1920
+    "article_url": "https://kesher.saharoni.com/blog/20-second-hug-relationship-stress",
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "short_portrait_verified": false,
+    "short_width": null,
+    "short_height": null
   },
-  "reconcile_seq": 11,
-  "reconcile_reason": "Verified both 2026-10-04 media deliverables are public and processed on the authoritative YouTube channel. Short recovery completed successfully; later Overview recovery was redundant and stopped fail-closed on stale local metadata before upload. No further recovery dispatch is required."
+  "reconcile_seq": 12,
+  "reconcile_reason": "The authoritative 2026-10-05 article is merged and deployed, while no verified public Video Overview/Short chain exists yet for this exact slug. Dispatch the exact bounded media workers without creating a duplicate article."
 }
