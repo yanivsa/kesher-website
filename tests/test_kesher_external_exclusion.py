@@ -216,4 +216,67 @@ class ExternalExclusionTests(unittest.TestCase):
         self.assertEqual(set(result['external']['resource_proofs']), set(services))
 
 
+    def test_v2_policy_selects_one_reviewed_protection_mode_and_exact_credential_classes(self):
+        from scripts.kesher_runtime.exclusion import REQUIRED_RESOURCES, ExclusionFence
+        fence, services = protection_fixture()
+        native = fence._policy('youtube')
+        self.assertEqual(native['protection_method'], 'native_revocation')
+        self.assertTrue(native['predecessor_authority_denied'])
+        self.assertTrue(native['credential_revocation_complete'])
+        self.assertEqual(set(native['covered_credential_classes']), set(REQUIRED_RESOURCES['youtube']))
+        self.assertNotIn('revoked_credential_classes', native)
+
+        modes = {name: 'native_revocation' for name in REQUIRED_RESOURCES}
+        modes['jules'] = 'resource_enforced_denial'
+        denial = ExclusionFence(fence.repo, fence.epoch, fence.owner, services, fence.bindings,
+                                protection_methods=modes)._policy('jules')
+        self.assertEqual(denial['protection_method'], 'resource_enforced_denial')
+        self.assertTrue(denial['predecessor_authority_denied'])
+        self.assertNotIn('credential_revocation_complete', denial)
+        self.assertEqual(set(denial['covered_credential_classes']), set(REQUIRED_RESOURCES['jules']))
+
+    def test_v2_native_and_resource_denial_proofs_validate_and_invalid_modes_fail_closed(self):
+        from scripts.kesher_runtime.exclusion import REQUIRED_RESOURCES, ExclusionFence, validate_external
+        fence, services = protection_fixture()
+        fence.establish()
+        native = fence.authority_observation()
+        validate_external(native, 'owner/repo')
+
+        modes = {name: 'native_revocation' for name in REQUIRED_RESOURCES}
+        modes['jules'] = 'resource_enforced_denial'
+        denial_fence = ExclusionFence(fence.repo, 'denial-epoch', fence.owner,
+                                      {name: ProtectedService(name) for name in REQUIRED_RESOURCES},
+                                      {name: 'resource-id:' + name for name in REQUIRED_RESOURCES},
+                                      protection_methods=modes)
+        denial_fence.ports['github'] = ProtectedGitAuthority()
+        denial_fence.bindings['github'] = denial_fence.ports['github'].resource_id
+        denial_fence.establish()
+        denial = denial_fence.authority_observation()
+        validate_external(denial, 'owner/repo')
+        self.assertNotIn('credential_revocation_complete', denial['resource_proofs']['jules'])
+
+        def reject(mutator):
+            broken = copy.deepcopy(denial)
+            mutator(broken['resource_proofs']['jules'])
+            proof = broken['resource_proofs']['jules']
+            proof['receipt_sha256'] = digest({k:v for k,v in proof.items() if k != 'receipt_sha256'})
+            broken['protection_sha256'] = digest(broken['resource_proofs'])
+            with self.assertRaises(StateInvalid):
+                validate_external(broken, 'owner/repo')
+
+        reject(lambda p: p.__setitem__('protection_method', 'synthetic_receipt'))
+        reject(lambda p: p.__setitem__('predecessor_authority_denied', False))
+        reject(lambda p: p.__setitem__('covered_credential_classes', p['covered_credential_classes'][:-1]))
+        reject(lambda p: p.__setitem__('credential_revocation_complete', True))
+        reject(lambda p: p.__setitem__('resource_id', 'caller-selected-resource'))
+
+        broken_native = copy.deepcopy(native)
+        proof = broken_native['resource_proofs']['youtube']
+        proof['credential_revocation_complete'] = False
+        proof['receipt_sha256'] = digest({k:v for k,v in proof.items() if k != 'receipt_sha256'})
+        broken_native['protection_sha256'] = digest(broken_native['resource_proofs'])
+        with self.assertRaises(StateInvalid):
+            validate_external(broken_native, 'owner/repo')
+
+
 if __name__ == '__main__': unittest.main()

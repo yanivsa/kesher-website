@@ -187,6 +187,22 @@ class ProductionCutoverTests(unittest.TestCase):
             with self.assertRaises(StateInvalid):check_definitions(definitions|{path:changed},changed_rules)
 
 
+    def test_resource_enforced_denial_mode_is_admitted_without_false_revocation_claim(self):
+        from scripts.kesher_runtime.exclusion import REQUIRED_RESOURCES
+        runtime, case, services = self.runtime()
+        modes = {name: 'native_revocation' for name in REQUIRED_RESOURCES}
+        modes['jules'] = 'resource_enforced_denial'
+        runtime.fence.protection_methods = modes
+        runtime.step()  # github
+        runtime.step()  # jules
+        proof = services['jules'].protection
+        self.assertEqual(proof['protection_method'], 'resource_enforced_denial')
+        self.assertTrue(proof['predecessor_authority_denied'])
+        self.assertNotIn('credential_revocation_complete', proof)
+        self.assertEqual(set(proof['covered_credential_classes']), set(REQUIRED_RESOURCES['jules']))
+        self.assertEqual(case.backend.writes, [])
+
+
 class CredentialGatewayTests(unittest.TestCase):
     def test_two_exact_dependabot_registrations_journal_cancel_and_terminal_readback(self):
         from scripts.kesher_runtime.github_drain import GithubDrain
