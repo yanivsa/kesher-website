@@ -1,8 +1,8 @@
 {
   "status": "failure",
-  "run_id": 35477478123,
-  "run_url": "https://github.com/yanivsa/kesher-website/actions/runs/35477478123",
-  "sha": "cf4b7247f001d970504fc69a5729dc00f0f7bc0d",
+  "run_id": 33992820864,
+  "run_url": "https://github.com/yanivsa/kesher-website/actions/runs/33992820864",
+  "sha": "6da6ee41c9206d620db09244b5594457d6cba7da",
   "strict_success": false,
   "markers": {
     "OPENCLAW_OFFLINE_REPAIR_COMPLETE": false,
@@ -14,5 +14,5 @@
   },
   "ready_url": null,
   "failure_hint": "conclusion=failure; missing=OPENCLAW_OFFLINE_REPAIR_COMPLETE,OPENCLAW_GATEWAY_RPC_OK,CLOUDFLARED_SERVICE_ACTIVE,CLOUDFLARE_ACCESS_PROTECTED,OPENCLAW_OFFLINE_FINALIZE_SUCCESS,OPENCLAW_READY_URL",
-  "updated_at": "2026-09-20T01:05:23Z"
+  "updated_at": "2026-10-05T12:38:25Z"
 }
