@@ -1,0 +1,37 @@
+name: Observe Short YouTube Metadata
+
+on:
+  push:
+    branches:
+      - fix/short-youtube-tag-reconcile-20261005
+
+permissions:
+  contents: read
+
+jobs:
+  observe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      VIDEO_ID: coGzlDtNMKQ
+    steps:
+      - name: Read exact remote YouTube metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$YOUTUBE_CLIENT_ID"
+          test -n "$YOUTUBE_CLIENT_SECRET"
+          test -n "$YOUTUBE_REFRESH_TOKEN"
+          token_json="$(curl -fsS -X POST https://oauth2.googleapis.com/token \
+            --data-urlencode "client_id=$YOUTUBE_CLIENT_ID" \
+            --data-urlencode "client_secret=$YOUTUBE_CLIENT_SECRET" \
+            --data-urlencode "refresh_token=$YOUTUBE_REFRESH_TOKEN" \
+            --data-urlencode 'grant_type=refresh_token')"
+          token="$(jq -r '.access_token // empty' <<<"$token_json")"
+          test -n "$token"
+          curl -fsS -H "Authorization: Bearer $token" \
+            "https://www.googleapis.com/youtube/v3/videos?part=snippet,status,processingDetails&id=$VIDEO_ID" \
+            | jq '{items: [.items[] | {id, snippet: {channelId: .snippet.channelId, title: .snippet.title, tags: (.snippet.tags // []), defaultLanguage: .snippet.defaultLanguage, defaultAudioLanguage: .snippet.defaultAudioLanguage}, status: {privacyStatus: .status.privacyStatus}, processingDetails: {processingStatus: .processingDetails.processingStatus}}]}'
