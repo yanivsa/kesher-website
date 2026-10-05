@@ -302,12 +302,17 @@ class GitHubResourceExclusion:
         from .github_drain import GithubDrain
         from .authority_topology import validate_registered_inventory
         from .exclusion import REQUIRED_RESOURCES, CANONICAL_GATE, CONTROL_GATE
-        expected_keys = {'repo','resource','resource_id','epoch','owner','default_authority',
-                         'credential_revocation_complete','revoked_credential_classes','canonical_gate','control_gate'}
+        base_keys = {'repo','resource','resource_id','epoch','owner','default_authority',
+                     'protection_method','predecessor_authority_denied','covered_credential_classes',
+                     'canonical_gate','control_gate'}
+        method = policy.get('protection_method')
+        expected_keys = base_keys | ({'credential_revocation_complete'} if method == 'native_revocation' else set())
         if (guard is None or not callable(registered) or set(policy) != expected_keys
                 or policy['repo'] != repo or policy['resource'] != 'github'
-                or policy['default_authority'] != 'deny' or policy['credential_revocation_complete'] is not True
-                or policy['revoked_credential_classes'] != REQUIRED_RESOURCES['github']
+                or policy['default_authority'] != 'deny' or policy.get('predecessor_authority_denied') is not True
+                or policy.get('covered_credential_classes') != REQUIRED_RESOURCES['github']
+                or method not in {'native_revocation','resource_enforced_denial'}
+                or (method == 'native_revocation' and policy.get('credential_revocation_complete') is not True)
                 or policy['canonical_gate'] != CANONICAL_GATE or policy['control_gate'] != CONTROL_GATE):
             raise StateInvalid('GITHUB_TRUSTED_RESOURCE_GATEWAY_REQUIRED')
         self.github, self.repo, self.guard = github, repo, guard
