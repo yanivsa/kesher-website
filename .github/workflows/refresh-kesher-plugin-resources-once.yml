@@ -1,0 +1,43 @@
+name: Refresh Kesher Plugin Resources Once
+
+on:
+  push:
+    branches:
+      - feature/kesher-plugin-v2-clean
+    paths:
+      - ".github/workflows/refresh-kesher-plugin-resources-once.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout V2 clean branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/kesher-plugin-v2-clean
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Regenerate Kesher plugin resource index
+        run: node scripts/generate-plugin-resources.mjs
+
+      - name: Commit regenerated resource index if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- plugin/data/kesher-resources.json; then
+            echo "Resource index already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add plugin/data/kesher-resources.json
+          git commit -m "chore: refresh Kesher plugin resource index"
+          git push origin HEAD:feature/kesher-plugin-v2-clean
