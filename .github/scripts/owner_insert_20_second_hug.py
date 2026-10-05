@@ -1,8 +1,12 @@
 from pathlib import Path
+from datetime import date, timedelta
+import hashlib
 import json
 
 POSTS = Path("src/data/posts.json")
 SLUG = "20-second-hug-relationship-stress"
+TODAY = date(2026, 10, 5)
+COOLDOWN_CUTOFF = TODAY - timedelta(days=90)
 
 raw = POSTS.read_text(encoding="utf-8")
 if f'"slug": "{SLUG}"' in raw or f'"id": "{SLUG}"' in raw:
@@ -10,19 +14,69 @@ if f'"slug": "{SLUG}"' in raw or f'"id": "{SLUG}"' in raw:
 if not raw.lstrip().startswith("["):
     raise SystemExit("posts.json root is not an array; refusing mutation")
 
+existing_posts = json.loads(raw)
+
+# Select a relevant local couple image whose binary content has not been used
+# by a post in the last 90 days. The content validator enforces this cooldown
+# by SHA-256, not filename, so compare the actual bytes here too.
+recent_hashes = set()
+for post in existing_posts:
+    if not isinstance(post, dict):
+        continue
+    d = str(post.get("date") or post.get("updatedAt") or "")[:10]
+    try:
+        post_date = date.fromisoformat(d)
+    except ValueError:
+        continue
+    image = post.get("image")
+    if post_date < COOLDOWN_CUTOFF or not isinstance(image, str) or not image.startswith("/"):
+        continue
+    image_path = Path("public" + image)
+    if image_path.is_file():
+        recent_hashes.add(hashlib.sha256(image_path.read_bytes()).hexdigest())
+
+candidates = [
+    "/images/generated/blog/couples-communication-distractions-presence.jpg",
+    "/images/generated/blog/five-questions-marriage.jpg",
+    "/images/generated/blog/newlyweds-domestic-duties-sharing.jpg",
+    "/images/generated/blog/relationship-after-childbirth.jpg",
+    "/images/generated/blog/repairing-relationship-after-resentment.jpg",
+    "/images/generated/blog/screens-relationship-intimacy.jpg",
+    "/images/generated/blog/stop-keeping-score-relationship.png",
+    "/images/generated/blog/unspoken-expectations-in-relationships.jpg",
+    "/images/generated/blog/new-relationship-initial-intentions.jpg",
+    "/images/generated/blog/couples-communication-life-transitions.jpg",
+    "/images/generated/blog/couples-communication-distance.jpg",
+]
+
+chosen_image = None
+chosen_hash = None
+for candidate in candidates:
+    p = Path("public" + candidate)
+    if not p.is_file():
+        continue
+    digest = hashlib.sha256(p.read_bytes()).hexdigest()
+    if digest not in recent_hashes:
+        chosen_image = candidate
+        chosen_hash = digest
+        break
+
+if not chosen_image:
+    raise SystemExit("no cooldown-safe local couple image found; refusing fallback reuse")
+
 content = """<p><strong>מחבקים את בן או בת הזוג לשנייה בדרך למטבח?</strong> ברוב הבתים זה קורה על אוטומט: נכנסים, אומרים שלום, חצי חיבוק — ומיד עוברים לילדים, לטלפון, לארוחת ערב ולכל מה שחיכה מאז הבוקר. ואז מגיע הטיפ שרץ ברשת: חיבוק של 20 שניות מוריד סטרס, מעלה אוקסיטוצין ואפילו משפיע על לחץ הדם.</p>
 <p>יש כאן בסיס מחקרי מעניין, אבל כדאי לדייק. אין הוכחה ל"מתג" שנדלק בדיוק בשנייה ה־20, ואין בסיס טוב לטענה שחיבוק של שתיים או שלוש שניות הוא רק נימוס ושאין לו שום השפעה. מה שכן יש: מחקרים שמראים שמגע חם ותומך בין בני זוג יכול להיות קשור לתגובה גופנית רגועה יותר במצבי לחץ.</p>
 <h3>אז מאיפה הגיעו 20 השניות?</h3>
-<p>במחקר מעבדה של Karen Grewen, Bobbi Anderson, Susan Girdler ו־Kathleen Light מאוניברסיטת צפון קרוליינה, זוגות שחיו יחד חולקו לשתי קבוצות לפני משימת לחץ. בקבוצת המגע החם בני הזוג החזיקו ידיים במשך עשר דקות בזמן צפייה בסרטון רומנטי, ולאחר מכן התחבקו במשך 20 שניות. קבוצת הביקורת פשוט ישבה בשקט.</p>
+<p>במחקר מעבדה של קארן גרוון, בובי אנדרסון, סוזן גירדלר וקתלין לייט מאוניברסיטת צפון קרוליינה, זוגות שחיו יחד חולקו לשתי קבוצות לפני משימת לחץ. בקבוצת המגע החם בני הזוג החזיקו ידיים במשך עשר דקות בזמן צפייה בסרטון רומנטי, ולאחר מכן התחבקו במשך 20 שניות. קבוצת הביקורת פשוט ישבה בשקט.</p>
 <p>לאחר מכן המשתתפים נדרשו לבצע משימת דיבור מלחיצה. אצל מי שקיבלו את המגע הזוגי לפני המשימה, העלייה בלחץ הדם ובדופק הייתה מתונה יותר. זה לא אומר שחיבוק של 20 שניות הוא טיפול בלחץ דם. זה כן אומר שמגע זוגי חם, כחלק מפרוטוקול של קרבה, נקשר לתגובה קרדיווסקולרית רגועה יותר בזמן סטרס.</p>
-<p><a href="https://pubmed.ncbi.nlm.nih.gov/15206831/" target="_blank" rel="noopener noreferrer">למחקר ב־PubMed: Warm partner contact is related to lower cardiovascular reactivity</a>.</p>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/15206831/" target="_blank" rel="noopener noreferrer">למחקר המקורי על מגע זוגי ותגובת לחץ</a>.</p>
 <h3>ומה לגבי אוקסיטוצין?</h3>
-<p>במחקר נוסף של Grewen, Girdler, Amico ו־Light, 38 זוגות עברו מנוחה, עשר דקות של מגע חם עם בן או בת הזוג, ואז מנוחה נוספת. תמיכה זוגית גבוהה יותר הייתה קשורה לרמות אוקסיטוצין גבוהות יותר לאורך הפרוטוקול. אצל נשים היא נקשרה גם ללחץ דם סיסטולי נמוך יותר במנוחה שלאחר המגע.</p>
+<p>במחקר נוסף של גרוון, גירדלר, אמיקו ולייט, 38 זוגות עברו מנוחה, עשר דקות של מגע חם עם בן או בת הזוג, ואז מנוחה נוספת. תמיכה זוגית גבוהה יותר הייתה קשורה לרמות אוקסיטוצין גבוהות יותר לאורך הפרוטוקול. אצל נשים היא נקשרה גם ללחץ דם סיסטולי נמוך יותר במנוחה שלאחר המגע.</p>
 <p>גם כאן חשוב לשמור על דיוק: המחקר לא מצא "קפיצה" אוטומטית באוקסיטוצין בשנייה ה־20. הוא מחזק תמונה רחבה יותר שבה קשר תומך ומגע רצוי הם חלק ממערכת של קרבה, ביטחון וויסות.</p>
-<p><a href="https://pubmed.ncbi.nlm.nih.gov/16046364/" target="_blank" rel="noopener noreferrer">למחקר ב־PubMed: Effects of partner support on resting oxytocin, cortisol, norepinephrine, and blood pressure</a>.</p>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/16046364/" target="_blank" rel="noopener noreferrer">למחקר המקורי על תמיכה זוגית ואוקסיטוצין</a>.</p>
 <h3>ומה קורה מחוץ למעבדה?</h3>
-<p>מחקר נוסף בהובלת Kathleen Light מצא שבקרב נשים לפני גיל המעבר, תדירות גבוהה יותר של חיבוקים עם בן הזוג הייתה קשורה לרמות אוקסיטוצין גבוהות יותר וללחץ דם ודופק נמוכים יותר במנוחה. זה קשר סטטיסטי — לא הוכחה שכל חיבוק מוריד מיד מספר מסוים במד לחץ הדם — אבל הוא בהחלט מצטרף לתמונה.</p>
-<p><a href="https://pubmed.ncbi.nlm.nih.gov/15740822/" target="_blank" rel="noopener noreferrer">למחקר ב־PubMed: More frequent partner hugs and higher oxytocin levels are linked to lower blood pressure and heart rate</a>.</p>
+<p>מחקר נוסף בהובלת קתלין לייט מצא שבקרב נשים לפני גיל המעבר, תדירות גבוהה יותר של חיבוקים עם בן הזוג הייתה קשורה לרמות אוקסיטוצין גבוהות יותר וללחץ דם ודופק נמוכים יותר במנוחה. זה קשר סטטיסטי — לא הוכחה שכל חיבוק מוריד מיד מספר מסוים במד לחץ הדם — אבל הוא בהחלט מצטרף לתמונה.</p>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/15740822/" target="_blank" rel="noopener noreferrer">למחקר המקורי על תדירות חיבוקים ומדדים פיזיולוגיים</a>.</p>
 <h3>אז למה בכל זאת שווה לנסות חיבוק של 20 שניות?</h3>
 <p>לא בגלל קסם ביולוגי במספר 20. בגלל ש־20 שניות הן מספיק זמן כדי להפוך מחווה אוטומטית לעצירה אמיתית.</p>
 <p>יש הבדל בין "היי, מה נשמע?" תוך כדי שמורידים נעליים ובודקים ווטסאפ, לבין רגע שבו שני בני הזוג עוצרים, מניחים את הטלפון, מתחבקים ונשארים שם עוד קצת. מבחינה זוגית, זה מסר אחר לגמרי: <strong>אני כאן. ראיתי אותך. לפני המשימות — אנחנו נפגשים.</strong></p>
@@ -56,56 +110,41 @@ article = {
     "updatedAt": "2026-10-05",
     "category": "זוגיות",
     "subcategory": "קרבה וויסות",
-    "tags": [
-        "חיבוק 20 שניות",
-        "סטרס בזוגיות",
-        "אוקסיטוצין",
-        "ייעוץ זוגי"
-    ],
+    "tags": ["חיבוק 20 שניות", "סטרס בזוגיות", "אוקסיטוצין", "ייעוץ זוגי"],
     "author": "שירה סהרוני",
     "serviceUrl": "/services/couples",
     "serviceLabel": "ייעוץ זוגי",
     "directAnswer": "חיבוק של 20 שניות אינו מספר קסם, אבל מחקרים על מגע חם בין בני זוג מצאו קשר לתגובה קרדיווסקולרית מתונה יותר בזמן סטרס ולמדדים הקשורים באוקסיטוצין. בפועל, 20 שניות הן דרך פשוטה לעצור, ליצור מגע רצוי ולתת לגוף ולזוגיות רגע של קרבה.",
     "evidence": [
         {
-            "title": "Warm partner contact is related to lower cardiovascular reactivity",
-            "source": "Behavioral Medicine / PubMed",
+            "title": "מגע חם בין בני זוג ותגובה קרדיווסקולרית נמוכה יותר",
+            "source": "מאגר המחקרים הרפואיים של הספרייה הלאומית לרפואה בארצות הברית",
             "url": "https://pubmed.ncbi.nlm.nih.gov/15206831/",
             "note": "פרוטוקול של מגע חם שכלל חיבוק של 20 שניות נקשר לעלייה מתונה יותר בלחץ דם ובדופק בזמן משימת לחץ."
         },
         {
-            "title": "Effects of partner support on resting oxytocin, cortisol, norepinephrine, and blood pressure",
-            "source": "Psychosomatic Medicine / PubMed",
+            "title": "השפעת תמיכת בן הזוג על אוקסיטוצין, קורטיזול ולחץ דם",
+            "source": "מאגר המחקרים הרפואיים של הספרייה הלאומית לרפואה בארצות הברית",
             "url": "https://pubmed.ncbi.nlm.nih.gov/16046364/",
             "note": "תמיכה זוגית גבוהה יותר נקשרה לרמות אוקסיטוצין גבוהות יותר; אצל נשים נמצאה גם זיקה ללחץ דם סיסטולי נמוך יותר אחרי מגע חם."
         },
         {
-            "title": "More frequent partner hugs and higher oxytocin levels are linked to lower blood pressure and heart rate",
-            "source": "Biological Psychology / PubMed",
+            "title": "תדירות חיבוקים, אוקסיטוצין, לחץ דם ודופק",
+            "source": "מאגר המחקרים הרפואיים של הספרייה הלאומית לרפואה בארצות הברית",
             "url": "https://pubmed.ncbi.nlm.nih.gov/15740822/",
             "note": "תדירות גבוהה יותר של חיבוקים עם בן הזוג נקשרה אצל נשים לפני גיל המעבר לאוקסיטוצין גבוה יותר וללחץ דם ודופק נמוכים יותר במנוחה."
         }
     ],
     "controllerManaged": False,
     "videoTitle": "חיבוק של 20 שניות באמת מוריד סטרס? מה המחקר אומר",
-    "videoTags": [
-        "חיבוק 20 שניות",
-        "סטרס בזוגיות",
-        "אוקסיטוצין",
-        "זוגיות"
-    ],
+    "videoTags": ["חיבוק 20 שניות", "סטרס בזוגיות", "אוקסיטוצין", "זוגיות"],
     "shortTitle": "חיבוק של 20 שניות: לא קסם — אבל כן שווה לנסות",
-    "shortTags": [
-        "חיבוק 20 שניות",
-        "זוגיות",
-        "סטרס",
-        "אוקסיטוצין"
-    ],
+    "shortTags": ["חיבוק 20 שניות", "זוגיות", "סטרס", "אוקסיטוצין"],
     "shortHook": "מחבקים לשנייה בדרך למטבח? הנה מה שבאמת מצאו במחקר על חיבוק של 20 שניות.",
-    "image": "/images/generated/blog/marriage-after-trust-leak.jpg",
+    "image": chosen_image,
     "imageAlt": "זוג ברגע שקט של קרבה וחיבור",
     "imageProvider": "Local",
-    "imageSourceUrl": "local://public/images/generated/blog/marriage-after-trust-leak.jpg",
+    "imageSourceUrl": f"local://public{chosen_image}",
     "imageIsFallback": True
 }
 
@@ -120,4 +159,4 @@ if len(matches) != 1:
     raise SystemExit(f"expected exactly one inserted slug, got {len(matches)}")
 
 POSTS.write_text(updated, encoding="utf-8")
-print(f"inserted {SLUG}; posts={len(parsed)}")
+print(f"inserted {SLUG}; posts={len(parsed)}; image={chosen_image}; image_sha256={chosen_hash[:12]}")
