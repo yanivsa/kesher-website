@@ -174,12 +174,17 @@ def validate_external(external, repo):
         for resource, classes in REQUIRED_RESOURCES.items():
             proof = proofs[resource]
             _revision(resource,proof,protected=True)
+            method = proof.get('protection_method')
             if (not isinstance(bindings[resource], str) or not bindings[resource] or
                     proof['resource'] != resource or proof['resource_id'] != bindings[resource] or
                     proof['repo'] != repo or proof['epoch'] != external['epoch'] or
                     proof['owner'] != external['owner'] or
-                    proof['default_authority'] != 'deny' or proof['credential_revocation_complete'] is not True or
-                    set(proof['revoked_credential_classes']) != set(classes) or
+                    proof['default_authority'] != 'deny' or proof.get('predecessor_authority_denied') is not True or
+                    set(proof.get('covered_credential_classes', [])) != set(classes) or
+                    method not in {'native_revocation','resource_enforced_denial'} or
+                    (method == 'native_revocation' and proof.get('credential_revocation_complete') is not True) or
+                    (method == 'resource_enforced_denial' and 'credential_revocation_complete' in proof) or
+                    'revoked_credential_classes' in proof or
                     proof['canonical_gate'] != CANONICAL_GATE or
                     proof.get('control_gate') != (CONTROL_GATE if resource == 'github' else None) or
                     proof['receipt_sha256'] != digest({k:v for k,v in proof.items() if k != 'receipt_sha256'})):
@@ -201,7 +206,7 @@ class ExclusionFence:
     from a resource chosen by the adapter after activation has begun.
     """
     def __init__(self, repo, epoch, owner, ports, bindings, *, review=None, key_binding=None,
-                 resource_separation=None):
+                 resource_separation=None, protection_methods=None):
         if (not all(isinstance(x,str) and x for x in (repo,epoch,owner)) or
                 set(ports) != set(REQUIRED_RESOURCES) or set(bindings) != set(REQUIRED_RESOURCES)):
             _refuse()
@@ -209,14 +214,24 @@ class ExclusionFence:
         self.ports, self.bindings = dict(ports), copy.deepcopy(bindings)
         self.review, self.key_binding = copy.deepcopy(review), copy.deepcopy(key_binding)
         self.resource_separation = copy.deepcopy(resource_separation)
+        default_methods = {name:'native_revocation' for name in REQUIRED_RESOURCES}
+        self.protection_methods = copy.deepcopy(protection_methods or default_methods)
+        if (set(self.protection_methods) != set(REQUIRED_RESOURCES) or
+                any(method not in {'native_revocation','resource_enforced_denial'}
+                    for method in self.protection_methods.values())):
+            _refuse()
 
     def _policy(self, resource):
-        return {'repo':self.repo, 'resource':resource, 'resource_id':self.bindings[resource],
+        method = self.protection_methods[resource]
+        policy = {'repo':self.repo, 'resource':resource, 'resource_id':self.bindings[resource],
                 'epoch':self.epoch, 'owner':self.owner, 'default_authority':'deny',
-                'credential_revocation_complete':True,
-                'revoked_credential_classes':REQUIRED_RESOURCES[resource],
+                'protection_method':method, 'predecessor_authority_denied':True,
+                'covered_credential_classes':copy.deepcopy(REQUIRED_RESOURCES[resource]),
                 'canonical_gate':copy.deepcopy(CANONICAL_GATE),
                 'control_gate':copy.deepcopy(CONTROL_GATE) if resource == 'github' else None}
+        if method == 'native_revocation':
+            policy['credential_revocation_complete'] = True
+        return policy
 
     def _inspect(self, resource):
         row = self.ports[resource].inspect(self.repo)
