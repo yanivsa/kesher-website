@@ -1,9 +1,20 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-10-04",
+  "generated_at": "2026-10-05",
   "source": "src/data/posts.json",
-  "count": 110,
+  "count": 111,
   "resources": [
+    {
+      "slug": "child-refuses-homework",
+      "title": "הילד לא רוצה להכין שיעורי בית? כך מפסיקים את המלחמה של אחר הצהריים",
+      "url": "https://kesher.saharoni.com/blog/child-refuses-homework",
+      "domain": "parenting",
+      "topics": [
+        "other"
+      ],
+      "content_type": "article",
+      "date": "2026-10-05"
+    },
     {
       "slug": "jealousy-in-relationships",
       "title": "קנאה בזוגיות: 5 סימנים שהיא כבר מנהלת את הקשר — ומה עושים במקום",
