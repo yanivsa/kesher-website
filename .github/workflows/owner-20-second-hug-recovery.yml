@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install image-test dependency
+        run: python3 -m pip install --disable-pip-version-check Pillow
+
       - name: Regenerate derived content
         run: npm run generate
 
