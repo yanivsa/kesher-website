@@ -1,4 +1,4 @@
-name: Observe Short YouTube Metadata
+name: Verify Hug Assets Public Evidence
 
 on:
   push:
@@ -17,8 +17,18 @@ jobs:
       YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
       YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
       VIDEO_ID: coGzlDtNMKQ
+      ARTICLE_URL: https://kesher.saharoni.com/blog/20-second-hug-relationship-stress
     steps:
-      - name: Read exact remote YouTube metadata
+      - name: Verify article public HTTP and title
+        shell: bash
+        run: |
+          set -euo pipefail
+          body="$(mktemp)"
+          code="$(curl -L -sS -o "$body" -w '%{http_code}' "$ARTICLE_URL")"
+          test "$code" = "200"
+          grep -Fq 'חיבוק של 20 שניות: מה המחקר באמת אומר על סטרס, לחץ דם וזוגיות' "$body"
+          echo "ARTICLE_PUBLIC_OK status=$code url=$ARTICLE_URL"
+      - name: Read exact remote Short metadata
         shell: bash
         run: |
           set -euo pipefail
