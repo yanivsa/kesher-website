@@ -12,122 +12,44 @@ jobs:
   recover-article:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+
       - name: Insert article fail-closed
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import json
+        run: python3 .github/scripts/owner_insert_20_second_hug.py
 
-          path = Path('src/data/posts.json')
-          raw = path.read_text(encoding='utf-8')
-          slug = '20-second-hug-relationship-stress'
-          if f'"slug": "{slug}"' in raw or f'"id": "{slug}"' in raw:
-              raise SystemExit(f'duplicate slug/id already present: {slug}')
-          if not raw.lstrip().startswith('['):
-              raise SystemExit('posts.json root is not an array; refusing mutation')
-
-          title = 'חיבוק של 20 שניות: מה המחקר באמת אומר על סטרס, לחץ דם וזוגיות'
-          excerpt = 'האם חיבוק של 20 שניות באמת מוריד סטרס? המחקרים של ד״ר קתלין לייט ועמיתיה מציירים תמונה מעניינת — אבל מדויקת יותר מהמיתוס שרץ ברשת.'
-          content = '''<p><strong>מחבקים לחצי שנייה בדרך למטבח?</strong> זה מוכר כמעט בכל בית: אחד נכנס מהעבודה, השני באמצע הודעה, ילד קורא מהחדר, שקיות על הרצפה — ונותנים חצי חיבוק תוך כדי תנועה. ואז מגיע המשפט שרץ ברשת: ״צריך בדיוק 20 שניות; בשנייה ה־20 המוח מציף את הגוף באוקסיטוצין והסטרס צונח״.</p>
-<p>זה נשמע נהדר. רק שהמחקר האמיתי מעניין יותר — וגם קצת פחות דרמטי.</p>
-<p>יש מחקרים טובים שמראים שמגע חם ותומך בין בני זוג קשור לתגובה גופנית רגועה יותר במצבי סטרס. יש גם מחקר מפורסם שבו הפרוטוקול הסתיים בחיבוק של 20 שניות. אבל אין הוכחה ל״מתג״ ביולוגי שנדלק בדיוק בשנייה ה־20, ואין בסיס טוב לטענה שחיבוק של שתיים או שלוש שניות ״לא עושה כלום״.</p>
-<h3>אז מה באמת בדקו?</h3>
-<p>במחקר של Karen Grewen, Bobbi Anderson, Susan Girdler ו־Kathleen Light מאוניברסיטת צפון קרוליינה, זוגות שחיו יחד חולקו לקבוצות לפני משימת לחץ. קבוצת המגע החם בילתה עשר דקות בהחזקת ידיים בזמן צפייה בסרטון רומנטי, ולאחר מכן בני הזוג התחבקו במשך 20 שניות. קבוצת הביקורת ישבה בשקט במשך אותו פרק זמן.</p>
-<p>אחר כך המשתתפים נדרשו לבצע משימת דיבור מלחיצה. אצל מי שקיבלו את המגע הזוגי לפני המשימה, העלייה בלחץ הדם הסיסטולי, בלחץ הדם הדיאסטולי ובדופק הייתה קטנה יותר לעומת קבוצת הביקורת. כלומר, המחקר לא הראה שחיבוק של 20 שניות הוא ״תרופה ללחץ דם״; הוא הראה שפרק של מגע חם עם בן או בת הזוג, שהסתיים בחיבוק של 20 שניות, נקשר לתגובה קרדיווסקולרית מתונה יותר לסטרס.</p>
-<p><a href="https://pubmed.ncbi.nlm.nih.gov/15206831/" target="_blank" rel="noopener noreferrer">המחקר ב־PubMed: Warm partner contact is related to lower cardiovascular reactivity</a>.</p>
-<h3>ומה לגבי אוקסיטוצין?</h3>
-<p>מחקר נוסף של Grewen, Girdler, Amico ו־Light בדק 38 זוגות שחיו יחד. המשתתפים עברו מנוחה, עשר דקות של מגע חם עם בן או בת הזוג, ואז מנוחה נוספת. החוקרים מצאו שתמיכה זוגית גבוהה יותר, כפי שהמשתתפים דיווחו עליה, הייתה קשורה לרמות אוקסיטוצין גבוהות יותר אצל נשים וגברים לאורך הפרוטוקול. אצל נשים, תמיכה זוגית גבוהה יותר נקשרה גם ללחץ דם סיסטולי נמוך יותר במנוחה שאחרי המגע.</p>
-<p>זה ממצא מעניין מאוד, אבל גם כאן חשוב לדייק: המחקר לא אומר שהאוקסיטוצין ״קופץ״ אוטומטית אחרי 20 שניות בדיוק. הוא מחזק תמונה רחבה יותר שלפיה קשר תומך ומגע חם יכולים להיות חלק ממערכת ביולוגית של קרבה, ביטחון וויסות.</p>
-<p><a href="https://pubmed.ncbi.nlm.nih.gov/16046364/" target="_blank" rel="noopener noreferrer">המחקר ב־PubMed: Effects of partner support on resting oxytocin, cortisol, norepinephrine, and blood pressure</a>.</p>
-<h3>ומה לגבי חיבוקים בחיים האמיתיים?</h3>
-<p>במחקר נוסף בהובלת Kathleen Light, בקרב נשים לפני גיל המעבר, תדירות גבוהה יותר של חיבוקים עם בן הזוג נקשרה לרמות אוקסיטוצין גבוהות יותר וללחץ דם ודופק נמוכים יותר במנוחה. גם כאן מדובר בקשר סטטיסטי, לא בהוכחה שכל חיבוק בפני עצמו מוריד מיד מספר מסוים במד לחץ הדם.</p>
-<p><a href="https://pubmed.ncbi.nlm.nih.gov/15740822/" target="_blank" rel="noopener noreferrer">המחקר ב־PubMed: More frequent partner hugs and higher oxytocin levels are linked to lower blood pressure and heart rate in premenopausal women</a>.</p>
-<h3>אז למה בכל זאת אני אוהבת את ״אתגר 20 השניות״?</h3>
-<p>לא כי יש שעון עצר במוח. אלא כי 20 שניות הן מספיק זמן כדי להפוך מחווה אוטומטית לעצירה אמיתית.</p>
-<p>נסו לחשוב על ההבדל בין ״היי, מה קורה?״ תוך כדי שאתם מורידים מעיל ובודקים ווטסאפ, לבין רגע שבו שניכם עוצרים, מניחים את הטלפון, מתחבקים ונשארים שם עוד קצת. מבחינה זוגית, זה מסר אחר לגמרי: <strong>אני כאן. ראיתי אותך. לפני המשימות — אנחנו נפגשים.</strong></p>
-<p>וזה בדיוק המקום שבו מחקר פוגש חיים אמיתיים. לא צריך להפוך חיבוק לטיפול רפואי. אפשר להשתמש בו כטקס קטן שמייצר מעבר: מהכביש לבית, מהעבודה לזוגיות, מהמרוץ לקשר.</p>
-<h3>התרגיל: 20 שניות בכניסה הביתה</h3>
-<p>פעם ביום, כשאחד מכם נכנס הביתה, נסו את זה:</p>
-<ul>
-<li>עוצרים לפני שנכנסים ישר למשימות.</li>
-<li>מניחים את הטלפון לרגע.</li>
-<li>מתחבקים בהסכמה במשך בערך 20 שניות.</li>
-<li>בלי לפתור שום בעיה בזמן החיבוק.</li>
-<li>בלי ״למה לא קנית?״ ובלי ״מי אוסף מחר?״ — לזה יהיו עוד שתי דקות.</li>
-</ul>
-<p>האם 20 שניות הן מספר קסם? לא. האם זו דרך פשוטה ליצור רגע של מגע חם, נוכחות וקרבה בתוך יום עמוס? בהחלט שווה לנסות.</p>
-<h3>ומה אם אחד מאיתנו לא אוהב חיבוקים ארוכים?</h3>
-<p>לא כופים מגע בשם המדע. מגע מרגיע רק כשהוא רצוי ונעים לשני הצדדים. אם חיבוק ארוך מרגיש לא נוח, אפשר לבחור טקס קרבה אחר: לשבת צמוד דקה, להחזיק ידיים, להניח יד על הכתף, או פשוט לעצור ולהסתכל אחד על השנייה בלי מסך באמצע.</p>
-<p>המטרה היא לא לעמוד בחוק של 20 שניות. המטרה היא ליצור רגע שבו שניכם מקבלים את אותו המסר: <strong>אנחנו לא רק מנהלים בית יחד. אנחנו גם זוג.</strong></p>
-<h3>והערה חשובה על לחץ דם וסטרס</h3>
-<p>חיבוק אינו טיפול ביתר לחץ דם, חרדה או מצב רפואי אחר, והמחקרים האלה לא מצדיקים להחליף טיפול רפואי או פסיכולוגי במגע. הם כן מוסיפים עוד חתיכה לפאזל שמראה שקשרים תומכים ומגע רצוי יכולים להיות חלק מאורח חיים שעוזר לנו להתמודד טוב יותר עם סטרס.</p>
-<h3>השורה התחתונה</h3>
-<p>אל תחפשו את השנייה שבה ״האוקסיטוצין נדלק״. חפשו את הרגע שבו אתם באמת עוצרים ונפגשים.</p>
-<p>הערב, כשאתם חוזרים הביתה, נסו חיבוק אחד של 20 שניות. בלי טלפון. בלי לפתור. בלי למדוד אם ״עבד״. רק לתת לגוף ולזוגיות רגע להגיע הביתה יחד.</p>
-<p><strong>מרגישים שהעומס והסטרס אוכלים את הקרבה?</strong> לפעמים שינוי מתחיל מהרגל קטן, ולפעמים צריך גם מקום מסודר לדבר ולבנות מחדש את החיבור. אפשר לפנות לשירה סהרוני לייעוץ זוגי באשדוד או אונליין.</p>'''
-
-          article = {
-              'id': slug,
-              'slug': slug,
-              'path': f'/blog/{slug}',
-              'title': title,
-              'excerpt': excerpt,
-              'description': excerpt,
-              'content': content,
-              'body': content,
-              'category': 'ייעוץ זוגי',
-              'labels': ['זוגיות', 'סטרס', 'חיבוק', 'אוקסיטוצין', 'ייעוץ זוגי'],
-              'author': 'שירה סהרוני',
-              'datePublished': '2026-10-05',
-              'dateModified': '2026-10-05',
-              'date': '2026-10-05',
-              'imageUrl': 'https://images.unsplash.com/photo-1758524941514-095dbccc676f?auto=format&fit=crop&fm=jpg&q=82&w=1600',
-              'imageUrlSource': 'unsplash',
-              'imageUrlValid': True,
-              'readingTime': '6 דקות קריאה'
-          }
-
-          stripped = raw.lstrip()
-          lead_ws_len = len(raw) - len(stripped)
-          arr_pos = lead_ws_len + stripped.index('[')
-          block = json.dumps(article, ensure_ascii=False, indent=2)
-          block = '\n'.join('  ' + line for line in block.splitlines())
-          updated = raw[:arr_pos+1] + '\n' + block + ',' + raw[arr_pos+1:]
-          parsed = json.loads(updated)
-          if not isinstance(parsed, list):
-              raise SystemExit('post-insert JSON root is not an array')
-          matches = [p for p in parsed if isinstance(p, dict) and p.get('slug') == slug]
-          if len(matches) != 1:
-              raise SystemExit(f'expected exactly one inserted slug, got {len(matches)}')
-          path.write_text(updated, encoding='utf-8')
-          print(f'inserted {slug}; posts={len(parsed)}')
-          PY
       - name: Install dependencies
         run: npm ci
-      - name: Test
-        run: npm test -- --run
+
+      - name: Content validation
+        run: npm run test:content
+
+      - name: Unit tests
+        run: npm test
+
       - name: Build
         run: npm run build
-      - name: Hard validation
-        run: npm run validate:hard
-      - name: Remove temporary recovery workflow
-        run: rm .github/workflows/owner-20-second-hug-recovery.yml
-      - name: Commit clean article diff
+
+      - name: Verify dist
+        run: npm run verify:dist
+
+      - name: Commit only the clean article result
         shell: bash
         run: |
+          rm .github/workflows/owner-20-second-hug-recovery.yml
+          rm .github/scripts/owner_insert_20_second_hug.py
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/data/posts.json .github/workflows/owner-20-second-hug-recovery.yml
+          git add src/data/posts.json .github/workflows/owner-20-second-hug-recovery.yml .github/scripts/owner_insert_20_second_hug.py
           git diff --cached --check
+          test "$(git diff --cached --name-only | tr '\n' ' ')" = "src/data/posts.json "
           git commit -m "feat(content): publish 20-second hug relationship article"
           git push origin HEAD:owner/20-second-hug-20261005
