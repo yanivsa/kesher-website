@@ -1,0 +1,52 @@
+{
+  "observed_at": "2026-10-05T06:31:39.658249+00:00",
+  "main_sha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+  "automation_state_ref": "cb2b97ad3039d4423467c232ee01f0c56b217f8d",
+  "state_blob": "93b5004d7ca0505d0072cde33413d932b53a1f88",
+  "schema_version": 5,
+  "handover_present": false,
+  "github_exclusion_present": false,
+  "active_run_counts": {
+    "queued": 0,
+    "in_progress": 0,
+    "waiting": 0,
+    "pending": 0,
+    "requested": 0
+  },
+  "empty_run_list_is_exclusion_proof": false,
+  "cutover_environment_present": true,
+  "cutover_environment_protection_types": [
+    "required_reviewers",
+    "branch_policy"
+  ],
+  "gateway_variable_present": false,
+  "repository_variable_names": [],
+  "deploy_key_count": 0,
+  "repository_ruleset_count": 0,
+  "branch_protection_summary": {
+    "required_review_count": null,
+    "enforce_admins": true,
+    "required_checks": []
+  },
+  "secret_names": [
+    "CLOUDFLARE_ACCOUNT_ID",
+    "CLOUDFLARE_API_TOKEN",
+    "COMPOSIO_API_KEY",
+    "DEEPAI_API_KEY",
+    "JULES_API_KEY",
+    "NOTEBOOKLM_AUTH_JSON",
+    "NOTEBOOKLM_MASTER_TOKEN_JSON",
+    "NOTEBOOKLM_STATE_KEY",
+    "NOTEBOOKLM_STORAGE_STATE_JSON",
+    "VITE_GA4_MEASUREMENT_ID",
+    "VITE_GTM_CONTAINER_ID",
+    "YOUTUBE_CLIENT_ID",
+    "YOUTUBE_CLIENT_SECRET",
+    "YOUTUBE_REFRESH_TOKEN"
+  ],
+  "secret_values_read": false,
+  "native_credential_exclusion_proven": false,
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false
+}

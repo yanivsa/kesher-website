@@ -1,0 +1,25 @@
+{
+  "observed_at": "2026-10-05T06:31:41.769Z",
+  "success": true,
+  "status": 200,
+  "account_id": "95ba6a62314a0682d0711050ba9c3445",
+  "project": "kesher-website",
+  "domains": [
+    "kesher-website.pages.dev",
+    "kesher.saharoni.com",
+    "shira.saharoni.com"
+  ],
+  "canonical_deployment": {
+    "id": "f356a0a5-cd7a-4aed-8c8a-57b21b2fe259",
+    "created_on": "2026-10-05T05:40:44.869214Z",
+    "environment": "production",
+    "latest_stage": {
+      "name": "deploy",
+      "started_on": null,
+      "ended_on": "2026-10-05T05:40:46.510076Z",
+      "status": "success"
+    },
+    "commit_hash": "1e009e1b990dc4a63b791e6060aa9718beae6781"
+  },
+  "public_delivery_inferred": false
+}

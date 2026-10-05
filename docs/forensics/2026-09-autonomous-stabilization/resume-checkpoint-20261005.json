@@ -1,0 +1,175 @@
+{
+  "verdict": "BLOCKED_NATIVE_AUTHORITY_EXCLUSION",
+  "goal_complete": false,
+  "recorded_at": "2026-10-05T06:48:51.343457+00:00",
+  "worktree": "/Users/ninja/Documents/Kesher-worktrees/autonomous-stabilization-20260917",
+  "branch": "codex/kesher-autonomous-stabilization-20260917",
+  "original_head": "2f0270f3a4c3938c28e35242b0b1c9b42594b499",
+  "reconciliation_commit": "386967856837915afd5832ddd66c41e3d967999c",
+  "validated_implementation_sha": "8bff025d38b2e358c4b9b247f09fed52eb5ab91f",
+  "final_main_sha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+  "merge_base": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+  "containing_evidence_commit": "resolve with git log -1 --format=%H -- docs/forensics/2026-09-autonomous-stabilization/resume-checkpoint-20261005.json",
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false,
+  "required_local_gates_passed": true,
+  "failed_gates_waived": false,
+  "validation": {
+    "full_python": 1202,
+    "full_python_xml_cases": 1202,
+    "full_python_failures": 0,
+    "full_python_errors": 0,
+    "full_python_skips": 0,
+    "expected_hostile_zip_warnings": 2,
+    "focused": 130,
+    "new_current_authority": 4,
+    "video_policy": 217,
+    "controller": 499,
+    "vitest": 152,
+    "browser": 140,
+    "distribution_routes": 131,
+    "content_posts": 99,
+    "independent_current_authority_tests": 4,
+    "npm_check_exit_code": 0,
+    "supported_node_v24_19_unit_exit_code": 0,
+    "actionlint_exit_code": 0,
+    "compile_exit_code": 0,
+    "candidate_diff_check": "PASS",
+    "prior_media_renders": "dated synthetic render evidence reused; render/runtime bytes unchanged; no new provider/public proof",
+    "restored_generated_outputs": {
+      "source_head": "8bff025d38b2e358c4b9b247f09fed52eb5ab91f",
+      "purpose": "deterministic required generation/prebuild overlay from unchanged exact current-main posts; restore tracked outputs after gate",
+      "outputs": {
+        "public/llms-full.txt": "1cc3d91f6a62a097966350c7b66504b257dbd7c7fbf97f71585cd9095440ad42",
+        "public/rss.xml": "636c24a171d2eb03a184011fd26724e30bb77f12eb549dd4133d6e20c5814ebe",
+        "public/sitemap.xml": "ac1f920258916b9328103d338ea5eace418a438743023d08cfbf7f9379029aac",
+        "src/data/postSummaries.json": "2cea098e961906d09e1210e81f2189c4967253d9050ea81d09427f051cd8f711"
+      }
+    }
+  },
+  "authority": {
+    "definitions": 74,
+    "registrations": 114,
+    "retained_missing_yaml": 40,
+    "retirement_targets": 80,
+    "present_registration_pins": 74,
+    "call_chain_pins": 1482,
+    "stale_definitions": 0,
+    "stale_call_chains": 0,
+    "policy_sha256": "b849edfbbcd565ee9c54c12a68a7e29cad4f312c3c9b4095d27b652ce6cb6c43",
+    "infrastructure_count": 19,
+    "native_separation_proven": false,
+    "new_cutover_id": 374799892,
+    "new_plugin_retained_id": 375118485,
+    "missing_definition_active_is_admitted": false
+  },
+  "blockers": {
+    "5.1": "Local existing nine-phase/historical-floor/digest/exclusion refusal preserved and current topology corrected; LIVE BLOCKED: six native boundaries, service and19 infrastructure proofs unavailable.",
+    "5.2": "CLOSED bounded evidence slice; all five files byte-identical to original AND current main;18 quarantine rows/three outcomes unchanged.",
+    "5.3": "OPEN: canonical incident-bound repair executor not connected; repair_required with repair={} is not completion.",
+    "5.4": "Finite1..3 lifecycle implemented in current main and focused/full tests pass; production proof pending, no generation dispatched.",
+    "5.5": "PR1048/1062 already merged; original same branch semantically reconciled with current main and local delta fully validated. New identity-policy checkpoint local-only; exact-head remote CI/publication incomplete.",
+    "5.6": "BLOCKED: no coordinated cutover or independent post-cutover Article/Overview/Short identity/public-delivery proof."
+  },
+  "final_readback": {
+    "observed_at": "2026-10-05T06:43:09.505763+00:00",
+    "main_sha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+    "state_blob": "93b5004d7ca0505d0072cde33413d932b53a1f88",
+    "schema_version": 5,
+    "handover_present": false,
+    "github_exclusion_present": false,
+    "registration_count": 114,
+    "registrations_unchanged": true,
+    "active_run_counts": {
+      "queued": 0,
+      "in_progress": 0,
+      "waiting": 0,
+      "pending": 0,
+      "requested": 0
+    },
+    "empty_run_list_is_exclusion_proof": false,
+    "public_delivery_inferred": false
+  },
+  "specific_main_ci_and_bridge_observations": {
+    "scope": "specific current-main CI and two manual Short bridge runs; not complete run inventory/public proof",
+    "runs": [
+      {
+        "workflowName": "CI",
+        "event": "push",
+        "headSha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/yanivsa/kesher-website/actions/runs/37268480519",
+        "run_id": 37268480519,
+        "failed_steps": []
+      },
+      {
+        "workflowName": "Kesher Daily Article Short V4",
+        "event": "workflow_dispatch",
+        "headSha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+        "status": "completed",
+        "conclusion": "failure",
+        "url": "https://github.com/yanivsa/kesher-website/actions/runs/37268951146",
+        "run_id": 37268951146,
+        "failed_steps": [
+          "Generate or resume exact NotebookLM-derived Short"
+        ]
+      },
+      {
+        "workflowName": "Kesher Daily Article Short V4",
+        "event": "workflow_dispatch",
+        "headSha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/yanivsa/kesher-website/actions/runs/37269207283",
+        "run_id": 37269207283,
+        "failed_steps": []
+      }
+    ]
+  },
+  "candidate_remote_ci": "none; local checkpoint not pushed and no new PR opened",
+  "independent_review": {
+    "critical": 0,
+    "important": 0,
+    "reviewed_sha": "8bff025d38b2e358c4b9b247f09fed52eb5ab91f",
+    "scope": "integration/current authority delta only; not whole-goal or production approval"
+  },
+  "native_ports": {
+    "github": "HUMAN_PREREQUISITE; not native exclusion proof",
+    "jules": "HUMAN_PREREQUISITE; not native exclusion proof",
+    "notebooklm": "HUMAN_PREREQUISITE; not native exclusion proof",
+    "youtube": "HUMAN_PREREQUISITE; not native exclusion proof",
+    "cloudflare": "HUMAN_PREREQUISITE; not native exclusion proof",
+    "image_provider": "HUMAN_PREREQUISITE; not native exclusion proof"
+  },
+  "smallest_human_action": "Account owner provisions an independently reviewed native six-resource exclusion gateway with complete grant/session/capability retirement readbacks and all19 infrastructure separation proofs, using protected credentials; provide its authenticated HTTPS endpoint. Setting a URL alone does not satisfy missing native proofs.",
+  "logs": {
+    "archive": "resume-validation-logs-20261005.tar.gz",
+    "sha256": "5da877ef969f722e31a54b0fec2460c43a7c7526c2ec2c31f4e956f2d3a87d79",
+    "members": {
+      "current-authority-red.log": "877320e40e40097e53e97e328282e554b4111edac712c63ec7985f2be8364b17",
+      "current-authority-green.log": "da48a98de3c85554d8c512c36b1469ce70e203d1c2cbfc15bca3045a9cadd6aa",
+      "dated-fixtures-red.log": "c09fa06e1d2940c86dba21196ea88e2ffd8989561ad0add26ea44eafae06abf8",
+      "focused.log": "46159c6378b946b70cbdc978bc8b73c0649d36bea14564ce2409bdf5e9c7c689",
+      "full-python.log": "1ca0c50a2fe05201e3b49b3421253fdc6040c1870452e0bd55cb74edee153a4a",
+      "full-python.xml": "d8cbdba1fe0d4db9fe9658dab29a4f51d196fb87ec3fe79b696b384d589cb652",
+      "npm-ci.log": "c356b78dd2374448167a9026f7438c007bde3ad465db5cd29bcbf626c2ecdc67",
+      "npm-check.log": "756bbeb141b2d6569381f6412fc9cc9bb54681b6e1023968e7cf5631b179b056",
+      "supported-node-unit.log": "832e9b33df82bf57df81292549ed8f8f01092f19a06d87eee807100285f5d19f",
+      "actionlint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "validated-inputs.json": "c5e585883db6709591b1ff5b312d57f7b5ecad04d729d6648f9358d986984a3b",
+      "generated-validation-overlay.json": "d1bfba516f0f7077ea104a40a7117365c0cbbdc279b545b934bfa3f4d44c8592",
+      "closed-floor-check.json": "d0c0107851eeb8d2cdbaeea5edc77c77a02a70c93c3d37173c4abf01eb13a06a",
+      "final-readback.json": "c476b36471c3bebf861af7bbeb0d29c127e98c3b8d67d1da0f6e7d94d3b6e88d",
+      "main-check-snapshot.json": "64a0723e5e0141f509febf011c2879fbb7eecc1ed89799c7376b63e74089ee8e",
+      "merge-parent-provenance.json": "6849a04d00e2cfc6a878db5b8f98076a4fd1920bd0097148e07ddddf60edbd54"
+    }
+  },
+  "validation_inputs": {
+    "file": "resume-validation-inputs-20261005.json",
+    "count": 654,
+    "sha256": "c5e585883db6709591b1ff5b312d57f7b5ecad04d729d6648f9358d986984a3b",
+    "all_unchanged_after_generated_overlay_restoration": true
+  }
+}

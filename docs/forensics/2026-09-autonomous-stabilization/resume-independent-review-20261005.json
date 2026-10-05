@@ -1,0 +1,37 @@
+{
+  "reviewer": "independent fresh-context agent /root/resume_current_authority_review",
+  "reviewed_commit": "8bff025d38b2e358c4b9b247f09fed52eb5ab91f",
+  "base_main_sha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+  "critical": 0,
+  "important": 0,
+  "scope": "current-main integration and exact registration policy/test/evidence delta only; no whole-goal or native production approval",
+  "independent_tests": {
+    "count": 4,
+    "result": "PASS",
+    "seconds": 0.015
+  },
+  "verified": {
+    "exact_main_merge_tree": "8c6dda564fabb7e0f6640fc0d271f56115c886a2",
+    "original_first_parent_preserved": true,
+    "main_rollback": false,
+    "definition_count": 74,
+    "matching_call_chain_pins": 1482,
+    "closed_floor_five_files_identical_to_original_and_main": true,
+    "plugin_source_exact_revision_api_get_verified": true,
+    "plugin_source_blob": "d1cd163f87a97a5f51184bc3e10f926fdef7fd88",
+    "plugin_source_size": 1260,
+    "active_missing_yaml_denied_even_with_empty_runs": true,
+    "all_six_native_observations_before_bootstrap_effects": true,
+    "missing_gateway_and_native_prerequisites_refuse": true,
+    "dated_fixture_projection_explicit": true,
+    "diff_check": "PASS"
+  },
+  "remaining_material_work": [
+    "5.1 complete native exclusion, trusted service and infrastructure separation",
+    "5.3 canonical incident-bound Jules repair executor absent",
+    "5.4 generation1..3 code exists; production proof absent",
+    "5.6 post-cutover independent public delivery absent"
+  ],
+  "production_verdict": "BLOCKED",
+  "external_mutations_performed": false
+}
