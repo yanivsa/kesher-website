@@ -1,0 +1,45 @@
+name: Cancel Stalled Hug Video and Resume Exact
+
+on:
+  push:
+    branches:
+      - fix/short-youtube-tag-reconcile-20261005
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  recover:
+    if: ${{ contains(github.event.head_commit.message, 'cancel stalled hug video and resume') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      STALLED_RUN_ID: '37344605603'
+    steps:
+      - name: Cancel stalled wrong-review run
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/runs/${STALLED_RUN_ID}/cancel" || true
+          for i in {1..30}; do
+            status="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${STALLED_RUN_ID}" --jq '.status')"
+            if [ "$status" = "completed" ]; then
+              echo "STALLED_RUN_COMPLETED"
+              break
+            fi
+            sleep 5
+          done
+      - name: Dispatch exact hug Video Overview recovery
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-daily-video.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref main \
+            -f operation=full \
+            -f target_slug=20-second-hug-relationship-stress \
+            -f target_content_sha256=043ca1242523b822d45fd398d1293f47d46b4c0f5d0bf61b6c62ff3956ab45ed \
+            -f target_item_id=video-20261005-195922-043ca12425
+          echo "DISPATCHED_EXACT_HUG_VIDEO_RECOVERY"
