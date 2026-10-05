@@ -1,15 +1,15 @@
 {
   "schema_version": "2.2",
-  "checked_at": "2026-10-04",
+  "checked_at": "2026-10-05",
   "public_submission_ready": false,
   "completed": [
-    "V2 clean branch synchronized to main checkpoint 277f130645ddc1f5c4fc0e019333df1002b8fc8d before technical QA",
+    "V2 clean branch synchronized to main checkpoint 1e009e1b990dc4a63b791e6060aa9718beae6781 before final technical QA",
     "Five bounded read-only MCP tools implemented",
     "Three scoped Hebrew Skills implemented",
     "220-prompt Hebrew golden evaluation set",
     "15-prompt Developer Mode canary set",
     "30 multi-turn and boundary evaluation cases",
-    "110-resource bounded Kesher index: 107 canonical articles plus 3 explicit service pages",
+    "111-resource bounded Kesher index: 108 canonical articles plus 3 explicit service pages",
     "Strict additionalProperties=false runtime schemas with parameter descriptions",
     "Server-side rejection of unexpected/private fields",
     "Unknown age-band support to avoid guessing or collecting exact child age",
@@ -94,6 +94,6 @@
       "requirement": "Confirm the OpenAI Apps Management permissions required to submit and publish the plugin."
     }
   ],
-  "baseline_main_sha": "277f130645ddc1f5c4fc0e019333df1002b8fc8d",
+  "baseline_main_sha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
   "qa_state": "technical_validation_requires_green_checks_on_current_pr_head; Developer Mode remains the next external gate"
 }
