@@ -138,6 +138,9 @@ class ProductionCutoverTests(unittest.TestCase):
         from scripts.kesher_runtime.authority_topology import policy
         evidence = json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
         rules = policy(ROOT)
+        # This immutable October 4 fixture predates the October 5 branch writer.
+        # Current 114-row admission is tested separately, without this projection.
+        del rules['registrations']['.github/workflows/refresh-kesher-plugin-resources-once.yml']
         # The new cutover workflow is registered only after merge. Its independent
         # registration binding is a prerequisite, never a guessed service ID.
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
@@ -167,6 +170,7 @@ class ProductionCutoverTests(unittest.TestCase):
         from scripts.kesher_runtime.authority_topology import policy,check_definitions,classify_registered
         import hashlib
         rules=policy(ROOT);del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
+        del rules['registrations']['.github/workflows/refresh-kesher-plugin-resources-once.yml']
         rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-final-20261004.json').read_text())['workflows']
         self.assertEqual(len(reconcile_registrations(rows,rules)),112)
         path='.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
@@ -547,6 +551,8 @@ class CredentialGatewayTests(unittest.TestCase):
         from tests.test_kesher_git_exclusion import EpochGit
         from tests.test_kesher_external_exclusion import ProtectedService
         rules=policy(ROOT)
+        # Replay the original 111 registrations; the fresh 114 inventory has its own gate.
+        del rules['registrations']['.github/workflows/refresh-kesher-plugin-resources-once.yml']
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         evidence=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())

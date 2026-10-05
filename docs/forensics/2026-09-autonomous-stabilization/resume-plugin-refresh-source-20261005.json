@@ -1,0 +1,15 @@
+{
+  "registration_id": 375118485,
+  "path": ".github/workflows/refresh-kesher-plugin-resources-once.yml",
+  "source_revision": "92d452549f7293f789268091ff4e1e132c5bca7c",
+  "blob_sha": "d1cd163f87a97a5f51184bc3e10f926fdef7fd88",
+  "source_sha256": "5206f2f143bca99e7e555fea5d7c4171e852dda078fc634850c1f34faa8e9165",
+  "observed_at": "2026-10-05T06:25:25.439180+00:00",
+  "main_definition_present": false,
+  "capabilities": [
+    "github.branch_write"
+  ],
+  "credential": "github.token",
+  "scope": "same repository contents write; source pushes feature/kesher-plugin-v2-clean; generated plugin index does not imply resource separation",
+  "disposition": "unresolved; native exclusion/disable/drain required"
+}

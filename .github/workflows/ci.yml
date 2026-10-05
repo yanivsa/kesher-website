@@ -63,6 +63,7 @@ jobs:
         run: |
           python3 -m unittest \
             tests.test_kesher_production_cutover \
+            tests.test_kesher_current_authority \
             tests.test_kesher_external_exclusion \
             tests.test_kesher_github_drain \
             tests.test_kesher_git_exclusion \

@@ -394,6 +394,15 @@
       "id": 320961763,
       "observed_state": "active",
       "reason": "Missing current YAML is not retirement proof. Exact old definitions, retained executions, indirect dispatch and surviving credentials require reviewed adjudication and service exclusion; no role is granted."
+    },
+    ".github/workflows/refresh-kesher-plugin-resources-once.yml": {
+      "id": 375118485,
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+      "observed_state": "active",
+      "evidence_source_sha": "92d452549f7293f789268091ff4e1e132c5bca7c",
+      "reason": "Exact historical source pushes feature/kesher-plugin-v2-clean using same-repository contents-write github.token. Branch naming and missing main YAML do not prove resource separation or retirement. Complete native exclusion and exact disable/drain readback are required; no role is granted."
     }
   },
   "resource_separation_contract": "Absent exact service-enforced resource separation, shared-resource infrastructure is a retired writer. Definitions, registered activation, retained old executions and surviving credentials are separate facts.",
@@ -593,7 +602,7 @@
         "read",
         "status_write"
       ],
-      "definition_sha256": "b54eb897801e371a6b4ba801e28cdbf36b51bcd559e55e7c2bf7d755147de0f9",
+      "definition_sha256": "9079c76ea648cd3ad37a0ae7229cf0011052de0c8e011795e7039fd2207a86e1",
       "resources": [
         "github.statuses"
       ],
@@ -700,17 +709,18 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "291440842cc8c930bc618dc980a78faebc298f8c4c5056e3643adf9937f1aabc",
           "tests/test_v5_video_source_binding.py": "6876f78b1f8515254c1a95bce9b697ad97c73a27ad0ce85ffa54272efc740b13",
-          "tests/test_kesher_production_cutover.py": "b668c3d7d7d8d92bbb4525c4df35f5ccd4ccbfce83fb6cbbea66dc832d1e8f28",
+          "tests/test_kesher_production_cutover.py": "a574d2ac037d5035d2c97655ab736db7f4515ec8aa1a5ba6bf515db80496a83d",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
           "tests/test_kesher_git_exclusion.py": "60ad776c6da6b084512be14730e73a0ff83676a4ed0cdb8c5cdf03044fb575d4",
           "tests/test_kesher_handover.py": "791fb6de96325644762840b71f02ef44c585a15bbc8e004c271935bf1ff44eb7",
           "tests/test_kesher_handover_github.py": "20d6875341d64f16bb2b8b393ac9936dbe3dbc59d5384254fd1014a6116cc948",
           "tests/test_kesher_authority_digest.py": "718053e650692cb59be8b59c76f2a318c81dd844c16aad582e895066f9f2357a",
-          "tests/test_kesher_authority_topology.py": "b0fc7fd09942f4c5bff07b066d0d2b6efbabb9b52b072792fb5de8c34d8b365d",
+          "tests/test_kesher_authority_topology.py": "b866b73fa4b1ed0531c949f7eaee131dbb88f817b5dbc074e5cb707131cd05d3",
           "tests/test_kesher_runtime_migration.py": "909db0229950e4fe3f7ebcb7d82c4eb433a8cfb9079c223f57330a2ba6a9287d",
           "tests/test_kesher_worker_entry.py": "f48055276b51e264ef35b5d0bb7d3952918fbc39aa1ff09a93e1a09b73365fde",
-          "tests/test_kesher_content_controller.py": "5f51efabb2d5f736084bcdca14220c301b4c7e10439471130dcbf22b2be39cf2"
+          "tests/test_kesher_content_controller.py": "5f51efabb2d5f736084bcdca14220c301b4c7e10439471130dcbf22b2be39cf2",
+          "tests/test_kesher_current_authority.py": "93a76539b44f9510c286dde67ac18822785f3cdf8cc36e0f8b2554cf44ac21a5"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -4319,7 +4329,8 @@
         "credentials": [],
         "credential_services": {},
         "note": "Only manual exact-main epoch/revision-bound OIDC request to independently administered credential-owning cutover gateway. No provider credentials on runner, no generation/publication/activation. New registration ID requires independent post-merge binding before live admission."
-      }
+      },
+      "registration_id": 374799892
     },
     ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": {
       "capabilities": [
