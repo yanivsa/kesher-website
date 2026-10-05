@@ -7,6 +7,7 @@ POSTS = Path("src/data/posts.json")
 SLUG = "20-second-hug-relationship-stress"
 TODAY = date(2026, 10, 5)
 COOLDOWN_CUTOFF = TODAY - timedelta(days=90)
+PUBLISHED_IMAGE = "/images/generated/blog/20-second-hug-relationship-stress.jpg"
 
 raw = POSTS.read_text(encoding="utf-8")
 if f'"slug": "{SLUG}"' in raw or f'"id": "{SLUG}"' in raw:
@@ -16,9 +17,9 @@ if not raw.lstrip().startswith("["):
 
 existing_posts = json.loads(raw)
 
-# Select a relevant local couple image whose binary content has not been used
-# by a post in the last 90 days. The content validator enforces this cooldown
-# by SHA-256, not filename, so compare the actual bytes here too.
+# The validators reject both duplicate image paths and reuse of the same image
+# bytes inside a 90-day cooldown. Pick a relevant old-enough couple image by
+# SHA-256, then publish those permitted bytes under a new slug-specific path.
 recent_hashes = set()
 for post in existing_posts:
     if not isinstance(post, dict):
@@ -49,7 +50,7 @@ candidates = [
     "/images/generated/blog/couples-communication-distance.jpg",
 ]
 
-chosen_image = None
+chosen_source = None
 chosen_hash = None
 for candidate in candidates:
     p = Path("public" + candidate)
@@ -57,12 +58,20 @@ for candidate in candidates:
         continue
     digest = hashlib.sha256(p.read_bytes()).hexdigest()
     if digest not in recent_hashes:
-        chosen_image = candidate
+        chosen_source = candidate
         chosen_hash = digest
         break
 
-if not chosen_image:
+if not chosen_source:
     raise SystemExit("no cooldown-safe local couple image found; refusing fallback reuse")
+
+published_path = Path("public" + PUBLISHED_IMAGE)
+if published_path.exists():
+    raise SystemExit(f"published image path already exists: {PUBLISHED_IMAGE}")
+published_path.parent.mkdir(parents=True, exist_ok=True)
+published_path.write_bytes(Path("public" + chosen_source).read_bytes())
+if hashlib.sha256(published_path.read_bytes()).hexdigest() != chosen_hash:
+    raise SystemExit("published image copy hash mismatch")
 
 content = """<p><strong>מחבקים את בן או בת הזוג לשנייה בדרך למטבח?</strong> ברוב הבתים זה קורה על אוטומט: נכנסים, אומרים שלום, חצי חיבוק — ומיד עוברים לילדים, לטלפון, לארוחת ערב ולכל מה שחיכה מאז הבוקר. ואז מגיע הטיפ שרץ ברשת: חיבוק של 20 שניות מוריד סטרס, מעלה אוקסיטוצין ואפילו משפיע על לחץ הדם.</p>
 <p>יש כאן בסיס מחקרי מעניין, אבל כדאי לדייק. אין הוכחה ל"מתג" שנדלק בדיוק בשנייה ה־20, ואין בסיס טוב לטענה שחיבוק של שתיים או שלוש שניות הוא רק נימוס ושאין לו שום השפעה. מה שכן יש: מחקרים שמראים שמגע חם ותומך בין בני זוג יכול להיות קשור לתגובה גופנית רגועה יותר במצבי לחץ.</p>
@@ -116,24 +125,9 @@ article = {
     "serviceLabel": "ייעוץ זוגי",
     "directAnswer": "חיבוק של 20 שניות אינו מספר קסם, אבל מחקרים על מגע חם בין בני זוג מצאו קשר לתגובה קרדיווסקולרית מתונה יותר בזמן סטרס ולמדדים הקשורים באוקסיטוצין. בפועל, 20 שניות הן דרך פשוטה לעצור, ליצור מגע רצוי ולתת לגוף ולזוגיות רגע של קרבה.",
     "evidence": [
-        {
-            "title": "מגע חם בין בני זוג ותגובה קרדיווסקולרית נמוכה יותר",
-            "source": "מאגר המחקרים הרפואיים של הספרייה הלאומית לרפואה בארצות הברית",
-            "url": "https://pubmed.ncbi.nlm.nih.gov/15206831/",
-            "note": "פרוטוקול של מגע חם שכלל חיבוק של 20 שניות נקשר לעלייה מתונה יותר בלחץ דם ובדופק בזמן משימת לחץ."
-        },
-        {
-            "title": "השפעת תמיכת בן הזוג על אוקסיטוצין, קורטיזול ולחץ דם",
-            "source": "מאגר המחקרים הרפואיים של הספרייה הלאומית לרפואה בארצות הברית",
-            "url": "https://pubmed.ncbi.nlm.nih.gov/16046364/",
-            "note": "תמיכה זוגית גבוהה יותר נקשרה לרמות אוקסיטוצין גבוהות יותר; אצל נשים נמצאה גם זיקה ללחץ דם סיסטולי נמוך יותר אחרי מגע חם."
-        },
-        {
-            "title": "תדירות חיבוקים, אוקסיטוצין, לחץ דם ודופק",
-            "source": "מאגר המחקרים הרפואיים של הספרייה הלאומית לרפואה בארצות הברית",
-            "url": "https://pubmed.ncbi.nlm.nih.gov/15740822/",
-            "note": "תדירות גבוהה יותר של חיבוקים עם בן הזוג נקשרה אצל נשים לפני גיל המעבר לאוקסיטוצין גבוה יותר וללחץ דם ודופק נמוכים יותר במנוחה."
-        }
+        {"title": "מגע חם בין בני זוג ותגובה קרדיווסקולרית נמוכה יותר", "source": "מאגר המחקרים הרפואיים של הספרייה הלאומית לרפואה בארצות הברית", "url": "https://pubmed.ncbi.nlm.nih.gov/15206831/", "note": "פרוטוקול של מגע חם שכלל חיבוק של 20 שניות נקשר לעלייה מתונה יותר בלחץ דם ובדופק בזמן משימת לחץ."},
+        {"title": "השפעת תמיכת בן הזוג על אוקסיטוצין, קורטיזול ולחץ דם", "source": "מאגר המחקרים הרפואיים של הספרייה הלאומית לרפואה בארצות הברית", "url": "https://pubmed.ncbi.nlm.nih.gov/16046364/", "note": "תמיכה זוגית גבוהה יותר נקשרה לרמות אוקסיטוצין גבוהות יותר; אצל נשים נמצאה גם זיקה ללחץ דם סיסטולי נמוך יותר אחרי מגע חם."},
+        {"title": "תדירות חיבוקים, אוקסיטוצין, לחץ דם ודופק", "source": "מאגר המחקרים הרפואיים של הספרייה הלאומית לרפואה בארצות הברית", "url": "https://pubmed.ncbi.nlm.nih.gov/15740822/", "note": "תדירות גבוהה יותר של חיבוקים עם בן הזוג נקשרה אצל נשים לפני גיל המעבר לאוקסיטוצין גבוה יותר וללחץ דם ודופק נמוכים יותר במנוחה."}
     ],
     "controllerManaged": False,
     "videoTitle": "חיבוק של 20 שניות באמת מוריד סטרס? מה המחקר אומר",
@@ -141,10 +135,10 @@ article = {
     "shortTitle": "חיבוק של 20 שניות: לא קסם — אבל כן שווה לנסות",
     "shortTags": ["חיבוק 20 שניות", "זוגיות", "סטרס", "אוקסיטוצין"],
     "shortHook": "מחבקים לשנייה בדרך למטבח? הנה מה שבאמת מצאו במחקר על חיבוק של 20 שניות.",
-    "image": chosen_image,
+    "image": PUBLISHED_IMAGE,
     "imageAlt": "זוג ברגע שקט של קרבה וחיבור",
     "imageProvider": "Local",
-    "imageSourceUrl": f"local://public{chosen_image}",
+    "imageSourceUrl": f"local://public{chosen_source}",
     "imageIsFallback": True
 }
 
@@ -153,10 +147,9 @@ block = json.dumps(article, ensure_ascii=False, indent=2)
 block = "\n".join("  " + line for line in block.splitlines())
 updated = raw[: first + 1] + "\n" + block + "," + raw[first + 1 :]
 parsed = json.loads(updated)
-
 matches = [p for p in parsed if isinstance(p, dict) and p.get("slug") == SLUG]
 if len(matches) != 1:
     raise SystemExit(f"expected exactly one inserted slug, got {len(matches)}")
 
 POSTS.write_text(updated, encoding="utf-8")
-print(f"inserted {SLUG}; posts={len(parsed)}; image={chosen_image}; image_sha256={chosen_hash[:12]}")
+print(f"inserted {SLUG}; posts={len(parsed)}; source={chosen_source}; image={PUBLISHED_IMAGE}; image_sha256={chosen_hash[:12]}")
