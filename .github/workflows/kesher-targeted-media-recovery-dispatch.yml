@@ -53,6 +53,17 @@ jobs:
           if not slug:
               raise SystemExit('Enabled targeted media recovery requires target_slug')
 
+          video_operation = str(request.get('overview_operation') or 'full').strip()
+          short_operation = str(request.get('short_operation') or 'full').strip()
+          allowed_video = {'skip', 'full', 'preflight', 'generate', 'upload', 'rebuild'}
+          allowed_short = {'skip', 'full', 'preflight', 'generate', 'upload', 'rebuild', 'derive', 'release', 'historical'}
+          if video_operation not in allowed_video:
+              raise SystemExit(f'Unsupported overview_operation: {video_operation!r}')
+          if short_operation not in allowed_short:
+              raise SystemExit(f'Unsupported short_operation: {short_operation!r}')
+          if video_operation == 'skip' and short_operation == 'skip':
+              raise SystemExit('Enabled targeted recovery cannot skip both media workers')
+
           posts = json.loads(Path('src/data/posts.json').read_text(encoding='utf-8'))
           matches = [p for p in posts if isinstance(p, dict) and str(p.get('slug') or p.get('id') or '').strip() == slug]
           if len(matches) != 1:
@@ -66,31 +77,35 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
               out.write('enabled=true\n')
               out.write(f'slug={slug}\n')
-          print(f'RECOVERY_TARGET_VERIFIED slug={slug} date={today}')
+              out.write(f'video_operation={video_operation}\n')
+              out.write(f'short_operation={short_operation}\n')
+          print(f'RECOVERY_TARGET_VERIFIED slug={slug} date={today} video={video_operation} short={short_operation}')
           PY
 
       - name: Dispatch exact Video Overview worker
-        if: ${{ steps.target.outputs.enabled == 'true' }}
+        if: ${{ steps.target.outputs.enabled == 'true' && steps.target.outputs.video_operation != 'skip' }}
         env:
           GH_TOKEN: ${{ github.token }}
           TARGET_SLUG: ${{ steps.target.outputs.slug }}
+          VIDEO_OPERATION: ${{ steps.target.outputs.video_operation }}
         run: |
           set -euo pipefail
           gh workflow run kesher-daily-video.yml \
             --ref main \
-            -f operation=full \
+            -f operation="$VIDEO_OPERATION" \
             -f target_slug="$TARGET_SLUG"
-          echo "VIDEO_OVERVIEW_DISPATCHED slug=$TARGET_SLUG"
+          echo "VIDEO_OVERVIEW_DISPATCHED slug=$TARGET_SLUG operation=$VIDEO_OPERATION"
 
       - name: Dispatch exact Short worker
-        if: ${{ steps.target.outputs.enabled == 'true' }}
+        if: ${{ steps.target.outputs.enabled == 'true' && steps.target.outputs.short_operation != 'skip' }}
         env:
           GH_TOKEN: ${{ github.token }}
           TARGET_SLUG: ${{ steps.target.outputs.slug }}
+          SHORT_OPERATION: ${{ steps.target.outputs.short_operation }}
         run: |
           set -euo pipefail
           gh workflow run kesher-short-v4.yml \
             --ref main \
-            -f operation=full \
+            -f operation="$SHORT_OPERATION" \
             -f derive_slug="$TARGET_SLUG"
-          echo "SHORT_DISPATCHED slug=$TARGET_SLUG"
+          echo "SHORT_DISPATCHED slug=$TARGET_SLUG operation=$SHORT_OPERATION"
