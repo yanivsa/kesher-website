@@ -1,0 +1,51 @@
+name: Owner Pin 20 Second Hug Recovery
+
+on:
+  push:
+    branches:
+      - ops/20-second-hug-media-recovery-20261005
+
+permissions:
+  contents: write
+
+jobs:
+  pin:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Pin exact recovery request hash
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+
+          request = Path('.github/kesher-media-recovery-request.json')
+          policy = Path('scripts/kesher_runtime/authority_policy.json')
+          old = 'ea6b674c2e0ab2ae3c116ad2134b916dac9f4d435338f73913c7e84e02859b3d'
+          new = hashlib.sha256(request.read_bytes()).hexdigest()
+          text = policy.read_text(encoding='utf-8')
+          needle = f'".github/kesher-media-recovery-request.json": "{old}"'
+          replacement = f'".github/kesher-media-recovery-request.json": "{new}"'
+          count = text.count(needle)
+          if count != 1:
+              raise SystemExit(f'expected exactly one reviewed request pin, found {count}')
+          policy.write_text(text.replace(needle, replacement, 1), encoding='utf-8')
+          print(f'PIN_UPDATED old={old} new={new}')
+          PY
+      - name: Remove temporary workflow and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/owner-pin-20-second-hug-recovery.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/kesher-media-recovery-request.json scripts/kesher_runtime/authority_policy.json .github/workflows/owner-pin-20-second-hug-recovery.yml
+          git diff --cached --check
+          git commit -m "ops: pin exact 20-second hug recovery request"
+          git push origin HEAD:ops/20-second-hug-media-recovery-20261005
