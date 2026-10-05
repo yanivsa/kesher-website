@@ -90,10 +90,30 @@ describe('browser booking confirmation endpoint', () => {
 
     const invalidUri = new Request('https://kesher.saharoni.com/api/booking/browser-confirmation', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Origin: 'https://kesher.saharoni.com',
+      },
       body: JSON.stringify({ calendly_event_uri: 'not-calendly' }),
     });
     expect((await handleBrowserBookingConfirmation(invalidUri, {})).status).toBe(400);
+  });
+
+  it('rejects requests that omit Origin instead of treating them as same-origin', async () => {
+    const { kv, puts } = createFakeKv();
+    const request = new Request('https://kesher.saharoni.com/api/booking/browser-confirmation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        calendly_event_uri: eventUri,
+        calendly_invitee_uri: inviteeUri,
+        utm_source: 'untrusted',
+      }),
+    });
+
+    const response = await handleBrowserBookingConfirmation(request, { BOOKING_KV: kv });
+    expect(response.status).toBe(403);
+    expect(puts).toHaveLength(0);
   });
 
   it('stores browser attribution in KV without requiring D1', async () => {

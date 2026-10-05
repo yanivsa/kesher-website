@@ -88,10 +88,18 @@ def canonical_slug(post: dict[str, Any]) -> str:
 
 
 def today_articles(posts: list[dict[str, Any]], day: date) -> list[dict[str, Any]]:
+    """Return same-day articles owned by the autonomous daily controller.
+
+    Editorial/manual publications may legitimately share the same public date as
+    the daily autonomous article. Such posts opt out explicitly with
+    `controllerManaged: false`, so the controller's one-article-per-cycle
+    invariant applies only to controller-managed publications.
+    """
     expected = day.isoformat()
     return [
         post for post in posts
         if isinstance(post, dict)
+        and post.get("controllerManaged") is not False
         and str(post.get("date") or "").strip() == expected
         and canonical_slug(post)
     ]
@@ -419,9 +427,17 @@ class GitHubClient:
                         headers={"User-Agent": "kesher-content-controller"},
                     )
                     try:
-                        with urllib.request.urlopen(signed_request, timeout=60) as response:
+                        # Video-state artifacts can temporarily be very large. A
+                        # socket read timeout is transient evidence, not a broken
+                        # state artifact, so give the signed blob enough time and
+                        # retry the same immutable archive before falling back.
+                        with urllib.request.urlopen(signed_request, timeout=120) as response:
                             return response.read()
-                    except (urllib.error.HTTPError, urllib.error.URLError) as signed_exc:
+                    except (
+                        urllib.error.HTTPError,
+                        urllib.error.URLError,
+                        TimeoutError,
+                    ) as signed_exc:
                         last = signed_exc
                 elif exc.code in {429, 500, 502, 503, 504}:
                     last = exc
@@ -430,7 +446,10 @@ class GitHubClient:
                     raise ControllerError(
                         f"GITHUB_ARTIFACT_HTTP_{exc.code}: artifact download failed: {detail}"
                     ) from exc
-            except urllib.error.URLError as exc:
+            except (urllib.error.URLError, TimeoutError) as exc:
+                # response.read() may raise the built-in TimeoutError directly
+                # rather than wrapping it in URLError. Keep it inside the
+                # bounded retry/fallback path instead of crashing Controller V5.
                 last = exc
             time.sleep(2 ** attempt)
         raise ControllerError(f"GITHUB_ARTIFACT_DOWNLOAD_FAILED: {last}")
@@ -440,9 +459,28 @@ class GitHubClient:
         payload = self.request(
             "GET", f"{self.api}/contents/{quoted}?ref={urllib.parse.quote(ref, safe='')}"
         )
-        if not isinstance(payload, dict) or payload.get("encoding") != "base64":
+        if not isinstance(payload, dict):
             raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}")
-        return json.loads(base64.b64decode(payload.get("content") or "").decode("utf-8"))
+
+        encoding = payload.get("encoding")
+        content = payload.get("content") or ""
+        if encoding == "base64" and content:
+            raw = base64.b64decode(content)
+        else:
+            # GitHub Contents API may omit inline content for large files.
+            # Fall back to the immutable blob referenced by the same payload.
+            blob_sha = str(payload.get("sha") or "").strip()
+            if not blob_sha:
+                raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}")
+            blob = self.request("GET", f"{self.api}/git/blobs/{blob_sha}")
+            if not isinstance(blob, dict) or blob.get("encoding") != "base64" or not blob.get("content"):
+                raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}")
+            raw = base64.b64decode(blob["content"])
+
+        try:
+            return json.loads(raw.decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}") from exc
 
     def open_article_prs(self, target_slot: str | None = None) -> list[dict[str, Any]]:
         prs = self.request("GET", f"{self.api}/pulls?state=open&per_page=100")
@@ -777,6 +815,33 @@ class Controller:
                     run_id=run_id,
                     session_id=session_id,
                 )
+                # A Jules timeout with a preserved authoritative session is not a
+                # reason to wait for another scheduler heartbeat. Relaunch the
+                # bounded worker immediately; acquire_session() will adopt the
+                # exact same slot/session and therefore cannot create a duplicate
+                # article identity. This closes the gap where a completed worker
+                # could sit in article_retry_wait for hours if scheduled ticks
+                # were delayed or queued.
+                if outcome == "JULES_TIMEOUT_SESSION_ACTIVE" and session_id:
+                    inputs = {"slot": self.now.date().isoformat()}
+                    self.github.dispatch(ARTICLE_WORKFLOW, inputs)
+                    article_state["resume_dispatches"] = int(
+                        article_state.get("resume_dispatches") or 0
+                    ) + 1
+                    article_state["last_dispatch_at"] = utc_now()
+                    article_state["next_retry_at"] = None
+                    transition(
+                        state,
+                        "article_generating",
+                        "timed-out Jules session preserved; same-session recovery dispatched immediately",
+                        run_id=run_id,
+                        session_id=session_id,
+                    )
+                    return Action(
+                        "dispatch_article_recovery",
+                        "preserved Jules session recovered immediately after worker timeout",
+                        inputs,
+                    )
                 return Action("wait", f"retryable article failure {outcome}")
             block(state, "article", outcome, str(result.get("message") or outcome))
             return Action("blocked", f"non-retryable article failure {outcome}")

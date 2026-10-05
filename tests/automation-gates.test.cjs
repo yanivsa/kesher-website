@@ -44,6 +44,7 @@ function testTrustedArticleImageV2() {
   const trigger = workflow.split('permissions:', 1)[0];
   const workerV3 = read('.github/scripts/article-image-worker-v3.py');
   const workerV4 = read('.github/scripts/article-image-worker-v4.py');
+  const articleController = read('.github/scripts/article-pr-controller-v3.py');
   const generation = read('.github/workflows/kesher-article-generation.yml');
   const runnerV3 = read('scripts/jules_article_runner_v3.py');
   const runnerV4 = read('scripts/jules_article_runner_v4.py');
@@ -60,7 +61,13 @@ function testTrustedArticleImageV2() {
   assert.strictEqual(contract.image.failure_mode, 'blocking-retry');
   assert.strictEqual(contract.image.worker_attempts_per_dispatch, 1);
   assert.strictEqual(contract.image.max_attempts, 3);
-  assert.deepStrictEqual(contract.image.provider_order, ['gemini', 'unsplash', 'pexels', 'local-curated', 'local-editorial']);
+  assert.deepStrictEqual(contract.image.provider_order, ['gemini', 'pexels', 'pixabay', 'local-curated']);
+  assert.strictEqual(contract.image.abstract_placeholder_allowed, false);
+  assert.strictEqual(contract.image.owned_generation_variants, 3);
+  assert.strictEqual(contract.image.local_fallback_candidates_per_category, 40);
+  assert.strictEqual(contract.image.managed_fallback_library_target_per_category, 40);
+  assert.strictEqual(contract.image.local_fallback_reuse_cooldown_days, 90);
+  assert.strictEqual(contract.image.local_fallback_max_lifetime_uses, 3);
   assert.strictEqual(contract.image.gemini_model, 'gemini-3.1-flash-image');
   assert.strictEqual(contract.image.visual_verifier_model, 'gemini-3.5-flash');
   assert.strictEqual(contract.image.external_stock_requires_pixel_verification, true);
@@ -72,20 +79,19 @@ function testTrustedArticleImageV2() {
   assert(workflow.includes('ref: main'));
   assert(workflow.includes('persist-credentials: false'));
   assert(workflow.includes('GOOGLE_API_KEY'));
-  assert(workflow.includes('UNSPLASH_ACCESS_KEY'));
+  assert(!workflow.includes('UNSPLASH_ACCESS_KEY'));
   assert(workflow.includes('PEXELS_API_KEY'));
+  assert(workflow.includes('PIXABAY_API_KEY'));
   assert(workflow.includes('article-image-worker-v4.py'));
   assert(workflow.includes('actions/workflows/ci.yml/dispatches'));
-  assert(controllerWorkflow.includes('Kesher Trusted Article Image'));
-  assert(controllerWorkflow.includes('kesher_content_controller_stabilized.py'));
+  assert(controllerWorkflow.includes('scripts.kesher_runtime.controller_entry'));
   assert(stabilizedController.includes('kesher_content_controller_v5_runtime'));
   assert(stabilizedController.includes('runtime.install_runtime()'));
   assert(!controllerWorkflow.includes('kesher_content_controller_v3_best_effort.py --report-json'));
 
   assert(workerV3.includes('GEMINI_MODEL = "gemini-3.1-flash-image"'));
   assert(workerV3.includes('VERIFY_MODEL = "gemini-3.5-flash"'));
-  assert(workerV3.indexOf('try_gemini') < workerV3.indexOf('try_unsplash'));
-  assert(workerV3.indexOf('try_unsplash') < workerV3.indexOf('try_pexels'));
+  assert(workerV4.includes('for provider in (try_gemini_variants, try_pexels, try_pixabay)'));
   assert(workerV3.includes('/v1/models/{GEMINI_MODEL}:generateContent'));
   assert(workerV3.includes('verify_pixels(post, data, ext)'));
   assert(workerV3.includes('ARTICLE_IMAGE_COMMITTED'));
@@ -93,10 +99,14 @@ function testTrustedArticleImageV2() {
   assert(workerV4.includes('candidate_path.read_bytes()'));
   assert(workerV4.includes('IMAGE_PROVIDER_PREFLIGHT'));
   assert(workerV4.includes('"local": True'));
-  assert(workerV4.includes('collect_existing_hashes'));
+  assert(workerV4.includes('collect_existing_image_usage'));
   assert(workerV4.includes('sha256_collision'));
-  assert(workerV4.includes('generate_editorial_fallback'));
-  assert(workerV4.includes('IMAGE_LOCAL_EDITORIAL_READY'));
+  assert(workerV4.includes('load_seed_manifest'));
+  assert(workerV4.includes('load_bank_manifest'));
+  assert(workerV4.includes('reuse_cooldown_days'));
+  assert(workerV4.includes('max_lifetime_uses'));
+  assert(!workerV4.includes('LocalEditorial'));
+  assert(!workerV4.includes('generate_editorial_fallback'));
   assert(workerV3.includes('stock_queries'));
   assert(!workerV4.includes('core.github_content(repo, source_path'));
 
@@ -106,6 +116,10 @@ function testTrustedArticleImageV2() {
   assert(runnerV3.includes('Jules owns ARTICLE TEXT ONLY'));
   assert(runnerV3.includes('The new article MUST omit'));
   assert(runnerV3.includes('trusted GitHub Actions stage'));
+  assert(runnerV3.includes('verified Pexels -> verified Pixabay'));
+  assert(!runnerV3.includes('Gemini -> Unsplash -> Pexels'));
+  assert(!articleController.includes('Article publication is allowed without an image'));
+  assert(!articleController.includes('if image_status == "deferred"'));
 }
 
 function testIndependentArticlePrGateRuntime() {
@@ -137,7 +151,7 @@ post = dict(no_image, image='/images/generated/blog/valid-new-post.png', imageAl
 post_sha = hashlib.sha256(json.dumps(post, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
 body = f'''Image Pipeline Version: 2
 Image Provider: Local
-Image Attempt Chain: gemini/unsplash/pexels/local-curated
+Image Attempt Chain: gemini-1/gemini-2/gemini-3/pexels/pixabay/local-curated
 Image Generation Result: local_fallback
 Image Source URL: local://public/images/generated/blog/listening-in-relationships.jpg
 Image SHA-256: {sha}

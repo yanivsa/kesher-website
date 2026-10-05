@@ -85,11 +85,11 @@ Use for competitor research, Google Ads state, deployment claims, or other asser
 4. Never state `launched`, `live`, `verified`, or equivalent without the required evidence.
 
 ### Article image backfill
-1. Build a deterministic inventory.
-2. Identify missing, broken, reused, or duplicate images/metadata.
-3. Repair from the inventory.
-4. Run the validator.
-5. Require machine-checkable totals such as `missing=0`, `broken=0`, and `duplicate SHA=0` before completion.
+1. Build a deterministic inventory and identify missing, broken, placeholder, or over-reused image metadata.
+2. Jules may repair automation code/config/tests only. It must not edit article image binaries, article `image`/`imageAlt`, or trusted image evidence directly.
+3. Dispatch or repair the trusted GitHub Actions image/backfill workflow so it mutates the SAME authoritative article PR or opens the dedicated reviewable migration PR.
+4. Run the image validator and CI on the resulting exact remote head.
+5. Require machine-checkable totals and contract compliance before completion; never bypass the trusted image worker just to clear an incident.
 
 ### Deploy / live verification
 1. Tie verification to the exact merged `main` SHA.

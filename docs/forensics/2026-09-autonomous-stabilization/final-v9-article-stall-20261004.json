@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "capture": {
+    "read_only": true,
+    "captured_at_utc": "2026-10-04T06:02:23.324764+00:00",
+    "state_ref_commit": "d0b93e1bdd012ea669d70a6c517a449658418910",
+    "state_blob_sha": "02e72a2bbe8424f6d8969385760d45792a6fd06a",
+    "period_start_utc": "2026-10-03T21:00:00Z",
+    "main_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b"
+  },
+  "production_state": {
+    "ref_commit": "d0b93e1bdd012ea669d70a6c517a449658418910",
+    "blob_sha": "02e72a2bbe8424f6d8969385760d45792a6fd06a",
+    "schema_version": 5,
+    "cycle": "2026-10-04",
+    "status": "article_generating",
+    "updated_at": "2026-10-04T04:33:05.693706+00:00",
+    "article": {
+      "attempt_count": 1,
+      "status": "running",
+      "last_error": null,
+      "next_retry_at": null,
+      "run_id": 37175772325,
+      "processed_run_id": 37175772325,
+      "provider_id": null,
+      "failure_fingerprint": null,
+      "same_failure_streak": 0,
+      "failure_count_by_type": {},
+      "attempts": 1,
+      "deploy_attempts": 0,
+      "normalization_status": "pending",
+      "quality_status": "passed",
+      "quality_content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22",
+      "quality_checked_at": "2026-10-04T00:45:00.091137+00:00",
+      "quality_violations": [],
+      "last_dispatch_at": "2026-10-04T04:01:32.853927+00:00",
+      "last_run_conclusion": "failure",
+      "last_worker_result": {
+        "schema_version": 1,
+        "slot": "2026-10-04",
+        "outcome": "ARTICLE_PR_INSPECTION_ERROR",
+        "retryable": false,
+        "message": "cannot inspect src/data/posts.json for open article PR 997",
+        "session_id": "",
+        "pr_url": "",
+        "github_run_id": "37175772325",
+        "completed_at": "2026-10-04T04:01:54.630553+00:00"
+      },
+      "watchdog": {
+        "identity": "2026-10-04",
+        "session_id": "sessions/8912115024517976935",
+        "last_progress_at": "2026-10-04T04:30:08.097222+00:00",
+        "last_fingerprint": "ce0ac65c646ac0384aba548fbbdd17f77f57c65f249b15ec34fd49b13ad7214c",
+        "last_nudge_at": null,
+        "nudge_count": 0,
+        "worker_restart_count": 0,
+        "last_restart_at": null,
+        "last_restart_run_id": null
+      }
+    }
+  },
+  "article_run": {
+    "id": 37175772325,
+    "dispatch_created_at": "2026-10-04T04:01:32Z",
+    "run_attempt": 2,
+    "status": "completed",
+    "conclusion": "failure",
+    "updated_at": "2026-10-04T04:51:11Z",
+    "url": "https://github.com/yanivsa/kesher-website/actions/runs/37175772325",
+    "attempt1_artifact_id": 11293016680,
+    "attempt2_artifact_id": 11293094603,
+    "attempt1_result": {
+      "schema_version": 1,
+      "slot": "2026-10-04",
+      "outcome": "ARTICLE_PR_INSPECTION_ERROR",
+      "retryable": false,
+      "message": "cannot inspect src/data/posts.json for open article PR 997",
+      "session_id": "",
+      "pr_url": "",
+      "github_run_id": "37175772325",
+      "completed_at": "2026-10-04T04:01:54.630553+00:00"
+    },
+    "attempt2_result": {
+      "schema_version": 1,
+      "slot": "2026-10-04",
+      "outcome": "COMPLETED_WITHOUT_PR",
+      "retryable": true,
+      "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed \u2014 All plan steps have been successfully completed. Ready for submission.",
+      "session_id": "sessions/8912115024517976935",
+      "pr_url": "",
+      "github_run_id": "37175772325",
+      "completed_at": "2026-10-04T04:51:07.218207+00:00",
+      "diagnostic": {
+        "source": {
+          "name": "sources/github/yanivsa/kesher-website",
+          "owner": "yanivsa",
+          "repo": "kesher-website",
+          "default_branch": "main",
+          "main_available": true
+        },
+        "activity_count": 33,
+        "change_set_count": 29,
+        "change_set_fingerprints": [],
+        "last_agent_message": "",
+        "last_progress": "All plan steps completed \u2014 All plan steps have been successfully completed. Ready for submission.",
+        "last_description": "",
+        "session_failed_reason": ""
+      }
+    }
+  },
+  "article_presence": {
+    "main_sha": "e79cccab32c046cc80a560ca43d0185b3b124f0b",
+    "today_posts": 0,
+    "open_prs_total": 14,
+    "open_posts_prs": {
+      "complete_open_pr_count": 14,
+      "posts_changing": [
+        {
+          "number": 1027,
+          "head_sha": "d781300a0bc0f4f1839caa8420a7c3e12ee3e8b9",
+          "posts_blob_sha": "80fddb220ada453d3e221ec8329043aebe847dbe",
+          "title": "feat: Kesher Plugin V2 \u2014 couples, parenting and ADHD support",
+          "html_url": "https://github.com/yanivsa/kesher-website/pull/1027",
+          "current_slot_posts": [],
+          "latest_post_dates": [
+            "2026-09-29",
+            "2026-09-30",
+            "2026-10-01",
+            "2026-10-02"
+          ]
+        },
+        {
+          "number": 997,
+          "head_sha": "b79d8753cf3ce1aefa5f48882d609c1203e00e04",
+          "posts_blob_sha": "b49b35c4bf8caec2fff03ba4592bf5c6af1cef3a",
+          "title": "Publish Kesher article: \u05e7\u05d5\u05d3 7500 \u05d1\u05d6\u05d5\u05d2\u05d9\u05d5\u05ea: 5 \u05e1\u05d9\u05de\u05e0\u05d9\u05dd \u05e9\u05d4\u05e7\u05e9\u05e8 \u05e9\u05dc\u05db\u05dd \u05e0\u05db\u05e0\u05e1 \u05dc\u05de\u05e6\u05d1 \u05d7\u05d9\u05e8\u05d5\u05dd",
+          "html_url": "https://github.com/yanivsa/kesher-website/pull/997",
+          "current_slot_posts": [],
+          "latest_post_dates": [
+            "2026-09-30",
+            "2026-10-01",
+            "2026-10-02",
+            "2026-10-03"
+          ]
+        }
+      ],
+      "current_slot_pr_count": 0
+    },
+    "today_article_prs": 0,
+    "active_today_article_runs": 0
+  },
+  "controller": {
+    "period_start_utc": "2026-10-03T21:00:00Z",
+    "total_runs": 67,
+    "event_outcome_counts": {
+      "workflow_run/skipped": 36,
+      "workflow_run/cancelled": 12,
+      "workflow_run/success": 9,
+      "push/success": 6,
+      "workflow_run/failure": 2,
+      "schedule/success": 2
+    },
+    "schedule_runs": [
+      {
+        "id": 37165877697,
+        "created_at": "2026-10-04T00:44:41Z",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 37157739072,
+        "created_at": "2026-10-03T22:14:19Z",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "last_productive_run": 37177160606,
+    "last_productive_at": "2026-10-04T04:33:11Z",
+    "last_productive_observation": "Article workflow attempt 2 was then active; session known; wait/watchdog was appropriate.",
+    "post_completion_wakes": 30,
+    "post_completion_productive_ticks": 0,
+    "post_completion_wakes_all": "skipped pull-request child completion events"
+  },
+  "answers": {
+    "dispatch_created": "Yes: one today workflow_dispatch run 37175772325; its second attempt reused that run.",
+    "exact_run_session": "Attempt 1 failed ARTICLE_PR_INSPECTION_ERROR on prior-day PR997 before Jules creation. Attempt 2 created sessions/8912115024517976935 and completed COMPLETED_WITHOUT_PR.",
+    "no_dispatch_explanation": "Not applicable: a real dispatch exists.",
+    "state_stale": "Yes as of captured evidence: article_generating was last written while attempt2 was active, then the attempt completed without a PR and no productive controller tick followed.",
+    "indefinite_label": "Without a productive invocation, stored status can persist indefinitely. V5 does not use the label alone as an unconditional active-worker latch, but its bare processed_run_id already consumed attempt1 and ignores the newer attempt2 result. Failed-child completion wakeups are passive until heartbeat; scheduler availability is not proved.",
+    "already_fixed_by_candidate": "Canonical Schema6 rejects an unmigrated Schema5 document, has no article_generating global latch, persists an exact slot command via CAS before dispatch, binds claimed run/attempt, and reports WORKER_STALLED or WORKER_ACCEPTANCE_STALLED on bounded absence. A known completed Jules session without output raises JULES_NO_OUTPUT and cannot authorize another create POST.",
+    "additional_runtime_fix": "None required: no confirmed canonical candidate defect. Five focused regression cases added; main immutable blob fallback and its prior-day regression retained."
+  },
+  "limits": [
+    "Jules evidence is a workflow result artifact, not a fresh provider attestation.",
+    "No exact reason for missing productive heartbeat is established by these GET reads.",
+    "No scheduler availability or live Schema6 recovery/activation certificate is claimed.",
+    "Live workflow registrations are not certified by local72-definition policy validation."
+  ],
+  "evidence_sha256": {
+    "article-artifacts.json": "bf7481e695229419306e1cf5e871f8ef93074b69711034aafc1534a860c6af71",
+    "article-attempt1-jobs.json": "19b1b9a1bb13e6f4d85b730bd245a3b34917ff8102f7c0a6bc3ed6fa28529189",
+    "article-attempt2-jobs.json": "6a64ddb6f2e3a9725ccd630eeeb16257496bf4b2c0dd77c891c01b751c33e402",
+    "article-recent-runs.json": "40d42c72d26d713da0cc5006b93283cc63c3424b20528f6fefb3d242a4c46a68",
+    "article-result-11293016680.json": "e4c9d5d63982c09551a0f65a4e72e04cc2b932894b8340a8e82cae537c54969d",
+    "article-result-11293016680.zip": "9e23466fb63ffb7b8efe598005f615a22b849e011e1b73f4dc483752f2656f18",
+    "article-result-11293094603.json": "c2277a399ab225e5db3418461b3bd0e4ff2e48251355ae80babd0a9aa7055367",
+    "article-result-11293094603.zip": "8594858dbafda75b9207825d36de7ff4d6b91ff93b5f256e8a6305a30441e191",
+    "article-runs-flat.json": "415aef02c83db79a29954fb73c83a10ec856330adf59c210e653d82ea303925f",
+    "article-runs.json": "77b0b79dfb883d31b9b7fa9027595464f4604d347471698c24fc4ab01c4c6ae0",
+    "capture.json": "f946fb0d6177a95904c046db41f7ac31cc853c0a9d307662e89d21683bb233a6",
+    "controller-37176810028-jobs.json": "96d97734621cbc60b36338e1e6436535313870ca18fd2dd60f5e10c573463b28",
+    "controller-37176996011-jobs.json": "56df33c414f3848faf8c45ff03555478f80e392b50d0eaeed41ce9327c473c70",
+    "controller-37177160606-jobs.json": "70d261d78084169e668d66ab9965abc8f9c419d9cdaedb7e2d35f0dab61ae9ed",
+    "controller-37177281240-jobs.json": "96d97734621cbc60b36338e1e6436535313870ca18fd2dd60f5e10c573463b28",
+    "controller-runs-flat.json": "69238ede50642b64e58837f53043a1d0432f3a38ba8812a213b6340f4e5e0e8b",
+    "controller-runs.json": "b2563e69ab45e8f3c7624211b91265d455d9d77eaab0ff9f24998516ecedc743",
+    "job-111357947489-selected.log": "453f45738601536948b5026579808ef5c12ff67ee74618c400c994e41a94f8a3",
+    "job-111359959107-selected.log": "919fb6829dfbe954590c44d67c34d5e009bdfae0bd5ba46413ea8a2ea37d03ac",
+    "job-111362080547-selected.log": "a9a71041f507303115528c7480b4118a326b6412c0581dac1bedff4b03ab9f96",
+    "open-article-pr-inspection.json": "71d4ab198650edcff7154c6c343bdd3283efa9bb14b3c8d53bc933931c0e064b",
+    "open-prs-complete.json": "b0fae10cbf1862f3a242e5115c388917ce3cc28373711ad0ca5c78fff7a90a24",
+    "pr-1000-files.json": "9e155248fedcaaa49f06cde818f291c3ee799d8ca616b8ca8df3456481d46eab",
+    "pr-1013-files.json": "a51d2b240fa75fa5f2e5fed060e6151a56833153b7c7c598fce6a5fbb9c1b87b",
+    "pr-1020-files.json": "8be5c4b45c766cc301b3c75d8f6feae9e59a96cf018cba1af71246cfe4e94471",
+    "pr-1023-files.json": "c7751006d77de6bf34ceb2acb00de4cebc16455accbf43ccd9cd9182402d1ad8",
+    "pr-1024-files.json": "8fa8f82d990ab6e17e6180755a4ff5225c6f3298a5e040e3f44ad91aca05927e",
+    "pr-1027-files.json": "f91665a02c29ebed573c233078aa23b2f8cddb434ce129ae3bca788b76497f88",
+    "pr-1044-files.json": "e272059e15e80721ade9832e11af0e281f002d5585da9bf4d92472db3a056e0a",
+    "pr-928-files.json": "99478abdbe8f8d0e2b67d2fc3c95e1527a08ceb03508d2521e5fc4ad976d8017",
+    "pr-983-files.json": "4a76f5ee2bad353e3d8eddd1cb2f6ff9df0798708af7718309426c0283731c90",
+    "pr-991-files.json": "0f1fb1f78cae31427f82521c1c2fd00841f56744199fbb335575816c81b36fd4",
+    "pr-997-files.json": "ac80965e75a3506da17c925c17f2b2c4376cee697a6367986b01d4cc781862c4",
+    "pr-998-files.json": "30af8cb6777f03137b4138d8c0c722c869415486004e2e2693097aeb76361af0",
+    "pulls.json": "415f6ded6f65cff72516aa0cd0219a3d7192731642281dd9b97003a93710aa53",
+    "repo-metadata-summary.json": "e309653b7904dc2bdd5a22d5eaf6ccd546fa6abea34cda247bd1786b46b68a1b",
+    "state-contents.json": "06868b725b55e6e3e4caeaf5aa1bb79318c2a959b216112e7d310bcb8fde5147",
+    "state-ref.json": "2f04fb1c8a3725e13d5dbbc6f187460f2ffcb6cf69c7b86968c9cb81781cb47e",
+    "state.json": "123f799169099c4fc50e0d2fd2ee8d7bee46700907bec67fd40f07768715fc81",
+    "today-posts.json": "d6ee8421294c490f3fee808f60242a3a4021ae8d66206b00beab2aea7dc83a91",
+    "workflows.json": "32d8a857876a8efc7f41c473a6b87aea03855df095b63b874d1362ffbf190198"
+  },
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false,
+  "sanitized_evidence_archive": {
+    "path": "final-v9-article-stall-evidence-20261004.tar.gz",
+    "sha256": "a4dfca9369845bc5976a399075e18767d8c6b01cdd51bb64dfdd4973e030e154",
+    "members": [
+      "capture.json",
+      "article-result-11293016680.json",
+      "article-result-11293094603.json",
+      "article-attempt1-jobs.json",
+      "article-attempt2-jobs.json",
+      "controller-runs-flat.json",
+      "open-article-pr-inspection.json",
+      "job-111357947489-selected.log",
+      "job-111359959107-selected.log",
+      "job-111362080547-selected.log"
+    ]
+  }
+}

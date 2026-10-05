@@ -1160,7 +1160,7 @@
   position: fixed;
   inset-inline-start: 50%;
   inset-block-end: max(1.1rem, env(safe-area-inset-bottom, 0px));
-  z-index: 90;
+  z-index: 80;
   min-height: 58px;
   padding: 0.45rem 0.55rem 0.45rem 1rem;
   display: flex;
@@ -1264,6 +1264,7 @@
   margin: 0 auto;
   padding: 2rem 0 2.5rem;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
@@ -1286,6 +1287,28 @@
 
 .footerLinks a:hover {
   color: var(--beta-sage-dark);
+}
+
+.footerSecondary {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -1rem;
+}
+
+.footerSecondary a {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  color: var(--beta-muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.footerSecondary a:hover {
+  color: var(--beta-sage-dark);
+  text-decoration: underline;
 }
 
 @keyframes heroEnter {
@@ -1431,9 +1454,9 @@
   .hero {
     min-height: auto;
     padding-top: 0;
-    padding-bottom: calc(6rem + 140px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(10rem + 140px + env(safe-area-inset-bottom, 0px));
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 1rem;
   }
 
   .heroCopy {
@@ -1441,17 +1464,19 @@
     }
 
   .hero h1 {
-    font-size: clamp(3.15rem, 15vw, 5rem);
-    line-height: 0.98;
+    font-size: clamp(2.5rem, 12vw, 4rem);
+    line-height: 0.95;
     margin-bottom: 0;
   }
 
   .heroLead {
-    font-size: 1.02rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
   }
 
   .heroActions {
-    margin-top: 0.5rem;
+    margin-top: 0;
+    gap: 0.5rem;
     display: grid;
   }
 
@@ -1461,12 +1486,15 @@
   }
 
   .heroWhatsapp {
-    margin-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 5.5rem;
+    position: relative;
+    z-index: 91;
   }
 
   .trustRow {
     margin-top: 1rem;
-    padding-bottom: calc(16rem + 70px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(22rem + 450px + env(safe-area-inset-bottom, 0px));
     gap: 0.65rem 1rem;
   }
 
@@ -1563,6 +1591,12 @@
     align-items: flex-start;
     flex-direction: column;
     padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .footerSecondary {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: -1rem;
   }
 
   .quickDock {

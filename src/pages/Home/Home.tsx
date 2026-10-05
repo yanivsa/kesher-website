@@ -73,7 +73,8 @@ const schemaData = {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Service",
-            "name": "הכנה לנישואים וליווי בשנה הראשונה",
+      "@id": `${SITE_CONFIG.url}#service`,
+            "name": "ייעוץ זוגי לפני חתונה והכנה לנישואים",
             "url": `${SITE_CONFIG.url}/services/premarital-first-year`,
             "description": "פגישות הכנה זוגיות סביב כסף, בית, משפחות, אינטימיות, חלוקת אחריות ותקשורת."
           }
@@ -203,6 +204,7 @@ const schemaData = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -265,6 +267,25 @@ const process = [
     number: '03',
     title: 'מתרגלים דרך אחרת',
     text: 'יוצאים מהפגישה עם כיוון ברור וכלים שאפשר לנסות בבית, בקצב שמתאים לכם.',
+  },
+];
+
+const situations = [
+  {
+    title: 'זוג עם קשיי תקשורת',
+    text: 'כשהשיחות הופכות לוויכוחים שחוזרים על עצמם, או כשיש תחושה ש"אין עם מי לדבר" והמרחק רק הולך וגדל.',
+  },
+  {
+    title: 'זוג במשבר או אחרי פגיעה באמון',
+    text: 'כשאירוע משמעותי, משבר אמון או תקופה מתוחה מטלטלים את הקשר וקשה למצוא יחד דרך קדימה.',
+  },
+  {
+    title: 'זוג שחווה שחיקה והתרחקות',
+    text: 'כשיש בדידות בתוך הזוגיות, ירידה באינטימיות או שגרה עמוסה שמרחיקה במקום לחבר.',
+  },
+  {
+    title: 'זוג בתקופת שינוי או אתגרי הורות',
+    text: 'כשהורות טרייה, מעבר, שינוי בקריירה או פערים בגישות החינוך יוצרים עומס ודורשים התאמה משותפת.',
   },
 ];
 
@@ -358,7 +379,8 @@ const Home: React.FC = () => {
 
   return (
     <div className={styles.page} dir="rtl">
-      <MetaTags 
+      <MetaTags
+        canonical={SITE_CONFIG.url}
         title={SITE_CONFIG.title}
         description={SITE_CONFIG.description}
       />
@@ -429,8 +451,8 @@ const Home: React.FC = () => {
               <span> את הקשר אחרת. יחד.</span>
             </h1>
             <p className={styles.heroLead}>
-              גם כשהשיחות נתקעות והעומס גדל, אפשר להבין מה קורה בזוגיות או בבית,
-              לבחור צעדים חדשים וליצור תנועה שמחזירה תקווה לקשר ולמשפחה.
+              שירה סהרוני היא יועצת זוגית, מנחת הורים ומגשרת מוסמכת באשדוד ובאונליין, שמלווה זוגות והורים כשהתקשורת נתקעת, הקונפליקטים חוזרים או הבית עובר שינוי.
+              הליווי מתמקד בזיהוי הדפוס שחוזר ובבחירת צעדים מעשיים שאפשר ליישם בזוגיות ובבית.
             </p>
             <div className={styles.heroActions}>
               <Link to={SITE_CONFIG.links.appointment} className={styles.primaryCta}>
@@ -498,6 +520,27 @@ const Home: React.FC = () => {
                   <FiArrowLeft aria-hidden="true" />
                 </span>
               </Link>
+            ))}
+          </div>
+        </section>
+
+        <section id="situations" className={`${styles.section} ${styles.processSection} ${styles.revealSection}`}>
+          <div className={styles.sectionHeading}>
+            <span className={styles.kicker}>מצבים בהם ייעוץ יכול לעזור</span>
+            <h2>מתי כדאי לפנות לייעוץ?</h2>
+            <p>הפנייה לייעוץ קורית פעמים רבות כשהמנגנונים המוכרים מפסיקים לעבוד, והתחושה בבית הופכת למתוחה.</p>
+          </div>
+          <div className={styles.processGrid}>
+            {situations.map((item, idx) => (
+              <article
+                className={styles.processCard}
+                key={item.title}
+                style={{ '--process-delay': `${idx * 65}ms` } as React.CSSProperties}
+              >
+                <span className={styles.processNumber}>{(idx + 1).toString().padStart(2, '0')}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
             ))}
           </div>
         </section>
@@ -660,6 +703,9 @@ const Home: React.FC = () => {
           <Link to="/blog">מאמרים</Link>
           <Link to="/privacy">פרטיות</Link>
           <Link to="/accessibility">נגישות</Link>
+        </div>
+        <div className={styles.footerSecondary}>
+          <a href="http://www.kartiv.co.il">אינדקס אתרים</a>
         </div>
       </footer>
     </div>

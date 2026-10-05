@@ -16,7 +16,7 @@ class PublicMetadataTests(unittest.TestCase):
             'id': 'exact', 'slug': 'exact', 'date': '2026-09-17', 'category': 'זוגיות',
             'title': 'כותרת בעברית', 'excerpt': 'תיאור מבוסס על המאמר', 'content': '<p>תוכן המאמר בעברית</p>',
         })
-        description = f"{self.source['excerpt']}\n\nלקריאת המאמר המלא:\n{self.source['canonical_url']}\n\nלאתר קשר:\n{pipeline.SITE_URL}"
+        description = f"{self.source['excerpt']}\n\nלקריאת המאמר המלא:\n{self.source['canonical_url']}\n\nלאתר קשר:\n{pipeline.SITE_URL}\n\nלתיאום פגישה:\n{pipeline.APPOINTMENT_URL}"
         self.item = {'type': 'video_overview', 'source': self.source, 'youtube_id': 'exact-video',
                      'youtube_metadata': {'title': self.source['title'], 'description': description, 'tags': ['זוגיות']}}
         self.row = {'id': 'exact-video', 'snippet': {
@@ -65,6 +65,13 @@ class PublicMetadataTests(unittest.TestCase):
         self.assertEqual(receipt['kind'], 'overview')
         self.assertEqual(receipt['verifier_version'], 1)
         self.assertTrue(receipt['verified_at'])
+
+    def test_youtube_legacy_iw_alias_is_accepted_as_hebrew(self):
+        row = copy.deepcopy(self.row)
+        row['snippet']['defaultLanguage'] = 'iw'
+        row['snippet']['defaultAudioLanguage'] = 'iw'
+        receipt = self.verify(row)
+        self.assertEqual(receipt['kind'], 'overview')
 
     def test_private_pending_wrong_channel_or_language_are_not_public_completion(self):
         cases = [('status', 'privacyStatus', 'unlisted'), ('processingDetails', 'processingStatus', 'processing'),

@@ -50,11 +50,27 @@ const safeSessionRemove = (key: string) => {
   }
 };
 
-const inferServiceType = (pathname: string): string | undefined => {
-  if (pathname === '/couples-counseling-ashdod') return 'couples_counseling';
-  const serviceMatch = pathname.match(/^\/services\/([^/]+)/);
+const SERVICE_TYPE_BY_PATH: Record<string, string> = {
+  '/couples-counseling-ashdod': 'couples_counseling',
+  '/parenting-guidance-ashdod': 'parenting_guidance',
+  '/couples-mediation-ashdod': 'couples_mediation',
+  '/couples-crisis-ashdod': 'couples_crisis',
+  '/parenting-adhd-ashdod': 'parenting_adhd',
+  '/couples-counseling-gan-yavne': 'couples_counseling',
+  '/services/couples/crisis': 'couples_crisis',
+  '/services/couples/before-separation': 'couples_before_separation',
+};
+
+export const inferServiceType = (pathname: string): string | undefined => {
+  const normalizedPath = pathname.length > 1 && pathname.endsWith('/')
+    ? pathname.slice(0, -1)
+    : pathname;
+  const explicit = SERVICE_TYPE_BY_PATH[normalizedPath];
+  if (explicit) return explicit;
+
+  const serviceMatch = normalizedPath.match(/^\/services\/([^/]+)/);
   if (serviceMatch?.[1]) return serviceMatch[1].replace(/-/g, '_');
-  if (pathname === '/appointment') return 'general_consultation';
+  if (normalizedPath === '/appointment') return 'general_consultation';
   return undefined;
 };
 

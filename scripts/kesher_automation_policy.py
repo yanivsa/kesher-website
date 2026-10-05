@@ -14,10 +14,9 @@ EXPECTED_BACKOFF = [5, 15]
 EXPECTED_HEARTBEAT_MINUTES = 5
 EXPECTED_IMAGE_PROVIDER_ORDER = [
     "gemini",
-    "unsplash",
     "pexels",
+    "pixabay",
     "local-curated",
-    "local-editorial",
 ]
 EXPECTED_MEDIA_VOICE_PRODUCTS = ["video_overview", "short"]
 EXPECTED_FEMALE_VOICE_ATTEMPTS = 3
@@ -78,8 +77,8 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         raise AutomationPolicyError("Article automation contract is invalid")
 
     # Images are required and publication-blocking. A published article must
-    # have a valid unique hero image. Downstream validators enforce
-    # strict provenance, SHA-256 uniqueness, pixel validation and local fallback rules.
+    # have a concrete trusted hero image. Downstream validators enforce strict
+    # provenance, pixel validation, external-image uniqueness and bounded local reuse.
     if (
         image.get("required_for_article") is not True
         or image.get("publication_blocking") is not True
@@ -91,6 +90,13 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         or image.get("visual_verifier_model") != "gemini-3.5-flash"
         or image.get("external_stock_requires_pixel_verification") is not True
         or image.get("fallback_must_be_local") is not True
+        or image.get("abstract_placeholder_allowed") is not False
+        or image.get("owned_generation_variants") != 3
+        or image.get("local_fallback_candidates_per_category") != 40
+        or image.get("managed_fallback_library_target_per_category") != 40
+        or image.get("local_fallback_policy") != "prefer-unused-then-90-day-cooldown-max-3-uses"
+        or image.get("local_fallback_reuse_cooldown_days") != 90
+        or image.get("local_fallback_max_lifetime_uses") != 3
         or image.get("no_image_publication_allowed") is not False
         or image.get("failure_mode") != "blocking-retry"
     ):
@@ -107,6 +113,26 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         raise AutomationPolicyError(
             "Video contract must use technical publication, advisory Jules, three attempts, FIFO, and 3 snapshots/14 days"
         )
+
+    broll = video.get("free_stock_broll")
+    if (
+        not isinstance(broll, dict)
+        or broll.get("enabled") is not True
+        or broll.get("cost_policy") != "free-only"
+        or broll.get("provider_order") != ["pexels", "pixabay"]
+        or broll.get("automatic_paid_fallback") is not False
+        or broll.get("publication_blocking") is not False
+        or broll.get("missing_credentials") != "skip-and-continue"
+        or broll.get("provider_failure") != "skip-and-continue"
+        or broll.get("download_failure") != "skip-and-continue"
+        or broll.get("render_failure") != "drop-assets-and-continue"
+        or broll.get("time_budget_seconds") != 12
+        or broll.get("max_short_assets") != 1
+        or broll.get("max_overview_assets") != 2
+        or broll.get("attribution_on_use") is not True
+        or broll.get("coverr_enabled") is not False
+    ):
+        raise AutomationPolicyError("Free B-roll contract must remain free-only, attributed, bounded and non-blocking")
 
     voice_policy = video.get("voice_policy")
     if (
@@ -131,6 +157,9 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         "heartbeat_is_recovery_only",
         "provider_ids_are_persisted_before_followup",
         "youtube_insert_is_idempotent",
+        "free_broll_never_blocks_publication",
+        "free_broll_never_triggers_paid_fallback",
+        "external_broll_attributed_when_used",
     )
     if any(invariants.get(name) is not True for name in required_invariants):
         raise AutomationPolicyError("Required Kesher production invariants are not enabled")

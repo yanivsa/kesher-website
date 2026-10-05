@@ -11,6 +11,7 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/gifted-parenting#service`,
       name: 'הנחיית הורים לילדים מחוננים',
       serviceType: 'הנחיית הורים לילדים מחוננים והכנה למסגרת מחוננים',
       url: `${SITE_CONFIG.url}/services/gifted-parenting`,
@@ -24,6 +25,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/gifted-parenting#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',
@@ -46,6 +48,7 @@ const GiftedParentingPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
+        canonical={`${SITE_CONFIG.url}/services/gifted-parenting`}
         title="הנחיית הורים לילדים מחוננים"
         description="ליווי הורים לילדים מחוננים: רגישות, פרפקציוניזם, שייכות, מחוננות לצד ADHD והכנה רגשית וניהולית למסגרת מחוננים."
         image="/images/generated/services/parenting-room.jpg"

@@ -3,44 +3,59 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-}
-
-.fallbackLink {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background-color: var(--color-primary, #4A6854);
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
-  font-weight: 500;
+  gap: 0.75rem;
   text-align: center;
-  transition: background-color 0.2s ease;
 }
 
-.fallbackLink:hover, .fallbackLink:focus {
-  background-color: var(--color-primary-dark, #3F5E49);
-  color: white;
+.label {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.button,
+.fallbackLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  max-width: 100%;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--color-primary, #4A6854);
+  border-radius: 999px;
+  background: var(--color-surface, #fff);
+  color: var(--color-primary-dark, #3F5E49);
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
   text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
-/* Hide the JS fallback by default if the button renders successfully.
-   The google script replaces or styles the custom element. If it fails,
-   we still want the fallback to be visible.
-*/
-.jsFallback {
-  display: block;
+.button:hover,
+.button:focus-visible,
+.fallbackLink:hover,
+.fallbackLink:focus-visible {
+  background: var(--color-primary, #4A6854);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
-/* If the google component is successfully initialized, we might want to hide the fallback.
-   Usually, publisher.js leaves the fallback intact if not instructed, or we can just leave it as an alternative.
-   To be safe and "Provide a permanent no-JavaScript / failure fallback deeplink",
-   we can just display the fallback alongside or hide it if the script adds specific classes.
-   The requirement says: "Provide a permanent no-JavaScript / failure fallback deeplink"
-   We'll keep the JS fallback visible in case the script fails to load due to adblockers.
-   Actually, it's better to show it only when the custom element is empty or hide it if custom element has content.
-*/
-google-add-preferred-source-btn:not(:empty) + noscript + .jsFallback,
-google-add-preferred-source-btn[data-initialized="true"] ~ .jsFallback {
-  display: none;
+.button:focus-visible,
+.fallbackLink:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--color-primary, #4A6854) 28%, transparent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 520px) {
+  .container {
+    margin: 1.5rem 0;
+  }
+
+  .button,
+  .fallbackLink {
+    width: 100%;
+  }
 }

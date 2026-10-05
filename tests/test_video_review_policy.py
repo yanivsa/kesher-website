@@ -165,8 +165,11 @@ class VideoReviewPolicyTestCase(unittest.TestCase):
         reviewer = load_reviewer()
         self.assertEqual(reviewer.MAX_REVIEW_SESSION_ATTEMPTS, 1)
         source = REVIEWER_PATH.read_text(encoding="utf-8")
+        legacy_source = LEGACY_REVIEWER_PATH.read_text(encoding="utf-8")
         self.assertNotIn("handle_non_fatal_review_error", source)
         self.assertNotIn("JULES_REVIEW_SESSION_REPLACEMENT", source)
+        self.assertIn("range(MAX_REVIEW_SESSION_ATTEMPTS)", legacy_source)
+        self.assertNotIn("for attempt in range(2):", legacy_source)
 
 
 if __name__ == "__main__":

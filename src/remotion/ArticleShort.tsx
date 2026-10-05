@@ -9,32 +9,7 @@ import {
 } from "remotion";
 import {FullScreenSignatureOutro} from "./components/FullScreenSignatureOutro";
 import {EnhancementAssetOverlay} from "./components/EnhancementAssetOverlay";
-
-export interface MotionTarget {
-  startFrame: number;
-  endFrame: number;
-  focusX: number;
-  focusY: number;
-  zoom: number;
-  rotation: number;
-  assetRef?: string;
-  assetType?: "image" | "broll" | "motion_graphic";
-  assetStartFrame?: number;
-  assetEndFrame?: number;
-  assetIntent?: string;
-  assetProvenance?: string;
-}
-
-export interface ArticleShortProps {
-  videoSrc: string;
-  sourceStartFrame: number;
-  durationInFrames: number;
-  title: string;
-  category: string;
-  url: string;
-  signatureImageSrc?: string;
-  motionPlan?: MotionTarget[];
-}
+import {SHORT_GEOMETRY, ArticleShortProps} from "./ArticleShort.types";
 
 const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
 const SIGNATURE_SECONDS = 3;
@@ -48,6 +23,7 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
   url,
   signatureImageSrc = "signature-mask.svg",
   motionPlan = [],
+  preserveSourceSharpness = false,
 }) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -61,12 +37,17 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
   const targetSpan = target ? Math.max(1, target.endFrame - target.startFrame) : 1;
   const targetProgress = target ? clamp01((frame - target.startFrame) / targetSpan) : 0;
   const pulse = Math.sin(targetProgress * Math.PI);
-  const zoom = target ? 1 + (Math.max(1.08, target.zoom) - 1) * pulse : 1;
+  const motionZoom = target ? Math.max(1.0, target.zoom) : 1.0;
+  const zoom = preserveSourceSharpness
+    ? 1.0
+    : (target ? SHORT_GEOMETRY.baseScale + (motionZoom - 1) * pulse : SHORT_GEOMETRY.baseScale);
   const focusX = target ? clamp01(target.focusX) : 0.5;
   const focusY = target ? clamp01(target.focusY) : 0.5;
-  const translateX = target ? (0.5 - focusX) * 110 * pulse : 0;
-  const translateY = target ? (0.5 - focusY) * 170 * pulse : 0;
-  const rotation = target ? target.rotation * pulse : 0;
+  const rawTranslateX = target ? (0.5 - focusX) * 110 * pulse : 0;
+  const rawTranslateY = target ? (0.5 - focusY) * 170 * pulse : 0;
+  const translateX = preserveSourceSharpness ? Math.round(rawTranslateX) : rawTranslateX;
+  const translateY = preserveSourceSharpness ? Math.round(rawTranslateY) : rawTranslateY;
+  const rotation = preserveSourceSharpness ? 0 : (target ? target.rotation * pulse : 0);
 
   const plannedAssets = motionPlan.filter(
     (entry) => entry.assetRef && entry.assetType && entry.assetStartFrame !== undefined && entry.assetEndFrame !== undefined,
@@ -108,59 +89,56 @@ export const ArticleShort: React.FC<ArticleShortProps> = ({
       <div
         style={{
           position: "absolute",
-          top: 76,
-          left: 54,
-          right: 54,
+          top: SHORT_GEOMETRY.safeArea.top,
+          left: SHORT_GEOMETRY.safeArea.left,
+          right: SHORT_GEOMETRY.safeArea.right,
           direction: "rtl",
           textAlign: "right",
-          opacity: intro,
-          translate: `0 ${interpolate(intro, [0, 1], [-18, 0])}px`,
           fontFamily: "Heebo, Rubik, Arial, sans-serif",
           color: "white",
-          textShadow: "0 3px 18px rgba(0,0,0,0.72)",
         }}
       >
         <div
           style={{
-            display: "inline-block",
-            padding: "9px 20px",
-            borderRadius: 999,
-            backgroundColor: "rgba(29,72,52,0.88)",
             fontSize: 30,
-            fontWeight: 700,
+            fontWeight: 800,
             marginBottom: 18,
+            textShadow: "0 2px 14px rgba(0,0,0,0.8)",
           }}
         >
-          {category}
+          שירה סהרוני · {url}
         </div>
         <div
           style={{
-            fontSize: 54,
-            lineHeight: 1.12,
-            fontWeight: 900,
-            maxWidth: 930,
+            opacity: intro,
+            translate: `0 ${interpolate(intro, [0, 1], [-18, 0])}px`,
+            textShadow: "0 3px 18px rgba(0,0,0,0.72)",
           }}
         >
-          {title}
+          <div
+            style={{
+              display: "inline-block",
+              padding: "9px 20px",
+              borderRadius: 999,
+              backgroundColor: "rgba(29,72,52,0.88)",
+              fontSize: 30,
+              fontWeight: 700,
+              marginBottom: 18,
+            }}
+          >
+            {category}
+          </div>
+          <div
+            style={{
+              fontSize: 54,
+              lineHeight: 1.12,
+              fontWeight: 900,
+              maxWidth: 930,
+            }}
+          >
+            {title}
+          </div>
         </div>
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          left: 52,
-          right: 52,
-          bottom: 76,
-          direction: "rtl",
-          textAlign: "center",
-          fontFamily: "Heebo, Rubik, Arial, sans-serif",
-          color: "white",
-          fontSize: 30,
-          fontWeight: 800,
-          textShadow: "0 2px 14px rgba(0,0,0,0.8)",
-        }}
-      >
-        שירה סהרוני · {url}
       </div>
 
       <FullScreenSignatureOutro

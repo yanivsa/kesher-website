@@ -111,13 +111,47 @@ def _image_guard_failure(controller_state: dict[str, Any]) -> bool:
     )
 
 
+def _fresh_article_state_failure(
+    controller_state: dict[str, Any],
+    fresh_article_evidence: dict[str, Any] | None,
+) -> tuple[str | None, str | None, str | None]:
+    """Detect stale durable article state using fresh GitHub/production evidence."""
+    evidence = fresh_article_evidence if isinstance(fresh_article_evidence, dict) else {}
+    status = str(controller_state.get("status") or "").strip()
+    stale_article_statuses = {
+        "article_pr_open",
+        "article_normalizing",
+        "article_image_running",
+        "article_deploying",
+        "article_result_wait",
+    }
+    if status not in stale_article_statuses:
+        return None, None, None
+
+    article_in_main = evidence.get("article_in_main") is True
+    pr_merged = evidence.get("pr_merged") is True
+    article_public = evidence.get("article_public") is True
+    if article_in_main and (pr_merged or article_public):
+        return (
+            "article",
+            "STALE_ARTICLE_STATE_AFTER_MERGE",
+            "wake_controller_after_article_merge",
+        )
+    return None, None, None
+
+
 def _classification(
     controller_state: dict[str, Any],
     source: dict[str, str],
     exact_long: dict[str, Any] | None,
     exact_short: dict[str, Any] | None,
+    fresh_article_evidence: dict[str, Any] | None = None,
 ) -> tuple[str | None, str | None, str | None]:
     """Return (stage, stable failure signature, deterministic proposed action)."""
+    fresh = _fresh_article_state_failure(controller_state, fresh_article_evidence)
+    if all(fresh):
+        return fresh
+
     if _image_guard_failure(controller_state):
         return "image", "ARTICLE_IMAGE_GUARD_FAILED", "repair_trusted_image_same_pr"
 
@@ -166,6 +200,7 @@ def build_shadow_report(
     short_state: dict[str, Any],
     observed_at: str | None = None,
     workflow_run_id: str = "",
+    fresh_article_evidence: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     cycle = str(controller_state.get("cycle") or "").strip()
     observed = observed_at or datetime.now(timezone.utc).isoformat()
@@ -211,7 +246,11 @@ def build_shadow_report(
     exact_long = _newest(long_rows)
     exact_short = _newest(short_rows)
     stage, failure_signature, proposed_action = _classification(
-        controller_state, source, exact_long, exact_short
+        controller_state,
+        source,
+        exact_long,
+        exact_short,
+        fresh_article_evidence,
     )
 
     exact: dict[str, Any] = {
@@ -237,6 +276,7 @@ def build_shadow_report(
             "would_dispatch": False,
             "observed_at": observed,
             "controller_status": controller_state.get("status"),
+            "fresh_article_evidence": dict(fresh_article_evidence or {}),
             "exact": exact,
         }
 
@@ -276,6 +316,7 @@ def build_shadow_report(
         "would_dispatch": False,
         "observed_at": observed,
         "controller_status": controller_state.get("status"),
+        "fresh_article_evidence": dict(fresh_article_evidence or {}),
         "exact": exact,
     }
 
@@ -291,12 +332,50 @@ def collect_live_shadow_report(*, repo: str, token: str, workflow_run_id: str = 
         raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
     video_state = client.newest_video_state()
     short_state = client.newest_short_state()
+
+    fresh_article_evidence: dict[str, Any] = {
+        "article_in_main": False,
+        "pr_merged": False,
+        "article_public": False,
+    }
+    cycle = str(controller_state.get("cycle") or "").strip()
+    try:
+        post = _article_for_cycle(posts, cycle) if cycle else None
+    except ValueError:
+        post = None
+    fresh_article_evidence["article_in_main"] = isinstance(post, dict)
+
+    article_state = controller_state.get("article") if isinstance(controller_state.get("article"), dict) else {}
+    pr_number = article_state.get("pr_number")
+    if pr_number:
+        pr = client.request("GET", f"{client.api}/pulls/{int(pr_number)}", allow_404=True)
+        if isinstance(pr, dict):
+            fresh_article_evidence["pr_state"] = str(pr.get("state") or "")
+            fresh_article_evidence["pr_merged"] = pr.get("merged") is True
+            fresh_article_evidence["pr_merged_at"] = pr.get("merged_at")
+
+    if isinstance(post, dict):
+        slug = v5.core.canonical_slug(post)
+        title = str(post.get("title") or "").strip()
+        url = f"{v5.core.SITE_URL}/blog/{slug}"
+        fresh_article_evidence["article_url"] = url
+        try:
+            status, page = v5.core.PublicSiteClient().get(url)
+        except Exception as exc:
+            fresh_article_evidence["article_http_error"] = type(exc).__name__
+        else:
+            fresh_article_evidence["article_http_status"] = status
+            fresh_article_evidence["article_public"] = bool(
+                status == 200 and v5.core.article_is_public(page, title)
+            )
+
     return build_shadow_report(
         controller_state=controller_state,
         posts=posts,
         video_state=video_state,
         short_state=short_state,
         workflow_run_id=workflow_run_id,
+        fresh_article_evidence=fresh_article_evidence,
     )
 
 

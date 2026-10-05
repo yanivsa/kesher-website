@@ -49,8 +49,8 @@ class ImageWorkerTests(unittest.TestCase):
         self.context = WorkerContext(self.store, command_id, '1/1', target, code_sha=CODE, now=lambda: NOW)
         self.context.claim(); self.blobs = Blobs(); self.calls = []
         self.providers = {}
-        for name, label in [('gemini', 'Gemini'), ('unsplash', 'Unsplash'), ('pexels', 'Pexels'),
-                            ('local-curated', 'Local'), ('local-editorial', 'LocalEditorial')]:
+        for name, label in [('gemini-1', 'Gemini'), ('gemini-2', 'Gemini'), ('gemini-3', 'Gemini'),
+                            ('pexels', 'Pexels'), ('pixabay', 'Pixabay'), ('local-curated', 'Local')]:
             def run(post, used, name=name, label=label):
                 self.calls.append(name)
                 return candidate(label)
@@ -72,41 +72,41 @@ class ImageWorkerTests(unittest.TestCase):
         first = self.select(); self.recover(); second = self.select()
         self.assertEqual(second, first)
         self.assertEqual(second['data'], candidate()['data'])
-        self.assertEqual(self.calls, ['gemini'])
+        self.assertEqual(self.calls, ['gemini-1'])
 
     def test_uncertain_generation_is_not_repeated_and_next_provider_can_finish(self):
         def crash(post, used):
-            self.calls.append('gemini')
+            self.calls.append('gemini-1')
             self.assertTrue(self.server.document['commands'][self.context.command_id]['effects'])
             raise SystemExit('generation accepted; response lost')
-        self.providers['gemini'] = crash
+        self.providers['gemini-1'] = crash
         with self.assertRaises(SystemExit): self.select()
         self.recover(); result = self.select()
-        self.assertEqual(result['provider'], 'Unsplash')
-        self.assertEqual(result['attempts'], ['gemini', 'unsplash'])
-        self.assertEqual(self.calls, ['gemini', 'unsplash'])
+        self.assertEqual(result['provider'], 'Gemini')
+        self.assertEqual(result['attempts'], ['gemini-1', 'gemini-2'])
+        self.assertEqual(self.calls, ['gemini-1', 'gemini-2'])
 
     def test_crash_after_blob_write_adopts_same_generated_image(self):
         self.blobs.crash = True
         with self.assertRaises(SystemExit): self.select()
         self.recover(); self.blobs.crash = False
         self.assertEqual(self.select()['provider'], 'Gemini')
-        self.assertEqual(self.calls, ['gemini'])
+        self.assertEqual(self.calls, ['gemini-1'])
 
     def test_corrupted_saved_blob_cannot_become_verified_pixels(self):
         self.select(); self.recover()
         key = next(iter(self.blobs.data)); self.blobs.data[key] += b'\0'
         with self.assertRaisesRegex(JulesError, 'ARTICLE_IMAGE_OUTPUT_INVALID'): self.select()
-        self.assertEqual(self.calls, ['gemini'])
+        self.assertEqual(self.calls, ['gemini-1'])
 
     def test_rejected_duplicate_pixels_fall_through_and_do_not_publish(self):
         from scripts.kesher_article_contract import image_pixel_sha256
-        self.providers['unsplash'] = lambda post, used: None
+        self.providers['gemini-2'] = lambda post, used: None
         self.providers['pexels'] = lambda post, used: candidate('Pexels', 'green')
         result = select_image(self.context, POST, 42, self.providers, self.blobs,
                               {'pixels:' + image_pixel_sha256(candidate()['data'])})
         self.assertEqual(result['provider'], 'Pexels')
-        self.assertEqual(result['attempts'], ['gemini', 'unsplash', 'pexels'])
+        self.assertEqual(result['attempts'], ['gemini-1', 'gemini-2', 'gemini-3', 'pexels'])
 
     def test_no_publication_pixels_means_no_successful_selection(self):
         with self.assertRaisesRegex(JulesError, 'ARTICLE_IMAGE_UNAVAILABLE'):
@@ -125,7 +125,7 @@ class ImageWorkerTests(unittest.TestCase):
         pull.fail_patch = False
         result = attach_image(self.context, pull.get(), branch, pull, choose, prove_quiescent=lambda pr: None)
         self.assertEqual(result['new_head_sha'], NEW)
-        self.assertEqual(self.calls, ['gemini'])
+        self.assertEqual(self.calls, ['gemini-1'])
         self.assertEqual(len(branch.pushes), 1)
         self.assertEqual(len(branch.prepares), 1)
         self.assertIn('Independent editorial evidence', pull.row['body'])
@@ -252,24 +252,19 @@ class ApprovedProviderTests(unittest.TestCase):
     def test_stock_never_accepts_search_metadata_instead_of_pixel_verification(self):
         from scripts.kesher_runtime import article_images as images
         sample = candidate()['data']
-        with patch.dict('os.environ', {'GOOGLE_API_KEY': 'test', 'UNSPLASH_ACCESS_KEY': 'test'}), \
-             patch.object(images, 'request_json', return_value={'results': [{'urls': {'regular': 'https://images.unsplash.com/test'}, 'links': {'html': 'https://unsplash.com/test'}}]}), \
+        with patch.dict('os.environ', {'GOOGLE_API_KEY': 'test', 'PEXELS_API_KEY': 'test'}), \
+             patch.object(images, 'request_json', return_value={'photos': [{'src': {'large': 'https://images.pexels.com/test'}, 'url': 'https://pexels.com/test'}]}), \
              patch.object(images, 'download', return_value=sample), \
              patch.object(images, 'google_json', return_value={'candidates': [{'content': {'parts': [{'text': 'REJECT|wrong pixels'}]}}]}):
-            self.assertIsNone(images.provider_functions(Path('.'))['unsplash'](POST, set()))
+            self.assertIsNone(images.provider_functions(Path('.'))['pexels'](POST, set()))
 
-    def test_terminal_editorial_fallback_is_deterministic_and_article_bound(self):
+    def test_abstract_fallback_and_retired_provider_are_unavailable(self):
         from scripts.kesher_runtime import article_images as images
-        provider = images.provider_functions(Path('.'))['local-editorial']
-        first = provider(POST, set()); second = provider(POST, set())
-        self.assertEqual(first, second)
-        self.assertEqual(first['provider'], 'LocalEditorial')
-        self.assertEqual(first['source_url'], 'local-editorial://new-article/0')
-        self.assertEqual(images.validate_candidate(first['data']), (1200, 675, 'png'))
-        from scripts.kesher_article_contract import image_pixel_sha256
-        next_image = provider(POST, {'pixels:' + image_pixel_sha256(first['data'])})
-        self.assertEqual(next_image['source_url'], 'local-editorial://new-article/1')
-        self.assertNotEqual(next_image['data'], first['data'])
+        providers = images.provider_functions(Path('.'))
+        self.assertEqual(set(providers), {'gemini-1', 'gemini-2', 'gemini-3', 'pexels', 'pixabay', 'local-curated'})
+        self.assertNotIn('local-editorial', providers)
+        self.assertNotIn('unsplash', providers)
+        self.assertFalse(hasattr(images, 'generate_editorial_fallback'))
 
 
 if __name__ == '__main__': unittest.main()

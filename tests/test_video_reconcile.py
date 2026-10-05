@@ -47,6 +47,10 @@ def technically_verified(item: dict, status: str = "approved") -> None:
 
 
 class VideoReconcileTests(unittest.TestCase):
+    def test_video_workflow_declares_video_overview_media_mode(self) -> None:
+        workflow = (Path(__file__).resolve().parents[1] / ".github/workflows/kesher-daily-video.yml").read_text(encoding="utf-8")
+        self.assertIn("KESHER_MEDIA_MODE: video_overview", workflow)
+
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
@@ -110,6 +114,70 @@ class VideoReconcileTests(unittest.TestCase):
         with mock.patch.object(pipeline, "validate_and_manifest") as validate:
             self.assertEqual(pipeline.rebuild_rejected_with_remotion(item["id"]), 0)
         validate.assert_called_once()
+
+    def test_legacy_technically_verified_item_can_rebuild_missing_immutable_evidence(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        item = pipeline.new_item(pipeline.source_metadata(today))
+        item.update({
+            "status": "pending_review",
+            "technical_verified": True,
+            "raw_mp4": "raw.mp4",
+            "source_id": "source-1",
+            "task_id": "task-1",
+            "artifact_id": "task-1",
+            "final_sha256": "f" * 64,
+            # Legacy item deliberately lacks transcript/manifest/source/frame evidence hashes.
+        })
+        raw = self.state_dir / "raw.mp4"
+        raw.parent.mkdir(parents=True, exist_ok=True)
+        raw.write_bytes(b"provider-video")
+        item["raw_sha256"] = pipeline.sha256_file(raw)
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        with mock.patch.object(pipeline, "validate_and_manifest") as validate:
+            self.assertEqual(pipeline.rebuild_rejected_with_remotion(item["id"]), 0)
+
+        validate.assert_called_once()
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "downloaded")
+        self.assertFalse(saved["technical_verified"])
+        self.assertIn("evidence_history", saved)
+
+    def test_resolution_rejected_short_is_eligible_for_exact_remotion_rebuild(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        item = pipeline.new_item(pipeline.source_metadata(today))
+        item.update({
+            "type": "article_short",
+            "status": "rejected",
+            "technical_verified": False,
+            "visual_review_status": "pending",
+            "review_notes": {
+                "technical": "נפסל טכנית: יחס התמונה 720x1280 אינו Short אנכי 1080x1920",
+                "visual": "",
+                "semantic": "",
+                "metadata": "",
+            },
+            "raw_mp4": "raw.mp4",
+            "source_id": "source-1",
+            "task_id": "task-1",
+            "artifact_id": "task-1",
+        })
+        raw = self.state_dir / "raw.mp4"
+        raw.parent.mkdir(parents=True, exist_ok=True)
+        raw.write_bytes(b"provider-short")
+        item["raw_sha256"] = pipeline.sha256_file(raw)
+        pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
+
+        with mock.patch.object(pipeline, "validate_and_manifest") as validate:
+            self.assertEqual(pipeline.rebuild_rejected_with_remotion(item["id"]), 0)
+
+        validate.assert_called_once()
+        saved = pipeline.load_state()["items"][0]
+        self.assertEqual(saved["status"], "downloaded")
+        self.assertFalse(saved["technical_verified"])
+        self.assertIn("evidence_history", saved)
 
     def test_provider_pending_item_is_not_an_upload_failure(self) -> None:
         today = post("today")

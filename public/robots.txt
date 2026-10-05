@@ -41,3 +41,7 @@ User-agent: *
 Allow: /
 
 Sitemap: https://kesher.saharoni.com/sitemap.xml
+
+# === AI Ready Endpoints ===
+# llms.txt: https://kesher.saharoni.com/llms.txt
+# llms-full.txt: https://kesher.saharoni.com/llms-full.txt

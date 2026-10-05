@@ -7,6 +7,7 @@ ARTICLE_NUDGE_AFTER = timedelta(minutes=15)
 ARTICLE_RESTART_AFTER = timedelta(minutes=25)
 MAX_ARTICLE_WORKER_RESTARTS = 2
 MEDIA_STALL_AFTER = timedelta(minutes=20)
+MEDIA_HARD_TIMEOUT = timedelta(minutes=90)
 MAX_MEDIA_RECOVERIES = 3
 
 
@@ -123,14 +124,17 @@ def observe_media(
     *,
     identity: str,
     fingerprint: str | None,
+    provider_started_at: Any = None,
     now: datetime,
 ) -> dict[str, Any]:
     """Track durable provider progress without creating a second media identity."""
     now_utc = now.astimezone(timezone.utc)
+    provider_started = _parse(provider_started_at) or now_utc
     current = stage.get("watchdog")
     if not isinstance(current, dict) or current.get("identity") != identity:
         current = {
             "identity": identity,
+            "hard_started_at": _iso(provider_started),
             "last_progress_at": _iso(now_utc),
             "last_fingerprint": fingerprint,
             "recovery_count": 0,
@@ -139,6 +143,7 @@ def observe_media(
         stage["watchdog"] = current
         return current
 
+    current.setdefault("hard_started_at", _iso(provider_started))
     current.setdefault("last_progress_at", _iso(now_utc))
     current.setdefault("last_fingerprint", fingerprint)
     current.setdefault("recovery_count", 0)
@@ -159,8 +164,16 @@ def media_decision(stage: dict[str, Any], *, now: datetime) -> str:
     current = stage.get("watchdog")
     if not isinstance(current, dict):
         return "wait"
-    progress_at = _parse(current.get("last_progress_at"))
+    hard_started_at = _parse(current.get("hard_started_at"))
     recovery_at = _parse(current.get("last_recovery_at"))
+    hard_baseline = max(
+        [value for value in (hard_started_at, recovery_at) if value is not None],
+        default=now.astimezone(timezone.utc),
+    )
+    if now.astimezone(timezone.utc) - hard_baseline >= MEDIA_HARD_TIMEOUT:
+        return "hard_timeout"
+
+    progress_at = _parse(current.get("last_progress_at"))
     baseline = max(
         [value for value in (progress_at, recovery_at) if value is not None],
         default=now.astimezone(timezone.utc),

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { FiDownload } from 'react-icons/fi';
 import { submitContact } from '../../lib/contactApi';
+import TurnstileWidget from '../TurnstileWidget';
 import styles from './LeadMagnet.module.css';
 
 const LeadMagnet: React.FC = () => {
@@ -8,11 +9,16 @@ const LeadMagnet: React.FC = () => {
   const [company, setCompany] = useState('');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [downloadUrl, setDownloadUrl] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const startedAt = useRef(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !turnstileToken) {
+      setStatus('error');
+      return;
+    }
 
     try {
       setStatus('submitting');
@@ -21,13 +27,17 @@ const LeadMagnet: React.FC = () => {
         email,
         company,
         startedAt: startedAt.current,
+        turnstileToken,
       });
       setDownloadUrl(result.downloadUrl || '/guides/5-sentences-stop-an-argument.html');
       setStatus('success');
       setEmail('');
       setCompany('');
+      setTurnstileToken('');
       startedAt.current = 0;
     } catch {
+      setTurnstileToken('');
+      setTurnstileResetKey((value) => value + 1);
       setStatus('error');
     }
   };
@@ -73,7 +83,16 @@ const LeadMagnet: React.FC = () => {
                 required
                 className={styles.input}
               />
-              <button type="submit" className={styles.button} disabled={status === 'submitting'}>
+              <TurnstileWidget
+                action="lead_magnet"
+                onTokenChange={setTurnstileToken}
+                resetKey={turnstileResetKey}
+              />
+              <button
+                type="submit"
+                className={styles.button}
+                disabled={status === 'submitting' || !turnstileToken}
+              >
                 <FiDownload />
                 <span>{status === 'submitting' ? 'שולחת...' : 'קבלת קישור להורדה'}</span>
               </button>

@@ -94,7 +94,9 @@ class OpenClawCloudflarePrimaryContractTest(unittest.TestCase):
     def test_live_cloudflare_uses_bounded_verified_oci_bootstrap(self):
         workflow = read_repo(".github/workflows/openclaw-cloudflare-tunnel.yml")
         self.assertIn("OPENCLAW_OCI_BOOTSTRAP_BYTES", workflow)
-        self.assertIn("raw.githubusercontent.com/yanivsa/kesher-website/${GITHUB_SHA}/scripts/openclaw_enable_cloudflare_tunnel.sh", workflow)
+        self.assertIn("script_gz_b64=", workflow)
+        self.assertIn("base64 -d | gzip -dc", workflow)
+        self.assertNotIn("raw.githubusercontent.com", workflow)
         self.assertIn("sha256sum -c", workflow)
         self.assertIn("/tmp/openclaw-cloudflare-bootstrap.sh", workflow)
         self.assertIn("--script-file /tmp/openclaw-cloudflare-bootstrap.sh", workflow)
@@ -127,6 +129,9 @@ class OpenClawCloudflarePrimaryContractTest(unittest.TestCase):
         self.assertIn('"openclaw_offline_mount_repair_early.sh"', text)
         self.assertIn('"openclaw_offline_mount_repair_base.sh"', text)
         self.assertIn("files.extend", text)
+        self.assertIn("api.github.com/repos/{repo}/contents/", text)
+        self.assertIn("Authorization: Bearer {token}", text)
+        self.assertNotIn("raw.githubusercontent.com", text)
 
     def test_helper_wrapper_changes_trigger_fresh_recovery(self):
         workflow = read_repo(".github/workflows/openclaw-recovery-controller.yml")

@@ -4,10 +4,9 @@
 Image failures belong to the trusted image worker and never consume a Jules
 content-repair attempt. Content repair stays on the same PR/branch and is capped
 at two repairs after the initial generation attempt (three total opportunities).
-Article publication is allowed without an image; image validation remains strict
-whenever an image is actually present. Auto-merge is deferred until the
-controller-owned trusted image stage has made at least one attempt and reached a
-terminal best-effort state (complete or deferred).
+A trusted hero image is publication-blocking. Auto-merge is allowed only after
+the controller-owned image stage is complete and durable provider/source/hash
+evidence exists for this exact article PR.
 """
 
 from __future__ import annotations
@@ -54,10 +53,9 @@ def controller_image_stage_terminal(repo: str, pr: dict, github_token: str) -> b
     """Require durable proof that the controller-owned image stage is terminal.
 
     A controller cycle rollover can reset attempt_count while preserving a
-    validated completed image. In that case the persisted provider/source/hash
-    evidence is stronger proof than the historical counter and must not strand
-    an otherwise publishable article PR. A deferred/no-image result still
-    requires an explicit recorded attempt.
+    validated completed image. In that case persisted provider/source/hash
+    evidence is stronger proof than the historical counter. A deferred,
+    exhausted, or no-image state is never publication-terminal.
     """
     number = int(pr["number"])
     payload = core.request_json(
@@ -92,13 +90,11 @@ def controller_image_stage_terminal(repo: str, pr: dict, github_token: str) -> b
             and image.get("source_id")
             and image.get("artifact_sha256")
         )
-    if image_status == "deferred":
-        return attempts >= 1
     return False
 
 
 def merge_and_deploy_after_image_stage(repo: str, pr: dict, token: str) -> None:
-    """Prevent the auto-merge workflow from racing ahead of trusted image best effort."""
+    """Prevent auto-merge from racing ahead of the required trusted image."""
     if not controller_image_stage_terminal(repo, pr, token):
         print(
             f"PR #{pr['number']} passed content gates but the controller-owned trusted image "

@@ -1,22 +1,6 @@
 name: Kesher Daily Article Short V4
 
 on:
-  pull_request:
-    paths:
-      - .github/workflows/kesher-short-v4.yml
-      - scripts/kesher_short_pipeline_v4.py
-      - scripts/kesher_short_policy.py
-      - scripts/kesher_daily_pipeline.py
-      - scripts/kesher_video_reconcile.py
-      - scripts/kesher_content_controller_v4_runtime.py
-      - scripts/requirements-video-cloud.txt
-      - src/remotion/**
-      - package.json
-      - package-lock.json
-      - tests/test_short_pipeline_v4.py
-      - tests/test_short_retry_policy_v4.py
-      - tests/test_video_reconcile.py
-      - tests/test_v4_runtime_activation.py
   workflow_dispatch:
     inputs:
       operation:
@@ -76,12 +60,12 @@ concurrency:
 
 jobs:
   pipeline:
-    # Retired by the coordinated schema-6 authority handover.
-    # A repository is always owner/name; this sentinel can never match.
-    if: ${{ github.repository == '__KESHER_RETIRED__' }}
+    # Bounded manual emergency bridge; explicitly retired by coordinated cutover.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
+      KESHER_MANUAL_EMERGENCY_BRIDGE: "true"
       KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-short-v4-state
       KESHER_STATE_ARTIFACT: kesher-short-v4-state
       NOTEBOOKLM_BIN: notebooklm
@@ -89,6 +73,8 @@ jobs:
       KESHER_WHISPER_MODEL: small
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
+      KESHER_BROLL_ENABLED: "true"
+      KESHER_BROLL_BUDGET_SECONDS: "12"
 
     steps:
       - name: Checkout workflow revision for validation
@@ -103,6 +89,11 @@ jobs:
         with:
           ref: main
           persist-credentials: false
+
+      - name: Refuse emergency bridge after cutover exclusion begins
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission
 
       - name: Set up Python 3.12
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
@@ -121,6 +112,8 @@ jobs:
         run: |
           set -euo pipefail
           npm ci --no-audit --no-fund
+          npm ci --prefix remotion-kesher --no-audit --no-fund
+          test -x remotion-kesher/node_modules/.bin/remotion
           ffmpeg_dir="$(dirname "$(node -p "require('@ffmpeg-installer/ffmpeg').path")")"
           ffprobe_dir="$(dirname "$(node -p "require('@ffprobe-installer/ffprobe').path")")"
           echo "$ffmpeg_dir" >> "$GITHUB_PATH"
@@ -142,6 +135,9 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         env:
           NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
+          PEXELS_API_KEY: ""
+          PIXABAY_API_KEY: ""
+          KESHER_BROLL_ENABLED: "false"
         run: |
           python -m unittest \
             tests.test_short_pipeline_v4 \
@@ -150,6 +146,7 @@ jobs:
             tests.test_pipeline_v4 \
             tests.test_v4_runtime_activation \
             tests.test_notebooklm_auth_precedence \
+            tests.test_kesher_free_stock_broll \
             -v
 
       - name: Restore newest valid Short V4 durable state
@@ -294,6 +291,8 @@ jobs:
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: python -u scripts/kesher_short_pipeline_v4.py --max-wait-seconds 150 ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Rebuild exact rejected Short with Remotion
@@ -301,6 +300,8 @@ jobs:
         id: rebuild_exact
         env:
           REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: |
           set -euo pipefail
           test -n "$REBUILD_ITEM_ID"
@@ -384,6 +385,17 @@ jobs:
           chmod 600 "$sealed_tmp"
           mv "$sealed_tmp" "$sealed_path"
 
+      - name: Persist lightweight Short controller state
+        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
+        id: persist_controller_state
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-short-v4-controller-state
+          path: ${{ env.KESHER_STATE_DIR }}/state.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 9
+
       - name: Persist latest Short V4 state and exact recovery evidence
         if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-short-v4-state/state.json') != '' }}
         id: persist_state
@@ -403,6 +415,19 @@ jobs:
         run: |
           set -euo pipefail
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=${KESHER_STATE_ARTIFACT}&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[3:] | .[].id' \
+            | while read -r artifact_id; do
+                [ -n "$artifact_id" ] || continue
+                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}"
+              done
+
+      - name: Keep only the newest three lightweight Short controller state artifacts
+        if: ${{ always() && steps.persist_controller_state.outputs.artifact-id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-short-v4-controller-state&per_page=100" \
             --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[3:] | .[].id' \
             | while read -r artifact_id; do
                 [ -n "$artifact_id" ] || continue

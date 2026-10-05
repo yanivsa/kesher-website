@@ -1,27 +1,6 @@
 name: Kesher Daily NotebookLM Video Overview
 
 on:
-  pull_request:
-    paths:
-      - .github/workflows/kesher-daily-video.yml
-      - .github/prompts/jules-remotion-video-upgrade.md
-      - config/kesher-production-contract.json
-      - scripts/kesher_automation_policy.py
-      - scripts/kesher_daily_pipeline.py
-      - scripts/kesher_video_reconcile.py
-      - scripts/jules_video_reviewer.py
-      - scripts/jules_video_reviewer_v3.py
-      - scripts/prepare_jules_video_evidence.py
-      - scripts/requirements-video-cloud.txt
-      - package.json
-      - package-lock.json
-      - src/remotion/**
-      - tests/test_kesher_daily_pipeline.py
-      - tests/kesher_daily_pipeline_suite.py
-      - tests/test_video_review_policy.py
-      - tests/test_video_review_schema.py
-      - tests/test_video_reconcile.py
-      - tests/test_production_contract_v3.py
   workflow_dispatch:
     inputs:
       operation:
@@ -62,24 +41,32 @@ concurrency:
 
 jobs:
   pipeline:
-    # Retired by the coordinated schema-6 authority handover.
-    # A repository is always owner/name; this sentinel can never match.
-    if: ${{ github.repository == '__KESHER_RETIRED__' }}
+    # Bounded manual emergency bridge; explicitly retired by coordinated cutover.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
+      KESHER_MANUAL_EMERGENCY_BRIDGE: "true"
       KESHER_STATE_DIR: ${{ github.workspace }}/.kesher-video-state
       NOTEBOOKLM_BIN: notebooklm
       KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
       KESHER_WHISPER_MODEL: small
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
+      KESHER_BROLL_ENABLED: "true"
+      KESHER_BROLL_BUDGET_SECONDS: "12"
+      KESHER_MEDIA_MODE: video_overview
 
     steps:
       - name: Checkout current main
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+
+      - name: Refuse emergency bridge after cutover exclusion begins
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission
 
       - name: Set up Python 3.12
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
@@ -280,7 +267,10 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         env:
           NOTEBOOKLM_AUTH_JSON: '{"cookies":[{"name":"fixture","value":"redacted"}]}'
-        run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_review_schema tests.test_video_reconcile tests.test_production_contract_v3 tests.test_notebooklm_auth_precedence -v
+          PEXELS_API_KEY: ""
+          PIXABAY_API_KEY: ""
+          KESHER_BROLL_ENABLED: "false"
+        run: python -m unittest tests.kesher_daily_pipeline_suite tests.test_video_review_policy tests.test_video_review_schema tests.test_video_reconcile tests.test_production_contract_v3 tests.test_notebooklm_auth_precedence tests.test_kesher_free_stock_broll -v
 
       - name: NotebookLM read-only preflight
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'preflight' || inputs.operation == 'full' || inputs.operation == 'generate') }}
@@ -296,10 +286,15 @@ jobs:
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
         env:
           TARGET_SLUG: ${{ inputs.target_slug }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150
 
       - name: Rebuild exact visually rejected item with Remotion
         if: ${{ inputs.operation == 'rebuild' }}
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: |
           set -euo pipefail
           test -n "${{ inputs.rebuild_item_id }}"
@@ -471,6 +466,17 @@ jobs:
           chmod 600 "$sealed_tmp"
           mv "$sealed_tmp" "$sealed_path"
 
+      - name: Persist lightweight controller state
+        if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != '' }}
+        id: persist_controller_state
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: kesher-video-controller-state
+          path: ${{ env.KESHER_STATE_DIR }}/state.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 9
+
       - name: Persist latest state and media evidence
         if: ${{ always() && github.event_name != 'pull_request' && hashFiles('.kesher-video-state/state.json') != '' }}
         id: persist_state
@@ -494,6 +500,19 @@ jobs:
             exit 0
           fi
           gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-state&per_page=100" \
+            --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[3:] | .[].id' \
+            | while read -r artifact_id; do
+                [ -n "$artifact_id" ] || continue
+                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}"
+              done
+
+      - name: Keep the newest three lightweight controller state artifacts
+        if: ${{ always() && steps.persist_controller_state.outputs.artifact-id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts?name=kesher-video-controller-state&per_page=100" \
             --jq '[.artifacts[] | select(.expired == false)] | sort_by(.created_at) | reverse | .[3:] | .[].id' \
             | while read -r artifact_id; do
                 [ -n "$artifact_id" ] || continue

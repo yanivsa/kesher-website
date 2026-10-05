@@ -11,6 +11,7 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/aliyah-families#service`,
       name: 'ייעוץ זוגי והנחיית הורים למשפחות עולים ותושבים חוזרים',
       serviceType: 'ליווי משפחתי בתקופת עלייה או חזרה לישראל',
       url: `${SITE_CONFIG.url}/services/aliyah-families`,
@@ -24,6 +25,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/aliyah-families#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',
@@ -46,6 +48,7 @@ const AliyahFamiliesPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
+        canonical={`${SITE_CONFIG.url}/services/aliyah-families`}
         title="ייעוץ למשפחות עולים ותושבים חוזרים"
         description="ייעוץ זוגי והנחיית הורים למשפחות עולים ותושבים חוזרים: הסתגלות, מסגרות חינוכיות, זוגיות, הורות ושייכות."
         image="/images/generated/site/home-hero.jpg"

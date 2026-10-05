@@ -35,10 +35,13 @@ STATE_SCHEMA_VERSION = 5
 LONG_VIDEO_WORKFLOW = "kesher-daily-video.yml"
 LONG_VIDEO_WORKFLOW_NAME = "Kesher Daily NotebookLM Video Overview"
 LONG_VIDEO_STATE_ARTIFACT = "kesher-video-state"
+LONG_VIDEO_CONTROLLER_STATE_ARTIFACT = "kesher-video-controller-state"
 SHORT_WORKFLOW = "kesher-short-v4.yml"
 SHORT_WORKFLOW_NAME = "Kesher Daily Article Short V4"
 SHORT_STATE_ARTIFACT = "kesher-short-v4-state"
+SHORT_CONTROLLER_STATE_ARTIFACT = "kesher-short-v4-controller-state"
 MAX_SHORT_DISPATCH_ATTEMPTS = 4
+MAX_SHORT_REMOTION_REBUILDS = 2
 
 
 class _TextExtractor(HTMLParser):
@@ -115,11 +118,48 @@ class V5GitHubClient(v4.V4GitHubClient):
         finally:
             core.VIDEO_STATE_ARTIFACT = previous
 
+    def _artifact_available(self, artifact_name: str) -> bool:
+        payload = self.request(
+            "GET",
+            f"{self.api}/actions/artifacts?name={artifact_name}&per_page=3",
+        )
+        artifacts = payload.get("artifacts") if isinstance(payload, dict) else None
+        return any(
+            isinstance(row, dict) and row.get("expired") is not True
+            for row in (artifacts or [])
+        )
+
+    def _preferred_controller_state(
+        self,
+        lightweight_artifact: str,
+        durable_artifact: str,
+    ) -> dict[str, Any]:
+        # The lightweight companion is an optimization only. Listing or reading
+        # it must never make production less reliable than the durable fallback.
+        try:
+            lightweight_available = self._artifact_available(lightweight_artifact)
+        except core.ControllerError:
+            lightweight_available = False
+        if lightweight_available:
+            try:
+                return self.newest_state_for_artifact(lightweight_artifact)
+            except core.ControllerError:
+                pass
+        return self.newest_state_for_artifact(durable_artifact)
+
     def newest_video_state(self) -> dict[str, Any]:
-        return self.newest_state_for_artifact(LONG_VIDEO_STATE_ARTIFACT)
+        # The full durable artifact may contain large MP4/evidence files needed
+        # by the video worker for resume. Controller V5 only needs state.json.
+        return self._preferred_controller_state(
+            LONG_VIDEO_CONTROLLER_STATE_ARTIFACT,
+            LONG_VIDEO_STATE_ARTIFACT,
+        )
 
     def newest_short_state(self) -> dict[str, Any]:
-        return self.newest_state_for_artifact(SHORT_STATE_ARTIFACT)
+        return self._preferred_controller_state(
+            SHORT_CONTROLLER_STATE_ARTIFACT,
+            SHORT_STATE_ARTIFACT,
+        )
 
     def article_session_snapshot(self, slot: str) -> dict[str, Any] | None:
         api_key = os.environ.get("JULES_API_KEY", "").strip()
@@ -278,6 +318,14 @@ class V5Controller(v4.V4Controller):
         return article_source_identity(todays[0])
 
     def _adopt_existing_short(self, state: dict[str, Any], source: dict[str, str]) -> dict[str, Any] | None:
+        current_short = state.get("short") or {}
+        if (
+            current_short.get("status") == "complete"
+            and current_short.get("verified") is True
+            and current_short.get("youtube_id")
+            and current_short.get("youtube_url")
+        ):
+            return current_short
         short_state = self.github.newest_short_state()
         verified = _verified_exact(short_state, source)
         item = _newest(verified)
@@ -316,6 +364,18 @@ class V5Controller(v4.V4Controller):
             "SHORT_WORKFLOW_FAILED",
             f"Short derive run {run_id} completed with conclusion={conclusion}",
             run_id=run_id,
+        )
+
+    @staticmethod
+    def _short_resolution_rebuild_candidate(item: dict[str, Any]) -> bool:
+        if not isinstance(item, dict) or item.get("uploaded") is True:
+            return False
+        if str(item.get("status") or "") != "rejected":
+            return False
+        note = str(((item.get("review_notes") or {}).get("technical") or ""))
+        return (
+            "1080x1920" in note
+            and bool(item.get("id"))
         )
 
     def _tick_short(self, state: dict[str, Any], source: dict[str, str], long_item: dict[str, Any]) -> core.Action:
@@ -357,6 +417,35 @@ class V5Controller(v4.V4Controller):
             if adopted and adopted != str(long_item.get("id") or ""):
                 core.block(state, "short", "SHORT_PROVIDER_IDENTITY_MISMATCH", "existing Short derives from a different long-form provider item")
                 return core.Action("blocked", "Short provider identity mismatch")
+
+            if self._short_resolution_rebuild_candidate(current_item):
+                rebuild_count = int(state["short"].get("remotion_rebuild_count") or 0)
+                if rebuild_count < MAX_SHORT_REMOTION_REBUILDS:
+                    inputs = {
+                        "operation": "rebuild",
+                        "rebuild_item_id": str(current_item.get("id") or ""),
+                    }
+                    core.GitHubClient.dispatch(self.github, SHORT_WORKFLOW, inputs)
+                    state["short"].update({
+                        "status": "running",
+                        "remotion_rebuild_count": rebuild_count + 1,
+                        "last_dispatch_at": core.utc_now(),
+                        "provider_id": current_item.get("task_id") or long_item.get("task_id"),
+                        "artifact_id": current_item.get("artifact_id") or long_item.get("artifact_id"),
+                        "source_id": current_item.get("source_id") or long_item.get("source_id"),
+                        "adopted_from_long_item_id": long_item.get("id"),
+                    })
+                    core.transition(
+                        state,
+                        "short_running",
+                        "rebuilding exact rejected Short after deterministic resolution-contract failure",
+                        item_id=current_item.get("id"),
+                    )
+                    return core.Action(
+                        "dispatch_short_rebuild",
+                        "rebuild exact rejected Short on current Remotion contract without new provider generation",
+                        inputs,
+                    )
 
         count = int(state["short"].get("attempt_count") or 0)
         if count >= MAX_SHORT_DISPATCH_ATTEMPTS:

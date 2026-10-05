@@ -8,6 +8,7 @@ const posts = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
 const summaries = posts
   .filter(isPublishable)
+  .sort((a, b) => (b.date > a.date ? 1 : b.date < a.date ? -1 : 0))
   .map(({ id, title, date, category, subcategory, excerpt, image }) => ({
     id,
     title,

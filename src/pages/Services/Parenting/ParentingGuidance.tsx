@@ -17,6 +17,7 @@ const schemaData = {
   "@graph": [
     {
       "@type": "Service",
+      "@id": `${SITE_CONFIG.url}/services/parenting#service`,
       "name": "הדרכת הורים",
       "serviceType": "הדרכת הורים",
       "url": `${SITE_CONFIG.url}/services/parenting`,
@@ -39,6 +40,7 @@ const schemaData = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/services/parenting#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -56,6 +58,7 @@ const schemaData = {
     },
     {
       "@type": "FAQPage",
+      "@id": `${SITE_CONFIG.url}/services/parenting#faq`,
       "mainEntity": parentingFaqs.map(faq => ({
         "@type": "Question",
         "name": faq.question,
@@ -72,9 +75,10 @@ const ParentingGuidance: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <MetaTags 
-        title="הדרכת הורים | מחוננים, ADHD והכנה לכיתה א'"
-        description="הדרכת הורים באשדוד ובאונליין לילדים מחוננים, לילדים עם ADHD ולהכנה לכיתה א' דרך תפקודים ניהוליים, ויסות ועצמאות."
+      <MetaTags
+        canonical={`${SITE_CONFIG.url}/services/parenting`}
+        title="הדרכת הורים באשדוד ואונליין | ADHD, מחוננים וכיתה א׳"
+        description="הדרכת הורים באשדוד ובאונליין לילדים ומתבגרים, עם התמחות ב-ADHD, מחוננים, גבולות, ויסות והכנה לכיתה א׳. כלים מעשיים להורים שאפשר ליישם בבית."
         image="/images/generated/services/parenting-room.jpg"
       />
       <SchemaOrg data={schemaData} />
@@ -83,8 +87,8 @@ const ParentingGuidance: React.FC = () => {
         <div className={`container ${styles.heroContainer}`}>
           <div className={styles.heroContent}>
             <div className={styles.badge}>מחוננים • ADHD • מעברים חינוכיים</div>
-            <h1>להבין מה מקשה בבית <br /><span>ולבחור תגובה שעוזרת</span></h1>
-            <p className={styles.subtitle}>הדרכת הורים שמחברת בין הצרכים של הילד, הגבולות בבית ומה שאפשר ליישם בשגרה שלכם.</p>
+            <h1>הדרכת הורים באשדוד ובאונליין <br /><span>להבין מה מקשה ולבחור תגובה שעוזרת</span></h1>
+            <p className={styles.subtitle}>הדרכת הורים באשדוד ובאונליין היא תהליך שממקד את העבודה בהורים: מזהים מה מפעיל את החיכוך, בונים גבולות ושגרה ובוחרים תגובות מעשיות שמתאימות לגיל הילד ולבית. בדרך כלל הילד אינו צריך להיות נוכח בפגישה.</p>
             <Link to={SITE_CONFIG.links.appointment} className={styles.ctaBtn}>קביעת פגישת ייעוץ</Link>
           </div>
           <div className={styles.heroImageWrapper}>
@@ -99,7 +103,9 @@ const ParentingGuidance: React.FC = () => {
             <div className={styles.segment}>
               <FiZap className={styles.icon} />
               <h3>ADHD ואתגרי קשב</h3>
-              <p>נבין מה מקשה על הילד להתארגן, לווסת ולהתמיד, ונבנה תמיכה שמחזקת עצמאות ושומרת על הדימוי העצמי.</p>
+              <p>
+                נבין מה מקשה על הילד להתארגן, לווסת ולהתמיד, ונבנה תמיכה שמחזקת עצמאות ושומרת על הדימוי העצמי. להורים שמחפשים מענה מקומי וממוקד יותר, אפשר לקרוא על <Link to="/parenting-adhd-ashdod">הדרכת הורים ל-ADHD באשדוד</Link>.
+              </p>
             </div>
             <div className={styles.segment}>
               <FiTarget className={styles.icon} />
@@ -148,6 +154,41 @@ const ParentingGuidance: React.FC = () => {
               <p>בפגישה הבאה נבדוק מה עזר, מה לא היה ישים ומה כדאי לשנות.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className={styles.specialization}>
+        <div className="container">
+          <div className={styles.specializationIntro}>
+            <span>הדרכת הורים למתבגרים</span>
+            <h2>איך שומרים על קשר עם מתבגר שנסגר?</h2>
+            <p>
+              כשהמתבגר נסגר או מבקש יותר מרחק, המטרה אינה "להחזיר שליטה" אלא לשמור על ערוץ תקשורת, להציב גבולות ברורים ולהעביר אחריות בהדרגה. גיל ההתבגרות מביא יותר עצמאות ופרטיות, ובמקביל ההורים עדיין צריכים לדעת מתי להתערב ואיך לחזור לשיחה אחרי עימות.
+            </p>
+            <p>
+              <a href="https://me.health.gov.il/mental-health/therapy-rehabilitation/public-care/kids-and-teens/supporting-teenagers/" target="_blank" rel="noopener noreferrer">משרד הבריאות</a> מדגיש שבגיל ההתבגרות עצמאות היא צורך התפתחותי משמעותי, לצד חשיבותה של נוכחות הורית, שיחה פתוחה וגבולות שמוסברים היטב. בהדרכת הורים מתרגמים את העקרונות האלה לכללים ותגובות שמתאימים למשפחה ולמצבים שחוזרים בבית.
+            </p>
+          </div>
+          <div className={styles.specializationGrid}>
+            <article>
+              <h3>שיחה וגבולות מותאמים</h3>
+              <p>איך לשאול ולהתעניין בלי להישמע חוקרים, מה עדיין באחריות ההורים ואיפה נכון לתת מרחב ועצמאות.</p>
+            </article>
+            <article>
+              <h3>מסכים, שגרה ואחריות</h3>
+              <p>בניית כללים סביב שינה, לימודים ומסכים ללא מאבק יומיומי, לצד העברת אחריות הדרגתית למתבגר.</p>
+            </article>
+            <article>
+              <h3>קונפליקטים והתרחקות</h3>
+              <p>איך להגיב כשהמתבגר נסגר או מבקש מרחק, ואיך לחזור לשיחה מקרבת אחרי רגעי כעס או חיכוך.</p>
+            </article>
+          </div>
+          <p style={{ marginTop: '1.5rem', color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>
+            <strong>מתי צריך מענה נוסף?</strong> אם יש מצוקה מתמשכת, שינוי חד בתפקוד, הסתגרות חריגה, חשש לפגיעה עצמית או קושי רגשי משמעותי, הדרכת הורים אינה תחליף להערכה או טיפול ישיר במתבגר. במצב כזה כדאי לפנות לגורם מתאים בבריאות הנפש או ברפואה.
+          </p>
+          <Link to="/blog/connecting-with-withdrawn-teenager" className={styles.specializationLink}>
+            למאמר על התמודדות עם מתבגר שמסתגר בחדר ואיך לשמור על ערוץ תקשורת פתוח
+          </Link>
         </div>
       </section>
 

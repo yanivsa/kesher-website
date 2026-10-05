@@ -102,9 +102,59 @@ class PipelineTestCase(unittest.TestCase):
         source = pipeline.source_metadata(hebrew_post())
         metadata = source["youtube_metadata"]
         self.assertEqual(metadata["title"], "איך עוזרים לילד להסתגל לשינוי?")
-        self.assertIn(pipeline.SITE_URL, metadata["description"])
+        lines = [line.strip() for line in metadata["description"].splitlines() if line.strip()]
+        self.assertIn(source["canonical_url"], lines)
+        self.assertIn(pipeline.SITE_URL, lines)
+        self.assertIn(pipeline.APPOINTMENT_URL, lines)
         self.assertEqual(metadata["tags"], ["הדרכת הורים", "ילדים מחוננים"])
         pipeline.require_hebrew(metadata["description"], "description", allow_url=True)
+
+    def test_source_metadata_supports_distinct_media_seo(self) -> None:
+        post = hebrew_post()
+        post.update({
+            "videoTitle": "איך מחזירים אמון בזוגיות אחרי משבר?",
+            "videoTags": ["אמון בזוגיות", "תקשורת זוגית"],
+            "shortTitle": "מריבות בזוגיות: שלושה סימנים שהוויכוח יצא משליטה",
+            "shortTags": ["מריבות בזוגיות", "איך לריב נכון"],
+            "shortHook": "כששני אנשים נלחמים על ההגה — אף אחד כבר לא מנווט את הקשר.",
+        })
+        source = pipeline.source_metadata(post)
+        self.assertEqual(source["youtube_metadata"]["title"], post["videoTitle"])
+        self.assertIn("אמון בזוגיות", source["youtube_metadata"]["tags"])
+        self.assertEqual(source["short_youtube_metadata"]["title"], post["shortTitle"])
+        self.assertIn("מריבות בזוגיות", source["short_youtube_metadata"]["tags"])
+        self.assertEqual(source["short_hook"], post["shortHook"])
+        self.assertIn(post["videoTitle"], pipeline.generation_prompt(source))
+
+    def test_enhancement_media_credits_are_added_only_when_stock_is_used(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        item = {
+            "youtube_metadata": source["youtube_metadata"],
+            "enhancement_assets_used": [{"provider": "pexels", "type": "broll"}],
+        }
+        metadata = pipeline.apply_enhancement_media_credits(item)
+        lines = [line.strip() for line in metadata["description"].splitlines() if line.strip()]
+        self.assertIn("קטעי וידאו משלימים מפקסלס: https://www.pexels.com/", lines)
+        pipeline.require_hebrew(metadata["description"], "description", allow_url=True)
+
+        item["enhancement_assets_used"] = []
+        metadata_without_new_credit = pipeline.apply_enhancement_media_credits(item)
+        self.assertEqual(
+            metadata_without_new_credit["description"].count("https://www.pexels.com/"),
+            1,
+        )
+
+    def test_youtube_description_requires_three_separate_links(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        article_only = f"תיאור בעברית\n{source['canonical_url']}"
+        with self.assertRaisesRegex(pipeline.PipelineError, "standalone Kesher site URL"):
+            pipeline.validate_youtube_description_links(article_only, source["canonical_url"])
+
+        without_appointment = (
+            f"תיאור בעברית\n{source['canonical_url']}\n{pipeline.SITE_URL}"
+        )
+        with self.assertRaisesRegex(pipeline.PipelineError, "appointment URL"):
+            pipeline.validate_youtube_description_links(without_appointment, source["canonical_url"])
 
     def test_article_body_uses_id_when_published_post_has_no_slug(self) -> None:
         post = hebrew_post("id-only-article")
@@ -125,8 +175,21 @@ class PipelineTestCase(unittest.TestCase):
 
     def test_generation_prompt_always_requests_female_hebrew_voice(self) -> None:
         prompt = pipeline.generation_prompt(pipeline.source_metadata(hebrew_post()))
-        self.assertIn("קול של אישה ישראלית", prompt)
+        self.assertIn("כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד", prompt)
+        self.assertIn("אין להשתמש בקול גברי", prompt)
+        self.assertIn("אם אין אפשרות להבטיח קול נשי — אל תפיק תוצר", prompt)
+        self.assertIn("תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד", prompt)
         self.assertIn("בעברית טבעית בלבד", prompt)
+
+    def test_voice_constraint_version_and_failure_fingerprint_are_durable(self) -> None:
+        source = pipeline.source_metadata(hebrew_post())
+        item = pipeline.new_item(source)
+        item["generation_prompt_sha256"] = "prompt-sha"
+        self.assertEqual(item["voice_constraint_version"], "female-he-v2")
+        self.assertEqual(
+            pipeline.voice_failure_fingerprint(item),
+            f"wrong_narrator_gender:prompt-sha:{source['content_sha256']}",
+        )
 
     def test_voice_runtime_rejects_early_male_audio_then_accepts_configured_fallback(self) -> None:
         with mock.patch.object(pipeline, "estimate_voice_pitch", return_value=129.0):
@@ -192,7 +255,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertEqual(item["task_id"], "task-exact")
         self.assertEqual(item["artifact_id"], "task-exact")
         self.assertEqual(item["status"], "generating")
-        self.assertIn("קול של אישה ישראלית", item["generation_prompt"])
+        self.assertIn("כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד", item["generation_prompt"])
         self.assertEqual(item["generation_prompt_sha256"], pipeline.sha256_text(item["generation_prompt"]))
         arguments = run.call_args.args[0]
         self.assertEqual(arguments[arguments.index("--style") + 1], "auto")
@@ -272,6 +335,19 @@ class PipelineTestCase(unittest.TestCase):
             self.assertFalse(pipeline.wait_for_generation(state, item, 0))
         run.assert_called_once_with(["artifact", "poll", "task-one", "--notebook", pipeline.NOTEBOOK_ID], timeout=120)
         self.assertEqual(item["status"], "generating")
+
+    def test_wait_for_generation_retries_transient_network_error(self) -> None:
+        item = {"id": "one", "task_id": "task-one", "status": "generating"}
+        state = {"version": 1, "items": [item], "updated_at": pipeline.utc_now()}
+        side_effects = [
+            pipeline.PipelineError("NotebookLMCommandError: Network error: Request timed out calling LIST_ARTIFACTS"),
+            {"status": "completed"},
+        ]
+        with mock.patch.object(pipeline, "run_notebooklm", side_effect=side_effects) as run, \
+             mock.patch.object(pipeline.time, "sleep", return_value=None):
+            self.assertTrue(pipeline.wait_for_generation(state, item, 60))
+        self.assertEqual(run.call_count, 2)
+        self.assertEqual(item["last_provider_status"], "completed")
 
     def test_technical_validation_rejects_wrong_duration_or_aspect(self) -> None:
         source = pipeline.source_metadata(hebrew_post())
@@ -996,6 +1072,7 @@ class PipelineTestCase(unittest.TestCase):
             mock.ANY,
         )
 
+    @mock.patch.object(reviewer, "MAX_REVIEW_SESSION_ATTEMPTS", 2)
     @mock.patch.object(reviewer, "validate_decision")
     @mock.patch.object(reviewer, "wait_for_message")
     @mock.patch.object(reviewer, "create_session")

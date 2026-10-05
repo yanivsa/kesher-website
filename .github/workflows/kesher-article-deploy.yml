@@ -25,7 +25,6 @@ jobs:
     env:
       COMMAND_ID: ${{ inputs.command_id }}
       GH_TOKEN: ${{ github.token }}
-      BUILD_ROOT: ${{ github.workspace }}/.kesher-deployment
       WRANGLER_SEND_METRICS: 'false'
     steps:
       - name: Checkout immutable trusted main
@@ -33,10 +32,14 @@ jobs:
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
+      - name: Initialize isolated deployment scratch
+        run: printf '%s\n' "BUILD_ROOT=$RUNNER_TEMP/kesher-deployment" >> "$GITHUB_ENV"
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.12'
+      - name: Install trusted authority admission dependencies
+        run: python -m pip install PyYAML==6.0.2 -r scripts/requirements-article.txt
       - name: Claim exact deployment command
         id: claim
         run: python -m scripts.kesher_runtime.worker_entry claim "$COMMAND_ID"

@@ -16,7 +16,17 @@ def technical_item(slug: str = "today", day: str = "2026-08-20", status: str = "
         "source": {
             "slug": slug,
             "date": day,
+            "canonical_url": f"https://kesher.saharoni.com/blog/{slug}",
             "content_sha256": "s" * 64,
+        },
+        "youtube_metadata": {
+            "title": "כותרת בעברית",
+            "description": (
+                f"תיאור בעברית\nhttps://kesher.saharoni.com/blog/{slug}"
+                "\nhttps://kesher.saharoni.com"
+                "\nhttps://kesher.saharoni.com/appointment"
+            ),
+            "tags": ["זוגיות"],
         },
         "final_sha256": "f" * 64,
         "manifest_sha256": "m" * 64,
@@ -52,6 +62,26 @@ class VideoUploadGuardTests(unittest.TestCase):
         item["visual_review_status"] = "rejected"
         guard.validate_candidate(item)
 
+    def test_missing_standalone_site_link_fails_closed(self) -> None:
+        item = technical_item()
+        item["youtube_metadata"]["description"] = (
+            "תיאור בעברית\n"
+            f"{item['source']['canonical_url']}\n"
+            f"{guard.APPOINTMENT_URL}"
+        )
+        with self.assertRaisesRegex(guard.UploadGuardError, "standalone Kesher site URL"):
+            guard.validate_candidate(item)
+
+    def test_missing_appointment_link_fails_closed(self) -> None:
+        item = technical_item()
+        item["youtube_metadata"]["description"] = (
+            "תיאור בעברית\n"
+            f"{item['source']['canonical_url']}\n"
+            f"{guard.SITE_URL}"
+        )
+        with self.assertRaisesRegex(guard.UploadGuardError, "appointment URL"):
+            guard.validate_candidate(item)
+
     def test_missing_final_sha_fails_closed(self) -> None:
         item = technical_item()
         item["final_sha256"] = ""
@@ -81,8 +111,9 @@ class VideoUploadGuardTests(unittest.TestCase):
         guard.validate_candidate(item)
 
     def test_short_candidate_passes_with_verified_signature_video(self) -> None:
-        item = technical_item()
+        item = technical_item(slug="article")
         item.update(bound_short(120.0))
+        item["source"]["canonical_url"] = "https://kesher.saharoni.com/blog/article"
         guard.validate_candidate(item)
 
     def test_short_candidate_fails_closed_when_derived_from_overview_segment(self) -> None:

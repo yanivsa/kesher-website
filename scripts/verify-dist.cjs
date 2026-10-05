@@ -5,6 +5,8 @@ const { ROOT, STATIC_ROUTES, isPublishable, blogRoute } = require('./content-pol
 const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
 const routes = [...STATIC_ROUTES, ...posts.filter(isPublishable).map(blogRoute)];
 const errors = [];
+const canonicalTargets = new Map();
+const SITE_ORIGIN = 'https://kesher.saharoni.com';
 const hasNonAscii = (value) => /[^\x00-\x7F]/.test(value);
 
 for (const route of routes) {
@@ -28,9 +30,27 @@ for (const route of routes) {
   const html = fs.readFileSync(file, 'utf8');
   if (!/<h1[\s>]/.test(html)) errors.push(`Missing h1 in prerendered HTML: ${route}`);
   const descriptions = html.match(/<meta name="description"/g) || [];
-  const canonicals = html.match(/<link rel="canonical"/g) || [];
+  const canonicalTags = html.match(/<link\b[^>]*\brel=["']canonical["'][^>]*>/gi) || [];
   if (descriptions.length !== 1) errors.push(`Expected one description, found ${descriptions.length}: ${route}`);
-  if (canonicals.length !== 1) errors.push(`Expected one canonical, found ${canonicals.length}: ${route}`);
+  if (canonicalTags.length !== 1) {
+    errors.push(`Expected one canonical, found ${canonicalTags.length}: ${route}`);
+  } else {
+    const canonicalHref = canonicalTags[0].match(/\bhref=["']([^"']+)["']/i)?.[1];
+    const expectedCanonical = `${SITE_ORIGIN}${route === '/' ? '' : route}`;
+    if (!canonicalHref) {
+      errors.push(`Canonical is missing href: ${route}`);
+    } else {
+      if (canonicalHref !== expectedCanonical) {
+        errors.push(`Canonical mismatch: ${route} -> ${canonicalHref}; expected ${expectedCanonical}`);
+      }
+      const previousRoute = canonicalTargets.get(canonicalHref);
+      if (previousRoute && previousRoute !== route) {
+        errors.push(`Duplicate canonical target: ${canonicalHref} used by ${previousRoute} and ${route}`);
+      } else {
+        canonicalTargets.set(canonicalHref, route);
+      }
+    }
+  }
 }
 
 const todaysUnicodeBlog = posts
@@ -49,4 +69,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Verified ${routes.length} prerendered routes and 404.html.`);
+console.log(`Verified ${routes.length} prerendered routes with self-canonicals and 404.html.`);

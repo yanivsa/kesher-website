@@ -16,6 +16,29 @@ const getCtaName = (link: HTMLAnchorElement): string | undefined => {
   return clean ? clean.slice(0, 120) : undefined;
 };
 
+const getLandingContext = (link: HTMLAnchorElement): Record<string, string> => {
+  const normalizedPath =
+    window.location.pathname.length > 1 && window.location.pathname.endsWith('/')
+      ? window.location.pathname.slice(0, -1)
+      : window.location.pathname;
+  const owner = link.closest<HTMLElement>(
+    '[data-analytics-service-type], [data-analytics-landing-page-type], [data-analytics-variant-id]',
+  );
+
+  return {
+    landing_page_path: normalizedPath || '/',
+    ...(owner?.dataset.analyticsServiceType
+      ? { service_type: owner.dataset.analyticsServiceType }
+      : {}),
+    ...(owner?.dataset.analyticsLandingPageType
+      ? { landing_page_type: owner.dataset.analyticsLandingPageType }
+      : {}),
+    ...(owner?.dataset.analyticsVariantId
+      ? { variant_id: owner.dataset.analyticsVariantId }
+      : {}),
+  };
+};
+
 const GlobalConversionTracker: React.FC = () => {
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -27,6 +50,7 @@ const GlobalConversionTracker: React.FC = () => {
       const rawHref = link.getAttribute('href') || '';
       const href = rawHref.toLowerCase();
       const context = {
+        ...getLandingContext(link),
         cta_location: getCtaLocation(link),
         ...(getCtaName(link) ? { cta_name: getCtaName(link) } : {}),
       };

@@ -12,6 +12,8 @@ from scripts.kesher_master_supervisor_live import (
     SupervisorStateStore,
     build_incident_packet,
     direct_dispatch_spec,
+    _dispatch_or_rerun_existing,
+    _run_terminal_result,
     incident_fingerprint,
     mark_command_acknowledged,
     mark_command_failed,
@@ -163,6 +165,18 @@ class MasterSupervisorLiveTests(unittest.TestCase):
         self.assertTrue(packet["constraints"]["reuse_existing_session_pr"])
         self.assertTrue(packet["constraints"]["no_duplicate_generation_upload"])
 
+    def test_image_incident_packet_keeps_article_and_image_mutation_out_of_jules_scope(self) -> None:
+        report = incident_report(
+            signature="ARTICLE_IMAGE_GUARD_FAILED",
+            action="repair_trusted_image_same_pr",
+            stage="image",
+        )
+        packet = build_incident_packet(report, strike=2, command_id="ksr-image")
+        self.assertEqual(packet["constraints"]["image_mutation_owner"], "trusted_github_actions")
+        self.assertTrue(packet["constraints"]["jules_must_not_modify_article_or_image_payloads"])
+        self.assertEqual(packet["constraints"]["jules_recovery_scope"], "automation code/config/tests only")
+        self.assertTrue(packet["constraints"]["same_article_pr_must_remain_authoritative"])
+
     def test_direct_dispatch_specs_are_exact_and_never_fresh_generation(self) -> None:
         report = incident_report()
         spec = direct_dispatch_spec(report)
@@ -179,6 +193,95 @@ class MasterSupervisorLiveTests(unittest.TestCase):
         self.assertEqual(short_spec["workflow"], "kesher-short-v4.yml")
         self.assertEqual(short_spec["inputs"]["operation"], "derive")
         self.assertEqual(short_spec["inputs"]["derive_long_item_id"], "video-1")
+
+        stale_article = incident_report(
+            signature="STALE_ARTICLE_STATE_AFTER_MERGE",
+            action="wake_controller_after_article_merge",
+            stage="article",
+        )
+        stale_spec = direct_dispatch_spec(stale_article)
+        self.assertEqual(stale_spec["workflow"], "kesher-content-controller.yml")
+        self.assertEqual(stale_spec["inputs"], {})
+
+    def test_stalled_controller_run_becomes_terminal_for_escalation(self) -> None:
+        report = incident_report(
+            signature="STALE_ARTICLE_STATE_AFTER_MERGE",
+            action="wake_controller_after_article_merge",
+            stage="article",
+        )
+        state, decision = prepare_escalation(
+            new_supervisor_state(),
+            report,
+            now="2026-09-28T07:00:00+00:00",
+            prior_action_terminal=False,
+        )
+        state = mark_command_acknowledged(
+            state,
+            decision["command_id"],
+            {"workflow": "kesher-content-controller.yml", "run_id": 999},
+            at="2026-09-28T07:00:01+00:00",
+        )
+        run = {
+            "id": 999,
+            "status": "in_progress",
+            "run_started_at": "2026-09-28T07:00:00+00:00",
+        }
+        updated, terminal, reason = _run_terminal_result(
+            state,
+            decision["command_id"],
+            run,
+            "kesher-content-controller.yml",
+            "2026-09-28T07:21:00+00:00",
+        )
+        self.assertTrue(terminal)
+        self.assertEqual(reason, "controller_run_stalled")
+        self.assertEqual(updated["commands"][decision["command_id"]]["lifecycle"], "failed")
+
+    def test_dispatch_capability_fallback_reruns_existing_failed_run_without_calling_it_permission_blocker(self) -> None:
+        class Api:
+            def __init__(self):
+                self.rerun_ids = []
+
+            def dispatch_workflow(self, workflow, inputs=None):
+                raise RuntimeError("unexpected non-SupervisorError")
+
+        # Guard the public helper with the exact SupervisorError shape emitted by GitHubApi.
+        class CapabilityApi:
+            def __init__(self):
+                self.rerun_ids = []
+
+            def dispatch_workflow(self, workflow, inputs=None):
+                from scripts.kesher_master_supervisor_live import SupervisorError
+                raise SupervisorError("GITHUB_HTTP_403: workflow dispatch endpoint unavailable to this execution surface")
+
+            def workflow_runs(self, workflow, limit=20):
+                return [{"id": 321, "status": "completed", "conclusion": "failure"}]
+
+            def rerun_workflow_run(self, run_id):
+                self.rerun_ids.append(run_id)
+
+        api = CapabilityApi()
+        result = _dispatch_or_rerun_existing(api, "kesher-content-controller.yml")
+        self.assertEqual(result["dispatch"], "rerun_existing")
+        self.assertEqual(result["fallback"], "workflow_dispatch_capability_unavailable")
+        self.assertEqual(api.rerun_ids, [321])
+
+    def test_dispatch_capability_fallback_never_reruns_inputful_media_with_stale_inputs(self) -> None:
+        class CapabilityApi:
+            def dispatch_workflow(self, workflow, inputs=None):
+                from scripts.kesher_master_supervisor_live import SupervisorError
+                raise SupervisorError("GITHUB_HTTP_404: workflow dispatch endpoint unavailable")
+
+            def workflow_runs(self, workflow, limit=20):
+                raise AssertionError("inputful fallback must not inspect or reuse stale runs")
+
+        result = _dispatch_or_rerun_existing(
+            CapabilityApi(),
+            "kesher-daily-video.yml",
+            {"operation": "rebuild", "rebuild_item_id": "video-1", "target_slug": "slug-a"},
+        )
+        self.assertEqual(result["dispatch"], "capability_unavailable")
+        self.assertEqual(result["fallback"], "direct_patch_required")
 
     def test_cas_store_uses_expected_blob_sha_and_propagates_conflict(self) -> None:
         api = FakeStoreApi()

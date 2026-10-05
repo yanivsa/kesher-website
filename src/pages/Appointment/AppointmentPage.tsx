@@ -12,17 +12,20 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/appointment#service`,
       name: 'פגישת ייעוץ עם שירה סהרוני',
       serviceType: ['ייעוץ זוגי', 'הנחיית הורים', 'גישור'],
       url: `${SITE_CONFIG.url}/appointment`,
       provider: {
-        '@type': 'Person',
+        '@type': 'LocalBusiness',
+        '@id': `${SITE_CONFIG.url}/#business`,
         name: SITE_CONFIG.author,
       },
       areaServed: 'אשדוד וישראל באונליין',
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/appointment#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',
@@ -45,6 +48,7 @@ const AppointmentPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
+        canonical={`${SITE_CONFIG.url}/appointment`}
         title="קביעת פגישת ייעוץ עם שירה סהרוני"
         description="בחרו מועד לפגישת ייעוץ אישית עם שירה סהרוני — ייעוץ זוגי, הנחיית הורים או גישור, באשדוד או אונליין."
       />

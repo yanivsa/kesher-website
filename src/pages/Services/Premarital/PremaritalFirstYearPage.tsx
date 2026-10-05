@@ -26,7 +26,9 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
-      name: 'פגישות הכנה לנישואים וליווי בשנה הראשונה',
+      '@id': `${SITE_CONFIG.url}/services/premarital-first-year#service`,
+      name: 'ייעוץ זוגי לפני חתונה והכנה לנישואים',
+      alternateName: 'הכנה לנישואים וליווי בשנה הראשונה',
       serviceType: 'הכנה זוגית מעשית לפני החתונה וליווי לזוגות בתחילת הנישואים',
       url: `${SITE_CONFIG.url}/services/premarital-first-year`,
       provider: { '@type': 'LocalBusiness', '@id': `${SITE_CONFIG.url}/#business` },
@@ -36,18 +38,20 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/premarital-first-year#breadcrumb`,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'עמוד הבית', item: SITE_CONFIG.url },
         {
           '@type': 'ListItem',
           position: 2,
-          name: 'הכנה לנישואים וליווי בשנה הראשונה',
+          name: 'ייעוץ זוגי לפני חתונה והכנה לנישואים',
           item: `${SITE_CONFIG.url}/services/premarital-first-year`,
         },
       ],
     },
     {
       '@type': 'FAQPage',
+      '@id': `${SITE_CONFIG.url}/services/premarital-first-year#faq`,
       mainEntity: pageFaqs.map((faq) => ({
         '@type': 'Question',
         name: faq.question,
@@ -60,8 +64,9 @@ const schemaData = {
 const PremaritalFirstYearPage: React.FC = () => (
   <div className={styles.page}>
     <MetaTags
-      title="הכנה לנישואים וליווי בשנה הראשונה"
-      description="פגישות הכנה לנישואים וליווי זוגי בשנה הראשונה: כסף, בית, משפחות, אינטימיות, חלוקת אחריות ותקשורת בזמן מחלוקת."
+        canonical={`${SITE_CONFIG.url}/services/premarital-first-year`}
+      title="ייעוץ זוגי לפני חתונה | הכנה לנישואים והשנה הראשונה"
+      description="ייעוץ זוגי לפני חתונה והכנה לנישואים סביב כסף, חלוקת תפקידים, משפחות המוצא, אינטימיות, גבולות וקונפליקטים, עם אפשרות לליווי בשנה הראשונה."
       image="/images/generated/services/premarital-first-year.webp"
     />
     <SchemaOrg data={schemaData} />
@@ -70,9 +75,9 @@ const PremaritalFirstYearPage: React.FC = () => (
       <div className={`container ${styles.heroGrid}`}>
         <div>
           <span className={styles.eyebrow}><FiHeart aria-hidden="true" /> לא רק להתכונן לחתונה — להתכונן לחיים יחד</span>
-          <h1>הכנה לנישואים וליווי בשנה הראשונה</h1>
+          <h1>ייעוץ זוגי לפני חתונה והכנה לנישואים</h1>
           <p className={styles.lead}>
-            רוב הזוגות משקיעים חודשים בערב אחד, ואת החיים שאחריו לומדים תוך כדי. סדרת פגישות ממוקדת מאפשרת לדבר מראש על כסף, בית, משפחות, אינטימיות ומריבות — ולהמשיך לקבל ליווי כשההסכמות פוגשות את המציאות.
+            ייעוץ זוגי לפני חתונה הוא סדרת פגישות ממוקדת שעוזרת לנהל מראש את השיחות החשובות על כסף, חלוקת תפקידים, משפחות המוצא, אינטימיות, גבולות וקונפליקטים. המטרה אינה להסכים על הכול, אלא לבנות דרך לקבל החלטות ולחזור לשיחה גם כשיש פערים.
           </p>
           <div className={styles.heroActions}>
             <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת הכנה</Link>
@@ -103,8 +108,8 @@ const PremaritalFirstYearPage: React.FC = () => (
     <section className={styles.section}>
       <div className="container">
         <div className={styles.sectionHeader}>
-          <h2>שש שיחות שלא כדאי להשאיר ל״נסתדר כבר״</h2>
-          <p>המטרה אינה להסכים על הכול. המטרה היא לדעת איפה אתם שונים, איך מקבלים החלטה ומה עושים כשהתוכנית משתנה.</p>
+          <h2>על מה מדברים בהכנה לנישואים?</h2>
+          <p>מתמקדים בנושאים שישפיעו על החיים המשותפים בפועל: כסף, בית ואחריות, משפחות המוצא, זמן אישי וזוגי, אינטימיות והדרך לנהל מחלוקת ולחזור לשיחה.</p>
         </div>
         <div className={styles.cardGrid}>
           <article className={styles.card}>

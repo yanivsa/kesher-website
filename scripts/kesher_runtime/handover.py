@@ -17,7 +17,7 @@ PHASES = ('PREPARED', 'LEGACY_QUIESCING', 'LEGACY_QUIESCED', 'IMPORT_READY',
           'CAPABILITY_SEALED', 'STATE_IMPORTED', 'CANONICAL_AUTHORITY_ESTABLISHED',
           'LEGACY_RETIRED', 'VERIFIED')
 OWNER = 'kesher-canonical-controller'
-ROLES = {'controller', 'worker', 'retired', 'diagnostic', 'separate_infrastructure'}
+ROLES = {'controller', 'worker', 'retired', 'diagnostic', 'separate_infrastructure', 'handover'}
 DISABLED = {'disabled_manually', 'disabled_inactivity', 'deleted'}
 
 
@@ -83,11 +83,22 @@ def _quiescent(observation, main_sha):
         return False
     roles = {w['id']: w['role'] for w in observation['workflows']}
     for run in observation['active_runs']:
+        if _control_run(run, roles.get(run.get('workflow_id')), main_sha): continue
         if (run.get('workflow_id') not in roles
                 or run.get('head_sha') != main_sha
                 or roles[run['workflow_id']] not in {'diagnostic', 'separate_infrastructure'}):
             return False
     return True
+
+
+def _control_run(run, role, main_sha):
+    # This reviewed role has no provider credentials and may invoke ONLY the
+    # independently authenticated, credential-owning cutover gateway. All other
+    # main code and epoch/review gates remain mandatory; it is not a worker or
+    # an exception for an ordinary legacy mutator. Competing steps still use CAS.
+    return (role == 'handover' and run.get('head_sha') == main_sha
+            and run.get('event') == 'workflow_dispatch' and run.get('head_branch') == 'main'
+            and run.get('path','').split('@',1)[0] == '.github/workflows/kesher-production-cutover.yml')
 
 
 def _legacy_body(document):
@@ -157,6 +168,7 @@ def require_authority(state: dict, observation: dict):
     paths = {w['id']: w['path'].split('/')[-1] for w in observation['workflows']}
     for run in observation['active_runs']:
         role = roles.get(run.get('workflow_id'))
+        if _control_run(run, role, observation['main_sha']): continue
         if role in {'controller', 'diagnostic', 'separate_infrastructure'} and run.get('head_sha') == observation['main_sha']:
             continue
         if role == 'worker':

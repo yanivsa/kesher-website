@@ -5,6 +5,7 @@ const require = createRequire(import.meta.url);
 const { buildSitemap } = require('../../scripts/generate-sitemap.cjs') as {
   buildSitemap: (posts: Array<{
     id: string;
+    slug?: string;
     date: string;
     content: string;
   }>) => string;
@@ -38,6 +39,20 @@ describe('sitemap generation', () => {
       '<loc>https://kesher.saharoni.com/blog/older-post</loc>\n    <lastmod>2026-01-02</lastmod>',
     );
     expect(sitemap).not.toContain('2030-12-31');
+  });
+
+  it('uses the post id as the only sitemap route key even when a legacy slug is present', () => {
+    const sitemap = buildSitemap([
+      {
+        id: 'canonical-id',
+        slug: 'legacy-slug',
+        date: '2026-09-24',
+        content: publishableContent,
+      },
+    ]);
+
+    expect(sitemap).toContain('<loc>https://kesher.saharoni.com/blog/canonical-id</loc>');
+    expect(sitemap).not.toContain('/blog/legacy-slug</loc>');
   });
 
   it('omits unsupported lastmod dates from static routes', () => {

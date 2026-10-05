@@ -19,29 +19,50 @@ class ShortPipelineV4Tests(unittest.TestCase):
             "content_sha256": "a" * 64,
             "youtube_metadata": {
                 "title": "איך מדברים בלי להפוך כל שיחה לריב",
-                "description": "תיאור המאמר\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/how-to-talk\n\nלאתר קשר:\nhttps://kesher.saharoni.com",
+                "description": "תיאור המאמר\n\nלקריאת המאמר המלא:\nhttps://kesher.saharoni.com/blog/how-to-talk\n\nלאתר קשר:\nhttps://kesher.saharoni.com\n\nלתיאום פגישה:\nhttps://kesher.saharoni.com/appointment",
                 "tags": ["זוגיות", "תקשורת"],
             },
         }
 
     def test_prompt_requests_one_complete_short_ready_hebrew_idea_without_duration_cap(self):
         prompt = short.generation_prompt(self.source())
-        self.assertIn("קול של אישה ישראלית", prompt)
+        self.assertIn("כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד", prompt)
+        self.assertIn("אין להשתמש בקול גברי", prompt)
+        self.assertIn("תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד", prompt)
         self.assertIn("סרטון אנכי ביחס 9:16", prompt)
         self.assertIn("אין ליצור סקירת וידאו אופקית", prompt)
+        self.assertIn("אסור להשתמש ברקע מטושטש", prompt)
+        self.assertIn("קומפוזיציה אנכית חדה", prompt)
         self.assertIn("הרעיון השלם", prompt)
         self.assertIn("סיום טבעי", prompt)
         self.assertNotIn("45 עד 55 שניות", prompt)
         self.assertNotIn("55 השניות", prompt)
 
 
-    def test_new_item_requires_native_provider_short_and_both_links(self):
+    def test_short_uses_distinct_title_tags_and_hook(self):
+        source = self.source()
+        source["short_youtube_metadata"] = {
+            "title": "מריבות בזוגיות: שלושה סימנים שהוויכוח יצא משליטה",
+            "description": source["youtube_metadata"]["description"],
+            "tags": ["זוגיות", "מריבות בזוגיות", "איך לריב נכון"],
+        }
+        source["short_title"] = source["short_youtube_metadata"]["title"]
+        source["short_hook"] = "כששני אנשים נלחמים על ההגה — אף אחד כבר לא מנווט את הקשר."
+        item = short.new_item(source)
+        self.assertEqual(item["youtube_metadata"]["title"], source["short_youtube_metadata"]["title"])
+        self.assertIn("מריבות בזוגיות", item["youtube_metadata"]["tags"])
+        prompt = short.generation_prompt(item["source"])
+        self.assertIn(source["short_hook"], prompt)
+        self.assertIn(source["short_title"], prompt)
+
+    def test_new_item_requires_native_provider_short_and_three_links(self):
         item = short.new_item(self.source())
         self.assertEqual(item["provider_video_format"], "short")
         self.assertTrue(item["provider_native_short"])
         lines = [line.strip() for line in item["youtube_metadata"]["description"].splitlines() if line.strip()]
         self.assertIn("https://kesher.saharoni.com/blog/how-to-talk", lines)
         self.assertIn("https://kesher.saharoni.com", lines)
+        self.assertIn("https://kesher.saharoni.com/appointment", lines)
 
     def test_repair_youtube_metadata_updates_stale_recovered_item_links(self):
         item = short.new_item(self.source())
@@ -50,7 +71,21 @@ class ShortPipelineV4Tests(unittest.TestCase):
         lines = [line.strip() for line in metadata["description"].splitlines() if line.strip()]
         self.assertIn("https://kesher.saharoni.com/blog/how-to-talk", lines)
         self.assertIn("https://kesher.saharoni.com", lines)
+        self.assertIn("https://kesher.saharoni.com/appointment", lines)
 
+
+    def test_repair_youtube_metadata_adds_credit_only_for_used_stock(self):
+        item = short.new_item(self.source())
+        item["enhancement_assets_used"] = [{"provider": "pexels", "type": "broll"}]
+        metadata = short.repair_youtube_metadata(item)
+        lines = [line.strip() for line in metadata["description"].splitlines() if line.strip()]
+        self.assertIn("קטעי וידאו משלימים מפקסלס: https://www.pexels.com/", lines)
+        short.core.require_hebrew(metadata["description"], "YouTube description", allow_url=True)
+
+    def test_short_generation_has_no_landscape_explainer_fallback(self):
+        source = (Path(short.core.PROJECT_DIR) / "scripts" / "kesher_short_pipeline_v4.py").read_text(encoding="utf-8")
+        self.assertIn('provider_format = "short"', source)
+        self.assertNotIn('provider_format = "short" if', source)
 
     def test_native_provider_gate_rejects_landscape_or_long_form_identity(self):
         valid = {"provider_video_format": "short", "provider_native_short": True}
@@ -58,7 +93,8 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertEqual(short.native_provider_short_failures({"width": 1080, "height": 1920}, valid), [])
         self.assertTrue(short.native_provider_short_failures({"width": 1920, "height": 1080}, valid))
         fallback = dict(valid, fresh_generation_attempt=3, provider_video_format="explainer", provider_native_short=False)
-        self.assertEqual(short.native_provider_short_failures({"width": 1920, "height": 1080}, fallback), [])
+        fallback_failures = short.native_provider_short_failures({"width": 1920, "height": 1080}, fallback)
+        self.assertTrue(any("landscape fallback is forbidden" in err for err in fallback_failures))
         reused = dict(fallback, shared_provider_identity=True)
         self.assertTrue(any("Video Overview provider identity" in err for err in short.native_provider_short_failures({"width": 1080, "height": 1920}, reused)))
 

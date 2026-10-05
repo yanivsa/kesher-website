@@ -13,6 +13,7 @@ from .media_publication import MediaVerificationError, reject
 from .output_artifacts import (FILE_FIELDS, _check_archive, _validate_metadata, _verify_local,
                                _producer_run, artifact_effects, descriptor, local_file, sha256_file)
 from .provider import text_hash
+from .media_state import provider_effect_name
 from .render_provenance import _audio_timing, _stream_hash
 
 
@@ -39,8 +40,9 @@ def _unique_effect(state: dict, target: MediaIdentity, name: str) -> dict:
 def verify_lineage(state: dict, target: MediaIdentity, item: dict) -> dict:
     """Bind source -> generation -> immutable output -> one upload intent."""
     try:
-        source = _unique_effect(state, target, 'provider_source')
-        generation = _unique_effect(state, target, 'provider_generation')
+        attempt = item.get('fresh_generation_attempt', 1)
+        source = _unique_effect(state, target, provider_effect_name('provider_source', attempt))
+        generation = _unique_effect(state, target, provider_effect_name('provider_generation', attempt))
         upload = _unique_effect(state, target, 'youtube_session')
         archive = _unique_effect(state, target, 'output_artifact')
         if (source['receipt']['source_id'] != item['source_id']

@@ -23,10 +23,32 @@ DEFAULT_SIGNATURE_ASSET = "public/images/signature/signature-mask.svg"
 BACKLOG_MEDIA_RECOVERY_WORKFLOW = "kesher-backlog-media-recovery.yml"
 MAX_BACKLOG_SEED_DISPATCHES = 3
 MAX_BACKLOG_SHORT_DISPATCHES = 4
+MAX_BACKLOG_EVIDENCE_REBUILDS = 2
+IMMUTABLE_EVIDENCE_HASHES = (
+    "manifest_sha256",
+    "transcript_sha256",
+    "source_file_sha256",
+    "visual_review_sha256",
+)
 TERMINAL_BACKLOG_MEDIA_ERRORS = frozenset({
     "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED",
     "BACKLOG_EXACT_SEED_ATTEMPTS_EXHAUSTED",
+    "BACKLOG_LEGACY_EVIDENCE_REBUILD_EXHAUSTED",
 })
+
+
+def legacy_immutable_evidence_gap(item):
+    """True only for publication-ready legacy items missing the current evidence contract."""
+    if not isinstance(item, dict) or item.get("uploaded") is True:
+        return False
+    if item.get("technical_verified") is not True:
+        return False
+    if str(item.get("status") or "") not in {"pending_review", "approved", "rejected", "uploading"}:
+        return False
+    if any(not item.get(field) for field in IMMUTABLE_EVIDENCE_HASHES):
+        return True
+    frame_hashes = item.get("frame_sha256")
+    return not isinstance(frame_hashes, dict) or not frame_hashes
 
 
 def ordered_recoverable_backlog(rows):
@@ -80,6 +102,19 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             matches = [post for post in posts if isinstance(post, dict) and str(post.get("date") or "") == cycle]
             if not matches:
                 continue
+            if len(matches) != 1:
+                row_slug = str((row.get("article") or {}).get("slug") or media.get("source_slug") or "").strip()
+                if row_slug:
+                    slug_matches = [
+                        p for p in matches
+                        if str(p.get("slug") or p.get("id") or "").strip() == row_slug
+                    ]
+                    if len(slug_matches) == 1:
+                        matches = slug_matches
+                if len(matches) != 1:
+                    cm_matches = [p for p in matches if p.get("controllerManaged") is not False]
+                    if len(cm_matches) == 1:
+                        matches = cm_matches
             if len(matches) != 1:
                 raise v5.core.ControllerError(f"BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: {cycle}")
             post = matches[0]
@@ -202,6 +237,36 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             media["last_error"] = "DUPLICATE_BACKLOG_LONG_ITEMS"
             return v5.core.Action("blocked", "duplicate prior-cycle long-video items")
         if exact_unresolved:
+            exact_item = exact_unresolved[0]
+            if legacy_immutable_evidence_gap(exact_item):
+                rebuild_count = int(media.get("long_evidence_rebuild_count") or 0)
+                if rebuild_count >= MAX_BACKLOG_EVIDENCE_REBUILDS:
+                    media["long_status"] = "exhausted"
+                    media["last_error"] = "BACKLOG_LEGACY_EVIDENCE_REBUILD_EXHAUSTED"
+                    return v5.core.Action(
+                        "blocked",
+                        "prior-cycle legacy evidence rebuild attempts exhausted",
+                    )
+                inputs = {
+                    "operation": "rebuild",
+                    "rebuild_item_id": str(exact_item.get("id") or ""),
+                    "target_slug": source["slug"],
+                    "target_content_sha256": source["content_sha256"],
+                    "target_item_id": str(exact_item.get("id") or ""),
+                }
+                v5.core.GitHubClient.dispatch(self.github, v5.LONG_VIDEO_WORKFLOW, inputs)
+                media.update({
+                    "long_status": "running",
+                    "long_evidence_rebuild_count": rebuild_count + 1,
+                    "long_last_dispatch_at": v5.core.utc_now(),
+                    "last_error": None,
+                })
+                return v5.core.Action(
+                    "dispatch_backlog_long_rebuild",
+                    "rebuilding exact prior-cycle legacy evidence without new provider generation",
+                    inputs,
+                )
+
             inputs = {"operation": "full"}
             v5.core.GitHubClient.dispatch(self.github, v5.LONG_VIDEO_WORKFLOW, inputs)
             media.update({

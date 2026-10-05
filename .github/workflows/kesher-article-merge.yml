@@ -37,6 +37,8 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.12'
+      - name: Install trusted authority admission dependencies
+        run: python -m pip install PyYAML==6.0.2 -r scripts/requirements-article.txt
       - name: Claim exact merge command
         id: claim
         run: python -m scripts.kesher_runtime.worker_entry claim "$COMMAND_ID"

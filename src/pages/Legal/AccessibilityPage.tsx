@@ -9,6 +9,7 @@ const schemaData = {
   "@graph": [
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/accessibility#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -30,7 +31,8 @@ const schemaData = {
 const AccessibilityPage: React.FC = () => {
   return (
     <div className={styles.page}>
-      <MetaTags title="הצהרת נגישות" description="הצהרת נגישות לאתר שירה סהרוני. אנו פועלים להנגשת האתר לכלל האוכלוסייה." />
+      <MetaTags
+        canonical={`${SITE_CONFIG.url}/accessibility`} title="הצהרת נגישות" description="הצהרת נגישות לאתר שירה סהרוני. אנו פועלים להנגשת האתר לכלל האוכלוסייה." />
       <SchemaOrg data={schemaData} />
       <header className={styles.header}>
         <div className="container">

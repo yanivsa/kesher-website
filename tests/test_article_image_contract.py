@@ -64,13 +64,12 @@ class ArticleImageContractTests(unittest.TestCase):
         self.files = [{'filename': p} for p in (
             'src/data/posts.json', 'public/rss.xml', 'public/images/generated/blog/new-article.png')]
 
-    def proof(self, provider='LocalEditorial', head=HEAD, **overrides):
+    def proof(self, provider='Local', head=HEAD, **overrides):
         result, chain, source = {
-            'LocalEditorial': ('local_fallback', 'gemini/unsplash/pexels/local-curated/local-editorial', 'local-editorial://new-article/0'),
-            'Local': ('local_fallback', 'gemini/unsplash/pexels/local-curated', 'local://public/images/generated/blog/curated.png'),
-            'Gemini': ('generated', 'gemini', 'https://ai.google.dev/models/gemini'),
-            'Unsplash': ('stock', 'gemini/unsplash', 'https://unsplash.com/photos/example'),
-            'Pexels': ('stock', 'gemini/unsplash/pexels', 'https://pexels.com/photo/example'),
+            'Pixabay': ('stock', 'gemini-1/gemini-2/gemini-3/pexels/pixabay', 'https://pixabay.com/photos/example'),
+            'Local': ('local_fallback', 'gemini-1/gemini-2/gemini-3/pexels/pixabay/local-curated', 'local://public/images/generated/blog/curated.png'),
+            'Gemini': ('generated', 'gemini-1', 'https://ai.google.dev/models/gemini'),
+                        'Pexels': ('stock', 'gemini-1/gemini-2/gemini-3/pexels', 'https://pexels.com/photo/example'),
         }[provider]
         fields = {
             'Image Pipeline Version': '2', 'Image Provider': provider, 'Image Attempt Chain': chain,
@@ -118,8 +117,12 @@ class ArticleImageContractTests(unittest.TestCase):
             self.base, self.base + [self.post], kwargs.get('loader', lambda _: self.image))
 
     def test_all_providers_obey_one_contract_in_all_three_consumers(self):
-        for provider in ('LocalEditorial', 'Local', 'Gemini', 'Unsplash', 'Pexels'):
+        for provider in ('Local', 'Gemini', 'Pixabay', 'Pexels'):
             with self.subTest(provider=provider):
+                if provider == 'Pexels':
+                    self.post.update(imageCredit='צילום דרך Pexels', imageCreditUrl='https://pexels.com/photo/example')
+                else:
+                    self.post.pop('imageCredit', None); self.post.pop('imageCreditUrl', None)
                 self.pr['body'] = self.proof(provider)
                 self.assertTrue(self.worker_ready())
                 self.assertTrue(self.controller_ready()[0])
@@ -220,6 +223,14 @@ class ArticleImageContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             contract.image_dimensions(self.image[:-20])
 
+    def test_valid_png_zero_padding_preserves_pixels_but_damaged_or_program_trailers_fail(self):
+        self.assertEqual(contract.image_dimensions(self.image + b'\0'), (1200, 675))
+        self.assertEqual(contract.image_pixel_sha256(self.image + b'\0'), contract.image_pixel_sha256(self.image))
+        for data in (self.image + b'<script>run()</script>',
+                     self.image[:-1] + bytes([self.image[-1] ^ 1]) + b'\0'):
+            with self.subTest(trailer=data[-12:]), self.assertRaises(ValueError):
+                contract.image_dimensions(data)
+
     def test_decoder_rejects_unsupported_formats_and_unsafe_settings(self):
         from PIL import Image, ImageFile
         output = io.BytesIO()
@@ -280,12 +291,12 @@ class ArticleImageContractTests(unittest.TestCase):
         del self.post['image']
         self.assertTrue(any('no-image publication is forbidden' in err for err in self.validate()))
 
-    def test_producer_emits_local_editorial_result_and_final_head_bound_proof(self):
+    def test_producer_emits_concrete_local_result_and_final_head_bound_proof(self):
         self.pr['body'] = ''
         head_posts = self.base + [self.post]
-        candidate = self.worker.core.ImageCandidate('LocalEditorial', self.image, 'png',
-            'local-editorial://new-article/0', VISUAL,
-            ['gemini', 'unsplash', 'pexels', 'local-curated', 'local-editorial'])
+        candidate = self.worker.core.ImageCandidate('Local', self.image, 'png',
+            'local://public/images/generated/blog/curated.png', VISUAL,
+            ['gemini-1', 'gemini-2', 'gemini-3', 'pexels', 'pixabay', 'local-curated'])
         bodies = []
         with patch.object(self.worker.core, 'posts_at', side_effect=[self.base, head_posts]), \
              patch.object(self.worker.v3, 'choose_candidate', return_value=candidate), \
@@ -295,7 +306,8 @@ class ArticleImageContractTests(unittest.TestCase):
             self.assertTrue(self.worker.ensure_image('test/repo', self.pr, 'unused'))
         self.assertIn('Image Generation Result: local_fallback', bodies[-1])
         self.assertIn('Image Article ID: new-article', bodies[-1])
-        self.assertIn('Image Article SHA-256: ' + article_digest(self.post), bodies[-1])
+        self.assertIn('Image Article SHA-256: ' + article_digest(head_posts[-1]), bodies[-1])
+        self.post = head_posts[-1]
         self.assertIn('Image Evidence Head: ' + NEXT_HEAD, bodies[-1])
         self.pr['head']['sha'] = NEXT_HEAD
         self.pr['body'] = bodies[-1]

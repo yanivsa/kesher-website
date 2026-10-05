@@ -57,6 +57,13 @@ const FAQSection: React.FC = () => {
             );
           })}
         </div>
+        <div className={styles.cta}>
+          <h3>לא מצאתם תשובה?</h3>
+          <p>נשארה שאלה? אפשר לשלוח לי הודעה ואחזור אליכם בהקדם.</p>
+          <a href="https://wa.me/972502763802" className={styles.ctaBtn}>
+            שאלו אותי בוואטסאפ
+          </a>
+        </div>
       </div>
     </section>
   );

@@ -33,12 +33,13 @@ def trigger_block(path: Path) -> str:
 
 
 class SingleSchedulerPolicyTests(unittest.TestCase):
-    def test_controller_is_the_only_scheduler_in_unified_content_pipeline(self):
+    def test_candidate_has_no_activated_content_scheduler(self):
         controller = trigger_block(CONTROLLER)
         article = trigger_block(ARTICLE)
         short = trigger_block(SHORT)
         legacy_video = trigger_block(LEGACY_VIDEO)
-        self.assertIn("  schedule:", controller)
+        self.assertNotIn("  schedule:", controller)
+        self.assertIn("github.repository == '__KESHER_RETIRED__'", CONTROLLER.read_text())
         self.assertNotIn("  schedule:", article)
         self.assertNotIn("  schedule:", short)
         self.assertNotIn("  schedule:", legacy_video)
@@ -107,9 +108,9 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         with self.assertRaisesRegex(StateInvalid, "wrong run/attempt/workflow/code identity"):
             observer.runs(state)
 
-    def test_canonical_heartbeat_runs_every_five_minutes_and_respects_durable_retry_backoff(self):
+    def test_parked_controller_respects_durable_five_minute_retry_backoff(self):
         text = CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn("cron: '*/5 * * * *'", text)
+        self.assertNotIn("cron:", text)
         self.assertIn("group: kesher-canonical-controller", text)
         self.assertIn("cancel-in-progress: false", text)
         first = reconcile(new_state(), observed(publication(short="verified")), now=NOW)

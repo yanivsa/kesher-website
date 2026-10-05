@@ -85,16 +85,17 @@ def reconcile_provider(state: CanonicalMediaState, observe) -> bool:
     """
     for name, fields in [('provider_source', ('source_id',)),
                          ('provider_generation', ('task_id', 'artifact_id'))]:
+        scoped = state.provider_name(name)
         commands = state.context.store.load().state['commands'].values()
-        effects = [command['effects'][name] for command in commands
-                   if command['target'] == state.context.target.to_dict() and name in command['effects']]
+        effects = [command['effects'][scoped] for command in commands
+                   if command['target'] == state.context.target.to_dict() and scoped in command['effects']]
         if not effects:
             continue
         requests = {effect['request_sha256']: effect['request'] for effect in effects}
         if len(requests) != 1:
             raise StateInvalid('PROVIDER_ATTEMPT_AMBIGUOUS: explicit attempt migration required')
         request = next(iter(requests.values()))
-        decision = state.context.begin_effect(name, request)
+        decision = state.context.begin_effect(scoped, request)
         receipt = decision.receipt
         if receipt is None:
             receipt = observe(name, request)
@@ -105,7 +106,7 @@ def reconcile_provider(state: CanonicalMediaState, observe) -> bool:
         if name == 'provider_generation' and request['source_id'] != state.item.get('source_id'):
             raise StateInvalid('PROVIDER_GENERATION_SOURCE_MISMATCH')
         if decision.receipt is None:
-            state.context.complete_effect(name, receipt)
+            state.context.complete_effect(scoped, receipt)
         item = state.item
         for field in fields:
             if item.get(field) and item[field] != receipt[field]:

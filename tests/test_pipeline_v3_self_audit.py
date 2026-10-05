@@ -206,7 +206,7 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
         self.assertIn("kesher_content_controller_v5_runtime", stabilized)
         self.assertIn("runtime.install_runtime()", stabilized)
         self.assertNotIn("scripts/kesher_content_controller_v3_best_effort.py", workflow)
-        self.assertIn("cron: '*/5 * * * *'", workflow)
+        self.assertIn("workflow_dispatch:", workflow)
         with self.assertRaisesRegex(StateInvalid, "LEGACY_ENTRYPOINT_RETIRED"):
             v3.main()
         pr = {"slot": SOURCE.slot, "number": 854, "head_sha": CODE, "status": "image_required"}

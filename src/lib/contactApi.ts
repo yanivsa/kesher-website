@@ -7,6 +7,7 @@ export interface ContactRequest {
   message?: string;
   company?: string;
   startedAt: number;
+  turnstileToken: string;
 }
 
 interface ContactResponse {

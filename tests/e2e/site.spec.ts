@@ -14,6 +14,12 @@ const routes = [
   '/services/late-singleness',
   '/services/finding-relationship',
   '/couples-counseling-ashdod',
+  '/parenting-guidance-ashdod',
+  '/services/couples/crisis',
+  '/couples-mediation-ashdod',
+  '/couples-crisis-ashdod',
+  '/parenting-adhd-ashdod',
+  '/couples-counseling-gan-yavne',
   '/blog',
   '/blog/child-after-school-restraint-collapse',
   '/blog/relocation-couple-conversations-before-moving',
@@ -24,6 +30,20 @@ const routes = [
   '/privacy',
   '/terms',
 ];
+
+test.beforeEach(async ({ page }) => {
+  await page.route('https://news.google.com/**', (route) => route.fulfill({ status: 200, body: '' }));
+  await page.route('https://assets.calendly.com/**', (route) => {
+    if (route.request().url().includes('widget.js')) {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/javascript',
+        body: 'window.Calendly={initInlineWidget:function(o){if(o&&o.parentElement){var f=document.createElement("iframe");f.title="Calendly Scheduling Page";f.src=o.url||"about:blank";o.parentElement.appendChild(f);}}};',
+      });
+    }
+    return route.fulfill({ status: 200, body: '' });
+  });
+});
 
 for (const route of routes) {
   test(`${route} renders route metadata and accessible content`, async ({ page }) => {
@@ -49,6 +69,128 @@ for (const route of routes) {
     expect(errors).toEqual([]);
   });
 }
+
+test('Compact Keywords index policy matches the intended portfolio', async ({ page }) => {
+  const cases = [
+    {
+      route: '/parenting-adhd-ashdod',
+      canonical: 'https://kesher.saharoni.com/parenting-adhd-ashdod',
+      robots: null,
+      serviceType: 'parenting_adhd',
+      landingPageType: 'adhd_ashdod',
+      relatedHref: '/parenting-guidance-ashdod',
+    },
+    {
+      route: '/couples-mediation-ashdod',
+      canonical: 'https://kesher.saharoni.com/couples-mediation-ashdod',
+      robots: null,
+      serviceType: 'couples_mediation',
+      landingPageType: 'mediation_ashdod',
+      relatedHref: '/services/mediation',
+    },
+    {
+      route: '/couples-crisis-ashdod',
+      canonical: 'https://kesher.saharoni.com/couples-crisis-ashdod',
+      robots: 'noindex, follow',
+      serviceType: 'couples_crisis',
+      landingPageType: 'crisis_ashdod',
+      relatedHref: '/services/couples/crisis',
+    },
+    {
+      route: '/couples-counseling-gan-yavne',
+      canonical: 'https://kesher.saharoni.com/couples-counseling-gan-yavne',
+      robots: 'noindex, follow',
+      serviceType: 'couples_counseling',
+      landingPageType: 'counseling_gan_yavne',
+      relatedHref: '/couples-counseling-ashdod',
+    },
+  ];
+
+  for (const item of cases) {
+    await page.goto(item.route, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', item.canonical);
+    await expect(page.locator('main[data-analytics-service-type]')).toHaveAttribute(
+      'data-analytics-service-type',
+      item.serviceType,
+    );
+    await expect(page.locator('main[data-analytics-landing-page-type]')).toHaveAttribute(
+      'data-analytics-landing-page-type',
+      item.landingPageType,
+    );
+    await expect(page.locator('a[data-analytics-location="related_service"]')).toHaveAttribute(
+      'href',
+      item.relatedHref,
+    );
+    if (item.robots) {
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', item.robots);
+    } else {
+      await expect(page.locator('meta[name="robots"]')).toHaveCount(0);
+    }
+  }
+});
+
+test('Ashdod landing hubs preserve exact conversion attribution context', async ({ page }) => {
+  const cases = [
+    {
+      route: '/couples-counseling-ashdod',
+      serviceType: 'couples_counseling',
+      landingPageType: 'ashdod',
+    },
+    {
+      route: '/parenting-guidance-ashdod',
+      serviceType: 'parenting_guidance',
+      landingPageType: 'ashdod',
+    },
+  ];
+
+  for (const item of cases) {
+    await page.goto(item.route, { waitUntil: 'domcontentloaded' });
+
+    const main = page.locator('main[data-analytics-service-type]');
+    await expect(main).toHaveAttribute('data-analytics-service-type', item.serviceType);
+    await expect(main).toHaveAttribute('data-analytics-landing-page-type', item.landingPageType);
+    await expect(main).toHaveAttribute('data-analytics-variant-id', 'A');
+
+    await page.evaluate(() => {
+      window.dataLayer = [];
+    });
+
+    const heroWhatsapp = page.locator('[data-analytics-location="hero"] a[href*="wa.me"]').first();
+    await expect(heroWhatsapp).toBeVisible();
+    await heroWhatsapp.evaluate((element) => {
+      element.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      (element as HTMLAnchorElement).click();
+    });
+
+    const event = await page.evaluate(() => {
+      return window.dataLayer.find((entry) => entry.event === 'whatsapp_click') || null;
+    });
+
+    expect(event).toMatchObject({
+      event: 'whatsapp_click',
+      landing_page_path: item.route,
+      service_type: item.serviceType,
+      landing_page_type: item.landingPageType,
+      variant_id: 'A',
+      cta_location: 'hero',
+    });
+  }
+});
+
+test('Ashdod landing schema omits unverified city-center placeholders', async ({ page }) => {
+  for (const route of ['/couples-counseling-ashdod', '/parenting-guidance-ashdod']) {
+    await page.goto(route, { waitUntil: 'domcontentloaded' });
+    const schemaText = (await page.locator('script[type="application/ld+json"]').allTextContents()).join('\n');
+
+    expect(schemaText).toContain('"@type":"Service"');
+    expect(schemaText).toContain('"@type":"Offer"');
+    expect(schemaText).not.toContain('31.8014');
+    expect(schemaText).not.toContain('34.6435');
+    expect(schemaText).not.toContain('77100');
+    expect(schemaText).not.toContain('"streetAddress":"אשדוד"');
+    expect(schemaText).not.toContain('openingHoursSpecification');
+  }
+});
 
 test('unknown routes render the noindex 404 page', async ({ page }) => {
   await page.route('https://news.google.com/**', route => route.fulfill({ status: 200, body: '' }));
@@ -201,7 +343,7 @@ test('relocation and premarital service pages expose their practical article hub
     .toHaveAttribute('href', '/services/couples-aliyah-relocation');
 
   await page.goto('/services/premarital-first-year');
-  await expect(page.getByRole('heading', { name: 'הכנה לנישואים וליווי בשנה הראשונה' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'ייעוץ זוגי לפני חתונה והכנה לנישואים' })).toBeVisible();
   await page.getByRole('link', { name: /12 שאלות שחייבים לשאול לפני החתונה/ }).click();
   await expect(page).toHaveURL(/\/blog\/premarital-questions-before-wedding$/);
   await expect(page.getByRole('link', { name: 'פגישות הכנה לנישואים' }))

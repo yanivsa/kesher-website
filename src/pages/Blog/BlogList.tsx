@@ -7,8 +7,11 @@ import posts from '../../data/postSummaries.json';
 import { getImageDimensions } from '../../data/imageDimensions';
 import styles from './BlogList.module.css';
 
-// Extract unique categories from actual posts data
-const CATEGORIES = ['הכל', ...Array.from(new Set(posts.map(p => p.category)))];
+const normalizeCategory = (category: string) => category === 'הנחיית הורים' ? 'הדרכת הורים' : category;
+const isParentingCategory = (category: string) => normalizeCategory(category) === 'הדרכת הורים';
+
+// Extract unique categories from actual posts data, while keeping the public label consistent.
+const CATEGORIES = ['הכל', ...Array.from(new Set(posts.map(p => normalizeCategory(p.category))))];
 
 
 const schemaData = {
@@ -39,6 +42,7 @@ const schemaData = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/blog#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -66,10 +70,11 @@ const BlogList: React.FC = () => {
     const map = new Map<string, Set<string>>();
     posts.forEach(p => {
       if ('subcategory' in p && p.subcategory) {
-        if (!map.has(p.category)) {
-          map.set(p.category, new Set());
+        const category = normalizeCategory(p.category);
+        if (!map.has(category)) {
+          map.set(category, new Set());
         }
-        map.get(p.category)!.add(p.subcategory);
+        map.get(category)!.add(p.subcategory);
       }
     });
     return map;
@@ -79,7 +84,7 @@ const BlogList: React.FC = () => {
     return selectedCategory === 'הכל'
       ? posts
       : posts.filter(post =>
-          post.category === selectedCategory ||
+          normalizeCategory(post.category) === selectedCategory ||
           (('subcategory' in post && post.subcategory) ? post.subcategory === selectedCategory : false)
         );
   }, [selectedCategory]);
@@ -214,7 +219,9 @@ const BlogList: React.FC = () => {
                         {...getImageDimensions(post.image)}
                       />
                       <span className={styles.categoryBadge}>
-                        {('subcategory' in post && post.subcategory) ? post.subcategory : post.category}
+                        {isParentingCategory(post.category)
+                          ? 'הדרכת הורים'
+                          : (('subcategory' in post && post.subcategory) ? post.subcategory : normalizeCategory(post.category))}
                       </span>
                     </div>
                   </Link>

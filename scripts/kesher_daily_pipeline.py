@@ -39,10 +39,12 @@ if str(PROJECT_DIR) not in sys.path:
 try:
     from motion_plan_generator import generate_motion_plan
     from kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
+    from kesher_free_stock_broll import provider_credit_lines
     from kesher_runtime.verification import VerificationError, match_youtube_metadata, publication_metadata
 except ImportError:
     from scripts.motion_plan_generator import generate_motion_plan
     from scripts.kesher_video_enhancement import build_enhancement_manifest, execute_enhancement
+    from scripts.kesher_free_stock_broll import provider_credit_lines
     from scripts.kesher_runtime.verification import VerificationError, match_youtube_metadata, publication_metadata
 
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
@@ -53,6 +55,7 @@ NOTEBOOKLM_BIN = os.environ.get("NOTEBOOKLM_BIN", "notebooklm")
 NOTEBOOKLM_REQUIRED_VERSION = "0.8.0"
 YOUTUBE_CHANNEL_ID = "UCx5fEFvdVf28HLAR2dFW64Q"
 SITE_URL = "https://kesher.saharoni.com"
+APPOINTMENT_URL = f"{SITE_URL}/appointment"
 DISPLAY_URL = "kesher.saharoni.com"
 STATE_VERSION = 1
 POLL_INTERVAL_SECONDS = 30
@@ -62,6 +65,7 @@ SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
 SIGNATURE_DURATION_SECONDS = 3.0
 FEMALE_PITCH_MIN_HZ = 155.0
+VOICE_CONSTRAINT_VERSION = "female-he-v2"
 PRODUCTION_CONTRACT_FILE = PROJECT_DIR / "config" / "kesher-production-contract.json"
 
 
@@ -137,15 +141,52 @@ def clean_article_html(value: str) -> str:
 def require_hebrew(value: str, field: str, allow_url: bool = False) -> None:
     checked = value
     if allow_url:
-        checked = re.sub(
-            rf"{re.escape(SITE_URL)}(?:/[A-Za-z0-9._~!$&'()*+,;=:@%/-]*)?",
-            "",
-            checked,
-        )
+        checked = re.sub(r"https?://\S+", "", checked)
     if re.search(r"[A-Za-z]", checked):
         raise PipelineError(f"{field} contains unsupported Latin text")
     if not re.search(r"[\u0590-\u05ff]", checked):
         raise PipelineError(f"{field} contains no Hebrew")
+
+
+def validate_youtube_description_links(description: str, canonical_url: str) -> None:
+    lines = [line.strip() for line in str(description).splitlines() if line.strip()]
+    if not canonical_url or canonical_url not in lines:
+        raise PipelineError("YouTube description is missing the exact article URL")
+    if SITE_URL not in lines:
+        raise PipelineError("YouTube description is missing the standalone Kesher site URL")
+    if APPOINTMENT_URL not in lines:
+        raise PipelineError("YouTube description is missing the appointment URL")
+
+
+def apply_enhancement_media_credits(item: dict[str, Any]) -> dict[str, Any]:
+    """Append provider attribution only when an external stock asset was actually used."""
+    metadata = item.get("youtube_metadata")
+    if not isinstance(metadata, dict):
+        raise PipelineError("YouTube metadata is missing")
+    description = str(metadata.get("description") or "").strip()
+    for line in provider_credit_lines(item.get("enhancement_assets_used") or []):
+        if line not in description:
+            description = f"{description}\n\n{line}".strip()
+    metadata["description"] = description
+    item["youtube_metadata"] = metadata
+    return metadata
+
+
+def media_tags(post: dict[str, Any], field: str, defaults: list[str]) -> list[str]:
+    raw = post.get(field)
+    if raw is None:
+        return list(defaults)
+    if not isinstance(raw, list):
+        raise PipelineError(f"{field} must be a list")
+    tags = list(defaults)
+    for value in raw:
+        tag = str(value or "").strip()
+        if not tag:
+            continue
+        require_hebrew(tag, field)
+        if tag not in tags:
+            tags.append(tag)
+    return tags
 
 
 def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
@@ -159,11 +200,23 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
     article_text = clean_article_html(str(post["content"]))
     category = str(post["category"]).strip()
     subcategory = str(post.get("subcategory", "")).strip()
+    video_title = str(post.get("videoTitle") or title).strip()
+    short_title = str(post.get("shortTitle") or title).strip()
+    short_hook = str(post.get("shortHook") or "").strip()
     canonical_url = f"{SITE_URL}/blog/{slug}"
-    for field, value in (("title", title), ("excerpt", excerpt), ("article", article_text), ("category", category)):
+    for field, value in (
+        ("title", title),
+        ("excerpt", excerpt),
+        ("article", article_text),
+        ("category", category),
+        ("videoTitle", video_title),
+        ("shortTitle", short_title),
+    ):
         require_hebrew(value, field)
     if subcategory:
         require_hebrew(subcategory, "subcategory")
+    if short_hook:
+        require_hebrew(short_hook, "shortHook")
     body = "\n\n".join(
         part
         for part in (
@@ -180,6 +233,15 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
         tags.append(subcategory)
     for tag in tags:
         require_hebrew(tag, "tag")
+    video_tags = media_tags(post, "videoTags", tags)
+    short_tags = media_tags(post, "shortTags", tags)
+    description = (
+        f"{excerpt}\n\nלקריאת המאמר המלא:\n{canonical_url}"
+        f"\n\nלאתר קשר:\n{SITE_URL}"
+        f"\n\nלתיאום פגישה:\n{APPOINTMENT_URL}"
+    )
+    require_hebrew(description, "description", allow_url=True)
+    validate_youtube_description_links(description, canonical_url)
     source = {
         "id": str(post["id"]),
         "slug": slug,
@@ -191,9 +253,23 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
         "canonical_url": canonical_url,
         "body": body,
         "content_sha256": content_hash,
+        "video_title": video_title,
+        "short_title": short_title,
+        "short_hook": short_hook,
+        "youtube_metadata": {
+            "title": video_title[:100],
+            "description": description,
+            "tags": video_tags,
+        },
+        "short_youtube_metadata": {
+            "title": short_title[:100],
+            "description": description,
+            "tags": short_tags,
+        },
     }
     try:
         source["youtube_metadata"] = publication_metadata(source, "overview")
+        source["short_youtube_metadata"] = publication_metadata(source, "short")
     except VerificationError as exc:
         raise PipelineError(str(exc)) from exc
     require_hebrew(source["youtube_metadata"]["description"], "description", allow_url=True)
@@ -325,10 +401,15 @@ def auth_preflight() -> dict[str, Any]:
 
 
 def generation_prompt(source: dict[str, Any]) -> str:
+    video_topic = str(source.get("video_title") or source["title"]).strip()
     prompt = (
+        "חובה: כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד. אין להשתמש בקול גברי, "
+        "אין להחליף בין דוברים, ואין להשתמש בקול ניטרלי או דו-קולי. "
+        "הקול צריך להישמע כאישה ישראלית בוגרת, טבעית, חמה, ברורה ומקצועית. "
+        "אם אין אפשרות להבטיח קול נשי — אל תפיק תוצר. "
         "צור סקירת וידאו מסוג הסבר, בעברית טבעית בלבד, המבוססת אך ורק על המקור שנבחר. "
         "אורך היעד הוא בין תשעים למאה ושמונים שניות, ביחס אופקי טבעי של שש עשרה לתשע. "
-        "השתמש בקול של אישה ישראלית, חם, טבעי, ברור ומקצועי לכל אורך הקריינות. "
+        "תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד. "
         "הקריינות כולה תהיה תמציתית ותכיל לכל היותר מאתיים ושישים מילים. "
         "הצג רעיון מרכזי אחד, דוגמה ביתית מוחשית ופעולה אחת שאפשר לנסות. "
         "אל תערבב בין הורות לזוגיות אם המקור עוסק רק באחד מהם. "
@@ -336,7 +417,7 @@ def generation_prompt(source: dict[str, Any]) -> str:
         "כל קריינות או טקסט חזותי יהיו בעברית תקינה. אין להשתמש באנגלית, בג׳יבריש, "
         "בשקופיות, בכרטיסיות מידע, בטבלאות או בתרשימים. העדף סיפור חזותי רציף וברור. "
         "אין ליצור כותרת ליוטיוב, תיאור ליוטיוב או תגיות בתוך הסרטון. "
-        f"הנושא המדויק הוא: {source['title']}"
+        f"הנושא המדויק הוא: {video_topic}"
     )
     require_hebrew(prompt, "generation prompt")
     return prompt
@@ -347,6 +428,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": f"video-{stamp}-{source['content_sha256'][:10]}",
         "type": "video_overview",
+        "voice_constraint_version": VOICE_CONSTRAINT_VERSION,
         "israel_date": israel_now().date().isoformat(),
         "status": "source_selected",
         "source": {key: value for key, value in source.items() if key not in {"body", "youtube_metadata"}},
@@ -478,6 +560,7 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     item["artifact_id"] = task_id
     item["generation_prompt"] = prompt
     item["generation_prompt_sha256"] = sha256_text(prompt)
+    item["voice_constraint_version"] = VOICE_CONSTRAINT_VERSION
     item["status"] = "generating"
     item["generation_started_at"] = utc_now()
     item["updated_at"] = utc_now()
@@ -493,7 +576,18 @@ def artifact_status(payload: dict[str, Any]) -> str:
 def wait_for_generation(state: dict[str, Any], item: dict[str, Any], max_wait_seconds: int) -> bool:
     deadline = time.monotonic() + max(0, max_wait_seconds)
     while True:
-        payload = run_notebooklm(["artifact", "poll", item["task_id"], "--notebook", NOTEBOOK_ID], timeout=120)
+        try:
+            payload = run_notebooklm(["artifact", "poll", item["task_id"], "--notebook", NOTEBOOK_ID], timeout=120)
+        except PipelineError as exc:
+            msg = str(exc).lower()
+            if any(term in msg for term in ("network error", "timed out", "connection reset", "502", "503", "504", "request timed out")):
+                print(f"POLL_TRANSIENT_NETWORK_RETRY item={item.get('id')} error={exc}")
+                if time.monotonic() >= deadline:
+                    print(f"GENERATION_PENDING item={item.get('id')} deadline_reached=True")
+                    return False
+                time.sleep(min(POLL_INTERVAL_SECONDS, max(2, int(deadline - time.monotonic()))))
+                continue
+            raise
         status = artifact_status(payload)
         item["last_provider_status"] = status
         item["last_polled_at"] = utc_now()
@@ -516,12 +610,23 @@ def download_artifact(state: dict[str, Any], item: dict[str, Any]) -> Path:
     raw_path = STATE_DIR / f"{item['id']}-notebooklm.mp4"
     if raw_path.exists() and raw_path.stat().st_size > 0:
         return raw_path
-    run_notebooklm(
-        ["download", "video", str(raw_path), "--notebook", NOTEBOOK_ID, "--artifact", item["artifact_id"], "--force"],
-        timeout=900,
-    )
+    last_err: Exception | None = None
+    for attempt in range(1, 4):
+        try:
+            run_notebooklm(
+                ["download", "video", str(raw_path), "--notebook", NOTEBOOK_ID, "--artifact", item["artifact_id"], "--force"],
+                timeout=900,
+            )
+            if raw_path.exists() and raw_path.stat().st_size >= 1024:
+                break
+        except PipelineError as exc:
+            last_err = exc
+            if attempt < 3:
+                time.sleep(5 * attempt)
+                continue
+            raise
     if not raw_path.exists() or raw_path.stat().st_size < 1024:
-        raise PipelineError("NotebookLM download did not produce a usable MP4")
+        raise PipelineError(f"NotebookLM download did not produce a usable MP4: {last_err or 'file missing or empty'}")
     item["raw_mp4"] = raw_path.name
     item["raw_sha256"] = sha256_file(raw_path)
     item["status"] = "downloaded"
@@ -638,6 +743,12 @@ def estimate_voice_pitch(media_path: Path) -> float | None:
         return None
     pitches.sort()
     return pitches[len(pitches) // 2]
+
+
+def voice_failure_fingerprint(item: dict[str, Any]) -> str:
+    prompt_sha = str(item.get("generation_prompt_sha256") or "missing-prompt-sha")
+    source_sha = str((item.get("source") or {}).get("content_sha256") or "missing-source-sha")
+    return f"wrong_narrator_gender:{prompt_sha}:{source_sha}"
 
 
 def validate_female_voice(
@@ -875,16 +986,23 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         )
     female_ok, pitch_hz, pitch_msg = validate_female_voice(final_path, item)
     if not female_ok:
+        item["failure_signature"] = "wrong_narrator_gender"
+        item["failure_fingerprint"] = voice_failure_fingerprint(item)
         technical_failures.append(pitch_msg)
-    metadata = item["youtube_metadata"]
+    else:
+        item.pop("failure_signature", None)
+        item.pop("failure_fingerprint", None)
+    metadata = apply_enhancement_media_credits(item)
     metadata_failure = ""
     try:
         require_hebrew(metadata["title"], "YouTube title")
         require_hebrew(metadata["description"], "YouTube description", allow_url=True)
         for tag in metadata["tags"]:
             require_hebrew(tag, "YouTube tag")
-        if SITE_URL not in metadata["description"]:
-            raise PipelineError("YouTube description is missing the Kesher URL")
+        validate_youtube_description_links(
+            metadata["description"],
+            str((item.get("source") or {}).get("canonical_url") or ""),
+        )
     except (KeyError, PipelineError) as exc:
         metadata_failure = f"המטא־דאטה אינו עומד בשער העברית והמקור: {exc}"
         technical_failures.append(metadata_failure)
@@ -900,6 +1018,9 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         "artifact_id": item["artifact_id"],
         "generation_prompt": item.get("generation_prompt"),
         "generation_prompt_sha256": item.get("generation_prompt_sha256"),
+        "voice_constraint_version": item.get("voice_constraint_version"),
+        "failure_signature": item.get("failure_signature"),
+        "failure_fingerprint": item.get("failure_fingerprint"),
         "raw_mp4": item["raw_mp4"],
         "raw_sha256": item["raw_sha256"],
         "final_mp4": item["final_mp4"],
@@ -1053,11 +1174,43 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
         and item.get("metadata_review_status") == "rejected"
         and bool(str((item.get("review_notes") or {}).get("metadata") or "").strip())
     )
+    resolution_recovery = (
+        item.get("status") == "rejected"
+        and item.get("technical_verified") is not True
+        and (
+            item.get("type") == "article_short"
+            or item.get("visual_pipeline") == "remotion-v4-notebooklm-short-motion-plan-v1"
+        )
+        and "1080x1920" in technical_note
+    )
     uploaded_recovery = item.get("status") == "uploaded" and item.get("uploaded") is True and item.get("youtube_id")
-    if not (rejected or legacy_signature_recovery or metadata_recovery or uploaded_recovery):
+    immutable_evidence_fields = (
+        "manifest_sha256",
+        "transcript_sha256",
+        "source_file_sha256",
+        "visual_review_sha256",
+    )
+    legacy_evidence_recovery = (
+        item.get("uploaded") is not True
+        and item.get("technical_verified") is True
+        and item.get("status") in {"pending_review", "approved", "rejected", "uploading"}
+        and (
+            any(not item.get(field) for field in immutable_evidence_fields)
+            or not isinstance(item.get("frame_sha256"), dict)
+            or not item.get("frame_sha256")
+        )
+    )
+    if not (
+        rejected
+        or legacy_signature_recovery
+        or metadata_recovery
+        or resolution_recovery
+        or uploaded_recovery
+        or legacy_evidence_recovery
+    ):
         raise PipelineError(
-            "Remotion rebuild is allowed only for a visual rejection, a recoverable signature/metadata technical rejection, "
-            "or an exact uploaded-item recovery"
+            "Remotion rebuild is allowed only for a visual rejection, a recoverable signature/metadata/resolution technical rejection, "
+            "an exact legacy immutable-evidence recovery, or an exact uploaded-item recovery"
         )
 
     youtube_id = item.pop("youtube_id", None)
@@ -1106,6 +1259,7 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
     )
     for field in (
         "final_mp4", "final_sha256", "manifest_path", "manifest_sha256",
+        "transcript_path", "transcript_sha256", "source_path", "source_file_sha256",
         "visual_review_path", "visual_review_sha256", "frame_paths", "frame_sha256",
         "remotion_props_path", "remotion_props_sha256", "motion_plan_path", "motion_plan_sha256", "rejected_at",
         "enhancement_status", "enhancement_render_mode", "enhancement_assets_used",
@@ -1367,8 +1521,10 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
             metadata_evidence = match_youtube_metadata(item, row)
         except VerificationError as exc:
             raise PipelineError(str(exc)) from exc
+        uploaded_description = str(snippet.get("description", ""))
+        validate_youtube_description_links(uploaded_description, str((item.get("source") or {}).get("canonical_url") or ""))
         require_hebrew(str(snippet.get("title", "")), "uploaded title")
-        require_hebrew(str(snippet.get("description", "")), "uploaded description", allow_url=True)
+        require_hebrew(uploaded_description, "uploaded description", allow_url=True)
         process_status = processing.get("processingStatus")
         if status.get("privacyStatus") == "public" and process_status == "succeeded":
             return {
@@ -1443,8 +1599,10 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
         raise PipelineError("YouTube metadata is incomplete")
     require_hebrew(title, "YouTube title")
     require_hebrew(description, "YouTube description", allow_url=True)
-    if SITE_URL not in description:
-        raise PipelineError("YouTube description is missing the Kesher URL")
+    validate_youtube_description_links(
+        description,
+        str((item.get("source") or {}).get("canonical_url") or ""),
+    )
     for tag in metadata.get("tags") or []:
         require_hebrew(str(tag), "YouTube tag")
     token = youtube_access_token()

@@ -70,6 +70,8 @@ def needs_recovery(item: dict) -> bool:
 
 def queue_aware_matching(video_state: dict, requested_slug: str) -> list[dict]:
     direct = _base_matching(video_state, requested_slug)
+    if any(controller.verified_youtube_item(item, requested_slug) for item in direct):
+        return direct
     backlog = [
         item for item in video_state.get("items") or []
         if isinstance(item, dict)

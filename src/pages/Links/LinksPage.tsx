@@ -1,6 +1,8 @@
 import React from 'react';
 import MetaTags from '../../components/SEO/MetaTags';
 import styles from './LinksPage.module.css';
+import { SITE_CONFIG } from '../../constants/siteConfig';
+
 
 const resources = [
   {
@@ -28,6 +30,7 @@ const resources = [
 const LinksPage: React.FC = () => (
   <div className={styles.page}>
     <MetaTags
+        canonical={`${SITE_CONFIG.url}/links`}
       title="קישורים ומקורות מקצועיים"
       description="קישורים לארגונים ולמקורות מידע שימושיים בתחומי זוגיות, משפחה, הורות, גישור וזכויות ילדים בישראל."
     />

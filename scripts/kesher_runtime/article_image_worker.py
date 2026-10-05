@@ -80,8 +80,14 @@ def _evidence(post, candidate, head):
 
 
 def _with_image(post, candidate):
-    return dict(_editorial(post), image='/images/generated/blog/' + post['id'] + '.' + candidate['extension'],
-                imageAlt=candidate['visual_match'])
+    result = dict(_editorial(post), image='/images/generated/blog/' + post['id'] + '.' + candidate['extension'],
+                imageAlt=candidate['visual_match'], imageProvider=candidate['provider'],
+                imageSourceUrl=candidate['source_url'], imageIsFallback=candidate['provider'] == 'Local')
+    if candidate['provider'] == 'Pexels':
+        result.update(imageCredit='צילום דרך Pexels', imageCreditUrl=candidate['source_url'])
+    else:
+        result.pop('imageCredit', None); result.pop('imageCreditUrl', None)
+    return result
 
 
 def _descriptor(candidate):
@@ -110,7 +116,8 @@ def _valid(post, candidate, used):
         proof = _evidence(_with_image(post, candidate), candidate, 'a'*40)
         if image_proof_errors(_with_image(post, candidate), replace_image_evidence('', proof), 'a'*40, data):
             return False
-        return (hashlib.sha256(data).hexdigest() not in used and 'pixels:' + image_pixel_sha256(data) not in used)
+        return ((hashlib.sha256(data).hexdigest() not in used and 'pixels:' + image_pixel_sha256(data) not in used)
+                or isinstance(used, ImageUsage) and used.permits(post, candidate))
     except (ValueError, KeyError, TypeError):
         return False
 
@@ -144,7 +151,7 @@ def select_image(context, post, pr_number, providers, blobs, existing_hashes):
             candidate = providers[provider](post, existing_hashes)
             if candidate:
                 candidate = dict(candidate, attempts=list(IMAGE_PROVIDER_ORDER[:index + 1]))
-                if IMAGE_PROVIDER_RULES.get(candidate.get('provider'), (None, None))[1] != provider:
+                if IMAGE_PROVIDER_RULES.get(candidate.get('provider'), (None, None))[1] != provider and not (candidate.get('provider') == 'Gemini' and provider.startswith('gemini-')):
                     raise JulesError('ARTICLE_IMAGE_OUTPUT_INVALID')
                 if not _valid(post, candidate, existing_hashes):
                     candidate = None
@@ -280,6 +287,27 @@ class GitHubImageBlobs:
         return row['sha']
 
 
+class ImageUsage(set):
+    """Trusted immutable-main publication history, keyed by decoded pixels."""
+    def __init__(self):
+        super().__init__()
+        self.publications = {}
+
+    def permits(self, post, candidate):
+        from datetime import date
+        if candidate.get('provider') != 'Local':
+            return False
+        previous = self.publications.get('pixels:' + image_pixel_sha256(candidate['data']), [])
+        if not previous or len(previous) >= 3:
+            return False
+        try:
+            published = date.fromisoformat(post['date'])
+            latest = max(date.fromisoformat(row['date']) for row in previous)
+            return (published - latest).days >= 90
+        except (KeyError, ValueError, TypeError):
+            return False
+
+
 class GitImageBranch:
     def __init__(self, root, *, generator=None):
         self.git = GitNormalization(Path(root), generator=generator)
@@ -303,7 +331,7 @@ class GitImageBranch:
         return _editorial(post)
 
     def used_hashes(self):
-        used = set()
+        used = ImageUsage()
         for post in json.loads((self.root / 'src/data/posts.json').read_text(encoding='utf-8')):
             image = post.get('image')
             if not image: continue
@@ -312,7 +340,9 @@ class GitImageBranch:
                 raise JulesError('ARTICLE_IMAGE_INVENTORY_INVALID')
             data = path.read_bytes()
             used.add(hashlib.sha256(data).hexdigest())
-            used.add('pixels:' + image_pixel_sha256(data))
+            pixels = 'pixels:' + image_pixel_sha256(data)
+            used.add(pixels)
+            used.publications.setdefault(pixels, []).append(post)
         return used
 
     def prepare(self, *, main_sha, head_sha, post, candidate, slot, pr_number, prepared_at):

@@ -15,6 +15,10 @@ except ImportError:
     import kesher_e2e_delivery_guard as delivery_guard
 
 
+SITE_URL = "https://kesher.saharoni.com"
+APPOINTMENT_URL = f"{SITE_URL}/appointment"
+
+
 class UploadGuardError(RuntimeError):
     pass
 
@@ -88,6 +92,17 @@ def validate_candidate(item: dict) -> None:
     source = item.get("source") or {}
     if not (source.get("slug") or source.get("id")) or not source.get("content_sha256"):
         raise UploadGuardError("Upload candidate source identity is incomplete")
+
+    metadata = item.get("youtube_metadata") or {}
+    description = str(metadata.get("description") or "")
+    canonical_url = str(source.get("canonical_url") or "").strip()
+    description_lines = [line.strip() for line in description.splitlines() if line.strip()]
+    if not canonical_url or canonical_url not in description_lines:
+        raise UploadGuardError("Upload candidate description is missing the exact article URL")
+    if SITE_URL not in description_lines:
+        raise UploadGuardError("Upload candidate description is missing the standalone Kesher site URL")
+    if APPOINTMENT_URL not in description_lines:
+        raise UploadGuardError("Upload candidate description is missing the appointment URL")
 
     is_long_video = item.get("visual_pipeline") == "remotion-v1-notebooklm-audio"
     is_short = (

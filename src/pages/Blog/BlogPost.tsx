@@ -12,22 +12,36 @@ import LeadMagnet from '../../components/LeadMagnet/LeadMagnet';
 import ShareButtons from '../../components/ShareButtons/ShareButtons';
 import GooglePreferredSource from '../../components/GooglePreferredSource/GooglePreferredSource';
 import SignatureMark from '../../components/Signature/SignatureMark';
+import LandingCalloutBanner from '../../components/LandingCalloutBanner/LandingCalloutBanner';
+import { getLandingTargetForPost } from '../../utils/landingCalloutHelper';
 import { SITE_CONFIG } from '../../constants/siteConfig';
 import { getImageDimensions } from '../../data/imageDimensions';
 import NotFound from '../NotFound/NotFound';
 import styles from './BlogPost.module.css';
 
-const routeKeyForPost = (post: (typeof posts)[number]) => {
-  if ('slug' in post && typeof post.slug === 'string' && post.slug.trim()) {
-    return post.slug.trim();
+const articleCtaCopy = (post: (typeof posts)[number]) => {
+  const subcategory = 'subcategory' in post && typeof post.subcategory === 'string' ? post.subcategory : '';
+  const context = `${post.category} ${subcategory} ${post.title}`;
+
+  if (/רילוקיישן|עלייה|הגירה/.test(context)) {
+    return 'אם המעבר, החזרה לארץ או השינוי הגדול משפיעים גם על הקשר או על האווירה בבית, אפשר לפנות לשירה לייעוץ פרטני. יחד אפשר לעשות סדר במה שקורה ולבחון צעדים שמתאימים לכם.';
   }
-  return post.id;
+
+  if (/הור|ילד|כיתה|קשב|מחונ/.test(context)) {
+    return 'אם הנושא במאמר דומה למה שקורה אצלכם בבית, אפשר לפנות לשירה לייעוץ פרטני. יחד אפשר להבין מה עומד מאחורי הקושי ולבחור צעדים שמתאימים לילד ולמשפחה.';
+  }
+
+  if (/רווק|דייט|היכרות|מציאת זוגיות/.test(context)) {
+    return 'אם השאלות במאמר פוגשות את מה שקורה אצלך עכשיו, אפשר לפנות לשירה לייעוץ פרטני וממוקד. יחד אפשר לברר את הדפוסים, הצרכים והצעדים הבאים שמתאימים לך.';
+  }
+
+  return 'אם מה שקראתם כאן דומה למה שקורה אצלכם בזוגיות, אפשר לפנות לשירה לייעוץ פרטני וממוקד. יחד אפשר לעשות סדר בקושי, בתקשורת ובצעדים הבאים שמתאימים לכם.';
 };
 
 const BlogPost: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const post = posts.find((candidate) => candidate.id === id || routeKeyForPost(candidate) === id);
-  const canonicalRouteKey = post ? routeKeyForPost(post) : '';
+  const post = posts.find((candidate) => candidate.id === id);
+  const canonicalRouteKey = post?.id || '';
   const articleVideo = post
     ? (articleVideos as Record<string, { youtubeId: string; title?: string }>)[post.id]
     : undefined;
@@ -65,6 +79,7 @@ const BlogPost: React.FC = () => {
       },
       {
         "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/blog/${canonicalRouteKey}#breadcrumb`,
         "itemListElement": [
           {
             "@type": "ListItem",
@@ -95,12 +110,26 @@ const BlogPost: React.FC = () => {
 
   const safeContent = DOMPurify.sanitize(post.content);
   const shareUrl = `${SITE_CONFIG.url}/blog/${canonicalRouteKey}`;
+  const directAnswer = 'directAnswer' in post && typeof post.directAnswer === 'string'
+    ? post.directAnswer.trim()
+    : '';
+  const articleSummary = directAnswer || post.excerpt.trim();
   const relatedService = 'serviceUrl' in post
     && 'serviceLabel' in post
     && typeof post.serviceUrl === 'string'
     && typeof post.serviceLabel === 'string'
     ? { url: post.serviceUrl, label: post.serviceLabel }
     : null;
+  const ctaCopy = articleCtaCopy(post);
+  const landingTarget = getLandingTargetForPost(post);
+  const displayCategory = post.category === 'הנחיית הורים' ? 'הדרכת הורים' : post.category;
+  const imageMeta = post as typeof post & {
+    imageProvider?: string;
+    imageSourceUrl?: string;
+    imageCredit?: string;
+    imageCreditUrl?: string;
+    imageIsFallback?: boolean;
+  };
 
   return (
     <article className={styles.post}>
@@ -115,8 +144,14 @@ const BlogPost: React.FC = () => {
       <header className={styles.header}>
         <div className="container">
           <Link to="/blog" className={styles.backLink}>← חזרה לבלוג</Link>
-          <span className={styles.category}>{post.category}</span>
+          <span className={styles.category}>{displayCategory}</span>
           <h1 className={styles.title}>{post.title}</h1>
+          {articleSummary && (
+            <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">
+              <div className={styles.directAnswerBadge}>תקציר מעשי</div>
+              <p className={styles.directAnswerText}>{articleSummary}</p>
+            </div>
+          )}
           <div className={styles.authorByline}>
             <span>מאת: </span>
             <Link to="/about" className={styles.authorLink}>{post.author || SITE_CONFIG.author}</Link>
@@ -140,22 +175,25 @@ const BlogPost: React.FC = () => {
       <div className={`container ${styles.container}`}>
         <div className={styles.mainContent}>
           {post.image && (
-            <div className={styles.imageWrapper}>
-              <img
-                data-kesher-article-hero
-                src={post.image}
-                alt={post.imageAlt || post.title}
-                className={styles.image}
-                fetchPriority="high"
-                {...getImageDimensions(post.image)}
-              />
-            </div>
-          )}
-          {'directAnswer' in post && typeof post.directAnswer === 'string' && post.directAnswer.trim() && (
-            <div className={styles.directAnswer} role="region" aria-label="תשובה תמציתית">
-              <div className={styles.directAnswerBadge}>תקציר מעשי</div>
-              <p className={styles.directAnswerText}>{post.directAnswer.trim()}</p>
-            </div>
+            <>
+              <div className={styles.imageWrapper}>
+                <img
+                  data-kesher-article-hero
+                  src={post.image}
+                  alt={post.imageAlt || post.title}
+                  className={styles.image}
+                  fetchPriority="high"
+                  {...getImageDimensions(post.image)}
+                />
+              </div>
+              {imageMeta.imageCredit && imageMeta.imageCreditUrl && (
+                <p className={styles.imageCredit}>
+                  <a href={imageMeta.imageCreditUrl} target="_blank" rel="noopener noreferrer">
+                    {imageMeta.imageCredit}
+                  </a>
+                </p>
+              )}
+            </>
           )}
           <div className={styles.content} data-kesher-article-body dangerouslySetInnerHTML={{ __html: safeContent }} />
           {'expertInsight' in post && typeof post.expertInsight === 'string' && post.expertInsight.trim() && (
@@ -191,6 +229,7 @@ const BlogPost: React.FC = () => {
               poster={post.image || undefined}
             />
           )}
+          {landingTarget && <LandingCalloutBanner target={landingTarget} />}
           <SignatureMark tone="article" label="שלכם," className={styles.articleSignature} />
           <ShareButtons
             title={post.title}
@@ -199,21 +238,8 @@ const BlogPost: React.FC = () => {
             placement="article_bottom"
           />
           <GooglePreferredSource />
-          <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
-          <div className={styles.articleContactCta}>
-            <h3>רוצה לדבר על מה שקורה אצלך?</h3>
-            <div className={styles.contactActions}>
-              <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
-                <FiCalendar aria-hidden="true" />
-                בחירת מועד לפגישה
-              </Link>
-              <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
-                <FaWhatsapp aria-hidden="true" />
-                שליחת הודעה בוואטסאפ
-              </a>
-            </div>
-          </div>
           <LeadMagnet />
+          <p className={styles.disclaimer}>המאמר מספק מידע כללי ואינו מחליף ייעוץ מקצועי המותאם למצב האישי או המשפחתי.</p>
         </div>
         <aside className={styles.sidebar}>
           {'video' in post && post.video && (
@@ -240,6 +266,22 @@ const BlogPost: React.FC = () => {
             <Link to={SITE_CONFIG.links.appointment} className={styles.ctaButton}>קביעת פגישת ייעוץ</Link>
           </div>
         </aside>
+      </div>
+      <div className={`container ${styles.finalCtaContainer}`}>
+        <section className={styles.articleContactCta} aria-label="פנייה לשירה סהרוני">
+          <h3>זה פוגש משהו שקורה אצלכם?</h3>
+          <p>{ctaCopy}</p>
+          <div className={styles.contactActions}>
+            <Link to={SITE_CONFIG.links.appointment} className={styles.appointmentBtn}>
+              <FiCalendar aria-hidden="true" />
+              לקביעת פגישה עם שירה
+            </Link>
+            <a href={SITE_CONFIG.links.whatsapp} className={styles.whatsappBtn}>
+              <FaWhatsapp aria-hidden="true" />
+              לכתיבה לשירה בוואטסאפ
+            </a>
+          </div>
+        </section>
       </div>
     </article>
   );

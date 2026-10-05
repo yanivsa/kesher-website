@@ -310,6 +310,7 @@ class ThreeStrikeMediaInterventionMixin:
                 stage,
                 identity=identity,
                 fingerprint=delivery_guard.media_fingerprint(item),
+                provider_started_at=item.get("generation_started_at") or item.get("created_at"),
                 now=self.now,
             )
 
@@ -342,6 +343,24 @@ class ThreeStrikeMediaInterventionMixin:
                         return v5.core.Action("wait", f"{stage_name} made durable progress; intervention strikes reset")
 
             watchdog_decision = watchdog.media_decision(stage, now=self.now)
+            if watchdog_decision == "hard_timeout":
+                code = "LONG_VIDEO_PROVIDER_HARD_TIMEOUT" if stage_name == "long_video" else "SHORT_PROVIDER_HARD_TIMEOUT"
+                minutes = int(watchdog.MEDIA_HARD_TIMEOUT.total_seconds() // 60)
+                v5.core.block(
+                    state,
+                    stage_name,
+                    code,
+                    f"{stage_name} provider exceeded {minutes} minute hard timeout from launch/recovery",
+                )
+                stage["status"] = "blocked"
+                stage["controller_recovery_required"] = {
+                    "incident_key": incident_key,
+                    "reason": "media provider hard timeout",
+                    "requested_at": v5.core.utc_now(),
+                }
+                self.github.save_controller_state(state)
+                return v5.core.Action("blocked", f"{stage_name} provider hard timeout")
+
             if watchdog_decision == "wait":
                 self.github.save_controller_state(state)
                 return v5.core.Action("wait", f"{stage_name} provider pending under watchdog")

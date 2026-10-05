@@ -8,14 +8,82 @@ from __future__ import annotations
 
 import copy
 
-from .identity import MediaIdentity, SourceIdentity, digest
+from .identity import MediaIdentity, SourceIdentity, digest, require_sha
 from .sealed import seal, unseal
 from .state import StateInvalid
 from .worker import WorkerContext, public_evidence
 
 VOLATILE_FIELDS = {'updated_at', 'last_polled_at'}
-IMMUTABLE_RECEIPTS = ('id', 'source_id', 'task_id', 'artifact_id', 'youtube_id')
+IMMUTABLE_RECEIPTS = ('id', 'source_id', 'task_id', 'artifact_id', 'youtube_id', 'fresh_generation_attempt')
 ITEM_TYPES = {'overview': 'video_overview', 'short': 'article_short'}
+
+
+def provider_effect_name(name: str, attempt: int) -> str:
+    if name not in {'provider_source', 'provider_generation'} or type(attempt) is not int or not 1 <= attempt <= 3:
+        raise StateInvalid('Invalid bounded provider attempt')
+    return name if attempt == 1 else f'{name}_a{attempt}'
+
+
+def next_generation_attempt(state: dict, target: MediaIdentity, *, current_command_id=None) -> int | None:
+    """Only exact completed, rejected, never-archived provider output can reset.
+
+    Every older intent and receipt remains in the same append-only journal.
+    Unknown results, active predecessors, capabilities, archives and uploads
+    are refusals, including those recorded outside the latest snapshot.
+    """
+    history = snapshots(state, target)
+    if not history:
+        return None
+    item = history[-1]['item']
+    attempt = item.get('fresh_generation_attempt', 1)
+    rejection = item.get('generation_rejection')
+    if (type(attempt) is not int or not 1 <= attempt < 3
+            or item.get('status') != 'rejected' or item.get('technical_verified') is not False
+            or item.get('last_provider_status') not in {'completed', 'complete', 'ready', 'succeeded', 'success'}
+            or not isinstance(rejection, dict) or rejection.get('reason') not in {'voice', 'native_short'}
+            or type(rejection.get('attempt')) is not int or rejection.get('attempt') != attempt
+            or rejection.get('raw_sha256') != item.get('raw_sha256')
+            or rejection.get('artifact_id') != item.get('artifact_id')
+            or not all(isinstance(item.get(k), str) and item[k] for k in ('source_id', 'task_id', 'artifact_id'))):
+        return None
+    try:
+        require_sha(item.get('raw_sha256'), 64)
+    except ValueError:
+        return None
+    if any(row.get('capabilities') or any(row['item'].get(k) for k in
+           ('youtube_id', 'uploaded', 'upload_capability_sha256', 'upload_session_uri')) for row in history):
+        return None
+    commands = [row for key, row in state['commands'].items()
+                if row['target'] == target.to_dict() and key != current_command_id]
+    if any(row['outcome'] == 'pending' or any(name == 'output_artifact' or name.startswith('youtube_')
+           for name in row['effects']) for row in commands):
+        return None
+    settled = {}
+    names = {name for row in commands for name in row['effects']
+             if name.startswith(('provider_source', 'provider_generation'))}
+    for name in names:
+        effects = [row['effects'][name] for row in commands if name in row['effects']]
+        receipts = {digest(e['receipt']): e['receipt'] for e in effects if e.get('receipt') is not None}
+        # A later read-only reconciliation settles the exact lost-response
+        # request without erasing the original None receipt or repeating POST.
+        if len({digest(e['request']) for e in effects}) != 1 or len(receipts) != 1:
+            return None
+        settled[name] = {'request': effects[0]['request'], 'receipt': next(iter(receipts.values()))}
+    exact = {name: settled.get(provider_effect_name(name, attempt))
+             for name in ('provider_source', 'provider_generation')}
+    if any(effect is None for effect in exact.values()):
+        return None
+    source, generation = exact['provider_source'], exact['provider_generation']
+    if (source['receipt'].get('source_id') != item['source_id']
+            or source['request'].get('body_sha256') != target.source.content_sha256
+            or source['request'].get('notebook_id') != item.get('notebook_id')
+            or source['request'].get('title') != f'kesher:{target.key}:{attempt}'
+            or generation['request'].get('notebook_id') != item.get('notebook_id')
+            or generation['request'].get('source_id') != item['source_id']
+            or generation['receipt'].get('task_id') != item['task_id']
+            or generation['receipt'].get('artifact_id') != item['artifact_id']):
+        return None
+    return attempt + 1
 
 
 def _validate_item(item: dict, target: MediaIdentity) -> None:
@@ -95,6 +163,20 @@ class CanonicalMediaState(dict):
         self._latest = copy.deepcopy(history[-1]) if history else None
         self._capabilities = copy.deepcopy(self._latest.get('capabilities', {})) if history else {}
         item = copy.deepcopy(self._latest['item'] if history else initial_item)
+        command = state['commands'][context.command_id]
+        requested = command['inputs'].get('generation_attempt', str(item.get('fresh_generation_attempt', 1)))
+        if requested not in {'1', '2', '3'}:
+            raise StateInvalid('Invalid bounded provider attempt')
+        wanted = int(requested)
+        if (not self._latest and wanted != 1) or type(item.get('fresh_generation_attempt', 1)) is not int:
+            raise StateInvalid('UNPROVEN_MEDIA_ATTEMPT_TRANSITION')
+        if wanted != item.get('fresh_generation_attempt', 1):
+            if (command['operation'] != 'publish' or not self._latest
+                    or command['inputs'].get('rejected_snapshot_sha256') != digest(self._latest)
+                    or next_generation_attempt(state, context.target, current_command_id=context.command_id) != wanted
+                    or initial_item.get('fresh_generation_attempt') != wanted):
+                raise StateInvalid('UNPROVEN_MEDIA_ATTEMPT_TRANSITION')
+            item = copy.deepcopy(initial_item)
         _validate_item(item, context.target)
         reference = item.pop('upload_capability_sha256', None)
         if reference:
@@ -104,6 +186,7 @@ class CanonicalMediaState(dict):
             item['upload_session_uri'] = unseal(envelope, encryption_key, context.target,
                                                  repo=context.store.repo, purpose='youtube_upload')
         self._bound = copy.deepcopy(item)
+        self._attempt = wanted
         self._uri = item.get('upload_session_uri')
         self._capability_ref = reference
         super().__init__({'version': 1, 'items': [item]})
@@ -116,6 +199,8 @@ class CanonicalMediaState(dict):
 
     def external(self, name: str, request: dict, create) -> dict:
         """Persist intent, execute once, persist receipt before item mutation."""
+        if name in {'provider_source', 'provider_generation'}:
+            name = self.provider_name(name)
         decision = self.context.begin_effect(name, request)
         if decision.receipt is not None:
             return copy.deepcopy(decision.receipt)
@@ -124,6 +209,12 @@ class CanonicalMediaState(dict):
         receipt = create()
         self.context.complete_effect(name, receipt)
         return receipt
+
+    def provider_name(self, name: str) -> str:
+        attempt = self.item.get('fresh_generation_attempt', 1)
+        if type(attempt) is not int or attempt != self._attempt:
+            raise StateInvalid('UNPROVEN_MEDIA_ATTEMPT_TRANSITION')
+        return provider_effect_name(name, self._attempt)
 
     def external_capability(self, name: str, request: dict, create) -> str:
         if not isinstance(self.encryption_key, str) or len(self.encryption_key) < 24:
@@ -146,6 +237,7 @@ class CanonicalMediaState(dict):
 
     def persist(self) -> None:
         item = self.item
+        self.provider_name('provider_source')
         _validate_item(item, self.context.target)
         for field in IMMUTABLE_RECEIPTS:
             if self._bound.get(field) and self._bound[field] != item.get(field):

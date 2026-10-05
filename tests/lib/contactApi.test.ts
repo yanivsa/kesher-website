@@ -7,6 +7,7 @@ const validRequest: ContactRequest = {
   email: 'test@example.com',
   phone: '050-1234567',
   startedAt: Date.now() - 5000,
+  turnstileToken: 'test-token',
 };
 
 describe('submitContact API wrapper', () => {

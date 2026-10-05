@@ -1,0 +1,2072 @@
+{
+  "kind": "local_non_ready_recovery_checkpoint",
+  "integration_status": "BLOCKED",
+  "checkpoint_scope": "Exact final main plus inert forensic evidence/recovery/runbook only; no reconstructed implementation is on an operational path.",
+  "created_at": "2026-10-02T08:28:49.137104+00:00",
+  "source_head": "2f0270f3a4c3938c28e35242b0b1c9b42594b499",
+  "target_main_at_start": "833b8cea42f4344371b823bae4d9c1060a348b22",
+  "final_main_readback": "839c9a8c15ede02956d02931cc55ac6bfd4b16a0",
+  "checkpoint_parent": "839c9a8c15ede02956d02931cc55ac6bfd4b16a0",
+  "checkpoint_commit": "containing Git commit; resolved in post-commit delivery artifact",
+  "merge_base": "55563f42e16618af5d93c39c26a8dd921d3ce019",
+  "start_source_ahead": 25,
+  "start_main_ahead": 263,
+  "branch": "candidate/stabilization-transplant-v6",
+  "main_movement": [
+    "M\t.github/workflows/kesher-daily-video.yml",
+    "M\t.github/workflows/kesher-short-v4.yml",
+    "A\tdocs/audits/compact-keywords-owner-evidence-2026-10-01.md",
+    "M\tpublic/llms-full.txt",
+    "M\tpublic/llms.txt",
+    "M\tpublic/rss.xml",
+    "M\tpublic/sitemap.xml",
+    "M\tscripts/content-policy.cjs",
+    "M\tscripts/generate-sitemap.cjs",
+    "M\tscripts/kesher_content_controller_v5.py",
+    "M\tscripts/kesher_short_pipeline_v4.py",
+    "M\tscripts/validate-content.cjs",
+    "M\tsrc/App.tsx",
+    "A\tsrc/components/LandingCalloutBanner/LandingCalloutBanner.module.css",
+    "A\tsrc/components/LandingCalloutBanner/LandingCalloutBanner.tsx",
+    "M\tsrc/components/Layout/Layout.tsx",
+    "M\tsrc/components/SEO/MetaTags.tsx",
+    "A\tsrc/data/landingPagesConfig.ts",
+    "M\tsrc/data/postSummaries.json",
+    "M\tsrc/data/posts.json",
+    "M\tsrc/hooks/useLandingPageAnalytics.ts",
+    "M\tsrc/pages/Blog/BlogPost.tsx",
+    "M\tsrc/pages/Home/Home.module.css",
+    "A\tsrc/pages/Landing/CouplesCounselingGanYavne/CouplesCounselingGanYavnePage.tsx",
+    "A\tsrc/pages/Landing/CouplesCrisisAshdod/CouplesCrisisAshdodPage.tsx",
+    "M\tsrc/pages/Landing/CouplesMediationAshdod/CouplesMediationAshdodPage.tsx",
+    "R055\tsrc/pages/Landing/CouplesMediationAshdod/CouplesMediationAshdodPage.module.css\tsrc/pages/Landing/LandingPageTemplate.module.css",
+    "A\tsrc/pages/Landing/LandingPageTemplate.tsx",
+    "A\tsrc/pages/Landing/ParentingAdhdAshdod/ParentingAdhdAshdodPage.tsx",
+    "M\tsrc/pages/Landing/ParentingGuidanceAshdod/ParentingGuidanceAshdodPage.tsx",
+    "M\tsrc/pages/Services/Mediation/MediationPage.tsx",
+    "A\tsrc/utils/landingCalloutHelper.ts",
+    "M\ttests/app-routing.test.ts",
+    "A\ttests/landing-page-component.test.tsx",
+    "A\ttests/landing-pages-config.test.ts",
+    "M\ttests/test_v5_shared_video_controller.py",
+    "M\tvitest.config.ts"
+  ],
+  "historical_recovery": {
+    "kind": "unvalidated_reconstruction_recovery_only",
+    "created_at": "2026-10-02T08:24:18.242957+00:00",
+    "base_sha": "833b8cea42f4344371b823bae4d9c1060a348b22",
+    "branch": "candidate/stabilization-transplant-v6",
+    "source_sha": "2f0270f3a4c3938c28e35242b0b1c9b42594b499",
+    "end_main_sha": "d2f92a93ef3e3f7966b35594e336e9707d5eba49",
+    "archive_name": "integration-unvalidated-recovery-20261002.tar.gz",
+    "archive_sha256": "c4dace067343700c448f1812d0d1027946115af2818558959d0fd9541fa3c7c6",
+    "archive_size_bytes": 3081697,
+    "files": [
+      {
+        "path": ".github/scripts/article-image-worker-v3.py",
+        "status": " M",
+        "size": 20324,
+        "mode": "0o644",
+        "sha256": "6e2d3452345c313f9be1a87b3a40ad50b947cccf6ced8e7abea4380e97d36cc4"
+      },
+      {
+        "path": ".github/scripts/article-image-worker-v4.py",
+        "status": " M",
+        "size": 19627,
+        "mode": "0o644",
+        "sha256": "550ee59ee6d8f3efb0494410a7cebd0f818fd83010627f972f7ce831e1a9de16"
+      },
+      {
+        "path": ".github/scripts/article-image-worker.py",
+        "status": " M",
+        "size": 22834,
+        "mode": "0o644",
+        "sha256": "bfd49063529708da1423e534da4f57da1ade1190e5bcc5aa82ad2e10580d7b5a"
+      },
+      {
+        "path": ".github/scripts/article-pr-controller.py",
+        "status": " M",
+        "size": 16078,
+        "mode": "0o644",
+        "sha256": "06636a59bc2a7c42cf7c9edce9bee44713f70e20580908b00874bbf8df595b80"
+      },
+      {
+        "path": ".github/scripts/validate-article-images.py",
+        "status": " M",
+        "size": 5871,
+        "mode": "0o644",
+        "sha256": "952c11759e25df559aae20135865a2458a4ea6ae71bce87918190c2c8c18f7e4"
+      },
+      {
+        "path": ".github/scripts/validate-article-pr.py",
+        "status": " M",
+        "size": 8461,
+        "mode": "0o644",
+        "sha256": "71bba8bb517e9201c8635bd9886bce7667922d9994664b1c4fbf7f25662886da"
+      },
+      {
+        "path": ".github/workflows/auto-close-noop-prs.yml",
+        "status": " M",
+        "size": 4058,
+        "mode": "0o644",
+        "sha256": "40963de2e8a75aa83859489d7ecf99201c9c95b1a741cf9302ecc22ae8dc5125"
+      },
+      {
+        "path": ".github/workflows/auto-close-stale-article-prs.yml",
+        "status": " M",
+        "size": 3286,
+        "mode": "0o644",
+        "sha256": "84d95f5cadfa23bb35f977408dc96934d1f29d5dda050456f73c6806971e77a4"
+      },
+      {
+        "path": ".github/workflows/auto-merge-article-prs.yml",
+        "status": " M",
+        "size": 9212,
+        "mode": "0o644",
+        "sha256": "ea513da2c321771d8ea723ecd1ff7899c355c34457eef8de1dc5aef3aa5a4441"
+      },
+      {
+        "path": ".github/workflows/auto-merge-jules-audit-prs.yml",
+        "status": " M",
+        "size": 15501,
+        "mode": "0o644",
+        "sha256": "4549131d5446651df3c7e49b74df9098da7c56691b666f4201583a2bc40a7616"
+      },
+      {
+        "path": ".github/workflows/booking-tracking-infrastructure.yml",
+        "status": " M",
+        "size": 8765,
+        "mode": "0o644",
+        "sha256": "931f69d7e0b4eefd290c25f79103a1ec2e5960eaa9665a725366662694644f2b"
+      },
+      {
+        "path": ".github/workflows/build-article-fallback-library.yml",
+        "status": " M",
+        "size": 2430,
+        "mode": "0o644",
+        "sha256": "18c2e395b277d27ad3765d95e8b1b01b61620e92344d962c0f970e95dac10877"
+      },
+      {
+        "path": ".github/workflows/ci.yml",
+        "status": " M",
+        "size": 5319,
+        "mode": "0o644",
+        "sha256": "6cd01365c4496db72036756ea09968b9a70cb0705d52465bbbb51b29d7da422c"
+      },
+      {
+        "path": ".github/workflows/cleanup-jules-branches.yml",
+        "status": " M",
+        "size": 4722,
+        "mode": "0o644",
+        "sha256": "bfc5f718ad9b86f63a9b2e3f0ba700a1bf41eebf799e1bb01c937defe7f4e5bd"
+      },
+      {
+        "path": ".github/workflows/deploy.yml",
+        "status": " M",
+        "size": 8351,
+        "mode": "0o644",
+        "sha256": "f1bdf24770da587a168f61ed28349f8fec79dde2f605b80830f102dc089a335c"
+      },
+      {
+        "path": ".github/workflows/jules-daily-industry-benchmarking.yml",
+        "status": " M",
+        "size": 8538,
+        "mode": "0o644",
+        "sha256": "24a97589b6c5b0d445d020d168f5211967db5f96d1119fe4fbe2d5691c7d3969"
+      },
+      {
+        "path": ".github/workflows/jules-daily-mobile-review.yml",
+        "status": " M",
+        "size": 9988,
+        "mode": "0o644",
+        "sha256": "a6b5a5546362fb4017f965a1ef2ca9343a73cd96a381fb03d1fc2ac5f8039190"
+      },
+      {
+        "path": ".github/workflows/jules-daily-seo-geo-review.yml",
+        "status": " M",
+        "size": 10493,
+        "mode": "0o644",
+        "sha256": "ed0c4b626867526a0f2fca30fa1da0d0a9676034c63029b3478a6e5c5eaeb845"
+      },
+      {
+        "path": ".github/workflows/jules-nightly-site-fixes.yml",
+        "status": " M",
+        "size": 8551,
+        "mode": "0o644",
+        "sha256": "33d225e10d7306428e7bd01a3b2a2552852d67dd768242719694e6909d9440db"
+      },
+      {
+        "path": ".github/workflows/jules-weekly-content-review.yml",
+        "status": " M",
+        "size": 6029,
+        "mode": "0o644",
+        "sha256": "04667cd13361679f5fb5d863b146ae10863f3508048d2277b5661e0dbf8bd1d6"
+      },
+      {
+        "path": ".github/workflows/kesher-activate-media-mode-fix.yml",
+        "status": " M",
+        "size": 1736,
+        "mode": "0o644",
+        "sha256": "17389b069f91db31be705509fa424d0fe16c2c279199f0f409dddd2e20a39524"
+      },
+      {
+        "path": ".github/workflows/kesher-article-deploy.yml",
+        "status": "??",
+        "size": 4355,
+        "mode": "0o644",
+        "sha256": "ce8827fc0e69b0974283014441c19a2a19c4ade3e61999a49bcb142ca5680a62"
+      },
+      {
+        "path": ".github/workflows/kesher-article-generation.yml",
+        "status": " M",
+        "size": 6594,
+        "mode": "0o644",
+        "sha256": "f66b8fc0169f5e1e31fb785f312ce807e4a0cc8d4a166a0a21705f58ee0843fc"
+      },
+      {
+        "path": ".github/workflows/kesher-article-image.yml",
+        "status": " M",
+        "size": 3091,
+        "mode": "0o644",
+        "sha256": "d205c30698b95b2c7885f50584c84c5540c442ea89730d03f3748f9b9b7111e6"
+      },
+      {
+        "path": ".github/workflows/kesher-article-merge.yml",
+        "status": "??",
+        "size": 1697,
+        "mode": "0o644",
+        "sha256": "b1a763c8b643a550840b12ce853875623d9fc0f9e8e51351e15c92aecc3646f0"
+      },
+      {
+        "path": ".github/workflows/kesher-article-validation.yml",
+        "status": "??",
+        "size": 6731,
+        "mode": "0o644",
+        "sha256": "ab327b377354c81d23aeab272d8a3cbf50e89989f4cac384d78425fa2d13eabe"
+      },
+      {
+        "path": ".github/workflows/kesher-article-worker.yml",
+        "status": "??",
+        "size": 2969,
+        "mode": "0o644",
+        "sha256": "6e10906288ece35d1735f3d3cb20e5f9d030ee7733cfad8c7f251e1acdd8ea1f"
+      },
+      {
+        "path": ".github/workflows/kesher-backlog-media-recovery.yml",
+        "status": " M",
+        "size": 3624,
+        "mode": "0o644",
+        "sha256": "ea0d178aa53dead6c21b518eca4f38d1909a10975699440c3b45cbd9b6211e74"
+      },
+      {
+        "path": ".github/workflows/kesher-canary-force-now.yml",
+        "status": " M",
+        "size": 3753,
+        "mode": "0o644",
+        "sha256": "b2b9f74633bd0197fb06baab11df9dee8d19186fd9da18ac8c5b1a1ebaaad740"
+      },
+      {
+        "path": ".github/workflows/kesher-content-controller.yml",
+        "status": " M",
+        "size": 1451,
+        "mode": "0o644",
+        "sha256": "befa18ed3ea3f37daa6c40e999f074273ef018f376ecaaa1d266d515eccaf089"
+      },
+      {
+        "path": ".github/workflows/kesher-current-gifted-completion.yml",
+        "status": " M",
+        "size": 9824,
+        "mode": "0o644",
+        "sha256": "a99654dd7784856cf9545468ba46cab76937076732e48e907e6acd7b691cdabe"
+      },
+      {
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "status": " M",
+        "size": 25904,
+        "mode": "0o644",
+        "sha256": "3ef80cd5c9236cd168776ac59175eeaa4f41d08bc726d6f1f5c8a7c7f1f40029"
+      },
+      {
+        "path": ".github/workflows/kesher-e2e-test-continuation.yml",
+        "status": " M",
+        "size": 3096,
+        "mode": "0o644",
+        "sha256": "dafc6625acd20e047630ab937badd0b323783cf76a1bd6033ea6246c87fd23a1"
+      },
+      {
+        "path": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "status": " M",
+        "size": 325,
+        "mode": "0o644",
+        "sha256": "05bffb42f83873ceb0ed926cbce664d1d1cc4d51be900c1fbec24f168fff5ee7"
+      },
+      {
+        "path": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "status": " M",
+        "size": 329,
+        "mode": "0o644",
+        "sha256": "45e23a628c402af1a7c29aa55c83572434d41986387d3705bee21d0553f97c69"
+      },
+      {
+        "path": ".github/workflows/kesher-final-attempt-fallback.yml",
+        "status": " M",
+        "size": 3796,
+        "mode": "0o644",
+        "sha256": "bacf7cf72ef66d01d9c96c9f25812f124e57dafa649272ee597768b7b9c44c8e"
+      },
+      {
+        "path": ".github/workflows/kesher-gifted-direct-recovery.yml",
+        "status": " M",
+        "size": 4987,
+        "mode": "0o644",
+        "sha256": "4c02167ce45fabbd21c68a5eee702e3e214fa308238dee6e947559d76aab0b03"
+      },
+      {
+        "path": ".github/workflows/kesher-gifted-short-dispatch.yml",
+        "status": " M",
+        "size": 4056,
+        "mode": "0o644",
+        "sha256": "93709fed375cbe9661a61e71fb16ed757a67156bfba9a5722dc5ee3d47cebbc5"
+      },
+      {
+        "path": ".github/workflows/kesher-goal-dispatch.yml",
+        "status": " M",
+        "size": 305,
+        "mode": "0o644",
+        "sha256": "b88f889cb6148da6654bd927a644af1ce64eb183ad98d474210ce6584c946339"
+      },
+      {
+        "path": ".github/workflows/kesher-historical-short-finalizer.yml",
+        "status": " M",
+        "size": 2750,
+        "mode": "0o644",
+        "sha256": "44c93644b33c3bc08a4c6c4896803552bf805bdb17045306fd475fd26d07c75f"
+      },
+      {
+        "path": ".github/workflows/kesher-live-e2e-test.yml",
+        "status": " M",
+        "size": 23813,
+        "mode": "0o644",
+        "sha256": "11160a4508bd627a20db1cce79c6e93944cb6fb85205a98c569d1f0e5006a1b2"
+      },
+      {
+        "path": ".github/workflows/kesher-master-supervisor.yml",
+        "status": " M",
+        "size": 2952,
+        "mode": "0o644",
+        "sha256": "90e852e7903e3bf112dd3e3fef8111c6414f93298960f69f4b0f04f7105d5de1"
+      },
+      {
+        "path": ".github/workflows/kesher-media-worker.yml",
+        "status": "??",
+        "size": 5177,
+        "mode": "0o644",
+        "sha256": "0b611c407895a115e2688cc483184594d27d6f8f1ae30038498821d82b1958a6"
+      },
+      {
+        "path": ".github/workflows/kesher-owner-exact-975.yml",
+        "status": " M",
+        "size": 310,
+        "mode": "0o644",
+        "sha256": "2bf94f00a5d5070be49a249df26c679af8d1b8bd37a4c620fc27ae88ef7db50f"
+      },
+      {
+        "path": ".github/workflows/kesher-remotion-evidence-repair.yml",
+        "status": " M",
+        "size": 8762,
+        "mode": "0o644",
+        "sha256": "7b867684e60183a8cd278e6a607b702580366db7c2ad26ca65c6545af30df7fb"
+      },
+      {
+        "path": ".github/workflows/kesher-repair-exact-video-state.yml",
+        "status": " M",
+        "size": 5579,
+        "mode": "0o644",
+        "sha256": "287876a2b1c4a94d238e732a917f03e5d2423a27fcc39063b29e50783b4afc59"
+      },
+      {
+        "path": ".github/workflows/kesher-short-v4.yml",
+        "status": " M",
+        "size": 20423,
+        "mode": "0o644",
+        "sha256": "c64371211840a4612e64193af4ae404df65445375e82f9dcab9f24a8b89469ad"
+      },
+      {
+        "path": ".github/workflows/kesher-stability-pr.yml",
+        "status": " M",
+        "size": 4490,
+        "mode": "0o644",
+        "sha256": "14455a212d1c24b7c3cd36a4d0d52ff638c9d2a8d05c6c3aef79d8a19b1a311a"
+      },
+      {
+        "path": ".github/workflows/kesher-video-canary-dispatch.yml",
+        "status": " M",
+        "size": 800,
+        "mode": "0o644",
+        "sha256": "d3e9fcc2f4b71ab7274ed4107d26140065b9b0411e8d594f77c106d15e78ba13"
+      },
+      {
+        "path": ".github/workflows/kesher-video-evidence-repair.yml",
+        "status": " M",
+        "size": 4355,
+        "mode": "0o644",
+        "sha256": "7ff56691d9699b0b118fa9e5d53c14da6e3097fad5b3eaa7dfeff99682efa0f9"
+      },
+      {
+        "path": ".github/workflows/normalize-article-pr.yml",
+        "status": " M",
+        "size": 6357,
+        "mode": "0o644",
+        "sha256": "e636a5835e9eb41313c45a3117e4a2f97036404b2a2383da2db766c7c9ae037d"
+      },
+      {
+        "path": ".github/workflows/repair-article-images.yml",
+        "status": " M",
+        "size": 2515,
+        "mode": "0o644",
+        "sha256": "291b6fb2b255c93511ce7e2b4bacf9622c1a744999b4c5b8075711301f17316d"
+      },
+      {
+        "path": ".github/workflows/repair-existing-article-heroes.yml",
+        "status": " M",
+        "size": 3531,
+        "mode": "0o644",
+        "sha256": "d78c8239c642e43cd99b023fb54d3e10032a722dee6016855af965032f9d5c1a"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/README.md",
+        "status": "??",
+        "size": 754,
+        "mode": "0o644",
+        "sha256": "0bd9593be45c475ffef3b12b0860cbce530efe72066291e855d0f87011855faa"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/WORK_LOG.md",
+        "status": "??",
+        "size": 113890,
+        "mode": "0o644",
+        "sha256": "995f37cdfde098041bfaf0dd4db76be64c6c5ad9a74b4b68c419b592a942184b"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/article-deployment-contract-20260926.md",
+        "status": "??",
+        "size": 8302,
+        "mode": "0o644",
+        "sha256": "07341a03d0843504a343a13c451cb6c8bfafb4e3d6ecdb66b743d15b427c5d84"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/article-image-local-proof-20260923.json",
+        "status": "??",
+        "size": 1354,
+        "mode": "0o644",
+        "sha256": "1196d08be51e697608265abca0ab2a2ec9a69f1318239ab3a9ede5f7dec602d8"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/article-merge-contract-20260925.md",
+        "status": "??",
+        "size": 6636,
+        "mode": "0o644",
+        "sha256": "abea253c71f42b4348741894698a5cef2d7b132d13c43578bdf496e4ec17f999"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/article-merge-policy-observation-20260925.json",
+        "status": "??",
+        "size": 817,
+        "mode": "0o644",
+        "sha256": "cf5a92bd5318168bbdf3564dc6049d5dbab5ae3ad3de0504aed8887f67718021"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/article-validation-local-proof-20260924.json",
+        "status": "??",
+        "size": 1242,
+        "mode": "0o644",
+        "sha256": "db0a2802aa21e61db4cbf857f6ea205f13e80f2e53010727924639e823373eec"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/checkpoint-cloudflare-observation-20260928.json",
+        "status": "??",
+        "size": 627,
+        "mode": "0o644",
+        "sha256": "853faa166e82195fb8b978a2d3efa43e06f75ce85d7018c5dc05f6633a3c5f1a"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/checkpoint-production-observation-20260928.json",
+        "status": "??",
+        "size": 1917,
+        "mode": "0o644",
+        "sha256": "cf6839ac054f11e9aa96632c369c19fbed3b2cf0f34c258b078fd139a10bdd21"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/checkpoint-report-20260928.md",
+        "status": "??",
+        "size": 19360,
+        "mode": "0o644",
+        "sha256": "802273bff7b032a5e42e483c827c2fbcee7ec8cce5c23816b62f45d4807b4d66"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/closed-media-evidence-floor-20260930.json",
+        "status": "??",
+        "size": 699614,
+        "mode": "0o644",
+        "sha256": "99ee2e33c76e24fb9d5d2a8e27cae80ab8566b557585eb8f060ab32b6a3c55d9"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/cloudflare-production-observation-20260925.json",
+        "status": "??",
+        "size": 1738,
+        "mode": "0o644",
+        "sha256": "7c736b6c8f919e939bf1130d3ee227f6d551e064f3558fea0d1698c1b475965f"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/coverage.json",
+        "status": "??",
+        "size": 9621,
+        "mode": "0o644",
+        "sha256": "170580fdf50774a184656f6a353bd23df43ec742dac0a3c7f57bd554dc1c8ef4"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/cutover-cloudflare-observation-20260927.json",
+        "status": "??",
+        "size": 780,
+        "mode": "0o644",
+        "sha256": "09dca4b10c812ea28bbb49659e4f9d4dbf5c165a8c256395440337d0ce9991ca"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/cutover-workflow-observation-20260927.json",
+        "status": "??",
+        "size": 17365,
+        "mode": "0o644",
+        "sha256": "808ab36274f02306c7cb883d7c52fd409069ed3add7de507c9ac788868c5463a"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/deployment-local-proof-20260926.json",
+        "status": "??",
+        "size": 1374,
+        "mode": "0o644",
+        "sha256": "67be63a20760c010abf97092377f085fc3a967024d454f904870cfafe29f95b8"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-owner-exact-975-adjudication-20261001.json",
+        "status": "??",
+        "size": 316829,
+        "mode": "0o644",
+        "sha256": "06b8c7af3ddc3e4de96ab7a56b880108e383e82b9f6720034680cafc9468731f"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-owner-exact-975-child-kesher-daily-video-20261001.yml.txt",
+        "status": "??",
+        "size": 25713,
+        "mode": "0o644",
+        "sha256": "afb887dafb213c249a31c6c08bb62b6207f37f8585cae3a9a7cd5c7a691c01e4"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-owner-exact-975-child-kesher-short-v4-20261001.yml.txt",
+        "status": "??",
+        "size": 20232,
+        "mode": "0o644",
+        "sha256": "3700c60bcf1c1470998492afdc035e9641903b6f1e122bd7a23a7e28ab5a2e9b"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-owner-exact-975-current-main-20261001.yml.txt",
+        "status": "??",
+        "size": 2092,
+        "mode": "0o644",
+        "sha256": "a426ff473c716df4fd468913623f46d33b1d51fb2bb9072ef85a74aa25758ea0"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-owner-exact-975-report-20261001.md",
+        "status": "??",
+        "size": 14310,
+        "mode": "0o644",
+        "sha256": "f779fd4a8666e1a96e33e24a96f1ca0f384dc13239d568a51861227bb2d48fd2"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-resource-exclusion-adapter-20260930.md",
+        "status": "??",
+        "size": 21135,
+        "mode": "0o644",
+        "sha256": "006031a1b7bb318059e9ac47c5fe54269b20093c2191802e231aa2bd6a6f2ecd"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-retained-registration-adjudication-20260930.json",
+        "status": "??",
+        "size": 18128,
+        "mode": "0o644",
+        "sha256": "eab83a4e6532dc43bac6d6719bc43db18b31b60af288a5725f0d7f03b50f2bfd"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-adjudication-20261001.json",
+        "status": "??",
+        "size": 196406,
+        "mode": "0o644",
+        "sha256": "ce85048118bf8d9d64f41a839aab9cb4cb77cb724322b62a4aa49665c79af7a8"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-free-stock-source-20261001.py.txt",
+        "status": "??",
+        "size": 17123,
+        "mode": "0o644",
+        "sha256": "a60b2592a5e3b845b81735047fddcd140da9e0c1954a4d1257f1c88a10570d2f"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-goal-request-20261001.json.txt",
+        "status": "??",
+        "size": 225,
+        "mode": "0o644",
+        "sha256": "138a9faadef4e60f3b9a5f229571e3ca3f7cec53ebbfdca456ece5bbb44787a1"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-report-20261001.md",
+        "status": "??",
+        "size": 13674,
+        "mode": "0o644",
+        "sha256": "597bc68c921127cfe23bad2c290fe41a4a266773183c15b7b774eab28b091483"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-chain-20261001.json",
+        "status": "??",
+        "size": 16660,
+        "mode": "0o644",
+        "sha256": "347c7d8b1c9e6af8379e154b664138e39cf9dd7eb271191ed307920ff576ae4f"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-daily-video-20261001.yml.txt",
+        "status": "??",
+        "size": 25713,
+        "mode": "0o644",
+        "sha256": "afb887dafb213c249a31c6c08bb62b6207f37f8585cae3a9a7cd5c7a691c01e4"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-exact-marshmallow-video-resume-20261001.yml.txt",
+        "status": "??",
+        "size": 632,
+        "mode": "0o644",
+        "sha256": "f5b925d8b07e2a0a19fbc7cd799182fdbce46e9beb2938145adc99dfbfe219b1"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-exact-marshmallow-video-upload-recovery-20261001.yml.txt",
+        "status": "??",
+        "size": 814,
+        "mode": "0o644",
+        "sha256": "ca780094c39a6e879efb7f0912c9afbd294304c5f78f72bcb046fa477abb4ffa"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-goal-dispatch-20261001.yml.txt",
+        "status": "??",
+        "size": 3178,
+        "mode": "0o644",
+        "sha256": "c0cae4082dad55da1fbe9587069fffe5e380b99946ff0812febda43ceac6bf07"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-source-kesher-short-v4-20261001.yml.txt",
+        "status": "??",
+        "size": 20232,
+        "mode": "0o644",
+        "sha256": "3700c60bcf1c1470998492afdc035e9641903b6f1e122bd7a23a7e28ab5a2e9b"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/guard-adjudications.json",
+        "status": "??",
+        "size": 1099991,
+        "mode": "0o644",
+        "sha256": "14ea71d4f9b65550036d3cfcf3b6459fc87e0a7a89a112bf64d8419500368246"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/guard-history.md",
+        "status": "??",
+        "size": 24519,
+        "mode": "0o644",
+        "sha256": "8fbc9b81d759fa4f7076ab674565ec06c4833398e267c695469e8d42ce5e51df"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/handover-hardening-replay-20260930.json",
+        "status": "??",
+        "size": 1894,
+        "mode": "0o644",
+        "sha256": "9292a5473d48fe0f79e54f83c47e92173a0266347423f22469f9f292fd667175"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/handover-hardening-report-20260930.md",
+        "status": "??",
+        "size": 20155,
+        "mode": "0o644",
+        "sha256": "a2001746eaac221b9f7eacdd7933e8611342263b3adbbf5882555d03e249a05e"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/handover-offline-replay-20260929.json",
+        "status": "??",
+        "size": 2028,
+        "mode": "0o644",
+        "sha256": "2e23dc5ec2fddf3042ecd8f4d398e7f99b208e3abe014044b7ba664c1075525f"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/handover-plan-20260928.md",
+        "status": "??",
+        "size": 4871,
+        "mode": "0o644",
+        "sha256": "18ebaa9af2921d89ca212ef8d0c5b4858e8d74e0c10e1bd4aa6304518233fc5f"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/image-repair-receipt.json",
+        "status": "??",
+        "size": 1064,
+        "mode": "0o644",
+        "sha256": "cd11c6615539565fb99493a14b2af2e15fc256f9d3165a7379f64a1c87f9b61d"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/implementation-plan.md",
+        "status": "??",
+        "size": 11635,
+        "mode": "0o644",
+        "sha256": "101cc211bf40c08a35f89a36f805bc174493bb41c702344bcd46a479a5f517fd"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/incident-index.json",
+        "status": "??",
+        "size": 1599400,
+        "mode": "0o644",
+        "sha256": "7537139bd75f450f1b1607d599d751f23af5cf13378f2b5202ce281aa0a357d1"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/legacy-media-adjudication-20260928.json",
+        "status": "??",
+        "size": 27581,
+        "mode": "0o644",
+        "sha256": "a16c3801e845ee09bc61803a79301b445dfd3e40d28bf05caad1952a4aa96c33"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/legacy-media-evidence-report-20260928.md",
+        "status": "??",
+        "size": 8446,
+        "mode": "0o644",
+        "sha256": "e58f2d24765f67792c41dbe157a2c51a4dc663faade9dc098e7a135926f637a2"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/live-evidence-manifest.json",
+        "status": "??",
+        "size": 91262,
+        "mode": "0o644",
+        "sha256": "5b58e3f54d3efb6023430b56a4669afc2f82f870c29435987d197d90b7519a9f"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/media-archive-recovery-20260927.md",
+        "status": "??",
+        "size": 4138,
+        "mode": "0o644",
+        "sha256": "1011f5510c81cebb3ef7704867955dbdc2b8bf8ccf85dc54ebf2bec1684b6bf9"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/migration-cutover-replay-20260927.json",
+        "status": "??",
+        "size": 1602,
+        "mode": "0o644",
+        "sha256": "8cdd54c9a0d9891a8af064de1de575d7aa61465c7ef0fed0bcaa16d6edd5cdbb"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/migration-legacy-evidence-replay-20260928.json",
+        "status": "??",
+        "size": 14322,
+        "mode": "0o644",
+        "sha256": "634cbe24513e5b0ac32b0df270a5dce188fb7dd5bd8a317112be823e176b4afd"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/migration-replay-20260923.json",
+        "status": "??",
+        "size": 2084,
+        "mode": "0o644",
+        "sha256": "09d337c80f61dd4c9e6245c8234d66903d30128ccde1816ded35c00c6917d50f"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/pr-evolution-index.json",
+        "status": "??",
+        "size": 125292,
+        "mode": "0o644",
+        "sha256": "a69a4c531e2fd16d892d587019b7ec7119a3c9eaa6d087e281b3bf8c27452e72"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/probes/article_gaps.py",
+        "status": "??",
+        "size": 5813,
+        "mode": "0o644",
+        "sha256": "a6a700c13316754dbd329c39e06d89597a6c77386e062347307d140279efd0ac"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/probes/guard_adjudication_probe.py",
+        "status": "??",
+        "size": 5351,
+        "mode": "0o644",
+        "sha256": "7d232e57417faed282762f8c9330d1e99021e79426b7fde996d3e28d3a33590e"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/probes/media_gaps.py",
+        "status": "??",
+        "size": 6356,
+        "mode": "0o644",
+        "sha256": "f6804bc14cbf805860b0ccafda56ab4ac4bceb9da54e5a748d97cdb8c6b04400"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/scope-exclusions.json",
+        "status": "??",
+        "size": 73359,
+        "mode": "0o644",
+        "sha256": "b189b2c1d326a6c03722512d20d3dc65c683ac0914b225c8a1210a7ec16430e5"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/target-architecture.md",
+        "status": "??",
+        "size": 13349,
+        "mode": "0o644",
+        "sha256": "80460e18189e182271e029ac7ee34b8db2318186e6e3e5db30e055e887fcb8f1"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/test-contract-migration-20260924.md",
+        "status": "??",
+        "size": 6584,
+        "mode": "0o644",
+        "sha256": "e7b07a95aef5383116b57b9d577c5ff8682a87f161a3edcb5f14b6adb8c7ca1b"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/workflow-authority-index.json",
+        "status": "??",
+        "size": 82698,
+        "mode": "0o644",
+        "sha256": "c0cc5c37bb28da48e3eb092fabd0d1388309a217438b40846e535684ea38db1f"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/workflow-run-coverage.json",
+        "status": "??",
+        "size": 49605,
+        "mode": "0o644",
+        "sha256": "75d801adaf59ac19240f32650f2d4079990837237bd98b939e9723a05812221e"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/workflow-run-evidence-coverage.json",
+        "status": "??",
+        "size": 1025,
+        "mode": "0o644",
+        "sha256": "e7636ceba7299ef8cca6ec7f9f572e360f00fd3e2f356a950267987adb1d8fea"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/workflow-run-evidence.jsonl.gz",
+        "status": "??",
+        "size": 685766,
+        "mode": "0o644",
+        "sha256": "ecb134501a06fc09ec87587fd8b2d06de241c4cbb021a7dfafb5d95549df0fc3"
+      },
+      {
+        "path": "docs/forensics/2026-09-autonomous-stabilization/workflow-run-index.jsonl.gz",
+        "status": "??",
+        "size": 822956,
+        "mode": "0o644",
+        "sha256": "a98a058eaf95a82ba9f86a3f77adfc6c6fb6bf82791d4a97df3e243e13e4fa13"
+      },
+      {
+        "path": "package.json",
+        "status": " M",
+        "size": 4758,
+        "mode": "0o644",
+        "sha256": "602d8ac8e75cd17b7797cc711b54abea643b69d8a5f136adca6a1c696ee3bb22"
+      },
+      {
+        "path": "public/llms-full.txt",
+        "status": " M",
+        "size": 949666,
+        "mode": "0o644",
+        "sha256": "8630ffa46b6db488c4a398074e7648f7d8ee12dd6241c7aec43384a90fa9479e"
+      },
+      {
+        "path": "public/rss.xml",
+        "status": " M",
+        "size": 82036,
+        "mode": "0o644",
+        "sha256": "57d9467fcb70ea7bed8dcf1b5be1dec87a1ff2cd908c89422b13ef340336e0b8"
+      },
+      {
+        "path": "public/sitemap.xml",
+        "status": " M",
+        "size": 23198,
+        "mode": "0o644",
+        "sha256": "67ac3990a453f29ae39361ce0129c1aacf7f71425e629fabd500e6bce320c131"
+      },
+      {
+        "path": "scripts/forensics/collect_live_evidence.py",
+        "status": "??",
+        "size": 3902,
+        "mode": "0o644",
+        "sha256": "eb60cad47a10a0d0a4b97daedaaf62eb2d8e9294f117bcfb279c6a6c008e0648"
+      },
+      {
+        "path": "scripts/forensics/inventory_action_runs.py",
+        "status": "??",
+        "size": 4362,
+        "mode": "0o644",
+        "sha256": "50fd75db72a92755e8c4b6374a970688857c35ed507bbe9b93dea8c5a3da088c"
+      },
+      {
+        "path": "scripts/forensics/inventory_kesher_history.py",
+        "status": "??",
+        "size": 14298,
+        "mode": "0o644",
+        "sha256": "254db06d95c2c1936534a4387d7020410d5b148ae3249230bfb2ac1c65a3b0ce"
+      },
+      {
+        "path": "scripts/forensics/inventory_pr_evolution.py",
+        "status": "??",
+        "size": 4465,
+        "mode": "0o644",
+        "sha256": "72b4438c64e3b2cde109c01128f5447b6549d72874c455026b7dba423034e02c"
+      },
+      {
+        "path": "scripts/forensics/inventory_run_evidence.py",
+        "status": "??",
+        "size": 9438,
+        "mode": "0o644",
+        "sha256": "12075670550a8ab029958defb954fcd4fcc987806a9cebe78c10175a8ea63543"
+      },
+      {
+        "path": "scripts/forensics/inventory_workflow_authority.py",
+        "status": "??",
+        "size": 2453,
+        "mode": "0o644",
+        "sha256": "0f3202711ab63d88fd71079fde55cccfc649d7177a58848fdd8f2ca73a5477e4"
+      },
+      {
+        "path": "scripts/kesher_article_contract.py",
+        "status": " M",
+        "size": 9828,
+        "mode": "0o644",
+        "sha256": "e2cb931a5a123777e3e4cf99eb33d3033b87ea7d82d86fcf5c5ada3ec46f380f"
+      },
+      {
+        "path": "scripts/kesher_content_controller.py",
+        "status": " M",
+        "size": 48334,
+        "mode": "0o644",
+        "sha256": "13f9577a3e82519663064dda31c985367c30c90106aaf410b3aa3361e203c10b"
+      },
+      {
+        "path": "scripts/kesher_content_controller_entry.py",
+        "status": " M",
+        "size": 13082,
+        "mode": "0o644",
+        "sha256": "5654e3ec279b41a478eedc42f95f259faf94d5043d31c9336b1e6801768c8274"
+      },
+      {
+        "path": "scripts/kesher_content_controller_stabilized.py",
+        "status": " M",
+        "size": 30527,
+        "mode": "0o644",
+        "sha256": "3f2b1eccb17a9cc4125468fb2f39b3809e3c3cbf0fb5d5911e98e49810da5e7d"
+      },
+      {
+        "path": "scripts/kesher_content_controller_v3_best_effort.py",
+        "status": " M",
+        "size": 13189,
+        "mode": "0o644",
+        "sha256": "e3e9265e8ccd7b6f5f8ed26c7cbd589e513e43a79db5733144950d07f6dcefcf"
+      },
+      {
+        "path": "scripts/kesher_content_controller_v3_entry.py",
+        "status": " M",
+        "size": 20260,
+        "mode": "0o644",
+        "sha256": "0892a712a1fee6d3b61d80601537f7b4a0506f528e2b8ce856298c3d3f92cfdf"
+      },
+      {
+        "path": "scripts/kesher_content_controller_v4.py",
+        "status": " M",
+        "size": 17664,
+        "mode": "0o644",
+        "sha256": "e45a0da4e4021b5959f9c99b6fd6e161622568bf0e8d2ebeceee0024390fc1ea"
+      },
+      {
+        "path": "scripts/kesher_content_controller_v4_runtime.py",
+        "status": " M",
+        "size": 3343,
+        "mode": "0o644",
+        "sha256": "c448e3a2c03143bf6f7ad0cc0c2c4bea885a4201e3735640b7ddacc8756989cd"
+      },
+      {
+        "path": "scripts/kesher_content_controller_v5.py",
+        "status": " M",
+        "size": 22459,
+        "mode": "0o644",
+        "sha256": "8b501d6ba4b4b83c9c378a5ed767e12e55ea54b04a358a3fe322c250799b76ef"
+      },
+      {
+        "path": "scripts/kesher_content_controller_v5_runtime.py",
+        "status": " M",
+        "size": 12844,
+        "mode": "0o644",
+        "sha256": "5dd7375d652ab9197dde35ff5a4d68d6b504b7946819317a2f660dd038a8f9ba"
+      },
+      {
+        "path": "scripts/kesher_content_controller_v5_runtime_base.py",
+        "status": " M",
+        "size": 17812,
+        "mode": "0o644",
+        "sha256": "4641e90c848c09bb269dbc8d3d6dd4cf33c964c774939f0cb502e7f6d4aef6c8"
+      },
+      {
+        "path": "scripts/kesher_daily_pipeline.py",
+        "status": " M",
+        "size": 77274,
+        "mode": "0o644",
+        "sha256": "15323e22d375a9b8d696c96beb3911e9106ad887b01fe34eb391722cdf452b3f"
+      },
+      {
+        "path": "scripts/kesher_e2e_delivery_guard.py",
+        "status": " M",
+        "size": 12390,
+        "mode": "0o644",
+        "sha256": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310"
+      },
+      {
+        "path": "scripts/kesher_master_supervisor_live.py",
+        "status": " M",
+        "size": 48661,
+        "mode": "0o644",
+        "sha256": "e451343cc8209d0f8658def835a776d3231ef094dd11cd3323dd6e0dee55f792"
+      },
+      {
+        "path": "scripts/kesher_publication_manifest.py",
+        "status": "??",
+        "size": 6399,
+        "mode": "0o644",
+        "sha256": "ac91596a75d1d5beeb37e5fc102f49d20f4461c1bd50867260f4fa1cce479a5f"
+      },
+      {
+        "path": "scripts/kesher_runtime/__init__.py",
+        "status": "??",
+        "size": 87,
+        "mode": "0o644",
+        "sha256": "87abad5c98b1cc707accd87163d96a30b945e8057b5d798eacaebbe07da99cef"
+      },
+      {
+        "path": "scripts/kesher_runtime/article_deploy.py",
+        "status": "??",
+        "size": 16026,
+        "mode": "0o644",
+        "sha256": "44478ec6881ca4e5b6ae766bf33a2dc4bfb8b333ec7957063ab3da8ba208b760"
+      },
+      {
+        "path": "scripts/kesher_runtime/article_image_worker.py",
+        "status": "??",
+        "size": 20068,
+        "mode": "0o644",
+        "sha256": "7fd393895490b0347b0a37e2ebac72d2a869b40082a1c7b82e0c3a0b9d0bf7e7"
+      },
+      {
+        "path": "scripts/kesher_runtime/article_images.py",
+        "status": "??",
+        "size": 22209,
+        "mode": "0o644",
+        "sha256": "e88601a2f01cfd44999d8a5c0815325cb977464eeedc376784978a5771187fd0"
+      },
+      {
+        "path": "scripts/kesher_runtime/article_merge.py",
+        "status": "??",
+        "size": 13844,
+        "mode": "0o644",
+        "sha256": "b5c21968aadbbe5cc7184e1d2beed7d9d57b2489c1088fba4d9e95038cfb6fd7"
+      },
+      {
+        "path": "scripts/kesher_runtime/article_merge_observer.py",
+        "status": "??",
+        "size": 4457,
+        "mode": "0o644",
+        "sha256": "66180a37643ced73e8c28cd8db38294cfe94e296c6a93a509a56dc2afd2c82a1"
+      },
+      {
+        "path": "scripts/kesher_runtime/article_normalize_worker.py",
+        "status": "??",
+        "size": 8148,
+        "mode": "0o644",
+        "sha256": "1f6f2426e64af0d8917370f57fd2019b4d4f9c5505f553fcb372e7cb601bdc8d"
+      },
+      {
+        "path": "scripts/kesher_runtime/article_quiescence.py",
+        "status": "??",
+        "size": 1887,
+        "mode": "0o644",
+        "sha256": "0750fac4fee1341273ce0bf3c8ef8dda864c9e062eee03c70d1c732dc578b71c"
+      },
+      {
+        "path": "scripts/kesher_runtime/article_validation.py",
+        "status": "??",
+        "size": 15901,
+        "mode": "0o644",
+        "sha256": "1c00890ee729dfff02ff93ff82e92147603cd63136f3d1fa8a4106974e7d4ade"
+      },
+      {
+        "path": "scripts/kesher_runtime/article_verification.py",
+        "status": "??",
+        "size": 16928,
+        "mode": "0o644",
+        "sha256": "a79966b53cef5c640d14193a402d0d97ac82a76d9ea463d034651c7c62fe700d"
+      },
+      {
+        "path": "scripts/kesher_runtime/article_worker.py",
+        "status": "??",
+        "size": 12877,
+        "mode": "0o644",
+        "sha256": "a911968a970ac450a34d59583dd7fc18a37997bb41ac3be87701b4c132d9e04c"
+      },
+      {
+        "path": "scripts/kesher_runtime/authority.py",
+        "status": "??",
+        "size": 754,
+        "mode": "0o644",
+        "sha256": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b"
+      },
+      {
+        "path": "scripts/kesher_runtime/authority_policy.json",
+        "status": "??",
+        "size": 262328,
+        "mode": "0o644",
+        "sha256": "01b9a02ad882b7aa9470bf1fee6b90015fce0cf86defe343a5040bc6fceae168"
+      },
+      {
+        "path": "scripts/kesher_runtime/authority_topology.py",
+        "status": "??",
+        "size": 34875,
+        "mode": "0o644",
+        "sha256": "cd2c8587fba4d239862580182be1853f23f08b4f4e464a964aacc9630b9a98ce"
+      },
+      {
+        "path": "scripts/kesher_runtime/cloudflare_pages.py",
+        "status": "??",
+        "size": 9690,
+        "mode": "0o644",
+        "sha256": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34"
+      },
+      {
+        "path": "scripts/kesher_runtime/controller.py",
+        "status": "??",
+        "size": 22598,
+        "mode": "0o644",
+        "sha256": "0f1baff1b86b395e6707981e3bf41abcd7e3c4adc468fe26b9f9c560177cac30"
+      },
+      {
+        "path": "scripts/kesher_runtime/controller_entry.py",
+        "status": "??",
+        "size": 6294,
+        "mode": "0o644",
+        "sha256": "562237507f626c669aba71ecdd9704beab5e6f71bd4f614f2521751c8618bff2"
+      },
+      {
+        "path": "scripts/kesher_runtime/deployment_artifact.py",
+        "status": "??",
+        "size": 16096,
+        "mode": "0o644",
+        "sha256": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699"
+      },
+      {
+        "path": "scripts/kesher_runtime/deployment_observer.py",
+        "status": "??",
+        "size": 4432,
+        "mode": "0o644",
+        "sha256": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4"
+      },
+      {
+        "path": "scripts/kesher_runtime/exclusion.py",
+        "status": "??",
+        "size": 15927,
+        "mode": "0o644",
+        "sha256": "fdb12dfc05f9e489ed4991e0b1582674489f47f856ff1f06c02e223b861af404"
+      },
+      {
+        "path": "scripts/kesher_runtime/git_exclusion.py",
+        "status": "??",
+        "size": 23773,
+        "mode": "0o644",
+        "sha256": "d4992fcd57bbeb9162e57dc358364462776c81cfaee4c73f9177851f437a4120"
+      },
+      {
+        "path": "scripts/kesher_runtime/github.py",
+        "status": "??",
+        "size": 7993,
+        "mode": "0o644",
+        "sha256": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167"
+      },
+      {
+        "path": "scripts/kesher_runtime/github_drain.py",
+        "status": "??",
+        "size": 20345,
+        "mode": "0o644",
+        "sha256": "4bab14d2f4e625c160460109f15ce23072d374cc0b4ae7d3bb4baaa833256737"
+      },
+      {
+        "path": "scripts/kesher_runtime/handover.py",
+        "status": "??",
+        "size": 21017,
+        "mode": "0o644",
+        "sha256": "a5b541dfbb953035fa9262e265efdb5b4b6feefca072641e91e7a8f688e46a00"
+      },
+      {
+        "path": "scripts/kesher_runtime/handover_github.py",
+        "status": "??",
+        "size": 9566,
+        "mode": "0o644",
+        "sha256": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572"
+      },
+      {
+        "path": "scripts/kesher_runtime/identity.py",
+        "status": "??",
+        "size": 3492,
+        "mode": "0o644",
+        "sha256": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944"
+      },
+      {
+        "path": "scripts/kesher_runtime/jules.py",
+        "status": "??",
+        "size": 8151,
+        "mode": "0o644",
+        "sha256": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
+      },
+      {
+        "path": "scripts/kesher_runtime/legacy_retirement.py",
+        "status": "??",
+        "size": 6521,
+        "mode": "0o644",
+        "sha256": "ec096a8777564a682ef5d88b99bde3d937650e25363b346c95beddb061475033"
+      },
+      {
+        "path": "scripts/kesher_runtime/media_audit.py",
+        "status": "??",
+        "size": 10565,
+        "mode": "0o644",
+        "sha256": "9289d9384fb075c1dfb0096413478ac05372b50332771870216a9ec8a41cda10"
+      },
+      {
+        "path": "scripts/kesher_runtime/media_observer.py",
+        "status": "??",
+        "size": 7391,
+        "mode": "0o644",
+        "sha256": "f225a50b4a495120b1b159e6005dd7ae0c7ec4ea0a7f6f4bdc217ea950ac9168"
+      },
+      {
+        "path": "scripts/kesher_runtime/media_publication.py",
+        "status": "??",
+        "size": 7578,
+        "mode": "0o644",
+        "sha256": "85004c226175d94264219892dc8806ab9b4fad01b91ef42728c3862421084c6b"
+      },
+      {
+        "path": "scripts/kesher_runtime/media_state.py",
+        "status": "??",
+        "size": 9585,
+        "mode": "0o644",
+        "sha256": "4406e7be42cf30d2f42bb6e2b3b64194428d897508c57df612eba4ed8de966d3"
+      },
+      {
+        "path": "scripts/kesher_runtime/media_worker.py",
+        "status": "??",
+        "size": 9673,
+        "mode": "0o644",
+        "sha256": "5754f0fc3d57514ef9c06077b88f0d3e92cf544dccc5582b7b60d904ed5f67ff"
+      },
+      {
+        "path": "scripts/kesher_runtime/migration.py",
+        "status": "??",
+        "size": 20463,
+        "mode": "0o644",
+        "sha256": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97"
+      },
+      {
+        "path": "scripts/kesher_runtime/observe.py",
+        "status": "??",
+        "size": 11989,
+        "mode": "0o644",
+        "sha256": "fddc4e93a0e0de3572864527e956dd56808dae15ae906b368d85d8788abe9b50"
+      },
+      {
+        "path": "scripts/kesher_runtime/outbox.py",
+        "status": "??",
+        "size": 7041,
+        "mode": "0o644",
+        "sha256": "e4d15c6ad83102d639a2ebbd72b2841cd786175ae12f939427ed4717f9e526fd"
+      },
+      {
+        "path": "scripts/kesher_runtime/output_artifacts.py",
+        "status": "??",
+        "size": 26755,
+        "mode": "0o644",
+        "sha256": "5bd90501e017d00d78f25195800542e7c9f9acf49b2a06b8751ff2f67c7ac5e0"
+      },
+      {
+        "path": "scripts/kesher_runtime/policy.py",
+        "status": "??",
+        "size": 3907,
+        "mode": "0o644",
+        "sha256": "b342ab3d38522e94f394db7564f62af7934c3ce413664585a3b8044f2b1aed71"
+      },
+      {
+        "path": "scripts/kesher_runtime/provider.py",
+        "status": "??",
+        "size": 7270,
+        "mode": "0o644",
+        "sha256": "5ddf97f576aa2bbef2059247de84937a3e8c06e9856c8b244e3e89ec6133fb21"
+      },
+      {
+        "path": "scripts/kesher_runtime/render_provenance.py",
+        "status": "??",
+        "size": 9962,
+        "mode": "0o644",
+        "sha256": "b1f9c5063b9a801bdf32cdab80087482a424ae470cdcfef28c291b1a0b6bc6dd"
+      },
+      {
+        "path": "scripts/kesher_runtime/sealed.py",
+        "status": "??",
+        "size": 2745,
+        "mode": "0o644",
+        "sha256": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a"
+      },
+      {
+        "path": "scripts/kesher_runtime/state.py",
+        "status": "??",
+        "size": 17233,
+        "mode": "0o644",
+        "sha256": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc"
+      },
+      {
+        "path": "scripts/kesher_runtime/verification.py",
+        "status": "??",
+        "size": 5317,
+        "mode": "0o644",
+        "sha256": "d6f62af0d1136c4e5d065da820b31ab47bc9a913c731087f3eac24ebf47e1d46"
+      },
+      {
+        "path": "scripts/kesher_runtime/worker.py",
+        "status": "??",
+        "size": 12064,
+        "mode": "0o644",
+        "sha256": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75"
+      },
+      {
+        "path": "scripts/kesher_runtime/worker_entry.py",
+        "status": "??",
+        "size": 5706,
+        "mode": "0o644",
+        "sha256": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f"
+      },
+      {
+        "path": "scripts/kesher_runtime/youtube.py",
+        "status": "??",
+        "size": 3482,
+        "mode": "0o644",
+        "sha256": "8bed655fd9124ad3852dcb9bc894911d7a7e81812fcd703626379dfc3d19539f"
+      },
+      {
+        "path": "scripts/kesher_short_pipeline_v4.py",
+        "status": " M",
+        "size": 29119,
+        "mode": "0o644",
+        "sha256": "c98f80f928c89b52250596bb5f236e064b2ae90a832c577957e74966d5ecb087"
+      },
+      {
+        "path": "scripts/prerender.cjs",
+        "status": " M",
+        "size": 3523,
+        "mode": "0o644",
+        "sha256": "949568e11148f07f2a7f7b0d9d21f89484a1741b6a8207ba33eaadc8ac47f878"
+      },
+      {
+        "path": "scripts/requirements-article.txt",
+        "status": "??",
+        "size": 85,
+        "mode": "0o644",
+        "sha256": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac"
+      },
+      {
+        "path": "scripts/requirements-video-cloud.txt",
+        "status": " M",
+        "size": 183,
+        "mode": "0o644",
+        "sha256": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec"
+      },
+      {
+        "path": "src/data/postSummaries.json",
+        "status": " M",
+        "size": 65545,
+        "mode": "0o644",
+        "sha256": "68e5885c721a8f4a9419df66441807a76527c8c203d957953ea9766f5ff33d06"
+      },
+      {
+        "path": "src/pages/Blog/BlogPost.tsx",
+        "status": " M",
+        "size": 12972,
+        "mode": "0o644",
+        "sha256": "5477f51152efbb2cc06881572d488381912a61aa4538c00d44d42ca9d7df0909"
+      },
+      {
+        "path": "src/remotion/kesher-overview/KesherOverview.tsx",
+        "status": " M",
+        "size": 6512,
+        "mode": "0o644",
+        "sha256": "0d85fc16a1ab1764ae9c7934dbb8e3db9abcb7cf5a28058ea5ec9fef17a0b1b8"
+      },
+      {
+        "path": "src/remotion/kesher-overview/types.ts",
+        "status": " M",
+        "size": 1590,
+        "mode": "0o644",
+        "sha256": "fb8c9cbf959bfe834731d4677dd47aee86be0380def30f171d4fa6eff45ad208"
+      },
+      {
+        "path": "tests/automation-gates.test.cjs",
+        "status": " M",
+        "size": 15870,
+        "mode": "0o644",
+        "sha256": "33bb23626b66571c0cf12500048c162fbf5b2055c6c2f910a9757120839821b3"
+      },
+      {
+        "path": "tests/real_media_render.py",
+        "status": "??",
+        "size": 4291,
+        "mode": "0o644",
+        "sha256": "348fc1b69184829b1e654d95687ad890fd8cf82887125c836a10b55038daa9a5"
+      },
+      {
+        "path": "tests/test_article_image_contract.py",
+        "status": "??",
+        "size": 17585,
+        "mode": "0o644",
+        "sha256": "3d9f7942f340623a44ed30f2faac1219915da35ccc8a8ea08fb116bbf7a5f077"
+      },
+      {
+        "path": "tests/test_article_image_worker.py",
+        "status": " M",
+        "size": 22494,
+        "mode": "0o644",
+        "sha256": "d242e3f3efff5512380f48ee549935b33e63d019eb6229cfa9df891010a64cd4"
+      },
+      {
+        "path": "tests/test_article_quality_stabilization.py",
+        "status": " M",
+        "size": 13918,
+        "mode": "0o644",
+        "sha256": "3e01474de1041e287a373b92e07e99f387e3d1cd7a20a7ac22e57b9e61c8fdad"
+      },
+      {
+        "path": "tests/test_kesher_article_deploy.py",
+        "status": "??",
+        "size": 12162,
+        "mode": "0o644",
+        "sha256": "e64f191df3e1cc45ca06db1edd4267f9cd71574a1cb314954f0585f9b435c683"
+      },
+      {
+        "path": "tests/test_kesher_article_image_worker.py",
+        "status": "??",
+        "size": 14560,
+        "mode": "0o644",
+        "sha256": "474a3408a5373590328505449aeeb166bdb675ca35069d4de630e1b37854d50f"
+      },
+      {
+        "path": "tests/test_kesher_article_merge.py",
+        "status": "??",
+        "size": 24536,
+        "mode": "0o644",
+        "sha256": "c71d6c85177944e0f506ca0c9fd4f1aab54abe5a6b21966fcfa81c49e8b4951c"
+      },
+      {
+        "path": "tests/test_kesher_article_normalize_worker.py",
+        "status": "??",
+        "size": 11029,
+        "mode": "0o644",
+        "sha256": "dc17e77a03dff02230a0afe0ff2bbbbf122acaa27256aabfd62105373870be5a"
+      },
+      {
+        "path": "tests/test_kesher_article_public.py",
+        "status": "??",
+        "size": 11429,
+        "mode": "0o644",
+        "sha256": "5ff93f684cda995d15edc03fd10878f31ec113eadc00cc26556dc62d267dabf8"
+      },
+      {
+        "path": "tests/test_kesher_article_validation.py",
+        "status": "??",
+        "size": 18837,
+        "mode": "0o644",
+        "sha256": "578e659759ab2c290b6ee468d9b9573d541367ffec76671fddeb41769228c46f"
+      },
+      {
+        "path": "tests/test_kesher_article_worker.py",
+        "status": "??",
+        "size": 7361,
+        "mode": "0o644",
+        "sha256": "f4530d4e8f7cf24da6ea471a2034467bb0200a33c0e8712c81f23a58c5888f16"
+      },
+      {
+        "path": "tests/test_kesher_audio_preservation.py",
+        "status": "??",
+        "size": 2021,
+        "mode": "0o644",
+        "sha256": "05b60713b8c741d30106925c3be2e453291976a88c86a7bc98e5cfc7046a91c0"
+      },
+      {
+        "path": "tests/test_kesher_authority_digest.py",
+        "status": "??",
+        "size": 10380,
+        "mode": "0o644",
+        "sha256": "718053e650692cb59be8b59c76f2a318c81dd844c16aad582e895066f9f2357a"
+      },
+      {
+        "path": "tests/test_kesher_authority_topology.py",
+        "status": "??",
+        "size": 36585,
+        "mode": "0o644",
+        "sha256": "028978328f1c683d9e9d56130bf8c1ea82fa86cb9935790e5f56d62a3bc72d8c"
+      },
+      {
+        "path": "tests/test_kesher_autonomous_controller.py",
+        "status": "??",
+        "size": 23169,
+        "mode": "0o644",
+        "sha256": "8194add4f915e1db0d09c22da7044c0a9913d0ac7bb734bcaecbbfc1cdbf43b4"
+      },
+      {
+        "path": "tests/test_kesher_canonical_state.py",
+        "status": "??",
+        "size": 11132,
+        "mode": "0o644",
+        "sha256": "1b2df228a1bec270e2124babfb977762430da6b1600ed0de9d6f886dac536f0a"
+      },
+      {
+        "path": "tests/test_kesher_command_dispatch.py",
+        "status": "??",
+        "size": 7869,
+        "mode": "0o644",
+        "sha256": "f031fb4b942647bb1a34d1fa168d9b2e62e60820ac162849940a7e05a468204f"
+      },
+      {
+        "path": "tests/test_kesher_content_controller.py",
+        "status": " M",
+        "size": 22075,
+        "mode": "0o644",
+        "sha256": "a1d17c3a7c9e0442a5c953ad8609c4802aaf4b738c8367ae2bffff75e73da6f5"
+      },
+      {
+        "path": "tests/test_kesher_controller_entry.py",
+        "status": "??",
+        "size": 2655,
+        "mode": "0o644",
+        "sha256": "b21af63caedd35cec03788f1bd2d7ffd6551bdc39f1973b8656854eecfe690a7"
+      },
+      {
+        "path": "tests/test_kesher_daily_pipeline.py",
+        "status": " M",
+        "size": 73198,
+        "mode": "0o644",
+        "sha256": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424"
+      },
+      {
+        "path": "tests/test_kesher_deployment_artifact.py",
+        "status": "??",
+        "size": 14265,
+        "mode": "0o644",
+        "sha256": "db18baf0cad6af718cac52414b866bbd5dab3cc0310c2b64cdf64a08a62d60dc"
+      },
+      {
+        "path": "tests/test_kesher_deployment_observer.py",
+        "status": "??",
+        "size": 5137,
+        "mode": "0o644",
+        "sha256": "86f6fd8a439e9751777b6eafe1206fd4ff7c725f3d9fd4ff72398ef2bb7755bc"
+      },
+      {
+        "path": "tests/test_kesher_e2e_readiness.py",
+        "status": " M",
+        "size": 5831,
+        "mode": "0o644",
+        "sha256": "5c7999e11b3cf092325f697551f6ffa38b29941f7e9483702acfebdce5bf7fd2"
+      },
+      {
+        "path": "tests/test_kesher_external_exclusion.py",
+        "status": "??",
+        "size": 11939,
+        "mode": "0o644",
+        "sha256": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb"
+      },
+      {
+        "path": "tests/test_kesher_git_exclusion.py",
+        "status": "??",
+        "size": 15313,
+        "mode": "0o644",
+        "sha256": "fc7c5a669c2a067d98a989469cd2822579384817f9cdf76975a99be396b3d307"
+      },
+      {
+        "path": "tests/test_kesher_github_drain.py",
+        "status": "??",
+        "size": 16196,
+        "mode": "0o644",
+        "sha256": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a"
+      },
+      {
+        "path": "tests/test_kesher_github_faults.py",
+        "status": "??",
+        "size": 5678,
+        "mode": "0o644",
+        "sha256": "bd874253ce00db7e9e430a72cc66b8d6ddc50bc8340ab23af9812ec10a68bfff"
+      },
+      {
+        "path": "tests/test_kesher_handover.py",
+        "status": "??",
+        "size": 19322,
+        "mode": "0o644",
+        "sha256": "791fb6de96325644762840b71f02ef44c585a15bbc8e004c271935bf1ff44eb7"
+      },
+      {
+        "path": "tests/test_kesher_handover_github.py",
+        "status": "??",
+        "size": 14923,
+        "mode": "0o644",
+        "sha256": "20d6875341d64f16bb2b8b393ac9936dbe3dbc59d5384254fd1014a6116cc948"
+      },
+      {
+        "path": "tests/test_kesher_historical_evidence.py",
+        "status": "??",
+        "size": 5119,
+        "mode": "0o644",
+        "sha256": "f8c482c71eaa44d072aa05f5a06f667fef0f915d6edeb83f021daa91cec0d546"
+      },
+      {
+        "path": "tests/test_kesher_jules_sessions.py",
+        "status": "??",
+        "size": 8582,
+        "mode": "0o644",
+        "sha256": "ff0d6df9902e55583b23d0431ad7ed13ef483a4e75dc683184614271bb1c6a82"
+      },
+      {
+        "path": "tests/test_kesher_legacy_retirement.py",
+        "status": "??",
+        "size": 3274,
+        "mode": "0o644",
+        "sha256": "b574a4b4bd330944faa34dc91ed39adb96cc43598095639ff8077d272deb82b5"
+      },
+      {
+        "path": "tests/test_kesher_legacy_schema_fence.py",
+        "status": "??",
+        "size": 12694,
+        "mode": "0o644",
+        "sha256": "d92735166860f899ba0844e1837e9bbeb067d3c9234694945a6ba75d8bf697e8"
+      },
+      {
+        "path": "tests/test_kesher_media_audit.py",
+        "status": "??",
+        "size": 7401,
+        "mode": "0o644",
+        "sha256": "595082695df8042630eaa92591ded87549309bc6258972519f0088903258c131"
+      },
+      {
+        "path": "tests/test_kesher_media_observer.py",
+        "status": "??",
+        "size": 10091,
+        "mode": "0o644",
+        "sha256": "aa334e557738d07fa5de943f97f1bc45f9c6a49251d04dfccc23f1e4588a3c66"
+      },
+      {
+        "path": "tests/test_kesher_media_publication.py",
+        "status": "??",
+        "size": 7575,
+        "mode": "0o644",
+        "sha256": "b6259552c4f6a87c74f9472a6491d84fb9adc073001f250688f0e617ba283205"
+      },
+      {
+        "path": "tests/test_kesher_media_state.py",
+        "status": "??",
+        "size": 11490,
+        "mode": "0o644",
+        "sha256": "7cbc83625e3361a29db9ff493868472139af6b9733aced7e316bf571229994a0"
+      },
+      {
+        "path": "tests/test_kesher_media_worker.py",
+        "status": "??",
+        "size": 7433,
+        "mode": "0o644",
+        "sha256": "04eb1b9ef88964004204356edaff248237d7e76d4a090e16248f3b36f31b4de9"
+      },
+      {
+        "path": "tests/test_kesher_metadata_repair.py",
+        "status": "??",
+        "size": 5047,
+        "mode": "0o644",
+        "sha256": "caeb3fe28a03cc9ed7827362d18b7d8d5a2fc5fe69145927a023245f92d077b2"
+      },
+      {
+        "path": "tests/test_kesher_observe.py",
+        "status": "??",
+        "size": 6588,
+        "mode": "0o644",
+        "sha256": "8c52159f86988837b42bd5b7cb98bc65fff8f9005ecdb4243be62d0e159d6f43"
+      },
+      {
+        "path": "tests/test_kesher_optional_video_enrichment.py",
+        "status": " M",
+        "size": 3083,
+        "mode": "0o644",
+        "sha256": "0f7ab8acf5b6853102955875698d0bff794fb0153da7188b80d53d2bfb1fb270"
+      },
+      {
+        "path": "tests/test_kesher_output_artifacts.py",
+        "status": "??",
+        "size": 20618,
+        "mode": "0o644",
+        "sha256": "89cd90e4d483a94e4b08e10ddbc9c2eea6080d4c870d5dbfc79312706e80408e"
+      },
+      {
+        "path": "tests/test_kesher_provider_recovery.py",
+        "status": "??",
+        "size": 5095,
+        "mode": "0o644",
+        "sha256": "98d4b49f4815b56b5ab4d6880543463ddc69a4dbcc347bb3a9d7b72102b301f3"
+      },
+      {
+        "path": "tests/test_kesher_public_delivery.py",
+        "status": "??",
+        "size": 9071,
+        "mode": "0o644",
+        "sha256": "aed1ffa9805b71c16d91c106dd13cd0e602e849aa88ac2a52914d3a568c6af25"
+      },
+      {
+        "path": "tests/test_kesher_publication_manifest.py",
+        "status": "??",
+        "size": 3485,
+        "mode": "0o644",
+        "sha256": "61cb682017f5e41183110642202a10c5719667cdeaf3fcd90733a1dca8304d94"
+      },
+      {
+        "path": "tests/test_kesher_runtime_migration.py",
+        "status": "??",
+        "size": 12781,
+        "mode": "0o644",
+        "sha256": "909db0229950e4fe3f7ebcb7d82c4eb433a8cfb9079c223f57330a2ba6a9287d"
+      },
+      {
+        "path": "tests/test_kesher_state_write_safety.py",
+        "status": "??",
+        "size": 4237,
+        "mode": "0o644",
+        "sha256": "1f23f3915cf1f1851ad77b84765efd2825bc5bd9862dba22a9f20046c72aac33"
+      },
+      {
+        "path": "tests/test_kesher_three_dispatchers.py",
+        "status": "??",
+        "size": 11521,
+        "mode": "0o644",
+        "sha256": "6ec3435cee8fd8ef68e851aa8d781b7b2d714cf841e4b8be5284e4f0d8684e17"
+      },
+      {
+        "path": "tests/test_kesher_v6_intervention_isolation.py",
+        "status": " M",
+        "size": 9357,
+        "mode": "0o644",
+        "sha256": "d7d581a5ac190d2c139c9b36a9e7f385faa6a27609fc149eebd6f3d72b81544e"
+      },
+      {
+        "path": "tests/test_kesher_worker_commands.py",
+        "status": "??",
+        "size": 9778,
+        "mode": "0o644",
+        "sha256": "ecff6837f5f5ac824a109ee9422aa2519a79fd79ad5c39e865b3bb918704ad29"
+      },
+      {
+        "path": "tests/test_kesher_worker_entry.py",
+        "status": "??",
+        "size": 4812,
+        "mode": "0o644",
+        "sha256": "f48055276b51e264ef35b5d0bb7d3952918fbc39aa1ff09a93e1a09b73365fde"
+      },
+      {
+        "path": "tests/test_media_provenance_contract.py",
+        "status": "??",
+        "size": 13472,
+        "mode": "0o644",
+        "sha256": "a52ab3ee6a0c9c51c93def98572af5854c3e54adcff20337cbe7fea606d74889"
+      },
+      {
+        "path": "tests/test_media_voice_policy_contract.py",
+        "status": " M",
+        "size": 2494,
+        "mode": "0o644",
+        "sha256": "f0acf97611450ff1870a6fb1d93439c3f60e3fab8a279d809e7476c2a43ab4fc"
+      },
+      {
+        "path": "tests/test_pipeline_v3_self_audit.py",
+        "status": " M",
+        "size": 12443,
+        "mode": "0o644",
+        "sha256": "a9af8c26385b408417631a4208e7a1eabe739501a42e0dfde7cd4ef41b7f7b14"
+      },
+      {
+        "path": "tests/test_short_pipeline_v4.py",
+        "status": " M",
+        "size": 13691,
+        "mode": "0o644",
+        "sha256": "80a7782c1f57597bf3060019f81ac74283cbf7b25465d0eb39b8e0190ce7b5ef"
+      },
+      {
+        "path": "tests/test_single_scheduler_policy.py",
+        "status": " M",
+        "size": 9034,
+        "mode": "0o644",
+        "sha256": "ba2e718b2ae11a79c0aa775883bb2a4ea7bfb0e29e7a673396bf151b1ecca6b8"
+      },
+      {
+        "path": "tests/test_v4_runtime_activation.py",
+        "status": " M",
+        "size": 7555,
+        "mode": "0o644",
+        "sha256": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b"
+      },
+      {
+        "path": "tests/test_v5_delivery_watchdog_contract.py",
+        "status": " M",
+        "size": 20691,
+        "mode": "0o644",
+        "sha256": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631"
+      },
+      {
+        "path": "tests/test_video_upload_guard.py",
+        "status": " M",
+        "size": 5669,
+        "mode": "0o644",
+        "sha256": "32e00c418e98f3e5e982148c9f1197e3660285c03cf87a0d3900b57276abeb14"
+      }
+    ],
+    "independently_verified_every_member": true,
+    "integrated_validation_passed": false,
+    "production_state_written": false,
+    "public_completion_inferred": false,
+    "automatic_restore_or_execution_authorized": false
+  },
+  "preservation": {
+    "all_operational_paths_equal_final_main": true,
+    "closed_floor_canonical_sha256": "5f2bb8d19b6ca3e9004d1e34997c9a55b05dea944f7ea901c1c33ff62a71df1c",
+    "closed_floor_files": {
+      "closed-media-evidence-floor-20260930.json": {
+        "identical_to_source": true,
+        "sha256": "99ee2e33c76e24fb9d5d2a8e27cae80ab8566b557585eb8f060ab32b6a3c55d9"
+      },
+      "legacy-media-adjudication-20260928.json": {
+        "identical_to_source": true,
+        "sha256": "a16c3801e845ee09bc61803a79301b445dfd3e40d28bf05caad1952a4aa96c33"
+      },
+      "legacy-media-evidence-report-20260928.md": {
+        "identical_to_source": true,
+        "sha256": "e58f2d24765f67792c41dbe157a2c51a4dc663faade9dc098e7a135926f637a2"
+      },
+      "migration-legacy-evidence-replay-20260928.json": {
+        "identical_to_source": true,
+        "sha256": "634cbe24513e5b0ac32b0df270a5dce188fb7dd5bd8a317112be823e176b4afd"
+      },
+      "handover-hardening-replay-20260930.json": {
+        "identical_to_source": true,
+        "sha256": "9292a5473d48fe0f79e54f83c47e92173a0266347423f22469f9f292fd667175"
+      }
+    },
+    "source_still_clean": true,
+    "source_not_rewritten": true
+  },
+  "raw_reconstruction_policy": {
+    "canonical_digest": "0835c31e5f679c3159c561fe00c2a2e60a2349109dd6aef342409929a77377c2",
+    "approved_for_integrated_candidate": false,
+    "stale_definition_or_call_chain_paths": [
+      ".github/prompts/jules-remotion-video-upgrade.md",
+      ".github/scripts/article-image-worker-v4.py",
+      ".github/scripts/article-pr-controller-v3.py",
+      ".github/scripts/validate-article-images.py",
+      ".github/scripts/validate-article-pr.py",
+      ".github/workflows/auto-merge-jules-audit-prs.yml",
+      ".github/workflows/build-article-fallback-library.yml",
+      ".github/workflows/ci.yml",
+      ".github/workflows/codex-seo-audit.yml",
+      ".github/workflows/deploy.yml",
+      ".github/workflows/kesher-article-generation.yml",
+      ".github/workflows/kesher-article-image.yml",
+      ".github/workflows/kesher-content-controller-v6.yml",
+      ".github/workflows/kesher-content-controller.yml",
+      ".github/workflows/kesher-daily-video.yml",
+      ".github/workflows/kesher-short-v4.yml",
+      ".github/workflows/openclaw-cloudflare-tunnel.yml",
+      ".github/workflows/openclaw-offline-boot-repair.yml",
+      ".github/workflows/openclaw-recovery-lint.yml",
+      ".github/workflows/repair-existing-article-heroes.yml",
+      "config/kesher-production-contract.json",
+      "package-lock.json",
+      "package.json",
+      "scripts/jules_article_runner_v3.py",
+      "scripts/jules_article_runner_v4.py",
+      "scripts/jules_video_reviewer.py",
+      "scripts/jules_video_reviewer_v3.py",
+      "scripts/kesher_article_contract.py",
+      "scripts/kesher_automation_policy.py",
+      "scripts/kesher_content_controller.py",
+      "scripts/kesher_content_controller_stabilized.py",
+      "scripts/kesher_content_controller_v5_runtime.py",
+      "scripts/kesher_content_controller_v5_runtime_base.py",
+      "scripts/kesher_content_watchdog.py",
+      "scripts/kesher_daily_pipeline.py",
+      "scripts/kesher_master_supervisor_live.py",
+      "scripts/kesher_master_supervisor_shadow.py",
+      "scripts/kesher_runtime/article_image_worker.py",
+      "scripts/kesher_runtime/article_images.py",
+      "scripts/kesher_runtime/verification.py",
+      "scripts/kesher_short_pipeline_v4.py",
+      "scripts/kesher_three_strike_runtime.py",
+      "scripts/kesher_video_asset_resolver.py",
+      "scripts/kesher_video_upload_guard.py",
+      "scripts/oci_openclaw_helper_local_proof.py",
+      "scripts/oci_openclaw_helper_run_command.py",
+      "scripts/oci_openclaw_helper_run_command_v2.py",
+      "scripts/requirements-video-cloud.txt",
+      "scripts/verify-production-article.py",
+      "tests/test_article_image_contract.py",
+      "tests/test_article_quality_stabilization.py",
+      "tests/test_controller_artifact_download.py",
+      "tests/test_kesher_article_image_worker.py",
+      "tests/test_kesher_content_controller.py",
+      "tests/test_kesher_daily_pipeline.py",
+      "tests/test_kesher_v6_intervention_isolation.py",
+      "tests/test_master_supervisor_live.py",
+      "tests/test_master_supervisor_shadow.py",
+      "tests/test_openclaw_cloudflare_primary.py",
+      "tests/test_production_contract_v3.py",
+      "tests/test_short_pipeline_v4.py",
+      "tests/test_single_scheduler_policy.py",
+      "tests/test_v4_runtime_activation.py",
+      "tests/test_v5_delivery_watchdog_contract.py",
+      "tests/test_v5_video_source_binding.py",
+      "tests/test_video_enhancement_contract.py",
+      "tests/test_video_review_policy.py"
+    ],
+    "note": "Inherited source policy remains historical data in archive; it is not an authority approval for reconstructed bytes."
+  },
+  "validation": {
+    "start_main_pytest": "578 passed, 17 subtests passed in 38.30s; exit0",
+    "raw_reconstruction_collection": "failed at test indentation; corrected before compile",
+    "raw_reconstruction_full_pytest": "aborted after user-required main-drift stop; exit143; no final successful integrated result",
+    "raw_reconstruction_compileall": "exit0",
+    "raw_reconstruction_diff_check": "exit0",
+    "integrated_actionlint": "not completed",
+    "integrated_npm_check": "not completed",
+    "integrated_browser": "not completed",
+    "integrated_policy_topology": "NOT PASSING; 67 unique stale pinned inputs",
+    "integrated_focused_handover_exclusion_cas": "not completed",
+    "integrated_worker_admission": "static manual trigger/required ID/claim ordering checked; no final test result",
+    "integrated_schema5_downgrade": "implementation preserved in source/archive; no final integrated test result",
+    "final_main_evidence_only_pytest": "584 passed, 17 subtests passed in 17.88s; exit0",
+    "final_main_evidence_only_actionlint": "Repository-wide actionlint 1.7.12 -shellcheck= -pyflakes=; exit0; zero diagnostics. Current-main definitions only, not integrated canonical workflows.",
+    "recovery_verifier": "253 exact regular members SHA/size/modes checked; exit0",
+    "checkpoint_staged_diff_check": "exit0",
+    "checkpoint_unstaged_diff_check": "exit0",
+    "new_final_main_evidence_only_pytest": "839c9a8c:584 passed,17 subtests passed in8.94s;exit0",
+    "new_final_main_evidence_only_actionlint": "839c9a8c:repository-wideactionlint1.7.12 -shellcheck= -pyflakes=;exit0;zero diagnostics"
+  },
+  "independent_review": {
+    "findings": [
+      {
+        "severity": "Important",
+        "finding": "Candidate omitted runtime/workflow/test main delta #1009",
+        "resolution": "Remove draft from operational paths; root checkpoint on exact final main."
+      },
+      {
+        "severity": "Important",
+        "finding": "67 unique stale workflow/call-chain pins",
+        "resolution": "Preserve draft policy only as unapproved historical archive; no operational canonical policy installed."
+      },
+      {
+        "severity": "Important",
+        "finding": "Missing data-kesher-article-body blocks exact publication evidence",
+        "resolution": "Isolate unvalidated frontend edit; current-main frontend restored byte-exact."
+      },
+      {
+        "severity": "Important",
+        "finding": "Canonical provider graph expects Pixabay key while workflow exposes old Unsplash key",
+        "resolution": "Isolate unvalidated workflow/provider graph; current-main providers restored byte-exact."
+      },
+      {
+        "severity": "readiness_gap",
+        "finding": "No final successful integrated validation",
+        "resolution": "Mark integration BLOCKED, do not publish; provide exact executable local recovery/handoff."
+      }
+    ],
+    "critical_findings": 0,
+    "all_confirmed_important_resolved_for_evidence_only_checkpoint": true,
+    "implementation_fixes_remaining": true,
+    "same_review_final_verification": "PASSED against839c9a8c15ede02956d02931cc55ac6bfd4b16a0:zero remainingCritical/Important for evidence-onlycheckpoint;71files confinedforensics;operationaltreeexactmain;cumulativepatch bytes/inventory;253member archive;sourceclean/closedfloor;baseline/registry provenance;staged/unstageddiffchecks. Not integrated implementation approval."
+  },
+  "pr_readiness": "NOT READY",
+  "production_state_written": false,
+  "public_completion_inferred": false,
+  "production_activated": false,
+  "push_performed": false,
+  "pull_request_created": false,
+  "lossless_patch_artifacts": {
+    "unvalidated-tracked.diff.gz": {
+      "uncompressed_sha256": "b0a8b495beb358003dd0033ffe3f2191633cc7e333ee0468a5fd24ae5b7d0db0",
+      "compressed_sha256": "d006cc8215d3274237b3471ed39d46bd171f61c99774b8ed8bf151f91bc04cc6",
+      "compressed_size_bytes": 51052,
+      "exact_bytes_preserved": true
+    },
+    "main-movement.diff.gz": {
+      "uncompressed_sha256": "e90e2084852caecf851f65e9320faf96b92ac5d27fbb020879ddbe76b320e692",
+      "compressed_sha256": "d640291ef630b1b96d94abe129f5616976cc8fa6c030a0f7d6c250f29bab6713",
+      "compressed_size_bytes": 2572,
+      "exact_bytes_preserved": true
+    },
+    "final-main-movement-20261002.diff.gz": {
+      "uncompressed_sha256": "3b00a3ea32629f0fbaa562e1dcbd80915e1d4b6e871117b1b95613c0c66c3746",
+      "compressed_sha256": "165bfd7dd037b957ff421a863950c6a8bc34318eb3f649a4ea295a2a8244d544",
+      "exact_bytes_preserved": true
+    }
+  },
+  "previous_main_readback": "d2f92a93ef3e3f7966b35594e336e9707d5eba49",
+  "additional_main_advance": {
+    "from": "d2f92a93ef3e3f7966b35594e336e9707d5eba49",
+    "to": "839c9a8c15ede02956d02931cc55ac6bfd4b16a0",
+    "paths": [
+      "A\tdocs/audits/compact-keywords-owner-evidence-2026-10-01.md",
+      "M\tpublic/llms-full.txt",
+      "M\tpublic/llms.txt",
+      "M\tpublic/rss.xml",
+      "M\tpublic/sitemap.xml",
+      "M\tscripts/content-policy.cjs",
+      "M\tscripts/generate-sitemap.cjs",
+      "M\tscripts/kesher_short_pipeline_v4.py",
+      "M\tscripts/validate-content.cjs",
+      "M\tsrc/App.tsx",
+      "A\tsrc/components/LandingCalloutBanner/LandingCalloutBanner.module.css",
+      "A\tsrc/components/LandingCalloutBanner/LandingCalloutBanner.tsx",
+      "M\tsrc/components/Layout/Layout.tsx",
+      "M\tsrc/components/SEO/MetaTags.tsx",
+      "A\tsrc/data/landingPagesConfig.ts",
+      "M\tsrc/data/postSummaries.json",
+      "M\tsrc/data/posts.json",
+      "M\tsrc/hooks/useLandingPageAnalytics.ts",
+      "M\tsrc/pages/Blog/BlogPost.tsx",
+      "M\tsrc/pages/Home/Home.module.css",
+      "A\tsrc/pages/Landing/CouplesCounselingGanYavne/CouplesCounselingGanYavnePage.tsx",
+      "A\tsrc/pages/Landing/CouplesCrisisAshdod/CouplesCrisisAshdodPage.tsx",
+      "M\tsrc/pages/Landing/CouplesMediationAshdod/CouplesMediationAshdodPage.tsx",
+      "R055\tsrc/pages/Landing/CouplesMediationAshdod/CouplesMediationAshdodPage.module.css\tsrc/pages/Landing/LandingPageTemplate.module.css",
+      "A\tsrc/pages/Landing/LandingPageTemplate.tsx",
+      "A\tsrc/pages/Landing/ParentingAdhdAshdod/ParentingAdhdAshdodPage.tsx",
+      "M\tsrc/pages/Landing/ParentingGuidanceAshdod/ParentingGuidanceAshdodPage.tsx",
+      "M\tsrc/pages/Services/Mediation/MediationPage.tsx",
+      "A\tsrc/utils/landingCalloutHelper.ts",
+      "M\ttests/app-routing.test.ts",
+      "A\ttests/landing-page-component.test.tsx",
+      "A\ttests/landing-pages-config.test.ts",
+      "M\tvitest.config.ts"
+    ],
+    "commits": [
+      "839c9a8c15ede02956d02931cc55ac6bfd4b16a0 Fix KESHER Short V4 portrait composition",
+      "6758e9e48f0b638fa5d24c81590141af4058981f feat: ship evidence-backed Compact Keywords landing system",
+      "3f9678f4f7d97b605778b3f6acc09d409fe18484 Auto-merge validated Jules audit",
+      "00420a0a132ace3cf3582e8a038cc45df22a8d7f Auto-merge validated Jules audit"
+    ],
+    "resolution": "Evidence-only checkpoint rooted on exact final main; no executable reconstruction reconciliation attempted."
+  },
+  "final_main_stable_readback": "839c9a8c15ede02956d02931cc55ac6bfd4b16a0;latest fetch unchanged before commit"
+}

@@ -41,14 +41,14 @@ def _read(request, *, timeout=20):
 
 
 def request_json(method, url, *, headers=None):
-    if method != 'GET' or urllib.parse.urlsplit(url).hostname not in {'api.unsplash.com', 'api.pexels.com'} or not url.startswith('https://'):
+    if method != 'GET' or urllib.parse.urlsplit(url).hostname not in {'api.pexels.com', 'pixabay.com'} or not url.startswith('https://'):
         raise ValueError('Unexpected stock provider endpoint')
     request = urllib.request.Request(url, method=method, headers={'User-Agent': 'kesher-canonical-image', **(headers or {})})
     return json.loads(_read(request))
 
 
 def download(url):
-    if not url.startswith('https://') or urllib.parse.urlsplit(url).hostname not in {'images.unsplash.com', 'images.pexels.com'}:
+    if not url.startswith('https://') or urllib.parse.urlsplit(url).hostname not in {'images.pexels.com', 'pixabay.com', 'cdn.pixabay.com'}:
         raise ValueError('Unexpected stock image origin')
     return _read(urllib.request.Request(url, headers={'User-Agent': 'kesher-canonical-image'}))
 
@@ -309,33 +309,24 @@ def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str, e
     for query_text in stock_queries(post)[:2]:
         query = urllib.parse.quote(query_text)
         try:
-            if provider == "unsplash":
-                key = os.environ.get("UNSPLASH_ACCESS_KEY", "").strip()
+            if provider == "pixabay":
+                key = os.environ.get("PIXABAY_API_KEY", "").strip()
                 if not key:
                     return None
-                result = request_json(
-                    "GET",
-                    f"https://api.unsplash.com/search/photos?query={query}&orientation=landscape&per_page=5",
-                    headers={"Authorization": f"Client-ID {key}"},
-                )
-                rows = [
-                    ((photo.get("urls") or {}).get("regular"), (photo.get("links") or {}).get("html"))
-                    for photo in (result.get("results") or []) if isinstance(photo, dict)
-                ]
-                label = "Unsplash"
+                result = request_json("GET", "https://pixabay.com/api/?" + urllib.parse.urlencode({
+                    "key": key, "q": query_text, "image_type": "photo", "orientation": "horizontal",
+                    "safesearch": "true", "min_width": 1200, "min_height": 675, "per_page": 8}))
+                rows = [(photo.get("largeImageURL") or photo.get("webformatURL"), photo.get("pageURL"))
+                        for photo in result.get("hits", []) if isinstance(photo, dict)]
+                label = "Pixabay"
             else:
                 key = os.environ.get("PEXELS_API_KEY", "").strip()
                 if not key:
                     return None
-                result = request_json(
-                    "GET",
-                    f"https://api.pexels.com/v1/search?query={query}&orientation=landscape&per_page=5",
-                    headers={"Authorization": key},
-                )
-                rows = [
-                    (((photo.get("src") or {}).get("large") or (photo.get("src") or {}).get("large2x")), photo.get("url"))
-                    for photo in (result.get("photos") or []) if isinstance(photo, dict)
-                ]
+                result = request_json("GET", f"https://api.pexels.com/v1/search?query={query}&orientation=landscape&per_page=5",
+                                      headers={"Authorization": key})
+                rows = [(((photo.get("src") or {}).get("large") or (photo.get("src") or {}).get("large2x")), photo.get("url"))
+                        for photo in (result.get("photos") or []) if isinstance(photo, dict)]
                 label = "Pexels"
             for url, source in rows[:2]:
                 if not url or not source:
@@ -354,9 +345,9 @@ def _stock_candidate(post: dict[str, Any], attempts: list[str], provider: str, e
     return None
 
 
-def try_unsplash(post: dict[str, Any], attempts: list[str], existing_hashes: set[str] | None = None) -> ImageCandidate | None:
-    attempts.append("unsplash")
-    return _stock_candidate(post, attempts, "unsplash", existing_hashes)
+def try_pixabay(post: dict[str, Any], attempts: list[str], existing_hashes: set[str] | None = None) -> ImageCandidate | None:
+    attempts.append("pixabay")
+    return _stock_candidate(post, attempts, "pixabay", existing_hashes)
 
 
 def try_pexels(post: dict[str, Any], attempts: list[str], existing_hashes: set[str] | None = None) -> ImageCandidate | None:
@@ -406,114 +397,16 @@ LOCAL_FALLBACK_CANDIDATES: dict[str, list[tuple[str, str]]] = {
 }
 
 
-def _png_chunk(kind: bytes, payload: bytes) -> bytes:
-    checksum = binascii.crc32(kind + payload) & 0xFFFFFFFF
-    return struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", checksum)
-
-
-def _render_editorial_png(identity: str, *, variant: int = 0) -> bytes:
-    """Render a deterministic premium-style abstract 16:9 hero with stdlib only."""
-    width, height = 1200, 675
-    seed = hashlib.sha256(f"{identity}|{variant}".encode("utf-8")).digest()
-
-    top = (238 + seed[0] % 12, 225 + seed[1] % 14, 214 + seed[2] % 18)
-    bottom = (224 + seed[3] % 18, 207 + seed[4] % 20, 198 + seed[5] % 18)
-    accent_a = (128 + seed[6] % 70, 82 + seed[7] % 70, 98 + seed[8] % 65)
-    accent_b = (78 + seed[9] % 75, 112 + seed[10] % 70, 118 + seed[11] % 65)
-    accent_c = (174 + seed[12] % 55, 126 + seed[13] % 55, 92 + seed[14] % 50)
-
-    blobs = (
-        (210 + seed[15] * 2, 150 + seed[16], 230 + seed[17], accent_a, 86),
-        (760 + seed[18], 370 + seed[19] // 2, 250 + seed[20], accent_b, 72),
-        (1020 - seed[21], 110 + seed[22] // 2, 170 + seed[23] // 2, accent_c, 58),
-    )
-
-    raw = bytearray()
-    for y in range(height):
-        raw.append(0)
-        t = y * 255 // (height - 1)
-        base = [
-            (top[channel] * (255 - t) + bottom[channel] * t) // 255
-            for channel in range(3)
-        ]
-        for x in range(width):
-            horizontal = (x * 18 // (width - 1)) - 9
-            pixel = [max(0, min(255, channel + horizontal)) for channel in base]
-            for cx, cy, radius, color, strength in blobs:
-                dx = x - cx
-                dy = y - cy
-                radius_sq = radius * radius
-                distance_sq = dx * dx + dy * dy
-                if distance_sq >= radius_sq:
-                    continue
-                weight = ((radius_sq - distance_sq) * strength) // radius_sq
-                pixel = [
-                    (pixel[channel] * (255 - weight) + color[channel] * weight) // 255
-                    for channel in range(3)
-                ]
-            grain = ((x * 17 + y * 29 + seed[(x + y) % len(seed)]) % 7) - 3
-            raw.extend(max(0, min(255, channel + grain)) for channel in pixel)
-
-    header = struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)
-    return (
-        b"\x89PNG\r\n\x1a\n"
-        + _png_chunk(b"IHDR", header)
-        + _png_chunk(b"IDAT", zlib.compress(bytes(raw), 9))
-        + _png_chunk(b"IEND", b"")
-    )
-
-
-def generate_editorial_fallback(
-    post: dict[str, Any],
-    attempts: list[str],
-    *,
-    existing_hashes: set[str] | None = None,
-) -> ImageCandidate:
-    """Create a unique deterministic local image when curated bytes are exhausted."""
-    attempts.append("local-editorial")
-    slug = str(post.get("slug") or post.get("id") or "article").strip()
-    title = str(post.get("title") or slug).strip()
-    identity = f"{slug}|{title}"
-    used = existing_hashes or set()
-
-    for variant in range(8):
-        data = _render_editorial_png(identity, variant=variant)
-        width, height, ext = validate_candidate(data)
-        digest = hashlib.sha256(data).hexdigest()
-        if candidate_is_duplicate(data, used):
-            continue
-        print(
-            f"IMAGE_LOCAL_EDITORIAL_READY slug={slug} variant={variant} dimensions={width}x{height}",
-            file=sys.stderr,
-            flush=True,
-        )
-        return ImageCandidate(
-            "LocalEditorial",
-            data,
-            ext,
-            f"local-editorial://{slug}/{variant}",
-            f"איור עריכתי מופשט בגוונים חמים עבור {title}",
-            attempts.copy(),
-        )
-    raise RuntimeError("Unable to create a unique deterministic editorial fallback after 8 variants")
-
-
 def curated_candidate(post, existing_hashes, root):
-    root = Path(root).resolve()
-    candidates = LOCAL_FALLBACK_CANDIDATES.get(article_key(post), LOCAL_FALLBACK_CANDIDATES['couples'])
-    for source, description in candidates:
-        path = (root / source).resolve()
-        if not path.is_relative_to(root) or not path.is_file():
-            continue
-        try:
-            data = path.read_bytes()
-            _, _, ext = validate_candidate(data)
-            if candidate_is_duplicate(data, existing_hashes):
-                continue
-            return ImageCandidate('Local', data, ext, 'local://' + source, description, [])
-        except (OSError, ValueError, RuntimeError):
-            continue
-    return None
+    # Reuse current main's concrete managed/seed reservoir and its policy. This
+    # calls only the pure local selector; the canonical worker owns all effects.
+    import importlib.util
+    path = Path(root).resolve() / '.github/scripts/article-image-worker-v4.py'
+    spec = importlib.util.spec_from_file_location('kesher_candidate_local_selector', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.REPO_ROOT = Path(root).resolve()
+    return module.local_fallback('', post, '', '', [], existing_hashes=existing_hashes)
 
 
 def provider_functions(root):
@@ -522,10 +415,18 @@ def provider_functions(root):
             candidate = function(post, used)
             return asdict(candidate) if candidate else None
         return run
-    return {
-        'gemini': adapt(lambda post, used: try_gemini(post, [], used)),
-        'unsplash': adapt(lambda post, used: try_unsplash(post, [], used)),
+    directions = (
+        'candid medium shot, natural eye-level interaction, warm daylight',
+        'wider environmental documentary frame with relevant real setting',
+        'natural emotional moment, restrained expressions, realistic composition',
+    )
+    providers = {}
+    for index, direction in enumerate(directions, start=1):
+        providers['gemini-' + str(index)] = adapt(lambda post, used, direction=direction:
+            try_gemini(dict(post, excerpt='Visual direction: ' + direction + '. ' + str(post.get('excerpt') or '')), [], used))
+    providers.update({
         'pexels': adapt(lambda post, used: try_pexels(post, [], used)),
+        'pixabay': adapt(lambda post, used: try_pixabay(post, [], used)),
         'local-curated': adapt(lambda post, used: curated_candidate(post, used, root)),
-        'local-editorial': adapt(lambda post, used: generate_editorial_fallback(post, [], existing_hashes=used)),
-    }
+    })
+    return providers

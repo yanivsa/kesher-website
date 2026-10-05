@@ -51,6 +51,14 @@ class RuntimeV5Controller(v5.V5Controller):
         return super()._tick_short(state, source, long_item)
 
     def _adopt_existing_short(self, state, source):
+        current_short = state.get("short") or {}
+        if (
+            current_short.get("status") == "complete"
+            and current_short.get("verified") is True
+            and current_short.get("youtube_id")
+            and current_short.get("youtube_url")
+        ):
+            return current_short
         short_state = self.github.newest_short_state()
         verified = [
             row
@@ -266,6 +274,11 @@ class RuntimeV5Controller(v5.V5Controller):
         if long_candidate is not None:
             stages.append(("long_video", v5.LONG_VIDEO_WORKFLOW, long_candidate, None))
         elif long_verified is not None:
+            if (
+                state.get("short", {}).get("status") == "complete"
+                and state.get("short", {}).get("verified") is True
+            ):
+                return None
             short_state = self.github.newest_short_state()
             valid_short = [
                 row
@@ -288,6 +301,7 @@ class RuntimeV5Controller(v5.V5Controller):
                 stage,
                 identity=identity,
                 fingerprint=delivery_guard.media_fingerprint(item),
+                provider_started_at=item.get("generation_started_at") or item.get("created_at"),
                 now=self.now,
             )
             active = self.github.active_workflow_run(workflow, production_only=True)
@@ -296,6 +310,19 @@ class RuntimeV5Controller(v5.V5Controller):
                 return None
 
             decision = watchdog.media_decision(stage, now=self.now)
+            if decision == "hard_timeout":
+                code = "LONG_VIDEO_PROVIDER_HARD_TIMEOUT" if stage_name == "long_video" else "SHORT_PROVIDER_HARD_TIMEOUT"
+                minutes = int(watchdog.MEDIA_HARD_TIMEOUT.total_seconds() // 60)
+                v5.core.block(
+                    state,
+                    stage_name,
+                    code,
+                    f"{stage_name} provider exceeded {minutes} minute hard timeout from launch/recovery",
+                )
+                stage["status"] = "blocked"
+                self.github.save_controller_state(state)
+                return v5.core.Action("blocked", f"{stage_name} provider hard timeout")
+
             if decision == "blocked":
                 code = "LONG_VIDEO_WATCHDOG_RECOVERY_EXHAUSTED" if stage_name == "long_video" else "SHORT_WATCHDOG_RECOVERY_EXHAUSTED"
                 v5.core.block(

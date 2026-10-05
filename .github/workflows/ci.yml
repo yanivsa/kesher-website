@@ -29,7 +29,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install contract test dependencies
-        run: python -m pip install requests==2.33.0 cryptography==50.0.1 -r scripts/requirements-article.txt
+        run: python -m pip install requests==2.33.0 cryptography==50.0.1 PyYAML==6.0.2 -r scripts/requirements-article.txt
 
       - name: Test CI and production contracts
         run: |
@@ -38,6 +38,7 @@ jobs:
             tests.test_kesher_article_contract \
             tests.test_kesher_article_normalizer \
             tests.test_kesher_explicit_test_mode \
+            tests.test_kesher_custom_topic_brief \
             tests.test_kesher_isolated_live_e2e_contract \
             tests.test_kesher_e2e_readiness \
             tests.test_article_quality_stabilization \
@@ -55,6 +56,24 @@ jobs:
             tests.test_master_supervisor_shadow \
             tests.test_master_supervisor_live \
             tests.test_master_supervisor_live_qa \
+            tests.test_verify_production_article \
+            -v
+
+      - name: Test Schema-6 production cutover safety
+        run: |
+          python3 -m unittest \
+            tests.test_kesher_production_cutover \
+            tests.test_kesher_external_exclusion \
+            tests.test_kesher_github_drain \
+            tests.test_kesher_git_exclusion \
+            tests.test_kesher_handover \
+            tests.test_kesher_handover_github \
+            tests.test_kesher_authority_digest \
+            tests.test_kesher_authority_topology \
+            tests.test_kesher_runtime_migration \
+            tests.test_kesher_canonical_state \
+            tests.test_kesher_worker_entry \
+            tests.test_kesher_content_controller \
             -v
 
       - name: Select CI profile

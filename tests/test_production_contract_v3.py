@@ -16,6 +16,7 @@ ARTICLE_PR_CONTROLLER_V3 = ROOT / ".github" / "scripts" / "article-pr-controller
 BEST_EFFORT_CONTROLLER = ROOT / "scripts" / "kesher_content_controller_v3_best_effort.py"
 RUNTIME_V5_CONTROLLER = ROOT / "scripts" / "kesher_content_controller_v5_runtime.py"
 SHORT_PIPELINE_V4 = ROOT / "scripts" / "kesher_short_pipeline_v4.py"
+SHORT_WORKFLOW_V4 = ROOT / ".github" / "workflows" / "kesher-short-v4.yml"
 
 
 class ProductionContractV3Tests(unittest.TestCase):
@@ -44,6 +45,37 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertEqual(video["queue_order"], "fifo")
         self.assertEqual(video["durable_state_artifacts_to_keep"], 3)
         self.assertEqual(video["durable_state_retention_days"], 14)
+
+    def test_free_broll_is_free_only_bounded_and_never_publication_blocking(self) -> None:
+        contract = load_policy()
+        broll = contract["video"]["free_stock_broll"]
+        self.assertEqual(broll["cost_policy"], "free-only")
+        self.assertEqual(broll["provider_order"], ["pexels", "pixabay"])
+        self.assertFalse(broll["automatic_paid_fallback"])
+        self.assertFalse(broll["publication_blocking"])
+        self.assertEqual(broll["missing_credentials"], "skip-and-continue")
+        self.assertEqual(broll["provider_failure"], "skip-and-continue")
+        self.assertEqual(broll["download_failure"], "skip-and-continue")
+        self.assertEqual(broll["render_failure"], "drop-assets-and-continue")
+        self.assertEqual(broll["time_budget_seconds"], 12)
+        self.assertEqual(broll["max_short_assets"], 1)
+        self.assertEqual(broll["max_overview_assets"], 2)
+        self.assertTrue(broll["attribution_on_use"])
+        self.assertFalse(broll["coverr_enabled"])
+        self.assertTrue(contract["invariants"]["free_broll_never_blocks_publication"])
+        self.assertTrue(contract["invariants"]["free_broll_never_triggers_paid_fallback"])
+        self.assertTrue(contract["invariants"]["external_broll_attributed_when_used"])
+
+    def test_free_stock_secrets_are_scoped_to_render_steps(self) -> None:
+        for path in (VIDEO_WORKFLOW, SHORT_WORKFLOW_V4):
+            workflow = path.read_text(encoding="utf-8")
+            job_header = workflow.split("    steps:", 1)[0]
+            self.assertNotIn("PEXELS_API_KEY:", job_header)
+            self.assertNotIn("PIXABAY_API_KEY:", job_header)
+            self.assertIn("PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}", workflow)
+            self.assertIn("PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}", workflow)
+            self.assertIn('KESHER_BROLL_ENABLED: "true"', workflow)
+            self.assertIn('KESHER_BROLL_BUDGET_SECONDS: "12"', workflow)
 
     def test_image_stage_is_publication_blocking_with_guaranteed_local_fallback(self) -> None:
         contract = load_policy()
@@ -75,15 +107,15 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn("content ready", policy)
         self.assertIn("publication ready", policy)
 
-    def test_article_auto_merge_cannot_race_ahead_of_image_best_effort(self) -> None:
+    def test_article_auto_merge_requires_completed_trusted_image(self) -> None:
         controller = ARTICLE_PR_CONTROLLER_V3.read_text(encoding="utf-8")
         self.assertIn("controller_image_stage_terminal", controller)
         self.assertIn('image_status == "complete"', controller)
-        self.assertIn('image_status == "deferred"', controller)
+        self.assertNotIn('image_status == "deferred"', controller)
         self.assertIn('image.get("provider_id")', controller)
         self.assertIn('image.get("source_id")', controller)
         self.assertIn('image.get("artifact_sha256")', controller)
-        self.assertIn("attempts >= 1", controller)
+        self.assertIn("A deferred,", controller)
         self.assertIn("core.merge_and_deploy = merge_and_deploy_after_image_stage", controller)
         self.assertIn("merge deferred without consuming a content attempt", controller)
 
@@ -135,6 +167,23 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn("| .[3:] | .[].id", workflow)
         self.assertNotIn("| .[7:]", workflow)
         self.assertIn("retention-days: 14", workflow)
+
+    def test_short_workflow_installs_the_renderer_workspace_dependencies(self) -> None:
+        workflow = SHORT_WORKFLOW_V4.read_text(encoding="utf-8")
+        self.assertIn("npm ci --prefix remotion-kesher --no-audit --no-fund", workflow)
+        self.assertIn("test -x remotion-kesher/node_modules/.bin/remotion", workflow)
+        import yaml
+        triggers=yaml.safe_load(workflow)['on'] if 'on' in yaml.safe_load(workflow) else yaml.safe_load(workflow)[True]
+        self.assertEqual(set(triggers),{'workflow_dispatch'})
+        self.assertIn('scripts.kesher_runtime.bridge_admission',workflow)
+
+    def test_short_remotion_composition_is_full_hd_portrait(self) -> None:
+        root = (ROOT / "remotion-kesher" / "src" / "Root.tsx").read_text(encoding="utf-8")
+        short = root.split('id="KesherShort"', 1)[1]
+        self.assertIn("width={1080}", short)
+        self.assertIn("height={1920}", short)
+        self.assertNotIn("width={720}", short)
+        self.assertNotIn("height={1280}", short)
 
     def test_short_controller_uses_same_approved_svg_signature_as_renderer(self) -> None:
         runtime = RUNTIME_V5_CONTROLLER.read_text(encoding="utf-8")

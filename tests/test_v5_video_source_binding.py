@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 
 from scripts import kesher_content_controller_stabilized as stabilized
 from scripts import kesher_content_controller_v5 as v5
-from tests.test_v5_shared_video_controller import FakeGitHub, FakeSite, article
+from tests.test_v5_shared_video_controller import FakeGitHub, FakeSite, article, verified_item
 
 
 TZ = ZoneInfo("Asia/Jerusalem")
@@ -52,6 +52,82 @@ class V5VideoSourceBindingTests(unittest.TestCase):
         self.assertIsNone(state["long_video"].get("artifact_id"))
         self.assertIsNone(state["long_video"].get("source_id"))
         self.assertNotEqual(state["long_video"].get("item_id"), "video-stale")
+
+    def test_targeted_media_switch_clears_stale_public_media_identity(self):
+        gh = FakeGitHub()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            gh,
+            FakeSite(),
+            now=datetime(2026, 8, 19, 19, 0, tzinfo=TZ),
+        )
+        state = controller.state()
+        state["targeted_media_recovery"] = {
+            "slug": "prior-article",
+            "content_sha256": "f" * 64,
+            "long_youtube_url": "https://youtu.be/old-long",
+            "short_youtube_url": "https://youtu.be/old-short",
+            "complete": True,
+        }
+        state["long_video"].update({
+            "status": "complete",
+            "youtube_id": "old-long",
+            "youtube_url": "https://youtu.be/old-long",
+            "item_id": "old-long-item",
+            "provider_id": "old-provider",
+            "verified": True,
+        })
+        state["short"].update({
+            "status": "complete",
+            "youtube_id": "old-short",
+            "youtube_url": "https://youtu.be/old-short",
+            "item_id": "old-short-item",
+            "verified": True,
+            "portrait_verified": True,
+        })
+        state["deliverables"] = {
+            "overview_youtube_url": "https://youtu.be/old-long",
+            "short_youtube_url": "https://youtu.be/old-short",
+            "overview_edit_verified": True,
+            "short_portrait_verified": True,
+            "short_signature_verified": True,
+            "short_origin_verified": True,
+        }
+        gh.saved_state = copy.deepcopy(state)
+        gh.active[v5.LONG_VIDEO_WORKFLOW] = {
+            "id": 4242,
+            "status": "in_progress",
+            "event": "workflow_dispatch",
+        }
+
+        with mock.patch.dict(
+            "os.environ",
+            {"KESHER_TARGET_MEDIA_SLUG": "today-article"},
+            clear=False,
+        ), mock.patch.object(
+            stabilized.quality, "article_violations", return_value=[]
+        ), mock.patch.object(
+            controller, "_verified_long_from_artifact_history", return_value=None
+        ):
+            updated, action = controller.tick()
+
+        self.assertEqual(action.kind, "wait")
+        self.assertEqual(updated["targeted_media_recovery"]["slug"], "today-article")
+        self.assertEqual(updated["targeted_media_recovery"]["long_status"], "running")
+        self.assertEqual(updated["long_video"]["run_id"], 4242)
+        self.assertEqual(updated["long_video"]["status"], "running")
+        self.assertIsNone(updated["long_video"].get("youtube_url"))
+        self.assertIsNone(updated["long_video"].get("item_id"))
+        self.assertEqual(updated["short"]["status"], "pending")
+        self.assertIsNone(updated["short"].get("youtube_url"))
+        self.assertIsNone(updated["deliverables"]["overview_youtube_url"])
+        self.assertIsNone(updated["deliverables"]["short_youtube_url"])
+        self.assertFalse(updated["deliverables"]["short_portrait_verified"])
+        resets = [
+            row for row in updated["history"]
+            if row.get("reason") == "targeted_media_source_identity_reset"
+        ]
+        self.assertEqual(len(resets), 1)
+        self.assertEqual(resets[0]["details"]["previous_slug"], "prior-article")
 
     def test_exact_rejected_overview_dispatches_remotion_rebuild_not_full_resume(self):
         gh = FakeGitHub()
@@ -178,6 +254,45 @@ class V5VideoSourceBindingTests(unittest.TestCase):
         ]
         self.assertEqual(len(recovery_events_again), 1)
         self.assertEqual(recovered_again["long_video"]["attempt_count"], 0)
+
+    def test_verified_overview_exhaustion_recovery_recovers_to_complete(self):
+        gh = FakeGitHub()
+        controller = stabilized.StabilizedRuntimeV5Controller(
+            gh,
+            FakeSite(),
+            now=datetime(2026, 8, 19, 19, 0, tzinfo=TZ),
+        )
+        source = v5.article_source_identity(article())
+        verified = verified_item(source, "exact-yt-id", item_id="video-verified")
+        gh.long_state["items"] = [verified]
+
+        initial = controller.state()
+        initial["status"] = "blocked"
+        initial["last_error"] = {
+            "stage": "long_video",
+            "code": "VIDEO_ATTEMPTS_EXHAUSTED",
+            "message": "video exhausted 3 total controller dispatch attempts",
+        }
+        initial["long_video"].update({
+            "attempt_count": 3,
+            "status": "exhausted",
+            "item_id": "video-stale",
+            "provider_id": "task-stale",
+            "artifact_id": "task-stale",
+            "source_id": "source-stale",
+        })
+        gh.saved_state = copy.deepcopy(initial)
+
+        recovered = controller.state()
+        long_video = recovered["long_video"]
+        self.assertEqual(recovered["status"], "article_live")
+        self.assertIsNone(recovered["last_error"])
+        self.assertTrue(long_video["source_binding_exhaustion_recovery_applied"])
+        self.assertEqual(long_video["status"], "complete")
+        self.assertEqual(long_video["item_id"], "video-verified")
+        self.assertEqual(long_video["youtube_id"], "exact-yt-id")
+        self.assertTrue(long_video["verified"])
+
 
     def test_exact_rejected_exhaustion_gets_one_remotion_rebuild_budget_recovery(self):
         gh = FakeGitHub()

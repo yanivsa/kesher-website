@@ -177,6 +177,32 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(state["article"]["last_jules_session_id"], "sessions/41")
         self.assertEqual(gh.dispatches, [])
 
+    def test_preserved_jules_timeout_immediately_redispatches_same_slot_recovery(self):
+        gh = FakeGitHub()
+        gh.saved_state = controller.new_cycle_state(self.now().date())
+        gh.saved_state["article"].update({"attempts": 1, "run_id": 43})
+        gh.runs[43] = {"id": 43, "status": "completed", "conclusion": "failure"}
+        gh.article_results[43] = {
+            "schema_version": 1,
+            "slot": "2026-08-19",
+            "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+            "retryable": True,
+            "message": "session preserved",
+            "session_id": "sessions/43",
+        }
+
+        state, action = self.make(gh).tick()
+
+        self.assertEqual(action.kind, "dispatch_article_recovery")
+        self.assertEqual(state["status"], "article_generating")
+        self.assertEqual(state["article"]["resume_dispatches"], 1)
+        self.assertIsNone(state["article"]["next_retry_at"])
+        self.assertEqual(
+            gh.dispatches,
+            [(controller.ARTICLE_WORKFLOW, {"slot": "2026-08-19"})],
+        )
+
+
     def test_completed_article_worker_progress_waits_for_reality_before_retry(self):
         gh = FakeGitHub()
         gh.saved_state = controller.new_cycle_state(self.now().date())
@@ -214,6 +240,31 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(new_state["backlog"][0]["cycle"], "2026-08-27")
         self.assertEqual(new_state["backlog"][0]["article"]["pr_number"], 550)
 
+    def test_contents_json_falls_back_to_git_blob_for_large_file(self):
+        client = controller.GitHubClient("yanivsa/kesher-website", "fake-token")
+        calls = []
+
+        def fake_request(method, url, body=None, **kwargs):
+            calls.append((method, url))
+            if "/contents/src/data/posts.json" in url:
+                return {
+                    "sha": "blob123",
+                    "encoding": "none",
+                    "content": "",
+                }
+            if url.endswith("/git/blobs/blob123"):
+                import base64
+                payload = base64.b64encode(b'[{"id":"large-post"}]').decode("ascii")
+                return {"encoding": "base64", "content": payload}
+            raise AssertionError(url)
+
+        client.request = fake_request
+        self.assertEqual(
+            client.contents_json("src/data/posts.json", "deadbeef"),
+            [{"id": "large-post"}],
+        )
+        self.assertTrue(any(url.endswith("/git/blobs/blob123") for _, url in calls))
+
     def test_unrelated_pr_563_is_not_adopted_as_article_pr(self):
         gh = FakeGitHub()
         # PR #563 is titled differently and does not add a post for 2026-08-19
@@ -247,6 +298,37 @@ class ControllerTests(unittest.TestCase):
         state, action = self.make(gh).tick()
         self.assertEqual(action.kind, "blocked")
         self.assertEqual(state["last_error"]["code"], "DUPLICATE_ARTICLE_DATE")
+
+    def test_manual_same_day_publications_do_not_block_managed_article(self):
+        gh = FakeGitHub()
+        managed = article("daily")
+        manual_a = article("manual-a")
+        manual_a["controllerManaged"] = False
+        manual_b = article("manual-b")
+        manual_b["controllerManaged"] = False
+        gh.posts = [manual_a, managed, manual_b]
+        site = FakeSite(status=200, body="<h1>כותרת מאמר</h1>")
+
+        state, action = self.make(gh, site).tick()
+
+        self.assertEqual(action.kind, "dispatch_video")
+        self.assertEqual(state["article"]["slug"], "daily")
+        self.assertIsNone(state.get("last_error"))
+
+    def test_only_manual_same_day_publications_leave_daily_slot_open(self):
+        gh = FakeGitHub()
+        manual_a = article("manual-a")
+        manual_a["controllerManaged"] = False
+        manual_b = article("manual-b")
+        manual_b["controllerManaged"] = False
+        gh.posts = [manual_a, manual_b]
+
+        state, action = self.make(gh).tick()
+
+        self.assertEqual(action.kind, "dispatch_article")
+        self.assertEqual(gh.dispatches, [
+            (controller.ARTICLE_WORKFLOW, {"slot": "2026-08-19"})
+        ])
 
     def test_article_in_main_but_not_live_dispatches_deploy(self):
         gh = FakeGitHub()
@@ -459,6 +541,10 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(len(put_calls), 1)
         self.assertEqual(put_calls[0][2]["sha"], "sha-1")
         self.assertEqual(sum(m == "GET" and "/contents/" in u for m, u, _ in calls), 1)
+
+    def test_image_providers_includes_local_editorial(self):
+        import scripts.kesher_content_controller_v3_entry as v3
+        self.assertIn("LocalEditorial", v3.IMAGE_PROVIDERS)
 
 
 if __name__ == "__main__":

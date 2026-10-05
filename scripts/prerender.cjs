@@ -46,6 +46,13 @@ const stopVite = () => {
 
 const hasNonAscii = (value) => /[^\x00-\x7F]/.test(value);
 
+const clientSnapshot = async (page) => {
+  await page.evaluate(() => {
+    document.getElementById('root')?.setAttribute('data-kesher-render', 'client-snapshot');
+  });
+  return page.content();
+};
+
 const writeRoute = (route, html) => {
   if (route === '/') {
     fs.writeFileSync(path.join(dist, 'index.html'), html);
@@ -82,13 +89,13 @@ const writeRoute = (route, html) => {
       await page.goto(`http://127.0.0.1:${port}${route}`, { waitUntil: 'domcontentloaded' });
       await page.waitForSelector('#main-content h1');
       await page.waitForSelector('link[rel="canonical"]', { state: 'attached' });
-      writeRoute(route, await page.content());
+      writeRoute(route, await clientSnapshot(page));
     }
 
     await page.goto(`http://127.0.0.1:${port}/__not-found__`, { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#main-content h1');
     await page.waitForSelector('meta[name="robots"][content*="noindex"]', { state: 'attached' });
-    fs.writeFileSync(path.join(dist, '404.html'), await page.content());
+    fs.writeFileSync(path.join(dist, '404.html'), await clientSnapshot(page));
   } finally {
     if (browser) await browser.close();
     stopVite();

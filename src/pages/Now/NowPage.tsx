@@ -60,6 +60,7 @@ const NowPage: React.FC = () => {
   return (
     <div className={styles.page}>
       <MetaTags
+        canonical={`${SITE_CONFIG.url}/now`}
         title="מה מעסיק אותי עכשיו (Now Page)"
         description="עמוד ה-Now האישי של שירה סהרוני: במה אני מתמקדת, אילו שאלות מלוות אותי ומה אני לומדת וכותבת בתקופה הזו."
       />

@@ -7,6 +7,7 @@ the newest artifact, or another provider task, and never installs module globals
 from __future__ import annotations
 
 import argparse
+import copy
 import os
 import sys
 from dataclasses import dataclass
@@ -55,12 +56,17 @@ def run_media(context: WorkerContext, *, encryption_key: str = '', phase: str = 
         raise StateInvalid('AUTHORITATIVE_SOURCE_CHANGED: do not select another article')
     engine = short if target.kind == 'short' else core
     initial = engine.new_item(source)
+    # Canonical byte/publication audits compare the complete independently
+    # observed source, including the provider body and publication metadata.
+    initial['source'] = copy.deepcopy(source)
     initial['id'] = f'media-{digest(target.to_dict())[:24]}'
     raw_attempt = command['inputs'].get('generation_attempt', '1')
     if raw_attempt not in {'1', '2', '3'}:
         raise StateInvalid('Generation attempt must be controller-authorized and bounded')
     attempt = int(raw_attempt)
     initial['fresh_generation_attempt'] = attempt
+    if attempt > 1:
+        initial['id'] += f'-a{attempt}'
     state = CanonicalMediaState(context, initial, encryption_key=encryption_key)
     item = state.item
     if item.get('fresh_generation_attempt', 1) != attempt:
@@ -124,8 +130,21 @@ def run_media(context: WorkerContext, *, encryption_key: str = '', phase: str = 
             if expected.exists() and core.sha256_file(expected) != item.get('raw_sha256'):
                 expected.unlink()
             raw = core.download_artifact(state, item)
+        if target.kind == 'short':
+            native_failures = short.native_provider_short_failures(core.ffprobe(raw), item)
+            if native_failures:
+                item.update(status='rejected', technical_verified=False,
+                    generation_rejection={'reason': 'native_short', 'attempt': attempt,
+                                          'raw_sha256': item['raw_sha256'], 'artifact_id': item['artifact_id']})
+                state.persist()
+                raise StateInvalid('PROVIDER_MEDIA_REJECTED: exact completed native Short output failed its contract')
         engine.validate_and_manifest(state, item, raw)
     if item.get('technical_verified') is not True or item.get('status') == 'rejected':
+        final = _file(core.STATE_DIR, item.get('final_mp4'))
+        if final and final.is_file() and not core.validate_female_voice(final, item)[0]:
+            item['generation_rejection'] = {'reason': 'voice', 'attempt': attempt,
+                                           'raw_sha256': item['raw_sha256'], 'artifact_id': item['artifact_id']}
+            state.persist()
         raise StateInvalid('TECHNICAL_REJECTION: output did not satisfy the publication gate')
 
     if target.kind == 'short':

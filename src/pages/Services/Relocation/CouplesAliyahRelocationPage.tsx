@@ -26,6 +26,7 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/couples-aliyah-relocation#service`,
       name: 'ייעוץ זוגי לעולים ולזוגות ברילוקיישן',
       serviceType: 'ייעוץ זוגי לפני עלייה או רילוקיישן, בתקופת ההסתגלות ולאחר החזרה',
       url: `${SITE_CONFIG.url}/services/couples-aliyah-relocation`,
@@ -36,6 +37,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/couples-aliyah-relocation#breadcrumb`,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'עמוד הבית', item: SITE_CONFIG.url },
         {
@@ -48,6 +50,7 @@ const schemaData = {
     },
     {
       '@type': 'FAQPage',
+      '@id': `${SITE_CONFIG.url}/services/couples-aliyah-relocation#faq`,
       mainEntity: pageFaqs.map((faq) => ({
         '@type': 'Question',
         name: faq.question,
@@ -60,6 +63,7 @@ const schemaData = {
 const CouplesAliyahRelocationPage: React.FC = () => (
   <div className={styles.page}>
     <MetaTags
+        canonical={`${SITE_CONFIG.url}/services/couples-aliyah-relocation`}
       title="ייעוץ זוגי לעולים ולזוגות ברילוקיישן"
       description="ייעוץ זוגי לפני עלייה או רילוקיישן, בתקופת ההסתגלות ולאחר החזרה: תפקידים, כסף, בדידות, שייכות ותקשורת זוגית."
       image="/images/generated/services/couples-aliyah-relocation.webp"

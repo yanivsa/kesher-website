@@ -169,6 +169,13 @@ def _eligible(state: dict, target: Identity, observation: dict, tracker: dict, *
             failure_class = 'PUBLIC_PROCESSING_PENDING'
     if observation['status'] == 'pending' and not failure_class:
         failure_class = 'PROVIDER_PENDING'
+    next_attempt = None
+    if isinstance(target, MediaIdentity) and failure_class == 'PROVIDER_MEDIA_REJECTED':
+        from .media_state import next_generation_attempt
+        next_attempt = next_generation_attempt(state, target)
+        if next_attempt is None:
+            record_incident(state, target, default_operation, 'UNPROVEN_MEDIA_ATTEMPT_TRANSITION', now=now)
+            return None
     if failure_class:
         rule = RULES.get(failure_class, Rule(None, 0))
         operation = default_operation if rule.operation == 'reconcile' and not isinstance(target, MediaIdentity) else rule.operation
@@ -201,6 +208,9 @@ def _eligible(state: dict, target: Identity, observation: dict, tracker: dict, *
     if isinstance(target, MediaIdentity):
         history = snapshots(state, target)
         payload['generation_attempt'] = str(history[-1]['item'].get('fresh_generation_attempt', 1) if history else 1)
+        if next_attempt is not None:
+            payload['generation_attempt'] = str(next_attempt)
+            payload['rejected_snapshot_sha256'] = digest(history[-1])
         if failure_class in {'OUTPUT_ARCHIVE_PENDING', 'OUTPUT_ARCHIVE_REBUILD'}:
             payload['recovery_class'] = failure_class
     return target, operation, payload

@@ -34,6 +34,19 @@ class VideoEnhancementContractTestCase(unittest.TestCase):
         self.assertIn("muted", overlay_source)
         self.assertIn("authoritative NotebookLM", overlay_source)
 
+    def test_signature_outro_uses_canonical_opaque_brand_background(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        outro_source = (root / "src/remotion/components/FullScreenSignatureOutro.tsx").read_text(encoding="utf-8")
+        overview_source = (root / "src/remotion/kesher-overview/KesherOverview.tsx").read_text(encoding="utf-8")
+        short_source = (root / "src/remotion/ArticleShort.tsx").read_text(encoding="utf-8")
+
+        self.assertIn(
+            'backgroundColor = "linear-gradient(135deg, #18281f 0%, #0d1712 100%)"',
+            outro_source,
+        )
+        self.assertNotIn("backgroundColor=", overview_source)
+        self.assertNotIn("backgroundColor=", short_source)
+
     def test_controller_contract_explicitly_keeps_enrichment_non_blocking(self) -> None:
         root = Path(__file__).resolve().parents[1]
         contract = json.loads((root / "config/kesher-production-contract.json").read_text(encoding="utf-8"))

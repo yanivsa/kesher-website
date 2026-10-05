@@ -30,4 +30,3 @@ def assert_article_quiescent(context, api, pr: dict, *, settled_head_sha=None) -
                 'settled_head_sha': settled_head_sha, 'sessions': sorted(names)}
     context.checkpoint('article_quiescence_' + digest(evidence)[:24], evidence, phase='STARTED')
     return sorted(names)
-

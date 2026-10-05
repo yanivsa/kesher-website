@@ -49,12 +49,12 @@ def forbidden_article_paths(paths: Iterable[str]) -> list[str]:
 # Pipeline version remains 2: the binding fields make its evidence explicit.
 IMAGE_PROVIDER_RULES = {
     "Gemini": ("generated", "gemini"),
-    "Unsplash": ("stock", "unsplash"),
+    "Pixabay": ("stock", "pixabay"),
     "Pexels": ("stock", "pexels"),
     "Local": ("local_fallback", "local-curated"),
     "LocalEditorial": ("local_fallback", "local-editorial"),
 }
-IMAGE_PROVIDER_ORDER = ("gemini", "unsplash", "pexels", "local-curated", "local-editorial")
+IMAGE_PROVIDER_ORDER = ("gemini-1", "gemini-2", "gemini-3", "pexels", "pixabay", "local-curated")
 IMAGE_EVIDENCE_FIELDS = (
     "Image Pipeline Version", "Image Provider", "Image Attempt Chain",
     "Image Generation Result", "Image Source URL", "Image SHA-256",
@@ -91,7 +91,9 @@ def image_dimensions(data: bytes) -> tuple[int, int]:
             with Image.open(io.BytesIO(data), formats=["PNG", "JPEG"]) as image:
                 # Pillow verifies PNG chunk CRCs up to, but excluding, IEND.
                 # Require its complete, zero-length closing chunk and checksum.
-                if image.format == "PNG" and not data.endswith(b"\x00\x00\x00\x00IEND\xaeB`\x82"):
+                # Existing published PNGs may have inert zero padding after
+                # IEND. Other trailing bytes remain a structural refusal.
+                if image.format == "PNG" and not data.rstrip(b"\0").endswith(b"\x00\x00\x00\x00IEND\xaeB`\x82"):
                     raise ValueError("invalid PNG closing chunk")
                 image.verify()
             # verify() checks structure without decoding pixels; reopen and
@@ -140,13 +142,15 @@ def image_proof_errors(post: dict, body: str, head_sha: str, data: bytes | None 
         result, last_attempt = rule
         if proof["Image Generation Result"] != result:
             errors.append(f"{provider} image must record {result} result")
-        expected_chain = "/".join(IMAGE_PROVIDER_ORDER[:IMAGE_PROVIDER_ORDER.index(last_attempt) + 1])
-        if proof["Image Attempt Chain"] != expected_chain:
+        chain = (proof["Image Attempt Chain"] or "").split("/")
+        expected = [list(IMAGE_PROVIDER_ORDER[:index + 1]) for index, value in enumerate(IMAGE_PROVIDER_ORDER)
+                    if value.startswith("gemini-") and provider == "Gemini" or value == last_attempt]
+        if chain not in expected:
             errors.append("Image Attempt Chain must truthfully begin with gemini and record provider fallthrough")
     source = proof["Image Source URL"] or ""
     if provider == "Local":
         source_path = source.removeprefix("local://")
-        if not source.startswith("local://" + ARTICLE_IMAGE_PREFIX) or any(part in {".", "..", ""} for part in source_path.split("/")):
+        if not re.fullmatch(r"local://public/images/(?:generated/blog|fallback/[^/]+)/[^\s]+", source) or any(part in {".", "..", ""} for part in source_path.split("/")):
             errors.append("Local fallback requires exact local:// repository source")
     elif provider == "LocalEditorial":
         slug = str(post.get("slug") or post.get("id") or "").strip()
@@ -154,6 +158,11 @@ def image_proof_errors(post: dict, body: str, head_sha: str, data: bytes | None 
             errors.append("LocalEditorial fallback requires an article-bound local-editorial:// source")
     elif not re.fullmatch(r"https://[^\s/]+/\S+", source):
         errors.append("External provider image requires an exact HTTPS source URL")
+    if provider == "Pexels":
+        if post.get("imageCredit") != "צילום דרך Pexels":
+            errors.append("Pexels image requires visible Pexels credit metadata")
+        if post.get("imageCreditUrl") != source:
+            errors.append("Pexels image credit URL must match the recorded source URL")
     expected_sha = proof["Image SHA-256"] or ""
     if not re.fullmatch(r"[a-f0-9]{64}", expected_sha):
         errors.append("Committed image requires a lowercase SHA-256")

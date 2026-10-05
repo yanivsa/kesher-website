@@ -3,7 +3,9 @@
 
 from __future__ import annotations
 
+import copy
 import json
+import os
 import sys
 import urllib.parse
 
@@ -38,6 +40,59 @@ def _unicode_safe_public_site_get(self, url: str):
 class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     """Prevent advancement/completion unless article and canonical media evidence are durable."""
 
+
+    def _selected_article(self, posts):
+        """Resolve one authoritative article without regressing to date-only selection."""
+        target_slug = os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip()
+        if target_slug:
+            matches = [
+                post for post in posts
+                if isinstance(post, dict)
+                and str(post.get("slug") or post.get("id") or "").strip() == target_slug
+            ]
+            if len(matches) != 1:
+                raise v5.core.ControllerError(
+                    f"TARGET_MEDIA_SOURCE_AMBIGUOUS: {target_slug} matched {len(matches)} articles"
+                )
+            return matches[0]
+
+        todays = v5.core.today_articles(posts, self.now.date())
+        if len(todays) <= 1:
+            return todays[0] if todays else None
+
+        # Multiple articles can legitimately share a publication date. In that
+        # case the durable controller state is stronger evidence than date order.
+        # Preserve the exact previously-adopted article identity when possible
+        # and fail closed if the state cannot disambiguate the candidates.
+        existing = self.github.load_controller_state()
+        article_state = existing.get("article") if isinstance(existing, dict) else {}
+        if not isinstance(article_state, dict):
+            article_state = {}
+
+        stored_slug = str(article_state.get("slug") or "").strip()
+        stored_sha = str(article_state.get("quality_content_sha256") or "").strip()
+        if stored_slug:
+            slug_matches = [
+                post for post in todays
+                if str(post.get("slug") or post.get("id") or "").strip() == stored_slug
+            ]
+            if len(slug_matches) == 1:
+                candidate = slug_matches[0]
+                candidate_source = v5.article_source_identity(candidate)
+                if not stored_sha or candidate_source["content_sha256"] == stored_sha:
+                    return candidate
+
+        raise v5.core.ControllerError(
+            f"BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: {self.now.date().isoformat()}"
+        )
+
+    def _article_source(self):
+        posts = self.github.contents_json("src/data/posts.json", "main")
+        if not isinstance(posts, list):
+            raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
+        article = self._selected_article(posts)
+        return v5.article_source_identity(article) if article is not None else None
+
     def _recover_stale_source_binding_exhaustion(self, state):
         """Reset one historical V5 attempt budget only when stale source binding is proven.
 
@@ -62,6 +117,56 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if source is None:
             return state
         snapshot = self.github.newest_video_state()
+        exact_verified = v5._verified_exact(snapshot, source)
+        if exact_verified:
+            verified_item = v5._newest(exact_verified)
+            previous = {
+                "attempt_count": long_video.get("attempt_count"),
+                "item_id": long_video.get("item_id"),
+                "provider_id": long_video.get("provider_id"),
+                "artifact_id": long_video.get("artifact_id"),
+                "source_id": long_video.get("source_id"),
+                "watchdog": long_video.get("watchdog"),
+            }
+            long_video[_SOURCE_BINDING_EXHAUSTION_RECOVERY_MARKER] = True
+            long_video["source_binding_recovery_previous"] = previous
+            long_video["attempt_count"] = 0
+            long_video["status"] = "complete"
+            long_video["last_error"] = None
+            long_video["next_retry_at"] = None
+            long_video["run_id"] = None
+            long_video["processed_run_id"] = None
+            long_video["provider_id"] = verified_item.get("task_id")
+            long_video["artifact_id"] = verified_item.get("artifact_id")
+            long_video["source_id"] = verified_item.get("source_id")
+            long_video["item_id"] = verified_item.get("id")
+            long_video["youtube_id"] = verified_item.get("youtube_id")
+            long_video["youtube_url"] = verified_item.get("youtube_url")
+            long_video["verified"] = True
+            long_video["last_dispatch_at"] = None
+            long_video["last_run_conclusion"] = None
+            long_video["resume_dispatches"] = 0
+            long_video["failure_fingerprint"] = None
+            long_video["same_failure_streak"] = 0
+            long_video["failure_count_by_type"] = {}
+            long_video.pop("watchdog", None)
+            v5.v3.clear_stage_failure(long_video)
+
+            state["status"] = "article_live"
+            state["last_error"] = None
+            state.setdefault("history", []).append({
+                "at": v5.core.utc_now(),
+                "from": "blocked",
+                "to": "article_live",
+                "reason": "verified_overview_exhaustion_recovery",
+                "details": {
+                    "slug": source["slug"],
+                    "item_id": verified_item.get("id"),
+                    "youtube_url": verified_item.get("youtube_url"),
+                },
+            })
+            return state
+
         exact = [
             item for item in v5._exact_items(snapshot, source)
             if item.get("uploaded") is not True
@@ -228,11 +333,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         posts = self.github.contents_json("src/data/posts.json", "main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
-        todays = v5.core.today_articles(posts, self.now.date())
-        if len(todays) != 1:
+        article = self._selected_article(posts)
+        if article is None:
             return None
 
-        article = todays[0]
         source = v5.article_source_identity(article)
         violations = quality.article_violations(article)
         state["article"].update({
@@ -400,6 +504,275 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         # lookup, which can bind a different article's provider identity.
         return v5.v3.V3Controller._dispatch_budgeted(self, state, stage, workflow, bound_inputs)
 
+    def _dispatch_targeted_short_rebuild_from_full_state(self, state, source, long_item):
+        """Recover one exact resolution-rejected Short from full durable state."""
+        # Fresh public evidence must win over an older rejected durable snapshot.
+        # Otherwise a controller tick that races a successful Short upload can
+        # dispatch a redundant rebuild from stale heavyweight state.
+        newest_short_state = getattr(self.github, "newest_short_state", None)
+        if callable(newest_short_state):
+            try:
+                fresh_short_snapshot = newest_short_state()
+            except v5.core.ControllerError:
+                fresh_short_snapshot = {"items": []}
+            if v5._newest(v5._verified_exact(fresh_short_snapshot, source)) is not None:
+                return None
+
+        reader = getattr(self.github, "newest_state_for_artifact", None)
+        if not callable(reader):
+            return None
+        try:
+            snapshot = reader(v5.SHORT_STATE_ARTIFACT)
+        except v5.core.ControllerError:
+            return None
+        exact_rejected = [
+            item for item in v5._exact_items(snapshot, source)
+            if item.get("uploaded") is not True
+            and str(item.get("status") or "") == "rejected"
+            and "1080x1920" in str(((item.get("review_notes") or {}).get("technical") or ""))
+        ]
+        if len(exact_rejected) > 1:
+            v5.core.block(
+                state,
+                "short",
+                "DUPLICATE_RESOLUTION_REJECTED_SHORTS",
+                f"{len(exact_rejected)} exact resolution-rejected Shorts exist for {source['slug']}",
+            )
+            self.github.save_controller_state(state)
+            return v5.core.Action("blocked", "duplicate resolution-rejected Shorts")
+        if not exact_rejected:
+            return None
+
+        item = exact_rejected[0]
+        item_id = str(item.get("id") or "").strip()
+        if not item_id:
+            return None
+        active = self.github.active_workflow_run(v5.SHORT_WORKFLOW, production_only=True)
+        if active:
+            state["short"]["status"] = "running"
+            state["short"]["run_id"] = active.get("id")
+            return v5.core.Action("wait", "exact Short rebuild workflow already active")
+
+        count = int(state["short"].get("remotion_rebuild_count") or 0)
+        if count >= v5.MAX_SHORT_REMOTION_REBUILDS:
+            v5.core.block(
+                state,
+                "short",
+                "SHORT_REMOTION_REBUILDS_EXHAUSTED",
+                "exact Short Remotion rebuild attempts exhausted",
+            )
+            state["short"]["status"] = "exhausted"
+            return v5.core.Action("blocked", "Short Remotion rebuild attempts exhausted")
+
+        inputs = {"operation": "rebuild", "rebuild_item_id": item_id}
+        v5.core.GitHubClient.dispatch(self.github, v5.SHORT_WORKFLOW, inputs)
+        state["short"].update({
+            "status": "running",
+            "remotion_rebuild_count": count + 1,
+            "last_dispatch_at": v5.core.utc_now(),
+            "provider_id": item.get("task_id") or long_item.get("task_id"),
+            "artifact_id": item.get("artifact_id") or long_item.get("artifact_id"),
+            "source_id": item.get("source_id") or long_item.get("source_id"),
+            "adopted_from_long_item_id": long_item.get("id"),
+        })
+        v5.core.transition(
+            state,
+            "short_running",
+            "targeted recovery dispatched exact resolution-rejected Short to current Remotion contract",
+            item_id=item_id,
+        )
+        self.github.save_controller_state(state)
+        return v5.core.Action(
+            "dispatch_short_rebuild",
+            "rebuild exact resolution-rejected Short without new provider generation",
+            inputs,
+        )
+
+    def _tick_targeted_media_recovery(self, state):
+        """Advance only the explicitly requested existing article media chain."""
+        posts = self.github.contents_json("src/data/posts.json", "main")
+        if not isinstance(posts, list):
+            raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
+        article = self._selected_article(posts)
+        if article is None:
+            raise v5.core.ControllerError("TARGET_MEDIA_SOURCE_UNAVAILABLE")
+
+        source = v5.article_source_identity(article)
+        title = str(article.get("title") or "").strip()
+        url = f"{v5.core.SITE_URL}/blog/{source['slug']}"
+        status, body = self.site.get(url)
+        if status != 200 or not v5.core.article_is_public(body, title):
+            v5.core.block(
+                state,
+                "article",
+                "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
+                f"targeted media article is not publicly verified: {source['slug']}",
+            )
+            self.github.save_controller_state(state)
+            return state, v5.core.Action("blocked", "targeted media article is not public")
+
+        target = state.setdefault("targeted_media_recovery", {})
+        previous_identity = (
+            str(target.get("slug") or "").strip(),
+            str(target.get("content_sha256") or "").strip(),
+        )
+        current_identity = (source["slug"], source["content_sha256"])
+        if any(previous_identity) and previous_identity != current_identity:
+            # A targeted-recovery switch starts a new source identity. Never
+            # carry public URLs/provider IDs from the prior target into the
+            # new target, because that can create a false A+B+C completion.
+            state["long_video"] = copy.deepcopy(v5.v3._stage_template())
+            state["short"] = copy.deepcopy(v5.v3._stage_template())
+            deliverables = state.get("deliverables")
+            if isinstance(deliverables, dict):
+                for key in (
+                    "overview_youtube_url",
+                    "short_youtube_url",
+                    "overview_edit_verified",
+                    "short_portrait_verified",
+                    "short_signature_verified",
+                    "short_origin_verified",
+                ):
+                    if key.endswith("_verified"):
+                        deliverables[key] = False
+                    else:
+                        deliverables[key] = None
+            target.clear()
+            state.setdefault("history", []).append({
+                "at": v5.core.utc_now(),
+                "from": previous_identity[0] or None,
+                "to": source["slug"],
+                "reason": "targeted_media_source_identity_reset",
+                "details": {
+                    "previous_slug": previous_identity[0] or None,
+                    "previous_content_sha256": previous_identity[1] or None,
+                    "content_sha256": source["content_sha256"],
+                },
+            })
+            state["history"] = state["history"][-100:]
+
+        target.update({
+            "slug": source["slug"],
+            "content_sha256": source["content_sha256"],
+            "article_url": url,
+            "article_verified": True,
+            "updated_at": v5.core.utc_now(),
+        })
+
+        snapshot = self.github.newest_video_state()
+        long_item = v5._newest(v5._verified_exact(snapshot, source))
+        if long_item is None:
+            long_item = self._verified_long_from_artifact_history(source)
+
+        if long_item is None:
+            # Fresh exact evidence wins over inherited controller fields. If no
+            # exact Overview exists for this source, old public identifiers
+            # must not survive merely because the target dictionary was already
+            # switched on an earlier tick.
+            stale_long_evidence = any(
+                state["long_video"].get(key)
+                for key in ("youtube_id", "youtube_url", "item_id", "provider_id", "artifact_id", "source_id")
+            )
+            if stale_long_evidence:
+                preserved_run_id = state["long_video"].get("run_id")
+                state["long_video"] = copy.deepcopy(v5.v3._stage_template())
+                state["long_video"]["run_id"] = preserved_run_id
+
+            newest_short_state = getattr(self.github, "newest_short_state", None)
+            short_snapshot = newest_short_state() if callable(newest_short_state) else {"items": []}
+            exact_short = v5._newest(v5._verified_exact(short_snapshot, source))
+            if exact_short is not None:
+                self._adopt_existing_short(state, source)
+                target["short_status"] = "complete"
+                target["short_youtube_url"] = state["short"].get("youtube_url")
+            else:
+                stale_short_evidence = any(
+                    state["short"].get(key)
+                    for key in ("youtube_id", "youtube_url", "item_id", "provider_id", "artifact_id", "source_id")
+                )
+                if stale_short_evidence:
+                    state["short"] = copy.deepcopy(v5.v3._stage_template())
+                target["short_status"] = state["short"].get("status") or "pending"
+                target.pop("short_youtube_url", None)
+
+            target["complete"] = False
+            target.pop("completed_at", None)
+            target.pop("long_youtube_url", None)
+            target.pop("long_item_id", None)
+
+            deliverables = state.get("deliverables")
+            if isinstance(deliverables, dict):
+                deliverables["overview_youtube_url"] = None
+                deliverables["overview_edit_verified"] = False
+                if exact_short is None:
+                    deliverables["short_youtube_url"] = None
+                    deliverables["short_portrait_verified"] = False
+                    deliverables["short_signature_verified"] = False
+                    deliverables["short_origin_verified"] = False
+
+            active = self.github.active_workflow_run(v5.LONG_VIDEO_WORKFLOW, production_only=True)
+            if active:
+                state["long_video"]["run_id"] = active.get("id")
+                state["long_video"]["status"] = "running"
+                target["long_status"] = "running"
+                self.github.save_controller_state(state)
+                return state, v5.core.Action("wait", "targeted long-video workflow active")
+
+            state["video"] = state["long_video"]
+            try:
+                self._dispatch_budgeted(
+                    state,
+                    "video",
+                    v5.LONG_VIDEO_WORKFLOW,
+                    {"operation": "full", "target_slug": source["slug"]},
+                )
+                state["long_video"] = state["video"]
+            finally:
+                state.pop("video", None)
+            state["long_video"]["status"] = "running"
+            target["long_status"] = "running"
+            target["long_last_dispatch_at"] = v5.core.utc_now()
+            self.github.save_controller_state(state)
+            return state, v5.core.Action(
+                "dispatch_long_video",
+                "targeted media recovery dispatched exact Video Overview",
+                {"operation": "full", "target_slug": source["slug"]},
+            )
+
+        state["long_video"].update({
+            "item_id": long_item.get("id"),
+            "status": "complete",
+            "youtube_id": long_item.get("youtube_id"),
+            "youtube_url": long_item.get("youtube_url"),
+            "verified": True,
+            "provider_id": long_item.get("task_id"),
+            "artifact_id": long_item.get("artifact_id"),
+            "source_id": long_item.get("source_id"),
+        })
+        target.update({
+            "long_status": "complete",
+            "long_youtube_url": long_item.get("youtube_url"),
+            "long_item_id": long_item.get("id"),
+        })
+
+        rebuild_action = self._dispatch_targeted_short_rebuild_from_full_state(
+            state, source, long_item
+        )
+        if rebuild_action is not None:
+            target["short_status"] = state["short"].get("status") or "running"
+            return state, rebuild_action
+
+        action = self._tick_short(state, source, long_item)
+        if action.kind == "complete":
+            target["short_status"] = "complete"
+            target["short_youtube_url"] = state["short"].get("youtube_url")
+            target["complete"] = True
+            target["completed_at"] = v5.core.utc_now()
+        elif state["short"].get("status"):
+            target["short_status"] = state["short"].get("status")
+        self.github.save_controller_state(state)
+        return state, action
+
     def _overview_evidence_preflight(self, state):
         """Copy exact public Overview edit evidence into durable controller state."""
         source = self._article_source()
@@ -444,10 +817,17 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if blocker is not None:
             return state, blocker
 
+        if os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip():
+            direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
+            if direct_rebuild is not None:
+                return direct_rebuild
+            return self._tick_targeted_media_recovery(state)
+
         self._overview_evidence_preflight(state)
         direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
         if direct_rebuild is not None:
             return direct_rebuild
+
         self.github.save_controller_state(state)
         return super().tick()
 

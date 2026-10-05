@@ -4,7 +4,7 @@ from __future__ import annotations
 from .identity import MediaIdentity, identity_from_dict
 from .media_publication import (MediaVerificationError, check_inventory, possible_uploads,
                                 reject, verify_media_publication)
-from .media_state import snapshots
+from .media_state import snapshots, next_generation_attempt
 from .output_artifacts import archive_recovery_failure
 from .verification import YOUTUBE_CHANNEL_ID
 
@@ -106,7 +106,8 @@ def observe_media(state: dict, target: MediaIdentity, source: dict, *, inventory
             if candidates:
                 reject('DUPLICATE_UPLOAD')  # Missing local binding never authorizes another insert.
             if item and item.get('status') == 'rejected':
-                return {'status': 'failed', 'failure_class': 'MEDIA_INVALID'}
+                failure = 'PROVIDER_MEDIA_REJECTED' if next_generation_attempt(state, target) else 'MEDIA_INVALID'
+                return {'status': 'failed', 'failure_class': failure}
             if item and item.get('technical_verified'):
                 failure = archive_recovery_failure(state, target, item)
                 if failure:

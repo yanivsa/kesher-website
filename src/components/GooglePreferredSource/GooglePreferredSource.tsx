@@ -1,48 +1,75 @@
 import React, { useEffect, useRef } from 'react';
 import styles from './GooglePreferredSource.module.css';
 
+type PreferredSourceApi = {
+  init: (options: { theme: 'light' | 'dark'; lang?: string }) => void;
+  addPreferredSource: () => void;
+};
+
+type PreferredSourceWindow = Window & {
+  PREFERRED_SOURCE?: Array<(preferredSource: PreferredSourceApi) => void>;
+  __KESHER_PREFERRED_SOURCE_API__?: PreferredSourceApi;
+  __KESHER_PREFERRED_SOURCE_CALLBACK_REGISTERED__?: boolean;
+};
+
+const SCRIPT_ID = 'google-preferred-source-script';
+const SCRIPT_SRC = 'https://news.google.com/swg/js/v1/publisher.js';
+const FALLBACK_URL = 'https://www.google.com/preferences/source?q=kesher.saharoni.com';
+
 const GooglePreferredSource: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const fallbackUrl = 'https://www.google.com/preferences/source?q=kesher.saharoni.com';
+  const apiRef = useRef<PreferredSourceApi | null>(null);
 
   useEffect(() => {
-    // Check if script is already present on the document
-    const scriptId = 'google-preferred-source-script';
-    let script = document.getElementById(scriptId) as HTMLScriptElement;
+    const preferredWindow = window as PreferredSourceWindow;
+    if (preferredWindow.__KESHER_PREFERRED_SOURCE_API__) {
+      apiRef.current = preferredWindow.__KESHER_PREFERRED_SOURCE_API__;
+    } else if (!preferredWindow.__KESHER_PREFERRED_SOURCE_CALLBACK_REGISTERED__) {
+      preferredWindow.PREFERRED_SOURCE = preferredWindow.PREFERRED_SOURCE || [];
+      preferredWindow.PREFERRED_SOURCE.push((preferredSource) => {
+        preferredSource.init({ theme: 'light', lang: 'he' });
+        preferredWindow.__KESHER_PREFERRED_SOURCE_API__ = preferredSource;
+        apiRef.current = preferredSource;
+      });
+      preferredWindow.__KESHER_PREFERRED_SOURCE_CALLBACK_REGISTERED__ = true;
+    }
 
+    let script = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
     if (!script) {
       script = document.createElement('script');
-      script.id = scriptId;
-      script.src = 'https://news.google.com/swg/js/v1/publisher.js';
+      script.id = SCRIPT_ID;
+      script.src = SCRIPT_SRC;
       script.async = true;
+      script.setAttribute('preferred-sources-control', 'manual');
       document.head.appendChild(script);
     }
   }, []);
 
+  const handlePreferredSource = () => {
+    if (apiRef.current) {
+      apiRef.current.addPreferredSource();
+      return;
+    }
+
+    window.open(FALLBACK_URL, '_blank', 'noopener,noreferrer');
+  };
+
   return (
-    <div className={styles.container} ref={containerRef}>
-      <div google-add-preferred-source-btn="" data-lang="he" data-theme="light"></div>
+    <section className={styles.container} aria-label="הוספה למקורות המועדפים ב-Google">
+      <p className={styles.label}>רוצים למצוא את המאמרים של שירה בקלות גם ב-Google?</p>
+      <button type="button" className={styles.button} onClick={handlePreferredSource}>
+        הוסיפו את שירה למקורות המועדפים
+      </button>
       <noscript>
         <a
-          href={fallbackUrl}
+          href={FALLBACK_URL}
           target="_blank"
           rel="noopener noreferrer"
           className={styles.fallbackLink}
         >
-          הוסיפו אותנו כמקור מועדף ב-Google
+          הוסיפו את שירה למקורות המועדפים ב-Google
         </a>
       </noscript>
-      <div className={styles.jsFallback}>
-        <a
-          href={fallbackUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={styles.fallbackLink}
-        >
-          הוסיפו אותנו כמקור מועדף ב-Google
-        </a>
-      </div>
-    </div>
+    </section>
   );
 };
 

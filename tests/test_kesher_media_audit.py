@@ -101,6 +101,20 @@ class IndependentMediaAuditTests(unittest.TestCase):
         state = {'commands': {'producer': {'target': target.to_dict(), 'effects': effects,
             'code_sha': 'a'*40, 'owner': {'run_id': '123/1'}}}}
         self.assertEqual(verify_lineage(state, target, item), effects['output_artifact'])
+        for attempt in (2, 3):
+            with self.subTest(attempt=attempt):
+                item['fresh_generation_attempt'] = attempt
+                # Rejected older provider receipts remain present. Only this
+                # attempt's source/task may certify the single archived upload.
+                for name in ('provider_source', 'provider_generation'):
+                    effects[f'{name}_a{attempt}'] = {**effects[name],
+                        'request': dict(effects[name]['request']), 'receipt': dict(effects[name]['receipt'])}
+                effects[f'provider_source_a{attempt}']['request']['title'] = f'kesher:{target.key}:{attempt}'
+                effects['output_artifact']['request']['output'] = descriptor(target, item)
+                self.assertEqual(verify_lineage(state, target, item), effects['output_artifact'])
+                effects[f'provider_generation_a{attempt}']['receipt']['task_id'] = 'wrong-rejected-task'
+                with self.assertRaises(MediaVerificationError): verify_lineage(state, target, item)
+                effects[f'provider_generation_a{attempt}']['receipt']['task_id'] = item['task_id']
         effects['youtube_session']['request']['final_sha256'] = '0'*64
         with self.assertRaises(MediaVerificationError): verify_lineage(state, target, item)
 

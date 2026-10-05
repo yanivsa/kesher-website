@@ -13,6 +13,7 @@ const schemaData = {
   '@graph': [
     {
       '@type': 'Service',
+      '@id': `${SITE_CONFIG.url}/services/finding-relationship#service`,
       name: 'ליווי למציאת זוגיות',
       serviceType: 'ליווי אישי בתהליך היכרות ובניית קשר זוגי',
       url: `${SITE_CONFIG.url}/services/finding-relationship`,
@@ -23,6 +24,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/services/finding-relationship#breadcrumb`,
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'עמוד הבית', item: SITE_CONFIG.url },
         { '@type': 'ListItem', position: 2, name: 'ליווי למציאת זוגיות', item: `${SITE_CONFIG.url}/services/finding-relationship` },
@@ -34,6 +36,7 @@ const schemaData = {
 const FindingRelationshipPage: React.FC = () => (
   <div className={styles.page}>
     <MetaTags
+        canonical={`${SITE_CONFIG.url}/services/finding-relationship`}
       title="ליווי למציאת זוגיות"
       description="ליווי אישי סביב היכרויות, דייטים, בחירת קשר, תקשורת, גבולות והמעבר מהיכרות לזוגיות — באשדוד ובאונליין."
       image="/images/generated/services/couples-room.jpg"
@@ -46,7 +49,7 @@ const FindingRelationshipPage: React.FC = () => (
           <span className={styles.eyebrow}><FiCompass aria-hidden="true" /> ליווי מעשי בתהליך ההיכרות</span>
           <h1>ליווי למציאת זוגיות</h1>
           <p className={styles.lead}>
-            כשלא ברור למי לתת הזדמנות, איך לנהל את הקצב או מה לומר כשמתחיל להיות חשוב, אפשר לעצור ולחשוב יחד. הליווי מתמקד בהחלטות ובשיחות שנמצאות בידיים שלכם — לא בשידוך ולא בנוסחה שמבטיחה זוגיות.
+            כשלא ברור למי לתת הזדמנות, איך לנהל את הקצב או מה לומר כשמתחיל להיות חשוב, אפשר לעצור ולחשוב יחד. הליווי מתמקד בהחלטות ובשיחות שנמצאות בידיים שלכם — לא בשידוך ולא בנוסחת קסם.
           </p>
           <div className={styles.heroActions}>
             <Link to={SITE_CONFIG.links.appointment} className={styles.primaryButton}>קביעת פגישת ייעוץ</Link>

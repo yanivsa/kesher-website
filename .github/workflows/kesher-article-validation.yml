@@ -38,6 +38,8 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.12'
+      - name: Install trusted authority admission dependencies
+        run: python -m pip install PyYAML==6.0.2 -r scripts/requirements-article.txt
       - name: Claim exact validation command
         id: claim
         env:
@@ -82,7 +84,7 @@ jobs:
       - name: Install trusted test dependencies
         run: |
           set -euo pipefail
-          python -m pip install requests==2.33.0 cryptography==50.0.1 -r scripts/requirements-article.txt
+          python -m pip install requests==2.33.0 cryptography==50.0.1 PyYAML==6.0.2 -r scripts/requirements-article.txt
           npm ci --no-audit --no-fund
           npx playwright install --with-deps chromium
       - name: Stage exact article data
@@ -134,8 +136,10 @@ jobs:
       - name: Install trusted render dependencies
         run: |
           set -euo pipefail
-          python -m pip install requests==2.33.0 -r scripts/requirements-article.txt
+          python -m pip install requests==2.33.0 PyYAML==6.0.2 -r scripts/requirements-article.txt
           npm ci --no-audit --no-fund
+          npm ci --prefix remotion-kesher --no-audit --no-fund
+          test -x remotion-kesher/node_modules/.bin/remotion
           node -e 'for (const name of ["@ffmpeg-installer/ffmpeg", "@ffprobe-installer/ffprobe"]) require("fs").appendFileSync(process.env.GITHUB_PATH, require("path").dirname(require(name).path) + "\n")'
       - name: Stage exact article data
         env:
@@ -169,6 +173,8 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.12'
+      - name: Install trusted authority admission dependencies
+        run: python -m pip install PyYAML==6.0.2 -r scripts/requirements-article.txt
       - name: Independently read required jobs and record exact result
         env:
           GH_TOKEN: ${{ github.token }}

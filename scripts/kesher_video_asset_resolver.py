@@ -15,6 +15,11 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+try:
+    from kesher_free_stock_broll import resolve_free_stock_broll
+except ImportError:
+    from scripts.kesher_free_stock_broll import resolve_free_stock_broll
+
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
 CATALOG_NAME = "enhancement-assets.json"
@@ -218,4 +223,18 @@ def resolve_asset_candidates(
                 "intent": "reinforce the exact article topic with its approved hero visual",
             }
         )
+    # Free external B-roll is strictly best-effort. Any provider, network,
+    # validation, quota or download failure degrades to the existing source-only path.
+    try:
+        candidates.extend(
+            resolve_free_stock_broll(
+                state_dir=state_dir,
+                source=source,
+                source_identity=identity,
+                duration_seconds=duration_seconds,
+                profile=profile,
+            )
+        )
+    except Exception:
+        pass
     return identity, candidates

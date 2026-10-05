@@ -6,7 +6,7 @@ import LeadMagnet from '../../../components/LeadMagnet/LeadMagnet';
 import ServiceFAQ from '../../../components/FAQ/ServiceFAQ';
 import TherapistBio from '../../../components/TherapistBio/TherapistBio';
 import faqs from '../../../data/faqs';
-import { FiMessageCircle, FiShield, FiStar } from 'react-icons/fi';
+import { FiMessageCircle, FiShield, FiStar, FiCheckCircle } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
 import { SITE_CONFIG } from '../../../constants/siteConfig';
 import styles from './CouplesCounseling.module.css';
@@ -18,6 +18,7 @@ const schemaData = {
   "@graph": [
     {
       "@type": "Service",
+      "@id": `${SITE_CONFIG.url}/services/couples#service`,
       "name": "ייעוץ זוגי",
       "serviceType": "ייעוץ זוגי",
       "url": `${SITE_CONFIG.url}/services/couples`,
@@ -40,6 +41,7 @@ const schemaData = {
     },
     {
       "@type": "BreadcrumbList",
+      "@id": `${SITE_CONFIG.url}/services/couples#breadcrumb`,
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -57,6 +59,7 @@ const schemaData = {
     },
     {
       "@type": "FAQPage",
+      "@id": `${SITE_CONFIG.url}/services/couples#faq`,
       "mainEntity": couplesFaqs.map(faq => ({
         "@type": "Question",
         "name": faq.question,
@@ -110,22 +113,48 @@ const CouplesCounseling: React.FC = () => {
 
       <section className={styles.painPoints}>
         <div className="container">
-          <h2 className={styles.sectionTitle}>מתי זוגות פונים לייעוץ?</h2>
+          <h2 className={styles.sectionTitle}>מתי כדאי לפנות לייעוץ זוגי?</h2>
           <div className={styles.grid}>
             <div className={styles.card}>
               <FiMessageCircle className={styles.icon} />
               <h3>התקשורת תקועה</h3>
-              <p>כל ניסיון לדבר הופך למריבה או לשתיקה כואבת. אתם כבר לא יודעים איך להביע צורך בלי להאשים.</p>
+              <p>כשהשיחות הופכות לוויכוחים שחוזרים על עצמם, או כשיש תחושה שאין עם מי לדבר והמרחק רק גדל.</p>
             </div>
             <div className={styles.card}>
               <FiStar className={styles.icon} />
               <h3>האינטימיות נעלמה</h3>
-              <p>מרגישים כמו 'שותפים לדירה' שמנהלים לוגיסטיקה וילדים, אבל שכחתם איך להיות פשוט זוג.</p>
+              <p>כשיש בדידות בתוך הזוגיות, ירידה בקרבה או שגרה עמוסה שמרחיקה במקום לחבר.</p>
             </div>
             <div className={styles.card}>
               <FiShield className={styles.icon} />
               <h3>משבר אמון</h3>
-              <p>התמודדות עם בגידה, הסתרות או שחיקה מצטברת שגרמה לכם להפסיק להאמין שאפשר אחרת.</p>
+              <p>כשאירוע משמעותי, פגיעה באמון או תקופה מתוחה מטלטלים את הקשר וקשה למצוא דרך קדימה.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.outcomes}>
+        <div className="container">
+          <div className={styles.sectionHeader}>
+            <h2>מה משתנה בייעוץ?</h2>
+            <p>התהליך מאפשר לכם לראות תוצאות מורגשות בחיי היומיום וליצור יחד זוגיות יציבה ובטוחה יותר.</p>
+          </div>
+          <div className={styles.outcomesGrid}>
+            <div className={styles.outcomeCard}>
+              <FiCheckCircle className={styles.outcomeIcon} />
+              <h3>התקרבות וחיבור רגשי</h3>
+              <p>מפסיקים להרגיש שותפים לדירה ומתחילים לחוות שוב קרבה אינטימית ורגשית.</p>
+            </div>
+            <div className={styles.outcomeCard}>
+              <FiCheckCircle className={styles.outcomeIcon} />
+              <h3>תקשורת בטוחה וברורה</h3>
+              <p>לומדים להביע צרכים וקשיים בלי להאשים, ולנהל חילוקי דעות מתוך הקשבה.</p>
+            </div>
+            <div className={styles.outcomeCard}>
+              <FiCheckCircle className={styles.outcomeIcon} />
+              <h3>יצירת הסכמות חדשות</h3>
+              <p>מגבשים דרכי פעולה משותפות שמתאימות לשניכם בניהול השגרה, המשפחה והקשר.</p>
             </div>
           </div>
         </div>
@@ -169,13 +198,39 @@ const CouplesCounseling: React.FC = () => {
         </div>
       </section>
 
+      <section className={styles.onlineSection}>
+        <div className="container">
+          <div className={styles.approachContent}>
+            <h2>איך עובד ייעוץ זוגי אונליין?</h2>
+            <p>ייעוץ זוגי אונליין הוא פגישת ייעוץ של 50 דקות בזום, שבה עובדים על דפוסי שיחה שחוזרים על עצמם, קונפליקטים, ריחוק, תיאום ציפיות וקבלת החלטות משותפת. הפורמט מתאים במיוחד כשקשה להגיע לקליניקה באשדוד בגלל מרחק, שעות עבודה, מגורים בחו״ל או תקופה של רילוקיישן.</p>
+            
+            <h3 style={{ marginTop: '2rem', marginBottom: '0.75rem' }}>איך מתכוננים לפגישה אונליין?</h3>
+            <ul className={styles.approachList}>
+              <li>בחרו מקום שבו שניכם יכולים לדבר בפרטיות וללא הפרעות.</li>
+              <li>נסו להתחבר כמה דקות מראש ולבדוק שהמצלמה, הקול והחיבור לאינטרנט עובדים.</li>
+              <li>אם אפשר, שבו מול מחשב או מסך שמאפשר לשניכם להשתתף בנוחות.</li>
+              <li>כדאי לפנות את זמן הפגישה ולא לנסות לקיים אותה במקביל לטיפול בילדים, נהיגה או משימות אחרות.</li>
+            </ul>
+
+            <h3 style={{ marginTop: '2rem', marginBottom: '0.75rem' }}>מתי ייעוץ זוגי אונליין יכול להתאים?</h3>
+            <p>אונליין יכול להיות פתרון מעשי לזוגות שאינם גרים באשדוד, לזוגות שנמצאים בתקופת מעבר או רילוקיישן, או כששגרת החיים מקשה על הגעה קבועה לקליניקה. אם אין בבית מקום שקט ופרטי לשיחה זוגית, כדאי לברר מראש אם פגישה בקליניקה מתאימה יותר.</p>
+
+            <h3 style={{ marginTop: '2rem', marginBottom: '0.75rem' }}>האם צריך לבחור בין אונליין לקליניקה?</h3>
+            <p>לא בהכרח. אפשר לקיים פגישות בקליניקה באשדוד או אונליין, ובמידת הצורך לשלב בין הפורמטים בהתאם לנוחות ולנסיבות.</p>
+            <p style={{ marginTop: '1rem' }}>
+              לזוגות שנמצאים בתהליך עלייה, רילוקיישן או חזרה לישראל יש גם מידע ממוקד בעמוד <Link to="/services/couples-aliyah-relocation">ייעוץ זוגי לעולים ולזוגות ברילוקיישן</Link>.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className={styles.boundaries}>
         <div className="container">
           <div className={styles.boundariesContent}>
             <h2>מתי צריך מענה אחר או נוסף?</h2>
-            <p>ייעוץ זוגי דורש נכונות של שני הצדדים להשתתף. יש מצבים שבהם נכון להתחיל במענה ייעודי אחר:</p>
+            <p>פגישה זוגית משותפת דורשת נכונות של שני הצדדים להשתתף. יש מצבים שבהם נכון להתחיל בפורמט אחר או במענה ייעודי:</p>
             <ul className={styles.boundariesList}>
-              <li>כאשר רק צד אחד מעוניין להגיע והשני אינו מסכים להשתתף.</li>
+              <li>כאשר רק צד אחד מעוניין להגיע, אפשר להתחיל בליווי אישי ולבחון את הדפוסים והתגובות שלו; אם הצד השני יצטרף בהמשך, אפשר לעבור לעבודה זוגית משותפת.</li>
               <li>כאשר המטרה היחידה היא לשנות את בן או בת הזוג, בלי לבחון את הדינמיקה המשותפת.</li>
               <li>במצבים של אלימות או סכנה בבית יש לפנות תחילה למענה ייעודי ומותאם.</li>
             </ul>

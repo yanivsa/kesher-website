@@ -35,7 +35,7 @@ prompt,topic_fortress,intent,funnel_stage,commercial_value,local_intent,best_kes
 פערים ברמת הדתיות או באורח החיים בזוגיות - איך מגשרים?,Couples Counseling,Problem-aware,Problem-aware,High,False,/services/couples,/services/mediation,Content gap: religious gaps,"שמירת מסורת, פערים דתיים",P2
 האם משבר גיל ה-40 בזוגיות דורש ייעוץ מקצועי?,Couples Counseling,Informational,Informational,Medium,False,/services/couples,/blog/exhausted-couple-communication,Content gap: midlife transition,משבר אמצע החיים בזוגיות,P2
 איך לנהל שיחה קשה בזוגיות בלי להגיע לבכי והאשמות?,Couples Counseling,Practical,Practical,Medium,False,/blog/defensiveness-in-relationships,/services/couples,None,"שיח מובנה, מניעת הצפה",P2
-האם כדאי לפנות לייעוץ זוגי לפני שמתחילים הליך גירושין?,Couples Counseling,Decision,Decision,High,False,/services/couples/before-separation,/services/couples,None,בדיקת היתכנות אחרונה,P2
+האם כדאי לפנות לייעוץ זוגי לפני שמתחילים הליך פרידה?,Couples Counseling,Decision,Decision,High,False,/services/couples/before-separation,/services/couples,None,בדיקת היתכנות אחרונה,P2
 איך מתמודדים עם קנאה וחוסר ביטחון בקשר?,Couples Counseling,Problem-aware,Problem-aware,Medium,False,/services/couples,/blog/unspoken-expectations-in-relationships,Content gap: jealousy,"קנאה, חוסר ביטחון",P2
 האם ייעוץ זוגי באשדוד מתאים גם לתושבי יבנה וגן יבנה?,Couples Counseling,Local,Local,High,True,/couples-counseling-ashdod,/services/couples,None,ייעוץ זוגי שפלה ודרום,P1
 יועצת זוגית מומלצת באשדוד עם גישה מעשית,Couples Counseling,Commercial,Commercial,High,True,/couples-counseling-ashdod,/about,None,"שירה סהרוני אשדוד, המלצות",P0
@@ -115,7 +115,7 @@ prompt,topic_fortress,intent,funnel_stage,commercial_value,local_intent,best_kes
 איך לחדש קשרים זוגיים עם חברים ותיקים בארץ בלי להרגיש זרים?,Aliyah & Relocation,Practical,Practical,Low,False,/blog/returning-to-israel-after-relocation-relationship,/services/couples-aliyah-relocation,None,"חברים ותיקים, חזרה לישראל",P2
 על מה זוגות רבים הכי הרבה בשנה הראשונה לנישואים ואיך לפתור את זה?,Premarital & First Year,Problem-aware,Problem-aware,High,False,/blog/newlywed-first-year-conflicts,/services/premarital-first-year,None,"ריבים נפוצים בשנה ראשונה, תיאום ציפיות",P0
 איך מדברים על כסף וחשבון משותף לפני החתונה בלי לריב?,Premarital & First Year,Practical,Practical,High,False,/blog/marriage-prep-financial-expectations-2026-08-24,/services/premarital-first-year,None,"כסף לפני חתונה, חשבון בנק משותף",P0
-מתחתנים כשההורים גרושים - איך להתמודד עם הפחד מכישלון הנישואים?,Premarital & First Year,Problem-aware,Problem-aware,High,False,/blog/premarital-counseling-divorced-parents,/services/premarital-first-year,None,"ילדים להורים גרושים, פחד מגירושין",P0
+מתחתנים כשההורים גרושים - איך להתמודד עם הפחד מכישלון הנישואים?,Premarital & First Year,Problem-aware,Problem-aware,High,False,/blog/premarital-counseling-divorced-parents,/services/premarital-first-year,None,"ילדים להורים גרושים, פחד מפרידה",P0
 חלוקת תפקידים בבית בשנה הראשונה לנישואים - איך מגיעים להסכמות הוגנות?,Premarital & First Year,Practical,Practical,High,False,/blog/newlyweds-domestic-duties-sharing,/services/premarital-first-year,None,"מטלות הבית, שותפות הוגנת",P0
 הצבת גבולות להורים ולמשפחות המוצא בשנה הראשונה לנישואים,Premarital & First Year,Problem-aware,Problem-aware,High,False,/blog/first-year-boundaries-origin-families,/services/premarital-first-year,None,"התערבות הורים, נאמנות זוגית",P0
 מה כולל ליווי זוגי לקראת חתונה ובשנה הראשונה?,Premarital & First Year,Informational,Informational,High,False,/services/premarital-first-year,/faq,None,"הכנה לנישואים, תהליך",P0

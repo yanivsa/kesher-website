@@ -42,7 +42,7 @@ SHORT_WIDTH = 1080
 SHORT_HEIGHT = 1920
 SHORT_FPS = 30
 SIGNATURE_DURATION_SECONDS = 3.0
-NATIVE_SHORT_FALLBACK_ATTEMPT = 3
+NATIVE_SHORT_MAX_ATTEMPTS = 3
 VISUAL_PIPELINE = "remotion-v4-notebooklm-short-motion-plan-v1"
 SIGNATURE_SOURCE = Path("public/images/signature/signature-mask.svg")
 SIGNATURE_RUNTIME_NAME = "signature-mask.svg"
@@ -59,11 +59,21 @@ _base_new_item = core.new_item
 
 
 def generation_prompt(source: dict[str, Any]) -> str:
+    short_metadata = source.get("short_youtube_metadata") or {}
+    short_topic = str(short_metadata.get("title") or source.get("short_title") or source["title"]).strip()
+    short_hook = str(source.get("short_hook") or "").strip()
+    hook_instruction = f'פתח במשפט הבא: "{short_hook}" ' if short_hook else ""
     prompt = (
+        "חובה: כל הקריינות, מתחילת הסרטון ועד סופו, בקול נשי בלבד. אין להשתמש בקול גברי, "
+        "אין להחליף בין דוברים, ואין להשתמש בקול ניטרלי או דו-קולי. "
+        "הקול צריך להישמע כאישה ישראלית בוגרת, טבעית, חמה, ברורה ומקצועית. "
+        "אם אין אפשרות להבטיח קול נשי — אל תפיק תוצר. "
         "צור סרטון קצר מקורי שנוצר מלכתחילה כסרטון אנכי ביחס 9:16 בעברית טבעית בלבד, המבוסס אך ורק על המקור שנבחר. "
         "אין ליצור סקירת וידאו אופקית, אין ליצור יחס 16:9, ואין להסתמך על חיתוך, מסגור מחדש או המרה מאוחרת של וידאו ארוך לסרטון קצר. "
+        "אסור להשתמש ברקע מטושטש, בהעתק מוגדל או מרוח של הווידאו כרקע, בפסי מילוי או בשוליים מלאכותיים כדי להשלים מסגרת אנכית. "
+        "כל הפריים חייב להיות קומפוזיציה אנכית חדה שנוצרה מלכתחילה ביחס תשע על שש עשרה. "
         "אין מגבלת משך: העדף קיצור, אך תן לרעיון להסתיים במלואו ובאופן טבעי. "
-        "בקש קול של אישה ישראלית (קריינית נקבה), חם, טבעי, ברור ומקצועי לכל אורך הקריינות. "
+        "תזכורת מחייבת: הקריינות כולה בקול נשי ישראלי בלבד. "
         "הרעיון השלם חייב לעמוד בפני עצמו: פתח במשפט שמציג בעיה או שאלה ברורה, "
         "המשך בתובנה אחת בלבד ובדוגמה אחת קצרה, וסיים בפעולה מעשית אחת ובסיום טבעי ומלא. "
         "לעולם אל תקטע משפט, מחשבה או מסקנה כדי לעמוד במשך מסוים. "
@@ -71,7 +81,8 @@ def generation_prompt(source: dict[str, Any]) -> str:
         "אין להוסיף אבחנות, תארים מקצועיים או הבטחות שאינם במקור. "
         "כל קריינות או טקסט חזותי יהיו בעברית תקינה. אין להשתמש באנגלית, בג׳יבריש, "
         "בטבלאות או בתרשימים. אין ליצור מטא־דאטה ליוטיוב בתוך הווידאו. "
-        f"הנושא המדויק הוא: {source['title']}"
+        f"{hook_instruction}"
+        f"הנושא המדויק הוא: {short_topic}"
     )
     core.require_hebrew(prompt, "Short generation prompt")
     return prompt
@@ -84,7 +95,7 @@ def repair_youtube_metadata(item: dict[str, Any]) -> dict[str, Any]:
     except core.VerificationError as exc:
         raise core.PipelineError(str(exc)) from exc
     item["youtube_metadata"] = metadata
-    return metadata
+    return core.apply_enhancement_media_credits(item)
 
 
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
@@ -100,7 +111,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
 
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
-    """Prefer a provider-native Short; use an independent landscape fallback only on the bounded final attempt."""
+    """Require a provider-native portrait Short on every attempt."""
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
     media_mutation(state)
@@ -108,8 +119,8 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
     prompt_path = core.STATE_DIR / f"{item['id']}-prompt-he.txt"
     prompt = generation_prompt(item["source"])
     attempt = int(item.get("fresh_generation_attempt") or 1)
-    provider_format = "short" if attempt < NATIVE_SHORT_FALLBACK_ATTEMPT else "explainer"
-    if not 1 <= attempt <= NATIVE_SHORT_FALLBACK_ATTEMPT:
+    provider_format = "short"
+    if not 1 <= attempt <= NATIVE_SHORT_MAX_ATTEMPTS:
         raise core.PipelineError("Short generation attempt is outside its bounded contract")
     prompt = bind_generation_prompt(state, item, prompt, provider_format)
     prompt_path.write_text(prompt, encoding="utf-8")
@@ -152,15 +163,12 @@ def native_provider_short_failures(media: dict[str, Any], item: dict[str, Any]) 
     ratio = (width / height) if height else 0
     attempt = int(item.get("fresh_generation_attempt") or 1)
     native_portrait = height > width and 0.53 <= ratio <= 0.60
-    fallback_allowed = attempt == NATIVE_SHORT_FALLBACK_ATTEMPT
-    if attempt < 1 or attempt > NATIVE_SHORT_FALLBACK_ATTEMPT:
+    if attempt < 1 or attempt > NATIVE_SHORT_MAX_ATTEMPTS:
         failures.append("Short generation attempt is outside the bounded native-first policy")
-    if item.get("provider_video_format") not in {"short", "explainer"}:
-        failures.append("Unknown NotebookLM provider format for Short")
-    if not native_portrait and not fallback_allowed:
-        failures.append(f"NotebookLM source is not a native portrait Short ({width}x{height}); retry native Short before fallback")
-    if item.get("provider_video_format") != "short" and not fallback_allowed:
-        failures.append("NotebookLM provider format is not the native Short format before the fallback attempt")
+    if item.get("provider_video_format") != "short":
+        failures.append("NotebookLM provider format is not the native Short format; landscape fallback is forbidden")
+    if not native_portrait:
+        failures.append(f"NotebookLM source is not a native portrait Short ({width}x{height}); landscape fallback is forbidden")
     if item.get("shared_provider_identity") is True or item.get("adopted_from_long_item_id"):
         failures.append("Short reuses Video Overview provider identity; an independent Short generation is required")
     return failures
@@ -332,6 +340,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
                 "url": core.DISPLAY_URL,
                 "signatureImageSrc": signature_image_src,
                 "motionPlan": _short_targets_for_plan(candidate_plan),
+                "preserveSourceSharpness": bool(item.get("provider_native_short_verified")),
             },
         )
         command = [
@@ -342,6 +351,7 @@ def render_remotion_video(raw_path: Path, item: dict[str, Any]) -> Path:
             str(candidate_output),
             f"--props={props_path}",
             f"--public-dir={core.STATE_DIR}",
+            "--pixel-format=yuv420p",
             "--codec=h264",
             "--audio-codec=aac",
             "--concurrency=2",
@@ -436,6 +446,8 @@ def validate_and_manifest(
             raise core.PipelineError("YouTube description is missing the exact article URL")
         if core.SITE_URL not in description_lines:
             raise core.PipelineError("YouTube description is missing the standalone Kesher site URL")
+        if core.APPOINTMENT_URL not in description_lines:
+            raise core.PipelineError("YouTube description is missing the appointment URL")
     except (KeyError, core.PipelineError) as exc:
         metadata_failure = f"המטא־דאטה אינו עומד בשער העברית והמקור: {exc}"
         technical_failures.append(metadata_failure)

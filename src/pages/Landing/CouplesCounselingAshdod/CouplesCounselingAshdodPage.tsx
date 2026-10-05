@@ -67,7 +67,7 @@ const faqItems = [
   },
   {
     question: 'האם חייבים להגיע יחד?',
-    answer: 'מומלץ להגיע יחד לפגישה הזוגית, משום שהייעוץ מתמקד בתקשורת ובדפוסים שבין בני הזוג. אם יש התלבטות או שאלה לפני הפגישה, אפשר להתייעץ מראש עם שירה.',
+    answer: 'מומלץ להגיע יחד, משום שהייעוץ מתמקד בתקשורת ובדפוסים שבין בני הזוג. אם אחד מבני הזוג עדיין לא מוכן להשתתף, אפשר להתחיל לבד ולבחון מה ניתן לשנות בדרך שבה מגיבים ומתקשרים; לעיתים הצד השני מצטרף בהמשך.',
   },
   {
     question: 'מה אם בן או בת הזוג עדיין לא בטוחים לגבי ייעוץ?',
@@ -114,35 +114,20 @@ const schemaData = {
       alternateName: 'קשר - ייעוץ זוגי באשדוד',
       url: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
       image: `${SITE_CONFIG.url}/images/shira-saharoni-sea.webp`,
-      telephone: '+972-50-2763802',
-      email: SITE_CONFIG.contact.email,
-      priceRange: '₪500',
       description: 'ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. כשאותם ריבים ודפוסי שיחה חוזרים שוב ושוב, אפשר להבין מה קורה ולתרגל דרך אחרת לדבר. פגישה של 50 דקות, 500 ₪.',
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: 'אשדוד',
-        addressLocality: 'אשדוד',
-        addressRegion: 'מחוז הדרום',
-        postalCode: '77100',
-        addressCountry: 'IL',
-      },
-      geo: {
-        '@type': 'GeoCoordinates',
-        latitude: 31.8014,
-        longitude: 34.6435,
-      },
-      openingHoursSpecification: [
-        {
-          '@type': 'OpeningHoursSpecification',
-          dayOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'],
-          opens: '09:00',
-          closes: '20:00',
-        },
-      ],
       provider: {
         '@type': 'LocalBusiness',
         '@id': `${SITE_CONFIG.url}/#business`,
         name: 'שירה סהרוני — קשר',
+        url: SITE_CONFIG.url,
+        telephone: '+972-50-2763802',
+        email: SITE_CONFIG.contact.email,
+      },
+      offers: {
+        '@type': 'Offer',
+        price: '500',
+        priceCurrency: 'ILS',
+        url: `${SITE_CONFIG.url}/couples-counseling-ashdod`,
       },
       areaServed: [
         {
@@ -165,6 +150,7 @@ const schemaData = {
     },
     {
       '@type': 'BreadcrumbList',
+      '@id': `${SITE_CONFIG.url}/couples-counseling-ashdod#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',
@@ -182,6 +168,7 @@ const schemaData = {
     },
     {
       '@type': 'FAQPage',
+      '@id': `${SITE_CONFIG.url}/couples-counseling-ashdod#faq`,
       mainEntity: faqItems.map((item) => ({
         '@type': 'Question',
         name: item.question,
@@ -231,7 +218,12 @@ const CouplesCounselingAshdodPage: React.FC = () => {
     trackPhoneClick,
     trackWhatsappClick,
     trackFaqInteraction,
-  } = useLandingPageAnalytics(variantId);
+  } = useLandingPageAnalytics({
+    variantId,
+    landingPagePath: '/couples-counseling-ashdod',
+    landingPageType: 'ashdod',
+    serviceType: 'couples_counseling',
+  });
 
   const whatsappMessage = encodeURIComponent(
     'היי שירה, הגעתי לעמוד הייעוץ הזוגי באשדוד ויש לי שאלה לפני שקובעים פגישה.',
@@ -267,7 +259,13 @@ const CouplesCounselingAshdodPage: React.FC = () => {
   }, []);
 
   return (
-    <main id="main-content" className={styles.page}>
+    <main
+      id="main-content"
+      className={styles.page}
+      data-analytics-service-type="couples_counseling"
+      data-analytics-landing-page-type="ashdod"
+      data-analytics-variant-id={variantId}
+    >
       <MetaTags
         title="ייעוץ זוגי באשדוד | שירה סהרוני"
         description="ייעוץ זוגי מעשי וממוקד באשדוד או אונליין. כשאותם ריבים ודפוסי שיחה חוזרים שוב ושוב, אפשר להבין מה קורה ולתרגל דרך אחרת לדבר. פגישה של 50 דקות, 500 ₪."
@@ -306,7 +304,11 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       </header>
 
       {/* 2. אזור Hero */}
-      <section className={styles.heroSection} aria-labelledby="couples-ashdod-title">
+      <section
+        className={styles.heroSection}
+        aria-labelledby="couples-ashdod-title"
+        data-analytics-location="hero"
+      >
         <div className={`container ${styles.heroGrid}`}>
           <div className={styles.heroContent}>
             <div className={styles.heroTag}>
@@ -627,7 +629,11 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       </section>
 
       {/* 10. אזור הזמנת פגישה (Booking / Calendly) */}
-      <section id="booking" className={`${styles.section} ${styles.bookingSection}`}>
+      <section
+        id="booking"
+        className={`${styles.section} ${styles.bookingSection}`}
+        data-analytics-location="booking_help"
+      >
         <div className="container">
           <div className={styles.sectionHeader}>
             <FiCalendar aria-hidden="true" style={{ fontSize: '2rem', color: 'var(--color-accent)' }} />
@@ -668,7 +674,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
       </section>
 
       {/* 11. CTA מסכם */}
-      <section className={styles.closingCta}>
+      <section className={styles.closingCta} data-analytics-location="closing_cta">
         <div className="container">
           <h2>לא חייבים לדעת כבר עכשיו איך לפתור הכול</h2>
           <p>מספיק להתחיל מלהבין מה קורה בשיחות שלכם — ולבדוק אם אפשר לעשות משהו אחרת.</p>
@@ -726,7 +732,7 @@ const CouplesCounselingAshdodPage: React.FC = () => {
 
       {/* 13. Mobile Sticky Bar */}
       {!isBookingInView && (
-        <div className={styles.mobileStickyBar}>
+        <div className={styles.mobileStickyBar} data-analytics-location="mobile_sticky">
           <a
             href={`tel:${SITE_CONFIG.contact.phone.replace(/-/g, '')}`}
             className={styles.mobileStickyPhoneBtn}

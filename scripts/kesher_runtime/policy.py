@@ -32,6 +32,7 @@ RULES = {
     'MERGE_RECORD_PENDING': Rule('reconcile', 3),
     'PUBLIC_METADATA_INVALID': Rule('repair_metadata', 3),
     'MEDIA_INVALID': Rule('rebuild', 2),
+    'PROVIDER_MEDIA_REJECTED': Rule('publish', 3),
     'STALE_CACHE': Rule('rebuild', 2),
     'ARTICLE_NOT_PUBLIC': Rule('deploy_article', 2),
     'DEPLOY_FAILED': Rule('deploy_article', 2),

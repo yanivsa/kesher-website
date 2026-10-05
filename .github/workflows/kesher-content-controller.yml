@@ -1,7 +1,5 @@
 name: Kesher canonical content controller
 on:
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
 permissions:
   contents: write
@@ -12,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   reconcile:
-    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.repository == '__KESHER_RETIRED__' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
@@ -27,8 +25,8 @@ jobs:
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
           python-version: '3.12'
-      - name: Install authority parser
-        run: python -m pip install PyYAML==6.0.2
+      - name: Install trusted authority admission dependencies
+        run: python -m pip install PyYAML==6.0.2 -r scripts/requirements-article.txt
       - name: Reconcile only after verified authority admission
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
