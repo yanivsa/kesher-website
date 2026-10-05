@@ -1,0 +1,31 @@
+name: Queue Exact Hug Video Resume
+
+on:
+  push:
+    branches:
+      - fix/short-youtube-tag-reconcile-20261005
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  queue:
+    if: ${{ contains(github.event.head_commit.message, 'queue exact hug video resume') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Dispatch exact existing Video Overview identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run kesher-daily-video.yml \
+            --repo "$GITHUB_REPOSITORY" \
+            --ref main \
+            -f operation=full \
+            -f target_slug=20-second-hug-relationship-stress \
+            -f target_content_sha256=043ca1242523b822d45fd398d1293f47d46b4c0f5d0bf61b6c62ff3956ab45ed \
+            -f target_item_id=video-20261005-195922-043ca12425
+          echo "QUEUED_EXACT_HUG_VIDEO_RESUME"
