@@ -12,7 +12,7 @@ jobs:
   recover-article:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:
@@ -31,6 +31,9 @@ jobs:
 
       - name: Install image-test dependency
         run: python3 -m pip install --disable-pip-version-check Pillow
+
+      - name: Install prerender browser
+        run: npx playwright install --with-deps chromium
 
       - name: Regenerate derived content
         run: npm run generate
