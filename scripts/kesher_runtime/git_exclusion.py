@@ -125,4 +125,311 @@ class GitExclusionEpoch:
             if (not isinstance(ledger,dict) or ledger.get('epoch') != self.identity['epoch']):
                 raise StateInvalid('GITHUB_EPOCH_LEDGER_IDENTITY_INVALID')
             anchor = self._anchor(ledger['anchor'])
-            comparison = self.github.request('GET',self.api+'/compare/'+anchor['commit_sha']+'...'2µÕÉÉ•¹Ğ¬œıÁ•É}Á…”ôÄ™Á…”ôÄœ¤(€€€€€€€€€€€¥˜€¡½µÁ…É¥Í½¸¹•Ğ ‰…Í•}½µµ¥Ğœ±íô¤¹•Ğ Í¡„œ¤€„ô…¹¡½Él½µµ¥Ñ}Í¡„t(€€€€€€€€€€€€€€€€€€€½È½µÁ…É¥Í½¸¹•Ğ µ•É•}‰…Í•}½µµ¥Ğœ±íô¤¹•Ğ Í¡„œ¤€„ô…¹¡½Él½µµ¥Ñ}Í¡„t(€€€€€€€€€€€€€€€€€€€½ÈÑåÁ”¡½µÁ…É¥Í½¸¹•Ğ ‰•¡¥¹‘}‰äœ¤¤¥Ì¹½Ğ¥¹Ğ½È½µÁ…É¥Í½¹l‰•¡¥¹‘}‰ät€„ô€À(€€€€€€€€€€€€€€€€€€€½ÈÑåÁ”¡½µÁ…É¥Í½¸¹•Ğ …¡•…‘}‰äœ¤¤¥Ì¹½Ğ¥¹Ğ(€€€€€€€€€€€€€€€€€€€½È€¡ÕÉÉ•¹Ğ€ôô…¹¡½Él½µµ¥Ñ}Í¡„t…¹(€€€€€€€€€€€€€€€€€€€€€€€€¡½µÁ…É¥Í½¸¹•Ğ ÍÑ…ÑÕÌœ¤€„ô€¥‘•¹Ñ¥…°œ½È½µÁ…É¥Í½¹l…¡•…‘}‰ät€„ô€À¤¤(€€€€€€€€€€€€€€€€€€€½È€¡ÕÉÉ•¹Ğ€„ô…¹¡½Él½µµ¥Ñ}Í¡„t…¹(€€€€€€€€€€€€€€€€€€€€€€€€¡½µÁ…É¥Í½¸¹•Ğ ÍÑ…ÑÕÌœ¤€„ô€…¡•…œ½È½µÁ…É¥Í½¹l…¡•…‘}‰ät€ğ€Ä¤¤¤è(€€€€€€€€€€€€€€€É…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}A=!}9!=I}9=Q}9MQ=Hœ¤(€€€€€€€€€€€¥˜€¡Í•±˜¹¥Ñ¡Õˆ¹É•ÅÕ•ÍĞ Pœ±Í•±˜¹…Á¤¬œ½¥Ğ½É•˜½¡•…‘Ì½…ÕÑ½µ…Ñ¥½¸µÍÑ…Ñ”œ¥l½‰©•ĞulÍ¡„t€„ôÕÉÉ•¹Ğ(€€€€€€€€€€€€€€€€€€€½ÈÍ•±˜¹¥Ñ¡Õˆ¹É•ÅÕ•ÍĞ Pœ±Í•±˜¹…Á¤¬œ½¥Ğ½É•˜½¡•…‘Ì½µ…¥¸œ¥l½‰©•ĞulÍ¡„t€„ôÍ•±˜¹¥‘•¹Ñ¥Ñålµ…¥¹}Í¡„t¤è(€€€€€€€€€€€€€€€É…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}A=!}I}!9}UI%9}I	,œ¤(€€€€€€€€€€€É•ÑÕÉ¸ìÕÉÉ•¹Ñ}É•˜œéÕÉÉ•¹Ğ°…¹¡½Èœé…¹¡½Éô(€€€€€€€Í¡„°Í••¸€ôÕÉÉ•¹Ğ°Í•Ğ ¤(€€€€€€€™½È|¥¸É…¹” ÔÄÈ¤è(€€€€€€€€€€€¥˜Í¡„¥¸Í••¸èÉ…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}A=!}9MQIe}%9Y1%œ¤(€€€€€€€€€€€Í••¸¹…‘¡Í¡„¤ìÉ½Ü€ôÍ•±˜¹}½µµ¥Ğ¡Í¡„¤(€€€€€€€€€€€µ•ÍÍ…”€ôÉ½Ü¹•Ğ µ•ÍÍ…”œ¤(€€€€€€€€€€€¥˜¹½Ğ¥Í¥¹ÍÑ…¹”¡µ•ÍÍ…”±ÍÑÈ¤èÉ…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}A=!}=55%Q}%9Y1%œ¤(€€€€€€€€€€€¥˜µ•ÍÍ…”¹ÍÑ…ÉÑÍİ¥Ñ ¡9!=I}5MM¤è(€€€€€€€€€€€€€€€É•ÑÕÉ¸ìÕÉÉ•¹Ñ}É•˜œéÕÉÉ•¹Ğ°…¹¡½ÈœéÍ•±˜¹}…¹¡½È¡Í¡„±É½Ü¥ô(€€€€€€€€€€€¥˜±•¸¡É½İlÁ…É•¹ÑÌt¤€ø€ÄèÉ…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}A=!}5I}9MQIe}IUMœ¤(€€€€€€€€€€€¥˜¹½ĞÉ½İlÁ…É•¹ÑÌtèÉ•ÑÕÉ¸ìÕÉÉ•¹Ñ}É•˜œéÕÉÉ•¹Ğ°…¹¡½Èœé9½¹•ô(€€€€€€€€€€€Í¡„€ôÉ½İlÁ…É•¹ÑÌulÁulÍ¡„t(€€€€€€€É…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}A=!}9MQIe}%9=5A1Qœ¤((€€€‘•˜…ÕÑ¡½É¥Ñä¡Í•±˜¤è(€€€€€€€É½Ü€ôÍ•±˜¹½‰Í•ÉÙ” ¤(€€€€€€€¥˜É½İl…¹¡½Èt¥Ì9½¹”èÉ…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}A=!}9=Q}EU%Iœ¤(€€€€€€€É•ÑÕÉ¸É½İl…¹¡½Èt((€€€‘•˜}…Ì¡Í•±˜°‰•™½É”°…™Ñ•È¤è(€€€€€€€É•Á½}¥€ôÍ•±˜¹¥Ñ¡Õˆ¹É•ÅÕ•ÍĞ Pœ±Í•±˜¹…Á¤¥l¹½‘•}¥t(€€€€€€€¥˜É•Á½}¥€„ôÍ•±˜¹¥‘•¹Ñ¥ÑålÉ•Í½ÕÉ•}¥tèÉ…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}A=!}IM=UI}%}5%M5Q œ¤(€€€€€€€É•ÅÕ•ÍĞ€ôìÉ•Á½Í¥Ñ½Éå%œéÉ•Á½}¥°(€€€€€€€€€€€€±¥•¹Ñ5ÕÑ…Ñ¥½¹%œé‘¥•ÍĞ¡ì‰•™½É”œé‰•™½É”°…™Ñ•Èœé…™Ñ•È°¥‘•¹Ñ¥ÑäœéÍ•±˜¹¥‘•¹Ñ¥Ñåô¤°(€€€€€€€€€€€€É•™UÁ‘…Ñ•Ìœél(€€€€€€€€€€€€€€€ì¹…µ”œèÉ•™Ì½¡•…‘Ì½µ…¥¸œ°‰•™½É•=¥œéÍ•±˜¹¥‘•¹Ñ¥Ñålµ…¥¹}Í¡„t°(€€€€€€€€€€€€€€€€€…™Ñ•É=¥œéÍ•±˜¹¥‘•¹Ñ¥Ñålµ…¥¹}Í¡„t°™½É”œé…±Í•ô°(€€€€€€€€€€€€€€€ì¹…µ”œÎÉ•™Ì½¡•…‘Ì½…ÕÑ½µ…Ñ¥½¸µÍÑ…Ñ”œ°‰•™½É•=¥œé‰•™½É”°…™Ñ•É=¥œé…™Ñ•È°™½É”œé…±Í•õuô(€€€€€€€É•ÍÕ±Ğ€ôÍ•±˜¹¥Ñ¡Õˆ¹É•ÅÕ•ÍĞ A=MPœ°œ½É…Á¡Å°œ±ìÅÕ•ÉäœéUAQ}IL°Ù…É¥…‰±•Ìœéì¥¹ÁÕĞœéÉ•ÅÕ•ÍÑõô¤(€€€€€€€¥˜É•ÍÕ±Ğ¹•Ğ •ÉÉ½ÉÌœ¤èÉ…¥Í”MÑ…Ñ•½¹™±¥Ğ %Q!U	}a1UM%=9}I}M}I)Qœ¤(€€€€€€€¥˜É•ÍÕ±Ğ¹•Ğ ‘…Ñ„œ±íô¤¹•Ğ ÕÁ‘…Ñ•I•™Ìœ±íô¤¹•Ğ ±¥•¹Ñ5ÕÑ…Ñ¥½¹%œ¤€„ôÉ•ÅÕ•ÍÑl±¥•¹Ñ5ÕÑ…Ñ¥½¹%tè(€€€€€€€€€€€É…¥Í”¥Ñ!Õ‰ÉÉ½È¡9½¹”°¥Ğ•á±ÕÍ¥½¸…­¹½İ±•‘µ•¹Ğµ¥ÍÍ¥¹œì¥¹ÍÁ•Ğ•á…ĞÉ•˜œ±Õ¹•ÉÑ…¥¸õQÉÕ”¤((€€€‘•˜…ÅÕ¥É”¡Í•±˜°½‰Í•ÉÙ•‘}É•˜¤è(€€€€€€€É•ÅÕ¥É•}Í¡„¡½‰Í•ÉÙ•‘}É•˜°ĞÀ¤(€€€€€€€É½Ü€ôÍ•±˜¹½‰Í•ÉÙ” ¤(€€€€€€€¥˜É½İlÕÉÉ•¹Ñ}É•˜t€„ô½‰Í•ÉÙ•‘}É•˜èÉ…¥Í”MÑ…Ñ•½¹™±¥Ğ %Q!U	}A=!}I}MQ1œ¤(€€€€€€€¥˜É½İl…¹¡½ÈtèÉ•ÑÕÉ¸É½İl…¹¡½Èt(€€€€€€€±½…‘•€ôÍ•±˜¹É•…‘•È¹É•…‘}Í¹…ÁÍ¡½Ğ ¤(€€€€€€€¹½}±•…å}¥¹¥‘•¹Ğ¡±½…‘•¹ÍÑ…Ñ”¤(€€€€€€€¥˜€¡±½…‘•¹½µµ¥Ñ}Í¡„€„ô½‰Í•ÉÙ•‘}É•˜½È±½…‘•¹ÍÑ…Ñ”¹•Ğ Í¡•µ…}Ù•ÉÍ¥½¸œ¤€„ô€Ô(€€€€€€€€€€€€€€€½È€¡…¹‘½Ù•Èœ¥¸±½…‘•¹ÍÑ…Ñ”½È€¥Ñ¡Õ‰}•á±ÕÍ¥½¸œ¥¸±½…‘•¹ÍÑ…Ñ”¤è(€€€€€€€€€€€É…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}A=!}%9%Q%1}M9AM!=Q}%9Y1%œ¤(€€€€€€€É•½É€ô‘¥Ğ¡Í•±˜¹¥‘•¹Ñ¥Ñä±‰•™½É•}½¥õ½‰Í•ÉÙ•‘}É•˜±ÑÉ••}Í¡„õ±½…‘•¹ÑÉ••}Í¡„°(€€€€€€€€€€€€€€€€€€€€€É•˜ôÉ•™Ì½¡•…‘Ì½…ÕÑ½µ…Ñ¥½¸µÍÑ…Ñ”œ¤(€€€€€€€½µµ¥Ğ€ôÍ•±˜¹¥Ñ¡Õˆ¹É•ÅÕ•ÍĞ A=MPœ±Í•±˜¹…Á¤¬œ½¥Ğ½½µµ¥ÑÌœ±ì(€€€€€€€€€€€€µ•ÍÍ…”œé9!=I}5MM­…¹½¹¥…±}©Í½¸¡É•½É¤¬ÑÉ•”œé±½…‘•¹ÑÉ••}Í¡„°Á…É•¹ÑÌœím½‰Í•ÉÙ•‘}É•™uô¥lÍ¡„t(€€€€€€€É•ÅÕ¥É•}Í¡„¡½µµ¥Ğ°ĞÀ¤(€€€€€€€Í•±˜¹}…Ì¡½‰Í•ÉÙ•‘}É•˜±½µµ¥Ğ¤(€€€€€€€…¹¡½È€ôÍ•±˜¹…ÕÑ¡½É¥Ñä ¤(€€€€€€€¥˜…¹¡½Él½µµ¥Ñ}Í¡„t€„ô½µµ¥ĞèÉ…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}A=!}I	-}!9œ¤(€€€€€€€É•ÑÕÉ¸…¹¡½È((€€€‘•˜İÉ¥Ñ•}‘½Õµ•¹Ğ¡Í•±˜°±½…‘•°ÁÉ½Á½Í•°€¨°µ•ÍÍ…”¤è(€€€€€€€€ˆˆ‰%¹Ñ•É¹…°ÁÉ¥µ¥Ñ¥Ù”¸…Ñ•İ…äµÕÍĞ…ÕÑ¡½É¥é”Ñ¡”ÍÕÁÁ±¥•¹…ÉÉ½Ü¥¹Ñ•¹Ğ¸((€€€€€€€)½ÕÉ¹…°…¹¥¹¥‘•¹Ğ…±±•ÉÌÙ…±¥‘…Ñ”•á…Ğ…±±½İ•‘¥™™•É•¹•Ì™¥ÉÍĞ¸(€€€€€€€É•Í …¹¡½ÈÉ•…Á±ÕÌ…Ñ½µ¥ŒÉ•˜½µ…¥¸LÉ•©•ÑÌÍÑ…±”‘•Í•¹‘…¹ÑÌ¸(€€€€€€€€ˆˆˆ(€€€€€€€¥˜¹½Ğ¥Í¥¹ÍÑ…¹”¡±½…‘•±M¹…ÁÍ¡½Ğ¤½È±½…‘•¹ÍÑ½É•}­•ä€„ôÍ•±˜¹É•…‘•È¹ÍÑ½É•}­•äè(€€€€€€€€€€€É…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}a1UM%=9}M9AM!=Q}%9Y1%œ¤(€€€€€€€Í•±˜¹…ÕÑ¡½É¥Ñä ¤(€€€€€€€É…Ü€ô€¡…¹½¹¥…±}©Í½¸¡ÁÉ½Á½Í•¤¬q¸œ¤¹•¹½‘” ¤(€€€€€€€‰±½ˆ€ôÍ•±˜¹¥Ñ¡Õˆ¹É•ÅÕ•ÍĞ A=MPœ±Í•±˜¹…Á¤¬œ½¥Ğ½‰±½‰Ìœ±ì½¹Ñ•¹Ğœé‰…Í”ØĞ¹ˆØÑ•¹½‘”¡É…Ü¤¹‘•½‘” ¤°•¹½‘¥¹œœè‰…Í”ØĞô¥lÍ¡„t(€€€€€€€¥˜‰±½ˆ€„ô¡…Í¡±¥ˆ¹Í¡„Ä¡ˆ‰±½ˆ€œ­ÍÑÈ¡±•¸¡É…Ü¤¤¹•¹½‘” ¤­ˆpÀœ­É…Ü¤¹¡•á‘¥•ÍĞ ¤è(€€€€€€€€€€€É…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}a1UM%=9}]I%QQ9}	1=	}%9Y1%œ¤(€€€€€€€ÑÉ•”€ôÍ•±˜¹¥Ñ¡Õˆ¹É•ÅÕ•ÍĞ A=MPœ±Í•±˜¹…Á¤¬œ½¥Ğ½ÑÉ••Ìœ±ì‰…Í•}ÑÉ•”œé±½…‘•¹ÑÉ••}Í¡„°ÑÉ•”œémìÁ…Ñ œéÍ•±˜¹É•…‘•È¹Á…Ñ °µ½‘”œèœÄÀÀØĞĞœ°ÑåÁ”œè‰±½ˆœ°Í¡„œé‰±½‰õuô¥lÍ¡„t(€€€€€€€É•ÅÕ¥É•}Í¡„¡ÑÉ•”°ĞÀ¤(€€€€€€€½µµ¥Ğ€ôÍ•±˜¹¥Ñ¡Õˆ¹É•ÅÕ•ÍĞ A=MPœ±Í•±˜¹…Á¤¬œ½¥Ğ½½µµ¥ÑÌœ±ìµ•ÍÍ…”œéµ•ÍÍ…”°ÑÉ•”œéÑÉ•”°Á…É•¹ÑÌœém±½…‘•¹½µµ¥Ñ}Í¡…uô¥lÍ¡„t(€€€€€€€É•ÅÕ¥É•}Í¡„¡½µµ¥Ğ°ĞÀ¤ìÍ•±˜¹…ÕÑ¡½É¥Ñä ¤ìÍ•±˜¹}…Ì¡±½…‘•¹½µµ¥Ñ}Í¡„±½µµ¥Ğ¤(€€€€€€€É•ÑÕÉ¸M¹…ÁÍ¡½Ğ¡½Áä¹‘••Á½Áä¡ÁÉ½Á½Í•¤±‰±½ˆ±±½…‘•¹ÍÑ½É•}­•ä±½µµ¥Ğ±ÑÉ•”¤(()±…ÍÌ¥ÑÉ…¥¹)½ÕÉ¹…°è(€€€€ˆˆ‰=¹±ä‘É…¥¸±•‘•È¡…¹•Ì‰•™½É”AIAI°½¸Ñ¡”½É¥¥¹…°ÍÑ…Ñ”Á…Ñ ¸ˆˆˆ(€€€‘•˜}}¥¹¥Ñ}|¡Í•±˜°•Á½ ¤èÍ•±˜¹•Á½ €ô•Á½ ((€€€‘•˜É•…‘}Í¹…ÁÍ¡½Ğ¡Í•±˜¤èÉ•ÑÕÉ¸Í•±˜¹•Á½ ¹É•…‘•È¹É•…‘}Í¹…ÁÍ¡½Ğ ¤((€€€‘•˜¥¹¥Ñ¥…±¥é”¡Í•±˜¤è(€€€€€€€…¹¡½È€ôÍ•±˜¹•Á½ ¹…ÕÑ¡½É¥Ñä ¤ì±½…‘•€ôÍ•±˜¹É•…‘}Í¹…ÁÍ¡½Ğ ¤(€€€€€€€¹½}±•…å}¥¹¥‘•¹Ğ¡±½…‘•¹ÍÑ…Ñ”¤(€€€€€€€¥˜€¥Ñ¡Õ‰}•á±ÕÍ¥½¸œ¥¸±½…‘•¹ÍÑ…Ñ”èÉ•ÑÕÉ¸Í•±˜¹±½… ¤(€€€€€€€¥˜±½…‘•¹½µµ¥Ñ}Í¡„€„ô…¹¡½Él½µµ¥Ñ}Í¡„tèÉ…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}a1UM%=9}U9aAQ}AI}1I}]I%Qœ¤(€€€€€€€ÁÉ½Á½Í•€ô½Áä¹‘••Á½Áä¡±½…‘•¹ÍÑ…Ñ”¤(€€€€€€€ÁÉ½Á½Í•‘l¥Ñ¡Õ‰}•á±ÕÍ¥½¸t€ôì•Á½ œé…¹¡½Él•Á½ t°…¹¡½Èœé…¹¡½Él½µµ¥Ñ}Í¡„t°(€€€€€€€€€€€€±•…å}‰½‘å}Í¡„ÈÔØœé‘¥•ÍĞ¡±½…‘•¹ÍÑ…Ñ”¤°‘É…¥¹Ìœéíõô(€€€€€€€É•ÑÕÉ¸Í•±˜¹•Á½ ¹İÉ¥Ñ•}‘½Õµ•¹Ğ¡±½…‘•±ÁÉ½Á½Í•±µ•ÍÍ…”ôÍÑ…Ñ”è-•Í¡•È•á±ÕÍ¥½¸‘É…¥¸¥¹¥Ñ¥…±¥é•œ¤((€€€‘•˜±½…¡Í•±˜¤è(€€€€€€€…¹¡½È€ôÍ•±˜¹•Á½ ¹…ÕÑ¡½É¥Ñä ¤ì±½…‘•€ôÍ•±˜¹É•…‘}Í¹…ÁÍ¡½Ğ ¤(€€€€€€€¹½}±•…å}¥¹¥‘•¹Ğ¡±½…‘•¹ÍÑ…Ñ”¤(€€€€€€€±•‘•È€ô±½…‘•¹ÍÑ…Ñ”¹•Ğ ¥Ñ¡Õ‰}•á±ÕÍ¥½¸œ±íô¤(€€€€€€€¥˜€¡±•‘•È¹•Ğ •Á½ œ¤€„ô…¹¡½Él•Á½ t½È±•‘•È¹•Ğ …¹¡½Èœ¤€„ô…¹¡½Él½µµ¥Ñ}Í¡„t½È¹½Ğ¥Í¥¹ÍÑ…¹”¡±•‘•È¹•Ğ ‘É…¥¹Ìœ¤±‘¥Ğ¤¤è(€€€€€€€€€€€É…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}a1UM%=9}1I}%9Y1%œ¤(€€€€€€€¥˜€¡…¹‘½Ù•Èœ¹½Ğ¥¸±½…‘•¹ÍÑ…Ñ”…¹‘¥•ÍĞ¡í¬éØ™½È¬±Ø¥¸±½…‘•¹ÍÑ…Ñ”¹¥Ñ•µÌ ¤¥˜¬€„ô€¥Ñ¡Õ‰}•á±ÕÍ¥½¸ô¤€„ô±•‘•È¹•Ğ ±•…å}‰½‘å}Í¡„ÈÔØœ¤è(€€€€€€€€€€€É…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}a1UM%=9}U9aAQ}1e}5UQQ%=8œ¤(€€€€€€€É•ÑÕÉ¸±½…‘•((€€€‘•˜Í…Ù”¡Í•±˜°±½…‘•°ÁÉ½Á½Í•¤è(€€€€€€€€ŒI”µÉ•…Ñ¡”±•‘•È…¹½İ¹••Á½ ì¹•Ù•ÈÉ•‰¥¹„ÍÑ…±”Í¹…ÁÍ¡½Ğ¸(€€€€€€€™É•Í €ôÍ•±˜¹±½… ¤(€€€€€€€¥˜™É•Í ¹½µµ¥Ñ}Í¡„€„ô±½…‘•¹½µµ¥Ñ}Í¡„èÉ…¥Í”MÑ…Ñ•½¹™±¥Ğ %Q!U	}I%9}M9AM!=Q}MQ1œ¤(€€€€€€€½±°¹•Ü€ô±½…‘•¹ÍÑ…Ñ”¹•Ğ ¥Ñ¡Õ‰}•á±ÕÍ¥½¸œ¤°ÁÉ½Á½Í•¹•Ğ ¥Ñ¡Õ‰}•á±ÕÍ¥½¸œ¤(€€€€€€€¥˜€ ¡…¹‘½Ù•Èœ¥¸±½…‘•¹ÍÑ…Ñ”½È±½…‘•¹ÍÑ…Ñ”¹•Ğ Í¡•µ…}Ù•ÉÍ¥½¸œ¤€„ô€Ô(€€€€€€€€€€€€€€€½Èí¬éØ™½È¬±Ø¥¸±½…‘•¹ÍÑ…Ñ”¹¥Ñ•µÌ ¤¥˜¬€„ô€¥Ñ¡Õ‰}•á±ÕÍ¥½¸ô€„ôí¬éØ™½È¬±Ø¥¸ÁÉ½Á½Í•¹¥Ñ•µÌ ¤¥˜¬€„ô€¥Ñ¡Õ‰}•á±ÕÍ¥½¸ô(€€€€€€€€€€€€€€€½È¹½Ğ¥Í¥¹ÍÑ…¹”¡¹•Ü±‘¥Ğ¤½ÈÍ•Ğ¡¹•Ü¤€„ôÍ•Ğ¡½±¤(€€€€€€€€€€€€€€€½Èí¬éØ™½È¬±Ø¥¸½±¹¥Ñ•µÌ ¤¥˜¬€„ô€‘É…¥¹Ìô€„ôí¬éØ™½È¬±Ø¥¸¹•Ü¹¥Ñ•µÌ ¤¥˜¬€„ô€‘É…¥¹Ìô(€€€€€€€€€€€€€€€½È¹½Ğ¥Í¥¹ÍÑ…¹”¡¹•İl‘É…¥¹Ìt±‘¥Ğ¤½È¹½ĞÍ•Ğ¡½±‘l‘É…¥¹Ìt¤€ğôÍ•Ğ¡¹•İl‘É…¥¹Ìt¤¤è(€€€€€€€€€€€É…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}I%9}]I%Q}=UQ}=}M=Aœ¤(€€€€€€€™½Èİ¥±•¹ÑÉä¥¸½±‘l‘É…¥¹Ìt¹¥Ñ•µÌ ¤è(€€€€€€€€€€€ÕÁ‘…Ñ•€ô¹•İl‘É…¥¹Ìumİ¥‘t(€€€€€€€€€€€¥˜€¡ÕÁ‘…Ñ•¹•Ğ •Á½ œ¤€„ô•¹ÑÉä¹•Ğ •Á½ œ¤½ÈÕÁ‘…Ñ•¹•Ğ İ½É­™±½İ}¥œ¤€„ô•¹ÑÉä¹•Ğ İ½É­™±½İ}¥œ¤¤è(€€€€€€€€€€€€€€€É…¥Í”MÑ…Ñ•%¹Ù…±¥ %Q!U	}I%9}%9Q%Qe}!9œ¤(€€€€€€€™É½´€¹¥Ñ¡Õ‰}‘É…¥¸¥µÁ½ÉĞÙ…±¥‘…Ñ•}‘É…¥¹}ÑÉ…¹Í¥Ñ¥½¸(€€€€€€€Ù…±¥‘…Ñ•}‘É…¥¹}ÑÉ…¹Í¥Ñ¥½¸¡½±‘l‘É…¥¹Ìt±¹•İl‘É…¥¹Ìt¤(€€€€€€€É•ÑÕÉ¸Í•±˜¹•Á½ ¹İÉ¥Ñ•}‘½Õµ•¹Ğ¡±½…‘•±ÁÉ½Á½Í•±µ•ÍÍ…”ôÍÑ…Ñ”è-•Í¡•È•á±ÕÍ¥½¸‘É…¥¸¡•­Á½¥¹Ğœ¤(()‘•˜É•½É‘}‘•¹¥•‘}±•…å}İÉ¥Ñ”¡•Á½ °€¨°…Ñ½È°ÁÉ½Á½Í•°‰•™½É•}Í¡„°¹½Ü¤è(€€€€ˆˆ‰QÉÕÍÑ•…Ñ•İ…ä¡½½¬…™Ñ•È…ÕÑ¡•¹Ñ¥…Ñ•±•…äİÉ¥Ñ”‘•¹¥…°¸((€€€%Ğ‘½•Ì¹½Ğ•á•ÕÑ”½ÈÉ•ÑÉäÑ¡”…ÑÑ•µÁÑ•İÉ¥Ñ”¸¸¥¹¥‘•¹ĞLÉ•ÍÁ½¹Í”(€€€±½ÍÌ¥ÌÉ•½¹¥±•‰äÍÑ…‰±”¥¹¥‘•¹Ğ¥‘•¹Ñ¥Ñä½¸„±…Ñ•È¥¹Ù½…Ñ¥½¸¸L(€€€½¹™±¥Ğ‰±½­ÌÑ¡”…Ñ•İ…äÕ¹Ñ¥°•á…Ğ¥¹¥‘•¹ĞÁ•ÉÍ¥ÍÑ•¹”¥ÌÉ•…‰…¬¸(€€€€ˆˆˆ(€€€™É½´€¹±•…å}É•Ñ¥É•µ•¹Ğ¥µÁ½ÉĞÉ•½É‘}±•…å}É•©•Ñ¥½¸(€€€•Á½ ¹…ÕÑ¡½É¥Ñä ¤ì±½…‘•€ô•Á½ ¹É•…‘•È¹É•…‘}Í¹…ÁÍ¡½Ğ ¤(€€€¥˜€¥Ñ¡Õ‰}•á±ÕÍ¥½¸œ¹½Ğ¥¸±½…‘•¹ÍÑ…Ñ”…¹€¡…¹‘½Ù•Èœ¹½Ğ¥¸±½…‘•¹ÍÑ…Ñ”è(€€€€€€€±½…‘•€ô¥ÑÉ…¥¹)½ÕÉ¹…°¡•Á½ ¤¹¥¹¥Ñ¥…±¥é” ¤(€€€É•½É‘•€ôÉ•½É‘}±•…å}É•©•Ñ¥½¸¡±½…‘•¹ÍÑ…Ñ”±…Ñ½Èõ…Ñ½È±•Á½ õ•Á½ ¹¥‘•¹Ñ¥Ñål•Á½ t°(€€€€€€€ÁÉ½Á½Í•õÁÉ½Á½Í•±‰•™½É•}Í¡„õ‰•™½É•}Í¡„±ÕÉÉ•¹Ñ}Í¡„õ±½…‘•¹½µµ¥Ñ}Í¡„±¹½Üõ¹½Ü¤(€€€¥˜É•½É‘•€ôô±½…‘•¹ÍÑ…Ñ”èÉ•ÑÕÉ¸±½…‘•(€€€É•ÑÕÉ¸•Á½ ¹İÉ¥Ñ•}‘½Õµ•¹Ğ¡±½…‘•±É•½É‘•±µ•ÍÍ…”ôÍÑ…Ñ”èÉ•©•Ñ•±•…ä…ÕÑ¡½É¥Ñä¥¹¥‘•¹Ğœ¤(()±…ÍÌ¥Ñ!Õ‰I•Í½ÕÉ•á±ÕÍ¥½¸è(€€€€ˆˆ‰½µÁ½Í”É•…°•Á½ L°•á…ĞÑ¥½¹Ì‘É…¥¸…¹„ÑÉÕÍÑ•‘•¹ä…Ñ•İ…ä¸((€€€Õ…É‘€€¥Ì…¸¥¹‘•Á•¹‘•¹Ñ±ä¥¹ÍÑ…±±•°…ÕÑ¡•¹Ñ¥…Ñ•É•Í½ÕÉ”•¹‘Á½¥¹Ğ(€€€¥µÁ±•µ•¹Ñ¥¹œ¥¹ÍÁ•Ğ½•á±Õ‘”ì¥ĞµÕÍĞÉ•Ù½­”½±İ½É­™±½Ü½…ÁÀ½AP½‘•Á±½äµ­•ä(€€€É…¹ÑÌ…¹•¹™½É”¹…ÉÉ½Ü¥Ğ½Ñ¥½¹Ì½Á•É…Ñ¥½¹Ì…ĞÑ¡”…ÑÕ…°•¹‘Á½¥¹ÑÌ¸(€€€9½Ñ¡¥¹œ¥¸Ñ¡¥Ì…‘…ÁÑ•È™…‰É¥…Ñ•ÌÑ¡…Ğ•¹™½É•µ•¹Ğ¸9¼Õ…É°Á…ÉÑ¥…°(€€€É•Ù½…Ñ¥½¸°Õ¹­¹½İ¸É•¥ÍÑÉ…Ñ¥½¸½ÈÍÑ…±”ÉÕ¸µ•…¹Ì¹¼•á±ÕÍ¥½¸É••¥ÁĞ¸(€€€É•¥ÍÑ•É•‘€É•ÑÕÉ¹Ì¥¹‘•Á•¹‘•¹Ñ±äÉ•Ù¥•İ••á…Ğ%½Á…Ñ ‰¥¹‘¥¹ÌìÑ¡”(€€€Ñ¥½¹ÌÉ•…‘•È½µÁ…É•Ì¥ÑÌ½µÁ±•Ñ”¥¹Ù•¹Ñ½Éä……¥¹ÍĞÑ¡•´½¸•Ù•ÉäÍÑ•À¸(€€€€ˆˆˆ(€€€‘•˜}}¥¹¥Ñ}|¡Í•±˜°¥Ñ¡Õˆ°É•Á¼°€¨°µ…¥¹}Í¡„°Á½±¥ä°ÉÕ±•Ì°É•¥ÍÑ•É•°Õ…É°Í•Á…É…Ñ¥½¸õ9½¹”°(€€€€€€€€€€€€€€€€Í•Á…É…Ñ¥½¹}‰¥¹‘¥¹œõ9½¹”°ÁÉ½Ñ•Ñ•‘}É•Í½ÕÉ•Ìõ9½¹”¤è(€€€€€€€™É½´€¹¥Ñ¡Õ‰}‘É…¥¸¥µÁ½ÉĞ¥Ñ¡Õ‰É…¥¸(€€€€€€€™É½´€¹…ÕÑ¡½É¥Ñå}Ñ½Á½±½ä¥µÁ½ÉĞÙ…±¥‘…Ñ•}É•¥ÍÑ•É•‘}¥¹Ù•¹Ñ½Éä(€€€€€€€™É½´€¹•á±ÕÍ¥½¸¥µÁ½ÉĞIEU%I}IM=UIL°9=9%1}Q°=9QI=1}Q(€€€€€€€‰…Í•}­•åÌ€ôìÉ•Á¼œ°É•Í½ÕÉ”œ°É•Í½ÕÉ•}¥œ°•Á½ œ°½İ¹•Èœ°‘•™…Õ±Ñ}…ÕÑ¡½É¥Ñäœ°(€€€€€€€€€€€€€€€€€€€€€ÁÉ½Ñ•Ñ¥½¹}µ•Ñ¡½œ°ÁÉ•‘••ÍÍ½É}…ÕÑ¡½É¥Ñå}‘•¹¥•œ°½Ù•É•‘}É•‘•¹Ñ¥…±}±…ÍÍ•Ìœ°(€€€€€€€€€€€€€€€€€€€€€…¹½¹¥…±}…Ñ”œ°½¹ÑÉ½±}…Ñ”ô(€€€€€€€µ•Ñ¡½€ôÁ½±¥ä¹•Ğ ÁÉ½Ñ•Ñ¥½¹}µ•Ñ¡½œ¤(€€€€€€€•áÁ•Ñ•‘}­•åÌ€ô‰…Í•}­•åÌğ€¡ìMÄ
+            # GitHub computes ancestry for exact immutable IDs. This proof does
+            # not depend on the paginated commits list (250 by default), nor on
+            # the number of valid controller/drain descendants. The API's
+            # permalink uses abbreviated IDs and is deliberately not authority.
+            comparison = self.github.request('GET',self.api+'/compare/'+anchor['commit_sha']+'...'+current+'?per_page=1&page=1')
+            if (comparison.get('base_commit',{}).get('sha') != anchor['commit_sha']
+                    or comparison.get('merge_base_commit',{}).get('sha') != anchor['commit_sha']
+                    or type(comparison.get('behind_by')) is not int or comparison['behind_by'] != 0
+                    or type(comparison.get('ahead_by')) is not int
+                    or (current == anchor['commit_sha'] and
+                        (comparison.get('status') != 'identical' or comparison['ahead_by'] != 0))
+                    or (current != anchor['commit_sha'] and
+                        (comparison.get('status') != 'ahead' or comparison['ahead_by'] < 1))):
+                raise StateInvalid('GITHUB_EPOCH_ANCHOR_NOT_ANCESTOR')
+            if (self.github.request('GET',self.api+'/git/ref/heads/automation-state')['object']['sha'] != current
+                    or self.github.request('GET',self.api+'/git/ref/heads/main')['object']['sha'] != self.identity['main_sha']):
+                raise StateInvalid('GITHUB_EPOCH_REF_CHANGED_DURING_READBACK')
+            return {'current_ref':current,'anchor':anchor}
+        sha, seen = current, set()
+        for _ in range(512):
+            if sha in seen: raise StateInvalid('GITHUB_EPOCH_ANCESTRY_INVALID')
+            seen.add(sha); row = self._commit(sha)
+            message = row.get('message')
+            if not isinstance(message,str): raise StateInvalid('GITHUB_EPOCH_COMMIT_INVALID')
+            if message.startswith(ANCHOR_MESSAGE):
+                return {'current_ref':current,'anchor':self._anchor(sha,row)}
+            if len(row['parents']) > 1: raise StateInvalid('GITHUB_EPOCH_MERGE_ANCESTRY_REFUSED')
+            if not row['parents']: return {'current_ref':current,'anchor':None}
+            sha = row['parents'][0]['sha']
+        raise StateInvalid('GITHUB_EPOCH_ANCESTRY_INCOMPLETE')
+
+    def authority(self):
+        row = self.observe()
+        if row['anchor'] is None: raise StateInvalid('GITHUB_EPOCH_NOT_ACQUIRED')
+        return row['anchor']
+
+    def _cas(self, before, after):
+        repo_id = self.github.request('GET',self.api)['node_id']
+        if repo_id != self.identity['resource_id']: raise StateInvalid('GITHUB_EPOCH_RESOURCE_ID_MISMATCH')
+        request = {'repositoryId':repo_id,
+            'clientMutationId':digest({'before':before,'after':after,'identity':self.identity}),
+            'refUpdates':[
+                {'name':'refs/heads/main','beforeOid':self.identity['main_sha'],
+                 'afterOid':self.identity['main_sha'],'force':False},
+                {'name':'refs/heads/automation-state','beforeOid':before,'afterOid':after,'force':False}]}
+        result = self.github.request('POST','/graphql',{'query':UPDATE_REFS,'variables':{'input':request}})
+        if result.get('errors'): raise StateConflict('GITHUB_EXCLUSION_REF_CAS_REJECTED')
+        if result.get('data',{}).get('updateRefs',{}).get('clientMutationId') != request['clientMutationId']:
+            raise GitHubError(None,'Git exclusion acknowledgment missing; inspect exact ref',uncertain=True)
+
+    def acquire(self, observed_ref):
+        require_sha(observed_ref,40)
+        row = self.observe()
+        if row['current_ref'] != observed_ref: raise StateConflict('GITHUB_EPOCH_REF_STALE')
+        if row['anchor']: return row['anchor']
+        loaded = self.reader.read_snapshot()
+        no_legacy_incident(loaded.state)
+        if (loaded.commit_sha != observed_ref or loaded.state.get('schema_version') != 5
+                or 'handover' in loaded.state or 'github_exclusion' in loaded.state):
+            raise StateInvalid('GITHUB_EPOCH_INITIAL_SNAPSHOT_INVALID')
+        record = dict(self.identity,before_oid=observed_ref,tree_sha=loaded.tree_sha,
+                      ref='refs/heads/automation-state')
+        commit = self.github.request('POST',self.api+'/git/commits',{
+            'message':ANCHOR_MESSAGE+canonical_json(record),'tree':loaded.tree_sha,'parents':[observed_ref]})['sha']
+        require_sha(commit,40)
+        self._cas(observed_ref,commit)
+        anchor = self.authority()
+        if anchor['commit_sha'] != commit: raise StateInvalid('GITHUB_EPOCH_READBACK_CHANGED')
+        return anchor
+
+    def write_document(self, loaded, proposed, *, message):
+        """Internal primitive. Gateway must authorize the supplied narrow intent.
+
+        Journal and incident callers validate exact allowed differences first.
+        Fresh anchor read plus atomic ref/main CAS rejects stale descendants.
+        """
+        if not isinstance(loaded,Snapshot) or loaded.store_key != self.reader.store_key:
+            raise StateInvalid('GITHUB_EXCLUSION_SNAPSHOT_INVALID')
+        self.authority()
+        raw = (canonical_json(proposed)+'\n').encode()
+        blob = self.github.request('POST',self.api+'/git/blobs',
+            {'content':base64.b64encode(raw).decode(),'encoding':'base64'})['sha']
+        if blob != hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest():
+            raise StateInvalid('GITHUB_EXCLUSION_WRITTEN_BLOB_INVALID')
+        tree = self.github.request('POST',self.api+'/git/trees',{'base_tree':loaded.tree_sha,
+            'tree':[{'path':self.reader.path,'mode':'100644','type':'blob','sha':blob}]})['sha']
+        require_sha(tree,40)
+        commit = self.github.request('POST',self.api+'/git/commits',{
+            'message':message,'tree':tree,'parents':[loaded.commit_sha]})['sha']
+        require_sha(commit,40); self.authority(); self._cas(loaded.commit_sha,commit)
+        return Snapshot(copy.deepcopy(proposed),blob,loaded.store_key,commit,tree)
+
+
+class GitDrainJournal:
+    """Only drain ledger changes before PREPARED, on the original state path."""
+    def __init__(self, epoch): self.epoch = epoch
+
+    def read_snapshot(self): return self.epoch.reader.read_snapshot()
+
+    def initialize(self):
+        anchor = self.epoch.authority(); loaded = self.read_snapshot()
+        no_legacy_incident(loaded.state)
+        if 'github_exclusion' in loaded.state: return self.load()
+        if loaded.commit_sha != anchor['commit_sha']:
+            raise StateInvalid('GITHUB_EXCLUSION_UNEXPECTED_PRE_LEDGER_WRITE')
+        proposed = copy.deepcopy(loaded.state)
+        proposed['github_exclusion'] = {'epoch':anchor['epoch'],'anchor':anchor['commit_sha'],
+            'legacy_body_sha256':digest(loaded.state),'drains':{}}
+        return self.epoch.write_document(loaded,proposed,message='state: Kesher exclusion drain initialized')
+
+    def load(self):
+        anchor = self.epoch.authority(); loaded = self.read_snapshot()
+        no_legacy_incident(loaded.state)
+        ledger = loaded.state.get('github_exclusion',{})
+        if (ledger.get('epoch') != anchor['epoch'] or ledger.get('anchor') != anchor['commit_sha']
+                or not isinstance(ledger.get('drains'),dict)):
+            raise StateInvalid('GITHUB_EXCLUSION_LEDGER_INVALID')
+        if 'handover' not in loaded.state and digest({k:v for k,v in loaded.state.items()
+                if k != 'github_exclusion'}) != ledger.get('legacy_body_sha256'):
+            raise StateInvalid('GITHUB_EXCLUSION_UNEXPECTED_LEGACY_MUTATION')
+        return loaded
+
+    def save(self, loaded, proposed):
+        # Re-read the ledger and owned epoch; never rebind a stale snapshot.
+        fresh = self.load()
+        if fresh.commit_sha != loaded.commit_sha: raise StateConflict('GITHUB_DRAIN_SNAPSHOT_STALE')
+        old, new = loaded.state.get('github_exclusion'), proposed.get('github_exclusion')
+        if ('handover' in loaded.state or loaded.state.get('schema_version') != 5
+                or {k:v for k,v in loaded.state.items() if k != 'github_exclusion'} !=
+                   {k:v for k,v in proposed.items() if k != 'github_exclusion'}
+                or not isinstance(new,dict) or set(new) != set(old)
+                or {k:v for k,v in old.items() if k != 'drains'} != {k:v for k,v in new.items() if k != 'drains'}
+                or not isinstance(new['drains'],dict) or not set(old['drains']) <= set(new['drains'])):
+            raise StateInvalid('GITHUB_DRAIN_WRITE_OUT_OF_SCOPE')
+        for wid,entry in old['drains'].items():
+            updated = new['drains'][wid]
+            if (updated.get('epoch') != entry.get('epoch') or
+                    updated.get('workflow_id') != entry.get('workflow_id')):
+                raise StateInvalid('GITHUB_DRAIN_IDENTITY_CHANGED')
+        from .github_drain import validate_drain_transition
+        validate_drain_transition(old['drains'],new['drains'])
+        return self.epoch.write_document(loaded,proposed,message='state: Kesher exclusion drain checkpoint')
+
+
+def record_denied_legacy_write(epoch, *, actor, proposed, before_sha, now):
+    """Trusted gateway hook after authenticated legacy write denial.
+
+    It does not execute or retry the attempted write. An incident CAS response
+    loss is reconciled by stable incident identity on a later invocation. CAS
+    conflict blocks the gateway until exact incident persistence is read back.
+    """
+    from .legacy_retirement import record_legacy_rejection
+    epoch.authority(); loaded = epoch.reader.read_snapshot()
+    if 'github_exclusion' not in loaded.state and 'handover' not in loaded.state:
+        loaded = GitDrainJournal(epoch).initialize()
+    recorded = record_legacy_rejection(loaded.state,actor=actor,epoch=epoch.identity['epoch'],
+        proposed=proposed,before_sha=before_sha,current_sha=loaded.commit_sha,now=now)
+    if recorded == loaded.state: return loaded
+    return epoch.write_document(loaded,recorded,message='state: rejected legacy authority incident')
+
+
+class GitHubResourceExclusion:
+    """Compose real epoch CAS, exact Actions drain and a trusted deny gateway.
+
+    ``guard`` is an independently installed, authenticated resource endpoint
+    implementing inspect/exclude; it must revoke old workflow/app/PAT/deploy-key
+    grants and enforce narrow Git/Actions operations at the actual endpoints.
+    Nothing in this adapter fabricates that enforcement. No guard, partial
+    revocation, unknown registration or stale run means no exclusion receipt.
+    ``registered`` returns independently reviewed exact ID/path bindings; the
+    Actions reader compares its complete inventory against them on every step.
+    """
+    def __init__(self, github, repo, *, main_sha, policy, rules, registered, guard, separation=None,
+                 separation_binding=None, protected_resources=None):
+        from .github_drain import GithubDrain
+        from .authority_topology import validate_registered_inventory
+        from .exclusion import REQUIRED_RESOURCES, CANONICAL_GATE, CONTROL_GATE
+        expected_keys = {'repo','resource','resource_id','epoch','owner','default_authority',
+                         'credential_revocation_complete','revoked_credential_classes','canonical_gate','control_gate'}
+        if (guard is None or not callable(registered) or set(policy) != expected_keys
+                or policy['repo'] != repo or policy['resource'] != 'github'
+                or policy['default_authority'] != 'deny' or policy['credential_revocation_complete'] is not True
+                or policy['revoked_credential_classes'] != REQUIRED_RESOURCES['github']
+                or policy['canonical_gate'] != CANONICAL_GATE or policy['control_gate'] != CONTROL_GATE):
+            raise StateInvalid('GITHUB_TRUSTED_RESOURCE_GATEWAY_REQUIRED')
+        self.github, self.repo, self.guard = github, repo, guard
+        self.policy = copy.deepcopy(policy); self.rules = copy.deepcopy(rules)
+        self.registered = registered
+        self.separation = separation
+        self.separation_binding = copy.deepcopy(separation_binding)
+        self.protected_resources = copy.deepcopy(protected_resources)
+        self.epoch = GitExclusionEpoch(github,repo,epoch=policy['epoch'],owner=policy['owner'],
+            resource_id=policy['resource_id'],main_sha=main_sha,policy_sha256=digest(policy))
+        self.journal = GitDrainJournal(self.epoch)
+        self.drain = GithubDrain(github,repo,journal=self.journal,
+            authority=lambda:self.journal.load().state['github_exclusion']['epoch'],registered=self._registered)
+        validate_registered_inventory(self._registered(),rules,complete=True)
+
+    def _registered(self):
+        from .authority_topology import validate_registered_inventory
+        rows = self.registered()
+        validate_registered_inventory(rows,self.rules,complete=True)
+        return rows
+
+    def targets(self):
+        from .authority_topology import _separated
+        from .exclusion import REQUIRED_RESOURCES
+        rows = self._registered()
+        targets=[]
+        # Infrastructure is never silently retired merely because a proof is
+        # unavailable. The trusted callback freshly reads real service scopes.
+        context = self.separation() if callable(self.separation) else {}
+        for row in rows:
+            if row['path'] in self.rules.get('registrations',{}): targets.append(row); continue
+            entry=self.rules['workflows'][row['path']]
+            if entry['role'] == 'separate_infrastructure':
+                binding,resources=self.separation_binding,self.protected_resources
+                if (not isinstance(binding,dict) or set(binding)!=
+                        {'repo','policy_sha256','code_sha256','resource_bindings_sha256'}
+                        or binding['repo']!=self.repo or not isinstance(resources,dict)
+                        or set(resources)!=set(REQUIRED_RESOURCES)
+                        or resources['github']!=self.policy['resource_id']
+                        or binding['resource_bindings_sha256']!=digest(resources)
+                        or context.get('binding')!=binding or context.get('protected_resources')!=resources
+                        or not _separated(row,entry,context.get('proofs'),binding,resources)):
+                    raise StateInvalid('CUTOVER_INFRASTRUCTURE_BOUNDARY_MISSING:'+row['path'])
+            elif entry['role'] in {'retired','emergency_bridge','retiring_dispatcher'}: targets.append(row)
+        return targets
+
+    def _guard(self):
+        row = self.guard.inspect(self.repo)
+        if (row.get('repo') != self.repo or row.get('resource') != 'github'
+                or row.get('resource_id') != self.policy['resource_id']
+                or row.get('inventory_complete') is not True or not isinstance(row.get('actors'),list)):
+            raise StateInvalid('GITHUB_RESOURCE_GATEWAY_READBACK_REQUIRED')
+        if row.get('protection') not in (None,self.policy):
+            raise StateInvalid('GITHUB_RESOURCE_GATEWAY_CHANGED')
+        return row
+
+    def _current_inventory(self):
+        from .authority_topology import GitHubAuthorityObserver
+        from .github_drain import GithubDrain
+        rows, _ = GitHubAuthorityObserver(self.github,self.repo,'.',fence=None).current_inventory(self.rules)
+        GithubDrain._known(rows,{row['id']:row['path'] for row in self._registered()})
+
+    def inspect(self, repo):
+        if repo != self.repo: raise StateInvalid('GITHUB_RESOURCE_REPO_MISMATCH')
+        self.targets()
+        self._current_inventory()
+        self._registered(); epoch = self.epoch.observe(); row = self._guard()
+        protected = False
+        if epoch['anchor'] and row.get('protection') == self.policy:
+            # A fresh process must recognize the owned same-tree anchor even
+            # when interruption preceded drain-ledger initialization.
+            if 'github_exclusion' not in self.journal.read_snapshot().state:
+                return {'repo':repo,'resource':'github','resource_id':self.policy['resource_id'],
+                    'revision_kind':'git_ref_cas','revision':epoch['anchor']['commit_sha'],
+                    'epoch_anchor':epoch['anchor'],'protection':None,
+                    'inventory_complete':True,'actors':copy.deepcopy(row['actors'])}
+            loaded = self.journal.load()
+            targets = self.targets()
+            ready = all(loaded.state['github_exclusion']['drains'].get(str(t['id']),{}).get('proof')
+                        for t in targets)
+            if not ready:
+                return {'repo':repo,'resource':'github','resource_id':self.policy['resource_id'],
+                    'revision_kind':'git_ref_cas','revision':epoch['anchor']['commit_sha'],
+                    'epoch_anchor':epoch['anchor'],'protection':None,
+                    'inventory_complete':True,'actors':copy.deepcopy(row['actors'])}
+            self.drain.observe_many([(target['id'],target['path']) for target in targets])
+            # Final gateway/ref observation after mutable Actions reads.
+            if self._guard().get('protection') != self.policy: raise StateInvalid('GITHUB_RESOURCE_GATEWAY_CHANGED')
+            if self.epoch.authority() != epoch['anchor']: raise StateInvalid('GITHUB_EPOCH_CHANGED')
+            protected = True
+        return {'repo':repo,'resource':'github','resource_id':self.policy['resource_id'],
+            'revision_kind':'git_ref_cas','revision':epoch['anchor']['commit_sha'] if epoch['anchor'] else epoch['current_ref'],
+            'epoch_anchor':epoch['anchor'],'protection':copy.deepcopy(self.policy) if protected else None,
+            'inventory_complete':True,'actors':copy.deepcopy(row['actors'])}
+
+    def exclude(self, repo, observed_revision, policy):
+        if repo != self.repo or policy != self.policy: raise StateInvalid('GITHUB_RESOURCE_POLICY_MISMATCH')
+        self.targets(); self._current_inventory(); observed = self.epoch.observe()
+        # Before acquisition, the supplied revision MUST be the current ref.
+        # After acquisition it MUST be the stable anchored authority commit.
+        expected = observed['anchor']['commit_sha'] if observed['anchor'] else observed['current_ref']
+        if observed_revision != expected: raise StateConflict('GITHUB_RESOURCE_EXCLUSION_STALE')
+        row = self._guard()
+        if row.get('protection') is None:
+            # Enforce deny/intent guards BEFORE reconciling Actions. The gateway
+            # authenticates exact run attempts at cancel, closing the REST
+            # run-ID-only check/use gap independently of workflow disablement.
+            self.guard.exclude(repo,row['revision'],copy.deepcopy(policy))
+            if self._guard().get('protection') != self.policy:
+                raise StateInvalid('GITHUB_RESOURCE_EXCLUSION_INCOMPLETE')
+            raise StateInvalid('GITHUB_RESOURCE_DRAIN_PENDING')
+        if not observed['anchor']:
+            self.epoch.acquire(observed['current_ref'])
+            raise StateInvalid('GITHUB_RESOURCE_DRAIN_PENDING')
+        if 'github_exclusion' not in self.journal.read_snapshot().state:
+            self.journal.initialize()
+            raise StateInvalid('GITHUB_RESOURCE_DRAIN_PENDING')
+        self.epoch.authority()
+        drains=self.journal.load().state['github_exclusion']['drains']
+        for target in self.targets():
+            if not drains.get(str(target['id']),{}).get('proof'):
+                self.drain.step(target['id'],target['path'])
+                raise StateInvalid('GITHUB_RESOURCE_DRAIN_PENDING')
+        if self.inspect(repo)['protection'] != self.policy:
+            raise StateInvalid('GITHUB_RESOURCE_EXCLUSION_INCOMPLETE')
