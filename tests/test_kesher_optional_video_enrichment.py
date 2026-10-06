@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from scripts import kesher_e2e_delivery_guard as guard
 from tests.test_media_provenance_contract import bound_short
@@ -55,6 +56,11 @@ class OptionalVideoEnrichmentContractTests(unittest.TestCase):
             deliverables["short_youtube_url"],
             "https://youtu.be/short123",
         )
+
+    def test_production_workflow_keeps_automatic_broll_disabled(self) -> None:
+        workflow = Path(".github/workflows/kesher-daily-video.yml").read_text(encoding="utf-8")
+        self.assertIn('KESHER_BROLL_ENABLED: "false"', workflow)
+        self.assertNotIn('KESHER_BROLL_ENABLED: "true"', workflow)
 
     def test_signature_overlay_is_inside_source_timeline_not_appended(self) -> None:
         stage = {
