@@ -18,6 +18,10 @@ on:
         description: Exact visually rejected item to rebuild with Remotion
         required: false
         type: string
+      fresh_generation_attempt:
+        description: Exact fresh generation attempt for same-artifact final voice fallback recovery
+        required: false
+        type: string
       target_slug:
         description: Exact article slug to generate video for
         required: false
@@ -298,7 +302,8 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${{ inputs.rebuild_item_id }}"
-          python -u scripts/kesher_daily_pipeline.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
+          KESHER_FRESH_GENERATION_ATTEMPT="${{ inputs.fresh_generation_attempt }}" \
+            python -u scripts/kesher_daily_pipeline.py --remotion-rebuild-item "${{ inputs.rebuild_item_id }}"
 
       - name: Detect pending advisory Jules review
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'rebuild' }}

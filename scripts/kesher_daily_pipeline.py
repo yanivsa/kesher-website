@@ -438,12 +438,28 @@ def generation_prompt(source: dict[str, Any]) -> str:
     return prompt
 
 
+def runtime_generation_attempt() -> int:
+    raw = (
+        os.environ.get("KESHER_FRESH_GENERATION_ATTEMPT")
+        or os.environ.get("GITHUB_RUN_ATTEMPT")
+        or "1"
+    ).strip()
+    try:
+        attempt = int(raw)
+    except ValueError as exc:
+        raise PipelineError("Generation attempt must be a positive integer") from exc
+    if attempt < 1:
+        raise PipelineError("Generation attempt must be a positive integer")
+    return attempt
+
+
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
     stamp = israel_now().strftime("%Y%m%d-%H%M%S")
     return {
         "id": f"video-{stamp}-{source['content_sha256'][:10]}",
         "type": "video_overview",
         "voice_constraint_version": VOICE_CONSTRAINT_VERSION,
+        "fresh_generation_attempt": runtime_generation_attempt(),
         "israel_date": israel_now().date().isoformat(),
         "status": "source_selected",
         "source": {key: value for key, value in source.items() if key not in {"body", "youtube_metadata"}},
@@ -1199,6 +1215,11 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
         and "1080x1920" in technical_note
     )
     uploaded_recovery = item.get("status") == "uploaded" and item.get("uploaded") is True and item.get("youtube_id")
+    voice_fallback_recovery = (
+        item.get("status") == "rejected"
+        and item.get("technical_verified") is not True
+        and item.get("failure_signature") == "wrong_narrator_gender"
+    )
     immutable_evidence_fields = (
         "manifest_sha256",
         "transcript_sha256",
@@ -1221,12 +1242,16 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
         or metadata_recovery
         or resolution_recovery
         or uploaded_recovery
+        or voice_fallback_recovery
         or legacy_evidence_recovery
     ):
         raise PipelineError(
-            "Remotion rebuild is allowed only for a visual rejection, a recoverable signature/metadata/resolution technical rejection, "
+            "Remotion rebuild is allowed only for a visual rejection, a recoverable signature/metadata/resolution/narrator technical rejection, "
             "an exact legacy immutable-evidence recovery, or an exact uploaded-item recovery"
         )
+
+    if voice_fallback_recovery:
+        item["fresh_generation_attempt"] = runtime_generation_attempt()
 
     youtube_id = item.pop("youtube_id", None)
     if youtube_id:
