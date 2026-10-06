@@ -50,6 +50,7 @@ jobs:
           slug = str(request.get('target_slug') or '').strip()
           target_date = str(request.get('target_date') or '').strip()
           target_sha = str(request.get('target_content_sha256') or '').strip()
+          target_item_id = str(request.get('target_item_id') or '').strip()
           if not slug or not target_date or len(target_sha) != 64:
               raise SystemExit('Enabled targeted media recovery requires target_slug, target_date, and target_content_sha256')
 
@@ -68,9 +69,10 @@ jobs:
               out.write('enabled=true\n')
               out.write(f'slug={slug}\n')
               out.write(f'content_sha256={target_sha}\n')
+              out.write(f'target_item_id={target_item_id}\n')
               out.write(f'need_video={str(need_video).lower()}\n')
               out.write(f'need_short={str(need_short).lower()}\n')
-          print(f'RECOVERY_TARGET_VERIFIED slug={slug} date={target_date} need_video={need_video} need_short={need_short}')
+          print(f'RECOVERY_TARGET_VERIFIED slug={slug} date={target_date} need_video={need_video} need_short={need_short} exact_item={bool(target_item_id)}')
           PY
 
       - name: Dispatch exact Video Overview worker
@@ -78,13 +80,25 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TARGET_SLUG: ${{ steps.target.outputs.slug }}
+          TARGET_CONTENT_SHA256: ${{ steps.target.outputs.content_sha256 }}
+          TARGET_ITEM_ID: ${{ steps.target.outputs.target_item_id }}
         run: |
           set -euo pipefail
-          gh workflow run kesher-daily-video.yml \
-            --ref main \
-            -f operation=full \
-            -f target_slug="$TARGET_SLUG"
-          echo "VIDEO_OVERVIEW_DISPATCHED slug=$TARGET_SLUG"
+          if [ -n "$TARGET_ITEM_ID" ]; then
+            gh workflow run kesher-daily-video.yml \
+              --ref main \
+              -f operation=upload \
+              -f target_slug="$TARGET_SLUG" \
+              -f target_content_sha256="$TARGET_CONTENT_SHA256" \
+              -f target_item_id="$TARGET_ITEM_ID"
+            echo "VIDEO_OVERVIEW_EXACT_UPLOAD_DISPATCHED slug=$TARGET_SLUG item_id=$TARGET_ITEM_ID"
+          else
+            gh workflow run kesher-daily-video.yml \
+              --ref main \
+              -f operation=full \
+              -f target_slug="$TARGET_SLUG"
+            echo "VIDEO_OVERVIEW_DISPATCHED slug=$TARGET_SLUG"
+          fi
 
       - name: Dispatch exact Short worker
         if: ${{ steps.target.outputs.enabled == 'true' && steps.target.outputs.need_short == 'true' }}
