@@ -287,18 +287,18 @@ def record_denied_legacy_write(epoch, *, actor, proposed, before_sha, now):
 
 
 class GitHubResourceExclusion:
-    """Compose real epoch CAS, exact Actions drain and a trusted deny gateway.
+    """Compose epoch CAS, native protected refs, Actions drain and deny gateway.
 
     ``guard`` is an independently installed, authenticated resource endpoint
-    implementing inspect/exclude; it must revoke old workflow/app/PAT/deploy-key
-    grants and enforce narrow Git/Actions operations at the actual endpoints.
+    implementing inspect/exclude; it must prove the selected revocation/denial
+    mode and enforce narrow Git/Actions operations at the actual endpoints.
     Nothing in this adapter fabricates that enforcement. No guard, partial
-    revocation, unknown registration or stale run means no exclusion receipt.
+    proof, missing native ruleset, unknown registration or stale run means no receipt.
     ``registered`` returns independently reviewed exact ID/path bindings; the
     Actions reader compares its complete inventory against them on every step.
     """
     def __init__(self, github, repo, *, main_sha, policy, rules, registered, guard, separation=None,
-                 separation_binding=None, protected_resources=None):
+                 separation_binding=None, protected_resources=None, ruleset_boundary=None):
         from .github_drain import GithubDrain
         from .authority_topology import validate_registered_inventory
         from .exclusion import REQUIRED_RESOURCES, CANONICAL_GATE, CONTROL_GATE
@@ -316,6 +316,7 @@ class GitHubResourceExclusion:
                 or policy['canonical_gate'] != CANONICAL_GATE or policy['control_gate'] != CONTROL_GATE):
             raise StateInvalid('GITHUB_TRUSTED_RESOURCE_GATEWAY_REQUIRED')
         self.github, self.repo, self.guard = github, repo, guard
+        self.ruleset_boundary = ruleset_boundary
         self.policy = copy.deepcopy(policy); self.rules = copy.deepcopy(rules)
         self.registered = registered
         self.separation = separation
@@ -375,19 +376,31 @@ class GitHubResourceExclusion:
         rows, _ = GitHubAuthorityObserver(self.github,self.repo,'.',fence=None).current_inventory(self.rules)
         GithubDrain._known(rows,{row['id']:row['path'] for row in self._registered()})
 
+    def _ruleset(self):
+        from .github_ruleset import GitHubRulesetBoundary
+        if type(self.ruleset_boundary) is not GitHubRulesetBoundary:
+            raise StateInvalid('GITHUB_NATIVE_RULESET_BOUNDARY_REQUIRED')
+        binding = self.ruleset_boundary.binding
+        expected = {key:self.policy[key] for key in ('repo','resource_id','epoch','owner')}
+        expected.update(main_sha=self.epoch.identity['main_sha'], policy_sha256=digest(self.policy),
+                        registrations_policy_sha256=digest(self.rules))
+        if any(binding.get(key) != value for key,value in expected.items()):
+            raise StateInvalid('GITHUB_RULESET_BINDING_CHANGED')
+        return self.ruleset_boundary.inspect(self.repo)
+
     def inspect(self, repo):
         if repo != self.repo: raise StateInvalid('GITHUB_RESOURCE_REPO_MISMATCH')
         self.targets()
         self._current_inventory()
-        self._registered(); epoch = self.epoch.observe(); row = self._guard()
+        self._registered(); epoch = self.epoch.observe(); native = self._ruleset(); row = self._guard()
         protected = False
-        if epoch['anchor'] and row.get('protection') == self.policy:
+        if epoch['anchor'] and native['protected'] and row.get('protection') == self.policy:
             # A fresh process must recognize the owned same-tree anchor even
             # when interruption preceded drain-ledger initialization.
             if 'github_exclusion' not in self.journal.read_snapshot().state:
                 return {'repo':repo,'resource':'github','resource_id':self.policy['resource_id'],
                     'revision_kind':'git_ref_cas','revision':epoch['anchor']['commit_sha'],
-                    'epoch_anchor':epoch['anchor'],'protection':None,
+                    'epoch_anchor':epoch['anchor'],'ruleset_revision':native['revision'],'protection':None,
                     'inventory_complete':True,'actors':copy.deepcopy(row['actors'])}
             loaded = self.journal.load()
             targets = self.targets()
@@ -396,16 +409,21 @@ class GitHubResourceExclusion:
             if not ready:
                 return {'repo':repo,'resource':'github','resource_id':self.policy['resource_id'],
                     'revision_kind':'git_ref_cas','revision':epoch['anchor']['commit_sha'],
-                    'epoch_anchor':epoch['anchor'],'protection':None,
+                    'epoch_anchor':epoch['anchor'],'ruleset_revision':native['revision'],'protection':None,
                     'inventory_complete':True,'actors':copy.deepcopy(row['actors'])}
             self.drain.observe_many([(target['id'],target['path']) for target in targets])
-            # Final gateway/ref observation after mutable Actions reads.
+            # Native policy and registrations must remain exact after drain.
+            if self._ruleset()['revision'] != native['revision']:
+                raise StateInvalid('GITHUB_RULESET_CHANGED')
+            self._current_inventory()
+            # The final inventory itself can race a main/gateway transition.
             if self._guard().get('protection') != self.policy: raise StateInvalid('GITHUB_RESOURCE_GATEWAY_CHANGED')
             if self.epoch.authority() != epoch['anchor']: raise StateInvalid('GITHUB_EPOCH_CHANGED')
             protected = True
         return {'repo':repo,'resource':'github','resource_id':self.policy['resource_id'],
             'revision_kind':'git_ref_cas','revision':epoch['anchor']['commit_sha'] if epoch['anchor'] else epoch['current_ref'],
-            'epoch_anchor':epoch['anchor'],'protection':copy.deepcopy(self.policy) if protected else None,
+            'epoch_anchor':epoch['anchor'],'ruleset_revision':native['revision'],
+            'protection':copy.deepcopy(self.policy) if protected else None,
             'inventory_complete':True,'actors':copy.deepcopy(row['actors'])}
 
     def exclude(self, repo, observed_revision, policy):
@@ -415,6 +433,10 @@ class GitHubResourceExclusion:
         # After acquisition it MUST be the stable anchored authority commit.
         expected = observed['anchor']['commit_sha'] if observed['anchor'] else observed['current_ref']
         if observed_revision != expected: raise StateConflict('GITHUB_RESOURCE_EXCLUSION_STALE')
+        native = self._ruleset()
+        if not native['protected']:
+            self.ruleset_boundary.enforce(repo,native['revision'],copy.deepcopy(policy))
+            raise StateInvalid('GITHUB_RESOURCE_DRAIN_PENDING')
         row = self._guard()
         if row.get('protection') is None:
             # Enforce deny/intent guards BEFORE reconciling Actions. The gateway

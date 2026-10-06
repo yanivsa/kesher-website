@@ -173,9 +173,12 @@ class ResourceAdapterTests(unittest.TestCase):
                     return outer.actions.request(method,path,body)
                 return outer.git.request(method,path,body)
         self.service = Service()
+        from tests.test_kesher_github_ruleset import RulesetAdmin, ruleset_boundary
+        self.native = RulesetAdmin(git=self.git, actions=self.actions)
+        self.native_boundary = ruleset_boundary(self.native, policy=self.policy, rules=self.rules)
         self.registered = lambda:[{'id':9,'path':PATH,'state':'active'}]
         self.kwargs = dict(main_sha='b'*40,policy=self.policy,rules=self.rules,
-                           registered=self.registered,guard=self.guard)
+                           registered=self.registered,guard=self.guard,ruleset_boundary=self.native_boundary)
         self.adapter = GitHubResourceExclusion(self.service,'owner/repo',**self.kwargs)
 
     def authorize(self,method,path):
@@ -229,6 +232,59 @@ class ResourceAdapterTests(unittest.TestCase):
         self.guard.exclude=lambda *args: None
         with self.assertRaisesRegex(StateInvalid,'GITHUB_RESOURCE_EXCLUSION_INCOMPLETE'): self.progress()
         self.assertFalse(any(method!='GET' for method,_ in self.actions.calls))
+
+    def test_guard_epoch_and_drain_cannot_substitute_for_absent_native_ruleset(self):
+        for _ in range(8): self.progress()
+        self.assertEqual(self.adapter.inspect('owner/repo')['protection'], self.policy)
+        self.native.native = None
+        self.assertIsNone(self.adapter.inspect('owner/repo')['protection'])
+        before = len(self.git.calls)
+        with self.assertRaisesRegex(StateInvalid, 'RULESET_MISSING'):
+            self.progress()
+        self.assertFalse(any(method != 'GET' for method, _, _ in self.git.calls[before:]))
+
+    def test_no_native_dependency_or_synthetic_protection_refuses(self):
+        from scripts.kesher_runtime.git_exclusion import GitHubResourceExclusion
+        from types import SimpleNamespace
+        for substitute in (None, {'protected': True}, SimpleNamespace(inspect=lambda repo: {'protected': True})):
+            adapter = GitHubResourceExclusion(self.service, 'owner/repo',
+                         **dict(self.kwargs, ruleset_boundary=substitute))
+            with self.subTest(substitute=substitute), self.assertRaisesRegex(StateInvalid, 'NATIVE_RULESET_BOUNDARY_REQUIRED'):
+                adapter.inspect('owner/repo')
+
+    def test_main_and_native_actor_drift_block_completed_drain_protection(self):
+        for _ in range(8): self.progress()
+        row = self.adapter.inspect('owner/repo')
+        self.assertEqual(row['protection'], self.policy)
+        self.assertTrue(row['ruleset_revision'])
+        self.git.refs['main'] = 'c'*40
+        with self.assertRaises(StateInvalid): self.adapter.inspect('owner/repo')
+        self.git.refs['main'] = 'b'*40
+        self.native.native['bypass_actors'].append({'actor_id': 801, 'actor_type': 'User', 'bypass_mode': 'always'})
+        with self.assertRaises(StateInvalid): self.adapter.inspect('owner/repo')
+
+    def test_denial_mode_never_claims_credential_revocation(self):
+        from scripts.kesher_runtime.git_exclusion import GitHubResourceExclusion
+        from tests.test_kesher_github_ruleset import ruleset_boundary, resource_policy
+        self.policy = resource_policy()
+        self.kwargs.update(policy=self.policy,
+                           ruleset_boundary=ruleset_boundary(self.native, policy=self.policy, rules=self.rules))
+        self.adapter = GitHubResourceExclusion(self.service, 'owner/repo', **self.kwargs)
+        for _ in range(8): self.progress()
+        protection = self.adapter.inspect('owner/repo')['protection']
+        self.assertEqual(protection, self.policy)
+        self.assertEqual(protection['protection_method'], 'resource_enforced_denial')
+        self.assertNotIn('credential_revocation_complete', protection)
+
+    def test_native_policy_binding_cannot_choose_another_epoch_or_mode(self):
+        from scripts.kesher_runtime.git_exclusion import GitHubResourceExclusion
+        from tests.test_kesher_github_ruleset import ruleset_boundary
+        for change in ({'epoch': 'two'}, {'owner': 'other'}):
+            boundary = ruleset_boundary(self.native, policy=self.policy | change, rules=self.rules)
+            adapter = GitHubResourceExclusion(self.service, 'owner/repo',
+                         **dict(self.kwargs, ruleset_boundary=boundary))
+            with self.subTest(change=change), self.assertRaisesRegex(StateInvalid, 'RULESET_BINDING_CHANGED'):
+                adapter.inspect('owner/repo')
 
     def test_endpoint_denies_stale_principal_and_exact_attempt_replaced_after_intent(self):
         from scripts.kesher_runtime.git_exclusion import require_exclusion_actions

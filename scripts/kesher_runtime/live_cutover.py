@@ -15,6 +15,7 @@ from .cutover_gateway import GuardedGitHub
 from .exclusion import ExclusionFence, REQUIRED_RESOURCES
 from .git_exclusion import GitHubResourceExclusion
 from .github import _unique_object
+from .github_ruleset import GitHubRulesetBoundary
 from .handover_github import GitHubHandover
 from .identity import digest, require_sha
 from .production_cutover import CutoverRuntime, reconcile_registrations
@@ -52,9 +53,9 @@ class OriginalMigrationInputs:
         return dict(copy.deepcopy(self.material),controller=controller,controller_sha=sha,main_sha=self.main_sha)
 
 
-def build_runtime(*, github, repo, root, epoch, owner, bindings, boundary,
+def build_runtime(*, github, repo, root, epoch, owner, bindings, boundary, ruleset_boundary,
                   external_ports, review, key_binding, registered_bindings,
-                  separation_observer, material, closure, key):
+                  separation_observer, material, closure, key, protection_methods=None):
     """Independent gateway bootstrap; no live effects during construction.
 
     review is administrator-approved code/evidence metadata, NOT a resource
@@ -62,6 +63,8 @@ def build_runtime(*, github, repo, root, epoch, owner, bindings, boundary,
     actual service protections on each call. Neither approval metadata nor an
     authenticated caller substitutes for their proofs.
     """
+    if type(ruleset_boundary) is not GitHubRulesetBoundary:
+        raise StateInvalid('GITHUB_NATIVE_RULESET_BOUNDARY_REQUIRED')
     if set(external_ports)!=set(REQUIRED_RESOURCES)-{'github'} or not callable(separation_observer):
         raise StateInvalid('CUTOVER_COMPLETE_NATIVE_PORTS_REQUIRED')
     rules=policy(root); definitions=inventory(root,rules)
@@ -79,7 +82,8 @@ def build_runtime(*, github, repo, root, epoch, owner, bindings, boundary,
             if original is not None and original!=identity:raise StateInvalid('CUTOVER_REGISTRATION_REBOUND')
             pinned['workflows'][path]['registration_id']=identity
         elif rules['registrations'][path]['id']!=identity:raise StateInvalid('CUTOVER_REGISTRATION_REBOUND')
-    temporary=ExclusionFence(repo,epoch,owner,dict.fromkeys(bindings),bindings)
+    temporary=ExclusionFence(repo,epoch,owner,dict.fromkeys(bindings),bindings,
+                             protection_methods=protection_methods)
     targets={identity:path for path,identity in registered_bindings.items()
              if path in pinned.get('registrations',{}) or
              pinned['workflows'][path]['role'] in {'retired','emergency_bridge','retiring_dispatcher'}}
@@ -88,7 +92,8 @@ def build_runtime(*, github, repo, root, epoch, owner, bindings, boundary,
     reader=GitHubAuthorityObserver(guarded,repo,root,fence=None)
     def registered():return reconcile_registrations(reader.pages('actions/workflows','workflows'),pinned)
     git_port=GitHubResourceExclusion(guarded,repo,main_sha=review['main_sha'],policy=temporary._policy('github'),
-        rules=pinned,registered=registered,guard=boundary,separation=separation_observer,
+        rules=pinned,registered=registered,guard=boundary,ruleset_boundary=ruleset_boundary,
+        separation=separation_observer,
         separation_binding={k:review[k] for k in ('repo','policy_sha256','code_sha256')} |
                            {'resource_bindings_sha256':digest(bindings)},protected_resources=bindings)
     class LiveFence(ExclusionFence):
@@ -98,7 +103,8 @@ def build_runtime(*, github, repo, root, epoch, owner, bindings, boundary,
             self.resource_separation=copy.deepcopy(context.get('proofs'))
             git_port.targets()
             return super().observe(observed_repo)
-    fence=LiveFence(repo,epoch,owner,dict(external_ports,github=git_port),bindings,review=review,key_binding=key_binding)
+    fence=LiveFence(repo,epoch,owner,dict(external_ports,github=git_port),bindings,review=review,key_binding=key_binding,
+                    protection_methods=protection_methods)
     observer=GitHubAuthorityObserver(guarded,repo,root,fence=fence)
     backend=GitHubHandover(guarded,repo,observer=observer,fence=fence)
     supplier=OriginalMigrationInputs(guarded,repo,main_sha=review['main_sha'],material=material,

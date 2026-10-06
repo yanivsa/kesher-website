@@ -57,3 +57,53 @@ class CurrentAuthorityTests(unittest.TestCase):
         rows.append({'id': 999999999, 'path': '.github/workflows/new-writer.yml', 'state': 'active'})
         with self.assertRaises(StateInvalid):
             reconcile_registrations(rows, rules)
+
+    def test_completed_native_fence_does_not_admit_new_or_rebound_workflow_writer(self):
+        from tests.test_kesher_git_exclusion import ResourceAdapterTests
+        for change in ('new', 'rebound'):
+            case = ResourceAdapterTests(); case.setUp()
+            for _ in range(8): case.progress()
+            self.assertEqual(case.adapter.inspect('owner/repo')['protection'], case.policy)
+            if change == 'new':
+                case.actions.workflows.append({'id': 10, 'path': '.github/workflows/new.yml', 'state': 'active'})
+            else:
+                case.actions.workflows[0]['id'] = 10
+            before = len(case.git.calls)
+            with self.subTest(change=change), self.assertRaises(StateInvalid):
+                case.adapter.inspect('owner/repo')
+            self.assertFalse(any(method != 'GET' for method, _, _ in case.git.calls[before:]))
+
+    def test_final_native_revision_drift_refuses_completed_drain_protection(self):
+        from tests.test_kesher_git_exclusion import ResourceAdapterTests
+        case = ResourceAdapterTests(); case.setUp()
+        for _ in range(8): case.progress()
+        calls = 0
+        def drift(method, path, body):
+            nonlocal calls
+            if '/rulesets?' in path:
+                calls += 1
+                if calls == 3:
+                    case.native.native['updated_at'] = '2026-10-05T03:00:00Z'
+        case.native.hook = drift
+        with self.assertRaisesRegex(StateInvalid, 'RULESET_CHANGED'):
+            case.adapter.inspect('owner/repo')
+
+    def test_main_or_guard_change_in_last_registration_pass_refuses_protection(self):
+        from tests.test_kesher_git_exclusion import ResourceAdapterTests
+        for change in ('main', 'guard'):
+            case = ResourceAdapterTests(); case.setUp()
+            for _ in range(8): case.progress()
+            native_reads = 0
+            def native_read(method, path, body):
+                nonlocal native_reads
+                if '/rulesets?' in path: native_reads += 1
+            case.native.hook = native_read
+            original = case.service.request
+            def drift(method, path, body=None):
+                if native_reads >= 4 and '/actions/workflows' in path:
+                    if change == 'main': case.git.refs['main'] = 'c'*40
+                    else: case.guard.protection = None
+                return original(method, path, body)
+            case.service.request = drift
+            with self.subTest(change=change), self.assertRaises(StateInvalid):
+                case.adapter.inspect('owner/repo')
