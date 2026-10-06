@@ -53,7 +53,7 @@ jobs:
       KESHER_WHISPER_MODEL: small
       HF_HOME: ${{ github.workspace }}/.cache/huggingface
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
-      KESHER_BROLL_ENABLED: "true"
+      KESHER_BROLL_ENABLED: "false"
       KESHER_BROLL_BUDGET_SECONDS: "12"
       KESHER_MEDIA_MODE: video_overview
 
