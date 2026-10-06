@@ -1,9 +1,8 @@
 {
-  "schema_version": "2.2",
-  "checked_at": "2026-10-05",
+  "schema_version": "2.3",
+  "checked_at": "2026-10-06",
   "public_submission_ready": false,
   "completed": [
-    "V2 clean branch synchronized to main checkpoint 1e009e1b990dc4a63b791e6060aa9718beae6781 before final technical QA",
     "Five bounded read-only MCP tools implemented",
     "Three scoped Hebrew Skills implemented",
     "220-prompt Hebrew golden evaluation set",
@@ -21,16 +20,28 @@
     "Five positive and three negative OpenAI review test cases",
     "ChatGPT landing page and attribution implementation",
     "V2 privacy and terms disclosures implemented",
-    "V2 branch reconciled with current main via two-parent merge commit",
     "Duplicate skills-only chatgpt-plugin package retired so V2 is the canonical public package",
     "Canonical ZIP packaging builds only plugin.json, mcp.json, skills and assets",
     "CI prevents a legacy chatgpt-plugin package from coexisting with V2",
-    "Schema-6 authority policy classifies both V2 workflows without granting production authority"
+    "Schema-6 authority policy classifies both V2 workflows without granting production authority",
+    "Technical CI, stability, contract validation and V2 staging were green on checkpoint 0b751103b8f5ffab7be29848014c40e371aef9b0"
   ],
   "staging": {
     "endpoint": "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp",
     "status": "must_remain_green_on_current_pr_head",
     "evidence": "Use the Kesher MCP Staging Deploy check attached to the current PR head; run IDs are intentionally not frozen in this file."
+  },
+  "branch_sync": {
+    "status": "reconciliation_required_before_merge",
+    "feature_head_before_refresh": "0b751103b8f5ffab7be29848014c40e371aef9b0",
+    "last_reconciled_main_sha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+    "current_main_sha_observed": "1a0682d348670300044e245b065ca9a93280fd04",
+    "main_commits_since_last_reconciliation": 16,
+    "known_overlap_files": [
+      "scripts/generate-sitemap.cjs",
+      "scripts/kesher_runtime/authority_policy.json"
+    ],
+    "requirement": "Resolve current-main drift before making PR #1068 ready for review or merging. Do not use force-push."
   },
   "release_gates": {
     "technical_pr_checks": [
@@ -41,7 +52,7 @@
     ],
     "developer_mode": {
       "status": "pending",
-      "requirement": "Connect staging as a Personal Plugin, run the 15-prompt canary, then 220 single-turn prompts and 30 multi-turn/boundary cases."
+      "requirement": "Connect V2 staging as a Personal Plugin, run the 15-prompt canary, then 220 single-turn prompts and 30 multi-turn/boundary cases."
     },
     "evaluation_thresholds": {
       "precision_min": 0.92,
@@ -53,6 +64,11 @@
     }
   },
   "gates": [
+    {
+      "id": "current_main_reconciliation",
+      "status": "pending",
+      "requirement": "Reconcile the V2 branch with current main and restore PR mergeability without force-push or dropping V2 changes."
+    },
     {
       "id": "developer_mode_evaluation",
       "status": "pending",
@@ -95,5 +111,6 @@
     }
   ],
   "baseline_main_sha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
-  "qa_state": "technical_validation_requires_green_checks_on_current_pr_head; Developer Mode remains the next external gate"
+  "current_main_sha": "1a0682d348670300044e245b065ca9a93280fd04",
+  "qa_state": "technical implementation complete; refresh checks on the new head, then reconcile current main and run Developer Mode evaluation"
 }
