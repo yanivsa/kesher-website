@@ -4,9 +4,9 @@
   "target_date": "2026-10-05",
   "target_content_sha256": "043ca1242523b822d45fd398d1293f47d46b4c0f5d0bf61b6c62ff3956ab45ed",
   "issue": null,
-  "purpose": "Urgently complete the 2026-10-05 KESHER Video Overview and Short for the authoritative 20-second-hug relationship article using the bounded targeted media recovery dispatcher.",
+  "purpose": "Complete the missing Video Overview for the authoritative 20-second-hug relationship article by reconciling the already-created YouTube resource metadata; preserve the verified Short and do not generate or upload duplicates.",
   "completed": false,
-  "failure_signature": "VIDEO_TECHNICAL_REJECTED_EXACT_IDENTITY_2026_10_06",
+  "failure_signature": "PUBLIC_METADATA_INVALID_REMOTE_TAGS_2026_10_06",
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/20-second-hug-relationship-stress",
     "overview_youtube_url": null,
@@ -15,6 +15,6 @@
     "short_width": 1080,
     "short_height": 1920
   },
-  "reconcile_seq": 14,
-  "reconcile_reason": "Bind bounded recovery to the authoritative 2026-10-05 article date and content SHA. Preserve the already verified Short upload and recover only the missing Video Overview without duplicate generation/upload."
+  "reconcile_seq": 15,
+  "reconcile_reason": "Fresh evidence from targeted recovery run 37462528517 shows the exact overview item video-20261006-132152-043ca12425 is technically verified and has an existing YouTube resource, but public verification fails only because remote tags differ from source-derived tags. Reconcile metadata on that existing resource and re-verify; never create a second insert."
 }
