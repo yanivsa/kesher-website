@@ -371,7 +371,7 @@ class GitHubRulesetTests(unittest.TestCase):
         from unittest.mock import patch
         from scripts.kesher_runtime.identity import digest
         from scripts.kesher_runtime.live_cutover import build_runtime
-        from tests.test_kesher_external_exclusion import ProtectedService
+        from tests.test_kesher_external_exclusion import ProtectedService, control_plane_fixture
         rules = reviewed_rules()
         registrations = {PATH: 9}
         closure = {'retained_evidence': 'f'*64}
@@ -387,7 +387,9 @@ class GitHubRulesetTests(unittest.TestCase):
                       ruleset_boundary=self.boundary, external_ports={name: object() for name in bindings if name != 'github'},
                       review=review, key_binding=None, registered_bindings=registrations,
                       separation_observer=lambda: {}, material={}, closure=closure, key=lambda: {},
-                      protection_methods=methods)
+                      protection_methods=methods,
+                      control_planes=control_plane_fixture(ExclusionFence('owner/repo','one','coordinator',
+                          dict.fromkeys(bindings),bindings)))
         for substitute in (None, {'protected': True}):
             with self.subTest(substitute=substitute), self.assertRaisesRegex(StateInvalid, 'NATIVE_RULESET_BOUNDARY_REQUIRED'):
                 build_runtime(**(kwargs | {'ruleset_boundary': substitute}))

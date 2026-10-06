@@ -189,7 +189,10 @@ def validate_external(external, repo):
                     proof.get('control_gate') != (CONTROL_GATE if resource == 'github' else None) or
                     proof['receipt_sha256'] != digest({k:v for k,v in proof.items() if k != 'receipt_sha256'})):
                 _refuse()
+        from .control_planes import validate_convergence
+        convergence = validate_convergence(external['control_planes'], external)
         return {'repo':repo, 'epoch':external['epoch'], 'owner':external['owner'],
+                'control_planes_sha256':convergence,
                 'binding_sha256':external['binding_sha256'],
                 'protection_sha256':digest(proofs), 'fence':external['fence'], 'fenced':True}
     except (KeyError, TypeError, ValueError, AttributeError):
@@ -206,11 +209,12 @@ class ExclusionFence:
     from a resource chosen by the adapter after activation has begun.
     """
     def __init__(self, repo, epoch, owner, ports, bindings, *, review=None, key_binding=None,
-                 resource_separation=None, protection_methods=None):
+                 resource_separation=None, protection_methods=None, control_planes=None):
         if (not all(isinstance(x,str) and x for x in (repo,epoch,owner)) or
                 set(ports) != set(REQUIRED_RESOURCES) or set(bindings) != set(REQUIRED_RESOURCES)):
             _refuse()
         self.repo, self.epoch, self.owner = repo, epoch, owner
+        self.control_planes = control_planes
         self.ports, self.bindings = dict(ports), copy.deepcopy(bindings)
         self.review, self.key_binding = copy.deepcopy(review), copy.deepcopy(key_binding)
         self.resource_separation = copy.deepcopy(resource_separation)
@@ -242,7 +246,14 @@ class ExclusionFence:
             _refuse()
         return row
 
+    def control_plane_check(self, rows, *, final=False):
+        from .control_planes import ControlPlaneConvergence
+        if type(self.control_planes) is not ControlPlaneConvergence:
+            raise StateInvalid('CONTROL_PLANE_CONVERGENCE_PREREQUISITE')
+        return self.control_planes.check(self, rows, final=final)
+
     def establish(self):
+        self.control_plane_check({r:self._inspect(r) for r in REQUIRED_RESOURCES})
         for resource in REQUIRED_RESOURCES:
             row = self._inspect(resource)
             desired = self._policy(resource)
@@ -257,9 +268,10 @@ class ExclusionFence:
         self.assert_exclusive(self.repo)
 
     def authority_observation(self):
-        proofs, writers = {}, []
+        proofs, writers, rows = {}, [], {}
         for resource in REQUIRED_RESOURCES:
             row = self._inspect(resource)
+            rows[resource] = row
             if row.get('protection') != self._policy(resource):
                 _refuse()
             proof = {**copy.deepcopy(row['protection']), 'revision':row['revision']}
@@ -272,7 +284,7 @@ class ExclusionFence:
             'fence':digest({'repo':self.repo,'epoch':self.epoch,'owner':self.owner,'bindings':self.bindings}),
             'fenced':True,'complete':True,'writers':writers,'inventory_sha256':digest(writers),
             'resource_bindings':copy.deepcopy(self.bindings),'binding_sha256':digest(self.bindings),
-            'resource_proofs':proofs}
+            'resource_proofs':proofs, 'control_planes':self.control_plane_check(rows, final=True)}
         validate_external(external,self.repo)
         return external
 

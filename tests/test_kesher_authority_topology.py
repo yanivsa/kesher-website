@@ -304,6 +304,8 @@ class AuthorityCapabilityTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);(root/'.github/workflows').mkdir(parents=True);(root/'scripts').mkdir()
             text,rules=self.rules()
+            from scripts.kesher_runtime.control_planes import ACTOR_POLICY
+            rules['control_plane_actors'] = copy.deepcopy(ACTOR_POLICY)
             (root/'.github/workflows/observed.yml').write_text(text)
             (root/'scripts/helper.py').write_text('safe=1\n')
             rules['workflows']['.github/workflows/observed.yml']['review']['call_chain']={

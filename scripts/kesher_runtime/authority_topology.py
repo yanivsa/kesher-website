@@ -129,6 +129,8 @@ def check_definitions(definitions, rules):
 
 def inventory(root, rules):
     root = Path(root)
+    from .control_planes import validate_actor_policy
+    validate_actor_policy(rules.get('control_plane_actors'))
     rows = check_definitions({str(p.relative_to(root)):p.read_text() for p in (root/'.github/workflows').glob('*.y*ml')}, rules)
     for entry in rules['workflows'].values():
         for name, expected in entry['review']['call_chain'].items():

@@ -137,6 +137,27 @@ def _eligible(state: dict, target: Identity, observation: dict, tracker: dict, *
     if observation['status'] == 'verified':
         tracker.pop('unknown_since', None)
         return None
+    # Terminal incidents are durable circuits for this exact target/stage.
+    # A new hourly symptom/worker exit code cannot buy a fresh recovery budget.
+    # Trusted repair resolves the incident explicitly; observed completion can
+    # still be reconciled above without creating any provider/publication work.
+    for row in state['incidents'].values():
+        if (row['target'] != target.to_dict() or row['stage'] != default_operation
+                or row['status'] == 'resolved'):
+            continue
+        if isinstance(target, SourceIdentity):
+            scopes = set()
+            for proof in row['evidence'].values():
+                if proof.get('recovery_inputs_sha256'):
+                    scopes.add(proof['recovery_inputs_sha256'])
+                prior = state['commands'].get(proof.get('last_command_id'))
+                if prior and prior['target'] == target.to_dict() and prior['operation'] == default_operation:
+                    scopes.add(digest(prior['inputs']))
+            # A fresh exact deploy revision has its own finite budget. Legacy
+            # incidents without a proved input binding remain fail-closed.
+            if scopes and digest(inputs or {}) not in scopes:
+                continue
+        return None
     if observation['status'] == 'unknown':
         tracker.setdefault('unknown_since', now)
         if seconds(now, tracker['unknown_since']) >= 43200:
@@ -193,7 +214,8 @@ def _eligible(state: dict, target: Identity, observation: dict, tracker: dict, *
                 or seconds(now, tracker['last_meaningful_progress_at']) >= rule.deadline_seconds):
             record_incident(state, target, default_operation, failure_class, now=now,
                             external_blocker=observation.get('external_blocker'),
-                            evidence={'attempts': attempts, 'last_command_id': last['id'] if last else None})
+                            evidence={'attempts': attempts, 'last_command_id': last['id'] if last else None,
+                                      'recovery_inputs_sha256':digest(inputs or {})})
             return None
         if last and last['outcome'] != 'cancelled':
             last_time = last.get('last_meaningful_progress_at') or last['created_at']

@@ -51,12 +51,33 @@ class ProtectedService:
         self.effects.append(principal)
 
 
+
+def control_plane_fixture(fence):
+    """Disposable independent task/provider readback; never a live adapter."""
+    from scripts.kesher_runtime.control_planes import ACTOR_POLICY, PREDECESSORS, ControlPlaneConvergence
+    now = '2026-10-06T00:00:00Z'
+    row = {'repo':fence.repo, 'epoch':fence.epoch, 'owner':fence.owner, 'observed_at':now,
+           'resource_bindings':{r:fence.bindings[r] for r in ('github','jules')},
+           'actor_policy_sha256':digest(ACTOR_POLICY), 'inventory_complete':True,
+           'unknown_actors':[], 'predecessor_actors':copy.deepcopy(PREDECESSORS),
+           'supervisor':{'name':'Master Active Supervisor', 'task_id':'disposable-task-id', 'state':'suspended',
+                         'github_authority':'canonical_admission_only', 'jules_authority':'canonical_admission_only',
+                         'direct_takeover_enabled':False, 'legacy_mutation_enabled':False},
+           'jules':{'inventory_complete':True, 'unknown_authority':[], 'predecessor_sessions':[],
+                    'inventory_scope':'all_repo_capable_predecessor_sessions_and_grants',
+                    'future_creation':'canonical_command_only'}}
+    fence.control_planes = ControlPlaneConvergence(repo=fence.repo, epoch=fence.epoch, owner=fence.owner,
+        bindings=fence.bindings, supervisor_id='disposable-task-id', observe=lambda:copy.deepcopy(row), clock=lambda:now)
+    return fence.control_planes
+
+
 def protection_fixture():
     from scripts.kesher_runtime.exclusion import REQUIRED_RESOURCES, ExclusionFence
     services = {name: ProtectedService(name) for name in REQUIRED_RESOURCES}
     services['github'] = ProtectedGitAuthority()
     binding = {name: service.resource_id for name, service in services.items()}
     fence = ExclusionFence('owner/repo', 'exclusive-epoch', 'coordinator-one', services, binding)
+    control_plane_fixture(fence)
     return fence, services
 
 
@@ -122,7 +143,7 @@ class ExternalExclusionTests(unittest.TestCase):
         fence, services = protection_fixture()
         first = next(iter(services.values())); first.drop = True
         with self.assertRaises(GitHubError): fence.establish()
-        restarted = ExclusionFence(fence.repo, fence.epoch, fence.owner, services, fence.bindings)
+        restarted = ExclusionFence(fence.repo, fence.epoch, fence.owner, services, fence.bindings, control_planes=fence.control_planes)
         restarted.establish(); restarted.assert_exclusive('owner/repo')
         self.assertEqual(first.requests, 1)
         self.assertTrue(all(s.requests == 1 for s in services.values()))
@@ -158,7 +179,7 @@ class ExternalExclusionTests(unittest.TestCase):
         case = fixtures.HandoverTests(); case.setUp()
         case.backend.observation['external'] = fence.authority_observation()
         state = case.finish()
-        restarted = ExclusionFence(fence.repo, fence.epoch, fence.owner, services, fence.bindings)
+        restarted = ExclusionFence(fence.repo, fence.epoch, fence.owner, services, fence.bindings, control_planes=fence.control_planes)
         restarted.establish()
         case.backend.observation['external'] = restarted.authority_observation()
         writes = len(case.backend.writes); case.finish()
@@ -250,6 +271,7 @@ class ExternalExclusionTests(unittest.TestCase):
                                       protection_methods=modes)
         denial_fence.ports['github'] = ProtectedGitAuthority()
         denial_fence.bindings['github'] = denial_fence.ports['github'].resource_id
+        control_plane_fixture(denial_fence)
         denial_fence.establish()
         denial = denial_fence.authority_observation()
         validate_external(denial, 'owner/repo')

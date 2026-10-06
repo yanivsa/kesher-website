@@ -55,7 +55,7 @@ class OriginalMigrationInputs:
 
 def build_runtime(*, github, repo, root, epoch, owner, bindings, boundary, ruleset_boundary,
                   external_ports, review, key_binding, registered_bindings,
-                  separation_observer, material, closure, key, protection_methods=None):
+                  separation_observer, material, closure, key, protection_methods=None, control_planes=None):
     """Independent gateway bootstrap; no live effects during construction.
 
     review is administrator-approved code/evidence metadata, NOT a resource
@@ -67,6 +67,9 @@ def build_runtime(*, github, repo, root, epoch, owner, bindings, boundary, rules
         raise StateInvalid('GITHUB_NATIVE_RULESET_BOUNDARY_REQUIRED')
     if set(external_ports)!=set(REQUIRED_RESOURCES)-{'github'} or not callable(separation_observer):
         raise StateInvalid('CUTOVER_COMPLETE_NATIVE_PORTS_REQUIRED')
+    from .control_planes import ControlPlaneConvergence
+    if type(control_planes) is not ControlPlaneConvergence:
+        raise StateInvalid('CONTROL_PLANE_CONVERGENCE_PREREQUISITE')
     rules=policy(root); definitions=inventory(root,rules)
     if (review.get('repo')!=repo or review['policy_sha256']!=digest({'policy':rules,'definitions':definitions})
             or review['code_sha256']!=executable_digest(root)
@@ -104,7 +107,7 @@ def build_runtime(*, github, repo, root, epoch, owner, bindings, boundary, rules
             git_port.targets()
             return super().observe(observed_repo)
     fence=LiveFence(repo,epoch,owner,dict(external_ports,github=git_port),bindings,review=review,key_binding=key_binding,
-                    protection_methods=protection_methods)
+                    protection_methods=protection_methods, control_planes=control_planes)
     observer=GitHubAuthorityObserver(guarded,repo,root,fence=fence)
     backend=GitHubHandover(guarded,repo,observer=observer,fence=fence)
     supplier=OriginalMigrationInputs(guarded,repo,main_sha=review['main_sha'],material=material,

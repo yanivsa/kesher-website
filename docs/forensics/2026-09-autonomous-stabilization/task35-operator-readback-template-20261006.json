@@ -1,0 +1,41 @@
+{
+  "repo": "yanivsa/kesher-website",
+  "epoch": "UNRESOLVED",
+  "owner": "UNRESOLVED",
+  "observed_at": "UNRESOLVED",
+  "resource_bindings": {
+    "github": "UNRESOLVED",
+    "jules": "UNRESOLVED"
+  },
+  "actor_policy_sha256": "ccf9b5d26992093b4031990ee8c2c210297be00b9d666fdde205169600c01c08",
+  "inventory_complete": false,
+  "unknown_actors": [
+    "UNRESOLVED_EXTERNAL_AUTOMATION_INVENTORY"
+  ],
+  "predecessor_actors": [
+    "controller_v5",
+    "external_master_active_supervisor",
+    "jules_predecessor_creators",
+    "jules_predecessor_sessions",
+    "manual_recovery",
+    "repository_supervisors"
+  ],
+  "supervisor": {
+    "name": "Master Active Supervisor",
+    "task_id": "UNRESOLVED",
+    "state": "unknown",
+    "github_authority": "unknown",
+    "jules_authority": "unknown",
+    "direct_takeover_enabled": null,
+    "legacy_mutation_enabled": null
+  },
+  "jules": {
+    "inventory_complete": false,
+    "unknown_authority": [
+      "UNRESOLVED_ALL_REPO_CAPABLE_PREDECESSOR_GRANTS_AND_SESSIONS"
+    ],
+    "predecessor_sessions": [],
+    "inventory_scope": "all_repo_capable_predecessor_sessions_and_grants",
+    "future_creation": "unknown"
+  }
+}

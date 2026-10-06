@@ -446,3 +446,47 @@ VerdictBLOCKED: genuine native external ports and GitHub complete predecessor-gr
 - Exact implementation8bff025d passed fullPython1,202/0fail/0error/0skip, complete npmcheck (217media/499controller/152unit/140browser/131routes/99posts), actionlint/compile/diff. Node22 dependency engine warnings are retained; supported bundledNode24.19 also passes152unit tests. All654 input hashes unchanged after restoring only four identified generation/prebuild side effects. Logs/red runs/overlay/merge provenance are safely archived and hashed. Independent current-delta reviewC0/I0 independently passed4tests and native exact plugin-source GET; production/whole-goal approval is explicitly absent.
 - Final main/state/registration readback remains unchanged at06:43:09UTC,114registrations/Schema5/nohandover/noGitHubexclusion. Complete resource fencing is NOT proved; no gateway URL/native service available. Current-main CI passed; one manual Short generation/resume run failed and a later same workflow succeeded, without inferred remediation/output/public proof. Cloudflare metadata matchesmain but does not certify publicA+B+C. Full local checkpoint does not complete5.1,5.3 or5.6.
 - Native6resource/19infrastructure prerequisites form a genuine external hard stop, not a coding/test/merge-conflict excuse. Single smallest human action: account owner provisions independently reviewed native exclusion gateway with complete actual retirement/settling/separation readbacks and authenticated HTTPS endpoint. No new prompt is requested. Full exact blocker/status/recovery details are in resume-report-20261005.md and resume-checkpoint-20261005.json. No new PR/push/merge/activation or production mutation; preserve the original Goal unfinished. Containing evidence commit will be checked clean with current-main diff whitespace check.
+
+## 2026-10-06 — Task 3.5 control-plane convergence (repository only)
+
+Resumed the same clean worktree/branch at `1bf7bd8e486aed70c0619b39f32eef774d565d33`.
+Audited 74 workflow definitions, retained/dynamic registrations, dispatch/merge
+chains and 187 source references; recorded current origin/main
+`db31dfdbc6f5539bc0b743db88990b4d7186a60b` without integration. The separate external
+ChatGPT Master Active Supervisor is a predecessor actor across GitHub/Jules,
+never a seventh protected resource. V5 state/reconstruction retirement guards and
+Task 3 native ruleset/Git exclusion bytes are unchanged.
+
+Added an explicit actor trust-root manifest and mandatory independently installed
+ControlPlaneConvergence observer. Before effects and final/live admission it
+requires fresh exact task/account/epoch/resource identity and complete predecessor
+Jules authority readback. Unknown scope or missing native/operator proof refuses.
+Existing sessions and future canonical creation are distinct; no unsupported
+cancel or scheduled-task editing API exists. Suspended/observer/restricted states
+require the actual six-resource fences for final authority. The readback template
+is intentionally unresolved and cannot stand in for a trusted native observer.
+
+Reproduced and fixed terminal recovery restarting under a new failure label.
+The exact target/stage incident now circuit-breaks across restart; independent
+media and fresh exact deployment revisions retain their existing budgets.
+Independent review found two Important edge cases (deployment revision scope and
+permitted later observer conversion); both have observed RED→GREEN regressions.
+Added missing transitive policy/Jules pins; completed the 12-class machine failure
+matrix. No review finding is deferred and no second review is claimed.
+
+Final focused suites: 133 OK. Broader authority/handover suites: 141 OK.
+Complete Python discovery: 1239 OK, no skips. Call-chain/definition mismatches: 0.
+Diff whitespace check PASS; existing workflow roles/caps/resources/credentials/
+dispatches/registration metadata unchanged. Preexisting SQLite/intentional ZIP
+fixture warnings remain visible. No frontend/build/public-production proof is
+claimed. Closed 5.2 claims/quarantines and migration evidence remain untouched.
+
+Evidence: `task35-control-plane-report-20261006.md`, companion machine inventory,
+operator template and checkpoint in this directory. One normal commit and normal
+same-branch push are authorized for this completed task; exact SHAs are independently
+read back and returned afterward. Task 4 is NOT started. Remaining prerequisites:
+actual independent operator/task readback, complete Jules predecessor authority
+and real native fences/adapters for all provider scopes, infrastructure separation,
+reviewed current-main/registrations and capability-sealing custody.
+No live task/ruleset/workflow/run/Jules/provider/credential/production mutation;
+no PR/merge; no production activation.

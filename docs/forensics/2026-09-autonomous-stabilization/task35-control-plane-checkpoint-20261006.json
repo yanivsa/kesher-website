@@ -1,0 +1,96 @@
+{
+  "task": "3.5 control-plane convergence",
+  "starting_head": "1bf7bd8e486aed70c0619b39f32eef774d565d33",
+  "ending_head_provenance": "The single commit containing this checkpoint; exact local/remote SHA verified and returned after normal push.",
+  "branch": "codex/kesher-autonomous-stabilization-20260917",
+  "worktree": "/Users/ninja/Documents/Kesher-worktrees/autonomous-stabilization-20260917",
+  "observed_origin_main": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+  "changed_files": [
+    "docs/forensics/2026-09-autonomous-stabilization/WORK_LOG.md",
+    "docs/forensics/2026-09-autonomous-stabilization/task35-control-plane-checkpoint-20261006.json",
+    "docs/forensics/2026-09-autonomous-stabilization/task35-control-plane-inventory-20261006.json",
+    "docs/forensics/2026-09-autonomous-stabilization/task35-control-plane-report-20261006.md",
+    "docs/forensics/2026-09-autonomous-stabilization/task35-operator-readback-template-20261006.json",
+    "scripts/kesher_runtime/authority_policy.json",
+    "scripts/kesher_runtime/authority_topology.py",
+    "scripts/kesher_runtime/control_planes.py",
+    "scripts/kesher_runtime/controller.py",
+    "scripts/kesher_runtime/exclusion.py",
+    "scripts/kesher_runtime/live_cutover.py",
+    "scripts/kesher_runtime/production_cutover.py",
+    "tests/test_kesher_authority_digest.py",
+    "tests/test_kesher_authority_topology.py",
+    "tests/test_kesher_control_planes.py",
+    "tests/test_kesher_external_exclusion.py",
+    "tests/test_kesher_github_ruleset.py"
+  ],
+  "source_sha256": {
+    "scripts/kesher_runtime/authority_policy.json": "be6c3bdb8ab11b2f7d0035c808447629df7dea9d7f4bd6fbcc0fca4e45c88173",
+    "scripts/kesher_runtime/authority_topology.py": "2d5fee9740cebb64907a7a4ea24522df3cccb3355b40eacd77ebf103d013b032",
+    "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+    "scripts/kesher_runtime/controller.py": "dc50149be1b9676e373bd8065eb8f2dfc27c15145df93f64a0b7a6235e957af4",
+    "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
+    "scripts/kesher_runtime/live_cutover.py": "aef88f927f25e59f0f850f7b78101a1a77d3997d56ff1c0b67ae68fcae1f9abf",
+    "scripts/kesher_runtime/production_cutover.py": "b44d40d905b0964b5d605ec157ec34e3b53d54b686bb5e1382a66071ea95dc91",
+    "tests/test_kesher_authority_digest.py": "e04729a5472b2d9fe37d7420a5fe04654ba841623ce1ee0e2d8b72e8dfbfd096",
+    "tests/test_kesher_authority_topology.py": "3ba49f1f0a473afcb748bc2b1daa0306b6cd48dead5402c7cc84e1f6ec2cbc4a",
+    "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+    "tests/test_kesher_external_exclusion.py": "8f7a4becccc178fc365304dc2ed78525fe4eeb763d7de3375d4ad16e7412e520",
+    "tests/test_kesher_github_ruleset.py": "e6d2f8b8b904cc763a837c8d1f60ba99d51db03452dc9d1ccf6313d0b85e0b2d"
+  },
+  "actor_policy_sha256": "ccf9b5d26992093b4031990ee8c2c210297be00b9d666fdde205169600c01c08",
+  "validation": {
+    "focused": {
+      "command": "python3 -B -m unittest tests.test_kesher_control_planes tests.test_kesher_github_ruleset tests.test_kesher_git_exclusion tests.test_kesher_github_drain tests.test_kesher_autonomous_controller tests.test_kesher_jules_sessions tests.test_kesher_generation_attempts tests.test_kesher_legacy_retirement -v",
+      "tests": 133,
+      "result": "OK",
+      "exit_code": 0
+    },
+    "broader_authority": {
+      "command": "python3 -B -m unittest tests.test_kesher_authority_topology tests.test_kesher_external_exclusion tests.test_kesher_production_cutover tests.test_kesher_current_authority tests.test_kesher_handover tests.test_kesher_handover_github tests.test_kesher_authority_digest -v",
+      "tests": 141,
+      "result": "OK",
+      "exit_code": 0
+    },
+    "complete_python": {
+      "command": "python3 -B -m unittest discover -s tests -p 'test_*.py'",
+      "tests": 1239,
+      "result": "OK",
+      "exit_code": 0,
+      "skips": 0
+    },
+    "new_regressions": 13,
+    "call_chain_mismatches": 0,
+    "definition_mismatches": 0,
+    "git_diff_check": "PASS",
+    "native_task3_runtime_unchanged": true,
+    "existing_authority_metadata_unchanged": true,
+    "closed_52_files_unchanged": true,
+    "log_sha256": {
+      "focused": "b0a1a9113f216302545eb1fcc7d2115194cc1c69c11f04a6b9e11586097f51d2",
+      "authority": "1e13b87474f05cee58fdea4157619fee2fef4e27af9cfefea85c2d0d6fb4ac0f",
+      "python": "d1f1a2f31edf721bc60833702ceeac7a9db224cb190b61c97e3ee19586ea1be2"
+    }
+  },
+  "independent_review": {
+    "initial_critical": 0,
+    "initial_important": 2,
+    "important_fixed_with_red_green": 2,
+    "initial_minor": 2,
+    "minor_resolved": 2,
+    "deferred": 0,
+    "rereview_performed": false,
+    "not_production_certification": true
+  },
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false,
+  "live_mutations": false,
+  "task4_started": false,
+  "remaining_prerequisites": [
+    "Independent exact task/account ID and fresh complete external actor readback; suspend/convert or prove both native GitHub/Jules restriction.",
+    "Complete all repo-capable Jules predecessor grants/sessions; native continuation/repository denial plus canonical future session admission.",
+    "Actual administrator-installed native ports for all remaining providers; in-flight/capability exclusion, infrastructure separation, sealing custody and final-main/registration review.",
+    "Trusted incident-bound repair executor remains unconnected as recorded in prior resume; later integration must use canonical admission and independent evaluation, never legacy rescue."
+  ]
+}

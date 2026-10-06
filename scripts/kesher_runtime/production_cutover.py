@@ -42,6 +42,7 @@ class CutoverRuntime:
             desired = self.fence._policy(resource)
             if row.get('protection') not in (None, desired):
                 raise StateInvalid('CUTOVER_COMPETING_RESOURCE_EPOCH')
+        self.fence.control_plane_check(rows)
         for resource, row in rows.items():
             if row.get('protection') is not None: continue
             try:

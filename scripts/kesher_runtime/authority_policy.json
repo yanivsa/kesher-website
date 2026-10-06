@@ -1,4 +1,131 @@
 {
+  "control_plane_actors": {
+    "version": 1,
+    "actors": {
+      "controller_v5": {
+        "role": "predecessor",
+        "resources": [
+          "github",
+          "jules"
+        ],
+        "capabilities": [
+          "state_write",
+          "workflow_dispatch",
+          "jules_continue"
+        ]
+      },
+      "controller_v6_shadow": {
+        "role": "observer",
+        "resources": [],
+        "capabilities": [
+          "read"
+        ]
+      },
+      "controller_schema6": {
+        "role": "canonical",
+        "resources": [
+          "github"
+        ],
+        "capabilities": [
+          "state_write",
+          "workflow_dispatch"
+        ]
+      },
+      "canonical_workers": {
+        "role": "canonical",
+        "resources": [
+          "github",
+          "jules",
+          "notebooklm",
+          "youtube",
+          "cloudflare",
+          "image_provider"
+        ],
+        "capabilities": [
+          "state_write",
+          "branch_write",
+          "pr_write",
+          "jules_create",
+          "provider_create",
+          "provider_continue",
+          "youtube_upload",
+          "cloudflare_write",
+          "image_provider_create"
+        ]
+      },
+      "jules_predecessor_sessions": {
+        "role": "predecessor",
+        "resources": [
+          "github",
+          "jules"
+        ],
+        "capabilities": [
+          "branch_write",
+          "pr_write",
+          "merge",
+          "jules_continue"
+        ]
+      },
+      "jules_predecessor_creators": {
+        "role": "predecessor",
+        "resources": [
+          "github",
+          "jules"
+        ],
+        "capabilities": [
+          "jules_create",
+          "jules_continue",
+          "branch_write",
+          "pr_write"
+        ]
+      },
+      "repository_supervisors": {
+        "role": "predecessor",
+        "resources": [
+          "github",
+          "jules"
+        ],
+        "capabilities": [
+          "workflow_dispatch",
+          "state_write",
+          "jules_create",
+          "jules_continue",
+          "merge"
+        ]
+      },
+      "external_master_active_supervisor": {
+        "role": "predecessor",
+        "resources": [
+          "github",
+          "jules"
+        ],
+        "capabilities": [
+          "workflow_dispatch",
+          "state_write",
+          "jules_create",
+          "jules_continue",
+          "merge"
+        ]
+      },
+      "manual_recovery": {
+        "role": "predecessor",
+        "resources": [
+          "github",
+          "jules",
+          "notebooklm",
+          "youtube",
+          "cloudflare",
+          "image_provider"
+        ],
+        "capabilities": [
+          "workflow_dispatch",
+          "branch_write",
+          "provider_create",
+          "youtube_upload"
+        ]
+      }
+    }
+  },
   "credential_service_contract": {
     "credential_bindings": "Exact reviewed class to nonempty unique actual credential ID list; flattened union must equal credential_ids. Every reviewed service, resource scope and class requires matching service enforcement/readback.",
     "enforcement_required_fields": [
@@ -639,7 +766,7 @@
           "scripts/kesher_master_supervisor_live.py": "e451343cc8209d0f8658def835a776d3231ef094dd11cd3323dd6e0dee55f792",
           "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -710,17 +837,21 @@
           "tests/test_v5_shared_video_controller.py": "291440842cc8c930bc618dc980a78faebc298f8c4c5056e3643adf9937f1aabc",
           "tests/test_v5_video_source_binding.py": "6876f78b1f8515254c1a95bce9b697ad97c73a27ad0ce85ffa54272efc740b13",
           "tests/test_kesher_production_cutover.py": "0c85f3f1da50ea3c71ea6df51d546bf3e856cd282dc8e24db54958cce7550912",
-          "tests/test_kesher_external_exclusion.py": "cc4ebb91ea095dce7f0f0e5985c27b8a1449e43eead970e3e5aa3ea395623dee",
+          "tests/test_kesher_external_exclusion.py": "8f7a4becccc178fc365304dc2ed78525fe4eeb763d7de3375d4ad16e7412e520",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
           "tests/test_kesher_git_exclusion.py": "7932922a3ba00c103189f17e854f9d1de0c5169306c3fae16ddc6e4c541b7eb8",
           "tests/test_kesher_handover.py": "791fb6de96325644762840b71f02ef44c585a15bbc8e004c271935bf1ff44eb7",
           "tests/test_kesher_handover_github.py": "20d6875341d64f16bb2b8b393ac9936dbe3dbc59d5384254fd1014a6116cc948",
-          "tests/test_kesher_authority_digest.py": "718053e650692cb59be8b59c76f2a318c81dd844c16aad582e895066f9f2357a",
-          "tests/test_kesher_authority_topology.py": "b866b73fa4b1ed0531c949f7eaee131dbb88f817b5dbc074e5cb707131cd05d3",
+          "tests/test_kesher_authority_digest.py": "e04729a5472b2d9fe37d7420a5fe04654ba841623ce1ee0e2d8b72e8dfbfd096",
+          "tests/test_kesher_authority_topology.py": "3ba49f1f0a473afcb748bc2b1daa0306b6cd48dead5402c7cc84e1f6ec2cbc4a",
           "tests/test_kesher_runtime_migration.py": "909db0229950e4fe3f7ebcb7d82c4eb433a8cfb9079c223f57330a2ba6a9287d",
           "tests/test_kesher_worker_entry.py": "f48055276b51e264ef35b5d0bb7d3952918fbc39aa1ff09a93e1a09b73365fde",
           "tests/test_kesher_content_controller.py": "5f51efabb2d5f736084bcdca14220c301b4c7e10439471130dcbf22b2be39cf2",
-          "tests/test_kesher_current_authority.py": "326ab4e27213bd81a394b6a6eed83173f6a7537c92c437436e0ea144da45dfde"
+          "tests/test_kesher_current_authority.py": "326ab4e27213bd81a394b6a6eed83173f6a7537c92c437436e0ea144da45dfde",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -798,7 +929,7 @@
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -827,7 +958,11 @@
           "scripts/verify-production-article.py": "c192049c04a384d3a3fec7d498702e00d06c5fe82e7be4e8f2623e8a661b537c",
           "tests/automation-gates.test.cjs": "d35eb1b58dfff4ff536d13625bdd1ffe8ff2a90949d7e70bda359e22bdf503f0",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
-          "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160"
+          "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
@@ -1105,7 +1240,7 @@
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -1132,7 +1267,11 @@
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac",
           "tests/automation-gates.test.cjs": "d35eb1b58dfff4ff536d13625bdd1ffe8ff2a90949d7e70bda359e22bdf503f0",
-          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
@@ -1255,7 +1394,7 @@
           "scripts/kesher_runtime/article_quiescence.py": "e7a2bc24c5fbc7346be96c313809f11d9632bca770238adf9208a39143bd68df",
           "scripts/kesher_runtime/article_validation.py": "1c00890ee729dfff02ff93ff82e92147603cd63136f3d1fa8a4106974e7d4ade",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -1271,7 +1410,10 @@
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
           "scripts/kesher_runtime/worker_entry.py": "418d3e83be6b182706a4117ba86b654cd95667cbb7d32cf04df085135239002f",
-          "scripts/requirements-article.txt": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac"
+          "scripts/requirements-article.txt": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -1320,7 +1462,7 @@
           "scripts/kesher_runtime/article_normalize_worker.py": "1f6f2426e64af0d8917370f57fd2019b4d4f9c5505f553fcb372e7cb601bdc8d",
           "scripts/kesher_runtime/article_validation.py": "1c00890ee729dfff02ff93ff82e92147603cd63136f3d1fa8a4106974e7d4ade",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -1370,7 +1512,10 @@
           "tests/test_kesher_daily_pipeline.py": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
-          "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564"
+          "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -1425,7 +1570,7 @@
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -1452,7 +1597,10 @@
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac",
-          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147"
         },
         "credential_services": {
           "GEMINI_API_KEY": "image_provider",
@@ -1495,7 +1643,7 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_exact_video_target.py": "2413036a3e239d48cd42bd4be607c64bea55a86f1afcbf0245d182e3413c7c15",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -1518,7 +1666,11 @@
           "scripts/kesher_short_pipeline_v4.py": "88cd21d912c896970a893a49d28c18623c09bd129aac46c322aa961f3cd80980",
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
-          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211"
+          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -1583,7 +1735,7 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -1614,7 +1766,11 @@
           "tests/test_kesher_three_strike_runtime.py": "b7bc82cb4d61a58a00aaa0f71a6c1ad8bb86d72834827a1a275dfb1cb6c327ea",
           "tests/test_kesher_v6_intervention_isolation.py": "d7d581a5ac190d2c139c9b36a9e7f385faa6a27609fc149eebd6f3d72b81544e",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
-          "tests/test_video_enhancement_contract.py": "6411c7d529220b344862a0a23da5cb9f4df20a13a204350f6c362c82228d4238"
+          "tests/test_video_enhancement_contract.py": "6411c7d529220b344862a0a23da5cb9f4df20a13a204350f6c362c82228d4238",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {},
         "credentials": [],
@@ -1676,11 +1832,11 @@
           "scripts/kesher_runtime/article_verification.py": "a79966b53cef5c640d14193a402d0d97ac82a76d9ea463d034651c7c62fe700d",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
-          "scripts/kesher_runtime/controller.py": "68085d20aca74ca5e254c47a485429a9a4ec3873904821cd0722568589d6b367",
+          "scripts/kesher_runtime/controller.py": "dc50149be1b9676e373bd8065eb8f2dfc27c15145df93f64a0b7a6235e957af4",
           "scripts/kesher_runtime/controller_entry.py": "562237507f626c669aba71ecdd9704beab5e6f71bd4f614f2521751c8618bff2",
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
           "scripts/kesher_runtime/deployment_observer.py": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -1710,7 +1866,9 @@
           "scripts/kesher_video_asset_resolver.py": "1225b69707396da2e7834dd58b3a5fcc777780596f0150150234079d8f89726b",
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
-          "scripts/requirements-article.txt": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac"
+          "scripts/requirements-article.txt": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
@@ -1785,7 +1943,7 @@
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -1813,7 +1971,11 @@
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
-          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -1878,7 +2040,7 @@
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -1919,7 +2081,11 @@
           "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
           "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
-          "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160"
+          "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -2048,7 +2214,7 @@
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -2088,7 +2254,11 @@
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
-          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
+          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -2203,7 +2373,7 @@
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -2243,7 +2413,11 @@
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
-          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
+          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -2303,7 +2477,7 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_final_attempt_fallback.py": "b0781df3b4cbc88357c8c980e7d84adc9530182be391755b28d159b28369d5c7",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -2329,7 +2503,11 @@
           "scripts/kesher_video_reconcile.py": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa",
           "scripts/kesher_video_upload_guard.py": "6bcd5fedeaa339d2d213cb4a957497b202c095ef77e9fa57a09a614df12b6ce7",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
-          "tests/test_kesher_final_attempt_fallback.py": "5d33e9182cec5f7f5d2334ed23ccc50046cc7ebc73978cc118eaac09f3f43e02"
+          "tests/test_kesher_final_attempt_fallback.py": "5d33e9182cec5f7f5d2334ed23ccc50046cc7ebc73978cc118eaac09f3f43e02",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -2366,7 +2544,7 @@
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -2391,7 +2569,11 @@
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/kesher_video_reconcile.py": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa",
           "scripts/kesher_video_upload_guard.py": "6bcd5fedeaa339d2d213cb4a957497b202c095ef77e9fa57a09a614df12b6ce7",
-          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211"
+          "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -2558,7 +2740,7 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -2604,7 +2786,11 @@
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
-          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
+          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -2732,7 +2918,7 @@
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -2760,7 +2946,11 @@
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
-          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "CLOUDFLARE_ACCOUNT_ID": "cloudflare",
@@ -2825,7 +3015,7 @@
           "scripts/kesher_master_supervisor_live.py": "e451343cc8209d0f8658def835a776d3231ef094dd11cd3323dd6e0dee55f792",
           "scripts/kesher_master_supervisor_shadow.py": "21e9c69cb0c03bc7d6b67b985ed1e1a660716ab39d0725aa99d1f91d6f60b8e7",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -2840,7 +3030,11 @@
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
           "scripts/kesher_runtime/worker.py": "797eb1fea905fbe038bb262063e8850483cb5cdb7c4c971692bf7bc651674d75",
-          "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9"
+          "scripts/kesher_short_policy.py": "82ec1902ee7e8245f7a795ca3a685384169e4cdeec9706de4c343b08d3ba3ac9",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -2888,7 +3082,7 @@
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -2933,7 +3127,11 @@
           "src/remotion/kesher-overview/scenes/OpeningScene.tsx": "05129feede87996bbe43b21e632acee2b1f26a988f453bb0b5963377b2eb9b6b",
           "src/remotion/kesher-overview/theme.ts": "e538504fdedf07e753b21472e3010d4d0a6474d44a8f63af392f0bf50b05dc50",
           "src/remotion/kesher-overview/types.ts": "fb8c9cbf959bfe834731d4677dd47aee86be0380def30f171d4fa6eff45ad208",
-          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -3060,7 +3258,7 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -3106,7 +3304,11 @@
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
-          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
+          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -3214,7 +3416,7 @@
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_intervention_policy.py": "76e3a89901987d061916193ad3d534fa5634cca5cfdfa9b1a92c080b985bb77d",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -3253,7 +3455,11 @@
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
           "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
-          "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160"
+          "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github",
@@ -3328,11 +3534,11 @@
           "scripts/kesher_runtime/article_worker.py": "a911968a970ac450a34d59583dd7fc18a37997bb41ac3be87701b4c132d9e04c",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
           "scripts/kesher_runtime/cloudflare_pages.py": "bd597e7f5ac6409622424e4043ed6bd4b41faa8bdc963a3baa9f8fc82c7f8a34",
-          "scripts/kesher_runtime/controller.py": "68085d20aca74ca5e254c47a485429a9a4ec3873904821cd0722568589d6b367",
+          "scripts/kesher_runtime/controller.py": "dc50149be1b9676e373bd8065eb8f2dfc27c15145df93f64a0b7a6235e957af4",
           "scripts/kesher_runtime/controller_entry.py": "562237507f626c669aba71ecdd9704beab5e6f71bd4f614f2521751c8618bff2",
           "scripts/kesher_runtime/deployment_artifact.py": "7395652b9a2869a948bc37a17a3ac0b0b6a1db5732b83d648b4d23a9ab0d1699",
           "scripts/kesher_runtime/deployment_observer.py": "00ef07c6db2f5c129187833fdb703be659d382186538fcb4d73aff487dd07bf4",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -3393,7 +3599,7 @@
           "tests/test_kesher_deployment_artifact.py": "db18baf0cad6af718cac52414b866bbd5dab3cc0310c2b64cdf64a08a62d60dc",
           "tests/test_kesher_deployment_observer.py": "86f6fd8a439e9751777b6eafe1206fd4ff7c725f3d9fd4ff72398ef2bb7755bc",
           "tests/test_kesher_e2e_readiness.py": "5c7999e11b3cf092325f697551f6ffa38b29941f7e9483702acfebdce5bf7fd2",
-          "tests/test_kesher_external_exclusion.py": "cc4ebb91ea095dce7f0f0e5985c27b8a1449e43eead970e3e5aa3ea395623dee",
+          "tests/test_kesher_external_exclusion.py": "8f7a4becccc178fc365304dc2ed78525fe4eeb763d7de3375d4ad16e7412e520",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
           "tests/test_kesher_git_exclusion.py": "7932922a3ba00c103189f17e854f9d1de0c5169306c3fae16ddc6e4c541b7eb8",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
@@ -3422,7 +3628,9 @@
           "tests/test_video_pending_evidence_repair.py": "56da045231c34de49a9a2702e8dc3fb4fcc65cf5676a3e52c4bc77a1d8a6e564",
           "tests/test_video_reconcile.py": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
           "tests/test_video_review_policy.py": "295bf33c56d610e8cbf2b7fe660cb7d007ad06424d5c7a517cce5373e84707e0",
-          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5"
+          "tests/test_video_review_schema.py": "a0869619791bf2fe4cd940a168317780d3c0d9fede9c299cf2554f7a49f993c5",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a"
         },
         "credential_services": {},
         "credentials": [],
@@ -3444,7 +3652,7 @@
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -3470,7 +3678,11 @@
           "scripts/kesher_video_reconcile.py": "ee7c5214d33b69e50a55b14f12798c6c43fde38eb317ef965e6bc62c323ea1aa",
           "scripts/kesher_video_upload_guard.py": "6bcd5fedeaa339d2d213cb4a957497b202c095ef77e9fa57a09a614df12b6ce7",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
-          "tests/test_target_slug_mode_contract.py": "f01c7857c9ed823a02e1987f45edf7ab7b210148621d3ba53d4263b975a2161f"
+          "tests/test_target_slug_mode_contract.py": "f01c7857c9ed823a02e1987f45edf7ab7b210148621d3ba53d4263b975a2161f",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {},
         "credentials": [],
@@ -3545,7 +3757,7 @@
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -3572,7 +3784,11 @@
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-video-cloud.txt": "682a6c18a81ae81f328fc3f91b0b58d77a3a494c14577e6b681c2f1a1a95f1ec",
-          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f"
+          "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
@@ -4309,21 +4525,25 @@
           "scripts/kesher_runtime/cutover_auth.py": "517cea3a2f991a3989a3e6d5e1550b68c3081672e254eea64d87ecffc78eb276",
           "scripts/kesher_runtime/cutover_service.py": "aa0254b4b29e4c8049472dc2992139bc27ba5209e57ab9be1849ace514c03f10",
           "scripts/kesher_runtime/cutover_gateway.py": "e8812d0d40bea7a8bae6bf23e3b7ea191dab5f05300d5b8ee8b33e6825b34e06",
-          "scripts/kesher_runtime/production_cutover.py": "1f6fdc9cc383f42ec9acb94c0d4baf2615b643ca89d7d0b5a3e13b31fa601a13",
+          "scripts/kesher_runtime/production_cutover.py": "b44d40d905b0964b5d605ec157ec34e3b53d54b686bb5e1382a66071ea95dc91",
           "scripts/kesher_runtime/production_ports.py": "fcc4a12a2ed5572ae6930aac03616de9cda3f39a274921d2ecc04fdcba86c23b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
           "scripts/kesher_runtime/handover_github.py": "4186722b790919697db7dc6039d4fae52beb96b59037929f01572ef4630f3572",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
-          "scripts/kesher_runtime/authority_topology.py": "f806e72dff1c4a62dd81ac2a4dd018cf33339c0a839cf7eee8280a9631b2a986",
+          "scripts/kesher_runtime/authority_topology.py": "2d5fee9740cebb64907a7a4ea24522df3cccb3355b40eacd77ebf103d013b032",
           "scripts/kesher_runtime/migration.py": "34e031182e8e463a2d0871a706c90a8bb87da494f3c391e2aae4c2875fa21d97",
           "scripts/kesher_runtime/sealed.py": "56d45969612487f409352f22dda485342b07998afbfe427fc05573b76603013a",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/identity.py": "dccb17a3db07d40fa8baaf5f920ccca202e7c4762023f8b16753627997d57944",
           "scripts/kesher_runtime/state.py": "add4c8030a6a552183b0f869d82f53c495a931d319784561ac899c3554f0d5dc",
           "scripts/kesher_runtime/legacy_retirement.py": "7f75c042c61278be5d3e7b07f190b4ba0d9fa0f58105e7f91c2b5148dbc3d874",
-          "scripts/kesher_runtime/live_cutover.py": "93c09ca4a137599dad8cf854c54577d61c0d57949e221b1c453cc7df932604a5"
+          "scripts/kesher_runtime/live_cutover.py": "aef88f927f25e59f0f850f7b78101a1a77d3997d56ff1c0b67ae68fcae1f9abf",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "dispatches": [],
         "credentials": [],
@@ -4367,7 +4587,7 @@
           "scripts/kesher_daily_pipeline.py": "34c6339a602b90818e6d833916d98749f667e4aeb6aa387963a9499d313a185e",
           "scripts/kesher_e2e_delivery_guard.py": "eb7ad62c45e30f8053735b7cbbddc16bf724def19d35eb57d013f7ea12d45310",
           "scripts/kesher_runtime/authority.py": "8131e31420d8bb76bd1f900a8c08a97f6a0261cfeebdb3aff32dfac2c653819b",
-          "scripts/kesher_runtime/exclusion.py": "b5f848baa9e10236c55275ac749ff8de30719c4c8ff487ed2a3760ca6e8f7869",
+          "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/git_exclusion.py": "74d0bae6514538db621c83d4cac100ff1c0a4e4fd955afa405f64f568cfd6e7c",
           "scripts/kesher_runtime/github.py": "8f2a225177753e82dd364ab2327eb8c8b5fce9f820df54d56d06a5c26f8f8167",
           "scripts/kesher_runtime/github_drain.py": "2ec3084b07681906e585b4be46b94ad95250da611e4cf4e961e3b51e76af473b",
@@ -4434,7 +4654,11 @@
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
           ".github/workflows/kesher-short-v4.yml": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
           ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": "bf19d683592240dcab3f67546b36ccd0f1c30ef32950985f0b8d38d6c9765cfb",
-          ".github/kesher-media-recovery-request.json": "ea6b674c2e0ab2ae3c116ad2134b916dac9f4d435338f73913c7e84e02859b3d"
+          ".github/kesher-media-recovery-request.json": "ea6b674c2e0ab2ae3c116ad2134b916dac9f4d435338f73913c7e84e02859b3d",
+          "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
+          "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
+          "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"

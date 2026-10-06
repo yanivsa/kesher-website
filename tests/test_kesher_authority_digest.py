@@ -108,6 +108,8 @@ class AuthorityDigestBoundaryTests(unittest.TestCase):
             'review':{'call_chain':{},'dispatches':[],'credentials':[], 'credential_services':{},
                       'note':'Exact fake controller review'}}}}
         self.put(name,text.encode())
+        from scripts.kesher_runtime.control_planes import ACTOR_POLICY
+        rules['control_plane_actors'] = copy.deepcopy(ACTOR_POLICY)
         self.put('scripts/kesher_runtime/authority_policy.json',json.dumps(rules).encode())
         tree=[{'path':p,'sha':sha,'type':'blob','mode':'100644'} for p,sha in code_manifest(self.root).items()]
         actual_sha=hashlib.sha1(b'blob '+str(len(raw)).encode()+b'\0'+raw).hexdigest()
