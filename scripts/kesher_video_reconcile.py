@@ -68,10 +68,7 @@ def source_date(item: dict[str, Any]) -> str:
 
 
 def posts() -> list[dict[str, Any]]:
-    value = json.loads(pipeline.POSTS_FILE.read_text(encoding="utf-8"))
-    if not isinstance(value, list):
-        raise pipeline.PipelineError("posts.json must contain a list")
-    return [row for row in value if isinstance(row, dict)]
+    return [row for row in pipeline.load_posts() if isinstance(row, dict)]
 
 
 def authoritative_article() -> dict[str, Any]:
