@@ -685,7 +685,7 @@
           "tests/test_kesher_explicit_test_mode.py": "817bba3e64c62b0f66cd42012eea549c5d21de217beaf8569f3a69cf0392341f",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
           "tests/test_kesher_isolated_live_e2e_contract.py": "fca0296caa54cf50aee0c4e7ab41b1735915143fb609df0cb5648f06b1ff6419",
-          "tests/test_kesher_optional_video_enrichment.py": "0f7ab8acf5b6853102955875698d0bff794fb0153da7188b80d53d2bfb1fb270",
+          "tests/test_kesher_optional_video_enrichment.py": "b3441e378fb45123fc584557ced7d1b31b0a0a70bc1af3804196bca36425cca8",
           "tests/test_master_supervisor_foundation.py": "d086caf5bd7e86ffa7c5d5847f37743eec77da299e63ed4f265ffdb0997cfe76",
           "tests/test_master_supervisor_live.py": "24b4f08bb0124a6a0e9c2892c468173634b0753f7cc44758a4f1ad4c5a4f8cb6",
           "tests/test_master_supervisor_live_qa.py": "fd420563624bb4d1b53ae31befa572277eebad655a2a517af01e00ddb1d38c53",
@@ -1600,7 +1600,7 @@
           "scripts/kesher_video_enhancement.py": "94f175ebdeaed599e67789cf07367fe43d6c72beb29b578b44d02283586eb6ec",
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "tests/test_kesher_intervention_policy.py": "7fcc88e575fef9ad80557aadb7b1140789361bb5683efd8b18892dcadc7a3e10",
-          "tests/test_kesher_optional_video_enrichment.py": "0f7ab8acf5b6853102955875698d0bff794fb0153da7188b80d53d2bfb1fb270",
+          "tests/test_kesher_optional_video_enrichment.py": "b3441e378fb45123fc584557ced7d1b31b0a0a70bc1af3804196bca36425cca8",
           "tests/test_kesher_three_strike_runtime.py": "b7bc82cb4d61a58a00aaa0f71a6c1ad8bb86d72834827a1a275dfb1cb6c327ea",
           "tests/test_kesher_v6_intervention_isolation.py": "d7d581a5ac190d2c139c9b36a9e7f385faa6a27609fc149eebd6f3d72b81544e",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
@@ -4423,7 +4423,7 @@
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
           ".github/workflows/kesher-short-v4.yml": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b",
           ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": "78be3f8fabc0634e845d3ef74fa2f8d3f55d34b88ad7e39ae49e9839b8b9531f",
-          ".github/kesher-media-recovery-request.json": "3287651fefef6a0a5e919ac9a8b1540884709f034ddce963b9832c118d96ecd9"
+          ".github/kesher-media-recovery-request.json": "a27033e1a08ac82a14d86bac3e2e0b6e4760c02adb9fc8b777668228c233b540"
         },
         "credential_services": {
           "GITHUB_TOKEN": "github"
