@@ -2098,7 +2098,7 @@
               "read",
               "workflow_dispatch"
             ],
-            "definition_sha256": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+            "definition_sha256": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
             "inputs": {
               "operation": "generate",
               "target_slug": "marshmallow-test-environmental-reliability"
@@ -2251,7 +2251,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+            "definition_sha256": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
             "inputs": {
               "operation": "upload",
               "target_content_sha256": "33253e446370fe980a409f6e7680f8affcf88975befe04ab28ca220dda8f8edf",
@@ -2616,7 +2616,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+            "definition_sha256": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
             "inputs": {
               "operation": "full",
               "target_slug": "$.github/kesher-goal-request.json.target_slug"
@@ -2643,7 +2643,7 @@
               "youtube_metadata",
               "youtube_upload"
             ],
-            "definition_sha256": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+            "definition_sha256": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b",
             "inputs": {
               "derive_slug": "$.github/kesher-goal-request.json.target_slug",
               "operation": "full"
