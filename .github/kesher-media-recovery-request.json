@@ -1,20 +1,18 @@
 {
   "enabled": true,
-  "target_slug": "20-second-hug-relationship-stress",
-  "target_date": "2026-10-05",
-  "target_content_sha256": "043ca1242523b822d45fd398d1293f47d46b4c0f5d0bf61b6c62ff3956ab45ed",
+  "target_slug": "child-meltdown-after-school",
+  "target_date": "2026-10-06",
+  "target_content_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
   "issue": null,
-  "purpose": "Complete the missing Video Overview for the authoritative 20-second-hug relationship article by reconciling the already-created YouTube resource metadata; preserve the verified Short and do not generate or upload duplicates.",
+  "purpose": "Complete today's authoritative KESHER chain for child-meltdown-after-school. Reuse existing source/artifacts/uploads when present; dispatch only missing Video Overview and Short stages and avoid duplicates.",
   "completed": false,
-  "failure_signature": "PUBLIC_METADATA_INVALID_REMOTE_TAGS_2026_10_06",
+  "failure_signature": "TODAY_MEDIA_NOT_PUBLICLY_VERIFIED_2026_10_06",
   "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/20-second-hug-relationship-stress",
+    "article_url": "https://kesher.saharoni.com/blog/child-meltdown-after-school",
     "overview_youtube_url": null,
-    "short_youtube_url": "https://www.youtube.com/watch?v=coGzlDtNMKQ",
-    "short_portrait_verified": true,
-    "short_width": 1080,
-    "short_height": 1920
+    "short_youtube_url": null,
+    "short_portrait_verified": false
   },
-  "reconcile_seq": 15,
-  "reconcile_reason": "Fresh evidence from targeted recovery run 37462528517 shows the exact overview item video-20261006-132152-043ca12425 is technically verified and has an existing YouTube resource, but public verification fails only because remote tags differ from source-derived tags. Reconcile metadata on that existing resource and re-verify; never create a second insert."
+  "reconcile_seq": 16,
+  "reconcile_reason": "Fresh evidence shows today's article is authoritative in postsRecent.json while public Video Overview/Short URLs are not yet verified. Dispatcher uses slug/date for authoritative admission and workers derive the exact source identity from the repository; this request intentionally avoids duplicate generation/upload."
 }
