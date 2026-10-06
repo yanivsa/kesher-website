@@ -48,7 +48,6 @@ except ImportError:
     from scripts.kesher_runtime.verification import VerificationError, match_youtube_metadata, publication_metadata
 
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
-RECENT_POSTS_FILE = PROJECT_DIR / "src" / "data" / "postsRecent.json"
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
 STATE_FILE = STATE_DIR / "state.json"
 NOTEBOOK_ID = os.environ.get("KESHER_NOTEBOOK_ID", "e101e7d7-5305-45b3-a611-21a5475ceb63")
@@ -277,30 +276,12 @@ def source_metadata(post: dict[str, Any]) -> dict[str, Any]:
     return source
 
 
-def load_posts() -> list[dict[str, Any]]:
+def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
     if not POSTS_FILE.exists():
         raise PipelineError(f"Article source does not exist: {POSTS_FILE}")
-    try:
-        historical = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
-        recent = json.loads(RECENT_POSTS_FILE.read_text(encoding="utf-8")) if RECENT_POSTS_FILE.exists() else []
-    except (OSError, json.JSONDecodeError) as exc:
-        raise PipelineError(f"Article source is unreadable: {type(exc).__name__}") from exc
-    if not isinstance(historical, list) or not isinstance(recent, list):
-        raise PipelineError("Article catalogs must contain lists")
-    combined = [*recent, *historical]
-    seen: set[str] = set()
-    for post in combined:
-        key = str(post.get("slug") or post.get("id") or "").strip() if isinstance(post, dict) else ""
-        if not key:
-            raise PipelineError("Article catalog contains an item without identity")
-        if key in seen:
-            raise PipelineError(f"Duplicate article identity across catalogs: {key}")
-        seen.add(key)
-    return combined
-
-
-def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
-    posts = load_posts()
+    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+    if not isinstance(posts, list):
+        raise PipelineError("posts.json must contain a list")
     used_hashes = {item.get("source", {}).get("content_sha256") for item in state["items"]}
     used_slugs = {item.get("source", {}).get("slug") for item in state["items"]}
     today = israel_now().date()
@@ -320,7 +301,11 @@ def select_newest_unused_article(state: dict[str, Any]) -> dict[str, Any]:
 
 
 def article_by_slug(slug: str) -> dict[str, Any]:
-    posts = load_posts()
+    if not POSTS_FILE.exists():
+        raise PipelineError(f"Article source does not exist: {POSTS_FILE}")
+    posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
+    if not isinstance(posts, list):
+        raise PipelineError("posts.json must contain a list")
     for post in posts:
         target = str(post.get("slug") or post.get("id") or "").strip()
         if target == slug:

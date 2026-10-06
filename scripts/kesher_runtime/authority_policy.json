@@ -4334,7 +4334,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "bf19d683592240dcab3f67546b36ccd0f1c30ef32950985f0b8d38d6c9765cfb",
+      "definition_sha256": "78be3f8fabc0634e845d3ef74fa2f8d3f55d34b88ad7e39ae49e9839b8b9531f",
       "registration_id": 374765037,
       "resources": [
         "github.dispatch",
