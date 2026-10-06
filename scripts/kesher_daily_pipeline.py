@@ -48,7 +48,6 @@ except ImportError:
     from scripts.kesher_runtime.verification import VerificationError, match_youtube_metadata, publication_metadata
 
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
-RECENT_POSTS_FILE = PROJECT_DIR / "src" / "data" / "postsRecent.json"
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", PROJECT_DIR / "notebooklm-output" / "cloud"))
 STATE_FILE = STATE_DIR / "state.json"
 NOTEBOOK_ID = os.environ.get("KESHER_NOTEBOOK_ID", "e101e7d7-5305-45b3-a611-21a5475ceb63")
@@ -282,7 +281,8 @@ def load_posts() -> list[dict[str, Any]]:
         raise PipelineError(f"Article source does not exist: {POSTS_FILE}")
     try:
         historical = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
-        recent = json.loads(RECENT_POSTS_FILE.read_text(encoding="utf-8")) if RECENT_POSTS_FILE.exists() else []
+        recent_file = POSTS_FILE.with_name("postsRecent.json")
+        recent = json.loads(recent_file.read_text(encoding="utf-8")) if recent_file.exists() else []
     except (OSError, json.JSONDecodeError) as exc:
         raise PipelineError(f"Article source is unreadable: {type(exc).__name__}") from exc
     if not isinstance(historical, list) or not isinstance(recent, list):
