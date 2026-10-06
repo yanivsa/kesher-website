@@ -1,0 +1,123 @@
+name: KESHER exact Short metadata recovery 2026-10-06
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  repair:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      VIDEO_ID: 3KsrzrY8Bk4
+      EXPECTED_TITLE: 'הילד מתפרק דווקא בבית? אל תתחילו בתחקיר'
+      EXPECTED_DESCRIPTION: |-
+        בבית הספר הוא מחזיק מעמד, ובבית הוא מתפוצץ? כך עומס, מעברים וויסות עצמי יכולים להסביר את אחר הצהריים — ומה אפשר לעשות ב־20 הדקות הראשונות בלי להפוך את הכניסה הביתה לעוד מאבק.
+
+        לקריאת המאמר המלא:
+        https://kesher.saharoni.com/blog/child-meltdown-after-school
+
+        לאתר קשר:
+        https://kesher.saharoni.com
+
+        לתיאום פגישה:
+        https://kesher.saharoni.com/appointment
+      EXPECTED_TAGS_JSON: '["הדרכת הורים","ויסות רגשי","ילד מתפרץ","אחרי בית הספר"]'
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+    steps:
+      - name: Reconcile metadata on the existing YouTube resource and verify public
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$YOUTUBE_CLIENT_ID"
+          test -n "$YOUTUBE_CLIENT_SECRET"
+          test -n "$YOUTUBE_REFRESH_TOKEN"
+          python3 - <<'PY'
+          import json
+          import os
+          import time
+          import urllib.parse
+          import urllib.request
+
+          def request_json(url, *, method='GET', headers=None, data=None):
+              req = urllib.request.Request(url, data=data, headers=headers or {}, method=method)
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  return json.loads(response.read().decode('utf-8'))
+
+          token_payload = urllib.parse.urlencode({
+              'client_id': os.environ['YOUTUBE_CLIENT_ID'],
+              'client_secret': os.environ['YOUTUBE_CLIENT_SECRET'],
+              'refresh_token': os.environ['YOUTUBE_REFRESH_TOKEN'],
+              'grant_type': 'refresh_token',
+          }).encode('utf-8')
+          token = request_json('https://oauth2.googleapis.com/token', method='POST', data=token_payload)['access_token']
+          headers = {'Authorization': f'Bearer {token}'}
+
+          mine = request_json('https://www.googleapis.com/youtube/v3/channels?part=id&mine=true', headers=headers)
+          channels = [row.get('id') for row in mine.get('items', [])]
+          if len(channels) != 1 or not channels[0]:
+              raise SystemExit(f'Authenticated YouTube channel is not unique: {channels}')
+          channel_id = channels[0]
+
+          video_id = os.environ['VIDEO_ID']
+          query = urllib.parse.urlencode({'part': 'snippet,status,processingDetails', 'id': video_id})
+          before = request_json(f'https://www.googleapis.com/youtube/v3/videos?{query}', headers=headers)
+          rows = before.get('items') or []
+          if len(rows) != 1:
+              raise SystemExit('Existing Short is not uniquely visible through YouTube Data API')
+          row = rows[0]
+          snippet = row.get('snippet') or {}
+          if snippet.get('channelId') != channel_id:
+              raise SystemExit('Refusing to update a video outside the authenticated Kesher channel')
+
+          expected_tags = json.loads(os.environ['EXPECTED_TAGS_JSON'])
+          new_snippet = {
+              'title': os.environ['EXPECTED_TITLE'],
+              'description': os.environ['EXPECTED_DESCRIPTION'],
+              'tags': expected_tags,
+              'categoryId': str(snippet.get('categoryId') or '22'),
+              'defaultLanguage': 'he',
+              'defaultAudioLanguage': 'he',
+          }
+          body = json.dumps({'id': video_id, 'snippet': new_snippet}, ensure_ascii=False).encode('utf-8')
+          update_headers = {
+              **headers,
+              'Content-Type': 'application/json; charset=UTF-8',
+              'Content-Length': str(len(body)),
+          }
+          update_url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet'
+          request_json(update_url, method='PUT', headers=update_headers, data=body)
+
+          deadline = time.monotonic() + 300
+          while True:
+              after = request_json(f'https://www.googleapis.com/youtube/v3/videos?{query}', headers=headers)
+              rows = after.get('items') or []
+              if len(rows) != 1:
+                  raise SystemExit('Updated Short is not uniquely visible')
+              row = rows[0]
+              snippet = row.get('snippet') or {}
+              status = row.get('status') or {}
+              processing = row.get('processingDetails') or {}
+              if snippet.get('title') != os.environ['EXPECTED_TITLE']:
+                  raise SystemExit('PUBLIC_METADATA_INVALID: title mismatch after repair')
+              if snippet.get('description') != os.environ['EXPECTED_DESCRIPTION']:
+                  raise SystemExit('PUBLIC_METADATA_INVALID: description mismatch after repair')
+              if list(snippet.get('tags') or []) != expected_tags:
+                  raise SystemExit(f'PUBLIC_METADATA_INVALID: tags mismatch after repair remote={snippet.get("tags")}')
+              if status.get('privacyStatus') == 'public' and processing.get('processingStatus') == 'succeeded':
+                  print(f'SHORT_PUBLIC_VERIFIED https://youtu.be/{video_id}')
+                  break
+              if processing.get('processingStatus') in {'failed', 'terminated'}:
+                  raise SystemExit(f'YouTube processing failed: {processing.get("processingStatus")}')
+              if time.monotonic() >= deadline:
+                  raise SystemExit(f'YouTube public processing timeout privacy={status.get("privacyStatus")} processing={processing.get("processingStatus")}')
+              time.sleep(10)
+          PY
