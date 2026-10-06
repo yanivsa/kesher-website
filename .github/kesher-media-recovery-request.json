@@ -1,6 +1,8 @@
 {
   "enabled": true,
   "target_slug": "20-second-hug-relationship-stress",
+  "target_date": "2026-10-05",
+  "target_content_sha256": "043ca1242523b822d45fd398d1293f47d46b4c0f5d0bf61b6c62ff3956ab45ed",
   "issue": null,
   "purpose": "Urgently complete the 2026-10-05 KESHER Video Overview and Short for the authoritative 20-second-hug relationship article using the bounded targeted media recovery dispatcher.",
   "completed": false,
@@ -13,6 +15,6 @@
     "short_width": 1080,
     "short_height": 1920
   },
-  "reconcile_seq": 13,
-  "reconcile_reason": "Owner-mode bounded continuation after exact Video Overview run 37372744525 failed technical review for the authoritative slug/SHA. The Short from run 37372504801 is freshly verified public, processing succeeded, and 1080x1920; preserve that upload and do not duplicate it. Reuse the existing Video identity/source/task/artifact when possible, and apply current main identity-binding/recovery fixes without weakening technical, semantic, voice, metadata, or YouTube verification gates."
+  "reconcile_seq": 14,
+  "reconcile_reason": "Bind bounded recovery to the authoritative 2026-10-05 article date and content SHA. Preserve the already verified Short upload and recover only the missing Video Overview without duplicate generation/upload."
 }
