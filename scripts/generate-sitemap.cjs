@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { ROOT, STATIC_ROUTES, isPublishable, blogRoute } = require('./content-policy.cjs');
+const { loadPosts } = require('./load-posts.cjs');
 
 const legalRoutes = new Set(['/accessibility', '/privacy', '/terms']);
 const serviceRoutes = new Set([
@@ -78,7 +79,7 @@ const buildSitemap = (posts) => {
 };
 
 if (require.main === module) {
-  const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
+  const posts = loadPosts();
   fs.writeFileSync(path.join(ROOT, 'public/sitemap.xml'), buildSitemap(posts));
 }
 
