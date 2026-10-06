@@ -1,0 +1,31 @@
+{
+  "observed_at": "2026-10-06T04:23:47.148004+00:00",
+  "accounts": [
+    {
+      "id": "95ba6a62314a0682d0711050ba9c3445"
+    }
+  ],
+  "projects": [
+    {
+      "account_id": "95ba6a62314a0682d0711050ba9c3445",
+      "id": "41773648-4870-407a-b868-5f05f2a2da57",
+      "name": "kesher-website",
+      "production_branch": "main",
+      "source_type": null
+    }
+  ],
+  "account_tokens": {
+    "http_status": 403
+  },
+  "members": {
+    "count": 1,
+    "ids": [
+      "6a1a5480d08ab6e85f22977f990e4f62"
+    ]
+  },
+  "connected_mcp_account_tokens": {
+    "error_code": 9109,
+    "message": "Unauthorized to access requested resource",
+    "read_only": true
+  }
+}

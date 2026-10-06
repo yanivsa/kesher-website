@@ -20,12 +20,32 @@ class CurrentAuthorityTests(unittest.TestCase):
 
     def test_exact_current_inventory_reconciles_but_active_missing_definition_is_denied(self):
         rules = policy(ROOT)
+        # Replay the immutable October 5 inventory; current 124-row admission is tested below.
+        historical_paths={row["path"] for row in self.rows()}
+        rules["registrations"]={p:r for p,r in rules["registrations"].items() if p in historical_paths}
         rows = reconcile_registrations(self.rows(), rules)
         self.assertEqual(len(rows), 114)
         row = next(r for r in rows if r['path'] == PLUGIN)
         self.assertEqual(row['id'], 375118485)
         with self.assertRaisesRegex(StateInvalid, 'DEFINITION_MISSING'):
             classify_registered([row], rules, active_runs=[], runs_complete=True)
+
+    def test_task4a_124_inventory_pins_new_actors_without_granting_authority(self):
+        rules=policy(ROOT)
+        rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/task4a-native-readback-20261006.json').read_text())['workflows']
+        self.assertEqual(len(reconcile_registrations(rows,rules)),124)
+        previous={r['path'] for r in self.rows()}
+        new=[r for r in rows if r['path'] not in previous]
+        self.assertEqual(len(new),10)
+        for row in new:
+            with self.subTest(path=row['path']):
+                with self.assertRaises(StateInvalid):
+                    classify_registered([row],rules,active_runs=[],runs_complete=True)
+                with self.assertRaises(StateInvalid):
+                    validate_registered_inventory([row | {'id':999999999}],rules)
+                retired=row | {'state':'disabled_manually'}
+                self.assertEqual(classify_registered([retired],rules,active_runs=[],runs_complete=True)[0]['role'],'retired')
+        with self.assertRaises(StateInvalid):reconcile_registrations(self.rows(),rules)
 
     def test_registered_cutover_id_cannot_rebind_even_to_another_known_path(self):
         rules = policy(ROOT)

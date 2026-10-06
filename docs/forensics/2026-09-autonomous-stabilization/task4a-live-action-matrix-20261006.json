@@ -1,0 +1,355 @@
+{
+  "verdict": "BLOCKED_BY_EXACT_EXTERNAL_CAPABILITIES",
+  "task4b_executable": false,
+  "static_data_is_not_live_proof": true,
+  "resource_status": {
+    "github": {
+      "classification": "EXTERNAL_ADMIN_CAPABILITY_REQUIRED",
+      "basis": "Native ruleset/CAS/drain and gateway admission implemented/tested. Complete resource guard, isolated canonical App and protected ruleset admin not provisioned. Current CLI repository admin is available; creating the ruleset/retirement is natively automatable after prerequisites, outside Task4A."
+    },
+    "jules": {
+      "classification": "EXTERNAL_ADMIN_CAPABILITY_REQUIRED",
+      "basis": "Session create/list/get/delete APIs exist. Complete all-user sessions/API-key inventory and Google Labs Jules GitHub App repository authorization/settling require account/installation custody. PrerequisitePort refuses."
+    },
+    "notebooklm": {
+      "classification": "API_CAPABILITY_NOT_AVAILABLE",
+      "basis": "Consumer notebook full credential/session/capability exclusion and independent native readback are not available through the enabled API surface. Enterprise IAM is not a substitute. PrerequisitePort refuses."
+    },
+    "youtube": {
+      "classification": "API_CAPABILITY_NOT_AVAILABLE",
+      "basis": "Grant/token revocation and channel/video reads exist; no available complete enumeration/settlement of predecessor resumable capabilities. Canonical receipt/resume is implemented, full exclusion port is not."
+    },
+    "cloudflare": {
+      "classification": "EXTERNAL_ADMIN_CAPABILITY_REQUIRED",
+      "basis": "Native token/member/Pages APIs exist. Exact project read succeeds; account-token inventory is 403/9109. Separate Pages and infrastructure authority plus independently observed effective policies required."
+    },
+    "image_provider": {
+      "classification": "EXTERNAL_ADMIN_CAPABILITY_REQUIRED",
+      "basis": "Gemini generation, Pexels/Pixabay lookup and local curated fallback are source-established. Exact Google project/key owners, stock accounts and outstanding capability/job inventory remain unbound; native key administration requires custody."
+    }
+  },
+  "actions": [
+    {
+      "resource": "gateway",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); host/TLS origin NOT YET PROVISIONED",
+      "native_operation": "Install independently approved exact-main Python code and external factory; protected persistent SQLite; TLS reverse proxy; OIDC audience; protected kesher-cutover environment main-only; set gateway URL only after verification",
+      "api_or_tool": "Administrator host provisioning/service manager + GitHub environments/variables REST",
+      "repository_support": "Installation validator, hash-pinned external factory loader, --check-only, persistent deny ledger, OIDC and loopback HTTP implemented",
+      "post_operation_evidence": "Read-only installed hash/main/policy/material/closed52/key custody checks; fresh six-port preflight; ledger survives restart/replay rejected; TLS cert and audience match; exact environment branch policy",
+      "reversible": "YES",
+      "before_final_activation": "YES; staged configuration only; no retirement",
+      "unavailable_blocker": "No supplied independent host/factory, TLS origin, actual five external ports, approved six bindings/epoch/sealing custody. Current environment protected-branches:true is not exact main-only; no rulesets currently exist."
+    },
+    {
+      "resource": "github",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); refs/heads/main + refs/heads/automation-state; canonical App ID UNRESOLVED",
+      "native_operation": "Preprovision exact disabled/evaluate branch ruleset; exactly ONE reviewed canonical Integration bypass; creation/update/deletion/non-fast-forward restrictions; activate only during cutover; acquire GitExclusionEpoch atomic main/state CAS",
+      "api_or_tool": "GitHub POST/GET/PUT /repos/yanivsa/kesher-website/rulesets[/id]; GraphQL updateRefs",
+      "repository_support": "Native boundary and CAS implemented; no implicit ruleset creation/repair",
+      "post_operation_evidence": "Exact numeric repo/node/app/ruleset IDs; fresh effective rules both refs; no other bypasses; exclusive ruleset admin; exact epoch ancestry and main CAS",
+      "reversible": "YES for enforcement setting; NO for erasing acquired journal",
+      "before_final_activation": "YES; activation is cutover-window only",
+      "unavailable_blocker": "Zero rulesets; no canonical App ID/private credential custody or complete direct-write/control-plane predecessor boundary. Admin permission exists; API operation is not inherently human-only."
+    },
+    {
+      "resource": "github",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); all predecessor PAT/OAuth/App/deploy-key/direct-write and old workflow-token holders (complete identities NOT YET OBSERVED)",
+      "native_operation": "Inventory grants; revoke or resource-deny every predecessor writer/dispatch authority; isolate canonical App; retain exclusive admin control over native rule management",
+      "api_or_tool": "GitHub settings/owner grant controls; DELETE /repos/{owner}/{repo}/keys/{key_id}; App installation removal/suspension APIs under authorized App JWT; supported token revocation for known token classes",
+      "repository_support": "GuardedGitHub denies out-of-scope operations; complete native grant observer still prerequisite",
+      "post_operation_evidence": "Complete holder/credential-ID coverage and effective deny readback for both protected refs AND Actions dispatch; no old App/user/admin/deploy-key bypass",
+      "reversible": "NO for credential revocation; replacement is a new grant",
+      "before_final_activation": "YES; cutover window only",
+      "unavailable_blocker": "Current deploy-key list empty is partial evidence. Personal-owned repo has no organization-wide PAT inventory; no complete owner/App/OAuth/PAT authority observer or isolated App supplied."
+    },
+    {
+      "resource": "github",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); all 124 exact registrations; 50 retained IDs in task4a-retained-registrations-20261006.json",
+      "native_operation": "Disable reviewed retirement targets and cancel/drain exact attempts only after exclusion; include retained definitions; preserve canonical/diagnostic/19 infrastructure roles",
+      "api_or_tool": "PUT /repos/{owner}/{repo}/actions/workflows/{id}/disable; POST /actions/runs/{run_id}/cancel; GET exact workflows/runs/attempts",
+      "repository_support": "GitHub drain journal, exact allowlist and double fresh zero-active readback implemented",
+      "post_operation_evidence": "Exact disabled_manually identities + terminal attempts + complete stable inventory across queued/in_progress/waiting/requested/pending; empty list alone never fencing",
+      "reversible": "YES for workflow disable; NO for canceled execution",
+      "before_final_activation": "YES; cutover window only",
+      "unavailable_blocker": "No native exclusion yet. 124 active includes 50 absent main YAML; no historical-ref dispatchability claimed. Any new/restored registration must fail closed."
+    },
+    {
+      "resource": "control_planes",
+      "exact_identity": "ChatGPT Master Active Supervisor task 6aa71096e1788191ae791be184322d69; account identity from independent task service readback still required",
+      "native_operation": "After all gateway/fence prerequisites ready, freshly observe task; enter cutover window; suspend; verify no executing/mutating continuation; after successful cutover convert OBSERVER-ONLY",
+      "api_or_tool": "Authenticated ChatGPT task controls/operator observer; no enabled dedicated task-state/authority API adapter",
+      "repository_support": "Expected ID bound by installation checks; fresh independent ControlPlaneConvergence observer remains mandatory",
+      "post_operation_evidence": "Exact task/account ID, observed_at <=60 seconds, actual state, no running mutation, GitHub/Jules tool authority plus native resource fences; a prompt/static ID proves none of these",
+      "reversible": "YES",
+      "before_final_activation": "YES; suspension only inside cutover window; observer conversion after successful cutover",
+      "unavailable_blocker": "User-supplied independent audit reports ACTIVE. No independently installed fresh task/tool authority observer; Codex heartbeat is not this ChatGPT task. Task4A leaves recovery running."
+    },
+    {
+      "resource": "jules",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); Google Labs Jules GitHub App installation ID/account IDs/all sessions NOT YET OBSERVED",
+      "native_operation": "List/get all repo-capable sessions across every account/grant; settle/delete exact predecessor sessions as supported; retire predecessor API keys separately; remove/suspend repository access at App installation; canonical session gate controls future creation",
+      "api_or_tool": "Jules GET /v1alpha/sessions and /sessions/{id}; DELETE /sessions/{id}; Jules API-key controls; GitHub App installation/repository-access administration",
+      "repository_support": "Durable session intent/exact identity/quiescence tests exist; exclusion PrerequisitePort",
+      "post_operation_evidence": "All session IDs + native terminal/denied continuation; complete key/installation inventory; actual repo access denial; fresh canonical-only future admission",
+      "reversible": "NO for session/key deletion; repository access can be regranted independently",
+      "before_final_activation": "YES; cutover window only",
+      "unavailable_blocker": "No complete cross-account/key/session observer or authorized installation custody; DELETE is documented, but it alone neither cancels all in-flight work nor revokes repository authority."
+    },
+    {
+      "resource": "notebooklm",
+      "exact_identity": "Consumer notebook e101e7d7-5305-45b3-a611-21a5475ceb63; account and other repo-capable notebooks NOT YET independently bound",
+      "native_operation": "Invalidate predecessor cookies/master tokens/provider sessions, settle in-flight generation, independently prove canonical-only admission at consumer service",
+      "api_or_tool": "Google account/session controls; no available consumer resource-wide exclusion/readback API; Enterprise notebook IAM applies to a different product",
+      "repository_support": "PrerequisitePort refuses; canonical generation attempts are implemented",
+      "post_operation_evidence": "Fresh exact account/notebook native capability/session inventory, predecessor denial, settled job IDs and exact canonical gate",
+      "reversible": "NO for session invalidation",
+      "before_final_activation": "YES; cutover window only",
+      "unavailable_blocker": "Missing consumer native exclusion+readback capability; Enterprise API and an empty local session list cannot fill it."
+    },
+    {
+      "resource": "youtube",
+      "exact_identity": "Channel UCx5fEFvdVf28HLAR2dFW64Q; Google OAuth client/project/grant IDs and all outstanding resumable URIs NOT YET independently bound",
+      "native_operation": "Revoke predecessor grant/token; settle/deny outstanding uploads; reauthorize canonical credential; protect it in canonical environment with restricted workflow access; verify old rejection and canonical admission",
+      "api_or_tool": "Google oauth2.googleapis.com/revoke; YouTube channels.list mine=true, videos.list, authenticated status query for each known resumable URI; Google consent UI and GitHub environment secret controls",
+      "repository_support": "Durable sealed capability/receipt recovery and duplicate-insert refusal implemented; full exclusion PrerequisitePort",
+      "post_operation_evidence": "Complete grants/capabilities coverage; exact channel and video IDs; native predecessor rejection plus every outstanding upload resolved without a duplicate; canonical environment access readback",
+      "reversible": "NO for revocation; reauthorization creates a new grant",
+      "before_final_activation": "YES; cutover window only",
+      "unavailable_blocker": "No complete outstanding resumable-capability enumeration/settlement observer. New refresh tokens are NOT Google environment-scoped; repository/environment custody supplies isolation."
+    },
+    {
+      "resource": "cloudflare",
+      "exact_identity": "Cloudflare account 95ba6a62314a0682d0711050ba9c3445; Pages kesher-website / 41773648-4870-407a-b868-5f05f2a2da57",
+      "native_operation": "Inventory members, global/user/account tokens and integrations; create independent minimum Pages-only credential, separate OCI/OpenClaw authority, revoke/deny old shared authority and settle deployments; enforce exact Pages project in canonical gateway",
+      "api_or_tool": "Cloudflare GET/POST/PATCH/DELETE account/user token APIs; member policies; Pages project/deployment GET; GitHub environment custody",
+      "repository_support": "Exact project Pages client exists; full fence/separation ports refuse until native receipts",
+      "post_operation_evidence": "Account-scoped minimum Pages permission (no unsupported per-project token claim), exclusive service custody and exact project gate; complete token/member/integration coverage; deployment settling; separate OCI/infra credential IDs/readbacks",
+      "reversible": "NO for revocation; policy changes may be reversed",
+      "before_final_activation": "YES; cutover window only for predecessor denial",
+      "unavailable_blocker": "GET account tokens returns HTTP403 with local token; connected MCP returns9109. Shared CLOUDFLARE_API_TOKEN across Pages and OCI/OpenClaw remains unresolved; complete scopes cannot be proved."
+    },
+    {
+      "resource": "image_provider",
+      "exact_identity": "Gemini API models/gemini-3.1-flash-image; Pexels; Pixabay; local-curated; exact Google project/key IDs and stock account IDs UNRESOLVED",
+      "native_operation": "Inventory keys/bearers/accounts and in-flight generation; administratively revoke or deny predecessor authority, settle requests; isolate canonical credentials and admission",
+      "api_or_tool": "Google API Keys projects.locations.keys list/get/delete (authorized project admin); provider account/key controls; IAM service-account-key APIs only if actually used",
+      "repository_support": "Gemini worker/stock/local fallback exist; production exclusion PrerequisitePort",
+      "post_operation_evidence": "Complete native project/account/key/capability IDs and effective denial; settled generation receipts; no unaccounted issued bearer; canonical gate",
+      "reversible": "NO for revocation (some API-key deletion has recoverability; do not assume universal undo)",
+      "before_final_activation": "YES; cutover window only",
+      "unavailable_blocker": "Exact provider administrative identities and capability/job observers unavailable. Deleting a service-account key alone cannot invalidate previously issued access tokens; actual path uses Gemini API key."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 294200685 .github/workflows/ci.yml; native github resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: github",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: github",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 333278814 .github/workflows/oci-a1-capacity-watch.yml; native cloudflare,github,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,github,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,github,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 347487895 .github/workflows/oci-bridge-repair-beta-20260901.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 347483139 .github/workflows/oci-bridge-repair-inherit-20260901.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 347443805 .github/workflows/oci-bridge-restore-20260901.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 334165848 .github/workflows/oci-openclaw-plan-b-e2.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 333275018 .github/workflows/oci-openclaw-provision-v2.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 333272481 .github/workflows/oci-openclaw-provision.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 333268727 .github/workflows/oci-secure-bridge-bootstrap.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 354763985 .github/workflows/openclaw-agent-diagnostic.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 354683396 .github/workflows/openclaw-clean-rebuild.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 347517048 .github/workflows/openclaw-cloudflare-preflight-diagnostic.yml; native cloudflare resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 340424915 .github/workflows/openclaw-cloudflare-tunnel.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 335556453 .github/workflows/openclaw-finalize-tailscale-serve.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 335566780 .github/workflows/openclaw-inspect-tailnet-console.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 335576768 .github/workflows/openclaw-offline-boot-repair.yml; native cloudflare,github,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,github,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,github,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 335562900 .github/workflows/openclaw-preserve-tailnet-recovery.yml; native cloudflare,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 338370770 .github/workflows/openclaw-recovery-controller.yml; native cloudflare,github,oci resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: cloudflare,github,oci",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: cloudflare,github,oci",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    },
+    {
+      "resource": "infrastructure",
+      "exact_identity": "yanivsa/kesher-website (1239881973 / R_kgDOSecY9Q); workflow 337057199 .github/workflows/youtube-oauth-diagnostic.yml; native youtube resource/credential IDs UNRESOLVED",
+      "native_operation": "Independently map exact effective credential scopes; separate from all six protected resource bindings; restrict native scopes or use equivalent reviewed service enforcement; include every OCI tenancy/compartment/instance/credential where applicable",
+      "api_or_tool": "GitHub permission/environment readbacks; Cloudflare token/member policies; OCI IAM policy/compartment/instance APIs; YouTube OAuth scopes, as applicable: youtube",
+      "repository_support": "Strict service_enforced_resource_separation receipt validator; no fabricated receipt or blind workflow retirement",
+      "post_operation_evidence": "Exact workflow definition/review/code/policy/resource-bindings digests, credential IDs per class, service policy IDs/revisions, effective/denied resource IDs, readback hashes for EVERY service: youtube",
+      "reversible": "YES for scoped policy separation; NO if credential revocation required",
+      "before_final_activation": "YES; provision distinct credentials safely before activation; do not retire recovery in Task4A",
+      "unavailable_blocker": "No native complete separation receipt. Shared account credentials, unbound OCI identities and incomplete credential-service mapping where present cannot be certified by labels or account-wide denial."
+    }
+  ],
+  "production_activated": false,
+  "production_state_written": false,
+  "public_completion_inferred": false
+}

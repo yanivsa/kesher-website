@@ -1,0 +1,10 @@
+{
+  "observed_at": "2026-10-06T08:33:59.491863+00:00",
+  "blob_sha": "93b5004d7ca0505d0072cde33413d932b53a1f88",
+  "schema_version": 5,
+  "handover_present": false,
+  "github_exclusion_present": false,
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false
+}

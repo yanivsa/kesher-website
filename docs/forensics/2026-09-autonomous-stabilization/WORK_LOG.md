@@ -490,3 +490,62 @@ and real native fences/adapters for all provider scopes, infrastructure separati
 reviewed current-main/registrations and capability-sealing custody.
 No live task/ruleset/workflow/run/Jules/provider/credential/production mutation;
 no PR/merge; no production activation.
+
+## 2026-10-06 — Task 4A native authority preflight (repository only)
+
+Resumed the exact same clean `35d1b7290965d55b0c92560ce64a3ffedab6212a` checkpoint,
+then preserved all partially completed Task4A files when the follow-up audit
+arrived. Origin/main remains observed `db31dfdbc6f5539bc0b743db88990b4d7186a60b`;
+no integration. The supplied independent Antigravity audit and its seven explicit
+corrections were incorporated without performing any recommended live mutation.
+
+Implemented independently installed hash-pinned external factory loading,
+exact supervisor `6aa71096e1788191ae791be184322d69` / repository / epoch / main /
+six-binding / HTTPS OIDC audience installation checks, read-only SQLite storage
+and schema validation, explicit connection closure and `--check-only` native
+preflight. Missing/corrupt ledger never initializes itself; static-key fallback
+and arbitrary HTTP client evidence remain unavailable. An ID/config file is not
+live task state or authority evidence. No fake native provider adapter created.
+
+Fresh inventory124 has74 present definitions and50 active retained registrations,
+including10 newly reviewed exact IDs/source blobs. Pinned those10 for future
+retirement, granting no authority and making no historical-ref dispatchability
+claim. No role/capability/credential/workflow mutation. Historical fixtures keep
+their dated scope; current124 and all50 fresh-drain requirements are tested.
+Existing nine-phase CAS, native ruleset single-App bypass, zero-active/drain,
+restart/lost-response, canonical admission and V5 downgrade guards preserved.
+
+Native Cloudflare project/account IDs confirmed; account-token read is403 and
+connected MCP independently returns9109. The exact matrix covers all six ports,
+external task, Jules sessions/key/App grant separation, YouTube grant/environment
+custody, Pages account-scoped minimal credential with exact project gate, image
+identities and all19 infrastructure proofs including OCI. The gateway installation
+contract preserves V5/supervisor until the real coordinated cutover window.
+
+Checked five recurring stall classes on exact current main: review-target
+identity and automatic B-roll disable fixes are not merged; upload receipts and
+merge CAS/reconciliation are implemented; quota/live capability coverage and
+trusted Jules repair remain unproved/unconnected. Added one three-state Jules
+stall regression without changing provider behavior or content.
+
+Validation before bounded independent review: focused authority/handover232 OK;
+stall paths106 OK; full Python1250 OK/0 skips; stale definitions0/callchains0;
+diff whitespace PASS. Closed5.2 evidence/quarantines and the unresolved Task3.5
+operator template are byte-identical. The final checkpoint records any review
+findings/fixes and revalidation. No frontend/browser certification claimed.
+
+Task4A verdict BLOCKED_BY_EXACT_EXTERNAL_CAPABILITIES; Task4B not executable.
+See task4a-report-20261006.md, task4a-live-action-matrix-20261006.md/JSON,
+task4a-gateway-installation-20261006.md and the final machine checkpoint.
+Production remains observed Schema5/no handover/no GitHub exclusion, state blob
+93b5004d7ca0505d0072cde33413d932b53a1f88. No production activation/state write,
+V5 retirement, supervisor mutation, live ruleset mutation, Jules/provider/credential
+mutation, PR or merge. One normal same-branch checkpoint commit/push follows
+review; exact local/remote SHA and clean status are read back afterward.
+
+Task4A bounded independent review completed:0Critical/0Important/0substantiveMinor;
+17independent focused tests pass,74definitions/zero stale pins and all19 matrix
+rows verified. One historical source is unavailable in the reviewer's local Git
+objects; parent native source readback remains recorded, without mismatch. No
+review fix or repeat full suite was needed. Final source hashes match the passing
+1250Python run; documentation/review metadata only was finalized afterward.

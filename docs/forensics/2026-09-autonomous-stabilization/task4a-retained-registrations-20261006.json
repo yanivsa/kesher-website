@@ -1,0 +1,502 @@
+[
+  {
+    "id": 347298475,
+    "path": ".github/workflows/aboutideasnow-submit-once.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 337968737,
+    "path": ".github/workflows/apply-controller-artifact-redirect.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 337962986,
+    "path": ".github/workflows/apply-controller-production-run-filter.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 337995946,
+    "path": ".github/workflows/apply-keep-video-state-history.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 337979596,
+    "path": ".github/workflows/apply-single-scheduler-video-patch.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 337977787,
+    "path": ".github/workflows/apply-video-retry-test-patch.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 337964365,
+    "path": ".github/workflows/apply-video-review-contract.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 376003609,
+    "path": ".github/workflows/apply-video-review-identity-fix-v2.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": true,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 376003948,
+    "path": ".github/workflows/apply-video-review-identity-fix-v3.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": true,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 375766882,
+    "path": ".github/workflows/apply-video-review-identity-fix.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": true,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 337993366,
+    "path": ".github/workflows/apply-video-state-fallback-patch.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 343136777,
+    "path": ".github/workflows/article-video-preview.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 375710964,
+    "path": ".github/workflows/cancel-stalled-hug-video-and-resume.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": true,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 343792124,
+    "path": ".github/workflows/deploy-preferred-sources-preview.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 375711641,
+    "path": ".github/workflows/force-cancel-stalled-hug-video.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": true,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 354688713,
+    "path": ".github/workflows/goal-e2e-isolation-patch.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 343193640,
+    "path": ".github/workflows/jules-preferred-sources-canary.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 358429827,
+    "path": ".github/workflows/kesher-auth-precedence-branch-patch.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 354750537,
+    "path": ".github/workflows/kesher-historical-media-scan.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 354753868,
+    "path": ".github/workflows/kesher-invidious-media-recovery.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 372990558,
+    "path": ".github/workflows/kesher-mcp-lockfile.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 373002721,
+    "path": ".github/workflows/kesher-mcp-pages-preview.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 372989693,
+    "path": ".github/workflows/kesher-mcp-staging.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 354707036,
+    "path": ".github/workflows/kesher-notebooklm-auth-recover-short.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 354752850,
+    "path": ".github/workflows/kesher-piped-media-recovery.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 372985940,
+    "path": ".github/workflows/kesher-plugin-contracts.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 354746618,
+    "path": ".github/workflows/kesher-short-recovery-embedded.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 354718134,
+    "path": ".github/workflows/kesher-short-recovery-phase2.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 354716406,
+    "path": ".github/workflows/kesher-short-verified-overview-recovery.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 354749898,
+    "path": ".github/workflows/kesher-youtube-embed-media-probe.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 375704226,
+    "path": ".github/workflows/observe-short-youtube-tags.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": true,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 337067176,
+    "path": ".github/workflows/one-time-dispatch-missing-article.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 353733583,
+    "path": ".github/workflows/one-time-repair-missing-hero-20260909.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 334261375,
+    "path": ".github/workflows/openclaw-cloudflare-setup.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 334259959,
+    "path": ".github/workflows/openclaw-dashboard-preflight.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 375525052,
+    "path": ".github/workflows/owner-20-second-hug-recovery.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": true,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 375624327,
+    "path": ".github/workflows/owner-pin-20-second-hug-recovery.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": true,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 375708198,
+    "path": ".github/workflows/queue-exact-hug-video-resume.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": true,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 375118485,
+    "path": ".github/workflows/refresh-kesher-plugin-resources-once.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 358851595,
+    "path": ".github/workflows/s3-pr802-hero-repair.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 358739183,
+    "path": ".github/workflows/s3-v5-provider-resume-repair.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 358727842,
+    "path": ".github/workflows/s3-v5-upload-target-repair.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 374196758,
+    "path": ".github/workflows/temp-hebrew-sleep-rewrite-retry.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 374196299,
+    "path": ".github/workflows/temp-hebrew-sleep-rewrite.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 354647414,
+    "path": ".github/workflows/tmp-fix-pr763.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 349169036,
+    "path": ".github/workflows/tmp-repair-pr-582.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 349148607,
+    "path": ".github/workflows/tmp-repair-pr-616.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 375714854,
+    "path": ".github/workflows/video-review-identity-regression.yml",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": true,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 294204178,
+    "path": "dynamic/dependabot/dependabot-updates",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  },
+  {
+    "id": 320961763,
+    "path": "dynamic/dependabot/update-graph",
+    "state": "active",
+    "classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "definition_present": false,
+    "new_oct5_6": false,
+    "retirement_required": true,
+    "historical_ref_dispatch_proven": false
+  }
+]

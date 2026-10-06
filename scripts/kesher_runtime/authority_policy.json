@@ -530,6 +530,96 @@
       "observed_state": "active",
       "evidence_source_sha": "92d452549f7293f789268091ff4e1e132c5bca7c",
       "reason": "Exact historical source pushes feature/kesher-plugin-v2-clean using same-repository contents-write github.token. Branch naming and missing main YAML do not prove resource separation or retirement. Complete native exclusion and exact disable/drain readback are required; no role is granted."
+    },
+    ".github/workflows/apply-video-review-identity-fix-v2.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+      "evidence_source_sha": "7505428e46acda63659ec9c77f9d350604ff8ff8",
+      "id": 376003609,
+      "observed_state": "active",
+      "reason": "Exact retained registration/source observed 2026-10-06. Missing main YAML, diagnostic labels and empty runs do not prove retirement or resource separation. No authority granted; native exclusion plus exact disable/drain required. Source identity archived in task4a-new-registrations-20261006.json."
+    },
+    ".github/workflows/apply-video-review-identity-fix-v3.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+      "evidence_source_sha": "7505428e46acda63659ec9c77f9d350604ff8ff8",
+      "id": 376003948,
+      "observed_state": "active",
+      "reason": "Exact retained registration/source observed 2026-10-06. Missing main YAML, diagnostic labels and empty runs do not prove retirement or resource separation. No authority granted; native exclusion plus exact disable/drain required. Source identity archived in task4a-new-registrations-20261006.json."
+    },
+    ".github/workflows/apply-video-review-identity-fix.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+      "evidence_source_sha": "c284307baa8c83bbe943f53bb6763bc2ab292c09",
+      "id": 375766882,
+      "observed_state": "active",
+      "reason": "Exact retained registration/source observed 2026-10-06. Missing main YAML, diagnostic labels and empty runs do not prove retirement or resource separation. No authority granted; native exclusion plus exact disable/drain required. Source identity archived in task4a-new-registrations-20261006.json."
+    },
+    ".github/workflows/cancel-stalled-hug-video-and-resume.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+      "evidence_source_sha": "543c82261fb919027519fb67bebba276c6e95461",
+      "id": 375710964,
+      "observed_state": "active",
+      "reason": "Exact retained registration/source observed 2026-10-06. Missing main YAML, diagnostic labels and empty runs do not prove retirement or resource separation. No authority granted; native exclusion plus exact disable/drain required. Source identity archived in task4a-new-registrations-20261006.json."
+    },
+    ".github/workflows/force-cancel-stalled-hug-video.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+      "evidence_source_sha": "543c82261fb919027519fb67bebba276c6e95461",
+      "id": 375711641,
+      "observed_state": "active",
+      "reason": "Exact retained registration/source observed 2026-10-06. Missing main YAML, diagnostic labels and empty runs do not prove retirement or resource separation. No authority granted; native exclusion plus exact disable/drain required. Source identity archived in task4a-new-registrations-20261006.json."
+    },
+    ".github/workflows/observe-short-youtube-tags.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+      "evidence_source_sha": "543c82261fb919027519fb67bebba276c6e95461",
+      "id": 375704226,
+      "observed_state": "active",
+      "reason": "Exact retained registration/source observed 2026-10-06. Missing main YAML, diagnostic labels and empty runs do not prove retirement or resource separation. No authority granted; native exclusion plus exact disable/drain required. Source identity archived in task4a-new-registrations-20261006.json."
+    },
+    ".github/workflows/owner-20-second-hug-recovery.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+      "evidence_source_sha": "a1ce7dce2c914cacee865a4b68547efc95392dc5",
+      "id": 375525052,
+      "observed_state": "active",
+      "reason": "Exact retained registration/source observed 2026-10-06. Missing main YAML, diagnostic labels and empty runs do not prove retirement or resource separation. No authority granted; native exclusion plus exact disable/drain required. Source identity archived in task4a-new-registrations-20261006.json."
+    },
+    ".github/workflows/owner-pin-20-second-hug-recovery.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+      "evidence_source_sha": "9134bdcf4ac42246e61a93fe855a9324bfbce069",
+      "id": 375624327,
+      "observed_state": "active",
+      "reason": "Exact retained registration/source observed 2026-10-06. Missing main YAML, diagnostic labels and empty runs do not prove retirement or resource separation. No authority granted; native exclusion plus exact disable/drain required. Source identity archived in task4a-new-registrations-20261006.json."
+    },
+    ".github/workflows/queue-exact-hug-video-resume.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+      "evidence_source_sha": "543c82261fb919027519fb67bebba276c6e95461",
+      "id": 375708198,
+      "observed_state": "active",
+      "reason": "Exact retained registration/source observed 2026-10-06. Missing main YAML, diagnostic labels and empty runs do not prove retirement or resource separation. No authority granted; native exclusion plus exact disable/drain required. Source identity archived in task4a-new-registrations-20261006.json."
+    },
+    ".github/workflows/video-review-identity-regression.yml": {
+      "definition_present": false,
+      "disposition": "unresolved",
+      "evidence_main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+      "evidence_source_sha": "09021aedf5b207cb682ba151def2961e8b51533b",
+      "id": 375714854,
+      "observed_state": "active",
+      "reason": "Exact retained registration/source observed 2026-10-06. Missing main YAML, diagnostic labels and empty runs do not prove retirement or resource separation. No authority granted; native exclusion plus exact disable/drain required. Source identity archived in task4a-new-registrations-20261006.json."
     }
   },
   "resource_separation_contract": "Absent exact service-enforced resource separation, shared-resource infrastructure is a retired writer. Definitions, registered activation, retained old executions and surviving credentials are separate facts.",
@@ -836,18 +926,18 @@
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
           "tests/test_v5_shared_video_controller.py": "291440842cc8c930bc618dc980a78faebc298f8c4c5056e3643adf9937f1aabc",
           "tests/test_v5_video_source_binding.py": "6876f78b1f8515254c1a95bce9b697ad97c73a27ad0ce85ffa54272efc740b13",
-          "tests/test_kesher_production_cutover.py": "0c85f3f1da50ea3c71ea6df51d546bf3e856cd282dc8e24db54958cce7550912",
+          "tests/test_kesher_production_cutover.py": "6596202892daa682d93a4df4cf03d20c936e64988981b4174bb3cf98b76441ec",
           "tests/test_kesher_external_exclusion.py": "8f7a4becccc178fc365304dc2ed78525fe4eeb763d7de3375d4ad16e7412e520",
           "tests/test_kesher_github_drain.py": "5f7486a33fe1c2241455ab4f4aa677c4864fbb4dc559a1ffbd835ae40604ab7a",
           "tests/test_kesher_git_exclusion.py": "7932922a3ba00c103189f17e854f9d1de0c5169306c3fae16ddc6e4c541b7eb8",
           "tests/test_kesher_handover.py": "791fb6de96325644762840b71f02ef44c585a15bbc8e004c271935bf1ff44eb7",
           "tests/test_kesher_handover_github.py": "20d6875341d64f16bb2b8b393ac9936dbe3dbc59d5384254fd1014a6116cc948",
           "tests/test_kesher_authority_digest.py": "e04729a5472b2d9fe37d7420a5fe04654ba841623ce1ee0e2d8b72e8dfbfd096",
-          "tests/test_kesher_authority_topology.py": "3ba49f1f0a473afcb748bc2b1daa0306b6cd48dead5402c7cc84e1f6ec2cbc4a",
+          "tests/test_kesher_authority_topology.py": "59f5f96694ec223b29172c7b3a7dc31b5ed72ac2dfebeae0ed5a31986fe78268",
           "tests/test_kesher_runtime_migration.py": "909db0229950e4fe3f7ebcb7d82c4eb433a8cfb9079c223f57330a2ba6a9287d",
           "tests/test_kesher_worker_entry.py": "f48055276b51e264ef35b5d0bb7d3952918fbc39aa1ff09a93e1a09b73365fde",
           "tests/test_kesher_content_controller.py": "5f51efabb2d5f736084bcdca14220c301b4c7e10439471130dcbf22b2be39cf2",
-          "tests/test_kesher_current_authority.py": "326ab4e27213bd81a394b6a6eed83173f6a7537c92c437436e0ea144da45dfde",
+          "tests/test_kesher_current_authority.py": "c51ddf7a8fe8089fc75dbbd3b3f46cd1e519a2129449a8eff189957500c3527e",
           "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
           "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
           "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
@@ -3587,7 +3677,7 @@
           "tests/test_kesher_article_normalize_worker.py": "dc17e77a03dff02230a0afe0ff2bbbbf122acaa27256aabfd62105373870be5a",
           "tests/test_kesher_article_public.py": "5ff93f684cda995d15edc03fd10878f31ec113eadc00cc26556dc62d267dabf8",
           "tests/test_kesher_article_validation.py": "578e659759ab2c290b6ee468d9b9573d541367ffec76671fddeb41769228c46f",
-          "tests/test_kesher_article_worker.py": "f4530d4e8f7cf24da6ea471a2034467bb0200a33c0e8712c81f23a58c5888f16",
+          "tests/test_kesher_article_worker.py": "97d5d612f28c62e81b9f0b8e971a7480b7e7a3a631ab3ebca739d91c23c369de",
           "tests/test_kesher_audio_preservation.py": "05b60713b8c741d30106925c3be2e453291976a88c86a7bc98e5cfc7046a91c0",
           "tests/test_kesher_autonomous_controller.py": "8194add4f915e1db0d09c22da7044c0a9913d0ac7bb734bcaecbbfc1cdbf43b4",
           "tests/test_kesher_canonical_state.py": "1b2df228a1bec270e2124babfb977762430da6b1600ed0de9d6f886dac536f0a",
@@ -4523,9 +4613,9 @@
         "call_chain": {
           "scripts/kesher_runtime/cutover_entry.py": "1dfc65d0f9dae9d017e6189075a2230863ec72143aa748d73b218b245ec226a4",
           "scripts/kesher_runtime/cutover_auth.py": "517cea3a2f991a3989a3e6d5e1550b68c3081672e254eea64d87ecffc78eb276",
-          "scripts/kesher_runtime/cutover_service.py": "aa0254b4b29e4c8049472dc2992139bc27ba5209e57ab9be1849ace514c03f10",
+          "scripts/kesher_runtime/cutover_service.py": "b01b99cac89ff39beb411a69c1ce3f135cb7b8fbdd964a2daf6e3cc2db645acb",
           "scripts/kesher_runtime/cutover_gateway.py": "e8812d0d40bea7a8bae6bf23e3b7ea191dab5f05300d5b8ee8b33e6825b34e06",
-          "scripts/kesher_runtime/production_cutover.py": "b44d40d905b0964b5d605ec157ec34e3b53d54b686bb5e1382a66071ea95dc91",
+          "scripts/kesher_runtime/production_cutover.py": "f485100f24ae1caa8f63228e80d27091ba06321eb00edfeefa04a9a52970bee7",
           "scripts/kesher_runtime/production_ports.py": "fcc4a12a2ed5572ae6930aac03616de9cda3f39a274921d2ecc04fdcba86c23b",
           "scripts/kesher_runtime/exclusion.py": "e7c9c8545c2490880a3231960af48818951da4a463947bf6ca875d32e443036f",
           "scripts/kesher_runtime/handover.py": "dd4b1a0448e18fb4755e70a69cf9d2696aeea44d68271a623deca053b2f9caca",
@@ -4543,7 +4633,9 @@
           "scripts/kesher_runtime/control_planes.py": "c3674ce07834ddce5dedbdf0ba55610c1d7f8d570caf5da1b990925956374938",
           "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
           "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
-          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858"
+          "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
+          "scripts/kesher_runtime/cutover_installation.py": "71af2bfa048ecbd678ed0197b31b3f2b8a56c383a02f936835b50f7f3192d4fd",
+          "tests/test_kesher_cutover_installation.py": "6e815eb75a8811915dcc9934f99001c799cc2a11b21cb4a59208d7a3f5867193"
         },
         "dispatches": [],
         "credentials": [],

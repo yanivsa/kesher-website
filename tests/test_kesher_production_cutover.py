@@ -139,8 +139,11 @@ class ProductionCutoverTests(unittest.TestCase):
         evidence = json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
         rules = policy(ROOT)
         # This immutable October 4 fixture predates the October 5 branch writer.
-        # Current 114-row admission is tested separately, without this projection.
+        # Current 124-row admission is tested separately, without this projection.
         del rules['registrations']['.github/workflows/refresh-kesher-plugin-resources-once.yml']
+        # Pin this dated fixture's retained registrations; later actors are tested in current_authority.
+        later=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/task4a-new-registrations-20261006.json').read_text())
+        for retained in later: del rules['registrations'][retained['path']]
         # The new cutover workflow is registered only after merge. Its independent
         # registration binding is a prerequisite, never a guessed service ID.
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
@@ -171,6 +174,9 @@ class ProductionCutoverTests(unittest.TestCase):
         import hashlib
         rules=policy(ROOT);del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['registrations']['.github/workflows/refresh-kesher-plugin-resources-once.yml']
+        # Pin this dated fixture's retained registrations; later actors are tested in current_authority.
+        later=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/task4a-new-registrations-20261006.json').read_text())
+        for retained in later: del rules['registrations'][retained['path']]
         rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-final-20261004.json').read_text())['workflows']
         self.assertEqual(len(reconcile_registrations(rows,rules)),112)
         path='.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
@@ -567,8 +573,11 @@ class CredentialGatewayTests(unittest.TestCase):
         from tests.test_kesher_git_exclusion import EpochGit
         from tests.test_kesher_external_exclusion import ProtectedService
         rules=policy(ROOT)
-        # Replay the original 111 registrations; the fresh 114 inventory has its own gate.
+        # Replay the original 111 registrations; the fresh 124 inventory has its own gate.
         del rules['registrations']['.github/workflows/refresh-kesher-plugin-resources-once.yml']
+        # Pin this dated fixture's retained registrations; later actors are tested in current_authority.
+        later=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/task4a-new-registrations-20261006.json').read_text())
+        for retained in later: del rules['registrations'][retained['path']]
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         evidence=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())

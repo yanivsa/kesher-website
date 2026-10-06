@@ -1,0 +1,19 @@
+{
+  "repo": "yanivsa/kesher-website",
+  "repository_id": 1239881973,
+  "repository_node_id": "R_kgDOSecY9Q",
+  "supervisor_task_id": "6aa71096e1788191ae791be184322d69",
+  "epoch": "UNRESOLVED",
+  "owner": "UNRESOLVED",
+  "reviewed_revision": "UNRESOLVED",
+  "https_origin": "UNRESOLVED",
+  "ledger_path": "/var/lib/kesher-cutover/invocations.sqlite",
+  "resource_bindings": {
+    "github": "R_kgDOSecY9Q",
+    "jules": "UNRESOLVED",
+    "notebooklm": "UNRESOLVED",
+    "youtube": "UNRESOLVED",
+    "cloudflare": "UNRESOLVED",
+    "image_provider": "UNRESOLVED"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "task": "4A native authority preflight and gateway readiness",
+  "verdict": "BLOCKED_BY_EXACT_EXTERNAL_CAPABILITIES",
+  "task4b_executable": false,
+  "starting_head": "35d1b7290965d55b0c92560ce64a3ffedab6212a",
+  "starting_remote_head": "35d1b7290965d55b0c92560ce64a3ffedab6212a",
+  "ending_head": "Containing single checkpoint commit; exact local/remote SHA verified after normal push and returned in final response.",
+  "worktree": "/Users/ninja/Documents/Kesher-worktrees/autonomous-stabilization-20260917",
+  "branch": "codex/kesher-autonomous-stabilization-20260917",
+  "final_read_only_observation": {
+    "observed_at": "2026-10-06T08:36:42.617689+00:00",
+    "main_sha": "db31dfdbc6f5539bc0b743db88990b4d7186a60b",
+    "branch_sha": "35d1b7290965d55b0c92560ce64a3ffedab6212a",
+    "registration_count": 124,
+    "all_active": true,
+    "inventory_unchanged": true,
+    "mutation_performed": false
+  },
+  "supervisor_expected_id": "6aa71096e1788191ae791be184322d69",
+  "supervisor_live_state_evidence": "User-supplied independent Antigravity audit: ACTIVE; fresh installed task/tool observer remains mandatory at cutover.",
+  "registrations": {
+    "total": 124,
+    "present_definition": 74,
+    "retained": 50,
+    "new": 10,
+    "all_active_at_readback": true,
+    "retained_classification": "UNRESOLVED_RETAINED_NO_AUTHORITY",
+    "historical_ref_dispatch_proven": false,
+    "infrastructure_separation_proofs_required": 19
+  },
+  "changed_files": [
+    "docs/forensics/2026-09-autonomous-stabilization/WORK_LOG.md",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-checkpoint-20261006.json",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-cloudflare-readback-20261006.json",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-gateway-installation-20261006.md",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-installation-template-20261006.json",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-live-action-matrix-20261006.json",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-live-action-matrix-20261006.md",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-native-readback-20261006.json",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-new-registrations-20261006.json",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-report-20261006.md",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-retained-registrations-20261006.json",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-state-readback-20261006.json",
+    "docs/forensics/2026-09-autonomous-stabilization/task4a-validation-logs-20261006.tar.gz",
+    "scripts/kesher_runtime/authority_policy.json",
+    "scripts/kesher_runtime/cutover_installation.py",
+    "scripts/kesher_runtime/cutover_service.py",
+    "scripts/kesher_runtime/production_cutover.py",
+    "tests/test_kesher_article_worker.py",
+    "tests/test_kesher_authority_topology.py",
+    "tests/test_kesher_current_authority.py",
+    "tests/test_kesher_cutover_installation.py",
+    "tests/test_kesher_production_cutover.py"
+  ],
+  "source_sha256": {
+    "scripts/kesher_runtime/cutover_installation.py": "71af2bfa048ecbd678ed0197b31b3f2b8a56c383a02f936835b50f7f3192d4fd",
+    "tests/test_kesher_cutover_installation.py": "6e815eb75a8811915dcc9934f99001c799cc2a11b21cb4a59208d7a3f5867193",
+    "scripts/kesher_runtime/authority_policy.json": "b5a19156b32c978c7fea2231bf037f8b5af10649410df2159b15adc8b1a4962c",
+    "scripts/kesher_runtime/cutover_service.py": "b01b99cac89ff39beb411a69c1ce3f135cb7b8fbdd964a2daf6e3cc2db645acb",
+    "scripts/kesher_runtime/production_cutover.py": "f485100f24ae1caa8f63228e80d27091ba06321eb00edfeefa04a9a52970bee7",
+    "tests/test_kesher_article_worker.py": "97d5d612f28c62e81b9f0b8e971a7480b7e7a3a631ab3ebca739d91c23c369de",
+    "tests/test_kesher_authority_topology.py": "59f5f96694ec223b29172c7b3a7dc31b5ed72ac2dfebeae0ed5a31986fe78268",
+    "tests/test_kesher_current_authority.py": "c51ddf7a8fe8089fc75dbbd3b3f46cd1e519a2129449a8eff189957500c3527e",
+    "tests/test_kesher_production_cutover.py": "6596202892daa682d93a4df4cf03d20c936e64988981b4174bb3cf98b76441ec"
+  },
+  "preserved_evidence_sha256": {
+    "docs/forensics/2026-09-autonomous-stabilization/legacy-media-evidence-report-20260928.md": "e58f2d24765f67792c41dbe157a2c51a4dc663faade9dc098e7a135926f637a2",
+    "docs/forensics/2026-09-autonomous-stabilization/legacy-media-adjudication-20260928.json": "a16c3801e845ee09bc61803a79301b445dfd3e40d28bf05caad1952a4aa96c33",
+    "docs/forensics/2026-09-autonomous-stabilization/migration-legacy-evidence-replay-20260928.json": "634cbe24513e5b0ac32b0df270a5dce188fb7dd5bd8a317112be823e176b4afd",
+    "docs/forensics/2026-09-autonomous-stabilization/checkpoint-report-20260928.md": "802273bff7b032a5e42e483c827c2fbcee7ec8cce5c23816b62f45d4807b4d66",
+    "docs/forensics/2026-09-autonomous-stabilization/migration-cutover-replay-20260927.json": "8cdd54c9a0d9891a8af064de1de575d7aa61465c7ef0fed0bcaa16d6edd5cdbb",
+    "docs/forensics/2026-09-autonomous-stabilization/task35-operator-readback-template-20261006.json": "cca6e88f85229367a76ece63f54e256e1a8bb3b25ebd1fa2b29025e1fae0b156"
+  },
+  "validation": {
+    "focused_authority_handover": {
+      "tests": 232,
+      "result": "OK"
+    },
+    "stall_paths": {
+      "tests": 106,
+      "result": "OK"
+    },
+    "complete_python": {
+      "tests": 1250,
+      "result": "OK",
+      "skips": 0
+    },
+    "new_test_methods": 11,
+    "call_chain_mismatches": 0,
+    "definition_mismatches": 0,
+    "git_diff_check": "PASS",
+    "workflow_definitions_unchanged": true,
+    "existing_authority_roles_capabilities_resources_credentials_dispatches_unchanged": true,
+    "closed52_quarantines_unchanged": true,
+    "log_sha256": {
+      "kesher-task4a-red.log": "be517258460fea20b794cb6efdcde3862a86abc1cf9782d1e3926f2e29e45b56",
+      "kesher-task4a-registration-red.log": "4b243375c00ece59f6d7fcda2cb3c0e75b0db43e7f591e53da6986b3841ddc32",
+      "kesher-task4a-focused.log": "2d57ae584cb515119a8cb701fdc00a5e6f10f442c087e9f841b60b536290641e",
+      "kesher-task4a-focused-final.log": "cda394d75b306af3e6ec9e021d43cb88465140057e01b67254f9b45d2e09ae1b",
+      "kesher-task4a-stalls.log": "099eb4200d5b95c2cf70ea07d893271e52ffb3e01454f4c04849236ab69f4afa",
+      "kesher-task4a-python.log": "2de32b057adebc6190ad867161d8713fa70053895faaa9b755e6b7677b5f0616"
+    }
+  },
+  "policy_digest": "8cac1d070893d99013e37f10869f113a1d218ab03d2972ef5c2dd2b6429f1990",
+  "independent_review": {
+    "status": "COMPLETE",
+    "reviewer": "/root/task4a_independent_review",
+    "critical": 0,
+    "important": 0,
+    "substantive_minor": 0,
+    "focused_tests": 17,
+    "result": "OK",
+    "iterations": 1,
+    "scope": "Bounded read-only Task4A diff; not Task4B or production certification",
+    "limitations": [
+      "9 of10 new archived source triples matched local Git objects; owner-20-second-hug-recovery source absent locally to reviewer. Parent collected exact native readback; no mismatch observed."
+    ],
+    "live_effects": false
+  },
+  "production_state_written": false,
+  "production_activated": false,
+  "public_completion_inferred": false,
+  "v5_retired": false,
+  "master_supervisor_mutated": false,
+  "live_ruleset_mutated": false,
+  "jules_provider_credentials_mutated": false,
+  "pr_created": false,
+  "merged": false
+}

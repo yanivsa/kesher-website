@@ -33,7 +33,7 @@ class CutoverRuntime:
         self.closure = copy.deepcopy(closure)
         self.key, self.infrastructure_check = key, infrastructure_check
 
-    def step(self):
+    def preflight(self):
         # Inspect ALL resources before the first write. A partial bootstrap must
         # never retire Actions while an unobservable provider still has authority.
         rows = {resource: self.fence._inspect(resource) for resource in REQUIRED_RESOURCES}
@@ -43,6 +43,10 @@ class CutoverRuntime:
             if row.get('protection') not in (None, desired):
                 raise StateInvalid('CUTOVER_COMPETING_RESOURCE_EPOCH')
         self.fence.control_plane_check(rows)
+        return rows
+
+    def step(self):
+        rows = self.preflight()
         for resource, row in rows.items():
             if row.get('protection') is not None: continue
             try:

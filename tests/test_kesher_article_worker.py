@@ -79,6 +79,17 @@ class ArticleWorkerTests(unittest.TestCase):
         self.assertEqual(self.api.creates, 1)
         self.assertFalse(self.server.document['slots'].get(DAY, {}).get('complete'))
 
+    def test_waiting_for_plan_or_user_is_stalled_without_duplicate_or_auto_approval(self):
+        for status in ('AWAITING_PLAN_APPROVAL','AWAITING_USER_FEEDBACK','PAUSED'):
+            with self.subTest(status=status):
+                self.setUp(); self.run_once()
+                self.api.rows[0]['state']=status
+                worker=self.command('create_article')
+                with self.assertRaisesRegex(JulesError,'JULES_STALLED'):
+                    run_article(worker,self.api,self.repo,policy='Approved article policy')
+                self.assertEqual(self.api.creates,1)
+                self.assertFalse(self.server.document['slots'].get(DAY,{}).get('complete'))
+
     def test_visible_pr_cannot_settle_until_exact_jules_session_finishes(self):
         self.run_once()
         self.repo.data['prs'] = [PR]
