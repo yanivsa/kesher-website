@@ -57,10 +57,14 @@ class OptionalVideoEnrichmentContractTests(unittest.TestCase):
             "https://youtu.be/short123",
         )
 
-    def test_production_workflow_keeps_automatic_broll_disabled(self) -> None:
-        workflow = Path(".github/workflows/kesher-daily-video.yml").read_text(encoding="utf-8")
-        self.assertIn('KESHER_BROLL_ENABLED: "false"', workflow)
-        self.assertNotIn('KESHER_BROLL_ENABLED: "true"', workflow)
+    def test_production_workflows_keep_automatic_broll_disabled(self) -> None:
+        for path in (
+            ".github/workflows/kesher-daily-video.yml",
+            ".github/workflows/kesher-short-v4.yml",
+        ):
+            workflow = Path(path).read_text(encoding="utf-8")
+            self.assertIn('KESHER_BROLL_ENABLED: "false"', workflow)
+            self.assertNotIn('KESHER_BROLL_ENABLED: "true"', workflow)
 
     def test_signature_overlay_is_inside_source_timeline_not_appended(self) -> None:
         stage = {

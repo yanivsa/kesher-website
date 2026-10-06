@@ -2515,7 +2515,7 @@
         "call_chain": {
           ".github/prompts/jules-remotion-video-upgrade.md": "b77ed706da6ca440bebb8fd4102b2ded5f0b96628039c372e50fe3fab3e13d6a",
           ".github/workflows/kesher-daily-video.yml": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
-          ".github/workflows/kesher-short-v4.yml": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+          ".github/workflows/kesher-short-v4.yml": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b",
           "config/kesher-production-contract.json": "459365f2ad2a0c9a5ef8de7120d704bf3423bbb8a08debd68adb058a61e62595",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-free-stock-source-20261001.py.txt": "a60b2592a5e3b845b81735047fddcd140da9e0c1954a4d1257f1c88a10570d2f",
           "docs/forensics/2026-09-autonomous-stabilization/github-three-dispatchers-goal-request-20261001.json.txt": "138a9faadef4e60f3b9a5f229571e3ca3f7cec53ebbfdca456ece5bbb44787a1",
@@ -3024,7 +3024,7 @@
       "review": {
         "call_chain": {
           ".github/workflows/kesher-daily-video.yml": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
-          ".github/workflows/kesher-short-v4.yml": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+          ".github/workflows/kesher-short-v4.yml": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b",
           "package-lock.json": "ba637b851692f17c32024d7662194bcf10ddf11d84bd2436ed52994886d7843e",
           "package.json": "f3f9783da74a71641932b939cc6189fa52d13c1047e5a5b5e39a50f42658af64",
           "scripts/article_claim_quality.py": "e38bbc97733816c8162cca9489475e8b9159e0fa4ecd29c388d0a93aec78c87d",
@@ -3169,7 +3169,7 @@
         "youtube_metadata",
         "youtube_upload"
       ],
-      "definition_sha256": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+      "definition_sha256": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b",
       "registration_id": 349292838,
       "resources": [
         "github.dispatch",
@@ -4421,7 +4421,7 @@
           "tests/test_short_pipeline_v4.py": "1d1efbb0ca90ecb5b4b46165aae05bcce57bc30927281350e2d34ef405bb07c4",
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "bd227df82e9712e0be4385f3ecdee0c636876442458e32db7a9bccb188e5c03b",
-          ".github/workflows/kesher-short-v4.yml": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+          ".github/workflows/kesher-short-v4.yml": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b",
           ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": "78be3f8fabc0634e845d3ef74fa2f8d3f55d34b88ad7e39ae49e9839b8b9531f",
           ".github/kesher-media-recovery-request.json": "3287651fefef6a0a5e919ac9a8b1540884709f034ddce963b9832c118d96ecd9"
         },
