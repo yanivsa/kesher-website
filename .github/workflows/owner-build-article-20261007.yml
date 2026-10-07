@@ -30,17 +30,10 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import json
+          import importlib.util, json, sys
           from pathlib import Path
           payload_path=Path('.owner-article-20261007.json')
           post=json.loads(payload_path.read_text(encoding='utf-8'))
-          old='/images/generated/blog/gottman-perpetual-problems-69-percent.jpg'
-          oldsrc='local://public/images/generated/blog/gottman-perpetual-problems-69-percent.jpg'
-          if post.get('image') == old and post.get('imageSourceUrl') == oldsrc:
-              post['image']='/images/generated/blog/couples-communication-distance.jpg'
-              post['imageSourceUrl']='local://public/images/generated/blog/couples-communication-distance.jpg'
-          elif post.get('image') != '/images/generated/blog/couples-communication-distance.jpg':
-              raise SystemExit('ARTICLE_IMAGE_GUARD_REFUSED')
           posts_path=Path('src/data/posts.json')
           posts=json.loads(posts_path.read_text(encoding='utf-8'))
           required={'id','slug','title','excerpt','content','date','category','tags','author','image','directAnswer','evidence','videoTitle','shortTitle','shortHook'}
@@ -54,12 +47,50 @@ jobs:
           same_date=[p.get('id') for p in posts if p.get('date') == post['date']]
           if same_date:
               raise SystemExit(f'ARTICLE_DATE_ALREADY_PUBLISHED {same_date}')
-          image=post['image']
-          image_path=Path('public') / image.removeprefix('/')
-          if not image_path.is_file() or image_path.stat().st_size < 30000:
-              raise SystemExit(f'ARTICLE_IMAGE_INVALID {image_path}')
-          if any(p.get('image') == image for p in posts):
-              raise SystemExit(f'ARTICLE_IMAGE_ALREADY_REFERENCED {image}')
+
+          # Self-heal hero selection: choose an existing local image whose path and pixels
+          # are not already used by any published post. This avoids fragile hard-coded fallbacks.
+          core_path=Path('.github/scripts/article-image-worker.py')
+          spec=importlib.util.spec_from_file_location('kesher_article_image_worker', core_path)
+          core=importlib.util.module_from_spec(spec)
+          sys.modules[spec.name]=core
+          spec.loader.exec_module(core)
+          used_paths={str(p.get('image') or '') for p in posts}
+          used_pixels=set()
+          for p in posts:
+              image=str(p.get('image') or '')
+              if not image.startswith('/images/'):
+                  continue
+              fp=Path('public')/image.lstrip('/')
+              if fp.is_file():
+                  try: used_pixels.add(core.image_pixel_sha256(fp.read_bytes()))
+                  except Exception: pass
+          selected=None
+          for fp in sorted(Path('public/images/generated/blog').glob('*')):
+              if not fp.is_file() or fp.stat().st_size < 30000:
+                  continue
+              rel='/' + fp.relative_to('public').as_posix()
+              if rel in used_paths:
+                  continue
+              data=fp.read_bytes()
+              try:
+                  core.validate_candidate(data)
+                  pixels=core.image_pixel_sha256(data)
+              except Exception:
+                  continue
+              if pixels in used_pixels:
+                  continue
+              selected=(rel, fp)
+              break
+          if not selected:
+              raise SystemExit('ARTICLE_NO_UNIQUE_VALID_LOCAL_HERO_AVAILABLE')
+          image, image_path=selected
+          post['image']=image
+          post['imageProvider']='Local'
+          post['imageSourceUrl']='local://public/' + image.lstrip('/')
+          post['imageIsFallback']=True
+          if not str(post.get('imageAlt') or '').strip():
+              post['imageAlt']='זוג בשיחה רגועה שממחישה יציאה מדפוס של ריבים חוזרים בזוגיות'
           posts.insert(0, post)
           posts_path.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
           print(f'ARTICLE_INSERTED slug={post["slug"]} title={post["title"]} image={image}')
