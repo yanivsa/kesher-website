@@ -38,39 +38,51 @@ jobs:
           python3 - <<'PY'
           import json
           import os
-          from datetime import datetime
           from pathlib import Path
-          from zoneinfo import ZoneInfo
 
           request = json.loads(Path('.github/kesher-media-recovery-request.json').read_text(encoding='utf-8'))
-          if request.get('enabled') is not True:
-              print('Targeted media recovery is disabled; nothing to dispatch.')
+          if request.get('enabled') is not True or request.get('completed') is True:
+              print('Targeted media recovery is disabled or completed; nothing to dispatch.')
               with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
                   out.write('enabled=false\n')
               raise SystemExit(0)
 
           slug = str(request.get('target_slug') or '').strip()
-          if not slug:
-              raise SystemExit('Enabled targeted media recovery requires target_slug')
+          target_date = str(request.get('target_date') or '').strip()
+          target_sha = str(request.get('target_content_sha256') or '').strip()
+          if not slug or not target_date or len(target_sha) != 64:
+              raise SystemExit('Enabled targeted media recovery requires target_slug, target_date, and target_content_sha256')
 
-          posts = json.loads(Path('src/data/posts.json').read_text(encoding='utf-8'))
-          matches = [p for p in posts if isinstance(p, dict) and str(p.get('slug') or p.get('id') or '').strip() == slug]
+          catalogs = []
+          for path in (Path('src/data/postsRecent.json'), Path('src/data/posts.json')):
+              if not path.exists():
+                  continue
+              data = json.loads(path.read_text(encoding='utf-8'))
+              if not isinstance(data, list):
+                  raise SystemExit(f'Article catalog {path} must contain a list')
+              catalogs.extend(data)
+
+          matches = [p for p in catalogs if isinstance(p, dict) and str(p.get('slug') or p.get('id') or '').strip() == slug]
           if len(matches) != 1:
-              raise SystemExit(f'Target slug {slug!r} matched {len(matches)} articles')
-
+              raise SystemExit(f'Target slug {slug!r} matched {len(matches)} articles across recent and historical catalogs')
           article = matches[0]
-          today = datetime.now(ZoneInfo('Asia/Jerusalem')).date().isoformat()
-          if str(article.get('date') or '') != today:
-              raise SystemExit(f'Recovery target {slug!r} is not today\'s article ({today})')
+          if str(article.get('date') or '') != target_date:
+              raise SystemExit(f'Recovery target {slug!r} article date does not match authoritative target_date {target_date}')
 
+          deliverables = request.get('deliverables') or {}
+          need_video = not bool(str(deliverables.get('overview_youtube_url') or '').strip())
+          need_short = not bool(str(deliverables.get('short_youtube_url') or '').strip())
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
               out.write('enabled=true\n')
               out.write(f'slug={slug}\n')
-          print(f'RECOVERY_TARGET_VERIFIED slug={slug} date={today}')
+              out.write(f'content_sha256={target_sha}\n')
+              out.write(f'need_video={str(need_video).lower()}\n')
+              out.write(f'need_short={str(need_short).lower()}\n')
+          print(f'RECOVERY_TARGET_VERIFIED slug={slug} date={target_date} need_video={need_video} need_short={need_short}')
           PY
 
       - name: Dispatch exact Video Overview worker
-        if: ${{ steps.target.outputs.enabled == 'true' }}
+        if: ${{ steps.target.outputs.enabled == 'true' && steps.target.outputs.need_video == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           TARGET_SLUG: ${{ steps.target.outputs.slug }}
@@ -83,7 +95,7 @@ jobs:
           echo "VIDEO_OVERVIEW_DISPATCHED slug=$TARGET_SLUG"
 
       - name: Dispatch exact Short worker
-        if: ${{ steps.target.outputs.enabled == 'true' }}
+        if: ${{ steps.target.outputs.enabled == 'true' && steps.target.outputs.need_short == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           TARGET_SLUG: ${{ steps.target.outputs.slug }}

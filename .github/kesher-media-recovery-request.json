@@ -1,18 +1,18 @@
 {
-  "enabled": false,
-  "target_slug": "jealousy-in-relationships",
+  "enabled": true,
+  "target_slug": "child-meltdown-after-school",
+  "target_date": "2026-10-06",
+  "target_content_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
   "issue": null,
-  "purpose": "Complete today's 2026-10-04 KESHER digital assets for the authoritative jealousy article using the bounded manual emergency media workers.",
-  "completed": true,
-  "failure_signature": "TODAY_MEDIA_RECOVERY_2026_10_04_JEALOUSY",
+  "purpose": "Complete today's authoritative KESHER chain for child-meltdown-after-school. Reuse existing source/artifacts/uploads when present; dispatch only missing Video Overview and Short stages and avoid duplicates.",
+  "completed": false,
+  "failure_signature": "TODAY_MEDIA_NOT_PUBLICLY_VERIFIED_2026_10_06",
   "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/jealousy-in-relationships",
-    "overview_youtube_url": "https://www.youtube.com/watch?v=9EkMz-dWxgo",
-    "short_youtube_url": "https://www.youtube.com/watch?v=jJMDG-EepRs",
-    "short_portrait_verified": true,
-    "short_width": 1080,
-    "short_height": 1920
+    "article_url": "https://kesher.saharoni.com/blog/child-meltdown-after-school",
+    "overview_youtube_url": null,
+    "short_youtube_url": null,
+    "short_portrait_verified": false
   },
-  "reconcile_seq": 11,
-  "reconcile_reason": "Verified both 2026-10-04 media deliverables are public and processed on the authoritative YouTube channel. Short recovery completed successfully; later Overview recovery was redundant and stopped fail-closed on stale local metadata before upload. No further recovery dispatch is required."
+  "reconcile_seq": 16,
+  "reconcile_reason": "Fresh evidence shows today's article is authoritative in postsRecent.json while public Video Overview/Short URLs are not yet verified. Dispatcher uses slug/date for authoritative admission and workers derive the exact source identity from the repository; this request intentionally avoids duplicate generation/upload."
 }
