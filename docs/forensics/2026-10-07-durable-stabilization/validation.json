@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-10-07T15:43:23.776471+00:00",
+  "timestamp": "2026-10-07T15:55:59.848415+00:00",
   "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
   "full_python": {
-    "tests_run": 1318,
+    "tests_run": 1319,
     "failures": [],
     "errors": [],
     "skipped": [],
@@ -16,14 +16,14 @@
       "tests.test_kesher_daily_pipeline.PipelineTestCase.test_workflow_restore_skips_invalid_state_and_restores_valid_older",
       "tests.test_kesher_daily_pipeline.PipelineTestCase.test_workflow_restore_starts_fresh_if_no_valid_artifact"
     ],
-    "seconds": 83.791,
+    "seconds": 86.33,
     "success": true
   },
   "commands": [
     {
       "command": "python3 -B /tmp/run-kesher-full-python.py",
       "result": "PASS",
-      "tests": 1318,
+      "tests": 1319,
       "runner_copy": "verification-runner.py.txt"
     },
     {
@@ -49,7 +49,7 @@
     {
       "command": "python3 -B -m unittest tests.test_master_supervisor_learning tests.test_master_supervisor_live tests.test_master_supervisor_live_qa tests.test_workflow_recovery_governance tests.test_v6_production_shadow -v",
       "result": "PASS",
-      "tests": 53
+      "tests": 54
     },
     {
       "command": "npm run check",
@@ -84,6 +84,11 @@
     {
       "command": "git diff --check",
       "result": "PASS"
+    },
+    {
+      "command": "python3 -B -m unittest tests.test_v6_production_shadow tests.test_master_supervisor_learning tests.test_kesher_v6_intervention_isolation -v",
+      "result": "PASS",
+      "tests": 32
     }
   ],
   "red_before_fix": {
@@ -119,6 +124,10 @@
     "final_hardening": {
       "tests": 13,
       "failures": 2
+    },
+    "public_metadata_vs_producer_lineage": {
+      "tests": 15,
+      "errors": 1
     }
   },
   "current_registration_inventory": {
@@ -134,7 +143,8 @@
       "GET"
     ],
     "production_dispatch_enabled": false,
-    "production_state_written": false
+    "production_state_written": false,
+    "public_completion_inferred": false
   },
   "limitations": [
     "Eight deliberately retired mirror tests are excluded by the repository compatibility suite; their canonical replacements are included. No other test skipped.",

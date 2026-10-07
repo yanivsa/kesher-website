@@ -49,7 +49,7 @@ class ShadowTests(unittest.TestCase):
         item,row=self.item();r=self.verdict(media_items=[item],youtube_rows={item['youtube_id']:row})
         self.assertEqual(r['short_state']['status'],'public_geometry_unproven')
         row['fileDetails']={'videoStreams':[{'widthPixels':1080,'heightPixels':1920}]}
-        self.assertEqual(self.verdict(media_items=[item],youtube_rows={item['youtube_id']:row})['short_state']['status'],'public_verified')
+        self.assertEqual(self.verdict(media_items=[item],youtube_rows={item['youtube_id']:row})['short_state']['status'],'public_metadata_verified')
         row['status']['privacyStatus']='unlisted'
         self.assertEqual(self.verdict(media_items=[item],youtube_rows={item['youtube_id']:row})['short_state']['status'],'unlisted')
     def test_wrong_media_source_and_duplicate_ids_fail_closed(self):
@@ -103,7 +103,7 @@ class ShadowTests(unittest.TestCase):
             return 200,json.dumps(payload).encode(),url
         client=self.shadow.ReadOnlyClient('yanivsa/kesher-website',youtube_token='test-owner-token',transport=transport)
         r=self.shadow.observe(client,slug='example',content_sha256=self.source['content_sha256'])
-        self.assertEqual(r['short_state']['status'],'public_verified')
+        self.assertEqual(r['short_state']['status'],'public_metadata_verified')
         self.assertEqual(r['short_state']['id'],item['youtube_id'])
         self.assertEqual({c.get_method() for c in calls},{'GET'})
         self.assertNotIn('test-owner-token',json.dumps(r))
@@ -117,3 +117,14 @@ class ShadowTests(unittest.TestCase):
         client=self.shadow.ReadOnlyClient('yanivsa/kesher-website',transport=transport)
         self.assertEqual(client.contents('src/data/posts.json','a'*40),[POST])
         self.assertTrue(calls[-1].endswith('/git/blobs/'+'b'*40))
+
+    def test_public_metadata_does_not_certify_producer_lineage_or_forged_source(self):
+        item,row=self.item();row['fileDetails']={'videoStreams':[{'widthPixels':1080,'heightPixels':1920}]}
+        r=self.verdict(media_items=[item],youtube_rows={item['youtube_id']:row})
+        self.assertFalse(r['public_completion_inferred'])
+        self.assertFalse(r['short_state']['producer_lineage_proven'])
+        item['source']=item['source']|{'title':'כותרת מקור מזויפת','short_title':'כותרת מקור מזויפת'}
+        item['youtube_metadata']=publication_metadata(item['source'],'short')
+        row['snippet'].update(item['youtube_metadata'])
+        r=self.verdict(media_items=[item],youtube_rows={item['youtube_id']:row})
+        self.assertEqual(r['short_state']['status'],'metadata_mismatch')

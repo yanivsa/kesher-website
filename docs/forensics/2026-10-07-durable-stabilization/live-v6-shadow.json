@@ -151,17 +151,20 @@
   "production_dispatch_enabled": false,
   "production_state_written": false,
   "provider_dispatch_enabled": false,
+  "public_completion_inferred": false,
   "short_state": {
     "kind": "short",
+    "producer_lineage_proven": false,
     "status": "identity_unproven"
   },
   "target_content_sha256": "1a51acdfc37b0519150bbd3e60d4c7a06cfd60ddf9737c43ae97e65e019db794",
   "target_slug": "how-to-stop-repeating-arguments",
-  "timestamp": "2026-10-07T15:26:27.036307+00:00",
+  "timestamp": "2026-10-07T15:54:36.224708+00:00",
   "upload_enabled": false,
   "v6_recommended_decision": "wait_for_maintainer",
   "video_overview_state": {
     "kind": "overview",
+    "producer_lineage_proven": false,
     "status": "identity_unproven"
   }
 }

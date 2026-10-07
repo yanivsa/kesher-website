@@ -573,3 +573,14 @@ Detailed completion, exact commands and read-only evidence:
 docs/forensics/2026-10-07-durable-stabilization/completion-report.md.
 Evidence-only completion commit and normal same-branch push follow; final exact
 local/remote SHA and clean status are independently read back in the report.
+
+Final evidence review tightened V6's public-metadata boundary: expectations derive
+from exact current-main source, not receipt-controlled source fields. Public
+metadata/portrait observation never certifies producer lineage or completion;
+producer_lineage_proven=false/public_completion_inferred=false. Forged-source
+regression RED then GREEN. Full final Python1319 GREEN/0 skips; focused final
+supervisor/governance/V6 54 GREEN. New live observation again20 GET/no mutations.
+Authority pins and683-input certification manifest refreshed explicitly; all
+frontend/build/browser inputs remain unchanged from successful npm check.
+Final amendment normal same-branch push/readback follows; broader cutover Goal
+remains incomplete and closed5.2 quarantines remain unchanged.

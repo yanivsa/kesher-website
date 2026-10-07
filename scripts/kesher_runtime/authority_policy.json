@@ -1029,8 +1029,8 @@
           "tests/test_voice_attempt_durability.py": "5b3c415407b20a6e8be2fadd99a23d2f84af0330080e22c44e8836b5187f1d10",
           "config/kesher-production-contract.json": "bc1dca50ebd645c5188828575b2d0861d9998d0699184e18e214060e298b2228",
           "scripts/kesher_runtime/sync_authority_policy.py": "353153ce2bee8543edd7cf74d40e5cb7d8de1ef76470172d87afe3d412f7fa08",
-          "scripts/kesher_v6_production_shadow.py": "d625b73cdc8adbfebf199505ad15372d353181aebe951d68b5f1d306c6a9b323",
-          "tests/test_v6_production_shadow.py": "aec6ac1defdad5af7bcb0497f14e852293d991cf060a303d21aeabacf1ee7aa3",
+          "scripts/kesher_v6_production_shadow.py": "b534646eb7bcfab5a5fe130a2869c1dedd5cd6f5e3c28efafbdd76b83f6f6b55",
+          "tests/test_v6_production_shadow.py": "cf0b86e5ad216ee40fa6dd6e04c808648ee801d4e1faa81128de27e624acb85d",
           "tests/test_image_catalog_replenishment.py": "f31b11c56429dd02e8f7dc9ee0ad39c5b7b1f5fcb8f32b8af11c7d0d5bef366e",
           "tests/test_jules_dual_identity.py": "b455361c0fa7fad60d592542fa4791bc50ae94189c117a3b9d2ecdf4a27814cd",
           "tests/test_workflow_recovery_governance.py": "99221c0b667c37933d8103937564bae8c78b8a635de706d6c30176028544348a",
@@ -1957,8 +1957,8 @@
           "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
           "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
           "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
-          "scripts/kesher_v6_production_shadow.py": "d625b73cdc8adbfebf199505ad15372d353181aebe951d68b5f1d306c6a9b323",
-          "tests/test_v6_production_shadow.py": "aec6ac1defdad5af7bcb0497f14e852293d991cf060a303d21aeabacf1ee7aa3"
+          "scripts/kesher_v6_production_shadow.py": "b534646eb7bcfab5a5fe130a2869c1dedd5cd6f5e3c28efafbdd76b83f6f6b55",
+          "tests/test_v6_production_shadow.py": "cf0b86e5ad216ee40fa6dd6e04c808648ee801d4e1faa81128de27e624acb85d"
         },
         "credential_services": {},
         "credentials": [],
@@ -2903,8 +2903,8 @@
           "tests/test_kesher_control_planes.py": "a7b342a96e01b8b1a4b0c212af5aa9bd441ce8ee1924a5f9922b938ccc03425a",
           "scripts/kesher_runtime/policy.py": "decf44d5ccfd7ee7f4c92e8cc32709fc35f46e0479abb844d99f7d5de5bfc147",
           "scripts/kesher_runtime/jules.py": "51c63357bffa74062e47797f5dd38db71d71f88930b4411dd0f19cae3e250858",
-          "scripts/kesher_v6_production_shadow.py": "d625b73cdc8adbfebf199505ad15372d353181aebe951d68b5f1d306c6a9b323",
-          "tests/test_v6_production_shadow.py": "aec6ac1defdad5af7bcb0497f14e852293d991cf060a303d21aeabacf1ee7aa3",
+          "scripts/kesher_v6_production_shadow.py": "b534646eb7bcfab5a5fe130a2869c1dedd5cd6f5e3c28efafbdd76b83f6f6b55",
+          "tests/test_v6_production_shadow.py": "cf0b86e5ad216ee40fa6dd6e04c808648ee801d4e1faa81128de27e624acb85d",
           "scripts/kesher_runtime/verification.py": "114ac6776ef0c0f432e1fd8a96473967141e5c224b6a12c4a1efe87e4a9003a9",
           "scripts/kesher_daily_pipeline.py": "829bdeea4ae5da0619c60bbb7f50a6609515def3bbf2546f2a9fc0699ed5ae05"
         },

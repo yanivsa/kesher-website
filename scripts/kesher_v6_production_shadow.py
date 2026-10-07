@@ -106,7 +106,7 @@ class ReadOnlyClient:
         if payload is not None:result['_lookup_complete']=True
         return result
 
-def _media(kind,items,rows,slug,content_hash):
+def _media(kind,items,rows,slug,content_hash,expected_source):
     expected_type='article_short' if kind=='short' else 'video_overview'
     exact=[i for i in items if i.get('type')==expected_type and (i.get('source') or {}).get('slug')==slug and (i.get('source') or {}).get('content_sha256')==content_hash and i.get('youtube_id')]
     identities={(i.get('id'),i['youtube_id']) for i in exact}
@@ -119,7 +119,12 @@ def _media(kind,items,rows,slug,content_hash):
     item=exact[0];video_id=item['youtube_id'];row=rows.get(video_id)
     result={'id':video_id,'url':'https://www.youtube.com/watch?v='+video_id,'kind':kind,'status':'remote_metadata_unavailable'}
     if not row:return result|{'status':'public_missing_or_inaccessible'} if rows.get('_lookup_complete') else result
-    try:match_youtube_metadata(item,row)
+    if not expected_source or any((item.get('source') or {}).get(key)!=expected_source.get(key) for key in ('slug','content_sha256','date','canonical_url')):
+        return result|{'status':'source_identity_unproven'}
+    # A receipt cannot define its own expected public metadata. Bind expectations
+    # to the independently read, exact-hash current-main article instead.
+    bound_item=item|{'source':expected_source}
+    try:match_youtube_metadata(bound_item,row)
     except (VerificationError,ValueError):return result|{'status':'metadata_mismatch'}
     privacy=(row.get('status') or {}).get('privacyStatus')
     result['privacy']=privacy
@@ -133,7 +138,7 @@ def _media(kind,items,rows,slug,content_hash):
         if type(width) is not int or type(height) is not int or width<=0 or height<=0:return result|{'status':'public_geometry_unproven'}
         result['dimensions']={'width':width,'height':height}
         if width>=height or abs(width/height-9/16)>0.03:return result|{'status':'geometry_mismatch'}
-    return result|{'status':'public_verified'}
+    return result|{'status':'public_metadata_verified'}
 
 def reconcile_snapshot(*,target_slug,target_content_sha256,post,main_sha,public_status,public_url,public_body,state,media_items,youtube_rows,pr,check_runs,workflow_runs,timestamp):
     state=state if isinstance(state,dict) else {}
@@ -157,16 +162,17 @@ def reconcile_snapshot(*,target_slug,target_content_sha256,post,main_sha,public_
     article=state.get('article') or {}
     if bound and article.get('status') in delivered and not healthy:drift.append('article_delivered_public_missing')
     if healthy and (not bound or article.get('status') not in delivered):drift.append('article_public_state_behind')
-    media={kind:_media(kind,media_items,youtube_rows,target_slug,target_content_sha256) for kind in ('overview','short')}
+    media={kind:_media(kind,media_items,youtube_rows,target_slug,target_content_sha256,source if source_matches else None) for kind in ('overview','short')}
+    for observation in media.values():observation['producer_lineage_proven']=False
     for kind,key in (('overview','long_video'),('short','short')):
-        stage=state.get(key) or {};public=media[kind]['status']=='public_verified'
+        stage=state.get(key) or {};public=media[kind]['status']=='public_metadata_verified'
         if bound and stage.get('status') in delivered and media[kind]['status'] in ('private','unlisted','metadata_mismatch','geometry_mismatch','public_missing_or_inaccessible'):
             drift.append(kind+'_delivered_public_missing')
         elif bound and stage.get('status') in delivered and media[kind]['status'] in ('identity_unproven','remote_metadata_unavailable'):
             drift.append(kind+'_delivery_unproven')
         if public and (not bound or stage.get('status') not in delivered):drift.append(kind+'_public_state_behind')
     if healthy and (not bound or (state.get('long_video') or {}).get('status') in ('pending','waiting')):drift.append('upstream_complete_downstream_waiting')
-    if media['overview']['status']=='public_verified' and (not bound or (state.get('short') or {}).get('status') in ('pending','waiting')):drift.append('upstream_complete_downstream_waiting')
+    if media['overview']['status']=='public_metadata_verified' and (not bound or (state.get('short') or {}).get('status') in ('pending','waiting')):drift.append('upstream_complete_downstream_waiting')
     pr_state=None;blocked=False
     if isinstance(pr,dict):
         pr_state={k:pr.get(k) for k in ('number','state','draft','merged','target_matches')};head=(pr.get('head') or {}).get('sha');pr_state['head_sha']=head
@@ -185,7 +191,7 @@ def reconcile_snapshot(*,target_slug,target_content_sha256,post,main_sha,public_
                 automation_state={'schema_version':state.get('schema_version'),'cycle':state.get('cycle'),'status':state.get('status'),'target_matches':bound},
                 github_pr_state=pr_state,detected_drift=sorted(set(drift)),active_v5_decision=active,
                 v6_recommended_decision=recommended,agreement=(active==recommended) if active else None,
-                production_dispatch_enabled=False,production_state_written=False,provider_dispatch_enabled=False,upload_enabled=False,
+                production_dispatch_enabled=False,production_state_written=False,public_completion_inferred=False,provider_dispatch_enabled=False,upload_enabled=False,
                 evidence=[],timestamp=timestamp)
 
 def _post(posts,slug):
