@@ -34,6 +34,13 @@ jobs:
           from pathlib import Path
           payload_path=Path('.owner-article-20261007.json')
           post=json.loads(payload_path.read_text(encoding='utf-8'))
+          old='/images/generated/blog/gottman-perpetual-problems-69-percent.jpg'
+          oldsrc='local://public/images/generated/blog/gottman-perpetual-problems-69-percent.jpg'
+          if post.get('image') == old and post.get('imageSourceUrl') == oldsrc:
+              post['image']='/images/generated/blog/couples-communication-distance.jpg'
+              post['imageSourceUrl']='local://public/images/generated/blog/couples-communication-distance.jpg'
+          elif post.get('image') != '/images/generated/blog/couples-communication-distance.jpg':
+              raise SystemExit('ARTICLE_IMAGE_GUARD_REFUSED')
           posts_path=Path('src/data/posts.json')
           posts=json.loads(posts_path.read_text(encoding='utf-8'))
           required={'id','slug','title','excerpt','content','date','category','tags','author','image','directAnswer','evidence','videoTitle','shortTitle','shortHook'}
@@ -55,7 +62,7 @@ jobs:
               raise SystemExit(f'ARTICLE_IMAGE_ALREADY_REFERENCED {image}')
           posts.insert(0, post)
           posts_path.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-          print(f'ARTICLE_INSERTED slug={post["slug"]} title={post["title"]}')
+          print(f'ARTICLE_INSERTED slug={post["slug"]} title={post["title"]} image={image}')
           PY
           npm ci --no-audit --no-fund
           npm run generate
@@ -67,6 +74,7 @@ jobs:
           set -euo pipefail
           rm -f .owner-article-20261007.json .owner-post-schema.json
           rm -f .github/workflows/owner-inspect-post-schema-20261007.yml
+          rm -f .github/workflows/owner-patch-article-image-20261007.yml
           rm -f .github/workflows/owner-build-article-20261007.yml
           git config user.name 'KESHER Owner Recovery'
           git config user.email 'actions@users.noreply.github.com'
