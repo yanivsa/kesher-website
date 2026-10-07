@@ -1,0 +1,30 @@
+[
+  {
+    "path": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+    "registration_id": 371480791,
+    "sha256": "05bffb42f83873ceb0ed926cbce664d1d1cc4d51be900c1fbec24f168fff5ee7",
+    "definition_deleted": true,
+    "live_registration_retired": false
+  },
+  {
+    "path": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+    "registration_id": 371466105,
+    "sha256": "45e23a628c402af1a7c29aa55c83572434d41986387d3705bee21d0553f97c69",
+    "definition_deleted": true,
+    "live_registration_retired": false
+  },
+  {
+    "path": ".github/workflows/kesher-repair-exact-video-state.yml",
+    "registration_id": 360696002,
+    "sha256": "287876a2b1c4a94d238e732a917f03e5d2423a27fcc39063b29e50783b4afc59",
+    "definition_deleted": true,
+    "live_registration_retired": false
+  },
+  {
+    "path": ".github/workflows/kesher-video-evidence-repair.yml",
+    "registration_id": 360831498,
+    "sha256": "7ff56691d9699b0b118fa9e5d53c14da6e3097fad5b3eaa7dfeff99682efa0f9",
+    "definition_deleted": true,
+    "live_registration_retired": false
+  }
+]

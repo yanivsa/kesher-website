@@ -2,6 +2,19 @@ name: Kesher Content Controller V6 Shadow
 
 on:
   workflow_dispatch:
+    inputs:
+      target_slug:
+        description: Exact article slug for read-only live reconciliation
+        required: true
+        type: string
+      target_content_sha256:
+        description: Exact authoritative content SHA-256
+        required: true
+        type: string
+      pr_number:
+        description: Optional exact article PR number
+        required: false
+        type: string
   pull_request:
     branches: [main]
     paths:
@@ -11,6 +24,8 @@ on:
       - "scripts/kesher_e2e_delivery_guard.py"
       - "scripts/kesher_content_controller_v5_runtime.py"
       - "scripts/kesher_content_controller_v6_runtime.py"
+      - "scripts/kesher_v6_production_shadow.py"
+      - "tests/test_v6_production_shadow.py"
       - "scripts/kesher_daily_pipeline.py"
       - "scripts/kesher_short_pipeline_v4.py"
       - "scripts/kesher_video_reconcile.py"
@@ -29,6 +44,9 @@ on:
 
 permissions:
   contents: read
+  actions: read
+  pull-requests: read
+  checks: read
 
 concurrency:
   group: kesher-content-controller-v6-${{ github.event.pull_request.number || github.ref }}
@@ -41,6 +59,8 @@ jobs:
     steps:
       - name: Checkout current branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
       - name: Verify shared intervention policy, enhancement contract and V5/V6 isolation
         run: |
@@ -49,6 +69,7 @@ jobs:
             tests.test_kesher_intervention_policy \
             tests.test_kesher_three_strike_runtime \
             tests.test_kesher_v6_intervention_isolation \
+            tests.test_v6_production_shadow \
             tests.test_kesher_optional_video_enrichment \
             tests.test_video_enhancement_contract
 
@@ -79,3 +100,23 @@ jobs:
           assert payload['concurrency_group'] == 'kesher-content-controller-v6'
           assert payload['production_dispatch_enabled'] is False
           PY
+
+      - name: Observe exact production target without mutation
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SLUG: ${{ inputs.target_slug }}
+          TARGET_SHA: ${{ inputs.target_content_sha256 }}
+          TARGET_PR: ${{ inputs.pr_number }}
+        run: |
+          set -euo pipefail
+          args=(--production-shadow --slug "$TARGET_SLUG" --content-sha256 "$TARGET_SHA" --github-summary)
+          if [[ -n "$TARGET_PR" ]]; then args+=(--pr-number "$TARGET_PR"); fi
+          python3 -B -m scripts.kesher_content_controller_v6_runtime "${args[@]}" | tee /tmp/kesher-v6-production-shadow.json
+
+      - name: Preserve read-only shadow diagnostic
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: kesher-v6-production-shadow
+          path: /tmp/kesher-v6-production-shadow.json

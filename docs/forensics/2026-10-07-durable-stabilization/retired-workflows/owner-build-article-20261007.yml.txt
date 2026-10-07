@@ -1,0 +1,72 @@
+name: Owner build KESHER article 20261007
+
+on:
+  push:
+    branches: [owner/kesher-assets-20261007]
+    paths: ['.github/workflows/owner-build-article-20261007.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: owner/kesher-assets-20261007
+      - name: Insert article with unique deterministic hero
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, math, struct, zlib
+          from pathlib import Path
+          post=json.loads(Path('.owner-article-20261007.json').read_text(encoding='utf-8'))
+          posts_path=Path('src/data/posts.json')
+          posts=json.loads(posts_path.read_text(encoding='utf-8'))
+          required={'id','slug','title','excerpt','content','date','category','tags','author','directAnswer','evidence','videoTitle','shortTitle','shortHook'}
+          missing=sorted(required-set(post))
+          if missing: raise SystemExit(f'ARTICLE_REQUIRED_FIELDS_MISSING {missing}')
+          if post['date']!='2026-10-07' or post['id']!=post['slug']: raise SystemExit('ARTICLE_IDENTITY_INVALID')
+          if any(p.get('id')==post['id'] or p.get('slug')==post['slug'] for p in posts): raise SystemExit('ARTICLE_DUPLICATE_IDENTITY')
+          if any(p.get('date')==post['date'] for p in posts): raise SystemExit('ARTICLE_DATE_ALREADY_PUBLISHED')
+          w,h=1200,630
+          rows=[]
+          for y in range(h):
+              row=bytearray([0])
+              for x in range(w):
+                  t=x/(w-1); u=y/(h-1)
+                  r=int(236-38*t+8*math.sin(u*math.pi)); g=int(228-28*t+6*math.cos(t*math.pi)); b=int(216-16*t)
+                  d=((x-w/2)/(w/2))**2+((y-h/2)/(h/2))**2; shade=max(0,1-0.10*d)
+                  r=int(r*shade); g=int(g*shade); b=int(b*shade)
+                  for cx,cy,rad,phase in ((470,315,155,0),(730,315,155,math.pi)):
+                      dx=x-cx; dy=y-cy; rr=(dx*dx+dy*dy)**0.5; ang=math.atan2(dy,dx)
+                      gap=abs(math.atan2(math.sin(ang-phase),math.cos(ang-phase)))<0.34
+                      if 18<abs(rr-rad)<34 and not gap: r,g,b=72,82,78
+                  n=((x*37+y*17+x*y*3)%13)-6
+                  row.extend((max(0,min(255,r+n)),max(0,min(255,g+n)),max(0,min(255,b+n))))
+              rows.append(bytes(row))
+          raw=b''.join(rows)
+          def chunk(kind,data): return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
+          png=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',w,h,8,2,0,0,0))+chunk(b'IDAT',zlib.compress(raw,6))+chunk(b'IEND',b'')
+          hero=Path('public/images/generated/blog/2026-10-07-recurring-arguments.png'); hero.parent.mkdir(parents=True,exist_ok=True); hero.write_bytes(png)
+          post['image']='/'+hero.relative_to('public').as_posix(); post['imageProvider']='KESHER Original'; post['imageSourceUrl']='local://generated/2026-10-07-recurring-arguments'; post['imageIsFallback']=False
+          post['imageAlt']='שתי לולאות משתלבות עם פתחים, המחשה חזותית ליציאה מדפוס של ריבים חוזרים בזוגיות'
+          posts.insert(0,post); posts_path.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(f'ARTICLE_INSERTED slug={post["slug"]} image={post["image"]} bytes={len(png)}')
+          PY
+          git diff --check
+      - name: Publish clean content commit for protected PR validation
+        run: |
+          set -euo pipefail
+          rm -f .owner-article-20261007.json .owner-post-schema.json
+          rm -f .github/workflows/owner-inspect-post-schema-20261007.yml
+          rm -f .github/workflows/owner-patch-article-image-20261007.yml
+          rm -f .github/workflows/owner-build-article-20261007.yml
+          git config user.name 'KESHER Owner Recovery'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'content(kesher): publish recurring-arguments guide for Oct 7'
+          git push origin HEAD:owner/kesher-assets-20261007

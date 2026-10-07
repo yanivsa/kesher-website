@@ -375,6 +375,8 @@ jobs:
           set -euo pipefail
           python -u scripts/jules_video_reviewer_v3.py \
             --state-dir "$KESHER_STATE_DIR" \
+            --target-slug "$TARGET_SLUG" \
+            --target-content-sha256 "$TARGET_CONTENT_SHA256" \
             --item-id "${{ steps.pending.outputs.item_id }}" \
             --review-branch "${{ steps.review_branch.outputs.branch }}" \
             --evidence-root "${{ steps.review_branch.outputs.evidence_root }}" \

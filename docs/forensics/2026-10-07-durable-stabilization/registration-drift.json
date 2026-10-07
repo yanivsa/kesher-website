@@ -1,0 +1,114 @@
+[
+  {
+    "id": 377173933,
+    "path": ".github/workflows/owner-build-article-20261007.yml",
+    "state": "active",
+    "current_main_definition_present": false,
+    "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+    "reviewed_run_samples": [
+      {
+        "id": 37633351767,
+        "head_sha": "64721fb456d244a6ae00ddf2f122e6e65bd949c6",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "path": ".github/workflows/owner-build-article-20261007.yml"
+      },
+      {
+        "id": 37606579657,
+        "head_sha": "dcc19a454b81caf233c2d8d22204ae8cda3f5d8f",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "path": ".github/workflows/owner-build-article-20261007.yml"
+      },
+      {
+        "id": 37604615350,
+        "head_sha": "e6d0fd0827247ed8b2e7e1dd1d3c26198ac5f0ac",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "path": ".github/workflows/owner-build-article-20261007.yml"
+      },
+      {
+        "id": 37594498791,
+        "head_sha": "72adc7c6b973b51d5101262bf48658ae9fc12c27",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "path": ".github/workflows/owner-build-article-20261007.yml"
+      },
+      {
+        "id": 37588371295,
+        "head_sha": "f62c3ce1ad99271e545a6c27ca9d83a3e985e0bc",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "path": ".github/workflows/owner-build-article-20261007.yml"
+      }
+    ],
+    "source_sha256": "8a1049e6d30db7be60635909b2855c4c36100e9e30ca2306e799c832db48f43b",
+    "source_commit": "64721fb456d244a6ae00ddf2f122e6e65bd949c6",
+    "source_evidence_path": "docs/forensics/2026-10-07-durable-stabilization/retired-workflows/owner-build-article-20261007.yml.txt"
+  },
+  {
+    "id": 377169971,
+    "path": ".github/workflows/owner-inspect-post-schema-20261007.yml",
+    "state": "active",
+    "current_main_definition_present": false,
+    "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+    "reviewed_run_samples": [
+      {
+        "id": 37587394660,
+        "head_sha": "d5f74981e096c9fef045e070c4bc2058042a903c",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "path": ".github/workflows/owner-inspect-post-schema-20261007.yml"
+      }
+    ],
+    "source_sha256": "08524da400b05d8d97694798507017956b32854594d5eaf50734f7b83100325a",
+    "source_commit": "d5f74981e096c9fef045e070c4bc2058042a903c",
+    "source_evidence_path": "docs/forensics/2026-10-07-durable-stabilization/retired-workflows/owner-inspect-post-schema-20261007.yml.txt"
+  },
+  {
+    "id": 377176340,
+    "path": ".github/workflows/owner-patch-article-image-20261007.yml",
+    "state": "active",
+    "current_main_definition_present": false,
+    "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+    "reviewed_run_samples": [
+      {
+        "id": 37588310202,
+        "head_sha": "80c0884b5b4f3e03463f0d9c3d7282da346a978f",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "failure",
+        "path": ".github/workflows/owner-patch-article-image-20261007.yml"
+      }
+    ],
+    "source_sha256": "3d05252782f4fd8908732b44ce69c3622d2af3f39299ec3cd5d0a73d6438198b",
+    "source_commit": "80c0884b5b4f3e03463f0d9c3d7282da346a978f",
+    "source_evidence_path": "docs/forensics/2026-10-07-durable-stabilization/retired-workflows/owner-patch-article-image-20261007.yml.txt"
+  },
+  {
+    "id": 377168191,
+    "path": ".github/workflows/owner-patch-pr1082.yml",
+    "state": "active",
+    "current_main_definition_present": false,
+    "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+    "reviewed_run_samples": [
+      {
+        "id": 37587178176,
+        "head_sha": "34e7378470b0a5c3238601c0dd6d2186b296874e",
+        "event": "push",
+        "status": "completed",
+        "conclusion": "success",
+        "path": ".github/workflows/owner-patch-pr1082.yml"
+      }
+    ],
+    "source_sha256": "cb1f8ef9ad96dad37a5562f3f061f7f76f213af685d6503d2c6b53540d7241a4",
+    "source_commit": "34e7378470b0a5c3238601c0dd6d2186b296874e",
+    "source_evidence_path": "docs/forensics/2026-10-07-durable-stabilization/retired-workflows/owner-patch-pr1082.yml.txt"
+  }
+]

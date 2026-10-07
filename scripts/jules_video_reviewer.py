@@ -68,6 +68,9 @@ def load_pending(state_dir: Path, item_id: str | None = None) -> tuple[dict[str,
         item = existing_item(state, item_id, kind='overview')
     except PipelineError as exc:
         raise ReviewError(str(exc)) from exc
+    source = item.get('source') or {}
+    if not source.get('slug') or not source.get('content_sha256'):
+        raise ReviewError('JULES_TARGET_CONTENT_IDENTITY_REQUIRED')
     if item.get('status') != 'pending_review':
         raise ReviewError('Exact requested item is not pending review')
     return state, item
@@ -439,13 +442,19 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--state-dir", type=Path, required=True)
     parser.add_argument("--item-id", required=True)
+    parser.add_argument("--target-slug", required=True)
+    parser.add_argument("--target-content-sha256", required=True)
     parser.add_argument("--review-branch", required=True)
     parser.add_argument("--evidence-root", required=True)
     parser.add_argument("--timeout-seconds", type=int, default=3600)
     args = parser.parse_args()
+    if not args.target_slug.strip() or not args.target_content_sha256.strip():
+        parser.error("Exact nonempty target slug and content SHA-256 required")
     api_key = os.environ.get("JULES_API_KEY", "").strip()
     if not api_key:
         raise ReviewError("JULES_API_KEY is missing")
+    os.environ['TARGET_SLUG'] = args.target_slug
+    os.environ['TARGET_CONTENT_SHA256'] = args.target_content_sha256
     _, item = load_pending(args.state_dir, args.item_id)
     hashes = expected_hashes(args.state_dir, item)
     prompt = build_prompt(args.evidence_root, item, hashes)

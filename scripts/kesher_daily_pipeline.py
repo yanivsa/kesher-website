@@ -128,6 +128,20 @@ def save_state(state: dict[str, Any]) -> None:
     if isinstance(state, CanonicalMediaState):
         state.persist()
         return
+    # Legacy snapshots may be restored by a later controller cycle. A stale
+    # snapshot must never erase or decrement an already persisted attempt.
+    if STATE_FILE.exists():
+        previous = load_state()
+        incoming = {row.get('id'): row for row in state.get('items', [])}
+        for prior in previous.get('items', []):
+            attempt = prior.get('fresh_generation_attempt', 1)
+            if type(attempt) is not int or attempt < 1:
+                continue  # release tombstones are not generation attempts
+            current = incoming.get(prior.get('id'))
+            if current is None and (attempt > 1 or prior.get('retry_of')):
+                raise PipelineError('FRESH_GENERATION_ATTEMPT_REGRESSION: receipt missing')
+            if current is not None and (type(current.get('fresh_generation_attempt',1)) is not int or current.get('fresh_generation_attempt',1) < attempt):
+                raise PipelineError('FRESH_GENERATION_ATTEMPT_REGRESSION: stale item')
     state["updated_at"] = utc_now()
     atomic_json_write(STATE_FILE, state)
 
@@ -444,6 +458,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
         "id": f"video-{stamp}-{source['content_sha256'][:10]}",
         "type": "video_overview",
         "voice_constraint_version": VOICE_CONSTRAINT_VERSION,
+        "fresh_generation_attempt": 1,
         "israel_date": israel_now().date().isoformat(),
         "status": "source_selected",
         "source": {key: value for key, value in source.items() if key not in {"body", "youtube_metadata"}},

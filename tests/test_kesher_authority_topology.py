@@ -136,14 +136,14 @@ class AuthorityObservationTests(unittest.TestCase):
         path, known = next(iter(rules['registrations'].items()))
         return rules, {'id': known['id'], 'path': path, 'state': 'disabled_manually'}
 
-    def test_all_50_missing_yaml_identities_require_fresh_complete_drain(self):
+    def test_all_58_missing_yaml_identities_require_fresh_complete_drain(self):
         from scripts.kesher_runtime.authority_topology import classify_registered, policy
         rules = policy(ROOT)
         rows = [{'id': entry['id'], 'path': path, 'state': 'disabled_manually'}
                 for path, entry in rules['registrations'].items()]
-        self.assertEqual(len(rows), 50)
+        self.assertEqual(len(rows), 58)
         result = classify_registered(rows, rules, active_runs=[], runs_complete=True)
-        self.assertEqual(len(result), 50)
+        self.assertEqual(len(result), 58)
         self.assertTrue(all(row['classification'] == 'retired_missing_yaml' for row in result))
         self.assertTrue(all(row['role'] == 'retired' and not row['definition_present'] for row in result))
 

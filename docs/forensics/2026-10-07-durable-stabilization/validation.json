@@ -1,0 +1,149 @@
+{
+  "timestamp": "2026-10-07T15:43:23.776471+00:00",
+  "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+  "full_python": {
+    "tests_run": 1318,
+    "failures": [],
+    "errors": [],
+    "skipped": [],
+    "retired_contracts_from_repository_compatibility_suite": [
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_durable_remotion_policy_file_exists_and_contains_required_rules",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_jules_review_api_timeout_remains_blocked_from_upload",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_jules_review_parse_failure_remains_blocked_from_upload",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_jules_review_replaces_timed_out_session_autonomously",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_reviewer_prompt_evaluates_source_video_first_and_no_invented_objects",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_technical_verification_failure_fatal_and_blocks_upload",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_workflow_restore_skips_invalid_state_and_restores_valid_older",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_workflow_restore_starts_fresh_if_no_valid_artifact"
+    ],
+    "seconds": 83.791,
+    "success": true
+  },
+  "commands": [
+    {
+      "command": "python3 -B /tmp/run-kesher-full-python.py",
+      "result": "PASS",
+      "tests": 1318,
+      "runner_copy": "verification-runner.py.txt"
+    },
+    {
+      "command": "python3 -B -m unittest tests.test_image_catalog_replenishment tests.test_article_image_worker tests.test_article_image_fallback_exhaustion tests.test_kesher_article_image_worker -v",
+      "result": "PASS",
+      "tests": 44
+    },
+    {
+      "command": "python3 -B -m unittest tests.test_voice_attempt_durability tests.test_video_reconcile tests.test_media_voice_policy_contract tests.test_kesher_generation_attempts -v",
+      "result": "PASS",
+      "tests": 54
+    },
+    {
+      "command": "python3 -B -m unittest tests.test_jules_dual_identity tests.test_video_exact_item_binding tests.test_video_exact_item_callers tests.test_video_review_schema tests.test_video_review_policy -v",
+      "result": "PASS",
+      "tests": 49
+    },
+    {
+      "command": "python3 -B -m unittest tests.test_kesher_authority_topology tests.test_kesher_current_authority tests.test_kesher_production_cutover tests.test_kesher_three_dispatchers tests.test_authority_policy_sync -v",
+      "result": "PASS",
+      "tests": 95
+    },
+    {
+      "command": "python3 -B -m unittest tests.test_master_supervisor_learning tests.test_master_supervisor_live tests.test_master_supervisor_live_qa tests.test_workflow_recovery_governance tests.test_v6_production_shadow -v",
+      "result": "PASS",
+      "tests": 53
+    },
+    {
+      "command": "npm run check",
+      "result": "PASS",
+      "video_policy_tests": 245,
+      "controller_tests": 500,
+      "vitest_tests": 152,
+      "browser_tests": 140,
+      "gates": [
+        "generate",
+        "lint",
+        "content",
+        "typecheck",
+        "build",
+        "prerender",
+        "verify:dist"
+      ]
+    },
+    {
+      "command": "python3 scripts/kesher_runtime/sync_authority_policy.py --check",
+      "result": "PASS",
+      "stale_hashes": 0
+    },
+    {
+      "command": "python3 scripts/kesher_runtime/workflow_governance.py",
+      "result": "PASS"
+    },
+    {
+      "command": "/Users/ninja/.codex/tmp/kesher-tools/actionlint-1.7.12/actionlint -shellcheck= -pyflakes=",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "red_before_fix": {
+    "image_exhaustion": {
+      "tests": 1,
+      "failures": 1
+    },
+    "voice_attempts": {
+      "tests": 6,
+      "failures": 5
+    },
+    "jules_binding": {
+      "tests": 5,
+      "failures": 2
+    },
+    "authority_sync": {
+      "tests": 4,
+      "failures": 3
+    },
+    "oneoff_governance": {
+      "tests": 4,
+      "failures": 4
+    },
+    "supervisor_learning": {
+      "tests": 7,
+      "failures": 6,
+      "errors": 1
+    },
+    "v6_observer": {
+      "tests": 11,
+      "errors": 11
+    },
+    "final_hardening": {
+      "tests": 13,
+      "failures": 2
+    }
+  },
+  "current_registration_inventory": {
+    "total": 129,
+    "definitions": 71,
+    "retained_missing_definitions": 58,
+    "reconciled": true,
+    "live_retirement_claimed": false
+  },
+  "live_shadow": {
+    "external_requests": 20,
+    "methods": [
+      "GET"
+    ],
+    "production_dispatch_enabled": false,
+    "production_state_written": false
+  },
+  "limitations": [
+    "Eight deliberately retired mirror tests are excluded by the repository compatibility suite; their canonical replacements are included. No other test skipped.",
+    "No independent-agent review was performed in this phase.",
+    "No remote CI run on the final stabilization head is claimed.",
+    "Build outputs regenerated for certification were restored to their preflight/current-main bytes; authoritative source catalog unchanged."
+  ],
+  "production_effects": false,
+  "merge_performed": false,
+  "cutover_performed": false,
+  "schema6_activated": false
+}

@@ -8,7 +8,7 @@
   },
   "supervisor": {
     "owner": "kesher-master-supervisor",
-    "mode": "live_s1_s2_s3",
+    "mode": "bounded_rescue_then_durable_correction",
     "production_state_writer": "kesher-content-controller-v5",
     "escalation_owner": "kesher-master-supervisor",
     "state_ref": "automation-supervisor-state",
@@ -17,9 +17,8 @@
     "single_action_per_audit": true,
     "escalation": {
       "S1": "controller",
-      "S2": "jules",
-      "S3": "direct",
-      "after_S3_same_incident": "human_blocker"
+      "S2": "jules_durable_correction",
+      "after_S2_same_incident": "human_blocker"
     },
     "external_running_heartbeat_exception_minutes": 90,
     "recovery_commands": {
@@ -56,9 +55,27 @@
       "payment",
       "irreversible_external_action",
       "production_identity_ambiguity",
-      "same_incident_after_s3",
+      "durable_correction_after_s2",
       "no_safe_direct_adapter"
-    ]
+    ],
+    "learning": {
+      "window_days": 7,
+      "first_occurrence_rescue_attempts": 1,
+      "fingerprint_fields": [
+        "component",
+        "failure_class",
+        "state_stage"
+      ],
+      "oneoff_recovery_workflows_allowed": false,
+      "recurrence_requires": [
+        "root_cause_classification",
+        "component_owner",
+        "generic_correction",
+        "deterministic_regression"
+      ],
+      "resolution_requires_merged_correction_and_regression": true,
+      "v6_shadow_comparison": true
+    }
   },
   "retry": {
     "max_attempts_per_stage": 3,

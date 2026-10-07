@@ -12,8 +12,6 @@ ROOT = Path(__file__).resolve().parents[1]
 DAILY = '.github/workflows/kesher-daily-video.yml'
 SHORT = '.github/workflows/kesher-short-v4.yml'
 PARENTS = {
-    '.github/workflows/kesher-exact-marshmallow-video-resume.yml': 371480791,
-    '.github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml': 371466105,
     '.github/workflows/kesher-goal-dispatch.yml': 371553288,
 }
 CHILDREN = {DAILY:331086666, SHORT:349292838}
@@ -132,15 +130,22 @@ class ThreeDispatcherAuthorityTests(unittest.TestCase):
                     active_runs=[],runs_complete=True)[0]
                 self.assertEqual(actor['role'],'retired')
 
-    def test_operation_scopes_exclude_unreachable_jules_provider_and_upload(self):
+    def test_deleted_definitions_retain_exact_registration_and_require_live_retirement(self):
         rules = policy(ROOT)
-        resume = rules['workflows'][next(p for p in PARENTS if p.endswith('resume.yml'))]
-        upload = rules['workflows'][next(p for p in PARENTS if p.endswith('upload-recovery.yml'))]
-        self.assertIn('jules.sessions',resume['resources']); self.assertIn('notebooklm.jobs',resume['resources'])
-        self.assertNotIn('youtube.objects',resume['resources']); self.assertNotIn('youtube.metadata',resume['resources'])
-        self.assertIn('youtube.objects',upload['resources']); self.assertIn('youtube.metadata',upload['resources'])
-        self.assertNotIn('jules.sessions',upload['resources']); self.assertNotIn('notebooklm.jobs',upload['resources'])
-        self.assertNotIn('github.pull_requests',upload['resources'])
+        retired = {
+            '.github/workflows/kesher-exact-marshmallow-video-resume.yml':371480791,
+            '.github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml':371466105,
+            '.github/workflows/kesher-repair-exact-video-state.yml':360696002,
+            '.github/workflows/kesher-video-evidence-repair.yml':360831498,
+        }
+        for path, identity in retired.items():
+            self.assertFalse((ROOT/path).exists())
+            self.assertEqual(rules['registrations'][path]['id'], identity)
+            with self.assertRaises(StateInvalid):
+                classify_registered([dict(id=identity,path=path,state='active')],rules,
+                                    active_runs=[],runs_complete=True)
+            self.assertEqual(classify_registered([dict(id=identity,path=path,state='disabled_manually')],
+                             rules,active_runs=[],runs_complete=True)[0]['role'],'retired')
         inventory(ROOT,rules)
 
     def test_each_active_zero_run_parent_blocks_and_disabled_drained_can_retire(self):

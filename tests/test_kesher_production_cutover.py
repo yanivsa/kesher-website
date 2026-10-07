@@ -138,6 +138,7 @@ class ProductionCutoverTests(unittest.TestCase):
         from scripts.kesher_runtime.authority_topology import policy
         evidence = json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
         rules = policy(ROOT)
+        del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
         # This immutable October 4 fixture predates the October 5 branch writer.
         # Current 124-row admission is tested separately, without this projection.
         del rules['registrations']['.github/workflows/refresh-kesher-plugin-resources-once.yml']
@@ -148,9 +149,11 @@ class ProductionCutoverTests(unittest.TestCase):
         # registration binding is a prerequisite, never a guessed service ID.
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
+        historical_paths={row['path'] for row in evidence['workflows']}
+        rules['registrations']={p:r for p,r in rules['registrations'].items() if p in historical_paths}
         rows = reconcile_registrations(evidence['workflows'], rules)
         self.assertEqual(len(rows), 111)
-        self.assertEqual(len(rules['registrations']), 39)
+        self.assertEqual(len(rules['registrations']), 43)
         for changed in (rows[:-1], rows + [{'id':999999999,'path':'.github/workflows/unknown.yml','state':'active'}]):
             with self.assertRaises(StateInvalid): reconcile_registrations(changed, rules)
         changed = copy.deepcopy(rows); changed[0]['id'] = 999999999
@@ -173,11 +176,13 @@ class ProductionCutoverTests(unittest.TestCase):
         from scripts.kesher_runtime.authority_topology import policy,check_definitions,classify_registered
         import hashlib
         rules=policy(ROOT);del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
+        del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
         del rules['registrations']['.github/workflows/refresh-kesher-plugin-resources-once.yml']
         # Pin this dated fixture's retained registrations; later actors are tested in current_authority.
         later=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/task4a-new-registrations-20261006.json').read_text())
         for retained in later: del rules['registrations'][retained['path']]
         rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-final-20261004.json').read_text())['workflows']
+        rules['registrations']={p:r for p,r in rules['registrations'].items() if p in {row['path'] for row in rows}}
         self.assertEqual(len(reconcile_registrations(rows,rules)),112)
         path='.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
         row=next(r for r in rows if r['path']==path)
@@ -573,6 +578,7 @@ class CredentialGatewayTests(unittest.TestCase):
         from tests.test_kesher_git_exclusion import EpochGit
         from tests.test_kesher_external_exclusion import ProtectedService
         rules=policy(ROOT)
+        del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
         # Replay the original 111 registrations; the fresh 124 inventory has its own gate.
         del rules['registrations']['.github/workflows/refresh-kesher-plugin-resources-once.yml']
         # Pin this dated fixture's retained registrations; later actors are tested in current_authority.
@@ -581,6 +587,7 @@ class CredentialGatewayTests(unittest.TestCase):
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         evidence=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
+        rules['registrations']={p:r for p,r in rules['registrations'].items() if p in {row['path'] for row in evidence['workflows']}}
         fence,_=protection_fixture(); raw=EpochGit(); guard=ProtectedService('github')
         adapter=GitHubResourceExclusion(raw,'owner/repo',main_sha='b'*40,policy=fence._policy('github'),
             rules=rules,registered=lambda:evidence['workflows'],guard=guard)

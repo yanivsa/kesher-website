@@ -189,7 +189,24 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
         raise pipeline.PipelineError(
             f"Published source changed after video selection for {slug}"
         )
-    retries = int(old.get("technical_retry_count") or 0)
+    recorded = old.get('fresh_generation_attempt', 1)
+    if type(recorded) is not int or recorded < 1:
+        raise pipeline.PipelineError('FRESH_GENERATION_ATTEMPT_INVALID')
+    retries = max(int(old.get("technical_retry_count") or 0), recorded - 1)
+    voice_rejection = (old.get('failure_signature') == 'wrong_narrator_gender'
+                       or 'Detected male voice' in str((old.get('review_notes') or {}).get('technical', '')))
+    if voice_rejection:
+        policy = json.loads(pipeline.PRODUCTION_CONTRACT_FILE.read_text())['video']['voice_policy']
+        if recorded >= int(policy['female_attempts_before_fallback']):
+            if (policy['accept_male_on_final_female_attempt'] is True
+                    and policy['fallback_voice_after_failed_female_attempts'] == 'male'
+                    and old.get('raw_mp4') and old.get('task_id')):
+                old['status'] = 'downloaded'
+                old['voice_fallback_revalidation'] = True
+                old['updated_at'] = pipeline.utc_now()
+                return old  # same receipt, no fourth provider generation
+            _mark_released(old, 'final_voice_attempt_has_no_recoverable_artifact')
+            return None
     if retries >= MAX_TECHNICAL_RETRIES:
         _mark_released(old, "fresh_generation_budget_exhausted")
         return None
@@ -206,6 +223,7 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
         replacement["source_mode"] = old["source_mode"]
     replacement["technical_retry_count"] = retries + 1
     replacement["fresh_generation_attempt"] = retries + 2
+    replacement["id"] += f"-a{retries + 2}"
     replacement["retry_of"] = old.get("id")
     state.setdefault("items", []).append(replacement)
     return replacement

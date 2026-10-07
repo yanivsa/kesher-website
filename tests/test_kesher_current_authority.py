@@ -20,6 +20,7 @@ class CurrentAuthorityTests(unittest.TestCase):
 
     def test_exact_current_inventory_reconciles_but_active_missing_definition_is_denied(self):
         rules = policy(ROOT)
+        del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
         # Replay the immutable October 5 inventory; current 124-row admission is tested below.
         historical_paths={row["path"] for row in self.rows()}
         rules["registrations"]={p:r for p,r in rules["registrations"].items() if p in historical_paths}
@@ -32,7 +33,9 @@ class CurrentAuthorityTests(unittest.TestCase):
 
     def test_task4a_124_inventory_pins_new_actors_without_granting_authority(self):
         rules=policy(ROOT)
+        del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
         rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/task4a-native-readback-20261006.json').read_text())['workflows']
+        rules['registrations']={p:r for p,r in rules['registrations'].items() if p in {row['path'] for row in rows}}
         self.assertEqual(len(reconcile_registrations(rows,rules)),124)
         previous={r['path'] for r in self.rows()}
         new=[r for r in rows if r['path'] not in previous]
@@ -46,6 +49,18 @@ class CurrentAuthorityTests(unittest.TestCase):
                 retired=row | {'state':'disabled_manually'}
                 self.assertEqual(classify_registered([retired],rules,active_runs=[],runs_complete=True)[0]['role'],'retired')
         with self.assertRaises(StateInvalid):reconcile_registrations(self.rows(),rules)
+
+    def test_current_129_inventory_preserves_new_oneoffs_without_admitting_active_writers(self):
+        rules=policy(ROOT)
+        evidence=json.loads((ROOT/'docs/forensics/2026-10-07-durable-stabilization/current-registrations.json').read_text())
+        self.assertEqual(len(reconcile_registrations(evidence['workflows'],rules)),129)
+        drift=json.loads((ROOT/'docs/forensics/2026-10-07-durable-stabilization/registration-drift.json').read_text())
+        self.assertEqual(len(drift),4)
+        for row in drift:
+            with self.subTest(path=row['path']), self.assertRaises(StateInvalid):
+                classify_registered([{k:row[k] for k in ('id','path','state')}],rules,active_runs=[],runs_complete=True)
+            changed={k:row[k] for k in ('id','path','state')};changed['id']+=1
+            with self.assertRaises(StateInvalid):validate_registered_inventory([changed],rules)
 
     def test_registered_cutover_id_cannot_rebind_even_to_another_known_path(self):
         rules = policy(ROOT)
