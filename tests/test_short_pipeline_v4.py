@@ -189,18 +189,21 @@ class ShortPipelineV4Tests(unittest.TestCase):
         self.assertIn("FullScreenSignatureOutro", source)
         self.assertNotIn("signatureVideoSrc", source)
 
+    @mock.patch.dict(os.environ, {'KESHER_MEDIA_MODE': 'article_short'})
     def test_active_item_scopes_to_target_slug_when_multiple_active_exist(self):
         state = {
             "version": 1,
             "items": [
                 {
                     "id": "item-old",
+                    "type": "article_short",
                     "status": "downloaded",
                     "uploaded": False,
                     "source": {"slug": "old-slug"},
                 },
                 {
                     "id": "item-new",
+                    "type": "article_short",
                     "status": "generating",
                     "uploaded": False,
                     "source": {"slug": "new-slug"},

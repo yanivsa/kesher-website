@@ -17,9 +17,9 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from kesher_daily_pipeline import REVIEW_FRAME_COUNT
+    from kesher_daily_pipeline import REVIEW_FRAME_COUNT, PipelineError, existing_item
 except ImportError:
-    from scripts.kesher_daily_pipeline import REVIEW_FRAME_COUNT
+    from scripts.kesher_daily_pipeline import REVIEW_FRAME_COUNT, PipelineError, existing_item
 
 
 API_BASE = "https://jules.googleapis.com/v1alpha"
@@ -59,15 +59,18 @@ def request_json(method: str, path: str, api_key: str, body: dict[str, Any] | No
         raise ReviewError(f"Jules API network error: {exc.reason}") from exc
 
 
-def load_pending(state_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+def load_pending(state_dir: Path, item_id: str | None = None) -> tuple[dict[str, Any], dict[str, Any]]:
     state_path = state_dir / "state.json"
     if not state_path.exists():
         raise ReviewError("state.json does not exist")
     state = json.loads(state_path.read_text(encoding="utf-8"))
-    pending = [item for item in state.get("items", []) if item.get("status") == "pending_review"]
-    if len(pending) != 1:
-        raise ReviewError(f"Expected exactly one pending review item, found {len(pending)}")
-    return state, pending[0]
+    try:
+        item = existing_item(state, item_id, kind='overview')
+    except PipelineError as exc:
+        raise ReviewError(str(exc)) from exc
+    if item.get('status') != 'pending_review':
+        raise ReviewError('Exact requested item is not pending review')
+    return state, item
 
 
 def load_remotion_policy() -> str:
@@ -401,7 +404,13 @@ def obtain_validated_decision(
     raise ReviewError("Exhausted Jules review attempts")
 
 
-def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> None:
+def record_decision(state_dir: Path, decision: dict[str, Any], session: str,
+                    reviewed_item: dict[str, Any] | None = None) -> None:
+    _, current = load_pending(state_dir, decision['item_id'])
+    if reviewed_item is not None and any(current.get(key) != reviewed_item.get(key)
+                                        for key in ('id', 'source', 'type', 'fresh_generation_attempt')):
+        raise ReviewError('Exact reviewed identity changed before recording')
+    validate_decision(decision, current, expected_hashes(state_dir, current))
     command = [
         sys.executable,
         "-u",
@@ -417,6 +426,10 @@ def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> 
     ]
     env = os.environ.copy()
     env["KESHER_STATE_DIR"] = str(state_dir)
+    env["TARGET_ITEM_ID"] = current['id']
+    env["TARGET_SLUG"] = current['source']['slug']
+    env["TARGET_CONTENT_SHA256"] = current['source']['content_sha256']
+    env["TARGET_GENERATION_ATTEMPT"] = str(current.get('fresh_generation_attempt', 1))
     result = subprocess.run(command, env=env, text=True, check=False)
     if result.returncode != 0:
         raise ReviewError("Official pipeline rejected the Jules review decision")
@@ -425,6 +438,7 @@ def record_decision(state_dir: Path, decision: dict[str, Any], session: str) -> 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--state-dir", type=Path, required=True)
+    parser.add_argument("--item-id", required=True)
     parser.add_argument("--review-branch", required=True)
     parser.add_argument("--evidence-root", required=True)
     parser.add_argument("--timeout-seconds", type=int, default=3600)
@@ -432,7 +446,7 @@ def main() -> int:
     api_key = os.environ.get("JULES_API_KEY", "").strip()
     if not api_key:
         raise ReviewError("JULES_API_KEY is missing")
-    _, item = load_pending(args.state_dir)
+    _, item = load_pending(args.state_dir, args.item_id)
     hashes = expected_hashes(args.state_dir, item)
     prompt = build_prompt(args.evidence_root, item, hashes)
     decision, session = obtain_validated_decision(
@@ -443,7 +457,7 @@ def main() -> int:
         args.review_branch,
         args.timeout_seconds,
     )
-    record_decision(args.state_dir, decision, session)
+    record_decision(args.state_dir, decision, session, item)
     print(f"JULES_REVIEW_RECORDED session={session} item={item['id']} decision={decision['decision']}")
     return 0
 
@@ -456,7 +470,10 @@ def handle_non_fatal_review_error(state_dir: Path, error_msg: str) -> bool:
     items = state.get("items") or []
     if not items:
         return False
-    item = items[0]
+    try:
+        item = existing_item(state, kind='overview')
+    except PipelineError:
+        return False
     if item.get("technical_verified") is not True:
         return False
     item["visual_review_status"] = "unavailable"

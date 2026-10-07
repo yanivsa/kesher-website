@@ -247,6 +247,7 @@ def export_target(item: dict[str, Any] | None) -> None:
                     f.write(f"TARGET_ITEM_ID={target_id}\n")
                 if content_sha256:
                     f.write(f"TARGET_CONTENT_SHA256={content_sha256}\n")
+                f.write(f"TARGET_GENERATION_ATTEMPT={item.get('fresh_generation_attempt', 1)}\n")
                 if slug and not os.environ.get("TARGET_SLUG"):
                     f.write(f"TARGET_SLUG={slug}\n")
         except OSError:
@@ -457,7 +458,10 @@ def prepare_upload(
         or ""
     ).strip()
     exact_required = (os.environ.get("KESHER_EXACT_UPLOAD_REQUIRED") or "").strip().lower() == "true"
-    exact_requested = exact_required or bool(target_item_id or target_content_sha256)
+    media_mode = os.environ.get('KESHER_MEDIA_MODE', '')
+    overview = media_mode == 'video_overview' or (media_mode != 'article_short'
+                and any(item.get('type') == 'video_overview' for item in state.get('items', [])))
+    exact_requested = overview or exact_required or bool(target_item_id or target_content_sha256)
     if exact_requested:
         if not all((target, target_content_sha256, target_item_id)):
             raise pipeline.PipelineError(
@@ -473,6 +477,8 @@ def prepare_upload(
             raise pipeline.PipelineError(
                 "Exact identity lock did not match exactly one unresolved video item"
             )
+        if overview:
+            pipeline.existing_item(state, target_item_id, target, target_content_sha256, kind='overview')
         unresolved = exact
     elif target:
         unresolved = [item for item in unresolved if source_slug(item) == target]
