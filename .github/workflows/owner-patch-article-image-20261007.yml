@@ -1,0 +1,53 @@
+name: Owner patch KESHER article image 20261007
+
+on:
+  push:
+    branches:
+      - owner/kesher-assets-20261007
+    paths:
+      - '.github/workflows/owner-patch-article-image-20261007.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ github.repository == 'yanivsa/kesher-website' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: owner/kesher-assets-20261007
+      - name: Replace duplicate hero image with verified unused asset
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('.owner-article-20261007.json')
+          data=json.loads(p.read_text(encoding='utf-8'))
+          old='/images/generated/blog/gottman-perpetual-problems-69-percent.jpg'
+          new='/images/generated/blog/couples-communication-distance.jpg'
+          oldsrc='local://public/images/generated/blog/gottman-perpetual-problems-69-percent.jpg'
+          newsrc='local://public/images/generated/blog/couples-communication-distance.jpg'
+          if data.get('image') != old or data.get('imageSourceUrl') != oldsrc:
+              raise SystemExit('GUARD_REFUSED: article image fields no longer match diagnosed failure')
+          img=Path('public/images/generated/blog/couples-communication-distance.jpg')
+          if not img.is_file() or img.stat().st_size < 30000:
+              raise SystemExit('REPLACEMENT_IMAGE_INVALID')
+          data['image']=new
+          data['imageSourceUrl']=newsrc
+          p.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          wf=Path('.github/workflows/owner-build-article-20261007.yml')
+          text=wf.read_text(encoding='utf-8')
+          marker='# retry-after-image-dedup-20261007\n'
+          if marker not in text:
+              wf.write_text(text+marker,encoding='utf-8')
+          Path('.github/workflows/owner-patch-article-image-20261007.yml').unlink()
+          PY
+          git diff --check
+          git config user.name 'KESHER Owner Recovery'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix(content): use unique hero image for Oct 7 article'
+          git push origin HEAD:owner/kesher-assets-20261007
