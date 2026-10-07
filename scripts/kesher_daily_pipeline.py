@@ -441,7 +441,6 @@ def generation_prompt(source: dict[str, Any]) -> str:
 def runtime_generation_attempt() -> int:
     raw = (
         os.environ.get("KESHER_FRESH_GENERATION_ATTEMPT")
-        or os.environ.get("GITHUB_RUN_ATTEMPT")
         or "1"
     ).strip()
     try:
