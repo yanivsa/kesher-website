@@ -48,8 +48,6 @@ jobs:
           if same_date:
               raise SystemExit(f'ARTICLE_DATE_ALREADY_PUBLISHED {same_date}')
 
-          # Self-heal hero selection: choose an existing local image whose path and pixels
-          # are not already used by any published post. This avoids fragile hard-coded fallbacks.
           core_path=Path('.github/scripts/article-image-worker.py')
           spec=importlib.util.spec_from_file_location('kesher_article_image_worker', core_path)
           core=importlib.util.module_from_spec(spec)
@@ -66,8 +64,12 @@ jobs:
                   try: used_pixels.add(core.image_pixel_sha256(fp.read_bytes()))
                   except Exception: pass
           selected=None
-          for fp in sorted(Path('public/images/generated/blog').glob('*')):
-              if not fp.is_file() or fp.stat().st_size < 30000:
+          # Direct-takeover recovery: search every local image, while retaining the
+          # existing validator plus path/pixel dedup gates. This fixes the recurring
+          # false exhaustion caused by limiting recovery to generated/blog only.
+          allowed={'.jpg','.jpeg','.png','.webp'}
+          for fp in sorted(Path('public/images').rglob('*')):
+              if not fp.is_file() or fp.suffix.lower() not in allowed or fp.stat().st_size < 30000:
                   continue
               rel='/' + fp.relative_to('public').as_posix()
               if rel in used_paths:
