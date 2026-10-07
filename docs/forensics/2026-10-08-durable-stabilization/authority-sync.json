@@ -1,0 +1,41 @@
+{
+  "status": "updated",
+  "changes": [
+    {
+      "location": ".github/workflows/ci.yml.review.call_chain[scripts/kesher_v6_production_shadow.py]",
+      "path": "scripts/kesher_v6_production_shadow.py",
+      "old": "b534646eb7bcfab5a5fe130a2869c1dedd5cd6f5e3c28efafbdd76b83f6f6b55",
+      "new": "4bc5480124bd96e5da496853363a7e2d23a61729c7d981ee7db2cee1646b2200"
+    },
+    {
+      "location": ".github/workflows/ci.yml.review.call_chain[tests/test_v6_production_shadow.py]",
+      "path": "tests/test_v6_production_shadow.py",
+      "old": "cf0b86e5ad216ee40fa6dd6e04c808648ee801d4e1faa81128de27e624acb85d",
+      "new": "4a6f0759eef4c3d527ef7db39e6c4838c24e36f455e06367f30b8de301e5abd0"
+    },
+    {
+      "location": ".github/workflows/kesher-content-controller-v6.yml.review.call_chain[scripts/kesher_v6_production_shadow.py]",
+      "path": "scripts/kesher_v6_production_shadow.py",
+      "old": "b534646eb7bcfab5a5fe130a2869c1dedd5cd6f5e3c28efafbdd76b83f6f6b55",
+      "new": "4bc5480124bd96e5da496853363a7e2d23a61729c7d981ee7db2cee1646b2200"
+    },
+    {
+      "location": ".github/workflows/kesher-content-controller-v6.yml.review.call_chain[tests/test_v6_production_shadow.py]",
+      "path": "tests/test_v6_production_shadow.py",
+      "old": "cf0b86e5ad216ee40fa6dd6e04c808648ee801d4e1faa81128de27e624acb85d",
+      "new": "4a6f0759eef4c3d527ef7db39e6c4838c24e36f455e06367f30b8de301e5abd0"
+    },
+    {
+      "location": ".github/workflows/kesher-master-supervisor.yml.review.call_chain[scripts/kesher_v6_production_shadow.py]",
+      "path": "scripts/kesher_v6_production_shadow.py",
+      "old": "b534646eb7bcfab5a5fe130a2869c1dedd5cd6f5e3c28efafbdd76b83f6f6b55",
+      "new": "4bc5480124bd96e5da496853363a7e2d23a61729c7d981ee7db2cee1646b2200"
+    },
+    {
+      "location": ".github/workflows/kesher-master-supervisor.yml.review.call_chain[tests/test_v6_production_shadow.py]",
+      "path": "tests/test_v6_production_shadow.py",
+      "old": "cf0b86e5ad216ee40fa6dd6e04c808648ee801d4e1faa81128de27e624acb85d",
+      "new": "4a6f0759eef4c3d527ef7db39e6c4838c24e36f455e06367f30b8de301e5abd0"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "timestamp": "2026-10-07T21:35:29.268610+00:00",
+  "implementation_commit": "930d41a4aa8428320a98bf64c9e7fc73275a1b1b",
+  "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+  "input_manifest_sha256": "854882a6ca44b0764018ee694d5275baeb41bcb7262b96802c948f49d161b04d",
+  "input_count": 683,
+  "input_mismatches_after_commit": 0,
+  "red_regression": {
+    "tests_run": 2,
+    "failures": 2,
+    "errors": 0,
+    "reason": "closed unmerged PR was not classified stale; historical merged PR failures incorrectly blocked delivery"
+  },
+  "full_python": {
+    "tests_run": 1321,
+    "failures": [],
+    "errors": [],
+    "skipped": [],
+    "retired_contracts_from_repository_compatibility_suite": [
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_durable_remotion_policy_file_exists_and_contains_required_rules",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_jules_review_api_timeout_remains_blocked_from_upload",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_jules_review_parse_failure_remains_blocked_from_upload",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_jules_review_replaces_timed_out_session_autonomously",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_reviewer_prompt_evaluates_source_video_first_and_no_invented_objects",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_technical_verification_failure_fatal_and_blocks_upload",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_workflow_restore_skips_invalid_state_and_restores_valid_older",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_workflow_restore_starts_fresh_if_no_valid_artifact"
+    ],
+    "seconds": 102.329,
+    "success": true
+  },
+  "commands": [
+    {
+      "command": "python3 -B /tmp/run-kesher-full-python-20261008.py",
+      "result": "PASS",
+      "tests": 1321,
+      "runner_copy": "verification-runner.py.txt"
+    },
+    {
+      "command": "python3 -B -m unittest tests.test_image_catalog_replenishment tests.test_voice_attempt_durability tests.test_jules_dual_identity tests.test_authority_policy_sync tests.test_master_supervisor_learning tests.test_workflow_recovery_governance tests.test_v6_production_shadow tests.test_kesher_v6_intervention_isolation -v",
+      "result": "PASS",
+      "tests": 57
+    },
+    {
+      "command": "python3 -B -m unittest tests.test_v6_production_shadow -v",
+      "result": "PASS",
+      "tests": 17
+    },
+    {
+      "command": "python3 -B scripts/kesher_runtime/sync_authority_policy.py --check",
+      "result": "PASS",
+      "stale_hashes": 0
+    },
+    {
+      "command": "python3 -B scripts/kesher_runtime/workflow_governance.py",
+      "result": "PASS"
+    },
+    {
+      "command": "/Users/ninja/.codex/tmp/kesher-tools/actionlint-1.7.12/actionlint -shellcheck= -pyflakes=",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check origin/main...HEAD",
+      "result": "PASS"
+    }
+  ],
+  "reused_npm_certification": {
+    "command": "npm run check",
+    "executed_this_continuation": false,
+    "previous_result": "PASS",
+    "evidence": "../2026-10-07-durable-stabilization/validation.json",
+    "frontend_tests": 152,
+    "browser_tests": 140,
+    "lint_typecheck_build_prerender_distribution": "PASS in prior certification",
+    "reuse_basis": "main unchanged; 683-input comparison showed only V6 observer, its tests and authority hash leaves changed; full Python recertifies that delta; source/content/frontend/build inputs unchanged"
+  },
+  "live_shadow": {
+    "requests_per_observation": 20,
+    "observations_this_continuation": 2,
+    "methods": [
+      "GET"
+    ],
+    "detected_drift": [
+      "orphaned_state",
+      "stale_pr"
+    ],
+    "recommendation": "reconcile_authoritative_state",
+    "production_dispatch_enabled": false,
+    "production_state_written": false,
+    "provider_dispatch_enabled": false,
+    "upload_enabled": false,
+    "public_completion_inferred": false
+  },
+  "pr1083_state": "closed_unmerged",
+  "pr1085_ci_failure_observed_not_changed": true,
+  "remote_ci_on_final_head_claimed": false,
+  "production_mutation": false,
+  "limitations": [
+    "Eight intentionally retired mirror contracts are excluded by the existing repository compatibility suite; listed in full_python. No additional exclusions or skips.",
+    "Existing frontend/build/browser certification reused rather than rerun; applicable inputs unchanged.",
+    "No independent-agent review or final-head remote CI certification claimed.",
+    "The production-cutover Goal remains incomplete; this branch is unmerged/inactive."
+  ]
+}

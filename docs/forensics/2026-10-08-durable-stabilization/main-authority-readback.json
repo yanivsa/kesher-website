@@ -1,0 +1,46 @@
+{
+  "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+  "unclassified_definitions": [
+    ".github/workflows/kesher-exact-short-metadata-recovery-20261006.yml"
+  ],
+  "dispatch_pin_mismatches": [
+    {
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "child": ".github/workflows/kesher-daily-video.yml",
+      "expected": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+      "actual": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958"
+    },
+    {
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "child": ".github/workflows/kesher-daily-video.yml",
+      "expected": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+      "actual": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958"
+    },
+    {
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "child": ".github/workflows/kesher-daily-video.yml",
+      "expected": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+      "actual": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958"
+    },
+    {
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "child": ".github/workflows/kesher-short-v4.yml",
+      "expected": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+      "actual": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b"
+    },
+    {
+      "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+      "child": ".github/workflows/kesher-daily-video.yml",
+      "expected": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+      "actual": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958"
+    },
+    {
+      "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+      "child": ".github/workflows/kesher-short-v4.yml",
+      "expected": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+      "actual": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b"
+    }
+  ],
+  "source": "exact Git objects; current PR1085 CI logs read without rerun",
+  "production_written": false
+}

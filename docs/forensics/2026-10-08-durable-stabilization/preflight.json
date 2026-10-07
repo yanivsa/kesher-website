@@ -1,0 +1,35 @@
+{
+  "timestamp_utc": "2026-10-07T21:35:29.268610+00:00",
+  "timestamp_local": "2026-10-08T00:35:29.268610+03:00",
+  "worktree": "/Users/ninja/Documents/Kesher-worktrees/autonomous-stabilization-20260917",
+  "branch": "codex/kesher-autonomous-stabilization-20260917",
+  "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+  "branch_before": "38bae366d2388eec3f6c0648dcd1602558258279",
+  "implementation_commit": "930d41a4aa8428320a98bf64c9e7fc73275a1b1b",
+  "historical_checkpoint": "15297dde7acf8ee9a4507f2c87435a050900ba71",
+  "historical_checkpoint_exists": true,
+  "initial_worktree_clean": true,
+  "request_sha256": "34604c940a97a32c0e5e86ea7b0373de2727652a20811d38e2346b1329d85e47",
+  "same_request_as_prior_attachment": true,
+  "main_drift": false,
+  "remote_branch_drift": false,
+  "prior_validation_input_mismatches": 0,
+  "current_registration_count": 129,
+  "registration_identity_state_drift": [],
+  "source_changes": [
+    "scripts/kesher_v6_production_shadow.py",
+    "tests/test_v6_production_shadow.py"
+  ],
+  "authority_update": "six hash leaves only; all non-hash policy semantics unchanged",
+  "new_workflow_changes": [],
+  "reused_implementation_commits": [
+    "98b9bfd607adacd40f7026d3e0bc54d427a0794a",
+    "2d4ce9846919d0d2e01db4c4f503f6c8d27b81bd",
+    "d4465ded81616bf9dae08cc7df62cb8a1acfbc15",
+    "38bae366d2388eec3f6c0648dcd1602558258279"
+  ],
+  "production_mutation": false,
+  "new_pr_created": false,
+  "main_or_github_pr_merged": false,
+  "closed_5_2_evidence_changed": false
+}

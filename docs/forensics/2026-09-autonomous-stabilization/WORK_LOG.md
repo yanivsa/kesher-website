@@ -584,3 +584,31 @@ Authority pins and683-input certification manifest refreshed explicitly; all
 frontend/build/browser inputs remain unchanged from successful npm check.
 Final amendment normal same-branch push/readback follows; broader cutover Goal
 remains incomplete and closed5.2 quarantines remain unchanged.
+
+2026-10-08 repeated durable-stabilization request resumed from clean38bae366.
+Main ac9eac28 and remote branch unchanged; exact15297dde historical checkpoint
+exists. All683 prior certified inputs match; current129 GitHub ID/path/state
+registrations match the prior inventory. Reused existing root fixes and main
+reconciliation. PR1083 is now CLOSED/unmerged; owner explicitly replaced it
+with1085, whose stability/render checks pass but current-main authority CI fails.
+Read-only logs:229tests/1failure/4errors; exact main has an unclassified Short
+metadata workflow and six stale dispatch-pin leaves. No PR/workflow mutation.
+Fresh V6 observation exposed one bounded defect: closed PR checks falsely became
+current approval gates. Two new regressions RED then GREEN; closed/unmerged now
+reports stale_pr, historical failures remain diagnostic, only open exact-head
+checks block. Correction930d41a4; six V6/test SHA leaves recertified offline with
+all non-hash policy semantics unchanged. No workflow definition changed.
+Full compatibility Python1321 GREEN/0failures/errors/skips; focused57 GREEN;
+V6 suite17 GREEN; authority zero stale pins/governance/actionlint/whitespace PASS.
+Eight explicitly retired mirror contracts retain the established compatibility
+exclusions; no additional test excluded. Prior npm/build/browser evidence reused
+because its inputs are unchanged. Final683-input manifest SHA256854882a6ca44b076
+4018ee694d5275baeb41bcb7262b96802c948f49d161b04d; post-code-commit mismatches0.
+Post-fix live shadow20 GET: exact-main article absent/HTTP404, media identities
+unproven, dated unbound V5 state; drift orphaned_state/stale_pr, recommendation
+reconcile_authoritative_state. Dispatch/state-write/upload/completion flags false.
+Closed5.2 evidence/three quarantines unchanged. No production generation/upload,
+master-supervisor/Jules/cutover/credentials/providers/Cloudflare/state mutation,
+main merge, new branch or new PR. Evidence-only checkpoint and normal same-branch
+push/readback follow. See2026-10-08-durable-stabilization/continuation-report.md.
+The broader production-cutover Goal remains incomplete and unactivated.

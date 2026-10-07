@@ -1,0 +1,27 @@
+import json, sys, time, unittest
+from pathlib import Path
+sys.path.insert(0, str(Path.cwd()))
+from tests.kesher_daily_pipeline_suite import OBSOLETE_TESTS
+loader=unittest.TestLoader()
+def cases(suite):
+ for item in suite:
+  if isinstance(item, unittest.TestSuite): yield from cases(item)
+  else: yield item
+modules=['tests.'+path.stem for path in sorted(Path('tests').glob('test_*.py'))]
+suite=unittest.TestSuite(); seen=set(); retired=[]
+for module in modules:
+ for case in cases(loader.loadTestsFromName(module)):
+  ident=case.id()
+  if module=='tests.test_kesher_daily_pipeline' and '.'.join(ident.split('.')[-2:]) in OBSOLETE_TESTS:
+   retired.append(ident); continue
+  if ident not in seen:
+   suite.addTest(case);seen.add(ident)
+started=time.monotonic()
+result=unittest.TextTestRunner(verbosity=2).run(suite)
+report={'tests_run':result.testsRun,'failures':[c.id() for c,_ in result.failures],
+        'errors':[c.id() for c,_ in result.errors],'skipped':result.skipped,
+        'retired_contracts_from_repository_compatibility_suite':retired,
+        'seconds':round(time.monotonic()-started,3),'success':result.wasSuccessful()}
+Path('/tmp/kesher-full-python-20261008.json').write_text(json.dumps(report,indent=2)+'\n')
+print('FULL_PYTHON_RESULT',json.dumps(report))
+raise SystemExit(not result.wasSuccessful())

@@ -1,0 +1,314 @@
+{
+  "timestamp": "2026-10-07T21:31:33.307026+00:00",
+  "pr1083": {
+    "baseRefOid": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+    "files": [
+      {
+        "path": "public/images/generated/blog/2026-10-07-recurring-arguments.png",
+        "additions": 0,
+        "deletions": 0
+      },
+      {
+        "path": "src/data/posts.json",
+        "additions": 62,
+        "deletions": 0
+      }
+    ],
+    "headRefOid": "ce749b46629b6c5674f3309c4b4d28a42f9e115e",
+    "isDraft": false,
+    "mergeable": "MERGEABLE",
+    "mergedAt": null,
+    "number": 1083,
+    "state": "CLOSED",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-07T14:57:40Z",
+        "conclusion": "SKIPPED",
+        "detailsUrl": "https://github.com/yanivsa/kesher-website/actions/runs/37641069967/job/112859862422",
+        "name": "merge",
+        "startedAt": "2026-10-07T14:57:41Z",
+        "status": "COMPLETED",
+        "workflowName": "Auto-merge Jules audit PRs"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-07T16:38:26Z",
+        "conclusion": "SKIPPED",
+        "detailsUrl": "https://github.com/yanivsa/kesher-website/actions/runs/37653625427/job/112903058750",
+        "name": "cleanup",
+        "startedAt": "2026-10-07T16:38:26Z",
+        "status": "COMPLETED",
+        "workflowName": "Cleanup Jules branches"
+      }
+    ],
+    "url": "https://github.com/yanivsa/kesher-website/pull/1083"
+  },
+  "pr1085": {
+    "baseRefOid": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+    "files": [
+      {
+        "path": "public/images/generated/blog/2026-10-07-recurring-arguments.png",
+        "additions": 0,
+        "deletions": 0
+      },
+      {
+        "path": "src/data/posts.json",
+        "additions": 62,
+        "deletions": 0
+      }
+    ],
+    "headRefOid": "fbf2c13f3d2426e6c4afab1fb8773d5928bc44b1",
+    "isDraft": false,
+    "mergeable": "MERGEABLE",
+    "mergedAt": null,
+    "number": 1085,
+    "state": "OPEN",
+    "statusCheckRollup": [
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-07T16:40:05Z",
+        "conclusion": "FAILURE",
+        "detailsUrl": "https://github.com/yanivsa/kesher-website/actions/runs/37653677701/job/112903237766",
+        "name": "verify",
+        "startedAt": "2026-10-07T16:38:52Z",
+        "status": "COMPLETED",
+        "workflowName": "CI"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-07T16:38:50Z",
+        "conclusion": "SKIPPED",
+        "detailsUrl": "https://github.com/yanivsa/kesher-website/actions/runs/37653677594/job/112903241393",
+        "name": "merge",
+        "startedAt": "2026-10-07T16:38:51Z",
+        "status": "COMPLETED",
+        "workflowName": "Auto-merge Jules audit PRs"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-07T16:39:27Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/yanivsa/kesher-website/actions/runs/37653677539/job/112903237733",
+        "name": "validate",
+        "startedAt": "2026-10-07T16:38:52Z",
+        "status": "COMPLETED",
+        "workflowName": "Kesher Stability PR Validation"
+      },
+      {
+        "__typename": "CheckRun",
+        "completedAt": "2026-10-07T16:39:41Z",
+        "conclusion": "SUCCESS",
+        "detailsUrl": "https://github.com/yanivsa/kesher-website/actions/runs/37653677539/job/112903237846",
+        "name": "render-proof",
+        "startedAt": "2026-10-07T16:38:52Z",
+        "status": "COMPLETED",
+        "workflowName": "Kesher Stability PR Validation"
+      }
+    ],
+    "url": "https://github.com/yanivsa/kesher-website/pull/1085"
+  },
+  "open_prs": [
+    {
+      "headRefName": "owner/kesher-assets-20261007-clean",
+      "headRefOid": "fbf2c13f3d2426e6c4afab1fb8773d5928bc44b1",
+      "isDraft": false,
+      "number": 1085,
+      "title": "KESHER: publish Oct 7 recurring-arguments guide (clean)",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1085"
+    },
+    {
+      "headRefName": "fix/pending-review-exact-item-binding-20261007",
+      "headRefOid": "630888d0fe9bdea2c0893d13b02e26f4381e4c01",
+      "isDraft": true,
+      "number": 1084,
+      "title": "fix(kesher): bind media review to exact item identity",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1084"
+    },
+    {
+      "headRefName": "fix/kesher-voice-fallback-recovery-20261006",
+      "headRefOid": "b93d032a8b87fe5203eb84d4fd90b84ebf7974cd",
+      "isDraft": false,
+      "number": 1082,
+      "title": "fix(kesher): recover final-attempt voice fallback without duplicate generation",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1082"
+    },
+    {
+      "headRefName": "fix/authority-dispatch-bindings-20261006",
+      "headRefOid": "f312719e152edb4583a5eb302df143756477dd01",
+      "isDraft": false,
+      "number": 1081,
+      "title": "fix(kesher): refresh exact recovery dispatch bindings",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1081"
+    },
+    {
+      "headRefName": "dependabot/npm_and_yarn/remotion-kesher/postcss-selector-parser-7.1.6",
+      "headRefOid": "504ec96a6d25dd48cb1c490cff1f1c4b3f148710",
+      "isDraft": false,
+      "number": 1078,
+      "title": "chore(deps): bump postcss-selector-parser from 7.1.4 to 7.1.6 in /remotion-kesher",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1078"
+    },
+    {
+      "headRefName": "dependabot/npm_and_yarn/postcss-selector-parser-7.1.6",
+      "headRefOid": "99084f24d544393ce959449f8f97043cf5b7a081",
+      "isDraft": false,
+      "number": 1077,
+      "title": "chore(deps-dev): bump postcss-selector-parser from 7.1.4 to 7.1.6",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1077"
+    },
+    {
+      "headRefName": "dependabot/npm_and_yarn/source-map-js-1.2.2",
+      "headRefOid": "ec8f1bc5309bf6218c6fa574410e19bb3fce6c4f",
+      "isDraft": false,
+      "number": 1076,
+      "title": "chore(deps): bump source-map-js from 1.2.1 to 1.2.2",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1076"
+    },
+    {
+      "headRefName": "dependabot/npm_and_yarn/remotion-kesher/source-map-js-1.2.2",
+      "headRefOid": "50452998e018119fec435140c9a93a318fbfc62d",
+      "isDraft": false,
+      "number": 1075,
+      "title": "chore(deps): bump source-map-js from 1.2.1 to 1.2.2 in /remotion-kesher",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1075"
+    },
+    {
+      "headRefName": "owner/trigger-20-second-hug-video-recovery",
+      "headRefOid": "e01b957e4d217f5b2a63813628dfe87478f3c28a",
+      "isDraft": false,
+      "number": 1074,
+      "title": "chore(kesher): trigger exact video-only recovery",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1074"
+    },
+    {
+      "headRefName": "fix/video-review-target-identity-20261005",
+      "headRefOid": "d4ce031c67b2b1420a2ee8c4cd9de52ac19fefc4",
+      "isDraft": false,
+      "number": 1071,
+      "title": "fix(kesher): upload exact verified 2026-10-05 overview",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1071"
+    },
+    {
+      "headRefName": "feature/kesher-plugin-v2-clean",
+      "headRefOid": "c92dd902db6831b3ea90a4179052106596d94337",
+      "isDraft": true,
+      "number": 1068,
+      "title": "feat: Kesher Plugin V2 clean — זוגיות, הורות ו-ADHD",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1068"
+    },
+    {
+      "headRefName": "fix/kesher-manual-media-mutation-return",
+      "headRefOid": "cea155a894c5318db30a233d1e279aee34347d0e",
+      "isDraft": false,
+      "number": 1056,
+      "title": "fix: complete bounded manual media mutation bridge",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1056"
+    },
+    {
+      "headRefName": "fix/chatgpt-plugin-portable-schema-20261004",
+      "headRefOid": "e31bca1f9f69e8b99c6b0f3491b9c00bb63faf86",
+      "isDraft": false,
+      "number": 1044,
+      "title": "fix: conform ChatGPT plugin ZIP to Agent Plugins schema",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1044"
+    },
+    {
+      "headRefName": "jules-eslint-ignore-fix-2197395737766935191",
+      "headRefOid": "6cc8d711da6882f936817eba64aa1ba3108e979d",
+      "isDraft": false,
+      "number": 1023,
+      "title": "[jules-review] Kesher build reliability: Enforce linting on scripts and fix regex warnings",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1023"
+    },
+    {
+      "headRefName": "dependabot/github_actions/cloudflare/wrangler-action-4.1.3",
+      "headRefOid": "864e6d193765d7f317f03444d94c85d776931989",
+      "isDraft": false,
+      "number": 1000,
+      "title": "build(deps): bump cloudflare/wrangler-action from 4.0.0 to 4.1.3",
+      "url": "https://github.com/yanivsa/kesher-website/pull/1000"
+    },
+    {
+      "headRefName": "feature/parenting-online-section-2506905059828131660",
+      "headRefOid": "b3582dcf168157a3017f56e04393b7133dbea076",
+      "isDraft": false,
+      "number": 998,
+      "title": "[jules-review] Kesher industry review: Add dedicated online section to Parenting Guidance",
+      "url": "https://github.com/yanivsa/kesher-website/pull/998"
+    },
+    {
+      "headRefName": "publish-relationship-code-7500-7967532874401372058",
+      "headRefOid": "b79d8753cf3ce1aefa5f48882d609c1203e00e04",
+      "isDraft": true,
+      "number": 997,
+      "title": "Publish Kesher article: קוד 7500 בזוגיות: 5 סימנים שהקשר שלכם נכנס למצב חירום",
+      "url": "https://github.com/yanivsa/kesher-website/pull/997"
+    },
+    {
+      "headRefName": "dependabot/npm_and_yarn/dompurify-3.4.16",
+      "headRefOid": "60981af8435aad64c0eec6f7c3d7f84227ad5ab8",
+      "isDraft": false,
+      "number": 991,
+      "title": "chore(deps): bump dompurify from 3.4.15 to 3.4.16",
+      "url": "https://github.com/yanivsa/kesher-website/pull/991"
+    },
+    {
+      "headRefName": "dependabot/npm_and_yarn/npm-minor-patch-d37418cd36",
+      "headRefOid": "169e2f21cc1919cbd111edfd258adeca193fc417",
+      "isDraft": false,
+      "number": 983,
+      "title": "build(deps): bump the npm-minor-patch group across 1 directory with 21 updates",
+      "url": "https://github.com/yanivsa/kesher-website/pull/983"
+    },
+    {
+      "headRefName": "dependabot/npm_and_yarn/typescript-7.0.2",
+      "headRefOid": "564c38a74dc2dbe666d9c8e13e6b224d33af2d8d",
+      "isDraft": false,
+      "number": 928,
+      "title": "chore(deps-dev): bump typescript from 6.0.3 to 7.0.2",
+      "url": "https://github.com/yanivsa/kesher-website/pull/928"
+    },
+    {
+      "headRefName": "dependabot/npm_and_yarn/cloudflare/workers-types-5.20260921.1",
+      "headRefOid": "8b5d3b96d4f623cf41c4282c4eb9ecec57a02281",
+      "isDraft": false,
+      "number": 927,
+      "title": "chore(deps-dev): bump @cloudflare/workers-types from 4.20260617.1 to 5.20260921.1",
+      "url": "https://github.com/yanivsa/kesher-website/pull/927"
+    },
+    {
+      "headRefName": "dependabot/npm_and_yarn/framer-motion-13.4.0",
+      "headRefOid": "0d2ae847bd2dcdec859b19f143ab426ea17e7ddf",
+      "isDraft": false,
+      "number": 926,
+      "title": "chore(deps): bump framer-motion from 12.40.0 to 13.4.0",
+      "url": "https://github.com/yanivsa/kesher-website/pull/926"
+    }
+  ],
+  "pr1083_check_jobs": [
+    {
+      "run_id": 37633442328,
+      "jobs": [],
+      "total_count": 0
+    },
+    {
+      "run_id": 37633442326,
+      "jobs": [],
+      "total_count": 0
+    }
+  ],
+  "replacement_declared_by_owner": "Clean recovery for the authoritative 2026-10-07 KESHER identity. This PR is rebuilt directly from main and contains only the verified article data plus its hero image. It replaces closed PR #1083, which was blocked by action_required after recovery scaffolding history. Do not merge until CI and stability gates pass.",
+  "pr1085_ci": {
+    "run_id": 37653677701,
+    "head_sha": "fbf2c13f3d2426e6c4afab1fb8773d5928bc44b1",
+    "tests_run": 229,
+    "failures": 1,
+    "errors": 4,
+    "failure_step": "Test Schema-6 production cutover safety",
+    "classes": [
+      "AUTHORITY_DISPATCH_BINDING_INVALID",
+      "AUTHORITY_UNCLASSIFIED_DEFINITION"
+    ]
+  }
+}

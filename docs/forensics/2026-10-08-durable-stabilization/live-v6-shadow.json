@@ -1,0 +1,172 @@
+{
+  "active_v5_decision": "article_image_running",
+  "agreement": false,
+  "article_public_state": {
+    "http_status": 404,
+    "status": "missing",
+    "url": "https://kesher.saharoni.com/blog/how-to-stop-repeating-arguments"
+  },
+  "article_source_state": {
+    "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+    "status": "missing"
+  },
+  "automation_state": {
+    "cycle": "2026-10-04",
+    "schema_version": 5,
+    "status": "article_image_running",
+    "target_matches": false
+  },
+  "detected_drift": [
+    "orphaned_state",
+    "stale_pr"
+  ],
+  "evidence": [
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/commits/main"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/contents/src/data/posts.json"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/git/blobs/ebb99f1b86e6688da43eac753892036709de99b2"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/contents/src/data/postsRecent.json"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/contents/.kesher-controller/state.json"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/pulls/1083"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/contents/src/data/posts.json"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/git/blobs/4f70a113c5608b89601fada1c1e8b2a220e177ff"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/contents/src/data/postsRecent.json"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/commits/ce749b46629b6c5674f3309c4b4d28a42f9e115e/check-runs"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/actions/runs"
+    },
+    {
+      "method": "GET",
+      "status": 404,
+      "url": "https://kesher.saharoni.com/blog/how-to-stop-repeating-arguments"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/11443711439/zip"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/11441662492/zip"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/11439261114/zip"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/11436717402/zip"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/11435424467/zip"
+    },
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "https://api.github.com/repos/yanivsa/kesher-website/actions/artifacts/11434814329/zip"
+    }
+  ],
+  "github_pr_state": {
+    "check_conclusions": [
+      "skipped",
+      "skipped",
+      "failure",
+      "failure",
+      "skipped",
+      "skipped"
+    ],
+    "draft": false,
+    "head_sha": "ce749b46629b6c5674f3309c4b4d28a42f9e115e",
+    "merged": false,
+    "number": 1083,
+    "state": "closed",
+    "target_matches": true
+  },
+  "media_receipt_coverage": [
+    {
+      "count": 3,
+      "name": "kesher-video-controller-state",
+      "status": "complete"
+    },
+    {
+      "count": 3,
+      "name": "kesher-short-v4-controller-state",
+      "status": "complete"
+    }
+  ],
+  "production_dispatch_enabled": false,
+  "production_state_written": false,
+  "provider_dispatch_enabled": false,
+  "public_completion_inferred": false,
+  "short_state": {
+    "kind": "short",
+    "producer_lineage_proven": false,
+    "status": "identity_unproven"
+  },
+  "target_content_sha256": "1a51acdfc37b0519150bbd3e60d4c7a06cfd60ddf9737c43ae97e65e019db794",
+  "target_slug": "how-to-stop-repeating-arguments",
+  "timestamp": "2026-10-07T21:30:53.439923+00:00",
+  "upload_enabled": false,
+  "v6_recommended_decision": "reconcile_authoritative_state",
+  "video_overview_state": {
+    "kind": "overview",
+    "producer_lineage_proven": false,
+    "status": "identity_unproven"
+  }
+}
