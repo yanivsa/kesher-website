@@ -1,0 +1,116 @@
+{
+  "schema_version": "2.3",
+  "checked_at": "2026-10-06",
+  "public_submission_ready": false,
+  "completed": [
+    "Five bounded read-only MCP tools implemented",
+    "Three scoped Hebrew Skills implemented",
+    "220-prompt Hebrew golden evaluation set",
+    "15-prompt Developer Mode canary set",
+    "30 multi-turn and boundary evaluation cases",
+    "111-resource bounded Kesher index: 108 canonical articles plus 3 explicit service pages",
+    "Strict additionalProperties=false runtime schemas with parameter descriptions",
+    "Server-side rejection of unexpected/private fields",
+    "Unknown age-band support to avoid guessing or collecting exact child age",
+    "No custom per-tool logging, preserving readOnlyHint=true",
+    "Cloudflare infrastructure observability, staging rate limiter, and isolated V2 Worker configured",
+    "Remote staging smoke coverage for all five tools, strict schemas, private-field rejection, article lookup and service-page lookup",
+    "Hebrew discovery metadata for couples, parenting and attention/executive-function support",
+    "Portable Agent Plugin package with logo, support, privacy and terms metadata",
+    "Five positive and three negative OpenAI review test cases",
+    "ChatGPT landing page and attribution implementation",
+    "V2 privacy and terms disclosures implemented",
+    "Duplicate skills-only chatgpt-plugin package retired so V2 is the canonical public package",
+    "Canonical ZIP packaging builds only plugin.json, mcp.json, skills and assets",
+    "CI prevents a legacy chatgpt-plugin package from coexisting with V2",
+    "Schema-6 authority policy classifies both V2 workflows without granting production authority",
+    "Technical CI, stability, contract validation and V2 staging were green on checkpoint 0b751103b8f5ffab7be29848014c40e371aef9b0"
+  ],
+  "staging": {
+    "endpoint": "https://kesher-mcp-v2-staging.yanivsa.workers.dev/mcp",
+    "status": "must_remain_green_on_current_pr_head",
+    "evidence": "Use the Kesher MCP Staging Deploy check attached to the current PR head; run IDs are intentionally not frozen in this file."
+  },
+  "branch_sync": {
+    "status": "reconciliation_required_before_merge",
+    "feature_head_before_refresh": "0b751103b8f5ffab7be29848014c40e371aef9b0",
+    "last_reconciled_main_sha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+    "current_main_sha_observed": "1a0682d348670300044e245b065ca9a93280fd04",
+    "main_commits_since_last_reconciliation": 16,
+    "known_overlap_files": [
+      "scripts/generate-sitemap.cjs",
+      "scripts/kesher_runtime/authority_policy.json"
+    ],
+    "requirement": "Resolve current-main drift before making PR #1068 ready for review or merging. Do not use force-push."
+  },
+  "release_gates": {
+    "technical_pr_checks": [
+      "CI",
+      "Kesher Stability PR Validation",
+      "Kesher Plugin Contract Validation",
+      "Kesher MCP Staging Deploy"
+    ],
+    "developer_mode": {
+      "status": "pending",
+      "requirement": "Connect V2 staging as a Personal Plugin, run the 15-prompt canary, then 220 single-turn prompts and 30 multi-turn/boundary cases."
+    },
+    "evaluation_thresholds": {
+      "precision_min": 0.92,
+      "negative_false_positives": 0,
+      "couples_recall_min": 0.8,
+      "parenting_recall_min": 0.8,
+      "parenting_adhd_recall_min": 0.75,
+      "wrong_tool_rate_max": 0.05
+    }
+  },
+  "gates": [
+    {
+      "id": "current_main_reconciliation",
+      "status": "pending",
+      "requirement": "Reconcile the V2 branch with current main and restore PR mergeability without force-push or dropping V2 changes."
+    },
+    {
+      "id": "developer_mode_evaluation",
+      "status": "pending",
+      "requirement": "Real ChatGPT Developer Mode / Work tool-selection results must meet the V2 evaluation thresholds."
+    },
+    {
+      "id": "site_landing",
+      "status": "implemented_pending_deploy",
+      "requirement": "Deploy /tools/chatgpt with safe UTM attribution and analytics before public submission."
+    },
+    {
+      "id": "privacy_and_terms",
+      "status": "implemented_pending_deploy",
+      "requirement": "Deploy V2 /privacy and /terms disclosures before public submission."
+    },
+    {
+      "id": "production_mcp_endpoint",
+      "status": "blocked",
+      "requirement": "Replace workers.dev staging with a stable production HTTPS MCP endpoint before public review."
+    },
+    {
+      "id": "demo_recording",
+      "status": "pending",
+      "requirement": "Create the review/demo recording after production endpoint and Developer Mode behavior are final."
+    },
+    {
+      "id": "domain_verification",
+      "status": "pending",
+      "requirement": "Complete the OpenAI domain-verification challenge for the production MCP domain during submission."
+    },
+    {
+      "id": "publisher_verification",
+      "status": "unknown",
+      "requirement": "Confirm publisher identity / business verification for the OpenAI organization used for submission."
+    },
+    {
+      "id": "submission_permissions",
+      "status": "unknown",
+      "requirement": "Confirm the OpenAI Apps Management permissions required to submit and publish the plugin."
+    }
+  ],
+  "baseline_main_sha": "1e009e1b990dc4a63b791e6060aa9718beae6781",
+  "current_main_sha": "1a0682d348670300044e245b065ca9a93280fd04",
+  "qa_state": "technical implementation complete; refresh checks on the new head, then reconcile current main and run Developer Mode evaluation"
+}

@@ -144,7 +144,7 @@ class ProductionCutoverTests(unittest.TestCase):
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         rows = reconcile_registrations(evidence['workflows'], rules)
         self.assertEqual(len(rows), 111)
-        self.assertEqual(len(rules['registrations']), 39)
+        self.assertEqual(len(rules['registrations']), 37)
         for changed in (rows[:-1], rows + [{'id':999999999,'path':'.github/workflows/unknown.yml','state':'active'}]):
             with self.assertRaises(StateInvalid): reconcile_registrations(changed, rules)
         changed = copy.deepcopy(rows); changed[0]['id'] = 999999999
@@ -264,7 +264,7 @@ class CredentialGatewayTests(unittest.TestCase):
         context['protected_resources']={k:v for k,v in protected.items() if k!='youtube'}
         with self.assertRaises(StateInvalid):adapter.targets()
 
-    def test_batch_recertification_78_targets_bounds_reads_and_rejects_bridge_race(self):
+    def test_batch_recertification_76_targets_bounds_reads_and_rejects_bridge_race(self):
         from scripts.kesher_runtime.github_drain import GithubDrain
         from scripts.kesher_runtime.authority_topology import policy
         from tests.test_kesher_github_drain import Journal
@@ -273,7 +273,7 @@ class CredentialGatewayTests(unittest.TestCase):
         rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())['workflows']
         targets=[r for r in rows if r['path'] in rules['registrations'] or
                  rules['workflows'][r['path']]['role'] in {'retired','emergency_bridge'}]
-        self.assertEqual(len(targets),78)
+        self.assertEqual(len(targets),76)
         for r in targets:r['state']='disabled_manually'
         journal=Journal();drains=journal.document['github_exclusion']['drains']
         for r in targets:
@@ -297,7 +297,7 @@ class CredentialGatewayTests(unittest.TestCase):
                 raise AssertionError(path)
         native=Native();drain=GithubDrain(native,'owner/repo',journal=journal,authority=lambda:'epoch-one',registered=lambda:rows)
         pairs=[(r['id'],r['path']) for r in targets]
-        self.assertEqual(len(drain.observe_many(pairs)),78)
+        self.assertEqual(len(drain.observe_many(pairs)),76)
         self.assertEqual(len(native.calls),18)
         native.race=True
         with self.assertRaisesRegex(StateInvalid,'RUN_AFTER_PROOF'):drain.observe_many(pairs)

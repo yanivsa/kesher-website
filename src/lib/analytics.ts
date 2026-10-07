@@ -57,6 +57,7 @@ const SERVICE_TYPE_BY_PATH: Record<string, string> = {
   '/couples-crisis-ashdod': 'couples_crisis',
   '/parenting-adhd-ashdod': 'parenting_adhd',
   '/couples-counseling-gan-yavne': 'couples_counseling',
+  '/tools/chatgpt': 'chatgpt_plugin',
   '/services/couples/crisis': 'couples_crisis',
   '/services/couples/before-separation': 'couples_before_separation',
 };

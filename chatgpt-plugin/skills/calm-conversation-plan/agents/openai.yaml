@@ -1,8 +1,0 @@
-interface:
-  display_name: "Plan a calmer conversation"
-  short_description: "Prepare a difficult talk without escalation"
-  default_prompt: "Help me prepare a calmer conversation about a conflict that keeps repeating."
-policy:
-  products:
-    - CHAT
-  allow_implicit_invocation: true

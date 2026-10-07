@@ -57,6 +57,7 @@ const contact = loadable(() => import('./pages/Contact/ContactPage'));
 const appointment = loadable(() => import('./pages/Appointment/AppointmentPage'));
 const accessibility = loadable(() => import('./pages/Legal/AccessibilityPage'));
 const privacy = loadable(() => import('./pages/Legal/PrivacyPolicy'));
+const chatgptTools = loadable(() => import('./pages/Tools/ChatGPTToolsPage'));
 const terms = loadable(() => import('./pages/Legal/TermsOfUse'));
 const now = loadable(() => import('./pages/Now/NowPage'));
 const friends = loadable(() => import('./pages/Friends/FriendsPage'));
@@ -98,6 +99,7 @@ const { Page: ContactPage } = contact;
 const { Page: AppointmentPage } = appointment;
 const { Page: AccessibilityPage } = accessibility;
 const { Page: PrivacyPolicy } = privacy;
+const { Page: ChatGPTToolsPage } = chatgptTools;
 const { Page: TermsOfUse } = terms;
 const { Page: CouplesCounselingAshdodPage } = couplesCounselingAshdod;
 const { Page: ParentingGuidanceAshdodPage } = parentingGuidanceAshdod;
@@ -145,6 +147,7 @@ const routeLoaders: Array<[RegExp, () => Promise<void>]> = [
   [/^\/appointment\/?$/, appointment.preload],
   [/^\/accessibility\/?$/, accessibility.preload],
   [/^\/privacy\/?$/, privacy.preload],
+  [/^\/tools\/chatgpt\/?$/, chatgptTools.preload],
   [/^\/terms\/?$/, terms.preload],
 ];
 
@@ -194,6 +197,7 @@ function App() {
           <Route path="/appointment" element={<AppointmentPage />} />
           <Route path="/accessibility" element={<AccessibilityPage />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/tools/chatgpt" element={<ChatGPTToolsPage />} />
           <Route path="/terms" element={<TermsOfUse />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
