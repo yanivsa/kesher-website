@@ -176,11 +176,13 @@ def reconcile_snapshot(*,target_slug,target_content_sha256,post,main_sha,public_
     pr_state=None;blocked=False
     if isinstance(pr,dict):
         pr_state={k:pr.get(k) for k in ('number','state','draft','merged','target_matches')};head=(pr.get('head') or {}).get('sha');pr_state['head_sha']=head
-        if pr.get('target_matches') is not True:drift.append('stale_pr')
-        else:
+        if pr.get('target_matches') is not True or (pr.get('state')=='closed' and pr.get('merged') is not True):
+            drift.append('stale_pr')
+        if pr.get('target_matches') is True:
             runs=[r for r in workflow_runs if r.get('head_sha')==head]
             checks=[c for c in check_runs if c.get('head_sha')==head]
-            blocked=any(r.get('conclusion') in ('action_required','failure','cancelled','timed_out') for r in runs+checks)
+            # Closed PR checks are historical evidence, not current approval gates.
+            blocked=pr.get('state')=='open' and any(r.get('conclusion') in ('action_required','failure','cancelled','timed_out') for r in runs+checks)
             pr_state['check_conclusions']=[r.get('conclusion') for r in runs+checks]
             if blocked:drift.append('blocked_pr_checks')
     recommended='wait_for_maintainer' if blocked else 'reconcile_authoritative_state' if drift else 'observe'

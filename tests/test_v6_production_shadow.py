@@ -45,6 +45,23 @@ class ShadowTests(unittest.TestCase):
         self.assertNotIn('blocked_pr_checks',r['detected_drift'])
     def test_wrong_pr_identity_cannot_hijack(self):
         self.assertIn('stale_pr',self.verdict(pr={'number':1,'target_matches':False})['detected_drift'])
+    def test_closed_unmerged_pr_is_stale_not_an_approval_blocker(self):
+        pr={'number':1083,'state':'closed','draft':False,'merged':False,'head':{'sha':'b'*40},'target_matches':True}
+        r=self.verdict(pr=pr,workflow_runs=[{'head_sha':'b'*40,'conclusion':'action_required'}],
+                       check_runs=[{'head_sha':'b'*40,'conclusion':'failure'}])
+        self.assertIn('stale_pr',r['detected_drift'])
+        self.assertNotIn('blocked_pr_checks',r['detected_drift'])
+        self.assertEqual(r['v6_recommended_decision'],'reconcile_authoritative_state')
+        self.assertEqual(r['github_pr_state']['check_conclusions'],['action_required','failure'])
+        self.assertFalse(r['production_state_written'])
+        self.assertFalse(r['production_dispatch_enabled'])
+    def test_merged_pr_historical_failure_does_not_block_current_delivery(self):
+        state=copy.deepcopy(self.snapshot['state']);state['article']['status']='delivered'
+        pr={'number':1083,'state':'closed','draft':False,'merged':True,'head':{'sha':'b'*40},'target_matches':True}
+        r=self.verdict(state=state,pr=pr,workflow_runs=[{'head_sha':'b'*40,'conclusion':'failure'}])
+        self.assertNotIn('stale_pr',r['detected_drift'])
+        self.assertNotIn('blocked_pr_checks',r['detected_drift'])
+        self.assertEqual(r['v6_recommended_decision'],'reconcile_authoritative_state')
     def test_media_exact_identity_metadata_privacy_and_geometry(self):
         item,row=self.item();r=self.verdict(media_items=[item],youtube_rows={item['youtube_id']:row})
         self.assertEqual(r['short_state']['status'],'public_geometry_unproven')
