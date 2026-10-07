@@ -2,17 +2,14 @@ name: Owner build KESHER article 20261007
 
 on:
   push:
-    branches:
-      - owner/kesher-assets-20261007
-    paths:
-      - '.github/workflows/owner-build-article-20261007.yml'
+    branches: [owner/kesher-assets-20261007]
+    paths: ['.github/workflows/owner-build-article-20261007.yml']
 
 permissions:
   contents: write
 
 jobs:
   build:
-    if: ${{ github.repository == 'yanivsa/kesher-website' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -23,86 +20,70 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
-        with:
-          python-version: '3.12'
-      - name: Insert exact article and validate identity
+      - name: Insert article with unique deterministic hero
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import importlib.util, json, sys
+          import json, math, struct, zlib
           from pathlib import Path
-          payload_path=Path('.owner-article-20261007.json')
-          post=json.loads(payload_path.read_text(encoding='utf-8'))
+          post=json.loads(Path('.owner-article-20261007.json').read_text(encoding='utf-8'))
           posts_path=Path('src/data/posts.json')
           posts=json.loads(posts_path.read_text(encoding='utf-8'))
-          required={'id','slug','title','excerpt','content','date','category','tags','author','image','directAnswer','evidence','videoTitle','shortTitle','shortHook'}
+          required={'id','slug','title','excerpt','content','date','category','tags','author','directAnswer','evidence','videoTitle','shortTitle','shortHook'}
           missing=sorted(required-set(post))
-          if missing:
-              raise SystemExit(f'ARTICLE_REQUIRED_FIELDS_MISSING {missing}')
-          if post['date'] != '2026-10-07' or post['id'] != post['slug']:
-              raise SystemExit('ARTICLE_IDENTITY_INVALID')
-          if any(p.get('id') == post['id'] or p.get('slug') == post['slug'] for p in posts):
-              raise SystemExit('ARTICLE_DUPLICATE_IDENTITY')
-          same_date=[p.get('id') for p in posts if p.get('date') == post['date']]
-          if same_date:
-              raise SystemExit(f'ARTICLE_DATE_ALREADY_PUBLISHED {same_date}')
+          if missing: raise SystemExit(f'ARTICLE_REQUIRED_FIELDS_MISSING {missing}')
+          if post['date']!='2026-10-07' or post['id']!=post['slug']: raise SystemExit('ARTICLE_IDENTITY_INVALID')
+          if any(p.get('id')==post['id'] or p.get('slug')==post['slug'] for p in posts): raise SystemExit('ARTICLE_DUPLICATE_IDENTITY')
+          if any(p.get('date')==post['date'] for p in posts): raise SystemExit('ARTICLE_DATE_ALREADY_PUBLISHED')
 
-          core_path=Path('.github/scripts/article-image-worker.py')
-          spec=importlib.util.spec_from_file_location('kesher_article_image_worker', core_path)
-          core=importlib.util.module_from_spec(spec)
-          sys.modules[spec.name]=core
-          spec.loader.exec_module(core)
-          used_paths={str(p.get('image') or '') for p in posts}
-          used_pixels=set()
-          for p in posts:
-              image=str(p.get('image') or '')
-              if not image.startswith('/images/'):
-                  continue
-              fp=Path('public')/image.lstrip('/')
-              if fp.is_file():
-                  try: used_pixels.add(core.image_pixel_sha256(fp.read_bytes()))
-                  except Exception: pass
-          selected=None
-          # Direct-takeover recovery: search every local image, while retaining the
-          # existing validator plus path/pixel dedup gates. This fixes the recurring
-          # false exhaustion caused by limiting recovery to generated/blog only.
-          allowed={'.jpg','.jpeg','.png','.webp'}
-          for fp in sorted(Path('public/images').rglob('*')):
-              if not fp.is_file() or fp.suffix.lower() not in allowed or fp.stat().st_size < 30000:
-                  continue
-              rel='/' + fp.relative_to('public').as_posix()
-              if rel in used_paths:
-                  continue
-              data=fp.read_bytes()
-              try:
-                  core.validate_candidate(data)
-                  pixels=core.image_pixel_sha256(data)
-              except Exception:
-                  continue
-              if pixels in used_pixels:
-                  continue
-              selected=(rel, fp)
-              break
-          if not selected:
-              raise SystemExit('ARTICLE_NO_UNIQUE_VALID_LOCAL_HERO_AVAILABLE')
-          image, image_path=selected
-          post['image']=image
-          post['imageProvider']='Local'
-          post['imageSourceUrl']='local://public/' + image.lstrip('/')
-          post['imageIsFallback']=True
-          if not str(post.get('imageAlt') or '').strip():
-              post['imageAlt']='זוג בשיחה רגועה שממחישה יציאה מדפוס של ריבים חוזרים בזוגיות'
-          posts.insert(0, post)
-          posts_path.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-          print(f'ARTICLE_INSERTED slug={post["slug"]} title={post["title"]} image={image}')
+          # Deterministic, original 1200x630 editorial-style abstract hero.
+          # Two interlocking loops represent a recurring argument and the opening between them.
+          w,h=1200,630
+          rows=[]
+          for y in range(h):
+              row=bytearray([0])
+              for x in range(w):
+                  t=x/(w-1); u=y/(h-1)
+                  r=int(236-38*t+8*math.sin(u*math.pi))
+                  g=int(228-28*t+6*math.cos(t*math.pi))
+                  b=int(216-16*t)
+                  # soft vignette
+                  d=((x-w/2)/(w/2))**2+((y-h/2)/(h/2))**2
+                  shade=max(0,1-0.10*d)
+                  r=int(r*shade); g=int(g*shade); b=int(b*shade)
+                  # two broken rings: visual metaphor for escaping the loop
+                  for cx,cy,rad,phase in ((470,315,155,0),(730,315,155,math.pi)):
+                      dx=x-cx; dy=y-cy; rr=(dx*dx+dy*dy)**0.5
+                      ang=math.atan2(dy,dx)
+                      gap=abs(math.atan2(math.sin(ang-phase),math.cos(ang-phase)))<0.34
+                      if 18<abs(rr-rad)<34 and not gap:
+                          r,g,b=72,82,78
+                  # subtle grain prevents over-compression and banding
+                  n=((x*37+y*17+x*y*3)%13)-6
+                  row.extend((max(0,min(255,r+n)),max(0,min(255,g+n)),max(0,min(255,b+n))))
+              rows.append(bytes(row))
+          raw=b''.join(rows)
+          def chunk(kind,data):
+              return struct.pack('>I',len(data))+kind+data+struct.pack('>I',zlib.crc32(kind+data)&0xffffffff)
+          png=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',w,h,8,2,0,0,0))+chunk(b'IDAT',zlib.compress(raw,6))+chunk(b'IEND',b'')
+          hero=Path('public/images/generated/blog/2026-10-07-recurring-arguments.png')
+          hero.parent.mkdir(parents=True,exist_ok=True)
+          hero.write_bytes(png)
+          post['image']='/'+hero.relative_to('public').as_posix()
+          post['imageProvider']='KESHER Original'
+          post['imageSourceUrl']='local://generated/2026-10-07-recurring-arguments'
+          post['imageIsFallback']=False
+          post['imageAlt']='שתי לולאות משתלבות עם פתחים, המחשה חזותית ליציאה מדפוס של ריבים חוזרים בזוגיות'
+          posts.insert(0,post)
+          posts_path.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(f'ARTICLE_INSERTED slug={post["slug"]} image={post["image"]} bytes={len(png)}')
           PY
           npm ci --no-audit --no-fund
           npm run generate
           node scripts/validate-content.cjs
           python3 .github/scripts/validate-article-images.py
           git diff --check
-      - name: Remove owner scaffolding and publish clean content commit
+      - name: Publish clean content commit
         run: |
           set -euo pipefail
           rm -f .owner-article-20261007.json .owner-post-schema.json
@@ -113,6 +94,5 @@ jobs:
           git config user.email 'actions@users.noreply.github.com'
           git add -A
           git diff --cached --check
-          git status --short
           git commit -m 'content(kesher): publish recurring-arguments guide for Oct 7'
           git push origin HEAD:owner/kesher-assets-20261007
