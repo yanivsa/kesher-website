@@ -267,7 +267,11 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
                     inputs,
                 )
 
-            inputs = {"operation": "full"}
+            inputs = {"operation": "full", "target_slug": source["slug"],
+                      "target_content_sha256": source["content_sha256"],
+                      "target_item_id": str(exact_item.get("id") or "")}
+            if not inputs['target_item_id']:
+                raise v5.core.ControllerError('LONG_VIDEO_ITEM_ID_MISSING')
             v5.core.GitHubClient.dispatch(self.github, v5.LONG_VIDEO_WORKFLOW, inputs)
             media.update({
                 "long_status": "running",

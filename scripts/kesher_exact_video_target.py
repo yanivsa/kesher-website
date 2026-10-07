@@ -70,12 +70,15 @@ def seed_exact_target(slug: str, content_sha256: str) -> dict[str, Any]:
         and str((item.get("source") or {}).get("slug") or "") == source["slug"]
         and str((item.get("source") or {}).get("content_sha256") or "") == source["content_sha256"]
     ]
+    if len(exact) > 1:
+        raise pipeline.PipelineError('EXACT_MEDIA_ITEM_ID_REQUIRED: multiple same-source artifacts; use the initiating item ID')
     if exact:
-        chosen = exact[-1]
+        chosen = pipeline.existing_item(state, exact[0]['id'], source['slug'], source['content_sha256'], kind='overview')
         print(
             "EXACT_VIDEO_TARGET_REUSED "
             f"slug={source['slug']} item={chosen.get('id')} status={chosen.get('status')}"
         )
+        pipeline.export_item_target(chosen)
         return chosen
 
     stale_same_slug = [
@@ -122,6 +125,7 @@ def seed_exact_target(slug: str, content_sha256: str) -> dict[str, Any]:
     item = pipeline.new_item(source)
     items.append(item)
     pipeline.save_state(state)
+    pipeline.export_item_target(item)
     print(f"EXACT_VIDEO_TARGET_SEEDED slug={source['slug']} item={item['id']}")
     return item
 

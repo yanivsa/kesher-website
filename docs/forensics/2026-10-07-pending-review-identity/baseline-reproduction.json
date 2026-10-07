@@ -1,0 +1,384 @@
+{
+  "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+  "main_worktree": "/Users/ninja/.codex/worktrees/pending-review-baseline-ac9eac28/Kesher",
+  "main_clean_before": true,
+  "main_clean_after": true,
+  "pending_worktree": "/Users/ninja/.codex/worktrees/pending-review-exact-item-20261007/Kesher",
+  "selected_five_pins": [
+    {
+      "workflow": ".github/workflows/ci.yml",
+      "field": "call_chain",
+      "path": "tests/test_kesher_optional_video_enrichment.py",
+      "recorded": "0f7ab8acf5b6853102955875698d0bff794fb0153da7188b80d53d2bfb1fb270",
+      "actual": "b3441e378fb45123fc584557ced7d1b31b0a0a70bc1af3804196bca36425cca8",
+      "pending_recorded": "0f7ab8acf5b6853102955875698d0bff794fb0153da7188b80d53d2bfb1fb270",
+      "pending_actual": "b3441e378fb45123fc584557ced7d1b31b0a0a70bc1af3804196bca36425cca8",
+      "referenced_file_byte_identical": true,
+      "recorded_leaf_identical": true
+    },
+    {
+      "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+      "field": "call_chain",
+      "path": "tests/test_kesher_optional_video_enrichment.py",
+      "recorded": "0f7ab8acf5b6853102955875698d0bff794fb0153da7188b80d53d2bfb1fb270",
+      "actual": "b3441e378fb45123fc584557ced7d1b31b0a0a70bc1af3804196bca36425cca8",
+      "pending_recorded": "0f7ab8acf5b6853102955875698d0bff794fb0153da7188b80d53d2bfb1fb270",
+      "pending_actual": "b3441e378fb45123fc584557ced7d1b31b0a0a70bc1af3804196bca36425cca8",
+      "referenced_file_byte_identical": true,
+      "recorded_leaf_identical": true
+    },
+    {
+      "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+      "field": "call_chain",
+      "path": ".github/kesher-media-recovery-request.json",
+      "recorded": "3287651fefef6a0a5e919ac9a8b1540884709f034ddce963b9832c118d96ecd9",
+      "actual": "a27033e1a08ac82a14d86bac3e2e0b6e4760c02adb9fc8b777668228c233b540",
+      "pending_recorded": "3287651fefef6a0a5e919ac9a8b1540884709f034ddce963b9832c118d96ecd9",
+      "pending_actual": "a27033e1a08ac82a14d86bac3e2e0b6e4760c02adb9fc8b777668228c233b540",
+      "referenced_file_byte_identical": true,
+      "recorded_leaf_identical": true
+    },
+    {
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "field": "dispatch_bindings",
+      "path": ".github/workflows/kesher-short-v4.yml",
+      "recorded": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+      "actual": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b",
+      "pending_recorded": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+      "pending_actual": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b",
+      "referenced_file_byte_identical": true,
+      "recorded_leaf_identical": true
+    },
+    {
+      "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+      "field": "dispatch_bindings",
+      "path": ".github/workflows/kesher-short-v4.yml",
+      "recorded": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+      "actual": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b",
+      "pending_recorded": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+      "pending_actual": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b",
+      "referenced_file_byte_identical": true,
+      "recorded_leaf_identical": true
+    }
+  ],
+  "broll": {
+    "id": "tests.test_production_contract_v3.ProductionContractV3Tests.test_free_stock_secrets_are_scoped_to_render_steps",
+    "path": "tests/test_production_contract_v3.py",
+    "start_line": 69,
+    "end_line": 78,
+    "assertion_line": 77,
+    "method_sha256": "cf68b8a5f4b7edb7777e4cf2c21959f6ceace6fd4b99c2641327169eed0404d8",
+    "method_byte_identical": true,
+    "exact_assertion": "self.assertIn('KESHER_BROLL_ENABLED: \"true\"', workflow)",
+    "current_flags": {
+      ".github/workflows/kesher-daily-video.yml": [
+        "KESHER_BROLL_ENABLED: \"false\"",
+        "KESHER_BROLL_ENABLED: \"false\""
+      ],
+      ".github/workflows/kesher-short-v4.yml": [
+        "KESHER_BROLL_ENABLED: \"false\"",
+        "KESHER_BROLL_ENABLED: \"false\""
+      ]
+    },
+    "pr_1073_merge_sha": "8df5219f3ce60c70487927721e7a43caec8eced5"
+  },
+  "six_baseline_checks": {
+    "tests_run": 6,
+    "failures": [
+      {
+        "id": "authority_pin[.github/workflows/ci.yml].review.call_chain[tests/test_kesher_optional_video_enrichment.py]",
+        "full_traceback_sha256": "c7cbb2aacaf764f9d94d78264fad7cab5be43542d5c4ac395c9c403a10432f50",
+        "terminal_signature": ""
+      },
+      {
+        "id": "authority_pin[.github/workflows/kesher-content-controller-v6.yml].review.call_chain[tests/test_kesher_optional_video_enrichment.py]",
+        "full_traceback_sha256": "c7cbb2aacaf764f9d94d78264fad7cab5be43542d5c4ac395c9c403a10432f50",
+        "terminal_signature": ""
+      },
+      {
+        "id": "authority_pin[.github/workflows/kesher-targeted-media-recovery-dispatch.yml].review.call_chain[.github/kesher-media-recovery-request.json]",
+        "full_traceback_sha256": "5be024b9971dd71115a6648722001cdc4ea18633dd9a3062014047f7e2da8e5c",
+        "terminal_signature": ""
+      },
+      {
+        "id": "authority_pin[.github/workflows/kesher-goal-dispatch.yml].review.dispatch_bindings[.github/workflows/kesher-short-v4.yml]",
+        "full_traceback_sha256": "8e6bb870aeb76b9fab174051fc7e37bc9d3d0607de8c0e4bd8f0a7f960c0b43c",
+        "terminal_signature": ""
+      },
+      {
+        "id": "authority_pin[.github/workflows/kesher-targeted-media-recovery-dispatch.yml].review.dispatch_bindings[.github/workflows/kesher-short-v4.yml]",
+        "full_traceback_sha256": "8e6bb870aeb76b9fab174051fc7e37bc9d3d0607de8c0e4bd8f0a7f960c0b43c",
+        "terminal_signature": ""
+      },
+      {
+        "id": "tests.test_production_contract_v3.ProductionContractV3Tests.test_free_stock_secrets_are_scoped_to_render_steps",
+        "full_traceback_sha256": "10ee57b6874d12df9c9b4b7fb5873f8333d948f85e5e781f777d067751092d2d",
+        "terminal_signature": "AssertionError: 'KESHER_BROLL_ENABLED: \"true\"' not found"
+      }
+    ],
+    "errors": [],
+    "skipped": []
+  },
+  "original_full_gate_consumers": {
+    "tests_run": 12,
+    "failures": [
+      {
+        "id": "tests.test_kesher_authority_topology.OwnerExactAuthorityTests.test_changed_dispatch_source_or_unknown_reviewed_target_refuses",
+        "full_traceback_sha256": "483188ef5e7d748132a7b3802e3a2a1a8a276116df9de90ff2b35eb06c087512",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-exact-marshmallow-video-resume.yml')",
+        "full_traceback_sha256": "6303a94f9429831191a3d46fd3f8f9e1b825aced81a9d4155bcea1fa9b7efe71",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml')",
+        "full_traceback_sha256": "6303a94f9429831191a3d46fd3f8f9e1b825aced81a9d4155bcea1fa9b7efe71",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-goal-dispatch.yml')",
+        "full_traceback_sha256": "6303a94f9429831191a3d46fd3f8f9e1b825aced81a9d4155bcea1fa9b7efe71",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-daily-video.yml')",
+        "full_traceback_sha256": "6303a94f9429831191a3d46fd3f8f9e1b825aced81a9d4155bcea1fa9b7efe71",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-short-v4.yml')",
+        "full_traceback_sha256": "6303a94f9429831191a3d46fd3f8f9e1b825aced81a9d4155bcea1fa9b7efe71",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "id": "tests.test_production_contract_v3.ProductionContractV3Tests.test_free_stock_secrets_are_scoped_to_render_steps",
+        "full_traceback_sha256": "10ee57b6874d12df9c9b4b7fb5873f8333d948f85e5e781f777d067751092d2d",
+        "terminal_signature": "AssertionError: 'KESHER_BROLL_ENABLED: \"true\"' not found"
+      }
+    ],
+    "errors": [
+      {
+        "id": "tests.test_kesher_authority_topology.AuthorityCapabilityTests.test_two_previously_missed_writers_are_explicit_retired_mutators",
+        "full_traceback_sha256": "2f1cb35afbc2100f5eabc5353e2cfcd3569b0acb62a2d13ce658555676b86a0d",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_UNCLASSIFIED_DEFINITION"
+      },
+      {
+        "id": "tests.test_kesher_authority_topology.AuthorityTopologyTests.test_every_definition_has_an_explicit_role",
+        "full_traceback_sha256": "944e53045e4b616ff273da8a812a52b28ea826a6ed5a171ae31e75c78fa10722",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_UNCLASSIFIED_DEFINITION"
+      },
+      {
+        "id": "tests.test_kesher_authority_topology.AuthorityTopologyTests.test_retired_definitions_have_no_runnable_jobs",
+        "full_traceback_sha256": "7913d4f7570de562da62992049bc5dab76ce01161c0923c9ce8e2a0af83361a8",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_UNCLASSIFIED_DEFINITION"
+      },
+      {
+        "id": "tests.test_kesher_production_cutover.ProductionCutoverTests.test_late_main_dispatcher_is_pinned_guarded_retired_and_registration_complete",
+        "full_traceback_sha256": "016a55fb3ff9f95a72a9969d1366cc1f746a84a658c50b41eb9a790e217c6c8a",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_each_active_zero_run_parent_blocks_and_disabled_drained_can_retire (path='.github/workflows/kesher-exact-marshmallow-video-resume.yml')",
+        "full_traceback_sha256": "0e7c742b01898d98b45252ad4b35fa13e16568c8a7c908a73cb0755be9df115a",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_each_active_zero_run_parent_blocks_and_disabled_drained_can_retire (path='.github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml')",
+        "full_traceback_sha256": "0e7c742b01898d98b45252ad4b35fa13e16568c8a7c908a73cb0755be9df115a",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_each_active_zero_run_parent_blocks_and_disabled_drained_can_retire (path='.github/workflows/kesher-goal-dispatch.yml')",
+        "full_traceback_sha256": "0e7c742b01898d98b45252ad4b35fa13e16568c8a7c908a73cb0755be9df115a",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_each_disabled_parent_requires_all_five_statuses_and_complete_inventory",
+        "full_traceback_sha256": "b1e6d9b2cdb4358474ff4d58ddbcbbf8e7d770e63f71a8148e53c6e9f8bce9e7",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_exact_parents_and_children_are_pinned_retirement_targets (path='.github/workflows/kesher-exact-marshmallow-video-resume.yml')",
+        "full_traceback_sha256": "23ef52440f53b68fe15b9256969262c6a1779077bc85a55ba91093f59ee252ff",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_exact_parents_and_children_are_pinned_retirement_targets (path='.github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml')",
+        "full_traceback_sha256": "23ef52440f53b68fe15b9256969262c6a1779077bc85a55ba91093f59ee252ff",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_exact_parents_and_children_are_pinned_retirement_targets (path='.github/workflows/kesher-goal-dispatch.yml')",
+        "full_traceback_sha256": "23ef52440f53b68fe15b9256969262c6a1779077bc85a55ba91093f59ee252ff",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_goal_both_trigger_routes_status_write_and_both_children_remain_authority (event='push')",
+        "full_traceback_sha256": "75f51cef76c2b736cb28393e048c4e21aabfd4074608d57caad5b3fdc940e019",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_goal_both_trigger_routes_status_write_and_both_children_remain_authority (event='workflow_dispatch')",
+        "full_traceback_sha256": "75f51cef76c2b736cb28393e048c4e21aabfd4074608d57caad5b3fdc940e019",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_operation_scopes_exclude_unreachable_jules_provider_and_upload",
+        "full_traceback_sha256": "ef4e7f9e47458d0ce3f5e95d8fa165e34199ea8c5f3a17cbbf44ae680beb85f9",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_UNCLASSIFIED_DEFINITION"
+      }
+    ],
+    "skipped": []
+  },
+  "main_additional_stale_pins": [
+    {
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+      "field": "dispatch_bindings",
+      "path": ".github/workflows/kesher-daily-video.yml",
+      "recorded": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+      "actual": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958"
+    },
+    {
+      "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+      "field": "dispatch_bindings",
+      "path": ".github/workflows/kesher-daily-video.yml",
+      "recorded": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+      "actual": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958"
+    },
+    {
+      "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+      "field": "dispatch_bindings",
+      "path": ".github/workflows/kesher-daily-video.yml",
+      "recorded": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+      "actual": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958"
+    },
+    {
+      "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+      "field": "call_chain",
+      "path": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+      "recorded": "78be3f8fabc0634e845d3ef74fa2f8d3f55d34b88ad7e39ae49e9839b8b9531f",
+      "actual": "3354ff7595ada57703be36c659cf555dd606e9b5506ffe7e4d1667366ed9145b"
+    },
+    {
+      "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+      "field": "dispatch_bindings",
+      "path": ".github/workflows/kesher-daily-video.yml",
+      "recorded": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+      "actual": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958"
+    }
+  ],
+  "all_six_baseline_reproduced": true,
+  "additional_unclassified_baseline_definitions": [
+    {
+      "path": ".github/workflows/kesher-exact-short-metadata-recovery-20261006.yml",
+      "sha256": "f3308665b070af09bc666465e692ca4268a0c291adb3c938b3c69dd34f136b7b",
+      "byte_identical": true,
+      "unclassified_in_both_policies": true
+    }
+  ],
+  "comparison": "All five recorded hash leaves and referenced files are byte-identical. The B-roll test method and disabled flags are byte-identical. Aggregate tracebacks may be masked by the same unclassified one-off workflow or earlier stale daily-video dispatch pins on main; they are retained rather than claimed identical.",
+  "production_state_written": false,
+  "media_generation_or_upload": false,
+  "pending_consumer_recheck": {
+    "tests_run": 12,
+    "failure_entries": 7,
+    "error_entries": 10,
+    "signatures": [
+      {
+        "kind": "failures",
+        "id": "tests.test_kesher_authority_topology.OwnerExactAuthorityTests.test_changed_dispatch_source_or_unknown_reviewed_target_refuses",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "kind": "failures",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-exact-marshmallow-video-resume.yml')",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "kind": "failures",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml')",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "kind": "failures",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-goal-dispatch.yml')",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "kind": "failures",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-daily-video.yml')",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "kind": "failures",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-short-v4.yml')",
+        "terminal_signature": "AssertionError: \"UNREVIEWED_DEFINITION_CHANGE\" does not match \"AUTHORITY_UNCLASSIFIED_DEFINITION\""
+      },
+      {
+        "kind": "failures",
+        "id": "tests.test_production_contract_v3.ProductionContractV3Tests.test_free_stock_secrets_are_scoped_to_render_steps",
+        "terminal_signature": "AssertionError: 'KESHER_BROLL_ENABLED: \"true\"' not found"
+      },
+      {
+        "kind": "errors",
+        "id": "tests.test_kesher_authority_topology.AuthorityCapabilityTests.test_two_previously_missed_writers_are_explicit_retired_mutators",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_UNCLASSIFIED_DEFINITION"
+      },
+      {
+        "kind": "errors",
+        "id": "tests.test_kesher_authority_topology.AuthorityTopologyTests.test_every_definition_has_an_explicit_role",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_UNCLASSIFIED_DEFINITION"
+      },
+      {
+        "kind": "errors",
+        "id": "tests.test_kesher_authority_topology.AuthorityTopologyTests.test_retired_definitions_have_no_runnable_jobs",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_UNCLASSIFIED_DEFINITION"
+      },
+      {
+        "kind": "errors",
+        "id": "tests.test_kesher_production_cutover.ProductionCutoverTests.test_late_main_dispatcher_is_pinned_guarded_retired_and_registration_complete",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "kind": "errors",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_each_active_zero_run_parent_blocks_and_disabled_drained_can_retire (path='.github/workflows/kesher-goal-dispatch.yml')",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "kind": "errors",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_each_disabled_parent_requires_all_five_statuses_and_complete_inventory",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "kind": "errors",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_exact_parents_and_children_are_pinned_retirement_targets (path='.github/workflows/kesher-goal-dispatch.yml')",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "kind": "errors",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_goal_both_trigger_routes_status_write_and_both_children_remain_authority (event='push')",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "kind": "errors",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_goal_both_trigger_routes_status_write_and_both_children_remain_authority (event='workflow_dispatch')",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_DISPATCH_BINDING_INVALID"
+      },
+      {
+        "kind": "errors",
+        "id": "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_operation_scopes_exclude_unreachable_jules_provider_and_upload",
+        "terminal_signature": "scripts.kesher_runtime.state.StateInvalid: AUTHORITY_UNCLASSIFIED_DEFINITION"
+      }
+    ],
+    "all_pending_failures_have_identical_baseline_terminal_signatures": true,
+    "note": "B-roll failure signature excludes the whole workflow dump because task-specific identity propagation changes the surrounding workflow. The assertion method itself is byte-identical."
+  },
+  "evidence_note": "Repeated whole-workflow dumps in B-roll AssertionError messages are omitted. Exact test identity, identical method bytes, expected/actual flags, terminal signatures, and full traceback/log hashes are retained.",
+  "log_sha256": {
+    "kesher-pending-baseline-proof.six.log": "4c254e0248aabfb70b95b247fab10e4fdfa3fccd848beca4a80e30eedf6c4d09",
+    "kesher-pending-baseline-proof.consumers.log": "323b5da9fe3c0477296155c158862717b7aed4b02ab21c357f4b6201bb1e0ca5",
+    "kesher-pending-baseline-consumer-recheck.log": "31a52926964f8802563586a2c283d5963121e5ffb558d459c15d2b9f4b4d3e5f"
+  }
+}

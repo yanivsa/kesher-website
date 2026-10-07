@@ -1,0 +1,1151 @@
+{
+  "starting_main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+  "branch": "fix/pending-review-exact-item-binding-20261007",
+  "interrupted_work_preserved": true,
+  "original_red": {
+    "tests_run": 17,
+    "assertion_failures": 17,
+    "test_errors": 0,
+    "reproduced_against_unchanged_base": true
+  },
+  "root_green": {
+    "tests_run": 28,
+    "failures": 0,
+    "errors": 0,
+    "rechecked_after_pristine_main_reproduction": true,
+    "log_sha256": "94587fbe6cb417c5ad2d26963f9d4681bfe537d3dd9911479b2999fa954c8e37"
+  },
+  "repository_video_policy": {
+    "tests_run": 245,
+    "failures": 0,
+    "errors": 0,
+    "command": "npm run test:video-policy",
+    "rechecked_after_pristine_main_reproduction": true,
+    "log_sha256": "d6008d7969e71b762912d7db38cd1d28e0816ffd9b4060ea81795e488218bfbb"
+  },
+  "media_controller_safety": {
+    "tests_run": 84,
+    "failures": 0,
+    "errors": 0,
+    "rechecked_after_pristine_main_reproduction": true,
+    "log_sha256": "6c3975fcfbfeac61a7e379ea40d5161a5494923e6d933a3ea70f6ce8a1352f01"
+  },
+  "full_python": {
+    "tests_run": 1206,
+    "failures": [
+      "tests.test_kesher_authority_topology.OwnerExactAuthorityTests.test_changed_dispatch_source_or_unknown_reviewed_target_refuses",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-exact-marshmallow-video-resume.yml')",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml')",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-goal-dispatch.yml')",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-daily-video.yml')",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_parent_source_child_source_and_dispatch_changes_refuse (path='.github/workflows/kesher-short-v4.yml')",
+      "tests.test_production_contract_v3.ProductionContractV3Tests.test_free_stock_secrets_are_scoped_to_render_steps"
+    ],
+    "errors": [
+      "tests.test_kesher_authority_topology.AuthorityCapabilityTests.test_two_previously_missed_writers_are_explicit_retired_mutators",
+      "tests.test_kesher_authority_topology.AuthorityTopologyTests.test_every_definition_has_an_explicit_role",
+      "tests.test_kesher_authority_topology.AuthorityTopologyTests.test_retired_definitions_have_no_runnable_jobs",
+      "tests.test_kesher_production_cutover.ProductionCutoverTests.test_late_main_dispatcher_is_pinned_guarded_retired_and_registration_complete",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_each_active_zero_run_parent_blocks_and_disabled_drained_can_retire (path='.github/workflows/kesher-goal-dispatch.yml')",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_each_disabled_parent_requires_all_five_statuses_and_complete_inventory",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_exact_parents_and_children_are_pinned_retirement_targets (path='.github/workflows/kesher-goal-dispatch.yml')",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_goal_both_trigger_routes_status_write_and_both_children_remain_authority (event='push')",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_goal_both_trigger_routes_status_write_and_both_children_remain_authority (event='workflow_dispatch')",
+      "tests.test_kesher_three_dispatchers.ThreeDispatcherAuthorityTests.test_operation_scopes_exclude_unreachable_jules_provider_and_upload"
+    ],
+    "skipped": [],
+    "retired_contracts_from_repository_compatibility_suite": [
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_durable_remotion_policy_file_exists_and_contains_required_rules",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_jules_review_api_timeout_remains_blocked_from_upload",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_jules_review_parse_failure_remains_blocked_from_upload",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_jules_review_replaces_timed_out_session_autonomously",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_reviewer_prompt_evaluates_source_video_first_and_no_invented_objects",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_technical_verification_failure_fatal_and_blocks_upload",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_workflow_restore_skips_invalid_state_and_restores_valid_older",
+      "tests.test_kesher_daily_pipeline.PipelineTestCase.test_workflow_restore_starts_fresh_if_no_valid_artifact"
+    ],
+    "seconds": 224.388,
+    "success": false,
+    "checkpoint_note": "The previous broad checkpoint ran 1,206 tests; it preceded the final unknown-kind guard. This continuation intentionally reran only exact baseline consumers and focused suites. All 17 remaining consumer failure/error entries reproduce with identical terminal signatures on clean exact main. The five selected pins, their referenced files, and B-roll assertion method are byte-identical. No full-gate green result is claimed."
+  },
+  "workflow_actionlint": "PASS",
+  "git_diff_check": "PASS",
+  "authority": {
+    "base_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+    "task_hash_only_updates": [
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_stabilized.py",
+        "old": "5df59f57f560887ecd97639ed9e50645d97a40cbd6c8f42528c08f6a3faddcf8",
+        "new": "dd473ea8b52985d9d212b5eb312e05684ae3580eca5a6b5cc0d96a24ea981bda"
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_v5_runtime.py",
+        "old": "95d4d4a1ef398b8d46c78a32389061439081a7fbf15f6fdfbfa35136d858fa67",
+        "new": "5d0e3cf8b1932eae6bdd64756d29760193a8965de0dbf4e55cb7ac914fad0e38"
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "field": "call_chain",
+        "path": "tests/test_v5_video_source_binding.py",
+        "old": "6876f78b1f8515254c1a95bce9b697ad97c73a27ad0ce85ffa54272efc740b13",
+        "new": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf"
+      },
+      {
+        "workflow": ".github/workflows/deploy.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/deploy.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-article-deploy.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-article-deploy.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-article-merge.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-article-validation.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-article-validation.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-article-validation.yml",
+        "field": "call_chain",
+        "path": "tests/kesher_daily_pipeline_suite.py",
+        "old": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3",
+        "new": "89de6768f4e0ab70900d7a165855dba69232175f8b9ac39b9fe8b199043dca73"
+      },
+      {
+        "workflow": ".github/workflows/kesher-article-validation.yml",
+        "field": "call_chain",
+        "path": "tests/test_kesher_daily_pipeline.py",
+        "old": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424",
+        "new": "5294cf5f4decad8538a2c767d6593d1871f3a872c98de68f3a513fad1f98d197"
+      },
+      {
+        "workflow": ".github/workflows/kesher-article-worker.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-article-worker.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-backlog-media-recovery.yml",
+        "field": "definition_sha256",
+        "path": ".github/workflows/kesher-backlog-media-recovery.yml",
+        "old": "ea0d178aa53dead6c21b518eca4f38d1909a10975699440c3b45cbd9b6211e74",
+        "new": "657fb090869971f8814af21e3f1af360b646ef79f1e127638826082163217a9a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-backlog-media-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-backlog-media-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_exact_video_target.py",
+        "old": "2413036a3e239d48cd42bd4be607c64bea55a86f1afcbf0245d182e3413c7c15",
+        "new": "e89793ea4ec3d29c6f6ef6e6e63c631cf242cd0ec3f8ab4934a2efc0d208ee8a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-backlog-media-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_v5_runtime.py",
+        "old": "95d4d4a1ef398b8d46c78a32389061439081a7fbf15f6fdfbfa35136d858fa67",
+        "new": "5d0e3cf8b1932eae6bdd64756d29760193a8965de0dbf4e55cb7ac914fad0e38"
+      },
+      {
+        "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-content-controller.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-content-controller.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-current-gifted-completion.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-daily-video.yml",
+        "field": "definition_sha256",
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "old": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
+        "new": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49"
+      },
+      {
+        "workflow": ".github/workflows/kesher-daily-video.yml",
+        "field": "call_chain",
+        "path": "scripts/jules_video_reviewer.py",
+        "old": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
+        "new": "9527f0cd29ba93e9a77ab4461da5e5eb353fe0c1c466bd576684704efe537bd6"
+      },
+      {
+        "workflow": ".github/workflows/kesher-daily-video.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-daily-video.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-daily-video.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-daily-video.yml",
+        "field": "call_chain",
+        "path": "scripts/prepare_jules_video_evidence.py",
+        "old": "308d81a56be35e126847881e316da4381c7c184f5fc4febfc641a99d0ddd5e22",
+        "new": "54a8ef4ed1d9c082d59e975a08abf833e9fe99aece397c343c66ce675ced1712"
+      },
+      {
+        "workflow": ".github/workflows/kesher-daily-video.yml",
+        "field": "call_chain",
+        "path": "tests/kesher_daily_pipeline_suite.py",
+        "old": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3",
+        "new": "89de6768f4e0ab70900d7a165855dba69232175f8b9ac39b9fe8b199043dca73"
+      },
+      {
+        "workflow": ".github/workflows/kesher-daily-video.yml",
+        "field": "call_chain",
+        "path": "tests/test_kesher_daily_pipeline.py",
+        "old": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424",
+        "new": "5294cf5f4decad8538a2c767d6593d1871f3a872c98de68f3a513fad1f98d197"
+      },
+      {
+        "workflow": ".github/workflows/kesher-daily-video.yml",
+        "field": "call_chain",
+        "path": "tests/test_production_contract_v3.py",
+        "old": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
+        "new": "aca08b3fbe55a33c8a7f271b290c32ba4f5235bc0a5c6690041450b02effdd4a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-daily-video.yml",
+        "field": "call_chain",
+        "path": "tests/test_video_reconcile.py",
+        "old": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+        "new": "515685e24f9eaa9c1b365e940df9d66a21c21f4b2afc1342a04ac09215947c5a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "call_chain",
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "old": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
+        "new": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "call_chain",
+        "path": "scripts/jules_video_reviewer.py",
+        "old": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
+        "new": "9527f0cd29ba93e9a77ab4461da5e5eb353fe0c1c466bd576684704efe537bd6"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "call_chain",
+        "path": "scripts/prepare_jules_video_evidence.py",
+        "old": "308d81a56be35e126847881e316da4381c7c184f5fc4febfc641a99d0ddd5e22",
+        "new": "54a8ef4ed1d9c082d59e975a08abf833e9fe99aece397c343c66ce675ced1712"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "call_chain",
+        "path": "tests/kesher_daily_pipeline_suite.py",
+        "old": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3",
+        "new": "89de6768f4e0ab70900d7a165855dba69232175f8b9ac39b9fe8b199043dca73"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "call_chain",
+        "path": "tests/test_kesher_daily_pipeline.py",
+        "old": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424",
+        "new": "5294cf5f4decad8538a2c767d6593d1871f3a872c98de68f3a513fad1f98d197"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "call_chain",
+        "path": "tests/test_production_contract_v3.py",
+        "old": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
+        "new": "aca08b3fbe55a33c8a7f271b290c32ba4f5235bc0a5c6690041450b02effdd4a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "call_chain",
+        "path": "tests/test_video_reconcile.py",
+        "old": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+        "new": "515685e24f9eaa9c1b365e940df9d66a21c21f4b2afc1342a04ac09215947c5a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-resume.yml",
+        "field": "dispatch_binding",
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "old": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+        "new": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "call_chain",
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "old": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
+        "new": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/jules_video_reviewer.py",
+        "old": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
+        "new": "9527f0cd29ba93e9a77ab4461da5e5eb353fe0c1c466bd576684704efe537bd6"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/prepare_jules_video_evidence.py",
+        "old": "308d81a56be35e126847881e316da4381c7c184f5fc4febfc641a99d0ddd5e22",
+        "new": "54a8ef4ed1d9c082d59e975a08abf833e9fe99aece397c343c66ce675ced1712"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "call_chain",
+        "path": "tests/kesher_daily_pipeline_suite.py",
+        "old": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3",
+        "new": "89de6768f4e0ab70900d7a165855dba69232175f8b9ac39b9fe8b199043dca73"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "call_chain",
+        "path": "tests/test_kesher_daily_pipeline.py",
+        "old": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424",
+        "new": "5294cf5f4decad8538a2c767d6593d1871f3a872c98de68f3a513fad1f98d197"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "call_chain",
+        "path": "tests/test_production_contract_v3.py",
+        "old": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
+        "new": "aca08b3fbe55a33c8a7f271b290c32ba4f5235bc0a5c6690041450b02effdd4a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "call_chain",
+        "path": "tests/test_video_reconcile.py",
+        "old": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+        "new": "515685e24f9eaa9c1b365e940df9d66a21c21f4b2afc1342a04ac09215947c5a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-exact-marshmallow-video-upload-recovery.yml",
+        "field": "dispatch_binding",
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "old": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+        "new": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49"
+      },
+      {
+        "workflow": ".github/workflows/kesher-final-attempt-fallback.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-final-attempt-fallback.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-final-attempt-fallback.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-gifted-direct-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-gifted-direct-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-gifted-direct-recovery.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "old": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
+        "new": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/jules_video_reviewer.py",
+        "old": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
+        "new": "9527f0cd29ba93e9a77ab4461da5e5eb353fe0c1c466bd576684704efe537bd6"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_stabilized.py",
+        "old": "5df59f57f560887ecd97639ed9e50645d97a40cbd6c8f42528c08f6a3faddcf8",
+        "new": "dd473ea8b52985d9d212b5eb312e05684ae3580eca5a6b5cc0d96a24ea981bda"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_v5_runtime.py",
+        "old": "95d4d4a1ef398b8d46c78a32389061439081a7fbf15f6fdfbfa35136d858fa67",
+        "new": "5d0e3cf8b1932eae6bdd64756d29760193a8965de0dbf4e55cb7ac914fad0e38"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/prepare_jules_video_evidence.py",
+        "old": "308d81a56be35e126847881e316da4381c7c184f5fc4febfc641a99d0ddd5e22",
+        "new": "54a8ef4ed1d9c082d59e975a08abf833e9fe99aece397c343c66ce675ced1712"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "tests/kesher_daily_pipeline_suite.py",
+        "old": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3",
+        "new": "89de6768f4e0ab70900d7a165855dba69232175f8b9ac39b9fe8b199043dca73"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "tests/test_kesher_daily_pipeline.py",
+        "old": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424",
+        "new": "5294cf5f4decad8538a2c767d6593d1871f3a872c98de68f3a513fad1f98d197"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "tests/test_production_contract_v3.py",
+        "old": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
+        "new": "aca08b3fbe55a33c8a7f271b290c32ba4f5235bc0a5c6690041450b02effdd4a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "tests/test_short_pipeline_v4.py",
+        "old": "1d1efbb0ca90ecb5b4b46165aae05bcce57bc30927281350e2d34ef405bb07c4",
+        "new": "8f5cc1baa0b43a3a793dc4d38a53f50dc98bd7ecf2c0f5b447ed25bf807f803e"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "call_chain",
+        "path": "tests/test_video_reconcile.py",
+        "old": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+        "new": "515685e24f9eaa9c1b365e940df9d66a21c21f4b2afc1342a04ac09215947c5a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "dispatch_binding",
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "old": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+        "new": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49"
+      },
+      {
+        "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-live-e2e-test.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-master-supervisor.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-media-worker.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-media-worker.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "old": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
+        "new": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "scripts/jules_video_reviewer.py",
+        "old": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
+        "new": "9527f0cd29ba93e9a77ab4461da5e5eb353fe0c1c466bd576684704efe537bd6"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_stabilized.py",
+        "old": "5df59f57f560887ecd97639ed9e50645d97a40cbd6c8f42528c08f6a3faddcf8",
+        "new": "dd473ea8b52985d9d212b5eb312e05684ae3580eca5a6b5cc0d96a24ea981bda"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_v5_runtime.py",
+        "old": "95d4d4a1ef398b8d46c78a32389061439081a7fbf15f6fdfbfa35136d858fa67",
+        "new": "5d0e3cf8b1932eae6bdd64756d29760193a8965de0dbf4e55cb7ac914fad0e38"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "scripts/prepare_jules_video_evidence.py",
+        "old": "308d81a56be35e126847881e316da4381c7c184f5fc4febfc641a99d0ddd5e22",
+        "new": "54a8ef4ed1d9c082d59e975a08abf833e9fe99aece397c343c66ce675ced1712"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "tests/kesher_daily_pipeline_suite.py",
+        "old": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3",
+        "new": "89de6768f4e0ab70900d7a165855dba69232175f8b9ac39b9fe8b199043dca73"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "tests/test_kesher_daily_pipeline.py",
+        "old": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424",
+        "new": "5294cf5f4decad8538a2c767d6593d1871f3a872c98de68f3a513fad1f98d197"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "tests/test_production_contract_v3.py",
+        "old": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
+        "new": "aca08b3fbe55a33c8a7f271b290c32ba4f5235bc0a5c6690041450b02effdd4a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "tests/test_short_pipeline_v4.py",
+        "old": "1d1efbb0ca90ecb5b4b46165aae05bcce57bc30927281350e2d34ef405bb07c4",
+        "new": "8f5cc1baa0b43a3a793dc4d38a53f50dc98bd7ecf2c0f5b447ed25bf807f803e"
+      },
+      {
+        "workflow": ".github/workflows/kesher-owner-exact-975.yml",
+        "field": "call_chain",
+        "path": "tests/test_video_reconcile.py",
+        "old": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+        "new": "515685e24f9eaa9c1b365e940df9d66a21c21f4b2afc1342a04ac09215947c5a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-short-v4.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_stabilized.py",
+        "old": "5df59f57f560887ecd97639ed9e50645d97a40cbd6c8f42528c08f6a3faddcf8",
+        "new": "dd473ea8b52985d9d212b5eb312e05684ae3580eca5a6b5cc0d96a24ea981bda"
+      },
+      {
+        "workflow": ".github/workflows/kesher-short-v4.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_v5_runtime.py",
+        "old": "95d4d4a1ef398b8d46c78a32389061439081a7fbf15f6fdfbfa35136d858fa67",
+        "new": "5d0e3cf8b1932eae6bdd64756d29760193a8965de0dbf4e55cb7ac914fad0e38"
+      },
+      {
+        "workflow": ".github/workflows/kesher-short-v4.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-short-v4.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-short-v4.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-short-v4.yml",
+        "field": "call_chain",
+        "path": "tests/test_short_pipeline_v4.py",
+        "old": "1d1efbb0ca90ecb5b4b46165aae05bcce57bc30927281350e2d34ef405bb07c4",
+        "new": "8f5cc1baa0b43a3a793dc4d38a53f50dc98bd7ecf2c0f5b447ed25bf807f803e"
+      },
+      {
+        "workflow": ".github/workflows/kesher-short-v4.yml",
+        "field": "call_chain",
+        "path": "tests/test_video_reconcile.py",
+        "old": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+        "new": "515685e24f9eaa9c1b365e940df9d66a21c21f4b2afc1342a04ac09215947c5a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-stability-pr.yml",
+        "field": "call_chain",
+        "path": "scripts/jules_video_reviewer.py",
+        "old": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
+        "new": "9527f0cd29ba93e9a77ab4461da5e5eb353fe0c1c466bd576684704efe537bd6"
+      },
+      {
+        "workflow": ".github/workflows/kesher-stability-pr.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_v5_runtime.py",
+        "old": "95d4d4a1ef398b8d46c78a32389061439081a7fbf15f6fdfbfa35136d858fa67",
+        "new": "5d0e3cf8b1932eae6bdd64756d29760193a8965de0dbf4e55cb7ac914fad0e38"
+      },
+      {
+        "workflow": ".github/workflows/kesher-stability-pr.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-stability-pr.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-stability-pr.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-stability-pr.yml",
+        "field": "call_chain",
+        "path": "tests/kesher_daily_pipeline_suite.py",
+        "old": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3",
+        "new": "89de6768f4e0ab70900d7a165855dba69232175f8b9ac39b9fe8b199043dca73"
+      },
+      {
+        "workflow": ".github/workflows/kesher-stability-pr.yml",
+        "field": "call_chain",
+        "path": "tests/test_kesher_daily_pipeline.py",
+        "old": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424",
+        "new": "5294cf5f4decad8538a2c767d6593d1871f3a872c98de68f3a513fad1f98d197"
+      },
+      {
+        "workflow": ".github/workflows/kesher-stability-pr.yml",
+        "field": "call_chain",
+        "path": "tests/test_video_reconcile.py",
+        "old": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+        "new": "515685e24f9eaa9c1b365e940df9d66a21c21f4b2afc1342a04ac09215947c5a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-target-slug-regression-check.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-target-slug-regression-check.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-target-slug-regression-check.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-video-evidence-repair.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-video-evidence-repair.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "definition_sha256",
+        "path": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "old": "78be3f8fabc0634e845d3ef74fa2f8d3f55d34b88ad7e39ae49e9839b8b9531f",
+        "new": "ef12e7b71a5146700dfa2aef609129539b9461a317a77ac3e85c38ee446690a3"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/jules_video_reviewer.py",
+        "old": "c525805664494caae085236eb0c1070eb194fc0aa84178accc062223b334bc07",
+        "new": "9527f0cd29ba93e9a77ab4461da5e5eb353fe0c1c466bd576684704efe537bd6"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_daily_pipeline.py",
+        "old": "cc63db5db32b7fcf33e109d6f2b46449f5f338c089e7d9d376ca63a322bb180f",
+        "new": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_runtime/media_state.py",
+        "old": "a02455b098c1f796bbc951fc9486eb578dcbc01c9fdb1327404cef2b7656d698",
+        "new": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_video_reconcile.py",
+        "old": "b43406aff337937955c24e08869304e8f5188b8f8a497dc0b02dd98d24c71545",
+        "new": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/prepare_jules_video_evidence.py",
+        "old": "308d81a56be35e126847881e316da4381c7c184f5fc4febfc641a99d0ddd5e22",
+        "new": "54a8ef4ed1d9c082d59e975a08abf833e9fe99aece397c343c66ce675ced1712"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "tests/kesher_daily_pipeline_suite.py",
+        "old": "1a3cae9dd99a24bbe3a00494005dad4aed720cf4a200e25299520bd61ba54ad3",
+        "new": "89de6768f4e0ab70900d7a165855dba69232175f8b9ac39b9fe8b199043dca73"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "tests/test_kesher_daily_pipeline.py",
+        "old": "02b0ce22e5b27b0f4bb68a5031de0df011f598f9d7626824008d0acc3d040424",
+        "new": "5294cf5f4decad8538a2c767d6593d1871f3a872c98de68f3a513fad1f98d197"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "tests/test_production_contract_v3.py",
+        "old": "d2248ed77be7699f3b6b459bfefa89d53c991929c1607226bc244d056168c2e2",
+        "new": "aca08b3fbe55a33c8a7f271b290c32ba4f5235bc0a5c6690041450b02effdd4a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "tests/test_video_reconcile.py",
+        "old": "af6ee1fad7d341a22bd1f388712e99ea7e3292ad1247218aa216e80d113cbdea",
+        "new": "515685e24f9eaa9c1b365e940df9d66a21c21f4b2afc1342a04ac09215947c5a"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "old": "c3a1ee9d4ff5c929e2493601fd0abfa9c3949669a245f42f721751719ab40958",
+        "new": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_stabilized.py",
+        "old": "5df59f57f560887ecd97639ed9e50645d97a40cbd6c8f42528c08f6a3faddcf8",
+        "new": "dd473ea8b52985d9d212b5eb312e05684ae3580eca5a6b5cc0d96a24ea981bda"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "scripts/kesher_content_controller_v5_runtime.py",
+        "old": "95d4d4a1ef398b8d46c78a32389061439081a7fbf15f6fdfbfa35136d858fa67",
+        "new": "5d0e3cf8b1932eae6bdd64756d29760193a8965de0dbf4e55cb7ac914fad0e38"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": "tests/test_short_pipeline_v4.py",
+        "old": "1d1efbb0ca90ecb5b4b46165aae05bcce57bc30927281350e2d34ef405bb07c4",
+        "new": "8f5cc1baa0b43a3a793dc4d38a53f50dc98bd7ecf2c0f5b447ed25bf807f803e"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "old": "78be3f8fabc0634e845d3ef74fa2f8d3f55d34b88ad7e39ae49e9839b8b9531f",
+        "new": "ef12e7b71a5146700dfa2aef609129539b9461a317a77ac3e85c38ee446690a3"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "dispatch_binding",
+        "path": ".github/workflows/kesher-daily-video.yml",
+        "old": "806d97a76d88e3f9d839a6eb5132b71fea50c99d0a3e7d9c00c39b886d4c1f3d",
+        "new": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49"
+      }
+    ],
+    "baseline_stale_pins_not_recertified": [
+      {
+        "workflow": ".github/workflows/ci.yml",
+        "field": "call_chain",
+        "path": "tests/test_kesher_optional_video_enrichment.py",
+        "old": "0f7ab8acf5b6853102955875698d0bff794fb0153da7188b80d53d2bfb1fb270",
+        "new": "b3441e378fb45123fc584557ced7d1b31b0a0a70bc1af3804196bca36425cca8"
+      },
+      {
+        "workflow": ".github/workflows/kesher-content-controller-v6.yml",
+        "field": "call_chain",
+        "path": "tests/test_kesher_optional_video_enrichment.py",
+        "old": "0f7ab8acf5b6853102955875698d0bff794fb0153da7188b80d53d2bfb1fb270",
+        "new": "b3441e378fb45123fc584557ced7d1b31b0a0a70bc1af3804196bca36425cca8"
+      },
+      {
+        "workflow": ".github/workflows/kesher-goal-dispatch.yml",
+        "field": "dispatch_binding",
+        "path": ".github/workflows/kesher-short-v4.yml",
+        "old": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+        "new": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "call_chain",
+        "path": ".github/kesher-media-recovery-request.json",
+        "old": "3287651fefef6a0a5e919ac9a8b1540884709f034ddce963b9832c118d96ecd9",
+        "new": "a27033e1a08ac82a14d86bac3e2e0b6e4760c02adb9fc8b777668228c233b540"
+      },
+      {
+        "workflow": ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+        "field": "dispatch_binding",
+        "path": ".github/workflows/kesher-short-v4.yml",
+        "old": "f21516f2123a9b37a152513c25153364dcfd7bf5d94e8ba850a274d2705fba26",
+        "new": "8101ca37c4c733ba7d7c5c8155cba23e13dcd94c4f3d4eb6fb4b8e2c9da8f58b"
+      }
+    ],
+    "changed_leaf_count": 136,
+    "authority_semantics_changed": false
+  },
+  "stale_task_pins": 0,
+  "baseline_definition_check": "AUTHORITY_UNCLASSIFIED_DEFINITION (unchanged one-off Short metadata workflow); selected stale dispatch pins independently prove AUTHORITY_DISPATCH_BINDING_INVALID",
+  "production_mutated": false,
+  "media_generated_or_uploaded": false,
+  "pr_1071": "Generic dispatcher/review changes supersede the routing workaround; the request-specific item binding remains an independent outcome action and is not made redundant.",
+  "validation_inputs": {
+    ".github/workflows/kesher-backlog-media-recovery.yml": "657fb090869971f8814af21e3f1af360b646ef79f1e127638826082163217a9a",
+    ".github/workflows/kesher-daily-video.yml": "0f34a97ba8fdf19347b3a5cd20d617eac1f7d48cf8d68373a74cac12936e0d49",
+    ".github/workflows/kesher-targeted-media-recovery-dispatch.yml": "ef12e7b71a5146700dfa2aef609129539b9461a317a77ac3e85c38ee446690a3",
+    "scripts/jules_video_reviewer.py": "9527f0cd29ba93e9a77ab4461da5e5eb353fe0c1c466bd576684704efe537bd6",
+    "scripts/kesher_content_controller_stabilized.py": "dd473ea8b52985d9d212b5eb312e05684ae3580eca5a6b5cc0d96a24ea981bda",
+    "scripts/kesher_content_controller_v5_runtime.py": "5d0e3cf8b1932eae6bdd64756d29760193a8965de0dbf4e55cb7ac914fad0e38",
+    "scripts/kesher_daily_pipeline.py": "a4a0f282fbf470a834e5393222972ceb93876e39e2bb92d057bb1efc238711ca",
+    "scripts/kesher_exact_video_target.py": "e89793ea4ec3d29c6f6ef6e6e63c631cf242cd0ec3f8ab4934a2efc0d208ee8a",
+    "scripts/kesher_runtime/authority_policy.json": "cdab6434e14cf345c63a94951f48a97b19f70229c4559b6ceca6cd1d9f614ad9",
+    "scripts/kesher_runtime/media_state.py": "14414b202e2106eb5b2793315beef49ab713e9ce3a114da4adb2c17f1e95de65",
+    "scripts/kesher_video_reconcile.py": "065bc3b891396da2f61e783dd1e1eb49c2451dfedf020fd94ca70f88872e0000",
+    "scripts/prepare_jules_video_evidence.py": "54a8ef4ed1d9c082d59e975a08abf833e9fe99aece397c343c66ce675ced1712",
+    "tests/kesher_daily_pipeline_suite.py": "89de6768f4e0ab70900d7a165855dba69232175f8b9ac39b9fe8b199043dca73",
+    "tests/test_kesher_daily_pipeline.py": "5294cf5f4decad8538a2c767d6593d1871f3a872c98de68f3a513fad1f98d197",
+    "tests/test_production_contract_v3.py": "aca08b3fbe55a33c8a7f271b290c32ba4f5235bc0a5c6690041450b02effdd4a",
+    "tests/test_short_pipeline_v4.py": "8f5cc1baa0b43a3a793dc4d38a53f50dc98bd7ecf2c0f5b447ed25bf807f803e",
+    "tests/test_v5_video_source_binding.py": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf",
+    "tests/test_video_reconcile.py": "515685e24f9eaa9c1b365e940df9d66a21c21f4b2afc1342a04ac09215947c5a",
+    "tests/test_video_exact_item_binding.py": "09b3dda14da4803816d81ba0ba9bcf5727febc7f3872c6191462ed04e79f8627",
+    "tests/test_video_exact_item_callers.py": "1974bcdd7736ba5deb02b05d63e3a0f6644e0aa1cdb082dffdd946ddeeb89970"
+  },
+  "status": "ROOT_FIX_GREEN; ALL_REMAINING_FAILURES_BASELINE_PROVEN; DRAFT_PUBLICATION_AUTHORIZED; NO_MERGE",
+  "final_main_readback": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+  "self_review": {
+    "critical": 0,
+    "important": 0,
+    "baseline_gate_failures_waived": false
+  },
+  "changed_files": [
+    ".github/workflows/kesher-backlog-media-recovery.yml",
+    ".github/workflows/kesher-daily-video.yml",
+    ".github/workflows/kesher-targeted-media-recovery-dispatch.yml",
+    "docs/forensics/2026-10-07-pending-review-identity/baseline-reproduction.json",
+    "docs/forensics/2026-10-07-pending-review-identity/report.md",
+    "docs/forensics/2026-10-07-pending-review-identity/reproduce-baseline.py",
+    "docs/forensics/2026-10-07-pending-review-identity/validation.json",
+    "scripts/jules_video_reviewer.py",
+    "scripts/kesher_content_controller_stabilized.py",
+    "scripts/kesher_content_controller_v5_runtime.py",
+    "scripts/kesher_daily_pipeline.py",
+    "scripts/kesher_exact_video_target.py",
+    "scripts/kesher_runtime/authority_policy.json",
+    "scripts/kesher_runtime/media_state.py",
+    "scripts/kesher_video_reconcile.py",
+    "scripts/prepare_jules_video_evidence.py",
+    "tests/kesher_daily_pipeline_suite.py",
+    "tests/test_kesher_daily_pipeline.py",
+    "tests/test_production_contract_v3.py",
+    "tests/test_short_pipeline_v4.py",
+    "tests/test_v5_video_source_binding.py",
+    "tests/test_video_exact_item_binding.py",
+    "tests/test_video_exact_item_callers.py",
+    "tests/test_video_reconcile.py"
+  ],
+  "baseline_reproduction": {
+    "main_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+    "clean_before_and_after": true,
+    "all_six_reproduced": true,
+    "five_pin_files_and_recorded_leaves_byte_identical": true,
+    "broll_method_byte_identical": true,
+    "pending_consumer_tests_run": 12,
+    "pending_consumer_failure_entries": 7,
+    "pending_consumer_error_entries": 10,
+    "all_17_terminal_failure_signatures_match_baseline": true,
+    "evidence": "baseline-reproduction.json",
+    "reproducer": "reproduce-baseline.py",
+    "additional_unclassified_baseline_definition": ".github/workflows/kesher-exact-short-metadata-recovery-20261006.yml",
+    "additional_stale_main_pins": 5
+  },
+  "publication_readiness": "FOCUSED_GREEN; ALL_REMAINING_FAILURES_PROVEN_BASELINE; DRAFT_PR_AUTHORIZED; MERGE_BLOCKED_BY_BASELINE",
+  "production_state_written": false,
+  "media_generation_or_upload": false,
+  "master_supervisor_jules_cutover_mutation": false,
+  "pr_merged": false,
+  "previous_publication_status": "ROOT_FIX_GREEN; FULL_GATE_BLOCKED_BY_UNCHANGED_MAIN_BASELINE; SCOPE_RESPONSE_PENDING",
+  "previous_baseline_definition_check": "AUTHORITY_DISPATCH_BINDING_INVALID"
+}

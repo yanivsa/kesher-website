@@ -93,4 +93,9 @@ jobs:
           include-hidden-files: true
 
       - name: Resume canonical long-video pipeline
-        run: gh workflow run kesher-daily-video.yml -f operation=full
+        run: |
+          test -n "$TARGET_ITEM_ID"
+          gh workflow run kesher-daily-video.yml -f operation=full \
+            -f target_slug="$TARGET_SLUG" \
+            -f target_content_sha256="$TARGET_CONTENT_SHA256" \
+            -f target_item_id="$TARGET_ITEM_ID"

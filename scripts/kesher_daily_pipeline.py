@@ -472,6 +472,33 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def existing_item(state: dict[str, Any], item_id: str | None = None,
+                  slug: str | None = None, content_sha256: str | None = None,
+                  *, kind: str | None = None, generation_attempt: int | None = None) -> dict[str, Any]:
+    from scripts.kesher_runtime.media_state import CanonicalMediaState, exact_item
+    from scripts.kesher_runtime.state import StateInvalid
+    target_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
+    target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+    target_sha = (content_sha256 or os.environ.get("TARGET_CONTENT_SHA256") or "").strip()
+    requested_attempt = os.environ.get("TARGET_GENERATION_ATTEMPT", "").strip()
+    if generation_attempt is None and requested_attempt:
+        if not requested_attempt.isdecimal() or int(requested_attempt) < 1:
+            raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: invalid generation attempt')
+        generation_attempt = int(requested_attempt)
+    if isinstance(state, CanonicalMediaState):
+        kind = kind or state.context.target.kind
+        target_slug = target_slug or state.context.target.source.slug
+        target_sha = target_sha or state.context.target.source.content_sha256
+    else:
+        kind = kind or {"article_short": "short", "video_overview": "overview"}.get(
+            os.environ.get("KESHER_MEDIA_MODE", "video_overview"), "overview")
+    try:
+        return exact_item(state, target_id, slug=target_slug, content_sha256=target_sha,
+                          kind=kind, generation_attempt=generation_attempt)
+    except StateInvalid as exc:
+        raise PipelineError(str(exc)) from exc
+
+
 def active_item(
     state: dict[str, Any],
     slug: str | None = None,
@@ -479,26 +506,35 @@ def active_item(
 ) -> dict[str, Any] | None:
     target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
     target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
+    if target_item_id:
+        # Missing/terminal exact items may never fall through to new generation.
+        return existing_item(state, target_item_id, target_slug)
     active_statuses = {"source_selected", "source_added", "generating", "downloaded", "pending_review", "approved", "uploading"}
+    media_type = os.environ.get("KESHER_MEDIA_MODE") or "video_overview"
+    if media_type not in {'video_overview', 'article_short'}:
+        raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: unknown media kind')
+    if any(not item.get('uploaded') and item.get('status') in active_statuses
+           and item.get('type') not in {'video_overview', 'article_short'}
+           and (not target_slug or (item.get('source') or {}).get('slug') == target_slug)
+           for item in state['items']):
+        raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: unclassified active artifact; refusing duplicate generation')
     matches = [
         item for item in state["items"]
-        if not item.get("uploaded") and (
+        if item.get("type") == media_type and not item.get("uploaded") and (
             item.get("status") in active_statuses
             or (item.get("status") == "rejected" and item.get("technical_verified") is True)
         )
+        and (not target_slug or (item.get("source") or {}).get("slug") == target_slug)
     ]
-    if target_item_id:
-        scoped = [item for item in matches if item.get("id") == target_item_id]
-        return scoped[0] if scoped else None
-    if target_slug:
-        scoped = [
-            item for item in matches
-            if str((item.get("source") or {}).get("slug") or (item.get("source") or {}).get("id") or "").strip() == target_slug
-        ]
-        return scoped[0] if scoped else None
     if len(matches) > 1:
-        raise PipelineError("More than one active video exists; refusing duplicate work")
-    return matches[0] if matches else None
+        raise PipelineError("More than one active video exists; EXACT_MEDIA_ITEM_ID_REQUIRED: supply the initiating item ID")
+    return existing_item(state, matches[0]['id'], target_slug) if matches else None
+
+
+def export_item_target(item: dict[str, Any]) -> None:
+    # Export the creation/resume result for later workflow steps, not a list query.
+    from scripts.kesher_video_reconcile import export_target
+    export_target(item)
 
 
 def article_body_for_item(item: dict[str, Any]) -> str:
@@ -1141,7 +1177,9 @@ def run_generation(
     auth_preflight()
     state = load_state()
     item = active_item(state, slug=slug, item_id=item_id)
-    if item and item["status"] in {"pending_review", "approved", "rejected", "uploading"}:
+    if item:
+        export_item_target(item)
+    if item and (item.get("uploaded") is True or item["status"] in {"pending_review", "approved", "rejected", "uploading", "uploaded", "superseded"}):
         print(f"NO_GENERATION active_item={item['id']} status={item['status']}")
         return 0
     if not item:
@@ -1150,9 +1188,13 @@ def run_generation(
             source = article_by_slug(target_slug)
         else:
             source = select_newest_unused_article(state)
+        requested_sha = os.environ.get('TARGET_CONTENT_SHA256', '').strip()
+        if requested_sha and source['content_sha256'] != requested_sha:
+            raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: requested source content changed')
         item = new_item(source)
         state["items"].append(item)
         save_state(state)
+        export_item_target(item)
         print(f"SOURCE_SELECTED item={item['id']} slug={source['slug']}")
     if item["status"] == "source_selected":
         add_source(state, item)
@@ -1175,7 +1217,11 @@ def rebuild_rejected_with_remotion(item_id: str) -> int:
     matches = [item for item in state["items"] if item.get("id") == item_id]
     if len(matches) != 1:
         raise PipelineError("Remotion rebuild item was not found uniquely")
-    item = matches[0]
+    kind = None
+    if not os.environ.get('KESHER_MEDIA_MODE') and matches[0].get('type') == 'article_short':
+        kind = 'short'  # The explicit rebuild ID also supports native Short recovery.
+    item = existing_item(state, item_id, kind=kind)
+    export_item_target(item)
     rejected = item.get("status") == "rejected" and item.get("visual_review_status") == "rejected"
     technical_note = str((item.get("review_notes") or {}).get("technical") or "")
     legacy_signature_recovery = (
@@ -1322,10 +1368,7 @@ def prune_uploaded_media() -> int:
 
 def update_review(args: argparse.Namespace) -> int:
     state = load_state()
-    matches = [item for item in state["items"] if item.get("id") == args.review_item]
-    if len(matches) != 1:
-        raise PipelineError("Review item was not found uniquely")
-    item = matches[0]
+    item = existing_item(state, args.review_item, getattr(args, 'slug', None))
     if item.get("status") != "pending_review" or item.get("technical_verified") is not True:
         raise PipelineError("Only technically verified pending items may be reviewed")
     for field in ("visual", "semantic", "metadata"):
@@ -1561,33 +1604,14 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
 
 def upload_only(slug: str | None = None, item_id: str | None = None, *, state: dict | None = None) -> int:
     state = load_state() if state is None else state
-    target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
-    target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
-    candidates = [
-        item for item in state["items"]
-        if item.get("technical_verified") is True
-        and item.get("status") in {"approved", "uploading"}
-        and not item.get("uploaded")
-        and not item.get("youtube_verification")
-    ]
-    if target_item_id:
-        candidates = [item for item in candidates if item.get("id") == target_item_id]
-    elif target_slug:
-        candidates = [
-            item for item in candidates
-            if str((item.get("source") or {}).get("slug") or (item.get("source") or {}).get("id") or "").strip() == target_slug
-        ]
-    if not candidates:
-        print("NO_TECHNICALLY_VERIFIED_UPLOAD")
+    item = existing_item(state, item_id, slug)
+    if item.get('uploaded') is True and item.get('youtube_verification'):
+        print(f"NO_DUPLICATE_UPLOAD item={item['id']}")
         return 0
-    if len(candidates) != 1:
-        dated = [item for item in candidates if str(item.get("israel_date") or "").strip()]
-        if dated:
-            newest_date = max(str(item["israel_date"]) for item in dated)
-            candidates = [item for item in dated if str(item["israel_date"]) == newest_date]
-        if len(candidates) != 1:
-            raise PipelineError(f"More than one technically verified candidate exists: {len(candidates)}")
-    item = candidates[0]
+    if (item.get('technical_verified') is not True
+            or item.get('status') not in {'approved', 'uploading'}):
+        print(f"NO_TECHNICALLY_VERIFIED_UPLOAD item={item['id']}")
+        return 0
     if item.get("youtube_id"):
         # The external insertion already happened. Public/metadata recovery
         # does not need retained MP4 bytes and may never insert another video.
