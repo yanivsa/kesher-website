@@ -549,3 +549,27 @@ rows verified. One historical source is unavailable in the reviewer's local Git
 objects; parent native source readback remains recorded, without mismatch. No
 review fix or repeat full suite was needed. Final source hashes match the passing
 1250Python run; documentation/review metadata only was finalized afterward.
+
+
+2026-10-07 durable stabilization implementation complete (no production activation).
+Same branch/worktree reused; main ac9eac28 reconciled via98b9bfd6, exact-item
+PR1084 implementation reused via2d4ce984, durable changes committed d4465ded.
+Image catalog auto replenishment within existing3 generation slots; item-durable
+voice attempts/final fallback; exact advisory dual-key review; explicit atomic
+authority sync/CI verify; four sentinel definitions archived/deleted and exact
+registrations retained denied. Current read-only129-row inventory includes four
+new missing-YAML owner registrations; all active retained identities fail closed.
+Supervisor7-day learning/one rescue/generic correction+regression contract and
+legacy S3 merge refusal implemented without activating its retired entrypoint.
+V6 real exact-target observation made20 GET-only external reads: article absent
+main/HTTP404, unproven media, orphaned dated V5 state and blocked PR1083.
+Final Python1318 GREEN/0 skipped; npm check including media245/controller500/
+frontend152/browser140 GREEN; actionlint, authority stale hashes0, governance,
+whitespace pass. Executable/test/config manifest683 inputs unchanged after commit.
+Current PR1083 OPEN/non-draft/same ce749b46; two action_required runs have0jobs.
+Closed5.2 evidence unchanged. No generation/upload, supervisor/Jules/cutover/
+credential/Cloudflare/production-state mutation, main merge or new PR.
+Detailed completion, exact commands and read-only evidence:
+docs/forensics/2026-10-07-durable-stabilization/completion-report.md.
+Evidence-only completion commit and normal same-branch push follow; final exact
+local/remote SHA and clean status are independently read back in the report.

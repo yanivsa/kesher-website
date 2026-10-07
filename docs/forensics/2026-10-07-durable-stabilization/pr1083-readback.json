@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-10-07T15:44:51.620303+00:00",
+  "pr": 1083,
+  "url": "https://github.com/yanivsa/kesher-website/pull/1083",
+  "state": "open",
+  "draft": false,
+  "merged": false,
+  "head_sha": "ce749b46629b6c5674f3309c4b4d28a42f9e115e",
+  "base_sha": "ac9eac28f4d7d6e4f89fca5e16bfa50014a7c84f",
+  "mergeable": true,
+  "runs": [
+    {
+      "id": 37633442328,
+      "name": "CI",
+      "status": "completed",
+      "conclusion": "action_required",
+      "head_sha": "ce749b46629b6c5674f3309c4b4d28a42f9e115e",
+      "jobs_total_count": 0
+    },
+    {
+      "id": 37633442326,
+      "name": "Kesher Stability PR Validation",
+      "status": "completed",
+      "conclusion": "action_required",
+      "head_sha": "ce749b46629b6c5674f3309c4b4d28a42f9e115e",
+      "jobs_total_count": 0
+    }
+  ],
+  "approval_performed": false,
+  "rerun_performed": false,
+  "mutations_performed": false
+}
