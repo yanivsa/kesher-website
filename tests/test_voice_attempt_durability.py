@@ -26,6 +26,20 @@ class VoiceAttemptDurabilityTests(unittest.TestCase):
         p.save_state(state);reloaded=p.load_state()
         self.assertEqual(reloaded['items'][-1]['fresh_generation_attempt'],3)
         self.assertEqual(reloaded['items'][-1]['retry_of'],'item-2')
+    def test_targeted_long_voice_rejection_creates_exact_second_attempt(self):
+        old=self.item(1);old.update(type='video_overview',failure_signature='wrong_narrator_gender')
+        state={'version':1,'items':[old]};p.save_state(state)
+        with mock.patch.dict(os.environ,{
+                'KESHER_MEDIA_MODE':'video_overview','TARGET_SLUG':'one',
+                'TARGET_CONTENT_SHA256':'a'*64,'TARGET_ITEM_ID':'item-1'}), \
+                mock.patch.object(r,'current_source_snapshot',return_value=self.source):
+            self.assertEqual(r.prepare_generation('one'),0)
+        rows=p.load_state()['items']
+        self.assertEqual(len(rows),2)
+        self.assertEqual(rows[0]['status'],'superseded')
+        self.assertEqual(rows[1]['fresh_generation_attempt'],2)
+        self.assertEqual(rows[1]['retry_of'],'item-1')
+        self.assertEqual(rows[1]['source']['content_sha256'],'a'*64)
     def test_stale_write_cannot_reset_attempt_or_drop_retry_receipt(self):
         old=self.item(3);p.save_state({'version':1,'items':[old]})
         stale=copy.deepcopy(old);stale['fresh_generation_attempt']=1
