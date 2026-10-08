@@ -75,6 +75,7 @@ jobs:
       NOTEBOOKLM_HOME: ${{ github.workspace }}/.notebooklm
       KESHER_BROLL_ENABLED: "false"
       KESHER_BROLL_BUDGET_SECONDS: "12"
+      KESHER_MEDIA_MODE: "article_short"
 
     steps:
       - name: Checkout workflow revision for validation
