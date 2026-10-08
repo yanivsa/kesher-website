@@ -74,7 +74,7 @@ class ProductionContractV3Tests(unittest.TestCase):
             self.assertNotIn("PIXABAY_API_KEY:", job_header)
             self.assertIn("PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}", workflow)
             self.assertIn("PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}", workflow)
-            self.assertIn('KESHER_BROLL_ENABLED: "false"', workflow)
+            self.assertIn('KESHER_BROLL_ENABLED: "true"', workflow)
             self.assertIn('KESHER_BROLL_BUDGET_SECONDS: "12"', workflow)
 
     def test_image_stage_is_publication_blocking_with_guaranteed_local_fallback(self) -> None:
@@ -146,6 +146,7 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn("Prepare technically verified upload", workflow)
         self.assertIn("Upload exact technically verified MP4", workflow)
         self.assertIn("Jules performs strict advisory review", workflow)
+
 
     def test_video_upload_workflow_enforces_exact_identity_lock(self) -> None:
         workflow = VIDEO_WORKFLOW.read_text(encoding="utf-8")
