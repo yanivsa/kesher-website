@@ -297,6 +297,63 @@ def prepare_generation(target_slug: str = "") -> int:
     target_slug = (target_slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
     media_mode = (os.environ.get("KESHER_MEDIA_MODE") or "article_short").strip()
     if target_slug and media_mode == "video_overview":
+        source = current_source_snapshot(target_slug)
+        requested_sha = (os.environ.get("TARGET_CONTENT_SHA256") or "").strip()
+        if requested_sha and requested_sha != source["content_sha256"]:
+            raise pipeline.PipelineError(
+                f"Published source changed after exact video request for {target_slug}"
+            )
+        requested_item_id = (os.environ.get("TARGET_ITEM_ID") or "").strip()
+        same_source = [
+            item for item in state.get("items") or []
+            if isinstance(item, dict)
+            and item.get("type") == "video_overview"
+            and source_slug(item) == target_slug
+            and str((item.get("source") or {}).get("content_sha256") or "") == source["content_sha256"]
+        ]
+        item = None
+        if requested_item_id:
+            exact = [row for row in same_source if str(row.get("id") or "") == requested_item_id]
+            if len(exact) != 1:
+                raise pipeline.PipelineError("EXACT_MEDIA_ITEM_ID_MISMATCH")
+            item = exact[0]
+        else:
+            unresolved = [
+                row for row in same_source
+                if row.get("uploaded") is not True and row.get("status") in UNRESOLVED_STATUSES
+            ]
+            if len(unresolved) > 1:
+                raise pipeline.PipelineError(
+                    "More than one exact Video Overview is unresolved; EXACT_MEDIA_ITEM_ID_REQUIRED"
+                )
+            item = unresolved[0] if unresolved else None
+        if item is not None:
+            _reconcile_item_technical_rejection(state, item)
+            export_target(item)
+            if item.get("status") == "rejected" and item.get("technical_verified") is not True:
+                replacement = retry_technical_rejection(state, item)
+                pipeline.save_state(state)
+                if replacement is None:
+                    workflow_output("skip_generation", "true")
+                    print(
+                        "VIDEO_RECONCILED_GENERATION "
+                        f"slug={target_slug} released_without_video=yes"
+                    )
+                    return 0
+                export_target(replacement)
+                workflow_output("skip_generation", "false")
+                print(
+                    "VIDEO_RECONCILED_GENERATION "
+                    f"slug={target_slug} technical_retry=yes "
+                    f"attempt={replacement.get('fresh_generation_attempt', 1)}"
+                )
+                return 0
+            workflow_output("skip_generation", "false")
+            print(
+                "VIDEO_RECONCILED_GENERATION "
+                f"slug={target_slug} backlog_resume=yes status={item.get('status')}"
+            )
+            return 0
         workflow_output("skip_generation", "false")
         print(
             "VIDEO_RECONCILED_GENERATION "
@@ -458,8 +515,8 @@ def prepare_upload(
     unresolved = unresolved_items(state)
     target_item_id = (
         item_id
-        or os.environ.get("KESHER_REQUESTED_TARGET_ITEM_ID")
         or os.environ.get("TARGET_ITEM_ID")
+        or os.environ.get("KESHER_REQUESTED_TARGET_ITEM_ID")
         or ""
     ).strip()
     target_content_sha256 = (
