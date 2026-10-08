@@ -189,7 +189,24 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
         raise pipeline.PipelineError(
             f"Published source changed after video selection for {slug}"
         )
-    retries = int(old.get("technical_retry_count") or 0)
+    recorded = old.get('fresh_generation_attempt', 1)
+    if type(recorded) is not int or recorded < 1:
+        raise pipeline.PipelineError('FRESH_GENERATION_ATTEMPT_INVALID')
+    retries = max(int(old.get("technical_retry_count") or 0), recorded - 1)
+    voice_rejection = (old.get('failure_signature') == 'wrong_narrator_gender'
+                       or 'Detected male voice' in str((old.get('review_notes') or {}).get('technical', '')))
+    if voice_rejection:
+        policy = json.loads(pipeline.PRODUCTION_CONTRACT_FILE.read_text())['video']['voice_policy']
+        if recorded >= int(policy['female_attempts_before_fallback']):
+            if (policy['accept_male_on_final_female_attempt'] is True
+                    and policy['fallback_voice_after_failed_female_attempts'] == 'male'
+                    and old.get('raw_mp4') and old.get('task_id')):
+                old['status'] = 'downloaded'
+                old['voice_fallback_revalidation'] = True
+                old['updated_at'] = pipeline.utc_now()
+                return old  # same receipt, no fourth provider generation
+            _mark_released(old, 'final_voice_attempt_has_no_recoverable_artifact')
+            return None
     if retries >= MAX_TECHNICAL_RETRIES:
         _mark_released(old, "fresh_generation_budget_exhausted")
         return None
@@ -206,6 +223,7 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
         replacement["source_mode"] = old["source_mode"]
     replacement["technical_retry_count"] = retries + 1
     replacement["fresh_generation_attempt"] = retries + 2
+    replacement["id"] += f"-a{retries + 2}"
     replacement["retry_of"] = old.get("id")
     state.setdefault("items", []).append(replacement)
     return replacement
@@ -247,6 +265,7 @@ def export_target(item: dict[str, Any] | None) -> None:
                     f.write(f"TARGET_ITEM_ID={target_id}\n")
                 if content_sha256:
                     f.write(f"TARGET_CONTENT_SHA256={content_sha256}\n")
+                f.write(f"TARGET_GENERATION_ATTEMPT={item.get('fresh_generation_attempt', 1)}\n")
                 if slug and not os.environ.get("TARGET_SLUG"):
                     f.write(f"TARGET_SLUG={slug}\n")
         except OSError:
@@ -457,7 +476,10 @@ def prepare_upload(
         or ""
     ).strip()
     exact_required = (os.environ.get("KESHER_EXACT_UPLOAD_REQUIRED") or "").strip().lower() == "true"
-    exact_requested = exact_required or bool(target_item_id or target_content_sha256)
+    media_mode = os.environ.get('KESHER_MEDIA_MODE', '')
+    overview = media_mode == 'video_overview' or (media_mode != 'article_short'
+                and any(item.get('type') == 'video_overview' for item in state.get('items', [])))
+    exact_requested = overview or exact_required or bool(target_item_id or target_content_sha256)
     if exact_requested:
         if not all((target, target_content_sha256, target_item_id)):
             raise pipeline.PipelineError(
@@ -473,6 +495,8 @@ def prepare_upload(
             raise pipeline.PipelineError(
                 "Exact identity lock did not match exactly one unresolved video item"
             )
+        if overview:
+            pipeline.existing_item(state, target_item_id, target, target_content_sha256, kind='overview')
         unresolved = exact
     elif target:
         unresolved = [item for item in unresolved if source_slug(item) == target]

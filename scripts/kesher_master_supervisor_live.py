@@ -7,7 +7,7 @@ persist-before-side-effect protocol so a crash cannot blindly duplicate a
 recovery command.
 
 Escalation is bounded and deterministic for one stable incident fingerprint:
-S1 Controller -> S2 Jules -> S3 direct exact recovery -> HUMAN_BLOCKER.
+One bounded S1 rescue -> S2 generic correction/regression -> HUMAN_BLOCKER.
 """
 
 from __future__ import annotations
@@ -26,6 +26,7 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from typing import Any
+from pathlib import Path
 
 if __package__:
     from . import jules_article_runner_core as jules
@@ -75,11 +76,52 @@ def _stable_hash(payload: Any) -> str:
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
+def learning_identity(report: dict[str, Any]) -> dict[str, str]:
+    stage = str(report.get("state_stage") or str(report.get("incident_id") or "").split("|")[-1] or "unknown")
+    signature = str(report.get("failure_class") or report.get("failure_signature") or "UNKNOWN_FAILURE").split(":",1)[0].strip()
+    aliases = {"IMAGE_LOCAL_FALLBACK_EXHAUSTED":"IMAGE_CATALOG_EXHAUSTED",
+               "wrong_narrator_gender":"VOICE_PITCH_REJECTION_LOOP",
+               "AUTHORITY_UNREVIEWED_DEFINITION_CHANGE":"AUTHORITY_SHA_DESYNC"}
+    token = re.match(r"[A-Z][A-Z0-9_]{2,}",signature)
+    failure_class = aliases.get(signature, token.group(0) if token else "UNKNOWN_FAILURE")
+    component = str(report.get("component") or {
+        "image":"canonical_image_worker", "article":"canonical_article_worker",
+        "long_video":"canonical_overview_worker", "overview":"canonical_overview_worker",
+        "short":"canonical_short_worker", "jules":"canonical_advisory_review",
+        "authority":"authority_policy"}.get(stage,"canonical_controller"))
+    return dict(component=component,failure_class=failure_class,state_stage=stage)
+
+
 def incident_fingerprint(report: dict[str, Any]) -> str:
-    return _stable_hash({
-        "incident_id": str(report.get("incident_id") or "").strip(),
-        "failure_signature": str(report.get("failure_signature") or "").strip(),
-    })[:32]
+    return _stable_hash(learning_identity(report))[:32]
+
+
+def _learning_policy() -> dict[str, Any]:
+    return json.loads((Path(__file__).resolve().parents[1]/"config/kesher-production-contract.json").read_text())["supervisor"]["learning"]
+
+
+def _migrate_learning(state: dict[str, Any], report: dict[str, Any]) -> None:
+    fp = incident_fingerprint(report)
+    matches = [(key,value) for key,value in state["incidents"].items()
+               if isinstance(value,dict) and incident_fingerprint(value)==fp]
+    active = [(key,value) for key,value in matches if value.get("active_command_id") and
+              state["commands"].get(value["active_command_id"],{}).get("lifecycle") in ACTIVE_LIFECYCLES]
+    if len(active)>1:
+        raise SupervisorError("LEARNING_MIGRATION_COMPETING_ACTIVE_COMMANDS")
+    if matches and (fp not in state["incidents"] or len(matches)>1):
+        key, value = active[0] if active else max(matches,key=lambda pair:int(pair[1].get("strike") or 0))
+        value["strike"] = max(int(old.get("strike") or 0) for _,old in matches)
+        value["first_seen_at"] = min(str(old.get("first_seen_at") or "9999") for _,old in matches)
+        value["merged_legacy_fingerprints"] = sorted({key for key,_ in matches if key!=fp})
+        state["incidents"][fp] = value
+        for old_key, old in matches:
+            if old_key != fp:
+                del state["incidents"][old_key]
+                for command in state["commands"].values():
+                    if command.get("fingerprint")==old_key:command["fingerprint"]=fp
+        value["fingerprint"]=fp
+        if value.get("status")=="resolved" and not value.get("merged_correction_proof"):
+            value["status"]="awaiting_durable_fix"
 
 
 def new_supervisor_state() -> dict[str, Any]:
@@ -105,6 +147,7 @@ def prepare_escalation(state: dict[str, Any], report: dict[str, Any], *, now: st
     result.setdefault("schema_version", SUPERVISOR_SCHEMA_VERSION)
     result.setdefault("incidents", {})
     result.setdefault("commands", {})
+    _migrate_learning(result, report)
     fp = incident_fingerprint(report)
     incidents = result["incidents"]
     commands = result["commands"]
@@ -124,6 +167,15 @@ def prepare_escalation(state: dict[str, Any], report: dict[str, Any], *, now: st
         incidents[fp] = incident
     else:
         incident["last_seen_at"] = now
+    identity = learning_identity(report)
+    incident.update(identity)
+    policy = _learning_policy()
+    incident["learning_window_days"] = policy["window_days"]
+    first = _parse_timestamp(incident.get("first_seen_at")); current = _parse_timestamp(now)
+    incident["recurrence_in_learning_window"] = bool(first and current and 0 <= (current-first).total_seconds() <= policy["window_days"]*86400)
+    incident["required_correction"] = policy["recurrence_requires"]
+    if isinstance(report.get("v6_shadow"),dict):
+        incident["v6_shadow_comparison"] = copy.deepcopy(report["v6_shadow"])
     active_id = str(incident.get("active_command_id") or "")
     active = commands.get(active_id) if active_id else None
     if isinstance(active, dict) and str(active.get("lifecycle") or "") in ACTIVE_LIFECYCLES:
@@ -137,15 +189,15 @@ def prepare_escalation(state: dict[str, Any], report: dict[str, Any], *, now: st
     if isinstance(active, dict) and str(active.get("lifecycle") or "") in TERMINAL_LIFECYCLES:
         incident["active_command_id"] = None
     strike = int(incident.get("strike") or 0) + 1
-    if strike > 3:
+    if strike > 2:
         incident["strike"] = strike
         incident["status"] = "human_blocker"
         incident["active_command_id"] = None
         incident["marker"] = _marker(report, strike, "HUMAN_BLOCKER")
         incident.setdefault("history", []).append({"at": now, "event": "human_blocker", "failure_signature": report.get("failure_signature")})
         result["updated_at"] = now
-        return result, {"stage": "HUMAN_BLOCKER", "executor": None, "execute_now": False, "command_id": None, "reason": "same_incident_exhausted_s1_s2_s3"}
-    stage, executor = {1: ("S1", "controller"), 2: ("S2", "jules"), 3: ("S3", "direct")}[strike]
+        return result, {"stage": "HUMAN_BLOCKER", "executor": None, "execute_now": False, "command_id": None, "reason": "durable_correction_required_after_bounded_rescue"}
+    stage, executor = {1: ("S1", "controller"), 2: ("S2", "jules")}[strike]
     command_id = _command_id(report, stage, strike)
     if command_id in commands:
         incident["active_command_id"] = command_id
@@ -233,10 +285,10 @@ def record_resolution(state: dict[str, Any], report: dict[str, Any], *, at: str)
         command["lifecycle"] = "verified"
         command["verified_at"] = at
         command["updated_at"] = at
-    incident["status"] = "resolved"
-    incident["resolved_at"] = at
+    incident["status"] = "awaiting_durable_fix"
+    incident["delivery_recovered_at"] = at
     incident["active_command_id"] = None
-    incident.setdefault("history", []).append({"at": at, "event": "resolved"})
+    incident.setdefault("history", []).append({"at": at, "event": "delivery_recovered_generic_fix_unmerged"})
     result["updated_at"] = at
     return result
 
@@ -256,7 +308,7 @@ def resolve_absent_incidents(state: dict[str, Any], report: dict[str, Any], *, a
     for fp, incident in incidents.items():
         if not isinstance(incident, dict) or fp == current_fp:
             continue
-        if not str(incident.get("incident_id") or "").startswith(prefix) or str(incident.get("status") or "") == "resolved":
+        if not str(incident.get("incident_id") or "").startswith(prefix) or str(incident.get("status") or "") in {"resolved","awaiting_durable_fix"}:
             continue
         active_id = str(incident.get("active_command_id") or "")
         command = commands.get(active_id) if active_id else None
@@ -264,10 +316,10 @@ def resolve_absent_incidents(state: dict[str, Any], report: dict[str, Any], *, a
             command["lifecycle"] = "verified"
             command["verified_at"] = at
             command["updated_at"] = at
-        incident["status"] = "resolved"
-        incident["resolved_at"] = at
+        incident["status"] = "awaiting_durable_fix"
+        incident["delivery_recovered_at"] = at
         incident["active_command_id"] = None
-        incident.setdefault("history", []).append({"at": at, "event": "resolved", "reason": "failure_absent_in_fresh_exact_evidence"})
+        incident.setdefault("history", []).append({"at": at, "event": "delivery_recovered_generic_fix_unmerged", "reason": "failure_absent_in_fresh_exact_evidence"})
         changed = True
     if changed:
         result["updated_at"] = at
@@ -299,6 +351,10 @@ def build_incident_packet(report: dict[str, Any], *, strike: int, command_id: st
         "no_duplicate_article_pr": True,
         "never_bypass_ci_or_safeguards": True,
         "production_state_writer_remains_v5": True,
+        "no_oneoff_recovery_workflows": True,
+        "generic_correction_required": True,
+        "deterministic_regression_required": True,
+        "merged_correction_and_regression_required_for_resolution": True,
     }
     if action == "repair_trusted_image_same_pr":
         constraints.update({
@@ -319,7 +375,9 @@ def build_incident_packet(report: dict[str, Any], *, strike: int, command_id: st
         "stage": str(report.get("incident_id") or "").split("|")[-1],
         "proposed_action": action,
         "exact": exact,
-        "definition_of_done": dod_by_action.get(action, "the exact incident is absent in fresh authoritative production evidence and all relevant CI/public verification gates pass"),
+        "component_owner": learning_identity(report)["component"],
+        "root_cause_classification": learning_identity(report)["failure_class"],
+        "definition_of_done": "Generic component correction and deterministic regression are reviewed and merged; " + dod_by_action.get(action, "fresh exact public evidence passes"),
         "constraints": constraints,
     }
 
@@ -731,24 +789,7 @@ def _safe_recovery_pr_scope(files: list[str]) -> bool:
 
 
 def try_finalize_recovery_pr(api: Any, number: int) -> dict[str, Any] | None:
-    pr = api.get_pr(number)
-    if not pr or str(pr.get("state") or "") != "open" or pr.get("draft") is True:
-        return None
-    head = str((pr.get("head") or {}).get("sha") or "")
-    if not head or not _safe_recovery_pr_scope(api.pr_files(number)) or pr.get("mergeable") is not True:
-        return None
-    status = api.combined_status(head)
-    legacy_contexts = {str(row.get("context") or ""): str(row.get("state") or "") for row in (status.get("statuses") or []) if isinstance(row, dict)}
-    checks = api.check_runs(head) if hasattr(api, "check_runs") else []
-    verify_check_ok = any(str(row.get("name") or "") == "verify" and str(row.get("status") or "") == "completed" and str(row.get("conclusion") or "") == "success" for row in checks)
-    if legacy_contexts.get("verify") != "success" and not verify_check_ok:
-        return None
-    if any(str(row.get("status") or "") == "completed" and str(row.get("conclusion") or "") in {"failure", "timed_out", "cancelled", "action_required"} for row in checks):
-        return None
-    merged = api.merge_pr(number, head)
-    if not isinstance(merged, dict) or merged.get("merged") is not True:
-        raise SupervisorError(f"RECOVERY_PR_MERGE_FAILED: #{number}")
-    return {"recovery_pr_number": number, "merge_sha": merged.get("sha")}
+    raise SupervisorError("LEGACY_S3_RETIRED_MERGE_AUTHORITY_DENIED")
 
 
 def _dispatch_or_rerun_existing(api: Any, workflow: str, inputs: dict[str, str] | None = None) -> dict[str, Any]:
@@ -808,6 +849,8 @@ def _dispatch_or_rerun_existing(api: Any, workflow: str, inputs: dict[str, str] 
 
 
 def execute_command(state: dict[str, Any], report: dict[str, Any], decision: dict[str, Any], *, api: Any, jules_client: JulesRecoveryClient | None, now: str) -> dict[str, Any]:
+    if decision.get("execute_now") is False:
+        return copy.deepcopy(state)
     command_id = str(decision.get("command_id") or "")
     executor = str(decision.get("executor") or "")
     if executor == "controller":
@@ -834,32 +877,7 @@ def execute_command(state: dict[str, Any], report: dict[str, Any], decision: dic
         session_id, mode = jules_client.acquire_or_continue(packet)
         return mark_command_acknowledged(state, command_id, {"session_id": session_id, "jules_mode": mode, "incident_packet": packet}, at=now)
     if executor == "direct":
-        fp = incident_fingerprint(report)
-        prior_pr = _find_prior_recovery_pr(state, fp)
-        if prior_pr:
-            finalized = try_finalize_recovery_pr(api, prior_pr)
-            if finalized:
-                api.dispatch_workflow("kesher-content-controller.yml")
-                return mark_command_acknowledged(state, command_id, {**finalized, "workflow": "recovery_pr_merge", "controller_dispatched_after_merge": True}, at=now)
-        try:
-            spec = direct_dispatch_spec(report)
-        except SupervisorError as exc:
-            return mark_command_failed(state, command_id, str(exc), at=now)
-        workflow = str(spec["workflow"])
-        active = [row for row in api.workflow_runs(workflow, 10) if str(row.get("status") or "") != "completed"]
-        if not active:
-            metadata = _dispatch_or_rerun_existing(api, workflow, spec.get("inputs") or {})
-            metadata["dispatched_at"] = now
-            if metadata.get("dispatch") == "capability_unavailable":
-                return mark_command_failed(
-                    state,
-                    command_id,
-                    f"WORKFLOW_DISPATCH_CAPABILITY_UNAVAILABLE_USE_DIRECT_PATCH: {metadata.get('fallback')}",
-                    at=now,
-                )
-        else:
-            metadata = {"workflow": workflow, "inputs": spec.get("inputs") or {}, "dispatch": "already_active", "run_id": active[0].get("id")}
-        return mark_command_acknowledged(state, command_id, metadata, at=now)
+        return mark_command_failed(state,command_id,"LEGACY_S3_RETIRED",at=now)
     return mark_command_failed(state, command_id, f"unsupported executor: {executor}", at=now)
 
 
@@ -884,6 +902,13 @@ def run_live(*, repo: str, token: str, jules_api_key: str) -> dict[str, Any]:
     observed_at = _now()
     report = shadow.collect_live_shadow_report(repo=repo, token=token, workflow_run_id=str(os.environ.get("KESHER_TRIGGER_RUN_ID") or ""))
     report = {**report, "mode": "live"}
+    exact=report.get("exact") or {}
+    if exact.get("slug") and re.fullmatch(r"[a-f0-9]{64}",str(exact.get("content_sha256") or "")):
+        from scripts.kesher_v6_production_shadow import ReadOnlyClient, observe
+        observed=observe(ReadOnlyClient(repo,token),slug=exact["slug"],content_sha256=exact["content_sha256"],pr_number=exact.get("pr_number"))
+        report["v6_shadow"]={key:observed[key] for key in ("v6_recommended_decision","active_v5_decision","agreement","detected_drift","timestamp")}
+        report["v6_shadow"]["active_supervisor_decision"]=report.get("proposed_action")
+        report["v6_shadow"]["supervisor_agreement"]=(report.get("proposed_action")==observed["v6_recommended_decision"])
     api = GitHubApi(repo, token)
     store = SupervisorStateStore(api)
     state, sha = store.load()

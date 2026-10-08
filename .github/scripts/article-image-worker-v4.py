@@ -2,7 +2,7 @@
 """Trusted article image worker for Kesher Pipeline V4.
 
 Production strategy:
-1. Try three materially different Gemini hero generations.
+1. Try two materially different Gemini hero generations; reserve the third for catalog exhaustion.
 2. Try verified Pexels and Pixabay photography.
 3. Try unused owned assets from the managed fallback bank.
 4. Try an unused repository-curated seed reservoir with 40 real JPG candidates
@@ -10,7 +10,7 @@ Production strategy:
 5. Prefer unused assets; bounded local reuse is allowed only after a 90-day cooldown and below three lifetime uses.
 6. Never fabricate an abstract placeholder.
 
-If every concrete option is exhausted under those limits, the worker fails closed so publication waits for a retry or a newly generated/curated asset.
+Catalog exhaustion automatically requests the reserved fresh owned hero through the existing pixel-verified provider. Total generation budget remains three. The worker fails closed for missing/unhealthy providers or rejected pixels; no abstract placeholder or reuse bypass is allowed.
 """
 
 from __future__ import annotations
@@ -244,6 +244,7 @@ def try_gemini_variants(
     post: dict[str, Any],
     attempts: list[str],
     existing_hashes: set[str] | None = None,
+    *, generation_limit: int = 3,
 ) -> core.ImageCandidate | None:
     """Use distinct compositions instead of repeating the same image request."""
     variants = (
@@ -251,7 +252,7 @@ def try_gemini_variants(
         "Visual direction: wider environmental documentary frame with relevant home, school, street or cafe context.",
         "Visual direction: intimate but natural emotional moment, restrained expressions, realistic editorial composition.",
     )
-    for index, direction in enumerate(variants, start=1):
+    for index, direction in enumerate(variants[:generation_limit], start=1):
         variant_post = dict(post)
         excerpt = str(post.get("excerpt") or "")
         variant_post["excerpt"] = f"{direction} {excerpt}"
@@ -436,24 +437,34 @@ def choose_candidate(
     attempts: list[str] = []
 
     for provider in (try_gemini_variants, try_pexels, try_pixabay):
-        try:
-            candidate = provider(post, attempts, existing_hashes=existing_hashes)
-        except TypeError:
-            candidate = provider(post, attempts)
+        options = {'generation_limit': 2} if provider is try_gemini_variants else {}
+        candidate = provider(post, attempts, existing_hashes=existing_hashes, **options)
         if candidate:
             return candidate
 
-    return local_fallback(
-        repo,
-        post,
-        head_ref,
-        token,
-        attempts,
-        existing_hashes=existing_hashes,
-        existing_usage=existing_usage,
-        last_used=last_used,
-        banned_paths=collect_banned_paths(REPO_ROOT),
+    candidate = local_fallback(
+        repo, post, head_ref, token, attempts,
+        existing_hashes=existing_hashes, existing_usage=existing_usage,
+        last_used=last_used, banned_paths=collect_banned_paths(REPO_ROOT),
     )
+    if candidate:
+        return candidate
+    # Spend the final existing owned-generation slot on a genuinely new scene,
+    # rather than redispatching a workflow or relaxing the catalog reuse gate.
+    fresh_post = dict(post)
+    fresh_post['excerpt'] = (
+        'IMAGE_CATALOG_EXHAUSTED: Generate a fresh owned replacement photograph. '
+        'Use a distinct concrete scene relevant to this article, real people and '
+        'natural interaction. No text, logos, symbolic placeholders or recycled '
+        'composition. ' + str(post.get('excerpt') or '')
+    )
+    candidate = try_gemini(fresh_post, attempts, existing_hashes=existing_hashes)
+    if attempts and attempts[-1] == 'gemini':
+        attempts[-1] = 'gemini-3-catalog-replenishment'
+    if candidate:
+        candidate.attempts = attempts.copy()
+    return candidate
+
 
 
 v3.local_fallback = local_fallback

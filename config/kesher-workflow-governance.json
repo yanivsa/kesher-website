@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "policy": "New date/slug-specific rescue workflows are prohibited. These existing exact bytes are frozen historical exceptions, not grants of mutation authority. Canonical generic recovery is required.",
+  "grandfathered": {
+    ".github/workflows/kesher-exact-short-metadata-recovery-20261006.yml": "f3308665b070af09bc666465e692ca4268a0c291adb3c938b3c69dd34f136b7b",
+    ".github/workflows/oci-bridge-repair-inherit-20260901.yml": "48a63f28c0e4c8dcc1b301f122742ecda2fe9451b0ba739f9c7bce318d2ac428",
+    ".github/workflows/oci-bridge-restore-20260901.yml": "b6e8414fa76db33a97371caf93f5bb2fc6c82eea4f6af69daaa97629a016595d",
+    ".github/workflows/oci-bridge-repair-beta-20260901.yml": "e74e3c3d1233440d3181d881ba0350964354dc4d112929437fafd305339469ee"
+  }
+}

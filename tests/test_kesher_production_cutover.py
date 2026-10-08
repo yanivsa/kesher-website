@@ -138,13 +138,16 @@ class ProductionCutoverTests(unittest.TestCase):
         from scripts.kesher_runtime.authority_topology import policy
         evidence = json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
         rules = policy(ROOT)
+        # Project only this immutable October 4 fixture; October 6 metadata
+        # authority remains classified in the current policy and refusal test.
+        del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
         # The new cutover workflow is registered only after merge. Its independent
         # registration binding is a prerequisite, never a guessed service ID.
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         rows = reconcile_registrations(evidence['workflows'], rules)
         self.assertEqual(len(rows), 111)
-        self.assertEqual(len(rules['registrations']), 39)
+        self.assertEqual(len(rules['registrations']), 43)
         for changed in (rows[:-1], rows + [{'id':999999999,'path':'.github/workflows/unknown.yml','state':'active'}]):
             with self.assertRaises(StateInvalid): reconcile_registrations(changed, rules)
         changed = copy.deepcopy(rows); changed[0]['id'] = 999999999
@@ -167,6 +170,8 @@ class ProductionCutoverTests(unittest.TestCase):
         from scripts.kesher_runtime.authority_topology import policy,check_definitions,classify_registered
         import hashlib
         rules=policy(ROOT);del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
+        # This immutable October 4 snapshot predates the metadata workflow.
+        del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
         rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-final-20261004.json').read_text())['workflows']
         self.assertEqual(len(reconcile_registrations(rows,rules)),112)
         path='.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
@@ -550,6 +555,11 @@ class CredentialGatewayTests(unittest.TestCase):
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
         evidence=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
+        # Retain the current metadata writer in this unseparated-authority
+        # refusal test rather than treating the dated fixture as current.
+        evidence['workflows'].append({'id':376735017,
+            'path':'.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml',
+            'state':'active'})
         fence,_=protection_fixture(); raw=EpochGit(); guard=ProtectedService('github')
         adapter=GitHubResourceExclusion(raw,'owner/repo',main_sha='b'*40,policy=fence._policy('github'),
             rules=rules,registered=lambda:evidence['workflows'],guard=guard)

@@ -96,6 +96,30 @@ def _validate_item(item: dict, target: MediaIdentity) -> None:
         raise StateInvalid('Worker item differs from exact command source/kind') from exc
 
 
+def exact_item(state: dict, item_id: str, *, slug: str = '', content_sha256: str = '',
+               kind: str = 'overview', generation_attempt: int | None = None) -> dict:
+    """Resolve existing canonical fields; never infer an artifact from ordering."""
+    if not isinstance(item_id, str) or not item_id.strip():
+        raise StateInvalid('EXACT_MEDIA_ITEM_ID_REQUIRED: supply the initiating item ID')
+    matches = [item for item in state.get('items', [])
+               if isinstance(item, dict) and item.get('id') == item_id]
+    if len(matches) != 1:
+        raise StateInvalid('EXACT_MEDIA_ITEM_NOT_UNIQUE: requested item is missing or duplicated')
+    item = matches[0]
+    source = item.get('source') or {}
+    if (kind not in ITEM_TYPES or item.get('type') != ITEM_TYPES[kind]
+            or (slug and source.get('slug') != slug)
+            or (content_sha256 and source.get('content_sha256') != content_sha256)
+            or (generation_attempt is not None
+                and item.get('fresh_generation_attempt', 1) != generation_attempt)):
+        raise StateInvalid('EXACT_MEDIA_IDENTITY_MISMATCH: source, kind or attempt changed')
+    if isinstance(state, CanonicalMediaState):
+        _validate_item(item, state.context.target)
+        if item['id'] != state._bound['id'] or item.get('fresh_generation_attempt', 1) != state._attempt:
+            raise StateInvalid('UNPROVEN_MEDIA_ATTEMPT_TRANSITION')
+    return item
+
+
 def snapshots(state: dict, target: MediaIdentity) -> list[dict]:
     baseline = legacy_baseline(state['items'].get(target.key, {}), target)
     found = {1: baseline} if baseline else {}

@@ -192,7 +192,7 @@ class VideoReconcileTests(unittest.TestCase):
         })
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
 
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["status"], "generating")
         self.assertEqual(saved["source_id"], "source-1")
@@ -211,7 +211,7 @@ class VideoReconcileTests(unittest.TestCase):
         })
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
         with self.assertRaisesRegex(pipeline.PipelineError, "not technically verified"):
-            reconcile.prepare_upload()
+            reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"])
 
     def test_multiple_backlog_items_are_processed_oldest_first(self) -> None:
         today = post("today")
@@ -328,7 +328,7 @@ class VideoReconcileTests(unittest.TestCase):
         technically_verified(item)
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
 
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["source"]["slug"], "yesterday")
         self.assertEqual(saved["status"], "approved")
@@ -342,7 +342,7 @@ class VideoReconcileTests(unittest.TestCase):
         technically_verified(item)
         item["final_sha256"] = "x" * 64
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["final_sha256"], "x" * 64)
         self.assertEqual(saved["review_gate"], "advisory-jules")
@@ -355,7 +355,7 @@ class VideoReconcileTests(unittest.TestCase):
         item["visual_review_status"] = "rejected"
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
 
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["review_gate"], "advisory-jules")
         self.assertEqual(saved["advisory_review_status_before_upload"], "rejected")
@@ -373,7 +373,7 @@ class VideoReconcileTests(unittest.TestCase):
         item["metadata_review_status"] = "pending"
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
 
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         saved = pipeline.load_state()["items"][0]
         self.assertEqual(saved["review_gate"], "advisory-jules")
         self.assertEqual(saved["advisory_review_status_before_upload"], "pending_review")
@@ -386,7 +386,7 @@ class VideoReconcileTests(unittest.TestCase):
         technically_verified(item)
         item["reviewer"] = {"type": "manual", "session": "manual"}
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
-        self.assertEqual(reconcile.prepare_upload(), 0)
+        self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
         self.assertEqual(pipeline.load_state()["items"][0]["review_gate"], "advisory-jules")
 
     def test_persisted_youtube_id_is_verified_without_second_insert(self) -> None:
@@ -414,7 +414,7 @@ class VideoReconcileTests(unittest.TestCase):
         ) as verify, mock.patch.object(
             pipeline, "start_resumable_upload"
         ) as insert:
-            self.assertEqual(reconcile.prepare_upload(), 0)
+            self.assertEqual(reconcile.prepare_upload(item["source"]["slug"], item["source"]["content_sha256"], item["id"]), 0)
 
         saved = pipeline.load_state()["items"][0]
         self.assertTrue(saved["uploaded"])
@@ -488,7 +488,7 @@ class VideoReconcileTests(unittest.TestCase):
         with self.assertRaisesRegex(pipeline.PipelineError, "hash changed"):
             reconcile.adopt_long_form_provider(str(long_path), "today", "0" * 64, "long-1")
 
-    def test_prepare_upload_targets_slug_when_specified(self) -> None:
+    def test_prepare_upload_targets_exact_item_when_specified(self) -> None:
         today = post("today")
         yesterday = post("yesterday", "2026-08-18")
         self.write_posts([today, yesterday])
@@ -498,7 +498,7 @@ class VideoReconcileTests(unittest.TestCase):
         yesterday_item["status"] = "generating"
         pipeline.save_state({"version": 1, "items": [yesterday_item, today_item], "updated_at": pipeline.utc_now()})
 
-        self.assertEqual(reconcile.prepare_upload("today"), 0)
+        self.assertEqual(reconcile.prepare_upload("today", today_item["source"]["content_sha256"], today_item["id"]), 0)
         saved = pipeline.load_state()["items"]
         self.assertEqual(saved[1]["status"], "approved")
 

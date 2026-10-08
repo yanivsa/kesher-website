@@ -44,7 +44,8 @@ class V5VideoSourceBindingTests(unittest.TestCase):
         self.assertEqual(action.kind, "dispatch_long_video")
         self.assertEqual(
             gh.dispatches,
-            [(v5.LONG_VIDEO_WORKFLOW, {"operation": "full", "target_slug": "today-article"})],
+            [(v5.LONG_VIDEO_WORKFLOW, {"operation": "full", "target_slug": "today-article",
+                                      "target_content_sha256": "cb7652284a7ccde8366884a377dc8991db1d7a66bbf5d647dc6814654aa0a705"})],
         )
         self.assertEqual(state["article"]["slug"], "today-article")
         self.assertEqual(state["long_video"]["attempt_count"], 1)
