@@ -289,7 +289,6 @@ jobs:
         env:
           TARGET_SLUG: ${{ inputs.target_slug }}
           TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
-          TARGET_ITEM_ID: ${{ inputs.target_item_id }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150
