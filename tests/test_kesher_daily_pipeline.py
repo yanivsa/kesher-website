@@ -733,7 +733,7 @@ class PipelineTestCase(unittest.TestCase):
         ), mock.patch.object(
             pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
         ):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         saved = pipeline.load_state()["items"][0]
         self.assertFalse(saved.get("uploaded", False))
@@ -1110,7 +1110,7 @@ class PipelineTestCase(unittest.TestCase):
         item["raw_mp4"] = raw.name
         pipeline.save_state({"version": 1, "items": [item], "updated_at": pipeline.utc_now()})
         output = self.root / "evidence"
-        prepared = evidence.prepare(self.state_dir, output)
+        prepared = evidence.prepare(self.state_dir, output, item["id"])
         self.assertEqual(prepared["id"], item["id"])
         self.assertFalse((output / raw.name).exists())
         self.assertFalse((output / item["final_mp4"]).exists())
@@ -1139,7 +1139,7 @@ class PipelineTestCase(unittest.TestCase):
         ), mock.patch.object(
             pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
         ):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         blocked = pipeline.load_state()["items"][0]
         self.assertFalse(blocked.get("uploaded", False))
@@ -1163,7 +1163,7 @@ class PipelineTestCase(unittest.TestCase):
         ), mock.patch.object(
             pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
         ):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         blocked = pipeline.load_state()["items"][0]
         self.assertFalse(blocked.get("uploaded", False))
@@ -1194,7 +1194,7 @@ class PipelineTestCase(unittest.TestCase):
         ), mock.patch.object(
             pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
         ):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         blocked = pipeline.load_state()["items"][0]
         self.assertFalse(blocked.get("uploaded", False))
@@ -1225,7 +1225,7 @@ class PipelineTestCase(unittest.TestCase):
         ), mock.patch.object(
             pipeline, "verify_public_upload", return_value={"privacy_status": "public", "processing_status": "succeeded"}
         ):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         uploaded = pipeline.load_state()["items"][0]
         self.assertTrue(uploaded["uploaded"])
@@ -1239,7 +1239,7 @@ class PipelineTestCase(unittest.TestCase):
         self.assertFalse(handled)
 
         with mock.patch.object(pipeline, "youtube_access_token", return_value="mock-token"):
-            self.assertEqual(pipeline.upload_only(), 0)
+            self.assertEqual(pipeline.upload_only(item_id=item["id"]), 0)
 
         saved = pipeline.load_state()["items"][0]
         self.assertFalse(saved.get("uploaded", False))

@@ -74,7 +74,7 @@ class ProductionContractV3Tests(unittest.TestCase):
             self.assertNotIn("PIXABAY_API_KEY:", job_header)
             self.assertIn("PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}", workflow)
             self.assertIn("PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}", workflow)
-            self.assertIn('KESHER_BROLL_ENABLED: "true"', workflow)
+            self.assertIn('KESHER_BROLL_ENABLED: "false"', workflow)
             self.assertIn('KESHER_BROLL_BUDGET_SECONDS: "12"', workflow)
 
     def test_image_stage_is_publication_blocking_with_guaranteed_local_fallback(self) -> None:
@@ -155,7 +155,7 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn("id: prepare_upload", workflow)
         self.assertIn("KESHER_REQUESTED_TARGET_SLUG: ${{ inputs.target_slug }}", workflow)
         self.assertIn("KESHER_REQUESTED_TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}", workflow)
-        self.assertIn("KESHER_REQUESTED_TARGET_ITEM_ID: ${{ inputs.target_item_id }}", workflow)
+        self.assertIn("KESHER_REQUESTED_TARGET_ITEM_ID: ${{ inputs.target_item_id || env.TARGET_ITEM_ID }}", workflow)
         self.assertIn("KESHER_EXACT_UPLOAD_REQUIRED: ${{ inputs.operation == 'upload' }}", workflow)
         self.assertIn("steps.prepare_upload.outputs.ready == 'true'", workflow)
         self.assertIn("EXACT_UPLOAD_IDENTITY_OK", workflow)

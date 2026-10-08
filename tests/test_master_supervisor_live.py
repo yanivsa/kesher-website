@@ -110,7 +110,7 @@ class MasterSupervisorLiveTests(unittest.TestCase):
         self.assertFalse(second["execute_now"])
         self.assertEqual(first["command_id"], again["incidents"][incident_fingerprint(incident_report())]["active_command_id"])
 
-    def test_same_failure_after_terminal_s1_escalates_to_s2_jules_then_s3_direct(self) -> None:
+    def test_same_failure_escalates_to_durable_correction_then_blocks_symptom_rescue(self) -> None:
         state, s1 = prepare_escalation(new_supervisor_state(), incident_report(), now="2026-09-16T00:00:00+00:00", prior_action_terminal=False)
         state = mark_command_failed(state, s1["command_id"], "controller completed but incident persisted", at="2026-09-16T00:10:00+00:00")
         state, s2 = prepare_escalation(state, incident_report(), now="2026-09-16T00:10:01+00:00", prior_action_terminal=True)
@@ -119,16 +119,18 @@ class MasterSupervisorLiveTests(unittest.TestCase):
 
         state = mark_command_failed(state, s2["command_id"], "Jules completed without convergence", at="2026-09-16T00:30:00+00:00")
         state, s3 = prepare_escalation(state, incident_report(), now="2026-09-16T00:30:01+00:00", prior_action_terminal=True)
-        self.assertEqual((s3["stage"], s3["executor"]), ("S3", "direct"))
+        self.assertEqual((s3["stage"], s3["executor"]), ("HUMAN_BLOCKER", None))
+        self.assertFalse(s3["execute_now"])
+        self.assertEqual(len(state["commands"]),2)
         self.assertEqual(state["incidents"][incident_fingerprint(incident_report())]["strike"], 3)
 
-    def test_fourth_same_failure_fails_closed_to_human_blocker(self) -> None:
+    def test_third_same_failure_fails_closed_after_durable_correction(self) -> None:
         state, s1 = prepare_escalation(new_supervisor_state(), incident_report(), now="2026-09-16T00:00:00+00:00", prior_action_terminal=False)
         state = mark_command_failed(state, s1["command_id"], "failed", at="2026-09-16T00:01:00+00:00")
         state, s2 = prepare_escalation(state, incident_report(), now="2026-09-16T00:01:01+00:00", prior_action_terminal=True)
         state = mark_command_failed(state, s2["command_id"], "failed", at="2026-09-16T00:02:00+00:00")
         state, s3 = prepare_escalation(state, incident_report(), now="2026-09-16T00:02:01+00:00", prior_action_terminal=True)
-        state = mark_command_failed(state, s3["command_id"], "failed", at="2026-09-16T00:03:00+00:00")
+        self.assertIsNone(s3["command_id"])
         state, final = prepare_escalation(state, incident_report(), now="2026-09-16T00:03:01+00:00", prior_action_terminal=True)
         self.assertEqual(final["stage"], "HUMAN_BLOCKER")
         self.assertFalse(final["execute_now"])
@@ -143,12 +145,12 @@ class MasterSupervisorLiveTests(unittest.TestCase):
         self.assertEqual(decision["stage"], "S1")
         self.assertEqual(state["incidents"][incident_fingerprint(changed)]["strike"], 1)
 
-    def test_resolution_verifies_active_command_and_closes_incident(self) -> None:
+    def test_delivery_verifies_command_but_does_not_close_architectural_defect(self) -> None:
         state, decision = prepare_escalation(new_supervisor_state(), incident_report(), now="2026-09-16T00:00:00+00:00", prior_action_terminal=False)
         state = mark_command_acknowledged(state, decision["command_id"], {"run_id": "123"}, at="2026-09-16T00:00:05+00:00")
         state = record_resolution(state, incident_report(), at="2026-09-16T00:05:00+00:00")
         fp = incident_fingerprint(incident_report())
-        self.assertEqual(state["incidents"][fp]["status"], "resolved")
+        self.assertEqual(state["incidents"][fp]["status"], "awaiting_durable_fix")
         self.assertEqual(state["commands"][decision["command_id"]]["lifecycle"], "verified")
 
     def test_external_provider_running_has_bounded_90_minute_exception(self) -> None:
@@ -311,15 +313,16 @@ class MasterSupervisorLiveTests(unittest.TestCase):
         self.assertNotIn("schedule:", legacy)
         self.assertNotIn("JULES_API_KEY", legacy)
 
-    def test_contract_declares_live_s1_s2_s3_and_single_escalation_owner(self) -> None:
+    def test_contract_declares_bounded_rescue_and_durable_correction_owner(self) -> None:
         contract = json.loads(CONTRACT.read_text(encoding="utf-8"))
         supervisor = contract["supervisor"]
-        self.assertEqual(supervisor["mode"], "live_s1_s2_s3")
+        self.assertEqual(supervisor["mode"], "bounded_rescue_then_durable_correction")
         self.assertEqual(supervisor["state_ref"], SUPERVISOR_STATE_REF)
         self.assertEqual(supervisor["state_path"], SUPERVISOR_STATE_PATH)
         self.assertEqual(supervisor["escalation"]["S1"], "controller")
-        self.assertEqual(supervisor["escalation"]["S2"], "jules")
-        self.assertEqual(supervisor["escalation"]["S3"], "direct")
+        self.assertEqual(supervisor["escalation"]["S2"], "jules_durable_correction")
+        self.assertNotIn("S3",supervisor["escalation"])
+        self.assertEqual(supervisor["learning"]["first_occurrence_rescue_attempts"],1)
         self.assertTrue(contract["invariants"]["legacy_task_supervisor_live_mutations_disabled"])
 
 

@@ -13,6 +13,8 @@ import unittest
 
 from tests import test_kesher_daily_pipeline as legacy
 from tests import test_video_pending_evidence_repair as pending_evidence
+from tests import test_video_exact_item_binding as exact_binding
+from tests import test_video_exact_item_callers as exact_callers
 
 
 OBSOLETE_TESTS = {
@@ -29,7 +31,7 @@ OBSOLETE_TESTS = {
 
 def load_tests(loader: unittest.TestLoader, _standard_tests, _pattern):
     suite = unittest.TestSuite()
-    for module in (legacy, pending_evidence):
+    for module in (legacy, pending_evidence, exact_binding, exact_callers):
         for value in vars(module).values():
             if not isinstance(value, type) or not issubclass(value, unittest.TestCase):
                 continue

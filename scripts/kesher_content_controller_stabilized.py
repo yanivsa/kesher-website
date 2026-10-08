@@ -445,8 +445,23 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             bound_inputs["target_slug"] = source["slug"]
 
         snapshot = self.github.newest_video_state()
+        exact_existing = [item for item in v5._exact_items(snapshot, source)
+                          if item.get('uploaded') is not True
+                          and item.get('status') in (v5.core.ACTIVE_VIDEO_STATUSES | {'rejected'})]
+        requested_id = str(bound_inputs.get('target_item_id') or '')
+        if requested_id:
+            exact_existing = [item for item in exact_existing if item.get('id') == requested_id]
+            if len(exact_existing) != 1:
+                raise v5.core.ControllerError('LONG_VIDEO_EXACT_ITEM_NOT_UNIQUE')
+        elif len(exact_existing) > 1:
+            raise v5.core.ControllerError('LONG_VIDEO_EXACT_ITEM_ID_REQUIRED')
+        bound_inputs['target_content_sha256'] = source['content_sha256']
+        if exact_existing:
+            bound_inputs['target_item_id'] = str(exact_existing[0].get('id') or '')
+            if not bound_inputs['target_item_id']:
+                raise v5.core.ControllerError('LONG_VIDEO_ITEM_ID_MISSING')
         exact_rejected = [
-            item for item in v5._exact_items(snapshot, source)
+            item for item in exact_existing
             if item.get("uploaded") is not True
             and str(item.get("status") or "") == "rejected"
             and item.get("signature_fullscreen") is not True
@@ -474,7 +489,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return
 
         exact_generating = [
-            item for item in v5._exact_items(snapshot, source)
+            item for item in exact_existing
             if item.get("uploaded") is not True
             and str(item.get("status") or "") == "generating"
             and str(item.get("source_id") or "").strip()

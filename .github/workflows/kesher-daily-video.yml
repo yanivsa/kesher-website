@@ -280,12 +280,16 @@ jobs:
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
         env:
           TARGET_SLUG: ${{ inputs.target_slug }}
+          TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
+          TARGET_ITEM_ID: ${{ inputs.target_item_id }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation
 
       - name: Generate or resume exact Video Overview
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
         env:
           TARGET_SLUG: ${{ inputs.target_slug }}
+          TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
+          TARGET_ITEM_ID: ${{ inputs.target_item_id }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: python -u scripts/kesher_daily_pipeline.py --max-wait-seconds 150
@@ -293,6 +297,9 @@ jobs:
       - name: Rebuild exact visually rejected item with Remotion
         if: ${{ inputs.operation == 'rebuild' }}
         env:
+          TARGET_SLUG: ${{ inputs.target_slug }}
+          TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
+          TARGET_ITEM_ID: ${{ inputs.target_item_id || inputs.rebuild_item_id }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
         run: |
@@ -305,21 +312,16 @@ jobs:
         id: pending
         continue-on-error: true
         run: |
-          python - <<'PY'
-          import json
+          python - <<'PYCODE'
           import os
           from pathlib import Path
-          state_path = Path(os.environ["KESHER_STATE_DIR"]) / "state.json"
-          pending = []
-          if state_path.exists():
-              state = json.loads(state_path.read_text(encoding="utf-8"))
-              pending = [item for item in state.get("items", []) if item.get("status") == "pending_review"]
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"found={'true' if len(pending) == 1 else 'false'}\n")
-              output.write(f"item_id={pending[0]['id'] if len(pending) == 1 else ''}\n")
-          if len(pending) > 1:
-              raise SystemExit("More than one pending review item; advisory review skipped until controller reconciliation")
-          PY
+          from scripts import kesher_daily_pipeline as pipeline
+          item = pipeline.existing_item(pipeline.load_state(), kind='overview')
+          found = item.get('status') == 'pending_review'
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write(f"found={str(found).lower()}\n")
+              output.write(f"item_id={item['id']}\n")
+          PYCODE
 
       - name: Publish immutable evidence bundle for advisory Jules review
         if: ${{ steps.pending.outputs.found == 'true' }}
@@ -349,6 +351,7 @@ jobs:
           git -C "$review_worktree" switch --orphan "$review_branch"
           python -u scripts/prepare_jules_video_evidence.py \
             --state-dir "$KESHER_STATE_DIR" \
+            --item-id "${{ steps.pending.outputs.item_id }}" \
             --output-dir "$review_worktree/$evidence_root"
           git -C "$review_worktree" config user.name "Kesher Video Automation"
           git -C "$review_worktree" config user.email "actions@users.noreply.github.com"
@@ -372,6 +375,9 @@ jobs:
           set -euo pipefail
           python -u scripts/jules_video_reviewer_v3.py \
             --state-dir "$KESHER_STATE_DIR" \
+            --target-slug "$TARGET_SLUG" \
+            --target-content-sha256 "$TARGET_CONTENT_SHA256" \
+            --item-id "${{ steps.pending.outputs.item_id }}" \
             --review-branch "${{ steps.review_branch.outputs.branch }}" \
             --evidence-root "${{ steps.review_branch.outputs.evidence_root }}" \
             --timeout-seconds 900
@@ -396,7 +402,7 @@ jobs:
         env:
           KESHER_REQUESTED_TARGET_SLUG: ${{ inputs.target_slug }}
           KESHER_REQUESTED_TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}
-          KESHER_REQUESTED_TARGET_ITEM_ID: ${{ inputs.target_item_id }}
+          KESHER_REQUESTED_TARGET_ITEM_ID: ${{ inputs.target_item_id || env.TARGET_ITEM_ID }}
           KESHER_EXACT_UPLOAD_REQUIRED: ${{ inputs.operation == 'upload' }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
