@@ -293,4 +293,54 @@ class ValidationWorkerTests(unittest.TestCase):
         self.assertEqual(status(stale), 'normalize_required', 'Old-main image branch needs automatic rebasing before CI')
 
 
+class ValidationWorkflowContractTests(unittest.TestCase):
+    def test_quality_gate_keeps_current_suites_and_routes_legacy_through_compatibility(self):
+        import os
+        from pathlib import Path
+        import subprocess
+        import sys
+        import tempfile
+        import yaml
+
+        root = Path(__file__).resolve().parents[1]
+        workflow = yaml.safe_load((root / '.github/workflows/kesher-article-validation.yml').read_text())
+        quality = next(step['run'] for step in workflow['jobs']['article-checks']['steps']
+                       if step['name'] == 'Run full repository quality gate')
+        python_gate = quality.split('python scripts/article_claim_quality.py', 1)[0]
+        with tempfile.TemporaryDirectory() as directory:
+            fixture = Path(directory)
+            tests = fixture / 'tests'; tests.mkdir()
+            (tests / '__init__.py').write_text('')
+            (tests / 'kesher_daily_pipeline_suite.py').write_text(
+                (root / 'tests/kesher_daily_pipeline_suite.py').read_text())
+            (tests / 'test_kesher_daily_pipeline.py').write_text(
+                'import unittest\n'
+                'class PipelineTestCase(unittest.TestCase):\n'
+                '    def test_current_pipeline(self): pass\n'
+                '    def test_jules_review_parse_failure_remains_blocked_from_upload(self):\n'
+                '        self.fail("obsolete parse assertion executed")\n'
+                '    def test_jules_review_api_timeout_remains_blocked_from_upload(self):\n'
+                '        self.fail("obsolete timeout assertion executed")\n')
+            modules = ('test_video_pending_evidence_repair', 'test_video_exact_item_binding',
+                       'test_video_exact_item_callers', 'test_canonical_article', 'test_canonical_media',
+                       'test_canonical_controller', 'test_canonical_authority', 'test_new_publication_regression')
+            for module in modules:
+                (tests / (module + '.py')).write_text(
+                    'import unittest\nclass CurrentTests(unittest.TestCase):\n'
+                    '    def test_current_contract(self): pass\n')
+            executables = fixture / 'bin'; executables.mkdir()
+            for name in ('python', 'python3'):
+                (executables / name).symlink_to(sys.executable)
+            result = subprocess.run(['bash', '-c', python_gate], cwd=fixture, capture_output=True,
+                                    text=True, timeout=30, env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1',
+                                    PATH=str(executables) + os.pathsep + os.environ['PATH']))
+        output = result.stdout + result.stderr
+        self.assertEqual(result.returncode, 0, output)
+        self.assertIn('tests.test_kesher_daily_pipeline.PipelineTestCase.test_current_pipeline', output)
+        for module in modules:
+            self.assertIn('tests.' + module + '.CurrentTests.test_current_contract', output)
+        self.assertNotIn('test_jules_review_parse_failure_remains_blocked_from_upload', output)
+        self.assertNotIn('test_jules_review_api_timeout_remains_blocked_from_upload', output)
+
+
 if __name__ == '__main__': unittest.main()

@@ -1327,7 +1327,7 @@
         "read",
         "state_write"
       ],
-      "definition_sha256": "0f24b13f929cb711df39710e5adb96794dbbed5f945641a6c4777f3fb3539342",
+      "definition_sha256": "f1486c568e035c26019b5b4275a6540349978ddb1d6ce207af5de8bb7a6a1a9b",
       "resources": [
         "github.refs",
         "github.state"
@@ -3084,7 +3084,7 @@
           "tests/test_kesher_article_merge.py": "c71d6c85177944e0f506ca0c9fd4f1aab54abe5a6b21966fcfa81c49e8b4951c",
           "tests/test_kesher_article_normalize_worker.py": "dc17e77a03dff02230a0afe0ff2bbbbf122acaa27256aabfd62105373870be5a",
           "tests/test_kesher_article_public.py": "5ff93f684cda995d15edc03fd10878f31ec113eadc00cc26556dc62d267dabf8",
-          "tests/test_kesher_article_validation.py": "578e659759ab2c290b6ee468d9b9573d541367ffec76671fddeb41769228c46f",
+          "tests/test_kesher_article_validation.py": "bf7c6ee45835639f4dec432b715f79e023219efdb34c98e7727066e764937f81",
           "tests/test_kesher_article_worker.py": "f4530d4e8f7cf24da6ea471a2034467bb0200a33c0e8712c81f23a58c5888f16",
           "tests/test_kesher_audio_preservation.py": "05b60713b8c741d30106925c3be2e453291976a88c86a7bc98e5cfc7046a91c0",
           "tests/test_kesher_autonomous_controller.py": "8194add4f915e1db0d09c22da7044c0a9913d0ac7bb734bcaecbbfc1cdbf43b4",
