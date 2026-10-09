@@ -461,7 +461,7 @@ def new_item(source: dict[str, Any]) -> dict[str, Any]:
         "fresh_generation_attempt": 1,
         "israel_date": israel_now().date().isoformat(),
         "status": "source_selected",
-        "source": {key: value for key, value in source.items() if key not in {"body", "youtube_metadata"}},
+        "source": {key: value for key, value in source.items() if key != "body"},
         "youtube_metadata": source["youtube_metadata"],
         "notebook_id": NOTEBOOK_ID,
         "source_id": None,

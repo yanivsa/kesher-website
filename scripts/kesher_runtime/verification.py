@@ -47,8 +47,12 @@ def publication_metadata(source: dict, kind: str) -> dict:
         raise VerificationError('YouTube metadata contains unsupported angle brackets')
     tags = list(dict.fromkeys(str(source.get(key) or '').strip() for key in ('category', 'subcategory')))
     supplied = source.get('short_youtube_metadata' if kind == 'short' else 'youtube_metadata') or {}
+    if not supplied and isinstance(source.get('youtube_metadata'), dict):
+        supplied = source['youtube_metadata']
     if isinstance(supplied.get('tags'), list):
         tags = list(dict.fromkeys(str(tag).strip() for tag in supplied['tags'] if str(tag).strip()))
+    elif isinstance(source.get('shortTags' if kind == 'short' else 'videoTags'), list):
+        tags = list(dict.fromkeys(tags + [str(t).strip() for t in source.get('shortTags' if kind == 'short' else 'videoTags') if str(t).strip()]))
     return {'title': title, 'description': description, 'tags': [tag for tag in tags if tag]}
 
 
@@ -57,7 +61,9 @@ def match_youtube_metadata(item: dict, row: dict) -> dict:
     kind = {'video_overview': 'overview', 'article_short': 'short'}.get(item.get('type'))
     if kind is None:
         raise VerificationError('Media kind missing or ambiguous')
-    source = item.get('source') or {}
+    source = dict(item.get('source') or {})
+    if 'youtube_metadata' not in source and 'youtube_metadata' in item:
+        source['youtube_metadata'] = item['youtube_metadata']
     try:
         identity = MediaIdentity(SourceIdentity(source['date'], source['slug'], source['content_sha256']), kind)
     except (KeyError, TypeError, ValueError) as exc:

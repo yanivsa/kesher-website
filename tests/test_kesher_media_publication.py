@@ -120,6 +120,31 @@ class IndependentMediaPublicationTests(unittest.TestCase):
         args = fixture(); args['inventory']['videos'] = []
         self.rejects(args, 'YOUTUBE_INVENTORY_UNAVAILABLE')
 
+    def test_match_youtube_metadata_preserves_item_metadata_and_full_tags(self):
+        from scripts.kesher_runtime.verification import match_youtube_metadata
+        args = fixture()
+        item = args['item']
+        # Simulate item where source had youtube_metadata stripped but item['youtube_metadata'] has tags
+        item['type'] = 'video_overview'
+        meta = publication_metadata(args['source'], 'overview')
+        meta['tags'] = ['משפחה', 'זוגיות', 'תקשורת ומריבות']
+        item['source'] = {k: v for k, v in args['source'].items() if k not in {'body', 'youtube_metadata'}}
+        item['youtube_metadata'] = meta
+        item['youtube_id'] = 'exact-vid-id'
+        row = {
+            'id': 'exact-vid-id',
+            'snippet': {
+                'channelId': YOUTUBE_CHANNEL_ID,
+                'title': meta['title'],
+                'description': meta['description'],
+                'tags': meta['tags'],
+                'defaultLanguage': 'he',
+                'defaultAudioLanguage': 'he',
+            }
+        }
+        evidence = match_youtube_metadata(item, row)
+        self.assertEqual(evidence['remote_tags'], item['youtube_metadata']['tags'])
+
 
 if __name__ == '__main__':
     unittest.main()
