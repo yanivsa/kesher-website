@@ -44,6 +44,7 @@ const stopVite = () => {
   if (!vite.killed && viteExitCode === null) vite.kill();
 };
 
+// eslint-disable-next-line no-control-regex
 const hasNonAscii = (value) => /[^\x00-\x7F]/.test(value);
 
 const clientSnapshot = async (page) => {
