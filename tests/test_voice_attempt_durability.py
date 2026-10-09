@@ -8,6 +8,9 @@ class VoiceAttemptDurabilityTests(unittest.TestCase):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
         self.path=Path(self.tmp.name)/'state.json'
         patch=mock.patch.object(p,'STATE_FILE',self.path);patch.start();self.addCleanup(patch.stop)
+        self.env_file=Path(self.tmp.name)/'env.tmp'
+        env_patch=mock.patch.dict(os.environ,{'GITHUB_ENV':str(self.env_file)})
+        env_patch.start();self.addCleanup(env_patch.stop)
         self.source={'id':'one','slug':'one','content_sha256':'a'*64,'youtube_metadata':{}}
     def item(self,attempt=1):
         item=p.new_item(self.source);item.update(id=f'item-{attempt}',fresh_generation_attempt=attempt,status='rejected',technical_verified=False)
