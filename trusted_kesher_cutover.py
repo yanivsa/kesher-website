@@ -1,8 +1,8 @@
 """Administrator-owned composition for the external KESHER cutover service.
 
-This module composes the already-reviewed cutover contracts.  It never creates
+This module composes the already-reviewed cutover contracts. It never creates
 provider evidence, initializes durable state, initializes the invocation ledger,
-or activates production.  Native resource boundaries remain an independent
+or activates production. Native resource boundaries remain an independent
 administrator prerequisite and are injected only from the local service host.
 """
 from __future__ import annotations
@@ -14,12 +14,14 @@ import re
 import sqlite3
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from scripts.kesher_runtime.authority_topology import executable_digest, inventory, policy
 from scripts.kesher_runtime.cutover_auth import ActionsIdentity
 from scripts.kesher_runtime.cutover_service import CutoverApplication, InvocationJournal
 from scripts.kesher_runtime.exclusion import REQUIRED_RESOURCES
 from scripts.kesher_runtime.github import _unique_object
+from scripts.kesher_runtime.handover import OWNER
 from scripts.kesher_runtime.identity import digest, require_sha
 from scripts.kesher_runtime.live_cutover import build_runtime
 from scripts.kesher_runtime.production_ports import PrerequisitePort
@@ -58,6 +60,22 @@ def _fail(reason: str) -> None:
     raise StateInvalid(reason)
 
 
+def _exact_https_origin(value: str) -> bool:
+    try:
+        parsed = urlsplit(value)
+        return (
+            parsed.scheme == "https"
+            and bool(parsed.hostname)
+            and parsed.username is None
+            and parsed.password is None
+            and parsed.path == ""
+            and parsed.query == ""
+            and parsed.fragment == ""
+        )
+    except ValueError:
+        return False
+
+
 def _environment() -> dict[str, str]:
     values: dict[str, str] = {}
     for name in _REQUIRED_ENV:
@@ -71,7 +89,9 @@ def _environment() -> dict[str, str]:
         _fail("CUTOVER_TRUSTED_SERVICE_CONFIG_REQUIRED")
     if not values["KESHER_GITHUB_REPOSITORY_ID"].isdecimal() or int(values["KESHER_GITHUB_REPOSITORY_ID"]) <= 0:
         _fail("CUTOVER_TRUSTED_SERVICE_CONFIG_REQUIRED")
-    if not values["KESHER_CUTOVER_OIDC_AUDIENCE"].startswith("https://"):
+    if values["KESHER_CUTOVER_OWNER"] != OWNER:
+        _fail("CUTOVER_TRUSTED_SERVICE_CONFIG_REQUIRED")
+    if not _exact_https_origin(values["KESHER_CUTOVER_OIDC_AUDIENCE"]):
         _fail("CUTOVER_TRUSTED_SERVICE_CONFIG_REQUIRED")
     return values
 
