@@ -59,7 +59,7 @@ def _latest_post() -> dict:
 
 
 def _public_url(post: dict) -> str:
-    post_id = str(post.get("slug") or post.get("id") or "").strip()
+    post_id = str(post.get("id") or "").strip()
     if not post_id:
         raise RuntimeError("latest article has no id")
     quoted = urllib.parse.quote(post_id, safe="-._~")
