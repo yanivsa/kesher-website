@@ -69,10 +69,14 @@ class TrustedCutoverServiceTests(unittest.TestCase):
                 json.dumps(payload, sort_keys=True), encoding="utf-8"
             )
         self.journal = self.root / "invocations.sqlite"
-        with sqlite3.connect(self.journal) as db:
+        db = sqlite3.connect(self.journal)
+        try:
             db.execute(
                 "CREATE TABLE invocations (epoch TEXT NOT NULL, run TEXT NOT NULL, PRIMARY KEY(epoch,run))"
             )
+            db.commit()
+        finally:
+            db.close()
         self.native_name = "tests._fixture_trusted_cutover_native"
         module = types.ModuleType(self.native_name)
         module.build = self.native_bundle
