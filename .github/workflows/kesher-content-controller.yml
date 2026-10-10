@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   reconcile:
-    if: ${{ github.repository == '__KESHER_RETIRED__' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
