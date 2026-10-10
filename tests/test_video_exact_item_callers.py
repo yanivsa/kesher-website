@@ -89,6 +89,22 @@ class ExactItemCallerTests(unittest.TestCase):
             with self.assertRaises(pipeline.PipelineError):
                 pipeline.active_item(self.state, item_id='new-item')
 
+    def test_generate_step_does_not_override_reconciled_target_item(self):
+        doc = yaml.safe_load((ROOT / '.github/workflows/kesher-daily-video.yml').read_text())
+        step = next(s for s in doc['jobs']['pipeline']['steps'] if s.get('name') == 'Generate or resume exact Video Overview')
+        self.assertNotIn('TARGET_ITEM_ID', step.get('env') or {})
+
+    def test_prepare_upload_prefers_reconciled_target_over_requested_predecessor(self):
+        with patch.dict(os.environ, {'TARGET_ITEM_ID': 'new-item', 'KESHER_REQUESTED_TARGET_ITEM_ID': 'old-item'}), \
+                patch.object(pipeline, 'load_state', return_value=self.state), \
+                patch.object(reconcile, 'unresolved_items', return_value=[self.new]), \
+                patch.object(reconcile, 'current_source_snapshot', return_value=self.source), \
+                patch.object(reconcile, 'technical_publication_ready', return_value=True), \
+                patch.object(reconcile, 'validate_upload_candidate', return_value=None), \
+                patch.object(pipeline, 'save_state'):
+            with patch.object(reconcile, 'workflow_output') as output:
+                reconcile.prepare_upload()
+        self.assertTrue(any(call.args == ('ready', 'true') for call in output.call_args_list))
     def test_record_decision_does_not_apply_old_evidence_after_item_changed(self):
         import hashlib
         frame = self.root / 'frame.png'
