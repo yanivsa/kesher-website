@@ -1,0 +1,36 @@
+[Unit]
+Description=KESHER trusted external cutover service
+Documentation=file:/opt/kesher-cutover/current/ops/kesher-cutover/README.md
+Wants=network-online.target
+After=network-online.target
+ConditionPathExists=/var/lib/kesher-cutover/invocations.sqlite
+ConditionPathExists=/etc/kesher-cutover/kesher-cutover.env
+
+[Service]
+Type=simple
+User=kesher-cutover
+Group=kesher-cutover
+WorkingDirectory=/opt/kesher-cutover/current
+EnvironmentFile=/etc/kesher-cutover/kesher-cutover.env
+ExecStart=/opt/kesher-cutover/venv/bin/python -m scripts.kesher_runtime.cutover_service --factory trusted_kesher_cutover:build --port 8789
+Restart=on-failure
+RestartSec=5s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ReadWritePaths=/var/lib/kesher-cutover
+ReadOnlyPaths=/etc/kesher-cutover /opt/kesher-cutover/current
+
+[Install]
+WantedBy=multi-user.target
