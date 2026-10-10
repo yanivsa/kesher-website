@@ -36,7 +36,6 @@ _REQUIRED_ENV = (
     "KESHER_CUTOVER_BINDINGS_FILE",
     "KESHER_CUTOVER_REGISTRATIONS_FILE",
     "KESHER_CUTOVER_KEY_BINDING_FILE",
-    "KESHER_CUTOVER_NATIVE_FACTORY",
     "KESHER_CUTOVER_OIDC_AUDIENCE",
     "KESHER_CUTOVER_JOURNAL",
     "KESHER_CUTOVER_EPOCH",
@@ -84,6 +83,9 @@ def _environment() -> dict[str, str]:
         if not value:
             _fail("CUTOVER_TRUSTED_SERVICE_CONFIG_REQUIRED")
         values[name] = value
+    # The native factory has its own fail-closed refusal identity; keep an empty
+    # value distinguishable from unrelated missing service configuration.
+    values["KESHER_CUTOVER_NATIVE_FACTORY"] = os.environ.get("KESHER_CUTOVER_NATIVE_FACTORY", "").strip()
     root = os.environ.get("KESHER_CUTOVER_ROOT", "").strip()
     values["KESHER_CUTOVER_ROOT"] = root or str(Path(__file__).resolve().parent)
     if values["KESHER_GITHUB_REPOSITORY"] != _REPO:
