@@ -858,7 +858,7 @@
           "scripts/motion_plan_generator.py": "2117679e77ffbbeeaf985f28287dbfee303e22494dbdefbf6e1115bea2ec3211",
           "scripts/prepare-shira-images.mjs": "d982714222e9e0e3fa1e41096783aa06ee8c81af531204b552da903310b2f73d",
           "scripts/requirements-article.txt": "144b57ba6e3e980a627d1cbf04c6eede9bd8435d58c3fff8ecc9bdc76b911eac",
-          "scripts/verify-production-article.py": "c192049c04a384d3a3fec7d498702e00d06c5fe82e7be4e8f2623e8a661b537c",
+          "scripts/verify-production-article.py": "d15b02da67e5fd0f5b9ae0c87b0254e81e0fd12b98bf6f9412cac276c05437b9",
           "tests/automation-gates.test.cjs": "d35eb1b58dfff4ff536d13625bdd1ffe8ff2a90949d7e70bda359e22bdf503f0",
           "tests/test_kesher_generation_attempts.py": "43c4044725380e7cc29b6daba3077799fb0a49b89bfdb397c4b564b4c8cc852f",
           "scripts/kesher_runtime/bridge_admission.py": "ff661adeb66865505520f2bff058886631e2698ba6e35a6733bdbac9510f7160"
