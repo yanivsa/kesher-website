@@ -29,17 +29,37 @@ def _publishable(post: dict) -> bool:
     return _word_count(content) >= 500 and len(re.findall(r"<h3\b", content)) >= 5
 
 
+def _load_posts() -> list[dict]:
+    historical = json.loads(Path("src/data/posts.json").read_text(encoding="utf-8"))
+    recent_path = Path("src/data/postsRecent.json")
+    recent = json.loads(recent_path.read_text(encoding="utf-8")) if recent_path.exists() else []
+    if not isinstance(historical, list) or not isinstance(recent, list):
+        raise RuntimeError("article catalogs must contain arrays")
+    combined = [*recent, *historical]
+    seen: set[str] = set()
+    for post in combined:
+        if not isinstance(post, dict):
+            raise RuntimeError("article catalog contains a non-object row")
+        identity = str(post.get("slug") or post.get("id") or "").strip()
+        if not identity:
+            raise RuntimeError("article catalog contains an item without identity")
+        if identity in seen:
+            raise RuntimeError(f"duplicate article identity across catalogs: {identity}")
+        seen.add(identity)
+    return combined
+
+
 def _latest_post() -> dict:
-    posts = json.loads(Path("src/data/posts.json").read_text(encoding="utf-8"))
-    eligible = [p for p in posts if isinstance(p, dict) and _publishable(p)]
+    posts = _load_posts()
+    eligible = [p for p in posts if _publishable(p)]
     if not eligible:
-        raise RuntimeError("no publishable article exists in src/data/posts.json")
+        raise RuntimeError("no publishable article exists in the combined catalog")
     eligible.sort(key=lambda p: str(p.get("date") or ""), reverse=True)
     return eligible[0]
 
 
 def _public_url(post: dict) -> str:
-    post_id = str(post.get("id") or "").strip()
+    post_id = str(post.get("slug") or post.get("id") or "").strip()
     if not post_id:
         raise RuntimeError("latest article has no id")
     quoted = urllib.parse.quote(post_id, safe="-._~")
@@ -83,8 +103,8 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.slug.strip():
-        posts = json.loads(Path("src/data/posts.json").read_text(encoding="utf-8"))
-        matches = [p for p in posts if isinstance(p, dict) and str(p.get("id") or "").strip() == args.slug.strip() and _publishable(p)]
+        posts = _load_posts()
+        matches = [p for p in posts if str(p.get("slug") or p.get("id") or "").strip() == args.slug.strip() and _publishable(p)]
         if len(matches) != 1:
             raise RuntimeError(f"exact publishable article not found uniquely: {args.slug}")
         post = matches[0]
