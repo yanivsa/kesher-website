@@ -753,7 +753,7 @@
           "tests/test_jules_dual_identity.py": "b455361c0fa7fad60d592542fa4791bc50ae94189c117a3b9d2ecdf4a27814cd",
           "tests/test_master_supervisor_learning.py": "193fa5994b8debfd039ab85a351c4c1193d5367bd96b1b82132566f92fa74e1d",
           "tests/test_v6_production_shadow.py": "4a6f0759eef4c3d527ef7db39e6c4838c24e36f455e06367f30b8de301e5abd0",
-          "tests/test_voice_attempt_durability.py": "1aec3a5f12b9e37742060749e8b2eda5216f649700bd29f3cd041ea62afd5d20",
+          "tests/test_voice_attempt_durability.py": "3868a0b0b0d7bf5d3829c7ca25825a91f6649945deec53542475c5c10faa7336",
           "tests/test_workflow_recovery_governance.py": "99221c0b667c37933d8103937564bae8c78b8a635de706d6c30176028544348a"
         },
         "credential_services": {
