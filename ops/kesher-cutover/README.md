@@ -17,12 +17,12 @@ Recommended layout:
 ```text
 /opt/kesher-cutover/current/       reviewed repository checkout
 /opt/kesher-cutover/venv/          pinned Python environment
-/etc/kesher-cutover/               protected administrator configuration (0600/root-managed)
+/etc/kesher-cutover/               root-managed protected administrator configuration
 /var/lib/kesher-cutover/           persistent service state owned by kesher-cutover
 /var/lib/kesher-cutover/invocations.sqlite
 ```
 
-Run the service as a dedicated unprivileged `kesher-cutover` user. Keep `/etc/kesher-cutover` read-only to the service except for the minimum read permission required for the service account. Native provider credentials belong only to the native bundle's protected host custody; they must never be copied to GitHub Actions variables, request payloads, repository files, or logs.
+Run the service as a dedicated unprivileged `kesher-cutover` user. Keep `/etc/kesher-cutover` root-managed and non-writable by the service. The systemd environment file may remain root-owned mode `0600` because systemd reads it before launching the process. The JSON files referenced by that environment must be readable by the service but not writable by it; a recommended layout is `root:kesher-cutover` ownership with mode `0640` (or an equivalent read-only ACL). Native provider credentials belong only to the native bundle's protected host custody; they must never be copied to GitHub Actions variables, request payloads, repository files, or logs.
 
 ## One-time denial-ledger initialization
 
@@ -41,7 +41,7 @@ The service deliberately refuses a missing or malformed ledger. **Never recreate
 
 ## Configuration
 
-Copy `kesher-cutover.env.example` to `/etc/kesher-cutover/kesher-cutover.env`, replace every placeholder, and keep the file protected. The JSON files referenced by that environment contain reviewed bindings/material but no HTTP client can supply or override them.
+Copy `kesher-cutover.env.example` to `/etc/kesher-cutover/kesher-cutover.env`, replace every placeholder, and keep the file protected. Install the referenced JSON files with the service-readable, non-writable permissions described above. Those JSON files contain reviewed bindings/material but no HTTP client can supply or override them.
 
 The installed review must bind the exact current reviewed `main` SHA, executable digest, policy/definition digest, complete workflow-registration binding digest, migration-material digest, closed-evidence floor, six resource IDs, and NOTEBOOKLM sealing-key binding. `review_check` re-reads these files and current GitHub `main` before every accepted invocation.
 
@@ -57,7 +57,7 @@ Do not add provider credentials or a generic mutation proxy to the ingress layer
 
 1. Install the exact reviewed repository revision under `/opt/kesher-cutover/current` and a pinned virtual environment under `/opt/kesher-cutover/venv`.
 2. Install and independently review the native bundle named by `KESHER_CUTOVER_NATIVE_FACTORY`.
-3. Install protected JSON configuration and the environment file.
+3. Install protected JSON configuration and the environment file using the permissions above.
 4. Initialize the denial ledger once as described above.
 5. Install `kesher-cutover.service` into `/etc/systemd/system/`.
 6. Run `systemd-analyze verify /etc/systemd/system/kesher-cutover.service` where available.
