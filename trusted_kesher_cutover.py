@@ -28,6 +28,7 @@ from scripts.kesher_runtime.production_ports import PrerequisitePort
 from scripts.kesher_runtime.state import StateInvalid
 
 
+_REPO = "yanivsa/kesher-website"
 _REQUIRED_ENV = (
     "KESHER_CUTOVER_REVIEW_FILE",
     "KESHER_CUTOVER_MATERIAL_FILE",
@@ -53,7 +54,7 @@ _JSON_ENV = {
 }
 _EXTERNAL_RESOURCES = set(REQUIRED_RESOURCES) - {"github"}
 _FACTORY = re.compile(r"^[A-Za-z_][A-Za-z0-9_.]*:[A-Za-z_][A-Za-z0-9_]*$")
-_REPOSITORY = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
+_EPOCH = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$")
 
 
 def _fail(reason: str) -> None:
@@ -85,11 +86,13 @@ def _environment() -> dict[str, str]:
         values[name] = value
     root = os.environ.get("KESHER_CUTOVER_ROOT", "").strip()
     values["KESHER_CUTOVER_ROOT"] = root or str(Path(__file__).resolve().parent)
-    if not _REPOSITORY.fullmatch(values["KESHER_GITHUB_REPOSITORY"]):
+    if values["KESHER_GITHUB_REPOSITORY"] != _REPO:
         _fail("CUTOVER_TRUSTED_SERVICE_CONFIG_REQUIRED")
     if not values["KESHER_GITHUB_REPOSITORY_ID"].isdecimal() or int(values["KESHER_GITHUB_REPOSITORY_ID"]) <= 0:
         _fail("CUTOVER_TRUSTED_SERVICE_CONFIG_REQUIRED")
     if values["KESHER_CUTOVER_OWNER"] != OWNER:
+        _fail("CUTOVER_TRUSTED_SERVICE_CONFIG_REQUIRED")
+    if not _EPOCH.fullmatch(values["KESHER_CUTOVER_EPOCH"]):
         _fail("CUTOVER_TRUSTED_SERVICE_CONFIG_REQUIRED")
     if not _exact_https_origin(values["KESHER_CUTOVER_OIDC_AUDIENCE"]):
         _fail("CUTOVER_TRUSTED_SERVICE_CONFIG_REQUIRED")
@@ -164,8 +167,11 @@ def _native_bundle(factory) -> dict[str, Any]:
     required = {"github", "github_boundary", "external_ports", "separation_observer", "key"}
     if not isinstance(bundle, dict) or set(bundle) != required:
         _fail("CUTOVER_COMPLETE_NATIVE_BUNDLE_REQUIRED")
-    if not callable(getattr(bundle["github"], "request", None)) or not _port(bundle["github_boundary"]):
+    if not callable(getattr(bundle["github"], "request", None)):
         _fail("CUTOVER_COMPLETE_NATIVE_BUNDLE_REQUIRED")
+    boundary = bundle["github_boundary"]
+    if isinstance(boundary, PrerequisitePort) or not _port(boundary):
+        _fail("CUTOVER_REAL_NATIVE_PORT_REQUIRED")
     ports = bundle["external_ports"]
     if not isinstance(ports, dict) or set(ports) != _EXTERNAL_RESOURCES:
         _fail("CUTOVER_COMPLETE_NATIVE_BUNDLE_REQUIRED")
@@ -205,7 +211,8 @@ def _verify_installed_review(
         rules = policy(root)
         definitions = inventory(root, rules)
         if (
-            review.get("repo") != repo
+            repo != _REPO
+            or review.get("repo") != repo
             or review["policy_sha256"] != digest({"policy": rules, "definitions": definitions})
             or review["code_sha256"] != executable_digest(root)
             or review["closed_evidence_sha256"] != closure.get("retained_evidence")
