@@ -3,9 +3,10 @@ const path = require('path');
 const { spawn } = require('child_process');
 const { chromium } = require('playwright');
 const { ROOT, STATIC_ROUTES, isPublishable, blogRoute } = require('./content-policy.cjs');
+const { loadPosts } = require('./load-posts.cjs');
 
 const dist = path.join(ROOT, 'dist');
-const posts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
+const posts = loadPosts();
 const routes = [
   ...STATIC_ROUTES.filter(r => r !== '/'),
   ...new Set(posts.filter(isPublishable).flatMap(post => [blogRoute(post), `/blog/${post.slug || post.id}`])),
