@@ -123,14 +123,15 @@ def _load_material(env: dict[str, str]) -> dict[str, Any]:
 
 def _validate_journal(path_value: str) -> InvocationJournal:
     path = Path(path_value)
+    db = None
     try:
         if not path.is_absolute() or not path.is_file():
             _fail("CUTOVER_INVOCATION_LEDGER_REQUIRED")
         uri = "file:" + str(path) + "?mode=rw"
-        with sqlite3.connect(uri, uri=True) as db:
-            db.execute("PRAGMA query_only=ON")
-            rows = db.execute("PRAGMA table_info(invocations)").fetchall()
-            tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        db = sqlite3.connect(uri, uri=True)
+        db.execute("PRAGMA query_only=ON")
+        rows = db.execute("PRAGMA table_info(invocations)").fetchall()
+        tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         expected = [
             (0, "epoch", "TEXT", 1, None, 1),
             (1, "run", "TEXT", 1, None, 2),
@@ -139,6 +140,9 @@ def _validate_journal(path_value: str) -> InvocationJournal:
             _fail("CUTOVER_INVOCATION_LEDGER_REQUIRED")
     except (OSError, sqlite3.Error):
         _fail("CUTOVER_INVOCATION_LEDGER_REQUIRED")
+    finally:
+        if db is not None:
+            db.close()
     return InvocationJournal(path)
 
 
