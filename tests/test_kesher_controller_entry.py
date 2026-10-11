@@ -36,6 +36,22 @@ class ControllerEntryTests(unittest.TestCase):
             execute_tick(self.store, self.observer, mode='live', dispatch=Mock(), clock=lambda: NOW)
         self.observer.read.assert_not_called()
 
+    def test_schema5_and_unverified_schema6_never_dispatch_or_write(self):
+        for migration in (None, {}, {'status':'complete','runtime_owner':'kesher-canonical-controller'}):
+            with self.subTest(migration=migration):
+                self.server.document['migration'] = migration or {}
+                if migration is None: self.server.document['schema_version'] = 5
+                else: self.server.document['schema_version'] = 6
+                before = __import__('copy').deepcopy(self.server.document)
+                effects = []
+                self.store.save = lambda *args: effects.append('write')
+                with self.assertRaises(StateInvalid):
+                    execute_tick(self.store, self.observer, mode='live',
+                                 dispatch=lambda command:effects.append('dispatch'), clock=lambda:NOW)
+                self.assertEqual(effects, [])
+                self.assertEqual(self.server.document, before)
+                self.observer.read.assert_not_called()
+
     def test_conflict_during_live_observation_cannot_dispatch_or_rebind(self):
         from tests.test_kesher_handover import install_verified_authority
         install_verified_authority(self.store, self.server.document)

@@ -1,0 +1,24 @@
+[Unit]
+Description=KESHER independently hosted cutover gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kesher-cutover
+Group=kesher-cutover
+WorkingDirectory=/opt/kesher-cutover/code
+ExecStart=/opt/kesher-cutover/venv/bin/python -B -m scripts.kesher_runtime.cutover_host --config /etc/kesher-cutover/installation.json serve --port 8789
+StateDirectory=kesher-cutover
+StateDirectoryMode=0700
+UMask=0077
+Restart=on-failure
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/kesher-cutover
+
+[Install]
+WantedBy=multi-user.target

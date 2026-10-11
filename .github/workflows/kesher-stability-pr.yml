@@ -56,6 +56,10 @@ jobs:
             tests.test_kesher_article_deploy \
             tests.test_kesher_deployment_observer \
             tests.test_kesher_runtime_migration \
+            tests.test_kesher_cutover_host \
+            tests.test_kesher_post_freeze_migration \
+            tests.test_kesher_real_data_migration \
+            tests.test_kesher_backlog_rotation \
             tests.test_kesher_state_write_safety \
             tests.test_kesher_canonical_state \
             tests.test_kesher_github_faults \

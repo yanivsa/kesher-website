@@ -1,0 +1,63 @@
+{
+  "description": "Sanitized representative Schema-5 test fixture; Oct 2 unverified backlog record added to exercise observed historical ambiguity. Never production migration material.",
+  "reviewed_main": "715a5c037ce38fa20cebf89e06fd2e9a7d82080e",
+  "legacy_blob": "93b5004d7ca0505d0072cde33413d932b53a1f88",
+  "controller": {
+    "schema_version": 5,
+    "cycle": "2026-10-04",
+    "status": "article_image_running",
+    "article": {
+      "status": "running",
+      "run_id": 37195963244,
+      "provider_id": null,
+      "quality_content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22",
+      "pr_number": 1045,
+      "slug": null,
+      "published_date": null
+    },
+    "long_video": {
+      "attempt_count": 1,
+      "status": "running",
+      "run_id": 37155684445,
+      "processed_run_id": null,
+      "provider_id": null,
+      "same_failure_streak": 0,
+      "failure_count_by_type": {}
+    },
+    "short": {
+      "attempt_count": 0,
+      "status": "pending",
+      "run_id": null,
+      "processed_run_id": null,
+      "provider_id": null,
+      "same_failure_streak": 0,
+      "failure_count_by_type": {}
+    },
+    "backlog": [
+      {
+        "cycle": "2026-10-01",
+        "status": "long_video_running",
+        "article": {
+          "status": "complete",
+          "run_id": 36850034947,
+          "provider_id": null,
+          "quality_content_sha256": "4b0df04d8931ff8ab08c172a6b3590686e4c3f598ef0194a27b2c0dde59104b6",
+          "pr_number": 1001,
+          "slug": "adhd-waiting-mode",
+          "published_date": "2026-10-01"
+        },
+        "long_video": {},
+        "short": {}
+      },
+      {
+        "cycle": "2026-10-02",
+        "article": {
+          "slug": "marshmallow-test-environmental-reliability",
+          "published_date": "2026-10-02"
+        },
+        "long_video": {},
+        "short": {}
+      }
+    ]
+  }
+}

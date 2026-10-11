@@ -10,6 +10,7 @@ on:
         type: string
 
 permissions:
+  id-token: write
   contents: write
   actions: read
 
@@ -24,6 +25,7 @@ jobs:
     timeout-minutes: 45
     env:
       COMMAND_ID: ${{ inputs.command_id }}
+      KESHER_CUTOVER_GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
       GH_TOKEN: ${{ github.token }}
       WRANGLER_SEND_METRICS: 'false'
     steps:

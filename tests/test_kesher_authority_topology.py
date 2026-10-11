@@ -9,6 +9,17 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AuthorityTopologyTests(unittest.TestCase):
+    def test_oidc_permission_is_not_granted_to_arbitrary_reviewed_roles(self):
+        from scripts.kesher_runtime.authority_topology import check_definitions
+        for role in ('worker','controller','handover','diagnostic','separate_infrastructure'):
+            path='.github/workflows/unrelated.yml'
+            text='on: workflow_dispatch\npermissions:\n  id-token: write\njobs:\n  check:\n    runs-on: ubuntu-latest\n    steps:\n      - run: true\n'
+            entry={'role':role,'definition_sha256':hashlib.sha256(text.encode()).hexdigest(),
+                'capabilities':['read'],'resources':[], 'review':{'call_chain':{},'dispatches':[],
+                'credentials':[],'credential_services':{},'note':'Disposable least privilege fixture'}}
+            with self.subTest(role=role),self.assertRaisesRegex(StateInvalid,'FALSE_READONLY_PERMISSIONS'):
+                check_definitions({path:text},{'version':2,'workflows':{path:entry}})
+
     def test_every_definition_has_an_explicit_role(self):
         from scripts.kesher_runtime.authority_topology import inventory, policy
         rows = inventory(ROOT, policy(ROOT))

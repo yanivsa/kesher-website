@@ -31,6 +31,20 @@ def article_window(now: str) -> bool:
     return article_window_open(local, sunset)
 
 
+def backlog_slot(state: dict, current_slot: str) -> str | None:
+    """Rotate durable observation turns, including blocked slots, without clocks."""
+    intended_articles = {command['target']['slot'] for command in state['commands'].values()
+                         if command['target']['type'] == 'slot' and command['outcome'] != 'cancelled'}
+    eligible = sorted(slot for slot, row in state['slots'].items()
+                      if slot < current_slot and not row.get('complete')
+                      and (row.get('source_key') or row.get('blocked') == 'SOURCE_AMBIGUOUS'
+                           or slot in intended_articles))
+    if not eligible:
+        return None
+    previous = state.get('scheduler', {}).get('last_observed_backlog_slot', '')
+    return next((slot for slot in eligible if slot > previous), eligible[0])
+
+
 class RepositoryObserver:
     def __init__(self, github, repo: str, *, inventory_reader, auditor, article_observer=None,
                  clock=utc_now, window=article_window, deployment_observer=None):
@@ -169,9 +183,9 @@ class RepositoryObserver:
         except (OSError, RuntimeError, MediaVerificationError):
             inventory = None  # Unknown, never permission to generate another upload.
         slots = {current_slot}
-        backlog = [slot for slot in state['slots'] if slot < current_slot and state['slots'][slot].get('source_key')]
+        backlog = backlog_slot(state, current_slot)
         if backlog:
-            slots.add(min(backlog, key=lambda slot: (state['slots'][slot].get('observed_at', ''), slot)))
+            slots.add(backlog)
         publications = []
         for post in posts:
             if post.get('date') not in slots:

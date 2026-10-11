@@ -10,6 +10,7 @@ on:
         type: string
 
 permissions:
+  id-token: write
   contents: write
   actions: read
 
@@ -24,6 +25,7 @@ jobs:
     timeout-minutes: 120
     env:
       COMMAND_ID: ${{ inputs.command_id }}
+      KESHER_CUTOVER_GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
       GH_TOKEN: ${{ secrets.KESHER_CONTROLLER_TOKEN || github.token }}
       KESHER_NOTEBOOK_ID: e101e7d7-5305-45b3-a611-21a5475ceb63
       KESHER_WHISPER_MODEL: small

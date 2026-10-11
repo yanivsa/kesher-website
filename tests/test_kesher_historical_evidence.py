@@ -17,6 +17,9 @@ class HistoricalEvidenceTests(unittest.TestCase):
         self.closed = json.loads(FLOOR.read_text())
         _, self.fresh = inputs()
         self.fresh['controller'] = {'schema_version': 5, 'cycle': '2026-09-30', 'article': {}, 'backlog': []}
+        # A refreshed Sep30 snapshot cannot be prepared at the older fixture's
+        # Sep22 clock. Keep historical assertions unchanged at a valid cutover.
+        self.fresh['now'] = '2026-10-01T10:00:00+03:00'
         self.fresh['artifacts'] = []
 
     def prepare(self):

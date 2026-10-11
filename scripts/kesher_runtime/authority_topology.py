@@ -80,7 +80,11 @@ def check_definitions(definitions, rules):
                 raise StateInvalid('AUTHORITY_UNREVIEWED_PERMISSIONS')
             for scope, level in permissions.items():
                 if level != 'write': continue
-                if scope == 'id-token' and role == 'handover': continue
+                if scope == 'id-token':
+                    from .authority_client import CANONICAL_WORKFLOWS
+                    if (role == 'handover' and path == '.github/workflows/kesher-production-cutover.yml'
+                            or role in {'controller','worker'} and path in CANONICAL_WORKFLOWS):
+                        continue
                 required = {'contents':'branch_write','pull-requests':'pr_write','actions':'workflow_dispatch',
                             'statuses':'status_write','issues':'issue_write'}.get(scope)
                 if role == 'diagnostic' or required not in entry['capabilities']:
