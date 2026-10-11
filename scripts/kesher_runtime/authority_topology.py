@@ -80,7 +80,11 @@ def check_definitions(definitions, rules):
                 raise StateInvalid('AUTHORITY_UNREVIEWED_PERMISSIONS')
             for scope, level in permissions.items():
                 if level != 'write': continue
-                if scope == 'id-token' and role == 'handover': continue
+                if scope == 'id-token':
+                    from .authority_client import CANONICAL_WORKFLOWS
+                    if (role == 'handover' and path == '.github/workflows/kesher-production-cutover.yml'
+                            or role in {'controller','worker'} and path in CANONICAL_WORKFLOWS):
+                        continue
                 required = {'contents':'branch_write','pull-requests':'pr_write','actions':'workflow_dispatch',
                             'statuses':'status_write','issues':'issue_write'}.get(scope)
                 if role == 'diagnostic' or required not in entry['capabilities']:
@@ -395,11 +399,12 @@ def _identities(values):
 
 
 def authority_path(path):
-    # An unknown path is pinned; only the shared publication contract is exempt.
+    # An unknown path is pinned. Both site's catalogs are validated inert data;
+    # this exemption does not expand the article worker's permitted PR paths.
     # This is a path classification, never a substitute for byte/mode validation.
     if not isinstance(path, str) or any(part in {'', '.', '..'} for part in path.split('/')):
         raise StateInvalid('AUTHORITY_INVALID_PATH')
-    return not (path in ARTICLE_PUBLICATION_PATHS or
+    return not (path in ARTICLE_PUBLICATION_PATHS or path == 'src/data/postsRecent.json' or
                 (path.startswith(ARTICLE_IMAGE_PREFIX) and Path(path).suffix.lower() in {'.png','.jpg','.jpeg'}))
 
 

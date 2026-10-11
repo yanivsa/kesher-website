@@ -16,6 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  KESHER_CUTOVER_GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
   COMMAND_ID: ${{ inputs.command_id }}
 
 jobs:
@@ -24,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
+      id-token: write
       contents: write
       actions: read
     outputs:
@@ -65,6 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
+      id-token: write
       contents: read
     steps:
       - name: Checkout immutable trusted workflow revision
@@ -118,6 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     permissions:
+      id-token: write
       contents: read
     steps:
       - name: Checkout immutable trusted workflow revision
@@ -162,6 +166,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
+      id-token: write
       contents: write
       actions: read
     steps:

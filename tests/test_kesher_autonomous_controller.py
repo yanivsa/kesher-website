@@ -241,7 +241,9 @@ class AutonomousControllerTests(unittest.TestCase):
         other = SourceIdentity(SOURCE.slot, 'other-article', 'b' * 64)
         result = reconcile(new_state(), observed(publication(), publication(other)), now=NOW)
         self.assertIsNone(result.command_id)
-        self.assertNotIn(SOURCE.slot, result.state['slots'])
+        # Keep a diagnostic slot for cursor progress without assigning ownership.
+        self.assertIsNone(result.state['slots'][SOURCE.slot].get('source_key'))
+        self.assertEqual(result.state['slots'][SOURCE.slot]['blocked'], 'SOURCE_AMBIGUOUS')
         self.assertEqual(len(result.state['incidents']), 1)
         self.assertEqual(next(iter(result.state['incidents'].values()))['failure_class'], 'SOURCE_AMBIGUOUS')
 

@@ -31,6 +31,20 @@ def article_window(now: str) -> bool:
     return article_window_open(local, sunset)
 
 
+def backlog_slot(state: dict, current_slot: str) -> str | None:
+    """Rotate durable observation turns, including blocked slots, without clocks."""
+    intended_articles = {command['target']['slot'] for command in state['commands'].values()
+                         if command['target']['type'] == 'slot' and command['outcome'] != 'cancelled'}
+    eligible = sorted(slot for slot, row in state['slots'].items()
+                      if slot < current_slot and not row.get('complete')
+                      and (row.get('source_key') or row.get('blocked') == 'SOURCE_AMBIGUOUS'
+                           or slot in intended_articles))
+    if not eligible:
+        return None
+    previous = state.get('scheduler', {}).get('last_observed_backlog_slot', '')
+    return next((slot for slot in eligible if slot > previous), eligible[0])
+
+
 class RepositoryObserver:
     def __init__(self, github, repo: str, *, inventory_reader, auditor, article_observer=None,
                  clock=utc_now, window=article_window, deployment_observer=None):
@@ -65,7 +79,10 @@ class RepositoryObserver:
         try:
             if self._deployment.get('status') != 'verified':
                 return self._deployment
-            snapshot = SourceSnapshot(main, main, post, self.content(main, 'public' + post['image']))
+            image = str(post.get('image') or '')
+            if not image.startswith('/images/generated/blog/') or '..' in image.split('/'):
+                return {'status':'failed','failure_class':'ARTICLE_HERO_MISMATCH'}
+            snapshot = SourceSnapshot(main, main, post, self.content(main, 'public' + image))
             verifier = ArticlePublicVerifier(lambda sha, slug: snapshot, lambda sha: self._deployment['evidence'])
             evidence = verifier.verify(source, main, verified_at=now)
             return {'status': 'verified', 'evidence': evidence}
@@ -83,7 +100,7 @@ class RepositoryObserver:
             return {'status': 'unknown', 'failure_class': 'TRANSIENT_API'}
 
     def article_prs(self, posts: list[dict], current_slot: str, state: dict | None = None,
-                    main_sha: str | None = None) -> list[dict]:
+                    main_sha: str | None = None, publication_base: list[dict] | None = None) -> list[dict]:
         from .article_image_worker import image_receipt_matches
         from .article_validation import validation_for_pr
         result = []
@@ -107,9 +124,13 @@ class RepositoryObserver:
                        'slot': slot, 'status': 'ci_pending'}
                 result.append(row)
                 if (pr.get('base', {}).get('ref') != 'main' or (pr.get('head', {}).get('repo') or {}).get('full_name') != self.repo
-                        or sum(candidate.get('date') == slot for candidate in candidates) != 1):
+                        or sum(candidate.get('date') == slot for candidate in candidates) != 1
+                        or any(existing.get('date') == slot for existing in posts)):
                     row['status'] = 'ci_failed'; continue
-                if normalization_required(posts, head_posts, slot, paths):
+                # Canonical PRs still write only the historical catalog. Recent
+                # main publications participate in duplicate protection above,
+                # without being copied into a competing catalog by normalization.
+                if normalization_required(posts if publication_base is None else publication_base, head_posts, slot, paths):
                     row['status'] = 'normalize_required'; continue
                 image = str(post.get('image') or '')
                 data = None
@@ -158,8 +179,9 @@ class RepositoryObserver:
         now = self.clock()
         current_slot = datetime.fromisoformat(now).astimezone(ZoneInfo('Asia/Jerusalem')).date().isoformat()
         main = self.github.request('GET', f'/repos/{self.repo}/git/ref/heads/main')['object']['sha']; require_sha(main, 40)
-        posts = json.loads(self.content(main, 'src/data/posts.json'))
-        prs = self.article_prs(posts, current_slot, state, main_sha=main)
+        posts = self.reader.catalog(main)
+        prs = self.article_prs(posts, current_slot, state, main_sha=main,
+                              publication_base=json.loads(self.content(main,'src/data/posts.json')))
         runs = self.runs(state)
         from .article_merge_observer import observe_merge_effects
         merge_effects = observe_merge_effects(state, self.github, self.repo, main)
@@ -169,9 +191,9 @@ class RepositoryObserver:
         except (OSError, RuntimeError, MediaVerificationError):
             inventory = None  # Unknown, never permission to generate another upload.
         slots = {current_slot}
-        backlog = [slot for slot in state['slots'] if slot < current_slot and state['slots'][slot].get('source_key')]
+        backlog = backlog_slot(state, current_slot)
         if backlog:
-            slots.add(min(backlog, key=lambda slot: (state['slots'][slot].get('observed_at', ''), slot)))
+            slots.add(backlog)
         publications = []
         for post in posts:
             if post.get('date') not in slots:

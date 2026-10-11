@@ -14,7 +14,8 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 
 from scripts.kesher_article_contract import image_dimensions
-from scripts.kesher_daily_pipeline import source_metadata, clean_article_html
+from scripts.kesher_daily_pipeline import source_metadata, clean_article_html, combine_post_catalogs
+from .github import _unique_object
 from .identity import SourceIdentity, digest, require_sha
 from .state import timestamp
 from .verification import SITE_URL
@@ -295,9 +296,19 @@ class GitHubArticleReader:
             reject('ARTICLE_SOURCE_MISMATCH', 'Exact source blob is unreadable')
         return base64.b64decode(''.join(row['content'].split()), validate=True)
 
+    def catalog_with_paths(self, sha: str) -> list[tuple[str, dict]]:
+        historical_path, recent_path = 'src/data/posts.json', 'src/data/postsRecent.json'
+        historical = json.loads(self.content(sha, historical_path), object_pairs_hook=_unique_object)
+        recent = json.loads(self.content(sha, recent_path), object_pairs_hook=_unique_object)
+        combine_post_catalogs(historical, recent)  # Reject duplicate/invalid identities.
+        return [(recent_path, post) for post in recent] + [(historical_path, post) for post in historical]
+
+    def catalog(self, sha: str) -> list[dict]:
+        return [post for _, post in self.catalog_with_paths(sha)]
+
     def __call__(self, expected_sha: str, slug: str) -> SourceSnapshot:
         main = self.github.request('GET', f'/repos/{self.repo}/git/ref/heads/main')['object']['sha']
-        posts = json.loads(self.content(expected_sha, 'src/data/posts.json'))
+        posts = self.catalog(expected_sha)
         rows = [post for post in posts if (post.get('slug') or post['id']) == slug]
         if len(rows) != 1:
             reject('ARTICLE_SOURCE_MISMATCH', 'Article slug is missing or ambiguous in exact main snapshot')

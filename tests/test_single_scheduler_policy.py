@@ -33,13 +33,15 @@ def trigger_block(path: Path) -> str:
 
 
 class SingleSchedulerPolicyTests(unittest.TestCase):
-    def test_candidate_has_no_activated_content_scheduler(self):
+    def test_canonical_controller_is_manual_only_and_legacy_has_no_schedulers(self):
         controller = trigger_block(CONTROLLER)
         article = trigger_block(ARTICLE)
         short = trigger_block(SHORT)
         legacy_video = trigger_block(LEGACY_VIDEO)
         self.assertNotIn("  schedule:", controller)
-        self.assertIn("github.repository == '__KESHER_RETIRED__'", CONTROLLER.read_text())
+        self.assertIn("workflow_dispatch:", controller)
+        self.assertNotIn("__KESHER_RETIRED__", CONTROLLER.read_text())
+        self.assertIn("controller_entry --mode live", CONTROLLER.read_text())
         self.assertNotIn("  schedule:", article)
         self.assertNotIn("  schedule:", short)
         self.assertNotIn("  schedule:", legacy_video)

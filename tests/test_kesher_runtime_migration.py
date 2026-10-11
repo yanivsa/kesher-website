@@ -25,6 +25,7 @@ class RuntimeMigrationTests(unittest.TestCase):
         params['controller'].update(cycle='2026-09-27', article={'status': 'running', 'pr_number': 944},
             targeted_media_recovery={'slug': args['source']['slug'],
                                      'content_sha256': args['source']['content_sha256']})
+        params['now']='2026-09-27T20:00:00+00:00'
         state = prepare_migration(**params)
         self.assertEqual(state['slots'][args['source']['date']]['source_key'], args['identity'].source.key)
         self.assertNotIn('2026-09-27', state['slots'])
@@ -38,6 +39,12 @@ class RuntimeMigrationTests(unittest.TestCase):
         args, params = inputs()
         params['controller'].update(article={}, targeted_media_recovery={
             'slug': args['source']['slug'], 'content_sha256': 'd' * 64})
+        # The current main source is deliberately unadopted: the targeted
+        # legacy claim disagrees with its exact identity. Retain explicit review
+        # disposition instead of letting source availability imply ownership.
+        params['post_freeze_boundary'] = {'frozen_cycle':params['controller']['cycle'],
+            'cutover_slot':params['now'][:10], 'adopted_source_keys':[],
+            'excluded_source_keys':[args['identity'].source.key]}
         state = prepare_migration(**params)
         self.assertEqual(state['slots'], {})
         unresolved = [row for row in state['quarantine'] if row['failure_class'] == 'LEGACY_TARGETED_SOURCE_UNRESOLVED']
@@ -73,6 +80,7 @@ class RuntimeMigrationTests(unittest.TestCase):
             with self.subTest(cycle=cycle):
                 args, params = inputs()
                 params['controller']['cycle'] = cycle
+                if cycle: params['now']=cycle+'T20:00:00+00:00'
                 params.update(sources=[], artifacts=[])
                 state = prepare_migration(**params)
                 quarantine = next(row for row in state['quarantine'] if row['failure_class'] == 'LEGACY_SOURCE_UNRESOLVED')

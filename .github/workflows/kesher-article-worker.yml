@@ -10,6 +10,7 @@ on:
         type: string
 
 permissions:
+  id-token: write
   contents: write
   pull-requests: write
   actions: read
@@ -25,6 +26,7 @@ jobs:
     timeout-minutes: 15
     env:
       COMMAND_ID: ${{ inputs.command_id }}
+      KESHER_CUTOVER_GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
       GH_TOKEN: ${{ secrets.KESHER_CONTROLLER_TOKEN || github.token }}
     steps:
       - name: Checkout immutable workflow revision

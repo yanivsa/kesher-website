@@ -216,6 +216,43 @@ def _eligible(state: dict, target: Identity, observation: dict, tracker: dict, *
     return target, operation, payload
 
 
+def _reviewed_entries(state: dict, slot: str, entries: list[dict]) -> list[dict]:
+    """An immutable migration review may select a source; observation order may not."""
+    review = state['migration'].get('post_freeze_adoption')
+    if not review:
+        return entries
+    boundary = review['boundary']
+    if not boundary['frozen_cycle'] <= slot <= boundary['cutover_slot']:
+        return entries
+    candidates = review['candidates']
+    adopted, excluded = boundary['adopted_source_keys'], boundary['excluded_source_keys']
+    expected = {key: identity for key, identity in candidates.items() if identity['slot'] == slot}
+    if (review['boundary_sha256'] != digest(boundary)
+            or set(adopted) & set(excluded) or set(adopted) | set(excluded) != set(candidates)):
+        return []
+    if slot == boundary['cutover_slot'] and not expected:
+        # Review observed no existing publication on the new current day. Its
+        # subsequent normal daily publication follows the canonical main/source
+        # contract; this is not adoption of an excluded historical candidate.
+        return entries
+    observed = {identity_from_dict(entry['source']).key: entry for entry in entries}
+    selected = [key for key in adopted if key in expected]
+    if (len(observed) != len(entries) or set(observed) != set(expected)
+            or any(observed[key]['source'] != identity for key, identity in expected.items())
+            or len(selected) != 1
+            or state['slots'].get(slot, {}).get('source_key') != selected[0]):
+        return []  # Missing/new/fully excluded identities never acquire ownership.
+    return [observed[selected[0]]]
+
+
+def _observed_slot(state: dict, slot: str, data: dict, *, advance_backlog=True) -> dict:
+    row = state['slots'].setdefault(slot, {})
+    row['observed_at'] = data['observed_at']
+    if advance_backlog and slot < data['current_slot']:
+        state.setdefault('scheduler', {})['last_observed_backlog_slot'] = slot
+    return row
+
+
 def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
     validate_state(state)
     timestamp(now)
@@ -236,14 +273,19 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
         if not isinstance(source, SourceIdentity) or entry.get('main_sha') != data['main_sha'] or source.slot > data['current_slot']:
             raise StateInvalid('Publication must come from observed authoritative main and an eligible slot')
         candidates.setdefault(source.slot, []).append(entry)
-    for slot, entries in candidates.items():
-        if len(entries) != 1:
+    for slot in sorted(candidates):
+        entries = candidates[slot]
+        row = _observed_slot(proposed, slot, data)
+        selected = _reviewed_entries(proposed, slot, entries)
+        if selected:
+            entries = selected
+        if len(entries) != 1 or not selected:
             record_incident(proposed, SlotIdentity(slot), 'article', 'SOURCE_AMBIGUOUS', now=now,
                             evidence={'source_keys': sorted(identity_from_dict(row['source']).key for row in entries)})
             blocked.add(slot)
-            if slot in proposed['slots']:
-                proposed['slots'][slot].update(blocked='SOURCE_AMBIGUOUS', complete=False)
+            row.update(blocked='SOURCE_AMBIGUOUS', complete=False)
             continue
+        candidates[slot] = entries
         source = identity_from_dict(entries[0]['source'])
         previous = proposed['slots'].get(slot, {}).get('source_key')
         # Replacement is explicit and preserves every old media identity/receipt.
@@ -311,15 +353,31 @@ def reconcile(state: dict, observed: Observation, *, now: str) -> Decision:
     for slot in sorted({data['current_slot'], *prs.keys(), *missing_slots}):
         if slot in candidates or slot in blocked:
             continue
+        review = proposed['migration'].get('post_freeze_adoption')
+        if review:
+            reviewed_keys = {key for key, identity in review['candidates'].items() if identity['slot'] == slot}
+            if reviewed_keys and not reviewed_keys.intersection(review['boundary']['adopted_source_keys']):
+                record_incident(proposed, SlotIdentity(slot), 'article', 'SOURCE_AMBIGUOUS', now=now,
+                                evidence={'source_keys':sorted(reviewed_keys), 'disposition':'reviewed_exclusion'})
+                _observed_slot(proposed,slot,data,advance_backlog=slot in missing_slots).update(
+                    blocked='SOURCE_AMBIGUOUS',complete=False)
+                continue
+        if (slot != data['current_slot'] and slot not in missing_slots
+                and proposed['slots'].get(slot, {}).get('source_key')):
+            # An unrelated open PR is not a repository absence observation of
+            # its adopted historical source, and must not reopen completed work.
+            continue
         target = SlotIdentity(slot)
+        row = _observed_slot(proposed, slot, data, advance_backlog=slot in missing_slots)
+        if row.get('blocked') == 'SOURCE_AMBIGUOUS':
+            # Missing repository data or PR rows cannot resolve source ambiguity.
+            continue
         matches = prs.get(slot, [])
         if len(matches) > 1:
             record_incident(proposed, target, 'article', 'DUPLICATE_PR', now=now,
                             evidence={'pull_requests': sorted(row['number'] for row in matches)})
-            proposed['slots'].setdefault(slot, {}).update(blocked='DUPLICATE_PR', complete=False)
+            row.update(blocked='DUPLICATE_PR', complete=False)
             continue
-        row = proposed['slots'].setdefault(slot, {})
-        row['observed_at'] = data['observed_at']
         row.pop('blocked', None)
         if row.get('source_key'):
             # An adopted article disappearing from main is an incident, never

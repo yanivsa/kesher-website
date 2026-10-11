@@ -10,6 +10,7 @@ on:
         type: string
 
 permissions:
+  id-token: write
   contents: write
   pull-requests: read
   actions: read
@@ -26,6 +27,7 @@ jobs:
     env:
       COMMAND_ID: ${{ inputs.command_id }}
       # Deliberately no administrator/controller PAT fallback on this route.
+      KESHER_CUTOVER_GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout immutable trusted revision

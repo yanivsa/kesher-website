@@ -2,6 +2,7 @@ name: Kesher canonical content controller
 on:
   workflow_dispatch:
 permissions:
+  id-token: write
   contents: write
   actions: write
   pull-requests: read
@@ -10,10 +11,11 @@ concurrency:
   cancel-in-progress: false
 jobs:
   reconcile:
-    if: ${{ github.repository == '__KESHER_RETIRED__' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     env:
+      KESHER_CUTOVER_GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
       GH_TOKEN: ${{ secrets.KESHER_CONTROLLER_TOKEN || github.token }}
     steps:
       - name: Checkout immutable main revision

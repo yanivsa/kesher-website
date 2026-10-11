@@ -35,6 +35,7 @@ class AuthorityDigestBoundaryTests(unittest.TestCase):
     def test_contract_generated_outputs_can_change_without_authority_change(self):
         outputs = {
             'src/data/posts.json': b'[{"id":"one","title":"first"}]',
+            'src/data/postsRecent.json': b'[{"id":"recent","title":"first"}]',
             'src/data/postSummaries.json': b'[{"id":"one","title":"first"}]',
             'public/sitemap.xml': b'<urlset><url><loc>https://example.test/one</loc></url></urlset>',
             'public/rss.xml': b'<rss version="2.0"><channel><title>first</title></channel></rss>',
@@ -83,6 +84,14 @@ class AuthorityDigestBoundaryTests(unittest.TestCase):
             with self.subTest(raw=raw):
                 self.put('src/data/posts.json', raw)
                 with self.assertRaises(StateInvalid): code_manifest(self.root)
+
+    def test_recent_publication_exemption_does_not_expand_article_pr_write_scope(self):
+        from scripts.kesher_article_contract import ARTICLE_PUBLICATION_PATHS
+        self.assertNotIn('src/data/postsRecent.json',ARTICLE_PUBLICATION_PATHS)
+        self.assertFalse(authority_path('src/data/postsRecent.json'))
+        for raw in (b'#!/usr/bin/env python\n',b'{"run":"python"}',b'[NaN]'):
+            self.put('src/data/postsRecent.json',raw)
+            with self.assertRaises(StateInvalid):code_manifest(self.root)
 
     def test_malformed_publication_xml_is_an_authority_refusal(self):
         self.put('public/rss.xml',b'<rss><channel>')

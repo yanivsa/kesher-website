@@ -1,5 +1,14 @@
 # Schema-6 production cutover implementation and blocked administrator handoff
 
+**2026-10-10 operator-path update:** use the [persistent trusted-host installation
+and read-only preflight](../../operations/kesher-cutover-host.md) for current
+installation commands, exact approved configuration and post-freeze publication
+adoption. The historical SHAs/counts below remain dated evidence. The existing
+nine-phase handover and all native exclusion prerequisites remain mandatory.
+The new `cutover_host` composition replaces the application-factory assembly
+instructions in step 4 below; independently installed native ports are still
+required. The controller can run manually after VERIFIED, with no schedule.
+
 **NO SCHEMA-6 PRODUCTION ACTIVATION HAS OCCURRED.** No live workflow disable,
 credential revocation, automation-state write, handover, generation, upload,
 deployment or production dispatch was performed in this implementation task.

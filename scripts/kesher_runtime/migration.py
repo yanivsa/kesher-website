@@ -6,8 +6,10 @@ certifies public delivery, or invents historical external-effect intents.
 from __future__ import annotations
 
 import copy
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
-from .identity import MediaIdentity, SourceIdentity, digest, require_sha
+from .identity import MediaIdentity, SlotIdentity, SourceIdentity, digest, require_sha
 from .media_state import ITEM_TYPES
 from .provider import text_hash
 from .state import StateInvalid, bind_source, new_state, timestamp, validate_state
@@ -37,12 +39,55 @@ def _identity(source: dict) -> SourceIdentity:
     return SourceIdentity(source['date'], source['slug'], source['content_sha256'])
 
 
+def _post_freeze_sources(controller, current_sources, now, boundary):
+    """Validate complete reviewed dispositions, never choose a daily owner.
+
+    Freeze-day publications may have completed after the legacy snapshot. Every
+    exact source in the inclusive window is either explicitly adopted or retained
+    as excluded evidence. Dates bound eligibility; only reviewed keys bind slots.
+    """
+    frozen = controller.get('cycle')
+    if frozen is None and boundary is None: return []
+    SlotIdentity(frozen)
+    cutover = datetime.fromisoformat(now).astimezone(ZoneInfo('Asia/Jerusalem')).date().isoformat()
+    if frozen > cutover:
+        raise StateInvalid('MIGRATION_POST_FREEZE_BOUNDARY_INVALID_OR_AMBIGUOUS')
+    sources = {key:source for key,source in current_sources.items() if frozen <= source['date'] <= cutover}
+    if boundary is None:
+        # Existing exact, uniquely represented legacy records retain the old
+        # import contract. Unbound freeze/post-freeze sources require review.
+        represented = set()
+        for record in [controller, *(controller.get('backlog') or [])]:
+            article = record.get('article') or {}
+            matches = [key for key,source in sources.items() if
+                       source['date'] == (article.get('published_date') or record.get('cycle'))
+                       and source['slug'] == article.get('slug')]
+            if len(matches) == 1: represented.update(matches)
+        if set(sources)-represented: raise StateInvalid('MIGRATION_POST_FREEZE_REVIEW_REQUIRED')
+        return []
+    required = {'frozen_cycle','cutover_slot','adopted_source_keys','excluded_source_keys'}
+    if not isinstance(boundary,dict) or set(boundary) != required:
+        raise StateInvalid('MIGRATION_POST_FREEZE_BOUNDARY_INVALID_OR_AMBIGUOUS')
+    adopted, excluded = boundary['adopted_source_keys'], boundary['excluded_source_keys']
+    if (boundary['frozen_cycle'] != frozen or boundary['cutover_slot'] != cutover
+            or any(not isinstance(keys,list) or not all(isinstance(key,str) for key in keys)
+                   or keys != sorted(set(keys)) for keys in (adopted,excluded))
+            or set(adopted)&set(excluded) or set(adopted)|set(excluded) != set(sources)
+            or len({sources[key]['date'] for key in adopted}) != len(adopted)):
+        raise StateInvalid('MIGRATION_POST_FREEZE_BOUNDARY_INVALID_OR_AMBIGUOUS')
+    return sorted((sources[key] for key in adopted),key=lambda source:source['date'])
+
+
 def prepare_migration(*, controller: dict, controller_sha: str, main_sha: str,
                       sources: list[dict], artifacts: list[dict], now: str, capability_sealer=None,
-                      historical_sources: list[dict] | None = None, retained_evidence: dict | None = None) -> dict:
+                      historical_sources: list[dict] | None = None, retained_evidence: dict | None = None,
+                      post_freeze_boundary: dict | None = None,
+                      source_git_paths: dict | None = None) -> dict:
     timestamp(now); require_sha(controller_sha, 40); require_sha(main_sha, 40)
     if controller.get('schema_version') != 5:
         raise StateInvalid('Migration input must be the explicitly inspected legacy schema')
+    if source_git_paths is not None and not isinstance(source_git_paths,dict):
+        raise StateInvalid('MIGRATION_EXACT_SOURCE_GIT_PATHS_REQUIRED')
     state = new_state()
     migration = state['migration']
     migration.update(status='prepared', controller_sha256=digest(controller), controller_blob_sha=controller_sha,
@@ -54,11 +99,16 @@ def prepare_migration(*, controller: dict, controller_sha: str, main_sha: str,
         if text_hash(source['body']) != identity.content_sha256 or identity.key in authoritative:
             raise StateInvalid('Migration requires unique independently fetched exact source bodies')
         authoritative[identity.key] = copy.deepcopy(source)
-        source_origins[identity.key] = {'commit_sha': main_sha, 'path': 'src/data/posts.json'}
+        source_origins[identity.key] = {'commit_sha': main_sha, 'path':
+            source_git_paths.get(identity.key) if source_git_paths is not None else 'src/data/posts.json'}
+    if source_git_paths is not None and (set(source_git_paths) != set(authoritative) or
+            any(path not in {'src/data/posts.json','src/data/postsRecent.json'} for path in source_git_paths.values())):
+        raise StateInvalid('MIGRATION_EXACT_SOURCE_GIT_PATHS_REQUIRED')
     # Historical source bodies explain old uploads; only current-main sources
     # may establish the active daily binding. The caller must read these exact
     # Git blobs and verify main ancestry before providing the provenance.
     current_sources = copy.deepcopy(authoritative)
+    catchup = _post_freeze_sources(controller,current_sources,now,post_freeze_boundary)
     for historical in historical_sources or []:
         require_sha(historical['commit_sha'], 40); require_sha(historical['blob_sha'], 40)
         source = historical['source']; identity = _identity(source)
@@ -145,6 +195,31 @@ def prepare_migration(*, controller: dict, controller_sha: str, main_sha: str,
             if stage.get('youtube_id'):
                 migration['observed_youtube_ids'].setdefault(stage['youtube_id'], []).append({
                     'origin': 'controller', 'target': MediaIdentity(claimed_source, kind).to_dict(), 'item_id': stage.get('item_id')})
+    # Adoption grants observation/scheduling identity only. No article/media
+    # receipt, worker ownership, provider intent or public completion is invented.
+    for source in catchup:
+        identity = _identity(source)
+        active = state['slots'].get(identity.slot,{}).get('source_key')
+        if active is not None and active != identity.key:
+            raise StateInvalid('MIGRATION_POST_FREEZE_BINDING_CONFLICT')
+        state = bind_source(state,identity,now=now,previous_source_key=active)
+        state['slots'][identity.slot]['complete'] = False
+    migration = state['migration']
+    if post_freeze_boundary is not None:
+        boundary_sha = digest(post_freeze_boundary)
+        candidates = {key:source for key,source in current_sources.items()
+                      if post_freeze_boundary['frozen_cycle'] <= source['date'] <= post_freeze_boundary['cutover_slot']}
+        migration['post_freeze_adoption'] = {'boundary':copy.deepcopy(post_freeze_boundary),
+            'boundary_sha256':boundary_sha, 'candidates':{key:_identity(source).to_dict()
+                for key,source in sorted(candidates.items())}}
+        for key in post_freeze_boundary['excluded_source_keys']:
+            source = candidates[key]; identity = _identity(source)
+            active = state['slots'].get(identity.slot,{}).get('source_key')
+            if active == key: raise StateInvalid('MIGRATION_POST_FREEZE_BINDING_CONFLICT')
+            state['quarantine'].append({'failure_class':'REVIEWED_MIGRATION_SOURCE_EXCLUDED',
+                'target':identity.to_dict(), 'origin':source_origins[key], 'boundary_sha256':boundary_sha,
+                'adopted_source_key':active, 'candidate_source_keys':sorted(k for k,s in candidates.items()
+                                                                         if s['date']==source['date'])})
     groups, sealed = {}, {}
     for artifact in artifacts:
         require_sha(artifact['archive_sha256'])

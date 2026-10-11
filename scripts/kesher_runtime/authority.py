@@ -7,10 +7,15 @@ live fence/actor acceptance remains a separate, explicitly authorized step.
 """
 from .handover import require_authority
 from .state import StateInvalid
+import os
 
 
 def require_live(store, *, observe=None):
     read = observe or getattr(store, 'authority_observer', None)
+    if read is None and os.environ.get('KESHER_CUTOVER_GATEWAY_URL'):
+        from .authority_client import ActionsAuthorityObserver, REPOSITORY
+        if getattr(store, 'repo', None) == REPOSITORY:
+            read = ActionsAuthorityObserver(os.environ)
     if not callable(read):
         raise StateInvalid('TRUSTED_AUTHORITY_OBSERVER_REQUIRED')
     state = store.load().state

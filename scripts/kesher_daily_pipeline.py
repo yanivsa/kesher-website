@@ -299,6 +299,11 @@ def load_posts() -> list[dict[str, Any]]:
         recent = json.loads(recent_file.read_text(encoding="utf-8")) if recent_file.exists() else []
     except (OSError, json.JSONDecodeError) as exc:
         raise PipelineError(f"Article source is unreadable: {type(exc).__name__}") from exc
+    return combine_post_catalogs(historical, recent)
+
+
+def combine_post_catalogs(historical: Any, recent: Any) -> list[dict[str, Any]]:
+    """The shared publication catalog contract for local and exact Git readers."""
     if not isinstance(historical, list) or not isinstance(recent, list):
         raise PipelineError("Article catalogs must contain lists")
     combined = [*recent, *historical]
