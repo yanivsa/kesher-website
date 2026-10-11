@@ -117,7 +117,8 @@ def check_definitions(definitions, rules):
                         or 'exclusion_write' not in entry['capabilities']):
                     raise StateInvalid('AUTHORITY_HANDOVER_NOT_EXACT_CONTROL')
             elif (path not in {'.github/workflows/kesher-daily-video.yml','.github/workflows/kesher-short-v4.yml',
-                              '.github/workflows/deploy.yml'}
+                              '.github/workflows/deploy.yml','.github/workflows/kesher-article-generation.yml',
+                              '.github/workflows/kesher-article-image.yml'}
                     or 'scripts.kesher_runtime.bridge_admission' not in text):
                 raise StateInvalid('AUTHORITY_EMERGENCY_BRIDGE_NOT_GUARDED')
         if role == 'worker':

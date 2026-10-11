@@ -1,4 +1,4 @@
-"""Read-only fail-closed admission before any emergency media credentials."""
+"""Read-only fail-closed admission before any emergency production credentials."""
 import os
 import sys
 import argparse
@@ -18,7 +18,8 @@ def require_bridge(state):
 
 def require_invocation(environ, *, dispatcher=False):
     paths={'.github/workflows/kesher-targeted-media-recovery-dispatch.yml'} if dispatcher else {
-        '.github/workflows/kesher-daily-video.yml','.github/workflows/kesher-short-v4.yml','.github/workflows/deploy.yml'}
+        '.github/workflows/kesher-daily-video.yml','.github/workflows/kesher-short-v4.yml','.github/workflows/deploy.yml',
+        '.github/workflows/kesher-article-generation.yml','.github/workflows/kesher-article-image.yml'}
     event='push' if dispatcher else 'workflow_dispatch'
     if (environ.get('GITHUB_REPOSITORY')!=REPOSITORY or environ.get('GITHUB_REF')!='refs/heads/main'
             or environ.get('GITHUB_EVENT_NAME')!=event or environ.get('GITHUB_WORKFLOW_REF') not in

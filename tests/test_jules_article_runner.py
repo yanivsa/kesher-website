@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -9,6 +10,8 @@ from unittest import mock
 
 from scripts import jules_article_runner as runner
 from scripts import jules_article_runner_v3 as runner_v3
+from scripts.kesher_runtime import bridge_admission
+from scripts.kesher_runtime.state import StateInvalid
 
 
 class JulesArticleRunnerTests(unittest.TestCase):
@@ -276,6 +279,134 @@ class JulesArticleRunnerTests(unittest.TestCase):
             matches = runner_v3.open_article_prs_for_slot("token", "2026-10-04")
 
         self.assertEqual(matches, [])
+
+
+class ManualArticleBridgeTests(unittest.TestCase):
+    paths = ('kesher-article-generation.yml', 'kesher-article-image.yml')
+
+    def invocation(self, name):
+        return {'GITHUB_REPOSITORY': runner.REPO, 'GITHUB_REF': 'refs/heads/main',
+                'GITHUB_EVENT_NAME': 'workflow_dispatch',
+                'GITHUB_WORKFLOW_REF': runner.REPO + '/.github/workflows/' + name + '@refs/heads/main'}
+
+    def test_exact_manual_article_bridges_are_admitted_only_before_cutover(self):
+        for name in self.paths:
+            with self.subTest(workflow=name):
+                bridge_admission.require_invocation(self.invocation(name))
+                bridge_admission.require_bridge({'schema_version': 5})
+
+    def test_schema_and_exclusion_markers_refuse_even_when_empty(self):
+        for state in ({'schema_version': 6}, {'schema_version': 4}, {'schema_version': '5'},
+                      {'schema_version': 5.0}, {}, {'schema_version': 5, 'handover': None},
+                      {'schema_version': 5, 'handover': {}},
+                      {'schema_version': 5, 'github_exclusion': None},
+                      {'schema_version': 5, 'github_exclusion': {}}):
+            with self.subTest(state=state), self.assertRaises(StateInvalid):
+                bridge_admission.require_bridge(state)
+
+    def test_exact_invocation_refuses_wrong_repository_branch_event_or_path(self):
+        for name in self.paths:
+            env = self.invocation(name)
+            for change in ({'GITHUB_REPOSITORY': 'other/repo'}, {'GITHUB_REF': 'refs/heads/repair'},
+                           {'GITHUB_REF': 'refs/tags/main'}, {'GITHUB_EVENT_NAME': 'push'},
+                           {'GITHUB_EVENT_NAME': 'schedule'},
+                           {'GITHUB_WORKFLOW_REF': runner.REPO + '/.github/workflows/auto-merge-article-prs.yml@refs/heads/main'},
+                           {'GITHUB_WORKFLOW_REF': env['GITHUB_WORKFLOW_REF'].replace('@refs/heads/main', '@refs/heads/repair')}):
+                with self.subTest(workflow=name, change=change), self.assertRaises(StateInvalid):
+                    bridge_admission.require_invocation(env | change)
+            with self.assertRaises(StateInvalid):
+                bridge_admission.require_invocation(env, dispatcher=True)
+
+    def test_unwritable_legacy_state_is_not_admitted(self):
+        with mock.patch('scripts.kesher_runtime.handover.require_legacy_writable',
+                        side_effect=StateInvalid('LEGACY_AUTHORITY_FENCED')) as writable:
+            with self.assertRaises(StateInvalid):
+                bridge_admission.require_bridge({'schema_version': 5})
+            writable.assert_called_once()
+
+    def test_invalid_invocation_never_reads_state_and_valid_invocation_only_reads(self):
+        for name in self.paths:
+            with mock.patch.dict(os.environ, self.invocation(name) | {'GITHUB_REF': 'refs/heads/other'}, clear=True), \
+                 mock.patch.object(bridge_admission, 'GitHub') as client:
+                self.assertEqual(bridge_admission.main([]), 1)
+                client.assert_not_called()
+            with mock.patch.dict(os.environ, self.invocation(name), clear=True), \
+                 mock.patch.object(bridge_admission, 'GitHub'), \
+                 mock.patch.object(bridge_admission, 'GitHubHandover') as handover:
+                handover.return_value.read_snapshot.return_value.state = {'schema_version': 5}
+                self.assertEqual(bridge_admission.main([]), 0)
+                self.assertEqual(handover.return_value.method_calls,
+                                 [mock.call.read_snapshot()])
+
+    def test_workflows_are_manual_main_only_with_admission_before_credentials(self):
+        import yaml
+        bound = "${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}"
+        for name in self.paths:
+            text = (Path('.github/workflows') / name).read_text()
+            workflow = yaml.safe_load(text)
+            self.assertEqual(set(workflow.get('on', workflow.get(True))), {'workflow_dispatch'})
+            self.assertIn('bounded manual emergency bridge', text.lower())
+            for job in workflow['jobs'].values():
+                self.assertEqual(job['if'], bound)
+                self.assertFalse(any('secrets.' in str(value) for value in job.get('env', {}).values()))
+                steps = job['steps']
+                gates = [index for index, step in enumerate(steps)
+                         if 'scripts.kesher_runtime.bridge_admission' in step.get('run', '')]
+                self.assertEqual(len(gates), 1)
+                gate = gates[0]
+                self.assertFalse(steps[gate].get('continue-on-error', False))
+                for index, step in enumerate(steps):
+                    if any('secrets.' in str(value) for value in step.get('env', {}).values()):
+                        self.assertGreater(index, gate)
+                    if 'always()' in str(step.get('if', '')):
+                        self.assertIn("steps.bridge_admission.outcome == 'success'", step['if'])
+
+    def test_only_exact_article_components_join_emergency_roles(self):
+        from scripts.kesher_runtime.authority_topology import check_definitions, policy
+        root = Path(__file__).resolve().parents[1]
+        rules = policy(root)
+        definitions = {str(p.relative_to(root)): p.read_text()
+                       for p in (root / '.github/workflows').glob('*.yml')}
+        rows = {row['path']: row for row in check_definitions(definitions, rules)}
+        for name in self.paths:
+            self.assertEqual(rows['.github/workflows/' + name]['role'], 'emergency_bridge')
+        for name in ('normalize-article-pr.yml', 'auto-merge-article-prs.yml'):
+            self.assertTrue(rows['.github/workflows/' + name]['definition_retired'])
+        self.assertEqual(sum(row['role'] == 'controller' for row in rows.values()), 1)
+
+    def test_recent_main_article_blocks_generation_before_pr_lookup(self):
+        recent = json.loads(Path('src/data/postsRecent.json').read_text())
+        self.assertTrue(recent)
+        with mock.patch.dict(os.environ, {'KESHER_TEST_MODE': 'false'}), \
+             mock.patch.object(runner_v3, 'open_article_prs_for_slot') as lookup:
+            self.assertEqual(runner_v3.preflight(recent[0]['date'], 'token'), 'ARTICLE_ALREADY_PUBLISHED')
+            lookup.assert_not_called()
+
+    def test_missing_recent_catalog_fails_before_any_pr_or_provider_request(self):
+        original = Path.read_text
+        def read(path, *args, **kwargs):
+            if path.name == 'postsRecent.json':
+                raise FileNotFoundError('missing reviewed publication catalog')
+            return original(path, *args, **kwargs)
+        with mock.patch.dict(os.environ, {'KESHER_TEST_MODE': 'false'}), \
+             mock.patch.object(Path, 'read_text', read), \
+             mock.patch.object(runner_v3, 'open_article_prs_for_slot') as lookup:
+            with self.assertRaises(runner.ArticleRunnerError):
+                runner_v3.preflight('2026-10-11', 'token')
+            lookup.assert_not_called()
+
+    def test_invalid_recent_catalog_and_duplicate_identity_fail_closed(self):
+        historical = json.loads(Path('src/data/posts.json').read_text())
+        original = Path.read_text
+        for recent in ({'not': 'a list'}, [historical[0]], [{'date': '2026-10-11'}]):
+            def read(path, *args, **kwargs):
+                if path.name == 'postsRecent.json':
+                    return json.dumps(recent)
+                return original(path, *args, **kwargs)
+            with self.subTest(recent=recent), \
+                 mock.patch.object(Path, 'read_text', read), \
+                 self.assertRaises(runner.ArticleRunnerError):
+                runner_v3._load_local_posts()
 
 
 if __name__ == "__main__":

@@ -42,10 +42,11 @@ class KesherExplicitTestModeTests(unittest.TestCase):
         finally:
             runner.core.slot_session_title = original
 
-    def test_article_workflow_exposes_test_mode_and_push_trigger(self):
+    def test_article_workflow_exposes_explicit_test_mode_without_push_trigger(self):
         workflow = Path(".github/workflows/kesher-article-generation.yml").read_text(encoding="utf-8")
         self.assertIn("test_mode:", workflow)
-        self.assertIn(".github/kesher-e2e-test-trigger.json", workflow)
+        self.assertNotIn(".github/kesher-e2e-test-trigger.json", workflow)
+        self.assertNotIn("  push:", workflow)
         self.assertIn("KESHER_TEST_MODE", workflow)
 
 
