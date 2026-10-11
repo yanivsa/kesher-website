@@ -92,8 +92,17 @@ def check_definitions(definitions, rules):
         retired = all(j.get('if') == "${{ github.repository == '__KESHER_RETIRED__' }}" for j in jobs.values())
         if role == 'retired' and not retired:
             raise StateInvalid('AUTHORITY_LEGACY_DEFINITION_RUNNABLE')
-        if role == 'controller' and 'scripts.kesher_runtime.controller_entry --mode live' not in text:
-            raise StateInvalid('AUTHORITY_CONTROLLER_NOT_CANONICAL')
+        if role == 'controller':
+            canonical = 'scripts.kesher_runtime.controller_entry --mode live' in text
+            pre_cutover = (
+                path == '.github/workflows/kesher-content-controller.yml'
+                and 'scripts.kesher_runtime.bridge_admission --controller' in text
+                and 'scripts/kesher_content_controller_stabilized.py' in text
+                and 'KESHER_PRE_CUTOVER_DAILY_AUTHORITY' in text
+                and all(j.get('if') == "${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}" for j in jobs.values())
+            )
+            if not (canonical or pre_cutover):
+                raise StateInvalid('AUTHORITY_CONTROLLER_NOT_CANONICAL')
         # PyYAML's YAML 1.1 loader reads the GitHub `on` key as True.
         events = data.get('on', data.get(True))
         if role=='retiring_dispatcher':
@@ -118,7 +127,8 @@ def check_definitions(definitions, rules):
                     raise StateInvalid('AUTHORITY_HANDOVER_NOT_EXACT_CONTROL')
             elif (path not in {'.github/workflows/kesher-daily-video.yml','.github/workflows/kesher-short-v4.yml',
                               '.github/workflows/deploy.yml','.github/workflows/kesher-article-generation.yml',
-                              '.github/workflows/kesher-article-image.yml'}
+                              '.github/workflows/kesher-article-image.yml','.github/workflows/normalize-article-pr.yml',
+                              '.github/workflows/auto-merge-article-prs.yml'}
                     or 'scripts.kesher_runtime.bridge_admission' not in text):
                 raise StateInvalid('AUTHORITY_EMERGENCY_BRIDGE_NOT_GUARDED')
         if role == 'worker':

@@ -24,14 +24,14 @@ ROOT = Path(__file__).resolve().parents[1]
 class ControllerActivationContractTests(unittest.TestCase):
     def test_manual_main_can_run_but_other_events_repositories_and_refs_cannot(self):
         data = yaml.safe_load((ROOT/'.github/workflows/kesher-content-controller.yml').read_text())
-        self.assertEqual(set(data.get('on', data.get(True))), {'workflow_dispatch'})
-        expression = data['jobs']['reconcile']['if'].removeprefix('${{').removesuffix('}}').strip()
+        self.assertEqual(set(data.get('on', data.get(True))), {'schedule', 'workflow_run', 'push', 'workflow_dispatch'})
+        expression = data['jobs']['control']['if'].removeprefix('${{').removesuffix('}}').strip()
         expression = expression.replace('&&', 'and')
         for repo, ref, event, expected in (
             ('yanivsa/kesher-website', 'refs/heads/main', 'workflow_dispatch', True),
+            ('yanivsa/kesher-website', 'refs/heads/main', 'schedule', True),
             ('other/repo', 'refs/heads/main', 'workflow_dispatch', False),
             ('yanivsa/kesher-website', 'refs/heads/other', 'workflow_dispatch', False),
-            ('yanivsa/kesher-website', 'refs/heads/main', 'schedule', False),
         ):
             with self.subTest(repo=repo, ref=ref, event=event):
                 self.assertEqual(eval(expression, {'__builtins__': {}},
@@ -52,6 +52,15 @@ class CutoverHostTests(unittest.TestCase):
         rules['registrations'] = {}
         for path, entry in rules['workflows'].items():
             entry['review']['call_chain'] = {}
+            entry['review']['dispatches'] = [
+                t for t in entry['review'].get('dispatches', []) if t in rules['workflows']
+            ]
+            if 'dispatch_bindings' in entry['review']:
+                entry['review']['dispatch_bindings'] = {
+                    k: v for k, v in entry['review']['dispatch_bindings'].items() if k in rules['workflows']
+                }
+                if not entry['review']['dispatch_bindings']:
+                    entry['review'].pop('dispatch_bindings', None)
             if entry['role'] == 'retired':
                 entry['review']['dispatches'] = []
                 entry['review'].pop('dispatch_bindings', None)

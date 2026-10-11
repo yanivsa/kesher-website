@@ -84,7 +84,8 @@ function testTrustedArticleImageV2() {
   assert(workflow.includes('PIXABAY_API_KEY'));
   assert(workflow.includes('article-image-worker-v4.py'));
   assert(workflow.includes('actions/workflows/ci.yml/dispatches'));
-  assert(controllerWorkflow.includes('scripts.kesher_runtime.controller_entry'));
+  assert(controllerWorkflow.includes('scripts.kesher_runtime.bridge_admission --controller'));
+  assert(controllerWorkflow.includes('scripts/kesher_content_controller_stabilized.py --report-json'));
   assert(stabilizedController.includes('kesher_content_controller_v5_runtime'));
   assert(stabilizedController.includes('runtime.install_runtime()'));
   assert(!controllerWorkflow.includes('kesher_content_controller_v3_best_effort.py --report-json'));

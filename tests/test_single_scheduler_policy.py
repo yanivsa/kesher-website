@@ -38,10 +38,12 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         article = trigger_block(ARTICLE)
         short = trigger_block(SHORT)
         legacy_video = trigger_block(LEGACY_VIDEO)
-        self.assertNotIn("  schedule:", controller)
+        self.assertIn("  schedule:", controller)
+        self.assertIn('cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"', controller)
         self.assertIn("workflow_dispatch:", controller)
         self.assertNotIn("__KESHER_RETIRED__", CONTROLLER.read_text())
-        self.assertIn("controller_entry --mode live", CONTROLLER.read_text())
+        self.assertIn("python3 -m scripts.kesher_runtime.bridge_admission --controller", CONTROLLER.read_text())
+        self.assertIn("python3 -u scripts/kesher_content_controller_stabilized.py --report-json", CONTROLLER.read_text())
         self.assertNotIn("  schedule:", article)
         self.assertNotIn("  schedule:", short)
         self.assertNotIn("  schedule:", legacy_video)
@@ -64,9 +66,8 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
 
     def test_controller_observes_every_canonical_child_completion_including_failures(self):
         text = CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn("python -m scripts.kesher_runtime.controller_entry --mode live", text)
-        # Retired child callbacks are replaced by exact durable run observations.
-        self.assertNotIn("workflow_run:", trigger_block(CONTROLLER))
+        self.assertIn("python3 -u scripts/kesher_content_controller_stabilized.py --report-json", text)
+        self.assertIn("workflow_run:", trigger_block(CONTROLLER))
         for target, operation in (
             (SlotIdentity(SOURCE.slot), "settle_article"),
             (SlotIdentity(SOURCE.slot), "normalize_article"),
@@ -97,8 +98,8 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         text = CONTROLLER.read_text(encoding="utf-8")
         self.assertIn("github.repository == 'yanivsa/kesher-website'", text)
         self.assertIn("github.ref == 'refs/heads/main'", text)
-        self.assertIn("ref: ${{ github.sha }}", text)
-        self.assertNotIn("workflow_run:", trigger_block(CONTROLLER))
+        self.assertIn("ref: main", text)
+        self.assertIn("workflow_run:", trigger_block(CONTROLLER))
         state, command_id = self.claimed_command(MediaIdentity(SOURCE, "overview"), "publish")
         api = mock.Mock()
         api.request.return_value = {
@@ -112,8 +113,8 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
 
     def test_parked_controller_respects_durable_five_minute_retry_backoff(self):
         text = CONTROLLER.read_text(encoding="utf-8")
-        self.assertNotIn("cron:", text)
-        self.assertIn("group: kesher-canonical-controller", text)
+        self.assertIn('cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"', text)
+        self.assertIn("group: kesher-content-controller", text)
         self.assertIn("cancel-in-progress: false", text)
         first = reconcile(new_state(), observed(publication(short="verified")), now=NOW)
         store = GitHubStateStore(ContentsServer(first.state), "owner/repo")

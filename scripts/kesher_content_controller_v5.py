@@ -252,7 +252,7 @@ class V5Controller(v4.V4Controller):
         # The publication window gates starting new article work, not recovery.
         # Once a worker is already active it must remain supervised across
         # window boundaries (for example a Friday pre-08:00 recovery run).
-        posts = self.github.contents_json("src/data/posts.json", "main")
+        posts = self.posts_on_main("main")
         if not isinstance(posts, list) or core.today_articles(posts, self.now.date()):
             return None
         slot = self.now.date().isoformat()
@@ -309,10 +309,7 @@ class V5Controller(v4.V4Controller):
         return super()._dispatch_budgeted(state, stage, workflow, inputs)
 
     def _article_source(self) -> dict[str, str] | None:
-        posts = self.github.contents_json("src/data/posts.json", "main")
-        if not isinstance(posts, list):
-            raise core.ControllerError("ARTICLE_SOURCE_INVALID")
-        todays = core.today_articles(posts, self.now.date())
+        todays = self.posts_for_cycle(self.now.date())
         if len(todays) != 1:
             return None
         return article_source_identity(todays[0])
@@ -563,14 +560,55 @@ class V5Controller(v4.V4Controller):
         return state, action
 
 
+def v5_trigger_stage(workflow_name: str):
+    if workflow_name in {LONG_VIDEO_WORKFLOW_NAME, "Kesher Daily Video Overview"}:
+        return "long_video", LONG_VIDEO_WORKFLOW
+    if workflow_name in {SHORT_WORKFLOW_NAME, "Kesher Article Short V4"}:
+        return "short", SHORT_WORKFLOW
+    return v3.v3_trigger_stage(workflow_name)
+
+
+def v5_adopt_latest(github: Any, state: dict[str, Any] | None, cycle: str) -> bool:
+    changed = v3.v3_adopt_latest(github, state, cycle)
+    if not isinstance(state, dict) or state.get("cycle") != cycle:
+        return changed
+    for stage, workflow in (
+        ("long_video", LONG_VIDEO_WORKFLOW),
+        ("short", SHORT_WORKFLOW),
+    ):
+        stage_state = state.get(stage) if isinstance(state.get(stage), dict) else None
+        if not stage_state or not stage_state.get("last_dispatch_at"):
+            continue
+        try:
+            runs = github.workflow_runs(workflow)
+        except core.ControllerError:
+            continue
+        production = [
+            run for run in runs
+            if isinstance(run, dict) and str(run.get("event") or "") == "workflow_dispatch"
+        ]
+        candidate = v3.entry._nearest_dispatched_run(production, stage_state)
+        if candidate is None or v3.entry._same_id(stage_state.get("run_id"), candidate.get("id")):
+            continue
+        stage_state["run_id"] = candidate.get("id")
+        changed = True
+        print(
+            f"KESHER_DISPATCH_CORRELATED stage={stage} run_id={candidate.get('id')} cycle={cycle}",
+            flush=True,
+        )
+    if changed:
+        github.save_controller_state(state)
+    return changed
+
+
 def main() -> int:
     from scripts.kesher_runtime.legacy_retirement import retired_entrypoint
     retired_entrypoint()
     core.STATE_SCHEMA_VERSION = STATE_SCHEMA_VERSION
     core.GitHubClient = V5GitHubClient
     core.Controller = V5Controller
-    v3.entry._trigger_stage = v3.v3_trigger_stage
-    v3.entry.adopt_latest_dispatched_children = v3.v3_adopt_latest
+    v3.entry._trigger_stage = v5_trigger_stage
+    v3.entry.adopt_latest_dispatched_children = v5_adopt_latest
     return v3.entry.main()
 
 

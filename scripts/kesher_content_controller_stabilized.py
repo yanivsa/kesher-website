@@ -41,8 +41,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     """Prevent advancement/completion unless article and canonical media evidence are durable."""
 
 
-    def _selected_article(self, posts):
+    def _selected_article(self, posts=None):
         """Resolve one authoritative article without regressing to date-only selection."""
+        if posts is None or isinstance(posts, dict):
+            posts = self.posts_on_main("main")
         target_slug = os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip()
         if target_slug:
             matches = [
@@ -63,7 +65,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         # Multiple articles can legitimately share a publication date. In that
         # case the durable controller state is stronger evidence than date order.
         # Preserve the exact previously-adopted article identity when possible
-        # and fail closed if the state cannot disambiguate the candidates.
+        # and fail closed if the state cannot disambuate the candidates.
         existing = self.github.load_controller_state()
         article_state = existing.get("article") if isinstance(existing, dict) else {}
         if not isinstance(article_state, dict):
@@ -87,7 +89,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         )
 
     def _article_source(self):
-        posts = self.github.contents_json("src/data/posts.json", "main")
+        posts = self.posts_on_main("main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
         article = self._selected_article(posts)
@@ -330,7 +332,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         return self._recover_exact_rejected_exhaustion(state)
 
     def _quality_preflight(self, state):
-        posts = self.github.contents_json("src/data/posts.json", "main")
+        posts = self.posts_on_main("main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
         article = self._selected_article(posts)
@@ -605,7 +607,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def _tick_targeted_media_recovery(self, state):
         """Advance only the explicitly requested existing article media chain."""
-        posts = self.github.contents_json("src/data/posts.json", "main")
+        posts = self.posts_on_main("main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
         article = self._selected_article(posts)

@@ -144,7 +144,7 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
         self.assertEqual(action.kind, "blocked")
         self.assertEqual(state["article"]["quality_status"], "failed")
         self.assertTrue(state["article"]["quality_content_sha256"])
-        self.assertEqual(gh.assertion, ("src/data/posts.json", "main"))
+        self.assertIn(gh.assertion, {("src/data/posts.json", "main"), ("src/data/postsRecent.json", "main")})
         self.assertIsNotNone(gh.saved)
 
     def test_multiple_same_day_articles_preserve_durable_controller_identity(self):
@@ -482,10 +482,10 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
     def test_production_controller_uses_canonical_runtime_and_retires_stabilized_entry(self):
         workflow = (ROOT / ".github/workflows/kesher-content-controller.yml").read_text(encoding="utf-8")
         self.assertIn(
-            "python -m scripts.kesher_runtime.controller_entry --mode live",
+            "python3 -m scripts.kesher_runtime.bridge_admission --controller",
             workflow,
         )
-        self.assertNotIn("scripts/kesher_content_controller_stabilized.py", workflow)
+        self.assertIn("scripts/kesher_content_controller_stabilized.py --report-json", workflow)
         with mock.patch.object(stabilized, "install_runtime") as install:
             with self.assertRaisesRegex(StateInvalid, "LEGACY_ENTRYPOINT_RETIRED"):
                 stabilized.main()

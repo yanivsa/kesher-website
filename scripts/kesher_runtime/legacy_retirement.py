@@ -30,6 +30,8 @@ def validate_legacy_read(state):
     if ('handover' in state or 'github_exclusion' in state
             or (type(schema) is int and schema >= 6)):
         raise StateInvalid('LEGACY_AUTHORITY_FENCED')
+    if os.environ.get('KESHER_PRE_CUTOVER_DAILY_AUTHORITY') == 'true' and (type(schema) is not int or schema != 5):
+        raise StateInvalid('LEGACY_AUTHORITY_FENCED')
     if schema is not None and (type(schema) is not int or not 1 <= schema <= 5):
         raise StateInvalid('LEGACY_STATE_SCHEMA_INVALID')
 
@@ -119,14 +121,16 @@ def record_legacy_rejection(current, *, actor, epoch, proposed, before_sha,
     return recorded
 
 
-def retired_entrypoint():
-    """Fail closed except for the explicitly bounded manual recovery bridge.
+def retired_entrypoint(state=None):
+    """Fail closed except for the bounded pre-cutover daily authority or manual recovery bridge.
 
-    The bridge exists only while the schema-6 handover is incomplete. It can
-    never authorize schedules, pull requests, another repository/ref, or an
-    arbitrary workflow. Provider/upload guards still enforce exact media
-    identity and duplicate prevention.
+    Both bridges exist only while the schema-6 handover is incomplete and state
+    remains schema 5. Manual emergency bridge never authorizes schedules, pull
+    requests, another repository/ref, or an arbitrary workflow. Pre-cutover
+    daily authority authorizes only the sole controller workflow on main.
     """
+    from .bridge_admission import require_bridge, require_pre_cutover_controller_invocation
+
     workflow_ref = os.environ.get('GITHUB_WORKFLOW_REF', '').split('@', 1)[0]
     allowed_workflows = {
         REPOSITORY + '/.github/workflows/kesher-daily-video.yml',
@@ -134,11 +138,19 @@ def retired_entrypoint():
     }
     if (
         os.environ.get('KESHER_MANUAL_EMERGENCY_BRIDGE') == 'true'
+        and os.environ.get('KESHER_PRE_CUTOVER_DAILY_AUTHORITY') != 'true'
         and os.environ.get('GITHUB_EVENT_NAME') == 'workflow_dispatch'
         and os.environ.get('GITHUB_REPOSITORY') == REPOSITORY
         and os.environ.get('GITHUB_REF') == 'refs/heads/main'
         and workflow_ref in allowed_workflows
     ):
+        if state is not None:
+            require_bridge(state)
+        return
+    if os.environ.get('KESHER_PRE_CUTOVER_DAILY_AUTHORITY') == 'true':
+        require_pre_cutover_controller_invocation(os.environ)
+        if state is not None:
+            require_bridge(state)
         return
     raise StateInvalid('LEGACY_ENTRYPOINT_RETIRED: use the admitted canonical command runtime')
 

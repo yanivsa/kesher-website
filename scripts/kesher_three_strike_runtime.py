@@ -134,7 +134,8 @@ class ThreeStrikeMediaInterventionMixin:
 
     def _article_watchdog(self, state: dict[str, Any]):
         """Keep V5's fast article recovery, with hourly direct-takeover ownership."""
-        posts = self.github.contents_json("src/data/posts.json", "main")
+        getter = getattr(self, "posts_on_main", None)
+        posts = getter("main") if callable(getter) else v5.core.posts_on_main(self.github, "main")
         if not isinstance(posts, list) or v5.core.today_articles(posts, self.now.date()):
             return None
         slot = self.now.date().isoformat()

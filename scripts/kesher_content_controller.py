@@ -105,6 +105,57 @@ def today_articles(posts: list[dict[str, Any]], day: date) -> list[dict[str, Any
     ]
 
 
+def merge_catalog_posts(primary: Any, secondary: Any = None) -> list[dict[str, Any]]:
+    """Combine posts.json and postsRecent.json into one logical catalog deduplicated by canonical slug/id."""
+    primary_list = [p for p in primary if isinstance(p, dict)] if isinstance(primary, list) else []
+    secondary_list = [p for p in secondary if isinstance(p, dict)] if isinstance(secondary, list) else []
+    managed_dates = {
+        str(p.get("date") or "").strip()
+        for p in [*primary_list, *secondary_list]
+        if p.get("controllerManaged") is not False and str(p.get("date") or "").strip()
+    }
+    secondary_date_counts: dict[str, int] = {}
+    for p in secondary_list:
+        d = str(p.get("date") or "").strip()
+        if d:
+            secondary_date_counts[d] = secondary_date_counts.get(d, 0) + 1
+
+    rows: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for is_secondary, catalog in ((False, primary_list), (True, secondary_list)):
+        for post in catalog:
+            key = canonical_slug(post)
+            if key:
+                if key in seen:
+                    continue
+                seen.add(key)
+            post_date = str(post.get("date") or "").strip()
+            if (
+                is_secondary
+                and post.get("controllerManaged") is False
+                and post_date
+                and post_date not in managed_dates
+                and secondary_date_counts.get(post_date) == 1
+            ):
+                post = {**post, "controllerManaged": True}
+            rows.append(post)
+    return rows
+
+
+def posts_on_main(github: Any, ref: str = "main") -> list[dict[str, Any]]:
+    """Read unified publication catalog from posts.json and postsRecent.json."""
+    posts = github.contents_json("src/data/posts.json", ref)
+    if not isinstance(posts, list):
+        raise ControllerError("ARTICLE_SOURCE_INVALID")
+    try:
+        recent = github.contents_json("src/data/postsRecent.json", ref)
+    except (ControllerError, AssertionError, KeyError, FileNotFoundError):
+        recent = []
+    if not isinstance(recent, list):
+        recent = []
+    return merge_catalog_posts(posts, recent)
+
+
 def article_is_public(html_text: str, expected_title: str) -> bool:
     page = re.sub(r"\s+", " ", html_text)
     title = re.sub(r"\s+", " ", expected_title.strip())
@@ -482,6 +533,9 @@ class GitHubClient:
         except (UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise ControllerError(f"GITHUB_CONTENT_INVALID: {path}@{ref}") from exc
 
+    def posts_on_main(self, ref: str = "main") -> list[dict[str, Any]]:
+        return posts_on_main(self, ref)
+
     def open_article_prs(self, target_slot: str | None = None) -> list[dict[str, Any]]:
         prs = self.request("GET", f"{self.api}/pulls?state=open&per_page=100")
         if not isinstance(prs, list):
@@ -500,7 +554,7 @@ class GitHubClient:
 
             files = self.request("GET", f"{self.api}/pulls/{number}/files?per_page=100")
             if not (isinstance(files, list) and any(
-                isinstance(row, dict) and row.get("filename") == "src/data/posts.json"
+                isinstance(row, dict) and row.get("filename") in {"src/data/posts.json", "src/data/postsRecent.json"}
                 for row in files
             )):
                 continue
@@ -509,11 +563,14 @@ class GitHubClient:
                 head_sha = str((pr.get("head") or {}).get("sha") or "")
                 base_sha = str((pr.get("base") or {}).get("sha") or "main")
                 try:
-                    base_posts = self.contents_json("src/data/posts.json", base_sha)
-                    head_posts = self.contents_json("src/data/posts.json", head_sha)
+                    base_posts = self.posts_on_main(base_sha)
+                    head_posts = self.posts_on_main(head_sha)
                     if isinstance(base_posts, list) and isinstance(head_posts, list):
-                        base_ids = {row.get("id") for row in base_posts if isinstance(row, dict)}
-                        new_posts = [row for row in head_posts if isinstance(row, dict) and row.get("id") not in base_ids]
+                        base_ids = {canonical_slug(row) for row in base_posts if isinstance(row, dict)}
+                        new_posts = [
+                            row for row in head_posts
+                            if isinstance(row, dict) and canonical_slug(row) not in base_ids
+                        ]
                         if not any(str(row.get("date") or "").strip() == target_slot for row in new_posts):
                             continue
                 except ControllerError:
@@ -751,6 +808,32 @@ class Controller:
             sunset = fetch_ashdod_sunset(self.now.date())
         return article_window_open(self.now, sunset)
 
+    def posts_on_main(self, ref: str = "main") -> list[dict[str, Any]]:
+        getter = getattr(self.github, "posts_on_main", None)
+        if callable(getter):
+            return getter(ref)
+        return posts_on_main(self.github, ref)
+
+    def posts_for_cycle(self, cycle: str | date | None = None, *, ref: str = "main") -> list[dict[str, Any]]:
+        target = self.now.date() if cycle is None else (
+            cycle if isinstance(cycle, date) else date.fromisoformat(str(cycle).strip())
+        )
+        return today_articles(self.posts_on_main(ref), target)
+
+    def _posts_for_date(
+        self,
+        cycle: str | date,
+        posts: list[dict[str, Any]] | None = None,
+    ) -> list[dict[str, Any]]:
+        expected = cycle.isoformat() if isinstance(cycle, date) else str(cycle).strip()
+        catalog = self.posts_on_main("main") if posts is None else posts
+        return [
+            post for post in catalog
+            if isinstance(post, dict)
+            and str(post.get("date") or "").strip() == expected
+            and canonical_slug(post)
+        ]
+
     def tick(self) -> tuple[dict[str, Any], Action]:
         state = self.state()
         try:
@@ -884,9 +967,7 @@ class Controller:
             transition(state, "waiting_for_article_window", "publication slot has not opened")
             return Action("wait", "article window not open")
 
-        posts = self.github.contents_json("src/data/posts.json", "main")
-        if not isinstance(posts, list):
-            raise ControllerError("ARTICLE_SOURCE_INVALID")
+        posts = self.posts_on_main("main")
         todays = today_articles(posts, self.now.date())
         if len(todays) > 1:
             block(state, "article", "DUPLICATE_ARTICLE_DATE",

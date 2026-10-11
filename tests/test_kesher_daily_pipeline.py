@@ -1123,7 +1123,8 @@ class PipelineTestCase(unittest.TestCase):
     def test_jules_review_parse_failure_remains_blocked_from_upload(self) -> None:
         _, item = self.make_pending_item()
         error_msg = "Jules completed without parseable structured review JSON"
-        handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
+        with mock.patch.dict(os.environ, {"TARGET_ITEM_ID": item["id"]}, clear=False):
+            handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
         self.assertTrue(handled)
 
         saved = pipeline.load_state()["items"][0]
@@ -1148,7 +1149,8 @@ class PipelineTestCase(unittest.TestCase):
     def test_jules_review_api_timeout_remains_blocked_from_upload(self) -> None:
         _, item = self.make_pending_item()
         error_msg = "Jules review timed out"
-        handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
+        with mock.patch.dict(os.environ, {"TARGET_ITEM_ID": item["id"]}, clear=False):
+            handled = reviewer.handle_non_fatal_review_error(self.state_dir, error_msg)
         self.assertTrue(handled)
 
         saved = pipeline.load_state()["items"][0]

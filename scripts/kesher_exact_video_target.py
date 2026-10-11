@@ -37,11 +37,7 @@ def exact_source(slug: str, content_sha256: str) -> dict[str, Any]:
         raise pipeline.PipelineError("Exact target requires slug and content hash")
     if len(content_sha256) != 64 or any(ch not in "0123456789abcdef" for ch in content_sha256):
         raise pipeline.PipelineError("Exact target content hash is invalid")
-    if not pipeline.POSTS_FILE.is_file():
-        raise pipeline.PipelineError(f"Article source does not exist: {pipeline.POSTS_FILE}")
-    raw = json.loads(pipeline.POSTS_FILE.read_text(encoding="utf-8"))
-    if not isinstance(raw, list):
-        raise pipeline.PipelineError("posts.json must contain a list")
+    raw = pipeline.load_posts()
     matches = [
         pipeline.source_metadata(post)
         for post in raw
