@@ -69,7 +69,7 @@ class ArticleRepository:
         SlotIdentity(slot)
         main = self.github.request('GET', f'/repos/{self.repo}/git/ref/heads/main')['object']['sha']
         require_sha(main, 40)
-        posts = json.loads(self.reader.content(main, 'src/data/posts.json'))
+        posts = self.reader.catalog(main)
         published = [post for post in posts if post.get('date') == slot]
         ids = {post['id'] for post in posts}
         prs = []

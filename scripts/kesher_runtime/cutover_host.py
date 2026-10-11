@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import hashlib
 import importlib
 import importlib.util
@@ -16,6 +17,7 @@ import subprocess
 import sys
 import urllib.parse
 import urllib.request
+from zoneinfo import ZoneInfo
 
 from .authority_topology import (GitHubAuthorityObserver, classify_registered, executable_digest,
                                  inventory, policy)
@@ -27,7 +29,7 @@ from .handover_github import GitHubHandover
 from .identity import digest, require_sha
 from .live_cutover import build_runtime
 from .production_cutover import reconcile_registrations
-from .state import StateInvalid
+from .state import StateInvalid, timestamp
 from .sync_authority_policy import synchronize
 
 
@@ -141,9 +143,17 @@ def reviewed_installation(i):
     return pinned, metadata
 
 
-def preflight(i, *, probe=probe_gateway):
+def trusted_now():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def preflight(i, *, probe=probe_gateway, clock=trusted_now):
     """No journal claim, exclusion, migration write, dispatch or provider call."""
     rules, _ = reviewed_installation(i)
+    timestamp(i.material['now']); observed_now=clock(); timestamp(observed_now)
+    cutover = datetime.fromisoformat(i.material['now']).astimezone(ZoneInfo('Asia/Jerusalem')).date().isoformat()
+    if cutover != datetime.fromisoformat(observed_now).astimezone(ZoneInfo('Asia/Jerusalem')).date().isoformat():
+        raise StateInvalid('CUTOVER_REVIEWED_CUTOVER_DATE_REQUIRED')
     github = ReadOnlyGitHub(i.native.github)
     api = '/repos/'+i.repo
     if github.request('GET',api+'/git/ref/heads/main')['object']['sha'] != i.review['main_sha']:
@@ -189,21 +199,19 @@ def preflight(i, *, probe=probe_gateway):
     from .article_verification import GitHubArticleReader
     from scripts.kesher_daily_pipeline import source_metadata
     from .migration import _post_freeze_sources
-    posts = json.loads(GitHubArticleReader(github,i.repo).content(i.review['main_sha'],'src/data/posts.json'),
-                       object_pairs_hook=_unique_object)
+    catalog = GitHubArticleReader(github,i.repo).catalog_with_paths(i.review['main_sha'])
     if 'post_freeze_boundary' not in i.material:
         raise StateInvalid('MIGRATION_POST_FREEZE_REVIEW_REQUIRED')
     from .identity import SourceIdentity
-    from datetime import datetime
-    from zoneinfo import ZoneInfo
     frozen = snapshot.state['cycle']
-    cutover = datetime.fromisoformat(i.material['now']).astimezone(ZoneInfo('Asia/Jerusalem')).date().isoformat()
     requested = {(s['date'],s['slug']) for s in i.material['sources']}
     # Old unrelated posts may not satisfy today's provider-language contract.
     # Validate every window candidate and every material reference, without
     # converting unrelated historical posts into provider/backlog inputs.
-    exact_sources = [source_metadata(post) for post in posts if
+    exact_entries = [(path,source_metadata(post)) for path,post in catalog if
         frozen <= post['date'] <= cutover or (post['date'],post.get('slug') or post['id']) in requested]
+    exact_sources = [source for _,source in exact_entries]
+    exact_paths = {SourceIdentity(s['date'],s['slug'],s['content_sha256']).key:path for path,s in exact_entries}
     exact_by_key = {SourceIdentity(s['date'],s['slug'],s['content_sha256']).key:s for s in exact_sources}
     catchup = _post_freeze_sources(snapshot.state,exact_by_key,i.material['now'],i.material['post_freeze_boundary'])
     material_sources = {SourceIdentity(s['date'],s['slug'],s['content_sha256']).key:s for s in i.material['sources']}
@@ -212,6 +220,8 @@ def preflight(i, *, probe=probe_gateway):
     if (len(exact_by_key) != len(exact_sources) or len(material_sources) != len(i.material['sources'])
             or material_sources != exact_by_key):
         raise StateInvalid('CUTOVER_EXACT_MAIN_SOURCE_MATERIAL_REQUIRED')
+    if i.material.get('source_git_paths') != exact_paths:
+        raise StateInvalid('CUTOVER_EXACT_MAIN_SOURCE_GIT_PATHS_REQUIRED')
     supplier = OriginalMigrationInputs(github,i.repo,main_sha=i.review['main_sha'],material=i.material,
                                       approved_digest=i.review['migration_material_sha256'])
     prepared = prepare_migration(**supplier(snapshot))
@@ -360,6 +370,8 @@ def main(argv=None):
             'CUTOVER_EXTERNAL_WRITER_OR_COMPETING_EPOCH','MIGRATION_POST_FREEZE_REVIEW_REQUIRED',
             'MIGRATION_POST_FREEZE_BOUNDARY_INVALID_OR_AMBIGUOUS',
             'CUTOVER_EXACT_POST_FREEZE_MAIN_SOURCES_REQUIRED','CUTOVER_EXACT_MAIN_SOURCE_MATERIAL_REQUIRED',
+            'CUTOVER_EXACT_MAIN_SOURCE_GIT_PATHS_REQUIRED','MIGRATION_EXACT_SOURCE_GIT_PATHS_REQUIRED',
+            'CUTOVER_REVIEWED_CUTOVER_DATE_REQUIRED',
             'CUTOVER_ADMINISTRATOR_OWNED_FILE_REQUIRED','CUTOVER_REVIEWED_NATIVE_FACTORY_REQUIRED'}
         code=str(exc) if isinstance(exc,StateInvalid) and str(exc) in safe_codes else 'CUTOVER_HOST_BLOCKED'
         print(code+': independently verify installation prerequisites',file=sys.stderr)

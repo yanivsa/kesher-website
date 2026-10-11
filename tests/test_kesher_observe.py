@@ -16,12 +16,15 @@ POST = {'id': 'today', 'date': '2026-09-22', 'title': 'כותרת', 'category': 
 
 
 class Reads:
-    def __init__(self, posts): self.posts, self.calls, self.heads = posts, [], [CODE, CODE]
+    def __init__(self, posts, recent=None):
+        self.posts, self.recent, self.calls, self.heads = posts, recent or [], [], [CODE, CODE]
     def request(self, method, path, *args, **kwargs):
         self.calls.append((method, path))
         if path.endswith('/git/ref/heads/main'): return {'object': {'sha': self.heads.pop(0)}}
         if '/contents/src/data/posts.json?' in path:
             return {'encoding': 'base64', 'content': base64.b64encode(json.dumps(self.posts).encode()).decode()}
+        if '/contents/src/data/postsRecent.json?' in path:
+            return {'encoding': 'base64', 'content': base64.b64encode(json.dumps(self.recent).encode()).decode()}
         if '/pulls?' in path: return []
         if '/deploy.yml/runs?' in path: return {'workflow_runs': []}
         raise AssertionError(path)
@@ -49,6 +52,17 @@ class RepositoryObservationTests(unittest.TestCase):
         result = self.observer(Reads([POST, old]), article_observer=Mock(return_value={'status': 'pending'})).read(new_state()).value
         self.assertEqual(len(result['publications']), 1)
         self.assertEqual(result['publications'][0]['source']['slug'], 'today')
+
+    def test_recent_catalog_publication_is_observed_without_duplicate_creation(self):
+        result = self.observer(Reads([], [POST]), article_observer=Mock(return_value={'status': 'pending'})).read(new_state()).value
+        self.assertEqual(result['publications'][0]['source']['slug'], 'today')
+
+    def test_recent_source_without_hero_cannot_infer_public_verification(self):
+        post={**POST};post.pop('image')
+        observer=self.observer(Reads([], [post]))
+        observer._deployment={'status':'verified','evidence':{}}
+        result=observer._article(SourceIdentity(post['date'],post['id'],'0'*64),post,CODE,NOW)
+        self.assertEqual(result,{'status':'failed','failure_class':'ARTICLE_HERO_MISMATCH'})
 
     def test_adopted_backlog_is_reobserved_at_its_current_authoritative_hash(self):
         old = {**POST, 'id': 'old', 'date': '2026-09-21'}
@@ -106,6 +120,31 @@ class RepositoryObservationTests(unittest.TestCase):
             raise AssertionError(path)
         gh.request = get
         self.assertEqual(self.observer(gh).article_prs([], POST['date'])[0]['status'], 'image_required')
+
+    def test_recent_catalog_does_not_create_false_pr_normalization_or_allow_duplicate_slot(self):
+        candidate={**POST,'date':'2026-09-23'}
+        historical=[{**POST,'id':'old','date':'2026-09-20'}]
+        recent=[{**POST,'id':'recent','date':'2026-09-22'}]
+        pr={'number':42,'title':'Publish Kesher article: test','body':'',
+            'base':{'ref':'main'},'head':{'sha':'b'*40,'repo':{'full_name':'owner/repo'}}}
+        gh=Reads(historical,recent)
+        def get(method,path,*args,**kwargs):
+            if '/pulls?' in path:return [pr]
+            if '/files?' in path:return [{'filename':'src/data/posts.json'}]
+            if '/contents/src/data/posts.json?' in path:
+                return {'encoding':'base64','content':base64.b64encode(json.dumps([candidate,*historical]).encode()).decode()}
+            if '/contents/public/images/' in path:
+                from scripts.kesher_runtime.github import GitHubError
+                raise GitHubError(404,'absent image')
+            raise AssertionError(path)
+        gh.request=get
+        observer=self.observer(gh)
+        rows=observer.article_prs([*recent,*historical],candidate['date'],publication_base=historical)
+        self.assertEqual(rows[0]['status'],'image_required')
+        candidate['date']=recent[0]['date']
+        pr['head']['sha']='c'*40  # Changed candidate data has a different immutable head.
+        rows=observer.article_prs([*recent,*historical],candidate['date'],publication_base=historical)
+        self.assertEqual(rows[0]['status'],'ci_failed')
 
 
 if __name__ == '__main__': unittest.main()

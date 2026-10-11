@@ -145,8 +145,20 @@ substitute newer/nearest artifacts. The sealing key is required even if no
 capability appears in a refreshed controller snapshot.
 
 Migration material contains the existing `sources`, `artifacts`, `now`,
-`historical_sources` where needed, and `retained_evidence` contracts. It also
-contains a mandatory `post_freeze_boundary`:
+`historical_sources` where needed, and `retained_evidence` contracts. Include
+`source_git_paths`, an exact source-key → catalog-path map for every material
+source. Independently read **both** `src/data/posts.json` and
+`src/data/postsRecent.json` at the pinned main SHA; missing, unreadable or duplicate
+catalog identities refuse preflight. Preserve the actual fixed catalog path for
+each source. A missing hero remains unverified and blocked; adoption does not
+invent image or public-media evidence. The Oct6 and Oct10 recent publications
+must be explicitly accounted for when those dates fall inside the reviewed
+window. Re-review after main or the cutover date changes. Initial preflight
+compares the reviewed cutover day to the trusted host clock's Israel date and
+refuses a stale boundary. Later recovery retains the original immutable material;
+this date check does not restart or invalidate an already fenced handover.
+
+Material also contains a mandatory `post_freeze_boundary`:
 
 ```json
 {

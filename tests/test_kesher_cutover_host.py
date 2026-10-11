@@ -68,12 +68,16 @@ class CutoverHostTests(unittest.TestCase):
         main = subprocess.check_output(['git','rev-parse','HEAD'],cwd=self.root,text=True).strip()
         case = handover_fixtures.HandoverTests(); case.setUp()
         self.material = {k:v for k,v in case.params.items() if k not in {'controller','controller_sha','main_sha'}}
+        from scripts.kesher_runtime.identity import SourceIdentity
+        self.material['source_git_paths'] = {SourceIdentity(s['date'],s['slug'],s['content_sha256']).key:
+            'src/data/posts.json' for s in self.material['sources']}
         self.material['post_freeze_boundary'] = {'frozen_cycle':case.params['controller']['cycle'],
             'cutover_slot':case.params['now'][:10],
             'adopted_source_keys':[next(iter(case.params['retained_evidence']['sources']))], 'excluded_source_keys':[]}
         self.raw = GitService(case.params['controller'], main)
         self.posts = [{'id':'exact','date':'2026-09-22','title':'כותרת מקורית',
             'category':'משפחה','excerpt':'תיאור בעברית','content':'<p>תוכן מלא בעברית</p>'}]
+        self.recent = []
         self.rows = [{'id':e.get('registration_id', i), 'path':p,
                       'state':'disabled_manually' if e['role']=='retired' else 'active'}
                      for i,(p,e) in enumerate(rules['workflows'].items(),1)]
@@ -83,6 +87,9 @@ class CutoverHostTests(unittest.TestCase):
             if method == 'GET' and '/contents/src/data/posts.json?' in path:
                 import base64
                 return {'encoding':'base64','content':base64.b64encode(json.dumps(self.posts).encode()).decode()}
+            if method == 'GET' and '/contents/src/data/postsRecent.json?' in path:
+                import base64
+                return {'encoding':'base64','content':base64.b64encode(json.dumps(self.recent).encode()).decode()}
             if method == 'GET' and '/actions/workflows?' in path:
                 self.raw.calls.append((method,path,body))
                 return {'total_count':len(self.rows),'workflows':copy.deepcopy(self.rows)}
@@ -119,9 +126,10 @@ class CutoverHostTests(unittest.TestCase):
             bindings=self.fence.bindings,registrations={r['path']:r['id'] for r in self.rows},native=native)
         self.probe = lambda url:host.health(self.install)
 
-    def preflight(self):
+    def preflight(self, *, clock=None):
         before = self.ledger.read_bytes() if self.ledger.exists() else None
-        try: return self.host.preflight(self.install, probe=self.probe)
+        try: return self.host.preflight(self.install, probe=self.probe,
+                                       clock=clock or (lambda:self.material['now']))
         finally:
             self.assertTrue(all(method=='GET' for method,_,_ in self.raw.calls))
             self.assertTrue(all(port.requests==0 and not port.effects for port in self.ports.values()))
@@ -133,6 +141,23 @@ class CutoverHostTests(unittest.TestCase):
         self.assertEqual(report['schema_version'],5)
         self.assertFalse(report['production_activated'])
         self.assertFalse(report['public_completion_inferred'])
+
+    def test_initial_preflight_requires_reviewed_current_israel_day(self):
+        from datetime import datetime,timedelta
+        later=(datetime.fromisoformat(self.material['now'])+timedelta(days=1)).isoformat()
+        with self.assertRaisesRegex(StateInvalid,'REVIEWED_CUTOVER_DATE_REQUIRED'):
+            self.preflight(clock=lambda:later)
+
+    def test_exact_recent_catalog_provenance_is_required_and_independently_observed(self):
+        self.recent,self.posts=self.posts,[]
+        self.material['source_git_paths']={key:'src/data/postsRecent.json' for key in self.material['source_git_paths']}
+        self.install.review['migration_material_sha256']=digest(self.material)
+        self.assertEqual(self.preflight()['schema_version'],5)
+        for corruption in (None,{}, {key:'src/data/posts.json' for key in self.material['source_git_paths']}):
+            with self.subTest(paths=corruption):
+                self.material['source_git_paths']=corruption
+                self.install.review['migration_material_sha256']=digest(self.material)
+                with self.assertRaisesRegex(StateInvalid,'EXACT_MAIN_SOURCE_GIT_PATHS_REQUIRED'):self.preflight()
 
     def test_missing_or_wrong_gateway_blocks(self):
         for probe in (lambda url:None, lambda url:{'service':'other'},

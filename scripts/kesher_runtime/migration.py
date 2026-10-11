@@ -81,10 +81,13 @@ def _post_freeze_sources(controller, current_sources, now, boundary):
 def prepare_migration(*, controller: dict, controller_sha: str, main_sha: str,
                       sources: list[dict], artifacts: list[dict], now: str, capability_sealer=None,
                       historical_sources: list[dict] | None = None, retained_evidence: dict | None = None,
-                      post_freeze_boundary: dict | None = None) -> dict:
+                      post_freeze_boundary: dict | None = None,
+                      source_git_paths: dict | None = None) -> dict:
     timestamp(now); require_sha(controller_sha, 40); require_sha(main_sha, 40)
     if controller.get('schema_version') != 5:
         raise StateInvalid('Migration input must be the explicitly inspected legacy schema')
+    if source_git_paths is not None and not isinstance(source_git_paths,dict):
+        raise StateInvalid('MIGRATION_EXACT_SOURCE_GIT_PATHS_REQUIRED')
     state = new_state()
     migration = state['migration']
     migration.update(status='prepared', controller_sha256=digest(controller), controller_blob_sha=controller_sha,
@@ -96,7 +99,11 @@ def prepare_migration(*, controller: dict, controller_sha: str, main_sha: str,
         if text_hash(source['body']) != identity.content_sha256 or identity.key in authoritative:
             raise StateInvalid('Migration requires unique independently fetched exact source bodies')
         authoritative[identity.key] = copy.deepcopy(source)
-        source_origins[identity.key] = {'commit_sha': main_sha, 'path': 'src/data/posts.json'}
+        source_origins[identity.key] = {'commit_sha': main_sha, 'path':
+            source_git_paths.get(identity.key) if source_git_paths is not None else 'src/data/posts.json'}
+    if source_git_paths is not None and (set(source_git_paths) != set(authoritative) or
+            any(path not in {'src/data/posts.json','src/data/postsRecent.json'} for path in source_git_paths.values())):
+        raise StateInvalid('MIGRATION_EXACT_SOURCE_GIT_PATHS_REQUIRED')
     # Historical source bodies explain old uploads; only current-main sources
     # may establish the active daily binding. The caller must read these exact
     # Git blobs and verify main ancestry before providing the provenance.

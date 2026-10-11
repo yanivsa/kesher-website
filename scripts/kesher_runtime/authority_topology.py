@@ -399,11 +399,12 @@ def _identities(values):
 
 
 def authority_path(path):
-    # An unknown path is pinned; only the shared publication contract is exempt.
+    # An unknown path is pinned. Both site's catalogs are validated inert data;
+    # this exemption does not expand the article worker's permitted PR paths.
     # This is a path classification, never a substitute for byte/mode validation.
     if not isinstance(path, str) or any(part in {'', '.', '..'} for part in path.split('/')):
         raise StateInvalid('AUTHORITY_INVALID_PATH')
-    return not (path in ARTICLE_PUBLICATION_PATHS or
+    return not (path in ARTICLE_PUBLICATION_PATHS or path == 'src/data/postsRecent.json' or
                 (path.startswith(ARTICLE_IMAGE_PREFIX) and Path(path).suffix.lower() in {'.png','.jpg','.jpeg'}))
 
 

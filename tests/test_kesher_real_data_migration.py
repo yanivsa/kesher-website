@@ -104,5 +104,58 @@ class RealDataMigrationTests(unittest.TestCase):
             self.assertEqual(state['slots'][identity.slot]['source_key'],identity.key)
             self.assertNotEqual(state['slots'][identity.slot].get('blocked'),'SOURCE_AMBIGUOUS')
 
+    def test_actual_recent_oct6_and_oct10_are_identity_bound_without_duplicate_articles(self):
+        from scripts.kesher_runtime.article_verification import GitHubArticleReader
+        from scripts.kesher_runtime.article_worker import ArticleRepository
+        recent=json.loads((ROOT/'src/data/postsRecent.json').read_text())
+        reader=GitHubArticleReader(Reads(self.posts,recent),'owner/repo')
+        entries=reader.catalog_with_paths(self.params['main_sha'])
+        exact=[(path,source_metadata(p)) for path,p in entries if '2026-10-01'<=p['date']<='2026-10-10']
+        keys={s['slug']:SourceIdentity(s['date'],s['slug'],s['content_sha256']).key for _,s in exact}
+        params={**self.params,'sources':[s for _,s in exact],
+            'source_git_paths':{SourceIdentity(s['date'],s['slug'],s['content_sha256']).key:path for path,s in exact}}
+        boundary=copy.deepcopy(self.boundary)
+        boundary['adopted_source_keys']=sorted([*boundary['adopted_source_keys'],
+            keys['child-meltdown-after-school'],keys['child-argues-every-request-boundaries']])
+        # No implicit date-only adoption: the old reviewed boundary is incomplete.
+        with self.assertRaises(StateInvalid):prepare_migration(**params,post_freeze_boundary=self.boundary)
+        state=prepare_migration(**params,post_freeze_boundary=boundary)
+        for day,slug in [('2026-10-06','child-meltdown-after-school'),('2026-10-10','child-argues-every-request-boundaries')]:
+            self.assertEqual(state['slots'][day]['source_key'],keys[slug])
+            self.assertEqual(state['migration']['source_git_origins'][keys[slug]],
+                             {'commit_sha':params['main_sha'],'path':'src/data/postsRecent.json'})
+            reads=Reads(self.posts,recent);reads.heads=[params['main_sha']]*2
+            snapshot=ArticleRepository(reads).snapshot(day)
+            self.assertEqual(snapshot['published'][0]['slug'],slug)
+        reads=Reads(self.posts,recent);reads.heads=[params['main_sha']]*2
+        value=RepositoryObserver(reads,'owner/repo',clock=lambda:NOW,window=lambda _:True,
+            inventory_reader=lambda **_:None,auditor=lambda *_:None,
+            article_observer=lambda *_:{'status':'pending','failure_class':'ARTICLE_NOT_PUBLIC'}).read(state).value
+        result=reconcile(state,Observation(value),now=NOW).state
+        self.assertTrue(any(p['source']['slug']=='child-argues-every-request-boundaries' for p in value['publications']))
+        self.assertFalse(any(c['operation']=='create_article' and c['target']['slot']=='2026-10-10'
+                             for c in result['commands'].values()))
+        self.assertFalse(any(row['receipts'] for row in result['items'].values()))
+
+    def test_combined_catalog_duplicate_identity_and_transient_reads_fail_closed(self):
+        from scripts.kesher_runtime.article_verification import GitHubArticleReader
+        from scripts.kesher_daily_pipeline import PipelineError
+        from scripts.kesher_runtime.github import GitHubError
+        with self.assertRaises(PipelineError):
+            GitHubArticleReader(Reads([self.posts[0]],[self.posts[0]]),'owner/repo').catalog(self.params['main_sha'])
+        reads=Reads(self.posts);original=reads.request
+        def unavailable(method,path,*args,**kwargs):
+            if 'postsRecent.json' in path:raise GitHubError(503,'unavailable')
+            return original(method,path,*args,**kwargs)
+        reads.request=unavailable
+        with self.assertRaises(GitHubError):GitHubArticleReader(reads,'owner/repo').catalog(self.params['main_sha'])
+
+    def test_source_git_paths_cannot_hide_missing_identity_or_choose_untrusted_path(self):
+        paths={identity.key:'src/data/posts.json' for identity in self.identities.values()}
+        for bad in (None,{}, {**paths,self.nine.key:'scripts/controller.py'}, {**paths,'source:unknown':'src/data/posts.json'}):
+            if bad is None:bad=[]
+            with self.subTest(paths=bad),self.assertRaisesRegex(StateInvalid,'EXACT_SOURCE_GIT_PATHS_REQUIRED'):
+                prepare_migration(**self.params,post_freeze_boundary=self.boundary,source_git_paths=bad)
+
 
 if __name__=='__main__':unittest.main()
