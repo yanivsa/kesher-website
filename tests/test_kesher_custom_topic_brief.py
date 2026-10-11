@@ -31,10 +31,11 @@ class KesherCustomTopicBriefTests(unittest.TestCase):
             ):
                 self.assertEqual(runner.load_owner_topic_brief(), "נושא מותאם אישית")
 
-    def test_workflow_exposes_dispatch_and_repo_trigger(self):
+    def test_workflow_exposes_owner_brief_only_on_manual_dispatch(self):
         workflow = Path(".github/workflows/kesher-article-generation.yml").read_text(encoding="utf-8")
         self.assertIn("topic_brief:", workflow)
-        self.assertIn(".github/kesher-topic-request.json", workflow)
+        self.assertNotIn(".github/kesher-topic-request.json", workflow)
+        self.assertNotIn("  push:", workflow)
         self.assertIn("KESHER_ARTICLE_TOPIC_BRIEF_FILE", workflow)
 
 

@@ -141,7 +141,24 @@ def api_json(url: str, token: str):
 def fetch_posts(repo: str, ref: str, token: str):
     quoted_ref = urllib.parse.quote(ref, safe="")
     payload = api_json(f"https://api.github.com/repos/{repo}/contents/src/data/posts.json?ref={quoted_ref}", token)
-    return json.loads(base64.b64decode(payload["content"]).decode("utf-8"))
+    blob_sha = payload.get("sha")
+    if not isinstance(blob_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", blob_sha):
+        raise ValueError("Article catalog blob identity is unavailable")
+    # Contents omits inline data above 1 MiB. Fetch the exact returned blob,
+    # never a mutable main ref or an API-supplied arbitrary download URL.
+    if payload.get("encoding") == "none":
+        payload = api_json(f"https://api.github.com/repos/{repo}/git/blobs/{blob_sha}", token)
+    if (payload.get("sha") != blob_sha or payload.get("encoding") != "base64"
+            or not isinstance(payload.get("content"), str) or not payload["content"].strip()):
+        raise ValueError("Article catalog blob is unavailable")
+    data = base64.b64decode("".join(payload["content"].split()), validate=True)
+    actual_sha = hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
+    if actual_sha != blob_sha:
+        raise ValueError("Article catalog blob identity changed")
+    posts = json.loads(data.decode("utf-8"))
+    if not isinstance(posts, list):
+        raise ValueError("Article catalog must be a list")
+    return posts
 
 
 def main() -> int:

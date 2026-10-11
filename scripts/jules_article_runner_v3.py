@@ -60,16 +60,13 @@ def configure_test_session_identity(slot: str) -> None:
 
 
 def _load_local_posts() -> list[dict[str, Any]]:
-    posts_path = Path("src/data/posts.json")
-    if not posts_path.is_file():
-        raise core.ArticleRunnerError("ARTICLE_SOURCE_ERROR", "src/data/posts.json is missing")
+    from scripts.kesher_daily_pipeline import combine_post_catalogs, PipelineError
     try:
-        posts = json.loads(posts_path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError as exc:
-        raise core.ArticleRunnerError("ARTICLE_SOURCE_ERROR", "src/data/posts.json is invalid JSON") from exc
-    if not isinstance(posts, list):
-        raise core.ArticleRunnerError("ARTICLE_SOURCE_ERROR", "src/data/posts.json is not a list")
-    return posts
+        historical = json.loads(Path("src/data/posts.json").read_text(encoding="utf-8"))
+        recent = json.loads(Path("src/data/postsRecent.json").read_text(encoding="utf-8"))
+        return combine_post_catalogs(historical, recent)
+    except (OSError, ValueError, PipelineError) as exc:
+        raise core.ArticleRunnerError("ARTICLE_SOURCE_ERROR", "publication catalogs are unavailable or invalid") from exc
 
 
 def _posts_for_pr_head(

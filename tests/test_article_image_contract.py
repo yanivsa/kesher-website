@@ -329,5 +329,49 @@ class ArticleImageContractTests(unittest.TestCase):
         self.assertTrue(self.worker_ready())
 
 
+class ArticleCatalogFetchTests(unittest.TestCase):
+    def setUp(self):
+        self.validator = load('validate-article-pr')
+        self.data = (ROOT / 'src/data/posts.json').read_bytes()
+        self.sha = hashlib.sha1(b'blob ' + str(len(self.data)).encode() + b'\0' + self.data).hexdigest()
+        self.blob = {'sha': self.sha, 'encoding': 'base64',
+                     'content': base64.encodebytes(self.data).decode()}
+
+    def test_large_current_catalog_uses_exact_blob_from_requested_ref(self):
+        self.assertGreater(len(self.data), 1024 * 1024)
+        with patch.object(self.validator, 'api_json', side_effect=[
+                {'sha': self.sha, 'encoding': 'none', 'content': ''}, self.blob]) as api:
+            posts = self.validator.fetch_posts('test/repo', HEAD, 'unused')
+        self.assertEqual(posts, json.loads(self.data))
+        self.assertEqual(api.call_args_list[0].args,
+                         (f'https://api.github.com/repos/test/repo/contents/src/data/posts.json?ref={HEAD}', 'unused'))
+        self.assertEqual(api.call_args_list[1].args,
+                         (f'https://api.github.com/repos/test/repo/git/blobs/{self.sha}', 'unused'))
+
+    def test_inline_catalog_requires_no_second_request(self):
+        with patch.object(self.validator, 'api_json', return_value=self.blob) as api:
+            self.assertEqual(self.validator.fetch_posts('test/repo', HEAD, 'unused'), json.loads(self.data))
+        api.assert_called_once()
+
+    def test_unavailable_or_invalid_blob_identity_refuses(self):
+        for sha in (None, '', '../main', 'a' * 39):
+            with self.subTest(sha=sha), patch.object(self.validator, 'api_json', return_value={
+                    'sha': sha, 'encoding': 'none', 'content': ''}) as api:
+                with self.assertRaises(ValueError):
+                    self.validator.fetch_posts('test/repo', HEAD, 'unused')
+                api.assert_called_once()
+
+    def test_changed_blob_or_incomplete_response_cannot_validate(self):
+        for response in (
+                dict(self.blob, sha='f' * 40), dict(self.blob, content=base64.b64encode(b'[]').decode()),
+                dict(self.blob, encoding='none'), dict(self.blob, content=''),
+                dict(self.blob, content='not base64!')):
+            with self.subTest(response_sha=response['sha'], encoding=response['encoding']), \
+                 patch.object(self.validator, 'api_json', side_effect=[
+                     {'sha': self.sha, 'encoding': 'none', 'content': ''}, response]):
+                with self.assertRaises(ValueError):
+                    self.validator.fetch_posts('test/repo', HEAD, 'unused')
+
+
 if __name__ == '__main__':
     unittest.main()
