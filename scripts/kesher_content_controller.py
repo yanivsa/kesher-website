@@ -102,6 +102,11 @@ REVIEWED_ADOPTABLE_POST_FREEZE_IDENTITIES: frozenset[tuple[str, str, str]] = fro
         "child-argues-every-request-boundaries",
         "e0594f772f3f11baacc0ae5c53b7ef9ce9f88f871ee3b6e8c8f67b024b8b8bbc",
     ),
+    (
+        "2026-10-12",
+        "relocation-loneliness-accompanying-partner",
+        "93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c",
+    ),
 })
 REVIEWED_AMBIGUOUS_POST_FREEZE_DATES: frozenset[str] = frozenset({
     "2026-10-04",
@@ -1081,10 +1086,6 @@ class Controller:
         )
 
     def _tick(self, state: dict[str, Any]) -> Action:
-        if not self.article_slot_open():
-            transition(state, "waiting_for_article_window", "publication slot has not opened")
-            return Action("wait", "article window not open")
-
         posts = self.posts_on_main("main")
         todays = today_articles(posts, self.now.date())
         if len(todays) > 1:
@@ -1092,8 +1093,12 @@ class Controller:
                   f"{len(todays)} articles share Israel date {self.now.date()}")
             return Action("blocked", "duplicate published articles")
 
-        open_prs = self.github.open_article_prs(self.now.date().isoformat())
         if not todays:
+            if not self.article_slot_open():
+                transition(state, "waiting_for_article_window", "publication slot has not opened")
+                return Action("wait", "article window not open")
+
+            open_prs = self.github.open_article_prs(self.now.date().isoformat())
             if len(open_prs) > 1:
                 block(state, "article", "DUPLICATE_ARTICLE_PRS",
                       f"{len(open_prs)} open article PRs modify posts.json")
@@ -1143,10 +1148,6 @@ class Controller:
             "published_date": str(article.get("date") or ""),
         })
         clear_failure(state["article"])
-        if open_prs:
-            block(state, "article", "STALE_OR_DUPLICATE_ARTICLE_PR",
-                  f"published article exists while {len(open_prs)} article PR(s) remain open")
-            return Action("blocked", "published article plus open article PR")
 
         status, page = self.site.get(url)
         if status != 200 or not article_is_public(page, title):

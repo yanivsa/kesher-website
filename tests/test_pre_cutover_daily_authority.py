@@ -650,7 +650,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             [(core.ARTICLE_WORKFLOW, {"slot": "2026-10-15"})],
         )
 
-        # 2.B: Exact reviewed post-freeze single-article recovery targets (2026-10-06, 2026-10-09, 2026-10-10)
+        # 2.B: Exact reviewed post-freeze single-article recovery targets (2026-10-06, 2026-10-09, 2026-10-10, 2026-10-12)
         expected_reviewed = [
             (
                 dt.date(2026, 10, 6),
@@ -666,6 +666,11 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 dt.date(2026, 10, 10),
                 "child-argues-every-request-boundaries",
                 "e0594f772f3f11baacc0ae5c53b7ef9ce9f88f871ee3b6e8c8f67b024b8b8bbc",
+            ),
+            (
+                dt.date(2026, 10, 12),
+                "relocation-loneliness-accompanying-partner",
+                "93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c",
             ),
         ]
         for day, slug, sha in expected_reviewed:
@@ -971,6 +976,8 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 self.posts = copy.deepcopy(posts_historical)
                 self.recent_posts = copy.deepcopy(posts_recent)
                 self.open_prs: list[dict] = []
+                self.open_prs_calls = 0
+                self.jules_session_calls = 0
                 self.needs_norm = True
                 self.image_ready = False
                 self.image_evidence: dict[str, str] = {}
@@ -1003,10 +1010,14 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 self.state = copy.deepcopy(state)
 
             def open_article_prs(self, slot=None):
+                self.open_prs_calls += 1
                 return copy.deepcopy(self.open_prs)
 
+            def nudge_article_session(self, session_id):
+                self.jules_session_calls += 1
+
             def article_pr_normalization_required(self, pr):
-                return self.needs_norm, "2026-10-12"
+                return self.needs_norm, str(self.state.get("cycle") or "2026-10-12")
 
             def active_normalizer_run(self, pr_number):
                 return None
@@ -1032,90 +1043,57 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             def dispatch(self, workflow: str, inputs: dict | None = None):
                 self.dispatches.append((workflow, copy.deepcopy(inputs or {})))
 
-        # Scenario A: Immediately after midnight, before article window opens (2026-10-12 00:10 Asia/Jerusalem)
-        gh_before = RolloverSimGitHub(frozen_2026_10_04_state)
-        site_before = mock.Mock()
-        site_before.get.return_value = (200, "<html></html>")
-        ctrl_before = stabilized.StabilizedRuntimeV5Controller(
-            gh_before,
-            site_before,
+        real_oct12_post = next(
+            p for p in posts_historical if core.canonical_slug(p) == "relocation-loneliness-accompanying-partner"
+        )
+        real_oct12_source = v5.article_source_identity(real_oct12_post)
+        self.assertEqual(real_oct12_source["slug"], "relocation-loneliness-accompanying-partner")
+        self.assertEqual(
+            real_oct12_source["content_sha256"],
+            "93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c",
+        )
+
+        # Scenario A (Req 3, 4, 5A): Early current-day tick at 2026-10-12 00:10 Asia/Jerusalem
+        # Starting from frozen Oct-4 Schema-5 state and real current-main catalogs containing
+        # relocation-loneliness-accompanying-partner (not yet live on kesher.saharoni.com -> HTTP 404).
+        gh_0010 = RolloverSimGitHub(frozen_2026_10_04_state)
+        site_0010 = mock.Mock()
+        site_0010.get.return_value = (404, "Not Found")
+        ctrl_0010 = stabilized.StabilizedRuntimeV5Controller(
+            gh_0010,
+            site_0010,
             now=dt.datetime(2026, 10, 12, 0, 10, tzinfo=core.ISRAEL_TZ),
         )
-        state_a, action_a = ctrl_before.tick()
-        self.assertEqual(state_a["cycle"], "2026-10-12")
-        self.assertEqual(state_a["status"], "waiting_for_article_window")
-        self.assertEqual(action_a.kind, "wait")
-        self.assertEqual(gh_before.dispatches, [])
-        # Archived 2026-10-04 backlog entry was quarantined cleanly without crashing
-        backlog_a = {r["cycle"]: r for r in state_a.get("backlog") or []}
-        self.assertEqual(backlog_a["2026-10-04"]["status"], "quarantined_ambiguous_identity")
-        self.assertTrue(backlog_a["2026-10-04"].get("quarantined"))
-
-        # Scenario B1: First tick after article window opens (00:36) when today's article already exists in postsRecent.json -> adopts, never generates duplicate
-        gh_b1 = RolloverSimGitHub(frozen_2026_10_04_state)
-        oct12_existing = copy.deepcopy(posts_recent[0])
-        oct12_existing.update(
-            {
-                "id": "oct-12-already-in-recent",
-                "slug": "oct-12-already-in-recent",
-                "title": "מאמר קיים ליום 12 באוקטובר",
-                "date": "2026-10-12",
-                "controllerManaged": True,
-            }
+        state_0010, action_0010 = ctrl_0010.tick()
+        self.assertEqual(state_0010["cycle"], "2026-10-12")
+        self.assertEqual(state_0010["article"]["slug"], "relocation-loneliness-accompanying-partner")
+        self.assertEqual(
+            state_0010["article"]["quality_content_sha256"],
+            "93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c",
         )
-        gh_b1.recent_posts.append(oct12_existing)
-        site_b1 = mock.Mock()
-        site_b1.get.return_value = (200, f"<html>{oct12_existing['title']}</html>")
-        ctrl_b1 = stabilized.StabilizedRuntimeV5Controller(
-            gh_b1,
-            site_b1,
-            now=dt.datetime(2026, 10, 12, 0, 36, tzinfo=core.ISRAEL_TZ),
-        )
-        _, action_b1 = ctrl_b1.tick()
-        self.assertNotEqual(action_b1.kind, "dispatch_article")
-        self.assertEqual([w for w, _ in gh_b1.dispatches if w == core.ARTICLE_WORKFLOW], [])
+        self.assertEqual(state_0010["article"]["quality_status"], "passed")
+        self.assertEqual(action_0010.kind, "dispatch_deploy")
+        self.assertEqual(gh_0010.dispatches, [(core.DEPLOY_WORKFLOW, {})])
+        self.assertEqual([w for w, _ in gh_0010.dispatches if w == core.ARTICLE_WORKFLOW], [])
+        self.assertEqual(gh_0010.open_prs_calls, 0)
+        self.assertEqual(gh_0010.jules_session_calls, 0)
+        # Historical 2026-10-04 is archived in backlog and never replaces current article identity
+        backlog_0010 = {r["cycle"]: r for r in state_0010.get("backlog") or []}
+        self.assertIn("2026-10-04", backlog_0010)
 
-        # Scenario B2: First tick after article window opens (00:36) when today's article PR already exists -> supervises PR, never generates duplicate
-        gh_b2 = RolloverSimGitHub(frozen_2026_10_04_state)
-        gh_b2.open_prs = [
-            {
-                "number": 1105,
-                "html_url": "https://github.com/yanivsa/kesher-website/pull/1105",
-                "title": "Publish Kesher article: oct-12-daily-article",
-                "head": {"sha": "head1105"},
-                "base": {"sha": "base1105"},
-            }
-        ]
-        ctrl_b2 = stabilized.StabilizedRuntimeV5Controller(
-            gh_b2,
-            mock.Mock(),
-            now=dt.datetime(2026, 10, 12, 0, 36, tzinfo=core.ISRAEL_TZ),
-        )
-        _, action_b2 = ctrl_b2.tick()
-        self.assertEqual(action_b2.kind, "dispatch_normalize")
-        self.assertEqual([w for w, _ in gh_b2.dispatches if w == core.ARTICLE_WORKFLOW], [])
-
-        # Scenario B3: First tick after article window opens (00:36) when active article workflow / Jules session already exists -> waits/observes, never dispatches second article
-        gh_b3 = RolloverSimGitHub(frozen_2026_10_04_state)
-        gh_b3.active_runs[core.ARTICLE_WORKFLOW] = {
-            "id": 777001,
-            "status": "in_progress",
-            "event": "workflow_dispatch",
-            "created_at": "2026-10-12T00:35:30+03:00",
-        }
-        ctrl_b3 = stabilized.StabilizedRuntimeV5Controller(
-            gh_b3,
-            mock.Mock(),
-            now=dt.datetime(2026, 10, 12, 0, 36, tzinfo=core.ISRAEL_TZ),
-        )
-        state_b3, action_b3 = ctrl_b3.tick()
-        self.assertEqual(action_b3.kind, "wait")
-        self.assertEqual(state_b3["status"], "article_generating")
-        self.assertEqual(gh_b3.dispatches, [])
-
-        # Scenario B4 & Scenario C: First tick at 00:36 dispatches exactly ONE article, and repeated ticks at 00:41, 00:46, 00:51 wait without duplicate dispatches
+        # Scenario B (Req 3, 4, 5B): Tick after normal article window at 2026-10-12 00:36 Asia/Jerusalem
+        # Starting from frozen Oct-4 Schema-5 state when the Oct-12 article is already public (HTTP 200).
         gh = RolloverSimGitHub(frozen_2026_10_04_state)
+        gh.state["backlog"] = [
+            {"cycle": "2026-10-06", "status": "article_live"},
+        ]
+        oct6_post = next(p for p in posts_recent if p.get("date") == "2026-10-06")
+        oct6_source = v5.article_source_identity(oct6_post)
         site = mock.Mock()
+        site.get.return_value = (
+            200,
+            f"<html><h1>{real_oct12_post['title']}</h1><h2>{oct6_post['title']}</h2></html>",
+        )
         ctrl_0036 = stabilized.StabilizedRuntimeV5Controller(
             gh,
             site,
@@ -1123,18 +1101,49 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         )
         state_0036, action_0036 = ctrl_0036.tick()
         self.assertEqual(state_0036["cycle"], "2026-10-12")
-        self.assertEqual(action_0036.kind, "dispatch_article")
-        self.assertEqual(gh.dispatches, [(core.ARTICLE_WORKFLOW, {"slot": "2026-10-12"})])
-        self.assertEqual(state_0036["article"]["attempt_count"], 1)
-        self.assertIsNone(state_0036["article"].get("pr_number"))
-        self.assertIsNone(state_0036["image"].get("run_id"))
+        self.assertEqual(state_0036["article"]["slug"], real_oct12_source["slug"])
+        self.assertEqual(state_0036["article"]["quality_content_sha256"], real_oct12_source["content_sha256"])
+        self.assertTrue(state_0036["article"]["live"])
+        self.assertEqual(action_0036.kind, "dispatch_long_video")
+        self.assertEqual([w for w, _ in gh.dispatches if w == core.ARTICLE_WORKFLOW], [])
+        self.assertEqual(gh.open_prs_calls, 0)
+        self.assertEqual(gh.jules_session_calls, 0)
+        self.assertEqual(
+            gh.dispatches,
+            [
+                (
+                    v5.LONG_VIDEO_WORKFLOW,
+                    {
+                        "operation": "full",
+                        "target_slug": real_oct12_source["slug"],
+                        "target_content_sha256": real_oct12_source["content_sha256"],
+                    },
+                )
+            ],
+        )
 
-        # Now the dispatched child worker is in progress during ticks 00:41, 00:46, 00:51
-        gh.active_runs[core.ARTICLE_WORKFLOW] = {
-            "id": 777002,
-            "status": "in_progress",
-            "event": "workflow_dispatch",
-            "created_at": "2026-10-12T00:36:05+03:00",
+        # Scenario C (Req 6): Repeated 5-minute scheduler ticks at 00:41, 00:46, 00:51
+        # while NotebookLM provider is pending (status="generating").
+        # Prove: 0 article dispatches, 0 Jules sessions, 0 PR searches, 0 duplicate video/Short/deploy dispatches.
+        gh.video_state = {
+            "version": 1,
+            "items": [
+                {
+                    "id": "long-oct12-1",
+                    "type": "video_overview",
+                    "status": "generating",
+                    "notebook_id": "nb-oct12",
+                    "task_id": "task-oct12",
+                    "artifact_id": "task-oct12",
+                    "source_id": "src-oct12",
+                    "created_at": "2026-10-11T21:36:05+00:00",
+                    "generation_started_at": "2026-10-11T21:36:05+00:00",
+                    "source": {
+                        "slug": real_oct12_source["slug"],
+                        "content_sha256": real_oct12_source["content_sha256"],
+                    },
+                }
+            ],
         }
         for minute in (41, 46, 51):
             tick_ctrl = stabilized.StabilizedRuntimeV5Controller(
@@ -1144,117 +1153,44 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             )
             tick_state, tick_action = tick_ctrl.tick()
             self.assertEqual(tick_action.kind, "wait")
-            self.assertEqual(tick_state["status"], "article_generating")
-            self.assertEqual(tick_state["article"]["attempt_count"], 1)
-            # Still only the single initial dispatch from 00:36
-            self.assertEqual(gh.dispatches, [(core.ARTICLE_WORKFLOW, {"slot": "2026-10-12"})])
+            self.assertEqual(tick_action.reason, "long_video provider pending under watchdog")
+            self.assertEqual(tick_state["article"]["slug"], real_oct12_source["slug"])
+            self.assertEqual(tick_state["article"]["quality_content_sha256"], real_oct12_source["content_sha256"])
+            self.assertEqual([w for w, _ in gh.dispatches if w == core.ARTICLE_WORKFLOW], [])
+            self.assertEqual(gh.open_prs_calls, 0)
+            self.assertEqual(gh.jules_session_calls, 0)
+            self.assertEqual(len(gh.dispatches), 1)
 
-        # Scenario D: Ambiguous 2026-10-04 + unambiguous 2026-10-06 + active 2026-10-12 together
-        # Prove: current cycle (2026-10-12) > recoverable backlog (2026-10-06) > quarantined backlog (2026-10-04)
-        gh.active_runs.clear()
-        gh.state["backlog"] = [
-            {"cycle": "2026-10-04", "status": "article_live"},
-            {"cycle": "2026-10-06", "status": "article_live"},
-        ]
-        # Open article PR for 2026-10-12 -> current cycle takes priority over 2026-10-06 backlog
-        gh.dispatches.clear()
-        gh.open_prs = [
-            {
-                "number": 1105,
-                "html_url": "https://github.com/yanivsa/kesher-website/pull/1105",
-                "title": "Publish Kesher article: oct-12-daily-article",
-                "head": {"sha": "head1105"},
-                "base": {"sha": "base1105"},
-            }
-        ]
-        gh.needs_norm = True
-        ctrl_c1 = stabilized.StabilizedRuntimeV5Controller(
-            gh,
-            site,
-            now=dt.datetime(2026, 10, 12, 8, 25, tzinfo=core.ISRAEL_TZ),
-        )
-        state_c1, action_c1 = ctrl_c1.tick()
-        self.assertEqual(action_c1.kind, "dispatch_normalize")
-        self.assertEqual(
-            gh.dispatches[-1],
-            ("normalize-article-pr.yml", {"pr_number": "1105", "slot": "2026-10-12"}),
-        )
-
-        # Normalization completes -> dispatches trusted hero image worker
-        gh.dispatches.clear()
-        gh.needs_norm = False
-        gh.image_ready = False
-        ctrl_c2 = stabilized.StabilizedRuntimeV5Controller(
-            gh,
-            site,
-            now=dt.datetime(2026, 10, 12, 8, 30, tzinfo=core.ISRAEL_TZ),
-        )
-        state_c2, action_c2 = ctrl_c2.tick()
-        self.assertEqual(action_c2.kind, "dispatch_image")
-        self.assertEqual(
-            gh.dispatches[-1],
-            ("kesher-article-image.yml", {"pr_number": "1105"}),
-        )
-
-        # Trusted image completes -> dispatches exact-PR auto-merge
-        gh.dispatches.clear()
-        gh.image_ready = True
-        gh.image_evidence = {
-            "provider": "gemini",
-            "source": "gemini-3.1-flash-image",
-            "sha256": "d" * 64,
+        # Also prove repeated-tick idempotency while deploy is active (00:36 -> 00:41 -> 00:46 -> 00:51)
+        gh_deploy_wait = RolloverSimGitHub(frozen_2026_10_04_state)
+        site_404 = mock.Mock()
+        site_404.get.return_value = (404, "Not Found")
+        _, first_deploy_action = stabilized.StabilizedRuntimeV5Controller(
+            gh_deploy_wait,
+            site_404,
+            now=dt.datetime(2026, 10, 12, 0, 36, tzinfo=core.ISRAEL_TZ),
+        ).tick()
+        self.assertEqual(first_deploy_action.kind, "dispatch_deploy")
+        self.assertEqual(gh_deploy_wait.dispatches, [(core.DEPLOY_WORKFLOW, {})])
+        gh_deploy_wait.active_runs[core.DEPLOY_WORKFLOW] = {
+            "id": 888001,
+            "status": "in_progress",
+            "event": "workflow_dispatch",
         }
-        ctrl_c3 = stabilized.StabilizedRuntimeV5Controller(
-            gh,
-            site,
-            now=dt.datetime(2026, 10, 12, 8, 35, tzinfo=core.ISRAEL_TZ),
-        )
-        state_c3, action_c3 = ctrl_c3.tick()
-        self.assertEqual(action_c3.kind, "wait")
-        self.assertEqual(
-            gh.dispatches[-1],
-            ("auto-merge-article-prs.yml", {"pr_number": "1105", "slot": "2026-10-12"}),
-        )
+        for minute in (41, 46, 51):
+            _, dep_tick_action = stabilized.StabilizedRuntimeV5Controller(
+                gh_deploy_wait,
+                site_404,
+                now=dt.datetime(2026, 10, 12, 0, minute, tzinfo=core.ISRAEL_TZ),
+            ).tick()
+            self.assertEqual(dep_tick_action.kind, "wait")
+            self.assertEqual(dep_tick_action.reason, "deployment active")
+            self.assertEqual(len(gh_deploy_wait.dispatches), 1)
+            self.assertEqual(gh_deploy_wait.open_prs_calls, 0)
 
-        # Article merged & live -> Long Video -> Short -> Complete, then backlog 2026-10-06 advances while 2026-10-04 is quarantined
-        gh.dispatches.clear()
-        gh.open_prs = []
-        oct12_post = copy.deepcopy(posts_recent[0])
-        oct12_post.update(
-            {
-                "id": "oct-12-daily-article",
-                "slug": "oct-12-daily-article",
-                "title": "איך מדברים על כסף בזוגיות בלי להיכנס למגננה?",
-                "date": "2026-10-12",
-                "controllerManaged": True,
-            }
-        )
-        gh.posts = [oct12_post, *posts_historical]
-        oct12_source = v5.article_source_identity(oct12_post)
-        oct6_post = next(p for p in posts_recent if p.get("date") == "2026-10-06")
-        oct6_source = v5.article_source_identity(oct6_post)
-        site.get.return_value = (200, f"<html><h1>{oct12_post['title']}</h1><h2>{oct6_post['title']}</h2></html>")
-
-        ctrl_d1 = stabilized.StabilizedRuntimeV5Controller(
-            gh,
-            site,
-            now=dt.datetime(2026, 10, 12, 8, 45, tzinfo=core.ISRAEL_TZ),
-        )
-        state_d1, action_d1 = ctrl_d1.tick()
-        self.assertEqual(action_d1.kind, "dispatch_long_video")
-        self.assertEqual(
-            gh.dispatches[-1],
-            (
-                v5.LONG_VIDEO_WORKFLOW,
-                {
-                    "operation": "full",
-                    "target_slug": oct12_source["slug"],
-                    "target_content_sha256": oct12_source["content_sha256"],
-                },
-            ),
-        )
-
-        # Long video completes & is verified public -> dispatches Short derivation from exact same identity
+        # Scenario D (Req 7): Long video completes & is verified public -> dispatches Short derivation from exact same identity,
+        # then once Short is verified complete, current 2026-10-12 completes, ambiguous 2026-10-04 is quarantined, and
+        # unambiguous 2026-10-06 backlog row advances!
         from tests.test_media_provenance_contract import audio_fixture, bound_short
 
         gh.dispatches.clear()
@@ -1301,7 +1237,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                         "end_seconds": overview_dur,
                         "audio_source_sha256": "e" * 64,
                     },
-                    "source": {"slug": oct12_source["slug"], "content_sha256": oct12_source["content_sha256"]},
+                    "source": {"slug": real_oct12_source["slug"], "content_sha256": real_oct12_source["content_sha256"]},
                     "youtube_verification": {
                         "channel_id": core.YOUTUBE_CHANNEL_ID,
                         "privacy_status": "public",
@@ -1323,8 +1259,8 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 v5.SHORT_WORKFLOW,
                 {
                     "operation": "derive",
-                    "derive_slug": oct12_source["slug"],
-                    "derive_content_sha256": oct12_source["content_sha256"],
+                    "derive_slug": real_oct12_source["slug"],
+                    "derive_content_sha256": real_oct12_source["content_sha256"],
                     "derive_long_item_id": "long-oct12-1",
                 },
             ),
@@ -1341,7 +1277,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             "uploaded": True,
             "youtube_id": "yt-short-oct12",
             "youtube_url": "https://youtube.com/shorts/yt-short-oct12",
-            "source": {"slug": oct12_source["slug"], "content_sha256": oct12_source["content_sha256"]},
+            "source": {"slug": real_oct12_source["slug"], "content_sha256": real_oct12_source["content_sha256"]},
             "overview_provider_identity": {
                 "notebook_id": "nb-oct12",
                 "source_id": "src-oct12",
@@ -1364,11 +1300,14 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         with mock.patch.object(
             v5_runtime,
             "ordered_recoverable_backlog",
-            side_effect=lambda rows: [r for r in rows if not r.get("quarantined")],
+            side_effect=lambda rows: sorted(
+                [r for r in rows if not r.get("quarantined")],
+                key=lambda r: str(r.get("cycle") or ""),
+            ),
         ):
             state_d3, action_d3 = ctrl_d3.tick()
         self.assertTrue(state_d3["article"]["live"])
-        self.assertEqual(state_d3["deliverables"]["article_url"], f"{core.SITE_URL}/blog/{oct12_source['slug']}")
+        self.assertEqual(state_d3["deliverables"]["article_url"], f"{core.SITE_URL}/blog/{real_oct12_source['slug']}")
         self.assertEqual(state_d3["deliverables"]["overview_youtube_url"], "https://youtu.be/yt-long-oct12")
         self.assertEqual(state_d3["deliverables"]["short_youtube_url"], "https://youtube.com/shorts/yt-short-oct12")
         backlog_d3 = {r["cycle"]: r for r in state_d3["backlog"]}
@@ -1386,6 +1325,70 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             ),
         )
 
+        # Scenario E: Next day (2026-10-13) with no existing article yet:
+        # 00:10 waits for article window; 00:36 dispatches article -> normalize -> image -> auto-merge
+        state_d3_clean = copy.deepcopy(state_d3)
+        state_d3_clean["backlog"] = []
+        gh_next = RolloverSimGitHub(state_d3_clean)
+        state_next_0010, action_next_0010 = stabilized.StabilizedRuntimeV5Controller(
+            gh_next,
+            site,
+            now=dt.datetime(2026, 10, 13, 0, 10, tzinfo=core.ISRAEL_TZ),
+        ).tick()
+        self.assertEqual(state_next_0010["cycle"], "2026-10-13")
+        self.assertEqual(state_next_0010["status"], "waiting_for_article_window")
+        self.assertEqual(action_next_0010.kind, "wait")
+
+        gh_next.dispatches.clear()
+        _, action_next_0036 = stabilized.StabilizedRuntimeV5Controller(
+            gh_next,
+            site,
+            now=dt.datetime(2026, 10, 13, 0, 36, tzinfo=core.ISRAEL_TZ),
+        ).tick()
+        self.assertEqual(action_next_0036.kind, "dispatch_article")
+        self.assertEqual(gh_next.dispatches, [(core.ARTICLE_WORKFLOW, {"slot": "2026-10-13"})])
+
+        gh_next.dispatches.clear()
+        gh_next.open_prs = [
+            {
+                "number": 1105,
+                "html_url": "https://github.com/yanivsa/kesher-website/pull/1105",
+                "title": "Publish Kesher article: oct-13-daily-article",
+                "head": {"sha": "head1105"},
+                "base": {"sha": "base1105"},
+            }
+        ]
+        gh_next.needs_norm = True
+        _, action_norm = stabilized.StabilizedRuntimeV5Controller(
+            gh_next,
+            site,
+            now=dt.datetime(2026, 10, 13, 0, 41, tzinfo=core.ISRAEL_TZ),
+        ).tick()
+        self.assertEqual(action_norm.kind, "dispatch_normalize")
+        self.assertEqual(gh_next.dispatches[-1], ("normalize-article-pr.yml", {"pr_number": "1105", "slot": "2026-10-13"}))
+
+        gh_next.dispatches.clear()
+        gh_next.needs_norm = False
+        gh_next.image_ready = False
+        _, action_img = stabilized.StabilizedRuntimeV5Controller(
+            gh_next,
+            site,
+            now=dt.datetime(2026, 10, 13, 0, 46, tzinfo=core.ISRAEL_TZ),
+        ).tick()
+        self.assertEqual(action_img.kind, "dispatch_image")
+        self.assertEqual(gh_next.dispatches[-1], ("kesher-article-image.yml", {"pr_number": "1105"}))
+
+        gh_next.dispatches.clear()
+        gh_next.image_ready = True
+        gh_next.image_evidence = {"provider": "gemini", "source": "gemini-3.1-flash-image", "sha256": "d" * 64}
+        _, action_merge = stabilized.StabilizedRuntimeV5Controller(
+            gh_next,
+            site,
+            now=dt.datetime(2026, 10, 13, 0, 51, tzinfo=core.ISRAEL_TZ),
+        ).tick()
+        self.assertEqual(action_merge.kind, "wait")
+        self.assertEqual(gh_next.dispatches[-1], ("auto-merge-article-prs.yml", {"pr_number": "1105", "slot": "2026-10-13"}))
+
     # Requirement 10: Two-catalog normalize & validation safety
     def test_normalizer_rejects_duplicate_slug_or_slot_against_posts_recent_without_mutating_it(self) -> None:
         from scripts.kesher_article_normalizer import (
@@ -1400,36 +1403,37 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
 
         # Duplicate slug against postsRecent.json must fail closed
         dup_slug_article = copy.deepcopy(posts_recent[0])
-        dup_slug_article["date"] = "2026-10-12"
+        dup_slug_article["date"] = "2026-10-13"
         with self.assertRaisesRegex(ArticleNormalizationError, "already exists in main"):
             normalized_posts(posts_historical, dup_slug_article, recent_posts=posts_recent)
 
-        # Duplicate adoptable slot against postsRecent.json (2026-10-10) must fail closed
-        dup_slot_article = copy.deepcopy(posts_recent[0])
-        dup_slot_article["id"] = "different-slug-on-oct-10"
-        dup_slot_article["slug"] = "different-slug-on-oct-10"
-        dup_slot_article["date"] = "2026-10-10"
-        with self.assertRaisesRegex(ArticleNormalizationError, "publication slot already exists in main"):
-            normalized_posts(posts_historical, dup_slot_article, recent_posts=posts_recent)
+        # Duplicate adoptable slot against posts.json (2026-10-12) or postsRecent.json (2026-10-10) must fail closed
+        for occupied_date in ("2026-10-10", "2026-10-12"):
+            dup_slot_article = copy.deepcopy(posts_recent[0])
+            dup_slot_article["id"] = f"different-slug-on-{occupied_date}"
+            dup_slot_article["slug"] = f"different-slug-on-{occupied_date}"
+            dup_slot_article["date"] = occupied_date
+            with self.assertRaisesRegex(ArticleNormalizationError, "publication slot already exists in main"):
+                normalized_posts(posts_historical, dup_slot_article, recent_posts=posts_recent)
 
-        # Valid new article on 2026-10-12 normalizes into posts.json and leaves postsRecent.json untouched
+        # Valid new article on 2026-10-13 normalizes into posts.json and leaves postsRecent.json untouched
         valid_new = copy.deepcopy(posts_recent[0])
         valid_new.update(
             {
-                "id": "valid-2026-10-12-article",
-                "slug": "valid-2026-10-12-article",
-                "date": "2026-10-12",
+                "id": "valid-2026-10-13-article",
+                "slug": "valid-2026-10-13-article",
+                "date": "2026-10-13",
             }
         )
         extracted = extract_target_article(
             posts_historical,
             [valid_new, *posts_historical],
-            "2026-10-12",
+            "2026-10-13",
             recent_posts=posts_recent,
         )
-        self.assertEqual(extracted["id"], "valid-2026-10-12-article")
+        self.assertEqual(extracted["id"], "valid-2026-10-13-article")
         norm = normalized_posts(posts_historical, extracted, recent_posts=posts_recent)
-        self.assertEqual(norm[0]["id"], "valid-2026-10-12-article")
+        self.assertEqual(norm[0]["id"], "valid-2026-10-13-article")
         self.assertEqual(len(norm), len(posts_historical) + 1)
         self.assertEqual(posts_recent, recent_before)
 
@@ -1473,13 +1477,13 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         self.assertIn("irrelevant workflow_run ignored", noop_action.reason)
         self.assertEqual(noop_dispatches, [])
 
-        # Cases 7, 8, 9: Two open article PRs for current cycle blocks with DUPLICATE_ARTICLE_PRS; unrelated old PR is ignored by open_article_prs(slot)
+        # Cases 7, 8, 9: Two open article PRs for an open cycle (2026-10-13) blocks with DUPLICATE_ARTICLE_PRS
         class DupPrGitHub:
             def contents_json(self, path: str, ref: str = "main"):
                 return copy.deepcopy(posts_historical) if path == "src/data/posts.json" else copy.deepcopy(posts_recent)
 
             def load_controller_state(self):
-                return {"schema_version": 5, "cycle": "2026-10-12", "status": "article_needed"}
+                return {"schema_version": 5, "cycle": "2026-10-13", "status": "article_needed"}
 
             def save_controller_state(self, state):
                 self.saved = copy.deepcopy(state)
@@ -1494,22 +1498,15 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         dup_ctrl = stabilized.StabilizedRuntimeV5Controller(
             dup_gh,
             mock.Mock(),
-            now=dt.datetime(2026, 10, 12, 9, 0, tzinfo=core.ISRAEL_TZ),
+            now=dt.datetime(2026, 10, 13, 9, 0, tzinfo=core.ISRAEL_TZ),
         )
         dup_state, dup_action = dup_ctrl.tick()
         self.assertEqual(dup_action.kind, "blocked")
         self.assertEqual(dup_state["last_error"]["code"], "DUPLICATE_ARTICLE_PRS")
 
-        # Case 13 & Req 11: Article merged on main, but public page not yet live (404 or missing expected title) -> dispatches deploy, NEVER dispatches long video
-        oct12_post = copy.deepcopy(posts_recent[0])
-        oct12_post.update(
-            {
-                "id": "oct-12-not-yet-public",
-                "slug": "oct-12-not-yet-public",
-                "title": "כותרת מאמר שטרם עלה לאוויר",
-                "date": "2026-10-12",
-                "controllerManaged": True,
-            }
+        # Case 13 & Req 11: Real 2026-10-12 article merged on main, but public page not yet live (404) -> dispatches deploy, NEVER dispatches long video
+        oct12_post = next(
+            p for p in posts_historical if core.canonical_slug(p) == "relocation-loneliness-accompanying-partner"
         )
         deploy_dispatches: list[tuple[str, dict]] = []
 
@@ -1527,7 +1524,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
 
             def contents_json(self, path: str, ref: str = "main"):
                 if path == "src/data/posts.json":
-                    return [oct12_post, *copy.deepcopy(posts_historical)]
+                    return copy.deepcopy(posts_historical)
                 if path == "src/data/postsRecent.json":
                     return copy.deepcopy(posts_recent)
                 raise AssertionError(path)
