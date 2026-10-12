@@ -54,10 +54,14 @@ class RuntimeV5Controller(v5.V5Controller):
 
     def _authoritative_overview_identity(self, source, long_item=None):
         item = long_item
-        if not isinstance(item, dict):
+        if not isinstance(item, dict) and hasattr(self.github, "newest_video_state"):
             long_state = self.github.newest_video_state()
             item = v5._newest(v5._verified_exact(long_state, source))
-        if not isinstance(item, dict) and hasattr(self, "_verified_long_from_artifact_history"):
+        if (
+            not isinstance(item, dict)
+            and hasattr(self, "_verified_long_from_artifact_history")
+            and hasattr(self.github, "list_workflow_artifacts")
+        ):
             item = self._verified_long_from_artifact_history(source)
         if not isinstance(item, dict):
             return None
