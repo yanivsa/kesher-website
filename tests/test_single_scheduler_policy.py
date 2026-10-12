@@ -39,7 +39,7 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
         short = trigger_block(SHORT)
         legacy_video = trigger_block(LEGACY_VIDEO)
         self.assertIn("  schedule:", controller)
-        self.assertIn('cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"', controller)
+        self.assertIn('cron: "4,9,14,19,24,29,34,39,44,49,54,59 * * * *"', controller)
         self.assertIn("workflow_dispatch:", controller)
         self.assertNotIn("__KESHER_RETIRED__", CONTROLLER.read_text())
         self.assertIn("python3 -m scripts.kesher_runtime.bridge_admission --controller", CONTROLLER.read_text())
@@ -113,7 +113,7 @@ class SingleSchedulerPolicyTests(unittest.TestCase):
 
     def test_parked_controller_respects_durable_five_minute_retry_backoff(self):
         text = CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn('cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"', text)
+        self.assertIn('cron: "4,9,14,19,24,29,34,39,44,49,54,59 * * * *"', text)
         self.assertIn("group: kesher-content-controller", text)
         self.assertIn("cancel-in-progress: false", text)
         first = reconcile(new_state(), observed(publication(short="verified")), now=NOW)
