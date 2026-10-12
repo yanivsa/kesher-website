@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-12",
-  "status": "article_needed",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -14,12 +14,18 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "pending",
     "quality_status": "passed",
     "quality_content_sha256": "93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c",
     "quality_checked_at": "2026-10-12T10:41:51.517298+00:00",
-    "quality_violations": []
+    "quality_violations": [],
+    "slug": "relocation-loneliness-accompanying-partner",
+    "title": "בדידות ברילוקיישן: למה בן הזוג המצטרף מרגיש שקוף – ומה אפשר לעשות",
+    "url": "https://kesher.saharoni.com/blog/relocation-loneliness-accompanying-partner",
+    "published_date": "2026-10-12",
+    "last_deploy_dispatch_at": "2026-10-12T10:42:19.798617+00:00",
+    "next_deploy_retry_at": "2026-10-12T10:47:19.798634+00:00"
   },
   "backlog": [
     {
@@ -1836,9 +1842,19 @@
       "from": "article_needed",
       "to": "v5_migrated",
       "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
+    },
+    {
+      "at": "2026-10-12T10:42:19.798646+00:00",
+      "from": "article_needed",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-12T08:21:33.774237+00:00",
+  "updated_at": "2026-10-12T10:42:19.798652+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
