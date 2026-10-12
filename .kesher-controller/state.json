@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-12",
-  "status": "short_running",
+  "status": "short_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1950,9 +1950,19 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "Short derive workflow already active"
+    },
+    {
+      "at": "2026-10-12T13:40:05.468270+00:00",
+      "from": "short_running",
+      "to": "short_watchdog_recovery",
+      "reason": "Short provider stalled; re-dispatched derivation from the same verified long-form identity",
+      "details": {
+        "item_id": "video-20261012-160846-93bd8eb7d0",
+        "long_item_id": "video-20261012-152939-93bd8eb7d0"
+      }
     }
   ],
-  "updated_at": "2026-10-12T13:06:50.747967+00:00",
+  "updated_at": "2026-10-12T13:40:05.468278+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2011,7 +2021,7 @@
     "source_id": "1df9bb10-bd44-4a0e-8b29-6be69cb9f04f"
   },
   "short": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
@@ -2021,7 +2031,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-12T13:05:38.598361+00:00",
+    "last_dispatch_at": "2026-10-12T13:40:05.468257+00:00",
     "artifact_id": "1cb087ab-6c10-4783-8a04-7bd5898567b5",
     "source_id": "1df9bb10-bd44-4a0e-8b29-6be69cb9f04f",
     "adopted_from_long_item_id": "video-20261012-152939-93bd8eb7d0",
@@ -2030,8 +2040,8 @@
       "hard_started_at": "2026-10-12T13:09:00.405188+00:00",
       "last_progress_at": "2026-10-12T13:19:32.023761+00:00",
       "last_fingerprint": "f3e88f1bbeeea588644f2124a2112db75489c0cfab0144fdf0ff67c61ffdf1d4",
-      "recovery_count": 0,
-      "last_recovery_at": null
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-12T13:39:50.979957+00:00"
     }
   },
   "migration": {
@@ -2045,5 +2055,22 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "interventions": {
+    "v5|relocation-loneliness-accompanying-partner|93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c|short": {
+      "pipeline_id": "v5",
+      "slug": "relocation-loneliness-accompanying-partner",
+      "content_sha256": "93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c",
+      "stage": "short",
+      "strike_count": 1,
+      "last_check_token": "2026-10-12T16",
+      "last_fingerprint": "09e6c356695039c62d3fdfb920f0f590b67887aeebd93dd8fb27cb4f25b539a4",
+      "last_controller_action_token": "recovery:1:2026-10-12T13:39:50.979957+00:00",
+      "controller_action_observed": true,
+      "last_observed_at": "2026-10-12T13:39:50.979957+00:00",
+      "last_action": "wait_after_controller_action",
+      "direct_takeover_required": false,
+      "last_controller_action_at": "2026-10-12T13:39:50.979957+00:00"
+    }
   }
 }
