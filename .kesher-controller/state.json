@@ -1,147 +1,27 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-04",
-  "status": "article_image_running",
+  "cycle": "2026-10-12",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 3,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
-    "next_retry_at": "2026-10-04T10:44:32.335079+00:00",
-    "run_id": 37195963244,
-    "processed_run_id": 37195963244,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 3,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
+    "normalization_status": "pending",
     "quality_status": "passed",
-    "quality_content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22",
-    "quality_checked_at": "2026-10-04T00:45:00.091137+00:00",
-    "quality_violations": [],
-    "last_dispatch_at": "2026-10-04T10:37:29.816007+00:00",
-    "last_run_conclusion": "success",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-10-04",
-      "outcome": "PR_CREATED",
-      "retryable": false,
-      "message": "",
-      "session_id": "sessions/2556970304191877836",
-      "pr_url": "https://github.com/yanivsa/kesher-website/pull/1045",
-      "github_run_id": "37195963244",
-      "completed_at": "2026-10-04T10:41:40.948815+00:00"
-    },
-    "watchdog": {
-      "identity": "2026-10-04",
-      "session_id": "sessions/8912115024517976935",
-      "last_progress_at": "2026-10-04T04:30:08.097222+00:00",
-      "last_fingerprint": "ce0ac65c646ac0384aba548fbbdd17f77f57c65f249b15ec34fd49b13ad7214c",
-      "last_nudge_at": null,
-      "nudge_count": 0,
-      "worker_restart_count": 0,
-      "last_restart_at": null,
-      "last_restart_run_id": null
-    },
-    "pr_number": 1045,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1045",
-    "normalization_slot": "2026-10-04",
-    "normalization_dispatched_at": "2026-10-04T10:28:40.189297+00:00",
-    "last_jules_session_id": "sessions/2556970304191877836"
+    "quality_content_sha256": "93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c",
+    "quality_checked_at": "2026-10-12T08:21:35.211383+00:00",
+    "quality_violations": []
   },
   "backlog": [
-    {
-      "cycle": "2026-09-01",
-      "status": "article_pr_open",
-      "article": {
-        "attempt_count": 1,
-        "status": "running",
-        "last_error": {
-          "stage": "article",
-          "code": "COMPLETED_WITHOUT_PR",
-          "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
-          "retryable": true,
-          "retry_at": "2026-09-01T10:04:03.211957+00:00",
-          "at": "2026-09-01T09:49:03.211975+00:00"
-        },
-        "next_retry_at": null,
-        "run_id": 33497738774,
-        "processed_run_id": 33488709183,
-        "provider_id": null,
-        "failure_fingerprint": "COMPLETED_WITHOUT_PR",
-        "same_failure_streak": 2,
-        "failure_count_by_type": {
-          "JULES_TIMEOUT_SESSION_ACTIVE": 2,
-          "COMPLETED_WITHOUT_PR": 2
-        },
-        "attempts": 5,
-        "deploy_attempts": 0,
-        "last_dispatch_at": "2026-09-01T10:30:11.070283+00:00",
-        "last_run_conclusion": "failure",
-        "last_worker_result": {
-          "schema_version": 1,
-          "slot": "2026-09-01",
-          "outcome": "COMPLETED_WITHOUT_PR",
-          "retryable": true,
-          "message": "Jules completed without creating a pull request; Jules diagnostic: All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
-          "session_id": "sessions/5987084725949200775",
-          "pr_url": "",
-          "github_run_id": "33488709183",
-          "completed_at": "2026-09-01T09:21:56.318388+00:00",
-          "diagnostic": {
-            "source": {
-              "name": "sources/github/yanivsa/kesher-website",
-              "owner": "yanivsa",
-              "repo": "kesher-website",
-              "default_branch": "main",
-              "main_available": true
-            },
-            "activity_count": 63,
-            "change_set_count": 60,
-            "change_set_fingerprints": [],
-            "last_agent_message": "",
-            "last_progress": "All plan steps completed — All plan steps have been successfully completed. Ready for submission.",
-            "last_description": "",
-            "session_failed_reason": ""
-          }
-        },
-        "last_jules_session_id": "sessions/5987084725949200775",
-        "last_failed_run_id": 33488709183,
-        "resume_dispatches": 4,
-        "pr_number": 616,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/616",
-        "merge_dispatch_at": "2026-09-01T12:57:10.540876+00:00",
-        "merge_dispatch_count": 3,
-        "merge_image_attempt_count": 3
-      },
-      "archived_at": "2026-09-01T21:24:57.393578+00:00",
-      "media": {
-        "source_slug": "aliyah-homesickness-balance",
-        "source_content_sha256": "04b29d6e5453dbfb8659ffe0160f42a81c22b06b2bd05323a91f2829df862c90",
-        "article_url": "https://kesher.saharoni.com/blog/aliyah-homesickness-balance",
-        "article_live": true,
-        "long_status": "complete",
-        "seed_dispatch_count": 1,
-        "long_last_dispatch_at": "2026-09-06T01:14:03.520707+00:00",
-        "long_resume_count": 1,
-        "long_item_id": "video-20260906-022345-04b29d6e54",
-        "long_youtube_url": "https://youtu.be/cjmOVgeAT7E",
-        "long_youtube_id": "cjmOVgeAT7E",
-        "short_status": "complete",
-        "short_dispatch_count": 1,
-        "short_last_dispatch_at": "2026-09-06T06:03:02.356131+00:00",
-        "long_provider_id": "91a86395-1be8-4c43-8ff3-04125e3b1401",
-        "long_artifact_id": "91a86395-1be8-4c43-8ff3-04125e3b1401",
-        "short_item_id": "video-20260906-090352-04b29d6e54",
-        "short_youtube_url": "https://youtu.be/QTfV67bERBg",
-        "short_youtube_id": "QTfV67bERBg",
-        "short_width": 1080,
-        "short_height": 1920,
-        "complete": true,
-        "completed_at": "2026-09-06T06:53:47.338365+00:00"
-      }
-    },
     {
       "cycle": "2026-09-02",
       "status": "article_pr_open",
@@ -1252,157 +1132,63 @@
       },
       "archived_at": "2026-10-03T21:00:42.100951+00:00",
       "media": {}
+    },
+    {
+      "cycle": "2026-10-04",
+      "status": "article_image_running",
+      "article": {
+        "attempt_count": 3,
+        "status": "running",
+        "last_error": null,
+        "next_retry_at": "2026-10-04T10:44:32.335079+00:00",
+        "run_id": 37195963244,
+        "processed_run_id": 37195963244,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 3,
+        "deploy_attempts": 0,
+        "normalization_status": "complete",
+        "quality_status": "passed",
+        "quality_content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22",
+        "quality_checked_at": "2026-10-04T00:45:00.091137+00:00",
+        "quality_violations": [],
+        "last_dispatch_at": "2026-10-04T10:37:29.816007+00:00",
+        "last_run_conclusion": "success",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-10-04",
+          "outcome": "PR_CREATED",
+          "retryable": false,
+          "message": "",
+          "session_id": "sessions/2556970304191877836",
+          "pr_url": "https://github.com/yanivsa/kesher-website/pull/1045",
+          "github_run_id": "37195963244",
+          "completed_at": "2026-10-04T10:41:40.948815+00:00"
+        },
+        "watchdog": {
+          "identity": "2026-10-04",
+          "session_id": "sessions/8912115024517976935",
+          "last_progress_at": "2026-10-04T04:30:08.097222+00:00",
+          "last_fingerprint": "ce0ac65c646ac0384aba548fbbdd17f77f57c65f249b15ec34fd49b13ad7214c",
+          "last_nudge_at": null,
+          "nudge_count": 0,
+          "worker_restart_count": 0,
+          "last_restart_at": null,
+          "last_restart_run_id": null
+        },
+        "pr_number": 1045,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1045",
+        "normalization_slot": "2026-10-04",
+        "normalization_dispatched_at": "2026-10-04T10:28:40.189297+00:00",
+        "last_jules_session_id": "sessions/2556970304191877836"
+      },
+      "archived_at": "2026-10-12T08:21:33.774217+00:00"
     }
   ],
   "last_error": null,
   "history": [
-    {
-      "at": "2026-10-01T14:50:02.756348+00:00",
-      "from": "article_retry_wait",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-01T14:54:36.516459+00:00",
-      "from": "adhd-waiting-mode",
-      "to": "marriage-hack-7-minutes",
-      "reason": "targeted_media_source_identity_reset",
-      "details": {
-        "previous_slug": "adhd-waiting-mode",
-        "previous_content_sha256": "4b0df04d8931ff8ab08c172a6b3590686e4c3f598ef0194a27b2c0dde59104b6",
-        "content_sha256": "bc7af54b55d268c5bf801470c842566c1e1a6948fac5ba0551849ffa6d41f967"
-      }
-    },
-    {
-      "at": "2026-10-01T18:14:35.885886+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-01T18:18:00.391141+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "full",
-        "resume": 1
-      }
-    },
-    {
-      "at": "2026-10-01T21:01:57.235420+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-10-01T21:01:57.235425+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-10-01T21:01:57.236427+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-10-01T21:20:49.258738+00:00",
-      "from": "article_needed",
-      "to": "waiting_for_article_window",
-      "reason": "publication slot has not opened"
-    },
-    {
-      "at": "2026-10-02T06:18:26.435296+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-02T06:18:30.377588+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "upload",
-        "resume": 1
-      }
-    },
-    {
-      "at": "2026-10-02T06:22:27.405727+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-02T06:22:32.502235+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "upload",
-        "resume": 2
-      }
-    },
-    {
-      "at": "2026-10-02T08:07:50.880833+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-02T08:07:55.596338+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "upload",
-        "resume": 3
-      }
-    },
-    {
-      "at": "2026-10-02T08:11:13.796103+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-02T08:11:17.017516+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-02T08:37:40.482288+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-02T08:37:42.517726+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "VIDEO_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "video exhausted 3 total controller dispatch attempts"
-      }
-    },
-    {
-      "at": "2026-10-02T08:40:28.919486+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-02T08:40:29.892742+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "video workflow already active"
-    },
     {
       "at": "2026-10-02T10:08:11.442672+00:00",
       "from": "long_video_running",
@@ -2032,12 +1818,42 @@
         "attempt": 1,
         "pr_number": 1045
       }
+    },
+    {
+      "at": "2026-10-12T08:21:33.774248+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-12T08:21:33.774251+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-12T08:21:33.774820+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-04T11:51:21.427947+00:00",
+  "updated_at": "2026-10-12T08:21:33.774237+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "running",
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  },
+  "long_video": {
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -2046,20 +1862,7 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-04T11:51:21.427918+00:00"
-  },
-  "long_video": {
-    "attempt_count": 1,
-    "status": "running",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 37155684445,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-04T00:45:52.640103+00:00"
+    "overview_evidence_required": true
   },
   "short": {
     "attempt_count": 0,
@@ -2075,25 +1878,5 @@
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": null,
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "targeted_media_recovery": {
-    "slug": "sleep-needs-10-year-old",
-    "content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22",
-    "article_url": "https://kesher.saharoni.com/blog/sleep-needs-10-year-old",
-    "article_verified": true,
-    "updated_at": "2026-10-04T00:45:01.116716+00:00",
-    "short_status": "pending",
-    "complete": false,
-    "long_status": "running",
-    "long_last_dispatch_at": "2026-10-04T00:45:52.640547+00:00"
   }
 }
