@@ -126,11 +126,12 @@ class RuntimeV5Controller(v5.V5Controller):
         return v5._newest(rows)
 
     def _verified_long_from_artifact_history(self, source):
-        """Recover exact public long-form evidence that a newer state artifact lost.
+        """Recover exact public long-form evidence from lightweight state history.
 
-        The normal fast path still reads only the newest state artifact. This
-        bounded fallback is used only when that newest state has no exact public
-        Overview for the authoritative slug + content hash.
+        The controller heartbeat must never download the multi-gigabyte durable
+        media archives just to inspect ``state.json``. Historical evidence is
+        therefore read only from the lightweight controller-state artifacts;
+        full durable media remains worker-side recovery material.
         """
         injected = getattr(self.github, "verified_video_item_from_history", None)
         if callable(injected):
@@ -145,7 +146,7 @@ class RuntimeV5Controller(v5.V5Controller):
 
         payload = self.github.request(
             "GET",
-            f"{self.github.api}/actions/artifacts?name={v5.LONG_VIDEO_STATE_ARTIFACT}&per_page=30",
+            f"{self.github.api}/actions/artifacts?name={v5.LONG_VIDEO_CONTROLLER_STATE_ARTIFACT}&per_page=30",
         )
         artifacts = [
             row
