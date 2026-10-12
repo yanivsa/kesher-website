@@ -26,8 +26,8 @@ STABILIZED_RUNTIME = ROOT / "scripts" / "kesher_content_controller_stabilized.py
 class V4RuntimeActivationTests(unittest.TestCase):
     def test_content_controller_owns_both_canonical_media_products_and_retires_v5_entry(self):
         workflow = CONTROLLER_WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("python -m scripts.kesher_runtime.controller_entry --mode live", workflow)
-        self.assertNotIn("scripts/kesher_content_controller_stabilized.py", workflow)
+        self.assertIn("python3 -m scripts.kesher_runtime.bridge_admission --controller", workflow)
+        self.assertIn("scripts/kesher_content_controller_stabilized.py --report-json", workflow)
         for kind in ("overview", "short"):
             with self.subTest(kind=kind):
                 state, command_id = requested(target=MediaIdentity(SOURCE, kind))

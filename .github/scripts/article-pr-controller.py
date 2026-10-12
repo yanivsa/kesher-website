@@ -404,6 +404,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", required=True)
     parser.add_argument("--pr", required=True, type=int)
+    parser.add_argument("--slot", default="")
     args = parser.parse_args()
     github_token = os.environ.get("GITHUB_TOKEN", "")
     jules_key = os.environ.get("JULES_API_KEY", "")

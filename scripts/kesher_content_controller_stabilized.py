@@ -41,8 +41,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     """Prevent advancement/completion unless article and canonical media evidence are durable."""
 
 
-    def _selected_article(self, posts):
+    def _selected_article(self, posts=None):
         """Resolve one authoritative article without regressing to date-only selection."""
+        if posts is None or isinstance(posts, dict):
+            posts = self.posts_on_main("main")
         target_slug = os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip()
         if target_slug:
             matches = [
@@ -63,7 +65,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         # Multiple articles can legitimately share a publication date. In that
         # case the durable controller state is stronger evidence than date order.
         # Preserve the exact previously-adopted article identity when possible
-        # and fail closed if the state cannot disambiguate the candidates.
+        # and fail closed if the state cannot disambuate the candidates.
         existing = self.github.load_controller_state()
         article_state = existing.get("article") if isinstance(existing, dict) else {}
         if not isinstance(article_state, dict):
@@ -87,7 +89,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         )
 
     def _article_source(self):
-        posts = self.github.contents_json("src/data/posts.json", "main")
+        posts = self.posts_on_main("main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
         article = self._selected_article(posts)
@@ -330,7 +332,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         return self._recover_exact_rejected_exhaustion(state)
 
     def _quality_preflight(self, state):
-        posts = self.github.contents_json("src/data/posts.json", "main")
+        posts = self.posts_on_main("main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
         article = self._selected_article(posts)
@@ -605,7 +607,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def _tick_targeted_media_recovery(self, state):
         """Advance only the explicitly requested existing article media chain."""
-        posts = self.github.contents_json("src/data/posts.json", "main")
+        posts = self.posts_on_main("main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
         article = self._selected_article(posts)
@@ -819,6 +821,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "duration": media.get("duration"),
             "content_duration_seconds": item.get("content_duration_seconds"),
             "signature_duration_seconds": item.get("signature_duration_seconds"),
+            "signature_overlay": item.get("signature_overlay"),
             "signature_fullscreen": item.get("signature_fullscreen"),
             "signature_asset_sha256": item.get("signature_asset_sha256"),
             "provider_id": item.get("task_id"),
@@ -828,23 +831,37 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def tick(self):
         state = self.state()
-        blocker = self._quality_preflight(state)
-        if blocker is not None:
-            return state, blocker
+        if v5.v3.entry.irrelevant_child_workflow_run():
+            return state, v5.core.Action(
+                "wait",
+                f"irrelevant workflow_run ignored: {os.environ.get('KESHER_CHILD_WORKFLOW') or 'unknown'}",
+            )
+        try:
+            blocker = self._quality_preflight(state)
+            if blocker is not None:
+                return state, blocker
 
-        if os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip():
+            if os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip():
+                direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
+                if direct_rebuild is not None:
+                    return direct_rebuild
+                return self._tick_targeted_media_recovery(state)
+
+            self._overview_evidence_preflight(state)
             direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
             if direct_rebuild is not None:
                 return direct_rebuild
-            return self._tick_targeted_media_recovery(state)
 
-        self._overview_evidence_preflight(state)
-        direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
-        if direct_rebuild is not None:
-            return direct_rebuild
-
-        self.github.save_controller_state(state)
-        return super().tick()
+            self.github.save_controller_state(state)
+            return super().tick()
+        except v5.core.ControllerError as exc:
+            code = str(exc).split(":", 1)[0]
+            v5.core.block(state, "controller", code, str(exc))
+            action = v5.core.Action("blocked", str(exc))
+            _, deliverables = runtime.delivery_guard.delivery_contract(state)
+            state["deliverables"] = deliverables
+            self.github.save_controller_state(state)
+            return state, action
 
 
 def install_runtime() -> None:

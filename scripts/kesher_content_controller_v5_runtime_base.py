@@ -25,6 +25,8 @@ DEFAULT_SIGNATURE_ASSET = "public/images/signature/signature-mask.svg"
 class RuntimeV5Controller(v5.V5Controller):
     """V5 plus bounded media recovery and a strict three-link delivery contract."""
 
+    AUTO_MERGE_WORKFLOW = ARTICLE_AUTO_MERGE_WORKFLOW
+
     def _signature_asset_path(self) -> Path:
         configured = os.environ.get("KESHER_SHORT_SIGNATURE_ASSET", "").strip()
         legacy_configured = os.environ.get("KESHER_SHORT_SIGNATURE_VIDEO", "").strip()
@@ -356,7 +358,16 @@ class RuntimeV5Controller(v5.V5Controller):
 
     def tick(self):
         state = self.state()
-        source = self._article_source()
+        try:
+            source = self._article_source()
+        except v5.core.ControllerError as exc:
+            code = str(exc).split(":", 1)[0]
+            v5.core.block(state, "controller", code, str(exc))
+            action = v5.core.Action("blocked", str(exc))
+            _, deliverables = delivery_guard.delivery_contract(state)
+            state["deliverables"] = deliverables
+            self.github.save_controller_state(state)
+            return state, action
         if source is not None:
             historical_action = self._reconcile_historical_long_and_advance_short(state, source)
             if historical_action is not None:

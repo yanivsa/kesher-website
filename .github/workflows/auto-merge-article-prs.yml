@@ -7,6 +7,16 @@ name: Auto-merge Kesher article PRs
 # the controller-owned image attempt.
 on:
   workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Exact authoritative article PR number to validate and merge"
+        required: true
+        type: string
+      slot:
+        description: "Optional authoritative publication slot (YYYY-MM-DD)"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -21,9 +31,8 @@ concurrency:
 
 jobs:
   merge:
-    # Retired by the coordinated schema-6 authority handover.
-    # A repository is always owner/name; this sentinel can never match.
-    if: ${{ github.repository == '__KESHER_RETIRED__' }}
+    # Bounded manual emergency bridge; explicitly retired by coordinated cutover.
+    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout trusted article controller
@@ -32,24 +41,57 @@ jobs:
           ref: main
           persist-credentials: false
 
-      - name: Select article PRs
+      - name: Refuse auto-merge bridge after cutover exclusion begins
+        id: bridge_admission
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission
+
+      - name: Validate exact target article PR
         env:
           GITHUB_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ inputs.pr_number }}
+          TARGET_SLOT: ${{ inputs.slot }}
         run: |
           set -euo pipefail
+          if [[ ! "${PR_NUMBER:-}" =~ ^[1-9][0-9]*$ ]]; then
+            echo "Refusing auto-merge: explicit positive integer pr_number is required (got '${PR_NUMBER:-}')." >&2
+            exit 1
+          fi
           curl --fail-with-body -sS \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/${REPO}/pulls?state=open&per_page=100" \
-            > open-prs.json
+            "https://api.github.com/repos/${REPO}/pulls/${PR_NUMBER}" \
+            > target-pr.json
           python3 - <<'PY' > pr-numbers.txt
           import json
-          with open("open-prs.json", encoding="utf-8") as fh:
-              for pr in json.load(fh):
-                  title = pr.get("title") or ""
-                  if title.startswith("Publish Kesher article:"):
-                      print(pr["number"])
+          import os
+          import sys
+          from pathlib import Path
+          import importlib.util
+
+          repo = os.environ["REPO"]
+          pr_number = int(os.environ["PR_NUMBER"])
+          target_slot = os.environ.get("TARGET_SLOT", "").strip()
+          token = os.environ["GITHUB_TOKEN"]
+          pr = json.loads(Path("target-pr.json").read_text(encoding="utf-8"))
+
+          spec = importlib.util.spec_from_file_location(
+              "kesher_article_pr_controller_v3",
+              Path(".github/scripts/article-pr-controller-v3.py"),
+          )
+          if spec is None or spec.loader is None:
+              raise SystemExit("Unable to load article-pr-controller-v3.py")
+          mod = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(mod)
+          mod.verify_exact_target_pr_preflight(
+              repo,
+              pr,
+              token,
+              expected_slot=target_slot,
+          )
+          print(pr_number)
           PY
 
       - name: Sync, clean, repair, validate and publish article PRs
@@ -57,6 +99,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
           REPO: ${{ github.repository }}
+          TARGET_SLOT: ${{ inputs.slot }}
         run: |
           set -euo pipefail
           test -n "${JULES_API_KEY:-}"
@@ -114,7 +157,8 @@ jobs:
               set +e
               output="$(python3 .github/scripts/article-pr-controller-v3.py \
                 --repo "${REPO}" \
-                --pr "${number}" 2>&1)"
+                --pr "${number}" \
+                --slot "${TARGET_SLOT:-}" 2>&1)"
               status=$?
               set -e
               printf '%s\n' "${output}"

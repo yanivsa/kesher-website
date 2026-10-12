@@ -130,8 +130,8 @@ class V3GitHubClient(core.GitHubClient):
             return False, {}
         if not isinstance(base_posts, list) or not isinstance(head_posts, list):
             return False, {}
-        base_ids = {row.get("id") for row in base_posts if isinstance(row, dict)}
-        new_posts = [row for row in head_posts if isinstance(row, dict) and row.get("id") not in base_ids]
+        base_ids = {core.canonical_slug(row) for row in base_posts if isinstance(row, dict)}
+        new_posts = [row for row in head_posts if isinstance(row, dict) and core.canonical_slug(row) not in base_ids]
         if len(new_posts) != 1:
             return False, {}
         post = new_posts[0]
@@ -394,9 +394,7 @@ class V3Controller(core.Controller):
         # Intercept the article-PR state because the base controller predates the
         # explicit image stage.
         if self.article_slot_open():
-            posts = self.github.contents_json("src/data/posts.json", "main")
-            if not isinstance(posts, list):
-                raise core.ControllerError("ARTICLE_SOURCE_INVALID")
+            posts = self.posts_on_main("main")
             todays = core.today_articles(posts, self.now.date())
             if not todays:
                 open_prs = self.github.open_article_prs(self.now.date().isoformat())
@@ -443,7 +441,7 @@ _original_adopt_latest = entry.adopt_latest_dispatched_children
 
 
 def v3_trigger_stage(workflow_name: str):
-    if workflow_name == IMAGE_WORKFLOW_NAME:
+    if workflow_name in {IMAGE_WORKFLOW_NAME, "Kesher Article Hero Image"}:
         return "image", IMAGE_WORKFLOW
     return _original_trigger_stage(workflow_name)
 

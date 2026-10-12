@@ -1,39 +1,71 @@
-name: Kesher canonical content controller
+name: Kesher Content Controller
+
 on:
+  schedule:
+    - cron: "3,8,13,18,23,28,33,38,43,48,53,58 * * * *"
+  workflow_run:
+    workflows:
+      - Kesher Article Generation
+      - Kesher Normalize Article PR
+      - Kesher Trusted Article Image
+      - Auto-merge Kesher article PRs
+      - Deploy to Cloudflare Pages
+      - Kesher Daily NotebookLM Video Overview
+      - Kesher Daily Article Short V4
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - "src/data/posts.json"
+      - "src/data/postsRecent.json"
+      - "public/images/blog/**"
   workflow_dispatch:
+
 permissions:
-  id-token: write
   contents: write
   actions: write
   pull-requests: read
+
 concurrency:
-  group: kesher-canonical-controller
+  group: kesher-content-controller
   cancel-in-progress: false
+
 jobs:
-  reconcile:
-    if: ${{ github.event_name == 'workflow_dispatch' && github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
+  control:
+    # Sole pre-cutover daily authority; automatically fails closed once canonical state becomes Schema 6.
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    env:
-      KESHER_CUTOVER_GATEWAY_URL: ${{ vars.KESHER_CUTOVER_GATEWAY_URL }}
-      GH_TOKEN: ${{ secrets.KESHER_CONTROLLER_TOKEN || github.token }}
+    timeout-minutes: 10
     steps:
-      - name: Checkout immutable main revision
+      - name: Checkout trusted controller
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: ${{ github.sha }}
+          ref: main
           persist-credentials: false
+
+      - name: Verify pre-cutover Schema-5 daily controller authority
+        id: bridge_admission
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KESHER_PRE_CUTOVER_DAILY_AUTHORITY: "true"
+          KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name || '' }}
+        run: python3 -m scripts.kesher_runtime.bridge_admission --controller
+
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
         with:
-          python-version: '3.12'
-      - name: Install trusted authority admission dependencies
-        run: python -m pip install PyYAML==6.0.2 -r scripts/requirements-article.txt
-      - name: Reconcile only after verified authority admission
+          python-version: "3.12"
+
+      - name: Install strict article image decoder
+        run: python3 -m pip install -r scripts/requirements-article.txt
+
+      - name: Run Kesher Content Controller
         env:
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: python -m scripts.kesher_runtime.controller_entry --mode live
+          GITHUB_TOKEN: ${{ github.token }}
+          JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
+          KESHER_PRE_CUTOVER_DAILY_AUTHORITY: "true"
+          KESHER_TRIGGER_EVENT: ${{ github.event_name }}
+          KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name || '' }}
+          KESHER_CHILD_RUN_ID: ${{ github.event.workflow_run.id || '' }}
+          KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion || '' }}
+        run: python3 -u scripts/kesher_content_controller_stabilized.py --report-json

@@ -128,7 +128,14 @@ class BestEffortController(v3.V3Controller):
         if dispatch_count >= MAX_AUTO_MERGE_DISPATCHES:
             return
 
-        self.github.dispatch(AUTO_MERGE_WORKFLOW)
+        pr_number = int(article.get("pr_number") or 0)
+        if pr_number <= 0:
+            raise v3.core.ControllerError("ARTICLE_PR_IDENTITY_MISSING")
+        slot = str(article.get("normalization_slot") or state.get("cycle") or "").strip()
+        inputs: dict[str, str] = {"pr_number": str(pr_number)}
+        if slot:
+            inputs["slot"] = slot
+        self.github.dispatch(AUTO_MERGE_WORKFLOW, inputs)
         article["merge_dispatch_at"] = now.isoformat()
         article["merge_dispatch_count"] = dispatch_count + 1
 

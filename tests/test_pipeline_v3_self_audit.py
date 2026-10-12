@@ -201,8 +201,8 @@ class PipelineV3SelfAuditTests(unittest.TestCase):
     def test_canonical_image_child_remains_controller_owned_and_failures_still_defer(self):
         workflow = CONTROLLER_WORKFLOW.read_text(encoding="utf-8")
         stabilized = STABILIZED_CONTROLLER.read_text(encoding="utf-8")
-        self.assertIn("python -m scripts.kesher_runtime.controller_entry --mode live", workflow)
-        self.assertNotIn("scripts/kesher_content_controller_stabilized.py", workflow)
+        self.assertIn("python3 -m scripts.kesher_runtime.bridge_admission --controller", workflow)
+        self.assertIn("scripts/kesher_content_controller_stabilized.py --report-json", workflow)
         self.assertIn("kesher_content_controller_v5_runtime", stabilized)
         self.assertIn("runtime.install_runtime()", stabilized)
         self.assertNotIn("scripts/kesher_content_controller_v3_best_effort.py", workflow)

@@ -22,6 +22,7 @@ except ImportError:
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 POSTS_FILE = PROJECT_DIR / "src" / "data" / "posts.json"
+POSTS_RECENT_FILE = PROJECT_DIR / "src" / "data" / "postsRecent.json"
 CATALOG_NAME = "enhancement-assets.json"
 
 
@@ -62,15 +63,19 @@ def _source_record(item: dict[str, Any] | None) -> dict[str, Any]:
     if source.get("image"):
         return source
     slug = str(source.get("slug") or source.get("id") or "").strip()
-    if not slug or not POSTS_FILE.is_file():
+    if not slug:
         return source
-    try:
-        posts = json.loads(POSTS_FILE.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return source
-    for post in posts if isinstance(posts, list) else []:
-        if not isinstance(post, dict):
+    catalog: list[dict[str, Any]] = []
+    for candidate_path in (POSTS_FILE, POSTS_RECENT_FILE):
+        if not candidate_path.is_file():
             continue
+        try:
+            rows = json.loads(candidate_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(rows, list):
+            catalog.extend(row for row in rows if isinstance(row, dict))
+    for post in catalog:
         if str(post.get("slug") or post.get("id") or "") == slug:
             merged = dict(post)
             merged.update(source)

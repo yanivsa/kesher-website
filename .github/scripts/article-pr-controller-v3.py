@@ -49,7 +49,13 @@ def load_validator_best_effort():
     return _original_load_validator()
 
 
-def controller_image_stage_terminal(repo: str, pr: dict, github_token: str) -> bool:
+def controller_image_stage_terminal(
+    repo: str,
+    pr: dict,
+    github_token: str,
+    *,
+    expected_slot: str = "",
+) -> bool:
     """Require durable proof that the controller-owned image stage is terminal.
 
     A controller cycle rollover can reset attempt_count while preserving a
@@ -58,6 +64,8 @@ def controller_image_stage_terminal(repo: str, pr: dict, github_token: str) -> b
     exhausted, or no-image state is never publication-terminal.
     """
     number = int(pr["number"])
+    if number <= 0:
+        return False
     payload = core.request_json(
         "GET",
         f"https://api.github.com/repos/{repo}/contents/{CONTROLLER_STATE_PATH}?ref={CONTROLLER_STATE_REF}",
@@ -83,6 +91,12 @@ def controller_image_stage_terminal(repo: str, pr: dict, github_token: str) -> b
     if state_pr != number:
         return False
 
+    slot_clean = expected_slot.strip()
+    if slot_clean:
+        state_slot = str(article.get("normalization_slot") or state.get("cycle") or "").strip()
+        if state_slot and state_slot != slot_clean:
+            return False
+
     image_status = str(image.get("status") or "")
     if image_status == "complete":
         return bool(
@@ -91,6 +105,40 @@ def controller_image_stage_terminal(repo: str, pr: dict, github_token: str) -> b
             and image.get("artifact_sha256")
         )
     return False
+
+
+def verify_exact_target_pr_preflight(
+    repo: str,
+    pr: dict,
+    github_token: str,
+    *,
+    expected_slot: str = "",
+) -> None:
+    """Validate exact target PR and durable state before any PR mutation, repair, or merge."""
+    if not isinstance(pr, dict):
+        raise RuntimeError("Target article PR payload is invalid")
+    try:
+        number = int(pr.get("number") or 0)
+    except (TypeError, ValueError) as exc:
+        raise RuntimeError("Target article PR number must be a positive integer") from exc
+    if number <= 0:
+        raise RuntimeError(f"Target article PR number must be positive: {number}")
+    if pr.get("state") != "open" or pr.get("draft"):
+        raise RuntimeError(f"PR #{number} is not an open non-draft PR")
+    base_ref = str((pr.get("base") or {}).get("ref") or "").strip()
+    if base_ref != "main":
+        raise RuntimeError(f"PR #{number} does not target main (base.ref={base_ref!r})")
+    head_repo = str(((pr.get("head") or {}).get("repo") or {}).get("full_name") or "").strip()
+    if head_repo and head_repo != repo:
+        raise RuntimeError(f"PR #{number} head repository mismatch: {head_repo!r} != {repo!r}")
+    title = str(pr.get("title") or "").strip()
+    if not title.startswith("Publish Kesher article:"):
+        raise RuntimeError(f"PR #{number} does not have an article publication title: {title!r}")
+    if not controller_image_stage_terminal(repo, pr, github_token, expected_slot=expected_slot):
+        raise RuntimeError(
+            f"PR #{number} is not the authoritative image-complete article PR in controller state; "
+            "refusing branch update, cleanup, repair, or merge"
+        )
 
 
 def merge_and_deploy_after_image_stage(repo: str, pr: dict, token: str) -> None:
@@ -194,12 +242,48 @@ Do not edit workflows, tests, prompts, scripts, packages or public/videos/. Run 
     return True
 
 
+_original_process = core.process
+
+
+def process_v3(
+    repo: str,
+    number: int,
+    github_token: str,
+    jules_key: str,
+    *,
+    expected_slot: str = "",
+) -> int:
+    if int(number or 0) <= 0:
+        raise RuntimeError(f"Target article PR number must be positive: {number}")
+    pr = core.request_json("GET", f"https://api.github.com/repos/{repo}/pulls/{int(number)}", github_token)
+    if not isinstance(pr, dict):
+        raise RuntimeError(f"Unable to load PR #{number}")
+    pr.setdefault("number", int(number))
+    verify_exact_target_pr_preflight(repo, pr, github_token, expected_slot=expected_slot)
+    return _original_process(repo, int(number), github_token, jules_key)
+
+
 def main() -> int:
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--repo", required=True)
+    parser.add_argument("--pr", required=True, type=int)
+    parser.add_argument("--slot", default="")
+    args = parser.parse_args()
+    github_token = os.environ.get("GITHUB_TOKEN", "")
+    jules_key = os.environ.get("JULES_API_KEY", "")
+    if not github_token:
+        raise RuntimeError("GITHUB_TOKEN is required")
+    if not jules_key:
+        raise RuntimeError("JULES_API_KEY is required")
+
     core.MAX_REPAIRS = MAX_REPAIRS
     core.load_validator = load_validator_best_effort
     core.send_jules_repair = send_jules_repair_v3
     core.merge_and_deploy = merge_and_deploy_after_image_stage
-    return core.main()
+    core.process = process_v3
+    return process_v3(args.repo, args.pr, github_token, jules_key, expected_slot=args.slot)
 
 
 if __name__ == "__main__":

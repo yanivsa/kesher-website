@@ -282,7 +282,12 @@ class JulesArticleRunnerTests(unittest.TestCase):
 
 
 class ManualArticleBridgeTests(unittest.TestCase):
-    paths = ('kesher-article-generation.yml', 'kesher-article-image.yml')
+    paths = (
+        'kesher-article-generation.yml',
+        'normalize-article-pr.yml',
+        'kesher-article-image.yml',
+        'auto-merge-article-prs.yml',
+    )
 
     def invocation(self, name):
         return {'GITHUB_REPOSITORY': runner.REPO, 'GITHUB_REF': 'refs/heads/main',
@@ -310,7 +315,7 @@ class ManualArticleBridgeTests(unittest.TestCase):
             for change in ({'GITHUB_REPOSITORY': 'other/repo'}, {'GITHUB_REF': 'refs/heads/repair'},
                            {'GITHUB_REF': 'refs/tags/main'}, {'GITHUB_EVENT_NAME': 'push'},
                            {'GITHUB_EVENT_NAME': 'schedule'},
-                           {'GITHUB_WORKFLOW_REF': runner.REPO + '/.github/workflows/auto-merge-article-prs.yml@refs/heads/main'},
+                           {'GITHUB_WORKFLOW_REF': runner.REPO + '/.github/workflows/kesher-master-supervisor.yml@refs/heads/main'},
                            {'GITHUB_WORKFLOW_REF': env['GITHUB_WORKFLOW_REF'].replace('@refs/heads/main', '@refs/heads/repair')}):
                 with self.subTest(workflow=name, change=change), self.assertRaises(StateInvalid):
                     bridge_admission.require_invocation(env | change)
@@ -370,7 +375,7 @@ class ManualArticleBridgeTests(unittest.TestCase):
         rows = {row['path']: row for row in check_definitions(definitions, rules)}
         for name in self.paths:
             self.assertEqual(rows['.github/workflows/' + name]['role'], 'emergency_bridge')
-        for name in ('normalize-article-pr.yml', 'auto-merge-article-prs.yml'):
+        for name in ('kesher-master-supervisor.yml', 'kesher-backlog-media-recovery.yml'):
             self.assertTrue(rows['.github/workflows/' + name]['definition_retired'])
         self.assertEqual(sum(row['role'] == 'controller' for row in rows.values()), 1)
 
