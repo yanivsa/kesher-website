@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-12",
-  "status": "long_video_retry_wait",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -27,7 +27,7 @@
     "last_deploy_dispatch_at": "2026-10-12T10:42:19.798617+00:00",
     "next_deploy_retry_at": null,
     "live": true,
-    "live_verified_at": "2026-10-12T12:09:56.696018+00:00"
+    "live_verified_at": "2026-10-12T12:27:57.328164+00:00"
   },
   "backlog": [
     {
@@ -1898,9 +1898,25 @@
       "details": {
         "retry_at": "2026-10-12T12:15:03.445933+00:00"
       }
+    },
+    {
+      "at": "2026-10-12T12:27:57.328186+00:00",
+      "from": "long_video_retry_wait",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-12T12:28:04.029768+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-12T12:10:03.446000+00:00",
+  "updated_at": "2026-10-12T12:28:04.029783+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1914,10 +1930,10 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 1,
+    "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-12T12:15:03.445933+00:00",
+    "next_retry_at": null,
     "run_id": 38238827214,
     "processed_run_id": 38238827214,
     "provider_id": null,
@@ -1928,10 +1944,11 @@
     },
     "overview_evidence_required": true,
     "item_id": "video-20261004-034718-199f8fed91",
-    "last_dispatch_at": "2026-10-12T10:50:25.764972+00:00",
+    "last_dispatch_at": "2026-10-12T12:28:04.029759+00:00",
     "resume_dispatches": 1,
     "last_run_conclusion": "failure",
-    "last_failed_run_id": 38238827214
+    "last_failed_run_id": 38238827214,
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
