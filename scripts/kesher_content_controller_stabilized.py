@@ -37,6 +37,16 @@ def _unicode_safe_public_site_get(self, url: str):
     return _ORIGINAL_PUBLIC_SITE_GET(self, safe_url)
 
 
+def _current_cycle_video_matching(video_state, requested_slug):
+    """Keep current-cycle media selection on the requested article only.
+
+    Prior-cycle media recovery is owned explicitly by RuntimeV5Controller's
+    backlog preflight. Reusing the legacy queue-aware matcher here can bind
+    today's article to an unrelated historical provider item.
+    """
+    return v5.v3.entry._base_matching(video_state, requested_slug)
+
+
 class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     """Prevent advancement/completion unless article and canonical media evidence are durable."""
 
@@ -440,11 +450,12 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         source = self._article_source()
         if source is None:
             raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_UNAVAILABLE")
+        operation = str(bound_inputs.get("operation") or "full").strip().lower()
+        bound_inputs["operation"] = operation
         target_slug = str(bound_inputs.get("target_slug") or "").strip()
-        if bound_inputs.get("operation") in {"full", "generate"}:
-            if target_slug and target_slug != source["slug"]:
-                raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_MISMATCH")
-            bound_inputs["target_slug"] = source["slug"]
+        if target_slug and target_slug != source["slug"]:
+            raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_MISMATCH")
+        bound_inputs["target_slug"] = source["slug"]
 
         snapshot = self.github.newest_video_state()
         exact_existing = [item for item in v5._exact_items(snapshot, source)
@@ -462,6 +473,43 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             bound_inputs['target_item_id'] = str(exact_existing[0].get('id') or '')
             if not bound_inputs['target_item_id']:
                 raise v5.core.ControllerError('LONG_VIDEO_ITEM_ID_MISSING')
+        elif operation == "rebuild":
+            # Rebuild is identity-preserving. Never reinterpret a stale rebuild
+            # request as fresh generation for today's article.
+            raise v5.core.ControllerError('LONG_VIDEO_EXACT_ITEM_NOT_UNIQUE')
+        elif operation == "upload":
+            # A legacy cross-cycle matcher could choose an old approved item and
+            # hand us an unbound upload request. With no exact current item,
+            # convert that stale resume into bounded fresh generation for the
+            # authoritative current source and clear only the stale media IDs.
+            current = state.get("video") if isinstance(state.get("video"), dict) else {}
+            previous = {
+                field: current.get(field)
+                for field in ("item_id", "provider_id", "artifact_id", "source_id")
+                if current.get(field)
+            }
+            for field in ("item_id", "provider_id", "artifact_id", "source_id"):
+                current[field] = None
+            if previous:
+                current["stale_source_binding_previous"] = previous
+                state.setdefault("history", []).append({
+                    "at": v5.core.utc_now(),
+                    "from": state.get("status"),
+                    "to": state.get("status"),
+                    "reason": "current_cycle_stale_video_binding_cleared",
+                    "details": {
+                        "slug": source["slug"],
+                        "content_sha256": source["content_sha256"],
+                        "previous": previous,
+                    },
+                })
+                state["history"] = state["history"][-100:]
+            bound_inputs = {
+                "operation": "full",
+                "target_slug": source["slug"],
+                "target_content_sha256": source["content_sha256"],
+            }
+            operation = "full"
         exact_rejected = [
             item for item in exact_existing
             if item.get("uploaded") is not True
@@ -866,6 +914,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
 def install_runtime() -> None:
     runtime.install_runtime()
+    # The stabilized V5 runtime owns prior-cycle backlog explicitly. Keep the
+    # base current-cycle matcher exact to the requested article instead of
+    # inheriting the legacy global FIFO fallback.
+    v5.v3.entry.queue_aware_matching = _current_cycle_video_matching
     v5.core.PublicSiteClient.get = _unicode_safe_public_site_get
     v5.V5Controller = StabilizedRuntimeV5Controller
 
