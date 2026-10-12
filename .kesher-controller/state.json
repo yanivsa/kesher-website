@@ -1,14 +1,14 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-13",
-  "status": "image_retry_wait",
+  "status": "article_result_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-13T00:00:57.605557+00:00",
     "run_id": 38312896122,
-    "processed_run_id": null,
+    "processed_run_id": 38312896122,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -21,7 +21,20 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1111",
     "normalization_slot": "2026-10-13",
     "normalization_dispatched_at": "2026-10-12T22:26:39.583126+00:00",
-    "normalization_run_id": 38316685719
+    "normalization_run_id": 38316685719,
+    "last_run_conclusion": "success",
+    "last_worker_result": {
+      "schema_version": 1,
+      "slot": "2026-10-13",
+      "outcome": "PR_CREATED",
+      "retryable": false,
+      "message": "",
+      "session_id": "sessions/5127100728681762820",
+      "pr_url": "https://github.com/yanivsa/kesher-website/pull/1111",
+      "github_run_id": "38312896122",
+      "completed_at": "2026-10-12T22:25:55.743755+00:00"
+    },
+    "last_jules_session_id": "sessions/5127100728681762820"
   },
   "backlog": [
     {
@@ -1189,14 +1202,7 @@
       "archived_at": "2026-10-12T08:21:33.774217+00:00"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 38316841968 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-10-12T22:35:10.349687+00:00",
-    "at": "2026-10-12T22:30:10.349717+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-02T11:18:22.753659+00:00",
@@ -1885,9 +1891,20 @@
         "failure_streak": 1,
         "run_id": 38316841968
       }
+    },
+    {
+      "at": "2026-10-12T23:58:57.605579+00:00",
+      "from": "image_retry_wait",
+      "to": "article_result_wait",
+      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
+      "details": {
+        "run_id": 38312896122,
+        "outcome": "PR_CREATED",
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1111"
+      }
     }
   ],
-  "updated_at": "2026-10-12T22:30:10.349729+00:00",
+  "updated_at": "2026-10-12T23:58:57.605585+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
