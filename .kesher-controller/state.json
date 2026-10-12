@@ -1891,5 +1891,12 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "last_child_notification": {
+    "workflow": "Kesher Article Generation",
+    "run_id": 38312896122,
+    "conclusion": "success",
+    "source_slug": null,
+    "slot": "2026-10-13"
   }
 }
