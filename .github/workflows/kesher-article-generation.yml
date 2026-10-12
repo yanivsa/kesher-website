@@ -22,7 +22,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  actions: read
+  actions: write
 
 concurrency:
   group: kesher-article-generation-${{ github.event_name }}-${{ inputs.slot || github.sha }}
@@ -132,3 +132,19 @@ jobs:
         run: |
           echo "The single article text worker attempt failed; the controller owns retry/backoff." >&2
           exit 1
+
+      - name: Notify canonical Kesher Content Controller on completion
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' && inputs.test_mode != true }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHILD_WORKFLOW: ${{ github.workflow }}
+          CHILD_RUN_ID: ${{ github.run_id }}
+          CHILD_CONCLUSION: ${{ job.status }}
+          SLOT: ${{ inputs.slot || '' }}
+        run: |
+          gh workflow run kesher-content-controller.yml \
+            --ref main \
+            -f child_workflow="$CHILD_WORKFLOW" \
+            -f child_run_id="$CHILD_RUN_ID" \
+            -f child_conclusion="$CHILD_CONCLUSION" \
+            -f slot="$SLOT"

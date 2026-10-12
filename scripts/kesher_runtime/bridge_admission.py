@@ -59,6 +59,11 @@ def require_pre_cutover_controller_invocation(environ):
             and 'KESHER_CHILD_WORKFLOW' in environ
             and child_workflow not in PRE_CUTOVER_ADMITTED_CHILD_WORKFLOW_NAMES
         )
+        or (
+            event_name == 'workflow_dispatch'
+            and bool(child_workflow)
+            and child_workflow not in PRE_CUTOVER_ADMITTED_CHILD_WORKFLOW_NAMES
+        )
     ):
         raise StateInvalid('PRE_CUTOVER_CONTROLLER_EXACT_INVOCATION_REQUIRED')
 

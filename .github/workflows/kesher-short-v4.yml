@@ -454,3 +454,19 @@ jobs:
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
               out.write("### Kesher Short V4\n\n" + text + "\n")
           PY
+
+      - name: Notify canonical Kesher Content Controller on completion
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHILD_WORKFLOW: ${{ github.workflow }}
+          CHILD_RUN_ID: ${{ github.run_id }}
+          CHILD_CONCLUSION: ${{ job.status }}
+          SOURCE_SLUG: ${{ inputs.derive_slug || inputs.release_slug || '' }}
+        run: |
+          gh workflow run kesher-content-controller.yml \
+            --ref main \
+            -f child_workflow="$CHILD_WORKFLOW" \
+            -f child_run_id="$CHILD_RUN_ID" \
+            -f child_conclusion="$CHILD_CONCLUSION" \
+            -f source_slug="$SOURCE_SLUG"

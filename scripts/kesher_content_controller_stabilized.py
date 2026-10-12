@@ -339,7 +339,9 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     def state(self):
         state = super().state()
         state = self._recover_stale_source_binding_exhaustion(state)
-        return self._recover_exact_rejected_exhaustion(state)
+        state = self._recover_exact_rejected_exhaustion(state)
+        self._correlate_child_notification_fields(state)
+        return state
 
     def _quality_preflight(self, state):
         posts = self.posts_on_main("main")
@@ -877,6 +879,100 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "source_id": item.get("source_id"),
         })
 
+    @staticmethod
+    def _child_notification_env() -> dict[str, str]:
+        return {
+            "trigger": str(
+                os.environ.get("KESHER_TRIGGER_EVENT")
+                or os.environ.get("GITHUB_EVENT_NAME")
+                or ""
+            ).strip(),
+            "workflow": str(os.environ.get("KESHER_CHILD_WORKFLOW") or "").strip(),
+            "run_id": str(os.environ.get("KESHER_CHILD_RUN_ID") or "").strip(),
+            "conclusion": str(os.environ.get("KESHER_CHILD_CONCLUSION") or "").strip().lower(),
+            "source_slug": str(os.environ.get("KESHER_CHILD_SOURCE_SLUG") or "").strip(),
+            "slot": str(os.environ.get("KESHER_CHILD_SLOT") or "").strip(),
+        }
+
+    def _correlate_child_notification_fields(self, state: dict) -> None:
+        info = self._child_notification_env()
+        workflow = info["workflow"]
+        if not workflow or workflow not in v5.v3.entry.ADMITTED_CHILD_WORKFLOW_NAMES:
+            return
+        if info["slot"] and state.get("cycle") and info["slot"] != str(state.get("cycle")):
+            return
+        raw_id = info["run_id"]
+        parsed_id = int(raw_id) if raw_id.isdigit() else (raw_id or None)
+        if parsed_id is not None:
+            if workflow == "Kesher Article Generation":
+                state.setdefault("article", {})["run_id"] = parsed_id
+            elif workflow == "Kesher Normalize Article PR":
+                state.setdefault("article", {})["normalization_run_id"] = parsed_id
+            elif workflow == "Kesher Trusted Article Image":
+                state.setdefault("image", {})["run_id"] = parsed_id
+            elif workflow == "Auto-merge Kesher article PRs":
+                state.setdefault("article", {})["merge_run_id"] = parsed_id
+            elif workflow == "Deploy to Cloudflare Pages":
+                article = state.setdefault("article", {})
+                article["deploy_run_id"] = parsed_id
+                if not article.get("next_deploy_retry_at"):
+                    article["next_deploy_retry_at"] = (
+                        self.now.astimezone(v5.core.timezone.utc) + v5.core.timedelta(minutes=5)
+                    ).isoformat()
+            elif workflow == "Kesher Daily NotebookLM Video Overview":
+                long_video = state.setdefault("long_video", {})
+                long_video["run_id"] = parsed_id
+                if not long_video.get("next_retry_at"):
+                    long_video["next_retry_at"] = (
+                        self.now.astimezone(v5.core.timezone.utc) + v5.core.timedelta(minutes=5)
+                    ).isoformat()
+            elif workflow == "Kesher Daily Article Short V4":
+                state.setdefault("short", {})["run_id"] = parsed_id
+        state["last_child_notification"] = {
+            "workflow": workflow,
+            "run_id": parsed_id,
+            "conclusion": info["conclusion"] or "success",
+            "source_slug": info["source_slug"] or None,
+            "slot": info["slot"] or state.get("cycle"),
+        }
+
+    def _workflow_run(self, run_id):
+        run = super()._workflow_run(run_id)
+        info = self._child_notification_env()
+        notified_id = info["run_id"]
+        notified_conclusion = info["conclusion"]
+        if notified_id and v5.v3.entry._same_id(run_id, notified_id) and notified_conclusion:
+            if not isinstance(run, dict) or str(run.get("status") or "") != "completed":
+                merged = dict(run) if isinstance(run, dict) else {}
+                merged.update({
+                    "id": int(notified_id) if notified_id.isdigit() else notified_id,
+                    "status": "completed",
+                    "conclusion": notified_conclusion,
+                    "event": str(merged.get("event") or "workflow_dispatch"),
+                })
+                return merged
+        return run
+
+    def _dispatch_auto_merge_v4(self, state):
+        if self._child_notification_env()["workflow"] == "Auto-merge Kesher article PRs":
+            return
+        return super()._dispatch_auto_merge_v4(state)
+
+    def _handle_open_article_pr(self, state, pr):
+        if self._child_notification_env()["workflow"] == "Kesher Normalize Article PR":
+            needs_normalization, _ = self.github.article_pr_normalization_required(pr)
+            if needs_normalization:
+                v5.core.transition(
+                    state,
+                    "article_normalizing",
+                    "normalize child completed while PR still requires normalization; deferred to recovery heartbeat",
+                )
+                return v5.core.Action(
+                    "wait",
+                    "normalize child completed without clearing normalization; deferred to heartbeat",
+                )
+        return super()._handle_open_article_pr(state, pr)
+
     def tick(self):
         state = self.state()
         if v5.v3.entry.irrelevant_child_workflow_run():
@@ -884,6 +980,35 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 "wait",
                 f"irrelevant workflow_run ignored: {os.environ.get('KESHER_CHILD_WORKFLOW') or 'unknown'}",
             )
+        info = self._child_notification_env()
+        notification_key = (
+            f"{info['workflow']}:{info['run_id']}"
+            if info["workflow"] and info["run_id"]
+            else ""
+        )
+        if info["workflow"]:
+            if info["slot"] and state.get("cycle") and info["slot"] != str(state.get("cycle")):
+                return state, v5.core.Action(
+                    "wait",
+                    f"stale child completion slot ignored: {info['slot']}",
+                )
+            processed = state.get("processed_child_notifications")
+            if not isinstance(processed, list):
+                processed = []
+            if notification_key and notification_key in processed:
+                return state, v5.core.Action(
+                    "wait",
+                    f"duplicate child completion notification ignored: {notification_key}",
+                )
+            if v5.v3.entry.failed_child_waits_for_heartbeat():
+                if notification_key:
+                    processed.append(notification_key)
+                    state["processed_child_notifications"] = processed[-100:]
+                self.github.save_controller_state(state)
+                return state, v5.core.Action(
+                    "wait",
+                    f"failed child {info['workflow']} deferred to recovery heartbeat",
+                )
         try:
             blocker = self._quality_preflight(state)
             if blocker is not None:
@@ -901,7 +1026,18 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 return direct_rebuild
 
             self.github.save_controller_state(state)
-            return super().tick()
+            state, action = super().tick()
+            if info["workflow"]:
+                self._correlate_child_notification_fields(state)
+                if notification_key:
+                    processed = state.get("processed_child_notifications")
+                    if not isinstance(processed, list):
+                        processed = []
+                    if notification_key not in processed:
+                        processed.append(notification_key)
+                    state["processed_child_notifications"] = processed[-100:]
+                self.github.save_controller_state(state)
+            return state, action
         except v5.core.ControllerError as exc:
             code = str(exc).split(":", 1)[0]
             v5.core.block(state, "controller", code, str(exc))
