@@ -2210,6 +2210,11 @@
         "note": "סקירות על הגירה מראות שמעבר לארץ חדשה מלווה לעיתים קרובות באתגרי הסתגלות למשפחה כולה, ודורש התארגנות מחדש של תפקידים ושגרות."
       }
     ],
-    "controllerManaged": false
+    "controllerManaged": false,
+    "image": "/images/generated/blog/relocation-loneliness-accompanying-partner.jpg",
+    "imageAlt": "צילום מציאותי של זוג או משפחה בתקופת מעבר, הסתגלות או רילוקיישן",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/generated/blog/healing-after-infidelity.jpg",
+    "imageIsFallback": true
   }
 ]
