@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-12",
-  "status": "long_video_running",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -27,7 +27,7 @@
     "last_deploy_dispatch_at": "2026-10-12T10:42:19.798617+00:00",
     "next_deploy_retry_at": null,
     "live": true,
-    "live_verified_at": "2026-10-12T12:27:57.328164+00:00"
+    "live_verified_at": "2026-10-12T13:05:33.352442+00:00"
   },
   "backlog": [
     {
@@ -1914,9 +1914,27 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-12T13:05:33.352458+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-12T13:05:34.098484+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-12T13:05:38.598384+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-10-12T12:28:04.029783+00:00",
+  "updated_at": "2026-10-12T13:05:38.598392+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1931,14 +1949,14 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38249201649,
     "processed_run_id": 38238827214,
     "provider_id": "1cb087ab-6c10-4783-8a04-7bd5898567b5",
-    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "VIDEO_WORKFLOW_FAILED": 1
     },
@@ -1975,16 +1993,20 @@
     "source_id": "1df9bb10-bd44-4a0e-8b29-6be69cb9f04f"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
     "processed_run_id": null,
-    "provider_id": null,
+    "provider_id": "1cb087ab-6c10-4783-8a04-7bd5898567b5",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_dispatch_at": "2026-10-12T13:05:38.598361+00:00",
+    "artifact_id": "1cb087ab-6c10-4783-8a04-7bd5898567b5",
+    "source_id": "1df9bb10-bd44-4a0e-8b29-6be69cb9f04f",
+    "adopted_from_long_item_id": "video-20261012-152939-93bd8eb7d0"
   },
   "migration": {
     "v4_short_controller_state": null
