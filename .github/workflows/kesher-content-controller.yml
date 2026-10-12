@@ -68,4 +68,4 @@ jobs:
           KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name || '' }}
           KESHER_CHILD_RUN_ID: ${{ github.event.workflow_run.id || '' }}
           KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion || '' }}
-        run: python3 -u -m scripts.kesher_content_controller_stabilized --report-json
+        run: PYTHONPATH=. python3 -u scripts/kesher_content_controller_stabilized.py --report-json
