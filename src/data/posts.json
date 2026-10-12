@@ -2211,10 +2211,7 @@
       }
     ],
     "controllerManaged": false,
-    "image": "/images/generated/blog/relocation-loneliness-accompanying-partner.jpg",
-    "imageAlt": "צילום מציאותי של זוג או משפחה בתקופת מעבר, הסתגלות או רילוקיישן",
-    "imageProvider": "Local",
-    "imageSourceUrl": "local://public/images/generated/blog/healing-after-infidelity.jpg",
-    "imageIsFallback": true
+    "image": "/images/generated/blog/placeholder-no-image-yet.png",
+    "imageAlt": "ממתין להוספת תמונה על ידי המערכת האוטומטית לאחר שלב הביניים של בחירת התמונה המדויקת"
   }
 ]
