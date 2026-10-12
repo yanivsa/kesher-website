@@ -1948,7 +1948,15 @@
     "resume_dispatches": 1,
     "last_run_conclusion": "failure",
     "last_failed_run_id": 38238827214,
-    "attempts": 1
+    "attempts": 1,
+    "watchdog": {
+      "identity": "long_video:relocation-loneliness-accompanying-partner:93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c:video-20261012-152939-93bd8eb7d0",
+      "hard_started_at": "2026-10-12T12:29:45.549794+00:00",
+      "last_progress_at": "2026-10-12T12:34:37.420379+00:00",
+      "last_fingerprint": "e533dae390e93ff64676a0a195e0871d794521593e6372c145f14069142300df",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "short": {
     "attempt_count": 0,
