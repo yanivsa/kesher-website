@@ -20,7 +20,12 @@
     "serviceLabel": "ייעוץ זוגי",
     "directAnswer": "הקושי לראות את כולם מתחתנים נובע מהפער בין השמחה על החברים לבין הכאב האישי על תחושת הלבד והגעגוע לזוגיות. זה יכול לעורר בדידות, השוואות כואבות ולחץ סביבתי. התמודדות נכונה עשויה לכלול מתן לגיטימציה לרגשות, ניהול גבולות באירועים, ויצירת עוגנים חברתיים נוספים.",
     "evidence": [],
-    "controllerManaged": false
+    "controllerManaged": false,
+    "image": "/images/generated/blog/when-everyone-around-you-gets-married.jpg",
+    "imageAlt": "צילום מציאותי של אדם או אינטראקציה חברתית המתאימים לנושא רווקות וקשרים",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/generated/blog/mental-load-relationship-invisible-labor.jpg",
+    "imageIsFallback": true
   },
   {
     "id": "how-to-repair-after-couple-fight",
