@@ -13,6 +13,9 @@ from __future__ import annotations
 import argparse
 import base64
 import copy
+import hashlib
+import html
+from html.parser import HTMLParser
 import io
 import json
 import os
@@ -83,8 +86,96 @@ def parse_timestamp(value: Any) -> datetime | None:
     return parsed.astimezone(timezone.utc)
 
 
+REVIEWED_ADOPTABLE_POST_FREEZE_IDENTITIES: frozenset[tuple[str, str, str]] = frozenset({
+    (
+        "2026-10-06",
+        "child-meltdown-after-school",
+        "4f5b0dfa23a56b7088fd332cc3f538a6d0bca9b1e7c09b601d43ec6e8d464e9a",
+    ),
+    (
+        "2026-10-09",
+        "how-to-repair-after-couple-fight",
+        "317b282607c03c6183ca4d7cd1791c2aa4c2f9bb6b6f5832e0227c413ef5121a",
+    ),
+    (
+        "2026-10-10",
+        "child-argues-every-request-boundaries",
+        "e0594f772f3f11baacc0ae5c53b7ef9ce9f88f871ee3b6e8c8f67b024b8b8bbc",
+    ),
+})
+REVIEWED_AMBIGUOUS_POST_FREEZE_DATES: frozenset[str] = frozenset({
+    "2026-10-04",
+    "2026-10-07",
+    "2026-10-08",
+})
+
+
+class _CatalogTextExtractor(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.parts: list[str] = []
+
+    def handle_data(self, data: str) -> None:
+        value = re.sub(r"\s+", " ", data).strip()
+        if value:
+            self.parts.append(value)
+
+
+def _clean_catalog_html(value: str) -> str:
+    parser = _CatalogTextExtractor()
+    parser.feed(value)
+    return html.unescape("\n\n".join(parser.parts))
+
+
 def canonical_slug(post: dict[str, Any]) -> str:
     return str(post.get("slug") or post.get("id") or "").strip()
+
+
+def _post_source_sha256(post: dict[str, Any]) -> str:
+    slug = canonical_slug(post)
+    title = str(post.get("title") or "").strip()
+    excerpt_raw = str(post.get("excerpt") or "").strip()
+    content_raw = str(post.get("content") or "").strip()
+    if slug and title and excerpt_raw and content_raw:
+        excerpt = _clean_catalog_html(excerpt_raw)
+        article_text = _clean_catalog_html(content_raw)
+        canonical_url = f"{SITE_URL}/blog/{slug}"
+        body = "\n\n".join(part for part in (title, excerpt, article_text, f"מקור: {canonical_url}") if part)
+        return hashlib.sha256(body.encode("utf-8")).hexdigest()
+    explicit = str(post.get("content_sha256") or "").strip()
+    if explicit:
+        return explicit
+    if content_raw:
+        return hashlib.sha256(" ".join(content_raw.split()).encode("utf-8")).hexdigest()
+    return ""
+
+
+def is_controller_adoptable_post(
+    post: dict[str, Any],
+    *,
+    state_slug: str = "",
+    state_content_sha256: str = "",
+) -> bool:
+    """Return True if a post is owned/adoptable by the autonomous daily controller.
+
+    Editorial/manual posts with `controllerManaged: false` remain excluded by
+    default across both catalogs. Only an exact state-disambiguated identity or
+    an exact immutable `(date, slug, content_sha256)` entry in
+    `REVIEWED_ADOPTABLE_POST_FREEZE_IDENTITIES` may be adopted.
+    """
+    if not isinstance(post, dict):
+        return False
+    slug = canonical_slug(post)
+    post_date = str(post.get("date") or "").strip()
+    if not slug or not post_date:
+        return False
+    if post.get("controllerManaged") is not False:
+        return True
+    sha = _post_source_sha256(post)
+    if state_slug and slug == state_slug:
+        if not state_content_sha256 or sha == state_content_sha256:
+            return True
+    return (post_date, slug, sha) in REVIEWED_ADOPTABLE_POST_FREEZE_IDENTITIES
 
 
 def today_articles(posts: list[dict[str, Any]], day: date) -> list[dict[str, Any]]:
@@ -93,66 +184,93 @@ def today_articles(posts: list[dict[str, Any]], day: date) -> list[dict[str, Any
     Editorial/manual publications may legitimately share the same public date as
     the daily autonomous article. Such posts opt out explicitly with
     `controllerManaged: false`, so the controller's one-article-per-cycle
-    invariant applies only to controller-managed publications.
+    invariant applies only to controller-managed or explicitly reviewed
+    post-freeze recovery publications.
     """
     expected = day.isoformat()
     return [
         post for post in posts
         if isinstance(post, dict)
-        and post.get("controllerManaged") is not False
         and str(post.get("date") or "").strip() == expected
-        and canonical_slug(post)
+        and is_controller_adoptable_post(post)
     ]
 
 
 def merge_catalog_posts(primary: Any, secondary: Any = None) -> list[dict[str, Any]]:
-    """Combine posts.json and postsRecent.json into one logical catalog deduplicated by canonical slug/id."""
+    """Combine posts.json and postsRecent.json into one logical catalog deduplicated by canonical slug/id.
+
+    Never rewrites `controllerManaged: false` on any post.
+    """
     primary_list = [p for p in primary if isinstance(p, dict)] if isinstance(primary, list) else []
     secondary_list = [p for p in secondary if isinstance(p, dict)] if isinstance(secondary, list) else []
-    managed_dates = {
-        str(p.get("date") or "").strip()
-        for p in [*primary_list, *secondary_list]
-        if p.get("controllerManaged") is not False and str(p.get("date") or "").strip()
-    }
-    secondary_date_counts: dict[str, int] = {}
-    for p in secondary_list:
-        d = str(p.get("date") or "").strip()
-        if d:
-            secondary_date_counts[d] = secondary_date_counts.get(d, 0) + 1
 
     rows: list[dict[str, Any]] = []
     seen: set[str] = set()
-    for is_secondary, catalog in ((False, primary_list), (True, secondary_list)):
+    for catalog in (primary_list, secondary_list):
         for post in catalog:
             key = canonical_slug(post)
             if key:
                 if key in seen:
                     continue
                 seen.add(key)
-            post_date = str(post.get("date") or "").strip()
-            if (
-                is_secondary
-                and post.get("controllerManaged") is False
-                and post_date
-                and post_date not in managed_dates
-                and secondary_date_counts.get(post_date) == 1
-            ):
-                post = {**post, "controllerManaged": True}
-            rows.append(post)
+            rows.append(copy.deepcopy(post))
     return rows
 
 
+def _validate_catalog_post_list(raw: Any, catalog_name: str) -> list[dict[str, Any]]:
+    if not isinstance(raw, list):
+        raise ControllerError(
+            f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: {catalog_name} is not a JSON list"
+        )
+    validated: list[dict[str, Any]] = []
+    seen_in_catalog: set[str] = set()
+    for idx, item in enumerate(raw):
+        if not isinstance(item, dict):
+            raise ControllerError(
+                f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: {catalog_name}[{idx}] is not an object"
+            )
+        slug = canonical_slug(item)
+        if not slug:
+            raise ControllerError(
+                f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: {catalog_name}[{idx}] missing canonical slug/id"
+            )
+        raw_date = str(item.get("date") or "").strip()
+        try:
+            date.fromisoformat(raw_date)
+        except ValueError as exc:
+            raise ControllerError(
+                f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: {catalog_name}[{idx}] invalid date {raw_date!r}"
+            ) from exc
+        if slug in seen_in_catalog:
+            raise ControllerError(
+                f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: duplicate slug {slug!r} in {catalog_name}"
+            )
+        seen_in_catalog.add(slug)
+        validated.append(item)
+    return validated
+
+
 def posts_on_main(github: Any, ref: str = "main") -> list[dict[str, Any]]:
-    """Read unified publication catalog from posts.json and postsRecent.json."""
-    posts = github.contents_json("src/data/posts.json", ref)
-    if not isinstance(posts, list):
-        raise ControllerError("ARTICLE_SOURCE_INVALID")
+    """Read unified publication catalog from posts.json and postsRecent.json (fail-closed)."""
     try:
-        recent = github.contents_json("src/data/postsRecent.json", ref)
-    except (ControllerError, AssertionError, KeyError, FileNotFoundError):
-        recent = []
-    if not isinstance(recent, list):
-        recent = []
+        posts_raw = github.contents_json("src/data/posts.json", ref)
+        recent_raw = github.contents_json("src/data/postsRecent.json", ref)
+    except Exception as exc:
+        if isinstance(exc, ControllerError) and str(exc).startswith("ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE"):
+            raise
+        raise ControllerError(
+            f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: failed reading unified catalog at {ref}: {exc}"
+        ) from exc
+
+    posts = _validate_catalog_post_list(posts_raw, "src/data/posts.json")
+    recent = _validate_catalog_post_list(recent_raw, "src/data/postsRecent.json")
+    primary_slugs = {canonical_slug(p) for p in posts}
+    recent_slugs = {canonical_slug(p) for p in recent}
+    overlap = sorted(primary_slugs & recent_slugs)
+    if overlap:
+        raise ControllerError(
+            f"ARTICLE_PUBLICATION_CATALOG_UNAVAILABLE: duplicate slug(s) across posts.json and postsRecent.json: {', '.join(overlap)}"
+        )
     return merge_catalog_posts(posts, recent)
 
 
@@ -554,7 +672,7 @@ class GitHubClient:
 
             files = self.request("GET", f"{self.api}/pulls/{number}/files?per_page=100")
             if not (isinstance(files, list) and any(
-                isinstance(row, dict) and row.get("filename") in {"src/data/posts.json", "src/data/postsRecent.json"}
+                isinstance(row, dict) and row.get("filename") == "src/data/posts.json"
                 for row in files
             )):
                 continue
@@ -563,8 +681,8 @@ class GitHubClient:
                 head_sha = str((pr.get("head") or {}).get("sha") or "")
                 base_sha = str((pr.get("base") or {}).get("sha") or "main")
                 try:
-                    base_posts = self.posts_on_main(base_sha)
-                    head_posts = self.posts_on_main(head_sha)
+                    base_posts = self.contents_json("src/data/posts.json", base_sha)
+                    head_posts = self.contents_json("src/data/posts.json", head_sha)
                     if isinstance(base_posts, list) and isinstance(head_posts, list):
                         base_ids = {canonical_slug(row) for row in base_posts if isinstance(row, dict)}
                         new_posts = [

@@ -41,6 +41,7 @@ class FakeGitHub:
     def __init__(self) -> None:
         self.saved_state = None
         self.posts = []
+        self.recent_posts = []
         self.prs = []
         self.active = {}
         self.runs = {}
@@ -55,9 +56,12 @@ class FakeGitHub:
         self.saved_state = copy.deepcopy(state)
 
     def contents_json(self, path, ref="main"):
-        assert path == "src/data/posts.json"
         assert ref == "main"
-        return copy.deepcopy(self.posts)
+        if path == "src/data/posts.json":
+            return copy.deepcopy(self.posts)
+        if path == "src/data/postsRecent.json":
+            return copy.deepcopy(self.recent_posts)
+        raise AssertionError(path)
 
     def open_article_prs(self, target_slot: str | None = None):
         return copy.deepcopy(self.prs)

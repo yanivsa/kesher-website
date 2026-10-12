@@ -821,6 +821,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "duration": media.get("duration"),
             "content_duration_seconds": item.get("content_duration_seconds"),
             "signature_duration_seconds": item.get("signature_duration_seconds"),
+            "signature_overlay": item.get("signature_overlay"),
             "signature_fullscreen": item.get("signature_fullscreen"),
             "signature_asset_sha256": item.get("signature_asset_sha256"),
             "provider_id": item.get("task_id"),
@@ -830,23 +831,37 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def tick(self):
         state = self.state()
-        blocker = self._quality_preflight(state)
-        if blocker is not None:
-            return state, blocker
+        if v5.v3.entry.irrelevant_child_workflow_run():
+            return state, v5.core.Action(
+                "wait",
+                f"irrelevant workflow_run ignored: {os.environ.get('KESHER_CHILD_WORKFLOW') or 'unknown'}",
+            )
+        try:
+            blocker = self._quality_preflight(state)
+            if blocker is not None:
+                return state, blocker
 
-        if os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip():
+            if os.environ.get("KESHER_TARGET_MEDIA_SLUG", "").strip():
+                direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
+                if direct_rebuild is not None:
+                    return direct_rebuild
+                return self._tick_targeted_media_recovery(state)
+
+            self._overview_evidence_preflight(state)
             direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
             if direct_rebuild is not None:
                 return direct_rebuild
-            return self._tick_targeted_media_recovery(state)
 
-        self._overview_evidence_preflight(state)
-        direct_rebuild = self._dispatch_exact_rejected_rebuild(state)
-        if direct_rebuild is not None:
-            return direct_rebuild
-
-        self.github.save_controller_state(state)
-        return super().tick()
+            self.github.save_controller_state(state)
+            return super().tick()
+        except v5.core.ControllerError as exc:
+            code = str(exc).split(":", 1)[0]
+            v5.core.block(state, "controller", code, str(exc))
+            action = v5.core.Action("blocked", str(exc))
+            _, deliverables = runtime.delivery_guard.delivery_contract(state)
+            state["deliverables"] = deliverables
+            self.github.save_controller_state(state)
+            return state, action
 
 
 def install_runtime() -> None:

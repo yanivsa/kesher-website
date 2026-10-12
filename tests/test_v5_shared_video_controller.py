@@ -85,8 +85,11 @@ class FakeGitHub:
         self.saved_state = copy.deepcopy(state)
 
     def contents_json(self, path, ref="main"):
-        assert path == "src/data/posts.json"
-        return copy.deepcopy(self.posts)
+        if path == "src/data/posts.json":
+            return copy.deepcopy(self.posts)
+        if path == "src/data/postsRecent.json":
+            return copy.deepcopy(getattr(self, "recent_posts", []))
+        raise AssertionError(path)
 
     def open_article_prs(self, target_slot=None):
         return copy.deepcopy(self.prs)

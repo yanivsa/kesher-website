@@ -11,6 +11,15 @@ from .worker_entry import REPOSITORY
 
 PRE_CUTOVER_CONTROLLER_WORKFLOW = '.github/workflows/kesher-content-controller.yml'
 PRE_CUTOVER_CONTROLLER_EVENTS = {'schedule', 'workflow_run', 'push', 'workflow_dispatch'}
+PRE_CUTOVER_ADMITTED_CHILD_WORKFLOW_NAMES = {
+    'Kesher Article Generation',
+    'Kesher Normalize Article PR',
+    'Kesher Trusted Article Image',
+    'Auto-merge Kesher article PRs',
+    'Deploy to Cloudflare Pages',
+    'Kesher Daily NotebookLM Video Overview',
+    'Kesher Daily Article Short V4',
+}
 WORKER_BRIDGE_WORKFLOWS = {
     '.github/workflows/kesher-article-generation.yml',
     '.github/workflows/normalize-article-pr.yml',
@@ -36,13 +45,20 @@ def require_bridge(state):
 
 
 def require_pre_cutover_controller_invocation(environ):
+    event_name = environ.get('GITHUB_EVENT_NAME')
+    child_workflow = str(environ.get('KESHER_CHILD_WORKFLOW') or '').strip()
     if (
         environ.get('KESHER_PRE_CUTOVER_DAILY_AUTHORITY') != 'true'
         or environ.get('KESHER_MANUAL_EMERGENCY_BRIDGE') == 'true'
         or environ.get('GITHUB_REPOSITORY') != REPOSITORY
         or environ.get('GITHUB_REF') != 'refs/heads/main'
-        or environ.get('GITHUB_EVENT_NAME') not in PRE_CUTOVER_CONTROLLER_EVENTS
+        or event_name not in PRE_CUTOVER_CONTROLLER_EVENTS
         or environ.get('GITHUB_WORKFLOW_REF') != f'{REPOSITORY}/{PRE_CUTOVER_CONTROLLER_WORKFLOW}@refs/heads/main'
+        or (
+            event_name == 'workflow_run'
+            and 'KESHER_CHILD_WORKFLOW' in environ
+            and child_workflow not in PRE_CUTOVER_ADMITTED_CHILD_WORKFLOW_NAMES
+        )
     ):
         raise StateInvalid('PRE_CUTOVER_CONTROLLER_EXACT_INVOCATION_REQUIRED')
 

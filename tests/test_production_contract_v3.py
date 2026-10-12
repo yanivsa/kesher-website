@@ -125,7 +125,7 @@ class ProductionContractV3Tests(unittest.TestCase):
         self.assertIn('IMAGE_TERMINAL_STATES = {"complete", "deferred"}', controller)
         self.assertIn("image_was_terminal", controller)
         self.assertIn("merge_dispatch_at", controller)
-        self.assertIn("self.github.dispatch(AUTO_MERGE_WORKFLOW)", controller)
+        self.assertIn("self.github.dispatch(AUTO_MERGE_WORKFLOW, inputs)", controller)
 
     def test_legacy_policy_is_not_the_runtime_policy(self) -> None:
         self.assertNotEqual(POLICY_PATH, LEGACY_POLICY)

@@ -126,6 +126,8 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
 
             def contents_json(self, path, ref="main"):
                 self.assertion = (path, ref)
+                if path == "src/data/postsRecent.json":
+                    return []
                 return [risky_article()]
 
             def save_controller_state(self, state):
@@ -236,6 +238,8 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
             def contents_json(self, path, ref="main"):
                 if path == "src/data/posts.json":
                     return [today_article, old_article]
+                if path == "src/data/postsRecent.json":
+                    return []
                 raise AssertionError(path)
 
         controller = object.__new__(stabilized.StabilizedRuntimeV5Controller)
@@ -278,6 +282,8 @@ class ArticleQualityStabilizationTests(unittest.TestCase):
 
             def contents_json(self, path, ref="main"):
                 self.assertion = (path, ref)
+                if path == "src/data/postsRecent.json":
+                    return []
                 return [today_article, old_article]
 
             def newest_video_state(self):

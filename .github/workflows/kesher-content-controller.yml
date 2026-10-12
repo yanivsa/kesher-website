@@ -7,16 +7,11 @@ on:
     workflows:
       - Kesher Article Generation
       - Kesher Normalize Article PR
-      - Normalize Kesher Article PR
       - Kesher Trusted Article Image
-      - Kesher Article Hero Image
       - Auto-merge Kesher article PRs
-      - Auto-Merge Kesher Article PRs
       - Deploy to Cloudflare Pages
       - Kesher Daily NotebookLM Video Overview
-      - Kesher Daily Video Overview
       - Kesher Daily Article Short V4
-      - Kesher Article Short V4
     types: [completed]
   push:
     branches: [main]
@@ -53,6 +48,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           KESHER_PRE_CUTOVER_DAILY_AUTHORITY: "true"
+          KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name || '' }}
         run: python3 -m scripts.kesher_runtime.bridge_admission --controller
 
       - name: Set up Python

@@ -326,6 +326,25 @@ def adopt_latest_dispatched_children(
     return changed
 
 
+ADMITTED_CHILD_WORKFLOW_NAMES = frozenset({
+    "Kesher Article Generation",
+    "Kesher Normalize Article PR",
+    "Kesher Trusted Article Image",
+    "Auto-merge Kesher article PRs",
+    "Deploy to Cloudflare Pages",
+    "Kesher Daily NotebookLM Video Overview",
+    "Kesher Daily Article Short V4",
+})
+
+
+def irrelevant_child_workflow_run(env: Mapping[str, str] | None = None) -> bool:
+    variables = os.environ if env is None else env
+    if variables.get("KESHER_TRIGGER_EVENT") != "workflow_run":
+        return False
+    child_workflow = str(variables.get("KESHER_CHILD_WORKFLOW") or "").strip()
+    return child_workflow not in ADMITTED_CHILD_WORKFLOW_NAMES
+
+
 def failed_child_waits_for_heartbeat(env: Mapping[str, str] | None = None) -> bool:
     variables = os.environ if env is None else env
     return bool(
@@ -334,11 +353,16 @@ def failed_child_waits_for_heartbeat(env: Mapping[str, str] | None = None) -> bo
     )
 
 
-def emit_heartbeat_wait_report(state: dict[str, Any] | None, cycle: str) -> None:
+def emit_heartbeat_wait_report(
+    state: dict[str, Any] | None,
+    cycle: str,
+    *,
+    reason: str = "failed child deferred to recovery heartbeat",
+) -> None:
     current = state if isinstance(state, dict) else controller.new_cycle_state(datetime.now(ISRAEL_TZ).date())
     payload = {
         "action": "wait",
-        "reason": "failed child deferred to recovery heartbeat",
+        "reason": reason,
         "state": current,
     }
     print(json.dumps(payload, ensure_ascii=False, indent=2))
@@ -354,6 +378,16 @@ def main() -> int:
     token = os.environ.get("GITHUB_TOKEN", "").strip()
     repo = os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website")
     state: dict[str, Any] | None = None
+    if irrelevant_child_workflow_run():
+        if token:
+            github = controller.GitHubClient(repo, token)
+            state = github.load_controller_state()
+        emit_heartbeat_wait_report(
+            state,
+            cycle,
+            reason="irrelevant workflow_run ignored without provider dispatch",
+        )
+        return 0
     if token:
         github = controller.GitHubClient(repo, token)
         state = github.load_controller_state()

@@ -119,17 +119,27 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             if not matches:
                 continue
             row_slug = str((row.get("article") or {}).get("slug") or media.get("source_slug") or "").strip()
+            expected_sha = str((row.get("article") or {}).get("quality_content_sha256") or "").strip()
             if row_slug:
                 slug_matches = [
                     p for p in matches
                     if str(p.get("slug") or p.get("id") or "").strip() == row_slug
+                    and v5.core.is_controller_adoptable_post(
+                        p,
+                        state_slug=row_slug,
+                        state_content_sha256=expected_sha,
+                    )
                 ]
                 resolved_matches = slug_matches if len(slug_matches) == 1 else []
+            elif cycle in v5.core.REVIEWED_AMBIGUOUS_POST_FREEZE_DATES:
+                resolved_matches = []
             else:
-                cm_matches = [p for p in matches if p.get("controllerManaged") is not False]
+                cm_matches = [
+                    p for p in matches
+                    if v5.core.is_controller_adoptable_post(p)
+                ]
                 resolved_matches = cm_matches if len(cm_matches) == 1 else []
 
-            expected_sha = str((row.get("article") or {}).get("quality_content_sha256") or "").strip()
             if len(resolved_matches) == 1 and expected_sha:
                 candidate_source = v5.article_source_identity(resolved_matches[0])
                 if candidate_source["content_sha256"] != expected_sha:

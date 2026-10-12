@@ -124,8 +124,8 @@ exact_field = article_contract.exact_field
 class V3GitHubClient(core.GitHubClient):
     def article_pr_image_ready(self, pr: dict[str, Any]) -> tuple[bool, dict[str, str]]:
         try:
-            base_posts = self.posts_on_main(str((pr.get("base") or {}).get("sha") or "main"))
-            head_posts = self.posts_on_main(str((pr.get("head") or {}).get("sha") or ""))
+            base_posts = self.contents_json("src/data/posts.json", str((pr.get("base") or {}).get("sha") or "main"))
+            head_posts = self.contents_json("src/data/posts.json", str((pr.get("head") or {}).get("sha") or ""))
         except core.ControllerError:
             return False, {}
         if not isinstance(base_posts, list) or not isinstance(head_posts, list):

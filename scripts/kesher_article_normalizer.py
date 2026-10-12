@@ -30,19 +30,26 @@ def extract_target_article(
     base_posts: list[dict[str, Any]],
     head_posts: list[dict[str, Any]],
     slot: str,
+    *,
+    recent_posts: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Extract exactly one new article for *slot* from an arbitrarily dirty head.
 
-    Existing base articles are not trusted from the PR branch. Only an article
-    whose identity is absent from current main and whose date equals the target
-    slot may be carried forward into the normalized publication branch.
+    Existing base articles (and any articles in postsRecent.json) are not
+    trusted from the PR branch. Only an article whose identity is absent from
+    current main and whose date equals the target slot may be carried forward
+    into the normalized publication branch.
     """
     try:
         target_date = date.fromisoformat(slot)
     except ValueError as exc:
         raise ArticleNormalizationError(f"invalid publication slot: {slot}") from exc
 
-    base_ids = {_post_id(post) for post in base_posts if _post_id(post)}
+    base_ids = {
+        _post_id(post)
+        for post in [*base_posts, *(recent_posts or [])]
+        if isinstance(post, dict) and _post_id(post)
+    }
     candidates = [
         post
         for post in head_posts
@@ -60,24 +67,34 @@ def extract_target_article(
 def normalized_posts(
     base_posts: list[dict[str, Any]],
     article: dict[str, Any],
+    *,
+    recent_posts: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     """Return current-main posts plus exactly one target article.
 
     Relative order and content of every base article are preserved. The new
     article is inserted by ISO publication date into the existing newest-first
-    sequence.
+    sequence. `src/data/posts.json` is the sole canonical write target;
+    `recent_posts` is checked read-only to prevent duplicate slugs/slots.
     """
+    try:
+        from .kesher_content_controller import is_controller_adoptable_post
+    except ImportError:
+        from kesher_content_controller import is_controller_adoptable_post
+
     article_id = _post_id(article)
     if not article_id:
         raise ArticleNormalizationError("target article has no id/slug")
     article_date = _post_date(article)
 
-    for post in base_posts:
+    for post in [*base_posts, *(recent_posts or [])]:
+        if not isinstance(post, dict):
+            continue
         if _post_id(post) == article_id:
             raise ArticleNormalizationError(
                 f"target article identity already exists in main: {article_id}"
             )
-        if _post_date(post) == article_date:
+        if _post_date(post) == article_date and is_controller_adoptable_post(post):
             raise ArticleNormalizationError(
                 f"publication slot already exists in main: {article_date.isoformat()}"
             )
@@ -100,8 +117,10 @@ def normalization_required(
     head_posts: list[dict[str, Any]],
     slot: str,
     changed_paths: list[str],
+    *,
+    recent_posts: list[dict[str, Any]] | None = None,
 ) -> bool:
     """Return True when the article branch is not the canonical current-main diff."""
-    article = extract_target_article(base_posts, head_posts, slot)
-    expected_posts = normalized_posts(base_posts, article)
+    article = extract_target_article(base_posts, head_posts, slot, recent_posts=recent_posts)
+    expected_posts = normalized_posts(base_posts, article, recent_posts=recent_posts)
     return bool(forbidden_article_paths(changed_paths) or head_posts != expected_posts)

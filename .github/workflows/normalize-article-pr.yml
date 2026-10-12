@@ -102,6 +102,7 @@ jobs:
           git fetch --no-tags origin "refs/heads/${head_ref}:refs/remotes/origin/${head_ref}"
           git show "refs/remotes/origin/${head_ref}:src/data/posts.json" > /tmp/head-posts.json
           cp src/data/posts.json /tmp/main-posts.json
+          cp src/data/postsRecent.json /tmp/main-posts-recent.json
 
           python3 - <<'PY'
           import json
@@ -110,15 +111,16 @@ jobs:
           from scripts.kesher_article_normalizer import extract_target_article, normalized_posts
 
           base = json.loads(Path('/tmp/main-posts.json').read_text(encoding='utf-8'))
+          recent = json.loads(Path('/tmp/main-posts-recent.json').read_text(encoding='utf-8'))
           head = json.loads(Path('/tmp/head-posts.json').read_text(encoding='utf-8'))
-          article = extract_target_article(base, head, os.environ['SLOT'])
+          article = extract_target_article(base, head, os.environ['SLOT'], recent_posts=recent)
 
           # Pipeline V4 ownership: the trusted image worker is the only image
           # mutator. Discard any legacy/untrusted article-image attachment here.
           article.pop('image', None)
           article.pop('imageAlt', None)
 
-          normalized = normalized_posts(base, article)
+          normalized = normalized_posts(base, article, recent_posts=recent)
           Path('src/data/posts.json').write_text(
               json.dumps(normalized, ensure_ascii=False, indent=2) + '\n',
               encoding='utf-8',

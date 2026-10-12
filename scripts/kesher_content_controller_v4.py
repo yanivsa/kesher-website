@@ -224,10 +224,19 @@ class V4Controller(legacy.BestEffortController):
         return state
 
     def _dispatch_auto_merge_v4(self, state: dict[str, Any]) -> None:
-        active = self.github.active_workflow_run(AUTO_MERGE_WORKFLOW, production_only=True)
+        workflow = getattr(self, "AUTO_MERGE_WORKFLOW", AUTO_MERGE_WORKFLOW)
+        active = self.github.active_workflow_run(workflow, production_only=True)
         if active:
             return
-        core.GitHubClient.dispatch(self.github, AUTO_MERGE_WORKFLOW, None)
+        article = state.get("article") if isinstance(state.get("article"), dict) else {}
+        pr_number = int(article.get("pr_number") or 0)
+        if pr_number <= 0:
+            raise core.ControllerError("ARTICLE_PR_IDENTITY_MISSING")
+        slot = str(article.get("normalization_slot") or state.get("cycle") or "").strip()
+        inputs: dict[str, str] = {"pr_number": str(pr_number)}
+        if slot:
+            inputs["slot"] = slot
+        core.GitHubClient.dispatch(self.github, workflow, inputs)
         state["article"]["merge_dispatch_at"] = core.utc_now()
         state["article"]["merge_dispatch_count"] = int(state["article"].get("merge_dispatch_count") or 0) + 1
 

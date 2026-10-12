@@ -482,15 +482,22 @@ class V5Controller(v4.V4Controller):
 
     def tick(self) -> tuple[dict[str, Any], core.Action]:
         state = self.state()
-        article_watchdog_action = self._article_watchdog(state)
-        if article_watchdog_action is not None:
+        try:
+            article_watchdog_action = self._article_watchdog(state)
+            if article_watchdog_action is not None:
+                self.github.save_controller_state(state)
+                return state, article_watchdog_action
+            source = self._article_source()
+            if source is not None:
+                # Evidence-only migration: a matching V4 public Short is durable
+                # success even while the long-form stage is still missing.
+                self._adopt_existing_short(state, source)
+        except core.ControllerError as exc:
+            code = str(exc).split(":", 1)[0]
+            core.block(state, "controller", code, str(exc))
+            action = core.Action("blocked", str(exc))
             self.github.save_controller_state(state)
-            return state, article_watchdog_action
-        source = self._article_source()
-        if source is not None:
-            # Evidence-only migration: a matching V4 public Short is durable
-            # success even while the long-form stage is still missing.
-            self._adopt_existing_short(state, source)
+            return state, action
 
         state["video"] = state["long_video"]
         try:
