@@ -1912,5 +1912,8 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-13"
-  }
+  },
+  "processed_child_notifications": [
+    "Kesher Article Generation:38312896122"
+  ]
 }
