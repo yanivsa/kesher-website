@@ -1211,6 +1211,27 @@ def run_generation(
         requested_sha = os.environ.get('TARGET_CONTENT_SHA256', '').strip()
         if requested_sha and source['content_sha256'] != requested_sha:
             raise PipelineError('EXACT_MEDIA_IDENTITY_MISMATCH: requested source content changed')
+        already_completed = [
+            existing
+            for existing in (state.get("items") or [])
+            if isinstance(existing, dict)
+            and str((existing.get("source") or {}).get("slug") or "") == source["slug"]
+            and str((existing.get("source") or {}).get("content_sha256") or "") == source["content_sha256"]
+            and (
+                (
+                    existing.get("uploaded") is True
+                    and existing.get("status") == "uploaded"
+                    and bool(str(existing.get("youtube_id") or "").strip())
+                    and existing.get("source_mode") != "overview-segment"
+                )
+                or existing.get("status") == "released_without_short"
+            )
+        ]
+        if already_completed:
+            existing = already_completed[-1]
+            export_item_target(existing)
+            print(f"NO_GENERATION active_item={existing['id']} status={existing['status']}")
+            return 0
         item = new_item(source)
         state["items"].append(item)
         save_state(state)

@@ -290,9 +290,14 @@ class ThreeStrikeMediaInterventionMixin:
             stages.append(("long_video", v5.LONG_VIDEO_WORKFLOW, long_candidate, None))
         elif long_verified is not None:
             short_state = self.github.newest_short_state()
+            short_rows = (
+                self._exact_short_items(short_state, source, long_item=long_verified)
+                if hasattr(self, "_exact_short_items")
+                else v5._exact_items(short_state, source)
+            )
             valid_short = [
                 row
-                for row in v5._exact_items(short_state, source)
+                for row in short_rows
                 if delivery_guard.short_public_portrait_verified(
                     row,
                     source,

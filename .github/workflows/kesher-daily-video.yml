@@ -277,6 +277,7 @@ jobs:
         run: python -u scripts/kesher_daily_pipeline.py --preflight
 
       - name: Prepare exact daily Video Overview generation
+        id: prepare_generation
         if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
         env:
           TARGET_SLUG: ${{ inputs.target_slug }}
@@ -285,7 +286,7 @@ jobs:
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation
 
       - name: Generate or resume exact Video Overview
-        if: ${{ inputs.operation == 'full' || inputs.operation == 'generate' }}
+        if: ${{ (inputs.operation == 'full' || inputs.operation == 'generate') && steps.prepare_generation.outputs.skip_generation != 'true' }}
         env:
           TARGET_SLUG: ${{ inputs.target_slug }}
           TARGET_CONTENT_SHA256: ${{ inputs.target_content_sha256 }}

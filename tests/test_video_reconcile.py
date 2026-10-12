@@ -739,8 +739,77 @@ class VideoReconcileTests(unittest.TestCase):
             with self.assertRaisesRegex(pipeline.PipelineError, "requires target_slug, content_sha256, and target_item_id"):
                 reconcile.prepare_upload()
 
+    def test_prepare_generation_skips_and_supersedes_stray_duplicates_when_already_public(self) -> None:
+        from tests.test_media_provenance_contract import bound_short
+
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        uploaded_short = {
+            **bound_short(45.0),
+            "id": "short-uploaded-1",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "qlVlUZMDKNo",
+            "youtube_url": "https://youtu.be/qlVlUZMDKNo",
+            "source": {"slug": source["slug"], "content_sha256": source["content_sha256"]},
+        }
+        uploaded_short.pop("overview_provider_identity", None)
+        stray_dup = pipeline.new_item(source)
+        stray_dup.update({
+            "id": "short-stray-2",
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "status": "generating",
+            "uploaded": False,
+        })
+        pipeline.save_state({"version": 1, "items": [uploaded_short, stray_dup], "updated_at": pipeline.utc_now()})
+
+        output_file = self.root / "github_output"
+        env_file = self.root / "github_env"
+        with mock.patch.dict(
+            os.environ,
+            {"GITHUB_OUTPUT": str(output_file), "GITHUB_ENV": str(env_file), "KESHER_MEDIA_MODE": "article_short"},
+            clear=False,
+        ):
+            self.assertEqual(reconcile.prepare_generation("today"), 0)
+
+        self.assertIn("skip_generation=true", output_file.read_text(encoding="utf-8"))
+        self.assertIn("TARGET_ITEM_ID=short-uploaded-1", env_file.read_text(encoding="utf-8"))
+        saved = {row["id"]: row for row in pipeline.load_state()["items"]}
+        self.assertEqual(saved["short-uploaded-1"]["status"], "uploaded")
+        self.assertEqual(saved["short-stray-2"]["status"], "superseded")
+        self.assertEqual(saved["short-stray-2"]["superseded_reason"], "already_public_same_source")
+
+    def test_run_generation_refuses_duplicate_item_when_uploaded_item_exists(self) -> None:
+        today = post("today")
+        self.write_posts([today])
+        source = pipeline.source_metadata(today)
+        uploaded_item = pipeline.new_item(source)
+        uploaded_item.update({
+            "id": "uploaded-1",
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "qlVlUZMDKNo",
+            "youtube_url": "https://youtu.be/qlVlUZMDKNo",
+        })
+        pipeline.save_state({"version": 1, "items": [uploaded_item], "updated_at": pipeline.utc_now()})
+
+        with mock.patch.object(pipeline, "auth_preflight"), mock.patch.object(
+            pipeline, "add_source"
+        ) as add_source, mock.patch.object(
+            pipeline, "start_generation"
+        ) as start_gen:
+            self.assertEqual(pipeline.run_generation(10, None, slug="today"), 0)
+
+        add_source.assert_not_called()
+        start_gen.assert_not_called()
+        items = pipeline.load_state()["items"]
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]["id"], "uploaded-1")
+
 
 if __name__ == "__main__":
     unittest.main()
-
-

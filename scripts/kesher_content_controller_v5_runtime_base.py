@@ -52,6 +52,42 @@ class RuntimeV5Controller(v5.V5Controller):
             return blocker
         return super()._tick_short(state, source, long_item)
 
+    def _authoritative_overview_identity(self, source, long_item=None):
+        item = long_item
+        if not isinstance(item, dict):
+            long_state = self.github.newest_video_state()
+            item = v5._newest(v5._verified_exact(long_state, source))
+        if not isinstance(item, dict) and hasattr(self, "_verified_long_from_artifact_history"):
+            item = self._verified_long_from_artifact_history(source)
+        if not isinstance(item, dict):
+            return None
+        identity = {
+            field: item.get(field)
+            for field in ("notebook_id", "source_id", "task_id", "artifact_id", "raw_sha256")
+        }
+        if not all(isinstance(identity.get(field), str) and identity[field].strip() for field in identity):
+            return None
+        return identity
+
+    def _bind_short_overview_identity(self, item, source, long_item=None):
+        if not isinstance(item, dict):
+            return item
+        bound = copy.deepcopy(item)
+        overview_identity = self._authoritative_overview_identity(source, long_item=long_item)
+        if overview_identity is not None:
+            bound["overview_provider_identity"] = overview_identity
+        return bound
+
+    def _exact_short_items(self, short_state, source, long_item=None):
+        overview_identity = self._authoritative_overview_identity(source, long_item=long_item)
+        rows = []
+        for row in v5._exact_items(short_state, source):
+            bound = copy.deepcopy(row)
+            if overview_identity is not None:
+                bound["overview_provider_identity"] = copy.deepcopy(overview_identity)
+            rows.append(bound)
+        return rows
+
     def _adopt_existing_short(self, state, source):
         current_short = state.get("short") or {}
         if (
@@ -60,11 +96,15 @@ class RuntimeV5Controller(v5.V5Controller):
             and current_short.get("youtube_id")
             and current_short.get("youtube_url")
         ):
+            if current_short.get("overview_provider_identity") is None:
+                overview_identity = self._authoritative_overview_identity(source)
+                if overview_identity is not None:
+                    current_short["overview_provider_identity"] = overview_identity
             return current_short
         short_state = self.github.newest_short_state()
         verified = [
             row
-            for row in v5._exact_items(short_state, source)
+            for row in self._exact_short_items(short_state, source)
             if delivery_guard.short_public_portrait_verified(
                 row,
                 source,
@@ -285,7 +325,7 @@ class RuntimeV5Controller(v5.V5Controller):
             short_state = self.github.newest_short_state()
             valid_short = [
                 row
-                for row in v5._exact_items(short_state, source)
+                for row in self._exact_short_items(short_state, source, long_item=long_verified)
                 if delivery_guard.short_public_portrait_verified(
                     row,
                     source,

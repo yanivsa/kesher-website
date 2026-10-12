@@ -1278,13 +1278,6 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             "youtube_id": "yt-short-oct12",
             "youtube_url": "https://youtube.com/shorts/yt-short-oct12",
             "source": {"slug": real_oct12_source["slug"], "content_sha256": real_oct12_source["content_sha256"]},
-            "overview_provider_identity": {
-                "notebook_id": "nb-oct12",
-                "source_id": "src-oct12",
-                "task_id": "task-oct12",
-                "artifact_id": "task-oct12",
-                "raw_sha256": "e" * 64,
-            },
             "youtube_verification": {
                 "channel_id": core.YOUTUBE_CHANNEL_ID,
                 "privacy_status": "public",
@@ -1635,6 +1628,245 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 client.save_controller_state({"schema_version": 6, "cycle": "2026-10-12"})
             with self.assertRaises(StateInvalid):
                 client.save_controller_state({"schema_version": 5, "cycle": "2026-10-12", "handover": {"phase": "INIT"}})
+
+    def test_live_oct12_short_without_overview_identity_and_historical_sep14_backlog_complete_zero_touch(self) -> None:
+        from tests.test_media_provenance_contract import audio_fixture, bound_short
+
+        posts_historical = json.loads((ROOT / "src" / "data" / "posts.json").read_text(encoding="utf-8"))
+        posts_recent = json.loads((ROOT / "src" / "data" / "postsRecent.json").read_text(encoding="utf-8"))
+        merged_posts = core.merge_catalog_posts(posts_historical, posts_recent)
+
+        oct12_post = next(p for p in merged_posts if core.canonical_slug(p) == "relocation-loneliness-accompanying-partner")
+        oct12_source = v5.article_source_identity(oct12_post)
+        sep14_post = next(p for p in merged_posts if str(p.get("date") or "") == "2026-09-14")
+        sep14_source = v5.article_source_identity(sep14_post)
+
+        sig_sha = hashlib.sha256((ROOT / "public/images/signature/signature-mask.svg").read_bytes()).hexdigest()
+        overview_dur = 140.42
+        long_oct12 = {
+            "id": "video-20261012-102835-93bd8eb7d0",
+            "type": "video_overview",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "phMWmYe_e6s",
+            "youtube_url": "https://www.youtube.com/watch?v=phMWmYe_e6s",
+            "notebook_id": "nb-oct12",
+            "source_id": "src-oct12-long",
+            "task_id": "task-oct12-long",
+            "artifact_id": "task-oct12-long",
+            "raw_sha256": "e" * 64,
+            "final_sha256": "a" * 64,
+            "audio_provenance": audio_fixture("e" * 64, "a" * 64, overview_dur),
+            "provider_raw_media": {"width": 1280, "height": 720, "duration": overview_dur, "audio_codec": "aac"},
+            "technical_verified": True,
+            "visual_pipeline": "remotion-v1-notebooklm-audio",
+            "media": {"codec": "h264", "audio_codec": "aac", "width": 1280, "height": 720, "duration": overview_dur},
+            "content_duration_seconds": overview_dur,
+            "signature_duration_seconds": 3.0,
+            "signature_overlay": True,
+            "signature_fullscreen": True,
+            "signature_verified": True,
+            "signature_sha256": sig_sha,
+            "signature_asset_sha256": sig_sha,
+            "signature_video_sha256": "8" * 64,
+            "signature_provenance": {
+                "schema_version": 1,
+                "final_sha256": "a" * 64,
+                "raw_sha256": "e" * 64,
+                "asset_sha256": sig_sha,
+                "segment_sha256": "8" * 64,
+                "source_duration_seconds": overview_dur,
+                "final_duration_seconds": overview_dur,
+                "start_seconds": overview_dur - 3.0,
+                "end_seconds": overview_dur,
+                "audio_source_sha256": "e" * 64,
+            },
+            "source": {"slug": oct12_source["slug"], "content_sha256": oct12_source["content_sha256"]},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+        long_sep14 = {
+            "id": "video-20260916-083249-74040d54b5",
+            "type": "video_overview",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "zecFDhri5Lc",
+            "youtube_url": "https://youtu.be/zecFDhri5Lc",
+            "technical_verified": True,
+            "visual_pipeline": "remotion-v1-notebooklm-audio",
+            "media": {"codec": "h264", "audio_codec": "aac", "width": 1280, "height": 720, "duration": 391.47},
+            "content_duration_seconds": 391.47,
+            "signature_duration_seconds": 3.0,
+            "signature_fullscreen": True,
+            "signature_verified": True,
+            "signature_asset_sha256": sig_sha,
+            "source": {"slug": sep14_source["slug"], "content_sha256": sep14_source["content_sha256"]},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+        # Uploaded Short item has NO overview_provider_identity on disk (matching kesher_short_pipeline_v4 output)
+        # AND a stray second generating item exists in short_state.
+        short_oct12_uploaded = {
+            **bound_short(45.0),
+            "id": "video-20261012-160846-93bd8eb7d0",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "qlVlUZMDKNo",
+            "youtube_url": "https://youtu.be/qlVlUZMDKNo",
+            "source": {"slug": oct12_source["slug"], "content_sha256": oct12_source["content_sha256"]},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+        short_oct12_uploaded.pop("overview_provider_identity", None)
+        short_oct12_stray_generating = {
+            "id": "video-20261012-174818-93bd8eb7d0",
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "status": "generating",
+            "uploaded": False,
+            "task_id": "stray-task",
+            "artifact_id": "stray-task",
+            "created_at": "2026-10-12T17:48:18+00:00",
+            "generation_started_at": "2026-10-12T17:48:32+00:00",
+            "source": {"slug": oct12_source["slug"], "content_sha256": oct12_source["content_sha256"]},
+        }
+        # Historical 2026-09-14 Short created before 2026-10-04 (no audio_provenance/signature_provenance)
+        short_sep14_historical = {
+            "id": "video-20260916-203232-74040d54b5",
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "0_D5XJBjong",
+            "youtube_url": "https://youtu.be/0_D5XJBjong",
+            "media": {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 284.72},
+            "signature_duration_seconds": 3.0,
+            "signature_fullscreen": True,
+            "signature_verified": True,
+            "signature_video_sha256": "7" * 64,
+            "source": {"slug": sep14_source["slug"], "content_sha256": sep14_source["content_sha256"], "date": "2026-09-14"},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+
+        live_like_state = {
+            "schema_version": 5,
+            "cycle": "2026-10-12",
+            "status": "short_running",
+            "article": {
+                "status": "complete",
+                "live": True,
+                "slug": oct12_source["slug"],
+                "url": f"{core.SITE_URL}/blog/{oct12_source['slug']}",
+                "quality_status": "passed",
+                "quality_content_sha256": oct12_source["content_sha256"],
+            },
+            "image": {"status": "complete"},
+            "long_video": {"status": "pending"},
+            "short": {
+                "status": "running",
+                "verified": False,
+                "adopted_from_long_item_id": long_oct12["id"],
+            },
+            "interventions": {
+                f"kesher-v5:{oct12_source['slug']}:{oct12_source['content_sha256']}:short": {
+                    "strikes": 1,
+                    "status": "recovering",
+                    "last_fingerprint": "old-fingerprint",
+                }
+            },
+            "backlog": [
+                {"cycle": "2026-10-04", "status": "article_image_running"},
+                {"cycle": "2026-09-14", "status": "article_deploying"},
+            ],
+        }
+
+        class LiveSimGitHub:
+            def __init__(self) -> None:
+                self.state = copy.deepcopy(live_like_state)
+                self.dispatches: list[tuple[str, dict]] = []
+
+            def load_controller_state(self):
+                return copy.deepcopy(self.state)
+
+            def save_controller_state(self, state):
+                self.state = copy.deepcopy(state)
+
+            def posts_on_main(self, ref="main"):
+                return copy.deepcopy(merged_posts)
+
+            def newest_video_state(self):
+                return {"version": 1, "items": [copy.deepcopy(long_sep14), copy.deepcopy(long_oct12)]}
+
+            def newest_short_state(self):
+                return {
+                    "version": 1,
+                    "items": [
+                        copy.deepcopy(short_sep14_historical),
+                        copy.deepcopy(short_oct12_uploaded),
+                        copy.deepcopy(short_oct12_stray_generating),
+                    ],
+                }
+
+            def active_workflow_run(self, workflow, production_only=False):
+                return None
+
+            def open_article_prs(self, slot=None):
+                return []
+
+            def dispatch(self, workflow: str, inputs: dict | None = None):
+                self.dispatches.append((workflow, copy.deepcopy(inputs or {})))
+
+        site = mock.Mock()
+        site.get.side_effect = lambda url: (
+            (200, f"<h1>{oct12_post['title']}</h1><article>{oct12_post['content']}</article>")
+            if url.endswith(oct12_source["slug"])
+            else (200, f"<h1>{sep14_post['title']}</h1><article>{sep14_post['content']}</article>")
+        )
+
+        gh = LiveSimGitHub()
+        with mock.patch.dict(os.environ, self._controller_env("schedule"), clear=False):
+            ctrl = stabilized.StabilizedRuntimeV5Controller(
+                gh,
+                site,
+                now=dt.datetime(2026, 10, 12, 21, 5, tzinfo=core.ISRAEL_TZ),
+            )
+            final_state, action = ctrl.tick()
+
+        self.assertEqual(final_state["status"], "complete")
+        self.assertEqual(action.kind, "complete")
+        self.assertEqual(final_state["short"]["status"], "complete")
+        self.assertTrue(final_state["short"]["verified"])
+        self.assertEqual(final_state["short"]["item_id"], "video-20261012-160846-93bd8eb7d0")
+        self.assertEqual(
+            final_state["deliverables"],
+            {
+                "article_url": f"{core.SITE_URL}/blog/{oct12_source['slug']}",
+                "overview_youtube_url": "https://www.youtube.com/watch?v=phMWmYe_e6s",
+                "short_youtube_url": "https://youtu.be/qlVlUZMDKNo",
+                "overview_edit_verified": True,
+                "short_portrait_verified": True,
+                "short_signature_verified": True,
+                "short_origin_verified": True,
+            },
+        )
+        backlog_by_cycle = {r["cycle"]: r for r in final_state["backlog"]}
+        self.assertEqual(backlog_by_cycle["2026-10-04"]["status"], "quarantined_ambiguous_identity")
+        self.assertTrue(backlog_by_cycle["2026-09-14"]["media"]["complete"])
+        self.assertEqual(backlog_by_cycle["2026-09-14"]["media"]["short_youtube_url"], "https://youtu.be/0_D5XJBjong")
+        self.assertEqual(gh.dispatches, [])
 
 
 if __name__ == "__main__":
