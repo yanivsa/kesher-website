@@ -2024,7 +2024,15 @@
     "last_dispatch_at": "2026-10-12T13:05:38.598361+00:00",
     "artifact_id": "1cb087ab-6c10-4783-8a04-7bd5898567b5",
     "source_id": "1df9bb10-bd44-4a0e-8b29-6be69cb9f04f",
-    "adopted_from_long_item_id": "video-20261012-152939-93bd8eb7d0"
+    "adopted_from_long_item_id": "video-20261012-152939-93bd8eb7d0",
+    "watchdog": {
+      "identity": "short:relocation-loneliness-accompanying-partner:93bd8eb7d057faf9ede979e86c891504604c80766287f170b011f05065bd326c:video-20261012-160846-93bd8eb7d0",
+      "hard_started_at": "2026-10-12T13:09:00.405188+00:00",
+      "last_progress_at": "2026-10-12T13:19:32.023761+00:00",
+      "last_fingerprint": "f3e88f1bbeeea588644f2124a2112db75489c0cfab0144fdf0ff67c61ffdf1d4",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
