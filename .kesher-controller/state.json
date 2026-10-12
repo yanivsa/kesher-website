@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-12",
-  "status": "article_deploying",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -25,7 +25,9 @@
     "url": "https://kesher.saharoni.com/blog/relocation-loneliness-accompanying-partner",
     "published_date": "2026-10-12",
     "last_deploy_dispatch_at": "2026-10-12T10:42:19.798617+00:00",
-    "next_deploy_retry_at": "2026-10-12T10:47:19.798634+00:00"
+    "next_deploy_retry_at": null,
+    "live": true,
+    "live_verified_at": "2026-10-12T10:50:20.562517+00:00"
   },
   "backlog": [
     {
@@ -1852,9 +1854,25 @@
         "http_status": 404,
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-12T10:50:20.562535+00:00",
+      "from": "article_deploying",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-12T10:50:25.764981+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "upload",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-10-12T10:42:19.798652+00:00",
+  "updated_at": "2026-10-12T10:50:25.764989+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1868,8 +1886,8 @@
     "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -1878,7 +1896,10 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "overview_evidence_required": true
+    "overview_evidence_required": true,
+    "item_id": "video-20261004-034718-199f8fed91",
+    "last_dispatch_at": "2026-10-12T10:50:25.764972+00:00",
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
