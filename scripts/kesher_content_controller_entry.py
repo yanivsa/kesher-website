@@ -248,9 +248,13 @@ def adopt_triggered_child(
     env: Mapping[str, str] | None = None,
 ) -> bool:
     variables = os.environ if env is None else env
-    if variables.get("KESHER_TRIGGER_EVENT") != "workflow_run":
+    trigger = str(variables.get("KESHER_TRIGGER_EVENT") or variables.get("GITHUB_EVENT_NAME") or "").strip()
+    if trigger not in {"workflow_run", "workflow_dispatch"}:
         return False
     if not isinstance(state, dict) or state.get("cycle") != cycle:
+        return False
+    child_slot = str(variables.get("KESHER_CHILD_SLOT") or "").strip()
+    if child_slot and child_slot != cycle:
         return False
     mapping = _trigger_stage(str(variables.get("KESHER_CHILD_WORKFLOW") or ""))
     child_id = str(variables.get("KESHER_CHILD_RUN_ID") or "").strip()
@@ -339,18 +343,26 @@ ADMITTED_CHILD_WORKFLOW_NAMES = frozenset({
 
 def irrelevant_child_workflow_run(env: Mapping[str, str] | None = None) -> bool:
     variables = os.environ if env is None else env
-    if variables.get("KESHER_TRIGGER_EVENT") != "workflow_run":
-        return False
+    trigger = str(variables.get("KESHER_TRIGGER_EVENT") or variables.get("GITHUB_EVENT_NAME") or "").strip()
     child_workflow = str(variables.get("KESHER_CHILD_WORKFLOW") or "").strip()
-    return child_workflow not in ADMITTED_CHILD_WORKFLOW_NAMES
+    if variables.get("KESHER_TRIGGER_EVENT") == "workflow_run" or (
+        trigger == "workflow_run" and "KESHER_CHILD_WORKFLOW" in variables
+    ):
+        return child_workflow not in ADMITTED_CHILD_WORKFLOW_NAMES
+    if trigger == "workflow_dispatch" and child_workflow:
+        return child_workflow not in ADMITTED_CHILD_WORKFLOW_NAMES
+    return False
 
 
 def failed_child_waits_for_heartbeat(env: Mapping[str, str] | None = None) -> bool:
     variables = os.environ if env is None else env
-    return bool(
-        variables.get("KESHER_TRIGGER_EVENT") == "workflow_run"
-        and str(variables.get("KESHER_CHILD_CONCLUSION") or "").lower() not in {"", "success"}
-    )
+    trigger = str(variables.get("KESHER_TRIGGER_EVENT") or variables.get("GITHUB_EVENT_NAME") or "").strip()
+    child_workflow = str(variables.get("KESHER_CHILD_WORKFLOW") or "").strip()
+    if trigger == "workflow_run":
+        return str(variables.get("KESHER_CHILD_CONCLUSION") or "").strip().lower() not in {"", "success"}
+    if trigger == "workflow_dispatch" and child_workflow:
+        return str(variables.get("KESHER_CHILD_CONCLUSION") or "").strip().lower() not in {"", "success"}
+    return False
 
 
 def emit_heartbeat_wait_report(
@@ -392,16 +404,16 @@ def main() -> int:
         github = controller.GitHubClient(repo, token)
         state = github.load_controller_state()
 
+        changed = adopt_latest_dispatched_children(github, state, cycle)
+        changed = adopt_triggered_child(github, state, cycle) or changed
+        if changed:
+            state = github.load_controller_state()
+
         # Failed/cancelled/timed-out child completions are intentionally passive.
         # The next scheduled heartbeat discovers the run and applies retry/backoff.
         if failed_child_waits_for_heartbeat():
             emit_heartbeat_wait_report(state, cycle)
             return 0
-
-        changed = adopt_latest_dispatched_children(github, state, cycle)
-        changed = adopt_triggered_child(github, state, cycle) or changed
-        if changed:
-            state = github.load_controller_state()
 
     install_article_run_correlation(state, cycle)
     return controller.main()

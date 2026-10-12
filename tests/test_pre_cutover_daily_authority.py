@@ -1278,13 +1278,6 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             "youtube_id": "yt-short-oct12",
             "youtube_url": "https://youtube.com/shorts/yt-short-oct12",
             "source": {"slug": real_oct12_source["slug"], "content_sha256": real_oct12_source["content_sha256"]},
-            "overview_provider_identity": {
-                "notebook_id": "nb-oct12",
-                "source_id": "src-oct12",
-                "task_id": "task-oct12",
-                "artifact_id": "task-oct12",
-                "raw_sha256": "e" * 64,
-            },
             "youtube_verification": {
                 "channel_id": core.YOUTUBE_CHANNEL_ID,
                 "privacy_status": "public",
@@ -1635,6 +1628,644 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 client.save_controller_state({"schema_version": 6, "cycle": "2026-10-12"})
             with self.assertRaises(StateInvalid):
                 client.save_controller_state({"schema_version": 5, "cycle": "2026-10-12", "handover": {"phase": "INIT"}})
+
+    def test_live_oct12_short_without_overview_identity_and_historical_sep14_backlog_complete_zero_touch(self) -> None:
+        from tests.test_media_provenance_contract import audio_fixture, bound_short
+
+        posts_historical = json.loads((ROOT / "src" / "data" / "posts.json").read_text(encoding="utf-8"))
+        posts_recent = json.loads((ROOT / "src" / "data" / "postsRecent.json").read_text(encoding="utf-8"))
+        merged_posts = core.merge_catalog_posts(posts_historical, posts_recent)
+
+        oct12_post = next(p for p in merged_posts if core.canonical_slug(p) == "relocation-loneliness-accompanying-partner")
+        oct12_source = v5.article_source_identity(oct12_post)
+        sep14_post = next(p for p in merged_posts if str(p.get("date") or "") == "2026-09-14")
+        sep14_source = v5.article_source_identity(sep14_post)
+
+        sig_sha = hashlib.sha256((ROOT / "public/images/signature/signature-mask.svg").read_bytes()).hexdigest()
+        overview_dur = 140.42
+        long_oct12 = {
+            "id": "video-20261012-102835-93bd8eb7d0",
+            "type": "video_overview",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "phMWmYe_e6s",
+            "youtube_url": "https://www.youtube.com/watch?v=phMWmYe_e6s",
+            "notebook_id": "nb-oct12",
+            "source_id": "src-oct12-long",
+            "task_id": "task-oct12-long",
+            "artifact_id": "task-oct12-long",
+            "raw_sha256": "e" * 64,
+            "final_sha256": "a" * 64,
+            "audio_provenance": audio_fixture("e" * 64, "a" * 64, overview_dur),
+            "provider_raw_media": {"width": 1280, "height": 720, "duration": overview_dur, "audio_codec": "aac"},
+            "technical_verified": True,
+            "visual_pipeline": "remotion-v1-notebooklm-audio",
+            "media": {"codec": "h264", "audio_codec": "aac", "width": 1280, "height": 720, "duration": overview_dur},
+            "content_duration_seconds": overview_dur,
+            "signature_duration_seconds": 3.0,
+            "signature_overlay": True,
+            "signature_fullscreen": True,
+            "signature_verified": True,
+            "signature_sha256": sig_sha,
+            "signature_asset_sha256": sig_sha,
+            "signature_video_sha256": "8" * 64,
+            "signature_provenance": {
+                "schema_version": 1,
+                "final_sha256": "a" * 64,
+                "raw_sha256": "e" * 64,
+                "asset_sha256": sig_sha,
+                "segment_sha256": "8" * 64,
+                "source_duration_seconds": overview_dur,
+                "final_duration_seconds": overview_dur,
+                "start_seconds": overview_dur - 3.0,
+                "end_seconds": overview_dur,
+                "audio_source_sha256": "e" * 64,
+            },
+            "source": {"slug": oct12_source["slug"], "content_sha256": oct12_source["content_sha256"]},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+        long_sep14 = {
+            "id": "video-20260916-083249-74040d54b5",
+            "type": "video_overview",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "zecFDhri5Lc",
+            "youtube_url": "https://youtu.be/zecFDhri5Lc",
+            "technical_verified": True,
+            "visual_pipeline": "remotion-v1-notebooklm-audio",
+            "media": {"codec": "h264", "audio_codec": "aac", "width": 1280, "height": 720, "duration": 391.47},
+            "content_duration_seconds": 391.47,
+            "signature_duration_seconds": 3.0,
+            "signature_fullscreen": True,
+            "signature_verified": True,
+            "signature_asset_sha256": sig_sha,
+            "source": {"slug": sep14_source["slug"], "content_sha256": sep14_source["content_sha256"]},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+        # Uploaded Short item has NO overview_provider_identity on disk (matching kesher_short_pipeline_v4 output)
+        # AND a stray second generating item exists in short_state.
+        short_oct12_uploaded = {
+            **bound_short(45.0),
+            "id": "video-20261012-160846-93bd8eb7d0",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "qlVlUZMDKNo",
+            "youtube_url": "https://youtu.be/qlVlUZMDKNo",
+            "source": {"slug": oct12_source["slug"], "content_sha256": oct12_source["content_sha256"]},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+        short_oct12_uploaded.pop("overview_provider_identity", None)
+        short_oct12_stray_generating = {
+            "id": "video-20261012-174818-93bd8eb7d0",
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "status": "generating",
+            "uploaded": False,
+            "task_id": "stray-task",
+            "artifact_id": "stray-task",
+            "created_at": "2026-10-12T17:48:18+00:00",
+            "generation_started_at": "2026-10-12T17:48:32+00:00",
+            "source": {"slug": oct12_source["slug"], "content_sha256": oct12_source["content_sha256"]},
+        }
+        # Historical 2026-09-14 Short created before 2026-10-04 (no audio_provenance/signature_provenance)
+        short_sep14_historical = {
+            "id": "video-20260916-203232-74040d54b5",
+            "type": "article_short",
+            "source_mode": "direct-short",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "0_D5XJBjong",
+            "youtube_url": "https://youtu.be/0_D5XJBjong",
+            "media": {"codec": "h264", "audio_codec": "aac", "width": 1080, "height": 1920, "duration": 284.72},
+            "signature_duration_seconds": 3.0,
+            "signature_fullscreen": True,
+            "signature_verified": True,
+            "signature_video_sha256": "7" * 64,
+            "source": {"slug": sep14_source["slug"], "content_sha256": sep14_source["content_sha256"], "date": "2026-09-14"},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+
+        live_like_state = {
+            "schema_version": 5,
+            "cycle": "2026-10-12",
+            "status": "short_running",
+            "article": {
+                "status": "complete",
+                "live": True,
+                "slug": oct12_source["slug"],
+                "url": f"{core.SITE_URL}/blog/{oct12_source['slug']}",
+                "quality_status": "passed",
+                "quality_content_sha256": oct12_source["content_sha256"],
+            },
+            "image": {"status": "complete"},
+            "long_video": {"status": "pending"},
+            "short": {
+                "status": "running",
+                "verified": False,
+                "adopted_from_long_item_id": long_oct12["id"],
+            },
+            "interventions": {
+                f"kesher-v5:{oct12_source['slug']}:{oct12_source['content_sha256']}:short": {
+                    "strikes": 1,
+                    "status": "recovering",
+                    "last_fingerprint": "old-fingerprint",
+                }
+            },
+            "backlog": [
+                {"cycle": "2026-10-04", "status": "article_image_running"},
+                {"cycle": "2026-09-14", "status": "article_deploying"},
+            ],
+        }
+
+        class LiveSimGitHub:
+            def __init__(self) -> None:
+                self.state = copy.deepcopy(live_like_state)
+                self.dispatches: list[tuple[str, dict]] = []
+
+            def load_controller_state(self):
+                return copy.deepcopy(self.state)
+
+            def save_controller_state(self, state):
+                self.state = copy.deepcopy(state)
+
+            def posts_on_main(self, ref="main"):
+                return copy.deepcopy(merged_posts)
+
+            def newest_video_state(self):
+                return {"version": 1, "items": [copy.deepcopy(long_sep14), copy.deepcopy(long_oct12)]}
+
+            def newest_short_state(self):
+                return {
+                    "version": 1,
+                    "items": [
+                        copy.deepcopy(short_sep14_historical),
+                        copy.deepcopy(short_oct12_uploaded),
+                        copy.deepcopy(short_oct12_stray_generating),
+                    ],
+                }
+
+            def active_workflow_run(self, workflow, production_only=False):
+                return None
+
+            def open_article_prs(self, slot=None):
+                return []
+
+            def dispatch(self, workflow: str, inputs: dict | None = None):
+                self.dispatches.append((workflow, copy.deepcopy(inputs or {})))
+
+        site = mock.Mock()
+        site.get.side_effect = lambda url: (
+            (200, f"<h1>{oct12_post['title']}</h1><article>{oct12_post['content']}</article>")
+            if url.endswith(oct12_source["slug"])
+            else (200, f"<h1>{sep14_post['title']}</h1><article>{sep14_post['content']}</article>")
+        )
+
+        gh = LiveSimGitHub()
+        with mock.patch.dict(os.environ, self._controller_env("schedule"), clear=False):
+            ctrl = stabilized.StabilizedRuntimeV5Controller(
+                gh,
+                site,
+                now=dt.datetime(2026, 10, 12, 21, 5, tzinfo=core.ISRAEL_TZ),
+            )
+            final_state, action = ctrl.tick()
+
+        self.assertEqual(final_state["status"], "complete")
+        self.assertEqual(action.kind, "complete")
+        self.assertEqual(final_state["short"]["status"], "complete")
+        self.assertTrue(final_state["short"]["verified"])
+        self.assertEqual(final_state["short"]["item_id"], "video-20261012-160846-93bd8eb7d0")
+        self.assertEqual(
+            final_state["deliverables"],
+            {
+                "article_url": f"{core.SITE_URL}/blog/{oct12_source['slug']}",
+                "overview_youtube_url": "https://www.youtube.com/watch?v=phMWmYe_e6s",
+                "short_youtube_url": "https://youtu.be/qlVlUZMDKNo",
+                "overview_edit_verified": True,
+                "short_portrait_verified": True,
+                "short_signature_verified": True,
+                "short_origin_verified": True,
+            },
+        )
+        backlog_by_cycle = {r["cycle"]: r for r in final_state["backlog"]}
+        self.assertEqual(backlog_by_cycle["2026-10-04"]["status"], "quarantined_ambiguous_identity")
+        self.assertTrue(backlog_by_cycle["2026-09-14"]["media"]["complete"])
+        self.assertEqual(backlog_by_cycle["2026-09-14"]["media"]["short_youtube_url"], "https://youtu.be/0_D5XJBjong")
+        self.assertEqual(gh.dispatches, [])
+
+    def test_deterministic_child_to_controller_wakeup_and_loop_prevention(self) -> None:
+        # 1. Verify controller YAML accepts backward-compatible child completion inputs and never notifies itself
+        controller_text = (WORKFLOWS_DIR / "kesher-content-controller.yml").read_text(encoding="utf-8")
+        controller_data = yaml.safe_load(controller_text)
+        events = controller_data.get("on", controller_data.get(True))
+        dispatch_inputs = (events.get("workflow_dispatch") or {}).get("inputs") or {}
+        for expected_input in ("child_workflow", "child_run_id", "child_conclusion", "source_slug", "slot"):
+            self.assertIn(expected_input, dispatch_inputs)
+            self.assertFalse(dispatch_inputs[expected_input].get("required", False))
+            self.assertEqual(dispatch_inputs[expected_input].get("default"), "")
+        self.assertNotIn("gh workflow run kesher-content-controller.yml", controller_text)
+
+        # 2. Verify all 7 authorized child workflows issue explicit always() wake-up to kesher-content-controller.yml
+        for wf_name in self.WORKER_WORKFLOWS:
+            with self.subTest(worker=wf_name):
+                wf_text = (WORKFLOWS_DIR / wf_name).read_text(encoding="utf-8")
+                wf_data = yaml.safe_load(wf_text)
+                perms = wf_data.get("permissions") or {}
+                self.assertEqual(perms.get("actions"), "write")
+                job = next(iter(wf_data["jobs"].values()))
+                last_step = job["steps"][-1]
+                self.assertEqual(last_step.get("name"), "Notify canonical Kesher Content Controller on completion")
+                cond = str(last_step.get("if") or "")
+                self.assertIn("always()", cond)
+                self.assertIn("steps.bridge_admission.outcome == 'success'", cond)
+                self.assertIn("github.event_name == 'workflow_dispatch'", cond)
+                run_cmd = str(last_step.get("run") or "")
+                self.assertIn("gh workflow run kesher-content-controller.yml", run_cmd)
+                self.assertIn("--ref main", run_cmd)
+                self.assertIn('-f child_workflow="$CHILD_WORKFLOW"', run_cmd)
+                self.assertIn('-f child_run_id="$CHILD_RUN_ID"', run_cmd)
+                self.assertIn('-f child_conclusion="$CHILD_CONCLUSION"', run_cmd)
+
+        # 3. Verify bridge_admission admits valid child_workflow on workflow_dispatch and rejects self/unknown
+        for valid_name in bridge_admission.PRE_CUTOVER_ADMITTED_CHILD_WORKFLOW_NAMES:
+            env = self._controller_env("workflow_dispatch") | {"KESHER_CHILD_WORKFLOW": valid_name}
+            bridge_admission.require_invocation(env, controller=True)
+        for invalid_name in ("Kesher Content Controller", "CI", "Kesher Master Supervisor"):
+            bad_env = self._controller_env("workflow_dispatch") | {"KESHER_CHILD_WORKFLOW": invalid_name}
+            with self.assertRaises(StateInvalid):
+                bridge_admission.require_invocation(bad_env, controller=True)
+
+        # 4. E2E progression driven strictly by explicit GITHUB_TOKEN child -> controller workflow_dispatch wake-up
+        # (simulating lost workflow_run due to GitHub anti-recursion)
+        posts_historical = json.loads((ROOT / "src" / "data" / "posts.json").read_text(encoding="utf-8"))
+        posts_recent = json.loads((ROOT / "src" / "data" / "postsRecent.json").read_text(encoding="utf-8"))
+        oct12_post = next(p for p in posts_historical if p.get("date") == "2026-10-12")
+        oct13_post = copy.deepcopy(oct12_post)
+        oct13_post.update({
+            "id": "oct-13-explicit-wakeup-article",
+            "slug": "oct-13-explicit-wakeup-article",
+            "date": "2026-10-13",
+            "title": "איך שומרים על תקשורת רגועה בבית בתקופת עומס? מדריך להורים",
+            "controllerManaged": True,
+        })
+        oct13_source = v5.article_source_identity(oct13_post)
+        sig_sha = hashlib.sha256((ROOT / "public/images/signature/signature-mask.svg").read_bytes()).hexdigest()
+
+        from tests.test_media_provenance_contract import audio_fixture, bound_short
+
+        overview_dur = 121.0
+        long_oct13 = {
+            "id": "video-20261013-020000-oct13long",
+            "type": "video_overview",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "yt-oct13-long",
+            "youtube_url": "https://www.youtube.com/watch?v=yt-oct13-long",
+            "notebook_id": "nb-oct13",
+            "source_id": "src-oct13",
+            "task_id": "task-oct13-long",
+            "artifact_id": "task-oct13-long",
+            "raw_sha256": "e" * 64,
+            "final_sha256": "a" * 64,
+            "audio_provenance": audio_fixture("e" * 64, "a" * 64, overview_dur),
+            "provider_raw_media": {"width": 1280, "height": 720, "duration": overview_dur, "audio_codec": "aac"},
+            "technical_verified": True,
+            "visual_pipeline": "remotion-v1-notebooklm-audio",
+            "media": {"codec": "h264", "audio_codec": "aac", "width": 1280, "height": 720, "duration": overview_dur},
+            "content_duration_seconds": overview_dur,
+            "signature_duration_seconds": 3.0,
+            "signature_overlay": True,
+            "signature_fullscreen": True,
+            "signature_verified": True,
+            "signature_sha256": sig_sha,
+            "signature_asset_sha256": sig_sha,
+            "signature_video_sha256": "8" * 64,
+            "signature_provenance": {
+                "schema_version": 1,
+                "final_sha256": "a" * 64,
+                "raw_sha256": "e" * 64,
+                "asset_sha256": sig_sha,
+                "segment_sha256": "8" * 64,
+                "source_duration_seconds": overview_dur,
+                "final_duration_seconds": overview_dur,
+                "start_seconds": overview_dur - 3.0,
+                "end_seconds": overview_dur,
+                "audio_source_sha256": "e" * 64,
+            },
+            "source": {"slug": oct13_source["slug"], "content_sha256": oct13_source["content_sha256"]},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+        short_oct13 = {
+            **bound_short(42.0),
+            "id": "video-20261013-022000-oct13short",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "yt-oct13-short",
+            "youtube_url": "https://youtu.be/yt-oct13-short",
+            "source": {"slug": oct13_source["slug"], "content_sha256": oct13_source["content_sha256"]},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+
+        class WakeupSimGitHub:
+            api = "https://api.github.test/repos/yanivsa/kesher-website"
+
+            def __init__(self) -> None:
+                self.state: dict = {
+                    "schema_version": 5,
+                    "cycle": "2026-10-13",
+                    "status": "waiting_for_article_window",
+                    "backlog": [],
+                }
+                self.dispatches: list[tuple[str, dict]] = []
+                self.open_prs: list[dict] = []
+                self.needs_norm = True
+                self.image_ready = False
+                self.image_evidence: dict = {}
+                self.merged_on_main = False
+                self.video_items: list[dict] = []
+                self.short_items: list[dict] = []
+
+            def request(self, method: str, path: str, body=None, allow_404: bool = False):
+                if method == "GET" and "/actions/artifacts" in path:
+                    return {"artifacts": []}
+                if method == "POST" and "/dispatches" in path:
+                    wf = urllib.parse.unquote(path.split("/actions/workflows/")[1].split("/dispatches")[0])
+                    inputs = copy.deepcopy((body or {}).get("inputs") or {})
+                    self.dispatches.append((wf, inputs))
+                    return {}
+                return {}
+
+            def load_controller_state(self):
+                return copy.deepcopy(self.state)
+
+            def save_controller_state(self, state):
+                self.state = copy.deepcopy(state)
+
+            def contents_json(self, path: str, ref: str = "main"):
+                if path == "src/data/posts.json":
+                    if self.merged_on_main:
+                        return [copy.deepcopy(oct13_post), *copy.deepcopy(posts_historical)]
+                    return copy.deepcopy(posts_historical)
+                if path == "src/data/postsRecent.json":
+                    return copy.deepcopy(posts_recent)
+                raise AssertionError(path)
+
+            def open_article_prs(self, slot=None):
+                return copy.deepcopy(self.open_prs)
+
+            def article_pr_normalization_required(self, pr):
+                return self.needs_norm, "2026-10-13"
+
+            def active_normalizer_run(self, number):
+                return None
+
+            def article_pr_image_ready(self, pr):
+                return self.image_ready, copy.deepcopy(self.image_evidence)
+
+            def active_image_run(self, number):
+                return None
+
+            def active_workflow_run(self, workflow, production_only=False):
+                return None
+
+            def workflow_run_by_id(self, run_id):
+                return None
+
+            def newest_video_state(self):
+                return {"version": 1, "items": copy.deepcopy(self.video_items)}
+
+            def newest_short_state(self):
+                return {"version": 1, "items": copy.deepcopy(self.short_items)}
+
+            def dispatch(self, workflow: str, inputs: dict | None = None):
+                self.dispatches.append((workflow, copy.deepcopy(inputs or {})))
+
+        sim_gh = WakeupSimGitHub()
+        article_live = {"ready": False}
+        sim_site = mock.Mock()
+        sim_site.get.side_effect = lambda url: (
+            (200, f"<h1>{oct13_post['title']}</h1><article>{oct13_post['content']}</article>")
+            if article_live["ready"] and url.endswith(oct13_source["slug"])
+            else (404, "not found")
+        )
+
+        def run_tick(now_dt: dt.datetime, **child_env: str):
+            env = self._controller_env("workflow_dispatch" if child_env else "schedule")
+            env["KESHER_TRIGGER_EVENT"] = env["GITHUB_EVENT_NAME"]
+            env.update(child_env)
+            bridge_admission.require_invocation(env, controller=True)
+            with mock.patch.dict(os.environ, env, clear=False):
+                return stabilized.StabilizedRuntimeV5Controller(sim_gh, sim_site, now=now_dt).tick()
+
+        # Step A: 00:36 scheduled heartbeat dispatches Kesher Article Generation
+        _, act1 = run_tick(dt.datetime(2026, 10, 13, 0, 36, tzinfo=core.ISRAEL_TZ))
+        self.assertEqual(act1.kind, "dispatch_article")
+        self.assertEqual(sim_gh.dispatches, [(core.ARTICLE_WORKFLOW, {"slot": "2026-10-13"})])
+
+        # Step B: Article worker (run 701) finishes and wakes controller via explicit workflow_dispatch
+        sim_gh.dispatches.clear()
+        sim_gh.open_prs = [{
+            "number": 1115,
+            "html_url": "https://github.com/yanivsa/kesher-website/pull/1115",
+            "title": f"Publish Kesher article: {oct13_source['slug']}",
+            "head": {"sha": "head1115"},
+            "base": {"sha": "base1115"},
+        }]
+        st2, act2 = run_tick(
+            dt.datetime(2026, 10, 13, 0, 42, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Kesher Article Generation",
+            KESHER_CHILD_RUN_ID="701",
+            KESHER_CHILD_CONCLUSION="success",
+            KESHER_CHILD_SLOT="2026-10-13",
+        )
+        self.assertEqual(st2["article"]["run_id"], 701)
+        self.assertEqual(act2.kind, "dispatch_normalize")
+        self.assertEqual(sim_gh.dispatches, [("normalize-article-pr.yml", {"pr_number": "1115", "slot": "2026-10-13"})])
+
+        # Step C: Normalizer worker (run 702) finishes and wakes controller via explicit workflow_dispatch
+        sim_gh.dispatches.clear()
+        sim_gh.needs_norm = False
+        st3, act3 = run_tick(
+            dt.datetime(2026, 10, 13, 0, 44, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Kesher Normalize Article PR",
+            KESHER_CHILD_RUN_ID="702",
+            KESHER_CHILD_CONCLUSION="success",
+            KESHER_CHILD_SLOT="2026-10-13",
+        )
+        self.assertEqual(st3["article"]["normalization_run_id"], 702)
+        self.assertEqual(act3.kind, "dispatch_image")
+        self.assertEqual(sim_gh.dispatches, [("kesher-article-image.yml", {"pr_number": "1115"})])
+
+        # Step D: Image worker (run 703) finishes and wakes controller via explicit workflow_dispatch
+        sim_gh.dispatches.clear()
+        sim_gh.image_ready = True
+        sim_gh.image_evidence = {"provider": "gemini", "source": "gemini-3.1-flash-image", "sha256": "1" * 64}
+        st4, act4 = run_tick(
+            dt.datetime(2026, 10, 13, 0, 47, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Kesher Trusted Article Image",
+            KESHER_CHILD_RUN_ID="703",
+            KESHER_CHILD_CONCLUSION="success",
+        )
+        self.assertEqual(st4["image"]["run_id"], 703)
+        self.assertEqual(act4.kind, "wait")
+        self.assertEqual(sim_gh.dispatches, [("auto-merge-article-prs.yml", {"pr_number": "1115", "slot": "2026-10-13"})])
+
+        # Verify loop guard: if auto-merge finishes while PR is STILL open (waiting for CI), it does NOT re-dispatch auto-merge
+        sim_gh.dispatches.clear()
+        _, act4_pending = run_tick(
+            dt.datetime(2026, 10, 13, 0, 49, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Auto-merge Kesher article PRs",
+            KESHER_CHILD_RUN_ID="7040",
+            KESHER_CHILD_CONCLUSION="success",
+            KESHER_CHILD_SLOT="2026-10-13",
+        )
+        self.assertEqual(act4_pending.kind, "wait")
+        self.assertEqual(sim_gh.dispatches, [])
+
+        # Step E: Auto-merge worker (run 704) merges PR and wakes controller via explicit workflow_dispatch
+        sim_gh.open_prs = []
+        sim_gh.merged_on_main = True
+        st5, act5 = run_tick(
+            dt.datetime(2026, 10, 13, 0, 52, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Auto-merge Kesher article PRs",
+            KESHER_CHILD_RUN_ID="704",
+            KESHER_CHILD_CONCLUSION="success",
+            KESHER_CHILD_SLOT="2026-10-13",
+        )
+        self.assertEqual(st5["article"]["merge_run_id"], 704)
+        self.assertEqual(act5.kind, "dispatch_deploy")
+        self.assertEqual(sim_gh.dispatches, [(core.DEPLOY_WORKFLOW, {})])
+
+        # Step F: Deploy worker (run 705) finishes and wakes controller via explicit workflow_dispatch
+        sim_gh.dispatches.clear()
+        article_live["ready"] = True
+        st6, act6 = run_tick(
+            dt.datetime(2026, 10, 13, 0, 57, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Deploy to Cloudflare Pages",
+            KESHER_CHILD_RUN_ID="705",
+            KESHER_CHILD_CONCLUSION="success",
+        )
+        self.assertEqual(st6["article"]["deploy_run_id"], 705)
+        self.assertEqual(act6.kind, "dispatch_long_video")
+        self.assertEqual(
+            sim_gh.dispatches,
+            [(
+                v5.LONG_VIDEO_WORKFLOW,
+                {
+                    "operation": "full",
+                    "target_slug": oct13_source["slug"],
+                    "target_content_sha256": oct13_source["content_sha256"],
+                },
+            )],
+        )
+
+        # Verify failed child notification is passive (correlates run_id, records notification, zero dispatches)
+        sim_gh.dispatches.clear()
+        st6_fail, act6_fail = run_tick(
+            dt.datetime(2026, 10, 13, 1, 5, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Kesher Daily NotebookLM Video Overview",
+            KESHER_CHILD_RUN_ID="7060",
+            KESHER_CHILD_CONCLUSION="failure",
+            KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+        )
+        self.assertEqual(act6_fail.kind, "wait")
+        self.assertIn("deferred to recovery heartbeat", act6_fail.reason)
+        self.assertEqual(st6_fail["long_video"]["run_id"], 7060)
+        self.assertEqual(sim_gh.dispatches, [])
+
+        # Step G: Long video worker (run 706) finishes and wakes controller via explicit workflow_dispatch
+        sim_gh.video_items = [copy.deepcopy(long_oct13)]
+        st7, act7 = run_tick(
+            dt.datetime(2026, 10, 13, 1, 20, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Kesher Daily NotebookLM Video Overview",
+            KESHER_CHILD_RUN_ID="706",
+            KESHER_CHILD_CONCLUSION="success",
+            KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+        )
+        self.assertEqual(st7["long_video"]["run_id"], 706)
+        self.assertEqual(act7.kind, "dispatch_short")
+        self.assertEqual(
+            sim_gh.dispatches,
+            [(
+                v5.SHORT_WORKFLOW,
+                {
+                    "operation": "derive",
+                    "derive_slug": oct13_source["slug"],
+                    "derive_content_sha256": oct13_source["content_sha256"],
+                    "derive_long_item_id": long_oct13["id"],
+                },
+            )],
+        )
+
+        # 5. Duplicate completion notification for run 706 produces ZERO duplicate Short dispatches
+        sim_gh.dispatches.clear()
+        _, act7_dup = run_tick(
+            dt.datetime(2026, 10, 13, 1, 21, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Kesher Daily NotebookLM Video Overview",
+            KESHER_CHILD_RUN_ID="706",
+            KESHER_CHILD_CONCLUSION="success",
+            KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+        )
+        self.assertEqual(act7_dup.kind, "wait")
+        self.assertIn("duplicate child completion notification ignored", act7_dup.reason)
+        self.assertEqual(sim_gh.dispatches, [])
+
+        # 6. Lost explicit notification + later scheduled heartbeat recovers safely and completes cycle
+        sim_gh.short_items = [copy.deepcopy(short_oct13)]
+        st8, act8 = run_tick(dt.datetime(2026, 10, 13, 1, 35, tzinfo=core.ISRAEL_TZ))
+        self.assertEqual(st8["status"], "complete")
+        self.assertEqual(act8.kind, "complete")
+        self.assertEqual(sim_gh.dispatches, [])
+        self.assertEqual(
+            st8["deliverables"],
+            {
+                "article_url": f"{core.SITE_URL}/blog/{oct13_source['slug']}",
+                "overview_youtube_url": "https://www.youtube.com/watch?v=yt-oct13-long",
+                "short_youtube_url": "https://youtu.be/yt-oct13-short",
+                "overview_edit_verified": True,
+                "short_portrait_verified": True,
+                "short_signature_verified": True,
+                "short_origin_verified": True,
+            },
+        )
+
+        # 7. Completed cycle + additional explicit notification or scheduled heartbeat = zero side effects
+        _, act_late_notif = run_tick(
+            dt.datetime(2026, 10, 13, 1, 36, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Kesher Daily Article Short V4",
+            KESHER_CHILD_RUN_ID="707",
+            KESHER_CHILD_CONCLUSION="success",
+            KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+        )
+        self.assertEqual(act_late_notif.kind, "complete")
+        self.assertEqual(sim_gh.dispatches, [])
+
+        _, act_late_hb = run_tick(dt.datetime(2026, 10, 13, 1, 40, tzinfo=core.ISRAEL_TZ))
+        self.assertEqual(act_late_hb.kind, "complete")
+        self.assertEqual(sim_gh.dispatches, [])
 
 
 if __name__ == "__main__":

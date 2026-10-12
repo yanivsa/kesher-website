@@ -20,6 +20,32 @@ on:
       - "src/data/postsRecent.json"
       - "public/images/blog/**"
   workflow_dispatch:
+    inputs:
+      child_workflow:
+        description: Completed child workflow name
+        required: false
+        default: ""
+        type: string
+      child_run_id:
+        description: Completed child workflow run ID
+        required: false
+        default: ""
+        type: string
+      child_conclusion:
+        description: Completed child workflow conclusion
+        required: false
+        default: ""
+        type: string
+      source_slug:
+        description: Optional authoritative article slug from child run
+        required: false
+        default: ""
+        type: string
+      slot:
+        description: Optional authoritative publication slot (YYYY-MM-DD)
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -48,7 +74,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           KESHER_PRE_CUTOVER_DAILY_AUTHORITY: "true"
-          KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name || '' }}
+          KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name || inputs.child_workflow || '' }}
         run: python3 -m scripts.kesher_runtime.bridge_admission --controller
 
       - name: Set up Python
@@ -65,7 +91,9 @@ jobs:
           JULES_API_KEY: ${{ secrets.JULES_API_KEY }}
           KESHER_PRE_CUTOVER_DAILY_AUTHORITY: "true"
           KESHER_TRIGGER_EVENT: ${{ github.event_name }}
-          KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name || '' }}
-          KESHER_CHILD_RUN_ID: ${{ github.event.workflow_run.id || '' }}
-          KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion || '' }}
+          KESHER_CHILD_WORKFLOW: ${{ github.event.workflow_run.name || inputs.child_workflow || '' }}
+          KESHER_CHILD_RUN_ID: ${{ github.event.workflow_run.id || inputs.child_run_id || '' }}
+          KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion || inputs.child_conclusion || '' }}
+          KESHER_CHILD_SOURCE_SLUG: ${{ inputs.source_slug || '' }}
+          KESHER_CHILD_SLOT: ${{ inputs.slot || '' }}
         run: PYTHONPATH=. python3 -u scripts/kesher_content_controller_stabilized.py --report-json

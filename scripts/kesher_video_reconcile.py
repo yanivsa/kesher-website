@@ -311,6 +311,27 @@ def prepare_generation(target_slug: str = "") -> int:
             and source_slug(item) == target_slug
             and str((item.get("source") or {}).get("content_sha256") or "") == source["content_sha256"]
         ]
+        uploaded = [
+            row for row in same_source
+            if row.get("uploaded") is True
+            and row.get("status") == "uploaded"
+            and bool(str(row.get("youtube_id") or "").strip())
+        ]
+        if uploaded:
+            modified = False
+            for row in same_source:
+                if row.get("uploaded") is not True and row.get("status") in UNRESOLVED_STATUSES:
+                    row["status"] = "superseded"
+                    row["superseded_reason"] = "already_public_same_source"
+                    row["superseded_at"] = pipeline.utc_now()
+                    row["updated_at"] = pipeline.utc_now()
+                    modified = True
+            if modified:
+                pipeline.save_state(state)
+            export_target(uploaded[-1])
+            workflow_output("skip_generation", "true")
+            print(f"VIDEO_GENERATION_ALREADY_PUBLIC slug={target_slug} item={uploaded[-1].get('id')}")
+            return 0
         item = None
         if requested_item_id:
             exact = [row for row in same_source if str(row.get("id") or "") == requested_item_id]
@@ -371,6 +392,17 @@ def prepare_generation(target_slug: str = "") -> int:
             if is_verified_public_short(item, source)
         ]
         if uploaded:
+            modified = False
+            for item in same_source:
+                if item.get("uploaded") is not True and item.get("status") in UNRESOLVED_STATUSES:
+                    item["status"] = "superseded"
+                    item["superseded_reason"] = "already_public_same_source"
+                    item["superseded_at"] = pipeline.utc_now()
+                    item["updated_at"] = pipeline.utc_now()
+                    modified = True
+            if modified:
+                pipeline.save_state(state)
+            export_target(uploaded[-1])
             workflow_output("skip_generation", "true")
             print(f"SHORT_GENERATION_ALREADY_PUBLIC slug={target_slug} item={uploaded[-1].get('id')}")
             return 0

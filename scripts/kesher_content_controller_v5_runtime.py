@@ -191,16 +191,50 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             return row, source
         return None, None
 
-    def _verified_backlog_short(self, source):
+    @staticmethod
+    def _historical_backlog_short_verified(item, source) -> bool:
+        if str(source.get("date") or "") >= "2026-10-04":
+            return False
+        if v5._source_identity(item) != (source["slug"], source["content_sha256"]):
+            return False
+        if item.get("source_mode") == "overview-segment":
+            return False
+        if not v5.core.verified_youtube_item(item, source["slug"]):
+            return False
+        media = item.get("media") or {}
+        try:
+            width = int(media.get("width") or 0)
+            height = int(media.get("height") or 0)
+        except (TypeError, ValueError):
+            return False
+        if width != 1080 or height != 1920 or height <= width:
+            return False
+        if item.get("signature_verified") is not True or item.get("signature_fullscreen") is not True:
+            return False
+        try:
+            sig_duration = float(item.get("signature_duration_seconds") or 0)
+        except (TypeError, ValueError):
+            return False
+        if abs(sig_duration - 3.0) >= 0.001:
+            return False
+        return bool(str(item.get("signature_video_sha256") or "").strip())
+
+    def _verified_backlog_short(self, source, long_item=None):
         snapshot = self.github.newest_short_state()
+        short_rows = (
+            self._exact_short_items(snapshot, source, long_item=long_item)
+            if hasattr(self, "_exact_short_items")
+            else v5._exact_items(snapshot, source)
+        )
         rows = [
             row
-            for row in v5._exact_items(snapshot, source)
+            for row in short_rows
             if delivery_guard.short_public_portrait_verified(
                 row,
                 source,
                 youtube_verified=v5.core.verified_youtube_item,
             )
+            or self._historical_backlog_short_verified(row, source)
         ]
         return v5._newest(rows)
 
@@ -212,7 +246,11 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
 
         long_state = self.github.newest_video_state()
         long_verified = v5._newest(v5._verified_exact(long_state, source))
-        short_verified = self._verified_backlog_short(source) if long_verified is not None else None
+        short_verified = (
+            self._verified_backlog_short(source, long_item=long_verified)
+            if long_verified is not None
+            else None
+        )
 
         if long_verified is not None:
             media.update({

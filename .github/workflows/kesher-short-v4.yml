@@ -283,13 +283,14 @@ jobs:
           exit 1
 
       - name: Reconcile exact article or existing provider identity before generation
+        id: prepare_generation
         if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
         run: python -u scripts/kesher_video_reconcile.py --prepare-generation ${DERIVE_SLUG:+--slug "$DERIVE_SLUG"}
 
       - name: Generate or resume exact NotebookLM-derived Short
-        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') }}
+        if: ${{ github.event_name != 'pull_request' && (inputs.operation == 'full' || inputs.operation == 'generate' || inputs.operation == 'derive') && steps.prepare_generation.outputs.skip_generation != 'true' }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -327,6 +328,7 @@ jobs:
           PY
 
       - name: Prepare exact technically verified Short upload
+        id: prepare_upload
         if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
@@ -347,7 +349,7 @@ jobs:
           fi
 
       - name: Upload exact Short once and verify it public
-        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') }}
+        if: ${{ github.event_name != 'pull_request' && !cancelled() && (inputs.operation == 'full' || inputs.operation == 'upload' || inputs.operation == 'rebuild' || inputs.operation == 'derive') && steps.prepare_upload.outputs.ready == 'true' }}
         env:
           DERIVE_SLUG: ${{ inputs.derive_slug }}
           REBUILD_ITEM_ID: ${{ inputs.rebuild_item_id }}
@@ -452,3 +454,19 @@ jobs:
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
               out.write("### Kesher Short V4\n\n" + text + "\n")
           PY
+
+      - name: Notify canonical Kesher Content Controller on completion
+        if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHILD_WORKFLOW: ${{ github.workflow }}
+          CHILD_RUN_ID: ${{ github.run_id }}
+          CHILD_CONCLUSION: ${{ job.status }}
+          SOURCE_SLUG: ${{ inputs.derive_slug || inputs.release_slug || '' }}
+        run: |
+          gh workflow run kesher-content-controller.yml \
+            --ref main \
+            -f child_workflow="$CHILD_WORKFLOW" \
+            -f child_run_id="$CHILD_RUN_ID" \
+            -f child_conclusion="$CHILD_CONCLUSION" \
+            -f source_slug="$SOURCE_SLUG"
