@@ -1,14 +1,14 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-13",
-  "status": "article_generating",
+  "status": "article_result_wait",
   "article": {
     "attempt_count": 2,
     "status": "running",
     "last_error": null,
-    "next_retry_at": null,
+    "next_retry_at": "2026-10-13T01:05:00.393190+00:00",
     "run_id": 38330140562,
-    "processed_run_id": 38312896122,
+    "processed_run_id": 38330140562,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
@@ -26,13 +26,13 @@
     "last_worker_result": {
       "schema_version": 1,
       "slot": "2026-10-13",
-      "outcome": "PR_CREATED",
+      "outcome": "ARTICLE_ALREADY_PUBLISHED",
       "retryable": false,
-      "message": "",
-      "session_id": "sessions/5127100728681762820",
-      "pr_url": "https://github.com/yanivsa/kesher-website/pull/1111",
-      "github_run_id": "38312896122",
-      "completed_at": "2026-10-12T22:25:55.743755+00:00"
+      "message": "Article already exists in main",
+      "session_id": "",
+      "pr_url": "",
+      "github_run_id": "38330140562",
+      "completed_at": "2026-10-13T01:02:07.569979+00:00"
     },
     "last_jules_session_id": "sessions/5127100728681762820"
   },
@@ -1911,9 +1911,20 @@
       "details": {
         "attempt": 2
       }
+    },
+    {
+      "at": "2026-10-13T01:03:00.393212+00:00",
+      "from": "article_generating",
+      "to": "article_result_wait",
+      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
+      "details": {
+        "run_id": 38330140562,
+        "outcome": "ARTICLE_ALREADY_PUBLISHED",
+        "pr_url": ""
+      }
     }
   ],
-  "updated_at": "2026-10-13T01:01:39.672590+00:00",
+  "updated_at": "2026-10-13T01:03:00.393218+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
