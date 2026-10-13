@@ -294,10 +294,62 @@ def posts_on_main(github: Any, ref: str = "main") -> list[dict[str, Any]]:
     return merge_catalog_posts(posts, recent)
 
 
-def article_is_public(html_text: str, expected_title: str) -> bool:
+def article_is_public(
+    html_text: str,
+    expected_title: str,
+    expected_slug: str | None = None,
+    expected_content_sha256: str | None = None,
+) -> bool:
     page = re.sub(r"\s+", " ", html_text)
     title = re.sub(r"\s+", " ", expected_title.strip())
-    return bool(title) and title in page
+    if not title or title not in page:
+        return False
+
+    if expected_slug:
+        slug = expected_slug.strip()
+        canonical_match = re.search(
+            r'<link[^>]+rel=["\']canonical["\'][^>]+href=["\']([^"\']+)["\']|<link[^>]+href=["\']([^"\']+)["\'][^>]+rel=["\']canonical["\']',
+            html_text,
+            re.IGNORECASE,
+        )
+        if canonical_match:
+            canonical_url = (canonical_match.group(1) or canonical_match.group(2) or "").strip()
+            if canonical_url and f"/blog/{slug}" not in canonical_url:
+                return False
+
+        og_match = re.search(
+            r'<meta[^>]+property=["\']og:url["\'][^>]+content=["\']([^"\']+)["\']|<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:url["\']',
+            html_text,
+            re.IGNORECASE,
+        )
+        if og_match:
+            og_url = (og_match.group(1) or og_match.group(2) or "").strip()
+            if og_url and f"/blog/{slug}" not in og_url:
+                return False
+
+    if expected_content_sha256:
+        expected_sha = expected_content_sha256.strip().lower()
+        meta_sha_match = re.search(
+            r'<meta[^>]+(?:name|property)=["\'](?:kesher:content-sha256|content-sha256)["\'][^>]+content=["\']([^"\']+)["\']|<meta[^>]+content=["\']([^"\']+)["\'][^>]+(?:name|property)=["\'](?:kesher:content-sha256|content-sha256)["\']',
+            html_text,
+            re.IGNORECASE,
+        )
+        if meta_sha_match:
+            meta_sha = (meta_sha_match.group(1) or meta_sha_match.group(2) or "").strip().lower()
+            if meta_sha and meta_sha != expected_sha:
+                return False
+
+        data_sha_match = re.search(
+            r'data-content-sha256=["\']([^"\']+)["\']',
+            html_text,
+            re.IGNORECASE,
+        )
+        if data_sha_match:
+            data_sha = data_sha_match.group(1).strip().lower()
+            if data_sha and data_sha != expected_sha:
+                return False
+
+    return True
 
 
 def verified_youtube_item(item: dict[str, Any], slug: str) -> bool:
@@ -1056,8 +1108,9 @@ class Controller:
             if (
                 article_state.get("status") in {"running", "retry_wait", "failed", "exhausted", "blocked"}
                 or article_state.get("last_error")
-                or last_error_stage == "article"
+                or last_error_stage in {"article", "image"}
                 or worker_outcome == "ARTICLE_ALREADY_PUBLISHED"
+                or state.get("status") in {"blocked", "article_retry_wait", "article_generating"}
             ):
                 clear_failure(article_state)
                 article_state["last_error"] = None
@@ -1069,8 +1122,21 @@ class Controller:
                 article_state["reconciled_existing_article"] = True
                 if article_state.get("status") in {"running", "retry_wait", "failed", "exhausted", "blocked"}:
                     article_state["status"] = "complete" if article_state.get("live") is True else "pending"
-                if last_error_stage == "article":
+                post_image = str(post.get("image") or post.get("hero_image") or "").strip()
+                if post_image:
+                    image_state = state.setdefault("image", {})
+                    clear_failure(image_state)
+                    image_state["status"] = "complete"
+                    image_state["last_error"] = None
+                    image_state["next_retry_at"] = None
+                    image_state["image_path"] = post_image
+                if last_error_stage in {"article", "image"}:
                     state["last_error"] = None
+                    if state.get("status") in {"blocked", "article_retry_wait", "article_generating"}:
+                        state["status"] = "article_live" if article_state.get("live") is True else "article_deploying" if article_state.get("status") == "deploying" else "article_needed"
+                elif article_state.get("last_error") or worker_outcome == "ARTICLE_ALREADY_PUBLISHED":
+                    if state.get("status") in {"article_retry_wait", "article_generating"}:
+                        state["status"] = "article_live" if article_state.get("live") is True else "article_deploying" if article_state.get("status") == "deploying" else "article_needed"
         return todays
 
     def _reconcile_completed_article_run(self, state: dict[str, Any]) -> Action | None:
@@ -1280,30 +1346,46 @@ class Controller:
         })
         clear_failure(state["article"])
 
-        status, page = self.site.get(url)
-        if status != 200 or not article_is_public(page, title):
-            if self.github.active_workflow_run(DEPLOY_WORKFLOW):
-                transition(state, "article_deploying", "deployment already active")
-                return Action("wait", "deployment active")
-            next_deploy = parse_timestamp(state["article"].get("next_deploy_retry_at"))
-            if next_deploy and self.now.astimezone(timezone.utc) < next_deploy:
-                transition(state, "article_deploy_wait", "deploy retry backoff is active",
-                           retry_at=next_deploy.isoformat())
-                return Action("wait", f"deploy retry scheduled for {next_deploy.isoformat()}")
-            attempts = int(state["article"].get("deploy_attempts") or 0) + 1
-            self.github.dispatch(DEPLOY_WORKFLOW)
-            delay_index = max(1, attempts - MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF + 1)
-            delay = 5 if attempts <= MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF else article_retry_backoff_minutes(delay_index)
-            state["article"].update({
-                "deploy_attempts": attempts,
-                "last_deploy_dispatch_at": utc_now(),
-                "next_deploy_retry_at": (
-                    datetime.now(timezone.utc) + timedelta(minutes=delay)
-                ).isoformat(),
-            })
-            transition(state, "article_deploying", "public article check failed; recovery deploy dispatched",
-                       http_status=status, attempt=attempts)
-            return Action("dispatch_deploy", "article not public yet")
+        content_sha = str(state["article"].get("quality_content_sha256") or "").strip()
+        already_verified = bool(state["article"].pop("_tick_live_verified", None))
+        if not already_verified:
+            status, page = self.site.get(url)
+            if status != 200 or not article_is_public(page, title, expected_slug=slug, expected_content_sha256=content_sha):
+                state["article"]["live"] = False
+                if self.github.active_workflow_run(DEPLOY_WORKFLOW):
+                    transition(state, "article_deploying", "deployment already active")
+                    return Action("wait", "deployment active")
+                pending_deploy = (state.get("pending_dispatches") or {}).get(DEPLOY_WORKFLOW)
+                if isinstance(pending_deploy, dict) and pending_deploy.get("cycle") == state.get("cycle"):
+                    if pending_deploy.get("status") in {"intent", "uncertain"}:
+                        transition(state, "article_deploying", "deployment dispatch intent pending")
+                        return Action("wait", "deployment dispatch pending reconciliation")
+                    if pending_deploy.get("status") == "dispatched":
+                        intent_dt = parse_timestamp(pending_deploy.get("dispatched_at") or pending_deploy.get("intent_at"))
+                        if intent_dt is not None:
+                            elapsed = (self.now.astimezone(timezone.utc) - intent_dt).total_seconds()
+                            if 0 <= elapsed < 180:
+                                transition(state, "article_deploying", "deployment dispatched; waiting for run visibility")
+                                return Action("wait", f"deployment dispatched {int(elapsed)}s ago; waiting for run visibility")
+                next_deploy = parse_timestamp(state["article"].get("next_deploy_retry_at"))
+                if next_deploy and self.now.astimezone(timezone.utc) < next_deploy:
+                    transition(state, "article_deploy_wait", "deploy retry backoff is active",
+                               retry_at=next_deploy.isoformat())
+                    return Action("wait", f"deploy retry scheduled for {next_deploy.isoformat()}")
+                attempts = int(state["article"].get("deploy_attempts") or 0) + 1
+                self.github.dispatch(DEPLOY_WORKFLOW)
+                delay_index = max(1, attempts - MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF + 1)
+                delay = 5 if attempts <= MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF else article_retry_backoff_minutes(delay_index)
+                state["article"].update({
+                    "deploy_attempts": attempts,
+                    "last_deploy_dispatch_at": utc_now(),
+                    "next_deploy_retry_at": (
+                        datetime.now(timezone.utc) + timedelta(minutes=delay)
+                    ).isoformat(),
+                })
+                transition(state, "article_deploying", "public article check failed; recovery deploy dispatched",
+                           http_status=status, attempt=attempts)
+                return Action("dispatch_deploy", "article not public yet")
 
         state["article"].update({
             "live": True,

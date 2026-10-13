@@ -504,7 +504,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if stage != "video" or workflow != v5.LONG_VIDEO_WORKFLOW:
             return super()._dispatch_budgeted(state, stage, workflow, bound_inputs)
 
-        source = self._article_source(state)
+        try:
+            source = self._article_source(state)
+        except TypeError:
+            source = self._article_source()
         if source is None:
             raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_UNAVAILABLE")
         operation = str(bound_inputs.get("operation") or "full").strip().lower()
@@ -1336,6 +1339,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 if direct_rebuild is not None:
                     return direct_rebuild
                 return self._tick_targeted_media_recovery(state)
+
+            is_pub, deploy_action = self._ensure_article_public_and_deployed(state)
+            if not is_pub and deploy_action is not None:
+                _, deliverables = runtime.delivery_guard.delivery_contract(state)
+                state["deliverables"] = deliverables
+                self._safe_save_controller_state(state)
+                return state, deploy_action
 
             self._overview_evidence_preflight(state)
             direct_rebuild = self._dispatch_exact_rejected_rebuild(state)

@@ -453,6 +453,84 @@ class RuntimeV5Controller(v5.V5Controller):
             return v5.core.Action("wait", f"{stage_name} provider pending under watchdog")
         return None
 
+    def _ensure_article_public_and_deployed(self, state: dict) -> tuple[bool, v5.core.Action | None]:
+        if getattr(self, "github", None) is None or getattr(self, "site", None) is None:
+            return True, None
+        posts = self.posts_on_main("main")
+        todays = self._reconcile_existing_current_day_article(state, posts)
+        if len(todays) > 1:
+            v5.core.block(state, "article", "DUPLICATE_ARTICLE_DATE",
+                          f"{len(todays)} articles share Israel date {self.now.date()}")
+            return False, v5.core.Action("blocked", "duplicate published articles")
+        if not todays:
+            return True, None
+
+        article = todays[0]
+        slug = v5.core.canonical_slug(article)
+        title = str(article.get("title") or "").strip()
+        url = f"{v5.core.SITE_URL}/blog/{slug}"
+        content_sha = str(state.get("article", {}).get("quality_content_sha256") or "").strip()
+
+        if state.get("article", {}).get("_tick_live_verified"):
+            return True, None
+
+        status, page = self.site.get(url)
+        is_pub = (status == 200 and v5.core.article_is_public(page, title, expected_slug=slug, expected_content_sha256=content_sha))
+        if is_pub:
+            state.setdefault("article", {}).update({
+                "live": True,
+                "live_verified_at": v5.core.utc_now(),
+                "next_deploy_retry_at": None,
+                "_tick_live_verified": True,
+            })
+            if state.get("status") in {"blocked", "article_deploying", "article_deploy_wait", "article_generating", "article_retry_wait"}:
+                v5.core.transition(state, "article_live", "HTTP 200 and expected title verified")
+            return True, None
+
+        state.setdefault("article", {})["live"] = False
+        if self.github.active_workflow_run(v5.core.DEPLOY_WORKFLOW):
+            v5.core.transition(state, "article_deploying", "deployment already active")
+            return False, v5.core.Action("wait", "deployment active")
+
+        pending_deploy = (state.get("pending_dispatches") or {}).get(v5.core.DEPLOY_WORKFLOW)
+        if isinstance(pending_deploy, dict) and pending_deploy.get("cycle") == state.get("cycle"):
+            if pending_deploy.get("status") in {"intent", "uncertain"}:
+                v5.core.transition(state, "article_deploying", "deployment dispatch intent pending")
+                return False, v5.core.Action("wait", "deployment dispatch pending reconciliation")
+            if pending_deploy.get("status") == "dispatched":
+                intent_dt = v5.core.parse_timestamp(pending_deploy.get("dispatched_at") or pending_deploy.get("intent_at"))
+                if intent_dt is not None:
+                    elapsed = (self.now.astimezone(v5.core.timezone.utc) - intent_dt).total_seconds()
+                    if 0 <= elapsed < 180:
+                        v5.core.transition(state, "article_deploying", "deployment dispatched; waiting for run visibility")
+                        return False, v5.core.Action("wait", f"deployment dispatched {int(elapsed)}s ago; waiting for run visibility")
+
+        next_deploy = v5.core.parse_timestamp(state["article"].get("next_deploy_retry_at"))
+        if next_deploy and self.now.astimezone(v5.core.timezone.utc) < next_deploy:
+            v5.core.transition(state, "article_deploy_wait", "deploy retry backoff is active",
+                               retry_at=next_deploy.isoformat())
+            return False, v5.core.Action("wait", f"deploy retry scheduled for {next_deploy.isoformat()}")
+
+        attempts = int(state["article"].get("deploy_attempts") or 0) + 1
+        self.github.dispatch(v5.core.DEPLOY_WORKFLOW)
+        delay_index = max(1, attempts - v5.core.MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF + 1)
+        delay = 5 if attempts <= v5.core.MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF else v5.core.article_retry_backoff_minutes(delay_index)
+        state["article"].update({
+            "deploy_attempts": attempts,
+            "last_deploy_dispatch_at": v5.core.utc_now(),
+            "next_deploy_retry_at": (
+                v5.core.datetime.now(v5.core.timezone.utc) + v5.core.timedelta(minutes=delay)
+            ).isoformat(),
+        })
+        v5.core.transition(
+            state,
+            "article_deploying",
+            "public article check failed; recovery deploy dispatched",
+            http_status=status,
+            attempt=attempts,
+        )
+        return False, v5.core.Action("dispatch_deploy", "article not public yet")
+
     def tick(self):
         state = self.state()
         try:
@@ -468,6 +546,13 @@ class RuntimeV5Controller(v5.V5Controller):
             self.github.save_controller_state(state)
             return state, action
         if source is not None:
+            is_pub, deploy_action = self._ensure_article_public_and_deployed(state)
+            if not is_pub and deploy_action is not None:
+                _, deliverables = delivery_guard.delivery_contract(state)
+                state["deliverables"] = deliverables
+                self.github.save_controller_state(state)
+                return state, deploy_action
+
             historical_action = self._reconcile_historical_long_and_advance_short(state, source)
             if historical_action is not None:
                 _, deliverables = delivery_guard.delivery_contract(state)
