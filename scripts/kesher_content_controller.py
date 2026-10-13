@@ -182,9 +182,8 @@ def is_controller_adoptable_post(
     if post.get("controllerManaged") is not False:
         return True
     sha = _post_source_sha256(post)
-    if state_slug and slug == state_slug:
-        if not state_content_sha256 or sha == state_content_sha256:
-            return True
+    if state_slug and state_content_sha256 and slug == state_slug and sha == state_content_sha256:
+        return True
     return (post_date, slug, sha) in REVIEWED_ADOPTABLE_POST_FREEZE_IDENTITIES
 
 
@@ -334,20 +333,19 @@ def article_is_public(
             html_text,
             re.IGNORECASE,
         )
+        meta_sha = ""
         if meta_sha_match:
             meta_sha = (meta_sha_match.group(1) or meta_sha_match.group(2) or "").strip().lower()
-            if meta_sha and meta_sha != expected_sha:
-                return False
 
         data_sha_match = re.search(
             r'data-content-sha256=["\']([^"\']+)["\']',
             html_text,
             re.IGNORECASE,
         )
-        if data_sha_match:
-            data_sha = data_sha_match.group(1).strip().lower()
-            if data_sha and data_sha != expected_sha:
-                return False
+        data_sha = data_sha_match.group(1).strip().lower() if data_sha_match else ""
+        observed_shas = [value for value in (meta_sha, data_sha) if value]
+        if not observed_shas or any(value != expected_sha for value in observed_shas):
+            return False
 
     return True
 
@@ -1066,28 +1064,6 @@ class Controller:
             state_slug=state_slug,
             state_content_sha256=state_sha,
         )
-        if not todays:
-            expected_date = self.now.date().isoformat()
-            same_day_all = [
-                post for post in posts
-                if isinstance(post, dict)
-                and str(post.get("date") or "").strip() == expected_date
-                and canonical_slug(post)
-            ]
-            worker_outcome = str((article_state.get("last_worker_result") or {}).get("outcome") or "")
-            last_error_stage = str((state.get("last_error") or {}).get("stage") or "")
-            last_error_code = str((state.get("last_error") or {}).get("code") or "")
-            controller_owned_signal = bool(
-                worker_outcome == "ARTICLE_ALREADY_PUBLISHED"
-                or article_state.get("reconcile_already_published") is True
-                or article_state.get("pr_number")
-                or article_state.get("normalization_slot") == expected_date
-                or int(article_state.get("merge_dispatch_count") or 0) > 0
-                or str(article_state.get("last_error") or "") == "ARTICLE_ATTEMPTS_EXHAUSTED"
-                or (last_error_stage == "article" and last_error_code == "ARTICLE_ATTEMPTS_EXHAUSTED")
-            )
-            if len(same_day_all) == 1 and controller_owned_signal:
-                todays = same_day_all
 
         if len(todays) == 1:
             post = todays[0]

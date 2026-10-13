@@ -26,6 +26,14 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS_DIR = ROOT / ".github" / "workflows"
 
 
+def public_article_html(post: dict) -> str:
+    source = v5.article_source_identity(post)
+    return (
+        f'<html><head><meta name="kesher:content-sha256" content="{source["content_sha256"]}"></head>'
+        f'<body><h1>{post["title"]}</h1>{post.get("content") or ""}</body></html>'
+    )
+
+
 class PreCutoverDailyAuthorityTests(unittest.TestCase):
     WORKER_WORKFLOWS = (
         "kesher-article-generation.yml",
@@ -395,7 +403,9 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         gh = BacklogGitHub()
         site = mock.Mock()
         site.get.side_effect = lambda url: (
-            (200, f"<html>{today_post['title']} {oct6_post['title']}</html>")
+            (200, public_article_html(today_post))
+            if url.endswith(today_source["slug"])
+            else (200, public_article_html(oct6_post))
         )
 
         # Instantiate StabilizedRuntimeV5Controller directly without mutating global v5.V5Controller
@@ -1091,9 +1101,10 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         oct6_post = next(p for p in posts_recent if p.get("date") == "2026-10-06")
         oct6_source = v5.article_source_identity(oct6_post)
         site = mock.Mock()
-        site.get.return_value = (
-            200,
-            f"<html><h1>{real_oct12_post['title']}</h1><h2>{oct6_post['title']}</h2></html>",
+        site.get.side_effect = lambda url: (
+            (200, public_article_html(real_oct12_post))
+            if url.endswith(real_oct12_source["slug"])
+            else (200, public_article_html(oct6_post))
         )
         ctrl_0036 = stabilized.StabilizedRuntimeV5Controller(
             gh,
@@ -1595,7 +1606,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 pending_dispatches.append((workflow, inputs or {}))
 
         live_site = mock.Mock()
-        live_site.get.return_value = (200, f"<html>{oct12_post['title']}</html>")
+        live_site.get.return_value = (200, public_article_html(oct12_post))
         p_gh = PendingProviderGitHub()
         for offset_min in (5, 10, 15):
             p_ctrl = stabilized.StabilizedRuntimeV5Controller(
@@ -1833,9 +1844,9 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
 
         site = mock.Mock()
         site.get.side_effect = lambda url: (
-            (200, f"<h1>{oct12_post['title']}</h1><article>{oct12_post['content']}</article>")
+            (200, public_article_html(oct12_post))
             if url.endswith(oct12_source["slug"])
-            else (200, f"<h1>{sep14_post['title']}</h1><article>{sep14_post['content']}</article>")
+            else (200, public_article_html(sep14_post))
         )
 
         gh = LiveSimGitHub()
@@ -2070,7 +2081,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         article_live = {"ready": False}
         sim_site = mock.Mock()
         sim_site.get.side_effect = lambda url: (
-            (200, f"<h1>{oct13_post['title']}</h1><article>{oct13_post['content']}</article>")
+            (200, public_article_html(oct13_post))
             if article_live["ready"] and url.endswith(oct13_source["slug"])
             else (404, "not found")
         )
@@ -2362,7 +2373,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         adv_site = mock.Mock()
         article_live_flag = {"live": True}
         adv_site.get.side_effect = lambda url: (
-            (200, f"<h1>{exact_article['title']}</h1><article>{exact_article['content']}</article>")
+            (200, public_article_html(exact_article))
             if article_live_flag["live"] and url.endswith(incident_slug)
             else (404, "not found")
         )

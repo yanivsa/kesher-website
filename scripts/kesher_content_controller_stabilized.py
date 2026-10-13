@@ -1148,6 +1148,21 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         pending_map = active_state.setdefault("pending_dispatches", {})
         pending = pending_map.get(workflow)
 
+        # Deploy is a singleton logical mutation for a cycle. workflow_dispatch does not
+        # return a run id, so mere visibility lag can never authorize a second POST.
+        # Public/deployment evidence or an exact child callback clears this ledger.
+        if (
+            workflow == v5.core.DEPLOY_WORKFLOW
+            and isinstance(pending, dict)
+            and pending.get("cycle") == active_state.get("cycle")
+            and pending.get("status") in {"intent", "uncertain", "dispatched"}
+            and (inputs or {}) == (pending.get("inputs") or {})
+        ):
+            raise _DuplicateDispatchSuppressed(
+                workflow,
+                f"{workflow} already has a durable {pending.get('status')} intent for this cycle; suppressing blind duplicate POST",
+            )
+
         if isinstance(pending, dict) and pending.get("cycle") == active_state.get("cycle"):
             if hasattr(self.github, "workflow_runs"):
                 try:

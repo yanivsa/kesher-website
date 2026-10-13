@@ -37,7 +37,6 @@ NO_IMAGE_GATE_ERROR = "New article requires a trusted local image; no-image publ
 CONTROLLER_STATE_REF = "automation-state"
 CONTROLLER_STATE_PATH = ".kesher-controller/state.json"
 _original_load_validator = core.load_validator
-_original_merge_and_deploy = core.merge_and_deploy
 
 
 def image_only_errors(errors: list[str]) -> bool:
@@ -142,14 +141,28 @@ def verify_exact_target_pr_preflight(
 
 
 def merge_and_deploy_after_image_stage(repo: str, pr: dict, token: str) -> None:
-    """Prevent auto-merge from racing ahead of the required trusted image."""
+    """Merge the validated article; the canonical Schema-5 controller alone owns Deploy."""
     if not controller_image_stage_terminal(repo, pr, token):
         print(
             f"PR #{pr['number']} passed content gates but the controller-owned trusted image "
             "stage is not terminal yet; merge deferred without consuming a content attempt."
         )
         return
-    _original_merge_and_deploy(repo, pr, token)
+    number = int(pr["number"])
+    head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
+    merged = core.request_json(
+        "PUT",
+        f"https://api.github.com/repos/{repo}/pulls/{number}/merge",
+        token,
+        {
+            "sha": head_sha,
+            "commit_title": "Auto-merge validated Kesher article",
+            "merge_method": "squash",
+        },
+    )
+    if not isinstance(merged, dict) or merged.get("merged") is not True:
+        raise RuntimeError(f"Article merge did not complete: {merged}")
+    print(f"Merged validated article PR #{number}; canonical controller owns deployment.")
 
 
 def send_jules_repair_v3(
