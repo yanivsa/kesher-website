@@ -1,22 +1,22 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-13",
-  "status": "article_result_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 2,
+    "attempt_count": 3,
     "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-13T01:05:00.393190+00:00",
+    "next_retry_at": null,
     "run_id": 38330140562,
     "processed_run_id": 38330140562,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 2,
+    "attempts": 3,
     "deploy_attempts": 0,
     "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-13T01:01:39.672574+00:00",
+    "last_dispatch_at": "2026-10-13T01:59:50.556946+00:00",
     "pr_number": 1111,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1111",
     "normalization_slot": "2026-10-13",
@@ -1922,9 +1922,18 @@
         "outcome": "ARTICLE_ALREADY_PUBLISHED",
         "pr_url": ""
       }
+    },
+    {
+      "at": "2026-10-13T01:59:50.556955+00:00",
+      "from": "article_result_wait",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 3
+      }
     }
   ],
-  "updated_at": "2026-10-13T01:03:00.393218+00:00",
+  "updated_at": "2026-10-13T01:59:50.556961+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
