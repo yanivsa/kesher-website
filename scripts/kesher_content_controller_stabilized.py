@@ -1149,19 +1149,78 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         pending = pending_map.get(workflow)
 
         # Deploy is a singleton logical mutation for a cycle. workflow_dispatch does not
-        # return a run id, so mere visibility lag can never authorize a second POST.
-        # Public/deployment evidence or an exact child callback clears this ledger.
+        # return a run id, so time alone can never authorize a second POST. A retry is
+        # allowed only after one exact run for the recorded main SHA is observed completed
+        # with a non-success conclusion. Ambiguous/missing evidence remains fail-closed.
         if (
             workflow == v5.core.DEPLOY_WORKFLOW
             and isinstance(pending, dict)
             and pending.get("cycle") == active_state.get("cycle")
-            and pending.get("status") in {"intent", "uncertain", "dispatched"}
+            and pending.get("status") in {"intent", "uncertain", "dispatched", "active", "completed_success"}
             and (inputs or {}) == (pending.get("inputs") or {})
         ):
-            raise _DuplicateDispatchSuppressed(
-                workflow,
-                f"{workflow} already has a durable {pending.get('status')} intent for this cycle; suppressing blind duplicate POST",
-            )
+            dispatch_sha = str(pending.get("dispatch_head_sha") or "").strip()
+            exact_runs: list[dict] = []
+            if dispatch_sha and hasattr(self.github, "workflow_runs"):
+                try:
+                    intent_dt = v5.core.parse_timestamp(pending.get("intent_at"))
+                    for run in (self.github.workflow_runs(workflow) or []):
+                        if not isinstance(run, dict) or str(run.get("event") or "") != "workflow_dispatch":
+                            continue
+                        if str(run.get("head_sha") or "").strip() != dispatch_sha:
+                            continue
+                        head_branch = str(run.get("head_branch") or "").strip()
+                        if head_branch and head_branch != "main":
+                            continue
+                        run_created = v5.core.parse_timestamp(run.get("created_at") or run.get("run_started_at"))
+                        if intent_dt and run_created and run_created < (intent_dt - v5.core.timedelta(seconds=30)):
+                            continue
+                        exact_runs.append(run)
+                except Exception:
+                    exact_runs = []
+
+            if len(exact_runs) > 1:
+                pending["matching_run_ids"] = [run.get("id") for run in exact_runs if run.get("id")]
+                self._safe_save_controller_state(active_state)
+                raise _DuplicateDispatchSuppressed(
+                    workflow,
+                    f"{workflow} has multiple exact runs for dispatch SHA {dispatch_sha}; refusing blind retry",
+                )
+
+            if len(exact_runs) == 1:
+                exact_run = exact_runs[0]
+                run_id = exact_run.get("id")
+                if run_id:
+                    active_state.setdefault("article", {})["deploy_run_id"] = run_id
+                    pending["observed_active_run_id"] = run_id
+                run_status = str(exact_run.get("status") or "")
+                if run_status == "completed":
+                    conclusion = str(exact_run.get("conclusion") or "").lower()
+                    if conclusion and conclusion != "success":
+                        pending_map.pop(workflow, None)
+                        self._safe_save_controller_state(active_state)
+                        pending = None
+                    else:
+                        pending["status"] = "completed_success"
+                        pending["conclusion"] = conclusion or "success"
+                        self._safe_save_controller_state(active_state)
+                        raise _DuplicateDispatchSuppressed(
+                            workflow,
+                            f"{workflow} exact run {run_id} completed successfully; waiting for public deployment evidence",
+                        )
+                else:
+                    pending["status"] = "active"
+                    self._safe_save_controller_state(active_state)
+                    raise _DuplicateDispatchSuppressed(
+                        workflow,
+                        f"{workflow} exact run {run_id} is {run_status or 'active'}; suppressing duplicate dispatch",
+                    )
+
+            if pending is not None:
+                raise _DuplicateDispatchSuppressed(
+                    workflow,
+                    f"{workflow} already has a durable {pending.get('status')} intent for this cycle; suppressing blind duplicate POST",
+                )
 
         if isinstance(pending, dict) and pending.get("cycle") == active_state.get("cycle"):
             if hasattr(self.github, "workflow_runs"):
@@ -1233,6 +1292,12 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
         now_iso = self.now.astimezone(v5.core.timezone.utc).isoformat()
         stage_dict = active_state.get(stage_name) if stage_name else None
+        dispatch_head_sha = ""
+        if workflow == v5.core.DEPLOY_WORKFLOW and hasattr(self.github, "main_sha"):
+            try:
+                dispatch_head_sha = str(self.github.main_sha() or "").strip()
+            except Exception:
+                dispatch_head_sha = ""
         pending_entry = {
             "workflow": workflow,
             "cycle": active_state.get("cycle"),
@@ -1242,6 +1307,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "previous_run_id": stage_dict.get(run_field) if isinstance(stage_dict, dict) and run_field else None,
             "observed_active_run_id": None,
         }
+        if workflow == v5.core.DEPLOY_WORKFLOW and dispatch_head_sha:
+            pending_entry["dispatch_head_sha"] = dispatch_head_sha
         pending_map[workflow] = pending_entry
         self._safe_save_controller_state(active_state)
 

@@ -570,6 +570,97 @@ class ControllerTests(unittest.TestCase):
             )
         self.assertEqual(raw_dispatches, [])
 
+    def test_failed_exact_deploy_run_with_lost_callback_allows_one_retry(self):
+        class DeployGitHub(FakeGitHub):
+            def workflow_runs(self, workflow, limit=20):
+                return [{
+                    "id": 501,
+                    "event": "workflow_dispatch",
+                    "head_sha": "c" * 40,
+                    "head_branch": "main",
+                    "created_at": "2026-08-19T07:00:05+00:00",
+                    "status": "completed",
+                    "conclusion": "failure",
+                }]
+
+            def main_sha(self):
+                return "c" * 40
+
+        gh = DeployGitHub()
+        ctrl = stabilized.StabilizedRuntimeV5Controller(gh, FakeSite(), now=self.now(10, 6))
+        state = {
+            "schema_version": 5,
+            "cycle": "2026-08-19",
+            "article": {},
+            "pending_dispatches": {
+                controller.DEPLOY_WORKFLOW: {
+                    "workflow": controller.DEPLOY_WORKFLOW,
+                    "cycle": "2026-08-19",
+                    "inputs": {},
+                    "intent_at": "2026-08-19T07:00:00+00:00",
+                    "dispatched_at": "2026-08-19T07:00:00+00:00",
+                    "dispatch_head_sha": "c" * 40,
+                    "status": "dispatched",
+                    "previous_run_id": None,
+                    "observed_active_run_id": None,
+                }
+            },
+        }
+        raw_dispatches = []
+        ctrl._guarded_dispatch(
+            state,
+            controller.DEPLOY_WORKFLOW,
+            {},
+            lambda workflow, inputs: raw_dispatches.append((workflow, copy.deepcopy(inputs or {}))),
+        )
+        self.assertEqual(raw_dispatches, [(controller.DEPLOY_WORKFLOW, {})])
+        self.assertEqual(state["pending_dispatches"][controller.DEPLOY_WORKFLOW]["status"], "dispatched")
+        self.assertEqual(state["pending_dispatches"][controller.DEPLOY_WORKFLOW]["dispatch_head_sha"], "c" * 40)
+
+    def test_wrong_head_deploy_run_cannot_resolve_pending_intent(self):
+        class DeployGitHub(FakeGitHub):
+            def workflow_runs(self, workflow, limit=20):
+                return [{
+                    "id": 777,
+                    "event": "workflow_dispatch",
+                    "head_sha": "d" * 40,
+                    "head_branch": "main",
+                    "created_at": "2026-08-19T07:00:05+00:00",
+                    "status": "completed",
+                    "conclusion": "failure",
+                }]
+
+        gh = DeployGitHub()
+        ctrl = stabilized.StabilizedRuntimeV5Controller(gh, FakeSite(), now=self.now(10, 6))
+        state = {
+            "schema_version": 5,
+            "cycle": "2026-08-19",
+            "article": {},
+            "pending_dispatches": {
+                controller.DEPLOY_WORKFLOW: {
+                    "workflow": controller.DEPLOY_WORKFLOW,
+                    "cycle": "2026-08-19",
+                    "inputs": {},
+                    "intent_at": "2026-08-19T07:00:00+00:00",
+                    "dispatched_at": "2026-08-19T07:00:00+00:00",
+                    "dispatch_head_sha": "c" * 40,
+                    "status": "dispatched",
+                    "previous_run_id": None,
+                    "observed_active_run_id": None,
+                }
+            },
+        }
+        raw_dispatches = []
+        with self.assertRaises(stabilized._DuplicateDispatchSuppressed):
+            ctrl._guarded_dispatch(
+                state,
+                controller.DEPLOY_WORKFLOW,
+                {},
+                lambda workflow, inputs: raw_dispatches.append((workflow, copy.deepcopy(inputs or {}))),
+            )
+        self.assertEqual(raw_dispatches, [])
+        self.assertIn(controller.DEPLOY_WORKFLOW, state["pending_dispatches"])
+
     def test_auto_merge_bridge_is_merge_only_and_never_dispatches_deploy(self):
         path = Path(__file__).resolve().parents[1] / ".github" / "scripts" / "article-pr-controller-v3.py"
         spec = importlib.util.spec_from_file_location("article_controller_v3_merge_only_test", path)
