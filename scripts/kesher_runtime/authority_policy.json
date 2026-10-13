@@ -740,7 +740,7 @@
           "tests/test_short_retry_policy_v4.py": "45d5596b39bfc88221ce6deb735d7dd7ac6fc6c80c205e7e2a0499fec8329971",
           "tests/test_v4_runtime_activation.py": "98b614126a9f1df68acd252ebf56de11472be8b38267e60430b1c7191fd7845e",
           "tests/test_v5_delivery_watchdog_contract.py": "fc4ef24b476258b86bd1e9bd49a350d2290a81fe80383520a319a1271e259631",
-          "tests/test_v5_shared_video_controller.py": "a38a065994bfd8c2ee4a3cd760c8c8a6f72d7f5e1097171c81a76abf065836d6",
+          "tests/test_v5_shared_video_controller.py": "5b9efb76e6d6eeaf003bf5f003975015bbeb833dc1b0f42cd350ec0f04c596e5",
           "tests/test_v5_video_source_binding.py": "cef18902a72d505fc3b8da671a706b866890e058ba490a99a3998f96dd5c78cf",
           "tests/test_kesher_production_cutover.py": "7d25b8062397da6bb45e3a7ccf77323832d8b22ab3d685ddfdad719d2644e740",
           "tests/test_kesher_external_exclusion.py": "96b3d85f31e2e2fcc939aa2f5be97b015a43c22aedfb263b37f7ea6cfdaa78cb",

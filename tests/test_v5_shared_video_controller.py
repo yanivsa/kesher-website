@@ -145,7 +145,13 @@ class FakeGitHub:
 
 class FakeSite:
     def get(self, url):
-        return 200, "<h1>כותרת מאמר</h1>"
+        post = article()
+        source = v5.article_source_identity(post)
+        return (
+            200,
+            f'<html><head><meta name="kesher:content-sha256" content="{source["content_sha256"]}"></head>'
+            f'<body><h1>{post["title"]}</h1>{post["content"]}</body></html>',
+        )
 
 
 class V5SharedVideoControllerTests(unittest.TestCase):
