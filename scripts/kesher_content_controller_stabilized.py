@@ -47,11 +47,53 @@ def _current_cycle_video_matching(video_state, requested_slug):
     return v5.v3.entry._base_matching(video_state, requested_slug)
 
 
+ARTICLE_AUTO_MERGE_WORKFLOW = runtime.ARTICLE_AUTO_MERGE_WORKFLOW
+DISPATCH_VISIBILITY_LAG_SECONDS = 90
+VALID_CHILD_CONCLUSIONS: frozenset[str] = frozenset({
+    "success",
+    "failure",
+    "cancelled",
+    "skipped",
+    "timed_out",
+    "neutral",
+    "action_required",
+    "stale",
+})
+
+
+class _DuplicateDispatchSuppressed(Exception):
+    def __init__(self, workflow: str, reason: str) -> None:
+        super().__init__(reason)
+        self.workflow = workflow
+        self.reason = reason
+
+
 class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     """Prevent advancement/completion unless article and canonical media evidence are durable."""
 
+    def _safe_newest_video_state(self) -> dict:
+        getter = getattr(self.github, "newest_video_state", None)
+        if callable(getter):
+            try:
+                res = getter()
+                if isinstance(res, dict):
+                    return res
+            except Exception:
+                pass
+        return {"version": 1, "items": []}
 
-    def _selected_article(self, posts=None):
+    def _safe_newest_short_state(self) -> dict:
+        getter = getattr(self.github, "newest_short_state", None)
+        if callable(getter):
+            try:
+                res = getter()
+                if isinstance(res, dict):
+                    return res
+            except Exception:
+                pass
+        return {"version": 1, "items": []}
+
+    def _selected_article(self, posts=None, state: dict | None = None):
         """Resolve one authoritative article without regressing to date-only selection."""
         if posts is None or isinstance(posts, dict):
             posts = self.posts_on_main("main")
@@ -68,7 +110,15 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 )
             return matches[0]
 
-        todays = v5.core.today_articles(posts, self.now.date())
+        active_state = state if isinstance(state, dict) else getattr(self, "_active_state_ref", None)
+        if isinstance(active_state, dict):
+            todays = self._reconcile_existing_current_day_article(active_state, posts)
+        else:
+            existing = self.github.load_controller_state()
+            if isinstance(existing, dict):
+                todays = self._reconcile_existing_current_day_article(existing, posts)
+            else:
+                todays = v5.core.today_articles(posts, self.now.date())
         if len(todays) <= 1:
             return todays[0] if todays else None
 
@@ -76,7 +126,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         # case the durable controller state is stronger evidence than date order.
         # Preserve the exact previously-adopted article identity when possible
         # and fail closed if the state cannot disambuate the candidates.
-        existing = self.github.load_controller_state()
+        existing = active_state if isinstance(active_state, dict) else self.github.load_controller_state()
         article_state = existing.get("article") if isinstance(existing, dict) else {}
         if not isinstance(article_state, dict):
             article_state = {}
@@ -98,11 +148,11 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             f"BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: {self.now.date().isoformat()}"
         )
 
-    def _article_source(self):
+    def _article_source(self, state: dict | None = None):
         posts = self.posts_on_main("main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
-        article = self._selected_article(posts)
+        article = self._selected_article(posts, state=state)
         return v5.article_source_identity(article) if article is not None else None
 
     def _recover_stale_source_binding_exhaustion(self, state):
@@ -128,7 +178,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         source = self._article_source()
         if source is None:
             return state
-        snapshot = self.github.newest_video_state()
+        snapshot = self._safe_newest_video_state()
         exact_verified = v5._verified_exact(snapshot, source)
         if exact_verified:
             verified_item = v5._newest(exact_verified)
@@ -278,7 +328,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         source = self._article_source()
         if source is None:
             return state
-        snapshot = self.github.newest_video_state()
+        snapshot = self._safe_newest_video_state()
         exact_rejected = [
             item for item in v5._exact_items(snapshot, source)
             if item.get("uploaded") is not True
@@ -338,8 +388,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def state(self):
         state = super().state()
+        try:
+            self._reconcile_existing_current_day_article(state)
+        except v5.core.ControllerError:
+            pass
         state = self._recover_stale_source_binding_exhaustion(state)
         state = self._recover_exact_rejected_exhaustion(state)
+        self._active_state_ref = state
         self._correlate_child_notification_fields(state)
         return state
 
@@ -347,7 +402,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         posts = self.posts_on_main("main")
         if not isinstance(posts, list):
             raise v5.core.ControllerError("ARTICLE_SOURCE_INVALID")
-        article = self._selected_article(posts)
+        article = self._selected_article(posts, state=state)
         if article is None:
             return None
 
@@ -374,10 +429,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def _dispatch_exact_rejected_rebuild(self, state):
         """Preempt legacy V5 rejection handling and rebuild the exact item with Remotion."""
-        source = self._article_source()
+        source = self._article_source(state)
         if source is None:
             return None
-        snapshot = self.github.newest_video_state()
+        snapshot = self._safe_newest_video_state()
         exact_rejected = [
             item for item in v5._exact_items(snapshot, source)
             if item.get("uploaded") is not True
@@ -449,7 +504,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if stage != "video" or workflow != v5.LONG_VIDEO_WORKFLOW:
             return super()._dispatch_budgeted(state, stage, workflow, bound_inputs)
 
-        source = self._article_source()
+        source = self._article_source(state)
         if source is None:
             raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_UNAVAILABLE")
         operation = str(bound_inputs.get("operation") or "full").strip().lower()
@@ -459,18 +514,45 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             raise v5.core.ControllerError("LONG_VIDEO_SOURCE_IDENTITY_MISMATCH")
         bound_inputs["target_slug"] = source["slug"]
 
-        snapshot = self.github.newest_video_state()
+        snapshot = self._safe_newest_video_state()
         exact_existing = [item for item in v5._exact_items(snapshot, source)
                           if item.get('uploaded') is not True
                           and item.get('status') in (v5.core.ACTIVE_VIDEO_STATUSES | {'rejected'})]
+        exact_uploaded_unverified = [
+            item for item in v5._exact_items(snapshot, source)
+            if bool(str(item.get("youtube_id") or "").strip())
+            and not v5.core.verified_youtube_item(item, source["slug"])
+        ]
         requested_id = str(bound_inputs.get('target_item_id') or '')
         if requested_id:
             exact_existing = [item for item in exact_existing if item.get('id') == requested_id]
-            if len(exact_existing) != 1:
+            exact_uploaded_unverified = [
+                item for item in exact_uploaded_unverified if item.get("id") == requested_id
+            ]
+            if len(exact_existing) != 1 and not (operation == "upload" and len(exact_uploaded_unverified) == 1):
                 raise v5.core.ControllerError('LONG_VIDEO_EXACT_ITEM_NOT_UNIQUE')
         elif len(exact_existing) > 1:
             raise v5.core.ControllerError('LONG_VIDEO_EXACT_ITEM_ID_REQUIRED')
         bound_inputs['target_content_sha256'] = source['content_sha256']
+        if operation == "upload" and exact_uploaded_unverified:
+            reverify_item = v5._newest(exact_uploaded_unverified) or exact_uploaded_unverified[-1]
+            reverify_id = str(reverify_item.get("id") or "").strip()
+            if not reverify_id:
+                raise v5.core.ControllerError("LONG_VIDEO_ITEM_ID_MISSING")
+            bound_inputs["operation"] = "upload"
+            bound_inputs["target_item_id"] = reverify_id
+            if isinstance(inputs, dict):
+                inputs.update(bound_inputs)
+            v5.v3.V3Controller._dispatch_budgeted(self, state, stage, workflow, bound_inputs)
+            current = state["video"]
+            current["item_id"] = reverify_id
+            current["youtube_id"] = reverify_item.get("youtube_id")
+            current["youtube_url"] = reverify_item.get("youtube_url")
+            current["verified"] = False
+            current["source_id"] = reverify_item.get("source_id")
+            current["artifact_id"] = reverify_item.get("artifact_id")
+            current["provider_id"] = reverify_item.get("task_id")
+            return
         if exact_existing:
             bound_inputs['target_item_id'] = str(exact_existing[0].get('id') or '')
             if not bound_inputs['target_item_id']:
@@ -573,6 +655,12 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def _dispatch_targeted_short_rebuild_from_full_state(self, state, source, long_item):
         """Recover one exact resolution-rejected Short from full durable state."""
+        gate_error = self._short_dispatch_gate_error(source, long_item)
+        if gate_error is not None:
+            code, message = gate_error
+            v5.core.block(state, "short", code, message)
+            self.github.save_controller_state(state)
+            return v5.core.Action("blocked", message)
         # Fresh public evidence must win over an older rejected durable snapshot.
         # Otherwise a controller tick that races a successful Short upload can
         # dispatch a redundant rebuild from stale heavyweight state.
@@ -631,7 +719,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             state["short"]["status"] = "exhausted"
             return v5.core.Action("blocked", "Short Remotion rebuild attempts exhausted")
 
-        inputs = {"operation": "rebuild", "rebuild_item_id": item_id}
+        inputs = {
+            "operation": "rebuild",
+            "rebuild_item_id": item_id,
+            "derive_slug": source["slug"],
+            "derive_content_sha256": source["content_sha256"],
+            "derive_long_item_id": str(long_item.get("id") or ""),
+        }
         v5.core.GitHubClient.dispatch(self.github, v5.SHORT_WORKFLOW, inputs)
         state["short"].update({
             "status": "running",
@@ -726,7 +820,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "updated_at": v5.core.utc_now(),
         })
 
-        snapshot = self.github.newest_video_state()
+        snapshot = self._safe_newest_video_state()
         long_item = v5._newest(v5._verified_exact(snapshot, source))
         if long_item is None:
             long_item = self._verified_long_from_artifact_history(source)
@@ -842,7 +936,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def _overview_evidence_preflight(self, state):
         """Copy exact public Overview edit evidence into durable controller state."""
-        source = self._article_source()
+        source = self._article_source(state)
         if source is None:
             return
 
@@ -850,7 +944,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         # public URL alone is never sufficient to complete the Overview stage.
         state["long_video"]["overview_evidence_required"] = True
 
-        snapshot = self.github.newest_video_state()
+        snapshot = self._safe_newest_video_state()
         item = v5._newest(v5._verified_exact(snapshot, source))
         if item is None:
             item = self._verified_long_from_artifact_history(source)
@@ -889,45 +983,132 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             ).strip(),
             "workflow": str(os.environ.get("KESHER_CHILD_WORKFLOW") or "").strip(),
             "run_id": str(os.environ.get("KESHER_CHILD_RUN_ID") or "").strip(),
+            "run_attempt": str(os.environ.get("KESHER_CHILD_RUN_ATTEMPT") or "").strip(),
             "conclusion": str(os.environ.get("KESHER_CHILD_CONCLUSION") or "").strip().lower(),
             "source_slug": str(os.environ.get("KESHER_CHILD_SOURCE_SLUG") or "").strip(),
             "slot": str(os.environ.get("KESHER_CHILD_SLOT") or "").strip(),
         }
 
-    def _correlate_child_notification_fields(self, state: dict) -> None:
+    @staticmethod
+    def _workflow_stage_and_file(workflow_name: str) -> tuple[str, str, str] | None:
+        if workflow_name == "Kesher Article Generation":
+            return "article", "run_id", v5.core.ARTICLE_WORKFLOW
+        if workflow_name == "Kesher Normalize Article PR":
+            return "article", "normalization_run_id", "normalize-article-pr.yml"
+        if workflow_name == "Kesher Trusted Article Image":
+            return "image", "run_id", v5.v3.IMAGE_WORKFLOW
+        if workflow_name == "Auto-merge Kesher article PRs":
+            return "article", "merge_run_id", ARTICLE_AUTO_MERGE_WORKFLOW
+        if workflow_name == "Deploy to Cloudflare Pages":
+            return "article", "deploy_run_id", v5.core.DEPLOY_WORKFLOW
+        if workflow_name in {"Kesher Daily NotebookLM Video Overview", "Kesher Daily Video Overview"}:
+            return "long_video", "run_id", v5.LONG_VIDEO_WORKFLOW
+        if workflow_name in {"Kesher Daily Article Short V4", "Kesher Article Short V4"}:
+            return "short", "run_id", v5.SHORT_WORKFLOW
+        return None
+
+    def _validate_child_notification(self, state: dict) -> tuple[bool, str]:
         info = self._child_notification_env()
         workflow = info["workflow"]
-        if not workflow or workflow not in v5.v3.entry.ADMITTED_CHILD_WORKFLOW_NAMES:
-            return
-        if info["slot"] and state.get("cycle") and info["slot"] != str(state.get("cycle")):
-            return
         raw_id = info["run_id"]
-        parsed_id = int(raw_id) if raw_id.isdigit() else (raw_id or None)
-        if parsed_id is not None:
-            if workflow == "Kesher Article Generation":
-                state.setdefault("article", {})["run_id"] = parsed_id
-            elif workflow == "Kesher Normalize Article PR":
-                state.setdefault("article", {})["normalization_run_id"] = parsed_id
-            elif workflow == "Kesher Trusted Article Image":
-                state.setdefault("image", {})["run_id"] = parsed_id
-            elif workflow == "Auto-merge Kesher article PRs":
-                state.setdefault("article", {})["merge_run_id"] = parsed_id
-            elif workflow == "Deploy to Cloudflare Pages":
-                article = state.setdefault("article", {})
-                article["deploy_run_id"] = parsed_id
-                if not article.get("next_deploy_retry_at"):
-                    article["next_deploy_retry_at"] = (
-                        self.now.astimezone(v5.core.timezone.utc) + v5.core.timedelta(minutes=5)
-                    ).isoformat()
-            elif workflow == "Kesher Daily NotebookLM Video Overview":
-                long_video = state.setdefault("long_video", {})
-                long_video["run_id"] = parsed_id
-                if not long_video.get("next_retry_at"):
-                    long_video["next_retry_at"] = (
-                        self.now.astimezone(v5.core.timezone.utc) + v5.core.timedelta(minutes=5)
-                    ).isoformat()
-            elif workflow == "Kesher Daily Article Short V4":
-                state.setdefault("short", {})["run_id"] = parsed_id
+        conclusion = info["conclusion"]
+
+        if not workflow and not raw_id and not conclusion and not info["source_slug"] and not info["slot"]:
+            return True, ""
+
+        if not workflow or workflow not in v5.v3.entry.ADMITTED_CHILD_WORKFLOW_NAMES:
+            return False, f"invalid or unadmitted child workflow: {workflow or 'missing'}"
+
+        mapping = self._workflow_stage_and_file(workflow)
+        if mapping is None:
+            return False, f"unmapped child workflow: {workflow}"
+        stage_name, run_field, workflow_file = mapping
+
+        if not raw_id or not raw_id.isdigit() or int(raw_id) <= 0:
+            return False, f"missing or invalid child run_id: {raw_id or 'missing'}"
+
+        if not conclusion or conclusion not in VALID_CHILD_CONCLUSIONS:
+            return False, f"missing or invalid child conclusion: {conclusion or 'missing'}"
+
+        if info["slot"] and state.get("cycle") and info["slot"] != str(state.get("cycle")):
+            return False, f"stale child completion slot ignored: {info['slot']}"
+
+        parsed_id = int(raw_id)
+        stage_dict = state.get(stage_name) if isinstance(state.get(stage_name), dict) else {}
+        if stage_dict.get("processed_run_id") is not None and v5.v3.entry._same_id(stage_dict.get("processed_run_id"), parsed_id):
+            return False, f"stale child run_id already processed: {parsed_id}"
+
+        if info["source_slug"]:
+            current_slug = str((state.get("article") or {}).get("slug") or "").strip()
+            if not current_slug:
+                src = self._article_source(state)
+                if src and src.get("slug"):
+                    current_slug = str(src.get("slug")).strip()
+            if current_slug and info["source_slug"] != current_slug:
+                backlog_matches = [
+                    row for row in (state.get("backlog") or [])
+                    if isinstance(row, dict) and str(row.get("slug") or "") == info["source_slug"]
+                ]
+                if not backlog_matches:
+                    return False, f"child notification source_slug mismatch: {info['source_slug']} != {current_slug}"
+
+        actual_run = super()._workflow_run(parsed_id)
+        if isinstance(actual_run, dict):
+            if str(actual_run.get("event") or "") == "pull_request":
+                return False, f"pull_request child run ignored: {parsed_id}"
+            run_name = str(actual_run.get("name") or "").strip()
+            if run_name and run_name not in {workflow, workflow_file}:
+                return False, f"child run workflow mismatch: run {parsed_id} belongs to {run_name}, not {workflow}"
+            actual_attempt = actual_run.get("run_attempt")
+            if info["run_attempt"] and actual_attempt and int(info["run_attempt"]) != int(actual_attempt):
+                return False, f"child run_attempt mismatch: {info['run_attempt']} != {actual_attempt}"
+            if actual_attempt and stage_dict.get("run_attempt") and int(actual_attempt) < int(stage_dict["run_attempt"]):
+                return False, f"stale child run_attempt ignored: {actual_attempt} < {stage_dict['run_attempt']}"
+
+        return True, ""
+
+    def _correlate_child_notification_fields(self, state: dict) -> None:
+        valid, _ = self._validate_child_notification(state)
+        if not valid:
+            return
+        info = self._child_notification_env()
+        workflow = info["workflow"]
+        if not workflow:
+            return
+        mapping = self._workflow_stage_and_file(workflow)
+        if mapping is None:
+            return
+        stage_name, run_field, workflow_file = mapping
+        parsed_id = int(info["run_id"])
+
+        if workflow == "Kesher Article Generation":
+            state.setdefault("article", {})["run_id"] = parsed_id
+        elif workflow == "Kesher Normalize Article PR":
+            state.setdefault("article", {})["normalization_run_id"] = parsed_id
+        elif workflow == "Kesher Trusted Article Image":
+            state.setdefault("image", {})["run_id"] = parsed_id
+        elif workflow == "Auto-merge Kesher article PRs":
+            state.setdefault("article", {})["merge_run_id"] = parsed_id
+        elif workflow == "Deploy to Cloudflare Pages":
+            article = state.setdefault("article", {})
+            article["deploy_run_id"] = parsed_id
+            if not article.get("next_deploy_retry_at"):
+                article["next_deploy_retry_at"] = (
+                    self.now.astimezone(v5.core.timezone.utc) + v5.core.timedelta(minutes=5)
+                ).isoformat()
+        elif workflow in {"Kesher Daily NotebookLM Video Overview", "Kesher Daily Video Overview"}:
+            long_video = state.setdefault("long_video", {})
+            long_video["run_id"] = parsed_id
+            if not long_video.get("next_retry_at"):
+                long_video["next_retry_at"] = (
+                    self.now.astimezone(v5.core.timezone.utc) + v5.core.timedelta(minutes=5)
+                ).isoformat()
+        elif workflow in {"Kesher Daily Article Short V4", "Kesher Article Short V4"}:
+            state.setdefault("short", {})["run_id"] = parsed_id
+
+        if isinstance(state.get("pending_dispatches"), dict):
+            state["pending_dispatches"].pop(workflow_file, None)
+
         state["last_child_notification"] = {
             "workflow": workflow,
             "run_id": parsed_id,
@@ -936,22 +1117,145 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "slot": info["slot"] or state.get("cycle"),
         }
 
-    def _workflow_run(self, run_id):
-        run = super()._workflow_run(run_id)
-        info = self._child_notification_env()
-        notified_id = info["run_id"]
-        notified_conclusion = info["conclusion"]
-        if notified_id and v5.v3.entry._same_id(run_id, notified_id) and notified_conclusion:
-            if not isinstance(run, dict) or str(run.get("status") or "") != "completed":
-                merged = dict(run) if isinstance(run, dict) else {}
-                merged.update({
-                    "id": int(notified_id) if notified_id.isdigit() else notified_id,
-                    "status": "completed",
-                    "conclusion": notified_conclusion,
-                    "event": str(merged.get("event") or "workflow_dispatch"),
-                })
-                return merged
-        return run
+    def _guarded_dispatch(self, state: dict, workflow: str, inputs: dict | None, raw_dispatch) -> None:
+        """Enforce pre-dispatch intent ledger, visibility-lag grace, and Short dispatch gate."""
+        active_state = getattr(self, "_active_state_ref", state)
+        if workflow == v5.SHORT_WORKFLOW:
+            slug = str((inputs or {}).get("derive_slug") or "").strip()
+            sha = str((inputs or {}).get("derive_content_sha256") or "").strip()
+            if not slug or len(sha) != 64 or not all(c in "0123456789abcdefABCDEF" for c in sha):
+                raise v5.core.ControllerError(
+                    "SHORT_SOURCE_IDENTITY_MISSING: Short dispatch requires non-empty derive_slug and 64-hex derive_content_sha256"
+                )
+            snapshot = self._safe_newest_video_state()
+            exact_long = v5._newest(v5._verified_exact(snapshot, {"slug": slug, "content_sha256": sha}))
+            if exact_long is None and hasattr(self, "_verified_long_from_artifact_history"):
+                exact_long = self._verified_long_from_artifact_history({"slug": slug, "content_sha256": sha})
+            if exact_long is None or not v5.core.verified_youtube_item(exact_long, slug):
+                raise v5.core.ControllerError(
+                    "SHORT_REQUIRES_VERIFIED_LONG_VIDEO: Short dispatch blocked because exact Long Video is not public and verified"
+                )
+
+        stage_field_map = {
+            v5.core.ARTICLE_WORKFLOW: ("article", "run_id"),
+            "normalize-article-pr.yml": ("article", "normalization_run_id"),
+            v5.v3.IMAGE_WORKFLOW: ("image", "run_id"),
+            ARTICLE_AUTO_MERGE_WORKFLOW: ("article", "merge_run_id"),
+            v5.core.DEPLOY_WORKFLOW: ("article", "deploy_run_id"),
+            v5.LONG_VIDEO_WORKFLOW: ("long_video", "run_id"),
+            v5.SHORT_WORKFLOW: ("short", "run_id"),
+        }
+        mapping = stage_field_map.get(workflow)
+        stage_name, run_field = mapping if mapping else (None, None)
+        pending_map = active_state.setdefault("pending_dispatches", {})
+        pending = pending_map.get(workflow)
+
+        if isinstance(pending, dict) and pending.get("cycle") == active_state.get("cycle"):
+            if hasattr(self.github, "workflow_runs"):
+                try:
+                    recent_runs = self.github.workflow_runs(workflow)
+                    intent_dt = v5.core.parse_timestamp(pending.get("intent_at"))
+                    for run in (recent_runs or []):
+                        if not isinstance(run, dict) or str(run.get("event") or "") != "workflow_dispatch":
+                            continue
+                        run_created = v5.core.parse_timestamp(run.get("created_at") or run.get("run_started_at"))
+                        if intent_dt and run_created and run_created >= (intent_dt - v5.core.timedelta(seconds=30)):
+                            if str(run.get("status") or "") != "completed":
+                                if stage_name and run_field:
+                                    active_state.setdefault(stage_name, {})[run_field] = run.get("id")
+                                pending["observed_active_run_id"] = run.get("id")
+                                pending["status"] = "active"
+                                self.github.save_controller_state(active_state)
+                                raise _DuplicateDispatchSuppressed(
+                                    workflow,
+                                    f"{workflow} active child run {run.get('id')} reconciled; suppressing duplicate dispatch",
+                                )
+                            if pending.get("status") in {"intent", "uncertain"}:
+                                if stage_name and run_field:
+                                    active_state.setdefault(stage_name, {})[run_field] = run.get("id")
+                                pending_map.pop(workflow, None)
+                                self.github.save_controller_state(active_state)
+                                raise _DuplicateDispatchSuppressed(
+                                    workflow,
+                                    f"{workflow} uncertain dispatch reconciled to completed run {run.get('id')}",
+                                )
+                            pending_map.pop(workflow, None)
+                            pending = None
+                            break
+                except (v5.core.ControllerError, _DuplicateDispatchSuppressed):
+                    raise
+                except Exception:
+                    pass
+
+        if isinstance(pending, dict) and pending.get("cycle") == active_state.get("cycle"):
+            stage_dict = active_state.get(stage_name) if stage_name else {}
+            if stage_dict and run_field:
+                current_run_id = stage_dict.get(run_field)
+                if current_run_id and current_run_id != pending.get("previous_run_id"):
+                    run_info = super()._workflow_run(current_run_id)
+                    if isinstance(run_info, dict) and str(run_info.get("status") or "") == "completed":
+                        pending_map.pop(workflow, None)
+                        pending = None
+            if pending and pending.get("observed_active_run_id"):
+                active_now = self.github.active_workflow_run(workflow, production_only=True)
+                if not active_now:
+                    pending_map.pop(workflow, None)
+                    pending = None
+
+        if isinstance(pending, dict) and pending.get("cycle") == active_state.get("cycle"):
+            if pending.get("status") in {"intent", "uncertain"}:
+                raise _DuplicateDispatchSuppressed(
+                    workflow,
+                    f"{workflow} dispatch outcome is {pending.get('status')}; suppressing duplicate POST until reconciled",
+                )
+            if pending.get("status") == "dispatched" and (inputs or {}) == (pending.get("inputs") or {}):
+                intent_dt = v5.core.parse_timestamp(pending.get("dispatched_at") or pending.get("intent_at"))
+                if intent_dt is not None:
+                    elapsed = (self.now.astimezone(v5.core.timezone.utc) - intent_dt).total_seconds()
+                    if 0 <= elapsed < DISPATCH_VISIBILITY_LAG_SECONDS:
+                        raise _DuplicateDispatchSuppressed(
+                            workflow,
+                            f"{workflow} dispatched {int(elapsed)}s ago; waiting for GitHub run visibility",
+                        )
+
+        now_iso = self.now.astimezone(v5.core.timezone.utc).isoformat()
+        stage_dict = active_state.get(stage_name) if stage_name else None
+        pending_entry = {
+            "workflow": workflow,
+            "cycle": active_state.get("cycle"),
+            "inputs": copy.deepcopy(inputs or {}),
+            "intent_at": now_iso,
+            "status": "intent",
+            "previous_run_id": stage_dict.get(run_field) if isinstance(stage_dict, dict) and run_field else None,
+            "observed_active_run_id": None,
+        }
+        pending_map[workflow] = pending_entry
+        self.github.save_controller_state(active_state)
+
+        try:
+            raw_dispatch(workflow, inputs)
+        except v5.core.ControllerError as exc:
+            if str(exc).startswith("GITHUB_MUTATION_UNCERTAIN") or "outcome unknown" in str(exc):
+                pending_entry["status"] = "uncertain"
+                pending_entry["error"] = str(exc)
+                self.github.save_controller_state(active_state)
+                raise _DuplicateDispatchSuppressed(
+                    workflow,
+                    f"{workflow} dispatch POST outcome uncertain; persisted intent without re-POSTing",
+                ) from exc
+            pending_map.pop(workflow, None)
+            self.github.save_controller_state(active_state)
+            raise
+        except Exception:
+            pending_map.pop(workflow, None)
+            self.github.save_controller_state(active_state)
+            raise
+
+        pending_entry["status"] = "dispatched"
+        pending_entry["dispatched_at"] = now_iso
+        active_now = self.github.active_workflow_run(workflow, production_only=True)
+        if isinstance(active_now, dict) and active_now.get("id"):
+            pending_entry["observed_active_run_id"] = active_now.get("id")
 
     def _dispatch_auto_merge_v4(self, state):
         if self._child_notification_env()["workflow"] == "Auto-merge Kesher article PRs":
@@ -975,6 +1279,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def tick(self):
         state = self.state()
+        self._active_state_ref = state
         if v5.v3.entry.irrelevant_child_workflow_run():
             return state, v5.core.Action(
                 "wait",
@@ -986,12 +1291,10 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             if info["workflow"] and info["run_id"]
             else ""
         )
-        if info["workflow"]:
-            if info["slot"] and state.get("cycle") and info["slot"] != str(state.get("cycle")):
-                return state, v5.core.Action(
-                    "wait",
-                    f"stale child completion slot ignored: {info['slot']}",
-                )
+        if any(info[k] for k in ("workflow", "run_id", "conclusion", "source_slug", "slot")):
+            valid, reject_reason = self._validate_child_notification(state)
+            if not valid:
+                return state, v5.core.Action("wait", reject_reason)
             processed = state.get("processed_child_notifications")
             if not isinstance(processed, list):
                 processed = []
@@ -1009,6 +1312,24 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     "wait",
                     f"failed child {info['workflow']} deferred to recovery heartbeat",
                 )
+
+        has_gh_dispatch = hasattr(self.github, "dispatch")
+        orig_gh_dispatch = getattr(self.github, "dispatch", None)
+        orig_core_dispatch = v5.core.GitHubClient.dispatch
+
+        def guarded_gh_dispatch(workflow: str, inputs: dict | None = None) -> None:
+            if orig_gh_dispatch:
+                self._guarded_dispatch(self._active_state_ref, workflow, inputs, orig_gh_dispatch)
+
+        def guarded_core_dispatch(client: Any, workflow: str, inputs: dict | None = None) -> None:
+            def raw_core(w, i):
+                orig_core_dispatch(client, w, i)
+            self._guarded_dispatch(self._active_state_ref, workflow, inputs, raw_core)
+
+        if has_gh_dispatch:
+            self.github.dispatch = guarded_gh_dispatch  # type: ignore[method-assign]
+        v5.core.GitHubClient.dispatch = guarded_core_dispatch  # type: ignore[method-assign]
+
         try:
             blocker = self._quality_preflight(state)
             if blocker is not None:
@@ -1027,17 +1348,21 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
             self.github.save_controller_state(state)
             state, action = super().tick()
-            if info["workflow"]:
-                self._correlate_child_notification_fields(state)
-                if notification_key:
-                    processed = state.get("processed_child_notifications")
-                    if not isinstance(processed, list):
-                        processed = []
-                    if notification_key not in processed:
-                        processed.append(notification_key)
-                    state["processed_child_notifications"] = processed[-100:]
+            self._active_state_ref = state
+            if info["workflow"] and notification_key:
+                processed = state.get("processed_child_notifications")
+                if not isinstance(processed, list):
+                    processed = []
+                if notification_key not in processed:
+                    processed.append(notification_key)
+                state["processed_child_notifications"] = processed[-100:]
                 self.github.save_controller_state(state)
             return state, action
+        except _DuplicateDispatchSuppressed as suppressed:
+            _, deliverables = runtime.delivery_guard.delivery_contract(self._active_state_ref)
+            self._active_state_ref["deliverables"] = deliverables
+            self.github.save_controller_state(self._active_state_ref)
+            return self._active_state_ref, v5.core.Action("wait", suppressed.reason)
         except v5.core.ControllerError as exc:
             code = str(exc).split(":", 1)[0]
             v5.core.block(state, "controller", code, str(exc))
@@ -1046,6 +1371,12 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             state["deliverables"] = deliverables
             self.github.save_controller_state(state)
             return state, action
+        finally:
+            if has_gh_dispatch:
+                self.github.dispatch = orig_gh_dispatch  # type: ignore[method-assign]
+            elif hasattr(self.github, "dispatch"):
+                delattr(self.github, "dispatch")
+            v5.core.GitHubClient.dispatch = orig_core_dispatch  # type: ignore[method-assign]
 
 
 def install_runtime() -> None:

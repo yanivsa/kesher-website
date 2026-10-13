@@ -393,23 +393,23 @@ class V3Controller(core.Controller):
     def _tick(self, state: dict[str, Any]) -> core.Action:
         # Intercept the article-PR state because the base controller predates the
         # explicit image stage.
-        if self.article_slot_open():
-            posts = self.posts_on_main("main")
-            todays = core.today_articles(posts, self.now.date())
-            if not todays:
-                open_prs = self.github.open_article_prs(self.now.date().isoformat())
-                if len(open_prs) > 1:
-                    core.block(
-                        state,
-                        "article",
-                        "DUPLICATE_ARTICLE_PRS",
-                        f"{len(open_prs)} open article PRs modify posts.json",
-                    )
-                    return core.Action("blocked", "duplicate article PRs")
-                if len(open_prs) == 1:
-                    return self._handle_open_article_pr(state, open_prs[0])
+        posts = self.posts_on_main("main")
+        todays = self._reconcile_existing_current_day_article(state, posts)
+        if not todays and self.article_slot_open():
+            open_prs = self.github.open_article_prs(self.now.date().isoformat())
+            if len(open_prs) > 1:
+                core.block(
+                    state,
+                    "article",
+                    "DUPLICATE_ARTICLE_PRS",
+                    f"{len(open_prs)} open article PRs modify posts.json",
+                )
+                return core.Action("blocked", "duplicate article PRs")
+            if len(open_prs) == 1:
+                return self._handle_open_article_pr(state, open_prs[0])
 
-        original_dispatch = self.github.dispatch
+        has_dispatch = hasattr(self.github, "dispatch")
+        original_dispatch = getattr(self.github, "dispatch", None)
 
         def guarded_dispatch(workflow: str, inputs: dict[str, str] | None = None) -> None:
             if workflow == core.ARTICLE_WORKFLOW:
@@ -425,13 +425,18 @@ class V3Controller(core.Controller):
                         "ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
                         f"article deployment exhausted {MAX_STAGE_ATTEMPTS} recovery attempts",
                     )
-            original_dispatch(workflow, inputs)
+            if original_dispatch:
+                original_dispatch(workflow, inputs)
 
-        self.github.dispatch = guarded_dispatch  # type: ignore[method-assign]
+        if has_dispatch:
+            self.github.dispatch = guarded_dispatch  # type: ignore[method-assign]
         try:
             return super()._tick(state)
         finally:
-            self.github.dispatch = original_dispatch  # type: ignore[method-assign]
+            if has_dispatch:
+                self.github.dispatch = original_dispatch  # type: ignore[method-assign]
+            elif hasattr(self.github, "dispatch"):
+                delattr(self.github, "dispatch")
 
 
 # Patch the queue-aware entrypoint so image workflow completions are correlated

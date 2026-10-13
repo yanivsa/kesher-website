@@ -105,7 +105,7 @@ class RuntimeV5Controller(v5.V5Controller):
                 if overview_identity is not None:
                     current_short["overview_provider_identity"] = overview_identity
             return current_short
-        short_state = self.github.newest_short_state()
+        short_state = self.github.newest_short_state() if hasattr(self.github, "newest_short_state") else {"version": 1, "items": []}
         verified = [
             row
             for row in self._exact_short_items(short_state, source)
@@ -188,6 +188,9 @@ class RuntimeV5Controller(v5.V5Controller):
                 return item
             return None
 
+        if not hasattr(self.github, "request"):
+            return None
+
         payload = self.github.request(
             "GET",
             f"{self.github.api}/actions/artifacts?name={v5.LONG_VIDEO_CONTROLLER_STATE_ARTIFACT}&per_page=30",
@@ -226,7 +229,7 @@ class RuntimeV5Controller(v5.V5Controller):
 
     def _reconcile_historical_long_and_advance_short(self, state, source):
         """Adopt a lost-but-public Overview and advance its Short in this tick."""
-        newest = self.github.newest_video_state()
+        newest = self.github.newest_video_state() if hasattr(self.github, "newest_video_state") else {"version": 1, "items": []}
         if v5._newest(v5._verified_exact(newest, source)) is not None:
             return None
 
@@ -255,24 +258,50 @@ class RuntimeV5Controller(v5.V5Controller):
         return self._tick_short(state, source, long_item)
 
     def _recover_long_video(self, state, source, item):
-        inputs = {"operation": "full"}
+        inputs = {
+            "operation": "full",
+            "target_slug": source["slug"],
+            "target_content_sha256": source["content_sha256"],
+            "target_item_id": str(item.get("id") or ""),
+        }
         v5.core.GitHubClient.dispatch(self.github, v5.LONG_VIDEO_WORKFLOW, inputs)
         watchdog.mark_media_recovery(state["long_video"], now=self.now)
-        state["long_video"]["status"] = "running"
-        state["long_video"]["last_dispatch_at"] = v5.core.utc_now()
-        state["long_video"]["resume_dispatches"] = int(
-            state["long_video"].get("resume_dispatches") or 0
-        ) + 1
+        state["long_video"].update({
+            "item_id": item.get("id"),
+            "source_slug": source["slug"],
+            "source_content_sha256": source["content_sha256"],
+            "content_sha256": source["content_sha256"],
+            "source_id": item.get("source_id"),
+            "task_id": item.get("task_id"),
+            "provider_id": item.get("task_id"),
+            "artifact_id": item.get("artifact_id"),
+            "provider_status": item.get("last_provider_status") or item.get("status"),
+            "verified": False,
+            "pending_resume_ready": False,
+            "status": "running",
+            "last_dispatch_at": v5.core.utc_now(),
+            "resume_dispatches": int(
+                state["long_video"].get("resume_dispatches") or 0
+            ) + 1,
+        })
         v5.core.transition(
             state,
             "long_video_watchdog_recovery",
             "long-form provider stalled; resumed the same durable provider identity",
             item_id=item.get("id"),
             task_id=item.get("task_id"),
+            slug=source["slug"],
+            content_sha256=source["content_sha256"],
         )
         return v5.core.Action("long_video_watchdog_recover", "resumed same long-form provider identity", inputs)
 
     def _recover_short(self, state, source, item, long_item):
+        gate_error = self._short_dispatch_gate_error(source, long_item)
+        if gate_error is not None:
+            code, message = gate_error
+            v5.core.block(state, "short", code, message)
+            state["short"]["status"] = "blocked"
+            return v5.core.Action("blocked", message)
         blocker = self._signature_asset_blocker(state)
         if blocker is not None:
             return blocker
@@ -313,7 +342,7 @@ class RuntimeV5Controller(v5.V5Controller):
         return v5.core.Action("short_watchdog_recover", "recovered same Short derivation identity", inputs)
 
     def _media_watchdog_preflight(self, state, source):
-        long_state = self.github.newest_video_state()
+        long_state = self.github.newest_video_state() if hasattr(self.github, "newest_video_state") else {"version": 1, "items": []}
         long_verified = v5._newest(v5._verified_exact(long_state, source))
         long_candidate = None if long_verified else self._watchdog_candidate(long_state, source)
 
@@ -343,6 +372,27 @@ class RuntimeV5Controller(v5.V5Controller):
 
         for stage_name, workflow, item, long_item in stages:
             stage = state[stage_name]
+            if stage_name == "long_video":
+                run_id = stage.get("run_id")
+                if run_id and stage.get("processed_run_id") != run_id and hasattr(self, "_workflow_run"):
+                    completed_run = self._workflow_run(run_id)
+                    if isinstance(completed_run, dict) and str(completed_run.get("status") or "") == "completed":
+                        stage["processed_run_id"] = run_id
+                        stage["last_run_conclusion"] = completed_run.get("conclusion")
+                stage.update({
+                    "item_id": item.get("id"),
+                    "source_slug": source["slug"],
+                    "source_content_sha256": source["content_sha256"],
+                    "content_sha256": source["content_sha256"],
+                    "source_id": item.get("source_id"),
+                    "task_id": item.get("task_id"),
+                    "provider_id": item.get("task_id"),
+                    "artifact_id": item.get("artifact_id"),
+                    "provider_status": item.get("last_provider_status") or item.get("status"),
+                    "verified": False,
+                })
+                if stage.get("status") in {"complete", "uploaded"}:
+                    stage["status"] = "generating"
             identity = f"{stage_name}:{source['slug']}:{item.get('id') or item.get('task_id') or 'unknown'}"
             watchdog.observe_media(
                 stage,
@@ -351,11 +401,6 @@ class RuntimeV5Controller(v5.V5Controller):
                 provider_started_at=item.get("generation_started_at") or item.get("created_at"),
                 now=self.now,
             )
-            active = self.github.active_workflow_run(workflow, production_only=True)
-            if active:
-                self.github.save_controller_state(state)
-                return None
-
             decision = watchdog.media_decision(stage, now=self.now)
             if decision == "hard_timeout":
                 code = "LONG_VIDEO_PROVIDER_HARD_TIMEOUT" if stage_name == "long_video" else "SHORT_PROVIDER_HARD_TIMEOUT"
@@ -369,6 +414,11 @@ class RuntimeV5Controller(v5.V5Controller):
                 stage["status"] = "blocked"
                 self.github.save_controller_state(state)
                 return v5.core.Action("blocked", f"{stage_name} provider hard timeout")
+
+            active = self.github.active_workflow_run(workflow, production_only=True)
+            if active:
+                self.github.save_controller_state(state)
+                return None
 
             if decision == "blocked":
                 code = "LONG_VIDEO_WATCHDOG_RECOVERY_EXHAUSTED" if stage_name == "long_video" else "SHORT_WATCHDOG_RECOVERY_EXHAUSTED"
@@ -391,6 +441,8 @@ class RuntimeV5Controller(v5.V5Controller):
                 self.github.save_controller_state(state)
                 return action
 
+            if stage_name == "long_video":
+                stage["status"] = "generating"
             v5.core.transition(
                 state,
                 f"{stage_name}_watchdog_wait",
@@ -404,7 +456,9 @@ class RuntimeV5Controller(v5.V5Controller):
     def tick(self):
         state = self.state()
         try:
-            source = self._article_source()
+            source = self._article_source(state)
+            if (state.get("article") or {}).get("reconciled_existing_article") is True:
+                self.github.save_controller_state(state)
         except v5.core.ControllerError as exc:
             code = str(exc).split(":", 1)[0]
             v5.core.block(state, "controller", code, str(exc))
