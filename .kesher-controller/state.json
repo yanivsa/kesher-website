@@ -1206,7 +1206,7 @@
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
     "message": "article exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-13T04:04:52.176095+00:00"
+    "at": "2026-10-13T09:46:37.733087+00:00"
   },
   "history": [
     {
@@ -1965,9 +1965,18 @@
       "details": {
         "message": "article exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-13T09:46:37.733099+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "article exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-13T04:04:52.176107+00:00",
+  "updated_at": "2026-10-13T09:46:37.733104+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
