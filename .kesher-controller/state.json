@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-13",
-  "status": "article_result_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": "2026-10-13T02:03:26.301129+00:00",
     "run_id": 38334771930,
@@ -1202,7 +1202,12 @@
       "archived_at": "2026-10-12T08:21:33.774217+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "article exhausted 3 total controller dispatch attempts",
+    "at": "2026-10-13T02:45:00.141334+00:00"
+  },
   "history": [
     {
       "at": "2026-10-02T11:18:22.753659+00:00",
@@ -1942,9 +1947,18 @@
         "outcome": "ARTICLE_ALREADY_PUBLISHED",
         "pr_url": ""
       }
+    },
+    {
+      "at": "2026-10-13T02:45:00.141346+00:00",
+      "from": "article_result_wait",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "article exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-13T02:01:26.301153+00:00",
+  "updated_at": "2026-10-13T02:45:00.141353+00:00",
   "image": {
     "attempt_count": 1,
     "status": "retry_wait",
