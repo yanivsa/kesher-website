@@ -1986,8 +1986,8 @@
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
+    "next_retry_at": "2026-10-13T04:09:31.277679+00:00",
+    "run_id": 38344234581,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -2019,8 +2019,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Kesher Article Generation",
-    "run_id": 38334771930,
+    "workflow": "Kesher Daily NotebookLM Video Overview",
+    "run_id": 38344234581,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-13"
