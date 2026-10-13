@@ -1,83 +1,23 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-13",
-  "status": "blocked",
+  "cycle": "2026-10-14",
+  "status": "article_needed",
   "article": {
-    "attempt_count": 3,
-    "status": "exhausted",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
-    "next_retry_at": "2026-10-13T02:03:26.301129+00:00",
-    "run_id": 38334771930,
-    "processed_run_id": 38334771930,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 3,
+    "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-13T01:59:50.556946+00:00",
-    "pr_number": 1111,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1111",
-    "normalization_slot": "2026-10-13",
-    "normalization_dispatched_at": "2026-10-12T22:26:39.583126+00:00",
-    "normalization_run_id": 38316685719,
-    "last_run_conclusion": "success",
-    "last_worker_result": {
-      "schema_version": 1,
-      "slot": "2026-10-13",
-      "outcome": "ARTICLE_ALREADY_PUBLISHED",
-      "retryable": false,
-      "message": "Article already exists in main",
-      "session_id": "",
-      "pr_url": "",
-      "github_run_id": "38334771930",
-      "completed_at": "2026-10-13T02:00:19.973087+00:00"
-    },
-    "last_jules_session_id": "sessions/5127100728681762820"
+    "normalization_status": "pending"
   },
   "backlog": [
-    {
-      "cycle": "2026-09-02",
-      "status": "article_pr_open",
-      "article": {
-        "attempt_count": 1,
-        "status": "running",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 33571411759,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 1,
-        "deploy_attempts": 0,
-        "last_dispatch_at": "2026-09-01T23:31:36.474009+00:00",
-        "pr_number": 631,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/631",
-        "merge_dispatch_at": "2026-09-02T04:44:22.875077+00:00",
-        "merge_dispatch_count": 3,
-        "merge_image_attempt_count": 1
-      },
-      "archived_at": "2026-09-02T21:43:50.058431+00:00",
-      "media": {
-        "source_slug": "singlehood-holiday-meals-inquiries",
-        "source_content_sha256": "65b5bb9c6903cfad5b38914bc46f2793e34226dbfc7d9634c05833ef9ccc1e1f",
-        "article_url": "https://kesher.saharoni.com/blog/singlehood-holiday-meals-inquiries",
-        "article_live": true,
-        "long_status": "complete",
-        "long_item_id": "video-20260904-130652-65b5bb9c69",
-        "long_youtube_url": "https://youtu.be/nx1jPP_YWn4",
-        "long_youtube_id": "nx1jPP_YWn4",
-        "short_status": "exhausted",
-        "short_dispatch_count": 4,
-        "short_last_dispatch_at": "2026-09-06T09:12:43.774348+00:00",
-        "long_provider_id": "b547c72b-4628-4f2e-99cd-45751ff147e7",
-        "long_artifact_id": "b547c72b-4628-4f2e-99cd-45751ff147e7",
-        "last_error": "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED"
-      }
-    },
     {
       "cycle": "2026-09-03",
       "status": "video_running",
@@ -1200,117 +1140,49 @@
         "last_jules_session_id": "sessions/2556970304191877836"
       },
       "archived_at": "2026-10-12T08:21:33.774217+00:00"
+    },
+    {
+      "cycle": "2026-10-13",
+      "status": "blocked",
+      "article": {
+        "attempt_count": 3,
+        "status": "exhausted",
+        "last_error": null,
+        "next_retry_at": "2026-10-13T02:03:26.301129+00:00",
+        "run_id": 38334771930,
+        "processed_run_id": 38334771930,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 3,
+        "deploy_attempts": 0,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-10-13T01:59:50.556946+00:00",
+        "pr_number": 1111,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1111",
+        "normalization_slot": "2026-10-13",
+        "normalization_dispatched_at": "2026-10-12T22:26:39.583126+00:00",
+        "normalization_run_id": 38316685719,
+        "last_run_conclusion": "success",
+        "last_worker_result": {
+          "schema_version": 1,
+          "slot": "2026-10-13",
+          "outcome": "ARTICLE_ALREADY_PUBLISHED",
+          "retryable": false,
+          "message": "Article already exists in main",
+          "session_id": "",
+          "pr_url": "",
+          "github_run_id": "38334771930",
+          "completed_at": "2026-10-13T02:00:19.973087+00:00"
+        },
+        "last_jules_session_id": "sessions/5127100728681762820"
+      },
+      "archived_at": "2026-10-13T21:50:46.806353+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "article exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-13T17:10:35.660072+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-02T11:18:22.753659+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-02T11:18:23.718529+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-02T11:25:41.017319+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-02T11:25:41.477905+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-02T11:25:41.959868+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-02T11:30:11.107793+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-02T11:30:12.249074+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-02T11:30:13.201388+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-02T12:53:08.243204+00:00",
-      "from": "complete",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-02T12:53:08.707865+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
-      "at": "2026-10-02T12:53:09.189382+00:00",
-      "from": "long_video_complete",
-      "to": "complete",
-      "reason": "article, long-form video and derivative Short verified public"
-    },
-    {
-      "at": "2026-10-02T18:14:55.840676+00:00",
-      "from": "complete",
-      "to": "blocked",
-      "reason": "STALE_OR_DUPLICATE_ARTICLE_PR",
-      "details": {
-        "message": "published article exists while 1 article PR(s) remain open"
-      }
-    },
-    {
-      "at": "2026-10-02T18:17:22.170613+00:00",
-      "from": "blocked",
-      "to": "blocked",
-      "reason": "STALE_OR_DUPLICATE_ARTICLE_PR",
-      "details": {
-        "message": "published article exists while 1 article PR(s) remain open"
-      }
-    },
-    {
-      "at": "2026-10-02T22:20:46.700712+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-10-02T22:20:46.700719+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-10-02T22:20:46.701850+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
     {
       "at": "2026-10-02T22:21:00.890726+00:00",
       "from": "article_needed",
@@ -1983,38 +1855,45 @@
       "details": {
         "message": "article exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-13T21:50:46.806383+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-13T21:50:46.806387+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-13T21:50:46.806970+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-13T17:10:35.660088+00:00",
+  "updated_at": "2026-10-13T21:50:46.806371+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "retry_wait",
-    "last_error": {
-      "code": "IMAGE_OUTPUT_MISSING",
-      "message": "trusted image run 38316841968 completed with conclusion=success but no validated image is present",
-      "retryable": true,
-      "retry_at": "2026-10-12T22:35:10.349687+00:00",
-      "at": "2026-10-12T22:30:10.349717+00:00"
-    },
-    "next_retry_at": "2026-10-12T22:35:10.349687+00:00",
-    "run_id": 38316841968,
-    "processed_run_id": 38316841968,
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
-    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
-    "same_failure_streak": 1,
-    "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 1
-    },
-    "last_dispatch_at": "2026-10-12T22:28:18.503884+00:00",
-    "last_run_conclusion": "success",
-    "last_failed_run_id": 38316841968
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   },
   "long_video": {
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
-    "next_retry_at": "2026-10-13T04:09:31.277679+00:00",
-    "run_id": 38344234581,
+    "next_retry_at": null,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -2035,29 +1914,5 @@
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": null,
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 38344234581,
-    "conclusion": "success",
-    "source_slug": null,
-    "slot": "2026-10-13"
-  },
-  "processed_child_notifications": [
-    "Kesher Article Generation:38312896122",
-    "Kesher Normalize Article PR:38316685719",
-    "Kesher Trusted Article Image:38316841968",
-    "Kesher Article Generation:38330140562",
-    "Kesher Article Generation:38334771930",
-    "Kesher Daily NotebookLM Video Overview:38344234581"
-  ]
+  }
 }
