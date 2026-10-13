@@ -529,9 +529,6 @@ class V5Controller(v4.V4Controller):
                     inputs = {
                         "operation": "rebuild",
                         "rebuild_item_id": str(current_item.get("id") or ""),
-                        "derive_slug": source["slug"],
-                        "derive_content_sha256": source["content_sha256"],
-                        "derive_long_item_id": str(long_item.get("id") or ""),
                     }
                     core.GitHubClient.dispatch(self.github, SHORT_WORKFLOW, inputs)
                     state["short"].update({
@@ -569,8 +566,6 @@ class V5Controller(v4.V4Controller):
             inputs = {
                 "operation": "full",
                 "derive_slug": source["slug"],
-                "derive_content_sha256": source["content_sha256"],
-                "derive_long_item_id": str(long_item.get("id") or ""),
             }
         else:
             inputs = {

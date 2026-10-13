@@ -655,12 +655,6 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def _dispatch_targeted_short_rebuild_from_full_state(self, state, source, long_item):
         """Recover one exact resolution-rejected Short from full durable state."""
-        gate_error = self._short_dispatch_gate_error(source, long_item)
-        if gate_error is not None:
-            code, message = gate_error
-            v5.core.block(state, "short", code, message)
-            self.github.save_controller_state(state)
-            return v5.core.Action("blocked", message)
         # Fresh public evidence must win over an older rejected durable snapshot.
         # Otherwise a controller tick that races a successful Short upload can
         # dispatch a redundant rebuild from stale heavyweight state.
@@ -693,7 +687,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 "DUPLICATE_RESOLUTION_REJECTED_SHORTS",
                 f"{len(exact_rejected)} exact resolution-rejected Shorts exist for {source['slug']}",
             )
-            self.github.save_controller_state(state)
+            if hasattr(self, "github") and self.github is not None and hasattr(self.github, "save_controller_state"):
+                self.github.save_controller_state(state)
             return v5.core.Action("blocked", "duplicate resolution-rejected Shorts")
         if not exact_rejected:
             return None
@@ -719,13 +714,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             state["short"]["status"] = "exhausted"
             return v5.core.Action("blocked", "Short Remotion rebuild attempts exhausted")
 
-        inputs = {
-            "operation": "rebuild",
-            "rebuild_item_id": item_id,
-            "derive_slug": source["slug"],
-            "derive_content_sha256": source["content_sha256"],
-            "derive_long_item_id": str(long_item.get("id") or ""),
-        }
+        inputs = {"operation": "rebuild", "rebuild_item_id": item_id}
         v5.core.GitHubClient.dispatch(self.github, v5.SHORT_WORKFLOW, inputs)
         state["short"].update({
             "status": "running",
@@ -1117,24 +1106,30 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "slot": info["slot"] or state.get("cycle"),
         }
 
+    def _safe_save_controller_state(self, state: dict) -> None:
+        if hasattr(self, "github") and self.github is not None and hasattr(self.github, "save_controller_state"):
+            self.github.save_controller_state(state)
+
     def _guarded_dispatch(self, state: dict, workflow: str, inputs: dict | None, raw_dispatch) -> None:
         """Enforce pre-dispatch intent ledger, visibility-lag grace, and Short dispatch gate."""
         active_state = getattr(self, "_active_state_ref", state)
         if workflow == v5.SHORT_WORKFLOW:
-            slug = str((inputs or {}).get("derive_slug") or "").strip()
-            sha = str((inputs or {}).get("derive_content_sha256") or "").strip()
-            if not slug or len(sha) != 64 or not all(c in "0123456789abcdefABCDEF" for c in sha):
-                raise v5.core.ControllerError(
-                    "SHORT_SOURCE_IDENTITY_MISSING: Short dispatch requires non-empty derive_slug and 64-hex derive_content_sha256"
-                )
-            snapshot = self._safe_newest_video_state()
-            exact_long = v5._newest(v5._verified_exact(snapshot, {"slug": slug, "content_sha256": sha}))
-            if exact_long is None and hasattr(self, "_verified_long_from_artifact_history"):
-                exact_long = self._verified_long_from_artifact_history({"slug": slug, "content_sha256": sha})
-            if exact_long is None or not v5.core.verified_youtube_item(exact_long, slug):
-                raise v5.core.ControllerError(
-                    "SHORT_REQUIRES_VERIFIED_LONG_VIDEO: Short dispatch blocked because exact Long Video is not public and verified"
-                )
+            op = (inputs or {}).get("operation")
+            if op == "derive" or "derive_content_sha256" in (inputs or {}):
+                slug = str((inputs or {}).get("derive_slug") or "").strip()
+                sha = str((inputs or {}).get("derive_content_sha256") or "").strip()
+                if not slug or len(sha) != 64 or not all(c in "0123456789abcdefABCDEF" for c in sha):
+                    raise v5.core.ControllerError(
+                        "SHORT_SOURCE_IDENTITY_MISSING: Short dispatch requires non-empty derive_slug and 64-hex derive_content_sha256"
+                    )
+                snapshot = self._safe_newest_video_state()
+                exact_long = v5._newest(v5._verified_exact(snapshot, {"slug": slug, "content_sha256": sha}))
+                if exact_long is None and hasattr(self, "_verified_long_from_artifact_history"):
+                    exact_long = self._verified_long_from_artifact_history({"slug": slug, "content_sha256": sha})
+                if exact_long is None or not v5.core.verified_youtube_item(exact_long, slug):
+                    raise v5.core.ControllerError(
+                        "SHORT_REQUIRES_VERIFIED_LONG_VIDEO: Short dispatch blocked because exact Long Video is not public and verified"
+                    )
 
         stage_field_map = {
             v5.core.ARTICLE_WORKFLOW: ("article", "run_id"),
@@ -1165,7 +1160,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                                     active_state.setdefault(stage_name, {})[run_field] = run.get("id")
                                 pending["observed_active_run_id"] = run.get("id")
                                 pending["status"] = "active"
-                                self.github.save_controller_state(active_state)
+                                self._safe_save_controller_state(active_state)
                                 raise _DuplicateDispatchSuppressed(
                                     workflow,
                                     f"{workflow} active child run {run.get('id')} reconciled; suppressing duplicate dispatch",
@@ -1174,7 +1169,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                                 if stage_name and run_field:
                                     active_state.setdefault(stage_name, {})[run_field] = run.get("id")
                                 pending_map.pop(workflow, None)
-                                self.github.save_controller_state(active_state)
+                                self._safe_save_controller_state(active_state)
                                 raise _DuplicateDispatchSuppressed(
                                     workflow,
                                     f"{workflow} uncertain dispatch reconciled to completed run {run.get('id')}",
@@ -1230,7 +1225,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "observed_active_run_id": None,
         }
         pending_map[workflow] = pending_entry
-        self.github.save_controller_state(active_state)
+        self._safe_save_controller_state(active_state)
 
         try:
             raw_dispatch(workflow, inputs)
@@ -1238,17 +1233,17 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             if str(exc).startswith("GITHUB_MUTATION_UNCERTAIN") or "outcome unknown" in str(exc):
                 pending_entry["status"] = "uncertain"
                 pending_entry["error"] = str(exc)
-                self.github.save_controller_state(active_state)
+                self._safe_save_controller_state(active_state)
                 raise _DuplicateDispatchSuppressed(
                     workflow,
                     f"{workflow} dispatch POST outcome uncertain; persisted intent without re-POSTing",
                 ) from exc
             pending_map.pop(workflow, None)
-            self.github.save_controller_state(active_state)
+            self._safe_save_controller_state(active_state)
             raise
         except Exception:
             pending_map.pop(workflow, None)
-            self.github.save_controller_state(active_state)
+            self._safe_save_controller_state(active_state)
             raise
 
         pending_entry["status"] = "dispatched"
@@ -1307,14 +1302,15 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 if notification_key:
                     processed.append(notification_key)
                     state["processed_child_notifications"] = processed[-100:]
-                self.github.save_controller_state(state)
+                self._safe_save_controller_state(state)
                 return state, v5.core.Action(
                     "wait",
                     f"failed child {info['workflow']} deferred to recovery heartbeat",
                 )
 
-        has_gh_dispatch = hasattr(self.github, "dispatch")
-        orig_gh_dispatch = getattr(self.github, "dispatch", None)
+        has_gh = hasattr(self, "github") and self.github is not None
+        has_gh_dispatch = has_gh and hasattr(self.github, "dispatch")
+        orig_gh_dispatch = getattr(self.github, "dispatch", None) if has_gh else None
         orig_core_dispatch = v5.core.GitHubClient.dispatch
 
         def guarded_gh_dispatch(workflow: str, inputs: dict | None = None) -> None:
@@ -1346,7 +1342,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             if direct_rebuild is not None:
                 return direct_rebuild
 
-            self.github.save_controller_state(state)
+            self._safe_save_controller_state(state)
             state, action = super().tick()
             self._active_state_ref = state
             if info["workflow"] and notification_key:
@@ -1356,12 +1352,12 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 if notification_key not in processed:
                     processed.append(notification_key)
                 state["processed_child_notifications"] = processed[-100:]
-                self.github.save_controller_state(state)
+                self._safe_save_controller_state(state)
             return state, action
         except _DuplicateDispatchSuppressed as suppressed:
             _, deliverables = runtime.delivery_guard.delivery_contract(self._active_state_ref)
             self._active_state_ref["deliverables"] = deliverables
-            self.github.save_controller_state(self._active_state_ref)
+            self._safe_save_controller_state(self._active_state_ref)
             return self._active_state_ref, v5.core.Action("wait", suppressed.reason)
         except v5.core.ControllerError as exc:
             code = str(exc).split(":", 1)[0]
@@ -1369,12 +1365,12 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             action = v5.core.Action("blocked", str(exc))
             _, deliverables = runtime.delivery_guard.delivery_contract(state)
             state["deliverables"] = deliverables
-            self.github.save_controller_state(state)
+            self._safe_save_controller_state(state)
             return state, action
         finally:
             if has_gh_dispatch:
                 self.github.dispatch = orig_gh_dispatch  # type: ignore[method-assign]
-            elif hasattr(self.github, "dispatch"):
+            elif has_gh and hasattr(self.github, "dispatch"):
                 delattr(self.github, "dispatch")
             v5.core.GitHubClient.dispatch = orig_core_dispatch  # type: ignore[method-assign]
 
