@@ -2039,7 +2039,8 @@
   "processed_child_notifications": [
     "Kesher Normalize Article PR:38491499100",
     "Kesher Trusted Article Image:38491646712",
-    "Kesher Trusted Article Image:38513928693"
+    "Kesher Trusted Article Image:38513928693",
+    "Auto-merge Kesher article PRs:38515762957"
   ],
   "pending_dispatches": {
     "normalize-article-pr.yml": {
