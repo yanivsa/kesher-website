@@ -413,6 +413,60 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
         self.assertEqual(pr_ctrl_v3.MAX_TOTAL_CONTENT_ATTEMPTS, 3)
         self.assertEqual(pr_ctrl_v3.MAX_REPAIRS, 2)
 
+    def test_10_no_fourth_attempt_through_rebind_or_redispatch(self):
+        """When merge_dispatch_count reaches 3, controller blocks with ARTICLE_ATTEMPTS_EXHAUSTED."""
+        mock_github = MagicMock()
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        state = {
+            "cycle": "2026-10-14",
+            "status": "article_pr_open",
+            "article": {
+                "status": "article_pr_open",
+                "merge_dispatch_count": 3,
+                "pr_number": 1113,
+            },
+            "history": [],
+        }
+        ctrl._pr_repair_status = MagicMock(return_value=(0, set()))
+        action = ctrl._handle_open_article_pr(state, {"number": 1113, "head": {"sha": "abc"}, "base": {"sha": "main"}})
+        self.assertEqual(action.kind, "blocked")
+        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["article"]["status"], "exhausted")
+        self.assertEqual(state["last_error"]["code"], "ARTICLE_ATTEMPTS_EXHAUSTED")
+
+    def test_11_cycle_rollover_starts_fresh_next_day_after_exhaustion(self):
+        """Exhausted cycle 2026-10-14 does not prevent cycle 2026-10-15 from starting cleanly."""
+        mock_github = MagicMock()
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        ctrl.now = datetime(2026, 10, 15, 7, 0, tzinfo=timezone.utc)
+
+        exhausted_state = {
+            "cycle": "2026-10-14",
+            "status": "blocked",
+            "last_error": {"code": "ARTICLE_ATTEMPTS_EXHAUSTED", "message": "budget exhausted"},
+            "article": {"status": "exhausted", "attempts": 3},
+            "image": {"status": "complete"},
+            "long_video": {"status": "pending"},
+            "short": {"status": "pending"},
+            "history": [],
+        }
+        mock_github.load_controller_state.return_value = exhausted_state
+        mock_github.posts_on_main.return_value = []
+        mock_github.open_article_prs.return_value = []
+        mock_github.active_workflow_run.return_value = None
+        mock_github.workflow_runs.return_value = []
+        mock_github.dispatch = MagicMock()
+
+        new_state, action = ctrl.tick()
+        self.assertEqual(new_state["cycle"], "2026-10-15")
+        self.assertEqual(new_state["status"], "article_generating")
+        self.assertEqual(action.kind, "dispatch_article")
+        self.assertEqual(new_state["article"]["status"], "running")
+        self.assertEqual(new_state["article"]["attempts"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()
+
