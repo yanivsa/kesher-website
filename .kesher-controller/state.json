@@ -1,12 +1,12 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-14",
-  "status": "article_retry_wait",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 1,
-    "status": "exhausted",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-14T14:12:30.292267+00:00",
+    "next_retry_at": null,
     "run_id": 38473663768,
     "processed_run_id": 38473663768,
     "provider_id": null,
@@ -18,7 +18,7 @@
     "attempts": 1,
     "deploy_attempts": 0,
     "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-13T21:51:16.742814+00:00",
+    "last_dispatch_at": "2026-10-14T14:07:34.372586+00:00",
     "pr_number": 1113,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1113",
     "normalization_slot": "2026-10-14",
@@ -56,7 +56,8 @@
       }
     },
     "last_jules_session_id": "sessions/7288980310060902366",
-    "last_failed_run_id": 38473663768
+    "last_failed_run_id": 38473663768,
+    "resume_dispatches": 1
   },
   "backlog": [
     {
@@ -1222,25 +1223,8 @@
       "archived_at": "2026-10-13T21:50:46.806353+00:00"
     }
   ],
-  "last_error": {
-    "stage": "article",
-    "code": "JULES_TIMEOUT_SESSION_ACTIVE",
-    "message": "Jules session exceeded the worker timeout and was left active for safe same-session recovery; Jules diagnostic: Code reviewed — **Analysis and Reasoning:** 1. **User's Goal:** The user wants to autonomously generate and publish exactly one new Hebrew article for the `2026-10-14` slot, adhering strictly to comprehensive editorial, structural, and procedural policies, including omitting image metadata and updating all generated summary/sitemap files. 2. **Evaluation of the Solution:** * **Core Functionality & Completeness:** The patch correctly creates a single article object in `src/data/posts.json`, sets the correct date (`2026-10-14`), chooses a valid approved subcategory (\"מציאת זוגיות\"), and correctly omits `image`…",
-    "retryable": true,
-    "retry_at": "2026-10-14T14:12:30.292267+00:00",
-    "at": "2026-10-14T14:07:30.292289+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-03T12:03:57.632801+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-09-27",
-        "source_slug": "siblings-fairness-vs-equality"
-      }
-    },
     {
       "at": "2026-10-03T16:13:16.099355+00:00",
       "from": "waiting_for_article_window",
@@ -2084,9 +2068,19 @@
         "run_id": 38473663768,
         "session_id": "sessions/7288980310060902366"
       }
+    },
+    {
+      "at": "2026-10-14T14:07:34.372591+00:00",
+      "from": "article_retry_wait",
+      "to": "article_generating",
+      "reason": "timed-out Jules session preserved; same-session recovery dispatched immediately",
+      "details": {
+        "run_id": 38473663768,
+        "session_id": "sessions/7288980310060902366"
+      }
     }
   ],
-  "updated_at": "2026-10-14T14:07:30.292301+00:00",
+  "updated_at": "2026-10-14T14:07:34.372600+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2186,21 +2180,10 @@
         "slot": "2026-10-14"
       },
       "intent_at": "2026-10-14T14:06:48.108157+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38473663768,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-14T14:06:48.108157+00:00"
     }
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
