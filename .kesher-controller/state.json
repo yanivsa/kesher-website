@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-14",
-  "status": "image_retry_wait",
+  "status": "blocked",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1192,11 +1192,9 @@
   ],
   "last_error": {
     "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 38516108724 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-10-14T08:14:47.000479+00:00",
-    "at": "2026-10-14T08:09:47.000510+00:00"
+    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
+    "message": "image exhausted 3 total controller dispatch attempts",
+    "at": "2026-10-14T09:59:46.863065+00:00"
   },
   "history": [
     {
@@ -1996,12 +1994,21 @@
         "failure_streak": 1,
         "run_id": 38516108724
       }
+    },
+    {
+      "at": "2026-10-14T09:59:46.863081+00:00",
+      "from": "image_retry_wait",
+      "to": "blocked",
+      "reason": "IMAGE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "image exhausted 3 total controller dispatch attempts"
+      }
     }
   ],
-  "updated_at": "2026-10-14T08:09:47.000523+00:00",
+  "updated_at": "2026-10-14T09:59:46.863088+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "retry_wait",
+    "status": "exhausted",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 38516108724 completed with conclusion=success but no validated image is present",
