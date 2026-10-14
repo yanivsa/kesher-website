@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-14",
-  "status": "blocked",
+  "status": "article_image_rebinding",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1190,12 +1190,7 @@
       "archived_at": "2026-10-13T21:50:46.806353+00:00"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_ATTEMPTS_EXHAUSTED",
-    "message": "image exhausted 3 total controller dispatch attempts",
-    "at": "2026-10-14T10:25:41.748191+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-02T22:21:00.890726+00:00",
@@ -2012,12 +2007,22 @@
       "details": {
         "message": "image exhausted 3 total controller dispatch attempts"
       }
+    },
+    {
+      "at": "2026-10-14T10:36:32.166524+00:00",
+      "from": "blocked",
+      "to": "article_image_rebinding",
+      "reason": "exact trusted image evidence is valid except for PR head binding",
+      "details": {
+        "pr_number": 1113,
+        "head_sha": "b76ca3215545db83c3a68339d43bfb9f929e613f"
+      }
     }
   ],
-  "updated_at": "2026-10-14T10:25:41.748214+00:00",
+  "updated_at": "2026-10-14T10:36:32.166532+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "exhausted",
+    "status": "running",
     "last_error": {
       "code": "IMAGE_OUTPUT_MISSING",
       "message": "trusted image run 38516108724 completed with conclusion=success but no validated image is present",
@@ -2025,7 +2030,7 @@
       "retry_at": "2026-10-14T08:14:47.000479+00:00",
       "at": "2026-10-14T08:09:47.000510+00:00"
     },
-    "next_retry_at": "2026-10-14T08:14:47.000479+00:00",
+    "next_retry_at": null,
     "run_id": 38516108724,
     "processed_run_id": 38516108724,
     "provider_id": "Local",
@@ -2038,7 +2043,9 @@
     "last_run_conclusion": "success",
     "last_failed_run_id": 38516108724,
     "artifact_sha256": "d902e56620cace8e711655586c9e708849d8b14bdb6f9c968f1e3fa696817763",
-    "source_id": "local://public/images/generated/blog/i-told-you-so-criticism-in-relationships.jpg"
+    "source_id": "local://public/images/generated/blog/i-told-you-so-criticism-in-relationships.jpg",
+    "evidence_rebind_head_sha": "b76ca3215545db83c3a68339d43bfb9f929e613f",
+    "evidence_rebind_dispatched_at": "2026-10-14T10:36:32.166502+00:00"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2114,21 +2121,10 @@
         "pr_number": "1113"
       },
       "intent_at": "2026-10-14T10:35:59.144169+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38516108724,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38550757730,
+      "dispatched_at": "2026-10-14T10:35:59.144169+00:00"
     }
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
