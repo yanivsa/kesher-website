@@ -1265,6 +1265,35 @@ class Controller:
             return Action("blocked", "duplicate published articles")
 
         if not todays:
+            # A terminal article budget is a durable tombstone for this cycle.
+            # Child workflow wake-ups must never replay an older retryable worker
+            # result after auto-merge/article attempts were already exhausted.
+            # A real same-day article, reconciled above, still takes precedence.
+            article_state = state.get("article") if isinstance(state.get("article"), dict) else {}
+            last_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
+            terminal_article_exhausted = bool(
+                article_state.get("status") == "exhausted"
+                or int(article_state.get("merge_dispatch_count") or 0) >= 3
+                or (
+                    state.get("status") == "blocked"
+                    and last_error.get("stage") == "article"
+                    and last_error.get("code") == "ARTICLE_ATTEMPTS_EXHAUSTED"
+                )
+            )
+            if terminal_article_exhausted:
+                message = "article cycle has durable terminal attempt exhaustion; stale worker recovery is forbidden"
+                already_terminal = bool(
+                    state.get("status") == "blocked"
+                    and article_state.get("status") == "exhausted"
+                    and last_error.get("stage") == "article"
+                    and last_error.get("code") == "ARTICLE_ATTEMPTS_EXHAUSTED"
+                )
+                article_state["status"] = "exhausted"
+                state["article"] = article_state
+                if not already_terminal:
+                    block(state, "article", "ARTICLE_ATTEMPTS_EXHAUSTED", message)
+                return Action("blocked", message)
+
             if not self.article_slot_open():
                 transition(state, "waiting_for_article_window", "publication slot has not opened")
                 return Action("wait", "article window not open")
