@@ -93,7 +93,16 @@ class KesherV5BacklogPriorityTests(unittest.TestCase):
             "final_sha256": "f" * 64,
             # Deliberately missing immutable evidence hashes.
         }
-        row = {"cycle": "2026-10-01", "media": {}}
+        row = {
+            "cycle": "2026-10-01",
+            "media": {
+                "source_slug": source["slug"],
+                "source_content_sha256": source["content_sha256"],
+                "article_title": post["title"],
+                "article_url": f"https://kesher.saharoni.com/blog/{source['slug']}",
+                "article_live": True,
+            },
+        }
         state = {"status": "complete", "backlog": [row], "history": []}
 
         class FakeGitHub:
