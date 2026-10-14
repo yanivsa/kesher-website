@@ -152,7 +152,7 @@ post = dict(no_image, image='/images/generated/blog/valid-new-post.png', imageAl
 post_sha = hashlib.sha256(json.dumps(post, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()).hexdigest()
 body = f'''Image Pipeline Version: 2
 Image Provider: Local
-Image Attempt Chain: gemini-1/gemini-2/gemini-3/pexels/pixabay/local-curated
+Image Attempt Chain: gemini-1/gemini-2/pexels/pixabay/local-curated
 Image Generation Result: local_fallback
 Image Source URL: local://public/images/generated/blog/listening-in-relationships.jpg
 Image SHA-256: {sha}
