@@ -13,6 +13,7 @@ MANDATORY_PRODUCTION_SAFETY_MODULES = [
     "tests.test_daily_rollover_delivery_completeness",
     "tests.test_deploy_sha_supersession_and_budget",
     "tests.test_exact_public_article_identity",
+    "tests.test_article_pr_verify_check_ordering",
 ]
 
 

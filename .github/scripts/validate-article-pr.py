@@ -3,9 +3,11 @@
 
 from __future__ import annotations
 
+from typing import Any
 import base64
 import hashlib
 import html
+from datetime import datetime, timezone
 import json
 import os
 import re
@@ -36,11 +38,148 @@ def raw_github_content_url(repo: str, ref: str, repo_path: str) -> str:
     return f"https://raw.githubusercontent.com/{repo}/{quoted_ref}{quoted_path}"
 
 
+def _parse_iso(val: Any) -> datetime | None:
+    if not isinstance(val, str) or not val.strip():
+        return None
+    s = val.strip()
+    try:
+        if s.endswith("Z"):
+            s = s[:-1] + "+00:00"
+        dt = datetime.fromisoformat(s)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt
+    except Exception:
+        return None
+
+
+def _check_time_tuple(check: dict) -> tuple[datetime | str, datetime | str] | None:
+    started_raw = check.get("started_at")
+    completed_raw = check.get("completed_at")
+    created_raw = check.get("created_at")
+
+    dt_start = _parse_iso(started_raw) or _parse_iso(created_raw) or _parse_iso(completed_raw)
+    dt_comp = _parse_iso(completed_raw) or _parse_iso(started_raw) or _parse_iso(created_raw)
+
+    if dt_start is not None and dt_comp is not None:
+        return (dt_start, dt_comp)
+
+    s_start = str(started_raw or created_raw or completed_raw or "").strip()
+    s_comp = str(completed_raw or started_raw or created_raw or "").strip()
+    if s_start or s_comp:
+        return (s_start or s_comp, s_comp or s_start)
+    return None
+
+
+def _check_id(check: dict) -> int | None:
+    val = check.get("id")
+    if val is None and isinstance(check.get("check_suite"), dict):
+        val = check["check_suite"].get("id")
+    if val is None:
+        val = check.get("run_id")
+    if val is not None:
+        try:
+            return int(val)
+        except (ValueError, TypeError):
+            pass
+    return None
+
+
+def compare_check_runs(a: dict, b: dict) -> int | None:
+    """Compare two check-runs for chronological precedence.
+    Returns:
+       1 if a is strictly newer than b
+      -1 if b is strictly newer than a
+      None if ambiguous, conflicting, or indistinguishable
+    """
+    time_a = _check_time_tuple(a)
+    time_b = _check_time_tuple(b)
+    id_a = _check_id(a)
+    id_b = _check_id(b)
+
+    time_cmp = 0
+    if time_a is not None and time_b is not None:
+        try:
+            if time_a > time_b:
+                time_cmp = 1
+            elif time_a < time_b:
+                time_cmp = -1
+        except TypeError:
+            s_time_a = (str(time_a[0]), str(time_a[1]))
+            s_time_b = (str(time_b[0]), str(time_b[1]))
+            if s_time_a > s_time_b:
+                time_cmp = 1
+            elif s_time_a < s_time_b:
+                time_cmp = -1
+
+    id_cmp = 0
+    if id_a is not None and id_b is not None:
+        if id_a > id_b:
+            id_cmp = 1
+        elif id_a < id_b:
+            id_cmp = -1
+
+    # Contradiction: one signal says A > B, the other says B > A
+    if time_cmp != 0 and id_cmp != 0 and time_cmp != id_cmp:
+        return None
+
+    # Concordant or one signal present while other is equal/missing
+    if time_cmp > 0 or id_cmp > 0:
+        return 1
+    if time_cmp < 0 or id_cmp < 0:
+        return -1
+
+    return None
+
+
+def resolve_latest_verify_check(candidates: list[dict]) -> tuple[dict | None, str | None]:
+    if not candidates:
+        return None, "No candidate verify checks found"
+    if len(candidates) == 1:
+        return candidates[0], None
+
+    for i, cand in enumerate(candidates):
+        is_strictly_latest = True
+        for j, other in enumerate(candidates):
+            if i == j:
+                continue
+            cmp_val = compare_check_runs(cand, other)
+            if cmp_val != 1:
+                is_strictly_latest = False
+                break
+        if is_strictly_latest:
+            return cand, None
+
+    return None, "Multiple indistinguishable or conflicting latest verify checks"
+
+
 def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra_base_posts=None):
     errors = evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra_base_posts=extra_base_posts)
-    if not any(check.get("name") == "verify" and check.get("conclusion") == "success"
-               and check.get("head_sha") == (pr.get("head") or {}).get("sha")
-               and bool((pr.get("head") or {}).get("sha")) for check in checks):
+    head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
+    if not head_sha:
+        errors.append("Fresh successful verify check is required on the current head")
+        return errors
+
+    candidates = [
+        check for check in checks
+        if isinstance(check, dict)
+        and check.get("name") == "verify"
+        and str(check.get("head_sha") or "").strip() == head_sha
+    ]
+    if not candidates:
+        errors.append("Fresh successful verify check is required on the current head")
+        return errors
+
+    latest_check, ambiguity = resolve_latest_verify_check(candidates)
+    if ambiguity or latest_check is None:
+        errors.append("Ambiguous verify check runs on the current head; failing closed")
+        errors.append("Fresh successful verify check is required on the current head")
+        return errors
+
+    status = str(latest_check.get("status") or "completed").strip().lower()
+    conclusion = str(latest_check.get("conclusion") or "").strip().lower()
+
+    if status != "completed" or conclusion != "success":
         errors.append("Fresh successful verify check is required on the current head")
     return errors
 
