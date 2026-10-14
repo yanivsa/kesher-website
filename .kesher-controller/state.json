@@ -1237,19 +1237,10 @@
   "last_error": {
     "stage": "article",
     "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
-    "message": "article cycle has durable terminal attempt exhaustion; stale worker recovery is forbidden",
-    "at": "2026-10-14T14:46:55.711301+00:00"
+    "message": "PR #1113 exceeded maximum auto-merge dispatch budget (6 dispatches)",
+    "at": "2026-10-14T19:00:11.239327+00:00"
   },
   "history": [
-    {
-      "at": "2026-10-03T17:00:56.162919+00:00",
-      "from": "article_normalizing",
-      "to": "blocked",
-      "reason": "TARGET_MEDIA_ARTICLE_NOT_PUBLIC",
-      "details": {
-        "message": "targeted media article is not publicly verified: sleep-needs-10-year-old"
-      }
-    },
     {
       "at": "2026-10-03T17:51:09.418412+00:00",
       "from": "blocked",
@@ -2092,9 +2083,18 @@
       "details": {
         "message": "article cycle has durable terminal attempt exhaustion; stale worker recovery is forbidden"
       }
+    },
+    {
+      "at": "2026-10-14T19:00:11.239344+00:00",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "PR #1113 exceeded maximum auto-merge dispatch budget (6 dispatches)"
+      }
     }
   ],
-  "updated_at": "2026-10-14T14:46:55.711322+00:00",
+  "updated_at": "2026-10-14T19:00:11.239351+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
