@@ -300,6 +300,57 @@ class V4Controller(legacy.BestEffortController):
                 self._dispatch_auto_merge_v4(state)
             return core.Action("wait", "article PR normalized and image ready; merge gate dispatched")
 
+        # A merge/rebase can move the PR head after trusted pixels and article
+        # identity were already proven. The image worker can safely refresh only
+        # Image Evidence Head when every other proof (article SHA, bytes, pixels,
+        # provider/source metadata) still matches. This is recovery of the same
+        # trusted artifact, not a fourth image-generation attempt.
+        rebind_check = getattr(self.github, "article_pr_image_rebindable", None)
+        rebindable, _rebind_evidence = rebind_check(pr) if callable(rebind_check) else (False, {})
+        image = state["image"]
+        head_sha = str((pr.get("head") or {}).get("sha") or "").strip()
+        if (
+            rebindable
+            and re.fullmatch(r"[a-f0-9]{40}", head_sha)
+            and str(image.get("evidence_rebind_head_sha") or "") != head_sha
+        ):
+            active = self.github.active_image_run(number)
+            if active:
+                image["run_id"] = active.get("id")
+                image["status"] = "running"
+                core.transition(
+                    state,
+                    "article_image_rebinding",
+                    "trusted image evidence rebind already active",
+                    pr_number=number,
+                    head_sha=head_sha,
+                )
+                return core.Action("wait", "trusted image evidence rebind workflow active")
+
+            core.GitHubClient.dispatch(
+                self.github,
+                v3.IMAGE_WORKFLOW,
+                {"pr_number": str(number)},
+            )
+            image.update({
+                "evidence_rebind_head_sha": head_sha,
+                "evidence_rebind_dispatched_at": core.utc_now(),
+                "status": "running",
+                "next_retry_at": None,
+            })
+            core.transition(
+                state,
+                "article_image_rebinding",
+                "exact trusted image evidence is valid except for PR head binding",
+                pr_number=number,
+                head_sha=head_sha,
+            )
+            return core.Action(
+                "dispatch_image_rebind",
+                "rebind trusted image evidence to the current PR head",
+                {"pr_number": str(number)},
+            )
+
         # Bypass the historical BestEffortController image-deferred behavior.
         # V3 strict handling blocks after the image retry budget; it never
         # publishes an image-less article.

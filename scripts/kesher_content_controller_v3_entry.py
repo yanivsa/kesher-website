@@ -122,7 +122,12 @@ def normalize_state(existing: dict[str, Any] | None, day) -> dict[str, Any]:
 exact_field = article_contract.exact_field
 
 class V3GitHubClient(core.GitHubClient):
-    def article_pr_image_ready(self, pr: dict[str, Any]) -> tuple[bool, dict[str, str]]:
+    def _article_pr_image_proof(
+        self,
+        pr: dict[str, Any],
+        *,
+        require_head: bool,
+    ) -> tuple[bool, dict[str, str]]:
         try:
             base_posts = self.contents_json("src/data/posts.json", str((pr.get("base") or {}).get("sha") or "main"))
             head_posts = self.contents_json("src/data/posts.json", str((pr.get("head") or {}).get("sha") or ""))
@@ -137,7 +142,7 @@ class V3GitHubClient(core.GitHubClient):
         post = new_posts[0]
         head_sha = str((pr.get("head") or {}).get("sha") or "")
         body = str(pr.get("body") or "")
-        if article_contract.image_proof_errors(post, body, head_sha):
+        if article_contract.image_proof_errors(post, body, head_sha, require_head=require_head):
             return False, {}
         quoted = urllib_quote("public" + post["image"])
         try:
@@ -155,7 +160,13 @@ class V3GitHubClient(core.GitHubClient):
             data = base64.b64decode(payload["content"])
         except (core.ControllerError, ValueError, TypeError):
             return False, {}
-        if article_contract.image_proof_errors(post, body, head_sha, data):
+        if article_contract.image_proof_errors(
+            post,
+            body,
+            head_sha,
+            data,
+            require_head=require_head,
+        ):
             return False, {}
         return True, {
             "provider": article_contract.exact_field(body, "Image Provider"),
@@ -165,6 +176,13 @@ class V3GitHubClient(core.GitHubClient):
             "article_sha256": article_contract.article_sha256(post),
             "head_sha": head_sha,
         }
+
+    def article_pr_image_ready(self, pr: dict[str, Any]) -> tuple[bool, dict[str, str]]:
+        return self._article_pr_image_proof(pr, require_head=True)
+
+    def article_pr_image_rebindable(self, pr: dict[str, Any]) -> tuple[bool, dict[str, str]]:
+        """Return true only when exact article/pixels proof is valid except for head binding."""
+        return self._article_pr_image_proof(pr, require_head=False)
 
     def active_image_run(self, pr_number: int) -> dict[str, Any] | None:
         expected = f"Kesher Image PR {pr_number}"
