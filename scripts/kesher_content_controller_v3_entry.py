@@ -19,11 +19,13 @@ from __future__ import annotations
 
 import base64
 import copy
+import hashlib
 import json
 import os
 import re
 import sys
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -168,6 +170,36 @@ class V3GitHubClient(core.GitHubClient):
             require_head=require_head,
         ):
             return False, {}
+        actual_sha = hashlib.sha256(data).hexdigest()
+        actual_pixels = None
+        try:
+            actual_pixels = article_contract.image_pixel_sha256(data)
+        except Exception:
+            pass
+        post_img = str(post.get("image") or "").strip()
+        body_source = str(article_contract.exact_field(body, "Image Source URL") or "").strip()
+        for base_post in base_posts:
+            if not isinstance(base_post, dict):
+                continue
+            base_img = str(base_post.get("image") or "").strip()
+            if base_img and base_img == post_img:
+                return False, {}
+            if body_source and base_img and body_source == f"local://public{base_img}":
+                return False, {}
+            base_sha = str(base_post.get("imageSha256") or "").strip()
+            if base_sha and base_sha == actual_sha:
+                return False, {}
+            if base_img:
+                local_base = Path(__file__).resolve().parents[1] / "public" / base_img.lstrip("/")
+                if local_base.is_file():
+                    try:
+                        base_bytes = local_base.read_bytes()
+                        if hashlib.sha256(base_bytes).hexdigest() == actual_sha:
+                            return False, {}
+                        if actual_pixels and article_contract.image_pixel_sha256(base_bytes) == actual_pixels:
+                            return False, {}
+                    except Exception:
+                        pass
         return True, {
             "provider": article_contract.exact_field(body, "Image Provider"),
             "sha256": article_contract.exact_field(body, "Image SHA-256"),

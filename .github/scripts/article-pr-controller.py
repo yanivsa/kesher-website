@@ -396,7 +396,13 @@ def process(repo: str, number: int, github_token: str, jules_key: str) -> int:
         print("Fresh verify is not terminal yet; waiting for CI instead of spending a repair attempt.")
         return 0
 
-    send_jules_repair(repo, pr, errors, verify, github_token, jules_key)
+    repaired = send_jules_repair(repo, pr, errors, verify, github_token, jules_key)
+    if not repaired:
+        print(
+            f"PR #{number} failed article gate and autonomous repair is not in flight; failing auto-merge.",
+            file=sys.stderr,
+        )
+        return 1
     return 0
 
 

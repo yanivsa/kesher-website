@@ -28,11 +28,32 @@ def reuse_policy() -> tuple[int, int]:
     image = contract.get("image") if isinstance(contract, dict) else {}
     if not isinstance(image, dict):
         raise RuntimeError("Missing image policy in production contract")
+    policy = str(image.get("local_fallback_policy") or "")
     cooldown_days = int(image.get("local_fallback_reuse_cooldown_days") or 0)
     max_uses = int(image.get("local_fallback_max_lifetime_uses") or 0)
-    if cooldown_days <= 0 or max_uses <= 0:
-        raise RuntimeError("Invalid local fallback reuse policy")
+    if policy != "unique-only-never-reuse-published-hero" or cooldown_days != 0 or max_uses != 1:
+        raise RuntimeError("Invalid unique-only hero policy")
     return cooldown_days, max_uses
+
+
+def _parse_date(value: object) -> date | None:
+    raw = str(value or "").strip()[:10]
+    if not raw:
+        return None
+    try:
+        return date.fromisoformat(raw)
+    except ValueError:
+        return None
+
+
+def unique_enforcement_start_date() -> date:
+    contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
+    image = contract.get("image") if isinstance(contract, dict) else {}
+    raw = str(image.get("hero_unique_enforcement_start_date") or "") if isinstance(image, dict) else ""
+    parsed = _parse_date(raw)
+    if parsed is None:
+        raise RuntimeError("Invalid hero uniqueness enforcement start date")
+    return parsed
 
 
 def validate_hash_reuse(
@@ -42,50 +63,24 @@ def validate_hash_reuse(
     cooldown_days: int,
     max_uses: int,
 ) -> list[str]:
+    del cooldown_days, max_uses
     if len(uses) <= 1:
         return []
-
-    errors: list[str] = []
-    if len(uses) > max_uses:
-        errors.append(
-            f"{uses[-1]['id']}: hero SHA-256 lifetime reuse limit exceeded "
-            f"({len(uses)}>{max_uses}) for {digest}"
-        )
-
-    dated: list[tuple[date, dict[str, object]]] = []
+    cutoff = unique_enforcement_start_date()
+    dated: list[tuple[date, str]] = []
     for use in uses:
         pid = str(use.get("id") or "<unknown>")
-        raw_date = str(use.get("date") or "")
-        try:
-            published = date.fromisoformat(raw_date)
-        except ValueError:
-            errors.append(f"{pid}: duplicate hero SHA-256 requires a valid ISO publish date")
-            continue
-        dated.append((published, use))
-
-    dated.sort(key=lambda row: row[0])
-    for index in range(1, len(dated)):
-        previous_date, previous = dated[index - 1]
-        current_date, current = dated[index]
-        current_id = str(current.get("id") or "<unknown>")
-        previous_id = str(previous.get("id") or "<unknown>")
-        gap = (current_date - previous_date).days
-
-        if gap < cooldown_days:
-            errors.append(
-                f"{current_id}: duplicate hero SHA-256 reused after {gap} days "
-                f"from {previous_id}; minimum cooldown is {cooldown_days} days"
-            )
-
-        provider = str(current.get("imageProvider") or "")
-        source_url = str(current.get("imageSourceUrl") or "")
-        is_fallback = current.get("imageIsFallback") is True
-        if provider != "Local" or not is_fallback or not source_url.startswith("local://"):
-            errors.append(
-                f"{current_id}: duplicate hero SHA-256 is allowed only for a trusted Local fallback reuse"
-            )
-
-    return errors
+        parsed = _parse_date(use.get("date"))
+        if parsed is None:
+            return [f"hero pixel reuse has missing publication date: {digest} includes {pid}"]
+        dated.append((parsed, pid))
+    if all(published < cutoff for published, _pid in dated):
+        return []
+    ids = ", ".join(pid for _published, pid in dated)
+    return [
+        f"hero pixels must be unique for articles on/after {cutoff.isoformat()}: "
+        f"{digest} used by {ids}"
+    ]
 
 
 def main() -> int:
