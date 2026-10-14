@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-14",
-  "status": "article_generating",
+  "status": "blocked",
   "article": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "exhausted",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38577726207,
@@ -1234,18 +1234,13 @@
       "archived_at": "2026-10-13T21:50:46.806353+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "article",
+    "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+    "message": "article cycle has durable terminal attempt exhaustion; stale worker recovery is forbidden",
+    "at": "2026-10-14T14:46:55.711301+00:00"
+  },
   "history": [
-    {
-      "at": "2026-10-03T17:00:04.481236+00:00",
-      "from": "waiting_for_article_window",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 997,
-        "slot": "2026-10-03"
-      }
-    },
     {
       "at": "2026-10-03T17:00:56.162919+00:00",
       "from": "article_normalizing",
@@ -2088,9 +2083,18 @@
       "details": {
         "session_id": null
       }
+    },
+    {
+      "at": "2026-10-14T14:46:55.711315+00:00",
+      "from": "article_generating",
+      "to": "blocked",
+      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
+      "details": {
+        "message": "article cycle has durable terminal attempt exhaustion; stale worker recovery is forbidden"
+      }
     }
   ],
-  "updated_at": "2026-10-14T14:12:11.680605+00:00",
+  "updated_at": "2026-10-14T14:46:55.711322+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
