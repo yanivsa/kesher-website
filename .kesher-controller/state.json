@@ -1966,5 +1966,8 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-14"
-  }
+  },
+  "processed_child_notifications": [
+    "Kesher Normalize Article PR:38491499100"
+  ]
 }
