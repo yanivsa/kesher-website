@@ -4,8 +4,8 @@
   "policy": {
     "primary_first": true,
     "prefer_unused": true,
-    "reuse_cooldown_days": 90,
-    "max_lifetime_uses": 3,
+    "reuse_cooldown_days": 0,
+    "max_lifetime_uses": 1,
     "no_abstract_placeholders": true,
     "reserve_is_terminal_only": true,
     "reserve_min_topic_score": 1

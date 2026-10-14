@@ -396,8 +396,8 @@ class ArticleImageWorkerTests(unittest.TestCase):
             worker.load_seed_manifest = lambda: {
                 "target_per_category": 40,
                 "policy": {
-                    "reuse_cooldown_days": 90,
-                    "max_lifetime_uses": 3,
+                    "reuse_cooldown_days": 0,
+                    "max_lifetime_uses": 1,
                     "reserve_min_topic_score": 1,
                 },
                 "categories": {
