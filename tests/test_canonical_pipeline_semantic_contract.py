@@ -969,6 +969,7 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
             "<meta property='article:published_time' content='2026-10-14'>"
             "<link rel='canonical' href='https://kesher.saharoni.com/blog/restart-safety-post'>"
             f"<meta name='kesher:content-sha256' content='{post_sha}'>"
+            "<meta property='og:image' content='https://kesher.saharoni.com/images/generated/blog/restart-safety-post.jpg'>"
             "</head><body><h1>Restart Safety Title</h1></body></html>"
         )
         mock_site.get.return_value = (200, html_page)

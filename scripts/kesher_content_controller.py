@@ -52,6 +52,7 @@ ACTIVE_VIDEO_STATUSES = {
     "pending_review", "approved", "uploading",
 }
 MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF = 3
+MAX_DEPLOY_ATTEMPTS = 5
 MAX_VIDEO_START_ATTEMPTS_BEFORE_LONG_BACKOFF = 4
 ISRAEL_TZ = ZoneInfo("Asia/Jerusalem")
 HEBCAL_ASHDOD_URL = (
@@ -298,6 +299,7 @@ def article_is_public(
     expected_title: str,
     expected_slug: str | None = None,
     expected_content_sha256: str | None = None,
+    expected_hero_path: str | None = None,
 ) -> bool:
     page = re.sub(r"\s+", " ", html_text)
     title = re.sub(r"\s+", " ", expected_title.strip())
@@ -311,10 +313,11 @@ def article_is_public(
             html_text,
             re.IGNORECASE,
         )
-        if canonical_match:
-            canonical_url = (canonical_match.group(1) or canonical_match.group(2) or "").strip()
-            if canonical_url and f"/blog/{slug}" not in canonical_url:
-                return False
+        if not canonical_match:
+            return False
+        canonical_url = (canonical_match.group(1) or canonical_match.group(2) or "").strip()
+        if not canonical_url or f"/blog/{slug}" not in canonical_url:
+            return False
 
         og_match = re.search(
             r'<meta[^>]+property=["\']og:url["\'][^>]+content=["\']([^"\']+)["\']|<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:url["\']',
@@ -323,7 +326,7 @@ def article_is_public(
         )
         if og_match:
             og_url = (og_match.group(1) or og_match.group(2) or "").strip()
-            if og_url and f"/blog/{slug}" not in og_url:
+            if not og_url or f"/blog/{slug}" not in og_url:
                 return False
 
     if expected_content_sha256:
@@ -346,6 +349,20 @@ def article_is_public(
         observed_shas = [value for value in (meta_sha, data_sha) if value]
         if not observed_shas or any(value != expected_sha for value in observed_shas):
             return False
+
+    if expected_hero_path:
+        hero = expected_hero_path.strip()
+        if hero not in html_text:
+            return False
+        og_img_match = re.search(
+            r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']|<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+            html_text,
+            re.IGNORECASE,
+        )
+        if og_img_match:
+            og_img = (og_img_match.group(1) or og_img_match.group(2) or "").strip()
+            if hero not in og_img:
+                return False
 
     return True
 
@@ -406,15 +423,69 @@ def new_cycle_state(day: date, old: dict[str, Any] | None = None) -> dict[str, A
     backlog = list((old or {}).get("backlog") or [])
     if isinstance(old, dict) and old.get("cycle") and old.get("cycle") != day.isoformat():
         prev_article = old.get("article") if isinstance(old.get("article"), dict) else {}
+        prev_long = old.get("long_video") if isinstance(old.get("long_video"), dict) else (old.get("video") if isinstance(old.get("video"), dict) else {})
+        prev_short = old.get("short") if isinstance(old.get("short"), dict) else {}
         prev_status = str(old.get("status") or "")
-        # If previous cycle ended without completing the article (and had an open PR or active session/attempts)
-        if prev_status not in {"complete", "article_live"} and (
-            prev_article.get("pr_number") or prev_article.get("last_jules_session_id") or int(prev_article.get("attempts") or 0) > 0
-        ):
+
+        article_delivered = bool(
+            prev_article.get("public") is True
+            or prev_article.get("live") is True
+            or prev_article.get("status") in {"verified", "published"}
+        )
+        long_delivered = bool(
+            prev_long.get("public") is True
+            or bool(prev_long.get("youtube_id"))
+            or prev_long.get("status") == "completed"
+        )
+        short_delivered = bool(
+            prev_short.get("public") is True
+            or bool(prev_short.get("youtube_id"))
+            or prev_short.get("status") == "completed"
+        )
+        full_delivered = bool(
+            prev_status == "complete"
+            and article_delivered
+            and long_delivered
+            and short_delivered
+        )
+
+        has_prior_activity = bool(
+            prev_article.get("slug")
+            or prev_article.get("pr_number")
+            or prev_article.get("last_jules_session_id")
+            or int(prev_article.get("attempts") or 0) > 0
+            or prev_status in {"article_live", "blocked", "video_needed", "long_video_needed", "short_needed", "exhausted"}
+            or prev_long.get("run_id")
+            or prev_short.get("run_id")
+        )
+
+        # A prior cycle may be omitted from backlog ONLY when the complete required contract is proven:
+        # Article public exact identity AND Long public exact identity AND Short public exact identity.
+        if not full_delivered and has_prior_activity:
             backlog.append({
                 "cycle": old.get("cycle"),
                 "status": prev_status,
-                "article": prev_article,
+                "exact_slug": prev_article.get("slug"),
+                "content_sha256": prev_article.get("content_sha256"),
+                "article": copy.deepcopy(prev_article),
+                "long_video": copy.deepcopy(prev_long),
+                "short": copy.deepcopy(prev_short),
+                "media_identities": {
+                    "long_video_id": prev_long.get("youtube_id"),
+                    "short_video_id": prev_short.get("youtube_id"),
+                },
+                "counters": {
+                    "article_attempts": prev_article.get("attempts", 0),
+                    "article_generation_attempts": prev_article.get("generation_attempts", 0),
+                    "merge_dispatch_count": prev_article.get("merge_dispatch_count", 0),
+                    "deploy_attempts": prev_article.get("deploy_attempts", 0),
+                    "long_attempts": prev_long.get("attempts", 0),
+                    "short_attempts": prev_short.get("attempts", 0),
+                },
+                "terminal_state": {
+                    "blocked": prev_status == "blocked",
+                    "article_exhausted": prev_article.get("status") == "exhausted",
+                },
                 "archived_at": utc_now(),
             })
     return {
@@ -1377,7 +1448,16 @@ class Controller:
                     transition(state, "article_deploy_wait", "deploy retry backoff is active",
                                retry_at=next_deploy.isoformat())
                     return Action("wait", f"deploy retry scheduled for {next_deploy.isoformat()}")
-                attempts = int(state["article"].get("deploy_attempts") or 0) + 1
+
+                current_attempts = int(state["article"].get("deploy_attempts") or 0)
+                if current_attempts >= MAX_DEPLOY_ATTEMPTS or state["article"].get("deploy_status") == "exhausted":
+                    state["article"]["deploy_status"] = "exhausted"
+                    if state.get("status") != "blocked":
+                        block(state, "article", "DEPLOY_ATTEMPTS_EXHAUSTED",
+                              f"Article deployment exhausted maximum allowed attempts ({MAX_DEPLOY_ATTEMPTS})")
+                    return Action("block", f"deploy attempts exhausted ({MAX_DEPLOY_ATTEMPTS})")
+
+                attempts = current_attempts + 1
                 self.github.dispatch(DEPLOY_WORKFLOW)
                 delay_index = max(1, attempts - MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF + 1)
                 delay = 5 if attempts <= MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF else article_retry_backoff_minutes(delay_index)

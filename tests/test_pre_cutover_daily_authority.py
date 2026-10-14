@@ -28,9 +28,15 @@ WORKFLOWS_DIR = ROOT / ".github" / "workflows"
 
 def public_article_html(post: dict) -> str:
     source = v5.article_source_identity(post)
+    slug = source["slug"]
+    canonical_url = f"{core.SITE_URL}/blog/{slug}"
+    image = post.get("image") or post.get("hero_image") or f"/images/generated/blog/{slug}.jpg"
     return (
-        f'<html><head><meta name="kesher:content-sha256" content="{source["content_sha256"]}"></head>'
-        f'<body><h1>{post["title"]}</h1>{post.get("content") or ""}</body></html>'
+        f'<html><head><meta name="kesher:content-sha256" content="{source["content_sha256"]}">'
+        f'<link rel="canonical" href="{canonical_url}">'
+        f'<meta property="og:url" content="{canonical_url}">'
+        f'<meta property="og:image" content="https://kesher.saharoni.com{image}">'
+        f'</head><body><h1>{post["title"]}</h1>{post.get("content") or ""}</body></html>'
     )
 
 
@@ -2955,6 +2961,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             f"<html><head><title>{post_fixture['title']}</title>"
             f"<link rel='canonical' href='{article_url}' />"
             f"<meta property='og:url' content='{article_url}' />"
+            f"<meta property='og:image' content='https://kesher.saharoni.com{post_fixture['image']}' />"
             f"<meta name='kesher:content-sha256' content='{exact_sha}' />"
             f"</head><body><h1>{post_fixture['title']}</h1></body></html>"
         )

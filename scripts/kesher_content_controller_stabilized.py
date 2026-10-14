@@ -1241,6 +1241,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             and (inputs or {}) == (pending.get("inputs") or {})
         ):
             dispatch_sha = str(pending.get("dispatch_head_sha") or "").strip()
+            current_main_sha = ""
+            if hasattr(self.github, "main_sha"):
+                try:
+                    current_main_sha = str(self.github.main_sha() or "").strip()
+                except Exception:
+                    current_main_sha = ""
+
             exact_runs: list[dict] = []
             if dispatch_sha and hasattr(self.github, "workflow_runs"):
                 try:
@@ -1260,7 +1267,35 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 except Exception:
                     exact_runs = []
 
-            if len(exact_runs) > 1:
+            if len(exact_runs) == 1:
+                exact_run = exact_runs[0]
+                run_id = exact_run.get("id")
+                if run_id:
+                    pending["observed_active_run_id"] = run_id
+                run_status = str(exact_run.get("status") or "")
+                if run_status == "completed":
+                    conclusion = str(exact_run.get("conclusion") or "").lower()
+                    pending["conclusion"] = conclusion or "success"
+                    pending["status"] = "completed_failed" if conclusion and conclusion != "success" else "completed_success"
+                else:
+                    pending["status"] = "active"
+
+            if current_main_sha and dispatch_sha and current_main_sha != dispatch_sha:
+                active_state.setdefault("deploy_history", []).append({
+                    "workflow": workflow,
+                    "superseded_sha": dispatch_sha,
+                    "current_sha": current_main_sha,
+                    "superseded_at": v5.core.utc_now(),
+                    "superseded_status": pending.get("status"),
+                    "superseded_run_id": pending.get("observed_active_run_id") or active_state.get("article", {}).get("deploy_run_id"),
+                    "superseded_conclusion": pending.get("conclusion"),
+                    "reason": f"deploy for SHA {dispatch_sha} superseded by newer main SHA {current_main_sha}",
+                })
+                pending_map.pop(workflow, None)
+                self._safe_save_controller_state(active_state)
+                pending = None
+
+            if pending is not None and len(exact_runs) > 1:
                 pending["matching_run_ids"] = [run.get("id") for run in exact_runs if run.get("id")]
                 self._safe_save_controller_state(active_state)
                 raise _DuplicateDispatchSuppressed(
@@ -1268,7 +1303,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     f"{workflow} has multiple exact runs for dispatch SHA {dispatch_sha}; refusing blind retry",
                 )
 
-            if len(exact_runs) == 1:
+            if pending is not None and len(exact_runs) == 1:
                 exact_run = exact_runs[0]
                 run_id = exact_run.get("id")
                 if run_id:
@@ -1623,13 +1658,23 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         title = str(article.get("title") or "").strip()
         url = f"{v5.core.SITE_URL}/blog/{slug}"
         content_sha = str(state.get("article", {}).get("quality_content_sha256") or "").strip()
+        hero_path = str(article.get("image") or article.get("hero_image") or "").strip()
 
         # In-memory session tracking only: guaranteed fresh HTTP check on controller restart
         if slug in self._in_memory_verified_articles:
             return True, None
 
         status, page = self.site.get(url)
-        is_pub = (status == 200 and v5.core.article_is_public(page, title, expected_slug=slug, expected_content_sha256=content_sha))
+        is_pub = (
+            status == 200
+            and v5.core.article_is_public(
+                page,
+                title,
+                expected_slug=slug,
+                expected_content_sha256=content_sha,
+                expected_hero_path=hero_path or None,
+            )
+        )
         if is_pub:
             self._in_memory_verified_articles.add(slug)
             state.setdefault("article", {}).update({
@@ -1647,12 +1692,33 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             v5.core.transition(state, "article_deploying", "deployment already active")
             return False, v5.core.Action("wait", "deployment active")
 
+        current_main_sha = ""
+        if hasattr(self.github, "main_sha"):
+            try:
+                current_main_sha = str(self.github.main_sha() or "").strip()
+            except Exception:
+                current_main_sha = ""
+
         pending_deploy = (state.get("pending_dispatches") or {}).get(v5.core.DEPLOY_WORKFLOW)
         if isinstance(pending_deploy, dict) and pending_deploy.get("cycle") == state.get("cycle"):
-            if pending_deploy.get("status") in {"intent", "uncertain"}:
+            dispatch_sha = str(pending_deploy.get("dispatch_head_sha") or "").strip()
+            if current_main_sha and dispatch_sha and current_main_sha != dispatch_sha:
+                state.setdefault("deploy_history", []).append({
+                    "workflow": v5.core.DEPLOY_WORKFLOW,
+                    "superseded_sha": dispatch_sha,
+                    "current_sha": current_main_sha,
+                    "superseded_at": v5.core.utc_now(),
+                    "superseded_status": pending_deploy.get("status"),
+                    "superseded_run_id": pending_deploy.get("observed_active_run_id") or state.get("article", {}).get("deploy_run_id"),
+                    "reason": f"deploy for SHA {dispatch_sha} superseded by newer main SHA {current_main_sha}",
+                })
+                state["pending_dispatches"].pop(v5.core.DEPLOY_WORKFLOW, None)
+                self._safe_save_controller_state(state)
+                pending_deploy = None
+            elif pending_deploy.get("status") in {"intent", "uncertain"}:
                 v5.core.transition(state, "article_deploying", "deployment dispatch intent pending")
                 return False, v5.core.Action("wait", "deployment dispatch pending reconciliation")
-            if pending_deploy.get("status") == "dispatched":
+            elif pending_deploy.get("status") == "dispatched":
                 intent_dt = v5.core.parse_timestamp(pending_deploy.get("dispatched_at") or pending_deploy.get("intent_at"))
                 if intent_dt is not None:
                     elapsed = (self.now.astimezone(v5.core.timezone.utc) - intent_dt).total_seconds()
@@ -1666,7 +1732,15 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                                retry_at=next_deploy.isoformat())
             return False, v5.core.Action("wait", f"deploy retry scheduled for {next_deploy.isoformat()}")
 
-        attempts = int(state["article"].get("deploy_attempts") or 0) + 1
+        current_attempts = int(state["article"].get("deploy_attempts") or 0)
+        if current_attempts >= v5.core.MAX_DEPLOY_ATTEMPTS or state["article"].get("deploy_status") == "exhausted":
+            state["article"]["deploy_status"] = "exhausted"
+            if state.get("status") != "blocked":
+                v5.core.block(state, "article", "DEPLOY_ATTEMPTS_EXHAUSTED",
+                              f"Article deployment exhausted maximum allowed attempts ({v5.core.MAX_DEPLOY_ATTEMPTS})")
+            return False, v5.core.Action("block", f"deploy attempts exhausted ({v5.core.MAX_DEPLOY_ATTEMPTS})")
+
+        attempts = current_attempts + 1
         self.github.dispatch(v5.core.DEPLOY_WORKFLOW)
         delay_index = max(1, attempts - v5.core.MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF + 1)
         delay = 5 if attempts <= v5.core.MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF else v5.core.article_retry_backoff_minutes(delay_index)
