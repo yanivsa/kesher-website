@@ -24,6 +24,7 @@ BACKLOG_MEDIA_RECOVERY_WORKFLOW = "kesher-backlog-media-recovery.yml"
 MAX_BACKLOG_SEED_DISPATCHES = 3
 MAX_BACKLOG_SHORT_DISPATCHES = 4
 MAX_BACKLOG_EVIDENCE_REBUILDS = 2
+MAX_BACKLOG_DEPLOY_DISPATCHES = 3
 IMMUTABLE_EVIDENCE_HASHES = (
     "manifest_sha256",
     "transcript_sha256",
@@ -34,6 +35,7 @@ TERMINAL_BACKLOG_MEDIA_ERRORS = frozenset({
     "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED",
     "BACKLOG_EXACT_SEED_ATTEMPTS_EXHAUSTED",
     "BACKLOG_LEGACY_EVIDENCE_REBUILD_EXHAUSTED",
+    "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED",
 })
 
 
@@ -103,7 +105,7 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             return
         self.github.dispatch(workflow, inputs)
 
-    def _published_backlog_source(self, state):
+    def _published_backlog_source(self, state, *, require_public=True):
         posts = self.posts_on_main("main")
 
         backlog_rows = state.get("backlog")
@@ -179,20 +181,23 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             post = resolved_matches[0]
             source = v5.article_source_identity(post)
             url = f"{v5.core.SITE_URL}/blog/{source['slug']}"
-            status, body = self.site.get(url)
-            if status != 200 or not v5.core.article_is_public(
-                body,
-                str(post.get("title") or ""),
-                source["slug"],
-                source["content_sha256"],
-            ):
-                continue
             media.update({
                 "source_slug": source["slug"],
                 "source_content_sha256": source["content_sha256"],
+                "article_title": str(post.get("title") or ""),
                 "article_url": url,
-                "article_live": True,
+                "article_live": False,
             })
+            if require_public:
+                status, body = self.site.get(url)
+                if status != 200 or not v5.core.article_is_public(
+                    body,
+                    media["article_title"],
+                    source["slug"],
+                    source["content_sha256"],
+                ):
+                    continue
+                media["article_live"] = True
             return row, source
         return None, None
 
@@ -244,10 +249,52 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
         return v5._newest(rows)
 
     def _backlog_media_preflight(self, state):
-        row, source = self._published_backlog_source(state)
+        row, source = self._published_backlog_source(state, require_public=False)
         if row is None or source is None:
             return None
         media = row["media"]
+
+        article_url = str(media.get("article_url") or f"{v5.core.SITE_URL}/blog/{source['slug']}")
+        status, body = self.site.get(article_url)
+        article_live = status == 200 and v5.core.article_is_public(
+            body,
+            str(media.get("article_title") or ""),
+            source["slug"],
+            source["content_sha256"],
+        )
+        media["article_live"] = bool(article_live)
+        if not article_live:
+            if self.github.active_workflow_run(v5.core.DEPLOY_WORKFLOW, production_only=True):
+                media["article_deploy_status"] = "running"
+                return v5.core.Action("wait", "prior-cycle article deployment is already active")
+
+            article_state = row.setdefault("article", {})
+            deploy_count = int(article_state.get("deploy_attempts") or 0)
+            if deploy_count >= MAX_BACKLOG_DEPLOY_DISPATCHES:
+                media["article_deploy_status"] = "exhausted"
+                media["last_error"] = "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"
+                return v5.core.Action("blocked", "prior-cycle article deployment attempts exhausted")
+
+            self.github.dispatch(v5.core.DEPLOY_WORKFLOW)
+            article_state.update({
+                "deploy_attempts": deploy_count + 1,
+                "last_deploy_dispatch_at": v5.core.utc_now(),
+            })
+            media.update({
+                "article_deploy_status": "running",
+                "article_last_deploy_dispatch_at": v5.core.utc_now(),
+                "last_error": None,
+            })
+            return v5.core.Action(
+                "dispatch_backlog_deploy",
+                "dispatched deployment for exact prior-cycle article already present on main",
+                {
+                    "target_slug": source["slug"],
+                    "target_content_sha256": source["content_sha256"],
+                },
+            )
+
+        media["article_deploy_status"] = "complete"
 
         long_state = self.github.newest_video_state()
         long_verified = v5._newest(v5._verified_exact(long_state, source))
