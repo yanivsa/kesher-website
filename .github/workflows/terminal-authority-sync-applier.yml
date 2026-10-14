@@ -25,7 +25,7 @@ jobs:
 
       - name: Synchronize reviewed authority pins
         run: |
-          python3 scripts/kesher_runtime/sync_authority_policy.py
+          python3 scripts/kesher_runtime/sync_authority_policy.py --update
           python3 scripts/kesher_runtime/sync_authority_policy.py --check
 
       - name: Commit canonical authority sync and remove applier
