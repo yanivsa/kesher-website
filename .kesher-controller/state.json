@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-14",
-  "status": "article_image_rebinding",
+  "status": "article_pr_open",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -2033,12 +2033,18 @@
         "pr_number": 1113,
         "head_sha": "2bdd1fba3f3faa89e2b6907e7aabd498603443d4"
       }
+    },
+    {
+      "at": "2026-10-14T10:46:06.999366+00:00",
+      "from": "article_image_rebinding",
+      "to": "article_pr_open",
+      "reason": "normalized article PR has required trusted image"
     }
   ],
-  "updated_at": "2026-10-14T10:42:54.163584+00:00",
+  "updated_at": "2026-10-14T10:46:06.999389+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38551492460,
@@ -2125,6 +2131,30 @@
       "previous_run_id": 38491499100,
       "observed_active_run_id": 38512981747,
       "dispatched_at": "2026-10-14T04:44:32.740063+00:00"
+    },
+    "auto-merge-article-prs.yml": {
+      "workflow": "auto-merge-article-prs.yml",
+      "cycle": "2026-10-14",
+      "inputs": {
+        "pr_number": "1113",
+        "slot": "2026-10-14"
+      },
+      "intent_at": "2026-10-14T10:45:33.701851+00:00",
+      "status": "intent",
+      "previous_run_id": 38550971288,
+      "observed_active_run_id": null
     }
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
