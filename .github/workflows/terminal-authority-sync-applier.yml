@@ -23,15 +23,16 @@ jobs:
           ref: fix/terminal-cycle-no-resurrection-20261014
           fetch-depth: 0
 
-      - name: Synchronize reviewed authority pins
-        run: |
-          python3 scripts/kesher_runtime/sync_authority_policy.py --update
-          python3 scripts/kesher_runtime/sync_authority_policy.py --check
-
-      - name: Commit canonical authority sync and remove applier
+      - name: Remove temporary workflow and synchronize reviewed authority pins
         run: |
           set -euo pipefail
           git rm .github/workflows/terminal-authority-sync-applier.yml
+          python3 scripts/kesher_runtime/sync_authority_policy.py --update
+          python3 scripts/kesher_runtime/sync_authority_policy.py --check
+
+      - name: Commit canonical authority sync
+        run: |
+          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add scripts/kesher_runtime/authority_policy.json
