@@ -164,6 +164,47 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         self.assertEqual(source["slug"], "post-a")
         self.assertEqual(source["content_sha256"], source_a["content_sha256"])
 
+    def test_exact_backlog_source_404_dispatches_one_deploy_and_dedups_active_run(self):
+        gh = FakeGitHub()
+        post = prior_article()
+        post["controllerManaged"] = True
+        source = v5.article_source_identity(post)
+        gh.posts = [post]
+
+        class MissingSite:
+            def get(self, url):
+                return 404, "<html><h1>not found</h1></html>"
+
+        state = {
+            "status": "waiting_for_article_window",
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "status": "blocked",
+                "article": {
+                    "slug": source["slug"],
+                    "quality_content_sha256": source["content_sha256"],
+                    "attempt_count": 3,
+                    "deploy_attempts": 0,
+                },
+            }],
+            "history": [],
+        }
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            MissingSite(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+
+        action = controller._backlog_media_preflight(state)
+        self.assertEqual(action.kind, "dispatch_backlog_deploy")
+        self.assertEqual(gh.dispatches, [(core.DEPLOY_WORKFLOW, None)])
+        self.assertEqual(state["backlog"][0]["article"]["deploy_attempts"], 1)
+        self.assertFalse(state["backlog"][0]["media"]["article_live"])
+
+        second = controller._backlog_media_preflight(state)
+        self.assertEqual(second.kind, "wait")
+        self.assertEqual(gh.dispatches, [(core.DEPLOY_WORKFLOW, None)])
+
     def test_published_backlog_source_rejects_title_only_public_page(self):
         gh = FakeGitHub()
         post = prior_article()
