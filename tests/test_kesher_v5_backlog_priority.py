@@ -114,8 +114,18 @@ class KesherV5BacklogPriorityTests(unittest.TestCase):
                     return {}
                 raise AssertionError((method, path))
 
+        class PublicSite:
+            def get(self, _url):
+                return 200, (
+                    f"<html><head>"
+                    f"<link rel='canonical' href='https://kesher.saharoni.com/blog/{source['slug']}'>"
+                    f"<meta name='kesher:content-sha256' content='{source['content_sha256']}'>"
+                    f"</head><body><h1>{post['title']}</h1></body></html>"
+                )
+
         controller = object.__new__(runtime.RuntimeV5Controller)
         controller.github = FakeGitHub()
+        controller.site = PublicSite()
         controller._published_backlog_source = lambda _state, **_kwargs: (row, source)
 
         action = controller._backlog_media_preflight(state)
