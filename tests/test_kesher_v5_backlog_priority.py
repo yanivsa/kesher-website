@@ -116,7 +116,7 @@ class KesherV5BacklogPriorityTests(unittest.TestCase):
 
         controller = object.__new__(runtime.RuntimeV5Controller)
         controller.github = FakeGitHub()
-        controller._published_backlog_source = lambda _state: (row, source)
+        controller._published_backlog_source = lambda _state, **_kwargs: (row, source)
 
         action = controller._backlog_media_preflight(state)
 
