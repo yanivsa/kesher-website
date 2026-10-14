@@ -66,10 +66,10 @@ class ArticleImageContractTests(unittest.TestCase):
 
     def proof(self, provider='Local', head=HEAD, **overrides):
         result, chain, source = {
-            'Pixabay': ('stock', 'gemini-1/gemini-2/gemini-3/pexels/pixabay', 'https://pixabay.com/photos/example'),
-            'Local': ('local_fallback', 'gemini-1/gemini-2/gemini-3/pexels/pixabay/local-curated', 'local://public/images/generated/blog/curated.png'),
+            'Pixabay': ('stock', 'gemini-1/gemini-2/pexels/pixabay', 'https://pixabay.com/photos/example'),
+            'Local': ('local_fallback', 'gemini-1/gemini-2/pexels/pixabay/local-curated', 'local://public/images/generated/blog/curated.png'),
             'Gemini': ('generated', 'gemini-1', 'https://ai.google.dev/models/gemini'),
-                        'Pexels': ('stock', 'gemini-1/gemini-2/gemini-3/pexels', 'https://pexels.com/photo/example'),
+                        'Pexels': ('stock', 'gemini-1/gemini-2/pexels', 'https://pexels.com/photo/example'),
         }[provider]
         fields = {
             'Image Pipeline Version': '2', 'Image Provider': provider, 'Image Attempt Chain': chain,
@@ -127,6 +127,24 @@ class ArticleImageContractTests(unittest.TestCase):
                 self.assertTrue(self.worker_ready())
                 self.assertTrue(self.controller_ready()[0])
                 self.assertEqual(self.validate(), [])
+
+    def test_reserved_third_gemini_attempt_is_only_after_catalog_exhaustion(self):
+        self.pr['body'] = self.proof(
+            'Gemini',
+            **{'Image Attempt Chain': 'gemini-1/gemini-2/pexels/pixabay/local-curated/gemini-3-catalog-replenishment'},
+        )
+        self.assertTrue(self.worker_ready())
+        self.assertTrue(self.controller_ready()[0])
+        self.assertEqual(self.validate(), [])
+
+    def test_old_pre_stock_third_gemini_chain_is_rejected(self):
+        self.pr['body'] = self.proof(
+            'Local',
+            **{'Image Attempt Chain': 'gemini-1/gemini-2/gemini-3/pexels/pixabay/local-curated'},
+        )
+        self.assertFalse(self.worker_ready())
+        self.assertFalse(self.controller_ready()[0])
+        self.assertTrue(self.validate())
 
     def test_content_gate_runs_before_ci_but_legacy_merge_gate_still_requires_ci(self):
         self.assertTrue(hasattr(self.validator, 'evaluate_content'), 'Missing independently callable content gate')
