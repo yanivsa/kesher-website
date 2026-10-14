@@ -20,7 +20,8 @@
     "pr_number": 1122,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1122",
     "normalization_slot": "2026-10-15",
-    "normalization_dispatched_at": "2026-10-14T22:55:08.791613+00:00"
+    "normalization_dispatched_at": "2026-10-14T22:55:08.791613+00:00",
+    "normalization_run_id": 38650819792
   },
   "backlog": [
     {
@@ -1945,21 +1946,7 @@
   "migration": {
     "v4_short_controller_state": null
   },
-  "pending_dispatches": {
-    "normalize-article-pr.yml": {
-      "workflow": "normalize-article-pr.yml",
-      "cycle": "2026-10-15",
-      "inputs": {
-        "pr_number": "1122",
-        "slot": "2026-10-15"
-      },
-      "intent_at": "2026-10-14T22:54:16.431884+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 38650819792,
-      "dispatched_at": "2026-10-14T22:54:16.431884+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "deliverables": {
     "article_url": null,
     "overview_youtube_url": null,
@@ -1970,8 +1957,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Kesher Article Generation",
-    "run_id": 38646235123,
+    "workflow": "Kesher Normalize Article PR",
+    "run_id": 38650819792,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-15"
