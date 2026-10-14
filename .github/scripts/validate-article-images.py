@@ -36,6 +36,16 @@ def reuse_policy() -> tuple[int, int]:
     return cooldown_days, max_uses
 
 
+def _parse_date(value: object) -> date | None:
+    raw = str(value or "").strip()[:10]
+    if not raw:
+        return None
+    try:
+        return date.fromisoformat(raw)
+    except ValueError:
+        return None
+
+
 def unique_enforcement_start_date() -> date:
     contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
     image = contract.get("image") if isinstance(contract, dict) else {}

@@ -29,6 +29,16 @@ def use(pid: str, published: str, *, trusted_local: bool = False) -> dict[str, o
 
 
 class ArticleImageValidatorReusePolicyTests(unittest.TestCase):
+    def test_date_parser_accepts_iso_and_rejects_invalid_values(self):
+        validator = load_validator()
+        self.assertEqual(validator._parse_date("2026-10-14T09:30:00Z").isoformat(), "2026-10-14")
+        self.assertIsNone(validator._parse_date("not-a-date"))
+        self.assertIsNone(validator._parse_date(None))
+
+    def test_uniqueness_fence_date_is_reviewed_contract_date(self):
+        validator = load_validator()
+        self.assertEqual(validator.unique_enforcement_start_date().isoformat(), "2026-10-14")
+
     def test_contract_policy_is_unique_only(self):
         validator = load_validator()
         self.assertEqual(validator.reuse_policy(), (0, 1))
