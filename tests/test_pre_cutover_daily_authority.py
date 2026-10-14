@@ -2066,6 +2066,14 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 return None
 
             def workflow_run_by_id(self, run_id):
+                if int(run_id) == 702:
+                    return {
+                        "id": 702,
+                        "name": "Kesher Normalize PR 1115",
+                        "path": ".github/workflows/normalize-article-pr.yml",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    }
                 return None
 
             def newest_video_state(self):

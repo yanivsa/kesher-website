@@ -1048,9 +1048,18 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if isinstance(actual_run, dict):
             if str(actual_run.get("event") or "") == "pull_request":
                 return False, f"pull_request child run ignored: {parsed_id}"
-            run_name = str(actual_run.get("name") or "").strip()
-            if run_name and run_name not in {workflow, workflow_file}:
-                return False, f"child run workflow mismatch: run {parsed_id} belongs to {run_name}, not {workflow}"
+            actual_path = str(actual_run.get("path") or "").strip()
+            normalized_path = actual_path.split("@", 1)[0].removeprefix(".github/workflows/")
+            if normalized_path:
+                if normalized_path != workflow_file:
+                    return False, (
+                        f"child run workflow path mismatch: run {parsed_id} belongs to "
+                        f"{actual_path}, not {workflow_file}"
+                    )
+            else:
+                run_name = str(actual_run.get("name") or "").strip()
+                if run_name and run_name not in {workflow, workflow_file}:
+                    return False, f"child run workflow mismatch: run {parsed_id} belongs to {run_name}, not {workflow}"
             actual_attempt = actual_run.get("run_attempt")
             if info["run_attempt"] and actual_attempt and int(info["run_attempt"]) != int(actual_attempt):
                 return False, f"child run_attempt mismatch: {info['run_attempt']} != {actual_attempt}"
