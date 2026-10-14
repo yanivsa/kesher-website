@@ -1,0 +1,39 @@
+name: Terminal Authority Sync Applier
+
+on:
+  push:
+    branches:
+      - fix/terminal-cycle-no-resurrection-20261014
+
+permissions:
+  contents: write
+
+concurrency:
+  group: terminal-authority-sync-applier
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: ${{ github.repository == 'yanivsa/kesher-website' && github.ref == 'refs/heads/fix/terminal-cycle-no-resurrection-20261014' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fix branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/terminal-cycle-no-resurrection-20261014
+          fetch-depth: 0
+
+      - name: Synchronize reviewed authority pins
+        run: |
+          python3 scripts/kesher_runtime/sync_authority_policy.py
+          python3 scripts/kesher_runtime/sync_authority_policy.py --check
+
+      - name: Commit canonical authority sync and remove applier
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/terminal-authority-sync-applier.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/kesher_runtime/authority_policy.json
+          git commit -m 'chore(policy): sync terminal-cycle fix authority pins'
+          git push origin HEAD:fix/terminal-cycle-no-resurrection-20261014
