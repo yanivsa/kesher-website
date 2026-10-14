@@ -78,7 +78,7 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
 
     # Images are required and publication-blocking. A published article must
     # have a concrete trusted hero image. Downstream validators enforce strict
-    # provenance, pixel validation, external-image uniqueness and bounded local reuse.
+    # provenance, pixel validation, and uniqueness of published hero pixels.
     if (
         image.get("required_for_article") is not True
         or image.get("publication_blocking") is not True
@@ -94,9 +94,9 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         or image.get("owned_generation_variants") != 3
         or image.get("local_fallback_candidates_per_category") != 40
         or image.get("managed_fallback_library_target_per_category") != 40
-        or image.get("local_fallback_policy") != "prefer-unused-then-90-day-cooldown-max-3-uses"
-        or image.get("local_fallback_reuse_cooldown_days") != 90
-        or image.get("local_fallback_max_lifetime_uses") != 3
+        or image.get("local_fallback_policy") != "unique-only-never-reuse-published-hero"
+        or image.get("local_fallback_reuse_cooldown_days") != 0
+        or image.get("local_fallback_max_lifetime_uses") != 1
         or image.get("no_image_publication_allowed") is not False
         or image.get("failure_mode") != "blocking-retry"
     ):
