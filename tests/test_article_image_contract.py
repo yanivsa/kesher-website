@@ -111,6 +111,22 @@ class ArticleImageContractTests(unittest.TestCase):
              patch.object(client, 'request', side_effect=image_at_head):
             return client.article_pr_image_ready(self.pr)
 
+    def controller_rebindable(self, payload=None):
+        client = V3GitHubClient('test/repo', 'unused')
+        payload = payload if payload is not None else {
+            'sha': 'd' * 40, 'encoding': 'base64', 'content': base64.b64encode(self.image).decode(),
+        }
+        def posts_at_ref(path, ref):
+            self.assertEqual(path, 'src/data/posts.json')
+            return {self.pr['base']['sha']: self.base,
+                    self.pr['head']['sha']: self.base + [self.post]}[ref]
+        def image_at_head(method, url, **kwargs):
+            self.assertEqual(method, 'GET')
+            return payload
+        with patch.object(client, 'contents_json', side_effect=posts_at_ref), \
+             patch.object(client, 'request', side_effect=image_at_head):
+            return client.article_pr_image_rebindable(self.pr)
+
     def validate(self, **kwargs):
         return self.validator.evaluate(self.pr, self.files,
             kwargs.get('checks', [{'name': 'verify', 'conclusion': 'success', 'head_sha': HEAD}]),
@@ -178,6 +194,15 @@ class ArticleImageContractTests(unittest.TestCase):
                 self.assertFalse(self.worker_ready())
                 self.assertFalse(self.controller_ready()[0])
                 self.assertTrue(self.validate())
+
+    def test_stale_head_is_rebindable_only_when_article_and_pixels_still_match(self):
+        self.pr['body'] = self.proof('Local', head=HEAD)
+        self.pr['head']['sha'] = NEXT_HEAD
+        self.assertFalse(self.controller_ready()[0])
+        self.assertTrue(self.controller_rebindable()[0])
+
+        self.post['content'] += '<p>article changed after image proof</p>'
+        self.assertFalse(self.controller_rebindable()[0])
 
     def test_existing_blob_without_image_bytes_is_not_ready(self):
         self.pr['body'] = self.proof('Local')
