@@ -2031,7 +2031,7 @@
       "at": "2026-10-14T08:09:47.000510+00:00"
     },
     "next_retry_at": null,
-    "run_id": 38516108724,
+    "run_id": 38550757730,
     "processed_run_id": 38516108724,
     "provider_id": "Local",
     "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
@@ -2084,8 +2084,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 38532594192,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 38550757730,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-14"
@@ -2113,18 +2113,6 @@
       "previous_run_id": 38491499100,
       "observed_active_run_id": 38512981747,
       "dispatched_at": "2026-10-14T04:44:32.740063+00:00"
-    },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-10-14",
-      "inputs": {
-        "pr_number": "1113"
-      },
-      "intent_at": "2026-10-14T10:35:59.144169+00:00",
-      "status": "dispatched",
-      "previous_run_id": 38516108724,
-      "observed_active_run_id": 38550757730,
-      "dispatched_at": "2026-10-14T10:35:59.144169+00:00"
     }
   }
 }
