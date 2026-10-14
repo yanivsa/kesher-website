@@ -57,7 +57,18 @@
     },
     "last_jules_session_id": "sessions/7288980310060902366",
     "last_failed_run_id": 38473663768,
-    "resume_dispatches": 1
+    "resume_dispatches": 1,
+    "watchdog": {
+      "identity": "2026-10-14",
+      "session_id": null,
+      "last_progress_at": "2026-10-14T14:07:33+00:00",
+      "last_fingerprint": null,
+      "last_nudge_at": null,
+      "nudge_count": 0,
+      "worker_restart_count": 0,
+      "last_restart_at": null,
+      "last_restart_run_id": null
+    }
   },
   "backlog": [
     {
@@ -1226,16 +1237,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-03T16:13:16.099355+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-09-27",
-        "source_slug": "siblings-fairness-vs-equality"
-      }
-    },
-    {
       "at": "2026-10-03T17:00:04.481236+00:00",
       "from": "waiting_for_article_window",
       "to": "article_normalizing",
@@ -2078,9 +2079,18 @@
         "run_id": 38473663768,
         "session_id": "sessions/7288980310060902366"
       }
+    },
+    {
+      "at": "2026-10-14T14:12:11.680594+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": null
+      }
     }
   ],
-  "updated_at": "2026-10-14T14:07:34.372600+00:00",
+  "updated_at": "2026-10-14T14:12:11.680605+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
