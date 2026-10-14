@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-14",
-  "status": "article_pr_open",
+  "status": "article_image_rebinding",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -2023,12 +2023,22 @@
       "from": "article_image_rebinding",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-14T10:42:54.163576+00:00",
+      "from": "article_pr_open",
+      "to": "article_image_rebinding",
+      "reason": "exact trusted image evidence is valid except for PR head binding",
+      "details": {
+        "pr_number": 1113,
+        "head_sha": "2bdd1fba3f3faa89e2b6907e7aabd498603443d4"
+      }
     }
   ],
-  "updated_at": "2026-10-14T10:38:16.753379+00:00",
+  "updated_at": "2026-10-14T10:42:54.163584+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "complete",
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38516108724,
@@ -2044,8 +2054,8 @@
     "last_failed_run_id": 38516108724,
     "artifact_sha256": "d902e56620cace8e711655586c9e708849d8b14bdb6f9c968f1e3fa696817763",
     "source_id": "local://public/images/generated/blog/i-told-you-so-criticism-in-relationships.jpg",
-    "evidence_rebind_head_sha": "b76ca3215545db83c3a68339d43bfb9f929e613f",
-    "evidence_rebind_dispatched_at": "2026-10-14T10:36:32.166502+00:00"
+    "evidence_rebind_head_sha": "2bdd1fba3f3faa89e2b6907e7aabd498603443d4",
+    "evidence_rebind_dispatched_at": "2026-10-14T10:42:54.163556+00:00"
   },
   "long_video": {
     "attempt_count": 0,
@@ -2122,21 +2132,10 @@
         "pr_number": "1113"
       },
       "intent_at": "2026-10-14T10:42:26.880437+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38516108724,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38551492460,
+      "dispatched_at": "2026-10-14T10:42:26.880437+00:00"
     }
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
