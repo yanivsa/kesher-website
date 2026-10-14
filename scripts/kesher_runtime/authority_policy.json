@@ -3217,7 +3217,7 @@
           "tests/test_kesher_publication_manifest.py": "61cb682017f5e41183110642202a10c5719667cdeaf3fcd90733a1dca8304d94",
           "tests/test_kesher_runtime_migration.py": "f900de0d2f33b710277cda0887890f514996709d4829868fcf8ad065986be510",
           "tests/test_kesher_state_write_safety.py": "1f23f3915cf1f1851ad77b84765efd2825bc5bd9862dba22a9f20046c72aac33",
-          "tests/test_kesher_v5_backlog_priority.py": "c498fee724215c3a31081c5a91924e4f6c7f935747de72cf74d7dde2d34e382a",
+          "tests/test_kesher_v5_backlog_priority.py": "8cd3d17607e0659db2ce45f6d9f2d4e4c06d1a481a3f4e8f3bb69f52afc01549",
           "tests/test_kesher_worker_commands.py": "ecff6837f5f5ac824a109ee9422aa2519a79fd79ad5c39e865b3bb918704ad29",
           "tests/test_kesher_worker_entry.py": "f48055276b51e264ef35b5d0bb7d3952918fbc39aa1ff09a93e1a09b73365fde",
           "tests/test_media_provenance_contract.py": "9a4ca332a8211323289ccf602bd05f067d5622da3a9ef9b8db14abac14e08c19",
