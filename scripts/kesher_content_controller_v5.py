@@ -253,7 +253,7 @@ class V5Controller(v4.V4Controller):
         # Once a worker is already active it must remain supervised across
         # window boundaries (for example a Friday pre-08:00 recovery run).
         posts = self.posts_on_main("main")
-        if not isinstance(posts, list) or core.today_articles(posts, self.now.date()):
+        if not isinstance(posts, list) or self._reconcile_existing_current_day_article(state, posts):
             return None
         slot = self.now.date().isoformat()
         open_prs = self.github.open_article_prs(slot)
@@ -308,11 +308,48 @@ class V5Controller(v4.V4Controller):
             return v4.legacy.BestEffortController._dispatch_budgeted(self, state, stage, workflow, inputs)
         return super()._dispatch_budgeted(state, stage, workflow, inputs)
 
-    def _article_source(self) -> dict[str, str] | None:
-        todays = self.posts_for_cycle(self.now.date())
+    def _article_source(self, state: dict[str, Any] | None = None) -> dict[str, str] | None:
+        if state is not None:
+            todays = self._reconcile_existing_current_day_article(state)
+        else:
+            todays = self.posts_for_cycle(self.now.date())
         if len(todays) != 1:
             return None
         return article_source_identity(todays[0])
+
+    @staticmethod
+    def _short_dispatch_gate_error(
+        source: Any,
+        long_item: Any,
+    ) -> tuple[str, str] | None:
+        if not isinstance(source, dict):
+            return (
+                "SHORT_SOURCE_IDENTITY_MISSING",
+                "Short dispatch requires non-empty canonical slug and 64-hex content_sha256",
+            )
+        slug = str(source.get("slug") or "").strip()
+        sha = str(source.get("content_sha256") or "").strip()
+        if not slug or len(sha) != 64 or not all(ch in "0123456789abcdefABCDEF" for ch in sha):
+            return (
+                "SHORT_SOURCE_IDENTITY_MISSING",
+                "Short dispatch requires non-empty canonical slug and 64-hex content_sha256",
+            )
+        if not isinstance(long_item, dict) or not str(long_item.get("id") or "").strip():
+            return (
+                "SHORT_REQUIRES_VERIFIED_LONG_VIDEO",
+                "Short cannot be dispatched before exact-identity Long Video is public and verified",
+            )
+        if _source_identity(long_item) != (slug, sha):
+            return (
+                "SHORT_REQUIRES_VERIFIED_LONG_VIDEO",
+                "Short cannot be dispatched when Long Video source identity does not match exact slug and content_sha256",
+            )
+        if not core.verified_youtube_item(long_item, slug):
+            return (
+                "SHORT_REQUIRES_VERIFIED_LONG_VIDEO",
+                "Short cannot be dispatched before exact-identity Long Video is public and verified on YouTube",
+            )
+        return None
 
     def _adopt_existing_short(self, state: dict[str, Any], source: dict[str, str]) -> dict[str, Any] | None:
         current_short = state.get("short") or {}
@@ -376,20 +413,28 @@ class V5Controller(v4.V4Controller):
         )
 
     def _tick_short(self, state: dict[str, Any], source: dict[str, str], long_item: dict[str, Any]) -> core.Action:
-        existing = self._adopt_existing_short(state, source)
-        if existing:
-            core.transition(state, "complete", "article, long-form video and derivative Short verified public")
-            state["article"]["status"] = "complete"
-            state["image"]["status"] = "complete"
-            state["long_video"]["status"] = "complete"
-            state["short"]["status"] = "complete"
-            return core.Action("complete", "article + long-form + Short verified public")
+        if isinstance(source, dict) and source.get("slug") and source.get("content_sha256"):
+            existing = self._adopt_existing_short(state, source)
+            if existing:
+                core.transition(state, "complete", "article, long-form video and derivative Short verified public")
+                state["article"]["status"] = "complete"
+                state["image"]["status"] = "complete"
+                state["long_video"]["status"] = "complete"
+                state["short"]["status"] = "complete"
+                return core.Action("complete", "article + long-form + Short verified public")
+
+        gate_error = self._short_dispatch_gate_error(source, long_item)
+        if gate_error is not None:
+            code, message = gate_error
+            core.block(state, "short", code, message)
+            return core.Action("blocked", message)
 
         short_state = self.github.newest_short_state()
         exact = _exact_items(short_state, source)
         unresolved = [
             item for item in exact
             if item.get("uploaded") is not True
+            and not bool(str(item.get("youtube_id") or "").strip())
             and str(item.get("status") or "") in (core.ACTIVE_VIDEO_STATUSES | {"rejected"})
         ]
         if len(unresolved) > 1:
@@ -407,6 +452,69 @@ class V5Controller(v4.V4Controller):
             retry_at = state["short"].get("next_retry_at")
             core.transition(state, "short_retry_wait", "Short retry backoff is active", retry_at=retry_at)
             return core.Action("wait", f"Short retry scheduled for {retry_at}")
+
+        uploaded_unverified = [
+            item for item in exact
+            if (
+                item.get("uploaded") is True
+                or str(item.get("status") or "") == "uploaded"
+                or bool(str(item.get("youtube_id") or "").strip())
+            )
+            and not core.verified_youtube_item(item, source["slug"])
+        ]
+        if uploaded_unverified:
+            candidate = _newest(uploaded_unverified) or uploaded_unverified[-1]
+            if not bool(str(candidate.get("youtube_id") or "").strip()):
+                core.block(
+                    state,
+                    "short",
+                    "UPLOADED_SHORT_NOT_VERIFIED",
+                    "Short has uploaded status without youtube_id",
+                )
+                return core.Action("blocked", "uploaded Short requires reconciliation")
+            count = int(state["short"].get("attempt_count") or 0)
+            if count >= MAX_SHORT_DISPATCH_ATTEMPTS:
+                core.block(
+                    state,
+                    "short",
+                    "SHORT_ATTEMPTS_EXHAUSTED",
+                    f"Short exhausted {MAX_SHORT_DISPATCH_ATTEMPTS} derive/recovery dispatch attempts",
+                )
+                state["short"]["status"] = "exhausted"
+                return core.Action("blocked", "Short attempts exhausted")
+            inputs = {
+                "operation": "upload",
+                "derive_slug": source["slug"],
+                "derive_content_sha256": source["content_sha256"],
+                "derive_long_item_id": str(long_item.get("id") or ""),
+            }
+            core.GitHubClient.dispatch(self.github, SHORT_WORKFLOW, inputs)
+            state["short"].update({
+                "item_id": candidate.get("id"),
+                "attempt_count": count + 1,
+                "last_dispatch_at": core.utc_now(),
+                "next_retry_at": None,
+                "status": "running",
+                "youtube_id": candidate.get("youtube_id"),
+                "youtube_url": candidate.get("youtube_url"),
+                "verified": False,
+                "provider_id": candidate.get("task_id") or long_item.get("task_id"),
+                "artifact_id": candidate.get("artifact_id") or long_item.get("artifact_id"),
+                "source_id": candidate.get("source_id") or long_item.get("source_id"),
+                "adopted_from_long_item_id": candidate.get("adopted_from_long_item_id") or long_item.get("id"),
+            })
+            core.transition(
+                state,
+                "short_running",
+                "uploaded Short has youtube_id but lacks complete verification; re-verifying without regeneration",
+                item_id=candidate.get("id"),
+                youtube_id=candidate.get("youtube_id"),
+            )
+            return core.Action(
+                "dispatch_short_reverify",
+                "uploaded Short requires public verification without regeneration",
+                inputs,
+            )
 
         if unresolved:
             current_item = unresolved[0]
@@ -487,7 +595,7 @@ class V5Controller(v4.V4Controller):
             if article_watchdog_action is not None:
                 self.github.save_controller_state(state)
                 return state, article_watchdog_action
-            source = self._article_source()
+            source = self._article_source(state)
             if source is not None:
                 # Evidence-only migration: a matching V4 public Short is durable
                 # success even while the long-form stage is still missing.
@@ -528,6 +636,8 @@ class V5Controller(v4.V4Controller):
             self.github.save_controller_state(state)
             return state, action
 
+        if source is None:
+            source = self._article_source(state)
         if source is None:
             core.block(state, "controller", "ARTICLE_IDENTITY_UNAVAILABLE", "long-form completed but authoritative article identity is unavailable")
             action = core.Action("blocked", "article identity unavailable")

@@ -61,7 +61,10 @@ def extract_target_article(
         raise ArticleNormalizationError(
             f"expected exactly one new article for {slot}, found {len(candidates)}"
         )
-    return copy.deepcopy(candidates[0])
+    extracted = copy.deepcopy(candidates[0])
+    if extracted.get("controllerManaged") is False:
+        extracted["controllerManaged"] = True
+    return extracted
 
 
 def normalized_posts(

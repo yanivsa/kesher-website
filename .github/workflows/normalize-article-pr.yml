@@ -119,6 +119,8 @@ jobs:
           # mutator. Discard any legacy/untrusted article-image attachment here.
           article.pop('image', None)
           article.pop('imageAlt', None)
+          if article.get('controllerManaged') is False:
+              article['controllerManaged'] = True
 
           normalized = normalized_posts(base, article, recent_posts=recent)
           Path('src/data/posts.json').write_text(
@@ -169,6 +171,8 @@ jobs:
 
       - name: Notify canonical Kesher Content Controller on completion
         if: ${{ always() && steps.bridge_admission.outcome == 'success' && github.event_name == 'workflow_dispatch' }}
+        continue-on-error: true
+        timeout-minutes: 2
         env:
           GH_TOKEN: ${{ github.token }}
           CHILD_WORKFLOW: ${{ github.workflow }}
@@ -181,4 +185,4 @@ jobs:
             -f child_workflow="$CHILD_WORKFLOW" \
             -f child_run_id="$CHILD_RUN_ID" \
             -f child_conclusion="$CHILD_CONCLUSION" \
-            -f slot="$SLOT"
+            -f slot="$SLOT" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."

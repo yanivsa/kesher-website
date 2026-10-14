@@ -229,14 +229,43 @@ def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dic
     return replacement
 
 
-def is_verified_public_short(item: dict[str, Any], source: dict[str, Any]) -> bool:
+def _has_valid_youtube_verification(item: dict[str, Any]) -> bool:
+    if not bool(str(item.get("youtube_id") or "").strip()):
+        return False
+    ver = item.get("youtube_verification")
+    if not isinstance(ver, dict):
+        return False
+    return bool(
+        ver.get("channel_id") == pipeline.YOUTUBE_CHANNEL_ID
+        and ver.get("privacy_status") == "public"
+        and ver.get("processing_status") == "succeeded"
+    )
+
+
+def _short_item_canonical_origin_verified(item: dict[str, Any]) -> bool:
+    if not isinstance(item, dict):
+        return False
+    if item.get("overview_provider_identity") is not None:
+        return delivery_guard._short_origin_verified(item)
+    raw_sha = str(item.get("raw_sha256") or "").strip()
+    dummy_overview_sha = "0" * 64 if raw_sha != "0" * 64 else "1" * 64
+    probe = {
+        **item,
+        "overview_provider_identity": {
+            "notebook_id": "__reconcile_independent_notebook__",
+            "source_id": "__reconcile_overview_source__",
+            "task_id": "__reconcile_overview_task__",
+            "artifact_id": "__reconcile_overview_artifact__",
+            "raw_sha256": dummy_overview_sha,
+        },
+    }
+    return delivery_guard._short_origin_verified(probe)
+
+
+def _short_media_and_signature_verified(item: dict[str, Any], source: dict[str, Any]) -> bool:
     if str((item.get("source") or {}).get("content_sha256") or "") != str(source.get("content_sha256") or ""):
         return False
-    if item.get("source_mode") == "overview-segment":
-        return False
-    if not (item.get("uploaded") is True and item.get("status") == "uploaded"):
-        return False
-    if not item.get("youtube_id"):
+    if not _short_item_canonical_origin_verified(item):
         return False
     media = item.get("media") or {}
     try:
@@ -247,6 +276,46 @@ def is_verified_public_short(item: dict[str, Any], source: dict[str, Any]) -> bo
     if width != 1080 or height != 1920 or height <= width:
         return False
     return delivery_guard._signature_verified(item)
+
+
+def is_verified_public_short(item: dict[str, Any], source: dict[str, Any]) -> bool:
+    if not _short_media_and_signature_verified(item, source):
+        return False
+    if not (item.get("uploaded") is True and item.get("status") == "uploaded"):
+        return False
+    return _has_valid_youtube_verification(item)
+
+
+def is_uploaded_unverified_short(item: dict[str, Any], source: dict[str, Any]) -> bool:
+    if not _short_media_and_signature_verified(item, source):
+        return False
+    if not bool(str(item.get("youtube_id") or "").strip()):
+        return False
+    return not is_verified_public_short(item, source)
+
+
+def is_verified_public_overview(item: dict[str, Any], source: dict[str, Any]) -> bool:
+    if not isinstance(item, dict) or item.get("type") != "video_overview":
+        return False
+    if source_slug(item) != str(source.get("slug") or "").strip():
+        return False
+    if str((item.get("source") or {}).get("content_sha256") or "") != str(source.get("content_sha256") or ""):
+        return False
+    if not (item.get("uploaded") is True and item.get("status") == "uploaded"):
+        return False
+    return _has_valid_youtube_verification(item)
+
+
+def is_uploaded_unverified_overview(item: dict[str, Any], source: dict[str, Any]) -> bool:
+    if not isinstance(item, dict) or item.get("type") != "video_overview":
+        return False
+    if source_slug(item) != str(source.get("slug") or "").strip():
+        return False
+    if str((item.get("source") or {}).get("content_sha256") or "") != str(source.get("content_sha256") or ""):
+        return False
+    if not bool(str(item.get("youtube_id") or "").strip()):
+        return False
+    return not is_verified_public_overview(item, source)
 
 
 def export_target(item: dict[str, Any] | None) -> None:
@@ -311,16 +380,18 @@ def prepare_generation(target_slug: str = "") -> int:
             and source_slug(item) == target_slug
             and str((item.get("source") or {}).get("content_sha256") or "") == source["content_sha256"]
         ]
-        uploaded = [
-            row for row in same_source
-            if row.get("uploaded") is True
-            and row.get("status") == "uploaded"
-            and bool(str(row.get("youtube_id") or "").strip())
-        ]
-        if uploaded:
+        verified_public = [row for row in same_source if is_verified_public_overview(row, source)]
+        uploaded_unverified = [row for row in same_source if is_uploaded_unverified_overview(row, source)]
+        if verified_public or uploaded_unverified:
+            chosen = verified_public[-1] if verified_public else uploaded_unverified[-1]
             modified = False
             for row in same_source:
-                if row.get("uploaded") is not True and row.get("status") in UNRESOLVED_STATUSES:
+                if (
+                    row is not chosen
+                    and row.get("uploaded") is not True
+                    and not bool(str(row.get("youtube_id") or "").strip())
+                    and row.get("status") in UNRESOLVED_STATUSES
+                ):
                     row["status"] = "superseded"
                     row["superseded_reason"] = "already_public_same_source"
                     row["superseded_at"] = pipeline.utc_now()
@@ -328,9 +399,12 @@ def prepare_generation(target_slug: str = "") -> int:
                     modified = True
             if modified:
                 pipeline.save_state(state)
-            export_target(uploaded[-1])
+            export_target(chosen)
             workflow_output("skip_generation", "true")
-            print(f"VIDEO_GENERATION_ALREADY_PUBLIC slug={target_slug} item={uploaded[-1].get('id')}")
+            if verified_public:
+                print(f"VIDEO_GENERATION_ALREADY_PUBLIC slug={target_slug} item={chosen.get('id')}")
+            else:
+                print(f"VIDEO_GENERATION_UPLOAD_NEEDS_VERIFICATION slug={target_slug} item={chosen.get('id')}")
             return 0
         item = None
         if requested_item_id:
@@ -387,14 +461,24 @@ def prepare_generation(target_slug: str = "") -> int:
             item for item in state.get("items") or []
             if isinstance(item, dict) and source_slug(item) == target_slug
         ]
-        uploaded = [
+        verified_public = [
             item for item in same_source
             if is_verified_public_short(item, source)
         ]
-        if uploaded:
+        uploaded_unverified = [
+            item for item in same_source
+            if is_uploaded_unverified_short(item, source)
+        ]
+        if verified_public or uploaded_unverified:
+            chosen = verified_public[-1] if verified_public else uploaded_unverified[-1]
             modified = False
             for item in same_source:
-                if item.get("uploaded") is not True and item.get("status") in UNRESOLVED_STATUSES:
+                if (
+                    item is not chosen
+                    and item.get("uploaded") is not True
+                    and not bool(str(item.get("youtube_id") or "").strip())
+                    and item.get("status") in UNRESOLVED_STATUSES
+                ):
                     item["status"] = "superseded"
                     item["superseded_reason"] = "already_public_same_source"
                     item["superseded_at"] = pipeline.utc_now()
@@ -402,9 +486,12 @@ def prepare_generation(target_slug: str = "") -> int:
                     modified = True
             if modified:
                 pipeline.save_state(state)
-            export_target(uploaded[-1])
+            export_target(chosen)
             workflow_output("skip_generation", "true")
-            print(f"SHORT_GENERATION_ALREADY_PUBLIC slug={target_slug} item={uploaded[-1].get('id')}")
+            if verified_public:
+                print(f"SHORT_GENERATION_ALREADY_PUBLIC slug={target_slug} item={chosen.get('id')}")
+            else:
+                print(f"SHORT_GENERATION_UPLOAD_NEEDS_VERIFICATION slug={target_slug} item={chosen.get('id')}")
             return 0
 
         # A targeted recovery must follow the currently published article identity.
@@ -423,7 +510,11 @@ def prepare_generation(target_slug: str = "") -> int:
                 item["superseded_at"] = pipeline.utc_now()
                 item["updated_at"] = pipeline.utc_now()
                 continue
-            if item.get("uploaded") is True and not is_verified_public_short(item, source):
+            if (
+                item.get("uploaded") is True
+                and not is_verified_public_short(item, source)
+                and not is_uploaded_unverified_short(item, source)
+            ):
                 item["status"] = "superseded"
                 item["superseded_reason"] = "unverified_or_legacy_short"
                 item["uploaded"] = False
@@ -444,6 +535,7 @@ def prepare_generation(target_slug: str = "") -> int:
                 replacement = retry_technical_rejection(state, item)
                 pipeline.save_state(state)
                 if replacement is None:
+                    workflow_output("skip_generation", "true")
                     print(
                         "VIDEO_RECONCILED_GENERATION "
                         f"slug={target_slug} released_without_short=yes fresh_attempts=4"
@@ -480,6 +572,7 @@ def prepare_generation(target_slug: str = "") -> int:
             replacement = retry_technical_rejection(state, item)
             pipeline.save_state(state)
             if replacement is None:
+                workflow_output("skip_generation", "true")
                 print(
                     "VIDEO_RECONCILED_GENERATION "
                     f"slug={source_slug(item)} released_without_short=yes fresh_attempts=4"
@@ -519,7 +612,9 @@ def technical_publication_ready(item: dict[str, Any]) -> bool:
 
 def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) -> bool:
     """Finish public verification after an earlier upload already returned its ID."""
-    if not item.get("youtube_id") or item.get("uploaded") is True:
+    if not bool(str(item.get("youtube_id") or "").strip()):
+        return False
+    if item.get("uploaded") is True and _has_valid_youtube_verification(item):
         return False
     token = pipeline.youtube_access_token()
     pipeline.verify_authenticated_channel(token)
@@ -581,6 +676,28 @@ def prepare_upload(
             and str((item.get("source") or {}).get("content_sha256") or "").strip() == target_content_sha256
         ]
         if len(exact) != 1:
+            exact_all = [
+                item for item in state.get("items") or []
+                if isinstance(item, dict)
+                and str(item.get("id") or "").strip() == target_item_id
+                and source_slug(item) == target
+                and str((item.get("source") or {}).get("content_sha256") or "").strip() == target_content_sha256
+            ]
+            if len(exact_all) == 1:
+                matched_item = exact_all[0]
+                if bool(str(matched_item.get("youtube_id") or "").strip()):
+                    export_target(matched_item)
+                    if matched_item.get("uploaded") is True and _has_valid_youtube_verification(matched_item):
+                        workflow_output("ready", "false")
+                        print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={target} item={matched_item.get('id')}")
+                        return 0
+                    if recover_persisted_youtube_id(state, matched_item):
+                        workflow_output("ready", "false")
+                        return 0
+                if matched_item.get("status") == RELEASED_STATUS:
+                    workflow_output("ready", "false")
+                    print("VIDEO_RECONCILED_UPLOAD candidate=none")
+                    return 0
             raise pipeline.PipelineError(
                 "Exact identity lock did not match exactly one unresolved video item"
             )
@@ -589,6 +706,30 @@ def prepare_upload(
         unresolved = exact
     elif target:
         unresolved = [item for item in unresolved if source_slug(item) == target]
+        if not unresolved:
+            same_slug_items = [
+                item for item in state.get("items") or []
+                if isinstance(item, dict) and source_slug(item) == target
+            ]
+            unverified_with_yt = [
+                item for item in same_slug_items
+                if bool(str(item.get("youtube_id") or "").strip()) and not _has_valid_youtube_verification(item)
+            ]
+            if unverified_with_yt:
+                candidate = unverified_with_yt[-1]
+                export_target(candidate)
+                if recover_persisted_youtube_id(state, candidate):
+                    workflow_output("ready", "false")
+                    return 0
+            verified_with_yt = [
+                item for item in same_slug_items
+                if item.get("uploaded") is True and _has_valid_youtube_verification(item)
+            ]
+            if verified_with_yt:
+                export_target(verified_with_yt[-1])
+                workflow_output("ready", "false")
+                print(f"VIDEO_RECONCILED_UPLOAD candidate=already_public slug={target} item={verified_with_yt[-1].get('id')}")
+                return 0
     if not unresolved:
         workflow_output("ready", "false")
         print("VIDEO_RECONCILED_UPLOAD candidate=none")
@@ -596,7 +737,7 @@ def prepare_upload(
 
     item = unresolved[0]
     export_target(item)
-    if item.get("youtube_id") and item.get("uploaded") is not True:
+    if bool(str(item.get("youtube_id") or "").strip()) and not (item.get("uploaded") is True and _has_valid_youtube_verification(item)):
         if recover_persisted_youtube_id(state, item):
             workflow_output("ready", "false")
             return 0

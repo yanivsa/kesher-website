@@ -102,13 +102,23 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         post_b["controllerManaged"] = False
         post_b["title"] = "פוסט נוסף באותו תאריך"
 
+        source_a = v5.article_source_identity(post_a)
+        source_b = v5.article_source_identity(post_b)
         gh.posts = [post_a, post_b]
 
         class Site:
             def get(self, url):
                 if "post-b" in url:
-                    return 200, "<html><h1>פוסט נוסף באותו תאריך</h1></html>"
-                return 200, "<html><h1>התמודדות עם תחושת החמצה ברווקות מאוחרת</h1></html>"
+                    return 200, (
+                        "<html><head>"
+                        f'<meta name="kesher:content-sha256" content="{source_b["content_sha256"]}">'
+                        "</head><h1>פוסט נוסף באותו תאריך</h1></html>"
+                    )
+                return 200, (
+                    "<html><head>"
+                    f'<meta name="kesher:content-sha256" content="{source_a["content_sha256"]}">'
+                    "</head><h1>התמודדות עם תחושת החמצה ברווקות מאוחרת</h1></html>"
+                )
 
         controller = runtime.RuntimeV5Controller(
             gh,
@@ -116,18 +126,33 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
             now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
         )
 
-        # 1. Matches post-b by explicit row slug
-        state_b = {
+        # Manual/editorial backlog identity is not adoptable from slug alone.
+        weak_manual_state = {
             "backlog": [{
                 "cycle": "2026-08-19",
                 "article": {"slug": "post-b"},
             }]
         }
+        row, source = controller._published_backlog_source(weak_manual_state)
+        self.assertIsNone(row)
+        self.assertIsNone(source)
+
+        # Exact immutable slug + content SHA may adopt the explicit manual source.
+        state_b = {
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "article": {
+                    "slug": "post-b",
+                    "quality_content_sha256": source_b["content_sha256"],
+                },
+            }]
+        }
         row, source = controller._published_backlog_source(state_b)
         self.assertIsNotNone(row)
         self.assertEqual(source["slug"], "post-b")
+        self.assertEqual(source["content_sha256"], source_b["content_sha256"])
 
-        # 2. Matches post-a by controllerManaged when no slug specified
+        # A single controller-managed source remains deterministic without a saved slug.
         state_no_slug = {
             "backlog": [{
                 "cycle": "2026-08-19",
@@ -137,6 +162,34 @@ class V5BacklogMediaRecoveryTests(unittest.TestCase):
         row, source = controller._published_backlog_source(state_no_slug)
         self.assertIsNotNone(row)
         self.assertEqual(source["slug"], "post-a")
+        self.assertEqual(source["content_sha256"], source_a["content_sha256"])
+
+    def test_published_backlog_source_rejects_title_only_public_page(self):
+        gh = FakeGitHub()
+        post = prior_article()
+        post["controllerManaged"] = True
+        gh.posts = [post]
+
+        class TitleOnlySite:
+            def get(self, url):
+                return 200, "<html><h1>התמודדות עם תחושת החמצה ברווקות מאוחרת</h1></html>"
+
+        controller = runtime.RuntimeV5Controller(
+            gh,
+            TitleOnlySite(),
+            now=datetime(2026, 8, 20, 0, 40, tzinfo=TZ),
+        )
+        state = {
+            "backlog": [{
+                "cycle": "2026-08-19",
+                "article": {"slug": post["slug"]},
+            }]
+        }
+
+        row, source = controller._published_backlog_source(state)
+
+        self.assertIsNone(row)
+        self.assertIsNone(source)
 
     def test_exact_seed_selection_is_slug_and_hash_bound(self):
         old_post = prior_article()

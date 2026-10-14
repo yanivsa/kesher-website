@@ -180,7 +180,12 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             source = v5.article_source_identity(post)
             url = f"{v5.core.SITE_URL}/blog/{source['slug']}"
             status, body = self.site.get(url)
-            if status != 200 or not v5.core.article_is_public(body, str(post.get("title") or "")):
+            if status != 200 or not v5.core.article_is_public(
+                body,
+                str(post.get("title") or ""),
+                source["slug"],
+                source["content_sha256"],
+            ):
                 continue
             media.update({
                 "source_slug": source["slug"],
@@ -291,6 +296,13 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
                 media["last_error"] = "SHORT_SIGNATURE_ASSET_MISSING"
                 return v5.core.Action("blocked", "prior-cycle Short signature asset is missing")
 
+            gate_error = self._short_dispatch_gate_error(source, long_verified)
+            if gate_error is not None:
+                code, message = gate_error
+                media["short_status"] = "blocked"
+                media["last_error"] = code
+                return v5.core.Action("blocked", message)
+
             count = int(media.get("short_dispatch_count") or 0)
             if count >= MAX_BACKLOG_SHORT_DISPATCHES:
                 media["short_status"] = "exhausted"
@@ -301,6 +313,7 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
                 "operation": "derive",
                 "derive_slug": source["slug"],
                 "derive_content_sha256": source["content_sha256"],
+                "derive_long_item_id": str(long_verified.get("id") or ""),
             }
             self._dispatch_worker(v5.SHORT_WORKFLOW, inputs)
             media.update({

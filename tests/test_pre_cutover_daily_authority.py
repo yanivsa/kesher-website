@@ -26,6 +26,14 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS_DIR = ROOT / ".github" / "workflows"
 
 
+def public_article_html(post: dict) -> str:
+    source = v5.article_source_identity(post)
+    return (
+        f'<html><head><meta name="kesher:content-sha256" content="{source["content_sha256"]}"></head>'
+        f'<body><h1>{post["title"]}</h1>{post.get("content") or ""}</body></html>'
+    )
+
+
 class PreCutoverDailyAuthorityTests(unittest.TestCase):
     WORKER_WORKFLOWS = (
         "kesher-article-generation.yml",
@@ -395,7 +403,9 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         gh = BacklogGitHub()
         site = mock.Mock()
         site.get.side_effect = lambda url: (
-            (200, f"<html>{today_post['title']} {oct6_post['title']}</html>")
+            (200, public_article_html(today_post))
+            if url.endswith(today_source["slug"])
+            else (200, public_article_html(oct6_post))
         )
 
         # Instantiate StabilizedRuntimeV5Controller directly without mutating global v5.V5Controller
@@ -891,6 +901,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
     # Requirement 4: First-Wakeup State Rollover Simulation from Exact Live Frozen State (2026-10-04 -> 2026-10-12)
     def test_first_wakeup_rollover_from_frozen_2026_10_04_state_through_full_daily_lifecycle(self) -> None:
         posts_historical = json.loads((ROOT / "src" / "data" / "posts.json").read_text(encoding="utf-8"))
+        posts_historical = [p for p in posts_historical if p.get("date") < "2026-10-13"]
         posts_recent = json.loads((ROOT / "src" / "data" / "postsRecent.json").read_text(encoding="utf-8"))
 
         frozen_2026_10_04_state = {
@@ -1090,9 +1101,10 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         oct6_post = next(p for p in posts_recent if p.get("date") == "2026-10-06")
         oct6_source = v5.article_source_identity(oct6_post)
         site = mock.Mock()
-        site.get.return_value = (
-            200,
-            f"<html><h1>{real_oct12_post['title']}</h1><h2>{oct6_post['title']}</h2></html>",
+        site.get.side_effect = lambda url: (
+            (200, public_article_html(real_oct12_post))
+            if url.endswith(real_oct12_source["slug"])
+            else (200, public_article_html(oct6_post))
         )
         ctrl_0036 = stabilized.StabilizedRuntimeV5Controller(
             gh,
@@ -1400,8 +1412,8 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         with self.assertRaisesRegex(ArticleNormalizationError, "already exists in main"):
             normalized_posts(posts_historical, dup_slug_article, recent_posts=posts_recent)
 
-        # Duplicate adoptable slot against posts.json (2026-10-12) or postsRecent.json (2026-10-10) must fail closed
-        for occupied_date in ("2026-10-10", "2026-10-12"):
+        # Duplicate adoptable slot against posts.json (2026-10-12, 2026-10-13) or postsRecent.json (2026-10-10) must fail closed
+        for occupied_date in ("2026-10-10", "2026-10-12", "2026-10-13"):
             dup_slot_article = copy.deepcopy(posts_recent[0])
             dup_slot_article["id"] = f"different-slug-on-{occupied_date}"
             dup_slot_article["slug"] = f"different-slug-on-{occupied_date}"
@@ -1409,30 +1421,31 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             with self.assertRaisesRegex(ArticleNormalizationError, "publication slot already exists in main"):
                 normalized_posts(posts_historical, dup_slot_article, recent_posts=posts_recent)
 
-        # Valid new article on 2026-10-13 normalizes into posts.json and leaves postsRecent.json untouched
+        # Valid new article on unoccupied slot (2026-10-14) normalizes into posts.json and leaves postsRecent.json untouched
         valid_new = copy.deepcopy(posts_recent[0])
         valid_new.update(
             {
-                "id": "valid-2026-10-13-article",
-                "slug": "valid-2026-10-13-article",
-                "date": "2026-10-13",
+                "id": "valid-2026-10-14-article",
+                "slug": "valid-2026-10-14-article",
+                "date": "2026-10-14",
             }
         )
         extracted = extract_target_article(
             posts_historical,
             [valid_new, *posts_historical],
-            "2026-10-13",
+            "2026-10-14",
             recent_posts=posts_recent,
         )
-        self.assertEqual(extracted["id"], "valid-2026-10-13-article")
+        self.assertEqual(extracted["id"], "valid-2026-10-14-article")
         norm = normalized_posts(posts_historical, extracted, recent_posts=posts_recent)
-        self.assertEqual(norm[0]["id"], "valid-2026-10-13-article")
+        self.assertEqual(norm[0]["id"], "valid-2026-10-14-article")
         self.assertEqual(len(norm), len(posts_historical) + 1)
         self.assertEqual(posts_recent, recent_before)
 
     # Requirements 6, 8, 11, 12, 13, 14: Adversarial regression coverage (20 scenarios)
     def test_adversarial_regression_matrix_and_event_semantics(self) -> None:
         posts_historical = json.loads((ROOT / "src" / "data" / "posts.json").read_text(encoding="utf-8"))
+        posts_historical = [p for p in posts_historical if p.get("date") < "2026-10-13"]
         posts_recent = json.loads((ROOT / "src" / "data" / "postsRecent.json").read_text(encoding="utf-8"))
 
         # Case 20 & Req 6: workflow_run triggered by an irrelevant workflow is denied at bridge_admission and no-op at controller tick
@@ -1593,7 +1606,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 pending_dispatches.append((workflow, inputs or {}))
 
         live_site = mock.Mock()
-        live_site.get.return_value = (200, f"<html>{oct12_post['title']}</html>")
+        live_site.get.return_value = (200, public_article_html(oct12_post))
         p_gh = PendingProviderGitHub()
         for offset_min in (5, 10, 15):
             p_ctrl = stabilized.StabilizedRuntimeV5Controller(
@@ -1831,9 +1844,9 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
 
         site = mock.Mock()
         site.get.side_effect = lambda url: (
-            (200, f"<h1>{oct12_post['title']}</h1><article>{oct12_post['content']}</article>")
+            (200, public_article_html(oct12_post))
             if url.endswith(oct12_source["slug"])
-            else (200, f"<h1>{sep14_post['title']}</h1><article>{sep14_post['content']}</article>")
+            else (200, public_article_html(sep14_post))
         )
 
         gh = LiveSimGitHub()
@@ -1913,6 +1926,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         # 4. E2E progression driven strictly by explicit GITHUB_TOKEN child -> controller workflow_dispatch wake-up
         # (simulating lost workflow_run due to GitHub anti-recursion)
         posts_historical = json.loads((ROOT / "src" / "data" / "posts.json").read_text(encoding="utf-8"))
+        posts_historical = [p for p in posts_historical if p.get("date") < "2026-10-13"]
         posts_recent = json.loads((ROOT / "src" / "data" / "postsRecent.json").read_text(encoding="utf-8"))
         oct12_post = next(p for p in posts_historical if p.get("date") == "2026-10-12")
         oct13_post = copy.deepcopy(oct12_post)
@@ -2067,7 +2081,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         article_live = {"ready": False}
         sim_site = mock.Mock()
         sim_site.get.side_effect = lambda url: (
-            (200, f"<h1>{oct13_post['title']}</h1><article>{oct13_post['content']}</article>")
+            (200, public_article_html(oct13_post))
             if article_live["ready"] and url.endswith(oct13_source["slug"])
             else (404, "not found")
         )
@@ -2267,6 +2281,627 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         self.assertEqual(act_late_hb.kind, "complete")
         self.assertEqual(sim_gh.dispatches, [])
 
+    def test_adversarial_incident_2026_10_13_and_sixteen_invariants(self) -> None:
+        """Adversarial validation of all 16 requirements and the 2026-10-13 incident fixture."""
+        from tests.test_media_provenance_contract import audio_fixture, bound_short
+
+        incident_slug = "when-everyone-around-you-gets-married"
+        incident_sha = "667857b17833c378ca3a8f4614b8934c04744d201a53761b781b331b921125e3"
+        incident_long_item_id = "video-20261013-070058-667857b178"
+        incident_task_id = "0bb84c8b-d3b8-4163-be0c-6aa240ba5172"
+        sig_sha = hashlib.sha256((ROOT / "public/images/signature/signature-mask.svg").read_bytes()).hexdigest()
+
+        posts_all = json.loads((ROOT / "src" / "data" / "posts.json").read_text(encoding="utf-8"))
+        posts_recent = json.loads((ROOT / "src" / "data" / "postsRecent.json").read_text(encoding="utf-8"))
+        exact_article = next((p for p in posts_all if p.get("slug") == incident_slug), None)
+        self.assertIsNotNone(exact_article, "Incident article must exist in posts.json")
+
+        class AdversarialIncidentGitHub:
+            api = "https://api.github.test/repos/yanivsa/kesher-website"
+
+            def __init__(self) -> None:
+                self.state = {
+                    "schema_version": 5,
+                    "cycle": "2026-10-13",
+                    "status": "article_running",
+                    "article": {
+                        "attempts": 3,
+                        "deploy_attempts": 0,
+                        "same_failure_streak": 3,
+                        "last_error": "ARTICLE_ATTEMPTS_EXHAUSTED",
+                        "last_worker_result": {"outcome": "ARTICLE_ALREADY_PUBLISHED"},
+                    },
+                    "long_video": {
+                        "attempts": 0,
+                        "status": "not_started",
+                    },
+                    "short": {
+                        "attempts": 0,
+                        "status": "not_started",
+                    },
+                    "backlog": [],
+                }
+                self.dispatches: list[tuple[str, dict]] = []
+                self.workflow_runs_history: list[dict] = []
+                self.video_items: list[dict] = []
+                self.short_items: list[dict] = []
+                self.saved_states: list[dict] = []
+
+            def request(self, method: str, path: str, body=None, allow_404: bool = False):
+                if method == "GET" and "/actions/artifacts" in path:
+                    return {"artifacts": []}
+                if method == "POST" and "/dispatches" in path:
+                    wf = urllib.parse.unquote(path.split("/actions/workflows/")[1].split("/dispatches")[0])
+                    inputs = copy.deepcopy((body or {}).get("inputs") or {})
+                    self.dispatches.append((wf, inputs))
+                    return {}
+                return {}
+
+            def load_controller_state(self):
+                return copy.deepcopy(self.state)
+
+            def save_controller_state(self, state):
+                self.state = copy.deepcopy(state)
+                self.saved_states.append(copy.deepcopy(state))
+
+            def contents_json(self, path: str, ref: str = "main"):
+                if path == "src/data/posts.json":
+                    return copy.deepcopy(posts_all)
+                if path == "src/data/postsRecent.json":
+                    return copy.deepcopy(posts_recent)
+                raise AssertionError(path)
+
+            def open_article_prs(self, slot=None):
+                return []
+
+            def active_workflow_run(self, workflow, production_only=False):
+                return None
+
+            def newest_video_state(self):
+                return {"version": 1, "items": copy.deepcopy(self.video_items)}
+
+            def newest_short_state(self):
+                return {"version": 1, "items": copy.deepcopy(self.short_items)}
+
+            def workflow_runs(self, workflow):
+                return copy.deepcopy(self.workflow_runs_history)
+
+            def dispatch(self, workflow: str, inputs: dict | None = None):
+                self.dispatches.append((workflow, copy.deepcopy(inputs or {})))
+
+        adv_gh = AdversarialIncidentGitHub()
+        adv_site = mock.Mock()
+        article_live_flag = {"live": True}
+        adv_site.get.side_effect = lambda url: (
+            (200, public_article_html(exact_article))
+            if article_live_flag["live"] and url.endswith(incident_slug)
+            else (404, "not found")
+        )
+
+        def tick_ctrl(now_dt: dt.datetime, **env_vars):
+            env = self._controller_env("workflow_dispatch" if env_vars else "schedule")
+            env["KESHER_TRIGGER_EVENT"] = env["GITHUB_EVENT_NAME"]
+            env.update(env_vars)
+            bridge_admission.require_invocation(env, controller=True)
+            with mock.patch.dict(os.environ, env, clear=False):
+                return stabilized.StabilizedRuntimeV5Controller(adv_gh, adv_site, now=now_dt).tick()
+
+        # Invariant 1 & 2: Existing article adopted, strikes cleared, ZERO article generation
+        st1, act1 = tick_ctrl(dt.datetime(2026, 10, 13, 0, 36, tzinfo=core.ISRAEL_TZ))
+        self.assertEqual(st1["article"]["slug"], incident_slug)
+        self.assertEqual(st1["article"]["quality_content_sha256"], incident_sha)
+        self.assertEqual(st1["article"]["attempts"], 0)
+        self.assertEqual(st1["article"]["same_failure_streak"], 0)
+        self.assertIsNone(st1.get("last_error"))
+        article_gen_dispatches = [w for w, _ in adv_gh.dispatches if w == core.ARTICLE_WORKFLOW]
+        self.assertEqual(article_gen_dispatches, [])
+        self.assertEqual(len(adv_gh.dispatches), 1)
+        self.assertEqual(adv_gh.dispatches[0][0], v5.LONG_VIDEO_WORKFLOW)
+        self.assertEqual(adv_gh.dispatches[0][1]["target_slug"], incident_slug)
+        self.assertEqual(adv_gh.dispatches[0][1]["target_content_sha256"], incident_sha)
+
+        # Invariant 3 & 4: Worker finished green while provider is GENERATION_PENDING
+        # Long Video is NOT complete, next heartbeats resume/wait, ZERO new Long generation
+        adv_gh.dispatches.clear()
+        adv_gh.video_items = [{
+            "id": incident_long_item_id,
+            "type": "video_overview",
+            "status": "generating",
+            "uploaded": False,
+            "task_id": incident_task_id,
+            "artifact_id": incident_task_id,
+            "source_id": "src-1013",
+            "created_at": "2026-10-13T07:00:58+00:00",
+            "generation_started_at": "2026-10-13T07:00:58+00:00",
+            "source": {"slug": incident_slug, "content_sha256": incident_sha},
+        }]
+
+        st2, act2 = tick_ctrl(
+            dt.datetime(2026, 10, 13, 0, 42, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Kesher Daily NotebookLM Video Overview",
+            KESHER_CHILD_RUN_ID="801",
+            KESHER_CHILD_CONCLUSION="success",
+            KESHER_CHILD_SOURCE_SLUG=incident_slug,
+            KESHER_CHILD_SLOT="2026-10-13",
+        )
+        self.assertEqual(act2.kind, "wait")
+        self.assertIn("long_video provider pending", act2.reason)
+        self.assertEqual(st2["long_video"]["status"], "generating")
+        self.assertFalse(st2["long_video"].get("verified", False))
+        self.assertEqual(st2["long_video"]["item_id"], incident_long_item_id)
+        self.assertEqual(st2["long_video"]["task_id"], incident_task_id)
+        self.assertEqual(adv_gh.dispatches, [])
+
+        # Invariant 5: Short gate fails closed while Long is pending
+        self.assertEqual([w for w, _ in adv_gh.dispatches if w == v5.SHORT_WORKFLOW], [])
+
+        # Invariant 6: Empty derive_slug or derive_content_sha256 fails closed
+        ctrl_direct = stabilized.StabilizedRuntimeV5Controller(adv_gh, adv_site, now=dt.datetime(2026, 10, 13, 0, 43, tzinfo=core.ISRAEL_TZ))
+        with self.assertRaises(core.ControllerError) as cm:
+            ctrl_direct._guarded_dispatch(st2, v5.SHORT_WORKFLOW, {"derive_slug": "", "derive_content_sha256": ""}, lambda w, i: None)
+        self.assertIn("SHORT_SOURCE_IDENTITY_MISSING", str(cm.exception))
+
+        # Invariant 7: Child completion notification is wake-up only; cannot forge Long complete
+        st3, act3 = tick_ctrl(
+            dt.datetime(2026, 10, 13, 0, 45, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Kesher Daily NotebookLM Video Overview",
+            KESHER_CHILD_RUN_ID="802",
+            KESHER_CHILD_CONCLUSION="success",
+            KESHER_CHILD_SOURCE_SLUG=incident_slug,
+            KESHER_CHILD_SLOT="2026-10-13",
+        )
+        self.assertEqual(act3.kind, "wait")
+        self.assertEqual(st3["long_video"]["status"], "generating")
+        self.assertFalse(st3["long_video"].get("verified", False))
+
+        # Invariant 14: Malformed notification rejected without mutating state
+        saved_before = copy.deepcopy(st3)
+        st_bad, act_bad = tick_ctrl(
+            dt.datetime(2026, 10, 13, 0, 46, tzinfo=core.ISRAEL_TZ),
+            KESHER_CHILD_WORKFLOW="Kesher Daily NotebookLM Video Overview",
+            KESHER_CHILD_RUN_ID="not-a-number",
+            KESHER_CHILD_CONCLUSION="success",
+            KESHER_CHILD_SLOT="2026-10-13",
+        )
+        self.assertEqual(st_bad["last_child_notification"], saved_before.get("last_child_notification"))
+
+        # Invariant 11: Uploaded but unverified Long Video re-verifies via operation="upload"
+        adv_gh.video_items = [{
+            "id": incident_long_item_id,
+            "type": "video_overview",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "yt-incident-long-123",
+            "youtube_url": "https://www.youtube.com/watch?v=yt-incident-long-123",
+            "task_id": incident_task_id,
+            "artifact_id": incident_task_id,
+            "source": {"slug": incident_slug, "content_sha256": incident_sha},
+        }]
+        adv_gh.dispatches.clear()
+        st4, act4 = tick_ctrl(dt.datetime(2026, 10, 13, 0, 48, tzinfo=core.ISRAEL_TZ))
+        self.assertEqual(len(adv_gh.dispatches), 1)
+        self.assertEqual(adv_gh.dispatches[0][0], v5.LONG_VIDEO_WORKFLOW)
+        self.assertEqual(adv_gh.dispatches[0][1]["operation"], "upload")
+        self.assertEqual(adv_gh.dispatches[0][1]["target_item_id"], incident_long_item_id)
+
+        # Invariant 12: Media classification contract for uploaded-unverified vs verified
+        from scripts.kesher_video_reconcile import (
+            is_verified_public_overview,
+            is_uploaded_unverified_overview,
+        )
+        source_id_dict = {"slug": incident_slug, "content_sha256": incident_sha}
+        self.assertTrue(is_uploaded_unverified_overview(adv_gh.video_items[0], source_id_dict))
+        self.assertFalse(is_verified_public_overview(adv_gh.video_items[0], source_id_dict))
+
+        # Now Long Video becomes verified
+        long_dur = 125.0
+        adv_gh.video_items = [{
+            "id": incident_long_item_id,
+            "type": "video_overview",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "yt-incident-long-123",
+            "youtube_url": "https://www.youtube.com/watch?v=yt-incident-long-123",
+            "task_id": incident_task_id,
+            "artifact_id": incident_task_id,
+            "raw_sha256": "e" * 64,
+            "final_sha256": "a" * 64,
+            "audio_provenance": audio_fixture("e" * 64, "a" * 64, long_dur),
+            "provider_raw_media": {"width": 1280, "height": 720, "duration": long_dur, "audio_codec": "aac"},
+            "technical_verified": True,
+            "visual_pipeline": "remotion-v1-notebooklm-audio",
+            "media": {"codec": "h264", "audio_codec": "aac", "width": 1280, "height": 720, "duration": long_dur},
+            "content_duration_seconds": long_dur,
+            "signature_duration_seconds": 3.0,
+            "signature_overlay": True,
+            "signature_fullscreen": True,
+            "signature_verified": True,
+            "signature_sha256": sig_sha,
+            "signature_asset_sha256": sig_sha,
+            "signature_video_sha256": "8" * 64,
+            "signature_provenance": {
+                "schema_version": 1,
+                "final_sha256": "a" * 64,
+                "raw_sha256": "e" * 64,
+                "asset_sha256": sig_sha,
+                "segment_sha256": "8" * 64,
+                "source_duration_seconds": long_dur,
+                "final_duration_seconds": long_dur,
+                "start_seconds": long_dur - 3.0,
+                "end_seconds": long_dur,
+                "audio_source_sha256": "e" * 64,
+            },
+            "source": {"slug": incident_slug, "content_sha256": incident_sha},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }]
+
+        # Long is now verified -> Advances to Short!
+        adv_gh.dispatches.clear()
+        st5, act5 = tick_ctrl(dt.datetime(2026, 10, 13, 0, 50, tzinfo=core.ISRAEL_TZ))
+        self.assertEqual(len(adv_gh.dispatches), 1)
+        self.assertEqual(adv_gh.dispatches[0][0], v5.SHORT_WORKFLOW)
+        short_inputs = adv_gh.dispatches[0][1]
+        self.assertEqual(short_inputs["derive_slug"], incident_slug)
+        self.assertEqual(short_inputs["derive_content_sha256"], incident_sha)
+        self.assertEqual(short_inputs["derive_long_item_id"], incident_long_item_id)
+
+        # Invariant 9: Duplicate / racing heartbeat within visibility lag is suppressed
+        adv_gh.workflow_runs_history = [{
+            "id": 999,
+            "event": "workflow_dispatch",
+            "status": "queued",
+            "created_at": "2026-10-13T00:50:10+00:00",
+        }]
+        adv_gh.dispatches.clear()
+        st_racing, act_racing = tick_ctrl(dt.datetime(2026, 10, 13, 0, 50, 20, tzinfo=core.ISRAEL_TZ))
+        self.assertEqual(adv_gh.dispatches, [])
+        self.assertEqual(act_racing.kind, "wait")
+        self.assertIn("suppressing duplicate dispatch", act_racing.reason)
+
+        # Short completes and verifies -> Entire cycle COMPLETE!
+        short_fixture = {
+            **bound_short(45.0),
+            "id": "video-20261013-090000-short1013",
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "yt-incident-short-456",
+            "youtube_url": "https://youtu.be/yt-incident-short-456",
+            "source": {"slug": incident_slug, "content_sha256": incident_sha},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+        adv_gh.short_items = [short_fixture]
+        adv_gh.dispatches.clear()
+        st_final, act_final = tick_ctrl(dt.datetime(2026, 10, 13, 1, 0, tzinfo=core.ISRAEL_TZ))
+        self.assertEqual(act_final.kind, "complete")
+        self.assertEqual(st_final["status"], "complete")
+        self.assertEqual(adv_gh.dispatches, [])
+        self.assertTrue(st_final["deliverables"]["overview_edit_verified"])
+        self.assertTrue(st_final["deliverables"]["short_portrait_verified"])
+        self.assertTrue(st_final["deliverables"]["short_origin_verified"])
+
+    def test_incident_20261013_article_404_deploy_gate_and_exact_resumption(self):
+        """Regression test for incident 2026-10-13 covering all 10 production contracts.
+
+        Fixture:
+        Article slug: 'when-everyone-around-you-gets-married'
+        Article SHA: '667857b17833c378ca3a8f4614b8934c04744d201a53761b781b331b921125e3'
+        Exact Long item: 'video-20261013-070058-667857b178'
+        Provider task: '0bb84c8b-d3b8-4163-be0c-6aa240ba5172' (GENERATION_PENDING)
+        """
+        slug = "when-everyone-around-you-gets-married"
+        sha = "667857b17833c378ca3a8f4614b8934c04744d201a53761b781b331b921125e3"
+        long_item_id = "video-20261013-070058-667857b178"
+        provider_task_id = "0bb84c8b-d3b8-4163-be0c-6aa240ba5172"
+        date_str = "2026-10-13"
+
+        post_fixture = {
+            "id": slug,
+            "slug": slug,
+            "title": "כשכולם מסביב מתחתנים: איך להתמודד עם הלחץ החברתי בלי לאבד את עצמך",
+            "excerpt": "כולם מתחתנים מסביבך? איך לא להישבר מהלחץ החברתי.",
+            "content": f"<p>מאמר מלא ומקצועי על התמודדות עם לחץ חברתי בזוגיות ונישואין.</p><meta name='kesher:content-sha256' content='{sha}' />",
+            "category": "זוגיות",
+            "subcategory": "רווקות ולחץ חברתי",
+            "date": date_str,
+            "updatedAt": date_str,
+            "author": "שירה סהרוני",
+            "image": f"/images/generated/blog/{slug}.webp",
+            "imageAlt": "רווקות ולחץ חברתי",
+        }
+        computed_sha = v5.article_source_identity(post_fixture)["content_sha256"]
+        post_fixture["content"] = f"<p>מאמר מלא ומקצועי על התמודדות עם לחץ חברתי בזוגיות ונישואין.</p><meta name='kesher:content-sha256' content='{computed_sha}' />"
+        source = v5.article_source_identity(post_fixture)
+        exact_sha = source["content_sha256"]
+
+        exact_long_item = {
+            "id": long_item_id,
+            "type": "video_overview",
+            "status": "generating",
+            "task_id": provider_task_id,
+            "source_id": provider_task_id,
+            "artifact_id": provider_task_id,
+            "created_at": "2026-10-13T07:00:58+00:00",
+            "generation_started_at": "2026-10-13T07:00:58+00:00",
+            "source": {"slug": slug, "content_sha256": exact_sha},
+        }
+
+        class MockGH:
+            api = "https://api.github.test/repos/yanivsa/kesher-website"
+
+            def __init__(self):
+                self.saved_state = {
+                    "schema_version": 5,
+                    "cycle": date_str,
+                    "status": "blocked",
+                    "article": {
+                        "status": "exhausted",
+                        "attempts": 3,
+                        "attempt_count": 3,
+                        "last_error": "ARTICLE_ATTEMPTS_EXHAUSTED",
+                    },
+                    "image": {
+                        "status": "failed",
+                        "last_error": "IMAGE_OUTPUT_MISSING",
+                    },
+                    "last_error": {
+                        "stage": "article",
+                        "code": "ARTICLE_ATTEMPTS_EXHAUSTED",
+                        "message": "article worker attempts exhausted",
+                    },
+                    "long_video": {
+                        "status": "generating",
+                        "item_id": long_item_id,
+                        "provider_id": provider_task_id,
+                    },
+                    "short": {},
+                }
+                self.dispatches: list[tuple[str, dict]] = []
+                self.active_runs: dict[str, dict] = {}
+                self.runs_history: list[dict] = []
+                self.video_items = [copy.deepcopy(exact_long_item)]
+                self.short_items: list[dict] = []
+
+            def request(self, method: str, path: str, body=None, allow_404: bool = False):
+                if method == "GET" and "/actions/artifacts" in path:
+                    return {"artifacts": []}
+                if method == "POST" and "/dispatches" in path:
+                    wf = urllib.parse.unquote(path.split("/actions/workflows/")[1].split("/dispatches")[0])
+                    inputs = copy.deepcopy((body or {}).get("inputs") or {})
+                    self.dispatches.append((wf, inputs))
+                    return {}
+                return {}
+
+            def load_controller_state(self):
+                return copy.deepcopy(self.saved_state)
+
+            def save_controller_state(self, state):
+                self.saved_state = copy.deepcopy(state)
+
+            def posts_on_main(self, ref: str = "main"):
+                return [copy.deepcopy(post_fixture)]
+
+            def newest_video_state(self):
+                return {"version": 1, "items": copy.deepcopy(self.video_items)}
+
+            def newest_short_state(self):
+                return {"version": 1, "items": copy.deepcopy(self.short_items)}
+
+            def active_workflow_run(self, workflow: str, production_only: bool = True):
+                return self.active_runs.get(workflow)
+
+            def workflow_runs(self, workflow: str):
+                return self.runs_history
+
+            def dispatch(self, workflow: str, inputs: dict | None = None):
+                self.dispatches.append((workflow, inputs or {}))
+
+        site_urls_status: dict[str, tuple[int, str]] = {}
+        mock_site = mock.Mock()
+        mock_site.get.side_effect = lambda u: site_urls_status.get(u, (404, "<html>404 Not Found</html>"))
+
+        gh = MockGH()
+        article_url = f"{core.SITE_URL}/blog/{slug}"
+        blog_list_url = f"{core.SITE_URL}/blog"
+
+        # Case 1: Article exists in main, controller is stale/exhausted, production returns 404:
+        # - ZERO Article Generation dispatches
+        # - adopt existing article
+        # - stale exhaustion no longer blocks recovery
+        # - exactly one Deploy logical dispatch
+        # - Long is NOT advanced / touched while article is 404
+        ctrl = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock_site, now=dt.datetime(2026, 10, 13, 7, 5, tzinfo=core.ISRAEL_TZ)
+        )
+        st1, act1 = ctrl.tick()
+        self.assertEqual(act1.kind, "dispatch_deploy")
+        self.assertEqual([w for w, _ in gh.dispatches if w == core.ARTICLE_WORKFLOW], [])
+        self.assertEqual([w for w, _ in gh.dispatches if w == v5.LONG_VIDEO_WORKFLOW], [])
+        self.assertEqual([w for w, _ in gh.dispatches if w == v5.SHORT_WORKFLOW], [])
+        self.assertEqual([w for w, _ in gh.dispatches if w == core.DEPLOY_WORKFLOW], [core.DEPLOY_WORKFLOW])
+        self.assertEqual(st1["article"]["slug"], slug)
+        self.assertEqual(st1["article"]["attempts"], 0)
+        self.assertFalse(st1["article"].get("live"))
+        self.assertIsNone(st1.get("last_error"))
+        self.assertEqual(st1["status"], "article_deploying")
+
+        # Case 2: Same state, but Deploy workflow is already queued/in_progress:
+        # - ZERO duplicate Deploy dispatch
+        gh.dispatches.clear()
+        gh.active_runs[core.DEPLOY_WORKFLOW] = {"id": 112233, "status": "in_progress"}
+        ctrl2 = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock_site, now=dt.datetime(2026, 10, 13, 7, 6, tzinfo=core.ISRAEL_TZ)
+        )
+        st2, act2 = ctrl2.tick()
+        self.assertEqual(act2.kind, "wait")
+        self.assertEqual(act2.reason, "deployment active")
+        self.assertEqual(gh.dispatches, [])
+        self.assertFalse(st2["article"].get("live"))
+
+        # Case 3: Deploy POST response is lost / GitHub Actions run is not visible yet:
+        # - durable pending_dispatches intent prevents blind second dispatch
+        gh.active_runs.clear()
+        st2["pending_dispatches"] = {
+            core.DEPLOY_WORKFLOW: {
+                "workflow": core.DEPLOY_WORKFLOW,
+                "cycle": date_str,
+                "intent_at": "2026-10-13T07:06:00+00:00",
+                "dispatched_at": "2026-10-13T07:06:00+00:00",
+                "status": "dispatched",
+                "inputs": {},
+            }
+        }
+        gh.saved_state = copy.deepcopy(st2)
+        gh.dispatches.clear()
+        ctrl3 = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock_site, now=dt.datetime(2026, 10, 13, 7, 7, tzinfo=core.ISRAEL_TZ)
+        )
+        st3, act3 = ctrl3.tick()
+        self.assertEqual(act3.kind, "wait")
+        self.assertEqual(gh.dispatches, [])
+
+        # Case 4: Deploy completed successfully but completion notification was lost:
+        # - later heartbeat reconciles using GitHub/public evidence; no second deploy solely because callback was lost
+        st3.pop("pending_dispatches", None)
+        st3["article"]["next_deploy_retry_at"] = "2026-10-13T07:15:00+00:00"
+        gh.saved_state = copy.deepcopy(st3)
+        gh.dispatches.clear()
+        ctrl4 = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock_site, now=dt.datetime(2026, 10, 13, 7, 8, tzinfo=core.ISRAEL_TZ)
+        )
+        st4, act4 = ctrl4.tick()
+        self.assertEqual(act4.kind, "wait")
+        self.assertIn("deploy retry scheduled", act4.reason)
+        self.assertEqual(gh.dispatches, [])
+
+        # Case 5: /blog returns 200 but exact article URL returns 404:
+        # - article is NOT considered public
+        site_urls_status[blog_list_url] = (200, "<html><title>בלוג קשר</title><body>רשימת מאמרים</body></html>")
+        site_urls_status[article_url] = (404, "<html>404 Not Found</html>")
+        st4["article"]["next_deploy_retry_at"] = None
+        gh.saved_state = copy.deepcopy(st4)
+        gh.dispatches.clear()
+        ctrl5 = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock_site, now=dt.datetime(2026, 10, 13, 7, 20, tzinfo=core.ISRAEL_TZ)
+        )
+        st5, act5 = ctrl5.tick()
+        self.assertFalse(st5["article"].get("live"))
+        self.assertEqual([w for w, _ in gh.dispatches if w == v5.LONG_VIDEO_WORKFLOW], [])
+        self.assertEqual([w for w, _ in gh.dispatches if w == v5.SHORT_WORKFLOW], [])
+
+        # Case 6: Exact article page returns 200 but deployed source/provenance does not match expected current-cycle identity:
+        # - do not advance
+        # 6a: Canonical points to wrong article
+        wrong_canonical_html = (
+            f"<html><head><title>{post_fixture['title']}</title>"
+            f"<link rel='canonical' href='{core.SITE_URL}/blog/other-article' />"
+            f"<meta name='kesher:content-sha256' content='{exact_sha}' />"
+            f"</head><body><h1>{post_fixture['title']}</h1></body></html>"
+        )
+        site_urls_status[article_url] = (200, wrong_canonical_html)
+        gh.dispatches.clear()
+        st5["article"]["next_deploy_retry_at"] = "2026-10-13T07:30:00+00:00"
+        gh.saved_state = copy.deepcopy(st5)
+        ctrl6a = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock_site, now=dt.datetime(2026, 10, 13, 7, 21, tzinfo=core.ISRAEL_TZ)
+        )
+        st6a, act6a = ctrl6a.tick()
+        self.assertFalse(st6a["article"].get("live"))
+        self.assertEqual([w for w, _ in gh.dispatches if w == v5.LONG_VIDEO_WORKFLOW], [])
+
+        # 6b: Meta content sha does not match
+        wrong_sha_html = (
+            f"<html><head><title>{post_fixture['title']}</title>"
+            f"<link rel='canonical' href='{article_url}' />"
+            f"<meta name='kesher:content-sha256' content='0000000000000000000000000000000000000000000000000000000000000000' />"
+            f"</head><body><h1>{post_fixture['title']}</h1></body></html>"
+        )
+        site_urls_status[article_url] = (200, wrong_sha_html)
+        gh.dispatches.clear()
+        ctrl6b = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock_site, now=dt.datetime(2026, 10, 13, 7, 22, tzinfo=core.ISRAEL_TZ)
+        )
+        st6b, act6b = ctrl6b.tick()
+        self.assertFalse(st6b["article"].get("live"))
+        self.assertEqual([w for w, _ in gh.dispatches if w == v5.LONG_VIDEO_WORKFLOW], [])
+
+        # Case 7 & Case 8: Exact article page + expected identity/provenance verified:
+        # - hero image contract: stale IMAGE_OUTPUT_MISSING cleared because post has valid image
+        # - article transitions to live
+        # - only then Long may resume
+        valid_html = (
+            f"<html><head><title>{post_fixture['title']}</title>"
+            f"<link rel='canonical' href='{article_url}' />"
+            f"<meta property='og:url' content='{article_url}' />"
+            f"<meta name='kesher:content-sha256' content='{exact_sha}' />"
+            f"</head><body><h1>{post_fixture['title']}</h1></body></html>"
+        )
+        site_urls_status[article_url] = (200, valid_html)
+        st6b["article"]["next_deploy_retry_at"] = None
+        gh.saved_state = copy.deepcopy(st6b)
+        gh.dispatches.clear()
+        ctrl7 = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock_site, now=dt.datetime(2026, 10, 13, 7, 25, tzinfo=core.ISRAEL_TZ)
+        )
+        st7, act7 = ctrl7.tick()
+        self.assertTrue(st7["article"].get("live"))
+        self.assertEqual(st7["image"]["status"], "complete")
+        self.assertIsNone(st7["image"].get("last_error"))
+        self.assertEqual(st7["image"]["image_path"], post_fixture["image"])
+
+        # Case 9: Long watchdog resumes exact pending item/task:
+        # - ZERO new Long generation dispatches
+        # - action waits on the same pending provider task
+        self.assertEqual(act7.kind, "wait")
+        self.assertEqual(act7.reason, "long_video provider pending under watchdog")
+        self.assertEqual([w for w, _ in gh.dispatches if w == v5.LONG_VIDEO_WORKFLOW], [])
+        self.assertEqual(st7["long_video"]["item_id"], long_item_id)
+        self.assertEqual(st7["long_video"]["provider_id"], provider_task_id)
+
+        # Case 10: Short gate:
+        # - ZERO Short dispatches until Long is public and verified
+        self.assertEqual([w for w, _ in gh.dispatches if w == v5.SHORT_WORKFLOW], [])
+
+        # Now Long Video finishes, uploads to YouTube and is verified:
+        verified_long_item = {
+            **exact_long_item,
+            "status": "uploaded",
+            "uploaded": True,
+            "youtube_id": "yt-incident-long-123",
+            "youtube_url": "https://youtu.be/yt-incident-long-123",
+            "technical_verified": True,
+            "visual_pipeline": "remotion",
+            "media": {"codec": "h264", "width": 1920, "height": 1080, "duration": 180.0},
+            "youtube_verification": {
+                "channel_id": core.YOUTUBE_CHANNEL_ID,
+                "privacy_status": "public",
+                "processing_status": "succeeded",
+            },
+        }
+        gh.video_items = [verified_long_item]
+        gh.saved_state = copy.deepcopy(st7)
+        gh.dispatches.clear()
+        ctrl10 = stabilized.StabilizedRuntimeV5Controller(
+            gh, mock_site, now=dt.datetime(2026, 10, 13, 7, 35, tzinfo=core.ISRAEL_TZ)
+        )
+        st10, act10 = ctrl10.tick()
+        # Now and ONLY NOW Short is dispatched from the verified Long Video!
+        self.assertEqual(len(gh.dispatches), 1)
+        self.assertEqual(gh.dispatches[0][0], v5.SHORT_WORKFLOW)
+        short_inputs = gh.dispatches[0][1]
+        self.assertEqual(short_inputs["derive_slug"], slug)
+        self.assertEqual(short_inputs["derive_content_sha256"], exact_sha)
+        self.assertEqual(short_inputs["derive_long_item_id"], long_item_id)
+
 
 if __name__ == "__main__":
     unittest.main()
+
+
