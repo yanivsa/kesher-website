@@ -175,22 +175,26 @@ def send_jules_repair_v3(
 ) -> bool:
     if image_only_errors(errors):
         print(
-            f"PR #{pr['number']} is waiting only for the trusted image stage; "
-            "no Jules content-repair attempt is consumed."
+            f"PR #{pr['number']} failed image gate; "
+            "no Jules content-repair attempt is consumed.",
+            file=sys.stderr,
         )
+        print("ARTICLE_IMAGE_GATE_FAILED", file=sys.stderr)
         return False
 
     number = int(pr["number"])
     head_sha = ((pr.get("head") or {}).get("sha") or "").lower()
     attempt, repaired_heads = core.existing_repair_attempts(repo, number, github_token)
-    if head_sha in repaired_heads:
-        print(f"Repair already requested for current head {head_sha}; waiting for Jules.")
-        return False
     if attempt >= MAX_REPAIRS:
         print(
             f"PR #{number} exhausted {MAX_TOTAL_CONTENT_ATTEMPTS} total article content attempts "
-            f"(initial + {MAX_REPAIRS} same-PR repairs)."
+            f"(initial + {MAX_REPAIRS} same-PR repairs).",
+            file=sys.stderr,
         )
+        print("ARTICLE_ATTEMPTS_EXHAUSTED", file=sys.stderr)
+        return False
+    if head_sha in repaired_heads:
+        print(f"Repair already requested for current head {head_sha}; waiting for Jules.", file=sys.stderr)
         return False
 
     body = pr.get("body") or ""

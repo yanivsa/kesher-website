@@ -308,7 +308,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
             )
         self.assertIsNone(candidate)
 
-    def test_local_image_can_be_reused_after_cooldown_below_use_cap(self):
+    def test_local_image_cannot_be_reused_after_cooldown_under_unique_only_policy(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_cooled_reuse_test")
         fake_data = fake_png()
         fake_sha = hashlib.sha256(fake_data).hexdigest()
@@ -331,9 +331,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
                 last_used={fake_sha: date.today() - timedelta(days=91)},
                 banned_paths=set(),
             )
-        self.assertIsNotNone(candidate)
-        assert candidate is not None
-        self.assertEqual(candidate.provider, "Local")
+        self.assertIsNone(candidate)
 
     def test_local_image_reuse_is_blocked_at_three_lifetime_uses(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_use_cap_test")

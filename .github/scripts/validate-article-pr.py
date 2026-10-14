@@ -77,13 +77,17 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader):
         return errors
 
     post = new_posts[0]
+    content_errors: list[str] = []
     count = word_count(post.get("content", ""))
     if not 700 <= count <= 1100:
-        errors.append(f"New article word count must be 700-1100, found {count}")
+        content_errors.append(f"New article word count must be 700-1100, found {count}")
     if len(re.findall(r"<h3(?:\s|>)", post.get("content", ""), re.I)) < 5:
-        errors.append("New article must contain at least five H3 sections")
+        content_errors.append("New article must contain at least five H3 sections")
     if post.get("video"):
-        errors.append("New article may not contain a video field")
+        content_errors.append("New article may not contain a video field")
+    if content_errors:
+        errors.extend(content_errors)
+        return errors
 
     # Pipeline v2 invariant: publication without an independently verified local
     # image is impossible. Provider outages must have been absorbed by the

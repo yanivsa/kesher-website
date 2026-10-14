@@ -6,8 +6,10 @@ from __future__ import annotations
 import copy
 import json
 import os
+import re
 import sys
 import urllib.parse
+from pathlib import Path
 
 if __package__:
     from . import article_claim_quality as quality
@@ -1351,7 +1353,89 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return
         return super()._dispatch_auto_merge_v4(state)
 
+    def _pr_repair_status(self, pr: dict[str, Any]) -> tuple[int, set[str]]:
+        number = int(pr.get("number") or 0)
+        api = getattr(self.github, "api", "")
+        req = getattr(self.github, "request", None)
+        if not number or not api or not callable(req):
+            return 0, set()
+        try:
+            comments = req("GET", f"{api}/issues/{number}/comments?per_page=100", allow_404=True)
+        except Exception:
+            return 0, set()
+        if not isinstance(comments, list):
+            return 0, set()
+        repair_marker = re.compile(r"<!-- kesher-article-repair attempt=(\d+) head=([a-f0-9]{40}) -->")
+        max_attempt = 0
+        repaired_heads: set[str] = set()
+        for comment in comments:
+            for match in repair_marker.finditer(str(comment.get("body") or "")):
+                max_attempt = max(max_attempt, int(match.group(1)))
+                repaired_heads.add(match.group(2).lower())
+        return max_attempt, repaired_heads
+
+    def _pr_content_structure_errors(self, pr: dict[str, Any]) -> list[str]:
+        head_sha = str((pr.get("head") or {}).get("sha") or "")
+        base_sha = str((pr.get("base") or {}).get("sha") or "main")
+        try:
+            head_posts = self.github.contents_json("src/data/posts.json", head_sha)
+            base_posts = self.github.contents_json("src/data/posts.json", base_sha)
+        except Exception:
+            return []
+        if not isinstance(head_posts, list) or not isinstance(base_posts, list):
+            return []
+        base_ids = {v5.core.canonical_slug(row) for row in base_posts if isinstance(row, dict)}
+        new_posts = [row for row in head_posts if isinstance(row, dict) and v5.core.canonical_slug(row) not in base_ids]
+        if len(new_posts) != 1:
+            return []
+        post = new_posts[0]
+        raw_content = str(post.get("content") or "")
+        errors = []
+        h3_count = len(re.findall(r"<h3(?:\s|>)", raw_content, re.I))
+        if h3_count < 5:
+            errors.append(f"New article must contain at least five H3 sections (found {h3_count})")
+        words = len([w for w in re.split(r"\s+", raw_content.strip()) if w])
+        if not (700 <= words <= 1100):
+            errors.append(f"New article word count must be 700-1100 (found {words})")
+        if post.get("video"):
+            errors.append("New article may not contain a video field")
+        return errors
+
     def _handle_open_article_pr(self, state, pr):
+        number = int(pr.get("number") or 0)
+        state.setdefault("article", {})["pr_number"] = number
+        state["article"]["pr_url"] = pr.get("html_url")
+        head_sha = str((pr.get("head") or {}).get("sha") or "").lower()
+
+        # 1. Cap auto-merge dispatches to budget (max 3 dispatches)
+        merge_dispatches = int(state["article"].get("merge_dispatch_count") or 0)
+        if merge_dispatches >= 3:
+            v5.core.block(
+                state,
+                "article",
+                "ARTICLE_ATTEMPTS_EXHAUSTED",
+                f"PR #{number} exceeded maximum auto-merge dispatch budget ({merge_dispatches} dispatches)",
+            )
+            state["article"]["status"] = "exhausted"
+            return v5.core.Action("blocked", f"auto-merge dispatch budget exhausted for PR #{number}")
+
+        # 2. Check if autonomous repairs on this PR are exhausted
+        max_attempt, repaired_heads = self._pr_repair_status(pr)
+        if max_attempt >= 2 and head_sha in repaired_heads:
+            v5.core.block(
+                state,
+                "article",
+                "ARTICLE_ATTEMPTS_EXHAUSTED",
+                f"PR #{number} exhausted 3 total article content attempts (initial + {max_attempt} repairs)",
+            )
+            state["article"]["status"] = "exhausted"
+            return v5.core.Action("blocked", f"article content attempts exhausted for PR #{number}")
+
+        # 3. Check if repair is actively in flight for current head
+        if head_sha in repaired_heads:
+            return v5.core.Action("wait", f"Jules text repair attempt {max_attempt} in flight for PR #{number}")
+
+        # 4. Normalization check
         if self._child_notification_env()["workflow"] == "Kesher Normalize Article PR":
             needs_normalization, _ = self.github.article_pr_normalization_required(pr)
             if needs_normalization:
@@ -1364,6 +1448,16 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     "wait",
                     "normalize child completed without clearing normalization; deferred to heartbeat",
                 )
+
+        # 5. Check content structure gates BEFORE consuming image attempts
+        content_errors = self._pr_content_structure_errors(pr)
+        if content_errors:
+            self._dispatch_auto_merge_v4(state)
+            return v5.core.Action(
+                "wait",
+                f"article PR #{number} has content errors: {' | '.join(content_errors)}; waiting for repair",
+            )
+
         return super()._handle_open_article_pr(state, pr)
 
     def tick(self):
