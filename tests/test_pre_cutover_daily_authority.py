@@ -1000,6 +1000,8 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 self.dispatches: list[tuple[str, dict]] = []
 
             def request(self, method: str, path: str, body=None, allow_404: bool = False):
+                if method == "GET" and "/comments" in path:
+                    return []
                 if method == "GET" and "/actions/artifacts" in path:
                     return {"artifacts": []}
                 if method == "POST" and "/dispatches" in path:
@@ -1011,7 +1013,21 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
 
             def contents_json(self, path: str, ref: str = "main"):
                 if path == "src/data/posts.json":
-                    return copy.deepcopy(self.posts)
+                    posts = copy.deepcopy(self.posts)
+                    for pr in self.open_prs:
+                        if ref == (pr.get("head") or {}).get("sha"):
+                            slug = pr.get("title", "").replace("Publish Kesher article: ", "").strip()
+                            if not any(core.canonical_slug(p) == slug for p in posts):
+                                posts.append({
+                                    "id": slug,
+                                    "slug": slug,
+                                    "title": slug,
+                                    "date": str(self.state.get("cycle") or "2026-10-13"),
+                                    "content": "".join(f"<h3>Heading {i}</h3>" + " word" * 160 for i in range(5)),
+                                    "image": f"/images/generated/blog/{slug}.jpg",
+                                    "imageAlt": "A detailed descriptive alt text for this test article.",
+                                })
+                    return posts
                 if path == "src/data/postsRecent.json":
                     return copy.deepcopy(self.recent_posts)
                 raise AssertionError(path)
@@ -2025,6 +2041,8 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 self.short_items: list[dict] = []
 
             def request(self, method: str, path: str, body=None, allow_404: bool = False):
+                if method == "GET" and "/comments" in path:
+                    return []
                 if method == "GET" and "/actions/artifacts" in path:
                     return {"artifacts": []}
                 if method == "POST" and "/dispatches" in path:
@@ -2042,7 +2060,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
 
             def contents_json(self, path: str, ref: str = "main"):
                 if path == "src/data/posts.json":
-                    if self.merged_on_main:
+                    if self.merged_on_main or ref == "head1115":
                         return [copy.deepcopy(oct13_post), *copy.deepcopy(posts_historical)]
                     return copy.deepcopy(posts_historical)
                 if path == "src/data/postsRecent.json":

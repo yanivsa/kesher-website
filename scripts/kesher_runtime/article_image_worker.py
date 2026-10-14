@@ -116,8 +116,7 @@ def _valid(post, candidate, used):
         proof = _evidence(_with_image(post, candidate), candidate, 'a'*40)
         if image_proof_errors(_with_image(post, candidate), replace_image_evidence('', proof), 'a'*40, data):
             return False
-        return ((hashlib.sha256(data).hexdigest() not in used and 'pixels:' + image_pixel_sha256(data) not in used)
-                or isinstance(used, ImageUsage) and used.permits(post, candidate))
+        return (hashlib.sha256(data).hexdigest() not in used and 'pixels:' + image_pixel_sha256(data) not in used)
     except (ValueError, KeyError, TypeError):
         return False
 
@@ -332,17 +331,23 @@ class GitImageBranch:
 
     def used_hashes(self):
         used = ImageUsage()
-        for post in json.loads((self.root / 'src/data/posts.json').read_text(encoding='utf-8')):
-            image = post.get('image')
-            if not image: continue
-            path = (self.root / 'public' / image.lstrip('/')).resolve()
-            if not str(image).startswith('/images/') or not path.is_relative_to(self.root / 'public/images'):
-                raise JulesError('ARTICLE_IMAGE_INVENTORY_INVALID')
-            data = path.read_bytes()
-            used.add(hashlib.sha256(data).hexdigest())
-            pixels = 'pixels:' + image_pixel_sha256(data)
-            used.add(pixels)
-            used.publications.setdefault(pixels, []).append(post)
+        for filename in ('src/data/posts.json', 'src/data/postsRecent.json'):
+            file_path = self.root / filename
+            if not file_path.exists():
+                continue
+            for post in json.loads(file_path.read_text(encoding='utf-8')):
+                image = post.get('image')
+                if not image: continue
+                path = (self.root / 'public' / image.lstrip('/')).resolve()
+                if not str(image).startswith('/images/') or not path.is_relative_to(self.root / 'public/images'):
+                    raise JulesError('ARTICLE_IMAGE_INVENTORY_INVALID')
+                if not path.is_file():
+                    raise JulesError('ARTICLE_IMAGE_INVENTORY_MISSING')
+                data = path.read_bytes()
+                used.add(hashlib.sha256(data).hexdigest())
+                pixels = 'pixels:' + image_pixel_sha256(data)
+                used.add(pixels)
+                used.publications.setdefault(pixels, []).append(post)
         return used
 
     def prepare(self, *, main_sha, head_sha, post, candidate, slot, pr_number, prepared_at):

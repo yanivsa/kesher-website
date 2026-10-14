@@ -73,6 +73,10 @@ class _DuplicateDispatchSuppressed(Exception):
 class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
     """Prevent advancement/completion unless article and canonical media evidence are durable."""
 
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._in_memory_verified_articles: set[str] = set()
+
     def _safe_newest_video_state(self) -> dict:
         getter = getattr(self.github, "newest_video_state", None)
         if callable(getter):
@@ -390,6 +394,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
 
     def state(self):
         state = super().state()
+        if isinstance(state, dict) and isinstance(state.get("article"), dict):
+            state["article"].pop("_tick_live_verified", None)
         try:
             self._reconcile_existing_current_day_article(state)
         except v5.core.ControllerError:
@@ -980,6 +986,11 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             "run_attempt": str(os.environ.get("KESHER_CHILD_RUN_ATTEMPT") or "").strip(),
             "conclusion": str(os.environ.get("KESHER_CHILD_CONCLUSION") or "").strip().lower(),
             "source_slug": str(os.environ.get("KESHER_CHILD_SOURCE_SLUG") or "").strip(),
+            "source_sha": str(
+                os.environ.get("KESHER_CHILD_SOURCE_SHA")
+                or os.environ.get("KESHER_CHILD_SOURCE_CONTENT_SHA256")
+                or ""
+            ).strip(),
             "slot": str(os.environ.get("KESHER_CHILD_SLOT") or "").strip(),
         }
 
@@ -1007,7 +1018,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         raw_id = info["run_id"]
         conclusion = info["conclusion"]
 
-        if not workflow and not raw_id and not conclusion and not info["source_slug"] and not info["slot"]:
+        if not workflow and not raw_id and not conclusion and not info["source_slug"] and not info["slot"] and not info["source_sha"]:
             return True, ""
 
         if not workflow or workflow not in v5.v3.entry.ADMITTED_CHILD_WORKFLOW_NAMES:
@@ -1032,7 +1043,30 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         if stage_dict.get("processed_run_id") is not None and v5.v3.entry._same_id(stage_dict.get("processed_run_id"), parsed_id):
             return False, f"stale child run_id already processed: {parsed_id}"
 
-        if info["source_slug"]:
+        # Media workflows strictly require authoritative exact source identity
+        if stage_name in {"long_video", "short"}:
+            if not info["source_slug"]:
+                return False, f"untrusted media notification: missing mandatory source_slug for {stage_name}"
+            current_slug = str((state.get("article") or {}).get("slug") or "").strip()
+            if not current_slug:
+                src = self._article_source(state)
+                if src and src.get("slug"):
+                    current_slug = str(src.get("slug")).strip()
+            if current_slug and info["source_slug"] != current_slug:
+                backlog_matches = [
+                    row for row in (state.get("backlog") or [])
+                    if isinstance(row, dict) and str(row.get("slug") or "") == info["source_slug"]
+                ]
+                if not backlog_matches:
+                    return False, f"child notification source_slug mismatch: {info['source_slug']} != {current_slug}"
+            current_sha = str((state.get("article") or {}).get("quality_content_sha256") or "").strip()
+            if not current_sha:
+                src = self._article_source(state)
+                if src and src.get("content_sha256"):
+                    current_sha = str(src.get("content_sha256")).strip()
+            if info.get("source_sha") and current_sha and info["source_sha"] != current_sha:
+                return False, f"child notification source_sha mismatch: {info['source_sha']} != {current_sha}"
+        elif info["source_slug"]:
             current_slug = str((state.get("article") or {}).get("slug") or "").strip()
             if not current_slug:
                 src = self._article_source(state)
@@ -1125,6 +1159,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         }
 
     def _safe_save_controller_state(self, state: dict) -> None:
+        if isinstance(state, dict) and isinstance(state.get("article"), dict):
+            state["article"].pop("_tick_live_verified", None)
         if hasattr(self, "github") and self.github is not None and hasattr(self.github, "save_controller_state"):
             self.github.save_controller_state(state)
 
@@ -1394,21 +1430,37 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         number = int(pr.get("number") or 0)
         api = getattr(self.github, "api", "")
         req = getattr(self.github, "request", None)
-        if not number or not api or not callable(req):
+        if not number:
+            raise v5.core.ControllerError("PR_REPAIR_HISTORY_UNREADABLE: missing or invalid PR number")
+        if not api or not callable(req):
             return 0, set()
-        try:
-            comments = req("GET", f"{api}/issues/{number}/comments?per_page=100", allow_404=True)
-        except Exception:
-            return 0, set()
-        if not isinstance(comments, list):
-            return 0, set()
+
         repair_marker = re.compile(r"<!-- kesher-article-repair attempt=(\d+) head=([a-f0-9]{40}) -->")
         max_attempt = 0
         repaired_heads: set[str] = set()
-        for comment in comments:
-            for match in repair_marker.finditer(str(comment.get("body") or "")):
-                max_attempt = max(max_attempt, int(match.group(1)))
-                repaired_heads.add(match.group(2).lower())
+
+        page = 1
+        while True:
+            try:
+                comments = req("GET", f"{api}/issues/{number}/comments?per_page=100&page={page}", allow_404=False)
+            except Exception as exc:
+                raise v5.core.ControllerError(
+                    f"PR_REPAIR_HISTORY_UNREADABLE: failed to fetch comments page {page} for PR #{number}: {exc}"
+                ) from exc
+            if not isinstance(comments, list):
+                raise v5.core.ControllerError(
+                    f"PR_REPAIR_HISTORY_UNREADABLE: comments page {page} for PR #{number} returned non-list"
+                )
+            for comment in comments:
+                if not isinstance(comment, dict):
+                    continue
+                for match in repair_marker.finditer(str(comment.get("body") or "")):
+                    max_attempt = max(max_attempt, int(match.group(1)))
+                    repaired_heads.add(match.group(2).lower())
+            if len(comments) < 100:
+                break
+            page += 1
+
         return max_attempt, repaired_heads
 
     def _pr_content_structure_errors(self, pr: dict[str, Any]) -> list[str]:
@@ -1417,14 +1469,24 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         try:
             head_posts = self.github.contents_json("src/data/posts.json", head_sha)
             base_posts = self.github.contents_json("src/data/posts.json", base_sha)
-        except Exception:
-            return []
+        except Exception as exc:
+            raise v5.core.ControllerError(
+                f"CONTENT_PREFLIGHT_CATALOG_UNREADABLE: failed to load src/data/posts.json for PR: {exc}"
+            ) from exc
         if not isinstance(head_posts, list) or not isinstance(base_posts, list):
-            return []
+            raise v5.core.ControllerError(
+                "CONTENT_PREFLIGHT_CATALOG_INVALID: head or base src/data/posts.json is not a list"
+            )
         base_ids = {v5.core.canonical_slug(row) for row in base_posts if isinstance(row, dict)}
         new_posts = [row for row in head_posts if isinstance(row, dict) and v5.core.canonical_slug(row) not in base_ids]
-        if len(new_posts) != 1:
-            return []
+        if len(new_posts) == 0:
+            raise v5.core.ControllerError(
+                f"CONTENT_PREFLIGHT_ZERO_NEW_POSTS: zero new article posts found in PR head compared to base"
+            )
+        if len(new_posts) > 1:
+            raise v5.core.ControllerError(
+                f"CONTENT_PREFLIGHT_MULTIPLE_NEW_POSTS: expected exactly 1 new post, found {len(new_posts)}"
+            )
         post = new_posts[0]
         raw_content = str(post.get("content") or "")
         errors = []
@@ -1457,7 +1519,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return v5.core.Action("blocked", f"auto-merge dispatch budget exhausted for PR #{number}")
 
         # 2. Check if autonomous repairs on this PR are exhausted
-        max_attempt, repaired_heads = self._pr_repair_status(pr)
+        try:
+            max_attempt, repaired_heads = self._pr_repair_status(pr)
+        except v5.core.ControllerError as exc:
+            code = str(exc).split(":", 1)[0]
+            v5.core.block(state, "article", code, str(exc))
+            return v5.core.Action("blocked", str(exc))
+
         if max_attempt >= 2 and head_sha in repaired_heads:
             v5.core.block(
                 state,
@@ -1473,9 +1541,9 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             return v5.core.Action("wait", f"Jules text repair attempt {max_attempt} in flight for PR #{number}")
 
         # 4. Normalization check
-        if self._child_notification_env()["workflow"] == "Kesher Normalize Article PR":
-            needs_normalization, _ = self.github.article_pr_normalization_required(pr)
-            if needs_normalization:
+        needs_normalization, slot = self.github.article_pr_normalization_required(pr)
+        if needs_normalization:
+            if self._child_notification_env()["workflow"] == "Kesher Normalize Article PR":
                 v5.core.transition(
                     state,
                     "article_normalizing",
@@ -1485,9 +1553,47 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     "wait",
                     "normalize child completed without clearing normalization; deferred to heartbeat",
                 )
+            active = self.github.active_normalizer_run(number)
+            if active:
+                state["article"].update({
+                    "normalization_status": "running",
+                    "normalization_run_id": active.get("id"),
+                    "normalization_slot": slot,
+                })
+                v5.core.transition(state, "article_normalizing", "trusted article normalization already active")
+                return v5.core.Action("wait", "article normalization active")
+            self.github.dispatch(
+                "normalize-article-pr.yml",
+                {"pr_number": str(number), "slot": slot},
+            )
+            state["article"].update({
+                "normalization_status": "running",
+                "normalization_slot": slot,
+                "normalization_dispatched_at": v5.core.utc_now(),
+            })
+            v5.core.transition(
+                state,
+                "article_normalizing",
+                "dirty or stale article PR dispatched to trusted normalizer",
+                pr_number=number,
+                slot=slot,
+            )
+            return v5.core.Action(
+                "dispatch_normalize",
+                "article PR must be normalized before image or Jules repair",
+                {"pr_number": str(number), "slot": slot},
+            )
+
+        state["article"]["normalization_status"] = "complete"
 
         # 5. Check content structure gates BEFORE consuming image attempts
-        content_errors = self._pr_content_structure_errors(pr)
+        try:
+            content_errors = self._pr_content_structure_errors(pr)
+        except v5.core.ControllerError as exc:
+            code = str(exc).split(":", 1)[0]
+            v5.core.block(state, "article", code, str(exc))
+            return v5.core.Action("blocked", str(exc))
+
         if content_errors:
             self._dispatch_auto_merge_v4(state)
             return v5.core.Action(
@@ -1496,6 +1602,87 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             )
 
         return super()._handle_open_article_pr(state, pr)
+
+    def _ensure_article_public_and_deployed(self, state: dict) -> tuple[bool, v5.core.Action | None]:
+        if isinstance(state, dict) and isinstance(state.get("article"), dict):
+            state["article"].pop("_tick_live_verified", None)
+
+        if getattr(self, "github", None) is None or getattr(self, "site", None) is None:
+            return True, None
+        posts = self.posts_on_main("main")
+        todays = self._reconcile_existing_current_day_article(state, posts)
+        if len(todays) > 1:
+            v5.core.block(state, "article", "DUPLICATE_ARTICLE_DATE",
+                          f"{len(todays)} articles share Israel date {self.now.date()}")
+            return False, v5.core.Action("blocked", "duplicate published articles")
+        if not todays:
+            return True, None
+
+        article = todays[0]
+        slug = v5.core.canonical_slug(article)
+        title = str(article.get("title") or "").strip()
+        url = f"{v5.core.SITE_URL}/blog/{slug}"
+        content_sha = str(state.get("article", {}).get("quality_content_sha256") or "").strip()
+
+        # In-memory session tracking only: guaranteed fresh HTTP check on controller restart
+        if slug in self._in_memory_verified_articles:
+            return True, None
+
+        status, page = self.site.get(url)
+        is_pub = (status == 200 and v5.core.article_is_public(page, title, expected_slug=slug, expected_content_sha256=content_sha))
+        if is_pub:
+            self._in_memory_verified_articles.add(slug)
+            state.setdefault("article", {}).update({
+                "live": True,
+                "live_verified_at": v5.core.utc_now(),
+                "next_deploy_retry_at": None,
+            })
+            state.get("article", {}).pop("_tick_live_verified", None)
+            if state.get("status") in {"blocked", "article_deploying", "article_deploy_wait", "article_generating", "article_retry_wait"}:
+                v5.core.transition(state, "article_live", "HTTP 200 and expected title verified")
+            return True, None
+
+        state.setdefault("article", {})["live"] = False
+        if self.github.active_workflow_run(v5.core.DEPLOY_WORKFLOW):
+            v5.core.transition(state, "article_deploying", "deployment already active")
+            return False, v5.core.Action("wait", "deployment active")
+
+        pending_deploy = (state.get("pending_dispatches") or {}).get(v5.core.DEPLOY_WORKFLOW)
+        if isinstance(pending_deploy, dict) and pending_deploy.get("cycle") == state.get("cycle"):
+            if pending_deploy.get("status") in {"intent", "uncertain"}:
+                v5.core.transition(state, "article_deploying", "deployment dispatch intent pending")
+                return False, v5.core.Action("wait", "deployment dispatch pending reconciliation")
+            if pending_deploy.get("status") == "dispatched":
+                intent_dt = v5.core.parse_timestamp(pending_deploy.get("dispatched_at") or pending_deploy.get("intent_at"))
+                if intent_dt is not None:
+                    elapsed = (self.now.astimezone(v5.core.timezone.utc) - intent_dt).total_seconds()
+                    if 0 <= elapsed < 180:
+                        v5.core.transition(state, "article_deploying", "deployment dispatched; waiting for run visibility")
+                        return False, v5.core.Action("wait", f"deployment dispatched {int(elapsed)}s ago; waiting for run visibility")
+
+        next_deploy = v5.core.parse_timestamp(state["article"].get("next_deploy_retry_at"))
+        if next_deploy and self.now.astimezone(v5.core.timezone.utc) < next_deploy:
+            v5.core.transition(state, "article_deploy_wait", "deploy retry backoff is active",
+                               retry_at=next_deploy.isoformat())
+            return False, v5.core.Action("wait", f"deploy retry scheduled for {next_deploy.isoformat()}")
+
+        attempts = int(state["article"].get("deploy_attempts") or 0) + 1
+        self.github.dispatch(v5.core.DEPLOY_WORKFLOW)
+        delay_index = max(1, attempts - v5.core.MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF + 1)
+        delay = 5 if attempts <= v5.core.MAX_DEPLOY_ATTEMPTS_BEFORE_LONG_BACKOFF else v5.core.article_retry_backoff_minutes(delay_index)
+        state["article"].update({
+            "deploy_attempts": attempts,
+            "last_deploy_dispatch_at": v5.core.utc_now(),
+            "next_deploy_retry_at": (self.now.astimezone(v5.core.timezone.utc) + v5.core.timedelta(minutes=delay)).isoformat(),
+        })
+        v5.core.transition(
+            state,
+            "article_deploying",
+            "public article check failed; recovery deploy dispatched",
+            http_status=status,
+            attempt=attempts,
+        )
+        return False, v5.core.Action("dispatch_deploy", "article not public yet")
 
     def tick(self):
         state = self.state()

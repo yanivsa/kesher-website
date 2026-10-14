@@ -36,8 +36,8 @@ def raw_github_content_url(repo: str, ref: str, repo_path: str) -> str:
     return f"https://raw.githubusercontent.com/{repo}/{quoted_ref}{quoted_path}"
 
 
-def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
-    errors = evaluate_content(pr, files_data, base_posts, head_posts, image_loader)
+def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader, extra_base_posts=None):
+    errors = evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra_base_posts=extra_base_posts)
     if not any(check.get("name") == "verify" and check.get("conclusion") == "success"
                and check.get("head_sha") == (pr.get("head") or {}).get("sha")
                and bool((pr.get("head") or {}).get("sha")) for check in checks):
@@ -45,7 +45,7 @@ def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
     return errors
 
 
-def evaluate_content(pr, files_data, base_posts, head_posts, image_loader):
+def evaluate_content(pr, files_data, base_posts, head_posts, image_loader, extra_base_posts=None):
     """Pure content policy, also run inside canonical CI before CI can finish."""
     errors: list[str] = []
     files = [entry["filename"] for entry in files_data]
@@ -113,7 +113,8 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader):
         actual_pixels = image_pixel_sha256(image_data)
 
         # Enforce SHA-256 uniqueness against all existing base posts
-        for base_post in base_posts:
+        comparison_posts = list(base_posts) + list(extra_base_posts or [])
+        for base_post in comparison_posts:
             if not isinstance(base_post, dict):
                 continue
             base_img = str(base_post.get("image") or "").strip()
@@ -155,9 +156,10 @@ def api_json(url: str, token: str):
         return json.loads(response.read().decode("utf-8"))
 
 
-def fetch_posts(repo: str, ref: str, token: str):
+def fetch_posts(repo: str, ref: str, token: str, filename: str = "src/data/posts.json"):
     quoted_ref = urllib.parse.quote(ref, safe="")
-    payload = api_json(f"https://api.github.com/repos/{repo}/contents/src/data/posts.json?ref={quoted_ref}", token)
+    quoted_path = urllib.parse.quote(filename, safe="/")
+    payload = api_json(f"https://api.github.com/repos/{repo}/contents/{quoted_path}?ref={quoted_ref}", token)
     blob_sha = payload.get("sha")
     if not isinstance(blob_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", blob_sha):
         raise ValueError("Article catalog blob identity is unavailable")
@@ -187,8 +189,13 @@ def main() -> int:
     checks = json.load(open(sys.argv[3], encoding="utf-8")).get("check_runs", [])
     repo = os.environ["REPO"]
     token = os.environ["GITHUB_TOKEN"]
-    base_posts = fetch_posts(repo, pr["base"]["sha"], token)
-    head_posts = fetch_posts(repo, pr["head"]["sha"], token)
+    base_posts = fetch_posts(repo, pr["base"]["sha"], token, "src/data/posts.json")
+    head_posts = fetch_posts(repo, pr["head"]["sha"], token, "src/data/posts.json")
+    extra_base_posts = []
+    try:
+        extra_base_posts = fetch_posts(repo, pr["base"]["sha"], token, "src/data/postsRecent.json")
+    except Exception:
+        pass
 
     def load_image(entry):
         request = urllib.request.Request(
@@ -198,7 +205,7 @@ def main() -> int:
         with urllib.request.urlopen(request) as response:
             return response.read()
 
-    errors = evaluate(pr, files_data, checks, base_posts, head_posts, load_image)
+    errors = evaluate(pr, files_data, checks, base_posts, head_posts, load_image, extra_base_posts=extra_base_posts)
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
