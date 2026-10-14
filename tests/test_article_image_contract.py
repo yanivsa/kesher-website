@@ -314,7 +314,7 @@ class ArticleImageContractTests(unittest.TestCase):
         head_posts = self.base + [self.post]
         candidate = self.worker.core.ImageCandidate('Local', self.image, 'png',
             'local://public/images/generated/blog/curated.png', VISUAL,
-            ['gemini-1', 'gemini-2', 'gemini-3', 'pexels', 'pixabay', 'local-curated'])
+            ['gemini-1', 'gemini-2', 'pexels', 'pixabay', 'local-curated'])
         bodies = []
         with patch.object(self.worker.core, 'posts_at', side_effect=[self.base, head_posts]), \
              patch.object(self.worker.v3, 'choose_candidate', return_value=candidate), \
