@@ -54,7 +54,8 @@ IMAGE_PROVIDER_RULES = {
     "Local": ("local_fallback", "local-curated"),
     "LocalEditorial": ("local_fallback", "local-editorial"),
 }
-IMAGE_PROVIDER_ORDER = ("gemini-1", "gemini-2", "gemini-3", "pexels", "pixabay", "local-curated")
+IMAGE_PROVIDER_ORDER = ("gemini-1", "gemini-2", "pexels", "pixabay", "local-curated")
+IMAGE_CATALOG_REPLENISHMENT_ATTEMPT = "gemini-3-catalog-replenishment"
 IMAGE_EVIDENCE_FIELDS = (
     "Image Pipeline Version", "Image Provider", "Image Attempt Chain",
     "Image Generation Result", "Image Source URL", "Image SHA-256",
@@ -143,10 +144,22 @@ def image_proof_errors(post: dict, body: str, head_sha: str, data: bytes | None 
         if proof["Image Generation Result"] != result:
             errors.append(f"{provider} image must record {result} result")
         chain = (proof["Image Attempt Chain"] or "").split("/")
-        expected = [list(IMAGE_PROVIDER_ORDER[:index + 1]) for index, value in enumerate(IMAGE_PROVIDER_ORDER)
-                    if value.startswith("gemini-") and provider == "Gemini" or value == last_attempt]
+        if provider == "Gemini":
+            expected = [
+                ["gemini-1"],
+                ["gemini-1", "gemini-2"],
+                [*IMAGE_PROVIDER_ORDER, IMAGE_CATALOG_REPLENISHMENT_ATTEMPT],
+            ]
+        elif provider == "LocalEditorial":
+            expected = [["local-editorial"]]
+        else:
+            expected = [
+                list(IMAGE_PROVIDER_ORDER[:index + 1])
+                for index, value in enumerate(IMAGE_PROVIDER_ORDER)
+                if value == last_attempt
+            ]
         if chain not in expected:
-            errors.append("Image Attempt Chain must truthfully begin with gemini and record provider fallthrough")
+            errors.append("Image Attempt Chain must truthfully record the bounded provider fallthrough")
     source = proof["Image Source URL"] or ""
     if provider == "Local":
         source_path = source.removeprefix("local://")

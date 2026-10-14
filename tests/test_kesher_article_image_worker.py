@@ -106,7 +106,7 @@ class ImageWorkerTests(unittest.TestCase):
         result = select_image(self.context, POST, 42, self.providers, self.blobs,
                               {'pixels:' + image_pixel_sha256(candidate()['data'])})
         self.assertEqual(result['provider'], 'Pexels')
-        self.assertEqual(result['attempts'], ['gemini-1', 'gemini-2', 'gemini-3', 'pexels'])
+        self.assertEqual(result['attempts'], ['gemini-1', 'gemini-2', 'pexels'])
 
     def test_no_publication_pixels_means_no_successful_selection(self):
         with self.assertRaisesRegex(JulesError, 'ARTICLE_IMAGE_UNAVAILABLE'):
