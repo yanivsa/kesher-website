@@ -180,7 +180,12 @@ class RuntimeV5Controller(three_strike.ThreeStrikeMediaInterventionMixin, base_r
             source = v5.article_source_identity(post)
             url = f"{v5.core.SITE_URL}/blog/{source['slug']}"
             status, body = self.site.get(url)
-            if status != 200 or not v5.core.article_is_public(body, str(post.get("title") or "")):
+            if status != 200 or not v5.core.article_is_public(
+                body,
+                str(post.get("title") or ""),
+                source["slug"],
+                source["content_sha256"],
+            ):
                 continue
             media.update({
                 "source_slug": source["slug"],
