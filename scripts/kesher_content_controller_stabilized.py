@@ -1047,26 +1047,30 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     return False, f"child notification source_slug mismatch: {info['source_slug']} != {current_slug}"
 
         actual_run = super()._workflow_run(parsed_id)
-        if isinstance(actual_run, dict):
-            if str(actual_run.get("event") or "") == "pull_request":
-                return False, f"pull_request child run ignored: {parsed_id}"
-            actual_path = str(actual_run.get("path") or "").strip()
-            normalized_path = actual_path.split("@", 1)[0].removeprefix(".github/workflows/")
-            if normalized_path:
-                if normalized_path != workflow_file:
-                    return False, (
-                        f"child run workflow path mismatch: run {parsed_id} belongs to "
-                        f"{actual_path}, not {workflow_file}"
-                    )
-            else:
-                run_name = str(actual_run.get("name") or "").strip()
-                if run_name and run_name not in {workflow, workflow_file}:
-                    return False, f"child run workflow mismatch: run {parsed_id} belongs to {run_name}, not {workflow}"
-            actual_attempt = actual_run.get("run_attempt")
-            if info["run_attempt"] and actual_attempt and int(info["run_attempt"]) != int(actual_attempt):
-                return False, f"child run_attempt mismatch: {info['run_attempt']} != {actual_attempt}"
-            if actual_attempt and stage_dict.get("run_attempt") and int(actual_attempt) < int(stage_dict["run_attempt"]):
-                return False, f"stale child run_attempt ignored: {actual_attempt} < {stage_dict['run_attempt']}"
+        if not isinstance(actual_run, dict) or not actual_run:
+            return False, f"child run {parsed_id} cannot be retrieved or verified from GitHub API"
+        if str(actual_run.get("event") or "") == "pull_request":
+            return False, f"pull_request child run ignored: {parsed_id}"
+        actual_path = str(actual_run.get("path") or "").strip()
+        normalized_path = actual_path.split("@", 1)[0].removeprefix(".github/workflows/")
+        if normalized_path:
+            if normalized_path != workflow_file:
+                return False, (
+                    f"child run workflow path mismatch: run {parsed_id} belongs to "
+                    f"{actual_path}, not {workflow_file}"
+                )
+        else:
+            run_name = str(actual_run.get("name") or "").strip()
+            if run_name and run_name not in {workflow, workflow_file}:
+                return False, f"child run workflow mismatch: run {parsed_id} belongs to {run_name}, not {workflow}"
+        actual_attempt = actual_run.get("run_attempt")
+        if info["run_attempt"] and actual_attempt and int(info["run_attempt"]) != int(actual_attempt):
+            return False, f"child run_attempt mismatch: {info['run_attempt']} != {actual_attempt}"
+        if actual_attempt and stage_dict.get("run_attempt") and int(actual_attempt) < int(stage_dict["run_attempt"]):
+            return False, f"stale child run_attempt ignored: {actual_attempt} < {stage_dict['run_attempt']}"
+        actual_conclusion = str(actual_run.get("conclusion") or "").strip().lower()
+        if actual_conclusion and actual_conclusion != info["conclusion"]:
+            return False, f"child run conclusion mismatch: notification={info['conclusion']} != actual={actual_conclusion}"
 
         return True, ""
 
@@ -1129,6 +1133,13 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         active_state = getattr(self, "_active_state_ref", state)
         if workflow == v5.SHORT_WORKFLOW:
             op = (inputs or {}).get("operation")
+            if op in {"derive", "full"}:
+                short_state = active_state.get("short") if isinstance(active_state.get("short"), dict) else {}
+                count = int(short_state.get("attempt_count") or 0)
+                if count >= v5.v3.MAX_STAGE_ATTEMPTS:
+                    raise v5.core.ControllerError(
+                        f"SHORT_ATTEMPTS_EXHAUSTED: Short exhausted {v5.v3.MAX_STAGE_ATTEMPTS} fresh generation attempts"
+                    )
             if op == "derive" or "derive_content_sha256" in (inputs or {}):
                 slug = str((inputs or {}).get("derive_slug") or "").strip()
                 sha = str((inputs or {}).get("derive_content_sha256") or "").strip()
@@ -1144,6 +1155,29 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     raise v5.core.ControllerError(
                         "SHORT_REQUIRES_VERIFIED_LONG_VIDEO: Short dispatch blocked because exact Long Video is not public and verified"
                     )
+        elif workflow == v5.LONG_VIDEO_WORKFLOW:
+            op = (inputs or {}).get("operation")
+            if op == "full":
+                long_state = active_state.get("long_video") if isinstance(active_state.get("long_video"), dict) else {}
+                count = int(long_state.get("attempt_count") or 0)
+                if count >= v5.v3.MAX_STAGE_ATTEMPTS:
+                    raise v5.core.ControllerError(
+                        f"VIDEO_ATTEMPTS_EXHAUSTED: Long Video exhausted {v5.v3.MAX_STAGE_ATTEMPTS} fresh generation attempts"
+                    )
+        elif workflow == v5.core.ARTICLE_WORKFLOW:
+            art_state = active_state.get("article") if isinstance(active_state.get("article"), dict) else {}
+            count = int(art_state.get("attempts") or 0)
+            if count >= v5.v3.MAX_STAGE_ATTEMPTS:
+                raise v5.core.ControllerError(
+                    f"ARTICLE_ATTEMPTS_EXHAUSTED: Article exhausted {v5.v3.MAX_STAGE_ATTEMPTS} fresh generation attempts"
+                )
+        elif workflow == v5.v3.IMAGE_WORKFLOW:
+            img_state = active_state.get("image") if isinstance(active_state.get("image"), dict) else {}
+            count = int(img_state.get("attempt_count") or 0)
+            if count >= v5.v3.MAX_STAGE_ATTEMPTS and active_state.get("status") != "article_image_rebinding":
+                raise v5.core.ControllerError(
+                    f"IMAGE_ATTEMPTS_EXHAUSTED: Image exhausted {v5.v3.MAX_STAGE_ATTEMPTS} fresh generation attempts"
+                )
 
         stage_field_map = {
             v5.core.ARTICLE_WORKFLOW: ("article", "run_id"),
@@ -1293,13 +1327,16 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 )
             if pending.get("status") == "dispatched" and (inputs or {}) == (pending.get("inputs") or {}):
                 intent_dt = v5.core.parse_timestamp(pending.get("dispatched_at") or pending.get("intent_at"))
-                if intent_dt is not None:
-                    elapsed = (self.now.astimezone(v5.core.timezone.utc) - intent_dt).total_seconds()
-                    if 0 <= elapsed < DISPATCH_VISIBILITY_LAG_SECONDS:
-                        raise _DuplicateDispatchSuppressed(
-                            workflow,
-                            f"{workflow} dispatched {int(elapsed)}s ago; waiting for GitHub run visibility",
-                        )
+                elapsed_str = f" {int((self.now.astimezone(v5.core.timezone.utc) - intent_dt).total_seconds())}s ago" if intent_dt else ""
+                raise _DuplicateDispatchSuppressed(
+                    workflow,
+                    f"{workflow} already dispatched for this cycle{elapsed_str}; waiting for GitHub run visibility without duplicate POST",
+                )
+            if pending.get("status") == "active":
+                raise _DuplicateDispatchSuppressed(
+                    workflow,
+                    f"{workflow} run {pending.get('observed_active_run_id')} is active; suppressing duplicate dispatch",
+                )
 
         now_iso = self.now.astimezone(v5.core.timezone.utc).isoformat()
         stage_dict = active_state.get(stage_name) if stage_name else None

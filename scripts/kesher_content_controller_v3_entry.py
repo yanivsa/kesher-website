@@ -171,6 +171,11 @@ class V3GitHubClient(core.GitHubClient):
         ):
             return False, {}
         actual_sha = hashlib.sha256(data).hexdigest()
+        actual_pixels = None
+        try:
+            actual_pixels = article_contract.image_pixel_sha256(data)
+        except Exception:
+            pass
         post_img = str(post.get("image") or "").strip()
         body_source = str(article_contract.exact_field(body, "Image Source URL") or "").strip()
         for base_post in base_posts:
@@ -188,7 +193,10 @@ class V3GitHubClient(core.GitHubClient):
                 local_base = Path(__file__).resolve().parents[1] / "public" / base_img.lstrip("/")
                 if local_base.is_file():
                     try:
-                        if hashlib.sha256(local_base.read_bytes()).hexdigest() == actual_sha:
+                        base_bytes = local_base.read_bytes()
+                        if hashlib.sha256(base_bytes).hexdigest() == actual_sha:
+                            return False, {}
+                        if actual_pixels and article_contract.image_pixel_sha256(base_bytes) == actual_pixels:
                             return False, {}
                     except Exception:
                         pass

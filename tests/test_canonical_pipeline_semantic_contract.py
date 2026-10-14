@@ -181,16 +181,13 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
         )
 
         # Controller's article_pr_image_ready must also reject this colliding asset
-        mock_github = MagicMock()
-        mock_github.contents_json.side_effect = lambda path, ref: [base_post] if "base" in ref or ref == "main" else [new_post]
-        mock_github.request.return_value = {
+        client = V3GitHubClient("token", "yanivsa/kesher-website")
+        client.contents_json = MagicMock(side_effect=lambda path, ref: [base_post] if "base" in ref or ref == "main" else [new_post])
+        client.request = MagicMock(return_value={
             "encoding": "base64",
             "content": base64.b64encode(colliding_bytes).decode("ascii"),
-        }
-        mock_github.api = "https://api.github.com/repos/yanivsa/kesher-website"
-        
-        # Test article_pr_image_ready directly
-        ready, _ = V3GitHubClient.article_pr_image_ready(mock_github, pr)
+        })
+        ready, _ = client.article_pr_image_ready(pr)
         self.assertFalse(ready, "article_pr_image_ready must return False for colliding image SHA")
 
     def test_4_auto_merge_exits_nonzero_when_repair_attempts_exhausted(self):
@@ -465,6 +462,300 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
         self.assertEqual(action.kind, "dispatch_article")
         self.assertEqual(new_state["article"]["status"], "running")
         self.assertEqual(new_state["article"]["attempts"], 1)
+
+
+    def test_12_github_run_unavailable_notification_rejected_no_state_mutation(self):
+        """When child notification references a run that cannot be retrieved, it fails closed without mutating state."""
+        mock_github = MagicMock()
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        ctrl.now = datetime(2026, 10, 14, 12, 0, tzinfo=timezone.utc)
+        state = {
+            "cycle": "2026-10-14",
+            "status": "article_generating",
+            "article": {"status": "running", "run_id": 111},
+            "history": [],
+            "processed_child_notifications": [],
+        }
+        ctrl.github.load_controller_state.return_value = state
+        # The referenced run cannot be retrieved (returns None)
+        ctrl.github.workflow_run_by_id = MagicMock(return_value=None)
+
+        with patch.dict(os.environ, {
+            "KESHER_TRIGGER_EVENT": "workflow_run",
+            "KESHER_CHILD_WORKFLOW": "Kesher Article Generation",
+            "KESHER_CHILD_RUN_ID": "99999",
+            "KESHER_CHILD_CONCLUSION": "success",
+            "KESHER_CHILD_SLOT": "2026-10-14",
+        }):
+            valid, reject_reason = ctrl._validate_child_notification(state)
+            self.assertFalse(valid)
+            self.assertIn("cannot be retrieved or verified", reject_reason)
+            self.assertEqual(state["article"]["run_id"], 111)
+            self.assertEqual(len(state["processed_child_notifications"]), 0)
+
+    def test_13_delayed_workflow_visibility_beyond_normal_grace_no_second_post(self):
+        """When visibility lag exceeds grace period and run is not yet visible, no second POST is made."""
+        mock_github = MagicMock()
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        ctrl.now = datetime(2026, 10, 14, 12, 10, tzinfo=timezone.utc)
+        ctrl._active_state_ref = {
+            "cycle": "2026-10-14",
+            "status": "long_video_running",
+            "long_video": {"status": "running", "attempt_count": 1},
+            "pending_dispatches": {
+                v5.LONG_VIDEO_WORKFLOW: {
+                    "workflow": v5.LONG_VIDEO_WORKFLOW,
+                    "cycle": "2026-10-14",
+                    "inputs": {"operation": "upload", "target_slug": "test-slug"},
+                    "intent_at": "2026-10-14T12:00:00+00:00",
+                    "dispatched_at": "2026-10-14T12:00:01+00:00",
+                    "status": "dispatched",
+                }
+            }
+        }
+        mock_github.workflow_runs = MagicMock(return_value=[])
+        raw_dispatch = MagicMock()
+
+        with self.assertRaises(stabilized_mod._DuplicateDispatchSuppressed) as ctx:
+            ctrl._guarded_dispatch(
+                ctrl._active_state_ref,
+                v5.LONG_VIDEO_WORKFLOW,
+                {"operation": "upload", "target_slug": "test-slug"},
+                raw_dispatch,
+            )
+        raw_dispatch.assert_not_called()
+        self.assertIn("already dispatched for this cycle", ctx.exception.reason)
+
+    def test_14_lost_dispatch_response_no_second_post(self):
+        """When dispatch outcome was uncertain (lost response), controller suppresses second POST until reconciled."""
+        mock_github = MagicMock()
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        ctrl.now = datetime(2026, 10, 14, 12, 5, tzinfo=timezone.utc)
+        ctrl._active_state_ref = {
+            "cycle": "2026-10-14",
+            "status": "article_deploying",
+            "pending_dispatches": {
+                v5.core.DEPLOY_WORKFLOW: {
+                    "workflow": v5.core.DEPLOY_WORKFLOW,
+                    "cycle": "2026-10-14",
+                    "inputs": {},
+                    "intent_at": "2026-10-14T12:00:00+00:00",
+                    "status": "uncertain",
+                }
+            }
+        }
+        mock_github.workflow_runs = MagicMock(return_value=[])
+        raw_dispatch = MagicMock()
+
+        with self.assertRaises(stabilized_mod._DuplicateDispatchSuppressed) as ctx:
+            ctrl._guarded_dispatch(
+                ctrl._active_state_ref,
+                v5.core.DEPLOY_WORKFLOW,
+                {},
+                raw_dispatch,
+            )
+        raw_dispatch.assert_not_called()
+        self.assertIn("uncertain", ctx.exception.reason)
+
+    def test_15_restart_with_pending_intent_reconciles_without_second_post(self):
+        """Restarting with pending intent reconciles against visible run without second POST."""
+        mock_github = MagicMock()
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        ctrl.now = datetime(2026, 10, 14, 12, 2, tzinfo=timezone.utc)
+        active_state = {
+            "cycle": "2026-10-14",
+            "status": "image_running",
+            "image": {"status": "running"},
+            "pending_dispatches": {
+                v5.v3.IMAGE_WORKFLOW: {
+                    "workflow": v5.v3.IMAGE_WORKFLOW,
+                    "cycle": "2026-10-14",
+                    "inputs": {"pr_number": "1117"},
+                    "intent_at": "2026-10-14T12:01:00+00:00",
+                    "status": "intent",
+                }
+            }
+        }
+        ctrl._active_state_ref = active_state
+        mock_github.workflow_runs = MagicMock(return_value=[{
+            "id": 55555,
+            "event": "workflow_dispatch",
+            "status": "in_progress",
+            "created_at": "2026-10-14T12:01:05+00:00",
+        }])
+        raw_dispatch = MagicMock()
+
+        with self.assertRaises(stabilized_mod._DuplicateDispatchSuppressed):
+            ctrl._guarded_dispatch(
+                active_state,
+                v5.v3.IMAGE_WORKFLOW,
+                {"pr_number": "1117"},
+                raw_dispatch,
+            )
+        raw_dispatch.assert_not_called()
+        self.assertEqual(active_state["pending_dispatches"][v5.v3.IMAGE_WORKFLOW]["observed_active_run_id"], 55555)
+        self.assertEqual(active_state["pending_dispatches"][v5.v3.IMAGE_WORKFLOW]["status"], "active")
+
+    def test_16_duplicate_pixels_with_different_encoding_rejected_everywhere(self):
+        """Identical pixel data across different encodings (e.g. metadata or format changes) is rejected."""
+        from PIL import Image
+        from PIL.PngImagePlugin import PngInfo
+        img = Image.new("RGB", (1200, 630), color=(100, 150, 200))
+        png_io = io.BytesIO()
+        img.save(png_io, format="PNG")
+        png_bytes = png_io.getvalue()
+
+        info = PngInfo()
+        info.add_text("comment", "extra metadata")
+        png_io_meta = io.BytesIO()
+        img.save(png_io_meta, format="PNG", pnginfo=info)
+        png_meta_bytes = png_io_meta.getvalue()
+
+        self.assertNotEqual(hashlib.sha256(png_bytes).hexdigest(), hashlib.sha256(png_meta_bytes).hexdigest())
+        self.assertEqual(article_contract.image_pixel_sha256(png_bytes), article_contract.image_pixel_sha256(png_meta_bytes))
+
+        client = V3GitHubClient("token", "repo")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            pub_dir = Path(tmpdir) / "public" / "images" / "generated" / "blog"
+            pub_dir.mkdir(parents=True)
+            (pub_dir / "existing.png").write_bytes(png_bytes)
+
+            with patch("scripts.kesher_content_controller_v3_entry.Path") as mock_path:
+                mock_path.return_value.resolve.return_value.parents.__getitem__.return_value = Path(tmpdir)
+                pr = {
+                    "number": 123,
+                    "head": {"sha": "headsha"},
+                    "body": "Image Provider: Local\nImage SHA-256: " + hashlib.sha256(png_meta_bytes).hexdigest() + "\nImage Source URL: local://public/images/generated/blog/new.png\nImage Evidence Head: headsha",
+                }
+                client.contents_json = MagicMock(side_effect=[
+                    [{"id": "existing", "image": "/images/generated/blog/existing.png"}],
+                    [{"id": "existing", "image": "/images/generated/blog/existing.png"},
+                     {"id": "new", "image": "/images/generated/blog/new.png", "imageAlt": "Valid descriptive image alt text for article"}]
+                ])
+                client.request = MagicMock(return_value={"encoding": "base64", "content": base64.b64encode(png_meta_bytes).decode("ascii")})
+                ready, _ = client.article_pr_image_ready(pr)
+                self.assertFalse(ready)
+
+    def test_17_rebind_after_image_exhaustion_zero_provider_generation_calls(self):
+        """When image attempts are exhausted and PR head moves, rebind refreshes head without provider generation."""
+        mock_github = MagicMock()
+        mock_github.article_pr_image_rebindable.return_value = (True, {"provider": "Local"})
+        mock_github.article_pr_image_ready.return_value = (False, {})
+        mock_github.article_pr_normalization_required.return_value = (False, "")
+        mock_github.active_image_run.return_value = None
+        mock_github.dispatch = MagicMock()
+
+        from scripts.kesher_content_controller_v4 import V4Controller
+        ctrl = V4Controller(mock_github, MagicMock())
+        state = {
+            "cycle": "2026-10-14",
+            "status": "article_pr_open",
+            "image": {
+                "status": "exhausted",
+                "attempt_count": 3,
+                "evidence_rebind_head_sha": "old_head_sha",
+            },
+            "article": {"pr_number": 1113},
+            "history": [],
+        }
+        pr = {
+            "number": 1113,
+            "head": {"sha": "2bdd1fba3f3faa89e2b6907e7aabd498603443d4"},
+        }
+        action = ctrl._handle_open_article_pr(state, pr)
+        self.assertEqual(action.kind, "dispatch_image_rebind")
+        self.assertEqual(state["image"]["attempt_count"], 3)
+        self.assertEqual(state["image"]["evidence_rebind_head_sha"], "2bdd1fba3f3faa89e2b6907e7aabd498603443d4")
+
+    def test_18_long_and_short_fresh_generation_caps_cannot_be_bypassed_through_recovery_paths(self):
+        """Guarded dispatch strictly forbids 4th fresh generation for Long Video and Short."""
+        mock_github = MagicMock()
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        ctrl.now = datetime(2026, 10, 14, 12, 0, tzinfo=timezone.utc)
+        raw_dispatch = MagicMock()
+
+        # 1. Long Video cap at 3
+        state_video = {
+            "cycle": "2026-10-14",
+            "status": "long_video_running",
+            "long_video": {"attempt_count": 3, "status": "running"},
+            "pending_dispatches": {},
+        }
+        with self.assertRaises(stabilized_mod.v5.core.ControllerError) as ctx:
+            ctrl._guarded_dispatch(
+                state_video,
+                v5.LONG_VIDEO_WORKFLOW,
+                {"operation": "full", "target_slug": "test-slug"},
+                raw_dispatch,
+            )
+        self.assertIn("VIDEO_ATTEMPTS_EXHAUSTED", str(ctx.exception))
+
+        # 2. Short cap at 3
+        state_short = {
+            "cycle": "2026-10-14",
+            "status": "short_running",
+            "short": {"attempt_count": 3, "status": "running"},
+            "pending_dispatches": {},
+        }
+        with self.assertRaises(stabilized_mod.v5.core.ControllerError) as ctx:
+            ctrl._guarded_dispatch(
+                state_short,
+                v5.SHORT_WORKFLOW,
+                {"operation": "derive", "derive_slug": "test-slug"},
+                raw_dispatch,
+            )
+        self.assertIn("SHORT_ATTEMPTS_EXHAUSTED", str(ctx.exception))
+
+    def test_19_public_article_disappears_or_changes_after_restart_media_remains_blocked(self):
+        """If public article returns 404 or missing SHA on controller restart, media progression remains blocked."""
+        mock_github = MagicMock()
+        mock_site = MagicMock()
+        ctrl = stabilized_mod.StabilizedRuntimeV5Controller(mock_github, mock_site)
+        ctrl.now = datetime(2026, 10, 14, 12, 0, tzinfo=timezone.utc)
+
+        post = {
+            "id": "restarted-article",
+            "slug": "restarted-article",
+            "title": "Restarted Article Title",
+            "date": "2026-10-14",
+            "content": "<p>Content</p>",
+            "category": "זוגיות",
+            "excerpt": "Valid excerpt of reasonable length for adoptable post",
+            "image": "/images/generated/blog/restarted-article.jpg",
+        }
+        state = {
+            "cycle": "2026-10-14",
+            "status": "article_live",
+            "article": {
+                "slug": "restarted-article",
+                "status": "complete",
+                "quality_content_sha256": "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+            },
+            "image": {"status": "complete"},
+            "long_video": {"status": "pending"},
+            "short": {"status": "pending"},
+            "history": [],
+        }
+        ctrl.github.load_controller_state.return_value = state
+        ctrl.github.posts_on_main.return_value = [post]
+        ctrl.github.active_workflow_run.return_value = None
+        ctrl.github.dispatch = MagicMock()
+
+        # Public site returns 404
+        ctrl.site.get.return_value = (404, "Not Found")
+
+        new_state, action = ctrl.tick()
+
+        # Controller must transition to deploying and must NOT advance to long video
+        self.assertEqual(new_state["status"], "article_deploying")
+        self.assertEqual(action.kind, "dispatch_deploy")
+        self.assertEqual(new_state["long_video"]["status"], "pending")
+        self.assertFalse(new_state["article"]["live"])
 
 
 if __name__ == "__main__":
