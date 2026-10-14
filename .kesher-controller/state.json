@@ -2088,7 +2088,7 @@
     "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": null,
+    "run_id": 38577378181,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -2108,8 +2108,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 38551874076,
+    "workflow": "Kesher Daily Article Short V4",
+    "run_id": 38577378181,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-14"
