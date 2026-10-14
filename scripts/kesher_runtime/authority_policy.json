@@ -492,7 +492,7 @@
         "status_write",
         "workflow_dispatch"
       ],
-      "definition_sha256": "1f50148877e4c75cd39e6c76bbb73c77f33cd1cabf20dd217df217c636861ba8",
+      "definition_sha256": "86ac2afc788c3040c1884d75055e9ea3f24cc591e134144fa3562aaf52621f9a",
       "resources": [
         "github.dispatch",
         "github.issues",

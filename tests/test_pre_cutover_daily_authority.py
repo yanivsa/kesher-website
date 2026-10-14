@@ -765,6 +765,8 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
     def test_exact_target_article_auto_merge_processes_only_authoritative_pr(self) -> None:
         auto_merge_wf = (WORKFLOWS_DIR / "auto-merge-article-prs.yml").read_text(encoding="utf-8")
         self.assertNotIn("pulls?state=open", auto_merge_wf)
+        self.assertIn("actions/setup-python@", auto_merge_wf)
+        self.assertIn("python3 -m pip install -r scripts/requirements-article.txt", auto_merge_wf)
         wf_data = yaml.safe_load(auto_merge_wf)
         wf_on = wf_data.get("on", wf_data.get(True))
         inputs_cfg = wf_on["workflow_dispatch"]["inputs"]
