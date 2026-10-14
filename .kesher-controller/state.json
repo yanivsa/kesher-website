@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-14",
-  "status": "article_pr_open",
+  "status": "image_retry_wait",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1190,7 +1190,14 @@
       "archived_at": "2026-10-13T21:50:46.806353+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "image",
+    "code": "IMAGE_OUTPUT_MISSING",
+    "message": "trusted image run 38516108724 completed with conclusion=success but no validated image is present",
+    "retryable": true,
+    "retry_at": "2026-10-14T08:14:47.000479+00:00",
+    "at": "2026-10-14T08:09:47.000510+00:00"
+  },
   "history": [
     {
       "at": "2026-10-02T22:21:00.890726+00:00",
@@ -1977,25 +1984,43 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-14T08:09:47.000517+00:00",
+      "from": "article_pr_open",
+      "to": "image_retry_wait",
+      "reason": "IMAGE_OUTPUT_MISSING",
+      "details": {
+        "message": "trusted image run 38516108724 completed with conclusion=success but no validated image is present",
+        "retry_at": "2026-10-14T08:14:47.000479+00:00",
+        "failure_streak": 1,
+        "run_id": 38516108724
+      }
     }
   ],
-  "updated_at": "2026-10-14T08:04:36.834102+00:00",
+  "updated_at": "2026-10-14T08:09:47.000523+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "complete",
-    "last_error": null,
-    "next_retry_at": null,
+    "status": "retry_wait",
+    "last_error": {
+      "code": "IMAGE_OUTPUT_MISSING",
+      "message": "trusted image run 38516108724 completed with conclusion=success but no validated image is present",
+      "retryable": true,
+      "retry_at": "2026-10-14T08:14:47.000479+00:00",
+      "at": "2026-10-14T08:09:47.000510+00:00"
+    },
+    "next_retry_at": "2026-10-14T08:14:47.000479+00:00",
     "run_id": 38516108724,
-    "processed_run_id": 38513928693,
+    "processed_run_id": 38516108724,
     "provider_id": "Local",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
+    "failure_fingerprint": "IMAGE_OUTPUT_MISSING",
+    "same_failure_streak": 1,
     "failure_count_by_type": {
-      "IMAGE_OUTPUT_MISSING": 2
+      "IMAGE_OUTPUT_MISSING": 3
     },
     "last_dispatch_at": "2026-10-14T05:20:33.766739+00:00",
     "last_run_conclusion": "success",
-    "last_failed_run_id": 38513928693,
+    "last_failed_run_id": 38516108724,
     "artifact_sha256": "d902e56620cace8e711655586c9e708849d8b14bdb6f9c968f1e3fa696817763",
     "source_id": "local://public/images/generated/blog/i-told-you-so-criticism-in-relationships.jpg"
   },
