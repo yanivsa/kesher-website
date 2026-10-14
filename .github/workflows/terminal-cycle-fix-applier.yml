@@ -23,127 +23,14 @@ jobs:
           ref: fix/terminal-cycle-no-resurrection-20261014
           fetch-depth: 0
 
-      - name: Add regression test only
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          path = Path('tests/test_kesher_content_controller.py')
-          text = path.read_text(encoding='utf-8')
-          marker = '    def test_preserved_jules_timeout_immediately_redispatches_same_slot_recovery(self):\n'
-          test = '''    def test_terminal_merge_budget_tombstone_blocks_stale_jules_recovery(self):
-              gh = FakeGitHub()
-              gh.saved_state = controller.new_cycle_state(self.now().date())
-              # Reproduce the production resurrection shape: a terminal cycle was
-              # already corrupted back to article_generating/running, while the
-              # durable auto-merge budget still proves terminal exhaustion.
-              gh.saved_state["status"] = "article_generating"
-              gh.saved_state["article"].update({
-                  "status": "running",
-                  "attempts": 1,
-                  "attempt_count": 2,
-                  "run_id": 43,
-                  "processed_run_id": 41,
-                  "merge_dispatch_count": 6,
-              })
-              gh.runs[43] = {"id": 43, "status": "completed", "conclusion": "failure"}
-              gh.article_results[43] = {
-                  "schema_version": 1,
-                  "slot": "2026-08-19",
-                  "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
-                  "retryable": True,
-                  "message": "session preserved",
-                  "session_id": "sessions/43",
-              }
+      - name: Run red-green regression applier
+        run: python3 .github/scripts/terminal_cycle_fix_applier.py
 
-              state, action = self.make(gh).tick()
-
-              self.assertEqual(action.kind, "blocked")
-              self.assertEqual(state["status"], "blocked")
-              self.assertEqual(state["article"]["status"], "exhausted")
-              self.assertEqual(state["last_error"]["code"], "ARTICLE_ATTEMPTS_EXHAUSTED")
-              self.assertEqual(gh.dispatches, [])
-
-'''
-          if 'test_terminal_merge_budget_tombstone_blocks_stale_jules_recovery' not in text:
-              if marker not in text:
-                  raise SystemExit('regression insertion marker missing')
-              text = text.replace(marker, test + marker, 1)
-              path.write_text(text, encoding='utf-8')
-          PY
-
-      - name: Prove regression is RED before fix
-        run: |
-          set +e
-          python3 -m unittest tests.test_kesher_content_controller.ControllerTests.test_terminal_merge_budget_tombstone_blocks_stale_jules_recovery -v
-          rc=$?
-          set -e
-          if [ "$rc" -eq 0 ]; then
-            echo 'ERROR: regression unexpectedly passed before the fix'
-            exit 1
-          fi
-          echo 'RED_CONFIRMED: terminal cycle resurrects on the unfixed controller'
-
-      - name: Apply minimal terminal tombstone guard
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          path = Path('scripts/kesher_content_controller.py')
-          text = path.read_text(encoding='utf-8')
-          old = '''        if not todays:
-            if not self.article_slot_open():
-'''
-          new = '''        if not todays:
-            # A terminal article budget is a durable tombstone for this cycle.
-            # Child workflow wake-ups must never replay an older retryable worker
-            # result (for example a preserved Jules timeout) after auto-merge or
-            # article attempts were already exhausted. A real same-day article,
-            # reconciled above, still takes precedence over stale terminal state.
-            article_state = state.get("article") if isinstance(state.get("article"), dict) else {}
-            last_error = state.get("last_error") if isinstance(state.get("last_error"), dict) else {}
-            terminal_article_exhausted = bool(
-                article_state.get("status") == "exhausted"
-                or int(article_state.get("merge_dispatch_count") or 0) >= 3
-                or (
-                    state.get("status") == "blocked"
-                    and last_error.get("stage") == "article"
-                    and last_error.get("code") == "ARTICLE_ATTEMPTS_EXHAUSTED"
-                )
-            )
-            if terminal_article_exhausted:
-                message = "article cycle has durable terminal attempt exhaustion; stale worker recovery is forbidden"
-                already_terminal = bool(
-                    state.get("status") == "blocked"
-                    and article_state.get("status") == "exhausted"
-                    and last_error.get("stage") == "article"
-                    and last_error.get("code") == "ARTICLE_ATTEMPTS_EXHAUSTED"
-                )
-                article_state["status"] = "exhausted"
-                state["article"] = article_state
-                if not already_terminal:
-                    block(state, "article", "ARTICLE_ATTEMPTS_EXHAUSTED", message)
-                return Action("blocked", message)
-
-            if not self.article_slot_open():
-'''
-          if old not in text:
-              if 'durable terminal attempt exhaustion' in text:
-                  raise SystemExit(0)
-              raise SystemExit('controller insertion marker missing')
-          path.write_text(text.replace(old, new, 1), encoding='utf-8')
-          PY
-
-      - name: Prove GREEN and preserve legitimate same-session recovery
-        run: |
-          python3 -m unittest \
-            tests.test_kesher_content_controller.ControllerTests.test_terminal_merge_budget_tombstone_blocks_stale_jules_recovery \
-            tests.test_kesher_content_controller.ControllerTests.test_preserved_jules_timeout_immediately_redispatches_same_slot_recovery \
-            -v
-          python3 -m unittest tests.test_kesher_content_controller -v
-
-      - name: Commit tested fix and remove applier
+      - name: Commit tested fix and remove temporary applier
         run: |
           set -euo pipefail
           git rm .github/workflows/terminal-cycle-fix-applier.yml
+          git rm .github/scripts/terminal_cycle_fix_applier.py
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add scripts/kesher_content_controller.py tests/test_kesher_content_controller.py
