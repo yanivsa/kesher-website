@@ -2030,8 +2030,8 @@
     "short_origin_verified": false
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 38515762957,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 38516108724,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-14"
@@ -2055,18 +2055,6 @@
       "previous_run_id": 38491499100,
       "observed_active_run_id": 38512981747,
       "dispatched_at": "2026-10-14T04:44:32.740063+00:00"
-    },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-10-14",
-      "inputs": {
-        "pr_number": "1113"
-      },
-      "intent_at": "2026-10-14T05:19:45.091254+00:00",
-      "status": "dispatched",
-      "previous_run_id": 38513928693,
-      "observed_active_run_id": 38516108724,
-      "dispatched_at": "2026-10-14T05:19:45.091254+00:00"
     }
   }
 }
