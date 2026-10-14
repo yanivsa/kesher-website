@@ -67,6 +67,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
         self.assertEqual(image["local_fallback_candidates_per_category"], 40)
         self.assertEqual(image["local_fallback_reuse_cooldown_days"], 0)
         self.assertEqual(image["local_fallback_max_lifetime_uses"], 1)
+        self.assertEqual(image["hero_unique_enforcement_start_date"], "2026-10-14")
         self.assertEqual(image["local_fallback_policy"], "unique-only-never-reuse-published-hero")
         self.assertFalse(image["abstract_placeholder_allowed"])
         self.assertTrue(image["fallback_must_be_local"])

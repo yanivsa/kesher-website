@@ -68,6 +68,7 @@ function testTrustedArticleImageV2() {
   assert.strictEqual(contract.image.managed_fallback_library_target_per_category, 40);
   assert.strictEqual(contract.image.local_fallback_reuse_cooldown_days, 0);
   assert.strictEqual(contract.image.local_fallback_max_lifetime_uses, 1);
+  assert.strictEqual(contract.image.hero_unique_enforcement_start_date, '2026-10-14');
   assert.strictEqual(contract.image.gemini_model, 'gemini-3.1-flash-image');
   assert.strictEqual(contract.image.visual_verifier_model, 'gemini-3.5-flash');
   assert.strictEqual(contract.image.external_stock_requires_pixel_verification, true);

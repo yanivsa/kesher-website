@@ -124,7 +124,8 @@
     "local_fallback_candidates_per_category": 40,
     "managed_fallback_library_target_per_category": 40,
     "local_fallback_reuse_cooldown_days": 0,
-    "local_fallback_max_lifetime_uses": 1
+    "local_fallback_max_lifetime_uses": 1,
+    "hero_unique_enforcement_start_date": "2026-10-14"
   },
   "video": {
     "publication_gate": "technical",

@@ -36,6 +36,16 @@ def reuse_policy() -> tuple[int, int]:
     return cooldown_days, max_uses
 
 
+def unique_enforcement_start_date() -> date:
+    contract = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
+    image = contract.get("image") if isinstance(contract, dict) else {}
+    raw = str(image.get("hero_unique_enforcement_start_date") or "") if isinstance(image, dict) else ""
+    parsed = _parse_date(raw)
+    if parsed is None:
+        raise RuntimeError("Invalid hero uniqueness enforcement start date")
+    return parsed
+
+
 def validate_hash_reuse(
     digest: str,
     uses: list[dict[str, object]],
@@ -46,8 +56,21 @@ def validate_hash_reuse(
     del cooldown_days, max_uses
     if len(uses) <= 1:
         return []
-    ids = ", ".join(str(use.get("id") or "<unknown>") for use in uses)
-    return [f"hero pixels must be unique across published articles: {digest} used by {ids}"]
+    cutoff = unique_enforcement_start_date()
+    dated: list[tuple[date, str]] = []
+    for use in uses:
+        pid = str(use.get("id") or "<unknown>")
+        parsed = _parse_date(use.get("date"))
+        if parsed is None:
+            return [f"hero pixel reuse has missing publication date: {digest} includes {pid}"]
+        dated.append((parsed, pid))
+    if all(published < cutoff for published, _pid in dated):
+        return []
+    ids = ", ".join(pid for _published, pid in dated)
+    return [
+        f"hero pixels must be unique for articles on/after {cutoff.isoformat()}: "
+        f"{digest} used by {ids}"
+    ]
 
 
 def main() -> int:

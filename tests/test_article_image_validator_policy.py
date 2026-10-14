@@ -33,31 +33,25 @@ class ArticleImageValidatorReusePolicyTests(unittest.TestCase):
         validator = load_validator()
         self.assertEqual(validator.reuse_policy(), (0, 1))
 
-    def test_duplicate_pixels_are_rejected_even_after_old_cooldown(self):
+    def test_historical_duplicate_pixels_are_grandfathered_before_fence(self):
         validator = load_validator()
         errors = validator.validate_hash_reuse(
             "abc",
-            [
-                use("first", "2025-01-01"),
-                use("second", "2026-09-24", trusted_local=True),
-            ],
+            [use("first", "2025-01-01"), use("second", "2026-10-13", trusted_local=True)],
             cooldown_days=0,
             max_uses=1,
         )
-        self.assertTrue(any("hero pixels must be unique" in error for error in errors), errors)
+        self.assertEqual(errors, [])
 
-    def test_duplicate_pixels_are_rejected_for_trusted_local_fallback(self):
+    def test_duplicate_pixels_are_rejected_when_current_article_crosses_fence(self):
         validator = load_validator()
         errors = validator.validate_hash_reuse(
             "abc",
-            [
-                use("first", "2026-08-01"),
-                use("second", "2026-09-24", trusted_local=True),
-            ],
+            [use("first", "2026-08-01"), use("second", "2026-10-14", trusted_local=True)],
             cooldown_days=0,
             max_uses=1,
         )
-        self.assertTrue(errors)
+        self.assertTrue(any("on/after 2026-10-14" in error for error in errors), errors)
 
     def test_single_use_is_allowed(self):
         validator = load_validator()

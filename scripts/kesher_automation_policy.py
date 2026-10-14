@@ -97,6 +97,7 @@ def load_policy(path: Path = POLICY_PATH) -> dict[str, Any]:
         or image.get("local_fallback_policy") != "unique-only-never-reuse-published-hero"
         or image.get("local_fallback_reuse_cooldown_days") != 0
         or image.get("local_fallback_max_lifetime_uses") != 1
+        or image.get("hero_unique_enforcement_start_date") != "2026-10-14"
         or image.get("no_image_publication_allowed") is not False
         or image.get("failure_mode") != "blocking-retry"
     ):
