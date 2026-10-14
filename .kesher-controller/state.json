@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-15",
-  "status": "article_generating",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -15,10 +15,12 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-10-14T22:14:26.528204+00:00",
     "pr_number": 1122,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1122"
+    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1122",
+    "normalization_slot": "2026-10-15",
+    "normalization_dispatched_at": "2026-10-14T22:55:08.791613+00:00"
   },
   "backlog": [
     {
@@ -1891,9 +1893,19 @@
       "details": {
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-14T22:55:08.791636+00:00",
+      "from": "article_generating",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1122,
+        "slot": "2026-10-15"
+      }
     }
   ],
-  "updated_at": "2026-10-14T22:14:26.528218+00:00",
+  "updated_at": "2026-10-14T22:55:08.791643+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -1942,9 +1954,10 @@
         "slot": "2026-10-15"
       },
       "intent_at": "2026-10-14T22:54:16.431884+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38650819792,
+      "dispatched_at": "2026-10-14T22:54:16.431884+00:00"
     }
   },
   "deliverables": {
@@ -1962,17 +1975,5 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-15"
-  },
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
   }
 }
