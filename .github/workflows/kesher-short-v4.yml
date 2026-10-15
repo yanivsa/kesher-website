@@ -92,6 +92,7 @@ jobs:
           persist-credentials: false
 
       - name: Refuse emergency bridge after cutover exclusion begins
+        id: bridge_admission
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 -m scripts.kesher_runtime.bridge_admission
