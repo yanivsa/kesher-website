@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-15",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1187,16 +1187,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-03T21:00:53.525752+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-09-27",
-        "source_slug": "siblings-fairness-vs-equality"
-      }
-    },
-    {
       "at": "2026-10-03T21:23:46.002262+00:00",
       "from": "waiting_for_article_window",
       "to": "waiting_for_article_window",
@@ -2058,9 +2048,19 @@
       "from": "blocked",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-15T14:44:50.833540+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "existing video item dispatched/resumed",
+      "details": {
+        "operation": "upload",
+        "resume": 1
+      }
     }
   ],
-  "updated_at": "2026-10-15T14:44:44.723377+00:00",
+  "updated_at": "2026-10-15T14:44:50.833547+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2081,10 +2081,10 @@
     "image_path": "/images/generated/blog/returning-to-israel-relationship-struggles.jpg"
   },
   "long_video": {
-    "attempt_count": 1,
-    "status": "uploading",
+    "attempt_count": 2,
+    "status": "running",
     "last_error": null,
-    "next_retry_at": "2026-10-15T13:45:57.092699+00:00",
+    "next_retry_at": null,
     "run_id": 38725623691,
     "processed_run_id": 38725623691,
     "provider_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
@@ -2092,7 +2092,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-15T11:11:58.110944+00:00",
+    "last_dispatch_at": "2026-10-15T14:44:50.833533+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261015-141328-f1d702122f",
@@ -2118,7 +2118,8 @@
       "requested_at": "2026-10-15T13:41:20.776880+00:00"
     },
     "youtube_id": "JzKDQLWHHW8",
-    "youtube_url": "https://youtu.be/JzKDQLWHHW8"
+    "youtube_url": "https://youtu.be/JzKDQLWHHW8",
+    "resume_dispatches": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2146,9 +2147,10 @@
         "target_item_id": "video-20261015-141328-f1d702122f"
       },
       "intent_at": "2026-10-15T14:44:25.846279+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38725623691,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38754142368,
+      "dispatched_at": "2026-10-15T14:44:25.846279+00:00"
     }
   },
   "deliverables": {
@@ -2176,45 +2178,5 @@
     "Deploy to Cloudflare Pages:38721231811",
     "Deploy to Cloudflare Pages:38724886297",
     "Kesher Daily NotebookLM Video Overview:38725623691"
-  ],
-  "video": {
-    "attempt_count": 1,
-    "status": "uploading",
-    "last_error": null,
-    "next_retry_at": "2026-10-15T13:45:57.092699+00:00",
-    "run_id": 38725623691,
-    "processed_run_id": 38725623691,
-    "provider_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-15T11:11:58.110944+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261015-141328-f1d702122f",
-    "source_slug": "returning-to-israel-relationship-struggles",
-    "source_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
-    "content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
-    "source_id": "d39569b2-6f46-434f-9ea8-bcaff69a74f5",
-    "task_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
-    "artifact_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
-    "provider_status": "pending",
-    "verified": false,
-    "watchdog": {
-      "identity": "long_video:returning-to-israel-relationship-struggles:f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223:video-20261015-141328-f1d702122f",
-      "hard_started_at": "2026-10-15T11:13:34.660634+00:00",
-      "last_progress_at": "2026-10-15T13:40:57.092699+00:00",
-      "last_fingerprint": "a3a6abb6b210fdaac564804400da3f9243f3ed9c45dff55759b4bb8ec2be4a99",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "controller_recovery_required": {
-      "incident_key": "v5|returning-to-israel-relationship-struggles|f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223|long_video",
-      "reason": "media provider hard timeout",
-      "requested_at": "2026-10-15T13:41:20.776880+00:00"
-    },
-    "youtube_id": "JzKDQLWHHW8",
-    "youtube_url": "https://youtu.be/JzKDQLWHHW8"
-  }
+  ]
 }
