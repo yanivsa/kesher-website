@@ -23,7 +23,7 @@
     "normalization_dispatched_at": "2026-10-15T10:27:43.844892+00:00",
     "normalization_run_id": 38720420098,
     "deploy_run_id": 38724886297,
-    "next_deploy_retry_at": "2026-10-15T11:16:11.138281+00:00",
+    "next_deploy_retry_at": null,
     "slug": "returning-to-israel-relationship-struggles",
     "title": "חוזרים לארץ אחרי רילוקיישן? למה החזרה הביתה מטלטלת את הזוגיות – ואיך מתמודדים",
     "url": "https://kesher.saharoni.com/blog/returning-to-israel-relationship-struggles",
@@ -34,7 +34,7 @@
     "quality_checked_at": "2026-10-15T11:11:15.598994+00:00",
     "quality_violations": [],
     "live": true,
-    "live_verified_at": "2026-10-15T11:11:17.360455+00:00"
+    "live_verified_at": "2026-10-15T11:11:49.008790+00:00"
   },
   "backlog": [
     {
@@ -2035,7 +2035,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-15T11:11:17.360480+00:00",
+  "updated_at": "2026-10-15T11:11:49.008810+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2083,7 +2083,21 @@
   "migration": {
     "v4_short_controller_state": null
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-15",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "returning-to-israel-relationship-struggles",
+        "target_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223"
+      },
+      "intent_at": "2026-10-15T11:11:11.138281+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/returning-to-israel-relationship-struggles",
     "overview_youtube_url": null,
@@ -2107,5 +2121,18 @@
     "Kesher Trusted Article Image:38719013794",
     "Kesher Normalize Article PR:38720420098",
     "Deploy to Cloudflare Pages:38721231811"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true
+  }
 }
