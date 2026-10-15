@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-15",
-  "status": "long_video_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1184,7 +1184,12 @@
       "archived_at": "2026-10-14T22:13:36.864685+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "long_video",
+    "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
+    "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
+    "at": "2026-10-15T13:41:20.776868+00:00"
+  },
   "history": [
     {
       "at": "2026-10-03T21:00:53.525752+00:00",
@@ -2043,9 +2048,18 @@
         "operation": "full",
         "attempt": 1
       }
+    },
+    {
+      "at": "2026-10-15T13:41:20.776873+00:00",
+      "from": "long_video_running",
+      "to": "blocked",
+      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
+      "details": {
+        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
+      }
     }
   ],
-  "updated_at": "2026-10-15T11:11:58.110961+00:00",
+  "updated_at": "2026-10-15T13:41:20.776878+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2067,18 +2081,41 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "blocked",
     "last_error": null,
     "next_retry_at": "2026-10-15T13:45:57.092699+00:00",
     "run_id": 38725623691,
-    "processed_run_id": null,
-    "provider_id": null,
+    "processed_run_id": 38725623691,
+    "provider_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
     "last_dispatch_at": "2026-10-15T11:11:58.110944+00:00",
-    "attempts": 1
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261015-141328-f1d702122f",
+    "source_slug": "returning-to-israel-relationship-struggles",
+    "source_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+    "content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+    "source_id": "d39569b2-6f46-434f-9ea8-bcaff69a74f5",
+    "task_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+    "artifact_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:returning-to-israel-relationship-struggles:f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223:video-20261015-141328-f1d702122f",
+      "hard_started_at": "2026-10-15T11:13:34.660634+00:00",
+      "last_progress_at": "2026-10-15T13:40:57.092699+00:00",
+      "last_fingerprint": "a3a6abb6b210fdaac564804400da3f9243f3ed9c45dff55759b4bb8ec2be4a99",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    },
+    "controller_recovery_required": {
+      "incident_key": "v5|returning-to-israel-relationship-struggles|f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223|long_video",
+      "reason": "media provider hard timeout",
+      "requested_at": "2026-10-15T13:41:20.776880+00:00"
+    }
   },
   "short": {
     "attempt_count": 0,
