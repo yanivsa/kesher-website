@@ -145,6 +145,7 @@ class ProductionCutoverTests(unittest.TestCase):
         # registration binding is a prerequisite, never a guessed service ID.
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
+        del rules['workflows']['.github/workflows/kesher-controller-liveness.yml']
         rows = reconcile_registrations(evidence['workflows'], rules)
         self.assertEqual(len(rows), 111)
         self.assertEqual(len(rules['registrations']), 43)
@@ -172,6 +173,7 @@ class ProductionCutoverTests(unittest.TestCase):
         rules=policy(ROOT);del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         # This immutable October 4 snapshot predates the metadata workflow.
         del rules['workflows']['.github/workflows/kesher-exact-short-metadata-recovery-20261006.yml']
+        del rules['workflows']['.github/workflows/kesher-controller-liveness.yml']
         rows=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-final-20261004.json').read_text())['workflows']
         self.assertEqual(len(reconcile_registrations(rows,rules)),112)
         path='.github/workflows/kesher-targeted-media-recovery-dispatch.yml'
@@ -554,6 +556,7 @@ class CredentialGatewayTests(unittest.TestCase):
         rules=policy(ROOT)
         del rules['workflows']['.github/workflows/kesher-production-cutover.yml']
         del rules['workflows']['.github/workflows/kesher-targeted-media-recovery-dispatch.yml']
+        del rules['workflows']['.github/workflows/kesher-controller-liveness.yml']
         evidence=json.loads((ROOT/'docs/forensics/2026-09-autonomous-stabilization/production-cutover-registration-baseline-20261004.json').read_text())
         # Retain the current metadata writer in this unseparated-authority
         # refusal test rather than treating the dated fixture as current.
