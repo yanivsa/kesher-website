@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-15",
-  "status": "long_video_running",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -34,7 +34,7 @@
     "quality_checked_at": "2026-10-15T15:20:17.935709+00:00",
     "quality_violations": [],
     "live": true,
-    "live_verified_at": "2026-10-15T15:20:19.968477+00:00"
+    "live_verified_at": "2026-10-15T15:20:51.625073+00:00"
   },
   "backlog": [
     {
@@ -1187,27 +1187,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-03T21:23:46.002262+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-09-27",
-        "source_slug": "siblings-fairness-vs-equality"
-      }
-    },
-    {
-      "at": "2026-10-03T21:58:22.567646+00:00",
-      "from": "sleep-needs-10-year-old",
-      "to": "sleep-needs-10-year-old",
-      "reason": "targeted_media_source_identity_reset",
-      "details": {
-        "previous_slug": "sleep-needs-10-year-old",
-        "previous_content_sha256": "4e02575378f8acab21bbbd79da607599aeffca50b47732011d883403a5e8a3d2",
-        "content_sha256": "199f8fed9193df4a0413df34afbfd962e8d827c08f8bfd74a30e1eb9a7c49d22"
-      }
-    },
-    {
       "at": "2026-10-04T04:01:32.853934+00:00",
       "from": "waiting_for_article_window",
       "to": "article_generating",
@@ -2058,9 +2037,21 @@
         "operation": "upload",
         "resume": 1
       }
+    },
+    {
+      "at": "2026-10-15T15:20:51.625092+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-15T15:20:53.075742+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-10-15T14:44:50.833547+00:00",
+  "updated_at": "2026-10-15T15:20:53.075772+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2082,7 +2073,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38754142368,
@@ -2162,6 +2153,20 @@
       "previous_run_id": 38725623691,
       "observed_active_run_id": 38754142368,
       "dispatched_at": "2026-10-15T14:44:25.846279+00:00"
+    },
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-15",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "returning-to-israel-relationship-struggles",
+        "derive_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+        "derive_long_item_id": "video-20261015-141328-f1d702122f"
+      },
+      "intent_at": "2026-10-15T15:20:14.022111+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "deliverables": {
