@@ -138,7 +138,7 @@ class ImageEvidenceRebindStabilityTests(unittest.TestCase):
         def article_pr_image_ready(self, pr):
             return False, {}
 
-        def article_pr_image_rebind_ready(self, pr):
+        def article_pr_image_rebindable(self, pr):
             if not self.rebind_ready:
                 return False, {}
             return True, {
