@@ -1256,7 +1256,10 @@
         "long_status": "complete",
         "long_item_id": "video-20261015-141328-f1d702122f",
         "long_youtube_url": "https://www.youtube.com/watch?v=JzKDQLWHHW8",
-        "long_youtube_id": "JzKDQLWHHW8"
+        "long_youtube_id": "JzKDQLWHHW8",
+        "short_status": "running",
+        "short_dispatch_count": 1,
+        "short_last_dispatch_at": "2026-10-15T21:38:38.074239+00:00"
       }
     }
   ],
@@ -1969,9 +1972,19 @@
       "from": "article_needed",
       "to": "waiting_for_article_window",
       "reason": "publication slot has not opened"
+    },
+    {
+      "at": "2026-10-15T21:38:38.074268+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched independent prior-cycle Short generation",
+      "details": {
+        "backlog_cycle": "2026-10-15",
+        "source_slug": "returning-to-israel-relationship-struggles"
+      }
     }
   ],
-  "updated_at": "2026-10-15T21:38:28.653205+00:00",
+  "updated_at": "2026-10-15T21:38:38.074285+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2031,9 +2044,10 @@
         "derive_long_item_id": "video-20261015-141328-f1d702122f"
       },
       "intent_at": "2026-10-15T21:38:10.688396+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38811420882,
+      "dispatched_at": "2026-10-15T21:38:10.688396+00:00"
     }
   }
 }
