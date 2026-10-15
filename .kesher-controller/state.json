@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-15",
-  "status": "article_live",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1184,17 +1184,13 @@
       "archived_at": "2026-10-14T22:13:36.864685+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "short",
+    "code": "SHORT_PROVIDER_HARD_TIMEOUT",
+    "message": "short provider exceeded 90 minute hard timeout from launch/recovery",
+    "at": "2026-10-15T19:35:58.757016+00:00"
+  },
   "history": [
-    {
-      "at": "2026-10-04T04:22:48.820407+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/8912115024517976935"
-      }
-    },
     {
       "at": "2026-10-04T04:29:41.993660+00:00",
       "from": "article_generating",
@@ -2043,9 +2039,18 @@
       "from": "blocked",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-15T19:35:58.757022+00:00",
+      "from": "article_live",
+      "to": "blocked",
+      "reason": "SHORT_PROVIDER_HARD_TIMEOUT",
+      "details": {
+        "message": "short provider exceeded 90 minute hard timeout from launch/recovery"
+      }
     }
   ],
-  "updated_at": "2026-10-15T19:35:45.745672+00:00",
+  "updated_at": "2026-10-15T19:35:58.757028+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2143,7 +2148,7 @@
     "controller_recovery_required": {
       "incident_key": "v5|returning-to-israel-relationship-struggles|f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223|short",
       "reason": "media provider hard timeout",
-      "requested_at": "2026-10-15T18:42:54.367248+00:00"
+      "requested_at": "2026-10-15T19:35:58.757031+00:00"
     }
   },
   "migration": {
