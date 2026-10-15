@@ -1245,7 +1245,19 @@
         "blocked": true,
         "article_exhausted": false
       },
-      "archived_at": "2026-10-15T21:38:11.847469+00:00"
+      "archived_at": "2026-10-15T21:38:11.847469+00:00",
+      "media": {
+        "source_slug": "returning-to-israel-relationship-struggles",
+        "source_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+        "article_title": "חוזרים לארץ אחרי רילוקיישן? למה החזרה הביתה מטלטלת את הזוגיות – ואיך מתמודדים",
+        "article_url": "https://kesher.saharoni.com/blog/returning-to-israel-relationship-struggles",
+        "article_live": true,
+        "article_deploy_status": "complete",
+        "long_status": "complete",
+        "long_item_id": "video-20261015-141328-f1d702122f",
+        "long_youtube_url": "https://www.youtube.com/watch?v=JzKDQLWHHW8",
+        "long_youtube_id": "JzKDQLWHHW8"
+      }
     }
   ],
   "last_error": null,
@@ -2007,5 +2019,21 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-16",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "returning-to-israel-relationship-struggles",
+        "derive_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+        "derive_long_item_id": "video-20261015-141328-f1d702122f"
+      },
+      "intent_at": "2026-10-15T21:38:10.688396+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
   }
 }
