@@ -2078,13 +2078,13 @@
       "inputs": {
         "operation": "full",
         "target_slug": "dating-apps-burnout-finding-a-partner",
-        "target_content_sha256": "8474a80ca2a28172e3e6936feaefe4e00d85dcff3973ba51b6c13675a2e38a8b"
+        "target_content_sha256": "8474a80ca2a28172e3e6936feaefe4e00d85dcff3973ba51b6c13675a2e38a8b",
+        "target_item_id": "video-20261016-004908-8474a80ca2"
       },
-      "intent_at": "2026-10-15T21:44:57.079815+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-15T22:07:44.085680+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 38812283519,
-      "dispatched_at": "2026-10-15T21:44:57.079815+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
