@@ -10,6 +10,7 @@ part of this pipeline.
 from __future__ import annotations
 
 import argparse
+import base64
 import copy
 import hashlib
 import html
@@ -22,6 +23,9 @@ import struct
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from datetime import date, datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -602,6 +606,11 @@ def reconcile_legacy_effect(
         session_uri = item.get("upload_session_uri") or (entry.get("request") or {}).get("session_uri")
         total = (entry.get("request") or {}).get("size")
         token = (entry.get("request") or {}).get("token")
+        if not token:
+            try:
+                token = youtube_access_token()
+            except Exception:
+                token = None
         if session_uri and total and token:
             try:
                 resumed = resume_upload_status(session_uri, token, total)
@@ -611,6 +620,101 @@ def reconcile_legacy_effect(
                 pass
         return None
     return None
+
+
+MEDIA_INTENT_REF = os.environ.get("KESHER_MEDIA_INTENT_REF", "automation-state")
+_REMOTE_MEDIA_INTENT_STORE: dict[str, dict[str, Any]] = {}
+
+
+def _load_remote_media_intent(item_id: str, name: str) -> dict[str, Any] | None:
+    if not item_id or not name:
+        return None
+    key = f"{item_id}:{name}"
+    if key in _REMOTE_MEDIA_INTENT_STORE:
+        return copy.deepcopy(_REMOTE_MEDIA_INTENT_STORE[key])
+
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    repo = os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website")
+    if not token:
+        return None
+
+    path = f".kesher-media-intents/{item_id}/{name}.json"
+    quoted = urllib.parse.quote(path, safe="/")
+    url = f"https://api.github.com/repos/{repo}/contents/{quoted}?ref={MEDIA_INTENT_REF}"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Kesher-Media-Intent",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            content = base64.b64decode(data.get("content", "")).decode("utf-8")
+            return json.loads(content)
+    except Exception:
+        return None
+
+
+def _persist_remote_media_intent(item_id: str, name: str, entry: dict[str, Any]) -> None:
+    if not item_id or not name or not entry:
+        return
+    key = f"{item_id}:{name}"
+    _REMOTE_MEDIA_INTENT_STORE[key] = copy.deepcopy(entry)
+
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    repo = os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website")
+    if not token:
+        return
+
+    path = f".kesher-media-intents/{item_id}/{name}.json"
+    quoted = urllib.parse.quote(path, safe="/")
+    url = f"https://api.github.com/repos/{repo}/contents/{quoted}?ref={MEDIA_INTENT_REF}"
+    req_get = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Kesher-Media-Intent",
+        },
+    )
+    existing_sha = None
+    try:
+        with urllib.request.urlopen(req_get, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            existing_sha = data.get("sha")
+    except Exception:
+        existing_sha = None
+
+    body = {
+        "message": f"state: media write-ahead intent {item_id} {name} {entry.get('status')} [skip ci]",
+        "content": base64.b64encode(
+            (json.dumps(entry, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+        ).decode("ascii"),
+        "branch": MEDIA_INTENT_REF,
+    }
+    if existing_sha:
+        body["sha"] = existing_sha
+
+    put_url = f"https://api.github.com/repos/{repo}/contents/{quoted}"
+    req_put = urllib.request.Request(
+        put_url,
+        data=json.dumps(body).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json",
+            "User-Agent": "Kesher-Media-Intent",
+        },
+        method="PUT",
+    )
+    try:
+        with urllib.request.urlopen(req_put, timeout=15) as resp:
+            pass
+    except Exception:
+        pass
 
 
 def legacy_external_effect(
@@ -625,8 +729,15 @@ def legacy_external_effect(
     Prevents duplicate generation/upload and budget divergence if the process crashes
     after external acceptance but before state save.
     """
+    item_id = str(item.get("id") or "")
     effects = item.setdefault("external_effects", {})
     entry = effects.get(name)
+    if not entry and item_id:
+        remote_entry = _load_remote_media_intent(item_id, name)
+        if isinstance(remote_entry, dict) and remote_entry.get("status"):
+            effects[name] = remote_entry
+            entry = remote_entry
+
     if entry:
         if entry.get("status") == "completed" and entry.get("receipt"):
             if entry.get("request") != request:
@@ -641,6 +752,7 @@ def legacy_external_effect(
                 entry["receipt"] = copy.deepcopy(reconciled)
                 entry["reconciled_at"] = utc_now()
                 save_state(state)
+                _persist_remote_media_intent(item_id, name, entry)
                 return copy.deepcopy(reconciled)
             raise PipelineError(
                 f"EXTERNAL_RESULT_UNCERTAIN: cannot prove whether {name} completed externally; refusing second mutation"
@@ -653,6 +765,7 @@ def legacy_external_effect(
         "started_at": utc_now(),
     }
     save_state(state)
+    _persist_remote_media_intent(item_id, name, effects[name])
 
     try:
         receipt = create_func()
@@ -660,12 +773,14 @@ def legacy_external_effect(
         effects[name]["status"] = "failed"
         effects[name]["error"] = str(exc)
         save_state(state)
+        _persist_remote_media_intent(item_id, name, effects[name])
         raise
 
     effects[name]["status"] = "completed"
     effects[name]["receipt"] = copy.deepcopy(receipt)
     effects[name]["completed_at"] = utc_now()
     save_state(state)
+    _persist_remote_media_intent(item_id, name, effects[name])
     return receipt
 
 

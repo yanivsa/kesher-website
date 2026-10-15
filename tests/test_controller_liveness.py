@@ -39,12 +39,14 @@ from scripts.kesher_runtime.controller_liveness import (
 
 
 class MockTransport(GitHubLivenessTransport):
-    def __init__(self, runs=None, state=None):
+    def __init__(self, runs=None, state=None, remote_ledger=None):
         super().__init__(token="mock-token", repo=DEFAULT_REPO)
         self.runs = runs or []
         self.state = state
         self.dispatches: list[dict] = []
         self.should_fail_dispatch = False
+        self.remote_ledger = remote_ledger if remote_ledger is not None else {}
+        self.remote_ledger_sha: str = "blob-sha-init"
 
     def get_recent_runs(self, workflow_name="kesher-content-controller.yml", limit=10):
         return copy.deepcopy(self.runs)
@@ -57,6 +59,15 @@ class MockTransport(GitHubLivenessTransport):
 
     def get_controller_state_from_git(self, ref="automation-state"):
         return copy.deepcopy(self.state)
+
+    def get_liveness_ledger(self, ref="automation-state"):
+        return copy.deepcopy(self.remote_ledger), self.remote_ledger_sha
+
+    def put_liveness_ledger(self, ledger, sha=None, ref="automation-state"):
+        self.remote_ledger.clear()
+        self.remote_ledger.update(copy.deepcopy(ledger))
+        self.remote_ledger_sha = "blob-sha-updated"
+        return self.remote_ledger_sha
 
 
 class ControllerLivenessTests(unittest.TestCase):
@@ -348,6 +359,59 @@ class ControllerLivenessTests(unittest.TestCase):
         decision_no_cycle = evaluate_liveness({"schema_version": 5}, [], {}, self.base_time)
         self.assertEqual(decision_no_cycle.status, "LIVENESS_REFUSED_INVALID_STATE")
         self.assertIsNone(decision_no_cycle.action)
+
+    # 12. Remote ledger durability across VM crashes
+    def test_remote_ledger_survives_vm_crash_and_prevents_duplicate_dispatch(self):
+        """Instance A writes intent to remote ledger and dies; Instance B on a fresh VM
+        (with empty filesystem) loads remote state, reconciles, and does NOT issue a duplicate POST/dispatch.
+        """
+        shared_remote_backend = {}
+        stale_time = self.base_time - timedelta(minutes=25)
+        state = self.valid_active_state(updated_at=_iso(stale_time))
+
+        # VM A: starts, evaluates stale controller, writes intent remotely, and dispatches
+        vm_a_dir = Path(self.temp_dir.name) / "vm_a"
+        vm_a_dir.mkdir(parents=True, exist_ok=True)
+        transport_a = MockTransport(runs=[], state=state, remote_ledger=shared_remote_backend)
+        watchdog_a = ControllerLivenessWatchdog(
+            repo=DEFAULT_REPO,
+            ledger_path=vm_a_dir / "controller-liveness.json",
+            transport=transport_a,
+        )
+
+        report_a = watchdog_a.reconcile(now=self.base_time)
+        self.assertTrue(report_a["dispatched"])
+        self.assertEqual(len(transport_a.dispatches), 1)
+        self.assertIn("current_intent", shared_remote_backend)
+        self.assertEqual(shared_remote_backend["current_intent"]["status"], "dispatched")
+
+        # SIMULATE VM A CRASH: VM A disk is completely discarded!
+        # VM B: Fresh runner VM starts up with empty disk!
+        vm_b_dir = Path(self.temp_dir.name) / "vm_b"
+        vm_b_dir.mkdir(parents=True, exist_ok=True)
+        # Note: vm_b_dir / "controller-liveness.json" DOES NOT EXIST!
+        self.assertFalse((vm_b_dir / "controller-liveness.json").exists())
+
+        # Transport B accesses the same shared git repo (automation-state)
+        # 2 minutes later: run has not appeared yet (delayed visibility)
+        time_b = self.base_time + timedelta(minutes=2)
+        transport_b = MockTransport(runs=[], state=state, remote_ledger=shared_remote_backend)
+        # Dispatches list on transport_b is initially empty
+        self.assertEqual(len(transport_b.dispatches), 0)
+
+        watchdog_b = ControllerLivenessWatchdog(
+            repo=DEFAULT_REPO,
+            ledger_path=vm_b_dir / "controller-liveness.json",
+            transport=transport_b,
+        )
+
+        # Watchdog B reconciles: loads remote ledger from automation-state,
+        # detects active intent within visibility grace window, and suppresses dispatch!
+        report_b = watchdog_b.reconcile(now=time_b)
+        self.assertFalse(report_b["dispatched"])
+        self.assertEqual(report_b["status"], "LIVENESS_WAIT_DISPATCH_VISIBILITY")
+        # Critical verification: ZERO additional dispatches from VM B!
+        self.assertEqual(len(transport_b.dispatches), 0)
 
 
 if __name__ == "__main__":

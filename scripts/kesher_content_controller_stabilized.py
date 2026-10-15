@@ -1052,20 +1052,37 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 src = self._article_source(state)
                 if src and src.get("slug"):
                     current_slug = str(src.get("slug")).strip()
+            backlog_sha = ""
             if current_slug and info["source_slug"] != current_slug:
                 backlog_matches = [
                     row for row in (state.get("backlog") or [])
-                    if isinstance(row, dict) and str(row.get("slug") or "") == info["source_slug"]
+                    if isinstance(row, dict) and (str(row.get("slug") or "") == info["source_slug"] or str(row.get("exact_slug") or "") == info["source_slug"])
                 ]
                 if not backlog_matches:
                     return False, f"child notification source_slug mismatch: {info['source_slug']} != {current_slug}"
-            current_sha = str((state.get("article") or {}).get("quality_content_sha256") or "").strip()
+                b_row = backlog_matches[0]
+                backlog_sha = str(
+                    b_row.get("content_sha256")
+                    or (b_row.get("article") or {}).get("quality_content_sha256")
+                    or (b_row.get("article") or {}).get("content_sha256")
+                    or ""
+                ).strip()
+
+            current_sha = backlog_sha
+            if not current_sha:
+                current_sha = str((state.get("article") or {}).get("quality_content_sha256") or "").strip()
+            if not current_sha:
+                current_sha = str((state.get("article") or {}).get("content_sha256") or "").strip()
             if not current_sha:
                 src = self._article_source(state)
                 if src and src.get("content_sha256"):
                     current_sha = str(src.get("content_sha256")).strip()
-            if info.get("source_sha") and current_sha and info["source_sha"] != current_sha:
-                return False, f"child notification source_sha mismatch: {info['source_sha']} != {current_sha}"
+
+            if current_sha:
+                if not info.get("source_sha"):
+                    return False, f"untrusted media notification: missing mandatory source_sha for {stage_name}"
+                if info["source_sha"] != current_sha:
+                    return False, f"child notification source_sha mismatch: {info['source_sha']} != {current_sha}"
         elif info["source_slug"]:
             current_slug = str((state.get("article") or {}).get("slug") or "").strip()
             if not current_slug:
@@ -1659,6 +1676,28 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         url = f"{v5.core.SITE_URL}/blog/{slug}"
         content_sha = str(state.get("article", {}).get("quality_content_sha256") or "").strip()
         hero_path = str(article.get("image") or article.get("hero_image") or "").strip()
+        expected_hero_sha = str(
+            article.get("image_sha256")
+            or article.get("hero_image_sha256")
+            or (state.get("image", {}) or {}).get("image_sha256")
+            or (state.get("article", {}) or {}).get("image_sha256")
+            or ""
+        ).strip()
+        if not expected_hero_sha and hero_path:
+            local_hero = Path("public") / hero_path.lstrip("/")
+            if local_hero.is_file():
+                try:
+                    expected_hero_sha = hashlib.sha256(local_hero.read_bytes()).hexdigest()
+                except Exception:
+                    pass
+            elif hasattr(self.github, "file_content"):
+                try:
+                    content = self.github.file_content("main", f"public/{hero_path.lstrip('/')}")
+                    if isinstance(content, (bytes, str)):
+                        raw_b = content.encode("utf-8") if isinstance(content, str) else content
+                        expected_hero_sha = hashlib.sha256(raw_b).hexdigest()
+                except Exception:
+                    pass
 
         # In-memory session tracking only: guaranteed fresh HTTP check on controller restart
         if slug in self._in_memory_verified_articles:
@@ -1673,6 +1712,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 expected_slug=slug,
                 expected_content_sha256=content_sha,
                 expected_hero_path=hero_path or None,
+                expected_hero_sha256=expected_hero_sha or None,
+                hero_fetcher=self.site,
             )
         )
         if is_pub:

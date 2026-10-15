@@ -300,6 +300,8 @@ def article_is_public(
     expected_slug: str | None = None,
     expected_content_sha256: str | None = None,
     expected_hero_path: str | None = None,
+    expected_hero_sha256: str | None = None,
+    hero_fetcher: Any | None = None,
 ) -> bool:
     page = re.sub(r"\s+", " ", html_text)
     title = re.sub(r"\s+", " ", expected_title.strip())
@@ -308,6 +310,7 @@ def article_is_public(
 
     if expected_slug:
         slug = expected_slug.strip()
+        expected_url = f"{SITE_URL}/blog/{slug}".rstrip("/")
         canonical_match = re.search(
             r'<link[^>]+rel=["\']canonical["\'][^>]+href=["\']([^"\']+)["\']|<link[^>]+href=["\']([^"\']+)["\'][^>]+rel=["\']canonical["\']',
             html_text,
@@ -316,7 +319,7 @@ def article_is_public(
         if not canonical_match:
             return False
         canonical_url = (canonical_match.group(1) or canonical_match.group(2) or "").strip()
-        if not canonical_url or f"/blog/{slug}" not in canonical_url:
+        if not canonical_url or canonical_url.rstrip("/") != expected_url:
             return False
 
         og_match = re.search(
@@ -326,7 +329,7 @@ def article_is_public(
         )
         if og_match:
             og_url = (og_match.group(1) or og_match.group(2) or "").strip()
-            if not og_url or f"/blog/{slug}" not in og_url:
+            if not og_url or og_url.rstrip("/") != expected_url:
                 return False
 
     if expected_content_sha256:
@@ -362,6 +365,40 @@ def article_is_public(
         if og_img_match:
             og_img = (og_img_match.group(1) or og_img_match.group(2) or "").strip()
             if hero not in og_img:
+                return False
+
+        if expected_hero_sha256:
+            expected_h_sha = expected_hero_sha256.strip().lower()
+            hero_url = hero if hero.startswith(("http://", "https://")) else f"{SITE_URL}/{hero.lstrip('/')}"
+            try:
+                if hero_fetcher is not None:
+                    if callable(hero_fetcher):
+                        fetch_res = hero_fetcher(hero_url)
+                    elif hasattr(hero_fetcher, "get_bytes"):
+                        fetch_res = hero_fetcher.get_bytes(hero_url)
+                    elif hasattr(hero_fetcher, "get"):
+                        fetch_res = hero_fetcher.get(hero_url)
+                    else:
+                        return False
+                    if isinstance(fetch_res, tuple) and len(fetch_res) == 2:
+                        status, data = fetch_res
+                    else:
+                        status, data = 200, fetch_res
+                    hero_bytes = data.encode("utf-8") if isinstance(data, str) else data
+                else:
+                    req = urllib.request.Request(
+                        hero_url,
+                        headers={"User-Agent": "Kesher-Content-Controller/2.0"},
+                    )
+                    with urllib.request.urlopen(req, timeout=30) as resp:
+                        status = int(resp.status)
+                        hero_bytes = resp.read()
+                if status != 200 or not hero_bytes:
+                    return False
+                actual_h_sha = hashlib.sha256(hero_bytes).hexdigest().lower()
+                if actual_h_sha != expected_h_sha:
+                    return False
+            except Exception:
                 return False
 
     return True
@@ -1015,6 +1052,18 @@ class PublicSiteClient:
                 return int(response.status), response.read().decode("utf-8", errors="replace")
         except urllib.error.HTTPError as exc:
             return int(exc.code), exc.read().decode("utf-8", errors="replace")
+
+    def get_bytes(self, url: str) -> tuple[int, bytes]:
+        request = urllib.request.Request(
+            url, headers={"User-Agent": "Kesher-Content-Controller/2.0"}
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                return int(response.status), response.read()
+        except urllib.error.HTTPError as exc:
+            return int(exc.code), exc.read()
+        except Exception:
+            return 500, b""
 
 
 def fetch_ashdod_sunset(day: date) -> datetime:

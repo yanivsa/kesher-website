@@ -171,19 +171,24 @@ class MediaExternalEffectCrashConsistencyTests(unittest.TestCase):
             self.assertEqual(call_count, 0)
 
     def test_crash_after_final_upload_acceptance_recovers_video_id(self):
+        """Model real failure window: pre-crash durable state has NO youtube_id.
+        Provider accepted the upload, VM died before local receipt save.
+        Fresh VM starts with empty disk, queries provider/session, recovers video ID without duplicate upload.
+        """
         state = {"version": 1, "items": []}
         item = {
             "id": "video-test-yt-upload",
-            "youtube_id": "yt-video-12345",
+            # Note: youtube_id is NOT present in item before crash!
+            "upload_session_uri": "https://upload.youtube.com/resumable/session-abc",
             "external_effects": {
                 "youtube_upload_bytes": {
                     "status": "intent",
-                    "request": {"session_uri": "uri-1", "offset": 0, "size": 1000},
+                    "request": {"session_uri": "https://upload.youtube.com/resumable/session-abc", "offset": 0, "size": 1000},
                 }
             },
         }
         state["items"].append(item)
-        request = {"session_uri": "uri-1", "offset": 0, "size": 1000}
+        request = {"session_uri": "https://upload.youtube.com/resumable/session-abc", "offset": 0, "size": 1000}
 
         call_count = 0
 
@@ -192,10 +197,126 @@ class MediaExternalEffectCrashConsistencyTests(unittest.TestCase):
             call_count += 1
             return {"video_id": "yt-video-dup"}
 
-        with mock.patch("scripts.kesher_daily_pipeline.save_state"):
+        with mock.patch("scripts.kesher_daily_pipeline.save_state"), \
+             mock.patch("scripts.kesher_daily_pipeline.youtube_access_token", return_value="dummy-token"), \
+             mock.patch("scripts.kesher_daily_pipeline.resume_upload_status", return_value={"offset": 1000, "video_id": "yt-video-12345"}) as mock_resume:
             receipt = legacy_external_effect(state, item, "youtube_upload_bytes", request, do_upload)
             self.assertEqual(receipt["video_id"], "yt-video-12345")
             self.assertEqual(call_count, 0)
+            mock_resume.assert_called_once_with("https://upload.youtube.com/resumable/session-abc", "dummy-token", 1000)
+
+    def test_crash_after_final_upload_incomplete_fails_closed(self):
+        """When provider session reports incomplete and video ID is absent, fail closed."""
+        state = {"version": 1, "items": []}
+        item = {
+            "id": "video-test-yt-upload-incomplete",
+            "upload_session_uri": "https://upload.youtube.com/resumable/session-inc",
+            "external_effects": {
+                "youtube_upload_bytes": {
+                    "status": "intent",
+                    "request": {"session_uri": "https://upload.youtube.com/resumable/session-inc", "offset": 0, "size": 1000},
+                }
+            },
+        }
+        state["items"].append(item)
+        request = {"session_uri": "https://upload.youtube.com/resumable/session-inc", "offset": 0, "size": 1000}
+
+        call_count = 0
+
+        def do_upload():
+            nonlocal call_count
+            call_count += 1
+            return {"video_id": "yt-video-dup"}
+
+        with mock.patch("scripts.kesher_daily_pipeline.save_state"), \
+             mock.patch("scripts.kesher_daily_pipeline.youtube_access_token", return_value="dummy-token"), \
+             mock.patch("scripts.kesher_daily_pipeline.resume_upload_status", return_value={"offset": 500, "video_id": None}):
+            with self.assertRaisesRegex(PipelineError, "EXTERNAL_RESULT_UNCERTAIN"):
+                legacy_external_effect(state, item, "youtube_upload_bytes", request, do_upload)
+            self.assertEqual(call_count, 0)
+
+    def test_remote_intent_survives_vm_crash_and_prevents_duplicate_mutation(self):
+        """Instance A persists intent remotely and dies; Instance B starts with empty filesystem,
+        loads remote intent, and makes NO second NotebookLM/YouTube mutation.
+        """
+        from scripts import kesher_daily_pipeline as pipe
+        pipe._REMOTE_MEDIA_INTENT_STORE.clear()
+
+        # Instance A: runs on VM A, persists intent and dies (SIGKILL / power loss)
+        # In a real hard crash, the intent is written ahead to remote storage before provider call,
+        # and the VM dies before any response or failure can be recorded.
+        request = {"notebook_id": "nb-999", "title": "Title A"}
+        pipe._persist_remote_media_intent(
+            "video-vm-crash-test",
+            "provider_source",
+            {"status": "intent", "request": copy.deepcopy(request), "started_at": pipe.utc_now()},
+        )
+
+        # Instance B: Fresh VM starts with empty disk! No local external_effects on item_b!
+        state_b = {"version": 1, "items": []}
+        item_b = {"id": "video-vm-crash-test", "source": {"title": "Title A"}}
+        # Note: item_b has NO local "external_effects" key!
+        self.assertNotIn("external_effects", item_b)
+        state_b["items"].append(item_b)
+
+        call_count_b = 0
+
+        def second_attempt():
+            nonlocal call_count_b
+            call_count_b += 1
+            return {"source_id": "duplicate-source-id"}
+
+        with mock.patch("scripts.kesher_daily_pipeline.save_state"):
+            # When legacy_external_effect is invoked on Instance B, it loads remote intent
+            # and fails closed because intent is uncertain, REFUSING any second mutation!
+            with self.assertRaisesRegex(PipelineError, "EXTERNAL_RESULT_UNCERTAIN"):
+                pipe.legacy_external_effect(state_b, item_b, "provider_source", request, second_attempt)
+
+            # Verification: Instance B made ZERO duplicate mutations!
+            self.assertEqual(call_count_b, 0)
+
+    def test_remote_intent_completed_survives_vm_crash_and_returns_receipt(self):
+        """Instance A persists completed receipt remotely; Instance B starts with empty disk,
+        loads remote receipt, and returns it without any second provider mutation.
+        """
+        from scripts import kesher_daily_pipeline as pipe
+        pipe._REMOTE_MEDIA_INTENT_STORE.clear()
+
+        # Instance A: succeeds and persists receipt
+        state_a = {"version": 1, "items": []}
+        item_a = {"id": "video-vm-completed-test", "source": {"title": "Title C"}}
+        state_a["items"].append(item_a)
+        request = {"notebook_id": "nb-999", "title": "Title C"}
+
+        call_count_a = 0
+
+        def create_source_a():
+            nonlocal call_count_a
+            call_count_a += 1
+            return {"source_id": "source-authoritative-99"}
+
+        with mock.patch("scripts.kesher_daily_pipeline.save_state"):
+            receipt_a = pipe.legacy_external_effect(state_a, item_a, "provider_source", request, create_source_a)
+            self.assertEqual(receipt_a["source_id"], "source-authoritative-99")
+            self.assertEqual(call_count_a, 1)
+
+        # Instance B: starts on fresh VM with empty disk
+        state_b = {"version": 1, "items": []}
+        item_b = {"id": "video-vm-completed-test", "source": {"title": "Title C"}}
+        state_b["items"].append(item_b)
+
+        call_count_b = 0
+
+        def create_source_b():
+            nonlocal call_count_b
+            call_count_b += 1
+            return {"source_id": "source-duplicate-b"}
+
+        with mock.patch("scripts.kesher_daily_pipeline.save_state"):
+            receipt_b = pipe.legacy_external_effect(state_b, item_b, "provider_source", request, create_source_b)
+            self.assertEqual(receipt_b["source_id"], "source-authoritative-99")
+            # Never called provider a second time!
+            self.assertEqual(call_count_b, 0)
 
 
 if __name__ == "__main__":

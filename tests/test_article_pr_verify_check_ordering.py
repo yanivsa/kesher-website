@@ -331,6 +331,56 @@ Image Evidence Head: {self.head_sha}"""
         ]
         self.assertEqual(self._eval(checks), [])
 
+    def test_duplicate_image_in_posts_recent_blocks_merge(self) -> None:
+        checks = [
+            {
+                "name": "verify",
+                "head_sha": self.head_sha,
+                "status": "completed",
+                "conclusion": "success",
+                "id": 100,
+                "started_at": "2026-10-14T10:00:00Z",
+            },
+        ]
+        extra_posts = [
+            {
+                "id": "prior-recent-post",
+                "title": "פוסט ישן מהזמן האחרון",
+                "image": "/images/generated/blog/new-post.png",  # duplicates self.post's image!
+            }
+        ]
+        errors = validator.evaluate(
+            self.pr,
+            self.files,
+            checks,
+            self.base_posts,
+            self.head_posts,
+            lambda _: self.image_bytes,
+            extra_base_posts=extra_posts,
+        )
+        self.assertTrue(any("collides with existing article" in err for err in errors))
+
+    def test_posts_recent_fetch_failure_fails_closed(self) -> None:
+        import sys
+        from unittest.mock import patch, mock_open
+
+        pr_json = json.dumps(self.pr)
+        files_json = json.dumps(self.files)
+        checks_json = json.dumps({"check_runs": [{"name": "verify", "head_sha": self.head_sha, "conclusion": "success", "status": "completed", "id": 1}]})
+
+        def mock_fetch(repo, ref, token, filename):
+            if filename == "src/data/postsRecent.json":
+                raise ValueError("postsRecent.json fetch failure")
+            return []
+
+        with patch("sys.argv", ["validate-article-pr.py", "pr.json", "files.json", "checks.json"]), \
+             patch("os.environ", {"REPO": "yanivsa/kesher-website", "GITHUB_TOKEN": "dummy"}), \
+             patch("builtins.open", mock_open(read_data=pr_json)), \
+             patch("json.load", side_effect=[self.pr, self.files, {"check_runs": []}]), \
+             patch.object(validator, "fetch_posts", side_effect=mock_fetch):
+            with self.assertRaisesRegex(ValueError, "postsRecent.json fetch failure"):
+                validator.main()
+
 
 if __name__ == "__main__":
     unittest.main()

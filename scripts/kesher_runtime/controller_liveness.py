@@ -329,6 +329,61 @@ class GitHubLivenessTransport:
         except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
             return None
 
+    def get_liveness_ledger(self, ref: str = "automation-state") -> tuple[dict[str, Any], Optional[str]]:
+        if not self.token:
+            return {}, None
+        url = f"https://api.github.com/repos/{self.repo}/contents/.kesher-controller/controller-liveness.json?ref={ref}"
+        req = urllib.request.Request(
+            url,
+            headers={
+                "Authorization": f"Bearer {self.token}",
+                "Accept": "application/vnd.github.v3+json",
+                "User-Agent": "Kesher-Controller-Liveness",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                content = base64.b64decode(data.get("content", "")).decode("utf-8")
+                return json.loads(content), data.get("sha")
+        except urllib.error.HTTPError as exc:
+            if exc.code == 404:
+                return {}, None
+            return {}, None
+        except Exception:
+            return {}, None
+
+    def put_liveness_ledger(self, ledger: dict[str, Any], sha: Optional[str] = None, ref: str = "automation-state") -> Optional[str]:
+        if not self.token:
+            return None
+        url = f"https://api.github.com/repos/{self.repo}/contents/.kesher-controller/controller-liveness.json"
+        body: dict[str, Any] = {
+            "message": "state: update controller liveness ledger [skip ci]",
+            "content": base64.b64encode(
+                (json.dumps(ledger, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+            ).decode("ascii"),
+            "branch": ref,
+        }
+        if sha:
+            body["sha"] = sha
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(body).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {self.token}",
+                "Accept": "application/vnd.github.v3+json",
+                "Content-Type": "application/json",
+                "User-Agent": "Kesher-Controller-Liveness",
+            },
+            method="PUT",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                return (data.get("content") or {}).get("sha")
+        except Exception:
+            return None
+
 
 class ControllerLivenessWatchdog:
     """Coordinates detection, durable CAS intent recording, and bounded dispatch."""
@@ -343,8 +398,19 @@ class ControllerLivenessWatchdog:
         self.repo = repo
         self.ledger_path = ledger_path or (Path(".kesher-controller") / "controller-liveness.json")
         self.transport = transport or GitHubLivenessTransport(repo=repo)
+        self._remote_sha: Optional[str] = None
 
     def load_ledger(self) -> dict[str, Any]:
+        # Try loading remote ledger from git ref (automation-state) first
+        if hasattr(self.transport, "get_liveness_ledger"):
+            try:
+                remote_ledger, sha = self.transport.get_liveness_ledger()
+                if remote_ledger:
+                    self._remote_sha = sha
+                    return remote_ledger
+            except Exception:
+                pass
+
         if self.ledger_path.exists():
             try:
                 return json.loads(self.ledger_path.read_text(encoding="utf-8"))
@@ -357,6 +423,15 @@ class ControllerLivenessWatchdog:
         temp_path = self.ledger_path.with_suffix(".tmp")
         temp_path.write_text(json.dumps(ledger, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         temp_path.replace(self.ledger_path)
+
+        # Persist remotely to automation-state branch via transport
+        if hasattr(self.transport, "put_liveness_ledger"):
+            try:
+                new_sha = self.transport.put_liveness_ledger(ledger, sha=self._remote_sha)
+                if new_sha:
+                    self._remote_sha = new_sha
+            except Exception:
+                pass
 
     def reconcile(
         self,

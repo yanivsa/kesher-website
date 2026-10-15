@@ -330,11 +330,7 @@ def main() -> int:
     token = os.environ["GITHUB_TOKEN"]
     base_posts = fetch_posts(repo, pr["base"]["sha"], token, "src/data/posts.json")
     head_posts = fetch_posts(repo, pr["head"]["sha"], token, "src/data/posts.json")
-    extra_base_posts = []
-    try:
-        extra_base_posts = fetch_posts(repo, pr["base"]["sha"], token, "src/data/postsRecent.json")
-    except Exception:
-        pass
+    extra_base_posts = fetch_posts(repo, pr["base"]["sha"], token, "src/data/postsRecent.json")
 
     def load_image(entry):
         request = urllib.request.Request(

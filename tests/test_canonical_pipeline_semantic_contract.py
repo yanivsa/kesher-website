@@ -912,7 +912,37 @@ class CanonicalPipelineSemanticContractTests(unittest.TestCase):
         self.assertFalse(valid)
         self.assertIn("mismatch", msg)
 
-        # 3. Matching source_slug is valid
+        # 3. Matching source_slug but missing source_sha when current_sha is known is rejected
+        env_no_sha = {
+            "KESHER_TRIGGER_EVENT": "workflow_dispatch",
+            "KESHER_CHILD_WORKFLOW": "Kesher Daily NotebookLM Video Overview",
+            "KESHER_CHILD_RUN_ID": "200",
+            "KESHER_CHILD_CONCLUSION": "success",
+            "KESHER_CHILD_SOURCE_SLUG": "correct-article-slug",
+            "KESHER_CHILD_SOURCE_SHA": "",
+            "KESHER_CHILD_SLOT": "2026-10-14",
+        }
+        with patch.dict(os.environ, env_no_sha):
+            valid, msg = ctrl._validate_child_notification(state)
+        self.assertFalse(valid)
+        self.assertIn("missing mandatory source_sha", msg)
+
+        # 4. Matching source_slug but mismatched source_sha is rejected
+        env_wrong_sha = {
+            "KESHER_TRIGGER_EVENT": "workflow_dispatch",
+            "KESHER_CHILD_WORKFLOW": "Kesher Daily NotebookLM Video Overview",
+            "KESHER_CHILD_RUN_ID": "200",
+            "KESHER_CHILD_CONCLUSION": "success",
+            "KESHER_CHILD_SOURCE_SLUG": "correct-article-slug",
+            "KESHER_CHILD_SOURCE_SHA": "9999222233334444555566667777888899990000aaaabbbbccccddddeeeeffff",
+            "KESHER_CHILD_SLOT": "2026-10-14",
+        }
+        with patch.dict(os.environ, env_wrong_sha):
+            valid, msg = ctrl._validate_child_notification(state)
+        self.assertFalse(valid)
+        self.assertIn("source_sha mismatch", msg)
+
+        # 5. Matching source_slug and source_sha is valid
         mock_github.workflow_run_by_id.return_value = {
             "id": 200,
             "name": "Kesher Daily NotebookLM Video Overview",

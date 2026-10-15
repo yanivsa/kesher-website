@@ -162,13 +162,22 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         self.assertIn('KESHER_PRE_CUTOVER_DAILY_AUTHORITY: "true"', controller_text)
 
         for wf_path in sorted(WORKFLOWS_DIR.glob("kesher-*.yml")):
-            if wf_path.name == "kesher-content-controller.yml":
+            if wf_path.name in {"kesher-content-controller.yml", "kesher-controller-liveness.yml"}:
                 continue
             wf_data = yaml.safe_load(wf_path.read_text(encoding="utf-8"))
             wf_events = wf_data.get("on", wf_data.get(True))
             if isinstance(wf_events, dict) and "schedule" in wf_events:
                 for job in wf_data.get("jobs", {}).values():
                     self.assertEqual(job.get("if"), "${{ github.repository == '__KESHER_RETIRED__' }}")
+
+        # Invariant: kesher-controller-liveness.yml is the dedicated watchdog: wakes controller only, no mutators
+        watchdog_text = (WORKFLOWS_DIR / "kesher-controller-liveness.yml").read_text(encoding="utf-8")
+        watchdog_data = yaml.safe_load(watchdog_text)
+        watchdog_events = watchdog_data.get("on", watchdog_data.get(True))
+        self.assertIn("schedule", watchdog_events)
+        self.assertEqual(watchdog_data["concurrency"]["group"], "kesher-controller-liveness")
+        self.assertIn("scripts.kesher_runtime.controller_liveness --reconcile", watchdog_text)
+        self.assertNotIn("KESHER_MANUAL_EMERGENCY_BRIDGE", watchdog_text)
 
     # 9.D. Catalog unification (posts.json + postsRecent.json)
     def test_unified_catalog_finds_articles_in_posts_recent_and_deduplicates(self) -> None:
@@ -2304,6 +2313,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="7060",
             KESHER_CHILD_CONCLUSION="failure",
             KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+            KESHER_CHILD_SOURCE_SHA=oct13_source["content_sha256"],
         )
         self.assertEqual(act6_fail.kind, "wait")
         self.assertIn("deferred to recovery heartbeat", act6_fail.reason)
@@ -2318,6 +2328,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="706",
             KESHER_CHILD_CONCLUSION="success",
             KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+            KESHER_CHILD_SOURCE_SHA=oct13_source["content_sha256"],
         )
         self.assertEqual(st7["long_video"]["run_id"], 706)
         self.assertEqual(act7.kind, "dispatch_short")
@@ -2342,6 +2353,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="706",
             KESHER_CHILD_CONCLUSION="success",
             KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+            KESHER_CHILD_SOURCE_SHA=oct13_source["content_sha256"],
         )
         self.assertEqual(act7_dup.kind, "wait")
         self.assertIn("duplicate child completion notification ignored", act7_dup.reason)
@@ -2373,6 +2385,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="707",
             KESHER_CHILD_CONCLUSION="success",
             KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+            KESHER_CHILD_SOURCE_SHA=oct13_source["content_sha256"],
         )
         self.assertEqual(act_late_notif.kind, "complete")
         self.assertEqual(sim_gh.dispatches, [])
@@ -2543,6 +2556,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="801",
             KESHER_CHILD_CONCLUSION="success",
             KESHER_CHILD_SOURCE_SLUG=incident_slug,
+            KESHER_CHILD_SOURCE_SHA=incident_sha,
             KESHER_CHILD_SLOT="2026-10-13",
         )
         self.assertEqual(act2.kind, "wait")
@@ -2569,6 +2583,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="802",
             KESHER_CHILD_CONCLUSION="success",
             KESHER_CHILD_SOURCE_SLUG=incident_slug,
+            KESHER_CHILD_SOURCE_SHA=incident_sha,
             KESHER_CHILD_SLOT="2026-10-13",
         )
         self.assertEqual(act3.kind, "wait")

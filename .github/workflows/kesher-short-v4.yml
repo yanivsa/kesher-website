@@ -465,10 +465,12 @@ jobs:
           CHILD_RUN_ID: ${{ github.run_id }}
           CHILD_CONCLUSION: ${{ job.status }}
           SOURCE_SLUG: ${{ inputs.derive_slug || inputs.release_slug || '' }}
+          SOURCE_SHA: ${{ inputs.derive_content_sha256 || '' }}
         run: |
           gh workflow run kesher-content-controller.yml \
             --ref main \
             -f child_workflow="$CHILD_WORKFLOW" \
             -f child_run_id="$CHILD_RUN_ID" \
             -f child_conclusion="$CHILD_CONCLUSION" \
-            -f source_slug="$SOURCE_SLUG" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."
+            -f source_slug="$SOURCE_SLUG" \
+            -f source_sha="$SOURCE_SHA" || echo "::warning::Controller wake-up notification failed; fallback schedule/workflow_run will reconcile."
