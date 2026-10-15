@@ -34,7 +34,7 @@
     "quality_checked_at": "2026-10-15T14:44:27.588118+00:00",
     "quality_violations": [],
     "live": true,
-    "live_verified_at": "2026-10-15T14:44:28.490054+00:00"
+    "live_verified_at": "2026-10-15T14:44:44.723363+00:00"
   },
   "backlog": [
     {
@@ -2060,7 +2060,7 @@
       "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-15T14:44:28.490074+00:00",
+  "updated_at": "2026-10-15T14:44:44.723377+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2082,7 +2082,7 @@
   },
   "long_video": {
     "attempt_count": 1,
-    "status": "blocked",
+    "status": "uploading",
     "last_error": null,
     "next_retry_at": "2026-10-15T13:45:57.092699+00:00",
     "run_id": 38725623691,
@@ -2116,7 +2116,9 @@
       "incident_key": "v5|returning-to-israel-relationship-struggles|f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223|long_video",
       "reason": "media provider hard timeout",
       "requested_at": "2026-10-15T13:41:20.776880+00:00"
-    }
+    },
+    "youtube_id": "JzKDQLWHHW8",
+    "youtube_url": "https://youtu.be/JzKDQLWHHW8"
   },
   "short": {
     "attempt_count": 0,
@@ -2133,7 +2135,22 @@
   "migration": {
     "v4_short_controller_state": null
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-15",
+      "inputs": {
+        "operation": "upload",
+        "target_slug": "returning-to-israel-relationship-struggles",
+        "target_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+        "target_item_id": "video-20261015-141328-f1d702122f"
+      },
+      "intent_at": "2026-10-15T14:44:25.846279+00:00",
+      "status": "intent",
+      "previous_run_id": 38725623691,
+      "observed_active_run_id": null
+    }
+  },
   "deliverables": {
     "article_url": "https://kesher.saharoni.com/blog/returning-to-israel-relationship-struggles",
     "overview_youtube_url": null,
@@ -2159,5 +2176,45 @@
     "Deploy to Cloudflare Pages:38721231811",
     "Deploy to Cloudflare Pages:38724886297",
     "Kesher Daily NotebookLM Video Overview:38725623691"
-  ]
+  ],
+  "video": {
+    "attempt_count": 1,
+    "status": "uploading",
+    "last_error": null,
+    "next_retry_at": "2026-10-15T13:45:57.092699+00:00",
+    "run_id": 38725623691,
+    "processed_run_id": 38725623691,
+    "provider_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {},
+    "overview_evidence_required": true,
+    "last_dispatch_at": "2026-10-15T11:11:58.110944+00:00",
+    "attempts": 1,
+    "last_run_conclusion": "success",
+    "item_id": "video-20261015-141328-f1d702122f",
+    "source_slug": "returning-to-israel-relationship-struggles",
+    "source_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+    "content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+    "source_id": "d39569b2-6f46-434f-9ea8-bcaff69a74f5",
+    "task_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+    "artifact_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+    "provider_status": "pending",
+    "verified": false,
+    "watchdog": {
+      "identity": "long_video:returning-to-israel-relationship-struggles:f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223:video-20261015-141328-f1d702122f",
+      "hard_started_at": "2026-10-15T11:13:34.660634+00:00",
+      "last_progress_at": "2026-10-15T13:40:57.092699+00:00",
+      "last_fingerprint": "a3a6abb6b210fdaac564804400da3f9243f3ed9c45dff55759b4bb8ec2be4a99",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    },
+    "controller_recovery_required": {
+      "incident_key": "v5|returning-to-israel-relationship-struggles|f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223|long_video",
+      "reason": "media provider hard timeout",
+      "requested_at": "2026-10-15T13:41:20.776880+00:00"
+    },
+    "youtube_id": "JzKDQLWHHW8",
+    "youtube_url": "https://youtu.be/JzKDQLWHHW8"
+  }
 }
