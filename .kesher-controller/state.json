@@ -31,10 +31,10 @@
     "quality_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-15T15:20:17.935709+00:00",
+    "quality_checked_at": "2026-10-15T18:42:39.463215+00:00",
     "quality_violations": [],
     "live": true,
-    "live_verified_at": "2026-10-15T15:20:51.625073+00:00"
+    "live_verified_at": "2026-10-15T18:42:41.108017+00:00"
   },
   "backlog": [
     {
