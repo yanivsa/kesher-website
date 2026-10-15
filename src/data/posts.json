@@ -21,7 +21,11 @@
     "directAnswer": "הקושי בזוגיות עם החזרה לארץ נובע לעיתים קרובות מפער ציפיות בין הפנטזיה של החזרה לשגרת היומיום המאתגרת, משינויים מחודשים בחלוקת התפקידים בין בני הזוג, ומהצורך לנהל מחדש את הגבולות מול ציפיות המשפחה המורחבת והסביבה הישראלית.",
     "evidence": [],
     "controllerManaged": true,
-    "imageIsFallback": true
+    "imageIsFallback": true,
+    "image": "/images/generated/blog/returning-to-israel-relationship-struggles.jpg",
+    "imageAlt": "צילום מציאותי של זוג או משפחה בתקופת מעבר, הסתגלות או רילוקיישן",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/generated/blog/relocation-hero.jpg"
   },
   {
     "id": "dating-apps-burnout-finding-a-partner",
