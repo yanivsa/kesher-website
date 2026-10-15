@@ -1107,7 +1107,15 @@
           "last_restart_run_id": null
         }
       },
-      "archived_at": "2026-10-14T22:13:36.864685+00:00"
+      "archived_at": "2026-10-14T22:13:36.864685+00:00",
+      "media": {
+        "source_slug": "dating-apps-burnout-finding-a-partner",
+        "source_content_sha256": "8474a80ca2a28172e3e6936feaefe4e00d85dcff3973ba51b6c13675a2e38a8b",
+        "article_title": "קשה למצוא זוגיות? למה אפליקציות הכרויות גורמות לשחיקה ומה אפשר לעשות",
+        "article_url": "https://kesher.saharoni.com/blog/dating-apps-burnout-finding-a-partner",
+        "article_live": true,
+        "article_deploy_status": "complete"
+      }
     },
     {
       "cycle": "2026-10-15",
@@ -2050,7 +2058,21 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-16",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "dating-apps-burnout-finding-a-partner",
+        "target_content_sha256": "8474a80ca2a28172e3e6936feaefe4e00d85dcff3973ba51b6c13675a2e38a8b"
+      },
+      "intent_at": "2026-10-15T21:44:57.079815+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 38811420882,
