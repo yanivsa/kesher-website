@@ -1879,7 +1879,7 @@
         "state_write",
         "workflow_dispatch"
       ],
-      "definition_sha256": "d0991a0aeadf4b14d953af32382c0ec7608be0b9d4b0d597411c12664700dbc4",
+      "definition_sha256": "11f0ab0b8d1760f59a39c7a1a4322a140cbcaec6539a03afdc226a223d93462a",
       "resources": [
         "github.dispatch",
         "github.refs",

@@ -3,6 +3,11 @@ name: Kesher Controller Liveness Watchdog
 on:
   schedule:
     - cron: "7,22,37,52 * * * *"
+  pull_request:
+    paths:
+      - ".github/workflows/kesher-controller-liveness.yml"
+      - "scripts/kesher_runtime/controller_liveness.py"
+      - "tests/test_controller_liveness.py"
   workflow_dispatch:
 
 permissions:
@@ -15,7 +20,7 @@ concurrency:
 
 jobs:
   watchdog:
-    if: ${{ github.repository == 'yanivsa/kesher-website' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch') }}
+    if: ${{ github.repository == 'yanivsa/kesher-website' && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -33,4 +38,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ github.token }}
-        run: PYTHONPATH=. python3 -u -m scripts.kesher_runtime.controller_liveness --reconcile
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            PYTHONPATH=. python3 -u -m scripts.kesher_runtime.controller_liveness --audit
+          else
+            PYTHONPATH=. python3 -u -m scripts.kesher_runtime.controller_liveness --reconcile
+          fi
