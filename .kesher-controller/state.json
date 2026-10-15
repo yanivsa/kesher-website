@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-15",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -31,10 +31,10 @@
     "quality_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-15T18:42:39.463215+00:00",
+    "quality_checked_at": "2026-10-15T19:35:43.996615+00:00",
     "quality_violations": [],
     "live": true,
-    "live_verified_at": "2026-10-15T18:42:41.108017+00:00"
+    "live_verified_at": "2026-10-15T19:35:45.745647+00:00"
   },
   "backlog": [
     {
@@ -1184,22 +1184,8 @@
       "archived_at": "2026-10-14T22:13:36.864685+00:00"
     }
   ],
-  "last_error": {
-    "stage": "short",
-    "code": "SHORT_PROVIDER_HARD_TIMEOUT",
-    "message": "short provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-15T18:42:54.367234+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-04T04:18:22.260043+00:00",
-      "from": "blocked",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": null
-      }
-    },
     {
       "at": "2026-10-04T04:22:48.820407+00:00",
       "from": "article_generating",
@@ -2051,9 +2037,15 @@
       "details": {
         "message": "short provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-15T19:35:45.745665+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-15T18:42:54.367246+00:00",
+  "updated_at": "2026-10-15T19:35:45.745672+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
