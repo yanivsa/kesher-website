@@ -10,6 +10,8 @@ part of this pipeline.
 from __future__ import annotations
 
 import argparse
+import base64
+import copy
 import hashlib
 import html
 import importlib.metadata
@@ -21,10 +23,13 @@ import struct
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from datetime import date, datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from zoneinfo import ZoneInfo
 
 import requests
@@ -571,6 +576,214 @@ def article_body_for_item(item: dict[str, Any]) -> str:
     raise PipelineError("Selected article no longer exists")
 
 
+def reconcile_legacy_effect(
+    state: dict[str, Any],
+    item: dict[str, Any],
+    name: str,
+    entry: dict[str, Any],
+    request: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Reconcile an uncertain external effect without creating duplicate external mutations."""
+    if name == "provider_source":
+        source_id = item.get("source_id")
+        if source_id:
+            return {"source_id": source_id}
+        return None
+    if name == "provider_generation":
+        task_id = item.get("task_id") or item.get("artifact_id")
+        if task_id:
+            return {"task_id": task_id, "artifact_id": task_id}
+        return None
+    if name == "youtube_session":
+        session_uri = item.get("upload_session_uri") or (entry.get("receipt") or {}).get("location")
+        if session_uri:
+            return {"location": session_uri}
+        return None
+    if name == "youtube_upload_bytes":
+        video_id = item.get("youtube_id")
+        if video_id:
+            return {"video_id": video_id}
+        session_uri = item.get("upload_session_uri") or (entry.get("request") or {}).get("session_uri")
+        total = (entry.get("request") or {}).get("size")
+        token = (entry.get("request") or {}).get("token")
+        if not token:
+            try:
+                token = youtube_access_token()
+            except Exception:
+                token = None
+        if session_uri and total and token:
+            try:
+                resumed = resume_upload_status(session_uri, token, total)
+                if resumed.get("video_id"):
+                    return {"video_id": resumed["video_id"]}
+            except Exception:
+                pass
+        return None
+    return None
+
+
+MEDIA_INTENT_REF = os.environ.get("KESHER_MEDIA_INTENT_REF", "automation-state")
+_REMOTE_MEDIA_INTENT_STORE: dict[str, dict[str, Any]] = {}
+
+
+def _load_remote_media_intent(item_id: str, name: str) -> dict[str, Any] | None:
+    if not item_id or not name:
+        return None
+    key = f"{item_id}:{name}"
+    if key in _REMOTE_MEDIA_INTENT_STORE:
+        return copy.deepcopy(_REMOTE_MEDIA_INTENT_STORE[key])
+
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    repo = os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website")
+    if not token:
+        return None
+
+    path = f".kesher-media-intents/{item_id}/{name}.json"
+    quoted = urllib.parse.quote(path, safe="/")
+    url = f"https://api.github.com/repos/{repo}/contents/{quoted}?ref={MEDIA_INTENT_REF}"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Kesher-Media-Intent",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            content = base64.b64decode(data.get("content", "")).decode("utf-8")
+            return json.loads(content)
+    except Exception:
+        return None
+
+
+def _persist_remote_media_intent(item_id: str, name: str, entry: dict[str, Any]) -> None:
+    if not item_id or not name or not entry:
+        return
+    key = f"{item_id}:{name}"
+    _REMOTE_MEDIA_INTENT_STORE[key] = copy.deepcopy(entry)
+
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    repo = os.environ.get("GITHUB_REPOSITORY", "yanivsa/kesher-website")
+    if not token:
+        return
+
+    path = f".kesher-media-intents/{item_id}/{name}.json"
+    quoted = urllib.parse.quote(path, safe="/")
+    url = f"https://api.github.com/repos/{repo}/contents/{quoted}?ref={MEDIA_INTENT_REF}"
+    req_get = urllib.request.Request(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Kesher-Media-Intent",
+        },
+    )
+    existing_sha = None
+    try:
+        with urllib.request.urlopen(req_get, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            existing_sha = data.get("sha")
+    except Exception:
+        existing_sha = None
+
+    body = {
+        "message": f"state: media write-ahead intent {item_id} {name} {entry.get('status')} [skip ci]",
+        "content": base64.b64encode(
+            (json.dumps(entry, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+        ).decode("ascii"),
+        "branch": MEDIA_INTENT_REF,
+    }
+    if existing_sha:
+        body["sha"] = existing_sha
+
+    put_url = f"https://api.github.com/repos/{repo}/contents/{quoted}"
+    req_put = urllib.request.Request(
+        put_url,
+        data=json.dumps(body).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json",
+            "User-Agent": "Kesher-Media-Intent",
+        },
+        method="PUT",
+    )
+    try:
+        with urllib.request.urlopen(req_put, timeout=15) as resp:
+            pass
+    except Exception:
+        pass
+
+
+def legacy_external_effect(
+    state: dict[str, Any],
+    item: dict[str, Any],
+    name: str,
+    request: dict[str, Any],
+    create_func: Callable[[], dict[str, Any]],
+) -> dict[str, Any]:
+    """Persist intent, execute once, persist receipt before item mutation for Schema-5 legacy path.
+
+    Prevents duplicate generation/upload and budget divergence if the process crashes
+    after external acceptance but before state save.
+    """
+    item_id = str(item.get("id") or "")
+    effects = item.setdefault("external_effects", {})
+    entry = effects.get(name)
+    if not entry and item_id:
+        remote_entry = _load_remote_media_intent(item_id, name)
+        if isinstance(remote_entry, dict) and remote_entry.get("status"):
+            effects[name] = remote_entry
+            entry = remote_entry
+
+    if entry:
+        if entry.get("status") == "completed" and entry.get("receipt"):
+            if entry.get("request") != request:
+                raise PipelineError(f"EXTERNAL_EFFECT_REQUEST_MISMATCH: {name}")
+            return copy.deepcopy(entry["receipt"])
+        if entry.get("status") == "intent":
+            if entry.get("request") != request:
+                raise PipelineError(f"EXTERNAL_EFFECT_REQUEST_MISMATCH: {name}")
+            reconciled = reconcile_legacy_effect(state, item, name, entry, request)
+            if reconciled is not None:
+                entry["status"] = "completed"
+                entry["receipt"] = copy.deepcopy(reconciled)
+                entry["reconciled_at"] = utc_now()
+                save_state(state)
+                _persist_remote_media_intent(item_id, name, entry)
+                return copy.deepcopy(reconciled)
+            raise PipelineError(
+                f"EXTERNAL_RESULT_UNCERTAIN: cannot prove whether {name} completed externally; refusing second mutation"
+            )
+
+    # Persist intent before calling external provider (write-ahead)
+    effects[name] = {
+        "status": "intent",
+        "request": copy.deepcopy(request),
+        "started_at": utc_now(),
+    }
+    save_state(state)
+    _persist_remote_media_intent(item_id, name, effects[name])
+
+    try:
+        receipt = create_func()
+    except Exception as exc:
+        effects[name]["status"] = "failed"
+        effects[name]["error"] = str(exc)
+        save_state(state)
+        _persist_remote_media_intent(item_id, name, effects[name])
+        raise
+
+    effects[name]["status"] = "completed"
+    effects[name]["receipt"] = copy.deepcopy(receipt)
+    effects[name]["completed_at"] = utc_now()
+    save_state(state)
+    _persist_remote_media_intent(item_id, name, effects[name])
+    return receipt
+
+
 def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
@@ -592,7 +805,10 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
 
     request = {"notebook_id": NOTEBOOK_ID, "title": title, "body_sha256": sha256_text(body),
                "body_normalized_sha256": sha256_text(' '.join(body.split()))}
-    receipt = state.external('provider_source', request, create_source) if isinstance(state, CanonicalMediaState) else create_source()
+    if isinstance(state, CanonicalMediaState):
+        receipt = state.external('provider_source', request, create_source)
+    else:
+        receipt = legacy_external_effect(state, item, 'provider_source', request, create_source)
     source_id = receipt["source_id"]
     item["source_id"] = source_id
     item["status"] = "source_added"
@@ -625,7 +841,10 @@ def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
 
     request = {"notebook_id": NOTEBOOK_ID, "source_id": item["source_id"], "format": "explainer",
                "style": "auto", "language": "he", "prompt_sha256": sha256_text(prompt), "prompt": prompt}
-    receipt = state.external('provider_generation', request, create_generation) if isinstance(state, CanonicalMediaState) else create_generation()
+    if isinstance(state, CanonicalMediaState):
+        receipt = state.external('provider_generation', request, create_generation)
+    else:
+        receipt = legacy_external_effect(state, item, 'provider_generation', request, create_generation)
     task_id = receipt["task_id"]
     item["task_id"] = task_id
     item["artifact_id"] = task_id
@@ -1531,7 +1750,11 @@ def start_resumable_upload(state: dict[str, Any], item: dict[str, Any], token: s
         return location
 
     request = {"metadata": body, "final_sha256": sha256_file(video_path), "size_bytes": video_path.stat().st_size}
-    location = state.external_capability('youtube_session', request, create_session) if isinstance(state, CanonicalMediaState) else create_session()
+    if isinstance(state, CanonicalMediaState):
+        location = state.external_capability('youtube_session', request, create_session)
+    else:
+        receipt = legacy_external_effect(state, item, 'youtube_session', request, lambda: {"location": create_session()})
+        location = receipt["location"]
     item["upload_session_uri"] = location
     item["upload_session_created_at"] = utc_now()
     item["status"] = "uploading"
@@ -1697,7 +1920,17 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
         offset = resumed["offset"]
         video_id = resumed["video_id"]
     if video_id is None:
-        video_id = upload_bytes(session_uri, token, video_path, offset, state=state)
+        from scripts.kesher_runtime.media_state import CanonicalMediaState
+
+        def do_upload():
+            vid = upload_bytes(session_uri, token, video_path, offset, state=state)
+            return {"video_id": vid}
+        if isinstance(state, CanonicalMediaState):
+            video_id = upload_bytes(session_uri, token, video_path, offset, state=state)
+        else:
+            upload_req = {"session_uri": session_uri, "offset": offset, "size": video_path.stat().st_size}
+            upload_receipt = legacy_external_effect(state, item, 'youtube_upload_bytes', upload_req, do_upload)
+            video_id = upload_receipt["video_id"]
     item["youtube_id"] = video_id
     item["youtube_url"] = f"https://youtu.be/{video_id}"
     item["upload_response_at"] = utc_now()

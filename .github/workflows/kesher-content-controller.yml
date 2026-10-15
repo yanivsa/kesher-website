@@ -46,6 +46,11 @@ on:
         required: false
         default: ""
         type: string
+      source_sha:
+        description: Optional authoritative article source content SHA256 from child run
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -95,5 +100,6 @@ jobs:
           KESHER_CHILD_RUN_ID: ${{ github.event.workflow_run.id || inputs.child_run_id || '' }}
           KESHER_CHILD_CONCLUSION: ${{ github.event.workflow_run.conclusion || inputs.child_conclusion || '' }}
           KESHER_CHILD_SOURCE_SLUG: ${{ inputs.source_slug || '' }}
+          KESHER_CHILD_SOURCE_SHA: ${{ inputs.source_sha || '' }}
           KESHER_CHILD_SLOT: ${{ inputs.slot || '' }}
         run: PYTHONPATH=. python3 -u scripts/kesher_content_controller_stabilized.py --report-json

@@ -178,7 +178,14 @@ class V3GitHubClient(core.GitHubClient):
             pass
         post_img = str(post.get("image") or "").strip()
         body_source = str(article_contract.exact_field(body, "Image Source URL") or "").strip()
-        for base_post in base_posts:
+        comparison_posts = list(base_posts)
+        try:
+            recent_posts = self.contents_json("src/data/postsRecent.json", str((pr.get("base") or {}).get("sha") or "main"))
+            if isinstance(recent_posts, list):
+                comparison_posts.extend([p for p in recent_posts if isinstance(p, dict)])
+        except Exception:
+            pass
+        for base_post in comparison_posts:
             if not isinstance(base_post, dict):
                 continue
             base_img = str(base_post.get("image") or "").strip()
@@ -199,7 +206,7 @@ class V3GitHubClient(core.GitHubClient):
                         if actual_pixels and article_contract.image_pixel_sha256(base_bytes) == actual_pixels:
                             return False, {}
                     except Exception:
-                        pass
+                        return False, {}
         return True, {
             "provider": article_contract.exact_field(body, "Image Provider"),
             "sha256": article_contract.exact_field(body, "Image SHA-256"),

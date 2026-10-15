@@ -28,9 +28,15 @@ WORKFLOWS_DIR = ROOT / ".github" / "workflows"
 
 def public_article_html(post: dict) -> str:
     source = v5.article_source_identity(post)
+    slug = source["slug"]
+    canonical_url = f"{core.SITE_URL}/blog/{slug}"
+    image = post.get("image") or post.get("hero_image") or f"/images/generated/blog/{slug}.jpg"
     return (
-        f'<html><head><meta name="kesher:content-sha256" content="{source["content_sha256"]}"></head>'
-        f'<body><h1>{post["title"]}</h1>{post.get("content") or ""}</body></html>'
+        f'<html><head><meta name="kesher:content-sha256" content="{source["content_sha256"]}">'
+        f'<link rel="canonical" href="{canonical_url}">'
+        f'<meta property="og:url" content="{canonical_url}">'
+        f'<meta property="og:image" content="https://kesher.saharoni.com{image}">'
+        f'</head><body><h1>{post["title"]}</h1>{post.get("content") or ""}</body></html>'
     )
 
 
@@ -156,13 +162,22 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         self.assertIn('KESHER_PRE_CUTOVER_DAILY_AUTHORITY: "true"', controller_text)
 
         for wf_path in sorted(WORKFLOWS_DIR.glob("kesher-*.yml")):
-            if wf_path.name == "kesher-content-controller.yml":
+            if wf_path.name in {"kesher-content-controller.yml", "kesher-controller-liveness.yml"}:
                 continue
             wf_data = yaml.safe_load(wf_path.read_text(encoding="utf-8"))
             wf_events = wf_data.get("on", wf_data.get(True))
             if isinstance(wf_events, dict) and "schedule" in wf_events:
                 for job in wf_data.get("jobs", {}).values():
                     self.assertEqual(job.get("if"), "${{ github.repository == '__KESHER_RETIRED__' }}")
+
+        # Invariant: kesher-controller-liveness.yml is the dedicated watchdog: wakes controller only, no mutators
+        watchdog_text = (WORKFLOWS_DIR / "kesher-controller-liveness.yml").read_text(encoding="utf-8")
+        watchdog_data = yaml.safe_load(watchdog_text)
+        watchdog_events = watchdog_data.get("on", watchdog_data.get(True))
+        self.assertIn("schedule", watchdog_events)
+        self.assertEqual(watchdog_data["concurrency"]["group"], "kesher-controller-liveness")
+        self.assertIn("scripts.kesher_runtime.controller_liveness --reconcile", watchdog_text)
+        self.assertNotIn("KESHER_MANUAL_EMERGENCY_BRIDGE", watchdog_text)
 
     # 9.D. Catalog unification (posts.json + postsRecent.json)
     def test_unified_catalog_finds_articles_in_posts_recent_and_deduplicates(self) -> None:
@@ -1000,6 +1015,8 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 self.dispatches: list[tuple[str, dict]] = []
 
             def request(self, method: str, path: str, body=None, allow_404: bool = False):
+                if method == "GET" and "/comments" in path:
+                    return []
                 if method == "GET" and "/actions/artifacts" in path:
                     return {"artifacts": []}
                 if method == "POST" and "/dispatches" in path:
@@ -1011,7 +1028,21 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
 
             def contents_json(self, path: str, ref: str = "main"):
                 if path == "src/data/posts.json":
-                    return copy.deepcopy(self.posts)
+                    posts = copy.deepcopy(self.posts)
+                    for pr in self.open_prs:
+                        if ref == (pr.get("head") or {}).get("sha"):
+                            slug = pr.get("title", "").replace("Publish Kesher article: ", "").strip()
+                            if not any(core.canonical_slug(p) == slug for p in posts):
+                                posts.append({
+                                    "id": slug,
+                                    "slug": slug,
+                                    "title": slug,
+                                    "date": str(self.state.get("cycle") or "2026-10-13"),
+                                    "content": "".join(f"<h3>Heading {i}</h3>" + " word" * 160 for i in range(5)),
+                                    "image": f"/images/generated/blog/{slug}.jpg",
+                                    "imageAlt": "A detailed descriptive alt text for this test article.",
+                                })
+                    return posts
                 if path == "src/data/postsRecent.json":
                     return copy.deepcopy(self.recent_posts)
                 raise AssertionError(path)
@@ -2025,6 +2056,8 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 self.short_items: list[dict] = []
 
             def request(self, method: str, path: str, body=None, allow_404: bool = False):
+                if method == "GET" and "/comments" in path:
+                    return []
                 if method == "GET" and "/actions/artifacts" in path:
                     return {"artifacts": []}
                 if method == "POST" and "/dispatches" in path:
@@ -2042,7 +2075,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
 
             def contents_json(self, path: str, ref: str = "main"):
                 if path == "src/data/posts.json":
-                    if self.merged_on_main:
+                    if self.merged_on_main or ref == "head1115":
                         return [copy.deepcopy(oct13_post), *copy.deepcopy(posts_historical)]
                     return copy.deepcopy(posts_historical)
                 if path == "src/data/postsRecent.json":
@@ -2280,6 +2313,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="7060",
             KESHER_CHILD_CONCLUSION="failure",
             KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+            KESHER_CHILD_SOURCE_SHA=oct13_source["content_sha256"],
         )
         self.assertEqual(act6_fail.kind, "wait")
         self.assertIn("deferred to recovery heartbeat", act6_fail.reason)
@@ -2294,6 +2328,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="706",
             KESHER_CHILD_CONCLUSION="success",
             KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+            KESHER_CHILD_SOURCE_SHA=oct13_source["content_sha256"],
         )
         self.assertEqual(st7["long_video"]["run_id"], 706)
         self.assertEqual(act7.kind, "dispatch_short")
@@ -2318,6 +2353,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="706",
             KESHER_CHILD_CONCLUSION="success",
             KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+            KESHER_CHILD_SOURCE_SHA=oct13_source["content_sha256"],
         )
         self.assertEqual(act7_dup.kind, "wait")
         self.assertIn("duplicate child completion notification ignored", act7_dup.reason)
@@ -2349,6 +2385,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="707",
             KESHER_CHILD_CONCLUSION="success",
             KESHER_CHILD_SOURCE_SLUG=oct13_source["slug"],
+            KESHER_CHILD_SOURCE_SHA=oct13_source["content_sha256"],
         )
         self.assertEqual(act_late_notif.kind, "complete")
         self.assertEqual(sim_gh.dispatches, [])
@@ -2519,6 +2556,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="801",
             KESHER_CHILD_CONCLUSION="success",
             KESHER_CHILD_SOURCE_SLUG=incident_slug,
+            KESHER_CHILD_SOURCE_SHA=incident_sha,
             KESHER_CHILD_SLOT="2026-10-13",
         )
         self.assertEqual(act2.kind, "wait")
@@ -2545,6 +2583,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             KESHER_CHILD_RUN_ID="802",
             KESHER_CHILD_CONCLUSION="success",
             KESHER_CHILD_SOURCE_SLUG=incident_slug,
+            KESHER_CHILD_SOURCE_SHA=incident_sha,
             KESHER_CHILD_SLOT="2026-10-13",
         )
         self.assertEqual(act3.kind, "wait")
@@ -2937,6 +2976,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             f"<html><head><title>{post_fixture['title']}</title>"
             f"<link rel='canonical' href='{article_url}' />"
             f"<meta property='og:url' content='{article_url}' />"
+            f"<meta property='og:image' content='https://kesher.saharoni.com{post_fixture['image']}' />"
             f"<meta name='kesher:content-sha256' content='{exact_sha}' />"
             f"</head><body><h1>{post_fixture['title']}</h1></body></html>"
         )
