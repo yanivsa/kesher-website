@@ -1962,12 +1962,18 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
         print(f"NO_TECHNICALLY_VERIFIED_UPLOAD item={item['id']}")
         return 0
     if item.get("youtube_id"):
-        # The external insertion already happened. Public/metadata recovery
-        # does not need retained MP4 bytes and may never insert another video.
+        # The external insertion already happened. First use the normal exact
+        # public verifier. Only a proven remote metadata drift may mutate the
+        # same persisted YouTube resource; every other failure stays fail-closed.
         token = youtube_access_token()
         verify_authenticated_channel(token)
-        repair_persisted_youtube_metadata(item, token)
-        _verify_and_record_upload(state, item, token)
+        try:
+            _verify_and_record_upload(state, item, token)
+        except PipelineError as exc:
+            if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
+                raise
+            repair_persisted_youtube_metadata(item, token)
+            _verify_and_record_upload(state, item, token)
         return 0
     if not item.get("final_mp4"):
         raise PipelineError("Upload candidate is missing final MP4 path")
