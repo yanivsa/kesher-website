@@ -1117,7 +1117,8 @@
         "article_deploy_status": "complete",
         "long_status": "running",
         "seed_dispatch_count": 1,
-        "long_last_dispatch_at": "2026-10-15T21:45:35.142341+00:00"
+        "long_last_dispatch_at": "2026-10-15T22:08:26.429483+00:00",
+        "long_resume_count": 1
       }
     },
     {
@@ -2082,9 +2083,10 @@
         "target_item_id": "video-20261016-004908-8474a80ca2"
       },
       "intent_at": "2026-10-15T22:07:44.085680+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38815023711,
+      "dispatched_at": "2026-10-15T22:07:44.085680+00:00"
     }
   },
   "last_child_notification": {
