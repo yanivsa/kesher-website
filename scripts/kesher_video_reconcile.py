@@ -618,7 +618,13 @@ def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) ->
         return False
     token = pipeline.youtube_access_token()
     pipeline.verify_authenticated_channel(token)
-    verification = pipeline.verify_public_upload(item, token)
+    try:
+        verification = pipeline.verify_public_upload(item, token)
+    except pipeline.PipelineError as exc:
+        if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
+            raise
+        pipeline.repair_persisted_youtube_metadata(item, token)
+        verification = pipeline.verify_public_upload(item, token)
     item["youtube_verification"] = verification
     item["youtube_url"] = f"https://www.youtube.com/watch?v={item['youtube_id']}"
     item["uploaded"] = True

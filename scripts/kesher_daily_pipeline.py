@@ -2027,7 +2027,13 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
     item["youtube_url"] = f"https://youtu.be/{video_id}"
     item["upload_response_at"] = utc_now()
     save_state(state)
-    _verify_and_record_upload(state, item, token)
+    try:
+        _verify_and_record_upload(state, item, token)
+    except PipelineError as exc:
+        if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
+            raise
+        repair_persisted_youtube_metadata(item, token)
+        _verify_and_record_upload(state, item, token)
     return 0
 
 
