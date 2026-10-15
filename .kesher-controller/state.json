@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-15",
-  "status": "image_retry_wait",
+  "status": "article_image_running",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -1173,14 +1173,7 @@
       "archived_at": "2026-10-14T22:13:36.864685+00:00"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_WORKFLOW_FAILED",
-    "message": "trusted image run 38716564382 completed with conclusion=failure but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-10-15T10:34:28.692257+00:00",
-    "at": "2026-10-15T10:29:28.692284+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-03T21:00:53.525752+00:00",
@@ -2011,12 +2004,18 @@
         "failure_streak": 1,
         "run_id": 38716564382
       }
+    },
+    {
+      "at": "2026-10-15T10:39:16.026792+00:00",
+      "from": "image_retry_wait",
+      "to": "article_image_running",
+      "reason": "trusted image workflow already active"
     }
   ],
-  "updated_at": "2026-10-15T10:29:28.692297+00:00",
+  "updated_at": "2026-10-15T10:39:16.026813+00:00",
   "image": {
     "attempt_count": 3,
-    "status": "retry_wait",
+    "status": "running",
     "last_error": {
       "code": "IMAGE_WORKFLOW_FAILED",
       "message": "trusted image run 38716564382 completed with conclusion=failure but no validated image is present",
@@ -2025,7 +2024,7 @@
       "at": "2026-10-15T10:29:28.692284+00:00"
     },
     "next_retry_at": "2026-10-15T10:34:28.692257+00:00",
-    "run_id": 38716564382,
+    "run_id": 38721759262,
     "processed_run_id": 38716564382,
     "provider_id": null,
     "failure_fingerprint": "IMAGE_WORKFLOW_FAILED",
