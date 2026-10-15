@@ -7,7 +7,7 @@ Production strategy:
 3. Try unused owned assets from the managed fallback bank.
 4. Try an unused repository-curated seed reservoir with 40 real JPG candidates
    per article category.
-5. Prefer unused assets; bounded local reuse is allowed only after a 90-day cooldown and below three lifetime uses.
+5. Never reuse pixels already published as an article hero; catalog exhaustion proceeds to the reserved third owned generation.
 6. Never fabricate an abstract placeholder.
 
 Catalog exhaustion automatically requests the reserved fresh owned hero through the existing pixel-verified provider. Total generation budget remains three. The worker fails closed for missing/unhealthy providers or rejected pixels; no abstract placeholder or reuse bypass is allowed.
@@ -328,7 +328,7 @@ def local_fallback(
     banned_paths: set[str] | None = None,
     **kwargs: Any,
 ) -> core.ImageCandidate | None:
-    """Choose the best concrete local asset with bounded, auditable reuse."""
+    """Choose the best concrete local asset; published hero pixels are never reused."""
     attempts.append("local-curated")
     if existing_hashes is None or existing_usage is None or last_used is None:
         discovered_hashes, discovered_usage, discovered_last_used = collect_existing_image_usage(REPO_ROOT)
@@ -344,7 +344,6 @@ def local_fallback(
     reserve_min_topic_score = int(policy.get("reserve_min_topic_score") or 1)
     today = date.today()
     unused: list[tuple[int, int, str, str, bytes, str]] = []
-    reusable: list[tuple[int, int, int, str, str, bytes, str]] = []
 
     for tier, source_path in _candidate_pool(post, banned_paths):
         try:
@@ -367,11 +366,8 @@ def local_fallback(
                 unused.append((tier, -score, _stable_tiebreak(post, source_path), source_path, data, ext))
                 continue
 
-            prior_uses = max(existing_usage.get(digest, 0), existing_usage.get(pixels, 0))
-            last = max((d for d in (last_used.get(digest), last_used.get(pixels)) if d), default=None)
-            days_since = (today - last).days if last else -1
-            if prior_uses < max_lifetime_uses and days_since >= cooldown_days:
-                reusable.append((tier, prior_uses, -score, _stable_tiebreak(post, source_path), source_path, data, ext))
+            # Any byte- or pixel-level match is already a published hero and is not reusable.
+            continue
         except Exception as exc:
             print(
                 f"IMAGE_LOCAL_FALLBACK_REJECTED category={category} path={source_path} error={type(exc).__name__}",
@@ -396,27 +392,8 @@ def local_fallback(
             attempts.copy(),
         )
 
-    if reusable:
-        reusable.sort()
-        tier, prior_uses, _neg_score, _stable, source_path, data, ext = reusable[0]
-        print(
-            f"IMAGE_LOCAL_FALLBACK_READY category={category} tier={tier} path={source_path} "
-            f"reuse={prior_uses + 1} cooldown_days={cooldown_days}",
-            file=sys.stderr,
-            flush=True,
-        )
-        return core.ImageCandidate(
-            "Local",
-            data,
-            ext,
-            f"local://{source_path}",
-            CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
-            attempts.copy(),
-        )
-
     print(
-        f"IMAGE_LOCAL_FALLBACK_EXHAUSTED category={category} "
-        f"cooldown_days={cooldown_days} max_lifetime_uses={max_lifetime_uses}",
+        f"IMAGE_LOCAL_FALLBACK_EXHAUSTED category={category} reason=no_unused_unique_asset",
         file=sys.stderr,
         flush=True,
     )

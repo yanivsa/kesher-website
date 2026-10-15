@@ -224,11 +224,21 @@ class V4Controller(legacy.BestEffortController):
         return state
 
     def _dispatch_auto_merge_v4(self, state: dict[str, Any]) -> None:
+        article = state.get("article") if isinstance(state.get("article"), dict) else {}
+        dispatch_count = int(article.get("merge_dispatch_count") or 0)
+        if dispatch_count >= 3:
+            core.block(
+                state,
+                "article",
+                "ARTICLE_ATTEMPTS_EXHAUSTED",
+                f"Auto-merge dispatch limit reached ({dispatch_count} dispatches)",
+            )
+            state["article"]["status"] = "exhausted"
+            return
         workflow = getattr(self, "AUTO_MERGE_WORKFLOW", AUTO_MERGE_WORKFLOW)
         active = self.github.active_workflow_run(workflow, production_only=True)
         if active:
             return
-        article = state.get("article") if isinstance(state.get("article"), dict) else {}
         pr_number = int(article.get("pr_number") or 0)
         if pr_number <= 0:
             raise core.ControllerError("ARTICLE_PR_IDENTITY_MISSING")
@@ -238,7 +248,7 @@ class V4Controller(legacy.BestEffortController):
             inputs["slot"] = slot
         core.GitHubClient.dispatch(self.github, workflow, inputs)
         state["article"]["merge_dispatch_at"] = core.utc_now()
-        state["article"]["merge_dispatch_count"] = int(state["article"].get("merge_dispatch_count") or 0) + 1
+        state["article"]["merge_dispatch_count"] = dispatch_count + 1
 
     def _handle_open_article_pr(self, state: dict[str, Any], pr: dict[str, Any]) -> core.Action:
         number = int(pr.get("number") or 0)

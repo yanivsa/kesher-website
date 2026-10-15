@@ -2068,15 +2068,81 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 return None
 
             def workflow_run_by_id(self, run_id):
-                if int(run_id) == 702:
-                    return {
+                runs = {
+                    701: {
+                        "id": 701,
+                        "name": "Kesher Article Generation",
+                        "path": f".github/workflows/{core.ARTICLE_WORKFLOW}",
+                        "conclusion": "success",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    },
+                    702: {
                         "id": 702,
                         "name": "Kesher Normalize PR 1115",
                         "path": ".github/workflows/normalize-article-pr.yml",
+                        "conclusion": "success",
                         "event": "workflow_dispatch",
                         "run_attempt": 1,
-                    }
-                return None
+                    },
+                    703: {
+                        "id": 703,
+                        "name": "Kesher Trusted Article Image",
+                        "path": f".github/workflows/{v5.v3.IMAGE_WORKFLOW}",
+                        "conclusion": "success",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    },
+                    7040: {
+                        "id": 7040,
+                        "name": "Auto-merge Kesher article PRs",
+                        "path": ".github/workflows/auto-merge-article-prs.yml",
+                        "conclusion": "success",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    },
+                    704: {
+                        "id": 704,
+                        "name": "Auto-merge Kesher article PRs",
+                        "path": ".github/workflows/auto-merge-article-prs.yml",
+                        "conclusion": "success",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    },
+                    705: {
+                        "id": 705,
+                        "name": "Deploy to Cloudflare Pages",
+                        "path": f".github/workflows/{core.DEPLOY_WORKFLOW}",
+                        "conclusion": "success",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    },
+                    706: {
+                        "id": 706,
+                        "name": "Kesher Long Video",
+                        "path": f".github/workflows/{v5.LONG_VIDEO_WORKFLOW}",
+                        "conclusion": "success",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    },
+                    7060: {
+                        "id": 7060,
+                        "name": "Kesher Daily NotebookLM Video Overview",
+                        "path": f".github/workflows/{v5.LONG_VIDEO_WORKFLOW}",
+                        "conclusion": "failure",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    },
+                    707: {
+                        "id": 707,
+                        "name": "Kesher Short Video",
+                        "path": f".github/workflows/{v5.SHORT_WORKFLOW}",
+                        "conclusion": "success",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    },
+                }
+                return runs.get(int(run_id)) if str(run_id).isdigit() else None
 
             def newest_video_state(self):
                 return {"version": 1, "items": copy.deepcopy(self.video_items)}
@@ -2375,6 +2441,27 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
 
             def workflow_runs(self, workflow):
                 return copy.deepcopy(self.workflow_runs_history)
+
+            def workflow_run_by_id(self, run_id):
+                runs = {
+                    801: {
+                        "id": 801,
+                        "name": "Kesher Daily NotebookLM Video Overview",
+                        "path": f".github/workflows/{v5.LONG_VIDEO_WORKFLOW}",
+                        "conclusion": "success",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    },
+                    802: {
+                        "id": 802,
+                        "name": "Kesher Daily NotebookLM Video Overview",
+                        "path": f".github/workflows/{v5.LONG_VIDEO_WORKFLOW}",
+                        "conclusion": "success",
+                        "event": "workflow_dispatch",
+                        "run_attempt": 1,
+                    },
+                }
+                return runs.get(int(run_id)) if str(run_id).isdigit() else None
 
             def dispatch(self, workflow: str, inputs: dict | None = None):
                 self.dispatches.append((workflow, copy.deepcopy(inputs or {})))

@@ -65,9 +65,10 @@ class ArticleImageWorkerTests(unittest.TestCase):
         )
         self.assertEqual(image["owned_generation_variants"], 3)
         self.assertEqual(image["local_fallback_candidates_per_category"], 40)
-        self.assertEqual(image["local_fallback_reuse_cooldown_days"], 90)
-        self.assertEqual(image["local_fallback_max_lifetime_uses"], 3)
-        self.assertEqual(image["local_fallback_policy"], "prefer-unused-then-90-day-cooldown-max-3-uses")
+        self.assertEqual(image["local_fallback_reuse_cooldown_days"], 0)
+        self.assertEqual(image["local_fallback_max_lifetime_uses"], 1)
+        self.assertEqual(image["hero_unique_enforcement_start_date"], "2026-10-14")
+        self.assertEqual(image["local_fallback_policy"], "unique-only-never-reuse-published-hero")
         self.assertFalse(image["abstract_placeholder_allowed"])
         self.assertTrue(image["fallback_must_be_local"])
         self.assertFalse(image["no_image_publication_allowed"])
@@ -307,7 +308,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
             )
         self.assertIsNone(candidate)
 
-    def test_local_image_can_be_reused_after_cooldown_below_use_cap(self):
+    def test_local_image_cannot_be_reused_after_cooldown_under_unique_only_policy(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_cooled_reuse_test")
         fake_data = fake_png()
         fake_sha = hashlib.sha256(fake_data).hexdigest()
@@ -330,9 +331,7 @@ class ArticleImageWorkerTests(unittest.TestCase):
                 last_used={fake_sha: date.today() - timedelta(days=91)},
                 banned_paths=set(),
             )
-        self.assertIsNotNone(candidate)
-        assert candidate is not None
-        self.assertEqual(candidate.provider, "Local")
+        self.assertIsNone(candidate)
 
     def test_local_image_reuse_is_blocked_at_three_lifetime_uses(self):
         worker = load(PRODUCTION_WORKER_PATH, "article_image_worker_v4_use_cap_test")
@@ -395,8 +394,8 @@ class ArticleImageWorkerTests(unittest.TestCase):
             worker.load_seed_manifest = lambda: {
                 "target_per_category": 40,
                 "policy": {
-                    "reuse_cooldown_days": 90,
-                    "max_lifetime_uses": 3,
+                    "reuse_cooldown_days": 0,
+                    "max_lifetime_uses": 1,
                     "reserve_min_topic_score": 1,
                 },
                 "categories": {

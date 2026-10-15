@@ -193,6 +193,39 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(state["article"]["last_jules_session_id"], "sessions/41")
         self.assertEqual(gh.dispatches, [])
 
+    def test_terminal_merge_budget_tombstone_blocks_stale_jules_recovery(self):
+        gh = FakeGitHub()
+        gh.saved_state = controller.new_cycle_state(self.now().date())
+        # Reproduce production after a terminal cycle was accidentally revived:
+        # mutable status says running, while merge_dispatch_count is the durable
+        # proof that this article cycle already exhausted its terminal budget.
+        gh.saved_state["status"] = "article_generating"
+        gh.saved_state["article"].update({
+            "status": "running",
+            "attempts": 1,
+            "attempt_count": 2,
+            "run_id": 43,
+            "processed_run_id": 41,
+            "merge_dispatch_count": 6,
+        })
+        gh.runs[43] = {"id": 43, "status": "completed", "conclusion": "failure"}
+        gh.article_results[43] = {
+            "schema_version": 1,
+            "slot": "2026-08-19",
+            "outcome": "JULES_TIMEOUT_SESSION_ACTIVE",
+            "retryable": True,
+            "message": "session preserved",
+            "session_id": "sessions/43",
+        }
+
+        state, action = self.make(gh).tick()
+
+        self.assertEqual(action.kind, "blocked")
+        self.assertEqual(state["status"], "blocked")
+        self.assertEqual(state["article"]["status"], "exhausted")
+        self.assertEqual(state["last_error"]["code"], "ARTICLE_ATTEMPTS_EXHAUSTED")
+        self.assertEqual(gh.dispatches, [])
+
     def test_preserved_jules_timeout_immediately_redispatches_same_slot_recovery(self):
         gh = FakeGitHub()
         gh.saved_state = controller.new_cycle_state(self.now().date())

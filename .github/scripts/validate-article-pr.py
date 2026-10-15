@@ -29,6 +29,13 @@ def word_count(content: str) -> int:
     return len([word for word in re.split(r"\s+", visible.strip()) if word])
 
 
+def raw_github_content_url(repo: str, ref: str, repo_path: str) -> str:
+    """Build a raw.githubusercontent URL that is safe for non-ASCII repository paths."""
+    quoted_ref = urllib.parse.quote(str(ref or ""), safe="")
+    quoted_path = urllib.parse.quote("/" + str(repo_path or "").lstrip("/"), safe="/")
+    return f"https://raw.githubusercontent.com/{repo}/{quoted_ref}{quoted_path}"
+
+
 def evaluate(pr, files_data, checks, base_posts, head_posts, image_loader):
     errors = evaluate_content(pr, files_data, base_posts, head_posts, image_loader)
     if not any(check.get("name") == "verify" and check.get("conclusion") == "success"
@@ -70,13 +77,17 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader):
         return errors
 
     post = new_posts[0]
+    content_errors: list[str] = []
     count = word_count(post.get("content", ""))
     if not 700 <= count <= 1100:
-        errors.append(f"New article word count must be 700-1100, found {count}")
+        content_errors.append(f"New article word count must be 700-1100, found {count}")
     if len(re.findall(r"<h3(?:\s|>)", post.get("content", ""), re.I)) < 5:
-        errors.append("New article must contain at least five H3 sections")
+        content_errors.append("New article must contain at least five H3 sections")
     if post.get("video"):
-        errors.append("New article may not contain a video field")
+        content_errors.append("New article may not contain a video field")
+    if content_errors:
+        errors.extend(content_errors)
+        return errors
 
     # Pipeline v2 invariant: publication without an independently verified local
     # image is impossible. Provider outages must have been absorbed by the
@@ -109,7 +120,13 @@ def evaluate_content(pr, files_data, base_posts, head_posts, image_loader):
             if not base_img.startswith("/images/"):
                 continue
             try:
-                base_entry = {"raw_url": f"https://raw.githubusercontent.com/{pr.get('base',{}).get('repo',{}).get('full_name')}/{pr['base']['sha']}/public{base_img}"}
+                base_entry = {
+                    "raw_url": raw_github_content_url(
+                        pr.get("base", {}).get("repo", {}).get("full_name"),
+                        pr["base"]["sha"],
+                        f"public{base_img}",
+                    )
+                }
                 base_data = image_loader(base_entry)
                 if hashlib.sha256(base_data).hexdigest() == actual_sha:
                     errors.append(f"Hero image SHA-256 collides with existing article {base_post.get('id')}")
