@@ -1257,9 +1257,16 @@
         "long_item_id": "video-20261015-141328-f1d702122f",
         "long_youtube_url": "https://www.youtube.com/watch?v=JzKDQLWHHW8",
         "long_youtube_id": "JzKDQLWHHW8",
-        "short_status": "running",
+        "short_status": "complete",
         "short_dispatch_count": 1,
-        "short_last_dispatch_at": "2026-10-15T21:38:38.074239+00:00"
+        "short_last_dispatch_at": "2026-10-15T21:38:38.074239+00:00",
+        "short_item_id": "video-20261015-182530-f1d702122f",
+        "short_youtube_url": "https://www.youtube.com/watch?v=OVWw2wu0LOo",
+        "short_youtube_id": "OVWw2wu0LOo",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-10-15T21:43:04.268452+00:00"
       }
     }
   ],
@@ -1982,9 +1989,19 @@
         "backlog_cycle": "2026-10-15",
         "source_slug": "returning-to-israel-relationship-struggles"
       }
+    },
+    {
+      "at": "2026-10-15T21:43:04.268472+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-10-15",
+        "source_slug": "returning-to-israel-relationship-struggles"
+      }
     }
   ],
-  "updated_at": "2026-10-15T21:42:57.624982+00:00",
+  "updated_at": "2026-10-15T21:43:04.268479+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
