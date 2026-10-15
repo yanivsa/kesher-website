@@ -153,7 +153,7 @@ jobs:
       - name: Prove real rendering preserves source audio and signature
         run: python tests/real_media_render.py --output "$RUNNER_TEMP/kesher-render-proof"
       - name: Retain synthetic render evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: article-render-proof-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/kesher-render-proof/
