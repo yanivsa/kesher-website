@@ -1,13 +1,13 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-15",
-  "status": "blocked",
+  "cycle": "2026-10-16",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 38646235123,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -15,83 +15,9 @@
     "failure_count_by_type": {},
     "attempts": 0,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-14T22:14:26.528204+00:00",
-    "pr_number": 1122,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1122",
-    "normalization_slot": "2026-10-15",
-    "normalization_dispatched_at": "2026-10-15T10:27:43.844892+00:00",
-    "normalization_run_id": 38720420098,
-    "deploy_run_id": 38724886297,
-    "next_deploy_retry_at": null,
-    "slug": "returning-to-israel-relationship-struggles",
-    "title": "חוזרים לארץ אחרי רילוקיישן? למה החזרה הביתה מטלטלת את הזוגיות – ואיך מתמודדים",
-    "url": "https://kesher.saharoni.com/blog/returning-to-israel-relationship-struggles",
-    "published_date": "2026-10-15",
-    "quality_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
-    "reconciled_existing_article": true,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-10-15T19:35:43.996615+00:00",
-    "quality_violations": [],
-    "live": true,
-    "live_verified_at": "2026-10-15T19:35:45.745647+00:00"
+    "normalization_status": "pending"
   },
   "backlog": [
-    {
-      "cycle": "2026-09-05",
-      "status": "image_retry_wait",
-      "article": {
-        "attempt_count": 1,
-        "status": "running",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 33979885509,
-        "processed_run_id": null,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {},
-        "attempts": 1,
-        "deploy_attempts": 0,
-        "normalization_status": "complete",
-        "last_dispatch_at": "2026-09-05T17:05:57.420976+00:00",
-        "watchdog": {
-          "identity": "2026-09-05",
-          "session_id": "sessions/1738477936498620473",
-          "last_progress_at": "2026-09-05T17:05:57+00:00",
-          "last_fingerprint": "13a1dbd3ee6eb77346ec32f4dc46db3d9d5bd631db1d4679cd92f57130015cdd",
-          "last_nudge_at": "2026-09-05T17:40:26.158411+00:00",
-          "nudge_count": 1,
-          "worker_restart_count": 0,
-          "last_restart_at": null,
-          "last_restart_run_id": null
-        },
-        "pr_number": 694,
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/694"
-      },
-      "archived_at": "2026-09-05T21:21:39.844472+00:00",
-      "media": {
-        "source_slug": "unattached-adults-missed-chances-regrets",
-        "source_content_sha256": "14edfb8a97ab97e4dda3aa6afea38fb39d0a32a008ff78e4ebcb693733988a92",
-        "article_url": "https://kesher.saharoni.com/blog/unattached-adults-missed-chances-regrets",
-        "article_live": true,
-        "long_status": "complete",
-        "seed_dispatch_count": 1,
-        "long_last_dispatch_at": "2026-09-06T10:29:09.463168+00:00",
-        "long_resume_count": 1,
-        "long_item_id": "video-20260906-132504-14edfb8a97",
-        "long_youtube_url": "https://youtu.be/MBUF_Iey2m0",
-        "long_youtube_id": "MBUF_Iey2m0",
-        "short_status": "complete",
-        "short_item_id": "video-20260906-095843-14edfb8a97",
-        "short_youtube_url": "https://youtu.be/iKDfQey_RzU",
-        "short_youtube_id": "iKDfQey_RzU",
-        "short_width": 1080,
-        "short_height": 1920,
-        "complete": true,
-        "completed_at": "2026-09-06T10:58:13.696988+00:00"
-      }
-    },
     {
       "cycle": "2026-09-06",
       "status": "short_running",
@@ -1182,189 +1108,148 @@
         }
       },
       "archived_at": "2026-10-14T22:13:36.864685+00:00"
+    },
+    {
+      "cycle": "2026-10-15",
+      "status": "blocked",
+      "exact_slug": "returning-to-israel-relationship-struggles",
+      "content_sha256": null,
+      "article": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 38646235123,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 0,
+        "deploy_attempts": 0,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-10-14T22:14:26.528204+00:00",
+        "pr_number": 1122,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1122",
+        "normalization_slot": "2026-10-15",
+        "normalization_dispatched_at": "2026-10-15T10:27:43.844892+00:00",
+        "normalization_run_id": 38720420098,
+        "deploy_run_id": 38724886297,
+        "next_deploy_retry_at": null,
+        "slug": "returning-to-israel-relationship-struggles",
+        "title": "חוזרים לארץ אחרי רילוקיישן? למה החזרה הביתה מטלטלת את הזוגיות – ואיך מתמודדים",
+        "url": "https://kesher.saharoni.com/blog/returning-to-israel-relationship-struggles",
+        "published_date": "2026-10-15",
+        "quality_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+        "reconciled_existing_article": true,
+        "quality_status": "passed",
+        "quality_checked_at": "2026-10-15T19:35:43.996615+00:00",
+        "quality_violations": [],
+        "live": true,
+        "live_verified_at": "2026-10-15T19:35:45.745647+00:00"
+      },
+      "long_video": {
+        "attempt_count": 2,
+        "status": "complete",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 38754142368,
+        "processed_run_id": 38725623691,
+        "provider_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "overview_evidence_required": true,
+        "last_dispatch_at": "2026-10-15T14:44:50.833533+00:00",
+        "attempts": 1,
+        "last_run_conclusion": "success",
+        "item_id": "video-20261015-141328-f1d702122f",
+        "source_slug": "returning-to-israel-relationship-struggles",
+        "source_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+        "content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
+        "source_id": "d39569b2-6f46-434f-9ea8-bcaff69a74f5",
+        "task_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+        "artifact_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+        "provider_status": "pending",
+        "verified": true,
+        "watchdog": {
+          "identity": "long_video:returning-to-israel-relationship-struggles:f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223:video-20261015-141328-f1d702122f",
+          "hard_started_at": "2026-10-15T11:13:34.660634+00:00",
+          "last_progress_at": "2026-10-15T13:40:57.092699+00:00",
+          "last_fingerprint": "a3a6abb6b210fdaac564804400da3f9243f3ed9c45dff55759b4bb8ec2be4a99",
+          "recovery_count": 0,
+          "last_recovery_at": null
+        },
+        "controller_recovery_required": {
+          "incident_key": "v5|returning-to-israel-relationship-struggles|f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223|long_video",
+          "reason": "media provider hard timeout",
+          "requested_at": "2026-10-15T13:41:20.776880+00:00"
+        },
+        "youtube_id": "JzKDQLWHHW8",
+        "youtube_url": "https://www.youtube.com/watch?v=JzKDQLWHHW8",
+        "resume_dispatches": 1,
+        "technical_verified": true,
+        "visual_pipeline": "remotion-v1-notebooklm-audio",
+        "codec": "h264",
+        "width": 1280,
+        "height": 720,
+        "duration": 116.867,
+        "content_duration_seconds": 116.875,
+        "signature_duration_seconds": 3.0,
+        "signature_overlay": true,
+        "signature_fullscreen": true,
+        "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+      },
+      "short": {
+        "attempt_count": 1,
+        "status": "blocked",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 38759538995,
+        "processed_run_id": null,
+        "provider_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "last_dispatch_at": "2026-10-15T15:21:06.220042+00:00",
+        "artifact_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+        "source_id": "d39569b2-6f46-434f-9ea8-bcaff69a74f5",
+        "adopted_from_long_item_id": "video-20261015-141328-f1d702122f",
+        "watchdog": {
+          "identity": "short:returning-to-israel-relationship-struggles:f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223:video-20261015-182530-f1d702122f",
+          "hard_started_at": "2026-10-15T15:25:44.896260+00:00",
+          "last_progress_at": "2026-10-15T18:42:36.518993+00:00",
+          "last_fingerprint": "ce3ad81fc8a002dcca39ac0ed219fd219a2c556391ea51ff9ae9f6505bc5119c",
+          "recovery_count": 0,
+          "last_recovery_at": null
+        },
+        "controller_recovery_required": {
+          "incident_key": "v5|returning-to-israel-relationship-struggles|f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223|short",
+          "reason": "media provider hard timeout",
+          "requested_at": "2026-10-15T19:35:58.757031+00:00"
+        }
+      },
+      "media_identities": {
+        "long_video_id": "JzKDQLWHHW8",
+        "short_video_id": null
+      },
+      "counters": {
+        "article_attempts": 0,
+        "article_generation_attempts": 0,
+        "merge_dispatch_count": 0,
+        "deploy_attempts": 0,
+        "long_attempts": 1,
+        "short_attempts": 0
+      },
+      "terminal_state": {
+        "blocked": true,
+        "article_exhausted": false
+      },
+      "archived_at": "2026-10-15T21:38:11.847469+00:00"
     }
   ],
-  "last_error": {
-    "stage": "short",
-    "code": "SHORT_PROVIDER_HARD_TIMEOUT",
-    "message": "short provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-15T19:35:58.757016+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-04T04:29:41.993660+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/8912115024517976935"
-      }
-    },
-    {
-      "at": "2026-10-04T04:33:05.693698+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "article workflow active; watchdog observing progress",
-      "details": {
-        "session_id": "sessions/8912115024517976935"
-      }
-    },
-    {
-      "at": "2026-10-04T06:26:44.838239+00:00",
-      "from": "article_generating",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 2
-      }
-    },
-    {
-      "at": "2026-10-04T10:28:40.189317+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1045,
-        "slot": "2026-10-04"
-      }
-    },
-    {
-      "at": "2026-10-04T10:32:58.503649+00:00",
-      "from": "article_normalizing",
-      "to": "article_result_wait",
-      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
-      "details": {
-        "run_id": 37182821167,
-        "outcome": "ARTICLE_ALREADY_IN_PROGRESS",
-        "pr_url": ""
-      }
-    },
-    {
-      "at": "2026-10-04T10:33:52.985929+00:00",
-      "from": "article_result_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-04T10:34:58.503628+00:00"
-      }
-    },
-    {
-      "at": "2026-10-04T10:37:29.816013+00:00",
-      "from": "article_retry_wait",
-      "to": "article_generating",
-      "reason": "single article worker attempt dispatched",
-      "details": {
-        "attempt": 3
-      }
-    },
-    {
-      "at": "2026-10-04T10:42:32.335098+00:00",
-      "from": "article_generating",
-      "to": "article_result_wait",
-      "reason": "article worker reported progress; waiting for GitHub/main reconciliation",
-      "details": {
-        "run_id": 37195963244,
-        "outcome": "PR_CREATED",
-        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1045"
-      }
-    },
-    {
-      "at": "2026-10-04T10:43:44.281921+00:00",
-      "from": "article_result_wait",
-      "to": "article_retry_wait",
-      "reason": "article retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-04T10:44:32.335079+00:00"
-      }
-    },
-    {
-      "at": "2026-10-04T11:51:21.427940+00:00",
-      "from": "article_retry_wait",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 1045
-      }
-    },
-    {
-      "at": "2026-10-12T08:21:33.774248+00:00",
-      "from": null,
-      "to": "article_needed",
-      "reason": "controller state initialized at schema v3"
-    },
-    {
-      "at": "2026-10-12T08:21:33.774251+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
-      "at": "2026-10-12T08:21:33.774820+00:00",
-      "from": "article_needed",
-      "to": "v5_migrated",
-      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
-    },
-    {
-      "at": "2026-10-12T10:42:19.798646+00:00",
-      "from": "article_needed",
-      "to": "article_deploying",
-      "reason": "public article check failed; recovery deploy dispatched",
-      "details": {
-        "http_status": 404,
-        "attempt": 1
-      }
-    },
-    {
-      "at": "2026-10-12T10:50:20.562535+00:00",
-      "from": "article_deploying",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-12T10:50:25.764981+00:00",
-      "from": "article_live",
-      "to": "video_running",
-      "reason": "existing video item dispatched/resumed",
-      "details": {
-        "operation": "upload",
-        "resume": 1
-      }
-    },
-    {
-      "at": "2026-10-12T12:09:56.696042+00:00",
-      "from": "long_video_running",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-12T12:10:03.445963+00:00",
-      "from": "article_live",
-      "to": "video_retry_wait",
-      "reason": "VIDEO_WORKFLOW_FAILED",
-      "details": {
-        "message": "video run 38238827214 completed with conclusion=failure",
-        "retry_at": "2026-10-12T12:15:03.445933+00:00",
-        "failure_streak": 1,
-        "run_id": 38238827214,
-        "session_id": null
-      }
-    },
-    {
-      "at": "2026-10-12T12:10:03.445995+00:00",
-      "from": "video_retry_wait",
-      "to": "video_retry_wait",
-      "reason": "video retry backoff is active",
-      "details": {
-        "retry_at": "2026-10-12T12:15:03.445933+00:00"
-      }
-    },
-    {
-      "at": "2026-10-12T12:27:57.328186+00:00",
-      "from": "long_video_retry_wait",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
     {
       "at": "2026-10-12T12:28:04.029768+00:00",
       "from": "article_live",
@@ -2048,168 +1933,64 @@
       "details": {
         "message": "short provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-15T21:38:11.847503+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-15T21:38:11.847507+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-15T21:38:11.848407+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-15T19:35:58.757028+00:00",
+  "updated_at": "2026-10-15T21:38:11.847489+00:00",
   "image": {
-    "attempt_count": 3,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 38716564382,
-    "processed_run_id": 38716564382,
+    "run_id": null,
+    "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {
-      "IMAGE_WORKFLOW_FAILED": 3,
-      "IMAGE_OUTPUT_MISSING": 1
-    },
-    "last_dispatch_at": "2026-10-15T09:55:50.448318+00:00",
-    "last_run_conclusion": "failure",
-    "last_failed_run_id": 38716564382,
-    "image_path": "/images/generated/blog/returning-to-israel-relationship-struggles.jpg"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 2,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 38754142368,
-    "processed_run_id": 38725623691,
-    "provider_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-15T14:44:50.833533+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261015-141328-f1d702122f",
-    "source_slug": "returning-to-israel-relationship-struggles",
-    "source_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
-    "content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
-    "source_id": "d39569b2-6f46-434f-9ea8-bcaff69a74f5",
-    "task_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
-    "artifact_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
-    "provider_status": "pending",
-    "verified": true,
-    "watchdog": {
-      "identity": "long_video:returning-to-israel-relationship-struggles:f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223:video-20261015-141328-f1d702122f",
-      "hard_started_at": "2026-10-15T11:13:34.660634+00:00",
-      "last_progress_at": "2026-10-15T13:40:57.092699+00:00",
-      "last_fingerprint": "a3a6abb6b210fdaac564804400da3f9243f3ed9c45dff55759b4bb8ec2be4a99",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "controller_recovery_required": {
-      "incident_key": "v5|returning-to-israel-relationship-struggles|f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223|long_video",
-      "reason": "media provider hard timeout",
-      "requested_at": "2026-10-15T13:41:20.776880+00:00"
-    },
-    "youtube_id": "JzKDQLWHHW8",
-    "youtube_url": "https://www.youtube.com/watch?v=JzKDQLWHHW8",
-    "resume_dispatches": 1,
-    "technical_verified": true,
-    "visual_pipeline": "remotion-v1-notebooklm-audio",
-    "codec": "h264",
-    "width": 1280,
-    "height": 720,
-    "duration": 116.867,
-    "content_duration_seconds": 116.875,
-    "signature_duration_seconds": 3.0,
-    "signature_overlay": true,
-    "signature_fullscreen": true,
-    "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
+    "failure_count_by_type": {}
   },
   "short": {
-    "attempt_count": 1,
-    "status": "blocked",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 38759538995,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-15T15:21:06.220042+00:00",
-    "artifact_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
-    "source_id": "d39569b2-6f46-434f-9ea8-bcaff69a74f5",
-    "adopted_from_long_item_id": "video-20261015-141328-f1d702122f",
-    "watchdog": {
-      "identity": "short:returning-to-israel-relationship-struggles:f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223:video-20261015-182530-f1d702122f",
-      "hard_started_at": "2026-10-15T15:25:44.896260+00:00",
-      "last_progress_at": "2026-10-15T18:42:36.518993+00:00",
-      "last_fingerprint": "ce3ad81fc8a002dcca39ac0ed219fd219a2c556391ea51ff9ae9f6505bc5119c",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "controller_recovery_required": {
-      "incident_key": "v5|returning-to-israel-relationship-struggles|f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223|short",
-      "reason": "media provider hard timeout",
-      "requested_at": "2026-10-15T19:35:58.757031+00:00"
-    }
+    "failure_count_by_type": {}
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "pending_dispatches": {
-    "kesher-daily-video.yml": {
-      "workflow": "kesher-daily-video.yml",
-      "cycle": "2026-10-15",
-      "inputs": {
-        "operation": "upload",
-        "target_slug": "returning-to-israel-relationship-struggles",
-        "target_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
-        "target_item_id": "video-20261015-141328-f1d702122f"
-      },
-      "intent_at": "2026-10-15T14:44:25.846279+00:00",
-      "status": "dispatched",
-      "previous_run_id": 38725623691,
-      "observed_active_run_id": 38754142368,
-      "dispatched_at": "2026-10-15T14:44:25.846279+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-15",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "returning-to-israel-relationship-struggles",
-        "derive_content_sha256": "f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223",
-        "derive_long_item_id": "video-20261015-141328-f1d702122f"
-      },
-      "intent_at": "2026-10-15T15:20:14.022111+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 38759538995,
-      "dispatched_at": "2026-10-15T15:20:14.022111+00:00"
-    }
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/returning-to-israel-relationship-struggles",
-    "overview_youtube_url": "https://www.youtube.com/watch?v=JzKDQLWHHW8",
-    "short_youtube_url": null,
-    "overview_edit_verified": true,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 38725623691,
-    "conclusion": "success",
-    "source_slug": "returning-to-israel-relationship-struggles",
-    "slot": "2026-10-15"
-  },
-  "processed_child_notifications": [
-    "Kesher Article Generation:38646235123",
-    "Kesher Normalize Article PR:38650819792",
-    "Kesher Normalize Article PR:38660867082",
-    "Kesher Trusted Article Image:38719013794",
-    "Kesher Normalize Article PR:38720420098",
-    "Deploy to Cloudflare Pages:38721231811",
-    "Deploy to Cloudflare Pages:38724886297",
-    "Kesher Daily NotebookLM Video Overview:38725623691"
-  ]
+  }
 }
