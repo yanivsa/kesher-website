@@ -39,12 +39,14 @@ def make_valid_article(slug: str, date_str: str) -> dict:
 
 def make_public_html(post: dict) -> str:
     source = v5.article_source_identity(post)
+    hero = post.get("image", "")
     return (
         f"<!DOCTYPE html><html><head><title>{post['title']}</title>"
         f"<meta property='article:published_time' content='{post['date']}'>"
         f"<link rel='canonical' href='https://kesher.saharoni.com/blog/{post['slug']}'>"
         f"<meta name='kesher:content-sha256' content='{source['content_sha256']}'>"
-        f"</head><body><h1>{post['title']}</h1>{post['content']}</body></html>"
+        f"<meta property='og:image' content='https://kesher.saharoni.com{hero}'>"
+        f"</head><body><h1>{post['title']}</h1><img src='{hero}'>{post['content']}</body></html>"
     )
 
 

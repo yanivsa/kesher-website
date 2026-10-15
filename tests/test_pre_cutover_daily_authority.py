@@ -604,20 +604,20 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         future_manual_post = copy.deepcopy(posts_recent[0])
         future_manual_post.update(
             {
-                "id": "manual-editorial-2026-10-15",
-                "slug": "manual-editorial-2026-10-15",
+                "id": "manual-editorial-2026-10-16",
+                "slug": "manual-editorial-2026-10-16",
                 "title": "מאמר מערכת ידני שלא מנוהל על ידי הבקר היומי",
-                "date": "2026-10-15",
+                "date": "2026-10-16",
                 "controllerManaged": False,
             }
         )
         merged = core.merge_catalog_posts(posts_historical, [*posts_recent, future_manual_post])
-        merged_future = next(p for p in merged if core.canonical_slug(p) == "manual-editorial-2026-10-15")
+        merged_future = next(p for p in merged if core.canonical_slug(p) == "manual-editorial-2026-10-16")
         self.assertIs(merged_future.get("controllerManaged"), False)
         self.assertFalse(core.is_controller_adoptable_post(merged_future))
-        self.assertEqual(core.today_articles(merged, dt.date(2026, 10, 15)), [])
+        self.assertEqual(core.today_articles(merged, dt.date(2026, 10, 16)), [])
 
-        # Confirm daily controller still dispatches article generation on 2026-10-15 despite manual post
+        # Confirm daily controller still dispatches article generation on 2026-10-16 despite manual post
         class FutureGitHub:
             api = "https://api.github.test/repos/yanivsa/kesher-website"
 
@@ -642,7 +642,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 raise AssertionError(path)
 
             def load_controller_state(self):
-                return {"schema_version": 5, "cycle": "2026-10-15", "status": "article_needed"}
+                return {"schema_version": 5, "cycle": "2026-10-16", "status": "article_needed"}
 
             def save_controller_state(self, state):
                 self.saved_state = copy.deepcopy(state)
@@ -666,13 +666,13 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         future_ctrl = stabilized.StabilizedRuntimeV5Controller(
             future_gh,
             mock.Mock(),
-            now=dt.datetime(2026, 10, 15, 9, 0, tzinfo=core.ISRAEL_TZ),
+            now=dt.datetime(2026, 10, 16, 9, 0, tzinfo=core.ISRAEL_TZ),
         )
         _, future_action = future_ctrl.tick()
         self.assertEqual(future_action.kind, "dispatch_article")
         self.assertEqual(
             future_gh.dispatches,
-            [(core.ARTICLE_WORKFLOW, {"slot": "2026-10-15"})],
+            [(core.ARTICLE_WORKFLOW, {"slot": "2026-10-16"})],
         )
 
         # 2.B: Exact reviewed post-freeze single-article recovery targets (2026-10-06, 2026-10-09, 2026-10-10, 2026-10-12)
