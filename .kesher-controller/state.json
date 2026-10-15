@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-15",
-  "status": "short_running",
+  "status": "blocked",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1184,17 +1184,13 @@
       "archived_at": "2026-10-14T22:13:36.864685+00:00"
     }
   ],
-  "last_error": null,
+  "last_error": {
+    "stage": "short",
+    "code": "SHORT_PROVIDER_HARD_TIMEOUT",
+    "message": "short provider exceeded 90 minute hard timeout from launch/recovery",
+    "at": "2026-10-15T18:42:54.367234+00:00"
+  },
   "history": [
-    {
-      "at": "2026-10-04T04:05:35.415242+00:00",
-      "from": "article_generating",
-      "to": "blocked",
-      "reason": "ARTICLE_PR_INSPECTION_ERROR",
-      "details": {
-        "message": "cannot inspect src/data/posts.json for open article PR 997"
-      }
-    },
     {
       "at": "2026-10-04T04:18:22.260043+00:00",
       "from": "blocked",
@@ -2046,9 +2042,18 @@
       "from": "long_video_complete",
       "to": "short_running",
       "reason": "derivative Short dispatched from verified long-form provider identity"
+    },
+    {
+      "at": "2026-10-15T18:42:54.367240+00:00",
+      "from": "short_running",
+      "to": "blocked",
+      "reason": "SHORT_PROVIDER_HARD_TIMEOUT",
+      "details": {
+        "message": "short provider exceeded 90 minute hard timeout from launch/recovery"
+      }
     }
   ],
-  "updated_at": "2026-10-15T15:21:06.220074+00:00",
+  "updated_at": "2026-10-15T18:42:54.367246+00:00",
   "image": {
     "attempt_count": 3,
     "status": "complete",
@@ -2122,7 +2127,7 @@
   },
   "short": {
     "attempt_count": 1,
-    "status": "running",
+    "status": "blocked",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38759538995,
@@ -2134,7 +2139,20 @@
     "last_dispatch_at": "2026-10-15T15:21:06.220042+00:00",
     "artifact_id": "bae96c13-cab7-4fb5-9f67-4dd154e68d59",
     "source_id": "d39569b2-6f46-434f-9ea8-bcaff69a74f5",
-    "adopted_from_long_item_id": "video-20261015-141328-f1d702122f"
+    "adopted_from_long_item_id": "video-20261015-141328-f1d702122f",
+    "watchdog": {
+      "identity": "short:returning-to-israel-relationship-struggles:f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223:video-20261015-182530-f1d702122f",
+      "hard_started_at": "2026-10-15T15:25:44.896260+00:00",
+      "last_progress_at": "2026-10-15T18:42:36.518993+00:00",
+      "last_fingerprint": "ce3ad81fc8a002dcca39ac0ed219fd219a2c556391ea51ff9ae9f6505bc5119c",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    },
+    "controller_recovery_required": {
+      "incident_key": "v5|returning-to-israel-relationship-struggles|f1d702122f80554bb5a50ef8953f256d4b9e2cf79387a75a1c22a495c9dc8223|short",
+      "reason": "media provider hard timeout",
+      "requested_at": "2026-10-15T18:42:54.367248+00:00"
+    }
   },
   "migration": {
     "v4_short_controller_state": null
