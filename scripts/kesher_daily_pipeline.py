@@ -1825,6 +1825,91 @@ def upload_bytes(session_uri: str, token: str, video_path: Path, offset: int, *,
     return str(video_id)
 
 
+def repair_persisted_youtube_metadata(item: dict[str, Any], token: str) -> dict[str, Any]:
+    """Repair authoritative metadata on an already-inserted Kesher video.
+
+    This recovery path is intentionally limited to a persisted YouTube ID that
+    resolves to the canonical Kesher channel. It never inserts or uploads media;
+    it only updates the snippet in place and then re-verifies the exact resource.
+    """
+    video_id = str(item.get("youtube_id") or "").strip()
+    if not video_id:
+        raise PipelineError("Persisted YouTube metadata repair requires an exact video ID")
+    payload = youtube_get(
+        "videos", token,
+        {"part": "snippet,status", "id": video_id},
+    )
+    rows = payload.get("items") or []
+    if len(rows) != 1 or rows[0].get("id") != video_id:
+        raise PipelineError("Persisted YouTube video is not uniquely visible")
+    row = rows[0]
+    snippet = row.get("snippet") or {}
+    if snippet.get("channelId") != YOUTUBE_CHANNEL_ID:
+        raise PipelineError("PUBLIC_METADATA_INVALID: wrong YouTube channel")
+
+    metadata = item.get("youtube_metadata") or {}
+    canonical_local = {
+        "id": video_id,
+        "snippet": {
+            "channelId": YOUTUBE_CHANNEL_ID,
+            "title": metadata.get("title"),
+            "description": metadata.get("description"),
+            "tags": metadata.get("tags") or [],
+            "defaultLanguage": "he",
+            "defaultAudioLanguage": "he",
+        },
+    }
+    try:
+        match_youtube_metadata(item, canonical_local)
+    except VerificationError as exc:
+        raise PipelineError(str(exc)) from exc
+
+    try:
+        match_youtube_metadata(item, row)
+        return row
+    except VerificationError as exc:
+        if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote " ):
+            raise PipelineError(str(exc)) from exc
+
+    body = {
+        "id": video_id,
+        "snippet": {
+            "title": metadata["title"],
+            "description": metadata["description"],
+            "tags": metadata.get("tags") or [],
+            "categoryId": str(snippet.get("categoryId") or "22"),
+            "defaultLanguage": "he",
+            "defaultAudioLanguage": "he",
+        },
+    }
+    response = requests.put(
+        "https://www.googleapis.com/youtube/v3/videos",
+        params={"part": "snippet"},
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json; charset=UTF-8",
+        },
+        json=body,
+        timeout=60,
+    )
+    if response.status_code != 200:
+        raise PipelineError(f"YouTube metadata repair failed with HTTP {response.status_code}")
+
+    refreshed = youtube_get(
+        "videos", token,
+        {"part": "snippet,status", "id": video_id},
+    )
+    refreshed_rows = refreshed.get("items") or []
+    if len(refreshed_rows) != 1 or refreshed_rows[0].get("id") != video_id:
+        raise PipelineError("Repaired YouTube video is not uniquely visible")
+    try:
+        match_youtube_metadata(item, refreshed_rows[0])
+    except VerificationError as exc:
+        raise PipelineError(str(exc)) from exc
+    print(f"YOUTUBE_METADATA_REPAIRED item={item['id']} video_id={video_id}")
+    return refreshed_rows[0]
+
+
 def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int = 900) -> dict[str, Any]:
     deadline = time.monotonic() + timeout_seconds
     while True:
@@ -1877,11 +1962,18 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
         print(f"NO_TECHNICALLY_VERIFIED_UPLOAD item={item['id']}")
         return 0
     if item.get("youtube_id"):
-        # The external insertion already happened. Public/metadata recovery
-        # does not need retained MP4 bytes and may never insert another video.
+        # The external insertion already happened. First use the normal exact
+        # public verifier. Only a proven remote metadata drift may mutate the
+        # same persisted YouTube resource; every other failure stays fail-closed.
         token = youtube_access_token()
         verify_authenticated_channel(token)
-        _verify_and_record_upload(state, item, token)
+        try:
+            _verify_and_record_upload(state, item, token)
+        except PipelineError as exc:
+            if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
+                raise
+            repair_persisted_youtube_metadata(item, token)
+            _verify_and_record_upload(state, item, token)
         return 0
     if not item.get("final_mp4"):
         raise PipelineError("Upload candidate is missing final MP4 path")
