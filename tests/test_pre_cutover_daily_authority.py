@@ -1445,8 +1445,8 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         with self.assertRaisesRegex(ArticleNormalizationError, "already exists in main"):
             normalized_posts(posts_historical, dup_slug_article, recent_posts=posts_recent)
 
-        # Duplicate adoptable slot against posts.json (2026-10-12, 2026-10-13) or postsRecent.json (2026-10-10) must fail closed
-        for occupied_date in ("2026-10-10", "2026-10-12", "2026-10-13"):
+        # Duplicate adoptable slot against posts.json (2026-10-12, 2026-10-13, 2026-10-14) or postsRecent.json (2026-10-10) must fail closed
+        for occupied_date in ("2026-10-10", "2026-10-12", "2026-10-13", "2026-10-14"):
             dup_slot_article = copy.deepcopy(posts_recent[0])
             dup_slot_article["id"] = f"different-slug-on-{occupied_date}"
             dup_slot_article["slug"] = f"different-slug-on-{occupied_date}"
@@ -1454,24 +1454,24 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             with self.assertRaisesRegex(ArticleNormalizationError, "publication slot already exists in main"):
                 normalized_posts(posts_historical, dup_slot_article, recent_posts=posts_recent)
 
-        # Valid new article on unoccupied slot (2026-10-14) normalizes into posts.json and leaves postsRecent.json untouched
+        # Valid new article on unoccupied slot (2026-10-16) normalizes into posts.json and leaves postsRecent.json untouched
         valid_new = copy.deepcopy(posts_recent[0])
         valid_new.update(
             {
-                "id": "valid-2026-10-14-article",
-                "slug": "valid-2026-10-14-article",
-                "date": "2026-10-14",
+                "id": "valid-2026-10-16-article",
+                "slug": "valid-2026-10-16-article",
+                "date": "2026-10-16",
             }
         )
         extracted = extract_target_article(
             posts_historical,
             [valid_new, *posts_historical],
-            "2026-10-14",
+            "2026-10-16",
             recent_posts=posts_recent,
         )
-        self.assertEqual(extracted["id"], "valid-2026-10-14-article")
+        self.assertEqual(extracted["id"], "valid-2026-10-16-article")
         norm = normalized_posts(posts_historical, extracted, recent_posts=posts_recent)
-        self.assertEqual(norm[0]["id"], "valid-2026-10-14-article")
+        self.assertEqual(norm[0]["id"], "valid-2026-10-16-article")
         self.assertEqual(len(norm), len(posts_historical) + 1)
         self.assertEqual(posts_recent, recent_before)
 
