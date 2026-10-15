@@ -1114,7 +1114,10 @@
         "article_title": "קשה למצוא זוגיות? למה אפליקציות הכרויות גורמות לשחיקה ומה אפשר לעשות",
         "article_url": "https://kesher.saharoni.com/blog/dating-apps-burnout-finding-a-partner",
         "article_live": true,
-        "article_deploy_status": "complete"
+        "article_deploy_status": "complete",
+        "long_status": "running",
+        "seed_dispatch_count": 1,
+        "long_last_dispatch_at": "2026-10-15T21:45:35.142341+00:00"
       }
     },
     {
@@ -2007,9 +2010,19 @@
         "backlog_cycle": "2026-10-15",
         "source_slug": "returning-to-israel-relationship-struggles"
       }
+    },
+    {
+      "at": "2026-10-15T21:45:35.142367+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched exact prior-cycle long-video state handoff before current-cycle watchdog",
+      "details": {
+        "backlog_cycle": "2026-10-14",
+        "source_slug": "dating-apps-burnout-finding-a-partner"
+      }
     }
   ],
-  "updated_at": "2026-10-15T21:45:24.458482+00:00",
+  "updated_at": "2026-10-15T21:45:35.142374+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2068,9 +2081,10 @@
         "target_content_sha256": "8474a80ca2a28172e3e6936feaefe4e00d85dcff3973ba51b6c13675a2e38a8b"
       },
       "intent_at": "2026-10-15T21:44:57.079815+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38812283519,
+      "dispatched_at": "2026-10-15T21:44:57.079815+00:00"
     }
   },
   "last_child_notification": {
