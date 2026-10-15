@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-15",
-  "status": "image_retry_wait",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 1,
     "status": "running",
@@ -15,12 +15,12 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "complete",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-10-14T22:14:26.528204+00:00",
     "pr_number": 1122,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1122",
     "normalization_slot": "2026-10-15",
-    "normalization_dispatched_at": "2026-10-15T00:35:08.605998+00:00",
+    "normalization_dispatched_at": "2026-10-15T10:27:43.844892+00:00",
     "normalization_run_id": 38660867082
   },
   "backlog": [
@@ -1171,14 +1171,7 @@
       "archived_at": "2026-10-14T22:13:36.864685+00:00"
     }
   ],
-  "last_error": {
-    "stage": "image",
-    "code": "IMAGE_OUTPUT_MISSING",
-    "message": "trusted image run 38719013794 completed with conclusion=success but no validated image is present",
-    "retryable": true,
-    "retry_at": "2026-10-15T10:22:56.299492+00:00",
-    "at": "2026-10-15T10:17:56.299520+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-03T21:00:53.525752+00:00",
@@ -1987,9 +1980,19 @@
         "failure_streak": 1,
         "run_id": 38719013794
       }
+    },
+    {
+      "at": "2026-10-15T10:27:43.844917+00:00",
+      "from": "image_retry_wait",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1122,
+        "slot": "2026-10-15"
+      }
     }
   ],
-  "updated_at": "2026-10-15T10:17:56.299534+00:00",
+  "updated_at": "2026-10-15T10:27:43.844927+00:00",
   "image": {
     "attempt_count": 3,
     "status": "retry_wait",
@@ -2050,9 +2053,10 @@
         "slot": "2026-10-15"
       },
       "intent_at": "2026-10-15T10:26:58.275270+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38660867082,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38720420098,
+      "dispatched_at": "2026-10-15T10:26:58.275270+00:00"
     }
   },
   "deliverables": {
@@ -2076,17 +2080,5 @@
     "Kesher Normalize Article PR:38650819792",
     "Kesher Normalize Article PR:38660867082",
     "Kesher Trusted Article Image:38719013794"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": null,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
