@@ -2082,7 +2082,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-17",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "when-everyone-around-you-gets-married",
+        "target_content_sha256": "667857b17833c378ca3a8f4614b8934c04744d201a53761b781b331b921125e3",
+        "target_item_id": "video-20261016-072105-667857b178-a3"
+      },
+      "intent_at": "2026-10-16T21:50:45.439081+00:00",
+      "status": "intent",
+      "previous_run_id": 38966393302,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 38971558655,
