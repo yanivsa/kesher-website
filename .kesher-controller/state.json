@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-16",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -41,10 +41,10 @@
     "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-16T16:00:50.650357+00:00",
+    "quality_checked_at": "2026-10-16T16:05:50.368908+00:00",
     "quality_violations": [],
     "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T16:00:52.183068+00:00"
+    "live_verified_at": "2026-10-16T16:05:51.450030+00:00"
   },
   "backlog": [
     {
@@ -1335,23 +1335,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-    "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-16T16:01:06.851598+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-16T11:31:17.647568+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_wait",
-      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
-      "details": {
-        "item_id": "video-20261016-140928-60a0e246ca-a3",
-        "task_id": "de45b79b-0da8-4ec8-9dc8-b068b10b8899"
-      }
-    },
     {
       "at": "2026-10-16T12:01:13.504121+00:00",
       "from": "long_video_watchdog_wait",
@@ -2095,9 +2080,15 @@
       "details": {
         "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-16T16:05:51.450051+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-16T16:01:06.851609+00:00",
+  "updated_at": "2026-10-16T16:05:51.450059+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
