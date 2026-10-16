@@ -2046,7 +2046,7 @@
     "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 38969924300,
+    "run_id": 38971558655,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -2065,26 +2065,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-17",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "why-cant-i-find-a-relationship",
-        "derive_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
-        "derive_long_item_id": "video-20261016-140928-60a0e246ca-a3"
-      },
-      "intent_at": "2026-10-16T21:45:42.917507+00:00",
-      "status": "dispatched",
-      "previous_run_id": 38969924300,
-      "observed_active_run_id": 38971558655,
-      "dispatched_at": "2026-10-16T21:45:42.917507+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
-    "run_id": 38969924300,
+    "run_id": 38971558655,
     "conclusion": "success",
     "source_slug": "why-cant-i-find-a-relationship",
     "slot": "2026-10-17"
