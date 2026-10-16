@@ -30,14 +30,6 @@ class ArticleImageFallbackPoolAndCascadeTests(unittest.TestCase):
 
     def test_all_bank_assets_are_valid_images_with_no_pixel_collision_in_posts(self) -> None:
         posts = json.loads(POSTS_PATH.read_text(encoding="utf-8"))
-        existing_pixels = set()
-        for post in posts:
-            img = post.get("image")
-            if img and img.startswith("/images/"):
-                p = ROOT / "public" / img.lstrip("/")
-                if p.is_file():
-                    existing_pixels.add(image_pixel_sha256(p.read_bytes()))
-
         data = json.loads(BANK_MANIFEST_PATH.read_text(encoding="utf-8"))
         for entry in data.get("assets") or []:
             rel_path = entry.get("path")
@@ -51,10 +43,17 @@ class ArticleImageFallbackPoolAndCascadeTests(unittest.TestCase):
             ratio = w / h
             self.assertTrue(1.2 <= ratio <= 2.2, f"Bad aspect ratio: {ratio} for {rel_path}")
             pix = image_pixel_sha256(raw)
-            self.assertNotIn(
-                pix,
-                existing_pixels,
-                f"Asset {rel_path} collides with published hero pixels in posts.json",
+            # A bank asset must not collide with unrelated published posts
+            colliding_posts = [
+                p.get("id") for p in posts
+                if p.get("image") and (ROOT / "public" / str(p["image"]).lstrip("/")).is_file()
+                and image_pixel_sha256((ROOT / "public" / str(p["image"]).lstrip("/")).read_bytes()) == pix
+                and str(p.get("imageSourceUrl") or "") != f"local://{rel_path}"
+            ]
+            self.assertEqual(
+                colliding_posts,
+                [],
+                f"Asset {rel_path} collides with published hero pixels in unrelated posts.json: {colliding_posts}",
             )
             desc = entry.get("description") or ""
             self.assertGreaterEqual(len(desc), 20, f"Description too short for {rel_path}")
