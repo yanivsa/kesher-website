@@ -1122,9 +1122,16 @@
         "long_item_id": "video-20261016-004908-8474a80ca2",
         "long_youtube_url": "https://www.youtube.com/watch?v=ueFxnU4Yl18",
         "long_youtube_id": "ueFxnU4Yl18",
-        "short_status": "running",
+        "short_status": "complete",
         "short_dispatch_count": 4,
-        "short_last_dispatch_at": "2026-10-16T00:44:37.214724+00:00"
+        "short_last_dispatch_at": "2026-10-16T00:44:37.214724+00:00",
+        "short_item_id": "video-20261016-025930-8474a80ca2",
+        "short_youtube_url": "https://www.youtube.com/watch?v=Hl6CArrj98I",
+        "short_youtube_id": "Hl6CArrj98I",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-10-16T00:48:26.040760+00:00"
       }
     },
     {
@@ -2067,9 +2074,19 @@
         "backlog_cycle": "2026-10-14",
         "source_slug": "dating-apps-burnout-finding-a-partner"
       }
+    },
+    {
+      "at": "2026-10-16T00:48:26.040781+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-10-14",
+        "source_slug": "dating-apps-burnout-finding-a-partner"
+      }
     }
   ],
-  "updated_at": "2026-10-16T00:48:19.305057+00:00",
+  "updated_at": "2026-10-16T00:48:26.040787+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
