@@ -1344,8 +1344,8 @@
         "long_youtube_url": "https://youtu.be/6j-doosfuRk",
         "long_youtube_id": "6j-doosfuRk",
         "short_status": "running",
-        "short_dispatch_count": 2,
-        "short_last_dispatch_at": "2026-10-16T21:31:13.271712+00:00"
+        "short_dispatch_count": 3,
+        "short_last_dispatch_at": "2026-10-16T21:37:42.559929+00:00"
       }
     }
   ],
@@ -1994,9 +1994,19 @@
         "backlog_cycle": "2026-10-16",
         "source_slug": "why-cant-i-find-a-relationship"
       }
+    },
+    {
+      "at": "2026-10-16T21:37:42.559950+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched independent prior-cycle Short generation",
+      "details": {
+        "backlog_cycle": "2026-10-16",
+        "source_slug": "why-cant-i-find-a-relationship"
+      }
     }
   ],
-  "updated_at": "2026-10-16T21:37:31.682072+00:00",
+  "updated_at": "2026-10-16T21:37:42.559957+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2056,9 +2066,10 @@
         "derive_long_item_id": "video-20261016-140928-60a0e246ca-a3"
       },
       "intent_at": "2026-10-16T21:37:10.916321+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38969924300,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38970641802,
+      "dispatched_at": "2026-10-16T21:37:10.916321+00:00"
     }
   },
   "last_child_notification": {
