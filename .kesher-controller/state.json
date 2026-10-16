@@ -21,7 +21,7 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1130",
     "normalization_slot": "2026-10-16",
     "normalization_dispatched_at": "2026-10-16T05:43:27.299791+00:00",
-    "normalization_run_id": 38873350704,
+    "normalization_run_id": 38877558744,
     "current_pr_head_sha": "2ace0696d894a30f78f4b9162c1ace6b28a70fef",
     "jules_head_sha": "6a081bd937298e51103d28efe400a8bed7ad4dd4",
     "normalization_drift_count": 1,
@@ -2217,8 +2217,8 @@
     }
   },
   "last_child_notification": {
-    "workflow": "Auto-merge Kesher article PRs",
-    "run_id": 38873794985,
+    "workflow": "Kesher Normalize Article PR",
+    "run_id": 38877558744,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-16"
