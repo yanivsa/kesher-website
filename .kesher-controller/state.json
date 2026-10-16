@@ -955,9 +955,10 @@
         "long_item_id": "video-20261016-072105-667857b178-a3",
         "long_youtube_url": "https://youtu.be/Sr_a20Vcywo",
         "long_youtube_id": "Sr_a20Vcywo",
-        "short_status": "running",
+        "short_status": "exhausted",
         "short_dispatch_count": 4,
-        "short_last_dispatch_at": "2026-10-16T22:36:19.784212+00:00"
+        "short_last_dispatch_at": "2026-10-16T22:36:19.784212+00:00",
+        "last_error": "BACKLOG_SHORT_ATTEMPTS_EXHAUSTED"
       }
     },
     {
