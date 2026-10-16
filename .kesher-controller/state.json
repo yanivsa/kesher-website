@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-16",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -41,10 +41,10 @@
     "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-16T12:20:49.670392+00:00",
+    "quality_checked_at": "2026-10-16T12:25:50.678678+00:00",
     "quality_violations": [],
     "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T12:20:50.936515+00:00"
+    "live_verified_at": "2026-10-16T12:25:52.168068+00:00"
   },
   "backlog": [
     {
@@ -1335,23 +1335,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "VIDEO_ATTEMPTS_EXHAUSTED",
-    "message": "VIDEO_ATTEMPTS_EXHAUSTED: Long Video exhausted 3 fresh generation attempts",
-    "at": "2026-10-16T12:21:06.970976+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-14T00:40:28.493177+00:00",
-      "from": "article_generating",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1113,
-        "slot": "2026-10-14"
-      }
-    },
     {
       "at": "2026-10-14T00:42:05.007954+00:00",
       "from": "article_normalizing",
@@ -2214,9 +2199,15 @@
       "details": {
         "message": "VIDEO_ATTEMPTS_EXHAUSTED: Long Video exhausted 3 fresh generation attempts"
       }
+    },
+    {
+      "at": "2026-10-16T12:25:52.168088+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-16T12:21:06.971002+00:00",
+  "updated_at": "2026-10-16T12:25:52.168095+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
