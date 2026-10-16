@@ -44,7 +44,7 @@
     "quality_checked_at": "2026-10-16T10:21:00.641626+00:00",
     "quality_violations": [],
     "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T10:21:02.627569+00:00"
+    "live_verified_at": "2026-10-16T10:21:35.556306+00:00"
   },
   "backlog": [
     {
@@ -1338,22 +1338,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-12T13:06:50.747947+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "Short derive workflow already active"
-    },
-    {
-      "at": "2026-10-12T13:40:05.468270+00:00",
-      "from": "short_running",
-      "to": "short_watchdog_recovery",
-      "reason": "Short provider stalled; re-dispatched derivation from the same verified long-form identity",
-      "details": {
-        "item_id": "video-20261012-160846-93bd8eb7d0",
-        "long_item_id": "video-20261012-152939-93bd8eb7d0"
-      }
-    },
-    {
       "at": "2026-10-12T14:46:10.580942+00:00",
       "from": "short_watchdog_recovery",
       "to": "article_live",
@@ -2205,9 +2189,21 @@
         "operation": "full",
         "resume": 2
       }
+    },
+    {
+      "at": "2026-10-16T10:21:35.556329+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-16T10:21:37.528647+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-16T10:19:27.080399+00:00",
+  "updated_at": "2026-10-16T10:21:37.528673+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2226,7 +2222,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38886458121,
