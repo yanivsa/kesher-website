@@ -2045,11 +2045,10 @@
         "derive_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
         "derive_long_item_id": "video-20261016-140928-60a0e246ca-a3"
       },
-      "intent_at": "2026-10-16T21:23:19.856763+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-16T21:30:41.298917+00:00",
+      "status": "intent",
       "previous_run_id": null,
-      "observed_active_run_id": 38969095660,
-      "dispatched_at": "2026-10-16T21:23:19.856763+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
