@@ -1,13 +1,12 @@
 {
   "current_intent": {
-    "intent_id": "liveness-2026-10-16-1792111416",
+    "intent_id": "liveness-2026-10-16-1792127473",
     "cycle": "2026-10-16",
-    "created_at": "2026-10-16T00:43:36.565345+00:00",
-    "status": "dispatched",
+    "created_at": "2026-10-16T05:11:13.420471+00:00",
+    "status": "dispatching",
     "target_workflow": ".github/workflows/kesher-content-controller.yml",
     "target_ref": "main",
-    "inputs": {},
-    "dispatched_at": "2026-10-16T00:43:36.565345+00:00"
+    "inputs": {}
   },
   "cycles": {
     "2026-10-15": {
