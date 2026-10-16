@@ -39,7 +39,7 @@
     "reconciled_existing_article": true,
     "live": true,
     "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
-    "next_deploy_retry_at": null,
+    "next_deploy_retry_at": "2026-10-16T09:31:34.704107+00:00",
     "quality_status": "passed",
     "quality_checked_at": "2026-10-16T09:26:37.249317+00:00",
     "quality_violations": [],
