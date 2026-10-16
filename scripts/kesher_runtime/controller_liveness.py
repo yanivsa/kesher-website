@@ -32,6 +32,9 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Optional
+from zoneinfo import ZoneInfo
+
+ISRAEL_TZ = ZoneInfo("Asia/Jerusalem")
 
 CANONICAL_CONTROLLER_WORKFLOW = ".github/workflows/kesher-content-controller.yml"
 CANONICAL_CONTROLLER_WORKFLOW_NAME = "Kesher Content Controller"
@@ -237,11 +240,26 @@ def evaluate_liveness(
 
     # 7. Recovery budget exhaustion check
     cycle_history = liveness_ledger.get("cycles", {}).get(cycle, {})
-    recoveries_count = int(cycle_history.get("recovery_count") or 0)
+    israel_dt = now_utc.astimezone(ISRAEL_TZ)
+    is_active_window = israel_dt.hour >= 8
+
+    if is_active_window:
+        if "active_window_recovery_count" in cycle_history:
+            recoveries_count = int(cycle_history["active_window_recovery_count"] or 0)
+        else:
+            recoveries_count = int(cycle_history.get("recovery_count") or 0)
+        phase_label = "active-window"
+    else:
+        if "pre_window_recovery_count" in cycle_history:
+            recoveries_count = int(cycle_history["pre_window_recovery_count"] or 0)
+        else:
+            recoveries_count = int(cycle_history.get("recovery_count") or 0)
+        phase_label = "pre-window"
+
     if recoveries_count >= max_recoveries:
         return LivenessDecision(
             status="LIVENESS_RECOVERY_BUDGET_EXHAUSTED",
-            reason=f"Maximum recovery dispatches reached for cycle {cycle} ({recoveries_count}/{max_recoveries})",
+            reason=f"Maximum {phase_label} recovery dispatches reached for cycle {cycle} ({recoveries_count}/{max_recoveries})",
             cycle=cycle,
             last_activity_at=_iso(latest_activity) if latest_activity else None,
         )
@@ -498,6 +516,11 @@ class ControllerLivenessWatchdog:
                 intent["dispatched_at"] = _iso(now_dt)
 
                 cycle_rec = ledger.setdefault("cycles", {}).setdefault(cycle, {})
+                israel_dt = now_dt.astimezone(ISRAEL_TZ)
+                if israel_dt.hour >= 8:
+                    cycle_rec["active_window_recovery_count"] = int(cycle_rec.get("active_window_recovery_count") or 0) + 1
+                else:
+                    cycle_rec["pre_window_recovery_count"] = int(cycle_rec.get("pre_window_recovery_count") or 0) + 1
                 cycle_rec["recovery_count"] = int(cycle_rec.get("recovery_count") or 0) + 1
                 cycle_rec["last_recovery_at"] = _iso(now_dt)
                 self.save_ledger(ledger)

@@ -1562,5 +1562,42 @@ class YoutubeMetadataRecoveryTest(unittest.TestCase):
                 pipeline.repair_persisted_youtube_metadata(item, "token")
         put.assert_not_called()
 
+    def test_upload_only_repairs_metadata_drift_on_initial_upload(self) -> None:
+        item = self._item()
+        item["type"] = "video_overview"
+        item["youtube_metadata"] = pipeline.publication_metadata(item["source"], "overview")
+        item["youtube_id"] = None
+        item["status"] = "approved"
+        item["technical_verified"] = True
+        item["final_mp4"] = "video.mp4"
+        item["manifest_path"] = "manifest.json"
+        video_file = pipeline.STATE_DIR / "video.mp4"
+        manifest_file = pipeline.STATE_DIR / "manifest.json"
+        video_file.parent.mkdir(parents=True, exist_ok=True)
+        video_file.write_bytes(b"dummy mp4")
+        manifest_file.write_text("{}", encoding="utf-8")
+        state = {"version": 1, "items": [item]}
+
+        mock_repair = mock.Mock()
+        with mock.patch.object(pipeline, "load_state", return_value=state), \
+             mock.patch.object(pipeline, "save_state"), \
+             mock.patch.object(pipeline, "youtube_access_token", return_value="token"), \
+             mock.patch.object(pipeline, "verify_authenticated_channel"), \
+             mock.patch.object(pipeline, "start_resumable_upload", return_value="https://upload.session"), \
+             mock.patch.object(pipeline, "legacy_external_effect", return_value={"video_id": "new-yt-id"}), \
+             mock.patch.object(pipeline, "verify_public_upload", side_effect=[
+                 pipeline.PipelineError("PUBLIC_METADATA_INVALID: remote tags differ from source-derived tags"),
+                 {"channel_id": pipeline.YOUTUBE_CHANNEL_ID, "privacy_status": "public", "processing_status": "succeeded"},
+             ]), \
+             mock.patch.object(pipeline, "repair_persisted_youtube_metadata", mock_repair):
+            res = pipeline.upload_only(item_id=item["id"], state=state)
+
+        self.assertEqual(res, 0)
+        self.assertEqual(item["youtube_id"], "new-yt-id")
+        self.assertTrue(item["uploaded"])
+        self.assertEqual(item["status"], "uploaded")
+        mock_repair.assert_called_once_with(item, "token")
+
 if __name__ == "__main__":
     unittest.main()
+

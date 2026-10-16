@@ -70,6 +70,17 @@ TOPIC_FILENAME_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
 
 REQUIRED_CATEGORIES = {"dating", "singles", "relocation", "premarital", "parenting", "gifted", "adhd", "couples"}
 
+CATEGORY_FALLBACK_ORDER: dict[str, tuple[str, ...]] = {
+    "dating": ("dating", "singles", "couples", "premarital"),
+    "singles": ("singles", "dating", "couples", "premarital"),
+    "couples": ("couples", "premarital", "dating", "singles", "relocation"),
+    "premarital": ("premarital", "couples", "dating", "singles"),
+    "relocation": ("relocation", "couples", "parenting"),
+    "parenting": ("parenting", "adhd", "gifted", "couples"),
+    "gifted": ("gifted", "parenting", "adhd"),
+    "adhd": ("adhd", "parenting", "gifted"),
+}
+
 
 def provider_preflight() -> dict[str, bool]:
     availability = {
@@ -211,10 +222,10 @@ def _bank_candidates(category: str, banned_paths: set[str]) -> list[tuple[int, s
     return rows
 
 
-def _seed_candidates(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[int, str]]:
+def _seed_candidates_for_category(category: str, banned_paths: set[str]) -> list[tuple[int, str]]:
     manifest = load_seed_manifest()
-    category = core.article_key(post)
-    block = manifest["categories"][category]
+    categories = manifest.get("categories") or {}
+    block = categories.get(category) or {}
     rows: list[tuple[int, str]] = []
     seen: set[str] = set()
     for tier, field in ((1, "primary"), (2, "reserve")):
@@ -227,9 +238,20 @@ def _seed_candidates(post: dict[str, Any], banned_paths: set[str]) -> list[tuple
     return rows
 
 
+def _seed_candidates(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[int, str]]:
+    return _seed_candidates_for_category(core.article_key(post), banned_paths)
+
+
 def _candidate_pool(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[int, str]]:
-    category = core.article_key(post)
-    rows = _bank_candidates(category, banned_paths) + _seed_candidates(post, banned_paths)
+    primary_category = core.article_key(post)
+    cascade = CATEGORY_FALLBACK_ORDER.get(primary_category, (primary_category,))
+    rows: list[tuple[int, str]] = []
+    for step_index, cat in enumerate(cascade):
+        tier_offset = step_index * 10
+        bank = [(tier + tier_offset, path) for tier, path in _bank_candidates(cat, banned_paths)]
+        seed = [(tier + tier_offset, path) for tier, path in _seed_candidates_for_category(cat, banned_paths)]
+        rows.extend(bank)
+        rows.extend(seed)
     seen: set[str] = set()
     result: list[tuple[int, str]] = []
     for tier, source_path in rows:
@@ -237,7 +259,55 @@ def _candidate_pool(post: dict[str, Any], banned_paths: set[str]) -> list[tuple[
             continue
         seen.add(source_path)
         result.append((tier, source_path))
+
+    # Final generic bank fallback: any unassigned asset from the verified local bank
+    generic_offset = 100
+    for entry in (load_bank_manifest().get("assets") or []):
+        if not isinstance(entry, dict):
+            continue
+        p = str(entry.get("path") or "").strip()
+        if p and p not in seen and p not in banned_paths:
+            seen.add(p)
+            result.append((generic_offset, p))
+
     return result
+
+
+def audit_image_pool_capacity(repo_root: Path = REPO_ROOT) -> dict[str, Any]:
+    existing_hashes, _, _ = collect_existing_image_usage(repo_root)
+    bank_payload = load_bank_manifest()
+    categories: dict[str, dict[str, int]] = {}
+    total_assets = 0
+    total_available = 0
+
+    for entry in bank_payload.get("assets") or []:
+        if not isinstance(entry, dict):
+            continue
+        cat = str(entry.get("category") or "generic")
+        p = str(entry.get("path") or "").strip()
+        cat_stats = categories.setdefault(cat, {"total": 0, "used": 0, "available": 0})
+        cat_stats["total"] += 1
+        total_assets += 1
+        try:
+            full_path = (repo_root / p).resolve()
+            if full_path.is_file():
+                data = full_path.read_bytes()
+                if core.candidate_is_duplicate(data, existing_hashes):
+                    cat_stats["used"] += 1
+                else:
+                    cat_stats["available"] += 1
+                    total_available += 1
+            else:
+                cat_stats["used"] += 1
+        except Exception:
+            cat_stats["used"] += 1
+
+    return {
+        "categories": categories,
+        "total_assets": total_assets,
+        "total_available": total_available,
+        "capacity_alert": total_available <= 2,
+    }
 
 
 def try_gemini_variants(
@@ -383,12 +453,18 @@ def local_fallback(
             file=sys.stderr,
             flush=True,
         )
+        visual_match = CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"])
+        bank_payload = load_bank_manifest()
+        for entry in bank_payload.get("assets") or []:
+            if isinstance(entry, dict) and entry.get("path") == source_path and entry.get("description"):
+                visual_match = str(entry["description"]).strip()
+                break
         return core.ImageCandidate(
             "Local",
             data,
             ext,
             f"local://{source_path}",
-            CATEGORY_DESCRIPTIONS.get(category, CATEGORY_DESCRIPTIONS["couples"]),
+            visual_match,
             attempts.copy(),
         )
 

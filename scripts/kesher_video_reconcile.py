@@ -335,7 +335,7 @@ def export_target(item: dict[str, Any] | None) -> None:
                 if content_sha256:
                     f.write(f"TARGET_CONTENT_SHA256={content_sha256}\n")
                 f.write(f"TARGET_GENERATION_ATTEMPT={item.get('fresh_generation_attempt', 1)}\n")
-                if slug and not os.environ.get("TARGET_SLUG"):
+                if slug:
                     f.write(f"TARGET_SLUG={slug}\n")
         except OSError:
             pass
@@ -618,7 +618,13 @@ def recover_persisted_youtube_id(state: dict[str, Any], item: dict[str, Any]) ->
         return False
     token = pipeline.youtube_access_token()
     pipeline.verify_authenticated_channel(token)
-    verification = pipeline.verify_public_upload(item, token)
+    try:
+        verification = pipeline.verify_public_upload(item, token)
+    except pipeline.PipelineError as exc:
+        if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
+            raise
+        pipeline.repair_persisted_youtube_metadata(item, token)
+        verification = pipeline.verify_public_upload(item, token)
     item["youtube_verification"] = verification
     item["youtube_url"] = f"https://www.youtube.com/watch?v={item['youtube_id']}"
     item["uploaded"] = True
