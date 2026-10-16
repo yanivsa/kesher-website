@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-16",
-  "status": "long_video_watchdog_wait",
+  "status": "long_video_watchdog_recovery",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1338,12 +1338,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-12T21:48:03.667814+00:00",
-      "from": "article_needed",
-      "to": "article_needed",
-      "reason": "controller state migrated from schema 3 to schema v4"
-    },
-    {
       "at": "2026-10-12T21:48:03.668804+00:00",
       "from": "article_needed",
       "to": "v5_migrated",
@@ -2217,9 +2211,21 @@
         "item_id": "video-20261016-132111-60a0e246ca-a2",
         "task_id": "7ea7a552-1375-4baa-a917-ba0baac616d1"
       }
+    },
+    {
+      "at": "2026-10-16T11:01:21.166987+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_recovery",
+      "reason": "long-form provider stalled; resumed the same durable provider identity",
+      "details": {
+        "item_id": "video-20261016-132111-60a0e246ca-a2",
+        "task_id": "7ea7a552-1375-4baa-a917-ba0baac616d1",
+        "slug": "why-cant-i-find-a-relationship",
+        "content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8"
+      }
     }
   ],
-  "updated_at": "2026-10-16T10:40:58.013732+00:00",
+  "updated_at": "2026-10-16T11:01:21.166993+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2238,7 +2244,7 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "generating",
+    "status": "running",
     "last_error": null,
     "next_retry_at": "2026-10-16T10:29:43.973073+00:00",
     "run_id": 38886458121,
@@ -2248,7 +2254,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-16T10:19:27.080380+00:00",
+    "last_dispatch_at": "2026-10-16T11:01:21.166975+00:00",
     "attempts": 1,
     "last_run_conclusion": "success",
     "item_id": "video-20261016-132111-60a0e246ca-a2",
@@ -2265,11 +2271,11 @@
       "hard_started_at": "2026-10-16T10:21:19.121698+00:00",
       "last_progress_at": "2026-10-16T10:24:43.973073+00:00",
       "last_fingerprint": "29fb99dac0c3bef7f0bcaef0f6015786c762081713e2db81c9b8c627da90332b",
-      "recovery_count": 0,
-      "last_recovery_at": null
+      "recovery_count": 1,
+      "last_recovery_at": "2026-10-16T11:00:46.942854+00:00"
     },
     "pending_resume_ready": false,
-    "resume_dispatches": 2
+    "resume_dispatches": 3
   },
   "short": {
     "attempt_count": 0,
@@ -2306,9 +2312,10 @@
         "target_item_id": "video-20261016-132111-60a0e246ca-a2"
       },
       "intent_at": "2026-10-16T11:00:46.942854+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38886458121,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38891028945,
+      "dispatched_at": "2026-10-16T11:00:46.942854+00:00"
     }
   },
   "last_child_notification": {
@@ -2343,12 +2350,12 @@
       "strike_count": 1,
       "last_check_token": "2026-10-16T14",
       "last_fingerprint": "198e21aa99a3cb27a602d8627176d2a89b89493d4f77199c33eddad048c9edf2",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
+      "last_controller_action_token": "recovery:1:2026-10-16T11:00:46.942854+00:00",
+      "controller_action_observed": true,
       "last_observed_at": "2026-10-16T11:00:46.942854+00:00",
-      "last_action": "observe_controller",
+      "last_action": "wait_after_controller_action",
       "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-16T10:10:14.163375+00:00"
+      "last_controller_action_at": "2026-10-16T11:00:46.942854+00:00"
     }
   }
 }
