@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-16",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -41,10 +41,10 @@
     "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-16T13:45:54.863876+00:00",
+    "quality_checked_at": "2026-10-16T13:50:49.636926+00:00",
     "quality_violations": [],
     "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T13:45:56.626560+00:00"
+    "live_verified_at": "2026-10-16T13:50:50.497484+00:00"
   },
   "backlog": [
     {
@@ -1335,23 +1335,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-    "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-16T13:46:18.353277+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-15T10:27:43.844917+00:00",
-      "from": "image_retry_wait",
-      "to": "article_normalizing",
-      "reason": "dirty or stale article PR dispatched to trusted normalizer",
-      "details": {
-        "pr_number": 1122,
-        "slot": "2026-10-15"
-      }
-    },
     {
       "at": "2026-10-15T10:29:28.692291+00:00",
       "from": "article_normalizing",
@@ -2149,9 +2134,15 @@
       "details": {
         "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-16T13:50:50.497505+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-16T13:46:18.353286+00:00",
+  "updated_at": "2026-10-16T13:50:50.497511+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
