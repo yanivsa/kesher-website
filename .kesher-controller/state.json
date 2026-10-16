@@ -2045,7 +2045,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-17",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "why-cant-i-find-a-relationship",
+        "derive_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
+        "derive_long_item_id": "video-20261016-140928-60a0e246ca-a3"
+      },
+      "intent_at": "2026-10-16T21:37:10.916321+00:00",
+      "status": "intent",
+      "previous_run_id": 38969924300,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
     "run_id": 38969924300,
