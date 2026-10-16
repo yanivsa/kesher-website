@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-16",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -41,10 +41,10 @@
     "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-16T12:50:54.493901+00:00",
+    "quality_checked_at": "2026-10-16T12:55:50.265499+00:00",
     "quality_violations": [],
     "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T12:50:56.040351+00:00"
+    "live_verified_at": "2026-10-16T12:55:51.711194+00:00"
   },
   "backlog": [
     {
@@ -1335,23 +1335,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-    "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-16T12:51:11.689698+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-14T10:36:32.166524+00:00",
-      "from": "blocked",
-      "to": "article_image_rebinding",
-      "reason": "exact trusted image evidence is valid except for PR head binding",
-      "details": {
-        "pr_number": 1113,
-        "head_sha": "b76ca3215545db83c3a68339d43bfb9f929e613f"
-      }
-    },
     {
       "at": "2026-10-14T10:38:16.753359+00:00",
       "from": "article_image_rebinding",
@@ -2188,9 +2173,15 @@
       "details": {
         "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-16T12:55:51.711214+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-16T12:51:11.689708+00:00",
+  "updated_at": "2026-10-16T12:55:51.711221+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
