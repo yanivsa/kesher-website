@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-16",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -41,10 +41,10 @@
     "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-16T13:50:49.636926+00:00",
+    "quality_checked_at": "2026-10-16T13:55:55.120292+00:00",
     "quality_violations": [],
     "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T13:50:50.497484+00:00"
+    "live_verified_at": "2026-10-16T13:55:56.750848+00:00"
   },
   "backlog": [
     {
@@ -1335,19 +1335,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-    "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-16T13:51:00.107540+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-15T10:39:16.026792+00:00",
-      "from": "image_retry_wait",
-      "to": "article_image_running",
-      "reason": "trusted image workflow already active"
-    },
     {
       "at": "2026-10-15T10:45:25.545416+00:00",
       "from": "article_image_running",
@@ -2142,9 +2131,15 @@
       "details": {
         "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-16T13:55:56.750873+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-16T13:51:00.107551+00:00",
+  "updated_at": "2026-10-16T13:55:56.750879+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
