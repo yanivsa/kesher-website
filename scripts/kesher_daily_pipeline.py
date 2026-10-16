@@ -1967,13 +1967,7 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
         # same persisted YouTube resource; every other failure stays fail-closed.
         token = youtube_access_token()
         verify_authenticated_channel(token)
-        try:
-            _verify_and_record_upload(state, item, token)
-        except PipelineError as exc:
-            if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
-                raise
-            repair_persisted_youtube_metadata(item, token)
-            _verify_and_record_upload(state, item, token)
+        _verify_and_record_upload(state, item, token)
         return 0
     if not item.get("final_mp4"):
         raise PipelineError("Upload candidate is missing final MP4 path")
@@ -2026,19 +2020,18 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
     item["youtube_id"] = video_id
     item["youtube_url"] = f"https://youtu.be/{video_id}"
     item["upload_response_at"] = utc_now()
-    save_state(state)
-    try:
-        _verify_and_record_upload(state, item, token)
-    except PipelineError as exc:
-        if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
-            raise
-        repair_persisted_youtube_metadata(item, token)
-        _verify_and_record_upload(state, item, token)
+    _verify_and_record_upload(state, item, token)
     return 0
 
 
 def _verify_and_record_upload(state: dict[str, Any], item: dict[str, Any], token: str) -> None:
-    verification = verify_public_upload(item, token)
+    try:
+        verification = verify_public_upload(item, token)
+    except PipelineError as exc:
+        if not str(exc).startswith("PUBLIC_METADATA_INVALID: remote "):
+            raise
+        repair_persisted_youtube_metadata(item, token)
+        verification = verify_public_upload(item, token)
     item["youtube_verification"] = verification
     item["uploaded"] = True
     item["status"] = "uploaded"

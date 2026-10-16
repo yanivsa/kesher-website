@@ -68,4 +68,6 @@ public/videos/*_broll.mp4
 videos_raw/
 data/
 reports/
+output/
+.agents/skills/take-one/
 

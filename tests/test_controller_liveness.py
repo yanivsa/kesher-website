@@ -413,6 +413,35 @@ class ControllerLivenessTests(unittest.TestCase):
         # Critical verification: ZERO additional dispatches from VM B!
         self.assertEqual(len(transport_b.dispatches), 0)
 
+    # 13. Pre-window wakes do not exhaust active pipeline recovery capacity
+    def test_pre_window_wakes_do_not_exhaust_active_pipeline_recovery_capacity(self):
+        # 05:00 Israel time (02:00 UTC) is before publication window (08:00 Israel time)
+        pre_window_time = datetime(2026, 10, 14, 2, 0, 0, tzinfo=timezone.utc)
+        # 09:00 Israel time (06:00 UTC) is during active publication window
+        active_window_time = datetime(2026, 10, 14, 6, 0, 0, tzinfo=timezone.utc)
+
+        state = self.valid_active_state(updated_at=_iso(pre_window_time - timedelta(hours=1)))
+        ledger = {
+            "cycles": {
+                "2026-10-14": {
+                    "pre_window_recovery_count": MAX_RECOVERIES_PER_CYCLE,
+                    "active_window_recovery_count": 0,
+                    "recovery_count": MAX_RECOVERIES_PER_CYCLE,
+                    "last_recovery_at": _iso(pre_window_time - timedelta(minutes=20)),
+                }
+            }
+        }
+
+        # During pre-window, a 4th recovery is exhausted
+        pre_decision = evaluate_liveness(state, [], ledger, pre_window_time)
+        self.assertEqual(pre_decision.status, "LIVENESS_RECOVERY_BUDGET_EXHAUSTED")
+        self.assertIn("pre-window", pre_decision.reason)
+
+        # During active window, full recovery capacity remains (active_window_recovery_count is 0)
+        active_decision = evaluate_liveness(state, [], ledger, active_window_time)
+        self.assertEqual(active_decision.status, "LIVENESS_RECOVERY_REQUIRED")
+        self.assertEqual(active_decision.action, "dispatch")
+
 
 if __name__ == "__main__":
     unittest.main()

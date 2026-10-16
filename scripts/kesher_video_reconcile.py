@@ -335,7 +335,7 @@ def export_target(item: dict[str, Any] | None) -> None:
                 if content_sha256:
                     f.write(f"TARGET_CONTENT_SHA256={content_sha256}\n")
                 f.write(f"TARGET_GENERATION_ATTEMPT={item.get('fresh_generation_attempt', 1)}\n")
-                if slug and not os.environ.get("TARGET_SLUG"):
+                if slug:
                     f.write(f"TARGET_SLUG={slug}\n")
         except OSError:
             pass

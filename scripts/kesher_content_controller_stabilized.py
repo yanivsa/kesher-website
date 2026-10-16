@@ -1556,7 +1556,32 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         number = int(pr.get("number") or 0)
         state.setdefault("article", {})["pr_number"] = number
         state["article"]["pr_url"] = pr.get("html_url")
-        head_sha = str((pr.get("head") or {}).get("sha") or "").lower()
+        head_sha = str((pr.get("head") or {}).get("sha") or "").strip().lower()
+        state["article"]["current_pr_head_sha"] = head_sha
+        if not state["article"].get("jules_head_sha"):
+            state["article"]["jules_head_sha"] = head_sha
+
+        normalized_head_sha = str(state["article"].get("normalized_head_sha") or "").strip().lower()
+        if normalized_head_sha and normalized_head_sha != head_sha:
+            drift_count = int(state["article"].get("normalization_drift_count") or 0) + 1
+            state["article"]["normalization_drift_count"] = drift_count
+            if drift_count > 3:
+                v5.core.block(
+                    state,
+                    "article",
+                    "ARTICLE_JULES_UNSTABLE_MUTATION",
+                    f"Article PR head mutated repeatedly ({drift_count} times) after trusted stages; branch quiescence failed",
+                )
+                state["article"]["status"] = "blocked"
+                return v5.core.Action("blocked", "Article PR head mutated repeatedly; branch quiescence failed")
+
+            state["article"]["normalization_status"] = "pending"
+            state["article"].pop("normalized_head_sha", None)
+            state["article"].pop("image_head_sha", None)
+            state["article"].pop("merge_candidate_sha", None)
+            if str((state.get("image") or {}).get("status") or "") in {"running", "complete"}:
+                state["image"]["status"] = "pending"
+                state["image"].pop("run_id", None)
 
         # 1. Cap auto-merge dispatches to budget (max 3 dispatches)
         merge_dispatches = int(state["article"].get("merge_dispatch_count") or 0)
@@ -1595,15 +1620,14 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
         # 4. Normalization check
         needs_normalization, slot = self.github.article_pr_normalization_required(pr)
         if needs_normalization:
-            if self._child_notification_env()["workflow"] == "Kesher Normalize Article PR":
+            if (
+                self._child_notification_env()["workflow"] == "Kesher Normalize Article PR"
+                and str(self._child_notification_env().get("conclusion") or "").lower() != "success"
+            ):
                 v5.core.transition(
                     state,
                     "article_normalizing",
-                    "normalize child completed while PR still requires normalization; deferred to recovery heartbeat",
-                )
-                return v5.core.Action(
-                    "wait",
-                    "normalize child completed without clearing normalization; deferred to heartbeat",
+                    "normalize child completed without success while PR still requires normalization; retrying normalization",
                 )
             active = self.github.active_normalizer_run(number)
             if active:
@@ -1637,6 +1661,7 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
             )
 
         state["article"]["normalization_status"] = "complete"
+        state["article"]["normalized_head_sha"] = head_sha
 
         # 5. Check content structure gates BEFORE consuming image attempts
         try:
@@ -1825,14 +1850,50 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     "wait",
                     f"duplicate child completion notification ignored: {notification_key}",
                 )
-            if v5.v3.entry.failed_child_waits_for_heartbeat():
+            env_for_heartbeat = {
+                "KESHER_TRIGGER_EVENT": info["trigger"],
+                "KESHER_CHILD_WORKFLOW": info["workflow"],
+                "KESHER_CHILD_CONCLUSION": info["conclusion"],
+            }
+            if v5.v3.entry.failed_child_waits_for_heartbeat(env_for_heartbeat):
                 if notification_key:
                     processed.append(notification_key)
                     state["processed_child_notifications"] = processed[-100:]
+                stage_mapping = self._workflow_stage_and_file(info["workflow"])
+                stage_name = stage_mapping[0] if stage_mapping else None
+                if stage_name and stage_name in state and isinstance(state[stage_name], dict):
+                    state[stage_name]["last_run_conclusion"] = info.get("conclusion")
+                    v5.v3.record_stage_failure(
+                        state,
+                        stage_name,
+                        f"{stage_name.upper()}_WORKFLOW_FAILED",
+                        f"child workflow {info['workflow']} completed with {info.get('conclusion')}",
+                        run_id=info.get("run_id"),
+                    )
+                stage_budget_exhausted = False
+                attempts = 0
+                if stage_name:
+                    stage_data = state.get(stage_name) or {}
+                    attempts = int(stage_data.get("attempt_count") or stage_data.get("attempts") or 0)
+                    if attempts >= v5.v3.MAX_STAGE_ATTEMPTS:
+                        stage_budget_exhausted = True
+                if stage_budget_exhausted:
+                    v5.core.block(
+                        state,
+                        stage_name or "controller",
+                        f"{stage_name.upper() if stage_name else 'CHILD'}_STAGE_BUDGET_EXHAUSTED",
+                        f"failed child {info['workflow']} exhausted stage budget ({attempts}/{v5.v3.MAX_STAGE_ATTEMPTS})",
+                    )
+                    self._safe_save_controller_state(state)
+                    return state, v5.core.Action(
+                        "blocked",
+                        f"failed child {info['workflow']} exhausted stage budget",
+                    )
                 self._safe_save_controller_state(state)
+                retry_at = (state.get(stage_name) or {}).get("next_retry_at") if stage_name else None
                 return state, v5.core.Action(
                     "wait",
-                    f"failed child {info['workflow']} deferred to recovery heartbeat",
+                    f"failed child {info['workflow']} reconciled; retry scheduled for {retry_at or 'next tick'}; deferred to recovery heartbeat",
                 )
 
         has_gh = hasattr(self, "github") and self.github is not None
