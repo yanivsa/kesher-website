@@ -1041,7 +1041,10 @@
         "article_title": "כשכולם סביבכם מתחתנים: למה החתונות של החברים כל כך מכאיבות – ומה עושים עם הלבד",
         "article_url": "https://kesher.saharoni.com/blog/when-everyone-around-you-gets-married",
         "article_live": true,
-        "article_deploy_status": "complete"
+        "article_deploy_status": "complete",
+        "long_status": "running",
+        "long_resume_count": 1,
+        "long_last_dispatch_at": "2026-10-16T04:19:34.665190+00:00"
       }
     },
     {
@@ -2154,9 +2157,10 @@
         "target_item_id": "video-20261013-135949-667857b178-a2"
       },
       "intent_at": "2026-10-16T04:19:13.179674+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38850034393,
+      "dispatched_at": "2026-10-16T04:19:13.179674+00:00"
     }
   },
   "last_child_notification": {
