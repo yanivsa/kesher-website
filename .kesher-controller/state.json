@@ -949,9 +949,12 @@
         "article_url": "https://kesher.saharoni.com/blog/when-everyone-around-you-gets-married",
         "article_live": true,
         "article_deploy_status": "complete",
-        "long_status": "running",
+        "long_status": "complete",
         "long_resume_count": 3,
-        "long_last_dispatch_at": "2026-10-16T22:16:26.303873+00:00"
+        "long_last_dispatch_at": "2026-10-16T22:16:26.303873+00:00",
+        "long_item_id": "video-20261016-072105-667857b178-a3",
+        "long_youtube_url": "https://youtu.be/Sr_a20Vcywo",
+        "long_youtube_id": "Sr_a20Vcywo"
       }
     },
     {
@@ -2082,7 +2085,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-17",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "when-everyone-around-you-gets-married",
+        "derive_content_sha256": "667857b17833c378ca3a8f4614b8934c04744d201a53761b781b331b921125e3",
+        "derive_long_item_id": "video-20261016-072105-667857b178-a3"
+      },
+      "intent_at": "2026-10-16T22:20:35.330081+00:00",
+      "status": "intent",
+      "previous_run_id": 38971558655,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
     "run_id": 38974743923,
