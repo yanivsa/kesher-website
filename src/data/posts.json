@@ -23,7 +23,9 @@
     "controllerManaged": true,
     "imageProvider": "Local",
     "imageSourceUrl": "local://public/images/fallback/dating/dating_relationship_park_walk.jpg",
-    "imageIsFallback": true
+    "imageIsFallback": true,
+    "image": "/images/generated/blog/why-cant-i-find-a-relationship.jpg",
+    "imageAlt": "צילום מציאותי של זוג בהליכה נינוחה בפארק בשעות אחר הצהריים"
   },
   {
     "id": "returning-to-israel-relationship-struggles",
