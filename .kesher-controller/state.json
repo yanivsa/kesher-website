@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-16",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -41,10 +41,10 @@
     "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-16T14:35:56.491729+00:00",
+    "quality_checked_at": "2026-10-16T14:40:50.329122+00:00",
     "quality_violations": [],
     "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T14:35:58.007761+00:00"
+    "live_verified_at": "2026-10-16T14:40:51.935697+00:00"
   },
   "backlog": [
     {
@@ -1335,23 +1335,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-    "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-16T14:36:17.103647+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-15T23:58:04.252534+00:00",
-      "from": "waiting_for_article_window",
-      "to": "waiting_for_article_window",
-      "reason": "dispatched independent prior-cycle Short generation",
-      "details": {
-        "backlog_cycle": "2026-10-14",
-        "source_slug": "dating-apps-burnout-finding-a-partner"
-      }
-    },
     {
       "at": "2026-10-16T00:03:18.649569+00:00",
       "from": "waiting_for_article_window",
@@ -2143,9 +2128,15 @@
       "details": {
         "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-16T14:40:51.935719+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-16T14:36:17.103658+00:00",
+  "updated_at": "2026-10-16T14:40:51.935726+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
