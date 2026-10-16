@@ -950,8 +950,8 @@
         "article_live": true,
         "article_deploy_status": "complete",
         "long_status": "running",
-        "long_resume_count": 2,
-        "long_last_dispatch_at": "2026-10-16T21:51:18.139162+00:00"
+        "long_resume_count": 3,
+        "long_last_dispatch_at": "2026-10-16T22:16:26.303873+00:00"
       }
     },
     {
@@ -2093,9 +2093,10 @@
         "target_item_id": "video-20261016-072105-667857b178-a3"
       },
       "intent_at": "2026-10-16T22:15:46.688918+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38966393302,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38974743923,
+      "dispatched_at": "2026-10-16T22:15:46.688918+00:00"
     }
   },
   "last_child_notification": {
