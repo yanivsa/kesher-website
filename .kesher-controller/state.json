@@ -2295,7 +2295,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-16",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "why-cant-i-find-a-relationship",
+        "target_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
+        "target_item_id": "video-20261016-132111-60a0e246ca-a2"
+      },
+      "intent_at": "2026-10-16T11:00:46.942854+00:00",
+      "status": "intent",
+      "previous_run_id": 38886458121,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
     "run_id": 38886458121,
@@ -2325,13 +2340,13 @@
       "slug": "why-cant-i-find-a-relationship",
       "content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
       "stage": "long_video",
-      "strike_count": 0,
-      "last_check_token": "2026-10-16T13",
+      "strike_count": 1,
+      "last_check_token": "2026-10-16T14",
       "last_fingerprint": "198e21aa99a3cb27a602d8627176d2a89b89493d4f77199c33eddad048c9edf2",
       "last_controller_action_token": null,
       "controller_action_observed": false,
-      "last_observed_at": "2026-10-16T10:24:43.973073+00:00",
-      "last_action": "progress_reset",
+      "last_observed_at": "2026-10-16T11:00:46.942854+00:00",
+      "last_action": "observe_controller",
       "direct_takeover_required": false,
       "last_controller_action_at": "2026-10-16T10:10:14.163375+00:00"
     }
