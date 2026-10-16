@@ -44,7 +44,7 @@
     "quality_checked_at": "2026-10-16T11:10:48.264668+00:00",
     "quality_violations": [],
     "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T11:10:49.027391+00:00"
+    "live_verified_at": "2026-10-16T11:11:04.270228+00:00"
   },
   "backlog": [
     {
@@ -1338,28 +1338,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-12T22:28:18.503909+00:00",
-      "from": "article_normalizing",
-      "to": "article_image_running",
-      "reason": "controller dispatched one trusted image worker attempt",
-      "details": {
-        "attempt": 1,
-        "pr_number": 1111
-      }
-    },
-    {
-      "at": "2026-10-12T22:30:10.349724+00:00",
-      "from": "article_image_running",
-      "to": "image_retry_wait",
-      "reason": "IMAGE_OUTPUT_MISSING",
-      "details": {
-        "message": "trusted image run 38316841968 completed with conclusion=success but no validated image is present",
-        "retry_at": "2026-10-12T22:35:10.349687+00:00",
-        "failure_streak": 1,
-        "run_id": 38316841968
-      }
-    },
-    {
       "at": "2026-10-12T23:58:57.605579+00:00",
       "from": "image_retry_wait",
       "to": "article_result_wait",
@@ -2224,9 +2202,21 @@
         "operation": "full",
         "resume": 4
       }
+    },
+    {
+      "at": "2026-10-16T11:11:04.270248+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-16T11:11:05.256992+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "video workflow already active"
     }
   ],
-  "updated_at": "2026-10-16T11:07:59.161775+00:00",
+  "updated_at": "2026-10-16T11:11:05.257014+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2245,7 +2235,7 @@
   },
   "long_video": {
     "attempt_count": 3,
-    "status": "running",
+    "status": "rejected",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38891754545,
