@@ -21,7 +21,10 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1130",
     "normalization_slot": "2026-10-16",
     "normalization_dispatched_at": "2026-10-16T05:43:27.299791+00:00",
-    "normalization_run_id": 38873350704
+    "normalization_run_id": 38873350704,
+    "current_pr_head_sha": "6a081bd937298e51103d28efe400a8bed7ad4dd4",
+    "jules_head_sha": "6a081bd937298e51103d28efe400a8bed7ad4dd4",
+    "normalized_head_sha": "6a081bd937298e51103d28efe400a8bed7ad4dd4"
   },
   "backlog": [
     {
@@ -2132,13 +2135,13 @@
       }
     }
   ],
-  "updated_at": "2026-10-16T05:45:15.080876+00:00",
+  "updated_at": "2026-10-16T08:25:25.313025+00:00",
   "image": {
     "attempt_count": 1,
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 38857416871,
+    "run_id": 38873541207,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
