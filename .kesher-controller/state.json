@@ -1337,9 +1337,12 @@
         "article_url": "https://kesher.saharoni.com/blog/why-cant-i-find-a-relationship",
         "article_live": true,
         "article_deploy_status": "complete",
-        "long_status": "running",
+        "long_status": "complete",
         "long_resume_count": 1,
-        "long_last_dispatch_at": "2026-10-16T21:01:07.236837+00:00"
+        "long_last_dispatch_at": "2026-10-16T21:01:07.236837+00:00",
+        "long_item_id": "video-20261016-140928-60a0e246ca-a3",
+        "long_youtube_url": "https://youtu.be/6j-doosfuRk",
+        "long_youtube_id": "6j-doosfuRk"
       }
     }
   ],
@@ -2019,7 +2022,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-17",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "why-cant-i-find-a-relationship",
+        "derive_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
+        "derive_long_item_id": "video-20261016-140928-60a0e246ca-a3"
+      },
+      "intent_at": "2026-10-16T21:23:19.856763+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
     "run_id": 38966393302,
