@@ -21,7 +21,7 @@
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1130",
     "normalization_slot": "2026-10-16",
     "normalization_dispatched_at": "2026-10-16T05:43:27.299791+00:00",
-    "normalization_run_id": 38857256229
+    "normalization_run_id": 38873350704
   },
   "backlog": [
     {
@@ -2213,7 +2213,7 @@
   },
   "last_child_notification": {
     "workflow": "Kesher Normalize Article PR",
-    "run_id": 38857256229,
+    "run_id": 38873350704,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-16"
