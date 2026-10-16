@@ -5,6 +5,15 @@ import worker, {
   checkActiveControllerRuns,
 } from "../cloudflare/heartbeat-worker/src/index.js";
 
+type MockExecutionContext = {
+  waitUntil: (promise: Promise<unknown>) => void;
+  passThroughOnException?: () => void;
+};
+
+const createMockCtx = (waitUntilFn?: (promise: Promise<unknown>) => void): MockExecutionContext => ({
+  waitUntil: waitUntilFn || vi.fn(),
+});
+
 describe("Cloudflare Heartbeat Worker", () => {
   const defaultEnv = {
     SITE_URL: "https://kesher.saharoni.com",
@@ -30,7 +39,7 @@ describe("Cloudflare Heartbeat Worker", () => {
       vi.stubGlobal("fetch", fetchMock);
 
       const request = new Request("https://worker.local/health", { method: "GET" });
-      const response = await worker.fetch(request, defaultEnv, {} as any);
+      const response = await worker.fetch(request, defaultEnv, createMockCtx());
 
       expect(response.status).toBe(200);
       const data = await response.json();
@@ -49,7 +58,7 @@ describe("Cloudflare Heartbeat Worker", () => {
 
       for (const path of ["/", "/ping"]) {
         const req = new Request(`https://worker.local${path}`, { method: "GET" });
-        const res = await worker.fetch(req, defaultEnv, {} as any);
+        const res = await worker.fetch(req, defaultEnv, createMockCtx());
         expect(res.status).toBe(200);
         const data = await res.json();
         expect(data.ok).toBe(true);
@@ -62,7 +71,7 @@ describe("Cloudflare Heartbeat Worker", () => {
       vi.stubGlobal("fetch", fetchMock);
 
       const request = new Request("https://worker.local/health", { method: "GET" });
-      const response = await worker.fetch(request, defaultEnv, {} as any);
+      const response = await worker.fetch(request, defaultEnv, createMockCtx());
 
       expect(response.status).toBe(502);
       const data = await response.json();
@@ -77,7 +86,7 @@ describe("Cloudflare Heartbeat Worker", () => {
       vi.stubGlobal("fetch", fetchMock);
 
       const request = new Request("https://worker.local/dispatch", { method: "POST" });
-      const response = await worker.fetch(request, defaultEnv, {} as any);
+      const response = await worker.fetch(request, defaultEnv, createMockCtx());
 
       expect(response.status).toBe(401);
       const data = await response.json();
@@ -93,14 +102,14 @@ describe("Cloudflare Heartbeat Worker", () => {
         method: "POST",
         headers: { Authorization: "Bearer wrong-secret" },
       });
-      const response = await worker.fetch(request, defaultEnv, {} as any);
+      const response = await worker.fetch(request, defaultEnv, createMockCtx());
 
       expect(response.status).toBe(401);
       expect(fetchMock).not.toHaveBeenCalled();
     });
 
     it("POST /dispatch succeeds with valid Bearer token", async () => {
-      const fetchMock = vi.fn().mockImplementation((url: string, opts: any) => {
+      const fetchMock = vi.fn().mockImplementation((url: string) => {
         if (url === "https://kesher.saharoni.com") {
           return Promise.resolve(new Response(null, { status: 200 }));
         }
@@ -118,7 +127,7 @@ describe("Cloudflare Heartbeat Worker", () => {
         method: "POST",
         headers: { Authorization: "Bearer mock-heartbeat-secret-xyz" },
       });
-      const response = await worker.fetch(request, defaultEnv, {} as any);
+      const response = await worker.fetch(request, defaultEnv, createMockCtx());
 
       expect(response.status).toBe(200);
       const data = await response.json();
@@ -129,8 +138,8 @@ describe("Cloudflare Heartbeat Worker", () => {
 
   describe("Scheduled Cron: Dispatch and Idempotency Fencing", () => {
     it("Dispatches controller when no runs are active", async () => {
-      const fetchCalls: Array<{ url: string; opts: any }> = [];
-      const fetchMock = vi.fn().mockImplementation((url: string, opts: any) => {
+      const fetchCalls: Array<{ url: string; opts?: RequestInit }> = [];
+      const fetchMock = vi.fn().mockImplementation((url: string, opts?: RequestInit) => {
         fetchCalls.push({ url, opts });
         if (url === "https://kesher.saharoni.com") {
           return Promise.resolve(new Response(null, { status: 200 }));
@@ -154,23 +163,25 @@ describe("Cloudflare Heartbeat Worker", () => {
       });
       vi.stubGlobal("fetch", fetchMock);
 
-      const waitUntil = vi.fn((p) => p);
+      const waitUntil = vi.fn((_p: Promise<unknown>) => {});
       await worker.scheduled(
         { cron: "*/5 * * * *", scheduledTime: Date.now() },
         defaultEnv,
-        { waitUntil } as any
+        createMockCtx(waitUntil)
       );
 
       const dispatchCall = fetchCalls.find((c) => c.url.includes("/dispatches"));
       expect(dispatchCall).toBeDefined();
-      expect(dispatchCall!.opts.method).toBe("POST");
-      expect(dispatchCall!.opts.headers.Authorization).toBe("Bearer mock-gh-token-12345");
-      expect(JSON.parse(dispatchCall!.opts.body)).toEqual({ ref: "main" });
+      expect(dispatchCall!.opts?.method).toBe("POST");
+      expect(
+        (dispatchCall!.opts?.headers as Record<string, string>)?.Authorization
+      ).toBe("Bearer mock-gh-token-12345");
+      expect(JSON.parse(String(dispatchCall!.opts?.body))).toEqual({ ref: "main" });
     });
 
     it("Idempotency: Skips dispatch when a controller run is already active (in_progress)", async () => {
-      const fetchCalls: Array<{ url: string; opts: any }> = [];
-      const fetchMock = vi.fn().mockImplementation((url: string, opts: any) => {
+      const fetchCalls: Array<{ url: string; opts?: RequestInit }> = [];
+      const fetchMock = vi.fn().mockImplementation((url: string, opts?: RequestInit) => {
         fetchCalls.push({ url, opts });
         if (url === "https://kesher.saharoni.com") {
           return Promise.resolve(new Response(null, { status: 200 }));
@@ -244,6 +255,33 @@ describe("Cloudflare Heartbeat Worker", () => {
       expect(result.ok).toBe(false);
       expect(result.dispatched).toBe(false);
       expect(result.github_dispatch.error).toBe("GITHUB_TOKEN_NOT_CONFIGURED");
+    });
+  });
+
+  describe("Helper Functions", () => {
+    it("handleHealthCheck runs site probe directly", async () => {
+      const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      const result = await handleHealthCheck(defaultEnv);
+      expect(result.ok).toBe(true);
+      expect(result.status).toBe("healthy");
+    });
+
+    it("checkActiveControllerRuns detects active runs", async () => {
+      const fetchMock = vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            workflow_runs: [{ id: 777, status: "in_progress" }],
+          }),
+          { status: 200 }
+        )
+      );
+      vi.stubGlobal("fetch", fetchMock);
+
+      const result = await checkActiveControllerRuns(defaultEnv);
+      expect(result.active).toBe(true);
+      expect(result.active_run?.id).toBe(777);
     });
   });
 });
