@@ -1,14 +1,5 @@
 {
-  "current_intent": {
-    "intent_id": "liveness-2026-10-16-1792127473",
-    "cycle": "2026-10-16",
-    "created_at": "2026-10-16T05:11:13.420471+00:00",
-    "status": "dispatched",
-    "target_workflow": ".github/workflows/kesher-content-controller.yml",
-    "target_ref": "main",
-    "inputs": {},
-    "dispatched_at": "2026-10-16T05:11:13.420471+00:00"
-  },
+  "current_intent": null,
   "cycles": {
     "2026-10-15": {
       "recovery_count": 1,
@@ -18,5 +9,18 @@
       "recovery_count": 3,
       "last_recovery_at": "2026-10-16T05:11:13.420471+00:00"
     }
-  }
+  },
+  "history": [
+    {
+      "intent_id": "liveness-2026-10-16-1792127473",
+      "cycle": "2026-10-16",
+      "created_at": "2026-10-16T05:11:13.420471+00:00",
+      "status": "reconciled",
+      "target_workflow": ".github/workflows/kesher-content-controller.yml",
+      "target_ref": "main",
+      "inputs": {},
+      "dispatched_at": "2026-10-16T05:11:13.420471+00:00",
+      "reconciled_at": "2026-10-16T21:41:34.445174+00:00"
+    }
+  ]
 }
