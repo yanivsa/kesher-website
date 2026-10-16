@@ -2108,11 +2108,10 @@
         "derive_content_sha256": "667857b17833c378ca3a8f4614b8934c04744d201a53761b781b331b921125e3",
         "derive_long_item_id": "video-20261016-072105-667857b178-a3"
       },
-      "intent_at": "2026-10-16T22:20:35.330081+00:00",
-      "status": "dispatched",
+      "intent_at": "2026-10-16T22:25:48.284708+00:00",
+      "status": "intent",
       "previous_run_id": 38971558655,
-      "observed_active_run_id": 38975232298,
-      "dispatched_at": "2026-10-16T22:20:35.330081+00:00"
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
