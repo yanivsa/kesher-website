@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-16",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -41,10 +41,10 @@
     "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-16T13:00:52.930177+00:00",
+    "quality_checked_at": "2026-10-16T13:06:04.224880+00:00",
     "quality_violations": [],
     "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T13:00:54.227931+00:00"
+    "live_verified_at": "2026-10-16T13:06:05.505228+00:00"
   },
   "backlog": [
     {
@@ -1335,22 +1335,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-    "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-16T13:01:13.492720+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-14T13:31:41.094939+00:00",
-      "from": "article_pr_open",
-      "to": "blocked",
-      "reason": "ARTICLE_ATTEMPTS_EXHAUSTED",
-      "details": {
-        "message": "PR #1113 exceeded maximum auto-merge dispatch budget (6 dispatches)"
-      }
-    },
     {
       "at": "2026-10-14T14:07:30.292295+00:00",
       "from": "blocked",
@@ -2186,9 +2172,15 @@
       "details": {
         "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-16T13:06:05.505250+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-16T13:01:13.492732+00:00",
+  "updated_at": "2026-10-16T13:06:05.505257+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
