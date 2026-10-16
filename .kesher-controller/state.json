@@ -36,7 +36,8 @@
     "url": "https://kesher.saharoni.com/blog/why-cant-i-find-a-relationship",
     "published_date": "2026-10-16",
     "quality_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
-    "reconciled_existing_article": true
+    "reconciled_existing_article": true,
+    "live": false
   },
   "backlog": [
     {
@@ -2246,6 +2247,16 @@
       "previous_run_id": 38873794985,
       "observed_active_run_id": 38878436514,
       "dispatched_at": "2026-10-16T09:08:16.299092+00:00"
+    },
+    "deploy.yml": {
+      "workflow": "deploy.yml",
+      "cycle": "2026-10-16",
+      "inputs": {},
+      "intent_at": "2026-10-16T09:09:24.816043+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null,
+      "dispatch_head_sha": "8fe558fe6920a8cd88ce69aa6a05f1538ce76609"
     }
   },
   "last_child_notification": {
