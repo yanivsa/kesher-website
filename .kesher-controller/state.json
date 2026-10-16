@@ -2079,7 +2079,7 @@
     "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 38826710326,
+    "run_id": 38827234802,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -2113,26 +2113,11 @@
       "previous_run_id": null,
       "observed_active_run_id": 38815023711,
       "dispatched_at": "2026-10-15T22:07:44.085680+00:00"
-    },
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-16",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "dating-apps-burnout-finding-a-partner",
-        "derive_content_sha256": "8474a80ca2a28172e3e6936feaefe4e00d85dcff3973ba51b6c13675a2e38a8b",
-        "derive_long_item_id": "video-20261016-004908-8474a80ca2"
-      },
-      "intent_at": "2026-10-16T00:02:55.018588+00:00",
-      "status": "dispatched",
-      "previous_run_id": 38826710326,
-      "observed_active_run_id": 38827234802,
-      "dispatched_at": "2026-10-16T00:02:55.018588+00:00"
     }
   },
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
-    "run_id": 38826710326,
+    "run_id": 38827234802,
     "conclusion": "success",
     "source_slug": "dating-apps-burnout-finding-a-partner",
     "slot": "2026-10-16"
