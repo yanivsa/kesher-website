@@ -956,8 +956,8 @@
         "long_youtube_url": "https://youtu.be/Sr_a20Vcywo",
         "long_youtube_id": "Sr_a20Vcywo",
         "short_status": "running",
-        "short_dispatch_count": 2,
-        "short_last_dispatch_at": "2026-10-16T22:26:27.726555+00:00"
+        "short_dispatch_count": 3,
+        "short_last_dispatch_at": "2026-10-16T22:31:04.511255+00:00"
       }
     },
     {
@@ -2057,9 +2057,19 @@
         "backlog_cycle": "2026-10-13",
         "source_slug": "when-everyone-around-you-gets-married"
       }
+    },
+    {
+      "at": "2026-10-16T22:31:04.511275+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "dispatched independent prior-cycle Short generation",
+      "details": {
+        "backlog_cycle": "2026-10-13",
+        "source_slug": "when-everyone-around-you-gets-married"
+      }
     }
   ],
-  "updated_at": "2026-10-16T22:30:56.133900+00:00",
+  "updated_at": "2026-10-16T22:31:04.511282+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2119,9 +2129,10 @@
         "derive_long_item_id": "video-20261016-072105-667857b178-a3"
       },
       "intent_at": "2026-10-16T22:30:44.443489+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38975232298,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38976219993,
+      "dispatched_at": "2026-10-16T22:30:44.443489+00:00"
     }
   },
   "last_child_notification": {
