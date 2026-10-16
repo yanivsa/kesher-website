@@ -1,145 +1,23 @@
 {
   "schema_version": 5,
-  "cycle": "2026-10-16",
-  "status": "blocked",
+  "cycle": "2026-10-17",
+  "status": "article_needed",
   "article": {
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 38854556688,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 1,
-    "normalization_status": "complete",
-    "last_dispatch_at": "2026-10-16T05:12:23.158812+00:00",
-    "pr_number": 1130,
-    "pr_url": "https://github.com/yanivsa/kesher-website/pull/1130",
-    "normalization_slot": "2026-10-16",
-    "normalization_dispatched_at": "2026-10-16T05:43:27.299791+00:00",
-    "normalization_run_id": 38877558744,
-    "current_pr_head_sha": "84e2f19d567f839d57c0ce55f77471273099af76",
-    "jules_head_sha": "6a081bd937298e51103d28efe400a8bed7ad4dd4",
-    "normalization_drift_count": 3,
-    "merge_dispatch_at": "2026-10-16T09:08:44.785693+00:00",
-    "merge_dispatch_count": 2,
-    "merge_run_id": 38878436514,
-    "normalized_head_sha": "84e2f19d567f839d57c0ce55f77471273099af76",
-    "image_head_sha": "84e2f19d567f839d57c0ce55f77471273099af76",
-    "merge_candidate_sha": "84e2f19d567f839d57c0ce55f77471273099af76",
-    "slug": "why-cant-i-find-a-relationship",
-    "title": "למה אני לא מוצאת זוגיות? מה שעוצר אותנו מלהיכנס לקשר ואיך אפשר להסתכל על זה אחרת",
-    "url": "https://kesher.saharoni.com/blog/why-cant-i-find-a-relationship",
-    "published_date": "2026-10-16",
-    "quality_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
-    "reconciled_existing_article": true,
-    "live": true,
-    "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
-    "next_deploy_retry_at": null,
-    "quality_status": "passed",
-    "quality_checked_at": "2026-10-16T20:55:51.801454+00:00",
-    "quality_violations": [],
-    "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T20:55:53.508120+00:00"
+    "deploy_attempts": 0,
+    "normalization_status": "pending"
   },
   "backlog": [
-    {
-      "cycle": "2026-09-06",
-      "status": "short_running",
-      "article": {
-        "attempt_count": 2,
-        "status": "running",
-        "last_error": null,
-        "next_retry_at": null,
-        "run_id": 34017701647,
-        "processed_run_id": 33993759015,
-        "provider_id": null,
-        "failure_fingerprint": null,
-        "same_failure_streak": 0,
-        "failure_count_by_type": {
-          "COMPLETED_WITHOUT_PR": 1
-        },
-        "attempts": 2,
-        "deploy_attempts": 0,
-        "normalization_status": "pending",
-        "last_dispatch_at": "2026-09-06T06:53:53.759399+00:00",
-        "watchdog": {
-          "identity": "2026-09-06",
-          "session_id": "sessions/2750507895984920114",
-          "last_progress_at": "2026-09-05T22:12:03.363166+00:00",
-          "last_fingerprint": "5040dc22a0f529fbaa23b437d7330e73a36618ea6bf301a76efc73ee46c26cf0",
-          "last_nudge_at": null,
-          "nudge_count": 0,
-          "worker_restart_count": 0,
-          "last_restart_at": null,
-          "last_restart_run_id": null
-        },
-        "last_run_conclusion": "failure",
-        "last_worker_result": {
-          "schema_version": 1,
-          "slot": "2026-09-06",
-          "outcome": "COMPLETED_WITHOUT_PR",
-          "retryable": true,
-          "message": "Jules completed without creating a pull request; Jules diagnostic: I have already removed the scratch files.",
-          "session_id": "sessions/2750507895984920114",
-          "pr_url": "",
-          "github_run_id": "33993759015",
-          "completed_at": "2026-09-05T22:15:42.351721+00:00",
-          "diagnostic": {
-            "source": {
-              "name": "sources/github/yanivsa/kesher-website",
-              "owner": "yanivsa",
-              "repo": "kesher-website",
-              "default_branch": "main",
-              "main_available": true
-            },
-            "activity_count": 45,
-            "change_set_count": 43,
-            "change_set_fingerprints": [],
-            "last_agent_message": "",
-            "last_progress": "I have already removed the scratch files.",
-            "last_description": "",
-            "session_failed_reason": ""
-          }
-        },
-        "last_jules_session_id": "sessions/2750507895984920114",
-        "last_failed_run_id": 33993759015,
-        "slug": "navigating-new-relationships-dating-balance",
-        "title": "היכרות חדשה: דיוק צרכים, תקשורת וקצב בשלבים הראשונים",
-        "url": "https://kesher.saharoni.com/blog/navigating-new-relationships-dating-balance",
-        "published_date": "2026-09-06",
-        "live": true,
-        "live_verified_at": "2026-09-06T19:30:33.525043+00:00",
-        "next_deploy_retry_at": null
-      },
-      "archived_at": "2026-09-06T22:41:33.010053+00:00",
-      "media": {
-        "source_slug": "navigating-new-relationships-dating-balance",
-        "source_content_sha256": "98d18a3af93b42ad8a060ed3e8e6e2a79f3544f789e6e050af28e96e010412fb",
-        "article_url": "https://kesher.saharoni.com/blog/navigating-new-relationships-dating-balance",
-        "article_live": true,
-        "long_status": "complete",
-        "long_item_id": "video-20260906-140013-98d18a3af9",
-        "long_youtube_url": "https://youtu.be/dlA58ZK7Uoc",
-        "long_youtube_id": "dlA58ZK7Uoc",
-        "short_status": "complete",
-        "short_dispatch_count": 3,
-        "short_last_dispatch_at": "2026-09-07T08:03:29.814393+00:00",
-        "long_provider_id": "97275da9-16ee-4589-95c7-d9bc16396a06",
-        "long_artifact_id": "97275da9-16ee-4589-95c7-d9bc16396a06",
-        "short_item_id": "video-20260906-223148-98d18a3af9",
-        "short_youtube_url": "https://youtu.be/vIXCpdShJ5c",
-        "short_youtube_id": "vIXCpdShJ5c",
-        "short_width": 1080,
-        "short_height": 1920,
-        "complete": true,
-        "completed_at": "2026-09-07T10:13:19.260611+00:00"
-      }
-    },
     {
       "cycle": "2026-09-07",
       "status": "long_video_running",
@@ -1333,165 +1211,129 @@
         "complete": true,
         "completed_at": "2026-10-15T21:43:04.268452+00:00"
       }
+    },
+    {
+      "cycle": "2026-10-16",
+      "status": "blocked",
+      "exact_slug": "why-cant-i-find-a-relationship",
+      "content_sha256": null,
+      "article": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 38854556688,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "attempts": 0,
+        "deploy_attempts": 1,
+        "normalization_status": "complete",
+        "last_dispatch_at": "2026-10-16T05:12:23.158812+00:00",
+        "pr_number": 1130,
+        "pr_url": "https://github.com/yanivsa/kesher-website/pull/1130",
+        "normalization_slot": "2026-10-16",
+        "normalization_dispatched_at": "2026-10-16T05:43:27.299791+00:00",
+        "normalization_run_id": 38877558744,
+        "current_pr_head_sha": "84e2f19d567f839d57c0ce55f77471273099af76",
+        "jules_head_sha": "6a081bd937298e51103d28efe400a8bed7ad4dd4",
+        "normalization_drift_count": 3,
+        "merge_dispatch_at": "2026-10-16T09:08:44.785693+00:00",
+        "merge_dispatch_count": 2,
+        "merge_run_id": 38878436514,
+        "normalized_head_sha": "84e2f19d567f839d57c0ce55f77471273099af76",
+        "image_head_sha": "84e2f19d567f839d57c0ce55f77471273099af76",
+        "merge_candidate_sha": "84e2f19d567f839d57c0ce55f77471273099af76",
+        "slug": "why-cant-i-find-a-relationship",
+        "title": "למה אני לא מוצאת זוגיות? מה שעוצר אותנו מלהיכנס לקשר ואיך אפשר להסתכל על זה אחרת",
+        "url": "https://kesher.saharoni.com/blog/why-cant-i-find-a-relationship",
+        "published_date": "2026-10-16",
+        "quality_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
+        "reconciled_existing_article": true,
+        "live": true,
+        "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
+        "next_deploy_retry_at": null,
+        "quality_status": "passed",
+        "quality_checked_at": "2026-10-16T20:55:51.801454+00:00",
+        "quality_violations": [],
+        "deploy_run_id": 38879674348,
+        "live_verified_at": "2026-10-16T20:55:53.508120+00:00"
+      },
+      "long_video": {
+        "attempt_count": 3,
+        "status": "blocked",
+        "last_error": null,
+        "next_retry_at": "2026-10-16T11:18:01.669085+00:00",
+        "run_id": 38891754545,
+        "processed_run_id": 38891754545,
+        "provider_id": "de45b79b-0da8-4ec8-9dc8-b068b10b8899",
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {},
+        "overview_evidence_required": true,
+        "last_dispatch_at": "2026-10-16T11:07:59.161751+00:00",
+        "attempts": 1,
+        "last_run_conclusion": "success",
+        "item_id": "video-20261016-140928-60a0e246ca-a3",
+        "source_slug": "why-cant-i-find-a-relationship",
+        "source_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
+        "content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
+        "source_id": "79bdcace-5adb-4af9-96c3-3bfb10517f50",
+        "task_id": "de45b79b-0da8-4ec8-9dc8-b068b10b8899",
+        "artifact_id": "de45b79b-0da8-4ec8-9dc8-b068b10b8899",
+        "provider_status": "pending",
+        "verified": false,
+        "watchdog": {
+          "identity": "long_video:why-cant-i-find-a-relationship:60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8:video-20261016-140928-60a0e246ca-a3",
+          "hard_started_at": "2026-10-16T11:09:36.841478+00:00",
+          "last_progress_at": "2026-10-16T11:13:01.669085+00:00",
+          "last_fingerprint": "f44594fa5bd287883d77ef9f086c8c1ecf91f812912ae05905d41c094988b7d2",
+          "recovery_count": 0,
+          "last_recovery_at": null
+        },
+        "pending_resume_ready": false,
+        "resume_dispatches": 4,
+        "controller_recovery_required": {
+          "incident_key": "v5|why-cant-i-find-a-relationship|60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8|long_video",
+          "reason": "media provider hard timeout",
+          "requested_at": "2026-10-16T20:56:09.832017+00:00"
+        }
+      },
+      "short": {
+        "attempt_count": 0,
+        "status": "pending",
+        "last_error": null,
+        "next_retry_at": null,
+        "run_id": 38831208805,
+        "processed_run_id": null,
+        "provider_id": null,
+        "failure_fingerprint": null,
+        "same_failure_streak": 0,
+        "failure_count_by_type": {}
+      },
+      "media_identities": {
+        "long_video_id": null,
+        "short_video_id": null
+      },
+      "counters": {
+        "article_attempts": 0,
+        "article_generation_attempts": 0,
+        "merge_dispatch_count": 2,
+        "deploy_attempts": 1,
+        "long_attempts": 1,
+        "short_attempts": 0
+      },
+      "terminal_state": {
+        "blocked": true,
+        "article_exhausted": false
+      },
+      "archived_at": "2026-10-16T21:00:48.487021+00:00"
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-    "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-16T20:56:09.832004+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-16T16:55:53.096786+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T16:56:01.748041+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T17:00:55.657881+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T17:01:14.091543+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T17:05:50.206287+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T17:05:59.032814+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T17:11:04.431324+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T17:11:26.037119+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T17:18:09.281129+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T17:18:30.140126+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T17:20:50.093657+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T17:20:59.318508+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T17:25:48.503659+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T17:25:58.996378+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T17:30:52.258005+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T17:31:07.718680+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T17:35:57.617820+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T17:36:21.401623+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
-      "at": "2026-10-16T17:41:04.656798+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T17:41:29.190535+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
     {
       "at": "2026-10-16T17:49:21.132221+00:00",
       "from": "blocked",
@@ -2091,71 +1933,57 @@
       "details": {
         "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-16T21:00:48.487050+00:00",
+      "from": null,
+      "to": "article_needed",
+      "reason": "controller state initialized at schema v3"
+    },
+    {
+      "at": "2026-10-16T21:00:48.487054+00:00",
+      "from": "article_needed",
+      "to": "article_needed",
+      "reason": "controller state migrated from schema 3 to schema v4"
+    },
+    {
+      "at": "2026-10-16T21:00:48.488112+00:00",
+      "from": "article_needed",
+      "to": "v5_migrated",
+      "reason": "controller state migrated from schema 5 to V5 long_video + short stages"
     }
   ],
-  "updated_at": "2026-10-16T20:56:09.832014+00:00",
+  "updated_at": "2026-10-16T21:00:48.487038+00:00",
   "image": {
-    "attempt_count": 1,
-    "status": "complete",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
     "next_retry_at": null,
+    "run_id": null,
     "processed_run_id": null,
-    "provider_id": "Local",
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "last_dispatch_at": "2026-10-16T05:45:15.080846+00:00",
-    "artifact_sha256": "cf7898a9469012b0641b7771745dda6e3e17dd91d940310281fd04eadf3234a3",
-    "source_id": "local://public/images/fallback/dating/dating_relationship_park_walk.jpg",
-    "run_id": 38857416871,
-    "image_path": "/images/generated/blog/why-cant-i-find-a-relationship.jpg"
+    "failure_count_by_type": {}
   },
   "long_video": {
-    "attempt_count": 3,
-    "status": "blocked",
+    "attempt_count": 0,
+    "status": "pending",
     "last_error": null,
-    "next_retry_at": "2026-10-16T11:18:01.669085+00:00",
-    "run_id": 38891754545,
-    "processed_run_id": 38891754545,
-    "provider_id": "de45b79b-0da8-4ec8-9dc8-b068b10b8899",
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_dispatch_at": "2026-10-16T11:07:59.161751+00:00",
-    "attempts": 1,
-    "last_run_conclusion": "success",
-    "item_id": "video-20261016-140928-60a0e246ca-a3",
-    "source_slug": "why-cant-i-find-a-relationship",
-    "source_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
-    "content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
-    "source_id": "79bdcace-5adb-4af9-96c3-3bfb10517f50",
-    "task_id": "de45b79b-0da8-4ec8-9dc8-b068b10b8899",
-    "artifact_id": "de45b79b-0da8-4ec8-9dc8-b068b10b8899",
-    "provider_status": "pending",
-    "verified": false,
-    "watchdog": {
-      "identity": "long_video:why-cant-i-find-a-relationship:60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8:video-20261016-140928-60a0e246ca-a3",
-      "hard_started_at": "2026-10-16T11:09:36.841478+00:00",
-      "last_progress_at": "2026-10-16T11:13:01.669085+00:00",
-      "last_fingerprint": "f44594fa5bd287883d77ef9f086c8c1ecf91f812912ae05905d41c094988b7d2",
-      "recovery_count": 0,
-      "last_recovery_at": null
-    },
-    "pending_resume_ready": false,
-    "resume_dispatches": 4,
-    "controller_recovery_required": {
-      "incident_key": "v5|why-cant-i-find-a-relationship|60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8|long_video",
-      "reason": "media provider hard timeout",
-      "requested_at": "2026-10-16T20:56:09.832017+00:00"
-    }
+    "failure_count_by_type": {}
   },
   "short": {
     "attempt_count": 0,
     "status": "pending",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 38831208805,
+    "run_id": null,
     "processed_run_id": null,
     "provider_id": null,
     "failure_fingerprint": null,
@@ -2164,57 +1992,5 @@
   },
   "migration": {
     "v4_short_controller_state": null
-  },
-  "deliverables": {
-    "article_url": "https://kesher.saharoni.com/blog/why-cant-i-find-a-relationship",
-    "overview_youtube_url": null,
-    "short_youtube_url": null,
-    "overview_edit_verified": false,
-    "short_portrait_verified": false,
-    "short_signature_verified": false,
-    "short_origin_verified": false
-  },
-  "pending_dispatches": {},
-  "last_child_notification": {
-    "workflow": "Kesher Daily NotebookLM Video Overview",
-    "run_id": 38891754545,
-    "conclusion": "success",
-    "source_slug": "why-cant-i-find-a-relationship",
-    "slot": "2026-10-16"
-  },
-  "processed_child_notifications": [
-    "Kesher Daily Article Short V4:38811420882",
-    "Kesher Daily Article Short V4:38826710326",
-    "Kesher Daily Article Short V4:38827234802",
-    "Kesher Daily Article Short V4:38831208805",
-    "Kesher Article Generation:38854556688",
-    "Kesher Normalize Article PR:38857256229",
-    "Kesher Normalize Article PR:38873350704",
-    "Kesher Trusted Article Image:38873541207",
-    "Auto-merge Kesher article PRs:38873794985",
-    "Kesher Normalize Article PR:38877558744",
-    "Deploy to Cloudflare Pages:38879674348",
-    "Kesher Daily NotebookLM Video Overview:38880544524",
-    "Kesher Daily NotebookLM Video Overview:38885473077",
-    "Kesher Daily NotebookLM Video Overview:38886458121",
-    "Kesher Daily NotebookLM Video Overview:38891028945",
-    "Kesher Daily NotebookLM Video Overview:38891754545"
-  ],
-  "interventions": {
-    "v5|why-cant-i-find-a-relationship|60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8|long_video": {
-      "pipeline_id": "v5",
-      "slug": "why-cant-i-find-a-relationship",
-      "content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
-      "stage": "long_video",
-      "strike_count": 0,
-      "last_check_token": "2026-10-16T14",
-      "last_fingerprint": "fb39638a69201765ede24ac5c5c713096102840b67bd6687fe94a13fb80a0202",
-      "last_controller_action_token": null,
-      "controller_action_observed": false,
-      "last_observed_at": "2026-10-16T11:13:01.669085+00:00",
-      "last_action": "progress_reset",
-      "direct_takeover_required": false,
-      "last_controller_action_at": "2026-10-16T11:00:46.942854+00:00"
-    }
   }
 }
