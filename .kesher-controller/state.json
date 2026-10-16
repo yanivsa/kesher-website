@@ -1336,7 +1336,10 @@
         "article_title": "למה אני לא מוצאת זוגיות? מה שעוצר אותנו מלהיכנס לקשר ואיך אפשר להסתכל על זה אחרת",
         "article_url": "https://kesher.saharoni.com/blog/why-cant-i-find-a-relationship",
         "article_live": true,
-        "article_deploy_status": "complete"
+        "article_deploy_status": "complete",
+        "long_status": "running",
+        "long_resume_count": 1,
+        "long_last_dispatch_at": "2026-10-16T21:01:07.236837+00:00"
       }
     }
   ],
@@ -2027,9 +2030,10 @@
         "target_item_id": "video-20261016-140928-60a0e246ca-a3"
       },
       "intent_at": "2026-10-16T21:00:47.661489+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 38966393302,
+      "dispatched_at": "2026-10-16T21:00:47.661489+00:00"
     }
   }
 }
