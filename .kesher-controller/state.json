@@ -1338,12 +1338,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-12T14:46:11.245574+00:00",
-      "from": "article_live",
-      "to": "complete",
-      "reason": "public article and YouTube video verified"
-    },
-    {
       "at": "2026-10-12T14:46:18.487597+00:00",
       "from": "long_video_complete",
       "to": "short_running",
@@ -2205,9 +2199,19 @@
         "item_id": "video-20261016-132111-60a0e246ca-a2",
         "task_id": "7ea7a552-1375-4baa-a917-ba0baac616d1"
       }
+    },
+    {
+      "at": "2026-10-16T10:31:11.531804+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261016-132111-60a0e246ca-a2",
+        "task_id": "7ea7a552-1375-4baa-a917-ba0baac616d1"
+      }
     }
   ],
-  "updated_at": "2026-10-16T10:26:22.697873+00:00",
+  "updated_at": "2026-10-16T10:31:11.531811+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
