@@ -2161,6 +2161,17 @@
       "previous_run_id": null,
       "observed_active_run_id": 38850034393,
       "dispatched_at": "2026-10-16T04:19:13.179674+00:00"
+    },
+    "kesher-article-generation.yml": {
+      "workflow": "kesher-article-generation.yml",
+      "cycle": "2026-10-16",
+      "inputs": {
+        "slot": "2026-10-16"
+      },
+      "intent_at": "2026-10-16T05:11:44.365445+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2175,5 +2186,17 @@
     "Kesher Daily Article Short V4:38826710326",
     "Kesher Daily Article Short V4:38827234802",
     "Kesher Daily Article Short V4:38831208805"
-  ]
+  ],
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
+  }
 }
