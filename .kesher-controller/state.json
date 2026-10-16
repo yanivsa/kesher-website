@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-16",
-  "status": "blocked",
+  "status": "article_live",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -41,10 +41,10 @@
     "last_deploy_dispatch_at": "2026-10-16T09:09:41.008336+00:00",
     "next_deploy_retry_at": null,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-16T15:15:45.327864+00:00",
+    "quality_checked_at": "2026-10-16T15:20:52.839593+00:00",
     "quality_violations": [],
     "deploy_run_id": 38879674348,
-    "live_verified_at": "2026-10-16T15:15:46.268324+00:00"
+    "live_verified_at": "2026-10-16T15:20:54.724734+00:00"
   },
   "backlog": [
     {
@@ -1335,25 +1335,8 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "long_video",
-    "code": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-    "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery",
-    "at": "2026-10-16T15:15:55.140094+00:00"
-  },
+  "last_error": null,
   "history": [
-    {
-      "at": "2026-10-16T10:10:37.140569+00:00",
-      "from": "long_video_watchdog_wait",
-      "to": "long_video_watchdog_recovery",
-      "reason": "long-form provider stalled; resumed the same durable provider identity",
-      "details": {
-        "item_id": "video-20261016-122945-60a0e246ca",
-        "task_id": "6f4096f4-1ca3-47fb-b4c5-d55d8f067cc5",
-        "slug": "why-cant-i-find-a-relationship",
-        "content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8"
-      }
-    },
     {
       "at": "2026-10-16T10:19:21.493514+00:00",
       "from": "long_video_watchdog_recovery",
@@ -2120,9 +2103,15 @@
       "details": {
         "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
       }
+    },
+    {
+      "at": "2026-10-16T15:20:54.724755+00:00",
+      "from": "blocked",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
     }
   ],
-  "updated_at": "2026-10-16T15:15:55.140104+00:00",
+  "updated_at": "2026-10-16T15:20:54.724761+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
