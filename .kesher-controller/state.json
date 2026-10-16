@@ -345,7 +345,15 @@
         "next_deploy_retry_at": "2026-09-14T20:44:15.296216+00:00"
       },
       "archived_at": "2026-09-14T21:30:17.751891+00:00",
-      "media": {}
+      "media": {
+        "source_slug": "מוכנות-לכיתה-א-עצמאות-ושגרה",
+        "source_content_sha256": "74040d54b52a8c0567f3ba329e23c872f082ec56bcae60d29330a0b58d0f5434",
+        "article_title": "מוכנות לכיתה א: איך בונים עצמאות ושגרה לפני הצלצול הראשון",
+        "article_url": "https://kesher.saharoni.com/blog/מוכנות-לכיתה-א-עצמאות-ושגרה",
+        "article_live": false,
+        "article_deploy_status": "exhausted",
+        "last_error": "BACKLOG_ARTICLE_DEPLOY_ATTEMPTS_EXHAUSTED"
+      }
     },
     {
       "cycle": "2026-09-15",
@@ -853,7 +861,7 @@
     },
     {
       "cycle": "2026-10-04",
-      "status": "article_image_running",
+      "status": "quarantined_ambiguous_identity",
       "article": {
         "attempt_count": 3,
         "status": "running",
@@ -902,7 +910,21 @@
         "normalization_dispatched_at": "2026-10-04T10:28:40.189297+00:00",
         "last_jules_session_id": "sessions/2556970304191877836"
       },
-      "archived_at": "2026-10-12T08:21:33.774217+00:00"
+      "archived_at": "2026-10-12T08:21:33.774217+00:00",
+      "media": {
+        "status": "quarantined_ambiguous_identity",
+        "long_status": "quarantined_ambiguous_identity",
+        "quarantined": true,
+        "quarantined_at": "2026-10-16T22:46:21.347983+00:00",
+        "quarantine_reason": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS",
+        "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-04",
+        "ambiguous_candidate_slugs": [
+          "jealousy-in-relationships"
+        ],
+        "ambiguous_candidate_count": 1
+      },
+      "quarantined": true,
+      "last_error": "BACKLOG_ARTICLE_IDENTITY_AMBIGUOUS: 2026-10-04"
     },
     {
       "cycle": "2026-10-13",
@@ -2077,6 +2099,18 @@
       "details": {
         "backlog_cycle": "2026-10-13",
         "source_slug": "when-everyone-around-you-gets-married"
+      }
+    },
+    {
+      "at": "2026-10-16T22:46:21.348004+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "backlog_quarantined_ambiguous_identity",
+      "details": {
+        "cycle": "2026-10-04",
+        "candidate_slugs": [
+          "jealousy-in-relationships"
+        ]
       }
     }
   ],
