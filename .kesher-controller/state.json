@@ -1329,7 +1329,15 @@
         "blocked": true,
         "article_exhausted": false
       },
-      "archived_at": "2026-10-16T21:00:48.487021+00:00"
+      "archived_at": "2026-10-16T21:00:48.487021+00:00",
+      "media": {
+        "source_slug": "why-cant-i-find-a-relationship",
+        "source_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
+        "article_title": "למה אני לא מוצאת זוגיות? מה שעוצר אותנו מלהיכנס לקשר ואיך אפשר להסתכל על זה אחרת",
+        "article_url": "https://kesher.saharoni.com/blog/why-cant-i-find-a-relationship",
+        "article_live": true,
+        "article_deploy_status": "complete"
+      }
     }
   ],
   "last_error": null,
@@ -2007,5 +2015,21 @@
     "short_portrait_verified": false,
     "short_signature_verified": false,
     "short_origin_verified": false
+  },
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-17",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "why-cant-i-find-a-relationship",
+        "target_content_sha256": "60a0e246ca7c07e750958b379e7b7f8f5bfcf5121b98bd9fb7332ae47440e9e8",
+        "target_item_id": "video-20261016-140928-60a0e246ca-a3"
+      },
+      "intent_at": "2026-10-16T21:00:47.661489+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
+    }
   }
 }
