@@ -1343,9 +1343,16 @@
         "long_item_id": "video-20261016-140928-60a0e246ca-a3",
         "long_youtube_url": "https://youtu.be/6j-doosfuRk",
         "long_youtube_id": "6j-doosfuRk",
-        "short_status": "running",
+        "short_status": "complete",
         "short_dispatch_count": 4,
-        "short_last_dispatch_at": "2026-10-16T21:46:01.530383+00:00"
+        "short_last_dispatch_at": "2026-10-16T21:46:01.530383+00:00",
+        "short_item_id": "video-20261017-002709-60a0e246ca",
+        "short_youtube_url": "https://youtu.be/RBrnnjsYWSg",
+        "short_youtube_id": "RBrnnjsYWSg",
+        "short_width": 1080,
+        "short_height": 1920,
+        "complete": true,
+        "completed_at": "2026-10-16T21:49:41.798720+00:00"
       }
     }
   ],
@@ -2014,9 +2021,19 @@
         "backlog_cycle": "2026-10-16",
         "source_slug": "why-cant-i-find-a-relationship"
       }
+    },
+    {
+      "at": "2026-10-16T21:49:41.798742+00:00",
+      "from": "waiting_for_article_window",
+      "to": "waiting_for_article_window",
+      "reason": "prior-cycle article media delivery verified without disturbing current cycle",
+      "details": {
+        "backlog_cycle": "2026-10-16",
+        "source_slug": "why-cant-i-find-a-relationship"
+      }
     }
   ],
-  "updated_at": "2026-10-16T21:49:37.487890+00:00",
+  "updated_at": "2026-10-16T21:49:41.798749+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
