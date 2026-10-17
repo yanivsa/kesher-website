@@ -2070,23 +2070,11 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-17T21:35:44.239366+00:00"
-    },
-    "kesher-article-image.yml": {
-      "workflow": "kesher-article-image.yml",
-      "cycle": "2026-10-18",
-      "inputs": {
-        "pr_number": "1137"
-      },
-      "intent_at": "2026-10-17T22:17:14.194556+00:00",
-      "status": "dispatched",
-      "previous_run_id": null,
-      "observed_active_run_id": 39074482466,
-      "dispatched_at": "2026-10-17T22:17:14.194556+00:00"
     }
   },
   "last_child_notification": {
-    "workflow": "Kesher Normalize Article PR",
-    "run_id": 39074372992,
+    "workflow": "Kesher Trusted Article Image",
+    "run_id": 39074482466,
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-18"
