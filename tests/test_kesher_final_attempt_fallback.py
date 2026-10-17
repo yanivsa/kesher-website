@@ -71,18 +71,70 @@ class FinalAttemptFallbackTests(unittest.TestCase):
                 chosen = fallback.promote_last_usable_after_third_attempt(state)
             self.assertIsNone(chosen)
 
-    def test_never_runs_after_public_upload_exists(self):
+    def test_unrelated_technical_rejection_not_promoted(self):
         with tempfile.TemporaryDirectory() as tmp:
             state_dir = Path(tmp)
-            previous = self._item("previous", 2)
+            # Attempt 2 has an unrelated technical failure (bad aspect ratio, not voice pitch)
+            second = self._item("second", 2, voice_only=False)
             third = self._item("third", 3, voice_only=False)
-            public = self._item("public", 1, uploaded=True, status="uploaded")
-            for row in (previous, third, public):
+            for row in (second, third):
                 (state_dir / row["final_mp4"]).write_bytes(b"x" * 2048)
-            state = {"version": 1, "items": [previous, third, public]}
+            state = {"version": 1, "items": [second, third]}
             with mock.patch.object(fallback, "STATE_DIR", state_dir):
                 chosen = fallback.promote_last_usable_after_third_attempt(state)
             self.assertIsNone(chosen)
+
+    def test_ordinary_pending_attempt3_does_not_trigger_promotion(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state_dir = Path(tmp)
+            second = self._item("second", 2, voice_only=True)
+            third = self._item("third", 3, status="generating")
+            for row in (second, third):
+                (state_dir / row["final_mp4"]).write_bytes(b"x" * 2048)
+            state = {"version": 1, "items": [second, third]}
+            with mock.patch.object(fallback, "STATE_DIR", state_dir):
+                # When allow_pending_abandonment is False, ordinary pending does NOT promote
+                chosen = fallback.promote_last_usable_after_third_attempt(state, allow_pending_abandonment=False)
+                self.assertIsNone(chosen)
+
+                # When explicitly allowed (e.g. hard timeout abandonment), it can promote
+                chosen_allowed = fallback.promote_last_usable_after_third_attempt(state, allow_pending_abandonment=True)
+                self.assertIs(chosen_allowed, second)
+
+    def test_no_new_generation_created_on_promotion(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state_dir = Path(tmp)
+            first = self._item("first", 1)
+            second = self._item("second", 2)
+            third = self._item("third", 3, voice_only=False)
+            for row in (first, second, third):
+                (state_dir / row["final_mp4"]).write_bytes(b"x" * 2048)
+            state = {"version": 1, "items": [first, second, third]}
+            original_item_count = len(state["items"])
+            with mock.patch.object(fallback, "STATE_DIR", state_dir):
+                chosen = fallback.promote_last_usable_after_third_attempt(state)
+
+            self.assertIs(chosen, second)
+            self.assertEqual(len(state["items"]), original_item_count, "Promotion must not create any new item in items list")
+
+    def test_find_usable_candidate_without_local_file(self):
+        second = self._item("second", 2, voice_only=True)
+        third = {
+            "id": "third",
+            "fresh_generation_attempt": 3,
+            "source": {"slug": "same-slug", "content_sha256": "same-hash"},
+            "status": "generating",
+            "uploaded": False,
+        }
+        state = {"version": 1, "items": [second, third]}
+
+        # Without requiring file on disk, remote controller inspects metadata candidate
+        candidate = fallback.find_usable_candidate(state, "same-slug", "same-hash", require_file=False)
+        self.assertIs(candidate, second)
+
+        # Mismatched source hash returns None
+        mismatch = fallback.find_usable_candidate(state, "same-slug", "other-hash", require_file=False)
+        self.assertIsNone(mismatch)
 
 
 if __name__ == "__main__":

@@ -46,7 +46,7 @@ def _voice_only_rejection(item: dict[str, Any]) -> bool:
     return not any(blocker in note for blocker in blockers)
 
 
-def _usable_candidate(item: dict[str, Any], slug: str, source_hash: str) -> bool:
+def _usable_candidate(item: dict[str, Any], slug: str, source_hash: str, *, require_file: bool = True) -> bool:
     if _slug(item) != slug or _source_hash(item) != source_hash:
         return False
     if item.get("uploaded") is True:
@@ -54,9 +54,10 @@ def _usable_candidate(item: dict[str, Any], slug: str, source_hash: str) -> bool
     final_name = str(item.get("final_mp4") or "").strip()
     if not final_name or not item.get("final_sha256"):
         return False
-    final_path = STATE_DIR / final_name
-    if not final_path.is_file() or final_path.stat().st_size < 1024:
-        return False
+    if require_file:
+        final_path = STATE_DIR / final_name
+        if not final_path.is_file() or final_path.stat().st_size < 1024:
+            return False
     media = item.get("media") or {}
     try:
         width = int(media.get("width") or 0)
@@ -71,7 +72,39 @@ def _usable_candidate(item: dict[str, Any], slug: str, source_hash: str) -> bool
     return item.get("technical_verified") is True or _voice_only_rejection(item)
 
 
-def promote_last_usable_after_third_attempt(state: dict[str, Any]) -> dict[str, Any] | None:
+def find_usable_candidate(
+    state: dict[str, Any],
+    slug: str,
+    source_hash: str,
+    *,
+    require_file: bool = False,
+) -> dict[str, Any] | None:
+    items = [row for row in state.get("items") or [] if isinstance(row, dict)]
+    if not items:
+        return None
+    if any(
+        row.get("uploaded") is True and _slug(row) == slug and _source_hash(row) == source_hash
+        for row in items
+    ):
+        return None
+    candidates = [
+        row for row in items
+        if _usable_candidate(row, slug, source_hash, require_file=require_file)
+    ]
+    if not candidates:
+        return None
+    return max(
+        candidates,
+        key=lambda row: (int(row.get("fresh_generation_attempt") or 0), str(row.get("updated_at") or "")),
+    )
+
+
+def promote_last_usable_after_third_attempt(
+    state: dict[str, Any],
+    *,
+    require_file: bool = True,
+    allow_pending_abandonment: bool = False,
+) -> dict[str, Any] | None:
     items = [row for row in state.get("items") or [] if isinstance(row, dict)]
     if not items:
         return None
@@ -96,7 +129,17 @@ def promote_last_usable_after_third_attempt(state: dict[str, Any]) -> dict[str, 
     ):
         return None
 
-    candidates = [row for row in items if _usable_candidate(row, slug, source_hash)]
+    # Important: do NOT invoke it merely because one 150-second NotebookLM poll returned GENERATION_PENDING.
+    # Ordinary pending remains ordinary pending; use it only when the third attempt has reached the explicit
+    # final-recovery condition (terminal provider result or the defined hard-timeout abandonment policy).
+    latest_status = str(latest_attempt.get("status") or "")
+    if latest_status in {"source_selected", "source_added", "generating"} and not allow_pending_abandonment:
+        return None
+
+    candidates = [
+        row for row in items
+        if row is not latest_attempt and _usable_candidate(row, slug, source_hash, require_file=require_file)
+    ]
     if not candidates:
         return None
 

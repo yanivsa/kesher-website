@@ -483,7 +483,12 @@ class RuntimeV5Controller(v5.V5Controller):
                 "next_deploy_retry_at": None,
                 "_tick_live_verified": True,
             })
-            if state.get("status") in {"blocked", "article_deploying", "article_deploy_wait", "article_generating", "article_retry_wait"}:
+            is_media_blocked = (
+                (state.get("last_error") or {}).get("stage") in {"long_video", "short", "image", "video", "media"}
+                or (state.get("long_video") or {}).get("status") in {"blocked", "exhausted"}
+                or (state.get("short") or {}).get("status") in {"blocked", "exhausted"}
+            )
+            if not is_media_blocked and state.get("status") in {"blocked", "article_deploying", "article_deploy_wait", "article_generating", "article_retry_wait"}:
                 v5.core.transition(state, "article_live", "HTTP 200 and expected title verified")
             return True, None
 
