@@ -1,10 +1,10 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "waiting_for_article_window",
+  "status": "article_generating",
   "article": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": null,
@@ -13,9 +13,10 @@
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "attempts": 0,
+    "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "pending"
+    "normalization_status": "pending",
+    "last_dispatch_at": "2026-10-17T16:11:20.096154+00:00"
   },
   "backlog": [
     {
@@ -2112,9 +2113,18 @@
           "jealousy-in-relationships"
         ]
       }
+    },
+    {
+      "at": "2026-10-17T16:11:20.096161+00:00",
+      "from": "waiting_for_article_window",
+      "to": "article_generating",
+      "reason": "single article worker attempt dispatched",
+      "details": {
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-17T16:05:58.268566+00:00",
+  "updated_at": "2026-10-17T16:11:20.096168+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2171,9 +2181,10 @@
         "slot": "2026-10-17"
       },
       "intent_at": "2026-10-17T16:10:44.984494+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": null,
+      "dispatched_at": "2026-10-17T16:10:44.984494+00:00"
     }
   },
   "last_child_notification": {
@@ -2193,17 +2204,5 @@
     "Kesher Daily Article Short V4:38975757218",
     "Kesher Daily Article Short V4:38976219993",
     "Kesher Daily Article Short V4:38976744012"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": "2026-10-16T21:28:19.856763+00:00",
-    "run_id": 38974743923,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
