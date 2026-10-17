@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "article_pr_open",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -16,7 +16,7 @@
       "JULES_TIMEOUT_SESSION_ACTIVE": 1
     },
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-17T16:56:11.686937+00:00",
     "watchdog": {
@@ -84,7 +84,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-17T17:17:35.456335+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-10-17T17:17:39.825417+00:00",
+    "next_deploy_retry_at": "2026-10-17T17:22:32.984775+00:00"
   },
   "backlog": [
     {
@@ -1457,15 +1459,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T18:01:34.085844+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-16T18:05:56.150904+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2254,9 +2247,19 @@
       "from": "article_image_running",
       "to": "article_pr_open",
       "reason": "normalized article PR has required trusted image"
+    },
+    {
+      "at": "2026-10-17T17:17:39.825443+00:00",
+      "from": "article_pr_open",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-17T17:16:16.339438+00:00",
+  "updated_at": "2026-10-17T17:17:39.825450+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2301,7 +2304,7 @@
     "v4_short_controller_state": null
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/fear-of-ending-up-alone-late-singleness",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
@@ -2315,10 +2318,11 @@
       "cycle": "2026-10-17",
       "inputs": {},
       "intent_at": "2026-10-17T17:17:32.984775+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "d0ccd462a9d6933cda65c79b6901fffaffe217a5"
+      "observed_active_run_id": 39053114609,
+      "dispatch_head_sha": "d0ccd462a9d6933cda65c79b6901fffaffe217a5",
+      "dispatched_at": "2026-10-17T17:17:32.984775+00:00"
     }
   },
   "last_child_notification": {
