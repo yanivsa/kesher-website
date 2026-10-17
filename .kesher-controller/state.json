@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "long_video_complete",
+  "status": "short_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1461,12 +1461,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T19:00:51.923700+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-16T19:01:02.007731+00:00",
       "from": "article_live",
       "to": "blocked",
@@ -2285,9 +2279,15 @@
       "from": "article_live",
       "to": "complete",
       "reason": "public article and YouTube video verified"
+    },
+    {
+      "at": "2026-10-17T18:24:36.051882+00:00",
+      "from": "long_video_complete",
+      "to": "short_running",
+      "reason": "derivative Short dispatched from verified long-form provider identity"
     }
   ],
-  "updated_at": "2026-10-17T18:24:25.389226+00:00",
+  "updated_at": "2026-10-17T18:24:36.051889+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2356,17 +2356,21 @@
     "signature_asset_sha256": "1aef56215bd8374d37b621154e33ba5b8353c78d601ee264731a23384cee7642"
   },
   "short": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38976744012,
     "processed_run_id": 38976744012,
-    "provider_id": null,
+    "provider_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803",
     "failure_fingerprint": null,
     "same_failure_streak": 0,
     "failure_count_by_type": {},
-    "last_run_conclusion": "success"
+    "last_run_conclusion": "success",
+    "last_dispatch_at": "2026-10-17T18:24:36.051858+00:00",
+    "artifact_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803",
+    "source_id": "a88b1a2d-611c-4665-9025-86fe15cac097",
+    "adopted_from_long_item_id": "video-20261017-202441-34994678e6"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -2391,9 +2395,10 @@
         "derive_long_item_id": "video-20261017-202441-34994678e6"
       },
       "intent_at": "2026-10-17T18:23:48.544243+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38976744012,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39057952733,
+      "dispatched_at": "2026-10-17T18:23:48.544243+00:00"
     }
   },
   "last_child_notification": {
