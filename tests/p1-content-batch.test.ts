@@ -3,7 +3,6 @@ import historicalPosts from '../src/data/posts.json';
 import recentPosts from '../src/data/postsRecent.json';
 
 const posts = [...recentPosts, ...historicalPosts];
-const byId = new Map(posts.map((post) => [post.id, post]));
 
 const targets = [
   { id: 'prepare-for-first-grade', keyword: "הכנה לכיתה א" },
