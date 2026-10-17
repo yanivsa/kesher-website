@@ -1210,7 +1210,8 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                     )
         elif workflow == v5.LONG_VIDEO_WORKFLOW:
             op = (inputs or {}).get("operation")
-            if op == "full":
+            target_item_id = str((inputs or {}).get("target_item_id") or "").strip()
+            if op == "full" and not target_item_id:
                 long_state = active_state.get("long_video") if isinstance(active_state.get("long_video"), dict) else {}
                 count = int(long_state.get("attempt_count") or 0)
                 if count >= v5.v3.MAX_STAGE_ATTEMPTS:
@@ -1749,7 +1750,12 @@ class StabilizedRuntimeV5Controller(runtime.RuntimeV5Controller):
                 "next_deploy_retry_at": None,
             })
             state.get("article", {}).pop("_tick_live_verified", None)
-            if state.get("status") in {"blocked", "article_deploying", "article_deploy_wait", "article_generating", "article_retry_wait"}:
+            is_media_blocked = (
+                (state.get("last_error") or {}).get("stage") in {"long_video", "short", "image", "video", "media"}
+                or (state.get("long_video") or {}).get("status") in {"blocked", "exhausted"}
+                or (state.get("short") or {}).get("status") in {"blocked", "exhausted"}
+            )
+            if not is_media_blocked and state.get("status") in {"blocked", "article_deploying", "article_deploy_wait", "article_generating", "article_retry_wait"}:
                 v5.core.transition(state, "article_live", "HTTP 200 and expected title verified")
             return True, None
 

@@ -147,7 +147,17 @@ class V5GitHubClient(v4.V4GitHubClient):
                 pass
         return self.newest_state_for_artifact(durable_artifact)
 
+    def save_video_state(self, state: dict[str, Any]) -> None:
+        self._video_state = copy.deepcopy(state)
+        try:
+            from scripts import kesher_daily_pipeline as pipeline
+            pipeline.save_state(state)
+        except Exception:
+            pass
+
     def newest_video_state(self) -> dict[str, Any]:
+        if getattr(self, "_video_state", None) is not None:
+            return copy.deepcopy(self._video_state)
         # The full durable artifact may contain large MP4/evidence files needed
         # by the video worker for resume. Controller V5 only needs state.json.
         return self._preferred_controller_state(
@@ -351,7 +361,7 @@ class V5Controller(v4.V4Controller):
             )
         return None
 
-    def _adopt_existing_short(self, state: dict[str, Any], source: dict[str, str]) -> dict[str, Any] | None:
+    def _adopt_existing_short(self, state: dict[str, Any], source: dict[str, str], long_item: dict[str, Any] | None = None) -> dict[str, Any] | None:
         current_short = state.get("short") or {}
         if (
             current_short.get("status") == "complete"
@@ -414,7 +424,7 @@ class V5Controller(v4.V4Controller):
 
     def _tick_short(self, state: dict[str, Any], source: dict[str, str], long_item: dict[str, Any]) -> core.Action:
         if isinstance(source, dict) and source.get("slug") and source.get("content_sha256"):
-            existing = self._adopt_existing_short(state, source)
+            existing = self._adopt_existing_short(state, source, long_item=long_item)
             if existing:
                 core.transition(state, "complete", "article, long-form video and derivative Short verified public")
                 state["article"]["status"] = "complete"

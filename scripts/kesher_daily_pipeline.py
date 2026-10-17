@@ -462,7 +462,17 @@ def generation_prompt(source: dict[str, Any]) -> str:
     return prompt
 
 
+def is_recovery_mode() -> bool:
+    if (os.environ.get("KESHER_RECOVERY_MODE") or "").lower().strip() in {"true", "1", "yes"}:
+        return True
+    if (os.environ.get("OPERATION") or "").lower().strip() in {"recovery", "reconcile"}:
+        return True
+    return False
+
+
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
+    if is_recovery_mode():
+        raise PipelineError("RECOVERY_MODE_VIOLATION: new_item forbidden in same-identity recovery mode")
     stamp = israel_now().strftime("%Y%m%d-%H%M%S")
     return {
         "id": f"video-{stamp}-{source['content_sha256'][:10]}",
@@ -785,6 +795,8 @@ def legacy_external_effect(
 
 
 def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
+    if is_recovery_mode():
+        raise PipelineError("RECOVERY_MODE_VIOLATION: add_source forbidden in same-identity recovery mode")
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
     media_mutation(state)
@@ -818,6 +830,8 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
 
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
+    if is_recovery_mode():
+        raise PipelineError("RECOVERY_MODE_VIOLATION: start_generation forbidden in same-identity recovery mode")
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
     media_mutation(state)
@@ -1229,6 +1243,35 @@ def create_contact_sheet(video_path: Path, item: dict[str, Any], duration: float
 
 
 def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path: Path) -> None:
+    slug = str((item.get("source") or {}).get("slug") or "")
+    source_hash = str((item.get("source") or {}).get("content_sha256") or "")
+    if slug and source_hash:
+        authoritative = load_state() if STATE_FILE.is_file() else state
+        auth_fw = authoritative.get("fallback_winner")
+        if auth_fw and auth_fw.get("slug") == slug and auth_fw.get("content_sha256") == source_hash:
+            if auth_fw.get("fallback_committed") is True and auth_fw.get("winner_item_id") != item.get("id"):
+                item["status"] = "superseded"
+                item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+                item["upload_eligible"] = False
+                item["updated_at"] = utc_now()
+                save_state(state)
+                raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner {auth_fw.get('winner_item_id')}")
+
+        has_promoted_winner = any(
+            row is not item
+            and str((row.get("source") or {}).get("slug") or "") == slug
+            and str((row.get("source") or {}).get("content_sha256") or "") == source_hash
+            and row.get("final_attempt_fallback") is True
+            for row in (authoritative.get("items") or [])
+            if isinstance(row, dict)
+        )
+        if item.get("status") == "superseded" or has_promoted_winner:
+            item["status"] = "superseded"
+            item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+            item["upload_eligible"] = False
+            item["updated_at"] = utc_now()
+            save_state(state)
+            raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner")
     final_path = render_remotion_video(raw_path, item)
     media = ffprobe(final_path)
     sheet = create_contact_sheet(final_path, item, media["duration"])
@@ -1374,7 +1417,28 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         print(f"TECHNICAL_REJECTED item={item['id']} reasons={len(technical_failures)}")
         return
 
+    if slug and source_hash and STATE_FILE.is_file():
+        authoritative = load_state()
+        auth_fw = authoritative.get("fallback_winner")
+        if auth_fw and auth_fw.get("slug") == slug and auth_fw.get("content_sha256") == source_hash:
+            if auth_fw.get("fallback_committed") is True and auth_fw.get("winner_item_id") != item.get("id"):
+                item["status"] = "superseded"
+                item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+                item["upload_eligible"] = False
+                item["updated_at"] = utc_now()
+                save_state(state)
+                raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner {auth_fw.get('winner_item_id')}")
+        auth_item = next((r for r in authoritative.get("items", []) if r.get("id") == item.get("id")), None)
+        if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
+            item["status"] = "superseded"
+            item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+            item["upload_eligible"] = False
+            item["updated_at"] = utc_now()
+            save_state(state)
+            raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner")
+
     item["technical_verified"] = True
+    item["upload_eligible"] = True
     item["review_notes"]["technical"] = (
         f"אומת קובץ MP4 תקין, H.264, יחס {media['width']}x{media['height']}, "
         f"משך {media['duration']} שניות וחותמת SHA-256"
@@ -1415,6 +1479,39 @@ def run_generation(
         return 0
     auth_preflight()
     state = load_state()
+    target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
+    is_recovery = is_recovery_mode() or bool(item_id)
+    if is_recovery:
+        item = active_item(state, slug=slug, item_id=target_item_id)
+        if not item:
+            raise PipelineError(f"RECOVERY_MODE_VIOLATION: target item {target_item_id} does not exist in state")
+        if str(item.get("id") or "").strip() != target_item_id:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: active item mismatch")
+        target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+        if target_slug and str((item.get("source") or {}).get("slug") or "") != target_slug:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: slug mismatch in recovery mode")
+        requested_sha = os.environ.get("TARGET_CONTENT_SHA256", "").strip()
+        if requested_sha and str((item.get("source") or {}).get("content_sha256") or "") != requested_sha:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: source content hash mismatch in recovery mode")
+        export_item_target(item)
+        if item.get("uploaded") is True or item["status"] in {"pending_review", "approved", "rejected", "uploading", "uploaded", "superseded"}:
+            print(f"NO_GENERATION recovery mode active_item={item['id']} status={item['status']}")
+            return 0
+        if is_recovery_mode() and item["status"] in {"source_selected", "source_added"}:
+            raise PipelineError(f"RECOVERY_MODE_VIOLATION: target item {target_item_id} has invalid status {item['status']} for recovery; provider source creation/generation forbidden")
+        if item["status"] == "generating":
+            if not item.get("task_id") or not item.get("source_id"):
+                raise PipelineError("RECOVERY_MODE_VIOLATION: generating item missing required task_id or source_id")
+            if not wait_for_generation(state, item, max_wait_seconds):
+                return 0
+            raw_path = download_artifact(state, item)
+        elif item["status"] == "downloaded":
+            raw_path = STATE_DIR / item["raw_mp4"]
+        else:
+            return 0
+        validate_and_manifest(state, item, raw_path)
+        return 0
+
     item = active_item(state, slug=slug, item_id=item_id)
     if item:
         export_item_target(item)
@@ -1953,6 +2050,16 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
 
 def upload_only(slug: str | None = None, item_id: str | None = None, *, state: dict | None = None) -> int:
     state = load_state() if state is None else state
+    if slug and item_id and STATE_FILE.is_file():
+        auth_state = load_state()
+        if auth_state.get("fallback_winner"):
+            fw = auth_state["fallback_winner"]
+            if fw.get("slug") == slug and fw.get("fallback_committed") is True:
+                if fw.get("winner_item_id") != item_id:
+                    raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item_id} superseded by fallback winner {fw.get('winner_item_id')}")
+        auth_item = next((r for r in auth_state.get("items", []) if r.get("id") == item_id), None)
+        if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
+            raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item_id} is superseded")
     item = existing_item(state, item_id, slug)
     if item.get('uploaded') is True and item.get('youtube_verification'):
         print(f"NO_DUPLICATE_UPLOAD item={item['id']}")

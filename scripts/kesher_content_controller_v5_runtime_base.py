@@ -92,7 +92,7 @@ class RuntimeV5Controller(v5.V5Controller):
             rows.append(bound)
         return rows
 
-    def _adopt_existing_short(self, state, source):
+    def _adopt_existing_short(self, state, source, long_item=None):
         current_short = state.get("short") or {}
         if (
             current_short.get("status") == "complete"
@@ -101,14 +101,14 @@ class RuntimeV5Controller(v5.V5Controller):
             and current_short.get("youtube_url")
         ):
             if current_short.get("overview_provider_identity") is None:
-                overview_identity = self._authoritative_overview_identity(source)
+                overview_identity = self._authoritative_overview_identity(source, long_item=long_item)
                 if overview_identity is not None:
                     current_short["overview_provider_identity"] = overview_identity
             return current_short
         short_state = self.github.newest_short_state() if hasattr(self.github, "newest_short_state") else {"version": 1, "items": []}
         verified = [
             row
-            for row in self._exact_short_items(short_state, source)
+            for row in self._exact_short_items(short_state, source, long_item=long_item)
             if delivery_guard.short_public_portrait_verified(
                 row,
                 source,
@@ -156,14 +156,22 @@ class RuntimeV5Controller(v5.V5Controller):
             "artifact_id": item.get("artifact_id"),
             "source_id": item.get("source_id"),
         })
-        v5.v3.clear_stage_failure(state["short"])
         return item
 
     @staticmethod
-    def _watchdog_candidate(snapshot, source):
+    def _watchdog_candidate(snapshot, source, authoritative_item_id=None):
+        exact_items = v5._exact_items(snapshot, source)
+        if authoritative_item_id:
+            auth_matches = [
+                row for row in exact_items
+                if str(row.get("id") or "") == str(authoritative_item_id)
+                and row.get("uploaded") is not True
+            ]
+            if auth_matches:
+                return auth_matches[0]
         rows = [
             row
-            for row in v5._exact_items(snapshot, source)
+            for row in exact_items
             if str(row.get("status") or "") in MEDIA_WATCHDOG_STATUSES
             and row.get("uploaded") is not True
         ]
@@ -259,7 +267,7 @@ class RuntimeV5Controller(v5.V5Controller):
 
     def _recover_long_video(self, state, source, item):
         inputs = {
-            "operation": "full",
+            "operation": "recovery",
             "target_slug": source["slug"],
             "target_content_sha256": source["content_sha256"],
             "target_item_id": str(item.get("id") or ""),
@@ -483,7 +491,12 @@ class RuntimeV5Controller(v5.V5Controller):
                 "next_deploy_retry_at": None,
                 "_tick_live_verified": True,
             })
-            if state.get("status") in {"blocked", "article_deploying", "article_deploy_wait", "article_generating", "article_retry_wait"}:
+            is_media_blocked = (
+                (state.get("last_error") or {}).get("stage") in {"long_video", "short", "image", "video", "media"}
+                or (state.get("long_video") or {}).get("status") in {"blocked", "exhausted"}
+                or (state.get("short") or {}).get("status") in {"blocked", "exhausted"}
+            )
+            if not is_media_blocked and state.get("status") in {"blocked", "article_deploying", "article_deploy_wait", "article_generating", "article_retry_wait"}:
                 v5.core.transition(state, "article_live", "HTTP 200 and expected title verified")
             return True, None
 
@@ -566,6 +579,69 @@ class RuntimeV5Controller(v5.V5Controller):
                 state["deliverables"] = deliverables
                 self.github.save_controller_state(state)
                 return state, watchdog_action
+            # Intercept unresolved media blockers before falling through to base tick
+            long_state = self.github.newest_video_state() if hasattr(self.github, "newest_video_state") else {"version": 1, "items": []}
+            long_verified = v5._newest(v5._verified_exact(long_state, source))
+
+            is_long_blocked = (
+                (state.get("long_video") or {}).get("status") in {"blocked", "exhausted"}
+                or (state.get("status") == "blocked" and (state.get("last_error") or {}).get("stage") == "long_video")
+            )
+            if is_long_blocked:
+                if long_verified is not None:
+                    # Valid durable evidence proves recovery! Clear long blocker cleanly
+                    state["long_video"]["status"] = "complete"
+                    state["long_video"]["verified"] = True
+                    state["long_video"]["item_id"] = long_verified.get("id")
+                    state["long_video"]["youtube_id"] = long_verified.get("youtube_id")
+                    state["long_video"]["youtube_url"] = long_verified.get("youtube_url")
+                    v5.v3.clear_stage_failure(state["long_video"])
+                    state["last_error"] = None
+                    v5.core.transition(
+                        state,
+                        "long_video_complete",
+                        "exact verified public Overview proven from durable evidence",
+                        item_id=long_verified.get("id"),
+                    )
+                    short_action = self._tick_short(state, source, long_verified)
+                    ready, deliverables = delivery_guard.delivery_contract(state)
+                    state["deliverables"] = deliverables
+                    self.github.save_controller_state(state)
+                    return state, short_action
+                else:
+                    _, deliverables = delivery_guard.delivery_contract(state)
+                    state["deliverables"] = deliverables
+                    self.github.save_controller_state(state)
+                    return state, v5.core.Action("blocked", (state.get("last_error") or {}).get("message") or "long_video blocked")
+
+            is_short_blocked = (
+                (state.get("short") or {}).get("status") in {"blocked", "exhausted"}
+                or (state.get("status") == "blocked" and (state.get("last_error") or {}).get("stage") == "short")
+            )
+            if is_short_blocked:
+                adopted_item = self._adopt_existing_short(state, source, long_item=long_verified)
+                if adopted_item is not None:
+                    ready, deliverables = delivery_guard.delivery_contract(state)
+                    state["deliverables"] = deliverables
+                    if ready:
+                        v5.v3.clear_stage_failure(state["short"])
+                        state["last_error"] = None
+                        v5.core.transition(
+                            state,
+                            "complete",
+                            "article, long-form video and derivative Short verified public",
+                        )
+                        self.github.save_controller_state(state)
+                        return state, v5.core.Action("complete", "article + long-form + Short verified public", copy.deepcopy(deliverables))
+                    else:
+                        state["short"]["status"] = "blocked"
+                        self.github.save_controller_state(state)
+                        return state, v5.core.Action("blocked", (state.get("last_error") or {}).get("message") or "delivery contract incomplete")
+                else:
+                    _, deliverables = delivery_guard.delivery_contract(state)
+                    state["deliverables"] = deliverables
+                    self.github.save_controller_state(state)
+                    return state, v5.core.Action("blocked", (state.get("last_error") or {}).get("message") or "short blocked")
 
         state, action = super().tick()
         ready, deliverables = delivery_guard.delivery_contract(state)

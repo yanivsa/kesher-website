@@ -178,9 +178,19 @@ def release_without_short(slug: str, reason: str = "controller_bounded_release")
     return 0
 
 
+def is_recovery_mode() -> bool:
+    if (os.environ.get("KESHER_RECOVERY_MODE") or "").lower().strip() in {"true", "1", "yes"}:
+        return True
+    if (os.environ.get("OPERATION") or "").lower().strip() in {"recovery", "reconcile"}:
+        return True
+    return False
+
+
 def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dict[str, Any] | None:
     if not (old.get("status") == "rejected" and old.get("technical_verified") is not True):
         raise pipeline.PipelineError("Technical retry requested for a non-technical rejection")
+    if is_recovery_mode():
+        raise pipeline.PipelineError("RECOVERY_MODE_VIOLATION: retry_technical_rejection forbidden in same-identity recovery mode")
     slug = source_slug(old)
     if not slug:
         raise pipeline.PipelineError("Technical rejection has no source slug")
@@ -412,16 +422,67 @@ def prepare_generation(target_slug: str = "") -> int:
             if len(exact) != 1:
                 raise pipeline.PipelineError("EXACT_MEDIA_ITEM_ID_MISMATCH")
             item = exact[0]
-        else:
-            unresolved = [
-                row for row in same_source
-                if row.get("uploaded") is not True and row.get("status") in UNRESOLVED_STATUSES
-            ]
-            if len(unresolved) > 1:
-                raise pipeline.PipelineError(
-                    "More than one exact Video Overview is unresolved; EXACT_MEDIA_ITEM_ID_REQUIRED"
+            _reconcile_item_technical_rejection(state, item)
+
+            is_voice_retry = (
+                not is_recovery_mode()
+                and item.get("status") == "rejected"
+                and item.get("technical_verified") is not True
+                and (
+                    item.get("failure_signature") == "wrong_narrator_gender"
+                    or "Detected male voice" in str((item.get("review_notes") or {}).get("technical", ""))
                 )
-            item = unresolved[0] if unresolved else None
+                and int(item.get("fresh_generation_attempt") or 1) < 3
+            )
+            if is_voice_retry:
+                replacement = retry_technical_rejection(state, item)
+                pipeline.save_state(state)
+                if replacement is None:
+                    workflow_output("skip_generation", "true")
+                    print(
+                        "VIDEO_RECONCILED_GENERATION "
+                        f"slug={target_slug} released_without_video=yes"
+                    )
+                    return 0
+                export_target(replacement)
+                workflow_output("skip_generation", "false")
+                print(
+                    "VIDEO_RECONCILED_GENERATION "
+                    f"slug={target_slug} technical_retry=yes "
+                    f"attempt={replacement.get('fresh_generation_attempt', 1)}"
+                )
+                return 0
+
+            export_target(item)
+            # Recovery mode semantics for exact existing item:
+            # generating -> poll existing provider task only (skip_generation=false)
+            # downloaded -> continue local post-processing/render/validation for SAME item (skip_generation=false)
+            # approved / pending_review / verified -> proceed toward exact upload (skip_generation=true)
+            # uploaded -> reconciliation only; never upload again (skip_generation=true)
+            # rejected -> obey explicit final fallback/recovery policy; never silently fresh-generate (skip_generation=true)
+            if item.get("status") in {"generating", "downloaded"}:
+                workflow_output("skip_generation", "false")
+                print(
+                    "VIDEO_RECONCILED_GENERATION "
+                    f"slug={target_slug} recovery_advance_local=yes item={item.get('id')} status={item.get('status')}"
+                )
+                return 0
+            workflow_output("skip_generation", "true")
+            print(
+                "VIDEO_RECONCILED_GENERATION "
+                f"slug={target_slug} recovery_skip_generation=yes item={item.get('id')} status={item.get('status')}"
+            )
+            return 0
+
+        unresolved = [
+            row for row in same_source
+            if row.get("uploaded") is not True and row.get("status") in UNRESOLVED_STATUSES
+        ]
+        if len(unresolved) > 1:
+            raise pipeline.PipelineError(
+                "More than one exact Video Overview is unresolved; EXACT_MEDIA_ITEM_ID_REQUIRED"
+            )
+        item = unresolved[0] if unresolved else None
         if item is not None:
             _reconcile_item_technical_rejection(state, item)
             export_target(item)
@@ -675,12 +736,25 @@ def prepare_upload(
             raise pipeline.PipelineError(
                 "Exact identity lock requires target_slug, content_sha256, and target_item_id"
             )
+        if state.get("fallback_winner"):
+            fw = state["fallback_winner"]
+            if fw.get("slug") == target and fw.get("content_sha256") == target_content_sha256:
+                if fw.get("fallback_committed") is True and fw.get("winner_item_id") != target_item_id:
+                    workflow_output("ready", "false")
+                    raise pipeline.PipelineError(
+                        f"EXACT_UPLOAD_SUPERSEDED: item {target_item_id} superseded by fallback winner {fw.get('winner_item_id')}"
+                    )
         exact = [
             item for item in unresolved
             if str(item.get("id") or "").strip() == target_item_id
             and source_slug(item) == target
             and str((item.get("source") or {}).get("content_sha256") or "").strip() == target_content_sha256
         ]
+        if exact and (exact[0].get("status") == "superseded" or exact[0].get("upload_eligible") is False):
+            workflow_output("ready", "false")
+            raise pipeline.PipelineError(
+                f"EXACT_UPLOAD_SUPERSEDED: item {target_item_id} is superseded"
+            )
         if len(exact) != 1:
             exact_all = [
                 item for item in state.get("items") or []

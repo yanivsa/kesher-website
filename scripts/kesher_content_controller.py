@@ -573,7 +573,26 @@ def migrate_same_cycle_state(existing: dict[str, Any], day: date) -> dict[str, A
     return migrated
 
 
+def has_unresolved_media_blocker(state: dict[str, Any]) -> bool:
+    """Return True if an unresolved authoritative media blocker controls global state."""
+    last_error = state.get("last_error") or {}
+    stage = str(last_error.get("stage") or "")
+    if stage in {"long_video", "short", "video", "media", "image"} and state.get("status") == "blocked":
+        return True
+    for stage_key in ("long_video", "short", "video", "image"):
+        stage_state = state.get(stage_key) or {}
+        if isinstance(stage_state, dict) and stage_state.get("status") in {"blocked", "exhausted"}:
+            return True
+    return False
+
+
 def transition(state: dict[str, Any], status: str, reason: str, **details: Any) -> None:
+    if has_unresolved_media_blocker(state) and status in {
+        "article_live", "complete", "waiting_for_article_window", "article_deploying", "article_generating"
+    }:
+        state["updated_at"] = utc_now()
+        return
+
     previous = state.get("status")
     if previous != status or details:
         event: dict[str, Any] = {
@@ -1531,6 +1550,8 @@ class Controller:
         video_state = self.github.newest_video_state()
         matches = matching_video_items(video_state, slug)
         verified = [item for item in matches if verified_youtube_item(item, slug)]
+        if has_unresolved_media_blocker(state) and not verified:
+            return Action("blocked", (state.get("last_error") or {}).get("message") or "media stage blocked")
         if verified:
             item = sorted(
                 verified,
