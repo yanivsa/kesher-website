@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "article_deploy_wait",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 2,
+    "deploy_attempts": 3,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-17T21:36:03.178460+00:00",
     "watchdog": {
@@ -52,8 +52,8 @@
     "quality_checked_at": "2026-10-17T22:40:44.535145+00:00",
     "quality_violations": [],
     "live": false,
-    "last_deploy_dispatch_at": "2026-10-17T22:31:06.874796+00:00",
-    "next_deploy_retry_at": "2026-10-17T22:35:52.942638+00:00",
+    "last_deploy_dispatch_at": "2026-10-17T22:40:50.781818+00:00",
+    "next_deploy_retry_at": "2026-10-17T22:45:42.708351+00:00",
     "deploy_run_id": 39075398024
   },
   "backlog": [
@@ -2069,9 +2069,19 @@
       "details": {
         "retry_at": "2026-10-17T22:35:52.942638+00:00"
       }
+    },
+    {
+      "at": "2026-10-17T22:40:50.781859+00:00",
+      "from": "article_deploy_wait",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 3
+      }
     }
   ],
-  "updated_at": "2026-10-17T22:35:51.513749+00:00",
+  "updated_at": "2026-10-17T22:40:50.781865+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2142,10 +2152,11 @@
       "cycle": "2026-10-18",
       "inputs": {},
       "intent_at": "2026-10-17T22:40:42.708351+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 39075398024,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "a05990f3152f3b579712510114f5ab907dfe0fcd"
+      "observed_active_run_id": 39076051937,
+      "dispatch_head_sha": "a05990f3152f3b579712510114f5ab907dfe0fcd",
+      "dispatched_at": "2026-10-17T22:40:42.708351+00:00"
     }
   },
   "last_child_notification": {
