@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { FiChevronDown } from 'react-icons/fi';
 import MetaTags from '../../components/SEO/MetaTags';
 import SchemaOrg from '../../components/SEO/SchemaOrg';
@@ -7,6 +8,7 @@ import faqs from '../../data/faqs';
 import styles from './FAQ.module.css';
 
 const categories = ['הכל', 'ייעוץ זוגי', 'הכנה לנישואים והשנה הראשונה', 'זוגיות בעלייה ורילוקיישן', 'רווקות מאוחרת', 'מציאת זוגיות', 'הדרכת הורים', 'תחומי התמחות', 'כללי'];
+const relocationParentingQuestion = 'כיצד ליווי יכול לעזור למשפחה שעולה או חוזרת לישראל?';
 
 // FAQPage Schema for SEO/GEO
 const faqSchema = {
@@ -106,6 +108,11 @@ const FAQ: React.FC = () => {
               </button>
               <div className={styles.answerWrapper}>
                 <p className={styles.answer}>{faq.answer}</p>
+                {faq.question === relocationParentingQuestion && (
+                  <Link to="/blog/parent-guidance-relocation">
+                    הדרכת הורים לקראת רילוקיישן – מדריך מעשי להכנת ילדים למעבר
+                  </Link>
+                )}
               </div>
             </div>
           ))}
