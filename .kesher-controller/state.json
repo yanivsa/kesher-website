@@ -15,7 +15,7 @@
     "failure_count_by_type": {},
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "running",
+    "normalization_status": "complete",
     "last_dispatch_at": "2026-10-17T21:36:03.178460+00:00",
     "watchdog": {
       "identity": "2026-10-18",
@@ -30,11 +30,12 @@
     },
     "pr_number": 1137,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1137",
-    "current_pr_head_sha": "b0bcf0635c767716f499d58f9a6e759beb096b74",
+    "current_pr_head_sha": "05e72ccede3b6a9a9d7e367c184906b23580de4f",
     "jules_head_sha": "b0bcf0635c767716f499d58f9a6e759beb096b74",
     "normalization_slot": "2026-10-18",
     "normalization_dispatched_at": "2026-10-17T22:16:15.052906+00:00",
-    "normalization_run_id": 39074372992
+    "normalization_run_id": 39074372992,
+    "normalized_head_sha": "05e72ccede3b6a9a9d7e367c184906b23580de4f"
   },
   "backlog": [
     {
@@ -2058,6 +2059,17 @@
       "previous_run_id": null,
       "observed_active_run_id": null,
       "dispatched_at": "2026-10-17T21:35:44.239366+00:00"
+    },
+    "kesher-article-image.yml": {
+      "workflow": "kesher-article-image.yml",
+      "cycle": "2026-10-18",
+      "inputs": {
+        "pr_number": "1137"
+      },
+      "intent_at": "2026-10-17T22:17:14.194556+00:00",
+      "status": "intent",
+      "previous_run_id": null,
+      "observed_active_run_id": null
     }
   },
   "last_child_notification": {
@@ -2066,5 +2078,17 @@
     "conclusion": "success",
     "source_slug": null,
     "slot": "2026-10-18"
+  },
+  "video": {
+    "attempt_count": 0,
+    "status": "pending",
+    "last_error": null,
+    "next_retry_at": null,
+    "run_id": null,
+    "processed_run_id": null,
+    "provider_id": null,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
+    "failure_count_by_type": {}
   }
 }
