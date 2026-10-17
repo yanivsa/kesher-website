@@ -82,13 +82,13 @@
     "quality_content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-17T18:45:59.959471+00:00",
+    "quality_checked_at": "2026-10-17T18:50:51.264408+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-17T17:17:39.825417+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39053114609,
-    "live_verified_at": "2026-10-17T18:46:01.041359+00:00"
+    "live_verified_at": "2026-10-17T18:50:52.870119+00:00"
   },
   "backlog": [
     {
