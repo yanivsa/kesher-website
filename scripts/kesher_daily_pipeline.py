@@ -137,6 +137,15 @@ def save_state(state: dict[str, Any]) -> None:
     # snapshot must never erase or decrement an already persisted attempt.
     if STATE_FILE.exists():
         previous = load_state()
+        prev_rev = int(previous.get("state_revision", 1))
+        curr_rev = int(state.get("state_revision", 1))
+        if curr_rev < prev_rev:
+            raise PipelineError(f"STALE_SNAPSHOT_REGRESSION: incoming state_revision {curr_rev} < persisted {prev_rev}")
+        prev_fw = previous.get("fallback_winner")
+        if prev_fw and prev_fw.get("fallback_committed") is True:
+            curr_fw = state.get("fallback_winner")
+            if not curr_fw or curr_fw.get("winner_item_id") != prev_fw.get("winner_item_id"):
+                raise PipelineError(f"STALE_SNAPSHOT_REGRESSION: cannot overwrite committed fallback winner {prev_fw.get('winner_item_id')}")
         incoming = {row.get('id'): row for row in state.get('items', [])}
         for prior in previous.get('items', []):
             attempt = prior.get('fresh_generation_attempt', 1)
@@ -1254,7 +1263,7 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
                 item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
                 item["upload_eligible"] = False
                 item["updated_at"] = utc_now()
-                save_state(state)
+                # DO NOT SAVE STALE SNAPSHOT! Raise immediately to protect authoritative disk state!
                 raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner {auth_fw.get('winner_item_id')}")
 
         has_promoted_winner = any(
@@ -1270,7 +1279,7 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
             item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
             item["upload_eligible"] = False
             item["updated_at"] = utc_now()
-            save_state(state)
+            # DO NOT SAVE STALE SNAPSHOT! Raise immediately to protect authoritative disk state!
             raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner")
     final_path = render_remotion_video(raw_path, item)
     media = ffprobe(final_path)
@@ -2048,19 +2057,123 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
         time.sleep(20)
 
 
+def verify_single_upload_authority(
+    state: dict[str, Any],
+    slug: str,
+    content_sha256: str,
+    target_item_id: str | None = None,
+    candidate_items: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Verify that exactly one authoritative Long item exists for the exact slug + content_sha256.
+
+    Fails closed with PipelineError('AMBIGUOUS_LONG_UPLOAD_AUTHORITY: ...') if:
+    - more than one item is already uploaded for this source;
+    - more than one non-superseded exact Long item satisfies upload eligibility;
+    - multiple attempts exist and there is no durable authoritative winner visible to this worker.
+    """
+    auth_state = load_state() if STATE_FILE.is_file() else state
+    if candidate_items is not None:
+        items = [
+            row for row in candidate_items
+            if isinstance(row, dict)
+            and str((row.get("source") or {}).get("slug") or "").strip() == slug
+            and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
+            and (row.get("type") == "video_overview" or row.get("type") is None)
+        ]
+    else:
+        items = [
+            row for row in auth_state.get("items", [])
+            if isinstance(row, dict)
+            and str((row.get("source") or {}).get("slug") or "").strip() == slug
+            and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
+            and (row.get("type") == "video_overview" or row.get("type") is None)
+        ]
+        if not items:
+            items = [
+                row for row in state.get("items", [])
+                if isinstance(row, dict)
+                and str((row.get("source") or {}).get("slug") or "").strip() == slug
+                and str((row.get("source") or {}).get("content_sha256") or "").strip() == content_sha256
+                and (row.get("type") == "video_overview" or row.get("type") is None)
+            ]
+
+    # 1. Check already public / uploaded items
+    uploaded = [
+        row for row in items
+        if row.get("uploaded") is True and bool(str(row.get("youtube_id") or "").strip())
+    ]
+    if len(uploaded) > 1:
+        raise PipelineError(
+            f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: multiple ({len(uploaded)}) public YouTube deliverables exist for {slug}"
+        )
+    if len(uploaded) == 1:
+        pub = uploaded[0]
+        if target_item_id and pub.get("id") != target_item_id:
+            raise PipelineError(
+                f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: item {target_item_id} attempted upload but {pub.get('id')} is already uploaded"
+            )
+        return pub
+
+    # 2. Check non-superseded and non-rejected items that satisfy upload eligibility
+    eligible = [
+        row for row in items
+        if row.get("status") not in {"superseded", "rejected"}
+        and row.get("upload_eligible") is not False
+        and (
+            row.get("technical_verified") is True
+            or row.get("status") in {"pending_review", "approved", "uploading"}
+        )
+    ]
+    if len(eligible) > 1:
+        raise PipelineError(
+            f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: more than one ({len(eligible)}) non-superseded item satisfies upload eligibility for {slug}"
+        )
+
+    # 3. Check multiple attempts with no durable authoritative winner
+    non_superseded = [
+        row for row in items
+        if row.get("status") not in {"superseded", "rejected"}
+    ]
+    if len(non_superseded) > 1:
+        fw = auth_state.get("fallback_winner") or state.get("fallback_winner")
+        has_winner = bool(
+            fw
+            and fw.get("slug") == slug
+            and fw.get("content_sha256") == content_sha256
+            and fw.get("fallback_committed") is True
+            and any(row.get("id") == fw.get("winner_item_id") for row in non_superseded)
+        )
+        if not has_winner:
+            raise PipelineError(
+                f"AMBIGUOUS_LONG_UPLOAD_AUTHORITY: multiple ({len(non_superseded)}) non-superseded attempts exist for {slug} with no durable authoritative winner"
+            )
+
+    target_id = target_item_id or (eligible[0].get("id") if eligible else None)
+    if target_id:
+        matched = [row for row in items if row.get("id") == target_id]
+        if matched:
+            return matched[0]
+    if eligible:
+        return eligible[0]
+    return items[0] if items else {}
+
+
 def upload_only(slug: str | None = None, item_id: str | None = None, *, state: dict | None = None) -> int:
     state = load_state() if state is None else state
-    if slug and item_id and STATE_FILE.is_file():
+    item = existing_item(state, item_id, slug)
+    target_slug = slug or str((item.get("source") or {}).get("slug") or "")
+    target_hash = str((item.get("source") or {}).get("content_sha256") or "")
+
+    if target_slug and item.get("id") and STATE_FILE.is_file():
         auth_state = load_state()
         if auth_state.get("fallback_winner"):
             fw = auth_state["fallback_winner"]
-            if fw.get("slug") == slug and fw.get("fallback_committed") is True:
-                if fw.get("winner_item_id") != item_id:
-                    raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item_id} superseded by fallback winner {fw.get('winner_item_id')}")
-        auth_item = next((r for r in auth_state.get("items", []) if r.get("id") == item_id), None)
+            if fw.get("slug") == target_slug and fw.get("fallback_committed") is True:
+                if fw.get("winner_item_id") != item.get("id"):
+                    raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} superseded by fallback winner {fw.get('winner_item_id')}")
+        auth_item = next((r for r in auth_state.get("items", []) if r.get("id") == item.get("id")), None)
         if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
-            raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item_id} is superseded")
-    item = existing_item(state, item_id, slug)
+            raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item.get('id')} is superseded")
     if item.get('uploaded') is True and item.get('youtube_verification'):
         print(f"NO_DUPLICATE_UPLOAD item={item['id']}")
         return 0
@@ -2076,6 +2189,14 @@ def upload_only(slug: str | None = None, item_id: str | None = None, *, state: d
         verify_authenticated_channel(token)
         _verify_and_record_upload(state, item, token)
         return 0
+
+    from scripts import kesher_final_attempt_fallback as fallback
+    if item.get("final_attempt_fallback") is True and not fallback.is_fallback_promotion_enabled():
+        raise PipelineError("FALLBACK_WINNER_AUTHORITY_UNAVAILABLE: fallback publication is disabled")
+
+    if target_slug and target_hash:
+        verify_single_upload_authority(state, target_slug, target_hash, item.get("id"))
+
     if not item.get("final_mp4"):
         raise PipelineError("Upload candidate is missing final MP4 path")
     video_path = STATE_DIR / item["final_mp4"]

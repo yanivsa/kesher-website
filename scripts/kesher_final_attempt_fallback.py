@@ -21,6 +21,15 @@ from typing import Any
 STATE_DIR = Path(os.environ.get("KESHER_STATE_DIR", ".kesher-video-state"))
 STATE_FILE = STATE_DIR / "state.json"
 FINAL_ATTEMPT = 3
+FALLBACK_PROMOTION_ENABLED = False
+
+
+def is_fallback_promotion_enabled() -> bool:
+    """Production-safe gate for fallback promotion. Default: DISABLED."""
+    env_val = os.environ.get("KESHER_ENABLE_FALLBACK_PROMOTION", "").strip().lower()
+    if env_val in {"1", "true", "yes"}:
+        return True
+    return FALLBACK_PROMOTION_ENABLED
 
 
 def _slug(item: dict[str, Any]) -> str:
@@ -333,6 +342,9 @@ def promote_last_usable_after_third_attempt(
     allow_pending_abandonment: bool = False,
     artifact_fetcher: Any = None,
 ) -> dict[str, Any] | None:
+    if not is_fallback_promotion_enabled():
+        return None
+
     items = [row for row in state.get("items") or [] if isinstance(row, dict)]
     if not items:
         return None
@@ -465,6 +477,9 @@ def promote_last_usable_after_third_attempt(
 
 
 def main() -> int:
+    if not is_fallback_promotion_enabled():
+        print("FALLBACK_WINNER_AUTHORITY_UNAVAILABLE")
+        return 0
     if not STATE_FILE.is_file():
         print("FINAL_ATTEMPT_FALLBACK_NO_STATE")
         return 0

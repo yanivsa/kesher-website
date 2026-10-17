@@ -406,9 +406,10 @@ class KesherRecoveryE2ETests(unittest.TestCase):
         # Snapshot B promotes Attempt 2 and commits to disk
         snapshot_b = {"version": 1, "items": [copy.deepcopy(item2), copy.deepcopy(item3)]}
         pipeline.save_state(snapshot_b)
-        promoted = fallback.promote_last_usable_after_third_attempt(
-            snapshot_b, state_dir=self.state_dir, require_file=False
-        )
+        with mock.patch.object(fallback, "FALLBACK_PROMOTION_ENABLED", True):
+            promoted = fallback.promote_last_usable_after_third_attempt(
+                snapshot_b, state_dir=self.state_dir, require_file=False
+            )
         self.assertIsNotNone(promoted)
         self.assertEqual(promoted["id"], "video-attempt-2")
 
@@ -505,9 +506,10 @@ class KesherRecoveryE2ETests(unittest.TestCase):
         pipeline.save_state(state)
 
         # Promote Attempt 2 as winner
-        promoted = fallback.promote_last_usable_after_third_attempt(
-            state, state_dir=self.state_dir, require_file=False
-        )
+        with mock.patch.object(fallback, "FALLBACK_PROMOTION_ENABLED", True):
+            promoted = fallback.promote_last_usable_after_third_attempt(
+                state, state_dir=self.state_dir, require_file=False
+            )
         self.assertIsNotNone(promoted)
 
         # Stale snapshot trying to prepare upload for Attempt 3 fails closed

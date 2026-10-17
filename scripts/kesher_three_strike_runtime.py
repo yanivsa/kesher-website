@@ -469,6 +469,16 @@ class ThreeStrikeMediaInterventionMixin:
                         action_item = item
                     elif decision.action == intervention.FORCE_CONTROLLER_RECOVERY and int(item.get("fresh_generation_attempt") or 0) >= 3:
                         # Fallback is strictly a FINAL condition: attempt budget exhausted + supervisor force recovery
+                        if not fallback.is_fallback_promotion_enabled():
+                            state["long_video"]["status"] = "blocked"
+                            v5.core.block(
+                                state,
+                                "long_video",
+                                "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE",
+                                "Fallback promotion is disabled until shared authoritative winner store is available",
+                            )
+                            self.github.save_controller_state(state)
+                            return v5.core.Action("blocked", "FALLBACK_WINNER_AUTHORITY_UNAVAILABLE")
                         promoted = fallback.promote_last_usable_after_third_attempt(
                             long_state,
                             require_file=False,
