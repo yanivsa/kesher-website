@@ -2347,7 +2347,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-daily-video.yml": {
+      "workflow": "kesher-daily-video.yml",
+      "cycle": "2026-10-17",
+      "inputs": {
+        "operation": "full",
+        "target_slug": "fear-of-ending-up-alone-late-singleness",
+        "target_content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25",
+        "target_item_id": "video-20261017-202441-34994678e6"
+      },
+      "intent_at": "2026-10-17T17:50:58.775550+00:00",
+      "status": "intent",
+      "previous_run_id": 39053521586,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
     "run_id": 39053521586,
@@ -2371,5 +2386,21 @@
     "Auto-merge Kesher article PRs:39052470893",
     "Deploy to Cloudflare Pages:39053114609",
     "Kesher Daily NotebookLM Video Overview:39053521586"
-  ]
+  ],
+  "interventions": {
+    "v5|fear-of-ending-up-alone-late-singleness|34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25|long_video": {
+      "pipeline_id": "v5",
+      "slug": "fear-of-ending-up-alone-late-singleness",
+      "content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25",
+      "stage": "long_video",
+      "strike_count": 1,
+      "last_check_token": "2026-10-17T20",
+      "last_fingerprint": "635db0e1d97158bdf71b15b8531bc5e43b9cce32b476af88c6cacea5870a4ee5",
+      "last_controller_action_token": null,
+      "controller_action_observed": false,
+      "last_observed_at": "2026-10-17T17:50:58.775550+00:00",
+      "last_action": "observe_controller",
+      "direct_takeover_required": false
+    }
+  }
 }
