@@ -20,7 +20,12 @@
     "serviceLabel": "ייעוץ זוגי",
     "directAnswer": "הפחד להישאר לבד עלול לנהל את קבלת ההחלטות שלנו, להוביל לפשרות על דברים חשובים רק כדי לא להיות לבד, או לחלופין לגרום להימנעות ולפסילה מהירה מדי מתוך חרדה. ההתמודדות דורשת הכרה בפחד, הבחנה אם פעולות נעשות מתוך תקווה או מתוך חרדה, וטיפוח חיים אישיים מלאים שמפחיתים את האיום שבלבד.",
     "evidence": [],
-    "controllerManaged": true
+    "controllerManaged": true,
+    "image": "/images/generated/blog/fear-of-ending-up-alone-late-singleness.jpg",
+    "imageAlt": "צילום מציאותי של אדם בהתבוננות שקטה בביתו המתאים לנושא רווקות ובחירות חיים",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/fallback/singles/adulthood_singleness_reflection.jpg",
+    "imageIsFallback": true
   },
   {
     "id": "why-cant-i-find-a-relationship",
