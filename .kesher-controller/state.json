@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "blocked",
+  "status": "article_deploying",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -14,7 +14,7 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "attempts": 0,
-    "deploy_attempts": 0,
+    "deploy_attempts": 1,
     "normalization_status": "complete",
     "last_dispatch_at": "2026-10-17T21:36:03.178460+00:00",
     "watchdog": {
@@ -51,7 +51,9 @@
     "quality_status": "passed",
     "quality_checked_at": "2026-10-17T22:23:41.131122+00:00",
     "quality_violations": [],
-    "live": false
+    "live": false,
+    "last_deploy_dispatch_at": "2026-10-17T22:23:46.579619+00:00",
+    "next_deploy_retry_at": "2026-10-17T22:28:37.772182+00:00"
   },
   "backlog": [
     {
@@ -1421,12 +1423,7 @@
       }
     }
   ],
-  "last_error": {
-    "stage": "controller",
-    "code": "ARTICLE_SLOT_UNRESOLVED",
-    "message": "ARTICLE_SLOT_UNRESOLVED",
-    "at": "2026-10-17T22:22:58.342004+00:00"
-  },
+  "last_error": null,
   "history": [
     {
       "at": "2026-10-17T18:24:36.051882+00:00",
@@ -2042,9 +2039,19 @@
       "details": {
         "message": "ARTICLE_SLOT_UNRESOLVED"
       }
+    },
+    {
+      "at": "2026-10-17T22:23:46.579666+00:00",
+      "from": "blocked",
+      "to": "article_deploying",
+      "reason": "public article check failed; recovery deploy dispatched",
+      "details": {
+        "http_status": 404,
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-17T22:22:58.342027+00:00",
+  "updated_at": "2026-10-17T22:23:46.579673+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2089,7 +2096,7 @@
     "v4_short_controller_state": null
   },
   "deliverables": {
-    "article_url": null,
+    "article_url": "https://kesher.saharoni.com/blog/why-is-it-so-hard-to-find-a-relationship",
     "overview_youtube_url": null,
     "short_youtube_url": null,
     "overview_edit_verified": false,
@@ -2115,10 +2122,11 @@
       "cycle": "2026-10-18",
       "inputs": {},
       "intent_at": "2026-10-17T22:23:37.772182+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null,
-      "dispatch_head_sha": "a05990f3152f3b579712510114f5ab907dfe0fcd"
+      "observed_active_run_id": 39074893283,
+      "dispatch_head_sha": "a05990f3152f3b579712510114f5ab907dfe0fcd",
+      "dispatched_at": "2026-10-17T22:23:37.772182+00:00"
     }
   },
   "last_child_notification": {
