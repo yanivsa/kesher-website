@@ -20,8 +20,8 @@
     "watchdog": {
       "identity": "2026-10-17",
       "session_id": "sessions/7980362767248953807",
-      "last_progress_at": "2026-10-17T16:45:41.968333+00:00",
-      "last_fingerprint": "6fe507e7bae025209b7057ead800ec11b625085fe58f2eb3c732bbe637e01f77",
+      "last_progress_at": "2026-10-17T16:50:47.498884+00:00",
+      "last_fingerprint": "20a8b4a5cda87fe0a9c9c30a78860e4845d8d7ec07c5907449a6f30dbdf0611b",
       "last_nudge_at": null,
       "nudge_count": 0,
       "worker_restart_count": 0,
@@ -1400,12 +1400,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T17:50:50.357363+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-16T17:51:04.643926+00:00",
       "from": "article_live",
       "to": "blocked",
@@ -2181,9 +2175,18 @@
       "details": {
         "session_id": "sessions/7980362767248953807"
       }
+    },
+    {
+      "at": "2026-10-17T16:54:04.824640+00:00",
+      "from": "article_generating",
+      "to": "article_generating",
+      "reason": "article workflow active; watchdog observing progress",
+      "details": {
+        "session_id": "sessions/7980362767248953807"
+      }
     }
   ],
-  "updated_at": "2026-10-17T16:48:59.451079+00:00",
+  "updated_at": "2026-10-17T16:54:04.824649+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
