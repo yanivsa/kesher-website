@@ -1461,15 +1461,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T18:31:32.109775+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-16T18:35:59.584332+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2278,9 +2269,19 @@
         "item_id": "video-20261017-202441-34994678e6",
         "task_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803"
       }
+    },
+    {
+      "at": "2026-10-17T18:00:55.120401+00:00",
+      "from": "long_video_watchdog_wait",
+      "to": "long_video_watchdog_wait",
+      "reason": "long_video provider is pending; watchdog is waiting for durable progress before same-identity recovery",
+      "details": {
+        "item_id": "video-20261017-202441-34994678e6",
+        "task_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803"
+      }
     }
   ],
-  "updated_at": "2026-10-17T17:56:19.460219+00:00",
+  "updated_at": "2026-10-17T18:00:55.120410+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
