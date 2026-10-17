@@ -26,6 +26,19 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS_DIR = ROOT / ".github" / "workflows"
 
 
+def first_unoccupied_slot(*catalogs: list[dict], start: dt.date = dt.date(2026, 10, 18)) -> dt.date:
+    occupied = {
+        str(post.get("date") or "")
+        for catalog in catalogs
+        for post in catalog
+        if isinstance(post, dict)
+    }
+    candidate = start
+    while candidate.isoformat() in occupied:
+        candidate += dt.timedelta(days=1)
+    return candidate
+
+
 def public_article_html(post: dict) -> str:
     source = v5.article_source_identity(post)
     slug = source["slug"]
@@ -601,23 +614,26 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         posts_recent = json.loads((ROOT / "src" / "data" / "postsRecent.json").read_text(encoding="utf-8"))
 
         # 2.A: Arbitrary future post in postsRecent.json with controllerManaged: false on a date with no other post
+        future_day = first_unoccupied_slot(posts_historical, posts_recent)
+        future_slot = future_day.isoformat()
+        future_id = f"manual-editorial-{future_slot}"
         future_manual_post = copy.deepcopy(posts_recent[0])
         future_manual_post.update(
             {
-                "id": "manual-editorial-2026-10-18",
-                "slug": "manual-editorial-2026-10-18",
+                "id": future_id,
+                "slug": future_id,
                 "title": "מאמר מערכת ידני שלא מנוהל על ידי הבקר היומי",
-                "date": "2026-10-18",
+                "date": future_slot,
                 "controllerManaged": False,
             }
         )
         merged = core.merge_catalog_posts(posts_historical, [*posts_recent, future_manual_post])
-        merged_future = next(p for p in merged if core.canonical_slug(p) == "manual-editorial-2026-10-18")
+        merged_future = next(p for p in merged if core.canonical_slug(p) == future_id)
         self.assertIs(merged_future.get("controllerManaged"), False)
         self.assertFalse(core.is_controller_adoptable_post(merged_future))
-        self.assertEqual(core.today_articles(merged, dt.date(2026, 10, 18)), [])
+        self.assertEqual(core.today_articles(merged, future_day), [])
 
-        # Confirm daily controller still dispatches article generation on 2026-10-18 despite manual post
+        # Confirm daily controller still dispatches article generation despite the manual post
         class FutureGitHub:
             api = "https://api.github.test/repos/yanivsa/kesher-website"
 
@@ -642,7 +658,7 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
                 raise AssertionError(path)
 
             def load_controller_state(self):
-                return {"schema_version": 5, "cycle": "2026-10-18", "status": "article_needed"}
+                return {"schema_version": 5, "cycle": future_slot, "status": "article_needed"}
 
             def save_controller_state(self, state):
                 self.saved_state = copy.deepcopy(state)
@@ -666,13 +682,13 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
         future_ctrl = stabilized.StabilizedRuntimeV5Controller(
             future_gh,
             mock.Mock(),
-            now=dt.datetime(2026, 10, 18, 9, 0, tzinfo=core.ISRAEL_TZ),
+            now=dt.datetime(future_day.year, future_day.month, future_day.day, 9, 0, tzinfo=core.ISRAEL_TZ),
         )
         _, future_action = future_ctrl.tick()
         self.assertEqual(future_action.kind, "dispatch_article")
         self.assertEqual(
             future_gh.dispatches,
-            [(core.ARTICLE_WORKFLOW, {"slot": "2026-10-18"})],
+            [(core.ARTICLE_WORKFLOW, {"slot": future_slot})],
         )
 
         # 2.B: Exact reviewed post-freeze single-article recovery targets (2026-10-06, 2026-10-09, 2026-10-10, 2026-10-12)
@@ -1454,24 +1470,27 @@ class PreCutoverDailyAuthorityTests(unittest.TestCase):
             with self.assertRaisesRegex(ArticleNormalizationError, "publication slot already exists in main"):
                 normalized_posts(posts_historical, dup_slot_article, recent_posts=posts_recent)
 
-        # Valid new article on unoccupied slot (2026-10-18) normalizes into posts.json and leaves postsRecent.json untouched
+        # Valid new article on a genuinely unoccupied slot normalizes into posts.json and leaves postsRecent.json untouched
+        valid_day = first_unoccupied_slot(posts_historical, posts_recent)
+        valid_slot = valid_day.isoformat()
+        valid_id = f"valid-{valid_slot}-article"
         valid_new = copy.deepcopy(posts_recent[0])
         valid_new.update(
             {
-                "id": "valid-2026-10-18-article",
-                "slug": "valid-2026-10-18-article",
-                "date": "2026-10-18",
+                "id": valid_id,
+                "slug": valid_id,
+                "date": valid_slot,
             }
         )
         extracted = extract_target_article(
             posts_historical,
             [valid_new, *posts_historical],
-            "2026-10-18",
+            valid_slot,
             recent_posts=posts_recent,
         )
-        self.assertEqual(extracted["id"], "valid-2026-10-18-article")
+        self.assertEqual(extracted["id"], valid_id)
         norm = normalized_posts(posts_historical, extracted, recent_posts=posts_recent)
-        self.assertEqual(norm[0]["id"], "valid-2026-10-18-article")
+        self.assertEqual(norm[0]["id"], valid_id)
         self.assertEqual(len(norm), len(posts_historical) + 1)
         self.assertEqual(posts_recent, recent_before)
 
