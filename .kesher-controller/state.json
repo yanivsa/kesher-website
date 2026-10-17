@@ -2364,7 +2364,15 @@
     "last_dispatch_at": "2026-10-17T18:24:36.051858+00:00",
     "artifact_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803",
     "source_id": "a88b1a2d-611c-4665-9025-86fe15cac097",
-    "adopted_from_long_item_id": "video-20261017-202441-34994678e6"
+    "adopted_from_long_item_id": "video-20261017-202441-34994678e6",
+    "watchdog": {
+      "identity": "short:fear-of-ending-up-alone-late-singleness:34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25:video-20261017-212624-34994678e6",
+      "hard_started_at": "2026-10-17T18:26:33.020605+00:00",
+      "last_progress_at": "2026-10-17T18:29:50.100928+00:00",
+      "last_fingerprint": "1afb2da5de337ce22090b488562ebc61b7f6d6cd8a1fc001031aaf479653bdae",
+      "recovery_count": 0,
+      "last_recovery_at": null
+    }
   },
   "migration": {
     "v4_short_controller_state": null
