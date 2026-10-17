@@ -21,7 +21,12 @@
     "serviceLabel": "ייעוץ זוגי",
     "directAnswer": "הקושי למצוא זוגיות נובע פעמים רבות משחיקה, עומס מנטלי של אפליקציות היכרויות, קריטריונים נוקשים ופחד מדחייה. כדי לשנות גישה, כדאי לצמצם את העומס, להתמקד בצרכים רגשיים במקום ברשימות יבשות, ולהוריד את הלחץ לקבלת החלטות מהירות.",
     "evidence": [],
-    "controllerManaged": true
+    "controllerManaged": true,
+    "image": "/images/generated/blog/why-is-it-so-hard-to-find-a-relationship.jpg",
+    "imageAlt": "צילום מציאותי של שיחה נינוחה בבית קפה המתאימה להיכרות ולבניית קשר",
+    "imageProvider": "Local",
+    "imageSourceUrl": "local://public/images/fallback/dating/dating_relationship_conversation.jpg",
+    "imageIsFallback": true
   },
   {
     "id": "fear-of-ending-up-alone-late-singleness",
