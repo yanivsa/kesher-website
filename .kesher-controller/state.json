@@ -2258,7 +2258,8 @@
     "failure_count_by_type": {},
     "last_dispatch_at": "2026-10-17T17:07:12.216553+00:00",
     "artifact_sha256": "c01fe88b784eb0a43057b7e184081b09099d68944b52f853d7c0a4ba0a328aa9",
-    "source_id": "local://public/images/fallback/singles/adulthood_singleness_reflection.jpg"
+    "source_id": "local://public/images/fallback/singles/adulthood_singleness_reflection.jpg",
+    "run_id": 39052349063
   },
   "long_video": {
     "attempt_count": 0,
