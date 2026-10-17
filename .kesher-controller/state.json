@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "article_generating",
+  "status": "article_normalizing",
   "article": {
     "attempt_count": 2,
     "status": "running",
@@ -17,7 +17,7 @@
     },
     "attempts": 1,
     "deploy_attempts": 0,
-    "normalization_status": "pending",
+    "normalization_status": "running",
     "last_dispatch_at": "2026-10-17T16:56:11.686937+00:00",
     "watchdog": {
       "identity": "2026-10-17",
@@ -64,7 +64,9 @@
     "pr_number": 1132,
     "pr_url": "https://github.com/yanivsa/kesher-website/pull/1132",
     "current_pr_head_sha": "4255d29abaa3d2a81ccf7496366fc7a6018e2b3e",
-    "jules_head_sha": "4255d29abaa3d2a81ccf7496366fc7a6018e2b3e"
+    "jules_head_sha": "4255d29abaa3d2a81ccf7496366fc7a6018e2b3e",
+    "normalization_slot": "2026-10-17",
+    "normalization_dispatched_at": "2026-10-17T17:05:36.219094+00:00"
   },
   "backlog": [
     {
@@ -1437,12 +1439,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T17:57:10.167578+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
       "at": "2026-10-16T17:57:26.877090+00:00",
       "from": "article_live",
       "to": "blocked",
@@ -2229,9 +2225,19 @@
       "details": {
         "session_id": "sessions/7980362767248953807"
       }
+    },
+    {
+      "at": "2026-10-17T17:05:36.219114+00:00",
+      "from": "article_generating",
+      "to": "article_normalizing",
+      "reason": "dirty or stale article PR dispatched to trusted normalizer",
+      "details": {
+        "pr_number": 1132,
+        "slot": "2026-10-17"
+      }
     }
   ],
-  "updated_at": "2026-10-17T17:04:46.283869+00:00",
+  "updated_at": "2026-10-17T17:05:36.219122+00:00",
   "image": {
     "attempt_count": 0,
     "status": "pending",
@@ -2289,9 +2295,10 @@
         "slot": "2026-10-17"
       },
       "intent_at": "2026-10-17T17:05:16.002847+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": null,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39052236182,
+      "dispatched_at": "2026-10-17T17:05:16.002847+00:00"
     }
   },
   "last_child_notification": {
@@ -2311,17 +2318,5 @@
     "Kesher Daily Article Short V4:38975757218",
     "Kesher Daily Article Short V4:38976219993",
     "Kesher Daily Article Short V4:38976744012"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": "2026-10-16T21:28:19.856763+00:00",
-    "run_id": 38974743923,
-    "processed_run_id": null,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {}
-  }
+  ]
 }
