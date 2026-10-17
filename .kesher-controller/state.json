@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "long_video_running",
+  "status": "long_video_complete",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -88,7 +88,7 @@
     "last_deploy_dispatch_at": "2026-10-17T17:17:39.825417+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39053114609,
-    "live_verified_at": "2026-10-17T18:23:54.879370+00:00"
+    "live_verified_at": "2026-10-17T18:24:24.211964+00:00"
   },
   "backlog": [
     {
@@ -1461,21 +1461,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T18:55:48.399781+00:00",
-      "from": "blocked",
-      "to": "article_live",
-      "reason": "HTTP 200 and expected title verified"
-    },
-    {
-      "at": "2026-10-16T18:55:57.727180+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-16T19:00:51.923700+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2288,9 +2273,21 @@
         "operation": "upload",
         "resume": 2
       }
+    },
+    {
+      "at": "2026-10-17T18:24:24.211982+00:00",
+      "from": "long_video_running",
+      "to": "article_live",
+      "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-17T18:24:25.389205+00:00",
+      "from": "article_live",
+      "to": "complete",
+      "reason": "public article and YouTube video verified"
     }
   ],
-  "updated_at": "2026-10-17T18:21:27.980444+00:00",
+  "updated_at": "2026-10-17T18:24:25.389226+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2309,14 +2306,14 @@
   },
   "long_video": {
     "attempt_count": 2,
-    "status": "running",
+    "status": "complete",
     "last_error": null,
-    "next_retry_at": "2026-10-17T18:28:48.544243+00:00",
+    "next_retry_at": null,
     "run_id": 39057727311,
     "processed_run_id": 39055569913,
     "provider_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803",
-    "failure_fingerprint": "VIDEO_WORKFLOW_FAILED",
-    "same_failure_streak": 1,
+    "failure_fingerprint": null,
+    "same_failure_streak": 0,
     "failure_count_by_type": {
       "VIDEO_WORKFLOW_FAILED": 1
     },
@@ -2364,11 +2361,12 @@
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38976744012,
-    "processed_run_id": null,
+    "processed_run_id": 38976744012,
     "provider_id": null,
     "failure_fingerprint": null,
     "same_failure_streak": 0,
-    "failure_count_by_type": {}
+    "failure_count_by_type": {},
+    "last_run_conclusion": "success"
   },
   "migration": {
     "v4_short_controller_state": null
@@ -2382,7 +2380,22 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {},
+  "pending_dispatches": {
+    "kesher-short-v4.yml": {
+      "workflow": "kesher-short-v4.yml",
+      "cycle": "2026-10-17",
+      "inputs": {
+        "operation": "derive",
+        "derive_slug": "fear-of-ending-up-alone-late-singleness",
+        "derive_content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25",
+        "derive_long_item_id": "video-20261017-202441-34994678e6"
+      },
+      "intent_at": "2026-10-17T18:23:48.544243+00:00",
+      "status": "intent",
+      "previous_run_id": 38976744012,
+      "observed_active_run_id": null
+    }
+  },
   "last_child_notification": {
     "workflow": "Kesher Daily NotebookLM Video Overview",
     "run_id": 39057727311,
