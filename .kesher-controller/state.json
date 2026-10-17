@@ -2276,25 +2276,12 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-article-generation.yml": {
-      "workflow": "kesher-article-generation.yml",
-      "cycle": "2026-10-17",
-      "inputs": {
-        "slot": "2026-10-17"
-      },
-      "intent_at": "2026-10-17T16:55:40.973726+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39048311811,
-      "observed_active_run_id": null,
-      "dispatched_at": "2026-10-17T16:55:40.973726+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
-    "workflow": "Kesher Daily Article Short V4",
-    "run_id": 38976744012,
+    "workflow": "Kesher Article Generation",
+    "run_id": 39051561772,
     "conclusion": "success",
-    "source_slug": "when-everyone-around-you-gets-married",
+    "source_slug": null,
     "slot": "2026-10-17"
   },
   "processed_child_notifications": [
