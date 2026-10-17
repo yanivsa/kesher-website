@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-18",
-  "status": "article_deploying",
+  "status": "article_deploy_wait",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -49,7 +49,7 @@
     "quality_content_sha256": "b7925c4cbed7751978db69267747ce960c0de5fc8ccf4716ae942e18d8cf4008",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-17T22:40:44.535145+00:00",
+    "quality_checked_at": "2026-10-17T22:45:44.001205+00:00",
     "quality_violations": [],
     "live": false,
     "last_deploy_dispatch_at": "2026-10-17T22:40:50.781818+00:00",
@@ -1427,12 +1427,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-17T18:24:36.051882+00:00",
-      "from": "long_video_complete",
-      "to": "short_running",
-      "reason": "derivative Short dispatched from verified long-form provider identity"
-    },
-    {
       "at": "2026-10-17T18:26:14.322757+00:00",
       "from": "short_running",
       "to": "article_live",
@@ -2079,9 +2073,18 @@
         "http_status": 404,
         "attempt": 3
       }
+    },
+    {
+      "at": "2026-10-17T22:45:45.400493+00:00",
+      "from": "article_deploying",
+      "to": "article_deploy_wait",
+      "reason": "deploy retry backoff is active",
+      "details": {
+        "retry_at": "2026-10-17T22:45:42.708351+00:00"
+      }
     }
   ],
-  "updated_at": "2026-10-17T22:40:50.781865+00:00",
+  "updated_at": "2026-10-17T22:45:45.400501+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
