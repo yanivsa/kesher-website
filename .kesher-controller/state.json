@@ -82,13 +82,13 @@
     "quality_content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25",
     "reconciled_existing_article": true,
     "quality_status": "passed",
-    "quality_checked_at": "2026-10-17T19:00:46.218498+00:00",
+    "quality_checked_at": "2026-10-17T19:02:07.606792+00:00",
     "quality_violations": [],
     "live": true,
     "last_deploy_dispatch_at": "2026-10-17T17:17:39.825417+00:00",
     "next_deploy_retry_at": null,
     "deploy_run_id": 39053114609,
-    "live_verified_at": "2026-10-17T19:01:10.645951+00:00"
+    "live_verified_at": "2026-10-17T19:02:08.219241+00:00"
   },
   "backlog": [
     {
@@ -2352,7 +2352,7 @@
     "status": "running",
     "last_error": null,
     "next_retry_at": null,
-    "run_id": 39059920558,
+    "run_id": 39060471256,
     "processed_run_id": 38976744012,
     "provider_id": "f2dacea7-e000-4ace-9bc9-dc229bedd803",
     "failure_fingerprint": null,
@@ -2384,26 +2384,10 @@
     "short_signature_verified": false,
     "short_origin_verified": false
   },
-  "pending_dispatches": {
-    "kesher-short-v4.yml": {
-      "workflow": "kesher-short-v4.yml",
-      "cycle": "2026-10-17",
-      "inputs": {
-        "operation": "derive",
-        "derive_slug": "fear-of-ending-up-alone-late-singleness",
-        "derive_content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25",
-        "derive_long_item_id": "video-20261017-202441-34994678e6"
-      },
-      "intent_at": "2026-10-17T18:50:47.808703+00:00",
-      "status": "dispatched",
-      "previous_run_id": 39057952733,
-      "observed_active_run_id": 39059920558,
-      "dispatched_at": "2026-10-17T18:50:47.808703+00:00"
-    }
-  },
+  "pending_dispatches": {},
   "last_child_notification": {
     "workflow": "Kesher Daily Article Short V4",
-    "run_id": 39057952733,
+    "run_id": 39060471256,
     "conclusion": "success",
     "source_slug": "fear-of-ending-up-alone-late-singleness",
     "slot": "2026-10-17"
