@@ -9,6 +9,7 @@ have already been consumed and no public upload exists.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -28,25 +29,145 @@ def _source_hash(item: dict[str, Any]) -> str:
     return str((item.get("source") or {}).get("content_sha256") or "").strip()
 
 
-def _voice_only_rejection(item: dict[str, Any]) -> bool:
+def _is_voice_marker(reason: str) -> bool:
+    lowered = reason.lower()
+    return any(
+        marker in lowered
+        for marker in (
+            "male voice",
+            "קול גברי",
+            "pitch",
+            "גובה צליל",
+            "female voice",
+            "קול נשי",
+            "narrator",
+        )
+    )
+
+
+def _positive_voice_only_rejection(item: dict[str, Any], state_dir: Path | None = None) -> bool:
+    """Positively prove that the ONLY technical failure is the female voice pitch/gender criterion."""
     note = str((item.get("review_notes") or {}).get("technical") or "")
     if not note.startswith("נפסל טכנית"):
         return False
-    lowered = note.lower()
-    voice_markers = ("male voice", "קול גברי", "pitch")
-    if not any(marker in lowered for marker in voice_markers):
+
+    reasons: list[str] = []
+    manifest_name = str(item.get("manifest_path") or "").strip()
+    s_dir = state_dir or STATE_DIR
+    if manifest_name:
+        manifest_path = s_dir / manifest_name
+        if manifest_path.is_file():
+            try:
+                mdata = json.loads(manifest_path.read_text(encoding="utf-8"))
+                reasons = [str(r) for r in mdata.get("rejection_reasons") or []]
+            except Exception:
+                pass
+
+    if not reasons:
+        reasons_text = note
+        if ":" in reasons_text:
+            reasons_text = reasons_text.split(":", 1)[1]
+        reasons = [r.strip() for r in reasons_text.split(";") if r.strip()]
+
+    if not reasons:
         return False
-    blockers = (
-        "אינו בטווח 90–180",
-        "אינו יחס אופקי",
-        "לא H.264",
-        "מטא־דאטה אינו עומד",
-        "סגיר החתימה",
-    )
-    return not any(blocker in note for blocker in blockers)
+
+    # Positive proof: every single rejection reason must be an allowed voice/pitch marker
+    if not all(_is_voice_marker(r) for r in reasons):
+        return False
+
+    # Mandatory technical gate positive proof:
+    media = item.get("media") or {}
+    if media.get("codec") and str(media["codec"]).lower() not in {"h264", "avc1"}:
+        return False
+
+    try:
+        width = int(media.get("width") or 0)
+        height = int(media.get("height") or 0)
+        duration = float(media.get("duration") or 0)
+    except (TypeError, ValueError):
+        return False
+
+    if width <= height or not (1.70 <= (width / height if height else 0) <= 1.82):
+        return False
+
+    if not (90.0 <= duration <= 183.5):
+        return False
+
+    meta = item.get("youtube_metadata")
+    if isinstance(meta, dict) and meta:
+        desc = str(meta.get("description") or "")
+        source = item.get("source") or {}
+        canon = str(source.get("canonical_url") or "")
+        if canon and canon not in desc:
+            return False
+
+    final_name = str(item.get("final_mp4") or "").strip()
+    final_sha = str(item.get("final_sha256") or "").strip()
+    if not final_name or not final_sha:
+        return False
+
+    return True
 
 
-def _usable_candidate(item: dict[str, Any], slug: str, source_hash: str, *, require_file: bool = True) -> bool:
+def restore_exact_candidate_media(
+    item: dict[str, Any],
+    *,
+    state_dir: Path | None = None,
+    artifact_fetcher: Any = None,
+) -> bool:
+    """Restore the exact candidate media files from local disk or durable artifact archives.
+
+    Fails closed (returns False) if the exact artifact cannot be verified against item['final_sha256'].
+    """
+    s_dir = state_dir or STATE_DIR
+    final_name = str(item.get("final_mp4") or "").strip()
+    expected_sha = str(item.get("final_sha256") or "").strip()
+    if not final_name or not expected_sha:
+        return False
+
+    final_path = s_dir / final_name
+    is_valid_hex_sha = len(expected_sha) == 64 and all(c in "0123456789abcdefABCDEF" for c in expected_sha)
+
+    if final_path.is_file() and final_path.stat().st_size >= 1024:
+        if is_valid_hex_sha:
+            actual_sha = hashlib.sha256(final_path.read_bytes()).hexdigest()
+            if actual_sha == expected_sha:
+                return True
+        else:
+            return True
+
+    if artifact_fetcher is not None:
+        try:
+            if callable(artifact_fetcher):
+                success = artifact_fetcher(item, s_dir)
+            elif hasattr(artifact_fetcher, "restore_media"):
+                success = artifact_fetcher.restore_media(item, s_dir)
+            else:
+                success = False
+
+            if success and final_path.is_file() and final_path.stat().st_size >= 1024:
+                if is_valid_hex_sha:
+                    actual_sha = hashlib.sha256(final_path.read_bytes()).hexdigest()
+                    if actual_sha == expected_sha:
+                        return True
+                else:
+                    return True
+        except Exception:
+            return False
+
+    return False
+
+
+def _usable_candidate(
+    item: dict[str, Any],
+    slug: str,
+    source_hash: str,
+    *,
+    state_dir: Path | None = None,
+    require_file: bool = True,
+    artifact_fetcher: Any = None,
+) -> bool:
     if _slug(item) != slug or _source_hash(item) != source_hash:
         return False
     if item.get("uploaded") is True:
@@ -54,9 +175,9 @@ def _usable_candidate(item: dict[str, Any], slug: str, source_hash: str, *, requ
     final_name = str(item.get("final_mp4") or "").strip()
     if not final_name or not item.get("final_sha256"):
         return False
+    s_dir = state_dir or STATE_DIR
     if require_file:
-        final_path = STATE_DIR / final_name
-        if not final_path.is_file() or final_path.stat().st_size < 1024:
+        if not restore_exact_candidate_media(item, state_dir=s_dir, artifact_fetcher=artifact_fetcher):
             return False
     media = item.get("media") or {}
     try:
@@ -69,7 +190,7 @@ def _usable_candidate(item: dict[str, Any], slug: str, source_hash: str, *, requ
         return False
     if not 90 <= duration <= 183.5:
         return False
-    return item.get("technical_verified") is True or _voice_only_rejection(item)
+    return item.get("technical_verified") is True or _positive_voice_only_rejection(item, state_dir=s_dir)
 
 
 def find_usable_candidate(
@@ -77,7 +198,9 @@ def find_usable_candidate(
     slug: str,
     source_hash: str,
     *,
+    state_dir: Path | None = None,
     require_file: bool = False,
+    artifact_fetcher: Any = None,
 ) -> dict[str, Any] | None:
     items = [row for row in state.get("items") or [] if isinstance(row, dict)]
     if not items:
@@ -89,7 +212,14 @@ def find_usable_candidate(
         return None
     candidates = [
         row for row in items
-        if _usable_candidate(row, slug, source_hash, require_file=require_file)
+        if _usable_candidate(
+            row,
+            slug,
+            source_hash,
+            state_dir=state_dir,
+            require_file=require_file,
+            artifact_fetcher=artifact_fetcher,
+        )
     ]
     if not candidates:
         return None
@@ -102,8 +232,10 @@ def find_usable_candidate(
 def promote_last_usable_after_third_attempt(
     state: dict[str, Any],
     *,
+    state_dir: Path | None = None,
     require_file: bool = True,
     allow_pending_abandonment: bool = False,
+    artifact_fetcher: Any = None,
 ) -> dict[str, Any] | None:
     items = [row for row in state.get("items") or [] if isinstance(row, dict)]
     if not items:
@@ -129,16 +261,23 @@ def promote_last_usable_after_third_attempt(
     ):
         return None
 
-    # Important: do NOT invoke it merely because one 150-second NotebookLM poll returned GENERATION_PENDING.
-    # Ordinary pending remains ordinary pending; use it only when the third attempt has reached the explicit
-    # final-recovery condition (terminal provider result or the defined hard-timeout abandonment policy).
     latest_status = str(latest_attempt.get("status") or "")
+    if latest_attempt.get("technical_verified") is True or latest_status in {"downloaded", "pending_review", "approved", "uploaded"}:
+        return None
     if latest_status in {"source_selected", "source_added", "generating"} and not allow_pending_abandonment:
         return None
 
+    s_dir = state_dir or STATE_DIR
     candidates = [
         row for row in items
-        if row is not latest_attempt and _usable_candidate(row, slug, source_hash, require_file=require_file)
+        if row is not latest_attempt and _usable_candidate(
+            row,
+            slug,
+            source_hash,
+            state_dir=s_dir,
+            require_file=require_file,
+            artifact_fetcher=artifact_fetcher,
+        )
     ]
     if not candidates:
         return None
@@ -154,6 +293,11 @@ def promote_last_usable_after_third_attempt(
             if row.get("status") not in {"superseded", "uploaded"}:
                 row["status"] = "superseded"
                 row["superseded_reason"] = "final_attempt_fallback_selected_other_existing_artifact"
+                row["superseded_at"] = (
+                    latest_attempt.get("updated_at")
+                    or chosen.get("updated_at")
+                    or ""
+                )
 
     chosen["technical_verified"] = True
     chosen["status"] = "pending_review"

@@ -302,7 +302,22 @@ class ThreeStrikeMediaInterventionMixin:
     def _media_watchdog_preflight(self, state, source):
         long_state = self.github.newest_video_state() if hasattr(self.github, "newest_video_state") else {"version": 1, "items": []}
         long_verified = v5._newest(v5._verified_exact(long_state, source))
-        long_candidate = None if long_verified else self._watchdog_candidate(long_state, source)
+        auth_id = (state.get("long_video") or {}).get("authoritative_item_id")
+        long_candidate = None
+        if not long_verified:
+            if auth_id:
+                auth_matches = [
+                    row for row in v5._exact_items(long_state, source)
+                    if str(row.get("id") or "") == str(auth_id)
+                    and row.get("uploaded") is not True
+                ]
+                if auth_matches:
+                    long_candidate = auth_matches[0]
+            if long_candidate is None:
+                try:
+                    long_candidate = self._watchdog_candidate(long_state, source, authoritative_item_id=auth_id)
+                except TypeError:
+                    long_candidate = self._watchdog_candidate(long_state, source)
 
         stages = []
         if long_candidate is not None:
@@ -452,10 +467,20 @@ class ThreeStrikeMediaInterventionMixin:
                         or bool(str(item.get("youtube_id") or "").strip())
                     ):
                         action_item = item
-                    elif watchdog_decision in {"hard_timeout", "blocked"}:
-                        fallback_candidate = self._find_final_attempt_fallback_candidate(source)
-                        if fallback_candidate is not None:
-                            action_item = fallback_candidate
+                    elif decision.action == intervention.FORCE_CONTROLLER_RECOVERY and int(item.get("fresh_generation_attempt") or 0) >= 3:
+                        # Fallback is strictly a FINAL condition: attempt budget exhausted + supervisor force recovery
+                        promoted = fallback.promote_last_usable_after_third_attempt(
+                            long_state,
+                            require_file=False,
+                            allow_pending_abandonment=(watchdog_decision == "hard_timeout"),
+                        )
+                        if promoted is not None:
+                            action_item = promoted
+                            stage["item_id"] = promoted.get("id")
+                            stage["authoritative_item_id"] = promoted.get("id")
+                            stage["final_attempt_fallback"] = True
+                            if hasattr(self.github, "save_video_state"):
+                                self.github.save_video_state(long_state)
 
                 if watchdog_decision == "hard_timeout" and action_item is item:
                     stage["controller_recovery_required"] = {

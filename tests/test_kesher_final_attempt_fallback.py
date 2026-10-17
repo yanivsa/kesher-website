@@ -71,6 +71,19 @@ class FinalAttemptFallbackTests(unittest.TestCase):
                 chosen = fallback.promote_last_usable_after_third_attempt(state)
             self.assertIsNone(chosen)
 
+    def test_never_runs_after_public_upload_exists(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            state_dir = Path(tmp)
+            previous = self._item("previous", 2)
+            third = self._item("third", 3, voice_only=False)
+            public = self._item("public", 1, uploaded=True, status="uploaded")
+            for row in (previous, third, public):
+                (state_dir / row["final_mp4"]).write_bytes(b"x" * 2048)
+            state = {"version": 1, "items": [previous, third, public]}
+            with mock.patch.object(fallback, "STATE_DIR", state_dir):
+                chosen = fallback.promote_last_usable_after_third_attempt(state)
+            self.assertIsNone(chosen)
+
     def test_unrelated_technical_rejection_not_promoted(self):
         with tempfile.TemporaryDirectory() as tmp:
             state_dir = Path(tmp)

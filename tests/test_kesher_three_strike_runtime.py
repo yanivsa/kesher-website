@@ -263,12 +263,20 @@ class KesherThreeStrikeRuntimeTests(unittest.TestCase):
             "long_video": v5.v3._stage_template(),
             "short": v5.v3._stage_template(),
         }
-        action = harness._media_watchdog_preflight(state, source)
-        self.assertEqual(action.kind, "long_video_watchdog_recover")
+        # Strike 1: hard timeout records incident strike and returns blocked without premature fallback promotion
+        action1 = harness._media_watchdog_preflight(state, source)
+        self.assertEqual(action1.kind, "blocked")
+        self.assertEqual(len(harness.github.dispatches), 0)
+
+        # Strike 2 (FORCE_CONTROLLER_RECOVERY under exhausted attempt 3): fallback candidate is authoritatively promoted!
+        harness.now += timedelta(hours=1)
+        action2 = harness._media_watchdog_preflight(state, source)
+        self.assertEqual(action2.kind, "long_video_watchdog_recover")
         self.assertEqual(len(harness.github.dispatches), 1)
         wf, inputs = harness.github.dispatches[0]
         self.assertEqual(wf, v5.LONG_VIDEO_WORKFLOW)
         self.assertEqual(inputs.get("target_item_id"), "item-attempt-2")
+        self.assertEqual(state["long_video"].get("authoritative_item_id"), "item-attempt-2")
 
     def test_media_blocked_state_does_not_oscillate_to_article_live(self):
         from scripts.kesher_content_controller_stabilized import StabilizedRuntimeV5Controller
@@ -386,6 +394,12 @@ class KesherThreeStrikeRuntimeTests(unittest.TestCase):
         action = harness._media_watchdog_preflight(state, source)
         # Should either be None (long verified, moves to short) or not dispatch long
         self.assertEqual(len(harness.github.dispatches), 0)
+
+    def test_prepublication_article_identity_is_stable_and_pipeline_scoped(self):
+        source = _Harness._article_intervention_source("2026-09-06")
+        self.assertEqual(source["slug"], "article-slot-2026-09-06")
+        self.assertEqual(len(source["content_sha256"]), 64)
+        int(source["content_sha256"], 16)
 
 
 if __name__ == "__main__":

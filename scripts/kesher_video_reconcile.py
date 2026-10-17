@@ -181,6 +181,9 @@ def release_without_short(slug: str, reason: str = "controller_bounded_release")
 def retry_technical_rejection(state: dict[str, Any], old: dict[str, Any]) -> dict[str, Any] | None:
     if not (old.get("status") == "rejected" and old.get("technical_verified") is not True):
         raise pipeline.PipelineError("Technical retry requested for a non-technical rejection")
+    requested_id = (os.environ.get("TARGET_ITEM_ID") or os.environ.get("KESHER_REQUESTED_TARGET_ITEM_ID") or "").strip()
+    if requested_id and requested_id == str(old.get("id") or "").strip():
+        raise pipeline.PipelineError("RECOVERY_MODE_VIOLATION: retry_technical_rejection forbidden in same-identity recovery mode")
     slug = source_slug(old)
     if not slug:
         raise pipeline.PipelineError("Technical rejection has no source slug")
@@ -412,16 +415,32 @@ def prepare_generation(target_slug: str = "") -> int:
             if len(exact) != 1:
                 raise pipeline.PipelineError("EXACT_MEDIA_ITEM_ID_MISMATCH")
             item = exact[0]
-        else:
-            unresolved = [
-                row for row in same_source
-                if row.get("uploaded") is not True and row.get("status") in UNRESOLVED_STATUSES
-            ]
-            if len(unresolved) > 1:
-                raise pipeline.PipelineError(
-                    "More than one exact Video Overview is unresolved; EXACT_MEDIA_ITEM_ID_REQUIRED"
+            _reconcile_item_technical_rejection(state, item)
+            export_target(item)
+            # Recovery mode invariant: structurally incapable of creating a replacement item or fresh generation.
+            if item.get("status") == "generating":
+                workflow_output("skip_generation", "false")
+                print(
+                    "VIDEO_RECONCILED_GENERATION "
+                    f"slug={target_slug} recovery_poll_generating=yes item={item.get('id')}"
                 )
-            item = unresolved[0] if unresolved else None
+                return 0
+            workflow_output("skip_generation", "true")
+            print(
+                "VIDEO_RECONCILED_GENERATION "
+                f"slug={target_slug} recovery_skip_generation=yes item={item.get('id')} status={item.get('status')}"
+            )
+            return 0
+
+        unresolved = [
+            row for row in same_source
+            if row.get("uploaded") is not True and row.get("status") in UNRESOLVED_STATUSES
+        ]
+        if len(unresolved) > 1:
+            raise pipeline.PipelineError(
+                "More than one exact Video Overview is unresolved; EXACT_MEDIA_ITEM_ID_REQUIRED"
+            )
+        item = unresolved[0] if unresolved else None
         if item is not None:
             _reconcile_item_technical_rejection(state, item)
             export_target(item)

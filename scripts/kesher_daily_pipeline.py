@@ -463,6 +463,8 @@ def generation_prompt(source: dict[str, Any]) -> str:
 
 
 def new_item(source: dict[str, Any]) -> dict[str, Any]:
+    if os.environ.get("TARGET_ITEM_ID"):
+        raise PipelineError("RECOVERY_MODE_VIOLATION: new_item forbidden in same-identity recovery mode")
     stamp = israel_now().strftime("%Y%m%d-%H%M%S")
     return {
         "id": f"video-{stamp}-{source['content_sha256'][:10]}",
@@ -785,6 +787,8 @@ def legacy_external_effect(
 
 
 def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
+    if os.environ.get("TARGET_ITEM_ID"):
+        raise PipelineError("RECOVERY_MODE_VIOLATION: add_source forbidden in same-identity recovery mode")
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
     media_mutation(state)
@@ -818,6 +822,8 @@ def add_source(state: dict[str, Any], item: dict[str, Any]) -> None:
 
 
 def start_generation(state: dict[str, Any], item: dict[str, Any]) -> None:
+    if os.environ.get("TARGET_ITEM_ID"):
+        raise PipelineError("RECOVERY_MODE_VIOLATION: start_generation forbidden in same-identity recovery mode")
     from scripts.kesher_runtime.media_state import CanonicalMediaState
     from scripts.kesher_runtime.legacy_retirement import media_mutation
     media_mutation(state)
@@ -1229,6 +1235,24 @@ def create_contact_sheet(video_path: Path, item: dict[str, Any], duration: float
 
 
 def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path: Path) -> None:
+    slug = str((item.get("source") or {}).get("slug") or "")
+    source_hash = str((item.get("source") or {}).get("content_sha256") or "")
+    if slug and source_hash:
+        has_promoted_winner = any(
+            row is not item
+            and str((row.get("source") or {}).get("slug") or "") == slug
+            and str((row.get("source") or {}).get("content_sha256") or "") == source_hash
+            and row.get("final_attempt_fallback") is True
+            for row in (state.get("items") or [])
+            if isinstance(row, dict)
+        )
+        if item.get("status") == "superseded" or has_promoted_winner:
+            item["status"] = "superseded"
+            item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+            item["updated_at"] = utc_now()
+            save_state(state)
+            print(f"LATE_COMPLETION_IGNORED item={item['id']} superseded by fallback winner")
+            return
     final_path = render_remotion_video(raw_path, item)
     media = ffprobe(final_path)
     sheet = create_contact_sheet(final_path, item, media["duration"])
@@ -1415,6 +1439,39 @@ def run_generation(
         return 0
     auth_preflight()
     state = load_state()
+    target_item_id = (item_id or os.environ.get("TARGET_ITEM_ID") or "").strip()
+    is_recovery_mode = bool(target_item_id)
+    if is_recovery_mode:
+        item = active_item(state, slug=slug, item_id=target_item_id)
+        if not item:
+            raise PipelineError(f"RECOVERY_MODE_VIOLATION: target item {target_item_id} does not exist in state")
+        if str(item.get("id") or "").strip() != target_item_id:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: active item mismatch")
+        target_slug = (slug or os.environ.get("TARGET_SLUG") or os.environ.get("DERIVE_SLUG") or "").strip()
+        if target_slug and str((item.get("source") or {}).get("slug") or "") != target_slug:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: slug mismatch in recovery mode")
+        requested_sha = os.environ.get("TARGET_CONTENT_SHA256", "").strip()
+        if requested_sha and str((item.get("source") or {}).get("content_sha256") or "") != requested_sha:
+            raise PipelineError("RECOVERY_MODE_VIOLATION: source content hash mismatch in recovery mode")
+        export_item_target(item)
+        if item.get("uploaded") is True or item["status"] in {"pending_review", "approved", "rejected", "uploading", "uploaded", "superseded"}:
+            print(f"NO_GENERATION recovery mode active_item={item['id']} status={item['status']}")
+            return 0
+        if item["status"] in {"source_selected", "source_added"}:
+            raise PipelineError(f"RECOVERY_MODE_VIOLATION: target item {target_item_id} has invalid status {item['status']} for recovery; provider source creation/generation forbidden")
+        if item["status"] == "generating":
+            if not item.get("task_id") or not item.get("source_id"):
+                raise PipelineError("RECOVERY_MODE_VIOLATION: generating item missing required task_id or source_id")
+            if not wait_for_generation(state, item, max_wait_seconds):
+                return 0
+            raw_path = download_artifact(state, item)
+        elif item["status"] == "downloaded":
+            raw_path = STATE_DIR / item["raw_mp4"]
+        else:
+            return 0
+        validate_and_manifest(state, item, raw_path)
+        return 0
+
     item = active_item(state, slug=slug, item_id=item_id)
     if item:
         export_item_target(item)
