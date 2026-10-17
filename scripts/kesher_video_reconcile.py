@@ -454,12 +454,17 @@ def prepare_generation(target_slug: str = "") -> int:
                 return 0
 
             export_target(item)
-            # Recovery mode invariant: structurally incapable of creating a replacement item or fresh generation.
-            if item.get("status") == "generating":
+            # Recovery mode semantics for exact existing item:
+            # generating -> poll existing provider task only (skip_generation=false)
+            # downloaded -> continue local post-processing/render/validation for SAME item (skip_generation=false)
+            # approved / pending_review / verified -> proceed toward exact upload (skip_generation=true)
+            # uploaded -> reconciliation only; never upload again (skip_generation=true)
+            # rejected -> obey explicit final fallback/recovery policy; never silently fresh-generate (skip_generation=true)
+            if item.get("status") in {"generating", "downloaded"}:
                 workflow_output("skip_generation", "false")
                 print(
                     "VIDEO_RECONCILED_GENERATION "
-                    f"slug={target_slug} recovery_poll_generating=yes item={item.get('id')}"
+                    f"slug={target_slug} recovery_advance_local=yes item={item.get('id')} status={item.get('status')}"
                 )
                 return 0
             workflow_output("skip_generation", "true")
@@ -731,12 +736,25 @@ def prepare_upload(
             raise pipeline.PipelineError(
                 "Exact identity lock requires target_slug, content_sha256, and target_item_id"
             )
+        if state.get("fallback_winner"):
+            fw = state["fallback_winner"]
+            if fw.get("slug") == target and fw.get("content_sha256") == target_content_sha256:
+                if fw.get("fallback_committed") is True and fw.get("winner_item_id") != target_item_id:
+                    workflow_output("ready", "false")
+                    raise pipeline.PipelineError(
+                        f"EXACT_UPLOAD_SUPERSEDED: item {target_item_id} superseded by fallback winner {fw.get('winner_item_id')}"
+                    )
         exact = [
             item for item in unresolved
             if str(item.get("id") or "").strip() == target_item_id
             and source_slug(item) == target
             and str((item.get("source") or {}).get("content_sha256") or "").strip() == target_content_sha256
         ]
+        if exact and (exact[0].get("status") == "superseded" or exact[0].get("upload_eligible") is False):
+            workflow_output("ready", "false")
+            raise pipeline.PipelineError(
+                f"EXACT_UPLOAD_SUPERSEDED: item {target_item_id} is superseded"
+            )
         if len(exact) != 1:
             exact_all = [
                 item for item in state.get("items") or []

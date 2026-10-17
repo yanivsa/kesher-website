@@ -229,6 +229,31 @@ class KesherThreeStrikeRuntimeTests(unittest.TestCase):
     def test_media_watchdog_hard_timeout_promotes_fallback_candidate(self):
         source = {"slug": "dating-burnout", "content_sha256": "a" * 64}
         start = datetime(2026, 9, 6, 7, 0, tzinfo=timezone.utc)
+        second_manifest = {
+            "item_id": "item-attempt-2",
+            "source": source,
+            "final_mp4": "item-attempt-2.mp4",
+            "final_sha256": "f" * 64,
+            "raw_sha256": "r" * 64,
+            "failure_signature": "wrong_narrator_gender",
+            "rejection_reasons": ["נפסל טכנית: Detected male voice pitch (129.0 Hz < 155 Hz threshold); Israeli female voice required"],
+            "media": {
+                "codec": "h264",
+                "audio_codec": "aac",
+                "width": 1920,
+                "height": 1080,
+                "duration": 120.0,
+            },
+            "content_duration_seconds": 120.0,
+            "signature_overlay": True,
+            "signature_asset_sha256": "s" * 64,
+            "youtube_metadata": {
+                "title": "dating-burnout",
+                "description": "https://kesher.saharoni.com/blog/dating-burnout",
+                "tags": ["זוגיות"],
+            },
+            "visual_pipeline": "remotion-v1-notebooklm-audio",
+        }
         second = {
             "id": "item-attempt-2",
             "fresh_generation_attempt": 2,
@@ -236,8 +261,9 @@ class KesherThreeStrikeRuntimeTests(unittest.TestCase):
             "status": "rejected",
             "technical_verified": False,
             "final_mp4": "item-attempt-2.mp4",
-            "final_sha256": "sha-2",
-            "media": {"width": 1920, "height": 1080, "duration": 120},
+            "final_sha256": "f" * 64,
+            "media": {"codec": "h264", "audio_codec": "aac", "width": 1920, "height": 1080, "duration": 120},
+            "manifest": second_manifest,
             "review_notes": {"technical": "נפסל טכנית: Detected male voice pitch (129.0 Hz < 155 Hz threshold); Israeli female voice required"},
             "uploaded": False,
             "updated_at": "2026-09-06T08:00:00Z",

@@ -92,7 +92,7 @@ class RuntimeV5Controller(v5.V5Controller):
             rows.append(bound)
         return rows
 
-    def _adopt_existing_short(self, state, source):
+    def _adopt_existing_short(self, state, source, long_item=None):
         current_short = state.get("short") or {}
         if (
             current_short.get("status") == "complete"
@@ -101,14 +101,14 @@ class RuntimeV5Controller(v5.V5Controller):
             and current_short.get("youtube_url")
         ):
             if current_short.get("overview_provider_identity") is None:
-                overview_identity = self._authoritative_overview_identity(source)
+                overview_identity = self._authoritative_overview_identity(source, long_item=long_item)
                 if overview_identity is not None:
                     current_short["overview_provider_identity"] = overview_identity
             return current_short
         short_state = self.github.newest_short_state() if hasattr(self.github, "newest_short_state") else {"version": 1, "items": []}
         verified = [
             row
-            for row in self._exact_short_items(short_state, source)
+            for row in self._exact_short_items(short_state, source, long_item=long_item)
             if delivery_guard.short_public_portrait_verified(
                 row,
                 source,
@@ -156,7 +156,6 @@ class RuntimeV5Controller(v5.V5Controller):
             "artifact_id": item.get("artifact_id"),
             "source_id": item.get("source_id"),
         })
-        v5.v3.clear_stage_failure(state["short"])
         return item
 
     @staticmethod
@@ -268,7 +267,7 @@ class RuntimeV5Controller(v5.V5Controller):
 
     def _recover_long_video(self, state, source, item):
         inputs = {
-            "operation": "full",
+            "operation": "recovery",
             "target_slug": source["slug"],
             "target_content_sha256": source["content_sha256"],
             "target_item_id": str(item.get("id") or ""),
@@ -620,38 +619,24 @@ class RuntimeV5Controller(v5.V5Controller):
                 or (state.get("status") == "blocked" and (state.get("last_error") or {}).get("stage") == "short")
             )
             if is_short_blocked:
-                short_state = self.github.newest_short_state() if hasattr(self.github, "newest_short_state") else {"version": 1, "items": []}
-                short_rows = (
-                    self._exact_short_items(short_state, source, long_item=long_verified)
-                    if hasattr(self, "_exact_short_items") and long_verified
-                    else v5._exact_items(short_state, source)
-                )
-                valid_short = [
-                    row for row in short_rows
-                    if delivery_guard.short_public_portrait_verified(
-                        row,
-                        source,
-                        youtube_verified=v5.core.verified_youtube_item,
-                    )
-                ]
-                if valid_short:
-                    chosen_short = valid_short[-1]
-                    state["short"]["status"] = "complete"
-                    state["short"]["verified"] = True
-                    state["short"]["item_id"] = chosen_short.get("id")
-                    state["short"]["youtube_id"] = chosen_short.get("youtube_id")
-                    state["short"]["youtube_url"] = chosen_short.get("youtube_url")
-                    v5.v3.clear_stage_failure(state["short"])
-                    state["last_error"] = None
-                    v5.core.transition(
-                        state,
-                        "complete",
-                        "article, long-form video and derivative Short verified public",
-                    )
+                adopted_item = self._adopt_existing_short(state, source, long_item=long_verified)
+                if adopted_item is not None:
                     ready, deliverables = delivery_guard.delivery_contract(state)
                     state["deliverables"] = deliverables
-                    self.github.save_controller_state(state)
-                    return state, v5.core.Action("complete", "article + long-form + Short verified public", copy.deepcopy(deliverables))
+                    if ready:
+                        v5.v3.clear_stage_failure(state["short"])
+                        state["last_error"] = None
+                        v5.core.transition(
+                            state,
+                            "complete",
+                            "article, long-form video and derivative Short verified public",
+                        )
+                        self.github.save_controller_state(state)
+                        return state, v5.core.Action("complete", "article + long-form + Short verified public", copy.deepcopy(deliverables))
+                    else:
+                        state["short"]["status"] = "blocked"
+                        self.github.save_controller_state(state)
+                        return state, v5.core.Action("blocked", (state.get("last_error") or {}).get("message") or "delivery contract incomplete")
                 else:
                     _, deliverables = delivery_guard.delivery_contract(state)
                     state["deliverables"] = deliverables

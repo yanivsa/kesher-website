@@ -1,3 +1,4 @@
+import hashlib
 import tempfile
 import unittest
 from pathlib import Path
@@ -13,17 +14,46 @@ class FinalAttemptFallbackTests(unittest.TestCase):
             if voice_only
             else "נפסל טכנית: יחס התמונה 1080x1920 אינו יחס אופקי טבעי 16:9"
         )
+        final_sha = hashlib.sha256(b"x" * 2048).hexdigest()
+        src = {"slug": "same-slug", "content_sha256": "same-hash"}
+        manifest = {
+            "item_id": item_id,
+            "source": src,
+            "final_mp4": f"{item_id}.mp4",
+            "final_sha256": final_sha,
+            "raw_sha256": "r" * 64,
+            "failure_signature": "wrong_narrator_gender" if voice_only else "invalid_aspect_ratio",
+            "rejection_reasons": ["Detected male voice pitch (129.0 Hz < 155 Hz threshold); Israeli female voice required"] if voice_only else ["יחס התמונה 1080x1920 אינו יחס אופקי טבעי 16:9"],
+            "media": {
+                "codec": "h264",
+                "audio_codec": "aac",
+                "width": 1920 if voice_only else 1080,
+                "height": 1080 if voice_only else 1920,
+                "duration": 120.0,
+            },
+            "content_duration_seconds": 120.0,
+            "signature_overlay": True,
+            "signature_asset_sha256": "s" * 64,
+            "youtube_metadata": {
+                "title": "Title",
+                "description": "Description",
+                "tags": ["tag"],
+            },
+            "visual_pipeline": "remotion-v1-notebooklm-audio",
+        }
         return {
             "id": item_id,
             "fresh_generation_attempt": attempt,
-            "source": {"slug": "same-slug", "content_sha256": "same-hash"},
+            "source": src,
             "uploaded": uploaded,
             "status": status,
             "technical_verified": False,
             "final_mp4": f"{item_id}.mp4",
-            "final_sha256": f"sha-{item_id}",
-            "media": {"width": 1920, "height": 1080, "duration": 120},
+            "final_sha256": final_sha,
+            "media": {"codec": "h264", "audio_codec": "aac", "width": 1920, "height": 1080, "duration": 120.0},
             "review_notes": {"technical": note},
+            "manifest": manifest,
+            "failure_signature": manifest["failure_signature"],
             "updated_at": f"2026-09-10T0{attempt}:00:00Z",
         }
 

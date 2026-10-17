@@ -1246,21 +1246,32 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
     slug = str((item.get("source") or {}).get("slug") or "")
     source_hash = str((item.get("source") or {}).get("content_sha256") or "")
     if slug and source_hash:
+        authoritative = load_state() if STATE_FILE.is_file() else state
+        auth_fw = authoritative.get("fallback_winner")
+        if auth_fw and auth_fw.get("slug") == slug and auth_fw.get("content_sha256") == source_hash:
+            if auth_fw.get("fallback_committed") is True and auth_fw.get("winner_item_id") != item.get("id"):
+                item["status"] = "superseded"
+                item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+                item["upload_eligible"] = False
+                item["updated_at"] = utc_now()
+                save_state(state)
+                raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner {auth_fw.get('winner_item_id')}")
+
         has_promoted_winner = any(
             row is not item
             and str((row.get("source") or {}).get("slug") or "") == slug
             and str((row.get("source") or {}).get("content_sha256") or "") == source_hash
             and row.get("final_attempt_fallback") is True
-            for row in (state.get("items") or [])
+            for row in (authoritative.get("items") or [])
             if isinstance(row, dict)
         )
         if item.get("status") == "superseded" or has_promoted_winner:
             item["status"] = "superseded"
             item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+            item["upload_eligible"] = False
             item["updated_at"] = utc_now()
             save_state(state)
-            print(f"LATE_COMPLETION_IGNORED item={item['id']} superseded by fallback winner")
-            return
+            raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner")
     final_path = render_remotion_video(raw_path, item)
     media = ffprobe(final_path)
     sheet = create_contact_sheet(final_path, item, media["duration"])
@@ -1406,7 +1417,28 @@ def validate_and_manifest(state: dict[str, Any], item: dict[str, Any], raw_path:
         print(f"TECHNICAL_REJECTED item={item['id']} reasons={len(technical_failures)}")
         return
 
+    if slug and source_hash and STATE_FILE.is_file():
+        authoritative = load_state()
+        auth_fw = authoritative.get("fallback_winner")
+        if auth_fw and auth_fw.get("slug") == slug and auth_fw.get("content_sha256") == source_hash:
+            if auth_fw.get("fallback_committed") is True and auth_fw.get("winner_item_id") != item.get("id"):
+                item["status"] = "superseded"
+                item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+                item["upload_eligible"] = False
+                item["updated_at"] = utc_now()
+                save_state(state)
+                raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner {auth_fw.get('winner_item_id')}")
+        auth_item = next((r for r in authoritative.get("items", []) if r.get("id") == item.get("id")), None)
+        if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
+            item["status"] = "superseded"
+            item["superseded_reason"] = "late_completion_superseded_by_fallback_winner"
+            item["upload_eligible"] = False
+            item["updated_at"] = utc_now()
+            save_state(state)
+            raise PipelineError(f"STALE_SNAPSHOT_SUPERSEDED: item {item.get('id')} superseded by fallback winner")
+
     item["technical_verified"] = True
+    item["upload_eligible"] = True
     item["review_notes"]["technical"] = (
         f"אומת קובץ MP4 תקין, H.264, יחס {media['width']}x{media['height']}, "
         f"משך {media['duration']} שניות וחותמת SHA-256"
@@ -2018,6 +2050,16 @@ def verify_public_upload(item: dict[str, Any], token: str, timeout_seconds: int 
 
 def upload_only(slug: str | None = None, item_id: str | None = None, *, state: dict | None = None) -> int:
     state = load_state() if state is None else state
+    if slug and item_id and STATE_FILE.is_file():
+        auth_state = load_state()
+        if auth_state.get("fallback_winner"):
+            fw = auth_state["fallback_winner"]
+            if fw.get("slug") == slug and fw.get("fallback_committed") is True:
+                if fw.get("winner_item_id") != item_id:
+                    raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item_id} superseded by fallback winner {fw.get('winner_item_id')}")
+        auth_item = next((r for r in auth_state.get("items", []) if r.get("id") == item_id), None)
+        if auth_item and (auth_item.get("status") == "superseded" or auth_item.get("upload_eligible") is False):
+            raise PipelineError(f"EXACT_UPLOAD_SUPERSEDED: item {item_id} is superseded")
     item = existing_item(state, item_id, slug)
     if item.get('uploaded') is True and item.get('youtube_verification'):
         print(f"NO_DUPLICATE_UPLOAD item={item['id']}")
