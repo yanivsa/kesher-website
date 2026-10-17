@@ -1,7 +1,7 @@
 {
   "schema_version": 5,
   "cycle": "2026-10-17",
-  "status": "article_live",
+  "status": "long_video_running",
   "article": {
     "attempt_count": 0,
     "status": "pending",
@@ -1461,15 +1461,6 @@
   "last_error": null,
   "history": [
     {
-      "at": "2026-10-16T18:06:19.702414+00:00",
-      "from": "article_live",
-      "to": "blocked",
-      "reason": "LONG_VIDEO_PROVIDER_HARD_TIMEOUT",
-      "details": {
-        "message": "long_video provider exceeded 90 minute hard timeout from launch/recovery"
-      }
-    },
-    {
       "at": "2026-10-16T18:11:03.170714+00:00",
       "from": "blocked",
       "to": "article_live",
@@ -2259,9 +2250,19 @@
       "from": "article_deploying",
       "to": "article_live",
       "reason": "HTTP 200 and expected title verified"
+    },
+    {
+      "at": "2026-10-17T17:23:10.756715+00:00",
+      "from": "article_live",
+      "to": "video_running",
+      "reason": "new video workflow dispatched",
+      "details": {
+        "operation": "full",
+        "attempt": 1
+      }
     }
   ],
-  "updated_at": "2026-10-17T17:23:01.010733+00:00",
+  "updated_at": "2026-10-17T17:23:10.756723+00:00",
   "image": {
     "attempt_count": 1,
     "status": "complete",
@@ -2279,8 +2280,8 @@
     "image_path": "/images/generated/blog/fear-of-ending-up-alone-late-singleness.jpg"
   },
   "long_video": {
-    "attempt_count": 0,
-    "status": "pending",
+    "attempt_count": 1,
+    "status": "running",
     "last_error": null,
     "next_retry_at": null,
     "run_id": 38974743923,
@@ -2290,7 +2291,9 @@
     "same_failure_streak": 0,
     "failure_count_by_type": {},
     "overview_evidence_required": true,
-    "last_run_conclusion": "success"
+    "last_run_conclusion": "success",
+    "last_dispatch_at": "2026-10-17T17:23:10.756707+00:00",
+    "attempts": 1
   },
   "short": {
     "attempt_count": 0,
@@ -2326,9 +2329,10 @@
         "target_content_sha256": "34994678e6b38002b9b07de186c345dc917405378a23c98c2e274c9831318c25"
       },
       "intent_at": "2026-10-17T17:22:21.932451+00:00",
-      "status": "intent",
+      "status": "dispatched",
       "previous_run_id": 38974743923,
-      "observed_active_run_id": null
+      "observed_active_run_id": 39053521586,
+      "dispatched_at": "2026-10-17T17:22:21.932451+00:00"
     }
   },
   "last_child_notification": {
@@ -2352,19 +2356,5 @@
     "Kesher Normalize Article PR:39052236182",
     "Kesher Trusted Article Image:39052349063",
     "Auto-merge Kesher article PRs:39052470893"
-  ],
-  "video": {
-    "attempt_count": 0,
-    "status": "pending",
-    "last_error": null,
-    "next_retry_at": null,
-    "run_id": 38974743923,
-    "processed_run_id": 38974743923,
-    "provider_id": null,
-    "failure_fingerprint": null,
-    "same_failure_streak": 0,
-    "failure_count_by_type": {},
-    "overview_evidence_required": true,
-    "last_run_conclusion": "success"
-  }
+  ]
 }
